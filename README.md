@@ -309,12 +309,36 @@ in a Story. `?lang=ru` opens it in Russian. They combine.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) data | — | ODbL | The map data behind the tiles. |
 | [Familjen Grotesk](https://fonts.google.com/specimen/Familjen+Grotesk), [Literata](https://fonts.google.com/specimen/Literata), [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) | — | SIL Open Font License 1.1 | Served by Google Fonts. |
 | [Instagram embed.js](https://developers.facebook.com/docs/instagram/oembed/) | — | Meta Platforms terms | Only loaded after a visitor presses play. |
+| [Google Analytics 4](https://developers.google.com/analytics) (gtag.js) | — | Google terms | Property `G-2XNTC15F28`. Loads on every page view and sets cookies. |
 
 **The attribution control in the bottom-right corner is a licence condition of
 both OpenStreetMap and CARTO. Do not remove it.**
 
-No analytics, no cookies, no tracking, no fonts or scripts beyond the table
-above. The only thing stored on a visitor's device is their language choice.
+No scripts or fonts beyond the table above. Apart from Google Analytics,
+the only thing stored on a visitor's device is their language choice.
+
+### Analytics
+
+Google Analytics 4 is wired up, property `G-2XNTC15F28`. The tag lives in the
+`<head>` of `index.html`, exactly as Google's console emits it.
+
+Because this is a single page, GA on its own would record one view per visit
+and tell you nothing about which places people actually open. So opening a
+place also reports a page view of its own, titled with the place name and
+pointing at its `?spot=` URL — `trackView()` near the bottom of
+`assets/app.js`. Those land in GA's standard **Pages and screens** report with
+no configuration in the console, which means the report doubles as a
+popularity ranking of the map.
+
+To remove tracking entirely, delete the gtag block from `index.html` and the
+`trackView` function from `assets/app.js`; its two call sites then do nothing.
+Deleting only the gtag block is also safe — `trackView` checks for the tag and
+returns quietly when it is missing, which is also what happens for visitors
+running an ad blocker.
+
+**GA4 sets cookies.** Estonia applies the EU rules, so if you get meaningful
+traffic from the EU you are expected to ask for consent before the tag loads.
+There is no consent banner on this site.
 
 If CARTO ever stops serving free tiles, the one line to change is `TILE_URL`
 near the top of `assets/app.js`.

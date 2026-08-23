@@ -385,6 +385,7 @@
     state.view = 'list';
     renderPanel();          /* leave the crawlable list in the markup */
     syncUrl();
+    lastTrackedPath = window.location.pathname + window.location.search;
 
     var back = state.lastFocus;
     state.lastFocus = null;
@@ -412,6 +413,8 @@
     dom.panelScroll.scrollTop = 0;
     var heading = dom.detail.querySelector('.place-name');
     if (heading) heading.focus();
+
+    trackView(place.name);
   }
 
   function showList(focus) {
@@ -765,6 +768,31 @@
     try { window.history.replaceState(null, '', next); } catch (e) { /* ignore */ }
   }
 
+  /* ------------------------------------------------------------- analytics
+   * Google Analytics, only if the tag in index.html is still there.
+   *
+   * This is one page, so GA on its own records a single view per visit and
+   * tells you nothing about which places people actually open. Opening a
+   * place therefore reports its own page view, which lands in GA's standard
+   * Pages and screens report with no setup in the console.
+   *
+   * To remove tracking completely: delete the gtag block in index.html and
+   * this function. The two calls below become harmless no-ops.
+   */
+
+  var lastTrackedPath = null;
+
+  function trackView(title) {
+    var here = window.location.pathname + window.location.search;
+    if (here === lastTrackedPath) return;   /* don't double-count the landing URL */
+    lastTrackedPath = here;
+    if (typeof window.gtag !== 'function') return;
+    window.gtag('event', 'page_view', {
+      page_location: window.location.href,
+      page_title: title
+    });
+  }
+
   /* -------------------------------------------------------------- controls */
 
   function wireControls() {
@@ -918,6 +946,9 @@
       renderFilters();
       renderPanel();
       wireControls();
+
+      /* gtag already reported the landing URL, deep link and all. */
+      lastTrackedPath = window.location.pathname + window.location.search;
 
       var spot = new URLSearchParams(window.location.search).get('spot');
       if (spot && byId(spot)) selectPlace(spot, { fly: true });
