@@ -37,7 +37,10 @@ const BBOX = { latMin: 59.32, latMax: 59.52, lngMin: 24.50, lngMax: 25.00 };
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const MONTH = /^[0-9]{4}-(0[1-9]|1[0-2])$/;
-const REEL = /^https:\/\/www\.instagram\.com\/(reel|reels|p|tv)\/[A-Za-z0-9_-]{5,}\/?(\?.*)?$/;
+/* Instagram shows two shapes depending on where you copied from: the plain
+   permalink, and the profile-prefixed one you get while browsing your own
+   grid (…instagram.com/tallinntastebuds/reel/ABC123/). Both are real. */
+const REEL = /^https:\/\/www\.instagram\.com\/(?:[A-Za-z0-9._]{1,30}\/)?(reel|reels|p|tv)\/[A-Za-z0-9_-]{5,}\/?(\?.*)?$/;
 const PHOTO_FILE = /^[A-Za-z0-9._-]+\.(webp|jpg|jpeg|png|avif)$/i;
 const HTTP_URL = /^https?:\/\/[^\s]+$/;
 
@@ -278,10 +281,10 @@ if (places !== null) {
         });
       }
 
-      /* website */
-      if ('website' in place) {
+      /* website — optional; "" and a missing key both mean "no website" */
+      if ('website' in place && place.website !== '') {
         if (!isNonEmptyString(place.website) || !HTTP_URL.test(place.website)) {
-          fail(where, `"website" must be a full http(s) URL, or the key left out entirely`);
+          fail(where, '"website" must be a full http(s) URL, or "" / the key left out');
         }
       }
 

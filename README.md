@@ -68,7 +68,7 @@ to it:
   "lat": 59.44150,
   "lng": 24.74975,
   "price": 3,
-  "types": ["date", "outdoor"],
+  "types": ["date", "fine-dining"],
   "blurb": {
     "en": "…",
     "et": "…",
@@ -97,7 +97,7 @@ Field by field:
 | `mustOrder` | Dish names exactly as the menu prints them. Not translated. Use `[]` if you have not decided. |
 | `reel` | The full Instagram permalink, or `""` if there is not a reel yet. |
 | `photos` | Filenames inside `photos/<id>/`. Just the filenames. Use `[]` if there are none. |
-| `website` | Optional. Leave the key out entirely rather than setting it to `""`. |
+| `website` | Optional. An empty string and a missing key both mean "no website". |
 | `visited` | The month you last ate there, `YYYY-MM`. |
 | `closed` | `true` greys the pin out. See below. |
 
@@ -152,10 +152,12 @@ place moves it about a metre.
 2. Copy the address bar, or use the ⋯ menu → **Copy link**.
 3. Strip everything after the `?`.
 
-You want the plain shape:
+Either of these shapes is accepted — the second is what the address bar shows
+while you are browsing your own grid:
 
 ```
 https://www.instagram.com/reel/ABC123xyz/
+https://www.instagram.com/tallinntastebuds/reel/ABC123xyz/
 ```
 
 **Never invent a shortcode.** A made-up one resolves to a real stranger's post.
@@ -190,8 +192,8 @@ panel gets a **Closed** flag and a short note, and — the point of the whole
 exercise — every `?spot=` link you ever put in a Story keeps working. Deleting
 the entry breaks those links silently.
 
-`data/restaurants.json` ships with `leib-resto-ja-aed` marked closed as a
-worked example. Delete it if you would rather not carry it.
+Nothing in `data/restaurants.json` is currently marked closed — the field is
+there for the first place that shuts.
 
 ---
 

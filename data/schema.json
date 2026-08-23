@@ -78,7 +78,7 @@
         "reel": {
           "type": "string",
           "description": "Full Instagram permalink to the reel, or an empty string if there is not one yet. Never invent a shortcode.",
-          "pattern": "^$|^https://www\\.instagram\\.com/(reel|p|tv)/[A-Za-z0-9_-]{5,}/?(\\?.*)?$"
+          "pattern": "^$|^https://www\\.instagram\\.com/(?:[A-Za-z0-9._]{1,30}/)?(reel|reels|p|tv)/[A-Za-z0-9_-]{5,}/?(\\?.*)?$"
         },
         "photos": {
           "type": "array",
@@ -88,8 +88,8 @@
         },
         "website": {
           "type": "string",
-          "description": "Optional. Leave the field out entirely rather than setting it to an empty string.",
-          "pattern": "^https?://[^\\s]+$"
+          "description": "Optional. An empty string and a missing key both mean there is no website.",
+          "pattern": "^$|^https?://[^\\s]+$"
         },
         "visited": {
           "type": "string",

@@ -1,200 +1,884 @@
 [
   {
-    "id": "f-hoone",
-    "name": "F-Hoone",
-    "address": "Telliskivi 60a-4, 10412 Tallinn",
-    "lat": 59.4397095,
-    "lng": 24.7292113,
-    "price": 2,
-    "types": ["solo", "groups", "brunch", "outdoor"],
-    "blurb": {
-      "en": "TODO — replace with your own words. A big, airy hall in the Telliskivi Creative City, open from breakfast through to late.",
-      "et": "TODO — asenda oma sõnadega. Suur ja avar saal Telliskivi loomelinnakus, avatud hommikusöögist hilisõhtuni.",
-      "ru": "TODO — замените своими словами. Большой светлый зал в творческом городке Telliskivi, открыт с завтрака до позднего вечера."
-    },
-    "mustOrder": [],
-    "reel": "",
-    "photos": [],
-    "website": "https://fhoone.ee",
-    "visited": "2026-02",
-    "closed": false
-  },
-  {
-    "id": "rataskaevu-16",
-    "name": "Rataskaevu 16",
-    "address": "Rataskaevu 16, 10123 Tallinn",
-    "lat": 59.43642,
-    "lng": 24.74138,
-    "price": 3,
-    "types": ["date", "groups"],
-    "blurb": {
-      "en": "TODO — replace with your own words. A long-running Old Town dining room on a quiet lane behind Niguliste church.",
-      "et": "TODO — asenda oma sõnadega. Kauaaegne vanalinna restoran vaiksel tänaval Niguliste kiriku taga.",
-      "ru": "TODO — замените своими словами. Давно работающий ресторан в Старом городе, на тихой улочке за церковью Нигулисте."
-    },
-    "mustOrder": ["Elk fillet"],
-    "reel": "",
-    "photos": [],
-    "website": "https://rataskaevu16.ee",
-    "visited": "2025-11",
-    "closed": false
-  },
-  {
-    "id": "vegan-restoran-v",
-    "name": "Vegan Restoran V",
-    "address": "Rataskaevu 12, 10123 Tallinn",
-    "lat": 59.43648,
-    "lng": 24.74173,
-    "price": 2,
-    "types": ["veg", "date", "solo"],
-    "blurb": {
-      "en": "TODO — replace with your own words. An all-plant kitchen a few doors along the same Old Town street.",
-      "et": "TODO — asenda oma sõnadega. Täielikult taimne köök mõne maja kaugusel samal vanalinna tänaval.",
-      "ru": "TODO — замените своими словами. Полностью растительная кухня в нескольких домах по той же улице Старого города."
-    },
-    "mustOrder": [],
-    "reel": "",
-    "photos": [],
-    "visited": "2026-01",
-    "closed": false
-  },
-  {
-    "id": "pohjala-tap-room",
-    "name": "Põhjala Tap Room",
-    "address": "Peetri 5, 10415 Tallinn",
-    "lat": 59.450162,
-    "lng": 24.727096,
-    "price": 2,
-    "types": ["groups", "late", "outdoor"],
-    "blurb": {
-      "en": "TODO — replace with your own words. A brewery tap room in a former submarine factory at Noblessner, with a Texas-style smoker in the back.",
-      "et": "TODO — asenda oma sõnadega. Pruulikoja baar endises allveelaevatehases Noblessneris, taga Texase stiilis suitsuahi.",
-      "ru": "TODO — замените своими словами. Пивоварня с баром в бывшем цехе подводных лодок в Ноблесснере, с коптильней в техасском стиле."
-    },
-    "mustOrder": ["Brisket", "Öö"],
-    "reel": "",
-    "photos": [],
-    "website": "https://pohjalabeer.com",
-    "visited": "2026-05",
-    "closed": false
-  },
-  {
-    "id": "lore-bistroo",
-    "name": "Lore Bistroo",
-    "address": "Peetri 12, 10415 Tallinn",
-    "lat": 59.44968,
-    "lng": 24.72415,
-    "price": 3,
-    "types": ["date", "outdoor"],
-    "blurb": {
-      "en": "TODO — replace with your own words. A bistro in the old shipyard hall on the Noblessner waterfront, under the Kai art centre.",
-      "et": "TODO — asenda oma sõnadega. Bistroo vanas laevatehase hoones Noblessneri rannaalal, Kai kunstikeskuse all.",
-      "ru": "TODO — замените своими словами. Бистро в старом цехе верфи на набережной Ноблесснера, под арт-центром Kai."
-    },
-    "mustOrder": [],
-    "reel": "",
-    "photos": [],
-    "website": "https://lorebistroo.ee",
-    "visited": "2026-06",
-    "closed": false
-  },
-  {
-    "id": "moon",
-    "name": "Moon",
-    "address": "Telliskivi 60/4, 10412 Tallinn",
-    "lat": 59.44025,
-    "lng": 24.7283,
-    "price": 3,
-    "types": ["date", "tasting", "groups"],
-    "blurb": {
-      "en": "TODO — replace with your own words. Modern Russian-Estonian cooking; the kitchen moved from Kalamaja to Telliskivi in 2025.",
-      "et": "TODO — asenda oma sõnadega. Kaasaegne vene-eesti köök; restoran kolis 2025. aastal Kalamajast Telliskivile.",
-      "ru": "TODO — замените своими словами. Современная русско-эстонская кухня; в 2025 году кухня переехала из Каламая в Telliskivi."
-    },
-    "mustOrder": [],
-    "reel": "",
-    "photos": [],
-    "website": "https://restoranmoon.ee",
-    "visited": "2026-07",
-    "closed": false
-  },
-  {
-    "id": "boheem",
-    "name": "Boheem",
-    "address": "Kopli 18, 10412 Tallinn",
-    "lat": 59.44275,
-    "lng": 24.7336,
+    "id": "annon",
+    "name": "Annön",
+    "address": "Kalevipoja põik 10, 13614 Tallinn",
+    "lat": 59.4389373,
+    "lng": 24.8311022,
     "price": 1,
-    "types": ["solo", "brunch", "quick", "outdoor"],
+    "types": [
+      "korean",
+      "cheap-eats",
+      "hidden-gem"
+    ],
     "blurb": {
-      "en": "TODO — replace with your own words. A wooden-house neighbourhood cafe on the Kalamaja end of Kopli street.",
-      "et": "TODO — asenda oma sõnadega. Puumajas asuv kohalik kohvik Kopli tänava Kalamaja-poolses otsas.",
-      "ru": "TODO — замените своими словами. Районное кафе в деревянном доме в начале улицы Копли, со стороны Каламая."
+      "en": "Soviet Korean comfort food in Lasnamäe, fifteen minutes from the centre by bus. Spicy all the way through — you can't avoid the chili in any bite. The lamb soup could use more lamb, but it still hits the spot.",
+      "et": "",
+      "ru": ""
     },
-    "mustOrder": [],
-    "reel": "",
+    "mustOrder": [
+      "Beef heart salad",
+      "Lamb soup",
+      "Beef soup"
+    ],
+    "reel": "https://www.instagram.com/reel/DJjxpMupy-f/",
     "photos": [],
-    "visited": "2025-09",
+    "website": "",
+    "visited": "2025-05",
     "closed": false
   },
   {
-    "id": "nop",
-    "name": "NOP",
-    "address": "J. Köleri 1, 10150 Tallinn",
-    "lat": 59.4378,
-    "lng": 24.787,
+    "id": "ariran",
+    "name": "Ariran",
+    "address": "Telliskivi 35, 10611 Tallinn",
+    "lat": 59.4372396,
+    "lng": 24.7227705,
     "price": 2,
-    "types": ["brunch", "coffee", "outdoor", "veg"],
+    "types": [
+      "korean",
+      "hidden-gem",
+      "casual"
+    ],
     "blurb": {
-      "en": "TODO — replace with your own words. A cafe and deli in a wooden house on the edge of Kadriorg park, with a big back yard.",
-      "et": "TODO — asenda oma sõnadega. Kohvik ja pood puumajas Kadrioru pargi serval, suure tagaõuega.",
-      "ru": "TODO — замените своими словами. Кафе и лавка в деревянном доме на краю парка Кадриорг, с большим задним двором."
+      "en": "A Korean restaurant on Telliskivi street run by the same owner for 34 years. He's from Korea, has lived most of his life in Estonia, and is sharp and multilingual. When you enter, show some respect — that isn't an easy business. We pass by daily and somehow kept skipping it.",
+      "et": "",
+      "ru": ""
     },
-    "mustOrder": [],
-    "reel": "",
+    "mustOrder": [
+      "Beef bulgogi",
+      "Kimchi"
+    ],
+    "reel": "https://www.instagram.com/reel/DS5hsjGEy5J/",
     "photos": [],
-    "website": "https://nop.ee",
+    "website": "",
+    "visited": "2025-12",
+    "closed": false
+  },
+  {
+    "id": "borsch-ja-varenyk",
+    "name": "Borsch & Varenyk",
+    "address": "Endla 56, 10613 Tallinn",
+    "lat": 59.4278699,
+    "lng": 24.718032,
+    "price": 2,
+    "types": [
+      "ukrainian",
+      "casual",
+      "cheap-eats"
+    ],
+    "blurb": {
+      "en": "A cozy place next to Taksopark for warm borscht, vareniki and other homemade Ukrainian dishes. Friendly staff and a welcoming vibe that makes it feel like grandma's kitchen.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Borscht",
+      "Varenyky"
+    ],
+    "reel": "https://www.instagram.com/reel/DHbAWclq5H_/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-03",
+    "closed": false
+  },
+  {
+    "id": "bruto-bakehouse",
+    "name": "Bruto Bakehouse",
+    "address": "Suur-Karja 12, 10140 Tallinn",
+    "lat": 59.4355717,
+    "lng": 24.7462442,
+    "price": 1,
+    "types": [
+      "bakery",
+      "coffee",
+      "solo"
+    ],
+    "blurb": {
+      "en": "Family size cookies in the Old Town. They prepare only 300 every working day.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Pistachio cookie",
+      "Carrot cake cookie"
+    ],
+    "reel": "https://www.instagram.com/reel/DcQR6nMo9L9/",
+    "photos": [],
+    "website": "",
+    "visited": "2026-08",
+    "closed": false
+  },
+  {
+    "id": "bueno-gourmet-kadriorg",
+    "name": "Bueno Gourmet Kadriorg",
+    "address": "Vesivärava 7, 10126 Tallinn",
+    "lat": 59.4378103,
+    "lng": 24.7763952,
+    "price": 1,
+    "types": [
+      "street-food",
+      "cheap-eats",
+      "casual"
+    ],
+    "blurb": {
+      "en": "Street food that feels honest and real. Everything is under €7, which is rare these days. Chilean-run, fair prices, strong taste. Kadriorg is a chill area to grab your food and eat outside — just don't forget a napkin.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Philly Cheese Steak",
+      "Pulled Pork Taco",
+      "Beef Burrito"
+    ],
+    "reel": "https://www.instagram.com/reel/DJJM_NhsfgP/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-05",
+    "closed": false
+  },
+  {
+    "id": "burger-box",
+    "name": "Burger Box",
+    "address": "Kopli 4a, 10412 Tallinn",
+    "lat": 59.4413251,
+    "lng": 24.7368718,
+    "price": 2,
+    "types": [
+      "burgers",
+      "casual",
+      "vegan"
+    ],
+    "blurb": {
+      "en": "Once just a small burger window next to the old Põhjala Speakeasy, it has kept its street-food soul while the menu got bolder. Prices stay wallet-friendly and the vibe is relaxed — vegan-friendly, dog-friendly, people-friendly.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Cheese balls",
+      "Kimchi fries",
+      "Laksa soup"
+    ],
+    "reel": "https://www.instagram.com/reel/DKHwvljB_bU/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-05",
+    "closed": false
+  },
+  {
+    "id": "cafe-cape-town",
+    "name": "Cafe Cape Town",
+    "address": "Kopli 1, 10412 Tallinn",
+    "lat": 59.4412173,
+    "lng": 24.7347696,
+    "price": 1,
+    "types": [
+      "coffee",
+      "solo",
+      "hidden-gem"
+    ],
+    "blurb": {
+      "en": "Paul's place inside the market hall — chillest dude, coolest vibes, and a must-see spot in town. Handmade South African pies.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Bobotie pie",
+      "Mushroom pie"
+    ],
+    "reel": "https://www.instagram.com/reel/DFFghzltZdX/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-01",
+    "closed": false
+  },
+  {
+    "id": "cafe-tempo",
+    "name": "Cafe Tempo",
+    "address": "Reisijate 62-3, 10412 Tallinn",
+    "lat": 59.441043,
+    "lng": 24.7334466,
+    "price": 3,
+    "types": [
+      "date",
+      "fine-dining"
+    ],
+    "blurb": {
+      "en": "Portions are confusing. The bread is good, the meat needs work. Vibes are good, service is good, interior is cool, prices are fine. Not sure about this one.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Bread"
+    ],
+    "reel": "https://www.instagram.com/reel/DNqd6mYz9pq/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-08",
+    "closed": false
+  },
+  {
+    "id": "chakra",
+    "name": "Chakra",
+    "address": "Bremeni käik 1, 10123 Tallinn",
+    "lat": 59.439357,
+    "lng": 24.7493884,
+    "price": 2,
+    "types": [
+      "indian",
+      "groups",
+      "vegan"
+    ],
+    "blurb": {
+      "en": "Most of you have tried it from Bolt Food, but the Old Town room is special — a very old building, and a chef who moved to Estonia in 1992 and finally opened his own place in 2009.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Onion bhaji — ask nicely, it's off menu"
+    ],
+    "reel": "https://www.instagram.com/reel/DNn6V21TsLA/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-08",
+    "closed": false
+  },
+  {
+    "id": "dvin",
+    "name": "DVIN",
+    "address": "Kopli 71, 11713 Tallinn",
+    "lat": 59.4553836,
+    "lng": 24.6799773,
+    "price": 1,
+    "types": [
+      "georgian",
+      "cheap-eats",
+      "hidden-gem"
+    ],
+    "blurb": {
+      "en": "Honest and delicious, out in Kopli.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Khinkali",
+      "Shashlik"
+    ],
+    "reel": "https://www.instagram.com/reel/DXMsafDjGxE/",
+    "photos": [],
+    "website": "",
     "visited": "2026-04",
     "closed": false
   },
   {
-    "id": "sfaar",
-    "name": "Sfäär",
-    "address": "Mere pst 6E, 10111 Tallinn",
-    "lat": 59.44032,
-    "lng": 24.75536,
-    "price": 3,
-    "types": ["date", "solo"],
+    "id": "faeton",
+    "name": "Faeton",
+    "address": "J. Köleri 2, 10150 Tallinn",
+    "lat": 59.4384988,
+    "lng": 24.7752398,
+    "price": 2,
+    "types": [
+      "azerbaijani",
+      "groups"
+    ],
     "blurb": {
-      "en": "TODO — replace with your own words. A restaurant and wine store just outside the Old Town wall, by Rotermann.",
-      "et": "TODO — asenda oma sõnadega. Restoran ja veinipood otse vanalinna müüri taga, Rotermanni kõrval.",
-      "ru": "TODO — замените своими словами. Ресторан и винный магазин сразу за стеной Старого города, рядом с Ротерманни."
+      "en": "The qutab has a twist — filled with greens and mozzarella instead of the traditional herbs. Portions are huge; if you're dining solo, half a küftä might be plenty. I'm Azerbaijani, and I approve this Azerbaijani restaurant.",
+      "et": "",
+      "ru": ""
     },
-    "mustOrder": [],
-    "reel": "",
+    "mustOrder": [
+      "Qutab",
+      "Küftä",
+      "Ayran"
+    ],
+    "reel": "https://www.instagram.com/reel/DJAFJMWKaPZ/",
     "photos": [],
-    "website": "https://sfaar.ee",
+    "website": "",
+    "visited": "2025-04",
+    "closed": false
+  },
+  {
+    "id": "ferment",
+    "name": "Ferment",
+    "address": "Peetri 6, 10414 Tallinn",
+    "lat": 59.4506949,
+    "lng": 24.7285009,
+    "price": 2,
+    "types": [
+      "date",
+      "casual"
+    ],
+    "blurb": {
+      "en": "Somebody stole my heart. A new gem in Noblessner.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Salami Picante pizza",
+      "Charred cabbage"
+    ],
+    "reel": "https://www.instagram.com/reel/DLt9Z7cqsSx/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-07",
+    "closed": false
+  },
+  {
+    "id": "francois-boulangerie",
+    "name": "François Boulangerie",
+    "address": "Härjapea 17, 10320 Tallinn",
+    "lat": 59.4376932,
+    "lng": 24.7162062,
+    "price": 1,
+    "types": [
+      "bakery",
+      "hidden-gem"
+    ],
+    "blurb": {
+      "en": "François and his croissants are back on Härjapea street. Saturdays only.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Croissant"
+    ],
+    "reel": "https://www.instagram.com/reel/DZjsu_zIETc/",
+    "photos": [],
+    "website": "",
+    "visited": "2026-06",
+    "closed": false
+  },
+  {
+    "id": "gobi",
+    "name": "Gobi",
+    "address": "Rotermanni 14, 10111 Tallinn",
+    "lat": 59.4389817,
+    "lng": 24.7576905,
+    "price": 3,
+    "types": [
+      "georgian",
+      "date",
+      "fine-dining"
+    ],
+    "blurb": {
+      "en": "Modern Georgian cuisine in Rotermanni.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Khinkali",
+      "Adjaruli khachapuri"
+    ],
+    "reel": "https://www.instagram.com/reel/DOf3xlPk9OV/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-09",
+    "closed": false
+  },
+  {
+    "id": "gotsu-kyuho",
+    "name": "Gotsu Kyuho's Kitchen",
+    "address": "Pärnu mnt 62a, 10135 Tallinn",
+    "lat": 59.4257277,
+    "lng": 24.7420539,
+    "price": 2,
+    "types": [
+      "korean",
+      "hidden-gem",
+      "solo"
+    ],
+    "blurb": {
+      "en": "A Korean restaurant that's been here a long time, known for its flavours, peppery spices and warm atmosphere. A little hidden gem for anyone craving authentic Korean food in the city.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Fried chicken",
+      "Bibimbap",
+      "Kimchi"
+    ],
+    "reel": "https://www.instagram.com/reel/DPOyEWNiHlF/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-09",
+    "closed": false
+  },
+  {
+    "id": "hans",
+    "name": "HAN's Restoran",
+    "address": "A. Lauteri 5, 10114 Tallinn",
+    "lat": 59.4314716,
+    "lng": 24.7577192,
+    "price": 2,
+    "types": [
+      "chinese",
+      "casual",
+      "groups"
+    ],
+    "blurb": {
+      "en": "Hans means my humble home. Not sure about this one.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Dumplings"
+    ],
+    "reel": "https://www.instagram.com/reel/DP_GM7XgPdq/",
+    "photos": [],
+    "website": "",
     "visited": "2025-10",
     "closed": false
   },
   {
-    "id": "leib-resto-ja-aed",
-    "name": "Leib Resto ja Aed",
-    "address": "Uus 31, 10111 Tallinn",
-    "lat": 59.4415,
-    "lng": 24.74975,
-    "price": 3,
-    "types": ["date", "groups", "outdoor"],
+    "id": "koht",
+    "name": "Koht",
+    "address": "Lai 8, 10133 Tallinn",
+    "lat": 59.4383107,
+    "lng": 24.7439751,
+    "price": 2,
+    "types": [
+      "pub",
+      "beer",
+      "solo"
+    ],
     "blurb": {
-      "en": "TODO — replace with your own words. Closed: the walled garden restaurant off Uus street. The same team now runs Lee at the address.",
-      "et": "TODO — asenda oma sõnadega. Suletud: müüriäärse aiaga restoran Uue tänava ääres. Sama meeskond peab nüüd samal aadressil Lee restorani.",
-      "ru": "TODO — замените своими словами. Закрыт: ресторан с садом у крепостной стены на улице Уус. Та же команда теперь держит по этому адресу ресторан Lee."
+      "en": "A small beer bar hidden on Lai 8 with more than 800 kinds of beer from all over the world. Start light, work up through the IPAs, finish on something dark. Ask the bartender — they know a lot and will help you choose.",
+      "et": "",
+      "ru": ""
     },
-    "mustOrder": [],
-    "reel": "",
+    "mustOrder": [
+      "Hazy IPA",
+      "A stout to finish"
+    ],
+    "reel": "https://www.instagram.com/reel/DIouPsLv7oO/",
     "photos": [],
-    "website": "https://leibresto.ee",
-    "visited": "2025-09",
-    "closed": true
+    "website": "",
+    "visited": "2025-04",
+    "closed": false
+  },
+  {
+    "id": "kokomo",
+    "name": "Kokomo Coffee Roasters",
+    "address": "Ankru 10, 11713 Tallinn",
+    "lat": 59.4552323,
+    "lng": 24.6757265,
+    "price": 2,
+    "types": [
+      "coffee",
+      "solo"
+    ],
+    "blurb": {
+      "en": "Another definition for hyggelig. Super cozy vibes.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Filter coffee",
+      "Focaccia"
+    ],
+    "reel": "https://www.instagram.com/reel/DNDNAEzzMmA/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-08",
+    "closed": false
+  },
+  {
+    "id": "laboratooriumi-23",
+    "name": "Laboratooriumi 23",
+    "address": "Laboratooriumi 23, 10133 Tallinn",
+    "lat": 59.4407266,
+    "lng": 24.7443032,
+    "price": 2,
+    "types": [
+      "pub",
+      "groups",
+      "hidden-gem"
+    ],
+    "blurb": {
+      "en": "Foosball, sandwiches, drinks and a sauna, all in one place. Very diverse, very different from anything else you'll see in town. Finding it without Google Maps is a challenge.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Sandwiches"
+    ],
+    "reel": "https://www.instagram.com/reel/DLCZ3s1SzJk/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-06",
+    "closed": false
+  },
+  {
+    "id": "lendav-maaler",
+    "name": "Lendav Maaler",
+    "address": "Kentmanni 4, 10116 Tallinn",
+    "lat": 59.4324804,
+    "lng": 24.7483049,
+    "price": 2,
+    "types": [
+      "mexican",
+      "casual",
+      "groups"
+    ],
+    "blurb": {
+      "en": "Used to be Georgian, now Mexican. It may not make sense at the beginning, but with each bite it starts to. The chicken taco needs extra work; the mushroom was the best.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Mushroom taco",
+      "Beef burrito"
+    ],
+    "reel": "https://www.instagram.com/reel/DUDff1qDI0C/",
+    "photos": [],
+    "website": "",
+    "visited": "2026-01",
+    "closed": false
+  },
+  {
+    "id": "lokaal-tilk",
+    "name": "Lokaal Tilk",
+    "address": "Pärnu mnt 66, 10135 Tallinn",
+    "lat": 59.4249623,
+    "lng": 24.742078,
+    "price": 2,
+    "types": [
+      "vegan",
+      "date",
+      "ramen"
+    ],
+    "blurb": {
+      "en": "A cozy vegan café blending Estonian, Asian and European flavours. Warming ramen, crispy portobello and homemade desserts. A great spot for a slow dinner with a twist.",
+      "et": "Hubane vegan-kohvik, kus kohtuvad Aasia ja Euroopa maitsed. Menüüs on soojendav ramen, krõbedad portobello seened ja kodused magustoidud. Sobib ideaalselt rahulikuks pärastlõunaks või teistsuguseks õhtusöögiks.",
+      "ru": "Уютное веганское кафе, сочетающее азиатскую и европейскую кухню. В меню — согревающий рамен, хрустящие портобелло и домашние десерты. Идеально подойдёт для спокойных встреч или ужина с изюминкой."
+    },
+    "mustOrder": [
+      "Ramen",
+      "Crispy portobello"
+    ],
+    "reel": "https://www.instagram.com/reel/DJqx5zFsZT2/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-05",
+    "closed": false
+  },
+  {
+    "id": "maison-francois",
+    "name": "Maison François",
+    "address": "Dunkri 8, 10123 Tallinn",
+    "lat": 59.4369683,
+    "lng": 24.7432969,
+    "price": 2,
+    "types": [
+      "bakery",
+      "coffee",
+      "solo"
+    ],
+    "blurb": {
+      "en": "A must-go bakery in the Old Town, best in the morning when everything is freshest. Known for high-quality croissants and desserts. Prices are reasonable for the quality, though tap water isn't offered and it can feel too quiet during off-hours.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Croissant",
+      "French onion soup",
+      "Éclair"
+    ],
+    "reel": "https://www.instagram.com/reel/DKhS5g4sDr5/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-06",
+    "closed": false
+  },
+  {
+    "id": "mix-resto",
+    "name": "MIX Resto",
+    "address": "Vana-Posti 11, 10146 Tallinn",
+    "lat": 59.4353205,
+    "lng": 24.7459026,
+    "price": 2,
+    "types": [
+      "fine-dining",
+      "date",
+      "cheap-eats"
+    ],
+    "blurb": {
+      "en": "A fine dining experience in the Old Town at lunch prices. Go for the three-course lunch menu.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Three-course lunch menu"
+    ],
+    "reel": "https://www.instagram.com/reel/DFdGJeviVmy/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-01",
+    "closed": false
+  },
+  {
+    "id": "paper-mill-coffee",
+    "name": "Paper Mill Coffee",
+    "address": "Masina 20, 10144 Tallinn",
+    "lat": 59.4261018,
+    "lng": 24.7779116,
+    "price": 2,
+    "types": [
+      "coffee",
+      "solo"
+    ],
+    "blurb": {
+      "en": "Built in 1912 as the fire station for a massive Tallinn paper mill. Today it's a top 30 coffee shop in Europe.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Batch brew",
+      "Cruffin"
+    ],
+    "reel": "https://www.instagram.com/reel/DaLL9iiI4xo/",
+    "photos": [],
+    "website": "",
+    "visited": "2026-06",
+    "closed": false
+  },
+  {
+    "id": "pirosmani",
+    "name": "Pirosmani",
+    "address": "Tartu mnt 157, 10112 Tallinn",
+    "lat": 59.4026194,
+    "lng": 24.813618,
+    "price": 2,
+    "types": [
+      "georgian",
+      "groups",
+      "cheap-eats"
+    ],
+    "blurb": {
+      "en": "Big on flavour and generous in size. Portions are large and prices very reasonable, perfect for sharing with friends — and the food looks as photogenic as it tastes.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Tšašušuli",
+      "Adjarian khachapuri",
+      "Khinkali"
+    ],
+    "reel": "https://www.instagram.com/reel/DKrxcSBTu-H/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-06",
+    "closed": false
+  },
+  {
+    "id": "pulla-bakery",
+    "name": "Pulla Bakery",
+    "address": "Voorimehe 7, 10146 Tallinn",
+    "lat": 59.4375173,
+    "lng": 24.7438257,
+    "price": 1,
+    "types": [
+      "bakery",
+      "coffee",
+      "solo"
+    ],
+    "blurb": {
+      "en": "Handmade sourdough buns baked by a mother and daughter in the heart of the Old Town. The place feels like a living room, and you might catch a fresh batch coming out of the oven.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Cinnamon bun",
+      "Coffee"
+    ],
+    "reel": "https://www.instagram.com/reel/DJTZPVYPK9X/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-05",
+    "closed": false
+  },
+  {
+    "id": "radio-restoran",
+    "name": "Radio",
+    "address": "Terase 16, 10125 Tallinn",
+    "lat": 59.4349703,
+    "lng": 24.7718684,
+    "price": 3,
+    "types": [
+      "groups",
+      "date"
+    ],
+    "blurb": {
+      "en": "Sharing is caring is the motto here, and it's the right way to eat. Just go and share whatever you see on the menu — you'll thank me, and so will your friends.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Whatever the table can share"
+    ],
+    "reel": "https://www.instagram.com/reel/DMaNNpfthTo/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-07",
+    "closed": false
+  },
+  {
+    "id": "ramen-taro",
+    "name": "Ramen Taro",
+    "address": "Laulupeo 1, 10121 Tallinn",
+    "lat": 59.4302614,
+    "lng": 24.7726871,
+    "price": 2,
+    "types": [
+      "ramen",
+      "solo"
+    ],
+    "blurb": {
+      "en": "My go-to meal has always been soup, and this has been the neighbourhood spot. Service and price are excellent; the taste is solid rather than spectacular.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Yuzu Hakata ramen"
+    ],
+    "reel": "https://www.instagram.com/reel/DHS6_rVMJ9Z/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-03",
+    "closed": false
+  },
+  {
+    "id": "saffron",
+    "name": "Saffron",
+    "address": "Gonsiori 12, 10117 Tallinn",
+    "lat": 59.4348202,
+    "lng": 24.7619912,
+    "price": 2,
+    "types": [
+      "indian",
+      "groups",
+      "casual"
+    ],
+    "blurb": {
+      "en": "Soup, butter naan, garlic naan, special saffron naan, dessert, chicken saagwala — everything was eaten to the last piece. I checked the other tables and everybody had finished their food completely. That is a sign.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Chicken saagwala",
+      "Saffron naan",
+      "Garlic naan"
+    ],
+    "reel": "https://www.instagram.com/reel/DTK1MYBkyj2/",
+    "photos": [],
+    "website": "",
+    "visited": "2026-01",
+    "closed": false
+  },
+  {
+    "id": "shaurma-kebab-linnamae",
+    "name": "Shaurma Kebab Linnamäe",
+    "address": "Linnamäe tee 17-19, 13912 Tallinn",
+    "lat": 59.4496523,
+    "lng": 24.8677282,
+    "price": 1,
+    "types": [
+      "turkish",
+      "cheap-eats",
+      "casual"
+    ],
+    "blurb": {
+      "en": "From signature dishes to new items, we tried it all. Worth every penny.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Shaurma",
+      "Döner",
+      "Ayran"
+    ],
+    "reel": "https://www.instagram.com/reel/DCRmS4GNG_E/",
+    "photos": [],
+    "website": "",
+    "visited": "2024-11",
+    "closed": false
+  },
+  {
+    "id": "uba-ja-humal",
+    "name": "Uba ja Humal",
+    "address": "Võrgu 3, 10415 Tallinn",
+    "lat": 59.445073,
+    "lng": 24.7478562,
+    "price": 1,
+    "types": [
+      "pub",
+      "beer",
+      "cheap-eats"
+    ],
+    "blurb": {
+      "en": "Cheapest beer in the centre. Over twenty taps and a fridge full of more, and you can order a kebab from next door to eat in the bar.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Whatever's on tap"
+    ],
+    "reel": "https://www.instagram.com/reel/DGnwcMctBKP/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-02",
+    "closed": false
+  },
+  {
+    "id": "vana-villem",
+    "name": "Vana Villem",
+    "address": "Tartu mnt 50, 10115 Tallinn",
+    "lat": 59.4303182,
+    "lng": 24.7707966,
+    "price": 1,
+    "types": [
+      "pub",
+      "estonian",
+      "cheap-eats"
+    ],
+    "blurb": {
+      "en": "A cozy local pub with old-school vibes, big portions and cheap beer. Open late.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Beer",
+      "Pub food"
+    ],
+    "reel": "https://www.instagram.com/reel/DKT7qv0PU6x/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-05",
+    "closed": false
+  },
+  {
+    "id": "vesta",
+    "name": "Vesta",
+    "address": "Tööstuse 88, 10416 Tallinn",
+    "lat": 59.454133,
+    "lng": 24.7072027,
+    "price": 3,
+    "types": [
+      "fine-dining",
+      "date"
+    ],
+    "blurb": {
+      "en": "I didn't mention the service and the people in the video, but believe me they are the best part of the restaurant. Without an amazing team it wouldn't be possible.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Beef tartare",
+      "Onion pie"
+    ],
+    "reel": "https://www.instagram.com/reel/DScUsF-k8ve/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-12",
+    "closed": false
   }
 ]

@@ -272,6 +272,15 @@ a:hover { color: var(--accent-lit); }
 }
 .filters::-webkit-scrollbar { display: none; }
 
+/* With a large type vocabulary the row runs past the viewport. Fade whichever
+   edge still has chips behind it, so it reads as scrollable rather than as a
+   list that happens to end at "Estonian". */
+.filters.can-left  { mask-image: linear-gradient(to right, transparent 0, #000 34px); }
+.filters.can-right { mask-image: linear-gradient(to left,  transparent 0, #000 34px); }
+.filters.can-left.can-right {
+  mask-image: linear-gradient(to right, transparent 0, #000 34px, #000 calc(100% - 34px), transparent 100%);
+}
+
 .chip {
   flex: 0 0 auto;
   padding: 7px 13px;

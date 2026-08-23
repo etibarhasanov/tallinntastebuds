@@ -337,6 +337,17 @@
       });
       dom.filters.appendChild(chip);
     });
+
+    updateFilterFades();
+  }
+
+  /* Keep the fade classes in step with how far the chip row is scrolled. */
+  function updateFilterFades() {
+    var box = dom.filters;
+    var max = box.scrollWidth - box.clientWidth;
+    var x = box.scrollLeft;
+    box.classList.toggle('can-left', max > 1 && x > 1);
+    box.classList.toggle('can-right', max > 1 && x < max - 1);
   }
 
   function applyFilters() {
@@ -801,8 +812,21 @@
       if (ev.key === 'Tab') keepFocusInLightbox(ev);
     });
 
+    dom.filters.addEventListener('scroll', updateFilterFades, { passive: true });
+
+    /* A desktop mouse only has a vertical wheel; turn that into sideways
+       travel while the pointer is over the chip row. */
+    dom.filters.addEventListener('wheel', function (ev) {
+      if (Math.abs(ev.deltaY) <= Math.abs(ev.deltaX)) return;
+      var box = dom.filters;
+      if (box.scrollWidth <= box.clientWidth) return;
+      box.scrollLeft += ev.deltaY;
+      ev.preventDefault();
+    }, { passive: false });
+
     window.addEventListener('resize', function () {
       if (map) map.invalidateSize({ animate: false });
+      updateFilterFades();
     });
   }
 
