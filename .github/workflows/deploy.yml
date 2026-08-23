@@ -1,0 +1,63 @@
+name: deploy
+
+# Publishes the repo root to GitHub Pages, exactly as it sits — there is no
+# build step, so the files that get served are the files in this repo.
+#
+# The data validator runs first and the deploy is gated on it, so a broken
+# restaurants.json can never reach the live site.
+#
+# Cloudflare Pages (see README) can point at the same repo at the same time;
+# the two do not interfere with each other.
+
+on:
+  push:
+    branches:
+      - main
+      - claude/tallinn-tastebuds-map-nzoqx0
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than cancelling it mid-flight.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Validate and package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate data
+        run: node tools/validate.mjs
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
