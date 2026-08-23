@@ -1,0 +1,14 @@
+{
+  "types": [
+    { "id": "solo",    "en": "Solo",          "et": "Üksi",                "ru": "В одиночку" },
+    { "id": "date",    "en": "Date night",    "et": "Kohting",             "ru": "Свидание" },
+    { "id": "groups",  "en": "Groups",        "et": "Seltskonnale",        "ru": "Компанией" },
+    { "id": "brunch",  "en": "Brunch",        "et": "Brunch",              "ru": "Бранч" },
+    { "id": "coffee",  "en": "Coffee & bakes","et": "Kohv ja saiakesed",   "ru": "Кофе и выпечка" },
+    { "id": "quick",   "en": "Quick bite",    "et": "Kiire amps",          "ru": "Быстрый перекус" },
+    { "id": "late",    "en": "Late night",    "et": "Hiline õhtusöök",     "ru": "Поздний ужин" },
+    { "id": "veg",     "en": "Veg-friendly",  "et": "Taimetoidusõbralik",  "ru": "Вегетарианцам" },
+    { "id": "tasting", "en": "Tasting menu",  "et": "Degustatsioonimenüü", "ru": "Дегустационное меню" },
+    { "id": "outdoor", "en": "Terrace",       "et": "Terrass",             "ru": "Терраса" }
+  ]
+}

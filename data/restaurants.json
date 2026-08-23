@@ -1,0 +1,200 @@
+[
+  {
+    "id": "f-hoone",
+    "name": "F-Hoone",
+    "address": "Telliskivi 60a-4, 10412 Tallinn",
+    "lat": 59.4397095,
+    "lng": 24.7292113,
+    "price": 2,
+    "types": ["solo", "groups", "brunch", "outdoor"],
+    "blurb": {
+      "en": "TODO — replace with your own words. A big, airy hall in the Telliskivi Creative City, open from breakfast through to late.",
+      "et": "TODO — asenda oma sõnadega. Suur ja avar saal Telliskivi loomelinnakus, avatud hommikusöögist hilisõhtuni.",
+      "ru": "TODO — замените своими словами. Большой светлый зал в творческом городке Telliskivi, открыт с завтрака до позднего вечера."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "https://fhoone.ee",
+    "visited": "2026-02",
+    "closed": false
+  },
+  {
+    "id": "rataskaevu-16",
+    "name": "Rataskaevu 16",
+    "address": "Rataskaevu 16, 10123 Tallinn",
+    "lat": 59.43642,
+    "lng": 24.74138,
+    "price": 3,
+    "types": ["date", "groups"],
+    "blurb": {
+      "en": "TODO — replace with your own words. A long-running Old Town dining room on a quiet lane behind Niguliste church.",
+      "et": "TODO — asenda oma sõnadega. Kauaaegne vanalinna restoran vaiksel tänaval Niguliste kiriku taga.",
+      "ru": "TODO — замените своими словами. Давно работающий ресторан в Старом городе, на тихой улочке за церковью Нигулисте."
+    },
+    "mustOrder": ["Elk fillet"],
+    "reel": "",
+    "photos": [],
+    "website": "https://rataskaevu16.ee",
+    "visited": "2025-11",
+    "closed": false
+  },
+  {
+    "id": "vegan-restoran-v",
+    "name": "Vegan Restoran V",
+    "address": "Rataskaevu 12, 10123 Tallinn",
+    "lat": 59.43648,
+    "lng": 24.74173,
+    "price": 2,
+    "types": ["veg", "date", "solo"],
+    "blurb": {
+      "en": "TODO — replace with your own words. An all-plant kitchen a few doors along the same Old Town street.",
+      "et": "TODO — asenda oma sõnadega. Täielikult taimne köök mõne maja kaugusel samal vanalinna tänaval.",
+      "ru": "TODO — замените своими словами. Полностью растительная кухня в нескольких домах по той же улице Старого города."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "visited": "2026-01",
+    "closed": false
+  },
+  {
+    "id": "pohjala-tap-room",
+    "name": "Põhjala Tap Room",
+    "address": "Peetri 5, 10415 Tallinn",
+    "lat": 59.450162,
+    "lng": 24.727096,
+    "price": 2,
+    "types": ["groups", "late", "outdoor"],
+    "blurb": {
+      "en": "TODO — replace with your own words. A brewery tap room in a former submarine factory at Noblessner, with a Texas-style smoker in the back.",
+      "et": "TODO — asenda oma sõnadega. Pruulikoja baar endises allveelaevatehases Noblessneris, taga Texase stiilis suitsuahi.",
+      "ru": "TODO — замените своими словами. Пивоварня с баром в бывшем цехе подводных лодок в Ноблесснере, с коптильней в техасском стиле."
+    },
+    "mustOrder": ["Brisket", "Öö"],
+    "reel": "",
+    "photos": [],
+    "website": "https://pohjalabeer.com",
+    "visited": "2026-05",
+    "closed": false
+  },
+  {
+    "id": "lore-bistroo",
+    "name": "Lore Bistroo",
+    "address": "Peetri 12, 10415 Tallinn",
+    "lat": 59.44968,
+    "lng": 24.72415,
+    "price": 3,
+    "types": ["date", "outdoor"],
+    "blurb": {
+      "en": "TODO — replace with your own words. A bistro in the old shipyard hall on the Noblessner waterfront, under the Kai art centre.",
+      "et": "TODO — asenda oma sõnadega. Bistroo vanas laevatehase hoones Noblessneri rannaalal, Kai kunstikeskuse all.",
+      "ru": "TODO — замените своими словами. Бистро в старом цехе верфи на набережной Ноблесснера, под арт-центром Kai."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "https://lorebistroo.ee",
+    "visited": "2026-06",
+    "closed": false
+  },
+  {
+    "id": "moon",
+    "name": "Moon",
+    "address": "Telliskivi 60/4, 10412 Tallinn",
+    "lat": 59.44025,
+    "lng": 24.7283,
+    "price": 3,
+    "types": ["date", "tasting", "groups"],
+    "blurb": {
+      "en": "TODO — replace with your own words. Modern Russian-Estonian cooking; the kitchen moved from Kalamaja to Telliskivi in 2025.",
+      "et": "TODO — asenda oma sõnadega. Kaasaegne vene-eesti köök; restoran kolis 2025. aastal Kalamajast Telliskivile.",
+      "ru": "TODO — замените своими словами. Современная русско-эстонская кухня; в 2025 году кухня переехала из Каламая в Telliskivi."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "https://restoranmoon.ee",
+    "visited": "2026-07",
+    "closed": false
+  },
+  {
+    "id": "boheem",
+    "name": "Boheem",
+    "address": "Kopli 18, 10412 Tallinn",
+    "lat": 59.44275,
+    "lng": 24.7336,
+    "price": 1,
+    "types": ["solo", "brunch", "quick", "outdoor"],
+    "blurb": {
+      "en": "TODO — replace with your own words. A wooden-house neighbourhood cafe on the Kalamaja end of Kopli street.",
+      "et": "TODO — asenda oma sõnadega. Puumajas asuv kohalik kohvik Kopli tänava Kalamaja-poolses otsas.",
+      "ru": "TODO — замените своими словами. Районное кафе в деревянном доме в начале улицы Копли, со стороны Каламая."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "visited": "2025-09",
+    "closed": false
+  },
+  {
+    "id": "nop",
+    "name": "NOP",
+    "address": "J. Köleri 1, 10150 Tallinn",
+    "lat": 59.4378,
+    "lng": 24.787,
+    "price": 2,
+    "types": ["brunch", "coffee", "outdoor", "veg"],
+    "blurb": {
+      "en": "TODO — replace with your own words. A cafe and deli in a wooden house on the edge of Kadriorg park, with a big back yard.",
+      "et": "TODO — asenda oma sõnadega. Kohvik ja pood puumajas Kadrioru pargi serval, suure tagaõuega.",
+      "ru": "TODO — замените своими словами. Кафе и лавка в деревянном доме на краю парка Кадриорг, с большим задним двором."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "https://nop.ee",
+    "visited": "2026-04",
+    "closed": false
+  },
+  {
+    "id": "sfaar",
+    "name": "Sfäär",
+    "address": "Mere pst 6E, 10111 Tallinn",
+    "lat": 59.44032,
+    "lng": 24.75536,
+    "price": 3,
+    "types": ["date", "solo"],
+    "blurb": {
+      "en": "TODO — replace with your own words. A restaurant and wine store just outside the Old Town wall, by Rotermann.",
+      "et": "TODO — asenda oma sõnadega. Restoran ja veinipood otse vanalinna müüri taga, Rotermanni kõrval.",
+      "ru": "TODO — замените своими словами. Ресторан и винный магазин сразу за стеной Старого города, рядом с Ротерманни."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "https://sfaar.ee",
+    "visited": "2025-10",
+    "closed": false
+  },
+  {
+    "id": "leib-resto-ja-aed",
+    "name": "Leib Resto ja Aed",
+    "address": "Uus 31, 10111 Tallinn",
+    "lat": 59.4415,
+    "lng": 24.74975,
+    "price": 3,
+    "types": ["date", "groups", "outdoor"],
+    "blurb": {
+      "en": "TODO — replace with your own words. Closed: the walled garden restaurant off Uus street. The same team now runs Lee at the address.",
+      "et": "TODO — asenda oma sõnadega. Suletud: müüriäärse aiaga restoran Uue tänava ääres. Sama meeskond peab nüüd samal aadressil Lee restorani.",
+      "ru": "TODO — замените своими словами. Закрыт: ресторан с садом у крепостной стены на улице Уус. Та же команда теперь держит по этому адресу ресторан Lee."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "https://leibresto.ee",
+    "visited": "2025-09",
+    "closed": true
+  }
+]

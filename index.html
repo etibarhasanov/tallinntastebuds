@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tallinn Tastebuds — the map</title>
+<meta name="description" content="A map of the places in Tallinn I have eaten at and approved for @tallinntastebuds. No scores, no stars — being on the map is the verdict.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f2f1ec">
+<meta name="robots" content="index, follow">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tallinn Tastebuds — the map">
+<meta property="og:description" content="Every place on this map has been eaten at and approved. No scores — being here is the verdict.">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%2300539c'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#panel-list" data-i18n="skipToList">Skip to the list of places</a>
+
+<div id="map" role="application" data-i18n-aria-label="mapLabel" aria-label="Map of approved places in Tallinn"></div>
+
+<header class="brand card" id="brand">
+  <p class="eyebrow" data-i18n="eyebrow">Tallinn</p>
+  <h1 class="wordmark" data-i18n="wordmark">Tallinn Tastebuds</h1>
+  <p class="tagline" data-i18n="tagline">Every place on this map has been eaten at and approved. There are no scores — being here is the verdict.</p>
+  <a class="ig-link"
+     href="https://www.instagram.com/tallinntastebuds/"
+     target="_blank"
+     rel="noopener"
+     data-i18n="instagramHandle"
+     data-i18n-aria-label="instagramLabel">@tallinntastebuds</a>
+</header>
+
+<div class="controls">
+  <div class="card seg" id="lang-switch" role="group" data-i18n-aria-label="language" aria-label="Language"></div>
+  <div class="card seg">
+    <button type="button" class="btn btn-wide" id="btn-list" data-i18n="listOpen" aria-expanded="false" aria-controls="panel">List</button>
+  </div>
+  <div class="card seg">
+    <button type="button" class="btn btn-icon" id="btn-locate" data-i18n-aria-label="locate" aria-label="Show my location">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.2" fill="none"/><path d="M12 1.6v3M12 19.4v3M1.6 12h3M19.4 12h3"/></svg>
+    </button>
+    <button type="button" class="btn btn-icon" id="btn-zoom-in" data-i18n-aria-label="zoomIn" aria-label="Zoom in">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 6v12M6 12h12"/></svg>
+    </button>
+    <button type="button" class="btn btn-icon" id="btn-zoom-out" data-i18n-aria-label="zoomOut" aria-label="Zoom out">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 12h12"/></svg>
+    </button>
+  </div>
+</div>
+
+<nav class="filters" id="filters" data-i18n-aria-label="filters" aria-label="Filter by type"></nav>
+
+<aside class="panel card" id="panel" aria-labelledby="panel-list-title">
+  <button type="button" class="panel-close" id="panel-close" data-i18n-aria-label="close" aria-label="Close">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <div class="panel-scroll" id="panel-scroll">
+    <article id="panel-detail" hidden></article>
+    <section id="panel-list"></section>
+  </div>
+</aside>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" data-i18n-aria-label="photos" aria-label="Photos" hidden>
+  <button type="button" class="lb-btn lb-close" id="lb-close" data-i18n-aria-label="photoClose" aria-label="Close photo">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <button type="button" class="lb-btn lb-prev" id="lb-prev" data-i18n-aria-label="photoPrev" aria-label="Previous photo">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>
+  </button>
+  <figure class="lb-figure">
+    <img id="lb-img" alt="">
+    <figcaption class="mono" id="lb-caption"></figcaption>
+  </figure>
+  <button type="button" class="lb-btn lb-next" id="lb-next" data-i18n-aria-label="photoNext" aria-label="Next photo">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg>
+  </button>
+</div>
+
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Tallinn</p>
+    <h2>Tallinn Tastebuds</h2>
+    <p>This map needs JavaScript to draw itself. The full list of places lives in
+      <a href="data/restaurants.json">data/restaurants.json</a>.</p>
+  </div>
+</noscript>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+        defer></script>
+<script src="assets/app.js" defer></script>
+</body>
+</html>

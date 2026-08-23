@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tallinntastebuds.example/schema/restaurants.json",
+  "title": "Tallinn Tastebuds — restaurants",
+  "description": "The full contents of data/restaurants.json. One object per approved place. There are deliberately no score, rating or ranking fields: inclusion is the verdict.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/restaurant" },
+  "$defs": {
+    "restaurant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "address",
+        "lat",
+        "lng",
+        "price",
+        "types",
+        "blurb",
+        "mustOrder",
+        "reel",
+        "photos",
+        "visited",
+        "closed"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Lowercase slug. Used in the ?spot= URL and as the photos/<id>/ folder name. Never change it once shared.",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "minLength": 2,
+          "maxLength": 64
+        },
+        "name": {
+          "type": "string",
+          "description": "The name as printed on the door. Never translated.",
+          "minLength": 1
+        },
+        "address": {
+          "type": "string",
+          "description": "Street address as Estonian post would write it.",
+          "minLength": 1
+        },
+        "lat": {
+          "type": "number",
+          "description": "Latitude in decimal degrees. Inside Tallinn this is roughly 59.3 to 59.5.",
+          "minimum": 59.32,
+          "maximum": 59.52
+        },
+        "lng": {
+          "type": "number",
+          "description": "Longitude in decimal degrees. Inside Tallinn this is roughly 24.5 to 25.0.",
+          "minimum": 24.5,
+          "maximum": 25.0
+        },
+        "price": {
+          "type": "integer",
+          "description": "Price band, 1 to 4. Rendered as one to four euro signs. This is a cost band, not a rating.",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "types": {
+          "type": "array",
+          "description": "Type ids that must exist in data/taxonomy.json. Never free text.",
+          "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "uniqueItems": true
+        },
+        "blurb": {
+          "$ref": "#/$defs/translated",
+          "description": "Your write-up, per language. The only per-place field that is translated."
+        },
+        "mustOrder": {
+          "type": "array",
+          "description": "Dish names exactly as the menu prints them. Not translated.",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "reel": {
+          "type": "string",
+          "description": "Full Instagram permalink to the reel, or an empty string if there is not one yet. Never invent a shortcode.",
+          "pattern": "^$|^https://www\\.instagram\\.com/(reel|p|tv)/[A-Za-z0-9_-]{5,}/?(\\?.*)?$"
+        },
+        "photos": {
+          "type": "array",
+          "description": "Filenames inside photos/<id>/. Just the filename, no path.",
+          "items": { "type": "string", "pattern": "^[A-Za-z0-9._-]+\\.(webp|jpg|jpeg|png|avif)$" },
+          "uniqueItems": true
+        },
+        "website": {
+          "type": "string",
+          "description": "Optional. Leave the field out entirely rather than setting it to an empty string.",
+          "pattern": "^https?://[^\\s]+$"
+        },
+        "visited": {
+          "type": "string",
+          "description": "Month you last ate there, YYYY-MM.",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+        },
+        "closed": {
+          "type": "boolean",
+          "description": "true greys the pin out and adds a closed note. Prefer this over deleting a place, so links shared earlier keep working."
+        }
+      }
+    },
+    "translated": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "en": { "type": "string" },
+        "et": { "type": "string" },
+        "ru": { "type": "string" }
+      },
+      "anyOf": [
+        { "required": ["en"] },
+        { "required": ["et"] },
+        { "required": ["ru"] }
+      ]
+    }
+  }
+}
