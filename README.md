@@ -303,45 +303,58 @@ palette. They all combine.
 
 ## The seven styles
 
-A vertical strip of seven swatches sits on the left edge. Each one is a colour
-of the spectrum, and picking one recolours the whole site.
+A strip of seven swatches sits on the left rail. Each is a colour of the
+spectrum, and picking one changes the **whole** colour world — not just an
+accent.
 
-| Style | Accent | Notes |
-| --- | --- | --- |
-| Red | `#b0212b` | |
-| Orange | `#a35109` | |
-| Amber | `#7d6408` | Stands in for yellow — see below |
-| Green | `#1a6e3c` | |
-| Blue | `#00539c` | The default, and the original identity |
-| Indigo | `#9aa0f0` | The dark one; also switches the basemap |
-| Violet | `#6e3596` | |
+| Style | Accent | Card | Map |
+| --- | --- | --- | --- |
+| Red | `#a81e28` | `#fff6f4` | tinted pink |
+| Orange | `#984a05` | `#fff8ef` | tinted warm |
+| Amber | `#6e5a07` | `#fffcef` | tinted gold |
+| Green | `#186537` | `#f4fbf6` | tinted green |
+| Blue | `#00539c` | `#f6fafd` | tinted blue — the default |
+| Indigo | `#9aa0f0` | `#1b1d30` | CARTO Dark Matter |
+| Violet | `#67308d` | `#fdf7fe` | tinted violet |
 
-Every style is **nothing but a block of custom properties** at the top of
+Every style is **nothing but a block of custom properties** near the top of
 `assets/styles.css`, keyed off `[data-style="…"]` on the root element. No
-component rule mentions a colour, so adding an eighth style means adding one
-block there and one entry to `STYLES` in `assets/app.js`. Nothing else.
+component rule anywhere names a colour, so adding an eighth style is one block
+there plus one entry in `STYLES` in `assets/app.js`. Nothing else.
 
-Two things worth knowing before you change the colours:
+Three things to know before you retune them:
 
-- **There is no true yellow.** Yellow on white is around 1.3:1 contrast, far
+- **The map is tinted, not just the chrome.** `--map-filter` is applied to
+  `.leaflet-tile-pane`. Without it the basemap stays grey and the styles read
+  as "only the pins changed colour", which is exactly how the first attempt
+  failed. Pins, tooltips and controls live in other panes, so they keep their
+  exact token colours.
+- **Do not retune `--map-filter` by eye.** CSS `hue-rotate` is a matrix
+  approximation, not a true HSL rotation, so plausible-looking numbers land
+  badly wrong — the first pass missed by up to 55°. The values in the file were
+  found by sampling filtered output against a real Positron land tone. Every
+  hue now lands within 9° of its target and land luminance stays above 224, so
+  streets and labels remain readable. Re-measure rather than guess.
+- **There is no true yellow.** Yellow on white is about 1.3:1 contrast, far
   under the 4.5:1 that body text and links need, so that slot is the deepest
-  yellow that still reads as yellow. Every accent here clears 4.5:1 against
-  both `--paper` and `--wash`. If you retune one, check it.
-- **Indigo also swaps the basemap** to CARTO Dark Matter, in `setStyle()`.
-  Dark cards floating over the pale Positron map would be unreadable. It is
-  the only style that changes tiles, because keyless CARTO offers three looks
-  and seven unique basemaps without an API key is not possible.
+  yellow still recognisable as yellow. Every accent clears 4.5:1 against both
+  its card and its ground; the worst is 5.12:1.
+
+Indigo is the dark style and swaps to CARTO Dark Matter unfiltered — dark cards
+over the pale Positron map would be unreadable. It is the only style that
+changes basemap, because keyless CARTO offers three looks and seven unique
+basemaps without an API key does not exist.
 
 The choice is saved to `localStorage` (wrapped in `try/catch`, like the
-language) and mirrors into `?style=`, so you can share a link in a given look.
+language) and mirrors into `?style=`, so a shared link opens in the same look.
 An unrecognised value falls back to blue and is dropped from the URL.
 
-One caveat on the dark style: the Instagram embed renders its own white card,
-which you cannot restyle from outside the iframe. It will stay light.
+One caveat on the dark style: the Instagram embed draws its own white card
+inside an iframe, which nothing outside can restyle. It stays light.
 
 ## Surprise me
 
-The button pinned to the right of the filter row picks a place at random and
+The button under the swatches on the left rail picks a place at random and
 opens it.
 
 It picks from **whatever the chips currently allow**, so selecting "Korean" and
@@ -349,8 +362,12 @@ It picks from **whatever the chips currently allow**, so selecting "Korean" and
 asking. Closed places are never suggested, and the same place is never returned
 twice in a row.
 
-It sits outside the scrolling chip row on purpose — the vocabulary is wide
-enough to scroll, and a button that scrolls out of reach is no use.
+It lives on the left rail rather than in the bottom filter row because the
+filter row scrolls sideways once the vocabulary is wide, and a button that
+scrolls out of reach is no use. On a phone it collapses to just the die.
+
+The rail is vertically centred, and `placeRail()` in `assets/app.js` nudges it
+down on short windows so it can never ride up under the brand card.
 
 ## Third-party pieces and their licences
 

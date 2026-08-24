@@ -299,6 +299,19 @@
   }
 
   /* Pressed state only, so activating a swatch by keyboard keeps focus on it. */
+  /* The rail is vertically centred, which collides with the brand card on a
+     short window. Nudge it down only when it actually would. */
+  function placeRail() {
+    if (!dom.rail || !dom.brand) return;
+    dom.rail.style.top = '';
+    dom.rail.style.transform = '';
+    var need = dom.brand.getBoundingClientRect().bottom + 14;
+    if (dom.rail.getBoundingClientRect().top < need) {
+      dom.rail.style.top = need + 'px';
+      dom.rail.style.transform = 'none';
+    }
+  }
+
   function markStyleSwitch() {
     if (!dom.styles) return;
     var buttons = dom.styles.querySelectorAll('.swatch');
@@ -1017,6 +1030,7 @@
     }, { passive: false });
 
     window.addEventListener('resize', function () {
+      placeRail();
       if (map) map.invalidateSize({ animate: false });
       updateFilterFades();
     });
@@ -1070,6 +1084,7 @@
       filters: $('filters'),
       filterBar: $('filter-bar'),
       styles: $('styles'),
+      rail: $('rail'),
       btnRandom: $('btn-random'),
       panel: $('panel'),
       panelScroll: $('panel-scroll'),
@@ -1124,6 +1139,8 @@
 
       /* gtag already reported the landing URL, deep link and all. */
       lastTrackedPath = window.location.pathname + window.location.search;
+
+      placeRail();
 
       var spot = new URLSearchParams(window.location.search).get('spot');
       if (spot && byId(spot)) selectPlace(spot, { fly: true });

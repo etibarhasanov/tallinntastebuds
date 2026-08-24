@@ -54,7 +54,18 @@
      data-i18n-aria-label="instagramLabel">@tallinntastebuds</a>
 </header>
 
-<div class="styles" id="styles" role="group" data-i18n-aria-label="styleLabel" aria-label="Colour"></div>
+<div class="rail" id="rail">
+  <div class="styles" id="styles" role="group" data-i18n-aria-label="styleLabel" aria-label="Colour"></div>
+  <button type="button" class="dice" id="btn-random" data-i18n-title="randomPick" data-i18n-aria-label="randomPick" aria-label="Surprise me" title="Surprise me">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="4" y="4" width="16" height="16" rx="4"/>
+      <circle cx="9" cy="9" r="1.35" class="pip"/>
+      <circle cx="12" cy="12" r="1.35" class="pip"/>
+      <circle cx="15" cy="15" r="1.35" class="pip"/>
+    </svg>
+    <span class="dice-label" data-i18n="randomPick">Surprise me</span>
+  </button>
+</div>
 
 <div class="controls">
   <div class="card seg" id="lang-switch" role="group" data-i18n-aria-label="language" aria-label="Language"></div>
@@ -76,15 +87,6 @@
 
 <div class="filter-bar" id="filter-bar">
   <nav class="filters" id="filters" data-i18n-aria-label="filters" aria-label="Filter by type"></nav>
-  <button type="button" class="dice" id="btn-random" data-i18n-title="randomPick" data-i18n-aria-label="randomPick" aria-label="Surprise me" title="Surprise me">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <rect x="4" y="4" width="16" height="16" rx="4"/>
-      <circle cx="9" cy="9" r="1.35" class="pip"/>
-      <circle cx="12" cy="12" r="1.35" class="pip"/>
-      <circle cx="15" cy="15" r="1.35" class="pip"/>
-    </svg>
-    <span class="dice-label" data-i18n="randomPick">Surprise me</span>
-  </button>
 </div>
 
 <aside class="panel card" id="panel" aria-labelledby="panel-list-title">
