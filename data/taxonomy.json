@@ -4,108 +4,126 @@
       "id": "solo",
       "en": "Solo",
       "et": "Üksi",
+      "az": "Tək",
       "ru": "В одиночку"
     },
     {
       "id": "date",
       "en": "Date night",
       "et": "Kohting",
+      "az": "Görüş",
       "ru": "Свидание"
     },
     {
       "id": "groups",
       "en": "Groups",
       "et": "Seltskonnale",
+      "az": "Qrupla",
       "ru": "Компанией"
     },
     {
       "id": "casual",
       "en": "Casual",
       "et": "Vabas vormis",
+      "az": "Rahat",
       "ru": "Неформально"
     },
     {
       "id": "fine-dining",
       "en": "Fine dining",
       "et": "Kõrgköök",
+      "az": "Yüksək mətbəx",
       "ru": "Высокая кухня"
     },
     {
       "id": "cheap-eats",
       "en": "Cheap eats",
       "et": "Soodne",
+      "az": "Ucuz",
       "ru": "Недорого"
     },
     {
       "id": "hidden-gem",
       "en": "Hidden gem",
       "et": "Peidetud pärl",
+      "az": "Gizli inci",
       "ru": "Находка"
     },
     {
       "id": "coffee",
       "en": "Coffee",
       "et": "Kohv",
+      "az": "Qəhvə",
       "ru": "Кофе"
     },
     {
       "id": "bakery",
       "en": "Bakery",
       "et": "Pagariäri",
+      "az": "Çörəkxana",
       "ru": "Пекарня"
     },
     {
       "id": "pub",
       "en": "Pub",
       "et": "Pubi",
+      "az": "Pab",
       "ru": "Паб"
     },
     {
       "id": "street-food",
       "en": "Street food",
       "et": "Tänavatoit",
+      "az": "Küçə yeməyi",
       "ru": "Уличная еда"
     },
     {
       "id": "vegan",
       "en": "Vegan",
       "et": "Vegan",
+      "az": "Vegan",
       "ru": "Веганское"
     },
     {
       "id": "asian",
       "en": "Asian",
       "et": "Aasia",
+      "az": "Asiya",
       "ru": "Азиатская"
     },
     {
       "id": "caucasian",
       "en": "Caucasus",
       "et": "Kaukaasia",
+      "az": "Qafqaz",
       "ru": "Кавказская"
     },
     {
       "id": "estonian",
       "en": "Estonian",
       "et": "Eesti",
+      "az": "Eston",
       "ru": "Эстонская"
     },
     {
       "id": "chinese",
       "en": "Chinese",
       "et": "Hiina",
+      "az": "Çin",
       "ru": "Китайская"
     },
     {
       "id": "turkish",
       "en": "Turkish",
       "et": "Türgi",
+      "az": "Türk",
       "ru": "Турецкая"
     },
     {
       "id": "mexican",
       "en": "Mexican",
       "et": "Mehhiko",
+      "az": "Meksika",
       "ru": "Мексиканская"
     }
   ]

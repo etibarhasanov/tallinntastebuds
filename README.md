@@ -221,7 +221,8 @@ there for the first place that shuts.
 
 ## Languages
 
-English (default), Estonian, Russian. Every interface string is in
+English (default), Estonian, Azerbaijani, Russian — the switcher shows them in
+that order. Every interface string is in
 `data/ui.json`, keyed by language and then by string id, so a translator never
 has to open the HTML.
 
@@ -244,9 +245,35 @@ preference between visits.
 2. Add the matching label to every type in `data/taxonomy.json`.
 3. Add the language to each `blurb` in `data/restaurants.json`.
 
+4. Add `months` — the twelve month names separated by `|` — and `monthYear`,
+   the pattern that joins them, in case the language wants a different order.
+
 The language switch, the validator and the schema all read the language list
 from `data/ui.json`, so there is nothing else to change. Missing blurb
-translations only produce warnings, so you can ship as you translate.
+translations only produce warnings, so you can ship as you translate. The
+order of the blocks in `ui.json` is the order of the buttons.
+
+### Why month names are in the data
+
+`visited` used to be formatted with `Intl.DateTimeFormat`, which is correct in
+Node and in Firefox but not in Chromium for every locale. Chromium reports
+Azerbaijani as supported — `supportedLocalesOf(['az'])` returns `['az']` and
+`resolvedOptions().locale` says `az` — and then renders April as **M04**,
+because the month names are not in its ICU build.
+
+There is no honest feature test for that, and which locales are thin varies by
+browser and version. So the names live in `ui.json` instead. The date now reads
+the same in every browser, and one more moving part is gone. Intl is still the
+fallback if a language has not filled `months` in.
+
+### Estonian is `et`, not `ee`
+
+`ee` is the country code and the domain suffix; the *language* code is `et`.
+This matters beyond pedantry: `ee` is the ISO code for Ewe, spoken in Ghana and
+Togo, so `<html lang="ee">` would mislead screen readers and any locale lookup
+would resolve to the wrong language. If you want the button to *read* EE, that
+is a one-line change to the label without touching the code underneath — say
+the word.
 
 ---
 

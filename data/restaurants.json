@@ -13,6 +13,7 @@
     "blurb": {
       "en": "The only two Michelin star restaurant in the Baltics. A really nice experimental place on the Noblessner waterfront, where the tasting menu is built to surprise you course after course.",
       "et": "Ainus kahe Michelini tärniga restoran Baltikumis. Väga vahva eksperimentaalne koht Noblessneri rannapromenaadil, kus degustatsioonimenüü üllatab sind käigu haaval.",
+      "az": "Baltikyanı ölkələrdə yeganə iki Michelin ulduzlu restoran. Noblessner sahilində həqiqətən gözəl eksperimental yer — dequstasiya menyusu elə qurulub ki, hər yeni yeməklə səni təəccübləndirsin.",
       "ru": "Единственный ресторан с двумя звёздами Мишлен в Балтии. Очень крутое экспериментальное место на набережной Ноблесснера, где дегустационное меню удивляет блюдо за блюдом."
     },
     "mustOrder": [
@@ -39,6 +40,7 @@
     "blurb": {
       "en": "Soviet Korean comfort food in Lasnamäe, fifteen minutes from the centre by bus. Spicy all the way through. You can't avoid the chili in any bite. The lamb soup could use more lamb, but it still hits the spot.",
       "et": "Nõukogude korea mugavustoit Lasnamäel, kesklinnast bussiga viisteist minutit. Vürtsikas algusest lõpuni. Tšillit ei õnnestu üheski suutäies vältida. Lambasupis võiks lambaliha rohkem olla, aga hea on ikka.",
+      "az": "Lasnamäedə sovet-koreya ev yeməkləri, mərkəzdən avtobusla on beş dəqiqə. Başdan-ayağa acılı. Heç bir tikədə bibərdən yayına bilmirsən. Quzu şorbasında bir az daha çox quzu olsaydı yaxşı olardı, amma yenə də ürəyəyatandır.",
       "ru": "Советско-корейская домашняя еда в Ласнамяэ, пятнадцать минут от центра на автобусе. Острое от начала до конца. Чили не избежать ни в одном кусочке. В супе из баранины хотелось бы больше мяса, но он всё равно попадает в точку."
     },
     "mustOrder": [
@@ -67,6 +69,7 @@
     "blurb": {
       "en": "A Korean restaurant on Telliskivi street run by the same owner for 34 years. He's from Korea, has lived most of his life in Estonia, and is sharp and multilingual. When you enter, show some respect. That isn't an easy business. We pass by daily and somehow kept skipping it.",
       "et": "Korea restoran Telliskivi tänaval, mida sama omanik on pidanud 34 aastat. Ta on pärit Koreast, elanud suurema osa elust Eestis ning on terane ja mitmekeelne. Sisse astudes ole lugupidav. See ei ole lihtne äri. Käime iga päev sealt mööda ja jätsime selle kuidagi ikka vahele.",
+      "az": "Telliskivi küçəsində 34 ildir eyni sahibin işlətdiyi Koreya restoranı. Özü Koreyadandır, ömrünün böyük hissəsini Estoniyada yaşayıb, zəkalı və bir neçə dil bilən adamdır. İçəri girəndə hörmət göstərin. Bu, asan iş deyil. Hər gün yanından keçirdik və nədənsə həmişə ötürürdük.",
       "ru": "Корейский ресторан на улице Теллискиви, которым один и тот же хозяин управляет уже 34 года. Он родом из Кореи, большую часть жизни прожил в Эстонии, человек умный и говорит на нескольких языках. Заходя, проявите уважение. Это непростой бизнес. Мы проходим мимо каждый день и почему-то всё время его пропускали."
     },
     "mustOrder": [
@@ -93,6 +96,7 @@
     "blurb": {
       "en": "A cozy place next to Taksopark for warm borscht, vareniki and other homemade Ukrainian dishes. Friendly staff and a welcoming vibe that makes it feel like grandma's kitchen.",
       "et": "Hubane koht Taksopargi kõrval, kus saab sooja borši, vareenikuid ja muid koduseid ukraina roogi. Sõbralik teenindus ja soe õhkkond, mis paneb end tundma nagu vanaema köögis.",
+      "az": "Taksoparkın yanında isti borş, vareniki və digər ev tipli Ukrayna yeməkləri üçün rahat yer. Səmimi işçilər və nənənin mətbəxini xatırladan isti bir mühit.",
       "ru": "Уютное место рядом с Taksopark, где подают тёплый борщ, вареники и другие домашние украинские блюда. Приветливый персонал и атмосфера, будто ты на бабушкиной кухне."
     },
     "mustOrder": [
@@ -120,6 +124,7 @@
     "blurb": {
       "en": "A bakehouse in the Old Town that lives for cookies. Thick, soft in the middle, and worth the walk. The pistachio one is the favourite",
       "et": "Vanalinna pagariäri, mis elab küpsiste nimel. Paksud, seest pehmed ja jalutuskäiku väärt. Lemmik on pistaatsiaküpsis",
+      "az": "Köhnə şəhərdə peçenye üçün yaşayan çörəkxana. Qalın, ortası yumşaq və ora qədər yeriməyə dəyər. Ən sevimlisi püstəli olanıdır.",
       "ru": "Пекарня в Старом городе, которая живёт ради печенья. Толстое, мягкое внутри и стоит того, чтобы дойти. Любимое, фисташковое"
     },
     "mustOrder": [
@@ -147,6 +152,7 @@
     "blurb": {
       "en": "Street food that feels honest and real. Everything is under €7, which is rare these days. Chilean-run, fair prices, strong taste. Kadriorg is a chill area to grab your food and eat outside, just don't forget a napkin.",
       "et": "Tänavatoit, mis on aus ja ehe. Kõik on alla 7 euro, mis on tänapäeval haruldane. Tšiillaste peetud koht, ausad hinnad, tugev maitse. Kadriorg on rahulik piirkond, kus toit kaasa võtta ja õues süüa, ainult salvrätikut ära unusta.",
+      "az": "Səmimi və həqiqi görünən küçə yeməyi. Hər şey 7 avrodan aşağıdır ki, bu günlərdə nadir haldır. Çililər işlədir, qiymətlər ədalətli, dad güclüdür. Kadriorq yeməyini götürüb çöldə yemək üçün sakit yerdir, sadəcə salfeti unutmayın.",
       "ru": "Уличная еда, которая ощущается честной и настоящей. Всё дешевле 7 евро, что сейчас редкость. Место держат чилийцы, цены справедливые, вкус яркий. Кадриорг подходит для того, чтобы взять еду с собой и поесть на улице, только не забудьте салфетку."
     },
     "mustOrder": [
@@ -176,6 +182,7 @@
     "blurb": {
       "en": "Once just a small burger window next to the old Põhjala Speakeasy, it has kept its street-food soul while the menu got bolder. Prices stay wallet-friendly and the vibe is relaxed: vegan-friendly, dog-friendly, people-friendly.",
       "et": "Kunagi lihtsalt väike burgeriaken vana Põhjala Speakeasy kõrval. Tänavatoidu hing on alles, kuigi menüü on julgemaks läinud. Hinnad on rahakotisõbralikud ja õhkkond rahulik: sobib veganitele, koertele ja inimestele.",
+      "az": "Bir vaxtlar köhnə Põhjala Speakeasy-nin yanında kiçik burger pəncərəsi idi; menyu cəsarətlənsə də küçə yeməyi ruhunu saxlayıb. Qiymətlər cibə uyğun qalır, mühit rahatdır: veganlara, itlərə və insanlara eyni dərəcədə açıq.",
       "ru": "Когда-то просто маленькое бургерное окно рядом со старым Põhjala Speakeasy. Дух уличной еды сохранился, а меню стало смелее. Цены дружелюбны к кошельку, атмосфера расслабленная: тут рады веганам, собакам и людям."
     },
     "mustOrder": [
@@ -204,6 +211,7 @@
     "blurb": {
       "en": "Paul's place inside the market hall. Chillest dude, coolest vibes, and a must-see spot in town. Handmade South African pies.",
       "et": "Pauli koht turuhoone sees. Kõige rahulikum mees, kõige lahedam õhkkond ja üks kohustuslik peatus linnas. Käsitsi tehtud Lõuna-Aafrika pirukad.",
+      "az": "Paulun bazar binasının içindəki yeri. Ən rahat adam, ən yaxşı mühit və şəhərdə mütləq görülməli məkan. Əl işi Cənubi Afrika piroqları.",
       "ru": "Место Пола внутри рыночного зала. Самый спокойный человек, самая приятная атмосфера и одна из обязательных точек в городе. Домашние южноафриканские пироги."
     },
     "mustOrder": [
@@ -230,6 +238,7 @@
     "blurb": {
       "en": "Portions are confusing. The bread is good, the meat needs work. Vibes are good, service is good, interior is cool, prices are fine. Not sure about this one.",
       "et": "Portsjonid ajavad segadusse. Leib on hea, liha vajab tööd. Õhkkond on hea, teenindus on hea, interjöör on lahe, hinnad on korras. Selles kohas ma päris kindel ei ole.",
+      "az": "Porsiyalar çaşdırıcıdır. Çörək yaxşıdır, ət üzərində işləmək lazımdır. Mühit yaxşı, xidmət yaxşı, interyer gözəl, qiymətlər normaldır. Bu birindən əmin deyiləm.",
       "ru": "Порции сбивают с толку. Хлеб хороший, мясо требует доработки. Атмосфера приятная, сервис хороший, интерьер классный, цены нормальные. В этом месте я до конца не уверен."
     },
     "mustOrder": [
@@ -256,6 +265,7 @@
     "blurb": {
       "en": "Most of you have tried this Indian kitchen from Bolt Food, but the Old Town room is special: a very old building, and a chef who moved to Estonia in 1992 and finally opened his own place in 2009.",
       "et": "Enamik teist on seda India kööki Bolt Foodist tellinud, aga vanalinna saal on eriline: väga vana maja ja kokk, kes kolis Eestisse 1992. aastal ning avas lõpuks 2009. aastal oma koha.",
+      "az": "Çoxunuz bu hind mətbəxini Bolt Food-dan sınamısınız, amma Köhnə şəhərdəki zal xüsusidir: çox köhnə bina və 1992-ci ildə Estoniyaya köçüb nəhayət 2009-cu ildə öz yerini açan aşpaz.",
       "ru": "Большинство из вас пробовали эту индийскую кухню из Bolt Food, но зал в Старом городе особенный: очень старое здание и повар, который переехал в Эстонию в 1992 году и наконец открыл своё место в 2009."
     },
     "mustOrder": [
@@ -281,6 +291,7 @@
     "blurb": {
       "en": "Award-winning chocolates made right here, with a small chocolate museum on Suur-Karja. There is a second spot in Telliskivi if the Old Town one is packed. A really cool place either way.",
       "et": "Auhinnatud šokolaad, mis valmib kohapeal, ja väike šokolaadimuuseum Suur-Karja tänaval. Telliskivil on teine koht, kui vanalinna oma on rahvast täis. Igal juhul väga lahe paik.",
+      "az": "Elə burada hazırlanan mükafatlı şokoladlar və Suur-Karja küçəsində kiçik şokolad muzeyi. Köhnə şəhərdəki dolu olsa, Telliskividə ikinci yer var. Hər halda çox gözəl məkandır.",
       "ru": "Отмеченный наградами шоколад, который делают прямо здесь, и маленький музей шоколада на улице Суур-Карья. Есть вторая точка в Теллискиви, если в Старом городе многолюдно. В любом случае очень крутое место."
     },
     "mustOrder": [
@@ -307,6 +318,7 @@
     "blurb": {
       "en": "Georgian food, honest and delicious, out in Kopli.",
       "et": "Gruusia toit, aus ja maitsev, seal Koplis.",
+      "az": "Kopli tərəfdə səmimi və dadlı gürcü yeməkləri.",
       "ru": "Грузинская еда, честно и вкусно, там, в Копли."
     },
     "mustOrder": [
@@ -333,6 +345,7 @@
     "blurb": {
       "en": "A BBQ counter in Telliskivi with really nice falafel. They also run experiments with beef liver and other cuts you don't usually see on a grill menu, so ask what's new.",
       "et": "Grillilett Telliskivil, kus on väga hea falafel. Nad katsetavad ka veise maksa ja muude tükkidega, mida grillimenüüs tavaliselt ei näe, nii et küsi, mis uut on.",
+      "az": "Telliskividə mangal piştaxtası, fəlafeli həqiqətən yaxşıdır. Həm də mal ciyəri və mangal menyusunda adətən görmədiyin başqa ətlərlə təcrübələr aparırlar, ona görə nəyin yeni olduğunu soruş.",
       "ru": "Гриль-стойка в Теллискиви с очень хорошим фалафелем. Здесь также экспериментируют с говяжьей печенью и другими отрубами, которые редко встретишь в меню гриля, так что спрашивайте, что нового."
     },
     "mustOrder": [
@@ -359,6 +372,7 @@
     "blurb": {
       "en": "The qutab has a twist: filled with greens and mozzarella instead of the traditional herbs. Portions are huge; if you're dining solo, half a küftä might be plenty. I'm Azerbaijani, and I approve this Azerbaijani restaurant.",
       "et": "Kutabil on vint: sisse on pandud rohelist ja mozzarellat traditsiooniliste ürtide asemel. Portsjonid on suured; kui sööd üksi, piisab ilmselt poolest küftäst. Olen aserbaidžaanlane ja kiidan selle aserbaidžaani restorani heaks.",
+      "az": "Qutabın öz fərqi var: ənənəvi otlar əvəzinə göyərti və motsarella ilə doldurulub. Porsiyalar nəhəngdir; tək gəlmisənsə, yarım küftə bəs edə bilər. Mən azərbaycanlıyam və bu Azərbaycan restoranını təsdiqləyirəm.",
       "ru": "У кутаба свой поворот: внутри зелень и моцарелла вместо традиционных трав. Порции огромные; если вы едите один, половины кюфты вполне хватит. Я азербайджанец и одобряю этот азербайджанский ресторан."
     },
     "mustOrder": [
@@ -386,6 +400,7 @@
     "blurb": {
       "en": "Somebody stole my heart. A new gem in Noblessner.",
       "et": "Keegi varastas mu südame. Uus pärl Noblessneris.",
+      "az": "Kimsə ürəyimi oğurladı. Noblessnerdə yeni bir inci.",
       "ru": "Кто-то украл моё сердце. Новая жемчужина в Ноблесснере."
     },
     "mustOrder": [
@@ -412,6 +427,7 @@
     "blurb": {
       "en": "François and his croissants are back on Härjapea street. Saturdays only.",
       "et": "François ja tema sarvesaiad on Härjapea tänaval tagasi. Ainult laupäeviti.",
+      "az": "François və onun kruassanları Härjapea küçəsinə qayıdıb. Yalnız şənbə günləri.",
       "ru": "Франсуа и его круассаны вернулись на улицу Хярьяпеа. Только по субботам."
     },
     "mustOrder": [
@@ -438,6 +454,7 @@
     "blurb": {
       "en": "Modern Georgian cuisine in Rotermanni.",
       "et": "Kaasaegne gruusia köök Rotermannis.",
+      "az": "Rotermannidə müasir gürcü mətbəxi.",
       "ru": "Современная грузинская кухня в Ротерманни."
     },
     "mustOrder": [
@@ -465,6 +482,7 @@
     "blurb": {
       "en": "A Korean restaurant that's been here a long time, known for its flavours, peppery spices and warm atmosphere. A little hidden gem for anyone craving authentic Korean food in the city.",
       "et": "Korea restoran, mis on siin olnud juba pikka aega ja mida teatakse maitsete, pipraste vürtside ja sooja õhkkonna poolest. Väike peidetud pärl kõigile, kes ihkavad linnas ehtsat korea toitu.",
+      "az": "Uzun müddətdir burada olan, dadları, bibərli ədviyyatları və isti mühiti ilə tanınan Koreya restoranı. Şəhərdə əsl Koreya yeməyi axtaranlar üçün kiçik gizli inci.",
       "ru": "Корейский ресторан, который работает здесь уже давно и известен своими вкусами, перечной остротой и тёплой атмосферой. Маленькая находка для всех, кто хочет настоящей корейской еды в городе."
     },
     "mustOrder": [
@@ -493,6 +511,7 @@
     "blurb": {
       "en": "Hans means my humble home. Not sure about this one.",
       "et": "Hans tähendab minu tagasihoidlikku kodu. Selles kohas ma päris kindel ei ole.",
+      "az": "Hans mənim təvazökar evim deməkdir. Bu birindən əmin deyiləm.",
       "ru": "Hans означает мой скромный дом. В этом месте я до конца не уверен."
     },
     "mustOrder": [
@@ -519,6 +538,7 @@
     "blurb": {
       "en": "Fully vegan and built entirely around the potato, right by the tram stop in Telliskivi. Stuffed baked potatoes, homemade dumplings and sauces that pull it all together. Big portions, small prices. Read the first page of the menu before you order.",
       "et": "Täiesti vegan ja üleni kartuli ümber ehitatud, otse trammipeatuse kõrval Telliskivil. Täidetud ahjukartulid, kodused pelmeenid ja kastmed, mis kõik kokku seovad. Suured portsjonid, väikesed hinnad. Loe enne tellimist menüü esimene lehekülg läbi.",
+      "az": "Tamamilə vegan və bütünlüklə kartofun ətrafında qurulub, Telliskividə tramvay dayanacağının düz yanında. Doldurulmuş bişmiş kartof, ev pelmeni və hamısını bir-birinə bağlayan souslar. Böyük porsiyalar, kiçik qiymətlər. Sifariş etməzdən əvvəl menyunun birinci səhifəsini oxu.",
       "ru": "Полностью веганское место, построенное вокруг картофеля, прямо у трамвайной остановки в Теллискиви. Фаршированный запечённый картофель, домашние пельмени и соусы, которые связывают всё воедино. Большие порции, маленькие цены. Прочитайте первую страницу меню, прежде чем заказывать."
     },
     "mustOrder": [
@@ -546,6 +566,7 @@
     "blurb": {
       "en": "A family-size cookie in the Old Town. They only prepare 300 every working day.",
       "et": "Peresuuruses küpsis vanalinnas. Neid valmib igal tööpäeval ainult 300.",
+      "az": "Köhnə şəhərdə ailəlik ölçüdə peçenye. Hər iş günü cəmi 300 ədəd hazırlayırlar.",
       "ru": "Печенье размером на всю семью в Старом городе. Их готовят всего 300 штук в рабочий день."
     },
     "mustOrder": [
@@ -571,6 +592,7 @@
     "blurb": {
       "en": "A small beer bar hidden on Lai 8 with more than 800 kinds of beer from all over the world. Start light, work up through the IPAs, finish on something dark. Ask the bartender. They know a lot and will help you choose.",
       "et": "Väike õllebaar peidus aadressil Lai 8, kus on üle 800 õllesordi kogu maailmast. Alusta kergemast, liigu IPA-de juurde ja lõpeta millegi tumedaga. Küsi baarmenilt. Nad teavad palju ja aitavad valida.",
+      "az": "Lai 8-də gizlənmiş, dünyanın hər yerindən 800-dən çox növ pivəsi olan kiçik pivə barı. Yüngüldən başla, IPA-lardan keç, tünd bir şeylə bitir. Barmenə sual ver. Çox şey bilirlər və seçməyə kömək edəcəklər.",
       "ru": "Маленький пивной бар, спрятанный по адресу Лай 8, где больше 800 сортов пива со всего мира. Начните с лёгкого, пройдите через IPA и закончите чем-то тёмным. Спросите бармена. Они знают много и помогут выбрать."
     },
     "mustOrder": [
@@ -597,6 +619,7 @@
     "blurb": {
       "en": "Another definition for hyggelig. Super cozy vibes.",
       "et": "Veel üks määratlus sõnale hyggelig. Ülimalt hubane.",
+      "az": "Hyggelig sözünün başqa bir tərifi. Son dərəcə rahat mühit.",
       "ru": "Ещё одно определение слова hyggelig. Максимально уютно."
     },
     "mustOrder": [
@@ -624,6 +647,7 @@
     "blurb": {
       "en": "Really nice chicken at Noblessner, and the chicken burger is the one to order. Get their card, and use the app for a discount before you pay.",
       "et": "Väga hea kana Noblessneris ja kanaburger on see, mida tellida. Võta nende kaart ja kasuta enne maksmist äppi, mis annab soodustust.",
+      "az": "Noblessnerdə həqiqətən yaxşı toyuq, sifariş ediləsi olan isə toyuq burgeridir. Kartlarını götür və ödəməzdən əvvəl tətbiqdən endirim üçün istifadə et.",
       "ru": "Очень хорошая курица в Ноблесснере, а куриный бургер стоит взять обязательно. Возьмите их карту и используйте приложение перед оплатой, оно даёт скидку."
     },
     "mustOrder": [
@@ -651,6 +675,7 @@
     "blurb": {
       "en": "French bakery near the port.",
       "et": "Prantsuse pagariäri sadama lähedal.",
+      "az": "Limanın yaxınlığında fransız çörəkxanası.",
       "ru": "Французская пекарня рядом с портом."
     },
     "mustOrder": [
@@ -677,6 +702,7 @@
     "blurb": {
       "en": "Foosball, sandwiches, drinks and a sauna, all in one place. Very diverse, very different from anything else you'll see in town. Finding it without Google Maps is a challenge. Sadly closed now, but the video stays up.",
       "et": "Lauajalgpall, võileivad, joogid ja saun, kõik ühes kohas. Väga mitmekesine ja täiesti erinev kõigest muust, mida linnas näed. Ilma Google Mapsita on seda raske leida. Kahjuks nüüdseks suletud, aga video jääb üles.",
+      "az": "Stolüstü futbol, sendviçlər, içkilər və sauna — hamısı bir yerdə. Çox rəngarəng, şəhərdə görəcəyin hər şeydən fərqli. Google Maps olmadan tapmaq çətindir. Təəssüf ki, indi bağlanıb, amma video yerində qalır.",
       "ru": "Настольный футбол, сэндвичи, напитки и сауна, всё в одном месте. Очень разнообразно и совсем не похоже на остальное в городе. Найти его без Google Maps непросто. К сожалению, сейчас закрыто, но видео остаётся."
     },
     "mustOrder": [
@@ -703,6 +729,7 @@
     "blurb": {
       "en": "Used to be Georgian, now Mexican. It may not make sense at the beginning, but with each bite it starts to. The chicken taco needs extra work; the mushroom was the best.",
       "et": "Varem oli gruusia, nüüd mehhiko köök. Alguses ei pruugi see loogiline tunduda, aga iga suutäiega hakkab. Kanataco vajab veel tööd; seenetaco oli parim.",
+      "az": "Əvvəllər gürcü idi, indi meksika. Əvvəlcə məntiqli görünməyə bilər, amma hər tikə ilə yerinə oturur. Toyuqlu takonun üzərində işləmək lazımdır; göbələkli ən yaxşısı idi.",
       "ru": "Раньше был грузинским, теперь мексиканский. Сначала это может показаться странным, но с каждым кусочком становится понятнее. Тако с курицей требует доработки; грибной был лучшим."
     },
     "mustOrder": [
@@ -730,6 +757,7 @@
     "blurb": {
       "en": "A cozy vegan café blending Estonian, Asian and European flavours. Warming ramen, crispy portobello and homemade desserts. A great spot for a slow dinner with a twist.",
       "et": "Hubane vegan-kohvik, kus kohtuvad Aasia ja Euroopa maitsed. Menüüs on soojendav ramen, krõbedad portobello seened ja kodused magustoidud. Sobib ideaalselt rahulikuks pärastlõunaks või teistsuguseks õhtusöögiks.",
+      "az": "Eston, Asiya və Avropa dadlarını birləşdirən rahat vegan kafe. İsindirən ramen, xırtıldayan portobello və ev desertləri. Fərqli bir şeylə yavaş şam yeməyi üçün əla yer.",
       "ru": "Уютное веганское кафе, сочетающее азиатскую и европейскую кухню. В меню есть согревающий рамен, хрустящие портобелло и домашние десерты. Идеально подойдёт для спокойных встреч или ужина с изюминкой."
     },
     "mustOrder": [
@@ -757,6 +785,7 @@
     "blurb": {
       "en": "A must-go bakery in the Old Town, best in the morning when everything is freshest. Known for high-quality croissants and desserts. Prices are reasonable for the quality, though tap water isn't offered and it can feel too quiet during off-hours.",
       "et": "Kohustuslik pagariäri vanalinnas, kõige parem hommikul, kui kõik on kõige värskem. Tuntud kvaliteetsete sarvesaiade ja magustoitude poolest. Hinnad on kvaliteedi kohta mõistlikud, kuigi kraanivett ei pakuta ja vaiksematel tundidel võib seal liiga vaikne olla.",
+      "az": "Köhnə şəhərdə mütləq gedilməli çörəkxana, ən yaxşısı səhər tezdən, hər şey təzə olanda. Yüksək keyfiyyətli kruassan və desertləri ilə tanınır. Keyfiyyətə görə qiymətlər münasibdir, amma kran suyu təklif olunmur və sakit saatlarda həddən artıq sakit hiss oluna bilər.",
       "ru": "Обязательная пекарня в Старом городе, лучше всего утром, когда всё самое свежее. Известна качественными круассанами и десертами. Цены разумные для такого уровня, хотя воду из-под крана не предлагают, а в тихие часы там бывает слишком пусто."
     },
     "mustOrder": [
@@ -785,6 +814,7 @@
     "blurb": {
       "en": "A fine dining experience in the Old Town at lunch prices. Go for the three-course lunch menu.",
       "et": "Fine dining kogemus vanalinnas lõunahinnaga. Võta kolmekäiguline lõunamenüü.",
+      "az": "Köhnə şəhərdə nahar qiymətinə yüksək mətbəx təcrübəsi. Üç yeməklik nahar menyusunu götür.",
       "ru": "Опыт высокой кухни в Старом городе по обеденным ценам. Берите обед из трёх блюд."
     },
     "mustOrder": [
@@ -810,6 +840,7 @@
     "blurb": {
       "en": "Built in 1912 as the fire station for a massive Tallinn paper mill. Today it's a top 30 coffee shop in Europe.",
       "et": "Ehitatud 1912. aastal suure Tallinna paberivabriku tuletõrjedepooks. Täna on see üks Euroopa 30 parima kohviku hulgas.",
+      "az": "1912-ci ildə Tallinin nəhəng kağız fabriki üçün yanğın deposu kimi tikilib. Bu gün Avropanın ən yaxşı 30 qəhvəxanasından biridir.",
       "ru": "Построено в 1912 году как пожарное депо для большой таллиннской бумажной фабрики. Сегодня это одна из 30 лучших кофеен Европы."
     },
     "mustOrder": [
@@ -837,6 +868,7 @@
     "blurb": {
       "en": "Georgian food, big on flavour and generous in size. Portions are large and prices very reasonable, perfect for sharing with friends, and the food looks as photogenic as it tastes.",
       "et": "Gruusia toit, palju maitset ja heldelt suured portsjonid. Hinnad on väga mõistlikud, ideaalne sõpradega jagamiseks, ja toit näeb sama hea välja kui maitseb.",
+      "az": "Dadı güclü, porsiyası bol gürcü yeməkləri. Porsiyalar böyük, qiymətlər çox münasibdir — dostlarla bölüşmək üçün mükəmməldir, üstəlik yeməklər dadı qədər də fotogenik görünür.",
       "ru": "Грузинская еда, много вкуса и щедрые размеры. Порции большие, цены очень разумные, идеально делиться с друзьями, и еда выглядит так же хорошо, как и на вкус."
     },
     "mustOrder": [
@@ -865,6 +897,7 @@
     "blurb": {
       "en": "Handmade sourdough buns baked by a mother and daughter in the heart of the Old Town. The place feels like a living room, and you might catch a fresh batch coming out of the oven.",
       "et": "Käsitsi tehtud juuretisesaiad, mida küpsetavad ema ja tütar vanalinna südames. Koht on nagu elutuba ja võid sattuda hetkele, kui värske partii ahjust tuleb.",
+      "az": "Köhnə şəhərin mərkəzində ana və qızın bişirdiyi əl işi maya çörəkləri. Yer qonaq otağı kimi hiss olunur və sobadan təzə çıxan partiyaya rast gələ bilərsən.",
       "ru": "Домашние булочки на закваске, которые пекут мама с дочкой в самом сердце Старого города. Место похоже на гостиную, и можно застать момент, когда из печи выходит свежая партия."
     },
     "mustOrder": [
@@ -891,6 +924,7 @@
     "blurb": {
       "en": "Sharing is caring is the motto here, and it's the right way to eat. Just go and share whatever you see on the menu. You'll thank me, and so will your friends.",
       "et": "Jagamine on hoolimine, see on siin moto ja ühtlasi õige viis süüa. Mine ja jaga kõike, mida menüüs näed. Sa tänad mind ja su sõbrad samuti.",
+      "az": "Burada şüar bölüşməkdir və yemək üçün doğru yol elə budur. Sadəcə get və menyuda gördüyün nə varsa bölüş. Mənə də, dostlarına da təşəkkür edəcəksən.",
       "ru": "Делиться значит заботиться, таков здесь девиз, и это правильный способ есть. Просто идите и делите всё, что видите в меню. Вы скажете мне спасибо, и ваши друзья тоже."
     },
     "mustOrder": [
@@ -916,6 +950,7 @@
     "blurb": {
       "en": "My go-to meal has always been soup, and this has been the neighbourhood spot. Service and price are excellent; the taste is solid rather than spectacular.",
       "et": "Minu lemmiktoit on alati olnud supp ja see on olnud kodukandi koht. Teenindus ja hind on suurepärased; maitse on pigem korralik kui vapustav.",
+      "az": "Həmişə şorba mənim seçdiyim yemək olub və bura da məhəllə yerim idi. Xidmət və qiymət əladır; dad isə heyranedici yox, sadəcə möhkəmdir.",
       "ru": "Моя любимая еда всегда была супом, и это место в моём районе. Сервис и цена отличные; вкус скорее добротный, чем выдающийся."
     },
     "mustOrder": [
@@ -942,6 +977,7 @@
     "blurb": {
       "en": "An Indian kitchen on Gonsiori. Soup, butter naan, garlic naan, special saffron naan, dessert, chicken saagwala. Everything was eaten to the last piece. I checked the other tables and everybody had finished their food completely. That is a sign.",
       "et": "India köök Gonsiori tänaval. Supp, võinaan, küüslaugunaan, eriline safraninaan, magustoit, kana saagwala. Kõik söödi viimse tükini ära. Vaatasin teisi laudu ja kõik olid oma toidu täiesti lõpetanud. See on märk.",
+      "az": "Gonsioridə hind mətbəxi. Şorba, kərə yağlı naan, sarımsaqlı naan, xüsusi zəfəranlı naan, desert, toyuqlu saagwala. Hər şey son tikəyə qədər yeyildi. Digər masalara baxdım, hamı yeməyini tamam bitirmişdi. Bu, bir işarədir.",
       "ru": "Индийская кухня на улице Гонсиори. Суп, наан с маслом, чесночный наан, особый шафрановый наан, десерт, курица саагвала. Всё съели до последнего кусочка. Я посмотрел на соседние столы, и там тоже всё доели. Это знак."
     },
     "mustOrder": [
@@ -970,6 +1006,7 @@
     "blurb": {
       "en": "From signature dishes to new items, we tried it all. Worth every penny.",
       "et": "Alates firmaroogadest kuni uute asjadeni proovisime kõike. Iga sent on seda väärt.",
+      "az": "İmza yeməklərindən yeni əlavələrə qədər hamısını sınadıq. Hər qəpiyinə dəyər.",
       "ru": "От фирменных блюд до новинок, мы попробовали всё. Каждый цент того стоит."
     },
     "mustOrder": [
@@ -997,6 +1034,7 @@
     "blurb": {
       "en": "If you want to try some decent craft beers. DDH, double IPA, smoothie beers, everything all at once.",
       "et": "Kui tahad proovida korralikke käsitööõllesid. DDH, topelt-IPA, smuutiõlled, kõik korraga.",
+      "az": "Yaxşı kraft pivələr sınamaq istəyirsənsə. DDH, double IPA, smoothie pivələr — hamısı bir yerdə.",
       "ru": "Если хотите попробовать достойное крафтовое пиво. DDH, двойной IPA, смузи-пиво, всё сразу."
     },
     "mustOrder": [],
@@ -1020,6 +1058,7 @@
     "blurb": {
       "en": "Cheapest beer in the centre. Over twenty taps and a fridge full of more, and you can order a kebab from next door to eat in the bar.",
       "et": "Kesklinna kõige odavam õlu. Üle kahekümne kraani ja külmik veel täis, ning kõrvalt saab tellida kebabi, mida baaris süüa.",
+      "az": "Mərkəzdə ən ucuz pivə. İyirmidən çox kran və daha çoxu ilə dolu soyuducu; üstəlik qonşudan kabab sifariş edib barda yeyə bilərsən.",
       "ru": "Самое дешёвое пиво в центре. Больше двадцати кранов и полный холодильник в придачу, а кебаб можно заказать по соседству и съесть прямо в баре."
     },
     "mustOrder": [
@@ -1046,6 +1085,7 @@
     "blurb": {
       "en": "A cozy local pub with old-school vibes, big portions and cheap beer. Open late.",
       "et": "Hubane kohalik pubi vanakooli hõnguga, suured portsjonid ja odav õlu. Avatud hilja.",
+      "az": "Köhnə məktəb ruhu, böyük porsiyaları və ucuz pivəsi olan rahat yerli pab. Gec saatlara qədər açıqdır.",
       "ru": "Уютный местный паб со старой школой, большие порции и дешёвое пиво. Открыт допоздна."
     },
     "mustOrder": [
@@ -1072,6 +1112,7 @@
     "blurb": {
       "en": "I didn't mention the service and the people in the video, but believe me they are the best part of the restaurant. Without an amazing team it wouldn't be possible.",
       "et": "Ma ei maininud videos teenindust ja inimesi, aga usu mind, nemad on restorani parim osa. Ilma suurepärase meeskonnata poleks see võimalik.",
+      "az": "Videoda xidmətdən və insanlardan danışmadım, amma inanın ki, restoranın ən yaxşı hissəsi elə onlardır. Möhtəşəm komanda olmasa, bu mümkün olmazdı.",
       "ru": "Я не упомянул в видео сервис и людей, но поверьте, они лучшая часть ресторана. Без прекрасной команды это было бы невозможно."
     },
     "mustOrder": [
@@ -1099,6 +1140,7 @@
     "blurb": {
       "en": "Chinese cooking by Balti jaam, and the hand-pulled biang biang noodles are the reason to come. One noodle, metres long, in chili oil and spring onion, with a broth on the side. The crispy pork belly is the other one everybody orders.",
       "et": "Hiina köök Balti jaama kõrval ja käsitsi tõmmatud biang biang nuudlid on põhjus, miks siia tulla. Üks nuudel, meetreid pikk, tšillioli ja rohelise sibulaga ning puljong kõrvale. Krõbe seakõht on teine asi, mida kõik tellivad.",
+      "az": "Balti jaamın yanında Çin mətbəxi, gəlməyə dəyər səbəb isə əllə çəkilmiş biang biang əriştəsidir. Bir dənə əriştə, metrlərlə uzun, acı yağ və göy soğanla, yanında da bulyon. Xırtıldayan donuz döşü isə hamının sifariş etdiyi digər yeməkdir.",
       "ru": "Китайская кухня рядом с Балтийским вокзалом, и ручной работы лапша бянбян это причина сюда прийти. Одна лапшина длиной в несколько метров, в чили-масле с зелёным луком и бульоном отдельно. Хрустящая свиная грудинка это второе, что заказывают все."
     },
     "mustOrder": [

@@ -135,13 +135,29 @@
     return b[state.lang] || b[DEFAULT_LANG] || b.et || b.ru || '';
   }
 
+  /* Month names come from ui.json, not from Intl.
+     Chromium reports az as a supported locale — supportedLocalesOf returns it
+     and resolvedOptions().locale says "az" — and then formats April as "M04",
+     because the month-name data is not in its ICU build. There is no honest
+     feature test for that, and which locales are thin varies by browser and
+     version. Reading the names from the data file makes the date identical
+     everywhere and removes the dependency entirely. Intl stays only as a
+     fallback for a language that has not filled the key in yet. */
   function formatMonth(ym) {
     var m = /^(\d{4})-(\d{2})$/.exec(ym || '');
     if (!m) return ym || '';
+    var year = m[1];
+    var index = Number(m[2]) - 1;
+
+    var names = (t('months') || '').split('|');
+    if (names.length === 12 && names[index]) {
+      return t('monthYear', { month: names[index], year: year });
+    }
+
     try {
       return new Intl.DateTimeFormat(state.lang, {
         year: 'numeric', month: 'long', timeZone: 'UTC'
-      }).format(new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, 1)));
+      }).format(new Date(Date.UTC(Number(year), index, 1)));
     } catch (e) {
       return ym;
     }
