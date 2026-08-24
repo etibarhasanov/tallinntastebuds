@@ -83,6 +83,30 @@
     "closed": false
   },
   {
+    "id": "baklazaan",
+    "name": "Baklažaan",
+    "address": "Mäepealse 30, Tallinn",
+    "lat": 59.394698,
+    "lng": 24.6447491,
+    "price": 2,
+    "types": [
+      "caucasian",
+      "groups",
+      "casual"
+    ],
+    "blurb": {
+      "en": "Out on the way to the Nõmme bike route, which is a fine ride in itself. Good spot, delicious shashlik, solid Caucasian cooking.",
+      "et": "Jääb Nõmme rattamarsruudi teele, mis on omaette hea sõit. Tore koht, maitsev šašlõkk ja korralik Kaukaasia köök.",
+      "az": "Nõmme velosiped marşrutuna gedən yolun üstündədir, marşrutun özü də əla sürüşdür. Yaxşı məkan, dadlı şaşlıq və möhkəm Qafqaz mətbəxi.",
+      "ru": "По дороге к велосипедному маршруту Нымме, который и сам по себе отличный. Хорошее место, вкусный шашлык, крепкая кавказская кухня."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "borsch-ja-varenyk",
     "name": "Borsch & Varenyk",
     "address": "Endla 56, 10613 Tallinn",
@@ -768,7 +792,7 @@
     "visited": "2025-05",
     "closed": false
   },
-    {
+  {
     "id": "magussoolane",
     "name": "Magussoolane",
     "address": "F. R. Faehlmanni tn 3, 10125 Tallinn",
@@ -877,6 +901,29 @@
     "closed": false
   },
   {
+    "id": "pilsneri-baar",
+    "name": "Pilsneri baar",
+    "address": "Kopli, 10412 Tallinn",
+    "lat": 59.4415391,
+    "lng": 24.7381598,
+    "price": 2,
+    "types": [
+      "pub",
+      "groups"
+    ],
+    "blurb": {
+      "en": "Three different ways of pouring Pilsner Urquell, which is the whole reason to come. Proper Czech beer, and a nice garden to drink it in.",
+      "et": "Pilsner Urquelli valatakse kolmel eri moel ja just selle pärast siia tullaksegi. Korralik Tšehhi õlu ja mõnus aed, kus seda juua.",
+      "az": "Pilsner Urquell üç fərqli üsulla süzülür — bura gəlməyin əsas səbəbi elə budur. Əsl Çex pivəsi və onu içmək üçün gözəl bağça.",
+      "ru": "Pilsner Urquell наливают тремя разными способами — ради этого сюда и идут. Настоящее чешское пиво и приятный сад, где его пить."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "pirosmani",
     "name": "Pirosmani",
     "address": "Tartu mnt 157, 10112 Tallinn",
@@ -906,6 +953,53 @@
     "closed": false
   },
   {
+    "id": "porgandipomm",
+    "name": "Porgandipomm",
+    "address": "Manufaktuuri kvartal, Tallinn",
+    "lat": 59.4491566,
+    "lng": 24.703142,
+    "price": 1,
+    "types": [
+      "bakery",
+      "hidden-gem"
+    ],
+    "blurb": {
+      "en": "A properly hidden bakery in the Manufaktuuri quarter, and the baking is worth the finding. Been once, going back.",
+      "et": "Korralikult peidus pagariäri Manufaktuuri kvartalis ja küpsetised on otsimist väärt. Käisin korra, lähen kindlasti tagasi.",
+      "az": "Manufaktuuri məhəlləsində əməlli-başlı gizlənmiş çörəkxana və bişmişləri axtarmağa dəyər. Bir dəfə getmişəm, yenə gedəcəyəm.",
+      "ru": "Как следует спрятанная пекарня в квартале Manufaktuuri, и выпечка стоит того, чтобы её найти. Был один раз, вернусь."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
+    "closed": false
+  },
+  {
+    "id": "pudel",
+    "name": "Pudel",
+    "address": "Telliskivi 62, 10412 Tallinn",
+    "lat": 59.4405426,
+    "lng": 24.7319195,
+    "price": 2,
+    "types": [
+      "pub",
+      "groups",
+      "casual"
+    ],
+    "blurb": {
+      "en": "A good place to bring a group and settle in for the evening. Really nice Guinness, and it is right there in Telliskivi.",
+      "et": "Hea koht, kuhu seltskonnaga tulla ja õhtuks pidama jääda. Väga hea Guinness ja asub otse Telliskivil.",
+      "az": "Dost qrupu ilə gəlib axşamı keçirmək üçün yaxşı yer. Guinness həqiqətən gözəldir, özü də elə Telliskividədir.",
+      "ru": "Хорошее место, чтобы прийти компанией и остаться на вечер. Очень хороший Guinness, и всё это прямо в Telliskivi."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "pulla-bakery",
     "name": "Pulla Bakery",
     "address": "Voorimehe 7, 10146 Tallinn",
@@ -931,6 +1025,29 @@
     "photos": [],
     "website": "",
     "visited": "2025-05",
+    "closed": false
+  },
+  {
+    "id": "pohja-konn",
+    "name": "Põhja Konn",
+    "address": "Telliskivi 60a-5, 10412 Tallinn",
+    "lat": 59.4389365,
+    "lng": 24.7283935,
+    "price": 2,
+    "types": [
+      "pub",
+      "casual"
+    ],
+    "blurb": {
+      "en": "Põhjala's own bar in Telliskivi, pouring their beers next to plenty of other craft. Take the balcony if it is free.",
+      "et": "Põhjala oma baar Telliskivil, kus nende õllede kõrval on ka palju muud käsitööõlut. Kui rõdu on vaba, istu sinna.",
+      "az": "Põhjala-nın Telliskivideki öz barı — öz pivələri ilə yanaşı çoxlu başqa kraft pivə də var. Balkon boşdursa, orada otur.",
+      "ru": "Собственный бар Põhjala в Telliskivi: их пиво плюс много другого крафта. Если балкон свободен — садитесь там."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
     "closed": false
   },
   {

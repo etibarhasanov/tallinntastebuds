@@ -23,7 +23,6 @@
         "mustOrder",
         "reel",
         "photos",
-        "visited",
         "closed"
       ],
       "properties": {
@@ -104,7 +103,7 @@
         },
         "visited": {
           "type": "string",
-          "description": "Month you last ate there, YYYY-MM.",
+          "description": "Month you last ate there, YYYY-MM. Optional: leave the key out for a place you have been to but not filmed, and the panel drops the row.",
           "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
         },
         "closed": {

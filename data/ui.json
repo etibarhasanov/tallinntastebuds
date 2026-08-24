@@ -33,7 +33,6 @@
     "reel": "The reel",
     "reelPlay": "Load the Instagram reel",
     "reelNote": "Loads Instagram's player. Nothing is fetched from Instagram until you press it.",
-    "reelNone": "No reel yet.",
     "reelFallback": "Trouble loading? Open it on Instagram.",
     "photos": "Photos",
     "photoOf": "Photo {n} of {total}",
@@ -61,7 +60,8 @@
     "videoNote": "Loads TikTok's player. Nothing is fetched from TikTok until you press it.",
     "videoFallback": "Trouble loading? Open it on TikTok.",
     "months": "January|February|March|April|May|June|July|August|September|October|November|December",
-    "monthYear": "{month} {year}"
+    "monthYear": "{month} {year}",
+    "notFilmed": "Been here, not filmed yet."
   },
   "et": {
     "langName": "Eesti",
@@ -97,7 +97,6 @@
     "reel": "Reel",
     "reelPlay": "Lae Instagrami reel",
     "reelNote": "Avab Instagrami pleieri. Enne vajutamist ei laadita Instagramist midagi.",
-    "reelNone": "Reelit veel ei ole.",
     "reelFallback": "Ei laadi? Ava see Instagramis.",
     "photos": "Fotod",
     "photoOf": "Foto {n} / {total}",
@@ -125,7 +124,8 @@
     "videoNote": "Avab TikToki pleieri. Enne vajutamist ei laadita TikTokist midagi.",
     "videoFallback": "Ei laadi? Ava see TikTokis.",
     "months": "jaanuar|veebruar|märts|aprill|mai|juuni|juuli|august|september|oktoober|november|detsember",
-    "monthYear": "{month} {year}"
+    "monthYear": "{month} {year}",
+    "notFilmed": "Käidud, aga veel filmimata."
   },
   "az": {
     "langName": "Azərbaycan",
@@ -161,7 +161,6 @@
     "reel": "Reel",
     "reelPlay": "Instagram reel-i yüklə",
     "reelNote": "Instagram pleyerini açır. Düyməyə basana qədər Instagramdan heç nə yüklənmir.",
-    "reelNone": "Hələ reel yoxdur.",
     "reelFallback": "Yüklənmir? Instagramda aç.",
     "photos": "Şəkillər",
     "photoOf": "Şəkil {n} / {total}",
@@ -189,7 +188,8 @@
     "videoNote": "TikTok pleyerini açır. Düyməyə basana qədər TikTokdan heç nə yüklənmir.",
     "videoFallback": "Yüklənmir? TikTokda aç.",
     "months": "yanvar|fevral|mart|aprel|may|iyun|iyul|avqust|sentyabr|oktyabr|noyabr|dekabr",
-    "monthYear": "{month} {year}"
+    "monthYear": "{month} {year}",
+    "notFilmed": "Gedilib, amma hələ çəkilməyib."
   },
   "ru": {
     "langName": "Русский",
@@ -225,7 +225,6 @@
     "reel": "Рилс",
     "reelPlay": "Загрузить рилс из Instagram",
     "reelNote": "Откроет плеер Instagram. До нажатия из Instagram ничего не загружается.",
-    "reelNone": "Рилса пока нет.",
     "reelFallback": "Не загружается? Откройте в Instagram.",
     "photos": "Фото",
     "photoOf": "Фото {n} из {total}",
@@ -253,6 +252,7 @@
     "videoNote": "Откроет плеер TikTok. До нажатия из TikTok ничего не загружается.",
     "videoFallback": "Не загружается? Откройте в TikTok.",
     "months": "январь|февраль|март|апрель|май|июнь|июль|август|сентябрь|октябрь|ноябрь|декабрь",
-    "monthYear": "{month} {year}"
+    "monthYear": "{month} {year}",
+    "notFilmed": "Был здесь, но ещё не снял."
   }
 }

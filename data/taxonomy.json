@@ -17,9 +17,9 @@
     {
       "id": "casual",
       "en": "Casual/Solo",
-      "et": "Vabas vormis",
-      "az": "Rahat",
-      "ru": "Неформально"
+      "et": "Vabas vormis/üksi",
+      "az": "Rahat/tək",
+      "ru": "Неформально/в одиночку"
     },
     {
       "id": "fine-dining",
@@ -58,10 +58,10 @@
     },
     {
       "id": "pub",
-      "en": "Pub",
-      "et": "Pubi",
-      "az": "Pab",
-      "ru": "Паб"
+      "en": "Beer/pub",
+      "et": "Õlu/pubi",
+      "az": "Pivə/pab",
+      "ru": "Пиво/паб"
     },
     {
       "id": "street-food",

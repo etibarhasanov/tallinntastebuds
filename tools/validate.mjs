@@ -53,9 +53,11 @@ const KNOWN_KEYS = new Set([
   'mustOrder', 'reel', 'photos', 'website', 'visited', 'closed'
 ]);
 
+/* visited is deliberately absent: a place you have been to but not filmed has
+   no post to date it from, so the key may be left out entirely. */
 const REQUIRED_KEYS = [
   'id', 'name', 'address', 'lat', 'lng', 'price', 'types', 'blurb',
-  'mustOrder', 'reel', 'photos', 'visited', 'closed'
+  'mustOrder', 'reel', 'photos', 'closed'
 ];
 
 const errors = [];
@@ -292,9 +294,13 @@ if (places !== null) {
         }
       }
 
-      /* visited */
-      if (!isNonEmptyString(place.visited) || !MONTH.test(place.visited)) {
-        fail(where, `"visited" must look like 2026-02, got ${JSON.stringify(place.visited)}`);
+      /* visited — optional, but must be a real month when present */
+      if ('visited' in place) {
+        if (!isNonEmptyString(place.visited) || !MONTH.test(place.visited)) {
+          fail(where, `"visited" must look like 2026-02 or be left out entirely, got ${JSON.stringify(place.visited)}`);
+        }
+      } else if (place.reel) {
+        warn(where, 'has a video but no "visited" month');
       }
 
       /* closed */

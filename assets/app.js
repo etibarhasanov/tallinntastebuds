@@ -797,7 +797,14 @@
       ));
     }
 
-    dom.detail.appendChild(section(reelWords(reelProvider(place.reel)).heading, reelBlock(place)));
+    /* No video means no section at all — an empty "The reel" heading over a
+       placeholder made six real places look half-finished. A quiet line says
+       what is actually true instead: been, not filmed. */
+    if (place.reel) {
+      dom.detail.appendChild(section(reelWords(reelProvider(place.reel)).heading, reelBlock(place)));
+    } else {
+      dom.detail.appendChild(el('p', { className: 'not-filmed', textContent: t('notFilmed') }));
+    }
 
     if ((place.mustOrder || []).length) {
       dom.detail.appendChild(section('mustOrder',
@@ -815,8 +822,9 @@
       el('dl', { className: 'facts' }, [
         el('dt', { textContent: t('address') }),
         el('dd', { textContent: place.address }),
-        el('dt', { textContent: t('visited') }),
-        el('dd', { textContent: formatMonth(place.visited) }),
+        /* visited is optional — a place with no video has no post to date it */
+        place.visited ? el('dt', { textContent: t('visited') }) : null,
+        place.visited ? el('dd', { textContent: formatMonth(place.visited) }) : null,
         el('dt', { textContent: t('coordinates') }),
         el('dd', { className: 'mono', textContent: coordText(place) })
       ]),
@@ -857,10 +865,6 @@
   }
 
   function reelBlock(place) {
-    if (!place.reel) {
-      return el('p', { className: 'muted-note', textContent: t('reelNone') });
-    }
-
     var words = reelWords(reelProvider(place.reel));
     var slot = el('div', { className: 'reel-slot' });
     var button = el('button', { type: 'button', className: 'reel-play' }, [
