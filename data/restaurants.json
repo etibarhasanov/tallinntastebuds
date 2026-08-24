@@ -771,6 +771,31 @@
     "closed": false
   },
   {
+    "id": "magussoolane",
+    "name": "Magussoolane",
+    "address": "F. R. Faehlmanni tn 3, 10125 Tallinn",
+    "lat": 59.4344578,
+    "lng": 24.7782927,
+    "price": 1,
+    "types": [
+      "bakery",
+      "coffee",
+      "solo"
+    ],
+    "blurb": {
+      "en": "A bakery in Kadriorg where the sweet and the savoury are equally good. I usually run past this place — the smell is what made me stop.",
+      "et": "Pagariäri Kadriorus, kus magus ja soolane on ühtviisi head. Tavaliselt jooksen sellest kohast mööda — peatuma pani mind lõhn.",
+      "az": "Kadriorqda çörəkxana — şirini də, duzlusu da eyni dərəcədə yaxşıdır. Adətən buranın yanından qaçaraq keçirəm; dayandıran isə ətri oldu.",
+      "ru": "Пекарня в Кадриорге, где сладкое и солёное одинаково хороши. Обычно я пробегаю мимо — остановил меня запах."
+    },
+    "mustOrder": [],
+    "reel": "https://www.instagram.com/p/DcVXcSQoeAP/",
+    "photos": [],
+    "website": "",
+    "visited": "2026-08",
+    "closed": false
+  },
+  {
     "id": "maison-francois",
     "name": "Maison François",
     "address": "Dunkri 8, 10123 Tallinn",
