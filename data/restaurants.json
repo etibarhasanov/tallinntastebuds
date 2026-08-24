@@ -32,7 +32,7 @@
     "lng": 24.8311022,
     "price": 1,
     "types": [
-      "korean",
+      "asian",
       "cheap-eats",
       "hidden-gem"
     ],
@@ -60,7 +60,7 @@
     "lng": 24.7227705,
     "price": 2,
     "types": [
-      "korean",
+      "asian",
       "hidden-gem",
       "casual"
     ],
@@ -119,9 +119,9 @@
       "solo"
     ],
     "blurb": {
-      "en": "Family size cookies in the Old Town. They prepare only 300 every working day.",
-      "et": "Peresuuruses küpsised vanalinnas. Neid valmib igal tööpäeval ainult 300.",
-      "ru": "Печенье размером на всю семью в Старом городе. Их готовят всего 300 штук в рабочий день."
+      "en": "A bakehouse in the Old Town that lives for cookies. Thick, soft in the middle, and worth the walk. The pistachio one is the favourite, with carrot cake right behind it.",
+      "et": "Vanalinna pagariäri, mis elab küpsiste nimel. Paksud, seest pehmed ja jalutuskäiku väärt. Lemmik on pistaatsiaküpsis, kohe järel porgandikoogiküpsis.",
+      "ru": "Пекарня в Старом городе, которая живёт ради печенья. Толстое, мягкое внутри и стоит того, чтобы дойти. Любимое, фисташковое, а сразу за ним морковный пирог."
     },
     "mustOrder": [
       "Pistachio cookie",
@@ -169,7 +169,7 @@
     "lng": 24.7368718,
     "price": 2,
     "types": [
-      "burgers",
+      "fast-food",
       "casual",
       "vegan",
       "solo"
@@ -226,7 +226,7 @@
     "price": 3,
     "types": [
       "date",
-      "fine-dining"
+      "casual"
     ],
     "blurb": {
       "en": "Portions are confusing. The bread is good, the meat needs work. Vibes are good, service is good, interior is cool, prices are fine. Not sure about this one.",
@@ -250,14 +250,14 @@
     "lng": 24.7493884,
     "price": 2,
     "types": [
-      "indian",
+      "asian",
       "groups",
       "vegan"
     ],
     "blurb": {
-      "en": "Most of you have tried it from Bolt Food, but the Old Town room is special: a very old building, and a chef who moved to Estonia in 1992 and finally opened his own place in 2009.",
-      "et": "Enamik teist on seda Bolt Foodist tellinud, aga vanalinna saal on eriline: väga vana maja ja kokk, kes kolis Eestisse 1992. aastal ning avas lõpuks 2009. aastal oma koha.",
-      "ru": "Большинство из вас пробовали это из Bolt Food, но зал в Старом городе особенный: очень старое здание и повар, который переехал в Эстонию в 1992 году и наконец открыл своё место в 2009."
+      "en": "Most of you have tried this Indian kitchen from Bolt Food, but the Old Town room is special: a very old building, and a chef who moved to Estonia in 1992 and finally opened his own place in 2009.",
+      "et": "Enamik teist on seda India kööki Bolt Foodist tellinud, aga vanalinna saal on eriline: väga vana maja ja kokk, kes kolis Eestisse 1992. aastal ning avas lõpuks 2009. aastal oma koha.",
+      "ru": "Большинство из вас пробовали эту индийскую кухню из Bolt Food, но зал в Старом городе особенный: очень старое здание и повар, который переехал в Эстонию в 1992 году и наконец открыл своё место в 2009."
     },
     "mustOrder": [
       "Onion bhaji (ask nicely, it's off menu)"
@@ -301,14 +301,14 @@
     "lng": 24.6799773,
     "price": 1,
     "types": [
-      "georgian",
+      "caucasian",
       "cheap-eats",
       "hidden-gem"
     ],
     "blurb": {
-      "en": "Honest and delicious, out in Kopli.",
-      "et": "Aus ja maitsev, seal Koplis.",
-      "ru": "Честно и вкусно, там, в Копли."
+      "en": "Georgian food, honest and delicious, out in Kopli.",
+      "et": "Gruusia toit, aus ja maitsev, seal Koplis.",
+      "ru": "Грузинская еда, честно и вкусно, там, в Копли."
     },
     "mustOrder": [
       "Khinkali",
@@ -354,7 +354,7 @@
     "lng": 24.7752398,
     "price": 2,
     "types": [
-      "azerbaijani",
+      "caucasian",
       "groups"
     ],
     "blurb": {
@@ -432,7 +432,7 @@
     "lng": 24.7576905,
     "price": 3,
     "types": [
-      "georgian",
+      "caucasian",
       "date",
       "fine-dining"
     ],
@@ -459,7 +459,7 @@
     "lng": 24.7420539,
     "price": 2,
     "types": [
-      "korean",
+      "asian",
       "hidden-gem",
       "solo"
     ],
@@ -540,7 +540,6 @@
     "price": 2,
     "types": [
       "pub",
-      "beer",
       "solo"
     ],
     "blurb": {
@@ -805,14 +804,14 @@
     "lng": 24.813618,
     "price": 2,
     "types": [
-      "georgian",
+      "caucasian",
       "groups",
       "cheap-eats"
     ],
     "blurb": {
-      "en": "Big on flavour and generous in size. Portions are large and prices very reasonable, perfect for sharing with friends, and the food looks as photogenic as it tastes.",
-      "et": "Palju maitset ja heldelt suured portsjonid. Hinnad on väga mõistlikud, ideaalne sõpradega jagamiseks, ja toit näeb sama hea välja kui maitseb.",
-      "ru": "Много вкуса и щедрые размеры. Порции большие, цены очень разумные, идеально делиться с друзьями, и еда выглядит так же хорошо, как и на вкус."
+      "en": "Georgian food, big on flavour and generous in size. Portions are large and prices very reasonable, perfect for sharing with friends, and the food looks as photogenic as it tastes.",
+      "et": "Gruusia toit, palju maitset ja heldelt suured portsjonid. Hinnad on väga mõistlikud, ideaalne sõpradega jagamiseks, ja toit näeb sama hea välja kui maitseb.",
+      "ru": "Грузинская еда, много вкуса и щедрые размеры. Порции большие, цены очень разумные, идеально делиться с друзьями, и еда выглядит так же хорошо, как и на вкус."
     },
     "mustOrder": [
       "Tšašušuli",
@@ -910,14 +909,14 @@
     "lng": 24.7619912,
     "price": 2,
     "types": [
-      "indian",
+      "asian",
       "groups",
       "casual"
     ],
     "blurb": {
-      "en": "Soup, butter naan, garlic naan, special saffron naan, dessert, chicken saagwala. Everything was eaten to the last piece. I checked the other tables and everybody had finished their food completely. That is a sign.",
-      "et": "Supp, võinaan, küüslaugunaan, eriline safraninaan, magustoit, kana saagwala. Kõik söödi viimse tükini ära. Vaatasin teisi laudu ja kõik olid oma toidu täiesti lõpetanud. See on märk.",
-      "ru": "Суп, наан с маслом, чесночный наан, особый шафрановый наан, десерт, курица саагвала. Всё съели до последнего кусочка. Я посмотрел на соседние столы, и там тоже всё доели. Это знак."
+      "en": "An Indian kitchen on Gonsiori. Soup, butter naan, garlic naan, special saffron naan, dessert, chicken saagwala. Everything was eaten to the last piece. I checked the other tables and everybody had finished their food completely. That is a sign.",
+      "et": "India köök Gonsiori tänaval. Supp, võinaan, küüslaugunaan, eriline safraninaan, magustoit, kana saagwala. Kõik söödi viimse tükini ära. Vaatasin teisi laudu ja kõik olid oma toidu täiesti lõpetanud. See on märk.",
+      "ru": "Индийская кухня на улице Гонсиори. Суп, наан с маслом, чесночный наан, особый шафрановый наан, десерт, курица саагвала. Всё съели до последнего кусочка. Я посмотрел на соседние столы, и там тоже всё доели. Это знак."
     },
     "mustOrder": [
       "Chicken saagwala",
@@ -966,7 +965,6 @@
     "lng": 24.6749319,
     "price": 2,
     "types": [
-      "beer",
       "pub",
       "groups"
     ],
@@ -991,7 +989,6 @@
     "price": 1,
     "types": [
       "pub",
-      "beer",
       "cheap-eats"
     ],
     "blurb": {
