@@ -1236,6 +1236,98 @@
     });
   }
 
+  /* ------------------------------------------------------ structured data
+   * One JSON-LD block describing the page and everything on it, built from
+   * the same restaurants.json the map draws from, so it can never drift out
+   * of sync the way a hand-written block would. Google runs this script
+   * before it indexes, and reads what it finds.
+   *
+   * Built once, in whichever language the visitor landed in. Closed places
+   * are left out: marking up a business that no longer serves anyone is a
+   * false statement about the world, not an SEO trick worth playing.
+   */
+  function schemaType(place) {
+    var types = place.types || [];
+    if (types.indexOf('bakery') !== -1) return 'Bakery';
+    if (types.indexOf('pub') !== -1) return 'BarOrPub';
+    if (types.indexOf('coffee') !== -1) return 'CafeOrCoffeeShop';
+    return 'Restaurant';
+  }
+
+  /* "Ankru 8, 11713 Tallinn" -> street, postcode and town as separate fields.
+     Anything that does not match that shape is passed through whole. */
+  function postalAddress(address) {
+    var out = { '@type': 'PostalAddress', addressCountry: 'EE' };
+    var parts = String(address || '').split(',');
+    var tail = (parts.length > 1 ? parts.pop() : '').trim();
+    var code = tail.match(/^(\d{5})\s+(.+)$/);
+
+    if (code) { out.postalCode = code[1]; out.addressLocality = code[2]; }
+    else if (tail) { out.addressLocality = tail; }
+    else { out.addressLocality = 'Tallinn'; }
+
+    var street = parts.join(',').trim();
+    if (street) out.streetAddress = street;
+    return out;
+  }
+
+  function injectStructuredData() {
+    var base = window.location.origin + window.location.pathname;
+    var items = [];
+
+    state.places.forEach(function (place) {
+      if (place.closed) return;
+      var node = {
+        '@type': schemaType(place),
+        name: place.name,
+        address: postalAddress(place.address),
+        geo: { '@type': 'GeoCoordinates', latitude: place.lat, longitude: place.lng },
+        url: base + '?spot=' + encodeURIComponent(place.id)
+      };
+      var blurb = place.blurb && (place.blurb[state.lang] || place.blurb[DEFAULT_LANG]);
+      if (blurb) node.description = blurb;
+      if (place.price) node.priceRange = new Array(place.price + 1).join('\u20ac');
+      items.push({ '@type': 'ListItem', position: items.length + 1, item: node });
+    });
+
+    var graph = [
+      {
+        '@type': 'WebSite',
+        '@id': base + '#website',
+        url: base,
+        name: 'Tallinn Tastebuds',
+        inLanguage: state.lang,
+        description: t('tagline'),
+        sameAs: ['https://www.instagram.com/tallinntastebuds/']
+      },
+      {
+        '@type': 'ItemList',
+        name: t('documentTitle'),
+        numberOfItems: items.length,
+        itemListOrder: 'https://schema.org/ItemListUnordered',
+        itemListElement: items
+      }
+    ];
+
+    var tag = document.createElement('script');
+    tag.type = 'application/ld+json';
+    tag.textContent = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
+    document.head.appendChild(tag);
+  }
+
+  /* The map is one page. ?spot, ?lang and ?style are deep links into it, not
+     separate documents, so point every one of them at the bare URL and let
+     the search engine pool the signals there instead of splitting them. */
+  function setCanonical() {
+    var link = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      document.head.appendChild(link);
+    }
+    link.setAttribute('href', window.location.origin + window.location.pathname);
+  }
+
   function boot() {
     dom = {
       map: $('map'),
@@ -1301,6 +1393,8 @@
       lastTrackedPath = window.location.pathname + window.location.search;
 
       placeRail();
+      setCanonical();
+      injectStructuredData();
 
       var spot = new URLSearchParams(window.location.search).get('spot');
       if (spot && byId(spot)) selectPlace(spot, { fly: true });

@@ -1,7 +1,7 @@
 {
   "en": {
     "langName": "English",
-    "documentTitle": "Tallinn Tastebuds — the map",
+    "documentTitle": "Tallinn Tastebuds | Where to eat in Tallinn",
     "skipToList": "Skip to the list of places",
     "eyebrow": "Tallinn",
     "wordmark": "Tallinn Tastebuds",
@@ -65,7 +65,7 @@
   },
   "et": {
     "langName": "Eesti",
-    "documentTitle": "Tallinn Tastebuds — kaart",
+    "documentTitle": "Tallinn Tastebuds | Kus Tallinnas süüa",
     "skipToList": "Hüppa kohtade nimekirja",
     "eyebrow": "Tallinn",
     "wordmark": "Tallinn Tastebuds",
@@ -129,7 +129,7 @@
   },
   "az": {
     "langName": "Azərbaycan",
-    "documentTitle": "Tallinn Tastebuds — xəritə",
+    "documentTitle": "Tallinn Tastebuds | Tallinndə harada yemək",
     "skipToList": "Yerlərin siyahısına keç",
     "eyebrow": "Tallin",
     "wordmark": "Tallinn Tastebuds",
@@ -193,7 +193,7 @@
   },
   "ru": {
     "langName": "Русский",
-    "documentTitle": "Tallinn Tastebuds — карта",
+    "documentTitle": "Tallinn Tastebuds | Где поесть в Таллинне",
     "skipToList": "Перейти к списку мест",
     "eyebrow": "Таллинн",
     "wordmark": "Tallinn Tastebuds",
