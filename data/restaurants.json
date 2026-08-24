@@ -504,7 +504,7 @@
     "lng": 24.7577192,
     "price": 2,
     "types": [
-      "chinese",
+      "asian",
       "casual",
       "groups"
     ],
@@ -722,7 +722,6 @@
     "lng": 24.7483049,
     "price": 2,
     "types": [
-      "mexican",
       "casual",
       "groups"
     ],
@@ -1024,7 +1023,6 @@
     "lng": 24.8677282,
     "price": 1,
     "types": [
-      "turkish",
       "cheap-eats",
       "casual"
     ],
@@ -1104,7 +1102,6 @@
     "price": 1,
     "types": [
       "pub",
-      "estonian",
       "cheap-eats"
     ],
     "blurb": {
@@ -1158,7 +1155,7 @@
     "lng": 24.7385644,
     "price": 2,
     "types": [
-      "chinese",
+      "asian",
       "casual",
       "groups"
     ],
