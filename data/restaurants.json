@@ -107,6 +107,31 @@
     "closed": false
   },
   {
+    "id": "bekker-pagariari",
+    "name": "Bekker Pagariäri",
+    "address": "Kopli 27, 10412 Tallinn",
+    "lat": 59.4489528,
+    "lng": 24.7104732,
+    "price": 1,
+    "types": [
+      "bakery",
+      "coffee"
+    ],
+    "blurb": {
+      "en": "The OG bakery, supplying bread and kringels to half the places in town — the salted caramel one is ridiculous. The room itself has hidden corners, and it only gets cosier as the weather turns.",
+      "et": "Algne pagariäri, mis varustab leiva ja kringlitega pool linna — soolakaramelliga on lausa naeruväärselt hea. Majas endas on peidetud nurgakesi ja külmemal ajal muutub see ainult hubasemaks.",
+      "az": "Şəhərin yarısını çörək və kringellə təmin edən əsl pagariäri — duzlu karamelli olanı ağlasığmazdır. Məkanın özündə gizli guşələr var və hava soyuduqca daha da rahat olur.",
+      "ru": "Та самая пекарня, снабжающая хлебом и крингелями половину города — с солёной карамелью просто безумие. В самом зале есть укромные уголки, и чем холоднее на улице, тем там уютнее."
+    },
+    "mustOrder": [
+      "Salted caramel kringel"
+    ],
+    "reel": "",
+    "photos": [],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "borsch-ja-varenyk",
     "name": "Borsch & Varenyk",
     "address": "Endla 56, 10613 Tallinn",
@@ -346,6 +371,29 @@
     "photos": [],
     "website": "",
     "visited": "2025-03",
+    "closed": false
+  },
+  {
+    "id": "crustum-bakery",
+    "name": "Crustum Bakery",
+    "address": "Iva 12, Mustamäe, 12618 Tallinn",
+    "lat": 59.4030085,
+    "lng": 24.6476513,
+    "price": 1,
+    "types": [
+      "bakery",
+      "hidden-gem"
+    ],
+    "blurb": {
+      "en": "The first bakery from the team behind La Boulangerie, and it has been feeding Mustamäe for years. A small, tucked-away neighbourhood place — bring the map.",
+      "et": "Esimene pagariäri La Boulangerie tiimilt ja on Mustamäed juba aastaid toitnud. Väike peidus naabruskonna koht — võta kaart kaasa.",
+      "az": "La Boulangerie-nin arxasında dayanan komandanın ilk çörəkxanası; illərdir Mustamäeni yedizdirir. Balaca, gözdən uzaq məhəllə məkanı — xəritəni yanında saxla.",
+      "ru": "Первая пекарня команды, которая потом открыла La Boulangerie, и она кормит Мустамяэ уже много лет. Маленькое, спрятанное районное место — без карты не найти."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
     "closed": false
   },
   {
@@ -753,6 +801,30 @@
     "photos": [],
     "website": "",
     "visited": "2024-12",
+    "closed": false
+  },
+  {
+    "id": "kringel",
+    "name": "Kringel",
+    "address": "Koidu 101, Uue Maailm, Tallinn",
+    "lat": 59.4215893,
+    "lng": 24.7400125,
+    "price": 1,
+    "types": [
+      "bakery",
+      "vegan",
+      "coffee"
+    ],
+    "blurb": {
+      "en": "A vegan place with very good kringels. There is nothing to fault here — hugely popular, and deservedly so.",
+      "et": "Vegan koht väga heade kringlitega. Pole millegi üle nuriseda — ülipopulaarne ja seda põhjusega.",
+      "az": "Çox yaxşı kringellər olan vegan məkan. İrad tutmağa bir şey yoxdur — çox populyardır və səbəbsiz deyil.",
+      "ru": "Веганское место с очень хорошими крингелями. Придраться не к чему — очень популярно, и заслуженно."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
     "closed": false
   },
   {
