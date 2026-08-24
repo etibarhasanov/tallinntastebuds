@@ -13,6 +13,22 @@
   var STORE_KEY = 'ttb.lang';
   var FALLBACK_CENTER = [59.437, 24.7536];
   var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+  var TILE_URL_DARK = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+
+  /* One style per colour of the spectrum. Only the Indigo one is dark, and it
+     is the only one that needs different tiles — dark cards over the pale
+     Positron basemap would be unreadable. */
+  var STYLES = [
+    { id: 'red',    dark: false },
+    { id: 'orange', dark: false },
+    { id: 'yellow', dark: false },
+    { id: 'green',  dark: false },
+    { id: 'blue',   dark: false },
+    { id: 'indigo', dark: true  },
+    { id: 'violet', dark: false }
+  ];
+  var DEFAULT_STYLE = 'blue';
+  var STYLE_KEY = 'ttb.style';
   var TILE_ATTRIBUTION =
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
     '&copy; <a href="https://carto.com/attributions">CARTO</a>';
@@ -26,6 +42,9 @@
     langs: [],
     lang: DEFAULT_LANG,
     langPinned: false,
+    style: DEFAULT_STYLE,
+    stylePinned: false,
+    lastPick: null,
     active: [],          // selected type ids, OR semantics; empty means "All"
     selected: null,      // restaurant id, or null
     view: 'list',        // 'list' | 'detail'
@@ -36,6 +55,7 @@
   var map = null;
   var markers = {};      // id -> L.CircleMarker
   var hereMarker = null;
+  var tileLayer = null;
   var toastTimer = null;
 
   var dom = {};
@@ -172,6 +192,11 @@
     for (var j = 0; j < aria.length; j++) {
       aria[j].setAttribute('aria-label', t(aria[j].getAttribute('data-i18n-aria-label')));
     }
+
+    var titled = document.querySelectorAll('[data-i18n-title]');
+    for (var k = 0; k < titled.length; k++) {
+      titled[k].setAttribute('title', t(titled[k].getAttribute('data-i18n-title')));
+    }
   }
 
   function renderLanguageSwitch() {
@@ -197,9 +222,124 @@
     storeSet(STORE_KEY, code);
     applyStaticStrings();
     renderLanguageSwitch();
+    renderStyleSwitch();
     renderFilters();
     renderPanel();
     syncUrl();
+  }
+
+  /* ---------------------------------------------------------------- styles
+   * Seven palettes, one per colour of the spectrum. Each is nothing but a
+   * block of custom properties in styles.css, so switching one re-colours the
+   * whole site without touching a single component rule.
+   */
+
+  function isDarkStyle(id) {
+    for (var i = 0; i < STYLES.length; i++) {
+      if (STYLES[i].id === id) return STYLES[i].dark;
+    }
+    return false;
+  }
+
+  function knownStyle(id) {
+    for (var i = 0; i < STYLES.length; i++) if (STYLES[i].id === id) return true;
+    return false;
+  }
+
+  function pickStyle() {
+    var fromUrl = new URLSearchParams(window.location.search).get('style');
+    if (fromUrl && knownStyle(fromUrl)) return { style: fromUrl, pinned: true };
+
+    var stored = storeGet(STYLE_KEY);
+    if (stored && knownStyle(stored)) return { style: stored, pinned: true };
+
+    return { style: DEFAULT_STYLE, pinned: false };
+  }
+
+  function makeTiles(dark) {
+    return L.tileLayer(dark ? TILE_URL_DARK : TILE_URL, {
+      subdomains: 'abcd',
+      maxZoom: 20,
+      detectRetina: true,
+      attribution: TILE_ATTRIBUTION
+    });
+  }
+
+  function applyStyle(id) {
+    document.documentElement.setAttribute('data-style', id);
+    /* Tell the browser which form controls and scrollbars to draw. */
+    document.documentElement.style.colorScheme = isDarkStyle(id) ? 'dark' : 'light';
+
+    var theme = document.querySelector('meta[name="theme-color"]');
+    if (theme) theme.setAttribute('content', cssVar('--wash') || '#f2f1ec');
+  }
+
+  function setStyle(id, opts) {
+    if (!knownStyle(id)) return;
+    var wasDark = isDarkStyle(state.style);
+    state.style = id;
+    if (!opts || opts.pin !== false) {
+      state.stylePinned = true;
+      storeSet(STYLE_KEY, id);
+    }
+
+    applyStyle(id);
+
+    /* Only rebuild the basemap when the light/dark side actually changed. */
+    if (map && tileLayer && isDarkStyle(id) !== wasDark) {
+      map.removeLayer(tileLayer);
+      tileLayer = makeTiles(isDarkStyle(id));
+      tileLayer.addTo(map);
+      if (tileLayer.getContainer) tileLayer.getContainer().style.opacity = '';
+    }
+
+    restyleMarkers();
+    markStyleSwitch();
+    syncUrl();
+  }
+
+  /* Pressed state only, so activating a swatch by keyboard keeps focus on it. */
+  function markStyleSwitch() {
+    if (!dom.styles) return;
+    var buttons = dom.styles.querySelectorAll('.swatch');
+    for (var i = 0; i < buttons.length && i < STYLES.length; i++) {
+      buttons[i].setAttribute('aria-pressed', String(STYLES[i].id === state.style));
+    }
+  }
+
+  function renderStyleSwitch() {
+    if (!dom.styles) return;
+    clear(dom.styles);
+    STYLES.forEach(function (style) {
+      var key = 'style' + style.id.charAt(0).toUpperCase() + style.id.slice(1);
+      var btn = el('button', {
+        type: 'button',
+        className: 'swatch sw-' + style.id,
+        'aria-pressed': String(style.id === state.style),
+        'aria-label': t(key),
+        title: t(key)
+      });
+      btn.addEventListener('click', function () { setStyle(style.id); });
+      dom.styles.appendChild(btn);
+    });
+  }
+
+  /* Pin colours are read from the tokens, so they have to be re-read whenever
+     the tokens change. */
+  function restyleMarkers() {
+    var accent = cssVar('--accent') || '#00539c';
+    var muted = cssVar('--muted') || '#5f6b75';
+    var paper = cssVar('--paper') || '#ffffff';
+
+    state.places.forEach(function (place) {
+      var marker = markers[place.id];
+      if (!marker) return;
+      marker.setStyle({ color: paper, fillColor: place.closed ? muted : accent });
+    });
+
+    if (hereMarker) {
+      hereMarker.setStyle({ color: paper, fillColor: cssVar('--accent-lit') || '#0072ce' });
+    }
   }
 
   /* ------------------------------------------------------------------- map */
@@ -216,12 +356,8 @@
       fadeAnimation: !reduceMotion()
     });
 
-    L.tileLayer(TILE_URL, {
-      subdomains: 'abcd',
-      maxZoom: 20,
-      detectRetina: true,
-      attribution: TILE_ATTRIBUTION
-    }).addTo(map);
+    tileLayer = makeTiles(isDarkStyle(state.style));
+    tileLayer.addTo(map);
 
     /* The OpenStreetMap and CARTO credits are a licence condition — the
        attribution control stays on the page, always. */
@@ -363,6 +499,30 @@
 
     renderFilters();
     if (state.view === 'list') renderPanel();
+  }
+
+  /* ----------------------------------------------------------- random pick
+   * Picks from whatever the filter chips currently allow, so "Asian + solo"
+   * then Surprise me answers the actual question being asked. Closed places
+   * are never suggested, and the same place is never returned twice running.
+   */
+  function randomPick() {
+    var pool = visiblePlaces().filter(function (p) { return !p.closed; });
+
+    if (!pool.length) {
+      toast(t('randomNone'));
+      return;
+    }
+
+    var choice = pool[0];
+    if (pool.length > 1) {
+      do {
+        choice = pool[Math.floor(Math.random() * pool.length)];
+      } while (choice.id === state.lastPick);
+    }
+
+    state.lastPick = choice.id;
+    selectPlace(choice.id, { fly: true });
   }
 
   /* ----------------------------------------------------------------- panel */
@@ -762,6 +922,8 @@
     else params.delete('spot');
     if (state.langPinned) params.set('lang', state.lang);
     else params.delete('lang');
+    if (state.stylePinned) params.set('style', state.style);
+    else params.delete('style');
 
     var query = params.toString();
     var next = window.location.pathname + (query ? '?' + query : '') + window.location.hash;
@@ -810,6 +972,8 @@
       if (dom.panel.classList.contains('is-open') && state.view === 'list') closePanel();
       else showList(true);
     });
+
+    dom.btnRandom.addEventListener('click', randomPick);
 
     dom.panelClose.addEventListener('click', closePanel);
 
@@ -904,6 +1068,9 @@
       brand: $('brand'),
       langSwitch: $('lang-switch'),
       filters: $('filters'),
+      filterBar: $('filter-bar'),
+      styles: $('styles'),
+      btnRandom: $('btn-random'),
       panel: $('panel'),
       panelScroll: $('panel-scroll'),
       panelClose: $('panel-close'),
@@ -938,8 +1105,16 @@
       state.lang = chosen.lang;
       state.langPinned = chosen.pinned;
 
+      /* Style before the map, so the first tile request is already the right
+         basemap and the pins are built from the right tokens. */
+      var styled = pickStyle();
+      state.style = styled.style;
+      state.stylePinned = styled.pinned;
+      applyStyle(state.style);
+
       applyStaticStrings();
       renderLanguageSwitch();
+      renderStyleSwitch();
       initMap();
       wireLocation();
       buildMarkers();

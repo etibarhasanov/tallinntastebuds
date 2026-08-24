@@ -45,7 +45,17 @@
     "closed": "Closed",
     "closedNote": "This place has closed. It stays on the map so links shared earlier still work.",
     "openPlace": "Open {name}",
-    "loadError": "Something went wrong loading the data. Try refreshing the page."
+    "loadError": "Something went wrong loading the data. Try refreshing the page.",
+    "randomPick": "Surprise me",
+    "randomNone": "Nothing to pick from — loosen the filters.",
+    "styleLabel": "Colour",
+    "styleRed": "Red",
+    "styleOrange": "Orange",
+    "styleYellow": "Amber",
+    "styleGreen": "Green",
+    "styleBlue": "Blue",
+    "styleIndigo": "Indigo (dark)",
+    "styleViolet": "Violet"
   },
   "et": {
     "langName": "Eesti",
@@ -93,7 +103,17 @@
     "closed": "Suletud",
     "closedNote": "See koht on suletud. Jätsime kaardile, et varem jagatud lingid töötaksid.",
     "openPlace": "Ava {name}",
-    "loadError": "Andmete laadimine ebaõnnestus. Proovi lehte värskendada."
+    "loadError": "Andmete laadimine ebaõnnestus. Proovi lehte värskendada.",
+    "randomPick": "Üllata mind",
+    "randomNone": "Pole millestki valida — leevenda filtreid.",
+    "styleLabel": "Värv",
+    "styleRed": "Punane",
+    "styleOrange": "Oranž",
+    "styleYellow": "Merevaigukollane",
+    "styleGreen": "Roheline",
+    "styleBlue": "Sinine",
+    "styleIndigo": "Indigo (tume)",
+    "styleViolet": "Violetne"
   },
   "ru": {
     "langName": "Русский",
@@ -141,6 +161,16 @@
     "closed": "Закрыто",
     "closedNote": "Место закрылось. Оставляем на карте, чтобы ранее отправленные ссылки работали.",
     "openPlace": "Открыть {name}",
-    "loadError": "Не удалось загрузить данные. Обновите страницу."
+    "loadError": "Не удалось загрузить данные. Обновите страницу.",
+    "randomPick": "Удиви меня",
+    "randomNone": "Не из чего выбрать — ослабьте фильтры.",
+    "styleLabel": "Цвет",
+    "styleRed": "Красный",
+    "styleOrange": "Оранжевый",
+    "styleYellow": "Янтарный",
+    "styleGreen": "Зелёный",
+    "styleBlue": "Синий",
+    "styleIndigo": "Индиго (тёмный)",
+    "styleViolet": "Фиолетовый"
   }
 }

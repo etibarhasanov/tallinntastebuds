@@ -19,6 +19,8 @@
   --accent-lit: #0072ce;
 
   --shadow: 0 1px 2px rgba(20, 26, 31, .04), 0 8px 28px rgba(20, 26, 31, .10);
+  --attrib-bg: rgba(255, 255, 255, .86);
+  --swatch-edge: rgba(0, 0, 0, .14);
 
   --display: "Familjen Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --body: "Literata", Georgia, "Times New Roman", serif;
@@ -129,7 +131,7 @@ a:hover { color: var(--accent-lit); }
   font-size: 10px !important;
   line-height: 1.5;
   padding: 3px 8px !important;
-  background: rgba(255, 255, 255, .86) !important;
+  background: var(--attrib-bg) !important;
   border: 1px solid var(--hairline);
   border-right: 0;
   border-bottom: 0;
@@ -254,21 +256,118 @@ a:hover { color: var(--accent-lit); }
 }
 #btn-locate svg circle:first-child { fill: currentColor; stroke: none; }
 
+/* ==========================================================================
+   The seven styles — one per colour of the spectrum.
+   Every one only redefines tokens, never component rules, so the whole site
+   follows automatically. Bare :root above is Blue, the default.
+
+   Two notes on the colours themselves:
+   - Amber stands in for yellow. Real yellow on white is about 1.3:1, far under
+     the 4.5:1 a link needs, so the slot is the deepest yellow that still reads
+     as yellow. Every accent here clears 4.5:1 on both paper and wash.
+   - Indigo is the dark one, and it also swaps the basemap to CARTO Dark Matter
+     in app.js. Dark cards over a white map would be unreadable.
+   ========================================================================== */
+
+[data-style="red"] {
+  --ink: #1b1416; --muted: #6b5b5e; --paper: #ffffff; --wash: #f6f0ef;
+  --hairline: #e7dcda; --accent: #b0212b; --accent-lit: #d33a44;
+}
+[data-style="orange"] {
+  --ink: #1c1610; --muted: #6d6053; --paper: #ffffff; --wash: #f7f1e9;
+  --hairline: #e9dfd1; --accent: #a35109; --accent-lit: #d2700f;
+}
+[data-style="yellow"] {
+  --ink: #1a1710; --muted: #695f4c; --paper: #ffffff; --wash: #f7f3e6;
+  --hairline: #e8e1cb; --accent: #7d6408; --accent-lit: #a8850f;
+}
+[data-style="green"] {
+  --ink: #121a15; --muted: #57685c; --paper: #ffffff; --wash: #eff4f0;
+  --hairline: #dbe5dd; --accent: #1a6e3c; --accent-lit: #229150;
+}
+[data-style="blue"] {
+  --ink: #141a1f; --muted: #5f6b75; --paper: #ffffff; --wash: #f2f1ec;
+  --hairline: #e3e1da; --accent: #00539c; --accent-lit: #0072ce;
+}
+[data-style="indigo"] {
+  --ink: #e9e9f2; --muted: #9a9cb8; --paper: #1b1d30; --wash: #0e1020;
+  --hairline: #2e3149; --accent: #9aa0f0; --accent-lit: #b6baff;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .40), 0 8px 28px rgba(0, 0, 0, .55);
+  --attrib-bg: rgba(14, 16, 32, .86);
+  --swatch-edge: rgba(255, 255, 255, .22);
+}
+[data-style="violet"] {
+  --ink: #181320; --muted: #645970; --paper: #ffffff; --wash: #f4f0f7;
+  --hairline: #e4dbea; --accent: #6e3596; --accent-lit: #8e4cbb;
+}
+
+/* ---------- the style picker ---------- */
+
+.styles {
+  position: fixed;
+  z-index: 1000;
+  left: calc(var(--gap) + var(--safe-l));
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 7px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  box-shadow: var(--shadow);
+}
+
+.swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 100px;
+  border: 1px solid var(--swatch-edge);
+  transition: transform .15s var(--ease);
+}
+.swatch:hover { transform: scale(1.2); }
+.swatch[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--ink);
+}
+.swatch:focus-visible { outline-offset: 3px; }
+
+.sw-red    { background: #b0212b; }
+.sw-orange { background: #a35109; }
+.sw-yellow { background: #a8850f; }
+.sw-green  { background: #1a6e3c; }
+.sw-blue   { background: #00539c; }
+.sw-indigo { background: #1b1d30; box-shadow: inset 0 0 0 4px #9aa0f0; }
+.sw-violet { background: #6e3596; }
+.sw-indigo[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 4px #9aa0f0, 0 0 0 2px var(--paper), 0 0 0 3px var(--ink);
+}
+
 /* ---------- filters ---------- */
 
-.filters {
+/* The bar is fixed; only the chips inside it scroll, so the random-pick
+   button stays reachable however far along the vocabulary you are. */
+.filter-bar {
   position: fixed;
   z-index: 1000;
   left: calc(var(--gap) + var(--safe-l));
   right: calc(var(--gap) + var(--safe-r));
   bottom: calc(30px + var(--gap) + var(--safe-b));
   display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: right .3s var(--ease), opacity .2s var(--ease);
+}
+
+.filters {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
   gap: 6px;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 2px;
   scrollbar-width: none;
-  transition: right .3s var(--ease);
 }
 .filters::-webkit-scrollbar { display: none; }
 
@@ -302,6 +401,38 @@ a:hover { color: var(--accent-lit); }
   border-color: var(--accent);
   color: var(--paper);
 }
+
+/* ---------- random pick ---------- */
+
+.dice {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px 7px 11px;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  box-shadow: var(--shadow);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  white-space: nowrap;
+  transition: background-color .15s var(--ease), border-color .15s var(--ease);
+}
+.dice:hover { background: var(--accent-lit); border-color: var(--accent-lit); }
+.dice svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+.dice svg .pip { fill: currentColor; stroke: none; }
+.dice:active svg { transform: rotate(-18deg); }
+.dice svg { transition: transform .18s var(--ease); }
 
 /* ==========================================================================
    The signature: the price gauge.
@@ -653,7 +784,7 @@ a:hover { color: var(--accent-lit); }
 /* ---------- desktop: keep the chips clear of the panel ---------- */
 
 @media (min-width: 861px) {
-  body.panel-open .filters,
+  body.panel-open .filter-bar,
   body.panel-open .controls {
     right: calc(var(--panel-w) + var(--gap) * 2 + var(--safe-r));
   }
@@ -674,7 +805,7 @@ a:hover { color: var(--accent-lit); }
   .btn { min-width: 34px; height: 34px; }
   .btn-wide { padding: 0 12px; }
 
-  .filters { bottom: calc(28px + 10px + var(--safe-b)); left: 10px; right: 10px; }
+  .filter-bar { bottom: calc(28px + 10px + var(--safe-b)); left: 10px; right: 10px; }
 
   .panel {
     top: auto;
@@ -703,7 +834,12 @@ a:hover { color: var(--accent-lit); }
   .panel-scroll { padding: 26px 20px calc(28px + var(--safe-b)); }
   .panel-close { top: 14px; right: 12px; }
 
-  body.panel-open .filters { opacity: 0; pointer-events: none; }
+  body.panel-open .filter-bar { opacity: 0; pointer-events: none; }
+
+  .dice-label { display: none; }
+  .dice { padding: 7px 10px; }
+  .styles { gap: 6px; padding: 6px; }
+  .swatch { width: 16px; height: 16px; }
 
   .place-name { font-size: 26px; }
   .photo-grid { grid-template-columns: repeat(3, 1fr); }
@@ -729,7 +865,7 @@ a:hover { color: var(--accent-lit); }
 /* ---------- print: the list, on paper ---------- */
 
 @media print {
-  #map, .controls, .filters, .brand, .panel-close, .toast, .lightbox { display: none !important; }
+  #map, .controls, .filter-bar, .styles, .brand, .panel-close, .toast, .lightbox { display: none !important; }
   body { overflow: visible; background: #fff; }
   .panel {
     position: static;

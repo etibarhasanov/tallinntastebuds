@@ -296,9 +296,61 @@ tools/validate.mjs         dependency-free data validator
 ```
 
 Deep links: `?spot=f-hoone` opens that place directly — that is the link to put
-in a Story. `?lang=ru` opens it in Russian. They combine.
+in a Story. `?lang=ru` opens it in Russian, `?style=violet` in the violet
+palette. They all combine.
 
 ---
+
+## The seven styles
+
+A vertical strip of seven swatches sits on the left edge. Each one is a colour
+of the spectrum, and picking one recolours the whole site.
+
+| Style | Accent | Notes |
+| --- | --- | --- |
+| Red | `#b0212b` | |
+| Orange | `#a35109` | |
+| Amber | `#7d6408` | Stands in for yellow — see below |
+| Green | `#1a6e3c` | |
+| Blue | `#00539c` | The default, and the original identity |
+| Indigo | `#9aa0f0` | The dark one; also switches the basemap |
+| Violet | `#6e3596` | |
+
+Every style is **nothing but a block of custom properties** at the top of
+`assets/styles.css`, keyed off `[data-style="…"]` on the root element. No
+component rule mentions a colour, so adding an eighth style means adding one
+block there and one entry to `STYLES` in `assets/app.js`. Nothing else.
+
+Two things worth knowing before you change the colours:
+
+- **There is no true yellow.** Yellow on white is around 1.3:1 contrast, far
+  under the 4.5:1 that body text and links need, so that slot is the deepest
+  yellow that still reads as yellow. Every accent here clears 4.5:1 against
+  both `--paper` and `--wash`. If you retune one, check it.
+- **Indigo also swaps the basemap** to CARTO Dark Matter, in `setStyle()`.
+  Dark cards floating over the pale Positron map would be unreadable. It is
+  the only style that changes tiles, because keyless CARTO offers three looks
+  and seven unique basemaps without an API key is not possible.
+
+The choice is saved to `localStorage` (wrapped in `try/catch`, like the
+language) and mirrors into `?style=`, so you can share a link in a given look.
+An unrecognised value falls back to blue and is dropped from the URL.
+
+One caveat on the dark style: the Instagram embed renders its own white card,
+which you cannot restyle from outside the iframe. It will stay light.
+
+## Surprise me
+
+The button pinned to the right of the filter row picks a place at random and
+opens it.
+
+It picks from **whatever the chips currently allow**, so selecting "Korean" and
+"Cheap eats" and then pressing it answers the question you were actually
+asking. Closed places are never suggested, and the same place is never returned
+twice in a row.
+
+It sits outside the scrolling chip row on purpose — the vocabulary is wide
+enough to scroll, and a button that scrolls out of reach is no use.
 
 ## Third-party pieces and their licences
 
