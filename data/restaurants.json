@@ -1,5 +1,28 @@
 [
   {
+    "id": "180-degrees",
+    "name": "180° by Matthias Diether",
+    "address": "Staapli 4, 10415 Tallinn",
+    "lat": 59.4502,
+    "lng": 24.7252,
+    "price": 4,
+    "types": [
+      "fine-dining",
+      "date"
+    ],
+    "blurb": {
+      "en": "TODO — your words here. Tasting-menu restaurant on the Noblessner waterfront.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [],
+    "reel": "https://www.instagram.com/p/DG5yah-tQhy/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-03",
+    "closed": false
+  },
+  {
     "id": "annon",
     "name": "Annön",
     "address": "Kalevipoja põik 10, 13614 Tallinn",
@@ -244,6 +267,29 @@
     "closed": false
   },
   {
+    "id": "chocolala",
+    "name": "Chocolala",
+    "address": "Suur-Karja 20, 10146 Tallinn",
+    "lat": 59.436,
+    "lng": 24.747,
+    "price": 2,
+    "types": [
+      "bakery",
+      "solo"
+    ],
+    "blurb": {
+      "en": "TODO — your words here. Bean-to-bar chocolate maker with a small chocolate museum on Suur-Karja.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [],
+    "reel": "https://www.instagram.com/p/DHvtbQbNK27/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-03",
+    "closed": false
+  },
+  {
     "id": "dvin",
     "name": "DVIN",
     "address": "Kopli 71, 11713 Tallinn",
@@ -268,6 +314,28 @@
     "photos": [],
     "website": "",
     "visited": "2026-04",
+    "closed": false
+  },
+  {
+    "id": "elman-bites",
+    "name": "Elman Bites",
+    "address": "Telliskivi 60a, 10412 Tallinn",
+    "lat": 59.43971,
+    "lng": 24.72921,
+    "price": 2,
+    "types": [
+      "casual"
+    ],
+    "blurb": {
+      "en": "TODO — your words here.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [],
+    "reel": "https://www.instagram.com/p/DZc_dXnoKP4/",
+    "photos": [],
+    "website": "",
+    "visited": "2026-06",
     "closed": false
   },
   {
@@ -430,6 +498,32 @@
     "closed": false
   },
   {
+    "id": "karu-talu-sokolaad",
+    "name": "Karu Talu Šokolaad",
+    "address": "Voorimehe 4, 10123 Tallinn",
+    "lat": 59.43742,
+    "lng": 24.74362,
+    "price": 2,
+    "types": [
+      "bakery",
+      "vegan",
+      "solo"
+    ],
+    "blurb": {
+      "en": "A family-size cookie in the Old Town. They only prepare 300 every working day.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Family size cookie"
+    ],
+    "reel": "https://www.instagram.com/p/DOG_KSHEVRR/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-09",
+    "closed": false
+  },
+  {
     "id": "koht",
     "name": "Koht",
     "address": "Lai 8, 10133 Tallinn",
@@ -480,6 +574,56 @@
     "photos": [],
     "website": "",
     "visited": "2025-08",
+    "closed": false
+  },
+  {
+    "id": "kotkot",
+    "name": "KotKot",
+    "address": "Peetri 12, 10411 Tallinn",
+    "lat": 59.4503,
+    "lng": 24.7276,
+    "price": 1,
+    "types": [
+      "street-food",
+      "casual",
+      "cheap-eats"
+    ],
+    "blurb": {
+      "en": "TODO — your words here. Fried chicken and chicken sandwiches at Noblessner.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [],
+    "reel": "https://www.instagram.com/p/DDXKDgctiP9/",
+    "photos": [],
+    "website": "",
+    "visited": "2024-12",
+    "closed": false
+  },
+  {
+    "id": "la-boulangerie",
+    "name": "La Boulangerie",
+    "address": "Poordi 3, 10151 Tallinn",
+    "lat": 59.4409,
+    "lng": 24.7583,
+    "price": 2,
+    "types": [
+      "bakery",
+      "coffee",
+      "solo"
+    ],
+    "blurb": {
+      "en": "TODO — your words here. French bakery near the port.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [
+      "Pistachio roll"
+    ],
+    "reel": "https://www.instagram.com/p/C_SvgWoOTQH/",
+    "photos": [],
+    "website": "",
+    "visited": "2024-08",
     "closed": false
   },
   {
@@ -801,6 +945,30 @@
     "photos": [],
     "website": "",
     "visited": "2024-11",
+    "closed": false
+  },
+  {
+    "id": "tuletorn",
+    "name": "Tuletorn",
+    "address": "Ankru 10, 11713 Tallinn",
+    "lat": 59.45505,
+    "lng": 24.676,
+    "price": 2,
+    "types": [
+      "beer",
+      "pub",
+      "groups"
+    ],
+    "blurb": {
+      "en": "If you want to try some decent craft beers. DDH, double IPA, smoothie beers, everything all at once.",
+      "et": "",
+      "ru": ""
+    },
+    "mustOrder": [],
+    "reel": "https://www.instagram.com/p/DMvZEVWz9ym/",
+    "photos": [],
+    "website": "",
+    "visited": "2025-07",
     "closed": false
   },
   {
