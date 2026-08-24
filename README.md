@@ -274,6 +274,25 @@ Every push to the production branch redeploys. Pull requests get their own
 preview URL. Nothing needs enabling on the GitHub side — unlike GitHub Pages,
 Cloudflare authorises itself through your own GitHub account.
 
+### Or deploy without touching the dashboard
+
+`.github/workflows/cloudflare.yml` publishes to Cloudflare Pages from GitHub's
+runners instead, so the only thing you do in Cloudflare is create a token.
+
+1. Cloudflare → **Manage Account → Account API Tokens → Create Token**, using
+   the **Cloudflare Pages — Edit** template.
+2. Copy your **Account ID** from the sidebar of any Cloudflare page.
+3. GitHub → **Settings → Secrets and variables → Actions → New repository
+   secret**, twice: `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+
+Push, and it deploys. The first run creates the `tallinntastebuds` project;
+later runs reuse it. The token is scoped to Pages, lives only in GitHub's
+secret store, and is never printed. Until both secrets exist the workflow
+passes and does nothing, so it will not sit red while you get round to it.
+
+**Use this or the dashboard Git connection, not both.** Two deploy paths on one
+project race each other and produce out-of-order deployments.
+
 ### Caching
 
 `_headers` in the repo root tells Cloudflare how long to hold each kind of

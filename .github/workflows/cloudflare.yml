@@ -1,0 +1,83 @@
+name: cloudflare
+
+# Deploys to Cloudflare Pages from GitHub's runners, so nothing has to be
+# wired up in the Cloudflare dashboard beyond creating an API token.
+#
+# Use EITHER this workflow OR Cloudflare's own "Connect to Git" integration,
+# never both — two deploy paths racing each other on the same project produces
+# confusing, out-of-order deployments.
+#
+# Setup, once:
+#   1. Cloudflare dashboard -> Manage Account -> Account API Tokens -> Create
+#      Token -> use the "Cloudflare Pages — Edit" template.
+#   2. Copy your Account ID from the right-hand sidebar of any Cloudflare page.
+#   3. In GitHub: Settings -> Secrets and variables -> Actions -> New
+#      repository secret, twice:
+#         CLOUDFLARE_API_TOKEN   the token from step 1
+#         CLOUDFLARE_ACCOUNT_ID  the id from step 2
+#
+# The token is scoped to Pages only and never leaves GitHub's secret store.
+# Until both secrets exist this workflow passes and does nothing, so it will
+# not sit red in the meantime.
+
+on:
+  push:
+    branches:
+      - main
+      - claude/tallinn-tastebuds-map-nzoqx0
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Validate and publish
+    runs-on: ubuntu-latest
+    env:
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PROJECT: tallinntastebuds
+      PROD_BRANCH: claude/tallinn-tastebuds-map-nzoqx0
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Same gate as the validate workflow: broken data never reaches the
+      # live site, whatever the deploy target.
+      - name: Validate data
+        run: node tools/validate.mjs
+
+      - name: Report missing configuration
+        if: env.CF_TOKEN == '' || env.CF_ACCOUNT == ''
+        run: |
+          echo "::notice::Cloudflare secrets are not set yet, so nothing was deployed."
+          echo "Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID under"
+          echo "Settings -> Secrets and variables -> Actions, then re-run this workflow."
+
+      # Creating a project that already exists is an error, and there is no
+      # --if-not-exists flag, so the first run creates it and every later run
+      # steps over the failure.
+      - name: Ensure the Pages project exists
+        if: env.CF_TOKEN != '' && env.CF_ACCOUNT != ''
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create tallinntastebuds --production-branch=claude/tallinn-tastebuds-map-nzoqx0
+
+      - name: Publish
+        if: env.CF_TOKEN != '' && env.CF_ACCOUNT != ''
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy . --project-name=tallinntastebuds --branch=${{ github.ref_name }} --commit-dirty=true
