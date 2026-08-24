@@ -175,6 +175,28 @@ a:hover { color: var(--accent-lit); }
 .leaflet-tooltip.pin-tip::before { display: none; }
 
 .pin { cursor: pointer; transition: opacity .15s var(--ease); }
+
+/* The chosen place: its name label stays open rather than waiting for a hover
+   that never comes on a phone, and a ring is drawn around the dot. */
+.leaflet-tooltip.pin-tip-on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+  font-weight: 600;
+  z-index: 650;
+}
+
+.pin-halo {
+  pointer-events: none;
+  animation: halo-breathe 2.6s ease-in-out infinite;
+}
+@keyframes halo-breathe {
+  0%, 100% { opacity: .9; }
+  50%      { opacity: .3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pin-halo { animation: none; opacity: .85; }
+}
 .pin:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 3px; }
 .pin-here { pointer-events: none; }
 
@@ -838,6 +860,8 @@ a:hover { color: var(--accent-lit); }
 /* ---------- under 860px: bottom sheet ---------- */
 
 @media (max-width: 860px) {
+  body { --sheet-h: min(82vh, 720px); }
+
   .brand {
     width: auto;
     max-width: calc(100vw - 78px - var(--gap) * 2);
@@ -859,7 +883,7 @@ a:hover { color: var(--accent-lit); }
     bottom: 0;
     width: auto;
     max-width: none;
-    height: min(82vh, 720px);
+    height: var(--sheet-h);
     border-width: 1px 0 0;
     border-radius: 14px 14px 0 0;
     transform: translateY(calc(100% + 20px));
@@ -880,6 +904,24 @@ a:hover { color: var(--accent-lit); }
   .panel-close { top: 14px; right: 12px; }
 
   body.panel-open .filter-bar { opacity: 0; pointer-events: none; }
+
+  /* A detail sheet is shorter than the list, so the chosen pin has map to
+     appear in. Without this the sheet covers 82vh and there is nowhere to
+     centre it that is not behind the brand card. */
+  body.panel-detail { --sheet-h: min(64vh, 580px); }
+
+  /* With the sheet up, a vertically centred rail sits behind it and Surprise
+     me becomes unreachable — which kills the whole point of the button. Lay
+     it out along the strip above the sheet instead. */
+  body.panel-open .rail {
+    top: auto;
+    bottom: calc(var(--sheet-h) + 10px + var(--safe-b));
+    transform: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+  body.panel-open .styles { flex-direction: row; }
 
   .dice-label { display: none; }
   .dice { padding: 0; width: 32px; height: 32px; justify-content: center; }

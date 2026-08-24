@@ -28,6 +28,8 @@
     { id: 'violet', dark: false }
   ];
   var DEFAULT_STYLE = 'blue';
+  var PIN_R = 7;             /* every pin */
+  var PIN_R_SELECTED = 10;   /* the one you are looking at */
   var STYLE_KEY = 'ttb.style';
   var TILE_ATTRIBUTION =
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
@@ -56,6 +58,7 @@
   var markers = {};      // id -> L.CircleMarker
   var hereMarker = null;
   var tileLayer = null;
+  var haloMarker = null;
   var toastTimer = null;
 
   var dom = {};
@@ -293,7 +296,7 @@
       if (tileLayer.getContainer) tileLayer.getContainer().style.opacity = '';
     }
 
-    restyleMarkers();
+    paintMarkers();
     markStyleSwitch();
     syncUrl();
   }
@@ -337,24 +340,6 @@
     });
   }
 
-  /* Pin colours are read from the tokens, so they have to be re-read whenever
-     the tokens change. */
-  function restyleMarkers() {
-    var accent = cssVar('--accent') || '#00539c';
-    var muted = cssVar('--muted') || '#5f6b75';
-    var paper = cssVar('--paper') || '#ffffff';
-
-    state.places.forEach(function (place) {
-      var marker = markers[place.id];
-      if (!marker) return;
-      marker.setStyle({ color: paper, fillColor: place.closed ? muted : accent });
-    });
-
-    if (hereMarker) {
-      hereMarker.setStyle({ color: paper, fillColor: cssVar('--accent-lit') || '#0072ce' });
-    }
-  }
-
   /* ------------------------------------------------------------------- map */
 
   function initMap() {
@@ -384,7 +369,7 @@
 
     state.places.forEach(function (place) {
       var marker = L.circleMarker([place.lat, place.lng], {
-        radius: 7,
+        radius: PIN_R,
         weight: 2.5,
         color: paper,
         opacity: 1,
@@ -435,6 +420,112 @@
       maxZoom: 16,
       animate: false
     });
+  }
+
+  /* --------------------------------------------------------------- chosen
+   * Whichever place is open has to be obvious on the map, especially after
+   * Surprise me — otherwise the panel names somewhere and you have no idea
+   * which of forty dots it is.
+   *
+   * Three things mark it: the pin grows and takes the brighter accent, a ring
+   * is drawn around it, and its name label is pinned open instead of waiting
+   * for a hover it will never get on a phone.
+   */
+
+  function markerColours() {
+    return {
+      accent: cssVar('--accent') || '#00539c',
+      lit: cssVar('--accent-lit') || '#0072ce',
+      muted: cssVar('--muted') || '#5f6b75',
+      paper: cssVar('--paper') || '#ffffff'
+    };
+  }
+
+  function tooltipFor(marker, name, permanent) {
+    marker.unbindTooltip();
+    marker.bindTooltip(name, {
+      className: 'pin-tip' + (permanent ? ' pin-tip-on' : ''),
+      direction: 'top',
+      offset: [0, permanent ? -14 : -11],
+      opacity: 1,
+      permanent: !!permanent
+    });
+  }
+
+  function clearHalo() {
+    if (haloMarker && map) map.removeLayer(haloMarker);
+    haloMarker = null;
+  }
+
+  /* Paints every pin for the current selection and the current style. Doubles
+     as the restyle hook, so a style change keeps the selection visible. */
+  function paintMarkers() {
+    var c = markerColours();
+
+    state.places.forEach(function (place) {
+      var marker = markers[place.id];
+      if (!marker) return;
+      var chosen = place.id === state.selected;
+
+      marker.setStyle({
+        radius: chosen ? PIN_R_SELECTED : PIN_R,
+        weight: chosen ? 3.5 : 2.5,
+        color: c.paper,
+        fillColor: chosen ? c.lit : (place.closed ? c.muted : c.accent)
+      });
+
+      var wantsPermanent = chosen;
+      var tip = marker.getTooltip();
+      if (!tip || !!tip.options.permanent !== wantsPermanent) {
+        tooltipFor(marker, place.name, wantsPermanent);
+      }
+      if (chosen && marker.bringToFront) marker.bringToFront();
+    });
+
+    clearHalo();
+    var place = state.selected ? byId(state.selected) : null;
+    if (place && map) {
+      haloMarker = L.circleMarker([place.lat, place.lng], {
+        radius: PIN_R_SELECTED + 7,
+        weight: 2,
+        color: c.lit,
+        opacity: .85,
+        fill: false,
+        className: 'pin-halo',
+        interactive: false
+      }).addTo(map);
+      if (haloMarker.bringToBack) haloMarker.bringToBack();
+    }
+
+    if (hereMarker) {
+      hereMarker.setStyle({ color: c.paper, fillColor: c.lit });
+    }
+  }
+
+  /* Centre the chosen place in the part of the map you can actually see. The
+     panel covers the right on desktop and the bottom on a phone, so centring
+     on the container would park the pin underneath it. */
+  function focusOn(place, zoomIn) {
+    if (!map) return;
+    var size = map.getSize();
+    var zoom = zoomIn ? Math.max(map.getZoom(), 15) : map.getZoom();
+
+    var wantX = size.x / 2;
+    var wantY = size.y / 2;
+
+    if (dom.panel.classList.contains('is-open')) {
+      if (isNarrow()) {
+        var strip = size.y - dom.panel.offsetHeight;
+        /* keep clear of the brand card at the top of the strip */
+        wantY = Math.min(Math.max(strip / 2 + 26, 104), Math.max(strip - 24, 104));
+      } else {
+        wantX = Math.max((size.x - dom.panel.offsetWidth - 32) / 2, 80);
+      }
+    }
+
+    var pt = map.project([place.lat, place.lng], zoom);
+    var centre = map.unproject(pt.add(L.point(size.x / 2 - wantX, size.y / 2 - wantY)), zoom);
+    map.setView(centre, zoom, { animate: !reduceMotion() });
   }
 
   /* --------------------------------------------------------------- filters */
@@ -512,6 +603,7 @@
 
     renderFilters();
     if (state.view === 'list') renderPanel();
+    paintMarkers();
   }
 
   /* ----------------------------------------------------------- random pick
@@ -557,6 +649,7 @@
     state.selected = null;
     state.view = 'list';
     renderPanel();          /* leave the crawlable list in the markup */
+    paintMarkers();
     syncUrl();
     lastTrackedPath = window.location.pathname + window.location.search;
 
@@ -576,12 +669,8 @@
     openPanel();
     syncUrl();
 
-    var target = [place.lat, place.lng];
-    if (opts && opts.fly) {
-      map.setView(target, Math.max(map.getZoom(), 15), { animate: !reduceMotion() });
-    } else if (!map.getBounds().pad(-0.15).contains(target)) {
-      map.panTo(target, { animate: !reduceMotion() });
-    }
+    paintMarkers();
+    focusOn(place, !!(opts && opts.fly));
 
     dom.panelScroll.scrollTop = 0;
     var heading = dom.detail.querySelector('.place-name');
@@ -596,6 +685,7 @@
     state.view = 'list';
     renderPanel();
     openPanel();
+    paintMarkers();
     syncUrl();
     dom.panelScroll.scrollTop = 0;
     if (focus) {
@@ -605,6 +695,7 @@
   }
 
   function renderPanel() {
+    document.body.classList.toggle('panel-detail', state.view === 'detail' && !!state.selected);
     if (state.view === 'detail' && state.selected) {
       renderDetail(byId(state.selected));
       dom.detail.hidden = false;
