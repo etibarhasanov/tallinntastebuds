@@ -87,7 +87,6 @@
     "lng": 24.718032,
     "price": 2,
     "types": [
-      "ukrainian",
       "casual",
       "cheap-eats"
     ],
@@ -169,7 +168,7 @@
     "lng": 24.7368718,
     "price": 2,
     "types": [
-      "fast-food",
+      "street-food",
       "casual",
       "vegan",
       "solo"
@@ -699,7 +698,7 @@
     "types": [
       "vegan",
       "date",
-      "ramen"
+      "asian"
     ],
     "blurb": {
       "en": "A cozy vegan café blending Estonian, Asian and European flavours. Warming ramen, crispy portobello and homemade desserts. A great spot for a slow dinner with a twist.",
@@ -884,7 +883,7 @@
     "lng": 24.7726871,
     "price": 2,
     "types": [
-      "ramen",
+      "asian",
       "solo"
     ],
     "blurb": {
