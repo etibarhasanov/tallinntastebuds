@@ -118,9 +118,9 @@
       "solo"
     ],
     "blurb": {
-      "en": "A bakehouse in the Old Town that lives for cookies. Thick, soft in the middle, and worth the walk. The pistachio one is the favourite, with carrot cake right behind it.",
-      "et": "Vanalinna pagariäri, mis elab küpsiste nimel. Paksud, seest pehmed ja jalutuskäiku väärt. Lemmik on pistaatsiaküpsis, kohe järel porgandikoogiküpsis.",
-      "ru": "Пекарня в Старом городе, которая живёт ради печенья. Толстое, мягкое внутри и стоит того, чтобы дойти. Любимое, фисташковое, а сразу за ним морковный пирог."
+      "en": "A bakehouse in the Old Town that lives for cookies. Thick, soft in the middle, and worth the walk. The pistachio one is the favourite",
+      "et": "Vanalinna pagariäri, mis elab küpsiste nimel. Paksud, seest pehmed ja jalutuskäiku väärt. Lemmik on pistaatsiaküpsis",
+      "ru": "Пекарня в Старом городе, которая живёт ради печенья. Толстое, мягкое внутри и стоит того, чтобы дойти. Любимое, фисташковое"
     },
     "mustOrder": [
       "Pistachio cookie",
@@ -502,6 +502,33 @@
     "photos": [],
     "website": "",
     "visited": "2025-10",
+    "closed": false
+  },
+  {
+    "id": "kartul",
+    "name": "Kartul",
+    "address": "Kopli 16, 10412 Tallinn",
+    "lat": 59.4418266,
+    "lng": 24.7332385,
+    "price": 1,
+    "types": [
+      "vegan",
+      "cheap-eats",
+      "casual"
+    ],
+    "blurb": {
+      "en": "Fully vegan and built entirely around the potato, right by the tram stop in Telliskivi. Stuffed baked potatoes, homemade dumplings and sauces that pull it all together. Big portions, small prices. Read the first page of the menu before you order.",
+      "et": "Täiesti vegan ja üleni kartuli ümber ehitatud, otse trammipeatuse kõrval Telliskivil. Täidetud ahjukartulid, kodused pelmeenid ja kastmed, mis kõik kokku seovad. Suured portsjonid, väikesed hinnad. Loe enne tellimist menüü esimene lehekülg läbi.",
+      "ru": "Полностью веганское место, построенное вокруг картофеля, прямо у трамвайной остановки в Теллискиви. Фаршированный запечённый картофель, домашние пельмени и соусы, которые связывают всё воедино. Большие порции, маленькие цены. Прочитайте первую страницу меню, прежде чем заказывать."
+    },
+    "mustOrder": [
+      "Stuffed baked potato",
+      "Homemade dumplings"
+    ],
+    "reel": "https://www.tiktok.com/@tallinntastebuds/video/7568039651458436374",
+    "photos": [],
+    "website": "",
+    "visited": "2026-08",
     "closed": false
   },
   {
@@ -1055,6 +1082,34 @@
     "photos": [],
     "website": "",
     "visited": "2025-12",
+    "closed": false
+  },
+  {
+    "id": "xinhai-1911",
+    "name": "Xinhai 1911 Restoran & Baar",
+    "address": "Kopli 2c, 10412 Tallinn",
+    "lat": 59.4412874,
+    "lng": 24.7385644,
+    "price": 2,
+    "types": [
+      "chinese",
+      "casual",
+      "groups"
+    ],
+    "blurb": {
+      "en": "Chinese cooking by Balti jaam, and the hand-pulled biang biang noodles are the reason to come. One noodle, metres long, in chili oil and spring onion, with a broth on the side. The crispy pork belly is the other one everybody orders.",
+      "et": "Hiina köök Balti jaama kõrval ja käsitsi tõmmatud biang biang nuudlid on põhjus, miks siia tulla. Üks nuudel, meetreid pikk, tšillioli ja rohelise sibulaga ning puljong kõrvale. Krõbe seakõht on teine asi, mida kõik tellivad.",
+      "ru": "Китайская кухня рядом с Балтийским вокзалом, и ручной работы лапша бянбян это причина сюда прийти. Одна лапшина длиной в несколько метров, в чили-масле с зелёным луком и бульоном отдельно. Хрустящая свиная грудинка это второе, что заказывают все."
+    },
+    "mustOrder": [
+      "Biang biang noodles",
+      "Crispy pork belly",
+      "Pork wonton soup"
+    ],
+    "reel": "https://www.instagram.com/p/DW4DsociIIf/",
+    "photos": [],
+    "website": "",
+    "visited": "2026-08",
     "closed": false
   }
 ]
