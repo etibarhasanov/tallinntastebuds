@@ -342,7 +342,7 @@
   {
     "id": "chamber-tea",
     "name": "Chamber Tea",
-    "address": "Noblessner, 11713 Tallinn",
+    "address": "Ankru 8, 11713 Tallinn",
     "lat": 59.4554149,
     "lng": 24.6760982,
     "price": 2,
@@ -351,10 +351,10 @@
       "hidden-gem"
     ],
     "blurb": {
-      "en": "Masters of tea who know exactly what they are doing. A quiet room in Noblessner for anyone who takes the leaf seriously.",
-      "et": "Tee meistrid, kes teavad täpselt, mida nad teevad. Vaikne ruum Noblessneris neile, kes võtavad teed tõsiselt.",
-      "az": "Çay ustaları, nə etdiklərini dəqiq bilirlər. Noblessnerdə çaya ciddi yanaşanlar üçün sakit bir məkan.",
-      "ru": "Мастера чая, которые точно знают, что делают. Тихая комната в Ноблесснере для тех, кто относится к чаю всерьёз."
+      "en": "Masters of tea who know exactly what they are doing. A quiet room for anyone who takes the leaf seriously.",
+      "et": "Tee meistrid, kes teavad täpselt, mida nad teevad. Vaikne ruum neile, kes võtavad teed tõsiselt.",
+      "az": "Çay ustaları, nə etdiklərini dəqiq bilirlər. Çaya ciddi yanaşanlar üçün sakit bir məkan.",
+      "ru": "Мастера чая, которые точно знают, что делают. Тихая комната для тех, кто относится к чаю всерьёз."
     },
     "mustOrder": [],
     "reel": "",
