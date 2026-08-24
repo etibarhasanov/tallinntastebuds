@@ -1,0 +1,26 @@
+# Cloudflare Pages reads this file, applies the rules and does not serve it.
+#
+# Nothing in this site is content-hashed — assets/app.js keeps that name
+# forever — so no file can be cached hard without risking a visitor stuck on
+# an old copy after you push. Everything therefore revalidates: the browser
+# still gets a fast 304 when nothing changed, but an edit to restaurants.json
+# shows up on the next load rather than whenever a cache decides to expire.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/assets/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# The file you actually edit. This one must never go stale.
+/data/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Photos are named per place and are replaced rather than edited, so they can
+# sit in the cache for a week.
+/photos/*
+  Cache-Control: public, max-age=604800

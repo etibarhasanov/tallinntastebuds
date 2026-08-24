@@ -3,17 +3,20 @@ name: deploy
 # Publishes the repo root to GitHub Pages, exactly as it sits — there is no
 # build step, so the files that get served are the files in this repo.
 #
+# NOT the live host. See the note on the trigger below.
+#
 # The data validator runs first and the deploy is gated on it, so a broken
 # restaurants.json can never reach the live site.
 #
 # Cloudflare Pages (see README) can point at the same repo at the same time;
 # the two do not interfere with each other.
 
+# Manual only. Cloudflare Pages is the live host, and it deploys from the
+# repo by itself, so this workflow would otherwise fail on every push against
+# a Pages site that was never enabled. Kept because it works the moment
+# Settings -> Actions -> General -> Workflow permissions is set to read and
+# write; run it from the Actions tab if you ever want GitHub Pages instead.
 on:
-  push:
-    branches:
-      - main
-      - claude/tallinn-tastebuds-map-nzoqx0
   workflow_dispatch:
 
 permissions:

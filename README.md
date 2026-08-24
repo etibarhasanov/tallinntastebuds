@@ -252,22 +252,64 @@ translations only produce warnings, so you can ship as you translate.
 
 ## Deploy to Cloudflare Pages
 
-There is nothing to build, so there is no build command.
+Cloudflare Pages is the live host. There is nothing to build, so there is no
+build command and no hosting bill — a static site of this size sits inside the
+free tier permanently, HTTPS included.
 
-1. Push this repo to GitHub.
-2. Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** →
-   **Connect to Git**, and pick the repo.
+1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** →
+   **Connect to Git**, authorise GitHub and pick `tallinntastebuds`.
+2. **Name the project `tallinntastebuds`.** The project name *is* the
+   subdomain, so this is what gets you `tallinntastebuds.pages.dev` rather
+   than something with a suffix bolted on. It cannot be changed later without
+   recreating the project.
 3. Set:
+   - **Production branch**: `claude/tallinn-tastebuds-map-nzoqx0`
+     (the repo's default branch)
    - **Framework preset**: `None`
    - **Build command**: *leave empty*
    - **Build output directory**: `/`
-4. **Save and Deploy.**
+4. **Save and Deploy.** First build takes about a minute.
 
-Every push to the default branch redeploys. Pull requests get a preview URL.
-Custom domains are under the project's **Custom domains** tab.
+Every push to the production branch redeploys. Pull requests get their own
+preview URL. Nothing needs enabling on the GitHub side — unlike GitHub Pages,
+Cloudflare authorises itself through your own GitHub account.
 
-The same repo works unchanged on GitHub Pages, Netlify, or any static host —
-the only requirement is that it serves the files over HTTP.
+### Caching
+
+`_headers` in the repo root tells Cloudflare how long to hold each kind of
+file. Nothing here is content-hashed — `assets/app.js` keeps that name
+forever — so every file revalidates instead of being cached hard. Browsers
+still get a fast `304 Not Modified` when nothing changed, but an edit to
+`restaurants.json` appears on the next load rather than whenever a cache feels
+like expiring. Photos are the exception and are held for a week, since they
+are replaced rather than edited.
+
+There is deliberately **no Content-Security-Policy**. Getting one right here
+means allowlisting unpkg, Google Fonts, CARTO, Instagram, TikTok and Google
+Analytics, and a CSP that is subtly wrong fails silently and breaks embeds
+years later. That trade is not worth it for a public map with no logins and no
+user input.
+
+### A custom domain, later
+
+Free hosting stays free with your own domain attached; the only cost is the
+name itself, around €10–15 a year. `.ee` is open to anyone through a registrar
+accredited by the Estonian Internet Foundation, though the registry does
+require an administrative contact in Estonia.
+
+Add it under the project's **Custom domains** tab. Cloudflare issues the
+certificate automatically. No code change is needed: every path in the site is
+relative, so it behaves the same at a domain root as it does under
+`/tallinntastebuds/`.
+
+### Other hosts
+
+The same repo works unchanged on GitHub Pages, Netlify or any static host —
+the only requirement is that it serves the files over HTTP. The GitHub Pages
+workflow in `.github/workflows/deploy.yml` is kept but set to manual-only, so
+it no longer fails on every push; run it from the Actions tab if you ever want
+to switch. It needs **Settings → Actions → General → Workflow permissions** set
+to read and write first.
 
 ---
 
