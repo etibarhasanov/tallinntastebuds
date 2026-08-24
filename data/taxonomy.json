@@ -1,30 +1,112 @@
 {
   "types": [
-    { "id": "solo",        "en": "Solo",         "et": "Üksi",           "ru": "В одиночку" },
-    { "id": "date",        "en": "Date night",   "et": "Kohting",        "ru": "Свидание" },
-    { "id": "groups",      "en": "Groups",       "et": "Seltskonnale",   "ru": "Компанией" },
-    { "id": "casual",      "en": "Casual",       "et": "Vabas vormis",   "ru": "Неформально" },
-    { "id": "fine-dining", "en": "Fine dining",  "et": "Kõrgköök",       "ru": "Высокая кухня" },
-    { "id": "cheap-eats",  "en": "Cheap eats",   "et": "Soodne",         "ru": "Недорого" },
-    { "id": "hidden-gem",  "en": "Hidden gem",   "et": "Peidetud pärl",  "ru": "Находка" },
-
-    { "id": "coffee",      "en": "Coffee",       "et": "Kohv",           "ru": "Кофе" },
-    { "id": "bakery",      "en": "Bakery",       "et": "Pagariäri",      "ru": "Пекарня" },
-    { "id": "pub",         "en": "Pub",          "et": "Pubi",           "ru": "Паб" },
-    { "id": "beer",        "en": "Beer",         "et": "Õlu",            "ru": "Пиво" },
-    { "id": "street-food", "en": "Street food",  "et": "Tänavatoit",     "ru": "Уличная еда" },
-    { "id": "burgers",     "en": "Burgers",      "et": "Burgerid",       "ru": "Бургеры" },
-    { "id": "ramen",       "en": "Ramen",        "et": "Ramen",          "ru": "Рамен" },
-    { "id": "vegan",       "en": "Vegan",        "et": "Vegan",          "ru": "Веганское" },
-
-    { "id": "estonian",    "en": "Estonian",     "et": "Eesti",          "ru": "Эстонская" },
-    { "id": "georgian",    "en": "Georgian",     "et": "Gruusia",        "ru": "Грузинская" },
-    { "id": "korean",      "en": "Korean",       "et": "Korea",          "ru": "Корейская" },
-    { "id": "indian",      "en": "Indian",       "et": "India",          "ru": "Индийская" },
-    { "id": "chinese",     "en": "Chinese",      "et": "Hiina",          "ru": "Китайская" },
-    { "id": "azerbaijani", "en": "Azerbaijani",  "et": "Aserbaidžaani",  "ru": "Азербайджанская" },
-    { "id": "turkish",     "en": "Turkish",      "et": "Türgi",          "ru": "Турецкая" },
-    { "id": "ukrainian",   "en": "Ukrainian",    "et": "Ukraina",        "ru": "Украинская" },
-    { "id": "mexican",     "en": "Mexican",      "et": "Mehhiko",        "ru": "Мексиканская" }
+    {
+      "id": "solo",
+      "en": "Solo",
+      "et": "Üksi",
+      "ru": "В одиночку"
+    },
+    {
+      "id": "date",
+      "en": "Date night",
+      "et": "Kohting",
+      "ru": "Свидание"
+    },
+    {
+      "id": "groups",
+      "en": "Groups",
+      "et": "Seltskonnale",
+      "ru": "Компанией"
+    },
+    {
+      "id": "casual",
+      "en": "Casual",
+      "et": "Vabas vormis",
+      "ru": "Неформально"
+    },
+    {
+      "id": "fine-dining",
+      "en": "Fine dining",
+      "et": "Kõrgköök",
+      "ru": "Высокая кухня"
+    },
+    {
+      "id": "cheap-eats",
+      "en": "Cheap eats",
+      "et": "Soodne",
+      "ru": "Недорого"
+    },
+    {
+      "id": "hidden-gem",
+      "en": "Hidden gem",
+      "et": "Peidetud pärl",
+      "ru": "Находка"
+    },
+    {
+      "id": "coffee",
+      "en": "Coffee",
+      "et": "Kohv",
+      "ru": "Кофе"
+    },
+    {
+      "id": "bakery",
+      "en": "Bakery",
+      "et": "Pagariäri",
+      "ru": "Пекарня"
+    },
+    {
+      "id": "pub",
+      "en": "Pub",
+      "et": "Pubi",
+      "ru": "Паб"
+    },
+    {
+      "id": "street-food",
+      "en": "Street food",
+      "et": "Tänavatoit",
+      "ru": "Уличная еда"
+    },
+    {
+      "id": "vegan",
+      "en": "Vegan",
+      "et": "Vegan",
+      "ru": "Веганское"
+    },
+    {
+      "id": "asian",
+      "en": "Asian",
+      "et": "Aasia",
+      "ru": "Азиатская"
+    },
+    {
+      "id": "caucasian",
+      "en": "Caucasus",
+      "et": "Kaukaasia",
+      "ru": "Кавказская"
+    },
+    {
+      "id": "estonian",
+      "en": "Estonian",
+      "et": "Eesti",
+      "ru": "Эстонская"
+    },
+    {
+      "id": "chinese",
+      "en": "Chinese",
+      "et": "Hiina",
+      "ru": "Китайская"
+    },
+    {
+      "id": "turkish",
+      "en": "Turkish",
+      "et": "Türgi",
+      "ru": "Турецкая"
+    },
+    {
+      "id": "mexican",
+      "en": "Mexican",
+      "et": "Mehhiko",
+      "ru": "Мексиканская"
+    }
   ]
 }
