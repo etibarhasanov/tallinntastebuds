@@ -15,7 +15,7 @@
  *   - a taxonomy type missing a label in any language
  *   - a UI string present in one language but missing in another
  *   - a photo listed in the data that does not exist in the repo
- *   - a reel value that is not a real Instagram permalink shape
+ *   - a reel value that is not a real Instagram or TikTok permalink shape
  *
  * Warns on:
  *   - placeholder blurbs, missing reels, missing blurb translations
@@ -40,7 +40,11 @@ const MONTH = /^[0-9]{4}-(0[1-9]|1[0-2])$/;
 /* Instagram shows two shapes depending on where you copied from: the plain
    permalink, and the profile-prefixed one you get while browsing your own
    grid (…instagram.com/tallinntastebuds/reel/ABC123/). Both are real. */
-const REEL = /^https:\/\/www\.instagram\.com\/(?:[A-Za-z0-9._]{1,30}\/)?(reel|reels|p|tv)\/[A-Za-z0-9_-]{5,}\/?(\?.*)?$/;
+const REEL_INSTAGRAM = /^https:\/\/www\.instagram\.com\/(?:[A-Za-z0-9._]{1,30}\/)?(reel|reels|p|tv)\/[A-Za-z0-9_-]{5,}\/?(\?.*)?$/;
+/* TikTok posts live in the same "reel" field — renaming it would touch every
+   place in the data for no gain. */
+const REEL_TIKTOK = /^https:\/\/www\.tiktok\.com\/@[A-Za-z0-9._]{1,30}\/video\/[0-9]{6,}\/?(\?.*)?$/;
+const isReel = (u) => REEL_INSTAGRAM.test(u) || REEL_TIKTOK.test(u);
 const PHOTO_FILE = /^[A-Za-z0-9._-]+\.(webp|jpg|jpeg|png|avif)$/i;
 const HTTP_URL = /^https?:\/\/[^\s]+$/;
 
@@ -262,8 +266,8 @@ if (places !== null) {
         fail(where, '"reel" must be a string ("" when there is no reel yet)');
       } else if (place.reel === '') {
         warn(where, 'has no reel yet');
-      } else if (!REEL.test(place.reel)) {
-        fail(where, `reel "${place.reel}" is not an Instagram permalink (https://www.instagram.com/reel/SHORTCODE/)`);
+      } else if (!isReel(place.reel)) {
+        fail(where, `reel "${place.reel}" is not a video permalink — expected https://www.instagram.com/reel/SHORTCODE/ or https://www.tiktok.com/@user/video/ID`);
       }
 
       /* photos */

@@ -55,7 +55,11 @@
     "styleGreen": "Green",
     "styleBlue": "Blue",
     "styleIndigo": "Indigo (dark)",
-    "styleViolet": "Violet"
+    "styleViolet": "Violet",
+    "video": "The video",
+    "videoPlay": "Load the TikTok video",
+    "videoNote": "Loads TikTok's player. Nothing is fetched from TikTok until you press it.",
+    "videoFallback": "Trouble loading? Open it on TikTok."
   },
   "et": {
     "langName": "Eesti",
@@ -113,7 +117,11 @@
     "styleGreen": "Roheline",
     "styleBlue": "Sinine",
     "styleIndigo": "Indigo (tume)",
-    "styleViolet": "Violetne"
+    "styleViolet": "Violetne",
+    "video": "Video",
+    "videoPlay": "Lae TikToki video",
+    "videoNote": "Avab TikToki pleieri. Enne vajutamist ei laadita TikTokist midagi.",
+    "videoFallback": "Ei laadi? Ava see TikTokis."
   },
   "ru": {
     "langName": "Русский",
@@ -171,6 +179,10 @@
     "styleGreen": "Зелёный",
     "styleBlue": "Синий",
     "styleIndigo": "Индиго (тёмный)",
-    "styleViolet": "Фиолетовый"
+    "styleViolet": "Фиолетовый",
+    "video": "Видео",
+    "videoPlay": "Загрузить видео из TikTok",
+    "videoNote": "Откроет плеер TikTok. До нажатия из TikTok ничего не загружается.",
+    "videoFallback": "Не загружается? Откройте в TikTok."
   }
 }

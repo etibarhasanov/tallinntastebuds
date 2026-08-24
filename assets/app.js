@@ -781,7 +781,7 @@
       ));
     }
 
-    dom.detail.appendChild(section('reel', reelBlock(place)));
+    dom.detail.appendChild(section(reelWords(reelProvider(place.reel)).heading, reelBlock(place)));
 
     if ((place.mustOrder || []).length) {
       dom.detail.appendChild(section('mustOrder',
@@ -825,17 +825,33 @@
     ]));
   }
 
+  /* The field is called "reel" whichever platform it points at — renaming it
+     would touch every place in the data for no gain. */
+  function reelProvider(url) {
+    if (/^https:\/\/www\.tiktok\.com\//.test(url || '')) return 'tiktok';
+    if (/^https:\/\/www\.instagram\.com\//.test(url || '')) return 'instagram';
+    return null;
+  }
+
+  /* TikTok says "video", Instagram says "reel". Use each one's own word. */
+  function reelWords(provider) {
+    return provider === 'tiktok'
+      ? { heading: 'video', play: 'videoPlay', note: 'videoNote', fallback: 'videoFallback' }
+      : { heading: 'reel', play: 'reelPlay', note: 'reelNote', fallback: 'reelFallback' };
+  }
+
   function reelBlock(place) {
     if (!place.reel) {
       return el('p', { className: 'muted-note', textContent: t('reelNone') });
     }
 
+    var words = reelWords(reelProvider(place.reel));
     var slot = el('div', { className: 'reel-slot' });
     var button = el('button', { type: 'button', className: 'reel-play' }, [
       el('span', { className: 'tri', html: '<svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 .8l8.5 5.2L2 11.2z"/></svg>' }),
       el('span', {}, [
-        el('span', { className: 'lbl', textContent: t('reelPlay') }),
-        el('span', { className: 'sub', textContent: t('reelNote') })
+        el('span', { className: 'lbl', textContent: t(words.play) }),
+        el('span', { className: 'sub', textContent: t(words.note) })
       ])
     ]);
 
@@ -847,9 +863,41 @@
     return slot;
   }
 
+  function embedReel(url) {
+    return reelProvider(url) === 'tiktok' ? embedTikTok(url) : embedInstagram(url);
+  }
+
+  /* TikTok publishes a plain iframe player, so there is no script to load and
+     nothing to re-process — unlike Instagram's embed.js, which only scans for
+     blockquotes when it runs and offers no hook for ones injected later. */
+  function embedTikTok(url) {
+    var id = /\/video\/(\d{6,})/.exec(url);
+    var wrap = el('div', { className: 'reel-embed' });
+
+    if (id) {
+      wrap.appendChild(el('div', { className: 'tiktok-frame' }, [
+        el('iframe', {
+          src: 'https://www.tiktok.com/embed/v2/' + id[1],
+          title: t('video'),
+          allow: 'encrypted-media; picture-in-picture; fullscreen',
+          allowfullscreen: '',
+          loading: 'lazy',
+          referrerpolicy: 'strict-origin-when-cross-origin',
+          frameborder: '0',
+          scrolling: 'no'
+        })
+      ]));
+    }
+
+    wrap.appendChild(el('p', { className: 'reel-fallback' }, [
+      el('a', { href: url, target: '_blank', rel: 'noopener', textContent: t('videoFallback') })
+    ]));
+    return wrap;
+  }
+
   /* Instagram's embed script is only fetched once the visitor asks for it.
      Injecting it up front would drag the whole map down on mobile data. */
-  function embedReel(url) {
+  function embedInstagram(url) {
     var permalink = url.indexOf('?') === -1 ? url + '?utm_source=ig_embed' : url;
 
     var quote = el('blockquote', {

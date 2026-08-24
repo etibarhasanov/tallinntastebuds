@@ -17,7 +17,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [Run it locally](#run-it-locally)
 - [Add a place](#add-a-place)
 - [Get the coordinates](#get-the-coordinates)
-- [Copy an Instagram permalink](#copy-an-instagram-permalink)
+- [Copy a video permalink](#copy-a-video-permalink)
 - [Add photos](#add-photos)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Languages](#languages)
@@ -146,7 +146,7 @@ place moves it about a metre.
 
 ---
 
-## Copy an Instagram permalink
+## Copy a video permalink
 
 1. Open the reel on **instagram.com** in a browser (not the app).
 2. Copy the address bar, or use the ⋯ menu → **Copy link**.
@@ -160,7 +160,29 @@ https://www.instagram.com/reel/ABC123xyz/
 https://www.instagram.com/tallinntastebuds/reel/ABC123xyz/
 ```
 
-**Never invent a shortcode.** A made-up one resolves to a real stranger's post.
+### TikTok
+
+The same `reel` field takes a TikTok post. Copy the link from the post's share
+menu and strip everything after the `?`:
+
+```
+https://www.tiktok.com/@tallinntastebuds/video/7568039651458436374
+```
+
+The field is still called `reel` whichever platform it points at — renaming it
+would mean touching every place in the data for no gain. The site works out
+which platform from the URL and follows suit: the section heading reads **The
+reel** or **The video**, and the button names the right app in all three
+languages.
+
+The two players work differently under the hood. Instagram needs its
+`embed.js`, which only scans for blockquotes when it runs and gives you no hook
+to re-process ones injected later. TikTok publishes a plain iframe player, so
+there is no script at all — which makes it the simpler of the two. Both stay
+click-to-load: nothing is fetched from either company until a visitor presses
+play. Verified — zero requests to tiktok.com before the click, one after.
+
+**Never invent a shortcode.** A made-up one resolves to a real stranger's post, on either platform.
 Leave `reel` as `""` until you have the actual link; the panel simply says
 there is no reel yet.
 
@@ -266,7 +288,7 @@ the only requirement is that it serves the files over HTTP.
 - a taxonomy type missing a label in any language
 - a UI string present in one language but missing in another
 - a photo listed in the data that does not exist in the repo
-- a `reel` value that is not a real Instagram permalink shape
+- a `reel` value that is not a real Instagram or TikTok permalink shape
 - a `price` outside 1–4, a malformed `visited` month, a malformed `website`
 
 **It warns, without failing, on:**
@@ -378,6 +400,7 @@ down on short windows so it can never ride up under the brand card.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) data | — | ODbL | The map data behind the tiles. |
 | [Familjen Grotesk](https://fonts.google.com/specimen/Familjen+Grotesk), [Literata](https://fonts.google.com/specimen/Literata), [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) | — | SIL Open Font License 1.1 | Served by Google Fonts. |
 | [Instagram embed.js](https://developers.facebook.com/docs/instagram/oembed/) | — | Meta Platforms terms | Only loaded after a visitor presses play. |
+| [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Only loaded after a visitor presses play. No script involved. |
 | [Google Analytics 4](https://developers.google.com/analytics) (gtag.js) | — | Google terms | Property `G-2XNTC15F28`. Loads on every page view and sets cookies. |
 
 **The attribution control in the bottom-right corner is a licence condition of

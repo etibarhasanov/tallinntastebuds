@@ -4,7 +4,9 @@
   "title": "Tallinn Tastebuds — restaurants",
   "description": "The full contents of data/restaurants.json. One object per approved place. There are deliberately no score, rating or ranking fields: inclusion is the verdict.",
   "type": "array",
-  "items": { "$ref": "#/$defs/restaurant" },
+  "items": {
+    "$ref": "#/$defs/restaurant"
+  },
   "$defs": {
     "restaurant": {
       "type": "object",
@@ -63,7 +65,10 @@
         "types": {
           "type": "array",
           "description": "Type ids that must exist in data/taxonomy.json. Never free text.",
-          "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
           "uniqueItems": true
         },
         "blurb": {
@@ -73,17 +78,23 @@
         "mustOrder": {
           "type": "array",
           "description": "Dish names exactly as the menu prints them. Not translated.",
-          "items": { "type": "string", "minLength": 1 }
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "reel": {
           "type": "string",
-          "description": "Full Instagram permalink to the reel, or an empty string if there is not one yet. Never invent a shortcode.",
-          "pattern": "^$|^https://www\\.instagram\\.com/(?:[A-Za-z0-9._]{1,30}/)?(reel|reels|p|tv)/[A-Za-z0-9_-]{5,}/?(\\?.*)?$"
+          "description": "Full permalink to the video, Instagram or TikTok, or an empty string if there is not one yet. Never invent a shortcode or an id.",
+          "pattern": "^$|^https://www\\.instagram\\.com/(?:[A-Za-z0-9._]{1,30}/)?(reel|reels|p|tv)/[A-Za-z0-9_-]{5,}/?(\\?.*)?$|^https://www\\.tiktok\\.com/@[A-Za-z0-9._]{1,30}/video/[0-9]{6,}/?(\\?.*)?$"
         },
         "photos": {
           "type": "array",
           "description": "Filenames inside photos/<id>/. Just the filename, no path.",
-          "items": { "type": "string", "pattern": "^[A-Za-z0-9._-]+\\.(webp|jpg|jpeg|png|avif)$" },
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._-]+\\.(webp|jpg|jpeg|png|avif)$"
+          },
           "uniqueItems": true
         },
         "website": {
@@ -106,14 +117,32 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "en": { "type": "string" },
-        "et": { "type": "string" },
-        "ru": { "type": "string" }
+        "en": {
+          "type": "string"
+        },
+        "et": {
+          "type": "string"
+        },
+        "ru": {
+          "type": "string"
+        }
       },
       "anyOf": [
-        { "required": ["en"] },
-        { "required": ["et"] },
-        { "required": ["ru"] }
+        {
+          "required": [
+            "en"
+          ]
+        },
+        {
+          "required": [
+            "et"
+          ]
+        },
+        {
+          "required": [
+            "ru"
+          ]
+        }
       ]
     }
   }
