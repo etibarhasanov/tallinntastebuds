@@ -1100,6 +1100,31 @@
     "closed": false
   },
   {
+    "id": "nullijook",
+    "name": "Nullijook",
+    "address": "Ankru, 11713 Tallinn",
+    "lat": 59.4551178,
+    "lng": 24.6756483,
+    "price": 2,
+    "types": [
+      "casual"
+    ],
+    "blurb": {
+      "en": "An alcohol free bottle shop with a serious list. Amazing kombucha, Proxy drinks and de-alcoholised wines, so nobody at the table has to settle for water.",
+      "et": "Alkoholivaba pudelipood tõsise valikuga. Suurepärane kombucha, Proxy joogid ja alkoholivabad veinid, nii et keegi lauas ei pea vee peale jääma.",
+      "az": "Ciddi seçimi olan alkoqolsuz içki mağazası. Möhtəşəm kombuça, Proxy içkiləri və alkoqolsuzlaşdırılmış şərablar, beləcə süfrədə heç kim su ilə kifayətlənmir.",
+      "ru": "Магазин безалкогольных напитков с серьёзной подборкой. Отличная комбуча, напитки Proxy и вина без алкоголя, так что никому за столом не придётся довольствоваться водой."
+    },
+    "mustOrder": [
+      "Kombucha",
+      "Proxy drinks"
+    ],
+    "reel": "",
+    "photos": [],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "paper-mill-coffee",
     "name": "Paper Mill Coffee",
     "address": "Masina 20, 10144 Tallinn",
