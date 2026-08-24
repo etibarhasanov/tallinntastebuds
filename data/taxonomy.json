@@ -1,13 +1,6 @@
 {
   "types": [
     {
-      "id": "solo",
-      "en": "Solo",
-      "et": "Üksi",
-      "az": "Tək",
-      "ru": "В одиночку"
-    },
-    {
       "id": "date",
       "en": "Date night",
       "et": "Kohting",
@@ -23,7 +16,7 @@
     },
     {
       "id": "casual",
-      "en": "Casual",
+      "en": "Casual/Solo",
       "et": "Vabas vormis",
       "az": "Rahat",
       "ru": "Неформально"
@@ -51,10 +44,10 @@
     },
     {
       "id": "coffee",
-      "en": "Coffee",
-      "et": "Kohv",
-      "az": "Qəhvə",
-      "ru": "Кофе"
+      "en": "Coffee/tea",
+      "et": "Kohv/tee",
+      "az": "Kofe/çay",
+      "ru": "Кофе/чай"
     },
     {
       "id": "bakery",
