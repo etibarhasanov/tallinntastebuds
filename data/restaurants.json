@@ -118,10 +118,10 @@
       "coffee"
     ],
     "blurb": {
-      "en": "The OG bakery, supplying bread and kringels to half the places in town — the salted caramel one is ridiculous. The room itself has hidden corners, and it only gets cosier as the weather turns.",
-      "et": "Algne pagariäri, mis varustab leiva ja kringlitega pool linna — soolakaramelliga on lausa naeruväärselt hea. Majas endas on peidetud nurgakesi ja külmemal ajal muutub see ainult hubasemaks.",
-      "az": "Şəhərin yarısını çörək və kringellə təmin edən əsl pagariäri — duzlu karamelli olanı ağlasığmazdır. Məkanın özündə gizli guşələr var və hava soyuduqca daha da rahat olur.",
-      "ru": "Та самая пекарня, снабжающая хлебом и крингелями половину города — с солёной карамелью просто безумие. В самом зале есть укромные уголки, и чем холоднее на улице, тем там уютнее."
+      "en": "The OG bakery, supplying bread and kringels to half the places in town. The salted caramel one is ridiculous. The room itself has hidden corners, and it only gets cosier as the weather turns.",
+      "et": "Algne pagariäri, mis varustab leiva ja kringlitega pool linna. Soolakaramelliga on lausa naeruväärselt hea. Majas endas on peidetud nurgakesi ja külmemal ajal muutub see ainult hubasemaks.",
+      "az": "Şəhərin yarısını çörək və kringellə təmin edən əsl pagariäri. Duzlu karamelli olanı ağlasığmazdır. Məkanın özündə gizli guşələr var və hava soyuduqca daha da rahat olur.",
+      "ru": "Та самая пекарня, снабжающая хлебом и крингелями половину города. С солёной карамелью просто безумие. В самом зале есть укромные уголки, и чем холоднее на улице, тем там уютнее."
     },
     "mustOrder": [
       "Salted caramel kringel"
@@ -385,10 +385,10 @@
       "hidden-gem"
     ],
     "blurb": {
-      "en": "The first bakery from the team behind La Boulangerie, and it has been feeding Mustamäe for years. A small, tucked-away neighbourhood place — bring the map.",
-      "et": "Esimene pagariäri La Boulangerie tiimilt ja on Mustamäed juba aastaid toitnud. Väike peidus naabruskonna koht — võta kaart kaasa.",
-      "az": "La Boulangerie-nin arxasında dayanan komandanın ilk çörəkxanası; illərdir Mustamäeni yedizdirir. Balaca, gözdən uzaq məhəllə məkanı — xəritəni yanında saxla.",
-      "ru": "Первая пекарня команды, которая потом открыла La Boulangerie, и она кормит Мустамяэ уже много лет. Маленькое, спрятанное районное место — без карты не найти."
+      "en": "The first bakery from the team behind La Boulangerie, and it has been feeding Mustamäe for years. A small, tucked-away neighbourhood place, so bring the map.",
+      "et": "Esimene pagariäri La Boulangerie tiimilt ja on Mustamäed juba aastaid toitnud. Väike peidus naabruskonna koht, nii et võta kaart kaasa.",
+      "az": "La Boulangerie-nin arxasında dayanan komandanın ilk çörəkxanası; illərdir Mustamäeni yedizdirir. Balaca, gözdən uzaq məhəllə məkanıdır, ona görə xəritəni yanında saxla.",
+      "ru": "Первая пекарня команды, которая потом открыла La Boulangerie, и она кормит Мустамяэ уже много лет. Маленькое, спрятанное районное место, без карты не найти."
     },
     "mustOrder": [],
     "reel": "",
@@ -520,8 +520,8 @@
     "blurb": {
       "en": "Fine dining where everything comes from local producers, with their own beehives and their own fermentation. The green Michelin star is no joke, and the view from the top is worth the trip on its own.",
       "et": "Kõrgköök, kus kõik tuleb kohalikelt tootjatelt, oma mesitarude ja oma fermentatsiooniga. Roheline Michelini täht ei ole nali ja vaade ülevalt on juba omaette põhjus tulla.",
-      "az": "Hər şeyin yerli istehsalçılardan gəldiyi yüksək mətbəx — öz pətəkləri və öz fermentasiyaları var. Yaşıl Michelin ulduzu zarafat deyil, yuxarıdan görünən mənzərə isə tək başına gəlməyə dəyər.",
-      "ru": "Высокая кухня, где всё от местных производителей, со своими ульями и собственной ферментацией. Зелёная звезда Michelin — это не шутка, а вид сверху сам по себе стоит поездки."
+      "az": "Hər şeyin yerli istehsalçılardan gəldiyi yüksək mətbəx. Öz pətəkləri və öz fermentasiyaları var. Yaşıl Michelin ulduzu zarafat deyil, yuxarıdan görünən mənzərə isə tək başına gəlməyə dəyər.",
+      "ru": "Высокая кухня, где всё от местных производителей, со своими ульями и собственной ферментацией. Зелёная звезда Michelin получена заслуженно, а вид сверху сам по себе стоит поездки."
     },
     "mustOrder": [],
     "reel": "",
@@ -652,10 +652,10 @@
       "groups"
     ],
     "blurb": {
-      "en": "Very good beers from Humalakoda, and the kitchen holds up too — the chicken strips and the fish and chips are both worth ordering.",
-      "et": "Väga head Humalakoja õlled ja köök peab sammu — nii kanaribad kui ka fish and chips tasuvad tellimist.",
-      "az": "Humalakoda-dan çox yaxşı pivələr, mətbəx də geri qalmır — toyuq zolaqları da, fish and chips də sifariş etməyə dəyər.",
-      "ru": "Очень хорошее пиво от Humalakoda, и кухня не отстаёт — куриные стрипсы и fish and chips оба стоят заказа."
+      "en": "Very good beers from Humalakoda, and the kitchen holds up too. The chicken strips and the fish and chips are both worth ordering.",
+      "et": "Väga head Humalakoja õlled ja köök peab sammu. Nii kanaribad kui ka fish and chips tasuvad tellimist.",
+      "az": "Humalakoda-dan çox yaxşı pivələr, mətbəx də geri qalmır. Toyuq zolaqları da, fish and chips də sifariş etməyə dəyər.",
+      "ru": "Очень хорошее пиво от Humalakoda, и кухня не отстаёт. Куриные стрипсы и fish and chips оба стоят заказа."
     },
     "mustOrder": [
       "Chicken strips",
@@ -719,6 +719,30 @@
     "photos": [],
     "website": "",
     "visited": "2025-09",
+    "closed": false
+  },
+  {
+    "id": "klorofull",
+    "name": "Klorofüll",
+    "address": "Pärnu mnt 154, ruum 208, 11317 Tallinn",
+    "lat": 59.4082133,
+    "lng": 24.7341188,
+    "price": 2,
+    "types": [
+      "vegan",
+      "hidden-gem",
+      "casual"
+    ],
+    "blurb": {
+      "en": "A hidden gem on the second floor of the ARS art factory. Everything is made fresh and plant-based from local shops, and the menu changes weekly or more often than that. Go for lunch.",
+      "et": "Peidetud pärl ARS kunstilinnaku teisel korrusel. Kõik tehakse värskelt ja taimselt, kraam tuleb kohalikest poodidest ning menüü vahetub kord nädalas või tihedaminigi. Mine lõunale.",
+      "az": "ARS sənət şəhərciyinin ikinci mərtəbəsində gizli inci. Hər şey təzə və bitki əsaslı hazırlanır, məhsullar yerli mağazalardan gəlir, menyu isə həftədə bir, bəzən daha tez-tez dəyişir. Nahara get.",
+      "ru": "Спрятанная жемчужина на втором этаже арт-квартала ARS. Всё готовят свежим и растительным, продукты из местных магазинов, а меню меняется раз в неделю или чаще. Идите на обед."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
     "closed": false
   },
   {
@@ -816,10 +840,10 @@
       "coffee"
     ],
     "blurb": {
-      "en": "A vegan place with very good kringels. There is nothing to fault here — hugely popular, and deservedly so.",
-      "et": "Vegan koht väga heade kringlitega. Pole millegi üle nuriseda — ülipopulaarne ja seda põhjusega.",
-      "az": "Çox yaxşı kringellər olan vegan məkan. İrad tutmağa bir şey yoxdur — çox populyardır və səbəbsiz deyil.",
-      "ru": "Веганское место с очень хорошими крингелями. Придраться не к чему — очень популярно, и заслуженно."
+      "en": "A vegan place with very good kringels. There is nothing to fault here. Hugely popular, and deservedly so.",
+      "et": "Vegan koht väga heade kringlitega. Pole millegi üle nuriseda. Ülipopulaarne ja seda põhjusega.",
+      "az": "Çox yaxşı kringellər olan vegan məkan. İrad tutmağa bir şey yoxdur. Çox populyardır və səbəbsiz deyil.",
+      "ru": "Веганское место с очень хорошими крингелями. Придраться не к чему. Очень популярно, и заслуженно."
     },
     "mustOrder": [],
     "reel": "",
@@ -949,10 +973,10 @@
       "casual"
     ],
     "blurb": {
-      "en": "A bakery in Kadriorg where the sweet and the savoury are equally good. I usually run past this place — the smell is what made me stop.",
-      "et": "Pagariäri Kadriorus, kus magus ja soolane on ühtviisi head. Tavaliselt jooksen sellest kohast mööda — peatuma pani mind lõhn.",
-      "az": "Kadriorqda çörəkxana — şirini də, duzlusu da eyni dərəcədə yaxşıdır. Adətən buranın yanından qaçaraq keçirəm; dayandıran isə ətri oldu.",
-      "ru": "Пекарня в Кадриорге, где сладкое и солёное одинаково хороши. Обычно я пробегаю мимо — остановил меня запах."
+      "en": "A bakery in Kadriorg where the sweet and the savoury are equally good. I usually run past this place, and the smell is what made me stop.",
+      "et": "Pagariäri Kadriorus, kus magus ja soolane on ühtviisi head. Tavaliselt jooksen sellest kohast mööda, peatuma pani mind lõhn.",
+      "az": "Kadriorqda çörəkxana; şirini də, duzlusu da eyni dərəcədə yaxşıdır. Adətən buranın yanından qaçaraq keçirəm; dayandıran isə ətri oldu.",
+      "ru": "Пекарня в Кадриорге, где сладкое и солёное одинаково хороши. Обычно я пробегаю мимо, но остановил меня запах."
     },
     "mustOrder": [],
     "reel": "https://www.instagram.com/p/DcVXcSQoeAP/",
@@ -988,6 +1012,30 @@
     "photos": [],
     "website": "",
     "visited": "2025-06",
+    "closed": false
+  },
+  {
+    "id": "mikkeller-old-town",
+    "name": "Mikkeller Tallinn Old Town",
+    "address": "Kullassepa 4, 10146 Tallinn",
+    "lat": 59.4365201,
+    "lng": 24.7444086,
+    "price": 2,
+    "types": [
+      "pub",
+      "casual",
+      "groups"
+    ],
+    "blurb": {
+      "en": "Mikkeller is one of the biggest names in craft beer, and this one pairs it with real food. The kitchen is run by Viljandi Burger, which makes it a very good combination.",
+      "et": "Mikkeller on käsitööõlle üks suurimaid nimesid ja siin käib selle juurde ka päris toit. Kööki peab Viljandi Burger, mis teeb sellest väga hea kombinatsiooni.",
+      "az": "Mikkeller kraft pivənin ən böyük adlarından biridir və burada onun yanına əsl yemək də gəlir. Mətbəxi Viljandi Burger idarə edir, bu da çox yaxşı bir birləşmədir.",
+      "ru": "Mikkeller одно из крупнейших имён в крафтовом пиве, и здесь к нему прилагается настоящая еда. Кухней заведует Viljandi Burger, и получается очень удачное сочетание."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
     "closed": false
   },
   {
@@ -1058,8 +1106,8 @@
     "blurb": {
       "en": "Three different ways of pouring Pilsner Urquell, which is the whole reason to come. Proper Czech beer, and a nice garden to drink it in.",
       "et": "Pilsner Urquelli valatakse kolmel eri moel ja just selle pärast siia tullaksegi. Korralik Tšehhi õlu ja mõnus aed, kus seda juua.",
-      "az": "Pilsner Urquell üç fərqli üsulla süzülür — bura gəlməyin əsas səbəbi elə budur. Əsl Çex pivəsi və onu içmək üçün gözəl bağça.",
-      "ru": "Pilsner Urquell наливают тремя разными способами — ради этого сюда и идут. Настоящее чешское пиво и приятный сад, где его пить."
+      "az": "Pilsner Urquell üç fərqli üsulla süzülür və bura gəlməyin əsas səbəbi elə budur. Əsl Çex pivəsi və onu içmək üçün gözəl bağça.",
+      "ru": "Pilsner Urquell наливают тремя разными способами, ради этого сюда и идут. Настоящее чешское пиво и приятный сад, где его пить."
     },
     "mustOrder": [],
     "reel": "",
@@ -1185,8 +1233,31 @@
     "blurb": {
       "en": "Põhjala's own bar in Telliskivi, pouring their beers next to plenty of other craft. Take the balcony if it is free.",
       "et": "Põhjala oma baar Telliskivil, kus nende õllede kõrval on ka palju muud käsitööõlut. Kui rõdu on vaba, istu sinna.",
-      "az": "Põhjala-nın Telliskivideki öz barı — öz pivələri ilə yanaşı çoxlu başqa kraft pivə də var. Balkon boşdursa, orada otur.",
-      "ru": "Собственный бар Põhjala в Telliskivi: их пиво плюс много другого крафта. Если балкон свободен — садитесь там."
+      "az": "Põhjala-nın Telliskivideki öz barı. Öz pivələri ilə yanaşı çoxlu başqa kraft pivə də var. Balkon boşdursa, orada otur.",
+      "ru": "Собственный бар Põhjala в Telliskivi: их пиво плюс много другого крафта. Если балкон свободен, садитесь там."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
+    "closed": false
+  },
+  {
+    "id": "puhaste-taproom",
+    "name": "Pühaste Taproom",
+    "address": "Rotermanni 2, 10111 Tallinn",
+    "lat": 59.4386681,
+    "lng": 24.758085,
+    "price": 2,
+    "types": [
+      "pub",
+      "casual"
+    ],
+    "blurb": {
+      "en": "A Tartu craft brewery with a taproom on a busy Rotermann street. Their double IPAs are the reason to come, and the Silver collection is worth a look too.",
+      "et": "Tartu käsitööpruulikoja taproom Rotermanni käidaval tänaval. Nende double IPA-d on põhjus kohale tulla ja Silveri sari väärib samuti proovimist.",
+      "az": "Tartu kraft zavodunun Rotermannideki hərəkətli küçədə yerləşən taproom-u. Onların double IPA-ları gəlməyin əsas səbəbidir, Silver seriyası da baxmağa dəyər.",
+      "ru": "Тартуская крафтовая пивоварня с тэпрумом на оживлённой улице в Ротерманни. Их double IPA главная причина зайти, а коллекция Silver тоже стоит внимания."
     },
     "mustOrder": [],
     "reel": "",
@@ -1304,6 +1375,30 @@
     "closed": false
   },
   {
+    "id": "the-brick-coffee",
+    "name": "The Brick Coffee Roastery",
+    "address": "Telliskivi 60M, 10412 Tallinn",
+    "lat": 59.440262,
+    "lng": 24.7332009,
+    "price": 2,
+    "types": [
+      "coffee",
+      "date",
+      "casual"
+    ],
+    "blurb": {
+      "en": "A coffee roastery with genuinely good food and a great feel to the room. One of the better places in town to take a date.",
+      "et": "Kohviröstikoda, kus on tõeliselt hea toit ja ruumil mõnus tunnetus. Üks paremaid kohti linnas, kuhu kohtingule minna.",
+      "az": "Həqiqətən yaxşı yeməyi və gözəl havası olan qəhvə qovurma evi. Şəhərdə görüşə getmək üçün ən yaxşı yerlərdən biridir.",
+      "ru": "Обжарочная кофейня с по-настоящему хорошей едой и приятной атмосферой. Одно из лучших мест в городе для свидания."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "tuletorn",
     "name": "Tuletorn",
     "address": "Ankru 10, 11713 Tallinn",
@@ -1351,6 +1446,29 @@
     "photos": [],
     "website": "",
     "visited": "2025-02",
+    "closed": false
+  },
+  {
+    "id": "vaat-brewery",
+    "name": "Vaat Brewery and Taproom",
+    "address": "Paljassaare tee 18, Tallinn",
+    "lat": 59.4602996,
+    "lng": 24.707586,
+    "price": 2,
+    "types": [
+      "pub",
+      "hidden-gem"
+    ],
+    "blurb": {
+      "en": "A craft brewery and taproom well out of the centre, and properly hidden at the moment. Reachable by bus or by bike, and worth the trip.",
+      "et": "Käsitööpruulikoda ja taproom kesklinnast korralikult eemal, praegu päris hästi peidus. Bussi või rattaga saab kohale ja see tasub sõitu.",
+      "az": "Mərkəzdən xeyli uzaqda, hazırda əməlli-başlı gizlənmiş kraft zavodu və taproom. Avtobus və ya velosipedlə çatmaq olar, yolun da dəyəri var.",
+      "ru": "Крафтовая пивоварня с тэпрумом далеко от центра, сейчас как следует спрятанная. Добраться можно на автобусе или на велосипеде, и оно того стоит."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
     "closed": false
   },
   {

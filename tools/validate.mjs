@@ -254,6 +254,13 @@ if (places !== null) {
             warn(where, `blurb (${lang}) is still a placeholder`);
           }
         }
+        /* House style: no em or en dashes in the prose. They kept creeping in
+           and had to be swept out by hand once already. */
+        for (const lang of written) {
+          if (/[\u2014\u2013]/.test(place.blurb[lang])) {
+            warn(where, `blurb (${lang}) contains an em or en dash`);
+          }
+        }
       }
 
       /* mustOrder */
