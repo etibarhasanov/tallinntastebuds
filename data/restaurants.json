@@ -318,16 +318,17 @@
   },
   {
     "id": "elman-bites",
-    "name": "Elman Bites",
-    "address": "Telliskivi 60a, 10412 Tallinn",
-    "lat": 59.43971,
-    "lng": 24.72921,
+    "name": "Elmans Bites",
+    "address": "Kopli, 10412 Tallinn",
+    "lat": 59.441622,
+    "lng": 24.7374496,
     "price": 2,
     "types": [
+      "street-food",
       "casual"
     ],
     "blurb": {
-      "en": "TODO — your words here.",
+      "en": "TODO — your words here. BBQ counter by Balti jaam, on the Kopli side.",
       "et": "",
       "ru": ""
     },
@@ -501,8 +502,8 @@
     "id": "karu-talu-sokolaad",
     "name": "Karu Talu Šokolaad",
     "address": "Voorimehe 4, 10123 Tallinn",
-    "lat": 59.43742,
-    "lng": 24.74362,
+    "lat": 59.4376459,
+    "lng": 24.743759,
     "price": 2,
     "types": [
       "bakery",
@@ -951,8 +952,8 @@
     "id": "tuletorn",
     "name": "Tuletorn",
     "address": "Ankru 10, 11713 Tallinn",
-    "lat": 59.45505,
-    "lng": 24.676,
+    "lat": 59.4561323,
+    "lng": 24.6749319,
     "price": 2,
     "types": [
       "beer",
