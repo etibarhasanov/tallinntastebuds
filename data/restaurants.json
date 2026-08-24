@@ -219,7 +219,6 @@
     "lng": 24.7368718,
     "price": 2,
     "types": [
-      "street-food",
       "casual",
       "vegan"
     ],
@@ -447,7 +446,6 @@
     "lng": 24.7374496,
     "price": 2,
     "types": [
-      "street-food",
       "casual"
     ],
     "blurb": {
@@ -822,7 +820,6 @@
     "lng": 24.7276,
     "price": 1,
     "types": [
-      "street-food",
       "casual",
       "cheap-eats"
     ],
@@ -1107,6 +1104,7 @@
     "lng": 24.6756483,
     "price": 2,
     "types": [
+      "coffee",
       "casual"
     ],
     "blurb": {
