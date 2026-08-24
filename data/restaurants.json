@@ -13,7 +13,7 @@
     "blurb": {
       "en": "The only two Michelin star restaurant in the Baltics. A really nice experimental place on the Noblessner waterfront, where the tasting menu is built to surprise you course after course.",
       "et": "Ainus kahe Michelini tärniga restoran Baltikumis. Väga vahva eksperimentaalne koht Noblessneri rannapromenaadil, kus degustatsioonimenüü üllatab sind käigu haaval.",
-      "az": "Baltikyanı ölkələrdə yeganə iki Michelin ulduzlu restoran. Noblessner sahilində həqiqətən gözəl eksperimental yer — dequstasiya menyusu elə qurulub ki, hər yeni yeməklə səni təəccübləndirsin.",
+      "az": "Baltikyanı ölkələrdə yeganə iki Michelin ulduzlu restoran. Noblessner sahilində həqiqətən gözəl eksperimental yer. Dequstasiya menyusu elə qurulub ki, hər yeni yeməklə səni təəccübləndirsin.",
       "ru": "Единственный ресторан с двумя звёздами Мишлен в Балтии. Очень крутое экспериментальное место на набережной Ноблесснера, где дегустационное меню удивляет блюдо за блюдом."
     },
     "mustOrder": [
@@ -119,13 +119,13 @@
     "types": [
       "bakery",
       "coffee",
-      "solo"
+      "casual"
     ],
     "blurb": {
-      "en": "A bakehouse in the Old Town that lives for cookies. Thick, soft in the middle, and worth the walk. The pistachio one is the favourite",
-      "et": "Vanalinna pagariäri, mis elab küpsiste nimel. Paksud, seest pehmed ja jalutuskäiku väärt. Lemmik on pistaatsiaküpsis",
+      "en": "A bakehouse in the Old Town that lives for cookies. Thick, soft in the middle, and worth the walk. The pistachio one is the favourite.",
+      "et": "Vanalinna pagariäri, mis elab küpsiste nimel. Paksud, seest pehmed ja jalutuskäiku väärt. Lemmik on pistaatsiaküpsis.",
       "az": "Köhnə şəhərdə peçenye üçün yaşayan çörəkxana. Qalın, ortası yumşaq və ora qədər yeriməyə dəyər. Ən sevimlisi püstəli olanıdır.",
-      "ru": "Пекарня в Старом городе, которая живёт ради печенья. Толстое, мягкое внутри и стоит того, чтобы дойти. Любимое, фисташковое"
+      "ru": "Пекарня в Старом городе, которая живёт ради печенья. Толстое, мягкое внутри и стоит того, чтобы дойти. Любимое, фисташковое."
     },
     "mustOrder": [
       "Pistachio cookie",
@@ -176,8 +176,7 @@
     "types": [
       "street-food",
       "casual",
-      "vegan",
-      "solo"
+      "vegan"
     ],
     "blurb": {
       "en": "Once just a small burger window next to the old Põhjala Speakeasy, it has kept its street-food soul while the menu got bolder. Prices stay wallet-friendly and the vibe is relaxed: vegan-friendly, dog-friendly, people-friendly.",
@@ -205,7 +204,7 @@
     "price": 1,
     "types": [
       "coffee",
-      "solo",
+      "casual",
       "hidden-gem"
     ],
     "blurb": {
@@ -286,7 +285,7 @@
     "price": 2,
     "types": [
       "bakery",
-      "solo"
+      "casual"
     ],
     "blurb": {
       "en": "Award-winning chocolates made right here, with a small chocolate museum on Suur-Karja. There is a second spot in Telliskivi if the Old Town one is packed. A really cool place either way.",
@@ -477,7 +476,7 @@
     "types": [
       "asian",
       "hidden-gem",
-      "solo"
+      "casual"
     ],
     "blurb": {
       "en": "A Korean restaurant that's been here a long time, known for its flavours, peppery spices and warm atmosphere. A little hidden gem for anyone craving authentic Korean food in the city.",
@@ -561,7 +560,7 @@
     "types": [
       "bakery",
       "vegan",
-      "solo"
+      "casual"
     ],
     "blurb": {
       "en": "A family-size cookie in the Old Town. They only prepare 300 every working day.",
@@ -587,7 +586,7 @@
     "price": 2,
     "types": [
       "pub",
-      "solo"
+      "casual"
     ],
     "blurb": {
       "en": "A small beer bar hidden on Lai 8 with more than 800 kinds of beer from all over the world. Start light, work up through the IPAs, finish on something dark. Ask the bartender. They know a lot and will help you choose.",
@@ -614,7 +613,7 @@
     "price": 2,
     "types": [
       "coffee",
-      "solo"
+      "casual"
     ],
     "blurb": {
       "en": "Another definition for hyggelig. Super cozy vibes.",
@@ -670,7 +669,7 @@
     "types": [
       "bakery",
       "coffee",
-      "solo"
+      "casual"
     ],
     "blurb": {
       "en": "French bakery near the port.",
@@ -702,7 +701,7 @@
     "blurb": {
       "en": "Foosball, sandwiches, drinks and a sauna, all in one place. Very diverse, very different from anything else you'll see in town. Finding it without Google Maps is a challenge. Sadly closed now, but the video stays up.",
       "et": "Lauajalgpall, võileivad, joogid ja saun, kõik ühes kohas. Väga mitmekesine ja täiesti erinev kõigest muust, mida linnas näed. Ilma Google Mapsita on seda raske leida. Kahjuks nüüdseks suletud, aga video jääb üles.",
-      "az": "Stolüstü futbol, sendviçlər, içkilər və sauna — hamısı bir yerdə. Çox rəngarəng, şəhərdə görəcəyin hər şeydən fərqli. Google Maps olmadan tapmaq çətindir. Təəssüf ki, indi bağlanıb, amma video yerində qalır.",
+      "az": "Stolüstü futbol, sendviçlər, içkilər və sauna, hamısı bir yerdə. Çox rəngarəng, şəhərdə görəcəyin hər şeydən fərqli. Google Maps olmadan tapmaq çətindir. Təəssüf ki, indi bağlanıb, amma video yerində qalır.",
       "ru": "Настольный футбол, сэндвичи, напитки и сауна, всё в одном месте. Очень разнообразно и совсем не похоже на остальное в городе. Найти его без Google Maps непросто. К сожалению, сейчас закрыто, но видео остаётся."
     },
     "mustOrder": [
@@ -769,7 +768,7 @@
     "visited": "2025-05",
     "closed": false
   },
-  {
+    {
     "id": "magussoolane",
     "name": "Magussoolane",
     "address": "F. R. Faehlmanni tn 3, 10125 Tallinn",
@@ -779,7 +778,7 @@
     "types": [
       "bakery",
       "coffee",
-      "solo"
+      "casual"
     ],
     "blurb": {
       "en": "A bakery in Kadriorg where the sweet and the savoury are equally good. I usually run past this place — the smell is what made me stop.",
@@ -804,7 +803,7 @@
     "types": [
       "bakery",
       "coffee",
-      "solo"
+      "casual"
     ],
     "blurb": {
       "en": "A must-go bakery in the Old Town, best in the morning when everything is freshest. Known for high-quality croissants and desserts. Prices are reasonable for the quality, though tap water isn't offered and it can feel too quiet during off-hours.",
@@ -859,7 +858,7 @@
     "price": 2,
     "types": [
       "coffee",
-      "solo"
+      "casual"
     ],
     "blurb": {
       "en": "Built in 1912 as the fire station for a massive Tallinn paper mill. Today it's a top 30 coffee shop in Europe.",
@@ -892,7 +891,7 @@
     "blurb": {
       "en": "Georgian food, big on flavour and generous in size. Portions are large and prices very reasonable, perfect for sharing with friends, and the food looks as photogenic as it tastes.",
       "et": "Gruusia toit, palju maitset ja heldelt suured portsjonid. Hinnad on väga mõistlikud, ideaalne sõpradega jagamiseks, ja toit näeb sama hea välja kui maitseb.",
-      "az": "Dadı güclü, porsiyası bol gürcü yeməkləri. Porsiyalar böyük, qiymətlər çox münasibdir — dostlarla bölüşmək üçün mükəmməldir, üstəlik yeməklər dadı qədər də fotogenik görünür.",
+      "az": "Dadı güclü, porsiyası bol gürcü yeməkləri. Porsiyalar böyük, qiymətlər çox münasibdir, dostlarla bölüşmək üçün mükəmməldir, üstəlik yeməklər dadı qədər də fotogenik görünür.",
       "ru": "Грузинская еда, много вкуса и щедрые размеры. Порции большие, цены очень разумные, идеально делиться с друзьями, и еда выглядит так же хорошо, как и на вкус."
     },
     "mustOrder": [
@@ -916,7 +915,7 @@
     "types": [
       "bakery",
       "coffee",
-      "solo"
+      "casual"
     ],
     "blurb": {
       "en": "Handmade sourdough buns baked by a mother and daughter in the heart of the Old Town. The place feels like a living room, and you might catch a fresh batch coming out of the oven.",
@@ -969,7 +968,7 @@
     "price": 2,
     "types": [
       "asian",
-      "solo"
+      "casual"
     ],
     "blurb": {
       "en": "My go-to meal has always been soup, and this has been the neighbourhood spot. Service and price are excellent; the taste is solid rather than spectacular.",
@@ -1027,10 +1026,10 @@
       "casual"
     ],
     "blurb": {
-      "en": "From signature dishes to new items, we tried it all. Worth every penny.",
-      "et": "Alates firmaroogadest kuni uute asjadeni proovisime kõike. Iga sent on seda väärt.",
-      "az": "İmza yeməklərindən yeni əlavələrə qədər hamısını sınadıq. Hər qəpiyinə dəyər.",
-      "ru": "От фирменных блюд до новинок, мы попробовали всё. Каждый цент того стоит."
+      "en": "A Turkish kebab counter out in Linnamäe. From signature dishes to new items, we tried it all. Worth every penny.",
+      "et": "Türgi kebabilett Linnamäel. Alates firmaroogadest kuni uute asjadeni proovisime kõike. Iga sent on seda väärt.",
+      "az": "Linnamäedə türk kebab piştaxtası. İmza yeməklərindən yeni əlavələrə qədər hamısını sınadıq. Hər qəpiyinə dəyər.",
+      "ru": "Турецкая кебабная в Линнамяэ. От фирменных блюд до новинок, мы попробовали всё. Каждый цент того стоит."
     },
     "mustOrder": [
       "Shaurma",
@@ -1057,7 +1056,7 @@
     "blurb": {
       "en": "If you want to try some decent craft beers. DDH, double IPA, smoothie beers, everything all at once.",
       "et": "Kui tahad proovida korralikke käsitööõllesid. DDH, topelt-IPA, smuutiõlled, kõik korraga.",
-      "az": "Yaxşı kraft pivələr sınamaq istəyirsənsə. DDH, double IPA, smoothie pivələr — hamısı bir yerdə.",
+      "az": "Yaxşı kraft pivələr sınamaq istəyirsənsə. DDH, double IPA, smoothie pivələr, hamısı bir yerdə.",
       "ru": "Если хотите попробовать достойное крафтовое пиво. DDH, двойной IPA, смузи-пиво, всё сразу."
     },
     "mustOrder": [],
