@@ -220,6 +220,28 @@
     "closed": false
   },
   {
+    "id": "buxhowden-pagar",
+    "name": "Buxhöwden pagar",
+    "address": "Ranna tee 5/2, Miiduranna, Viimsi",
+    "lat": 59.4955512,
+    "lng": 24.8269404,
+    "price": 1,
+    "types": [
+      "bakery"
+    ],
+    "blurb": {
+      "en": "A really cool bakery out on the way to Viimsi. The savouries are filling and delicious.",
+      "et": "Väga lahe pagariäri Viimsi poole minnes. Soolased küpsetised on täidlased ja maitsvad.",
+      "az": "Viimsi yolunun üstündə çox gözəl bir çörəkxana. Duzlu bişmişlər həm doyurucu, həm dadlıdır.",
+      "ru": "Отличная пекарня по дороге в Виймси. Солёная выпечка сытная и вкусная."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "cafe-cape-town",
     "name": "Cafe Cape Town",
     "address": "Kopli 1, 10412 Tallinn",
@@ -437,6 +459,29 @@
     "closed": false
   },
   {
+    "id": "fotografiska",
+    "name": "Fotografiska",
+    "address": "Telliskivi 60a-8, 10412 Tallinn",
+    "lat": 59.4383561,
+    "lng": 24.7284409,
+    "price": 3,
+    "types": [
+      "fine-dining",
+      "date"
+    ],
+    "blurb": {
+      "en": "Fine dining where everything comes from local producers, with their own beehives and their own fermentation. The green Michelin star is no joke, and the view from the top is worth the trip on its own.",
+      "et": "Kõrgköök, kus kõik tuleb kohalikelt tootjatelt, oma mesitarude ja oma fermentatsiooniga. Roheline Michelini täht ei ole nali ja vaade ülevalt on juba omaette põhjus tulla.",
+      "az": "Hər şeyin yerli istehsalçılardan gəldiyi yüksək mətbəx — öz pətəkləri və öz fermentasiyaları var. Yaşıl Michelin ulduzu zarafat deyil, yuxarıdan görünən mənzərə isə tək başına gəlməyə dəyər.",
+      "ru": "Высокая кухня, где всё от местных производителей, со своими ульями и собственной ферментацией. Зелёная звезда Michelin — это не шутка, а вид сверху сам по себе стоит поездки."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "francois-boulangerie",
     "name": "François Boulangerie",
     "address": "Härjapea 17, 10320 Tallinn",
@@ -544,6 +589,33 @@
     "photos": [],
     "website": "",
     "visited": "2025-10",
+    "closed": false
+  },
+  {
+    "id": "hell-hunt",
+    "name": "Hell Hunt",
+    "address": "Pikk 39, 10123 Tallinn",
+    "lat": 59.4393711,
+    "lng": 24.74666,
+    "price": 2,
+    "types": [
+      "pub",
+      "casual",
+      "groups"
+    ],
+    "blurb": {
+      "en": "Very good beers from Humalakoda, and the kitchen holds up too — the chicken strips and the fish and chips are both worth ordering.",
+      "et": "Väga head Humalakoja õlled ja köök peab sammu — nii kanaribad kui ka fish and chips tasuvad tellimist.",
+      "az": "Humalakoda-dan çox yaxşı pivələr, mətbəx də geri qalmır — toyuq zolaqları da, fish and chips də sifariş etməyə dəyər.",
+      "ru": "Очень хорошее пиво от Humalakoda, и кухня не отстаёт — куриные стрипсы и fish and chips оба стоят заказа."
+    },
+    "mustOrder": [
+      "Chicken strips",
+      "Fish and chips"
+    ],
+    "reel": "",
+    "photos": [],
+    "website": "",
     "closed": false
   },
   {
