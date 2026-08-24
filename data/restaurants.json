@@ -194,9 +194,6 @@
     "lng": 24.7763952,
     "price": 1,
     "types": [
-      "street-food",
-      "cheap-eats",
-      "casual"
     ],
     "blurb": {
       "en": "Street food that feels honest and real. Everything is under €7, which is rare these days. Chilean-run, fair prices, strong taste. Kadriorg is a chill area to grab your food and eat outside, just don't forget a napkin.",
@@ -274,9 +271,6 @@
     "lng": 24.7347696,
     "price": 1,
     "types": [
-      "coffee",
-      "casual",
-      "hidden-gem"
     ],
     "blurb": {
       "en": "Paul's place inside the market hall. Chillest dude, coolest vibes, and a must-see spot in town. Handmade South African pies.",
@@ -913,8 +907,6 @@
     "lng": 24.7483049,
     "price": 2,
     "types": [
-      "casual",
-      "groups"
     ],
     "blurb": {
       "en": "Used to be Georgian, now Mexican. It may not make sense at the beginning, but with each bite it starts to. The chicken taco needs extra work; the mushroom was the best.",
