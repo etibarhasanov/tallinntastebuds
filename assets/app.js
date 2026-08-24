@@ -1034,8 +1034,9 @@
         el('span', { className: 'list-sub' }, [
           priceGauge(place.price),
           el('span', {
-            textContent: (place.types || []).map(typeLabel).join(' · ') +
-              (place.closed ? ' · ' + t('closed') : '')
+            textContent: (place.types || []).map(typeLabel)
+              .concat(place.closed ? [t('closed')] : [])
+              .join(' · ')
           })
         ])
       ]);

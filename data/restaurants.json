@@ -193,8 +193,7 @@
     "lat": 59.4378103,
     "lng": 24.7763952,
     "price": 1,
-    "types": [
-    ],
+    "types": [],
     "blurb": {
       "en": "Street food that feels honest and real. Everything is under €7, which is rare these days. Chilean-run, fair prices, strong taste. Kadriorg is a chill area to grab your food and eat outside, just don't forget a napkin.",
       "et": "Tänavatoit, mis on aus ja ehe. Kõik on alla 7 euro, mis on tänapäeval haruldane. Tšiillaste peetud koht, ausad hinnad, tugev maitse. Kadriorg on rahulik piirkond, kus toit kaasa võtta ja õues süüa, ainult salvrätikut ära unusta.",
@@ -270,8 +269,7 @@
     "lat": 59.4412173,
     "lng": 24.7347696,
     "price": 1,
-    "types": [
-    ],
+    "types": [],
     "blurb": {
       "en": "Paul's place inside the market hall. Chillest dude, coolest vibes, and a must-see spot in town. Handmade South African pies.",
       "et": "Pauli koht turuhoone sees. Kõige rahulikum mees, kõige lahedam õhkkond ja üks kohustuslik peatus linnas. Käsitsi tehtud Lõuna-Aafrika pirukad.",
@@ -339,6 +337,29 @@
     "photos": [],
     "website": "",
     "visited": "2025-08",
+    "closed": false
+  },
+  {
+    "id": "chamber-tea",
+    "name": "Chamber Tea",
+    "address": "Noblessner, 11713 Tallinn",
+    "lat": 59.4554149,
+    "lng": 24.6760982,
+    "price": 2,
+    "types": [
+      "coffee",
+      "hidden-gem"
+    ],
+    "blurb": {
+      "en": "Masters of tea who know exactly what they are doing. A quiet room in Noblessner for anyone who takes the leaf seriously.",
+      "et": "Tee meistrid, kes teavad täpselt, mida nad teevad. Vaikne ruum Noblessneris neile, kes võtavad teed tõsiselt.",
+      "az": "Çay ustaları, nə etdiklərini dəqiq bilirlər. Noblessnerdə çaya ciddi yanaşanlar üçün sakit bir məkan.",
+      "ru": "Мастера чая, которые точно знают, что делают. Тихая комната в Ноблесснере для тех, кто относится к чаю всерьёз."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
     "closed": false
   },
   {
@@ -906,8 +927,7 @@
     "lat": 59.4324804,
     "lng": 24.7483049,
     "price": 2,
-    "types": [
-    ],
+    "types": [],
     "blurb": {
       "en": "Used to be Georgian, now Mexican. It may not make sense at the beginning, but with each bite it starts to. The chicken taco needs extra work; the mushroom was the best.",
       "et": "Varem oli gruusia, nüüd mehhiko köök. Alguses ei pruugi see loogiline tunduda, aga iga suutäiega hakkab. Kanataco vajab veel tööd; seenetaco oli parim.",
@@ -984,8 +1004,7 @@
     "lat": 59.4369683,
     "lng": 24.7432969,
     "price": 2,
-    "types": [
-    ],
+    "types": [],
     "blurb": {
       "en": "A must-go bakery in the Old Town, best in the morning when everything is freshest. Known for high-quality croissants and desserts. Prices are reasonable for the quality, though tap water isn't offered and it can feel too quiet during off-hours.",
       "et": "Kohustuslik pagariäri vanalinnas, kõige parem hommikul, kui kõik on kõige värskem. Tuntud kvaliteetsete sarvesaiade ja magustoitude poolest. Hinnad on kvaliteedi kohta mõistlikud, kuigi kraanivett ei pakuta ja vaiksematel tundidel võib seal liiga vaikne olla.",
@@ -1001,7 +1020,7 @@
     "photos": [],
     "website": "",
     "visited": "2025-06",
-    "closed": false
+    "closed": true
   },
   {
     "id": "mikkeller-old-town",
@@ -1052,6 +1071,32 @@
     "photos": [],
     "website": "",
     "visited": "2025-01",
+    "closed": false
+  },
+  {
+    "id": "morii-tea-house",
+    "name": "Morii Tea House",
+    "address": "Kopli 16, 10412 Tallinn",
+    "lat": 59.4418049,
+    "lng": 24.7324773,
+    "price": 2,
+    "types": [
+      "coffee",
+      "casual"
+    ],
+    "blurb": {
+      "en": "New in Telliskivi and already second place for tea at the Helsinki tea and coffee festival. Come for the matcha and the hojicha.",
+      "et": "Uus tulija Telliskivil ja juba teine koht tee kategoorias Helsingi tee- ja kohvifestivalil. Tule matcha ja hojicha pärast.",
+      "az": "Telliskividə yeni açılıb və artıq Helsinki çay və qəhvə festivalında çay üzrə ikinci yeri tutub. Matça və hocça üçün gəlin.",
+      "ru": "Новичок в Теллискиви, уже взявший второе место по чаю на хельсинкском чайно-кофейном фестивале. Приходите за матчей и ходзитей."
+    },
+    "mustOrder": [
+      "Matcha",
+      "Hojicha"
+    ],
+    "reel": "",
+    "photos": [],
+    "website": "",
     "closed": false
   },
   {
