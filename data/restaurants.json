@@ -1606,7 +1606,10 @@
     },
     "mustOrder": [],
     "reel": "",
-    "photos": [],
+    "photos": [
+      "01.webp",
+      "02.webp"
+    ],
     "website": "",
     "closed": false
   },
