@@ -57,6 +57,7 @@
   var map = null;
   var markers = {};      // id -> L.CircleMarker
   var hereMarker = null;
+  var hereAccuracy = null;
   var tileLayer = null;
   var haloMarker = null;
   var toastTimer = null;
@@ -456,7 +457,8 @@
       accent: cssVar('--accent') || '#00539c',
       lit: cssVar('--accent-lit') || '#0072ce',
       muted: cssVar('--muted') || '#5f6b75',
-      paper: cssVar('--paper') || '#ffffff'
+      paper: cssVar('--paper') || '#ffffff',
+      here: cssVar('--here') || '#c1420b'
     };
   }
 
@@ -517,7 +519,10 @@
     }
 
     if (hereMarker) {
-      hereMarker.setStyle({ color: c.paper, fillColor: c.lit });
+      hereMarker.setStyle({ color: c.paper, fillColor: c.here });
+    }
+    if (hereAccuracy) {
+      hereAccuracy.setStyle({ color: c.here, fillColor: c.here });
     }
   }
 
@@ -1335,17 +1340,37 @@
     else if (focusable.indexOf(document.activeElement) === -1) { ev.preventDefault(); first.focus(); }
   }
 
+  /* You are not a restaurant. The dot takes the palette's --here, a hue none
+     of its pins use, and stands inside the circle the device actually claims
+     as its accuracy, which is a thing no pin has. Past a kilometre the
+     reading says little beyond "somewhere in town", so the circle is dropped
+     rather than drawn as a lie the size of a district. */
   function wireLocation() {
-    var accentLit = cssVar('--accent-lit') || '#0072ce';
-    var paper = cssVar('--paper') || '#ffffff';
-
     map.on('locationfound', function (ev) {
-      if (hereMarker) map.removeLayer(hereMarker);
+      var c = markerColours();
+
+      if (hereAccuracy) { map.removeLayer(hereAccuracy); hereAccuracy = null; }
+      if (hereMarker) { map.removeLayer(hereMarker); hereMarker = null; }
+
+      if (ev.accuracy && ev.accuracy <= 1000) {
+        hereAccuracy = L.circle(ev.latlng, {
+          radius: Math.max(ev.accuracy, 12),
+          weight: 1,
+          color: c.here,
+          opacity: .45,
+          fillColor: c.here,
+          fillOpacity: .14,
+          className: 'here-accuracy',
+          interactive: false
+        }).addTo(map);
+        if (hereAccuracy.bringToBack) hereAccuracy.bringToBack();
+      }
+
       hereMarker = L.circleMarker(ev.latlng, {
         radius: 6,
         weight: 3,
-        color: paper,
-        fillColor: accentLit,
+        color: c.paper,
+        fillColor: c.here,
         fillOpacity: 1,
         className: 'pin pin-here',
         interactive: false

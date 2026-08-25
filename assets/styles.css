@@ -17,6 +17,7 @@
   --hairline:   #d2e0ed;
   --accent:     #00539c;
   --accent-lit: #0072ce;
+  --here:       #c1420b;
 
   --shadow: 0 1px 2px rgba(20, 26, 31, .04), 0 8px 28px rgba(20, 26, 31, .10);
   --attrib-bg: rgba(255, 255, 255, .86);
@@ -143,6 +144,17 @@ a:hover { color: var(--accent-lit); }
   pointer-events: none;
   background: var(--map-tint, transparent);
   mix-blend-mode: color;
+}
+
+/* Where you are, which is not one of the places on the map and should never
+   look like one. The dot carries a hue that no style's accent uses, plus the
+   ring of real accuracy around it, which no pin ever has. */
+.here-accuracy {
+  animation: herePulse 2.6s var(--ease) infinite;
+}
+@keyframes herePulse {
+  0%, 100% { fill-opacity: .12; }
+  50%      { fill-opacity: .22; }
 }
 
 .leaflet-control-attribution {
@@ -318,6 +330,10 @@ a:hover { color: var(--accent-lit); }
    - Amber stands in for yellow: yellow on white is about 1.3:1, far under the
      4.5:1 a link needs. Every accent here clears 4.5:1 on both paper and wash.
    - Blue is the original design, untouched and untinted.
+   - --here paints the "you are here" dot, and is deliberately a hue no accent
+     in the same palette uses: a blue dot next to warm pins, a warm one in the
+     blue style, teal against indigo. Otherwise you cannot tell yourself from
+     a restaurant.
    - Indigo is the dark one and swaps to CARTO Dark Matter, untinted.
    ========================================================================== */
 
@@ -325,26 +341,31 @@ a:hover { color: var(--accent-lit); }
   --ink: #1e1517; --muted: #6d5c5e; --paper: #fffaf9; --wash: #f3ecea;
   --hairline: #e9dcd9; --accent: #a81e28; --accent-lit: #ce3540;
   --map-tint: rgba(168, 30, 40, .22);
+  --here: #0b62c4;
 }
 [data-style="orange"] {
   --ink: #1f1911; --muted: #6e6153; --paper: #fffbf5; --wash: #f4eee4;
   --hairline: #e9ded0; --accent: #96490a; --accent-lit: #c26410;
   --map-tint: rgba(150, 73, 10, .22);
+  --here: #0b62c4;
 }
 [data-style="yellow"] {
   --ink: #1d1a11; --muted: #6a6150; --paper: #fffdf3; --wash: #f3f0e2;
   --hairline: #e7e1ca; --accent: #6e5a07; --accent-lit: #93790c;
   --map-tint: rgba(110, 90, 7, .22);
+  --here: #0b62c4;
 }
 [data-style="green"] {
   --ink: #141d17; --muted: #5a6a5e; --paper: #f9fdfa; --wash: #ecf2ee;
   --hairline: #dbe6de; --accent: #186537; --accent-lit: #1f8749;
   --map-tint: rgba(24, 101, 55, .22);
+  --here: #0b62c4;
 }
 [data-style="blue"] {
   --ink: #141a1f; --muted: #5f6b75; --paper: #ffffff; --wash: #f2f1ec;
   --hairline: #e3e1da; --accent: #00539c; --accent-lit: #0072ce;
   --map-tint: transparent;
+  --here: #c1420b;
 }
 [data-style="indigo"] {
   --ink: #ececf5; --muted: #a8aac6; --paper: #262a42; --wash: #1a1e33;
@@ -353,6 +374,7 @@ a:hover { color: var(--accent-lit); }
   --shadow: 0 1px 2px rgba(0, 0, 0, .34), 0 8px 28px rgba(0, 0, 0, .46);
   --attrib-bg: rgba(26, 30, 51, .86);
   --swatch-edge: rgba(255, 255, 255, .22);
+  --here: #3fd0c9;
 }
 
 /* Dark Matter is drawn almost black, which reads as a hole in the screen next
@@ -370,6 +392,7 @@ a:hover { color: var(--accent-lit); }
   --ink: #1a1620; --muted: #655c70; --paper: #fdfaff; --wash: #f1edf5;
   --hairline: #e3dbe9; --accent: #6b3494; --accent-lit: #8b4ab8;
   --map-tint: rgba(107, 52, 148, .22);
+  --here: #0b62c4;
 }
 
 /* ---------- the left rail: seven colours, then the random pick ---------- */
