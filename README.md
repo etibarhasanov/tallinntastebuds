@@ -125,15 +125,17 @@ or to your user settings:
 
 ---
 
-## The video toggle
+## The reel toggle
 
-`With video` sits to the left of the chip row, behind a hairline, because it
+`With reel` sits to the left of the chip row, behind a hairline, because it
 asks a different question from the rest: not what kind of evening, but whether
 there is something to watch. Pressed, it hides every place whose `reel` is
 empty. 43 of the 62 have one.
 
-It is a filter like any other and stacks with the chips: `With video` plus
-`Bakery` means filmed bakeries. It rides in the URL as `?video=1`, so a link
+It is a filter like any other and stacks with the chips: `With reel` plus
+`Bakery` means filmed bakeries. The one TikTok on the map counts as a reel
+here: the button is asking whether there is something to watch, and splitting
+the two would mean a filter with one place behind it. It rides in the URL as `?video=1`, so a link
 can carry it, and it reports a `filter_video` event.
 
 Two details worth knowing:
