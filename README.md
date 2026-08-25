@@ -595,6 +595,13 @@ up for hover and the locate dot. Cool near-black ink, one hairline weight, one
 soft shadow, nothing else. The tokens are the first thing in
 `assets/styles.css`; change those six values and the whole site follows.
 
+**Pins.** One shape in two states: a place that has been filmed is drawn
+solid, one that has not is drawn as a ring, and both take the palette from the
+same `--accent`. Not two icons, because at 14px a picture inside a dot is mud
+and the map is 63 dots. The chosen place grows, gains a breathing halo and
+keeps its name open, but it keeps whichever of the two states it is, so the map
+never stops telling you where there is something to watch.
+
 **Type.** Three faces with three jobs, and they never trade places.
 *Familjen Grotesk* — a contemporary Nordic grotesque — sets place names and
 the wordmark only. *Literata* sets prose; it is a screen-reading serif with

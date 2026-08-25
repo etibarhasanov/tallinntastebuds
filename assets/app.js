@@ -472,7 +472,7 @@
     });
 
     fitToPins();
-    syncMarkers();
+    paintMarkers();   /* also syncs; gives every pin its filmed or unfilmed face */
   }
 
   /* Four places sit 7km out. Fitting every one of them on a phone squeezes
@@ -540,11 +540,19 @@
       if (!marker) return;
       var chosen = place.id === state.selected;
 
+      /* A place that has been filmed is drawn solid, one that has not is
+         drawn as a ring. Two states of one shape rather than two icons: at
+         14px a picture inside a dot is mud, and the map is 63 dots. The
+         chosen place keeps whichever of the two it is, so the map never
+         stops telling you which places have something to watch. */
+      var filmed = !!place.reel;
+      var tone = chosen ? c.lit : (place.closed ? c.muted : c.accent);
+
       marker.setStyle({
-        radius: chosen ? PIN_R_SELECTED : PIN_R,
+        radius: chosen ? PIN_R_SELECTED : (filmed ? PIN_R : PIN_R - 1),
         weight: chosen ? 3.5 : 2.5,
-        color: c.paper,
-        fillColor: chosen ? c.lit : (place.closed ? c.muted : c.accent)
+        color: filmed ? c.paper : tone,
+        fillColor: filmed ? tone : c.paper
       });
 
       var wantsPermanent = chosen;
