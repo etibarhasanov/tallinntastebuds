@@ -458,13 +458,19 @@ accent.
 
 | Style | Accent | Card | Map |
 | --- | --- | --- | --- |
-| Red | `#a81e28` | `#fff6f4` | tinted pink |
-| Orange | `#984a05` | `#fff8ef` | tinted warm |
-| Amber | `#6e5a07` | `#fffcef` | tinted gold |
-| Green | `#186537` | `#f4fbf6` | tinted green |
-| Blue | `#00539c` | `#f6fafd` | tinted blue — the default |
-| Indigo | `#9aa0f0` | `#1b1d30` | CARTO Dark Matter |
-| Violet | `#67308d` | `#fdf7fe` | tinted violet |
+| Red | `#a81e28` | `#fffaf9` | tinted pink |
+| Orange | `#96490a` | `#fffbf5` | tinted warm |
+| Amber | `#6e5a07` | `#fffdf3` | tinted gold |
+| Green (dark) | `#6fd39a` | `#1d2a23` | CARTO Dark Matter |
+| Blue | `#00539c` | `#ffffff` | untinted — the default |
+| Indigo (dark) | `#a7adf5` | `#262a42` | CARTO Dark Matter |
+| Violet | `#6b3494` | `#fdfaff` | tinted violet |
+
+Two of them are dark, because one dark option is a switch and two is a choice.
+Both take the same treatment on the basemap: a brightness lift on the tiles and
+a faint screen pass in their own hue, since Dark Matter is drawn almost black.
+Their swatches wear the card colour with a ring of the accent, so the rail
+shows at a glance which two they are.
 
 Every style is **nothing but a block of custom properties** near the top of
 `assets/styles.css`, keyed off `[data-style="…"]` on the root element. No

@@ -22,7 +22,7 @@
     { id: 'red',    dark: false },
     { id: 'orange', dark: false },
     { id: 'yellow', dark: false },
-    { id: 'green',  dark: false },
+    { id: 'green',  dark: true  },
     { id: 'blue',   dark: false },
     { id: 'indigo', dark: true  },
     { id: 'violet', dark: false }
