@@ -250,8 +250,15 @@ there for the first place that shuts.
 
 ## Languages
 
-English (default), Estonian, Finnish, Azerbaijani, Russian — the switcher shows
-them in that order. Every interface string is in
+English (default), Estonian, Finnish, Azerbaijani, Russian, Portuguese — the
+switcher shows them in that order.
+
+The switch has two shapes, from the same markup. Wide enough, it is a row of
+codes. On a phone it folds into the current code with a menu under it, listing
+each language's own name for itself: six codes side by side are 232px, which
+on a 390px screen runs straight into the handle in the opposite corner. The
+fold happens in CSS at 860px, so adding a seventh language costs nothing in
+layout. Every interface string is in
 `data/ui.json`, keyed by language and then by string id, so a translator never
 has to open the HTML.
 

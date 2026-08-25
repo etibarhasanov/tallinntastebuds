@@ -220,20 +220,56 @@
     }
   }
 
+  /* Six codes in a row is 232px, and on a 390px phone that runs straight into
+     the handle in the top left corner. So the row keeps its shape on a
+     desktop and folds into the current code plus a menu on a phone, which is
+     the same markup either way: CSS decides which half is showing. */
+  function closeLangMenu() {
+    dom.langSwitch.classList.remove('is-open');
+    var now = dom.langSwitch.querySelector('.btn-lang-now');
+    if (now) now.setAttribute('aria-expanded', 'false');
+  }
+
   function renderLanguageSwitch() {
     clear(dom.langSwitch);
+
+    var now = el('button', {
+      type: 'button',
+      className: 'btn btn-lang-now',
+      'aria-expanded': 'false',
+      'aria-label': t('language')
+    }, [
+      el('span', { textContent: state.lang.toUpperCase() }),
+      el('span', {
+        className: 'caret',
+        html: '<svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4"/></svg>'
+      })
+    ]);
+    now.addEventListener('click', function () {
+      var open = dom.langSwitch.classList.toggle('is-open');
+      now.setAttribute('aria-expanded', String(open));
+    });
+    dom.langSwitch.appendChild(now);
+
+    var list = el('div', { className: 'lang-list' });
     state.langs.forEach(function (code) {
+      var name = (state.ui[code] && state.ui[code].langName) || code;
+      /* The code is what the desktop row shows; the phone menu has room for
+         the language's own name for it, so it carries both. */
       var btn = el('button', {
         type: 'button',
         className: 'btn btn-lang',
         lang: code,
-        'aria-label': (state.ui[code] && state.ui[code].langName) || code,
-        'aria-pressed': String(code === state.lang),
-        textContent: code.toUpperCase()
-      });
-      btn.addEventListener('click', function () { setLanguage(code); });
-      dom.langSwitch.appendChild(btn);
+        'aria-label': name,
+        'aria-pressed': String(code === state.lang)
+      }, [
+        el('span', { className: 'lang-code', textContent: code.toUpperCase() }),
+        el('span', { className: 'lang-name', textContent: name })
+      ]);
+      btn.addEventListener('click', function () { setLanguage(code); closeLangMenu(); });
+      list.appendChild(btn);
     });
+    dom.langSwitch.appendChild(list);
   }
 
   function setLanguage(code) {
@@ -1447,6 +1483,10 @@
 
     dom.btnRandom.addEventListener('click', randomPick);
 
+    document.addEventListener('click', function (ev) {
+      if (!dom.langSwitch.contains(ev.target)) closeLangMenu();
+    });
+
     dom.panelClose.addEventListener('click', closePanel);
     wireSheet();
 
@@ -1469,6 +1509,7 @@
     document.addEventListener('keydown', function (ev) {
       if (ev.key === 'Escape') {
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
+        if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
         if (dom.panel.classList.contains('is-open')) closePanel();
         return;
       }

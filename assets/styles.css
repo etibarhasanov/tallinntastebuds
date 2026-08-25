@@ -309,6 +309,13 @@ a:hover { color: var(--accent-lit); }
 .btn:hover { background: var(--wash); color: var(--ink); }
 .btn[aria-pressed="true"], .btn.is-on { color: var(--paper); background: var(--accent); }
 
+/* The language switch has two shapes. Wide enough, it is the row of codes it
+   always was. On a phone it is the current code with a menu under it, because
+   six codes side by side reach the handle in the opposite corner. */
+.btn-lang-now { display: none; }
+.lang-list { display: flex; }
+.lang-name { display: none; }
+
 .btn-wide {
   padding: 0 16px;
   font-family: var(--mono);
@@ -978,6 +985,56 @@ a:hover { color: var(--accent-lit); }
 
   .controls { gap: 6px; }
   .btn { min-width: 34px; height: 34px; }
+
+  #lang-switch { position: relative; overflow: visible; }
+  .btn-lang-now {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 10px;
+  }
+  .btn-lang-now .caret { display: flex; }
+  .btn-lang-now svg {
+    width: 9px;
+    height: 6px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform .15s var(--ease);
+  }
+  #lang-switch.is-open .btn-lang-now svg { transform: rotate(180deg); }
+
+  .lang-list {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    top: calc(100% + 6px);
+    right: 0;
+    flex-direction: column;
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  #lang-switch.is-open .lang-list { display: flex; }
+  .lang-list .btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 9px;
+    padding: 0 12px;
+    min-width: 0;
+  }
+  .lang-list .btn + .btn { border-left: 0; border-top: 1px solid var(--hairline); }
+  .lang-list .lang-name {
+    display: block;
+    font-family: var(--body);
+    font-size: 13px;
+    letter-spacing: 0;
+  }
   .btn-wide { padding: 0 12px; }
 
   .filter-bar { bottom: calc(28px + 10px + var(--safe-b)); left: 10px; right: 10px; }

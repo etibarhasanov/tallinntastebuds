@@ -15,7 +15,8 @@
       "et": "Ainus kahe Michelini tärniga restoran Baltikumis. Väga vahva eksperimentaalne koht Noblessneri rannapromenaadil, kus degustatsioonimenüü üllatab sind käigu haaval.",
       "fi": "Baltian ainoa kahden Michelin-tähden ravintola. Todella hieno kokeileva paikka Noblessnerin rannassa, jossa maistelumenu on rakennettu yllättämään ruokalajista toiseen.",
       "az": "Baltikyanı ölkələrdə yeganə iki Michelin ulduzlu restoran. Noblessner sahilində həqiqətən gözəl eksperimental yer. Dequstasiya menyusu elə qurulub ki, hər yeni yeməklə səni təəccübləndirsin.",
-      "ru": "Единственный ресторан с двумя звёздами Мишлен в Балтии. Очень крутое экспериментальное место на набережной Ноблесснера, где дегустационное меню удивляет блюдо за блюдом."
+      "ru": "Единственный ресторан с двумя звёздами Мишлен в Балтии. Очень крутое экспериментальное место на набережной Ноблесснера, где дегустационное меню удивляет блюдо за блюдом.",
+      "pt": "O único restaurante com duas estrelas Michelin dos países bálticos. Um lugar experimental e muito bonito na frente de água de Noblessner, onde o menu de degustação foi montado para surpreender prato após prato."
     },
     "mustOrder": [
       "Tasting menu"
@@ -43,7 +44,8 @@
       "et": "Nõukogude korea mugavustoit Lasnamäel, kesklinnast bussiga viisteist minutit. Vürtsikas algusest lõpuni. Tšillit ei õnnestu üheski suutäies vältida. Lambasupis võiks lambaliha rohkem olla, aga hea on ikka.",
       "fi": "Neuvostoaikaista korealaista kotiruokaa Lasnamäellä, vartin bussimatkan päässä keskustasta. Tulista alusta loppuun. Chiliä ei pääse pakoon yhdessäkään suupalassa. Lammaskeittoon kaipaisi enemmän lammasta, mutta silti se osuu kohdalleen.",
       "az": "Lasnamäedə sovet-koreya ev yeməkləri, mərkəzdən avtobusla on beş dəqiqə. Başdan-ayağa acılı. Heç bir tikədə bibərdən yayına bilmirsən. Quzu şorbasında bir az daha çox quzu olsaydı yaxşı olardı, amma yenə də ürəyəyatandır.",
-      "ru": "Советско-корейская домашняя еда в Ласнамяэ, пятнадцать минут от центра на автобусе. Острое от начала до конца. Чили не избежать ни в одном кусочке. В супе из баранины хотелось бы больше мяса, но он всё равно попадает в точку."
+      "ru": "Советско-корейская домашняя еда в Ласнамяэ, пятнадцать минут от центра на автобусе. Острое от начала до конца. Чили не избежать ни в одном кусочке. В супе из баранины хотелось бы больше мяса, но он всё равно попадает в точку.",
+      "pt": "Comida coreana soviética de conforto em Lasnamäe, a quinze minutos do centro de autocarro. Picante do início ao fim. Não há como fugir do chili em nenhuma garfada. A sopa de borrego pedia mais borrego, mas mesmo assim acerta no ponto."
     },
     "mustOrder": [
       "Beef heart salad",
@@ -73,7 +75,8 @@
       "et": "Korea restoran Telliskivi tänaval, mida sama omanik on pidanud 34 aastat. Ta on pärit Koreast, elanud suurema osa elust Eestis ning on terane ja mitmekeelne. Sisse astudes ole lugupidav. See ei ole lihtne äri. Käime iga päev sealt mööda ja jätsime selle kuidagi ikka vahele.",
       "fi": "Korealainen ravintola Telliskivi-kadulla, jota sama omistaja on pyörittänyt 34 vuotta. Hän on kotoisin Koreasta, on asunut suurimman osan elämästään Virossa ja on terävä ja monikielinen. Kun astut sisään, osoita kunnioitusta. Helppo bisnes se ei ole. Kuljemme ohi päivittäin ja jotenkin ohitimme sen aina.",
       "az": "Telliskivi küçəsində 34 ildir eyni sahibin işlətdiyi Koreya restoranı. Özü Koreyadandır, ömrünün böyük hissəsini Estoniyada yaşayıb, zəkalı və bir neçə dil bilən adamdır. İçəri girəndə hörmət göstərin. Bu, asan iş deyil. Hər gün yanından keçirdik və nədənsə həmişə ötürürdük.",
-      "ru": "Корейский ресторан на улице Теллискиви, которым один и тот же хозяин управляет уже 34 года. Он родом из Кореи, большую часть жизни прожил в Эстонии, человек умный и говорит на нескольких языках. Заходя, проявите уважение. Это непростой бизнес. Мы проходим мимо каждый день и почему-то всё время его пропускали."
+      "ru": "Корейский ресторан на улице Теллискиви, которым один и тот же хозяин управляет уже 34 года. Он родом из Кореи, большую часть жизни прожил в Эстонии, человек умный и говорит на нескольких языках. Заходя, проявите уважение. Это непростой бизнес. Мы проходим мимо каждый день и почему-то всё время его пропускали.",
+      "pt": "Um restaurante coreano na rua Telliskivi, com o mesmo dono há 34 anos. Ele é da Coreia, viveu quase toda a vida na Estónia e é esperto e poliglota. Ao entrar, mostre respeito. Não é um negócio fácil. Passamos por ali todos os dias e sempre acabávamos por saltá-lo."
     },
     "mustOrder": [
       "Beef bulgogi",
@@ -101,7 +104,8 @@
       "et": "Jääb Nõmme rattamarsruudi teele, mis on omaette hea sõit. Tore koht, maitsev šašlõkk ja korralik Kaukaasia köök.",
       "fi": "Matkan varrella Nõmmen pyöräreitille, joka on itsessäänkin hieno ajo. Hyvä paikka, herkullinen shashlik ja vankkaa kaukasialaista ruokaa.",
       "az": "Nõmme velosiped marşrutuna gedən yolun üstündədir, marşrutun özü də əla sürüşdür. Yaxşı məkan, dadlı şaşlıq və möhkəm Qafqaz mətbəxi.",
-      "ru": "По дороге к велосипедному маршруту Нымме, который и сам по себе отличный. Хорошее место, вкусный шашлык, крепкая кавказская кухня."
+      "ru": "По дороге к велосипедному маршруту Нымме, который и сам по себе отличный. Хорошее место, вкусный шашлык, крепкая кавказская кухня.",
+      "pt": "Fica no caminho para a ciclovia de Nõmme, que já é um bom passeio por si só. Bom lugar, shashlik delicioso e cozinha caucasiana sólida."
     },
     "mustOrder": [],
     "reel": "",
@@ -125,7 +129,8 @@
       "et": "Algne pagariäri, mis varustab leiva ja kringlitega pool linna. Soolakaramelliga on lausa naeruväärselt hea. Majas endas on peidetud nurgakesi ja külmemal ajal muutub see ainult hubasemaks.",
       "fi": "Alkuperäinen leipomo, joka toimittaa leipää ja kringeliä puoleen kaupunkiin. Suolakinuskinen on älytön. Salissa on omat piilonurkkauksensa, ja se muuttuu vain kodikkaammaksi säiden kylmetessä.",
       "az": "Şəhərin yarısını çörək və kringellə təmin edən əsl pagariäri. Duzlu karamelli olanı ağlasığmazdır. Məkanın özündə gizli guşələr var və hava soyuduqca daha da rahat olur.",
-      "ru": "Та самая пекарня, снабжающая хлебом и крингелями половину города. С солёной карамелью просто безумие. В самом зале есть укромные уголки, и чем холоднее на улице, тем там уютнее."
+      "ru": "Та самая пекарня, снабжающая хлебом и крингелями половину города. С солёной карамелью просто безумие. В самом зале есть укромные уголки, и чем холоднее на улице, тем там уютнее.",
+      "pt": "A padaria original, que fornece pão e kringel a meia cidade. O de caramelo salgado é absurdo. A sala tem cantos escondidos e só fica mais aconchegante quando o tempo vira."
     },
     "mustOrder": [
       "Salted caramel kringel"
@@ -151,7 +156,8 @@
       "et": "Hubane koht Taksopargi kõrval, kus saab sooja borši, vareenikuid ja muid koduseid ukraina roogi. Sõbralik teenindus ja soe õhkkond, mis paneb end tundma nagu vanaema köögis.",
       "fi": "Kodikas paikka Taksoparkin vieressä lämpimälle borssikeitolle, vareniki-nyyteille ja muulle kotitekoiselle ukrainalaiselle ruoalle. Ystävällinen henkilökunta ja tunnelma, joka tuntuu mummon keittiöltä.",
       "az": "Taksoparkın yanında isti borş, vareniki və digər ev tipli Ukrayna yeməkləri üçün rahat yer. Səmimi işçilər və nənənin mətbəxini xatırladan isti bir mühit.",
-      "ru": "Уютное место рядом с Taksopark, где подают тёплый борщ, вареники и другие домашние украинские блюда. Приветливый персонал и атмосфера, будто ты на бабушкиной кухне."
+      "ru": "Уютное место рядом с Taksopark, где подают тёплый борщ, вареники и другие домашние украинские блюда. Приветливый персонал и атмосфера, будто ты на бабушкиной кухне.",
+      "pt": "Um lugar acolhedor ao lado do Taksopark para borscht quente, vareniki e outros pratos ucranianos caseiros. Equipa simpática e um ambiente que faz aquilo parecer a cozinha da avó."
     },
     "mustOrder": [
       "Borscht",
@@ -180,7 +186,8 @@
       "et": "Vanalinna pagariäri, mis elab küpsiste nimel. Paksud, seest pehmed ja jalutuskäiku väärt. Lemmik on pistaatsiaküpsis.",
       "fi": "Vanhankaupungin leipomo, joka elää keksejä varten. Paksuja, keskeltä pehmeitä ja kävelyn arvoisia. Pistaasi on suosikki.",
       "az": "Köhnə şəhərdə peçenye üçün yaşayan çörəkxana. Qalın, ortası yumşaq və ora qədər yeriməyə dəyər. Ən sevimlisi püstəli olanıdır.",
-      "ru": "Пекарня в Старом городе, которая живёт ради печенья. Толстое, мягкое внутри и стоит того, чтобы дойти. Любимое, фисташковое."
+      "ru": "Пекарня в Старом городе, которая живёт ради печенья. Толстое, мягкое внутри и стоит того, чтобы дойти. Любимое, фисташковое.",
+      "pt": "Uma padaria na Cidade Velha que vive pelos cookies. Grossos, moles no meio e valem a caminhada. O de pistácio é o preferido."
     },
     "mustOrder": [
       "Pistachio cookie",
@@ -205,7 +212,8 @@
       "et": "Tänavatoit, mis on aus ja ehe. Kõik on alla 7 euro, mis on tänapäeval haruldane. Tšiillaste peetud koht, ausad hinnad, tugev maitse. Kadriorg on rahulik piirkond, kus toit kaasa võtta ja õues süüa, ainult salvrätikut ära unusta.",
       "fi": "Katuruokaa, joka tuntuu rehelliseltä ja aidolta. Kaikki alle seitsemän euron, mikä on nykyään harvinaista. Chileläisten pyörittämä, reilut hinnat, vahva maku. Kadriorg on rauhallinen alue napata ruoka mukaan ja syödä ulkona, älä vain unohda lautasliinaa.",
       "az": "Səmimi və həqiqi görünən küçə yeməyi. Hər şey 7 avrodan aşağıdır ki, bu günlərdə nadir haldır. Çililər işlədir, qiymətlər ədalətli, dad güclüdür. Kadriorq yeməyini götürüb çöldə yemək üçün sakit yerdir, sadəcə salfeti unutmayın.",
-      "ru": "Уличная еда, которая ощущается честной и настоящей. Всё дешевле 7 евро, что сейчас редкость. Место держат чилийцы, цены справедливые, вкус яркий. Кадриорг подходит для того, чтобы взять еду с собой и поесть на улице, только не забудьте салфетку."
+      "ru": "Уличная еда, которая ощущается честной и настоящей. Всё дешевле 7 евро, что сейчас редкость. Место держат чилийцы, цены справедливые, вкус яркий. Кадриорг подходит для того, чтобы взять еду с собой и поесть на улице, только не забудьте салфетку.",
+      "pt": "Comida de rua que parece honesta e verdadeira. Tudo abaixo de sete euros, o que hoje em dia é raro. Tocado por chilenos, preços justos, sabor forte. Kadriorg é uma zona calma para levar a comida e comer na rua, só não se esqueça do guardanapo."
     },
     "mustOrder": [
       "Philly Cheese Steak",
@@ -234,7 +242,8 @@
       "et": "Kunagi lihtsalt väike burgeriaken vana Põhjala Speakeasy kõrval. Tänavatoidu hing on alles, kuigi menüü on julgemaks läinud. Hinnad on rahakotisõbralikud ja õhkkond rahulik: sobib veganitele, koertele ja inimestele.",
       "fi": "Ennen pelkkä pieni hampurilaisluukku vanhan Põhjala Speakeasyn vieressä. Se on säilyttänyt katuruokasielunsa, vaikka menu on rohkaistunut. Hinnat pysyvät kukkarolle ystävällisinä ja meininki on rento: vegaaniystävällinen, koiraystävällinen, ihmisystävällinen.",
       "az": "Bir vaxtlar köhnə Põhjala Speakeasy-nin yanında kiçik burger pəncərəsi idi; menyu cəsarətlənsə də küçə yeməyi ruhunu saxlayıb. Qiymətlər cibə uyğun qalır, mühit rahatdır: veganlara, itlərə və insanlara eyni dərəcədə açıq.",
-      "ru": "Когда-то просто маленькое бургерное окно рядом со старым Põhjala Speakeasy. Дух уличной еды сохранился, а меню стало смелее. Цены дружелюбны к кошельку, атмосфера расслабленная: тут рады веганам, собакам и людям."
+      "ru": "Когда-то просто маленькое бургерное окно рядом со старым Põhjala Speakeasy. Дух уличной еды сохранился, а меню стало смелее. Цены дружелюбны к кошельку, атмосфера расслабленная: тут рады веганам, собакам и людям.",
+      "pt": "Era só uma janelinha de hambúrgueres ao lado do antigo Põhjala Speakeasy. Manteve a alma de comida de rua mesmo depois de o menu ficar mais ousado. Os preços continuam amigos da carteira e o ambiente é relaxado: amigo dos veganos, dos cães e das pessoas."
     },
     "mustOrder": [
       "Cheese balls",
@@ -262,7 +271,8 @@
       "et": "Väga lahe pagariäri Viimsi poole minnes. Soolased küpsetised on täidlased ja maitsvad.",
       "fi": "Todella siisti leipomo Viimsin suuntaan mentäessä. Suolaiset ovat täyttäviä ja herkullisia.",
       "az": "Viimsi yolunun üstündə çox gözəl bir çörəkxana. Duzlu bişmişlər həm doyurucu, həm dadlıdır.",
-      "ru": "Отличная пекарня по дороге в Виймси. Солёная выпечка сытная и вкусная."
+      "ru": "Отличная пекарня по дороге в Виймси. Солёная выпечка сытная и вкусная.",
+      "pt": "Uma padaria muito bacana no caminho para Viimsi. Os salgados são fartos e deliciosos."
     },
     "mustOrder": [],
     "reel": "",
@@ -283,7 +293,8 @@
       "et": "Pauli koht turuhoone sees. Kõige rahulikum mees, kõige lahedam õhkkond ja üks kohustuslik peatus linnas. Käsitsi tehtud Lõuna-Aafrika pirukad.",
       "fi": "Paulin paikka kauppahallin sisällä. Rennoin tyyppi, siisteimmät fiilikset ja pakko nähdä kaupungissa. Käsintehtyjä eteläafrikkalaisia piirakoita.",
       "az": "Paulun bazar binasının içindəki yeri. Ən rahat adam, ən yaxşı mühit və şəhərdə mütləq görülməli məkan. Əl işi Cənubi Afrika piroqları.",
-      "ru": "Место Пола внутри рыночного зала. Самый спокойный человек, самая приятная атмосфера и одна из обязательных точек в городе. Домашние южноафриканские пироги."
+      "ru": "Место Пола внутри рыночного зала. Самый спокойный человек, самая приятная атмосфера и одна из обязательных точек в городе. Домашние южноафриканские пироги.",
+      "pt": "O lugar do Paul dentro do mercado. O tipo mais tranquilo, a melhor vibe e uma paragem obrigatória na cidade. Empadas sul-africanas feitas à mão."
     },
     "mustOrder": [
       "Bobotie pie",
@@ -311,7 +322,8 @@
       "et": "Portsjonid ajavad segadusse. Leib on hea, liha vajab tööd. Õhkkond on hea, teenindus on hea, interjöör on lahe, hinnad on korras. Selles kohas ma päris kindel ei ole.",
       "fi": "Annoskoot hämmentävät. Leipä on hyvää, liha kaipaa työtä. Fiilis on hyvä, palvelu on hyvä, sisustus on siisti, hinnat ovat kohdallaan. En ole varma tästä.",
       "az": "Porsiyalar çaşdırıcıdır. Çörək yaxşıdır, ət üzərində işləmək lazımdır. Mühit yaxşı, xidmət yaxşı, interyer gözəl, qiymətlər normaldır. Bu birindən əmin deyiləm.",
-      "ru": "Порции сбивают с толку. Хлеб хороший, мясо требует доработки. Атмосфера приятная, сервис хороший, интерьер классный, цены нормальные. В этом месте я до конца не уверен."
+      "ru": "Порции сбивают с толку. Хлеб хороший, мясо требует доработки. Атмосфера приятная, сервис хороший, интерьер классный, цены нормальные. В этом месте я до конца не уверен.",
+      "pt": "As doses confundem. O pão é bom, a carne precisa de trabalho. O ambiente é bom, o serviço é bom, o interior é bonito, os preços estão certos. Não tenho a certeza sobre este."
     },
     "mustOrder": [
       "Bread"
@@ -338,7 +350,8 @@
       "et": "Enamik teist on seda India kööki Bolt Foodist tellinud, aga vanalinna saal on eriline: väga vana maja ja kokk, kes kolis Eestisse 1992. aastal ning avas lõpuks 2009. aastal oma koha.",
       "fi": "Useimmat teistä ovat kokeilleet tätä intialaista keittiötä Bolt Foodin kautta, mutta vanhankaupungin sali on erityinen: hyvin vanha rakennus ja keittiömestari, joka muutti Viroon vuonna 1992 ja avasi vihdoin oman paikkansa vuonna 2009.",
       "az": "Çoxunuz bu hind mətbəxini Bolt Food-dan sınamısınız, amma Köhnə şəhərdəki zal xüsusidir: çox köhnə bina və 1992-ci ildə Estoniyaya köçüb nəhayət 2009-cu ildə öz yerini açan aşpaz.",
-      "ru": "Большинство из вас пробовали эту индийскую кухню из Bolt Food, но зал в Старом городе особенный: очень старое здание и повар, который переехал в Эстонию в 1992 году и наконец открыл своё место в 2009."
+      "ru": "Большинство из вас пробовали эту индийскую кухню из Bolt Food, но зал в Старом городе особенный: очень старое здание и повар, который переехал в Эстонию в 1992 году и наконец открыл своё место в 2009.",
+      "pt": "A maioria de vocês já provou esta cozinha indiana pelo Bolt Food, mas a sala na Cidade Velha é especial: um prédio muito antigo e um chef que se mudou para a Estónia em 1992 e finalmente abriu a própria casa em 2009."
     },
     "mustOrder": [
       "Onion bhaji (ask nicely, it's off menu)"
@@ -365,7 +378,8 @@
       "et": "Tee meistrid, kes teavad täpselt, mida nad teevad. Vaikne ruum neile, kes võtavad teed tõsiselt.",
       "fi": "Teen mestareita, jotka tietävät tasan mitä tekevät. Hiljainen huone kaikille, jotka ottavat teen tosissaan.",
       "az": "Çay ustaları, nə etdiklərini dəqiq bilirlər. Çaya ciddi yanaşanlar üçün sakit bir məkan.",
-      "ru": "Мастера чая, которые точно знают, что делают. Тихая комната для тех, кто относится к чаю всерьёз."
+      "ru": "Мастера чая, которые точно знают, что делают. Тихая комната для тех, кто относится к чаю всерьёз.",
+      "pt": "Mestres de chá que sabem exatamente o que estão a fazer. Uma sala silenciosa para quem leva a folha a sério."
     },
     "mustOrder": [],
     "reel": "",
@@ -389,7 +403,8 @@
       "et": "Auhinnatud šokolaad, mis valmib kohapeal, ja väike šokolaadimuuseum Suur-Karja tänaval. Telliskivil on teine koht, kui vanalinna oma on rahvast täis. Igal juhul väga lahe paik.",
       "fi": "Palkittuja suklaita, jotka tehdään täällä paikan päällä, ja pieni suklaamuseo Suur-Karjalla. Telliskivessä on toinen piste, jos vanhankaupungin paikka on täynnä. Todella siisti paikka kummassakin tapauksessa.",
       "az": "Elə burada hazırlanan mükafatlı şokoladlar və Suur-Karja küçəsində kiçik şokolad muzeyi. Köhnə şəhərdəki dolu olsa, Telliskividə ikinci yer var. Hər halda çox gözəl məkandır.",
-      "ru": "Отмеченный наградами шоколад, который делают прямо здесь, и маленький музей шоколада на улице Суур-Карья. Есть вторая точка в Теллискиви, если в Старом городе многолюдно. В любом случае очень крутое место."
+      "ru": "Отмеченный наградами шоколад, который делают прямо здесь, и маленький музей шоколада на улице Суур-Карья. Есть вторая точка в Теллискиви, если в Старом городе многолюдно. В любом случае очень крутое место.",
+      "pt": "Chocolates premiados feitos aqui mesmo, com um pequeno museu do chocolate na Suur-Karja. Há um segundo ponto em Telliskivi se o da Cidade Velha estiver cheio. Um lugar muito bacana de qualquer forma."
     },
     "mustOrder": [
       "Bean-to-bar chocolate"
@@ -416,7 +431,8 @@
       "et": "Esimene pagariäri La Boulangerie tiimilt ja on Mustamäed juba aastaid toitnud. Väike peidus naabruskonna koht, nii et võta kaart kaasa.",
       "fi": "La Boulangerien tiimin ensimmäinen leipomo, joka on ruokkinut Mustamäkeä jo vuosia. Pieni, syrjään jäävä lähiöpaikka, joten ota kartta mukaan.",
       "az": "La Boulangerie-nin arxasında dayanan komandanın ilk çörəkxanası; illərdir Mustamäeni yedizdirir. Balaca, gözdən uzaq məhəllə məkanıdır, ona görə xəritəni yanında saxla.",
-      "ru": "Первая пекарня команды, которая потом открыла La Boulangerie, и она кормит Мустамяэ уже много лет. Маленькое, спрятанное районное место, без карты не найти."
+      "ru": "Первая пекарня команды, которая потом открыла La Boulangerie, и она кормит Мустамяэ уже много лет. Маленькое, спрятанное районное место, без карты не найти.",
+      "pt": "A primeira padaria da equipa por trás da La Boulangerie, e alimenta Mustamäe há anos. Um lugar de bairro pequeno e escondido, por isso leve o mapa."
     },
     "mustOrder": [],
     "reel": "",
@@ -441,7 +457,8 @@
       "et": "Gruusia toit, aus ja maitsev, seal Koplis.",
       "fi": "Georgialaista ruokaa, rehellistä ja herkullista, Koplissa.",
       "az": "Kopli tərəfdə səmimi və dadlı gürcü yeməkləri.",
-      "ru": "Грузинская еда, честно и вкусно, там, в Копли."
+      "ru": "Грузинская еда, честно и вкусно, там, в Копли.",
+      "pt": "Comida georgiana, honesta e deliciosa, lá em Kopli."
     },
     "mustOrder": [
       "Khinkali",
@@ -468,7 +485,8 @@
       "et": "Grillilett Telliskivil, kus on väga hea falafel. Nad katsetavad ka veise maksa ja muude tükkidega, mida grillimenüüs tavaliselt ei näe, nii et küsi, mis uut on.",
       "fi": "Grillitiski Telliskivessä ja todella hyvä falafel. He kokeilevat myös naudan maksaa ja muita paloja, joita ei yleensä näe grillimenussa, joten kysy mitä uutta on.",
       "az": "Telliskividə mangal piştaxtası, fəlafeli həqiqətən yaxşıdır. Həm də mal ciyəri və mangal menyusunda adətən görmədiyin başqa ətlərlə təcrübələr aparırlar, ona görə nəyin yeni olduğunu soruş.",
-      "ru": "Гриль-стойка в Теллискиви с очень хорошим фалафелем. Здесь также экспериментируют с говяжьей печенью и другими отрубами, которые редко встретишь в меню гриля, так что спрашивайте, что нового."
+      "ru": "Гриль-стойка в Теллискиви с очень хорошим фалафелем. Здесь также экспериментируют с говяжьей печенью и другими отрубами, которые редко встретишь в меню гриля, так что спрашивайте, что нового.",
+      "pt": "Um balcão de churrasco em Telliskivi com um falafel muito bom. Também fazem experiências com fígado de vaca e outros cortes que raramente aparecem num menu de grelhados, por isso pergunte o que há de novo."
     },
     "mustOrder": [
       "Falafel",
@@ -495,7 +513,8 @@
       "et": "Kutabil on vint: sisse on pandud rohelist ja mozzarellat traditsiooniliste ürtide asemel. Portsjonid on suured; kui sööd üksi, piisab ilmselt poolest küftäst. Olen aserbaidžaanlane ja kiidan selle aserbaidžaani restorani heaks.",
       "fi": "Qutabissa on oma käänteensä: se on täytetty vihanneksilla ja mozzarellalla perinteisten yrttien sijaan. Annokset ovat valtavia. Jos syöt yksin, puolikas küftä saattaa riittää. Olen azerbaidžanilainen, ja hyväksyn tämän azerbaidžanilaisen ravintolan.",
       "az": "Qutabın öz fərqi var: ənənəvi otlar əvəzinə göyərti və motsarella ilə doldurulub. Porsiyalar nəhəngdir; tək gəlmisənsə, yarım küftə bəs edə bilər. Mən azərbaycanlıyam və bu Azərbaycan restoranını təsdiqləyirəm.",
-      "ru": "У кутаба свой поворот: внутри зелень и моцарелла вместо традиционных трав. Порции огромные; если вы едите один, половины кюфты вполне хватит. Я азербайджанец и одобряю этот азербайджанский ресторан."
+      "ru": "У кутаба свой поворот: внутри зелень и моцарелла вместо традиционных трав. Порции огромные; если вы едите один, половины кюфты вполне хватит. Я азербайджанец и одобряю этот азербайджанский ресторан.",
+      "pt": "O qutab tem uma reviravolta: vem recheado com verduras e mozzarella em vez das ervas tradicionais. As doses são enormes; se estiver a comer sozinho, meia küftä pode ser suficiente. Sou azerbaijano e aprovo este restaurante azerbaijano."
     },
     "mustOrder": [
       "Qutab",
@@ -524,7 +543,8 @@
       "et": "Keegi varastas mu südame. Uus pärl Noblessneris.",
       "fi": "Joku varasti sydämeni. Uusi helmi Noblessnerissa.",
       "az": "Kimsə ürəyimi oğurladı. Noblessnerdə yeni bir inci.",
-      "ru": "Кто-то украл моё сердце. Новая жемчужина в Ноблесснере."
+      "ru": "Кто-то украл моё сердце. Новая жемчужина в Ноблесснере.",
+      "pt": "Alguém roubou o meu coração. Uma joia nova em Noblessner."
     },
     "mustOrder": [
       "Salami Picante pizza",
@@ -552,7 +572,8 @@
       "et": "Kõrgköök, kus kõik tuleb kohalikelt tootjatelt, oma mesitarude ja oma fermentatsiooniga. Roheline Michelini täht ei ole nali ja vaade ülevalt on juba omaette põhjus tulla.",
       "fi": "Fine diningia, jossa kaikki tulee paikallisilta tuottajilta, omat mehiläispesät ja oma fermentointi mukaan lukien. Vihreä Michelin-tähti ei ole vitsi, ja näkymä ylhäältä on jo itsessään matkan arvoinen.",
       "az": "Hər şeyin yerli istehsalçılardan gəldiyi yüksək mətbəx. Öz pətəkləri və öz fermentasiyaları var. Yaşıl Michelin ulduzu zarafat deyil, yuxarıdan görünən mənzərə isə tək başına gəlməyə dəyər.",
-      "ru": "Высокая кухня, где всё от местных производителей, со своими ульями и собственной ферментацией. Зелёная звезда Michelin получена заслуженно, а вид сверху сам по себе стоит поездки."
+      "ru": "Высокая кухня, где всё от местных производителей, со своими ульями и собственной ферментацией. Зелёная звезда Michelin получена заслуженно, а вид сверху сам по себе стоит поездки.",
+      "pt": "Alta gastronomia em que tudo vem de produtores locais, com colmeias próprias e fermentação própria. A estrela verde Michelin não é brincadeira, e a vista lá de cima já justifica a subida."
     },
     "mustOrder": [],
     "reel": "",
@@ -576,7 +597,8 @@
       "et": "François ja tema sarvesaiad on Härjapea tänaval tagasi. Ainult laupäeviti.",
       "fi": "François ja hänen croissanttinsa ovat palanneet Härjapea-kadulle. Vain lauantaisin.",
       "az": "François və onun kruassanları Härjapea küçəsinə qayıdıb. Yalnız şənbə günləri.",
-      "ru": "Франсуа и его круассаны вернулись на улицу Хярьяпеа. Только по субботам."
+      "ru": "Франсуа и его круассаны вернулись на улицу Хярьяпеа. Только по субботам.",
+      "pt": "O François e os croissants dele estão de volta à rua Härjapea. Só aos sábados."
     },
     "mustOrder": [
       "Croissant"
@@ -604,7 +626,8 @@
       "et": "Kaasaegne gruusia köök Rotermannis.",
       "fi": "Modernia georgialaista keittiötä Rotermannissa.",
       "az": "Rotermannidə müasir gürcü mətbəxi.",
-      "ru": "Современная грузинская кухня в Ротерманни."
+      "ru": "Современная грузинская кухня в Ротерманни.",
+      "pt": "Cozinha georgiana moderna em Rotermanni."
     },
     "mustOrder": [
       "Khinkali",
@@ -633,7 +656,8 @@
       "et": "Korea restoran, mis on siin olnud juba pikka aega ja mida teatakse maitsete, pipraste vürtside ja sooja õhkkonna poolest. Väike peidetud pärl kõigile, kes ihkavad linnas ehtsat korea toitu.",
       "fi": "Korealainen ravintola, joka on ollut täällä pitkään ja tunnetaan mauistaan, pippurisista mausteistaan ja lämpimästä tunnelmastaan. Pieni piilohelmi kaikille, jotka kaipaavat aitoa korealaista ruokaa kaupungissa.",
       "az": "Uzun müddətdir burada olan, dadları, bibərli ədviyyatları və isti mühiti ilə tanınan Koreya restoranı. Şəhərdə əsl Koreya yeməyi axtaranlar üçün kiçik gizli inci.",
-      "ru": "Корейский ресторан, который работает здесь уже давно и известен своими вкусами, перечной остротой и тёплой атмосферой. Маленькая находка для всех, кто хочет настоящей корейской еды в городе."
+      "ru": "Корейский ресторан, который работает здесь уже давно и известен своими вкусами, перечной остротой и тёплой атмосферой. Маленькая находка для всех, кто хочет настоящей корейской еды в городе.",
+      "pt": "Um restaurante coreano que já está aqui há muito tempo, conhecido pelos sabores, pelas especiarias apimentadas e pelo ambiente acolhedor. Uma pequena joia escondida para quem tem saudades de comida coreana de verdade na cidade."
     },
     "mustOrder": [
       "Fried chicken",
@@ -662,7 +686,8 @@
       "et": "Hans tähendab minu tagasihoidlikku kodu. Selles kohas ma päris kindel ei ole.",
       "fi": "Hans tarkoittaa vaatimatonta kotiani. En ole varma tästä.",
       "az": "Hans mənim təvazökar evim deməkdir. Bu birindən əmin deyiləm.",
-      "ru": "Hans означает мой скромный дом. В этом месте я до конца не уверен."
+      "ru": "Hans означает мой скромный дом. В этом месте я до конца не уверен.",
+      "pt": "Hans quer dizer a minha humilde casa. Não tenho a certeza sobre este."
     },
     "mustOrder": [
       "Dumplings"
@@ -689,7 +714,8 @@
       "et": "Väga head Humalakoja õlled ja köök peab sammu. Nii kanaribad kui ka fish and chips tasuvad tellimist.",
       "fi": "Erittäin hyviä oluita Humalakodalta, ja keittiökin pitää pintansa. Kanasuikaleet ja fish and chips ovat molemmat tilaamisen arvoisia.",
       "az": "Humalakoda-dan çox yaxşı pivələr, mətbəx də geri qalmır. Toyuq zolaqları da, fish and chips də sifariş etməyə dəyər.",
-      "ru": "Очень хорошее пиво от Humalakoda, и кухня не отстаёт. Куриные стрипсы и fish and chips оба стоят заказа."
+      "ru": "Очень хорошее пиво от Humalakoda, и кухня не отстаёт. Куриные стрипсы и fish and chips оба стоят заказа.",
+      "pt": "Cervejas muito boas da Humalakoda, e a cozinha também aguenta. As tiras de frango e o fish and chips valem os dois o pedido."
     },
     "mustOrder": [
       "Chicken strips",
@@ -716,7 +742,8 @@
       "et": "Eriline kohv Faehlmanni tänava Kadrioru nurgal, röstitud Kalve poolt. Kõnniteel paar väikest lauda, kus tasub olla siis, kui päike paistab.",
       "fi": "Erikoiskahvia Faehlmannin Kadriorgin kulmassa, Kalven paahtamaa. Jalkakäytävällä pari pientä pöytää, joissa kannattaa istua kun aurinko paistaa.",
       "az": "Faehlmanni küçəsinin Kadriorq küncündə xüsusi qəhvə, Kalve tərəfindən qovrulub. Səkidə bir neçə kiçik masa var, günəş çıxanda məhz orada oturmaq istəyirsən.",
-      "ru": "Спешелти кофе на кадриоргском углу Фельмани, обжарка Kalve. На тротуаре пара маленьких столиков, и в солнечный день сидеть хочется именно там."
+      "ru": "Спешелти кофе на кадриоргском углу Фельмани, обжарка Kalve. На тротуаре пара маленьких столиков, и в солнечный день сидеть хочется именно там.",
+      "pt": "Café de especialidade na esquina de Kadriorg com a Faehlmanni, torrado pela Kalve. Umas mesinhas no passeio, que é onde se quer estar quando há sol."
     },
     "mustOrder": [],
     "reel": "",
@@ -743,7 +770,8 @@
       "et": "Täiesti vegan ja üleni kartuli ümber ehitatud, otse trammipeatuse kõrval Telliskivil. Täidetud ahjukartulid, kodused pelmeenid ja kastmed, mis kõik kokku seovad. Suured portsjonid, väikesed hinnad. Loe enne tellimist menüü esimene lehekülg läbi.",
       "fi": "Täysin vegaaninen ja rakennettu kokonaan perunan ympärille, aivan raitiovaunupysäkin vieressä Telliskivessä. Täytettyjä uuniperunoita, kotitekoisia nyyttejä ja kastikkeita, jotka sitovat kaiken yhteen. Isot annokset, pienet hinnat. Lue menun ensimmäinen sivu ennen kuin tilaat.",
       "az": "Tamamilə vegan və bütünlüklə kartofun ətrafında qurulub, Telliskividə tramvay dayanacağının düz yanında. Doldurulmuş bişmiş kartof, ev pelmeni və hamısını bir-birinə bağlayan souslar. Böyük porsiyalar, kiçik qiymətlər. Sifariş etməzdən əvvəl menyunun birinci səhifəsini oxu.",
-      "ru": "Полностью веганское место, построенное вокруг картофеля, прямо у трамвайной остановки в Теллискиви. Фаршированный запечённый картофель, домашние пельмени и соусы, которые связывают всё воедино. Большие порции, маленькие цены. Прочитайте первую страницу меню, прежде чем заказывать."
+      "ru": "Полностью веганское место, построенное вокруг картофеля, прямо у трамвайной остановки в Теллискиви. Фаршированный запечённый картофель, домашние пельмени и соусы, которые связывают всё воедино. Большие порции, маленькие цены. Прочитайте первую страницу меню, прежде чем заказывать.",
+      "pt": "Totalmente vegano e construído inteiramente à volta da batata, mesmo ao lado da paragem do elétrico em Telliskivi. Batatas assadas recheadas, dumplings caseiros e molhos que ligam tudo. Doses grandes, preços pequenos. Leia a primeira página do menu antes de pedir."
     },
     "mustOrder": [
       "Stuffed baked potato",
@@ -772,7 +800,8 @@
       "et": "Peresuuruses küpsis vanalinnas. Neid valmib igal tööpäeval ainult 300.",
       "fi": "Perheenkokoinen keksi vanhassakaupungissa. Niitä tehdään vain 300 jokaisena työpäivänä.",
       "az": "Köhnə şəhərdə ailəlik ölçüdə peçenye. Hər iş günü cəmi 300 ədəd hazırlayırlar.",
-      "ru": "Печенье размером на всю семью в Старом городе. Их готовят всего 300 штук в рабочий день."
+      "ru": "Печенье размером на всю семью в Старом городе. Их готовят всего 300 штук в рабочий день.",
+      "pt": "Um cookie do tamanho de uma família na Cidade Velha. Fazem apenas 300 por dia útil."
     },
     "mustOrder": [
       "Family size cookie"
@@ -800,7 +829,8 @@
       "et": "Peidetud pärl ARS kunstilinnaku teisel korrusel. Kõik tehakse värskelt ja taimselt, kraam tuleb kohalikest poodidest ning menüü vahetub kord nädalas või tihedaminigi. Mine lõunale.",
       "fi": "Piilohelmi ARS-taidetehtaan toisessa kerroksessa. Kaikki tehdään tuoreena ja kasvipohjaisena paikallisista kaupoista, ja menu vaihtuu viikoittain tai useamminkin. Mene lounaalle.",
       "az": "ARS sənət şəhərciyinin ikinci mərtəbəsində gizli inci. Hər şey təzə və bitki əsaslı hazırlanır, məhsullar yerli mağazalardan gəlir, menyu isə həftədə bir, bəzən daha tez-tez dəyişir. Nahara get.",
-      "ru": "Спрятанная жемчужина на втором этаже арт-квартала ARS. Всё готовят свежим и растительным, продукты из местных магазинов, а меню меняется раз в неделю или чаще. Идите на обед."
+      "ru": "Спрятанная жемчужина на втором этаже арт-квартала ARS. Всё готовят свежим и растительным, продукты из местных магазинов, а меню меняется раз в неделю или чаще. Идите на обед.",
+      "pt": "Uma joia escondida no segundo andar da fábrica de arte ARS. Tudo é feito na hora, à base de plantas e com produtos de lojas locais, e o menu muda todas as semanas ou até mais vezes. Vá ao almoço."
     },
     "mustOrder": [],
     "reel": "",
@@ -824,7 +854,8 @@
       "et": "Väike õllebaar peidus aadressil Lai 8, kus on üle 800 õllesordi kogu maailmast. Alusta kergemast, liigu IPA-de juurde ja lõpeta millegi tumedaga. Küsi baarmenilt. Nad teavad palju ja aitavad valida.",
       "fi": "Pieni olutbaari piilossa osoitteessa Lai 8, ja yli 800 olutlaatua ympäri maailmaa. Aloita kevyestä, etene IPA:n kautta ja lopeta johonkin tummaan. Kysy baarimikolta. He tietävät paljon ja auttavat valitsemaan.",
       "az": "Lai 8-də gizlənmiş, dünyanın hər yerindən 800-dən çox növ pivəsi olan kiçik pivə barı. Yüngüldən başla, IPA-lardan keç, tünd bir şeylə bitir. Barmenə sual ver. Çox şey bilirlər və seçməyə kömək edəcəklər.",
-      "ru": "Маленький пивной бар, спрятанный по адресу Лай 8, где больше 800 сортов пива со всего мира. Начните с лёгкого, пройдите через IPA и закончите чем-то тёмным. Спросите бармена. Они знают много и помогут выбрать."
+      "ru": "Маленький пивной бар, спрятанный по адресу Лай 8, где больше 800 сортов пива со всего мира. Начните с лёгкого, пройдите через IPA и закончите чем-то тёмным. Спросите бармена. Они знают много и помогут выбрать.",
+      "pt": "Um pequeno bar de cerveja escondido na Lai 8 com mais de 800 tipos de cerveja do mundo inteiro. Comece leve, suba pelas IPA e termine em algo escuro. Pergunte ao barman. Eles sabem muito e ajudam a escolher."
     },
     "mustOrder": [
       "Hazy IPA",
@@ -852,7 +883,8 @@
       "et": "Veel üks määratlus sõnale hyggelig. Ülimalt hubane.",
       "fi": "Toinen määritelmä sanalle hyggelig. Superkodikas fiilis.",
       "az": "Hyggelig sözünün başqa bir tərifi. Son dərəcə rahat mühit.",
-      "ru": "Ещё одно определение слова hyggelig. Максимально уютно."
+      "ru": "Ещё одно определение слова hyggelig. Максимально уютно.",
+      "pt": "Outra definição para hyggelig. Uma vibe super aconchegante."
     },
     "mustOrder": [
       "Filter coffee",
@@ -880,7 +912,8 @@
       "et": "Väga hea kana Noblessneris ja kanaburger on see, mida tellida. Võta nende kaart ja kasuta enne maksmist äppi, mis annab soodustust.",
       "fi": "Todella hyvää kanaa Noblessnerissa, ja kanaburgeri on se mikä kannattaa tilata. Hanki heidän korttinsa ja käytä sovellusta alennukseen ennen maksua.",
       "az": "Noblessnerdə həqiqətən yaxşı toyuq, sifariş ediləsi olan isə toyuq burgeridir. Kartlarını götür və ödəməzdən əvvəl tətbiqdən endirim üçün istifadə et.",
-      "ru": "Очень хорошая курица в Ноблесснере, а куриный бургер стоит взять обязательно. Возьмите их карту и используйте приложение перед оплатой, оно даёт скидку."
+      "ru": "Очень хорошая курица в Ноблесснере, а куриный бургер стоит взять обязательно. Возьмите их карту и используйте приложение перед оплатой, оно даёт скидку.",
+      "pt": "Frango muito bom em Noblessner, e o hambúrguer de frango é o pedido certo. Peça o cartão deles e use a app para o desconto antes de pagar."
     },
     "mustOrder": [
       "Chicken burger",
@@ -909,7 +942,8 @@
       "et": "Vegan koht väga heade kringlitega. Pole millegi üle nuriseda. Ülipopulaarne ja seda põhjusega.",
       "fi": "Vegaaninen paikka ja todella hyviä kringeleitä. Täällä ei ole mitään moitittavaa. Valtavan suosittu, ja ansaitusti.",
       "az": "Çox yaxşı kringellər olan vegan məkan. İrad tutmağa bir şey yoxdur. Çox populyardır və səbəbsiz deyil.",
-      "ru": "Веганское место с очень хорошими крингелями. Придраться не к чему. Очень популярно, и заслуженно."
+      "ru": "Веганское место с очень хорошими крингелями. Придраться не к чему. Очень популярно, и заслуженно.",
+      "pt": "Uma casa vegana com kringel muito bom. Não há nada a apontar aqui. Enormemente popular, e com razão."
     },
     "mustOrder": [],
     "reel": "",
@@ -934,7 +968,8 @@
       "et": "Prantsuse pagariäri sadama lähedal.",
       "fi": "Ranskalainen leipomo sataman lähellä.",
       "az": "Limanın yaxınlığında fransız çörəkxanası.",
-      "ru": "Французская пекарня рядом с портом."
+      "ru": "Французская пекарня рядом с портом.",
+      "pt": "Padaria francesa perto do porto."
     },
     "mustOrder": [
       "Pistachio roll"
@@ -961,7 +996,8 @@
       "et": "Lauajalgpall, võileivad, joogid ja saun, kõik ühes kohas. Väga mitmekesine ja täiesti erinev kõigest muust, mida linnas näed. Ilma Google Mapsita on seda raske leida. Kahjuks nüüdseks suletud, aga video jääb üles.",
       "fi": "Pöytäjalkapalloa, voileipiä, juomia ja sauna, kaikki samassa paikassa. Hyvin monipuolinen ja hyvin erilainen kuin mikään muu kaupungissa. Sen löytäminen ilman Google Mapsia on haaste. Valitettavasti nyt suljettu, mutta video jää nettiin.",
       "az": "Stolüstü futbol, sendviçlər, içkilər və sauna, hamısı bir yerdə. Çox rəngarəng, şəhərdə görəcəyin hər şeydən fərqli. Google Maps olmadan tapmaq çətindir. Təəssüf ki, indi bağlanıb, amma video yerində qalır.",
-      "ru": "Настольный футбол, сэндвичи, напитки и сауна, всё в одном месте. Очень разнообразно и совсем не похоже на остальное в городе. Найти его без Google Maps непросто. К сожалению, сейчас закрыто, но видео остаётся."
+      "ru": "Настольный футбол, сэндвичи, напитки и сауна, всё в одном месте. Очень разнообразно и совсем не похоже на остальное в городе. Найти его без Google Maps непросто. К сожалению, сейчас закрыто, но видео остаётся.",
+      "pt": "Matraquilhos, sanduíches, bebidas e uma sauna, tudo no mesmo sítio. Muito variado e muito diferente de tudo o resto na cidade. Encontrá-lo sem o Google Maps é um desafio. Infelizmente já fechou, mas o vídeo fica."
     },
     "mustOrder": [
       "Sandwiches"
@@ -985,7 +1021,8 @@
       "et": "Varem oli gruusia, nüüd mehhiko köök. Alguses ei pruugi see loogiline tunduda, aga iga suutäiega hakkab. Kanataco vajab veel tööd; seenetaco oli parim.",
       "fi": "Ennen georgialainen, nyt meksikolainen. Alussa se ei ehkä käy järkeen, mutta jokaisen suupalan myötä se alkaa käydä. Kanataco kaipaa lisää työtä, sieni oli paras.",
       "az": "Əvvəllər gürcü idi, indi meksika. Əvvəlcə məntiqli görünməyə bilər, amma hər tikə ilə yerinə oturur. Toyuqlu takonun üzərində işləmək lazımdır; göbələkli ən yaxşısı idi.",
-      "ru": "Раньше был грузинским, теперь мексиканский. Сначала это может показаться странным, но с каждым кусочком становится понятнее. Тако с курицей требует доработки; грибной был лучшим."
+      "ru": "Раньше был грузинским, теперь мексиканский. Сначала это может показаться странным, но с каждым кусочком становится понятнее. Тако с курицей требует доработки; грибной был лучшим.",
+      "pt": "Era georgiano, agora é mexicano. Ao início pode não fazer sentido, mas a cada garfada começa a fazer. O taco de frango precisa de mais trabalho; o de cogumelo era o melhor."
     },
     "mustOrder": [
       "Mushroom taco",
@@ -1014,7 +1051,8 @@
       "et": "Hubane vegan-kohvik, kus kohtuvad Aasia ja Euroopa maitsed. Menüüs on soojendav ramen, krõbedad portobello seened ja kodused magustoidud. Sobib ideaalselt rahulikuks pärastlõunaks või teistsuguseks õhtusöögiks.",
       "fi": "Kodikas vegaanikahvila, joka yhdistää virolaisia, aasialaisia ja eurooppalaisia makuja. Lämmittävää ramenia, rapeaa portobelloa ja kotitekoisia jälkiruokia. Loistava paikka hitaalle illalliselle pienellä käänteellä.",
       "az": "Eston, Asiya və Avropa dadlarını birləşdirən rahat vegan kafe. İsindirən ramen, xırtıldayan portobello və ev desertləri. Fərqli bir şeylə yavaş şam yeməyi üçün əla yer.",
-      "ru": "Уютное веганское кафе, сочетающее азиатскую и европейскую кухню. В меню есть согревающий рамен, хрустящие портобелло и домашние десерты. Идеально подойдёт для спокойных встреч или ужина с изюминкой."
+      "ru": "Уютное веганское кафе, сочетающее азиатскую и европейскую кухню. В меню есть согревающий рамен, хрустящие портобелло и домашние десерты. Идеально подойдёт для спокойных встреч или ужина с изюминкой.",
+      "pt": "Um café vegano acolhedor que mistura sabores estónios, asiáticos e europeus. Ramen que aquece, portobello estaladiço e sobremesas caseiras. Um ótimo sítio para um jantar demorado com um toque diferente."
     },
     "mustOrder": [
       "Ramen",
@@ -1043,7 +1081,8 @@
       "et": "Pagariäri Kadriorus, kus magus ja soolane on ühtviisi head. Tavaliselt jooksen sellest kohast mööda, peatuma pani mind lõhn.",
       "fi": "Leipomo Kadriorgissa, jossa makea ja suolainen ovat yhtä hyviä. Yleensä juoksen tämän paikan ohi, ja tuoksu sai minut pysähtymään.",
       "az": "Kadriorqda çörəkxana; şirini də, duzlusu da eyni dərəcədə yaxşıdır. Adətən buranın yanından qaçaraq keçirəm; dayandıran isə ətri oldu.",
-      "ru": "Пекарня в Кадриорге, где сладкое и солёное одинаково хороши. Обычно я пробегаю мимо, но остановил меня запах."
+      "ru": "Пекарня в Кадриорге, где сладкое и солёное одинаково хороши. Обычно я пробегаю мимо, но остановил меня запах.",
+      "pt": "Uma padaria em Kadriorg onde o doce e o salgado são igualmente bons. Costumo passar por aqui a correr, e foi o cheiro que me fez parar."
     },
     "mustOrder": [],
     "reel": "https://www.instagram.com/p/DcVXcSQoeAP/",
@@ -1065,7 +1104,8 @@
       "et": "Kohustuslik pagariäri vanalinnas, kõige parem hommikul, kui kõik on kõige värskem. Tuntud kvaliteetsete sarvesaiade ja magustoitude poolest. Hinnad on kvaliteedi kohta mõistlikud, kuigi kraanivett ei pakuta ja vaiksematel tundidel võib seal liiga vaikne olla.",
       "fi": "Pakko käydä -leipomo vanhassakaupungissa, parhaimmillaan aamulla kun kaikki on tuoreinta. Tunnettu laadukkaista croissanteista ja jälkiruoista. Hinnat ovat laatuun nähden kohtuulliset, joskaan hanavettä ei tarjota ja hiljaisina hetkinä voi tuntua liiankin autiolta.",
       "az": "Köhnə şəhərdə mütləq gedilməli çörəkxana, ən yaxşısı səhər tezdən, hər şey təzə olanda. Yüksək keyfiyyətli kruassan və desertləri ilə tanınır. Keyfiyyətə görə qiymətlər münasibdir, amma kran suyu təklif olunmur və sakit saatlarda həddən artıq sakit hiss oluna bilər.",
-      "ru": "Обязательная пекарня в Старом городе, лучше всего утром, когда всё самое свежее. Известна качественными круассанами и десертами. Цены разумные для такого уровня, хотя воду из-под крана не предлагают, а в тихие часы там бывает слишком пусто."
+      "ru": "Обязательная пекарня в Старом городе, лучше всего утром, когда всё самое свежее. Известна качественными круассанами и десертами. Цены разумные для такого уровня, хотя воду из-под крана не предлагают, а в тихие часы там бывает слишком пусто.",
+      "pt": "Padaria obrigatória na Cidade Velha, melhor de manhã quando está tudo mais fresco. Conhecida pelos croissants e sobremesas de alta qualidade. Os preços são razoáveis para a qualidade, embora não sirvam água da torneira e possa parecer demasiado silenciosa fora das horas de ponta."
     },
     "mustOrder": [
       "Croissant",
@@ -1094,7 +1134,8 @@
       "et": "Mikkeller on käsitööõlle üks suurimaid nimesid ja siin käib selle juurde ka päris toit. Kööki peab Viljandi Burger, mis teeb sellest väga hea kombinatsiooni.",
       "fi": "Mikkeller on yksi käsityöoluen suurimmista nimistä, ja tämä yhdistää sen oikeaan ruokaan. Keittiöstä vastaa Viljandi Burger, mikä tekee siitä erittäin hyvän yhdistelmän.",
       "az": "Mikkeller kraft pivənin ən böyük adlarından biridir və burada onun yanına əsl yemək də gəlir. Mətbəxi Viljandi Burger idarə edir, bu da çox yaxşı bir birləşmədir.",
-      "ru": "Mikkeller одно из крупнейших имён в крафтовом пиве, и здесь к нему прилагается настоящая еда. Кухней заведует Viljandi Burger, и получается очень удачное сочетание."
+      "ru": "Mikkeller одно из крупнейших имён в крафтовом пиве, и здесь к нему прилагается настоящая еда. Кухней заведует Viljandi Burger, и получается очень удачное сочетание.",
+      "pt": "A Mikkeller é um dos maiores nomes da cerveja artesanal, e esta casa junta isso a comida a sério. A cozinha é da Viljandi Burger, o que faz disto uma combinação muito boa."
     },
     "mustOrder": [],
     "reel": "",
@@ -1119,7 +1160,8 @@
       "et": "Fine dining kogemus vanalinnas lõunahinnaga. Võta kolmekäiguline lõunamenüü.",
       "fi": "Fine dining -kokemus vanhassakaupungissa lounashintaan. Ota kolmen ruokalajin lounasmenu.",
       "az": "Köhnə şəhərdə nahar qiymətinə yüksək mətbəx təcrübəsi. Üç yeməklik nahar menyusunu götür.",
-      "ru": "Опыт высокой кухни в Старом городе по обеденным ценам. Берите обед из трёх блюд."
+      "ru": "Опыт высокой кухни в Старом городе по обеденным ценам. Берите обед из трёх блюд.",
+      "pt": "Uma experiência de alta gastronomia na Cidade Velha a preço de almoço. Vá pelo menu de almoço de três pratos."
     },
     "mustOrder": [
       "Three-course lunch menu"
@@ -1146,7 +1188,8 @@
       "et": "Uus tulija Telliskivil ja juba teine koht tee kategoorias Helsingi tee- ja kohvifestivalil. Tule matcha ja hojicha pärast.",
       "fi": "Uusi tulokas Telliskivessä ja jo toinen sija teessä Helsingin tee- ja kahvifestivaaleilla. Tule matchan ja hojichan takia.",
       "az": "Telliskividə yeni açılıb və artıq Helsinki çay və qəhvə festivalında çay üzrə ikinci yeri tutub. Matça və hocça üçün gəlin.",
-      "ru": "Новичок в Теллискиви, уже взявший второе место по чаю на хельсинкском чайно-кофейном фестивале. Приходите за матчей и ходзитей."
+      "ru": "Новичок в Теллискиви, уже взявший второе место по чаю на хельсинкском чайно-кофейном фестивале. Приходите за матчей и ходзитей.",
+      "pt": "Novo em Telliskivi e já com o segundo lugar em chá no festival de chá e café de Helsínquia. Venha pelo matcha e pelo hojicha."
     },
     "mustOrder": [
       "Matcha",
@@ -1173,7 +1216,8 @@
       "et": "Alkoholivaba pudelipood tõsise valikuga. Suurepärane kombucha, Proxy joogid ja alkoholivabad veinid, nii et keegi lauas ei pea vee peale jääma.",
       "fi": "Alkoholiton juomakauppa vakavasti otettavalla valikoimalla. Mahtavaa kombuchaa, Proxy-juomia ja alkoholittomia viinejä, joten kenenkään pöydässä ei tarvitse tyytyä veteen.",
       "az": "Ciddi seçimi olan alkoqolsuz içki mağazası. Möhtəşəm kombuça, Proxy içkiləri və alkoqolsuzlaşdırılmış şərablar, beləcə süfrədə heç kim su ilə kifayətlənmir.",
-      "ru": "Магазин безалкогольных напитков с серьёзной подборкой. Отличная комбуча, напитки Proxy и вина без алкоголя, так что никому за столом не придётся довольствоваться водой."
+      "ru": "Магазин безалкогольных напитков с серьёзной подборкой. Отличная комбуча, напитки Proxy и вина без алкоголя, так что никому за столом не придётся довольствоваться водой.",
+      "pt": "Uma loja de bebidas sem álcool com uma carta a sério. Kombucha incrível, bebidas Proxy e vinhos desalcoolizados, para que ninguém à mesa tenha de se contentar com água."
     },
     "mustOrder": [
       "Kombucha",
@@ -1200,7 +1244,8 @@
       "et": "Ehitatud 1912. aastal suure Tallinna paberivabriku tuletõrjedepooks. Täna on see üks Euroopa 30 parima kohviku hulgas.",
       "fi": "Rakennettu vuonna 1912 valtavan tallinnalaisen paperitehtaan paloasemaksi. Tänään se on Euroopan 30 parhaan kahvilan joukossa.",
       "az": "1912-ci ildə Tallinin nəhəng kağız fabriki üçün yanğın deposu kimi tikilib. Bu gün Avropanın ən yaxşı 30 qəhvəxanasından biridir.",
-      "ru": "Построено в 1912 году как пожарное депо для большой таллиннской бумажной фабрики. Сегодня это одна из 30 лучших кофеен Европы."
+      "ru": "Построено в 1912 году как пожарное депо для большой таллиннской бумажной фабрики. Сегодня это одна из 30 лучших кофеен Европы.",
+      "pt": "Construído em 1912 como o quartel de bombeiros de uma enorme fábrica de papel de Tallinn. Hoje é uma das 30 melhores casas de café da Europa."
     },
     "mustOrder": [
       "Batch brew",
@@ -1227,7 +1272,8 @@
       "et": "Pilsner Urquelli valatakse kolmel eri moel ja just selle pärast siia tullaksegi. Korralik Tšehhi õlu ja mõnus aed, kus seda juua.",
       "fi": "Kolme eri tapaa laskea Pilsner Urquellia, mikä on koko syy tulla. Kunnon tšekkiläistä olutta ja mukava piha jossa juoda se.",
       "az": "Pilsner Urquell üç fərqli üsulla süzülür və bura gəlməyin əsas səbəbi elə budur. Əsl Çex pivəsi və onu içmək üçün gözəl bağça.",
-      "ru": "Pilsner Urquell наливают тремя разными способами, ради этого сюда и идут. Настоящее чешское пиво и приятный сад, где его пить."
+      "ru": "Pilsner Urquell наливают тремя разными способами, ради этого сюда и идут. Настоящее чешское пиво и приятный сад, где его пить.",
+      "pt": "Três formas diferentes de tirar uma Pilsner Urquell, que é a razão inteira para vir. Cerveja checa como deve ser, e um pátio simpático para a beber."
     },
     "mustOrder": [],
     "reel": "",
@@ -1251,7 +1297,8 @@
       "et": "Gruusia toit, palju maitset ja heldelt suured portsjonid. Hinnad on väga mõistlikud, ideaalne sõpradega jagamiseks, ja toit näeb sama hea välja kui maitseb.",
       "fi": "Georgialaista ruokaa, vahvaa makua ja anteliaita annoksia. Annokset ovat isoja ja hinnat hyvin kohtuullisia, täydellinen jakamiseen ystävien kanssa, ja ruoka näyttää yhtä valokuvauskelpoiselta kuin maistuu.",
       "az": "Dadı güclü, porsiyası bol gürcü yeməkləri. Porsiyalar böyük, qiymətlər çox münasibdir, dostlarla bölüşmək üçün mükəmməldir, üstəlik yeməklər dadı qədər də fotogenik görünür.",
-      "ru": "Грузинская еда, много вкуса и щедрые размеры. Порции большие, цены очень разумные, идеально делиться с друзьями, и еда выглядит так же хорошо, как и на вкус."
+      "ru": "Грузинская еда, много вкуса и щедрые размеры. Порции большие, цены очень разумные, идеально делиться с друзьями, и еда выглядит так же хорошо, как и на вкус.",
+      "pt": "Comida georgiana, forte no sabor e generosa no tamanho. As doses são grandes e os preços muito razoáveis, perfeito para partilhar com amigos, e a comida é tão fotogénica quanto saborosa."
     },
     "mustOrder": [
       "Tšašušuli",
@@ -1280,7 +1327,8 @@
       "et": "Korralikult peidus pagariäri Manufaktuuri kvartalis ja küpsetised on otsimist väärt. Käisin korra, lähen kindlasti tagasi.",
       "fi": "Kunnolla piilossa oleva leipomo Manufaktuurin korttelissa, ja leivonta on etsimisen arvoista. Käyty kerran, menen uudestaan.",
       "az": "Manufaktuuri məhəlləsində əməlli-başlı gizlənmiş çörəkxana və bişmişləri axtarmağa dəyər. Bir dəfə getmişəm, yenə gedəcəyəm.",
-      "ru": "Как следует спрятанная пекарня в квартале Manufaktuuri, и выпечка стоит того, чтобы её найти. Был один раз, вернусь."
+      "ru": "Как следует спрятанная пекарня в квартале Manufaktuuri, и выпечка стоит того, чтобы её найти. Был один раз, вернусь.",
+      "pt": "Uma padaria bem escondida no quarteirão de Manufaktuuri, e a pastelaria compensa a procura. Fui uma vez, vou voltar."
     },
     "mustOrder": [],
     "reel": "",
@@ -1304,7 +1352,8 @@
       "et": "Hea koht, kuhu seltskonnaga tulla ja õhtuks pidama jääda. Väga hea Guinness ja asub otse Telliskivil.",
       "fi": "Hyvä paikka tuoda porukka ja asettua illaksi. Todella hyvää Guinnessia, ja se on siinä Telliskivessä.",
       "az": "Dost qrupu ilə gəlib axşamı keçirmək üçün yaxşı yer. Guinness həqiqətən gözəldir, özü də elə Telliskividədir.",
-      "ru": "Хорошее место, чтобы прийти компанией и остаться на вечер. Очень хороший Guinness, и всё это прямо в Telliskivi."
+      "ru": "Хорошее место, чтобы прийти компанией и остаться на вечер. Очень хороший Guinness, и всё это прямо в Telliskivi.",
+      "pt": "Um bom sítio para levar um grupo e ficar pela noite. Guinness muito boa, e está ali mesmo em Telliskivi."
     },
     "mustOrder": [],
     "reel": "",
@@ -1329,7 +1378,8 @@
       "et": "Käsitsi tehtud juuretisesaiad, mida küpsetavad ema ja tütar vanalinna südames. Koht on nagu elutuba ja võid sattuda hetkele, kui värske partii ahjust tuleb.",
       "fi": "Käsintehtyjä hapanjuuripullia, joita äiti ja tytär leipovat keskellä vanhaakaupunkia. Paikka tuntuu olohuoneelta, ja saatat osua kohdalle kun tuore satsi tulee uunista.",
       "az": "Köhnə şəhərin mərkəzində ana və qızın bişirdiyi əl işi maya çörəkləri. Yer qonaq otağı kimi hiss olunur və sobadan təzə çıxan partiyaya rast gələ bilərsən.",
-      "ru": "Домашние булочки на закваске, которые пекут мама с дочкой в самом сердце Старого города. Место похоже на гостиную, и можно застать момент, когда из печи выходит свежая партия."
+      "ru": "Домашние булочки на закваске, которые пекут мама с дочкой в самом сердце Старого города. Место похоже на гостиную, и можно застать момент, когда из печи выходит свежая партия.",
+      "pt": "Pães de massa mãe feitos à mão por uma mãe e uma filha no coração da Cidade Velha. O lugar parece uma sala de estar, e pode calhar apanhar uma fornada a sair do forno."
     },
     "mustOrder": [
       "Cinnamon bun",
@@ -1357,7 +1407,8 @@
       "et": "Põhjala oma baar Telliskivil, kus nende õllede kõrval on ka palju muud käsitööõlut. Kui rõdu on vaba, istu sinna.",
       "fi": "Põhjalan oma baari Telliskivessä, jossa heidän oluitaan kaadetaan monen muun pienpanimotuotteen rinnalla. Ota parveke jos se on vapaa.",
       "az": "Põhjala-nın Telliskivideki öz barı. Öz pivələri ilə yanaşı çoxlu başqa kraft pivə də var. Balkon boşdursa, orada otur.",
-      "ru": "Собственный бар Põhjala в Telliskivi: их пиво плюс много другого крафта. Если балкон свободен, садитесь там."
+      "ru": "Собственный бар Põhjala в Telliskivi: их пиво плюс много другого крафта. Если балкон свободен, садитесь там.",
+      "pt": "O bar da própria Põhjala em Telliskivi, a tirar as cervejas deles ao lado de muita outra artesanal. Fique na varanda se estiver livre."
     },
     "mustOrder": [],
     "reel": "",
@@ -1381,7 +1432,8 @@
       "et": "Tartu käsitööpruulikoja taproom Rotermanni käidaval tänaval. Nende double IPA-d on põhjus kohale tulla ja Silveri sari väärib samuti proovimist.",
       "fi": "Tartolainen pienpanimo, jonka taproom on vilkkaalla Rotermanni-kadulla. Heidän double IPA:nsa ovat syy tulla, ja Silver-sarja on myös tutustumisen arvoinen.",
       "az": "Tartu kraft zavodunun Rotermannideki hərəkətli küçədə yerləşən taproom-u. Onların double IPA-ları gəlməyin əsas səbəbidir, Silver seriyası da baxmağa dəyər.",
-      "ru": "Тартуская крафтовая пивоварня с тэпрумом на оживлённой улице в Ротерманни. Их double IPA главная причина зайти, а коллекция Silver тоже стоит внимания."
+      "ru": "Тартуская крафтовая пивоварня с тэпрумом на оживлённой улице в Ротерманни. Их double IPA главная причина зайти, а коллекция Silver тоже стоит внимания.",
+      "pt": "Uma cervejeira artesanal de Tartu com taproom na movimentada rua Rotermann. As double IPA deles são a razão para vir, e a coleção Silver também merece uma olhada."
     },
     "mustOrder": [],
     "reel": "",
@@ -1404,7 +1456,8 @@
       "et": "Jagamine on hoolimine, see on siin moto ja ühtlasi õige viis süüa. Mine ja jaga kõike, mida menüüs näed. Sa tänad mind ja su sõbrad samuti.",
       "fi": "Sharing is caring on täällä motto, ja se on oikea tapa syödä. Mene vain ja jaa mitä ikinä menusta löydät. Kiität minua, ja niin kiittävät ystäväsikin.",
       "az": "Burada şüar bölüşməkdir və yemək üçün doğru yol elə budur. Sadəcə get və menyuda gördüyün nə varsa bölüş. Mənə də, dostlarına da təşəkkür edəcəksən.",
-      "ru": "Делиться значит заботиться, таков здесь девиз, и это правильный способ есть. Просто идите и делите всё, что видите в меню. Вы скажете мне спасибо, и ваши друзья тоже."
+      "ru": "Делиться значит заботиться, таков здесь девиз, и это правильный способ есть. Просто идите и делите всё, что видите в меню. Вы скажете мне спасибо, и ваши друзья тоже.",
+      "pt": "Sharing is caring é o lema aqui, e é mesmo a forma certa de comer. Vá e partilhe o que vir no menu. Vai agradecer-me, e os seus amigos também."
     },
     "mustOrder": [
       "Whatever the table can share"
@@ -1431,7 +1484,8 @@
       "et": "Minu lemmiktoit on alati olnud supp ja see on olnud kodukandi koht. Teenindus ja hind on suurepärased; maitse on pigem korralik kui vapustav.",
       "fi": "Keitto on aina ollut minun ruokani, ja tämä on ollut se oman kulmakunnan paikka. Palvelu ja hinta ovat erinomaisia, maku on vankka mutta ei häikäisevä.",
       "az": "Həmişə şorba mənim seçdiyim yemək olub və bura da məhəllə yerim idi. Xidmət və qiymət əladır; dad isə heyranedici yox, sadəcə möhkəmdir.",
-      "ru": "Моя любимая еда всегда была супом, и это место в моём районе. Сервис и цена отличные; вкус скорее добротный, чем выдающийся."
+      "ru": "Моя любимая еда всегда была супом, и это место в моём районе. Сервис и цена отличные; вкус скорее добротный, чем выдающийся.",
+      "pt": "A minha refeição de sempre foi sopa, e este tem sido o sítio do bairro. O serviço e o preço são excelentes; o sabor é sólido, sem ser espetacular."
     },
     "mustOrder": [
       "Yuzu Hakata ramen"
@@ -1458,7 +1512,8 @@
       "et": "India köök Gonsiori tänaval. Supp, võinaan, küüslaugunaan, eriline safraninaan, magustoit, kana saagwala. Kõik söödi viimse tükini ära. Vaatasin teisi laudu ja kõik olid oma toidu täiesti lõpetanud. See on märk.",
       "fi": "Intialainen keittiö Gonsiorilla. Keittoa, voinaania, valkosipulinaania, erityistä saframinaania, jälkiruokaa, chicken saagwalaa. Kaikki syötiin viimeiseen palaan. Katsoin muita pöytiä ja kaikki olivat syöneet annoksensa loppuun. Se on merkki.",
       "az": "Gonsioridə hind mətbəxi. Şorba, kərə yağlı naan, sarımsaqlı naan, xüsusi zəfəranlı naan, desert, toyuqlu saagwala. Hər şey son tikəyə qədər yeyildi. Digər masalara baxdım, hamı yeməyini tamam bitirmişdi. Bu, bir işarədir.",
-      "ru": "Индийская кухня на улице Гонсиори. Суп, наан с маслом, чесночный наан, особый шафрановый наан, десерт, курица саагвала. Всё съели до последнего кусочка. Я посмотрел на соседние столы, и там тоже всё доели. Это знак."
+      "ru": "Индийская кухня на улице Гонсиори. Суп, наан с маслом, чесночный наан, особый шафрановый наан, десерт, курица саагвала. Всё съели до последнего кусочка. Я посмотрел на соседние столы, и там тоже всё доели. Это знак.",
+      "pt": "Uma cozinha indiana na Gonsiori. Sopa, naan de manteiga, naan de alho, o naan especial de açafrão, sobremesa, chicken saagwala. Comeu-se tudo até ao último pedaço. Olhei para as outras mesas e toda a gente tinha acabado a comida por completo. Isso é um sinal."
     },
     "mustOrder": [
       "Chicken saagwala",
@@ -1487,7 +1542,8 @@
       "et": "Türgi kebabilett Linnamäel. Alates firmaroogadest kuni uute asjadeni proovisime kõike. Iga sent on seda väärt.",
       "fi": "Turkkilainen kebabtiski Linnamäellä. Talon klassikoista uutuuksiin, kokeilimme kaiken. Jokaisen sentin arvoinen.",
       "az": "Linnamäedə türk kebab piştaxtası. İmza yeməklərindən yeni əlavələrə qədər hamısını sınadıq. Hər qəpiyinə dəyər.",
-      "ru": "Турецкая кебабная в Линнамяэ. От фирменных блюд до новинок, мы попробовали всё. Каждый цент того стоит."
+      "ru": "Турецкая кебабная в Линнамяэ. От фирменных блюд до новинок, мы попробовали всё. Каждый цент того стоит.",
+      "pt": "Um balcão de kebab turco lá em Linnamäe. Dos pratos da casa às novidades, provámos tudo. Vale cada cêntimo."
     },
     "mustOrder": [
       "Shaurma",
@@ -1517,7 +1573,8 @@
       "et": "Kohviröstikoda, kus on tõeliselt hea toit ja ruumil mõnus tunnetus. Üks paremaid kohti linnas, kuhu kohtingule minna.",
       "fi": "Kahvipaahtimo, jossa on aidosti hyvää ruokaa ja hieno tunnelma. Yksi kaupungin parhaista paikoista viedä treffit.",
       "az": "Həqiqətən yaxşı yeməyi və gözəl havası olan qəhvə qovurma evi. Şəhərdə görüşə getmək üçün ən yaxşı yerlərdən biridir.",
-      "ru": "Обжарочная кофейня с по-настоящему хорошей едой и приятной атмосферой. Одно из лучших мест в городе для свидания."
+      "ru": "Обжарочная кофейня с по-настоящему хорошей едой и приятной атмосферой. Одно из лучших мест в городе для свидания.",
+      "pt": "Uma torrefação de café com comida genuinamente boa e uma sala com uma ótima atmosfera. Um dos melhores sítios da cidade para levar um encontro."
     },
     "mustOrder": [],
     "reel": "",
@@ -1540,7 +1597,8 @@
       "et": "Kui tahad proovida korralikke käsitööõllesid. DDH, topelt-IPA, smuutiõlled, kõik korraga.",
       "fi": "Jos haluat kokeilla kunnon pienpanimo-oluita. DDH, double IPA, smoothie-oluet, kaikkea kerralla.",
       "az": "Yaxşı kraft pivələr sınamaq istəyirsənsə. DDH, double IPA, smoothie pivələr, hamısı bir yerdə.",
-      "ru": "Если хотите попробовать достойное крафтовое пиво. DDH, двойной IPA, смузи-пиво, всё сразу."
+      "ru": "Если хотите попробовать достойное крафтовое пиво. DDH, двойной IPA, смузи-пиво, всё сразу.",
+      "pt": "Se quiser provar umas artesanais decentes. DDH, double IPA, cervejas smoothie, tudo ao mesmo tempo."
     },
     "mustOrder": [],
     "reel": "https://www.instagram.com/p/DMvZEVWz9ym/",
@@ -1565,7 +1623,8 @@
       "et": "Kesklinna kõige odavam õlu. Üle kahekümne kraani ja külmik veel täis, ning kõrvalt saab tellida kebabi, mida baaris süüa.",
       "fi": "Keskustan halvin olut. Yli kaksikymmentä hanaa ja jääkaappi täynnä lisää, ja voit tilata kebabin naapurista syötäväksi baarissa.",
       "az": "Mərkəzdə ən ucuz pivə. İyirmidən çox kran və daha çoxu ilə dolu soyuducu; üstəlik qonşudan kabab sifariş edib barda yeyə bilərsən.",
-      "ru": "Самое дешёвое пиво в центре. Больше двадцати кранов и полный холодильник в придачу, а кебаб можно заказать по соседству и съесть прямо в баре."
+      "ru": "Самое дешёвое пиво в центре. Больше двадцати кранов и полный холодильник в придачу, а кебаб можно заказать по соседству и съесть прямо в баре.",
+      "pt": "A cerveja mais barata do centro. Mais de vinte torneiras e um frigorífico cheio de mais, e pode pedir um kebab ao lado para comer no bar."
     },
     "mustOrder": [
       "Whatever's on tap"
@@ -1592,7 +1651,8 @@
       "et": "Käsitööpruulikoda ja taproom kesklinnast korralikult eemal, praegu päris hästi peidus. Bussi või rattaga saab kohale ja see tasub sõitu.",
       "fi": "Pienpanimo ja taproom kaukana keskustasta, ja tällä hetkellä kunnolla piilossa. Saavutettavissa bussilla tai pyörällä, ja matkan arvoinen.",
       "az": "Mərkəzdən xeyli uzaqda, hazırda əməlli-başlı gizlənmiş kraft zavodu və taproom. Avtobus və ya velosipedlə çatmaq olar, yolun da dəyəri var.",
-      "ru": "Крафтовая пивоварня с тэпрумом далеко от центра, сейчас как следует спрятанная. Добраться можно на автобусе или на велосипеде, и оно того стоит."
+      "ru": "Крафтовая пивоварня с тэпрумом далеко от центра, сейчас как следует спрятанная. Добраться можно на автобусе или на велосипеде, и оно того стоит.",
+      "pt": "Uma cervejeira artesanal com taproom bem longe do centro, e neste momento bem escondida. Dá para chegar de autocarro ou de bicicleta, e vale a viagem."
     },
     "mustOrder": [],
     "reel": "",
@@ -1616,7 +1676,8 @@
       "et": "Hubane kohalik pubi vanakooli hõnguga, suured portsjonid ja odav õlu. Avatud hilja.",
       "fi": "Kodikas kulmapubi vanhan koulukunnan meiningillä, isoilla annoksilla ja halvalla oluella. Auki myöhään.",
       "az": "Köhnə məktəb ruhu, böyük porsiyaları və ucuz pivəsi olan rahat yerli pab. Gec saatlara qədər açıqdır.",
-      "ru": "Уютный местный паб со старой школой, большие порции и дешёвое пиво. Открыт допоздна."
+      "ru": "Уютный местный паб со старой школой, большие порции и дешёвое пиво. Открыт допоздна.",
+      "pt": "Um pub de bairro acolhedor, com ares antigos, doses grandes e cerveja barata. Aberto até tarde."
     },
     "mustOrder": [
       "Beer",
@@ -1644,7 +1705,8 @@
       "et": "Ma ei maininud videos teenindust ja inimesi, aga usu mind, nemad on restorani parim osa. Ilma suurepärase meeskonnata poleks see võimalik.",
       "fi": "En maininnut videolla palvelua enkä ihmisiä, mutta usko pois, he ovat ravintolan paras osa. Ilman mahtavaa tiimiä se ei olisi mahdollista.",
       "az": "Videoda xidmətdən və insanlardan danışmadım, amma inanın ki, restoranın ən yaxşı hissəsi elə onlardır. Möhtəşəm komanda olmasa, bu mümkün olmazdı.",
-      "ru": "Я не упомянул в видео сервис и людей, но поверьте, они лучшая часть ресторана. Без прекрасной команды это было бы невозможно."
+      "ru": "Я не упомянул в видео сервис и людей, но поверьте, они лучшая часть ресторана. Без прекрасной команды это было бы невозможно.",
+      "pt": "Não falei do serviço nem das pessoas no vídeo, mas acreditem, são a melhor parte do restaurante. Sem uma equipa incrível não seria possível."
     },
     "mustOrder": [
       "Beef tartare",
@@ -1672,7 +1734,8 @@
       "et": "Hiina köök Balti jaama kõrval ja käsitsi tõmmatud biang biang nuudlid on põhjus, miks siia tulla. Üks nuudel, meetreid pikk, tšillioli ja rohelise sibulaga ning puljong kõrvale. Krõbe seakõht on teine asi, mida kõik tellivad.",
       "fi": "Kiinalaista ruokaa Balti jaamin kupeessa, ja käsin vedetyt biang biang -nuudelit ovat syy tulla. Yksi nuudeli, metrien mittainen, chiliöljyssä ja kevätsipulissa, liemi erikseen. Rapea porsaankylki on se toinen, jonka kaikki tilaavat.",
       "az": "Balti jaamın yanında Çin mətbəxi, gəlməyə dəyər səbəb isə əllə çəkilmiş biang biang əriştəsidir. Bir dənə əriştə, metrlərlə uzun, acı yağ və göy soğanla, yanında da bulyon. Xırtıldayan donuz döşü isə hamının sifariş etdiyi digər yeməkdir.",
-      "ru": "Китайская кухня рядом с Балтийским вокзалом, и ручной работы лапша бянбян это причина сюда прийти. Одна лапшина длиной в несколько метров, в чили-масле с зелёным луком и бульоном отдельно. Хрустящая свиная грудинка это второе, что заказывают все."
+      "ru": "Китайская кухня рядом с Балтийским вокзалом, и ручной работы лапша бянбян это причина сюда прийти. Одна лапшина длиной в несколько метров, в чили-масле с зелёным луком и бульоном отдельно. Хрустящая свиная грудинка это второе, что заказывают все.",
+      "pt": "Cozinha chinesa junto à Balti jaam, e os noodles biang biang puxados à mão são a razão para vir. Um único noodle, com metros de comprimento, em óleo de chili e cebolinho, com um caldo à parte. A barriga de porco estaladiça é o outro que toda a gente pede."
     },
     "mustOrder": [
       "Biang biang noodles",
