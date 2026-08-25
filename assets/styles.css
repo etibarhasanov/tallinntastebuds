@@ -564,26 +564,6 @@ a:hover { color: var(--accent-lit); }
   color: var(--paper);
 }
 
-/* The one filter that is not a type: it asks a different question, so it sits
-   outside the scrolling row, pinned to the left of it behind a hairline. On a
-   phone that keeps it reachable when the type chips have scrolled away. */
-.chip-video {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-.chip-video svg {
-  width: 9px;
-  height: 9px;
-  fill: currentColor;
-}
-.filter-split {
-  flex: 0 0 auto;
-  width: 1px;
-  height: 20px;
-  background: var(--hairline);
-}
-
 /* ==========================================================================
    The signature: the price gauge.
    Four slots, always four. Filled slots in accent, the rest ghosted in

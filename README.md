@@ -125,28 +125,6 @@ or to your user settings:
 
 ---
 
-## The reel toggle
-
-`With reel` sits to the left of the chip row, behind a hairline, because it
-asks a different question from the rest: not what kind of evening, but whether
-there is something to watch. Pressed, it hides every place whose `reel` is
-empty. 43 of the 62 have one.
-
-It is a filter like any other and stacks with the chips: `With reel` plus
-`Bakery` means filmed bakeries. The one TikTok on the map counts as a reel
-here: the button is asking whether there is something to watch, and splitting
-the two would mean a filter with one place behind it. It rides in the URL as `?video=1`, so a link
-can carry it, and it reports a `filter_video` event.
-
-Two details worth knowing:
-
-- It lives outside the scrolling `.filters` row, so it stays put on a phone
-  when the type chips have scrolled away. It costs about 117px of a 390px
-  screen, which still leaves All, Casual/Solo and Bakery in view.
-- The place whose panel is open always keeps its pin, filters or not.
-  Otherwise a shared link to an unfilmed place, opened with the toggle on,
-  would show a panel pointing at an empty map.
-
 ## The order of the filter chips
 
 The chips appear in the order the types are written in `data/taxonomy.json`,
@@ -569,7 +547,6 @@ reported as events instead, from `trackEvent()` beside `trackView()`:
 | --- | --- |
 | `filter_select` | `filter_id`, `filter_state` (`on`/`off`), `filters`, `filter_count`, `places_shown` |
 | `filter_clear` | `filters`, `filter_count`, `places_shown` |
-| `filter_video` | `filter_state` (`on`/`off`), `filmed_only`, `places_shown` |
 | `language_select` | `language` |
 | `style_select` | `style` |
 | `random_pick` | `place`, `pool` |
@@ -583,10 +560,9 @@ numbers down by a parameter — which chip, which language — register it once 
 **Admin → Custom definitions** as a custom dimension; GA only collects
 parameters from that point on, so it is worth doing early.
 
-The chips are also in the URL now, as `?type=bakery,vegan`, and the video
-toggle as `?video=1`. A filtered map is a link worth sending, and the landing
-page view GA records for it names the filters, so shared filtered links show up
-in **Pages and screens** too.
+The chips are also in the URL now, as `?type=bakery,vegan`. A filtered map is
+a link worth sending, and the landing page view GA records for it names the
+filters, so shared filtered links show up in **Pages and screens** too.
 
 To remove tracking entirely, delete the gtag block from `index.html` and the
 `trackView` and `trackEvent` functions from `assets/app.js`; their call sites

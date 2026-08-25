@@ -48,7 +48,6 @@
     stylePinned: false,
     lastPick: null,
     active: [],          // selected type ids, OR semantics; empty means "All"
-    filmed: false,       // true hides everything without a reel
     selected: null,      // restaurant id, or null
     view: 'list',        // 'list' | 'detail'
     lastFocus: null,
@@ -599,25 +598,14 @@
       .filter(function (id) { return used[id]; });
   }
 
-  /* Two questions, asked separately and answered together: the type chips
-     say what kind of evening, the video toggle says whether there is
-     something to watch. A place has to pass both. */
   function visiblePlaces() {
-    var list = state.filmed
-      ? state.places.filter(function (p) { return !!p.reel; })
-      : state.places;
-    if (!state.active.length) return list.slice();
-    return list.filter(function (p) {
+    if (!state.active.length) return state.places.slice();
+    return state.places.filter(function (p) {
       return (p.types || []).some(function (id) { return state.active.indexOf(id) !== -1; });
     });
   }
 
-  function markVideoToggle() {
-    if (dom.btnVideo) dom.btnVideo.setAttribute('aria-pressed', String(state.filmed));
-  }
-
   function renderFilters() {
-    markVideoToggle();
     clear(dom.filters);
 
     var all = el('button', {
@@ -757,8 +745,8 @@
       if (p.id !== state.selected) pool.push(p);
     });
     /* Whatever the filters say, the place whose panel is open keeps its pin.
-       A shared link to an unfilmed place, opened with the video toggle on,
-       would otherwise show a panel pointing at nothing. */
+       A shared link to a place the chips exclude would otherwise open a panel
+       pointing at nothing. */
     if (state.selected) alone[state.selected] = true;
 
     clearClusters();
@@ -790,13 +778,9 @@
     var params = {
       filters: state.active.length ? state.active.slice().sort().join(',') : 'all',
       filter_count: state.active.length,
-      filmed_only: state.filmed,
       places_shown: visiblePlaces().length
     };
-    if (change && change.video) {
-      params.filter_state = state.filmed ? 'on' : 'off';
-      trackEvent('filter_video', params);
-    } else if (change) {
+    if (change) {
       params.filter_id = change.id;
       params.filter_state = change.on ? 'on' : 'off';
       trackEvent('filter_select', params);
@@ -1392,8 +1376,6 @@
        and the landing view GA records for it says which filters it was. */
     if (state.active.length) params.set('type', state.active.join(','));
     else params.delete('type');
-    if (state.filmed) params.set('video', '1');
-    else params.delete('video');
     if (state.langPinned) params.set('lang', state.lang);
     else params.delete('lang');
     if (state.stylePinned) params.set('style', state.style);
@@ -1464,11 +1446,6 @@
     });
 
     dom.btnRandom.addEventListener('click', randomPick);
-
-    dom.btnVideo.addEventListener('click', function () {
-      state.filmed = !state.filmed;
-      applyFilters({ video: true });
-    });
 
     dom.panelClose.addEventListener('click', closePanel);
     wireSheet();
@@ -1686,7 +1663,6 @@
       panelScroll: $('panel-scroll'),
       panelClose: $('panel-close'),
       sheetGrip: $('sheet-grip'),
-      btnVideo: $('btn-video'),
       detail: $('panel-detail'),
       list: $('panel-list'),
       btnList: $('btn-list'),
@@ -1719,7 +1695,6 @@
       state.langPinned = chosen.pinned;
 
       /* Chips before the map, so the opening view fits the filtered set. */
-      state.filmed = new URLSearchParams(window.location.search).get('video') === '1';
       var picked = new URLSearchParams(window.location.search).get('type');
       if (picked) {
         var live = usedTypeIds();

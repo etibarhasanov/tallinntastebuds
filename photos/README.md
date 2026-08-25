@@ -36,7 +36,7 @@ here, and warns about folders here that no place points at.
 
 A photo straight off a phone is 4 to 8 MB and around 5000px wide. That is 20
 times more than this site can use, and it would sit in the git history for
-good. The recipe, which turned a 6.7 MB Kalve photo into 232 KB:
+good. The recipe, which turned a 6.7 MB phone photo into 232 KB:
 
 ```python
 # pip install pillow
