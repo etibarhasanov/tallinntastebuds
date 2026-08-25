@@ -66,5 +66,11 @@ Three things are doing the work, and each matters on its own:
 no visible difference. If a photo still lands over 300 KB at 75, drop the long
 edge to 1400 rather than the quality.
 
+A frame full of leaves is the expensive one. Foliage is high frequency detail
+everywhere at once, which is exactly what a lossy codec cannot cheat on: one
+tree photo here was still 399 KB at 1400 and only came under the line at 1200
+and quality 70. That is the order to try it in, edge first and quality second,
+and leaves are where quality 70 hides best anyway.
+
 No Python to hand: [squoosh.app](https://squoosh.app/) does the same three
 things in a browser tab and uploads nothing.
