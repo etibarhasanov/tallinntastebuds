@@ -1644,6 +1644,36 @@
     "closed": false
   },
   {
+    "id": "telliskivi-saslokk",
+    "name": "Telliskivi Šašlõkk",
+    "address": "Telliskivi tn 62, 10412 Tallinn",
+    "lat": 59.4405498,
+    "lng": 24.7304552,
+    "price": 2,
+    "types": [
+      "casual",
+      "caucasian"
+    ],
+    "blurb": {
+      "en": "Turkish cooking on the Telliskivi corner, and they bake their own bread. The lahmajun is the one to order.",
+      "et": "Türgi köök Telliskivi nurgal, ja leiva küpsetavad nad ise. Lahmadžuun on see, mida tellida.",
+      "fi": "Turkkilaista keittiötä Telliskiven kulmassa, ja leivän he leipovat itse. Lahmacun on se, joka kannattaa tilata.",
+      "az": "Telliskivi küncündə Türk mətbəxi, çörəyi də özləri bişirirlər. Sifariş verməli olduğunuz şey lahmacundur.",
+      "ru": "Турецкая кухня на углу Теллискиви, и хлеб они пекут сами. Заказывать надо лахмаджун.",
+      "pt": "Cozinha turca na esquina de Telliskivi, e o pão é feito por eles. O lahmajun é o que se pede."
+    },
+    "mustOrder": [
+      "Lahmajun"
+    ],
+    "reel": "",
+    "photos": [
+      "01.webp",
+      "02.webp"
+    ],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "the-brick-coffee",
     "name": "The Brick Coffee Roastery",
     "address": "Telliskivi 60M, 10412 Tallinn",
