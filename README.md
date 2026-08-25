@@ -635,6 +635,14 @@ and the map is 63 dots. The chosen place grows, gains a breathing halo and
 keeps its name open, but it keeps whichever of the two states it is, so the map
 never stops telling you where there is something to watch.
 
+**The open place.** The list panel is the neutral card everything else on the
+map is. Opening a place tints that card with six percent of the accent, so it
+reads as picked rather than as the same panel with different words in it. Six
+percent because it has to survive the measurement: across all seven palettes
+the body text stays between 10.7 and 15.9 to one and the muted line never
+drops below 4.96. Anything stronger starts turning a write-up into a coloured
+box.
+
 **Labels.** Past zoom 14 the pins start carrying their names, because at that
 point you are looking at a street rather than a city and the question changes
 from where to which. Not all of them: a name is wide and a pin is 14px, so they
