@@ -1781,6 +1781,32 @@
     "closed": false
   },
   {
+    "id": "vabrik",
+    "name": "Vabrik",
+    "address": "Vabriku tn 6, 10414 Tallinn",
+    "lat": 59.442553,
+    "lng": 24.733203,
+    "price": 1,
+    "types": [
+      "casual"
+    ],
+    "blurb": {
+      "en": "The cheapest wine in town, house pours and a proper list beside them, and it is a bottle shop too, so you can leave with one. In summer the tables go out on the pavement and that is where the whole point of the place is.",
+      "et": "Linna odavaim vein, maja vein ja korralik valik selle kõrval, ja see on ka pudelipood, nii et võid ühe kaasa võtta. Suvel lähevad lauad kõnniteele ja just seal ongi kogu koha mõte.",
+      "fi": "Kaupungin halvin viini, talon lasit ja kunnon lista niiden vierellä, ja paikka on myös pullokauppa, joten yhden voi ottaa mukaan. Kesällä pöydät siirtyvät jalkakäytävälle, ja juuri siinä on koko paikan idea.",
+      "az": "Şəhərin ən ucuz şərabı, ev şərabı və yanında ciddi bir siyahı, üstəlik burası həm də şərab mağazasıdır, yəni bir şüşə ilə çıxa bilərsiniz. Yayda masalar səkiyə çıxır və məkanın bütün mənası elə oradadır.",
+      "ru": "Самое дешёвое вино в городе, домашнее плюс приличная карта рядом с ним, и это ещё и винный магазин, так что можно уйти с бутылкой. Летом столы выносят на тротуар, и весь смысл этого места именно там.",
+      "pt": "O vinho mais barato da cidade, o da casa e uma carta a sério ao lado, e é também uma garrafeira, por isso pode sair com uma. No verão as mesas vão para o passeio, e é aí que está toda a graça do sítio."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [
+      "01.webp"
+    ],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "vana-villem",
     "name": "Vana Villem",
     "address": "Tartu mnt 50, 10115 Tallinn",
