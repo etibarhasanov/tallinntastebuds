@@ -701,6 +701,32 @@
     "closed": false
   },
   {
+    "id": "kalve-kadriorg",
+    "name": "Kalve Coffee Kadriorg",
+    "address": "F. R. Faehlmanni tn 13, 10125 Tallinn",
+    "lat": 59.434986,
+    "lng": 24.773151,
+    "price": 2,
+    "types": [
+      "coffee",
+      "casual"
+    ],
+    "blurb": {
+      "en": "Specialty coffee on the Kadriorg corner of Faehlmanni, roasted by Kalve. A few small tables out on the pavement, which is where you want to be when the sun is out.",
+      "et": "Eriline kohv Faehlmanni tänava Kadrioru nurgal, röstitud Kalve poolt. Kõnniteel paar väikest lauda, kus tasub olla siis, kui päike paistab.",
+      "fi": "Erikoiskahvia Faehlmannin Kadriorgin kulmassa, Kalven paahtamaa. Jalkakäytävällä pari pientä pöytää, joissa kannattaa istua kun aurinko paistaa.",
+      "az": "Faehlmanni küçəsinin Kadriorq küncündə xüsusi qəhvə, Kalve tərəfindən qovrulub. Səkidə bir neçə kiçik masa var, günəş çıxanda məhz orada oturmaq istəyirsən.",
+      "ru": "Спешелти кофе на кадриоргском углу Фельмани, обжарка Kalve. На тротуаре пара маленьких столиков, и в солнечный день сидеть хочется именно там."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [
+      "01.webp"
+    ],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "kartul",
     "name": "Kartul",
     "address": "Kopli 16, 10412 Tallinn",
