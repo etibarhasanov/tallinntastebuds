@@ -250,7 +250,11 @@ if (places !== null) {
           if (!languages.includes(key)) warn(where, `blurb has an extra language "${key}" that is not in ui.json`);
         }
         for (const lang of written) {
-          if (/\bTODO\b|\bPLACEHOLDER\b|lorem ipsum/i.test(place.blurb[lang])) {
+          /* TODO and PLACEHOLDER are matched in caps only, the way anyone
+             actually leaves them. Case-insensitive caught "o dia todo", which
+             is ordinary Portuguese and not a note to self. */
+          if (/\bTODO\b|\bPLACEHOLDER\b/.test(place.blurb[lang]) ||
+              /lorem ipsum/i.test(place.blurb[lang])) {
             warn(where, `blurb (${lang}) is still a placeholder`);
           }
         }

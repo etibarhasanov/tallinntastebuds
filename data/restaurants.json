@@ -499,6 +499,35 @@
     "closed": false
   },
   {
+    "id": "f-hoone",
+    "name": "F-Hoone",
+    "address": "Telliskivi tn 60a-4, 10412 Tallinn",
+    "lat": 59.4397095,
+    "lng": 24.7292113,
+    "price": 2,
+    "types": [
+      "casual",
+      "date"
+    ],
+    "blurb": {
+      "en": "Breakfast, lunch, pizza and sandwiches, all day in one of the oldest buildings in Telliskivi. The name is the building: block F. The room is as good as the food and the terrace is as good as the room. Highly recommended.",
+      "et": "Hommikusöök, lõuna, pitsa ja võileivad, terve päev ühes Telliskivi vanimas hoones. Nimi ongi hoone: F-korpus. Ruum on sama hea kui toit ja terrass sama hea kui ruum. Väga soovitan.",
+      "fi": "Aamiaista, lounasta, pizzaa ja voileipiä koko päivän, yhdessä Telliskiven vanhimmista rakennuksista. Nimi on rakennus: kortteli F. Sali on yhtä hyvä kuin ruoka ja terassi yhtä hyvä kuin sali. Suosittelen lämpimästi.",
+      "az": "Səhər yeməyi, nahar, pizza və sendviçlər, bütün gün Telliskivinin ən köhnə binalarından birində. Adı elə binanın özüdür: F korpusu. Zal yemək qədər gözəldir, terras isə zal qədər. Çox tövsiyə edirəm.",
+      "ru": "Завтрак, обед, пицца и сэндвичи, весь день в одном из самых старых зданий Теллискиви. Название и есть здание: корпус F. Зал не хуже еды, а терраса не хуже зала. Очень рекомендую.",
+      "pt": "Pequeno-almoço, almoço, pizza e sanduíches, o dia todo num dos edifícios mais antigos de Telliskivi. O nome é o próprio edifício: bloco F. A sala é tão boa quanto a comida e a esplanada tão boa quanto a sala. Recomendo muito."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [
+      "01.webp",
+      "02.webp",
+      "03.webp"
+    ],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "faehlmanni-kohvik",
     "name": "Faehlmanni kohvik",
     "address": "F. R. Faehlmanni tn 18, 10125 Tallinn",
