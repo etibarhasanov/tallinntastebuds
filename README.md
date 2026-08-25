@@ -221,8 +221,8 @@ there for the first place that shuts.
 
 ## Languages
 
-English (default), Estonian, Azerbaijani, Russian — the switcher shows them in
-that order. Every interface string is in
+English (default), Estonian, Finnish, Azerbaijani, Russian — the switcher shows
+them in that order. Every interface string is in
 `data/ui.json`, keyed by language and then by string id, so a translator never
 has to open the HTML.
 
