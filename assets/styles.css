@@ -555,6 +555,11 @@ a:hover { color: var(--accent-lit); }
   transition: transform .34s var(--ease), visibility 0s;
 }
 
+/* The grab bar on the bottom sheet. It exists only on a phone, where the
+   sheet has a height worth changing; on a desktop the panel is a column and
+   display:none also keeps the bar out of the tab order. */
+.sheet-grip { display: none; }
+
 .panel-scroll {
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -898,13 +903,27 @@ a:hover { color: var(--accent-lit); }
 @media (max-width: 860px) {
   body { --sheet-h: min(82vh, 720px); }
 
+  /* On a phone the card is standing on the map, so it keeps the one line
+     that says whose map this is. The name and the eyebrow stay in the
+     markup for search engines and screen readers, out of sight. */
   .brand {
     width: auto;
     max-width: calc(100vw - 78px - var(--gap) * 2);
-    padding: 12px 14px 11px;
+    padding: 7px 12px 6px;
   }
   .brand .tagline { display: none; }
-  .wordmark { font-size: 19px; margin: 4px 0 6px; }
+  .brand .eyebrow,
+  .brand .wordmark {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+  .brand .ig-link { font-size: 13px; }
 
   .controls { gap: 6px; }
   .btn { min-width: 34px; height: 34px; }
@@ -925,7 +944,26 @@ a:hover { color: var(--accent-lit); }
     transform: translateY(calc(100% + 20px));
     box-shadow: 0 -6px 34px rgba(20, 26, 31, .16);
   }
-  .panel::before {
+  .panel { transition: transform .34s var(--ease), height .28s var(--ease), visibility 0s linear .34s; }
+  .panel.is-open { transition: transform .34s var(--ease), height .28s var(--ease), visibility 0s; }
+  .panel.is-dragging { transition: none; }
+
+  /* A finger-sized strip along the top of the sheet: drag it to resize, tap
+     it to swap between the two heights. touch-action keeps the browser from
+     claiming the gesture as a page scroll. */
+  .sheet-grip {
+    display: block;
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 26px;
+    touch-action: none;
+    cursor: grab;
+  }
+  .sheet-grip:active { cursor: grabbing; }
+  .sheet-grip::before {
     content: "";
     position: absolute;
     top: 8px;
@@ -935,16 +973,24 @@ a:hover { color: var(--accent-lit); }
     height: 3px;
     border-radius: 100px;
     background: var(--hairline);
+    transition: background .15s var(--ease), width .15s var(--ease);
   }
+  .sheet-grip:focus-visible { outline: none; }
+  .sheet-grip:focus-visible::before,
+  .panel.is-dragging .sheet-grip::before { background: var(--accent); width: 46px; }
   .panel-scroll { padding: 26px 20px calc(28px + var(--safe-b)); }
   .panel-close { top: 14px; right: 12px; }
 
   body.panel-open .filter-bar { opacity: 0; pointer-events: none; }
 
-  /* A detail sheet is shorter than the list, so the chosen pin has map to
-     appear in. Without this the sheet covers 82vh and there is nowhere to
-     centre it that is not behind the brand card. */
-  body.panel-detail { --sheet-h: min(64vh, 580px); }
+  /* A detail sheet opens at half the screen so the map keeps the other half
+     and the chosen pin has somewhere to be. Drag the grip up for the rest of
+     the text; the map is not worth much while you are reading it anyway, so
+     the rail steps out of the way at full height. */
+  body.panel-detail { --sheet-h: min(50vh, 470px); }
+  body.panel-detail.sheet-full { --sheet-h: min(88vh, 780px); }
+  body.sheet-full .rail { opacity: 0; pointer-events: none; }
+  .rail { transition: opacity .2s var(--ease); }
 
   /* With the sheet up, a vertically centred rail sits behind it and Surprise
      me becomes unreachable — which kills the whole point of the button. Lay

@@ -324,6 +324,9 @@
     if (!dom.rail || !dom.brand) return;
     dom.rail.style.top = '';
     dom.rail.style.transform = '';
+    /* With the sheet up the rail is anchored to its top edge by the
+       stylesheet. Pinning a top as well would stretch it between the two. */
+    if (isNarrow() && document.body.classList.contains('panel-open')) return;
     var need = dom.brand.getBoundingClientRect().bottom + 14;
     if (dom.rail.getBoundingClientRect().top < need) {
       dom.rail.style.top = need + 'px';
@@ -521,6 +524,8 @@
   /* Centre the chosen place in the part of the map you can actually see. The
      panel covers the right on desktop and the bottom on a phone, so centring
      on the container would park the pin underneath it. */
+  var lastSheetKey = null;
+
   function focusOn(place, zoomIn) {
     if (!map) return;
     var size = map.getSize();
@@ -542,6 +547,22 @@
     var pt = map.project([place.lat, place.lng], zoom);
     var centre = map.unproject(pt.add(L.point(size.x / 2 - wantX, size.y / 2 - wantY)), zoom);
     map.setView(centre, zoom, { animate: !reduceMotion() });
+  }
+
+  /* focusOn measures the sheet to find the strip of map left over, so it has
+     to wait whenever the sheet is on its way to a new height. Opening one
+     place while another is already open changes nothing about that height,
+     and those moves stay immediate. */
+  function sheetKey() {
+    return state.view + '|' + (document.body.classList.contains('sheet-full') ? 'full' : 'low');
+  }
+
+  function refocus(place, zoomIn) {
+    var key = sheetKey();
+    var resizing = isNarrow() && key !== lastSheetKey;
+    lastSheetKey = key;
+    if (!resizing || reduceMotion()) { focusOn(place, zoomIn); return; }
+    window.setTimeout(function () { focusOn(place, zoomIn); }, 300);
   }
 
   /* --------------------------------------------------------------- filters */
@@ -646,6 +667,104 @@
     selectPlace(choice.id, { fly: true });
   }
 
+  /* ------------------------------------------------------------ the sheet
+   * On a phone the panel is a bottom sheet, and a sheet tall enough to read
+   * comfortably is a sheet that leaves no map. So it opens low and the grip
+   * raises it: drag it, or tap to swap between the two heights. Dragging it
+   * below the low stop closes it, which is the gesture a phone user reaches
+   * for first anyway.
+   *
+   * The live height is written to --sheet-h rather than to the panel, so the
+   * rail that sits above the sheet tracks the drag with it for free.
+   */
+  function sheetStops() {
+    var h = window.innerHeight;
+    if (document.body.classList.contains('panel-detail')) {
+      return { low: Math.min(h * .50, 470), high: Math.min(h * .88, 780) };
+    }
+    /* The list is already as tall as it gets; it can only be dragged shut. */
+    var list = Math.min(h * .82, 720);
+    return { low: list, high: list };
+  }
+
+  function sheetSnap(full) {
+    document.body.classList.toggle('sheet-full', !!full);
+    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', String(!!full));
+    if (state.selected && state.view === 'detail') {
+      var place = byId(state.selected);
+      if (place) refocus(place, false);
+    }
+  }
+
+  function setSheetHeight(px) {
+    document.body.style.setProperty('--sheet-h', Math.round(px) + 'px');
+  }
+
+  function releaseSheetHeight() {
+    document.body.style.removeProperty('--sheet-h');
+  }
+
+  function wireSheet() {
+    if (!dom.sheetGrip) return;
+    var dragging = false;
+    var startY = 0;
+    var startH = 0;
+    var height = 0;
+    var moved = false;
+
+    function begin(ev) {
+      if (!isNarrow() || !dom.panel.classList.contains('is-open')) return;
+      dragging = true;
+      moved = false;
+      startY = ev.clientY;
+      startH = dom.panel.offsetHeight;
+      height = startH;
+      dom.panel.classList.add('is-dragging');
+      if (dom.sheetGrip.setPointerCapture) dom.sheetGrip.setPointerCapture(ev.pointerId);
+    }
+
+    function move(ev) {
+      if (!dragging) return;
+      var stops = sheetStops();
+      var delta = startY - ev.clientY;
+      if (Math.abs(delta) > 4) moved = true;
+      /* A little room below the low stop so a closing drag has somewhere to
+         travel, and none above the high one. */
+      height = Math.max(Math.min(startH + delta, stops.high), stops.low * .4);
+      setSheetHeight(height);
+      ev.preventDefault();
+    }
+
+    function end() {
+      if (!dragging) return;
+      dragging = false;
+      dom.panel.classList.remove('is-dragging');
+      releaseSheetHeight();
+
+      var stops = sheetStops();
+      if (!moved) { toggle(); return; }
+      if (height < stops.low * .72) { closePanel(); return; }
+      sheetSnap(height > (stops.low + stops.high) / 2);
+    }
+
+    function toggle() {
+      var stops = sheetStops();
+      if (stops.high === stops.low) return;   /* the list has one height */
+      sheetSnap(!document.body.classList.contains('sheet-full'));
+    }
+
+    dom.sheetGrip.addEventListener('pointerdown', begin);
+    dom.sheetGrip.addEventListener('pointermove', move);
+    dom.sheetGrip.addEventListener('pointerup', end);
+    dom.sheetGrip.addEventListener('pointercancel', end);
+    dom.sheetGrip.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
+        ev.preventDefault();
+        toggle();
+      }
+    });
+  }
+
   /* ----------------------------------------------------------------- panel */
 
   function openPanel() {
@@ -659,7 +778,9 @@
     if (!dom.panel.classList.contains('is-open')) return;
     dom.panel.classList.remove('is-open');
     dom.panel.setAttribute('inert', '');
-    document.body.classList.remove('panel-open');
+    document.body.classList.remove('panel-open', 'sheet-full');
+    releaseSheetHeight();
+    lastSheetKey = null;
     dom.btnList.setAttribute('aria-expanded', 'false');
 
     state.selected = null;
@@ -683,10 +804,15 @@
     state.view = 'detail';
     renderPanel();
     openPanel();
+    /* A new place starts at the low stop: the point of opening one is to see
+       where it is. */
+    document.body.classList.remove('sheet-full');
+    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', 'false');
+    releaseSheetHeight();
     syncUrl();
 
     paintMarkers();
-    focusOn(place, !!(opts && opts.fly));
+    refocus(place, !!(opts && opts.fly));
 
     dom.panelScroll.scrollTop = 0;
     var heading = dom.detail.querySelector('.place-name');
@@ -701,6 +827,8 @@
     state.view = 'list';
     renderPanel();
     openPanel();
+    document.body.classList.remove('sheet-full');
+    releaseSheetHeight();
     paintMarkers();
     syncUrl();
     dom.panelScroll.scrollTop = 0;
@@ -1149,6 +1277,7 @@
     dom.btnRandom.addEventListener('click', randomPick);
 
     dom.panelClose.addEventListener('click', closePanel);
+    wireSheet();
 
     dom.btnZoomIn.addEventListener('click', function () { map.zoomIn(); });
     dom.btnZoomOut.addEventListener('click', function () { map.zoomOut(); });
@@ -1341,6 +1470,7 @@
       panel: $('panel'),
       panelScroll: $('panel-scroll'),
       panelClose: $('panel-close'),
+      sheetGrip: $('sheet-grip'),
       detail: $('panel-detail'),
       list: $('panel-list'),
       btnList: $('btn-list'),
