@@ -1502,6 +1502,33 @@
     "closed": false
   },
   {
+    "id": "q-pizza-jaam",
+    "name": "Q Pizza Jaam",
+    "address": "Telliskivi tn 62, 10412 Tallinn",
+    "lat": 59.4405324,
+    "lng": 24.7306484,
+    "price": 2,
+    "types": [
+      "casual"
+    ],
+    "blurb": {
+      "en": "Pizza and sandwiches, and they bake the bread themselves. Go for the sandwich: it is finished in the wood fired pizza oven while you wait, and that is the whole reason to come.",
+      "et": "Pitsa ja võileivad, ja leiva küpsetavad nad ise. Võta võileib: see tehakse valmis puuküttega pitsaahjus sinu silme all, ja just selle pärast tasub tulla.",
+      "fi": "Pizzaa ja voileipiä, ja leivän he leipovat itse. Ota voileipä: se viimeistellään puulämmitteisessä pizzauunissa siinä samassa, ja juuri sen takia kannattaa tulla.",
+      "az": "Pizza və sendviçlər, çörəyi də özləri bişirirlər. Sendviçi götürün: onu gözünüzün qabağında odun sobasında hazırlayırlar, gəlməyə dəyən əsas səbəb elə budur.",
+      "ru": "Пицца и сэндвичи, причём хлеб они пекут сами. Берите сэндвич: его доводят в дровяной печи прямо при вас, и ради этого сюда и стоит идти.",
+      "pt": "Pizza e sanduíches, e o pão é feito por eles. Peça a sanduíche: é terminada no forno a lenha enquanto espera, e é essa a razão para vir."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [
+      "01.webp",
+      "02.webp"
+    ],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "radio-restoran",
     "name": "Radio",
     "address": "Terase 16, 10125 Tallinn",
