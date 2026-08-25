@@ -119,7 +119,7 @@
     "address": "Kopli 27, 10412 Tallinn",
     "lat": 59.4489528,
     "lng": 24.7104732,
-    "price": 1,
+    "price": 2,
     "types": [
       "bakery",
       "coffee"
@@ -175,7 +175,7 @@
     "address": "Suur-Karja 12, 10140 Tallinn",
     "lat": 59.4355717,
     "lng": 24.7462442,
-    "price": 1,
+    "price": 2,
     "types": [
       "bakery",
       "coffee",
@@ -262,7 +262,7 @@
     "address": "Ranna tee 5/2, Miiduranna, Viimsi",
     "lat": 59.4955512,
     "lng": 24.8269404,
-    "price": 1,
+    "price": 2,
     "types": [
       "bakery"
     ],
@@ -393,7 +393,7 @@
     "address": "Suur-Karja 20, 10146 Tallinn",
     "lat": 59.436,
     "lng": 24.747,
-    "price": 2,
+    "price": 1,
     "types": [
       "bakery",
       "casual"
@@ -421,7 +421,7 @@
     "address": "Iva 12, Mustamäe, 12618 Tallinn",
     "lat": 59.4030085,
     "lng": 24.6476513,
-    "price": 1,
+    "price": 2,
     "types": [
       "bakery",
       "hidden-gem"
@@ -587,7 +587,7 @@
     "address": "Härjapea 17, 10320 Tallinn",
     "lat": 59.4376932,
     "lng": 24.7162062,
-    "price": 1,
+    "price": 2,
     "types": [
       "bakery",
       "hidden-gem"
@@ -789,7 +789,7 @@
     "address": "Voorimehe 4, 10123 Tallinn",
     "lat": 59.4376459,
     "lng": 24.743759,
-    "price": 2,
+    "price": 1,
     "types": [
       "bakery",
       "vegan",
@@ -931,7 +931,7 @@
     "address": "Koidu 101, Uue Maailm, Tallinn",
     "lat": 59.4215893,
     "lng": 24.7400125,
-    "price": 1,
+    "price": 2,
     "types": [
       "bakery",
       "vegan",
@@ -1070,7 +1070,7 @@
     "address": "F. R. Faehlmanni tn 3, 10125 Tallinn",
     "lat": 59.4344578,
     "lng": 24.7782927,
-    "price": 1,
+    "price": 2,
     "types": [
       "bakery",
       "coffee",
