@@ -94,7 +94,6 @@
     "price": 2,
     "types": [
       "caucasian",
-      "groups",
       "casual"
     ],
     "blurb": {
@@ -332,7 +331,6 @@
     "price": 2,
     "types": [
       "asian",
-      "groups",
       "vegan"
     ],
     "blurb": {
@@ -490,8 +488,7 @@
     "lng": 24.7752398,
     "price": 2,
     "types": [
-      "caucasian",
-      "groups"
+      "caucasian"
     ],
     "blurb": {
       "en": "The qutab has a twist: filled with greens and mozzarella instead of the traditional herbs. Portions are huge; if you're dining solo, half a küftä might be plenty. I'm Azerbaijani, and I approve this Azerbaijani restaurant.",
@@ -658,8 +655,7 @@
     "price": 2,
     "types": [
       "asian",
-      "casual",
-      "groups"
+      "casual"
     ],
     "blurb": {
       "en": "Hans means my humble home. Not sure about this one.",
@@ -686,8 +682,7 @@
     "price": 2,
     "types": [
       "pub",
-      "casual",
-      "groups"
+      "casual"
     ],
     "blurb": {
       "en": "Very good beers from Humalakoda, and the kitchen holds up too. The chicken strips and the fish and chips are both worth ordering.",
@@ -933,7 +928,6 @@
     "price": 2,
     "types": [
       "pub",
-      "groups",
       "hidden-gem"
     ],
     "blurb": {
@@ -1067,8 +1061,7 @@
     "price": 2,
     "types": [
       "pub",
-      "casual",
-      "groups"
+      "casual"
     ],
     "blurb": {
       "en": "Mikkeller is one of the biggest names in craft beer, and this one pairs it with real food. The kitchen is run by Viljandi Burger, which makes it a very good combination.",
@@ -1201,8 +1194,7 @@
     "lng": 24.7381598,
     "price": 2,
     "types": [
-      "pub",
-      "groups"
+      "pub"
     ],
     "blurb": {
       "en": "Three different ways of pouring Pilsner Urquell, which is the whole reason to come. Proper Czech beer, and a nice garden to drink it in.",
@@ -1226,7 +1218,6 @@
     "price": 2,
     "types": [
       "caucasian",
-      "groups",
       "cheap-eats"
     ],
     "blurb": {
@@ -1280,7 +1271,6 @@
     "price": 2,
     "types": [
       "pub",
-      "groups",
       "casual"
     ],
     "blurb": {
@@ -1381,7 +1371,6 @@
     "lng": 24.7718684,
     "price": 3,
     "types": [
-      "groups",
       "date"
     ],
     "blurb": {
@@ -1436,7 +1425,6 @@
     "price": 2,
     "types": [
       "asian",
-      "groups",
       "casual"
     ],
     "blurb": {
@@ -1519,8 +1507,7 @@
     "lng": 24.6749319,
     "price": 2,
     "types": [
-      "pub",
-      "groups"
+      "pub"
     ],
     "blurb": {
       "en": "If you want to try some decent craft beers. DDH, double IPA, smoothie beers, everything all at once.",
@@ -1652,8 +1639,7 @@
     "price": 2,
     "types": [
       "asian",
-      "casual",
-      "groups"
+      "casual"
     ],
     "blurb": {
       "en": "Chinese cooking by Balti jaam, and the hand-pulled biang biang noodles are the reason to come. One noodle, metres long, in chili oil and spring onion, with a broth on the side. The crispy pork belly is the other one everybody orders.",

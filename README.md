@@ -135,17 +135,16 @@ have to scroll for. Today that is:
 | # | Type | Places |
 | --- | --- | --- |
 | 1 | Casual/Solo | 33 |
-| 2 | Groups | 14 |
-| 3 | Bakery | 12 |
-| 4 | Coffee/tea | 12 |
-| 5 | Beer/pub | 12 |
-| 6 | Hidden gem | 11 |
-| 7 | Cheap eats | 10 |
-| 8 | Date night | 10 |
-| 9 | Asian | 9 |
-| 10 | Vegan | 7 |
-| 11 | Fine dining | 5 |
-| 12 | Caucasus | 5 |
+| 2 | Bakery | 12 |
+| 3 | Coffee/tea | 12 |
+| 4 | Beer/pub | 12 |
+| 5 | Hidden gem | 11 |
+| 6 | Cheap eats | 10 |
+| 7 | Date night | 10 |
+| 8 | Asian | 9 |
+| 9 | Vegan | 7 |
+| 10 | Fine dining | 5 |
+| 11 | Caucasus | 5 |
 
 Ties are broken by hand: bakery before coffee before pub, cheap eats before
 date night, and the two cuisines last, since somebody scanning the row is
