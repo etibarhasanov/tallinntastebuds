@@ -423,6 +423,10 @@
     /* Which pins are close enough to share a dot depends on the zoom, and on
        nothing else, so panning does not have to recompute anything. */
     map.on('zoomend', syncMarkers);
+
+    /* Which names fit depends on what is on the screen, so unlike the
+       clustering this one has to follow the pan too. */
+    map.on('zoomend moveend', paintLabels);
   }
 
   function buildMarkers() {
@@ -513,14 +517,100 @@
     };
   }
 
-  function tooltipFor(marker, name, permanent) {
+  function tooltipFor(marker, name, permanent, chosen) {
     marker.unbindTooltip();
     marker.bindTooltip(name, {
-      className: 'pin-tip' + (permanent ? ' pin-tip-on' : ''),
+      className: 'pin-tip' + (chosen ? ' pin-tip-on' : '') + (permanent && !chosen ? ' pin-tip-quiet' : ''),
       direction: 'top',
       offset: [0, permanent ? -14 : -11],
       opacity: 1,
       permanent: !!permanent
+    });
+  }
+
+  /* ---------------------------------------------------------------- labels
+   * Past a certain zoom the dots stop being enough: you are looking at a
+   * street, not a city, and the question becomes which place is which. So
+   * pins start carrying their names.
+   *
+   * Not all of them. A label is wide and a pin is 14px, so the names are laid
+   * out greedily and any that would land on top of one already placed is
+   * dropped. Width is estimated from the character count rather than measured,
+   * because measuring means putting the label in the page first, which is the
+   * thing being decided. The chosen place is placed before everything else and
+   * so always keeps its name.
+   *
+   * Recomputed on pan as well as zoom, unlike the clustering, because which
+   * labels fit depends on what is actually on the screen.
+   */
+  var LABEL_ZOOM = 14;
+  var LABEL_H = 24;
+  var soloPins = {};
+
+  function labelBox(place) {
+    var pt = map.latLngToContainerPoint([place.lat, place.lng]);
+    var w = 20 + place.name.length * 7.3;   /* padding plus the display face */
+    return { x: pt.x - w / 2, y: pt.y - 16 - LABEL_H, w: w, h: LABEL_H, px: pt.x, py: pt.y };
+  }
+
+  function hits(a, b) {
+    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+  }
+
+  function labelPlan() {
+    var plan = {};
+    if (!map || map.getZoom() < LABEL_ZOOM) return plan;
+
+    var size = map.getSize();
+    var queue = visiblePlaces().filter(function (p) { return soloPins[p.id]; });
+
+    /* The dots are obstacles too. A name laid over a pin or a cluster count
+       hides the very thing it is naming. */
+    var taken = [];
+    queue.forEach(function (p) {
+      var pt = map.latLngToContainerPoint([p.lat, p.lng]);
+      taken.push({ x: pt.x - 11, y: pt.y - 11, w: 22, h: 22 });
+    });
+    clusterPins.forEach(function (pin) {
+      var pt = map.latLngToContainerPoint(pin.getLatLng());
+      var r = (pin.options.icon.options.iconSize[0] / 2) + 3;
+      taken.push({ x: pt.x - r, y: pt.y - r, w: r * 2, h: r * 2 });
+    });
+
+    /* The chosen place first, so a collision never costs it its name. */
+    queue.sort(function (a, b) {
+      if (a.id === state.selected) return -1;
+      if (b.id === state.selected) return 1;
+      return 0;
+    });
+
+    queue.forEach(function (place) {
+      var box = labelBox(place);
+      /* The whole label has to fit, not just the pin under it: half a name
+         sliced off by the window edge is worse than no name. */
+      if (box.x < 4 || box.x + box.w > size.x - 4 || box.y < 4 || box.y + box.h > size.y) return;
+      for (var i = 0; i < taken.length; i++) if (hits(box, taken[i])) return;
+      taken.push(box);
+      plan[place.id] = true;
+    });
+    return plan;
+  }
+
+  function paintLabels() {
+    if (!map) return;
+    var plan = labelPlan();
+    state.places.forEach(function (place) {
+      var marker = markers[place.id];
+      if (!marker) return;
+      var chosen = place.id === state.selected;
+      var wants = chosen || !!plan[place.id];
+      var tip = marker.getTooltip();
+      var isOn = !!(tip && tip.options.permanent);
+      var wasChosen = !!(tip && tip.options.className &&
+        tip.options.className.indexOf('pin-tip-on') !== -1);
+      if (!tip || isOn !== wants || wasChosen !== chosen) {
+        tooltipFor(marker, place.name, wants, chosen);
+      }
     });
   }
 
@@ -555,13 +645,10 @@
         fillColor: filmed ? tone : c.paper
       });
 
-      var wantsPermanent = chosen;
-      var tip = marker.getTooltip();
-      if (!tip || !!tip.options.permanent !== wantsPermanent) {
-        tooltipFor(marker, place.name, wantsPermanent);
-      }
       if (chosen && marker.bringToFront) marker.bringToFront();
     });
+
+    paintLabels();
 
     clearHalo();
     var place = state.selected ? byId(state.selected) : null;
@@ -811,6 +898,7 @@
       if (alone[p.id]) { if (!map.hasLayer(marker)) marker.addTo(map); }
       else if (map.hasLayer(marker)) map.removeLayer(marker);
     });
+    soloPins = alone;
   }
 
   function applyFilters(change) {

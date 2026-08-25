@@ -250,8 +250,11 @@ there for the first place that shuts.
 
 ## Languages
 
-English (default), Estonian, Finnish, Azerbaijani, Russian, Portuguese — the
-switcher shows them in that order.
+Azerbaijani, English, Estonian, Finnish, Portuguese, Russian — the switcher
+shows them in that order, Azerbaijani first and the rest alphabetical. The
+order of the blocks in `ui.json` is the order of the buttons; the language a
+visitor *lands* in is a separate thing, still English by default, and set by
+`DEFAULT_LANG` in `assets/app.js`.
 
 The switch has two shapes, from the same markup. Wide enough, it is a row of
 codes. On a phone it folds into the current code with a menu under it, listing
@@ -625,6 +628,15 @@ same `--accent`. Not two icons, because at 14px a picture inside a dot is mud
 and the map is 63 dots. The chosen place grows, gains a breathing halo and
 keeps its name open, but it keeps whichever of the two states it is, so the map
 never stops telling you where there is something to watch.
+
+**Labels.** Past zoom 14 the pins start carrying their names, because at that
+point you are looking at a street rather than a city and the question changes
+from where to which. Not all of them: a name is wide and a pin is 14px, so they
+are placed greedily and any that would land on another name, on a pin or on a
+cluster count is dropped, and one that would be sliced off by the window edge
+is dropped too. The chosen place is placed first and always keeps its name.
+Recomputed on pan as well as zoom, unlike the clustering, since which names fit
+depends on what is on the screen.
 
 **Type.** Three faces with three jobs, and they never trade places.
 *Familjen Grotesk* — a contemporary Nordic grotesque — sets place names and

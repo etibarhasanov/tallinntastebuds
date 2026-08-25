@@ -216,6 +216,15 @@ a:hover { color: var(--accent-lit); }
 
 .pin { cursor: pointer; transition: opacity .15s var(--ease); }
 
+/* Names that stand open past zoom 14 sit quieter than the chosen one: paper,
+   not accent, and behind it in the stack, so the place you picked still reads
+   first on a map where a dozen names are showing. */
+.leaflet-tooltip.pin-tip-quiet {
+  color: var(--muted);
+  font-weight: 500;
+  z-index: 600;
+}
+
 /* The chosen place: its name label stays open rather than waiting for a hover
    that never comes on a phone, and a ring is drawn around the dot. */
 .leaflet-tooltip.pin-tip-on {
