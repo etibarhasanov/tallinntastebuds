@@ -507,6 +507,41 @@ An unrecognised value falls back to blue and is dropped from the URL.
 One caveat on the dark style: the Instagram embed draws its own white card
 inside an iframe, which nothing outside can restyle. It stays light.
 
+## The radio
+
+`data/radio.json` holds one station, or nothing:
+
+```json
+{
+  "station": {
+    "name": "Raadio Jazz",
+    "url": "https://example.org/stream.mp3"
+  }
+}
+```
+
+With `"station": null` the button never appears and the map behaves exactly as
+it did before. That is the state the site ships in, because a stream URL is
+somebody else's promise and this repo does not invent those.
+
+Requirements for the URL, all three or it will not work:
+
+- **HTTPS.** The page is served over HTTPS, so a plain `http://` stream is
+  blocked as mixed content and fails silently in the console.
+- **A direct audio stream**, MP3 or AAC, the address a media player would take.
+  Not a station's web page, not a SoundCloud or YouTube link.
+- **Somebody else's bandwidth**, which is normal for a public stream, but it is
+  worth picking a station that publishes theirs openly.
+
+It is a plain `<audio>` element built on first press, not an embed. A visitor
+who never presses it downloads nothing and is handed no third-party cookie,
+which is not true of a SoundCloud or YouTube iframe. Autoplay is blocked by
+every browser and that is right: it plays because somebody asked it to.
+
+If the stream fails, the button resets and says so in a toast. If the URL dies
+for good, it is one line in this file, which is the same maintenance the rest
+of the map asks for.
+
 ## Surprise me
 
 The button under the swatches on the left rail picks a place at random and

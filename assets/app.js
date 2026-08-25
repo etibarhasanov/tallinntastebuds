@@ -47,6 +47,7 @@
     style: DEFAULT_STYLE,
     stylePinned: false,
     lastPick: null,
+    radio: null,         // the station from data/radio.json, or nothing
     active: [],          // selected type ids, OR semantics; empty means "All"
     selected: null,      // restaurant id, or null
     view: 'list',        // 'list' | 'detail'
@@ -282,6 +283,7 @@
     renderStyleSwitch();
     renderFilters();
     renderPanel();
+    renderRadio();
     syncUrl();
     trackEvent('language_select', { language: code });
   }
@@ -919,6 +921,75 @@
     } else {
       trackEvent('filter_clear', params);
     }
+  }
+
+  /* ---------------------------------------------------------------- radio
+   * A station on a button, for the same reason a restaurant map has a colour
+   * rail: it is somebody's map, not a directory.
+   *
+   * A plain <audio> element and one URL. No SoundCloud or YouTube iframe,
+   * which would cost a visitor third party cookies, a megabyte of player and
+   * a track that gets taken down while nobody is looking. The element is
+   * built on first press, so a visitor who never presses it pays nothing.
+   *
+   * Autoplay is blocked in every browser and should be: a map that starts
+   * making noise on its own is a map people close. This one only ever plays
+   * because somebody asked it to.
+   *
+   * The station lives in data/radio.json. With none set the button never
+   * appears, which is the state the site ships in.
+   */
+  var radioEl = null;
+
+  function markRadio(on) {
+    if (!dom.btnRadio) return;
+    dom.btnRadio.setAttribute('aria-pressed', String(on));
+    var label = t(on ? 'radioStop' : 'radioPlay');
+    dom.btnRadio.setAttribute('aria-label', label);
+    dom.btnRadio.setAttribute('title', label);
+  }
+
+  function stopRadio() {
+    if (radioEl) { radioEl.pause(); radioEl.removeAttribute('src'); radioEl.load(); }
+    markRadio(false);
+  }
+
+  function toggleRadio() {
+    var station = state.radio;
+    if (!station || !station.url) return;
+
+    if (dom.btnRadio.getAttribute('aria-pressed') === 'true') {
+      stopRadio();
+      trackEvent('radio_stop', { station: station.name || 'radio' });
+      return;
+    }
+
+    if (!radioEl) {
+      radioEl = document.createElement('audio');
+      radioEl.preload = 'none';
+      radioEl.addEventListener('error', function () {
+        stopRadio();
+        toast(t('radioFail'));
+      });
+    }
+    /* A live stream has no position to resume from, so it is re-attached
+       rather than un-paused: pressing play always joins it where it is now. */
+    radioEl.src = station.url;
+    var started = radioEl.play();
+    if (started && started.catch) {
+      started.catch(function () { stopRadio(); toast(t('radioFail')); });
+    }
+    markRadio(true);
+    trackEvent('radio_play', { station: station.name || 'radio' });
+  }
+
+  function renderRadio() {
+    if (!dom.btnRadio) return;
+    var station = state.radio;
+    if (!station || !station.url) { dom.btnRadio.hidden = true; return; }
+    dom.btnRadio.hidden = false;
+    if (dom.radioName) dom.radioName.textContent = station.name || '';
+    markRadio(!!(radioEl && !radioEl.paused));
   }
 
   /* ----------------------------------------------------------- random pick
@@ -1578,6 +1649,7 @@
     });
 
     dom.btnRandom.addEventListener('click', randomPick);
+    dom.btnRadio.addEventListener('click', toggleRadio);
 
     document.addEventListener('click', function (ev) {
       if (!dom.langSwitch.contains(ev.target)) closeLangMenu();
@@ -1804,6 +1876,8 @@
       panelScroll: $('panel-scroll'),
       panelClose: $('panel-close'),
       sheetGrip: $('sheet-grip'),
+      btnRadio: $('btn-radio'),
+      radioName: $('radio-name'),
       detail: $('panel-detail'),
       list: $('panel-list'),
       btnList: $('btn-list'),
@@ -1824,10 +1898,14 @@
     Promise.all([
       getJSON('data/restaurants.json'),
       getJSON('data/taxonomy.json'),
-      getJSON('data/ui.json')
+      getJSON('data/ui.json'),
+      /* The station is optional in every sense: no file, no station, no
+         button, and the rest of the map does not notice. */
+      getJSON('data/radio.json').catch(function () { return null; })
     ]).then(function (loaded) {
       state.places = loaded[0] || [];
       state.types = (loaded[1] && loaded[1].types) || [];
+      state.radio = (loaded[3] && loaded[3].station) || null;
       state.ui = loaded[2] || {};
       state.langs = Object.keys(state.ui);
 
@@ -1859,6 +1937,7 @@
       buildMarkers();
       renderFilters();
       renderPanel();
+      renderRadio();
       wireControls();
 
       /* gtag already reported the landing URL, deep link and all. */

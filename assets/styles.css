@@ -530,6 +530,19 @@ a:hover { color: var(--accent-lit); }
 .dice svg .pip { fill: var(--accent); stroke: none; }
 .dice:hover svg { transform: rotate(-20deg); }
 
+/* The radio wears the same pill as Surprise me: it is the same kind of thing,
+   a switch for the mood of the place rather than part of the map. */
+.radio svg { fill: var(--accent); stroke: none; }
+.radio .ico-stop { display: none; }
+.radio[aria-pressed="true"] .ico-play { display: none; }
+.radio[aria-pressed="true"] .ico-stop { display: inline; }
+.radio[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.radio:hover svg { transform: none; }
+.radio-name { max-width: 15ch; overflow: hidden; text-overflow: ellipsis; }
+
 /* ---------- filters ---------- */
 
 /* The bar is fixed; only the chips inside it scroll, so the random-pick
@@ -1169,7 +1182,7 @@ body.panel-detail .panel {
   }
   body.panel-open .styles { flex-direction: row; }
 
-  .dice-label { display: none; }
+  .dice-label, .radio-name { display: none; }
   .dice { padding: 0; width: 32px; height: 32px; justify-content: center; }
   .rail { gap: 8px; }
   .styles { gap: 6px; padding: 6px; }
