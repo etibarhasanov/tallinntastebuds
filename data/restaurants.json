@@ -499,6 +499,34 @@
     "closed": false
   },
   {
+    "id": "faehlmanni-kohvik",
+    "name": "Faehlmanni kohvik",
+    "address": "F. R. Faehlmanni tn 18, 10125 Tallinn",
+    "lat": 59.4347529,
+    "lng": 24.7732181,
+    "price": 2,
+    "types": [
+      "bakery",
+      "coffee",
+      "casual"
+    ],
+    "blurb": {
+      "en": "A corner cafe that has been on Faehlmanni a long time, and it is one of the nicest corners in the neighbourhood. Bakery, coffee and a really good brunch. Calm enough that you can sit and work there.",
+      "et": "Nurgakohvik, mis on Faehlmannil olnud juba pikka aega, ja see on üks kvartali kenamaid nurki. Pagariäri, kohv ja tõeliselt hea brunch. Piisavalt rahulik, et seal ka tööd teha.",
+      "fi": "Kulmakahvila, joka on ollut Faehlmannilla jo pitkään, ja se on yksi korttelin hienoimmista kulmista. Leipomo, kahvi ja todella hyvä brunssi. Niin rauhallinen, että siellä voi tehdä töitä.",
+      "az": "Faehlmannidə çoxdan fəaliyyət göstərən künc kafesi, özü də məhəllənin ən gözəl künclərindən birində. Çörəkxana, qəhvə və həqiqətən yaxşı branç. Elə sakitdir ki, orada işləmək də olar.",
+      "ru": "Угловая кофейня, которая стоит на Фельмани уже давно, и угол этот один из самых приятных в районе. Пекарня, кофе и очень хороший бранч. Достаточно спокойно, чтобы там и поработать.",
+      "pt": "Um cafe de esquina que está na Faehlmanni há muito tempo, e é uma das esquinas mais bonitas do bairro. Padaria, cafe e um brunch muito bom. Calmo o suficiente para se sentar e trabalhar."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [
+      "01.webp"
+    ],
+    "website": "",
+    "closed": false
+  },
+  {
     "id": "faeton",
     "name": "Faeton",
     "address": "J. Köleri 2, 10150 Tallinn",
