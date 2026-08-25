@@ -1,12 +1,12 @@
 {
   "types": [
     {
-      "id": "date",
-      "en": "Date night",
-      "et": "Kohting",
-      "fi": "Treffit",
-      "az": "Görüş",
-      "ru": "Свидание"
+      "id": "casual",
+      "en": "Casual/Solo",
+      "et": "Vabas vormis/üksi",
+      "fi": "Rento/yksin",
+      "az": "Rahat/tək",
+      "ru": "Неформально/в одиночку"
     },
     {
       "id": "groups",
@@ -17,36 +17,12 @@
       "ru": "Компанией"
     },
     {
-      "id": "casual",
-      "en": "Casual/Solo",
-      "et": "Vabas vormis/üksi",
-      "fi": "Rento/yksin",
-      "az": "Rahat/tək",
-      "ru": "Неформально/в одиночку"
-    },
-    {
-      "id": "fine-dining",
-      "en": "Fine dining",
-      "et": "Kõrgköök",
-      "fi": "Fine dining",
-      "az": "Yüksək mətbəx",
-      "ru": "Высокая кухня"
-    },
-    {
-      "id": "cheap-eats",
-      "en": "Cheap eats",
-      "et": "Soodne",
-      "fi": "Edullinen",
-      "az": "Ucuz",
-      "ru": "Недорого"
-    },
-    {
-      "id": "hidden-gem",
-      "en": "Hidden gem",
-      "et": "Peidetud pärl",
-      "fi": "Piilohelmi",
-      "az": "Gizli inci",
-      "ru": "Находка"
+      "id": "bakery",
+      "en": "Bakery",
+      "et": "Pagariäri",
+      "fi": "Leipomo",
+      "az": "Çörəkxana",
+      "ru": "Пекарня"
     },
     {
       "id": "coffee",
@@ -57,20 +33,44 @@
       "ru": "Кофе/чай"
     },
     {
-      "id": "bakery",
-      "en": "Bakery",
-      "et": "Pagariäri",
-      "fi": "Leipomo",
-      "az": "Çörəkxana",
-      "ru": "Пекарня"
-    },
-    {
       "id": "pub",
       "en": "Beer/pub",
       "et": "Õlu/pubi",
       "fi": "Olut/pubi",
       "az": "Pivə/pab",
       "ru": "Пиво/паб"
+    },
+    {
+      "id": "hidden-gem",
+      "en": "Hidden gem",
+      "et": "Peidetud pärl",
+      "fi": "Piilohelmi",
+      "az": "Gizli inci",
+      "ru": "Находка"
+    },
+    {
+      "id": "cheap-eats",
+      "en": "Cheap eats",
+      "et": "Soodne",
+      "fi": "Edullinen",
+      "az": "Ucuz",
+      "ru": "Недорого"
+    },
+    {
+      "id": "date",
+      "en": "Date night",
+      "et": "Kohting",
+      "fi": "Treffit",
+      "az": "Görüş",
+      "ru": "Свидание"
+    },
+    {
+      "id": "asian",
+      "en": "Asian",
+      "et": "Aasia",
+      "fi": "Aasialainen",
+      "az": "Asiya",
+      "ru": "Азиатская"
     },
     {
       "id": "vegan",
@@ -81,12 +81,12 @@
       "ru": "Веганское"
     },
     {
-      "id": "asian",
-      "en": "Asian",
-      "et": "Aasia",
-      "fi": "Aasialainen",
-      "az": "Asiya",
-      "ru": "Азиатская"
+      "id": "fine-dining",
+      "en": "Fine dining",
+      "et": "Kõrgköök",
+      "fi": "Fine dining",
+      "az": "Yüksək mətbəx",
+      "ru": "Высокая кухня"
     },
     {
       "id": "caucasian",

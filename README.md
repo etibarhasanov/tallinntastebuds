@@ -125,6 +125,36 @@ or to your user settings:
 
 ---
 
+## The order of the filter chips
+
+The chips appear in the order the types are written in `data/taxonomy.json`,
+left to right. That order is set by how many places carry each type, commonest
+first, so the chips people are most likely to want are the ones they do not
+have to scroll for. Today that is:
+
+| # | Type | Places |
+| --- | --- | --- |
+| 1 | Casual/Solo | 33 |
+| 2 | Groups | 14 |
+| 3 | Bakery | 12 |
+| 4 | Coffee/tea | 12 |
+| 5 | Beer/pub | 12 |
+| 6 | Hidden gem | 11 |
+| 7 | Cheap eats | 10 |
+| 8 | Date night | 10 |
+| 9 | Asian | 9 |
+| 10 | Vegan | 7 |
+| 11 | Fine dining | 5 |
+| 12 | Caucasus | 5 |
+
+Ties are broken by hand: bakery before coffee before pub, cheap eats before
+date night, and the two cuisines last, since somebody scanning the row is
+usually after a kind of evening rather than a kind of kitchen.
+
+Nothing re-sorts itself as you add places, and that is deliberate: a row of
+chips that rearranges between visits is a row nobody learns. Re-check it when
+a type has visibly grown, and move the line in `taxonomy.json`.
+
 ## Get the coordinates
 
 In Google Maps: find the place, **right-click the pin**, and the first item in
