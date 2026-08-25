@@ -571,6 +571,30 @@ The chips are also in the URL now, as `?type=bakery,vegan`. A filtered map is
 a link worth sending, and the landing page view GA records for it names the
 filters, so shared filtered links show up in **Pages and screens** too.
 
+### Getting found
+
+`robots.txt` and `sitemap.xml` sit at the root, and `index.html` carries a
+canonical link and the `og:` tags. All three name the host, so **on a custom
+domain, change the address in those three files** and nothing else.
+
+Google finds a site through links and through Search Console, and a brand new
+host has neither. In order of what actually moves the needle:
+
+1. **Put the link in the Instagram bio.** It is both the crawl path and,
+   realistically, most of the traffic.
+2. **Google Search Console.** Verify the property, submit `sitemap.xml`, then
+   use URL Inspection to request indexing. Verification by HTML tag needs a
+   `<meta name="google-site-verification">` line in `index.html`.
+3. **Bing Webmaster Tools.** Same job, and it feeds other answer engines.
+4. **A custom domain.** `pages.dev` indexes fine, but it carries no brand and
+   it is not yours: a domain you own is the one thing here that survives
+   changing host.
+
+Search Console is also where to check whether a page is being *refused*
+rather than merely missed. Cloudflare Pages serves `x-robots-tag: noindex` on
+preview deployments, which is correct for previews and fatal if the address
+people share turns out to be one.
+
 To remove tracking entirely, delete the gtag block from `index.html` and the
 `trackView` and `trackEvent` functions from `assets/app.js`; their call sites
 then do nothing. Deleting only the gtag block is also safe — both check for

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  One page, one URL. ?spot=, ?type=, ?lang= and ?style= are deep links into
+  this same document and the canonical tag points them all back here, so
+  listing them would only ask Google to index the same page sixty times.
+
+  On a custom domain, change the two hostnames here and in robots.txt.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://tallinntastebuds.pages.dev/</loc>
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

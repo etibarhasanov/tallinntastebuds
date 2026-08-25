@@ -1642,7 +1642,7 @@
   }
 
   function injectStructuredData() {
-    var base = window.location.origin + window.location.pathname;
+    var base = canonicalBase();
     var items = [];
 
     state.places.forEach(function (place) {
@@ -1687,15 +1687,19 @@
 
   /* The map is one page. ?spot, ?lang and ?style are deep links into it, not
      separate documents, so point every one of them at the bare URL and let
-     the search engine pool the signals there instead of splitting them. */
-  function setCanonical() {
+     the search engine pool the signals there instead of splitting them.
+     index.html carries the real address; this only fills in when the page is
+     opened from somewhere that has none, a preview build or a local file. */
+  function canonicalBase() {
     var link = document.querySelector('link[rel="canonical"]');
     if (!link) {
       link = document.createElement('link');
       link.setAttribute('rel', 'canonical');
+      link.setAttribute('href', window.location.origin + window.location.pathname);
       document.head.appendChild(link);
     }
-    link.setAttribute('href', window.location.origin + window.location.pathname);
+    var href = link.getAttribute('href') || '';
+    return href.charAt(href.length - 1) === '/' ? href : href + '/';
   }
 
   function boot() {
@@ -1773,7 +1777,6 @@
       lastTrackedPath = window.location.pathname + window.location.search;
 
       placeRail();
-      setCanonical();
       injectStructuredData();
 
       var spot = new URLSearchParams(window.location.search).get('spot');
