@@ -564,6 +564,26 @@ a:hover { color: var(--accent-lit); }
   color: var(--paper);
 }
 
+/* The one filter that is not a type: it asks a different question, so it sits
+   outside the scrolling row, pinned to the left of it behind a hairline. On a
+   phone that keeps it reachable when the type chips have scrolled away. */
+.chip-video {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.chip-video svg {
+  width: 9px;
+  height: 9px;
+  fill: currentColor;
+}
+.filter-split {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 20px;
+  background: var(--hairline);
+}
+
 /* ==========================================================================
    The signature: the price gauge.
    Four slots, always four. Filled slots in accent, the rest ghosted in
@@ -1032,7 +1052,15 @@ a:hover { color: var(--accent-lit); }
   .panel-scroll { padding: 26px 20px calc(28px + var(--safe-b)); }
   .panel-close { top: 14px; right: 12px; }
 
-  body.panel-open .filter-bar { opacity: 0; pointer-events: none; }
+  /* The sheet covers the chip row, so it goes away rather than sitting
+     invisible underneath: visibility, not just opacity, so a keyboard cannot
+     tab into a row nobody can see. */
+  body.panel-open .filter-bar {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: right .3s var(--ease), opacity .2s var(--ease), visibility 0s linear .2s;
+  }
 
   /* A detail sheet opens at half the screen so the map keeps the other half
      and the chosen pin has somewhere to be. Drag the grip up for the rest of
