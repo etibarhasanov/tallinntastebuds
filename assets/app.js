@@ -247,6 +247,7 @@
     renderFilters();
     renderPanel();
     syncUrl();
+    trackEvent('language_select', { language: code });
   }
 
   /* ---------------------------------------------------------------- styles
@@ -317,6 +318,7 @@
     paintMarkers();
     markStyleSwitch();
     syncUrl();
+    if (!opts || opts.pin !== false) trackEvent('style_select', { style: id });
   }
 
   /* Pressed state only, so activating a swatch by keyboard keeps focus on it. */
@@ -613,6 +615,7 @@
       textContent: t('filterAll')
     });
     all.addEventListener('click', function () {
+      if (!state.active.length) return;
       state.active = [];
       applyFilters();
     });
@@ -629,7 +632,7 @@
       chip.addEventListener('click', function () {
         var at = state.active.indexOf(id);
         if (at === -1) state.active.push(id); else state.active.splice(at, 1);
-        applyFilters();
+        applyFilters({ id: id, on: at === -1 });
       });
       dom.filters.appendChild(chip);
     });
@@ -715,6 +718,7 @@
     });
 
     function open() {
+      trackEvent('cluster_open', { cluster_size: count });
       var pts = group.map(function (m) { return [m.place.lat, m.place.lng]; });
       map.fitBounds(L.latLngBounds(pts), {
         padding: isNarrow() ? [56, 56] : [110, 110],
@@ -762,10 +766,24 @@
     });
   }
 
-  function applyFilters() {
+  function applyFilters(change) {
+    syncUrl();
     renderFilters();
     if (state.view === 'list') renderPanel();
     paintMarkers();
+
+    var params = {
+      filters: state.active.length ? state.active.slice().sort().join(',') : 'all',
+      filter_count: state.active.length,
+      places_shown: visiblePlaces().length
+    };
+    if (change) {
+      params.filter_id = change.id;
+      params.filter_state = change.on ? 'on' : 'off';
+      trackEvent('filter_select', params);
+    } else {
+      trackEvent('filter_clear', params);
+    }
   }
 
   /* ----------------------------------------------------------- random pick
@@ -789,6 +807,7 @@
     }
 
     state.lastPick = choice.id;
+    trackEvent('random_pick', { place: choice.name, pool: pool.length });
     selectPlace(choice.id, { fly: true });
   }
 
@@ -1130,6 +1149,10 @@
 
     button.addEventListener('click', function () {
       slot.replaceChild(embedReel(place.reel), button);
+      trackEvent('reel_play', {
+        place: place.name,
+        provider: reelProvider(place.reel) || 'unknown'
+      });
     });
 
     slot.appendChild(button);
@@ -1346,6 +1369,10 @@
     var params = new URLSearchParams(window.location.search);
     if (state.selected) params.set('spot', state.selected);
     else params.delete('spot');
+    /* Chips in the address bar: a filtered map becomes a link worth sending,
+       and the landing view GA records for it says which filters it was. */
+    if (state.active.length) params.set('type', state.active.join(','));
+    else params.delete('type');
     if (state.langPinned) params.set('lang', state.lang);
     else params.delete('lang');
     if (state.stylePinned) params.set('style', state.style);
@@ -1360,15 +1387,31 @@
    * Google Analytics, only if the tag in index.html is still there.
    *
    * This is one page, so GA on its own records a single view per visit and
-   * tells you nothing about which places people actually open. Opening a
-   * place therefore reports its own page view, which lands in GA's standard
-   * Pages and screens report with no setup in the console.
+   * tells you nothing about what anyone did on it. Two things are reported
+   * on top of that.
+   *
+   * A page view per opened place, which lands in GA's standard Pages and
+   * screens report with no setup in the console.
+   *
+   * And an event per deliberate action: which filter chips get pressed,
+   * which language and colour people pick, whether they press Surprise me,
+   * whether they play a reel. None of that changes the address bar on its
+   * own, and GA only ever sees a URL, so without these events the whole of
+   * it was invisible. They show up under Reports, Engagement, Events, and
+   * the parameters (filter_id, language, style) need registering once as
+   * custom dimensions in Admin if you want to break the numbers down by
+   * them.
    *
    * To remove tracking completely: delete the gtag block in index.html and
-   * this function. The two calls below become harmless no-ops.
+   * these two functions. Every call below becomes a harmless no-op.
    */
 
   var lastTrackedPath = null;
+
+  function trackEvent(name, params) {
+    if (typeof window.gtag !== 'function') return;
+    window.gtag('event', name, params || {});
+  }
 
   function trackView(title) {
     var here = window.location.pathname + window.location.search;
@@ -1396,7 +1439,7 @@
 
     dom.btnList.addEventListener('click', function () {
       if (dom.panel.classList.contains('is-open') && state.view === 'list') closePanel();
-      else showList(true);
+      else { trackEvent('list_open', { places_shown: visiblePlaces().length }); showList(true); }
     });
 
     dom.btnRandom.addEventListener('click', randomPick);
@@ -1408,6 +1451,7 @@
     dom.btnZoomOut.addEventListener('click', function () { map.zoomOut(); });
 
     dom.btnLocate.addEventListener('click', function () {
+      trackEvent('locate');
       if (!navigator.geolocation) { toast(t('locateFail')); return; }
       map.locate({ setView: true, maxZoom: 15 });
     });
@@ -1646,6 +1690,15 @@
       var chosen = pickLanguage(state.langs);
       state.lang = chosen.lang;
       state.langPinned = chosen.pinned;
+
+      /* Chips before the map, so the opening view fits the filtered set. */
+      var picked = new URLSearchParams(window.location.search).get('type');
+      if (picked) {
+        var live = usedTypeIds();
+        state.active = picked.split(',').filter(function (id) {
+          return live.indexOf(id) !== -1;
+        });
+      }
 
       /* Style before the map, so the first tile request is already the right
          basemap and the pins are built from the right tokens. */

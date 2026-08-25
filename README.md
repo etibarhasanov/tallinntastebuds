@@ -510,11 +510,36 @@ pointing at its `?spot=` URL — `trackView()` near the bottom of
 no configuration in the console, which means the report doubles as a
 popularity ranking of the map.
 
+Everything else people do on the map happens without the address bar changing,
+and GA only ever sees a URL, so those actions used to be invisible. They are
+reported as events instead, from `trackEvent()` beside `trackView()`:
+
+| event | parameters |
+| --- | --- |
+| `filter_select` | `filter_id`, `filter_state` (`on`/`off`), `filters`, `filter_count`, `places_shown` |
+| `filter_clear` | `filters`, `filter_count`, `places_shown` |
+| `language_select` | `language` |
+| `style_select` | `style` |
+| `random_pick` | `place`, `pool` |
+| `reel_play` | `place`, `provider` |
+| `cluster_open` | `cluster_size` |
+| `list_open` | `places_shown` |
+| `locate` | — |
+
+They appear under **Reports → Engagement → Events** on their own. To break the
+numbers down by a parameter — which chip, which language — register it once in
+**Admin → Custom definitions** as a custom dimension; GA only collects
+parameters from that point on, so it is worth doing early.
+
+The chips are also in the URL now, as `?type=bakery,vegan`. A filtered map is
+a link worth sending, and the landing page view GA records for it names the
+filters, so shared filtered links show up in **Pages and screens** too.
+
 To remove tracking entirely, delete the gtag block from `index.html` and the
-`trackView` function from `assets/app.js`; its two call sites then do nothing.
-Deleting only the gtag block is also safe — `trackView` checks for the tag and
-returns quietly when it is missing, which is also what happens for visitors
-running an ad blocker.
+`trackView` and `trackEvent` functions from `assets/app.js`; their call sites
+then do nothing. Deleting only the gtag block is also safe — both check for
+the tag and return quietly when it is missing, which is also what happens for
+visitors running an ad blocker.
 
 **GA4 sets cookies.** Estonia applies the EU rules, so if you get meaningful
 traffic from the EU you are expected to ask for consent before the tag loads.
