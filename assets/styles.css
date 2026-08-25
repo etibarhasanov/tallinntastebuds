@@ -528,6 +528,11 @@ a:hover { color: var(--accent-lit); }
   transition: right .3s var(--ease), opacity .2s var(--ease);
 }
 
+/* The row is 38px of chip standing on live map. A finger aiming at it lands a
+   few pixels high often enough, and those pixels used to be the map, which
+   panned. The padding is invisible and belongs to the scroller itself, so a
+   drag that starts in it still scrolls the chips instead of dragging Tallinn
+   sideways. touch-action pins the gesture to the one axis the row has. */
 .filters {
   flex: 0 1 auto;
   min-width: 0;
@@ -535,7 +540,9 @@ a:hover { color: var(--accent-lit); }
   gap: 6px;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 2px;
+  padding: 13px 2px;
+  margin: -11px 0;
+  touch-action: pan-x;
   scrollbar-width: none;
 }
 .filters::-webkit-scrollbar { display: none; }
