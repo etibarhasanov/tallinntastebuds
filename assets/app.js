@@ -56,6 +56,7 @@
 
   var map = null;
   var markers = {};      // id -> L.CircleMarker
+  var clusterPins = [];
   var hereMarker = null;
   var hereAccuracy = null;
   var tileLayer = null;
@@ -380,6 +381,10 @@
     /* The OpenStreetMap and CARTO credits are a licence condition — the
        attribution control stays on the page, always. */
     map.attributionControl.setPrefix('<a href="https://leafletjs.com/">Leaflet</a>');
+
+    /* Which pins are close enough to share a dot depends on the zoom, and on
+       nothing else, so panning does not have to recompute anything. */
+    map.on('zoomend', syncMarkers);
   }
 
   function buildMarkers() {
@@ -429,7 +434,14 @@
     });
 
     fitToPins();
+    syncMarkers();
   }
+
+  /* Four places sit 7km out. Fitting every one of them on a phone squeezes
+     the fifty in the middle into a thumbnail, where the whole city is a
+     single dot however it is drawn. So the fit has a floor: open on Tallinn,
+     with the far ones a zoom-out away. */
+  var FIT_FLOOR = 12;
 
   function fitToPins() {
     var pts = visiblePlaces().map(function (p) { return [p.lat, p.lng]; });
@@ -440,6 +452,7 @@
       maxZoom: 16,
       animate: false
     });
+    if (map.getZoom() < FIT_FLOOR) map.setZoom(FIT_FLOOR, { animate: false });
   }
 
   /* --------------------------------------------------------------- chosen
@@ -482,6 +495,7 @@
      as the restyle hook, so a style change keeps the selection visible. */
   function paintMarkers() {
     var c = markerColours();
+    syncMarkers();
 
     state.places.forEach(function (place) {
       var marker = markers[place.id];
@@ -632,17 +646,123 @@
     box.classList.toggle('can-right', max > 1 && x < max - 1);
   }
 
-  function applyFilters() {
-    var shown = {};
-    visiblePlaces().forEach(function (p) { shown[p.id] = true; });
+  /* ------------------------------------------------------------ clustering
+   * Tallinn is small and the places crowd together in it. Opened on a phone
+   * the map fits all 62 into about 300px of width, where a pin is 14px wide:
+   * measured, 34 of them sit mostly underneath another one. So pins closer
+   * together than a fingertip are drawn as one counted dot until you zoom in
+   * far enough to tell them apart.
+   *
+   * Written here rather than pulled from Leaflet.markercluster, which does
+   * not support the circleMarker every pin on this map is made of, and would
+   * have meant rebuilding the whole pin layer around image markers for 62
+   * points. Greedy grouping over 62 points is nothing to compute, and it
+   * runs on zoom rather than on pan because clustering follows the
+   * projection, which panning does not change.
+   *
+   * The chosen place is never swallowed: it always keeps its own pin.
+   */
+  var CLUSTER_PX = 44;
+
+  function pinGroups(places) {
+    var zoom = map.getZoom();
+    var pts = places.map(function (p) {
+      return { place: p, pt: map.project([p.lat, p.lng], zoom) };
+    });
+    var taken = [];
+    var groups = [];
+
+    pts.forEach(function (seed, i) {
+      if (taken[i]) return;
+      taken[i] = true;
+      var group = [seed];
+      pts.forEach(function (other, j) {
+        if (j <= i || taken[j]) return;
+        if (seed.pt.distanceTo(other.pt) < CLUSTER_PX) {
+          taken[j] = true;
+          group.push(other);
+        }
+      });
+      groups.push(group);
+    });
+    return groups;
+  }
+
+  function clearClusters() {
+    clusterPins.forEach(function (pin) { if (map) map.removeLayer(pin); });
+    clusterPins = [];
+  }
+
+  function clusterPin(group) {
+    var count = group.length;
+    var lat = 0;
+    var lng = 0;
+    group.forEach(function (m) { lat += m.place.lat; lng += m.place.lng; });
+
+    var size = 26 + Math.min(count, 12);
+    var label = t('clusterLabel', { count: count });
+    var pin = L.marker([lat / count, lng / count], {
+      icon: L.divIcon({
+        className: 'cluster-pin',
+        html: '<span class="cluster-dot">' + count + '</span>',
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2]
+      }),
+      keyboard: true,
+      title: label,
+      alt: label,
+      zIndexOffset: -100
+    });
+
+    function open() {
+      var pts = group.map(function (m) { return [m.place.lat, m.place.lng]; });
+      map.fitBounds(L.latLngBounds(pts), {
+        padding: isNarrow() ? [56, 56] : [110, 110],
+        maxZoom: Math.min(map.getZoom() + 4, 18),
+        animate: !reduceMotion()
+      });
+    }
+    pin.on('click', open);
+    pin.on('keypress', function (ev) {
+      if (ev.originalEvent && ev.originalEvent.key === 'Enter') open();
+    });
+
+    return pin;
+  }
+
+  /* Decides which pins are on the map: the filtered set, minus everything a
+     cluster is standing in for. */
+  function syncMarkers() {
+    if (!map) return;
+    var alone = {};
+    var pool = [];
+
+    visiblePlaces().forEach(function (p) {
+      if (p.id === state.selected) alone[p.id] = true;   /* never swallowed */
+      else pool.push(p);
+    });
+
+    clearClusters();
+
+    pinGroups(pool).forEach(function (group) {
+      if (group.length === 1) {
+        alone[group[0].place.id] = true;
+        return;
+      }
+      var pin = clusterPin(group);
+      pin.addTo(map);
+      clusterPins.push(pin);
+    });
 
     state.places.forEach(function (p) {
       var marker = markers[p.id];
       if (!marker) return;
-      if (shown[p.id]) { if (!map.hasLayer(marker)) marker.addTo(map); }
+      if (alone[p.id]) { if (!map.hasLayer(marker)) marker.addTo(map); }
       else if (map.hasLayer(marker)) map.removeLayer(marker);
     });
+  }
 
+  function applyFilters() {
     renderFilters();
     if (state.view === 'list') renderPanel();
     paintMarkers();

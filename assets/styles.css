@@ -146,6 +146,34 @@ a:hover { color: var(--accent-lit); }
   mix-blend-mode: color;
 }
 
+/* One dot standing in for the pins too close together to tell apart. It wears
+   the accent like a pin but carries a count, so it never reads as a place. */
+.cluster-pin { background: none; border: 0; }
+.cluster-dot {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 100px;
+  background: var(--accent);
+  box-shadow: 0 0 0 2.5px var(--paper), 0 1px 3px rgba(20, 26, 31, .3);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  transition: background .15s var(--ease), transform .15s var(--ease);
+}
+.cluster-pin:hover .cluster-dot,
+.cluster-pin:focus-visible .cluster-dot {
+  background: var(--accent-lit);
+  transform: scale(1.08);
+}
+.cluster-pin:focus-visible { outline: none; }
+.cluster-pin:focus-visible .cluster-dot {
+  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 4.5px var(--accent-lit);
+}
+
 /* Where you are, which is not one of the places on the map and should never
    look like one. The dot carries a hue that no style's accent uses, plus the
    ring of real accuracy around it, which no pin ever has. */
