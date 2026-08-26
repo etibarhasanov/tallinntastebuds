@@ -1,0 +1,1185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Editor — Tallinn Tastebuds</title>
+
+<!-- This page is a tool for one person and has no business in a search index.
+     robots.txt disallows it too, and _headers sends X-Robots-Tag. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
+
+<!-- Nothing is loaded from anywhere: no fonts, no Leaflet, no framework.
+     The visitor-facing site never links here and never fetches this file, so
+     the map keeps loading exactly the same bytes it did before. -->
+<style>
+/* The site's tokens, copied rather than imported: assets/styles.css is 46 kB
+   of map and sheet layout that this page has no use for. */
+:root {
+  --ink:      #0d1b28;
+  --muted:    #52667a;
+  --paper:    #f6fafd;
+  --wash:     #dfeaf4;
+  --hairline: #d2e0ed;
+  --accent:   #00539c;
+  --accent-lit: #0072ce;
+  --warn:     #8a5a00;
+  --bad:      #b3261e;
+  --good:     #1e6b3a;
+  --radius: 4px;
+  --sys: "Familjen Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--wash);
+  color: var(--ink);
+  font-family: var(--sys);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 1px; }
+.mono { font-family: var(--mono); font-size: 12px; }
+
+/* ---------- top bar ---------- */
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
+  flex: none;
+  flex-wrap: wrap;
+}
+.bar h1 { font-size: 15px; margin: 0; font-weight: 600; letter-spacing: -.01em; }
+.bar h1 span { color: var(--muted); font-weight: 400; }
+.count { color: var(--muted); font-size: 13px; }
+.bar .spacer { flex: 1 1 auto; }
+
+.btn {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 6px 11px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--accent-lit); color: var(--accent); }
+.btn[disabled] { opacity: .45; cursor: default; }
+.btn[disabled]:hover { border-color: var(--hairline); color: inherit; }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-lit); border-color: var(--accent-lit); color: #fff; }
+.btn-danger:hover { border-color: var(--bad); color: var(--bad); }
+
+.pill-dirty {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fff3d6;
+  color: var(--warn);
+  border: 1px solid #ecd9a8;
+}
+.pill-dirty[hidden] { display: none; }
+
+/* ---------- layout ---------- */
+
+.split {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 296px minmax(0, 1fr);
+  min-height: 0;
+}
+
+.side {
+  border-right: 1px solid var(--hairline);
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.side-head { padding: 10px; border-bottom: 1px solid var(--hairline); display: flex; gap: 8px; }
+.side-head input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 6px 9px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: #fff;
+}
+.rows { overflow-y: auto; flex: 1 1 auto; }
+
+.row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--hairline);
+  background: none;
+}
+.row:hover { background: var(--wash); }
+.row[aria-current="true"] { background: var(--wash); box-shadow: inset 3px 0 0 var(--accent); }
+.row-name { font-weight: 500; display: flex; align-items: baseline; gap: 6px; }
+.row-name .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--warn); flex: none;
+}
+.row-name .dot[hidden] { display: none; }
+.row-meta { color: var(--muted); font-size: 12px; display: flex; gap: 8px; }
+.row-meta .euro { font-family: var(--mono); }
+.row.closed .row-name { text-decoration: line-through; color: var(--muted); }
+.row.bad .row-name { color: var(--bad); }
+
+.main { overflow-y: auto; min-height: 0; padding: 18px 20px 28px; }
+.sheet { max-width: 760px; margin: 0 auto; }
+
+.empty { color: var(--muted); max-width: 46ch; margin: 12vh auto 0; text-align: center; }
+.empty h2 { font-size: 17px; }
+
+/* ---------- form ---------- */
+
+fieldset {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--paper);
+  margin: 0 0 14px;
+  padding: 12px 14px 14px;
+}
+legend {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--muted);
+  padding: 0 5px;
+}
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field.wide { grid-column: 1 / -1; }
+.field > label, .field > .lbl { font-size: 12px; color: var(--muted); }
+.field input[type="text"], .field input[type="search"], .field textarea, .field input[type="number"] {
+  padding: 7px 9px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: #fff;
+  width: 100%;
+  min-width: 0;
+}
+.field textarea { resize: vertical; min-height: 64px; line-height: 1.55; }
+.field .hint { font-size: 12px; color: var(--muted); }
+.field .hint.bad { color: var(--bad); }
+.field .hint.warn { color: var(--warn); }
+.field input.bad, .field textarea.bad { border-color: var(--bad); }
+
+/* price + type chips */
+.seg { display: flex; gap: 6px; }
+.seg button {
+  border: 1px solid var(--hairline);
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 6px 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .04em;
+}
+.seg button[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  border: 1px solid var(--hairline);
+  background: #fff;
+  border-radius: 999px;
+  padding: 4px 11px;
+  font-size: 13px;
+}
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.switch { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.switch input { width: 16px; height: 16px; accent-color: var(--accent); }
+
+.blurb-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.blurb-head .n { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+.inline-btn {
+  border: 1px solid var(--hairline);
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 4px 9px;
+  font-size: 12px;
+}
+.inline-btn:hover { border-color: var(--accent-lit); color: var(--accent); }
+.row-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+
+.title-line { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; flex-wrap: wrap; }
+.title-line h2 { font-size: 20px; margin: 0; letter-spacing: -.01em; }
+.title-line .id { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+
+/* ---------- checks drawer ---------- */
+
+.checks {
+  flex: none;
+  background: var(--paper);
+  border-top: 1px solid var(--hairline);
+  max-height: 40vh;
+  display: flex;
+  flex-direction: column;
+}
+.checks-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  width: 100%;
+  border: 0;
+  background: none;
+  text-align: left;
+  font-size: 13px;
+}
+.checks-list { overflow-y: auto; border-top: 1px solid var(--hairline); }
+.checks-list[hidden] { display: none; }
+.check {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--hairline);
+  background: none;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+.check:hover { background: var(--wash); }
+.check .who { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-right: 8px; }
+.check.err .what { color: var(--bad); }
+.check.warn .what { color: var(--warn); }
+.tag-ok { color: var(--good); }
+.tag-err { color: var(--bad); font-weight: 600; }
+.tag-warn { color: var(--warn); }
+
+/* ---------- toast + boot screen ---------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: #fff;
+  padding: 9px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  z-index: 20;
+  max-width: 90vw;
+}
+.toast[hidden] { display: none; }
+
+.boot { margin: 14vh auto; max-width: 52ch; padding: 0 20px; }
+.boot h2 { font-size: 18px; }
+.boot code { font-family: var(--mono); font-size: 13px; background: var(--paper); padding: 1px 5px; border-radius: 3px; }
+
+@media (max-width: 820px) {
+  .split { grid-template-columns: 1fr; }
+  .side { border-right: 0; border-bottom: 1px solid var(--hairline); max-height: 34vh; }
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <h1>Tallinn Tastebuds <span>· editor</span></h1>
+  <span class="count" id="count"></span>
+  <span class="pill-dirty" id="dirty" hidden></span>
+  <span class="spacer"></span>
+  <button type="button" class="btn" id="btn-open" hidden>Open file…</button>
+  <button type="button" class="btn" id="btn-copy">Copy JSON</button>
+  <button type="button" class="btn" id="btn-revert">Revert all</button>
+  <button type="button" class="btn btn-primary" id="btn-save">Save</button>
+</div>
+
+<div class="split" id="split" hidden>
+  <section class="side">
+    <div class="side-head">
+      <input type="search" id="q" placeholder="Filter places" aria-label="Filter places"
+             autocomplete="off" spellcheck="false">
+      <button type="button" class="btn" id="btn-new" title="Add a place">New</button>
+    </div>
+    <div class="rows" id="rows"></div>
+  </section>
+  <section class="main" id="main"></section>
+</div>
+
+<div class="checks" id="checks" hidden>
+  <button type="button" class="checks-head" id="checks-head" aria-expanded="false">
+    <span id="checks-summary"></span>
+    <span class="spacer" style="flex:1"></span>
+    <span class="mono" id="checks-toggle">show</span>
+  </button>
+  <div class="checks-list" id="checks-list" hidden></div>
+</div>
+
+<div class="boot" id="boot">
+  <h2>Loading the data…</h2>
+</div>
+
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+<script>
+/* ==========================================================================
+   Tallinn Tastebuds — the editor
+   --------------------------------------------------------------------------
+   A local tool for editing data/restaurants.json without hand-typing JSON:
+   prices, types, blurbs, dishes, dates, closed flags, new places.
+
+   Three things it deliberately does NOT do:
+
+   1. It is not part of the site. index.html does not link here and does not
+      fetch this file, so nothing a visitor downloads changes.
+   2. It cannot write to the live site. It reads data/restaurants.json over
+      plain HTTP and hands you a new file back; the change only reaches anyone
+      once you commit and push it. Finding this page buys a stranger nothing
+      they could not get from data/restaurants.json directly.
+   3. It has no dependencies and no build step, in keeping with the rest of
+      the repo.
+
+   It carries a copy of the rules in tools/validate.mjs so you see the same
+   errors here that CI would raise, before you commit. The validator remains
+   the authority: run `node tools/validate.mjs` after saving.
+   ========================================================================== */
+
+(function () {
+  'use strict';
+
+  /* ---------------------------------------------------------------- rules
+     Kept deliberately identical to tools/validate.mjs. If you change one,
+     change the other. */
+
+  var BBOX = { latMin: 59.32, latMax: 59.52, lngMin: 24.50, lngMax: 25.00 };
+  var SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  var MONTH = /^[0-9]{4}-(0[1-9]|1[0-2])$/;
+  var DAY = /^\d{4}-\d{2}-\d{2}$/;
+  var REEL_INSTAGRAM = /^https:\/\/www\.instagram\.com\/(?:[A-Za-z0-9._]{1,30}\/)?(reel|reels|p|tv)\/[A-Za-z0-9_-]{5,}\/?(\?.*)?$/;
+  var REEL_TIKTOK = /^https:\/\/www\.tiktok\.com\/@[A-Za-z0-9._]{1,30}\/video\/[0-9]{6,}\/?(\?.*)?$/;
+  var PHOTO_FILE = /^[A-Za-z0-9._-]+\.(webp|jpg|jpeg|png|avif)$/i;
+  var HTTP_URL = /^https?:\/\/[^\s]+$/;
+
+  /* The order keys are written back in. Matches the existing file exactly, so
+     an untouched place re-serialises byte for byte and the diff stays small. */
+  var KEY_ORDER = [
+    'id', 'name', 'address', 'lat', 'lng', 'price', 'types', 'blurb',
+    'mustOrder', 'reel', 'photos', 'website', 'added', 'visited', 'closed'
+  ];
+
+  var DRAFT_KEY = 'tallinntastebuds:editor-draft';
+
+  /* ---------------------------------------------------------------- state */
+
+  var langs = [];        // language codes, from data/ui.json
+  var langName = {};     // code -> the name in the language switch
+  var types = [];        // taxonomy entries
+  var original = [];     // the file as loaded, untouched
+  var originalText = ''; // its exact bytes, for the dirty check
+  var places = [];       // the working copy
+  var currentId = null;
+  var fileHandle = null; // File System Access handle, when the browser has it
+  var photoChecked = {}; // "id/file" -> true | false, from HEAD probes
+  var checks = { errors: [], warnings: [] };
+
+  var el = {};
+  ['count', 'dirty', 'split', 'rows', 'main', 'q', 'boot', 'toast', 'checks',
+   'checks-head', 'checks-list', 'checks-summary', 'checks-toggle',
+   'btn-open', 'btn-copy', 'btn-revert', 'btn-save', 'btn-new'].forEach(function (id) {
+    el[id] = document.getElementById(id);
+  });
+
+  /* ----------------------------------------------------------- small tools */
+
+  function isStr(v) { return typeof v === 'string' && v.trim().length > 0; }
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+  function lines(v) {
+    return String(v || '').split('\n').map(function (s) { return s.trim(); })
+      .filter(function (s) { return s.length > 0; });
+  }
+  function today() {
+    var d = new Date();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    return d.getFullYear() + '-' + m + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function euros(n) { return '€€€€'.slice(0, Math.max(0, Math.min(4, n || 0))); }
+
+  var toastTimer = null;
+  function toast(message) {
+    el.toast.textContent = message;
+    el.toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.toast.hidden = true; }, 3200);
+  }
+
+  function debounce(fn, ms) {
+    var t = null;
+    return function () {
+      var args = arguments;
+      clearTimeout(t);
+      t = setTimeout(function () { fn.apply(null, args); }, ms);
+    };
+  }
+
+  /* ------------------------------------------------------------ serialising
+     One function decides what the file looks like. Unknown keys are carried
+     through untouched rather than dropped: this editor is never the reason a
+     field disappears. */
+
+  function tidy(place) {
+    var out = {};
+    KEY_ORDER.forEach(function (key) {
+      var value = place[key];
+      switch (key) {
+        case 'lat':
+        case 'lng':
+          out[key] = value;
+          break;
+        case 'price':
+          out.price = value;
+          break;
+        case 'types':
+          out.types = (place.types || []).slice();
+          break;
+        case 'blurb':
+          out.blurb = {};
+          Object.keys(place.blurb || {}).sort().forEach(function (lang) {
+            var text = String(place.blurb[lang] || '').trim();
+            if (text) out.blurb[lang] = text;
+          });
+          break;
+        case 'mustOrder':
+        case 'photos':
+          out[key] = (place[key] || []).map(function (s) { return String(s).trim(); })
+            .filter(function (s) { return s.length > 0; });
+          break;
+        case 'visited':
+          /* Optional on purpose: a place you have been to but not filmed has
+             no month to give, and the panel drops the row. */
+          if (isStr(place.visited)) out.visited = place.visited.trim();
+          break;
+        case 'closed':
+          out.closed = place.closed === true;
+          break;
+        case 'website':
+          out.website = String(place.website == null ? '' : place.website).trim();
+          break;
+        case 'added':
+          out.added = String(place.added == null ? '' : place.added).trim();
+          break;
+        default:
+          out[key] = typeof value === 'string' ? value.trim() : value;
+      }
+    });
+    Object.keys(place).forEach(function (key) {
+      if (KEY_ORDER.indexOf(key) === -1) out[key] = place[key];
+    });
+    return out;
+  }
+
+  /* Places keep the order they have in the file. A place added here is slotted
+     in where its name sorts, which is how the file is already arranged, so a
+     new entry shows up as one added block rather than a reshuffle. */
+  function ordered() {
+    var known = [];
+    var fresh = [];
+    var wasThere = {};
+    original.forEach(function (p) { wasThere[p.id] = true; });
+    places.forEach(function (p) { (wasThere[p.id] ? known : fresh).push(p); });
+
+    var out = known.slice();
+    fresh.forEach(function (p) {
+      var name = String(p.name || '');
+      var at = out.length;
+      for (var i = 0; i < out.length; i++) {
+        if (String(out[i].name || '').localeCompare(name, 'et') > 0) { at = i; break; }
+      }
+      out.splice(at, 0, p);
+    });
+    return out;
+  }
+
+  function serialise() {
+    return JSON.stringify(ordered().map(tidy), null, 2) + '\n';
+  }
+
+  /* ------------------------------------------------------------- validating
+     A port of tools/validate.mjs. Photo existence is checked with HEAD
+     requests instead of the filesystem; everything else is the same test. */
+
+  function validate() {
+    var errors = [];
+    var warnings = [];
+    var seen = {};
+    var typeIds = {};
+    types.forEach(function (t) { typeIds[t.id] = true; });
+
+    var fail = function (p, m) { errors.push({ id: p.id || '(new)', key: p.__key, msg: m }); };
+    var warn = function (p, m) { warnings.push({ id: p.id || '(new)', key: p.__key, msg: m }); };
+
+    places.forEach(function (p) {
+      /* id */
+      if (!isStr(p.id)) fail(p, 'has no id yet');
+      else if (!SLUG.test(p.id)) fail(p, 'id "' + p.id + '" is not a lowercase slug (a-z, 0-9, single hyphens)');
+      else if (seen[p.id]) fail(p, 'id "' + p.id + '" is used more than once');
+      if (isStr(p.id)) seen[p.id] = true;
+
+      if (!isStr(p.name)) fail(p, 'needs a name');
+      if (!isStr(p.address)) fail(p, 'needs an address');
+
+      /* coordinates */
+      if (typeof p.lat !== 'number' || !isFinite(p.lat)) fail(p, 'lat must be a number');
+      else if (p.lat < BBOX.latMin || p.lat > BBOX.latMax) fail(p, 'lat ' + p.lat + ' is outside Tallinn (' + BBOX.latMin + '–' + BBOX.latMax + ') — lat and lng swapped?');
+      if (typeof p.lng !== 'number' || !isFinite(p.lng)) fail(p, 'lng must be a number');
+      else if (p.lng < BBOX.lngMin || p.lng > BBOX.lngMax) fail(p, 'lng ' + p.lng + ' is outside Tallinn (' + BBOX.lngMin + '–' + BBOX.lngMax + ') — lat and lng swapped?');
+
+      /* price */
+      if (!Number.isInteger(p.price) || p.price < 1 || p.price > 4) {
+        fail(p, 'price must be a whole number from 1 to 4');
+      }
+
+      /* types */
+      var here = {};
+      (p.types || []).forEach(function (id) {
+        if (here[id]) warn(p, 'lists the type "' + id + '" twice');
+        here[id] = true;
+        if (!typeIds[id]) fail(p, 'uses the type "' + id + '", which is not in data/taxonomy.json');
+      });
+      if (!(p.types || []).length) warn(p, 'has no types, so no filter chip will ever show it');
+
+      /* blurb */
+      var written = langs.filter(function (l) { return isStr((p.blurb || {})[l]); });
+      if (!written.length) fail(p, 'blurb has no text in any language');
+      else {
+        langs.forEach(function (l) {
+          if (!isStr((p.blurb || {})[l])) warn(p, 'blurb has no "' + l + '" translation');
+        });
+      }
+      written.forEach(function (l) {
+        var text = p.blurb[l];
+        if (/\bTODO\b|\bPLACEHOLDER\b/.test(text) || /lorem ipsum/i.test(text)) {
+          warn(p, 'blurb (' + l + ') is still a placeholder');
+        }
+        /* House style: no em or en dashes in the prose. */
+        if (/[—–]/.test(text)) warn(p, 'blurb (' + l + ') contains an em or en dash');
+      });
+
+      /* reel */
+      if (typeof p.reel !== 'string') fail(p, 'reel must be a string ("" when there is no reel yet)');
+      else if (p.reel === '') warn(p, 'has no reel yet');
+      else if (!REEL_INSTAGRAM.test(p.reel) && !REEL_TIKTOK.test(p.reel)) {
+        fail(p, 'reel is not a video permalink — expected https://www.instagram.com/reel/SHORTCODE/ or https://www.tiktok.com/@user/video/ID');
+      }
+
+      /* photos */
+      (p.photos || []).forEach(function (file) {
+        if (!PHOTO_FILE.test(file)) {
+          fail(p, 'photo "' + file + '" should be a bare filename such as 01.webp, with no folders in it');
+          return;
+        }
+        if (photoChecked[p.id + '/' + file] === false) {
+          fail(p, 'photo "' + file + '" is listed but photos/' + p.id + '/' + file + ' does not exist');
+        }
+      });
+
+      /* website, added, visited */
+      if (p.website !== '' && !HTTP_URL.test(String(p.website || ''))) {
+        fail(p, 'website must be a full http(s) URL, or left empty');
+      }
+      if (!isStr(p.added)) warn(p, 'has no "added" date, so it can never show as newly added');
+      else if (!DAY.test(p.added.trim())) fail(p, '"added" must look like ' + today());
+      if (isStr(p.visited) && !MONTH.test(p.visited.trim())) fail(p, '"visited" must look like 2026-02, or be left empty');
+      else if (!isStr(p.visited) && p.reel) warn(p, 'has a video but no "visited" month');
+    });
+
+    checks = { errors: errors, warnings: warnings };
+  }
+
+  /* --------------------------------------------------------------- the list */
+
+  function byId(id) {
+    for (var i = 0; i < places.length; i++) if (places[i].__key === id) return places[i];
+    return null;
+  }
+  function current() { return currentId ? byId(currentId) : null; }
+
+  function isDirty(place) {
+    var was = null;
+    original.forEach(function (p) { if (p.__key === place.__key) was = p; });
+    if (!was) return true;
+    return JSON.stringify(tidy(was)) !== JSON.stringify(tidy(place));
+  }
+
+  function dirtyCount() {
+    var n = places.filter(isDirty).length;
+    var gone = original.filter(function (p) { return !byId(p.__key); }).length;
+    return n + gone;
+  }
+
+  function renderList() {
+    var needle = el.q.value.trim().toLowerCase();
+    var bad = {};
+    checks.errors.forEach(function (e) { if (e.key) bad[e.key] = true; });
+
+    var html = ordered().filter(function (p) {
+      if (!needle) return true;
+      return (String(p.name) + ' ' + p.id + ' ' + p.address + ' ' + (p.types || []).join(' '))
+        .toLowerCase().indexOf(needle) > -1;
+    }).map(function (p) {
+      var cls = 'row' + (p.closed ? ' closed' : '') + (bad[p.__key] ? ' bad' : '');
+      return '<button type="button" class="' + cls + '" data-key="' + esc(p.__key) + '"' +
+        (p.__key === currentId ? ' aria-current="true"' : '') + '>' +
+        '<span class="row-name"><span class="dot"' + (isDirty(p) ? '' : ' hidden') + '></span>' +
+        esc(p.name || '(no name yet)') + '</span>' +
+        '<span class="row-meta"><span class="euro">' + (euros(p.price) || '—') + '</span>' +
+        '<span>' + esc((p.types || []).slice(0, 2).join(', ')) + '</span></span>' +
+        '</button>';
+    }).join('');
+
+    el.rows.innerHTML = html || '<p class="row-meta" style="padding:12px">Nothing matches that.</p>';
+
+    var n = places.length;
+    var d = dirtyCount();
+    el.count.textContent = n + (n === 1 ? ' place' : ' places');
+    el.dirty.hidden = d === 0;
+    el.dirty.textContent = d + (d === 1 ? ' edit not saved' : ' edits not saved');
+  }
+
+  /* ------------------------------------------------------------- the editor */
+
+  function fieldText(place, key, label, hint, attrs) {
+    return '<div class="field' + (attrs && attrs.wide ? ' wide' : '') + '">' +
+      '<label for="f-' + key + '">' + esc(label) + '</label>' +
+      '<input type="text" id="f-' + key + '" data-field="' + key + '" value="' +
+      esc(place[key] == null ? '' : place[key]) + '"' +
+      (attrs && attrs.placeholder ? ' placeholder="' + esc(attrs.placeholder) + '"' : '') +
+      (attrs && attrs.mono ? ' class="mono"' : '') + '>' +
+      (hint ? '<span class="hint">' + hint + '</span>' : '') +
+      '</div>';
+  }
+
+  function editorHTML(p) {
+    var typeChips = types.map(function (t) {
+      var on = (p.types || []).indexOf(t.id) > -1;
+      return '<button type="button" class="chip" data-type="' + esc(t.id) + '" aria-pressed="' +
+        (on ? 'true' : 'false') + '">' + esc(t.en) + '</button>';
+    }).join('');
+
+    var priceButtons = [1, 2, 3, 4].map(function (n) {
+      return '<button type="button" data-price="' + n + '" aria-pressed="' +
+        (p.price === n ? 'true' : 'false') + '" aria-label="Price band ' + n + '">' +
+        euros(n) + '</button>';
+    }).join('');
+
+    var blurbs = langs.map(function (lang) {
+      var text = (p.blurb || {})[lang] || '';
+      return '<div class="field wide">' +
+        '<div class="blurb-head">' +
+        '<label for="b-' + lang + '">' + esc(langName[lang] || lang) + ' <span class="mono">' + esc(lang) + '</span></label>' +
+        '<span class="n">' + text.length + ' chars</span>' +
+        '</div>' +
+        '<textarea id="b-' + lang + '" data-blurb="' + lang + '" rows="3">' + esc(text) + '</textarea>' +
+        '</div>';
+    }).join('');
+
+    var photoNotes = (p.photos || []).map(function (f) {
+      var state = photoChecked[p.id + '/' + f];
+      if (state === false) return '<span class="hint bad">photos/' + esc(p.id) + '/' + esc(f) + ' is not in the repo</span>';
+      return '';
+    }).join('');
+
+    return '<div class="sheet">' +
+      '<div class="title-line">' +
+        '<h2>' + esc(p.name || 'New place') + '</h2>' +
+        '<span class="id">' + esc(p.id || 'no id yet') + '</span>' +
+        '<span style="flex:1"></span>' +
+        (p.id ? '<a class="inline-btn" href="index.html?spot=' + encodeURIComponent(p.id) + '" target="_blank" rel="noopener">Open on the map</a>' : '') +
+        '<button type="button" class="inline-btn" data-act="duplicate">Duplicate</button>' +
+        '<button type="button" class="btn btn-danger" data-act="delete">Delete</button>' +
+      '</div>' +
+
+      '<fieldset><legend>The place</legend><div class="grid">' +
+        fieldText(p, 'name', 'Name', 'Exactly as it is written on the door. Never translated.') +
+        fieldText(p, 'id', 'Id', 'Slug for the <span class="mono">?spot=</span> link and the photos folder. Never change it once shared.', { mono: true }) +
+        fieldText(p, 'address', 'Address', 'The way Estonian post would write it.', { wide: true }) +
+        '<div class="field">' +
+          '<label for="f-lat">Latitude</label>' +
+          '<input type="text" id="f-lat" data-field="lat" class="mono" value="' + esc(p.lat) + '">' +
+          '<span class="hint">59.32 to 59.52</span>' +
+        '</div>' +
+        '<div class="field">' +
+          '<label for="f-lng">Longitude</label>' +
+          '<input type="text" id="f-lng" data-field="lng" class="mono" value="' + esc(p.lng) + '">' +
+          '<span class="hint">24.50 to 25.00</span>' +
+        '</div>' +
+        '<div class="field wide">' +
+          '<label for="f-paste">Paste coordinates</label>' +
+          '<input type="text" id="f-paste" data-act="paste-coords" placeholder="A Google Maps link, or 59.4502, 24.7252">' +
+          '<span class="hint">Right click the pin in Google Maps, copy, paste here. The two fields above fill themselves.</span>' +
+        '</div>' +
+      '</div></fieldset>' +
+
+      '<fieldset><legend>Price and types</legend><div class="grid">' +
+        '<div class="field">' +
+          '<span class="lbl">Price band</span>' +
+          '<div class="seg" role="group" aria-label="Price band">' + priceButtons + '</div>' +
+          '<span class="hint">A cost band, not a rating.</span>' +
+        '</div>' +
+        '<div class="field">' +
+          '<span class="lbl">Status</span>' +
+          '<label class="switch"><input type="checkbox" data-field="closed"' + (p.closed ? ' checked' : '') + '> Closed down</label>' +
+          '<span class="hint">Closing greys the pin out and keeps links working. Better than deleting.</span>' +
+        '</div>' +
+        '<div class="field wide">' +
+          '<span class="lbl">Types</span>' +
+          '<div class="chips">' + typeChips + '</div>' +
+          '<span class="hint">From data/taxonomy.json. Add a new type there first.</span>' +
+        '</div>' +
+      '</div></fieldset>' +
+
+      '<fieldset><legend>The write-up</legend><div class="grid">' + blurbs +
+        '<div class="field wide">' +
+          '<label for="f-must">Must order</label>' +
+          '<textarea id="f-must" data-list="mustOrder" rows="3">' + esc((p.mustOrder || []).join('\n')) + '</textarea>' +
+          '<span class="hint">One dish per line, spelled the way the menu spells it. Not translated.</span>' +
+        '</div>' +
+      '</div></fieldset>' +
+
+      '<fieldset><legend>Links, photos, dates</legend><div class="grid">' +
+        fieldText(p, 'reel', 'Reel', 'The full Instagram or TikTok permalink, or leave it empty.', { wide: true, placeholder: 'https://www.instagram.com/reel/…' }) +
+        fieldText(p, 'website', 'Website', 'Optional.', { wide: true, placeholder: 'https://' }) +
+        '<div class="field wide">' +
+          '<label for="f-photos">Photos</label>' +
+          '<textarea id="f-photos" data-list="photos" rows="3">' + esc((p.photos || []).join('\n')) + '</textarea>' +
+          '<span class="hint">One filename per line, from photos/' + esc(p.id || '&lt;id&gt;') + '/. The files themselves are added to the repo by hand.</span>' +
+          photoNotes +
+        '</div>' +
+        fieldText(p, 'added', 'Added', 'The day it first appeared here, YYYY-MM-DD. Drives the Just added section.', { mono: true }) +
+        fieldText(p, 'visited', 'Visited', 'The month you last ate there, YYYY-MM. Leave empty if there is no post.', { mono: true }) +
+      '</div></fieldset>' +
+      '</div>';
+  }
+
+  function renderEditor() {
+    var p = current();
+    if (!p) {
+      el.main.innerHTML = '<div class="empty"><h2>Pick a place on the left</h2>' +
+        '<p>Or add one with <b>New</b>. Every change stays in this browser until you press Save.</p></div>';
+      return;
+    }
+    var scroll = el.main.scrollTop;
+    el.main.innerHTML = editorHTML(p);
+    el.main.scrollTop = scroll;
+    checkPhotos(p);
+  }
+
+  /* Re-rendering the whole editor on every keystroke would lose the caret, so
+     typing only refreshes the list, the checks and the draft. */
+  function touched(rerender) {
+    validate();
+    renderList();
+    renderChecks();
+    if (rerender) renderEditor();
+    saveDraft();
+  }
+  var touchedSoon = debounce(function () { touched(false); }, 200);
+
+  /* ------------------------------------------------------------ photo probe
+     The filesystem is not readable from a page, so ask the server instead. */
+
+  function checkPhotos(p) {
+    if (!p || !p.id) return;
+    var pending = (p.photos || []).filter(function (f) {
+      return PHOTO_FILE.test(f) && photoChecked[p.id + '/' + f] === undefined;
+    });
+    if (!pending.length) return;
+    Promise.all(pending.map(function (file) {
+      var path = 'photos/' + encodeURIComponent(p.id) + '/' + encodeURIComponent(file);
+      return fetch(path, { method: 'HEAD' })
+        .then(function (res) { photoChecked[p.id + '/' + file] = res.ok; })
+        .catch(function () { photoChecked[p.id + '/' + file] = false; });
+    })).then(function () { touched(true); });
+  }
+
+  /* ---------------------------------------------------------------- checks */
+
+  function renderChecks() {
+    var e = checks.errors.length;
+    var w = checks.warnings.length;
+    el.checks.hidden = false;
+    el['checks-summary'].innerHTML = e
+      ? '<span class="tag-err">' + e + (e === 1 ? ' error' : ' errors') + '</span> · ' +
+        '<span class="tag-warn">' + w + (w === 1 ? ' warning' : ' warnings') + '</span> · CI would reject this file'
+      : '<span class="tag-ok">No errors</span> · <span class="tag-warn">' + w +
+        (w === 1 ? ' warning' : ' warnings') + '</span> · warnings never block a deploy';
+
+    el['checks-list'].innerHTML = checks.errors.map(function (c) {
+      return '<button type="button" class="check err" data-key="' + esc(c.key || '') + '">' +
+        '<span class="who">' + esc(c.id) + '</span><span class="what">' + esc(c.msg) + '</span></button>';
+    }).concat(checks.warnings.map(function (c) {
+      return '<button type="button" class="check warn" data-key="' + esc(c.key || '') + '">' +
+        '<span class="who">' + esc(c.id) + '</span><span class="what">' + esc(c.msg) + '</span></button>';
+    })).join('') || '<p class="check">Nothing to report.</p>';
+  }
+
+  /* ----------------------------------------------------------------- drafts
+     A refresh should never cost you an evening of typing. The draft is this
+     browser's own scratch copy and has nothing to do with the deployed file. */
+
+  var saveDraft = debounce(function () {
+    try {
+      if (dirtyCount() === 0) { localStorage.removeItem(DRAFT_KEY); return; }
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ at: Date.now(), text: serialise() }));
+    } catch (err) { /* private mode, a full quota: not worth interrupting for */ }
+  }, 600);
+
+  function readDraft() {
+    try {
+      var raw = localStorage.getItem(DRAFT_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (err) { return null; }
+  }
+
+  /* ------------------------------------------------------------------ boot */
+
+  function getJSON(path) {
+    return fetch(path, { credentials: 'same-origin' }).then(function (res) {
+      if (!res.ok) throw new Error(path + ' came back ' + res.status);
+      return res.json();
+    });
+  }
+
+  function adopt(list) {
+    places = list.map(function (p, i) {
+      var copy = JSON.parse(JSON.stringify(p));
+      /* A stable handle for selection, so renaming an id never loses the row
+         you are editing. It is stripped before anything is written out. */
+      Object.defineProperty(copy, '__key', { value: 'k' + i + ':' + (p.id || ''), enumerable: false, writable: true });
+      return copy;
+    });
+  }
+
+  function start() {
+    Promise.all([
+      getJSON('data/restaurants.json'),
+      getJSON('data/taxonomy.json'),
+      getJSON('data/ui.json')
+    ]).then(function (loaded) {
+      var restaurants = loaded[0];
+      types = (loaded[1] && loaded[1].types) || [];
+      langs = Object.keys(loaded[2] || {});
+      langs.forEach(function (l) { langName[l] = (loaded[2][l] || {}).langName || l; });
+
+      originalText = JSON.stringify(restaurants, null, 2) + '\n';
+      adopt(restaurants);
+      original = places.map(function (p) {
+        var copy = JSON.parse(JSON.stringify(p));
+        Object.defineProperty(copy, '__key', { value: p.__key, enumerable: false, writable: true });
+        return copy;
+      });
+
+      var draft = readDraft();
+      if (draft && draft.text && draft.text !== originalText) {
+        var when = new Date(draft.at).toLocaleString();
+        if (confirm('This browser has unsaved edits from ' + when + '.\n\nOK restores them. Cancel throws them away and loads the file from disk.')) {
+          try { adopt(JSON.parse(draft.text)); } catch (err) { toast('That draft was unreadable, so the file was loaded instead.'); }
+        } else {
+          try { localStorage.removeItem(DRAFT_KEY); } catch (err) {}
+        }
+      }
+
+      el.boot.hidden = true;
+      el.split.hidden = false;
+      if (window.showSaveFilePicker) el['btn-open'].hidden = false;
+      currentId = places.length ? places[0].__key : null;
+      touched(true);
+    }).catch(function (err) {
+      el.boot.innerHTML = '<h2>The data would not load</h2>' +
+        '<p>' + esc(err.message) + '</p>' +
+        '<p>This page reads the JSON with <code>fetch()</code>, and browsers refuse ' +
+        '<code>fetch()</code> over <code>file://</code>. Serve the folder first:</p>' +
+        '<p><code>python3 -m http.server 8000</code></p>' +
+        '<p>then open <code>http://localhost:8000/admin.html</code>.</p>';
+    });
+  }
+
+  /* ---------------------------------------------------------------- saving */
+
+  function afterSave(text) {
+    var parsed = JSON.parse(text);
+    originalText = text;
+    adopt(parsed);
+    original = places.map(function (p) {
+      var copy = JSON.parse(JSON.stringify(p));
+      Object.defineProperty(copy, '__key', { value: p.__key, enumerable: false, writable: true });
+      return copy;
+    });
+    if (!byId(currentId)) currentId = places.length ? places[0].__key : null;
+    try { localStorage.removeItem(DRAFT_KEY); } catch (err) {}
+    touched(true);
+  }
+
+  function confirmErrors() {
+    if (!checks.errors.length) return true;
+    return confirm(checks.errors.length + ' error' + (checks.errors.length === 1 ? '' : 's') +
+      ' would fail tools/validate.mjs, and the deploy is gated on it.\n\nSave anyway?');
+  }
+
+  function save() {
+    if (dirtyCount() === 0) { toast('Nothing has changed.'); return; }
+    if (!confirmErrors()) return;
+    var text = serialise();
+
+    /* Chrome and Edge can write straight back to data/restaurants.json once
+       you have pointed at it. Everywhere else falls back to a download. */
+    if (fileHandle) {
+      fileHandle.createWritable().then(function (w) {
+        return w.write(text).then(function () { return w.close(); });
+      }).then(function () {
+        afterSave(text);
+        toast('Written to restaurants.json. Now run node tools/validate.mjs and commit.');
+      }).catch(function (err) { toast('Could not write: ' + err.message); });
+      return;
+    }
+
+    var blob = new Blob([text], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'restaurants.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    afterSave(text);
+    toast('Downloaded. Put it in data/restaurants.json, run the validator, commit.');
+  }
+
+  function openFile() {
+    window.showSaveFilePicker({
+      suggestedName: 'restaurants.json',
+      types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+    }).then(function (handle) {
+      fileHandle = handle;
+      toast('Save now writes straight to that file.');
+    }).catch(function () { /* the picker was dismissed */ });
+  }
+
+  /* ---------------------------------------------------------------- events */
+
+  el.rows.addEventListener('click', function (e) {
+    var row = e.target.closest('.row');
+    if (!row) return;
+    currentId = row.getAttribute('data-key');
+    renderList();
+    renderEditor();
+    el.main.scrollTop = 0;
+  });
+
+  el.q.addEventListener('input', renderList);
+
+  el['checks-list'].addEventListener('click', function (e) {
+    var check = e.target.closest('.check');
+    if (!check || !check.getAttribute('data-key')) return;
+    currentId = check.getAttribute('data-key');
+    renderList();
+    renderEditor();
+  });
+
+  el['checks-head'].addEventListener('click', function () {
+    var open = el['checks-list'].hidden;
+    el['checks-list'].hidden = !open;
+    el['checks-head'].setAttribute('aria-expanded', open ? 'true' : 'false');
+    el['checks-toggle'].textContent = open ? 'hide' : 'show';
+  });
+
+  el.main.addEventListener('input', function (e) {
+    var p = current();
+    if (!p) return;
+    var t = e.target;
+
+    if (t.getAttribute('data-act') === 'paste-coords') {
+      var pair = parseCoords(t.value);
+      if (pair) {
+        p.lat = pair[0];
+        p.lng = pair[1];
+        t.value = '';
+        touched(true);
+      }
+      return;
+    }
+
+    var field = t.getAttribute('data-field');
+    if (field === 'lat' || field === 'lng') {
+      var n = Number(t.value.trim().replace(',', '.'));
+      p[field] = t.value.trim() === '' || isNaN(n) ? t.value.trim() : n;
+      touchedSoon();
+      return;
+    }
+    if (field === 'closed') { p.closed = t.checked; touched(false); return; }
+    if (field) { p[field] = t.value; touchedSoon(); return; }
+
+    var lang = t.getAttribute('data-blurb');
+    if (lang) {
+      if (!p.blurb) p.blurb = {};
+      p.blurb[lang] = t.value;
+      var n2 = t.parentNode.querySelector('.n');
+      if (n2) n2.textContent = t.value.length + ' chars';
+      touchedSoon();
+      return;
+    }
+
+    var list = t.getAttribute('data-list');
+    if (list) { p[list] = lines(t.value); touchedSoon(); }
+  });
+
+  el.main.addEventListener('click', function (e) {
+    var p = current();
+    if (!p) return;
+
+    var price = e.target.closest('[data-price]');
+    if (price) {
+      p.price = Number(price.getAttribute('data-price'));
+      touched(true);
+      return;
+    }
+
+    var chip = e.target.closest('[data-type]');
+    if (chip) {
+      var id = chip.getAttribute('data-type');
+      if (!p.types) p.types = [];
+      var at = p.types.indexOf(id);
+      if (at > -1) p.types.splice(at, 1); else p.types.push(id);
+      touched(true);
+      return;
+    }
+
+    var act = e.target.closest('[data-act]');
+    if (!act) return;
+    if (act.getAttribute('data-act') === 'duplicate') duplicate(p);
+    if (act.getAttribute('data-act') === 'delete') remove(p);
+  });
+
+  el['btn-new'].addEventListener('click', function () {
+    var fresh = {
+      id: '', name: '', address: '',
+      lat: 59.4370, lng: 24.7536,
+      price: 2, types: [], blurb: {}, mustOrder: [],
+      reel: '', photos: [], website: '',
+      added: today(), visited: '', closed: false
+    };
+    Object.defineProperty(fresh, '__key', { value: 'new:' + Date.now(), enumerable: false, writable: true });
+    places.push(fresh);
+    currentId = fresh.__key;
+    touched(true);
+    var name = document.getElementById('f-name');
+    if (name) name.focus();
+  });
+
+  function duplicate(p) {
+    var copy = JSON.parse(JSON.stringify(tidy(p)));
+    copy.id = '';
+    copy.name = p.name + ' (copy)';
+    copy.photos = [];
+    copy.reel = '';
+    copy.added = today();
+    Object.defineProperty(copy, '__key', { value: 'new:' + Date.now(), enumerable: false, writable: true });
+    places.push(copy);
+    currentId = copy.__key;
+    touched(true);
+  }
+
+  function remove(p) {
+    if (!confirm('Delete ' + (p.name || 'this place') + ' outright?\n\n' +
+        'Closing it instead greys the pin out and keeps every link anyone has ' +
+        'ever shared working. Deleting breaks them.')) return;
+    places = places.filter(function (x) { return x !== p; });
+    currentId = places.length ? places[0].__key : null;
+    touched(true);
+  }
+
+  /* Google Maps hands you several shapes depending on where you copied from.
+     All of them carry the pair somewhere. */
+  function parseCoords(text) {
+    var s = String(text || '');
+    var m = s.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) ||
+            s.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) ||
+            s.match(/(-?\d{2}\.\d{3,})\s*[,;]\s*(-?\d{2}\.\d{3,})/);
+    if (!m) return null;
+    var lat = Number(m[1]);
+    var lng = Number(m[2]);
+    if (!isFinite(lat) || !isFinite(lng)) return null;
+    /* A pair copied the other way round is the single commonest paste mistake,
+       and Tallinn's two ranges do not overlap, so it can be fixed silently. */
+    if (lat > 24 && lat < 25 && lng > 59 && lng < 60) { var t = lat; lat = lng; lng = t; }
+    return [lat, lng];
+  }
+
+  el['btn-save'].addEventListener('click', save);
+  el['btn-open'].addEventListener('click', openFile);
+
+  el['btn-copy'].addEventListener('click', function () {
+    var text = serialise();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text)
+        .then(function () { toast('The whole file is on the clipboard.'); })
+        .catch(function () { toast('The browser refused the clipboard. Use Save instead.'); });
+    } else {
+      toast('This browser has no clipboard access. Use Save instead.');
+    }
+  });
+
+  el['btn-revert'].addEventListener('click', function () {
+    if (dirtyCount() === 0) { toast('Nothing has changed.'); return; }
+    if (!confirm('Throw away all ' + dirtyCount() + ' unsaved edits and reload the file from disk?')) return;
+    try { localStorage.removeItem(DRAFT_KEY); } catch (err) {}
+    adopt(JSON.parse(originalText));
+    currentId = places.length ? places[0].__key : null;
+    touched(true);
+    toast('Back to the file on disk.');
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); save(); }
+  });
+
+  window.addEventListener('beforeunload', function (e) {
+    if (dirtyCount() === 0) return;
+    e.preventDefault();
+    e.returnValue = '';
+  });
+
+  /* Exposed for the smoke test in tools/, and handy in the console. */
+  window.ttEditor = {
+    serialise: serialise,
+    state: function () { return { places: places, checks: checks, originalText: originalText }; }
+  };
+
+  start();
+})();
+</script>
+</body>
+</html>

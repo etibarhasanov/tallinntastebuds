@@ -1,5 +1,8 @@
-# Everything here is meant to be found.
+# Everything here is meant to be found, apart from the editor: admin.html is a
+# tool for one person, it cannot change anything anyone else sees, and it has
+# no business in a search result.
 User-agent: *
 Allow: /
+Disallow: /admin.html
 
 Sitemap: https://tallinntastebuds.pages.dev/sitemap.xml

@@ -20,6 +20,13 @@
 /data/*
   Cache-Control: public, max-age=0, must-revalidate
 
+# The editor. Never cached, never indexed. It only ever reads the data files
+# and hands you a new restaurants.json to commit, so it cannot change the live
+# site by itself, but there is no reason for it to show up in a search either.
+/admin.html
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
 # Photos are named per place and are replaced rather than edited, so they can
 # sit in the cache for a week.
 /photos/*

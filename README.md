@@ -16,6 +16,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 
 - [Run it locally](#run-it-locally)
 - [Add a place](#add-a-place)
+- [The editor](#the-editor)
 - [Get the coordinates](#get-the-coordinates)
 - [Copy a video permalink](#copy-a-video-permalink)
 - [Add photos](#add-photos)
@@ -174,6 +175,70 @@ usually after a kind of evening rather than a kind of kitchen.
 Nothing re-sorts itself as you add places, and that is deliberate: a row of
 chips that rearranges between visits is a row nobody learns. Re-check it when
 a type has visibly grown, and move the line in `taxonomy.json`.
+
+## The editor
+
+Editing `data/restaurants.json` by hand is fine for one field and tedious for
+ten. `admin.html` is a form over the same file: prices, types, blurbs in every
+language, dishes, dates, the closed flag, and new places.
+
+Serve the folder and open it:
+
+```bash
+python3 -m http.server 8000
+# then http://localhost:8000/admin.html
+```
+
+It reads `data/restaurants.json`, `data/taxonomy.json` and `data/ui.json`, and
+hands you a finished file back. **It cannot write to anything by itself.** The
+round trip is:
+
+1. Edit. The badge in the top bar counts what you have changed.
+2. Watch the bar along the bottom. It runs the same rules as
+   `tools/validate.mjs`, so an error there is an error CI would raise.
+3. Press **Save** (or ⌘S / Ctrl+S). In Chrome and Edge, **Open file…** first
+   and Save writes straight back to `data/restaurants.json`; everywhere else
+   Save downloads a `restaurants.json` you drop into `data/`.
+4. Run `node tools/validate.mjs`, then commit and push.
+
+Nothing is live until step 4. That is the point.
+
+What it does for you beyond the typing:
+
+- **Price** is four buttons, € to €€€€, not a number you can typo.
+- **Types** are chips built from `data/taxonomy.json`, so a type that is not in
+  the vocabulary cannot be invented by accident.
+- **Coordinates** have a paste box: paste a Google Maps link or a
+  `59.4502, 24.7252` pair and the two fields fill themselves. A pair copied the
+  other way round is put back the right way, because Tallinn's latitude and
+  longitude ranges do not overlap.
+- **Photos** are checked against the repo with a `HEAD` request, so a filename
+  with no file behind it is caught here rather than in CI.
+- **Delete** asks you to consider closing the place instead, for the reason in
+  [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it).
+- Unsaved work survives a refresh: it is kept in this browser's `localStorage`
+  and offered back when you return.
+
+Formatting is preserved exactly — two-space indent, the same key order, the
+same trailing newline — so changing one price shows up in `git diff` as one
+changed line rather than a rewritten file.
+
+### It is not part of the site
+
+`index.html` does not link to `admin.html` and never fetches it, so no visitor
+downloads a single extra byte because this file exists. It ships no
+dependencies, no fonts and no build step.
+
+It is served publicly, like every other file in the repo, and that is harmless:
+it is a form over data that is already public at `data/restaurants.json`, and
+it has no credentials and no way to write to the deployed site. `robots.txt`
+disallows it and `_headers` sends `X-Robots-Tag: noindex`, so it stays out of
+search results. If you would still rather nobody could open it, put
+[Cloudflare Access](https://developers.cloudflare.com/cloudflare-one/policies/access/)
+in front of `/admin.html`, or delete the file and edit the JSON by hand — the
+site does not depend on it either way.
+
+---
 
 ## Get the coordinates
 
@@ -554,6 +619,7 @@ data/restaurants.json      the only file you edit regularly
 data/taxonomy.json         the controlled vocabulary of types
 data/ui.json               every interface string, in every language
 data/schema.json           JSON Schema, for editor autocomplete
+admin.html                 the editor — a form over restaurants.json, not linked from the site
 photos/<restaurant-id>/    photos, one folder per place
 tools/validate.mjs         dependency-free data validator
 .github/workflows/validate.yml
