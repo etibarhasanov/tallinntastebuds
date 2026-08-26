@@ -222,8 +222,7 @@ https://www.tiktok.com/@tallinntastebuds/video/7568039651458436374
 The field is still called `reel` whichever platform it points at — renaming it
 would mean touching every place in the data for no gain. The site works out
 which platform from the URL and follows suit: the section heading reads **The
-reel** or **The video**, and the button names the right app in all three
-languages.
+reel** or **The video**, and the button names the right app in every language.
 
 The two players work differently under the hood. Instagram needs its
 `embed.js`, which only scans for blockquotes when it runs and gives you no hook
@@ -312,14 +311,14 @@ the **name**, the **street**, the **type labels**, and the **dishes** in
 `mustOrder`. Not the write-ups — a word like "good" would match half the map
 and give no clue why.
 
-The type labels go in **in all seven languages at once**, not the one the
+The type labels go in **in all eight languages at once**, not the one the
 switcher happens to be showing. Somebody reading the map in Turkish still types
 "bakery" half the time, and somebody reading it in English may well know the
 place as a *pagariäri*: `bakery`, `pagariäri`, `leipomo`, `padaria`, `пекарня`,
-`çörəkxana` and `fırın` all return the same thirteen, whichever language is on
-screen. The index is built once at load, since none of what goes into it can
-change afterwards; folding sixty-eight of these on every keystroke would be
-work for nothing.
+`çörəkxana`, `panadería` and `fırın` all return the same fourteen, whichever
+language is on screen. The index is built once at load, since none of what goes
+into it can change afterwards; folding sixty-nine of these on every keystroke
+would be work for nothing.
 
 Accents are folded away on both sides before anything is compared, so `sasl`
 finds Telliskivi Šašlõkk, `pohja` finds Põhja Konn and `pagariari` finds the
@@ -362,21 +361,20 @@ there for the first place that shuts.
 
 ## Languages
 
-Azerbaijani, English, Estonian, Finnish, Portuguese, Russian, Turkish — the
-switcher shows them in that order, Azerbaijani first and the rest
-alphabetical. The
-order of the blocks in `ui.json` is the order of the buttons; the language a
-visitor *lands* in is a separate thing, still English by default, and set by
-`DEFAULT_LANG` in `assets/app.js`.
+Azerbaijani, English, Estonian, Finnish, Portuguese, Russian, Spanish and
+Turkish — the switcher shows them in that order, Azerbaijani first and the rest
+alphabetical. The order of the blocks in `ui.json` is the order of the buttons;
+the language a visitor *lands* in is a separate thing, still English by
+default, and set by `DEFAULT_LANG` in `assets/app.js`.
 
 The switch has two shapes, from the same markup. Wide enough, it is a row of
 codes. On a phone it folds into the current code with a menu under it, listing
-each language's own name for itself: seven codes side by side are 270px, which
-on a 390px screen runs straight into the handle in the opposite corner. The
-fold happens in CSS at 860px, and the folded menu grows downwards, so the next
-language costs nothing in layout either. Every interface string is in
-`data/ui.json`, keyed by language and then by string id, so a translator never
-has to open the HTML.
+each language's own name for itself: eight codes side by side are just over
+310px, which on a 390px screen runs straight into the handle in the opposite
+corner. The fold happens in CSS at 860px, and the folded menu grows downwards,
+so the next language costs nothing in layout either. Every interface string is
+in `data/ui.json`, keyed by language and then by string id, so a translator
+never has to open the HTML.
 
 The language is chosen in this order:
 
@@ -399,10 +397,14 @@ preference between visits.
 
 4. Add `months` — the twelve month names separated by `|` — and `monthYear`,
    the pattern that joins them, in case the language wants a different order.
+5. Add the code to `translated` in `data/schema.json`. That one is a literal
+   list rather than something read out of `ui.json`, so it is the only place
+   that has to be told twice.
 
-The language switch, the validator and the schema all read the language list
-from `data/ui.json`, so there is nothing else to change. Missing blurb
-translations only produce warnings, so you can ship as you translate. The
+The language switch and the validator both read the language list from
+`data/ui.json`, so there is nothing else to change. Step 2 is the only one the
+validator fails on: a type with no label in some language is an error, while
+missing blurb translations are warnings, so you can ship as you translate. The
 order of the blocks in `ui.json` is the order of the buttons.
 
 ### Why month names are in the data
