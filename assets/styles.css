@@ -651,6 +651,8 @@ a:hover { color: var(--accent-lit); }
   flex-direction: column;
   transform: translateX(calc(100% + var(--gap) + 20px));
   visibility: hidden;
+  --panel-pad: 26px;
+  --panel-pad-t: 26px;
   transition: transform .34s var(--ease), visibility 0s linear .34s,
               background-color .25s var(--ease);
 }
@@ -680,8 +682,28 @@ body.panel-detail .panel {
 .panel-scroll {
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 26px 26px 30px;
+  padding: var(--panel-pad-t) var(--panel-pad) 30px;
   -webkit-overflow-scrolling: touch;
+}
+
+/* A band of the card's own colour across the top of the panel. Chromium parks
+   a sticky element below the scroller's top padding, not at its edge, so
+   without this the rows would show through that strip above the stuck section
+   label. It doubles as a clean edge for anything scrolling past: rows stop at
+   a line rather than being cut through the middle of a letter by the card's
+   rounded corner. `inherit` so it follows the tint on an open place. */
+.panel::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--panel-pad-t);
+  background: inherit;
+  border-radius: inherit;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .panel-close {
@@ -893,19 +915,30 @@ body.panel-detail .panel {
 }
 .list-title:focus { outline: none; }
 .list-title:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 3px; }
-.list-count { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .04em; }
 
 /* The section labels inside the list. Quiet, because they are signposts and
-   not headings: the list is still one list. */
+   not headings: the list is still one list. Each one holds its group's count
+   on the right, and sticks to the top of the panel on the way past, so a list
+   sixty rows long never leaves you wondering which group you are in. The
+   right inset is the close button's, which floats above all of this. */
 .list-label {
-  margin: 22px 0 8px;
-  padding-top: 14px;
-  border-top: 1px solid var(--hairline);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 26px calc(var(--panel-pad) * -1) 0;
+  padding: 10px var(--panel-pad) 9px;
+  padding-right: calc(var(--panel-pad) + 30px);
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
 }
-.list-label:first-of-type { border-top: 0; padding-top: 0; margin-top: 4px; }
+.list-label:first-of-type { margin-top: 14px; }
+.list-label-n { flex: 0 0 auto; letter-spacing: .04em; opacity: .75; }
 
-.place-list { margin-top: 14px; }
-.place-list li { border-top: 1px solid var(--hairline); }
+.place-list li + li { border-top: 1px solid var(--hairline); }
 
 .list-row {
   display: block;
@@ -1035,7 +1068,7 @@ body.panel-detail .panel {
   .brand {
     width: auto;
     max-width: calc(100vw - 78px - var(--gap) * 2);
-    padding: 7px 12px 6px;
+    padding: 5px 11px 4px;
   }
   .brand .tagline { display: none; }
   .brand .eyebrow,
@@ -1049,7 +1082,7 @@ body.panel-detail .panel {
     white-space: nowrap;
     clip-path: inset(50%);
   }
-  .brand .ig-link { font-size: 13px; }
+  .brand .ig-link { font-size: 11.5px; }
 
   .controls { gap: 6px; }
   .btn { min-width: 34px; height: 34px; }
@@ -1160,7 +1193,16 @@ body.panel-detail .panel {
   .sheet-grip:focus-visible { outline: none; }
   .sheet-grip:focus-visible::before,
   .panel.is-dragging .sheet-grip::before { background: var(--accent); width: 46px; }
-  .panel-scroll { padding: 26px 20px calc(28px + var(--safe-b)); }
+  /* The sheet is a phone screen, not a page: the rows get tighter so more of
+     the list is above the fold, and the heading stops shouting. */
+  .panel { --panel-pad: 18px; --panel-pad-t: 20px; }
+  .panel-scroll { padding-bottom: calc(26px + var(--safe-b)); }
+  .list-title { font-size: 21px; margin: 4px 0 2px; }
+  .list-label { margin-top: 20px; padding: 8px var(--panel-pad) 7px; padding-right: calc(var(--panel-pad) + 34px); }
+  .list-label:first-of-type { margin-top: 10px; }
+  .list-row { padding: 10px 2px; }
+  .list-name { font-size: 15.5px; }
+  .list-sub { margin-top: 3px; gap: 10px; }
   .panel-close { top: 14px; right: 12px; }
 
   /* The sheet covers the chip row, so it goes away rather than sitting
@@ -1237,4 +1279,6 @@ body.panel-detail .panel {
     box-shadow: none;
   }
   .panel-scroll { overflow: visible; padding: 0; }
+  .panel::before { display: none; }
+  .list-label { position: static; margin-inline: 0; padding-inline: 0; }
 }

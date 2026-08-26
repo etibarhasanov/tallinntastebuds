@@ -256,6 +256,12 @@ alphabetical order, with those five sitting in their usual spots — open the
 list and you see the whole thing, the way you always did. The section on top
 is a shortcut, not a slice taken out.
 
+Each group's heading carries its own count on the right, which is why there is
+no count under the panel title any more: a single "68 places" above two
+sections read as a claim about both of them. The headings stick to the top of
+the panel as you scroll, so sixty rows in you can still see which group you
+are looking at.
+
 The five are picked from the **whole map**, not from what the filters have left
 on screen — otherwise filtering to a type whose places are all old would
 declare them new. Then anything the filter has hidden drops out of the section,

@@ -1574,10 +1574,6 @@
         id: 'panel-list-title',
         tabindex: '-1',
         textContent: t('listTitle')
-      }),
-      el('p', {
-        className: 'list-count',
-        textContent: places.length === 1 ? t('listCountOne') : t('listCount', { n: places.length })
       })
     ]));
 
@@ -1606,10 +1602,17 @@
       return el('li', {}, [row]);
     }
 
+    /* Each group carries its own count, so the number always sits next to the
+       list it is counting rather than under the panel title, where it read as
+       a claim about the whole map. */
     function section(labelKey, rows, className) {
-      if (labelKey) {
-        dom.list.appendChild(el('p', { className: 'list-label eyebrow', textContent: t(labelKey) }));
-      }
+      dom.list.appendChild(el('p', { className: 'list-label eyebrow' }, [
+        el('span', { textContent: t(labelKey) }),
+        el('span', {
+          className: 'list-label-n',
+          textContent: rows.length === 1 ? t('listCountOne') : t('listCount', { n: rows.length })
+        })
+      ]));
       var ul = el('ul', { className: 'place-list' + (className ? ' ' + className : '') });
       rows.forEach(function (place) { ul.appendChild(listRow(place)); });
       dom.list.appendChild(ul);
@@ -1621,12 +1624,8 @@
     places.forEach(function (p) { shown[p.id] = true; });
     var fresh = recentlyAdded().filter(function (p) { return shown[p.id]; });
 
-    if (fresh.length > 1) {
-      section('listNew', fresh, 'is-new');
-      section('listAlphabet', places);
-    } else {
-      section(null, places);
-    }
+    if (fresh.length > 1) section('listNew', fresh, 'is-new');
+    section('listAlphabet', places);
   }
 
   /* -------------------------------------------------------------- lightbox */
