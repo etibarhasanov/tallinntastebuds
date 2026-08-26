@@ -1125,9 +1125,15 @@
      strip is the way back out when a sheet is standing open. */
   var SHEET_HEADROOM = 110;
 
+  function safeTop() {
+    var raw = getComputedStyle(document.documentElement).getPropertyValue('--safe-t');
+    var n = parseFloat(raw);
+    return isFinite(n) ? n : 0;
+  }
+
   function sheetStops() {
     var h = window.innerHeight;
-    var cap = Math.max(h - SHEET_HEADROOM, 160);
+    var cap = Math.max(h - SHEET_HEADROOM - safeTop(), 160);
     if (document.body.classList.contains('panel-detail')) {
       return { low: Math.min(h * .50, 470, cap), high: Math.min(h * .88, 780, cap) };
     }
@@ -1212,6 +1218,81 @@
         toggle();
       }
     });
+
+    wireSheetSwipe();
+  }
+
+  /* Swiping the sheet down closes it, from anywhere in it rather than from the
+   * 26px of grip at the top. The grip is a small target on a screen the sheet
+   * is covering, and a swipe down is what a hand tries first.
+   *
+   * It arms only at the very top of the sheet's own scroll and only on a
+   * downward move, so scrolling the list still scrolls the list: the first
+   * touchmove decides which of the two this is, and the browser is only told
+   * to keep its hands off once the sheet is the answer. Non-passive, because
+   * preventDefault on that first move is the whole mechanism.
+   */
+  function wireSheetSwipe() {
+    var scroll = dom.panelScroll;
+    if (!scroll) return;
+    var armed = false;
+    var active = false;
+    var startY = 0;
+    var startH = 0;
+    var height = 0;
+
+    function ignore(node) {
+      if (!node || !node.closest) return false;
+      /* An embed handles its own gestures. A text field only wants its own
+         while it is the one being typed in — a swipe that starts on the
+         search box before you have touched it is a swipe like any other. */
+      if (node.closest('iframe')) return true;
+      var field = node.closest('input, textarea');
+      return !!field && field === document.activeElement;
+    }
+
+    scroll.addEventListener('touchstart', function (ev) {
+      armed = false;
+      if (!isNarrow() || !dom.panel.classList.contains('is-open')) return;
+      if (ev.touches.length !== 1 || ignore(ev.target)) return;
+      armed = scroll.scrollTop <= 0;
+      active = false;
+      startY = ev.touches[0].clientY;
+      startH = dom.panel.offsetHeight;
+      height = startH;
+    }, { passive: true });
+
+    scroll.addEventListener('touchmove', function (ev) {
+      if (!armed || ev.touches.length !== 1) return;
+      var dy = ev.touches[0].clientY - startY;
+      if (!active) {
+        if (dy < 9) {
+          if (dy < -3) armed = false;   /* they are scrolling, not dismissing */
+          return;
+        }
+        active = true;
+        dom.panel.classList.add('is-dragging');
+      }
+      height = Math.max(startH - dy, 80);
+      setSheetHeight(height);
+      if (ev.cancelable) ev.preventDefault();
+    }, { passive: false });
+
+    function release() {
+      if (!armed) return;
+      armed = false;
+      if (!active) return;
+      active = false;
+      dom.panel.classList.remove('is-dragging');
+      releaseSheetHeight();
+
+      var stops = sheetStops();
+      if (height < stops.low * .72) { closePanel(); return; }
+      sheetSnap(height > (stops.low + stops.high) / 2);
+    }
+
+    scroll.addEventListener('touchend', release);
+    scroll.addEventListener('touchcancel', release);
   }
 
   /* --------------------------------------------------------- soft keyboard

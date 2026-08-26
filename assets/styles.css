@@ -674,7 +674,7 @@ a:hover { color: var(--accent-lit); }
   transform: translateX(calc(100% + var(--gap) + 20px));
   visibility: hidden;
   --panel-pad: 26px;
-  --panel-pad-t: 26px;
+  --panel-pad-t: 44px;
   --search-h: 60px;
   transition: transform .34s var(--ease), visibility 0s linear .34s,
               background-color .25s var(--ease);
@@ -729,21 +729,27 @@ body.panel-detail .panel {
   border-bottom-right-radius: 0;
 }
 
+/* The close button rides in the band at the top of the panel rather than
+   floating over the words. It used to be a disc standing on the text: fine
+   while the panel was at the top of its scroll, and a hole punched through a
+   sentence as soon as it was not. The band is opaque and the content scrolls
+   under it, so the button always has its own ground to stand on. */
 .panel-close {
   position: absolute;
-  z-index: 2;
-  top: 10px;
-  right: 10px;
+  z-index: 3;
+  top: 5px;
+  right: 8px;
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
   border-radius: 100px;
   background: var(--paper);
   color: var(--muted);
 }
 .panel-close:hover { background: var(--wash); color: var(--ink); }
-.panel-close svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+.panel-close svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
 
 /* detail */
 
@@ -1166,7 +1172,7 @@ body.panel-detail .panel {
      leaves the chrome strip and the chip row showing, which is a way back out
      and the filters besides. */
   body { --sheet-h: min(82vh, 720px); }
-  body { --sheet-h: min(calc(var(--vph, 100dvh) * .82), 720px, calc(var(--vph, 100dvh) - 110px)); }
+  body { --sheet-h: min(calc(var(--vph, 100dvh) * .82), 720px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
 
   /* On a phone the card is standing on the map, so it keeps the one line
      that says whose map this is. The name and the eyebrow stay in the
@@ -1300,7 +1306,7 @@ body.panel-detail .panel {
     top: 0;
     left: 0;
     right: 0;
-    height: 26px;
+    height: 48px;
     touch-action: none;
     cursor: grab;
   }
@@ -1308,7 +1314,7 @@ body.panel-detail .panel {
   .sheet-grip::before {
     content: "";
     position: absolute;
-    top: 8px;
+    top: 9px;
     left: 50%;
     transform: translateX(-50%);
     width: 34px;
@@ -1322,7 +1328,7 @@ body.panel-detail .panel {
   .panel.is-dragging .sheet-grip::before { background: var(--accent); width: 46px; }
   /* The sheet is a phone screen, not a page: the rows get tighter so more of
      the list is above the fold, and the heading stops shouting. */
-  .panel { --panel-pad: 18px; --panel-pad-t: 20px; --search-h: 60px; }
+  .panel { --panel-pad: 18px; --panel-pad-t: 48px; --search-h: 60px; }
   .panel-scroll { padding-bottom: calc(26px + var(--safe-b)); }
   .list-title { font-size: 21px; margin: 4px 0 2px; }
   /* Anything under 16px makes iOS zoom the whole page when the field takes
@@ -1334,7 +1340,22 @@ body.panel-detail .panel {
   .list-row { padding: 10px 2px; }
   .list-name { font-size: 15.5px; }
   .list-sub { margin-top: 3px; gap: 10px; }
-  .panel-close { top: 14px; right: 12px; }
+  /* On a phone this is the way out of a sheet standing over the whole screen,
+     so it is a target rather than a mark: 44px, the size a thumb expects, and
+     drawn as its own disc so it cannot be lost in whatever it is sitting on
+     top of. */
+  /* On a phone this is the way out of a sheet standing over the whole screen,
+     so it is a target rather than a mark. It sits in the grip bar, which is
+     the sheet's header: the pill to grab in the middle, the way out on the
+     right, and the content scrolling underneath both. */
+  .panel-close {
+    top: 4px;
+    right: 8px;
+    width: 40px;
+    height: 40px;
+    color: var(--ink);
+  }
+  .panel-close svg { width: 19px; height: 19px; stroke-width: 1.8; }
 
   /* The sheet used to cover the chip row, which is why the row used to be
      hidden while the panel was open. At the top of the screen it clears even
@@ -1346,9 +1367,9 @@ body.panel-detail .panel {
      the text; the map is not worth much while you are reading it anyway, so
      the rail steps out of the way at full height. */
   body.panel-detail { --sheet-h: min(50vh, 470px); }
-  body.panel-detail { --sheet-h: min(calc(var(--vph, 100dvh) * .5), 470px, calc(var(--vph, 100dvh) - 110px)); }
+  body.panel-detail { --sheet-h: min(calc(var(--vph, 100dvh) * .5), 470px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
   body.panel-detail.sheet-full { --sheet-h: min(88vh, 780px); }
-  body.panel-detail.sheet-full { --sheet-h: min(calc(var(--vph, 100dvh) * .88), 780px, calc(var(--vph, 100dvh) - 110px)); }
+  body.panel-detail.sheet-full { --sheet-h: min(calc(var(--vph, 100dvh) * .88), 780px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
   body.sheet-full .rail { opacity: 0; pointer-events: none; }
   .rail { transition: opacity .2s var(--ease); }
 

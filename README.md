@@ -862,9 +862,30 @@ sheet up, and there was no way out of it. Measuring the number in JS rather
 than trusting a unit also means the drag stops and the stylesheet can never
 disagree about how tall the sheet is allowed to be.
 
-Which leaves three ways back from a sheet standing open, all of them on
-screen: the close button, a tap on the grip, and **List** in the chrome strip
-above.
+The headroom carries `env(safe-area-inset-top)` on top of its 110px, the same
+way the chrome strip above it does, so a taller phone keeps the same clearance
+rather than eating into it.
+
+Which leaves four ways back from a sheet standing open, all of them on screen:
+**swipe it down**, the close button, a tap on the grip, and **List** in the
+chrome strip above.
+
+The swipe arms only at the very top of the sheet's own scroll and only on a
+downward move, so scrolling the list still scrolls the list: the first
+touchmove decides which of the two the gesture is, and the browser is only told
+to keep its hands off once the sheet is the answer — non-passive, because
+`preventDefault` on that move is the whole mechanism. An embed keeps its own
+gestures, and so does the search field, but only while it is the one being
+typed in: a swipe that starts on the search box before you have touched it is a
+swipe like any other.
+
+**The close button** rides in the band at the top of the panel — on a phone
+that band is the grip bar, with the pill to grab in the middle and the way out
+on the right. It used to float over the words: fine while the panel was at the
+top of its scroll, and a hole punched through a sentence as soon as it was not.
+The band is opaque and the content scrolls under it, so the button always has
+its own ground to stand on. 40px on a phone, which is a target rather than a
+mark.
 
 The soft keyboard is the same class of problem from the other end. iOS shrinks
 the visual viewport when the keyboard comes up but leaves the layout viewport —
