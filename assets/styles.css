@@ -214,6 +214,17 @@ a:hover { color: var(--accent-lit); }
 }
 .leaflet-tooltip.pin-tip::before { display: none; }
 
+/* An open name is a target, not a caption. Leaflet turns the pointer events
+   on; this says so on the way in. */
+.leaflet-tooltip.pin-tip.leaflet-interactive {
+  cursor: pointer;
+  transition: border-color .15s var(--ease), color .15s var(--ease);
+}
+.leaflet-tooltip.pin-tip-quiet.leaflet-interactive:hover {
+  color: var(--ink);
+  border-color: var(--muted);
+}
+
 .pin { cursor: pointer; transition: opacity .15s var(--ease); }
 
 /* Names that stand open past zoom 14 sit quieter than the chosen one: paper,

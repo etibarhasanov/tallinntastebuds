@@ -791,7 +791,12 @@ are placed greedily and any that would land on another name, on a pin or on a
 cluster count is dropped, and one that would be sliced off by the window edge
 is dropped too. The chosen place is placed first and always keeps its name.
 Recomputed on pan as well as zoom, unlike the clustering, since which names fit
-depends on what is on the screen.
+depends on what is on the screen. A name that is standing open opens its place
+when you click it, the same as the dot — it is part of the pin, not a caption
+beside it. Leaflet's `interactive` tooltip option does that on its own: it lets
+pointer events reach the label and makes the marker the label's event parent,
+so one click handler serves both and a drag that starts on a name still pans
+the map. Hover tooltips stay inert, since the pointer is already on the dot.
 
 **Type.** Three faces with three jobs, and they never trade places.
 *Familjen Grotesk* — a contemporary Nordic grotesque — sets place names and

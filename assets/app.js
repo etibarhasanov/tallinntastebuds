@@ -549,6 +549,11 @@
     return 'words';
   }
 
+  /* A name standing open on the map is part of the pin, so it opens the place
+     the same way the dot does. Leaflet's own `interactive` does the work: it
+     lets pointer events reach the label and makes the marker the label's event
+     parent, so one click handler serves both. A hover tooltip stays inert —
+     it is only there because the pointer is already on the dot. */
   function tooltipFor(marker, name, permanent, chosen) {
     marker.unbindTooltip();
     marker.bindTooltip(name, {
@@ -556,6 +561,7 @@
       direction: 'top',
       offset: [0, permanent ? -14 : -11],
       opacity: 1,
+      interactive: !!permanent,
       permanent: !!permanent
     });
   }
