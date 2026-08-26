@@ -1532,44 +1532,30 @@
    * looked", and an alphabetical list cannot: Vabrik has sat between Uba ja
    * Humal and Vana Villem since the day it went in.
    *
-   * So the newest additions are lifted to the top of the list. Whole days at
-   * a time, because a batch of places added in one sitting belongs together,
-   * and enough days to make a section worth having: at least three places,
-   * never more than eight, always at least the most recent day. Adding one
-   * place tomorrow shows that one plus yesterday's, rather than a section of
-   * one.
+   * So the five newest go in a short section above the list. Always five, so
+   * the shape of the panel never depends on how many places happened to go in
+   * on one day, and the section is the same size every visit.
+   *
+   * They are lifted, not moved. The list underneath is still the whole list,
+   * in alphabetical order, with those five in their usual places — open the
+   * list and you see everything, the way you always did. The section on top
+   * is a shortcut to the new ones, not a chunk taken out of the list.
    *
    * The dates come from the repo's own history rather than from memory. Every
    * place carries the day it first appeared in data/restaurants.json.
    */
-  var NEW_MIN = 3;
-  var NEW_MAX = 8;
+  var NEW_COUNT = 5;
 
-  /* Which days count as new is a fact about the map, not about the filter in
-     force. Working it out from the filtered list instead would let "Fine
-     dining", five places added over three days, report all five as just
-     added. */
-  function newDays() {
-    var days = {};
-    state.places.forEach(function (p) {
-      if (p.added) days[p.added] = (days[p.added] || 0) + 1;
+  /* Which places are new is a fact about the map, not about the filter in
+     force. Reading it off the filtered list instead would let "Fine dining",
+     whose five places are all old, report all five as just added. */
+  function recentlyAdded() {
+    var dated = state.places.filter(function (p) { return p.added && !p.closed; });
+    dated.sort(function (a, b) {
+      if (a.added !== b.added) return a.added < b.added ? 1 : -1;
+      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
     });
-
-    var newest = Object.keys(days).sort().reverse();
-    var picked = {};
-    var total = 0;
-    for (var i = 0; i < newest.length; i++) {
-      if (i > 0 && total + days[newest[i]] > NEW_MAX) break;
-      picked[newest[i]] = true;
-      total += days[newest[i]];
-      if (total >= NEW_MIN) break;
-    }
-    return picked;
-  }
-
-  function recentlyAdded(places) {
-    var days = newDays();
-    return places.filter(function (p) { return p.added && days[p.added]; });
+    return dated.slice(0, NEW_COUNT);
   }
 
   function renderList() {
@@ -1621,26 +1607,26 @@
     }
 
     function section(labelKey, rows, className) {
-      dom.list.appendChild(el('p', { className: 'list-label eyebrow', textContent: t(labelKey) }));
+      if (labelKey) {
+        dom.list.appendChild(el('p', { className: 'list-label eyebrow', textContent: t(labelKey) }));
+      }
       var ul = el('ul', { className: 'place-list' + (className ? ' ' + className : '') });
       rows.forEach(function (place) { ul.appendChild(listRow(place)); });
       dom.list.appendChild(ul);
     }
 
-    var fresh = recentlyAdded(places);
-    var freshIds = {};
-    fresh.forEach(function (p) { freshIds[p.id] = true; });
+    /* Only the new ones the current filter has left on screen, and only if
+       there are enough of them to be worth a heading of their own. */
+    var shown = {};
+    places.forEach(function (p) { shown[p.id] = true; });
+    var fresh = recentlyAdded().filter(function (p) { return shown[p.id]; });
 
-    if (fresh.length) {
-      fresh.sort(function (a, b) {
-        if (a.added !== b.added) return a.added < b.added ? 1 : -1;
-        return collator.compare(a.name, b.name);
-      });
+    if (fresh.length > 1) {
       section('listNew', fresh, 'is-new');
+      section('listAlphabet', places);
+    } else {
+      section(null, places);
     }
-
-    var rest = places.filter(function (p) { return !freshIds[p.id]; });
-    if (rest.length) section(fresh.length ? 'listRest' : 'listAll', rest);
   }
 
   /* -------------------------------------------------------------- lightbox */

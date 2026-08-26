@@ -241,26 +241,30 @@ Photos live in Git forever, so resize before committing.
 
 ## The Just added section
 
-The list panel opens with a **Just added** heading, then **The rest**. That
-first group is worked out from the `added` dates, in whole days:
+The list panel opens with a short **Just added** section, then the full list
+under **A–Z**:
 
-- Start with the newest date any place carries and take every place added that
-  day.
-- Still fewer than **3** places? Add the day before it, whole. Repeat.
-- Stop before a day that would push the group past **8**. The newest day is
-  always in, even on its own, even if it is bigger than 8.
+- Always the **five** newest places by `added` date, so the section is the same
+  size on every visit whatever you did that week. Change `NEW_COUNT` in
+  `assets/app.js` if five is the wrong number.
+- Ties inside one day break alphabetically. `added` has day resolution, so if
+  six places share a date the five that show are the first five by name.
+- Closed places never appear there.
 
-Whole days, never "the newest six", so places added in the same sitting never
-get split across two headings.
+They are **lifted, not moved**. The list below is still every place, in
+alphabetical order, with those five sitting in their usual spots — open the
+list and you see the whole thing, the way you always did. The section on top
+is a shortcut, not a slice taken out.
 
-The group is computed from the **whole map**, not from what the filters have
-left on screen — otherwise filtering to a type with five old places would
-declare all five of them new. When a filter leaves nothing recent, the two
-headings collapse to a single **All places**.
+The five are picked from the **whole map**, not from what the filters have left
+on screen — otherwise filtering to a type whose places are all old would
+declare them new. Then anything the filter has hidden drops out of the section,
+and if that leaves one or none, both headings disappear and the list renders
+plain, exactly as it did before any of this existed.
 
 So the field that matters is `added`. Write today's date when you add a place
-and it will sit at the top of the list until enough newer places push it out.
-The validator warns if you forget one.
+and it sits at the top until five newer ones push it out. The validator warns
+if you forget one.
 
 The dates already in the file were read out of this repository's own git
 history — the first commit in which each `id` appears — not guessed.
