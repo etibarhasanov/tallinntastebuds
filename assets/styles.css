@@ -1153,16 +1153,23 @@ body.panel-detail .panel {
   .btn { min-width: 34px; height: 34px; }
 
   #lang-switch { position: relative; overflow: visible; }
+  /* The code on this button was inheriting the body serif at 15px, which put
+     it a size and a typeface away from LIST sitting right under it. It is the
+     same mono the row of codes uses on a desktop. */
   .btn-lang-now {
     display: flex;
     align-items: center;
     gap: 5px;
     padding: 0 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
   }
   .btn-lang-now .caret { display: flex; }
   .btn-lang-now svg {
-    width: 9px;
-    height: 6px;
+    width: 8px;
+    height: 5px;
     fill: none;
     stroke: currentColor;
     stroke-width: 1.6;

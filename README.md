@@ -285,15 +285,25 @@ map: the pins are what the filter chips are for, and a search left behind in a
 closed panel would otherwise sit there invisibly removing places from the map.
 
 It looks in four places, all of them things somebody could reasonably remember:
-the **name**, the **street**, the **type labels** in whatever language they are
-reading, and the **dishes** in `mustOrder`. Not the write-ups — a word like
-"good" would match half the map and give no clue why.
+the **name**, the **street**, the **type labels**, and the **dishes** in
+`mustOrder`. Not the write-ups — a word like "good" would match half the map
+and give no clue why.
+
+The type labels go in **in all seven languages at once**, not the one the
+switcher happens to be showing. Somebody reading the map in Turkish still types
+"bakery" half the time, and somebody reading it in English may well know the
+place as a *pagariäri*: `bakery`, `pagariäri`, `leipomo`, `padaria`, `пекарня`,
+`çörəkxana` and `fırın` all return the same thirteen, whichever language is on
+screen. The index is built once at load, since none of what goes into it can
+change afterwards; folding sixty-eight of these on every keystroke would be
+work for nothing.
 
 Accents are folded away on both sides before anything is compared, so `sasl`
-finds Telliskivi Šašlõkk and `pohja` finds Põhja Konn. Nobody types the carons.
-It is done by splitting each letter from its marks (`NFD`) and dropping the
-marks; the dotless Turkish `ı` has no decomposition of its own and is mapped by
-hand.
+finds Telliskivi Šašlõkk, `pohja` finds Põhja Konn and `pagariari` finds the
+bakeries. Nobody types the carons. It is done by splitting each letter from its
+marks (`NFD`) and dropping the marks; the dotless Turkish `ı` has no
+decomposition of its own and is mapped by hand, which is what makes `firin`
+work as well as `fırın`.
 
 Several words all have to land somewhere, so `telliskivi kohvik` narrows rather
 than widening the way a match on the whole phrase would.

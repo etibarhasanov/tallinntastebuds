@@ -1582,19 +1582,44 @@
     return out.replace(/[\u0131\u0130]/g, 'i').replace(/\u00f8/g, 'o').replace(/\u00df/g, 'ss');
   }
 
-  function haystack(place) {
-    return fold([
-      place.name,
-      place.address,
-      (place.types || []).map(typeLabel).join(' '),
-      (place.mustOrder || []).join(' ')
-    ].join(' '));
+  /* Every language at once, not the one on screen. Somebody reading the map
+     in Turkish still types "bakery" half the time, and somebody reading it in
+     English may well know the place as a pagariäri. So a type carries all
+     seven of its labels into the index and any of them matches, whatever the
+     switcher happens to say.
+     Names, streets and dishes are never translated, so they go in once.
+     The index is built once from data that cannot change afterwards; folding
+     sixty-eight of these on every keystroke would be work for nothing. */
+  var hayIndex = null;
+
+  function typeWords(id) {
+    for (var i = 0; i < state.types.length; i++) {
+      if (state.types[i].id === id) {
+        var type = state.types[i];
+        return Object.keys(type).map(function (k) {
+          return k === 'id' ? '' : type[k];
+        }).join(' ');
+      }
+    }
+    return id;
+  }
+
+  function buildSearchIndex() {
+    hayIndex = {};
+    state.places.forEach(function (place) {
+      hayIndex[place.id] = fold([
+        place.name,
+        place.address,
+        (place.types || []).map(typeWords).join(' '),
+        (place.mustOrder || []).join(' ')
+      ].join(' '));
+    });
   }
 
   /* Every word has to land somewhere, so "telliskivi kohvik" narrows rather
      than widening the way a plain substring match on the whole phrase would. */
   function matches(place, words) {
-    var hay = haystack(place);
+    var hay = (hayIndex && hayIndex[place.id]) || '';
     for (var i = 0; i < words.length; i++) {
       if (hay.indexOf(words[i]) === -1) return false;
     }
@@ -2119,6 +2144,7 @@
       state.stylePinned = styled.pinned;
       applyStyle(state.style);
 
+      buildSearchIndex();
       applyStaticStrings();
       renderLanguageSwitch();
       renderStyleSwitch();
