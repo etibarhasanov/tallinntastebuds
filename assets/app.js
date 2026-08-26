@@ -841,8 +841,20 @@
    */
   var CLUSTER_PX = 44;
 
+  /* Past this zoom nothing is grouped, whatever the spacing. Q Pizza Jaam and
+     Telliskivi Šašlõkk are eleven metres apart: 37px at zoom 18, under the 44
+     that groups them, so the cluster survived every zoom the click could
+     reach and there was no way to get at either place. Two dots 37px apart
+     are two perfectly clickable dots. Grouping exists to stop a city of pins
+     turning into a smear at low zoom, and by 18 you are looking at one
+     street. */
+  var CLUSTER_ZOOM_MAX = 17;
+
   function pinGroups(places) {
     var zoom = map.getZoom();
+    if (zoom > CLUSTER_ZOOM_MAX) {
+      return places.map(function (p) { return [{ place: p }]; });
+    }
     var pts = places.map(function (p) {
       return { place: p, pt: map.project([p.lat, p.lng], zoom) };
     });
@@ -896,7 +908,7 @@
       var pts = group.map(function (m) { return [m.place.lat, m.place.lng]; });
       map.fitBounds(L.latLngBounds(pts), {
         padding: isNarrow() ? [56, 56] : [110, 110],
-        maxZoom: Math.min(map.getZoom() + 4, 18),
+        maxZoom: Math.min(map.getZoom() + 4, CLUSTER_ZOOM_MAX + 1),
         animate: !reduceMotion()
       });
     }
@@ -1089,13 +1101,19 @@
    * The live height is written to --sheet-h rather than to the panel, so the
    * rail that sits above the sheet tracks the drag with it for free.
    */
+  /* The same floor the stylesheet keeps: the sheet never grows past the point
+     where the chrome strip and the chip row above it are still showing. That
+     strip is the way back out when a sheet is standing open. */
+  var SHEET_HEADROOM = 110;
+
   function sheetStops() {
     var h = window.innerHeight;
+    var cap = Math.max(h - SHEET_HEADROOM, 160);
     if (document.body.classList.contains('panel-detail')) {
-      return { low: Math.min(h * .50, 470), high: Math.min(h * .88, 780) };
+      return { low: Math.min(h * .50, 470, cap), high: Math.min(h * .88, 780, cap) };
     }
     /* The list is already as tall as it gets; it can only be dragged shut. */
-    var list = Math.min(h * .82, 720);
+    var list = Math.min(h * .82, 720, cap);
     return { low: list, high: list };
   }
 
@@ -1175,6 +1193,36 @@
         toggle();
       }
     });
+  }
+
+  /* --------------------------------------------------------- soft keyboard
+   * iOS shrinks the visual viewport when the keyboard comes up but leaves the
+   * layout viewport — and with it anything position:fixed — exactly where it
+   * was, so a bottom sheet keeps its full height and the bottom of it, along
+   * with the field being typed into, ends up behind the keys. Worse, Safari
+   * then scrolls the layout viewport to try to reveal the field, which drags
+   * the whole sheet off the top of the screen.
+   *
+   * So measure what is covered, hand it to the stylesheet, and put the page
+   * scroll back where it belongs. Android resizes the layout viewport itself
+   * and the measurement comes out at zero, which is the right answer there.
+   * A browser without visualViewport simply keeps the behaviour it had.
+   */
+  function wireKeyboard() {
+    var vv = window.visualViewport;
+    if (!vv) return;
+
+    function sync() {
+      var covered = window.innerHeight - vv.height - vv.offsetTop;
+      /* Only a keyboard, not a URL bar sliding away. */
+      var kbd = covered > 90 ? Math.round(covered) : 0;
+      document.documentElement.style.setProperty('--kbd', kbd + 'px');
+      if (kbd && window.pageYOffset) window.scrollTo(0, 0);
+    }
+
+    vv.addEventListener('resize', sync);
+    vv.addEventListener('scroll', sync);
+    sync();
   }
 
   /* ----------------------------------------------------------------- panel */
@@ -1860,6 +1908,7 @@
 
     dom.panelClose.addEventListener('click', closePanel);
     wireSheet();
+    wireKeyboard();
 
 
     dom.btnLocate.addEventListener('click', function () {

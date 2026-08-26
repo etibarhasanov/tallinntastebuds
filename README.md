@@ -314,9 +314,14 @@ back as one flat A–Z list — somebody who typed a word is after a particular
 place, and lifting two of the answers into a section of their own only makes
 them read the same names twice.
 
+The field sticks to the top of the panel, and the section headings park below
+it rather than under it, so sixty rows down the search is still there.
+
 Escape empties the field; a second Escape closes the panel, which is what a
 browser's own search boxes do. On a phone the field is 16px, because anything
-smaller makes iOS zoom the whole page on focus and never zoom back out.
+smaller makes iOS zoom the whole page on focus and never zoom back out — and
+see **The sheet** in the design notes for what happens to a fixed bottom sheet
+when the keyboard opens over it.
 
 ---
 
@@ -802,6 +807,38 @@ percent because it has to survive the measurement: across all seven palettes
 the body text stays between 10.7 and 15.9 to one and the muted line never
 drops below 4.96. Anything stronger starts turning a write-up into a coloured
 box.
+
+**Clustering.** Pins closer together than 44px are drawn as one counted dot,
+recomputed on zoom — clustering follows the projection, and panning does not
+change that. Clicking one zooms to fit what is inside it.
+
+Nothing is grouped past **zoom 17**, whatever the spacing. Q Pizza Jaam and
+Telliskivi Šašlõkk are eleven metres apart, which is 37px at zoom 18 — under
+the 44 that groups them, so the cluster survived every zoom a click could
+reach and there was no way to get at either place. Two dots 37px apart are two
+perfectly clickable dots. Grouping is there to stop a city of pins turning
+into a smear at low zoom, and by 18 you are looking at one doorway.
+
+**The sheet.** On a phone the panel is a bottom sheet, and its height has a
+floor under it: whatever else happens it leaves 110px of the screen showing,
+which is the chrome strip and the chip row. That strip is the way back out.
+
+It is sized in `dvh`, with a `vh` line before it for anything too old to know
+the unit. `vh` on iOS means the *large* viewport — the one with the browser
+chrome collapsed — so a sheet sized in `vh` and anchored to the bottom of the
+screen could start above the top of what you can actually see, taking its
+close button and its drag grip with it. Open a place, play the reel, and there
+was no way out of it.
+
+The soft keyboard is the same class of problem from the other end. iOS shrinks
+the visual viewport when the keyboard comes up but leaves the layout viewport —
+and with it anything `position: fixed` — where it was, so the sheet keeps its
+full height and the search field ends up behind the keys; then Safari scrolls
+the layout viewport to reveal the field and drags the whole sheet off the top.
+`visualViewport` is measured, what the keyboard covers goes into `--kbd`, the
+sheet lifts by it and loses the same off its height so the top edge does not
+move, and the page scroll is put back. Android resizes the layout viewport
+itself and the measurement comes out at zero, which is the right answer there.
 
 **Labels.** Past zoom 14 the pins start carrying their names, because at that
 point you are looking at a street rather than a city and the question changes

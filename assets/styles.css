@@ -675,6 +675,7 @@ a:hover { color: var(--accent-lit); }
   visibility: hidden;
   --panel-pad: 26px;
   --panel-pad-t: 26px;
+  --search-h: 60px;
   transition: transform .34s var(--ease), visibility 0s linear .34s,
               background-color .25s var(--ease);
 }
@@ -943,9 +944,16 @@ body.panel-detail .panel {
    clear button are laid over the input rather than beside it, so the text
    starts and ends where the row names do. */
 .search {
-  position: relative;
-  margin: 14px 0 2px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 14px calc(var(--panel-pad) * -1) 0;
+  padding: 0 var(--panel-pad) 8px;
+  background: inherit;
 }
+/* The clear button and the magnifier are positioned against this, not the
+   sticky box, so the bleed padding does not push them to the panel edge. */
+.search-field { position: relative; }
 .search-input {
   width: 100%;
   height: 38px;
@@ -1010,7 +1018,7 @@ body.panel-detail .panel {
    right inset is the close button's, which floats above all of this. */
 .list-label {
   position: sticky;
-  top: 0;
+  top: var(--search-h);
   z-index: 1;
   display: flex;
   align-items: baseline;
@@ -1147,7 +1155,16 @@ body.panel-detail .panel {
 /* ---------- under 860px: bottom sheet ---------- */
 
 @media (max-width: 860px) {
+  /* vh is the *large* viewport on iOS — the one with the browser chrome
+     collapsed — so a sheet sized in vh and anchored to the bottom can start
+     above the top of what you can actually see, taking its close button and
+     its grip with it. That is how a place could open with no way out of it.
+     dvh follows the viewport you have right now; the vh line stays first for
+     anything too old to know the unit. The third term is the floor: whatever
+     else happens, the sheet leaves the chrome strip and the chip row showing,
+     which is a second way out and the filters besides. */
   body { --sheet-h: min(82vh, 720px); }
+  body { --sheet-h: min(82dvh, 720px, calc(100dvh - 110px)); }
 
   /* On a phone the card is standing on the map, so it keeps the one line
      that says whose map this is. The name and the eyebrow stay in the
@@ -1245,14 +1262,17 @@ body.panel-detail .panel {
     .brand { max-width: calc(100vw - var(--gap) * 2 - var(--safe-l) - var(--safe-r)); }
   }
 
+  /* --kbd is what the on-screen keyboard covers. Lifting the sheet by it and
+     taking the same off the height keeps the top edge exactly where it was,
+     so the field you are typing in does not end up behind the keyboard. */
   .panel {
     top: auto;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: var(--kbd, 0px);
     width: auto;
     max-width: none;
-    height: var(--sheet-h);
+    height: calc(var(--sheet-h) - var(--kbd, 0px));
     border-width: 1px 0 0;
     border-radius: 14px 14px 0 0;
     transform: translateY(calc(100% + 20px));
@@ -1300,12 +1320,12 @@ body.panel-detail .panel {
   .panel.is-dragging .sheet-grip::before { background: var(--accent); width: 46px; }
   /* The sheet is a phone screen, not a page: the rows get tighter so more of
      the list is above the fold, and the heading stops shouting. */
-  .panel { --panel-pad: 18px; --panel-pad-t: 20px; }
+  .panel { --panel-pad: 18px; --panel-pad-t: 20px; --search-h: 60px; }
   .panel-scroll { padding-bottom: calc(26px + var(--safe-b)); }
   .list-title { font-size: 21px; margin: 4px 0 2px; }
   /* Anything under 16px makes iOS zoom the whole page when the field takes
      focus, and it never zooms back out. */
-  .search { margin: 12px 0 2px; }
+  .search { margin-top: 12px; }
   .search-input { height: 40px; font-size: 16px; }
   .list-label { margin-top: 20px; padding: 8px var(--panel-pad) 7px; padding-right: calc(var(--panel-pad) + 34px); }
   .list-label:first-of-type { margin-top: 10px; }
@@ -1324,7 +1344,9 @@ body.panel-detail .panel {
      the text; the map is not worth much while you are reading it anyway, so
      the rail steps out of the way at full height. */
   body.panel-detail { --sheet-h: min(50vh, 470px); }
+  body.panel-detail { --sheet-h: min(50dvh, 470px, calc(100dvh - 110px)); }
   body.panel-detail.sheet-full { --sheet-h: min(88vh, 780px); }
+  body.panel-detail.sheet-full { --sheet-h: min(88dvh, 780px, calc(100dvh - 110px)); }
   body.sheet-full .rail { opacity: 0; pointer-events: none; }
   .rail { transition: opacity .2s var(--ease); }
 
@@ -1385,4 +1407,5 @@ body.panel-detail .panel {
   .panel-scroll { overflow: visible; padding: 0; }
   .panel::before { display: none; }
   .list-label { position: static; margin-inline: 0; padding-inline: 0; }
+  .search { display: none; }
 }
