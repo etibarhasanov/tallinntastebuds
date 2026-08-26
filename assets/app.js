@@ -1014,7 +1014,7 @@
   var radioEl = null;
 
   /* One station per language where there is one, and the default everywhere
-     else. A visitor reading the map in Russian gets Raadio 4 rather than a
+     else. A visitor reading the map in Russian gets Наше Радио rather than a
      station they cannot follow, and nobody gets silence for want of an entry. */
   function stationFor(lang) {
     var r = state.radio;

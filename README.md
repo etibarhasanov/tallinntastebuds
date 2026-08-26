@@ -635,7 +635,7 @@ language:
 {
   "default": { "name": "Raadio Tallinn", "url": "https://icecast.err.ee/raadiotallinn.mp3" },
   "byLanguage": {
-    "ru": { "name": "Raadio 4", "url": "https://icecast.err.ee/raadio4.mp3" },
+    "ru": { "name": "Наше Радио", "url": "https://nashe1.hostingradio.ru/nashe-256" },
     "tr": { "name": "Joy Türk Rock", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/JOYTURK_ROCK.mp3" }
   }
 }
