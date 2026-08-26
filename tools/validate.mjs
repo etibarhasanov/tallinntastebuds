@@ -50,7 +50,7 @@ const HTTP_URL = /^https?:\/\/[^\s]+$/;
 
 const KNOWN_KEYS = new Set([
   'id', 'name', 'address', 'lat', 'lng', 'price', 'types', 'blurb',
-  'mustOrder', 'reel', 'photos', 'website', 'visited', 'closed'
+  'mustOrder', 'reel', 'photos', 'website', 'added', 'visited', 'closed'
 ]);
 
 /* visited is deliberately absent: a place you have been to but not filmed has
@@ -303,6 +303,17 @@ if (places !== null) {
         if (!isNonEmptyString(place.website) || !HTTP_URL.test(place.website)) {
           fail(where, '"website" must be a full http(s) URL, or "" / the key left out');
         }
+      }
+
+      /* added — the day this place first appeared in this file, which is what
+         puts it in the "Just added" section. Optional, so an older file still
+         validates, but a real date when it is there. */
+      if ('added' in place) {
+        if (!isNonEmptyString(place.added) || !/^\d{4}-\d{2}-\d{2}$/.test(place.added)) {
+          fail(where, `"added" must look like 2026-08-25, got ${JSON.stringify(place.added)}`);
+        }
+      } else {
+        warn(where, 'has no "added" date, so it can never show as newly added');
       }
 
       /* visited — optional, but must be a real month when present */

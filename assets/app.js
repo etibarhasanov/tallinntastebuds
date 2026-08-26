@@ -1527,6 +1527,51 @@
 
   /* ------------------------------------------------------------------ list */
 
+  /* ------------------------------------------------------------ what is new
+   * A map somebody follows needs to answer "what did you add since I last
+   * looked", and an alphabetical list cannot: Vabrik has sat between Uba ja
+   * Humal and Vana Villem since the day it went in.
+   *
+   * So the newest additions are lifted to the top of the list. Whole days at
+   * a time, because a batch of places added in one sitting belongs together,
+   * and enough days to make a section worth having: at least three places,
+   * never more than eight, always at least the most recent day. Adding one
+   * place tomorrow shows that one plus yesterday's, rather than a section of
+   * one.
+   *
+   * The dates come from the repo's own history rather than from memory. Every
+   * place carries the day it first appeared in data/restaurants.json.
+   */
+  var NEW_MIN = 3;
+  var NEW_MAX = 8;
+
+  /* Which days count as new is a fact about the map, not about the filter in
+     force. Working it out from the filtered list instead would let "Fine
+     dining", five places added over three days, report all five as just
+     added. */
+  function newDays() {
+    var days = {};
+    state.places.forEach(function (p) {
+      if (p.added) days[p.added] = (days[p.added] || 0) + 1;
+    });
+
+    var newest = Object.keys(days).sort().reverse();
+    var picked = {};
+    var total = 0;
+    for (var i = 0; i < newest.length; i++) {
+      if (i > 0 && total + days[newest[i]] > NEW_MAX) break;
+      picked[newest[i]] = true;
+      total += days[newest[i]];
+      if (total >= NEW_MIN) break;
+    }
+    return picked;
+  }
+
+  function recentlyAdded(places) {
+    var days = newDays();
+    return places.filter(function (p) { return p.added && days[p.added]; });
+  }
+
   function renderList() {
     clear(dom.list);
 
@@ -1555,8 +1600,7 @@
       return;
     }
 
-    var ul = el('ul', { className: 'place-list' });
-    places.forEach(function (place) {
+    function listRow(place) {
       var row = el('button', {
         type: 'button',
         className: 'list-row' + (place.closed ? ' is-closed' : ''),
@@ -1573,9 +1617,30 @@
         ])
       ]);
       row.addEventListener('click', function () { selectPlace(place.id, { fly: true }); });
-      ul.appendChild(el('li', {}, [row]));
-    });
-    dom.list.appendChild(ul);
+      return el('li', {}, [row]);
+    }
+
+    function section(labelKey, rows, className) {
+      dom.list.appendChild(el('p', { className: 'list-label eyebrow', textContent: t(labelKey) }));
+      var ul = el('ul', { className: 'place-list' + (className ? ' ' + className : '') });
+      rows.forEach(function (place) { ul.appendChild(listRow(place)); });
+      dom.list.appendChild(ul);
+    }
+
+    var fresh = recentlyAdded(places);
+    var freshIds = {};
+    fresh.forEach(function (p) { freshIds[p.id] = true; });
+
+    if (fresh.length) {
+      fresh.sort(function (a, b) {
+        if (a.added !== b.added) return a.added < b.added ? 1 : -1;
+        return collator.compare(a.name, b.name);
+      });
+      section('listNew', fresh, 'is-new');
+    }
+
+    var rest = places.filter(function (p) { return !freshIds[p.id]; });
+    if (rest.length) section(fresh.length ? 'listRest' : 'listAll', rest);
   }
 
   /* -------------------------------------------------------------- lightbox */

@@ -19,6 +19,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [Get the coordinates](#get-the-coordinates)
 - [Copy a video permalink](#copy-a-video-permalink)
 - [Add photos](#add-photos)
+- [The Just added section](#the-just-added-section)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Languages](#languages)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -78,6 +79,7 @@ to it:
   "reel": "https://www.instagram.com/reel/ABC123xyz/",
   "photos": ["01.webp", "02.webp"],
   "website": "https://leerestoran.ee",
+  "added": "2026-08-26",
   "visited": "2026-08",
   "closed": false
 }
@@ -98,6 +100,7 @@ Field by field:
 | `reel` | The full Instagram permalink, or `""` if there is not a reel yet. |
 | `photos` | Filenames inside `photos/<id>/`. Just the filenames. Use `[]` if there are none. |
 | `website` | Optional. An empty string and a missing key both mean "no website". |
+| `added` | The day you added the place, `YYYY-MM-DD`. Drives the **Just added** section at the top of the list. |
 | `visited` | The month you last ate there, `YYYY-MM`. |
 | `closed` | `true` greys the pin out. See below. |
 
@@ -233,6 +236,34 @@ photos/f-hoone/02.webp
 Then list the filenames in that place's `photos` array. WebP at around 1600px
 on the long edge and under ~300 KB each is plenty — see `photos/README.md`.
 Photos live in Git forever, so resize before committing.
+
+---
+
+## The Just added section
+
+The list panel opens with a **Just added** heading, then **The rest**. That
+first group is worked out from the `added` dates, in whole days:
+
+- Start with the newest date any place carries and take every place added that
+  day.
+- Still fewer than **3** places? Add the day before it, whole. Repeat.
+- Stop before a day that would push the group past **8**. The newest day is
+  always in, even on its own, even if it is bigger than 8.
+
+Whole days, never "the newest six", so places added in the same sitting never
+get split across two headings.
+
+The group is computed from the **whole map**, not from what the filters have
+left on screen — otherwise filtering to a type with five old places would
+declare all five of them new. When a filter leaves nothing recent, the two
+headings collapse to a single **All places**.
+
+So the field that matters is `added`. Write today's date when you add a place
+and it will sit at the top of the list until enough newer places push it out.
+The validator warns if you forget one.
+
+The dates already in the file were read out of this repository's own git
+history — the first commit in which each `id` appears — not guessed.
 
 ---
 
@@ -417,11 +448,13 @@ to read and write first.
 - a photo listed in the data that does not exist in the repo
 - a `reel` value that is not a real Instagram or TikTok permalink shape
 - a `price` outside 1–4, a malformed `visited` month, a malformed `website`
+- a malformed `added` date — it has to be `YYYY-MM-DD`
 
 **It warns, without failing, on:**
 
 - blurbs that still contain `TODO` or `PLACEHOLDER`
 - places with no reel yet
+- places with no `added` date
 - blurbs missing a translation
 - taxonomy types nothing uses
 - folders in `photos/` that no place points at
