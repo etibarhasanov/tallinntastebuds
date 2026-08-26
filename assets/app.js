@@ -1861,8 +1861,6 @@
     dom.panelClose.addEventListener('click', closePanel);
     wireSheet();
 
-    dom.btnZoomIn.addEventListener('click', function () { map.zoomIn(); });
-    dom.btnZoomOut.addEventListener('click', function () { map.zoomOut(); });
 
     dom.btnLocate.addEventListener('click', function () {
       trackEvent('locate');
@@ -2103,8 +2101,6 @@
       searchClear: $('search-clear'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
-      btnZoomIn: $('btn-zoom-in'),
-      btnZoomOut: $('btn-zoom-out'),
       lightbox: $('lightbox'),
       lbImg: $('lb-img'),
       lbCaption: $('lb-caption'),

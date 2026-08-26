@@ -264,7 +264,7 @@ a:hover { color: var(--accent-lit); }
 
 .brand {
   position: fixed;
-  z-index: 1000;
+  z-index: 1001;
   top: calc(var(--gap) + var(--safe-t));
   left: calc(var(--gap) + var(--safe-l));
   width: 288px;
@@ -300,14 +300,20 @@ a:hover { color: var(--accent-lit); }
 
 /* ---------- top-right controls ---------- */
 
+/* Three things left once the zoom buttons went, so they sit on one line
+   instead of a column: it frees the whole band under them for the chips, and
+   the top of the map becomes a single strip of chrome. row-reverse keeps the
+   language switch in the corner, where its menu drops from. Above the chip
+   row in the stack, because the chip scroller claims invisible padding around
+   itself and a button must always win the tap. */
 .controls {
   position: fixed;
-  z-index: 1000;
+  z-index: 1001;
   top: calc(var(--gap) + var(--safe-t));
   right: calc(var(--gap) + var(--safe-r));
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  flex-direction: row-reverse;
+  align-items: flex-start;
   gap: 8px;
   transition: right .34s var(--ease);
 }
@@ -562,12 +568,17 @@ a:hover { color: var(--accent-lit); }
 
 /* The bar is fixed; only the chips inside it scroll, so the random-pick
    button stays reachable however far along the vocabulary you are. */
+/* The chips sit under the top strip of chrome. On a desktop they start where
+   the brand card ends, so the card keeps its own column and the row runs from
+   there to the edge; on a phone the card is one short line and the row spans
+   the full width beneath it. --chrome-h is the height of that strip. */
 .filter-bar {
   position: fixed;
   z-index: 1000;
-  left: calc(var(--gap) + var(--safe-l));
+  --chrome-h: 40px;
+  left: calc(var(--gap) + var(--safe-l) + 288px + 16px);
   right: calc(var(--gap) + var(--safe-r));
-  bottom: calc(30px + var(--gap) + var(--safe-b));
+  top: calc(var(--gap) + var(--safe-t) + var(--chrome-h) + 12px);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -576,13 +587,13 @@ a:hover { color: var(--accent-lit); }
 
 /* The row is 38px of chip standing on live map, and a finger aiming at it
    lands a few pixels off often enough that those pixels used to drag Tallinn
-   sideways. So the scroller claims the whole strip: 24px of cushion above the
-   chips, and everything below them down to the attribution, which is the one
-   thing under there that still has to be clickable. The padding is invisible
-   and belongs to the scroller itself, so a drag starting in it scrolls the
-   chips rather than doing nothing, and the negative margins keep the chips
-   drawn on exactly the pixels they were before. touch-action pins the gesture
-   to the one axis the row has. */
+   sideways. So the scroller claims a strip around itself: a little above the
+   chips, where the chrome buttons are and they win anyway, and a good deal
+   below, which is the side a thumb reaching up overshoots on. The padding is
+   invisible and belongs to the scroller itself, so a drag starting in it
+   scrolls the chips rather than doing nothing, and the negative margins keep
+   the chips drawn on exactly the pixels they were before. touch-action pins
+   the gesture to the one axis the row has. */
 .filters {
   flex: 0 1 auto;
   min-width: 0;
@@ -590,8 +601,8 @@ a:hover { color: var(--accent-lit); }
   gap: 6px;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 24px 2px 18px;
-  margin: -22px 0 -16px;
+  padding: 10px 2px 24px;
+  margin: -10px 0 -24px;
   touch-action: pan-x;
   scrollbar-width: none;
 }
@@ -1143,7 +1154,7 @@ body.panel-detail .panel {
      markup for search engines and screen readers, out of sight. */
   .brand {
     width: auto;
-    max-width: calc(100vw - 78px - var(--gap) * 2);
+    max-width: calc(100vw - 172px - var(--gap) * 2);
     padding: 5px 11px 4px;
   }
   .brand .tagline { display: none; }
@@ -1221,7 +1232,18 @@ body.panel-detail .panel {
   }
   .btn-wide { padding: 0 12px; }
 
-  .filter-bar { bottom: calc(28px + 10px + var(--safe-b)); left: 10px; right: 10px; }
+  .filter-bar { --chrome-h: 36px; left: 10px; right: 10px; }
+
+  /* Under about 380px the handle and the three controls stop fitting on one
+     line, so the controls take a line of their own and the chips drop below
+     both of them. */
+  @media (max-width: 380px) {
+    .controls { top: calc(var(--gap) + var(--safe-t) + 41px); }
+    .filter-bar { --chrome-h: 77px; }
+    /* Nothing shares the line any more, so the card takes the width it needs
+       rather than the width the controls used to leave it. */
+    .brand { max-width: calc(100vw - var(--gap) * 2 - var(--safe-l) - var(--safe-r)); }
+  }
 
   .panel {
     top: auto;
@@ -1292,15 +1314,10 @@ body.panel-detail .panel {
   .list-sub { margin-top: 3px; gap: 10px; }
   .panel-close { top: 14px; right: 12px; }
 
-  /* The sheet covers the chip row, so it goes away rather than sitting
-     invisible underneath: visibility, not just opacity, so a keyboard cannot
-     tab into a row nobody can see. */
-  body.panel-open .filter-bar {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: right .3s var(--ease), opacity .2s var(--ease), visibility 0s linear .2s;
-  }
+  /* The sheet used to cover the chip row, which is why the row used to be
+     hidden while the panel was open. At the top of the screen it clears even
+     the fully dragged-up sheet, so it stays where it is and the filters can
+     be changed with the list open. */
 
   /* A detail sheet opens at half the screen so the map keeps the other half
      and the chosen pin has somewhere to be. Drag the grip up for the rest of

@@ -759,6 +759,25 @@ up for hover and the locate dot. Cool near-black ink, one hairline weight, one
 soft shadow, nothing else. The tokens are the first thing in
 `assets/styles.css`; change those six values and the whole site follows.
 
+**The chrome.** Everything floats on the map: nothing has a page around it.
+One strip across the top — the brand card on the left, locate, **List** and the
+language switch on the right — and the filter chips on the line directly
+beneath it. There are no zoom buttons; the wheel, a double-click, a pinch and
+the `+`/`-` keys all still zoom, and two more buttons standing on the map were
+paying for a job the map already does. The chips used to sit at the bottom,
+where the sheet covered them and they had to be hidden whenever the list was
+open; at the top they clear even the fully dragged-up sheet, so the filters can
+be changed while the list is showing.
+
+The chip scroller claims an invisible strip around itself, because a finger
+aiming at a 38px row lands a few pixels off often enough to drag Tallinn
+sideways instead. Most of that cushion is below the chips now — the side a
+thumb reaching up overshoots on — and the brand card and the controls sit above
+the scroller in the stack, so a tap on a button is always a tap on that button.
+
+Under about 380px the handle and the three controls stop fitting on one line,
+so the controls take a line of their own and the chips drop below both.
+
 **Pins.** One shape, three amounts of ink, for the three amounts of place
 behind it:
 
