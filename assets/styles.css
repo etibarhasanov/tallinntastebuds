@@ -577,7 +577,12 @@ a:hover { color: var(--accent-lit); }
   color: var(--accent);
 }
 .radio:hover svg { transform: none; }
-.radio-name { max-width: 15ch; overflow: hidden; text-overflow: ellipsis; }
+/* Wide enough for the longest station actually on the dial — "Raadio Tallinn"
+   needs 103px and 15ch only bought 90, so every name arrived clipped to
+   "RAADIO TALL…". The label is uppercased and letter-spaced, which buys fewer
+   characters per ch than the unit suggests. 18ch clears it and still leaves
+   the button inside the 168px rail; the ellipsis stays for anything longer. */
+.radio-name { max-width: 18ch; overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- filters ---------- */
 
