@@ -676,6 +676,13 @@ to one of them rots within months, so the entry points at
 `playerservices.streamtheworld.com/api/livestream-redirect/`, which hands the
 browser whichever node is up today.
 
+Prefer the station's own address, but not past the point where it answers. Baku
+Retro FM publishes `stream.bakuradioalliance.az/retrofm` and it is dead; the
+entry uses a rebroadcast on `stream02.pcradio.biz` instead, at a lower bitrate
+and one remove from the station. That is the trade every time a broadcaster
+lets its own stream lapse: a working mirror beats a correct URL that plays
+nothing. Re-check the official one now and then and move back when it returns.
+
 ## Surprise me
 
 The button under the swatches on the left rail picks a place at random and
