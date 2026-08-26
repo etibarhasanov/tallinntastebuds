@@ -20,6 +20,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [Copy a video permalink](#copy-a-video-permalink)
 - [Add photos](#add-photos)
 - [The Just added section](#the-just-added-section)
+- [Searching the list](#searching-the-list)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Languages](#languages)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -274,6 +275,38 @@ if you forget one.
 
 The dates already in the file were read out of this repository's own git
 history — the first commit in which each `id` appears — not guessed.
+
+---
+
+## Searching the list
+
+There is a field at the top of the list panel. It narrows **the list**, not the
+map: the pins are what the filter chips are for, and a search left behind in a
+closed panel would otherwise sit there invisibly removing places from the map.
+
+It looks in four places, all of them things somebody could reasonably remember:
+the **name**, the **street**, the **type labels** in whatever language they are
+reading, and the **dishes** in `mustOrder`. Not the write-ups — a word like
+"good" would match half the map and give no clue why.
+
+Accents are folded away on both sides before anything is compared, so `sasl`
+finds Telliskivi Šašlõkk and `pohja` finds Põhja Konn. Nobody types the carons.
+It is done by splitting each letter from its marks (`NFD`) and dropping the
+marks; the dotless Turkish `ı` has no decomposition of its own and is mapped by
+hand.
+
+Several words all have to land somewhere, so `telliskivi kohvik` narrows rather
+than widening the way a match on the whole phrase would.
+
+A search and the filter chips compose: chips first, then the words. While a
+search is running the **Just added** section is suppressed and the results come
+back as one flat A–Z list — somebody who typed a word is after a particular
+place, and lifting two of the answers into a section of their own only makes
+them read the same names twice.
+
+Escape empties the field; a second Escape closes the panel, which is what a
+browser's own search boxes do. On a phone the field is 16px, because anything
+smaller makes iOS zoom the whole page on focus and never zoom back out.
 
 ---
 
@@ -656,6 +689,7 @@ reported as events instead, from `trackEvent()` beside `trackView()`:
 | `reel_play` | `place`, `provider` |
 | `cluster_open` | `cluster_size` |
 | `list_open` | `places_shown` |
+| `search` | `search_term` |
 | `locate` | — |
 
 They appear under **Reports → Engagement → Events** on their own. To break the

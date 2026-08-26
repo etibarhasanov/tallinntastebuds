@@ -42,6 +42,7 @@
     types: [],
     ui: {},
     langs: [],
+    q: '',
     lang: DEFAULT_LANG,
     langPinned: false,
     style: DEFAULT_STYLE,
@@ -213,6 +214,11 @@
     var aria = document.querySelectorAll('[data-i18n-aria-label]');
     for (var j = 0; j < aria.length; j++) {
       aria[j].setAttribute('aria-label', t(aria[j].getAttribute('data-i18n-aria-label')));
+    }
+
+    var holders = document.querySelectorAll('[data-i18n-placeholder]');
+    for (var h = 0; h < holders.length; h++) {
+      holders[h].setAttribute('placeholder', t(holders[h].getAttribute('data-i18n-placeholder')));
     }
 
     var titled = document.querySelectorAll('[data-i18n-title]');
@@ -1558,27 +1564,90 @@
     return dated.slice(0, NEW_COUNT);
   }
 
-  function renderList() {
-    clear(dom.list);
+  /* ---------------------------------------------------------------- search
+   * Accents are the whole problem: nobody types Telliskivi Šašlõkk with the
+   * carons, and Põhja Konn with the tilde. So both sides of every comparison
+   * are folded down to plain unaccented lowercase first — NFD splits a letter
+   * from its marks, and the marks are dropped. The dotless Turkish i has no
+   * decomposition of its own, so it is mapped by hand.
+   *
+   * What is searched is what a person could reasonably remember: the name,
+   * the street, the type labels in whatever language they are reading, and
+   * the dishes. Not the write-ups, which would match half the map on a word
+   * like "good" and give no clue why.
+   */
+  function fold(value) {
+    var out = String(value == null ? '' : value).toLowerCase();
+    try { out = out.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } catch (e) { /* older engine */ }
+    return out.replace(/[\u0131\u0130]/g, 'i').replace(/\u00f8/g, 'o').replace(/\u00df/g, 'ss');
+  }
 
+  function haystack(place) {
+    return fold([
+      place.name,
+      place.address,
+      (place.types || []).map(typeLabel).join(' '),
+      (place.mustOrder || []).join(' ')
+    ].join(' '));
+  }
+
+  /* Every word has to land somewhere, so "telliskivi kohvik" narrows rather
+     than widening the way a plain substring match on the whole phrase would. */
+  function matches(place, words) {
+    var hay = haystack(place);
+    for (var i = 0; i < words.length; i++) {
+      if (hay.indexOf(words[i]) === -1) return false;
+    }
+    return true;
+  }
+
+  function searchWords() {
+    var q = fold(state.q).replace(/\s+/g, ' ').replace(/^ | $/g, '');
+    return q ? q.split(' ') : [];
+  }
+
+  var searchTimer = null;
+
+  function setQuery(value) {
+    var next = String(value == null ? '' : value);
+    if (dom.search.value !== next) dom.search.value = next;
+    if (next === state.q) return;
+    state.q = next;
+    dom.searchClear.hidden = !next;
+    renderList();
+    trackSearch(next);
+  }
+
+  /* One event per search rather than one per keystroke: the report should say
+     what people went looking for, not watch them spell it. */
+  function trackSearch(q) {
+    if (searchTimer) clearTimeout(searchTimer);
+    var term = q.trim();
+    if (term.length < 2) return;
+    searchTimer = setTimeout(function () {
+      trackEvent('search', { search_term: term.toLowerCase() });
+    }, 900);
+  }
+
+  function renderList() {
+    clear(dom.listBody);
+
+    var words = searchWords();
     var places = visiblePlaces();
+    if (words.length) {
+      places = places.filter(function (p) { return matches(p, words); });
+    }
+
     var collator;
     try { collator = new Intl.Collator(state.lang, { sensitivity: 'base' }); }
     catch (e) { collator = { compare: function (a, b) { return a < b ? -1 : a > b ? 1 : 0; } }; }
     places.sort(function (a, b) { return collator.compare(a.name, b.name); });
 
-    dom.list.appendChild(el('div', { className: 'list-head' }, [
-      el('p', { className: 'eyebrow', textContent: t('eyebrow') }),
-      el('h2', {
-        className: 'list-title',
-        id: 'panel-list-title',
-        tabindex: '-1',
-        textContent: t('listTitle')
-      })
-    ]));
-
     if (!places.length) {
-      dom.list.appendChild(el('p', { className: 'empty-note', textContent: t('noResults') }));
+      dom.listBody.appendChild(el('p', {
+        className: 'empty-note',
+        textContent: words.length ? t('searchNone', { q: state.q.trim() }) : t('noResults')
+      }));
       return;
     }
 
@@ -1606,7 +1675,7 @@
        list it is counting rather than under the panel title, where it read as
        a claim about the whole map. */
     function section(labelKey, rows, className) {
-      dom.list.appendChild(el('p', { className: 'list-label eyebrow' }, [
+      dom.listBody.appendChild(el('p', { className: 'list-label eyebrow' }, [
         el('span', { textContent: t(labelKey) }),
         el('span', {
           className: 'list-label-n',
@@ -1615,14 +1684,17 @@
       ]));
       var ul = el('ul', { className: 'place-list' + (className ? ' ' + className : '') });
       rows.forEach(function (place) { ul.appendChild(listRow(place)); });
-      dom.list.appendChild(ul);
+      dom.listBody.appendChild(ul);
     }
 
     /* Only the new ones the current filter has left on screen, and only if
-       there are enough of them to be worth a heading of their own. */
+       there are enough of them to be worth a heading of their own. A search
+       suppresses the section outright: somebody who typed a word is looking
+       for a particular place, and lifting two of the answers into a section
+       of their own only makes them read the same names twice. */
     var shown = {};
     places.forEach(function (p) { shown[p.id] = true; });
-    var fresh = recentlyAdded().filter(function (p) { return shown[p.id]; });
+    var fresh = words.length ? [] : recentlyAdded().filter(function (p) { return shown[p.id]; });
 
     if (fresh.length > 1) section('listNew', fresh, 'is-new');
     section('listAlphabet', places);
@@ -1778,6 +1850,10 @@
       if (ev.key === 'Escape') {
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
+        /* Escape in a search field empties the field. Only once it is already
+           empty does it go on to close the panel, which is what a browser's
+           own search inputs do. */
+        if (document.activeElement === dom.search && state.q) { setQuery(''); return; }
         if (dom.panel.classList.contains('is-open')) closePanel();
         return;
       }
@@ -1785,6 +1861,17 @@
       if (ev.key === 'ArrowLeft') { ev.preventDefault(); stepLightbox(-1); }
       if (ev.key === 'ArrowRight') { ev.preventDefault(); stepLightbox(1); }
       if (ev.key === 'Tab') keepFocusInLightbox(ev);
+    });
+
+    dom.search.addEventListener('input', function () { setQuery(dom.search.value); });
+    dom.searchClear.addEventListener('click', function () {
+      setQuery('');
+      dom.search.focus();
+    });
+    /* Enter on a phone means "done": drop the keyboard rather than submit
+       anything, since the list has already narrowed with every keystroke. */
+    dom.search.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter') { ev.preventDefault(); dom.search.blur(); }
     });
 
     dom.filters.addEventListener('scroll', updateFilterFades, { passive: true });
@@ -1980,6 +2067,9 @@
       radioName: $('radio-name'),
       detail: $('panel-detail'),
       list: $('panel-list'),
+      listBody: $('list-body'),
+      search: $('list-search'),
+      searchClear: $('search-clear'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
       btnZoomIn: $('btn-zoom-in'),

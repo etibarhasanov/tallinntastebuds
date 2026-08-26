@@ -110,7 +110,26 @@
   </button>
   <div class="panel-scroll" id="panel-scroll">
     <article id="panel-detail" hidden></article>
-    <section id="panel-list"></section>
+    <section id="panel-list">
+      <div class="list-head">
+        <p class="eyebrow" data-i18n="eyebrow">Tallinn</p>
+        <h2 class="list-title" id="panel-list-title" tabindex="-1" data-i18n="listTitle">All places</h2>
+      </div>
+      <div class="search">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/>
+        </svg>
+        <input type="search" class="search-input" id="list-search" autocomplete="off"
+               autocorrect="off" autocapitalize="none" spellcheck="false"
+               data-i18n-aria-label="search" data-i18n-placeholder="searchPlaceholder"
+               aria-label="Search places" placeholder="Name, street or dish">
+        <button type="button" class="search-clear" id="search-clear"
+                data-i18n-aria-label="searchClear" aria-label="Clear the search" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div id="list-body"></div>
+    </section>
   </div>
 </aside>
 

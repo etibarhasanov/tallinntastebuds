@@ -916,6 +916,71 @@ body.panel-detail .panel {
 .list-title:focus { outline: none; }
 .list-title:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 3px; }
 
+/* The search field. A hairline box rather than a filled one: it is a tool
+   the list offers, not the thing the panel is about. The magnifier and the
+   clear button are laid over the input rather than beside it, so the text
+   starts and ends where the row names do. */
+.search {
+  position: relative;
+  margin: 14px 0 2px;
+}
+.search-input {
+  width: 100%;
+  height: 38px;
+  padding: 0 34px 0 32px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  font-family: var(--body);
+  font-size: 14px;
+  color: var(--ink);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color .15s var(--ease);
+}
+.search-input::placeholder { color: var(--muted); opacity: 1; }
+.search-input:hover { border-color: var(--muted); }
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+/* Chromium and Safari draw their own clear button inside a search input,
+   which would sit next to ours. */
+.search-input::-webkit-search-cancel-button,
+.search-input::-webkit-search-decoration { display: none; }
+
+.search-icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.search-clear {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  transform: translateY(-50%);
+  border-radius: 100px;
+  color: var(--muted);
+}
+/* display:grid on a class beats the UA sheet's [hidden] rule, so the
+   attribute has to be honoured explicitly. */
+.search-clear[hidden] { display: none; }
+.search-clear:hover { color: var(--ink); background: var(--wash); }
+.search-clear svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+
 /* The section labels inside the list. Quiet, because they are signposts and
    not headings: the list is still one list. Each one holds its group's count
    on the right, and sticks to the top of the panel on the way past, so a list
@@ -1198,6 +1263,10 @@ body.panel-detail .panel {
   .panel { --panel-pad: 18px; --panel-pad-t: 20px; }
   .panel-scroll { padding-bottom: calc(26px + var(--safe-b)); }
   .list-title { font-size: 21px; margin: 4px 0 2px; }
+  /* Anything under 16px makes iOS zoom the whole page when the field takes
+     focus, and it never zooms back out. */
+  .search { margin: 12px 0 2px; }
+  .search-input { height: 40px; font-size: 16px; }
   .list-label { margin-top: 20px; padding: 8px var(--panel-pad) 7px; padding-right: calc(var(--panel-pad) + 34px); }
   .list-label:first-of-type { margin-top: 10px; }
   .list-row { padding: 10px 2px; }
