@@ -1512,6 +1512,44 @@
     "closed": false
   },
   {
+    "id": "paper-mill-coffee-volta",
+    "name": "Paper Mill Coffee Volta",
+    "address": "Tööstuse 47d, 10416 Tallinn",
+    "lat": 59.4499521,
+    "lng": 24.7235408,
+    "price": 3,
+    "types": [
+      "coffee",
+      "bakery",
+      "casual"
+    ],
+    "blurb": {
+      "az": "Paper Mill-in ikinci məkanı, Volta məhəlləsində: şüşə künc, nanə yaşılı zal və elə orada bişirilən xəmir işləri ilə dolu piştaxta. Monkey bread buraya gəlməyin səbəbidir: hündür, yapışqan, tikə-tikə ayrılan və kruassan kimi dadan bir çörək. Qəhvə də öz sözünü deyir, ponçiklər və qaragiləli xəmir işləri isə ayrıca yol getməyə dəyər.",
+      "en": "The second Paper Mill, out in the Volta quarter: a glass corner unit, a mint green room and a counter full of pastry they bake on the spot. The monkey bread is the reason to come: tall, sticky, pulls apart in pieces and eats like a croissant. The coffee holds its own, and the doughnuts and the blueberry pastries are worth the trip on their own.",
+      "et": "Paper Milli teine maja, Volta kvartalis: klaasist nurgapind, piparmündiroheline saal ja lett täis kohapeal küpsetatud saiakesi. Monkey bread on põhjus siia tulla: kõrge, kleepuv, tükkide kaupa lahti tulev sai, mis maitseb nagu sarvesai. Kohv peab samuti vett ning sõõrikud ja mustikasaiakesed on omaette tulemist väärt.",
+      "fi": "Paper Millin toinen paikka, Voltan korttelissa: lasinen kulmatila, mintunvihreä sali ja tiski täynnä paikan päällä paistettuja leivonnaisia. Monkey bread on syy tulla tänne: korkea, tahmea pulla, joka repeytyy palasiksi ja maistuu croissantilta. Kahvi pitää pintansa, ja donitsit sekä mustikkaleivonnaiset ovat ihan oman käyntinsä arvoisia.",
+      "pt": "A segunda casa do Paper Mill, no bairro Volta: uma esquina de vidro, uma sala verde-menta e um balcão cheio de pastelaria feita ali mesmo. O monkey bread é a razão para vir: alto, pegajoso, desfaz-se aos bocados e sabe a croissant. O café aguenta-se bem, e os donuts e os folhados de mirtilo valem a viagem por si sós.",
+      "ru": "Второй Paper Mill, в квартале Volta: стеклянный угол, мятно-зелёный зал и витрина, полная выпечки, которую пекут здесь же. Ради monkey bread сюда и стоит ехать: высокая липкая булка, которая разбирается на кусочки и на вкус как круассан. Кофе не подводит, а пончики и черничная выпечка стоят отдельного захода.",
+      "tr": "Paper Mill’in ikinci mekânı, Volta mahallesinde: camlı bir köşe, nane yeşili bir salon ve yerinde pişirilen hamur işleriyle dolu bir tezgâh. Monkey bread buraya gelme sebebi: yüksek, yapış yapış, parça parça ayrılan ve kruvasan gibi yenen bir ekmek. Kahve de kendini belli ediyor; donutlar ve yaban mersinli hamur işleri ise başlı başına yola değer."
+    },
+    "mustOrder": [
+      "Monkey bread",
+      "Donut"
+    ],
+    "reel": "",
+    "photos": [
+      "02.webp",
+      "05.webp",
+      "01.webp",
+      "04.webp",
+      "03.webp"
+    ],
+    "website": "",
+    "added": "2026-08-26",
+    "visited": "2026-08",
+    "closed": false
+  },
+  {
     "id": "pilsneri-baar",
     "name": "Pilsneri baar",
     "address": "Kopli, 10412 Tallinn",
