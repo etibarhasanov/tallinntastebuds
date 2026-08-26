@@ -7,7 +7,8 @@
       "fi": "Rento/yksin",
       "az": "Rahat/tək",
       "ru": "Неформально/в одиночку",
-      "pt": "Casual/sozinho"
+      "pt": "Casual/sozinho",
+      "tr": "Rahat/tek başına"
     },
     {
       "id": "bakery",
@@ -16,7 +17,8 @@
       "fi": "Leipomo",
       "az": "Çörəkxana",
       "ru": "Пекарня",
-      "pt": "Padaria"
+      "pt": "Padaria",
+      "tr": "Fırın"
     },
     {
       "id": "coffee",
@@ -25,7 +27,8 @@
       "fi": "Kahvi/tee",
       "az": "Kofe/çay",
       "ru": "Кофе/чай",
-      "pt": "Café/chá"
+      "pt": "Café/chá",
+      "tr": "Kahve/çay"
     },
     {
       "id": "pub",
@@ -34,7 +37,8 @@
       "fi": "Olut/pubi",
       "az": "Pivə/pab",
       "ru": "Пиво/паб",
-      "pt": "Cerveja/pub"
+      "pt": "Cerveja/pub",
+      "tr": "Bira/pub"
     },
     {
       "id": "hidden-gem",
@@ -43,7 +47,8 @@
       "fi": "Piilohelmi",
       "az": "Gizli inci",
       "ru": "Находка",
-      "pt": "Joia escondida"
+      "pt": "Joia escondida",
+      "tr": "Gizli cevher"
     },
     {
       "id": "cheap-eats",
@@ -52,7 +57,8 @@
       "fi": "Edullinen",
       "az": "Ucuz",
       "ru": "Недорого",
-      "pt": "Barato"
+      "pt": "Barato",
+      "tr": "Ucuz"
     },
     {
       "id": "date",
@@ -61,7 +67,8 @@
       "fi": "Treffit",
       "az": "Görüş",
       "ru": "Свидание",
-      "pt": "Encontro"
+      "pt": "Encontro",
+      "tr": "Buluşma"
     },
     {
       "id": "asian",
@@ -70,7 +77,8 @@
       "fi": "Aasialainen",
       "az": "Asiya",
       "ru": "Азиатская",
-      "pt": "Asiático"
+      "pt": "Asiático",
+      "tr": "Asya"
     },
     {
       "id": "vegan",
@@ -79,7 +87,8 @@
       "fi": "Vegaani",
       "az": "Vegan",
       "ru": "Веганское",
-      "pt": "Vegano"
+      "pt": "Vegano",
+      "tr": "Vegan"
     },
     {
       "id": "fine-dining",
@@ -88,7 +97,8 @@
       "fi": "Fine dining",
       "az": "Yüksək mətbəx",
       "ru": "Высокая кухня",
-      "pt": "Alta gastronomia"
+      "pt": "Alta gastronomia",
+      "tr": "Fine dining"
     },
     {
       "id": "caucasian",
@@ -97,7 +107,8 @@
       "fi": "Kaukasia",
       "az": "Qafqaz",
       "ru": "Кавказская",
-      "pt": "Cáucaso"
+      "pt": "Cáucaso",
+      "tr": "Kafkasya"
     }
   ]
 }

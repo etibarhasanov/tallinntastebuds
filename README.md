@@ -281,18 +281,19 @@ there for the first place that shuts.
 
 ## Languages
 
-Azerbaijani, English, Estonian, Finnish, Portuguese, Russian — the switcher
-shows them in that order, Azerbaijani first and the rest alphabetical. The
+Azerbaijani, English, Estonian, Finnish, Portuguese, Russian, Turkish — the
+switcher shows them in that order, Azerbaijani first and the rest
+alphabetical. The
 order of the blocks in `ui.json` is the order of the buttons; the language a
 visitor *lands* in is a separate thing, still English by default, and set by
 `DEFAULT_LANG` in `assets/app.js`.
 
 The switch has two shapes, from the same markup. Wide enough, it is a row of
 codes. On a phone it folds into the current code with a menu under it, listing
-each language's own name for itself: six codes side by side are 232px, which
+each language's own name for itself: seven codes side by side are 270px, which
 on a 390px screen runs straight into the handle in the opposite corner. The
-fold happens in CSS at 860px, so adding a seventh language costs nothing in
-layout. Every interface string is in
+fold happens in CSS at 860px, and the folded menu grows downwards, so the next
+language costs nothing in layout either. Every interface string is in
 `data/ui.json`, keyed by language and then by string id, so a translator never
 has to open the HTML.
 
