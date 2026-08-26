@@ -680,12 +680,16 @@ browser whichever node is up today. A `<audio>` element follows the 302 without
 being asked; some stream checkers do not, so those two URLs will look dead to a
 link checker and play fine in a browser.
 
-Prefer the station's own address, but not past the point where it answers. Baku
-Retro FM publishes `stream.bakuradioalliance.az/retrofm` and it is dead; the
-entry uses a rebroadcast on `stream02.pcradio.biz` instead, at a lower bitrate
-and one remove from the station. That is the trade every time a broadcaster
-lets its own stream lapse: a working mirror beats a correct URL that plays
-nothing. Re-check the official one now and then and move back when it returns.
+Prefer the station's own address. Baku Retro FM publishes
+`stream.bakuradioalliance.az/retrofm`, and that is what the entry uses, over
+the rebroadcasts of it on `stream02.pcradio.biz` and `stream.rcast.net` — a
+mirror is a lower bitrate, one remove from the broadcaster, and free to drop
+the station whenever it likes.
+
+Reach for a mirror only once the official address has actually failed **in a
+browser**. Scraped stream indexes disagree with each other about that address
+and a link checker can call it dead from the wrong country or over the wrong
+TLS; neither is the test that counts. Pressing the button is.
 
 ## Surprise me
 
