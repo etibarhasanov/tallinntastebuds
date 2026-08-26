@@ -823,12 +823,19 @@ into a smear at low zoom, and by 18 you are looking at one doorway.
 floor under it: whatever else happens it leaves 110px of the screen showing,
 which is the chrome strip and the chip row. That strip is the way back out.
 
-It is sized in `dvh`, with a `vh` line before it for anything too old to know
-the unit. `vh` on iOS means the *large* viewport — the one with the browser
-chrome collapsed — so a sheet sized in `vh` and anchored to the bottom of the
-screen could start above the top of what you can actually see, taking its
-close button and its drag grip with it. Open a place, play the reel, and there
-was no way out of it.
+It is sized against `--vph`, which is `window.innerHeight` written back to CSS
+on every resize, falling back to `dvh` before the script runs and to plain `vh`
+in a browser that has neither. `vh` on iOS means the *large* viewport — the one
+with the browser chrome collapsed — so a sheet sized in `vh` and anchored to
+the bottom of the screen could start above the top of what you can actually
+see, taking its close button and its drag grip with it. Open a place, swipe the
+sheet up, and there was no way out of it. Measuring the number in JS rather
+than trusting a unit also means the drag stops and the stylesheet can never
+disagree about how tall the sheet is allowed to be.
+
+Which leaves three ways back from a sheet standing open, all of them on
+screen: the close button, a tap on the grip, and **List** in the chrome strip
+above.
 
 The soft keyboard is the same class of problem from the other end. iOS shrinks
 the visual viewport when the keyboard comes up but leaves the layout viewport —

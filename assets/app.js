@@ -1208,7 +1208,20 @@
    * and the measurement comes out at zero, which is the right answer there.
    * A browser without visualViewport simply keeps the behaviour it had.
    */
+  /* The height the sheet is measured against, written back to CSS so it does
+     not have to trust a viewport unit. dvh is right where it is supported;
+     this is the same number taken from the horse's mouth, and it is what the
+     drag stops use, so the two can never disagree about how tall the sheet is
+     allowed to be. */
+  function syncViewportHeight() {
+    document.documentElement.style.setProperty('--vph', window.innerHeight + 'px');
+  }
+
   function wireKeyboard() {
+    syncViewportHeight();
+    window.addEventListener('resize', syncViewportHeight);
+    window.addEventListener('orientationchange', syncViewportHeight);
+
     var vv = window.visualViewport;
     if (!vv) return;
 
