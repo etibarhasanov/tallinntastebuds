@@ -7,6 +7,10 @@
     "ru": {
       "name": "Raadio 4",
       "url": "https://icecast.err.ee/raadio4.mp3"
+    },
+    "tr": {
+      "name": "Joy Türk Rock",
+      "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/JOYTURK_ROCK.mp3"
     }
   }
 }
