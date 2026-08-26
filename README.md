@@ -670,11 +670,15 @@ for good, it is one line in this file, which is the same maintenance the rest
 of the map asks for.
 
 Where a station sits behind a load balancer, take the address that resolves to
-a node rather than a node itself. Joy Türk Rock is served from a pool of hosts
-named `21633.live.streamtheworld.com` and up; those numbers rotate and a link
-to one of them rots within months, so the entry points at
+a node rather than a node itself. Joy Türk Rock and Itapema FM are both served
+from pools of hosts named `21633.live.streamtheworld.com` and up — scraped
+playlists have Joy Türk Rock on fourteen different numbers and Itapema on five,
+which is the rotation happening in public. A link to one of them rots within
+months, so both entries point at
 `playerservices.streamtheworld.com/api/livestream-redirect/`, which hands the
-browser whichever node is up today.
+browser whichever node is up today. A `<audio>` element follows the 302 without
+being asked; some stream checkers do not, so those two URLs will look dead to a
+link checker and play fine in a browser.
 
 Prefer the station's own address, but not past the point where it answers. Baku
 Retro FM publishes `stream.bakuradioalliance.az/retrofm` and it is dead; the
