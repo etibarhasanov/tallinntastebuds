@@ -960,6 +960,38 @@
     "closed": false
   },
   {
+    "id": "koho",
+    "name": "KoHo",
+    "address": "Telliskivi tn 60-1, 10412 Tallinn",
+    "lat": 59.4401373,
+    "lng": 24.7303523,
+    "price": 2,
+    "types": [
+      "casual",
+      "bakery"
+    ],
+    "blurb": {
+      "az": "Telliskivi küncündə restoran, çörəkxana və bar: döşəmədən tavana şüşə, hər yerdə bitkilər və səkidə masalar. Yüngül Asiya toxunuşu olan Aralıq dənizi mətbəxi, hər yeməyin yanında isə çörək və özlərinin hazırladığı hummus. Mən bura nahara gəlirəm: qısa çap olunmuş siyahı və heç biri on avrodan baha deyil.",
+      "en": "Restaurant, bakery and bar on the Telliskivi corner: floor to ceiling glass, plants everywhere and tables out on the pavement. Mediterranean cooking with a light Asian touch, and bread and their own hummus with every meal. Lunch is what I come for. A short printed list, and nothing on it over ten euros.",
+      "et": "Restoran, pagariäri ja baar Telliskivi nurgal: põrandast laeni klaas, taimed igal pool ja lauad kõnniteel. Vahemere köök kerge Aasia puudutusega ning iga toidu juurde leib ja nende oma hummus. Mina käin siin lõunal. Lühike trükitud nimekiri, millest miski ei lähe üle kümne euro.",
+      "fi": "Ravintola, leipomo ja baari Telliskivin kulmassa: lattiasta kattoon ulottuvat lasit, kasveja joka puolella ja pöytiä jalkakäytävällä. Välimeren keittiötä kevyellä aasialaisella otteella, ja jokaisen annoksen kanssa leipää ja heidän omaa hummustaan. Minä tulen tänne lounaalle. Lyhyt painettu lista, jossa mikään ei ylitä kymmentä euroa.",
+      "pt": "Restaurante, padaria e bar na esquina de Telliskivi: vidro do chão ao tecto, plantas por todo o lado e mesas no passeio. Cozinha mediterrânica com um toque asiático leve, e pão e o hummus da casa com cada prato. Venho cá almoçar. Uma lista curta impressa, e nada acima de dez euros.",
+      "ru": "Ресторан, пекарня и бар на углу Теллискиви: стекло от пола до потолка, растения повсюду и столики прямо на тротуаре. Средиземноморская кухня с лёгким азиатским акцентом, к каждому блюду хлеб и их собственный хумус. Я хожу сюда на обед: короткий распечатанный список, и ничего дороже десяти евро.",
+      "tr": "Telliskivi köşesinde restoran, fırın ve bar: tavandan yere cam, her yerde bitkiler ve kaldırıma çıkan masalar. Hafif Asya dokunuşlu Akdeniz mutfağı, her yemeğin yanında ekmek ve kendi humusları. Ben buraya öğle yemeğine geliyorum. Kısa, basılı bir liste ve hiçbiri on avroyu geçmiyor."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [
+      "01.webp",
+      "02.webp",
+      "03.webp"
+    ],
+    "website": "https://telliskivi.koho.ee",
+    "added": "2026-08-26",
+    "visited": "2026-08",
+    "closed": false
+  },
+  {
     "id": "koht",
     "name": "Koht",
     "address": "Lai 8, 10133 Tallinn",
