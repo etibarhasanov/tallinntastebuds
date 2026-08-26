@@ -635,7 +635,8 @@ language:
 {
   "default": { "name": "Raadio Tallinn", "url": "https://icecast.err.ee/raadiotallinn.mp3" },
   "byLanguage": {
-    "ru": { "name": "Raadio 4", "url": "https://icecast.err.ee/raadio4.mp3" }
+    "ru": { "name": "Raadio 4", "url": "https://icecast.err.ee/raadio4.mp3" },
+    "tr": { "name": "Joy Türk Rock", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/JOYTURK_ROCK.mp3" }
   }
 }
 ```
@@ -652,7 +653,10 @@ Requirements for the URL, all three or it will not work:
 - **HTTPS.** The page is served over HTTPS, so a plain `http://` stream is
   blocked as mixed content and fails silently in the console.
 - **A direct audio stream**, MP3 or AAC, the address a media player would take.
-  Not a station's web page, not a SoundCloud or YouTube link.
+  Not a station's web page, not a SoundCloud or YouTube link, and not an HLS
+  playlist: a `.m3u8` plays in Safari and nowhere else, which is the trap most
+  Turkish broadcasters set, TRT included. A `.pls` or `.m3u` is a playlist file
+  rather than a stream and is no good either — open it and take the URL inside.
 - **Somebody else's bandwidth**, which is normal for a public stream, but it is
   worth picking a station that publishes theirs openly.
 
@@ -664,6 +668,13 @@ every browser and that is right: it plays because somebody asked it to.
 If the stream fails, the button resets and says so in a toast. If the URL dies
 for good, it is one line in this file, which is the same maintenance the rest
 of the map asks for.
+
+Where a station sits behind a load balancer, take the address that resolves to
+a node rather than a node itself. Joy Türk Rock is served from a pool of hosts
+named `21633.live.streamtheworld.com` and up; those numbers rotate and a link
+to one of them rots within months, so the entry points at
+`playerservices.streamtheworld.com/api/livestream-redirect/`, which hands the
+browser whichever node is up today.
 
 ## Surprise me
 
