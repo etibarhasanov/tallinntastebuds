@@ -826,7 +826,20 @@ box.
 
 **Clustering.** Pins closer together than 44px are drawn as one counted dot,
 recomputed on zoom — clustering follows the projection, and panning does not
-change that. Clicking one zooms to fit what is inside it.
+change that.
+
+Pressing one used to zoom to *fit* what was inside it, which turned out to be
+the wrong question. Two places forty pixels apart already fit, so the answer
+came back "you are close enough" and the cluster stood there however many
+times it was pressed. What has to happen is that the pins come further apart
+than the distance that grouped them, and that zoom can be asked of the group
+directly: every member is within 44px of the seed by construction, so doubling
+the gap enough times always splits it. The target is the deepest of that, the
+zoom that fits the bounds, and one level in — so pressing a cluster always does
+something, a wide one opens out to show what is in it, and a tight one goes
+straight to where its pins come apart. A cluster of 19 steps 12 → 14 and
+becomes thirteen clusters; a pair eleven metres apart goes 12 → 18 and becomes
+two pins.
 
 Nothing is grouped past **zoom 17**, whatever the spacing. Q Pizza Jaam and
 Telliskivi Šašlõkk are eleven metres apart, which is 37px at zoom 18 — under

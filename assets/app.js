@@ -903,14 +903,33 @@
       zIndexOffset: -100
     });
 
+    /* Fitting the group in the window is not the same as breaking it up, and
+       it was the wrong question: two places forty pixels apart already fit,
+       so fitBounds answered "you are close enough" and left the cluster
+       standing however many times it was pressed. What has to happen is that
+       the pins come further apart than the distance that grouped them, which
+       is a zoom the group can be asked for directly — every member is within
+       CLUSTER_PX of the seed by construction, so doubling the gap enough
+       times always splits it, and 18 always splits it outright. */
+    function breakZoom() {
+      var far = 0;
+      group.forEach(function (m) { far = Math.max(far, group[0].pt.distanceTo(m.pt)); });
+      if (far <= 0) return CLUSTER_ZOOM_MAX + 1;
+      return map.getZoom() + Math.ceil(Math.log(CLUSTER_PX / far) / Math.LN2);
+    }
+
     function open() {
       trackEvent('cluster_open', { cluster_size: count });
       var pts = group.map(function (m) { return [m.place.lat, m.place.lng]; });
-      map.fitBounds(L.latLngBounds(pts), {
-        padding: isNarrow() ? [56, 56] : [110, 110],
-        maxZoom: Math.min(map.getZoom() + 4, CLUSTER_ZOOM_MAX + 1),
-        animate: !reduceMotion()
-      });
+      var bounds = L.latLngBounds(pts);
+      var pad = isNarrow() ? 112 : 220;
+      var fit = map.getBoundsZoom(bounds, false, L.point(pad, pad));
+      /* Never less than one level in: pressing it always does something. */
+      var target = Math.min(
+        Math.max(fit, breakZoom(), map.getZoom() + 1),
+        CLUSTER_ZOOM_MAX + 1
+      );
+      map.setView(bounds.getCenter(), target, { animate: !reduceMotion() });
     }
     pin.on('click', open);
     pin.on('keypress', function (ev) {
