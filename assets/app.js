@@ -1247,8 +1247,9 @@
     dom.btnList.setAttribute('aria-expanded', 'true');
   }
 
-  function closePanel() {
+  function closePanel(opts) {
     if (!dom.panel.classList.contains('is-open')) return;
+    var was = state.selected;
     dom.panel.classList.remove('is-open');
     dom.panel.setAttribute('inert', '');
     document.body.classList.remove('panel-open', 'sheet-full');
@@ -1260,8 +1261,17 @@
     state.view = 'list';
     renderPanel();          /* leave the crawlable list in the markup */
     paintMarkers();
-    syncUrl();
+    if (!opts || opts.history !== false) syncUrl();
     lastTrackedPath = window.location.pathname + window.location.search;
+
+    /* The panel was covering half the map, so the pin it was about was parked
+       off to one side. With the panel gone, settle the map on it: closing a
+       place leaves you looking at where it is, which is the only reason the
+       map is underneath in the first place. */
+    if (was) {
+      var seen = byId(was);
+      if (seen) focusOn(seen, false);
+    }
 
     var back = state.lastFocus;
     state.lastFocus = null;
@@ -1269,10 +1279,12 @@
   }
 
   function selectPlace(id, opts) {
+    opts = opts || {};
     var place = byId(id);
     if (!place) return;
     if (!state.lastFocus) state.lastFocus = document.activeElement;
 
+    var fresh = !state.selected;
     state.selected = id;
     state.view = 'detail';
     renderPanel();
@@ -1282,10 +1294,10 @@
     document.body.classList.remove('sheet-full');
     if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', 'false');
     releaseSheetHeight();
-    syncUrl();
+    if (opts.history !== false) syncUrl(fresh);
 
     paintMarkers();
-    refocus(place, !!(opts && opts.fly));
+    refocus(place, !!opts.fly);
 
     dom.panelScroll.scrollTop = 0;
     var heading = dom.detail.querySelector('.place-name');
@@ -1835,7 +1847,12 @@
 
   /* ------------------------------------------------------------------- URL */
 
-  function syncUrl() {
+  /* Opening a place is a step you can come back from, so it gets a history
+     entry of its own; everything else — a filter, a language, a colour —
+     rewrites the entry you are on. One entry per open place, not one per
+     place: switching from one to another replaces, so Back always means
+     "close this", never "walk back through everywhere I looked". */
+  function syncUrl(push) {
     var params = new URLSearchParams(window.location.search);
     if (state.selected) params.set('spot', state.selected);
     else params.delete('spot');
@@ -1850,7 +1867,23 @@
 
     var query = params.toString();
     var next = window.location.pathname + (query ? '?' + query : '') + window.location.hash;
-    try { window.history.replaceState(null, '', next); } catch (e) { /* ignore */ }
+    try {
+      if (push) window.history.pushState(null, '', next);
+      else window.history.replaceState(null, '', next);
+    } catch (e) { /* ignore */ }
+  }
+
+  /* Back and Forward. The address bar is the truth here: whatever entry the
+     browser lands on, match it, and write nothing back while doing so. */
+  function wireHistory() {
+    window.addEventListener('popstate', function () {
+      var spot = new URLSearchParams(window.location.search).get('spot');
+      if (spot && byId(spot)) {
+        if (state.selected !== spot) selectPlace(spot, { fly: true, history: false });
+        return;
+      }
+      if (dom.panel.classList.contains('is-open')) closePanel({ history: false });
+    });
   }
 
   /* ------------------------------------------------------------- analytics
@@ -2226,9 +2259,14 @@
       placeRail();
       injectStructuredData();
 
+      wireHistory();
+
+      /* The bare map goes into the entry the visitor arrived on, whether or
+         not they arrived on a place. So a link straight to a place still has
+         somewhere to go Back to: the map, standing on that place. */
       var spot = new URLSearchParams(window.location.search).get('spot');
+      syncUrl();
       if (spot && byId(spot)) selectPlace(spot, { fly: true });
-      else syncUrl();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
       var note = el('div', { className: 'noscript card' }, [

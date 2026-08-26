@@ -712,6 +712,22 @@ numbers down by a parameter — which chip, which language — register it once 
 **Admin → Custom definitions** as a custom dimension; GA only collects
 parameters from that point on, so it is worth doing early.
 
+**Back.** Opening a place is a step you can come back from, so it gets a
+history entry of its own; a filter, a language or a colour rewrites the entry
+you are already on. Back therefore closes the place and leaves the map settled
+on it — the panel had it parked off to one side to stay out of the way, and
+with the panel gone it moves to the middle of the screen. Which is the point:
+you came to find out where it is.
+
+One entry per open place, not one per place. Opening a second place while a
+first is showing replaces, so Back always means "close this", never "walk back
+through everywhere I looked". Forward reopens it.
+
+A link straight to a place — the kind that goes in a Story — gets the bare map
+written into the entry it arrives on, so Back has somewhere to go: the map,
+standing on the place that was shared. Whatever entry the browser lands on,
+`popstate` matches it and writes nothing back.
+
 The chips are also in the URL now, as `?type=bakery,vegan`. A filtered map is
 a link worth sending, and the landing page view GA records for it names the
 filters, so shared filtered links show up in **Pages and screens** too.
