@@ -427,17 +427,21 @@ a:hover { color: var(--accent-lit); }
 }
 
 /* Dark Matter is drawn almost black, which reads as a hole in the screen next
-   to the panel. The tiles get a brightness lift, then a faint indigo screen
-   pass to raise the near-black water off zero (a multiplier alone leaves it
-   there). Measured on Dark Matter's own tones the pair lightens the land from
-   #1a1c1e to #2f3237 and moves label contrast 5.1 to 7.7, so the map gets
-   lighter and more legible at once. */
+   to the panel. The tiles get a brightness lift, then a screen pass in the
+   style's own hue.
+   The screen is the half doing the real work. A multiplier cannot lift a black
+   off zero, so brightness alone leaves the land where it started; screen adds,
+   and adds most to the darkest tones. Measured on Dark Matter's own tones, the
+   pair takes the land from #1a1c1e to #44474f and the water from #0e1013 to
+   #353843, while label contrast reads 5.9 against the 5.1 it has untouched.
+   Lighter and still more legible than raw, which is the trade worth making;
+   past this the labels start giving that back. */
 [data-style="indigo"] .leaflet-tile-pane,
 [data-style="green"] .leaflet-tile-pane { filter: brightness(1.4); }
 [data-style="indigo"] #map::after,
 [data-style="green"] #map::after { mix-blend-mode: screen; }
-[data-style="indigo"] #map::after { background: rgba(170, 176, 224, .07); }
-[data-style="green"] #map::after { background: rgba(150, 210, 175, .07); }
+[data-style="indigo"] #map::after { background: rgba(199, 203, 240, .18); }
+[data-style="green"] #map::after { background: rgba(176, 226, 197, .18); }
 [data-style="violet"] {
   --ink: #1a1620; --muted: #655c70; --paper: #fdfaff; --wash: #f1edf5;
   --hairline: #e3dbe9; --accent: #6b3494; --accent-lit: #8b4ab8;

@@ -467,8 +467,12 @@ accent.
 | Violet | `#6b3494` | `#fdfaff` | tinted violet |
 
 Two of them are dark, because one dark option is a switch and two is a choice.
-Both take the same treatment on the basemap: a brightness lift on the tiles and
-a faint screen pass in their own hue, since Dark Matter is drawn almost black.
+Both take the same treatment on the basemap, since Dark Matter is drawn almost
+black: a brightness lift on the tiles and a screen pass in their own hue. The
+screen is the half doing the work, because a multiplier cannot lift a black off
+zero. Measured on Dark Matter's own tones the pair takes the land from `#1a1c1e`
+to `#44474f`, and label contrast still reads 5.9 against the 5.1 the tiles have
+untouched.
 Their swatches wear the card colour with a ring of the accent, so the rail
 shows at a glance which two they are.
 
