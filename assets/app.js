@@ -941,6 +941,16 @@
    */
   var radioEl = null;
 
+  /* One station per language where there is one, and the default everywhere
+     else. A visitor reading the map in Russian gets Raadio 4 rather than a
+     station they cannot follow, and nobody gets silence for want of an entry. */
+  function stationFor(lang) {
+    var r = state.radio;
+    if (!r) return null;
+    var byLang = r.byLanguage || {};
+    return byLang[lang] || r['default'] || null;
+  }
+
   function markRadio(on) {
     if (!dom.btnRadio) return;
     dom.btnRadio.setAttribute('aria-pressed', String(on));
@@ -955,7 +965,7 @@
   }
 
   function toggleRadio() {
-    var station = state.radio;
+    var station = stationFor(state.lang);
     if (!station || !station.url) return;
 
     if (dom.btnRadio.getAttribute('aria-pressed') === 'true') {
@@ -985,10 +995,21 @@
 
   function renderRadio() {
     if (!dom.btnRadio) return;
-    var station = state.radio;
+    var station = stationFor(state.lang);
     if (!station || !station.url) { dom.btnRadio.hidden = true; return; }
     dom.btnRadio.hidden = false;
     if (dom.radioName) dom.radioName.textContent = station.name || '';
+
+    /* Changing language mid-song changes the station under it, rather than
+       leaving the old one playing behind a button naming the new one. */
+    if (radioEl && !radioEl.paused && radioEl.src !== station.url) {
+      radioEl.src = station.url;
+      var again = radioEl.play();
+      if (again && again.catch) {
+        again.catch(function () { stopRadio(); toast(t('radioFail')); });
+      }
+      trackEvent('radio_play', { station: station.name || 'radio' });
+    }
     markRadio(!!(radioEl && !radioEl.paused));
   }
 
@@ -1905,7 +1926,7 @@
     ]).then(function (loaded) {
       state.places = loaded[0] || [];
       state.types = (loaded[1] && loaded[1].types) || [];
-      state.radio = (loaded[3] && loaded[3].station) || null;
+      state.radio = loaded[3] || null;
       state.ui = loaded[2] || {};
       state.langs = Object.keys(state.ui);
 

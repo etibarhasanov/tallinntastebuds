@@ -513,20 +513,24 @@ inside an iframe, which nothing outside can restyle. It stays light.
 
 ## The radio
 
-`data/radio.json` holds one station, or nothing:
+`data/radio.json` holds a station for everyone and, optionally, one per
+language:
 
 ```json
 {
-  "station": {
-    "name": "Raadio Jazz",
-    "url": "https://example.org/stream.mp3"
+  "default": { "name": "Raadio Tallinn", "url": "https://icecast.err.ee/raadiotallinn.mp3" },
+  "byLanguage": {
+    "ru": { "name": "Raadio 4", "url": "https://icecast.err.ee/raadio4.mp3" }
   }
 }
 ```
 
-With `"station": null` the button never appears and the map behaves exactly as
-it did before. That is the state the site ships in, because a stream URL is
-somebody else's promise and this repo does not invent those.
+A language with no entry of its own falls back to `default`, so nobody gets
+silence for want of a line. Switching language while the radio is playing
+switches the station under it rather than leaving the old one running behind a
+button naming the new one.
+
+Delete the file, or empty it, and the button never appears at all.
 
 Requirements for the URL, all three or it will not work:
 
