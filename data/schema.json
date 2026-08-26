@@ -114,19 +114,40 @@
     },
     "translated": {
       "type": "object",
+      "description": "Your write-up, keyed by the language codes in data/ui.json. At least one has to be there; the rest can follow as they are translated.",
       "additionalProperties": false,
       "properties": {
+        "az": {
+          "type": "string"
+        },
         "en": {
           "type": "string"
         },
         "et": {
           "type": "string"
         },
+        "fi": {
+          "type": "string"
+        },
+        "pt": {
+          "type": "string"
+        },
         "ru": {
+          "type": "string"
+        },
+        "es": {
+          "type": "string"
+        },
+        "tr": {
           "type": "string"
         }
       },
       "anyOf": [
+        {
+          "required": [
+            "az"
+          ]
+        },
         {
           "required": [
             "en"
@@ -139,7 +160,27 @@
         },
         {
           "required": [
+            "fi"
+          ]
+        },
+        {
+          "required": [
+            "pt"
+          ]
+        },
+        {
+          "required": [
             "ru"
+          ]
+        },
+        {
+          "required": [
+            "es"
+          ]
+        },
+        {
+          "required": [
+            "tr"
           ]
         }
       ]

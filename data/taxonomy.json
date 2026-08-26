@@ -8,6 +8,7 @@
       "az": "Rahat/tək",
       "ru": "Неформально/в одиночку",
       "pt": "Casual/sozinho",
+      "es": "Informal/solo",
       "tr": "Rahat/tek başına"
     },
     {
@@ -18,6 +19,7 @@
       "az": "Restoran",
       "ru": "Ресторан",
       "pt": "Restaurante",
+      "es": "Restaurante",
       "tr": "Restoran"
     },
     {
@@ -28,6 +30,7 @@
       "az": "Çörəkxana",
       "ru": "Пекарня",
       "pt": "Padaria",
+      "es": "Panadería",
       "tr": "Fırın"
     },
     {
@@ -38,6 +41,7 @@
       "az": "Kofe/çay",
       "ru": "Кофе/чай",
       "pt": "Café/chá",
+      "es": "Café/té",
       "tr": "Kahve/çay"
     },
     {
@@ -48,6 +52,7 @@
       "az": "Pivə/pab",
       "ru": "Пиво/паб",
       "pt": "Cerveja/pub",
+      "es": "Cerveza/pub",
       "tr": "Bira/pub"
     },
     {
@@ -58,6 +63,7 @@
       "az": "Gizli inci",
       "ru": "Находка",
       "pt": "Joia escondida",
+      "es": "Joya escondida",
       "tr": "Gizli cevher"
     },
     {
@@ -68,6 +74,7 @@
       "az": "Ucuz",
       "ru": "Недорого",
       "pt": "Barato",
+      "es": "Barato",
       "tr": "Hesaplı"
     },
     {
@@ -78,6 +85,7 @@
       "az": "Görüş",
       "ru": "Свидание",
       "pt": "Encontro",
+      "es": "Cita",
       "tr": "Buluşma"
     },
     {
@@ -88,6 +96,7 @@
       "az": "Asiya",
       "ru": "Азиатская",
       "pt": "Asiático",
+      "es": "Asiática",
       "tr": "Asya"
     },
     {
@@ -98,6 +107,7 @@
       "az": "Vegan",
       "ru": "Веганское",
       "pt": "Vegano",
+      "es": "Vegano",
       "tr": "Vegan"
     },
     {
@@ -108,6 +118,7 @@
       "az": "Yüksək mətbəx",
       "ru": "Высокая кухня",
       "pt": "Alta gastronomia",
+      "es": "Alta cocina",
       "tr": "Fine dining"
     },
     {
@@ -118,6 +129,7 @@
       "az": "Qafqaz",
       "ru": "Кавказская",
       "pt": "Cáucaso",
+      "es": "Cáucaso",
       "tr": "Kafkasya"
     }
   ]
