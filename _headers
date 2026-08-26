@@ -24,3 +24,14 @@
 # sit in the cache for a week.
 /photos/*
   Cache-Control: public, max-age=604800
+
+# The editor. Never cached, never indexed: a stale copy of a form that writes
+# to the repository is worse than a slow one, and a meta tag only reaches
+# robots that bother to render the page.
+/admin/*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/api/*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow

@@ -15,6 +15,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 ## Contents
 
 - [Run it locally](#run-it-locally)
+- [Edit from your phone](#edit-from-your-phone)
 - [Add a place](#add-a-place)
 - [Get the coordinates](#get-the-coordinates)
 - [Copy a video permalink](#copy-a-video-permalink)
@@ -54,6 +55,86 @@ node tools/validate.mjs
 ```
 
 It needs Node 18 or newer and has no dependencies.
+
+---
+
+## Edit from your phone
+
+Everything below this section describes editing `data/restaurants.json` by
+hand, which is still the fastest way to do it at a keyboard. It is no way to
+add a place while standing outside it, so there is also a form:
+
+**<https://tallinntastebuds.pages.dev/admin/>**
+
+One password, then the whole list. Tap a place to edit it, or add a new one.
+Photos come straight from the camera roll and are resized to 1600px WebP *in
+the page* before they are uploaded, which is also what strips the GPS
+coordinates out of them. Press **Save** and it becomes one commit on GitHub —
+the data file and every photo together, never half of each — Cloudflare
+notices the push, and the change is on the map about a minute later.
+
+Nothing new is invented to store the data. The repository stays the only copy,
+every edit has a diff and an author, and `git revert` is the undo button.
+
+The form refuses to save anything `tools/validate.mjs` would reject, and it
+refuses it twice: once in the page, so it can tell you which field is wrong,
+and once on the server, using the same `admin/place-rules.js` both sides
+import — a browser can be lied to, and that check is the one that counts.
+
+What it will not do, on purpose:
+
+- **Rename an id.** Ids are in every `?spot=` link ever shared and in the
+  photo folder's name. New places get one from the name and can be edited
+  before the first save; after that it is fixed.
+- **Touch anything but the places and the photos.** Not the taxonomy, not the
+  interface strings, not the code. Those are rare enough to be worth a
+  keyboard.
+- **Translate for you.** Seven language tabs, seven boxes, and a red dot on
+  the ones still empty.
+
+### Turning it on
+
+The editor is dead without two secrets, and says so rather than half working.
+In the Cloudflare dashboard, **Workers & Pages → tallinntastebuds → Settings →
+Environment variables**, add to **Production**:
+
+| Name | Type | Value |
+| --- | --- | --- |
+| `ADMIN_PASSWORD` | Secret | whatever you will type into the box |
+| `GITHUB_TOKEN` | Secret | a GitHub fine-grained token, below |
+| `GITHUB_REPO` | Plain text | `etibarhasanov/tallinntastebuds` (optional) |
+| `GITHUB_BRANCH` | Plain text | the production branch (optional) |
+
+The token: GitHub → **Settings → Developer settings → Personal access tokens →
+Fine-grained tokens → Generate new token**. Repository access: **only**
+`tallinntastebuds`. Permissions: **Contents → Read and write**, and nothing
+else. Give it an expiry you will notice — when it lapses the editor says
+GitHub refused it, and the map carries on unaffected.
+
+Redeploy once after adding them, since a Pages Function only picks up
+variables at deploy time.
+
+`/admin/` is `Disallow`ed in `robots.txt`, sent as `noindex` by `_headers`,
+and linked from nowhere — but a password is all that is really holding the
+door. It is checked on Cloudflare, never in the page, with a deliberate second
+of thinking time on every attempt so it cannot be guessed quickly, and the
+cookie it hands back is signed and expires in 30 days. Make the password a
+long one. If you want a second lock, Cloudflare Access will put an email code
+in front of `/admin/*` without a line of code changing here.
+
+### Working on the editor itself
+
+`functions/api/[[path]].js` only exists on Cloudflare, and every save it makes
+is a real commit — neither is much use while changing the form. So there is a
+stand-in:
+
+```bash
+node tools/editor-dev.mjs      # then open http://localhost:8787/admin/
+```
+
+Same three endpoints, but it reads and writes the files in your checkout
+instead of GitHub, so a save lands in the working tree where `git diff` can
+look at it first. The password is `dev` unless `ADMIN_PASSWORD` says otherwise.
 
 ---
 
@@ -558,6 +639,13 @@ data/ui.json               every interface string, in every language
 data/schema.json           JSON Schema, for editor autocomplete
 photos/<restaurant-id>/    photos, one folder per place
 tools/validate.mjs         dependency-free data validator
+tools/editor-dev.mjs       the editor's back end, faked, for local work
+admin/index.html           the editor: a form over restaurants.json
+admin/admin.css            its styles — the map's tokens, sized for a thumb
+admin/admin.js             its logic, including the photo resizing
+admin/place-rules.js       what a valid place is; imported by both sides
+functions/api/[[path]].js  the Cloudflare Function the editor saves through
+_routes.json               keeps that Function off every other request
 .github/workflows/validate.yml
 ```
 

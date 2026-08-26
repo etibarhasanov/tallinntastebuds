@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tallinn Tastebuds — editor</title>
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#dfeaf4">
+
+<!-- Not a page for the public: no crawler, no sitemap entry, no link from the
+     map. _headers sends X-Robots-Tag as well, since a meta tag only reaches
+     robots that render the page. -->
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%23c1420b'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<link rel="stylesheet" href="admin.css">
+</head>
+<body data-view="loading">
+
+<header class="bar">
+  <button class="bar__back" id="back" type="button" hidden aria-label="Back to the list">←</button>
+  <h1 class="bar__title">Tastebuds <span>editor</span></h1>
+  <p class="bar__state" id="banner" role="status" aria-live="polite"></p>
+  <button class="btn btn--primary" id="save" type="button" disabled>Save</button>
+</header>
+
+<main class="stage">
+
+  <!-- ------------------------------------------------------------- signing in -->
+  <section class="pane pane--gate" id="gate" hidden>
+    <form class="gate" id="gateForm">
+      <h2>The password, please</h2>
+      <p class="note">One password for the whole editor. It is checked on Cloudflare, never in this page.</p>
+      <input class="field" id="password" type="password" name="password" autocomplete="current-password"
+             enterkeyhint="go" required placeholder="Password">
+      <p class="error" id="gateError" hidden></p>
+      <button class="btn btn--primary btn--wide" type="submit">Sign in</button>
+    </form>
+  </section>
+
+  <!-- ------------------------------------------------------------ the list -->
+  <section class="pane pane--list" id="browse" hidden>
+    <div class="list__tools">
+      <input class="field" id="search" type="search" placeholder="Search 70 places" enterkeyhint="search"
+             autocomplete="off" aria-label="Search the places">
+      <button class="btn" id="add" type="button">+ Add a place</button>
+    </div>
+    <ul class="list" id="list"></ul>
+    <p class="list__empty" id="listEmpty" hidden>Nothing matches that.</p>
+  </section>
+
+  <!-- ---------------------------------------------------------- one place -->
+  <section class="pane pane--form" id="editor" hidden>
+    <form class="form" id="form" novalidate>
+
+      <fieldset class="group">
+        <legend>The basics</legend>
+
+        <label class="row">
+          <span class="row__label">Name <em>as it is printed on the door</em></span>
+          <input class="field" name="name" type="text" autocomplete="off" spellcheck="false">
+        </label>
+
+        <label class="row">
+          <span class="row__label">Id <em id="idNote">the ?spot= link and the photo folder</em></span>
+          <input class="field field--mono" name="id" type="text" autocomplete="off" spellcheck="false" autocapitalize="none">
+        </label>
+
+        <label class="row">
+          <span class="row__label">Address</span>
+          <input class="field" name="address" type="text" autocomplete="off">
+        </label>
+
+        <div class="row">
+          <span class="row__label">Where it is <em>paste the Google Maps link and it fills itself in</em></span>
+          <input class="field" id="mapsPaste" type="url" inputmode="url" autocomplete="off" spellcheck="false"
+                 placeholder="https://www.google.com/maps/place/…">
+          <p class="hint" id="mapsHint" hidden></p>
+          <div class="pair">
+            <label><span class="row__label">Lat</span><input class="field field--mono" name="lat" type="text" inputmode="decimal" autocomplete="off"></label>
+            <label><span class="row__label">Lng</span><input class="field field--mono" name="lng" type="text" inputmode="decimal" autocomplete="off"></label>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="row__label">Price <em>a cost band, never a rating</em></span>
+          <div class="price" id="price" role="radiogroup" aria-label="Price band"></div>
+        </div>
+
+        <div class="row">
+          <span class="row__label">Types <em>the chips on the map</em></span>
+          <div class="types" id="types"></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="group">
+        <legend>The write-up</legend>
+        <div class="tabs" id="langTabs" role="tablist"></div>
+        <textarea class="field field--area" id="blurb" rows="8" spellcheck="true"
+                  placeholder="Two or three sentences. No scores."></textarea>
+        <p class="hint" id="blurbHint"></p>
+      </fieldset>
+
+      <fieldset class="group">
+        <legend>Must order</legend>
+        <div id="dishes" class="dishes"></div>
+        <button class="btn btn--quiet" id="addDish" type="button">+ Add a dish</button>
+      </fieldset>
+
+      <fieldset class="group">
+        <legend>Photos</legend>
+        <ol class="shots" id="shots"></ol>
+        <p class="hint" id="shotsHint">Straight off the phone is fine — they are resized to 1600px WebP in this
+          page before anything is uploaded, and the location data is dropped.</p>
+        <label class="btn btn--quiet btn--file">
+          + Add photos
+          <input id="pick" type="file" accept="image/*" multiple hidden>
+        </label>
+      </fieldset>
+
+      <fieldset class="group">
+        <legend>Links and dates</legend>
+
+        <label class="row">
+          <span class="row__label">Reel <em>Instagram or TikTok permalink</em></span>
+          <input class="field field--mono" name="reel" type="url" inputmode="url" autocomplete="off" spellcheck="false">
+        </label>
+
+        <label class="row">
+          <span class="row__label">Website</span>
+          <input class="field field--mono" name="website" type="url" inputmode="url" autocomplete="off" spellcheck="false">
+        </label>
+
+        <div class="pair">
+          <label><span class="row__label">Added</span><input class="field field--mono" name="added" type="date"></label>
+          <label><span class="row__label">Visited</span><input class="field field--mono" name="visited" type="month"></label>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" name="closed">
+          <span>Closed down <em>kept on the map, struck through, rather than deleted</em></span>
+        </label>
+      </fieldset>
+
+      <div class="checks" id="checks"></div>
+
+      <div class="form__end">
+        <button class="btn btn--danger" id="remove" type="button">Delete this place</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="admin.js"></script>
+</body>
+</html>

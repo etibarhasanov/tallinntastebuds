@@ -1,5 +1,8 @@
-# Everything here is meant to be found.
+# Everything here is meant to be found, except the editor behind /admin/,
+# which is a password box and a form and of no use to anyone but me.
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
 
 Sitemap: https://tallinntastebuds.pages.dev/sitemap.xml
