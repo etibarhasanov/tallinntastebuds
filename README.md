@@ -129,6 +129,23 @@ or to your user settings:
 
 ---
 
+## What counts as a Restaurant
+
+`restaurant` is the one type that is about the shape of a place rather than
+what it cooks, so it needs a line drawn: **a sit-down place whose main
+business is a cooked meal ordered at a table.**
+
+Not a bakery, not a coffee roastery, not a pub or a taproom even when the
+kitchen is good, and not a counter you order at and carry your food away from.
+A place can be a restaurant *and* something else — KoHo is a restaurant and a
+bakery, Gobi is a restaurant and fine dining — but if the tag went on
+everything that serves food it would match the whole map and filter nothing.
+
+27 of the 69 carry it today. If one of them looks wrong to you, it is one line
+in `data/restaurants.json`.
+
+---
+
 ## The order of the filter chips
 
 The chips appear in the order the types are written in `data/taxonomy.json`,

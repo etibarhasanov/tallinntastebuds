@@ -11,6 +11,16 @@
       "tr": "Rahat/tek başına"
     },
     {
+      "id": "restaurant",
+      "en": "Restaurant",
+      "et": "Restoran",
+      "fi": "Ravintola",
+      "az": "Restoran",
+      "ru": "Ресторан",
+      "pt": "Restaurante",
+      "tr": "Restoran"
+    },
+    {
       "id": "bakery",
       "en": "Bakery",
       "et": "Pagariäri",
