@@ -509,6 +509,22 @@
    * for a hover it will never get on a phone.
    */
 
+  /* Two hex colours, mixed. Used for the middle pin state, so the disc is one
+     opaque colour rather than a translucent one letting the map through. */
+  function mixHex(a, b, weight) {
+    function parse(h) {
+      h = String(h).replace('#', '');
+      if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+      return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+    }
+    var x = parse(a);
+    var y = parse(b);
+    return '#' + [0, 1, 2].map(function (i) {
+      var v = Math.round(x[i] * weight + y[i] * (1 - weight));
+      return (v < 16 ? '0' : '') + v.toString(16);
+    }).join('');
+  }
+
   function markerColours() {
     return {
       accent: cssVar('--accent') || '#00539c',
@@ -517,6 +533,14 @@
       paper: cssVar('--paper') || '#ffffff',
       here: cssVar('--here') || '#c1420b'
     };
+  }
+
+  /* How much of a place there is to look at, which is what the pin says:
+     something to watch, something to look at, or the write-up alone. */
+  function pinDepth(place) {
+    if (place.reel) return 'reel';
+    if (place.photos && place.photos.length) return 'photos';
+    return 'words';
   }
 
   function tooltipFor(marker, name, permanent, chosen) {
@@ -632,19 +656,24 @@
       if (!marker) return;
       var chosen = place.id === state.selected;
 
-      /* A place that has been filmed is drawn solid, one that has not is
-         drawn as a ring. Two states of one shape rather than two icons: at
-         14px a picture inside a dot is mud, and the map is 63 dots. The
-         chosen place keeps whichever of the two it is, so the map never
-         stops telling you which places have something to watch. */
-      var filmed = !!place.reel;
+      /* One shape, three amounts of ink, for the three amounts of place
+         behind it: filmed is solid, photographed is half filled, and the
+         write-up on its own is an empty ring. Not three icons, because at
+         14px a picture inside a dot is mud and the map is 68 dots. The
+         chosen place keeps whichever of the three it is, so selecting one
+         never hides what there is to see in it. */
+      var depth = pinDepth(place);
       var tone = chosen ? c.lit : (place.closed ? c.muted : c.accent);
+      var fill = depth === 'reel' ? tone
+        : depth === 'photos' ? mixHex(tone, c.paper, .38)
+        : c.paper;
 
       marker.setStyle({
-        radius: chosen ? PIN_R_SELECTED : (filmed ? PIN_R : PIN_R - 1),
+        radius: chosen ? PIN_R_SELECTED
+          : (depth === 'reel' ? PIN_R : depth === 'photos' ? PIN_R - .5 : PIN_R - 1),
         weight: chosen ? 3.5 : 2.5,
-        color: filmed ? c.paper : tone,
-        fillColor: filmed ? tone : c.paper
+        color: depth === 'reel' ? c.paper : tone,
+        fillColor: fill
       });
 
       if (chosen && marker.bringToFront) marker.bringToFront();

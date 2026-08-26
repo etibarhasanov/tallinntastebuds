@@ -671,12 +671,22 @@ up for hover and the locate dot. Cool near-black ink, one hairline weight, one
 soft shadow, nothing else. The tokens are the first thing in
 `assets/styles.css`; change those six values and the whole site follows.
 
-**Pins.** One shape in two states: a place that has been filmed is drawn
-solid, one that has not is drawn as a ring, and both take the palette from the
-same `--accent`. Not two icons, because at 14px a picture inside a dot is mud
-and the map is 63 dots. The chosen place grows, gains a breathing halo and
-keeps its name open, but it keeps whichever of the two states it is, so the map
-never stops telling you where there is something to watch.
+**Pins.** One shape, three amounts of ink, for the three amounts of place
+behind it:
+
+| | pin | today |
+| --- | --- | --- |
+| a reel | solid, r7 | 43 |
+| photos, no reel | half filled, r6.5 | 8 |
+| the write-up alone | empty ring, r6 | 17 |
+
+The middle fill is the accent mixed 38% into the card colour and drawn opaque,
+rather than the accent at 38% alpha, so the map does not show through it and
+the three read the same on every palette. Not three icons, because at 14px a
+picture inside a dot is mud and the map is 68 dots. The chosen place grows,
+gains a breathing halo and keeps its name open, but it keeps whichever of the
+three states it is, so selecting a place never hides what there is to see in
+it.
 
 **The open place.** The list panel is the neutral card everything else on the
 map is. Opening a place tints that card with six percent of the accent, so it
