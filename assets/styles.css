@@ -300,12 +300,13 @@ a:hover { color: var(--accent-lit); }
 
 /* ---------- top-right controls ---------- */
 
-/* Three things left once the zoom buttons went, so they sit on one line
-   instead of a column: it frees the whole band under them for the chips, and
-   the top of the map becomes a single strip of chrome. row-reverse keeps the
-   language switch in the corner, where its menu drops from. Above the chip
-   row in the stack, because the chip scroller claims invisible padding around
-   itself and a button must always win the tap. */
+/* Two things left once the zoom buttons went and the locate button moved to
+   the far corner, so they sit on one line instead of a column: it frees the
+   whole band under them for the chips, and the top of the map becomes a
+   single strip of chrome. row-reverse keeps the language switch in the
+   corner, where its menu drops from. Above the chip row in the stack, because
+   the chip scroller claims invisible padding around itself and a button must
+   always win the tap. */
 .controls {
   position: fixed;
   z-index: 1001;
@@ -384,6 +385,22 @@ a:hover { color: var(--accent-lit); }
   stroke-linecap: round;
 }
 #btn-locate svg circle:first-child { fill: currentColor; stroke: none; }
+
+/* ---------- the locate button: bottom-left corner ---------- */
+
+/* Where you are is a question about the map, not about the chrome, so the
+   button answers it from inside the map rather than from the strip of
+   controls at the top. Bottom-left is the free corner: the panel owns the
+   right side on a desktop, the attribution owns the bottom right, and the
+   rail is centred well above this. Its bottom edge lines up with the
+   panel's, which is what keeps it clear of the attribution strip. */
+.locate-dock {
+  position: fixed;
+  z-index: 1001;
+  left: calc(var(--gap) + var(--safe-l));
+  bottom: calc(30px + var(--gap) + var(--safe-b));
+  transition: opacity .2s var(--ease);
+}
 
 /* ==========================================================================
    The seven styles — one per colour of the spectrum.
@@ -1199,7 +1216,7 @@ body.panel-detail .panel {
      markup for search engines and screen readers, out of sight. */
   .brand {
     width: auto;
-    max-width: calc(100vw - 172px - var(--gap) * 2);
+    max-width: calc(100vw - 132px - var(--gap) * 2);
     padding: 5px 11px 4px;
   }
   .brand .tagline { display: none; }
@@ -1278,17 +1295,6 @@ body.panel-detail .panel {
   .btn-wide { padding: 0 11px; gap: 5px; }
 
   .filter-bar { --chrome-h: 36px; left: 10px; right: 10px; }
-
-  /* Under about 380px the handle and the three controls stop fitting on one
-     line, so the controls take a line of their own and the chips drop below
-     both of them. */
-  @media (max-width: 380px) {
-    .controls { top: calc(var(--gap) + var(--safe-t) + 41px); }
-    .filter-bar { --chrome-h: 77px; }
-    /* Nothing shares the line any more, so the card takes the width it needs
-       rather than the width the controls used to leave it. */
-    .brand { max-width: calc(100vw - var(--gap) * 2 - var(--safe-l) - var(--safe-r)); }
-  }
 
   /* --kbd is what the on-screen keyboard covers. Lifting the sheet by it and
      taking the same off the height keeps the top edge exactly where it was,
@@ -1406,6 +1412,19 @@ body.panel-detail .panel {
   }
   body.panel-open .styles { flex-direction: row; }
 
+  /* The sheet covers the bottom-left corner, so the button joins the rail on
+     the strip above it, at the far end. Beside the rail rather than stacked
+     above it: a sheet dragged up shortens that gap until a stacked button
+     would be standing on the brand card, whereas the strip has room for both
+     — the rail runs to 242px and the button wants 52 more, which a 320px
+     screen still covers. It leaves with the rail at full height. */
+  body.panel-open .locate-dock {
+    left: auto;
+    right: calc(var(--gap) + var(--safe-r));
+    bottom: calc(var(--sheet-h) + 10px + var(--safe-b));
+  }
+  body.sheet-full .locate-dock { opacity: 0; pointer-events: none; }
+
   .dice-label, .radio-name { display: none; }
   .dice { padding: 0; width: 32px; height: 32px; justify-content: center; }
   .rail { gap: 8px; }
@@ -1436,7 +1455,7 @@ body.panel-detail .panel {
 /* ---------- print: the list, on paper ---------- */
 
 @media print {
-  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .toast, .lightbox { display: none !important; }
+  #map, .controls, .locate-dock, .filter-bar, .rail, .brand, .panel-close, .toast, .lightbox { display: none !important; }
   body { overflow: visible; background: #fff; }
   .panel {
     position: static;
