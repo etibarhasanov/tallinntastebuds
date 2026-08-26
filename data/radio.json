@@ -8,6 +8,10 @@
       "name": "Baku Retro FM",
       "url": "https://stream02.pcradio.biz/rad_bakrtrofm-med"
     },
+    "pt": {
+      "name": "Itapema FM",
+      "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/ITA_FLO.mp3"
+    },
     "ru": {
       "name": "Наше Радио",
       "url": "https://nashe1.hostingradio.ru/nashe-256"
