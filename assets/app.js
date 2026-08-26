@@ -1295,6 +1295,51 @@
     scroll.addEventListener('touchcancel', release);
   }
 
+  /* Nothing above the chips drags the map. That strip is chrome, and the map
+   * shows through the gaps in it: between the card and the buttons, around
+   * the chips, along the edges. A thumb aimed at a chip lands a few pixels
+   * off often enough that the whole city used to come with it.
+   *
+   * Only the drag is turned off, not the events, so everything in the strip
+   * still does its job: the handle still opens Instagram, the switcher still
+   * changes language, the chips still scroll, and a pin that happens to be up
+   * there still opens when you tap it. Leaflet binds its own drag to
+   * touchstart and mousedown on the map container, so disabling the handler
+   * from a capture listener on the document unbinds them before the event
+   * ever gets that far. It goes back on when the finger lifts.
+   */
+  function wireTopGuard() {
+    var held = false;
+
+    function above(y) {
+      if (!dom.filterBar || !map || !map.dragging) return false;
+      return y <= dom.filterBar.getBoundingClientRect().bottom;
+    }
+
+    function hold(ev) {
+      if (held) return;
+      var y = ev.touches && ev.touches.length ? ev.touches[0].clientY : ev.clientY;
+      if (typeof y !== 'number' || !above(y)) return;
+      held = true;
+      map.dragging.disable();
+    }
+
+    function release() {
+      if (!held) return;
+      held = false;
+      if (map && map.dragging) map.dragging.enable();
+    }
+
+    /* pointerdown covers everything modern and fires before the compatibility
+       events; the other two are there for anything that only sends those. */
+    ['pointerdown', 'touchstart', 'mousedown'].forEach(function (type) {
+      document.addEventListener(type, hold, true);
+    });
+    ['pointerup', 'pointercancel', 'touchend', 'touchcancel', 'mouseup'].forEach(function (type) {
+      document.addEventListener(type, release, true);
+    });
+  }
+
   /* --------------------------------------------------------- soft keyboard
    * iOS shrinks the visual viewport when the keyboard comes up but leaves the
    * layout viewport — and with it anything position:fixed — exactly where it
@@ -2097,6 +2142,8 @@
     dom.search.addEventListener('keydown', function (ev) {
       if (ev.key === 'Enter') { ev.preventDefault(); dom.search.blur(); }
     });
+
+    wireTopGuard();
 
     dom.filters.addEventListener('scroll', updateFilterFades, { passive: true });
 

@@ -813,8 +813,22 @@ where the sheet covered them and they had to be hidden whenever the list was
 open; at the top they clear even the fully dragged-up sheet, so the filters can
 be changed while the list is showing.
 
-The chip scroller claims an invisible strip around itself, because a finger
-aiming at a 38px row lands a few pixels off often enough to drag Tallinn
+**Nothing above the chips drags the map.** That strip is chrome, and the map
+shows through the gaps in it: between the card and the buttons, around the
+chips, along the edges. A thumb aimed at a chip lands a few pixels off often
+enough that the whole city used to come with it. A press that starts anywhere
+above the bottom of the chip row now turns Leaflet's drag handler off, and the
+finger lifting turns it back on.
+
+Only the drag, not the events. Everything in the strip still does its job: the
+handle opens Instagram, the switcher changes language, the chips scroll, the
+wheel still zooms, and a pin that happens to be up there still opens when you
+tap it. Leaflet binds its own drag to `touchstart` and `mousedown` on the map
+container, so disabling the handler from a capture listener on the document
+unbinds them before the event ever gets that far.
+
+The chip scroller claims an invisible strip around itself as well, because a
+finger aiming at a 38px row lands a few pixels off often enough to drag Tallinn
 sideways instead. Most of that cushion is below the chips now — the side a
 thumb reaching up overshoots on — and the brand card and the controls sit above
 the scroller in the stack, so a tap on a button is always a tap on that button.
