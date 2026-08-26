@@ -83,7 +83,12 @@
 <div class="controls">
   <div class="card seg" id="lang-switch" role="group" data-i18n-aria-label="language" aria-label="Language"></div>
   <div class="card seg">
-    <button type="button" class="btn btn-wide" id="btn-list" data-i18n="listOpen" aria-expanded="false" aria-controls="panel">List</button>
+    <button type="button" class="btn btn-wide" id="btn-list" aria-expanded="false" aria-controls="panel">
+      <svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/>
+      </svg>
+      <span data-i18n="listOpen">List</span>
+    </button>
   </div>
   <div class="card seg">
     <button type="button" class="btn btn-icon" id="btn-locate" data-i18n-aria-label="locate" aria-label="Show my location">

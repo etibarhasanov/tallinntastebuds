@@ -297,6 +297,12 @@ history — the first commit in which each `id` appears — not guessed.
 
 ## Searching the list
 
+The **List** button carries a magnifier, because opening the list is how you
+get at the search field and with nothing on the button to say so nobody found
+out the map could be searched at all. The button still does one thing: it opens
+and closes the list. The glyph is the only part that is new, and it is there to
+answer a question people were not asking.
+
 There is a field at the top of the list panel. It narrows **the list**, not the
 map: the pins are what the filter chips are for, and a search left behind in a
 closed panel would otherwise sit there invisibly removing places from the map.
