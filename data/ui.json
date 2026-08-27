@@ -66,7 +66,11 @@
     "videoFallback": "Yüklənmir? TikTokda aç.",
     "months": "yanvar|fevral|mart|aprel|may|iyun|iyul|avqust|sentyabr|oktyabr|noyabr|dekabr",
     "monthYear": "{month} {year}",
-    "notFilmed": "Gedilib, amma hələ çəkilməyib."
+    "notFilmed": "Gedilib, amma hələ çəkilməyib.",
+    "markVideo": "Video",
+    "markReel": "Reel",
+    "markPhotos": "Şəkillər",
+    "markNone": "Çəkilməyib"
   },
   "en": {
     "langName": "English",
@@ -135,7 +139,11 @@
     "videoFallback": "Trouble loading? Open it on TikTok.",
     "months": "January|February|March|April|May|June|July|August|September|October|November|December",
     "monthYear": "{month} {year}",
-    "notFilmed": "Been here, not filmed yet."
+    "notFilmed": "Been here, not filmed yet.",
+    "markVideo": "Video",
+    "markReel": "Reel",
+    "markPhotos": "Photos",
+    "markNone": "Not filmed"
   },
   "et": {
     "langName": "Eesti",
@@ -204,7 +212,11 @@
     "videoFallback": "Ei laadi? Ava see TikTokis.",
     "months": "jaanuar|veebruar|märts|aprill|mai|juuni|juuli|august|september|oktoober|november|detsember",
     "monthYear": "{month} {year}",
-    "notFilmed": "Käidud, aga veel filmimata."
+    "notFilmed": "Käidud, aga veel filmimata.",
+    "markVideo": "Video",
+    "markReel": "Reel",
+    "markPhotos": "Fotod",
+    "markNone": "Filmimata"
   },
   "fi": {
     "langName": "Suomi",
@@ -273,7 +285,11 @@
     "videoFallback": "Ongelmia latauksessa? Avaa se TikTokissa.",
     "months": "tammikuu|helmikuu|maaliskuu|huhtikuu|toukokuu|kesäkuu|heinäkuu|elokuu|syyskuu|lokakuu|marraskuu|joulukuu",
     "monthYear": "{month} {year}",
-    "notFilmed": "Käyty, ei vielä kuvattu."
+    "notFilmed": "Käyty, ei vielä kuvattu.",
+    "markVideo": "Video",
+    "markReel": "Reel",
+    "markPhotos": "Kuvat",
+    "markNone": "Ei kuvattu"
   },
   "pt": {
     "langName": "Português",
@@ -342,7 +358,11 @@
     "videoFallback": "Problemas para carregar? Abra no TikTok.",
     "months": "janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro",
     "monthYear": "{month} de {year}",
-    "notFilmed": "Estive aqui, ainda não filmei."
+    "notFilmed": "Estive aqui, ainda não filmei.",
+    "markVideo": "Vídeo",
+    "markReel": "Reel",
+    "markPhotos": "Fotos",
+    "markNone": "Não filmado"
   },
   "ru": {
     "langName": "Русский",
@@ -411,7 +431,11 @@
     "videoFallback": "Не загружается? Откройте в TikTok.",
     "months": "январь|февраль|март|апрель|май|июнь|июль|август|сентябрь|октябрь|ноябрь|декабрь",
     "monthYear": "{month} {year}",
-    "notFilmed": "Был здесь, но ещё не снял."
+    "notFilmed": "Был здесь, но ещё не снял.",
+    "markVideo": "Видео",
+    "markReel": "Рилс",
+    "markPhotos": "Фото",
+    "markNone": "Без съёмки"
   },
   "es": {
     "langName": "Español",
@@ -480,7 +504,11 @@
     "videoFallback": "¿No carga? Ábrelo en TikTok.",
     "months": "enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre",
     "monthYear": "{month} de {year}",
-    "notFilmed": "He estado, todavía no lo he grabado."
+    "notFilmed": "He estado, todavía no lo he grabado.",
+    "markVideo": "Vídeo",
+    "markReel": "Reel",
+    "markPhotos": "Fotos",
+    "markNone": "Sin grabar"
   },
   "tr": {
     "langName": "Türkçe",
@@ -549,6 +577,10 @@
     "videoFallback": "Yüklenmiyor mu? TikTok'ta aç.",
     "months": "Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık",
     "monthYear": "{month} {year}",
-    "notFilmed": "Gidildi, ama henüz çekilmedi."
+    "notFilmed": "Gidildi, ama henüz çekilmedi.",
+    "markVideo": "Video",
+    "markReel": "Reel",
+    "markPhotos": "Fotoğraflar",
+    "markNone": "Çekilmedi"
   }
 }

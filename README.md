@@ -888,22 +888,43 @@ the scroller in the stack, so a tap on a button is always a tap on that button.
 Under about 380px the handle and the three controls stop fitting on one line,
 so the controls take a line of their own and the chips drop below both.
 
-**Pins.** One shape, three amounts of ink, for the three amounts of place
+**Pins.** One shape, three readings of it, for the three amounts of place
 behind it:
 
 | | pin | today |
 | --- | --- | --- |
-| a reel | solid, r7 | 43 |
-| photos, no reel | half filled, r6.5 | 8 |
-| the write-up alone | empty ring, r6 | 17 |
+| a reel | solid disc, r7 | 43 |
+| photos, no reel | hollow, r7, ring at full weight | 10 |
+| the write-up alone | small faded ring, r4.5 | 17 |
 
-The middle fill is the accent mixed 38% into the card colour and drawn opaque,
-rather than the accent at 38% alpha, so the map does not show through it and
-the three read the same on both palettes. Not three icons, because at 14px a
-picture inside a dot is mud and the map is 68 dots. The chosen place grows,
-gains a breathing halo and keeps its name open, but it keeps whichever of the
-three states it is, so selecting a place never hides what there is to see in
-it.
+The three used to be told apart by fill alone — solid, then the accent mixed
+38% into the card colour, then empty — at radii of 7, 6.5 and 6. On paper that
+is three states; on the map it was one dot and two dots that looked like it in
+worse light, and the half-fill in particular read as a rendering artefact
+rather than as a fact about the place. So the middle state gave up its fill
+entirely and kept its size: solid versus hollow is a different silhouette, not
+a paler version of the same one. The faintest state went the other way and gave
+up size instead, down to r4.5 with a 1.75 stroke drawn in the accent mixed half
+into the paper — small and quiet, which is what it is saying.
+
+The mix is still drawn opaque rather than as the accent at half alpha, so the
+map does not show through it and the three read the same on both palettes. Not
+three icons, because at 14px a picture inside a dot is mud and the map is 70
+dots. The chosen place grows, gains a breathing halo and keeps its name open,
+but it keeps whichever of the three states it is, so selecting a place never
+hides what there is to see in it.
+
+**The mark.** A dot only says this if you can see two other dots to compare it
+with, which rules out the list, and rules out the map on a phone that has
+zoomed into one street. So every row in the list carries the same three-way in
+words — **REEL** or **VIDEO**, **PHOTOS**, **NOT FILMED** — as a badge holding
+the right edge of the row, and the badge is drawn at the pin's own three
+weights: solid accent, accent outline, hairline. The glyph inside it is the pin
+itself, small: a disc, a ring, a speck. Not a play triangle and a camera, which
+would only repeat the word next to them; echoing the dot is the one thing the
+badge can do that the word cannot, which is turn every row into a key to the
+map. The row's `aria-label` spells the word out, because the label is all a
+screen reader reads of a row and anything shown but not spelled is not there.
 
 **The open place.** The list panel is the neutral card everything else on the
 map is. Opening a place tints that card with six percent of the accent, so it
@@ -912,6 +933,20 @@ percent because it has to survive the measurement: on both palettes the body
 text stays between 10.7 and 15.9 to one and the muted line never drops below
 4.96. Anything stronger starts turning a write-up into a coloured
 box.
+
+**What the panel leads with.** Name, price, **Call** — then, immediately, the
+thing there is to look at. The reel comes first, the photos after it, and a
+place with neither says so in that same slot under its own heading rather than
+leaving you to reach the bottom and work it out. The write-up, the tags and the
+dishes all moved down a notch to make room.
+
+They used to sit two sections down, under the write-up and the tags, which put
+the one thing on the page that is not text below a screenful of text: on a
+phone the reel had to be scrolled to, and the Call button had already been
+moved up out of the same problem. Ordering by what is scarcest reads better
+anyway — every place has a write-up, only 43 have a reel — and it makes the
+three kinds of place read as three kinds in the panel too, rather than as one
+kind and two omissions.
 
 **Clustering.** Pins closer together than 44px are drawn as one counted dot,
 recomputed on zoom — clustering follows the projection, and panning does not

@@ -522,8 +522,9 @@
    * for a hover it will never get on a phone.
    */
 
-  /* Two hex colours, mixed. Used for the middle pin state, so the disc is one
-     opaque colour rather than a translucent one letting the map through. */
+  /* Two hex colours, mixed. Used for the faintest pin, so the ring around a
+     place with nothing to look at is one opaque colour rather than a
+     translucent one letting the map through. */
   function mixHex(a, b, weight) {
     function parse(h) {
       h = String(h).replace('#', '');
@@ -554,6 +555,42 @@
     if (place.reel) return 'reel';
     if (place.photos && place.photos.length) return 'photos';
     return 'words';
+  }
+
+  /* The pin, drawn small: a solid disc, a ring, a speck. Not a play triangle
+     and a camera — those say what the word beside them already says, and at
+     9px a camera is a smudge anyway. Echoing the dot is the one thing the
+     badge can do that the word cannot: it makes every row a key to the map,
+     so the three kinds of dot out there stop needing to be guessed at. */
+  var DEPTH_GLYPH = {
+    reel: '<svg viewBox="0 0 10 10" focusable="false"><circle cx="5" cy="5" r="3.9"/></svg>',
+    photos: '<svg viewBox="0 0 10 10" focusable="false"><path fill-rule="evenodd" d="M5 1.1a3.9 3.9 0 100 7.8 3.9 3.9 0 000-7.8zm0 1.7a2.2 2.2 0 110 4.4 2.2 2.2 0 010-4.4z"/></svg>',
+    words: '<svg viewBox="0 0 10 10" focusable="false"><circle cx="5" cy="5" r="2.2"/></svg>'
+  };
+
+  /* The pin's three-way, said in words. A dot on the map is only legible when
+     you already know the code and can compare it with its neighbours; a row
+     in the list has neither, so it carries the name and the dot both. Same
+     order of weight as the pins: the filmed places take the accent, the
+     photographed ones an outline, and the rest a hairline the eye slides
+     over.
+
+     Instagram's word and TikTok's word are not the same word, and the rest of
+     the page is careful about that, so the mark is too. */
+  function depthMarkKey(place) {
+    var depth = pinDepth(place);
+    return depth === 'reel'
+      ? (reelProvider(place.reel) === 'tiktok' ? 'markVideo' : 'markReel')
+      : depth === 'photos' ? 'markPhotos' : 'markNone';
+  }
+
+  function depthMark(place) {
+    var depth = pinDepth(place);
+    var key = depthMarkKey(place);
+    return el('span', { className: 'depth-mark is-' + depth }, [
+      el('span', { className: 'depth-glyph', 'aria-hidden': 'true', html: DEPTH_GLYPH[depth] }),
+      el('span', { textContent: t(key) })
+    ]);
   }
 
   /* A name standing open on the map is part of the pin, so it opens the place
@@ -675,24 +712,27 @@
       if (!marker) return;
       var chosen = place.id === state.selected;
 
-      /* One shape, three amounts of ink, for the three amounts of place
-         behind it: filmed is solid, photographed is half filled, and the
-         write-up on its own is an empty ring. Not three icons, because at
-         14px a picture inside a dot is mud and the map is 68 dots. The
-         chosen place keeps whichever of the three it is, so selecting one
-         never hides what there is to see in it. */
+      /* One shape, three readings of it, for the three amounts of place
+         behind it. Filmed is a solid disc at full size. Photographed is the
+         same size but hollow — a paper centre inside a full-strength ring,
+         which is a different silhouette rather than a paler version of the
+         same one. The write-up on its own is a small, faded ring, drawn
+         narrower and in a tone half mixed into the paper.
+         Not three icons, because at 14px a picture inside a dot is mud and
+         the map is 70 dots; but solid, hollow and small-and-faint are told
+         apart at a glance, which half a shade of fill was not. The chosen
+         place keeps whichever of the three it is, so selecting one never
+         hides what there is to see in it. */
       var depth = pinDepth(place);
       var tone = chosen ? c.lit : (place.closed ? c.muted : c.accent);
-      var fill = depth === 'reel' ? tone
-        : depth === 'photos' ? mixHex(tone, c.paper, .38)
-        : c.paper;
+      var solid = depth === 'reel';
+      var faded = depth === 'words';
 
       marker.setStyle({
-        radius: chosen ? PIN_R_SELECTED
-          : (depth === 'reel' ? PIN_R : depth === 'photos' ? PIN_R - .5 : PIN_R - 1),
-        weight: chosen ? 3.5 : 2.5,
-        color: depth === 'reel' ? c.paper : tone,
-        fillColor: fill
+        radius: chosen ? PIN_R_SELECTED : (faded ? PIN_R - 2.5 : PIN_R),
+        weight: chosen ? 3.5 : (faded ? 1.75 : 2.75),
+        color: solid ? c.paper : (faded ? mixHex(tone, c.paper, .55) : tone),
+        fillColor: solid ? tone : c.paper
       });
 
       if (chosen && marker.bringToFront) marker.bringToFront();
@@ -1576,6 +1616,33 @@
       dom.detail.appendChild(el('p', { className: 'muted-note', textContent: t('closedNote') }));
     }
 
+    /* What there is to see comes first, straight under the name and the Call
+       button, because it is the reason to keep reading. It used to sit two
+       sections down, under the write-up and the tags, which meant the reel
+       — the one thing on the page that is not text — had to be scrolled to.
+       The video leads, the photos follow it, and a place with neither says so
+       here rather than leaving you to reach the bottom and work it out.
+
+       No video means no section at all — an empty "The reel" heading over a
+       placeholder made six real places look half-finished. A quiet line says
+       what is actually true instead: been, not filmed. */
+    if (place.reel) {
+      dom.detail.appendChild(section(reelWords(reelProvider(place.reel)).heading, reelBlock(place)));
+    }
+
+    if ((place.photos || []).length) {
+      dom.detail.appendChild(section('photos', photoGrid(place)));
+    }
+
+    if (!place.reel && !(place.photos || []).length) {
+      /* A heading of its own, in the slot the reel and the photos use, so the
+         three kinds of place read as three kinds rather than as one kind and
+         two omissions. */
+      dom.detail.appendChild(section('markNone',
+        el('p', { className: 'not-filmed', textContent: t('notFilmed') })
+      ));
+    }
+
     var blurb = blurbFor(place);
     if (blurb) {
       dom.detail.appendChild(el('p', {
@@ -1592,26 +1659,12 @@
       ));
     }
 
-    /* No video means no section at all — an empty "The reel" heading over a
-       placeholder made six real places look half-finished. A quiet line says
-       what is actually true instead: been, not filmed. Photos say the same
-       thing louder, so the line only stands in for a place with neither. */
-    if (place.reel) {
-      dom.detail.appendChild(section(reelWords(reelProvider(place.reel)).heading, reelBlock(place)));
-    } else if (!(place.photos || []).length) {
-      dom.detail.appendChild(el('p', { className: 'not-filmed', textContent: t('notFilmed') }));
-    }
-
     if ((place.mustOrder || []).length) {
       dom.detail.appendChild(section('mustOrder',
         el('ul', { className: 'dish-list' }, place.mustOrder.map(function (dish) {
           return el('li', { textContent: dish });
         }))
       ));
-    }
-
-    if ((place.photos || []).length) {
-      dom.detail.appendChild(section('photos', photoGrid(place)));
     }
 
     dom.detail.appendChild(plainSection([
@@ -1953,17 +2006,24 @@
       var row = el('button', {
         type: 'button',
         className: 'list-row' + (place.closed ? ' is-closed' : ''),
-        'aria-label': t('openPlace', { name: place.name })
+        /* The row's own label is what a screen reader reads, so anything the
+           row shows has to be spelled into it or it is not there at all. */
+        'aria-label': t('openPlace', { name: place.name }) + ', ' + t(depthMarkKey(place))
       }, [
         el('span', { className: 'list-name', textContent: place.name }),
         el('span', { className: 'list-sub' }, [
           priceGauge(place.price),
           el('span', {
+            className: 'list-types',
             textContent: (place.types || []).map(typeLabel)
               .concat(place.closed ? [t('closed')] : [])
               .join(' · ')
           })
-        ])
+        ]),
+        /* Last in the row and among the first things the eye lands on: it
+           holds the same edge on every row, so it can be read straight down
+           the list without reading the rows themselves. */
+        depthMark(place)
       ]);
       row.addEventListener('click', function () { selectPlace(place.id, { fly: true }); });
       return el('li', {}, [row]);
