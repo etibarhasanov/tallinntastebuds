@@ -103,7 +103,7 @@ Field by field:
 | `reel` | The full Instagram permalink, or `""` if there is not a reel yet. |
 | `photos` | Filenames inside `photos/<id>/`. Just the filenames. Use `[]` if there are none. |
 | `website` | Optional. An empty string and a missing key both mean "no website". |
-| `phone` | Optional. The number you would actually ring, international form with spaces: `+372 661 0180`. It becomes the **Call** button under the place name — a `tel:` link, so a phone hands it straight to the dialler — and a tappable row in the facts list. An empty string and a missing key both mean "no number", and the button and the row both disappear. |
+| `phone` | Optional. The number you would actually ring, international form with spaces: `+372 661 0180`. It becomes the **Call** button at the foot of the panel, next to **Directions** — a `tel:` link, so a phone hands it straight to the dialler — and a tappable row in the facts list just above it. An empty string and a missing key both mean "no number", and the button and the row both disappear. |
 | `added` | The day you added the place, `YYYY-MM-DD`. Drives the **Just added** section at the top of the list. |
 | `visited` | The month you last ate there, `YYYY-MM`. |
 | `closed` | `true` greys the pin out. See below. |
@@ -475,10 +475,10 @@ the word.
 
 ## Restaurant discounts
 
-A few places may one day give readers of this map something off the bill. The
-machinery for that is built and switched off: **no place has a live discount**,
-nothing on the map has changed, and `data/deals.json` is where that stays true
-until you decide otherwise.
+A few places give readers of this map something off the bill. Which ones, and
+whether the offer is switched on at all, lives in `data/deals.json` — a place
+with nothing in that file is exactly the place it was before any of this
+existed.
 
 ### How it works at the table
 
@@ -529,6 +529,32 @@ slower than scanning and quite a lot faster than turning a guest away.
 None of the three pages is linked from anywhere except that one button, none
 is in the sitemap, and all three carry `noindex` in the markup and in
 `_headers`.
+
+### Where a discount shows up
+
+A place with a live deal says so in three places, in the order you meet them:
+
+1. **In its list row**, next to the price — a small outlined pill reading
+   **−15%**, so the offer is part of the choosing rather than something you
+   only find by opening the place.
+2. **In the panel head**, the same pill beside the same price, one size up.
+   The number is what you decide on, so it sits where the deciding happens.
+3. **At the foot of the panel**, under the reel, the write-up and the tags:
+   the offer in words — "15% off your order" — and the **Show QR** button that
+   leaves for `deal.html`. That is a pass you hold up at a till, which is
+   worth making once you have decided to walk there, not while you are still
+   reading about the place. It sits directly above **Directions**, which is
+   the other half of the same errand.
+
+The number is not written a second time in the data. It is taken from the
+`offer` line the deal already carries in the language being read, which is why
+Turkish shows **−%15** — the whole match travels, sign and all, rather than
+the digits. An offer with no percentage in it, a free coffee or a second
+pizza, falls back to the word the filter chip uses: **Discount**.
+
+The badge is drawn, so it is also spelled: the row's own `aria-label` ends
+with the full offer — "Open Pudel, Not filmed, 10% off your order" — because
+"−10%" read out on its own is a number and not what it comes off.
 
 ### The Discount chip
 
@@ -750,7 +776,7 @@ assets/staff.js            )
 data/restaurants.json      the only file you edit regularly
 data/taxonomy.json         the controlled vocabulary of types
 data/ui.json               every interface string, in every language
-data/deals.json            discounts; empty of live ones by default
+data/deals.json            the discounts, and which of them are live
 data/schema.json           JSON Schema, for editor autocomplete
 photos/<restaurant-id>/    photos, one folder per place
 tools/validate.mjs         dependency-free data validator
@@ -1142,19 +1168,25 @@ text stays between 10.7 and 15.9 to one and the muted line never drops below
 4.96. Anything stronger starts turning a write-up into a coloured
 box.
 
-**What the panel leads with.** Name, price, **Call** — then, immediately, the
-thing there is to look at. The reel comes first, the photos after it, and a
-place with neither says so in that same slot under its own heading rather than
-leaving you to reach the bottom and work it out. The write-up, the tags and the
-dishes all moved down a notch to make room.
+**What the panel leads with.** Name, price, and the discount badge where there
+is one — then, immediately, the thing there is to look at. The reel comes
+first, the photos after it, and a place with neither says so in that same slot
+under its own heading rather than leaving you to reach the bottom and work it
+out. The write-up, the tags and the dishes all moved down a notch to make room.
 
 They used to sit two sections down, under the write-up and the tags, which put
 the one thing on the page that is not text below a screenful of text: on a
-phone the reel had to be scrolled to, and the Call button had already been
-moved up out of the same problem. Ordering by what is scarcest reads better
+phone the reel had to be scrolled to. Ordering by what is scarcest reads better
 anyway — every place has a write-up, only 43 have a reel — and it makes the
 three kinds of place read as three kinds in the panel too, rather than as one
 kind and two omissions.
+
+**What the panel closes with.** The offer in full, then the address, then
+**Directions**, **Call** and **Website** — the three things you do about a
+place rather than read about it. Call rode with the name for a while, where it
+was the loudest thing on a panel about a restaurant nobody had decided on yet;
+it now sits with the directions, which is the other half of the same errand.
+The head keeps only what tells you whether to keep reading.
 
 **Clustering.** Pins closer together than 44px are drawn as one counted dot,
 recomputed on zoom — clustering follows the projection, and panning does not

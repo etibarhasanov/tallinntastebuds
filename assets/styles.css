@@ -791,21 +791,20 @@ body.panel-detail .panel {
   flex-wrap: wrap;
   gap: 6px 14px;
 }
-/* The Call button rides with the name rather than with the links at the
-   bottom, so a phone finds it without scrolling past the reel and the photos.
-   inline-flex keeps the handset glued to the word at any text size. */
-.head-call {
+/* The Call button stands in the link row at the foot of the panel, next to
+   the directions. inline-flex keeps the handset glued to the word at any
+   text size. */
+.call-btn {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  margin-top: 14px;
-  padding: 8px 14px;
 }
 .call-icon { display: flex; }
 .call-icon svg { width: 12px; height: 12px; fill: currentColor; }
-/* A closed place keeps the row for the record, but nothing there is worth
-   ringing, so the button drops back to the greyed-out palette. */
-.is-closed .head-call { background: var(--muted); border-color: var(--muted); }
+/* A closed place keeps its links for the record, but nothing there is worth
+   ringing, so the handset greys out with the words. */
+.is-closed .call-btn { color: var(--muted); }
+.is-closed .call-btn:hover { border-color: var(--hairline); color: var(--muted); }
 
 .closed-flag {
   display: inline-block;
@@ -893,8 +892,30 @@ body.panel-detail .panel {
 .link-btn.is-primary:hover { background: var(--accent-lit); border-color: var(--accent-lit); color: var(--paper); }
 
 /* discount
-   Only ever drawn for a place that has a live deal in data/deals.json, which
-   for now is none of them. */
+   Only ever drawn for a place that has a live deal in data/deals.json. */
+
+/* The number, wherever it is shown: beside the price in a list row and
+   beside the price in the panel head. Both lines are otherwise muted grey,
+   so the accent is enough to lift the badge out without a fill, which would
+   have put a second solid pill in a row that already ends in one. */
+.deal-mark {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  padding: 2px 7px;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  line-height: 1.4;
+  color: var(--accent);
+  white-space: nowrap;
+}
+/* One step up in the panel head, where it stands beside a 13px price rather
+   than an 11px one. */
+.head-meta .deal-mark { padding: 3px 9px; font-size: 11px; }
 
 .deal-block {
   display: flex;
@@ -1140,6 +1161,8 @@ body.panel-detail .panel {
   letter-spacing: .02em;
 }
 .list-row.is-closed .list-name { color: var(--muted); }
+
+.list-row:hover .deal-mark { border-color: var(--accent-lit); color: var(--accent-lit); }
 .empty-note {
   margin-top: 20px;
   font-family: var(--body);
@@ -1460,6 +1483,7 @@ body.panel-detail .panel {
   .list-row { padding: 10px 2px; column-gap: 8px; }
   .list-name { font-size: 15.5px; }
   .list-sub { margin-top: 3px; gap: 10px; }
+  .list-sub .deal-mark { padding: 1px 6px; font-size: 9.5px; }
   /* Narrower screen, narrower badge — the name is what the row is for and it
      gets the space back. */
   .depth-mark { gap: 4px; padding: 2px 7px; font-size: 9px; letter-spacing: .08em; }

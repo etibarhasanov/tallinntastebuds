@@ -1613,7 +1613,7 @@
      tab — there is no page to open. */
   function callButton(place) {
     var link = el('a', {
-      className: 'link-btn is-primary head-call',
+      className: 'link-btn call-btn',
       href: telHref(place.phone),
       'aria-label': t('call') + ' ' + place.name + ', ' + place.phone
     }, [
@@ -1650,6 +1650,22 @@
     ]);
   }
 
+  /* The offer, small enough to read at a glance in a list row. The number is
+     taken from the line the deal already carries in the reader's language
+     rather than written a second time in the data, and the whole match
+     travels rather than the digits, because Turkish puts the sign in front:
+     "%15 indirim". An offer with no percentage in it — a free coffee, a
+     second pizza — falls back to the word the filter chip uses, which is the
+     honest thing a badge can say when there is no number to show. */
+  function dealMark(deal) {
+    var offer = window.TTBPass.textFor(deal.offer, state.lang);
+    var found = /%\s*\d+(?:[.,]\d+)?|\d+(?:[.,]\d+)?\s*%/.exec(offer);
+    return el('span', {
+      className: 'deal-mark',
+      textContent: found ? '−' + found[0].replace(/\s+/g, '') : t('filterDiscount')
+    });
+  }
+
   function section(labelKey, body) {
     return el('div', { className: 'section' }, [
       el('p', { className: 'eyebrow', textContent: t(labelKey) }),
@@ -1673,6 +1689,8 @@
        coordinates are a machine's way of saying the same thing the address
        already says. The head keeps what only it can carry: the name, and
        whether the door still opens. */
+    var deal = liveDealFor(place);
+
     dom.detail.appendChild(el('div', { className: 'place-head' }, [
       place.closed
         ? el('span', { className: 'closed-flag', textContent: t('closed') })
@@ -1683,29 +1701,24 @@
         tabindex: '-1',
         textContent: place.name
       }),
+      /* The same badge the list row carries, in the same line as the price:
+         the number is the part of a discount you decide on, and it belongs
+         where the deciding happens rather than a scroll further down. What
+         it is off, and the way to get it, wait below with everything else
+         you would read once you have decided to go. */
       el('div', { className: 'head-meta' }, [
-        priceGauge(place.price)
-      ]),
-      /* Calling is the one thing you do standing on the pavement — is there a
-         table, are they still open — so the button sits with the name rather
-         than under the reel and the photos, where a phone would have to be
-         scrolled to reach it. No number means no button. */
-      place.phone ? callButton(place) : null
+        priceGauge(place.price),
+        deal ? dealMark(deal) : null
+      ])
     ]));
 
     if (place.closed) {
       dom.detail.appendChild(el('p', { className: 'muted-note', textContent: t('closedNote') }));
     }
 
-    /* A discount, on the few places that have one, sits above the reel: it is
-       the one thing on the panel that expires, so it is the one thing that
-       cannot wait until the bottom of a scroll. */
-    var deal = liveDealFor(place);
-    if (deal) dom.detail.appendChild(section('passOffer', dealBlock(place, deal)));
-
-    /* What there is to see comes first, straight under the name and the Call
-       button, because it is the reason to keep reading. It used to sit two
-       sections down, under the write-up and the tags, which meant the reel
+    /* What there is to see comes first, straight under the name, because it
+       is the reason to keep reading. It used to sit two sections down, under
+       the write-up and the tags, which meant the reel
        — the one thing on the page that is not text — had to be scrolled to.
        The video leads, the photos follow it, and a place with neither says so
        here rather than leaving you to reach the bottom and work it out.
@@ -1754,6 +1767,15 @@
       ));
     }
 
+    /* The offer in full, and the button that makes the code, at the foot of
+       the read: the badge at the top says how much, and this says what of and
+       hands it over. It used to sit above the reel, which put a QR you are
+       meant to hold up at a till in front of somebody still deciding whether
+       to walk there — the pass is worth making once you have decided, and by
+       then you are at the bottom of the panel anyway, next to the directions
+       that take you to the door. */
+    if (deal) dom.detail.appendChild(section('passOffer', dealBlock(place, deal)));
+
     dom.detail.appendChild(plainSection([
       el('dl', { className: 'facts' }, [
         el('dt', { textContent: t('address') }),
@@ -1777,6 +1799,13 @@
           rel: 'noopener',
           textContent: t('directions')
         }),
+        /* Calling sits next to the directions, which is the other thing you
+           do about a place rather than to read about it: how to get there,
+           and how to ask whether it is worth setting off. It rode with the
+           name for a while, where it was the loudest thing on a panel about
+           a restaurant nobody had decided on yet. No number means no
+           button, and the number itself is still in the facts above. */
+        place.phone ? callButton(place) : null,
         place.website
           ? el('a', {
               className: 'link-btn',
@@ -2090,16 +2119,29 @@
     }
 
     function listRow(place) {
+      /* A discount used to be something you could only find by opening the
+         place, which meant opening seventy of them to learn that four save
+         you money. It is the one thing in a row that is an
+         offer rather than a description, so it is shown where the choosing
+         happens — and spelled into the label in full, since "−15%" read out
+         on its own says a number and not what it comes off. */
+      var deal = liveDealFor(place);
+      var offer = deal ? window.TTBPass.textFor(deal.offer, state.lang) : '';
+
       var row = el('button', {
         type: 'button',
         className: 'list-row' + (place.closed ? ' is-closed' : ''),
         /* The row's own label is what a screen reader reads, so anything the
            row shows has to be spelled into it or it is not there at all. */
-        'aria-label': t('openPlace', { name: place.name }) + ', ' + t(depthMarkKey(place))
+        'aria-label': t('openPlace', { name: place.name }) + ', ' + t(depthMarkKey(place)) +
+          (deal ? ', ' + (offer || t('filterDiscount')) : '')
       }, [
         el('span', { className: 'list-name', textContent: place.name }),
         el('span', { className: 'list-sub' }, [
+          /* After the price, which holds the same edge on every row, and
+             before the types, which are the part that can run long. */
           priceGauge(place.price),
+          deal ? dealMark(deal) : null,
           el('span', {
             className: 'list-types',
             textContent: (place.types || []).map(typeLabel)
