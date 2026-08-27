@@ -31,7 +31,7 @@
 
      Empty is a working state, deliberately: the map falls back to exactly
      what it does today, watermark and all, rather than breaking. */
-  var TILE_KEY = '';
+  var TILE_KEY = 'cb1_2ci9_1_e18f20c42b2e5346aa517b42';
 
   /* Two styles, which is the choice worth offering: day or night. Seven
      colours of the spectrum made the rail look like a settings screen and
