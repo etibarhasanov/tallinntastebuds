@@ -865,13 +865,6 @@ body.panel-detail .panel {
   flex-wrap: wrap;
   gap: 6px 14px;
 }
-.coords {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  color: var(--muted);
-  letter-spacing: -.01em;
-}
-
 .closed-flag {
   display: inline-block;
   margin-bottom: 12px;
