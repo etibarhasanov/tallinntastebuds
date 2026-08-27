@@ -3,8 +3,8 @@
     "id": "180-degrees",
     "name": "180° by Matthias Diether",
     "address": "Staapli 4, 10415 Tallinn",
-    "lat": 59.4519,
-    "lng": 24.7273,
+    "lat": 59.4520538,
+    "lng": 24.7289234,
     "price": 4,
     "types": [
       "restaurant",
@@ -1153,8 +1153,8 @@
     "id": "kotkot",
     "name": "KotKot",
     "address": "Peetri 12, 10411 Tallinn",
-    "lat": 59.4518,
-    "lng": 24.7297,
+    "lat": 59.4524531,
+    "lng": 24.7308239,
     "price": 1,
     "types": [
       "casual",
