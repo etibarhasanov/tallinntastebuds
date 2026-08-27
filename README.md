@@ -89,8 +89,9 @@ What it will not do, on purpose:
 - **Touch anything but the places and the photos.** Not the taxonomy, not the
   interface strings, not the code. Those are rare enough to be worth a
   keyboard.
-- **Translate for you.** Seven language tabs, seven boxes, and a red dot on
-  the ones still empty.
+- **Translate for you.** One tab per language the map speaks, taken from
+  `data/ui.json` rather than a list in the editor, and a red dot on the ones
+  still empty.
 
 ### Turning it on
 

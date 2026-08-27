@@ -315,14 +315,15 @@ async function save(request, env) {
     if (photosById[id]) photosById[id] = photosById[id].filter((name) => name !== file);
   }
 
+  const languages = Object.keys(JSON.parse(ui));
   const check = validateAll(places, {
     typeIds: (JSON.parse(taxonomy).types || []).map((t) => t.id),
-    languages: Object.keys(JSON.parse(ui)),
+    languages,
     photosById
   });
   if (check.errors.length) return oops(422, 'The data is not valid', { errors: check.errors });
 
-  const text = serialise(places);
+  const text = serialise(places, languages);
   const dataChanged = text !== current;
   if (!dataChanged && uploads.length === 0 && deletions.length === 0) {
     return json({ ok: true, unchanged: true, sha: head.sha, warnings: check.warnings });

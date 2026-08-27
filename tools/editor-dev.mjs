@@ -108,9 +108,10 @@ const server = createServer(async (req, res) => {
 
       if (path === '/api/save' && req.method === 'POST') {
         const body = await readBody(req);
+        const languages = Object.keys(await readJSON('data/ui.json'));
         const check = validateAll(body.places, {
           typeIds: ((await readJSON('data/taxonomy.json')).types || []).map((t) => t.id),
-          languages: Object.keys(await readJSON('data/ui.json')),
+          languages,
           photosById: await photosAfter(body)
         });
         if (check.errors.length) return sendJSON(res, 422, { error: 'The data is not valid', errors: check.errors });
@@ -124,7 +125,7 @@ const server = createServer(async (req, res) => {
           const target = safeJoin(gone);
           if (existsSync(target)) await unlink(target);
         }
-        await writeFile(join(ROOT, 'data/restaurants.json'), serialise(body.places));
+        await writeFile(join(ROOT, 'data/restaurants.json'), serialise(body.places, languages));
 
         console.log(`saved — ${body.places.length} places, ${(body.uploads || []).length} photos in, ${(body.deletions || []).length} out`);
         return sendJSON(res, 200, { ok: true, sha: 'local', warnings: check.warnings });

@@ -273,16 +273,32 @@ export function orderKeys(place) {
   return out;
 }
 
-/** data/restaurants.json, byte for byte as the repo holds it. */
-export function serialise(places) {
-  const blurbSorted = places.map((place) => {
+/**
+ * data/restaurants.json, byte for byte as the repo holds it.
+ *
+ * The blurb keys follow data/ui.json's order rather than the alphabet, which
+ * is the order the file already uses — Spanish sits between Russian and
+ * Turkish there, not between English and Estonian. Sorting them instead would
+ * turn one edited place into a diff touching all seventy.
+ *
+ * @param {object[]} places
+ * @param {string[]} languageOrder  Object.keys(ui.json). Anything not in it
+ *                                  keeps its own order, after the ones that are.
+ */
+export function serialise(places, languageOrder = []) {
+  const tidied = places.map((place) => {
     const copy = orderKeys(place);
     if (isObject(copy.blurb)) {
+      const keys = Object.keys(copy.blurb);
+      const ordered = [
+        ...languageOrder.filter((lang) => keys.includes(lang)),
+        ...keys.filter((lang) => !languageOrder.includes(lang))
+      ];
       const blurb = {};
-      for (const lang of Object.keys(copy.blurb).sort()) blurb[lang] = copy.blurb[lang];
+      for (const lang of ordered) blurb[lang] = copy.blurb[lang];
       copy.blurb = blurb;
     }
     return copy;
   });
-  return JSON.stringify(blurbSorted, null, 2) + '\n';
+  return JSON.stringify(tidied, null, 2) + '\n';
 }
