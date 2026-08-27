@@ -171,6 +171,13 @@
     return place.lat.toFixed(5) + ', ' + place.lng.toFixed(5);
   }
 
+  /* The data holds the number the way you would read it out, spaces and all.
+     A tel: href wants it without them, so strip everything but the digits and
+     the leading plus rather than storing the same number twice. */
+  function telHref(phone) {
+    return 'tel:' + String(phone || '').replace(/[^+0-9]/g, '');
+  }
+
   function byId(id) {
     for (var i = 0; i < state.places.length; i++) {
       if (state.places[i].id === id) return state.places[i];
@@ -1587,6 +1594,13 @@
       el('dl', { className: 'facts' }, [
         el('dt', { textContent: t('address') }),
         el('dd', { textContent: place.address }),
+        /* phone is optional — plenty of small places only answer the door */
+        place.phone ? el('dt', { textContent: t('phone') }) : null,
+        place.phone
+          ? el('dd', {}, [
+              el('a', { href: telHref(place.phone), textContent: place.phone })
+            ])
+          : null,
         /* visited is optional — a place with no video has no post to date it */
         place.visited ? el('dt', { textContent: t('visited') }) : null,
         place.visited ? el('dd', { textContent: formatMonth(place.visited) }) : null,
@@ -1601,6 +1615,16 @@
           rel: 'noopener',
           textContent: t('directions')
         }),
+        /* No number means no button, rather than one that dials nothing. A
+           tel: link opens the dialler on a phone and the desktop's calling
+           app otherwise, so it never needs a new tab. */
+        place.phone
+          ? el('a', {
+              className: 'link-btn',
+              href: telHref(place.phone),
+              textContent: t('call')
+            })
+          : null,
         place.website
           ? el('a', {
               className: 'link-btn',

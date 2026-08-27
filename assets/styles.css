@@ -929,6 +929,11 @@ body.panel-detail .panel {
   color: var(--muted);
 }
 .facts dd { margin: 0; font-size: 14px; }
+/* The phone number is the one fact you can act on, so it stays tappable in
+   the row as well as in the button below. Ink rather than accent: a list of
+   facts should read as facts, with the hover doing the telling. */
+.facts a { color: inherit; text-decoration-color: var(--hairline); }
+.facts a:hover { color: var(--accent); text-decoration-color: currentColor; }
 
 .link-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .link-btn {
