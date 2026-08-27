@@ -1,0 +1,20 @@
+# The repository is public, and the editor's password and GitHub token are the
+# two things that must never land in it. They live in the Cloudflare Pages
+# project (Settings → Environment variables) and nowhere else.
+#
+# These patterns are the belt to that braces: the file names Wrangler and every
+# other tool reach for when you keep secrets locally, ignored before they can
+# be committed by an absent-minded `git add -A`.
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+*.secret
+
+# Wrangler's working directory, if you ever run it here.
+.wrangler/
+
+# The usual rubbish.
+.DS_Store
+Thumbs.db
+node_modules/

@@ -114,6 +114,24 @@ GitHub refused it, and the map carries on unaffected.
 Redeploy once after adding them, since a Pages Function only picks up
 variables at deploy time.
 
+### Where the password lives
+
+**Not here.** This repository is public, so the password and the token exist
+only as environment variables in the Cloudflare Pages project, and in your
+password manager. Nothing in the code, the data or the history has ever held
+either of them, and `.gitignore` covers the file names (`.dev.vars`, `.env`)
+that tools reach for when you keep secrets locally, so an absent-minded
+`git add -A` cannot start.
+
+If one ever does leak, changing it is two minutes and no code:
+
+- **The password** — edit `ADMIN_PASSWORD` in the Pages project and redeploy.
+  Every cookie signed with the old one stops working the moment it changes,
+  which is exactly the behaviour you want.
+- **The token** — revoke it on GitHub, generate another, paste it into
+  `GITHUB_TOKEN`, redeploy. The map is untouched either way: it is static
+  files, and none of this runs for a visitor.
+
 `/admin/` is `Disallow`ed in `robots.txt`, sent as `noindex` by `_headers`,
 and linked from nowhere — but a password is all that is really holding the
 door. It is checked on Cloudflare, never in the page, with a deliberate second
