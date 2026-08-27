@@ -1,15 +1,17 @@
 [
   {
-    "id": "bekker-pagariari",
-    "live": false,
-    "key": "PR3S960YQP1RZ4HR74H5ABSBBZ3XNMCV",
+    "id": "magussoolane",
+    "live": true,
+    "key": "CXMXRR04BX83FF38VZTX3CAJTMTF7C5Z",
     "offer": {
-      "en": "Sample offer — not a real discount. Nothing is live yet.",
-      "et": "Näidispakkumine — see ei ole päris soodustus."
-    },
-    "terms": {
-      "en": "One per table. Not with other offers.",
-      "et": "Üks laua kohta. Ei kehti koos teiste pakkumistega."
+      "en": "15% off your order",
+      "et": "15% soodustust tellimuselt",
+      "ru": "Скидка 15% на заказ",
+      "fi": "15% alennus tilauksesta",
+      "az": "Sifarişinizə 15% endirim",
+      "pt": "15% de desconto no seu pedido",
+      "es": "15% de descuento en tu pedido",
+      "tr": "Siparişinizde %15 indirim"
     }
   }
 ]
