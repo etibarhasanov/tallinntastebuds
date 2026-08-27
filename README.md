@@ -189,9 +189,9 @@ In Tallinn, `lat` is always about **59.4** and `lng` about **24.7**. If you get
 them the wrong way round the validator will catch it, because 24.7° N 59.4° E
 is in the Arabian Sea.
 
-Once the pin is on the map, open it and check the coordinates line in the
-detail panel against where the dot actually sits. Nudging the fifth decimal
-place moves it about a metre.
+Once the pin is on the map, check where the dot actually sits — the panel does
+not print the numbers back at you, so the map is the proof. Nudging the fifth
+decimal place moves it about a metre.
 
 > The coordinates in the seed data were placed by address, not surveyed. Spot
 > check each one on the live map and correct it if the dot is on the wrong side
@@ -567,59 +567,57 @@ tools/validate.mjs         dependency-free data validator
 ```
 
 Deep links: `?spot=f-hoone` opens that place directly — that is the link to put
-in a Story. `?lang=ru` opens it in Russian, `?style=violet` in the violet
+in a Story. `?lang=ru` opens it in Russian, `?style=green` in the dark
 palette. They all combine.
 
 ---
 
-## The seven styles
+## The two styles
 
-A strip of seven swatches sits on the left rail. Each is a colour of the
-spectrum, and picking one changes the **whole** colour world — not just an
-accent.
+Two swatches sit on the left rail: brick and forest, day and night. Picking one
+changes the **whole** colour world — not just an accent.
 
 | Style | Accent | Card | Ground | Map |
 | --- | --- | --- | --- | --- |
 | Red | `#a81e28` | `#fff0ea` | `#f7ddd4` | Positron, tinted brick |
-| Orange (dark) | `#f0a44c` | `#2b1d11` | `#1b1209` | CARTO Dark Matter |
-| Amber | `#6b5806` | `#fcf6e0` | `#f0e6c2` | Positron, tinted gold |
 | Green (dark) | `#6fd39a` | `#1d2a23` | `#101a15` | CARTO Dark Matter |
-| Blue | `#00539c` | `#f2f8ff` | `#dceaf9` | Positron, tinted Baltic |
-| Indigo (dark) | `#a7adf5` | `#262a42` | `#171b2e` | CARTO Dark Matter |
-| Violet | `#6b3494` | `#f6eefd` | `#e4d6f4` | Positron, tinted heather |
+
+There used to be seven, one per colour of the spectrum. Seven colours of chrome
+is a settings screen, and the rail was asking a question nobody opens a
+restaurant map to answer — the strip read as the loudest thing on the page and
+was the only control on it that changes nothing about what you are looking at.
+The two that survive are the two that are actually a choice: the light one and
+the dark one.
 
 **The card is what carries the colour.** An earlier version kept every light
 style's paper within a point of white — `#fffaf9`, `#fffbf5`, `#fffdf3`,
 `#ffffff`, `#fdfaff` — which measures out at 2-5 dE between any two of them.
 Four styles that differ by less than a JPEG artefact are one style with four
-pin colours, which is exactly what it looked like. The light papers now sit
-around L\* 95-97 with real chroma and land 7-19 dE apart.
+pin colours, which is exactly what it looked like. Red's paper sits at L\* 96
+with real chroma.
 
-Three of the seven are dark, one per temperature: espresso, forest and night.
-All three take the same treatment on the basemap, since Dark Matter is drawn
-almost black: a brightness lift on the tiles and a screen pass in their own
-hue. The screen is the half doing the work, because a multiplier cannot lift a
-black off zero. Measured on Dark Matter's own tones the pair takes the land
-from `#1a1c1e` to around `#44474f`, and label contrast reads 5.7-5.8 against
-the 5.0 the tiles have untouched — the warm cast lands within a twentieth of a
-point of the two cool ones, so the three are the same map at three
-temperatures.
-Their swatches wear the card colour with a ring of the accent, so the rail
-shows at a glance which three they are.
+Green takes the same treatment on the basemap that the dark styles always did,
+since Dark Matter is drawn almost black: a brightness lift on the tiles and a
+screen pass in its own hue. The screen is the half doing the work, because a
+multiplier cannot lift a black off zero. Measured on Dark Matter's own tones
+the pair takes the land from `#1a1c1e` to around `#44474f`, and label contrast
+reads 5.7-5.8 against the 5.0 the tiles have untouched.
+Its swatch wears the card colour with a ring of the accent, so the rail says
+which of the two is the dark one before you press it.
 
-Every style is **nothing but a block of custom properties** near the top of
+Both styles are **nothing but a block of custom properties** near the top of
 `assets/styles.css`, keyed off `[data-style="…"]` on the root element. No
-component rule anywhere names a colour, so adding an eighth style is one block
+component rule anywhere names a colour, so adding a third style is one block
 there plus one entry in `STYLES` in `assets/app.js`. Nothing else. The `:root`
-block above them is Blue's palette to the value, because Blue is what the page
+block above them is Red's palette to the value, because Red is what the page
 opens on and `:root` is what it wears for the instant before the script sets
 `data-style`.
 
-Three things to know before you retune them:
+Two things to know before you retune them:
 
 - **The map is tinted, not just the chrome.** `--map-tint` paints `#map::after`
   over the tile pane with `mix-blend-mode: color`. Without it the basemap stays
-  grey and the styles read as "only the pins changed colour", which is exactly
+  grey and the style reads as "only the pins changed colour", which is exactly
   how the first attempt failed. Pins, tooltips and controls live in other
   panes, so they keep their exact token colours.
 - **Tint with `color`, never with filters.** An early version used
@@ -630,28 +628,25 @@ Three things to know before you retune them:
   contrast is preserved by construction. Modelled on Positron's own tones
   through the compositing spec's `ClipColor`, every pair that matters —
   road/land, land/label, road/label, land/water — holds at 94-104% of untinted
-  all the way to alpha `.45`. The tinted styles run at `.36`, Blue at `.30`.
-  Positron's land is too light to hold much saturation either way; it is the
-  bay the tint is for, and in a coastal city the bay is a third of the screen.
-- **There is no true yellow.** Yellow on white is about 1.3:1 contrast, far
-  under the 4.5:1 that body text and links need, so that slot is the deepest
-  yellow still recognisable as yellow. Every accent clears 4.5:1 against both
-  its card and its ground, every `--muted` clears 4.5:1 on its card, and every
-  `--ink` clears 12:1.
+  all the way to alpha `.45`. Red runs at `.36`. Positron's land is too light
+  to hold much saturation either way; it is the bay the tint is for, and in a
+  coastal city the bay is a third of the screen.
 
-`--here` paints the "you are here" dot and is deliberately a hue no accent in
-the same palette uses: a blue dot next to warm pins, a warm one in the blue
-style, teal against indigo and against amber, warm against green. Otherwise you
+Both accents clear 4.5:1 against both their card and their ground, every
+`--muted` clears 4.5:1 on its card, and every `--ink` clears 12:1.
+
+`--here` paints the "you are here" dot and is deliberately a hue neither accent
+uses: a blue dot next to brick pins, a warm one against green. Otherwise you
 cannot tell yourself from a restaurant.
 
-The three dark styles swap to CARTO Dark Matter — dark cards over the pale
-Positron map would be unreadable. They are the only styles that change basemap,
-because keyless CARTO offers three looks and seven unique basemaps without an
-API key does not exist.
+Green swaps to CARTO Dark Matter — a dark card over the pale Positron map would
+be unreadable. It is the only style that changes basemap.
 
 The choice is saved to `localStorage` (wrapped in `try/catch`, like the
 language) and mirrors into `?style=`, so a shared link opens in the same look.
-An unrecognised value falls back to blue and is dropped from the URL.
+An unrecognised value falls back to red and is dropped from the URL — which is
+also what an old `?style=violet` link, or a browser still holding one of the
+five removed styles in `localStorage`, lands on.
 
 One caveat on the dark styles: the Instagram embed draws its own white card
 inside an iframe, which nothing outside can restyle. It stays light.
@@ -853,12 +848,12 @@ near the top of `assets/app.js`.
 
 ## Design notes
 
-**Palette.** The ground is `--wash`, a pale limestone grey — *paekivi* is
-Estonia's national stone and the Old Town is built out of it. The accent is
-`--accent`, the blue of the Estonian flag, with `--accent-lit` a brighter step
-up for hover and the locate dot. Cool near-black ink, one hairline weight, one
-soft shadow, nothing else. The tokens are the first thing in
-`assets/styles.css`; change those six values and the whole site follows.
+**Palette.** The ground is `--wash`, the cards are `--paper`, and links, pins
+and the price gauge are `--accent`, with `--accent-lit` a brighter step up for
+hover and the locate dot. Near-black ink cast towards the style's own hue, one
+hairline weight, one soft shadow, nothing else. The tokens are the first thing
+in `assets/styles.css` and each of the two styles restates every one of them;
+change those values and the whole site follows.
 
 **The chrome.** Everything floats on the map: nothing has a page around it.
 One strip across the top — the brand card on the left, locate, **List** and the
@@ -904,7 +899,7 @@ behind it:
 
 The middle fill is the accent mixed 38% into the card colour and drawn opaque,
 rather than the accent at 38% alpha, so the map does not show through it and
-the three read the same on every palette. Not three icons, because at 14px a
+the three read the same on both palettes. Not three icons, because at 14px a
 picture inside a dot is mud and the map is 68 dots. The chosen place grows,
 gains a breathing halo and keeps its name open, but it keeps whichever of the
 three states it is, so selecting a place never hides what there is to see in
@@ -913,9 +908,9 @@ it.
 **The open place.** The list panel is the neutral card everything else on the
 map is. Opening a place tints that card with six percent of the accent, so it
 reads as picked rather than as the same panel with different words in it. Six
-percent because it has to survive the measurement: across all seven palettes
-the body text stays between 10.7 and 15.9 to one and the muted line never
-drops below 4.96. Anything stronger starts turning a write-up into a coloured
+percent because it has to survive the measurement: on both palettes the body
+text stays between 10.7 and 15.9 to one and the muted line never drops below
+4.96. Anything stronger starts turning a write-up into a coloured
 box.
 
 **Clustering.** Pins closer together than 44px are drawn as one counted dot,
@@ -1009,13 +1004,13 @@ the map. Hover tooltips stay inert, since the pointer is already on the dot.
 *Familjen Grotesk* — a contemporary Nordic grotesque — sets place names and
 the wordmark only. *Literata* sets prose; it is a screen-reading serif with
 proper Cyrillic, which matters when a third of the copy is Russian.
-*IBM Plex Mono* is reserved for micro-labels, coordinates and the price, set
-at 10px uppercase with wide letter-spacing. Reading a coordinate in a
-monospace face and a blurb in a serif is a quiet signal about which is data
-and which is opinion.
+*IBM Plex Mono* is reserved for micro-labels, the price and the buttons, set
+at 10px uppercase with wide letter-spacing. Reading a label in a monospace
+face and a blurb in a serif is a quiet signal about which is data and which is
+opinion.
 
 **The signature: the price gauge.** Price always renders as four slots, never
-fewer. The slots you are paying for are in the accent blue; the rest stay
+fewer. The slots you are paying for are in the accent; the rest stay
 ghosted in the hairline colour — `€€··` rather than `€€`. It is the only meter
 anywhere on the site, and it measures money rather than merit. That is the
 argument of the whole project in one piece of typography, sitting exactly where

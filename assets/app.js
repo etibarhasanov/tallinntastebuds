@@ -15,19 +15,16 @@
   var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
   var TILE_URL_DARK = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 
-  /* One style per colour of the spectrum. Three of them are dark — one warm,
-     one green, one blue — and those are the ones that need different tiles:
-     dark cards over the pale Positron basemap would be unreadable. */
+  /* Two styles, which is the choice worth offering: day or night. Seven
+     colours of the spectrum made the rail look like a settings screen and
+     asked a question nobody came here to answer. Green is the dark one, and
+     dark is the half that needs different tiles: dark cards over the pale
+     Positron basemap would be unreadable. */
   var STYLES = [
-    { id: 'red',    dark: false },
-    { id: 'orange', dark: true  },
-    { id: 'yellow', dark: false },
-    { id: 'green',  dark: true  },
-    { id: 'blue',   dark: false },
-    { id: 'indigo', dark: true  },
-    { id: 'violet', dark: false }
+    { id: 'red',   dark: false },
+    { id: 'green', dark: true  }
   ];
-  var DEFAULT_STYLE = 'blue';
+  var DEFAULT_STYLE = 'red';
   var PIN_R = 7;             /* every pin */
   var PIN_R_SELECTED = 10;   /* the one you are looking at */
   var STYLE_KEY = 'ttb.style';
@@ -298,9 +295,9 @@
   }
 
   /* ---------------------------------------------------------------- styles
-   * Seven palettes, one per colour of the spectrum. Each is nothing but a
-   * block of custom properties in styles.css, so switching one re-colours the
-   * whole site without touching a single component rule.
+   * Two palettes, brick and forest. Each is nothing but a block of custom
+   * properties in styles.css, so switching one re-colours the whole site
+   * without touching a single component rule.
    */
 
   function isDarkStyle(id) {
