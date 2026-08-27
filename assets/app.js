@@ -167,10 +167,6 @@
     }
   }
 
-  function coordText(place) {
-    return place.lat.toFixed(5) + ', ' + place.lng.toFixed(5);
-  }
-
   function byId(id) {
     for (var i = 0; i < state.places.length; i++) {
       if (state.places[i].id === id) return state.places[i];
@@ -1526,10 +1522,14 @@
 
     dom.detail.className = place.closed ? 'is-closed' : '';
 
+    /* The city sits in the brand above and in every address below, and the
+       coordinates are a machine's way of saying the same thing the address
+       already says. The head keeps what only it can carry: the name, and
+       whether the door still opens. */
     dom.detail.appendChild(el('div', { className: 'place-head' }, [
       place.closed
         ? el('span', { className: 'closed-flag', textContent: t('closed') })
-        : el('p', { className: 'eyebrow', textContent: t('eyebrow') }),
+        : null,
       el('h2', {
         className: 'place-name',
         id: 'panel-title',
@@ -1537,8 +1537,7 @@
         textContent: place.name
       }),
       el('div', { className: 'head-meta' }, [
-        priceGauge(place.price),
-        el('span', { className: 'coords', textContent: coordText(place) })
+        priceGauge(place.price)
       ])
     ]));
 
@@ -1564,10 +1563,11 @@
 
     /* No video means no section at all — an empty "The reel" heading over a
        placeholder made six real places look half-finished. A quiet line says
-       what is actually true instead: been, not filmed. */
+       what is actually true instead: been, not filmed. Photos say the same
+       thing louder, so the line only stands in for a place with neither. */
     if (place.reel) {
       dom.detail.appendChild(section(reelWords(reelProvider(place.reel)).heading, reelBlock(place)));
-    } else {
+    } else if (!(place.photos || []).length) {
       dom.detail.appendChild(el('p', { className: 'not-filmed', textContent: t('notFilmed') }));
     }
 
@@ -1589,9 +1589,7 @@
         el('dd', { textContent: place.address }),
         /* visited is optional — a place with no video has no post to date it */
         place.visited ? el('dt', { textContent: t('visited') }) : null,
-        place.visited ? el('dd', { textContent: formatMonth(place.visited) }) : null,
-        el('dt', { textContent: t('coordinates') }),
-        el('dd', { className: 'mono', textContent: coordText(place) })
+        place.visited ? el('dd', { textContent: formatMonth(place.visited) }) : null
       ]),
       el('div', { className: 'link-row' }, [
         el('a', {
