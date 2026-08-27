@@ -573,59 +573,82 @@ A strip of seven swatches sits on the left rail. Each is a colour of the
 spectrum, and picking one changes the **whole** colour world — not just an
 accent.
 
-| Style | Accent | Card | Map |
-| --- | --- | --- | --- |
-| Red | `#a81e28` | `#fffaf9` | tinted pink |
-| Orange | `#96490a` | `#fffbf5` | tinted warm |
-| Amber | `#6e5a07` | `#fffdf3` | tinted gold |
-| Green (dark) | `#6fd39a` | `#1d2a23` | CARTO Dark Matter |
-| Blue | `#00539c` | `#ffffff` | untinted — the default |
-| Indigo (dark) | `#a7adf5` | `#262a42` | CARTO Dark Matter |
-| Violet | `#6b3494` | `#fdfaff` | tinted violet |
+| Style | Accent | Card | Ground | Map |
+| --- | --- | --- | --- | --- |
+| Red | `#a81e28` | `#fff0ea` | `#f7ddd4` | Positron, tinted brick |
+| Orange (dark) | `#f0a44c` | `#2b1d11` | `#1b1209` | CARTO Dark Matter |
+| Amber | `#6b5806` | `#fcf6e0` | `#f0e6c2` | Positron, tinted gold |
+| Green (dark) | `#6fd39a` | `#1d2a23` | `#101a15` | CARTO Dark Matter |
+| Blue | `#00539c` | `#f2f8ff` | `#dceaf9` | Positron, tinted Baltic |
+| Indigo (dark) | `#a7adf5` | `#262a42` | `#171b2e` | CARTO Dark Matter |
+| Violet | `#6b3494` | `#f6eefd` | `#e4d6f4` | Positron, tinted heather |
 
-Two of them are dark, because one dark option is a switch and two is a choice.
-Both take the same treatment on the basemap, since Dark Matter is drawn almost
-black: a brightness lift on the tiles and a screen pass in their own hue. The
-screen is the half doing the work, because a multiplier cannot lift a black off
-zero. Measured on Dark Matter's own tones the pair takes the land from `#1a1c1e`
-to `#44474f`, and label contrast still reads 5.9 against the 5.1 the tiles have
-untouched.
+**The card is what carries the colour.** An earlier version kept every light
+style's paper within a point of white — `#fffaf9`, `#fffbf5`, `#fffdf3`,
+`#ffffff`, `#fdfaff` — which measures out at 2-5 dE between any two of them.
+Four styles that differ by less than a JPEG artefact are one style with four
+pin colours, which is exactly what it looked like. The light papers now sit
+around L\* 95-97 with real chroma and land 7-19 dE apart.
+
+Three of the seven are dark, one per temperature: espresso, forest and night.
+All three take the same treatment on the basemap, since Dark Matter is drawn
+almost black: a brightness lift on the tiles and a screen pass in their own
+hue. The screen is the half doing the work, because a multiplier cannot lift a
+black off zero. Measured on Dark Matter's own tones the pair takes the land
+from `#1a1c1e` to around `#44474f`, and label contrast reads 5.7-5.8 against
+the 5.0 the tiles have untouched — the warm cast lands within a twentieth of a
+point of the two cool ones, so the three are the same map at three
+temperatures.
 Their swatches wear the card colour with a ring of the accent, so the rail
-shows at a glance which two they are.
+shows at a glance which three they are.
 
 Every style is **nothing but a block of custom properties** near the top of
 `assets/styles.css`, keyed off `[data-style="…"]` on the root element. No
 component rule anywhere names a colour, so adding an eighth style is one block
-there plus one entry in `STYLES` in `assets/app.js`. Nothing else.
+there plus one entry in `STYLES` in `assets/app.js`. Nothing else. The `:root`
+block above them is Blue's palette to the value, because Blue is what the page
+opens on and `:root` is what it wears for the instant before the script sets
+`data-style`.
 
 Three things to know before you retune them:
 
-- **The map is tinted, not just the chrome.** `--map-filter` is applied to
-  `.leaflet-tile-pane`. Without it the basemap stays grey and the styles read
-  as "only the pins changed colour", which is exactly how the first attempt
-  failed. Pins, tooltips and controls live in other panes, so they keep their
-  exact token colours.
-- **Do not retune `--map-filter` by eye.** CSS `hue-rotate` is a matrix
-  approximation, not a true HSL rotation, so plausible-looking numbers land
-  badly wrong — the first pass missed by up to 55°. The values in the file were
-  found by sampling filtered output against a real Positron land tone. Every
-  hue now lands within 9° of its target and land luminance stays above 224, so
-  streets and labels remain readable. Re-measure rather than guess.
+- **The map is tinted, not just the chrome.** `--map-tint` paints `#map::after`
+  over the tile pane with `mix-blend-mode: color`. Without it the basemap stays
+  grey and the styles read as "only the pins changed colour", which is exactly
+  how the first attempt failed. Pins, tooltips and controls live in other
+  panes, so they keep their exact token colours.
+- **Tint with `color`, never with filters.** An early version used
+  `sepia() + saturate() + hue-rotate()` and it made the map unreadable: sepia
+  flattens Positron's light greys into a single tone, so road-against-land
+  contrast fell from 1.30 to about 1.03 and labels lost 30-52% of theirs. The
+  `color` blend takes hue from the tint and lightness from the tiles, so
+  contrast is preserved by construction. Modelled on Positron's own tones
+  through the compositing spec's `ClipColor`, every pair that matters —
+  road/land, land/label, road/label, land/water — holds at 94-104% of untinted
+  all the way to alpha `.45`. The tinted styles run at `.36`, Blue at `.30`.
+  Positron's land is too light to hold much saturation either way; it is the
+  bay the tint is for, and in a coastal city the bay is a third of the screen.
 - **There is no true yellow.** Yellow on white is about 1.3:1 contrast, far
   under the 4.5:1 that body text and links need, so that slot is the deepest
   yellow still recognisable as yellow. Every accent clears 4.5:1 against both
-  its card and its ground; the worst is 5.12:1.
+  its card and its ground, every `--muted` clears 4.5:1 on its card, and every
+  `--ink` clears 12:1.
 
-Indigo is the dark style and swaps to CARTO Dark Matter unfiltered — dark cards
-over the pale Positron map would be unreadable. It is the only style that
-changes basemap, because keyless CARTO offers three looks and seven unique
-basemaps without an API key does not exist.
+`--here` paints the "you are here" dot and is deliberately a hue no accent in
+the same palette uses: a blue dot next to warm pins, a warm one in the blue
+style, teal against indigo and against amber, warm against green. Otherwise you
+cannot tell yourself from a restaurant.
+
+The three dark styles swap to CARTO Dark Matter — dark cards over the pale
+Positron map would be unreadable. They are the only styles that change basemap,
+because keyless CARTO offers three looks and seven unique basemaps without an
+API key does not exist.
 
 The choice is saved to `localStorage` (wrapped in `try/catch`, like the
 language) and mirrors into `?style=`, so a shared link opens in the same look.
 An unrecognised value falls back to blue and is dropped from the URL.
 
-One caveat on the dark style: the Instagram embed draws its own white card
+One caveat on the dark styles: the Instagram embed draws its own white card
 inside an iframe, which nothing outside can restyle. It stays light.
 
 ## The radio
