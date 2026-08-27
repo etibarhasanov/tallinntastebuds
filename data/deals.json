@@ -28,5 +28,20 @@
       "es": "10% de descuento en tu pedido",
       "tr": "Siparişinizde %10 indirim"
     }
+  },
+  {
+    "id": "nullijook",
+    "live": true,
+    "key": "4DBEFZP3QMW5HNMKATRD0CZ9A6W8V36R",
+    "offer": {
+      "en": "10% off your order",
+      "et": "10% soodustust tellimuselt",
+      "ru": "Скидка 10% на заказ",
+      "fi": "10% alennus tilauksesta",
+      "az": "Sifarişinizə 10% endirim",
+      "pt": "10% de desconto no seu pedido",
+      "es": "10% de descuento en tu pedido",
+      "tr": "Siparişinizde %10 indirim"
+    }
   }
 ]
