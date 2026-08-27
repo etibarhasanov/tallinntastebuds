@@ -150,6 +150,34 @@ in `data/restaurants.json`.
 
 ---
 
+## What counts as Laptop friendly
+
+`laptop` is the other type that describes the room rather than the menu, so it
+needs the same line drawn: **somewhere you can sit for two hours with a laptop
+open and nobody minds.**
+
+Three things have to be true at once — a table you can actually work at, a room
+quiet enough to think in, and staff who are fine with one coffee stretching out.
+Any one of them missing and the tag comes off. A cafe with power sockets but
+queues out the door at lunch is not laptop friendly, and neither is a great
+quiet room with nothing but bar stools.
+
+Wi-Fi is deliberately not on that list. Every place on this map has it, and half
+of them do not print the password anywhere, so it separates nothing.
+
+It is also not a promise about the whole day. Every one of these fills up at
+lunch. The tag says the place has a working shift in it, not that every hour is
+one.
+
+It goes on a place, never on a counter inside one. Somewhere that is a bakery
+in the morning and a restaurant at night is two different rooms with two
+different answers, and one chip cannot say both — so it stays off until the two
+are split into their own entries.
+
+6 of the 70 carry it today, and all six are coffee or tea.
+
+---
+
 ## The order of the filter chips
 
 The chips appear in the order the types are written in `data/taxonomy.json`,
@@ -159,21 +187,31 @@ have to scroll for. Today that is:
 
 | # | Type | Places |
 | --- | --- | --- |
-| 1 | Casual/Solo | 33 |
-| 2 | Bakery | 12 |
-| 3 | Coffee/tea | 12 |
+| 1 | Casual/Solo | 40 |
+| 2 | Bakery | 15 |
+| 3 | Coffee/tea | 15 |
 | 4 | Beer/pub | 12 |
 | 5 | Hidden gem | 11 |
 | 6 | Cheap eats | 10 |
-| 7 | Date night | 10 |
-| 8 | Asian | 9 |
-| 9 | Vegan | 7 |
-| 10 | Fine dining | 5 |
-| 11 | Caucasus | 5 |
+| 7 | Date night | 11 |
+| 8 | Laptop friendly | 6 |
+| 9 | Asian | 9 |
+| 10 | Vegan | 7 |
+| 11 | Fine dining | 5 |
+| 12 | Caucasus | 6 |
+
+The counts above are the live ones, and the order no longer follows them
+exactly: Date night has grown past Cheap eats, and Caucasus past Fine dining,
+without the chips moving. That is the deliberate part — see below — but it is
+worth a re-sort the next time somebody is in here.
 
 Ties are broken by hand: bakery before coffee before pub, cheap eats before
 date night, and the two cuisines last, since somebody scanning the row is
-usually after a kind of evening rather than a kind of kitchen.
+usually after a kind of evening rather than a kind of kitchen. Laptop friendly
+sits above Asian and Vegan on six places for the same reason — it is a kind of
+afternoon, and the row reads better with the use cases together and the
+kitchens at the end. It is the newest chip and the smallest, so it is the one
+to watch: if it stays this short it belongs further right.
 
 Nothing re-sorts itself as you add places, and that is deliberate: a row of
 chips that rearranges between visits is a row nobody learns. Re-check it when

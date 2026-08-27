@@ -430,7 +430,8 @@
     "price": 2,
     "types": [
       "coffee",
-      "hidden-gem"
+      "hidden-gem",
+      "laptop"
     ],
     "blurb": {
       "az": "Çay ustaları, nə etdiklərini dəqiq bilirlər. Çaya ciddi yanaşanlar üçün sakit bir məkan.",
@@ -622,7 +623,8 @@
     "types": [
       "bakery",
       "coffee",
-      "casual"
+      "casual",
+      "laptop"
     ],
     "blurb": {
       "az": "Faehlmannidə çoxdan fəaliyyət göstərən künc kafesi, özü də məhəllənin ən gözəl künclərindən birində. Çörəkxana, qəhvə və həqiqətən yaxşı branç. Elə sakitdir ki, orada işləmək də olar.",
@@ -919,7 +921,8 @@
     "price": 2,
     "types": [
       "coffee",
-      "casual"
+      "casual",
+      "laptop"
     ],
     "blurb": {
       "az": "Faehlmanni küçəsinin Kadriorq küncündə xüsusi qəhvə, Kalve tərəfindən qovrulub. Səkidə bir neçə kiçik masa var, günəş çıxanda məhz orada oturmaq istəyirsən.",
@@ -1049,7 +1052,6 @@
     "price": 2,
     "types": [
       "restaurant",
-      "casual",
       "bakery"
     ],
     "blurb": {
@@ -1471,7 +1473,8 @@
     "price": 2,
     "types": [
       "coffee",
-      "casual"
+      "casual",
+      "laptop"
     ],
     "blurb": {
       "az": "Telliskividə yeni açılıb və artıq Helsinki çay və qəhvə festivalında çay üzrə ikinci yeri tutub. Matça və hocça üçün gəlin.",
@@ -1535,7 +1538,8 @@
     "price": 2,
     "types": [
       "coffee",
-      "casual"
+      "casual",
+      "laptop"
     ],
     "blurb": {
       "az": "1912-ci ildə Tallinin nəhəng kağız fabriki üçün yanğın deposu kimi tikilib. Bu gün Avropanın ən yaxşı 30 qəhvəxanasından biridir.",
@@ -1569,7 +1573,8 @@
     "types": [
       "coffee",
       "bakery",
-      "casual"
+      "casual",
+      "laptop"
     ],
     "blurb": {
       "az": "Paper Mill-in ikinci məkanı, Volta məhəlləsində: şüşə künc, nanə yaşılı zal və elə orada bişirilən xəmir işləri ilə dolu piştaxta. Monkey bread buraya gəlməyin səbəbidir: hündür, yapışqan, tikə-tikə ayrılan və kruassan kimi dadan bir çörək. Qəhvə də öz sözünü deyir, ponçiklər və qaragiləli xəmir işləri isə ayrıca yol getməyə dəyər.",
