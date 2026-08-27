@@ -730,8 +730,16 @@ It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
 scrolls out of reach is no use. On a phone it collapses to just the die.
 
+Under it, at the foot of the rail, is the locate button. It used to sit in the
+far bottom-left corner — the free one, but also as far from every other map
+control as the screen allows, so a thumb that had just pressed Surprise me had
+the length of the page to travel. It takes the rail's round shape so it reads
+as one of its buttons rather than as a stray card parked beneath them.
+
 The rail is vertically centred, and `placeRail()` in `assets/app.js` nudges it
-down on short windows so it can never ride up under the brand card.
+down on short windows so it can never ride up under the brand card — never so
+far down that its own foot leaves the screen, which is the floor the locate
+button used to provide by standing in the corner.
 
 ## Third-party pieces and their licences
 
@@ -856,9 +864,11 @@ in `assets/styles.css` and each of the two styles restates every one of them;
 change those values and the whole site follows.
 
 **The chrome.** Everything floats on the map: nothing has a page around it.
-One strip across the top — the brand card on the left, locate, **List** and the
+One strip across the top — the brand card on the left, **List** and the
 language switch on the right — and the filter chips on the line directly
-beneath it. There are no zoom buttons; the wheel, a double-click, a pinch and
+beneath it. The controls that are questions about the *map* rather than about
+the page stand on the map instead, in the left rail: the two colours, the
+radio, Surprise me, and locate at its foot. There are no zoom buttons; the wheel, a double-click, a pinch and
 the `+`/`-` keys all still zoom, and two more buttons standing on the map were
 paying for a job the map already does. The chips used to sit at the bottom,
 where the sheet covered them and they had to be hidden whenever the list was
