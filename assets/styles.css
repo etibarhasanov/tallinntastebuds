@@ -1,27 +1,35 @@
 /* ==========================================================================
    Tallinn Tastebuds — tokens
    --------------------------------------------------------------------------
-   ink      near-black with a cool cast, the colour of wet limestone
+   ink      near-black, cast towards the style's own hue
    muted    secondary text, hairline labels
-   paper    the floating cards
-   wash     page ground, a pale limestone grey (paekivi, Estonia's own stone)
+   paper    the floating cards — the surface that carries the colour
+   wash     page ground, button hovers, the ground behind a photo
    hairline the only border weight on the site
-   accent   Baltic blue, taken from the blue of the Estonian flag
+   accent   links and pins; Baltic blue here, from the blue of the flag
+
+   Every one of them is restated by each of the seven styles below. Nothing
+   on the site names a colour of its own — a component that did would be the
+   one thing that failed to change when you press a swatch.
    ========================================================================== */
 
+/* These are Blue's, to the value, because Blue is the style the page opens on
+   and this block is what it wears for the instant before the script sets
+   data-style. They used to be a palette of their own, which meant every cold
+   load flashed a colour world that is not one of the seven. */
 :root {
-  --ink:        #0d1b28;
-  --muted:      #52667a;
-  --paper:      #f6fafd;
-  --wash:       #dfeaf4;
-  --hairline:   #d2e0ed;
+  --ink:        #0e1b27;
+  --muted:      #536879;
+  --paper:      #f2f8ff;
+  --wash:       #dceaf9;
+  --hairline:   #c9dcef;
   --accent:     #00539c;
   --accent-lit: #0072ce;
   --here:       #c1420b;
 
-  --shadow: 0 1px 2px rgba(20, 26, 31, .04), 0 8px 28px rgba(20, 26, 31, .10);
-  --attrib-bg: rgba(255, 255, 255, .86);
-  --map-tint: transparent;
+  --shadow: 0 1px 2px rgba(20, 26, 31, .05), 0 8px 28px rgba(20, 26, 31, .12);
+  --attrib-bg: rgba(242, 248, 255, .88);
+  --map-tint: rgba(0, 83, 156, .30);
   --swatch-edge: rgba(0, 0, 0, .14);
 
   --display: "Familjen Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -405,74 +413,117 @@ a:hover { color: var(--accent-lit); }
 /* ==========================================================================
    The seven styles — one per colour of the spectrum.
 
-   Each is a colour world rather than an accent swap: card, ground, ink and
-   hairline all move to the hue, and the map takes a whisper of it. Everything
-   is redefined as tokens only, never as component rules, so the site follows.
+   Each is a colour world rather than an accent swap: card, ground, ink,
+   hairline and shadow all move to the hue, and the map takes the same hue
+   with them. Everything is redefined as tokens only, never as component
+   rules, so the site follows.
 
-   - The colour lives in the chrome, not the map. An earlier version tinted the
-     tiles with sepia() + saturate() + hue-rotate() and it made the map
-     unreadable: sepia flattens Positron's light greys into a single tone, so
-     road-against-land contrast fell from 1.30 to about 1.03 and labels lost
-     30-52% of theirs. --map-tint replaces it with mix-blend-mode: color, which
-     takes hue from the tint and lightness from the tiles, so contrast is
-     preserved by construction — measured at 96-103% of untinted.
-     The trade is honest: Positron's land is so light there is little room for
-     saturation, so the map cast is subtle by nature. Pushing it further means
-     losing the streets again. Raise the alpha and re-measure before believing
-     it looks fine.
+   - The card is the surface you actually look at, so it carries the hue.
+     An earlier version kept every light style's paper within a point of
+     white — #fffaf9, #fffbf5, #fffdf3, #ffffff, #fdfaff — which measures
+     out at a colour difference of 2-5 dE between any two of them, i.e. the
+     styles were the pins and nothing else. They now sit around L* 95-97
+     with real chroma, 7-19 dE apart, so switching one changes the page
+     rather than the map key.
+   - The colour lives in the chrome and the water, not the land. An earlier
+     version tinted the tiles with sepia() + saturate() + hue-rotate() and it
+     made the map unreadable: sepia flattens Positron's light greys into a
+     single tone, so road-against-land contrast fell from 1.30 to about 1.03
+     and labels lost 30-52% of theirs. --map-tint replaces it with
+     mix-blend-mode: color, which takes hue from the tint and lightness from
+     the tiles, so contrast is preserved by construction. Modelled on
+     Positron's own tones through the compositing spec's ClipColor, every
+     pair that matters — road/land, land/label, road/label, land/water —
+     holds at 94-104% of untinted all the way to alpha .45. So .36, not the
+     .22 it used to run at: Positron's land is too light to hold saturation
+     either way, but the bay is not, and in a coastal city the bay is a
+     third of the screen.
    - Amber stands in for yellow: yellow on white is about 1.3:1, far under the
      4.5:1 a link needs. Every accent here clears 4.5:1 on both paper and wash.
-   - Blue is the original design, untouched and untinted.
    - --here paints the "you are here" dot, and is deliberately a hue no accent
      in the same palette uses: a blue dot next to warm pins, a warm one in the
-     blue style, teal against indigo, warm against green. Otherwise you cannot
-     tell yourself from a restaurant.
-   - Indigo and green are the dark ones and swap to CARTO Dark Matter,
-     untinted. Two of them, because one dark option is a switch and two is a
-     choice.
+     blue style, teal against indigo and against amber, warm against green.
+     Otherwise you cannot tell yourself from a restaurant.
+   - Orange, green and indigo are the dark ones and swap to CARTO Dark Matter.
+     Three of them, one per temperature: espresso, forest, night.
    ========================================================================== */
 
+/* Brick and ceramic. The warmest light one after amber, and the only palette
+   whose accent is darker than its own hue reads — oxblood, not pillarbox. */
 [data-style="red"] {
-  --ink: #1e1517; --muted: #6d5c5e; --paper: #fffaf9; --wash: #f3ecea;
-  --hairline: #e9dcd9; --accent: #a81e28; --accent-lit: #ce3540;
-  --map-tint: rgba(168, 30, 40, .22);
+  --ink: #27141a; --muted: #7d5754; --paper: #fff0ea; --wash: #f7ddd4;
+  --hairline: #f0cec3; --accent: #a81e28; --accent-lit: #c9323d;
+  --map-tint: rgba(168, 30, 40, .36);
+  --shadow: 0 1px 2px rgba(74, 26, 22, .06), 0 8px 28px rgba(74, 26, 22, .14);
+  --attrib-bg: rgba(255, 240, 234, .88);
   --here: #0b62c4;
 }
+
+/* Espresso and amber — the warm dark. Its accent is the only one on the site
+   lighter than its own card, which is what a dark palette costs and also what
+   makes it the one that reads as lamplight rather than as a colour. */
 [data-style="orange"] {
-  --ink: #1f1911; --muted: #6e6153; --paper: #fffbf5; --wash: #f4eee4;
-  --hairline: #e9ded0; --accent: #96490a; --accent-lit: #c26410;
-  --map-tint: rgba(150, 73, 10, .22);
-  --here: #0b62c4;
+  --ink: #f8ece0; --muted: #c4a98d; --paper: #2b1d11; --wash: #1b1209;
+  --hairline: #4a3620; --accent: #f0a44c; --accent-lit: #ffbf76;
+  --map-tint: transparent;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .34), 0 8px 28px rgba(0, 0, 0, .46);
+  --attrib-bg: rgba(27, 18, 9, .86);
+  --swatch-edge: rgba(255, 255, 255, .22);
+  --here: #4ec7dd;
 }
+
+/* Ivory and sand. The card is properly cream here — this is the one that
+   looks like paper rather than like a screen. */
 [data-style="yellow"] {
-  --ink: #1d1a11; --muted: #6a6150; --paper: #fffdf3; --wash: #f3f0e2;
-  --hairline: #e7e1ca; --accent: #6e5a07; --accent-lit: #93790c;
-  --map-tint: rgba(110, 90, 7, .22);
+  --ink: #221f0e; --muted: #6d6242; --paper: #fcf6e0; --wash: #f0e6c2;
+  --hairline: #e5d8ae; --accent: #6b5806; --accent-lit: #8d7509;
+  --map-tint: rgba(110, 90, 7, .36);
+  --shadow: 0 1px 2px rgba(62, 52, 14, .07), 0 8px 28px rgba(62, 52, 14, .15);
+  --attrib-bg: rgba(252, 246, 224, .88);
   --here: #0b62c4;
 }
+
+/* Forest. */
 [data-style="green"] {
-  --ink: #e7f1ea; --muted: #a2b7a9; --paper: #1d2a23; --wash: #131f19;
+  --ink: #e7f1ea; --muted: #a2b7a9; --paper: #1d2a23; --wash: #101a15;
   --hairline: #354740; --accent: #6fd39a; --accent-lit: #93e7b7;
   --map-tint: transparent;
   --shadow: 0 1px 2px rgba(0, 0, 0, .34), 0 8px 28px rgba(0, 0, 0, .46);
-  --attrib-bg: rgba(19, 31, 25, .86);
+  --attrib-bg: rgba(16, 26, 21, .86);
   --swatch-edge: rgba(255, 255, 255, .22);
   --here: #e0873a;
 }
+
+/* Baltic. The lightest card of the seven and the only cool one, so it stays
+   the crisp default; the tint is there for the bay rather than the land. */
 [data-style="blue"] {
-  --ink: #141a1f; --muted: #5f6b75; --paper: #ffffff; --wash: #f2f1ec;
-  --hairline: #e3e1da; --accent: #00539c; --accent-lit: #0072ce;
-  --map-tint: transparent;
+  --ink: #0e1b27; --muted: #536879; --paper: #f2f8ff; --wash: #dceaf9;
+  --hairline: #c9dcef; --accent: #00539c; --accent-lit: #0072ce;
+  --map-tint: rgba(0, 83, 156, .30);
+  --shadow: 0 1px 2px rgba(20, 26, 31, .05), 0 8px 28px rgba(20, 26, 31, .12);
+  --attrib-bg: rgba(242, 248, 255, .88);
   --here: #c1420b;
 }
+
+/* Night. */
 [data-style="indigo"] {
-  --ink: #ececf5; --muted: #a8aac6; --paper: #262a42; --wash: #1a1e33;
+  --ink: #f0f0f8; --muted: #a8aac6; --paper: #262a42; --wash: #171b2e;
   --hairline: #41455f; --accent: #a7adf5; --accent-lit: #c0c4ff;
   --map-tint: transparent;
   --shadow: 0 1px 2px rgba(0, 0, 0, .34), 0 8px 28px rgba(0, 0, 0, .46);
-  --attrib-bg: rgba(26, 30, 51, .86);
+  --attrib-bg: rgba(23, 27, 46, .86);
   --swatch-edge: rgba(255, 255, 255, .22);
   --here: #3fd0c9;
+}
+
+/* Dusk. The deepest of the four light ones — heather, not lavender. */
+[data-style="violet"] {
+  --ink: #1f1329; --muted: #6a5a7c; --paper: #f6eefd; --wash: #e4d6f4;
+  --hairline: #d3c2e9; --accent: #6b3494; --accent-lit: #8b4ab8;
+  --map-tint: rgba(107, 52, 148, .36);
+  --shadow: 0 1px 2px rgba(48, 28, 66, .07), 0 8px 28px rgba(48, 28, 66, .15);
+  --attrib-bg: rgba(246, 238, 253, .88);
+  --here: #0b62c4;
 }
 
 /* Dark Matter is drawn almost black, which reads as a hole in the screen next
@@ -481,22 +532,21 @@ a:hover { color: var(--accent-lit); }
    The screen is the half doing the real work. A multiplier cannot lift a black
    off zero, so brightness alone leaves the land where it started; screen adds,
    and adds most to the darkest tones. Measured on Dark Matter's own tones, the
-   pair takes the land from #1a1c1e to #44474f and the water from #0e1013 to
-   #353843, while label contrast reads 5.9 against the 5.1 it has untouched.
+   pair takes the land from #1a1c1e to around #44474f and the water from
+   #0e1013 to #353843, while label contrast reads 5.7-5.8 against the 5.0 it
+   has untouched — the warm cast lands within a twentieth of a point of the
+   two cool ones, so the three darks are the same map at three temperatures.
    Lighter and still more legible than raw, which is the trade worth making;
    past this the labels start giving that back. */
+[data-style="orange"] .leaflet-tile-pane,
 [data-style="indigo"] .leaflet-tile-pane,
 [data-style="green"] .leaflet-tile-pane { filter: brightness(1.4); }
+[data-style="orange"] #map::after,
 [data-style="indigo"] #map::after,
 [data-style="green"] #map::after { mix-blend-mode: screen; }
+[data-style="orange"] #map::after { background: rgba(240, 205, 160, .18); }
 [data-style="indigo"] #map::after { background: rgba(199, 203, 240, .18); }
 [data-style="green"] #map::after { background: rgba(176, 226, 197, .18); }
-[data-style="violet"] {
-  --ink: #1a1620; --muted: #655c70; --paper: #fdfaff; --wash: #f1edf5;
-  --hairline: #e3dbe9; --accent: #6b3494; --accent-lit: #8b4ab8;
-  --map-tint: rgba(107, 52, 148, .22);
-  --here: #0b62c4;
-}
 
 /* ---------- the left rail: seven colours, then the random pick ---------- */
 
@@ -536,13 +586,19 @@ a:hover { color: var(--accent-lit); }
 }
 .swatch:focus-visible { outline-offset: 3px; }
 
+/* A light style is its accent; a dark one is its card with the accent as a
+   ring, so the three darks announce themselves in the rail before you press
+   them. */
 .sw-red    { background: #a81e28; }
-.sw-orange { background: #984a05; }
+.sw-orange { background: #2b1d11; box-shadow: inset 0 0 0 4px #f0a44c; }
 .sw-yellow { background: #93790c; }
 .sw-green  { background: #1d2a23; box-shadow: inset 0 0 0 4px #6fd39a; }
 .sw-blue   { background: #00539c; }
 .sw-indigo { background: #262a42; box-shadow: inset 0 0 0 4px #a7adf5; }
 .sw-violet { background: #67308d; }
+.sw-orange[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 4px #f0a44c, 0 0 0 2px var(--paper), 0 0 0 3px var(--ink);
+}
 .sw-indigo[aria-pressed="true"] {
   box-shadow: inset 0 0 0 4px #a7adf5, 0 0 0 2px var(--paper), 0 0 0 3px var(--ink);
 }

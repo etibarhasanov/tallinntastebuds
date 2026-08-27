@@ -15,12 +15,12 @@
   var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
   var TILE_URL_DARK = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 
-  /* One style per colour of the spectrum. Only the Indigo one is dark, and it
-     is the only one that needs different tiles — dark cards over the pale
-     Positron basemap would be unreadable. */
+  /* One style per colour of the spectrum. Three of them are dark — one warm,
+     one green, one blue — and those are the ones that need different tiles:
+     dark cards over the pale Positron basemap would be unreadable. */
   var STYLES = [
     { id: 'red',    dark: false },
-    { id: 'orange', dark: false },
+    { id: 'orange', dark: true  },
     { id: 'yellow', dark: false },
     { id: 'green',  dark: true  },
     { id: 'blue',   dark: false },
@@ -337,7 +337,7 @@
     document.documentElement.style.colorScheme = isDarkStyle(id) ? 'dark' : 'light';
 
     var theme = document.querySelector('meta[name="theme-color"]');
-    if (theme) theme.setAttribute('content', cssVar('--wash') || '#f2f1ec');
+    if (theme) theme.setAttribute('content', cssVar('--wash') || '#dceaf9');
   }
 
   function setStyle(id, opts) {
@@ -446,8 +446,8 @@
 
   function buildMarkers() {
     var accent = cssVar('--accent') || '#00539c';
-    var muted = cssVar('--muted') || '#5f6b75';
-    var paper = cssVar('--paper') || '#ffffff';
+    var muted = cssVar('--muted') || '#536879';
+    var paper = cssVar('--paper') || '#f2f8ff';
 
     state.places.forEach(function (place) {
       var marker = L.circleMarker([place.lat, place.lng], {
@@ -542,8 +542,8 @@
     return {
       accent: cssVar('--accent') || '#00539c',
       lit: cssVar('--accent-lit') || '#0072ce',
-      muted: cssVar('--muted') || '#5f6b75',
-      paper: cssVar('--paper') || '#ffffff',
+      muted: cssVar('--muted') || '#536879',
+      paper: cssVar('--paper') || '#f2f8ff',
       here: cssVar('--here') || '#c1420b'
     };
   }
