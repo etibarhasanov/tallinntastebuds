@@ -527,6 +527,10 @@ existed.
 
 1. A guest opens a place on the map and presses **Get the discount**.
 2. `deal.html` shows them a QR, the same code in large type, and a countdown.
+   The countdown is in the accent colour with a dot beating beside it, twice
+   the size of the small print around it — a picture of the page has frozen
+   digits and a frozen dot, so a waiter can tell a live pass from a
+   screenshot without checking anything.
 3. A waiter points their ordinary camera app at it — no app to install, no
    account, no training.
 4. `verify.html` opens on the waiter's phone and fills the screen green with

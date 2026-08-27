@@ -17,6 +17,13 @@
   var t = null;
   var timer = null;
 
+  /* The running tick, so waking the phone can re-check immediately rather
+     than waiting on an interval a backgrounded tab may have throttled. */
+  var currentTick = null;
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && currentTick) currentTick();
+  });
+
   function backLink() {
     /* Back to the place on the map, not the top of it. */
     return el('a', {
@@ -32,19 +39,37 @@
     card.appendChild(el('div', { className: 'pass-foot' }, [backLink()]));
   }
 
-  /* The countdown is the one moving thing on the page. It is here to be
-     looked at rather than read: a screenshot has a frozen one, and that is
-     the difference a waiter can see without checking anything. */
-  function startClock(node, onRollover) {
+  /* The countdown is the one moving thing on the page, and the only thing
+     standing between this and a screenshot doing the same job. So it is
+     drawn in the accent rather than the grey the rest of the small print
+     uses, and a dot beats beside it: a waiter glancing for half a second
+     catches a pulse where they might miss a digit.
+
+     What decides a rollover is the hour, not the countdown reaching zero.
+     untilNextHour never returns zero — it is HOUR minus a remainder, so its
+     range is 1 to HOUR — and a phone that slept through the turn would wake
+     to a fresh-looking countdown standing over a stale code. */
+  function startClock(node, dot, hour, onRollover) {
     if (timer) clearInterval(timer);
 
     function tick() {
+      if (P.hourNow() !== hour) { clearInterval(timer); onRollover(); return; }
+
       var left = P.untilNextHour();
-      if (left <= 0) { clearInterval(timer); onRollover(); return; }
       var mins = Math.floor(left / 60000);
       var secs = Math.floor((left % 60000) / 1000);
       node.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+
+      /* Restart the beat on each tick so the dot and the digits move
+         together. Left to its own CSS loop it drifts out of step with them
+         within a minute, and two things blinking a second apart read as
+         decoration rather than as one thing running. */
+      dot.classList.remove('is-beat');
+      void dot.offsetWidth;          /* reflow, so the animation can restart */
+      dot.classList.add('is-beat');
     }
+
+    currentTick = tick;
     tick();
     timer = setInterval(tick, 1000);
   }
@@ -80,13 +105,17 @@
 
       card.appendChild(el('p', { className: 'pass-code', textContent: value }));
 
-      var tick = el('span', { className: 'pass-tick' });
-      card.appendChild(el('p', { className: 'pass-clock' }, [
-        t('passUntil', { time: P.clockOf(P.hourStart(hour + 1)) }),
-        '  ·  ',
-        tick
-      ]));
-      startClock(tick, function () { draw(data, deal, place); });
+      /* aria-live off: the card around it is polite, and a countdown inside
+         a live region is a screen reader announcing the seconds all evening. */
+      var tick = el('span', { className: 'pass-tick', 'aria-live': 'off' });
+      var dot = el('span', { className: 'live-dot', 'aria-hidden': 'true' });
+      card.appendChild(el('p', { className: 'pass-live' }, [dot, tick]));
+
+      card.appendChild(el('p', {
+        className: 'pass-clock',
+        textContent: t('passUntil', { time: P.clockOf(P.hourStart(hour + 1)) })
+      }));
+      startClock(tick, dot, hour, function () { draw(data, deal, place); });
 
       var terms = P.textFor(deal.terms, data.lang);
       if (terms) card.appendChild(el('p', { className: 'pass-terms', textContent: terms }));
