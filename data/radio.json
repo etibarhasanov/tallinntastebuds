@@ -8,6 +8,10 @@
       "name": "Baku Retro FM",
       "url": "https://stream.bakuradioalliance.az/retrofm"
     },
+    "fi": {
+      "name": "YleX",
+      "url": "https://icecast.live.yle.fi/radio/YleX/icecast.audio"
+    },
     "pt": {
       "name": "Itapema FM",
       "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/ITA_FLO.mp3"
