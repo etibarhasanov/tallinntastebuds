@@ -1650,6 +1650,22 @@
     ]);
   }
 
+  /* The offer, small enough to read at a glance in a list row. The number is
+     taken from the line the deal already carries in the reader's language
+     rather than written a second time in the data, and the whole match
+     travels rather than the digits, because Turkish puts the sign in front:
+     "%15 indirim". An offer with no percentage in it — a free coffee, a
+     second pizza — falls back to the word the filter chip uses, which is the
+     honest thing a badge can say when there is no number to show. */
+  function dealMark(deal) {
+    var offer = window.TTBPass.textFor(deal.offer, state.lang);
+    var found = /%\s*\d+(?:[.,]\d+)?|\d+(?:[.,]\d+)?\s*%/.exec(offer);
+    return el('span', {
+      className: 'deal-mark',
+      textContent: found ? '−' + found[0].replace(/\s+/g, '') : t('filterDiscount')
+    });
+  }
+
   function section(labelKey, body) {
     return el('div', { className: 'section' }, [
       el('p', { className: 'eyebrow', textContent: t(labelKey) }),
@@ -2090,16 +2106,29 @@
     }
 
     function listRow(place) {
+      /* A discount used to be something you could only find by opening the
+         place, which meant opening seventy of them to learn that four save
+         you money. It is the one thing in a row that is an
+         offer rather than a description, so it is shown where the choosing
+         happens — and spelled into the label in full, since "−15%" read out
+         on its own says a number and not what it comes off. */
+      var deal = liveDealFor(place);
+      var offer = deal ? window.TTBPass.textFor(deal.offer, state.lang) : '';
+
       var row = el('button', {
         type: 'button',
         className: 'list-row' + (place.closed ? ' is-closed' : ''),
         /* The row's own label is what a screen reader reads, so anything the
            row shows has to be spelled into it or it is not there at all. */
-        'aria-label': t('openPlace', { name: place.name }) + ', ' + t(depthMarkKey(place))
+        'aria-label': t('openPlace', { name: place.name }) + ', ' + t(depthMarkKey(place)) +
+          (deal ? ', ' + (offer || t('filterDiscount')) : '')
       }, [
         el('span', { className: 'list-name', textContent: place.name }),
         el('span', { className: 'list-sub' }, [
+          /* After the price, which holds the same edge on every row, and
+             before the types, which are the part that can run long. */
           priceGauge(place.price),
+          deal ? dealMark(deal) : null,
           el('span', {
             className: 'list-types',
             textContent: (place.types || []).map(typeLabel)

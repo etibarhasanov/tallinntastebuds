@@ -1140,6 +1140,27 @@ body.panel-detail .panel {
   letter-spacing: .02em;
 }
 .list-row.is-closed .list-name { color: var(--muted); }
+
+/* The offer, in the row that has one. The sub line is otherwise all muted
+   grey — price, types — so the accent is enough to lift the badge out of it
+   without a fill, which would have put a second solid pill in a row that
+   already ends in one. */
+.deal-mark {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  padding: 2px 7px;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  line-height: 1.4;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.list-row:hover .deal-mark { border-color: var(--accent-lit); color: var(--accent-lit); }
 .empty-note {
   margin-top: 20px;
   font-family: var(--body);
@@ -1460,6 +1481,7 @@ body.panel-detail .panel {
   .list-row { padding: 10px 2px; column-gap: 8px; }
   .list-name { font-size: 15.5px; }
   .list-sub { margin-top: 3px; gap: 10px; }
+  .deal-mark { padding: 1px 6px; font-size: 9.5px; }
   /* Narrower screen, narrower badge — the name is what the row is for and it
      gets the space back. */
   .depth-mark { gap: 4px; padding: 2px 7px; font-size: 9px; letter-spacing: .08em; }

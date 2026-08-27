@@ -475,10 +475,10 @@ the word.
 
 ## Restaurant discounts
 
-A few places may one day give readers of this map something off the bill. The
-machinery for that is built and switched off: **no place has a live discount**,
-nothing on the map has changed, and `data/deals.json` is where that stays true
-until you decide otherwise.
+A few places give readers of this map something off the bill. Which ones, and
+whether the offer is switched on at all, lives in `data/deals.json` — a place
+with nothing in that file is exactly the place it was before any of this
+existed.
 
 ### How it works at the table
 
@@ -529,6 +529,22 @@ slower than scanning and quite a lot faster than turning a guest away.
 None of the three pages is linked from anywhere except that one button, none
 is in the sitemap, and all three carry `noindex` in the markup and in
 `_headers`.
+
+### The badge in the list
+
+A place with a live deal says so in its own row, next to the price: a small
+outlined pill reading **−15%**, so the offer is part of the choosing rather
+than something you only find by opening the place.
+
+The number is not written a second time in the data. It is taken from the
+`offer` line the deal already carries in the language being read, which is why
+Turkish shows **−%15** — the whole match travels, sign and all, rather than
+the digits. An offer with no percentage in it, a free coffee or a second
+pizza, falls back to the word the filter chip uses: **Discount**.
+
+The badge is drawn, so it is also spelled: the row's own `aria-label` ends
+with the full offer — "Open Pudel, Not filmed, 10% off your order" — because
+"−10%" read out on its own is a number and not what it comes off.
 
 ### The Discount chip
 
@@ -750,7 +766,7 @@ assets/staff.js            )
 data/restaurants.json      the only file you edit regularly
 data/taxonomy.json         the controlled vocabulary of types
 data/ui.json               every interface string, in every language
-data/deals.json            discounts; empty of live ones by default
+data/deals.json            the discounts, and which of them are live
 data/schema.json           JSON Schema, for editor autocomplete
 photos/<restaurant-id>/    photos, one folder per place
 tools/validate.mjs         dependency-free data validator
