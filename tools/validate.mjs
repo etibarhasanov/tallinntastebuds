@@ -12,6 +12,7 @@
  *   - invalid JSON, wrong shapes, duplicate ids, ids that are not slugs
  *   - coordinates outside Tallinn's bounding box (catches swapped lat/lng)
  *   - a type used in restaurants.json that is not in taxonomy.json
+ *   - a taxonomy type claiming a reserved id, such as "discount"
  *   - a taxonomy type missing a label in any language
  *   - a UI string present in one language but missing in another
  *   - a photo listed in the data that does not exist in the repo
@@ -136,6 +137,12 @@ if (ui !== null) {
 
 if (languages.length === 0) languages = ['en'];
 
+/* The filter row carries one chip that is not a type: Discount, which reads
+   data/deals.json instead of a place's types. A taxonomy type claiming the
+   same id would give the row two chips answering to one name, each filtering
+   the other's places out. */
+const RESERVED_TYPE_IDS = new Set(['discount']);
+
 /* ------------------------------------------------------------ taxonomy.json */
 
 const taxonomy = readJSON('data/taxonomy.json');
@@ -151,6 +158,9 @@ if (taxonomy !== null) {
       if (!isNonEmptyString(type.id)) { fail(where, 'has no "id"'); return; }
       if (!SLUG.test(type.id)) fail(where, `id "${type.id}" is not a lowercase slug`);
       if (typeIds.has(type.id)) fail(where, `id "${type.id}" is used twice`);
+      if (RESERVED_TYPE_IDS.has(type.id)) {
+        fail(where, `id "${type.id}" is reserved for the filter chip of the same name`);
+      }
       typeIds.add(type.id);
 
       for (const lang of languages) {

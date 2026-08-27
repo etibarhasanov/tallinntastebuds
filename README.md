@@ -492,6 +492,25 @@ None of the three pages is linked from anywhere except that one button, none
 is in the sitemap, and all three carry `noindex` in the markup and in
 `_headers`.
 
+### The Discount chip
+
+The filter row grows one chip when any place has a live deal, sitting first
+among the filters, right after **All**. It reads `data/deals.json` rather than
+a place's `types`, so it is the one chip that is not a taxonomy entry — `tools/validate.mjs`
+refuses a taxonomy type that tries to claim the id `discount`, since two chips
+answering to one name would filter each other's places out.
+
+With no live deal anywhere the chip is not drawn at all, which is the state the
+site sat in before Magussoolane.
+
+Narrowing to a **single** place moves the map onto it, at zoom 15 or closer.
+That is not special to discounts — any filter that leaves one place does it,
+because leaving the map where it was makes you hunt for the one pin still
+lit. The place is not opened: the filter said where, not read me.
+
+`?type=discount` works as a link, and combines with the rest: `?type=discount,bakery`
+is either.
+
 ### Switching one on
 
 Add an entry to `data/deals.json`:
