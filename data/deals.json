@@ -13,5 +13,20 @@
       "es": "15% de descuento en tu pedido",
       "tr": "Siparişinizde %15 indirim"
     }
+  },
+  {
+    "id": "pudel",
+    "live": true,
+    "key": "RH0WBQ494H7T37VGCF1W98CZ2A00FNJT",
+    "offer": {
+      "en": "10% off your order",
+      "et": "10% soodustust tellimuselt",
+      "ru": "Скидка 10% на заказ",
+      "fi": "10% alennus tilauksesta",
+      "az": "Sifarişinizə 10% endirim",
+      "pt": "10% de desconto no seu pedido",
+      "es": "10% de descuento en tu pedido",
+      "tr": "Siparişinizde %10 indirim"
+    }
   }
 ]
