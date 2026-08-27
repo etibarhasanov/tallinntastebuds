@@ -24,6 +24,10 @@
       "name": "Наше Радио",
       "url": "https://nashe1.hostingradio.ru/nashe-256"
     },
+    "es": {
+      "name": "Loca FM Urban",
+      "url": "https://s1.we4stream.com:2020/stream/locaurban"
+    },
     "tr": {
       "name": "Joy Türk Rock",
       "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/JOYTURK_ROCK.mp3"
