@@ -25,6 +25,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [Languages](#languages)
 - [Restaurant discounts](#restaurant-discounts)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
+- [The map tiles need a key](#the-map-tiles-need-a-key)
 - [What the validator checks](#what-the-validator-checks)
 - [Files](#files)
 - [Third-party pieces and their licences](#third-party-pieces-and-their-licences)
@@ -958,12 +959,54 @@ down on short windows so it can never ride up under the brand card — never so
 far down that its own foot leaves the screen, which is the floor the locate
 button used to provide by standing in the corner.
 
+## The map tiles need a key
+
+The basemap comes from CARTO. It used to be free to anyone who attributed it,
+which is what this file said for a long time, and it is still free — but since
+2026 it wants a key, and it stamps **API KEY REQUIRED** diagonally across every
+tile fetched without one. The map still draws. It just wears the nag.
+
+Get one at **[carto.com/basemaps/apikey](https://carto.com/basemaps/apikey/)**.
+No CARTO account, no approval queue, and no need to say in advance whether the
+project is commercial. Free up to **5 million tile requests a calendar month**,
+which a map of seventy restaurants will never come close to.
+
+Then put it in one place, `TILE_KEY` at the top of `assets/app.js`:
+
+```js
+var TILE_KEY = 'your_key_here';
+```
+
+That is the whole change. Both styles read it, and the light and dark tiles
+are the same key.
+
+### Leaving it empty
+
+An empty `TILE_KEY` is a working state, not a broken one: the tiles are
+requested exactly the way they are today, watermark and all. Nothing throws,
+nothing is blocked, and a fork of this repo with no key still gets a map.
+
+### The key is public, and that is fine
+
+This is a static site with no build step and no server, so anything the browser
+needs is readable by anyone who opens the page or the repo. A basemap key is
+the kind of key where that is acceptable: it is a meter reading rather than a
+password, and it unlocks nothing except the tiles it is already drawing.
+
+What it does need is a **domain lock**, set in the CARTO dashboard against the
+site's hostname. That is what actually stops somebody spending your five
+million tiles — not secrecy, which a public repo cannot offer anyway. Never
+reach for this reasoning with a key that can write, spend or read private
+data; those do not belong in a static site at all.
+
+---
+
 ## Third-party pieces and their licences
 
 | Piece | Version | Licence | Notes |
 | --- | --- | --- | --- |
 | [Leaflet](https://leafletjs.com/) | 1.9.4, pinned | BSD-2-Clause | Loaded from unpkg with Subresource Integrity hashes, so a compromised CDN cannot swap the file. |
-| [CARTO Positron](https://carto.com/basemaps/) basemap (`light_all`) | — | Free for use with attribution, no key or account | The tiles. |
+| [CARTO Positron](https://carto.com/basemaps/) basemap (`light_all`, `dark_all`) | — | Free with attribution, up to 5M tiles a month, **key required** | The tiles. See [The map tiles need a key](#the-map-tiles-need-a-key). |
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) data | — | ODbL | The map data behind the tiles. |
 | [Familjen Grotesk](https://fonts.google.com/specimen/Familjen+Grotesk), [Literata](https://fonts.google.com/specimen/Literata), [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) | — | SIL Open Font License 1.1 | Served by Google Fonts. |
 | [Instagram embed.js](https://developers.facebook.com/docs/instagram/oembed/) | — | Meta Platforms terms | Only loaded after a visitor presses play. |
@@ -1073,8 +1116,11 @@ visitors running an ad blocker.
 traffic from the EU you are expected to ask for consent before the tag loads.
 There is no consent banner on this site.
 
-If CARTO ever stops serving free tiles, the one line to change is `TILE_URL`
-near the top of `assets/app.js`.
+CARTO has already made one move here — tiles now want a key, free but
+required, which is what `TILE_KEY` is for. If they ever go further and stop
+serving free tiles altogether, the lines to change are `TILE_URL`,
+`TILE_URL_DARK` and `TILE_ATTRIBUTION` near the top of `assets/app.js`.
+There is no CSP to update alongside them — see above for why.
 
 ---
 
