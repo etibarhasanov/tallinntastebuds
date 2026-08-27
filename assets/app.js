@@ -36,6 +36,7 @@
 
   var state = {
     places: [],
+    deals: [],           // data/deals.json, usually empty
     types: [],
     ui: {},
     langs: [],
@@ -176,6 +177,21 @@
       if (state.places[i].id === id) return state.places[i];
     }
     return null;
+  }
+
+  /* A place only shows a discount when one is set up, switched on, and
+     inside whatever run of dates it was given. Everything else — an entry
+     still being drafted, a campaign that has finished, a place that has
+     closed — leaves the panel exactly as it was before any of this existed.
+
+     assets/pass.js owns the date arithmetic and is loaded alongside this
+     file; if it ever fails to arrive, no place has a deal and the map is
+     none the wiser. */
+  function liveDealFor(place) {
+    if (!window.TTBPass || place.closed) return null;
+    var deal = window.TTBPass.find(state.deals, place.id);
+    if (!deal || !deal.live) return null;
+    return window.TTBPass.windowState(deal) === 'open' ? deal : null;
   }
 
   function toast(message) {
@@ -1570,6 +1586,27 @@
     return link;
   }
 
+  /* The button leaves the map for deal.html, which is where the code and the
+     QR are made. Deliberately a link rather than a panel that opens in place:
+     what the guest holds up at the till should be a page of its own, with an
+     address they can reopen, not a state this one happens to be in. */
+  function dealBlock(place, deal) {
+    var offer = window.TTBPass.textFor(deal.offer, state.lang);
+    var open = el('a', {
+      className: 'link-btn is-primary',
+      href: 'deal.html?r=' + encodeURIComponent(place.id),
+      textContent: t('passGet')
+    });
+    open.addEventListener('click', function () {
+      trackEvent('deal_open', { place: place.name });
+    });
+
+    return el('div', { className: 'deal-block' }, [
+      offer ? el('p', { className: 'deal-offer', textContent: offer }) : null,
+      open
+    ]);
+  }
+
   function section(labelKey, body) {
     return el('div', { className: 'section' }, [
       el('p', { className: 'eyebrow', textContent: t(labelKey) }),
@@ -1616,6 +1653,12 @@
     if (place.closed) {
       dom.detail.appendChild(el('p', { className: 'muted-note', textContent: t('closedNote') }));
     }
+
+    /* A discount, on the few places that have one, sits above the reel: it is
+       the one thing on the panel that expires, so it is the one thing that
+       cannot wait until the bottom of a scroll. */
+    var deal = liveDealFor(place);
+    if (deal) dom.detail.appendChild(section('passOffer', dealBlock(place, deal)));
 
     /* What there is to see comes first, straight under the name and the Call
        button, because it is the reason to keep reading. It used to sit two
@@ -2492,13 +2535,17 @@
       getJSON('data/restaurants.json'),
       getJSON('data/taxonomy.json'),
       getJSON('data/ui.json'),
+      /* Optional in the same way the station is: no file, no deals, and the
+         panel never grows the section. */
+      getJSON('data/deals.json').catch(function () { return []; }),
       /* The station is optional in every sense: no file, no station, no
          button, and the rest of the map does not notice. */
       getJSON('data/radio.json').catch(function () { return null; })
     ]).then(function (loaded) {
       state.places = loaded[0] || [];
       state.types = (loaded[1] && loaded[1].types) || [];
-      state.radio = loaded[3] || null;
+      state.deals = loaded[3] || [];
+      state.radio = loaded[4] || null;
       state.ui = loaded[2] || {};
       state.langs = Object.keys(state.ui);
 

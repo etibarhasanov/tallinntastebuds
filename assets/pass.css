@@ -1,0 +1,193 @@
+/* ==========================================================================
+   Tallinn Tastebuds — the discount pass
+   --------------------------------------------------------------------------
+   Three small pages that sit beside the map rather than inside it: deal.html,
+   verify.html and staff.html. They load assets/styles.css first for the
+   tokens, the card and the button, and this file only for what a single
+   scrolling column needs that a full-screen map does not.
+   ========================================================================== */
+
+/* The map owns the viewport and never scrolls; these pages are ordinary
+   documents and must. */
+html, body {
+  height: auto;
+  overflow: visible;
+}
+
+.pass-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: calc(24px + var(--safe-t)) calc(16px + var(--safe-r))
+           calc(32px + var(--safe-b)) calc(16px + var(--safe-l));
+}
+
+.pass-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pass-head { display: flex; flex-direction: column; gap: 4px; }
+
+.pass-name {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+}
+
+.pass-lede { font-size: 15px; }
+.pass-terms { font-size: 13px; color: var(--muted); }
+
+/* ---------- the code itself ---------- */
+
+/* Held up at arm's length across a counter, so it is the largest thing on
+   the page after the QR. The wide tracking is what makes a waiter reading it
+   aloud land on the right character. */
+.pass-code {
+  font-family: var(--mono);
+  font-size: clamp(38px, 13vw, 52px);
+  font-weight: 500;
+  letter-spacing: .16em;
+  line-height: 1.1;
+  text-align: center;
+  /* The tracking is applied to the right of every character including the
+     last, which throws the block off centre without this. */
+  text-indent: .16em;
+  word-break: break-all;
+}
+
+.pass-clock {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* The ticking half of the line above. A screenshot freezes it, which is the
+   point: a still picture of this page is visibly a still picture. */
+.pass-tick { font-variant-numeric: tabular-nums; }
+
+/* ---------- the QR ---------- */
+
+/* White ground and black modules whatever palette the site is wearing.
+   Scanners cope badly with an inverted code and worse with a tinted one, and
+   this is the one element on the page whose job is to be machine-read — so it
+   is the one element that does not follow the style switch. */
+.qr {
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 12px;
+  align-self: center;
+  width: 100%;
+  max-width: 320px;
+}
+.qr svg { display: block; width: 100%; height: auto; }
+
+/* ---------- verdict ---------- */
+
+/* Green and red are named outright here, and nowhere else on the site.
+   A waiter reads this across a counter in about half a second, and the answer
+   has to survive both palettes and a stranger's expectations of what a green
+   screen means. Tying it to the accent would make "valid" brick red in one
+   style and forest green in the other, which is worse than a fixed colour. */
+.verdict {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 30px 20px;
+  border-radius: var(--radius);
+  text-align: center;
+  color: #fff;
+}
+.verdict.is-ok   { background: #147a3d; }
+.verdict.is-no   { background: #a3161d; }
+.verdict.is-warn { background: #8a5a08; }
+
+.verdict-word {
+  font-family: var(--display);
+  font-size: clamp(30px, 10vw, 40px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+}
+
+/* Colour alone would leave a colour-blind waiter guessing, and the word is
+   not always read at a glance. The mark says the same thing a third way. */
+.verdict-mark {
+  width: 46px;
+  height: 46px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.verdict-note { font-size: 14px; }
+
+/* ---------- notices ---------- */
+
+/* A deal that is not published yet still has a working page, reachable by
+   anyone holding the link. This band is what stops that page being mistaken
+   for a live offer. */
+.pass-flag {
+  padding: 10px 12px;
+  border: 1px dashed var(--muted);
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--muted);
+}
+
+.pass-foot {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pass-brand {
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+}
+.pass-brand:hover { color: inherit; }
+
+.pass-wordmark {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+/* ---------- staff ---------- */
+
+.staff-also {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+}
+
+/* The previous hour's code is accepted but is not the one to read out, so it
+   is deliberately quieter than the current one. */
+.staff-also .pass-code {
+  font-size: 22px;
+  color: var(--muted);
+}

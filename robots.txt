@@ -1,5 +1,13 @@
-# Everything here is meant to be found.
+# Everything on the map is meant to be found.
 User-agent: *
 Allow: /
+
+# The discount pages are not. Each one is meaningless without a place in the
+# query string, and a crawled copy of a code that expires within the hour is
+# worse than meaningless. The pages carry a noindex tag of their own too,
+# which is the half that actually binds.
+Disallow: /deal.html
+Disallow: /verify.html
+Disallow: /staff.html
 
 Sitemap: https://tallinntastebuds.pages.dev/sitemap.xml

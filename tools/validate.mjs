@@ -17,6 +17,8 @@
  *   - a photo listed in the data that does not exist in the repo
  *   - a reel value that is not a real Instagram or TikTok permalink shape
  *   - a phone number that is not in international form, such as +372 661 0180
+ *   - a deal in deals.json for a place that does not exist, sharing a key with
+ *     another deal, or switched live with nothing written in it
  *
  * Warns on:
  *   - placeholder blurbs, missing reels, missing phone numbers, missing blurb translations
@@ -348,6 +350,108 @@ if (places !== null) {
   }
 }
 
+/* ---------------------------------------------------------------- deals.json
+   Optional. Missing, empty, or full of switched-off entries all mean the same
+   thing to the site: no place shows a discount. What is checked here is that
+   an entry which IS switched on cannot be half-finished — a deal pointing at
+   a place that does not exist, or with no words to show a guest, would reach
+   the till before anyone noticed.
+
+   The keys are not secrets. They ship in a public file on a static site and
+   anyone can read them; the hourly rotation is what does the work. See the
+   README before treating one as though it were private. */
+
+const DEAL_KEYS = new Set(['id', 'live', 'key', 'offer', 'terms', 'from', 'until']);
+const DEAL_KEY_CHARS = /^[0-9A-HJKMNP-TV-Z]{16,64}$/;
+const DAY = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+
+const dealsPath = join(DATA, 'deals.json');
+const deals = existsSync(dealsPath) ? readJSON('data/deals.json') : [];
+const seenDeals = new Set();
+const seenKeys = new Set();
+
+if (deals !== null && !Array.isArray(deals)) {
+  fail('data/deals.json', 'the top level must be an array');
+} else if (Array.isArray(deals)) {
+  deals.forEach((deal, i) => {
+    const where = `data/deals.json[${i}]`;
+    if (!isPlainObject(deal)) { fail(where, 'must be an object'); return; }
+
+    for (const key of Object.keys(deal)) {
+      if (!DEAL_KEYS.has(key)) warn(where, `unknown key "${key}"`);
+    }
+
+    if (!isNonEmptyString(deal.id) || !SLUG.test(deal.id)) {
+      fail(where, '"id" must be a lowercase slug');
+    } else {
+      if (seenDeals.has(deal.id)) fail(where, `duplicate deal for "${deal.id}"`);
+      seenDeals.add(deal.id);
+      /* The id is the join to restaurants.json, and a deal for a place that
+         is not on the map can never be opened from it. */
+      if (seenIds.size && !seenIds.has(deal.id)) {
+        fail(where, `"${deal.id}" is not a place in restaurants.json`);
+      }
+    }
+
+    if (typeof deal.live !== 'boolean') {
+      fail(where, '"live" must be true or false — leave it false until the restaurant has agreed');
+    }
+
+    if (!isNonEmptyString(deal.key) || !DEAL_KEY_CHARS.test(deal.key)) {
+      fail(where, '"key" must be 16 to 64 characters from the code alphabet (0-9 A-Z, no I L O U)');
+    } else if (seenKeys.has(deal.key)) {
+      /* Two places sharing a key means either one verifies the other's
+         codes, which is the one way this can go quietly wrong. */
+      fail(where, 'two deals share a key — every place needs its own');
+    } else {
+      seenKeys.add(deal.key);
+    }
+
+    for (const field of ['offer', 'terms']) {
+      if (deal[field] === undefined) continue;
+      if (!isPlainObject(deal[field])) { fail(where, `"${field}" must be an object of translations`); continue; }
+      for (const lang of Object.keys(deal[field])) {
+        if (!languages.includes(lang)) fail(where, `"${field}" has unknown language "${lang}"`);
+        else if (!isNonEmptyString(deal[field][lang])) fail(where, `"${field}.${lang}" is empty`);
+      }
+    }
+
+    for (const field of ['from', 'until']) {
+      if (deal[field] === undefined) continue;
+      if (!isNonEmptyString(deal[field]) || !DAY.test(deal[field])) {
+        fail(where, `"${field}" must be a date like 2026-09-01`);
+      }
+    }
+    if (deal.from && deal.until && DAY.test(deal.from) && DAY.test(deal.until) && deal.from > deal.until) {
+      fail(where, '"from" is after "until", so the deal can never run');
+    }
+
+    /* A live deal is about to be shown to a stranger, so it is held to more
+       than a dormant one: it needs words, and it needs them in English at
+       minimum, which is what every page falls back to. */
+    if (deal.live === true) {
+      if (!isPlainObject(deal.offer) || !isNonEmptyString(deal.offer.en)) {
+        fail(where, 'a live deal needs "offer.en" — that is the line the guest and the waiter both read');
+      }
+      for (const lang of languages) {
+        if (isPlainObject(deal.offer) && !isNonEmptyString(deal.offer[lang])) {
+          warn(where, `live deal has no "offer" in ${lang}`);
+        }
+      }
+      if (deal.until && DAY.test(deal.until) && deal.until < todayStamp()) {
+        warn(where, `is live but finished on ${deal.until}`);
+      }
+    }
+  });
+}
+
+function todayStamp() {
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
 /* -------------------------------------------------- taxonomy / photo sweeps */
 
 for (const id of typeIds) {
@@ -387,5 +491,7 @@ if (errors.length) {
   process.exit(1);
 }
 
+const liveDeals = Array.isArray(deals) ? deals.filter((d) => d && d.live === true).length : 0;
+
 console.log('');
-console.log(`OK — ${count} place${count === 1 ? '' : 's'}, ${typeIds.size} types, ${languages.length} languages (${languages.join(', ')}), ${warnings.length} warning${warnings.length === 1 ? '' : 's'}.`);
+console.log(`OK — ${count} place${count === 1 ? '' : 's'}, ${typeIds.size} types, ${languages.length} languages (${languages.join(', ')}), ${liveDeals} live deal${liveDeals === 1 ? '' : 's'}, ${warnings.length} warning${warnings.length === 1 ? '' : 's'}.`);

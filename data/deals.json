@@ -1,0 +1,15 @@
+[
+  {
+    "id": "bekker-pagariari",
+    "live": false,
+    "key": "PR3S960YQP1RZ4HR74H5ABSBBZ3XNMCV",
+    "offer": {
+      "en": "Sample offer — not a real discount. Nothing is live yet.",
+      "et": "Näidispakkumine — see ei ole päris soodustus."
+    },
+    "terms": {
+      "en": "One per table. Not with other offers.",
+      "et": "Üks laua kohta. Ei kehti koos teiste pakkumistega."
+    }
+  }
+]
