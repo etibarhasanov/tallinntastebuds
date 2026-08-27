@@ -23,6 +23,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [Searching the list](#searching-the-list)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Languages](#languages)
+- [Restaurant discounts](#restaurant-discounts)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
 - [What the validator checks](#what-the-validator-checks)
 - [Files](#files)
@@ -434,6 +435,129 @@ the word.
 
 ---
 
+## Restaurant discounts
+
+A few places may one day give readers of this map something off the bill. The
+machinery for that is built and switched off: **no place has a live discount**,
+nothing on the map has changed, and `data/deals.json` is where that stays true
+until you decide otherwise.
+
+### How it works at the table
+
+1. A guest opens a place on the map and presses **Get the discount**.
+2. `deal.html` shows them a QR, the same code in large type, and a countdown.
+3. A waiter points their ordinary camera app at it — no app to install, no
+   account, no training.
+4. `verify.html` opens on the waiter's phone and fills the screen green with
+   **VALID**, or red with the reason it is not.
+
+The code is rebuilt every hour:
+
+```
+hour = floor(now / one hour)
+code = HMAC-SHA256(the deal's key, "<place-id>:<hour>")   first 25 bits, base 32
+```
+
+The hour travels inside the QR next to the code, so the verifier checks the
+hour the guest actually claimed. It accepts the hour before and the hour after
+as well as the current one — that is what makes it usable in a room where a
+waiter takes six minutes to reach a table and neither phone has a perfect
+clock. A screenshot is therefore worth two or three hours, not forever, which
+is the whole point of the rotation.
+
+### The three addresses
+
+Replace `<place-id>` with the `id` from `restaurants.json` — the same slug
+`?spot=` uses.
+
+| Who | Address | How they get there |
+| --- | --- | --- |
+| Guest | `/deal.html?r=<place-id>` | The **Get the discount** button on the place's panel |
+| Waiter | `/verify.html?r=…&h=…&c=…` | Scanning the guest's QR. Never typed by hand |
+| Counter | `/staff.html?r=<place-id>` | **You send this link to the restaurant once.** They bookmark it |
+
+So the staff URL to hand over is, in full:
+
+```
+https://tallinntastebuds.pages.dev/staff.html?r=bekker-pagariari
+```
+
+`staff.html` shows the code the guest's screen is showing right now, plus the
+previous hour's, which is also accepted. It is the fallback for the evenings
+when the camera will not focus, the guest's screen is cracked, or the cellar
+has no signal to load `verify.html` on. Comparing five characters by eye is
+slower than scanning and quite a lot faster than turning a guest away.
+
+None of the three pages is linked from anywhere except that one button, none
+is in the sitemap, and all three carry `noindex` in the markup and in
+`_headers`.
+
+### Switching one on
+
+Add an entry to `data/deals.json`:
+
+```json
+{
+  "id": "bekker-pagariari",
+  "live": true,
+  "key": "PR3S960YQP1RZ4HR74H5ABSBBZ3XNMCV",
+  "offer": { "en": "10% off the bill", "et": "10% arvest" },
+  "terms": { "en": "One per table.", "et": "Üks laua kohta." },
+  "from": "2026-09-01",
+  "until": "2026-12-31"
+}
+```
+
+| Field | |
+| --- | --- |
+| `id` | Must be a place in `restaurants.json` |
+| `live` | `false` keeps it invisible on the map while remaining testable by URL |
+| `key` | 16–64 characters of `0-9 A-Z`, no `I L O U`. **Different for every place** |
+| `offer` | Translations, like `blurb`. A live deal must have `en` at minimum |
+| `terms` | Optional small print |
+| `from`, `until` | Optional, inclusive. Outside them the button disappears |
+
+Generate a key with:
+
+```bash
+node -e "const A='0123456789ABCDEFGHJKMNPQRSTVWXYZ';console.log([...require('crypto').randomBytes(32)].map(x=>A[x%32]).join('').slice(0,32))"
+```
+
+Then `node tools/validate.mjs`. It refuses a deal pointing at a place that does
+not exist, two deals sharing a key, and anything switched `live` with no words
+in it. The summary line ends with a live-deal count, so CI tells you what is
+switched on.
+
+### Testing before anything is public
+
+Leave `live` at `false` and open the pages by hand. They work in full; the
+guest and verify pages both show a dashed **preview** band so a dormant deal
+can never be mistaken for a real one. Nothing on the map changes, and nobody
+who has not been given the URL can find them.
+
+`crypto.subtle` only exists in a secure context, so `file://` will not do —
+use the local server from [Run it locally](#run-it-locally). `localhost`
+counts as secure.
+
+### What this is not
+
+There is no server here. **The deal keys ship inside `data/deals.json`, which
+is a public file on a public site, and anyone who opens it can mint codes all
+day.** That is a deliberate trade rather than an oversight: the thing an
+hourly code defends against is a screenshot going round a group chat, and it
+does that completely. What it cannot do is stop someone determined, or stop
+the same guest redeeming twice at two tables — a human seeing them is the only
+control there.
+
+If a discount ever starts costing real money, the upgrade is small and this
+repo is already set up for it. Add `functions/api/verify.js`; Cloudflare Pages
+picks up a `functions/` directory on the deploy you already have. The key
+moves server-side, a KV write makes each code single-use, and only
+`assets/verify.js` changes — swap the local HMAC for a `fetch`. Roughly fifty
+lines, and the guest-facing half stays exactly as it is.
+
+---
+
 ## Deploy to Cloudflare Pages
 
 Cloudflare Pages is the live host. There is nothing to build, so there is no
@@ -557,9 +681,19 @@ to read and write first.
 index.html                 the whole page
 assets/styles.css          design tokens at the top, then everything else
 assets/app.js              map, panel, filters, i18n, lightbox — no framework
+deal.html                  the guest's discount pass          } all three are
+verify.html                what a waiter sees after scanning  } unlinked and
+staff.html                 the current code, for the counter  } noindex
+assets/pass.js             hourly code, shared by those three and the map
+assets/pass.css            styles for those three
+assets/qr.js              QR encoder, written out, no dependency
+assets/deal.js             ) one small script
+assets/verify.js           ) per page
+assets/staff.js            )
 data/restaurants.json      the only file you edit regularly
 data/taxonomy.json         the controlled vocabulary of types
 data/ui.json               every interface string, in every language
+data/deals.json            discounts; empty of live ones by default
 data/schema.json           JSON Schema, for editor autocomplete
 photos/<restaurant-id>/    photos, one folder per place
 tools/validate.mjs         dependency-free data validator
@@ -758,6 +892,13 @@ both OpenStreetMap and CARTO. Do not remove it.**
 
 No scripts or fonts beyond the table above. Apart from Google Analytics,
 the only thing stored on a visitor's device is their language choice.
+
+`assets/qr.js` is deliberately **not** in that table. Every QR library worth
+using is a dependency this repo would otherwise not have, and the discount
+pages are the ones most likely to be opened on a bad connection in a cellar,
+so the encoder is written out in the repo instead — ISO/IEC 18004 byte mode,
+error correction level M. It is checked against a reference encoder and a
+scanner, module for module, rather than trusted because it looks like a QR.
 
 ### Analytics
 

@@ -892,6 +892,19 @@ body.panel-detail .panel {
 .link-btn.is-primary { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .link-btn.is-primary:hover { background: var(--accent-lit); border-color: var(--accent-lit); color: var(--paper); }
 
+/* discount
+   Only ever drawn for a place that has a live deal in data/deals.json, which
+   for now is none of them. */
+
+.deal-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.deal-offer { font-size: 15px; }
+
 /* reel */
 
 .reel-slot { position: relative; }
