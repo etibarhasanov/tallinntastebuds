@@ -768,7 +768,13 @@ a:hover { color: var(--accent-lit); }
   visibility: hidden;
   --panel-pad: 26px;
   --panel-pad-t: 44px;
-  --search-h: 60px;
+  /* What the group headings stick under. It is the search field plus the
+     8px the sticky search box carries below it, and it is written as that
+     sum rather than as a number because it had drifted to 60px against a
+     real 46 — a 14px slot under the search where rows scrolled past in the
+     open, above the heading that was supposed to be covering them. */
+  --search-field-h: 38px;
+  --search-h: calc(var(--search-field-h) + 8px);
   transition: transform .34s var(--ease), visibility 0s linear .34s,
               background-color .25s var(--ease);
 }
@@ -865,13 +871,6 @@ body.panel-detail .panel {
   flex-wrap: wrap;
   gap: 6px 14px;
 }
-.coords {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  color: var(--muted);
-  letter-spacing: -.01em;
-}
-
 /* The Call button rides with the name rather than with the links at the
    bottom, so a phone finds it without scrolling past the reel and the photos.
    inline-flex keeps the handset glued to the word at any text size. */
@@ -1048,16 +1047,9 @@ body.panel-detail .panel {
 
 /* list */
 
+/* Just the eyebrow now — whose map this is. The heading that used to sit
+   under it moved into the list, where each group says its own name. */
 .list-head { margin-bottom: 4px; padding-right: 30px; }
-.list-title {
-  font-family: var(--display);
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: -.022em;
-  margin: 5px 0 3px;
-}
-.list-title:focus { outline: none; }
-.list-title:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 3px; }
 
 /* The search field. A hairline box rather than a filled one: it is a tool
    the list offers, not the thing the panel is about. The magnifier and the
@@ -1076,7 +1068,7 @@ body.panel-detail .panel {
 .search-field { position: relative; }
 .search-input {
   width: 100%;
-  height: 38px;
+  height: var(--search-field-h);
   padding: 0 34px 0 32px;
   background: var(--paper);
   border: 1px solid var(--hairline);
@@ -1131,11 +1123,19 @@ body.panel-detail .panel {
 .search-clear:hover { color: var(--ink); background: var(--wash); }
 .search-clear svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
 
-/* The section labels inside the list. Quiet, because they are signposts and
-   not headings: the list is still one list. Each one holds its group's count
-   on the right, and sticks to the top of the panel on the way past, so a list
-   sixty rows long never leaves you wondering which group you are in. The
-   right inset is the close button's, which floats above all of this. */
+/* The group headings. They are the panel's largest type and its only
+   headings — quiet signposts underneath a bigger title was the arrangement
+   that made the panel read wrong. Each holds its group's count on the right,
+   and sticks to the top of the panel on the way past, so a list sixty rows
+   long never leaves you wondering which group you are in. The right inset is
+   the close button's, which floats above all of this.
+
+   21px rather than the 24 the old title ran at: this band sticks, so it is on
+   screen for most of the scroll rather than only at the top of it, and 24
+   sitting over the 17px rows all the way down was a heavier line than the
+   rows underneath could carry. Not much less, though — a group name and a
+   place name are both display 600, so the size is the whole of what separates
+   them, and at 19 they read as the same rank. */
 .list-label {
   position: sticky;
   top: var(--search-h);
@@ -1144,13 +1144,24 @@ body.panel-detail .panel {
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  margin: 26px calc(var(--panel-pad) * -1) 0;
-  padding: 10px var(--panel-pad) 9px;
+  margin: 30px calc(var(--panel-pad) * -1) 0;
+  padding: 9px var(--panel-pad) 8px;
   padding-right: calc(var(--panel-pad) + 30px);
   background: var(--paper);
   border-bottom: 1px solid var(--hairline);
 }
-.list-label:first-of-type { margin-top: 14px; }
+.list-label:first-of-type { margin-top: 10px; }
+.list-label:focus { outline: none; }
+.list-label:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: -2px; }
+.list-group {
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
+/* The count keeps the eyebrow's mono, so the pair reads as a name and a
+   measurement rather than as two competing headings. */
 .list-label-n { flex: 0 0 auto; letter-spacing: .04em; opacity: .75; }
 
 .place-list li + li { border-top: 1px solid var(--hairline); }
@@ -1181,7 +1192,15 @@ body.panel-detail .panel {
   letter-spacing: .02em;
 }
 .list-row.is-closed .list-name { color: var(--muted); }
-.empty-note { margin-top: 20px; font-size: 14px; color: var(--muted); }
+.empty-note {
+  margin-top: 20px;
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.empty-note:focus { outline: none; }
+.empty-note:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 3px; }
 
 /* ---------- lightbox ---------- */
 
@@ -1431,13 +1450,15 @@ body.panel-detail .panel {
   .panel.is-dragging .sheet-grip::before { background: var(--accent); width: 46px; }
   /* The sheet is a phone screen, not a page: the rows get tighter so more of
      the list is above the fold, and the heading stops shouting. */
-  .panel { --panel-pad: 18px; --panel-pad-t: 48px; --search-h: 60px; }
+  .panel { --panel-pad: 18px; --panel-pad-t: 48px; --search-field-h: 40px; }
   .panel-scroll { padding-bottom: calc(26px + var(--safe-b)); }
-  .list-title { font-size: 21px; margin: 4px 0 2px; }
+  .list-group { font-size: 19px; }
   /* Anything under 16px makes iOS zoom the whole page when the field takes
      focus, and it never zooms back out. */
   .search { margin-top: 12px; }
-  .search-input { height: 40px; font-size: 16px; }
+  /* 16px is the smallest a field can be before iOS zooms the page to reach
+     it; the height moves with it through the token. */
+  .search-input { font-size: 16px; }
   .list-label { margin-top: 20px; padding: 8px var(--panel-pad) 7px; padding-right: calc(var(--panel-pad) + 34px); }
   .list-label:first-of-type { margin-top: 10px; }
   .list-row { padding: 10px 2px; }

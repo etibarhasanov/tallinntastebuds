@@ -167,10 +167,6 @@
     }
   }
 
-  function coordText(place) {
-    return place.lat.toFixed(5) + ', ' + place.lng.toFixed(5);
-  }
-
   /* The data holds the number the way you would read it out, spaces and all.
      A tel: href wants it without them, so strip everything but the digits and
      the leading plus rather than storing the same number twice. */
@@ -1477,7 +1473,7 @@
     syncUrl();
     dom.panelScroll.scrollTop = 0;
     if (focus) {
-      var heading = dom.list.querySelector('.list-title');
+      var heading = dom.list.querySelector('#panel-list-title');
       if (heading) heading.focus();
     }
   }
@@ -1555,10 +1551,14 @@
 
     dom.detail.className = place.closed ? 'is-closed' : '';
 
+    /* The city sits in the brand above and in every address below, and the
+       coordinates are a machine's way of saying the same thing the address
+       already says. The head keeps what only it can carry: the name, and
+       whether the door still opens. */
     dom.detail.appendChild(el('div', { className: 'place-head' }, [
       place.closed
         ? el('span', { className: 'closed-flag', textContent: t('closed') })
-        : el('p', { className: 'eyebrow', textContent: t('eyebrow') }),
+        : null,
       el('h2', {
         className: 'place-name',
         id: 'panel-title',
@@ -1566,8 +1566,7 @@
         textContent: place.name
       }),
       el('div', { className: 'head-meta' }, [
-        priceGauge(place.price),
-        el('span', { className: 'coords', textContent: coordText(place) })
+        priceGauge(place.price)
       ]),
       /* Calling is the one thing you do standing on the pavement — is there a
          table, are they still open — so the button sits with the name rather
@@ -1598,10 +1597,11 @@
 
     /* No video means no section at all — an empty "The reel" heading over a
        placeholder made six real places look half-finished. A quiet line says
-       what is actually true instead: been, not filmed. */
+       what is actually true instead: been, not filmed. Photos say the same
+       thing louder, so the line only stands in for a place with neither. */
     if (place.reel) {
       dom.detail.appendChild(section(reelWords(reelProvider(place.reel)).heading, reelBlock(place)));
-    } else {
+    } else if (!(place.photos || []).length) {
       dom.detail.appendChild(el('p', { className: 'not-filmed', textContent: t('notFilmed') }));
     }
 
@@ -1630,9 +1630,7 @@
           : null,
         /* visited is optional — a place with no video has no post to date it */
         place.visited ? el('dt', { textContent: t('visited') }) : null,
-        place.visited ? el('dd', { textContent: formatMonth(place.visited) }) : null,
-        el('dt', { textContent: t('coordinates') }),
-        el('dd', { className: 'mono', textContent: coordText(place) })
+        place.visited ? el('dd', { textContent: formatMonth(place.visited) }) : null
       ]),
       el('div', { className: 'link-row' }, [
         el('a', {
@@ -1941,8 +1939,14 @@
     places.sort(function (a, b) { return collator.compare(a.name, b.name); });
 
     if (!places.length) {
-      dom.listBody.appendChild(el('p', {
+      /* The note is the heading here. Something has to carry the panel's
+         label and take focus when the list opens, and with no groups on
+         screen this line is the only thing left that says what you are
+         looking at. */
+      dom.listBody.appendChild(el('h2', {
         className: 'empty-note',
+        id: 'panel-list-title',
+        tabIndex: -1,
         textContent: words.length ? t('searchNone', { q: state.q.trim() }) : t('noResults')
       }));
       return;
@@ -1969,16 +1973,36 @@
     }
 
     /* Each group carries its own count, so the number always sits next to the
-       list it is counting rather than under the panel title, where it read as
-       a claim about the whole map. */
+       list it is counting rather than under a panel title, where it read as a
+       claim about the whole map.
+
+       The group name is the biggest type in the panel, and there is no longer
+       a title above it. There used to be: the panel opened with "All places"
+       at 24px and then, directly underneath, a quiet grey signpost reading
+       JUST ADDED over five rows. The big words named the group you were not
+       looking at yet. Whichever group you are actually reading now says its
+       own name, at the size the panel used to spend on a heading that was
+       true of the scroll as a whole and of nothing on screen. */
+    var first = true;
     function section(labelKey, rows, className) {
-      dom.listBody.appendChild(el('p', { className: 'list-label eyebrow' }, [
-        el('span', { textContent: t(labelKey) }),
-        el('span', {
-          className: 'list-label-n',
-          textContent: rows.length === 1 ? t('listCountOne') : t('listCount', { n: rows.length })
-        })
-      ]));
+      var name = t(labelKey);
+      var count = rows.length === 1 ? t('listCountOne') : t('listCount', { n: rows.length });
+      /* Spelled out rather than left to the name computation: the two spans
+         are flex items with no whitespace between them, so what a screen
+         reader announces for the heading — and for the panel, which this
+         labels — would come out as "Just added5 places". */
+      var head = el('h2', { className: 'list-label', 'aria-label': name + ', ' + count }, [
+        el('span', { className: 'list-group', textContent: name }),
+        el('span', { className: 'list-label-n eyebrow', textContent: count })
+      ]);
+      /* The first group on screen is what labels the panel and what takes
+         focus when the list opens, whichever group that turns out to be. */
+      if (first) {
+        head.id = 'panel-list-title';
+        head.tabIndex = -1;
+        first = false;
+      }
+      dom.listBody.appendChild(head);
       var ul = el('ul', { className: 'place-list' + (className ? ' ' + className : '') });
       rows.forEach(function (place) { ul.appendChild(listRow(place)); });
       dom.listBody.appendChild(ul);
@@ -1994,7 +2018,11 @@
     var fresh = words.length ? [] : recentlyAdded().filter(function (p) { return shown[p.id]; });
 
     if (fresh.length > 1) section('listNew', fresh, 'is-new');
-    section('listAlphabet', places);
+    /* "All places" over a filtered list would be a lie the count sitting next
+       to it immediately contradicts, so a narrowed list falls back to naming
+       its sort order instead. */
+    var everything = !words.length && !state.active.length;
+    section(everything ? 'listTitle' : 'listAlphabet', places);
   }
 
   /* -------------------------------------------------------------- lightbox */
