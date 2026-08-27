@@ -25,6 +25,12 @@
     { id: 'green', dark: true  }
   ];
   var DEFAULT_STYLE = 'red';
+
+  /* The one chip that is not a type. Discounts live in data/deals.json, not
+     in the taxonomy, so this id is reserved rather than declared: the
+     validator refuses a taxonomy type that tries to claim it, because two
+     chips answering to the same id would filter each other's places. */
+  var DEAL_FILTER = 'discount';
   var PIN_R = 7;             /* every pin */
   var PIN_R_SELECTED = 10;   /* the one you are looking at */
   var STYLE_KEY = 'ttb.style';
@@ -836,11 +842,22 @@
       .filter(function (id) { return used[id]; });
   }
 
+  function anyLiveDeal() {
+    return state.places.some(function (p) { return !!liveDealFor(p); });
+  }
+
+  /* Chips are OR, so a place shows if it answers any active one — and the
+     discount chip is answered by the deal rather than by the type list. */
+  function matchesFilters(place) {
+    if (state.active.indexOf(DEAL_FILTER) !== -1 && liveDealFor(place)) return true;
+    return (place.types || []).some(function (id) {
+      return state.active.indexOf(id) !== -1;
+    });
+  }
+
   function visiblePlaces() {
     if (!state.active.length) return state.places.slice();
-    return state.places.filter(function (p) {
-      return (p.types || []).some(function (id) { return state.active.indexOf(id) !== -1; });
-    });
+    return state.places.filter(matchesFilters);
   }
 
   function renderFilters() {
@@ -858,6 +875,25 @@
       applyFilters();
     });
     dom.filters.appendChild(all);
+
+    /* First of the real filters, because it is the only one that is an offer
+       rather than a description — and last to appear, since with no live deal
+       anywhere it is a chip that would filter down to nothing. */
+    if (anyLiveDeal()) {
+      var onDeal = state.active.indexOf(DEAL_FILTER) !== -1;
+      var dealChip = el('button', {
+        type: 'button',
+        className: 'chip',
+        'aria-pressed': String(onDeal),
+        textContent: t('filterDiscount')
+      });
+      dealChip.addEventListener('click', function () {
+        var at = state.active.indexOf(DEAL_FILTER);
+        if (at === -1) state.active.push(DEAL_FILTER); else state.active.splice(at, 1);
+        applyFilters({ id: DEAL_FILTER, on: at === -1 });
+      });
+      dom.filters.appendChild(dealChip);
+    }
 
     usedTypeIds().forEach(function (id) {
       var on = state.active.indexOf(id) !== -1;
@@ -1044,6 +1080,13 @@
     renderFilters();
     if (state.view === 'list') renderPanel();
     paintMarkers();
+
+    /* Narrowing to a single place and leaving the map where it was makes you
+       hunt for the one pin that is left, which on a filter like Discount is
+       the entire answer. So the map goes to it. The place is not opened: the
+       filter said where, not read me. */
+    var shown = visiblePlaces();
+    if (state.active.length && shown.length === 1) refocus(shown[0], true);
 
     var params = {
       filters: state.active.length ? state.active.slice().sort().join(',') : 'all',
@@ -2557,6 +2600,7 @@
       var picked = new URLSearchParams(window.location.search).get('type');
       if (picked) {
         var live = usedTypeIds();
+        if (anyLiveDeal()) live = live.concat(DEAL_FILTER);
         state.active = picked.split(',').filter(function (id) {
           return live.indexOf(id) !== -1;
         });

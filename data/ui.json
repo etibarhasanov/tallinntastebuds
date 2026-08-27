@@ -104,7 +104,8 @@
     "staffNote": "Kamera işləmirsə, bunu qonağın ekranı ilə tutuşdurun.",
     "staffAlso": "Həmçinin qəbul olunur",
     "staffChanges": "Saat {time}-də dəyişir",
-    "staffPick": "Məkanın kodunu görmək üçün bu ünvana ?r=məkan-id əlavə edin."
+    "staffPick": "Məkanın kodunu görmək üçün bu ünvana ?r=məkan-id əlavə edin.",
+    "filterDiscount": "Endirim"
   },
   "en": {
     "langName": "English",
@@ -211,7 +212,8 @@
     "staffNote": "Compare this with the guest's screen when a camera will not do it.",
     "staffAlso": "Also accepted",
     "staffChanges": "Changes at {time}",
-    "staffPick": "Add ?r=place-id to this address to see a place's code."
+    "staffPick": "Add ?r=place-id to this address to see a place's code.",
+    "filterDiscount": "Discount"
   },
   "et": {
     "langName": "Eesti",
@@ -318,7 +320,8 @@
     "staffNote": "Võrdle seda külalise ekraaniga, kui kaameraga ei õnnestu.",
     "staffAlso": "Kehtib ka",
     "staffChanges": "Muutub kell {time}",
-    "staffPick": "Lisa sellele aadressile ?r=koha-id, et näha koha koodi."
+    "staffPick": "Lisa sellele aadressile ?r=koha-id, et näha koha koodi.",
+    "filterDiscount": "Soodustus"
   },
   "fi": {
     "langName": "Suomi",
@@ -425,7 +428,8 @@
     "staffNote": "Vertaa tätä vieraan näyttöön, jos kamera ei toimi.",
     "staffAlso": "Hyväksytään myös",
     "staffChanges": "Vaihtuu klo {time}",
-    "staffPick": "Lisää tähän osoitteeseen ?r=paikan-id nähdäksesi koodin."
+    "staffPick": "Lisää tähän osoitteeseen ?r=paikan-id nähdäksesi koodin.",
+    "filterDiscount": "Alennus"
   },
   "pt": {
     "langName": "Português",
@@ -532,7 +536,8 @@
     "staffNote": "Compare com o ecrã do cliente quando a câmara não funcionar.",
     "staffAlso": "Também aceite",
     "staffChanges": "Muda às {time}",
-    "staffPick": "Adicione ?r=id-do-lugar a este endereço para ver o código."
+    "staffPick": "Adicione ?r=id-do-lugar a este endereço para ver o código.",
+    "filterDiscount": "Desconto"
   },
   "ru": {
     "langName": "Русский",
@@ -639,7 +644,8 @@
     "staffNote": "Сравните его с экраном гостя, если камера не срабатывает.",
     "staffAlso": "Также принимается",
     "staffChanges": "Изменится в {time}",
-    "staffPick": "Добавьте ?r=id-заведения к этому адресу, чтобы увидеть код."
+    "staffPick": "Добавьте ?r=id-заведения к этому адресу, чтобы увидеть код.",
+    "filterDiscount": "Скидка"
   },
   "es": {
     "langName": "Español",
@@ -746,7 +752,8 @@
     "staffNote": "Compáralo con la pantalla del cliente cuando la cámara no funcione.",
     "staffAlso": "También se acepta",
     "staffChanges": "Cambia a las {time}",
-    "staffPick": "Añade ?r=id-del-sitio a esta dirección para ver el código."
+    "staffPick": "Añade ?r=id-del-sitio a esta dirección para ver el código.",
+    "filterDiscount": "Descuento"
   },
   "tr": {
     "langName": "Türkçe",
@@ -853,6 +860,7 @@
     "staffNote": "Kamera çalışmadığında bunu misafirin ekranıyla karşılaştırın.",
     "staffAlso": "Ayrıca kabul edilir",
     "staffChanges": "{time} saatinde değişir",
-    "staffPick": "Bir mekânın kodunu görmek için bu adrese ?r=mekan-id ekleyin."
+    "staffPick": "Bir mekânın kodunu görmek için bu adrese ?r=mekan-id ekleyin.",
+    "filterDiscount": "İndirim"
   }
 }
