@@ -89,6 +89,17 @@
       "tr": "Buluşma"
     },
     {
+      "id": "laptop",
+      "en": "Laptop friendly",
+      "et": "Sülearvutisõbralik",
+      "fi": "Läppärille sopiva",
+      "az": "Noutbukla işləmək",
+      "ru": "С ноутбуком",
+      "pt": "Bom para portátil",
+      "es": "Bueno para portátil",
+      "tr": "Laptopa uygun"
+    },
+    {
       "id": "asian",
       "en": "Asian",
       "et": "Aasia",
