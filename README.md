@@ -21,6 +21,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [Add photos](#add-photos)
 - [The Just added section](#the-just-added-section)
 - [Searching the list](#searching-the-list)
+- [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Languages](#languages)
 - [Restaurant discounts](#restaurant-discounts)
@@ -217,6 +218,47 @@ to watch: if it stays this short it belongs further right.
 Nothing re-sorts itself as you add places, and that is deliberate: a row of
 chips that rearranges between visits is a row nobody learns. Re-check it when
 a type has visibly grown, and move the line in `taxonomy.json`.
+
+## A filter never answers with an empty screen
+
+A chip is a question about places, so the map is never allowed to answer it
+with a square of blank tiles. Whenever a chip is pressed and **none of the
+places it leaves are on the screen**, the map pulls back until some of them
+are — the filtered set framed at city level, or the whole map if the chips
+match nothing anywhere.
+
+The screen means the strip of map you can actually see, measured in
+`anyInView()` rather than off the map's full bounds: the panel covers the
+bottom of a phone and the right of a desktop, and a pin behind it is not on
+screen in any sense a visitor would accept. With the sheet dragged to full
+height there is no strip left to judge, and nothing moves — there is no point
+re-framing a map nobody is looking at.
+
+This is mostly felt after **Show my location**. That used to drop you at zoom
+15 wherever you were standing, which on the edge of town is a screen of
+streets with no pin on it, and from there every chip you pressed answered with
+the same empty view: the filter had worked, the list behind it had changed,
+and the map said nothing. Now the locate button frames you together with the
+nearest place the chips allow, so you land looking at somewhere you could walk
+to, and the chips keep the map on their own places from then on.
+
+Two edges are handled by hand:
+
+- **Further than 25km from everything** — Helsinki, a plane, a bad reading —
+  and there is no zoom that holds you and Tallinn at once without both
+  becoming dots. The map shows the city instead, and the toast says why
+  (`locateAway`). Your dot is still plotted, a pan away.
+- **Closed places** are never the nearest thing to walk to. They stay grey
+  pins on the map for the links pointing at them, but the locate framing skips
+  them unless nothing open is left.
+
+One Leaflet trap sits under all of this, in `travelTo()`. An animated
+`setView` only works over short hops: hand it a target across the city and it
+starts a zoom animation whose CSS transition never runs, so the call returns
+with the map exactly where it began — silently, no error. Every move that the
+current view does not already contain goes through `flyTo` instead, which
+crosses the distance properly and draws the zoom-out-and-back-in the move
+actually is. Under `prefers-reduced-motion` both become a jump.
 
 ## Get the coordinates
 
@@ -571,7 +613,9 @@ site sat in before Magussoolane.
 Narrowing to a **single** place moves the map onto it, at zoom 15 or closer.
 That is not special to discounts — any filter that leaves one place does it,
 because leaving the map where it was makes you hunt for the one pin still
-lit. The place is not opened: the filter said where, not read me.
+lit. The place is not opened: the filter said where, not read me. Leaving
+several, none of which are on screen, moves the map too — see
+[A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen).
 
 `?type=discount` works as a link, and combines with the rest: `?type=discount,bakery`
 is either.
@@ -948,7 +992,11 @@ It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
 scrolls out of reach is no use. On a phone it collapses to just the die.
 
-Under it, at the foot of the rail, is the locate button. It used to sit in the
+Under it, at the foot of the rail, is the locate button, which frames you
+together with the nearest place rather than dropping you at zoom 15 on
+whatever street you are standing in —
+[A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
+has the rest of it. It used to sit in the
 far bottom-left corner — the free one, but also as far from every other map
 control as the screen allows, so a thumb that had just pressed Surprise me had
 the length of the page to travel. It takes the rail's round shape so it reads
