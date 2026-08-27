@@ -8,6 +8,10 @@
       "name": "Baku Retro FM",
       "url": "https://stream.bakuradioalliance.az/retrofm"
     },
+    "en": {
+      "name": "Radio Paradise",
+      "url": "https://stream.radioparadise.com/mp3-192"
+    },
     "fi": {
       "name": "YleX",
       "url": "https://icecast.live.yle.fi/radio/YleX/icecast.audio"
