@@ -167,6 +167,13 @@
     }
   }
 
+  /* The data holds the number the way you would read it out, spaces and all.
+     A tel: href wants it without them, so strip everything but the digits and
+     the leading plus rather than storing the same number twice. */
+  function telHref(phone) {
+    return 'tel:' + String(phone || '').replace(/[^+0-9]/g, '');
+  }
+
   function byId(id) {
     for (var i = 0; i < state.places.length; i++) {
       if (state.places[i].id === id) return state.places[i];
@@ -1503,6 +1510,28 @@
     return wrap;
   }
 
+  /* A tel: link is what makes this dial rather than navigate: a phone hands it
+     to the dialler with the number already typed in, and a desktop passes it to
+     whichever calling app is registered. That is also why it never opens a new
+     tab — there is no page to open. */
+  function callButton(place) {
+    var link = el('a', {
+      className: 'link-btn is-primary head-call',
+      href: telHref(place.phone),
+      'aria-label': t('call') + ' ' + place.name + ', ' + place.phone
+    }, [
+      el('span', {
+        className: 'call-icon',
+        html: '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.2 1.6c.4 0 .8.3.9.7l.8 2.4c.1.4 0 .8-.3 1l-1.1.9c.8 1.7 2.2 3.1 3.9 3.9l.9-1.1c.2-.3.6-.4 1-.3l2.4.8c.4.1.7.5.7.9v2.3c0 .6-.5 1.1-1.1 1C7.6 14.5 1.5 8.4 1.1 1.7c0-.6.4-1.1 1-1.1h3.1z"/></svg>'
+      }),
+      el('span', { textContent: t('call') })
+    ]);
+    link.addEventListener('click', function () {
+      trackEvent('call_place', { place: place.name });
+    });
+    return link;
+  }
+
   function section(labelKey, body) {
     return el('div', { className: 'section' }, [
       el('p', { className: 'eyebrow', textContent: t(labelKey) }),
@@ -1538,7 +1567,12 @@
       }),
       el('div', { className: 'head-meta' }, [
         priceGauge(place.price)
-      ])
+      ]),
+      /* Calling is the one thing you do standing on the pavement — is there a
+         table, are they still open — so the button sits with the name rather
+         than under the reel and the photos, where a phone would have to be
+         scrolled to reach it. No number means no button. */
+      place.phone ? callButton(place) : null
     ]));
 
     if (place.closed) {
@@ -1587,6 +1621,13 @@
       el('dl', { className: 'facts' }, [
         el('dt', { textContent: t('address') }),
         el('dd', { textContent: place.address }),
+        /* phone is optional — plenty of small places only answer the door */
+        place.phone ? el('dt', { textContent: t('phone') }) : null,
+        place.phone
+          ? el('dd', {}, [
+              el('a', { href: telHref(place.phone), textContent: place.phone })
+            ])
+          : null,
         /* visited is optional — a place with no video has no post to date it */
         place.visited ? el('dt', { textContent: t('visited') }) : null,
         place.visited ? el('dd', { textContent: formatMonth(place.visited) }) : null

@@ -16,9 +16,10 @@
  *   - a UI string present in one language but missing in another
  *   - a photo listed in the data that does not exist in the repo
  *   - a reel value that is not a real Instagram or TikTok permalink shape
+ *   - a phone number that is not in international form, such as +372 661 0180
  *
  * Warns on:
- *   - placeholder blurbs, missing reels, missing blurb translations
+ *   - placeholder blurbs, missing reels, missing phone numbers, missing blurb translations
  *   - unused taxonomy types, photo folders with no matching restaurant
  *   - unknown keys in a restaurant object (catches typos)
  */
@@ -47,10 +48,14 @@ const REEL_TIKTOK = /^https:\/\/www\.tiktok\.com\/@[A-Za-z0-9._]{1,30}\/video\/[
 const isReel = (u) => REEL_INSTAGRAM.test(u) || REEL_TIKTOK.test(u);
 const PHOTO_FILE = /^[A-Za-z0-9._-]+\.(webp|jpg|jpeg|png|avif)$/i;
 const HTTP_URL = /^https?:\/\/[^\s]+$/;
+/* International form with spaces for readability: "+372 661 0180". Estonian
+   numbers are seven or eight digits, but the pattern stays country-agnostic so
+   a place across the water can be listed the same way. */
+const PHONE = /^\+[1-9][0-9]{0,3}(?: [0-9]{2,4}){1,4}$/;
 
 const KNOWN_KEYS = new Set([
   'id', 'name', 'address', 'lat', 'lng', 'price', 'types', 'blurb',
-  'mustOrder', 'reel', 'photos', 'website', 'added', 'visited', 'closed'
+  'mustOrder', 'reel', 'photos', 'website', 'phone', 'added', 'visited', 'closed'
 ]);
 
 /* visited is deliberately absent: a place you have been to but not filmed has
@@ -303,6 +308,16 @@ if (places !== null) {
         if (!isNonEmptyString(place.website) || !HTTP_URL.test(place.website)) {
           fail(where, '"website" must be a full http(s) URL, or "" / the key left out');
         }
+      }
+
+      /* phone — optional; "" and a missing key both mean "no number", and the
+         panel drops the Call button rather than showing a dead one. */
+      if ('phone' in place && place.phone !== '') {
+        if (!isNonEmptyString(place.phone) || !PHONE.test(place.phone)) {
+          fail(where, `"phone" must look like +372 661 0180, or be "" / the key left out, got ${JSON.stringify(place.phone)}`);
+        }
+      } else if (!place.closed) {
+        warn(where, 'has no "phone", so there is nothing to call');
       }
 
       /* added — the day this place first appeared in this file, which is what

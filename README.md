@@ -80,6 +80,7 @@ to it:
   "reel": "https://www.instagram.com/reel/ABC123xyz/",
   "photos": ["01.webp", "02.webp"],
   "website": "https://leerestoran.ee",
+  "phone": "+372 5555 5555",
   "added": "2026-08-26",
   "visited": "2026-08",
   "closed": false
@@ -101,6 +102,7 @@ Field by field:
 | `reel` | The full Instagram permalink, or `""` if there is not a reel yet. |
 | `photos` | Filenames inside `photos/<id>/`. Just the filenames. Use `[]` if there are none. |
 | `website` | Optional. An empty string and a missing key both mean "no website". |
+| `phone` | Optional. The number you would actually ring, international form with spaces: `+372 661 0180`. It becomes the **Call** button under the place name — a `tel:` link, so a phone hands it straight to the dialler — and a tappable row in the facts list. An empty string and a missing key both mean "no number", and the button and the row both disappear. |
 | `added` | The day you added the place, `YYYY-MM-DD`. Drives the **Just added** section at the top of the list. |
 | `visited` | The month you last ate there, `YYYY-MM`. |
 | `closed` | `true` greys the pin out. See below. |
@@ -108,7 +110,8 @@ Field by field:
 There is deliberately **no neighbourhood field** — the map is the location
 index, and a district label would be a third thing to keep translated. There is
 deliberately **no opening-hours field** — it goes stale within weeks and turns
-the site into a chore.
+the site into a chore. `phone` is the honest substitute: a number ages far more
+slowly than a timetable, and the place can answer the question itself.
 
 ### Editor autocomplete
 
@@ -532,6 +535,7 @@ to read and write first.
 - a photo listed in the data that does not exist in the repo
 - a `reel` value that is not a real Instagram or TikTok permalink shape
 - a `price` outside 1–4, a malformed `visited` month, a malformed `website`
+- a `phone` that is not in international form — `+372 661 0180`, not `6610180`
 - a malformed `added` date — it has to be `YYYY-MM-DD`
 
 **It warns, without failing, on:**
@@ -539,6 +543,7 @@ to read and write first.
 - blurbs that still contain `TODO` or `PLACEHOLDER`
 - places with no reel yet
 - places with no `added` date
+- open places with no `phone`, so there is nothing to call
 - blurbs missing a translation
 - taxonomy types nothing uses
 - folders in `photos/` that no place points at
@@ -776,6 +781,7 @@ reported as events instead, from `trackEvent()` beside `trackView()`:
 | `style_select` | `style` |
 | `random_pick` | `place`, `pool` |
 | `reel_play` | `place`, `provider` |
+| `call_place` | `place` |
 | `cluster_open` | `cluster_size` |
 | `list_open` | `places_shown` |
 | `search` | `search_term` |

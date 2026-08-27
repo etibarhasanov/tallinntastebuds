@@ -871,6 +871,22 @@ body.panel-detail .panel {
   flex-wrap: wrap;
   gap: 6px 14px;
 }
+/* The Call button rides with the name rather than with the links at the
+   bottom, so a phone finds it without scrolling past the reel and the photos.
+   inline-flex keeps the handset glued to the word at any text size. */
+.head-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 8px 14px;
+}
+.call-icon { display: flex; }
+.call-icon svg { width: 12px; height: 12px; fill: currentColor; }
+/* A closed place keeps the row for the record, but nothing there is worth
+   ringing, so the button drops back to the greyed-out palette. */
+.is-closed .head-call { background: var(--muted); border-color: var(--muted); }
+
 .closed-flag {
   display: inline-block;
   margin-bottom: 12px;
@@ -928,6 +944,11 @@ body.panel-detail .panel {
   color: var(--muted);
 }
 .facts dd { margin: 0; font-size: 14px; }
+/* The phone number is the one fact you can act on, so it stays tappable in
+   the row as well as in the button below. Ink rather than accent: a list of
+   facts should read as facts, with the hover doing the telling. */
+.facts a { color: inherit; text-decoration-color: var(--hairline); }
+.facts a:hover { color: var(--accent); text-decoration-color: currentColor; }
 
 .link-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .link-btn {
