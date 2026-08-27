@@ -548,16 +548,69 @@
      with the far ones a zoom-out away. */
   var FIT_FLOOR = 12;
 
-  function fitToPins() {
-    var pts = visiblePlaces().map(function (p) { return [p.lat, p.lng]; });
-    if (!pts.length) pts = state.places.map(function (p) { return [p.lat, p.lng]; });
-    if (!pts.length) return;
-    map.fitBounds(L.latLngBounds(pts), {
-      padding: isNarrow() ? [48, 48] : [96, 96],
-      maxZoom: 16,
-      animate: false
+  /* Move the map, over any distance. Leaflet's animated setView only works
+     over short hops: hand it a target across the city and it starts a zoom
+     animation whose CSS transition never runs, so the map ends the call
+     exactly where it began — silently. That is the whole bug behind a filter
+     chip that appears to do nothing. flyTo crosses the distance properly, and
+     the arc it draws is the zoom-out-and-back-in the move actually is, so it
+     takes every jump the current view does not already contain. */
+  function travelTo(centre, zoom, animate) {
+    if (!animate || reduceMotion()) { map.setView(centre, zoom, { animate: false }); return; }
+    if (map.getBounds().contains(centre) && Math.abs(zoom - map.getZoom()) <= 2) {
+      map.setView(centre, zoom, { animate: true });
+      return;
+    }
+    map.flyTo(centre, zoom, { duration: .9 });
+  }
+
+  /* Frame a set of points. The zoom is worked out before the map moves rather
+     than read back after a fitBounds: an animated fit does not report its new
+     zoom until the animation has finished, so a floor applied afterwards
+     would undo the move it was meant to correct.
+
+     opts.floor lifts the low end (FIT_FLOOR by default, 0 to allow the whole
+     way out to minZoom), opts.maxZoom caps the near end, opts.animate glides
+     rather than jumps. */
+  function fitLatLngs(pts, opts) {
+    if (!map || !pts.length) return;
+    var o = opts || {};
+    var bounds = L.latLngBounds(pts);
+    var pad = isNarrow() ? L.point(48, 48) : L.point(96, 96);
+    var floor = o.floor == null ? FIT_FLOOR : o.floor;
+    var zoom = Math.min(map.getBoundsZoom(bounds, false, pad), o.maxZoom == null ? 16 : o.maxZoom);
+    travelTo(bounds.getCenter(), Math.max(zoom, floor), !!o.animate);
+  }
+
+  function fitToPins(opts) {
+    var pool = visiblePlaces();
+    if (!pool.length) pool = state.places;
+    fitLatLngs(pool.map(function (p) { return [p.lat, p.lng]; }), opts);
+  }
+
+  /* Is any of this lot actually on the screen as it stands? Measured against
+     the strip of map you can see rather than the map's full bounds: the panel
+     covers the bottom of a phone and the right of a desktop, and a pin
+     underneath it is not on screen in any sense a visitor would accept.
+
+     With the sheet dragged to full height there is no strip left to judge, so
+     the answer is yes — a map nobody can see is not worth moving. */
+  function anyInView(places) {
+    if (!map || !places.length) return false;
+    var size = map.getSize();
+    var right = size.x;
+    var bottom = size.y;
+
+    if (dom.panel.classList.contains('is-open')) {
+      if (isNarrow()) bottom = size.y - dom.panel.offsetHeight;
+      else right = size.x - dom.panel.offsetWidth;
+    }
+    if (bottom < 80 || right < 80) return true;
+
+    return places.some(function (p) {
+      var pt = map.latLngToContainerPoint([p.lat, p.lng]);
+      return pt.x >= 0 && pt.x <= right && pt.y >= 0 && pt.y <= bottom;
     });
-    if (map.getZoom() < FIT_FLOOR) map.setZoom(FIT_FLOOR, { animate: false });
   }
 
   /* --------------------------------------------------------------- chosen
@@ -836,7 +889,7 @@
 
     var pt = map.project([place.lat, place.lng], zoom);
     var centre = map.unproject(pt.add(L.point(size.x / 2 - wantX, size.y / 2 - wantY)), zoom);
-    map.setView(centre, zoom, { animate: !reduceMotion() });
+    travelTo(centre, zoom, true);
   }
 
   /* focusOn measures the sheet to find the strip of map left over, so it has
@@ -1112,6 +1165,15 @@
        filter said where, not read me. */
     var shown = visiblePlaces();
     if (state.active.length && shown.length === 1) refocus(shown[0], true);
+
+    /* And if the chips have left none of themselves on the screen, the map
+       goes to them. This is the view you land in after Show my location: a
+       street corner at zoom 15 that may hold no pin at all, where every chip
+       you press used to answer with the same empty square of tiles. Pressing
+       a filter is a question about places, so the map pulls back until some
+       of them are in it — city-wide if that is what it takes, and to the
+       whole map if the chips match nothing anywhere. */
+    else if (!anyInView(shown)) fitToPins({ animate: true });
 
     var params = {
       filters: state.active.length ? state.active.slice().sort().join(',') : 'all',
@@ -2392,7 +2454,9 @@
     dom.btnLocate.addEventListener('click', function () {
       trackEvent('locate');
       if (!navigator.geolocation) { toast(t('locateFail')); return; }
-      map.locate({ setView: true, maxZoom: 15 });
+      /* setView is off: the framing is done in locationfound, which knows
+         where the places are and Leaflet does not. */
+      map.locate({ setView: false, maxZoom: 15 });
     });
 
     dom.lbClose.addEventListener('click', closeLightbox);
@@ -2497,9 +2561,54 @@
         interactive: false
       }).addTo(map);
       hereMarker.bindTooltip(t('locateHere'), { className: 'pin-tip', direction: 'top', offset: [0, -10] });
+
+      frameHere(ev.latlng);
     });
 
     map.on('locationerror', function () { toast(t('locateFail')); });
+  }
+
+  /* How far the nearest place can be and still be worth framing next to you.
+     Past that the two of you share no useful zoom — Tallinn is a dot on one
+     edge of the screen and you are a dot on the other — so the map answers
+     with the city instead, and says why. */
+  var HERE_MAX_M = 25000;
+
+  /* Where the map goes once it knows where you are. Dropping you at zoom 15
+     is only an answer if there is something to eat around you: on the edge of
+     town, or in the next country, it is a screen of streets with no pin on
+     it, and no amount of pressing filter chips fills it in. So the view is
+     framed on you *and* the nearest place the chips allow — you always land
+     looking at somewhere you could walk to. */
+  function frameHere(latlng) {
+    /* A closed place is a grey pin kept for the links pointing at it, not
+       somewhere to send you, so it is only the nearest thing if nothing open
+       is left to be. */
+    var pool = visiblePlaces().filter(function (p) { return !p.closed; });
+    if (!pool.length) pool = visiblePlaces();
+    if (!pool.length) pool = state.places;
+    if (!pool.length) { travelTo(latlng, Math.max(map.getZoom(), 15), true); return; }
+
+    var nearest = null;
+    var best = Infinity;
+    pool.forEach(function (p) {
+      var away = latlng.distanceTo(L.latLng(p.lat, p.lng));
+      if (away < best) { best = away; nearest = p; }
+    });
+
+    if (best > HERE_MAX_M) {
+      toast(t('locateAway'));
+      fitToPins({ animate: true });
+      return;
+    }
+
+    /* No floor here: you and a place 20km apart need the zoom the pair of you
+       actually take, which is further out than the city fit's own floor. */
+    fitLatLngs([[latlng.lat, latlng.lng], [nearest.lat, nearest.lng]], {
+      animate: true,
+      maxZoom: 15,
+      floor: 0
+    });
   }
 
   /* ------------------------------------------------------------------ boot */
