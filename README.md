@@ -102,7 +102,7 @@ Field by field:
 | `reel` | The full Instagram permalink, or `""` if there is not a reel yet. |
 | `photos` | Filenames inside `photos/<id>/`. Just the filenames. Use `[]` if there are none. |
 | `website` | Optional. An empty string and a missing key both mean "no website". |
-| `phone` | Optional. The number you would actually ring, international form with spaces: `+372 661 0180`. It becomes the **Call** button next to **Directions**, and a tappable row in the facts list. An empty string and a missing key both mean "no number", and both buttons and row disappear. |
+| `phone` | Optional. The number you would actually ring, international form with spaces: `+372 661 0180`. It becomes the **Call** button under the place name — a `tel:` link, so a phone hands it straight to the dialler — and a tappable row in the facts list. An empty string and a missing key both mean "no number", and the button and the row both disappear. |
 | `added` | The day you added the place, `YYYY-MM-DD`. Drives the **Just added** section at the top of the list. |
 | `visited` | The month you last ate there, `YYYY-MM`. |
 | `closed` | `true` greys the pin out. See below. |
@@ -781,6 +781,7 @@ reported as events instead, from `trackEvent()` beside `trackView()`:
 | `style_select` | `style` |
 | `random_pick` | `place`, `pool` |
 | `reel_play` | `place`, `provider` |
+| `call_place` | `place` |
 | `cluster_open` | `cluster_size` |
 | `list_open` | `places_shown` |
 | `search` | `search_term` |
