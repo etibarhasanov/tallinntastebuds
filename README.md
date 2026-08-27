@@ -705,11 +705,11 @@ browser whichever node is up today. A `<audio>` element follows the 302 without
 being asked; some stream checkers do not, so those two URLs will look dead to a
 link checker and play fine in a browser.
 
-Prefer the station's own address. Baku Retro FM publishes
-`stream.bakuradioalliance.az/retrofm`, and that is what the entry uses, over
-the rebroadcasts of it on `stream02.pcradio.biz` and `stream.rcast.net` — a
-mirror is a lower bitrate, one remove from the broadcaster, and free to drop
-the station whenever it likes.
+Prefer the station's own address over a rebroadcast of it. Anti Radio, YleX and
+Radio Paradise are all on their broadcaster's own host, which is why those
+three lines are the shortest in the file. A mirror on an aggregator's CDN is a
+lower bitrate, one remove from the station, and free to drop it whenever it
+likes.
 
 Reach for a mirror only once the official address has actually failed **in a
 browser**. Scraped stream indexes disagree with each other about that address
