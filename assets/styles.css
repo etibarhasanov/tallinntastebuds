@@ -394,21 +394,18 @@ a:hover { color: var(--accent-lit); }
 }
 #btn-locate svg circle:first-child { fill: currentColor; stroke: none; }
 
-/* ---------- the locate button: bottom-left corner ---------- */
+/* ---------- the locate button: the foot of the rail ---------- */
 
 /* Where you are is a question about the map, not about the chrome, so the
    button answers it from inside the map rather than from the strip of
-   controls at the top. Bottom-left is the free corner: the panel owns the
-   right side on a desktop, the attribution owns the bottom right, and the
-   rail is centred well above this. Its bottom edge lines up with the
-   panel's, which is what keeps it clear of the attribution strip. */
-.locate-dock {
-  position: fixed;
-  z-index: 1001;
-  left: calc(var(--gap) + var(--safe-l));
-  bottom: calc(30px + var(--gap) + var(--safe-b));
-  transition: opacity .2s var(--ease);
-}
+   controls at the top. It used to answer from the far bottom-left corner,
+   which is the free one but also as far from every other map control as the
+   screen allows — a thumb that had just pressed Surprise me had the length of
+   the page to travel. It sits under Surprise me now, at the foot of the rail,
+   and takes the rail's round shape so it reads as one of its buttons rather
+   than as a stray card parked beneath it. */
+.locate-dock { border-radius: 100px; }
+.locate-dock .btn { border-radius: 100px; }
 
 /* ==========================================================================
    The two styles — brick by day, forest by night.
@@ -1433,19 +1430,6 @@ body.panel-detail .panel {
   }
   body.panel-open .styles { flex-direction: row; }
 
-  /* The sheet covers the bottom-left corner, so the button joins the rail on
-     the strip above it, at the far end. Beside the rail rather than stacked
-     above it: a sheet dragged up shortens that gap until a stacked button
-     would be standing on the brand card, whereas the strip has room for both
-     — the rail runs to 242px and the button wants 52 more, which a 320px
-     screen still covers. It leaves with the rail at full height. */
-  body.panel-open .locate-dock {
-    left: auto;
-    right: calc(var(--gap) + var(--safe-r));
-    bottom: calc(var(--sheet-h) + 10px + var(--safe-b));
-  }
-  body.sheet-full .locate-dock { opacity: 0; pointer-events: none; }
-
   .dice-label, .radio-name { display: none; }
   .dice { padding: 0; width: 32px; height: 32px; justify-content: center; }
   .rail { gap: 8px; }
@@ -1476,7 +1460,7 @@ body.panel-detail .panel {
 /* ---------- print: the list, on paper ---------- */
 
 @media print {
-  #map, .controls, .locate-dock, .filter-bar, .rail, .brand, .panel-close, .toast, .lightbox { display: none !important; }
+  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .toast, .lightbox { display: none !important; }
   body { overflow: visible; background: #fff; }
   .panel {
     position: static;

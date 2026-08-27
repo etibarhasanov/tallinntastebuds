@@ -376,13 +376,14 @@
        stylesheet. Pinning a top as well would stretch it between the two. */
     if (isNarrow() && document.body.classList.contains('panel-open')) return;
     var need = dom.brand.getBoundingClientRect().bottom + 14;
-    /* And never so far down that it lands on the locate button in the corner.
-       On a window too short for both the rail stays centred and takes its
-       chances with the card, which is where it was before the nudge. */
-    if (dom.locateDock) {
-      var floor = dom.locateDock.getBoundingClientRect().top - 14 - dom.rail.offsetHeight;
-      if (need > floor) need = floor;
-    }
+    /* And never so far down that the foot of the rail leaves the screen. The
+       locate button used to be the thing it must not land on; now that the
+       button is the foot of the rail, the floor is the bottom of the window,
+       less the attribution strip and the same gap the rail keeps everywhere
+       else. On a window too short for both, the rail stays centred and takes
+       its chances with the card, which is where it was before the nudge. */
+    var floor = window.innerHeight - 46 - dom.rail.offsetHeight;
+    if (need > floor) need = floor;
     if (dom.rail.getBoundingClientRect().top < need) {
       dom.rail.style.top = need + 'px';
       dom.rail.style.transform = 'none';
@@ -2416,7 +2417,6 @@
       searchClear: $('search-clear'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
-      locateDock: $('locate-dock'),
       lightbox: $('lightbox'),
       lbImg: $('lb-img'),
       lbCaption: $('lb-caption'),
