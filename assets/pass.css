@@ -71,9 +71,61 @@ html, body {
   color: var(--muted);
 }
 
-/* The ticking half of the line above. A screenshot freezes it, which is the
-   point: a still picture of this page is visibly a still picture. */
+/* ---------- the live line ---------- */
+
+/* The whole anti-screenshot mechanism, and the only part of the page whose
+   job is to be caught out of the corner of an eye. A picture of this page has
+   frozen digits and a frozen dot; the real one does not.
+
+   So it carries the accent rather than the muted grey the rest of the small
+   print uses, and it is nearly twice the size. Two signals rather than one,
+   because a waiter glancing for half a second may miss a digit changing but
+   will catch a pulse. */
+.pass-live {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 500;
+  /* Fixed-width figures, or the line jostles sideways every second and reads
+     as a glitch rather than as a clock. */
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .06em;
+  color: var(--accent);
+}
+
 .pass-tick { font-variant-numeric: tabular-nums; }
+
+.live-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+/* Restarted from the script on every tick, so the beat lands with the digit
+   change. Under a second, so it has finished before the next one. */
+.live-dot.is-beat { animation: ttb-beat .9s var(--ease); }
+
+@keyframes ttb-beat {
+  0%   { transform: scale(1);   opacity: 1; }
+  45%  { transform: scale(1.7); opacity: .35; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* Someone who has asked for less motion still has to be able to tell a live
+   pass from a photograph of one, so the beat loses its travel and keeps its
+   fade rather than being switched off. */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes ttb-beat {
+    0%   { opacity: 1; }
+    45%  { opacity: .3; }
+    100% { opacity: 1; }
+  }
+}
 
 /* ---------- the QR ---------- */
 
