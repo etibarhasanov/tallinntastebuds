@@ -10,4 +10,4 @@ Disallow: /deal.html
 Disallow: /verify.html
 Disallow: /staff.html
 
-Sitemap: https://tallinntastebuds.pages.dev/sitemap.xml
+Sitemap: https://tallinntastebuds.ee/sitemap.xml
