@@ -104,6 +104,40 @@
     "closed": false
   },
   {
+    "id": "badam",
+    "name": "Badam",
+    "address": "Lastekodu tn 35, 10113 Tallinn",
+    "lat": 59.4276428,
+    "lng": 24.7754944,
+    "price": 2,
+    "types": [
+      "restaurant",
+      "caucasian"
+    ],
+    "blurb": {
+      "az": "Tallinndə ən autentik Azərbaycan mətbəxi.",
+      "en": "The most authentic Azerbaijani cooking in Tallinn.",
+      "et": "Tallinna kõige autentsem aserbaidžaani köök.",
+      "fi": "Tallinnan aidoin azerbaidžanilainen keittiö.",
+      "pt": "A cozinha azerbaijana mais autêntica de Tallinn.",
+      "ru": "Самая аутентичная азербайджанская кухня в Таллинне.",
+      "es": "La cocina azerbaiyana más auténtica de Tallin.",
+      "tr": "Tallinn'deki en otantik Azerbaycan mutfağı."
+    },
+    "mustOrder": [
+      "Dolma",
+      "Xəngəl",
+      "Piti",
+      "Küftə"
+    ],
+    "reel": "",
+    "photos": [],
+    "website": "https://badam.ee/",
+    "phone": "+372 5821 4430",
+    "added": "2026-08-28",
+    "closed": false
+  },
+  {
     "id": "baklazaan",
     "name": "Baklažaan",
     "address": "Mäepealse 30, Tallinn",
