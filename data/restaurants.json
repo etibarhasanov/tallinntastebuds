@@ -115,20 +115,22 @@
       "caucasian"
     ],
     "blurb": {
-      "az": "Tallinndə ən autentik Azərbaycan mətbəxi.",
-      "en": "The most authentic Azerbaijani cooking in Tallinn.",
-      "et": "Tallinna kõige autentsem aserbaidžaani köök.",
-      "fi": "Tallinnan aidoin azerbaidžanilainen keittiö.",
-      "pt": "A cozinha azerbaijana mais autêntica de Tallinn.",
-      "ru": "Самая аутентичная азербайджанская кухня в Таллинне.",
-      "es": "La cocina azerbaiyana más auténtica de Tallin.",
-      "tr": "Tallinn'deki en otantik Azerbaycan mutfağı."
+      "az": "Tallinndə ən autentik Azərbaycan mətbəxi. Kofta, dolma, hangal, piti, plov, lamb plov.",
+      "en": "The most authentic Azerbaijani cooking in Tallinn. Kofta, dolma, hangal, piti, plov, lamb plov.",
+      "et": "Tallinna kõige autentsem aserbaidžaani köök. Kofta, dolma, hangal, piti, plov, lamb plov.",
+      "fi": "Tallinnan aidoin azerbaidžanilainen keittiö. Kofta, dolma, hangal, piti, plov, lamb plov.",
+      "pt": "A cozinha azerbaijana mais autêntica de Tallinn. Kofta, dolma, hangal, piti, plov, lamb plov.",
+      "ru": "Самая аутентичная азербайджанская кухня в Таллинне. Kofta, dolma, hangal, piti, plov, lamb plov.",
+      "es": "La cocina azerbaiyana más auténtica de Tallin. Kofta, dolma, hangal, piti, plov, lamb plov.",
+      "tr": "Tallinn'deki en otantik Azerbaycan mutfağı. Kofta, dolma, hangal, piti, plov, lamb plov."
     },
     "mustOrder": [
+      "Kofta",
       "Dolma",
-      "Xəngəl",
+      "Hangal",
       "Piti",
-      "Küftə"
+      "Plov",
+      "Lamb plov"
     ],
     "reel": "",
     "photos": [],
