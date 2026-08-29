@@ -175,6 +175,42 @@
     "closed": false
   },
   {
+    "id": "balta-chill",
+    "name": "Balta Chill",
+    "address": "Vana-Kalamaja 3, 10415 Tallinn",
+    "lat": 59.4416944,
+    "lng": 24.7382778,
+    "price": 1,
+    "types": [
+      "pub",
+      "hidden-gem",
+      "casual"
+    ],
+    "blurb": {
+      "az": "Vana-Kalamaja yaxınlığında gizli bir həyət, haqqında kiminsə sənə danışması lazımdır. Hər taxtada qraffiti, içəri də eyni cür. Bura sadəcə dincəlmək üçün yerdir, adın ikinci yarısı elə bunu deyir. Qapı açılmasa, döy. Bəlkə səni içəri buraxdılar.",
+      "en": "A hidden yard off Vana-Kalamaja that somebody has to tell you about. Graffiti on every board, and a room to match. It is a place made for chilling, which is the half of the name that says so. If the door does not open, knock. They might let you in.",
+      "et": "Peidetud hoov Vana-Kalamaja ääres, millest keegi peab sulle rääkima. Grafiti igal laual ja tuba sama nägu. See on koht lihtsalt olemiseks, nagu nime teine pool ütlebki. Kui uks lahti ei lähe, koputa. Võib-olla lastakse sind sisse.",
+      "fi": "Piilotettu piha Vana-Kalamajan kupeessa, josta jonkun täytyy kertoa sinulle. Grafitia joka laudassa, ja sisätila samaa maata. Tämä on paikka pelkkään oleiluun, niin kuin nimen toinen puoli sanoo. Jos ovi ei aukea, koputa. Sinut saatetaan päästää sisään.",
+      "pt": "Um pátio escondido ao pé da Vana-Kalamaja, daqueles que alguém te tem de contar. Graffiti em cada tábua, e a sala a condizer. É um sítio feito para descontrair, que é o que diz a segunda metade do nome. Se a porta não abrir, bate. Podem deixar-te entrar.",
+      "ru": "Спрятанный двор у Вана-Каламая, о котором кто-то должен тебе рассказать. Граффити на каждой доске, и комната такая же. Это место для того, чтобы просто посидеть, о чём вторая половина названия и говорит. Если дверь не открывается, постучи. Могут впустить.",
+      "es": "Un patio escondido junto a Vana-Kalamaja, de los que alguien te tiene que contar. Grafiti en cada tabla, y la sala a juego. Es un sitio hecho para estar tranquilo, que es lo que dice la segunda mitad del nombre. Si la puerta no abre, llama. Puede que te dejen entrar.",
+      "tr": "Vana-Kalamaja kıyısında, birinin sana söylemesi gereken gizli bir avlu. Her tahtada grafiti, içerisi de aynı. Burası sadece takılmak için bir yer, adın ikinci yarısı da bunu söylüyor. Kapı açılmazsa vur. Belki içeri alırlar.",
+      "uk": "Схований двір біля Вана-Каламая, про який хтось має тобі розповісти. Графіті на кожній дошці, і кімната така сама. Це місце, щоб просто посидіти, про що друга половина назви й каже. Якщо двері не відчиняються, постукай. Можуть впустити."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [
+      "01.webp",
+      "02.webp",
+      "03.webp",
+      "04.webp"
+    ],
+    "website": "",
+    "phone": "",
+    "added": "2026-08-29",
+    "closed": false
+  },
+  {
     "id": "bekker-pagariari",
     "name": "Bekker Pagariäri",
     "address": "Kopli 27, 10412 Tallinn",
