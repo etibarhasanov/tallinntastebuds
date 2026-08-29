@@ -389,7 +389,7 @@
     "phone": "+372 5309 6455",
     "added": "2026-08-23",
     "visited": "2025-01",
-    "closed": false
+    "closed": true
   },
   {
     "id": "cafe-tempo",
@@ -1293,14 +1293,14 @@
       "hidden-gem"
     ],
     "blurb": {
-      "az": "Stolüstü futbol, sendviçlər, içkilər və sauna, hamısı bir yerdə. Çox rəngarəng, şəhərdə görəcəyin hər şeydən fərqli. Google Maps olmadan tapmaq çətindir. Təəssüf ki, indi bağlanıb, amma video yerində qalır.",
-      "en": "Foosball, sandwiches, drinks and a sauna, all in one place. Very diverse, very different from anything else you'll see in town. Finding it without Google Maps is a challenge. Sadly closed now, but the video stays up.",
-      "et": "Lauajalgpall, võileivad, joogid ja saun, kõik ühes kohas. Väga mitmekesine ja täiesti erinev kõigest muust, mida linnas näed. Ilma Google Mapsita on seda raske leida. Kahjuks nüüdseks suletud, aga video jääb üles.",
-      "fi": "Pöytäjalkapalloa, voileipiä, juomia ja sauna, kaikki samassa paikassa. Hyvin monipuolinen ja hyvin erilainen kuin mikään muu kaupungissa. Sen löytäminen ilman Google Mapsia on haaste. Valitettavasti nyt suljettu, mutta video jää nettiin.",
-      "pt": "Matraquilhos, sanduíches, bebidas e uma sauna, tudo no mesmo sítio. Muito variado e muito diferente de tudo o resto na cidade. Encontrá-lo sem o Google Maps é um desafio. Infelizmente já fechou, mas o vídeo fica.",
-      "ru": "Настольный футбол, сэндвичи, напитки и сауна, всё в одном месте. Очень разнообразно и совсем не похоже на остальное в городе. Найти его без Google Maps непросто. К сожалению, сейчас закрыто, но видео остаётся.",
-      "es": "Futbolín, bocadillos, copas y sauna, todo en el mismo sitio. Muy variado, muy distinto de cualquier otra cosa que veas en la ciudad. Encontrarlo sin Google Maps es todo un reto. Por desgracia ya ha cerrado, pero el vídeo se queda.",
-      "tr": "Langırt, sandviç, içki ve sauna, hepsi tek yerde. Çok çeşitli ve şehirde göreceğiniz her şeyden çok farklı. Google Haritalar olmadan bulmak başlı başına bir mesele. Maalesef şimdi kapandı ama video duruyor."
+      "az": "Stolüstü futbol, sendviçlər, içkilər və sauna, hamısı bir yerdə. Çox rəngarəng, şəhərdə görəcəyin hər şeydən fərqli. Google Maps olmadan tapmaq çətindir.",
+      "en": "Foosball, sandwiches, drinks and a sauna, all in one place. Very diverse, very different from anything else you'll see in town. Finding it without Google Maps is a challenge.",
+      "et": "Lauajalgpall, võileivad, joogid ja saun, kõik ühes kohas. Väga mitmekesine ja täiesti erinev kõigest muust, mida linnas näed. Ilma Google Mapsita on seda raske leida.",
+      "fi": "Pöytäjalkapalloa, voileipiä, juomia ja sauna, kaikki samassa paikassa. Hyvin monipuolinen ja hyvin erilainen kuin mikään muu kaupungissa. Sen löytäminen ilman Google Mapsia on haaste.",
+      "pt": "Matraquilhos, sanduíches, bebidas e uma sauna, tudo no mesmo sítio. Muito variado e muito diferente de tudo o resto na cidade. Encontrá-lo sem o Google Maps é um desafio.",
+      "ru": "Настольный футбол, сэндвичи, напитки и сауна, всё в одном месте. Очень разнообразно и совсем не похоже на остальное в городе. Найти его без Google Maps непросто.",
+      "es": "Futbolín, bocadillos, copas y sauna, todo en el mismo sitio. Muy variado, muy distinto de cualquier otra cosa que veas en la ciudad. Encontrarlo sin Google Maps es todo un reto.",
+      "tr": "Langırt, sandviç, içki ve sauna, hepsi tek yerde. Çok çeşitli ve şehirde göreceğiniz her şeyden çok farklı. Google Haritalar olmadan bulmak başlı başına bir mesele."
     },
     "mustOrder": [
       "Sandwiches"
@@ -1311,7 +1311,7 @@
     "phone": "+372 5395 7134",
     "added": "2026-08-23",
     "visited": "2025-06",
-    "closed": false
+    "closed": true
   },
   {
     "id": "lendav-maaler",
@@ -1343,7 +1343,7 @@
     "phone": "+372 5800 5171",
     "added": "2026-08-23",
     "visited": "2026-01",
-    "closed": false
+    "closed": true
   },
   {
     "id": "lokaal-tilk",
