@@ -29,6 +29,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [The map tiles need a key](#the-map-tiles-need-a-key)
 - [What the validator checks](#what-the-validator-checks)
 - [Files](#files)
+- [The mark](#the-mark)
 - [Third-party pieces and their licences](#third-party-pieces-and-their-licences)
 - [Design notes](#design-notes)
 
@@ -819,6 +820,7 @@ staff.html                 the current code, for the counter  } noindex
 assets/pass.js             hourly code, shared by those three and the map
 assets/pass.css            styles for those three
 assets/qr.js              QR encoder, written out, no dependency
+assets/logo/               the mark, and the painting it came out of
 assets/deal.js             ) one small script
 assets/verify.js           ) per page
 assets/staff.js            )
@@ -835,6 +837,38 @@ tools/validate.mjs         dependency-free data validator
 Deep links: `?spot=f-hoone` opens that place directly — that is the link to put
 in a Story. `?lang=ru` opens it in Russian, `?style=green` in the dark
 palette. They all combine.
+
+---
+
+## The mark
+
+The logo is a mouth. It is traced off a watercolour-and-ink portrait —
+somebody grinning with a chocolate ice cream bar in one hand — which sits in
+the repository as `assets/logo/source-artwork.jpg`. The grin was the part of
+that picture worth keeping: it is the only bit of it that is about tasting
+something, and a wide dark shape with a band of white through it survives
+being 16 pixels tall, which a face does not.
+
+It appears in exactly two forms and never a third:
+
+- **`mark.svg`** — the grin on nothing, in a box cropped to its own edges.
+  This is the one that goes in the brand card on the map, at the top of the
+  three pass pages, and in the share card.
+- **`icon.svg`** — the same grin sitting on an aubergine disc, square. This is
+  the one that has to hold a silhouette against browser chrome it cannot
+  predict, so it is the favicon and the home-screen icon.
+
+Everything else in `assets/logo/` is one of those two rendered out: a 32px PNG
+for Safari, which will not read an SVG favicon; a 180px square on filled
+aubergine for iOS, which rounds its own corners and ignores transparency; a
+1200x630 share card; and a one-ink cut with the teeth knocked out as holes,
+for anywhere it has to print in a single colour.
+
+The map pins are the one place the mark deliberately does not go. They already
+say three things by shape — filmed is solid, photographed is hollow,
+written-up is small and faint — and there are seventy of them; a picture
+inside a 14px dot is mud, and it would cost the map that reading to gain a
+logo it already has in the corner.
 
 ---
 
@@ -1372,6 +1406,14 @@ beside it. Leaflet's `interactive` tooltip option does that on its own: it lets
 pointer events reach the label and makes the marker the label's event parent,
 so one click handler serves both and a drag that starts on a name still pans
 the map. Hover tooltips stay inert, since the pointer is already on the dot.
+
+**The mark.** A mouth, open, mid-laugh, traced off the painting in
+`assets/logo/source-artwork.jpg`. It sits above the name in the brand card
+rather than beside it, because beside it the wordmark has to break over two
+lines to clear the mark and *Tallinn Tastebuds* reads as one line or not at
+all. On a phone the card gives up its words and the mark is what is left
+standing for the name, on one line with the handle. The full account of it is
+in [The mark](#the-mark).
 
 **Type.** Three faces with three jobs, and they never trade places.
 *Familjen Grotesk* — a contemporary Nordic grotesque — sets place names and

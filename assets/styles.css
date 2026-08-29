@@ -279,6 +279,18 @@ a:hover { color: var(--accent-lit); }
   padding: 16px 18px 15px;
 }
 
+/* The grin, above the name rather than beside it. Beside it the wordmark had
+   to break over two lines to clear the mark, and "Tallinn Tastebuds" reads as
+   one line or not at all. Stacked, the card is a letterhead: mark, place,
+   name. The file is one SVG shared with the three pass pages, so it is in
+   cache by the time anyone opens a discount. */
+.brand-mark {
+  width: 52px;
+  height: auto;
+  margin-bottom: 6px;
+  flex: 0 0 auto;
+}
+
 .wordmark {
   font-family: var(--display);
   font-size: 25px;
@@ -1335,6 +1347,16 @@ body.panel-detail .panel {
     padding: 5px 11px 4px;
   }
   .brand .tagline { display: none; }
+
+  /* Everything the card says in words is gone at this width, so the mark is
+     what is left standing for the name — it and the handle on one line. */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .brand-mark { width: 30px; margin-bottom: 0; }
+
   .brand .eyebrow,
   .brand .wordmark {
     position: absolute;

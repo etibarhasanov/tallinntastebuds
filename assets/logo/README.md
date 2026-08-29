@@ -1,26 +1,37 @@
-# Logo candidates
+# The mark
 
-Four directions drawn out of the watercolour-and-ink portrait in
-`source-artwork.jpg` — the drawing rotated upright, nothing else changed.
+The grin, lifted out of `source-artwork.jpg` — the watercolour-and-ink
+portrait the site's identity comes from, rotated upright and scaled down from
+the original photograph. Of everything in that painting the mouth was the one
+shape that is literally about tasting something, so that is what the mark is.
 
-`candidates.svg` holds the three drawn marks as `<symbol>` elements, ready to
-inline in a page and call with `<use href="#id">`:
+```
+mark.svg          the grin on its own, transparent ground, 94x63 box
+                  → the brand card on the map, the three pass pages, og.png
+icon.svg          the same grin on the aubergine disc, square
+                  → the favicon on all four pages
+icon-32.png       the same disc, flattened, for Safari, which does not
+                  read SVG favicons
+icon-180.png      the grin on a filled aubergine square, for a home screen;
+                  iOS rounds the corners and does not honour transparency,
+                  so this one is not a disc
+og.png            1200x630 share card — mark, name, tagline, handle
+mark-mono.svg     one ink, teeth knocked out of the shape as holes rather
+                  than painted over, so it works on any ground
+source-artwork.jpg the painting
+```
 
-| Option | id         | What it is                                             |
-| ------ | ---------- | ------------------------------------------------------ |
-| A      | `tt-grin`  | The open grin on its own — lips, two rows of teeth      |
-| B      | `tt-face`  | The whole face flattened, on the aubergine ground       |
-| C      | `tt-bar`   | The chocolate bar with the bite out of it               |
-| D      | —          | A crop of `source-artwork.jpg` itself, no redrawing     |
+`mark-mono.svg` fills with `currentColor`, which only inherits when the file
+is inlined into a page. Loaded through an `<img>` it draws black, because an
+`<img>` renders the SVG as its own document.
 
-All three are built on a 100 × 100 viewBox and hold together down to 16 px.
-Nothing here is wired into the site yet — one of them gets picked first, then
-that one goes to the favicon, the brand card, the touch icon, the share card,
-the pass header and the map pins.
+Colours, all of them lifted off the painting:
 
-Colours lifted from the painting:
+    aubergine  #8E5C9C   the disc
+    lip        #A9707E   the mouth
+    ink        #241A1F   every line
+    tooth      #F5F0E2
+    berry      #B41F2B   the tongue
 
-    aubergine  #8E5C9C      lip      #A9707E
-    sweater    #4A57AC      cocoa    #3B2A20
-    skin       #F2E3B0      berry    #B41F2B
-    ink        #241A1F      vanilla  #F4EAD2
+Anything regenerated from these — a new PNG size, a new share card — should
+be rendered from `mark.svg`, not redrawn.
