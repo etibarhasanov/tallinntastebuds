@@ -31,6 +31,10 @@
     "tr": {
       "name": "Joy Türk Rock",
       "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/JOYTURK_ROCK.mp3"
+    },
+    "uk": {
+      "name": "ROKS Ukr Rock",
+      "url": "https://online.radioroks.ua/RadioROKS_Ukr"
     }
   }
 }

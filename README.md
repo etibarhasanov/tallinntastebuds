@@ -109,7 +109,7 @@ Field by field:
 | `phone` | Optional. The number you would actually ring, international form with spaces: `+372 661 0180`. It becomes the **Call** button at the foot of the panel, next to **Directions** — a `tel:` link, so a phone hands it straight to the dialler — and a tappable row in the facts list just above it. An empty string and a missing key both mean "no number", and the button and the row both disappear. |
 | `added` | The day you added the place, `YYYY-MM-DD`. Drives the **Just added** section at the top of the list. |
 | `visited` | The month you last ate there, `YYYY-MM`. |
-| `closed` | `true` greys the pin out. See below. |
+| `closed` | `true` greys the pin out and draws a dashed ring round it. See below. |
 
 There is deliberately **no neighbourhood field** — the map is the location
 index, and a district label would be a third thing to keep translated. There is
@@ -397,7 +397,7 @@ the **name**, the **street**, the **type labels**, and the **dishes** in
 `mustOrder`. Not the write-ups — a word like "good" would match half the map
 and give no clue why.
 
-The type labels go in **in all eight languages at once**, not the one the
+The type labels go in **in all nine languages at once**, not the one the
 switcher happens to be showing. Somebody reading the map in Turkish still types
 "bakery" half the time, and somebody reading it in English may well know the
 place as a *pagariäri*: `bakery`, `pagariäri`, `leipomo`, `padaria`, `пекарня`,
@@ -435,30 +435,79 @@ when the keyboard opens over it.
 
 ## Close a place instead of deleting it
 
-When somewhere shuts down, set `"closed": true`. The pin turns grey, the detail
-panel gets a **Closed** flag and a short note, and — the point of the whole
-exercise — every `?spot=` link you ever put in a Story keeps working. Deleting
-the entry breaks those links silently.
+When somewhere shuts down, set `"closed": true`. Nothing else about the entry
+changes — the point of the whole exercise is that every `?spot=` link you ever
+put in a Story keeps working. Deleting the entry breaks those links silently.
 
-Nothing in `data/restaurants.json` is currently marked closed — the field is
-there for the first place that shuts.
+A shut place is two facts, not one, and the second is the reason it is still
+here: **the door is closed, and the reel is not.** So it is marked in two
+places rather than dimmed in one.
+
+- **On the map** the pin keeps the shape that says what there is to watch —
+  solid disc, hollow ring, small speck — in grey, and gains a **dashed ring**
+  drawn just outside it. A closed place you can still watch a reel of is a
+  solid dot inside a broken circle, which is both facts at once. Grey alone
+  could not do that: it is also what a write-up-only place looks like from
+  three streets away. The ring stays when the place is selected, and a
+  selected closed pin no longer lights up the accent — the halo and the size
+  say which one the panel belongs to.
+- **In the list** the row carries a **Closed** badge next to the price, beside
+  where a discount would sit, because the two of them are what you decide on
+  rather than what you read. The badge carries the same broken ring at 9px, so
+  the list doubles as the key to the map. The depth badge on the right keeps
+  its accent: the name greys, the price greys, the **Call** button greys —
+  everything that was about *going* — and what is left to look at stays lit.
+- **In the panel** the flag over the name carries the ring too, and says it in
+  full: **Closed for good**, not **Closed**. On a map of restaurants the bare
+  word reads as *closed today*, which is the one thing this site refuses to
+  claim — there is no opening-hours field, on purpose. Under it the note says
+  what is left rather than only what is gone: the reel, the video or the
+  photos, in each one's own word, or the "nothing was filmed inside" line when
+  there is neither.
+
+**Two lengths, one fact.** `closed` is the one-word badge — scanned down a
+list, never read — and `closedFlag` is the full phrase, which has a line of
+its own in the panel. They are separate strings because the full phrase does
+not fit the badge: at `Cerrado para siempre` the types beside it wrapped to
+three lines on a 390px screen. The notes are four more strings per language —
+`closedNote` for a place with nothing filmed, and `closedReelNote` /
+`closedVideoNote` / `closedPhotosNote`, picked by `closedNoteKey()`. Six
+strings per language in all, and the wording is meant to sound like the rest
+of the write-ups rather than like a database field.
+
+Closed places are left out of everything that goes looking for somewhere to
+eat. **Surprise me** never picks one — `randomPick()` filters `!p.closed` off
+the visible set before it draws, so a shut place cannot come up however many
+times you press it, and with every place filtered out the toast says so rather
+than sending you to a closed door. The **Just added** section never lists one,
+and the locate framing walks you to the nearest *open* place. They stay on the
+map, and in the list, and at their own `?spot=` link — that is the whole point
+— but nothing ever *suggests* them.
+
+Four places in `data/restaurants.json` are marked closed today — Cafe Cape
+Town, Laboratooriumi 23, Lendav Maaler and Maison François. All four have a
+reel, so all four get `closedReelNote`.
+
+Do not write the closure into the `blurb` as well. The panel says it in every
+language already, and Laboratooriumi 23 used to end with "Sadly closed now,
+but the video stays up" directly under a note that said the same thing.
 
 ---
 
 ## Languages
 
-Azerbaijani, English, Estonian, Finnish, Portuguese, Russian, Spanish and
-Turkish — the switcher shows them in that order, Azerbaijani first and the rest
-alphabetical. The order of the blocks in `ui.json` is the order of the buttons;
-the language a visitor *lands* in is a separate thing, still English by
+Azerbaijani, English, Estonian, Finnish, Portuguese, Russian, Spanish, Turkish
+and Ukrainian — the switcher shows them in that order, Azerbaijani first and the
+rest alphabetical. The order of the blocks in `ui.json` is the order of the
+buttons; the language a visitor *lands* in is a separate thing, still English by
 default, and set by `DEFAULT_LANG` in `assets/app.js`.
 
 The switch has two shapes, from the same markup. Wide enough, it is a row of
 codes. On a phone it folds into the current code with a menu under it, listing
-each language's own name for itself: eight codes side by side are just over
-310px, which on a 390px screen runs straight into the handle in the opposite
-corner. The fold happens in CSS at 860px, and the folded menu grows downwards,
-so the next language costs nothing in layout either. Every interface string is
+each language's own name for itself: nine codes side by side are around 350px,
+which on a 390px screen runs straight into the handle in the opposite corner.
+The fold happens in CSS at 860px, and the folded menu grows downwards, so the
+next language costs nothing in layout either. Every interface string is
 in `data/ui.json`, keyed by language and then by string id, so a translator
 never has to open the HTML.
 
@@ -966,7 +1015,8 @@ language:
   "default": { "name": "Raadio Tallinn", "url": "https://icecast.err.ee/raadiotallinn.mp3" },
   "byLanguage": {
     "ru": { "name": "Наше Радио", "url": "https://nashe1.hostingradio.ru/nashe-256" },
-    "tr": { "name": "Joy Türk Rock", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/JOYTURK_ROCK.mp3" }
+    "tr": { "name": "Joy Türk Rock", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/JOYTURK_ROCK.mp3" },
+    "uk": { "name": "ROKS Ukr Rock", "url": "https://online.radioroks.ua/RadioROKS_Ukr" }
   }
 }
 ```
@@ -1010,11 +1060,24 @@ browser whichever node is up today. A `<audio>` element follows the 302 without
 being asked; some stream checkers do not, so those two URLs will look dead to a
 link checker and play fine in a browser.
 
-Prefer the station's own address over a rebroadcast of it. Anti Radio, YleX and
-Radio Paradise are all on their broadcaster's own host, which is why those
-three lines are the shortest in the file. A mirror on an aggregator's CDN is a
-lower bitrate, one remove from the station, and free to drop it whenever it
-likes.
+Prefer the station's own address over a rebroadcast of it. Anti Radio, YleX,
+Radio Paradise and Radio ROKS are all on their broadcaster's own host, which is
+why those four lines are the shortest in the file. A mirror on an aggregator's
+CDN is a lower bitrate, one remove from the station, and free to drop it
+whenever it likes.
+
+Ukrainian is on a channel rather than a main feed. Radio ROKS runs several
+alongside the broadcast one, and `RadioROKS_Ukr` is the Ukrainian rock stream:
+Okean Elzy, Skryabin, Druha Rika, Bumboks, Vopli Vidopliassova and the rest of
+it, all day, which is a better answer to somebody reading the map in Ukrainian
+than the main feed's Western rock. The other channels on the same host are
+`RadioROKS_ClassicRock`, `RadioROKS_NewRock`, `RadioROKS_HardnHeavy` and
+`RadioROKS_Ballads`, if the taste of the map ever changes.
+
+The `name` is what the button says, and the button holds 18ch before it starts
+eating the end of it, so the station's full name for the channel is shortened
+to `ROKS Ukr Rock` rather than shown as `RADIO ROKS UK…`, which reads like a
+language code rather than a station.
 
 Reach for a mirror only once the official address has actually failed **in a
 browser**. Scraped stream indexes disagree with each other about that address
@@ -1267,6 +1330,10 @@ behind it:
 | a reel | solid disc, r7 | 43 |
 | photos, no reel | hollow, r7, ring at full weight | 10 |
 | the write-up alone | small faded ring, r4.5 | 17 |
+
+A closed place takes whichever of the three it is, drawn in grey, plus a
+dashed ring at r11 outside it — a fourth mark rather than a fourth reading of
+the same one. See **Close a place instead of deleting it**.
 
 The three used to be told apart by fill alone — solid, then the accent mixed
 38% into the card colour, then empty — at radii of 7, 6.5 and 6. On paper that

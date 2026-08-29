@@ -265,6 +265,10 @@ a:hover { color: var(--accent-lit); }
 @media (prefers-reduced-motion: reduce) {
   .pin-halo { animation: none; opacity: .85; }
 }
+/* The broken circle round a closed place. Inert, like the halo: the dot
+   inside it is the thing you click, and a ring that took the pointer would
+   swallow the taps aimed at the edge of its own pin. */
+.pin-shut { pointer-events: none; }
 .pin:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 3px; }
 .pin-here { pointer-events: none; }
 
@@ -371,7 +375,7 @@ a:hover { color: var(--accent-lit); }
 
 /* The language switch has two shapes. Wide enough, it is the row of codes it
    always was. On a phone it is the current code with a menu under it, because
-   eight codes side by side reach the handle in the opposite corner. */
+   nine codes side by side reach the handle in the opposite corner. */
 .btn-lang-now { display: none; }
 .lang-list { display: flex; }
 .lang-name { display: none; }
@@ -831,11 +835,28 @@ body.panel-detail .panel {
 .is-closed .call-btn { color: var(--muted); }
 .is-closed .call-btn:hover { border-color: var(--hairline); color: var(--muted); }
 
+/* The map's broken circle, at badge size. Stroked rather than filled, unlike
+   the depth glyphs, because the gaps in the ring are the whole mark — filled
+   in, it is a dot with a bite out of it. */
+.shut-glyph { display: flex; }
+.shut-glyph svg {
+  display: block;
+  width: 9px;
+  height: 9px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+/* The flag over a closed place's name. It was the word alone; the ring in
+   front of it is what ties it to the pin the visitor just pressed. */
 .closed-flag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   margin-bottom: 12px;
-  padding: 3px 9px;
-  border: 1px solid var(--hairline);
+  padding: 3px 9px 3px 8px;
+  border: 1px solid var(--muted);
   border-radius: 100px;
   font-family: var(--mono);
   font-size: 10px;
@@ -844,6 +865,11 @@ body.panel-detail .panel {
   text-transform: uppercase;
   color: var(--muted);
 }
+.closed-flag .shut-glyph svg { width: 10px; height: 10px; }
+
+/* The note that follows it says what is left, not only what is gone, so it
+   is worth a hair more room than a stray grey line. */
+.is-shut-note { margin-top: 2px; line-height: 1.55; }
 
 .section { border-top: 1px solid var(--hairline); padding-top: 16px; margin-top: 20px; }
 .section > .eyebrow { margin-bottom: 8px; }
@@ -1187,6 +1213,29 @@ body.panel-detail .panel {
 }
 .list-row.is-closed .list-name { color: var(--muted); }
 
+/* Sits with the discount badge rather than at the end of the type list: an
+   offer and a shut door are the two things in a row you decide on rather than
+   read about. Grey where that one takes the accent, so the pair are never
+   read as the same kind of note, and nothing here brightens on hover — there
+   is nothing to go to. */
+.shut-mark {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 5px;
+  padding: 2px 8px 2px 7px;
+  border: 1px solid var(--muted);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: .11em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
 .list-row:hover .deal-mark { border-color: var(--accent-lit); color: var(--accent-lit); }
 .empty-note {
   margin-top: 20px;
@@ -1237,10 +1286,13 @@ body.panel-detail .panel {
 }
 .depth-mark.is-words svg { opacity: .5; }
 
-/* A closed place keeps its row for the record, but nothing about it is worth
-   the accent any more — same call the Call button makes. */
-.list-row.is-closed .depth-mark.is-reel { background: var(--muted); border-color: var(--muted); }
-.list-row.is-closed .depth-mark.is-photos { border-color: var(--muted); color: var(--muted); }
+/* The depth mark keeps its accent on a closed row, which it used to lose. It
+   is the one thing in the row that did not close: the door is shut and the
+   reel is still there to watch, and greying the badge said the opposite of
+   the reason the entry is still on the map at all. The name greys, the price
+   greys, the Call button greys — everything that was about going. What is
+   left to look at stays lit, and the CLOSED mark beside it carries the news
+   on its own. */
 
 .list-row:hover .depth-mark.is-photos { border-color: var(--accent-lit); color: var(--accent-lit); }
 .list-row:hover .depth-mark.is-reel { background: var(--accent-lit); border-color: var(--accent-lit); }
