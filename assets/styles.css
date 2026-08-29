@@ -350,7 +350,7 @@ a:hover { color: var(--accent-lit); }
 
 /* The language switch has two shapes. Wide enough, it is the row of codes it
    always was. On a phone it is the current code with a menu under it, because
-   eight codes side by side reach the handle in the opposite corner. */
+   nine codes side by side reach the handle in the opposite corner. */
 .btn-lang-now { display: none; }
 .lang-list { display: flex; }
 .lang-name { display: none; }
