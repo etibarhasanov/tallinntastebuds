@@ -269,19 +269,18 @@ a:hover { color: var(--accent-lit); }
 .pin-here { pointer-events: none; }
 
 /* The mark, sitting on the pin you picked. It is scenery: the circle beneath
-   it is the button, so nothing here may take a pointer. Sized in CSS rather
-   than by the icon box, because the grin is wider than it is tall and the box
-   it hangs in is square — width sets it, height follows the viewBox. */
+   it is the button, so nothing here may take a pointer.
+   Painted in `currentColor` through a mask rather than drawn, because on the
+   map the mouth has to be whatever colour the pin under it is wearing, and
+   that changes with the swatches. app.js sets the colour and the box; this
+   only says what shape to cut. The mask file is the same mouth as everywhere
+   else on the site, thresholded to one ink and traced — a photograph cannot
+   be recoloured, and at this size its watercolour is a smudge anyway. */
 .pin-grin {
   pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.pin-grin svg {
-  width: 20px;
-  height: auto;
-  overflow: visible;
+  background: currentColor;
+  -webkit-mask: url(logo/mark-pin.svg) center / contain no-repeat;
+  mask: url(logo/mark-pin.svg) center / contain no-repeat;
 }
 
 /* ---------- brand ---------- */

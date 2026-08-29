@@ -1,42 +1,46 @@
 # The mark
 
-The grin, lifted out of `source-artwork.jpg` — the watercolour-and-ink
-portrait the site's identity comes from, rotated upright and scaled down from
-the original photograph. Of everything in that painting the mouth was the one
-shape that is literally about tasting something, so that is what the mark is.
+The mouth out of `source-artwork.jpg` — the watercolour-and-ink portrait the
+identity comes from — cut away from the face along its own ink line. Not a
+redrawing of it. The brush marks, the olive teeth, the red in the gap and the
+wobble of the pen are the mark.
 
 ```
-mark.svg          the grin on its own, transparent ground, 94x63 box
-                  → the brand card on the map, the three pass pages, og.png
-icon.svg          the same grin on the aubergine disc, square
-                  → the favicon on all four pages
-icon-32.png       the same disc, flattened, for Safari, which does not
-                  read SVG favicons
-icon-180.png      the grin on a filled aubergine square, for a home screen;
-                  iOS rounds the corners and does not honour transparency,
-                  so this one is not a disc
-og.png            1200x630 share card — mark, name, tagline, handle
-mark-mono.svg     one ink, teeth knocked out of the shape as holes rather
-                  than painted over, so it works on any ground
+mark.webp          the painted mouth, cut out, 380px wide
+                   → the brand card on the map, the three pass pages
+icon-32.png        the same mouth on the purple its background was painted
+icon-48.png        in, as a disc
+                   → the favicon on all four pages
+icon-180.png       the same, on a filled square: iOS rounds its own corners
+                   and does not honour transparency
+                   → the home-screen icon
+og.jpg             1200x630 share card — mouth, name, tagline, handle
+mark-pin.svg       the same drawing reduced to one ink and traced: the lip as
+                   a line, the dark as one band, the teeth punched out of it
+                   → the CSS mask on the chosen map pin
+mark-mono.svg      the full-detail one-ink trace, every stroke kept
+                   → anywhere it has to print in a single colour
 source-artwork.jpg the painting
 ```
 
-`mark-mono.svg` fills with `currentColor`, which only inherits when the file
-is inlined into a page. Loaded through an `<img>` it draws black, because an
-`<img>` renders the SVG as its own document.
+Two of these are vector and five are not, and the split is not arbitrary. The
+mark is a watercolour, so wherever it can simply be shown, it is shown: a
+photograph of the paint. The two SVGs exist for the one thing a photograph
+cannot do — take a colour it is told to. `mark-pin.svg` fills with whatever
+`currentColor` is, which is how the mouth on the map ends up wearing the pin's
+own colour and changing with the swatches. `mark-mono.svg` does the same for
+one-ink printing. Both are traced from the same pixels as `mark.webp`.
 
-The chosen map pin wears the same one-ink cut, but it is not this file: it is
-inlined in `assets/app.js` as `PIN_GRIN`, because it has to take its colour
-from the pin it is sitting on and a file behind an `<img>` cannot be told. The
-two are the same paths. Change one and change the other.
+`mark-pin.svg` is deliberately the coarser of the two: on the map it is 26
+pixels across, and at that size thirty separate teeth are one grey smudge.
 
 Colours, all of them lifted off the painting:
 
-    aubergine  #8E5C9C   the disc
-    lip        #A9707E   the mouth
-    ink        #241A1F   every line
-    tooth      #F5F0E2
-    berry      #B41F2B   the tongue
+    aubergine  #8E5C9C   the ground behind the icon
+    lip        #A9707E
+    ink        #241A1F
+    tooth      #F5F0E2 through #BEB98C
+    berry      #B41F2B
 
-Anything regenerated from these — a new PNG size, a new share card — should
-be rendered from `mark.svg`, not redrawn.
+Everything here is rebuilt from `source-artwork.jpg` rather than edited by
+hand, so a new size or a new share card is a re-render, not a redraw.

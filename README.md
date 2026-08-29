@@ -842,41 +842,40 @@ palette. They all combine.
 
 ## The mark
 
-The logo is a mouth. It is traced off a watercolour-and-ink portrait —
-somebody grinning with a chocolate ice cream bar in one hand — which sits in
-the repository as `assets/logo/source-artwork.jpg`. The grin was the part of
-that picture worth keeping: it is the only bit of it that is about tasting
-something, and a wide dark shape with a band of white through it survives
-being 16 pixels tall, which a face does not.
+The logo is a mouth: the one in the watercolour-and-ink portrait that sits in
+the repository as `assets/logo/source-artwork.jpg`, cut away from the face
+along its own ink line and used as it was painted. It is not a drawing *of*
+the painting. The olive teeth, the red in the gap, the place where the pen went
+twice round the lower lip — those are the mark, and they are the reason not to
+redraw it.
 
-It appears in exactly two forms and never a third:
+Of everything in that picture the mouth was the part worth keeping. It is the
+only bit of it that is about tasting something, and a wide dark shape with a
+band of pale through it survives being small, which a face does not.
 
-- **`mark.svg`** — the grin on nothing, in a box cropped to its own edges.
-  This is the one that goes in the brand card on the map, at the top of the
-  three pass pages, and in the share card.
-- **`icon.svg`** — the same grin sitting on an aubergine disc, square. This is
-  the one that has to hold a silhouette against browser chrome it cannot
-  predict, so it is the favicon and the home-screen icon.
-
-Everything else in `assets/logo/` is one of those two rendered out: a 32px PNG
-for Safari, which will not read an SVG favicon; a 180px square on filled
-aubergine for iOS, which rounds its own corners and ignores transparency; a
-1200x630 share card; and a one-ink cut with the teeth knocked out as holes,
-for anywhere it has to print in a single colour.
+It ships as a photograph nearly everywhere: `mark.webp` in the brand card and
+at the top of the three pass pages, `og.jpg` as the share card, and a set of
+PNGs for the favicon and the home screen — all of them the same pixels at
+different sizes. Two vectors exist alongside them, for the one thing a
+photograph cannot do, which is take a colour it is told to. Both are traced
+from the same pixels.
 
 On the map it goes on exactly one pin: the one whose panel is open. Not on all
 seventy — the pins already say three things by shape, and a picture inside a
 14px dot is mud. But there is only ever one chosen place, so it can afford to
-be 28px, and at that size the grin is the clearest thing on the screen.
+be 34px.
 
 It is drawn as a layer of its own sitting on the circle rather than replacing
 it, which is what keeps this from costing anything. The circle underneath is
 still the button — the click, the label, the tab stop, the focus ring — and
-still says by its fill how much there is to see in the place. The grin is cut
-out of it in one colour, and that colour is the ring the pin is already
-wearing: paper out of a solid disc, accent out of a hollow one, the half-mixed
-tone out of the faint one. So the three readings survive being grinned at, and
-the mark changes colour with the swatches like everything else.
+still says by its fill how much there is to see in the place. The mouth is cut
+out of it by a CSS mask over `currentColor`, and that colour is the ring the
+pin is already wearing: paper out of a solid disc, accent out of a hollow one,
+the half-mixed tone out of the faint one. So the three readings survive being
+grinned at, and the mark changes colour with the swatches like everything else.
+That is the one place the traced `mark-pin.svg` is used instead of the
+painting, and the trade is deliberate: a watercolour cannot follow a palette,
+and at 26 pixels across its brushwork is a smudge anyway.
 
 ---
 
@@ -1415,8 +1414,9 @@ pointer events reach the label and makes the marker the label's event parent,
 so one click handler serves both and a drag that starts on a name still pans
 the map. Hover tooltips stay inert, since the pointer is already on the dot.
 
-**The mark.** A mouth, open, mid-laugh, traced off the painting in
-`assets/logo/source-artwork.jpg`. It sits above the name in the brand card
+**The mark.** A mouth, open, mid-laugh — the one in the painting at
+`assets/logo/source-artwork.jpg`, cut out of it rather than redrawn from it.
+It sits above the name in the brand card
 rather than beside it, because beside it the wordmark has to break over two
 lines to clear the mark and *Tallinn Tastebuds* reads as one line or not at
 all. On a phone the card gives up its words and the mark is what is left
