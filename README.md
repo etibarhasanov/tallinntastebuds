@@ -108,7 +108,7 @@ Field by field:
 | `phone` | Optional. The number you would actually ring, international form with spaces: `+372 661 0180`. It becomes the **Call** button at the foot of the panel, next to **Directions** — a `tel:` link, so a phone hands it straight to the dialler — and a tappable row in the facts list just above it. An empty string and a missing key both mean "no number", and the button and the row both disappear. |
 | `added` | The day you added the place, `YYYY-MM-DD`. Drives the **Just added** section at the top of the list. |
 | `visited` | The month you last ate there, `YYYY-MM`. |
-| `closed` | `true` greys the pin out. See below. |
+| `closed` | `true` greys the pin out and draws a dashed ring round it. See below. |
 
 There is deliberately **no neighbourhood field** — the map is the location
 index, and a district label would be a third thing to keep translated. There is
@@ -434,13 +434,46 @@ when the keyboard opens over it.
 
 ## Close a place instead of deleting it
 
-When somewhere shuts down, set `"closed": true`. The pin turns grey, the detail
-panel gets a **Closed** flag and a short note, and — the point of the whole
-exercise — every `?spot=` link you ever put in a Story keeps working. Deleting
-the entry breaks those links silently.
+When somewhere shuts down, set `"closed": true`. Nothing else about the entry
+changes — the point of the whole exercise is that every `?spot=` link you ever
+put in a Story keeps working. Deleting the entry breaks those links silently.
 
-Nothing in `data/restaurants.json` is currently marked closed — the field is
-there for the first place that shuts.
+A shut place is two facts, not one, and the second is the reason it is still
+here: **the door is closed, and the reel is not.** So it is marked in two
+places rather than dimmed in one.
+
+- **On the map** the pin keeps the shape that says what there is to watch —
+  solid disc, hollow ring, small speck — in grey, and gains a **dashed ring**
+  drawn just outside it. A closed place you can still watch a reel of is a
+  solid dot inside a broken circle, which is both facts at once. Grey alone
+  could not do that: it is also what a write-up-only place looks like from
+  three streets away. The ring stays when the place is selected, and a
+  selected closed pin no longer lights up the accent — the halo and the size
+  say which one the panel belongs to.
+- **In the list** the row carries a **Closed** badge next to the price, beside
+  where a discount would sit, because the two of them are what you decide on
+  rather than what you read. The badge carries the same broken ring at 9px, so
+  the list doubles as the key to the map. The depth badge on the right keeps
+  its accent: the name greys, the price greys, the **Call** button greys —
+  everything that was about *going* — and what is left to look at stays lit.
+- **In the panel** the **Closed** flag over the name carries the ring too, and
+  the note under it says what is left rather than only what is gone: the reel,
+  the video or the photos, in each one's own word, or the plain "links still
+  work" line when there is nothing filmed. Four strings per language,
+  `closedNote` and `closedReelNote` / `closedVideoNote` / `closedPhotosNote`,
+  picked by `closedNoteKey()`.
+
+Closed places are still left out of the places that go looking for somewhere to
+eat: **Surprise me** never picks one, the **Just added** section never lists
+one, and the locate framing walks you to the nearest *open* place.
+
+Four places in `data/restaurants.json` are marked closed today — Cafe Cape
+Town, Laboratooriumi 23, Lendav Maaler and Maison François. All four have a
+reel, so all four get `closedReelNote`.
+
+Do not write the closure into the `blurb` as well. The panel says it in eight
+languages already, and Laboratooriumi 23 used to end with "Sadly closed now,
+but the video stays up" directly under a note that said the same thing.
 
 ---
 
@@ -1242,6 +1275,10 @@ behind it:
 | a reel | solid disc, r7 | 43 |
 | photos, no reel | hollow, r7, ring at full weight | 10 |
 | the write-up alone | small faded ring, r4.5 | 17 |
+
+A closed place takes whichever of the three it is, drawn in grey, plus a
+dashed ring at r11 outside it — a fourth mark rather than a fourth reading of
+the same one. See **Close a place instead of deleting it**.
 
 The three used to be told apart by fill alone — solid, then the accent mixed
 38% into the card colour, then empty — at radii of 7, 6.5 and 6. On paper that
