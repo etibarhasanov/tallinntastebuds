@@ -295,15 +295,24 @@ a:hover { color: var(--accent-lit); }
   padding: 16px 18px 15px;
 }
 
-/* The grin, above the name rather than beside it. Beside it the wordmark had
-   to break over two lines to clear the mark, and "Tallinn Tastebuds" reads as
-   one line or not at all. Stacked, the card is a letterhead: mark, place,
-   name. The file is one SVG shared with the three pass pages, so it is in
-   cache by the time anyone opens a discount. */
+/* The mark and the name, locked together. Stacked above it the mark was a
+   picture parked in the corner of the card with half a line of nothing beside
+   it, which read as something left there rather than as the logo. Beside the
+   name it has a job: the wordmark breaks after Tallinn, and two lines of it
+   stand exactly as tall as the picture does.
+   The break is the width doing it, not a <br> — the wordmark is set from
+   ui.json by textContent, which would eat one. Every language ships the same
+   two words, so every language breaks in the same place. */
+.brand-head {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: 0 0 10px;
+}
+
 .brand-mark {
-  width: 76px;
+  width: 82px;
   height: auto;
-  margin-bottom: 8px;
   border-radius: 2px;
   flex: 0 0 auto;
 }
@@ -314,7 +323,7 @@ a:hover { color: var(--accent-lit); }
   font-weight: 600;
   letter-spacing: -.025em;
   line-height: 1.1;
-  margin: 5px 0 8px;
+  margin: 0;
 }
 
 .tagline {
@@ -1404,8 +1413,8 @@ body.panel-detail .panel {
   body { --sheet-h: min(calc(var(--vph, 100dvh) * .82), 720px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
 
   /* On a phone the card is standing on the map, so it keeps the one line
-     that says whose map this is. The name and the eyebrow stay in the
-     markup for search engines and screen readers, out of sight. */
+     that says whose map this is. The name stays in the markup for search
+     engines and screen readers, out of sight. */
   .brand {
     width: auto;
     max-width: calc(100vw - 132px - var(--gap) * 2);
@@ -1420,7 +1429,8 @@ body.panel-detail .panel {
     align-items: center;
     gap: 9px;
   }
-  .brand-mark { width: 38px; margin-bottom: 0; }
+  .brand-head { margin: 0; }
+  .brand-mark { width: 38px; }
 
   .brand .eyebrow,
   .brand .wordmark {
