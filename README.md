@@ -843,39 +843,37 @@ palette. They all combine.
 ## The mark
 
 The logo is a mouth: the one in the watercolour-and-ink portrait that sits in
-the repository as `assets/logo/source-artwork.jpg`, cut away from the face
-along its own ink line and used as it was painted. It is not a drawing *of*
-the painting. The olive teeth, the red in the gap, the place where the pen went
-twice round the lower lip — those are the mark, and they are the reason not to
-redraw it.
+the repository as `assets/logo/source-artwork.jpg`, cropped out of the
+photograph of it and used exactly as painted. It is not a drawing *of* the
+painting, and there is no drawing of it anywhere — nothing is masked out,
+smoothed or traced. The olive teeth, the red in the gap, the place where the
+pen went twice round the lower lip: those are the mark, and they are the whole
+reason not to redraw it.
 
 Of everything in that picture the mouth was the part worth keeping. It is the
-only bit of it that is about tasting something, and a wide dark shape with a
-band of pale through it survives being small, which a face does not.
+only bit of it that is about tasting something, and it is the bit that survives
+being small.
 
-It ships as a photograph nearly everywhere: `mark.webp` in the brand card and
-at the top of the three pass pages, `og.jpg` as the share card, and a set of
-PNGs for the favicon and the home screen — all of them the same pixels at
-different sizes. Two vectors exist alongside them, for the one thing a
-photograph cannot do, which is take a colour it is told to. Both are traced
-from the same pixels.
+There are two crops of it and six files, all of them a resize of one crop or
+the other: a wide one for the brand card, the three pass pages and the share
+card, and a square one for the favicon, the home-screen icon and the map. The
+boxes are written down in `assets/logo/README.md`, so a new size is a
+re-render rather than a redraw.
 
 On the map it goes on exactly one pin: the one whose panel is open. Not on all
 seventy — the pins already say three things by shape, and a picture inside a
 14px dot is mud. But there is only ever one chosen place, so it can afford to
-be 34px.
+be 34px and wear the painting.
 
 It is drawn as a layer of its own sitting on the circle rather than replacing
 it, which is what keeps this from costing anything. The circle underneath is
-still the button — the click, the label, the tab stop, the focus ring — and
-still says by its fill how much there is to see in the place. The mouth is cut
-out of it by a CSS mask over `currentColor`, and that colour is the ring the
-pin is already wearing: paper out of a solid disc, accent out of a hollow one,
-the half-mixed tone out of the faint one. So the three readings survive being
-grinned at, and the mark changes colour with the swatches like everything else.
-That is the one place the traced `mark-pin.svg` is used instead of the
-painting, and the trade is deliberate: a watercolour cannot follow a palette,
-and at 26 pixels across its brushwork is a smudge anyway.
+still the button — the click, the label, the tab stop, the focus ring. The
+mouth is set inside it at 26px, which leaves a ring of the pin's own fill
+showing all the way round: accent inside a paper stroke where the place is
+filmed, paper inside an accent one where it is photographed, paper inside a
+thin half-mixed one where there is only the write-up. So the pin goes on
+saying how much there is to see in the place while it is wearing the mouth,
+and it still changes with the swatches.
 
 ---
 

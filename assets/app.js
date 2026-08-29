@@ -51,8 +51,7 @@
   var DEAL_FILTER = 'discount';
   var PIN_R = 7;             /* every pin */
   var PIN_R_SELECTED = 17;   /* the one you are looking at — it carries the mark */
-  var PIN_GRIN_W = 26;       /* the mouth on it: wider than it is tall */
-  var PIN_GRIN_H = 16;
+  var PIN_GRIN_D = 26;       /* the mouth on it, round, inside the pin's ring */
   var STYLE_KEY = 'ttb.style';
   var TILE_ATTRIBUTION =
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
@@ -661,10 +660,9 @@
     return 'words';
   }
 
-  /* The mark on the chosen pin is cut by a CSS mask over `currentColor`, not
-     drawn here, so the one place that knows its shape is the one file that
-     holds it — assets/logo/mark-pin.svg. All this has to be is a box for the
-     mask to fill; the colour and the size are set below. */
+  /* The mark on the chosen pin is a picture, set as a background in the
+     stylesheet so its path stays next to the other logo files. All this has
+     to be is the box it fills. */
   var PIN_GRIN = '';
 
   /* The pin, drawn small: a solid disc, a ring, a speck. Not a play triangle
@@ -820,7 +818,6 @@
      as the restyle hook, so a style change keeps the selection visible. */
   function paintMarkers() {
     var c = markerColours();
-    var chosenInk = null;
     syncMarkers();
 
     state.places.forEach(function (place) {
@@ -845,7 +842,6 @@
       var faded = depth === 'words';
 
       var ring = solid ? c.paper : (faded ? mixHex(tone, c.paper, .55) : tone);
-      if (chosen) chosenInk = ring;
 
       marker.setStyle({
         radius: chosen ? PIN_R_SELECTED : (faded ? PIN_R - 2.5 : PIN_R),
@@ -886,17 +882,14 @@
         icon: L.divIcon({
           className: 'pin-grin',
           html: PIN_GRIN,
-          iconSize: [PIN_GRIN_W, PIN_GRIN_H],
-          iconAnchor: [PIN_GRIN_W / 2, PIN_GRIN_H / 2]
+          iconSize: [PIN_GRIN_D, PIN_GRIN_D],
+          iconAnchor: [PIN_GRIN_D / 2, PIN_GRIN_D / 2]
         }),
         interactive: false,
         keyboard: false
       }).addTo(map);
       var grinEl = grinMarker.getElement();
-      if (grinEl) {
-        grinEl.setAttribute('aria-hidden', 'true');
-        if (chosenInk) grinEl.style.color = chosenInk;
-      }
+      if (grinEl) grinEl.setAttribute('aria-hidden', 'true');
     }
 
     if (hereMarker) {

@@ -1,46 +1,35 @@
 # The mark
 
-The mouth out of `source-artwork.jpg` — the watercolour-and-ink portrait the
-identity comes from — cut away from the face along its own ink line. Not a
-redrawing of it. The brush marks, the olive teeth, the red in the gap and the
-wobble of the pen are the mark.
+The mouth, cropped out of `source-artwork.jpg` — the photograph of the
+watercolour-and-ink portrait the identity comes from, rotated upright. That is
+the whole operation. Crop, resize, encode. Nothing is masked out, nothing is
+smoothed, nothing is traced, and there is no drawing of the mouth anywhere in
+this folder. The wobble of the pen, the olive teeth, the red in the gap and the
+paper the paint sank into are the mark.
 
 ```
-mark.webp          the painted mouth, cut out, 380px wide
-                   → the brand card on the map, the three pass pages
-icon-32.png        the same mouth on the purple its background was painted
-icon-48.png        in, as a disc
-                   → the favicon on all four pages
-icon-180.png       the same, on a filled square: iOS rounds its own corners
-                   and does not honour transparency
-                   → the home-screen icon
+mark.webp          the wide crop — mouth, the nose above it, the jaw below
+                   → the brand card on the map, the three pass pages, og.jpg
+mark-round.webp    the square crop, shown round by the stylesheet
+                   → the chosen pin on the map
+icon-32.png        the square crop, at the sizes a browser asks for
+icon-48.png        → the favicon on all four pages
+icon-180.png       → the home-screen icon; iOS rounds its own corners
 og.jpg             1200x630 share card — mouth, name, tagline, handle
-mark-pin.svg       the same drawing reduced to one ink and traced: the lip as
-                   a line, the dark as one band, the teeth punched out of it
-                   → the CSS mask on the chosen map pin
-mark-mono.svg      the full-detail one-ink trace, every stroke kept
-                   → anywhere it has to print in a single colour
-source-artwork.jpg the painting
+source-artwork.jpg the photograph everything above is cut from
 ```
 
-Two of these are vector and five are not, and the split is not arbitrary. The
-mark is a watercolour, so wherever it can simply be shown, it is shown: a
-photograph of the paint. The two SVGs exist for the one thing a photograph
-cannot do — take a colour it is told to. `mark-pin.svg` fills with whatever
-`currentColor` is, which is how the mouth on the map ends up wearing the pin's
-own colour and changing with the swatches. `mark-mono.svg` does the same for
-one-ink printing. Both are traced from the same pixels as `mark.webp`.
+Two crops, six files. The wide one keeps the mouth in its setting, which is
+how it reads at any size a page shows it. The square one is for the frames
+that are square or round, where the wide crop would have to be padded or
+cut again by the browser.
 
-`mark-pin.svg` is deliberately the coarser of the two: on the map it is 26
-pixels across, and at that size thirty separate teeth are one grey smudge.
+    wide     (1365, 1275) to (2268, 1975)      903 x 700
+    square   (1480, 1370) to (2140, 2030)      660 x 660
 
-Colours, all of them lifted off the painting:
+Those boxes are in `source-artwork.jpg`'s own pixels. Every file here is a
+resize of one of them, so a new size is a re-render and never a redraw — and
+whatever gets rendered is the painting, not an interpretation of it.
 
-    aubergine  #8E5C9C   the ground behind the icon
-    lip        #A9707E
-    ink        #241A1F
-    tooth      #F5F0E2 through #BEB98C
-    berry      #B41F2B
-
-Everything here is rebuilt from `source-artwork.jpg` rather than edited by
-hand, so a new size or a new share card is a re-render, not a redraw.
+The site frames pictures at `border-radius: 2px` and no border, so the mark is
+framed the same way. It is a picture, and it is allowed to look like one.
