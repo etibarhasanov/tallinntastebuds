@@ -487,8 +487,8 @@ Four places in `data/restaurants.json` are marked closed today — Cafe Cape
 Town, Laboratooriumi 23, Lendav Maaler and Maison François. All four have a
 reel, so all four get `closedReelNote`.
 
-Do not write the closure into the `blurb` as well. The panel says it in eight
-languages already, and Laboratooriumi 23 used to end with "Sadly closed now,
+Do not write the closure into the `blurb` as well. The panel says it in every
+language already, and Laboratooriumi 23 used to end with "Sadly closed now,
 but the video stays up" directly under a note that said the same thing.
 
 ---
