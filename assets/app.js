@@ -898,12 +898,15 @@
       var solid = depth === 'reel';
       var faded = depth === 'words';
 
-      var ring = solid ? c.paper : (faded ? mixHex(tone, c.paper, .55) : tone);
+      /* Named `edge` and not `ring`, because a few lines down `ring` is the
+         extra circle a closed place wears, and one scope cannot mean two
+         things by the same word. */
+      var edge = solid ? c.paper : (faded ? mixHex(tone, c.paper, .55) : tone);
 
       marker.setStyle({
         radius: chosen ? PIN_R_SELECTED : (faded ? PIN_R - 2.5 : PIN_R),
         weight: chosen ? 3 : (faded ? 1.75 : 2.75),
-        color: ring,
+        color: edge,
         fillColor: solid ? tone : c.paper
       });
 
