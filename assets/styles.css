@@ -272,6 +272,18 @@ a:hover { color: var(--accent-lit); }
 .pin:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 3px; }
 .pin-here { pointer-events: none; }
 
+/* The mark on the pin you picked — the painting itself, cropped round, not a
+   drawing of it. It is scenery: the circle beneath it is the button, so
+   nothing here may take a pointer.
+   It sits inside the circle rather than over it, leaving a ring of the pin's
+   own fill showing all the way round. That ring is what keeps the pin saying
+   how much there is to see in the place while it is wearing the mouth. */
+.pin-grin {
+  pointer-events: none;
+  border-radius: 50%;
+  background: url(logo/mark-round.webp) center / cover no-repeat;
+}
+
 /* ---------- brand ---------- */
 
 .brand {
@@ -281,6 +293,19 @@ a:hover { color: var(--accent-lit); }
   left: calc(var(--gap) + var(--safe-l));
   width: 288px;
   padding: 16px 18px 15px;
+}
+
+/* The grin, above the name rather than beside it. Beside it the wordmark had
+   to break over two lines to clear the mark, and "Tallinn Tastebuds" reads as
+   one line or not at all. Stacked, the card is a letterhead: mark, place,
+   name. The file is one SVG shared with the three pass pages, so it is in
+   cache by the time anyone opens a discount. */
+.brand-mark {
+  width: 76px;
+  height: auto;
+  margin-bottom: 8px;
+  border-radius: 2px;
+  flex: 0 0 auto;
 }
 
 .wordmark {
@@ -1387,6 +1412,16 @@ body.panel-detail .panel {
     padding: 5px 11px 4px;
   }
   .brand .tagline { display: none; }
+
+  /* Everything the card says in words is gone at this width, so the mark is
+     what is left standing for the name — it and the handle on one line. */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .brand-mark { width: 38px; margin-bottom: 0; }
+
   .brand .eyebrow,
   .brand .wordmark {
     position: absolute;

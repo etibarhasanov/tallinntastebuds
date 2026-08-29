@@ -217,6 +217,15 @@ html, body {
   text-decoration: none;
   color: inherit;
 }
+
+/* Same mark and the same stack as the card on the map, a size down. The point
+   of it here is that the person holding the phone at the till and the person
+   reading it behind the counter are looking at the same thing. */
+.pass-mark {
+  width: 46px;
+  height: auto;
+  margin: 0 auto 7px;
+}
 .pass-brand:hover { color: inherit; }
 
 .pass-wordmark {

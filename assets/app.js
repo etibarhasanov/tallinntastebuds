@@ -50,7 +50,8 @@
      chips answering to the same id would filter each other's places. */
   var DEAL_FILTER = 'discount';
   var PIN_R = 7;             /* every pin */
-  var PIN_R_SELECTED = 10;   /* the one you are looking at */
+  var PIN_R_SELECTED = 17;   /* the one you are looking at — it carries the mark */
+  var PIN_GRIN_D = 26;       /* the mouth on it, round, inside the pin's ring */
   var STYLE_KEY = 'ttb.style';
   var TILE_ATTRIBUTION =
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
@@ -86,6 +87,7 @@
   var hereAccuracy = null;
   var tileLayer = null;
   var haloMarker = null;
+  var grinMarker = null;
   var toastTimer = null;
 
   var dom = {};
@@ -684,6 +686,11 @@
     return 'words';
   }
 
+  /* The mark on the chosen pin is a picture, set as a background in the
+     stylesheet so its path stays next to the other logo files. All this has
+     to be is the box it fills. */
+  var PIN_GRIN = '';
+
   /* The pin, drawn small: a solid disc, a ring, a speck. Not a play triangle
      and a camera — those say what the word beside them already says, and at
      9px a camera is a smudge anyway. Echoing the dot is the one thing the
@@ -757,7 +764,7 @@
     marker.bindTooltip(name, {
       className: 'pin-tip' + (chosen ? ' pin-tip-on' : '') + (permanent && !chosen ? ' pin-tip-quiet' : ''),
       direction: 'top',
-      offset: [0, permanent ? -14 : -11],
+      offset: [0, chosen ? -21 : (permanent ? -14 : -11)],
       opacity: 1,
       interactive: !!permanent,
       permanent: !!permanent
@@ -855,6 +862,11 @@
     haloMarker = null;
   }
 
+  function clearGrin() {
+    if (grinMarker && map) map.removeLayer(grinMarker);
+    grinMarker = null;
+  }
+
   /* Paints every pin for the current selection and the current style. Doubles
      as the restyle hook, so a style change keeps the selection visible. */
   function paintMarkers() {
@@ -886,10 +898,15 @@
       var solid = depth === 'reel';
       var faded = depth === 'words';
 
+      /* Named `edge` and not `ring`, because a few lines down `ring` is the
+         extra circle a closed place wears, and one scope cannot mean two
+         things by the same word. */
+      var edge = solid ? c.paper : (faded ? mixHex(tone, c.paper, .55) : tone);
+
       marker.setStyle({
         radius: chosen ? PIN_R_SELECTED : (faded ? PIN_R - 2.5 : PIN_R),
-        weight: chosen ? 3.5 : (faded ? 1.75 : 2.75),
-        color: solid ? c.paper : (faded ? mixHex(tone, c.paper, .55) : tone),
+        weight: chosen ? 3 : (faded ? 1.75 : 2.75),
+        color: edge,
         fillColor: solid ? tone : c.paper
       });
 
@@ -917,6 +934,28 @@
         interactive: false
       }).addTo(map);
       if (haloMarker.bringToBack) haloMarker.bringToBack();
+    }
+
+    /* And the mark itself, cut out of the pin you picked. It is drawn as a
+       separate layer rather than as the pin, so the circle underneath keeps
+       everything it already does — the click, the tooltip, the tab stop, the
+       focus ring — and keeps saying by its fill how much there is to see in
+       the place. One grin on the map at a time, on the one you are tasting. */
+    clearGrin();
+    var chosenMarker = place ? markers[place.id] : null;
+    if (place && map && chosenMarker && map.hasLayer(chosenMarker)) {
+      grinMarker = L.marker([place.lat, place.lng], {
+        icon: L.divIcon({
+          className: 'pin-grin',
+          html: PIN_GRIN,
+          iconSize: [PIN_GRIN_D, PIN_GRIN_D],
+          iconAnchor: [PIN_GRIN_D / 2, PIN_GRIN_D / 2]
+        }),
+        interactive: false,
+        keyboard: false
+      }).addTo(map);
+      var grinEl = grinMarker.getElement();
+      if (grinEl) grinEl.setAttribute('aria-hidden', 'true');
     }
 
     if (hereMarker) {

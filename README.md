@@ -29,6 +29,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [The map tiles need a key](#the-map-tiles-need-a-key)
 - [What the validator checks](#what-the-validator-checks)
 - [Files](#files)
+- [The mark](#the-mark)
 - [Third-party pieces and their licences](#third-party-pieces-and-their-licences)
 - [Design notes](#design-notes)
 
@@ -886,6 +887,7 @@ staff.html                 the current code, for the counter  } noindex
 assets/pass.js             hourly code, shared by those three and the map
 assets/pass.css            styles for those three
 assets/qr.js              QR encoder, written out, no dependency
+assets/logo/               the mark, and the painting it came out of
 assets/deal.js             ) one small script
 assets/verify.js           ) per page
 assets/staff.js            )
@@ -902,6 +904,43 @@ tools/validate.mjs         dependency-free data validator
 Deep links: `?spot=f-hoone` opens that place directly — that is the link to put
 in a Story. `?lang=ru` opens it in Russian, `?style=green` in the dark
 palette. They all combine.
+
+---
+
+## The mark
+
+The logo is a mouth: the one in the watercolour-and-ink portrait that sits in
+the repository as `assets/logo/source-artwork.jpg`, cropped out of the
+photograph of it and used exactly as painted. It is not a drawing *of* the
+painting, and there is no drawing of it anywhere — nothing is masked out,
+smoothed or traced. The olive teeth, the red in the gap, the place where the
+pen went twice round the lower lip: those are the mark, and they are the whole
+reason not to redraw it.
+
+Of everything in that picture the mouth was the part worth keeping. It is the
+only bit of it that is about tasting something, and it is the bit that survives
+being small.
+
+There are two crops of it and six files, all of them a resize of one crop or
+the other: a wide one for the brand card, the three pass pages and the share
+card, and a square one for the favicon, the home-screen icon and the map. The
+boxes are written down in `assets/logo/README.md`, so a new size is a
+re-render rather than a redraw.
+
+On the map it goes on exactly one pin: the one whose panel is open. Not on all
+seventy — the pins already say three things by shape, and a picture inside a
+14px dot is mud. But there is only ever one chosen place, so it can afford to
+be 34px and wear the painting.
+
+It is drawn as a layer of its own sitting on the circle rather than replacing
+it, which is what keeps this from costing anything. The circle underneath is
+still the button — the click, the label, the tab stop, the focus ring. The
+mouth is set inside it at 26px, which leaves a ring of the pin's own fill
+showing all the way round: accent inside a paper stroke where the place is
+filmed, paper inside an accent one where it is photographed, paper inside a
+thin half-mixed one where there is only the write-up. So the pin goes on
+saying how much there is to see in the place while it is wearing the mouth,
+and it still changes with the swatches.
 
 ---
 
@@ -1459,6 +1498,17 @@ beside it. Leaflet's `interactive` tooltip option does that on its own: it lets
 pointer events reach the label and makes the marker the label's event parent,
 so one click handler serves both and a drag that starts on a name still pans
 the map. Hover tooltips stay inert, since the pointer is already on the dot.
+
+**The mark.** A mouth, open, mid-laugh — the one in the painting at
+`assets/logo/source-artwork.jpg`, cut out of it rather than redrawn from it.
+It sits above the name in the brand card
+rather than beside it, because beside it the wordmark has to break over two
+lines to clear the mark and *Tallinn Tastebuds* reads as one line or not at
+all. On a phone the card gives up its words and the mark is what is left
+standing for the name, on one line with the handle. On the map itself it goes
+on one pin only — whichever place is open — cut out of the dot in the dot's
+own ring colour, so the pin keeps saying what it said before. The full account
+of it is in [The mark](#the-mark).
 
 **Type.** Three faces with three jobs, and they never trade places.
 *Familjen Grotesk* — a contemporary Nordic grotesque — sets place names and
