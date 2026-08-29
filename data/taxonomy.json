@@ -9,7 +9,8 @@
       "ru": "Неформально/в одиночку",
       "pt": "Casual/sozinho",
       "es": "Informal/solo",
-      "tr": "Rahat/tek başına"
+      "tr": "Rahat/tek başına",
+      "uk": "Неформально/наодинці"
     },
     {
       "id": "restaurant",
@@ -20,7 +21,8 @@
       "ru": "Ресторан",
       "pt": "Restaurante",
       "es": "Restaurante",
-      "tr": "Restoran"
+      "tr": "Restoran",
+      "uk": "Ресторан"
     },
     {
       "id": "bakery",
@@ -31,7 +33,8 @@
       "ru": "Пекарня",
       "pt": "Padaria",
       "es": "Panadería",
-      "tr": "Fırın"
+      "tr": "Fırın",
+      "uk": "Пекарня"
     },
     {
       "id": "coffee",
@@ -42,7 +45,8 @@
       "ru": "Кофе/чай",
       "pt": "Café/chá",
       "es": "Café/té",
-      "tr": "Kahve/çay"
+      "tr": "Kahve/çay",
+      "uk": "Кава/чай"
     },
     {
       "id": "pub",
@@ -53,7 +57,8 @@
       "ru": "Пиво/паб",
       "pt": "Cerveja/pub",
       "es": "Cerveza/pub",
-      "tr": "Bira/pub"
+      "tr": "Bira/pub",
+      "uk": "Пиво/паб"
     },
     {
       "id": "hidden-gem",
@@ -64,7 +69,8 @@
       "ru": "Находка",
       "pt": "Joia escondida",
       "es": "Joya escondida",
-      "tr": "Gizli cevher"
+      "tr": "Gizli cevher",
+      "uk": "Прихована перлина"
     },
     {
       "id": "cheap-eats",
@@ -75,7 +81,8 @@
       "ru": "Недорого",
       "pt": "Barato",
       "es": "Barato",
-      "tr": "Hesaplı"
+      "tr": "Hesaplı",
+      "uk": "Недорого"
     },
     {
       "id": "date",
@@ -86,7 +93,8 @@
       "ru": "Свидание",
       "pt": "Encontro",
       "es": "Cita",
-      "tr": "Buluşma"
+      "tr": "Buluşma",
+      "uk": "Побачення"
     },
     {
       "id": "laptop",
@@ -97,7 +105,8 @@
       "ru": "С ноутбуком",
       "pt": "Bom para portátil",
       "es": "Bueno para portátil",
-      "tr": "Laptopa uygun"
+      "tr": "Laptopa uygun",
+      "uk": "З ноутбуком"
     },
     {
       "id": "asian",
@@ -108,7 +117,8 @@
       "ru": "Азиатская",
       "pt": "Asiático",
       "es": "Asiática",
-      "tr": "Asya"
+      "tr": "Asya",
+      "uk": "Азійська"
     },
     {
       "id": "vegan",
@@ -119,7 +129,8 @@
       "ru": "Веганское",
       "pt": "Vegano",
       "es": "Vegano",
-      "tr": "Vegan"
+      "tr": "Vegan",
+      "uk": "Веганське"
     },
     {
       "id": "fine-dining",
@@ -130,7 +141,8 @@
       "ru": "Высокая кухня",
       "pt": "Alta gastronomia",
       "es": "Alta cocina",
-      "tr": "Fine dining"
+      "tr": "Fine dining",
+      "uk": "Висока кухня"
     },
     {
       "id": "caucasian",
@@ -141,7 +153,8 @@
       "ru": "Кавказская",
       "pt": "Cáucaso",
       "es": "Cáucaso",
-      "tr": "Kafkasya"
+      "tr": "Kafkasya",
+      "uk": "Кавказька"
     }
   ]
 }
