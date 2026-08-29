@@ -456,16 +456,32 @@ places rather than dimmed in one.
   the list doubles as the key to the map. The depth badge on the right keeps
   its accent: the name greys, the price greys, the **Call** button greys —
   everything that was about *going* — and what is left to look at stays lit.
-- **In the panel** the **Closed** flag over the name carries the ring too, and
-  the note under it says what is left rather than only what is gone: the reel,
-  the video or the photos, in each one's own word, or the plain "links still
-  work" line when there is nothing filmed. Four strings per language,
-  `closedNote` and `closedReelNote` / `closedVideoNote` / `closedPhotosNote`,
-  picked by `closedNoteKey()`.
+- **In the panel** the flag over the name carries the ring too, and says it in
+  full: **Closed for good**, not **Closed**. On a map of restaurants the bare
+  word reads as *closed today*, which is the one thing this site refuses to
+  claim — there is no opening-hours field, on purpose. Under it the note says
+  what is left rather than only what is gone: the reel, the video or the
+  photos, in each one's own word, or the "nothing was filmed inside" line when
+  there is neither.
 
-Closed places are still left out of the places that go looking for somewhere to
-eat: **Surprise me** never picks one, the **Just added** section never lists
-one, and the locate framing walks you to the nearest *open* place.
+**Two lengths, one fact.** `closed` is the one-word badge — scanned down a
+list, never read — and `closedFlag` is the full phrase, which has a line of
+its own in the panel. They are separate strings because the full phrase does
+not fit the badge: at `Cerrado para siempre` the types beside it wrapped to
+three lines on a 390px screen. The notes are four more strings per language —
+`closedNote` for a place with nothing filmed, and `closedReelNote` /
+`closedVideoNote` / `closedPhotosNote`, picked by `closedNoteKey()`. Six
+strings per language in all, and the wording is meant to sound like the rest
+of the write-ups rather than like a database field.
+
+Closed places are left out of everything that goes looking for somewhere to
+eat. **Surprise me** never picks one — `randomPick()` filters `!p.closed` off
+the visible set before it draws, so a shut place cannot come up however many
+times you press it, and with every place filtered out the toast says so rather
+than sending you to a closed door. The **Just added** section never lists one,
+and the locate framing walks you to the nearest *open* place. They stay on the
+map, and in the list, and at their own `?spot=` link — that is the whole point
+— but nothing ever *suggests* them.
 
 Four places in `data/restaurants.json` are marked closed today — Cafe Cape
 Town, Laboratooriumi 23, Lendav Maaler and Maison François. All four have a

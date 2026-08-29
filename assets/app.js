@@ -1851,10 +1851,15 @@
     var deal = liveDealFor(place);
 
     dom.detail.appendChild(el('div', { className: 'place-head' }, [
+      /* The flag says it in full — a whole line to itself, and "Closed" alone
+         on a map of restaurants reads as closed *today*, which is the one
+         thing this site will not claim. The row badge keeps the one-word
+         version: it is scanned, not read, and at "Cerrado para siempre" the
+         types beside it wrapped to three lines on a phone. */
       place.closed
         ? el('div', { className: 'closed-flag' }, [
             el('span', { className: 'shut-glyph', 'aria-hidden': 'true', html: SHUT_GLYPH }),
-            el('span', { textContent: t('closed') })
+            el('span', { textContent: t('closedFlag') })
           ])
         : null,
       el('h2', {
