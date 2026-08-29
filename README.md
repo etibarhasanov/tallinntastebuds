@@ -467,8 +467,9 @@ Closed places are still left out of the places that go looking for somewhere to
 eat: **Surprise me** never picks one, the **Just added** section never lists
 one, and the locate framing walks you to the nearest *open* place.
 
-Two places in `data/restaurants.json` are marked closed today — Maison François
-and Laboratooriumi 23.
+Four places in `data/restaurants.json` are marked closed today — Cafe Cape
+Town, Laboratooriumi 23, Lendav Maaler and Maison François. All four have a
+reel, so all four get `closedReelNote`.
 
 Do not write the closure into the `blurb` as well. The panel says it in eight
 languages already, and Laboratooriumi 23 used to end with "Sadly closed now,
