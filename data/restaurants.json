@@ -1005,9 +1005,18 @@
       "tr": "Eski şehirde, Müürivahe'de Japon usulü küçük tabaklar. Somon çok güzel ve masaya gelen diğer bütün tatlar da en az onun kadar iyi.",
       "uk": "Японські маленькі тарілки на Мюйривахе, у Старому місті. Лосось смачний, і всі інші смаки, що приходили на стіл, були такі самі добрі."
     },
-    "mustOrder": [],
+    "mustOrder": [
+      "Salmon Ponzu",
+      "Yodare Dori (Spicy Chicken)"
+    ],
     "reel": "",
-    "photos": [],
+    "photos": [
+      "01.webp",
+      "02.webp",
+      "03.webp",
+      "04.webp",
+      "05.webp"
+    ],
     "website": "",
     "phone": "+372 335 7477",
     "added": "2026-08-29",
