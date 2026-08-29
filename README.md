@@ -613,7 +613,7 @@ Replace `<place-id>` with the `id` from `restaurants.json` — the same slug
 So the staff URL to hand over is, in full:
 
 ```
-https://tallinntastebuds.pages.dev/staff.html?r=bekker-pagariari
+https://tallinntastebuds.ee/staff.html?r=bekker-pagariari
 ```
 
 `staff.html` shows the code the guest's screen is showing right now, plus the
@@ -798,17 +798,35 @@ Analytics, and a CSP that is subtly wrong fails silently and breaks embeds
 years later. That trade is not worth it for a public map with no logins and no
 user input.
 
-### A custom domain, later
+### The custom domain
 
-Free hosting stays free with your own domain attached; the only cost is the
-name itself, around €10–15 a year. `.ee` is open to anyone through a registrar
-accredited by the Estonian Internet Foundation, though the registry does
-require an administrative contact in Estonia.
+The site lives at **`tallinntastebuds.ee`**. Free hosting stays free with your
+own domain attached; the only cost is the name itself, around €10–15 a year.
 
-Add it under the project's **Custom domains** tab. Cloudflare issues the
-certificate automatically. No code change is needed: every path in the site is
-relative, so it behaves the same at a domain root as it does under
-`/tallinntastebuds/`.
+`.ee` is open to anyone — there is no residency requirement — but it is sold
+only through a registrar accredited by the Estonian Internet Foundation, and
+registration needs a digitally signed application and an identified
+administrative contact. Cloudflare Registrar does not carry `.ee`, so the name
+is registered with an Estonian registrar while Cloudflare runs the DNS.
+
+Two steps, in this order:
+
+1. **Nameservers.** Point the domain at the two nameservers Cloudflare gives
+   you when the site is added to the account. Cloudflare's CNAME flattening is
+   what lets the bare apex resolve to Pages at all — a registrar's own DNS
+   panel usually cannot put a CNAME on an apex.
+2. **Custom domains.** Add the domain under the Pages project's **Custom
+   domains** tab. Cloudflare issues the certificate automatically.
+
+Four lines in the repo name the host — see [Getting found](#getting-found).
+Nothing else needs touching: every path in the site is relative, and the
+scripts build absolute URLs from `window.location.origin`, so the QR codes and
+share links follow whatever host serves them.
+
+`tallinntastebuds.pages.dev` keeps serving the same site after the custom
+domain is attached, which splits the SEO between two hosts. A Cloudflare
+redirect rule from `tallinntastebuds.pages.dev/*` to the custom domain, 301,
+settles it.
 
 ### Other hosts
 
@@ -1200,8 +1218,9 @@ filters, so shared filtered links show up in **Pages and screens** too.
 ### Getting found
 
 `robots.txt` and `sitemap.xml` sit at the root, and `index.html` carries a
-canonical link and the `og:` tags. All three name the host, so **on a custom
-domain, change the address in those three files** and nothing else.
+canonical link and the `og:` tags. All three name the host — four lines in
+total — so **changing domain means editing those three files** and nothing
+else.
 
 Google finds a site through links and through Search Console, and a brand new
 host has neither. In order of what actually moves the needle:
@@ -1212,9 +1231,10 @@ host has neither. In order of what actually moves the needle:
    use URL Inspection to request indexing. Verification by HTML tag needs a
    `<meta name="google-site-verification">` line in `index.html`.
 3. **Bing Webmaster Tools.** Same job, and it feeds other answer engines.
-4. **A custom domain.** `pages.dev` indexes fine, but it carries no brand and
-   it is not yours: a domain you own is the one thing here that survives
-   changing host.
+4. **A custom domain.** Done — `tallinntastebuds.ee`. `pages.dev` indexes
+   fine, but it carries no brand and it is not yours: a domain you own is the
+   one thing here that survives changing host. Search Console treats it as a
+   new property, so verify and submit the sitemap there too.
 
 Search Console is also where to check whether a page is being *refused*
 rather than merely missed. Cloudflare Pages serves `x-robots-tag: noindex` on
