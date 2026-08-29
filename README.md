@@ -864,11 +864,19 @@ aubergine for iOS, which rounds its own corners and ignores transparency; a
 1200x630 share card; and a one-ink cut with the teeth knocked out as holes,
 for anywhere it has to print in a single colour.
 
-The map pins are the one place the mark deliberately does not go. They already
-say three things by shape — filmed is solid, photographed is hollow,
-written-up is small and faint — and there are seventy of them; a picture
-inside a 14px dot is mud, and it would cost the map that reading to gain a
-logo it already has in the corner.
+On the map it goes on exactly one pin: the one whose panel is open. Not on all
+seventy — the pins already say three things by shape, and a picture inside a
+14px dot is mud. But there is only ever one chosen place, so it can afford to
+be 28px, and at that size the grin is the clearest thing on the screen.
+
+It is drawn as a layer of its own sitting on the circle rather than replacing
+it, which is what keeps this from costing anything. The circle underneath is
+still the button — the click, the label, the tab stop, the focus ring — and
+still says by its fill how much there is to see in the place. The grin is cut
+out of it in one colour, and that colour is the ring the pin is already
+wearing: paper out of a solid disc, accent out of a hollow one, the half-mixed
+tone out of the faint one. So the three readings survive being grinned at, and
+the mark changes colour with the swatches like everything else.
 
 ---
 
@@ -1412,8 +1420,10 @@ the map. Hover tooltips stay inert, since the pointer is already on the dot.
 rather than beside it, because beside it the wordmark has to break over two
 lines to clear the mark and *Tallinn Tastebuds* reads as one line or not at
 all. On a phone the card gives up its words and the mark is what is left
-standing for the name, on one line with the handle. The full account of it is
-in [The mark](#the-mark).
+standing for the name, on one line with the handle. On the map itself it goes
+on one pin only — whichever place is open — cut out of the dot in the dot's
+own ring colour, so the pin keeps saying what it said before. The full account
+of it is in [The mark](#the-mark).
 
 **Type.** Three faces with three jobs, and they never trade places.
 *Familjen Grotesk* — a contemporary Nordic grotesque — sets place names and

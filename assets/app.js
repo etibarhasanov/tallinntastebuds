@@ -50,7 +50,7 @@
      chips answering to the same id would filter each other's places. */
   var DEAL_FILTER = 'discount';
   var PIN_R = 7;             /* every pin */
-  var PIN_R_SELECTED = 10;   /* the one you are looking at */
+  var PIN_R_SELECTED = 14;   /* the one you are looking at — it carries the mark */
   var STYLE_KEY = 'ttb.style';
   var TILE_ATTRIBUTION =
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
@@ -85,6 +85,7 @@
   var hereAccuracy = null;
   var tileLayer = null;
   var haloMarker = null;
+  var grinMarker = null;
   var toastTimer = null;
 
   var dom = {};
@@ -658,6 +659,32 @@
     return 'words';
   }
 
+  /* The mark, cut for the chosen pin: the teeth are holes in the shape rather
+     than white paint over it, so the pin's own fill shows through them and one
+     colour draws the whole thing. That colour is the ring the pin is already
+     wearing, which is how the grin inherits the reading underneath it — paper
+     out of a solid disc, accent out of a hollow one, the mixed tone out of the
+     faint one. No transform anywhere in here: a mask and a scale in the same
+     SVG disagree about whose coordinate space they are in, and the argument is
+     settled silently and wrongly. The size is set in CSS instead. */
+  var PIN_GRIN =
+    '<svg viewBox="3 26 94 63" aria-hidden="true" focusable="false">' +
+      '<mask id="pin-grin-teeth" maskUnits="userSpaceOnUse" x="0" y="24" width="100" height="66">' +
+        '<rect x="0" y="24" width="100" height="66" fill="#fff"/>' +
+        '<path d="M10,42 C29,32 71,32 90,42 C88,49 86,54 84,58 C68,50 32,50 16,58 C14,54 12,49 10,42 Z"/>' +
+        '<path d="M14,63 C30,71 70,71 86,63 C82,74 67,81 50,81 C33,81 18,74 14,63 Z"/>' +
+        '<g stroke="#fff" stroke-width="2.6" stroke-linecap="round" fill="none">' +
+          '<path d="M27,42 L28.5,56.5"/><path d="M37,39.6 L37.5,54.6"/>' +
+          '<path d="M45.6,38.6 L46,54"/><path d="M54.4,38.6 L54,54"/>' +
+          '<path d="M63,39.6 L62.5,54.6"/><path d="M73,42 L71.5,56.5"/>' +
+          '<path d="M32,66 L31,79"/><path d="M41,68.4 L41,80"/><path d="M50,69 L50,81"/>' +
+          '<path d="M59,68.4 L59,80"/><path d="M68,66 L69,79"/>' +
+        '</g>' +
+      '</mask>' +
+      '<path d="M6,41 C22,29 78,29 94,41 C90,68 73,86 50,86 C27,86 10,68 6,41 Z"' +
+      ' fill="currentColor" mask="url(#pin-grin-teeth)"/>' +
+    '</svg>';
+
   /* The pin, drawn small: a solid disc, a ring, a speck. Not a play triangle
      and a camera — those say what the word beside them already says, and at
      9px a camera is a smudge anyway. Echoing the dot is the one thing the
@@ -704,7 +731,7 @@
     marker.bindTooltip(name, {
       className: 'pin-tip' + (chosen ? ' pin-tip-on' : '') + (permanent && !chosen ? ' pin-tip-quiet' : ''),
       direction: 'top',
-      offset: [0, permanent ? -14 : -11],
+      offset: [0, chosen ? -18 : (permanent ? -14 : -11)],
       opacity: 1,
       interactive: !!permanent,
       permanent: !!permanent
@@ -802,10 +829,16 @@
     haloMarker = null;
   }
 
+  function clearGrin() {
+    if (grinMarker && map) map.removeLayer(grinMarker);
+    grinMarker = null;
+  }
+
   /* Paints every pin for the current selection and the current style. Doubles
      as the restyle hook, so a style change keeps the selection visible. */
   function paintMarkers() {
     var c = markerColours();
+    var chosenInk = null;
     syncMarkers();
 
     state.places.forEach(function (place) {
@@ -829,10 +862,13 @@
       var solid = depth === 'reel';
       var faded = depth === 'words';
 
+      var ring = solid ? c.paper : (faded ? mixHex(tone, c.paper, .55) : tone);
+      if (chosen) chosenInk = ring;
+
       marker.setStyle({
         radius: chosen ? PIN_R_SELECTED : (faded ? PIN_R - 2.5 : PIN_R),
-        weight: chosen ? 3.5 : (faded ? 1.75 : 2.75),
-        color: solid ? c.paper : (faded ? mixHex(tone, c.paper, .55) : tone),
+        weight: chosen ? 3 : (faded ? 1.75 : 2.75),
+        color: ring,
         fillColor: solid ? tone : c.paper
       });
 
@@ -854,6 +890,28 @@
         interactive: false
       }).addTo(map);
       if (haloMarker.bringToBack) haloMarker.bringToBack();
+    }
+
+    /* And the mark itself, cut out of the pin you picked. It is drawn as a
+       separate layer rather than as the pin, so the circle underneath keeps
+       everything it already does — the click, the tooltip, the tab stop, the
+       focus ring — and keeps saying by its fill how much there is to see in
+       the place. One grin on the map at a time, on the one you are tasting. */
+    clearGrin();
+    var chosenMarker = place ? markers[place.id] : null;
+    if (place && map && chosenMarker && map.hasLayer(chosenMarker)) {
+      grinMarker = L.marker([place.lat, place.lng], {
+        icon: L.divIcon({
+          className: 'pin-grin',
+          html: PIN_GRIN,
+          iconSize: [PIN_R_SELECTED * 2, PIN_R_SELECTED * 2],
+          iconAnchor: [PIN_R_SELECTED, PIN_R_SELECTED]
+        }),
+        interactive: false,
+        keyboard: false
+      }).addTo(map);
+      var grinEl = grinMarker.getElement();
+      if (grinEl && chosenInk) grinEl.style.color = chosenInk;
     }
 
     if (hereMarker) {

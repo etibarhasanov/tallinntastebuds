@@ -268,6 +268,22 @@ a:hover { color: var(--accent-lit); }
 .pin:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 3px; }
 .pin-here { pointer-events: none; }
 
+/* The mark, sitting on the pin you picked. It is scenery: the circle beneath
+   it is the button, so nothing here may take a pointer. Sized in CSS rather
+   than by the icon box, because the grin is wider than it is tall and the box
+   it hangs in is square — width sets it, height follows the viewBox. */
+.pin-grin {
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pin-grin svg {
+  width: 20px;
+  height: auto;
+  overflow: visible;
+}
+
 /* ---------- brand ---------- */
 
 .brand {

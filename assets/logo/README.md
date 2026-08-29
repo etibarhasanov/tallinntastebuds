@@ -25,6 +25,11 @@ source-artwork.jpg the painting
 is inlined into a page. Loaded through an `<img>` it draws black, because an
 `<img>` renders the SVG as its own document.
 
+The chosen map pin wears the same one-ink cut, but it is not this file: it is
+inlined in `assets/app.js` as `PIN_GRIN`, because it has to take its colour
+from the pin it is sitting on and a file behind an `<img>` cannot be told. The
+two are the same paths. Change one and change the other.
+
 Colours, all of them lifted off the painting:
 
     aubergine  #8E5C9C   the disc
