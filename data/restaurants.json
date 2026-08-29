@@ -983,6 +983,37 @@
     "closed": false
   },
   {
+    "id": "izakaya-taro",
+    "name": "Izakaya Taro",
+    "address": "Müürivahe 31, 10140 Tallinn",
+    "lat": 59.4372248,
+    "lng": 24.7493633,
+    "price": 3,
+    "types": [
+      "restaurant",
+      "asian",
+      "casual"
+    ],
+    "blurb": {
+      "az": "Köhnə şəhərdə, Müürivahe küçəsində yapon üsulu kiçik boşqablar. Qızılbalıq çox gözəldir və masaya gələn bütün digər dadlar da eyni dərəcədə yaxşıdır.",
+      "en": "Japanese small plates on Müürivahe, in the Old Town. The salmon is lovely, and every other taste that came to the table was just as good.",
+      "et": "Jaapani väikesed road Müürivahel vanalinnas. Lõhe on maitsev ja kõik ülejäänud maitsed, mis lauda jõudsid, olid sama head.",
+      "fi": "Japanilaisia pieniä annoksia Müürivahella vanhassakaupungissa. Lohi on herkullista, ja kaikki muutkin maut, jotka pöytään tulivat, olivat yhtä hyviä.",
+      "pt": "Pratinhos japoneses na Müürivahe, na cidade velha. O salmão é ótimo, e todos os outros sabores que chegaram à mesa estavam tão bons quanto.",
+      "ru": "Японские маленькие тарелки на Мюйривахе, в Старом городе. Лосось хорош, и все остальные вкусы, что приходили на стол, ничуть не хуже.",
+      "es": "Platos pequeños japoneses en Müürivahe, en el casco antiguo. El salmón está buenísimo, y todos los demás sabores que llegaron a la mesa estaban igual de bien.",
+      "tr": "Eski şehirde, Müürivahe'de Japon usulü küçük tabaklar. Somon çok güzel ve masaya gelen diğer bütün tatlar da en az onun kadar iyi.",
+      "uk": "Японські маленькі тарілки на Мюйривахе, у Старому місті. Лосось смачний, і всі інші смаки, що приходили на стіл, були такі самі добрі."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [],
+    "website": "",
+    "phone": "+372 335 7477",
+    "added": "2026-08-29",
+    "closed": false
+  },
+  {
     "id": "kalve-kadriorg",
     "name": "Kalve Kadriorg",
     "address": "F. R. Faehlmanni tn 13, 10125 Tallinn",
