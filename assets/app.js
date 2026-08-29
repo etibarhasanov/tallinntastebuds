@@ -80,6 +80,7 @@
 
   var map = null;
   var markers = {};      // id -> L.CircleMarker
+  var closedRings = {};  // id -> L.CircleMarker, the dashed ring round a shut place
   var clusterPins = [];
   var hereMarker = null;
   var hereAccuracy = null;
@@ -525,7 +526,8 @@
         if (!path) return;
         path.setAttribute('tabindex', '0');
         path.setAttribute('role', 'button');
-        path.setAttribute('aria-label', t('openPlace', { name: place.name }));
+        path.setAttribute('aria-label', t('openPlace', { name: place.name }) +
+          (place.closed ? ', ' + t('closed') : ''));
         path.addEventListener('keydown', function (ev) {
           if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
             ev.preventDefault();
@@ -536,6 +538,30 @@
 
       markers[place.id] = marker;
       marker.addTo(map);
+
+      /* A shut place gets a second mark rather than a quieter version of the
+         first one. Greying the dot was all it had, and grey is also what a
+         write-up-only place looks like from three streets away — so the one
+         thing worth knowing before you walk there was said in the same
+         language as how much there is to read about it. The ring is drawn
+         outside the pin, dashed, so the pin underneath keeps saying what
+         there is to watch: a closed place you can still see a reel of is a
+         solid dot inside a broken circle, which is the two facts at once. */
+      if (place.closed) {
+        var ring = L.circleMarker([place.lat, place.lng], {
+          radius: PIN_R + 4,
+          weight: 1.5,
+          color: muted,
+          opacity: .9,
+          dashArray: '2 3',
+          fill: false,
+          className: 'pin-shut',
+          interactive: false
+        });
+        closedRings[place.id] = ring;
+        ring.addTo(map);
+        if (ring.bringToBack) ring.bringToBack();
+      }
     });
 
     fitToPins();
@@ -685,6 +711,33 @@
       : depth === 'photos' ? 'markPhotos' : 'markNone';
   }
 
+  /* The dashed ring off the map, shrunk to badge size. The word "Closed" is
+     the part you read; the ring is the part that tells you the broken circle
+     around a dot out there is the same fact, so the map stops needing a key
+     printed next to it. */
+  var SHUT_GLYPH = '<svg viewBox="0 0 10 10" focusable="false"><circle cx="5" cy="5" r="3.9" stroke-dasharray="1.7 1.7"/></svg>';
+
+  function shutMark() {
+    return el('span', { className: 'shut-mark' }, [
+      el('span', { className: 'shut-glyph', 'aria-hidden': 'true', html: SHUT_GLYPH }),
+      el('span', { textContent: t('closed') })
+    ]);
+  }
+
+  /* A closed place is not one fact but two, and the second one is the reason
+     the entry is still here: the door is shut, and the reel is not. So the
+     note says what is left rather than only what is gone, in whichever of
+     the three shapes the place has — Instagram's word, TikTok's word, the
+     photos, or nothing to see, which is the only case the plain note covers
+     and the only case it ever read right in. */
+  function closedNoteKey(place) {
+    var depth = pinDepth(place);
+    if (depth === 'reel') {
+      return reelProvider(place.reel) === 'tiktok' ? 'closedVideoNote' : 'closedReelNote';
+    }
+    return depth === 'photos' ? 'closedPhotosNote' : 'closedNote';
+  }
+
   function depthMark(place) {
     var depth = pinDepth(place);
     var key = depthMarkKey(place);
@@ -825,7 +878,11 @@
          place keeps whichever of the three it is, so selecting one never
          hides what there is to see in it. */
       var depth = pinDepth(place);
-      var tone = chosen ? c.lit : (place.closed ? c.muted : c.accent);
+      /* Closed outranks chosen. Selecting a shut place used to light its pin
+         the same accent every open one takes, which is the one moment the map
+         had to keep saying it — the halo and the bigger radius already say
+         which pin is the open panel's. */
+      var tone = place.closed ? c.muted : (chosen ? c.lit : c.accent);
       var solid = depth === 'reel';
       var faded = depth === 'words';
 
@@ -835,6 +892,12 @@
         color: solid ? c.paper : (faded ? mixHex(tone, c.paper, .55) : tone),
         fillColor: solid ? tone : c.paper
       });
+
+      var ring = closedRings[place.id];
+      if (ring) {
+        ring.setStyle({ color: c.muted });
+        ring.setRadius((chosen ? PIN_R_SELECTED : PIN_R) + 4);
+      }
 
       if (chosen && marker.bringToFront) marker.bringToFront();
     });
@@ -1147,8 +1210,17 @@
     state.places.forEach(function (p) {
       var marker = markers[p.id];
       if (!marker) return;
-      if (alone[p.id]) { if (!map.hasLayer(marker)) marker.addTo(map); }
-      else if (map.hasLayer(marker)) map.removeLayer(marker);
+      var ring = closedRings[p.id];
+      if (alone[p.id]) {
+        if (!map.hasLayer(marker)) marker.addTo(map);
+        /* The ring is part of the pin, so it hides with it — a broken circle
+           left standing where a cluster swallowed its dot reads as a place
+           of its own. */
+        if (ring && !map.hasLayer(ring)) { ring.addTo(map); if (ring.bringToBack) ring.bringToBack(); }
+      } else {
+        if (map.hasLayer(marker)) map.removeLayer(marker);
+        if (ring && map.hasLayer(ring)) map.removeLayer(ring);
+      }
     });
     soloPins = alone;
   }
@@ -1780,7 +1852,10 @@
 
     dom.detail.appendChild(el('div', { className: 'place-head' }, [
       place.closed
-        ? el('span', { className: 'closed-flag', textContent: t('closed') })
+        ? el('div', { className: 'closed-flag' }, [
+            el('span', { className: 'shut-glyph', 'aria-hidden': 'true', html: SHUT_GLYPH }),
+            el('span', { textContent: t('closed') })
+          ])
         : null,
       el('h2', {
         className: 'place-name',
@@ -1800,7 +1875,10 @@
     ]));
 
     if (place.closed) {
-      dom.detail.appendChild(el('p', { className: 'muted-note', textContent: t('closedNote') }));
+      dom.detail.appendChild(el('p', {
+        className: 'muted-note is-shut-note',
+        textContent: t(closedNoteKey(place))
+      }));
     }
 
     /* What there is to see comes first, straight under the name, because it
@@ -2220,7 +2298,8 @@
         className: 'list-row' + (place.closed ? ' is-closed' : ''),
         /* The row's own label is what a screen reader reads, so anything the
            row shows has to be spelled into it or it is not there at all. */
-        'aria-label': t('openPlace', { name: place.name }) + ', ' + t(depthMarkKey(place)) +
+        'aria-label': t('openPlace', { name: place.name }) +
+          (place.closed ? ', ' + t('closed') : '') + ', ' + t(depthMarkKey(place)) +
           (deal ? ', ' + (offer || t('filterDiscount')) : '')
       }, [
         el('span', { className: 'list-name', textContent: place.name }),
@@ -2229,11 +2308,15 @@
              before the types, which are the part that can run long. */
           priceGauge(place.price),
           deal ? dealMark(deal) : null,
+          /* It used to ride at the end of the type list, in the same grey and
+             the same size as "Bakery · Coffee", which made the one thing that
+             decides whether to set off at all the last word of a description.
+             It sits with the badges now, where the discount sits: the row's
+             two facts about the place rather than about the food. */
+          place.closed ? shutMark() : null,
           el('span', {
             className: 'list-types',
-            textContent: (place.types || []).map(typeLabel)
-              .concat(place.closed ? [t('closed')] : [])
-              .join(' · ')
+            textContent: (place.types || []).map(typeLabel).join(' · ')
           })
         ]),
         /* Last in the row and among the first things the eye lands on: it
