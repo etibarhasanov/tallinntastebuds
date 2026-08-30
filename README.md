@@ -1470,8 +1470,41 @@ dot until you zoom in far enough to tell them apart, and the count on it stops
 at **10+**. Past ten the exact figure is not information: 23 and 31 ask you to
 read a number and then tell you the same thing, and on the opening view — where
 whole quarters fall into one dot — those were the only numbers on the map. The
-dot itself still grows with the real count, so a bigger crowd still looks like
-one.
+The size caps here too. A dot that says 10+ and is drawn at three different
+widths is telling you a number it has just refused to tell you, so eleven and
+twenty-five are the same circle, the same as they are the same words.
+
+Below that the dot grows **in proportion to the crowd**: ten places is twice
+the radius of two, which is the whole of the rule. 24 and 4 are the only pair
+of round numbers that give it —
+
+| places | dot | count |
+| --- | --- | --- |
+| 2 | 32px | 12px |
+| 3 | 36px | 13px |
+| 5 | 44px | 16px |
+| 8 | 56px | 20px |
+| 10+ | 64px | 23px |
+
+— and 32 doubled is 64. Against a 22px pin at the small end and three times
+one at the big end, so a cluster is never mistaken for a place at any count.
+
+The count grows with the dot, a third of its width. A fixed 12px was why the
+digits were hard to find at all: on a photograph a small number reads as a
+caption rather than as the thing the picture is there to count.
+
+**The rim says whether it is a crowd.** Two places under one dot is barely
+one — it is the pair of doors you could not tell apart at this zoom — and it
+keeps the quiet paper rim. Past two the rim takes the style's own colour, the
+same brick or mint the number inside it is written in, so the dots worth
+pressing are the ones the map is saying something with.
+
+The distance that groups pins stays at 52px: wider than a fingertip, and wider
+than most of the dots, but deliberately **not** as wide as the biggest of them.
+Matching the widest dot would be a loop — a longer distance groups more places,
+more places make bigger dots, bigger dots ask for a longer distance again, and
+the opening view collapses into four huge circles. So two maximal clusters side
+by side may touch. That is rare, and it is the cheaper of the two prices.
 
 The dot is the mark too — the places it stands for are places — at the same
 full strength a pin wears it, with the count written straight onto it in the
@@ -1483,11 +1516,12 @@ than any pin at every count.
 There was a wash of the accent over the mark for a version, to give the count
 something flat to sit on. It worked and it cost the thing it was there to
 show — a mouth under 80% of a colour is a texture, not a picture. What carries
-the digits instead is a **casing**: a 1px ring of paper around the glyphs, the
+the digits instead is a **casing**: a ring of paper around the glyphs, the
 way a map label has always cased itself. It leaves the picture untouched
 everywhere the letters are not, and it holds the number at the same
 accent-against-paper the rest of the site reads at — 6.56 to one on Red, 8.14
-on Green. Without it the accent alone drops to about 1.5 to one where the
+on Green. It is drawn in ems, so it thickens with the number rather than
+thinning out under the big ones. Without it the accent alone drops to about 1.5 to one where the
 digits cross the dark of the gap, which is the middle of the mouth, which is
 where the number sits.
 

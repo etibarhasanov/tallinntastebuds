@@ -1111,7 +1111,14 @@
    *
    * The chosen place is never swallowed: it always keeps its own pin.
    */
-  var CLUSTER_PX = 44;
+  /* Wider than a fingertip, and wider than most of the dots that stand in for
+     the pins it groups — but deliberately not as wide as the biggest of them.
+     Matching the widest dot would be a loop: a longer distance groups more
+     places, more places make bigger dots, bigger dots ask for a longer
+     distance again, and the opening view collapses into four huge circles.
+     So two maximal clusters side by side may touch. That is rare, and it is
+     the cheaper of the two prices. */
+  var CLUSTER_PX = 52;
 
   /* Past this zoom nothing is grouped, whatever the spacing. Q Pizza Jaam and
      Telliskivi Šašlõkk are eleven metres apart: 37px at zoom 18, under the 44
@@ -1126,8 +1133,9 @@
      to read a figure and tell you the same thing — a lot, zoom in — and on the
      opening view, where whole quarters fall into one dot, they are the only
      numbers on the map. So the count is capped: up to ten it is counted, and
-     above that it is 10+. The dot stays the size the real count gives it, so
-     a bigger crowd is still visibly a bigger crowd. */
+     above that it is 10+. The size caps here too — a dot that says 10+ and is
+     drawn at three different widths is telling you a number it has just
+     refused to tell you. */
   var CLUSTER_COUNT_MAX = 10;
 
   function clusterCount(count) {
@@ -1172,16 +1180,28 @@
     var lng = 0;
     group.forEach(function (m) { lat += m.place.lat; lng += m.place.lng; });
 
-    /* Four pixels wider than it was, because the dot carries the mark now and
-       a mouth under a count needs room to be one. Still bigger than any pin at
-       every count, which is half of how a cluster says it is not a place. */
-    var size = 30 + Math.min(count, 12);
+    /* The dot grows with the crowd, in proportion to it: ten places is twice
+       the radius of two, which is the whole of the rule. 24 and 4 are the only
+       pair of round numbers that give it — d(2) is 32 and d(10) is 64, and
+       32 doubled is 64.
+
+       It stops counting where the label does. A dot that says 10+ and is
+       drawn at three different sizes is telling you a number it has just
+       refused to tell you, so eleven and twenty-five are the same circle,
+       the same as they are the same words.
+
+       Against a 22px pin at the small end and three times one at the big end,
+       so a cluster is never mistaken for a place at any count. The count
+       itself grows with the dot; see --cluster-d in the stylesheet. */
+    var size = 24 + Math.min(count, CLUSTER_COUNT_MAX) * 4;
     var shown = clusterCount(count);
     var label = t('clusterLabel', { count: shown });
     var pin = L.marker([lat / count, lng / count], {
       icon: L.divIcon({
         className: 'cluster-pin',
-        html: '<span class="cluster-dot"><span class="cluster-count">' + shown + '</span></span>',
+        html: '<span class="cluster-dot' + (count > 2 ? ' is-many' : '') +
+              '" style="--cluster-d:' + size + 'px">' +
+              '<span class="cluster-count">' + shown + '</span></span>',
         iconSize: [size, size],
         iconAnchor: [size / 2, size / 2]
       }),
