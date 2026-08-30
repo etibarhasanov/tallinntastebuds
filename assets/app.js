@@ -1133,20 +1133,24 @@
      to read a figure and tell you the same thing — a lot, zoom in. So up to
      ten it is counted, and above that it rounds down to a tier: 10+, 20+, 30+.
 
-     Three tiers and not one, because 10+ on its own was doing the same
+     Four tiers and not one, because 10+ on its own was doing the same
      flattening it exists to prevent. Both of these are real on this map: the
      opening view carries a cluster of twenty, and zoomed out to the floor the
      whole city is a single dot of sixty-six. Calling those the same thing —
      and drawing them the same size — is the "23 and 31" problem again, one
-     order of magnitude up.
+     order of magnitude up. The ladder stops at 50 rather than running 40, 60,
+     70 to the end of the data: the top tier is the one that says "all of it,
+     basically", and on a map of seventy-odd places that is what fifty means.
 
      The dot follows the words exactly. Below eleven it is the proportional
      ramp; at and above it, one width per tier, because a dot that says 10+
      and is drawn at three different widths is telling you a number it has
-     just refused to tell you. The widths only step by ten: 84px is a lot of
-     circle, and 30+ is only reachable zoomed out to the floor, where there
-     are three dots on the whole screen and the room is there to spend. */
+     just refused to tell you. The widths only step by ten: 94px is a lot of
+     circle, and the top two tiers are only reachable zoomed out to the floor,
+     where there are three dots on the whole screen and the room is there to
+     spend. */
   var CLUSTER_TIERS = [
+    { over: 50, label: 50, d: 94 },
     { over: 30, label: 30, d: 84 },
     { over: 20, label: 20, d: 74 },
     { over: 10, label: 10, d: 64 }

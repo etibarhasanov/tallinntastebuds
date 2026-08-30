@@ -1467,15 +1467,19 @@ screen reader reads of a row and anything shown but not spelled is not there.
 
 **Clusters.** Pins closer together than a fingertip are drawn as one counted
 dot until you zoom in far enough to tell them apart, and the count on it stops
-in **tiers**: 10+, 20+, 30+. Past ten the exact figure is not information: 23
+in **tiers**: 10+, 20+, 30+, 50+. Past ten the exact figure is not information: 23
 and 31 ask you to read a number and then tell you the same thing, and on the
 opening view — where whole quarters fall into one dot — those were the only
 numbers on the map. The
-Three tiers and not one, because 10+ on its own was doing the same flattening
+Four tiers and not one, because 10+ on its own was doing the same flattening
 it exists to prevent. Both of these are real on this map: the opening view
 carries a cluster of twenty, and zoomed out to the floor the whole city is a
 single dot of sixty-six. Calling those the same thing — and drawing them the
 same size — is the 23-and-31 problem again, one order of magnitude up.
+
+The ladder stops at 50 rather than running 40, 60, 70 to the end of the data.
+The top tier is the one that says "all of it, basically", and on a map of
+seventy-odd places that is what fifty means.
 
 Below eleven the dot grows **in proportion to the crowd**: ten places is twice
 the radius of two, which is the whole of the rule. 24 and 4 are the only pair
@@ -1492,15 +1496,16 @@ you a number it has just refused to tell you.
 | 10 | 10 | 64px | 23px |
 | 11–20 | 10+ | 64px | 23px |
 | 21–30 | 20+ | 74px | 27px |
-| 31+ | 30+ | 84px | 30px |
+| 31–50 | 30+ | 84px | 30px |
+| 51+ | 50+ | 94px | 34px |
 
 32 doubled is 64, and the first tier picks up at exactly the width ten left off
 at — 10 and 10+ are the same circle wearing different words, which is what they
-are. The tiers step by ten and no more: 84px is a lot of circle, and 30+ is
-only reachable zoomed out to the floor, where there are three dots on the whole
-screen and the room is there to spend. Against a 22px pin at the small end and
-nearly four times one at the big end, so a cluster is never mistaken for a
-place at any count.
+are. The tiers step by ten and no more: 94px is a lot of circle, and the top
+two are only reachable zoomed out to the floor, where there are three dots on
+the whole screen and the room is there to spend. Against a 22px pin at the
+small end and four times one at the big end, so a cluster is never mistaken for
+a place at any count.
 
 The count grows with the dot, a third of its width. A fixed 12px was why the
 digits were hard to find at all: on a photograph a small number reads as a
