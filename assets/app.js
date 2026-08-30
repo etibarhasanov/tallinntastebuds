@@ -1130,16 +1130,52 @@
   var CLUSTER_ZOOM_MAX = 17;
 
   /* Past ten the exact number stops being information. "23" and "31" ask you
-     to read a figure and tell you the same thing — a lot, zoom in — and on the
-     opening view, where whole quarters fall into one dot, they are the only
-     numbers on the map. So the count is capped: up to ten it is counted, and
-     above that it is 10+. The size caps here too — a dot that says 10+ and is
-     drawn at three different widths is telling you a number it has just
-     refused to tell you. */
-  var CLUSTER_COUNT_MAX = 10;
+     to read a figure and tell you the same thing — a lot, zoom in. So up to
+     ten it is counted, and above that it rounds down to a tier: 10+, 20+, 30+.
+
+     Four tiers and not one, because 10+ on its own was doing the same
+     flattening it exists to prevent. Both of these are real on this map: the
+     opening view carries a cluster of twenty, and zoomed out to the floor the
+     whole city is a single dot of sixty-six. Calling those the same thing —
+     and drawing them the same size — is the "23 and 31" problem again, one
+     order of magnitude up. The ladder stops at 50 rather than running 40, 60,
+     70 to the end of the data: the top tier is the one that says "all of it,
+     basically", and on a map of seventy-odd places that is what fifty means.
+
+     The dot follows the words exactly. Below eleven it is the proportional
+     ramp; at and above it, one width per tier, because a dot that says 10+
+     and is drawn at three different widths is telling you a number it has
+     just refused to tell you. The widths only step by ten: 94px is a lot of
+     circle, and the top two tiers are only reachable zoomed out to the floor,
+     where there are three dots on the whole screen and the room is there to
+     spend. */
+  var CLUSTER_TIERS = [
+    { over: 50, label: 50, d: 94 },
+    { over: 30, label: 30, d: 84 },
+    { over: 20, label: 20, d: 74 },
+    { over: 10, label: 10, d: 64 }
+  ];
+
+  function clusterTier(count) {
+    for (var i = 0; i < CLUSTER_TIERS.length; i++) {
+      if (count > CLUSTER_TIERS[i].over) return CLUSTER_TIERS[i];
+    }
+    return null;
+  }
 
   function clusterCount(count) {
-    return count > CLUSTER_COUNT_MAX ? CLUSTER_COUNT_MAX + '+' : String(count);
+    var tier = clusterTier(count);
+    return tier ? tier.label + '+' : String(count);
+  }
+
+  /* Ten places is twice the radius of two, which is the whole of the rule
+     under the tiers: 24 and 4 are the only pair of round numbers that give it,
+     d(2) is 32 and d(10) is 64, and 32 doubled is 64. The first tier picks up
+     at exactly the width ten left off at, so 10 and 10+ are the same circle
+     wearing different words — which is what they are. */
+  function clusterSize(count) {
+    var tier = clusterTier(count);
+    return tier ? tier.d : 24 + count * 4;
   }
 
   function pinGroups(places) {
@@ -1180,20 +1216,10 @@
     var lng = 0;
     group.forEach(function (m) { lat += m.place.lat; lng += m.place.lng; });
 
-    /* The dot grows with the crowd, in proportion to it: ten places is twice
-       the radius of two, which is the whole of the rule. 24 and 4 are the only
-       pair of round numbers that give it — d(2) is 32 and d(10) is 64, and
-       32 doubled is 64.
-
-       It stops counting where the label does. A dot that says 10+ and is
-       drawn at three different sizes is telling you a number it has just
-       refused to tell you, so eleven and twenty-five are the same circle,
-       the same as they are the same words.
-
-       Against a 22px pin at the small end and three times one at the big end,
-       so a cluster is never mistaken for a place at any count. The count
-       itself grows with the dot; see --cluster-d in the stylesheet. */
-    var size = 24 + Math.min(count, CLUSTER_COUNT_MAX) * 4;
+    /* Against a 22px pin at the small end and nearly four times one at the
+       big end, so a cluster is never mistaken for a place at any count. The
+       count itself grows with the dot; see --cluster-d in the stylesheet. */
+    var size = clusterSize(count);
     var shown = clusterCount(count);
     var label = t('clusterLabel', { count: shown });
     var pin = L.marker([lat / count, lng / count], {
