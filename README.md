@@ -1470,18 +1470,41 @@ dot until you zoom in far enough to tell them apart, and the count on it stops
 at **10+**. Past ten the exact figure is not information: 23 and 31 ask you to
 read a number and then tell you the same thing, and on the opening view — where
 whole quarters fall into one dot — those were the only numbers on the map. The
-dot itself still grows with the real count, and steeply — two places is 35px,
-five is 40, ten is 48, and from twelve up it is 51, against a 22px pin. The
-count grows with it, a third of the dot's width, so ten places carry a 17px
-number where two carry a 13px one. A fixed 12px was why the digits were hard
-to find at all: on a photograph a small number reads as a caption rather than
-as the thing the picture is there to count.
+The size caps here too. A dot that says 10+ and is drawn at three different
+widths is telling you a number it has just refused to tell you, so eleven and
+twenty-five are the same circle, the same as they are the same words.
 
-The distance that groups pins is the width of the widest dot, 52px, and that
-is not a coincidence. Grouping exists so a city of pins does not draw as a
-smear; now that the thing standing in for them is as wide as the crowd it
-holds, two dots drawn closer than that would smear the same way. Whatever is
-closer than one dot's width is one dot.
+Below that the dot grows **in proportion to the crowd**: ten places is twice
+the radius of two, which is the whole of the rule. 24 and 4 are the only pair
+of round numbers that give it —
+
+| places | dot | count |
+| --- | --- | --- |
+| 2 | 32px | 12px |
+| 3 | 36px | 13px |
+| 5 | 44px | 16px |
+| 8 | 56px | 20px |
+| 10+ | 64px | 23px |
+
+— and 32 doubled is 64. Against a 22px pin at the small end and three times
+one at the big end, so a cluster is never mistaken for a place at any count.
+
+The count grows with the dot, a third of its width. A fixed 12px was why the
+digits were hard to find at all: on a photograph a small number reads as a
+caption rather than as the thing the picture is there to count.
+
+**The rim says whether it is a crowd.** Two places under one dot is barely
+one — it is the pair of doors you could not tell apart at this zoom — and it
+keeps the quiet paper rim. Past two the rim takes the style's own colour, the
+same brick or mint the number inside it is written in, so the dots worth
+pressing are the ones the map is saying something with.
+
+The distance that groups pins stays at 52px: wider than a fingertip, and wider
+than most of the dots, but deliberately **not** as wide as the biggest of them.
+Matching the widest dot would be a loop — a longer distance groups more places,
+more places make bigger dots, bigger dots ask for a longer distance again, and
+the opening view collapses into four huge circles. So two maximal clusters side
+by side may touch. That is rare, and it is the cheaper of the two prices.
 
 The dot is the mark too — the places it stands for are places — at the same
 full strength a pin wears it, with the count written straight onto it in the

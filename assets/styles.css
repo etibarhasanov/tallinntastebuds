@@ -175,7 +175,22 @@ a:hover { color: var(--accent-lit); }
   font-family: var(--mono);
   font-weight: 500;
   line-height: 1;
-  transition: transform .15s var(--ease);
+  transition: transform .15s var(--ease), box-shadow .15s var(--ease);
+}
+
+/* Two places under one dot is barely a crowd — it is the pair of doors you
+   could not tell apart at this zoom — and it keeps the quiet paper rim. Past
+   two the rim takes the style's own colour, the same brick or mint the number
+   inside it is written in, so the dots worth pressing are the ones the map
+   says something with. It never reads as a pin even wearing the accent: a pin
+   is 22px and carries no number, and the smallest of these is a third wider
+   than one. */
+.cluster-dot.is-many {
+  box-shadow: 0 0 0 3px var(--accent), 0 1px 3px rgba(20, 26, 31, .3);
+}
+.cluster-pin:hover .cluster-dot.is-many,
+.cluster-pin:focus-visible .cluster-dot.is-many {
+  box-shadow: 0 0 0 3px var(--accent-lit), 0 1px 3px rgba(20, 26, 31, .3);
 }
 
 /* The count grows with the dot it sits in — a third of the width, so ten
