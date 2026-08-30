@@ -99,7 +99,7 @@ Field by field:
 | `name` | Exactly as it is written on the door. Never translated. |
 | `address` | Street address, the way Estonian post would write it. |
 | `lat`, `lng` | Decimal degrees. See below. |
-| `price` | A whole number, 1 to 4. Rendered as € to €€€€. It is a cost band, not a rating. |
+| `price` | A number from 1 to 4, in steps of 0.5. Rendered as € to €€€€, where a half step lights half a euro sign — `2.5` reads as €€ and a half. It is a cost band, not a rating. |
 | `types` | Ids that must already exist in `data/taxonomy.json`. Never free text — a typo would silently split a filter in two. |
 | `blurb` | Your write-up, one per language. The only per-place field that is translated. |
 | `mustOrder` | Dish names exactly as the menu prints them. Not translated. Use `[]` if you have not decided. |
@@ -859,7 +859,8 @@ to read and write first.
 - a UI string present in one language but missing in another
 - a photo listed in the data that does not exist in the repo
 - a `reel` value that is not a real Instagram or TikTok permalink shape
-- a `price` outside 1–4, a malformed `visited` month, a malformed `website`
+- a `price` outside 1–4 or off the 0.5 step, a malformed `visited` month, a
+  malformed `website`
 - a `phone` that is not in international form — `+372 661 0180`, not `6610180`
 - a malformed `added` date — it has to be `YYYY-MM-DD`
 
@@ -1522,7 +1523,10 @@ opinion.
 
 **The signature: the price gauge.** Price always renders as four slots, never
 fewer. The slots you are paying for are in the accent; the rest stay
-ghosted in the hairline colour — `€€··` rather than `€€`. It is the only meter
+ghosted in the hairline colour — `€€··` rather than `€€`. A band can sit on a
+half step, and then one slot is lit down its left half only: the ghosted sign
+with a second copy of the same glyph laid over it and clipped in two, so the
+row keeps its width whether the place is a 2 or a 2.5. It is the only meter
 anywhere on the site, and it measures money rather than merit. That is the
 argument of the whole project in one piece of typography, sitting exactly where
 a lesser guide would put its stars. Everything else is deliberately quiet so

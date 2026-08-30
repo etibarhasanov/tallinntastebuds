@@ -288,7 +288,7 @@
     "address": "Suur-Karja 12, 10140 Tallinn",
     "lat": 59.4355717,
     "lng": 24.7462442,
-    "price": 2,
+    "price": 2.5,
     "types": [
       "bakery",
       "coffee",
@@ -1029,7 +1029,7 @@
     "address": "Müürivahe 31, 10140 Tallinn",
     "lat": 59.4372248,
     "lng": 24.7493633,
-    "price": 3,
+    "price": 2.5,
     "types": [
       "restaurant",
       "asian",
@@ -1740,7 +1740,7 @@
     "address": "Tööstuse 47d, 10416 Tallinn",
     "lat": 59.4499521,
     "lng": 24.7235408,
-    "price": 3,
+    "price": 2.5,
     "types": [
       "coffee",
       "bakery",
@@ -2070,7 +2070,7 @@
     "address": "Laulupeo 1, 10121 Tallinn",
     "lat": 59.4302614,
     "lng": 24.7726871,
-    "price": 2,
+    "price": 2.5,
     "types": [
       "restaurant",
       "asian",

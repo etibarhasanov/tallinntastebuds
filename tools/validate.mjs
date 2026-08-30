@@ -230,9 +230,10 @@ if (places !== null) {
         fail(where, `lng ${lng} is outside Tallinn (${BBOX.lngMin}–${BBOX.lngMax}) — lat and lng swapped?`);
       }
 
-      /* price */
-      if (!Number.isInteger(place.price) || place.price < 1 || place.price > 4) {
-        fail(where, `"price" must be a whole number from 1 to 4, got ${JSON.stringify(place.price)}`);
+      /* price — whole bands and the half steps between them: 1, 1.5, ... 4 */
+      if (typeof place.price !== 'number' || !Number.isFinite(place.price) ||
+          place.price < 1 || place.price > 4 || (place.price * 2) % 1 !== 0) {
+        fail(where, `"price" must be 1 to 4 in steps of 0.5, got ${JSON.stringify(place.price)}`);
       }
 
       /* types */
