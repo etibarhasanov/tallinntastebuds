@@ -233,8 +233,6 @@ a:hover { color: var(--accent-lit); }
   border-color: var(--muted);
 }
 
-.pin { cursor: pointer; transition: opacity .15s var(--ease); }
-
 /* Names that stand open past zoom 14 sit quieter than the chosen one: paper,
    not accent, and behind it in the stack, so the place you picked still reads
    first on a map where a dozen names are showing. */
@@ -269,19 +267,80 @@ a:hover { color: var(--accent-lit); }
    inside it is the thing you click, and a ring that took the pointer would
    swallow the taps aimed at the edge of its own pin. */
 .pin-shut { pointer-events: none; }
-.pin:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 3px; }
+
+/* Where you are. Still a plain circle, and now the only one on the map — a
+   place wears the mark, so nothing else can be mistaken for you. */
 .pin-here { pointer-events: none; }
 
-/* The mark on the pin you picked — the painting itself, cropped round, not a
-   drawing of it. It is scenery: the circle beneath it is the button, so
-   nothing here may take a pointer.
-   It sits inside the circle rather than over it, leaving a ring of the pin's
-   own fill showing all the way round. That ring is what keeps the pin saying
-   how much there is to see in the place while it is wearing the mouth. */
-.pin-grin {
-  pointer-events: none;
+/* Every place on the map is the mark — the painting itself, cropped round,
+   not a drawing of it. A plain circle is left to the one dot out there that
+   is not a place: the one that says where you are.
+
+   The icon Leaflet anchors is a fixed square, so a pin can grow or shrink
+   without the anchor moving under it. The square takes no pointer and the
+   mark inside it takes all of them, so a tap only ever lands on the picture
+   you can see rather than on the empty corners around it. */
+.pin-mark {
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 0;
+}
+/* Leaflet claims the whole icon box for the pointer at .leaflet-marker-icon
+   .leaflet-interactive, which outranks a single class — so the hand-back has
+   to be said at the same weight. */
+.pin-mark.leaflet-interactive { pointer-events: none; }
+.pin-mark:focus { outline: none; }
+
+.pin-face {
+  width: var(--pin-d, 22px);
+  height: var(--pin-d, 22px);
   border-radius: 50%;
-  background: url(logo/mark-round.webp) center / cover no-repeat;
+  background: var(--paper) url(logo/mark-round.webp) center / cover no-repeat;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: width .15s var(--ease), height .15s var(--ease),
+              box-shadow .15s var(--ease), transform .15s var(--ease);
+}
+.pin-mark:hover .pin-face { transform: scale(1.12); }
+
+/* One picture, three readings of it, for the three amounts of place behind
+   it. The mark cannot change — that is the whole point of putting it on every
+   pin — so the collar drawn round it carries what the fill of a dot used to:
+   filmed is a solid collar, photographed is a paper gap and then a hairline,
+   which is a different silhouette rather than a paler version of the same
+   one, and the write-up on its own is smaller and quieter. Told apart at a
+   glance, at the size the map actually draws them. */
+.is-reel .pin-face {
+  box-shadow: 0 0 0 2.5px var(--pin-tone, var(--accent)), 0 1px 3px rgba(20, 26, 31, .32);
+}
+.is-photos .pin-face {
+  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 4.2px var(--pin-tone, var(--accent)),
+              0 1px 3px rgba(20, 26, 31, .28);
+}
+.is-words .pin-face {
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--pin-tone, var(--accent)),
+              0 1px 2px rgba(20, 26, 31, .24);
+  opacity: .8;
+}
+
+/* The one you are looking at keeps whichever of the three it is — it is
+   bigger, brighter-collared and haloed, which is already three ways of
+   saying it — but it is never the faded one. */
+.is-chosen .pin-face { opacity: 1; }
+
+/* Shut for good: the paint drains out of the mark. The broken circle drawn
+   round it says the same thing a second time, in the shape the list uses. */
+.is-shut .pin-face { filter: grayscale(1) contrast(.92); opacity: .86; }
+
+.pin-mark:focus-visible .pin-face {
+  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--accent-lit);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pin-face { transition: none; }
+  .pin-mark:hover .pin-face { transform: none; }
 }
 
 /* ---------- brand ---------- */
@@ -542,27 +601,25 @@ a:hover { color: var(--accent-lit); }
   box-shadow: var(--shadow);
 }
 
+/* One button, not two. There are two styles and one of them is always the one
+   you are already looking at, so the second swatch was a control that did
+   nothing. What is left shows the side you are not on: press the dark swatch
+   to go dark, press the light one to come back. */
 .swatch {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 100px;
   border: 1px solid var(--swatch-edge);
   transition: transform .15s var(--ease);
 }
-.swatch:hover { transform: scale(1.2); }
-.swatch[aria-pressed="true"] {
-  box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--ink);
-}
+.swatch:hover { transform: scale(1.15); }
 .swatch:focus-visible { outline-offset: 3px; }
 
 /* The light style is its accent; the dark one is its card with the accent as
-   a ring, so the rail says which of the two is the dark one before you press
-   it. */
+   a ring, so the rail says which of the two you are about to get before you
+   press it. */
 .sw-red    { background: #a81e28; }
 .sw-green  { background: #1d2a23; box-shadow: inset 0 0 0 4px #6fd39a; }
-.sw-green[aria-pressed="true"] {
-  box-shadow: inset 0 0 0 4px #6fd39a, 0 0 0 2px var(--paper), 0 0 0 3px var(--ink);
-}
 
 /* ---------- random pick ---------- */
 
@@ -1653,7 +1710,7 @@ body.panel-detail .panel {
   .dice { padding: 0; width: 32px; height: 32px; justify-content: center; }
   .rail { gap: 8px; }
   .styles { gap: 6px; padding: 6px; }
-  .swatch { width: 16px; height: 16px; }
+  .swatch { width: 18px; height: 18px; }
 
   .place-name { font-size: 26px; }
   .photo-grid { grid-template-columns: repeat(3, 1fr); }

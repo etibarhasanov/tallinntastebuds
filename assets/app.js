@@ -49,9 +49,15 @@
      validator refuses a taxonomy type that tries to claim it, because two
      chips answering to the same id would filter each other's places. */
   var DEAL_FILTER = 'discount';
-  var PIN_R = 7;             /* every pin */
-  var PIN_R_SELECTED = 17;   /* the one you are looking at — it carries the mark */
-  var PIN_GRIN_D = 26;       /* the mouth on it, round, inside the pin's ring */
+  /* Every pin is the mark — the mouth out of the painting, cropped round.
+     The circle is left to the one dot on the map that is not a place: the one
+     that says where you are. So the sizes below are diameters of a picture,
+     not radii of a dot, and the box the picture is drawn in is fixed, so a
+     pin can change size without Leaflet re-anchoring anything under it. */
+  var PIN_D = 22;            /* every pin */
+  var PIN_D_WORDS = 17;      /* the write-up-only ones, drawn smaller */
+  var PIN_D_SELECTED = 34;   /* the one you are looking at */
+  var PIN_BOX = 46;          /* the icon box each of those is centred in */
   var STYLE_KEY = 'ttb.style';
   var TILE_ATTRIBUTION =
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
@@ -80,14 +86,13 @@
   };
 
   var map = null;
-  var markers = {};      // id -> L.CircleMarker
+  var markers = {};      // id -> L.Marker, the mark on a divIcon
   var closedRings = {};  // id -> L.CircleMarker, the dashed ring round a shut place
   var clusterPins = [];
   var hereMarker = null;
   var hereAccuracy = null;
   var tileLayer = null;
   var haloMarker = null;
-  var grinMarker = null;
   var toastTimer = null;
 
   var dom = {};
@@ -415,7 +420,6 @@
     if (!opts || opts.pin !== false) trackEvent('style_select', { style: id });
   }
 
-  /* Pressed state only, so activating a swatch by keyboard keeps focus on it. */
   /* The rail is vertically centred, which collides with the brand card on a
      short window. Nudge it down only when it actually would. */
   function placeRail() {
@@ -440,29 +444,42 @@
     }
   }
 
+  /* With two styles and no third one coming, two buttons were one too many:
+     whichever you were looking at, one of them was already pressed and did
+     nothing, and the rail read like a settings screen for a choice that is
+     just day or night. So it is one button, and it shows the side you are not
+     on — press the dark swatch to go dark, press the light one to come back.
+     Written against STYLES rather than against the two ids, so the switch is
+     still a switch if a third palette ever turns up. */
+  function nextStyle() {
+    for (var i = 0; i < STYLES.length; i++) {
+      if (STYLES[i].id === state.style) return STYLES[(i + 1) % STYLES.length].id;
+    }
+    return DEFAULT_STYLE;
+  }
+
+  function styleKey(id) {
+    return 'style' + id.charAt(0).toUpperCase() + id.slice(1);
+  }
+
   function markStyleSwitch() {
     if (!dom.styles) return;
-    var buttons = dom.styles.querySelectorAll('.swatch');
-    for (var i = 0; i < buttons.length && i < STYLES.length; i++) {
-      buttons[i].setAttribute('aria-pressed', String(STYLES[i].id === state.style));
-    }
+    var btn = dom.styles.querySelector('.swatch');
+    if (!btn) return;
+    var next = nextStyle();
+    btn.className = 'swatch sw-' + next;
+    btn.setAttribute('aria-label', t(styleKey(next)));
+    btn.setAttribute('title', t(styleKey(next)));
   }
 
   function renderStyleSwitch() {
     if (!dom.styles) return;
     clear(dom.styles);
-    STYLES.forEach(function (style) {
-      var key = 'style' + style.id.charAt(0).toUpperCase() + style.id.slice(1);
-      var btn = el('button', {
-        type: 'button',
-        className: 'swatch sw-' + style.id,
-        'aria-pressed': String(style.id === state.style),
-        'aria-label': t(key),
-        title: t(key)
-      });
-      btn.addEventListener('click', function () { setStyle(style.id); });
-      dom.styles.appendChild(btn);
-    });
+    var btn = el('button', { type: 'button', className: 'swatch' });
+    /* Read at click time, not at render: the button outlives every switch. */
+    btn.addEventListener('click', function () { setStyle(nextStyle()); });
+    dom.styles.appendChild(btn);
+    markStyleSwitch();
   }
 
   /* ------------------------------------------------------------------- map */
@@ -495,47 +512,58 @@
     map.on('zoomend moveend', paintLabels);
   }
 
+  /* The icon every pin is built from. One box, one span: the box is the
+     anchor and takes no pointer, the span is the mark and takes all of them,
+     so a tap only ever lands on the picture you can see rather than on the
+     empty corners of a 46px square. Its size and its collar are set in
+     dressPin, which is the one place that knows what a pin is saying. */
+  function pinIcon() {
+    return L.divIcon({
+      className: 'pin-mark',
+      html: '<span class="pin-face"></span>',
+      iconSize: [PIN_BOX, PIN_BOX],
+      iconAnchor: [PIN_BOX / 2, PIN_BOX / 2],
+      tooltipAnchor: [0, 0]
+    });
+  }
+
   function buildMarkers() {
-    var accent = cssVar('--accent') || '#00539c';
     var muted = cssVar('--muted') || '#536879';
-    var paper = cssVar('--paper') || '#f2f8ff';
 
     state.places.forEach(function (place) {
-      var marker = L.circleMarker([place.lat, place.lng], {
-        radius: PIN_R,
-        weight: 2.5,
-        color: paper,
-        opacity: 1,
-        fillColor: place.closed ? muted : accent,
-        fillOpacity: 1,
-        className: 'pin',
+      var marker = L.marker([place.lat, place.lng], {
+        icon: pinIcon(),
+        keyboard: false,        /* the button semantics are added by hand below */
         bubblingMouseEvents: false
       });
 
       marker.bindTooltip(place.name, {
         className: 'pin-tip',
         direction: 'top',
-        offset: [0, -11],
+        offset: [0, -15],
         opacity: 1
       });
 
       marker.on('click', function () { selectPlace(place.id, { fly: false }); });
 
-      /* Leaflet does not make vector layers keyboard-reachable, so add the
-         button semantics by hand every time the path is (re)attached. */
+      /* Leaflet builds a fresh element every time the marker is re-attached —
+         clustering takes pins off the map and puts them back all day — so the
+         button semantics and the pin's face are applied on every add, not
+         once at construction. */
       marker.on('add', function () {
-        var path = marker.getElement();
-        if (!path) return;
-        path.setAttribute('tabindex', '0');
-        path.setAttribute('role', 'button');
-        path.setAttribute('aria-label', t('openPlace', { name: place.name }) +
+        var node = marker.getElement();
+        if (!node) return;
+        node.setAttribute('tabindex', '0');
+        node.setAttribute('role', 'button');
+        node.setAttribute('aria-label', t('openPlace', { name: place.name }) +
           (place.closed ? ', ' + t('closed') : ''));
-        path.addEventListener('keydown', function (ev) {
+        node.addEventListener('keydown', function (ev) {
           if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
             ev.preventDefault();
             selectPlace(place.id, { fly: false });
           }
         });
+        dressPin(place);
       });
 
       markers[place.id] = marker;
@@ -546,12 +574,12 @@
          write-up-only place looks like from three streets away — so the one
          thing worth knowing before you walk there was said in the same
          language as how much there is to read about it. The ring is drawn
-         outside the pin, dashed, so the pin underneath keeps saying what
+         outside the pin, dashed, so the mark underneath keeps saying what
          there is to watch: a closed place you can still see a reel of is a
-         solid dot inside a broken circle, which is the two facts at once. */
+         full-collared mark inside a broken circle, two facts at once. */
       if (place.closed) {
         var ring = L.circleMarker([place.lat, place.lng], {
-          radius: PIN_R + 4,
+          radius: PIN_D / 2 + 4,
           weight: 1.5,
           color: muted,
           opacity: .9,
@@ -646,27 +674,10 @@
    * Surprise me — otherwise the panel names somewhere and you have no idea
    * which of forty dots it is.
    *
-   * Three things mark it: the pin grows and takes the brighter accent, a ring
-   * is drawn around it, and its name label is pinned open instead of waiting
-   * for a hover it will never get on a phone.
+   * Three things mark it: the mark grows and its collar takes the brighter
+   * accent, a ring is drawn around it, and its name label is pinned open
+   * instead of waiting for a hover it will never get on a phone.
    */
-
-  /* Two hex colours, mixed. Used for the faintest pin, so the ring around a
-     place with nothing to look at is one opaque colour rather than a
-     translucent one letting the map through. */
-  function mixHex(a, b, weight) {
-    function parse(h) {
-      h = String(h).replace('#', '');
-      if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
-      return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
-    }
-    var x = parse(a);
-    var y = parse(b);
-    return '#' + [0, 1, 2].map(function (i) {
-      var v = Math.round(x[i] * weight + y[i] * (1 - weight));
-      return (v < 16 ? '0' : '') + v.toString(16);
-    }).join('');
-  }
 
   function markerColours() {
     return {
@@ -686,25 +697,20 @@
     return 'words';
   }
 
-  /* The mark on the chosen pin is a picture, set as a background in the
-     stylesheet so its path stays next to the other logo files. All this has
-     to be is the box it fills. */
-  var PIN_GRIN = '';
-
-  /* The pin, drawn small: a solid disc, a ring, a speck. Not a play triangle
+  /* The pin's collar, drawn small: solid, a ring, a speck. Not a play triangle
      and a camera — those say what the word beside them already says, and at
-     9px a camera is a smudge anyway. Echoing the dot is the one thing the
+     9px a camera is a smudge anyway. Echoing the pin is the one thing the
      badge can do that the word cannot: it makes every row a key to the map,
-     so the three kinds of dot out there stop needing to be guessed at. */
+     so the three kinds of pin out there stop needing to be guessed at. */
   var DEPTH_GLYPH = {
     reel: '<svg viewBox="0 0 10 10" focusable="false"><circle cx="5" cy="5" r="3.9"/></svg>',
     photos: '<svg viewBox="0 0 10 10" focusable="false"><path fill-rule="evenodd" d="M5 1.1a3.9 3.9 0 100 7.8 3.9 3.9 0 000-7.8zm0 1.7a2.2 2.2 0 110 4.4 2.2 2.2 0 010-4.4z"/></svg>',
     words: '<svg viewBox="0 0 10 10" focusable="false"><circle cx="5" cy="5" r="2.2"/></svg>'
   };
 
-  /* The pin's three-way, said in words. A dot on the map is only legible when
+  /* The pin's three-way, said in words. A pin on the map is only legible when
      you already know the code and can compare it with its neighbours; a row
-     in the list has neither, so it carries the name and the dot both. Same
+     in the list has neither, so it carries the name and the badge both. Same
      order of weight as the pins: the filmed places take the accent, the
      photographed ones an outline, and the rest a hairline the eye slides
      over.
@@ -764,7 +770,7 @@
     marker.bindTooltip(name, {
       className: 'pin-tip' + (chosen ? ' pin-tip-on' : '') + (permanent && !chosen ? ' pin-tip-quiet' : ''),
       direction: 'top',
-      offset: [0, chosen ? -21 : (permanent ? -14 : -11)],
+      offset: [0, chosen ? -23 : (permanent ? -18 : -15)],
       opacity: 1,
       interactive: !!permanent,
       permanent: !!permanent
@@ -793,7 +799,7 @@
   function labelBox(place) {
     var pt = map.latLngToContainerPoint([place.lat, place.lng]);
     var w = 20 + place.name.length * 7.3;   /* padding plus the display face */
-    return { x: pt.x - w / 2, y: pt.y - 16 - LABEL_H, w: w, h: LABEL_H, px: pt.x, py: pt.y };
+    return { x: pt.x - w / 2, y: pt.y - 19 - LABEL_H, w: w, h: LABEL_H, px: pt.x, py: pt.y };
   }
 
   function hits(a, b) {
@@ -812,7 +818,8 @@
     var taken = [];
     queue.forEach(function (p) {
       var pt = map.latLngToContainerPoint([p.lat, p.lng]);
-      taken.push({ x: pt.x - 11, y: pt.y - 11, w: 22, h: 22 });
+      var r = (p.id === state.selected ? PIN_D_SELECTED : PIN_D) / 2 + 2;
+      taken.push({ x: pt.x - r, y: pt.y - r, w: r * 2, h: r * 2 });
     });
     clusterPins.forEach(function (pin) {
       var pt = map.latLngToContainerPoint(pin.getLatLng());
@@ -862,9 +869,48 @@
     haloMarker = null;
   }
 
-  function clearGrin() {
-    if (grinMarker && map) map.removeLayer(grinMarker);
-    grinMarker = null;
+  /* One pin, dressed for what it is saying. The picture is the same on every
+     one of them — that is the point of it — so the three readings that used
+     to be solid, hollow and small-and-faint are carried by the collar drawn
+     round the mark and by how big the mark is:
+
+       filmed          full size, a solid collar in the accent
+       photographed    full size, a paper gap and then a hairline — hollow
+       write-up only   smaller, quieter, a hairline collar
+
+     The chosen place keeps whichever of the three it is, so selecting one
+     never hides what there is to see in it; it grows instead, and takes the
+     lit tone and the halo. Closed outranks chosen: a shut place keeps the
+     muted tone and the mark goes grey, which the broken circle round it says
+     a second time.
+
+     The shape work is all in the stylesheet — this hands it the two things
+     only the script knows, the diameter and the tone, and the classes that
+     say which of the three readings to draw. */
+  function dressPin(place, colours) {
+    var marker = markers[place.id];
+    if (!marker) return;
+    var node = marker.getElement();
+    if (!node) return;              /* swallowed by a cluster, nothing to dress */
+
+    /* Reading five custom properties off the root is a layout question, so
+       the caller passes them in when it is dressing all seventy at once. */
+    var c = colours || markerColours();
+    var chosen = place.id === state.selected;
+    var depth = pinDepth(place);
+    var d = chosen ? PIN_D_SELECTED : (depth === 'words' ? PIN_D_WORDS : PIN_D);
+
+    node.classList.add('pin-mark');
+    ['reel', 'photos', 'words'].forEach(function (kind) {
+      node.classList.toggle('is-' + kind, depth === kind);
+    });
+    node.classList.toggle('is-chosen', chosen);
+    node.classList.toggle('is-shut', !!place.closed);
+    node.style.setProperty('--pin-d', d + 'px');
+    node.style.setProperty('--pin-tone', place.closed ? c.muted : (chosen ? c.lit : c.accent));
+
+    /* No bringToFront on an icon marker; the stacking is the z offset. */
+    if (marker.setZIndexOffset) marker.setZIndexOffset(chosen ? 400 : 0);
   }
 
   /* Paints every pin for the current selection and the current style. Doubles
@@ -878,45 +924,13 @@
       if (!marker) return;
       var chosen = place.id === state.selected;
 
-      /* One shape, three readings of it, for the three amounts of place
-         behind it. Filmed is a solid disc at full size. Photographed is the
-         same size but hollow — a paper centre inside a full-strength ring,
-         which is a different silhouette rather than a paler version of the
-         same one. The write-up on its own is a small, faded ring, drawn
-         narrower and in a tone half mixed into the paper.
-         Not three icons, because at 14px a picture inside a dot is mud and
-         the map is 70 dots; but solid, hollow and small-and-faint are told
-         apart at a glance, which half a shade of fill was not. The chosen
-         place keeps whichever of the three it is, so selecting one never
-         hides what there is to see in it. */
-      var depth = pinDepth(place);
-      /* Closed outranks chosen. Selecting a shut place used to light its pin
-         the same accent every open one takes, which is the one moment the map
-         had to keep saying it — the halo and the bigger radius already say
-         which pin is the open panel's. */
-      var tone = place.closed ? c.muted : (chosen ? c.lit : c.accent);
-      var solid = depth === 'reel';
-      var faded = depth === 'words';
-
-      /* Named `edge` and not `ring`, because a few lines down `ring` is the
-         extra circle a closed place wears, and one scope cannot mean two
-         things by the same word. */
-      var edge = solid ? c.paper : (faded ? mixHex(tone, c.paper, .55) : tone);
-
-      marker.setStyle({
-        radius: chosen ? PIN_R_SELECTED : (faded ? PIN_R - 2.5 : PIN_R),
-        weight: chosen ? 3 : (faded ? 1.75 : 2.75),
-        color: edge,
-        fillColor: solid ? tone : c.paper
-      });
+      dressPin(place, c);
 
       var ring = closedRings[place.id];
       if (ring) {
         ring.setStyle({ color: c.muted });
-        ring.setRadius((chosen ? PIN_R_SELECTED : PIN_R) + 4);
+        ring.setRadius((chosen ? PIN_D_SELECTED : PIN_D) / 2 + 4);
       }
-
-      if (chosen && marker.bringToFront) marker.bringToFront();
     });
 
     paintLabels();
@@ -925,7 +939,7 @@
     var place = state.selected ? byId(state.selected) : null;
     if (place && map) {
       haloMarker = L.circleMarker([place.lat, place.lng], {
-        radius: PIN_R_SELECTED + 7,
+        radius: PIN_D_SELECTED / 2 + 7,
         weight: 2,
         color: c.lit,
         opacity: .85,
@@ -934,28 +948,6 @@
         interactive: false
       }).addTo(map);
       if (haloMarker.bringToBack) haloMarker.bringToBack();
-    }
-
-    /* And the mark itself, cut out of the pin you picked. It is drawn as a
-       separate layer rather than as the pin, so the circle underneath keeps
-       everything it already does — the click, the tooltip, the tab stop, the
-       focus ring — and keeps saying by its fill how much there is to see in
-       the place. One grin on the map at a time, on the one you are tasting. */
-    clearGrin();
-    var chosenMarker = place ? markers[place.id] : null;
-    if (place && map && chosenMarker && map.hasLayer(chosenMarker)) {
-      grinMarker = L.marker([place.lat, place.lng], {
-        icon: L.divIcon({
-          className: 'pin-grin',
-          html: PIN_GRIN,
-          iconSize: [PIN_GRIN_D, PIN_GRIN_D],
-          iconAnchor: [PIN_GRIN_D / 2, PIN_GRIN_D / 2]
-        }),
-        interactive: false,
-        keyboard: false
-      }).addTo(map);
-      var grinEl = grinMarker.getElement();
-      if (grinEl) grinEl.setAttribute('aria-hidden', 'true');
     }
 
     if (hereMarker) {
@@ -1130,6 +1122,18 @@
      street. */
   var CLUSTER_ZOOM_MAX = 17;
 
+  /* Past ten the exact number stops being information. "23" and "31" ask you
+     to read a figure and tell you the same thing — a lot, zoom in — and on the
+     opening view, where whole quarters fall into one dot, they are the only
+     numbers on the map. So the count is capped: up to ten it is counted, and
+     above that it is 10+. The dot stays the size the real count gives it, so
+     a bigger crowd is still visibly a bigger crowd. */
+  var CLUSTER_COUNT_MAX = 10;
+
+  function clusterCount(count) {
+    return count > CLUSTER_COUNT_MAX ? CLUSTER_COUNT_MAX + '+' : String(count);
+  }
+
   function pinGroups(places) {
     var zoom = map.getZoom();
     if (zoom > CLUSTER_ZOOM_MAX) {
@@ -1169,11 +1173,12 @@
     group.forEach(function (m) { lat += m.place.lat; lng += m.place.lng; });
 
     var size = 26 + Math.min(count, 12);
-    var label = t('clusterLabel', { count: count });
+    var shown = clusterCount(count);
+    var label = t('clusterLabel', { count: shown });
     var pin = L.marker([lat / count, lng / count], {
       icon: L.divIcon({
         className: 'cluster-pin',
-        html: '<span class="cluster-dot">' + count + '</span>',
+        html: '<span class="cluster-dot">' + shown + '</span>',
         iconSize: [size, size],
         iconAnchor: [size / 2, size / 2]
       }),
@@ -2718,7 +2723,7 @@
         color: c.paper,
         fillColor: c.here,
         fillOpacity: 1,
-        className: 'pin pin-here',
+        className: 'pin-here',
         interactive: false
       }).addTo(map);
       hereMarker.bindTooltip(t('locateHere'), { className: 'pin-tip', direction: 'top', offset: [0, -10] });
