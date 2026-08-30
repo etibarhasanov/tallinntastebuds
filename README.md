@@ -1473,20 +1473,23 @@ whole quarters fall into one dot — those were the only numbers on the map. The
 dot itself still grows with the real count, so a bigger crowd still looks like
 one.
 
-The dot is the mark too — the places it stands for are places. Three layers,
-because a number laid straight onto a photograph is unreadable: the mark, a
-wash of the accent over it, then the count. A pin and a cluster are still told
-apart at a glance, and by more than the number: a pin wears the accent as a
-collar with the mark at full strength inside it, a cluster is the other way
-round — the colour is the face, the mark is the texture under it — and it is
-ringed in paper rather than accent, and bigger than any pin at every count.
+The dot is the mark too — the places it stands for are places — at the same
+full strength a pin wears it, with the count written straight onto it in the
+style's own accent. A pin and a cluster are still told apart at a glance, and
+by more than the number: a pin wears the accent as a collar, a cluster is
+ringed in paper instead and wears the accent as the number, and it is bigger
+than any pin at every count.
 
-The wash is measured, not picked. The mark runs from near-black in the gap to
-near-white on the teeth, so the count has to clear 4.5 to one against both
-extremes at the same time: Red's worst spot reads 4.60 at `.80` alpha, Green's
-4.75 at `.76`. Hovering firms the wash up to `.92` rather than brightening it —
-`--accent-lit` under white letters cannot reach 4.5 at any alpha, and going
-more solid is what pressing the dot does anyway.
+There was a wash of the accent over the mark for a version, to give the count
+something flat to sit on. It worked and it cost the thing it was there to
+show — a mouth under 80% of a colour is a texture, not a picture. What carries
+the digits instead is a **casing**: a 1px ring of paper around the glyphs, the
+way a map label has always cased itself. It leaves the picture untouched
+everywhere the letters are not, and it holds the number at the same
+accent-against-paper the rest of the site reads at — 6.56 to one on Red, 8.14
+on Green. Without it the accent alone drops to about 1.5 to one where the
+digits cross the dark of the gap, which is the middle of the mouth, which is
+where the number sits.
 
 **The open place.** The list panel is the neutral card everything else on the
 map is. Opening a place tints that card with six percent of the accent, so it
