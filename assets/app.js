@@ -1172,13 +1172,16 @@
     var lng = 0;
     group.forEach(function (m) { lat += m.place.lat; lng += m.place.lng; });
 
-    var size = 26 + Math.min(count, 12);
+    /* Four pixels wider than it was, because the dot carries the mark now and
+       a mouth under a count needs room to be one. Still bigger than any pin at
+       every count, which is half of how a cluster says it is not a place. */
+    var size = 30 + Math.min(count, 12);
     var shown = clusterCount(count);
     var label = t('clusterLabel', { count: shown });
     var pin = L.marker([lat / count, lng / count], {
       icon: L.divIcon({
         className: 'cluster-pin',
-        html: '<span class="cluster-dot">' + shown + '</span>',
+        html: '<span class="cluster-dot"><span class="cluster-count">' + shown + '</span></span>',
         iconSize: [size, size],
         iconAnchor: [size / 2, size / 2]
       }),
