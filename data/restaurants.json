@@ -471,7 +471,10 @@
       "Bread"
     ],
     "reel": "https://www.instagram.com/reel/DNqd6mYz9pq/",
-    "photos": [],
+    "photos": [
+      "01.webp",
+      "02.webp"
+    ],
     "website": "",
     "phone": "+372 5397 9111",
     "added": "2026-08-23",
