@@ -2967,7 +2967,13 @@
       lastTrackedPath = window.location.pathname + window.location.search;
 
       placeRail();
-      injectStructuredData();
+      /* The JSON-LD block is for crawlers only — nobody reading the map ever
+         sees it — so it must never be the reason a visitor gets the fatal
+         card instead of the map. It sits alone in a try for that reason:
+         everything above it has already rendered by this point. */
+      try { injectStructuredData(); } catch (e) {
+        if (window.console && console.error) console.error(e);
+      }
 
       wireHistory();
 
