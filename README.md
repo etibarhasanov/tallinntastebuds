@@ -1080,9 +1080,9 @@ browser whichever node is up today. A `<audio>` element follows the 302 without
 being asked; some stream checkers do not, so those two URLs will look dead to a
 link checker and play fine in a browser.
 
-Prefer the station's own address over a rebroadcast of it. YleX, Radio Paradise
-and Radio ROKS are all on their broadcaster's own host, which is why those three
-lines are the shortest in the file. A mirror on an aggregator's
+Prefer the station's own address over a rebroadcast of it. Baku Retro FM, YleX,
+Radio Paradise and Radio ROKS are all on their broadcaster's own host, which is
+why those four lines are the shortest in the file. A mirror on an aggregator's
 CDN is a lower bitrate, one remove from the station, and free to drop it
 whenever it likes.
 
@@ -1094,36 +1094,35 @@ than the main feed's Western rock. The other channels on the same host are
 `RadioROKS_ClassicRock`, `RadioROKS_NewRock`, `RadioROKS_HardnHeavy` and
 `RadioROKS_Ballads`, if the taste of the map ever changes.
 
-Azerbaijani wants retro **in Azerbaijani**, which is two conditions and not one.
-A station being licensed in Baku says nothing about the language coming out of
-it: Vintage Radio Azerbaijan sat in this slot for an afternoon and plays golden
-oldies — fifties to nineties pop, rock and roll, disco — on a host it shares
-with a Russian trucker station. Correct country, wrong music. `Sən Günəşsən`,
-99.9 in Baku, is retro Azerbaijani pop, and is named after one of the songs it
-plays. Read a directory's country tag as an address, never as a format.
+Azerbaijani wants retro **in Azerbaijani**, which is two conditions and not one,
+and the slot took three wrong stations before it took the right one. A station
+licensed in Baku says nothing about the language coming out of it: Vintage Radio
+Azerbaijan is golden oldies — fifties to nineties pop, rock and roll, disco — on
+a host it shares with a Russian trucker station. Correct country, wrong music.
+Read a directory's country tag as an address, never as a format.
 
-Baku Retro FM, 93.3 in Baku, is the obvious name for the slot and cannot have
-it. Its only feed is `http://5.191.241.101:8000/bakuretrofm` — plain HTTP on a
-bare address, no certificate to serve it over TLS — so the browser blocks it as
-mixed content before a note is heard, and Android blocks cleartext for the same
-station in the app. The aggregators that appear to play it are proxying that
-same HTTP mount over their own HTTPS, which is a rebroadcast on somebody else's
-uptime and the thing the paragraph above says not to reach for. If the station
-ever publishes an HTTPS address of its own, it is one line in this file.
+The other two were worse, and worth writing down because the mistake is easy to
+repeat. Scraped stream indexes attach station *names* to URLs, and on shared
+hosting those names are guesses: one Zeno mount in the lists carries six
+different station names, and two Asura ports labelled with Azerbaijani stations
+play English-language music. A name in an index is somebody's annotation. A
+hostname is evidence.
 
-The Azerbaijani line is the one exception to the paragraph about broadcasters'
-own hosts, and not by choice: no Azerbaijani retro station publishes an HTTPS
-address of its own, so `Sən Günəşsən` is on rented Asura hosting, one station
-per port. `Ağdam radio` is the other one worth having — Azerbaijani popular,
-folk and retro, on `https://a2.asurahosting.com:6650/radio.mp3` — if this line
-ever goes quiet or the taste of the map changes.
+Which is what settles it. Baku Retro FM, 93.3 in Baku, publishes
+`https://stream.bakuradioalliance.az/retrofm` — its own network's domain, TLS,
+and a mount named after the station. The aggregators all point instead at
+`http://5.191.241.101:8000/bakuretrofm`, the same box behind the same network's
+other stations, AVTOFM and Baku Hit FM among them; that address is plain HTTP,
+so the browser blocks it as mixed content and Android blocks it as cleartext,
+and every site that appears to play it is proxying that mount over their own
+HTTPS. The station's own address was there the whole time, one DNS name away
+from the one every index copies from the last.
 
 The `name` is what the button says, and the button holds 18ch before it starts
 eating the end of it, so the station's full name for the channel is shortened
 to `ROKS Ukr Rock` rather than shown as `RADIO ROKS UK…`, which reads like a
-language code rather than a station. `Sən Günəşsən` is written the way the
-station writes it, diacritics and all, which fits the button with room to spare
-and is the right spelling for the only readers who will ever see it.
+language code rather than a station. `Baku Retro FM` is the station's own name
+and fits with room to spare.
 
 Reach for a mirror only once the official address has actually failed **in a
 browser**. Scraped stream indexes disagree with each other about that address
