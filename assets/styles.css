@@ -54,6 +54,11 @@
 html, body {
   height: 100%;
   margin: 0;
+  /* iOS inflates text on its own when it decides a page was written for a
+     desktop and is being read on a phone. This one was written for the phone,
+     and every size in here is a chosen one. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -64,7 +69,48 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
+  /* --------------------------------------------- the browser's own zoom
+   * This page is a map, not a document: it fills the window, nothing behind
+   * it scrolls, and every gesture over it is meant for Leaflet. But the
+   * chrome standing on the map — the chip row, the rail, the brand card, the
+   * corner buttons — is ordinary DOM, and the browser claims gestures that
+   * land on it. On a phone that went wrong two ways.
+   *
+   * Double tap: a chip is a toggle, so tapping one twice quickly is a normal
+   * thing to do, and to Safari it is the gesture that zooms the page in on
+   * whatever was tapped. `manipulation` is `auto` minus that one gesture, so
+   * taps, drags and pinches all still work and the double tap stops being a
+   * zoom. It sits on the body, where every control inherits it: the permitted
+   * gestures are the intersection down the tree, so the map keeps the `none`
+   * Leaflet sets on its own container and goes on handling pinch itself.
+   *
+   * The other way is pinch, and it is handled per element below.
+   */
+  touch-action: manipulation;
 }
+
+/* A pinch aimed at the map that starts a finger on the chrome is a pinch the
+   browser zooms the *page* with — and on a phone the chip row spans the top
+   and the rail runs down the left, so that is easy to do by accident. The
+   result is the whole interface suddenly twice the size, panned to wherever
+   the fingers were, with the header off the top of the screen; and since
+   nothing here scrolls, there is no obvious way back out of it. So the
+   chrome does not take pinches: nothing inside these scrolls, so `none`
+   costs them nothing.
+   Two deliberate exceptions. The chip row sets its own `pan-x` further down,
+   which already excludes pinch — and it has to be set on the scroller itself,
+   because a `none` above it would forbid the sideways drag as well. And the
+   sheet is left alone: it is the one part of this that is text to sit and
+   read, so pinching it still zooms, which is the accessible answer. */
+.brand,
+.controls,
+.rail { touch-action: none; }
+
+/* The bar is a full-width strip and the chips only fill part of it, so the
+   rest of it was a piece of dead map that swallowed pinches and drags. The
+   bar stops taking touches at all; the scroller inside it takes its own. */
+.filter-bar { pointer-events: none; }
+.filters { pointer-events: auto; }
 
 h1, h2, h3, p, figure, ul, ol { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
