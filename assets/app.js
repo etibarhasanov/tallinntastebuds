@@ -1730,6 +1730,18 @@
     if (!vv) return;
 
     function sync() {
+      /* A page the browser has zoomed in on shrinks the visual viewport in
+         exactly the way a keyboard does, and the measurement below cannot
+         tell the two apart: pinched to 2x, half the window reads as covered,
+         so the sheet would fold itself up around a keyboard that is not
+         there and then scroll the page out from under the fingers doing the
+         pinching. A scale that is not 1 is a zoom, not a keyboard — the
+         fields on this page are set at 16px precisely so that focusing one
+         never zooms. */
+      if (vv.scale && Math.abs(vv.scale - 1) > .01) {
+        document.documentElement.style.setProperty('--kbd', '0px');
+        return;
+      }
       var covered = window.innerHeight - vv.height - vv.offsetTop;
       /* Only a keyboard, not a URL bar sliding away. */
       var kbd = covered > 90 ? Math.round(covered) : 0;
