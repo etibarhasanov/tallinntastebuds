@@ -454,14 +454,14 @@ A shut place is two facts, not one, and the second is the reason it is still
 here: **the door is closed, and the reel is not.** So it is marked in two
 places rather than dimmed in one.
 
-- **On the map** the pin keeps the shape that says what there is to watch —
-  solid disc, hollow ring, small speck — in grey, and gains a **dashed ring**
-  drawn just outside it. A closed place you can still watch a reel of is a
-  solid dot inside a broken circle, which is both facts at once. Grey alone
-  could not do that: it is also what a write-up-only place looks like from
-  three streets away. The ring stays when the place is selected, and a
-  selected closed pin no longer lights up the accent — the halo and the size
-  say which one the panel belongs to.
+- **On the map** the pin keeps the collar that says what there is to watch —
+  solid, hollow, hairline — in grey, the mark itself drains of colour, and it
+  gains a **dashed ring** drawn just outside it. A closed place you can still
+  watch a reel of is a full-collared mark inside a broken circle, which is both
+  facts at once. Grey alone could not do that: it is also what a write-up-only
+  place looks like from three streets away. The ring stays when the place is
+  selected, and a selected closed pin no longer lights up the accent — the halo
+  and the size say which one the panel belongs to.
 - **In the list** the row carries a **Closed** badge next to the price, beside
   where a discount would sit, because the two of them are what you decide on
   rather than what you read. The badge carries the same broken ring at 9px, so
@@ -971,26 +971,42 @@ card, and a square one for the favicon, the home-screen icon and the map. The
 boxes are written down in `assets/logo/README.md`, so a new size is a
 re-render rather than a redraw.
 
-On the map it goes on exactly one pin: the one whose panel is open. Not on all
-seventy — the pins already say three things by shape, and a picture inside a
-14px dot is mud. But there is only ever one chosen place, so it can afford to
-be 34px and wear the painting.
+On the map it *is* the pin. Every place is the mouth, cropped round, drawn at
+22px — 34px for the one whose panel is open, and 17px for the quietest of them.
+It used to go on the chosen pin alone, over a circle, on the reasoning that a
+picture inside a 14px dot is mud. That was true of a 14px dot. At 22px the
+crop reads, and the map stops being seventy anonymous circles with one
+photograph parked among them.
 
-It is drawn as a layer of its own sitting on the circle rather than replacing
-it, which is what keeps this from costing anything. The circle underneath is
-still the button — the click, the label, the tab stop, the focus ring. The
-mouth is set inside it at 26px, which leaves a ring of the pin's own fill
-showing all the way round: accent inside a paper stroke where the place is
-filmed, paper inside an accent one where it is photographed, paper inside a
-thin half-mixed one where there is only the write-up. So the pin goes on
-saying how much there is to see in the place while it is wearing the mouth,
-and it still changes with the swatches.
+The circle is not gone, it is *reserved*: the only plain dot left on the map is
+the one that says where you are. Nothing else can be mistaken for it now, which
+is more than the old `--here` hue was doing on its own.
+
+What the circle used to carry, the collar round the mark carries instead — the
+picture is the same on every pin, so the three readings have to live somewhere
+else:
+
+| The place has | The pin |
+| --- | --- |
+| a reel or a video | full size, a solid collar in the accent |
+| photos | full size, a paper gap and then an accent hairline — hollow |
+| the write-up only | smaller and quieter, a hairline collar |
+
+Filmed, photographed and write-up-only are still told apart at a glance, and
+still by silhouette rather than by half a shade of fill. The chosen place keeps
+whichever of the three it is and grows; a closed one keeps the muted tone, and
+its mark goes grey inside the dashed ring that already says so.
+
+The icon Leaflet anchors is a fixed 46px square, so a pin resizes without the
+anchor moving under it, and the square takes no pointer at all — only the mark
+inside it does. A tap lands on the picture you can see and never on the empty
+corners around it.
 
 ---
 
 ## The two styles
 
-Two swatches sit on the left rail: brick and forest, day and night. Picking one
+One swatch sits on the left rail: brick and forest, day and night. Pressing it
 changes the **whole** colour world — not just an accent.
 
 | Style | Accent | Card | Ground | Map |
@@ -1020,6 +1036,13 @@ the pair takes the land from `#1a1c1e` to around `#44474f`, and label contrast
 reads 5.7-5.8 against the 5.0 the tiles have untouched.
 Its swatch wears the card colour with a ring of the accent, so the rail says
 which of the two is the dark one before you press it.
+
+**One button, not two.** There were two swatches, and with only two styles one
+of them was always the one you were already looking at — a control that did
+nothing, sitting next to the one that did. What is left is a single button
+showing the side you are *not* on: the dark swatch to go dark, the light one to
+come back. It is written against `STYLES` rather than against the two ids, so
+it is still a switch if a third palette ever turns up.
 
 Both styles are **nothing but a block of custom properties** near the top of
 `assets/styles.css`, keyed off `[data-style="…"]` on the root element. No
@@ -1164,7 +1187,7 @@ TLS; neither is the test that counts. Pressing the button is.
 
 ## Surprise me
 
-The button under the swatches on the left rail picks a place at random and
+The button under the colour switch on the left rail picks a place at random and
 opens it.
 
 It picks from **whatever the chips currently allow**, so selecting "Korean" and
@@ -1371,7 +1394,7 @@ change those values and the whole site follows.
 One strip across the top — the brand card on the left, **List** and the
 language switch on the right — and the filter chips on the line directly
 beneath it. The controls that are questions about the *map* rather than about
-the page stand on the map instead, in the left rail: the two colours, the
+the page stand on the map instead, in the left rail: the colour switch, the
 radio, Surprise me, and locate at its foot. There are no zoom buttons; the wheel, a double-click, a pinch and
 the `+`/`-` keys all still zoom, and two more buttons standing on the map were
 paying for a job the map already does. The chips used to sit at the bottom,
@@ -1402,47 +1425,53 @@ the scroller in the stack, so a tap on a button is always a tap on that button.
 Under about 380px the handle and the three controls stop fitting on one line,
 so the controls take a line of their own and the chips drop below both.
 
-**Pins.** One shape, three readings of it, for the three amounts of place
-behind it:
+**Pins.** Every pin is the mark — see **The mark**. One picture, three collars
+round it, for the three amounts of place behind it:
 
 | | pin | today |
 | --- | --- | --- |
-| a reel | solid disc, r7 | 43 |
-| photos, no reel | hollow, r7, ring at full weight | 10 |
-| the write-up alone | small faded ring, r4.5 | 17 |
+| a reel | 22px, solid accent collar | 43 |
+| photos, no reel | 22px, paper gap then an accent hairline | 10 |
+| the write-up alone | 17px, hairline collar, quieter | 17 |
 
-A closed place takes whichever of the three it is, drawn in grey, plus a
-dashed ring at r11 outside it — a fourth mark rather than a fourth reading of
-the same one. See **Close a place instead of deleting it**.
+A closed place takes whichever of the three it is, greyed, plus a dashed ring
+outside it — a fourth mark rather than a fourth reading of the same one. See
+**Close a place instead of deleting it**.
 
-The three used to be told apart by fill alone — solid, then the accent mixed
-38% into the card colour, then empty — at radii of 7, 6.5 and 6. On paper that
-is three states; on the map it was one dot and two dots that looked like it in
-worse light, and the half-fill in particular read as a rendering artefact
-rather than as a fact about the place. So the middle state gave up its fill
-entirely and kept its size: solid versus hollow is a different silhouette, not
-a paler version of the same one. The faintest state went the other way and gave
-up size instead, down to r4.5 with a 1.75 stroke drawn in the accent mixed half
-into the paper — small and quiet, which is what it is saying.
+The three used to be told apart by fill: a solid dot, a hollow one, and a small
+faded one, drawn as circles at radii of 7, 7 and 4.5. That worked, and it was
+still seventy circles that could have been anybody's map. Putting the mark on
+all of them costs nothing the reading needed, because the reading was never in
+the fill — it was in solid versus hollow versus small-and-quiet, and a collar
+says that as well as a fill does while leaving the middle of the pin free to be
+the painting. Bigger, too, which is what made it possible: 14px is mud, 22px is
+a mouth.
 
-The mix is still drawn opaque rather than as the accent at half alpha, so the
-map does not show through it and the three read the same on both palettes. Not
-three icons, because at 14px a picture inside a dot is mud and the map is 70
-dots. The chosen place grows, gains a breathing halo and keeps its name open,
-but it keeps whichever of the three states it is, so selecting a place never
+The collar tones are the same accent, lit accent and muted the fills used, so
+the pins still change with the swatch and the map still shows through nothing.
+The chosen place grows to 34px, gains a breathing halo and keeps its name open,
+but it keeps whichever of the three collars it is, so selecting a place never
 hides what there is to see in it.
 
-**The mark.** A dot only says this if you can see two other dots to compare it
+**The badge.** A pin only says this if you can see two other pins to compare it
 with, which rules out the list, and rules out the map on a phone that has
 zoomed into one street. So every row in the list carries the same three-way in
 words — **REEL** or **VIDEO**, **PHOTOS**, **NOT FILMED** — as a badge holding
 the right edge of the row, and the badge is drawn at the pin's own three
-weights: solid accent, accent outline, hairline. The glyph inside it is the pin
-itself, small: a disc, a ring, a speck. Not a play triangle and a camera, which
-would only repeat the word next to them; echoing the dot is the one thing the
-badge can do that the word cannot, which is turn every row into a key to the
-map. The row's `aria-label` spells the word out, because the label is all a
+weights: solid accent, accent outline, hairline. The glyph inside it is the
+pin's collar, small: solid, a ring, a speck. Not a play triangle and a camera,
+which would only repeat the word next to them; echoing the pin is the one thing
+the badge can do that the word cannot, which is turn every row into a key to
+the map. The row's `aria-label` spells the word out, because the label is all a
 screen reader reads of a row and anything shown but not spelled is not there.
+
+**Clusters.** Pins closer together than a fingertip are drawn as one counted
+dot until you zoom in far enough to tell them apart, and the count on it stops
+at **10+**. Past ten the exact figure is not information: 23 and 31 ask you to
+read a number and then tell you the same thing, and on the opening view — where
+whole quarters fall into one dot — those were the only numbers on the map. The
+dot itself still grows with the real count, so a bigger crowd still looks like
+one.
 
 **The open place.** The list panel is the neutral card everything else on the
 map is. Opening a place tints that card with six percent of the accent, so it
