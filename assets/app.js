@@ -2001,6 +2001,16 @@
       ));
     }
 
+    /* The offer in full, and the button that makes the code, straight after
+       the tags: the badge at the top says how much, and this says what of and
+       hands it over. It sat under the dishes for a while, at the very foot of
+       the read, which put the one thing here you act on rather than read
+       below a list you skim — a discount is part of deciding where to eat, so
+       it belongs with the deciding. It stays below the reel and the photos
+       all the same: a QR meant to be held up at a till has no business in
+       front of somebody who has not seen the place yet. */
+    if (deal) dom.detail.appendChild(section('passOffer', dealBlock(place, deal)));
+
     if ((place.mustOrder || []).length) {
       dom.detail.appendChild(section('mustOrder',
         el('ul', { className: 'dish-list' }, place.mustOrder.map(function (dish) {
@@ -2008,15 +2018,6 @@
         }))
       ));
     }
-
-    /* The offer in full, and the button that makes the code, at the foot of
-       the read: the badge at the top says how much, and this says what of and
-       hands it over. It used to sit above the reel, which put a QR you are
-       meant to hold up at a till in front of somebody still deciding whether
-       to walk there — the pass is worth making once you have decided, and by
-       then you are at the bottom of the panel anyway, next to the directions
-       that take you to the door. */
-    if (deal) dom.detail.appendChild(section('passOffer', dealBlock(place, deal)));
 
     dom.detail.appendChild(plainSection([
       el('dl', { className: 'facts' }, [
