@@ -31,6 +31,19 @@
   --attrib-bg: rgba(255, 240, 234, .88);
   --map-tint: rgba(168, 30, 40, .36);
   --swatch-edge: rgba(0, 0, 0, .14);
+  /* The accent, laid over the mark on a cluster so the count can be read off
+     it, and the same accent nearly solid for the hovered one. Tokens per style
+     like everything else: they are the accent at an alpha, and no component
+     rule is allowed to know a colour.
+
+     The alphas are measured, not picked. The mark runs from near-black in the
+     gap to near-white on the teeth, so the count has to clear 4.5 against both
+     extremes at once: .80 puts Red's worst spot at 4.60, .76 puts Green's at
+     4.75. Hover firms up rather than brightening — accent-lit under white
+     letters cannot reach 4.5 at any alpha, and going more solid is what
+     pressing the dot does anyway. */
+  --cluster-veil: rgba(168, 30, 40, .80);
+  --cluster-veil-on: rgba(168, 30, 40, .92);
 
   --display: "Familjen Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --body: "Literata", Georgia, "Times New Roman", serif;
@@ -154,32 +167,61 @@ a:hover { color: var(--accent-lit); }
   mix-blend-mode: color;
 }
 
-/* One dot standing in for the pins too close together to tell apart. It wears
-   the accent like a pin but carries a count, so it never reads as a place. */
+/* One dot standing in for the pins too close together to tell apart. It is
+   the same mark every pin is — the places it stands for are places — under a
+   wash of the accent, with the count over the top. Three layers, because the
+   mark is a photograph and a number laid straight onto one is unreadable: the
+   picture, the veil that quietens it, then the count.
+
+   It still never reads as a place. A pin wears the accent as a collar with
+   the mark at full strength inside it; a cluster is the other way round — the
+   colour is the face and the mark is the texture under it — and it is ringed
+   in paper rather than accent, and bigger than any pin. */
 .cluster-pin { background: none; border: 0; }
 .cluster-dot {
+  position: relative;
   display: grid;
   place-items: center;
   width: 100%;
   height: 100%;
   border-radius: 100px;
-  background: var(--accent);
+  background: var(--accent) url(logo/mark-round.webp) center / cover no-repeat;
   box-shadow: 0 0 0 2.5px var(--paper), 0 1px 3px rgba(20, 26, 31, .3);
   color: var(--paper);
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
   line-height: 1;
-  transition: background .15s var(--ease), transform .15s var(--ease);
+  transition: transform .15s var(--ease);
+}
+.cluster-dot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--cluster-veil);
+  transition: background .15s var(--ease);
+}
+/* Positioned, so it paints over the veil rather than under it. The halo is
+   the accent in both palettes, which is the colour on either side of the
+   digits either way: dark behind pale letters on Red, pale behind dark ones
+   on Green. The veil already carries the measurement on its own; this is what
+   keeps the count crisp where the teeth run brightest under it. */
+.cluster-count {
+  position: relative;
+  text-shadow: 0 0 3px var(--accent), 0 0 6px var(--accent);
 }
 .cluster-pin:hover .cluster-dot,
-.cluster-pin:focus-visible .cluster-dot {
-  background: var(--accent-lit);
-  transform: scale(1.08);
-}
+.cluster-pin:focus-visible .cluster-dot { transform: scale(1.08); }
+.cluster-pin:hover .cluster-dot::before,
+.cluster-pin:focus-visible .cluster-dot::before { background: var(--cluster-veil-on); }
 .cluster-pin:focus-visible { outline: none; }
 .cluster-pin:focus-visible .cluster-dot {
   box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 4.5px var(--accent-lit);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cluster-pin:hover .cluster-dot,
+  .cluster-pin:focus-visible .cluster-dot { transform: none; }
 }
 
 /* Where you are, which is not one of the places on the map and should never
@@ -546,6 +588,8 @@ a:hover { color: var(--accent-lit); }
   --map-tint: rgba(168, 30, 40, .36);
   --shadow: 0 1px 2px rgba(74, 26, 22, .06), 0 8px 28px rgba(74, 26, 22, .14);
   --attrib-bg: rgba(255, 240, 234, .88);
+  --cluster-veil: rgba(168, 30, 40, .80);
+  --cluster-veil-on: rgba(168, 30, 40, .92);
   --here: #0b62c4;
 }
 
@@ -557,6 +601,8 @@ a:hover { color: var(--accent-lit); }
   --shadow: 0 1px 2px rgba(0, 0, 0, .34), 0 8px 28px rgba(0, 0, 0, .46);
   --attrib-bg: rgba(16, 26, 21, .86);
   --swatch-edge: rgba(255, 255, 255, .22);
+  --cluster-veil: rgba(111, 211, 154, .76);
+  --cluster-veil-on: rgba(111, 211, 154, .92);
   --here: #e0873a;
 }
 
