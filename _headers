@@ -1,18 +1,30 @@
 # Cloudflare Pages reads this file, applies the rules and does not serve it.
 #
-# Nothing in this site is content-hashed — assets/app.js keeps that name
-# forever — so no file can be cached hard without risking a visitor stuck on
-# an old copy after you push. Everything therefore revalidates: the browser
-# still gets a fast 304 when nothing changed, but an edit to restaurants.json
-# shows up on the next load rather than whenever a cache decides to expire.
+# Everything here revalidates: the browser still gets a fast 304 when nothing
+# changed, but an edit to restaurants.json shows up on the next load rather
+# than whenever a cache decides to expire. Photos are the one exception.
 
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 
+# The pages carry the ?v= stamps that tell a browser which copy of the scripts
+# and stylesheets it is allowed to reuse, so a stale page is a stale
+# everything. These rules match the request path, and the address people
+# actually open is "/", not "/index.html", so both are spelled out.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
 /index.html
   Cache-Control: public, max-age=0, must-revalidate
 
+# Scripts and stylesheets are content-addressed by tools/stamp.mjs — the URL
+# in the HTML carries a hash of the file — so a year-long cache would be safe
+# for a stamped request and is deliberately not used anyway. These rules match
+# on path and ignore the query string, so the same header would also be handed
+# to a request for the bare, unstamped assets/app.js, and a browser that had
+# pinned that one for a year would be stuck there for a year. Revalidating
+# costs one conditional request and cannot strand anybody.
 /assets/*
   Cache-Control: public, max-age=0, must-revalidate
 

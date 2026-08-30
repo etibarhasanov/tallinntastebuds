@@ -2913,6 +2913,10 @@
 
     dom.panel.setAttribute('inert', '');
 
+    /* Flipped once the visitor has the thing they came for. See the note on
+       the fatal card at the foot of this function. */
+    var drawn = false;
+
     Promise.all([
       getJSON('data/restaurants.json'),
       getJSON('data/taxonomy.json'),
@@ -2964,6 +2968,11 @@
       renderRadio();
       wireControls();
 
+      /* The map is drawn, the chips and the panel are filled in, and every
+         button on the page is live. Everything below this line is bookkeeping
+         the visitor never sees fail. */
+      drawn = true;
+
       /* gtag already reported the landing URL, deep link and all. */
       lastTrackedPath = window.location.pathname + window.location.search;
 
@@ -2986,6 +2995,17 @@
       if (spot && byId(spot)) selectPlace(spot, { fly: true });
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
+
+      /* The card explains a page with nothing on it. Once the map has drawn,
+         covering it with "something went wrong loading the data" says two
+         untrue things — the data loaded fine, and refreshing will help. It
+         will not: a refresh runs the same code against the same files and
+         lands in the same place, which is exactly what happened to everyone
+         whose browser was still holding the previous assets/app.js while
+         serving them today's restaurants.json. So a failure this late keeps
+         the map and goes to the console, where it belongs. */
+      if (drawn) return;
+
       var note = el('div', { className: 'noscript card' }, [
         el('p', { className: 'eyebrow', textContent: 'Tallinn' }),
         el('h2', { textContent: 'Tallinn Tastebuds' }),

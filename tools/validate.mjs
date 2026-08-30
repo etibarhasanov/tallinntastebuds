@@ -31,6 +31,8 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
+import { stale as staleStamps } from './stamp.mjs';
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DATA = join(ROOT, 'data');
 const PHOTOS = join(ROOT, 'photos');
@@ -484,6 +486,19 @@ if (existsSync(PHOTOS)) {
    not something this script enforces at runtime. */
 
 readJSON('data/schema.json');
+
+/* ------------------------------------------------------------ asset stamps
+   Every script and stylesheet is referenced with a hash of its own contents on
+   the end, so a changed file is always a changed URL and no browser can pair
+   an old copy of assets/app.js with today's restaurants.json. That guarantee
+   is only worth anything if the stamps are current, so a stale one fails the
+   build rather than shipping. See tools/stamp.mjs. */
+
+for (const ref of staleStamps()) {
+  fail(ref.page, ref.want === null
+    ? `"${ref.asset}" is referenced but is not in the repo`
+    : `"${ref.asset}" is stamped ${ref.got || '(nothing)'} but its contents hash to ${ref.want} — run \`node tools/stamp.mjs\` and commit the result`);
+}
 
 /* ---------------------------------------------------------------- reporting */
 
