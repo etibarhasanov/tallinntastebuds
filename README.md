@@ -1470,8 +1470,18 @@ dot until you zoom in far enough to tell them apart, and the count on it stops
 at **10+**. Past ten the exact figure is not information: 23 and 31 ask you to
 read a number and then tell you the same thing, and on the opening view — where
 whole quarters fall into one dot — those were the only numbers on the map. The
-dot itself still grows with the real count, so a bigger crowd still looks like
-one.
+dot itself still grows with the real count, and steeply — two places is 35px,
+five is 40, ten is 48, and from twelve up it is 51, against a 22px pin. The
+count grows with it, a third of the dot's width, so ten places carry a 17px
+number where two carry a 13px one. A fixed 12px was why the digits were hard
+to find at all: on a photograph a small number reads as a caption rather than
+as the thing the picture is there to count.
+
+The distance that groups pins is the width of the widest dot, 52px, and that
+is not a coincidence. Grouping exists so a city of pins does not draw as a
+smear; now that the thing standing in for them is as wide as the crowd it
+holds, two dots drawn closer than that would smear the same way. Whatever is
+closer than one dot's width is one dot.
 
 The dot is the mark too — the places it stands for are places — at the same
 full strength a pin wears it, with the count written straight onto it in the
@@ -1483,11 +1493,12 @@ than any pin at every count.
 There was a wash of the accent over the mark for a version, to give the count
 something flat to sit on. It worked and it cost the thing it was there to
 show — a mouth under 80% of a colour is a texture, not a picture. What carries
-the digits instead is a **casing**: a 1px ring of paper around the glyphs, the
+the digits instead is a **casing**: a ring of paper around the glyphs, the
 way a map label has always cased itself. It leaves the picture untouched
 everywhere the letters are not, and it holds the number at the same
 accent-against-paper the rest of the site reads at — 6.56 to one on Red, 8.14
-on Green. Without it the accent alone drops to about 1.5 to one where the
+on Green. It is drawn in ems, so it thickens with the number rather than
+thinning out under the big ones. Without it the accent alone drops to about 1.5 to one where the
 digits cross the dark of the gap, which is the middle of the mouth, which is
 where the number sits.
 

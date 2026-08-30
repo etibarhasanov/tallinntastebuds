@@ -1111,7 +1111,13 @@
    *
    * The chosen place is never swallowed: it always keeps its own pin.
    */
-  var CLUSTER_PX = 44;
+  /* Also the width of the widest dot, and that is not a coincidence. The
+     distance exists so a city of pins does not draw as a smear; now that the
+     thing standing in for them is as wide as the crowd it holds, two dots
+     drawn closer than this would smear in exactly the same way. So the
+     grouping distance is the size of the biggest counted dot: whatever is
+     closer than one dot's width is one dot. */
+  var CLUSTER_PX = 52;
 
   /* Past this zoom nothing is grouped, whatever the spacing. Q Pizza Jaam and
      Telliskivi Šašlõkk are eleven metres apart: 37px at zoom 18, under the 44
@@ -1172,16 +1178,20 @@
     var lng = 0;
     group.forEach(function (m) { lat += m.place.lat; lng += m.place.lng; });
 
-    /* Four pixels wider than it was, because the dot carries the mark now and
-       a mouth under a count needs room to be one. Still bigger than any pin at
-       every count, which is half of how a cluster says it is not a place. */
-    var size = 30 + Math.min(count, 12);
+    /* The dot grows with the crowd, and steeply, because the count is written
+       on a photograph now: a number needs room on one, and the room is what
+       makes it readable. Two places is 35px, five is 40, ten is 48, and from
+       twelve up it is 51 — against a 22px pin, so a cluster is never mistaken
+       for a place at any count. The count grows with the dot; see
+       --cluster-d in the stylesheet. */
+    var size = Math.round(32 + Math.min(count, 12) * 1.6);
     var shown = clusterCount(count);
     var label = t('clusterLabel', { count: shown });
     var pin = L.marker([lat / count, lng / count], {
       icon: L.divIcon({
         className: 'cluster-pin',
-        html: '<span class="cluster-dot"><span class="cluster-count">' + shown + '</span></span>',
+        html: '<span class="cluster-dot" style="--cluster-d:' + size + 'px">' +
+              '<span class="cluster-count">' + shown + '</span></span>',
         iconSize: [size, size],
         iconAnchor: [size / 2, size / 2]
       }),
