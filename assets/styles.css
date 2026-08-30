@@ -710,6 +710,24 @@ a:hover { color: var(--accent-lit); }
 .price i.on { color: var(--accent); }
 .is-closed .price i.on { color: var(--muted); }
 
+/* A band can sit on a half step, so a slot can be half lit: the ghosted sign
+   underneath, and a second copy of the same glyph laid exactly over it in the
+   accent and clipped to its left half. Same glyph, same metrics, so the row of
+   four keeps its width whatever the band is. */
+.price i.half { position: relative; }
+.price i.half b {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 50%;
+  overflow: hidden;
+  font-weight: inherit;
+  color: var(--accent);
+  pointer-events: none;
+}
+.is-closed .price i.half b { color: var(--muted); }
+
 /* ---------- panel ---------- */
 
 .panel {

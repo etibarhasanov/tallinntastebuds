@@ -1792,17 +1792,50 @@
   /* ------------------------------------------------------------ price gauge
    * Four slots, always four. The filled ones carry the accent, the rest are
    * ghosted in the hairline colour. It is the only gauge on the site.
+   *
+   * A band can land on a half step — 2.5 sits between the cheap end and the
+   * middle — so a slot has three states, not two: full, half, empty. The half
+   * slot is one euro sign in hairline with a second one stacked on top of it,
+   * clipped to its left half in the accent, which keeps the glyph itself
+   * whole where a gradient fill would lean on background-clip: text.
    */
   function priceGauge(n) {
     var wrap = el('span', {
       className: 'price',
       role: 'img',
-      'aria-label': t('priceOf', { n: n })
+      'aria-label': t('priceOf', { n: formatPrice(n) })
     });
     for (var i = 1; i <= 4; i++) {
-      wrap.appendChild(el('i', { className: i <= n ? 'on' : '', textContent: '€' }));
+      /* How much of this slot the band fills: 1 or more is a full sign, half
+         a slot is a half sign, at or below zero is an empty socket. */
+      var fill = n - i + 1;
+      if (fill >= 1) {
+        wrap.appendChild(el('i', { className: 'on', textContent: '€' }));
+      } else if (fill >= 0.5) {
+        wrap.appendChild(el('i', { className: 'half', textContent: '€' }, [
+          el('b', { 'aria-hidden': 'true', textContent: '€' })
+        ]));
+      } else {
+        wrap.appendChild(el('i', { textContent: '€' }));
+      }
     }
     return wrap;
+  }
+
+  /* The band as it reads out loud: whole numbers stay whole, half steps keep
+     the one decimal they need, written with the reading language's own decimal
+     mark so Estonian hears "2,5" where English hears "2.5". */
+  function formatPrice(n) {
+    if (typeof n !== 'number' || !isFinite(n)) return String(n);
+    var digits = n % 1 === 0 ? 0 : 1;
+    try {
+      return n.toLocaleString(state.lang, {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      });
+    } catch (e) {
+      return n.toFixed(digits);
+    }
   }
 
   /* A tel: link is what makes this dial rather than navigate: a phone hands it
@@ -2797,7 +2830,9 @@
       };
       var blurb = place.blurb && (place.blurb[state.lang] || place.blurb[DEFAULT_LANG]);
       if (blurb) node.description = blurb;
-      if (place.price) node.priceRange = new Array(place.price + 1).join('\u20ac');
+      /* priceRange takes a run of euro signs, and half a sign is not something
+         it can express, so a half step rounds up to the nearer whole band. */
+      if (place.price) node.priceRange = new Array(Math.round(place.price) + 1).join('\u20ac');
       items.push({ '@type': 'ListItem', position: items.length + 1, item: node });
     });
 

@@ -56,10 +56,11 @@
           "maximum": 25.0
         },
         "price": {
-          "type": "integer",
-          "description": "Price band, 1 to 4. Rendered as one to four euro signs. This is a cost band, not a rating.",
+          "type": "number",
+          "description": "Price band, 1 to 4 in steps of 0.5. Rendered as up to four euro signs, where a half step lights half a sign. This is a cost band, not a rating.",
           "minimum": 1,
-          "maximum": 4
+          "maximum": 4,
+          "multipleOf": 0.5
         },
         "types": {
           "type": "array",
