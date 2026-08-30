@@ -1080,9 +1080,9 @@ browser whichever node is up today. A `<audio>` element follows the 302 without
 being asked; some stream checkers do not, so those two URLs will look dead to a
 link checker and play fine in a browser.
 
-Prefer the station's own address over a rebroadcast of it. Yurd FM, YleX, Radio
-Paradise and Radio ROKS are all on their broadcaster's own host, which is why
-those four lines are the shortest in the file. A mirror on an aggregator's
+Prefer the station's own address over a rebroadcast of it. Baku Retro FM, YleX,
+Radio Paradise and Radio ROKS are all on their broadcaster's own host, which is
+why those four lines are the shortest in the file. A mirror on an aggregator's
 CDN is a lower bitrate, one remove from the station, and free to drop it
 whenever it likes.
 
@@ -1095,41 +1095,40 @@ than the main feed's Western rock. The other channels on the same host are
 `RadioROKS_Ballads`, if the taste of the map ever changes.
 
 Azerbaijani wants retro **in Azerbaijani**, which is two conditions and not one,
-and the slot took four wrong stations before it took this one. A station licensed
-in Baku says nothing about the language coming out of it: Vintage Radio
+and the slot took several wrong stations before it took this one. A station
+licensed in Baku says nothing about the language coming out of it: Vintage Radio
 Azerbaijan is golden oldies — fifties to nineties pop, rock and roll, disco — on
 a host it shares with a Russian trucker station. Correct country, wrong music.
 Read a directory's country tag as an address, never as a format.
 
-Two more went in on the strength of station names attached to URLs in scraped
-indexes, and those names are annotations rather than facts: one Zeno mount in
-the lists carries six different station names, and two Asura ports labelled with
-Azerbaijani stations play English-language music. Then a fourth went in on a
-hostname, which is better evidence and still not proof —
-`stream.bakuradioalliance.az` resolves, and answers nothing.
+The rest went in on station names attached to URLs in scraped indexes, and those
+names are annotations rather than facts: one Zeno mount in the lists carries six
+different station names, and two Asura ports labelled with Azerbaijani stations
+play English-language music. A name in an index is somebody's guess. A hostname
+is evidence, and what comes out of the speaker is the only proof.
 
-So: check the host resolves and check what comes out of it, and treat those as
-two separate questions. `icecast.livetv.az` is Cloudflare-fronted and serves
-several Azerbaijani broadcasters under mount names their operators chose —
-`yurdfm`, `mediamugam`, `antennfm` — which is the one place in this whole search
-where the name on the URL was written by somebody who owns the station.
+Which is how the slot ended up with the station it wanted from the start. Baku
+Retro FM, 93.3 in Baku, publishes `https://stream.bakuradioalliance.az/retrofm`
+— its own network's domain, TLS, and a mount named after the station. Every
+aggregator points instead at `http://5.191.241.101:8000/bakuretrofm`, the same
+box that serves the network's AVTOFM and Baku Hit FM; that address is plain
+HTTP, so the browser blocks it as mixed content and Android blocks it as
+cleartext, and the sites that appear to play it are proxying that mount over
+their own HTTPS. The station's own address was one DNS name away from the one
+every index copies from the last.
 
-Yurd FM, 90.7 in Baku, plays Azerbaijani folk, mugham, ashug and national dance
-music, the standards alongside contemporary performers of them. It is heritage
-rather than retro pop, which is the honest trade: no Azerbaijani retro-pop
-station publishes a stream this map can use. Baku Retro FM, 93.3, is the one
-everybody wants and its only answering feed is
-`http://5.191.241.101:8000/bakuretrofm` — plain HTTP on a bare address, blocked
-as mixed content in the browser and as cleartext on Android. The aggregators
-proxy that mount over their own HTTPS; that is a rebroadcast on somebody else's
-uptime, and it is the only way in. Media FM's mugham channel,
-`https://icecast.livetv.az/mediamugam`, is the alternate on the same host.
+That host has been slow to answer at least once. If it stops for good,
+`icecast.livetv.az` is Cloudflare-fronted and carries several Azerbaijani
+broadcasters under mounts their own operators named — `antennfm` for local music
+and Top 40, `mediafm` for pop, `yurdfm` for folk and ashug, `mediamugam` for
+mugham — which is the rare place where the name on a stream URL was written by
+somebody who owns the station.
 
 The `name` is what the button says, and the button holds 18ch before it starts
 eating the end of it, so the station's full name for the channel is shortened
 to `ROKS Ukr Rock` rather than shown as `RADIO ROKS UK…`, which reads like a
-language code rather than a station. `Yurd FM` is the station's own name and
-fits several times over.
+language code rather than a station. `Baku Retro FM` is the station's own name
+and fits with room to spare.
 
 Reach for a mirror only once the official address has actually failed **in a
 browser**. Scraped stream indexes disagree with each other about that address
