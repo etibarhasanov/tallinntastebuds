@@ -59,6 +59,17 @@ node tools/validate.mjs
 
 It needs Node 18 or newer and has no dependencies.
 
+**If you edited anything in `assets/`, run the stamper first:**
+
+```bash
+node tools/stamp.mjs
+```
+
+It rewrites the `?v=` hash on every script and stylesheet reference in the four
+HTML pages. The validator fails on a stale one, so CI will catch it if you
+forget — but it is one command and it saves a round trip. See
+[Cache stamps](#cache-stamps).
+
 ---
 
 ## Add a place
@@ -787,12 +798,40 @@ project race each other and produce out-of-order deployments.
 ### Caching
 
 `_headers` in the repo root tells Cloudflare how long to hold each kind of
-file. Nothing here is content-hashed — `assets/app.js` keeps that name
-forever — so every file revalidates instead of being cached hard. Browsers
-still get a fast `304 Not Modified` when nothing changed, but an edit to
+file. Everything revalidates instead of being cached hard: browsers still get a
+fast `304 Not Modified` when nothing changed, but an edit to
 `restaurants.json` appears on the next load rather than whenever a cache feels
 like expiring. Photos are the exception and are held for a week, since they
 are replaced rather than edited.
+
+### Cache stamps
+
+Every script and stylesheet is referenced from the HTML with a short hash of
+its own contents on the end:
+
+```html
+<script src="assets/app.js?v=91af6fb0" defer></script>
+```
+
+`node tools/stamp.mjs` writes those hashes, `node tools/validate.mjs` fails the
+build on a stale one, and CI runs the validator before every deploy — so a
+changed file always reaches visitors under a URL no browser has ever seen, and
+no browser can answer for it out of its own cache.
+
+That is not belt and braces. The pages are not independent: `assets/app.js`
+reads `data/restaurants.json`, so a browser holding yesterday's script against
+today's data runs code written for a shape the data no longer has. It happened.
+Half-step prices landed in the data and in the script on the same deploy, and
+every phone still holding the previous script hit `new Array(2.5 + 1)` —
+`RangeError: Invalid array length` — which took down the boot chain and put the
+"something went wrong loading the data" card over a map that had already drawn
+itself. A fresh private window worked, the window they had been using did not,
+and reloading changed nothing, because reloading asked for the same URL again.
+The revalidation headers above are a request; the stamp is not.
+
+Data files are deliberately **not** stamped. They are the files you edit every
+week, and they have to go live the moment they are pushed without anybody
+remembering to run a tool.
 
 There is deliberately **no Content-Security-Policy**. Getting one right here
 means allowlisting unpkg, Google Fonts, CARTO, Instagram, TikTok and Google
@@ -863,6 +902,8 @@ to read and write first.
   malformed `website`
 - a `phone` that is not in international form — `+372 661 0180`, not `6610180`
 - a malformed `added` date — it has to be `YYYY-MM-DD`
+- a `?v=` cache stamp in the HTML that no longer matches the file it points at
+  (run `node tools/stamp.mjs` and commit the result)
 
 **It warns, without failing, on:**
 
@@ -900,6 +941,7 @@ data/deals.json            the discounts, and which of them are live
 data/schema.json           JSON Schema, for editor autocomplete
 photos/<restaurant-id>/    photos, one folder per place
 tools/validate.mjs         dependency-free data validator
+tools/stamp.mjs            writes the ?v= content hash on every asset URL
 .github/workflows/validate.yml
 ```
 
