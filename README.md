@@ -1080,7 +1080,7 @@ browser whichever node is up today. A `<audio>` element follows the 302 without
 being asked; some stream checkers do not, so those two URLs will look dead to a
 link checker and play fine in a browser.
 
-Prefer the station's own address over a rebroadcast of it. Anti Radio, YleX,
+Prefer the station's own address over a rebroadcast of it. Vintage Radio, YleX,
 Radio Paradise and Radio ROKS are all on their broadcaster's own host, which is
 why those four lines are the shortest in the file. A mirror on an aggregator's
 CDN is a lower bitrate, one remove from the station, and free to drop it
@@ -1094,10 +1094,26 @@ than the main feed's Western rock. The other channels on the same host are
 `RadioROKS_ClassicRock`, `RadioROKS_NewRock`, `RadioROKS_HardnHeavy` and
 `RadioROKS_Ballads`, if the taste of the map ever changes.
 
+Azerbaijani is retro rather than current. Vintage Radio is the second station
+of ALR Media in Baku, alongside AutoLife Radio: fifties to nineties, heaviest on
+the seventies and eighties, which suits a map read in Azerbaijani better than the
+eclectic new music that sat here before.
+
+Baku Retro FM, 93.3 in Baku, is the obvious name for that slot and cannot have
+it. Its only feed is `http://5.191.241.101:8000/bakuretrofm` — plain HTTP on a
+bare address, no certificate to serve it over TLS — so the browser blocks it as
+mixed content before a note is heard, and Android blocks cleartext for the same
+station in the app. The aggregators that appear to play it are proxying that
+same HTTP mount over their own HTTPS, which is a rebroadcast on somebody else's
+uptime and the thing the paragraph above says not to reach for. If the station
+ever publishes an HTTPS address of its own, it is one line in this file.
+
 The `name` is what the button says, and the button holds 18ch before it starts
 eating the end of it, so the station's full name for the channel is shortened
 to `ROKS Ukr Rock` rather than shown as `RADIO ROKS UK…`, which reads like a
-language code rather than a station.
+language code rather than a station. `Vintage Radio Azerbaijan` is shortened the
+same way, to `Vintage Radio`; the language the button sits under already says
+where it broadcasts from.
 
 Reach for a mirror only once the official address has actually failed **in a
 browser**. Scraped stream indexes disagree with each other about that address
