@@ -636,12 +636,13 @@ A place with a live deal says so in three places, in the order you meet them:
    only find by opening the place.
 2. **In the panel head**, the same pill beside the same price, one size up.
    The number is what you decide on, so it sits where the deciding happens.
-3. **At the foot of the panel**, under the reel, the write-up and the tags:
-   the offer in words — "15% off your order" — and the **Show QR** button that
-   leaves for `deal.html`. That is a pass you hold up at a till, which is
-   worth making once you have decided to walk there, not while you are still
-   reading about the place. It sits directly above **Directions**, which is
-   the other half of the same errand.
+3. **In the panel**, under the reel, the write-up and the tags, and directly
+   above **Must order**: the offer in words — "15% off your order" — and the
+   **Show QR** button that leaves for `deal.html`. A discount is part of
+   deciding where to eat, so it reads with the rest of the deciding rather
+   than after the dish list you skim on the way out. It stays below the reel
+   and the photos all the same — a pass you hold up at a till has no business
+   in front of somebody who has not seen the place yet.
 
 The number is not written a second time in the data. It is taken from the
 `offer` line the deal already carries in the language being read, which is why
