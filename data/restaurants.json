@@ -453,6 +453,7 @@
     "price": 2.5,
     "types": [
       "restaurant",
+      "bakery",
       "date",
       "casual"
     ],
