@@ -254,7 +254,7 @@ a:hover { color: var(--accent-lit); }
 }
 
 /* The count grows with the dot it sits in — a third of the width, so ten
-   places carry an 17px number where two carry a 13px one. A fixed 12px was
+   places carry a 14px number where two carry a 12px one. A fixed 12px was
    the whole reason the digits were hard to find: it read as a caption on a
    picture rather than as the thing the picture is there to count.
 
