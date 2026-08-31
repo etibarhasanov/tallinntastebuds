@@ -32,11 +32,25 @@
   --map-tint: rgba(168, 30, 40, .36);
   --swatch-edge: rgba(0, 0, 0, .14);
 
+  /* Two tokens for chrome that stands on the map with no card under it.
+     --lift is a short shadow for a picture at logo size: --shadow is a card's
+     shadow, 28px of blur meant to lift a 288px panel, and under a 40px circle
+     it reads as a smudge rather than as a lift. --glass is the tint the
+     button bar is washed with when the map shows through it. */
+  --lift:  0 1px 6px rgba(74, 26, 22, .28);
+  --glass: rgba(255, 240, 234, .74);
+
   --display: "Familjen Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --body: "Literata", Georgia, "Times New Roman", serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
+  /* Two radii, because the page has two kinds of edge. --radius is the one a
+     picture, a tooltip or a sheet gets: nearly square, so a photograph still
+     reads as a photograph. --radius-soft is for the chrome floating on the
+     map, where a 4px corner is small enough to read as a box someone forgot
+     to round rather than as a deliberate shape. */
   --radius: 4px;
+  --radius-soft: 12px;
   --gap: 16px;
   --panel-w: 420px;
   --ease: cubic-bezier(.22, .61, .36, 1);
@@ -439,6 +453,11 @@ a:hover { color: var(--accent-lit); }
 
 /* ---------- brand ---------- */
 
+/* On a desktop the card stays, because it is holding a sentence. The tagline
+   is a line of serif prose over a map full of street names, and prose is the
+   one thing a glow behind the letters cannot rescue — it needs a page under
+   it. So the surface lives here rather than on a shared .card class: below
+   860px there is no tagline left to carry and the card goes away entirely. */
 .brand {
   position: fixed;
   z-index: 1001;
@@ -446,13 +465,17 @@ a:hover { color: var(--accent-lit); }
   left: calc(var(--gap) + var(--safe-l));
   width: 288px;
   padding: 16px 18px 15px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  box-shadow: var(--shadow);
 }
 
 /* The mark and the name, locked together. Stacked above it the mark was a
    picture parked in the corner of the card with half a line of nothing beside
    it, which read as something left there rather than as the logo. Beside the
    name it has a job: the wordmark breaks after Tallinn, and two lines of it
-   stand exactly as tall as the picture does.
+   stand as tall as the picture does.
    The break is the width doing it, not a <br> — the wordmark is set from
    ui.json by textContent, which would eat one. Every language ships the same
    two words, so every language breaks in the same place. */
@@ -463,10 +486,19 @@ a:hover { color: var(--accent-lit); }
   margin: 0 0 10px;
 }
 
+/* Round, and the square crop rather than the wide one. The site frames its
+   pictures at 2px and no border, and the mark was framed the same way — but
+   this one is not a picture on a page, it is the account's face at the top
+   left of a map, in the position and at the size every profile picture on a
+   phone occupies. Round is what that position means, and the mouth fills a
+   circle where the wide crop would have had to be cut again to fit one.
+   66px, not the 82 the wide crop ran at: a circle at 82 stands taller than
+   the two lines of the wordmark beside it and starts leading the card. */
 .brand-mark {
-  width: 82px;
-  height: auto;
-  border-radius: 2px;
+  width: 66px;
+  height: 66px;
+  border-radius: 100px;
+  object-fit: cover;
   flex: 0 0 auto;
 }
 
@@ -521,6 +553,32 @@ a:hover { color: var(--accent-lit); }
 .seg {
   display: flex;
   overflow: hidden;
+}
+
+/* The pair in the top-right corner are the only chrome on the map that is
+   pressed rather than read, so they keep a surface when the brand loses its
+   own — but it is a pane rather than a card: the map goes on underneath,
+   blurred, and the hairline border comes off. What was three filled boxes
+   across the top of the screen is now one photograph, one line of text and
+   two panes you can see the city through.
+   The rail down the left keeps its solid pills on purpose. Those are round
+   and they sit in the middle of the map; frosting them as well would leave
+   nothing on the page with an edge you can trust. */
+.controls .seg {
+  border-radius: var(--radius-soft);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(10px) saturate(1.3);
+  backdrop-filter: blur(10px) saturate(1.3);
+  box-shadow: var(--lift);
+}
+
+/* Firefox before 103 and anything older ignore the blur and would be left
+   with a bar you can read the street names through. They get the paper. */
+@supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
+  .controls .seg {
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+  }
 }
 
 .btn {
@@ -639,6 +697,8 @@ a:hover { color: var(--accent-lit); }
   --hairline: #f0cec3; --accent: #a81e28; --accent-lit: #c9323d;
   --map-tint: rgba(168, 30, 40, .36);
   --shadow: 0 1px 2px rgba(74, 26, 22, .06), 0 8px 28px rgba(74, 26, 22, .14);
+  --lift: 0 1px 6px rgba(74, 26, 22, .28);
+  --glass: rgba(255, 240, 234, .74);
   --attrib-bg: rgba(255, 240, 234, .88);
   --here: #0b62c4;
 }
@@ -649,6 +709,11 @@ a:hover { color: var(--accent-lit); }
   --hairline: #354740; --accent: #6fd39a; --accent-lit: #93e7b7;
   --map-tint: transparent;
   --shadow: 0 1px 2px rgba(0, 0, 0, .34), 0 8px 28px rgba(0, 0, 0, .46);
+  --lift: 0 1px 6px rgba(0, 0, 0, .5);
+  /* Denser than the light style's. Dark Matter under it is nearly black even
+     after the brightness lift, so a bar this side of opaque loses its own
+     edge against the map instead of sitting on it. */
+  --glass: rgba(29, 42, 35, .82);
   --attrib-bg: rgba(16, 26, 21, .86);
   --swatch-edge: rgba(255, 255, 255, .22);
   --here: #e0873a;
@@ -1683,25 +1748,38 @@ body.panel-detail .panel {
   body { --sheet-h: min(82vh, 720px); }
   body { --sheet-h: min(calc(var(--vph, 100dvh) * .82), 720px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
 
-  /* On a phone the card is standing on the map, so it keeps the one line
-     that says whose map this is. The name stays in the markup for search
-     engines and screen readers, out of sight. */
-  .brand {
-    width: auto;
-    max-width: calc(100vw - 132px - var(--gap) * 2);
-    padding: 5px 11px 4px;
-  }
-  .brand .tagline { display: none; }
-
-  /* Everything the card says in words is gone at this width, so the mark is
-     what is left standing for the name — it and the handle on one line. */
+  /* On a phone there is no room for the tagline, and with the tagline gone
+     there is nothing left in the card that needed a card. What stands on the
+     map instead is the account itself: the round mark and the handle beside
+     it, the same two things at the same size and in the same corner as a
+     profile page opens with. The name stays in the markup for search engines
+     and screen readers, out of sight.
+     No max-width any more. The old card had one, and it never held anything:
+     the handle is a single unbreakable word, so a narrow box does not wrap it,
+     it just lets it hang out of the far side. What keeps it clear of the two
+     buttons in the other corner is the size step at the bottom of this block,
+     which is a thing the text actually obeys. */
   .brand {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
+    width: auto;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
   }
+  .brand .tagline { display: none; }
   .brand-head { margin: 0; }
-  .brand-mark { width: 38px; }
+
+  /* A paper ring rather than a border: it holds the circle apart from
+     whatever the map puts behind it without drawing a second edge, and it is
+     the one the pins already wear. */
+  .brand-mark {
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 0 0 2px var(--paper), var(--lift);
+  }
 
   .brand .eyebrow,
   .brand .wordmark {
@@ -1714,7 +1792,46 @@ body.panel-detail .panel {
     white-space: nowrap;
     clip-path: inset(50%);
   }
-  .brand .ig-link { font-size: 11.5px; }
+  /* Up here the handle is not a username printed under a name — it is the
+     only name on the screen, so it takes the face the wordmark uses instead
+     of the mono the desktop card sets it in, and the size of a name rather
+     than of a footnote.
+     What replaces the card behind it is a glow in the paper colour, which
+     over Positron's pale land holds the letters as well as a filled box did
+     and puts nothing on the screen with an edge. The underline goes with the
+     card for the same reason: a hairline under text lying on a map is a
+     stray line. It comes back on hover and on focus, where it is answering
+     a question rather than decorating. */
+  .brand .ig-link {
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -.015em;
+    line-height: 1.2;
+    color: var(--ink);
+    border-bottom-color: transparent;
+    white-space: nowrap;
+    text-shadow:
+       0   1px 2px var(--paper), 0  -1px 2px var(--paper),
+       1px 0   2px var(--paper), -1px 0   2px var(--paper),
+       0   0   8px var(--paper);
+  }
+  .brand .ig-link:hover,
+  .brand .ig-link:focus-visible {
+    color: var(--accent);
+    border-bottom-color: currentColor;
+  }
+
+  /* A 320px screen has about 150px left over once LIST and the language
+     button have taken theirs, and the mark and the handle at full size want
+     more than that. Both come down a step here, which is what keeps the last
+     letter of the handle off the LIST button on the narrowest phone still
+     being sold. */
+  @media (max-width: 380px) {
+    .brand { gap: 8px; }
+    .brand-mark { width: 34px; height: 34px; }
+    .brand .ig-link { font-size: 13px; }
+  }
 
   .controls { gap: 6px; }
   .btn { min-width: 34px; height: 34px; }
@@ -1755,7 +1872,7 @@ body.panel-detail .panel {
     flex-direction: column;
     background: var(--paper);
     border: 1px solid var(--hairline);
-    border-radius: var(--radius);
+    border-radius: var(--radius-soft);
     box-shadow: var(--shadow);
     overflow: hidden;
   }
