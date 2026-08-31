@@ -1032,8 +1032,54 @@
     return state.places.filter(matchesFilters);
   }
 
+  var filterOpenTimer = null;
+
+  /* Shut, the bar is one button; open, it is the row it always was. The two
+     states share a rule the design rests on: no chip pressed means every
+     place is showing, so a shut drawer is never a filtered map by accident.
+     That is why the button carries a count — it is the only thing that can
+     say the map is showing less than all of it. */
+  function filterMenuOpen() {
+    return dom.filterBar.classList.contains('is-open');
+  }
+
+  function setFilterMenu(open) {
+    if (open === filterMenuOpen()) return;
+    dom.filterBar.classList.toggle('is-open', open);
+    dom.btnFilters.setAttribute('aria-expanded', String(open));
+    window.clearTimeout(filterOpenTimer);
+    if (!open) {
+      dom.filterBar.classList.remove('is-opening');
+      return;
+    }
+    /* The class the chips' entrance is hung on, held for exactly as long as
+       the entrance lasts: the longest chip delay plus its own length. Pressing
+       a chip rebuilds the row, and past this point that has to be silent. */
+    dom.filterBar.classList.add('is-opening');
+    /* Shut, the scroller measures zero, so the edge fades can only be worked
+       out once it has width — now for the chips already in view, and again
+       when the slide has finished for the ones arriving with it. */
+    updateFilterFades();
+    filterOpenTimer = window.setTimeout(function () {
+      dom.filterBar.classList.remove('is-opening');
+      updateFilterFades();
+    }, 640);
+  }
+
+  function closeFilterMenu() { setFilterMenu(false); }
+
+  /* The badge on the button, and the count is of pressed chips rather than of
+     places: "2" means two words, not two restaurants. */
+  function renderFilterToggle() {
+    var n = state.active.length;
+    dom.btnFilters.classList.toggle('has-active', n > 0);
+    dom.filterCount.textContent = n ? String(n) : '';
+    dom.filterCount.hidden = !n;
+  }
+
   function renderFilters() {
     clear(dom.filters);
+    renderFilterToggle();
 
     var all = el('button', {
       type: 'button',
@@ -1082,6 +1128,14 @@
       });
       dom.filters.appendChild(chip);
     });
+
+    /* Each chip slides in a beat after the one before it. Capped at eight
+       beats, because a fourteen-word vocabulary would otherwise still be
+       arriving long after the row had stopped moving. */
+    var chips = dom.filters.children;
+    for (var c = 0; c < chips.length; c++) {
+      chips[c].style.setProperty('--i', String(Math.min(c, 7)));
+    }
 
     updateFilterFades();
   }
@@ -2697,6 +2751,7 @@
       if (ev.key === 'Escape') {
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
+        if (filterMenuOpen()) { closeFilterMenu(); dom.btnFilters.focus(); return; }
         /* Escape in a search field empties the field. Only once it is already
            empty does it go on to close the panel, which is what a browser's
            own search inputs do. */
@@ -2722,6 +2777,16 @@
     });
 
     wireTopGuard();
+
+    dom.btnFilters.addEventListener('click', function () {
+      setFilterMenu(!filterMenuOpen());
+    });
+
+    /* The open row lies across the map it is filtering, so a press on the map
+       is a press past the row: it means look at Tallinn, and the drawer gets
+       out of the way. Pressing a chip is not that — the row keeps its own
+       touches — so a second and a third filter can go on without reopening. */
+    dom.map.addEventListener('pointerdown', closeFilterMenu);
 
     dom.filters.addEventListener('scroll', updateFilterFades, { passive: true });
 
@@ -2952,6 +3017,8 @@
       langSwitch: $('lang-switch'),
       filters: $('filters'),
       filterBar: $('filter-bar'),
+      btnFilters: $('btn-filters'),
+      filterCount: $('filter-count'),
       styles: $('styles'),
       rail: $('rail'),
       btnRandom: $('btn-random'),

@@ -787,6 +787,16 @@ a:hover { color: var(--accent-lit); }
   transition: right .3s var(--ease), opacity .2s var(--ease);
 }
 
+/* The whole vocabulary laid out across the top was the map's loudest thing
+   and the one nobody had asked a question of yet: a dozen words in front of
+   Tallinn before the visitor had looked at it. So the row is a drawer now.
+   Shut, it is one button that says Filters — and shut is also "All", because
+   no chip pressed is every place showing. Pressed, the row unrolls to the
+   right out of that button, which is the direction it scrolls in and the
+   direction it came from.
+
+   The measurements below are unchanged from the open row. */
+
 /* The row is 38px of chip standing on live map, and a finger aiming at it
    lands a few pixels off often enough that those pixels used to drag Tallinn
    sideways. So the scroller claims a strip around itself: a little above the
@@ -809,6 +819,106 @@ a:hover { color: var(--accent-lit); }
   scrollbar-width: none;
 }
 .filters::-webkit-scrollbar { display: none; }
+
+/* Shut. max-width rather than width because the row still wants to size
+   itself to its chips once it is open, and 100% of the bar is the ceiling it
+   already had. visibility is what takes the chips out of the tab order while
+   they are rolled up — it is delayed by the length of the slide so they stay
+   drawn all the way shut, and dropped instantly on the way open. */
+.filters {
+  max-width: 0;
+  /* The 2px the open row keeps for its chips' shadows is padding, and padding
+     is floor to a border-box max-width: left in, a shut row is still a 4px
+     sliver widening the bar. */
+  padding-left: 0;
+  padding-right: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: max-width .4s var(--ease), opacity .18s var(--ease),
+              visibility 0s linear .4s;
+}
+.filter-bar.is-open .filters {
+  max-width: 100%;
+  padding-left: 2px;
+  padding-right: 2px;
+  opacity: 1;
+  visibility: visible;
+  transition: max-width .4s var(--ease), opacity .22s var(--ease) .04s,
+              visibility 0s;
+}
+
+/* Each chip arrives a beat after the one before it, so the row reads as
+   unrolling rather than appearing. The stagger is capped in the script at
+   eight steps: past that the last chip of a long vocabulary would still be
+   sliding in a half second after the row had finished opening.
+
+   An animation rather than a transition, and hung on a class the script only
+   holds for the length of the slide, because pressing a chip rebuilds the
+   whole row: on a transition every press would have replayed the entrance,
+   and the row you were filtering with would flash out and back in under your
+   finger. */
+@keyframes chip-in {
+  from { opacity: 0; transform: translateX(-16px); }
+}
+.filter-bar.is-opening .filters .chip {
+  animation: chip-in .34s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 30ms + 60ms);
+}
+
+/* The button the row lives in. It is a chip like the ones it opens, which is
+   the point: shut, the bar reads as one chip that happens to say Filters. */
+.filter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  pointer-events: auto;
+}
+.filter-toggle .filter-ico {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  transition: transform .3s var(--ease);
+}
+.filter-bar.is-open .filter-toggle {
+  color: var(--ink);
+  border-color: var(--muted);
+}
+/* Shut over a filtered map. The badge is the number; the edge is what catches
+   the eye that was not looking for a number. */
+.filter-toggle.has-active {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+.filter-bar.is-open .filter-toggle .filter-ico { transform: rotate(90deg); }
+
+/* How many chips are pressed, for the shut row that cannot show you. It is
+   also the only thing on the button that says the map is not showing
+   everything — which, shut, is the one question it has to answer. */
+.filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 100px;
+  background: var(--accent);
+  color: var(--paper);
+  font-size: 10px;
+  line-height: 1;
+}
+.filter-count[hidden] { display: none; }
+
+/* The drawer still opens and shuts; it just stops travelling to get there. */
+@media (prefers-reduced-motion: reduce) {
+  .filters,
+  .filter-bar.is-open .filters,
+  .filter-toggle .filter-ico { transition: none; }
+  .filter-bar.is-opening .filters .chip { animation: none; }
+}
 
 /* With a large type vocabulary the row runs past the viewport. Fade whichever
    edge still has chips behind it, so it reads as scrollable rather than as a
