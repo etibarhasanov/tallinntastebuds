@@ -34,9 +34,17 @@
 
 <!-- The mouth, cropped square out of the painting in
      assets/logo/source-artwork.jpg. Raster all the way down: the mark is a
-     watercolour, so there is no vector of it to hand a browser. -->
-<link rel="icon" href="assets/logo/icon-32.png" sizes="32x32">
-<link rel="icon" href="assets/logo/icon-48.png" sizes="48x48">
+     watercolour, so there is no vector of it to hand a browser.
+
+     Every side here is 16, 48 or a multiple of 48, because Google will only
+     put a favicon beside a search result if it is square at a multiple of
+     48px — a 32px file, which is what this list used to lead with, gets the
+     grey globe instead. /favicon.ico carries the same crop at the path
+     Google falls back to when it cannot read the tags at all. -->
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="assets/logo/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="assets/logo/icon-180.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
