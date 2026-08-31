@@ -787,19 +787,17 @@ a:hover { color: var(--accent-lit); }
   transition: right .3s var(--ease), opacity .2s var(--ease);
 }
 
-/* The whole vocabulary laid out across the top was the map's loudest thing
-   and the one nobody had asked a question of yet: a dozen words in front of
-   Tallinn before the visitor had looked at it. So the row is a drawer now.
-   Shut, it is one button that says Filters — and shut is All, because putting
-   the row away lets every chip in it go. Pressed, the row unrolls to the
-   right out of that button, which is the direction it scrolls in and the
-   direction it came from.
+/* Under 860px the row is a drawer, and everything about it lives in the one
+   media query below. A phone has about 300px of width for a vocabulary of
+   fourteen words: laid out flat it is the map's loudest thing and the one
+   nobody has asked a question of yet, a row of words in front of Tallinn
+   before the visitor has looked at it, and thirteen of them off the right
+   edge besides. A desktop has the width, so a desktop keeps the flat row —
+   there is nothing to fold away and folding it would only hide the answer
+   behind a press.
 
-   That the two states cannot disagree is the point: there is no such thing as
-   a filtered map behind a shut drawer, so the button never has to carry a
-   badge saying so, and nothing is being kept from you off-screen.
-
-   The measurements below are unchanged from the open row. */
+   That is why the drawer is not just a narrow skin on the same behaviour: on
+   a phone, shut is All, and a desktop has no shut. See the media query. */
 
 /* The row is 38px of chip standing on live map, and a finger aiming at it
    lands a few pixels off often enough that those pixels used to drag Tallinn
@@ -824,81 +822,94 @@ a:hover { color: var(--accent-lit); }
 }
 .filters::-webkit-scrollbar { display: none; }
 
-/* Shut. max-width rather than width because the row still wants to size
-   itself to its chips once it is open, and 100% of the bar is the ceiling it
-   already had. visibility is what takes the chips out of the tab order while
-   they are rolled up — it is delayed by the length of the slide so they stay
-   drawn all the way shut, and dropped instantly on the way open. */
-.filters {
-  max-width: 0;
-  /* The 2px the open row keeps for its chips' shadows is padding, and padding
-     is floor to a border-box max-width: left in, a shut row is still a 4px
-     sliver widening the bar. */
-  padding-left: 0;
-  padding-right: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition: max-width .4s var(--ease), opacity .18s var(--ease),
-              visibility 0s linear .4s;
-}
-.filter-bar.is-open .filters {
-  max-width: 100%;
-  padding-left: 2px;
-  padding-right: 2px;
-  opacity: 1;
-  visibility: visible;
-  transition: max-width .4s var(--ease), opacity .22s var(--ease) .04s,
-              visibility 0s;
-}
+/* Above 860px there is no drawer and no button: the row is what it always
+   was, every chip flat on the map and none of them a press away. The button
+   is in the markup at every width — it is what the drawer is opened by, and
+   markup that appears and disappears with the viewport is markup the script
+   has to keep checking for — so this is where it is put away. */
+.filter-toggle { display: none; }
 
-/* Each chip arrives a beat after the one before it, so the row reads as
-   unrolling rather than appearing. The stagger is capped in the script at
-   eight steps: past that the last chip of a long vocabulary would still be
-   sliding in a half second after the row had finished opening.
-
-   An animation rather than a transition, and hung on a class the script only
-   holds for the length of the slide, because pressing a chip rebuilds the
-   whole row: on a transition every press would have replayed the entrance,
-   and the row you were filtering with would flash out and back in under your
-   finger. */
 @keyframes chip-in {
   from { opacity: 0; transform: translateX(-16px); }
 }
-.filter-bar.is-opening .filters .chip {
-  animation: chip-in .34s var(--ease) both;
-  animation-delay: calc(var(--i, 0) * 30ms + 60ms);
-}
 
-/* The button the row lives in. It is a chip like the ones it opens, which is
-   the point: shut, the bar reads as one chip that happens to say Filters. */
-.filter-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  pointer-events: auto;
-}
-.filter-toggle .filter-ico {
-  width: 13px;
-  height: 13px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.9;
-  stroke-linecap: round;
-  transition: transform .3s var(--ease);
-}
-.filter-bar.is-open .filter-toggle {
-  color: var(--ink);
-  border-color: var(--muted);
-}
-.filter-bar.is-open .filter-toggle .filter-ico { transform: rotate(90deg); }
+/* ---------- under 860px: the chips fold into one button ---------- */
 
+@media (max-width: 860px) {
+  /* The button the row lives in. It is a chip like the ones it opens, which
+     is the point: shut, the bar reads as one chip that happens to say
+     Filters. */
+  .filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    pointer-events: auto;
+  }
+  .filter-toggle .filter-ico {
+    width: 13px;
+    height: 13px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    transition: transform .3s var(--ease);
+  }
+  .filter-bar.is-open .filter-toggle {
+    color: var(--ink);
+    border-color: var(--muted);
+  }
+  .filter-bar.is-open .filter-toggle .filter-ico { transform: rotate(90deg); }
 
-/* The drawer still opens and shuts; it just stops travelling to get there. */
-@media (prefers-reduced-motion: reduce) {
-  .filters,
-  .filter-bar.is-open .filters,
-  .filter-toggle .filter-ico { transition: none; }
-  .filter-bar.is-opening .filters .chip { animation: none; }
+  /* Shut. max-width rather than width because the row still wants to size
+     itself to its chips once it is open, and 100% of the bar is the ceiling
+     it already had. visibility is what takes the chips out of the tab order
+     while they are rolled up — it is delayed by the length of the slide so
+     they stay drawn all the way shut, and dropped instantly on the way
+     open. */
+  .filters {
+    max-width: 0;
+    /* The 2px the open row keeps for its chips' shadows is padding, and
+       padding is floor to a border-box max-width: left in, a shut row is
+       still a 4px sliver widening the bar. */
+    padding-left: 0;
+    padding-right: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-width .4s var(--ease), opacity .18s var(--ease),
+                visibility 0s linear .4s;
+  }
+  .filter-bar.is-open .filters {
+    max-width: 100%;
+    padding-left: 2px;
+    padding-right: 2px;
+    opacity: 1;
+    visibility: visible;
+    transition: max-width .4s var(--ease), opacity .22s var(--ease) .04s,
+                visibility 0s;
+  }
+
+  /* Each chip arrives a beat after the one before it, so the row reads as
+     unrolling rather than appearing. The stagger is capped in the script at
+     eight steps: past that the last chip of a long vocabulary would still be
+     sliding in a half second after the row had finished opening.
+
+     An animation rather than a transition, and hung on a class the script
+     only holds for the length of the slide, because pressing a chip rebuilds
+     the whole row: on a transition every press would have replayed the
+     entrance, and the row you were filtering with would flash out and back
+     in under your finger. */
+  .filter-bar.is-opening .filters .chip {
+    animation: chip-in .34s var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 30ms + 60ms);
+  }
+
+  /* The drawer still opens and shuts; it just stops travelling to get there. */
+  @media (prefers-reduced-motion: reduce) {
+    .filters,
+    .filter-bar.is-open .filters,
+    .filter-toggle .filter-ico { transition: none; }
+    .filter-bar.is-opening .filters .chip { animation: none; }
+  }
 }
 
 /* With a large type vocabulary the row runs past the viewport. Fade whichever

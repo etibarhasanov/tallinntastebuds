@@ -1034,14 +1034,20 @@
 
   var filterOpenTimer = null;
 
-  /* Shut, the bar is one button; open, it is the row it always was. And shut
-     is All: the chips are the only place a filter lives, so putting the row
-     away puts the map back to every place. That is the rule the design rests
-     on — a shut drawer can never be a filtered map, so nothing on the button
-     has to warn you that it is one, and no visitor has to wonder what the
-     map is not showing them. It costs the filter you had picked, which is
-     why the row does not shut on a stray press of the map: the only ways
-     out of it are the button and Escape, and both are deliberate. */
+  /* Under 860px the chip row is a drawer. Shut, the bar is one button; open,
+     it is the row it always was. And shut is All: the chips are the only
+     place a filter lives, so putting the row away puts the map back to every
+     place. That is the rule the design rests on — a shut drawer can never be
+     a filtered map, so nothing on the button has to warn you that it is one,
+     and no visitor has to wonder what the map is not showing them. It costs
+     the filter you had picked, which is why the row does not shut on a stray
+     press of the map: the only ways out of it are the button and Escape, and
+     both are deliberate.
+
+     Above 860px none of this applies. The drawer answers a row that does not
+     fit, and on a desktop it does fit: the chips stay flat on the map, the
+     button is not drawn, and a filter is nobody's to take away. The width is
+     CSS's to decide, so everything here asks isNarrow() before it acts. */
   function filterMenuOpen() {
     return dom.filterBar.classList.contains('is-open');
   }
@@ -1054,8 +1060,9 @@
     if (!open) {
       dom.filterBar.classList.remove('is-opening');
       /* Exactly what pressing All does, because shutting the row is the same
-         answer said a different way. */
-      if (state.active.length) {
+         answer said a different way — on a phone. A desktop shuts nothing, so
+         a stale class going out is not a visitor letting their filter go. */
+      if (isNarrow() && state.active.length) {
         state.active = [];
         applyFilters();
       }
@@ -1076,6 +1083,14 @@
   }
 
   function closeFilterMenu() { setFilterMenu(false); }
+
+  /* The one thing a resize can break: a window narrowing onto a filtered map
+     would put the drawer's shut button in front of chips that are still
+     filtering, which is the one state this design says cannot exist. So it
+     arrives open instead, showing what is doing the filtering. */
+  function syncFilterMenuToWidth() {
+    if (isNarrow() && state.active.length) setFilterMenu(true);
+  }
 
   function renderFilters() {
     clear(dom.filters);
@@ -2750,7 +2765,11 @@
       if (ev.key === 'Escape') {
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
-        if (filterMenuOpen()) { closeFilterMenu(); dom.btnFilters.focus(); return; }
+        if (isNarrow() && filterMenuOpen()) {
+          closeFilterMenu();
+          dom.btnFilters.focus();
+          return;
+        }
         /* Escape in a search field empties the field. Only once it is already
            empty does it go on to close the panel, which is what a browser's
            own search inputs do. */
@@ -2796,6 +2815,7 @@
     window.addEventListener('resize', function () {
       placeRail();
       if (map) map.invalidateSize({ animate: false });
+      syncFilterMenuToWidth();
       updateFilterFades();
     });
   }
@@ -3093,11 +3113,11 @@
       renderRadio();
       wireControls();
 
-      /* A ?type= link lands on a filtered map, and a shut row would be the
-         one thing this design promises never to be. So the link opens it: the
-         chips it arrived with are on screen, pressed, and one press from
-         being let go of. */
-      if (state.active.length) setFilterMenu(true);
+      /* A ?type= link lands on a filtered map, and on a phone a shut row
+         would be the one thing this design promises never to be. So the link
+         opens it: the chips it arrived with are on screen, pressed, and one
+         press from being let go of. On a desktop they already are. */
+      syncFilterMenuToWidth();
 
       /* The map is drawn, the chips and the panel are filled in, and every
          button on the page is live. Everything below this line is bookkeeping
