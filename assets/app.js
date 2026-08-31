@@ -1034,11 +1034,14 @@
 
   var filterOpenTimer = null;
 
-  /* Shut, the bar is one button; open, it is the row it always was. The two
-     states share a rule the design rests on: no chip pressed means every
-     place is showing, so a shut drawer is never a filtered map by accident.
-     That is why the button carries a count — it is the only thing that can
-     say the map is showing less than all of it. */
+  /* Shut, the bar is one button; open, it is the row it always was. And shut
+     is All: the chips are the only place a filter lives, so putting the row
+     away puts the map back to every place. That is the rule the design rests
+     on — a shut drawer can never be a filtered map, so nothing on the button
+     has to warn you that it is one, and no visitor has to wonder what the
+     map is not showing them. It costs the filter you had picked, which is
+     why the row does not shut on a stray press of the map: the only ways
+     out of it are the button and Escape, and both are deliberate. */
   function filterMenuOpen() {
     return dom.filterBar.classList.contains('is-open');
   }
@@ -1050,6 +1053,12 @@
     window.clearTimeout(filterOpenTimer);
     if (!open) {
       dom.filterBar.classList.remove('is-opening');
+      /* Exactly what pressing All does, because shutting the row is the same
+         answer said a different way. */
+      if (state.active.length) {
+        state.active = [];
+        applyFilters();
+      }
       return;
     }
     /* The class the chips' entrance is hung on, held for exactly as long as
@@ -1068,18 +1077,8 @@
 
   function closeFilterMenu() { setFilterMenu(false); }
 
-  /* The badge on the button, and the count is of pressed chips rather than of
-     places: "2" means two words, not two restaurants. */
-  function renderFilterToggle() {
-    var n = state.active.length;
-    dom.btnFilters.classList.toggle('has-active', n > 0);
-    dom.filterCount.textContent = n ? String(n) : '';
-    dom.filterCount.hidden = !n;
-  }
-
   function renderFilters() {
     clear(dom.filters);
-    renderFilterToggle();
 
     var all = el('button', {
       type: 'button',
@@ -2782,12 +2781,6 @@
       setFilterMenu(!filterMenuOpen());
     });
 
-    /* The open row lies across the map it is filtering, so a press on the map
-       is a press past the row: it means look at Tallinn, and the drawer gets
-       out of the way. Pressing a chip is not that — the row keeps its own
-       touches — so a second and a third filter can go on without reopening. */
-    dom.map.addEventListener('pointerdown', closeFilterMenu);
-
     dom.filters.addEventListener('scroll', updateFilterFades, { passive: true });
 
     /* A desktop mouse only has a vertical wheel; turn that into sideways
@@ -3018,7 +3011,6 @@
       filters: $('filters'),
       filterBar: $('filter-bar'),
       btnFilters: $('btn-filters'),
-      filterCount: $('filter-count'),
       styles: $('styles'),
       rail: $('rail'),
       btnRandom: $('btn-random'),
@@ -3100,6 +3092,12 @@
       renderPanel();
       renderRadio();
       wireControls();
+
+      /* A ?type= link lands on a filtered map, and a shut row would be the
+         one thing this design promises never to be. So the link opens it: the
+         chips it arrived with are on screen, pressed, and one press from
+         being let go of. */
+      if (state.active.length) setFilterMenu(true);
 
       /* The map is drawn, the chips and the panel are filled in, and every
          button on the page is live. Everything below this line is bookkeeping

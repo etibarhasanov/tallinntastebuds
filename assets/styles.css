@@ -790,10 +790,14 @@ a:hover { color: var(--accent-lit); }
 /* The whole vocabulary laid out across the top was the map's loudest thing
    and the one nobody had asked a question of yet: a dozen words in front of
    Tallinn before the visitor had looked at it. So the row is a drawer now.
-   Shut, it is one button that says Filters — and shut is also "All", because
-   no chip pressed is every place showing. Pressed, the row unrolls to the
+   Shut, it is one button that says Filters — and shut is All, because putting
+   the row away lets every chip in it go. Pressed, the row unrolls to the
    right out of that button, which is the direction it scrolls in and the
    direction it came from.
+
+   That the two states cannot disagree is the point: there is no such thing as
+   a filtered map behind a shut drawer, so the button never has to carry a
+   badge saying so, and nothing is being kept from you off-screen.
 
    The measurements below are unchanged from the open row. */
 
@@ -886,31 +890,8 @@ a:hover { color: var(--accent-lit); }
   color: var(--ink);
   border-color: var(--muted);
 }
-/* Shut over a filtered map. The badge is the number; the edge is what catches
-   the eye that was not looking for a number. */
-.filter-toggle.has-active {
-  color: var(--ink);
-  border-color: var(--accent);
-}
 .filter-bar.is-open .filter-toggle .filter-ico { transform: rotate(90deg); }
 
-/* How many chips are pressed, for the shut row that cannot show you. It is
-   also the only thing on the button that says the map is not showing
-   everything — which, shut, is the one question it has to answer. */
-.filter-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: 100px;
-  background: var(--accent);
-  color: var(--paper);
-  font-size: 10px;
-  line-height: 1;
-}
-.filter-count[hidden] { display: none; }
 
 /* The drawer still opens and shuts; it just stops travelling to get there. */
 @media (prefers-reduced-motion: reduce) {
