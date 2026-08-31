@@ -1165,10 +1165,13 @@
 
   /* ------------------------------------------------------------ clustering
    * Tallinn is small and the places crowd together in it. Opened on a phone
-   * the map fits all 62 into about 300px of width, where a pin is 14px wide:
-   * measured, 34 of them sit mostly underneath another one. So pins closer
-   * together than a fingertip are drawn as one counted dot until you zoom in
-   * far enough to tell them apart.
+   * the map fits all 62 into about 300px of width, where a pin is 22px wide:
+   * measured, 34 of them sit mostly underneath another one. So pins that
+   * would cover each other are drawn as one counted dot until you zoom in
+   * far enough for them to stand clear.
+   *
+   * Grouping is a last resort, not a tidying habit: two dots that both fit
+   * on the screen without touching are two dots, however close they look.
    *
    * Written here rather than pulled from Leaflet.markercluster, which does
    * not support the circleMarker every pin on this map is made of, and would
@@ -1179,14 +1182,20 @@
    *
    * The chosen place is never swallowed: it always keeps its own pin.
    */
-  /* Wider than a fingertip, and wider than most of the dots that stand in for
-     the pins it groups — but deliberately not as wide as the biggest of them.
-     Matching the widest dot would be a loop: a longer distance groups more
-     places, more places make bigger dots, bigger dots ask for a longer
-     distance again, and the opening view collapses into four huge circles.
-     So two maximal clusters side by side may touch. That is rare, and it is
-     the cheaper of the two prices. */
-  var CLUSTER_PX = 52;
+  /* Exactly as wide as a pin and its halo, and not a pixel wider. A pin is
+     22px with a 2.5px rim on each side, so two of them 32px apart are two
+     separate circles with daylight between them — nothing to merge. Anything
+     closer and one dot is sitting on the other, which is the only thing
+     grouping is here to fix.
+
+     It used to be 52, a fingertip's width, on the theory that two pins you
+     cannot comfortably tap apart may as well be one. That grouped pairs the
+     eye could plainly see as two, and it fed the size ramp: a longer distance
+     groups more places, more places make bigger dots, and the opening view
+     turned into a handful of balloons. Tapping is not the problem the dots
+     were solving — overlap is — and a pair 32px apart is a pair you can zoom
+     into normally. */
+  var CLUSTER_PX = 32;
 
   /* Past this zoom nothing is grouped, whatever the spacing. Q Pizza Jaam and
      Telliskivi Šašlõkk are eleven metres apart: 37px at zoom 18, under the 44
@@ -1213,15 +1222,20 @@
      The dot follows the words exactly. Below eleven it is the proportional
      ramp; at and above it, one width per tier, because a dot that says 10+
      and is drawn at three different widths is telling you a number it has
-     just refused to tell you. The widths only step by ten: 94px is a lot of
-     circle, and the top two tiers are only reachable zoomed out to the floor,
-     where there are three dots on the whole screen and the room is there to
-     spend. */
+     just refused to tell you.
+
+     The widths step by six and stop at 58. They used to run to 94, which is
+     most of a phone's width in one circle: a cluster of thirty stopped being
+     a mark on a map and became a hole in it, covering the streets you were
+     trying to read to decide whether to zoom in. A dot only has to be big
+     enough to hold its number and to rank against its neighbours, and 58
+     does both. The order is still legible — 40, 46, 52, 58 — it just no
+     longer buys that ordering with half the map. */
   var CLUSTER_TIERS = [
-    { over: 50, label: 50, d: 94 },
-    { over: 30, label: 30, d: 84 },
-    { over: 20, label: 20, d: 74 },
-    { over: 10, label: 10, d: 64 }
+    { over: 50, label: 50, d: 58 },
+    { over: 30, label: 30, d: 52 },
+    { over: 20, label: 20, d: 46 },
+    { over: 10, label: 10, d: 40 }
   ];
 
   function clusterTier(count) {
@@ -1236,14 +1250,18 @@
     return tier ? tier.label + '+' : String(count);
   }
 
-  /* Ten places is twice the radius of two, which is the whole of the rule
-     under the tiers: 24 and 4 are the only pair of round numbers that give it,
-     d(2) is 32 and d(10) is 64, and 32 doubled is 64. The first tier picks up
-     at exactly the width ten left off at, so 10 and 10+ are the same circle
-     wearing different words — which is what they are. */
+  /* Two is 32, the width of a pin and its halo — the smallest a cluster can
+     be and still not be mistaken for the one place it is standing in front
+     of — and every further place adds half a pixel of radius, so ten is 40.
+     The ramp is deliberately shallow. A cluster is a signpost, not a bar chart:
+     it has to say "more here than there" and stay out of the way of the map
+     underneath, and a dot that doubles its width by ten places does neither.
+     The first tier picks up at exactly the width ten left off at, so 10 and
+     10+ are the same circle wearing different words — which is what they
+     are. */
   function clusterSize(count) {
     var tier = clusterTier(count);
-    return tier ? tier.d : 24 + count * 4;
+    return tier ? tier.d : 30 + count;
   }
 
   function pinGroups(places) {
@@ -1284,8 +1302,8 @@
     var lng = 0;
     group.forEach(function (m) { lat += m.place.lat; lng += m.place.lng; });
 
-    /* Against a 22px pin at the small end and nearly four times one at the
-       big end, so a cluster is never mistaken for a place at any count. The
+    /* Against a 22px pin at the small end and just under three times one at
+       the big end, so a cluster is never mistaken for a place at any count. The
        count itself grows with the dot; see --cluster-d in the stylesheet. */
     var size = clusterSize(count);
     var shown = clusterCount(count);
