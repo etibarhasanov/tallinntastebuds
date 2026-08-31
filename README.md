@@ -1168,11 +1168,26 @@ than the main feed's Western rock. The other channels on the same host are
 `RadioROKS_ClassicRock`, `RadioROKS_NewRock`, `RadioROKS_HardnHeavy` and
 `RadioROKS_Ballads`, if the taste of the map ever changes.
 
-Armenian has no entry, so it plays the default. The slot was left open rather
-than filled with a stream nobody had listened to: a station that cannot be
-checked before it ships is a button that fails in front of a visitor instead of
-in front of you. It is one line in `byLanguage` for whoever can put a Yerevan
-stream through the three requirements above.
+Armenian is jazz, which is less of a stretch than it sounds: Yerevan has had a
+jazz scene since Malkhas, and Jazz FM 95.3 is the station on the end of it.
+The button reads the frequency rather than the city, which is the same trim
+Radio ROKS took: 18ch, and "Jazz FM Yerevan" ran into the ellipsis.
+`am.radioaurora.am` is Radio Aurora's own host and it carries several Yerevan
+stations off the one Icecast, `/jz` among them, so this is the broadcaster's
+address rather than an aggregator's copy of it. Kiss FM 88.3 is `/kiss.aac` on
+the same host and Aurora itself is `/al.mp3`, if the taste of the map ever
+changes.
+
+101.ru's Armenia channel is the one to avoid. It is the easiest Armenian music
+stream to find and it fails twice over: a Russian aggregator's rebroadcast
+rather than a station, and one remove from the country whose slot it would be
+sitting in.
+
+This entry is the only one in the file nobody has listened to before committing
+it. It came out of a mirror of the radio-browser database rather than a
+browser, because the session that added Armenian could not reach a single radio
+host to play one. If the button ever toasts instead of playing, that is why,
+and the two mounts above are the first things to try.
 
 Azerbaijani wants retro **in Azerbaijani**, which is two conditions and not one,
 and the slot took several wrong stations before it took this one. A station
