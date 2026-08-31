@@ -408,14 +408,15 @@ the **name**, the **street**, the **type labels**, and the **dishes** in
 `mustOrder`. Not the write-ups — a word like "good" would match half the map
 and give no clue why.
 
-The type labels go in **in all nine languages at once**, not the one the
+The type labels go in **in all ten languages at once**, not the one the
 switcher happens to be showing. Somebody reading the map in Turkish still types
 "bakery" half the time, and somebody reading it in English may well know the
 place as a *pagariäri*: `bakery`, `pagariäri`, `leipomo`, `padaria`, `пекарня`,
-`çörəkxana`, `panadería` and `fırın` all return the same fourteen, whichever
-language is on screen. The index is built once at load, since none of what goes
-into it can change afterwards; folding sixty-nine of these on every keystroke
-would be work for nothing.
+`çörəkxana`, `panadería`, `fırın` and `հացատուն` all return the same fourteen,
+whichever language is on screen. Russian and Ukrainian happen to share the
+word, which is why nine of them cover ten languages. The index is built once at
+load, since none of what goes into it can change afterwards; folding sixty-nine
+of these on every keystroke would be work for nothing.
 
 Accents are folded away on both sides before anything is compared, so `sasl`
 finds Telliskivi Šašlõkk, `pohja` finds Põhja Konn and `pagariari` finds the
@@ -507,16 +508,17 @@ but the video stays up" directly under a note that said the same thing.
 
 ## Languages
 
-Azerbaijani, English, Estonian, Finnish, Portuguese, Russian, Spanish, Turkish
-and Ukrainian — the switcher shows them in that order, Azerbaijani first and the
-rest alphabetical. The order of the blocks in `ui.json` is the order of the
-buttons; the language a visitor *lands* in is a separate thing, still English by
-default, and set by `DEFAULT_LANG` in `assets/app.js`.
+Azerbaijani, Armenian, English, Estonian, Finnish, Portuguese, Russian,
+Spanish, Turkish and Ukrainian — the switcher shows them in that order,
+Azerbaijani first and the rest alphabetical. The order of the blocks in
+`ui.json` is the order of the buttons; the language a visitor *lands* in is a
+separate thing, still English by default, and set by `DEFAULT_LANG` in
+`assets/app.js`.
 
 The switch has two shapes, from the same markup. Wide enough, it is a row of
 codes. On a phone it folds into the current code with a menu under it, listing
-each language's own name for itself: nine codes side by side are around 350px,
-which on a 390px screen runs straight into the handle in the opposite corner.
+each language's own name for itself: ten codes side by side are around 390px,
+which is the whole of a 390px screen, handle in the opposite corner and all.
 The fold happens in CSS at 860px, and the folded menu grows downwards, so the
 next language costs nothing in layout either. Every interface string is
 in `data/ui.json`, keyed by language and then by string id, so a translator
@@ -1165,6 +1167,12 @@ it, all day, which is a better answer to somebody reading the map in Ukrainian
 than the main feed's Western rock. The other channels on the same host are
 `RadioROKS_ClassicRock`, `RadioROKS_NewRock`, `RadioROKS_HardnHeavy` and
 `RadioROKS_Ballads`, if the taste of the map ever changes.
+
+Armenian has no entry, so it plays the default. The slot was left open rather
+than filled with a stream nobody had listened to: a station that cannot be
+checked before it ships is a button that fails in front of a visitor instead of
+in front of you. It is one line in `byLanguage` for whoever can put a Yerevan
+stream through the three requirements above.
 
 Azerbaijani wants retro **in Azerbaijani**, which is two conditions and not one,
 and the slot took several wrong stations before it took this one. A station

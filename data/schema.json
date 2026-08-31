@@ -126,6 +126,9 @@
         "az": {
           "type": "string"
         },
+        "hy": {
+          "type": "string"
+        },
         "en": {
           "type": "string"
         },
@@ -155,6 +158,11 @@
         {
           "required": [
             "az"
+          ]
+        },
+        {
+          "required": [
+            "hy"
           ]
         },
         {
