@@ -1032,6 +1032,66 @@
     return state.places.filter(matchesFilters);
   }
 
+  var filterOpenTimer = null;
+
+  /* Under 860px the chip row is a drawer. Shut, the bar is one button; open,
+     it is the row it always was. And shut is All: the chips are the only
+     place a filter lives, so putting the row away puts the map back to every
+     place. That is the rule the design rests on — a shut drawer can never be
+     a filtered map, so nothing on the button has to warn you that it is one,
+     and no visitor has to wonder what the map is not showing them. It costs
+     the filter you had picked, which is why the row does not shut on a stray
+     press of the map: the only ways out of it are the button and Escape, and
+     both are deliberate.
+
+     Above 860px none of this applies. The drawer answers a row that does not
+     fit, and on a desktop it does fit: the chips stay flat on the map, the
+     button is not drawn, and a filter is nobody's to take away. The width is
+     CSS's to decide, so everything here asks isNarrow() before it acts. */
+  function filterMenuOpen() {
+    return dom.filterBar.classList.contains('is-open');
+  }
+
+  function setFilterMenu(open) {
+    if (open === filterMenuOpen()) return;
+    dom.filterBar.classList.toggle('is-open', open);
+    dom.btnFilters.setAttribute('aria-expanded', String(open));
+    window.clearTimeout(filterOpenTimer);
+    if (!open) {
+      dom.filterBar.classList.remove('is-opening');
+      /* Exactly what pressing All does, because shutting the row is the same
+         answer said a different way — on a phone. A desktop shuts nothing, so
+         a stale class going out is not a visitor letting their filter go. */
+      if (isNarrow() && state.active.length) {
+        state.active = [];
+        applyFilters();
+      }
+      return;
+    }
+    /* The class the chips' entrance is hung on, held for exactly as long as
+       the entrance lasts: the longest chip delay plus its own length. Pressing
+       a chip rebuilds the row, and past this point that has to be silent. */
+    dom.filterBar.classList.add('is-opening');
+    /* Shut, the scroller measures zero, so the edge fades can only be worked
+       out once it has width — now for the chips already in view, and again
+       when the slide has finished for the ones arriving with it. */
+    updateFilterFades();
+    filterOpenTimer = window.setTimeout(function () {
+      dom.filterBar.classList.remove('is-opening');
+      updateFilterFades();
+    }, 640);
+  }
+
+  function closeFilterMenu() { setFilterMenu(false); }
+
+  /* The one thing a resize can break: a window narrowing onto a filtered map
+     would put the drawer's shut button in front of chips that are still
+     filtering, which is the one state this design says cannot exist. So it
+     arrives open instead, showing what is doing the filtering. */
+  function syncFilterMenuToWidth() {
+    if (isNarrow() && state.active.length) setFilterMenu(true);
+  }
+
   function renderFilters() {
     clear(dom.filters);
 
@@ -1082,6 +1142,14 @@
       });
       dom.filters.appendChild(chip);
     });
+
+    /* Each chip slides in a beat after the one before it. Capped at eight
+       beats, because a fourteen-word vocabulary would otherwise still be
+       arriving long after the row had stopped moving. */
+    var chips = dom.filters.children;
+    for (var c = 0; c < chips.length; c++) {
+      chips[c].style.setProperty('--i', String(Math.min(c, 7)));
+    }
 
     updateFilterFades();
   }
@@ -2697,6 +2765,11 @@
       if (ev.key === 'Escape') {
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
+        if (isNarrow() && filterMenuOpen()) {
+          closeFilterMenu();
+          dom.btnFilters.focus();
+          return;
+        }
         /* Escape in a search field empties the field. Only once it is already
            empty does it go on to close the panel, which is what a browser's
            own search inputs do. */
@@ -2723,6 +2796,10 @@
 
     wireTopGuard();
 
+    dom.btnFilters.addEventListener('click', function () {
+      setFilterMenu(!filterMenuOpen());
+    });
+
     dom.filters.addEventListener('scroll', updateFilterFades, { passive: true });
 
     /* A desktop mouse only has a vertical wheel; turn that into sideways
@@ -2738,6 +2815,7 @@
     window.addEventListener('resize', function () {
       placeRail();
       if (map) map.invalidateSize({ animate: false });
+      syncFilterMenuToWidth();
       updateFilterFades();
     });
   }
@@ -2952,6 +3030,7 @@
       langSwitch: $('lang-switch'),
       filters: $('filters'),
       filterBar: $('filter-bar'),
+      btnFilters: $('btn-filters'),
       styles: $('styles'),
       rail: $('rail'),
       btnRandom: $('btn-random'),
@@ -3033,6 +3112,12 @@
       renderPanel();
       renderRadio();
       wireControls();
+
+      /* A ?type= link lands on a filtered map, and on a phone a shut row
+         would be the one thing this design promises never to be. So the link
+         opens it: the chips it arrived with are on screen, pressed, and one
+         press from being let go of. On a desktop they already are. */
+      syncFilterMenuToWidth();
 
       /* The map is drawn, the chips and the panel are filled in, and every
          button on the page is live. Everything below this line is bookkeeping
