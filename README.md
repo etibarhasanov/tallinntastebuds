@@ -966,10 +966,10 @@ only bit of it that is about tasting something, and it is the bit that survives
 being small.
 
 There are two crops of it and eight files, all of them a resize of one crop or
-the other: a wide one for the brand card, the three pass pages and the share
-card, and a square one for the favicon, the home-screen icon and the map. The
-boxes are written down in `assets/logo/README.md`, so a new size is a
-re-render rather than a redraw.
+the other: a wide one for the three pass pages and the share card, and a square
+one for the brand, the favicon, the home-screen icon and the map. The boxes are
+written down in `assets/logo/README.md`, so a new size is a re-render rather
+than a redraw.
 
 The favicon sizes are the ones Google will accept — square, at a multiple of
 48 — plus `/favicon.ico` at the root of the site, which is where Google looks
