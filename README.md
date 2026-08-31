@@ -965,11 +965,18 @@ Of everything in that picture the mouth was the part worth keeping. It is the
 only bit of it that is about tasting something, and it is the bit that survives
 being small.
 
-There are two crops of it and six files, all of them a resize of one crop or
+There are two crops of it and eight files, all of them a resize of one crop or
 the other: a wide one for the brand card, the three pass pages and the share
 card, and a square one for the favicon, the home-screen icon and the map. The
 boxes are written down in `assets/logo/README.md`, so a new size is a
 re-render rather than a redraw.
+
+The favicon sizes are the ones Google will accept — square, at a multiple of
+48 — plus `/favicon.ico` at the root of the site, which is where Google looks
+when it cannot read a page's link tags. The pages used to lead with a 32px
+icon, which Google refuses, so a search for the site came back with the grey
+globe instead of the mouth. Google re-crawls favicons on its own schedule;
+there is no way to make it look sooner.
 
 On the map it *is* the pin. Every place is the mouth, cropped round, drawn at
 22px — 34px for the one whose panel is open, and 17px for the quietest of them.

@@ -28,6 +28,12 @@
 /assets/*
   Cache-Control: public, max-age=0, must-revalidate
 
+# The one asset whose URL cannot carry a ?v= stamp: browsers and Google's
+# favicon crawler both ask for the bare path. Revalidating is how a redrawn
+# mark ever reaches a tab that has already seen the old one.
+/favicon.ico
+  Cache-Control: public, max-age=0, must-revalidate
+
 # The file you actually edit. This one must never go stale.
 /data/*
   Cache-Control: public, max-age=0, must-revalidate
