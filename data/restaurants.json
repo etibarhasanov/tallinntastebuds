@@ -872,7 +872,8 @@
       "01.webp",
       "02.webp",
       "03.webp",
-      "04.webp"
+      "04.webp",
+      "05.webp"
     ],
     "website": "",
     "phone": "+372 5745 0922",
@@ -1337,7 +1338,9 @@
       "Focaccia"
     ],
     "reel": "https://www.instagram.com/reel/DNDNAEzzMmA/",
-    "photos": [],
+    "photos": [
+      "01.webp"
+    ],
     "website": "",
     "phone": "+372 5624 0970",
     "added": "2026-08-23",
@@ -1577,7 +1580,9 @@
     },
     "mustOrder": [],
     "reel": "https://www.instagram.com/p/DcVXcSQoeAP/",
-    "photos": [],
+    "photos": [
+      "01.webp"
+    ],
     "website": "",
     "phone": "+372 5685 5965",
     "added": "2026-08-24",
@@ -1990,7 +1995,9 @@
       "Coffee"
     ],
     "reel": "https://www.instagram.com/reel/DJTZPVYPK9X/",
-    "photos": [],
+    "photos": [
+      "01.webp"
+    ],
     "website": "",
     "phone": "+372 5918 9100",
     "added": "2026-08-23",
