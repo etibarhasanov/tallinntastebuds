@@ -308,6 +308,17 @@
     if (now) now.setAttribute('aria-expanded', 'false');
   }
 
+  /* The switch reads in alphabetical order rather than in whatever order the
+     blocks happen to sit in ui.json. It sorts on the code, not on the name:
+     the codes are the row the desktop shows, they are Latin whatever the
+     language writes itself in, and sorting on them keeps Հայերեն in the
+     middle of the list where its code puts it instead of trailing the Latin
+     names the way a collator would push it. Two lowercase ASCII letters, so
+     a plain sort is the alphabet. */
+  function sortLanguages(codes) {
+    return codes.slice().sort();
+  }
+
   function renderLanguageSwitch() {
     clear(dom.langSwitch);
 
@@ -3914,7 +3925,7 @@
       state.radio = loaded[4] || null;
       state.stories = Array.isArray(loaded[5]) ? loaded[5] : [];
       state.ui = loaded[2] || {};
-      state.langs = Object.keys(state.ui);
+      state.langs = sortLanguages(Object.keys(state.ui));
 
       var chosen = pickLanguage(state.langs);
       state.lang = chosen.lang;
