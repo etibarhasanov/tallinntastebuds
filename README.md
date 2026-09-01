@@ -672,7 +672,7 @@ A place with a live deal says so in three places, in the order you meet them:
    only find by opening the place.
 2. **In the panel head**, the same pill beside the same price, one size up.
    The number is what you decide on, so it sits where the deciding happens.
-3. **In the panel**, under the reel, the write-up and the tags, and directly
+3. **In the panel**, under the write-up, the reel and the tags, and directly
    above **Must order**: the offer in words — "15% off your order" — and the
    **Show QR** button that leaves for `deal.html`. A discount is part of
    deciding where to eat, so it reads with the rest of the deciding rather
@@ -2124,17 +2124,24 @@ text stays between 10.7 and 15.9 to one and the muted line never drops below
 box.
 
 **What the panel leads with.** Name, price, and the discount badge where there
-is one — then, immediately, the thing there is to look at. The reel comes
-first, the photos after it, and a place with neither says so in that same slot
-under its own heading rather than leaving you to reach the bottom and work it
-out. The write-up, the tags and the dishes all moved down a notch to make room.
+is one — then the write-up, and then the thing there is to look at. The reel
+comes first of those, the photos after it, and a place with neither says so in
+that same slot under its own heading rather than leaving you to reach the
+bottom and work it out. The tags, the offer and the dishes follow, as they did.
 
-They used to sit two sections down, under the write-up and the tags, which put
-the one thing on the page that is not text below a screenful of text: on a
-phone the reel had to be scrolled to. Ordering by what is scarcest reads better
-anyway — every place has a write-up, only 43 have a reel — and it makes the
-three kinds of place read as three kinds in the panel too, rather than as one
-kind and two omissions.
+The reel led for a while, and the write-up sat below it. That fixed a real
+problem — the one part of the page which is not text had been two sections
+down, under a screenful of words, so on a phone it had to be scrolled to — by
+creating another: a player opened directly under the name, before a word had
+been said about the restaurant, and the paragraph underneath read as its
+caption. A few lines of prose is not a screenful, so putting them back on top
+costs the reel nothing. The write-up says what the place is and the reel shows
+it, which is the order the two were written in.
+
+The reel and the photos keep the slot they took, immediately under the
+write-up, and a place with neither still gets its own heading there: the three
+kinds of place read as three kinds in the panel rather than as one kind and two
+omissions.
 
 **What the panel closes with.** The offer in full, then the address, then
 **Directions**, **Call** and **Website** — the three things you do about a
