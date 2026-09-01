@@ -368,6 +368,8 @@
     "price": 2,
     "types": [
       "casual",
+      "cheap-eats",
+      "asian",
       "vegan"
     ],
     "blurb": {
@@ -389,7 +391,6 @@
     ],
     "reel": "https://www.instagram.com/reel/DKHwvljB_bU/",
     "photos": [],
-    "website": "",
     "phone": "+372 5800 6780",
     "added": "2026-08-23",
     "visited": "2025-05",
