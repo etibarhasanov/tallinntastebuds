@@ -319,22 +319,42 @@ https://www.tiktok.com/@tallinntastebuds/video/7568039651458436374
 The field is still called `reel` whichever platform it points at — renaming it
 would mean touching every place in the data for no gain. The site works out
 which platform from the URL and follows suit: the section heading reads **The
-reel** or **The video**, and the button names the right app in every language.
+reel** or **The video**, and the link under the player names the right app in
+every language.
 
-The two players work differently under the hood. Instagram needs its
-`embed.js`, which only scans for blockquotes when it runs and gives you no hook
-to re-process ones injected later. TikTok publishes a plain iframe player, so
-there is no script at all — which makes it the simpler of the two. Both stay
-click-to-load: nothing is fetched from either company until a visitor presses
-play. Verified — zero requests to tiktok.com before the click, one after.
+Both are plain iframes, and both are built with the panel. Instagram's player
+lives at the permalink with `/embed/` on the end — the same frame its
+`embed.js` would have built for you — so neither platform needs a script here.
 
 **Never invent a shortcode.** A made-up one resolves to a real stranger's post, on either platform.
 Leave `reel` as `""` until you have the actual link; the panel simply says
 there is no reel yet.
 
-The embed is click-to-load: Instagram's `embed.js` is not fetched, and no
-request is made to Instagram at all, until a visitor presses play. This is what
-keeps the map quick on mobile data.
+### The player starts loading with the panel
+
+It used to sit behind a **Load the reel** button, and nothing was fetched from
+Instagram or TikTok until that button was pressed. It saved a request on every
+place nobody watched and charged a wait to every place somebody did: open the
+place, find the button, press it, and only then watch a player start from
+nothing. Opening a profile is a deliberate act and the video is the reason for
+it, so the player is now built with the panel: by the time the write-up has
+been read the reel is loaded and often buffered, and pressing play plays.
+
+The frame it sits in is sized by CSS, never by the iframe. A cross-origin frame
+cannot be asked how tall it is and collapses to 150px if left to itself, which
+is how a reel used to open as a strip with the video cut off at the bottom.
+Instead the frame opens at `9 / 19` — 9:16 of video plus Instagram's own chrome
+above and below it — and Instagram's embed page then posts its real height out
+to the page that framed it (`wireReelMeasure` in `app.js` listens for the same
+message `embed.js` does). That number is stored as the frame's ratio rather
+than as pixels, so a phone turned on its side still holds a whole reel. If the
+message never arrives the opening shape stands, and a frame slightly too tall
+shows a band of card under the video where slightly too short would cut it off.
+
+The frame also bleeds out through the panel's padding to the card edges, the
+way the search box and the group headings do: 52px more picture on a desktop,
+the full width of the screen on a phone, and since the ratio is fixed, a wider
+frame is a taller one too.
 
 ---
 
@@ -1286,8 +1306,8 @@ data; those do not belong in a static site at all.
 | [CARTO Positron](https://carto.com/basemaps/) basemap (`light_all`, `dark_all`) | — | Free with attribution, up to 5M tiles a month, **key required** | The tiles. See [The map tiles need a key](#the-map-tiles-need-a-key). |
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) data | — | ODbL | The map data behind the tiles. |
 | [Familjen Grotesk](https://fonts.google.com/specimen/Familjen+Grotesk), [Literata](https://fonts.google.com/specimen/Literata), [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) | — | SIL Open Font License 1.1 | Served by Google Fonts. |
-| [Instagram embed.js](https://developers.facebook.com/docs/instagram/oembed/) | — | Meta Platforms terms | Only loaded after a visitor presses play. |
-| [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Only loaded after a visitor presses play. No script involved. |
+| [Instagram embed](https://developers.facebook.com/docs/instagram/oembed/) (iframe player) | — | Meta Platforms terms | The permalink with `/embed/` on the end. Loaded with the panel of a place that has a reel. No script involved. |
+| [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Loaded with the panel of a place that has a video. No script involved. |
 | [Google Analytics 4](https://developers.google.com/analytics) (gtag.js) | — | Google terms | Property `G-2XNTC15F28`. Loads on every page view and sets cookies. |
 
 **The attribution control in the bottom-right corner is a licence condition of
@@ -1327,7 +1347,7 @@ reported as events instead, from `trackEvent()` beside `trackView()`:
 | `language_select` | `language` |
 | `style_select` | `style` |
 | `random_pick` | `place`, `pool` |
-| `reel_play` | `place`, `provider` |
+| `reel_load` | `place`, `provider` |
 | `call_place` | `place` |
 | `cluster_open` | `cluster_size` |
 | `list_open` | `places_shown` |
