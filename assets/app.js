@@ -3075,6 +3075,50 @@
     });
   }
 
+  /* ------------------------------------------------------- watching a story
+   * A story is opened far more often than it is watched, and the gap between
+   * the two is the only thing worth knowing about a reel: a run of stories
+   * everybody skips at two seconds is a run of stories nobody is watching,
+   * however healthy the opens look.
+   *
+   * So the frame loop below keeps the fraction that has gone by, and whatever
+   * ends the story — the next one, the arrows, the close button, the last one
+   * running out — reports how far it got on the way out. One story_view when
+   * it comes up, one story_watch when it goes, per story rather than per
+   * opening of the ring.
+   */
+  var storyWatch = null;
+
+  function beginStoryWatch(story) {
+    endStoryWatch();
+    storyWatch = { story: story, done: 0, finished: false };
+    trackEvent('story_view', {
+      story_id: story.id,
+      spot: story.spot || '',
+      format: story.photo ? 'photo' : 'video',
+      position: state.story.index + 1
+    });
+  }
+
+  /* Videos rarely report the last hundredth of themselves before the browser
+     calls them ended, so anything past 95% counts as watched to the end —
+     and a story that actually ended says so itself rather than being judged
+     on a fraction. */
+  function endStoryWatch() {
+    if (!storyWatch) return;
+    var watch = storyWatch;
+    storyWatch = null;
+    var percent = Math.round(Math.max(0, Math.min(1, watch.done)) * 100);
+    if (watch.finished) percent = 100;
+    trackEvent('story_watch', {
+      story_id: watch.story.id,
+      spot: watch.story.spot || '',
+      format: watch.story.photo ? 'photo' : 'video',
+      percent_watched: percent,
+      completed: percent >= 95 ? 'yes' : 'no'
+    });
+  }
+
   /* Draw whichever story the queue is standing on, and start it. */
   function paintStory() {
     var s = state.story;
@@ -3092,6 +3136,7 @@
 
     markStorySeen(story);
     renderStoryRing();
+    beginStoryWatch(story);
     startStoryProgress();
   }
 
@@ -3215,6 +3260,11 @@
   }
 
   function setStorySound(muted) {
+    var story = state.story.list[state.story.index];
+    trackEvent('story_sound', {
+      sound: muted ? 'off' : 'on',
+      story_id: (story && story.id) || ''
+    });
     state.story.muted = muted;
     dom.storyVideo.muted = muted;
     storeSet(STORY_SOUND_KEY, muted ? 'off' : 'on');
@@ -3242,11 +3292,16 @@
       if (story.photo) {
         var spent = s.photoSpent + (s.held ? 0 : now() - s.photoFrom);
         done = Math.min(1, spent / storyLength(story));
-        if (done >= 1) { stepStory(1); return; }
+        if (done >= 1) {
+          if (storyWatch) storyWatch.finished = true;
+          stepStory(1);
+          return;
+        }
       } else {
         var length = storyLength(story);
         done = length ? Math.min(1, (dom.storyVideo.currentTime * 1000) / length) : 0;
       }
+      if (storyWatch) storyWatch.done = done;
       bar.firstChild.style.width = (done * 100).toFixed(2) + '%';
     });
   }
@@ -3306,6 +3361,7 @@
   function closeStories() {
     if (dom.stories.hidden) return;
     stopStoryProgress();
+    endStoryWatch();
     clearHold();
     dom.storyVideo.pause();
     dom.storyVideo.removeAttribute('src');
@@ -3326,7 +3382,10 @@
     dom.storyBack.addEventListener('click', function () { if (!swallowedTap()) stepStory(-1); });
     dom.storyFwd.addEventListener('click', function () { if (!swallowedTap()) stepStory(1); });
 
-    dom.storyVideo.addEventListener('ended', function () { stepStory(1); });
+    dom.storyVideo.addEventListener('ended', function () {
+      if (storyWatch) storyWatch.finished = true;
+      stepStory(1);
+    });
     /* A file that will not load is a file nobody can watch. Say so once and
        move on rather than sitting on a black rectangle. */
     dom.storyVideo.addEventListener('error', function () {
@@ -3501,7 +3560,8 @@
    * The full list, so it can be read without hunting through the file:
    *   directions, call_place, website, deal_open  — leaving for the place
    *   photo_open, reel_load                       — looking at the place
-   *   story_open, story_link                      — the stories ring
+   *   story_open, story_view, story_watch, story_sound, story_link
+   *                                               — the stories ring
    *   filter_select, filter_clear, filters_open, search  — narrowing down
    *   list_open, cluster_open, random_pick, locate       — the map controls
    *   radio_play, radio_stop, language_select, style_select
