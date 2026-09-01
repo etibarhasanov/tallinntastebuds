@@ -43,6 +43,13 @@
 /photos/*
   Cache-Control: public, max-age=604800
 
+# A story's video is written once, watched for a day or two and then deleted.
+# Nothing ever edits one in place, so the file at a given name is always the
+# same file, and a browser that has it should keep it: this is the largest
+# thing on the site and the one most likely to be watched twice.
+/stories/*
+  Cache-Control: public, max-age=604800
+
 # The discount pages turn over an hourly code between them, so a cached copy
 # is a wrong copy. They are also the three pages that must never be indexed
 # or shown in a preview card, whatever a link unfurler decides to do with the

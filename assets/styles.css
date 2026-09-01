@@ -40,6 +40,16 @@
   --lift:  0 1px 6px rgba(74, 26, 22, .28);
   --glass: rgba(255, 240, 234, .74);
 
+  /* The ring round the mark when a story is up, and what is left of it once
+     you have watched them all. A gradient rather than a colour because that
+     is the shape the gesture has everywhere else: a ring that is clearly not
+     a border is the one thing on a profile picture that reads as "there is
+     something new here" without a word of explanation. Ours turns, which is
+     the part Instagram's does not do, and it is brick and ember rather than
+     their purple — the site has one hue and the ring keeps it. */
+  --story-ring: conic-gradient(from 210deg, #a81e28, #d84a2f, #f2a63c, #e1615a, #a81e28);
+  --story-ring-seen: linear-gradient(#f0cec3, #f0cec3);
+
   --display: "Familjen Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --body: "Literata", Georgia, "Times New Roman", serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -502,6 +512,45 @@ a:hover { color: var(--accent-lit); }
   flex: 0 0 auto;
 }
 
+/* ---------- the story ring ---------- */
+
+/* When something is up, the mark stops being a picture and becomes a button.
+   The ring is drawn outside the box the picture occupies — inset is negative,
+   so nothing in the card moves when a story goes up or runs out — and it
+   turns, slowly enough to read as alive rather than as a loading spinner.
+   The paper gap between ring and photograph is a box-shadow on the mark
+   rather than a border, which is what the pins already wear. */
+.brand-ring {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  line-height: 0;
+  border-radius: 100px;
+  cursor: pointer;
+}
+.brand-ring::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 100px;
+  background: var(--story-ring);
+  animation: story-spin 7s linear infinite;
+}
+.brand-ring .brand-mark {
+  position: relative;
+  box-shadow: 0 0 0 2.5px var(--paper);
+}
+/* Watched, and still up. Instagram greys the ring out at this point and so
+   does this, down to the hairline the rest of the site draws its edges in —
+   the story has not gone anywhere, it is just no longer asking. */
+.brand-ring.is-seen::before {
+  background: var(--story-ring-seen);
+  animation: none;
+}
+.brand-ring:focus-visible { outline-offset: 6px; }
+
+@keyframes story-spin { to { transform: rotate(1turn); } }
+
 .wordmark {
   font-family: var(--display);
   font-size: 25px;
@@ -701,6 +750,8 @@ a:hover { color: var(--accent-lit); }
   --glass: rgba(255, 240, 234, .74);
   --attrib-bg: rgba(255, 240, 234, .88);
   --here: #0b62c4;
+  --story-ring: conic-gradient(from 210deg, #a81e28, #d84a2f, #f2a63c, #e1615a, #a81e28);
+  --story-ring-seen: linear-gradient(#f0cec3, #f0cec3);
 }
 
 /* Forest — the dark one. */
@@ -717,6 +768,11 @@ a:hover { color: var(--accent-lit); }
   --attrib-bg: rgba(16, 26, 21, .86);
   --swatch-edge: rgba(255, 255, 255, .22);
   --here: #e0873a;
+  /* The same ring in the dark style's own hue, with the ember arc left in it:
+     a red ring on a green page would be the one thing on the site that did
+     not follow the swatch you pressed. */
+  --story-ring: conic-gradient(from 210deg, #6fd39a, #b7e8a4, #f2a63c, #93e7b7, #6fd39a);
+  --story-ring-seen: linear-gradient(#354740, #354740);
 }
 
 /* Dark Matter is drawn almost black, which reads as a hole in the screen next
@@ -1673,6 +1729,295 @@ body.panel-detail .panel {
 .lb-close { position: absolute; top: max(var(--gap), var(--safe-t)); right: var(--gap); }
 .lb-btn:focus-visible { outline-color: #fff; }
 
+/* ---------- stories ----------
+   One video, full height, with the chrome laid over it: a bar per story along
+   the top, who it is from and how long it has left under that, the caption and
+   the link along the bottom. Everything is absolute inside .story-stage rather
+   than stacked around it, because the stage is the video — a column layout
+   would have the picture shrink every time a caption ran to two lines.
+
+   The stage is sized off the height and not the width. A story is a tall
+   picture, so the height of the window is what there is to spend, and the
+   width follows from it at 9:16. On a phone it fills the screen instead, which
+   is the only place a story has ever been watched anyway.
+   --------------------------------------------------------------------- */
+
+.stories {
+  --story-h: min(calc(var(--vph, 100dvh) - 2 * var(--gap)), 900px);
+  position: fixed;
+  inset: 0;
+  z-index: 2600;
+  display: grid;
+  place-items: center;
+  padding: var(--gap);
+  background: rgba(14, 9, 10, .95);
+}
+.stories[hidden] { display: none; }
+
+.story-stage {
+  position: relative;
+  height: var(--story-h);
+  width: min(100%, calc(var(--story-h) * 9 / 16));
+  overflow: hidden;
+  border-radius: var(--radius-soft);
+  background: #000;
+  touch-action: pan-y;
+}
+
+.story-video,
+.story-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+.story-video[hidden], .story-photo[hidden] { display: none; }
+
+/* Two scrims in one pass: white text has to hold over whatever the video is
+   doing at the top and the bottom of the frame, and a video is the one
+   surface on the site whose colours nobody controls. */
+.story-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    rgba(0, 0, 0, .55), rgba(0, 0, 0, 0) 24%,
+    rgba(0, 0, 0, 0) 58%, rgba(0, 0, 0, .68));
+}
+
+/* The left third goes back, the rest goes on. Buttons rather than bare
+   divs, so the two moves a thumb has are the two moves a keyboard has. */
+.story-half {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.story-half-back { left: 0; width: 32%; }
+.story-half-fwd { right: 0; width: 68%; }
+.story-half:focus-visible { outline-offset: -6px; }
+
+/* On a phone the two halves are invisible and everybody knows they are there.
+   On a desktop nobody does — a mouse expects something to aim at — so the
+   halves grow a chevron that fades in under the pointer. It is the same
+   button either way; this only gives it a face where a face is wanted. */
+.story-chevron {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 100px;
+  background: rgba(0, 0, 0, .32);
+  color: #fff;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity .18s var(--ease);
+}
+.story-half-back .story-chevron { left: 10px; }
+.story-half-fwd .story-chevron { right: 10px; }
+.story-chevron svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (hover: hover) and (pointer: fine) {
+  .story-half:hover .story-chevron,
+  .story-half:focus-visible .story-chevron { opacity: 1; }
+}
+/* A held story hides its chrome, and the chevrons are chrome. */
+.story-stage.is-held .story-chevron { opacity: 0; }
+
+.story-bars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+  padding: calc(9px + var(--safe-t)) 10px 0;
+}
+.story-bar {
+  flex: 1 1 0;
+  height: 2.5px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, .34);
+  overflow: hidden;
+}
+.story-bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 2px;
+  background: #fff;
+}
+
+.story-head {
+  position: absolute;
+  top: calc(22px + var(--safe-t));
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 8px 0 10px;
+}
+.story-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 100px;
+  object-fit: cover;
+  flex: 0 0 auto;
+}
+.story-who {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .55);
+}
+.story-name {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* How long it has left, in the face the site sets facts in. It is the whole
+   point of the top line: a story is a thing that goes away, and saying so is
+   what makes anybody open it now rather than later. */
+.story-left {
+  flex: 0 0 auto;
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .78);
+}
+
+.story-btn {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 100px;
+  color: rgba(255, 255, 255, .86);
+  transition: color .15s var(--ease), background-color .15s var(--ease);
+}
+.story-btn:hover { color: #fff; background: rgba(255, 255, 255, .14); }
+.story-btn:focus-visible { outline-color: #fff; }
+.story-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#story-sound[hidden] { display: none; }
+#story-sound svg .ico-hush { display: none; }
+#story-sound.is-muted svg .ico-loud { display: none; }
+#story-sound.is-muted svg .ico-hush { display: inline; }
+
+.story-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 0 16px calc(20px + var(--safe-b));
+  text-align: center;
+}
+.story-caption {
+  max-width: 34ch;
+  margin: 0;
+  color: #fff;
+  font-size: 14.5px;
+  line-height: 1.5;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+}
+.story-caption[hidden] { display: none; }
+
+/* The link, as a pill rather than as a line of text: on a phone this is the
+   thing being aimed at with a thumb over a moving picture. The arrow points
+   up because that is the gesture this button replaces. */
+.story-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border: 1px solid rgba(255, 255, 255, .34);
+  border-radius: 100px;
+  background: rgba(255, 255, 255, .16);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  font-family: var(--display);
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  text-decoration: none;
+  cursor: pointer;
+}
+.story-cta[hidden] { display: none; }
+.story-cta:hover { background: rgba(255, 255, 255, .28); color: #fff; }
+.story-cta:focus-visible { outline-color: #fff; }
+.story-cta svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: story-nudge 2.4s var(--ease) infinite;
+}
+@keyframes story-nudge {
+  0%, 62%, 100% { transform: translateY(0); }
+  76% { transform: translateY(-3px); }
+}
+
+/* Held down. Everything laid over the picture gets out of the way, which is
+   what holding a story is for. */
+.story-stage.is-held .story-bars,
+.story-stage.is-held .story-head,
+.story-stage.is-held .story-foot { opacity: 0; }
+.story-bars, .story-head, .story-foot { transition: opacity .2s var(--ease); }
+
+@media (max-width: 860px) {
+  /* Full bleed. A story on a phone is the screen, and the rounded card with a
+     strip of page either side of it is a desktop idea. */
+  .stories {
+    --story-h: var(--vph, 100dvh);
+    padding: 0;
+  }
+  .story-stage {
+    width: 100%;
+    border-radius: 0;
+  }
+}
+
 /* ---------- toast ---------- */
 
 .toast {
@@ -1764,6 +2109,11 @@ body.panel-detail .panel {
     box-shadow: 0 0 0 2px var(--paper), var(--lift);
   }
 
+  /* The ring comes in a step with the circle it is drawn round, and the mark
+     keeps the lift it wears out here on the map with no card under it. */
+  .brand-ring::before { inset: -4px; }
+  .brand-ring .brand-mark { box-shadow: 0 0 0 2px var(--paper), var(--lift); }
+
   .brand .eyebrow,
   .brand .wordmark {
     position: absolute;
@@ -1814,6 +2164,7 @@ body.panel-detail .panel {
     .brand { gap: 8px; }
     .brand-mark { width: 34px; height: 34px; }
     .brand .ig-link { font-size: 13px; }
+    .brand-ring::before { inset: -3px; }
   }
 
   .controls { gap: 6px; }
@@ -2034,7 +2385,7 @@ body.panel-detail .panel {
 /* ---------- print: the list, on paper ---------- */
 
 @media print {
-  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .toast, .lightbox { display: none !important; }
+  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .toast, .lightbox, .stories { display: none !important; }
   body { overflow: visible; background: #fff; }
   .panel {
     position: static;
