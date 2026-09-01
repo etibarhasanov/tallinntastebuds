@@ -65,3 +65,9 @@
 /staff.html
   Cache-Control: no-store
   X-Robots-Tag: noindex, nofollow
+
+# The admin page holds a token in the browser it is opened in. A cached copy
+# is a copy of the door, so there is never one.
+/admin.html
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow

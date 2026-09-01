@@ -26,6 +26,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [Languages](#languages)
 - [Restaurant discounts](#restaurant-discounts)
 - [Stories](#stories)
+- [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
 - [The map tiles need a key](#the-map-tiles-need-a-key)
 - [What the validator checks](#what-the-validator-checks)
@@ -1001,6 +1002,72 @@ is everybody: nothing about a story is cached beyond the page it is on.
 
 ---
 
+## The admin page
+
+`/admin.html` — a door, and behind it the tools for posting without opening a
+terminal. It is not linked from anywhere, carries `noindex` in the markup, in
+`robots.txt` and in `_headers`, and is served `no-store`.
+
+Today it holds a GitHub token for one device and proves that token can still
+reach this repository. Posting a story goes behind it next.
+
+### Setting up a device
+
+Once per device, per browser. Do the laptop first — Chrome will sync the
+passphrase to the phone, so the phone only needs the token pasted.
+
+1. Make a **fine-grained** personal access token on
+   [GitHub](https://github.com/settings/personal-access-tokens/new).
+2. Repository access: **only select repositories** → `tallinntastebuds`.
+3. Permissions: **Contents → Read and write**, and **Pull requests → Read and
+   write** for when adding a place lands.
+4. Expiry: **90 days.** A token you forget about then dies on its own.
+5. Open `/admin.html`, paste the token, choose a passphrase.
+
+On an **iPhone**, add the page to the Home Screen. Safari — and Chrome on
+iOS, which is Safari underneath — clears a site's storage after seven days
+without a visit, and an installed web app is exempt. On Android nothing needs
+doing; the page asks for persistent storage itself.
+
+### Where the token lives
+
+In that browser's `localStorage`, encrypted:
+
+```
+{ salt, iv, ct }     AES-GCM, key from PBKDF2-SHA256 over the passphrase
+```
+
+Nowhere else. Not in this repository, not on the server — there is no server.
+The decrypted token exists only as a variable in the open tab, is never
+written to disk, and is dropped when the tab closes or after fifteen idle
+minutes.
+
+**Nothing is published for a guess to be checked against.** The obvious design
+puts a verifier — a hash of the passphrase — in the repo so the page can tell
+a right passphrase from a wrong one. That is a free offline oracle: anybody
+who clones a public site can grind guesses at it forever without ever touching
+your phone. AES-GCM already answers the question. A wrong passphrase derives a
+wrong key, the tag fails to authenticate, and the decrypt rejects — so an
+attacker needs the device in their hand before they can begin.
+
+### If a device goes missing
+
+Revoke that device's token on GitHub. One click, and it does not touch the
+other device, because each holds its own token sealed with its own salt.
+
+What a thief has in the meantime is the encrypted blob, which is worth nothing
+without the passphrase — so make the passphrase long. And the floor under all
+of it: the token reaches one public repository, every change is in git
+history, and a branch rule against force-pushes keeps the history you would
+revert from.
+
+**The gate is not what stops somebody editing the map — the token is.** Anyone
+can read `admin.html` and skip the passphrase; they still have no token, and
+the page can do nothing without one. The passphrase protects the token at rest
+on the device. That is the whole of its job.
+
+---
+
 ## Deploy to Cloudflare Pages
 
 Cloudflare Pages is the live host. There is nothing to build, so there is no
@@ -1201,6 +1268,7 @@ data/ui.json               every interface string, in every language
 data/deals.json            the discounts, and which of them are live
 data/stories.json          the stories, when each goes up and when it goes away
 data/schema.json           JSON Schema, for editor autocomplete
+admin.html                 the admin door, self-contained and unlinked
 photos/<restaurant-id>/    photos, one folder per place
 stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator

@@ -10,4 +10,8 @@ Disallow: /deal.html
 Disallow: /verify.html
 Disallow: /staff.html
 
+# The admin page is not for anybody, crawler or otherwise. Nothing links to
+# it and it carries its own noindex tag.
+Disallow: /admin.html
+
 Sitemap: https://tallinntastebuds.ee/sitemap.xml

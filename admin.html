@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin — Tallinn Tastebuds</title>
+
+<!-- A tool for one person, with no business in a search index. robots.txt
+     disallows it, _headers sends X-Robots-Tag and no-store, and nothing on
+     the map links here. This tag is the half that actually binds. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="favicon.ico">
+
+<!--
+  WHAT THIS PAGE IS
+
+  The door. It holds a GitHub token for this one device, encrypted with a
+  passphrase, and proves the token can still reach the repository. Posting a
+  story is the next thing to go behind it; today it stops at "you are in".
+
+  WHERE THE SECRET LIVES
+
+  In this browser's localStorage, on this device, as ciphertext:
+
+      { salt, iv, ct }   AES-GCM, key from PBKDF2-SHA256 over your passphrase
+
+  Nowhere else. Not in the repository, not on the server — there is no server,
+  this is a static file on a CDN. The decrypted token exists only as a
+  variable in this tab, is never written to disk, and is dropped when the tab
+  closes or after fifteen idle minutes.
+
+  WHY THERE IS NO "PUBLIC KEY" IN THE SITE
+
+  The obvious design publishes a verifier — a hash of the passphrase — so the
+  page can tell a right passphrase from a wrong one. Do not do that. A
+  verifier in a public repository is a free offline oracle: anybody who clones
+  the site can grind guesses against it forever, on their own hardware,
+  without ever touching your phone.
+
+  There is nothing to publish, because AES-GCM already answers the question.
+  A wrong passphrase derives a wrong key, the tag fails to authenticate, and
+  the decrypt rejects. The check comes free, and an attacker needs the device
+  before they can even start guessing. So: strong passphrase, and a stolen
+  phone leaks a blob that is worth nothing without it.
+
+  WHAT THIS IS NOT
+
+  This gate is not what stops somebody else editing the map — the token is.
+  Anybody can read this file and skip the passphrase; they still have no
+  token, and the page can do nothing without one. Scope the token to this one
+  repository, give it a short expiry, and revoke it the moment a device goes
+  missing. The passphrase protects the token at rest on the device. That is
+  the whole of its job, and it is enough, because the blast radius on the
+  other side is one public repository whose every change is revertible.
+-->
+<style>
+:root {
+  --ink:        #27141a;
+  --muted:      #7d5754;
+  --paper:      #fff0ea;
+  --wash:       #f7ddd4;
+  --hairline:   #f0cec3;
+  --accent:     #a81e28;
+  --accent-lit: #c9323d;
+  --good:       #1e6b3a;
+  --bad:        #b3261e;
+  --display: "Familjen Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --body: "Literata", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--wash);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+}
+
+main {
+  width: 100%;
+  max-width: 34rem;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-top: 4vh;
+}
+
+h1 {
+  font-family: var(--display);
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 2px;
+}
+.sub { color: var(--muted); font-size: .85rem; margin: 0 0 20px; }
+
+h2 { font-family: var(--display); font-size: 1rem; margin: 0 0 8px; }
+p { margin: 0 0 12px; }
+.small { font-size: .85rem; color: var(--muted); }
+
+label { display: block; font-family: var(--display); font-size: .82rem; margin: 14px 0 5px; }
+
+input[type="password"], input[type="text"] {
+  width: 100%;
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 15px;               /* 16px or more, or iOS zooms the page in */
+  padding: 11px 12px;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+input:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 1px; }
+
+button {
+  font-family: var(--display);
+  font-size: .95rem;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  min-height: 44px;              /* a thumb target, not a mouse target */
+  width: 100%;
+  margin-top: 16px;
+}
+button:hover { background: var(--accent-lit); }
+button[disabled] { opacity: .55; cursor: default; }
+button.quiet {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--hairline);
+  margin-top: 10px;
+}
+button.quiet:hover { background: var(--wash); color: var(--ink); }
+
+.note {
+  border-left: 3px solid var(--hairline);
+  padding: 2px 0 2px 12px;
+  margin: 0 0 14px;
+  font-size: .85rem;
+  color: var(--muted);
+}
+.msg { margin-top: 14px; font-size: .88rem; }
+.msg.bad  { color: var(--bad); }
+.msg.good { color: var(--good); }
+
+dl.facts { margin: 0; font-size: .88rem; }
+dl.facts div { display: flex; gap: 10px; padding: 7px 0; border-top: 1px solid var(--hairline); }
+dl.facts dt { color: var(--muted); flex: 0 0 8.5rem; }
+dl.facts dd { margin: 0; font-family: var(--mono); font-size: .82rem; word-break: break-word; }
+
+ol { margin: 0 0 12px; padding-left: 1.2rem; font-size: .88rem; }
+ol li { margin-bottom: 6px; }
+code { font-family: var(--mono); font-size: .85em; background: var(--wash); padding: 1px 4px; border-radius: 3px; }
+a { color: var(--accent); }
+.spin { opacity: .6; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main id="card" aria-live="polite">
+  <h1>Tallinn Tastebuds</h1>
+  <p class="sub" id="sub">Checking this device…</p>
+  <div id="body"></div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var REPO = 'etibarhasanov/tallinntastebuds';
+  var VAULT_KEY = 'ttb.admin.vault';
+
+  /* OWASP's floor for PBKDF2-SHA256. It costs a phone a second or two, which
+     is the point: every guess an attacker makes costs them the same. */
+  var ITERATIONS = 600000;
+
+  /* The decrypted token is dropped after this long without a touch, so a
+     phone left on a table locks itself. */
+  var IDLE_MS = 15 * 60 * 1000;
+
+  var body = document.getElementById('body');
+  var sub = document.getElementById('sub');
+
+  /* The only place the plaintext token ever lives. Never persisted, never
+     logged, gone when this tab is. */
+  var token = null;
+  var idleTimer = null;
+
+  /* ------------------------------------------------------------- plumbing */
+
+  function enc(text) { return new TextEncoder().encode(text); }
+  function dec(buf) { return new TextDecoder().decode(buf); }
+
+  function b64(bytes) {
+    var s = '';
+    for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s);
+  }
+  function unb64(text) {
+    var raw = atob(text);
+    var out = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+    return out;
+  }
+
+  function el(tag, props, kids) {
+    var node = document.createElement(tag);
+    Object.keys(props || {}).forEach(function (k) {
+      var v = props[k];
+      if (v === null || v === undefined || v === false) return;
+      if (k === 'className') node.className = v;
+      else if (k === 'textContent') node.textContent = v;
+      else if (k === 'html') node.innerHTML = v;
+      else node.setAttribute(k, v === true ? '' : String(v));
+    });
+    (kids || []).forEach(function (kid) {
+      if (!kid) return;
+      node.appendChild(typeof kid === 'string' ? document.createTextNode(kid) : kid);
+    });
+    return node;
+  }
+
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+
+  function vault() {
+    try { return JSON.parse(window.localStorage.getItem(VAULT_KEY) || 'null'); }
+    catch (e) { return null; }
+  }
+  function storeVault(v) {
+    try { window.localStorage.setItem(VAULT_KEY, JSON.stringify(v)); return true; }
+    catch (e) { return false; }
+  }
+  function dropVault() {
+    try { window.localStorage.removeItem(VAULT_KEY); } catch (e) { /* nothing to do */ }
+  }
+
+  /* ---------------------------------------------------------------- crypto
+   * One key, derived from the passphrase and this device's own salt. The
+   * salt is per-device and lives beside the ciphertext: two devices holding
+   * the same passphrase share nothing, which is what makes revoking one of
+   * them a local act.
+   */
+  function keyFrom(pass, salt, iterations) {
+    return crypto.subtle
+      .importKey('raw', enc(pass), 'PBKDF2', false, ['deriveKey'])
+      .then(function (base) {
+        return crypto.subtle.deriveKey(
+          { name: 'PBKDF2', salt: salt, iterations: iterations, hash: 'SHA-256' },
+          base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+      });
+  }
+
+  function seal(pass, secret) {
+    var salt = crypto.getRandomValues(new Uint8Array(16));
+    var iv = crypto.getRandomValues(new Uint8Array(12));
+    return keyFrom(pass, salt, ITERATIONS)
+      .then(function (key) {
+        return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, enc(secret));
+      })
+      .then(function (ct) {
+        return { v: 1, iterations: ITERATIONS, salt: b64(salt), iv: b64(iv), ct: b64(new Uint8Array(ct)) };
+      });
+  }
+
+  /* The wrong passphrase derives the wrong key, the tag fails, and this
+     rejects. That rejection is the whole of the verification — there is
+     nothing published anywhere for anybody to check a guess against. */
+  function unseal(pass, v) {
+    return keyFrom(pass, unb64(v.salt), v.iterations || ITERATIONS)
+      .then(function (key) {
+        return crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(v.iv) }, key, unb64(v.ct));
+      })
+      .then(dec);
+  }
+
+  /* ---------------------------------------------------------------- github
+   * The one call that proves the whole chain: this token, this repository,
+   * write access. If this answers, posting a story is only a matter of
+   * writing the form.
+   */
+  function reachRepo(tok) {
+    return fetch('https://api.github.com/repos/' + REPO, {
+      headers: { Authorization: 'Bearer ' + tok, Accept: 'application/vnd.github+json' }
+    }).then(function (res) {
+      if (res.status === 401) throw new Error('GitHub rejected the token — it has expired, or been revoked.');
+      if (res.status === 403) throw new Error('GitHub refused the token. Check its permissions have not been narrowed.');
+      if (res.status === 404) throw new Error('The token cannot see ' + REPO + '. Check it is scoped to this repository.');
+      if (!res.ok) throw new Error('GitHub answered ' + res.status + '.');
+      return res.json().then(function (repo) {
+        return {
+          name: repo.full_name,
+          canWrite: !!(repo.permissions && repo.permissions.push),
+          branch: repo.default_branch,
+          expires: res.headers.get('github-authentication-token-expiration')
+        };
+      });
+    }, function () {
+      throw new Error('Could not reach GitHub. Check the connection and try again.');
+    });
+  }
+
+  /* ------------------------------------------------------------ the states */
+
+  function say(where, text, kind) {
+    var node = el('p', { className: 'msg ' + (kind || ''), textContent: text });
+    where.appendChild(node);
+    return node;
+  }
+
+  function insecure() {
+    sub.textContent = 'This page needs a secure context.';
+    body.appendChild(el('p', { textContent:
+      'Web Crypto only exists over HTTPS, so there is nothing here to unlock. Open the ' +
+      'page over https://, or over http://localhost while working on it — localhost counts as secure.' }));
+  }
+
+  /* First run on this device: choose a passphrase, hand over a token. */
+  function setup() {
+    sub.textContent = 'This device does not have a token yet.';
+    clear(body);
+
+    body.appendChild(el('h2', { textContent: 'Set this device up' }));
+    body.appendChild(el('p', { className: 'note', textContent:
+      'Once per device. The token is encrypted with your passphrase and kept in this ' +
+      'browser only — it never reaches the site, the repository, or anywhere else.' }));
+
+    var steps = el('ol', {}, []);
+    [
+      'On GitHub, make a fine-grained personal access token.',
+      'Repository access: only select repositories → tallinntastebuds.',
+      'Permissions: Contents → Read and write, and Pull requests → Read and write.',
+      'Give it 90 days. A token you forget about then dies on its own.'
+    ].forEach(function (line) { steps.appendChild(el('li', { textContent: line })); });
+    body.appendChild(steps);
+    body.appendChild(el('p', { className: 'small' }, [
+      el('a', {
+        href: 'https://github.com/settings/personal-access-tokens/new',
+        target: '_blank', rel: 'noopener noreferrer',
+        textContent: 'Make one on GitHub →'
+      })
+    ]));
+
+    var tokenIn = el('input', { type: 'password', id: 'tok', autocomplete: 'off',
+      autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false',
+      placeholder: 'github_pat_…' });
+    var passIn = el('input', { type: 'password', id: 'pass1',
+      autocomplete: 'new-password', placeholder: 'four or five words' });
+    var pass2In = el('input', { type: 'password', id: 'pass2',
+      autocomplete: 'new-password', placeholder: 'again' });
+
+    body.appendChild(el('label', { for: 'tok', textContent: 'The token' }));
+    body.appendChild(tokenIn);
+    body.appendChild(el('label', { for: 'pass1', textContent: 'A passphrase to lock it with' }));
+    body.appendChild(passIn);
+    body.appendChild(el('p', { className: 'small', textContent:
+      'Words beat symbols. Nothing published anywhere can be used to guess this, but ' +
+      'somebody holding the device could try — so make it long rather than clever. ' +
+      'Let Chrome save it and it will be on your other device too.' }));
+    body.appendChild(el('label', { for: 'pass2', textContent: 'And again' }));
+    body.appendChild(pass2In);
+
+    var go = el('button', { type: 'button', textContent: 'Check it and remember it' });
+    body.appendChild(go);
+
+    go.addEventListener('click', function () {
+      var tok = tokenIn.value.trim();
+      var p1 = passIn.value, p2 = pass2In.value;
+      var old = body.querySelector('.msg');
+      if (old) old.parentNode.removeChild(old);
+
+      if (!tok) return say(body, 'Paste the token first.', 'bad');
+      if (p1.length < 10) return say(body, 'A passphrase of at least ten characters, please.', 'bad');
+      if (p1 !== p2) return say(body, 'The two passphrases are not the same.', 'bad');
+
+      go.disabled = true;
+      var working = say(body, 'Asking GitHub…', 'spin');
+
+      reachRepo(tok)
+        .then(function (repo) {
+          if (!repo.canWrite) {
+            throw new Error('That token can read ' + repo.name + ' but not write to it. ' +
+                            'Give it Contents → Read and write.');
+          }
+          working.textContent = 'Locking it to this device…';
+          return seal(p1, tok).then(function (v) {
+            if (!storeVault(v)) {
+              throw new Error('This browser refused to store anything. Private browsing?');
+            }
+            token = tok;
+            if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
+            ready(repo);
+          });
+        })
+        .catch(function (err) {
+          go.disabled = false;
+          working.className = 'msg bad';
+          working.textContent = err.message;
+        });
+    });
+  }
+
+  /* Every visit after that. */
+  function locked() {
+    sub.textContent = 'Locked.';
+    clear(body);
+
+    body.appendChild(el('h2', { textContent: 'Unlock' }));
+
+    var passIn = el('input', { type: 'password', id: 'pass',
+      autocomplete: 'current-password', placeholder: 'passphrase' });
+    body.appendChild(el('label', { for: 'pass', textContent: 'Passphrase' }));
+    body.appendChild(passIn);
+
+    var go = el('button', { type: 'button', textContent: 'Unlock' });
+    body.appendChild(go);
+
+    var forget = el('button', { type: 'button', className: 'quiet',
+      textContent: 'Forget this device' });
+    body.appendChild(forget);
+    body.appendChild(el('p', { className: 'small', textContent:
+      'Forgetting removes the encrypted token from this browser. It does not revoke ' +
+      'it — do that on GitHub, which is also what to do if the device is lost.' }));
+
+    function attempt() {
+      var pass = passIn.value;
+      var old = body.querySelector('.msg');
+      if (old) old.parentNode.removeChild(old);
+      if (!pass) return;
+
+      go.disabled = true;
+      var working = say(body, 'Unlocking…', 'spin');
+
+      unseal(pass, vault())
+        .then(function (tok) {
+          working.textContent = 'Asking GitHub…';
+          return reachRepo(tok).then(function (repo) {
+            token = tok;
+            ready(repo);
+          });
+        })
+        .catch(function (err) {
+          go.disabled = false;
+          working.className = 'msg bad';
+          working.textContent = /operation-specific reason|OperationError|decrypt/i.test(err.name + err.message)
+            ? 'That is not the passphrase for this device.'
+            : err.message;
+        });
+    }
+
+    go.addEventListener('click', attempt);
+    passIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') attempt(); });
+
+    forget.addEventListener('click', function () {
+      dropVault();
+      token = null;
+      boot();
+    });
+
+    passIn.focus();
+  }
+
+  /* In. */
+  function ready(repo) {
+    sub.textContent = 'Unlocked on this device.';
+    clear(body);
+    touch();
+
+    body.appendChild(el('h2', { textContent: 'Ready' }));
+
+    var facts = el('dl', { className: 'facts' });
+    function fact(term, value) {
+      facts.appendChild(el('div', {}, [
+        el('dt', { textContent: term }),
+        el('dd', { textContent: value })
+      ]));
+    }
+    fact('Repository', repo.name);
+    fact('Write access', repo.canWrite ? 'yes' : 'no — read only');
+    fact('Publishes to', repo.branch);
+    if (repo.expires) fact('Token expires', repo.expires);
+    body.appendChild(facts);
+
+    body.appendChild(el('p', { className: 'note', textContent:
+      'Posting a story goes here next: photo, the day it goes up, and which place it ' +
+      'belongs to. It stands for 36 hours, and the picture moves onto the place afterwards.' }));
+
+    var lock = el('button', { type: 'button', className: 'quiet', textContent: 'Lock' });
+    lock.addEventListener('click', function () { token = null; boot(); });
+    body.appendChild(lock);
+
+    var forget = el('button', { type: 'button', className: 'quiet',
+      textContent: 'Forget this device' });
+    forget.addEventListener('click', function () {
+      dropVault();
+      token = null;
+      boot();
+    });
+    body.appendChild(forget);
+  }
+
+  /* ------------------------------------------------------------ idle lock */
+
+  function touch() {
+    window.clearTimeout(idleTimer);
+    if (!token) return;
+    idleTimer = window.setTimeout(function () {
+      token = null;
+      boot();
+    }, IDLE_MS);
+  }
+
+  ['pointerdown', 'keydown'].forEach(function (kind) {
+    window.addEventListener(kind, function () { if (token) touch(); }, { passive: true });
+  });
+
+  /* ----------------------------------------------------------------- boot */
+
+  function boot() {
+    clear(body);
+    if (!window.crypto || !window.crypto.subtle) return insecure();
+    return vault() ? locked() : setup();
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>
