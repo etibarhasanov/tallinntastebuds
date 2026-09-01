@@ -2779,6 +2779,13 @@
    * a place on this map, and pressing it lands you on that place with the pin
    * already open, rather than in a browser somewhere else.
    *
+   * A story does not have to be posted at the moment it is written, either.
+   * An entry carries the day and time it goes up, and the browser is what
+   * starts it: nothing is deployed at nine in the morning, the file was
+   * already there, and the ring appears on the minute for whoever is looking.
+   * Coming down is the same clock read the other way, and the tidying up
+   * afterwards is tools/stories.mjs on a cron — see the README.
+   *
    * It all lives in data/stories.json, and it is optional in the same way the
    * radio is: an empty file means no ring, no viewer, nothing changed. See
    * the README for how an entry is written.
@@ -2804,6 +2811,14 @@
      enough to read a line of writing on it, short enough that nobody taps
      past it out of impatience. An entry can set its own "seconds". */
   var STORY_PHOTO_MS = 6000;
+  /* How long a story stands for when its entry only says when it goes up.
+     A day and a half: long enough that somebody who only opens the map in the
+     evening still catches a thing posted that morning, short enough that the
+     countdown is the reason to open it now rather than later. It is 36 real
+     hours rather than "a day and a half of dates", so a window that steps
+     over the night the clocks change is still 36 hours of somebody's life.
+     tools/clock.mjs holds the same number for the validator and the cron. */
+  var STORY_HOURS = 36;
 
   var storyHoldTimer = null;
   var storyFrame = null;
@@ -2854,6 +2869,30 @@
     return wall - tallinnOffset(wall - tallinnOffset(wall));
   }
 
+  /* ------------------------------------------------------------- the window
+   * When a story goes up, and when it goes. One place works it out and
+   * everything else asks it, because "is this up" is asked once a minute and
+   * getting two answers out of it would put the ring and the viewer at odds.
+   *
+   *   from and until   exactly what they say
+   *   from only        36 hours from the moment it goes up  <- the usual one
+   *   until only       up from the moment "live" is true, until then
+   */
+  function storyStart(story) {
+    /* No "from" is not "no idea": it is up already, which is any instant at
+       or before now. */
+    if (!story || !story.from) return -Infinity;
+    var from = tallinnTime(story.from);
+    return from === from ? from : -Infinity;
+  }
+
+  function storyEnd(story) {
+    if (!story) return NaN;
+    if (story.until) return tallinnTime(story.until);
+    var from = story.from ? tallinnTime(story.from) : NaN;
+    return from === from ? from + STORY_HOURS * 3600000 : NaN;
+  }
+
   /* ------------------------------------------------------------- the queue */
 
   /* Up, in the order the file lists them. A story that is switched off, has
@@ -2863,20 +2902,22 @@
     var now = Date.now();
     return (state.stories || []).filter(function (s) {
       if (!s || s.live !== true || !(s.video || s.photo)) return false;
-      var until = tallinnTime(s.until);
-      if (!(until > now)) return false;
-      if (s.from) {
-        var from = tallinnTime(s.from);
-        if (from === from && from > now) return false;
-      }
-      return true;
+      var end = storyEnd(s);
+      if (!(end > now)) return false;
+      return !(storyStart(s) > now);
     });
   }
 
-  /* Watched is remembered per story and per expiry: repost under the same id
-     with a new "until" and the ring lights up again, which is what reposting
-     means. Only the stories still up are kept, so the entry in somebody's
-     browser cannot grow for ever. */
+  /* Watched is remembered per story and per run: repost under the same id
+     with a new time and the ring lights up again, which is what reposting
+     means. It is the times as the file writes them rather than the instant
+     they work out to, so an entry that has been left alone keeps its answer
+     across a change to the default window. Only the stories still up are
+     kept, so the entry in somebody's browser cannot grow for ever. */
+  function storyVersion(story) {
+    return (story.from || '') + '/' + (story.until || '');
+  }
+
   function storiesSeen() {
     try {
       var raw = JSON.parse(storeGet(STORY_SEEN_KEY) || '{}');
@@ -2884,11 +2925,11 @@
     } catch (e) { return {}; }
   }
 
-  function storySeen(story) { return storiesSeen()[story.id] === story.until; }
+  function storySeen(story) { return storiesSeen()[story.id] === storyVersion(story); }
 
   function markStorySeen(story) {
     var seen = storiesSeen();
-    seen[story.id] = story.until;
+    seen[story.id] = storyVersion(story);
     var kept = {};
     liveStories().forEach(function (s) {
       if (seen[s.id] !== undefined) kept[s.id] = seen[s.id];
@@ -2913,7 +2954,7 @@
      under the hour, hours under the day, days above it — the same ladder a
      phone uses, because past a point the exact number stops being the point. */
   function storyLeft(story) {
-    var ms = tallinnTime(story.until) - Date.now();
+    var ms = storyEnd(story) - Date.now();
     if (!(ms >= 60000)) return t('storyLeftSoon');
     var mins = Math.floor(ms / 60000);
     if (mins < 60) return t('storyLeftMinutes', { n: mins });

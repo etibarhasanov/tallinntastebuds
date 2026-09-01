@@ -20,15 +20,16 @@
  *   - a phone number that is not in international form, such as +372 661 0180
  *   - a deal in deals.json for a place that does not exist, sharing a key with
  *     another deal, or switched live with nothing written in it
- *   - a story in stories.json with no end time, an end before its start, no
- *     video or photo (or both), a file that is not in the repo, or a link to
- *     a place that does not exist
+ *   - a story in stories.json with neither a start nor an end time, an end
+ *     before its start, no video or photo (or both), a file that is not in
+ *     the repo, or a link to a place that does not exist
  *
  * Warns on:
  *   - placeholder blurbs, missing reels, missing phone numbers, missing blurb translations
  *   - unused taxonomy types, photo folders with no matching restaurant
- *   - a story that is still switched on after its time ran out, and a video in
- *     stories/ that no story names
+ *   - a story that is still switched on after its time ran out, a story asked
+ *     to stand for much longer than the 36 hours one gets by default, and a
+ *     video in stories/ that no story names
  *   - unknown keys in a restaurant object (catches typos)
  */
 
@@ -37,6 +38,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
 import { stale as staleStamps } from './stamp.mjs';
+import { STORY_HOURS, HOUR_MS, storyWindow, storyPhase } from './clock.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DATA = join(ROOT, 'data');
@@ -479,12 +481,18 @@ function todayStamp() {
 
    Times are Tallinn wall clock, "2026-09-14T21:00", because that is the clock
    the person writing the file and the person watching the video are both
-   reading. assets/app.js turns them into instants. */
+   reading. assets/app.js turns them into instants, and tools/clock.mjs works
+   out the window an entry stands for: "from" plus 36 hours unless "until"
+   says otherwise. */
 
 const STORY_KEYS = new Set(['id', 'live', 'video', 'photo', 'seconds', 'poster', 'from', 'until', 'caption', 'spot', 'link', 'linkLabel']);
 const STAMP = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]$/;
 const VIDEO_FILE = /^[A-Za-z0-9._-]+\.(mp4|webm|mov|m4v)$/i;
 const POSTER_FILE = /^[A-Za-z0-9._-]+\.(webp|jpg|jpeg|png|avif)$/i;
+/* Where an explicitly written "until" stops being a story. Two days is what
+   the README has always said is the most anyone will wait, and the default
+   window is a day and a half, so this only ever fires on a deliberate one. */
+const LONG_WINDOW_MS = 48 * HOUR_MS;
 
 const STORIES = join(ROOT, 'stories');
 const storiesPath = join(DATA, 'stories.json');
@@ -582,13 +590,18 @@ if (stories !== null && !Array.isArray(stories)) {
         fail(where, `"${field}" must be a Tallinn date and time like 2026-09-14T21:00`);
       }
     }
-    if (!isNonEmptyString(story.until)) {
-      /* The countdown is the point. A story with no end is a video. */
-      fail(where, '"until" is required — a story is a thing that goes away');
-    }
-    if (story.from && story.until && STAMP.test(story.from) && STAMP.test(story.until)
-        && story.from >= story.until) {
+    /* The countdown is the point: a story is a thing that goes away, so it has
+       to be possible to say when. It rarely has to be written down, though —
+       "from" and the 36 hours every story gets is the usual way to say it, and
+       the only one that survives being scheduled a week out and forgotten. */
+    const window = storyWindow(story);
+    if (!window.until) {
+      fail(where, '"from" or "until" is required — without one of them nothing knows when the story goes away');
+    } else if (window.from && window.fromMs >= window.untilMs) {
       fail(where, '"from" is not before "until", so the story can never be up');
+    } else if (window.explicit && window.from && window.untilMs - window.fromMs > LONG_WINDOW_MS) {
+      const hours = Math.round((window.untilMs - window.fromMs) / HOUR_MS);
+      warn(where, `stands for ${hours} hours — a story gets ${STORY_HOURS}, and past two days nobody is hurrying. Leave "until" out for the default, or make it a "reel" on the place.`);
     }
 
     for (const field of ['caption', 'linkLabel']) {
@@ -620,23 +633,14 @@ if (stories !== null && !Array.isArray(stories)) {
        than a draft: it needs to still be running, and to say something in
        English at minimum, which is what every language falls back to. */
     if (story.live === true) {
-      if (story.until && STAMP.test(story.until) && story.until < nowStamp()) {
-        warn(where, `is live but ran out on ${story.until.replace('T', ' ')}`);
+      if (window.until && window.untilMs <= Date.now()) {
+        warn(where, `is live but ran out on ${window.until.replace('T', ' ')} — \`node tools/stories.mjs --tick\` files it away`);
       }
       if (isPlainObject(story.caption) && !isNonEmptyString(story.caption.en)) {
         warn(where, 'has a caption but none in English, which is the fallback every language uses');
       }
     }
   });
-}
-
-function nowStamp() {
-  /* Tallinn's own clock, for comparing against times written in it. */
-  const parts = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Europe/Tallinn', hour12: false,
-    year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
-  }).format(new Date());
-  return parts.replace(' ', 'T');
 }
 
 if (existsSync(STORIES)) {
@@ -707,7 +711,7 @@ if (errors.length) {
 
 const liveDeals = Array.isArray(deals) ? deals.filter((d) => d && d.live === true).length : 0;
 const liveStories = Array.isArray(stories)
-  ? stories.filter((s) => s && s.live === true && s.until && s.until >= nowStamp()).length
+  ? stories.filter((s) => s && storyPhase(s) === 'up').length
   : 0;
 
 console.log('');

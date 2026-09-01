@@ -26,6 +26,18 @@ on:
       - main
       - claude/tallinn-tastebuds-map-nzoqx0
   workflow_dispatch:
+  # The story cron calls this after it commits. A push made with the built-in
+  # GITHUB_TOKEN deliberately does not start another workflow — that is how
+  # GitHub stops a workflow from triggering itself round and round — so the
+  # cron has to ask for the deploy by name, and hand over the commit it just
+  # wrote, which is newer than the one it was itself started on.
+  workflow_call:
+    inputs:
+      ref:
+        description: The commit or branch to publish. Defaults to the one that started this run.
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -45,6 +57,9 @@ jobs:
       PROD_BRANCH: claude/tallinn-tastebuds-map-nzoqx0
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Empty on a push or a manual run, which is checkout's own default.
+          ref: ${{ inputs.ref }}
 
       - uses: actions/setup-node@v4
         with:

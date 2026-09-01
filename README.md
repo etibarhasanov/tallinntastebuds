@@ -778,9 +778,13 @@ lines, and the guest-facing half stays exactly as it is.
 ## Stories
 
 The one thing on this map that is not permanent. Everything else here is a
-place that will still be there next year; a story is a video that is up for a
-day or two and then is gone, which is the whole reason anybody opens one now
-rather than later.
+place that will still be there next year; a story is a video — or a
+photograph — that is up for **a day and a half** and then is gone, which is
+the whole reason anybody opens one now rather than later.
+
+It can be written today and go up on Saturday, and the photograph in it does
+not disappear when the story does: it moves onto the place it was taken at and
+joins that place's photos. So the story is the moment, and the picture stays.
 
 When something is up, the mark in the top left grows a turning ring — the same
 ring, in the site's own brick and ember, that every profile picture wears when
@@ -822,12 +826,16 @@ the size and the one `ffmpeg` line that gets it there — and add an entry:
 | `photo` | one or the other | An image filename inside `stories/`, for a story that is a picture rather than a film. |
 | `seconds` | optional | How long a **photo** stands there. 6 by default, 2 to 20 allowed. A video has a length of its own, so this does nothing to one. |
 | `poster` | optional | An image filename inside `stories/`, shown for the moment before the **video** has enough of itself to play. |
-| `from` | optional | When it goes up. Leave it out and it is up the moment `live` is `true`. |
-| `until` | **required** | When it goes. There is no story without this. |
+| `from` | one of the two | When it goes up. Leave it out and it is up the moment `live` is `true`. |
+| `until` | one of the two | When it goes. Leave it out and it is **36 hours after `from`**, which is the usual way to write one. |
 | `caption` | optional | A line under the video, per language, exactly like a `blurb`. |
 | `spot` | optional | A place id from `restaurants.json`. The button under the video opens that place on this map. |
 | `link` | optional | A full `https://` address instead. Opens in a new tab. |
 | `linkLabel` | optional | What the button says, per language. Without it a `spot` reads "See Kokomo" and a `link` reads "Open the link". |
+
+An entry needs a `from` or an `until` between them, because a story that never
+goes away is not a story. Almost always that is a `from`: say when it goes up
+and the 36 hours take care of the rest.
 
 A story is a `video` or a `photo` — one of them, never both and never neither.
 A photograph runs on the viewer's own clock instead of the file's: the bar
@@ -839,6 +847,78 @@ it differs, except that there is no sound button on something with no sound.
 carries one or the other, never both. An entry with neither is a video with no
 button, which is a perfectly good story.
 
+### Post it on Saturday
+
+A story does not have to be written at the moment it goes up. Put the file in
+`stories/`, say which day it is for, and walk away:
+
+```bash
+node tools/stories.mjs --schedule kokomo-brunch.webp \
+                       --spot kokomo \
+                       --at 2026-09-14T09:00 \
+                       --caption "Sunday brunch at Kokomo. The last table goes at noon."
+```
+
+That writes the entry — `live: true`, `from: 2026-09-14T09:00`, no `until`,
+because 36 hours is the answer — and nothing else happens. It is a normal
+entry; write it by hand if you would rather. Open `data/stories.json`
+afterwards to fill in the caption in the other languages.
+
+**Nothing is deployed on Saturday morning.** The file went up the day you
+committed it, and `assets/app.js` reads the same `from` you wrote and starts
+the story on the minute, in whoever's browser is looking — `data/*` is served
+`must-revalidate`, so a phone opening the map at 09:01 asks the origin and
+gets a story that was sitting there all week. That is the whole reason the
+time lives in the file rather than in a queue somewhere: there is nothing to
+be awake for, and nothing to go wrong at nine in the morning.
+
+To see where everything stands:
+
+```bash
+node tools/stories.mjs
+```
+
+```
+UP NOW
+  pulla-bakery-cinnamon-bun        video pulla-bakery-cinnamon-bun.mp4 -> pulla-bakery
+                                   until 2026-09-02 21:00, 1d 4h left  (36h window)
+
+QUEUED
+  kokomo-brunch                    photo kokomo-brunch.webp -> kokomo
+                                   goes up 2026-09-14 09:00, comes down 2026-09-15 21:00  (36h window)
+```
+
+### And the cron picks it up afterwards
+
+[`.github/workflows/stories.yml`](.github/workflows/stories.yml) runs
+`node tools/stories.mjs --tick` on the hour. It is not what makes a story
+appear — the browser did that already, on the minute, with nobody awake. It is
+what happens **once the 36 hours are over**, which is the part a person
+forgets:
+
+- A **photograph with a `spot`** moves into `photos/<spot>/`, numbered like
+  every other photo there, and is listed on the place. The entry and the file
+  in `stories/` go with it. The story expires; the picture becomes one of that
+  restaurant's photos, and is in the lightbox from then on.
+- **Anything else** — a video, or a photograph of nothing in particular — is
+  switched to `live: false` and left exactly where it is. Deleting somebody's
+  video is somebody's decision, not a cron job's.
+
+Then it commits, and asks the Cloudflare workflow to publish, so the site
+catches up within the hour. On an hour with nothing due it touches nothing and
+writes no commit, which is almost every hour.
+
+You can run the same thing yourself, and look before you leap:
+
+```bash
+node tools/stories.mjs --tick --dry-run    # say what would happen
+node tools/stories.mjs --tick              # do it
+```
+
+> GitHub stops scheduled workflows in a repository that has had no activity for
+> 60 days, and says so in the Actions tab. If stories ever stop clearing
+> themselves, that is the first thing to check — one push starts it again.
+
 ### The clock
 
 `from` and `until` are **Tallinn wall clock**, written `YYYY-MM-DDTHH:MM`:
@@ -847,22 +927,29 @@ your own laptop's clock is set to. That is the only clock you and the person
 watching are both reading. Summer time is worked out for you, so there is no
 offset to write and no offset to get wrong.
 
-The countdown under the name says `3d left`, then `18h left`, then `44m left`,
+The countdown under the name says `1d left`, then `18h left`, then `44m left`,
 then `Going now` — the same ladder a phone uses, because past a point the
-exact number stops being the point. The moment `until` passes, the story stops
+exact number stops being the point. The moment the end passes, the story stops
 being shown: the ring goes, the viewer will not open it, and a `?story=` link
 to it lands on the plain map instead. Nothing has to be edited for that to
 happen, which is what makes this safe to post at midnight and forget.
 
-**A day is a good length. Two is the most anyone will sit through the wait
-for.** If a video is still worth watching next week, it is not a story — it is
-a `reel` on the place itself.
+**Every story gets 36 hours.** A day and a half is long enough that somebody
+who only opens the map in the evening still catches a thing posted that
+morning, and short enough that the countdown is a reason to look now rather
+than later. It is 36 *real* hours, so a story that runs over the night the
+clocks change is still 36 hours of somebody's life rather than 35 of them.
+
+Write an `until` and you get exactly that instead — but if it comes out past
+two days the validator will say so, gently, and it is usually right. If a
+video is still worth watching next week, it is not a story: it is a `reel` on
+the place itself.
 
 ### Watched, and posting again
 
 A browser remembers which stories it has watched, and the ring stops turning
-and goes grey once they all have been. It remembers the `id` **and** the
-`until` together, so reposting under the same id with a new `until` lights the
+and goes grey once they all have been. It remembers the `id` **and** the times
+written next to it, so reposting under the same id with a new `from` lights the
 ring again for everybody — which is what reposting means. Nothing is sent
 anywhere: it is one entry in that browser's own storage, and it is thrown away
 as each story runs out.
@@ -901,10 +988,16 @@ to a pointer.
 
 ### Taking one down
 
-Nothing needs taking down. `until` does it. Once a story has been gone for a
-while, delete its entry and its video together — the repo does not need to
-carry every video ever posted, and the validator says so, gently, about a file
-in `stories/` that no entry names.
+Nothing needs taking down. The clock does it, and the cron tidies up after the
+clock: a photograph of a place ends up on that place, and everything else is
+switched off and left for you. Once a video has been gone for a while, delete
+its entry and the file together — the repo does not need to carry every video
+ever posted, and the validator says so, gently, about a file in `stories/`
+that no entry names.
+
+To pull something down early, set `live` to `false`, or take the entry out
+altogether. Both are immediate for anybody who loads the map after it, which
+is everybody: nothing about a story is cached beyond the page it is on.
 
 ---
 
@@ -1059,9 +1152,10 @@ to read and write first.
   malformed `website`
 - a `phone` that is not in international form — `+372 661 0180`, not `6610180`
 - a malformed `added` date — it has to be `YYYY-MM-DD`
-- a story with no `until`, an `until` before its `from`, neither a `video` nor a
-  `photo` (or both), a file that is not in `stories/`, a `seconds` outside
-  2–20, a `spot` that is not a place, or both a `spot` and a `link`
+- a story with neither a `from` nor an `until`, an `until` before its `from`,
+  neither a `video` nor a `photo` (or both), a file that is not in `stories/`,
+  a `seconds` outside 2–20, a `spot` that is not a place, or both a `spot` and
+  a `link`
 - a `?v=` cache stamp in the HTML that no longer matches the file it points at
   (run `node tools/stamp.mjs` and commit the result)
 
@@ -1075,7 +1169,10 @@ to read and write first.
 - taxonomy types nothing uses
 - folders in `photos/` that no place points at
 - unknown keys on a place object (this is how you catch `blrub`)
-- a story left `live` after its time ran out
+- a story left `live` after its time ran out — `node tools/stories.mjs --tick`
+  is what files it away
+- a story given an `until` that has it standing for more than two days, when
+  every story gets 36 hours by leaving `until` out
 - a file in `stories/` that no story in `data/stories.json` names
 - a `seconds` on a video or a `poster` on a photo, neither of which does
   anything
@@ -1102,13 +1199,16 @@ data/restaurants.json      the only file you edit regularly
 data/taxonomy.json         the controlled vocabulary of types
 data/ui.json               every interface string, in every language
 data/deals.json            the discounts, and which of them are live
-data/stories.json          the stories, and when each one goes away
+data/stories.json          the stories, when each goes up and when it goes away
 data/schema.json           JSON Schema, for editor autocomplete
 photos/<restaurant-id>/    photos, one folder per place
 stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
+tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
+tools/stories.mjs          the story queue: what is up, schedule one, tick
 .github/workflows/validate.yml
+.github/workflows/stories.yml   the hourly tick, and the tidying up after it
 ```
 
 Deep links: `?spot=f-hoone` opens that place directly — that is the link to put

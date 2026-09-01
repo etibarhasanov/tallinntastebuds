@@ -11,7 +11,7 @@ stories/pulla-bakery-window.webp          or a photo story, which is just the pi
 
 `data/stories.json` names the file, never a path: the folder is always this
 one. See **[Stories](../README.md#stories)** in the main README for the entry
-itself, the expiry, and the link a story carries.
+itself, the 36 hours it stands for, and the link a story carries.
 
 ## What a file should be
 
@@ -24,7 +24,12 @@ and it wants to be small:
   in a `.webm` is smaller and Safari will not touch it. HEVC is what an iPhone
   records and what only Safari plays — always convert.
 - **Photo: `.webp` or `.jpg`,** the same as the photos on the places. A
-  photo story stands for six seconds unless the entry says otherwise.
+  photo story stands for six seconds unless the entry says otherwise — and if
+  the entry carries a `spot`, that file is going to *become* one of that
+  place's photos once the story is over, so shoot it as a picture worth
+  keeping rather than a frame with words across it. It arrives in the
+  lightbox upright, which is fine: the lightbox has always taken a photo the
+  shape it was given.
 - **Under 15 seconds and under 8 MB.** Cloudflare Pages refuses a file over
   25 MB outright, and a phone on a tram gives up long before that.
 - **Burn the words in, or write them in `caption`.** There are no subtitles
@@ -71,7 +76,15 @@ ffmpeg -i stories/kokomo-brunch.mp4 -ss 0.3 -frames:v 1 -vf "scale=540:-2" -q:v 
 
 ## Take them out again
 
-A story that has run out stops being shown the moment its `until` passes, but
-the file stays in the repo until it is deleted. Once a story is off the map,
-delete its entry and its file together — nothing links to either, and the repo
-does not need to carry every video ever posted.
+A story stops being shown the moment its time is up — 36 hours after it went
+up, unless the entry wrote its own `until`. What happens to the file afterwards
+depends on what it is, and `node tools/stories.mjs --tick` does it on the hour
+without being asked:
+
+- **A photograph with a `spot`** is moved into `photos/<that place>/`, numbered
+  after the photos already there, and listed on the place. It leaves this
+  folder entirely. The story was the moment; the picture stays.
+- **A video, or a photograph of nothing in particular,** is switched to
+  `live: false` and left here. Deleting it is your decision — do it once it has
+  been gone a while, entry and file together, and the validator will mention
+  the file until you do.
