@@ -2283,13 +2283,13 @@
         place.visited ? el('dd', { textContent: formatMonth(place.visited) }) : null
       ]),
       el('div', { className: 'link-row' }, [
-        el('a', {
+        trackClick(el('a', {
           className: 'link-btn is-primary',
           href: 'https://www.google.com/maps/dir/?api=1&destination=' + place.lat + ',' + place.lng,
           target: '_blank',
           rel: 'noopener',
           textContent: t('directions')
-        }),
+        }), 'directions', { place: place.name }),
         /* Calling sits next to the directions, which is the other thing you
            do about a place rather than to read about it: how to get there,
            and how to ask whether it is worth setting off. It rode with the
@@ -2298,13 +2298,13 @@
            button, and the number itself is still in the facts above. */
         place.phone ? callButton(place) : null,
         place.website
-          ? el('a', {
+          ? trackClick(el('a', {
               className: 'link-btn',
               href: place.website,
               target: '_blank',
               rel: 'noopener',
               textContent: t('website')
-            })
+            }), 'website', { place: place.name })
           : null
       ])
     ]));
@@ -2466,6 +2466,7 @@
         })
       ]);
       button.addEventListener('click', function () {
+        trackEvent('photo_open', { place: place.name, photo_index: i + 1 });
         openLightbox(place, i, button);
       });
       grid.appendChild(button);
@@ -3489,12 +3490,21 @@
    *
    * And an event per deliberate action: which filter chips get pressed,
    * which language and colour people pick, whether they press Surprise me,
-   * whether they play a reel. None of that changes the address bar on its
-   * own, and GA only ever sees a URL, so without these events the whole of
-   * it was invisible. They show up under Reports, Engagement, Events, and
-   * the parameters (filter_id, language, style) need registering once as
-   * custom dimensions in Admin if you want to break the numbers down by
-   * them.
+   * whether they play a reel, and which buttons on an open place get used —
+   * directions, call, website, the deal, the photographs. None of that
+   * changes the address bar on its own, and GA only ever sees a URL, so
+   * without these events the whole of it was invisible. They show up under
+   * Reports, Engagement, Events, and the parameters (place, filter_id,
+   * language, style) need registering once as custom dimensions in Admin if
+   * you want to break the numbers down by them.
+   *
+   * The full list, so it can be read without hunting through the file:
+   *   directions, call_place, website, deal_open  — leaving for the place
+   *   photo_open, reel_load                       — looking at the place
+   *   story_open, story_link                      — the stories ring
+   *   filter_select, filter_clear, filters_open, search  — narrowing down
+   *   list_open, cluster_open, random_pick, locate       — the map controls
+   *   radio_play, radio_stop, language_select, style_select
    *
    * To remove tracking completely: delete the gtag block in index.html and
    * these two functions. Every call below becomes a harmless no-op.
@@ -3509,6 +3519,13 @@
   function trackEvent(name, params) {
     if (typeof window.gtag !== 'function') return;
     window.gtag('event', name, params || {});
+  }
+
+  /* Attaches a report to a link or button that is built inline, and hands
+     the same node back so it can stay inside the array it was written in. */
+  function trackClick(node, name, params) {
+    if (node) node.addEventListener('click', function () { trackEvent(name, params); });
+    return node;
   }
 
   function trackView(title) {
@@ -3619,7 +3636,9 @@
     wireTopGuard();
 
     dom.btnFilters.addEventListener('click', function () {
-      setFilterMenu(!filterMenuOpen());
+      var opening = !filterMenuOpen();
+      if (opening) trackEvent('filters_open');
+      setFilterMenu(opening);
     });
 
     dom.filters.addEventListener('scroll', updateFilterFades, { passive: true });
