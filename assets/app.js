@@ -57,7 +57,12 @@
   var PIN_D = 22;            /* every pin */
   var PIN_D_WORDS = 17;      /* the write-up-only ones, drawn smaller */
   var PIN_D_SELECTED = 34;   /* the one you are looking at */
+  var PIN_D_KEPT = 29;       /* the one you were looking at, panel now shut */
   var PIN_BOX = 46;          /* the icon box each of those is centred in */
+  /* How close the map settles on a single place — opening one, closing one,
+     or filtering down to one. Street level: near enough that the pin sits in
+     a block you can recognise and walk from, rather than in a city. */
+  var FOCUS_ZOOM = 16;
   var STYLE_KEY = 'ttb.style';
   var TILE_ATTRIBUTION =
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
@@ -80,6 +85,12 @@
     radio: null,         // the station from data/radio.json, or nothing
     active: [],          // selected type ids, OR semantics; empty means "All"
     selected: null,      // restaurant id, or null
+    /* The place you last opened, kept lit on the map after the panel shuts.
+       Closing a write-up used to put the pin back in the crowd, so the answer
+       to "where was that one?" went out with the panel that raised the
+       question. The mark outlives the panel and only a different place, or a
+       filter that rules it out, takes it. */
+    marked: null,        // restaurant id, or null
     view: 'list',        // 'list' | 'detail'
     lastFocus: null,
     lb: { photos: [], index: 0, base: '', name: '', opener: null },
@@ -703,6 +714,23 @@
     };
   }
 
+  /* Chosen is the place whose panel is open; kept is the place whose panel
+     was open until you shut it. Both are lit — bigger, named, haloed, never
+     folded into a cluster — because both answer the same question about where
+     something is. Kept is drawn a step down from chosen, so the map still
+     says which of the two you are in. */
+  function isChosen(place) { return !!place && place.id === state.selected; }
+  function isKept(place) {
+    return !!place && !!state.marked && place.id === state.marked && place.id !== state.selected;
+  }
+  function isLit(place) { return isChosen(place) || isKept(place); }
+
+  function pinSize(place) {
+    if (isChosen(place)) return PIN_D_SELECTED;
+    if (isKept(place)) return PIN_D_KEPT;
+    return pinDepth(place) === 'words' ? PIN_D_WORDS : PIN_D;
+  }
+
   /* How much of a place there is to look at, which is what the pin says:
      something to watch, something to look at, or the write-up alone. */
   function pinDepth(place) {
@@ -779,12 +807,17 @@
      lets pointer events reach the label and makes the marker the label's event
      parent, so one click handler serves both. A hover tooltip stays inert —
      it is only there because the pointer is already on the dot. */
-  function tooltipFor(marker, name, permanent, chosen) {
+  /* Three readings, not two: the open one wears the accent, the one you last
+     had open wears the same label a shade quieter, and the rest are the grey
+     names that fit. */
+  function tooltipFor(marker, name, permanent, chosen, kept) {
     marker.unbindTooltip();
     marker.bindTooltip(name, {
-      className: 'pin-tip' + (chosen ? ' pin-tip-on' : '') + (permanent && !chosen ? ' pin-tip-quiet' : ''),
+      className: 'pin-tip' + (chosen ? ' pin-tip-on' : '') +
+        (kept ? ' pin-tip-kept' : '') +
+        (permanent && !chosen && !kept ? ' pin-tip-quiet' : ''),
       direction: 'top',
-      offset: [0, chosen ? -23 : (permanent ? -18 : -15)],
+      offset: [0, chosen ? -23 : (kept ? -20 : (permanent ? -18 : -15))],
       opacity: 1,
       interactive: !!permanent,
       permanent: !!permanent
@@ -832,7 +865,7 @@
     var taken = [];
     queue.forEach(function (p) {
       var pt = map.latLngToContainerPoint([p.lat, p.lng]);
-      var r = (p.id === state.selected ? PIN_D_SELECTED : PIN_D) / 2 + 2;
+      var r = Math.max(pinSize(p), PIN_D) / 2 + 2;
       taken.push({ x: pt.x - r, y: pt.y - r, w: r * 2, h: r * 2 });
     });
     clusterPins.forEach(function (pin) {
@@ -841,11 +874,10 @@
       taken.push({ x: pt.x - r, y: pt.y - r, w: r * 2, h: r * 2 });
     });
 
-    /* The chosen place first, so a collision never costs it its name. */
+    /* The lit places first, so a collision never costs one of them its name. */
     queue.sort(function (a, b) {
-      if (a.id === state.selected) return -1;
-      if (b.id === state.selected) return 1;
-      return 0;
+      if (isLit(a) === isLit(b)) return 0;
+      return isLit(a) ? -1 : 1;
     });
 
     queue.forEach(function (place) {
@@ -866,14 +898,18 @@
     state.places.forEach(function (place) {
       var marker = markers[place.id];
       if (!marker) return;
-      var chosen = place.id === state.selected;
-      var wants = chosen || !!plan[place.id];
+      var chosen = isChosen(place);
+      var kept = isKept(place);
+      /* A lit place keeps its name whatever the layout said: it is the one
+         the map is being asked about. */
+      var wants = chosen || kept || !!plan[place.id];
       var tip = marker.getTooltip();
+      var cls = (tip && tip.options.className) || '';
       var isOn = !!(tip && tip.options.permanent);
-      var wasChosen = !!(tip && tip.options.className &&
-        tip.options.className.indexOf('pin-tip-on') !== -1);
-      if (!tip || isOn !== wants || wasChosen !== chosen) {
-        tooltipFor(marker, place.name, wants, chosen);
+      var wasChosen = cls.indexOf('pin-tip-on') !== -1;
+      var wasKept = cls.indexOf('pin-tip-kept') !== -1;
+      if (!tip || isOn !== wants || wasChosen !== chosen || wasKept !== kept) {
+        tooltipFor(marker, place.name, wants, chosen, kept);
       }
     });
   }
@@ -910,21 +946,25 @@
     /* Reading five custom properties off the root is a layout question, so
        the caller passes them in when it is dressing all seventy at once. */
     var c = colours || markerColours();
-    var chosen = place.id === state.selected;
+    var chosen = isChosen(place);
+    var kept = isKept(place);
     var depth = pinDepth(place);
-    var d = chosen ? PIN_D_SELECTED : (depth === 'words' ? PIN_D_WORDS : PIN_D);
+    var d = pinSize(place);
 
     node.classList.add('pin-mark');
     ['reel', 'photos', 'words'].forEach(function (kind) {
       node.classList.toggle('is-' + kind, depth === kind);
     });
     node.classList.toggle('is-chosen', chosen);
+    node.classList.toggle('is-kept', kept);
     node.classList.toggle('is-shut', !!place.closed);
     node.style.setProperty('--pin-d', d + 'px');
-    node.style.setProperty('--pin-tone', place.closed ? c.muted : (chosen ? c.lit : c.accent));
+    node.style.setProperty('--pin-tone',
+      place.closed ? c.muted : ((chosen || kept) ? c.lit : c.accent));
 
-    /* No bringToFront on an icon marker; the stacking is the z offset. */
-    if (marker.setZIndexOffset) marker.setZIndexOffset(chosen ? 400 : 0);
+    /* No bringToFront on an icon marker; the stacking is the z offset. The
+       kept pin sits above the crowd and under the open one. */
+    if (marker.setZIndexOffset) marker.setZIndexOffset(chosen ? 400 : (kept ? 300 : 0));
   }
 
   /* Paints every pin for the current selection and the current style. Doubles
@@ -936,29 +976,31 @@
     state.places.forEach(function (place) {
       var marker = markers[place.id];
       if (!marker) return;
-      var chosen = place.id === state.selected;
 
       dressPin(place, c);
 
       var ring = closedRings[place.id];
       if (ring) {
         ring.setStyle({ color: c.muted });
-        ring.setRadius((chosen ? PIN_D_SELECTED : PIN_D) / 2 + 4);
+        ring.setRadius(Math.max(pinSize(place), PIN_D) / 2 + 4);
       }
     });
 
     paintLabels();
 
     clearHalo();
-    var place = state.selected ? byId(state.selected) : null;
+    /* The halo follows the lit place, which is the open one while a panel is
+       open and the one you last had open once it is shut. */
+    var place = byId(state.selected || state.marked);
     if (place && map) {
+      var lit = isChosen(place);
       haloMarker = L.circleMarker([place.lat, place.lng], {
-        radius: PIN_D_SELECTED / 2 + 7,
+        radius: pinSize(place) / 2 + 7,
         weight: 2,
         color: c.lit,
-        opacity: .85,
+        opacity: lit ? .85 : .6,
         fill: false,
-        className: 'pin-halo',
+        className: 'pin-halo' + (lit ? '' : ' pin-halo-kept'),
         interactive: false
       }).addTo(map);
       if (haloMarker.bringToBack) haloMarker.bringToBack();
@@ -980,7 +1022,10 @@
   function focusOn(place, zoomIn) {
     if (!map) return;
     var size = map.getSize();
-    var zoom = zoomIn ? Math.max(map.getZoom(), 15) : map.getZoom();
+    /* Never back out: a place you have gone to the trouble of opening is a
+       street question, so the map comes in to FOCUS_ZOOM if it is further out
+       than that and stays where it is if you had already gone closer. */
+    var zoom = zoomIn ? Math.max(map.getZoom(), FOCUS_ZOOM) : map.getZoom();
 
     var wantX = size.x / 2;
     var wantY = size.y / 2;
@@ -1381,12 +1426,14 @@
     var pool = [];
 
     visiblePlaces().forEach(function (p) {
-      if (p.id !== state.selected) pool.push(p);
+      if (!isLit(p)) pool.push(p);
     });
     /* Whatever the filters say, the place whose panel is open keeps its pin.
        A shared link to a place the chips exclude would otherwise open a panel
-       pointing at nothing. */
+       pointing at nothing. The place you last had open keeps its pin for the
+       same reason: a cluster swallowing it is the map forgetting it. */
     if (state.selected) alone[state.selected] = true;
+    if (state.marked && byId(state.marked)) alone[state.marked] = true;
 
     clearClusters();
 
@@ -1419,6 +1466,13 @@
   }
 
   function applyFilters(change) {
+    /* A chip that rules the marked place out takes the mark with it: a lit
+       pin for a place the filter says you are not looking at is the map
+       arguing with the chips. */
+    if (state.marked && state.marked !== state.selected) {
+      var held = byId(state.marked);
+      if (!held || (state.active.length && !matchesFilters(held))) state.marked = null;
+    }
     syncUrl();
     renderFilters();
     if (state.view === 'list') renderPanel();
@@ -1875,6 +1929,11 @@
     dom.btnList.setAttribute('aria-expanded', 'false');
 
     state.selected = null;
+    /* The place stays marked on the map. Shutting the write-up is not losing
+       interest in the place — it is usually the moment you want to see where
+       it is — so the pin keeps its name, its halo and its size, and the map
+       goes on answering the question the panel raised. */
+    if (was) state.marked = was;
     state.view = 'list';
     lastReelKey = null;
     renderPanel();          /* leave the crawlable list in the markup */
@@ -1885,10 +1944,11 @@
     /* The panel was covering half the map, so the pin it was about was parked
        off to one side. With the panel gone, settle the map on it: closing a
        place leaves you looking at where it is, which is the only reason the
-       map is underneath in the first place. */
+       map is underneath in the first place. And it comes in while it is at
+       it — a lit pin in the middle of the whole city is not where it is. */
     if (was) {
       var seen = byId(was);
-      if (seen) focusOn(seen, false);
+      if (seen) focusOn(seen, true);
     }
 
     var back = state.lastFocus;
@@ -1904,6 +1964,8 @@
 
     var fresh = !state.selected;
     state.selected = id;
+    /* One mark at a time: opening a place takes it from whatever held it. */
+    state.marked = id;
     state.view = 'detail';
     renderPanel();
     openPanel();
@@ -2562,9 +2624,18 @@
       var deal = liveDealFor(place);
       var offer = deal ? window.TTBPass.textFor(deal.offer, state.lang) : '';
 
+      /* The list says the same thing the map now says: this is the one you
+         were just reading. It is where you come back to, so it is worth being
+         findable in a list of seventy. */
+      var kept = isKept(place);
+
       var row = el('button', {
         type: 'button',
-        className: 'list-row' + (place.closed ? ' is-closed' : ''),
+        className: 'list-row' + (place.closed ? ' is-closed' : '') + (kept ? ' is-kept' : ''),
+        /* Which is a mark on the list as well as a word in the row's label:
+           aria-current is the one announcement for "the one you are on" that
+           needs no wording of its own in five languages. */
+        'aria-current': kept ? 'true' : null,
         /* The row's own label is what a screen reader reads, so anything the
            row shows has to be spelled into it or it is not there at all. */
         'aria-label': t('openPlace', { name: place.name }) +
