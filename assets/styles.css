@@ -516,10 +516,25 @@ a:hover { color: var(--accent-lit); }
 
 /* When something is up, the mark stops being a picture and becomes a button.
    The ring is drawn outside the box the picture occupies — inset is negative,
-   so nothing in the card moves when a story goes up or runs out — and it
-   turns, slowly enough to read as alive rather than as a loading spinner.
-   The paper gap between ring and photograph is a box-shadow on the mark
-   rather than a border, which is what the pins already wear. */
+   so nothing in the card moves when a story goes up or runs out — and the
+   paper gap between ring and photograph is a box-shadow on the mark rather
+   than a border, which is what the pins already wear.
+
+   Two things move, and they are asking for two different things.
+
+   The ring turns, which says the thing behind it is live. A turning ring is
+   only legible if there is something on it to watch go past, so the gradient
+   is not an even wheel of colour: it has one bright arc in it and the rest is
+   the site's own brick, and that arc is what the eye follows round.
+
+   And every few seconds a second ring leaves it and opens outwards, the way
+   a dropped stone leaves a ripple. That is the part that catches somebody who
+   is not looking at the corner of the screen. It runs for a fifth of its
+   cycle and is gone for the rest, because a thing that pulses without pause
+   is not asking any more, it is nagging — and this is a map somebody is
+   trying to read.
+
+   Both stop the moment the last story has been watched. */
 .brand-ring {
   position: relative;
   display: block;
@@ -534,22 +549,60 @@ a:hover { color: var(--accent-lit); }
   inset: -5px;
   border-radius: 100px;
   background: var(--story-ring);
-  animation: story-spin 7s linear infinite;
+  animation: story-spin 3.4s linear infinite;
+}
+/* The ripple. Drawn as a border with nothing inside it, so what expands over
+   the map is a hoop rather than a disc, and it is behind nothing: the mark
+   sits above it and the photograph is never dimmed by its own halo. */
+.brand-ring::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 100px;
+  border: 2px solid var(--accent-lit);
+  opacity: 0;
+  pointer-events: none;
+  animation: story-ping 4.6s var(--ease) infinite;
 }
 .brand-ring .brand-mark {
   position: relative;
   box-shadow: 0 0 0 2.5px var(--paper);
+  transition: transform .18s var(--ease);
+}
+/* A pointer gets the last nudge: the mark leans up a step under it, which is
+   the plainest way a picture says it is a button. */
+@media (hover: hover) and (pointer: fine) {
+  .brand-ring:hover .brand-mark { transform: scale(1.06); }
 }
 /* Watched, and still up. Instagram greys the ring out at this point and so
    does this, down to the hairline the rest of the site draws its edges in —
-   the story has not gone anywhere, it is just no longer asking. */
+   the story has not gone anywhere, it is just no longer asking. Nothing
+   turns, nothing ripples: it has had its go. */
 .brand-ring.is-seen::before {
   background: var(--story-ring-seen);
   animation: none;
 }
+.brand-ring.is-seen::after { animation: none; }
 .brand-ring:focus-visible { outline-offset: 6px; }
 
 @keyframes story-spin { to { transform: rotate(1turn); } }
+
+/* Two ripples, close together, and then three seconds of nothing: a double
+   blink reads as something signalling, where one on its own can be missed and
+   a steady beat is a fire alarm.
+
+   The reach is deliberately short. A hoop that grows by a third crosses about
+   ten pixels of map and stops, which is enough movement to catch an eye
+   pointed elsewhere and not enough to land on the wordmark sitting 13px away
+   from the mark. Both ripples snap back to the ring's own size while they are
+   invisible, which is the whole trick: the eye only ever sees outward. */
+@keyframes story-ping {
+  0%   { opacity: .6;  transform: scale(1); }
+  13%  { opacity: 0;   transform: scale(1.3); }
+  14%  { opacity: .5;  transform: scale(1); }
+  27%  { opacity: 0;   transform: scale(1.3); }
+  100% { opacity: 0;   transform: scale(1.3); }
+}
 
 .wordmark {
   font-family: var(--display);

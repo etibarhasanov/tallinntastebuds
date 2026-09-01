@@ -1614,11 +1614,25 @@ be changed while the list is showing.
 
 **The ring is the only thing on the page that moves on its own.** Nothing else
 here animates without being asked: pins settle, panels slide, and that is the
-lot. A story is the one thing with a clock running on it, so the one turning
-thing on the page is the ring that says so — and the moment the last one runs
-out it stops turning, goes to the hairline colour, and then goes altogether.
-Under `prefers-reduced-motion` it never turns at all; the ring is still there,
-and it is still the difference between something being up and not.
+lot. A story is the one thing with a clock running on it, so the one moving
+thing on the page is the ring that says so.
+
+It moves twice over, for two different reasons. It **turns**, which says the
+thing behind it is live — and a turning ring is only legible if there is
+something on it to watch go past, so the gradient carries one bright arc
+through the brick rather than being an even wheel of colour. And every few
+seconds a second ring **leaves it and opens outwards**, twice, like a stone
+dropped in water, then nothing for three seconds. That is the half that
+catches somebody whose eye is on the middle of the map. It reaches about ten
+pixels and stops, short of the wordmark 13px away, because the job is to be
+noticed from the corner of an eye rather than to arrive in the middle of the
+card — and it rests between blinks, because a thing that pulses without pause
+has stopped asking and started nagging.
+
+Both stop the moment the last story has been watched: the ring goes to the
+hairline colour and just sits there until it goes altogether. Under
+`prefers-reduced-motion` neither ever runs; the ring is still there, and it is
+still the difference between something being up and not.
 
 **Nothing above the chips drags the map.** That strip is chrome, and the map
 shows through the gaps in it: between the card and the buttons, around the
