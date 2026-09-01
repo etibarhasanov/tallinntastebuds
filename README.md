@@ -1261,15 +1261,71 @@ Two steps, in this order:
 2. **Custom domains.** Add the domain under the Pages project's **Custom
    domains** tab. Cloudflare issues the certificate automatically.
 
-Four lines in the repo name the host — see [Getting found](#getting-found).
+Five lines in the repo name the host — see [Getting found](#getting-found).
 Nothing else needs touching: every path in the site is relative, and the
 scripts build absolute URLs from `window.location.origin`, so the QR codes and
 share links follow whatever host serves them.
 
 `tallinntastebuds.pages.dev` keeps serving the same site after the custom
-domain is attached, which splits the SEO between two hosts. A Cloudflare
-redirect rule from `tallinntastebuds.pages.dev/*` to the custom domain, 301,
-settles it.
+domain is attached, which splits the site between two hosts: Google has to
+guess which one is real, and a link copied out of the address bar carries
+whichever one that person happened to land on. Worse for this site than for
+most, because the QR codes are built from `window.location.origin` — a code
+generated on the pages.dev copy points at the pages.dev copy for as long as
+the sticker is on the table.
+
+`functions/_middleware.js` settles it with a 301 to `tallinntastebuds.ee`,
+path and query intact. It is a Function rather than a line of configuration
+because nothing else can do the job:
+
+- **`_redirects` cannot.** It matches on path only — [domain-level redirects
+  are explicitly unsupported][cf-redirects]. A `/* https://tallinntastebuds.ee/:splat 301`
+  rule there would match on `tallinntastebuds.ee` too and redirect the live
+  site to itself, forever.
+- **Redirect Rules and Bulk Redirects cannot.** Both only apply to zones in
+  your own account, and `pages.dev` is Cloudflare's zone, not yours. There is
+  no dashboard page on which to write this rule. (An earlier version of this
+  section said there was. There is not.)
+
+Only the bare `tallinntastebuds.pages.dev` is redirected. Preview deployments
+live on `<branch>.tallinntastebuds.pages.dev` and `<hash>.tallinntastebuds.pages.dev`,
+and those are the addresses you open to check a change *before* it is live —
+bouncing them to the live site would hide the very thing you went there to
+look at. They carry Cloudflare's own `x-robots-tag: noindex`, so they are not
+a search problem.
+
+`_routes.json` keeps the Function off `/assets`, `/photos`, `/stories`,
+`/data` and `/favicon.ico`. Those are served straight from the edge, so the
+story videos and the photos — much the highest-volume requests here — never
+spend a Functions invocation against the free plan's daily quota.
+
+Two things worth knowing about this arrangement:
+
+- `_headers` still applies. The [docs' caution][cf-headers] is about responses
+  a Function *generates*; a response handed back by `context.next()` comes
+  from the asset server and keeps its header rules. Verified against
+  `wrangler pages dev`: `/` still revalidates and `deal.html` is still
+  `no-store`, with and without the Function.
+- A 301 is cached hard by browsers, which is the point of using one — it is
+  also what makes it awkward to undo. Anyone who has hit the redirect once
+  will keep skipping to `tallinntastebuds.ee` without asking. That is the
+  right trade for a permanent move and the wrong one for an experiment.
+
+To watch it work without deploying, run the site the way Cloudflare does and
+ask it as each host in turn:
+
+```
+npx wrangler pages dev .
+curl -sI -H 'Host: tallinntastebuds.pages.dev' http://127.0.0.1:8788/   # 301
+curl -sI -H 'Host: tallinntastebuds.ee'        http://127.0.0.1:8788/   # 200
+```
+
+`npx` is the one place a dependency is downloaded, and nothing it fetches is
+committed or deployed — `wrangler` is a local tool, not a dependency of the
+site, which still has none.
+
+[cf-redirects]: https://developers.cloudflare.com/pages/configuration/redirects/
+[cf-headers]: https://developers.cloudflare.com/pages/configuration/headers/
 
 ### Other hosts
 
@@ -1803,9 +1859,10 @@ filters, so shared filtered links show up in **Pages and screens** too.
 ### Getting found
 
 `robots.txt` and `sitemap.xml` sit at the root, and `index.html` carries a
-canonical link and the `og:` tags. All three name the host — four lines in
-total — so **changing domain means editing those three files** and nothing
-else.
+canonical link and the `og:` tags. All three name the host — five lines in
+total, and `functions/_middleware.js` names it once more as the host it
+redirects *to* — so **changing domain means editing those four files** and
+nothing else.
 
 Google finds a site through links and through Search Console, and a brand new
 host has neither. In order of what actually moves the needle:
