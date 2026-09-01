@@ -18,5 +18,15 @@
       "hy": "Դարչնով բուլկիներ՝ ուղիղ վառարանից, Pulla Bakery։"
     },
     "spot": "pulla-bakery"
+  },
+  {
+    "id": "varav-coffee-toast-2026-09-01",
+    "live": true,
+    "photo": "varav-coffee-toast-2026-09-01.webp",
+    "from": "2026-09-01T18:58",
+    "caption": {
+      "en": "new location is added to the list"
+    },
+    "spot": "varav-coffee-toast"
   }
 ]
