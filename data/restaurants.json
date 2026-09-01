@@ -368,6 +368,8 @@
     "price": 2,
     "types": [
       "casual",
+      "cheap-eats",
+      "asian",
       "vegan"
     ],
     "blurb": {
@@ -389,7 +391,6 @@
     ],
     "reel": "https://www.instagram.com/reel/DKHwvljB_bU/",
     "photos": [],
-    "website": "",
     "phone": "+372 5800 6780",
     "added": "2026-08-23",
     "visited": "2025-05",
@@ -636,10 +637,11 @@
     "lng": 24.6799773,
     "price": 1,
     "types": [
+      "casual",
       "restaurant",
-      "caucasian",
+      "hidden-gem",
       "cheap-eats",
-      "hidden-gem"
+      "caucasian"
     ],
     "blurb": {
       "az": "Kopli tərəfdə səmimi və dadlı gürcü yeməkləri.",
@@ -659,7 +661,6 @@
     ],
     "reel": "https://www.instagram.com/reel/DXMsafDjGxE/",
     "photos": [],
-    "website": "",
     "phone": "+372 5814 6100",
     "added": "2026-08-23",
     "visited": "2026-04",
