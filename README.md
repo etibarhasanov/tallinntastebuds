@@ -1139,11 +1139,18 @@ serve last month's picture to anybody who had already seen the old one.
 Every photograph either tab uploads goes through the same squeeze, on the
 device, before a byte of it leaves:
 
-- **1600px on the long edge**, WebP at quality 72, dropping to 1400, 1200 and
-  then 1100 as the quality steps down to 58 — until it comes in **under
-  200 KB**. Edge first and quality second, the order
+- **1600px on the long edge**, at quality 72, dropping to 1400, 1200 and then
+  1100 as the quality steps down to 58 — until it comes in **under 200 KB**.
+  Edge first and quality second, the order
   [photos/README.md](photos/README.md) argues for, because a frame full of
   leaves is the expensive one and dropping the edge hides better.
+- **WebP where the browser can write one, JPEG where it cannot.** The encoder
+  is asked once, up front, what it is willing to produce, and the file is named
+  after the answer. `canvas.toBlob` does not fail when it cannot encode what it
+  was asked for — it quietly returns a PNG — so what comes back is checked
+  against what was requested, and a browser that can only manage PNG is told to
+  use a laptop rather than humoured. The first photograph ever posted from a
+  phone here went up as a 1596 KB PNG named `.webp` for exactly that reason.
 - **The EXIF block goes with the re-encode**, and the GPS fix inside it with
   that. Same as pasting onto a fresh canvas in the Pillow recipe — a side
   effect there and a side effect here, and the one that matters most, because
