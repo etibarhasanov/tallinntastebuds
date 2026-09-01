@@ -163,6 +163,33 @@ dl.facts div { display: flex; gap: 10px; padding: 7px 0; border-top: 1px solid v
 dl.facts dt { color: var(--muted); flex: 0 0 8.5rem; }
 dl.facts dd { margin: 0; font-family: var(--mono); font-size: .82rem; word-break: break-word; }
 
+select, textarea, input[type="datetime-local"] {
+  width: 100%;
+  font: inherit;
+  font-size: 15px;
+  padding: 11px 12px;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+textarea { min-height: 4.5rem; resize: vertical; font-family: var(--body); }
+select:focus-visible, textarea:focus-visible, input:focus-visible {
+  outline: 2px solid var(--accent-lit); outline-offset: 1px;
+}
+input[type="file"] {
+  width: 100%; font-size: .85rem; padding: 14px 12px;
+  background: #fff; border: 1px dashed var(--hairline); border-radius: var(--radius);
+}
+.shot { margin-top: 12px; text-align: center; }
+.shot img {
+  max-width: 100%; max-height: 44vh; border-radius: var(--radius);
+  border: 1px solid var(--hairline);
+}
+.shot p { margin: 6px 0 0; font-family: var(--mono); font-size: .78rem; color: var(--muted); }
+.hint { font-size: .78rem; color: var(--muted); margin: 5px 0 0; }
+hr { border: 0; border-top: 1px solid var(--hairline); margin: 22px 0 4px; }
+
 ol { margin: 0 0 12px; padding-left: 1.2rem; font-size: .88rem; }
 ol li { margin-bottom: 6px; }
 code { font-family: var(--mono); font-size: .85em; background: var(--wash); padding: 1px 4px; border-radius: 3px; }
@@ -474,13 +501,311 @@ a { color: var(--accent); }
     passIn.focus();
   }
 
+  /* ------------------------------------------------------------- the wire
+   * Bytes in and out of the Contents API. Everything here is base64 because
+   * that is the only thing that API takes, and the two directions are not
+   * symmetrical: what comes back is wrapped at 60 characters, and what a
+   * caption is made of is not Latin-1, so a naive btoa on either throws.
+   */
+  function bytesToB64(bytes) {
+    var out = '';
+    /* In blocks, because String.fromCharCode.apply on a whole photograph is
+       an argument list a hundred thousand long, and engines refuse. */
+    for (var i = 0; i < bytes.length; i += 0x8000) {
+      out += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    }
+    return btoa(out);
+  }
+  function textToB64(text) { return bytesToB64(new TextEncoder().encode(text)); }
+  function b64ToText(b64) {
+    var raw = atob(String(b64).replace(/\s+/g, ''));
+    var bytes = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  function gh(path, init) {
+    var opts = init || {};
+    opts.headers = Object.assign({
+      Authorization: 'Bearer ' + token,
+      Accept: 'application/vnd.github+json'
+    }, opts.headers || {});
+    return fetch('https://api.github.com/repos/' + REPO + path, opts).then(function (res) {
+      if (res.status === 404) return null;
+      if (!res.ok) {
+        return res.json().catch(function () { return {}; }).then(function (err) {
+          throw new Error('GitHub said ' + res.status + (err.message ? ': ' + err.message : '.'));
+        });
+      }
+      return res.json();
+    });
+  }
+
+  function putFile(path, b64, message, branch, sha) {
+    return gh('/contents/' + path, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: message, content: b64, branch: branch, sha: sha || undefined })
+    });
+  }
+
+  /* ---------------------------------------------------------- the picture
+   * A phone photograph is four to eight megabytes and five thousand pixels
+   * across; this repository wants 1600 on the long edge and under 300 KB,
+   * and every file committed to it is in the history for good. So it is
+   * shrunk here, on the device, before a byte of it goes anywhere.
+   *
+   * Re-encoding through a canvas throws away the EXIF block on the way — no
+   * GPS fix, no serial number, no timestamp — which is the same reason
+   * photos/README.md tells you to paste onto a fresh canvas in Pillow. It is
+   * a side effect there and a side effect here, and it is the one that
+   * matters most: these files land in a public repository.
+   *
+   * Edge first and quality second, in that order, exactly as that README
+   * says: a frame full of leaves is the expensive one, and dropping the edge
+   * hides better than dropping the quality.
+   */
+  var SHRINK_STEPS = [[1600, 0.75], [1400, 0.75], [1200, 0.70]];
+  var PHOTO_BUDGET = 300 * 1024;
+
+  function shrink(file) {
+    /* from-image rather than the default: the pixels come out the way up the
+       picture is meant to be seen, so nothing downstream has to read a flag
+       that the next tool along would strip. */
+    return createImageBitmap(file, { imageOrientation: 'from-image' }).then(function (bmp) {
+      var step = 0;
+
+      function attempt() {
+        var edge = SHRINK_STEPS[step][0], quality = SHRINK_STEPS[step][1];
+        var scale = Math.min(1, edge / Math.max(bmp.width, bmp.height));
+        var w = Math.round(bmp.width * scale), h = Math.round(bmp.height * scale);
+
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(bmp, 0, 0, w, h);
+
+        return new Promise(function (resolve) {
+          canvas.toBlob(resolve, 'image/webp', quality);
+        }).then(function (blob) {
+          if (!blob) throw new Error('This browser would not encode a WebP.');
+          if (blob.size <= PHOTO_BUDGET || step === SHRINK_STEPS.length - 1) {
+            bmp.close();
+            return { blob: blob, width: w, height: h, quality: quality };
+          }
+          step++;
+          return attempt();
+        });
+      }
+
+      return attempt();
+    });
+  }
+
+  function blobToB64(blob) {
+    return blob.arrayBuffer().then(function (buf) { return bytesToB64(new Uint8Array(buf)); });
+  }
+
+  /* ----------------------------------------------------------- the clock
+   * What a Tallinn clock reads right now. The field below is the browser's
+   * own wall clock, and the file wants Tallinn's — the same thing from a
+   * kitchen in Kalamaja and an hour out from a hotel in Lisbon, so the
+   * current time is printed under it to be checked against.
+   */
+  function tallinnNow() {
+    return new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Europe/Tallinn', hour12: false,
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+    }).format(new Date()).replace(' ', 'T');
+  }
+
+  function plusHours(stamp, hours) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(stamp);
+    if (!m) return '';
+    var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) + hours * 3600000);
+    return d.toISOString().slice(0, 16);
+  }
+
   /* In. */
   function ready(repo) {
     sub.textContent = 'Unlocked on this device.';
     clear(body);
     touch();
 
-    body.appendChild(el('h2', { textContent: 'Ready' }));
+    var state = { photo: null, places: [], stories: [] };
+
+    /* ------------------------------------------------------------ the form */
+    body.appendChild(el('h2', { textContent: 'Post a story' }));
+
+    var fileIn = el('input', { type: 'file', id: 'photo', accept: 'image/*' });
+    body.appendChild(el('label', { for: 'photo', textContent: 'The photograph' }));
+    body.appendChild(fileIn);
+    body.appendChild(el('p', { className: 'hint', textContent:
+      'Shrunk on this device to 1600px and WebP before it goes anywhere, which also ' +
+      'drops the EXIF block and the GPS fix inside it. Videos are still a laptop job.' }));
+    var shot = el('div', { className: 'shot' });
+    body.appendChild(shot);
+
+    var placeIn = el('select', { id: 'place' }, [
+      el('option', { value: '', textContent: 'Loading the places…' })
+    ]);
+    body.appendChild(el('label', { for: 'place', textContent: 'The place it belongs to' }));
+    body.appendChild(placeIn);
+    body.appendChild(el('p', { className: 'hint', textContent:
+      'The button under the story opens this place on the map, and the photograph ' +
+      'moves into its photos when the 36 hours are up.' }));
+
+    var whenIn = el('input', { type: 'datetime-local', id: 'when', value: tallinnNow() });
+    body.appendChild(el('label', { for: 'when', textContent: 'When it goes up' }));
+    body.appendChild(whenIn);
+    var whenHint = el('p', { className: 'hint' });
+    body.appendChild(whenHint);
+
+    var capIn = el('textarea', { id: 'cap', maxlength: '280',
+      placeholder: 'Cinnamon buns, straight out of the oven at Pulla Bakery.' });
+    body.appendChild(el('label', { for: 'cap', textContent: 'Caption, in English' }));
+    body.appendChild(capIn);
+    body.appendChild(el('p', { className: 'hint', textContent:
+      'English is what every other language falls back to. Add the rest from a ' +
+      'laptop later — the story is live either way.' }));
+
+    var post = el('button', { type: 'button', disabled: true, textContent: 'Post it' });
+    body.appendChild(post);
+    var out = el('div');
+    body.appendChild(out);
+
+    function refreshWhen() {
+      var v = whenIn.value.slice(0, 16);
+      var down = v ? plusHours(v, 36) : '';
+      whenHint.textContent = 'Tallinn time — it is ' + tallinnNow().replace('T', ' ') +
+        ' there now.' + (down ? ' Comes down ' + down.replace('T', ' ') + '.' : '');
+    }
+    whenIn.addEventListener('input', refreshWhen);
+    refreshWhen();
+
+    /* The places come off the site itself rather than the API: it is the same
+       file the map is reading, one request, no token spent. */
+    fetch('data/restaurants.json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (places) {
+        state.places = places.filter(function (p) { return !p.closed; })
+          .sort(function (a, b) { return a.name.localeCompare(b.name); });
+        clear(placeIn);
+        placeIn.appendChild(el('option', { value: '', textContent: 'Choose a place…' }));
+        state.places.forEach(function (p) {
+          placeIn.appendChild(el('option', { value: p.id, textContent: p.name }));
+        });
+      })
+      .catch(function () {
+        clear(placeIn);
+        placeIn.appendChild(el('option', { value: '', textContent: 'Could not load the places' }));
+      });
+
+    function ready_() {
+      post.disabled = !(state.photo && placeIn.value && whenIn.value);
+    }
+    placeIn.addEventListener('change', ready_);
+    whenIn.addEventListener('change', ready_);
+
+    fileIn.addEventListener('change', function () {
+      var file = fileIn.files && fileIn.files[0];
+      clear(shot);
+      state.photo = null;
+      ready_();
+      if (!file) return;
+
+      shot.appendChild(el('p', { textContent: 'Shrinking…' }));
+      shrink(file).then(function (small) {
+        state.photo = small;
+        clear(shot);
+        var img = el('img', { alt: '' });
+        img.src = URL.createObjectURL(small.blob);
+        img.addEventListener('load', function () { URL.revokeObjectURL(img.src); });
+        shot.appendChild(img);
+        shot.appendChild(el('p', { textContent:
+          small.width + '×' + small.height + ' WebP, ' +
+          Math.round(small.blob.size / 1024) + ' KB, from ' +
+          Math.round(file.size / 1024) + ' KB' }));
+        ready_();
+      }).catch(function (err) {
+        clear(shot);
+        shot.appendChild(el('p', { textContent: 'Could not read that picture. ' + err.message }));
+      });
+    });
+
+    /* ------------------------------------------------------------ posting
+     * Two commits, and the order is the whole of it: the picture lands
+     * first, so the entry naming it is never in the repository on its own.
+     * A story pointing at a file that is not there would fail the validator
+     * and show a broken frame to anybody who opened the ring in between.
+     */
+    post.addEventListener('click', function () {
+      var place = state.places.find(function (p) { return p.id === placeIn.value; });
+      var when = whenIn.value.slice(0, 16);
+      var caption = capIn.value.trim();
+
+      post.disabled = true;
+      clear(out);
+      var step = say(out, 'Reading the file…', 'spin');
+
+      gh('/contents/data/stories.json?ref=' + encodeURIComponent(repo.branch))
+        .then(function (current) {
+          var stories = current ? JSON.parse(b64ToText(current.content)) : [];
+          var taken = {};
+          stories.forEach(function (s) { taken[s.id] = true; });
+
+          var id = place.id + '-' + when.slice(0, 10);
+          var n = 2;
+          while (taken[id]) id = place.id + '-' + when.slice(0, 10) + '-' + n++;
+
+          var file = id + '.webp';
+          var entry = { id: id, live: true, photo: file, from: when };
+          if (caption) entry.caption = { en: caption };
+          entry.spot = place.id;
+          stories.push(entry);
+
+          step.textContent = 'Uploading the photograph…';
+          return blobToB64(state.photo.blob)
+            .then(function (b64) {
+              return putFile('stories/' + file, b64,
+                'Add the photograph for the ' + place.name + ' story', repo.branch);
+            })
+            .then(function () {
+              step.textContent = 'Writing the entry…';
+              return putFile('data/stories.json',
+                textToB64(JSON.stringify(stories, null, 2) + '\n'),
+                'Queue a story for ' + place.name + ', up ' + when.replace('T', ' '),
+                repo.branch, current ? current.sha : null);
+            })
+            .then(function () { return { id: id, when: when }; });
+        })
+        .then(function (done) {
+          clear(out);
+          say(out, 'Posted. It goes up at ' + done.when.replace('T', ' ') +
+            ' and comes down ' + plusHours(done.when, 36).replace('T', ' ') + '.', 'good');
+          var facts = el('dl', { className: 'facts' }, [
+            el('div', {}, [
+              el('dt', { textContent: 'Link to it' }),
+              el('dd', { textContent: '/?story=' + done.id })
+            ])
+          ]);
+          out.appendChild(facts);
+          out.appendChild(el('p', { className: 'hint', textContent:
+            'Cloudflare redeploys within the minute. Nothing else has to happen — the ' +
+            'ring appears by itself when the time comes, and the picture moves onto ' +
+            place.name + ' when it is over.' }));
+          var again = el('button', { type: 'button', textContent: 'Post another' });
+          again.addEventListener('click', function () { ready(repo); });
+          out.appendChild(again);
+        })
+        .catch(function (err) {
+          clear(out);
+          say(out, err.message, 'bad');
+          post.disabled = false;
+        });
+    });
+
+    /* ------------------------------------------------------------ the door */
+    body.appendChild(el('hr'));
 
     var facts = el('dl', { className: 'facts' });
     function fact(term, value) {
@@ -494,10 +819,6 @@ a { color: var(--accent); }
     fact('Publishes to', repo.branch);
     if (repo.expires) fact('Token expires', repo.expires);
     body.appendChild(facts);
-
-    body.appendChild(el('p', { className: 'note', textContent:
-      'Posting a story goes here next: photo, the day it goes up, and which place it ' +
-      'belongs to. It stands for 36 hours, and the picture moves onto the place afterwards.' }));
 
     var lock = el('button', { type: 'button', className: 'quiet', textContent: 'Lock' });
     lock.addEventListener('click', function () { token = null; boot(); });

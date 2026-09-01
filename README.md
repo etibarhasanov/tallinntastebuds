@@ -1008,8 +1008,9 @@ is everybody: nothing about a story is cached beyond the page it is on.
 terminal. It is not linked from anywhere, carries `noindex` in the markup, in
 `robots.txt` and in `_headers`, and is served `no-store`.
 
-Today it holds a GitHub token for one device and proves that token can still
-reach this repository. Posting a story goes behind it next.
+Behind it: post a story from a phone. Pick a photograph, the place it belongs
+to, and the day it goes up. It stands for 36 hours and then the picture moves
+onto that place by itself.
 
 ### Setting up a device
 
@@ -1028,6 +1029,36 @@ On an **iPhone**, add the page to the Home Screen. Safari — and Chrome on
 iOS, which is Safari underneath — clears a site's storage after seven days
 without a visit, and an installed web app is exempt. On Android nothing needs
 doing; the page asks for persistent storage itself.
+
+### Posting a story
+
+Four fields and a button. What happens when you press it:
+
+1. The photograph is **shrunk on the device** — 1600px on the long edge, WebP,
+   dropping to 1400 and then 1200 at quality 70 if it will not come under
+   300 KB. Edge first and quality second, the order
+   [photos/README.md](photos/README.md) argues for. Re-encoding through a
+   canvas throws the EXIF block away with it, so no GPS fix rides along into a
+   public repository.
+2. The picture is committed to `stories/`, **then** the entry to
+   `data/stories.json` — that order, so a story naming a file that is not
+   there is never in the repository even for one commit.
+3. Cloudflare redeploys. The ring appears by itself when `from` comes round;
+   nothing has to be deployed at nine in the morning, because the file was
+   already there.
+
+The id is the place and the day — `kokomo-2026-09-14` — and a second story for
+the same place on the same day gets a `-2`. No `until` is written: the 36 hours
+do it.
+
+**The time is Tallinn's**, not the phone's, so the current Tallinn clock is
+printed under the field to check against. Only English is asked for; it is the
+fallback every other language uses, and the rest can be filled in from a laptop
+later without the story coming down.
+
+**Videos are still a laptop job.** A browser cannot transcode one, and an
+untouched phone video is 50 MB of HEVC that no browser but Safari will play —
+see [stories/README.md](stories/README.md) for the `ffmpeg` line.
 
 ### Where the token lives
 
