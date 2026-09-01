@@ -1623,11 +1623,12 @@ something on it to watch go past, so the gradient carries one bright arc
 through the brick rather than being an even wheel of colour. And every few
 seconds a second ring **leaves it and opens outwards**, twice, like a stone
 dropped in water, then nothing for three seconds. That is the half that
-catches somebody whose eye is on the middle of the map. It reaches about ten
-pixels and stops, short of the wordmark 13px away, because the job is to be
-noticed from the corner of an eye rather than to arrive in the middle of the
-card — and it rests between blinks, because a thing that pulses without pause
-has stopped asking and started nagging.
+catches somebody whose eye is on the middle of the map, so it goes wide:
+half again the size of the mark, twenty-odd pixels of travel, passing over the
+first letter of the wordmark on its way out — by which point it is nearly
+transparent, and a quarter of a second later it is gone. What keeps it from
+being a nuisance is the rest between blinks rather than a small reach: a thing
+that pulses without pause has stopped asking and started nagging.
 
 Both stop the moment the last story has been watched: the ring goes to the
 hairline colour and just sits there until it goes altogether. Under
