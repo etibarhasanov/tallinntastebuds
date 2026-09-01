@@ -1070,9 +1070,19 @@ see [stories/README.md](stories/README.md) for the `ffmpeg` line.
 
 The same form the data needs: name, address, coordinates, price, types, the
 English write-up, must-orders one to a line, and as many photographs as you
-like. The id is made from the name — `Põhja Pagar` becomes `pohja-pagar` — and
-**I am here** fills the coordinates from the phone's own position, which is the
-one thing easier standing in the door than sitting at a laptop.
+like. The id is made from the name — `Põhja Pagar` becomes `pohja-pagar`.
+
+**The coordinates are a map.** Press where the door is, or drag the pin.
+**I am here** fills it from the phone's own position, which is the one thing
+easier standing in the doorway than sitting at a laptop, and then you drag the
+pin the last few metres onto the actual door. The field and the pin are two
+views of one number: type into one and the other follows.
+
+That map is the same map — Leaflet 1.9.4 and the CARTO tiles the site already
+draws, same version, same integrity hashes, same key — fetched only when a
+place form is open, so the story tab and the door stay as light as they were.
+If it will not load, the form says so and the numbers can still be typed,
+which is how every place already in the file got there.
 
 Everything `tools/validate.mjs` would fail the build over is checked before the
 branch exists, in the same words: the slug, the Tallinn bounding box that
@@ -1112,6 +1122,11 @@ Two things it will tell you rather than decide for you:
 - **Closed is a change, not a deletion.** Closed places are in the picker too,
   so reopening one is an edit like any other. See
   [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it).
+
+Editing opens the map on that place at street zoom, which is the point: **check
+the pin lands on the right side of the street** — the note this README has been
+ending every place with — is finally a thing you can do before merging rather
+than after.
 
 Photographs already there are shown with a tick to drop one, which deletes the
 file from the repository as well, since nothing else points at it. New ones are

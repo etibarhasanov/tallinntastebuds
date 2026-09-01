@@ -15,9 +15,9 @@
 <!--
   WHAT THIS PAGE IS
 
-  The door. It holds a GitHub token for this one device, encrypted with a
-  passphrase, and proves the token can still reach the repository. Posting a
-  story is the next thing to go behind it; today it stops at "you are in".
+  The door, and the three things behind it: post a story, add a place, change
+  a place. It holds a GitHub token for this one device, encrypted with a
+  passphrase, and proves the token can still reach the repository.
 
   WHERE THE SECRET LIVES
 
@@ -214,6 +214,14 @@ fieldset { border: 0; padding: 0; margin: 0; }
 .thumbs figure { margin: 0; width: 86px; }
 .thumbs img { width: 86px; height: 86px; object-fit: cover; border-radius: 4px; border: 1px solid var(--hairline); }
 .thumbs figcaption { font-family: var(--mono); font-size: .66rem; color: var(--muted); text-align: center; margin-top: 2px; }
+
+.map {
+  height: 260px; margin-top: 6px;
+  border: 1px solid var(--hairline); border-radius: var(--radius);
+  overflow: hidden; background: var(--wash);
+}
+.map .hint { padding: 12px; margin: 0; }
+.leaflet-container { font-family: var(--body); }
 
 ol { margin: 0 0 12px; padding-left: 1.2rem; font-size: .88rem; }
 ol li { margin-bottom: 6px; }
@@ -926,6 +934,100 @@ a { color: var(--accent); }
 
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
 
+  /* ---------------------------------------------------------------- the map
+   * The pin, dragged rather than typed. The README has told you to "check the
+   * dot lands on the right side of the street" since the first place went in,
+   * and until now the only way to do that was to merge it and go and look.
+   *
+   * Leaflet and the CARTO tiles are the map's own — same version, same
+   * integrity hashes, same key as index.html. That key is in assets/app.js in
+   * plain sight on purpose: it is a meter reading rather than a password, and
+   * it unlocks nothing but the tiles it is already drawing.
+   *
+   * Fetched only when a place form is opened, so the story tab and the door
+   * itself stay exactly as light as they were. And if it will not load, the
+   * form says so and carries on: the numbers can always be typed, which is
+   * how every place already in the file got there.
+   */
+  var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+  var TILE_KEY = 'cb1_2ci9_1_e18f20c42b2e5346aa517b42';
+  var TILE_ATTRIBUTION =
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
+    '&copy; <a href="https://carto.com/attributions">CARTO</a>';
+  var TALLINN = [59.437, 24.7536];
+  var leafletReady = null;
+
+  function loadLeaflet() {
+    if (leafletReady) return leafletReady;
+    leafletReady = new Promise(function (resolve, reject) {
+      if (window.L) { resolve(window.L); return; }
+
+      var css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      css.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+      css.crossOrigin = '';
+      document.head.appendChild(css);
+
+      var js = document.createElement('script');
+      js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      js.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+      js.crossOrigin = '';
+      js.onload = function () {
+        if (window.L) resolve(window.L);
+        else reject(new Error('Leaflet loaded but is not there.'));
+      };
+      js.onerror = function () { reject(new Error('The map would not load.')); };
+      document.head.appendChild(js);
+    });
+    return leafletReady;
+  }
+
+  /* One pin on a map of Tallinn. `onMove` is told every time it lands
+     somewhere new; the handle back lets the form move it when the numbers are
+     typed or the phone is asked where it is. */
+  function mapPicker(host, start, onMove) {
+    var handle = { goto: function () {} };
+
+    loadLeaflet().then(function (L) {
+      clear(host);
+      var map = L.map(host).setView(start || TALLINN, start ? 17 : 13);
+      L.tileLayer(TILE_KEY ? TILE_URL + '?key=' + encodeURIComponent(TILE_KEY) : TILE_URL, {
+        subdomains: 'abcd', maxZoom: 20, detectRetina: true,
+        attribution: TILE_ATTRIBUTION
+      }).addTo(map);
+
+      var pin = L.marker(start || TALLINN, { draggable: true, autoPan: true }).addTo(map);
+      /* A place with no coordinates yet gets a faint pin in the middle of the
+         city: something to drag, without claiming the middle of the city is
+         the answer. */
+      if (!start && pin.setOpacity) pin.setOpacity(0.4);
+
+      function landed(latlng) {
+        if (pin.setOpacity) pin.setOpacity(1);
+        onMove(latlng.lat, latlng.lng);
+      }
+      pin.on('dragend', function () { landed(pin.getLatLng()); });
+      map.on('click', function (e) { pin.setLatLng(e.latlng); landed(e.latlng); });
+
+      handle.goto = function (lat, lng) {
+        pin.setLatLng([lat, lng]);
+        if (pin.setOpacity) pin.setOpacity(1);
+        map.setView([lat, lng], Math.max(map.getZoom(), 17));
+      };
+
+      /* Leaflet measures the container on construction, and the browser has
+         not finished laying the form out by then. */
+      window.setTimeout(function () { map.invalidateSize(); }, 0);
+    }).catch(function (err) {
+      clear(host);
+      host.appendChild(el('p', { className: 'hint', textContent:
+        err.message + ' Type the coordinates in instead — that is all the map was going to write.' }));
+    });
+
+    return handle;
+  }
+
   /* Which place to change. Closed ones are in the list too — reopening one is
      an edit like any other, and it is the only way back. */
   function editPicker(repo, into) {
@@ -999,21 +1101,45 @@ a { color: var(--accent); }
     var hereBtn = el('button', { type: 'button', className: 'quiet', textContent: 'I am here' });
     into.appendChild(el('label', { for: 'coord', textContent: 'Coordinates' }));
     into.appendChild(el('div', { className: 'row' }, [coordIn, hereBtn]));
-    var coordHint = el('p', { className: 'hint', textContent:
-      'Paste them off Google Maps — right-click the pin and the first item is the pair. ' +
-      'Or press the button while standing in the door.' });
+    var coordHint = el('p', { className: 'hint', textContent: editing
+      ? 'Drag the pin, or press the map where it should be. Zoom in far enough to see which side of the street it is on.'
+      : 'Press the map where the door is, paste the pair off Google Maps, or press the button while standing there.' });
     into.appendChild(coordHint);
+
+    var mapBox = el('div', { className: 'map' }, [
+      el('p', { className: 'hint', textContent: 'Loading the map…' })
+    ]);
+    into.appendChild(mapBox);
+
+    /* The field and the pin are two views of one number, so each has to be
+       able to move the other without setting off the one that moved it. */
+    var pinMoving = false;
+    var picker = mapPicker(mapBox, editing ? [existing.lat, existing.lng] : null,
+      function (lat, lng) {
+        pinMoving = true;
+        coordIn.value = lat.toFixed(5) + ', ' + lng.toFixed(5);
+        pinMoving = false;
+        coordHint.textContent = 'Taken off the map. Zoom in and check it is the right doorway.';
+        settle();
+      });
+
+    coordIn.addEventListener('input', function () {
+      if (pinMoving) return;
+      var c = coords();
+      if (c) picker.goto(c.lat, c.lng);
+    });
 
     hereBtn.addEventListener('click', function () {
       if (!navigator.geolocation) { coordHint.textContent = 'This browser will not say where it is.'; return; }
       coordHint.textContent = 'Asking the phone…';
       navigator.geolocation.getCurrentPosition(function (pos) {
         coordIn.value = pos.coords.latitude.toFixed(5) + ', ' + pos.coords.longitude.toFixed(5);
+        picker.goto(pos.coords.latitude, pos.coords.longitude);
         coordHint.textContent = 'Where the phone thinks it is, to about ' +
-          Math.round(pos.coords.accuracy) + ' m. Check the dot lands on the right side of the street.';
+          Math.round(pos.coords.accuracy) + ' m. Drag the pin onto the door if it is out.';
         settle();
       }, function () {
-        coordHint.textContent = 'The phone would not say. Paste the pair from Google Maps instead.';
+        coordHint.textContent = 'The phone would not say. Press the map instead, or paste the pair from Google Maps.';
       }, { enableHighAccuracy: true, timeout: 10000 });
     });
 
