@@ -1556,11 +1556,12 @@
   }
 
   /* ------------------------------------------------------------ the sheet
-   * On a phone the panel is a bottom sheet, and a sheet tall enough to read
-   * comfortably is a sheet that leaves no map. So it opens low and the grip
-   * raises it: drag it, or tap to swap between the two heights. Dragging it
-   * below the low stop closes it, which is the gesture a phone user reaches
-   * for first anyway.
+   * On a phone the panel is a bottom sheet with two heights, and the grip
+   * moves between them: drag it, or tap to swap. A place opens at the high
+   * stop — what you tapped for is the place, and the reel at the top of it
+   * wants a screen — and the grip pulls it down to the low one for the map.
+   * Dragging below the low stop closes it, which is the gesture a phone user
+   * reaches for first anyway.
    *
    * The live height is written to --sheet-h rather than to the panel, so the
    * rail that sits above the sheet tracks the drag with it for free.
@@ -1892,10 +1893,17 @@
     state.view = 'detail';
     renderPanel();
     openPanel();
-    /* A new place starts at the low stop: the point of opening one is to see
-       where it is. */
-    document.body.classList.remove('sheet-full');
-    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', 'false');
+    /* Tapping a place is a request for the place, not for the map, so on a
+       phone the sheet opens at its full stop: the restaurant's page, as far
+       as a phone is concerned. It used to open at the half stop, on the
+       reasoning that the point of opening a place is to see where it is —
+       which left the reel sliced across the bottom edge of the screen and a
+       scroll between you and the thing you tapped for. The strip of map above
+       it still holds the pin, the chip row and the way back out, and the grip
+       drags the sheet down for anyone who wants the map back. */
+    var full = isNarrow();
+    document.body.classList.toggle('sheet-full', full);
+    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', String(full));
     releaseSheetHeight();
     if (opts.history !== false) syncUrl(fresh);
 

@@ -1978,10 +1978,12 @@ body.panel-detail .panel {
      the fully dragged-up sheet, so it stays where it is and the filters can
      be changed with the list open. */
 
-  /* A detail sheet opens at half the screen so the map keeps the other half
-     and the chosen pin has somewhere to be. Drag the grip up for the rest of
-     the text; the map is not worth much while you are reading it anyway, so
-     the rail steps out of the way at full height. */
+  /* Two stops. A detail sheet opens at the full one: a place you tapped is a
+     page to read, and at the half stop the reel under the name was sliced
+     across the bottom edge of the screen. Drag the grip down for the half
+     stop, where the map keeps the other half and the chosen pin has somewhere
+     to be. The map is not worth much while you are reading anyway, so the
+     rail steps out of the way at full height. */
   body.panel-detail { --sheet-h: min(50vh, 470px); }
   body.panel-detail { --sheet-h: min(calc(var(--vph, 100dvh) * .5), 470px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
   body.panel-detail.sheet-full { --sheet-h: min(88vh, 780px); }

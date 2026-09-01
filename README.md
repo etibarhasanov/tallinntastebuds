@@ -1641,6 +1641,16 @@ into a smear at low zoom, and by 18 you are looking at one doorway.
 floor under it: whatever else happens it leaves 110px of the screen showing,
 which is the chrome strip and the chip row. That strip is the way back out.
 
+A place opens the sheet at its full stop — 88% of the screen — because tapping
+a place is a request for the place, not for the map: it is the restaurant's
+page as far as a phone is concerned, and the name, the reel and the write-up
+are on one screen. It used to open at a half stop, on the reasoning that the
+point of opening a place is to see where it is, which put the player half on
+the screen and half under the bottom edge and a scroll between you and the
+thing you had tapped for. The half stop is still there — drag the grip down —
+and the strip above the full sheet still holds the pin, the chips and the way
+out.
+
 It is sized against `--vph`, which is `window.innerHeight` written back to CSS
 on every resize, falling back to `dvh` before the script runs and to plain `vh`
 in a browser that has neither. `vh` on iOS means the *large* viewport — the one
