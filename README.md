@@ -25,6 +25,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Languages](#languages)
 - [Restaurant discounts](#restaurant-discounts)
+- [Stories](#stories)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
 - [The map tiles need a key](#the-map-tiles-need-a-key)
 - [What the validator checks](#what-the-validator-checks)
@@ -752,6 +753,119 @@ lines, and the guest-facing half stays exactly as it is.
 
 ---
 
+## Stories
+
+The one thing on this map that is not permanent. Everything else here is a
+place that will still be there next year; a story is a video that is up for a
+day or two and then is gone, which is the whole reason anybody opens one now
+rather than later.
+
+When something is up, the mark in the top left grows a turning ring — the same
+ring, in the site's own brick and ember, that every profile picture wears when
+there is something new behind it. Press it and the video fills the screen: a
+bar along the top per story, who it is from, **how long it has left**, the
+caption, and a link. The left third of the screen goes back, the rest goes on,
+holding stops it, swiping down leaves. All of it is
+[`data/stories.json`](data/stories.json) plus a file in
+[`stories/`](stories/README.md), and with nothing live there is no ring, no
+viewer and nothing else on the page changes.
+
+### Post one
+
+Drop the video in `stories/` — see [stories/README.md](stories/README.md) for
+the size and the one `ffmpeg` line that gets it there — and add an entry:
+
+```json
+[
+  {
+    "id": "kokomo-brunch",
+    "live": true,
+    "video": "kokomo-brunch.mp4",
+    "poster": "kokomo-brunch.jpg",
+    "until": "2026-09-15T21:00",
+    "caption": {
+      "en": "Sunday brunch at Kokomo. The last table goes at noon.",
+      "et": "Pühapäevane brunch Kokomos. Viimane laud läheb keskpäeval."
+    },
+    "spot": "kokomo"
+  }
+]
+```
+
+| Field | | What it is |
+| --- | --- | --- |
+| `id` | required | Lowercase slug. It is what a browser remembers as watched, and what `?story=` points at. |
+| `live` | required | `false` parks a draft in the file with nothing on screen. Nothing about it is shown until this is `true`. |
+| `video` | required | A filename inside `stories/`, never a path. `.mp4` unless you have a reason. |
+| `poster` | optional | An image filename inside `stories/`, shown for the moment before the video has enough of itself to play. |
+| `from` | optional | When it goes up. Leave it out and it is up the moment `live` is `true`. |
+| `until` | **required** | When it goes. There is no story without this. |
+| `caption` | optional | A line under the video, per language, exactly like a `blurb`. |
+| `spot` | optional | A place id from `restaurants.json`. The button under the video opens that place on this map. |
+| `link` | optional | A full `https://` address instead. Opens in a new tab. |
+| `linkLabel` | optional | What the button says, per language. Without it a `spot` reads "See Kokomo" and a `link` reads "Open the link". |
+
+`spot` and `link` are one field's worth of intent between them, so an entry
+carries one or the other, never both. An entry with neither is a video with no
+button, which is a perfectly good story.
+
+### The clock
+
+`from` and `until` are **Tallinn wall clock**, written `YYYY-MM-DDTHH:MM`:
+`2026-09-15T21:00` is nine in the evening in Tallinn, in September, whatever
+your own laptop's clock is set to. That is the only clock you and the person
+watching are both reading. Summer time is worked out for you, so there is no
+offset to write and no offset to get wrong.
+
+The countdown under the name says `3d left`, then `18h left`, then `44m left`,
+then `Going now` — the same ladder a phone uses, because past a point the
+exact number stops being the point. The moment `until` passes, the story stops
+being shown: the ring goes, the viewer will not open it, and a `?story=` link
+to it lands on the plain map instead. Nothing has to be edited for that to
+happen, which is what makes this safe to post at midnight and forget.
+
+**A day is a good length. Two is the most anyone will sit through the wait
+for.** If a video is still worth watching next week, it is not a story — it is
+a `reel` on the place itself.
+
+### Watched, and posting again
+
+A browser remembers which stories it has watched, and the ring stops turning
+and goes grey once they all have been. It remembers the `id` **and** the
+`until` together, so reposting under the same id with a new `until` lights the
+ring again for everybody — which is what reposting means. Nothing is sent
+anywhere: it is one entry in that browser's own storage, and it is thrown away
+as each story runs out.
+
+### Linking to one
+
+`?story=kokomo-brunch` opens the map with that story already playing — the
+link to put in a post, in a bio, or in an actual Instagram story pointing back
+here. It works while the video is up and lands on the plain map once it is
+not, and the parameter is taken off the address bar on the way in, so nothing
+copied out of it later reopens a video that has since gone.
+
+The button inside a story is the other half of that trade: `"spot": "kokomo"`
+lands on the place with its pin already open, without the page being loaded
+twice, because the map was underneath the whole time.
+
+### Sound
+
+A story plays with sound if the browser allows it, and muted if it does not —
+which on a phone is most of the time, until the visitor has pressed the
+speaker once. That choice is remembered. So **burn any words that matter into
+the video, or write them in `caption`**: the first play is silent more often
+than not.
+
+### Taking one down
+
+Nothing needs taking down. `until` does it. Once a story has been gone for a
+while, delete its entry and its video together — the repo does not need to
+carry every video ever posted, and the validator says so, gently, about a file
+in `stories/` that no entry names.
+
+---
+
 ## Deploy to Cloudflare Pages
 
 Cloudflare Pages is the live host. There is nothing to build, so there is no
@@ -801,8 +915,9 @@ project race each other and produce out-of-order deployments.
 file. Everything revalidates instead of being cached hard: browsers still get a
 fast `304 Not Modified` when nothing changed, but an edit to
 `restaurants.json` appears on the next load rather than whenever a cache feels
-like expiring. Photos are the exception and are held for a week, since they
-are replaced rather than edited.
+like expiring. Photos and story videos are the exception and are held for a
+week, since both are replaced rather than edited — and a story video is the
+largest thing on the site and the one most likely to be watched twice.
 
 ### Cache stamps
 
@@ -902,6 +1017,8 @@ to read and write first.
   malformed `website`
 - a `phone` that is not in international form — `+372 661 0180`, not `6610180`
 - a malformed `added` date — it has to be `YYYY-MM-DD`
+- a story with no `until`, an `until` before its `from`, a video that is not in
+  `stories/`, a `spot` that is not a place, or both a `spot` and a `link`
 - a `?v=` cache stamp in the HTML that no longer matches the file it points at
   (run `node tools/stamp.mjs` and commit the result)
 
@@ -915,6 +1032,8 @@ to read and write first.
 - taxonomy types nothing uses
 - folders in `photos/` that no place points at
 - unknown keys on a place object (this is how you catch `blrub`)
+- a story left `live` after its time ran out
+- a video in `stories/` that no story in `data/stories.json` names
 
 ---
 
@@ -938,8 +1057,10 @@ data/restaurants.json      the only file you edit regularly
 data/taxonomy.json         the controlled vocabulary of types
 data/ui.json               every interface string, in every language
 data/deals.json            the discounts, and which of them are live
+data/stories.json          the stories, and when each one goes away
 data/schema.json           JSON Schema, for editor autocomplete
 photos/<restaurant-id>/    photos, one folder per place
+stories/                   the story videos, one file each
 tools/validate.mjs         dependency-free data validator
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 .github/workflows/validate.yml
@@ -947,7 +1068,8 @@ tools/stamp.mjs            writes the ?v= content hash on every asset URL
 
 Deep links: `?spot=f-hoone` opens that place directly — that is the link to put
 in a Story. `?lang=ru` opens it in Russian, `?style=green` in the dark
-palette. They all combine.
+palette. They all combine. `?story=kokomo-brunch` is the odd one out: it opens
+a story rather than a place, and takes itself back out of the address bar.
 
 ---
 
@@ -1423,6 +1545,14 @@ paying for a job the map already does. The chips used to sit at the bottom,
 where the sheet covered them and they had to be hidden whenever the list was
 open; at the top they clear even the fully dragged-up sheet, so the filters can
 be changed while the list is showing.
+
+**The ring is the only thing on the page that moves on its own.** Nothing else
+here animates without being asked: pins settle, panels slide, and that is the
+lot. A story is the one thing with a clock running on it, so the one turning
+thing on the page is the ring that says so — and the moment the last one runs
+out it stops turning, goes to the hairline colour, and then goes altogether.
+Under `prefers-reduced-motion` it never turns at all; the ring is still there,
+and it is still the difference between something being up and not.
 
 **Nothing above the chips drags the map.** That strip is chrome, and the map
 shows through the gaps in it: between the card and the buttons, around the

@@ -82,7 +82,15 @@
     selected: null,      // restaurant id, or null
     view: 'list',        // 'list' | 'detail'
     lastFocus: null,
-    lb: { photos: [], index: 0, base: '', name: '', opener: null }
+    lb: { photos: [], index: 0, base: '', name: '', opener: null },
+    stories: [],         // data/stories.json, usually empty
+    /* The queue being watched right now: which stories are up, which one is
+       on screen, whether a finger is holding it still, and what to give the
+       focus back to when it closes. */
+    story: {
+      list: [], index: 0, opener: null, muted: false,
+      held: false, dragging: false, swallow: false, downX: 0, downY: 0
+    }
   };
 
   var map = null;
@@ -338,6 +346,8 @@
     renderFilters();
     renderPanel();
     renderRadio();
+    renderStoryRing();
+    if (dom.stories && !dom.stories.hidden) paintStoryText(state.story.list[state.story.index]);
     syncUrl();
     trackEvent('language_select', { language: code });
   }
@@ -2652,6 +2662,532 @@
     if (back && document.contains(back) && typeof back.focus === 'function') back.focus();
   }
 
+  /* --------------------------------------------------------------- stories
+   * The one part of this map that is not permanent.
+   *
+   * Everything else here is a place that will still be there next year. A
+   * story is the opposite: a video that is up for a day or two and then is
+   * gone, which is the whole reason anybody opens one now rather than later.
+   * So the countdown is not decoration — it is the thing being said, and it
+   * sits next to the name at the top of every frame.
+   *
+   * The shape is the one everybody already knows, because there is no version
+   * of this worth teaching from scratch: the mark in the corner grows a ring,
+   * pressing it fills the screen, a bar along the top per story, the left of
+   * the screen goes back, the rest goes on, hold to stop it, swipe down to
+   * leave. The one thing under it that is ours is the link: a story points at
+   * a place on this map, and pressing it lands you on that place with the pin
+   * already open, rather than in a browser somewhere else.
+   *
+   * It all lives in data/stories.json, and it is optional in the same way the
+   * radio is: an empty file means no ring, no viewer, nothing changed. See
+   * the README for how an entry is written.
+   */
+
+  /* The data names a file, not a path, exactly as a place's photos do: the
+     folder is the same for all of them and spelling it out nine times is nine
+     chances to spell it wrong. */
+  var STORY_DIR = 'stories/';
+  var STORY_SEEN_KEY = 'ttb.stories.seen';
+  var STORY_SOUND_KEY = 'ttb.stories.sound';
+  /* Press for longer than this and it is a hold, not a tap. Instagram's own
+     is somewhere near this; much shorter and a slow tap pauses the video. */
+  var STORY_HOLD_MS = 260;
+  /* How far down a drag has to travel before it means "close this". */
+  var STORY_SWIPE = 70;
+  /* The countdown is drawn in minutes, so it only ever needs redrawing once a
+     minute. The same tick is what retires a story the moment it runs out. */
+  var STORY_TICK_MS = 60000;
+
+  var storyHoldTimer = null;
+  var storyFrame = null;
+  var storyTick = null;
+
+  /* ------------------------------------------------------------- the clock
+   * Times in the data are Tallinn wall clock — "2026-09-14T21:00" is nine in
+   * the evening in Tallinn, which is the only clock the person writing the
+   * file and the person watching the video are both reading. Turning that
+   * into an instant means knowing the offset in force on that date, and the
+   * offset depends on the instant, so it is worked out twice: the first pass
+   * can be an hour out, and only inside the hour the clocks change, and the
+   * second pass settles it.
+   */
+  function tallinnOffset(utcMs) {
+    try {
+      var parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Tallinn', hour12: false,
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit'
+      }).formatToParts(new Date(utcMs));
+      var f = {};
+      parts.forEach(function (p) { f[p.type] = p.value; });
+      var local = Date.UTC(Number(f.year), Number(f.month) - 1, Number(f.day),
+                           Number(f.hour) % 24, Number(f.minute));
+      return local - Math.floor(utcMs / 60000) * 60000;
+    } catch (e) {
+      /* No tzdata in this browser's build. Estonia keeps the EU's rule and
+         has since 2002: +2 in winter, +3 from 01:00 UTC on the last Sunday in
+         March to 01:00 UTC on the last Sunday in October. */
+      var year = new Date(utcMs).getUTCFullYear();
+      var on = lastSundayAtOne(year, 2);
+      var off = lastSundayAtOne(year, 9);
+      return (utcMs >= on && utcMs < off) ? 10800000 : 7200000;
+    }
+  }
+
+  function lastSundayAtOne(year, month) {
+    var d = new Date(Date.UTC(year, month + 1, 0, 1, 0, 0));   /* the last day of the month */
+    d.setUTCDate(d.getUTCDate() - d.getUTCDay());              /* back up to Sunday */
+    return d.getTime();
+  }
+
+  function tallinnTime(stamp) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(String(stamp || ''));
+    if (!m) return NaN;
+    var wall = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4]), Number(m[5]));
+    return wall - tallinnOffset(wall - tallinnOffset(wall));
+  }
+
+  /* ------------------------------------------------------------- the queue */
+
+  /* Up, in the order the file lists them. A story that is switched off, has
+     not started, or has run out is not up, and nothing on the page says a
+     word about it. */
+  function liveStories() {
+    var now = Date.now();
+    return (state.stories || []).filter(function (s) {
+      if (!s || s.live !== true || !s.video) return false;
+      var until = tallinnTime(s.until);
+      if (!(until > now)) return false;
+      if (s.from) {
+        var from = tallinnTime(s.from);
+        if (from === from && from > now) return false;
+      }
+      return true;
+    });
+  }
+
+  /* Watched is remembered per story and per expiry: repost under the same id
+     with a new "until" and the ring lights up again, which is what reposting
+     means. Only the stories still up are kept, so the entry in somebody's
+     browser cannot grow for ever. */
+  function storiesSeen() {
+    try {
+      var raw = JSON.parse(storeGet(STORY_SEEN_KEY) || '{}');
+      return (raw && typeof raw === 'object' && !Array.isArray(raw)) ? raw : {};
+    } catch (e) { return {}; }
+  }
+
+  function storySeen(story) { return storiesSeen()[story.id] === story.until; }
+
+  function markStorySeen(story) {
+    var seen = storiesSeen();
+    seen[story.id] = story.until;
+    var kept = {};
+    liveStories().forEach(function (s) {
+      if (seen[s.id] !== undefined) kept[s.id] = seen[s.id];
+    });
+    storeSet(STORY_SEEN_KEY, JSON.stringify(kept));
+  }
+
+  function storyCaption(story) {
+    var c = story.caption || {};
+    return c[state.lang] || c[DEFAULT_LANG] || '';
+  }
+
+  function storyCtaLabel(story) {
+    var label = story.linkLabel && (story.linkLabel[state.lang] || story.linkLabel[DEFAULT_LANG]);
+    if (label) return label;
+    var place = story.spot ? byId(story.spot) : null;
+    if (place) return t('storySee', { name: place.name });
+    return t('storyLink');
+  }
+
+  /* What the top line says, and the reason the whole thing exists. Minutes
+     under the hour, hours under the day, days above it — the same ladder a
+     phone uses, because past a point the exact number stops being the point. */
+  function storyLeft(story) {
+    var ms = tallinnTime(story.until) - Date.now();
+    if (!(ms >= 60000)) return t('storyLeftSoon');
+    var mins = Math.floor(ms / 60000);
+    if (mins < 60) return t('storyLeftMinutes', { n: mins });
+    var hours = Math.floor(mins / 60);
+    if (hours < 24) return t('storyLeftHours', { n: hours });
+    return t('storyLeftDays', { n: Math.floor(hours / 24) });
+  }
+
+  /* ---------------------------------------------------------------- the ring
+   * The mark is a picture until there is something to watch, and a button
+   * from then on. Nothing in the card moves when that happens: the ring is
+   * drawn outside the box the picture already occupies.
+   */
+  function renderStoryRing() {
+    var mark = dom.brand && dom.brand.querySelector('.brand-mark');
+    if (!mark) return;
+    var live = liveStories();
+
+    if (!live.length) {
+      if (dom.storyRing) {
+        dom.storyRing.parentNode.insertBefore(mark, dom.storyRing);
+        dom.storyRing.parentNode.removeChild(dom.storyRing);
+        dom.storyRing = null;
+      }
+      return;
+    }
+
+    if (!dom.storyRing) {
+      var ring = el('button', {
+        type: 'button',
+        className: 'brand-ring',
+        id: 'brand-ring',
+        'data-i18n-aria-label': 'storiesOpen',
+        'data-i18n-title': 'storiesOpen',
+        'aria-label': t('storiesOpen'),
+        title: t('storiesOpen')
+      });
+      mark.parentNode.insertBefore(ring, mark);
+      ring.appendChild(mark);
+      ring.addEventListener('click', function () { openStories(null, ring); });
+      dom.storyRing = ring;
+    }
+
+    /* Watched them all and they are still up: the ring stays, greyed, the way
+       it does everywhere else. It has stopped asking, not gone away. */
+    var unseen = live.filter(function (s) { return !storySeen(s); });
+    dom.storyRing.classList.toggle('is-seen', unseen.length === 0);
+  }
+
+  /* One tick a minute, which is all a countdown drawn in minutes needs, and
+     it is also what takes the ring down the moment the last story runs out
+     under somebody who left the tab open. */
+  function startStoryClock() {
+    if (storyTick || !(state.stories || []).length) return;
+    storyTick = window.setInterval(function () {
+      renderStoryRing();
+      if (!dom.stories.hidden) {
+        var story = state.story.list[state.story.index];
+        if (story) dom.storyLeft.textContent = storyLeft(story);
+      }
+    }, STORY_TICK_MS);
+  }
+
+  /* ------------------------------------------------------------- the viewer */
+
+  function openStories(startAt, opener) {
+    var live = liveStories();
+    if (!live.length) return;
+
+    var index = 0;
+    if (typeof startAt === 'number') {
+      index = Math.max(0, Math.min(live.length - 1, startAt));
+    } else {
+      /* Straight to the first one not watched yet, and back to the top once
+         they have all been seen. */
+      for (var i = 0; i < live.length; i++) {
+        if (!storySeen(live[i])) { index = i; break; }
+        if (i === live.length - 1) index = 0;
+      }
+    }
+
+    state.story.list = live;
+    state.story.index = index;
+    state.story.opener = opener || document.activeElement;
+    state.story.muted = storeGet(STORY_SOUND_KEY) === 'off';
+
+    /* Two things playing at once is one too many. */
+    if (radioEl && !radioEl.paused) stopRadio();
+
+    dom.stories.hidden = false;
+    buildStoryBars();
+    paintStory();
+    dom.storyClose.focus();
+    trackEvent('story_open', { stories: live.length });
+  }
+
+  function buildStoryBars() {
+    clear(dom.storyBars);
+    state.story.list.forEach(function () {
+      dom.storyBars.appendChild(el('div', { className: 'story-bar' }, [el('span')]));
+    });
+  }
+
+  /* Draw whichever story the queue is standing on, and start it. */
+  function paintStory() {
+    var s = state.story;
+    var story = s.list[s.index];
+    if (!story) { closeStories(); return; }
+
+    for (var i = 0; i < dom.storyBars.children.length; i++) {
+      var fill = dom.storyBars.children[i].firstChild;
+      fill.style.width = i < s.index ? '100%' : '0%';
+    }
+
+    paintStoryText(story);
+
+    var video = dom.storyVideo;
+    video.pause();
+    if (story.poster) video.setAttribute('poster', STORY_DIR + story.poster);
+    else video.removeAttribute('poster');
+    video.muted = s.muted;
+    video.src = STORY_DIR + story.video;
+    var started = video.play();
+    if (started && started.catch) {
+      started.catch(function () {
+        /* Sound is refused until a browser is satisfied the visitor asked for
+           it, and the rules differ per browser and per platform. Muted always
+           plays, so drop to that rather than showing a still frame, and put
+           the speaker button in the state that says what happened. */
+        if (!video.muted) {
+          s.muted = true;
+          video.muted = true;
+          markStorySound();
+          var retry = video.play();
+          if (retry && retry.catch) retry.catch(function () { /* nothing left to try */ });
+        }
+      });
+    }
+
+    markStorySeen(story);
+    renderStoryRing();
+    startStoryProgress();
+  }
+
+  /* Everything on the frame that is words rather than picture. Split out
+     because a language change has to redraw all of it without touching the
+     video, which would otherwise start again from the top. */
+  function paintStoryText(story) {
+    var s = state.story;
+    if (!story) return;
+    dom.stories.setAttribute('aria-label',
+      t('storiesTitle') + ' — ' + t('storyOf', { n: s.index + 1, total: s.list.length }));
+    dom.storyLeft.textContent = storyLeft(story);
+
+    var caption = storyCaption(story);
+    dom.storyCaption.textContent = caption;
+    dom.storyCaption.hidden = !caption;
+
+    paintStoryCta(story);
+    markStorySound();
+  }
+
+  /* The link, which is the reason a story is on a map rather than on a phone.
+     A place id opens the place here; anything else is a plain outbound link. */
+  function paintStoryCta(story) {
+    var place = story.spot ? byId(story.spot) : null;
+    var target = place ? null : (story.link || '');
+
+    if (!place && !target) {
+      dom.storyCta.hidden = true;
+      dom.storyCta.removeAttribute('href');
+      return;
+    }
+
+    dom.storyCta.hidden = false;
+    dom.storyCtaLabel.textContent = storyCtaLabel(story);
+
+    if (place) {
+      /* Not an href to ?spot=: the map is already loaded underneath, and
+         asking the browser to fetch the whole page again to land on a pin it
+         can open in a frame would be the slowest possible way to do it. */
+      dom.storyCta.setAttribute('href', '?spot=' + encodeURIComponent(place.id));
+      dom.storyCta.removeAttribute('target');
+      dom.storyCta.removeAttribute('rel');
+    } else {
+      dom.storyCta.setAttribute('href', target);
+      dom.storyCta.setAttribute('target', '_blank');
+      dom.storyCta.setAttribute('rel', 'noopener');
+    }
+  }
+
+  function markStorySound() {
+    dom.storySound.classList.toggle('is-muted', state.story.muted);
+    var label = t(state.story.muted ? 'storyUnmute' : 'storyMute');
+    dom.storySound.setAttribute('aria-label', label);
+    dom.storySound.setAttribute('title', label);
+  }
+
+  function setStorySound(muted) {
+    state.story.muted = muted;
+    dom.storyVideo.muted = muted;
+    storeSet(STORY_SOUND_KEY, muted ? 'off' : 'on');
+    markStorySound();
+    if (!muted) {
+      var again = dom.storyVideo.play();
+      if (again && again.catch) again.catch(function () { /* still refused; the picture keeps playing */ });
+    }
+  }
+
+  /* The bar fills with the video rather than on a timer of its own, so what
+     it shows is where the video actually is — including while it buffers. */
+  function startStoryProgress() {
+    stopStoryProgress();
+    storyFrame = window.requestAnimationFrame(function step() {
+      storyFrame = window.requestAnimationFrame(step);
+      var s = state.story;
+      var bar = dom.storyBars.children[s.index];
+      if (!bar) return;
+      var video = dom.storyVideo;
+      var length = video.duration;
+      var done = (length && isFinite(length) && length > 0)
+        ? Math.min(1, video.currentTime / length) : 0;
+      bar.firstChild.style.width = (done * 100).toFixed(2) + '%';
+    });
+  }
+
+  function stopStoryProgress() {
+    if (storyFrame) { window.cancelAnimationFrame(storyFrame); storyFrame = null; }
+  }
+
+  function stepStory(delta) {
+    var s = state.story;
+    var next = s.index + delta;
+    /* Back from the first one is a no-op, the way it is in a story anywhere
+       else. Forward past the last one is the end: that is what closes it. */
+    if (next < 0) { dom.storyVideo.currentTime = 0; return; }
+    if (next >= s.list.length) { closeStories(); return; }
+    clearHold();
+    s.index = next;
+    paintStory();
+  }
+
+  function holdStory(on) {
+    var s = state.story;
+    if (s.held === on) return;
+    if (on) {
+      s.held = true;
+      dom.storyStage.classList.add('is-held');
+      dom.storyVideo.pause();
+      return;
+    }
+    clearHold();
+    var again = dom.storyVideo.play();
+    if (again && again.catch) again.catch(function () { /* ignore */ });
+  }
+
+  /* Let go of the hold without starting the video again — for when what comes
+     next is a different video, or no video at all. Asking a browser to play
+     and pause in the same breath is how the console fills up with warnings
+     about a play() nobody watched. */
+  function clearHold() {
+    state.story.held = false;
+    dom.storyStage.classList.remove('is-held');
+  }
+
+  function closeStories() {
+    if (dom.stories.hidden) return;
+    stopStoryProgress();
+    clearHold();
+    dom.storyVideo.pause();
+    dom.storyVideo.removeAttribute('src');
+    dom.storyVideo.load();
+    dom.stories.hidden = true;
+    renderStoryRing();
+
+    var back = state.story.opener;
+    state.story.opener = null;
+    if (back && document.contains(back) && typeof back.focus === 'function') back.focus();
+  }
+
+  function wireStories() {
+    dom.storyClose.addEventListener('click', closeStories);
+    dom.storySound.addEventListener('click', function () { setStorySound(!state.story.muted); });
+
+    dom.storyBack.addEventListener('click', function () { if (!swallowedTap()) stepStory(-1); });
+    dom.storyFwd.addEventListener('click', function () { if (!swallowedTap()) stepStory(1); });
+
+    dom.storyVideo.addEventListener('ended', function () { stepStory(1); });
+    dom.storyVideo.addEventListener('error', function () {
+      /* A file that will not load is a file nobody can watch. Say so once and
+         move on rather than sitting on a black rectangle. */
+      if (dom.stories.hidden) return;
+      toast(t('storyFail'));
+      stepStory(1);
+    });
+
+    dom.storyCta.addEventListener('click', function (ev) {
+      var story = state.story.list[state.story.index];
+      if (!story) return;
+      trackEvent('story_link', { story_id: story.id, spot: story.spot || '' });
+      var place = story.spot ? byId(story.spot) : null;
+      if (!place) return;                  /* an outbound link goes where it says */
+      ev.preventDefault();
+      closeStories();
+      selectPlace(place.id, { fly: true });
+    });
+
+    /* Press, hold, drag. One set of handlers on the stage rather than on each
+       half, because a drag that starts on one half and ends on the other is
+       still the same gesture. */
+    dom.storyStage.addEventListener('pointerdown', function (ev) {
+      if (ev.button !== undefined && ev.button !== 0) return;
+      var s = state.story;
+      s.downX = ev.clientX;
+      s.downY = ev.clientY;
+      s.dragging = true;
+      if (storyHoldTimer) window.clearTimeout(storyHoldTimer);
+      storyHoldTimer = window.setTimeout(function () {
+        storyHoldTimer = null;
+        holdStory(true);
+      }, STORY_HOLD_MS);
+    });
+
+    dom.storyStage.addEventListener('pointermove', function (ev) {
+      var s = state.story;
+      if (!s.dragging) return;
+      /* A finger on the move is going somewhere, not holding still. */
+      if (storyHoldTimer && Math.abs(ev.clientY - s.downY) > 10) {
+        window.clearTimeout(storyHoldTimer);
+        storyHoldTimer = null;
+      }
+    });
+
+    dom.storyStage.addEventListener('pointerup', function (ev) {
+      var s = state.story;
+      if (storyHoldTimer) { window.clearTimeout(storyHoldTimer); storyHoldTimer = null; }
+      if (!s.dragging) return;
+      s.dragging = false;
+
+      var down = ev.clientY - s.downY;
+      var across = Math.abs(ev.clientX - s.downX);
+      /* Down and mostly down: the gesture that closes a story everywhere. */
+      if (down > STORY_SWIPE && across < down) {
+        s.swallow = true;
+        closeStories();
+        return;
+      }
+      if (s.held) {
+        /* The click that follows a hold is the end of the hold, not a tap on
+           the half of the screen the finger happened to be over. */
+        s.swallow = true;
+        holdStory(false);
+      }
+    });
+
+    dom.storyStage.addEventListener('pointercancel', function () {
+      var s = state.story;
+      if (storyHoldTimer) { window.clearTimeout(storyHoldTimer); storyHoldTimer = null; }
+      s.dragging = false;
+      if (s.held) { s.swallow = true; holdStory(false); }
+    });
+
+    /* Leaving the tab pauses it. Coming back does not resume on its own: a
+       video that starts talking the moment a tab is looked at again is the
+       thing every browser's autoplay rules exist to prevent. */
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden && !dom.stories.hidden) dom.storyVideo.pause();
+    });
+  }
+
+  function swallowedTap() {
+    if (!state.story.swallow) return false;
+    state.story.swallow = false;
+    return true;
+  }
+
+  function keepFocusInStories(ev) {
+    keepFocusIn(ev, [dom.storyClose, dom.storySound, dom.storyBack, dom.storyFwd, dom.storyCta]);
+  }
+
   /* ------------------------------------------------------------------- URL */
 
   /* Opening a place is a step you can come back from, so it gets a history
@@ -2671,6 +3207,10 @@
     else params.delete('lang');
     if (state.stylePinned) params.set('style', state.style);
     else params.delete('style');
+    /* ?story= is a door, not a state: it opens the queue on the way in and is
+       taken off the address bar there and then, so nothing anybody copies out
+       of it later reopens a video that has since gone. */
+    params.delete('story');
 
     var query = params.toString();
     var next = window.location.pathname + (query ? '?' + query : '') + window.location.hash;
@@ -2780,6 +3320,22 @@
     });
 
     document.addEventListener('keydown', function (ev) {
+      /* The stories cover everything, so while they are up they answer the
+         keyboard first: the arrows walk the queue, space holds it the way a
+         finger does, and Escape leaves. */
+      if (!dom.stories.hidden) {
+        if (ev.key === 'Escape') { closeStories(); return; }
+        if (ev.key === 'ArrowLeft') { ev.preventDefault(); stepStory(-1); return; }
+        if (ev.key === 'ArrowRight') { ev.preventDefault(); stepStory(1); return; }
+        if (ev.key === ' ' || ev.key === 'Spacebar') {
+          ev.preventDefault();
+          holdStory(!state.story.held);
+          return;
+        }
+        if (ev.key === 'Tab') keepFocusInStories(ev);
+        return;
+      }
+
       if (ev.key === 'Escape') {
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
@@ -2838,14 +3394,22 @@
     });
   }
 
-  function keepFocusInLightbox(ev) {
-    var focusable = [dom.lbClose, dom.lbPrev, dom.lbNext].filter(function (n) { return !n.hidden; });
+  /* Tab inside a full-screen dialog stays inside it. Shared by the lightbox
+     and the stories, which are the two things on this site that cover the
+     page: a Tab that walked out of either would be tabbing through a map
+     nobody can see. */
+  function keepFocusIn(ev, nodes) {
+    var focusable = nodes.filter(function (n) { return n && !n.hidden; });
     if (!focusable.length) return;
     var first = focusable[0];
     var last = focusable[focusable.length - 1];
     if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
     else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
     else if (focusable.indexOf(document.activeElement) === -1) { ev.preventDefault(); first.focus(); }
+  }
+
+  function keepFocusInLightbox(ev) {
+    keepFocusIn(ev, [dom.lbClose, dom.lbPrev, dom.lbNext]);
   }
 
   /* You are not a restaurant. The dot takes the palette's --here, a hue none
@@ -3065,6 +3629,19 @@
       searchClear: $('search-clear'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
+      stories: $('stories'),
+      storyStage: $('story-stage'),
+      storyVideo: $('story-video'),
+      storyBars: $('story-bars'),
+      storyLeft: $('story-left'),
+      storyCaption: $('story-caption'),
+      storyCta: $('story-cta'),
+      storyCtaLabel: $('story-cta-label'),
+      storySound: $('story-sound'),
+      storyClose: $('story-close'),
+      storyBack: $('story-back'),
+      storyFwd: $('story-fwd'),
+      storyRing: null,
       lightbox: $('lightbox'),
       lbImg: $('lb-img'),
       lbCaption: $('lb-caption'),
@@ -3089,12 +3666,15 @@
       getJSON('data/deals.json').catch(function () { return []; }),
       /* The station is optional in every sense: no file, no station, no
          button, and the rest of the map does not notice. */
-      getJSON('data/radio.json').catch(function () { return null; })
+      getJSON('data/radio.json').catch(function () { return null; }),
+      /* And the stories the same: no file, no ring on the mark, no viewer. */
+      getJSON('data/stories.json').catch(function () { return []; })
     ]).then(function (loaded) {
       state.places = loaded[0] || [];
       state.types = (loaded[1] && loaded[1].types) || [];
       state.deals = loaded[3] || [];
       state.radio = loaded[4] || null;
+      state.stories = Array.isArray(loaded[5]) ? loaded[5] : [];
       state.ui = loaded[2] || {};
       state.langs = Object.keys(state.ui);
 
@@ -3129,7 +3709,10 @@
       renderFilters();
       renderPanel();
       renderRadio();
+      renderStoryRing();
       wireControls();
+      wireStories();
+      startStoryClock();
 
       /* A ?type= link lands on a filtered map, and on a phone a shut row
          would be the one thing this design promises never to be. So the link
@@ -3159,9 +3742,22 @@
       /* The bare map goes into the entry the visitor arrived on, whether or
          not they arrived on a place. So a link straight to a place still has
          somewhere to go Back to: the map, standing on that place. */
-      var spot = new URLSearchParams(window.location.search).get('spot');
+      var params = new URLSearchParams(window.location.search);
+      var spot = params.get('spot');
       syncUrl();
       if (spot && byId(spot)) selectPlace(spot, { fly: true });
+
+      /* ?story=<id> opens the queue standing on that one, which is the link
+         to put in a post: it lands on the video while the video is still up,
+         and on the plain map once it is not. syncUrl above has already taken
+         the parameter back off the address bar. */
+      var wanted = params.get('story');
+      if (wanted) {
+        var queue = liveStories();
+        for (var q = 0; q < queue.length; q++) {
+          if (queue[q].id === wanted) { openStories(q, null); break; }
+        }
+      }
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
 

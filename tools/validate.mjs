@@ -20,10 +20,14 @@
  *   - a phone number that is not in international form, such as +372 661 0180
  *   - a deal in deals.json for a place that does not exist, sharing a key with
  *     another deal, or switched live with nothing written in it
+ *   - a story in stories.json with no end time, an end before its start, a
+ *     video that is not in the repo, or a link to a place that does not exist
  *
  * Warns on:
  *   - placeholder blurbs, missing reels, missing phone numbers, missing blurb translations
  *   - unused taxonomy types, photo folders with no matching restaurant
+ *   - a story that is still switched on after its time ran out, and a video in
+ *     stories/ that no story names
  *   - unknown keys in a restaurant object (catches typos)
  */
 
@@ -465,6 +469,152 @@ function todayStamp() {
   return `${d.getFullYear()}-${m}-${day}`;
 }
 
+/* -------------------------------------------------------------- stories.json
+   Optional, and empty most of the time: a story is up for a day and then it
+   is not. What is checked is that one which IS live can actually be watched —
+   the video is in the repo, the clock reads forwards, and the link it carries
+   goes somewhere that exists. A story is on screen for six seconds with no
+   way back to it, so there is no version of "the reader will work it out".
+
+   Times are Tallinn wall clock, "2026-09-14T21:00", because that is the clock
+   the person writing the file and the person watching the video are both
+   reading. assets/app.js turns them into instants. */
+
+const STORY_KEYS = new Set(['id', 'live', 'video', 'poster', 'from', 'until', 'caption', 'spot', 'link', 'linkLabel']);
+const STAMP = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]$/;
+const VIDEO_FILE = /^[A-Za-z0-9._-]+\.(mp4|webm|mov|m4v)$/i;
+const POSTER_FILE = /^[A-Za-z0-9._-]+\.(webp|jpg|jpeg|png|avif)$/i;
+
+const STORIES = join(ROOT, 'stories');
+const storiesPath = join(DATA, 'stories.json');
+const stories = existsSync(storiesPath) ? readJSON('data/stories.json') : [];
+const seenStories = new Set();
+const usedStoryFiles = new Set();
+
+if (stories !== null && !Array.isArray(stories)) {
+  fail('data/stories.json', 'the top level must be an array');
+} else if (Array.isArray(stories)) {
+  stories.forEach((story, i) => {
+    const where = `data/stories.json[${i}]`;
+    if (!isPlainObject(story)) { fail(where, 'must be an object'); return; }
+
+    for (const key of Object.keys(story)) {
+      if (!STORY_KEYS.has(key)) warn(where, `unknown key "${key}"`);
+    }
+
+    if (!isNonEmptyString(story.id) || !SLUG.test(story.id)) {
+      fail(where, '"id" must be a lowercase slug');
+    } else if (seenStories.has(story.id)) {
+      /* Watched is remembered per id, so two stories sharing one would each
+         mark the other as seen and the ring would go grey a story early. */
+      fail(where, `duplicate story id "${story.id}"`);
+    } else {
+      seenStories.add(story.id);
+    }
+
+    if (typeof story.live !== 'boolean') {
+      fail(where, '"live" must be true or false');
+    }
+
+    if (!isNonEmptyString(story.video) || !VIDEO_FILE.test(story.video)) {
+      fail(where, '"video" must be a filename inside stories/, such as "kokomo-brunch.mp4"');
+    } else {
+      usedStoryFiles.add(story.video);
+      if (!existsSync(join(STORIES, story.video))) {
+        fail(where, `"stories/${story.video}" is not in the repo`);
+      } else if (/\.(mov|m4v)$/i.test(story.video)) {
+        warn(where, `"${story.video}" is a QuickTime file — re-wrap it as .mp4 so every browser plays it`);
+      }
+    }
+
+    if (story.poster !== undefined) {
+      if (!isNonEmptyString(story.poster) || !POSTER_FILE.test(story.poster)) {
+        fail(where, '"poster" must be an image filename inside stories/');
+      } else {
+        usedStoryFiles.add(story.poster);
+        if (!existsSync(join(STORIES, story.poster))) {
+          fail(where, `"stories/${story.poster}" is not in the repo`);
+        }
+      }
+    }
+
+    for (const field of ['from', 'until']) {
+      if (story[field] === undefined) continue;
+      if (!isNonEmptyString(story[field]) || !STAMP.test(story[field])) {
+        fail(where, `"${field}" must be a Tallinn date and time like 2026-09-14T21:00`);
+      }
+    }
+    if (!isNonEmptyString(story.until)) {
+      /* The countdown is the point. A story with no end is a video. */
+      fail(where, '"until" is required — a story is a thing that goes away');
+    }
+    if (story.from && story.until && STAMP.test(story.from) && STAMP.test(story.until)
+        && story.from >= story.until) {
+      fail(where, '"from" is not before "until", so the story can never be up');
+    }
+
+    for (const field of ['caption', 'linkLabel']) {
+      if (story[field] === undefined) continue;
+      if (!isPlainObject(story[field])) { fail(where, `"${field}" must be an object of translations`); continue; }
+      for (const lang of Object.keys(story[field])) {
+        if (!languages.includes(lang)) fail(where, `"${field}" has unknown language "${lang}"`);
+        else if (!isNonEmptyString(story[field][lang])) fail(where, `"${field}.${lang}" is empty`);
+      }
+    }
+
+    /* One link, and one only. Two would put two buttons' worth of intent
+       behind one, and whichever the code picked would be a surprise. */
+    if (story.spot !== undefined && story.link !== undefined) {
+      fail(where, 'a story carries either "spot" or "link", not both');
+    }
+    if (story.spot !== undefined) {
+      if (!isNonEmptyString(story.spot) || !SLUG.test(story.spot)) {
+        fail(where, '"spot" must be a place id from restaurants.json');
+      } else if (seenIds.size && !seenIds.has(story.spot)) {
+        fail(where, `"${story.spot}" is not a place in restaurants.json`);
+      }
+    }
+    if (story.link !== undefined && (!isNonEmptyString(story.link) || !HTTP_URL.test(story.link))) {
+      fail(where, '"link" must be a full http(s) address');
+    }
+
+    /* A live story is on somebody's screen right now, so it is held to more
+       than a draft: it needs to still be running, and to say something in
+       English at minimum, which is what every language falls back to. */
+    if (story.live === true) {
+      if (story.until && STAMP.test(story.until) && story.until < nowStamp()) {
+        warn(where, `is live but ran out on ${story.until.replace('T', ' ')}`);
+      }
+      if (isPlainObject(story.caption) && !isNonEmptyString(story.caption.en)) {
+        warn(where, 'has a caption but none in English, which is the fallback every language uses');
+      }
+    }
+  });
+}
+
+function nowStamp() {
+  /* Tallinn's own clock, for comparing against times written in it. */
+  const parts = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Europe/Tallinn', hour12: false,
+    year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+  }).format(new Date());
+  return parts.replace(' ', 'T');
+}
+
+if (existsSync(STORIES)) {
+  for (const entry of readdirSync(STORIES)) {
+    if (entry === 'README.md') continue;
+    if (statSync(join(STORIES, entry)).isDirectory()) {
+      warn('stories/', `"${entry}/" is a folder — stories are single files named in data/stories.json`);
+    } else if (!usedStoryFiles.has(entry)) {
+      /* Not a failure: a video can sit in the repo for a day before its entry
+         goes live. It is worth saying, because a story nobody wrote an entry
+         for is a story nobody can watch. */
+      warn('stories/', `"${entry}" is not named by any story in data/stories.json`);
+    }
+  }
+}
+
 /* -------------------------------------------------- taxonomy / photo sweeps */
 
 for (const id of typeIds) {
@@ -518,6 +668,9 @@ if (errors.length) {
 }
 
 const liveDeals = Array.isArray(deals) ? deals.filter((d) => d && d.live === true).length : 0;
+const liveStories = Array.isArray(stories)
+  ? stories.filter((s) => s && s.live === true && s.until && s.until >= nowStamp()).length
+  : 0;
 
 console.log('');
-console.log(`OK — ${count} place${count === 1 ? '' : 's'}, ${typeIds.size} types, ${languages.length} languages (${languages.join(', ')}), ${liveDeals} live deal${liveDeals === 1 ? '' : 's'}, ${warnings.length} warning${warnings.length === 1 ? '' : 's'}.`);
+console.log(`OK — ${count} place${count === 1 ? '' : 's'}, ${typeIds.size} types, ${languages.length} languages (${languages.join(', ')}), ${liveDeals} live deal${liveDeals === 1 ? '' : 's'}, ${liveStories} live stor${liveStories === 1 ? 'y' : 'ies'}, ${warnings.length} warning${warnings.length === 1 ? '' : 's'}.`);

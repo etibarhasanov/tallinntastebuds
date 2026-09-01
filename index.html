@@ -55,7 +55,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=39a60ca8">
+<link rel="stylesheet" href="assets/styles.css?v=b2343928">
 </head>
 <body>
 
@@ -160,6 +160,56 @@
   </div>
 </aside>
 
+<!-- Instagram's stories, on the map. Hidden and empty until data/stories.json
+     has something live in it, at which point the mark in the top left grows a
+     ring and this is what opens behind it. One video at a time, full screen,
+     tap to move, a bar per story along the top and the countdown to the
+     moment it goes. -->
+<div class="stories" id="stories" role="dialog" aria-modal="true"
+     data-i18n-aria-label="storiesTitle" aria-label="Stories" hidden>
+  <div class="story-stage" id="story-stage">
+    <video class="story-video" id="story-video" playsinline webkit-playsinline preload="auto"></video>
+
+    <!-- The two halves of the screen, which is how a story is walked through
+         everywhere else. They are buttons and not bare divs so a keyboard and
+         a screen reader get the same two moves a thumb does. -->
+    <button type="button" class="story-half story-half-back" id="story-back"
+            data-i18n-aria-label="storyPrev" aria-label="Previous story"></button>
+    <button type="button" class="story-half story-half-fwd" id="story-fwd"
+            data-i18n-aria-label="storyNext" aria-label="Next story"></button>
+
+    <div class="story-bars" id="story-bars" aria-hidden="true"></div>
+
+    <header class="story-head">
+      <img class="story-mark" src="assets/logo/mark-round.webp" alt="" width="30" height="30">
+      <p class="story-who">
+        <span class="story-name" data-i18n="wordmark">Tallinn Tastebuds</span>
+        <span class="story-left mono" id="story-left"></span>
+      </p>
+      <button type="button" class="story-btn" id="story-sound"
+              data-i18n-aria-label="storyMute" aria-label="Turn the sound off">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M11 5L6.5 9H3v6h3.5L11 19z"/>
+          <path class="ico-loud" d="M15 9.2a4 4 0 010 5.6M17.8 6.6a8 8 0 010 10.8"/>
+          <path class="ico-hush" d="M15.5 10l5 4M20.5 10l-5 4"/>
+        </svg>
+      </button>
+      <button type="button" class="story-btn" id="story-close"
+              data-i18n-aria-label="storyClose" aria-label="Close the stories">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+
+    <footer class="story-foot">
+      <p class="story-caption" id="story-caption" hidden></p>
+      <a class="story-cta" id="story-cta" hidden>
+        <span id="story-cta-label"></span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+      </a>
+    </footer>
+  </div>
+</div>
+
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" data-i18n-aria-label="photos" aria-label="Photos" hidden>
   <button type="button" class="lb-btn lb-close" id="lb-close" data-i18n-aria-label="photoClose" aria-label="Close photo">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -195,6 +245,6 @@
      lookup and date helpers from it, to work out whether a place has a
      discount worth showing; with no deals set up that answer is always no. -->
 <script src="assets/pass.js?v=41008114" defer></script>
-<script src="assets/app.js?v=885e1bda" defer></script>
+<script src="assets/app.js?v=8c77c834" defer></script>
 </body>
 </html>
