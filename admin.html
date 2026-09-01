@@ -681,7 +681,7 @@ a { color: var(--accent); }
 
     function draw() {
       clear(tabs);
-      [['story', 'Post a story'], ['place', 'Add a place']].forEach(function (pair) {
+      [['story', 'Story'], ['place', 'Add a place'], ['edit', 'Edit a place']].forEach(function (pair) {
         var b = el('button', { type: 'button',
           className: 'tab' + (which === pair[0] ? ' on' : ''),
           textContent: pair[1] });
@@ -693,7 +693,9 @@ a { color: var(--accent); }
         tabs.appendChild(b);
       });
       clear(panel);
-      (which === 'story' ? storyForm : placeForm)(repo, panel);
+      if (which === 'story') storyForm(repo, panel);
+      else if (which === 'place') placeForm(repo, panel, null);
+      else editPicker(repo, panel);
     }
 
     body.appendChild(tabs);
@@ -886,9 +888,11 @@ a { color: var(--accent); }
   }
 
   /* ------------------------------------------------------------- a place
-   * Everything tools/validate.mjs would fail the build over is checked here
-   * first, in the same words, because the point of a pull request is to be
-   * read rather than to be a red tick somebody has to come back to.
+   * Adding one and changing one are the same form and the same road: a pull
+   * request, because a place is permanent and it is the file the whole map is
+   * drawn from. Everything tools/validate.mjs would fail the build over is
+   * asked here first, in the same words, so a pull request this opens is one
+   * that goes green.
    */
   var SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   var REEL_IG = /^https:\/\/www\.instagram\.com\/(?:[A-Za-z0-9._]{1,30}\/)?(reel|reels|p|tv)\/[A-Za-z0-9_-]{5,}\/?(\?.*)?$/;
@@ -905,11 +909,11 @@ a { color: var(--accent); }
     return out.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
 
-  function loadPlaces() {
+  function loadPlaces(withClosed) {
     return fetch('data/restaurants.json', { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (all) {
-        return all.filter(function (pl) { return !pl.closed; })
+        return all.filter(function (pl) { return withClosed || !pl.closed; })
           .sort(function (a, b) { return a.name.localeCompare(b.name, 'et'); });
       });
   }
@@ -920,8 +924,49 @@ a { color: var(--accent); }
       Math.round(file.size / 1024) + ' KB';
   }
 
-  function placeForm(repo, into) {
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  /* Which place to change. Closed ones are in the list too — reopening one is
+     an edit like any other, and it is the only way back. */
+  function editPicker(repo, into) {
+    var pick = el('select', { id: 'which' }, [
+      el('option', { value: '', textContent: 'Loading the places…' })
+    ]);
+    into.appendChild(el('label', { for: 'which', textContent: 'Which place' }));
+    into.appendChild(pick);
+    var hint = el('p', { className: 'hint', textContent:
+      'Everything the form does not ask about is left exactly as it is — the other ' +
+      'nine write-ups, the month you visited, the date it was added.' });
+    into.appendChild(hint);
+    var host = el('div');
+    into.appendChild(host);
+
+    loadPlaces(true).then(function (places) {
+      clear(pick);
+      pick.appendChild(el('option', { value: '', textContent: 'Choose a place…' }));
+      places.forEach(function (pl) {
+        pick.appendChild(el('option', { value: pl.id,
+          textContent: pl.name + (pl.closed ? ' (closed)' : '') }));
+      });
+      pick.addEventListener('change', function () {
+        clear(host);
+        var chosen = places.filter(function (pl) { return pl.id === pick.value; })[0];
+        if (chosen) placeForm(repo, host, chosen);
+      });
+    }).catch(function () {
+      clear(pick);
+      pick.appendChild(el('option', { value: '', textContent: 'Could not load the places' }));
+    });
+  }
+
+  /* One form, two jobs. `existing` null means a new place; anything else is
+     the object as it sits in the file right now, and the entry written back is
+     that object with only the fields below replaced — which is the whole
+     reason an edit cannot be built by filling a blank form and saving it. */
+  function placeForm(repo, into, existing) {
+    var editing = !!existing;
     var shots = [];
+    var drop = {};        /* photos ticked for removal, by filename */
 
     function field(id, label, node, hint) {
       into.appendChild(el('label', { for: id, textContent: label }));
@@ -930,18 +975,26 @@ a { color: var(--accent); }
       return node;
     }
 
-    var nameIn = field('name', 'Name', el('input', { type: 'text', id: 'name' }));
+    var nameIn = field('name', 'Name', el('input', { type: 'text', id: 'name',
+      value: editing ? existing.name : '' }));
     var idIn = field('id', 'Id', el('input', { type: 'text', id: 'id',
+      value: editing ? existing.id : '', readonly: editing || null,
       autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false' }),
-      'Made from the name. It is the folder the photos live in and what ?spot= points at, so it never changes afterwards.');
-    nameIn.addEventListener('input', function () {
-      if (!idIn.dataset.touched) idIn.value = slugify(nameIn.value);
-    });
-    idIn.addEventListener('input', function () { idIn.dataset.touched = '1'; });
+      editing
+        ? 'Fixed. It is the folder the photographs live in and what ?spot= points at, and every link ever shared uses it.'
+        : 'Made from the name. It is the folder the photos live in and what ?spot= points at, so it never changes afterwards.');
+    if (!editing) {
+      nameIn.addEventListener('input', function () {
+        if (!idIn.dataset.touched) idIn.value = slugify(nameIn.value);
+      });
+      idIn.addEventListener('input', function () { idIn.dataset.touched = '1'; });
+    }
 
-    var addrIn = field('addr', 'Address', el('input', { type: 'text', id: 'addr' }), null);
+    var addrIn = field('addr', 'Address', el('input', { type: 'text', id: 'addr',
+      value: editing ? existing.address : '' }));
 
     var coordIn = el('input', { type: 'text', id: 'coord',
+      value: editing ? existing.lat + ', ' + existing.lng : '',
       placeholder: '59.4370, 24.7536', autocapitalize: 'off', spellcheck: 'false' });
     var hereBtn = el('button', { type: 'button', className: 'quiet', textContent: 'I am here' });
     into.appendChild(el('label', { for: 'coord', textContent: 'Coordinates' }));
@@ -969,7 +1022,7 @@ a { color: var(--accent); }
       priceIn.appendChild(el('option', { value: String(n),
         textContent: '€'.repeat(Math.ceil(n)) + (n % 1 ? ' (half a step down)' : '') + '  ·  ' + n }));
     });
-    priceIn.value = '2';
+    priceIn.value = String(editing ? existing.price : 2);
     field('price', 'Price', priceIn);
 
     var typeBox = el('div', { className: 'types' });
@@ -980,39 +1033,99 @@ a { color: var(--accent); }
       .then(function (tax) {
         clear(typeBox);
         tax.types.forEach(function (t) {
-          var box = el('input', { type: 'checkbox', value: t.id });
+          var on = editing && existing.types.indexOf(t.id) !== -1;
+          var box = el('input', { type: 'checkbox', value: t.id, checked: on || null });
           box.addEventListener('change', settle);
           typeBox.appendChild(el('label', {}, [box, t.en]));
         });
+        settle();
       })
       .catch(function () {
         typeBox.appendChild(el('p', { className: 'hint', textContent: 'Could not load the types.' }));
       });
 
+    var hadEn = editing && existing.blurb && existing.blurb.en ? existing.blurb.en : '';
+    var others = editing
+      ? Object.keys(existing.blurb || {}).filter(function (l) { return l !== 'en'; })
+      : [];
     var blurbIn = field('blurb', 'The write-up, in English',
-      el('textarea', { id: 'blurb', maxlength: '600' }),
+      el('textarea', { id: 'blurb', maxlength: '600', textContent: hadEn }),
       'The one thing that has to be written. House style keeps em and en dashes out of it.');
+    if (others.length) {
+      var warnLine = el('p', { className: 'hint' });
+      into.appendChild(warnLine);
+      var sayDrift = function () {
+        warnLine.textContent = blurbIn.value.trim() !== hadEn
+          ? 'Changed. The ' + others.length + ' other translations are left as they are, so they ' +
+            'no longer say this — the pull request will point that out.'
+          : 'There are ' + others.length + ' other translations. They are left untouched.';
+      };
+      blurbIn.addEventListener('input', sayDrift);
+      sayDrift();
+    }
 
     var dishesIn = field('dishes', 'Must order',
-      el('textarea', { id: 'dishes', placeholder: 'One a line. Leave it empty if there is nothing yet.' }));
+      el('textarea', { id: 'dishes',
+        textContent: editing ? (existing.mustOrder || []).join('\n') : '',
+        placeholder: 'One a line. Leave it empty if there is nothing yet.' }));
 
     var reelIn = field('reel', 'Reel', el('input', { type: 'text', id: 'reel',
+      value: editing ? (existing.reel || '') : '',
       placeholder: 'https://www.instagram.com/reel/…', autocapitalize: 'off', spellcheck: 'false' }),
       'Optional. Instagram or TikTok permalink, off the web rather than the app.');
 
     var siteIn = field('site', 'Website', el('input', { type: 'text', id: 'site',
+      value: editing ? (existing.website || '') : '',
       placeholder: 'https://…', autocapitalize: 'off', spellcheck: 'false' }));
     var phoneIn = field('phone', 'Phone', el('input', { type: 'text', id: 'phone',
-      placeholder: '+372 661 0180' }), 'Optional, international form. Without it the panel drops the Call button.');
+      value: editing ? (existing.phone || '') : '', placeholder: '+372 661 0180' }),
+      'Optional, international form. Without it the panel drops the Call button.');
 
-    var photoIn = field('photos', 'Photographs',
+    /* Closed is the one field that only makes sense on something that already
+       exists, and it is a change rather than a deletion on purpose: the place
+       keeps its page, its photographs and its write-up, and says it has shut. */
+    var closedIn = null;
+    if (editing) {
+      closedIn = el('input', { type: 'checkbox', checked: existing.closed || null });
+      into.appendChild(el('label', { textContent: 'Open or closed' }));
+      into.appendChild(el('div', { className: 'types' }, [
+        el('label', {}, [closedIn, 'This place has closed down'])
+      ]));
+      into.appendChild(el('p', { className: 'hint', textContent:
+        'Closing keeps it on the map, greyed, rather than deleting it — somebody ' +
+        'looking for it deserves to be told it has gone.' }));
+    }
+
+    /* What is already there, each with a tick to take it away. */
+    if (editing && (existing.photos || []).length) {
+      into.appendChild(el('label', { textContent: 'Photographs already there' }));
+      var have = el('div', { className: 'thumbs' });
+      existing.photos.forEach(function (file) {
+        var box = el('input', { type: 'checkbox' });
+        box.addEventListener('change', function () {
+          drop[file] = box.checked;
+          fig.style.opacity = box.checked ? '.4' : '';
+        });
+        var fig = el('figure', {}, [
+          el('img', { src: 'photos/' + existing.id + '/' + file, alt: '', loading: 'lazy' }),
+          el('figcaption', {}, [box, ' ' + file])
+        ]);
+        have.appendChild(fig);
+      });
+      into.appendChild(have);
+      into.appendChild(el('p', { className: 'hint', textContent:
+        'Tick one to drop it. The file is deleted from the repository too, since ' +
+        'nothing else points at it.' }));
+    }
+
+    var photoIn = field('photos', editing ? 'Add more photographs' : 'Photographs',
       el('input', { type: 'file', id: 'photos', accept: 'image/*', multiple: true }),
-      'Shrunk here to 1600px WebP under 200 KB, EXIF and GPS gone with the re-encode. ' +
-      'They land as 01.webp, 02.webp… in the order chosen.');
+      'Shrunk here to 1600px WebP under 200 KB, EXIF and GPS gone with the re-encode.');
     var thumbs = el('div', { className: 'thumbs' });
     into.appendChild(thumbs);
 
-    var go = el('button', { type: 'button', disabled: true, textContent: 'Open a pull request' });
+    var go = el('button', { type: 'button', disabled: true,
+      textContent: editing ? 'Open a pull request with the changes' : 'Open a pull request' });
     into.appendChild(go);
     var out = el('div');
     into.appendChild(out);
@@ -1034,8 +1147,10 @@ a { color: var(--accent); }
           img.addEventListener('load', function () { URL.revokeObjectURL(img.src); });
           thumbs.appendChild(el('figure', {}, [
             img,
+            /* The name it will actually land under, worked out the same way
+               the submit does, so the preview is not a guess. */
             el('figcaption', { textContent:
-              pad2(i + 1) + '.webp · ' + Math.round(d.small.blob.size / 1024) + ' KB' })
+              pad2(highestSoFar() + i + 1) + '.webp · ' + Math.round(d.small.blob.size / 1024) + ' KB' })
           ]));
         });
         var before = done.reduce(function (n, d) { return n + d.file.size; }, 0);
@@ -1054,6 +1169,17 @@ a { color: var(--accent); }
       node.addEventListener('input', settle);
     });
 
+    /* New files are numbered past the highest that has ever been there, never
+       into a gap a removal just made: /photos/* is cached for a week, so a
+       reused name would serve last month's picture to anybody who had seen the
+       old one. The preview and the submit both ask this, so they agree. */
+    function highestSoFar() {
+      return (editing ? (existing.photos || []) : []).reduce(function (n, f) {
+        var m = /^(\d+)\./.exec(f);
+        return m ? Math.max(n, Number(m[1])) : n;
+      }, 0);
+    }
+
     function chosenTypes() {
       return Array.prototype.slice.call(typeBox.querySelectorAll('input:checked'))
         .map(function (b) { return b.value; });
@@ -1065,8 +1191,12 @@ a { color: var(--accent); }
       return { lat: Number(nums[0]), lng: Number(nums[1]) };
     }
 
-    /* The same list the validator keeps, asked before the branch exists
-       rather than after CI has gone red on somebody else's morning. */
+    function dropped() {
+      return Object.keys(drop).filter(function (f) { return drop[f]; });
+    }
+
+    /* The same list the validator keeps, asked before the branch exists rather
+       than after CI has gone red on somebody else's morning. */
     function complaints() {
       var bad = [];
       if (!nameIn.value.trim()) bad.push('It needs a name.');
@@ -1106,42 +1236,54 @@ a { color: var(--accent); }
       }
 
       var c = coords();
-      var place = {
-        id: idIn.value.trim(),
-        name: nameIn.value.trim(),
-        address: addrIn.value.trim(),
-        lat: Number(c.lat.toFixed(7)),
-        lng: Number(c.lng.toFixed(7)),
-        price: Number(priceIn.value),
-        types: chosenTypes(),
-        blurb: { en: blurbIn.value.trim().replace(/[—–]/g, '-') },
-        mustOrder: dishesIn.value.split('\n').map(function (d) { return d.trim(); })
-          .filter(function (d) { return d; }),
-        reel: reelIn.value.trim(),
-        photos: shots.map(function (_, i) { return pad2(i + 1) + '.webp'; }),
-        closed: false,
-        added: tallinnNow().slice(0, 10)
-      };
+      /* An edit starts from the object as it is and replaces only what the
+         form asked about. Everything else rides along untouched: the nine
+         other write-ups, "visited", "added", and any key added to the data
+         after this page was written. */
+      var place = editing ? JSON.parse(JSON.stringify(existing)) : {};
+      place.id = idIn.value.trim();
+      place.name = nameIn.value.trim();
+      place.address = addrIn.value.trim();
+      place.lat = Number(c.lat.toFixed(7));
+      place.lng = Number(c.lng.toFixed(7));
+      place.price = Number(priceIn.value);
+      place.types = chosenTypes();
+      place.blurb = Object.assign({}, place.blurb || {},
+        { en: blurbIn.value.trim().replace(/[—–]/g, '-') });
+      place.mustOrder = dishesIn.value.split('\n').map(function (d) { return d.trim(); })
+        .filter(function (d) { return d; });
+      place.reel = reelIn.value.trim();
+      place.closed = closedIn ? closedIn.checked : false;
+      if (!editing) place.added = tallinnNow().slice(0, 10);
+
       var site = siteIn.value.trim(), phone = phoneIn.value.trim();
-      if (site) place.website = site;
-      if (phone) place.phone = phone;
+      if (site) place.website = site; else delete place.website;
+      if (phone) place.phone = phone; else delete place.phone;
+
+      var had = editing ? (existing.photos || []) : [];
+      var highest = highestSoFar();
+      var fresh = shots.map(function (_, i) { return pad2(highest + i + 1) + '.webp'; });
+      var gone = dropped();
+      place.photos = had.filter(function (f) { return gone.indexOf(f) === -1; }).concat(fresh);
 
       go.disabled = true;
       var step = say(out, 'Making a branch…', 'spin');
-      openPlacePR(repo, place, shots, function (msg) { step.textContent = msg; })
+      openPlacePR(repo, place, shots, fresh, gone, existing, function (msg) { step.textContent = msg; })
         .then(function (pr) {
           clear(out);
-          say(out, 'Opened. It is a pull request, so nothing is on the map until it is merged.', 'good');
+          say(out, 'Opened. It is a pull request, so nothing on the map changes until it is merged.', 'good');
           out.appendChild(el('dl', { className: 'facts' }, [
             el('div', {}, [el('dt', { textContent: 'Pull request' }), el('dd', { textContent: pr.title })]),
             el('div', {}, [el('dt', { textContent: 'Open it' }), el('dd', { textContent: pr.url })])
           ]));
           out.appendChild(el('p', { className: 'hint', textContent:
-            'The validator runs on it. Merge it there and the place is on the map on the ' +
-            'next deploy — and remember it has only an English write-up until the other ' +
-            'nine are filled in from a laptop.' }));
-          var again = el('button', { type: 'button', textContent: 'Add another' });
-          again.addEventListener('click', function () { clear(into); placeForm(repo, into); });
+            'The validator runs on it. Merge it there and the map catches up on the next deploy.' }));
+          var again = el('button', { type: 'button',
+            textContent: editing ? 'Change something else' : 'Add another' });
+          again.addEventListener('click', function () {
+            clear(into);
+            if (editing) editPicker(repo, into); else placeForm(repo, into, null);
+          });
           out.appendChild(again);
         })
         .catch(function (err) {
@@ -1154,14 +1296,13 @@ a { color: var(--accent); }
     settle();
   }
 
-  function pad2(n) { return (n < 10 ? '0' : '') + n; }
-
   /* A branch, the photographs, the entry, and then the pull request — in that
      order, so a failure part-way leaves a branch nobody is looking at rather
      than a pull request that is missing half of itself. */
-  function openPlacePR(repo, place, shots, step) {
+  function openPlacePR(repo, place, shots, fresh, gone, existing, step) {
     var base = repo.branch;
-    var branch = 'admin/add-' + place.id;
+    var editing = !!existing;
+    var branch = 'admin/' + (editing ? 'edit-' : 'add-') + place.id;
 
     /* Not encodeURIComponent: this branch name has a slash in it, the ref
        path wants that slash literal, and %2F is a ref that does not exist.
@@ -1189,6 +1330,34 @@ a { color: var(--accent); }
       })
       .then(function (name) {
         branch = name;
+        if (!gone.length) return;
+        /* A delete needs the blob's own sha, so the folder is listed once. */
+        step('Removing ' + gone.length + ' photograph' + (gone.length === 1 ? '' : 's') + '…');
+        return gh('/contents/photos/' + place.id + '?ref=' + encodeURIComponent(branch))
+          .then(function (listing) {
+            var shaOf = {};
+            (listing || []).forEach(function (f) { shaOf[f.name] = f.sha; });
+            var i = 0;
+            function next() {
+              if (i >= gone.length) return Promise.resolve();
+              var file = gone[i++];
+              if (!shaOf[file]) return next();
+              return fetch('https://api.github.com/repos/' + REPO +
+                  '/contents/photos/' + place.id + '/' + file, {
+                method: 'DELETE',
+                headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json',
+                           'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: 'Drop ' + file + ' from ' + place.name,
+                                       sha: shaOf[file], branch: branch })
+              }).then(function (res) {
+                if (!res.ok) throw new Error('Could not remove ' + file + ' (' + res.status + ').');
+                return next();
+              });
+            }
+            return next();
+          });
+      })
+      .then(function () {
         /* One at a time: the Contents API writes a commit per call, and two
            in flight against one branch is one of them losing. */
         var i = 0;
@@ -1198,8 +1367,8 @@ a { color: var(--accent); }
           step('Uploading photograph ' + n + ' of ' + shots.length + '…');
           return blobToB64(shots[i].small.blob)
             .then(function (b64) {
-              return putFile('photos/' + place.id + '/' + pad2(n) + '.webp', b64,
-                'Add photograph ' + pad2(n) + ' for ' + place.name, branch);
+              return putFile('photos/' + place.id + '/' + fresh[i], b64,
+                'Add ' + fresh[i] + ' for ' + place.name, branch);
             })
             .then(function () { i++; return next(); });
         }
@@ -1211,25 +1380,32 @@ a { color: var(--accent); }
       })
       .then(function (current) {
         var places = JSON.parse(b64ToText(current.content));
-        if (places.some(function (pl) { return pl.id === place.id; })) {
+        var at = places.findIndex(function (pl) { return pl.id === place.id; });
+
+        if (editing) {
+          if (at === -1) throw new Error('"' + place.id + '" is no longer in the file.');
+          places.splice(at, 1);
+        } else if (at !== -1) {
           throw new Error('There is already a place with the id "' + place.id + '".');
         }
+
         /* The file is in name order under Estonian collation — o, then õ, then
            ä — which is why Põhja Konn sits after Pulla and not before it.
-           Slotting it in keeps the diff to the lines that changed. */
-        var at = places.findIndex(function (pl) {
+           Re-slotting rather than writing back in place is what keeps a
+           renamed place in the right spot. */
+        var to = places.findIndex(function (pl) {
           return pl.name.localeCompare(place.name, 'et') > 0;
         });
-        if (at === -1) places.push(place); else places.splice(at, 0, place);
+        if (to === -1) places.push(place); else places.splice(to, 0, place);
 
         return putFile('data/restaurants.json',
           textToB64(JSON.stringify(places, null, 2) + '\n'),
-          'Add ' + place.name, branch, current.sha);
+          (editing ? 'Update ' : 'Add ') + place.name, branch, current.sha);
       })
       .then(function () {
         step('Opening the pull request…');
-        var body = [
-          'Added from the admin page on a phone.',
+        var lines = [
+          (editing ? 'Changed' : 'Added') + ' from the admin page on a phone.',
           '',
           '| | |',
           '| --- | --- |',
@@ -1238,20 +1414,45 @@ a { color: var(--accent); }
           '| Price | ' + place.price + ' |',
           '| Types | ' + place.types.join(', ') + ' |',
           '| Photographs | ' + (place.photos.length || 'none yet') + ' |',
-          '| Reel | ' + (place.reel || 'none yet') + ' |',
-          '',
-          'The write-up is English only. The other nine languages, the `visited` month',
-          'and anything else still missing are a laptop job — the validator warns about',
-          'them rather than failing, so this can be merged and finished after.',
-          '',
-          'Check the pin lands on the right side of the street before merging.'
-        ].join('\n');
+          '| Reel | ' + (place.reel || 'none yet') + ' |'
+        ];
+        if (editing) {
+          lines.push('| Open | ' + (place.closed ? 'no, it has closed' : 'yes') + ' |');
+          var changed = [];
+          if (existing.name !== place.name) changed.push('renamed from "' + existing.name + '"');
+          if (existing.address !== place.address) changed.push('address');
+          if (existing.lat !== place.lat || existing.lng !== place.lng) changed.push('coordinates');
+          if (existing.price !== place.price) changed.push('price');
+          if (existing.types.join() !== place.types.join()) changed.push('types');
+          if ((existing.reel || '') !== place.reel) changed.push('reel');
+          if (!!existing.closed !== !!place.closed) changed.push(place.closed ? 'marked closed' : 'reopened');
+          if (fresh.length) changed.push(fresh.length + ' photograph' + (fresh.length === 1 ? '' : 's') + ' added');
+          if (gone.length) changed.push(gone.join(', ') + ' removed');
+          lines.push('', '**Changed:** ' + (changed.length ? changed.join(', ') : 'the write-up or the dishes') + '.');
+
+          var others = Object.keys(existing.blurb || {}).filter(function (l) { return l !== 'en'; });
+          if (others.length && (existing.blurb.en || '') !== place.blurb.en) {
+            lines.push('',
+              '> The English write-up changed and the other ' + others.length +
+              ' translations did not, so they no longer say the same thing. ' +
+              'They are ' + others.join(', ') + '.');
+          }
+        } else {
+          lines.push('',
+            'The write-up is English only. The other nine languages, the `visited` month',
+            'and anything else still missing are a laptop job — the validator warns about',
+            'them rather than failing, so this can be merged and finished after.');
+        }
+        lines.push('', 'Check the pin lands on the right side of the street before merging.');
 
         return fetch('https://api.github.com/repos/' + REPO + '/pulls', {
           method: 'POST',
           headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json',
                      'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: 'Add ' + place.name, head: branch, base: base, body: body })
+          body: JSON.stringify({
+            title: (editing ? 'Update ' : 'Add ') + place.name,
+            head: branch, base: base, body: lines.join('\n')
+          })
         }).then(function (res) {
           if (!res.ok) {
             return res.json().catch(function () { return {}; }).then(function (err) {

@@ -1016,10 +1016,11 @@ story is a thing happening now, and one that waits for a review has missed the
 morning it was about. It is also the cheap kind of mistake: four lines of JSON
 that take themselves down after 36 hours.
 
-**Add a place** opens a **pull request**. A place is permanent, it is the file
-the whole map is drawn from, and it has coordinates that can land on the wrong
-side of the street. So it waits to be read — and waits for the validator, which
-is the difference between seeing the verdict before it is live and after.
+**Add a place** and **Edit a place** open a **pull request**. A place is
+permanent, it is the file the whole map is drawn from, and it has coordinates
+that can land on the wrong side of the street. So it waits to be read — and
+waits for the validator, which is the difference between seeing the verdict
+before it is live and after.
 
 ### Setting up a device
 
@@ -1089,6 +1090,34 @@ actually changed.
 What it cannot do is the other nine languages. The write-up goes in in English,
 the validator warns rather than fails, and the pull request says so — merge it
 and finish it from a laptop.
+
+### Changing one
+
+The same form, filled in from the place as it stands. Everything is editable
+except the **id**, which is the folder the photographs live in and what every
+`?spot=` link ever shared points at.
+
+**What the form does not ask about is not touched.** The entry written back is
+the object as it is in the file with only the fields above replaced, so the
+other nine write-ups, `visited`, `added` and any key added to the data since
+this page was written all ride along untouched. That is the whole reason an
+edit is not a blank form you fill in and save.
+
+Two things it will tell you rather than decide for you:
+
+- **Change the English write-up and the other nine no longer say the same
+  thing.** They are left exactly as they are — blanking nine languages is not
+  a thing a phone should do on its own — and the form and the pull request
+  both say so, by name.
+- **Closed is a change, not a deletion.** Closed places are in the picker too,
+  so reopening one is an edit like any other. See
+  [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it).
+
+Photographs already there are shown with a tick to drop one, which deletes the
+file from the repository as well, since nothing else points at it. New ones are
+numbered **past the highest that has ever been there**, never into a gap a
+removal just made: `/photos/*` is cached for a week, so a reused filename would
+serve last month's picture to anybody who had already seen the old one.
 
 ### What it does to a photograph
 
