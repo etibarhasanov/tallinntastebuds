@@ -1781,12 +1781,14 @@ body.panel-detail .panel {
   touch-action: pan-y;
 }
 
-.story-video {
+.story-video,
+.story-photo {
   width: 100%;
   height: 100%;
   object-fit: contain;
   background: #000;
 }
+.story-video[hidden], .story-photo[hidden] { display: none; }
 
 /* Two scrims in one pass: white text has to hold over whatever the video is
    doing at the top and the bottom of the frame, and a video is the one
@@ -1816,6 +1818,42 @@ body.panel-detail .panel {
 .story-half-back { left: 0; width: 32%; }
 .story-half-fwd { right: 0; width: 68%; }
 .story-half:focus-visible { outline-offset: -6px; }
+
+/* On a phone the two halves are invisible and everybody knows they are there.
+   On a desktop nobody does — a mouse expects something to aim at — so the
+   halves grow a chevron that fades in under the pointer. It is the same
+   button either way; this only gives it a face where a face is wanted. */
+.story-chevron {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 100px;
+  background: rgba(0, 0, 0, .32);
+  color: #fff;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity .18s var(--ease);
+}
+.story-half-back .story-chevron { left: 10px; }
+.story-half-fwd .story-chevron { right: 10px; }
+.story-chevron svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (hover: hover) and (pointer: fine) {
+  .story-half:hover .story-chevron,
+  .story-half:focus-visible .story-chevron { opacity: 1; }
+}
+/* A held story hides its chrome, and the chevrons are chrome. */
+.story-stage.is-held .story-chevron { opacity: 0; }
 
 .story-bars {
   position: absolute;
@@ -1911,6 +1949,7 @@ body.panel-detail .panel {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+#story-sound[hidden] { display: none; }
 #story-sound svg .ico-hush { display: none; }
 #story-sound.is-muted svg .ico-loud { display: none; }
 #story-sound.is-muted svg .ico-hush { display: inline; }

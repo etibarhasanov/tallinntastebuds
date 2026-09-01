@@ -88,8 +88,12 @@
        on screen, whether a finger is holding it still, and what to give the
        focus back to when it closes. */
     story: {
-      list: [], index: 0, opener: null, muted: false,
-      held: false, dragging: false, swallow: false, downX: 0, downY: 0
+      list: [], index: 0, opener: null, muted: true,
+      held: false, dragging: false, swallow: false, downX: 0, downY: 0,
+      /* A photograph has no clock of its own, so the viewer keeps one for it:
+         how much of its time has been spent, and when the current run of it
+         started. Holding banks the first and clears the second. */
+      photoSpent: 0, photoFrom: 0
     }
   };
 
@@ -2698,6 +2702,12 @@
   /* The countdown is drawn in minutes, so it only ever needs redrawing once a
      minute. The same tick is what retires a story the moment it runs out. */
   var STORY_TICK_MS = 60000;
+  /* How long a photograph stands there, when the entry does not say. A video
+     has a length of its own and a photograph does not, so this is the one
+     number in the viewer that is a decision rather than a measurement: long
+     enough to read a line of writing on it, short enough that nobody taps
+     past it out of impatience. An entry can set its own "seconds". */
+  var STORY_PHOTO_MS = 6000;
 
   var storyHoldTimer = null;
   var storyFrame = null;
@@ -2756,7 +2766,7 @@
   function liveStories() {
     var now = Date.now();
     return (state.stories || []).filter(function (s) {
-      if (!s || s.live !== true || !s.video) return false;
+      if (!s || s.live !== true || !(s.video || s.photo)) return false;
       var until = tallinnTime(s.until);
       if (!(until > now)) return false;
       if (s.from) {
@@ -2892,7 +2902,12 @@
     state.story.list = live;
     state.story.index = index;
     state.story.opener = opener || document.activeElement;
-    state.story.muted = storeGet(STORY_SOUND_KEY) === 'off';
+    /* Sound is off until somebody asks for it, and on for ever after they
+       have. A map that starts talking because a ring was pressed is the kind
+       of thing people close the tab over — and on a phone the browser would
+       have refused anyway, so this only makes a desktop behave like the
+       phone everybody already knows. */
+    state.story.muted = storeGet(STORY_SOUND_KEY) !== 'on';
 
     /* Two things playing at once is one too many. */
     if (radioEl && !radioEl.paused) stopRadio();
@@ -2923,8 +2938,22 @@
     }
 
     paintStoryText(story);
+    if (story.photo) showStoryPhoto(story);
+    else showStoryVideo(story);
 
+    markStorySeen(story);
+    renderStoryRing();
+    startStoryProgress();
+  }
+
+  function showStoryVideo(story) {
+    var s = state.story;
     var video = dom.storyVideo;
+
+    dom.storyPhoto.hidden = true;
+    dom.storyPhoto.removeAttribute('src');
+    dom.storyVideo.hidden = false;
+
     video.pause();
     if (story.poster) video.setAttribute('poster', STORY_DIR + story.poster);
     else video.removeAttribute('poster');
@@ -2946,10 +2975,36 @@
         }
       });
     }
+  }
 
-    markStorySeen(story);
-    renderStoryRing();
-    startStoryProgress();
+  /* A photograph is the same story with the clock moved: nothing plays, so
+     the viewer counts the seconds itself and the bar along the top is the
+     only thing that says how long is left. */
+  function showStoryPhoto(story) {
+    var s = state.story;
+
+    dom.storyVideo.pause();
+    dom.storyVideo.removeAttribute('src');
+    dom.storyVideo.load();
+    dom.storyVideo.hidden = true;
+
+    s.photoSpent = 0;
+    s.photoFrom = now();
+    dom.storyPhoto.hidden = false;
+    dom.storyPhoto.alt = storyCaption(story) || t('storiesTitle');
+    dom.storyPhoto.src = STORY_DIR + story.photo;
+  }
+
+  /* How long this story runs, in milliseconds. A video answers for itself
+     once it has read enough of its own header; a photograph is told. */
+  function storyLength(story) {
+    if (story.photo) return Math.max(1000, (story.seconds || 0) * 1000 || STORY_PHOTO_MS);
+    var length = dom.storyVideo.duration;
+    return (length && isFinite(length) && length > 0) ? length * 1000 : 0;
+  }
+
+  function now() {
+    return (window.performance && performance.now) ? performance.now() : Date.now();
   }
 
   /* Everything on the frame that is words rather than picture. Split out
@@ -3000,6 +3055,10 @@
   }
 
   function markStorySound() {
+    var story = state.story.list[state.story.index];
+    /* Nothing to turn off on a photograph, so the button goes rather than
+       standing there doing nothing. */
+    dom.storySound.hidden = !!(story && story.photo);
     dom.storySound.classList.toggle('is-muted', state.story.muted);
     var label = t(state.story.muted ? 'storyUnmute' : 'storyMute');
     dom.storySound.setAttribute('aria-label', label);
@@ -3017,19 +3076,28 @@
     }
   }
 
-  /* The bar fills with the video rather than on a timer of its own, so what
-     it shows is where the video actually is — including while it buffers. */
+  /* The bar fills with the video rather than on a timer beside it, so what it
+     shows is where the video actually is — including while it buffers. A
+     photograph has nothing to ask, so there the same loop runs the clock and
+     steps on at the end of it. */
   function startStoryProgress() {
     stopStoryProgress();
     storyFrame = window.requestAnimationFrame(function step() {
       storyFrame = window.requestAnimationFrame(step);
       var s = state.story;
+      var story = s.list[s.index];
       var bar = dom.storyBars.children[s.index];
-      if (!bar) return;
-      var video = dom.storyVideo;
-      var length = video.duration;
-      var done = (length && isFinite(length) && length > 0)
-        ? Math.min(1, video.currentTime / length) : 0;
+      if (!story || !bar) return;
+
+      var done = 0;
+      if (story.photo) {
+        var spent = s.photoSpent + (s.held ? 0 : now() - s.photoFrom);
+        done = Math.min(1, spent / storyLength(story));
+        if (done >= 1) { stepStory(1); return; }
+      } else {
+        var length = storyLength(story);
+        done = length ? Math.min(1, (dom.storyVideo.currentTime * 1000) / length) : 0;
+      }
       bar.firstChild.style.width = (done * 100).toFixed(2) + '%';
     });
   }
@@ -3043,7 +3111,13 @@
     var next = s.index + delta;
     /* Back from the first one is a no-op, the way it is in a story anywhere
        else. Forward past the last one is the end: that is what closes it. */
-    if (next < 0) { dom.storyVideo.currentTime = 0; return; }
+    if (next < 0) {
+      /* Back from the first one starts it again rather than going nowhere. */
+      var here = s.list[s.index];
+      if (here && here.photo) { s.photoSpent = 0; s.photoFrom = now(); }
+      else dom.storyVideo.currentTime = 0;
+      return;
+    }
     if (next >= s.list.length) { closeStories(); return; }
     clearHold();
     s.index = next;
@@ -3053,13 +3127,20 @@
   function holdStory(on) {
     var s = state.story;
     if (s.held === on) return;
+    var story = s.list[s.index];
+
     if (on) {
+      /* Bank what the photograph has already spent; a video is holding its
+         own place and does not need telling. */
+      if (story && story.photo) s.photoSpent += now() - s.photoFrom;
       s.held = true;
       dom.storyStage.classList.add('is-held');
       dom.storyVideo.pause();
       return;
     }
+
     clearHold();
+    if (story && story.photo) { s.photoFrom = now(); return; }
     var again = dom.storyVideo.play();
     if (again && again.catch) again.catch(function () { /* ignore */ });
   }
@@ -3080,6 +3161,7 @@
     dom.storyVideo.pause();
     dom.storyVideo.removeAttribute('src');
     dom.storyVideo.load();
+    dom.storyPhoto.removeAttribute('src');
     dom.stories.hidden = true;
     renderStoryRing();
 
@@ -3096,12 +3178,24 @@
     dom.storyFwd.addEventListener('click', function () { if (!swallowedTap()) stepStory(1); });
 
     dom.storyVideo.addEventListener('ended', function () { stepStory(1); });
+    /* A file that will not load is a file nobody can watch. Say so once and
+       move on rather than sitting on a black rectangle. */
     dom.storyVideo.addEventListener('error', function () {
-      /* A file that will not load is a file nobody can watch. Say so once and
-         move on rather than sitting on a black rectangle. */
-      if (dom.stories.hidden) return;
+      if (dom.stories.hidden || dom.storyVideo.hidden) return;
       toast(t('storyFail'));
       stepStory(1);
+    });
+    dom.storyPhoto.addEventListener('error', function () {
+      if (dom.stories.hidden || dom.storyPhoto.hidden) return;
+      toast(t('storyFail'));
+      stepStory(1);
+    });
+
+    /* On a desktop the story is a card with the map showing round it, and
+       clicking the part of the screen that is not the card means the same
+       thing it means everywhere else on this site. */
+    dom.stories.addEventListener('click', function (ev) {
+      if (ev.target === dom.stories) closeStories();
     });
 
     dom.storyCta.addEventListener('click', function (ev) {
@@ -3170,11 +3264,13 @@
       if (s.held) { s.swallow = true; holdStory(false); }
     });
 
-    /* Leaving the tab pauses it. Coming back does not resume on its own: a
-       video that starts talking the moment a tab is looked at again is the
-       thing every browser's autoplay rules exist to prevent. */
+    /* Leaving the tab holds the story exactly where it stands, and coming
+       back lets it go again — the same pause a finger does. Without this a
+       photograph would spend its whole six seconds in a tab nobody was
+       looking at, because the clock keeps running while the frames do not. */
     document.addEventListener('visibilitychange', function () {
-      if (document.hidden && !dom.stories.hidden) dom.storyVideo.pause();
+      if (dom.stories.hidden) return;
+      holdStory(!!document.hidden);
     });
   }
 
@@ -3632,6 +3728,7 @@
       stories: $('stories'),
       storyStage: $('story-stage'),
       storyVideo: $('story-video'),
+      storyPhoto: $('story-photo'),
       storyBars: $('story-bars'),
       storyLeft: $('story-left'),
       storyCaption: $('story-caption'),

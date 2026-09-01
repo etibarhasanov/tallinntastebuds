@@ -20,8 +20,9 @@
  *   - a phone number that is not in international form, such as +372 661 0180
  *   - a deal in deals.json for a place that does not exist, sharing a key with
  *     another deal, or switched live with nothing written in it
- *   - a story in stories.json with no end time, an end before its start, a
- *     video that is not in the repo, or a link to a place that does not exist
+ *   - a story in stories.json with no end time, an end before its start, no
+ *     video or photo (or both), a file that is not in the repo, or a link to
+ *     a place that does not exist
  *
  * Warns on:
  *   - placeholder blurbs, missing reels, missing phone numbers, missing blurb translations
@@ -480,7 +481,7 @@ function todayStamp() {
    the person writing the file and the person watching the video are both
    reading. assets/app.js turns them into instants. */
 
-const STORY_KEYS = new Set(['id', 'live', 'video', 'poster', 'from', 'until', 'caption', 'spot', 'link', 'linkLabel']);
+const STORY_KEYS = new Set(['id', 'live', 'video', 'photo', 'seconds', 'poster', 'from', 'until', 'caption', 'spot', 'link', 'linkLabel']);
 const STAMP = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]$/;
 const VIDEO_FILE = /^[A-Za-z0-9._-]+\.(mp4|webm|mov|m4v)$/i;
 const POSTER_FILE = /^[A-Za-z0-9._-]+\.(webp|jpg|jpeg|png|avif)$/i;
@@ -516,14 +517,48 @@ if (stories !== null && !Array.isArray(stories)) {
       fail(where, '"live" must be true or false');
     }
 
-    if (!isNonEmptyString(story.video) || !VIDEO_FILE.test(story.video)) {
-      fail(where, '"video" must be a filename inside stories/, such as "kokomo-brunch.mp4"');
-    } else {
-      usedStoryFiles.add(story.video);
-      if (!existsSync(join(STORIES, story.video))) {
-        fail(where, `"stories/${story.video}" is not in the repo`);
-      } else if (/\.(mov|m4v)$/i.test(story.video)) {
-        warn(where, `"${story.video}" is a QuickTime file — re-wrap it as .mp4 so every browser plays it`);
+    /* A story is one thing or the other. Both would be two stories filed as
+       one, and the viewer would have to pick — which is a decision nobody
+       writing the file meant to hand it. */
+    if (story.video !== undefined && story.photo !== undefined) {
+      fail(where, 'a story is either a "video" or a "photo", not both');
+    } else if (story.video === undefined && story.photo === undefined) {
+      fail(where, 'a story needs a "video" or a "photo"');
+    }
+
+    if (story.video !== undefined) {
+      if (!isNonEmptyString(story.video) || !VIDEO_FILE.test(story.video)) {
+        fail(where, '"video" must be a filename inside stories/, such as "kokomo-brunch.mp4"');
+      } else {
+        usedStoryFiles.add(story.video);
+        if (!existsSync(join(STORIES, story.video))) {
+          fail(where, `"stories/${story.video}" is not in the repo`);
+        } else if (/\.(mov|m4v)$/i.test(story.video)) {
+          warn(where, `"${story.video}" is a QuickTime file — re-wrap it as .mp4 so every browser plays it`);
+        }
+      }
+    }
+
+    if (story.photo !== undefined) {
+      if (!isNonEmptyString(story.photo) || !POSTER_FILE.test(story.photo)) {
+        fail(where, '"photo" must be an image filename inside stories/, such as "kokomo-window.webp"');
+      } else {
+        usedStoryFiles.add(story.photo);
+        if (!existsSync(join(STORIES, story.photo))) {
+          fail(where, `"stories/${story.photo}" is not in the repo`);
+        }
+      }
+    }
+
+    /* Seconds are what a photograph has instead of a length, so they mean
+       nothing next to a video, and a photograph nobody can read in the time
+       given is worse than no photograph. */
+    if (story.seconds !== undefined) {
+      if (typeof story.seconds !== 'number' || !isFinite(story.seconds)
+          || story.seconds < 2 || story.seconds > 20) {
+        fail(where, '"seconds" must be a number between 2 and 20');
+      } else if (story.video !== undefined) {
+        warn(where, '"seconds" does nothing on a video — the file already has a length');
       }
     }
 
@@ -534,6 +569,9 @@ if (stories !== null && !Array.isArray(stories)) {
         usedStoryFiles.add(story.poster);
         if (!existsSync(join(STORIES, story.poster))) {
           fail(where, `"stories/${story.poster}" is not in the repo`);
+        }
+        if (story.photo !== undefined) {
+          warn(where, '"poster" does nothing on a photo story — the photo is already the picture');
         }
       }
     }

@@ -55,7 +55,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=b2343928">
+<link rel="stylesheet" href="assets/styles.css?v=ec813ba7">
 </head>
 <body>
 
@@ -169,14 +169,27 @@
      data-i18n-aria-label="storiesTitle" aria-label="Stories" hidden>
   <div class="story-stage" id="story-stage">
     <video class="story-video" id="story-video" playsinline webkit-playsinline preload="auto"></video>
+    <!-- A story is a video most of the time and a photograph the rest of it.
+         Two elements rather than one that changes tag: a browser keeps a
+         <video> warm between stories, and swapping the element out under it
+         would throw that away on every step. -->
+    <img class="story-photo" id="story-photo" alt="" hidden>
 
     <!-- The two halves of the screen, which is how a story is walked through
          everywhere else. They are buttons and not bare divs so a keyboard and
          a screen reader get the same two moves a thumb does. -->
     <button type="button" class="story-half story-half-back" id="story-back"
-            data-i18n-aria-label="storyPrev" aria-label="Previous story"></button>
+            data-i18n-aria-label="storyPrev" aria-label="Previous story">
+      <span class="story-chevron" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>
+      </span>
+    </button>
     <button type="button" class="story-half story-half-fwd" id="story-fwd"
-            data-i18n-aria-label="storyNext" aria-label="Next story"></button>
+            data-i18n-aria-label="storyNext" aria-label="Next story">
+      <span class="story-chevron" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>
+      </span>
+    </button>
 
     <div class="story-bars" id="story-bars" aria-hidden="true"></div>
 
@@ -245,6 +258,6 @@
      lookup and date helpers from it, to work out whether a place has a
      discount worth showing; with no deals set up that answer is always no. -->
 <script src="assets/pass.js?v=41008114" defer></script>
-<script src="assets/app.js?v=8c77c834" defer></script>
+<script src="assets/app.js?v=d1341953" defer></script>
 </body>
 </html>

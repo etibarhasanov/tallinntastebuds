@@ -762,9 +762,9 @@ rather than later.
 
 When something is up, the mark in the top left grows a turning ring — the same
 ring, in the site's own brick and ember, that every profile picture wears when
-there is something new behind it. Press it and the video fills the screen: a
-bar along the top per story, who it is from, **how long it has left**, the
-caption, and a link. The left third of the screen goes back, the rest goes on,
+there is something new behind it. Press it and the video — or the photograph;
+a story is either — fills the screen: a bar along the top per story, who it is
+from, **how long it has left**, the caption, and a link. The left third of the screen goes back, the rest goes on,
 holding stops it, swiping down leaves. All of it is
 [`data/stories.json`](data/stories.json) plus a file in
 [`stories/`](stories/README.md), and with nothing live there is no ring, no
@@ -796,14 +796,22 @@ the size and the one `ffmpeg` line that gets it there — and add an entry:
 | --- | --- | --- |
 | `id` | required | Lowercase slug. It is what a browser remembers as watched, and what `?story=` points at. |
 | `live` | required | `false` parks a draft in the file with nothing on screen. Nothing about it is shown until this is `true`. |
-| `video` | required | A filename inside `stories/`, never a path. `.mp4` unless you have a reason. |
-| `poster` | optional | An image filename inside `stories/`, shown for the moment before the video has enough of itself to play. |
+| `video` | one or the other | A filename inside `stories/`, never a path. `.mp4` unless you have a reason. |
+| `photo` | one or the other | An image filename inside `stories/`, for a story that is a picture rather than a film. |
+| `seconds` | optional | How long a **photo** stands there. 6 by default, 2 to 20 allowed. A video has a length of its own, so this does nothing to one. |
+| `poster` | optional | An image filename inside `stories/`, shown for the moment before the **video** has enough of itself to play. |
 | `from` | optional | When it goes up. Leave it out and it is up the moment `live` is `true`. |
 | `until` | **required** | When it goes. There is no story without this. |
 | `caption` | optional | A line under the video, per language, exactly like a `blurb`. |
 | `spot` | optional | A place id from `restaurants.json`. The button under the video opens that place on this map. |
 | `link` | optional | A full `https://` address instead. Opens in a new tab. |
 | `linkLabel` | optional | What the button says, per language. Without it a `spot` reads "See Kokomo" and a `link` reads "Open the link". |
+
+A story is a `video` or a `photo` — one of them, never both and never neither.
+A photograph runs on the viewer's own clock instead of the file's: the bar
+along the top is the only thing saying how long is left, it holds still when
+you hold the screen, and it steps on by itself at the end. Nothing else about
+it differs, except that there is no sound button on something with no sound.
 
 `spot` and `link` are one field's worth of intent between them, so an entry
 carries one or the other, never both. An entry with neither is a video with no
@@ -849,13 +857,25 @@ The button inside a story is the other half of that trade: `"spot": "kokomo"`
 lands on the place with its pin already open, without the page being loaded
 twice, because the map was underneath the whole time.
 
-### Sound
+### Sound, and not being annoying
 
-A story plays with sound if the browser allows it, and muted if it does not —
-which on a phone is most of the time, until the visitor has pressed the
-speaker once. That choice is remembered. So **burn any words that matter into
-the video, or write them in `caption`**: the first play is silent more often
-than not.
+**A story opens muted.** Pressing a ring on a map is not asking a laptop to
+start talking, and that is exactly what a phone's browser would have refused to
+do anyway — so the desktop behaves like the phone everybody already knows.
+The speaker button in the corner turns it on, and that choice is remembered
+from then on, on every story after it.
+
+So **burn any words that matter into the video, or write them in `caption`**:
+the first play is silent, and on a second visit it is silent again unless the
+speaker has been pressed.
+
+Nothing else about a story asks for attention either. It never opens itself,
+it never plays behind the map, and nothing on the page moves except the ring —
+which stops turning the moment the last story has been watched. On a desktop
+the story is a card with the map showing around it, and clicking the map
+around it closes it, the same as the photo lightbox; a mouse gets a chevron
+under it on each side, since the tap halves a thumb knows about are invisible
+to a pointer.
 
 ### Taking one down
 
@@ -1017,8 +1037,9 @@ to read and write first.
   malformed `website`
 - a `phone` that is not in international form — `+372 661 0180`, not `6610180`
 - a malformed `added` date — it has to be `YYYY-MM-DD`
-- a story with no `until`, an `until` before its `from`, a video that is not in
-  `stories/`, a `spot` that is not a place, or both a `spot` and a `link`
+- a story with no `until`, an `until` before its `from`, neither a `video` nor a
+  `photo` (or both), a file that is not in `stories/`, a `seconds` outside
+  2–20, a `spot` that is not a place, or both a `spot` and a `link`
 - a `?v=` cache stamp in the HTML that no longer matches the file it points at
   (run `node tools/stamp.mjs` and commit the result)
 
@@ -1033,7 +1054,9 @@ to read and write first.
 - folders in `photos/` that no place points at
 - unknown keys on a place object (this is how you catch `blrub`)
 - a story left `live` after its time ran out
-- a video in `stories/` that no story in `data/stories.json` names
+- a file in `stories/` that no story in `data/stories.json` names
+- a `seconds` on a video or a `poster` on a photo, neither of which does
+  anything
 
 ---
 
@@ -1060,7 +1083,7 @@ data/deals.json            the discounts, and which of them are live
 data/stories.json          the stories, and when each one goes away
 data/schema.json           JSON Schema, for editor autocomplete
 photos/<restaurant-id>/    photos, one folder per place
-stories/                   the story videos, one file each
+stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 .github/workflows/validate.yml
