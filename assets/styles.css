@@ -370,16 +370,32 @@ a:hover { color: var(--accent-lit); }
   z-index: 650;
 }
 
+/* The place you last had open, with the panel now shut. It keeps the open
+   label rather than dropping back into the grey ones — the map has to go on
+   saying which place you were reading, or closing a write-up loses the place
+   it was about — but it is drawn in outline where the open one is filled, so
+   the two are never the same state said twice. */
+.leaflet-tooltip.pin-tip-kept {
+  background: var(--paper);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+  z-index: 640;
+}
+
 .pin-halo {
   pointer-events: none;
   animation: halo-breathe 2.6s ease-in-out infinite;
 }
+/* Steadier than the open one: still there, no longer asking to be looked at. */
+.pin-halo-kept { animation-duration: 4.2s; }
 @keyframes halo-breathe {
   0%, 100% { opacity: .9; }
   50%      { opacity: .3; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pin-halo { animation: none; opacity: .85; }
+  .pin-halo-kept { opacity: .6; }
 }
 /* The broken circle round a closed place. Inert, like the halo: the dot
    inside it is the thing you click, and a ring that took the pointer would
@@ -445,7 +461,8 @@ a:hover { color: var(--accent-lit); }
 /* The one you are looking at keeps whichever of the three it is — it is
    bigger, brighter-collared and haloed, which is already three ways of
    saying it — but it is never the faded one. */
-.is-chosen .pin-face { opacity: 1; }
+.is-chosen .pin-face,
+.is-kept .pin-face { opacity: 1; }
 
 /* Shut for good: the paint drains out of the mark. The broken circle drawn
    round it says the same thing a second time, in the shape the list uses. */
@@ -1651,6 +1668,17 @@ body.panel-detail .panel {
   letter-spacing: .02em;
 }
 .list-row.is-closed .list-name { color: var(--muted); }
+
+/* The row for the place the map is still holding lit. A rule down the inside
+   edge and the name in the accent, which is the hover state made permanent —
+   the list already says that colour means this place, so coming back to the
+   list from a place you have just read lands you looking at it. */
+.list-row.is-kept {
+  box-shadow: inset 2px 0 0 var(--accent);
+  padding-left: 12px;
+}
+.list-row.is-kept .list-name { color: var(--accent); }
+.list-row.is-kept.is-closed .list-name { color: var(--muted); }
 
 /* Sits with the discount badge rather than at the end of the type list: an
    offer and a shut door are the two things in a row you decide on rather than
