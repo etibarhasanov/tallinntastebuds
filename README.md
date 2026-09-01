@@ -575,8 +575,7 @@ The language switch and the validator both read the language list from
 validator fails on: a type with no label in some language is an error, while
 missing blurb translations are warnings, so you can ship as you translate. The
 order of the blocks in `ui.json` does not matter: the switch sorts the
-languages alphabetically by their own `langName`, so a new one lands in its
-place on its own.
+languages alphabetically by code, so a new one lands in its place on its own.
 
 ### Why month names are in the data
 
