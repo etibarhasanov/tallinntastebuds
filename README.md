@@ -408,14 +408,15 @@ the **name**, the **street**, the **type labels**, and the **dishes** in
 `mustOrder`. Not the write-ups — a word like "good" would match half the map
 and give no clue why.
 
-The type labels go in **in all nine languages at once**, not the one the
+The type labels go in **in all ten languages at once**, not the one the
 switcher happens to be showing. Somebody reading the map in Turkish still types
 "bakery" half the time, and somebody reading it in English may well know the
 place as a *pagariäri*: `bakery`, `pagariäri`, `leipomo`, `padaria`, `пекарня`,
-`çörəkxana`, `panadería` and `fırın` all return the same fourteen, whichever
-language is on screen. The index is built once at load, since none of what goes
-into it can change afterwards; folding sixty-nine of these on every keystroke
-would be work for nothing.
+`çörəkxana`, `panadería`, `fırın` and `հացատուն` all return the same fourteen,
+whichever language is on screen. Russian and Ukrainian happen to share the
+word, which is why nine of them cover ten languages. The index is built once at
+load, since none of what goes into it can change afterwards; folding sixty-nine
+of these on every keystroke would be work for nothing.
 
 Accents are folded away on both sides before anything is compared, so `sasl`
 finds Telliskivi Šašlõkk, `pohja` finds Põhja Konn and `pagariari` finds the
@@ -507,16 +508,17 @@ but the video stays up" directly under a note that said the same thing.
 
 ## Languages
 
-Azerbaijani, English, Estonian, Finnish, Portuguese, Russian, Spanish, Turkish
-and Ukrainian — the switcher shows them in that order, Azerbaijani first and the
-rest alphabetical. The order of the blocks in `ui.json` is the order of the
-buttons; the language a visitor *lands* in is a separate thing, still English by
-default, and set by `DEFAULT_LANG` in `assets/app.js`.
+Azerbaijani, Armenian, English, Estonian, Finnish, Portuguese, Russian,
+Spanish, Turkish and Ukrainian — the switcher shows them in that order,
+Azerbaijani first and the rest alphabetical. The order of the blocks in
+`ui.json` is the order of the buttons; the language a visitor *lands* in is a
+separate thing, still English by default, and set by `DEFAULT_LANG` in
+`assets/app.js`.
 
 The switch has two shapes, from the same markup. Wide enough, it is a row of
 codes. On a phone it folds into the current code with a menu under it, listing
-each language's own name for itself: nine codes side by side are around 350px,
-which on a 390px screen runs straight into the handle in the opposite corner.
+each language's own name for itself: ten codes side by side are around 390px,
+which is the whole of a 390px screen, handle in the opposite corner and all.
 The fold happens in CSS at 860px, and the folded menu grows downwards, so the
 next language costs nothing in layout either. Every interface string is
 in `data/ui.json`, keyed by language and then by string id, so a translator
@@ -1165,6 +1167,27 @@ it, all day, which is a better answer to somebody reading the map in Ukrainian
 than the main feed's Western rock. The other channels on the same host are
 `RadioROKS_ClassicRock`, `RadioROKS_NewRock`, `RadioROKS_HardnHeavy` and
 `RadioROKS_Ballads`, if the taste of the map ever changes.
+
+Armenian is jazz, which is less of a stretch than it sounds: Yerevan has had a
+jazz scene since Malkhas, and Jazz FM 95.3 is the station on the end of it.
+The button reads the frequency rather than the city, which is the same trim
+Radio ROKS took: 18ch, and "Jazz FM Yerevan" ran into the ellipsis.
+`am.radioaurora.am` is Radio Aurora's own host and it carries several Yerevan
+stations off the one Icecast, `/jz` among them, so this is the broadcaster's
+address rather than an aggregator's copy of it. Kiss FM 88.3 is `/kiss.aac` on
+the same host and Aurora itself is `/al.mp3`, if the taste of the map ever
+changes.
+
+101.ru's Armenia channel is the one to avoid. It is the easiest Armenian music
+stream to find and it fails twice over: a Russian aggregator's rebroadcast
+rather than a station, and one remove from the country whose slot it would be
+sitting in.
+
+This entry is the only one in the file nobody has listened to before committing
+it. It came out of a mirror of the radio-browser database rather than a
+browser, because the session that added Armenian could not reach a single radio
+host to play one. If the button ever toasts instead of playing, that is why,
+and the two mounts above are the first things to try.
 
 Azerbaijani wants retro **in Azerbaijani**, which is two conditions and not one,
 and the slot took several wrong stations before it took this one. A station
