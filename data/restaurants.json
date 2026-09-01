@@ -637,10 +637,11 @@
     "lng": 24.6799773,
     "price": 1,
     "types": [
+      "casual",
       "restaurant",
-      "caucasian",
+      "hidden-gem",
       "cheap-eats",
-      "hidden-gem"
+      "caucasian"
     ],
     "blurb": {
       "az": "Kopli tərəfdə səmimi və dadlı gürcü yeməkləri.",
@@ -660,7 +661,6 @@
     ],
     "reel": "https://www.instagram.com/reel/DXMsafDjGxE/",
     "photos": [],
-    "website": "",
     "phone": "+372 5814 6100",
     "added": "2026-08-23",
     "visited": "2026-04",
