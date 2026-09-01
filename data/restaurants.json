@@ -1718,7 +1718,12 @@
       "Hojicha"
     ],
     "reel": "",
-    "photos": [],
+    "photos": [
+      "01.webp",
+      "02.webp",
+      "03.webp",
+      "04.webp"
+    ],
     "website": "",
     "phone": "+372 5833 6859",
     "added": "2026-08-24",
