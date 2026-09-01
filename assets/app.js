@@ -308,6 +308,24 @@
     if (now) now.setAttribute('aria-expanded', 'false');
   }
 
+  /* The switch reads in alphabetical order of the names it actually shows —
+     each language's own name for itself — rather than in whatever order the
+     keys happen to sit in ui.json. The collator is asked with no locale so
+     the order is the same list whichever language is on screen: the Latin
+     names first, then Cyrillic, then Armenian, which is where the root
+     collation puts those scripts. */
+  function sortLanguages(codes) {
+    var collator;
+    try { collator = new Intl.Collator(undefined, { sensitivity: 'base' }); }
+    catch (e) { collator = { compare: function (a, b) { return a < b ? -1 : a > b ? 1 : 0; } }; }
+    function nameOf(code) {
+      return (state.ui[code] && state.ui[code].langName) || code;
+    }
+    return codes.slice().sort(function (a, b) {
+      return collator.compare(nameOf(a), nameOf(b)) || collator.compare(a, b);
+    });
+  }
+
   function renderLanguageSwitch() {
     clear(dom.langSwitch);
 
@@ -3873,7 +3891,7 @@
       state.radio = loaded[4] || null;
       state.stories = Array.isArray(loaded[5]) ? loaded[5] : [];
       state.ui = loaded[2] || {};
-      state.langs = Object.keys(state.ui);
+      state.langs = sortLanguages(Object.keys(state.ui));
 
       var chosen = pickLanguage(state.langs);
       state.lang = chosen.lang;

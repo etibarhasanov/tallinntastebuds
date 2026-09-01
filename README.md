@@ -574,7 +574,9 @@ The language switch and the validator both read the language list from
 `data/ui.json`, so there is nothing else to change. Step 2 is the only one the
 validator fails on: a type with no label in some language is an error, while
 missing blurb translations are warnings, so you can ship as you translate. The
-order of the blocks in `ui.json` is the order of the buttons.
+order of the blocks in `ui.json` does not matter: the switch sorts the
+languages alphabetically by their own `langName`, so a new one lands in its
+place on its own.
 
 ### Why month names are in the data
 
