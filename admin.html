@@ -190,6 +190,31 @@ input[type="file"] {
 .hint { font-size: .78rem; color: var(--muted); margin: 5px 0 0; }
 hr { border: 0; border-top: 1px solid var(--hairline); margin: 22px 0 4px; }
 
+.tabs { display: flex; gap: 6px; margin-bottom: 4px; }
+.tabs button {
+  flex: 1; margin: 0; min-height: 40px; font-size: .88rem;
+  background: transparent; color: var(--muted); border-color: var(--hairline);
+}
+.tabs button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tabs button:hover { color: var(--ink); }
+.tabs button.on:hover { color: #fff; background: var(--accent-lit); }
+
+fieldset { border: 0; padding: 0; margin: 0; }
+.types { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.types label {
+  margin: 0; display: inline-flex; align-items: center; gap: 5px;
+  border: 1px solid var(--hairline); border-radius: 999px;
+  padding: 7px 11px; font-size: .8rem; background: #fff; cursor: pointer;
+}
+.types input { margin: 0; accent-color: var(--accent); }
+.row { display: flex; gap: 8px; }
+.row > * { flex: 1; }
+.row button { margin-top: 0; flex: 0 0 auto; width: auto; padding: 11px 13px; font-size: .82rem; }
+.thumbs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.thumbs figure { margin: 0; width: 86px; }
+.thumbs img { width: 86px; height: 86px; object-fit: cover; border-radius: 4px; border: 1px solid var(--hairline); }
+.thumbs figcaption { font-family: var(--mono); font-size: .66rem; color: var(--muted); text-align: center; margin-top: 2px; }
+
 ol { margin: 0 0 12px; padding-left: 1.2rem; font-size: .88rem; }
 ol li { margin-bottom: 6px; }
 code { font-family: var(--mono); font-size: .85em; background: var(--wash); padding: 1px 4px; border-radius: 3px; }
@@ -564,9 +589,15 @@ a { color: var(--accent); }
    * Edge first and quality second, in that order, exactly as that README
    * says: a frame full of leaves is the expensive one, and dropping the edge
    * hides better than dropping the quality.
+   *
+   * The budget here is 200 KB rather than the 300 the README allows by hand.
+   * Every photograph posted from a phone is one nobody sized deliberately, and
+   * they are the ones that accumulate — a file committed here is in the
+   * history for good, so the automatic path is the one that should be mean.
+   * Two numbers, and nothing else depends on them.
    */
-  var SHRINK_STEPS = [[1600, 0.75], [1400, 0.75], [1200, 0.70]];
-  var PHOTO_BUDGET = 300 * 1024;
+  var SHRINK_STEPS = [[1600, 0.72], [1400, 0.68], [1200, 0.62], [1100, 0.58]];
+  var PHOTO_BUDGET = 200 * 1024;
 
   function shrink(file) {
     /* from-image rather than the default: the pixels come out the way up the
@@ -625,53 +656,119 @@ a { color: var(--accent); }
     return d.toISOString().slice(0, 16);
   }
 
-  /* In. */
+  /* --------------------------------------------------------------- the shell
+   * Two things to add, and they reach the repository by different roads.
+   *
+   * A story goes straight onto the branch the site publishes from, because a
+   * story is a thing happening now: one that waits for a review has missed
+   * the morning it was about. It is also the cheap kind of mistake — the
+   * entry is four lines and the whole thing removes itself in 36 hours.
+   *
+   * A place is the opposite. It is permanent, it has coordinates that can be
+   * on the wrong side of the street, a price, a write-up and a set of tags,
+   * and it is the file the whole map is drawn from. So it opens a pull
+   * request and waits to be read, which is also the only way to see the
+   * validator's verdict before the thing is live rather than after.
+   */
   function ready(repo) {
     sub.textContent = 'Unlocked on this device.';
     clear(body);
     touch();
 
-    var state = { photo: null, places: [], stories: [] };
+    var tabs = el('div', { className: 'tabs' });
+    var panel = el('div');
+    var which = 'story';
 
-    /* ------------------------------------------------------------ the form */
-    body.appendChild(el('h2', { textContent: 'Post a story' }));
+    function draw() {
+      clear(tabs);
+      [['story', 'Post a story'], ['place', 'Add a place']].forEach(function (pair) {
+        var b = el('button', { type: 'button',
+          className: 'tab' + (which === pair[0] ? ' on' : ''),
+          textContent: pair[1] });
+        b.addEventListener('click', function () {
+          if (which === pair[0]) return;
+          which = pair[0];
+          draw();
+        });
+        tabs.appendChild(b);
+      });
+      clear(panel);
+      (which === 'story' ? storyForm : placeForm)(repo, panel);
+    }
+
+    body.appendChild(tabs);
+    body.appendChild(panel);
+    draw();
+
+    body.appendChild(el('hr'));
+
+    var facts = el('dl', { className: 'facts' });
+    function fact(term, value) {
+      facts.appendChild(el('div', {}, [
+        el('dt', { textContent: term }),
+        el('dd', { textContent: value })
+      ]));
+    }
+    fact('Repository', repo.name);
+    fact('Write access', repo.canWrite ? 'yes' : 'no — read only');
+    fact('Publishes to', repo.branch);
+    if (repo.expires) fact('Token expires', repo.expires);
+    body.appendChild(facts);
+
+    var lock = el('button', { type: 'button', className: 'quiet', textContent: 'Lock' });
+    lock.addEventListener('click', function () { token = null; boot(); });
+    body.appendChild(lock);
+
+    var forget = el('button', { type: 'button', className: 'quiet',
+      textContent: 'Forget this device' });
+    forget.addEventListener('click', function () {
+      dropVault();
+      token = null;
+      boot();
+    });
+    body.appendChild(forget);
+  }
+
+  /* ------------------------------------------------------------ a story */
+  function storyForm(repo, into) {
+    var state = { photo: null, places: [] };
 
     var fileIn = el('input', { type: 'file', id: 'photo', accept: 'image/*' });
-    body.appendChild(el('label', { for: 'photo', textContent: 'The photograph' }));
-    body.appendChild(fileIn);
-    body.appendChild(el('p', { className: 'hint', textContent:
+    into.appendChild(el('label', { for: 'photo', textContent: 'The photograph' }));
+    into.appendChild(fileIn);
+    into.appendChild(el('p', { className: 'hint', textContent:
       'Shrunk on this device to 1600px and WebP before it goes anywhere, which also ' +
       'drops the EXIF block and the GPS fix inside it. Videos are still a laptop job.' }));
     var shot = el('div', { className: 'shot' });
-    body.appendChild(shot);
+    into.appendChild(shot);
 
     var placeIn = el('select', { id: 'place' }, [
       el('option', { value: '', textContent: 'Loading the places…' })
     ]);
-    body.appendChild(el('label', { for: 'place', textContent: 'The place it belongs to' }));
-    body.appendChild(placeIn);
-    body.appendChild(el('p', { className: 'hint', textContent:
+    into.appendChild(el('label', { for: 'place', textContent: 'The place it belongs to' }));
+    into.appendChild(placeIn);
+    into.appendChild(el('p', { className: 'hint', textContent:
       'The button under the story opens this place on the map, and the photograph ' +
       'moves into its photos when the 36 hours are up.' }));
 
     var whenIn = el('input', { type: 'datetime-local', id: 'when', value: tallinnNow() });
-    body.appendChild(el('label', { for: 'when', textContent: 'When it goes up' }));
-    body.appendChild(whenIn);
+    into.appendChild(el('label', { for: 'when', textContent: 'When it goes up' }));
+    into.appendChild(whenIn);
     var whenHint = el('p', { className: 'hint' });
-    body.appendChild(whenHint);
+    into.appendChild(whenHint);
 
     var capIn = el('textarea', { id: 'cap', maxlength: '280',
       placeholder: 'Cinnamon buns, straight out of the oven at Pulla Bakery.' });
-    body.appendChild(el('label', { for: 'cap', textContent: 'Caption, in English' }));
-    body.appendChild(capIn);
-    body.appendChild(el('p', { className: 'hint', textContent:
+    into.appendChild(el('label', { for: 'cap', textContent: 'Caption, in English' }));
+    into.appendChild(capIn);
+    into.appendChild(el('p', { className: 'hint', textContent:
       'English is what every other language falls back to. Add the rest from a ' +
       'laptop later — the story is live either way.' }));
 
     var post = el('button', { type: 'button', disabled: true, textContent: 'Post it' });
-    body.appendChild(post);
+    into.appendChild(post);
     var out = el('div');
-    body.appendChild(out);
+    into.appendChild(out);
 
     function refreshWhen() {
       var v = whenIn.value.slice(0, 16);
@@ -682,37 +779,28 @@ a { color: var(--accent); }
     whenIn.addEventListener('input', refreshWhen);
     refreshWhen();
 
-    /* The places come off the site itself rather than the API: it is the same
-       file the map is reading, one request, no token spent. */
-    fetch('data/restaurants.json', { cache: 'no-store' })
-      .then(function (r) { return r.json(); })
-      .then(function (places) {
-        state.places = places.filter(function (p) { return !p.closed; })
-          .sort(function (a, b) { return a.name.localeCompare(b.name); });
-        clear(placeIn);
-        placeIn.appendChild(el('option', { value: '', textContent: 'Choose a place…' }));
-        state.places.forEach(function (p) {
-          placeIn.appendChild(el('option', { value: p.id, textContent: p.name }));
-        });
-      })
-      .catch(function () {
-        clear(placeIn);
-        placeIn.appendChild(el('option', { value: '', textContent: 'Could not load the places' }));
+    loadPlaces().then(function (places) {
+      state.places = places;
+      clear(placeIn);
+      placeIn.appendChild(el('option', { value: '', textContent: 'Choose a place…' }));
+      places.forEach(function (pl) {
+        placeIn.appendChild(el('option', { value: pl.id, textContent: pl.name }));
       });
+    }).catch(function () {
+      clear(placeIn);
+      placeIn.appendChild(el('option', { value: '', textContent: 'Could not load the places' }));
+    });
 
-    function ready_() {
-      post.disabled = !(state.photo && placeIn.value && whenIn.value);
-    }
-    placeIn.addEventListener('change', ready_);
-    whenIn.addEventListener('change', ready_);
+    function settle() { post.disabled = !(state.photo && placeIn.value && whenIn.value); }
+    placeIn.addEventListener('change', settle);
+    whenIn.addEventListener('change', settle);
 
     fileIn.addEventListener('change', function () {
       var file = fileIn.files && fileIn.files[0];
       clear(shot);
       state.photo = null;
-      ready_();
+      settle();
       if (!file) return;
-
       shot.appendChild(el('p', { textContent: 'Shrinking…' }));
       shrink(file).then(function (small) {
         state.photo = small;
@@ -721,25 +809,18 @@ a { color: var(--accent); }
         img.src = URL.createObjectURL(small.blob);
         img.addEventListener('load', function () { URL.revokeObjectURL(img.src); });
         shot.appendChild(img);
-        shot.appendChild(el('p', { textContent:
-          small.width + '×' + small.height + ' WebP, ' +
-          Math.round(small.blob.size / 1024) + ' KB, from ' +
-          Math.round(file.size / 1024) + ' KB' }));
-        ready_();
+        shot.appendChild(el('p', { textContent: sizeLine(small, file) }));
+        settle();
       }).catch(function (err) {
         clear(shot);
         shot.appendChild(el('p', { textContent: 'Could not read that picture. ' + err.message }));
       });
     });
 
-    /* ------------------------------------------------------------ posting
-     * Two commits, and the order is the whole of it: the picture lands
-     * first, so the entry naming it is never in the repository on its own.
-     * A story pointing at a file that is not there would fail the validator
-     * and show a broken frame to anybody who opened the ring in between.
-     */
+    /* Two commits, and the order is the whole of it: the picture lands first,
+       so the entry naming it is never in the repository on its own. */
     post.addEventListener('click', function () {
-      var place = state.places.find(function (p) { return p.id === placeIn.value; });
+      var place = state.places.filter(function (pl) { return pl.id === placeIn.value; })[0];
       var when = whenIn.value.slice(0, 16);
       var caption = capIn.value.trim();
 
@@ -751,7 +832,7 @@ a { color: var(--accent); }
         .then(function (current) {
           var stories = current ? JSON.parse(b64ToText(current.content)) : [];
           var taken = {};
-          stories.forEach(function (s) { taken[s.id] = true; });
+          stories.forEach(function (st) { taken[st.id] = true; });
 
           var id = place.id + '-' + when.slice(0, 10);
           var n = 2;
@@ -782,19 +863,18 @@ a { color: var(--accent); }
           clear(out);
           say(out, 'Posted. It goes up at ' + done.when.replace('T', ' ') +
             ' and comes down ' + plusHours(done.when, 36).replace('T', ' ') + '.', 'good');
-          var facts = el('dl', { className: 'facts' }, [
+          out.appendChild(el('dl', { className: 'facts' }, [
             el('div', {}, [
               el('dt', { textContent: 'Link to it' }),
               el('dd', { textContent: '/?story=' + done.id })
             ])
-          ]);
-          out.appendChild(facts);
+          ]));
           out.appendChild(el('p', { className: 'hint', textContent:
             'Cloudflare redeploys within the minute. Nothing else has to happen — the ' +
             'ring appears by itself when the time comes, and the picture moves onto ' +
             place.name + ' when it is over.' }));
           var again = el('button', { type: 'button', textContent: 'Post another' });
-          again.addEventListener('click', function () { ready(repo); });
+          again.addEventListener('click', function () { clear(into); storyForm(repo, into); });
           out.appendChild(again);
         })
         .catch(function (err) {
@@ -803,35 +883,386 @@ a { color: var(--accent); }
           post.disabled = false;
         });
     });
+  }
 
-    /* ------------------------------------------------------------ the door */
-    body.appendChild(el('hr'));
+  /* ------------------------------------------------------------- a place
+   * Everything tools/validate.mjs would fail the build over is checked here
+   * first, in the same words, because the point of a pull request is to be
+   * read rather than to be a red tick somebody has to come back to.
+   */
+  var SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  var REEL_IG = /^https:\/\/www\.instagram\.com\/(?:[A-Za-z0-9._]{1,30}\/)?(reel|reels|p|tv)\/[A-Za-z0-9_-]{5,}\/?(\?.*)?$/;
+  var REEL_TT = /^https:\/\/www\.tiktok\.com\/@[A-Za-z0-9._]{1,30}\/video\/[0-9]{6,}\/?(\?.*)?$/;
+  var PHONE_RE = /^\+[1-9][0-9]{0,3}(?: [0-9]{2,4}){1,4}$/;
+  var URL_RE = /^https?:\/\/[^\s]+$/;
+  /* Tallinn, generously drawn — the same box the validator uses, so a swapped
+     lat and lng is caught on the phone rather than in CI. */
+  var BBOX = { latMin: 59.32, latMax: 59.52, lngMin: 24.50, lngMax: 25.00 };
 
-    var facts = el('dl', { className: 'facts' });
-    function fact(term, value) {
-      facts.appendChild(el('div', {}, [
-        el('dt', { textContent: term }),
-        el('dd', { textContent: value })
-      ]));
+  function slugify(name) {
+    var out = String(name).toLowerCase();
+    try { out = out.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } catch (e) { /* older engine */ }
+    return out.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+
+  function loadPlaces() {
+    return fetch('data/restaurants.json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (all) {
+        return all.filter(function (pl) { return !pl.closed; })
+          .sort(function (a, b) { return a.name.localeCompare(b.name, 'et'); });
+      });
+  }
+
+  function sizeLine(small, file) {
+    return small.width + '×' + small.height + ' WebP, ' +
+      Math.round(small.blob.size / 1024) + ' KB, from ' +
+      Math.round(file.size / 1024) + ' KB';
+  }
+
+  function placeForm(repo, into) {
+    var shots = [];
+
+    function field(id, label, node, hint) {
+      into.appendChild(el('label', { for: id, textContent: label }));
+      into.appendChild(node);
+      if (hint) into.appendChild(el('p', { className: 'hint', textContent: hint }));
+      return node;
     }
-    fact('Repository', repo.name);
-    fact('Write access', repo.canWrite ? 'yes' : 'no — read only');
-    fact('Publishes to', repo.branch);
-    if (repo.expires) fact('Token expires', repo.expires);
-    body.appendChild(facts);
 
-    var lock = el('button', { type: 'button', className: 'quiet', textContent: 'Lock' });
-    lock.addEventListener('click', function () { token = null; boot(); });
-    body.appendChild(lock);
-
-    var forget = el('button', { type: 'button', className: 'quiet',
-      textContent: 'Forget this device' });
-    forget.addEventListener('click', function () {
-      dropVault();
-      token = null;
-      boot();
+    var nameIn = field('name', 'Name', el('input', { type: 'text', id: 'name' }));
+    var idIn = field('id', 'Id', el('input', { type: 'text', id: 'id',
+      autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false' }),
+      'Made from the name. It is the folder the photos live in and what ?spot= points at, so it never changes afterwards.');
+    nameIn.addEventListener('input', function () {
+      if (!idIn.dataset.touched) idIn.value = slugify(nameIn.value);
     });
-    body.appendChild(forget);
+    idIn.addEventListener('input', function () { idIn.dataset.touched = '1'; });
+
+    var addrIn = field('addr', 'Address', el('input', { type: 'text', id: 'addr' }), null);
+
+    var coordIn = el('input', { type: 'text', id: 'coord',
+      placeholder: '59.4370, 24.7536', autocapitalize: 'off', spellcheck: 'false' });
+    var hereBtn = el('button', { type: 'button', className: 'quiet', textContent: 'I am here' });
+    into.appendChild(el('label', { for: 'coord', textContent: 'Coordinates' }));
+    into.appendChild(el('div', { className: 'row' }, [coordIn, hereBtn]));
+    var coordHint = el('p', { className: 'hint', textContent:
+      'Paste them off Google Maps — right-click the pin and the first item is the pair. ' +
+      'Or press the button while standing in the door.' });
+    into.appendChild(coordHint);
+
+    hereBtn.addEventListener('click', function () {
+      if (!navigator.geolocation) { coordHint.textContent = 'This browser will not say where it is.'; return; }
+      coordHint.textContent = 'Asking the phone…';
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        coordIn.value = pos.coords.latitude.toFixed(5) + ', ' + pos.coords.longitude.toFixed(5);
+        coordHint.textContent = 'Where the phone thinks it is, to about ' +
+          Math.round(pos.coords.accuracy) + ' m. Check the dot lands on the right side of the street.';
+        settle();
+      }, function () {
+        coordHint.textContent = 'The phone would not say. Paste the pair from Google Maps instead.';
+      }, { enableHighAccuracy: true, timeout: 10000 });
+    });
+
+    var priceIn = el('select', { id: 'price' });
+    [1, 1.5, 2, 2.5, 3, 3.5, 4].forEach(function (n) {
+      priceIn.appendChild(el('option', { value: String(n),
+        textContent: '€'.repeat(Math.ceil(n)) + (n % 1 ? ' (half a step down)' : '') + '  ·  ' + n }));
+    });
+    priceIn.value = '2';
+    field('price', 'Price', priceIn);
+
+    var typeBox = el('div', { className: 'types' });
+    into.appendChild(el('label', { textContent: 'Types' }));
+    into.appendChild(typeBox);
+    fetch('data/taxonomy.json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (tax) {
+        clear(typeBox);
+        tax.types.forEach(function (t) {
+          var box = el('input', { type: 'checkbox', value: t.id });
+          box.addEventListener('change', settle);
+          typeBox.appendChild(el('label', {}, [box, t.en]));
+        });
+      })
+      .catch(function () {
+        typeBox.appendChild(el('p', { className: 'hint', textContent: 'Could not load the types.' }));
+      });
+
+    var blurbIn = field('blurb', 'The write-up, in English',
+      el('textarea', { id: 'blurb', maxlength: '600' }),
+      'The one thing that has to be written. House style keeps em and en dashes out of it.');
+
+    var dishesIn = field('dishes', 'Must order',
+      el('textarea', { id: 'dishes', placeholder: 'One a line. Leave it empty if there is nothing yet.' }));
+
+    var reelIn = field('reel', 'Reel', el('input', { type: 'text', id: 'reel',
+      placeholder: 'https://www.instagram.com/reel/…', autocapitalize: 'off', spellcheck: 'false' }),
+      'Optional. Instagram or TikTok permalink, off the web rather than the app.');
+
+    var siteIn = field('site', 'Website', el('input', { type: 'text', id: 'site',
+      placeholder: 'https://…', autocapitalize: 'off', spellcheck: 'false' }));
+    var phoneIn = field('phone', 'Phone', el('input', { type: 'text', id: 'phone',
+      placeholder: '+372 661 0180' }), 'Optional, international form. Without it the panel drops the Call button.');
+
+    var photoIn = field('photos', 'Photographs',
+      el('input', { type: 'file', id: 'photos', accept: 'image/*', multiple: true }),
+      'Shrunk here to 1600px WebP under 200 KB, EXIF and GPS gone with the re-encode. ' +
+      'They land as 01.webp, 02.webp… in the order chosen.');
+    var thumbs = el('div', { className: 'thumbs' });
+    into.appendChild(thumbs);
+
+    var go = el('button', { type: 'button', disabled: true, textContent: 'Open a pull request' });
+    into.appendChild(go);
+    var out = el('div');
+    into.appendChild(out);
+
+    photoIn.addEventListener('change', function () {
+      var files = Array.prototype.slice.call(photoIn.files || []);
+      shots = [];
+      clear(thumbs);
+      if (!files.length) { settle(); return; }
+      thumbs.appendChild(el('p', { className: 'hint', textContent: 'Shrinking ' + files.length + '…' }));
+      Promise.all(files.map(function (f) {
+        return shrink(f).then(function (small) { return { small: small, file: f }; });
+      })).then(function (done) {
+        shots = done;
+        clear(thumbs);
+        done.forEach(function (d, i) {
+          var img = el('img', { alt: '' });
+          img.src = URL.createObjectURL(d.small.blob);
+          img.addEventListener('load', function () { URL.revokeObjectURL(img.src); });
+          thumbs.appendChild(el('figure', {}, [
+            img,
+            el('figcaption', { textContent:
+              pad2(i + 1) + '.webp · ' + Math.round(d.small.blob.size / 1024) + ' KB' })
+          ]));
+        });
+        var before = done.reduce(function (n, d) { return n + d.file.size; }, 0);
+        var after = done.reduce(function (n, d) { return n + d.small.blob.size; }, 0);
+        thumbs.appendChild(el('p', { className: 'hint', textContent:
+          Math.round(before / 1024) + ' KB of camera roll became ' +
+          Math.round(after / 1024) + ' KB in the repository.' }));
+        settle();
+      }).catch(function (err) {
+        clear(thumbs);
+        thumbs.appendChild(el('p', { className: 'hint', textContent: 'Could not read those. ' + err.message }));
+      });
+    });
+
+    [nameIn, idIn, addrIn, coordIn, blurbIn].forEach(function (node) {
+      node.addEventListener('input', settle);
+    });
+
+    function chosenTypes() {
+      return Array.prototype.slice.call(typeBox.querySelectorAll('input:checked'))
+        .map(function (b) { return b.value; });
+    }
+
+    function coords() {
+      var nums = String(coordIn.value).match(/-?\d+\.\d+/g);
+      if (!nums || nums.length < 2) return null;
+      return { lat: Number(nums[0]), lng: Number(nums[1]) };
+    }
+
+    /* The same list the validator keeps, asked before the branch exists
+       rather than after CI has gone red on somebody else's morning. */
+    function complaints() {
+      var bad = [];
+      if (!nameIn.value.trim()) bad.push('It needs a name.');
+      if (!SLUG_RE.test(idIn.value.trim())) bad.push('The id has to be a lowercase slug.');
+      if (!addrIn.value.trim()) bad.push('It needs an address.');
+
+      var c = coords();
+      if (!c) bad.push('Coordinates should be two decimal numbers, lat first.');
+      else if (c.lat < BBOX.latMin || c.lat > BBOX.latMax || c.lng < BBOX.lngMin || c.lng > BBOX.lngMax) {
+        bad.push('Those coordinates are outside Tallinn. Lat is about 59.4 and lng about 24.7 — the wrong way round puts it in the Arabian Sea.');
+      }
+      if (!chosenTypes().length) bad.push('Pick at least one type.');
+      if (!blurbIn.value.trim()) bad.push('The write-up is the one thing that has to be written.');
+
+      var reel = reelIn.value.trim();
+      if (reel && !REEL_IG.test(reel) && !REEL_TT.test(reel)) {
+        bad.push('That is not an Instagram or TikTok permalink.');
+      }
+      var site = siteIn.value.trim();
+      if (site && !URL_RE.test(site)) bad.push('The website needs the https:// on the front.');
+      var phone = phoneIn.value.trim();
+      if (phone && !PHONE_RE.test(phone)) bad.push('The phone wants international form, like +372 661 0180.');
+      return bad;
+    }
+
+    function settle() {
+      go.disabled = !(nameIn.value.trim() && idIn.value.trim() && addrIn.value.trim()
+        && coords() && blurbIn.value.trim() && chosenTypes().length);
+    }
+
+    go.addEventListener('click', function () {
+      var bad = complaints();
+      clear(out);
+      if (bad.length) {
+        bad.forEach(function (line) { say(out, line, 'bad'); });
+        return;
+      }
+
+      var c = coords();
+      var place = {
+        id: idIn.value.trim(),
+        name: nameIn.value.trim(),
+        address: addrIn.value.trim(),
+        lat: Number(c.lat.toFixed(7)),
+        lng: Number(c.lng.toFixed(7)),
+        price: Number(priceIn.value),
+        types: chosenTypes(),
+        blurb: { en: blurbIn.value.trim().replace(/[—–]/g, '-') },
+        mustOrder: dishesIn.value.split('\n').map(function (d) { return d.trim(); })
+          .filter(function (d) { return d; }),
+        reel: reelIn.value.trim(),
+        photos: shots.map(function (_, i) { return pad2(i + 1) + '.webp'; }),
+        closed: false,
+        added: tallinnNow().slice(0, 10)
+      };
+      var site = siteIn.value.trim(), phone = phoneIn.value.trim();
+      if (site) place.website = site;
+      if (phone) place.phone = phone;
+
+      go.disabled = true;
+      var step = say(out, 'Making a branch…', 'spin');
+      openPlacePR(repo, place, shots, function (msg) { step.textContent = msg; })
+        .then(function (pr) {
+          clear(out);
+          say(out, 'Opened. It is a pull request, so nothing is on the map until it is merged.', 'good');
+          out.appendChild(el('dl', { className: 'facts' }, [
+            el('div', {}, [el('dt', { textContent: 'Pull request' }), el('dd', { textContent: pr.title })]),
+            el('div', {}, [el('dt', { textContent: 'Open it' }), el('dd', { textContent: pr.url })])
+          ]));
+          out.appendChild(el('p', { className: 'hint', textContent:
+            'The validator runs on it. Merge it there and the place is on the map on the ' +
+            'next deploy — and remember it has only an English write-up until the other ' +
+            'nine are filled in from a laptop.' }));
+          var again = el('button', { type: 'button', textContent: 'Add another' });
+          again.addEventListener('click', function () { clear(into); placeForm(repo, into); });
+          out.appendChild(again);
+        })
+        .catch(function (err) {
+          clear(out);
+          say(out, err.message, 'bad');
+          go.disabled = false;
+        });
+    });
+
+    settle();
+  }
+
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  /* A branch, the photographs, the entry, and then the pull request — in that
+     order, so a failure part-way leaves a branch nobody is looking at rather
+     than a pull request that is missing half of itself. */
+  function openPlacePR(repo, place, shots, step) {
+    var base = repo.branch;
+    var branch = 'admin/add-' + place.id;
+
+    /* Not encodeURIComponent: this branch name has a slash in it, the ref
+       path wants that slash literal, and %2F is a ref that does not exist.
+       The ?ref= further down IS a query value, where encoding is right. */
+    return gh('/git/ref/heads/' + base)
+      .then(function (ref) {
+        if (!ref) throw new Error('Could not find the ' + base + ' branch.');
+        var sha = ref.object.sha;
+
+        function make(name, tries) {
+          return fetch('https://api.github.com/repos/' + REPO + '/git/refs', {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json',
+                       'Content-Type': 'application/json' },
+            body: JSON.stringify({ ref: 'refs/heads/' + name, sha: sha })
+          }).then(function (res) {
+            if (res.ok) return name;
+            /* 422 is the branch already being there, which is a second go at
+               the same place rather than a problem. */
+            if (res.status === 422 && tries < 5) return make(branch + '-' + (tries + 2), tries + 1);
+            throw new Error('Could not make a branch (' + res.status + ').');
+          });
+        }
+        return make(branch, 0);
+      })
+      .then(function (name) {
+        branch = name;
+        /* One at a time: the Contents API writes a commit per call, and two
+           in flight against one branch is one of them losing. */
+        var i = 0;
+        function next() {
+          if (i >= shots.length) return Promise.resolve();
+          var n = i + 1;
+          step('Uploading photograph ' + n + ' of ' + shots.length + '…');
+          return blobToB64(shots[i].small.blob)
+            .then(function (b64) {
+              return putFile('photos/' + place.id + '/' + pad2(n) + '.webp', b64,
+                'Add photograph ' + pad2(n) + ' for ' + place.name, branch);
+            })
+            .then(function () { i++; return next(); });
+        }
+        return next();
+      })
+      .then(function () {
+        step('Writing the entry…');
+        return gh('/contents/data/restaurants.json?ref=' + encodeURIComponent(branch));
+      })
+      .then(function (current) {
+        var places = JSON.parse(b64ToText(current.content));
+        if (places.some(function (pl) { return pl.id === place.id; })) {
+          throw new Error('There is already a place with the id "' + place.id + '".');
+        }
+        /* The file is in name order under Estonian collation — o, then õ, then
+           ä — which is why Põhja Konn sits after Pulla and not before it.
+           Slotting it in keeps the diff to the lines that changed. */
+        var at = places.findIndex(function (pl) {
+          return pl.name.localeCompare(place.name, 'et') > 0;
+        });
+        if (at === -1) places.push(place); else places.splice(at, 0, place);
+
+        return putFile('data/restaurants.json',
+          textToB64(JSON.stringify(places, null, 2) + '\n'),
+          'Add ' + place.name, branch, current.sha);
+      })
+      .then(function () {
+        step('Opening the pull request…');
+        var body = [
+          'Added from the admin page on a phone.',
+          '',
+          '| | |',
+          '| --- | --- |',
+          '| Address | ' + place.address + ' |',
+          '| Coordinates | ' + place.lat + ', ' + place.lng + ' |',
+          '| Price | ' + place.price + ' |',
+          '| Types | ' + place.types.join(', ') + ' |',
+          '| Photographs | ' + (place.photos.length || 'none yet') + ' |',
+          '| Reel | ' + (place.reel || 'none yet') + ' |',
+          '',
+          'The write-up is English only. The other nine languages, the `visited` month',
+          'and anything else still missing are a laptop job — the validator warns about',
+          'them rather than failing, so this can be merged and finished after.',
+          '',
+          'Check the pin lands on the right side of the street before merging.'
+        ].join('\n');
+
+        return fetch('https://api.github.com/repos/' + REPO + '/pulls', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json',
+                     'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: 'Add ' + place.name, head: branch, base: base, body: body })
+        }).then(function (res) {
+          if (!res.ok) {
+            return res.json().catch(function () { return {}; }).then(function (err) {
+              throw new Error('The branch is pushed, but the pull request would not open (' +
+                res.status + (err.message ? ': ' + err.message : '') + '). Open it by hand from ' + branch + '.');
+            });
+          }
+          return res.json();
+        });
+      })
+      .then(function (pr) { return { title: pr.title, url: pr.html_url }; });
   }
 
   /* ------------------------------------------------------------ idle lock */

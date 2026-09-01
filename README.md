@@ -1009,9 +1009,17 @@ is everybody: nothing about a story is cached beyond the page it is on.
 terminal. It is not linked from anywhere, carries `noindex` in the markup, in
 `robots.txt` and in `_headers`, and is served `no-store`.
 
-Behind it: post a story from a phone. Pick a photograph, the place it belongs
-to, and the day it goes up. It stands for 36 hours and then the picture moves
-onto that place by itself.
+Behind it, two tabs, and they reach the repository by different roads.
+
+**Post a story** commits straight to the branch the site publishes from. A
+story is a thing happening now, and one that waits for a review has missed the
+morning it was about. It is also the cheap kind of mistake: four lines of JSON
+that take themselves down after 36 hours.
+
+**Add a place** opens a **pull request**. A place is permanent, it is the file
+the whole map is drawn from, and it has coordinates that can land on the wrong
+side of the street. So it waits to be read — and waits for the validator, which
+is the difference between seeing the verdict before it is live and after.
 
 ### Setting up a device
 
@@ -1035,12 +1043,8 @@ doing; the page asks for persistent storage itself.
 
 Four fields and a button. What happens when you press it:
 
-1. The photograph is **shrunk on the device** — 1600px on the long edge, WebP,
-   dropping to 1400 and then 1200 at quality 70 if it will not come under
-   300 KB. Edge first and quality second, the order
-   [photos/README.md](photos/README.md) argues for. Re-encoding through a
-   canvas throws the EXIF block away with it, so no GPS fix rides along into a
-   public repository.
+1. The photograph is **shrunk on the device** — see
+   [What it does to a photograph](#what-it-does-to-a-photograph) below.
 2. The picture is committed to `stories/`, **then** the entry to
    `data/stories.json` — that order, so a story naming a file that is not
    there is never in the repository even for one commit.
@@ -1060,6 +1064,55 @@ later without the story coming down.
 **Videos are still a laptop job.** A browser cannot transcode one, and an
 untouched phone video is 50 MB of HEVC that no browser but Safari will play —
 see [stories/README.md](stories/README.md) for the `ffmpeg` line.
+
+### Adding a place
+
+The same form the data needs: name, address, coordinates, price, types, the
+English write-up, must-orders one to a line, and as many photographs as you
+like. The id is made from the name — `Põhja Pagar` becomes `pohja-pagar` — and
+**I am here** fills the coordinates from the phone's own position, which is the
+one thing easier standing in the door than sitting at a laptop.
+
+Everything `tools/validate.mjs` would fail the build over is checked before the
+branch exists, in the same words: the slug, the Tallinn bounding box that
+catches a swapped `lat`/`lng`, the reel permalink shape, the phone's
+international form. So a pull request this opens is a pull request that goes
+green.
+
+Then, in this order: a branch `admin/add-<id>`, the photographs, the entry,
+and the pull request last — so a failure part-way leaves a branch nobody is
+looking at rather than a half-written pull request. The entry is **slotted into
+the file in name order under Estonian collation**, which is why Põhja Konn sits
+after Pulla and not before it, and which keeps the diff to the lines that
+actually changed.
+
+What it cannot do is the other nine languages. The write-up goes in in English,
+the validator warns rather than fails, and the pull request says so — merge it
+and finish it from a laptop.
+
+### What it does to a photograph
+
+Every photograph either tab uploads goes through the same squeeze, on the
+device, before a byte of it leaves:
+
+- **1600px on the long edge**, WebP at quality 72, dropping to 1400, 1200 and
+  then 1100 as the quality steps down to 58 — until it comes in **under
+  200 KB**. Edge first and quality second, the order
+  [photos/README.md](photos/README.md) argues for, because a frame full of
+  leaves is the expensive one and dropping the edge hides better.
+- **The EXIF block goes with the re-encode**, and the GPS fix inside it with
+  that. Same as pasting onto a fresh canvas in the Pillow recipe — a side
+  effect there and a side effect here, and the one that matters most, because
+  these files are public and permanent.
+
+The budget is 200 KB rather than the 300 that recipe allows by hand. A
+photograph posted from a phone is one nobody sized deliberately, and those are
+the ones that pile up; a file committed here is in the history for good. Both
+numbers are `SHRINK_STEPS` and `PHOTO_BUDGET` at the top of the script in
+`admin.html`, and nothing else depends on them.
+
+A 4 MB phone photograph comes out somewhere near 150 KB. The form prints what
+went in and what came out, so you can see it happen.
 
 ### Where the token lives
 
