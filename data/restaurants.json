@@ -2515,6 +2515,48 @@
     "closed": false
   },
   {
+    "id": "varav-coffee-toast",
+    "name": "Värav Coffee and toast",
+    "address": "Väike-Rannavärav 4, 10111 Tallinn",
+    "lat": 59.4415101,
+    "lng": 24.7508032,
+    "price": 2,
+    "types": [
+      "coffee",
+      "casual",
+      "laptop",
+      "hidden-gem"
+    ],
+    "blurb": {
+      "az": "Parkinqin kənarında, Köhnə şəhərin bastionunun altında qırmızı damlı balaca ağ ev, günəşli tərəfdə isə yaşıllıq. La Marzocco-dan keçən Kokomo dənələri, tostlar və eyvanda bir neçə masa. Zal balacadır, ona görə saat 10-dan 14-ə qədər noutbukları bağlı saxlamağı xahiş edirlər; ondan əvvəl və sonra burada işləmək yaxşıdır, sadəcə qəhvə ilə tək oturmaq isə daha yaxşı.",
+      "hy": "Փոքրիկ սպիտակ տուն կարմիր տանիքով՝ ավտոկայանատեղիի ծայրին, հենց Հին քաղաքի բաստիոնի տակ, արևոտ կողմում՝ կանաչ։ Kokomo-ի հատիկները La Marzocco-ով, տոստեր և մի քանի սեղան պատշգամբում։ Դահլիճը փոքր է, ուստի ժամը 10-ից 14-ը նոութբուքերը խնդրում են փակ պահել. դրանից առաջ և հետո այստեղ լավ է աշխատել, իսկ սուրճով մենակ նստելը՝ ավելի լավ։",
+      "en": "A little white house with a red roof at the end of a car park, right under the Old Town bastion, with the greenery on the sunny side. Kokomo beans through the La Marzocco, toasts, and a few tables out on the deck. The room is small, so laptops stay shut between 10 and 14; either side of that it is a good place to work, and a better one to just sit alone with a coffee.",
+      "et": "Väike valge punase katusega maja parkla otsas, otse vanalinna bastioni all, päikesepoolel rohelus. Kokomo oad läbi La Marzocco, röstsaiad ja paar lauda terrassil. Saal on väike, nii et kella 10 ja 14 vahel jäävad sülearvutid kinni; enne ja pärast seda on siin hea töötada ja veel parem lihtsalt üksi kohviga istuda.",
+      "fi": "Pieni valkoinen punakattoinen talo parkkipaikan laidalla, aivan vanhankaupungin bastionin alla, aurinkoisella puolella vehreyttä. Kokomon papuja La Marzoccon läpi, paahtoleipiä ja pari pöytää terassilla. Sali on pieni, joten läppärit pysyvät kiinni klo 10 ja 14 välillä; sitä ennen ja sen jälkeen täällä on hyvä tehdä töitä, ja vielä parempi vain istua yksin kahvin kanssa.",
+      "pt": "Uma casinha branca de telhado vermelho no fim de um estacionamento, mesmo por baixo do bastião da Cidade Velha, com o verde do lado do sol. Grãos da Kokomo pela La Marzocco, tostas e umas mesas no deck lá fora. A sala é pequena, por isso os portáteis ficam fechados entre as 10 e as 14; antes e depois disso trabalha-se bem aqui, e ainda melhor se fica só com um café.",
+      "ru": "Маленький белый домик с красной крышей на краю парковки, прямо под бастионом Старого города, с зеленью на солнечной стороне. Зёрна Kokomo через La Marzocco, тосты и пара столиков на террасе. Зал крошечный, поэтому с 10 до 14 ноутбуки просят закрыть; до и после здесь хорошо работать, а ещё лучше просто посидеть одному с кофе.",
+      "es": "Una casita blanca de tejado rojo al final de un aparcamiento, justo debajo del bastión del casco antiguo, con el verde en el lado del sol. Granos de Kokomo por la La Marzocco, tostadas y unas mesas en la terraza. La sala es pequeña, así que los portátiles se quedan cerrados entre las 10 y las 14; antes y después se trabaja bien aquí, y mejor aún se está solo con un café.",
+      "tr": "Bir otoparkın ucunda, Eski Şehir tabyasının hemen altında, kırmızı çatılı küçük beyaz bir ev; güneş tarafında da yeşillik. La Marzocco'dan geçen Kokomo çekirdekleri, tostlar ve terasta birkaç masa. Salon küçük, o yüzden 10 ile 14 arasında dizüstüler kapalı kalıyor; öncesinde ve sonrasında burada çalışmak güzel, tek başına kahveyle oturmak ise daha da güzel.",
+      "uk": "Маленький білий будиночок з червоним дахом на краю парковки, просто під бастіоном Старого міста, із зеленню на сонячному боці. Зерна Kokomo через La Marzocco, тости і кілька столиків на терасі. Зала крихітна, тому з 10 до 14 ноутбуки просять закрити; до і після тут добре працювати, а ще краще просто посидіти наодинці з кавою."
+    },
+    "mustOrder": [
+      "Flatwhite",
+      "Filterkohv"
+    ],
+    "reel": "",
+    "photos": [
+      "01.webp",
+      "02.webp",
+      "03.webp",
+      "04.webp",
+      "05.webp"
+    ],
+    "website": "",
+    "added": "2026-09-01",
+    "visited": "2026-08",
+    "closed": false
+  },
+  {
     "id": "xinhai-1911",
     "name": "Xinhai 1911 Restoran & Baar",
     "address": "Kopli 2c, 10412 Tallinn",
