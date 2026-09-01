@@ -320,22 +320,42 @@ https://www.tiktok.com/@tallinntastebuds/video/7568039651458436374
 The field is still called `reel` whichever platform it points at — renaming it
 would mean touching every place in the data for no gain. The site works out
 which platform from the URL and follows suit: the section heading reads **The
-reel** or **The video**, and the button names the right app in every language.
+reel** or **The video**, and the link under the player names the right app in
+every language.
 
-The two players work differently under the hood. Instagram needs its
-`embed.js`, which only scans for blockquotes when it runs and gives you no hook
-to re-process ones injected later. TikTok publishes a plain iframe player, so
-there is no script at all — which makes it the simpler of the two. Both stay
-click-to-load: nothing is fetched from either company until a visitor presses
-play. Verified — zero requests to tiktok.com before the click, one after.
+Both are plain iframes, and both are built with the panel. Instagram's player
+lives at the permalink with `/embed/` on the end — the same frame its
+`embed.js` would have built for you — so neither platform needs a script here.
 
 **Never invent a shortcode.** A made-up one resolves to a real stranger's post, on either platform.
 Leave `reel` as `""` until you have the actual link; the panel simply says
 there is no reel yet.
 
-The embed is click-to-load: Instagram's `embed.js` is not fetched, and no
-request is made to Instagram at all, until a visitor presses play. This is what
-keeps the map quick on mobile data.
+### The player starts loading with the panel
+
+It used to sit behind a **Load the reel** button, and nothing was fetched from
+Instagram or TikTok until that button was pressed. It saved a request on every
+place nobody watched and charged a wait to every place somebody did: open the
+place, find the button, press it, and only then watch a player start from
+nothing. Opening a profile is a deliberate act and the video is the reason for
+it, so the player is now built with the panel: by the time the write-up has
+been read the reel is loaded and often buffered, and pressing play plays.
+
+The frame it sits in is sized by CSS, never by the iframe. A cross-origin frame
+cannot be asked how tall it is and collapses to 150px if left to itself, which
+is how a reel used to open as a strip with the video cut off at the bottom.
+Instead the frame opens at `9 / 19` — 9:16 of video plus Instagram's own chrome
+above and below it — and Instagram's embed page then posts its real height out
+to the page that framed it (`wireReelMeasure` in `app.js` listens for the same
+message `embed.js` does). That number is stored as the frame's ratio rather
+than as pixels, so a phone turned on its side still holds a whole reel. If the
+message never arrives the opening shape stands, and a frame slightly too tall
+shows a band of card under the video where slightly too short would cut it off.
+
+The frame also bleeds out through the panel's padding to the card edges, the
+way the search box and the group headings do: 52px more picture on a desktop,
+the full width of the screen on a phone, and since the ratio is fixed, a wider
+frame is a taller one too.
 
 ---
 
@@ -409,14 +429,15 @@ the **name**, the **street**, the **type labels**, and the **dishes** in
 `mustOrder`. Not the write-ups — a word like "good" would match half the map
 and give no clue why.
 
-The type labels go in **in all nine languages at once**, not the one the
+The type labels go in **in all ten languages at once**, not the one the
 switcher happens to be showing. Somebody reading the map in Turkish still types
 "bakery" half the time, and somebody reading it in English may well know the
 place as a *pagariäri*: `bakery`, `pagariäri`, `leipomo`, `padaria`, `пекарня`,
-`çörəkxana`, `panadería` and `fırın` all return the same fourteen, whichever
-language is on screen. The index is built once at load, since none of what goes
-into it can change afterwards; folding sixty-nine of these on every keystroke
-would be work for nothing.
+`çörəkxana`, `panadería`, `fırın` and `հացատուն` all return the same fourteen,
+whichever language is on screen. Russian and Ukrainian happen to share the
+word, which is why nine of them cover ten languages. The index is built once at
+load, since none of what goes into it can change afterwards; folding sixty-nine
+of these on every keystroke would be work for nothing.
 
 Accents are folded away on both sides before anything is compared, so `sasl`
 finds Telliskivi Šašlõkk, `pohja` finds Põhja Konn and `pagariari` finds the
@@ -508,16 +529,17 @@ but the video stays up" directly under a note that said the same thing.
 
 ## Languages
 
-Azerbaijani, English, Estonian, Finnish, Portuguese, Russian, Spanish, Turkish
-and Ukrainian — the switcher shows them in that order, Azerbaijani first and the
-rest alphabetical. The order of the blocks in `ui.json` is the order of the
-buttons; the language a visitor *lands* in is a separate thing, still English by
-default, and set by `DEFAULT_LANG` in `assets/app.js`.
+Azerbaijani, Armenian, English, Estonian, Finnish, Portuguese, Russian,
+Spanish, Turkish and Ukrainian — the switcher shows them in that order,
+Azerbaijani first and the rest alphabetical. The order of the blocks in
+`ui.json` is the order of the buttons; the language a visitor *lands* in is a
+separate thing, still English by default, and set by `DEFAULT_LANG` in
+`assets/app.js`.
 
 The switch has two shapes, from the same markup. Wide enough, it is a row of
 codes. On a phone it folds into the current code with a menu under it, listing
-each language's own name for itself: nine codes side by side are around 350px,
-which on a 390px screen runs straight into the handle in the opposite corner.
+each language's own name for itself: ten codes side by side are around 390px,
+which is the whole of a 390px screen, handle in the opposite corner and all.
 The fold happens in CSS at 860px, and the folded menu grows downwards, so the
 next language costs nothing in layout either. Every interface string is
 in `data/ui.json`, keyed by language and then by string id, so a translator
@@ -1311,6 +1333,27 @@ than the main feed's Western rock. The other channels on the same host are
 `RadioROKS_ClassicRock`, `RadioROKS_NewRock`, `RadioROKS_HardnHeavy` and
 `RadioROKS_Ballads`, if the taste of the map ever changes.
 
+Armenian is jazz, which is less of a stretch than it sounds: Yerevan has had a
+jazz scene since Malkhas, and Jazz FM 95.3 is the station on the end of it.
+The button reads the frequency rather than the city, which is the same trim
+Radio ROKS took: 18ch, and "Jazz FM Yerevan" ran into the ellipsis.
+`am.radioaurora.am` is Radio Aurora's own host and it carries several Yerevan
+stations off the one Icecast, `/jz` among them, so this is the broadcaster's
+address rather than an aggregator's copy of it. Kiss FM 88.3 is `/kiss.aac` on
+the same host and Aurora itself is `/al.mp3`, if the taste of the map ever
+changes.
+
+101.ru's Armenia channel is the one to avoid. It is the easiest Armenian music
+stream to find and it fails twice over: a Russian aggregator's rebroadcast
+rather than a station, and one remove from the country whose slot it would be
+sitting in.
+
+This entry is the only one in the file nobody has listened to before committing
+it. It came out of a mirror of the radio-browser database rather than a
+browser, because the session that added Armenian could not reach a single radio
+host to play one. If the button ever toasts instead of playing, that is why,
+and the two mounts above are the first things to try.
+
 Azerbaijani wants retro **in Azerbaijani**, which is two conditions and not one,
 and the slot took several wrong stations before it took this one. A station
 licensed in Baku says nothing about the language coming out of it: Vintage Radio
@@ -1431,8 +1474,8 @@ data; those do not belong in a static site at all.
 | [CARTO Positron](https://carto.com/basemaps/) basemap (`light_all`, `dark_all`) | — | Free with attribution, up to 5M tiles a month, **key required** | The tiles. See [The map tiles need a key](#the-map-tiles-need-a-key). |
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) data | — | ODbL | The map data behind the tiles. |
 | [Familjen Grotesk](https://fonts.google.com/specimen/Familjen+Grotesk), [Literata](https://fonts.google.com/specimen/Literata), [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) | — | SIL Open Font License 1.1 | Served by Google Fonts. |
-| [Instagram embed.js](https://developers.facebook.com/docs/instagram/oembed/) | — | Meta Platforms terms | Only loaded after a visitor presses play. |
-| [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Only loaded after a visitor presses play. No script involved. |
+| [Instagram embed](https://developers.facebook.com/docs/instagram/oembed/) (iframe player) | — | Meta Platforms terms | The permalink with `/embed/` on the end. Loaded with the panel of a place that has a reel. No script involved. |
+| [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Loaded with the panel of a place that has a video. No script involved. |
 | [Google Analytics 4](https://developers.google.com/analytics) (gtag.js) | — | Google terms | Property `G-2XNTC15F28`. Loads on every page view and sets cookies. |
 
 **The attribution control in the bottom-right corner is a licence condition of
@@ -1472,7 +1515,7 @@ reported as events instead, from `trackEvent()` beside `trackView()`:
 | `language_select` | `language` |
 | `style_select` | `style` |
 | `random_pick` | `place`, `pool` |
-| `reel_play` | `place`, `provider` |
+| `reel_load` | `place`, `provider` |
 | `call_place` | `place` |
 | `cluster_open` | `cluster_size` |
 | `list_open` | `places_shown` |
@@ -1773,6 +1816,16 @@ into a smear at low zoom, and by 18 you are looking at one doorway.
 **The sheet.** On a phone the panel is a bottom sheet, and its height has a
 floor under it: whatever else happens it leaves 110px of the screen showing,
 which is the chrome strip and the chip row. That strip is the way back out.
+
+A place opens the sheet at its full stop — 88% of the screen — because tapping
+a place is a request for the place, not for the map: it is the restaurant's
+page as far as a phone is concerned, and the name, the reel and the write-up
+are on one screen. It used to open at a half stop, on the reasoning that the
+point of opening a place is to see where it is, which put the player half on
+the screen and half under the bottom edge and a scroll between you and the
+thing you had tapped for. The half stop is still there — drag the grip down —
+and the strip above the full sheet still holds the pin, the chips and the way
+out.
 
 It is sized against `--vph`, which is `window.innerHeight` written back to CSS
 on every resize, falling back to `dvh` before the script runs and to plain `vh`

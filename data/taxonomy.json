@@ -10,7 +10,8 @@
       "pt": "Casual/sozinho",
       "es": "Informal/solo",
       "tr": "Rahat/tek başına",
-      "uk": "Неформально/наодинці"
+      "uk": "Неформально/наодинці",
+      "hy": "Հանգիստ/մենակ"
     },
     {
       "id": "restaurant",
@@ -22,7 +23,8 @@
       "pt": "Restaurante",
       "es": "Restaurante",
       "tr": "Restoran",
-      "uk": "Ресторан"
+      "uk": "Ресторан",
+      "hy": "Ռեստորան"
     },
     {
       "id": "bakery",
@@ -34,7 +36,8 @@
       "pt": "Padaria",
       "es": "Panadería",
       "tr": "Fırın",
-      "uk": "Пекарня"
+      "uk": "Пекарня",
+      "hy": "Հացատուն"
     },
     {
       "id": "coffee",
@@ -46,7 +49,8 @@
       "pt": "Café/chá",
       "es": "Café/té",
       "tr": "Kahve/çay",
-      "uk": "Кава/чай"
+      "uk": "Кава/чай",
+      "hy": "Սուրճ/թեյ"
     },
     {
       "id": "pub",
@@ -58,7 +62,8 @@
       "pt": "Cerveja/pub",
       "es": "Cerveza/pub",
       "tr": "Bira/pub",
-      "uk": "Пиво/паб"
+      "uk": "Пиво/паб",
+      "hy": "Գարեջուր/փաբ"
     },
     {
       "id": "hidden-gem",
@@ -70,7 +75,8 @@
       "pt": "Joia escondida",
       "es": "Joya escondida",
       "tr": "Gizli cevher",
-      "uk": "Прихована перлина"
+      "uk": "Прихована перлина",
+      "hy": "Թաքնված գոհար"
     },
     {
       "id": "cheap-eats",
@@ -82,7 +88,8 @@
       "pt": "Barato",
       "es": "Barato",
       "tr": "Hesaplı",
-      "uk": "Недорого"
+      "uk": "Недорого",
+      "hy": "Էժան"
     },
     {
       "id": "date",
@@ -94,7 +101,8 @@
       "pt": "Encontro",
       "es": "Cita",
       "tr": "Buluşma",
-      "uk": "Побачення"
+      "uk": "Побачення",
+      "hy": "Ժամադրություն"
     },
     {
       "id": "laptop",
@@ -106,7 +114,8 @@
       "pt": "Bom para portátil",
       "es": "Bueno para portátil",
       "tr": "Laptopa uygun",
-      "uk": "З ноутбуком"
+      "uk": "З ноутбуком",
+      "hy": "Նոութբուքով"
     },
     {
       "id": "asian",
@@ -118,7 +127,8 @@
       "pt": "Asiático",
       "es": "Asiática",
       "tr": "Asya",
-      "uk": "Азійська"
+      "uk": "Азійська",
+      "hy": "Ասիական"
     },
     {
       "id": "vegan",
@@ -130,7 +140,8 @@
       "pt": "Vegano",
       "es": "Vegano",
       "tr": "Vegan",
-      "uk": "Веганське"
+      "uk": "Веганське",
+      "hy": "Վեգան"
     },
     {
       "id": "fine-dining",
@@ -142,7 +153,8 @@
       "pt": "Alta gastronomia",
       "es": "Alta cocina",
       "tr": "Fine dining",
-      "uk": "Висока кухня"
+      "uk": "Висока кухня",
+      "hy": "Բարձր խոհանոց"
     },
     {
       "id": "caucasian",
@@ -154,7 +166,8 @@
       "pt": "Cáucaso",
       "es": "Cáucaso",
       "tr": "Kafkasya",
-      "uk": "Кавказька"
+      "uk": "Кавказька",
+      "hy": "Կովկասյան"
     }
   ]
 }

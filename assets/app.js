@@ -1570,11 +1570,12 @@
   }
 
   /* ------------------------------------------------------------ the sheet
-   * On a phone the panel is a bottom sheet, and a sheet tall enough to read
-   * comfortably is a sheet that leaves no map. So it opens low and the grip
-   * raises it: drag it, or tap to swap between the two heights. Dragging it
-   * below the low stop closes it, which is the gesture a phone user reaches
-   * for first anyway.
+   * On a phone the panel is a bottom sheet with two heights, and the grip
+   * moves between them: drag it, or tap to swap. A place opens at the high
+   * stop — what you tapped for is the place, and the reel at the top of it
+   * wants a screen — and the grip pulls it down to the low one for the map.
+   * Dragging below the low stop closes it, which is the gesture a phone user
+   * reaches for first anyway.
    *
    * The live height is written to --sheet-h rather than to the panel, so the
    * rail that sits above the sheet tracks the drag with it for free.
@@ -1875,6 +1876,7 @@
 
     state.selected = null;
     state.view = 'list';
+    lastReelKey = null;
     renderPanel();          /* leave the crawlable list in the markup */
     paintMarkers();
     if (!opts || opts.history !== false) syncUrl();
@@ -1905,10 +1907,17 @@
     state.view = 'detail';
     renderPanel();
     openPanel();
-    /* A new place starts at the low stop: the point of opening one is to see
-       where it is. */
-    document.body.classList.remove('sheet-full');
-    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', 'false');
+    /* Tapping a place is a request for the place, not for the map, so on a
+       phone the sheet opens at its full stop: the restaurant's page, as far
+       as a phone is concerned. It used to open at the half stop, on the
+       reasoning that the point of opening a place is to see where it is —
+       which left the reel sliced across the bottom edge of the screen and a
+       scroll between you and the thing you tapped for. The strip of map above
+       it still holds the pin, the chip row and the way back out, and the grip
+       drags the sheet down for anyone who wants the map back. */
+    var full = isNarrow();
+    document.body.classList.toggle('sheet-full', full);
+    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', String(full));
     releaseSheetHeight();
     if (opts.history !== false) syncUrl(fresh);
 
@@ -2135,7 +2144,7 @@
        placeholder made six real places look half-finished. A quiet line says
        what is actually true instead: been, not filmed. */
     if (place.reel) {
-      dom.detail.appendChild(section(reelWords(reelProvider(place.reel)).heading, reelBlock(place)));
+      dom.detail.appendChild(section(reelWord(reelProvider(place.reel)), reelBlock(place)));
     }
 
     if ((place.photos || []).length) {
@@ -2236,55 +2245,46 @@
     return null;
   }
 
-  /* TikTok says "video", Instagram says "reel". Use each one's own word. */
-  function reelWords(provider) {
-    return provider === 'tiktok'
-      ? { heading: 'video', play: 'videoPlay', note: 'videoNote', fallback: 'videoFallback' }
-      : { heading: 'reel', play: 'reelPlay', note: 'reelNote', fallback: 'reelFallback' };
-  }
+  /* TikTok says "video", Instagram says "reel". Use each one's own word — in
+     the heading over the player, in the frame's own name, and in the link out
+     to the post underneath it. */
+  function reelWord(provider) { return provider === 'tiktok' ? 'video' : 'reel'; }
 
+  /* The player used to sit behind a "Load the reel" button, so that a visitor
+     who only wanted the address never fetched anything from Instagram. It
+     saved a request on the places nobody watched and charged a wait to every
+     place somebody did: open the place, find the button, press it, then watch
+     a player start from nothing. Opening a profile is already a deliberate
+     act and the video is the reason for it, so the player is built with the
+     panel now and is loaded — often buffered — by the time the write-up has
+     been read. Pressing play plays. */
   function reelBlock(place) {
-    var words = reelWords(reelProvider(place.reel));
-    var slot = el('div', { className: 'reel-slot' });
-    var button = el('button', { type: 'button', className: 'reel-play' }, [
-      el('span', { className: 'tri', html: '<svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 .8l8.5 5.2L2 11.2z"/></svg>' }),
-      el('span', {}, [
-        el('span', { className: 'lbl', textContent: t(words.play) }),
-        el('span', { className: 'sub', textContent: t(words.note) })
-      ])
-    ]);
+    var provider = reelProvider(place.reel);
 
-    button.addEventListener('click', function () {
-      slot.replaceChild(embedReel(place.reel), button);
-      trackEvent('reel_play', {
-        place: place.name,
-        provider: reelProvider(place.reel) || 'unknown'
-      });
-    });
+    /* A language switch re-renders the open panel, which builds this block
+       again. That is one visitor and one reel, so it is counted once. */
+    if (lastReelKey !== place.id) {
+      lastReelKey = place.id;
+      trackEvent('reel_load', { place: place.name, provider: provider || 'unknown' });
+    }
 
-    slot.appendChild(button);
-    return slot;
+    return provider === 'tiktok' ? embedTikTok(place) : embedInstagram(place);
   }
 
-  function embedReel(url) {
-    return reelProvider(url) === 'tiktok' ? embedTikTok(url) : embedInstagram(url);
-  }
-
-  /* TikTok publishes a plain iframe player, so there is no script to load and
-     nothing to re-process — unlike Instagram's embed.js, which only scans for
-     blockquotes when it runs and offers no hook for ones injected later. */
-  function embedTikTok(url) {
-    var id = /\/video\/(\d{6,})/.exec(url);
+  /* TikTok publishes a plain iframe player at a fixed shape — 325x739 is the
+     ratio its own embed uses — so the frame it goes in is the shape of the
+     finished player and nothing has to be measured. */
+  function embedTikTok(place) {
+    var id = /\/video\/(\d{6,})/.exec(place.reel);
     var wrap = el('div', { className: 'reel-embed' });
 
     if (id) {
-      wrap.appendChild(el('div', { className: 'tiktok-frame' }, [
+      wrap.appendChild(el('div', { className: 'reel-frame is-tiktok' }, [
         el('iframe', {
           src: 'https://www.tiktok.com/embed/v2/' + id[1],
-          title: t('video'),
-          allow: 'encrypted-media; picture-in-picture; fullscreen',
+          title: place.name + ' — ' + t('video'),
+          allow: 'autoplay; encrypted-media; picture-in-picture; fullscreen',
           allowfullscreen: '',
-          loading: 'lazy',
           referrerpolicy: 'strict-origin-when-cross-origin',
           frameborder: '0',
           scrolling: 'no'
@@ -2292,63 +2292,88 @@
       ]));
     }
 
-    wrap.appendChild(el('p', { className: 'reel-fallback' }, [
-      el('a', { href: url, target: '_blank', rel: 'noopener', textContent: t('videoFallback') })
-    ]));
+    wrap.appendChild(reelFallback(place.reel, 'videoFallback'));
     return wrap;
   }
 
-  /* Instagram's embed script is only fetched once the visitor asks for it.
-     Injecting it up front would drag the whole map down on mobile data. */
-  function embedInstagram(url) {
-    var permalink = url.indexOf('?') === -1 ? url + '?utm_source=ig_embed' : url;
+  /* Instagram publishes the same iframe player that embed.js builds for a
+     blockquote — the permalink with /embed on the end — so the reel goes in
+     directly and no script is involved at all.
 
-    var quote = el('blockquote', {
-      className: 'instagram-media',
-      'data-instgrm-permalink': permalink,
-      'data-instgrm-version': '14',
-      style: 'background:#FFF;border:0;margin:0;max-width:540px;min-width:0;padding:0;width:100%'
-    }, [
-      el('a', { href: permalink, target: '_blank', rel: 'noopener', textContent: url })
+     Going through embed.js meant fetching it, polling for window.instgrm,
+     handing it a blockquote and letting it draw whatever box it had measured
+     at the moment it ran. In a panel that is still sliding in, that moment is
+     a bad one: the box came out short, and a reel taller than its box was cut
+     off at the bottom — the player half in view that this replaces. The frame
+     below opens at the shape a reel actually is and then takes Instagram's
+     own measurement for the exact one. */
+  function embedInstagram(place) {
+    /* A link copied while browsing your own grid carries the profile name in
+       front of the shortcode — a shape Instagram serves the post at but not
+       the embed, so the player is addressed by the shortcode alone. The kind
+       of post is kept as it was written: /p/ is where a photo lives. */
+    var post = /\/(p|reels?|tv)\/([A-Za-z0-9_-]+)/.exec(place.reel);
+    var src = post
+      ? 'https://www.instagram.com/' + (post[1] === 'reels' ? 'reel' : post[1]) +
+        '/' + post[2] + '/embed/'
+      : String(place.reel).replace(/[?#].*$/, '').replace(/\/+$/, '') + '/embed/';
+
+    var frame = el('div', { className: 'reel-frame is-instagram' }, [
+      el('iframe', {
+        src: src,
+        title: place.name + ' — ' + t('reel'),
+        allow: 'autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen',
+        allowfullscreen: '',
+        referrerpolicy: 'strict-origin-when-cross-origin',
+        frameborder: '0',
+        scrolling: 'no'
+      })
     ]);
 
-    var wrap = el('div', { className: 'reel-embed' }, [
-      quote,
-      el('p', { className: 'reel-fallback' }, [
-        el('a', { href: url, target: '_blank', rel: 'noopener', textContent: t('reelFallback') })
-      ])
+    return el('div', { className: 'reel-embed' }, [
+      frame,
+      reelFallback(place.reel, 'reelFallback')
     ]);
-
-    loadEmbedScript(function () {
-      try { window.instgrm.Embeds.process(); } catch (e) { /* the fallback link stays */ }
-    });
-
-    return wrap;
   }
 
-  function loadEmbedScript(done) {
-    if (window.instgrm && window.instgrm.Embeds) { done(); return; }
+  /* Neither player is ours, and both can come up blank — a deleted post, a
+     browser blocking third-party frames. The way out stays under every one. */
+  function reelFallback(url, key) {
+    return el('p', { className: 'reel-fallback' }, [
+      el('a', { href: url, target: '_blank', rel: 'noopener', textContent: t(key) })
+    ]);
+  }
 
-    if (!document.getElementById('ig-embed-js')) {
-      var script = document.createElement('script');
-      script.id = 'ig-embed-js';
-      script.async = true;
-      script.src = 'https://www.instagram.com/embed.js';
-      document.body.appendChild(script);
-    }
+  /* Instagram's embed page posts the height it came out at to whoever framed
+     it — the message embed.js listens for, taken here instead. It arrives
+     once the post has drawn and again whenever the post changes shape, and it
+     is stored as the ratio of the frame rather than as a height in pixels, so
+     a phone turned on its side keeps a whole reel rather than a wrong number.
+     If it never arrives the frame keeps the shape it opened at, which is the
+     shape of a reel; nothing here can leave a player with no room. */
+  function wireReelMeasure() {
+    window.addEventListener('message', function (ev) {
+      if (!/^https:\/\/(www\.)?instagram\.com$/.test(ev.origin)) return;
 
-    /* embed.js may already be in flight, or may take a moment to define
-       window.instgrm, so poll rather than relying on the load event. */
-    var tries = 0;
-    var timer = setInterval(function () {
-      tries += 1;
-      if (window.instgrm && window.instgrm.Embeds) {
-        clearInterval(timer);
-        done();
-      } else if (tries > 50) {          /* ~5 s, then give up quietly */
-        clearInterval(timer);
+      var frames = dom.detail.querySelectorAll('.reel-frame.is-instagram iframe');
+      var frame = null;
+      for (var i = 0; i < frames.length; i++) {
+        if (frames[i].contentWindow === ev.source) { frame = frames[i]; break; }
       }
-    }, 100);
+      if (!frame) return;
+
+      var data = ev.data;
+      if (typeof data === 'string') {
+        try { data = JSON.parse(data); } catch (e) { return; }
+      }
+
+      var details = (data && data.details) || data;
+      var height = Number(details && details.height);
+      var width = frame.offsetWidth;
+      if (!height || !width || height < 100) return;
+
+      frame.parentNode.style.aspectRatio = width + ' / ' + height;
+    });
   }
 
   function photoGrid(place) {
@@ -3353,6 +3378,10 @@
    */
 
   var lastTrackedPath = null;
+  /* Which place the reel on screen belongs to. A language switch rebuilds
+     the open panel and so builds the player again; that is not a second
+     reel. Closing the panel clears it, so opening the same place later is. */
+  var lastReelKey = null;
 
   function trackEvent(name, params) {
     if (typeof window.gtag !== 'function') return;
@@ -3810,6 +3839,7 @@
       wireControls();
       wireStories();
       startStoryClock();
+      wireReelMeasure();
 
       /* A ?type= link lands on a filtered map, and on a phone a shut row
          would be the one thing this design promises never to be. So the link
