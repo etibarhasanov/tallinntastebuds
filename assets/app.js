@@ -375,6 +375,12 @@
     renderStoryRing();
     if (dom.stories && !dom.stories.hidden) paintStoryText(state.story.list[state.story.index]);
     syncUrl();
+    /* Every label on the page just changed language, and on a phone the two
+       rail buttons are the only ones whose label is not on screen to change
+       with them. So they say themselves again, in the language just picked:
+       somebody switching to Ukrainian is telling you they did not read the
+       English one. */
+    introduceRail();
     trackEvent('language_select', { language: code });
   }
 
@@ -506,6 +512,11 @@
     btn.className = 'swatch sw-' + next;
     btn.setAttribute('aria-label', t(styleKey(next)));
     btn.setAttribute('title', t(styleKey(next)));
+    /* The label the phone shows while the rail is introducing itself names
+       the style you are about to get, exactly as the title does — so a swatch
+       that has just been pressed says the way back. */
+    var name = dom.styles.querySelector('.style-label');
+    if (name) name.textContent = t(styleKey(next));
   }
 
   function renderStyleSwitch() {
@@ -513,8 +524,14 @@
     clear(dom.styles);
     var btn = el('button', { type: 'button', className: 'swatch' });
     /* Read at click time, not at render: the button outlives every switch. */
-    btn.addEventListener('click', function () { setStyle(nextStyle()); });
+    btn.addEventListener('click', function () {
+      setStyle(nextStyle());
+      /* And say what it has become, the way the radio names its station:
+         one press in and the swatch is showing the other side again. */
+      openHint('style', 0);
+    });
     dom.styles.appendChild(btn);
+    dom.styles.appendChild(el('span', { className: 'style-label rail-label' }));
     markStyleSwitch();
   }
 
@@ -1520,42 +1537,62 @@
   }
 
   /* ------------------------------------------------------------ rail hints
-   * On a phone the two rail pills are icon-only: a die and a play triangle,
-   * because a label wide enough to read is a label wide enough to cover the
-   * map. Which left them explaining nothing — a phone has no hover, so the
-   * title that carries the meaning on a desktop is never read out loud, and
-   * a die over a map is not self-evident to anybody who has not seen this
-   * page before.
+   * On a phone the rail is four icons in a column: a die, a play triangle, a
+   * coloured dot and a crosshair, because a label wide enough to read is a
+   * label wide enough to cover the map. Which left them explaining nothing —
+   * a phone has no hover, so the title that carries the meaning on a desktop
+   * is never read out loud, and a die over a map is not self-evident to
+   * anybody who has not seen this page before.
    *
-   * So they say what they are on arrival and then stop saying it. Surprise me
-   * opens wearing its label, the station follows half a second later — the
-   * order they are stacked in, so the eye tracks down the rail rather than
-   * being asked to read two things at once — both hold for four seconds, and
-   * both collapse back to the icon. Long enough to read twice, gone before it
-   * is furniture.
+   * So they say what they are on arrival — and again in the new language the
+   * moment one is picked — and then stop saying it. They open in the order
+   * they are stacked, 300ms apart, so the eye tracks down the rail rather
+   * than being asked to read four things at once; each holds for four
+   * seconds and collapses back to its icon. Long enough to read twice, gone
+   * before it is furniture.
    *
-   * The class is inert above 860px, where the labels never leave in the first
-   * place, so none of this needs to ask how wide the window is.
+   * The class is inert above 860px, where the two that have a label there
+   * never lose it and the other two never want one, so none of this needs to
+   * ask how wide the window is.
    */
   var HINT_MS = 4200;
+  /* Top to bottom, which is the order they open in. */
+  var HINT_KEYS = ['random', 'radio', 'style', 'locate'];
   var hintTimers = {};
+  /* An introduction owed to a visitor who has had a sheet standing open ever
+     since it was due. Paid off by closePanel. */
+  var introPending = false;
+
+  /* The colour swatch has no button of its own to grow: the group around it
+     is the pill, with the swatch sitting in it where the other three keep
+     their icon. */
+  function hintPill(key) {
+    if (key === 'radio') return dom.btnRadio;
+    if (key === 'style') return dom.styles;
+    if (key === 'locate') return dom.btnLocate;
+    return dom.btnRandom;
+  }
 
   /* A pill with nothing to say does not get to open: the radio's label is the
      station name, and a station with no name in radio.json would otherwise
      expand the button around an empty span. */
   function hintText(btn) {
-    var label = btn && btn.querySelector('.dice-label, .radio-name');
+    var label = btn && btn.querySelector('.rail-label');
     return label ? (label.textContent || '').replace(/^\s+|\s+$/g, '') : '';
   }
 
   function closeHint(key) {
     if (hintTimers[key]) { clearTimeout(hintTimers[key]); hintTimers[key] = null; }
-    var btn = key === 'radio' ? dom.btnRadio : dom.btnRandom;
+    var btn = hintPill(key);
     if (btn) btn.classList.remove('hint-open');
   }
 
+  function closeHints() {
+    for (var i = 0; i < HINT_KEYS.length; i++) closeHint(HINT_KEYS[i]);
+  }
+
   function openHint(key, delay) {
-    var btn = key === 'radio' ? dom.btnRadio : dom.btnRandom;
+    var btn = hintPill(key);
     if (!btn || btn.hidden || !hintText(btn)) return;
     closeHint(key);
     hintTimers[key] = setTimeout(function () {
@@ -1575,9 +1612,25 @@
     }, delay || 0);
   }
 
+  /* On arrival, and again after a language switch — see setLanguage. */
   function introduceRail() {
-    openHint('random', 300);
-    openHint('radio', 800);
+    /* Not over an open sheet, and not behind the stories: the rail is a row
+       along the top of a sheet, where a pill at full width pushes the buttons
+       after it off the side of the screen, and it is not on screen at all
+       under a story. It waits for either to go rather than being dropped, so
+       a visitor who landed on a place or a story — or who switched language
+       while reading one — still gets the rail explained the first time they
+       are actually looking at the map. */
+    if (document.body.classList.contains('panel-open') ||
+        (dom.stories && !dom.stories.hidden)) {
+      introPending = true;
+      return;
+    }
+    introPending = false;
+    /* A cascade rather than four labels at once: 300ms apart is slow enough
+       to read down the rail and quick enough that all four are up together
+       for most of the time they are up at all. */
+    for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], 300 + i * 300);
   }
 
   /* ---------------------------------------------------------------- radio
@@ -1994,10 +2047,9 @@
     document.body.classList.add('panel-open');
     dom.btnList.setAttribute('aria-expanded', 'true');
     /* The rail turns into a row along the top of the sheet here, and a pill
-       still wearing its label would push the two buttons after it off the
-       side of the screen. Whatever it was saying, it has been read. */
-    closeHint('random');
-    closeHint('radio');
+       still wearing its label would push the buttons after it off the side of
+       the screen. Whatever it was saying, it has been read. */
+    closeHints();
   }
 
   function closePanel(opts) {
@@ -2036,6 +2088,10 @@
     var back = state.lastFocus;
     state.lastFocus = null;
     if (back && document.contains(back) && typeof back.focus === 'function') back.focus();
+
+    /* The map is finally the thing on screen. If the rail owed an
+       introduction, this is the first moment it has room to make it. */
+    if (introPending) introduceRail();
   }
 
   function selectPlace(id, opts) {
@@ -3444,6 +3500,10 @@
     var back = state.story.opener;
     state.story.opener = null;
     if (back && document.contains(back) && typeof back.focus === 'function') back.focus();
+
+    /* Same as closing a place: an introduction owed while the screen was
+       somebody else's is made now the map is back. */
+    if (introPending) introduceRail();
   }
 
   function wireStories() {
@@ -4134,10 +4194,6 @@
       lastTrackedPath = window.location.pathname + window.location.search;
 
       placeRail();
-      /* And on a phone, the rail says what it is for. After placeRail, which
-         measures it: a pill that opened mid-measurement would be measured
-         mid-animation. */
-      introduceRail();
       /* The JSON-LD block is for crawlers only — nobody reading the map ever
          sees it — so it must never be the reason a visitor gets the fatal
          card instead of the map. It sits alone in a try for that reason:
@@ -4167,6 +4223,12 @@
           if (queue[q].id === wanted) { openStories(q, null); break; }
         }
       }
+
+      /* And on a phone, the rail says what it is for. Last, after the deep
+         link has had its say: a link straight to a place opens the sheet, and
+         the introduction is owed to the map behind it rather than spent on a
+         screen the rail is only a row along the top of. */
+      introduceRail();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
 
