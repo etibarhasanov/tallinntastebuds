@@ -777,6 +777,13 @@ a:hover { color: var(--accent-lit); }
 .locate-dock { border-radius: 100px; }
 .locate-dock .btn { border-radius: 100px; }
 
+/* The swatch and the locate button carry no label on a desktop: there is a
+   hover title on both, the pointer that reads it is right there, and two more
+   words down the left edge would be two more than the map can spare. They
+   borrow one for a few seconds on a phone — see the rail hints in the phone
+   layout, where hover does not exist. */
+.style-label, .locate-label { display: none; }
+
 /* ==========================================================================
    The two styles — brick by day, forest by night.
 
@@ -2441,53 +2448,102 @@ body.panel-detail .panel {
     align-items: center;
     gap: 8px;
   }
-  body.panel-open .styles { flex-direction: row; }
 
-  /* The two pills introduce themselves, then get out of the way.
+  /* The rail introduces itself, then gets out of the way.
 
      A phone has no hover and no title tooltip, so the desktop pill lost its
-     label here and both buttons arrived as a bare 32px disc: a die and a play
-     triangle, floating over a map, saying nothing about what pressing them
-     does. People did not press them. So on a phone they now open wearing
-     their label — Surprise me first, the station a beat later, in the order
-     the rail is stacked — hold it long enough to read, and collapse to the
-     icon so the map gets its screen back. The rail is body copy for four
-     seconds and chrome after that.
+     label here and the rail arrived as a column of four bare discs: a die, a
+     play triangle, a coloured dot and a crosshair, floating over a map,
+     saying nothing about what pressing them does. People did not press them.
+     So on a phone they now open wearing their label, in the order they are
+     stacked, hold it long enough to read, and collapse to the icon so the map
+     gets its screen back. The rail is body copy for four seconds and chrome
+     after that.
 
-     Only these two. The colour swatch shows the style you are about to get
-     and the locate button is the crosshair every map on earth uses; neither
-     is a mystery worth spending a label on. */
-  .dice-label, .radio-name {
+     Every one of them is the same shape: an icon at the left, a label that
+     grows out of nothing beside it, and a pill drawn around the pair. The
+     colour swatch has no button of its own to grow, so the group around it
+     does the growing and the swatch sits in it where the others keep their
+     icon. */
+  .rail-label {
     display: block;
-    max-width: 0;
-    opacity: 0;
+    min-width: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
-    transition: max-width .34s var(--ease), opacity .22s var(--ease);
+    opacity: 0;
+    transition: opacity .22s var(--ease);
   }
+  .hint-open > .rail-label { opacity: 1; }
+
+  /* Icon, then a track for the words that grows from nothing to exactly the
+     width of them: 0fr to 1fr, which an auto-width grid resolves against the
+     label's own max-content. A fixed ceiling in ch cannot do both halves of
+     that job — one wide enough for "Показать моё местоположение" makes "Red"
+     snap open in a tenth of the time, and one tuned to "Red" puts an ellipsis
+     through the label explaining the button. This way every language gets the
+     same slide and none of them gets cut. */
+  .dice, .styles, .locate-dock .btn {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: auto 0fr;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  /* Spelled out one by one rather than as a bare .hint-open: the collapsed
+     rule above reaches the locate button through .locate-dock, and a single
+     class cannot outrank two. */
+  .dice.hint-open,
+  .styles.hint-open,
+  .locate-dock .btn.hint-open { grid-template-columns: auto 1fr; }
+
+  /* The swatch and the locate button borrow the rail's own voice for the few
+     seconds they are wearing words: the same mono the two above them wear, in
+     each one's own colour rather than a third one. */
+  .style-label, .locate-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
   /* Collapsed it is the same 32px disc as before — 18px of icon, 6px each
      side, the border on top of that — so the four buttons still read as one
      column of circles down the edge of the map. */
+  /* The pill collapsed is the same disc it has always been: the icon, a few
+     pixels either side of it, the border on top of that. Each keeps its own
+     numbers because each starts from a different icon. */
   .dice {
     width: auto;
     min-width: 32px;
     height: 32px;
     padding: 0 6px;
     gap: 0;
-    justify-content: center;
-    overflow: hidden;
     transition: border-color .15s var(--ease), color .15s var(--ease),
+                grid-template-columns .34s var(--ease),
                 padding .34s var(--ease), gap .34s var(--ease);
   }
-  /* Wide enough for the longest of them — "Bana sürpriz yap" — rather than a
-     tidy number that would ellipsis the label of the very button the label is
-     there to explain. The pill is sized by its content, so the extra ceiling
-     costs nothing on the short ones. */
-  .dice.hint-open .dice-label,
-  .dice.hint-open .radio-name { max-width: 20ch; opacity: 1; }
   .dice.hint-open { padding: 0 13px 0 6px; gap: 8px; }
+
+  .styles {
+    gap: 0;
+    padding: 6px;
+    transition: grid-template-columns .34s var(--ease),
+                padding .34s var(--ease), gap .34s var(--ease);
+  }
+  .styles.hint-open { padding: 6px 13px 6px 6px; gap: 8px; }
+
+  .locate-dock .btn {
+    gap: 0;
+    padding: 0 7px;
+    transition: background-color .15s var(--ease), color .15s var(--ease),
+                grid-template-columns .34s var(--ease),
+                padding .34s var(--ease), gap .34s var(--ease);
+  }
+  .locate-dock .btn.hint-open { padding: 0 13px 0 7px; gap: 8px; }
+
   .rail { gap: 8px; }
-  .styles { gap: 6px; padding: 6px; }
   .swatch { width: 18px; height: 18px; }
 
   .place-name { font-size: 26px; }

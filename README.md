@@ -1780,19 +1780,22 @@ the two that change your evening above the two that change the map, because a
 rail that opens with a colour picker reads as a settings strip rather than as
 the shortcut it is.
 
-On a phone the top two used to lose their labels and arrive as a bare 32px
-disc each: a die and a play triangle over a map, saying nothing. A phone has
-no hover, so the `title` that carries the meaning on a desktop is never read
-out loud, and people did not press them.
+On a phone it used to arrive as a column of four bare discs: a die, a play
+triangle, a coloured dot and a crosshair over a map, saying nothing. A phone
+has no hover, so the `title` that carries the meaning on a desktop is never
+read out loud, and people did not press them.
 
-So they say what they are on arrival and then stop saying it. Surprise me
-opens wearing its label, the station name follows half a second later — the
-order they are stacked in — both hold for `HINT_MS` (4.2 seconds) and both
-collapse back to the icon, which is the same 32px disc as before. Pressing
-Surprise me shuts its label early, because the question it answered is the
-question the label was there to ask; starting the radio opens the station's
-name the same way, so a triangle in a circle is not the only thing saying what
-is playing.
+So they say what they are on arrival and then stop saying it. Each opens
+wearing its label — Surprise me, the station, the style you are about to
+switch to, "Show my location" — 300ms apart in the order they are stacked, so
+the eye tracks down the rail rather than being asked to read four things at
+once. Each holds for `HINT_MS` (4.2 seconds) and collapses back to its icon,
+the same disc as before. Two of them say something again when pressed:
+starting the radio opens the station's name, so a triangle in a circle is not
+the only thing saying what is playing, and pressing the swatch opens the name
+of the style it has just become the way back to. Pressing Surprise me instead
+shuts its label early — the question it answered is the question the label was
+there to ask.
 
 **It repeats in the new language when you switch languages.** Every other
 label on the page changes in front of you; the two on the rail are the only
@@ -1802,19 +1805,30 @@ introduction again.
 
 Nothing opens while the sheet is up: the rail lies along the top of it as a
 row there, and a pill at full width would push the buttons after it off the
-side of the screen. It is owed rather than dropped — `introPending` holds it
-and `closePanel()` pays it — so a visitor who arrived on a `?spot=` link, or
-who switched language while reading a place, still gets the rail explained the
-first time they are actually looking at the map. Pressing Surprise me is not
-owed anything: closing the place it opened leaves the rail as it was.
+side of the screen, and it is pointless behind the stories, where the rail is
+not on screen at all. It is owed rather than dropped — `introPending` holds it,
+`closePanel()` or `closeStories()` pays it — so a visitor who arrived on a
+`?spot=` or `?story=` link, or who switched language while reading a place,
+still gets the rail explained the first time they are actually looking at the
+map. Pressing Surprise me is not owed anything: closing the place it opened
+leaves the rail as it was.
 
 `openHint()` / `closeHint()` in `assets/app.js` do the timing; the pill itself
-is CSS, a `max-width` on the label from `0` to `20ch` — wide enough for the
-longest of the ten translations, `Bana sürpriz yap`, rather than a tidy number
-that would put an ellipsis through the label explaining the button. The
-`hint-open` class does nothing above 860px, where the labels never leave in
-the first place. The colour swatch and the locate button never get one: the
-swatch shows the style you are about to get, and a crosshair is a crosshair.
+is CSS. All four are the same shape — an icon, then a track for the words that
+grows from `0fr` to `1fr`, which an auto-width grid resolves against the
+label's own max-content. A fixed ceiling in `ch` cannot do both halves of that
+job: one wide enough for Ukrainian's `Показати моє місцезнаходження` makes
+`Red` snap open in a tenth of the time, and one tuned to `Red` puts an
+ellipsis through the label explaining the button. This way every language gets
+the same slide and none of them gets cut — the widest of the forty labels
+reaches 276px on a 320px screen.
+
+The colour swatch has no button of its own to grow, so the group around it
+does the growing and the swatch sits in it where the other three keep their
+icon. Above 860px none of this applies: the two `.dice` pills never lose their
+labels there, and `.style-label` / `.locate-label` are `display: none` — a
+pointer that can hover has the `title` instead, and two more words down the
+left edge would be two more than the map can spare.
 
 At the foot of the rail is the locate button, which frames you
 together with the nearest place rather than dropping you at zoom 15 on
