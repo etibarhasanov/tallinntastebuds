@@ -1292,13 +1292,13 @@ body.panel-detail .panel {
 .panel-close:hover { background: var(--wash); color: var(--ink); }
 .panel-close svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
 
-/* The heart, one step to the left of the close. Same paper, same height, same
+/* The mark, one step to the left of the close. Same paper, same height, same
    line of the panel's chrome — two things you do TO the panel rather than
    read inside it, so they are drawn as a pair. Both sit in the scroller's top
    padding band, above where the write-up begins, which is why a second
    control up here costs the name underneath no width.
 
-   A disc while it is only a heart, a pill once it carries a number: the width
+   A disc while it is only a mark, a pill once it carries a number: the width
    is left to the content so a count of 3 and a count of 148 both sit properly
    inside it, and `right` is measured from the close rather than from the edge
    so growing leftwards never walks into it. */
@@ -1320,7 +1320,7 @@ body.panel-detail .panel {
   color: var(--muted);
 }
 /* display on a class beats the UA sheet's [hidden] rule, so the list view's
-   hidden heart has to be told to go — the same trap .search-clear falls into
+   hidden mark has to be told to go — the same trap .search-clear falls into
    further down. */
 .panel-save[hidden] { display: none; }
 .panel-save:hover { background: var(--wash); color: var(--accent); }
@@ -1336,13 +1336,13 @@ body.panel-detail .panel {
   transition: fill .18s var(--ease);
 }
 /* Saved is the outline filling in, and nothing else: the same button, in the
-   same place, saying the same word. An empty heart and a full one is the
+   same place, saying the same word. An empty mark and a full one is the
    entire vocabulary here, and everybody already reads it. */
 .panel-save[aria-pressed="true"] { color: var(--accent); }
 .panel-save[aria-pressed="true"] svg { fill: currentColor; }
 
 /* The count. Tabular figures so the pill does not jitter as it goes from 9 to
-   10, and no slot at all at zero — a "0" under a heart reads as a verdict on
+   10, and no slot at all at zero — a "0" under a mark reads as a verdict on
    the restaurant rather than as nobody having pressed it yet. */
 .save-n {
   font-family: var(--mono);
@@ -1384,10 +1384,10 @@ body.panel-detail .panel {
   width: 11px;
   height: 11px;
 }
-/* Filled rather than outlined at this size: an 11px heart drawn in a 1.7px
-   stroke closes up into a blob, and the outline/filled distinction is the
-   panel button's vocabulary, not the row's — a row is not a thing you press
-   to save. */
+/* Filled rather than outlined at this size: an 11px bookmark drawn in a
+   1.7px stroke closes up into a smudge, and the outline/filled distinction is
+   the panel button's vocabulary, not the row's — a row is not a thing you
+   press to save. */
 .save-mark-ico svg { width: 11px; height: 11px; fill: currentColor; }
 
 /* ==========================================================================
@@ -1487,6 +1487,35 @@ body.panel-detail .panel {
 }
 .ac-alt:hover { color: var(--ink); }
 
+/* The one thing on the sign-up sheet that cannot be put right afterwards, so
+   it is given the weight of a notice rather than the weight of a footnote:
+   the accent colour, a rule down its edge, and the same size as the words it
+   is warning about. */
+.ac-warn {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  margin: -4px 0 0;
+  padding: 10px 12px 10px 11px;
+  border-left: 3px solid var(--accent);
+  border-radius: 4px 10px 10px 4px;
+  background: var(--wash);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.42;
+}
+.ac-warn-ico { flex: 0 0 auto; display: block; margin-top: 1px; }
+.ac-warn-ico svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.ac-warn-ico circle { fill: var(--accent); stroke: none; }
+
 .ac-err, .ac-note {
   margin: 0;
   padding: 9px 12px;
@@ -1501,6 +1530,53 @@ body.panel-detail .panel {
    longer than the fixed-width buttons around it. */
 #btn-account.is-on { color: var(--accent); }
 #btn-account .dice-label { max-width: 12ch; overflow: hidden; text-overflow: ellipsis; }
+
+/* The offer of an account, after a save made signed out. It stands where the
+   toast stands and looks like a quieter relative of it: same corner of the
+   screen, same distance up from the bottom, but a card rather than a pill
+   because it has two buttons and a sentence rather than a phrase. */
+.nudge {
+  position: fixed;
+  z-index: 2400;
+  left: 50%;
+  bottom: calc(84px + var(--safe-b));
+  transform: translateX(-50%);
+  width: min(320px, calc(100vw - 32px));
+  padding: 14px 16px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+.nudge[hidden] { display: none; }
+
+.nudge-say {
+  margin: 0 0 11px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.nudge-row { display: flex; gap: 8px; align-items: center; }
+
+.nudge-go, .nudge-no {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  border-radius: 100px;
+  padding: 7px 13px;
+}
+.nudge-go {
+  background: var(--paper);
+  border: 1px solid var(--paper);
+  color: var(--ink);
+}
+.nudge-no {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--paper);
+  opacity: .72;
+}
+.nudge-no:hover { opacity: 1; }
 
 /* Turnstile in invisible mode still wants somewhere to render. It draws
    nothing a visitor can see, but left in the flow it is a 300px hole at the
@@ -2649,7 +2725,7 @@ body.panel-detail .panel {
   }
   .panel-close svg { width: 19px; height: 19px; stroke-width: 1.8; }
 
-  /* The heart follows it: a target on a phone rather than a mark, kept the
+  /* The mark follows it: a target on a phone rather than a mark, kept the
      same distance to its left as the close is from the edge. */
   .panel-save {
     top: 4px;

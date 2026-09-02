@@ -176,7 +176,7 @@ function withNotModified(request, res) {
 /* -------------------------------------------------------------- one save
  * { place, client, on, token } in, { place, n, on } back.
  *
- * `on: false` withdraws a save rather than adding one, because the heart is a
+ * `on: false` withdraws a save rather than adding one, because the mark is a
  * toggle and a save nobody can take back is a support request waiting to
  * happen. It can only remove a row that carries the caller's own client id.
  */

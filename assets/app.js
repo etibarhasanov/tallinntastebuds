@@ -1096,7 +1096,7 @@
   }
 
   /* ----------------------------------------------------------------- saves
-   * The heart, and the number next to it.
+   * The bookmark, and the number next to it.
    *
    * Pressing it keeps the place — the same thing a bookmark does — and the
    * number says how many other people have kept it too. One action, not two:
@@ -1119,7 +1119,7 @@
    *              not an account and identifies nobody: it never leaves this
    *              browser except as one opaque string on a save.
    *
-   *   ttb.saved  which places this browser has saved, so the heart is already
+   *   ttb.saved  which places this browser has saved, so the mark is already
    *              filled when you come back rather than looking untouched
    *              until the server is asked. Losing it costs the fill, not the
    *              save — the save is in the database, and pressing again is
@@ -1139,7 +1139,7 @@
 
   /* Nothing on the map waits for this. The counts arrive when they arrive and
      the panel repaints if it is already open; if they never arrive — offline,
-     the Function not deployed yet, the database not bound — the heart still
+     the Function not deployed yet, the database not bound — the mark still
      works as a button and simply shows no number. A map that will not draw
      because a save count is late would be a bad trade. */
   function loadSaves() {
@@ -1199,7 +1199,7 @@
        door to a list, and a door has to open onto what it claims — an id for
        somewhere that has left restaurants.json would be counted here and then
        not drawn there. The save itself is unaffected: that lives in the
-       database, and this is only which hearts to fill in. */
+       database, and this is only which marks to fill in. */
     var seen = {};
     state.saved = ids.filter(function (id) {
       if (typeof id !== 'string' || seen[id] || !byId(id)) return false;
@@ -1210,7 +1210,7 @@
 
   function isSaved(id) { return state.saved.indexOf(id) !== -1; }
 
-  /* Newest first, and renderList reads that order back out: the heart you
+  /* Newest first, and renderList reads that order back out: the mark you
      pressed on the way home is the one you are looking for tonight. */
   function markSaved(id, on) {
     var at = state.saved.indexOf(id);
@@ -1226,7 +1226,7 @@
     return typeof n === 'number' && n > 0 ? n : 0;
   }
 
-  /* The same heart the panel carries, at badge size and with no button under
+  /* The same mark the panel carries, at badge size and with no button under
      it: a row is already a button, and one inside another is not a thing the
      HTML allows. So this is a fact about the place, printed next to the price
      and the discount — the count is the only thing on a row that is about
@@ -1235,8 +1235,7 @@
      hides a zero: a "0" against a restaurant reads as a verdict rather than
      as nobody having got there yet. */
   var SAVE_GLYPH = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-    '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78' +
-    'l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+    '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
 
   function saveMark(place) {
     var n = saveCount(place.id);
@@ -1247,9 +1246,9 @@
     ]);
   }
 
-  /* The heart's three jobs: be on screen only when there is a place to save,
+  /* The mark's three jobs: be on screen only when there is a place to save,
      say whether this browser has saved it, and carry the count. The count is
-     hidden at zero — "0" under a heart reads as a verdict on the place rather
+     hidden at zero — "0" under a mark reads as a verdict on the place rather
      than as nobody having pressed it yet. */
   function paintSave() {
     var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
@@ -1262,7 +1261,7 @@
     dom.panelSaveN.textContent = n ? String(n) : '';
     dom.panelSave.classList.toggle('has-n', !!n);
 
-    /* Spelled into the label, because the number beside the heart is
+    /* Spelled into the label, because the number beside the mark is
        aria-hidden: read out on its own it is a digit with nothing saying what
        it counts. */
     var label = t('savePlace');
@@ -1307,7 +1306,7 @@
             size: 'invisible',
             /* Every path out of the widget lands on the same resolver, so a
                refused or expired challenge fails the save fast instead of
-               leaving the heart spinning on a promise nobody settles. */
+               leaving the mark spinning on a promise nobody settles. */
             callback: function (token) { settleTurnstile(token); },
             'error-callback': function () { settleTurnstile(''); },
             'expired-callback': function () { settleTurnstile(''); }
@@ -1360,7 +1359,7 @@
   }
 
   /* ------------------------------------------------------------- the press
-   * Optimistic, because a heart that waits for a round trip before it fills
+   * Optimistic, because a mark that waits for a round trip before it fills
    * feels broken on a phone on mobile data. The number moves at once and the
    * server's answer replaces it a moment later; anything that goes wrong puts
    * both back exactly as they were and says so.
@@ -1427,6 +1426,9 @@
         place: place.name,
         saves_total: saveCount(place.id)
       });
+      /* Only on the way in. Unsaving something is not the moment to suggest
+         keeping it somewhere safer. */
+      if (on) showNudge();
     }).catch(function () {
       revert();
       toast(t('saveFailed'));
@@ -1443,7 +1445,7 @@
     if (state.active.indexOf(SAVED_FILTER) !== -1) {
       /* The list being filtered by just changed underneath the filter, so the
          map and the panel are both out of date. And if that was the last
-         heart, the chip goes out with it — which would leave the map filtered
+         mark, the chip goes out with it — which would leave the map filtered
          by a chip that is no longer drawn, with no way to press it off. So the
          filter comes off with the chip. */
       if (!savedCount()) state.active.splice(state.active.indexOf(SAVED_FILTER), 1);
@@ -1470,6 +1472,51 @@
    */
 
   var ACCOUNT_URL = '/api/account';
+
+  /* --------------------------------------------------------- the offer
+   * A save made while signed out is the one moment when an account is worth
+   * mentioning: there is now something to lose, and the person has just shown
+   * what they would be losing. Before that it is a sign-up wall on a map
+   * nobody has decided about yet, which is the thing this site does not do.
+   *
+   * Once per visit, and never again after it is turned down. "Not now" is
+   * remembered for a fortnight rather than forever — somebody with one save
+   * in March may feel differently about six in April — but a visit that has
+   * already been asked is not asked twice however many places are kept in it.
+   */
+  var NUDGE_KEY = 'ttb.nudged';
+  var NUDGE_QUIET = 14 * 24 * 3600 * 1000;
+  var nudgedThisVisit = false;
+  var nudgeTimer = null;
+
+  function nudgeWelcome() {
+    if (nudgedThisVisit) return false;
+    if (!state.account.ready || state.account.user) return false;
+    var last = parseInt(storeGet(NUDGE_KEY) || '0', 10);
+    if (last && Date.now() - last < NUDGE_QUIET) return false;
+    return true;
+  }
+
+  function showNudge() {
+    if (!nudgeWelcome()) return;
+    nudgedThisVisit = true;
+
+    dom.nudgeSay.textContent = t('nudgeSay');
+    dom.nudgeGo.textContent = t('accountCreate');
+    dom.nudgeNo.textContent = t('nudgeLater');
+    dom.nudge.hidden = false;
+
+    /* Long enough to read and act on, and it takes itself away rather than
+       sitting over the map waiting to be dealt with. Turning it down is what
+       starts the quiet fortnight; ignoring it only ends the visit's one ask. */
+    window.clearTimeout(nudgeTimer);
+    nudgeTimer = window.setTimeout(hideNudge, 9000);
+  }
+
+  function hideNudge() {
+    window.clearTimeout(nudgeTimer);
+    dom.nudge.hidden = true;
+  }
 
   function accountPost(payload) {
     return fetch(ACCOUNT_URL, {
@@ -1509,7 +1556,7 @@
 
   /* The account's list replaces this browser's, because once somebody is
      signed in the server is the one that knows. Written through to
-     localStorage all the same, so the hearts are right on the next load
+     localStorage all the same, so the marks are right on the next load
      before the network has answered. */
   function adoptSaved(list) {
     var seen = {};
@@ -1563,6 +1610,7 @@
     accountView = view || (state.account.user ? 'me' : 'in');
     accountNote = note || '';
     accountErr = '';
+    hideNudge();
     dom.accountScrim.hidden = false;
     document.body.classList.add('has-scrim');
     renderAccount();
@@ -1774,9 +1822,20 @@
       if (state.account.email) {
         form.appendChild(accountField('ac-email', 'accountEmail', 'email', { autocomplete: 'email' }));
         form.appendChild(el('p', { className: 'ac-why is-small', textContent: t('accountEmailWhy') }));
-      } else {
-        form.appendChild(el('p', { className: 'ac-why is-small', textContent: t('accountNoReset') }));
       }
+      /* Shown whether or not the field is offered, because the field being
+         there is not the same as it being filled in: somebody who skips it is
+         in exactly the position somebody with no field at all is in. It is
+         drawn as a warning rather than a footnote — it is the one thing on
+         this sheet that cannot be undone later, and it spent its first
+         version as small grey text under the button, which is where notices
+         go to be missed. */
+      form.appendChild(el('p', { className: 'ac-warn', role: 'note' }, [
+        el('span', { className: 'ac-warn-ico', 'aria-hidden': 'true', html:
+          '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.5 21 19.5H3z"/>' +
+          '<path d="M12 10v4"/><circle cx="12" cy="16.7" r=".9"/></svg>' }),
+        el('span', { textContent: t('accountNoReset') })
+      ]));
     }
 
     var go = accountSubmit(creating ? 'accountCreate' : 'accountSignIn');
@@ -1987,13 +2046,13 @@
     dom.filters.appendChild(all);
 
     /* First of the real filters, and the only one that is about you rather
-       than about food. It is the door to the hearts you have pressed — and
-       the reason the heart is the whole of it: the button that says "this one"
+       than about food. It is the door to the marks you have pressed — and
+       the reason the mark is the whole of it: the button that says "this one"
        and the button that keeps it are the same button, since a
        map you can narrow to your own is a saved list by another name.
 
        No saves means no chip: a filter whose only possible answer is an empty
-       map is not worth the width, and the chip arriving with the first heart
+       map is not worth the width, and the chip arriving with the first mark
        is how anybody learns it is there at all. */
     if (savedCount()) {
       var onSaved = state.active.indexOf(SAVED_FILTER) !== -1;
@@ -3557,7 +3616,7 @@
       places = places.filter(function (p) { return matches(p, words); });
     }
 
-    /* Whether what is on screen is your own hearts and nothing else. One
+    /* Whether what is on screen is your own saves and nothing else. One
        chip, that chip, and nothing typed: the moment a second filter or a
        search joins in this is no longer the list, it is a slice of the map
        that happens to be cut out of it, and it reads like every other slice. */
@@ -3565,8 +3624,7 @@
                state.active[0] === SAVED_FILTER;
 
     if (mine) {
-      /* The one list here that is not alphabetical. The order you pressed the
-         hearts in is information — the newest is what you were doing most
+      /* The one list here that is not alphabetical. The order you saved them in is information — the newest is what you were doing most
          recently, and most likely what you came back for — and the alphabet
          throws it away for a sort nobody asked for. */
       var rank = {};
@@ -3709,7 +3767,7 @@
        to it immediately contradicts, so a narrowed list falls back to naming
        its sort order instead. */
     var everything = !words.length && !state.active.length;
-    /* And your own hearts are named as themselves. "A–Z" over them would be
+    /* And your own saves are named as themselves. "A–Z" over them would be
        true and useless: this is the one list on the site whose point is whose
        it is, not what order it came out in. */
     section(everything ? 'listTitle' : mine ? 'listSaved' : 'listAlphabet', places);
@@ -4627,6 +4685,23 @@
     dom.panelSave.addEventListener('click', pressSave);
 
     dom.btnAccount.addEventListener('click', function () { openAccount(); });
+
+    dom.nudgeGo.addEventListener('click', function () {
+      hideNudge();
+      /* Straight to the sign-up sheet rather than the sign-in one: somebody
+         who pressed this does not have an account yet, and the sheet offers
+         the way across for the few who do. */
+      openAccount('up');
+      trackEvent('account_nudge', { taken: true });
+    });
+
+    dom.nudgeNo.addEventListener('click', function () {
+      hideNudge();
+      /* Turning it down buys the quiet fortnight. Letting it time out does
+         not: that is somebody being busy, not somebody saying no. */
+      storeSet(NUDGE_KEY, String(Date.now()));
+      trackEvent('account_nudge', { taken: false });
+    });
     /* The scrim is the way out, the card is not: a press that lands on the
        card itself must not close the sheet somebody is typing into. */
     dom.accountScrim.addEventListener('click', function (ev) {
@@ -4959,6 +5034,10 @@
       panelSave: $('panel-save'),
       panelSaveN: $('panel-save-n'),
       btnAccount: $('btn-account'),
+      nudge: $('nudge'),
+      nudgeSay: $('nudge-say'),
+      nudgeGo: $('nudge-go'),
+      nudgeNo: $('nudge-no'),
       accountLabel: $('account-label'),
       accountScrim: $('account-scrim'),
       accountCard: $('account-card'),
@@ -5085,7 +5164,7 @@
          file. Deliberately last and deliberately not waited for: the map is
          already drawn and usable by now, and a save count is the least
          important thing on the screen right up until somebody opens a place.
-         If it never arrives, the hearts show no number and still work. */
+         If it never arrives, the marks show no number and still work. */
       loadSaves();
       /* And who is holding them. Same rules: last, unwaited, and the site is
          the site it always was if the answer never comes. */
