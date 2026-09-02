@@ -794,6 +794,50 @@ Press it again to take it back. The count hides at zero — a "0" under a heart
 reads as a verdict on the restaurant rather than as nobody having pressed it
 yet.
 
+### The Liked chip, and why liking is also saving
+
+Press one heart and a **Liked** chip appears at the front of the filter row,
+directly after All. Press it and the map narrows to the places you have
+hearted; the panel names the group **Places I liked** and shows them newest
+first — the order you pressed them in is information, and the alphabet throws
+it away.
+
+That chip is the reason this site has no separate "save" button. A map you can
+narrow to your own places is a saved list by another name, and one heart is a
+better thing to ask of somebody than a heart and a bookmark that mean almost
+the same thing.
+
+It carries the same limit as anything kept in a browser: the chip is per
+browser, so the phone's list and the laptop's list are different lists, and
+clearing the browser clears it. What it does *not* lose is the like itself —
+that is a row in the database, and it keeps counting whatever happens here.
+Losing the local list costs you the view of your own hearts, not the hearts.
+Making that list follow a person across devices needs accounts, and that is
+the one thing this site still does not have.
+
+The chip is drawn only when there is at least one heart, and it goes again
+with the last unlike. If the filter is on when the list empties, the filter
+comes off with the chip — a map narrowed by a chip that is no longer on the
+row is a map with no way back. `?type=liked` is deliberately never written to
+the address bar: a link filtered by one browser's hearts is an empty map for
+everybody else.
+
+### On "no scores, stars or rankings"
+
+The top of this file says there are none and there never will be, and a number
+next to a heart is close enough to that line to be worth naming where the line
+actually is.
+
+A like count is a count of people, not a verdict on a kitchen. Nobody rates
+anything out of five, and — this is the part that matters — **nothing on this
+site sorts, ranks or orders by likes.** The list is alphabetical; your own
+hearts are in the order you pressed them; the map draws every pin the same
+size whatever its count. There is deliberately no "Most liked" chip, because
+that would be a ranking, and the line above is not a slogan.
+
+If a future change wants to sort by likes, it is changing the argument of the
+site, not adding a feature. That is a decision for a person, not a patch.
+
 ### How unique a like actually is
 
 Be clear-eyed about this: **without accounts, no like is truly unique.** There

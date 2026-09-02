@@ -1104,6 +1104,11 @@
   var CID_KEY = 'ttb.cid';
   var LIKED_KEY = 'ttb.liked';
 
+  /* A chip id that is not a taxonomy type, reserved the way "discount" is and
+     refused to the taxonomy by the same list in tools/validate.mjs: two chips
+     answering to one name would each filter the other's places out. */
+  var LIKED_FILTER = 'liked';
+
   /* Nothing on the map waits for this. The counts arrive when they arrive and
      the panel repaints if it is already open; if they never arrive — offline,
      the Function not deployed yet, the database not bound — the heart still
@@ -1155,9 +1160,15 @@
         if (Array.isArray(parsed)) ids = parsed;
       } catch (e) { /* unreadable is the same as none */ }
     }
+    /* Trusted as far as: parses, is an array, holds strings, no id twice, and
+       a place of that id is still on the map. The chip built from this is a
+       door to a list, and a door has to open onto what it claims — an id for
+       somewhere that has left restaurants.json would be counted here and then
+       not drawn there. The like itself is unaffected: that lives in the
+       database, and this is only which hearts to fill in. */
     var seen = {};
     state.liked = ids.filter(function (id) {
-      if (typeof id !== 'string' || seen[id]) return false;
+      if (typeof id !== 'string' || seen[id] || !byId(id)) return false;
       seen[id] = true;
       return true;
     });
@@ -1165,12 +1176,16 @@
 
   function isLiked(id) { return state.liked.indexOf(id) !== -1; }
 
+  /* Newest first, and renderList reads that order back out: the heart you
+     pressed on the way home is the one you are looking for tonight. */
   function markLiked(id, on) {
     var at = state.liked.indexOf(id);
-    if (on && at === -1) state.liked.push(id);
+    if (on && at === -1) state.liked.unshift(id);
     if (!on && at !== -1) state.liked.splice(at, 1);
     storeSet(LIKED_KEY, JSON.stringify(state.liked));
   }
+
+  function likedCount() { return state.liked.length; }
 
   function likeCount(id) {
     var n = state.likes[id];
@@ -1351,6 +1366,7 @@
       }
       if (typeof answer.out.n === 'number') state.likes[place.id] = answer.out.n;
       paintLike();
+      syncLikedChip(on);
       trackEvent(on ? 'like_place' : 'unlike_place', {
         place_id: place.id,
         place: place.name,
@@ -1362,6 +1378,24 @@
     }).then(function () {
       likeBusy = false;
     });
+  }
+
+  /* The chip row and the map, after a like has changed what the liked chip
+     would filter to. Only the first like and the last unlike change whether
+     there is a chip at all; every press in between leaves the row exactly as
+     it was and does not need it built again. */
+  function syncLikedChip(on) {
+    if (state.active.indexOf(LIKED_FILTER) !== -1) {
+      /* The list being filtered by just changed underneath the filter, so the
+         map and the panel are both out of date. And if that was the last
+         heart, the chip goes out with it — which would leave the map filtered
+         by a chip that is no longer drawn, with no way to press it off. So the
+         filter comes off with the chip. */
+      if (!likedCount()) state.active.splice(state.active.indexOf(LIKED_FILTER), 1);
+      applyFilters();
+      return;
+    }
+    if (likedCount() === (on ? 1 : 0)) renderFilters();
   }
 
   /* --------------------------------------------------------------- filters */
@@ -1380,9 +1414,12 @@
     return state.places.some(function (p) { return !!liveDealFor(p); });
   }
 
-  /* Chips are OR, so a place shows if it answers any active one — and the
-     discount chip is answered by the deal rather than by the type list. */
+  /* Chips are OR, so a place shows if it answers any active one — and two of
+     them are not answered by the type list at all: the discount chip is
+     answered by the deal, and the liked chip by what this browser has
+     pressed. */
   function matchesFilters(place) {
+    if (state.active.indexOf(LIKED_FILTER) !== -1 && isLiked(place.id)) return true;
     if (state.active.indexOf(DEAL_FILTER) !== -1 && liveDealFor(place)) return true;
     return (place.types || []).some(function (id) {
       return state.active.indexOf(id) !== -1;
@@ -1470,9 +1507,33 @@
     });
     dom.filters.appendChild(all);
 
-    /* First of the real filters, because it is the only one that is an offer
-       rather than a description — and last to appear, since with no live deal
-       anywhere it is a chip that would filter down to nothing. */
+    /* First of the real filters, and the only one that is about you rather
+       than about food. It is the door to the hearts you have pressed — and
+       the reason the like button doubles as a way of keeping a place, since a
+       map you can narrow to your own is a saved list by another name.
+
+       No likes means no chip: a filter whose only possible answer is an empty
+       map is not worth the width, and the chip arriving with the first heart
+       is how anybody learns it is there at all. */
+    if (likedCount()) {
+      var onLiked = state.active.indexOf(LIKED_FILTER) !== -1;
+      var likedChip = el('button', {
+        type: 'button',
+        className: 'chip',
+        'aria-pressed': String(onLiked),
+        textContent: t('filterLiked')
+      });
+      likedChip.addEventListener('click', function () {
+        var at = state.active.indexOf(LIKED_FILTER);
+        if (at === -1) state.active.push(LIKED_FILTER); else state.active.splice(at, 1);
+        applyFilters({ id: LIKED_FILTER, on: at === -1 });
+      });
+      dom.filters.appendChild(likedChip);
+    }
+
+    /* The only chip that is an offer rather than a description — and last to
+       appear, since with no live deal anywhere it is a chip that would filter
+       down to nothing. */
     if (anyLiveDeal()) {
       var onDeal = state.active.indexOf(DEAL_FILTER) !== -1;
       var dealChip = el('button', {
@@ -2900,10 +2961,27 @@
       places = places.filter(function (p) { return matches(p, words); });
     }
 
-    var collator;
-    try { collator = new Intl.Collator(state.lang, { sensitivity: 'base' }); }
-    catch (e) { collator = { compare: function (a, b) { return a < b ? -1 : a > b ? 1 : 0; } }; }
-    places.sort(function (a, b) { return collator.compare(a.name, b.name); });
+    /* Whether what is on screen is your own hearts and nothing else. One
+       chip, that chip, and nothing typed: the moment a second filter or a
+       search joins in this is no longer the list, it is a slice of the map
+       that happens to be cut out of it, and it reads like every other slice. */
+    var mine = !words.length && state.active.length === 1 &&
+               state.active[0] === LIKED_FILTER;
+
+    if (mine) {
+      /* The one list here that is not alphabetical. The order you pressed the
+         hearts in is information — the newest is what you were doing most
+         recently, and most likely what you came back for — and the alphabet
+         throws it away for a sort nobody asked for. */
+      var rank = {};
+      state.liked.forEach(function (id, i) { rank[id] = i; });
+      places.sort(function (a, b) { return rank[a.id] - rank[b.id]; });
+    } else {
+      var collator;
+      try { collator = new Intl.Collator(state.lang, { sensitivity: 'base' }); }
+      catch (e) { collator = { compare: function (a, b) { return a < b ? -1 : a > b ? 1 : 0; } }; }
+      places.sort(function (a, b) { return collator.compare(a.name, b.name); });
+    }
 
     if (!places.length) {
       /* The note is the heading here. Something has to carry the panel's
@@ -3016,14 +3094,20 @@
        of their own only makes them read the same names twice. */
     var shown = {};
     places.forEach(function (p) { shown[p.id] = true; });
-    var fresh = words.length ? [] : recentlyAdded().filter(function (p) { return shown[p.id]; });
+    /* Suppressed on your own list for the reason a search suppresses it: a
+       handful of places you chose yourself, cut in two by a heading about when
+       the site added them, makes you read your own list twice. */
+    var fresh = (words.length || mine) ? [] : recentlyAdded().filter(function (p) { return shown[p.id]; });
 
     if (fresh.length > 1) section('listNew', fresh, 'is-new');
     /* "All places" over a filtered list would be a lie the count sitting next
        to it immediately contradicts, so a narrowed list falls back to naming
        its sort order instead. */
     var everything = !words.length && !state.active.length;
-    section(everything ? 'listTitle' : 'listAlphabet', places);
+    /* And your own hearts are named as themselves. "A–Z" over them would be
+       true and useless: this is the one list on the site whose point is whose
+       it is, not what order it came out in. */
+    section(everything ? 'listTitle' : mine ? 'listLiked' : 'listAlphabet', places);
   }
 
   /* -------------------------------------------------------------- lightbox */
@@ -3797,8 +3881,16 @@
     if (state.selected) params.set('spot', state.selected);
     else params.delete('spot');
     /* Chips in the address bar: a filtered map becomes a link worth sending,
-       and the landing view GA records for it says which filters it was. */
-    if (state.active.length) params.set('type', state.active.join(','));
+       and the landing view GA records for it says which filters it was.
+
+       Every chip but one. The liked chip filters by what this browser has
+       pressed, so ?type=liked sent to somebody else is a link to an empty
+       map, and opened on your own laptop a link to a different one. It
+       filters; it does not travel. Nothing has to strip it on the way back
+       in — boot only accepts ids that are on the map — but a link nobody can
+       use should not be built in the first place. */
+    var shareable = state.active.filter(function (id) { return id !== LIKED_FILTER; });
+    if (shareable.length) params.set('type', shareable.join(','));
     else params.delete('type');
     if (state.langPinned) params.set('lang', state.lang);
     else params.delete('lang');
