@@ -1,15 +1,54 @@
 # Tallinn Tastebuds — Cloudflare Pages configuration.
 #
-# The site is still static files: this exists only so the /api/saves Function
-# has a database to talk to, and so `wrangler pages dev` can run the same
-# binding locally that production uses.
+# The site is still static files: this exists only so the /api Functions have
+# a database to talk to, and so `wrangler pages dev` can run the same bindings
+# locally that a deployment does.
 #
-# The two secrets this needs are NOT here and must never be. Set them in the
-# Pages project (Settings → Variables and Secrets), as encrypted secrets:
+# TWO DATABASES, AND WHY
+#
+# Pages gives a project two environments. Production is whatever is deployed
+# from the production branch and serves tallinntastebuds.ee; preview is every
+# other deployment — a pull request, a branch you pushed to look at, a
+# `wrangler pages deploy` from a laptop — and each gets its own URL under
+# *.tallinntastebuds.pages.dev.
+#
+# They used to share one D1 database, because the binding was declared once at
+# the top level and Pages hands the top level to both. So a save pressed on a
+# preview URL while checking a change landed in the live counts, a test account
+# was a real account, and the live database's row counts were part test data
+# with no way to tell which rows were which. That is what the split below
+# fixes: production talks to `tallinntastebuds`, everything else talks to
+# `tallinntastebuds-preview`, and the two never see each other's rows.
+#
+# Pages only allows these two environment names — there is no [env.staging] —
+# and `wrangler pages deploy --branch <name>` picks between them by whether
+# <name> is the project's production branch. The preview block is written once
+# and applies to every preview deployment; Pages has no per-branch config.
+#
+# Both blocks must list every binding they use. Pages does not inherit
+# bindings or vars from the top level once an environment overrides any of
+# them, so d1_databases and vars are repeated in full in each — an omission
+# there is not a fallback, it is a missing binding.
+#
+# The top level is what `wrangler pages dev` reads, and it points at the
+# preview database on purpose: a local session that reaches for the remote
+# database should reach for the one it is allowed to break.
+#
+# tools/validate.mjs checks all of this on every push — that the two
+# environments name different databases, and that each says which one it is —
+# so the two ids cannot quietly drift back into being the same id again.
+#
+# The secrets this needs are NOT here and must never be. Set them in the Pages
+# project (Settings → Variables and Secrets) as encrypted secrets, and note
+# that secrets are per-environment too: the dropdown at the top of that page
+# says Production or Preview, and a secret added to one is not present in the
+# other.
 #
 #   SAVE_SALT          any long random string. Salts the IP fingerprints, so
 #                      changing it later makes every existing fingerprint
-#                      unmatchable — the cap resets, the counts do not.
+#                      unmatchable — the cap resets, the counts do not. Give
+#                      preview a different one from production; there is
+#                      nothing to gain from the two being comparable.
 #   TURNSTILE_SECRET   optional. The secret half of a Turnstile widget. With
 #                      it unset the bot check is skipped and the rest of the
 #                      feature works unchanged.
@@ -17,7 +56,34 @@ name = "tallinntastebuds"
 pages_build_output_dir = "."
 compatibility_date = "2026-09-02"
 
+# ------------------------------------------------------------------- local
 [[d1_databases]]
+binding = "DB"
+database_name = "tallinntastebuds-preview"
+database_id = "3dd762d3-1d31-4e54-9f12-a3c0ad93dbca"
+
+[vars]
+# Which half of the split this deployment believes it is. Compared against the
+# database's own meta row by functions/api/_lib.js, so a binding pointed at
+# the wrong database shuts the API off instead of writing to it.
+ENVIRONMENT = "preview"
+
+# ----------------------------------------------------------------- preview
+# Every deployment that is not from the production branch.
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "tallinntastebuds-preview"
+database_id = "3dd762d3-1d31-4e54-9f12-a3c0ad93dbca"
+
+[env.preview.vars]
+ENVIRONMENT = "preview"
+
+# -------------------------------------------------------------- production
+# tallinntastebuds.ee, and the only database anybody would miss.
+[[env.production.d1_databases]]
 binding = "DB"
 database_name = "tallinntastebuds"
 database_id = "3eb14127-0ef6-4935-954b-e0a593d465ba"
+
+[env.production.vars]
+ENVIRONMENT = "production"

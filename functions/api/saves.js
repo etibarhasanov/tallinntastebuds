@@ -43,7 +43,8 @@
  */
 
 import {
-  json, clientIp, fingerprint, sessionUser, knownPlaces, RECOUNT_SQL, countsKey
+  json, clientIp, fingerprint, sessionUser, knownPlaces, wrongDatabase,
+  RECOUNT_SQL, countsKey
 } from './_lib.js';
 
 /* How many saves for one place may come from a single network fingerprint.
@@ -118,6 +119,11 @@ const COUNTS_TTL = 60;
 
 export async function onRequestGet(context) {
   if (!context.env.DB) return json({}, 200, COUNTS_TTL);
+  /* A deployment holding the other environment's database answers as though
+     it had no database at all: no counts, no error, the map unaffected. The
+     alternative is a preview URL showing the live numbers, which is the same
+     mistake as writing to them. */
+  if (await wrongDatabase(context.env)) return json({}, 200, COUNTS_TTL);
 
   const cache = caches.default;
   const key = countsKey(context.request);
@@ -179,6 +185,11 @@ export async function onRequestPost(context) {
 
   if (!env.DB) {
     return json({ error: 'no-database' }, 503);
+  }
+  /* The binding is there, but it is the wrong one — a preview pointed at the
+     live database, or the reverse. Nothing is written. See wrongDatabase(). */
+  if (await wrongDatabase(env)) {
+    return json({ error: 'wrong-database' }, 503);
   }
   /* Fail closed, and loudly. Without the salt the stored fingerprints would
      be a plain hash of an address, which is guessable given the whole of

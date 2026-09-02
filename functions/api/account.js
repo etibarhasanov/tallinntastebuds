@@ -42,7 +42,7 @@
 import {
   json, clientIp, fingerprint, sha256Hex, randomHex, derivePassword, sameSecret,
   PW_ITERATIONS, sessionCookie, sessionUser, SESSION_DAYS, SESSION_COOKIE,
-  readCookie, RECOUNT_SQL, countsKey
+  readCookie, wrongDatabase, RECOUNT_SQL, countsKey
 } from './_lib.js';
 
 /* Guessing is the only way in — there is no reset link to phish and no email
@@ -167,16 +167,19 @@ async function savedByUser(env, userId) {
 export async function onRequestGet(context) {
   const { request, env } = context;
 
-  /* Whether accounts work at all here. Both are set in the Pages project and
-     neither has a sensible default: without the binding there is nowhere to
-     put a user, and without the salt the sign-in route refuses to write.
+  /* Whether accounts work at all here. The first two are set in the Pages
+     project and neither has a sensible default: without the binding there is
+     nowhere to put a user, and without the salt the sign-in route refuses to
+     write. The third is the split — a deployment holding the other
+     environment's database reports itself as not ready rather than offering a
+     sign-up sheet that would write into the wrong one.
 
      This is reported rather than assumed because the client hides the whole
      account button unless it comes back true. A deploy that reaches the site
      before the bindings do would otherwise show a sign-up sheet that could
      only ever answer "something went wrong", which is worse than showing
      nothing at all. */
-  const ready = !!(env.DB && env.SAVE_SALT);
+  const ready = !!(env.DB && env.SAVE_SALT) && !(await wrongDatabase(env));
   if (!ready) return json({ ready: false, user: null, email: false }, 200);
 
   const url = new URL(request.url);
@@ -212,6 +215,10 @@ export async function onRequestPost(context) {
   const { request, env } = context;
 
   if (!env.DB) return json({ error: 'no-database' }, 503);
+  /* The wrong half of the split — see wrongDatabase(). An account made on a
+     preview URL must not be an account on the live site, and the sign-in
+     below must not read the live users table. */
+  if (await wrongDatabase(env)) return json({ error: 'wrong-database' }, 503);
   if (!env.SAVE_SALT) return json({ error: 'no-salt' }, 503);
 
   let body;

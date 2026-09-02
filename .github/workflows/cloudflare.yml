@@ -89,6 +89,17 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages project create tallinntastebuds --production-branch=claude/tallinn-tastebuds-map-nzoqx0
 
+      # Which of the two environments this lands in is decided by --branch: the
+      # production branch is a production deployment and gets the production
+      # D1 database, anything else is a preview deployment and gets
+      # tallinntastebuds-preview. Both are declared in wrangler.toml, and the
+      # validate step above refuses to let them become the same database.
+      #
+      # Each environment's configuration is written by a deployment of that
+      # environment, so a change to the preview half of wrangler.toml only
+      # takes effect once something has been deployed from a branch that is
+      # not the production branch — a pull request, or this workflow run by
+      # hand from that branch.
       - name: Publish
         if: env.CF_TOKEN != '' && env.CF_ACCOUNT != ''
         uses: cloudflare/wrangler-action@v3

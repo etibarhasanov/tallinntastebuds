@@ -954,36 +954,119 @@ that one file. So:
 
 D1 also has Time Travel, so a bad write is recoverable for 30 days.
 
+### Two databases, and never one
+
+There are two, and the difference matters more than it looks:
+
+| | database | who writes to it |
+|---|---|---|
+| **production** | `tallinntastebuds` | tallinntastebuds.ee |
+| **preview** | `tallinntastebuds-preview` | every preview deployment, and `wrangler pages dev` |
+
+Cloudflare Pages gives a project two environments. Production is whatever is
+deployed from the production branch; **preview is everything else** — a pull
+request, a branch pushed to look at, a deploy from a laptop — each on its own
+`*.tallinntastebuds.pages.dev` URL, running the same Functions against the
+same bindings.
+
+For a while those bindings were the same binding. `wrangler.toml` declared the
+D1 database once, at the top level, and Pages hands the top level to both
+environments — so a heart pressed on a preview URL while checking a change was
+a save on the live map, a test account was a real account, and the live
+database's rows were part test data with nothing in them to say which was
+which. Nobody notices that for weeks; that is the whole problem with it.
+
+So the two environments are now declared separately, and the split is held in
+three places:
+
+1. **`wrangler.toml`** names a different `database_id` under
+   `[[env.production.d1_databases]]` and `[[env.preview.d1_databases]]`. Pages
+   allows exactly these two environment names — there is no staging — and
+   picks between them by whether the deployment's branch is the production
+   branch. The preview block is written once and covers every preview
+   deployment; Pages has no per-branch configuration.
+2. **`tools/validate.mjs`** fails the build if those two ever name the same
+   database again, or if either environment stops declaring one. It runs on
+   every push and in front of every deploy.
+3. **The database says which one it is.** Each carries a row in `meta`
+   — `environment` = `production` or `preview` — and every deployment carries
+   a matching `ENVIRONMENT` variable out of `wrangler.toml`. `wrongDatabase()`
+   in `functions/api/_lib.js` compares them once per isolate and switches the
+   whole API off when they disagree: no counts, no accounts, no writes. A
+   binding pointed at the wrong database is then a preview with no saves on
+   it, which is obvious, rather than a test row in the live counts, which is
+   not. A database with no stamp is not blocked — the check cannot tell what
+   it is looking at, and failing on a missing row would be worse than the
+   thing it guards against.
+
+**The two are not kept in step and are not meant to be.** The preview database
+starts empty and stays whatever testing leaves in it; nothing copies rows
+either way. If preview data ever gets in the way, empty it — it is not
+anybody's data.
+
+Because `wrangler.toml` is the [source of
+truth](https://developers.cloudflare.com/pages/functions/wrangler-configuration/#source-of-truth)
+once it exists, the D1 bindings can no longer be edited in the dashboard: the
+file wins. Each environment's configuration is written by a deployment *of
+that environment*, so the preview side only picks up a change to this file
+once a preview deployment has run with it — open a pull request, or run the
+`cloudflare` workflow by hand from a branch that is not the production branch.
+Previews deployed before that still hold the old binding, and the stamp check
+is what stops them writing anywhere they should not.
+
 ### Setting it up
 
-The database is already created — `tallinntastebuds`, id
-`3eb14127-0ef6-4935-954b-e0a593d465ba`, in the `EEUR` region — and its schema
-is applied. Three things remain, all in the Cloudflare dashboard:
+Both databases exist, in the `EEUR` region, with the schema applied and their
+`meta` row stamped:
 
-1. **Bind it.** Pages project → Settings → Bindings → D1 database. Variable
-   name `DB`, database `tallinntastebuds`. This is what `wrangler.toml`
-   describes, and Pages needs it set in the project as well.
-2. **Set `SAVE_SALT`.** Settings → Variables and Secrets → add a *secret*
-   named `SAVE_SALT`, any long random string. **The save endpoint refuses to
-   write without it** — it fails closed rather than storing a weaker hash than
-   it claims to. Changing it later makes every existing fingerprint
-   unmatchable, which resets the caps and leaves the counts alone.
-3. **Turnstile, when you want it.** Create a widget in the Cloudflare
+```
+tallinntastebuds          3eb14127-0ef6-4935-954b-e0a593d465ba
+tallinntastebuds-preview  3dd762d3-1d31-4e54-9f12-a3c0ad93dbca
+```
+
+What remains is in the Cloudflare dashboard, and **secrets are per-environment
+too** — the Production / Preview switch at the top of Settings → Variables and
+Secrets is not decoration, and a secret added to one is simply absent in the
+other:
+
+1. **Set `SAVE_SALT`, twice.** A *secret*, any long random string, once for
+   Production and once for Preview — different values, since there is nothing
+   to gain from fingerprints being comparable across the two. **The save
+   endpoint refuses to write without it**: it fails closed rather than storing
+   a weaker hash than it claims to. Changing it later makes every existing
+   fingerprint unmatchable, which resets the caps and leaves the counts alone.
+2. **Turnstile, when you want it.** Create a widget in the Cloudflare
    dashboard, paste the site key into the `<meta name="turnstile-key">` in
    `index.html`, and add the secret half as `TURNSTILE_SECRET`. Test a save
    after enabling — a misconfigured widget refuses every save.
+3. **Nothing to bind by hand.** The D1 bindings come from `wrangler.toml`, and
+   the dashboard cannot override them.
 
-Re-applying the schema, if it is ever needed:
+Re-applying the schema, or setting up a database from scratch:
 
 ```
-wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
+wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
+wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
+
+wrangler d1 execute tallinntastebuds --remote --command \
+  "INSERT INTO meta (key, value) VALUES ('environment', 'production') \
+   ON CONFLICT(key) DO UPDATE SET value = excluded.value"
+
+wrangler d1 execute tallinntastebuds-preview --remote --command \
+  "INSERT INTO meta (key, value) VALUES ('environment', 'preview') \
+   ON CONFLICT(key) DO UPDATE SET value = excluded.value"
 ```
+
+The stamp is the one thing `db/schema.sql` cannot carry, because it is the one
+value that differs between the two copies. A database that is missing it works
+normally and is simply unguarded, so run it.
 
 ### How it behaves when it is not there
 
 Every failure is quiet and none of them costs anybody the map. If `/api/saves`
-is not deployed, the binding is missing, the salt is unset or the visitor is
-offline, the counts simply do not appear — the heart is still a button, the map
+is not deployed, the binding is missing or points at the other environment's
+database, the salt is unset or the visitor is offline, the counts simply do not
+appear — the heart is still a button, the map
 still draws, and nothing throws. The counts are fetched last in `boot()` and
 nothing waits on them.
 
@@ -1558,8 +1641,10 @@ free tier permanently, HTTPS included.
 4. **Save and Deploy.** First build takes about a minute.
 
 Every push to the production branch redeploys. Pull requests get their own
-preview URL. Nothing needs enabling on the GitHub side — unlike GitHub Pages,
-Cloudflare authorises itself through your own GitHub account.
+preview URL, and a preview URL talks to its own database — see **Two
+databases, and never one** — so anything pressed while checking a change stays
+out of the live counts. Nothing needs enabling on the GitHub side — unlike
+GitHub Pages, Cloudflare authorises itself through your own GitHub account.
 
 ### Or deploy without touching the dashboard
 
@@ -1708,6 +1793,11 @@ curl -sI -H 'Host: tallinntastebuds.ee'        http://127.0.0.1:8788/   # 200
 committed or deployed — `wrangler` is a local tool, not a dependency of the
 site, which still has none.
 
+`wrangler pages dev` reads the top of `wrangler.toml`, which is pointed at
+`tallinntastebuds-preview` rather than the live database on purpose: a local
+session that reaches for the remote database should reach for the one it is
+allowed to break.
+
 [cf-redirects]: https://developers.cloudflare.com/pages/configuration/redirects/
 [cf-headers]: https://developers.cloudflare.com/pages/configuration/headers/
 
@@ -1781,8 +1871,8 @@ functions/_middleware.js   sends the pages.dev address to the real one
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, optional email recovery
 functions/api/_lib.js      what those two share (not a route: leading _)
-db/schema.sql              the one table that Function talks to
-wrangler.toml              the D1 binding (the secrets are NOT in here)
+db/schema.sql              the tables those Functions talk to
+wrangler.toml              the D1 bindings, one per environment (secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are
 verify.html                what a waiter sees after scanning  } unlinked and
 staff.html                 the current code, for the counter  } noindex
