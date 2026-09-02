@@ -1116,11 +1116,30 @@ feature's own setup:
 
 1. Nothing, for username and password. It works as soon as `DB` is bound and
    `SAVE_SALT` is set.
-2. For email recovery, an email sender. Set **`RESEND_API_KEY`** and
-   **`MAIL_FROM`** (an address on a domain verified with Resend) in the Pages
-   project. Until both are set the email parts switch themselves off: no
-   address field on the sign-up sheet, no "forgotten your password", and
-   everything else carries on unchanged. Same shape as Turnstile.
+2. For password-reset email, **Cloudflare's own Email Service** — no third
+   party, since the domain and the DNS are already here.
+
+   1. Dashboard → **Compute → Email Service → Email Sending → Onboard
+      Domain**, and pick `tallinntastebuds.ee`. Cloudflare writes the SPF,
+      DKIM and DMARC records itself, on the `cf-bounce` subdomain. Usually
+      live in 5–15 minutes. **Until the domain is onboarded you can only send
+      to verified destination addresses on your own account** — which is
+      exactly how to test it before letting anybody else near it.
+   2. Create an API token with **Email Sending: Edit**.
+   3. In the Pages project set three variables: `CF_ACCOUNT_ID` (text),
+      `CF_EMAIL_TOKEN` (**secret**) and `MAIL_FROM` (text, e.g.
+      `Tallinn Tastebuds <noreply@tallinntastebuds.ee>`).
+
+   Until all three are set the email parts switch themselves off: no address
+   field on the sign-up sheet, no "forgotten your password", and everything
+   else carries on unchanged. Same shape as Turnstile.
+
+   A note on `noreply@`: nothing needs to *exist* at that address for sending
+   to work — DKIM signs for the domain, not for a mailbox. If you would rather
+   replies to it went somewhere instead of bouncing, Email Routing (free, same
+   dashboard) will forward them to a real inbox. Cloudflare cannot *send* from
+   a routing address, only receive at one; sending is what Email Sending is
+   for, and the two are configured separately.
 
 ---
 

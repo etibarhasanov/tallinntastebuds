@@ -341,37 +341,58 @@ export async function onRequestPost(context) {
 }
 
 /* ------------------------------------------------------------------ email
- * Optional throughout, and switched off entirely until an email provider is
- * configured — the same shape Turnstile has. With no RESEND_API_KEY set the
- * routes below answer "not available" and every other part of the account
- * system carries on exactly as it did.
+ * Optional throughout, and switched off entirely until sending is configured
+ * — the same shape Turnstile has. Until all three variables are set the
+ * routes below answer "not available", the sign-up sheet draws no address
+ * field, and every other part of the account system carries on exactly as it
+ * did.
  */
 
+/* Sending goes through Cloudflare's own Email Service rather than a third
+   party, because the domain, the DNS and the site are already here: one
+   account to hold, one place the DKIM is signed, and no other company handed
+   a list of this site's visitors' addresses.
+
+   The REST API rather than the send_email Workers binding. The binding is the
+   more native of the two, but it is configured in a Wrangler file for a
+   Worker, and this is a Pages project — the REST endpoint is documented for
+   exactly this case ("any backend, serverless function") and needs nothing
+   but a token.
+
+   All three have to be set before a single line of this runs; see
+   emailReady, and the README for where each comes from. */
+const SEND_URL = 'https://api.cloudflare.com/client/v4/accounts/';
+
 function emailReady(env) {
-  return !!(env.RESEND_API_KEY && env.MAIL_FROM);
+  return !!(env.CF_ACCOUNT_ID && env.CF_EMAIL_TOKEN && env.MAIL_FROM);
 }
 
 async function sendCode(env, to, code, purpose) {
-  const subject = purpose === 'recover'
+  const recover = purpose === 'recover';
+  const subject = recover
     ? 'Your Tallinn Tastebuds reset code'
     : 'Confirm your email for Tallinn Tastebuds';
-  const line = purpose === 'recover'
+  const line = recover
     ? 'Somebody asked to reset the password on your Tallinn Tastebuds account.'
     : 'Somebody added this address to a Tallinn Tastebuds account.';
 
-  const res = await fetch('https://api.resend.com/emails', {
+  const text = line + '\n\nYour code is ' + code +
+    '\n\nIt is good for 15 minutes and can be used once. ' +
+    'If this was not you, ignore this message — nothing has changed.\n\n' +
+    'This address is only ever used to send codes you asked for. ' +
+    'Nobody is on a list.';
+
+  const res = await fetch(SEND_URL + env.CF_ACCOUNT_ID + '/email/sending/send', {
     method: 'POST',
     headers: {
-      authorization: 'Bearer ' + env.RESEND_API_KEY,
+      authorization: 'Bearer ' + env.CF_EMAIL_TOKEN,
       'content-type': 'application/json'
     },
     body: JSON.stringify({
+      to: to,
       from: env.MAIL_FROM,
-      to: [to],
       subject: subject,
-      text: line + '\n\nYour code is ' + code +
-            '\n\nIt is good for 15 minutes and can be used once. ' +
-            'If this was not you, ignore this message — nothing has changed.'
+      text: text
     })
   });
   return res.ok;
