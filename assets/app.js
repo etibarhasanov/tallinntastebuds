@@ -3150,12 +3150,26 @@
       }));
     }
 
-    /* What there is to see comes first, straight under the name, because it
-       is the reason to keep reading. It used to sit two sections down, under
-       the write-up and the tags, which meant the reel
-       — the one thing on the page that is not text — had to be scrolled to.
-       The video leads, the photos follow it, and a place with neither says so
-       here rather than leaving you to reach the bottom and work it out.
+    /* A few lines about the place, straight under the name, and then the
+       thing there is to look at. The reel led for a while, on the reasoning
+       that the one part of the page which is not text should not have to be
+       scrolled to — which was true, and cost the panel its opening sentence:
+       a player started under the name before anything had been said about
+       the restaurant, and the write-up read as a caption under it. The
+       paragraph says what this place is, the reel shows it. Three or four
+       lines is not a screenful, so it is still the second thing on the
+       panel rather than something to scroll for. */
+    var blurb = blurbFor(place);
+    if (blurb) {
+      dom.detail.appendChild(el('p', {
+        className: 'blurb' + (/^\s*TODO/i.test(blurb) ? ' is-todo' : ''),
+        textContent: blurb
+      }));
+    }
+
+    /* The reel first and the photos after it, and a place with neither says
+       so in that same slot under its own heading rather than leaving you to
+       reach the bottom and work it out.
 
        No video means no section at all — an empty "The reel" heading over a
        placeholder made six real places look half-finished. A quiet line says
@@ -3175,14 +3189,6 @@
       dom.detail.appendChild(section('markNone',
         el('p', { className: 'not-filmed', textContent: t('notFilmed') })
       ));
-    }
-
-    var blurb = blurbFor(place);
-    if (blurb) {
-      dom.detail.appendChild(el('p', {
-        className: 'blurb' + (/^\s*TODO/i.test(blurb) ? ' is-todo' : ''),
-        textContent: blurb
-      }));
     }
 
     if ((place.types || []).length) {
