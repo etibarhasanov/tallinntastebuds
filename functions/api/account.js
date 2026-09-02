@@ -149,7 +149,7 @@ async function claim(env, userId, clientId) {
   return touched;
 }
 
-/* The places this account has saved, so a fresh device can draw its hearts
+/* The places this account has saved, so a fresh device can draw its marks
    filled the moment somebody signs in on it. */
 async function savedByUser(env, userId) {
   const { results } = await env.DB

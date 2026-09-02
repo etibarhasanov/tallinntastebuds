@@ -10,7 +10,7 @@ Being on the map is the verdict.
 Static files, one small Function, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
-The one exception to "static" is the save count: a heart keeps a place and
+The one exception to "static" is the save count: a bookmark keeps a place and
 says how many other people kept it too, so those live in a Cloudflare D1
 database behind `/api/saves`. Everything else on the map — the places, the write-ups, the
 discounts, the stories — is still a JSON file in this repository, and the site
@@ -805,63 +805,77 @@ lines, and the guest-facing half stays exactly as it is.
 
 ## Saves
 
-The heart in the corner of an open place, and the number beside it: how many
+The bookmark in the corner of an open place, and the number beside it: how many
 people have pressed it. It is the only thing on this site that is not a static
 file, because it is the only thing that is about other people.
 
-Press it again to take it back. The count hides at zero — a "0" under a heart
+Press it again to take it back. The count hides at zero — a "0" under a bookmark
 reads as a verdict on the restaurant rather than as nobody having pressed it
 yet.
 
-### The Saved chip, and why one heart does both jobs
+### The Saved chip, and why one bookmark does both jobs
+
+### Where the account lives, and when it is offered
+
+The account button sits in the rail, under the colour swatch — and it is
+**hidden until `/api/account` says the database behind it is bound**, so on a
+deployment without the bindings there is no sign-up sheet to find. If you
+cannot see it, that is why.
+
+Nobody is expected to find it on their own, though. A save made while signed
+out brings up a card offering an account, once per visit and never again for a
+fortnight after it is turned down. That is the moment worth asking at: there
+is now something to lose, and the person has just shown what it is. Asking
+before that would be a sign-up wall on a map nobody has decided about yet,
+which is the thing this site does not do.
 
 The count is on the list rows too, not only inside an open place: a small
-heart and a number beside the price, so a scroll down seventy-four rows shows
+bookmark and a number beside the price, so a scroll down seventy-four rows shows
 which ones other people have kept without opening any of them. Rows at zero
 show nothing — a "0" against a restaurant reads as a verdict rather than as
 nobody having got there yet.
 
-Press one heart and a **Saved** chip appears at the front of the filter row,
+Press one bookmark and a **Saved** chip appears at the front of the filter row,
 directly after All. Press it and the map narrows to the places you have
 saved; the panel names the group **Places I saved** and shows them newest
 first — the order you pressed them in is information, and the alphabet throws
 it away.
 
 That chip is the reason this site has no separate "save" button. A map you can
-narrow to your own places is a saved list by another name, and one heart is a
-better thing to ask of somebody than a heart and a bookmark that mean almost
+narrow to your own places is a saved list by another name, and one bookmark is a
+better thing to ask of somebody than a bookmark and a bookmark that mean almost
 the same thing.
 
 It carries the same limit as anything kept in a browser: the chip is per
 browser, so the phone's list and the laptop's list are different lists, and
 clearing the browser clears it. What it does *not* lose is the save itself —
 that is a row in the database, and it keeps counting whatever happens here.
-Losing the local list costs you the view of your own hearts, not the hearts.
+Losing the local list costs you the view of your own saves, not the marks.
 Making that list follow a person across devices needs accounts, and that is
 the one thing this site still does not have.
 
-The chip is drawn only when there is at least one heart, and it goes again
+The chip is drawn only when there is at least one bookmark, and it goes again
 with the last unsave. If the filter is on when the list empties, the filter
 comes off with the chip — a map narrowed by a chip that is no longer on the
 row is a map with no way back. `?type=saved` is deliberately never written to
-the address bar: a link filtered by one browser's hearts is an empty map for
+the address bar: a link filtered by one browser's saves is an empty map for
 everybody else.
 
 ### Why there is no separate "like"
 
 An earlier version of this had a like and planned a bookmark beside it. They
-collapsed into one heart, and the reason is worth keeping.
+collapsed into one bookmark, and the reason is worth keeping.
 
 Products split the two when a like is **publicly attributable to you**.
 Instagram, X, TikTok, YouTube and Reddit all pair a public like with a private
 save, and X added Bookmarks precisely because people were using Likes to keep
-things and disliked that it broadcast their interest. Where the heart is not
+things and disliked that it broadcast their interest. Where the bookmark is not
 public — Airbnb, Spotify, Zillow, Pinterest — one action covers both, and the
-heart simply means "keep this".
+bookmark simply means "keep this".
 
 Nothing here is attributable. There are no accounts, no profiles, and no
 visitor can see who saved what — not even the owner of the site. So the social
-problem that forces the split does not exist, and asking somebody for a heart
+problem that forces the split does not exist, and asking somebody for a bookmark
 *and* a bookmark that mean almost the same thing would be asking twice for one
 answer.
 
@@ -872,19 +886,19 @@ clean thing — this many people kept this place.
 
 The closest analogue to this site, Google Maps, does split them: Save for your
 own lists, ratings for the public signal. But its ratings carry your name, and
-this site rules out ratings on the first page. One anonymous heart is the
+this site rules out ratings on the first page. One anonymous bookmark is the
 version of that which fits.
 
 ### On "no scores, stars or rankings"
 
 The top of this file says there are none and there never will be, and a number
-next to a heart is close enough to that line to be worth naming where the line
+next to a bookmark is close enough to that line to be worth naming where the line
 actually is.
 
 A save count is a count of people, not a verdict on a kitchen. Nobody rates
 anything out of five, and — this is the part that matters — **nothing on this
 site sorts, ranks or orders by saves.** The list is alphabetical; your own
-hearts are in the order you pressed them; the map draws every pin the same
+saves are in the order you pressed them; the map draws every pin the same
 size whatever its count. There is deliberately no "Most saved" chip, because
 that would be a ranking, and the line above is not a slogan.
 
@@ -903,7 +917,7 @@ itself the first time it saves anything, kept under `ttb.cid`. It is the
 `UNIQUE` half of a save, so the same browser cannot like a place twice, and it
 is what lets somebody take a save back. It is client-supplied and therefore
 *not* a defence — anybody can send a fresh one. It is there to stop honest
-double-taps and to keep the heart filled when you come back.
+double-taps and to keep the bookmark filled when you come back.
 
 **2. A hashed network fingerprint, as a cap.** The Function computes
 `HMAC(SAVE_SALT, ip + '|' + user agent)` and allows at most **five** saves for
@@ -983,11 +997,11 @@ wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
 
 Every failure is quiet and none of them costs anybody the map. If `/api/saves`
 is not deployed, the binding is missing, the salt is unset or the visitor is
-offline, the counts simply do not appear — the heart is still a button, the map
+offline, the counts simply do not appear — the bookmark is still a button, the map
 still draws, and nothing throws. The counts are fetched last in `boot()` and
 nothing waits on them.
 
-A press is optimistic: the heart fills and the number moves at once, because
+A press is optimistic: the bookmark fills and the number moves at once, because
 waiting for a round trip on mobile data feels broken. The server's answer
 replaces the number a moment later, and anything that goes wrong puts both back
 exactly as they were and says so in a toast.
