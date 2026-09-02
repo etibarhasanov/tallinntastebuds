@@ -870,12 +870,14 @@ a:hover { color: var(--accent-lit); }
   background: rgba(176, 226, 197, .18);
 }
 
-/* ---------- the left rail: the two picks, then the two settings ----------
+/* ------- the left rail: who you are, the two picks, the two settings -------
 
-   Top to bottom: Surprise me, the radio, the colour swatch, where am I. The
-   first two change your evening and the last two change the map, and a rail
-   that opens with a colour picker reads as a settings strip rather than as
-   the shortcut it is. */
+   Top to bottom: the account, Surprise me, the radio, the colour swatch,
+   where am I. The account leads because it is the only one whose answer
+   outlasts the visit, and because it wears the name of whoever is signed in.
+   Then the two that change your evening, then the two that change the map: a
+   rail that opens with a colour picker reads as a settings strip rather than
+   as the shortcut it is. */
 
 .rail {
   position: fixed;
@@ -2723,9 +2725,10 @@ body.panel-detail .panel {
   /* The rail introduces itself, then gets out of the way.
 
      A phone has no hover and no title tooltip, so the desktop pill lost its
-     label here and the rail arrived as a column of four bare discs: a die, a
-     play triangle, a coloured dot and a crosshair, floating over a map,
-     saying nothing about what pressing them does. People did not press them.
+     label here and the rail arrived as a column of bare discs: a head and
+     shoulders, a die, a play triangle, a coloured dot and a crosshair,
+     floating over a map, saying nothing about what pressing them does. People
+     did not press them.
      So on a phone they now open wearing their label, in the order they are
      stacked, hold it long enough to read, and collapse to the icon so the map
      gets its screen back. The rail is body copy for four seconds and chrome
@@ -2780,7 +2783,7 @@ body.panel-detail .panel {
   }
 
   /* Collapsed it is the same 32px disc as before — 18px of icon, 6px each
-     side, the border on top of that — so the four buttons still read as one
+     side, the border on top of that — so the buttons still read as one
      column of circles down the edge of the map. */
   /* The pill collapsed is the same disc it has always been: the icon, a few
      pixels either side of it, the border on top of that. Each keeps its own

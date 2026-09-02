@@ -59,17 +59,38 @@ export async function fingerprint(secret, ip, ua) {
  * raised later and old rows re-hashed on their next successful sign-in
  * without a migration.
  *
- * On the number: OWASP's recommendation for PBKDF2-SHA256 is considerably
- * higher than this, and the ceiling here is not security but Cloudflare's CPU
- * budget — the Workers free plan allows 10ms per request and a derive at
- * OWASP's number takes an order of magnitude more than that. 100k is the
- * compromise: far past the point where a leaked table is trivially reversed,
- * and survivable inside a free-plan request. If sign-in ever starts returning
- * CPU-limit errors, this is the number to lower — or the cue to move to the
- * paid Workers plan and raise it instead. Nothing here holds anything more
- * sensitive than a list of restaurants somebody liked the look of.
+ * ON THE NUMBER, WHICH IS A COMPROMISE AND SHOULD BE READ AS ONE
+ *
+ * The ceiling here is not security, it is Cloudflare's CPU budget. The
+ * Workers free plan allows 10ms per request, and PBKDF2-SHA256 measured on a
+ * comparable machine costs roughly:
+ *
+ *     10,000 iterations    ~5ms     fits
+ *     50,000               ~25ms    over
+ *    100,000               ~49ms    over
+ *    210,000 (OWASP)      ~112ms    far over
+ *
+ * So the default is 10,000: the most that reliably fits, and well below what
+ * anybody would recommend in the abstract. What it protects is a username and
+ * a list of restaurants — no email, no address, no payment — and it is the
+ * difference between a leaked table being readable and being work, not a
+ * claim to be proof against a serious attacker.
+ *
+ * It is deliberately not a constant. Set PW_ITERATIONS in the Pages project
+ * to raise it — on the paid plan, where the budget is 30 seconds rather than
+ * 10 milliseconds, 210,000 is the number to use. Existing accounts are not
+ * stranded by that: each row carries the count its own hash was made with, so
+ * old passwords keep verifying, and the sign-in path re-derives a row that is
+ * behind the current setting the next time its owner signs in successfully.
  */
-export const PW_ITERATIONS = 100000;
+const PW_DEFAULT_ITERATIONS = 10000;
+const PW_MAX_ITERATIONS = 600000;
+
+export function pwIterations(env) {
+  const asked = parseInt((env && env.PW_ITERATIONS) || '', 10);
+  if (!asked || asked < 1000) return PW_DEFAULT_ITERATIONS;
+  return Math.min(asked, PW_MAX_ITERATIONS);
+}
 
 export async function derivePassword(password, saltHex, iterations) {
   const enc = new TextEncoder();
