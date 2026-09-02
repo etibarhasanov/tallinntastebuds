@@ -375,6 +375,12 @@
     renderStoryRing();
     if (dom.stories && !dom.stories.hidden) paintStoryText(state.story.list[state.story.index]);
     syncUrl();
+    /* Every label on the page just changed language, and on a phone the two
+       rail buttons are the only ones whose label is not on screen to change
+       with them. So they say themselves again, in the language just picked:
+       somebody switching to Ukrainian is telling you they did not read the
+       English one. */
+    introduceRail();
     trackEvent('language_select', { language: code });
   }
 
@@ -1527,8 +1533,9 @@
    * a die over a map is not self-evident to anybody who has not seen this
    * page before.
    *
-   * So they say what they are on arrival and then stop saying it. Surprise me
-   * opens wearing its label, the station follows half a second later — the
+   * So they say what they are on arrival — and again in the new language the
+   * moment one is picked — and then stop saying it. Surprise me opens
+   * wearing its label, the station follows half a second later — the
    * order they are stacked in, so the eye tracks down the rail rather than
    * being asked to read two things at once — both hold for four seconds, and
    * both collapse back to the icon. Long enough to read twice, gone before it
@@ -1539,6 +1546,9 @@
    */
   var HINT_MS = 4200;
   var hintTimers = {};
+  /* An introduction owed to a visitor who has had a sheet standing open ever
+     since it was due. Paid off by closePanel. */
+  var introPending = false;
 
   /* A pill with nothing to say does not get to open: the radio's label is the
      station name, and a station with no name in radio.json would otherwise
@@ -1575,7 +1585,21 @@
     }, delay || 0);
   }
 
+  /* On arrival, and again after a language switch — see setLanguage. */
   function introduceRail() {
+    /* Not over an open sheet, and not behind the stories: the rail is a row
+       along the top of a sheet, where a pill at full width pushes the buttons
+       after it off the side of the screen, and it is not on screen at all
+       under a story. It waits for either to go rather than being dropped, so
+       a visitor who landed on a place or a story — or who switched language
+       while reading one — still gets the rail explained the first time they
+       are actually looking at the map. */
+    if (document.body.classList.contains('panel-open') ||
+        (dom.stories && !dom.stories.hidden)) {
+      introPending = true;
+      return;
+    }
+    introPending = false;
     openHint('random', 300);
     openHint('radio', 800);
   }
@@ -2036,6 +2060,10 @@
     var back = state.lastFocus;
     state.lastFocus = null;
     if (back && document.contains(back) && typeof back.focus === 'function') back.focus();
+
+    /* The map is finally the thing on screen. If the rail owed an
+       introduction, this is the first moment it has room to make it. */
+    if (introPending) introduceRail();
   }
 
   function selectPlace(id, opts) {
@@ -3444,6 +3472,10 @@
     var back = state.story.opener;
     state.story.opener = null;
     if (back && document.contains(back) && typeof back.focus === 'function') back.focus();
+
+    /* Same as closing a place: an introduction owed while the screen was
+       somebody else's is made now the map is back. */
+    if (introPending) introduceRail();
   }
 
   function wireStories() {
@@ -4134,10 +4166,6 @@
       lastTrackedPath = window.location.pathname + window.location.search;
 
       placeRail();
-      /* And on a phone, the rail says what it is for. After placeRail, which
-         measures it: a pill that opened mid-measurement would be measured
-         mid-animation. */
-      introduceRail();
       /* The JSON-LD block is for crawlers only — nobody reading the map ever
          sees it — so it must never be the reason a visitor gets the fatal
          card instead of the map. It sits alone in a try for that reason:
@@ -4167,6 +4195,12 @@
           if (queue[q].id === wanted) { openStories(q, null); break; }
         }
       }
+
+      /* And on a phone, the rail says what it is for. Last, after the deep
+         link has had its say: a link straight to a place opens the sheet, and
+         the introduction is owed to the map behind it rather than spent on a
+         screen the rail is only a row along the top of. */
+      introduceRail();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
 

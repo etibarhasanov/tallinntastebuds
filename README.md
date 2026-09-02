@@ -1792,9 +1792,21 @@ collapse back to the icon, which is the same 32px disc as before. Pressing
 Surprise me shuts its label early, because the question it answered is the
 question the label was there to ask; starting the radio opens the station's
 name the same way, so a triangle in a circle is not the only thing saying what
-is playing. Nothing opens while the sheet is up: the rail lies along the top
-of it as a row there, and a pill at full width would push the buttons after it
-off the side of the screen.
+is playing.
+
+**It repeats in the new language when you switch languages.** Every other
+label on the page changes in front of you; the two on the rail are the only
+ones not on screen to change with them, and somebody switching to Ukrainian is
+telling you they did not read the English one. So `setLanguage()` runs the
+introduction again.
+
+Nothing opens while the sheet is up: the rail lies along the top of it as a
+row there, and a pill at full width would push the buttons after it off the
+side of the screen. It is owed rather than dropped — `introPending` holds it
+and `closePanel()` pays it — so a visitor who arrived on a `?spot=` link, or
+who switched language while reading a place, still gets the rail explained the
+first time they are actually looking at the map. Pressing Surprise me is not
+owed anything: closing the place it opened leaves the rail as it was.
 
 `openHint()` / `closeHint()` in `assets/app.js` do the timing; the pill itself
 is CSS, a `max-width` on the label from `0` to `20ch` — wide enough for the
