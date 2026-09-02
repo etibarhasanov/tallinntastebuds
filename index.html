@@ -87,11 +87,30 @@
 </header>
 
 <div class="rail" id="rail">
-  <!-- What the rail does comes before what the rail looks like. Surprise me
+  <!-- Who you are, first. Everything under it is about this visit — a place
+       for tonight, a station, a colour, where you are standing — and the
+       account is the one button that says the saves outlast the visit. It
+       also wears a name once there is one, which is the rail telling you
+       whose list you are looking at before you go looking for it.
+
+       Hidden until /api/account says accounts are actually bound — see
+       paintAccountButton in assets/app.js, which is also what holds the
+       introduction below open for it. -->
+  <button type="button" class="dice" id="btn-account"
+          data-i18n-title="accountOpen" data-i18n-aria-label="accountOpen"
+          aria-label="Account" title="Account" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="8.4" r="3.6"/>
+      <path d="M4.8 20.2a7.2 7.2 0 0 1 14.4 0"/>
+    </svg>
+    <span class="dice-label rail-label" id="account-label" data-i18n="accountOpen">Account</span>
+  </button>
+  <!-- Then what the rail does, before what the rail looks like. Surprise me
        and the radio are the two buttons here that *do* something to the
        evening; the colour swatch and "where am I" are settings, and settings
        belong under the things they settle. On a phone that order is the whole
-       point: the two at the top are the two that introduce themselves. -->
+       point: the buttons at the top are the ones that introduce themselves
+       first. -->
   <button type="button" class="dice" id="btn-random" data-i18n-title="randomPick" data-i18n-aria-label="randomPick" aria-label="Surprise me" title="Surprise me">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <rect x="4" y="4" width="16" height="16" rx="4"/>
@@ -111,20 +130,6 @@
     <span class="radio-name rail-label" id="radio-name"></span>
   </button>
   <div class="styles" id="styles" role="group" data-i18n-aria-label="styleLabel" aria-label="Colour"></div>
-  <!-- Below the two that do something to the evening and below the swatch,
-       because who you are is the same kind of thing as which colour you like
-       and where you are standing: it settles the map rather than changing it.
-       Hidden until /api/account says accounts are actually bound — see
-       paintAccountButton in assets/app.js. -->
-  <button type="button" class="dice" id="btn-account"
-          data-i18n-title="accountOpen" data-i18n-aria-label="accountOpen"
-          aria-label="Account" title="Account" hidden>
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="8.4" r="3.6"/>
-      <path d="M4.8 20.2a7.2 7.2 0 0 1 14.4 0"/>
-    </svg>
-    <span class="dice-label rail-label" id="account-label" data-i18n="accountOpen">Account</span>
-  </button>
   <div class="locate-dock card seg" id="locate-dock">
     <button type="button" class="btn btn-icon" id="btn-locate" data-i18n-aria-label="locate" aria-label="Show my location">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.2" fill="none"/><path d="M12 1.6v3M12 19.4v3M1.6 12h3M19.4 12h3"/></svg>
@@ -320,6 +325,6 @@
      lookup and date helpers from it, to work out whether a place has a
      discount worth showing; with no deals set up that answer is always no. -->
 <script src="assets/pass.js?v=9dfcb42e" defer></script>
-<script src="assets/app.js?v=d94a98b2" defer></script>
+<script src="assets/app.js?v=346994fe" defer></script>
 </body>
 </html>

@@ -1494,14 +1494,28 @@
     });
   }
 
+  /* Whether /api/account has said anything at all, either way. The rail's
+     introduction waits a moment on this — see introduceRail — because the
+     button it opens with is the one button on the rail that is not in the
+     markup until the network says so. */
+  var accountAnswered = false;
+
+  function accountSettled() {
+    if (accountAnswered) return;
+    accountAnswered = true;
+    /* The rail is holding the door for this answer: it can go now. */
+    if (railWaiting) { railWaiting = false; introduceRail(); }
+  }
+
   /* Who is signed in, asked once on the way in. Like the counts, nothing
      waits for it: the button appears when the answer arrives, and if it never
-     does the map is exactly the map it was before accounts existed. */
+     does the map is exactly the map it was before accounts existed. The one
+     thing that does wait on it is the rail's introduction, and only briefly. */
   function loadAccount() {
     return fetch(ACCOUNT_URL, { headers: { accept: 'application/json' } })
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (out) {
-        if (!out) return;
+        if (!out) { accountSettled(); return; }
         state.account = {
           /* The endpoint says whether accounts are actually usable — the
              database bound, the salt set. Until it says yes there is no
@@ -1519,8 +1533,9 @@
         if (out.user) adoptSaved(Array.isArray(out.saved) ? out.saved : []);
         else if (state.saved.length) adoptSaved([]);
         paintAccountButton();
+        accountSettled();
       })
-      .catch(function () { /* signed out is a fine place to be */ });
+      .catch(function () { /* signed out is a fine place to be */ accountSettled(); });
   }
 
   /* The account's list, as the server has it. Written through to
@@ -1555,11 +1570,13 @@
     dom.btnAccount.classList.toggle('is-on', !!name);
 
     /* It is the top button on the rail, and on a phone the rail says what its
-       buttons are for on arrival. This one arrives late — it waits on the
-       network while the rest are already introducing themselves — so it says
-       its name when it turns up rather than appearing as a silent disc above
-       a column of pills that have all had their say. Nothing happens on a
-       desktop, where the label is never hidden in the first place. */
+       buttons are for on arrival. The introduction holds a moment for this
+       answer — see introduceRail — so on any normal load it opens at the head
+       of the cascade with the rest. This is the other case: an answer slower
+       than the hold, which says its name when it turns up rather than
+       appearing as a silent disc above a column of pills that have all had
+       their say. Nothing happens on a desktop, where the label is never
+       hidden in the first place. */
     if (wasHidden && railIntroduced) openHint('account', 0);
   }
 
@@ -2414,10 +2431,23 @@
   /* An introduction owed to a visitor who has had a sheet standing open ever
      since it was due. Paid off by closePanel. */
   var introPending = false;
-  /* Whether the cascade has already run. The account button is drawn by an
-     answer from the network, which usually lands after it — see
-     paintAccountButton, which catches it up. */
+  /* Whether the cascade has already run. */
   var railIntroduced = false;
+  /* The button at the head of the rail is the one that is not in the markup:
+     it waits on /api/account. So the introduction waits on it too, rather
+     than starting without it and letting the account catch up out of turn —
+     a pill that opens after the four below it have opened, and closes before
+     they do, reads as a fifth thing rather than as the first, and on a
+     fast answer it can be up and gone before the eye has got down the rail.
+     The wait is short and it is capped: a slow endpoint, an unbound database
+     or no Function at all must not cost the other four their labels, so
+     after RAIL_WAIT_MS the rail goes ahead without it and paintAccountButton
+     catches it up as before. */
+  var RAIL_WAIT_MS = 1400;
+  /* Whether the wait has been spent — it is worth having once, on the way in
+     — and whether an introduction is still owed at the end of it. */
+  var railWaited = false;
+  var railWaiting = false;
 
   /* The colour swatch has no button of its own to grow: the group around it
      is the pill, with the swatch sitting in it where the others keep their
@@ -2484,6 +2514,17 @@
       introPending = true;
       return;
     }
+    /* Once, on the way in: after that the answer has either landed or been
+       given up on, and a language switch introduces the rail as it stands. */
+    if (!accountAnswered && !railWaited) {
+      railWaited = true;
+      railWaiting = true;
+      setTimeout(function () {
+        if (railWaiting) { railWaiting = false; introduceRail(); }
+      }, RAIL_WAIT_MS);
+      return;
+    }
+    railWaiting = false;
     introPending = false;
     railIntroduced = true;
     /* A cascade rather than the whole column at once: 300ms apart is slow

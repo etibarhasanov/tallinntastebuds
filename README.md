@@ -2313,15 +2313,25 @@ order they are stacked, so the eye tracks down the rail rather than being
 asked to read the whole column at once. Each holds for `HINT_MS` (4.2 seconds)
 and collapses back to its icon, the same disc as before.
 
-The account button is the one that cannot be in the cascade every time: it is
-drawn by an answer from `/api/account`, which usually lands after the rail has
-already started introducing itself. So `paintAccountButton()` opens its label
-the moment the button appears — the top of the rail says what it is rather
-than turning up as a silent disc above a column of pills that have all had
-their say. Two of them say something again when pressed:
-starting the radio opens the station's name, so a triangle in a circle is not
-the only thing saying what is playing, and pressing the swatch opens the name
-of the style it has just become the way back to. Pressing Surprise me instead
+The account button is the one the rail has to wait for. It leads the cascade
+and it is the one button not in the markup: it is drawn by an answer from
+`/api/account`. So the introduction holds for that answer, up to
+`RAIL_WAIT_MS` (1.4 seconds), and then runs with the account at its head. A
+pill that opens after the four below it and closes before they do reads as a
+fifth thing rather than as the first, and on a fast answer it was up and gone
+again before the eye had got down the rail.
+
+The wait is capped because it has to be: a slow endpoint, an unbound database
+or no Function at all must not cost the other four their labels. So an answer
+slower than the hold gets the old behaviour — `paintAccountButton()` opens the
+label the moment the button appears, rather than leaving a silent disc above a
+column of pills that have all had their say — and an answer that never comes
+leaves a rail of four that introduced itself on time.
+
+Two of them say something again when pressed: starting the radio opens the
+station's name, so a triangle in a circle is not the only thing saying what is
+playing, and pressing the swatch opens the name of the style it has just
+become the way back to. Pressing Surprise me instead
 shuts its label early — the question it answered is the question the label was
 there to ask.
 
