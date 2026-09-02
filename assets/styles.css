@@ -1487,6 +1487,35 @@ body.panel-detail .panel {
 }
 .ac-alt:hover { color: var(--ink); }
 
+/* The one thing on the sign-up sheet that cannot be put right afterwards, so
+   it is given the weight of a notice rather than the weight of a footnote:
+   the accent colour, a rule down its edge, and the same size as the words it
+   is warning about. */
+.ac-warn {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  margin: -4px 0 0;
+  padding: 10px 12px 10px 11px;
+  border-left: 3px solid var(--accent);
+  border-radius: 4px 10px 10px 4px;
+  background: var(--wash);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.42;
+}
+.ac-warn-ico { flex: 0 0 auto; display: block; margin-top: 1px; }
+.ac-warn-ico svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.ac-warn-ico circle { fill: var(--accent); stroke: none; }
+
 .ac-err, .ac-note {
   margin: 0;
   padding: 9px 12px;
