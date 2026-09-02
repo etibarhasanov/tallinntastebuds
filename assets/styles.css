@@ -771,11 +771,18 @@ a:hover { color: var(--accent-lit); }
    controls at the top. It used to answer from the far bottom-left corner,
    which is the free one but also as far from every other map control as the
    screen allows — a thumb that had just pressed Surprise me had the length of
-   the page to travel. It sits under Surprise me now, at the foot of the rail,
-   and takes the rail's round shape so it reads as one of its buttons rather
-   than as a stray card parked beneath it. */
+   the page to travel. It sits at the foot of the rail now, under the colour
+   swatch, and takes the rail's round shape so it reads as one of its buttons
+   rather than as a stray card parked beneath it. */
 .locate-dock { border-radius: 100px; }
 .locate-dock .btn { border-radius: 100px; }
+
+/* The swatch and the locate button carry no label on a desktop: there is a
+   hover title on both, the pointer that reads it is right there, and two more
+   words down the left edge would be two more than the map can spare. They
+   borrow one for a few seconds on a phone — see the rail hints in the phone
+   layout, where hover does not exist. */
+.style-label, .locate-label { display: none; }
 
 /* ==========================================================================
    The two styles — brick by day, forest by night.
@@ -863,7 +870,12 @@ a:hover { color: var(--accent-lit); }
   background: rgba(176, 226, 197, .18);
 }
 
-/* ---------- the left rail: two colours, then the random pick ---------- */
+/* ---------- the left rail: the two picks, then the two settings ----------
+
+   Top to bottom: Surprise me, the radio, the colour swatch, where am I. The
+   first two change your evening and the last two change the map, and a rail
+   that opens with a colour picker reads as a settings strip rather than as
+   the shortcut it is. */
 
 .rail {
   position: fixed;
@@ -909,6 +921,14 @@ a:hover { color: var(--accent-lit); }
 .sw-green  { background: #1d2a23; box-shadow: inset 0 0 0 4px #6fd39a; }
 
 /* ---------- random pick ---------- */
+
+/* display on a class beats the UA sheet's [hidden] rule, so every button in
+   here that can be taken away has to be told to go. Two are: the radio, when
+   data/radio.json has no station for the language, and the account, until
+   /api/account says the database behind it is actually bound. Without this
+   both draw as an empty pill instead of not drawing at all — the same trap
+   .search-clear and .panel-save fall into further down. */
+.dice[hidden] { display: none; }
 
 .dice {
   flex: 0 0 auto;
@@ -1271,6 +1291,227 @@ body.panel-detail .panel {
 }
 .panel-close:hover { background: var(--wash); color: var(--ink); }
 .panel-close svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+
+/* The heart, one step to the left of the close. Same paper, same height, same
+   line of the panel's chrome — two things you do TO the panel rather than
+   read inside it, so they are drawn as a pair. Both sit in the scroller's top
+   padding band, above where the write-up begins, which is why a second
+   control up here costs the name underneath no width.
+
+   A disc while it is only a heart, a pill once it carries a number: the width
+   is left to the content so a count of 3 and a count of 148 both sit properly
+   inside it, and `right` is measured from the close rather than from the edge
+   so growing leftwards never walks into it. */
+.panel-save {
+  position: absolute;
+  z-index: 3;
+  top: 5px;
+  right: 52px;             /* the close, its 36px, and the same 8px again */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 100px;
+  background: var(--paper);
+  color: var(--muted);
+}
+/* display on a class beats the UA sheet's [hidden] rule, so the list view's
+   hidden heart has to be told to go — the same trap .search-clear falls into
+   further down. */
+.panel-save[hidden] { display: none; }
+.panel-save:hover { background: var(--wash); color: var(--accent); }
+.panel-save svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: fill .18s var(--ease);
+}
+/* Saved is the outline filling in, and nothing else: the same button, in the
+   same place, saying the same word. An empty heart and a full one is the
+   entire vocabulary here, and everybody already reads it. */
+.panel-save[aria-pressed="true"] { color: var(--accent); }
+.panel-save[aria-pressed="true"] svg { fill: currentColor; }
+
+/* The count. Tabular figures so the pill does not jitter as it goes from 9 to
+   10, and no slot at all at zero — a "0" under a heart reads as a verdict on
+   the restaurant rather than as nobody having pressed it yet. */
+.save-n {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.panel-save:not(.has-n) { padding: 0; width: 36px; }
+.panel-save:not(.has-n) .save-n { display: none; }
+
+/* One beat, on the press. Short enough to be over before a toast underneath
+   has finished arriving, and the global reduced-motion rule at the foot of
+   this file takes it out for anyone who has asked for that. */
+.panel-save.is-beating svg { animation: save-beat .42s var(--ease); }
+@keyframes save-beat {
+  30%  { transform: scale(1.26); }
+  58%  { transform: scale(.95); }
+  100% { transform: scale(1); }
+}
+
+/* The count on a list row. Quieter than the discount badge beside it — a
+   discount is an offer you act on, this is a fact you glance at — so it
+   carries no pill, just the mark and the number in the row's own grey. */
+.save-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: 0 0 auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.save-mark-ico {
+  display: inline-flex;
+  width: 11px;
+  height: 11px;
+}
+/* Filled rather than outlined at this size: an 11px heart drawn in a 1.7px
+   stroke closes up into a blob, and the outline/filled distinction is the
+   panel button's vocabulary, not the row's — a row is not a thing you press
+   to save. */
+.save-mark-ico svg { width: 11px; height: 11px; fill: currentColor; }
+
+/* ==========================================================================
+   The account sheet.
+   One card over a dimmed map. It is the only modal on this site that takes
+   typing, so it is centred rather than dropped from an edge, and it sits
+   above the --kbd variable the keyboard handler maintains so an on-screen
+   keyboard pushes it up instead of covering the field being filled in.
+   ========================================================================== */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  padding-bottom: calc(20px + var(--kbd, 0px));
+  background: rgba(39, 20, 26, .42);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  overscroll-behavior: contain;
+}
+.scrim[hidden] { display: none; }
+
+.account {
+  position: relative;
+  width: min(380px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 26px 24px 24px;
+}
+.ac-close { top: 8px; right: 8px; }
+
+.ac-form { display: flex; flex-direction: column; gap: 14px; }
+
+.ac-title {
+  font-family: var(--display);
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  margin: 0 30px 0 0;
+}
+.ac-who { margin: 0; font-size: 15px; }
+.ac-why { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.ac-why.is-small { font-size: 12px; margin-top: -6px; }
+
+.ac-field { display: flex; flex-direction: column; gap: 5px; }
+.ac-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* 16px is not a taste decision: anything smaller makes iOS zoom the page when
+   a field takes focus, and it never zooms back out. */
+.ac-field input {
+  font: inherit;
+  font-size: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.ac-field input:focus-visible {
+  outline: 2px solid var(--accent-lit);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.ac-go {
+  padding: 11px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  background: var(--accent);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .06em;
+}
+.ac-go:hover { background: var(--accent-lit); border-color: var(--accent-lit); }
+.ac-go[disabled] { opacity: .6; }
+
+.ac-alt {
+  align-self: flex-start;
+  padding: 2px 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ac-alt:hover { color: var(--ink); }
+
+.ac-err, .ac-note {
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.ac-err { background: var(--wash); color: var(--accent); }
+.ac-note { background: var(--wash); color: var(--ink); }
+
+/* The rail button wears the name of whoever is signed in, so it can run
+   longer than the fixed-width buttons around it. */
+#btn-account.is-on { color: var(--accent); }
+#btn-account .dice-label { max-width: 12ch; overflow: hidden; text-overflow: ellipsis; }
+
+/* Turnstile in invisible mode still wants somewhere to render. It draws
+   nothing a visitor can see, but left in the flow it is a 300px hole at the
+   foot of the page. */
+.turnstile-box {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
 
 /* detail */
 
@@ -2408,6 +2649,18 @@ body.panel-detail .panel {
   }
   .panel-close svg { width: 19px; height: 19px; stroke-width: 1.8; }
 
+  /* The heart follows it: a target on a phone rather than a mark, kept the
+     same distance to its left as the close is from the edge. */
+  .panel-save {
+    top: 4px;
+    right: 56px;
+    min-width: 40px;
+    height: 40px;
+  }
+  .panel-save:not(.has-n) { width: 40px; }
+  .panel-save svg { width: 20px; height: 20px; stroke-width: 1.8; }
+  .save-n { font-size: 13px; }
+
   /* The sheet used to cover the chip row, which is why the row used to be
      hidden while the panel was open. At the top of the screen it clears even
      the fully dragged-up sheet, so it stays where it is and the filters can
@@ -2437,12 +2690,102 @@ body.panel-detail .panel {
     align-items: center;
     gap: 8px;
   }
-  body.panel-open .styles { flex-direction: row; }
 
-  .dice-label, .radio-name { display: none; }
-  .dice { padding: 0; width: 32px; height: 32px; justify-content: center; }
+  /* The rail introduces itself, then gets out of the way.
+
+     A phone has no hover and no title tooltip, so the desktop pill lost its
+     label here and the rail arrived as a column of four bare discs: a die, a
+     play triangle, a coloured dot and a crosshair, floating over a map,
+     saying nothing about what pressing them does. People did not press them.
+     So on a phone they now open wearing their label, in the order they are
+     stacked, hold it long enough to read, and collapse to the icon so the map
+     gets its screen back. The rail is body copy for four seconds and chrome
+     after that.
+
+     Every one of them is the same shape: an icon at the left, a label that
+     grows out of nothing beside it, and a pill drawn around the pair. The
+     colour swatch has no button of its own to grow, so the group around it
+     does the growing and the swatch sits in it where the others keep their
+     icon. */
+  .rail-label {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity .22s var(--ease);
+  }
+  .hint-open > .rail-label { opacity: 1; }
+
+  /* Icon, then a track for the words that grows from nothing to exactly the
+     width of them: 0fr to 1fr, which an auto-width grid resolves against the
+     label's own max-content. A fixed ceiling in ch cannot do both halves of
+     that job — one wide enough for "Показать моё местоположение" makes "Red"
+     snap open in a tenth of the time, and one tuned to "Red" puts an ellipsis
+     through the label explaining the button. This way every language gets the
+     same slide and none of them gets cut. */
+  .dice, .styles, .locate-dock .btn {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: auto 0fr;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  /* Spelled out one by one rather than as a bare .hint-open: the collapsed
+     rule above reaches the locate button through .locate-dock, and a single
+     class cannot outrank two. */
+  .dice.hint-open,
+  .styles.hint-open,
+  .locate-dock .btn.hint-open { grid-template-columns: auto 1fr; }
+
+  /* The swatch and the locate button borrow the rail's own voice for the few
+     seconds they are wearing words: the same mono the two above them wear, in
+     each one's own colour rather than a third one. */
+  .style-label, .locate-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Collapsed it is the same 32px disc as before — 18px of icon, 6px each
+     side, the border on top of that — so the four buttons still read as one
+     column of circles down the edge of the map. */
+  /* The pill collapsed is the same disc it has always been: the icon, a few
+     pixels either side of it, the border on top of that. Each keeps its own
+     numbers because each starts from a different icon. */
+  .dice {
+    width: auto;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    gap: 0;
+    transition: border-color .15s var(--ease), color .15s var(--ease),
+                grid-template-columns .34s var(--ease),
+                padding .34s var(--ease), gap .34s var(--ease);
+  }
+  .dice.hint-open { padding: 0 13px 0 6px; gap: 8px; }
+
+  .styles {
+    gap: 0;
+    padding: 6px;
+    transition: grid-template-columns .34s var(--ease),
+                padding .34s var(--ease), gap .34s var(--ease);
+  }
+  .styles.hint-open { padding: 6px 13px 6px 6px; gap: 8px; }
+
+  .locate-dock .btn {
+    gap: 0;
+    padding: 0 7px;
+    transition: background-color .15s var(--ease), color .15s var(--ease),
+                grid-template-columns .34s var(--ease),
+                padding .34s var(--ease), gap .34s var(--ease);
+  }
+  .locate-dock .btn.hint-open { padding: 0 13px 0 7px; gap: 8px; }
+
   .rail { gap: 8px; }
-  .styles { gap: 6px; padding: 6px; }
   .swatch { width: 18px; height: 18px; }
 
   .place-name { font-size: 26px; }
@@ -2469,7 +2812,7 @@ body.panel-detail .panel {
 /* ---------- print: the list, on paper ---------- */
 
 @media print {
-  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .toast, .lightbox, .stories { display: none !important; }
+  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .panel-save, .toast, .lightbox, .stories { display: none !important; }
   body { overflow: visible; background: #fff; }
   .panel {
     position: static;

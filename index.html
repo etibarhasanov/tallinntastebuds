@@ -2,6 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- The public half of a Cloudflare Turnstile widget, which is the layer that
+     stops scripts rather than people from running the save count up. Empty
+     means off: assets/app.js does not load Turnstile at all, the save still
+     works, and the cap in functions/api/saves.js carries it alone. Paste the
+     site key here and set TURNSTILE_SECRET in the Pages project to turn it
+     on — nothing else changes. -->
+<meta name="turnstile-key" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tallinn Tastebuds | Where to eat in Tallinn</title>
 <meta name="description" content="A hand picked map of restaurants, bakeries, cafes and bars in Tallinn I have been to myself and approved. No scores: being on the map is the verdict.">
@@ -55,7 +62,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=3362dba6">
+<link rel="stylesheet" href="assets/styles.css?v=780ef31a">
 </head>
 <body>
 
@@ -80,16 +87,11 @@
 </header>
 
 <div class="rail" id="rail">
-  <div class="styles" id="styles" role="group" data-i18n-aria-label="styleLabel" aria-label="Colour"></div>
-  <button type="button" class="dice radio" id="btn-radio" aria-pressed="false" hidden
-          data-i18n-title="radioPlay" data-i18n-aria-label="radioPlay"
-          aria-label="Play the radio" title="Play the radio">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path class="ico-play" d="M8 5.5l11 6.5-11 6.5z"/>
-      <path class="ico-stop" d="M8 6.5h3v11H8zM13 6.5h3v11h-3z"/>
-    </svg>
-    <span class="radio-name" id="radio-name"></span>
-  </button>
+  <!-- What the rail does comes before what the rail looks like. Surprise me
+       and the radio are the two buttons here that *do* something to the
+       evening; the colour swatch and "where am I" are settings, and settings
+       belong under the things they settle. On a phone that order is the whole
+       point: the two at the top are the two that introduce themselves. -->
   <button type="button" class="dice" id="btn-random" data-i18n-title="randomPick" data-i18n-aria-label="randomPick" aria-label="Surprise me" title="Surprise me">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <rect x="4" y="4" width="16" height="16" rx="4"/>
@@ -97,11 +99,40 @@
       <circle cx="12" cy="12" r="1.35" class="pip"/>
       <circle cx="15" cy="15" r="1.35" class="pip"/>
     </svg>
-    <span class="dice-label" data-i18n="randomPick">Surprise me</span>
+    <span class="dice-label rail-label" data-i18n="randomPick">Surprise me</span>
+  </button>
+  <button type="button" class="dice radio" id="btn-radio" aria-pressed="false" hidden
+          data-i18n-title="radioPlay" data-i18n-aria-label="radioPlay"
+          aria-label="Play the radio" title="Play the radio">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path class="ico-play" d="M8 5.5l11 6.5-11 6.5z"/>
+      <path class="ico-stop" d="M8 6.5h3v11H8zM13 6.5h3v11h-3z"/>
+    </svg>
+    <span class="radio-name rail-label" id="radio-name"></span>
+  </button>
+  <div class="styles" id="styles" role="group" data-i18n-aria-label="styleLabel" aria-label="Colour"></div>
+  <!-- Below the two that do something to the evening and below the swatch,
+       because who you are is the same kind of thing as which colour you like
+       and where you are standing: it settles the map rather than changing it.
+       Hidden until /api/account says accounts are actually bound — see
+       paintAccountButton in assets/app.js. -->
+  <button type="button" class="dice" id="btn-account"
+          data-i18n-title="accountOpen" data-i18n-aria-label="accountOpen"
+          aria-label="Account" title="Account" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="8.4" r="3.6"/>
+      <path d="M4.8 20.2a7.2 7.2 0 0 1 14.4 0"/>
+    </svg>
+    <span class="dice-label rail-label" id="account-label" data-i18n="accountOpen">Account</span>
   </button>
   <div class="locate-dock card seg" id="locate-dock">
     <button type="button" class="btn btn-icon" id="btn-locate" data-i18n-aria-label="locate" aria-label="Show my location">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.2" fill="none"/><path d="M12 1.6v3M12 19.4v3M1.6 12h3M19.4 12h3"/></svg>
+      <!-- Shown on a phone for the few seconds the rail spends introducing
+           itself, and never on a desktop, where the hover title says it. The
+           button keeps its own aria-label, so this is decoration to a reader
+           rather than a second name for the same control. -->
+      <span class="locate-label rail-label" data-i18n="locate" aria-hidden="true">Show my location</span>
     </button>
   </div>
 </div>
@@ -133,6 +164,29 @@
        data-i18n-aria-label="sheetResize" aria-label="Drag to resize the sheet"></div>
   <button type="button" class="panel-close" id="panel-close" data-i18n-aria-label="close" aria-label="Close">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <!-- The heart, and next to it how many other people have kept this place.
+       Pressing it saves the place; the number says how many others saved it
+       too. One action doing both jobs, which is only honest because a save
+       here is anonymous — nobody can see whose it was — so the reason
+       Instagram and X keep a public like apart from a private bookmark does
+       not apply. In the
+       panel's chrome rather than in the write-up under it: the write-up is
+       rebuilt on every language switch and scrolls away, and the one thing on
+       this panel you act on should do neither.
+
+       Drawn only on a place — there is no one place to save from a list of
+       seventy — which assets/app.js decides in renderPanel alongside
+       everything else that turns on the view.
+
+       A toggle keeps one name and flips aria-pressed under it; it does not
+       rename itself to the opposite of what it is. The count rides in its own
+       span so it can change without the label being rebuilt, and it is
+       spelled into the button's label for anybody who cannot see it. -->
+  <button type="button" class="panel-save" id="panel-save" aria-pressed="false"
+          aria-label="Save this place" title="Save this place" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <span class="save-n" id="panel-save-n" aria-hidden="true"></span>
   </button>
   <div class="panel-scroll" id="panel-scroll">
     <article id="panel-detail" hidden></article>
@@ -223,6 +277,14 @@
   </div>
 </div>
 
+<!-- The account sheet. Everything in it is built by assets/app.js, because
+     which of the four states it is showing — signed out, signed in, confirming
+     an address, resetting a password — is decided at the moment it opens. -->
+<div class="scrim" id="account-scrim" role="dialog" aria-modal="true"
+     data-i18n-aria-label="accountTitle" aria-label="Your account" hidden>
+  <div class="account card" id="account-card"></div>
+</div>
+
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" data-i18n-aria-label="photos" aria-label="Photos" hidden>
   <button type="button" class="lb-btn lb-close" id="lb-close" data-i18n-aria-label="photoClose" aria-label="Close photo">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -257,7 +319,7 @@
 <!-- Shared with deal.html, verify.html and staff.html. The map uses only the
      lookup and date helpers from it, to work out whether a place has a
      discount worth showing; with no deals set up that answer is always no. -->
-<script src="assets/pass.js?v=41008114" defer></script>
-<script src="assets/app.js?v=e2a8817e" defer></script>
+<script src="assets/pass.js?v=9dfcb42e" defer></script>
+<script src="assets/app.js?v=d155c7ef" defer></script>
 </body>
 </html>

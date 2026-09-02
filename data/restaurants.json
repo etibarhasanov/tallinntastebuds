@@ -2148,11 +2148,11 @@
     "address": "Laulupeo 1, 10121 Tallinn",
     "lat": 59.4302614,
     "lng": 24.7726871,
-    "price": 2.5,
+    "price": 2,
     "types": [
+      "casual",
       "restaurant",
-      "asian",
-      "casual"
+      "asian"
     ],
     "blurb": {
       "az": "Həmişə şorba mənim seçdiyim yemək olub və bura da məhəllə yerim idi. Xidmət və qiymət əladır; dad isə heyranedici yox, sadəcə möhkəmdir.",
@@ -2171,7 +2171,6 @@
     ],
     "reel": "https://www.instagram.com/reel/DHS6_rVMJ9Z/",
     "photos": [],
-    "website": "",
     "phone": "+372 335 7735",
     "added": "2026-08-23",
     "visited": "2025-03",

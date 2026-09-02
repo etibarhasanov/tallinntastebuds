@@ -84,6 +84,12 @@
     lastPick: null,
     radio: null,         // the station from data/radio.json, or nothing
     active: [],          // selected type ids, OR semantics; empty means "All"
+    saves: {},           // place id -> how many people, from /api/saves
+    saved: [],           // the places this browser (or account) has saved
+    /* Who is signed in, whether they have a recovery address on file, and
+       whether the site can send email at all. All three come from
+       /api/account and all three are absent until it answers. */
+    account: { ready: false, user: null, recovery: false, email: false },
     selected: null,      // restaurant id, or null
     /* The place you last opened, kept lit on the map after the panel shuts.
        Closing a write-up used to put the pin back in the crowd, so the answer
@@ -375,6 +381,12 @@
     renderStoryRing();
     if (dom.stories && !dom.stories.hidden) paintStoryText(state.story.list[state.story.index]);
     syncUrl();
+    /* Every label on the page just changed language, and on a phone the two
+       rail buttons are the only ones whose label is not on screen to change
+       with them. So they say themselves again, in the language just picked:
+       somebody switching to Ukrainian is telling you they did not read the
+       English one. */
+    introduceRail();
     trackEvent('language_select', { language: code });
   }
 
@@ -506,6 +518,11 @@
     btn.className = 'swatch sw-' + next;
     btn.setAttribute('aria-label', t(styleKey(next)));
     btn.setAttribute('title', t(styleKey(next)));
+    /* The label the phone shows while the rail is introducing itself names
+       the style you are about to get, exactly as the title does — so a swatch
+       that has just been pressed says the way back. */
+    var name = dom.styles.querySelector('.style-label');
+    if (name) name.textContent = t(styleKey(next));
   }
 
   function renderStyleSwitch() {
@@ -513,8 +530,14 @@
     clear(dom.styles);
     var btn = el('button', { type: 'button', className: 'swatch' });
     /* Read at click time, not at render: the button outlives every switch. */
-    btn.addEventListener('click', function () { setStyle(nextStyle()); });
+    btn.addEventListener('click', function () {
+      setStyle(nextStyle());
+      /* And say what it has become, the way the radio names its station:
+         one press in and the swatch is showing the other side again. */
+      openHint('style', 0);
+    });
     dom.styles.appendChild(btn);
+    dom.styles.appendChild(el('span', { className: 'style-label rail-label' }));
     markStyleSwitch();
   }
 
@@ -1072,6 +1095,788 @@
     window.setTimeout(function () { focusOn(place, zoomIn); }, 300);
   }
 
+  /* ----------------------------------------------------------------- saves
+   * The heart, and the number next to it.
+   *
+   * Pressing it keeps the place — the same thing a bookmark does — and the
+   * number says how many other people have kept it too. One action, not two:
+   * there is nobody to perform for here, since a save is anonymous and no
+   * visitor can see whose it was, so the reason Instagram and X keep a public
+   * like apart from a private bookmark does not apply. The README has the
+   * argument in full.
+   *
+   * Unlike everything else in this file, a save is not this browser's to
+   * keep: it is a count of other people, so it lives in a Cloudflare D1
+   * database behind /api/saves and this is the client half of it. See
+   * functions/api/saves.js for the server half and the README for the honest
+   * account of how unique a save actually is.
+   *
+   * What is kept locally is only what the browser needs to draw itself:
+   *
+   *   ttb.cid    a v4 UUID this browser made for itself the first time it
+   *              saved anything. It is what the server uses as the unique
+   *              half of a save, and what lets a save be taken back. It is
+   *              not an account and identifies nobody: it never leaves this
+   *              browser except as one opaque string on a save.
+   *
+   *   ttb.saved  which places this browser has saved, so the heart is already
+   *              filled when you come back rather than looking untouched
+   *              until the server is asked. Losing it costs the fill, not the
+   *              save — the save is in the database, and pressing again is
+   *              refused by the primary key rather than counted twice.
+   *
+   * The counts themselves are never cached locally. A number that is meant to
+   * be other people is worth being told fresh.
+   */
+
+  var CID_KEY = 'ttb.cid';
+  var SAVED_KEY = 'ttb.saved';
+
+  /* A chip id that is not a taxonomy type, reserved the way "discount" is and
+     refused to the taxonomy by the same list in tools/validate.mjs: two chips
+     answering to one name would each filter the other's places out. */
+  var SAVED_FILTER = 'saved';
+
+  /* Nothing on the map waits for this. The counts arrive when they arrive and
+     the panel repaints if it is already open; if they never arrive — offline,
+     the Function not deployed yet, the database not bound — the heart still
+     works as a button and simply shows no number. A map that will not draw
+     because a save count is late would be a bad trade. */
+  function loadSaves() {
+    return fetch('/api/saves', { headers: { accept: 'application/json' } })
+      .then(function (res) { return res.ok ? res.json() : {}; })
+      .then(function (counts) {
+        state.saves = counts && typeof counts === 'object' ? counts : {};
+        paintSave();
+        /* The list is built with the counts in it, so a list already on screen
+           when they land is a list without them. Rebuilt rather than patched:
+           it is seventy-four rows once, on a request that has already been
+           made, and patching would mean threading the number back through
+           every row that might be showing it. */
+        if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderList();
+      })
+      .catch(function () { /* no counts is a fine state to be in */ });
+  }
+
+  /* Made once, on the first save, and never before: a browser that only ever
+     reads the map is not given an id for something it has not done. */
+  function clientId() {
+    var id = storeGet(CID_KEY);
+    if (id) return id;
+    id = (window.crypto && window.crypto.randomUUID)
+      ? window.crypto.randomUUID()
+      /* Safari before 15.4 has crypto but not randomUUID. getRandomValues is
+         everywhere, so the shape is assembled by hand from real entropy
+         rather than falling back to Math.random. */
+      : uuidFromBytes();
+    storeSet(CID_KEY, id);
+    return id;
+  }
+
+  function uuidFromBytes() {
+    var b = new Uint8Array(16);
+    window.crypto.getRandomValues(b);
+    b[6] = (b[6] & 0x0f) | 0x40;   /* version 4 */
+    b[8] = (b[8] & 0x3f) | 0x80;   /* variant 1 */
+    var hex = [];
+    for (var i = 0; i < 16; i++) hex.push((b[i] + 0x100).toString(16).slice(1));
+    return hex.slice(0, 4).join('') + '-' + hex.slice(4, 6).join('') + '-' +
+           hex.slice(6, 8).join('') + '-' + hex.slice(8, 10).join('') + '-' +
+           hex.slice(10, 16).join('');
+  }
+
+  function readSaved() {
+    var raw = storeGet(SAVED_KEY);
+    var ids = [];
+    if (raw) {
+      try {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) ids = parsed;
+      } catch (e) { /* unreadable is the same as none */ }
+    }
+    /* Trusted as far as: parses, is an array, holds strings, no id twice, and
+       a place of that id is still on the map. The chip built from this is a
+       door to a list, and a door has to open onto what it claims — an id for
+       somewhere that has left restaurants.json would be counted here and then
+       not drawn there. The save itself is unaffected: that lives in the
+       database, and this is only which hearts to fill in. */
+    var seen = {};
+    state.saved = ids.filter(function (id) {
+      if (typeof id !== 'string' || seen[id] || !byId(id)) return false;
+      seen[id] = true;
+      return true;
+    });
+  }
+
+  function isSaved(id) { return state.saved.indexOf(id) !== -1; }
+
+  /* Newest first, and renderList reads that order back out: the heart you
+     pressed on the way home is the one you are looking for tonight. */
+  function markSaved(id, on) {
+    var at = state.saved.indexOf(id);
+    if (on && at === -1) state.saved.unshift(id);
+    if (!on && at !== -1) state.saved.splice(at, 1);
+    storeSet(SAVED_KEY, JSON.stringify(state.saved));
+  }
+
+  function savedCount() { return state.saved.length; }
+
+  function saveCount(id) {
+    var n = state.saves[id];
+    return typeof n === 'number' && n > 0 ? n : 0;
+  }
+
+  /* The same heart the panel carries, at badge size and with no button under
+     it: a row is already a button, and one inside another is not a thing the
+     HTML allows. So this is a fact about the place, printed next to the price
+     and the discount — the count is the only thing on a row that is about
+     other people, and seeing it while scanning is most of the reason it is
+     worth counting at all. Nothing below one, for the same reason the panel
+     hides a zero: a "0" against a restaurant reads as a verdict rather than
+     as nobody having got there yet. */
+  var SAVE_GLYPH = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78' +
+    'l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+
+  function saveMark(place) {
+    var n = saveCount(place.id);
+    if (!n) return null;
+    return el('span', { className: 'save-mark' }, [
+      el('span', { className: 'save-mark-ico', 'aria-hidden': 'true', html: SAVE_GLYPH }),
+      el('span', { textContent: String(n) })
+    ]);
+  }
+
+  /* The heart's three jobs: be on screen only when there is a place to save,
+     say whether this browser has saved it, and carry the count. The count is
+     hidden at zero — "0" under a heart reads as a verdict on the place rather
+     than as nobody having pressed it yet. */
+  function paintSave() {
+    var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
+    dom.panelSave.hidden = !place;
+    if (!place) return;
+
+    var n = saveCount(place.id);
+    var mine = isSaved(place.id);
+    dom.panelSave.setAttribute('aria-pressed', String(mine));
+    dom.panelSaveN.textContent = n ? String(n) : '';
+    dom.panelSave.classList.toggle('has-n', !!n);
+
+    /* Spelled into the label, because the number beside the heart is
+       aria-hidden: read out on its own it is a digit with nothing saying what
+       it counts. */
+    var label = t('savePlace');
+    if (n) label += ', ' + (n === 1 ? t('saveCountOne') : t('saveCount', { n: n }));
+    dom.panelSave.setAttribute('aria-label', label);
+    dom.panelSave.setAttribute('title', label);
+  }
+
+  /* ------------------------------------------------------------- Turnstile
+   * The one layer that stops a script rather than a person. Optional in every
+   * sense: with no key in the <meta> the script is never fetched, no token is
+   * ever asked for, and the server — which has no secret either — accepts the
+   * save on the strength of the cap alone. Everything below is written so
+   * that any failure of it resolves to an empty token rather than to a save
+   * that will not go through.
+   */
+
+  var TURNSTILE_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js' +
+                      '?render=explicit&onload=ttbTurnstileReady';
+  var turnstileKey = '';
+  var turnstileWidget = null;
+  var turnstileLoading = null;
+  var turnstileWaiting = null;
+
+  function readTurnstileKey() {
+    var meta = document.querySelector('meta[name="turnstile-key"]');
+    turnstileKey = (meta && meta.getAttribute('content') || '').trim();
+  }
+
+  function loadTurnstile() {
+    if (turnstileWidget !== null) return Promise.resolve(turnstileWidget);
+    if (turnstileLoading) return turnstileLoading;
+
+    turnstileLoading = new Promise(function (resolve, reject) {
+      var box = el('div', { className: 'turnstile-box' });
+      document.body.appendChild(box);
+
+      window.ttbTurnstileReady = function () {
+        try {
+          turnstileWidget = window.turnstile.render(box, {
+            sitekey: turnstileKey,
+            size: 'invisible',
+            /* Every path out of the widget lands on the same resolver, so a
+               refused or expired challenge fails the save fast instead of
+               leaving the heart spinning on a promise nobody settles. */
+            callback: function (token) { settleTurnstile(token); },
+            'error-callback': function () { settleTurnstile(''); },
+            'expired-callback': function () { settleTurnstile(''); }
+          });
+          resolve(turnstileWidget);
+        } catch (e) { reject(e); }
+      };
+
+      var tag = document.createElement('script');
+      tag.src = TURNSTILE_URL;
+      tag.async = true;
+      tag.defer = true;
+      tag.onerror = function () { reject(new Error('turnstile unreachable')); };
+      document.head.appendChild(tag);
+    });
+
+    return turnstileLoading;
+  }
+
+  function settleTurnstile(token) {
+    var waiting = turnstileWaiting;
+    turnstileWaiting = null;
+    if (waiting) waiting(token || '');
+  }
+
+  /* Resolves to a token, or to an empty string for every way this can go
+     wrong — no key, no network, a challenge that failed, or one that simply
+     took too long. An empty token is refused by a server that has a secret
+     set and ignored by one that has not, which is the correct behaviour in
+     both cases. */
+  function saveToken() {
+    if (!turnstileKey) return Promise.resolve('');
+    return loadTurnstile().then(function (id) {
+      return new Promise(function (resolve) {
+        var done = false;
+        turnstileWaiting = function (token) {
+          if (done) return;
+          done = true;
+          resolve(token);
+        };
+        window.setTimeout(function () {
+          if (!done) { done = true; turnstileWaiting = null; resolve(''); }
+        }, 6000);
+        try {
+          window.turnstile.reset(id);
+          window.turnstile.execute(id);
+        } catch (e) { settleTurnstile(''); }
+      });
+    }).catch(function () { return ''; });
+  }
+
+  /* ------------------------------------------------------------- the press
+   * Optimistic, because a heart that waits for a round trip before it fills
+   * feels broken on a phone on mobile data. The number moves at once and the
+   * server's answer replaces it a moment later; anything that goes wrong puts
+   * both back exactly as they were and says so.
+   */
+  var saveBusy = false;
+
+  function pressSave() {
+    var place = state.selected ? byId(state.selected) : null;
+    if (!place || saveBusy) return;
+
+    var wasSaved = isSaved(place.id);
+    var wasCount = saveCount(place.id);
+    var on = !wasSaved;
+
+    function revert() {
+      markSaved(place.id, wasSaved);
+      state.saves[place.id] = wasCount;
+      paintSave();
+    }
+
+    markSaved(place.id, on);
+    state.saves[place.id] = Math.max(0, wasCount + (on ? 1 : -1));
+    paintSave();
+
+    /* One beat of movement. A fill that simply appears reads as a colour that
+       was always there; this is what makes it read as something that just
+       happened. Reduced motion is not asked about — the blanket rule at the
+       foot of styles.css already flattens every animation on the site. */
+    dom.panelSave.classList.remove('is-beating');
+    void dom.panelSave.offsetWidth;
+    dom.panelSave.classList.add('is-beating');
+
+    saveBusy = true;
+    saveToken().then(function (token) {
+      return fetch('/api/saves', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          place: place.id,
+          client: clientId(),
+          on: on,
+          token: token
+        })
+      });
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (out) {
+        return { ok: res.ok, out: out || {} };
+      });
+    }).then(function (answer) {
+      if (!answer.ok) {
+        revert();
+        /* The count the server sent back with the refusal is still the true
+           one, so it survives the revert. */
+        if (typeof answer.out.n === 'number') state.saves[place.id] = answer.out.n;
+        paintSave();
+        toast(t(answer.out.error === 'capped' ? 'saveCapped' : 'saveFailed'));
+        return;
+      }
+      if (typeof answer.out.n === 'number') state.saves[place.id] = answer.out.n;
+      paintSave();
+      syncSavedChip(on);
+      trackEvent(on ? 'save_place' : 'unsave_place', {
+        place_id: place.id,
+        place: place.name,
+        saves_total: saveCount(place.id)
+      });
+    }).catch(function () {
+      revert();
+      toast(t('saveFailed'));
+    }).then(function () {
+      saveBusy = false;
+    });
+  }
+
+  /* The chip row and the map, after a save has changed what the saved chip
+     would filter to. Only the first save and the last unsave change whether
+     there is a chip at all; every press in between leaves the row exactly as
+     it was and does not need it built again. */
+  function syncSavedChip(on) {
+    if (state.active.indexOf(SAVED_FILTER) !== -1) {
+      /* The list being filtered by just changed underneath the filter, so the
+         map and the panel are both out of date. And if that was the last
+         heart, the chip goes out with it — which would leave the map filtered
+         by a chip that is no longer drawn, with no way to press it off. So the
+         filter comes off with the chip. */
+      if (!savedCount()) state.active.splice(state.active.indexOf(SAVED_FILTER), 1);
+      applyFilters();
+      return;
+    }
+    if (savedCount() === (on ? 1 : 0)) renderFilters();
+  }
+
+
+  /* --------------------------------------------------------------- account
+   * A username and a password, and nothing else required.
+   *
+   * Saving works with no account: the device keeps a random id and the save
+   * is filed under that. An account is the upgrade that makes the list follow
+   * a person to another phone or browser — nobody is stopped at a wall before
+   * they have any reason to sign up, and signing in claims whatever this
+   * device already saved rather than starting them over.
+   *
+   * An email is optional and buys exactly one thing: the ability to reset a
+   * forgotten password. Without one there is nothing that proves an account
+   * is yours except knowing its password, so the sheet says so in as many
+   * words rather than letting somebody find out later.
+   */
+
+  var ACCOUNT_URL = '/api/account';
+
+  function accountPost(payload) {
+    return fetch(ACCOUNT_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (out) {
+        return { ok: res.ok, out: out || {} };
+      });
+    });
+  }
+
+  /* Who is signed in, asked once on the way in. Like the counts, nothing
+     waits for it: the button appears when the answer arrives, and if it never
+     does the map is exactly the map it was before accounts existed. */
+  function loadAccount() {
+    return fetch(ACCOUNT_URL, { headers: { accept: 'application/json' } })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (out) {
+        if (!out) return;
+        state.account = {
+          /* The endpoint says whether accounts are actually usable — the
+             database bound, the salt set. Until it says yes there is no
+             button, because a sign-up sheet that can only fail is worse than
+             no sign-up sheet at all. */
+          ready: !!out.ready,
+          user: out.user || null,
+          recovery: !!out.recovery,
+          email: !!out.email
+        };
+        if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
+        paintAccountButton();
+      })
+      .catch(function () { /* signed out is a fine place to be */ });
+  }
+
+  /* The account's list replaces this browser's, because once somebody is
+     signed in the server is the one that knows. Written through to
+     localStorage all the same, so the hearts are right on the next load
+     before the network has answered. */
+  function adoptSaved(list) {
+    var seen = {};
+    state.saved = list.filter(function (id) {
+      if (typeof id !== 'string' || seen[id] || !byId(id)) return false;
+      seen[id] = true;
+      return true;
+    });
+    storeSet(SAVED_KEY, JSON.stringify(state.saved));
+    paintSave();
+    renderFilters();
+    if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderList();
+  }
+
+  function paintAccountButton() {
+    if (!dom.btnAccount) return;
+    /* Drawn only once the endpoint has answered that it can do the job: a
+       sign-in button on a site whose Function is not deployed, or whose
+       database is not bound yet, is a button that can only disappoint. */
+    dom.btnAccount.hidden = !state.account.ready;
+    if (!state.account.ready) return;
+    var name = state.account.user;
+    dom.accountLabel.textContent = name || t('accountOpen');
+    dom.btnAccount.setAttribute('aria-label', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
+    dom.btnAccount.setAttribute('title', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
+    dom.btnAccount.classList.toggle('is-on', !!name);
+  }
+
+  /* ------------------------------------------------------------- the sheet
+   * Four states in one card: signed in, signing in, creating, recovering.
+   * Which one is showing is a variable rather than four hidden blocks, so
+   * there is exactly one place that decides and nothing can be left over from
+   * the state before.
+   */
+  var accountView = 'in';        /* 'in' | 'up' | 'me' | 'recover' | 'code' */
+  var accountBusy = false;
+  var accountNote = '';
+  var accountErr = '';
+  var accountSuggest = '';
+
+  /* The note is a parameter and not something a caller sets first, because
+     opening a view clears the messages from the one before it — a caller that
+     assigned accountNote and then called this would have it wiped on the way
+     in. Moving between steps and saying what just happened is one action, so
+     it is one call. */
+  function openAccount(view, note) {
+    /* Only when arriving from outside: stepping between views inside an open
+       sheet must not record a field in the sheet as the thing to hand focus
+       back to when it shuts. */
+    if (dom.accountScrim.hidden) state.lastFocus = document.activeElement;
+    accountView = view || (state.account.user ? 'me' : 'in');
+    accountNote = note || '';
+    accountErr = '';
+    dom.accountScrim.hidden = false;
+    document.body.classList.add('has-scrim');
+    renderAccount();
+    var first = dom.accountCard.querySelector('input, button');
+    if (first) first.focus();
+    /* A suggested name, so the sign-up sheet is not a blank box asking
+       somebody to be creative before they can save a bakery. */
+    if (accountView === 'up' && !accountSuggest) {
+      fetch(ACCOUNT_URL + '?suggest=1')
+        .then(function (r) { return r.json(); })
+        .then(function (out) {
+          accountSuggest = out.suggest || '';
+          var field = dom.accountCard.querySelector('#ac-user');
+          if (field && !field.value) field.value = accountSuggest;
+        })
+        .catch(function () {});
+    }
+  }
+
+  function closeAccount() {
+    dom.accountScrim.hidden = true;
+    document.body.classList.remove('has-scrim');
+    var back = state.lastFocus;
+    state.lastFocus = null;
+    if (back && document.contains(back) && back.focus) back.focus();
+  }
+
+  function accountField(id, labelKey, type, opts) {
+    opts = opts || {};
+    return el('label', { className: 'ac-field' }, [
+      el('span', { className: 'ac-label', textContent: t(labelKey) }),
+      el('input', {
+        id: id,
+        type: type,
+        autocomplete: opts.autocomplete || 'off',
+        autocapitalize: 'none',
+        autocorrect: 'off',
+        spellcheck: 'false',
+        inputmode: opts.inputmode || null,
+        maxlength: opts.maxlength || null,
+        value: opts.value || ''
+      })
+    ]);
+  }
+
+  function accountValue(id) {
+    var node = dom.accountCard.querySelector('#' + id);
+    return node ? node.value.trim() : '';
+  }
+
+  /* Everything the sheet is holding, read in one go.
+
+     This has to happen before anything sets the busy state, because showing
+     that state re-renders the card and re-rendering builds the inputs afresh
+     — so a value read afterwards is the field's default and not a word of
+     what was typed into it. The password deliberately keeps its spaces: they
+     are characters somebody chose. */
+  function accountValues() {
+    var pass = dom.accountCard.querySelector('#ac-pass');
+    return {
+      username: accountValue('ac-user'),
+      password: pass ? pass.value : '',
+      email: accountValue('ac-email'),
+      code: accountValue('ac-code')
+    };
+  }
+
+  function accountSubmit(labelKey, run) {
+    var btn = el('button', {
+      type: 'submit',
+      className: 'ac-go',
+      textContent: t(accountBusy ? 'accountWorking' : labelKey),
+      disabled: accountBusy || null
+    });
+    return btn;
+  }
+
+  function accountSwitch(labelKey, view) {
+    var link = el('button', { type: 'button', className: 'ac-alt', textContent: t(labelKey) });
+    link.addEventListener('click', function () { openAccount(view); });
+    return link;
+  }
+
+  /* One place turns an error code from the server into a sentence. Anything
+     unrecognised falls back to the general one rather than showing a visitor
+     a word out of the source. */
+  var ACCOUNT_ERRORS = {
+    taken: 'accountErrTaken',
+    'no-match': 'accountErrNoMatch',
+    password: 'accountErrPassword',
+    username: 'accountErrUsername',
+    email: 'accountErrEmail',
+    'bad-code': 'accountErrCode',
+    'slow-down': 'accountErrSlow',
+    'email-taken': 'accountErrEmailTaken',
+    'no-email': 'accountErrNoEmail',
+    'send-failed': 'accountErrSend'
+  };
+
+  function accountFail(out) {
+    accountErr = t(ACCOUNT_ERRORS[out && out.error] || 'accountErrGeneric');
+    accountBusy = false;
+    renderAccount();
+  }
+
+  function renderAccount() {
+    clear(dom.accountCard);
+
+    var close = el('button', {
+      type: 'button',
+      className: 'panel-close ac-close',
+      'aria-label': t('close'),
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+    });
+    close.addEventListener('click', closeAccount);
+    dom.accountCard.appendChild(close);
+
+    var form = el('form', { className: 'ac-form' });
+    form.addEventListener('submit', function (ev) { ev.preventDefault(); });
+    dom.accountCard.appendChild(form);
+
+    if (accountView === 'me') return renderAccountMe(form);
+    if (accountView === 'recover') return renderAccountRecover(form);
+    if (accountView === 'code') return renderAccountCode(form);
+    return renderAccountAuth(form);
+  }
+
+  function accountMessages(form) {
+    if (accountErr) form.appendChild(el('p', { className: 'ac-err', role: 'alert', textContent: accountErr }));
+    if (accountNote) form.appendChild(el('p', { className: 'ac-note', role: 'status', textContent: accountNote }));
+  }
+
+  /* -------------------------------------------------- signed in already */
+  function renderAccountMe(form) {
+    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountTitle') }));
+    form.appendChild(el('p', {
+      className: 'ac-who',
+      textContent: t('accountSignedIn', { name: state.account.user })
+    }));
+    accountMessages(form);
+
+    if (state.account.email && !state.account.recovery) {
+      form.appendChild(el('p', { className: 'ac-why', textContent: t('accountEmailWhy') }));
+      form.appendChild(accountField('ac-email', 'accountEmail', 'email', { autocomplete: 'email' }));
+      var add = accountSubmit('accountSendCode');
+      add.addEventListener('click', function () {
+        if (accountBusy) return;
+        var v = accountValues();
+        accountBusy = true; accountErr = ''; renderAccount();
+        accountPost({ action: 'email-add', email: v.email }).then(function (a) {
+          accountBusy = false;
+          if (!a.ok) return accountFail(a.out);
+          openAccount('code', t('accountEmailSent'));
+        }).catch(function () { accountFail({}); });
+      });
+      form.appendChild(add);
+    } else if (state.account.recovery) {
+      form.appendChild(el('p', { className: 'ac-why', textContent: t('accountRecoveryOn') }));
+    }
+
+    var out = el('button', { type: 'button', className: 'ac-alt', textContent: t('accountSignOut') });
+    out.addEventListener('click', function () {
+      accountPost({ action: 'logout' }).then(function () {
+        /* Only the person changes. Whether accounts work here at all, and
+           whether email is configured, are facts about the deployment and
+           survive somebody signing out of it — dropping `ready` would hide
+           the button that is the way back in. */
+        state.account = {
+          ready: state.account.ready,
+          user: null,
+          recovery: false,
+          email: state.account.email
+        };
+        /* The account's list goes with the account. What this browser saved
+           before signing in was claimed on the way in and is not coming back
+           here — it is on the account now, waiting for the next sign-in. */
+        state.saved = [];
+        storeSet(SAVED_KEY, '[]');
+        paintSave();
+        paintAccountButton();
+        renderFilters();
+        if (state.view === 'list') renderPanel();
+        closeAccount();
+      });
+    });
+    form.appendChild(out);
+  }
+
+  /* ------------------------------------------- signing in or signing up */
+  function renderAccountAuth(form) {
+    var creating = accountView === 'up';
+    form.appendChild(el('h2', {
+      className: 'ac-title',
+      textContent: t(creating ? 'accountCreate' : 'accountSignIn')
+    }));
+    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountWhy') }));
+    accountMessages(form);
+
+    form.appendChild(accountField('ac-user', 'accountUsername', 'text', {
+      autocomplete: 'username',
+      maxlength: '24',
+      value: creating ? accountSuggest : ''
+    }));
+    form.appendChild(accountField('ac-pass', 'accountPassword', 'password', {
+      autocomplete: creating ? 'new-password' : 'current-password'
+    }));
+
+    if (creating) {
+      if (state.account.email) {
+        form.appendChild(accountField('ac-email', 'accountEmail', 'email', { autocomplete: 'email' }));
+        form.appendChild(el('p', { className: 'ac-why is-small', textContent: t('accountEmailWhy') }));
+      } else {
+        form.appendChild(el('p', { className: 'ac-why is-small', textContent: t('accountNoReset') }));
+      }
+    }
+
+    var go = accountSubmit(creating ? 'accountCreate' : 'accountSignIn');
+    go.addEventListener('click', function () {
+      if (accountBusy) return;
+      var v = accountValues();
+      accountBusy = true; accountErr = ''; renderAccount();
+      accountPost({
+        action: creating ? 'create' : 'login',
+        username: v.username,
+        password: v.password,
+        email: creating ? v.email : '',
+        client: clientId()
+      }).then(function (a) {
+        accountBusy = false;
+        if (!a.ok) return accountFail(a.out);
+        state.account.user = a.out.user;
+        if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
+        paintAccountButton();
+        trackEvent(creating ? 'account_create' : 'account_login', {});
+        closeAccount();
+        toast(t('accountSignedIn', { name: a.out.user }));
+      }).catch(function () { accountFail({}); });
+    });
+    form.appendChild(go);
+
+    form.appendChild(accountSwitch(creating ? 'accountSwitchSignIn' : 'accountSwitchCreate',
+                                   creating ? 'in' : 'up'));
+    if (!creating && state.account.email) {
+      form.appendChild(accountSwitch('accountForgot', 'recover'));
+    }
+  }
+
+  /* ------------------------------------------------ asking for a code */
+  function renderAccountRecover(form) {
+    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountRecoverTitle') }));
+    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountRecoverWhy') }));
+    accountMessages(form);
+    form.appendChild(accountField('ac-email', 'accountEmail', 'email', { autocomplete: 'email' }));
+
+    var go = accountSubmit('accountSendCode');
+    go.addEventListener('click', function () {
+      if (accountBusy) return;
+      var v = accountValues();
+      accountBusy = true; accountErr = ''; renderAccount();
+      accountPost({ action: 'recover-start', email: v.email }).then(function (a) {
+        accountBusy = false;
+        if (!a.ok) return accountFail(a.out);
+        openAccount('code', t('accountEmailSent'));
+      }).catch(function () { accountFail({}); });
+    });
+    form.appendChild(go);
+    form.appendChild(accountSwitch('accountSwitchSignIn', 'in'));
+  }
+
+  /* --------------------------------- entering one, for either purpose */
+  function renderAccountCode(form) {
+    var resetting = !state.account.user;
+    form.appendChild(el('h2', {
+      className: 'ac-title',
+      textContent: t(resetting ? 'accountRecoverTitle' : 'accountConfirmTitle')
+    }));
+    accountMessages(form);
+
+    form.appendChild(accountField('ac-code', 'accountCode', 'text', {
+      inputmode: 'numeric',
+      maxlength: '6',
+      autocomplete: 'one-time-code'
+    }));
+    if (resetting) {
+      form.appendChild(accountField('ac-pass', 'accountNewPassword', 'password', {
+        autocomplete: 'new-password'
+      }));
+    }
+
+    var go = accountSubmit('accountConfirm');
+    go.addEventListener('click', function () {
+      if (accountBusy) return;
+      var v = accountValues();
+      accountBusy = true; accountErr = ''; renderAccount();
+      var payload = resetting
+        ? { action: 'recover-finish', code: v.code, password: v.password }
+        : { action: 'email-confirm', code: v.code };
+
+      accountPost(payload).then(function (a) {
+        accountBusy = false;
+        if (!a.ok) return accountFail(a.out);
+        if (resetting) {
+          /* The reset dropped every session, this one included, so the way
+             back in is the sign-in sheet with the new password. */
+          openAccount('in', t('accountResetDone'));
+          return;
+        }
+        state.account.recovery = true;
+        openAccount('me', t('accountEmailDone'));
+      }).catch(function () { accountFail({}); });
+    });
+    form.appendChild(go);
+  }
+
   /* --------------------------------------------------------------- filters */
 
   function usedTypeIds() {
@@ -1088,9 +1893,12 @@
     return state.places.some(function (p) { return !!liveDealFor(p); });
   }
 
-  /* Chips are OR, so a place shows if it answers any active one — and the
-     discount chip is answered by the deal rather than by the type list. */
+  /* Chips are OR, so a place shows if it answers any active one — and two of
+     them are not answered by the type list at all: the discount chip is
+     answered by the deal, and the saved chip by what this browser has
+     pressed. */
   function matchesFilters(place) {
+    if (state.active.indexOf(SAVED_FILTER) !== -1 && isSaved(place.id)) return true;
     if (state.active.indexOf(DEAL_FILTER) !== -1 && liveDealFor(place)) return true;
     return (place.types || []).some(function (id) {
       return state.active.indexOf(id) !== -1;
@@ -1178,9 +1986,34 @@
     });
     dom.filters.appendChild(all);
 
-    /* First of the real filters, because it is the only one that is an offer
-       rather than a description — and last to appear, since with no live deal
-       anywhere it is a chip that would filter down to nothing. */
+    /* First of the real filters, and the only one that is about you rather
+       than about food. It is the door to the hearts you have pressed — and
+       the reason the heart is the whole of it: the button that says "this one"
+       and the button that keeps it are the same button, since a
+       map you can narrow to your own is a saved list by another name.
+
+       No saves means no chip: a filter whose only possible answer is an empty
+       map is not worth the width, and the chip arriving with the first heart
+       is how anybody learns it is there at all. */
+    if (savedCount()) {
+      var onSaved = state.active.indexOf(SAVED_FILTER) !== -1;
+      var savedChip = el('button', {
+        type: 'button',
+        className: 'chip',
+        'aria-pressed': String(onSaved),
+        textContent: t('filterSaved')
+      });
+      savedChip.addEventListener('click', function () {
+        var at = state.active.indexOf(SAVED_FILTER);
+        if (at === -1) state.active.push(SAVED_FILTER); else state.active.splice(at, 1);
+        applyFilters({ id: SAVED_FILTER, on: at === -1 });
+      });
+      dom.filters.appendChild(savedChip);
+    }
+
+    /* The only chip that is an offer rather than a description — and last to
+       appear, since with no live deal anywhere it is a chip that would filter
+       down to nothing. */
     if (anyLiveDeal()) {
       var onDeal = state.active.indexOf(DEAL_FILTER) !== -1;
       var dealChip = el('button', {
@@ -1519,6 +2352,103 @@
     }
   }
 
+  /* ------------------------------------------------------------ rail hints
+   * On a phone the rail is four icons in a column: a die, a play triangle, a
+   * coloured dot and a crosshair, because a label wide enough to read is a
+   * label wide enough to cover the map. Which left them explaining nothing —
+   * a phone has no hover, so the title that carries the meaning on a desktop
+   * is never read out loud, and a die over a map is not self-evident to
+   * anybody who has not seen this page before.
+   *
+   * So they say what they are on arrival — and again in the new language the
+   * moment one is picked — and then stop saying it. They open in the order
+   * they are stacked, 300ms apart, so the eye tracks down the rail rather
+   * than being asked to read four things at once; each holds for four
+   * seconds and collapses back to its icon. Long enough to read twice, gone
+   * before it is furniture.
+   *
+   * The class is inert above 860px, where the two that have a label there
+   * never lose it and the other two never want one, so none of this needs to
+   * ask how wide the window is.
+   */
+  var HINT_MS = 4200;
+  /* Top to bottom, which is the order they open in. */
+  var HINT_KEYS = ['random', 'radio', 'style', 'locate'];
+  var hintTimers = {};
+  /* An introduction owed to a visitor who has had a sheet standing open ever
+     since it was due. Paid off by closePanel. */
+  var introPending = false;
+
+  /* The colour swatch has no button of its own to grow: the group around it
+     is the pill, with the swatch sitting in it where the other three keep
+     their icon. */
+  function hintPill(key) {
+    if (key === 'radio') return dom.btnRadio;
+    if (key === 'style') return dom.styles;
+    if (key === 'locate') return dom.btnLocate;
+    return dom.btnRandom;
+  }
+
+  /* A pill with nothing to say does not get to open: the radio's label is the
+     station name, and a station with no name in radio.json would otherwise
+     expand the button around an empty span. */
+  function hintText(btn) {
+    var label = btn && btn.querySelector('.rail-label');
+    return label ? (label.textContent || '').replace(/^\s+|\s+$/g, '') : '';
+  }
+
+  function closeHint(key) {
+    if (hintTimers[key]) { clearTimeout(hintTimers[key]); hintTimers[key] = null; }
+    var btn = hintPill(key);
+    if (btn) btn.classList.remove('hint-open');
+  }
+
+  function closeHints() {
+    for (var i = 0; i < HINT_KEYS.length; i++) closeHint(HINT_KEYS[i]);
+  }
+
+  function openHint(key, delay) {
+    var btn = hintPill(key);
+    if (!btn || btn.hidden || !hintText(btn)) return;
+    closeHint(key);
+    hintTimers[key] = setTimeout(function () {
+      /* Never over an open sheet. With a place open the rail lies along the
+         strip above it as a row, and two pills at their full width push the
+         colour swatch and the locate button off the side of the screen. */
+      if (btn.hidden || !hintText(btn) ||
+          document.body.classList.contains('panel-open')) {
+        hintTimers[key] = null;
+        return;
+      }
+      btn.classList.add('hint-open');
+      hintTimers[key] = setTimeout(function () {
+        btn.classList.remove('hint-open');
+        hintTimers[key] = null;
+      }, HINT_MS);
+    }, delay || 0);
+  }
+
+  /* On arrival, and again after a language switch — see setLanguage. */
+  function introduceRail() {
+    /* Not over an open sheet, and not behind the stories: the rail is a row
+       along the top of a sheet, where a pill at full width pushes the buttons
+       after it off the side of the screen, and it is not on screen at all
+       under a story. It waits for either to go rather than being dropped, so
+       a visitor who landed on a place or a story — or who switched language
+       while reading one — still gets the rail explained the first time they
+       are actually looking at the map. */
+    if (document.body.classList.contains('panel-open') ||
+        (dom.stories && !dom.stories.hidden)) {
+      introPending = true;
+      return;
+    }
+    introPending = false;
+    /* A cascade rather than four labels at once: 300ms apart is slow enough
+       to read down the rail and quick enough that all four are up together
+       for most of the time they are up at all. */
+    for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], 300 + i * 300);
+  }
+
   /* ---------------------------------------------------------------- radio
    * A station on a button, for the same reason a restaurant map has a colour
    * rail: it is somebody's map, not a directory.
@@ -1558,6 +2488,7 @@
   function stopRadio() {
     if (radioEl) { radioEl.pause(); radioEl.removeAttribute('src'); radioEl.load(); }
     markRadio(false);
+    closeHint('radio');
   }
 
   function toggleRadio() {
@@ -1586,6 +2517,10 @@
       started.catch(function () { stopRadio(); toast(t('radioFail')); });
     }
     markRadio(true);
+    /* What you just started, by name, for as long as the intro label ran.
+       On a phone the pill is a triangle in a circle otherwise, which says a
+       stream is playing but never says whose. */
+    openHint('radio', 0);
     trackEvent('radio_play', { station: station.name || 'radio' });
   }
 
@@ -1927,6 +2862,10 @@
     dom.panel.removeAttribute('inert');
     document.body.classList.add('panel-open');
     dom.btnList.setAttribute('aria-expanded', 'true');
+    /* The rail turns into a row along the top of the sheet here, and a pill
+       still wearing its label would push the buttons after it off the side of
+       the screen. Whatever it was saying, it has been read. */
+    closeHints();
   }
 
   function closePanel(opts) {
@@ -1965,6 +2904,10 @@
     var back = state.lastFocus;
     state.lastFocus = null;
     if (back && document.contains(back) && typeof back.focus === 'function') back.focus();
+
+    /* The map is finally the thing on screen. If the rail owed an
+       introduction, this is the first moment it has room to make it. */
+    if (introPending) introduceRail();
   }
 
   function selectPlace(id, opts) {
@@ -2023,6 +2966,7 @@
 
   function renderPanel() {
     document.body.classList.toggle('panel-detail', state.view === 'detail' && !!state.selected);
+    paintSave();
     if (state.view === 'detail' && state.selected) {
       renderDetail(byId(state.selected));
       dom.detail.hidden = false;
@@ -2289,13 +3233,13 @@
         place.visited ? el('dd', { textContent: formatMonth(place.visited) }) : null
       ]),
       el('div', { className: 'link-row' }, [
-        el('a', {
+        trackClick(el('a', {
           className: 'link-btn is-primary',
           href: 'https://www.google.com/maps/dir/?api=1&destination=' + place.lat + ',' + place.lng,
           target: '_blank',
           rel: 'noopener',
           textContent: t('directions')
-        }),
+        }), 'directions', { place: place.name }),
         /* Calling sits next to the directions, which is the other thing you
            do about a place rather than to read about it: how to get there,
            and how to ask whether it is worth setting off. It rode with the
@@ -2304,13 +3248,13 @@
            button, and the number itself is still in the facts above. */
         place.phone ? callButton(place) : null,
         place.website
-          ? el('a', {
+          ? trackClick(el('a', {
               className: 'link-btn',
               href: place.website,
               target: '_blank',
               rel: 'noopener',
               textContent: t('website')
-            })
+            }), 'website', { place: place.name })
           : null
       ])
     ]));
@@ -2472,6 +3416,7 @@
         })
       ]);
       button.addEventListener('click', function () {
+        trackEvent('photo_open', { place: place.name, photo_index: i + 1 });
         openLightbox(place, i, button);
       });
       grid.appendChild(button);
@@ -2612,10 +3557,27 @@
       places = places.filter(function (p) { return matches(p, words); });
     }
 
-    var collator;
-    try { collator = new Intl.Collator(state.lang, { sensitivity: 'base' }); }
-    catch (e) { collator = { compare: function (a, b) { return a < b ? -1 : a > b ? 1 : 0; } }; }
-    places.sort(function (a, b) { return collator.compare(a.name, b.name); });
+    /* Whether what is on screen is your own hearts and nothing else. One
+       chip, that chip, and nothing typed: the moment a second filter or a
+       search joins in this is no longer the list, it is a slice of the map
+       that happens to be cut out of it, and it reads like every other slice. */
+    var mine = !words.length && state.active.length === 1 &&
+               state.active[0] === SAVED_FILTER;
+
+    if (mine) {
+      /* The one list here that is not alphabetical. The order you pressed the
+         hearts in is information — the newest is what you were doing most
+         recently, and most likely what you came back for — and the alphabet
+         throws it away for a sort nobody asked for. */
+      var rank = {};
+      state.saved.forEach(function (id, i) { rank[id] = i; });
+      places.sort(function (a, b) { return rank[a.id] - rank[b.id]; });
+    } else {
+      var collator;
+      try { collator = new Intl.Collator(state.lang, { sensitivity: 'base' }); }
+      catch (e) { collator = { compare: function (a, b) { return a < b ? -1 : a > b ? 1 : 0; } }; }
+      places.sort(function (a, b) { return collator.compare(a.name, b.name); });
+    }
 
     if (!places.length) {
       /* The note is the heading here. Something has to carry the panel's
@@ -2657,7 +3619,15 @@
            row shows has to be spelled into it or it is not there at all. */
         'aria-label': t('openPlace', { name: place.name }) +
           (place.closed ? ', ' + t('closed') : '') + ', ' + t(depthMarkKey(place)) +
-          (deal ? ', ' + (offer || t('filterDiscount')) : '')
+          (deal ? ', ' + (offer || t('filterDiscount')) : '') +
+          /* The count is drawn aria-hidden, so a row that shows one has to
+             spell it out or a screen reader gets the digit and nothing to
+             hang it on. */
+          (saveCount(place.id)
+            ? ', ' + (saveCount(place.id) === 1
+                ? t('saveCountOne')
+                : t('saveCount', { n: saveCount(place.id) }))
+            : '')
       }, [
         el('span', { className: 'list-name', textContent: place.name }),
         el('span', { className: 'list-sub' }, [
@@ -2671,6 +3641,7 @@
              It sits with the badges now, where the discount sits: the row's
              two facts about the place rather than about the food. */
           place.closed ? shutMark() : null,
+          saveMark(place),
           el('span', {
             className: 'list-types',
             textContent: (place.types || []).map(typeLabel).join(' · ')
@@ -2728,14 +3699,20 @@
        of their own only makes them read the same names twice. */
     var shown = {};
     places.forEach(function (p) { shown[p.id] = true; });
-    var fresh = words.length ? [] : recentlyAdded().filter(function (p) { return shown[p.id]; });
+    /* Suppressed on your own list for the reason a search suppresses it: a
+       handful of places you chose yourself, cut in two by a heading about when
+       the site added them, makes you read your own list twice. */
+    var fresh = (words.length || mine) ? [] : recentlyAdded().filter(function (p) { return shown[p.id]; });
 
     if (fresh.length > 1) section('listNew', fresh, 'is-new');
     /* "All places" over a filtered list would be a lie the count sitting next
        to it immediately contradicts, so a narrowed list falls back to naming
        its sort order instead. */
     var everything = !words.length && !state.active.length;
-    section(everything ? 'listTitle' : 'listAlphabet', places);
+    /* And your own hearts are named as themselves. "A–Z" over them would be
+       true and useless: this is the one list on the site whose point is whose
+       it is, not what order it came out in. */
+    section(everything ? 'listTitle' : mine ? 'listSaved' : 'listAlphabet', places);
   }
 
   /* -------------------------------------------------------------- lightbox */
@@ -3080,6 +4057,50 @@
     });
   }
 
+  /* ------------------------------------------------------- watching a story
+   * A story is opened far more often than it is watched, and the gap between
+   * the two is the only thing worth knowing about a reel: a run of stories
+   * everybody skips at two seconds is a run of stories nobody is watching,
+   * however healthy the opens look.
+   *
+   * So the frame loop below keeps the fraction that has gone by, and whatever
+   * ends the story — the next one, the arrows, the close button, the last one
+   * running out — reports how far it got on the way out. One story_view when
+   * it comes up, one story_watch when it goes, per story rather than per
+   * opening of the ring.
+   */
+  var storyWatch = null;
+
+  function beginStoryWatch(story) {
+    endStoryWatch();
+    storyWatch = { story: story, done: 0, finished: false };
+    trackEvent('story_view', {
+      story_id: story.id,
+      spot: story.spot || '',
+      format: story.photo ? 'photo' : 'video',
+      position: state.story.index + 1
+    });
+  }
+
+  /* Videos rarely report the last hundredth of themselves before the browser
+     calls them ended, so anything past 95% counts as watched to the end —
+     and a story that actually ended says so itself rather than being judged
+     on a fraction. */
+  function endStoryWatch() {
+    if (!storyWatch) return;
+    var watch = storyWatch;
+    storyWatch = null;
+    var percent = Math.round(Math.max(0, Math.min(1, watch.done)) * 100);
+    if (watch.finished) percent = 100;
+    trackEvent('story_watch', {
+      story_id: watch.story.id,
+      spot: watch.story.spot || '',
+      format: watch.story.photo ? 'photo' : 'video',
+      percent_watched: percent,
+      completed: percent >= 95 ? 'yes' : 'no'
+    });
+  }
+
   /* Draw whichever story the queue is standing on, and start it. */
   function paintStory() {
     var s = state.story;
@@ -3097,6 +4118,7 @@
 
     markStorySeen(story);
     renderStoryRing();
+    beginStoryWatch(story);
     startStoryProgress();
   }
 
@@ -3220,6 +4242,11 @@
   }
 
   function setStorySound(muted) {
+    var story = state.story.list[state.story.index];
+    trackEvent('story_sound', {
+      sound: muted ? 'off' : 'on',
+      story_id: (story && story.id) || ''
+    });
     state.story.muted = muted;
     dom.storyVideo.muted = muted;
     storeSet(STORY_SOUND_KEY, muted ? 'off' : 'on');
@@ -3247,11 +4274,16 @@
       if (story.photo) {
         var spent = s.photoSpent + (s.held ? 0 : now() - s.photoFrom);
         done = Math.min(1, spent / storyLength(story));
-        if (done >= 1) { stepStory(1); return; }
+        if (done >= 1) {
+          if (storyWatch) storyWatch.finished = true;
+          stepStory(1);
+          return;
+        }
       } else {
         var length = storyLength(story);
         done = length ? Math.min(1, (dom.storyVideo.currentTime * 1000) / length) : 0;
       }
+      if (storyWatch) storyWatch.done = done;
       bar.firstChild.style.width = (done * 100).toFixed(2) + '%';
     });
   }
@@ -3311,6 +4343,7 @@
   function closeStories() {
     if (dom.stories.hidden) return;
     stopStoryProgress();
+    endStoryWatch();
     clearHold();
     dom.storyVideo.pause();
     dom.storyVideo.removeAttribute('src');
@@ -3322,6 +4355,10 @@
     var back = state.story.opener;
     state.story.opener = null;
     if (back && document.contains(back) && typeof back.focus === 'function') back.focus();
+
+    /* Same as closing a place: an introduction owed while the screen was
+       somebody else's is made now the map is back. */
+    if (introPending) introduceRail();
   }
 
   function wireStories() {
@@ -3331,7 +4368,10 @@
     dom.storyBack.addEventListener('click', function () { if (!swallowedTap()) stepStory(-1); });
     dom.storyFwd.addEventListener('click', function () { if (!swallowedTap()) stepStory(1); });
 
-    dom.storyVideo.addEventListener('ended', function () { stepStory(1); });
+    dom.storyVideo.addEventListener('ended', function () {
+      if (storyWatch) storyWatch.finished = true;
+      stepStory(1);
+    });
     /* A file that will not load is a file nobody can watch. Say so once and
        move on rather than sitting on a black rectangle. */
     dom.storyVideo.addEventListener('error', function () {
@@ -3450,8 +4490,16 @@
     if (state.selected) params.set('spot', state.selected);
     else params.delete('spot');
     /* Chips in the address bar: a filtered map becomes a link worth sending,
-       and the landing view GA records for it says which filters it was. */
-    if (state.active.length) params.set('type', state.active.join(','));
+       and the landing view GA records for it says which filters it was.
+
+       Every chip but one. The saved chip filters by what this browser has
+       pressed, so ?type=saved sent to somebody else is a link to an empty
+       map, and opened on your own laptop a link to a different one. It
+       filters; it does not travel. Nothing has to strip it on the way back
+       in — boot only accepts ids that are on the map — but a link nobody can
+       use should not be built in the first place. */
+    var shareable = state.active.filter(function (id) { return id !== SAVED_FILTER; });
+    if (shareable.length) params.set('type', shareable.join(','));
     else params.delete('type');
     if (state.langPinned) params.set('lang', state.lang);
     else params.delete('lang');
@@ -3495,12 +4543,22 @@
    *
    * And an event per deliberate action: which filter chips get pressed,
    * which language and colour people pick, whether they press Surprise me,
-   * whether they play a reel. None of that changes the address bar on its
-   * own, and GA only ever sees a URL, so without these events the whole of
-   * it was invisible. They show up under Reports, Engagement, Events, and
-   * the parameters (filter_id, language, style) need registering once as
-   * custom dimensions in Admin if you want to break the numbers down by
-   * them.
+   * whether they play a reel, and which buttons on an open place get used —
+   * directions, call, website, the deal, the photographs. None of that
+   * changes the address bar on its own, and GA only ever sees a URL, so
+   * without these events the whole of it was invisible. They show up under
+   * Reports, Engagement, Events, and the parameters (place, filter_id,
+   * language, style) need registering once as custom dimensions in Admin if
+   * you want to break the numbers down by them.
+   *
+   * The full list, so it can be read without hunting through the file:
+   *   directions, call_place, website, deal_open  — leaving for the place
+   *   photo_open, reel_load                       — looking at the place
+   *   story_open, story_view, story_watch, story_sound, story_link
+   *                                               — the stories ring
+   *   filter_select, filter_clear, filters_open, search  — narrowing down
+   *   list_open, cluster_open, random_pick, locate       — the map controls
+   *   radio_play, radio_stop, language_select, style_select
    *
    * To remove tracking completely: delete the gtag block in index.html and
    * these two functions. Every call below becomes a harmless no-op.
@@ -3515,6 +4573,13 @@
   function trackEvent(name, params) {
     if (typeof window.gtag !== 'function') return;
     window.gtag('event', name, params || {});
+  }
+
+  /* Attaches a report to a link or button that is built inline, and hands
+     the same node back so it can stay inside the array it was written in. */
+  function trackClick(node, name, params) {
+    if (node) node.addEventListener('click', function () { trackEvent(name, params); });
+    return node;
   }
 
   function trackView(title) {
@@ -3546,7 +4611,12 @@
       else { trackEvent('list_open', { places_shown: visiblePlaces().length }); showList(true); }
     });
 
-    dom.btnRandom.addEventListener('click', randomPick);
+    /* Pressing it answers the question the label was there to answer, and
+       the sheet it opens wants the room. */
+    dom.btnRandom.addEventListener('click', function () {
+      closeHint('random');
+      randomPick();
+    });
     dom.btnRadio.addEventListener('click', toggleRadio);
 
     document.addEventListener('click', function (ev) {
@@ -3554,6 +4624,14 @@
     });
 
     dom.panelClose.addEventListener('click', closePanel);
+    dom.panelSave.addEventListener('click', pressSave);
+
+    dom.btnAccount.addEventListener('click', function () { openAccount(); });
+    /* The scrim is the way out, the card is not: a press that lands on the
+       card itself must not close the sheet somebody is typing into. */
+    dom.accountScrim.addEventListener('click', function (ev) {
+      if (ev.target === dom.accountScrim) closeAccount();
+    });
     wireSheet();
     wireKeyboard();
 
@@ -3591,6 +4669,9 @@
       }
 
       if (ev.key === 'Escape') {
+        /* Ahead of the lightbox: the account sheet stands over everything, so
+           it is the thing Escape means when it is open. */
+        if (!dom.accountScrim.hidden) { closeAccount(); return; }
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
         if (isNarrow() && filterMenuOpen()) {
@@ -3625,7 +4706,9 @@
     wireTopGuard();
 
     dom.btnFilters.addEventListener('click', function () {
-      setFilterMenu(!filterMenuOpen());
+      var opening = !filterMenuOpen();
+      if (opening) trackEvent('filters_open');
+      setFilterMenu(opening);
     });
 
     dom.filters.addEventListener('scroll', updateFilterFades, { passive: true });
@@ -3873,6 +4956,12 @@
       panel: $('panel'),
       panelScroll: $('panel-scroll'),
       panelClose: $('panel-close'),
+      panelSave: $('panel-save'),
+      panelSaveN: $('panel-save-n'),
+      btnAccount: $('btn-account'),
+      accountLabel: $('account-label'),
+      accountScrim: $('account-scrim'),
+      accountCard: $('account-card'),
       sheetGrip: $('sheet-grip'),
       btnRadio: $('btn-radio'),
       radioName: $('radio-name'),
@@ -3933,6 +5022,12 @@
       state.ui = loaded[2] || {};
       state.langs = sortLanguages(Object.keys(state.ui));
 
+      /* Which places this browser has saved, and whether the bot check is
+         switched on. Both are local and instant. The counts themselves are a
+         request over the network and are not waited for — see loadSaves. */
+      readSaved();
+      readTurnstileKey();
+
       var chosen = pickLanguage(state.langs);
       state.lang = chosen.lang;
       state.langPinned = chosen.pinned;
@@ -3985,6 +5080,17 @@
       lastTrackedPath = window.location.pathname + window.location.search;
 
       placeRail();
+
+      /* The counts, from the one place on this site that is not a static
+         file. Deliberately last and deliberately not waited for: the map is
+         already drawn and usable by now, and a save count is the least
+         important thing on the screen right up until somebody opens a place.
+         If it never arrives, the hearts show no number and still work. */
+      loadSaves();
+      /* And who is holding them. Same rules: last, unwaited, and the site is
+         the site it always was if the answer never comes. */
+      loadAccount();
+
       /* The JSON-LD block is for crawlers only — nobody reading the map ever
          sees it — so it must never be the reason a visitor gets the fatal
          card instead of the map. It sits alone in a try for that reason:
@@ -4014,6 +5120,12 @@
           if (queue[q].id === wanted) { openStories(q, null); break; }
         }
       }
+
+      /* And on a phone, the rail says what it is for. Last, after the deep
+         link has had its say: a link straight to a place opens the sheet, and
+         the introduction is owed to the map behind it rather than spent on a
+         screen the rail is only a row along the top of. */
+      introduceRail();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
 

@@ -7,8 +7,14 @@ read the write-up, watch the reel.
 There are no scores, stars or rankings anywhere, and there never will be.
 Being on the map is the verdict.
 
-Static files only — no backend, no database, no build step, no npm install, no
-API keys. Adding a place means editing one JSON file and pushing.
+Static files, one small Function, no build step and no npm install. Adding a
+place means editing one JSON file and pushing.
+
+The one exception to "static" is the save count: a heart keeps a place and
+says how many other people kept it too, so those live in a Cloudflare D1
+database behind `/api/saves`. Everything else on the map — the places, the write-ups, the
+discounts, the stories — is still a JSON file in this repository, and the site
+renders completely with the database switched off. See **Saves**.
 
 ---
 
@@ -25,6 +31,8 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Languages](#languages)
 - [Restaurant discounts](#restaurant-discounts)
+- [Saves](#saves)
+- [Accounts](#accounts)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -718,6 +726,7 @@ Add an entry to `data/deals.json`:
 ```json
 {
   "id": "bekker-pagariari",
+  "name": "Bekker Pagariäri",
   "live": true,
   "key": "PR3S960YQP1RZ4HR74H5ABSBBZ3XNMCV",
   "offer": { "en": "10% off the bill", "et": "10% arvest" },
@@ -730,6 +739,7 @@ Add an entry to `data/deals.json`:
 | Field | |
 | --- | --- |
 | `id` | Must be a place in `restaurants.json` |
+| `name` | The same name that place has in `restaurants.json`, copied here so the three pass pages never have to load it — see [Why the name is written twice](#why-the-name-is-written-twice) |
 | `live` | `false` keeps it invisible on the map while remaining testable by URL |
 | `key` | 16–64 characters of `0-9 A-Z`, no `I L O U`. **Different for every place** |
 | `offer` | Translations, like `blurb`. A live deal must have `en` at minimum |
@@ -743,9 +753,25 @@ node -e "const A='0123456789ABCDEFGHJKMNPQRSTVWXYZ';console.log([...require('cry
 ```
 
 Then `node tools/validate.mjs`. It refuses a deal pointing at a place that does
-not exist, two deals sharing a key, and anything switched `live` with no words
-in it. The summary line ends with a live-deal count, so CI tells you what is
-switched on.
+not exist, two deals sharing a key, a name that `restaurants.json` disagrees
+with, and anything switched `live` with no words in it. The summary line ends
+with a live-deal count, so CI tells you what is switched on.
+
+### Why the name is written twice
+
+`restaurants.json` is around two hundred kilobytes — every pin on the map, with
+its photos, blurbs and translations. The three pass pages want exactly one
+string out of it, the restaurant's name for the heading, and they were waiting
+for the whole file before the QR could be drawn: on a phone on a slow
+connection that was a second and a half of blank card, in front of a guest
+standing at a till.
+
+So the name is copied into the deal, and the pass pages load `deals.json` and
+`ui.json` only. Copied data goes stale, which is what `tools/validate.mjs`
+exists for: rename a place on the map without renaming it here and CI fails
+with both spellings in the message. Nothing else about a place is duplicated —
+if a fourth field is ever wanted on these pages, the answer is a small
+generated file, not more copying by hand.
 
 ### Testing before anything is public
 
@@ -774,6 +800,313 @@ picks up a `functions/` directory on the deploy you already have. The key
 moves server-side, a KV write makes each code single-use, and only
 `assets/verify.js` changes — swap the local HMAC for a `fetch`. Roughly fifty
 lines, and the guest-facing half stays exactly as it is.
+
+---
+
+## Saves
+
+The heart in the corner of an open place, and the number beside it: how many
+people have pressed it. It is the only thing on this site that is not a static
+file, because it is the only thing that is about other people.
+
+Press it again to take it back. The count hides at zero — a "0" under a heart
+reads as a verdict on the restaurant rather than as nobody having pressed it
+yet.
+
+### The Saved chip, and why one heart does both jobs
+
+The count is on the list rows too, not only inside an open place: a small
+heart and a number beside the price, so a scroll down seventy-four rows shows
+which ones other people have kept without opening any of them. Rows at zero
+show nothing — a "0" against a restaurant reads as a verdict rather than as
+nobody having got there yet.
+
+Press one heart and a **Saved** chip appears at the front of the filter row,
+directly after All. Press it and the map narrows to the places you have
+saved; the panel names the group **Places I saved** and shows them newest
+first — the order you pressed them in is information, and the alphabet throws
+it away.
+
+That chip is the reason this site has no separate "save" button. A map you can
+narrow to your own places is a saved list by another name, and one heart is a
+better thing to ask of somebody than a heart and a bookmark that mean almost
+the same thing.
+
+It carries the same limit as anything kept in a browser: the chip is per
+browser, so the phone's list and the laptop's list are different lists, and
+clearing the browser clears it. What it does *not* lose is the save itself —
+that is a row in the database, and it keeps counting whatever happens here.
+Losing the local list costs you the view of your own hearts, not the hearts.
+Making that list follow a person across devices needs accounts, and that is
+the one thing this site still does not have.
+
+The chip is drawn only when there is at least one heart, and it goes again
+with the last unsave. If the filter is on when the list empties, the filter
+comes off with the chip — a map narrowed by a chip that is no longer on the
+row is a map with no way back. `?type=saved` is deliberately never written to
+the address bar: a link filtered by one browser's hearts is an empty map for
+everybody else.
+
+### Why there is no separate "like"
+
+An earlier version of this had a like and planned a bookmark beside it. They
+collapsed into one heart, and the reason is worth keeping.
+
+Products split the two when a like is **publicly attributable to you**.
+Instagram, X, TikTok, YouTube and Reddit all pair a public like with a private
+save, and X added Bookmarks precisely because people were using Likes to keep
+things and disliked that it broadcast their interest. Where the heart is not
+public — Airbnb, Spotify, Zillow, Pinterest — one action covers both, and the
+heart simply means "keep this".
+
+Nothing here is attributable. There are no accounts, no profiles, and no
+visitor can see who saved what — not even the owner of the site. So the social
+problem that forces the split does not exist, and asking somebody for a heart
+*and* a bookmark that mean almost the same thing would be asking twice for one
+answer.
+
+Calling it a save rather than a like also makes the number honest. "Like" is a
+verdict, so a like count mixes *this was excellent* with *I want to try this*.
+A save is neither: both of those genuinely are saves, so the count means one
+clean thing — this many people kept this place.
+
+The closest analogue to this site, Google Maps, does split them: Save for your
+own lists, ratings for the public signal. But its ratings carry your name, and
+this site rules out ratings on the first page. One anonymous heart is the
+version of that which fits.
+
+### On "no scores, stars or rankings"
+
+The top of this file says there are none and there never will be, and a number
+next to a heart is close enough to that line to be worth naming where the line
+actually is.
+
+A save count is a count of people, not a verdict on a kitchen. Nobody rates
+anything out of five, and — this is the part that matters — **nothing on this
+site sorts, ranks or orders by saves.** The list is alphabetical; your own
+hearts are in the order you pressed them; the map draws every pin the same
+size whatever its count. There is deliberately no "Most saved" chip, because
+that would be a ranking, and the line above is not a slogan.
+
+If a future change wants to sort by saves, it is changing the argument of the
+site, not adding a feature. That is a decision for a person, not a patch.
+
+### How unique a save actually is
+
+Be clear-eyed about this: **without accounts, no save is truly unique.** There
+is no honest way to tell two people apart on a public web page. What can be
+done is make faking one cost more than it is worth, and that is what this does,
+in three layers — no accounts, no cookies, nothing a visitor has to do.
+
+**1. A client id in `localStorage`.** A random v4 UUID the browser makes for
+itself the first time it saves anything, kept under `ttb.cid`. It is the
+`UNIQUE` half of a save, so the same browser cannot like a place twice, and it
+is what lets somebody take a save back. It is client-supplied and therefore
+*not* a defence — anybody can send a fresh one. It is there to stop honest
+double-taps and to keep the heart filled when you come back.
+
+**2. A hashed network fingerprint, as a cap.** The Function computes
+`HMAC(SAVE_SALT, ip + '|' + user agent)` and allows at most **five** saves for
+one place from one fingerprint. The raw IP is never stored and cannot be
+recovered from the hash without the salt.
+
+A cap and not "one save per IP", deliberately. Estonian mobile carriers put
+thousands of phones behind one public address, and this map is opened from an
+Instagram link on a phone more than anywhere else — so a hard per-IP rule would
+let the first Elisa customer like a bakery and then silently refuse every other
+Elisa customer in the country. Folding the user agent in separates most of them
+again; a cap of five leaves room for a household, a table of friends and the
+handful of identical phones that will still collide, while the tenth attempt
+from one fingerprint on one place is the clear-your-storage-and-try-again loop
+this exists to stop.
+
+**3. Turnstile, optional.** Cloudflare's CAPTCHA replacement, in invisible
+mode: no puzzle, no traffic lights, usually nothing the visitor ever sees. It
+is the only layer that stops a *script* rather than a person — the two above
+only handle humans being cheeky. It is off until you set both halves of the
+key, and the feature works without it.
+
+What this stops: honest duplicates, a curious visitor pressing twenty times,
+and casual gaming. What it does not stop: somebody determined, with a script
+and a VPN, if Turnstile is off. If a discount ever depends on these numbers,
+turn Turnstile on.
+
+### Is the database exposed?
+
+No. **D1 has no public endpoint** — there is no host, no port and no connection
+string anybody can point a tool at. It is reachable from a Worker holding a
+binding to it and from the Cloudflare API with your account credentials, and
+from nowhere else. A visitor can only ever reach the two handlers in
+`functions/api/saves.js`, which means the attack surface of the database is
+that one file. So:
+
+- **Every query is a prepared statement with bound parameters.** No value out
+  of a request is ever concatenated into SQL.
+- **The only `DELETE` takes a client id as well as a place**, so it can only
+  remove the caller's own row — removing somebody else's would mean guessing a
+  v4 UUID.
+- **A place id not in `data/restaurants.json` is refused**, so the table cannot
+  be filled with rows for places that do not exist.
+- **Nothing personal is stored.** No IP, no user agent, no name — one salted
+  one-way hash, useless to anybody without the secret.
+- **The realistic worst case is an inflated number, not a breach.** There is
+  nothing in this table worth stealing.
+
+D1 also has Time Travel, so a bad write is recoverable for 30 days.
+
+### Setting it up
+
+The database is already created — `tallinntastebuds`, id
+`3eb14127-0ef6-4935-954b-e0a593d465ba`, in the `EEUR` region — and its schema
+is applied. Three things remain, all in the Cloudflare dashboard:
+
+1. **Bind it.** Pages project → Settings → Bindings → D1 database. Variable
+   name `DB`, database `tallinntastebuds`. This is what `wrangler.toml`
+   describes, and Pages needs it set in the project as well.
+2. **Set `SAVE_SALT`.** Settings → Variables and Secrets → add a *secret*
+   named `SAVE_SALT`, any long random string. **The save endpoint refuses to
+   write without it** — it fails closed rather than storing a weaker hash than
+   it claims to. Changing it later makes every existing fingerprint
+   unmatchable, which resets the caps and leaves the counts alone.
+3. **Turnstile, when you want it.** Create a widget in the Cloudflare
+   dashboard, paste the site key into the `<meta name="turnstile-key">` in
+   `index.html`, and add the secret half as `TURNSTILE_SECRET`. Test a save
+   after enabling — a misconfigured widget refuses every save.
+
+Re-applying the schema, if it is ever needed:
+
+```
+wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
+```
+
+### How it behaves when it is not there
+
+Every failure is quiet and none of them costs anybody the map. If `/api/saves`
+is not deployed, the binding is missing, the salt is unset or the visitor is
+offline, the counts simply do not appear — the heart is still a button, the map
+still draws, and nothing throws. The counts are fetched last in `boot()` and
+nothing waits on them.
+
+A press is optimistic: the heart fills and the number moves at once, because
+waiting for a round trip on mobile data feels broken. The server's answer
+replaces the number a moment later, and anything that goes wrong puts both back
+exactly as they were and says so in a toast.
+
+### Where the counts come from, and why not from a `COUNT(*)`
+
+`GET /api/saves` returns every place's count in one request — the map asks once
+on the way in rather than seventy-four times — and it reads them from
+`save_counts`, one row per place, rather than aggregating the `saves` table.
+
+That is the important part. The obvious query is
+`SELECT place_id, COUNT(*) FROM saves GROUP BY place_id`, and it was the first
+version of this, but its cost grows with the data and never stops: ten thousand
+saves means reading ten thousand rows to produce seventy-four numbers, on a
+table that only ever gets bigger. Reading `save_counts` costs one row per place
+on the map and never more, however popular the map gets.
+
+`save_counts` is not a cache of `saves`. It is recomputed **from** `saves`, in
+the same `batch()` — one transaction — as every insert and delete, so the two
+can never disagree. It is deliberately not a `+1`/`-1`: an increment that ran
+when the insert had quietly hit its conflict clause would drift, and nothing
+would ever notice. `db/schema.sql` carries the statement to rebuild it from
+scratch if it is ever suspected of having come apart.
+
+**Nothing runs on a timer.** The count is brought up to date by the write that
+changed it. On top of that sit two layers of not-fetching:
+
+- **An ETag**, hashed from the answer itself, so it changes when and only when
+  the numbers do. A browser that already has the counts revalidates and gets
+  `304` and no body back. This is the part that is genuinely driven by changes
+  rather than by a clock.
+- **An edge cache copy**, which any save landing in the same Cloudflare
+  location deletes on its way out — so a visitor there sees the new number at
+  once rather than waiting for anything to expire.
+
+There is still a 60-second TTL, and it is a backstop rather than the
+mechanism. The Cache API is per-location: a purge in Frankfurt cannot reach
+into Warsaw, so a location that never sees a write would otherwise hold its
+copy indefinitely. Anyone who has just saved something never sees a stale
+number regardless — the POST hands the new one straight back.
+
+---
+
+## Accounts
+
+Optional, and deliberately the smallest thing that does the job: **a username
+and a password**. No email required, no phone, no OAuth, no profile, no name.
+
+Saving works with no account at all — the device keeps a random id and the
+save is filed under that. An account is the upgrade that makes a list follow a
+person to another phone or browser, and signing in **claims** whatever this
+device already saved rather than starting anybody over. Nobody meets a wall
+before they have a reason to sign up.
+
+### What signing in actually does to the rows
+
+`saves.owner` holds a `users.id` when the request carries a session and the
+device's own UUID when it does not. The primary key is `(place_id, owner)`, so
+the same account saving the same place from two devices is one row and not two.
+
+Claiming is `UPDATE OR IGNORE` then `DELETE`, in that order. A row that cannot
+move — because the account already holds that place from another device — is
+left alone by the update rather than failing it, and the delete then clears it
+away. The result is a **merge**: the union of what the device had and what the
+account had, nothing counted twice. Every affected count is recomputed from
+the rows afterwards, so a place one person had saved from two devices correctly
+drops from two to one.
+
+### The email is optional and buys one thing
+
+A reset. Without an address there is nothing that proves an account is yours
+except knowing its password, so **a forgotten password cannot be recovered by
+anyone, including whoever runs this site**. The sign-up sheet says so in as
+many words rather than letting somebody find out later, and the fields carry
+the autocomplete hints that make a browser's password manager offer to keep
+the details — which is what actually rescues people in practice.
+
+Give an address and it is stored unverified until a six-digit code sent to it
+comes back. Only then does reset work. The address is never used for anything
+else: no list, no newsletter, no mail that is not a code somebody just asked
+for.
+
+### How it is kept safe
+
+- **Passwords** are PBKDF2-HMAC-SHA256 through WebCrypto — there is no bcrypt
+  or argon2 in a Worker without shipping WASM. The salt and the iteration
+  count live on the row, so the count can be raised later and old rows
+  re-derived on their next sign-in without a migration.
+- **The iteration count is capped by CPU, not by taste.** Cloudflare's free
+  plan allows 10ms per request; OWASP's recommended number for PBKDF2-SHA256
+  takes far longer than that. 100,000 is the compromise. If sign-in starts
+  returning CPU-limit errors, lower it — or move to the paid Workers plan and
+  raise it. `PW_ITERATIONS` in `functions/api/_lib.js`.
+- **Session tokens** are random, and only their SHA-256 is stored. A leaked
+  sessions table is a list of hashes, not a drawer of working keys.
+- **The session cookie** is server-set, HttpOnly, Secure and SameSite=Lax.
+  Page scripts cannot read it, and — this is the practical part — Safari's
+  seven-day cap on script-written storage does not apply to a cookie the
+  server set, which is the difference between a sign-in lasting a week and
+  lasting a year on an iPhone.
+- **Guessing is the attack**, since there is no reset link to phish. Ten wrong
+  passwords from one network fingerprint in fifteen minutes and that
+  fingerprint waits.
+- **"No such account" and "wrong password" give the same answer**, so the
+  endpoint cannot be used to find out which usernames exist.
+- **A reset drops every session** on that account, not just the current one.
+
+### Turning it on
+
+The account tables are already applied. Two things it needs beyond the save
+feature's own setup:
+
+1. Nothing, for username and password. It works as soon as `DB` is bound and
+   `SAVE_SALT` is set.
+2. For email recovery, an email sender. Set **`RESEND_API_KEY`** and
+   **`MAIL_FROM`** (an address on a domain verified with Resend) in the Pages
+   project. Until both are set the email parts switch themselves off: no
+   address field on the sign-up sheet, no "forgotten your password", and
+   everything else carries on unchanged. Same shape as Turnstile.
 
 ---
 
@@ -1070,9 +1403,19 @@ see [stories/README.md](stories/README.md) for the `ffmpeg` line.
 
 The same form the data needs: name, address, coordinates, price, types, the
 English write-up, must-orders one to a line, and as many photographs as you
-like. The id is made from the name — `Põhja Pagar` becomes `pohja-pagar` — and
-**I am here** fills the coordinates from the phone's own position, which is the
-one thing easier standing in the door than sitting at a laptop.
+like. The id is made from the name — `Põhja Pagar` becomes `pohja-pagar`.
+
+**The coordinates are a map.** Press where the door is, or drag the pin.
+**I am here** fills it from the phone's own position, which is the one thing
+easier standing in the doorway than sitting at a laptop, and then you drag the
+pin the last few metres onto the actual door. The field and the pin are two
+views of one number: type into one and the other follows.
+
+That map is the same map — Leaflet 1.9.4 and the CARTO tiles the site already
+draws, same version, same integrity hashes, same key — fetched only when a
+place form is open, so the story tab and the door stay as light as they were.
+If it will not load, the form says so and the numbers can still be typed,
+which is how every place already in the file got there.
 
 Everything `tools/validate.mjs` would fail the build over is checked before the
 branch exists, in the same words: the slug, the Tallinn bounding box that
@@ -1113,6 +1456,11 @@ Two things it will tell you rather than decide for you:
   so reopening one is an edit like any other. See
   [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it).
 
+Editing opens the map on that place at street zoom, which is the point: **check
+the pin lands on the right side of the street** — the note this README has been
+ending every place with — is finally a thing you can do before merging rather
+than after.
+
 Photographs already there are shown with a tick to drop one, which deletes the
 file from the repository as well, since nothing else points at it. New ones are
 numbered **past the highest that has ever been there**, never into a gap a
@@ -1124,11 +1472,18 @@ serve last month's picture to anybody who had already seen the old one.
 Every photograph either tab uploads goes through the same squeeze, on the
 device, before a byte of it leaves:
 
-- **1600px on the long edge**, WebP at quality 72, dropping to 1400, 1200 and
-  then 1100 as the quality steps down to 58 — until it comes in **under
-  200 KB**. Edge first and quality second, the order
+- **1600px on the long edge**, at quality 72, dropping to 1400, 1200 and then
+  1100 as the quality steps down to 58 — until it comes in **under 200 KB**.
+  Edge first and quality second, the order
   [photos/README.md](photos/README.md) argues for, because a frame full of
   leaves is the expensive one and dropping the edge hides better.
+- **WebP where the browser can write one, JPEG where it cannot.** The encoder
+  is asked once, up front, what it is willing to produce, and the file is named
+  after the answer. `canvas.toBlob` does not fail when it cannot encode what it
+  was asked for — it quietly returns a PNG — so what comes back is checked
+  against what was requested, and a browser that can only manage PNG is told to
+  use a laptop rather than humoured. The first photograph ever posted from a
+  phone here went up as a 1596 KB PNG named `.webp` for exactly that reason.
 - **The EXIF block goes with the re-encode**, and the GPS fix inside it with
   that. Same as pasting onto a fresh canvas in the Pillow recipe — a side
   effect there and a side effect here, and the one that matters most, because
@@ -1422,6 +1777,12 @@ to read and write first.
 index.html                 the whole page
 assets/styles.css          design tokens at the top, then everything else
 assets/app.js              map, panel, filters, i18n, lightbox — no framework
+functions/_middleware.js   sends the pages.dev address to the real one
+functions/api/saves.js     the save count
+functions/api/account.js   sign up, sign in, optional email recovery
+functions/api/_lib.js      what those two share (not a route: leading _)
+db/schema.sql              the one table that Function talks to
+wrangler.toml              the D1 binding (the secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are
 verify.html                what a waiter sees after scanning  } unlinked and
 staff.html                 the current code, for the counter  } noindex
@@ -1445,6 +1806,7 @@ tools/validate.mjs         dependency-free data validator
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
+tools/qrperf.mjs           checks the QR encoder still draws the same code, and times it
 .github/workflows/validate.yml
 .github/workflows/stories.yml   the hourly tick, and the tidying up after it
 ```
@@ -1625,6 +1987,11 @@ button naming the new one.
 
 Delete the file, or empty it, and the button never appears at all.
 
+The button wears the station's name on a desktop, and on a phone it wears it
+for the first few seconds and again whenever you press play — see
+[The rail introduces itself on a phone](#the-rail-introduces-itself-on-a-phone).
+A station with no `name` gets no label and stays a play triangle.
+
 Requirements for the URL, all three or it will not work:
 
 - **HTTPS.** The page is served over HTTPS, so a plain `http://` stream is
@@ -1735,8 +2102,7 @@ TLS; neither is the test that counts. Pressing the button is.
 
 ## Surprise me
 
-The button under the colour switch on the left rail picks a place at random and
-opens it.
+The top button on the left rail picks a place at random and opens it.
 
 It picks from **whatever the chips currently allow**, so selecting "Korean" and
 "Cheap eats" and then pressing it answers the question you were actually
@@ -1745,9 +2111,66 @@ twice in a row.
 
 It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
-scrolls out of reach is no use. On a phone it collapses to just the die.
+scrolls out of reach is no use.
 
-Under it, at the foot of the rail, is the locate button, which frames you
+### The rail introduces itself on a phone
+
+The rail runs Surprise me, the radio, the colour swatch, the locate button —
+the two that change your evening above the two that change the map, because a
+rail that opens with a colour picker reads as a settings strip rather than as
+the shortcut it is.
+
+On a phone it used to arrive as a column of four bare discs: a die, a play
+triangle, a coloured dot and a crosshair over a map, saying nothing. A phone
+has no hover, so the `title` that carries the meaning on a desktop is never
+read out loud, and people did not press them.
+
+So they say what they are on arrival and then stop saying it. Each opens
+wearing its label — Surprise me, the station, the style you are about to
+switch to, "Show my location" — 300ms apart in the order they are stacked, so
+the eye tracks down the rail rather than being asked to read four things at
+once. Each holds for `HINT_MS` (4.2 seconds) and collapses back to its icon,
+the same disc as before. Two of them say something again when pressed:
+starting the radio opens the station's name, so a triangle in a circle is not
+the only thing saying what is playing, and pressing the swatch opens the name
+of the style it has just become the way back to. Pressing Surprise me instead
+shuts its label early — the question it answered is the question the label was
+there to ask.
+
+**It repeats in the new language when you switch languages.** Every other
+label on the page changes in front of you; the two on the rail are the only
+ones not on screen to change with them, and somebody switching to Ukrainian is
+telling you they did not read the English one. So `setLanguage()` runs the
+introduction again.
+
+Nothing opens while the sheet is up: the rail lies along the top of it as a
+row there, and a pill at full width would push the buttons after it off the
+side of the screen, and it is pointless behind the stories, where the rail is
+not on screen at all. It is owed rather than dropped — `introPending` holds it,
+`closePanel()` or `closeStories()` pays it — so a visitor who arrived on a
+`?spot=` or `?story=` link, or who switched language while reading a place,
+still gets the rail explained the first time they are actually looking at the
+map. Pressing Surprise me is not owed anything: closing the place it opened
+leaves the rail as it was.
+
+`openHint()` / `closeHint()` in `assets/app.js` do the timing; the pill itself
+is CSS. All four are the same shape — an icon, then a track for the words that
+grows from `0fr` to `1fr`, which an auto-width grid resolves against the
+label's own max-content. A fixed ceiling in `ch` cannot do both halves of that
+job: one wide enough for Ukrainian's `Показати моє місцезнаходження` makes
+`Red` snap open in a tenth of the time, and one tuned to `Red` puts an
+ellipsis through the label explaining the button. This way every language gets
+the same slide and none of them gets cut — the widest of the forty labels
+reaches 276px on a 320px screen.
+
+The colour swatch has no button of its own to grow, so the group around it
+does the growing and the swatch sits in it where the other three keep their
+icon. Above 860px none of this applies: the two `.dice` pills never lose their
+labels there, and `.style-label` / `.locate-label` are `display: none` — a
+pointer that can hover has the `title` instead, and two more words down the
+left edge would be two more than the map can spare.
+
+At the foot of the rail is the locate button, which frames you
 together with the nearest place rather than dropping you at zoom 15 on
 whatever street you are standing in —
 [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
@@ -1828,6 +2251,14 @@ pages are the ones most likely to be opened on a bad connection in a cellar,
 so the encoder is written out in the repo instead — ISO/IEC 18004 byte mode,
 error correction level M. It is checked against a reference encoder and a
 scanner, module for module, rather than trusted because it looks like a QR.
+
+`node tools/qrperf.mjs` is what holds it to that. Nine payloads covering
+versions 1 to 10, each recorded as the hash of the finished matrix: a code that
+scanned last week and hashes the same today still scans, so any change to the
+encoder that moves a single module says so immediately. It then times the
+encoder, because this runs on the main thread between the card being cleared
+and the QR appearing — every millisecond there is a millisecond of blank card
+in front of somebody at a till.
 
 ### Analytics
 

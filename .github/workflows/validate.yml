@@ -22,3 +22,9 @@ jobs:
       # tools/validate.mjs has no dependencies.
       - name: Validate data
         run: node tools/validate.mjs
+
+      # The encoder that draws the discount QR. --check compares every fixture
+      # against the matrix it drew when it was last scanned with a real camera
+      # and skips the timing, which would only be noise on a shared runner.
+      - name: Check the QR encoder
+        run: node tools/qrperf.mjs --check

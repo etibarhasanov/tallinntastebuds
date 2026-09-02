@@ -348,51 +348,68 @@ window.TTBQR = (function () {
   function penalty(m) {
     var size = m.length;
     var score = 0;
-    var r, c, run, runColour;
+    var r, c, i, j, v;
 
-    /* Rule 1 — runs of five or more in a row or a column. */
-    function scoreLine(get) {
-      run = 1;
-      runColour = get(0);
-      for (var i = 1; i < size; i++) {
-        var v = get(i);
-        if (v === runColour) {
-          run++;
-          if (run === 5) score += 3;
-          else if (run > 5) score += 1;
-        } else { runColour = v; run = 1; }
+    /* Rule 1 — runs of five or more in a row or a column. Rows and columns are
+       counted in the same pass: the work is identical either way round, and
+       one walk of the matrix is cheaper than two. */
+    for (i = 0; i < size; i++) {
+      var row = m[i];
+      var rowRun = 1, rowColour = row[0];
+      var colRun = 1, colColour = m[0][i];
+      for (j = 1; j < size; j++) {
+        v = row[j];
+        if (v === rowColour) {
+          rowRun++;
+          if (rowRun === 5) score += 3; else if (rowRun > 5) score += 1;
+        } else { rowColour = v; rowRun = 1; }
+
+        v = m[j][i];
+        if (v === colColour) {
+          colRun++;
+          if (colRun === 5) score += 3; else if (colRun > 5) score += 1;
+        } else { colColour = v; colRun = 1; }
       }
     }
-    for (r = 0; r < size; r++) scoreLine(function (i) { return m[r][i]; });
-    for (c = 0; c < size; c++) scoreLine(function (i) { return m[i][c]; });
 
     /* Rule 2 — every 2x2 block of one colour. */
     for (r = 0; r < size - 1; r++) {
+      var top = m[r], below = m[r + 1];
       for (c = 0; c < size - 1; c++) {
-        var v0 = m[r][c];
-        if (v0 === m[r][c + 1] && v0 === m[r + 1][c] && v0 === m[r + 1][c + 1]) score += 3;
+        var v0 = top[c];
+        if (v0 === top[c + 1] && v0 === below[c] && v0 === below[c + 1]) score += 3;
       }
     }
 
     /* Rule 3 — the 1:1:3:1:1 finder signature appearing in the data, either
-       way round, with four light modules on one side. */
-    var A = [1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0];
-    var B = [0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1];
-    function matches(get, at, pattern) {
-      for (var i = 0; i < 11; i++) if (get(at + i) !== pattern[i]) return false;
-      return true;
-    }
-    function scanLine(get) {
-      for (var i = 0; i + 11 <= size; i++) {
-        if (matches(get, i, A) || matches(get, i, B)) score += 40;
+       way round, with four light modules on one side. Rather than compare
+       eleven modules at every position, the last eleven are carried along as
+       the low bits of an integer: shift one in, mask to eleven bits, and the
+       comparison is against two constants. Reading it as a number puts the
+       earliest module in the highest bit, which is the order the pattern is
+       written in below. */
+    var A = 0x5D0;   /* 10111010000 */
+    var B = 0x05D;   /* 00001011101 */
+    var WINDOW = 0x7FF;
+    for (i = 0; i < size; i++) {
+      var across = 0, down = 0;
+      var scanned = m[i];
+      for (j = 0; j < size; j++) {
+        across = ((across << 1) | scanned[j]) & WINDOW;
+        down = ((down << 1) | m[j][i]) & WINDOW;
+        if (j >= 10) {
+          if (across === A || across === B) score += 40;
+          if (down === A || down === B) score += 40;
+        }
       }
     }
-    for (r = 0; r < size; r++) scanLine(function (i) { return m[r][i]; });
-    for (c = 0; c < size; c++) scanLine(function (i) { return m[i][c]; });
 
     /* Rule 4 — how far the proportion of dark modules strays from half. */
     var dark = 0;
-    for (r = 0; r < size; r++) for (c = 0; c < size; c++) if (m[r][c]) dark++;
+    for (r = 0; r < size; r++) {
+      var counted = m[r];
+      for (c = 0; c < size; c++) if (counted[c]) dark++;
+    }
     var percent = (dark * 100) / (size * size);
     score += Math.floor(Math.abs(percent - 50) / 5) * 10;
 
@@ -409,24 +426,39 @@ window.TTBQR = (function () {
     var codewords = interleave(buildData(bytes, version), version);
     var size = version * 4 + 17;
 
+    /* The finders, the timing lines, the alignment patterns and the data sit
+       in the same places whichever mask wins, so they are drawn once and each
+       candidate is a copy of that board with a mask laid over it. Drawing
+       them eight times over — once per mask, only to throw seven away — was
+       most of what this function used to spend its time on, and this is the
+       page where that time is a guest holding a phone up at a till. */
+    var base = makeMatrix(size);
+    var reserved = makeMatrix(size);
+    drawFunctionPatterns(base, reserved, version);
+    placeData(base, reserved, codewords);
+
+    var candidate = makeMatrix(size);
     var best = null;
     var bestScore = Infinity;
+    var r, c;
 
     for (var mask = 0; mask < 8; mask++) {
-      var m = makeMatrix(size);
-      var reserved = makeMatrix(size);
-
-      drawFunctionPatterns(m, reserved, version);
-      placeData(m, reserved, codewords);
-      for (var r = 0; r < size; r++) {
-        for (var c = 0; c < size; c++) {
-          if (!reserved[r][c] && maskAt(mask, r, c)) m[r][c] ^= 1;
-        }
+      for (r = 0; r < size; r++) {
+        var row = candidate[r];
+        var keep = reserved[r];
+        row.set(base[r]);
+        for (c = 0; c < size; c++) if (!keep[c] && maskAt(mask, r, c)) row[c] ^= 1;
       }
-      drawFormat(m, reserved, mask);
+      drawFormat(candidate, reserved, mask);
 
-      var score = penalty(m);
-      if (score < bestScore) { bestScore = score; best = m; }
+      var score = penalty(candidate);
+      if (score < bestScore) {
+        bestScore = score;
+        best = candidate;
+        /* The winner is kept as it stands, so the next mask needs somewhere
+           else to be drawn. Nothing is allocated for a mask that loses. */
+        candidate = makeMatrix(size);
+      }
     }
     return best;
   }

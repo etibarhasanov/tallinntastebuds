@@ -15,9 +15,9 @@
 <!--
   WHAT THIS PAGE IS
 
-  The door. It holds a GitHub token for this one device, encrypted with a
-  passphrase, and proves the token can still reach the repository. Posting a
-  story is the next thing to go behind it; today it stops at "you are in".
+  The door, and the three things behind it: post a story, add a place, change
+  a place. It holds a GitHub token for this one device, encrypted with a
+  passphrase, and proves the token can still reach the repository.
 
   WHERE THE SECRET LIVES
 
@@ -214,6 +214,14 @@ fieldset { border: 0; padding: 0; margin: 0; }
 .thumbs figure { margin: 0; width: 86px; }
 .thumbs img { width: 86px; height: 86px; object-fit: cover; border-radius: 4px; border: 1px solid var(--hairline); }
 .thumbs figcaption { font-family: var(--mono); font-size: .66rem; color: var(--muted); text-align: center; margin-top: 2px; }
+
+.map {
+  height: 260px; margin-top: 6px;
+  border: 1px solid var(--hairline); border-radius: var(--radius);
+  overflow: hidden; background: var(--wash);
+}
+.map .hint { padding: 12px; margin: 0; }
+.leaflet-container { font-family: var(--body); }
 
 ol { margin: 0 0 12px; padding-left: 1.2rem; font-size: .88rem; }
 ol li { margin-bottom: 6px; }
@@ -599,11 +607,45 @@ a { color: var(--accent); }
   var SHRINK_STEPS = [[1600, 0.72], [1400, 0.68], [1200, 0.62], [1100, 0.58]];
   var PHOTO_BUDGET = 200 * 1024;
 
+  /* Which format this browser can actually write.
+   *
+   * canvas.toBlob does not fail when it cannot encode what it was asked for —
+   * it quietly hands back a PNG instead. That is not a hypothetical: the first
+   * photograph ever posted from a phone here went up as a 1596 KB PNG named
+   * .webp, because WebKit took 'image/webp' and returned PNG without a word,
+   * and nothing downstream looked at what it had been given. The picture was
+   * resized to 1100px on the long edge, four steps down the ladder chasing a
+   * budget it could never meet in a lossless format, and uploaded anyway.
+   *
+   * So the encoder is asked once, up front, what it is willing to produce, and
+   * everything after works in that. JPEG is the floor and every browser has it;
+   * photos/README.md takes either.
+   */
+  var encoderReady = null;
+
+  function encoder() {
+    if (encoderReady) return encoderReady;
+    encoderReady = new Promise(function (resolve) {
+      var probe = document.createElement('canvas');
+      probe.width = probe.height = 8;
+      probe.toBlob(function (blob) {
+        resolve(blob && blob.type === 'image/webp'
+          ? { type: 'image/webp', ext: 'webp' }
+          : { type: 'image/jpeg', ext: 'jpg' });
+      }, 'image/webp', 0.7);
+    });
+    return encoderReady;
+  }
+
   function shrink(file) {
     /* from-image rather than the default: the pixels come out the way up the
        picture is meant to be seen, so nothing downstream has to read a flag
        that the next tool along would strip. */
-    return createImageBitmap(file, { imageOrientation: 'from-image' }).then(function (bmp) {
+    return Promise.all([
+      createImageBitmap(file, { imageOrientation: 'from-image' }),
+      encoder()
+    ]).then(function (both) {
+      var bmp = both[0], enc = both[1];
       var step = 0;
 
       function attempt() {
@@ -616,12 +658,19 @@ a { color: var(--accent); }
         canvas.getContext('2d').drawImage(bmp, 0, 0, w, h);
 
         return new Promise(function (resolve) {
-          canvas.toBlob(resolve, 'image/webp', quality);
+          canvas.toBlob(resolve, enc.type, quality);
         }).then(function (blob) {
-          if (!blob) throw new Error('This browser would not encode a WebP.');
+          if (!blob) throw new Error('This browser would not encode a picture at all.');
+          /* It answered with something other than what it was asked for, which
+             is the failure that has no error attached to it. */
+          if (blob.type !== enc.type) {
+            throw new Error('This browser encoded ' + blob.type + ' when asked for ' +
+                            enc.type + '. Shrink the photograph on a laptop instead.');
+          }
           if (blob.size <= PHOTO_BUDGET || step === SHRINK_STEPS.length - 1) {
             bmp.close();
-            return { blob: blob, width: w, height: h, quality: quality };
+            return { blob: blob, width: w, height: h, quality: quality,
+                     ext: enc.ext, over: blob.size > PHOTO_BUDGET };
           }
           step++;
           return attempt();
@@ -739,8 +788,9 @@ a { color: var(--accent); }
     into.appendChild(el('label', { for: 'photo', textContent: 'The photograph' }));
     into.appendChild(fileIn);
     into.appendChild(el('p', { className: 'hint', textContent:
-      'Shrunk on this device to 1600px and WebP before it goes anywhere, which also ' +
-      'drops the EXIF block and the GPS fix inside it. Videos are still a laptop job.' }));
+      'Shrunk on this device before it goes anywhere — 1600px, and WebP where the ' +
+      'browser can write one, JPEG where it cannot. The re-encode drops the EXIF ' +
+      'block and the GPS fix inside it. Videos are still a laptop job.' }));
     var shot = el('div', { className: 'shot' });
     into.appendChild(shot);
 
@@ -840,7 +890,7 @@ a { color: var(--accent); }
           var n = 2;
           while (taken[id]) id = place.id + '-' + when.slice(0, 10) + '-' + n++;
 
-          var file = id + '.webp';
+          var file = id + '.' + state.photo.ext;
           var entry = { id: id, live: true, photo: file, from: when };
           if (caption) entry.caption = { en: caption };
           entry.spot = place.id;
@@ -919,12 +969,107 @@ a { color: var(--accent); }
   }
 
   function sizeLine(small, file) {
-    return small.width + '×' + small.height + ' WebP, ' +
+    return small.width + '×' + small.height + ' ' + small.ext.toUpperCase() + ', ' +
       Math.round(small.blob.size / 1024) + ' KB, from ' +
-      Math.round(file.size / 1024) + ' KB';
+      Math.round(file.size / 1024) + ' KB' +
+      (small.over ? ' — over the 200 KB budget, and this is as small as it goes' : '');
   }
 
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  /* ---------------------------------------------------------------- the map
+   * The pin, dragged rather than typed. The README has told you to "check the
+   * dot lands on the right side of the street" since the first place went in,
+   * and until now the only way to do that was to merge it and go and look.
+   *
+   * Leaflet and the CARTO tiles are the map's own — same version, same
+   * integrity hashes, same key as index.html. That key is in assets/app.js in
+   * plain sight on purpose: it is a meter reading rather than a password, and
+   * it unlocks nothing but the tiles it is already drawing.
+   *
+   * Fetched only when a place form is opened, so the story tab and the door
+   * itself stay exactly as light as they were. And if it will not load, the
+   * form says so and carries on: the numbers can always be typed, which is
+   * how every place already in the file got there.
+   */
+  var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+  var TILE_KEY = 'cb1_2ci9_1_e18f20c42b2e5346aa517b42';
+  var TILE_ATTRIBUTION =
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
+    '&copy; <a href="https://carto.com/attributions">CARTO</a>';
+  var TALLINN = [59.437, 24.7536];
+  var leafletReady = null;
+
+  function loadLeaflet() {
+    if (leafletReady) return leafletReady;
+    leafletReady = new Promise(function (resolve, reject) {
+      if (window.L) { resolve(window.L); return; }
+
+      var css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      css.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+      css.crossOrigin = '';
+      document.head.appendChild(css);
+
+      var js = document.createElement('script');
+      js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      js.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+      js.crossOrigin = '';
+      js.onload = function () {
+        if (window.L) resolve(window.L);
+        else reject(new Error('Leaflet loaded but is not there.'));
+      };
+      js.onerror = function () { reject(new Error('The map would not load.')); };
+      document.head.appendChild(js);
+    });
+    return leafletReady;
+  }
+
+  /* One pin on a map of Tallinn. `onMove` is told every time it lands
+     somewhere new; the handle back lets the form move it when the numbers are
+     typed or the phone is asked where it is. */
+  function mapPicker(host, start, onMove) {
+    var handle = { goto: function () {} };
+
+    loadLeaflet().then(function (L) {
+      clear(host);
+      var map = L.map(host).setView(start || TALLINN, start ? 17 : 13);
+      L.tileLayer(TILE_KEY ? TILE_URL + '?key=' + encodeURIComponent(TILE_KEY) : TILE_URL, {
+        subdomains: 'abcd', maxZoom: 20, detectRetina: true,
+        attribution: TILE_ATTRIBUTION
+      }).addTo(map);
+
+      var pin = L.marker(start || TALLINN, { draggable: true, autoPan: true }).addTo(map);
+      /* A place with no coordinates yet gets a faint pin in the middle of the
+         city: something to drag, without claiming the middle of the city is
+         the answer. */
+      if (!start && pin.setOpacity) pin.setOpacity(0.4);
+
+      function landed(latlng) {
+        if (pin.setOpacity) pin.setOpacity(1);
+        onMove(latlng.lat, latlng.lng);
+      }
+      pin.on('dragend', function () { landed(pin.getLatLng()); });
+      map.on('click', function (e) { pin.setLatLng(e.latlng); landed(e.latlng); });
+
+      handle.goto = function (lat, lng) {
+        pin.setLatLng([lat, lng]);
+        if (pin.setOpacity) pin.setOpacity(1);
+        map.setView([lat, lng], Math.max(map.getZoom(), 17));
+      };
+
+      /* Leaflet measures the container on construction, and the browser has
+         not finished laying the form out by then. */
+      window.setTimeout(function () { map.invalidateSize(); }, 0);
+    }).catch(function (err) {
+      clear(host);
+      host.appendChild(el('p', { className: 'hint', textContent:
+        err.message + ' Type the coordinates in instead — that is all the map was going to write.' }));
+    });
+
+    return handle;
+  }
 
   /* Which place to change. Closed ones are in the list too — reopening one is
      an edit like any other, and it is the only way back. */
@@ -999,21 +1144,45 @@ a { color: var(--accent); }
     var hereBtn = el('button', { type: 'button', className: 'quiet', textContent: 'I am here' });
     into.appendChild(el('label', { for: 'coord', textContent: 'Coordinates' }));
     into.appendChild(el('div', { className: 'row' }, [coordIn, hereBtn]));
-    var coordHint = el('p', { className: 'hint', textContent:
-      'Paste them off Google Maps — right-click the pin and the first item is the pair. ' +
-      'Or press the button while standing in the door.' });
+    var coordHint = el('p', { className: 'hint', textContent: editing
+      ? 'Drag the pin, or press the map where it should be. Zoom in far enough to see which side of the street it is on.'
+      : 'Press the map where the door is, paste the pair off Google Maps, or press the button while standing there.' });
     into.appendChild(coordHint);
+
+    var mapBox = el('div', { className: 'map' }, [
+      el('p', { className: 'hint', textContent: 'Loading the map…' })
+    ]);
+    into.appendChild(mapBox);
+
+    /* The field and the pin are two views of one number, so each has to be
+       able to move the other without setting off the one that moved it. */
+    var pinMoving = false;
+    var picker = mapPicker(mapBox, editing ? [existing.lat, existing.lng] : null,
+      function (lat, lng) {
+        pinMoving = true;
+        coordIn.value = lat.toFixed(5) + ', ' + lng.toFixed(5);
+        pinMoving = false;
+        coordHint.textContent = 'Taken off the map. Zoom in and check it is the right doorway.';
+        settle();
+      });
+
+    coordIn.addEventListener('input', function () {
+      if (pinMoving) return;
+      var c = coords();
+      if (c) picker.goto(c.lat, c.lng);
+    });
 
     hereBtn.addEventListener('click', function () {
       if (!navigator.geolocation) { coordHint.textContent = 'This browser will not say where it is.'; return; }
       coordHint.textContent = 'Asking the phone…';
       navigator.geolocation.getCurrentPosition(function (pos) {
         coordIn.value = pos.coords.latitude.toFixed(5) + ', ' + pos.coords.longitude.toFixed(5);
+        picker.goto(pos.coords.latitude, pos.coords.longitude);
         coordHint.textContent = 'Where the phone thinks it is, to about ' +
-          Math.round(pos.coords.accuracy) + ' m. Check the dot lands on the right side of the street.';
+          Math.round(pos.coords.accuracy) + ' m. Drag the pin onto the door if it is out.';
         settle();
       }, function () {
-        coordHint.textContent = 'The phone would not say. Paste the pair from Google Maps instead.';
+        coordHint.textContent = 'The phone would not say. Press the map instead, or paste the pair from Google Maps.';
       }, { enableHighAccuracy: true, timeout: 10000 });
     });
 
@@ -1120,7 +1289,8 @@ a { color: var(--accent); }
 
     var photoIn = field('photos', editing ? 'Add more photographs' : 'Photographs',
       el('input', { type: 'file', id: 'photos', accept: 'image/*', multiple: true }),
-      'Shrunk here to 1600px WebP under 200 KB, EXIF and GPS gone with the re-encode.');
+      'Shrunk here to 1600px under 200 KB, WebP or JPEG depending on the browser. ' +
+      'EXIF and GPS go with the re-encode.');
     var thumbs = el('div', { className: 'thumbs' });
     into.appendChild(thumbs);
 
@@ -1150,7 +1320,9 @@ a { color: var(--accent); }
             /* The name it will actually land under, worked out the same way
                the submit does, so the preview is not a guess. */
             el('figcaption', { textContent:
-              pad2(highestSoFar() + i + 1) + '.webp · ' + Math.round(d.small.blob.size / 1024) + ' KB' })
+              pad2(highestSoFar() + i + 1) + '.' + d.small.ext +
+              ' · ' + Math.round(d.small.blob.size / 1024) + ' KB' +
+              (d.small.over ? ' — over budget' : '') })
           ]));
         });
         var before = done.reduce(function (n, d) { return n + d.file.size; }, 0);
@@ -1262,7 +1434,7 @@ a { color: var(--accent); }
 
       var had = editing ? (existing.photos || []) : [];
       var highest = highestSoFar();
-      var fresh = shots.map(function (_, i) { return pad2(highest + i + 1) + '.webp'; });
+      var fresh = shots.map(function (d, i) { return pad2(highest + i + 1) + '.' + d.small.ext; });
       var gone = dropped();
       place.photos = had.filter(function (f) { return gone.indexOf(f) === -1; }).concat(fresh);
 

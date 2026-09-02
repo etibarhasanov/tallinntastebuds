@@ -138,13 +138,20 @@ window.TTBPass = (function () {
     });
   }
 
+  /* Deliberately not restaurants.json. These three pages want one thing out
+     of it — the restaurant's name for the heading — and that file is two
+     hundred kilobytes of pins, photo lists and blurbs for the whole map. A
+     guest opening deal.html on a phone was waiting through the whole of it
+     before the QR could be drawn, which on a slow connection was well over a
+     second of blank card. So the name travels in deals.json instead, beside
+     the offer it belongs to, and tools/validate.mjs refuses a deploy where
+     the two files disagree about what a place is called. */
   function load() {
     return Promise.all([
-      getJSON('data/restaurants.json'),
       getJSON('data/deals.json').catch(function () { return []; }),
       getJSON('data/ui.json')
     ]).then(function (loaded) {
-      return { places: loaded[0] || [], deals: loaded[1] || [], ui: loaded[2] || {} };
+      return { deals: loaded[0] || [], ui: loaded[1] || {} };
     });
   }
 
@@ -180,8 +187,7 @@ window.TTBPass = (function () {
     var deal = find(data.deals, placeId);
     if (!deal) return Promise.resolve({ status: 'unknown' });
 
-    var place = find(data.places, placeId);
-    var out = { deal: deal, place: place, hour: hour };
+    var out = { deal: deal, hour: hour };
 
     if (!/^[0-9]+$/.test(String(hour)) || !/^[0-9A-Z]{5}$/.test(String(claimed))) {
       out.status = 'malformed';
