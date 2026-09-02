@@ -1090,11 +1090,24 @@ for.
   or argon2 in a Worker without shipping WASM. The salt and the iteration
   count live on the row, so the count can be raised later and old rows
   re-derived on their next sign-in without a migration.
-- **The iteration count is capped by CPU, not by taste.** Cloudflare's free
-  plan allows 10ms per request; OWASP's recommended number for PBKDF2-SHA256
-  takes far longer than that. 100,000 is the compromise. If sign-in starts
-  returning CPU-limit errors, lower it — or move to the paid Workers plan and
-  raise it. `PW_ITERATIONS` in `functions/api/_lib.js`.
+- **The iteration count is capped by CPU, not by taste, and the default is
+  low.** Measured on a comparable machine: 10,000 iterations costs ~5ms,
+  100,000 ~49ms, and OWASP's 210,000 ~112ms. The Workers **free plan allows
+  10ms of CPU per request**, so the default is **10,000** — the most that
+  reliably fits, and well below what anybody would recommend in the abstract.
+
+  What it protects is a username and a list of restaurants. No email, no
+  address, no payment. It is the difference between a leaked table being
+  readable and being work, and it is not a claim to be proof against a
+  determined attacker. That is a real trade and it is written down here rather
+  than left to be discovered.
+
+  **To raise it**, set `PW_ITERATIONS` in the Pages project — on the paid plan,
+  where the budget is 30 seconds rather than 10 milliseconds, use `210000`.
+  Nobody is stranded by that: every row carries the count its own hash was made
+  with, so old passwords keep verifying, and a row behind the current setting
+  is re-derived the next time its owner signs in successfully. Only upwards —
+  lowering the setting never weakens a hash that is already stronger.
 - **Session tokens** are random, and only their SHA-256 is stored. A leaked
   sessions table is a list of hashes, not a drawer of working keys.
 - **The session cookie** is server-set, HttpOnly, Secure and SameSite=Lax.
@@ -1117,7 +1130,11 @@ feature's own setup:
 1. Nothing, for username and password. It works as soon as `DB` is bound and
    `SAVE_SALT` is set.
 2. For password-reset email, **Cloudflare's own Email Service** — no third
-   party, since the domain and the DNS are already here.
+   party, since the domain and the DNS are already here. **This needs the
+   Workers Paid plan**, which is why it is off: Email Sending is not on the
+   free tier. Until it is configured there is no address field on the sign-up
+   sheet and no "forgotten your password" — the sheet says plainly that a lost
+   password cannot be recovered, which is the truth in that configuration.
 
    1. Dashboard → **Compute → Email Service → Email Sending → Onboard
       Domain**, and pick `tallinntastebuds.ee`. Cloudflare writes the SPF,

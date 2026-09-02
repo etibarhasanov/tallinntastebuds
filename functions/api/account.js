@@ -41,7 +41,7 @@
 
 import {
   json, clientIp, fingerprint, sha256Hex, randomHex, derivePassword, sameSecret,
-  PW_ITERATIONS, sessionCookie, sessionUser, SESSION_DAYS, SESSION_COOKIE,
+  pwIterations, sessionCookie, sessionUser, SESSION_DAYS, SESSION_COOKIE,
   readCookie, RECOUNT_SQL, countsKey
 } from './_lib.js';
 
@@ -267,6 +267,7 @@ export async function onRequestPost(context) {
 
     userId = crypto.randomUUID();
     const salt = randomHex(16);
+    const iter = pwIterations(env);
     await env.DB
       .prepare(
         'INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at) ' +
@@ -275,9 +276,9 @@ export async function onRequestPost(context) {
       .bind(
         userId,
         username,
-        await derivePassword(password, salt, PW_ITERATIONS),
+        await derivePassword(password, salt, iter),
         salt,
-        PW_ITERATIONS,
+        iter,
         Date.now(),
         Date.now()
       )
@@ -300,6 +301,22 @@ export async function onRequestPost(context) {
       .prepare('UPDATE users SET last_seen_at = ? WHERE id = ?')
       .bind(Date.now(), userId)
       .run();
+
+    /* Raising PW_ITERATIONS should not strand the accounts made before it was
+       raised, and the only moment the plaintext password is in hand to redo
+       the work is this one — a successful sign-in. So a row behind the current
+       setting is quietly brought up to it here, and nowhere else.
+
+       Only upwards, and only when it is actually behind: lowering the setting
+       must never quietly weaken hashes that are already stronger than it. */
+    const want = pwIterations(env);
+    if (row.pw_iter < want) {
+      const fresh = randomHex(16);
+      await env.DB
+        .prepare('UPDATE users SET pw_hash = ?, pw_salt = ?, pw_iter = ? WHERE id = ?')
+        .bind(await derivePassword(password, fresh, want), fresh, want, userId)
+        .run();
+    }
   }
 
   /* The token goes to the browser; only its hash is kept here. */
@@ -511,7 +528,7 @@ export async function handleEmail(context, body, hash) {
     await env.DB.batch([
       env.DB
         .prepare('UPDATE users SET pw_hash = ?, pw_salt = ?, pw_iter = ? WHERE id = ?')
-        .bind(await derivePassword(password, salt, PW_ITERATIONS), salt, PW_ITERATIONS, taken.userId),
+        .bind(await derivePassword(password, salt, pwIterations(env)), salt, pwIterations(env), taken.userId),
       /* Every session goes. A reset is the one moment where somebody may be
          doing this precisely because a session they do not control exists. */
       env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(taken.userId)

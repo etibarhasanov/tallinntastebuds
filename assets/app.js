@@ -1823,13 +1823,13 @@
         form.appendChild(accountField('ac-email', 'accountEmail', 'email', { autocomplete: 'email' }));
         form.appendChild(el('p', { className: 'ac-why is-small', textContent: t('accountEmailWhy') }));
       }
-      /* Shown whether or not the field is offered, because the field being
-         there is not the same as it being filled in: somebody who skips it is
-         in exactly the position somebody with no field at all is in. It is
-         drawn as a warning rather than a footnote — it is the one thing on
-         this sheet that cannot be undone later, and it spent its first
-         version as small grey text under the button, which is where notices
-         go to be missed. */
+      /* Always, whether or not an address was asked for. It says what happens
+         if the password goes, which is true in every configuration of this
+         site — with no email set up at all, or with a field that somebody
+         chose to skip. It is drawn as a warning rather than a footnote: it is
+         the one thing on this sheet that cannot be undone later, and it spent
+         its first version as small grey text under the button, which is where
+         notices go to be missed. */
       form.appendChild(el('p', { className: 'ac-warn', role: 'note' }, [
         el('span', { className: 'ac-warn-ico', 'aria-hidden': 'true', html:
           '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.5 21 19.5H3z"/>' +
