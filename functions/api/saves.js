@@ -129,29 +129,86 @@ function json(body, status, maxAge) {
 
 /* ------------------------------------------------------------------ counts
  * Every place's count in one request, so the map asks once on the way in
- * rather than seventy-four times. Held at the edge for a minute: the
- * aggregate runs once per minute per colo however much traffic arrives, and
- * a count that is up to a minute stale is a count nobody can tell from a
- * fresh one. The saver themself never sees the stale copy — the POST hands
- * back the new number directly.
+ * rather than seventy-four times.
+ *
+ * This reads save_counts and never aggregates. The obvious way to answer
+ * "how many saves has each place got" is COUNT(*) GROUP BY over the saves
+ * table, and that was the first version of this — but its cost grows with
+ * the data forever: ten thousand saves means reading ten thousand rows to
+ * produce seventy-four numbers, on every cache miss, for a table that only
+ * ever gets bigger. save_counts is one row per place, so this read is capped
+ * at the number of places on the map no matter how popular the map gets, and
+ * the count is brought up to date by the write that changed it rather than by
+ * a query that runs on a timer. See the POST for how it is kept true.
+ *
+ * Two layers of not-fetching sit on top of that:
+ *
+ *   ETag        the answer carries one, so a browser that already has the
+ *               counts sends If-None-Match and gets 304 and no body back
+ *               when nothing has changed since. This is the part that is
+ *               genuinely driven by changes rather than by a clock.
+ *
+ *   edge cache  a copy in the colo, deleted by any save that lands in that
+ *               same colo, so a visitor there sees the new number at once.
+ *               The TTL below is only a backstop for the other colos: the
+ *               Cache API is per-location and a purge in Frankfurt cannot
+ *               reach into Warsaw, so without it a colo that never sees a
+ *               write would hold its copy indefinitely.
  */
+const COUNTS_TTL = 60;
+
+function countsKey(request) {
+  return new Request(new URL('/api/saves', request.url).toString());
+}
+
 export async function onRequestGet(context) {
-  if (!context.env.DB) return json({}, 200, 60);
+  if (!context.env.DB) return json({}, 200, COUNTS_TTL);
 
   const cache = caches.default;
-  const key = new Request(new URL('/api/saves', context.request.url).toString());
+  const key = countsKey(context.request);
   const hit = await cache.match(key);
-  if (hit) return hit;
+  if (hit) return withNotModified(context.request, hit);
 
+  /* Only the places somebody has actually saved. A row at zero is a place
+     that was saved and then unsaved, and the client draws nothing at zero
+     anyway, so sending it is bytes for no one. */
   const { results } = await context.env.DB
-    .prepare('SELECT place_id, COUNT(*) AS n FROM saves GROUP BY place_id')
+    .prepare('SELECT place_id, n FROM save_counts WHERE n > 0')
     .all();
 
   const counts = {};
   for (const row of results) counts[row.place_id] = row.n;
 
-  const res = json(counts, 200, 60);
+  const body = JSON.stringify(counts);
+  const res = new Response(body, {
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'public, max-age=' + COUNTS_TTL,
+      etag: await weakTag(body)
+    }
+  });
   context.waitUntil(cache.put(key, res.clone()));
+  return withNotModified(context.request, res);
+}
+
+/* A hash of the answer itself, so the tag changes when and only when the
+   numbers do. No version column to keep in step with anything. */
+async function weakTag(body) {
+  const digest = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(body));
+  const hex = Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+  return 'W/"' + hex.slice(0, 16) + '"';
+}
+
+function withNotModified(request, res) {
+  const tag = res.headers.get('etag');
+  if (tag && request.headers.get('if-none-match') === tag) {
+    return new Response(null, {
+      status: 304,
+      headers: { etag: tag, 'cache-control': res.headers.get('cache-control') }
+    });
+  }
   return res;
 }
 
@@ -210,6 +267,22 @@ export async function onRequestPost(context) {
 
   const hash = await fingerprint(env.SAVE_SALT, ip, ua);
 
+  /* save_counts is brought level with saves in the same batch that changes
+     them, and it is recomputed from the saves table rather than nudged up or
+     down by one. A blind +1 would be cheaper and would drift the first time
+     an insert quietly hit the conflict clause and the increment did not; this
+     cannot drift, because it takes its answer from the rows themselves. The
+     count is over one place's saves, which the primary key leads with, so it
+     is an index range and not a scan of the table.
+
+     batch() is one transaction: either the save and its count both land or
+     neither does. There is no window in which the number on the map is a
+     number the rows do not agree with. */
+  const recount =
+    'INSERT INTO save_counts (place_id, n) ' +
+    'VALUES (?, (SELECT COUNT(*) FROM saves WHERE place_id = ?)) ' +
+    'ON CONFLICT(place_id) DO UPDATE SET n = excluded.n';
+
   if (on) {
     const seen = await env.DB
       .prepare('SELECT COUNT(*) AS n FROM saves WHERE place_id = ? AND ip_hash = ?')
@@ -219,31 +292,42 @@ export async function onRequestPost(context) {
        saved and is pressing again is under the cap and lands on the conflict
        below — which is a no-op, not a rejection. */
     if (seen && seen.n >= PER_PLACE_CAP) {
-      const total = await env.DB
-        .prepare('SELECT COUNT(*) AS n FROM saves WHERE place_id = ?')
+      const held = await env.DB
+        .prepare('SELECT n FROM save_counts WHERE place_id = ?')
         .bind(place)
         .first();
-      return json({ error: 'capped', place: place, n: total ? total.n : 0 }, 429);
+      return json({ error: 'capped', place: place, n: held ? held.n : 0 }, 429);
     }
 
-    await env.DB
-      .prepare(
-        'INSERT INTO saves (place_id, client_id, ip_hash, created_at) ' +
-        'VALUES (?, ?, ?, ?) ON CONFLICT DO NOTHING'
-      )
-      .bind(place, client, hash, Date.now())
-      .run();
+    await env.DB.batch([
+      env.DB
+        .prepare(
+          'INSERT INTO saves (place_id, client_id, ip_hash, created_at) ' +
+          'VALUES (?, ?, ?, ?) ON CONFLICT DO NOTHING'
+        )
+        .bind(place, client, hash, Date.now()),
+      env.DB.prepare(recount).bind(place, place)
+    ]);
   } else {
-    await env.DB
-      .prepare('DELETE FROM saves WHERE place_id = ? AND client_id = ?')
-      .bind(place, client)
-      .run();
+    await env.DB.batch([
+      env.DB
+        .prepare('DELETE FROM saves WHERE place_id = ? AND client_id = ?')
+        .bind(place, client),
+      env.DB.prepare(recount).bind(place, place)
+    ]);
   }
 
   const total = await env.DB
-    .prepare('SELECT COUNT(*) AS n FROM saves WHERE place_id = ?')
+    .prepare('SELECT n FROM save_counts WHERE place_id = ?')
     .bind(place)
     .first();
+
+  /* The copy this colo is handing out is now wrong, so it goes. Only this
+     colo's — the Cache API is per-location — but this is the one a visitor
+     who just saved something is most likely to be served by, and everywhere
+     else has the TTL as a backstop. Not awaited: the answer below does not
+     depend on it. */
+  context.waitUntil(caches.default.delete(countsKey(request)));
 
   return json({ place: place, n: total ? total.n : 0, on: on }, 200);
 }

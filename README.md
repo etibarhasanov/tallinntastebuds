@@ -973,13 +973,42 @@ waiting for a round trip on mobile data feels broken. The server's answer
 replaces the number a moment later, and anything that goes wrong puts both back
 exactly as they were and says so in a toast.
 
-### The counts are cached for a minute
+### Where the counts come from, and why not from a `COUNT(*)`
 
 `GET /api/saves` returns every place's count in one request — the map asks once
-on the way in rather than seventy-four times — and it is held at the edge for
-60 seconds, so the aggregate runs once a minute per location however much
-traffic arrives. Somebody who has just saved never sees the stale copy: the
-POST hands the new number straight back.
+on the way in rather than seventy-four times — and it reads them from
+`save_counts`, one row per place, rather than aggregating the `saves` table.
+
+That is the important part. The obvious query is
+`SELECT place_id, COUNT(*) FROM saves GROUP BY place_id`, and it was the first
+version of this, but its cost grows with the data and never stops: ten thousand
+saves means reading ten thousand rows to produce seventy-four numbers, on a
+table that only ever gets bigger. Reading `save_counts` costs one row per place
+on the map and never more, however popular the map gets.
+
+`save_counts` is not a cache of `saves`. It is recomputed **from** `saves`, in
+the same `batch()` — one transaction — as every insert and delete, so the two
+can never disagree. It is deliberately not a `+1`/`-1`: an increment that ran
+when the insert had quietly hit its conflict clause would drift, and nothing
+would ever notice. `db/schema.sql` carries the statement to rebuild it from
+scratch if it is ever suspected of having come apart.
+
+**Nothing runs on a timer.** The count is brought up to date by the write that
+changed it. On top of that sit two layers of not-fetching:
+
+- **An ETag**, hashed from the answer itself, so it changes when and only when
+  the numbers do. A browser that already has the counts revalidates and gets
+  `304` and no body back. This is the part that is genuinely driven by changes
+  rather than by a clock.
+- **An edge cache copy**, which any save landing in the same Cloudflare
+  location deletes on its way out — so a visitor there sees the new number at
+  once rather than waiting for anything to expire.
+
+There is still a 60-second TTL, and it is a backstop rather than the
+mechanism. The Cache API is per-location: a purge in Frankfurt cannot reach
+into Warsaw, so a location that never sees a write would otherwise hold its
+copy indefinitely. Anyone who has just saved something never sees a stale
+number regardless — the POST hands the new one straight back.
 
 ---
 
