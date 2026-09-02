@@ -726,6 +726,7 @@ Add an entry to `data/deals.json`:
 ```json
 {
   "id": "bekker-pagariari",
+  "name": "Bekker Pagariäri",
   "live": true,
   "key": "PR3S960YQP1RZ4HR74H5ABSBBZ3XNMCV",
   "offer": { "en": "10% off the bill", "et": "10% arvest" },
@@ -738,6 +739,7 @@ Add an entry to `data/deals.json`:
 | Field | |
 | --- | --- |
 | `id` | Must be a place in `restaurants.json` |
+| `name` | The same name that place has in `restaurants.json`, copied here so the three pass pages never have to load it — see [Why the name is written twice](#why-the-name-is-written-twice) |
 | `live` | `false` keeps it invisible on the map while remaining testable by URL |
 | `key` | 16–64 characters of `0-9 A-Z`, no `I L O U`. **Different for every place** |
 | `offer` | Translations, like `blurb`. A live deal must have `en` at minimum |
@@ -751,9 +753,25 @@ node -e "const A='0123456789ABCDEFGHJKMNPQRSTVWXYZ';console.log([...require('cry
 ```
 
 Then `node tools/validate.mjs`. It refuses a deal pointing at a place that does
-not exist, two deals sharing a key, and anything switched `live` with no words
-in it. The summary line ends with a live-deal count, so CI tells you what is
-switched on.
+not exist, two deals sharing a key, a name that `restaurants.json` disagrees
+with, and anything switched `live` with no words in it. The summary line ends
+with a live-deal count, so CI tells you what is switched on.
+
+### Why the name is written twice
+
+`restaurants.json` is around two hundred kilobytes — every pin on the map, with
+its photos, blurbs and translations. The three pass pages want exactly one
+string out of it, the restaurant's name for the heading, and they were waiting
+for the whole file before the QR could be drawn: on a phone on a slow
+connection that was a second and a half of blank card, in front of a guest
+standing at a till.
+
+So the name is copied into the deal, and the pass pages load `deals.json` and
+`ui.json` only. Copied data goes stale, which is what `tools/validate.mjs`
+exists for: rename a place on the map without renaming it here and CI fails
+with both spellings in the message. Nothing else about a place is duplicated —
+if a fourth field is ever wanted on these pages, the answer is a small
+generated file, not more copying by hand.
 
 ### Testing before anything is public
 
@@ -1788,6 +1806,7 @@ tools/validate.mjs         dependency-free data validator
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
+tools/qrperf.mjs           checks the QR encoder still draws the same code, and times it
 .github/workflows/validate.yml
 .github/workflows/stories.yml   the hourly tick, and the tidying up after it
 ```
@@ -1968,6 +1987,11 @@ button naming the new one.
 
 Delete the file, or empty it, and the button never appears at all.
 
+The button wears the station's name on a desktop, and on a phone it wears it
+for the first few seconds and again whenever you press play — see
+[The rail introduces itself on a phone](#the-rail-introduces-itself-on-a-phone).
+A station with no `name` gets no label and stays a play triangle.
+
 Requirements for the URL, all three or it will not work:
 
 - **HTTPS.** The page is served over HTTPS, so a plain `http://` stream is
@@ -2078,8 +2102,7 @@ TLS; neither is the test that counts. Pressing the button is.
 
 ## Surprise me
 
-The button under the colour switch on the left rail picks a place at random and
-opens it.
+The top button on the left rail picks a place at random and opens it.
 
 It picks from **whatever the chips currently allow**, so selecting "Korean" and
 "Cheap eats" and then pressing it answers the question you were actually
@@ -2088,9 +2111,66 @@ twice in a row.
 
 It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
-scrolls out of reach is no use. On a phone it collapses to just the die.
+scrolls out of reach is no use.
 
-Under it, at the foot of the rail, is the locate button, which frames you
+### The rail introduces itself on a phone
+
+The rail runs Surprise me, the radio, the colour swatch, the locate button —
+the two that change your evening above the two that change the map, because a
+rail that opens with a colour picker reads as a settings strip rather than as
+the shortcut it is.
+
+On a phone it used to arrive as a column of four bare discs: a die, a play
+triangle, a coloured dot and a crosshair over a map, saying nothing. A phone
+has no hover, so the `title` that carries the meaning on a desktop is never
+read out loud, and people did not press them.
+
+So they say what they are on arrival and then stop saying it. Each opens
+wearing its label — Surprise me, the station, the style you are about to
+switch to, "Show my location" — 300ms apart in the order they are stacked, so
+the eye tracks down the rail rather than being asked to read four things at
+once. Each holds for `HINT_MS` (4.2 seconds) and collapses back to its icon,
+the same disc as before. Two of them say something again when pressed:
+starting the radio opens the station's name, so a triangle in a circle is not
+the only thing saying what is playing, and pressing the swatch opens the name
+of the style it has just become the way back to. Pressing Surprise me instead
+shuts its label early — the question it answered is the question the label was
+there to ask.
+
+**It repeats in the new language when you switch languages.** Every other
+label on the page changes in front of you; the two on the rail are the only
+ones not on screen to change with them, and somebody switching to Ukrainian is
+telling you they did not read the English one. So `setLanguage()` runs the
+introduction again.
+
+Nothing opens while the sheet is up: the rail lies along the top of it as a
+row there, and a pill at full width would push the buttons after it off the
+side of the screen, and it is pointless behind the stories, where the rail is
+not on screen at all. It is owed rather than dropped — `introPending` holds it,
+`closePanel()` or `closeStories()` pays it — so a visitor who arrived on a
+`?spot=` or `?story=` link, or who switched language while reading a place,
+still gets the rail explained the first time they are actually looking at the
+map. Pressing Surprise me is not owed anything: closing the place it opened
+leaves the rail as it was.
+
+`openHint()` / `closeHint()` in `assets/app.js` do the timing; the pill itself
+is CSS. All four are the same shape — an icon, then a track for the words that
+grows from `0fr` to `1fr`, which an auto-width grid resolves against the
+label's own max-content. A fixed ceiling in `ch` cannot do both halves of that
+job: one wide enough for Ukrainian's `Показати моє місцезнаходження` makes
+`Red` snap open in a tenth of the time, and one tuned to `Red` puts an
+ellipsis through the label explaining the button. This way every language gets
+the same slide and none of them gets cut — the widest of the forty labels
+reaches 276px on a 320px screen.
+
+The colour swatch has no button of its own to grow, so the group around it
+does the growing and the swatch sits in it where the other three keep their
+icon. Above 860px none of this applies: the two `.dice` pills never lose their
+labels there, and `.style-label` / `.locate-label` are `display: none` — a
+pointer that can hover has the `title` instead, and two more words down the
+left edge would be two more than the map can spare.
+
+At the foot of the rail is the locate button, which frames you
 together with the nearest place rather than dropping you at zoom 15 on
 whatever street you are standing in —
 [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
@@ -2171,6 +2251,14 @@ pages are the ones most likely to be opened on a bad connection in a cellar,
 so the encoder is written out in the repo instead — ISO/IEC 18004 byte mode,
 error correction level M. It is checked against a reference encoder and a
 scanner, module for module, rather than trusted because it looks like a QR.
+
+`node tools/qrperf.mjs` is what holds it to that. Nine payloads covering
+versions 1 to 10, each recorded as the hash of the finished matrix: a code that
+scanned last week and hashes the same today still scans, so any change to the
+encoder that moves a single module says so immediately. It then times the
+encoder, because this runs on the main thread between the card being cleared
+and the QR appearing — every millisecond there is a millisecond of blank card
+in front of somebody at a till.
 
 ### Analytics
 

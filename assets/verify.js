@@ -63,10 +63,10 @@
         card.appendChild(el('p', { className: 'pass-flag', textContent: t('verifyTest') }));
       }
 
-      if (result.place) {
+      if (result.deal) {
         card.appendChild(el('div', { className: 'pass-head' }, [
           el('p', { className: 'eyebrow', textContent: t('passOffer') }),
-          el('h1', { className: 'pass-name', textContent: result.place.name })
+          el('h1', { className: 'pass-name', textContent: result.deal.name })
         ]));
       }
 

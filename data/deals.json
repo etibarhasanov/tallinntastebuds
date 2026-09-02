@@ -1,6 +1,7 @@
 [
   {
     "id": "magussoolane",
+    "name": "Magussoolane",
     "live": true,
     "key": "CXMXRR04BX83FF38VZTX3CAJTMTF7C5Z",
     "offer": {
@@ -18,6 +19,7 @@
   },
   {
     "id": "pudel",
+    "name": "Pudel",
     "live": true,
     "key": "RH0WBQ494H7T37VGCF1W98CZ2A00FNJT",
     "offer": {
@@ -35,6 +37,7 @@
   },
   {
     "id": "nullijook",
+    "name": "Nullijook",
     "live": true,
     "key": "4DBEFZP3QMW5HNMKATRD0CZ9A6W8V36R",
     "offer": {
@@ -52,6 +55,7 @@
   },
   {
     "id": "q-pizza-jaam",
+    "name": "Q Pizza Jaam",
     "live": true,
     "key": "ABJ1MXZ0RCGBSE2DFWF8QPC5TFAC71BR",
     "offer": {
@@ -69,6 +73,7 @@
   },
   {
     "id": "badam",
+    "name": "Badam",
     "live": true,
     "key": "0YH3ZFHQM3VG3S6GP8VESFCYVA324YG4",
     "offer": {
