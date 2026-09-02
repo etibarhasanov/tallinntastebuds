@@ -378,12 +378,18 @@
     renderFilters();
     renderPanel();
     renderRadio();
+    /* applyStaticStrings has just put "Account" back on the button through
+       its data-i18n, which is the right word for a stranger and the wrong one
+       for somebody signed in: the button wears their name. So it is repainted
+       from the state rather than from the markup, before the rail goes and
+       reads it out below. */
+    paintAccountButton();
     renderStoryRing();
     if (dom.stories && !dom.stories.hidden) paintStoryText(state.story.list[state.story.index]);
     syncUrl();
-    /* Every label on the page just changed language, and on a phone the two
-       rail buttons are the only ones whose label is not on screen to change
-       with them. So they say themselves again, in the language just picked:
+    /* Every label on the page just changed language, and on a phone the rail
+       buttons are the only ones whose label is not on screen to change with
+       them. So they say themselves again, in the language just picked:
        somebody switching to Ukrainian is telling you they did not read the
        English one. */
     introduceRail();
@@ -1576,6 +1582,7 @@
     /* Drawn only once the endpoint has answered that it can do the job: a
        sign-in button on a site whose Function is not deployed, or whose
        database is not bound yet, is a button that can only disappoint. */
+    var wasHidden = dom.btnAccount.hidden;
     dom.btnAccount.hidden = !state.account.ready;
     if (!state.account.ready) return;
     var name = state.account.user;
@@ -1583,6 +1590,14 @@
     dom.btnAccount.setAttribute('aria-label', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
     dom.btnAccount.setAttribute('title', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
     dom.btnAccount.classList.toggle('is-on', !!name);
+
+    /* It is the top button on the rail, and on a phone the rail says what its
+       buttons are for on arrival. This one arrives late — it waits on the
+       network while the rest are already introducing themselves — so it says
+       its name when it turns up rather than appearing as a silent disc above
+       a column of pills that have all had their say. Nothing happens on a
+       desktop, where the label is never hidden in the first place. */
+    if (wasHidden && railIntroduced) openHint('account', 0);
   }
 
   /* ------------------------------------------------------------- the sheet
@@ -2412,36 +2427,41 @@
   }
 
   /* ------------------------------------------------------------ rail hints
-   * On a phone the rail is four icons in a column: a die, a play triangle, a
-   * coloured dot and a crosshair, because a label wide enough to read is a
-   * label wide enough to cover the map. Which left them explaining nothing —
-   * a phone has no hover, so the title that carries the meaning on a desktop
-   * is never read out loud, and a die over a map is not self-evident to
-   * anybody who has not seen this page before.
+   * On a phone the rail is a column of icons: a head and shoulders, a die, a
+   * play triangle, a coloured dot and a crosshair, because a label wide
+   * enough to read is a label wide enough to cover the map. Which left them
+   * explaining nothing — a phone has no hover, so the title that carries the
+   * meaning on a desktop is never read out loud, and a die over a map is not
+   * self-evident to anybody who has not seen this page before.
    *
    * So they say what they are on arrival — and again in the new language the
    * moment one is picked — and then stop saying it. They open in the order
    * they are stacked, 300ms apart, so the eye tracks down the rail rather
-   * than being asked to read four things at once; each holds for four
+   * than being asked to read the whole column at once; each holds for four
    * seconds and collapses back to its icon. Long enough to read twice, gone
    * before it is furniture.
    *
-   * The class is inert above 860px, where the two that have a label there
-   * never lose it and the other two never want one, so none of this needs to
-   * ask how wide the window is.
+   * The class is inert above 860px, where the pills that have a label there
+   * never lose it and the rest never want one, so none of this needs to ask
+   * how wide the window is.
    */
   var HINT_MS = 4200;
   /* Top to bottom, which is the order they open in. */
-  var HINT_KEYS = ['random', 'radio', 'style', 'locate'];
+  var HINT_KEYS = ['account', 'random', 'radio', 'style', 'locate'];
   var hintTimers = {};
   /* An introduction owed to a visitor who has had a sheet standing open ever
      since it was due. Paid off by closePanel. */
   var introPending = false;
+  /* Whether the cascade has already run. The account button is drawn by an
+     answer from the network, which usually lands after it — see
+     paintAccountButton, which catches it up. */
+  var railIntroduced = false;
 
   /* The colour swatch has no button of its own to grow: the group around it
-     is the pill, with the swatch sitting in it where the other three keep
-     their icon. */
+     is the pill, with the swatch sitting in it where the others keep their
+     icon. */
   function hintPill(key) {
+    if (key === 'account') return dom.btnAccount;
     if (key === 'radio') return dom.btnRadio;
     if (key === 'style') return dom.styles;
     if (key === 'locate') return dom.btnLocate;
@@ -2450,7 +2470,8 @@
 
   /* A pill with nothing to say does not get to open: the radio's label is the
      station name, and a station with no name in radio.json would otherwise
-     expand the button around an empty span. */
+     expand the button around an empty span. Same rule takes care of the
+     account button, which is hidden until /api/account has answered. */
   function hintText(btn) {
     var label = btn && btn.querySelector('.rail-label');
     return label ? (label.textContent || '').replace(/^\s+|\s+$/g, '') : '';
@@ -2502,9 +2523,10 @@
       return;
     }
     introPending = false;
-    /* A cascade rather than four labels at once: 300ms apart is slow enough
-       to read down the rail and quick enough that all four are up together
-       for most of the time they are up at all. */
+    railIntroduced = true;
+    /* A cascade rather than the whole column at once: 300ms apart is slow
+       enough to read down the rail and quick enough that they are all up
+       together for most of the time they are up at all. */
     for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], 300 + i * 300);
   }
 
@@ -4684,7 +4706,12 @@
     dom.panelClose.addEventListener('click', closePanel);
     dom.panelSave.addEventListener('click', pressSave);
 
-    dom.btnAccount.addEventListener('click', function () { openAccount(); });
+    /* Same as Surprise me: pressing it answers the question the label was
+       there to ask, and the sheet it opens wants the room. */
+    dom.btnAccount.addEventListener('click', function () {
+      closeHint('account');
+      openAccount();
+    });
 
     dom.nudgeGo.addEventListener('click', function () {
       hideNudge();
