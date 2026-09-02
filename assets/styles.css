@@ -1370,6 +1370,118 @@ body.panel-detail .panel {
    to save. */
 .save-mark-ico svg { width: 11px; height: 11px; fill: currentColor; }
 
+/* ==========================================================================
+   The account sheet.
+   One card over a dimmed map. It is the only modal on this site that takes
+   typing, so it is centred rather than dropped from an edge, and it sits
+   above the --kbd variable the keyboard handler maintains so an on-screen
+   keyboard pushes it up instead of covering the field being filled in.
+   ========================================================================== */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  padding-bottom: calc(20px + var(--kbd, 0px));
+  background: rgba(39, 20, 26, .42);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  overscroll-behavior: contain;
+}
+.scrim[hidden] { display: none; }
+
+.account {
+  position: relative;
+  width: min(380px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 26px 24px 24px;
+}
+.ac-close { top: 8px; right: 8px; }
+
+.ac-form { display: flex; flex-direction: column; gap: 14px; }
+
+.ac-title {
+  font-family: var(--display);
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  margin: 0 30px 0 0;
+}
+.ac-who { margin: 0; font-size: 15px; }
+.ac-why { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.ac-why.is-small { font-size: 12px; margin-top: -6px; }
+
+.ac-field { display: flex; flex-direction: column; gap: 5px; }
+.ac-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* 16px is not a taste decision: anything smaller makes iOS zoom the page when
+   a field takes focus, and it never zooms back out. */
+.ac-field input {
+  font: inherit;
+  font-size: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.ac-field input:focus-visible {
+  outline: 2px solid var(--accent-lit);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.ac-go {
+  padding: 11px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  background: var(--accent);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .06em;
+}
+.ac-go:hover { background: var(--accent-lit); border-color: var(--accent-lit); }
+.ac-go[disabled] { opacity: .6; }
+
+.ac-alt {
+  align-self: flex-start;
+  padding: 2px 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ac-alt:hover { color: var(--ink); }
+
+.ac-err, .ac-note {
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.ac-err { background: var(--wash); color: var(--accent); }
+.ac-note { background: var(--wash); color: var(--ink); }
+
+/* The rail button wears the name of whoever is signed in, so it can run
+   longer than the fixed-width buttons around it. */
+#btn-account.is-on { color: var(--accent); }
+#btn-account .dice-label { max-width: 12ch; overflow: hidden; text-overflow: ellipsis; }
+
 /* Turnstile in invisible mode still wants somewhere to render. It draws
    nothing a visitor can see, but left in the flow it is a 300px hole at the
    foot of the page. */

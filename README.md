@@ -32,6 +32,7 @@ renders completely with the database switched off. See **Saves**.
 - [Languages](#languages)
 - [Restaurant discounts](#restaurant-discounts)
 - [Saves](#saves)
+- [Accounts](#accounts)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -1012,6 +1013,85 @@ number regardless — the POST hands the new one straight back.
 
 ---
 
+## Accounts
+
+Optional, and deliberately the smallest thing that does the job: **a username
+and a password**. No email required, no phone, no OAuth, no profile, no name.
+
+Saving works with no account at all — the device keeps a random id and the
+save is filed under that. An account is the upgrade that makes a list follow a
+person to another phone or browser, and signing in **claims** whatever this
+device already saved rather than starting anybody over. Nobody meets a wall
+before they have a reason to sign up.
+
+### What signing in actually does to the rows
+
+`saves.owner` holds a `users.id` when the request carries a session and the
+device's own UUID when it does not. The primary key is `(place_id, owner)`, so
+the same account saving the same place from two devices is one row and not two.
+
+Claiming is `UPDATE OR IGNORE` then `DELETE`, in that order. A row that cannot
+move — because the account already holds that place from another device — is
+left alone by the update rather than failing it, and the delete then clears it
+away. The result is a **merge**: the union of what the device had and what the
+account had, nothing counted twice. Every affected count is recomputed from
+the rows afterwards, so a place one person had saved from two devices correctly
+drops from two to one.
+
+### The email is optional and buys one thing
+
+A reset. Without an address there is nothing that proves an account is yours
+except knowing its password, so **a forgotten password cannot be recovered by
+anyone, including whoever runs this site**. The sign-up sheet says so in as
+many words rather than letting somebody find out later, and the fields carry
+the autocomplete hints that make a browser's password manager offer to keep
+the details — which is what actually rescues people in practice.
+
+Give an address and it is stored unverified until a six-digit code sent to it
+comes back. Only then does reset work. The address is never used for anything
+else: no list, no newsletter, no mail that is not a code somebody just asked
+for.
+
+### How it is kept safe
+
+- **Passwords** are PBKDF2-HMAC-SHA256 through WebCrypto — there is no bcrypt
+  or argon2 in a Worker without shipping WASM. The salt and the iteration
+  count live on the row, so the count can be raised later and old rows
+  re-derived on their next sign-in without a migration.
+- **The iteration count is capped by CPU, not by taste.** Cloudflare's free
+  plan allows 10ms per request; OWASP's recommended number for PBKDF2-SHA256
+  takes far longer than that. 100,000 is the compromise. If sign-in starts
+  returning CPU-limit errors, lower it — or move to the paid Workers plan and
+  raise it. `PW_ITERATIONS` in `functions/api/_lib.js`.
+- **Session tokens** are random, and only their SHA-256 is stored. A leaked
+  sessions table is a list of hashes, not a drawer of working keys.
+- **The session cookie** is server-set, HttpOnly, Secure and SameSite=Lax.
+  Page scripts cannot read it, and — this is the practical part — Safari's
+  seven-day cap on script-written storage does not apply to a cookie the
+  server set, which is the difference between a sign-in lasting a week and
+  lasting a year on an iPhone.
+- **Guessing is the attack**, since there is no reset link to phish. Ten wrong
+  passwords from one network fingerprint in fifteen minutes and that
+  fingerprint waits.
+- **"No such account" and "wrong password" give the same answer**, so the
+  endpoint cannot be used to find out which usernames exist.
+- **A reset drops every session** on that account, not just the current one.
+
+### Turning it on
+
+The account tables are already applied. Two things it needs beyond the save
+feature's own setup:
+
+1. Nothing, for username and password. It works as soon as `DB` is bound and
+   `SAVE_SALT` is set.
+2. For email recovery, an email sender. Set **`RESEND_API_KEY`** and
+   **`MAIL_FROM`** (an address on a domain verified with Resend) in the Pages
+   project. Until both are set the email parts switch themselves off: no
+   address field on the sign-up sheet, no "forgotten your password", and
+   everything else carries on unchanged. Same shape as Turnstile.
+
+---
+
 ## Stories
 
 The one thing on this map that is not permanent. Everything else here is a
@@ -1680,7 +1760,9 @@ index.html                 the whole page
 assets/styles.css          design tokens at the top, then everything else
 assets/app.js              map, panel, filters, i18n, lightbox — no framework
 functions/_middleware.js   sends the pages.dev address to the real one
-functions/api/saves.js     the save count: the only server-side code here
+functions/api/saves.js     the save count
+functions/api/account.js   sign up, sign in, optional email recovery
+functions/api/_lib.js      what those two share (not a route: leading _)
 db/schema.sql              the one table that Function talks to
 wrangler.toml              the D1 binding (the secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are

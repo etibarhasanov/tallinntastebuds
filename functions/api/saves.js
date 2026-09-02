@@ -8,41 +8,43 @@
  * no connection string a stranger can point a tool at. It is reachable from a
  * Worker holding a binding to it, or from the Cloudflare API with the
  * account's own credentials, and from nowhere else. So the attack surface of
- * the database is exactly this file.
+ * the database is exactly this file and the one next to it.
  *
- * Which is why this file is written the way it is:
+ * Which is why they are written the way they are:
  *
  *   - Every query is a prepared statement with bound parameters. No value
- *     from a request is ever concatenated into SQL. That is the whole of the
- *     injection defence and it is not negotiable.
- *   - The only DELETE takes a client id as well as a place, so it can only
- *     ever remove the caller's own row. Guessing somebody else's would mean
- *     guessing a v4 UUID.
+ *     from a request is ever concatenated into SQL.
+ *   - The only DELETE takes an owner as well as a place, so it can only ever
+ *     remove the caller's own row.
  *   - A place id that is not in data/restaurants.json is refused, so nobody
  *     can fill the table with rows for places that do not exist.
  *   - Nothing personal is stored. Not the IP, not the user agent — only an
- *     HMAC of them under a secret that never leaves the environment, which is
- *     one-way and useless to anybody who does not hold the secret.
+ *     HMAC of them under a secret that never leaves the environment.
  *
- * WHAT A SAVE IS TIED TO
+ * WHO A SAVE BELONGS TO
  *
- * There are no accounts here and no cookies, so "one person" has to be
- * approximated, and it is approximated twice over:
+ * One column, `owner`, holding one of two things:
  *
- *   client_id  a random UUID the browser keeps in localStorage. It is what
- *              makes the heart still look saved when you come back, and the
- *              UNIQUE key that stops the same browser saving twice. It is
- *              also client-supplied, so it is a convenience, not a defence:
- *              anybody can send a fresh one.
+ *   a user id     when the request carries a signed-in session. The save then
+ *                 follows the person, and the same account saving the same
+ *                 place from a second device is the same row rather than a
+ *                 second one.
  *
- *   ip_hash    HMAC(secret, ip + user agent). This is the part that cannot
- *              be forged from a browser, and it backs a CAP rather than a
- *              second unique key. That distinction is the important one —
- *              see the note on the cap below.
+ *   a client id   when it does not. A random UUID the browser made for
+ *                 itself, so saving works with no account at all. Signing in
+ *                 later moves these rows onto the account — see claim() in
+ *                 account.js.
  *
- * Neither is proof of a person and this file does not pretend otherwise. The
- * README has the honest write-up of what that means.
+ * Either way the primary key is (place_id, owner), so one owner can hold at
+ * most one save per place and the count cannot be run up by pressing twice.
+ * Neither is proof of a person, and this file does not pretend otherwise: the
+ * cap below is what stands in for that, and the README has the honest write-up
+ * of how far it goes.
  */
+
+import {
+  json, clientIp, fingerprint, sessionUser, knownPlaces, RECOUNT_SQL, countsKey
+} from './_lib.js';
 
 /* How many saves for one place may come from a single network fingerprint.
  *
@@ -57,41 +59,6 @@
  * clear-your-storage-and-do-it-again loop this is here to stop.
  */
 const PER_PLACE_CAP = 5;
-
-/* The list of real places, kept for five minutes per isolate. It comes from
-   the deployed data/restaurants.json rather than a copy in here, so adding a
-   place to the map is all it takes for saves to work on it. */
-let known = null;
-let knownAt = 0;
-
-async function knownPlaces(context) {
-  if (known && Date.now() - knownAt < 300000) return known;
-  const url = new URL('/data/restaurants.json', context.request.url);
-  /* env.ASSETS reads the deployment's own static files without going back out
-     to the network. Plain fetch is the fallback for `wrangler pages dev`. */
-  const res = context.env.ASSETS
-    ? await context.env.ASSETS.fetch(new Request(url.toString()))
-    : await fetch(url.toString());
-  if (!res.ok) throw new Error('restaurants.json unreadable: ' + res.status);
-  const places = await res.json();
-  known = new Set(places.map((p) => p.id));
-  knownAt = Date.now();
-  return known;
-}
-
-/* One-way, and salted with a secret that lives in the Pages environment. The
-   raw IP never reaches the database, so a copy of the table tells nobody
-   where anybody was. */
-async function fingerprint(secret, ip, ua) {
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    'raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
-  );
-  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(ip + '|' + ua));
-  return Array.from(new Uint8Array(sig))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
-}
 
 /* Turnstile is the only layer here that stops a script rather than a person,
    and it is optional: with no secret set the check is skipped and the other
@@ -117,14 +84,6 @@ async function challengePassed(secret, token, ip) {
        than the one it is protecting against. The cap still applies. */
     return true;
   }
-}
-
-function json(body, status, maxAge) {
-  const headers = { 'content-type': 'application/json; charset=utf-8' };
-  headers['cache-control'] = maxAge
-    ? 'public, max-age=' + maxAge
-    : 'no-store';
-  return new Response(JSON.stringify(body), { status: status || 200, headers });
 }
 
 /* ------------------------------------------------------------------ counts
@@ -156,10 +115,6 @@ function json(body, status, maxAge) {
  *               write would hold its copy indefinitely.
  */
 const COUNTS_TTL = 60;
-
-function countsKey(request) {
-  return new Request(new URL('/api/saves', request.url).toString());
-}
 
 export async function onRequestGet(context) {
   if (!context.env.DB) return json({}, 200, COUNTS_TTL);
@@ -244,9 +199,23 @@ export async function onRequestPost(context) {
   const client = typeof body.client === 'string' ? body.client : '';
   const on = body.on !== false;
 
-  /* A UUID and nothing else. This is a primary-key column, so the shape is
-     checked before it is allowed anywhere near the table. */
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(client)) {
+  /* Who this save belongs to. A signed-in session wins: the row then follows
+     the person rather than the browser, and the same account saving the same
+     place from a second device lands on the primary key instead of adding a
+     second row. Signed out, it is the device's own id.
+
+     The session is read from an HttpOnly cookie the server set, so nothing in
+     the request body can claim to be somebody — a forged `client` can only
+     ever be another anonymous device. */
+  const user = await sessionUser(request, env);
+  const owner = user ? user.id : client;
+  const ownerKind = user ? 'user' : 'device';
+
+  /* A UUID and nothing else. This is half of a primary key, so the shape is
+     checked before it is allowed anywhere near the table. Only the anonymous
+     path needs it: a session already carries an id this route did not have to
+     be told. */
+  if (!user && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(client)) {
     return json({ error: 'client' }, 400);
   }
 
@@ -258,7 +227,7 @@ export async function onRequestPost(context) {
   }
   if (!places.has(place)) return json({ error: 'place' }, 400);
 
-  const ip = request.headers.get('CF-Connecting-IP') || '';
+  const ip = clientIp(request);
   const ua = request.headers.get('User-Agent') || '';
 
   if (on && !(await challengePassed(env.TURNSTILE_SECRET, body.token, ip))) {
@@ -278,10 +247,7 @@ export async function onRequestPost(context) {
      batch() is one transaction: either the save and its count both land or
      neither does. There is no window in which the number on the map is a
      number the rows do not agree with. */
-  const recount =
-    'INSERT INTO save_counts (place_id, n) ' +
-    'VALUES (?, (SELECT COUNT(*) FROM saves WHERE place_id = ?)) ' +
-    'ON CONFLICT(place_id) DO UPDATE SET n = excluded.n';
+  const recount = RECOUNT_SQL;
 
   if (on) {
     const seen = await env.DB
@@ -302,17 +268,17 @@ export async function onRequestPost(context) {
     await env.DB.batch([
       env.DB
         .prepare(
-          'INSERT INTO saves (place_id, client_id, ip_hash, created_at) ' +
-          'VALUES (?, ?, ?, ?) ON CONFLICT DO NOTHING'
+          'INSERT INTO saves (place_id, owner, owner_kind, ip_hash, created_at) ' +
+          'VALUES (?, ?, ?, ?, ?) ON CONFLICT DO NOTHING'
         )
-        .bind(place, client, hash, Date.now()),
+        .bind(place, owner, ownerKind, hash, Date.now()),
       env.DB.prepare(recount).bind(place, place)
     ]);
   } else {
     await env.DB.batch([
       env.DB
-        .prepare('DELETE FROM saves WHERE place_id = ? AND client_id = ?')
-        .bind(place, client),
+        .prepare('DELETE FROM saves WHERE place_id = ? AND owner = ?')
+        .bind(place, owner),
       env.DB.prepare(recount).bind(place, place)
     ]);
   }

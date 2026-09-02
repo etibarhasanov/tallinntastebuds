@@ -85,7 +85,11 @@
     radio: null,         // the station from data/radio.json, or nothing
     active: [],          // selected type ids, OR semantics; empty means "All"
     saves: {},           // place id -> how many people, from /api/saves
-    saved: [],           // the places THIS browser has saved
+    saved: [],           // the places this browser (or account) has saved
+    /* Who is signed in, whether they have a recovery address on file, and
+       whether the site can send email at all. All three come from
+       /api/account and all three are absent until it answers. */
+    account: { user: null, recovery: false, email: false },
     selected: null,      // restaurant id, or null
     /* The place you last opened, kept lit on the map after the panel shuts.
        Closing a write-up used to put the pin back in the crowd, so the answer
@@ -1430,6 +1434,414 @@
       return;
     }
     if (savedCount() === (on ? 1 : 0)) renderFilters();
+  }
+
+
+  /* --------------------------------------------------------------- account
+   * A username and a password, and nothing else required.
+   *
+   * Saving works with no account: the device keeps a random id and the save
+   * is filed under that. An account is the upgrade that makes the list follow
+   * a person to another phone or browser — nobody is stopped at a wall before
+   * they have any reason to sign up, and signing in claims whatever this
+   * device already saved rather than starting them over.
+   *
+   * An email is optional and buys exactly one thing: the ability to reset a
+   * forgotten password. Without one there is nothing that proves an account
+   * is yours except knowing its password, so the sheet says so in as many
+   * words rather than letting somebody find out later.
+   */
+
+  var ACCOUNT_URL = '/api/account';
+
+  function accountPost(payload) {
+    return fetch(ACCOUNT_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (out) {
+        return { ok: res.ok, out: out || {} };
+      });
+    });
+  }
+
+  /* Who is signed in, asked once on the way in. Like the counts, nothing
+     waits for it: the button appears when the answer arrives, and if it never
+     does the map is exactly the map it was before accounts existed. */
+  function loadAccount() {
+    return fetch(ACCOUNT_URL, { headers: { accept: 'application/json' } })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (out) {
+        if (!out) return;
+        state.account = {
+          user: out.user || null,
+          recovery: !!out.recovery,
+          email: !!out.email
+        };
+        if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
+        paintAccountButton();
+      })
+      .catch(function () { /* signed out is a fine place to be */ });
+  }
+
+  /* The account's list replaces this browser's, because once somebody is
+     signed in the server is the one that knows. Written through to
+     localStorage all the same, so the hearts are right on the next load
+     before the network has answered. */
+  function adoptSaved(list) {
+    var seen = {};
+    state.saved = list.filter(function (id) {
+      if (typeof id !== 'string' || seen[id] || !byId(id)) return false;
+      seen[id] = true;
+      return true;
+    });
+    storeSet(SAVED_KEY, JSON.stringify(state.saved));
+    paintSave();
+    renderFilters();
+    if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderList();
+  }
+
+  function paintAccountButton() {
+    if (!dom.btnAccount) return;
+    /* Drawn only once the endpoint has answered: a sign-in button on a site
+       whose Function is not deployed is a button that can only disappoint. */
+    dom.btnAccount.hidden = false;
+    var name = state.account.user;
+    dom.accountLabel.textContent = name || t('accountOpen');
+    dom.btnAccount.setAttribute('aria-label', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
+    dom.btnAccount.setAttribute('title', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
+    dom.btnAccount.classList.toggle('is-on', !!name);
+  }
+
+  /* ------------------------------------------------------------- the sheet
+   * Four states in one card: signed in, signing in, creating, recovering.
+   * Which one is showing is a variable rather than four hidden blocks, so
+   * there is exactly one place that decides and nothing can be left over from
+   * the state before.
+   */
+  var accountView = 'in';        /* 'in' | 'up' | 'me' | 'recover' | 'code' */
+  var accountBusy = false;
+  var accountNote = '';
+  var accountErr = '';
+  var accountSuggest = '';
+
+  /* The note is a parameter and not something a caller sets first, because
+     opening a view clears the messages from the one before it — a caller that
+     assigned accountNote and then called this would have it wiped on the way
+     in. Moving between steps and saying what just happened is one action, so
+     it is one call. */
+  function openAccount(view, note) {
+    /* Only when arriving from outside: stepping between views inside an open
+       sheet must not record a field in the sheet as the thing to hand focus
+       back to when it shuts. */
+    if (dom.accountScrim.hidden) state.lastFocus = document.activeElement;
+    accountView = view || (state.account.user ? 'me' : 'in');
+    accountNote = note || '';
+    accountErr = '';
+    dom.accountScrim.hidden = false;
+    document.body.classList.add('has-scrim');
+    renderAccount();
+    var first = dom.accountCard.querySelector('input, button');
+    if (first) first.focus();
+    /* A suggested name, so the sign-up sheet is not a blank box asking
+       somebody to be creative before they can save a bakery. */
+    if (accountView === 'up' && !accountSuggest) {
+      fetch(ACCOUNT_URL + '?suggest=1')
+        .then(function (r) { return r.json(); })
+        .then(function (out) {
+          accountSuggest = out.suggest || '';
+          var field = dom.accountCard.querySelector('#ac-user');
+          if (field && !field.value) field.value = accountSuggest;
+        })
+        .catch(function () {});
+    }
+  }
+
+  function closeAccount() {
+    dom.accountScrim.hidden = true;
+    document.body.classList.remove('has-scrim');
+    var back = state.lastFocus;
+    state.lastFocus = null;
+    if (back && document.contains(back) && back.focus) back.focus();
+  }
+
+  function accountField(id, labelKey, type, opts) {
+    opts = opts || {};
+    return el('label', { className: 'ac-field' }, [
+      el('span', { className: 'ac-label', textContent: t(labelKey) }),
+      el('input', {
+        id: id,
+        type: type,
+        autocomplete: opts.autocomplete || 'off',
+        autocapitalize: 'none',
+        autocorrect: 'off',
+        spellcheck: 'false',
+        inputmode: opts.inputmode || null,
+        maxlength: opts.maxlength || null,
+        value: opts.value || ''
+      })
+    ]);
+  }
+
+  function accountValue(id) {
+    var node = dom.accountCard.querySelector('#' + id);
+    return node ? node.value.trim() : '';
+  }
+
+  /* Everything the sheet is holding, read in one go.
+
+     This has to happen before anything sets the busy state, because showing
+     that state re-renders the card and re-rendering builds the inputs afresh
+     — so a value read afterwards is the field's default and not a word of
+     what was typed into it. The password deliberately keeps its spaces: they
+     are characters somebody chose. */
+  function accountValues() {
+    var pass = dom.accountCard.querySelector('#ac-pass');
+    return {
+      username: accountValue('ac-user'),
+      password: pass ? pass.value : '',
+      email: accountValue('ac-email'),
+      code: accountValue('ac-code')
+    };
+  }
+
+  function accountSubmit(labelKey, run) {
+    var btn = el('button', {
+      type: 'submit',
+      className: 'ac-go',
+      textContent: t(accountBusy ? 'accountWorking' : labelKey),
+      disabled: accountBusy || null
+    });
+    return btn;
+  }
+
+  function accountSwitch(labelKey, view) {
+    var link = el('button', { type: 'button', className: 'ac-alt', textContent: t(labelKey) });
+    link.addEventListener('click', function () { openAccount(view); });
+    return link;
+  }
+
+  /* One place turns an error code from the server into a sentence. Anything
+     unrecognised falls back to the general one rather than showing a visitor
+     a word out of the source. */
+  var ACCOUNT_ERRORS = {
+    taken: 'accountErrTaken',
+    'no-match': 'accountErrNoMatch',
+    password: 'accountErrPassword',
+    username: 'accountErrUsername',
+    email: 'accountErrEmail',
+    'bad-code': 'accountErrCode',
+    'slow-down': 'accountErrSlow',
+    'email-taken': 'accountErrEmailTaken',
+    'no-email': 'accountErrNoEmail',
+    'send-failed': 'accountErrSend'
+  };
+
+  function accountFail(out) {
+    accountErr = t(ACCOUNT_ERRORS[out && out.error] || 'accountErrGeneric');
+    accountBusy = false;
+    renderAccount();
+  }
+
+  function renderAccount() {
+    clear(dom.accountCard);
+
+    var close = el('button', {
+      type: 'button',
+      className: 'panel-close ac-close',
+      'aria-label': t('close'),
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+    });
+    close.addEventListener('click', closeAccount);
+    dom.accountCard.appendChild(close);
+
+    var form = el('form', { className: 'ac-form' });
+    form.addEventListener('submit', function (ev) { ev.preventDefault(); });
+    dom.accountCard.appendChild(form);
+
+    if (accountView === 'me') return renderAccountMe(form);
+    if (accountView === 'recover') return renderAccountRecover(form);
+    if (accountView === 'code') return renderAccountCode(form);
+    return renderAccountAuth(form);
+  }
+
+  function accountMessages(form) {
+    if (accountErr) form.appendChild(el('p', { className: 'ac-err', role: 'alert', textContent: accountErr }));
+    if (accountNote) form.appendChild(el('p', { className: 'ac-note', role: 'status', textContent: accountNote }));
+  }
+
+  /* -------------------------------------------------- signed in already */
+  function renderAccountMe(form) {
+    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountTitle') }));
+    form.appendChild(el('p', {
+      className: 'ac-who',
+      textContent: t('accountSignedIn', { name: state.account.user })
+    }));
+    accountMessages(form);
+
+    if (state.account.email && !state.account.recovery) {
+      form.appendChild(el('p', { className: 'ac-why', textContent: t('accountEmailWhy') }));
+      form.appendChild(accountField('ac-email', 'accountEmail', 'email', { autocomplete: 'email' }));
+      var add = accountSubmit('accountSendCode');
+      add.addEventListener('click', function () {
+        if (accountBusy) return;
+        var v = accountValues();
+        accountBusy = true; accountErr = ''; renderAccount();
+        accountPost({ action: 'email-add', email: v.email }).then(function (a) {
+          accountBusy = false;
+          if (!a.ok) return accountFail(a.out);
+          openAccount('code', t('accountEmailSent'));
+        }).catch(function () { accountFail({}); });
+      });
+      form.appendChild(add);
+    } else if (state.account.recovery) {
+      form.appendChild(el('p', { className: 'ac-why', textContent: t('accountRecoveryOn') }));
+    }
+
+    var out = el('button', { type: 'button', className: 'ac-alt', textContent: t('accountSignOut') });
+    out.addEventListener('click', function () {
+      accountPost({ action: 'logout' }).then(function () {
+        state.account = { user: null, recovery: false, email: state.account.email };
+        /* The account's list goes with the account. What this browser saved
+           before signing in was claimed on the way in and is not coming back
+           here — it is on the account now, waiting for the next sign-in. */
+        state.saved = [];
+        storeSet(SAVED_KEY, '[]');
+        paintSave();
+        paintAccountButton();
+        renderFilters();
+        if (state.view === 'list') renderPanel();
+        closeAccount();
+      });
+    });
+    form.appendChild(out);
+  }
+
+  /* ------------------------------------------- signing in or signing up */
+  function renderAccountAuth(form) {
+    var creating = accountView === 'up';
+    form.appendChild(el('h2', {
+      className: 'ac-title',
+      textContent: t(creating ? 'accountCreate' : 'accountSignIn')
+    }));
+    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountWhy') }));
+    accountMessages(form);
+
+    form.appendChild(accountField('ac-user', 'accountUsername', 'text', {
+      autocomplete: 'username',
+      maxlength: '24',
+      value: creating ? accountSuggest : ''
+    }));
+    form.appendChild(accountField('ac-pass', 'accountPassword', 'password', {
+      autocomplete: creating ? 'new-password' : 'current-password'
+    }));
+
+    if (creating) {
+      if (state.account.email) {
+        form.appendChild(accountField('ac-email', 'accountEmail', 'email', { autocomplete: 'email' }));
+        form.appendChild(el('p', { className: 'ac-why is-small', textContent: t('accountEmailWhy') }));
+      } else {
+        form.appendChild(el('p', { className: 'ac-why is-small', textContent: t('accountNoReset') }));
+      }
+    }
+
+    var go = accountSubmit(creating ? 'accountCreate' : 'accountSignIn');
+    go.addEventListener('click', function () {
+      if (accountBusy) return;
+      var v = accountValues();
+      accountBusy = true; accountErr = ''; renderAccount();
+      accountPost({
+        action: creating ? 'create' : 'login',
+        username: v.username,
+        password: v.password,
+        email: creating ? v.email : '',
+        client: clientId()
+      }).then(function (a) {
+        accountBusy = false;
+        if (!a.ok) return accountFail(a.out);
+        state.account.user = a.out.user;
+        if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
+        paintAccountButton();
+        trackEvent(creating ? 'account_create' : 'account_login', {});
+        closeAccount();
+        toast(t('accountSignedIn', { name: a.out.user }));
+      }).catch(function () { accountFail({}); });
+    });
+    form.appendChild(go);
+
+    form.appendChild(accountSwitch(creating ? 'accountSwitchSignIn' : 'accountSwitchCreate',
+                                   creating ? 'in' : 'up'));
+    if (!creating && state.account.email) {
+      form.appendChild(accountSwitch('accountForgot', 'recover'));
+    }
+  }
+
+  /* ------------------------------------------------ asking for a code */
+  function renderAccountRecover(form) {
+    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountRecoverTitle') }));
+    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountRecoverWhy') }));
+    accountMessages(form);
+    form.appendChild(accountField('ac-email', 'accountEmail', 'email', { autocomplete: 'email' }));
+
+    var go = accountSubmit('accountSendCode');
+    go.addEventListener('click', function () {
+      if (accountBusy) return;
+      var v = accountValues();
+      accountBusy = true; accountErr = ''; renderAccount();
+      accountPost({ action: 'recover-start', email: v.email }).then(function (a) {
+        accountBusy = false;
+        if (!a.ok) return accountFail(a.out);
+        openAccount('code', t('accountEmailSent'));
+      }).catch(function () { accountFail({}); });
+    });
+    form.appendChild(go);
+    form.appendChild(accountSwitch('accountSwitchSignIn', 'in'));
+  }
+
+  /* --------------------------------- entering one, for either purpose */
+  function renderAccountCode(form) {
+    var resetting = !state.account.user;
+    form.appendChild(el('h2', {
+      className: 'ac-title',
+      textContent: t(resetting ? 'accountRecoverTitle' : 'accountConfirmTitle')
+    }));
+    accountMessages(form);
+
+    form.appendChild(accountField('ac-code', 'accountCode', 'text', {
+      inputmode: 'numeric',
+      maxlength: '6',
+      autocomplete: 'one-time-code'
+    }));
+    if (resetting) {
+      form.appendChild(accountField('ac-pass', 'accountNewPassword', 'password', {
+        autocomplete: 'new-password'
+      }));
+    }
+
+    var go = accountSubmit('accountConfirm');
+    go.addEventListener('click', function () {
+      if (accountBusy) return;
+      var v = accountValues();
+      accountBusy = true; accountErr = ''; renderAccount();
+      var payload = resetting
+        ? { action: 'recover-finish', code: v.code, password: v.password }
+        : { action: 'email-confirm', code: v.code };
+
+      accountPost(payload).then(function (a) {
+        accountBusy = false;
+        if (!a.ok) return accountFail(a.out);
+        if (resetting) {
+          /* The reset dropped every session, this one included, so the way
+             back in is the sign-in sheet with the new password. */
+          openAccount('in', t('accountResetDone'));
+          return;
+        }
+        state.account.recovery = true;
+        openAccount('me', t('accountEmailDone'));
+      }).catch(function () { accountFail({}); });
+    });
+    form.appendChild(go);
   }
 
   /* --------------------------------------------------------------- filters */
@@ -4055,6 +4467,13 @@
 
     dom.panelClose.addEventListener('click', closePanel);
     dom.panelSave.addEventListener('click', pressSave);
+
+    dom.btnAccount.addEventListener('click', function () { openAccount(); });
+    /* The scrim is the way out, the card is not: a press that lands on the
+       card itself must not close the sheet somebody is typing into. */
+    dom.accountScrim.addEventListener('click', function (ev) {
+      if (ev.target === dom.accountScrim) closeAccount();
+    });
     wireSheet();
     wireKeyboard();
 
@@ -4092,6 +4511,9 @@
       }
 
       if (ev.key === 'Escape') {
+        /* Ahead of the lightbox: the account sheet stands over everything, so
+           it is the thing Escape means when it is open. */
+        if (!dom.accountScrim.hidden) { closeAccount(); return; }
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
         if (isNarrow() && filterMenuOpen()) {
@@ -4378,6 +4800,10 @@
       panelClose: $('panel-close'),
       panelSave: $('panel-save'),
       panelSaveN: $('panel-save-n'),
+      btnAccount: $('btn-account'),
+      accountLabel: $('account-label'),
+      accountScrim: $('account-scrim'),
+      accountCard: $('account-card'),
       sheetGrip: $('sheet-grip'),
       btnRadio: $('btn-radio'),
       radioName: $('radio-name'),
@@ -4503,6 +4929,9 @@
          important thing on the screen right up until somebody opens a place.
          If it never arrives, the hearts show no number and still work. */
       loadSaves();
+      /* And who is holding them. Same rules: last, unwaited, and the site is
+         the site it always was if the answer never comes. */
+      loadAccount();
 
       /* The JSON-LD block is for crawlers only — nobody reading the map ever
          sees it — so it must never be the reason a visitor gets the fatal
