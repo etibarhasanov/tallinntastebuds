@@ -1282,7 +1282,7 @@ body.panel-detail .panel {
    is left to the content so a count of 3 and a count of 148 both sit properly
    inside it, and `right` is measured from the close rather than from the edge
    so growing leftwards never walks into it. */
-.panel-like {
+.panel-save {
   position: absolute;
   z-index: 3;
   top: 5px;
@@ -1302,9 +1302,9 @@ body.panel-detail .panel {
 /* display on a class beats the UA sheet's [hidden] rule, so the list view's
    hidden heart has to be told to go — the same trap .search-clear falls into
    further down. */
-.panel-like[hidden] { display: none; }
-.panel-like:hover { background: var(--wash); color: var(--accent); }
-.panel-like svg {
+.panel-save[hidden] { display: none; }
+.panel-save:hover { background: var(--wash); color: var(--accent); }
+.panel-save svg {
   width: 18px;
   height: 18px;
   flex: 0 0 auto;
@@ -1315,34 +1315,60 @@ body.panel-detail .panel {
   stroke-linejoin: round;
   transition: fill .18s var(--ease);
 }
-/* Liked is the outline filling in, and nothing else: the same button, in the
+/* Saved is the outline filling in, and nothing else: the same button, in the
    same place, saying the same word. An empty heart and a full one is the
    entire vocabulary here, and everybody already reads it. */
-.panel-like[aria-pressed="true"] { color: var(--accent); }
-.panel-like[aria-pressed="true"] svg { fill: currentColor; }
+.panel-save[aria-pressed="true"] { color: var(--accent); }
+.panel-save[aria-pressed="true"] svg { fill: currentColor; }
 
 /* The count. Tabular figures so the pill does not jitter as it goes from 9 to
    10, and no slot at all at zero — a "0" under a heart reads as a verdict on
    the restaurant rather than as nobody having pressed it yet. */
-.like-n {
+.save-n {
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
-.panel-like:not(.has-n) { padding: 0; width: 36px; }
-.panel-like:not(.has-n) .like-n { display: none; }
+.panel-save:not(.has-n) { padding: 0; width: 36px; }
+.panel-save:not(.has-n) .save-n { display: none; }
 
 /* One beat, on the press. Short enough to be over before a toast underneath
    has finished arriving, and the global reduced-motion rule at the foot of
    this file takes it out for anyone who has asked for that. */
-.panel-like.is-beating svg { animation: like-beat .42s var(--ease); }
-@keyframes like-beat {
+.panel-save.is-beating svg { animation: save-beat .42s var(--ease); }
+@keyframes save-beat {
   30%  { transform: scale(1.26); }
   58%  { transform: scale(.95); }
   100% { transform: scale(1); }
 }
+
+/* The count on a list row. Quieter than the discount badge beside it — a
+   discount is an offer you act on, this is a fact you glance at — so it
+   carries no pill, just the mark and the number in the row's own grey. */
+.save-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: 0 0 auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.save-mark-ico {
+  display: inline-flex;
+  width: 11px;
+  height: 11px;
+}
+/* Filled rather than outlined at this size: an 11px heart drawn in a 1.7px
+   stroke closes up into a blob, and the outline/filled distinction is the
+   panel button's vocabulary, not the row's — a row is not a thing you press
+   to save. */
+.save-mark-ico svg { width: 11px; height: 11px; fill: currentColor; }
 
 /* Turnstile in invisible mode still wants somewhere to render. It draws
    nothing a visitor can see, but left in the flow it is a 300px hole at the
@@ -2492,15 +2518,15 @@ body.panel-detail .panel {
 
   /* The heart follows it: a target on a phone rather than a mark, kept the
      same distance to its left as the close is from the edge. */
-  .panel-like {
+  .panel-save {
     top: 4px;
     right: 56px;
     min-width: 40px;
     height: 40px;
   }
-  .panel-like:not(.has-n) { width: 40px; }
-  .panel-like svg { width: 20px; height: 20px; stroke-width: 1.8; }
-  .like-n { font-size: 13px; }
+  .panel-save:not(.has-n) { width: 40px; }
+  .panel-save svg { width: 20px; height: 20px; stroke-width: 1.8; }
+  .save-n { font-size: 13px; }
 
   /* The sheet used to cover the chip row, which is why the row used to be
      hidden while the panel was open. At the top of the screen it clears even
@@ -2563,7 +2589,7 @@ body.panel-detail .panel {
 /* ---------- print: the list, on paper ---------- */
 
 @media print {
-  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .panel-like, .toast, .lightbox, .stories { display: none !important; }
+  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .panel-save, .toast, .lightbox, .stories { display: none !important; }
   body { overflow: visible; background: #fff; }
   .panel {
     position: static;

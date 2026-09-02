@@ -1,7 +1,7 @@
 /**
- * Tallinn Tastebuds — the likes.
+ * Tallinn Tastebuds — the saves.
  *
- * Two things live at /api/likes: GET hands back how many people have liked
+ * Two things live at /api/saves: GET hands back how many people have saved
  * each place, POST records or withdraws one. They are the only way anything
  * outside Cloudflare can reach the database, which is the whole security
  * story: D1 has no public endpoint of its own. There is no host, no port and
@@ -24,14 +24,14 @@
  *     HMAC of them under a secret that never leaves the environment, which is
  *     one-way and useless to anybody who does not hold the secret.
  *
- * WHAT A LIKE IS TIED TO
+ * WHAT A SAVE IS TIED TO
  *
  * There are no accounts here and no cookies, so "one person" has to be
  * approximated, and it is approximated twice over:
  *
  *   client_id  a random UUID the browser keeps in localStorage. It is what
- *              makes the heart still look liked when you come back, and the
- *              UNIQUE key that stops the same browser liking twice. It is
+ *              makes the heart still look saved when you come back, and the
+ *              UNIQUE key that stops the same browser saving twice. It is
  *              also client-supplied, so it is a convenience, not a defence:
  *              anybody can send a fresh one.
  *
@@ -44,12 +44,12 @@
  * README has the honest write-up of what that means.
  */
 
-/* How many likes for one place may come from a single network fingerprint.
+/* How many saves for one place may come from a single network fingerprint.
  *
- * A cap, deliberately, and not "one like per IP". Estonian mobile carriers
+ * A cap, deliberately, and not "one save per IP". Estonian mobile carriers
  * put thousands of phones behind one public address, and this site is opened
  * from an Instagram link on a phone more than anywhere else — so a hard
- * per-IP rule would let the first Elisa customer like a bakery and silently
+ * per-IP rule would let the first Elisa customer save a bakery and silently
  * refuse every other Elisa customer in the country. Folding the user agent in
  * separates most of them again, and a cap of five leaves room for a household,
  * a table of friends and the handful of identical phones that will still
@@ -60,7 +60,7 @@ const PER_PLACE_CAP = 5;
 
 /* The list of real places, kept for five minutes per isolate. It comes from
    the deployed data/restaurants.json rather than a copy in here, so adding a
-   place to the map is all it takes for likes to work on it. */
+   place to the map is all it takes for saves to work on it. */
 let known = null;
 let knownAt = 0;
 
@@ -113,7 +113,7 @@ async function challengePassed(secret, token, ip) {
     return out.success === true;
   } catch (e) {
     /* Cloudflare's own verifier being unreachable is not the visitor's fault,
-       and refusing every like until it comes back would be a worse outage
+       and refusing every save until it comes back would be a worse outage
        than the one it is protecting against. The cap still applies. */
     return true;
   }
@@ -132,19 +132,19 @@ function json(body, status, maxAge) {
  * rather than seventy-four times. Held at the edge for a minute: the
  * aggregate runs once per minute per colo however much traffic arrives, and
  * a count that is up to a minute stale is a count nobody can tell from a
- * fresh one. The liker themself never sees the stale copy — the POST hands
+ * fresh one. The saver themself never sees the stale copy — the POST hands
  * back the new number directly.
  */
 export async function onRequestGet(context) {
   if (!context.env.DB) return json({}, 200, 60);
 
   const cache = caches.default;
-  const key = new Request(new URL('/api/likes', context.request.url).toString());
+  const key = new Request(new URL('/api/saves', context.request.url).toString());
   const hit = await cache.match(key);
   if (hit) return hit;
 
   const { results } = await context.env.DB
-    .prepare('SELECT place_id, COUNT(*) AS n FROM likes GROUP BY place_id')
+    .prepare('SELECT place_id, COUNT(*) AS n FROM saves GROUP BY place_id')
     .all();
 
   const counts = {};
@@ -155,11 +155,11 @@ export async function onRequestGet(context) {
   return res;
 }
 
-/* -------------------------------------------------------------- one like
+/* -------------------------------------------------------------- one save
  * { place, client, on, token } in, { place, n, on } back.
  *
- * `on: false` withdraws a like rather than adding one, because the heart is a
- * toggle and a like nobody can take back is a support request waiting to
+ * `on: false` withdraws a save rather than adding one, because the heart is a
+ * toggle and a save nobody can take back is a support request waiting to
  * happen. It can only remove a row that carries the caller's own client id.
  */
 export async function onRequestPost(context) {
@@ -171,8 +171,8 @@ export async function onRequestPost(context) {
   /* Fail closed, and loudly. Without the salt the stored fingerprints would
      be a plain hash of an address, which is guessable given the whole of
      IPv4 — so this refuses to write rather than write something weaker than
-     it claims. Set LIKE_SALT in the Pages project and it starts working. */
-  if (!env.LIKE_SALT) {
+     it claims. Set SAVE_SALT in the Pages project and it starts working. */
+  if (!env.SAVE_SALT) {
     return json({ error: 'no-salt' }, 503);
   }
 
@@ -208,19 +208,19 @@ export async function onRequestPost(context) {
     return json({ error: 'challenge' }, 403);
   }
 
-  const hash = await fingerprint(env.LIKE_SALT, ip, ua);
+  const hash = await fingerprint(env.SAVE_SALT, ip, ua);
 
   if (on) {
     const seen = await env.DB
-      .prepare('SELECT COUNT(*) AS n FROM likes WHERE place_id = ? AND ip_hash = ?')
+      .prepare('SELECT COUNT(*) AS n FROM saves WHERE place_id = ? AND ip_hash = ?')
       .bind(place, hash)
       .first();
     /* The caller's own row counts towards this, so somebody who has already
-       liked and is pressing again is under the cap and lands on the conflict
+       saved and is pressing again is under the cap and lands on the conflict
        below — which is a no-op, not a rejection. */
     if (seen && seen.n >= PER_PLACE_CAP) {
       const total = await env.DB
-        .prepare('SELECT COUNT(*) AS n FROM likes WHERE place_id = ?')
+        .prepare('SELECT COUNT(*) AS n FROM saves WHERE place_id = ?')
         .bind(place)
         .first();
       return json({ error: 'capped', place: place, n: total ? total.n : 0 }, 429);
@@ -228,20 +228,20 @@ export async function onRequestPost(context) {
 
     await env.DB
       .prepare(
-        'INSERT INTO likes (place_id, client_id, ip_hash, created_at) ' +
+        'INSERT INTO saves (place_id, client_id, ip_hash, created_at) ' +
         'VALUES (?, ?, ?, ?) ON CONFLICT DO NOTHING'
       )
       .bind(place, client, hash, Date.now())
       .run();
   } else {
     await env.DB
-      .prepare('DELETE FROM likes WHERE place_id = ? AND client_id = ?')
+      .prepare('DELETE FROM saves WHERE place_id = ? AND client_id = ?')
       .bind(place, client)
       .run();
   }
 
   const total = await env.DB
-    .prepare('SELECT COUNT(*) AS n FROM likes WHERE place_id = ?')
+    .prepare('SELECT COUNT(*) AS n FROM saves WHERE place_id = ?')
     .bind(place)
     .first();
 

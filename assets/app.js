@@ -84,8 +84,8 @@
     lastPick: null,
     radio: null,         // the station from data/radio.json, or nothing
     active: [],          // selected type ids, OR semantics; empty means "All"
-    likes: {},           // place id -> how many people, from /api/likes
-    liked: [],           // the places THIS browser has liked
+    saves: {},           // place id -> how many people, from /api/saves
+    saved: [],           // the places THIS browser has saved
     selected: null,      // restaurant id, or null
     /* The place you last opened, kept lit on the map after the panel shuts.
        Closing a write-up used to put the pin back in the crowd, so the answer
@@ -1074,27 +1074,34 @@
     window.setTimeout(function () { focusOn(place, zoomIn); }, 300);
   }
 
-  /* ----------------------------------------------------------------- likes
+  /* ----------------------------------------------------------------- saves
    * The heart, and the number next to it.
    *
-   * Unlike everything else in this file, a like is not this browser's to
+   * Pressing it keeps the place — the same thing a bookmark does — and the
+   * number says how many other people have kept it too. One action, not two:
+   * there is nobody to perform for here, since a save is anonymous and no
+   * visitor can see whose it was, so the reason Instagram and X keep a public
+   * like apart from a private bookmark does not apply. The README has the
+   * argument in full.
+   *
+   * Unlike everything else in this file, a save is not this browser's to
    * keep: it is a count of other people, so it lives in a Cloudflare D1
-   * database behind /api/likes and this is the client half of it. See
-   * functions/api/likes.js for the server half and the README for the honest
-   * account of how unique a like actually is.
+   * database behind /api/saves and this is the client half of it. See
+   * functions/api/saves.js for the server half and the README for the honest
+   * account of how unique a save actually is.
    *
    * What is kept locally is only what the browser needs to draw itself:
    *
    *   ttb.cid    a v4 UUID this browser made for itself the first time it
-   *              liked anything. It is what the server uses as the unique
-   *              half of a like, and what lets a like be taken back. It is
+   *              saved anything. It is what the server uses as the unique
+   *              half of a save, and what lets a save be taken back. It is
    *              not an account and identifies nobody: it never leaves this
-   *              browser except as one opaque string on a like.
+   *              browser except as one opaque string on a save.
    *
-   *   ttb.liked  which places this browser has liked, so the heart is already
+   *   ttb.saved  which places this browser has saved, so the heart is already
    *              filled when you come back rather than looking untouched
    *              until the server is asked. Losing it costs the fill, not the
-   *              like — the like is in the database, and pressing again is
+   *              save — the save is in the database, and pressing again is
    *              refused by the primary key rather than counted twice.
    *
    * The counts themselves are never cached locally. A number that is meant to
@@ -1102,29 +1109,35 @@
    */
 
   var CID_KEY = 'ttb.cid';
-  var LIKED_KEY = 'ttb.liked';
+  var SAVED_KEY = 'ttb.saved';
 
   /* A chip id that is not a taxonomy type, reserved the way "discount" is and
      refused to the taxonomy by the same list in tools/validate.mjs: two chips
      answering to one name would each filter the other's places out. */
-  var LIKED_FILTER = 'liked';
+  var SAVED_FILTER = 'saved';
 
   /* Nothing on the map waits for this. The counts arrive when they arrive and
      the panel repaints if it is already open; if they never arrive — offline,
      the Function not deployed yet, the database not bound — the heart still
      works as a button and simply shows no number. A map that will not draw
-     because a like count is late would be a bad trade. */
-  function loadLikes() {
-    return fetch('/api/likes', { headers: { accept: 'application/json' } })
+     because a save count is late would be a bad trade. */
+  function loadSaves() {
+    return fetch('/api/saves', { headers: { accept: 'application/json' } })
       .then(function (res) { return res.ok ? res.json() : {}; })
       .then(function (counts) {
-        state.likes = counts && typeof counts === 'object' ? counts : {};
-        paintLike();
+        state.saves = counts && typeof counts === 'object' ? counts : {};
+        paintSave();
+        /* The list is built with the counts in it, so a list already on screen
+           when they land is a list without them. Rebuilt rather than patched:
+           it is seventy-four rows once, on a request that has already been
+           made, and patching would mean threading the number back through
+           every row that might be showing it. */
+        if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderList();
       })
       .catch(function () { /* no counts is a fine state to be in */ });
   }
 
-  /* Made once, on the first like, and never before: a browser that only ever
+  /* Made once, on the first save, and never before: a browser that only ever
      reads the map is not given an id for something it has not done. */
   function clientId() {
     var id = storeGet(CID_KEY);
@@ -1151,8 +1164,8 @@
            hex.slice(10, 16).join('');
   }
 
-  function readLiked() {
-    var raw = storeGet(LIKED_KEY);
+  function readSaved() {
+    var raw = storeGet(SAVED_KEY);
     var ids = [];
     if (raw) {
       try {
@@ -1164,64 +1177,85 @@
        a place of that id is still on the map. The chip built from this is a
        door to a list, and a door has to open onto what it claims — an id for
        somewhere that has left restaurants.json would be counted here and then
-       not drawn there. The like itself is unaffected: that lives in the
+       not drawn there. The save itself is unaffected: that lives in the
        database, and this is only which hearts to fill in. */
     var seen = {};
-    state.liked = ids.filter(function (id) {
+    state.saved = ids.filter(function (id) {
       if (typeof id !== 'string' || seen[id] || !byId(id)) return false;
       seen[id] = true;
       return true;
     });
   }
 
-  function isLiked(id) { return state.liked.indexOf(id) !== -1; }
+  function isSaved(id) { return state.saved.indexOf(id) !== -1; }
 
   /* Newest first, and renderList reads that order back out: the heart you
      pressed on the way home is the one you are looking for tonight. */
-  function markLiked(id, on) {
-    var at = state.liked.indexOf(id);
-    if (on && at === -1) state.liked.unshift(id);
-    if (!on && at !== -1) state.liked.splice(at, 1);
-    storeSet(LIKED_KEY, JSON.stringify(state.liked));
+  function markSaved(id, on) {
+    var at = state.saved.indexOf(id);
+    if (on && at === -1) state.saved.unshift(id);
+    if (!on && at !== -1) state.saved.splice(at, 1);
+    storeSet(SAVED_KEY, JSON.stringify(state.saved));
   }
 
-  function likedCount() { return state.liked.length; }
+  function savedCount() { return state.saved.length; }
 
-  function likeCount(id) {
-    var n = state.likes[id];
+  function saveCount(id) {
+    var n = state.saves[id];
     return typeof n === 'number' && n > 0 ? n : 0;
   }
 
-  /* The heart's three jobs: be on screen only when there is a place to like,
-     say whether this browser has liked it, and carry the count. The count is
+  /* The same heart the panel carries, at badge size and with no button under
+     it: a row is already a button, and one inside another is not a thing the
+     HTML allows. So this is a fact about the place, printed next to the price
+     and the discount — the count is the only thing on a row that is about
+     other people, and seeing it while scanning is most of the reason it is
+     worth counting at all. Nothing below one, for the same reason the panel
+     hides a zero: a "0" against a restaurant reads as a verdict rather than
+     as nobody having got there yet. */
+  var SAVE_GLYPH = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78' +
+    'l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+
+  function saveMark(place) {
+    var n = saveCount(place.id);
+    if (!n) return null;
+    return el('span', { className: 'save-mark' }, [
+      el('span', { className: 'save-mark-ico', 'aria-hidden': 'true', html: SAVE_GLYPH }),
+      el('span', { textContent: String(n) })
+    ]);
+  }
+
+  /* The heart's three jobs: be on screen only when there is a place to save,
+     say whether this browser has saved it, and carry the count. The count is
      hidden at zero — "0" under a heart reads as a verdict on the place rather
      than as nobody having pressed it yet. */
-  function paintLike() {
+  function paintSave() {
     var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
-    dom.panelLike.hidden = !place;
+    dom.panelSave.hidden = !place;
     if (!place) return;
 
-    var n = likeCount(place.id);
-    var mine = isLiked(place.id);
-    dom.panelLike.setAttribute('aria-pressed', String(mine));
-    dom.panelLikeN.textContent = n ? String(n) : '';
-    dom.panelLike.classList.toggle('has-n', !!n);
+    var n = saveCount(place.id);
+    var mine = isSaved(place.id);
+    dom.panelSave.setAttribute('aria-pressed', String(mine));
+    dom.panelSaveN.textContent = n ? String(n) : '';
+    dom.panelSave.classList.toggle('has-n', !!n);
 
     /* Spelled into the label, because the number beside the heart is
        aria-hidden: read out on its own it is a digit with nothing saying what
        it counts. */
-    var label = t('likePlace');
-    if (n) label += ', ' + (n === 1 ? t('likeCountOne') : t('likeCount', { n: n }));
-    dom.panelLike.setAttribute('aria-label', label);
-    dom.panelLike.setAttribute('title', label);
+    var label = t('savePlace');
+    if (n) label += ', ' + (n === 1 ? t('saveCountOne') : t('saveCount', { n: n }));
+    dom.panelSave.setAttribute('aria-label', label);
+    dom.panelSave.setAttribute('title', label);
   }
 
   /* ------------------------------------------------------------- Turnstile
    * The one layer that stops a script rather than a person. Optional in every
    * sense: with no key in the <meta> the script is never fetched, no token is
    * ever asked for, and the server — which has no secret either — accepts the
-   * like on the strength of the cap alone. Everything below is written so
-   * that any failure of it resolves to an empty token rather than to a like
+   * save on the strength of the cap alone. Everything below is written so
+   * that any failure of it resolves to an empty token rather than to a save
    * that will not go through.
    */
 
@@ -1251,7 +1285,7 @@
             sitekey: turnstileKey,
             size: 'invisible',
             /* Every path out of the widget lands on the same resolver, so a
-               refused or expired challenge fails the like fast instead of
+               refused or expired challenge fails the save fast instead of
                leaving the heart spinning on a promise nobody settles. */
             callback: function (token) { settleTurnstile(token); },
             'error-callback': function () { settleTurnstile(''); },
@@ -1283,7 +1317,7 @@
      took too long. An empty token is refused by a server that has a secret
      set and ignored by one that has not, which is the correct behaviour in
      both cases. */
-  function likeToken() {
+  function saveToken() {
     if (!turnstileKey) return Promise.resolve('');
     return loadTurnstile().then(function (id) {
       return new Promise(function (resolve) {
@@ -1310,37 +1344,37 @@
    * server's answer replaces it a moment later; anything that goes wrong puts
    * both back exactly as they were and says so.
    */
-  var likeBusy = false;
+  var saveBusy = false;
 
-  function pressLike() {
+  function pressSave() {
     var place = state.selected ? byId(state.selected) : null;
-    if (!place || likeBusy) return;
+    if (!place || saveBusy) return;
 
-    var wasLiked = isLiked(place.id);
-    var wasCount = likeCount(place.id);
-    var on = !wasLiked;
+    var wasSaved = isSaved(place.id);
+    var wasCount = saveCount(place.id);
+    var on = !wasSaved;
 
     function revert() {
-      markLiked(place.id, wasLiked);
-      state.likes[place.id] = wasCount;
-      paintLike();
+      markSaved(place.id, wasSaved);
+      state.saves[place.id] = wasCount;
+      paintSave();
     }
 
-    markLiked(place.id, on);
-    state.likes[place.id] = Math.max(0, wasCount + (on ? 1 : -1));
-    paintLike();
+    markSaved(place.id, on);
+    state.saves[place.id] = Math.max(0, wasCount + (on ? 1 : -1));
+    paintSave();
 
     /* One beat of movement. A fill that simply appears reads as a colour that
        was always there; this is what makes it read as something that just
        happened. Reduced motion is not asked about — the blanket rule at the
        foot of styles.css already flattens every animation on the site. */
-    dom.panelLike.classList.remove('is-beating');
-    void dom.panelLike.offsetWidth;
-    dom.panelLike.classList.add('is-beating');
+    dom.panelSave.classList.remove('is-beating');
+    void dom.panelSave.offsetWidth;
+    dom.panelSave.classList.add('is-beating');
 
-    likeBusy = true;
-    likeToken().then(function (token) {
-      return fetch('/api/likes', {
+    saveBusy = true;
+    saveToken().then(function (token) {
+      return fetch('/api/saves', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
@@ -1359,43 +1393,43 @@
         revert();
         /* The count the server sent back with the refusal is still the true
            one, so it survives the revert. */
-        if (typeof answer.out.n === 'number') state.likes[place.id] = answer.out.n;
-        paintLike();
-        toast(t(answer.out.error === 'capped' ? 'likeCapped' : 'likeFailed'));
+        if (typeof answer.out.n === 'number') state.saves[place.id] = answer.out.n;
+        paintSave();
+        toast(t(answer.out.error === 'capped' ? 'saveCapped' : 'saveFailed'));
         return;
       }
-      if (typeof answer.out.n === 'number') state.likes[place.id] = answer.out.n;
-      paintLike();
-      syncLikedChip(on);
-      trackEvent(on ? 'like_place' : 'unlike_place', {
+      if (typeof answer.out.n === 'number') state.saves[place.id] = answer.out.n;
+      paintSave();
+      syncSavedChip(on);
+      trackEvent(on ? 'save_place' : 'unsave_place', {
         place_id: place.id,
         place: place.name,
-        likes_total: likeCount(place.id)
+        saves_total: saveCount(place.id)
       });
     }).catch(function () {
       revert();
-      toast(t('likeFailed'));
+      toast(t('saveFailed'));
     }).then(function () {
-      likeBusy = false;
+      saveBusy = false;
     });
   }
 
-  /* The chip row and the map, after a like has changed what the liked chip
-     would filter to. Only the first like and the last unlike change whether
+  /* The chip row and the map, after a save has changed what the saved chip
+     would filter to. Only the first save and the last unsave change whether
      there is a chip at all; every press in between leaves the row exactly as
      it was and does not need it built again. */
-  function syncLikedChip(on) {
-    if (state.active.indexOf(LIKED_FILTER) !== -1) {
+  function syncSavedChip(on) {
+    if (state.active.indexOf(SAVED_FILTER) !== -1) {
       /* The list being filtered by just changed underneath the filter, so the
          map and the panel are both out of date. And if that was the last
          heart, the chip goes out with it — which would leave the map filtered
          by a chip that is no longer drawn, with no way to press it off. So the
          filter comes off with the chip. */
-      if (!likedCount()) state.active.splice(state.active.indexOf(LIKED_FILTER), 1);
+      if (!savedCount()) state.active.splice(state.active.indexOf(SAVED_FILTER), 1);
       applyFilters();
       return;
     }
-    if (likedCount() === (on ? 1 : 0)) renderFilters();
+    if (savedCount() === (on ? 1 : 0)) renderFilters();
   }
 
   /* --------------------------------------------------------------- filters */
@@ -1416,10 +1450,10 @@
 
   /* Chips are OR, so a place shows if it answers any active one — and two of
      them are not answered by the type list at all: the discount chip is
-     answered by the deal, and the liked chip by what this browser has
+     answered by the deal, and the saved chip by what this browser has
      pressed. */
   function matchesFilters(place) {
-    if (state.active.indexOf(LIKED_FILTER) !== -1 && isLiked(place.id)) return true;
+    if (state.active.indexOf(SAVED_FILTER) !== -1 && isSaved(place.id)) return true;
     if (state.active.indexOf(DEAL_FILTER) !== -1 && liveDealFor(place)) return true;
     return (place.types || []).some(function (id) {
       return state.active.indexOf(id) !== -1;
@@ -1509,26 +1543,27 @@
 
     /* First of the real filters, and the only one that is about you rather
        than about food. It is the door to the hearts you have pressed — and
-       the reason the like button doubles as a way of keeping a place, since a
+       the reason the heart is the whole of it: the button that says "this one"
+       and the button that keeps it are the same button, since a
        map you can narrow to your own is a saved list by another name.
 
-       No likes means no chip: a filter whose only possible answer is an empty
+       No saves means no chip: a filter whose only possible answer is an empty
        map is not worth the width, and the chip arriving with the first heart
        is how anybody learns it is there at all. */
-    if (likedCount()) {
-      var onLiked = state.active.indexOf(LIKED_FILTER) !== -1;
-      var likedChip = el('button', {
+    if (savedCount()) {
+      var onSaved = state.active.indexOf(SAVED_FILTER) !== -1;
+      var savedChip = el('button', {
         type: 'button',
         className: 'chip',
-        'aria-pressed': String(onLiked),
-        textContent: t('filterLiked')
+        'aria-pressed': String(onSaved),
+        textContent: t('filterSaved')
       });
-      likedChip.addEventListener('click', function () {
-        var at = state.active.indexOf(LIKED_FILTER);
-        if (at === -1) state.active.push(LIKED_FILTER); else state.active.splice(at, 1);
-        applyFilters({ id: LIKED_FILTER, on: at === -1 });
+      savedChip.addEventListener('click', function () {
+        var at = state.active.indexOf(SAVED_FILTER);
+        if (at === -1) state.active.push(SAVED_FILTER); else state.active.splice(at, 1);
+        applyFilters({ id: SAVED_FILTER, on: at === -1 });
       });
-      dom.filters.appendChild(likedChip);
+      dom.filters.appendChild(savedChip);
     }
 
     /* The only chip that is an offer rather than a description — and last to
@@ -2376,7 +2411,7 @@
 
   function renderPanel() {
     document.body.classList.toggle('panel-detail', state.view === 'detail' && !!state.selected);
-    paintLike();
+    paintSave();
     if (state.view === 'detail' && state.selected) {
       renderDetail(byId(state.selected));
       dom.detail.hidden = false;
@@ -2966,7 +3001,7 @@
        search joins in this is no longer the list, it is a slice of the map
        that happens to be cut out of it, and it reads like every other slice. */
     var mine = !words.length && state.active.length === 1 &&
-               state.active[0] === LIKED_FILTER;
+               state.active[0] === SAVED_FILTER;
 
     if (mine) {
       /* The one list here that is not alphabetical. The order you pressed the
@@ -2974,7 +3009,7 @@
          recently, and most likely what you came back for — and the alphabet
          throws it away for a sort nobody asked for. */
       var rank = {};
-      state.liked.forEach(function (id, i) { rank[id] = i; });
+      state.saved.forEach(function (id, i) { rank[id] = i; });
       places.sort(function (a, b) { return rank[a.id] - rank[b.id]; });
     } else {
       var collator;
@@ -3023,7 +3058,15 @@
            row shows has to be spelled into it or it is not there at all. */
         'aria-label': t('openPlace', { name: place.name }) +
           (place.closed ? ', ' + t('closed') : '') + ', ' + t(depthMarkKey(place)) +
-          (deal ? ', ' + (offer || t('filterDiscount')) : '')
+          (deal ? ', ' + (offer || t('filterDiscount')) : '') +
+          /* The count is drawn aria-hidden, so a row that shows one has to
+             spell it out or a screen reader gets the digit and nothing to
+             hang it on. */
+          (saveCount(place.id)
+            ? ', ' + (saveCount(place.id) === 1
+                ? t('saveCountOne')
+                : t('saveCount', { n: saveCount(place.id) }))
+            : '')
       }, [
         el('span', { className: 'list-name', textContent: place.name }),
         el('span', { className: 'list-sub' }, [
@@ -3037,6 +3080,7 @@
              It sits with the badges now, where the discount sits: the row's
              two facts about the place rather than about the food. */
           place.closed ? shutMark() : null,
+          saveMark(place),
           el('span', {
             className: 'list-types',
             textContent: (place.types || []).map(typeLabel).join(' · ')
@@ -3107,7 +3151,7 @@
     /* And your own hearts are named as themselves. "A–Z" over them would be
        true and useless: this is the one list on the site whose point is whose
        it is, not what order it came out in. */
-    section(everything ? 'listTitle' : mine ? 'listLiked' : 'listAlphabet', places);
+    section(everything ? 'listTitle' : mine ? 'listSaved' : 'listAlphabet', places);
   }
 
   /* -------------------------------------------------------------- lightbox */
@@ -3883,13 +3927,13 @@
     /* Chips in the address bar: a filtered map becomes a link worth sending,
        and the landing view GA records for it says which filters it was.
 
-       Every chip but one. The liked chip filters by what this browser has
-       pressed, so ?type=liked sent to somebody else is a link to an empty
+       Every chip but one. The saved chip filters by what this browser has
+       pressed, so ?type=saved sent to somebody else is a link to an empty
        map, and opened on your own laptop a link to a different one. It
        filters; it does not travel. Nothing has to strip it on the way back
        in — boot only accepts ids that are on the map — but a link nobody can
        use should not be built in the first place. */
-    var shareable = state.active.filter(function (id) { return id !== LIKED_FILTER; });
+    var shareable = state.active.filter(function (id) { return id !== SAVED_FILTER; });
     if (shareable.length) params.set('type', shareable.join(','));
     else params.delete('type');
     if (state.langPinned) params.set('lang', state.lang);
@@ -4010,7 +4054,7 @@
     });
 
     dom.panelClose.addEventListener('click', closePanel);
-    dom.panelLike.addEventListener('click', pressLike);
+    dom.panelSave.addEventListener('click', pressSave);
     wireSheet();
     wireKeyboard();
 
@@ -4332,8 +4376,8 @@
       panel: $('panel'),
       panelScroll: $('panel-scroll'),
       panelClose: $('panel-close'),
-      panelLike: $('panel-like'),
-      panelLikeN: $('panel-like-n'),
+      panelSave: $('panel-save'),
+      panelSaveN: $('panel-save-n'),
       sheetGrip: $('sheet-grip'),
       btnRadio: $('btn-radio'),
       radioName: $('radio-name'),
@@ -4394,10 +4438,10 @@
       state.ui = loaded[2] || {};
       state.langs = sortLanguages(Object.keys(state.ui));
 
-      /* Which places this browser has liked, and whether the bot check is
+      /* Which places this browser has saved, and whether the bot check is
          switched on. Both are local and instant. The counts themselves are a
-         request over the network and are not waited for — see loadLikes. */
-      readLiked();
+         request over the network and are not waited for — see loadSaves. */
+      readSaved();
       readTurnstileKey();
 
       var chosen = pickLanguage(state.langs);
@@ -4455,10 +4499,10 @@
 
       /* The counts, from the one place on this site that is not a static
          file. Deliberately last and deliberately not waited for: the map is
-         already drawn and usable by now, and a like count is the least
+         already drawn and usable by now, and a save count is the least
          important thing on the screen right up until somebody opens a place.
          If it never arrives, the hearts show no number and still work. */
-      loadLikes();
+      loadSaves();
 
       /* The JSON-LD block is for crawlers only — nobody reading the map ever
          sees it — so it must never be the reason a visitor gets the fatal

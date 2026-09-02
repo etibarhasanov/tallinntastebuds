@@ -10,11 +10,11 @@ Being on the map is the verdict.
 Static files, one small Function, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
-The one exception to "static" is the like count: hearts are a number about
-other people, so they live in a Cloudflare D1 database behind
-`/api/likes`. Everything else on the map — the places, the write-ups, the
+The one exception to "static" is the save count: a heart keeps a place and
+says how many other people kept it too, so those live in a Cloudflare D1
+database behind `/api/saves`. Everything else on the map — the places, the write-ups, the
 discounts, the stories — is still a JSON file in this repository, and the site
-renders completely with the database switched off. See **Likes**.
+renders completely with the database switched off. See **Saves**.
 
 ---
 
@@ -31,7 +31,7 @@ renders completely with the database switched off. See **Likes**.
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Languages](#languages)
 - [Restaurant discounts](#restaurant-discounts)
-- [Likes](#likes)
+- [Saves](#saves)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -784,7 +784,7 @@ lines, and the guest-facing half stays exactly as it is.
 
 ---
 
-## Likes
+## Saves
 
 The heart in the corner of an open place, and the number beside it: how many
 people have pressed it. It is the only thing on this site that is not a static
@@ -794,11 +794,17 @@ Press it again to take it back. The count hides at zero — a "0" under a heart
 reads as a verdict on the restaurant rather than as nobody having pressed it
 yet.
 
-### The Liked chip, and why liking is also saving
+### The Saved chip, and why one heart does both jobs
 
-Press one heart and a **Liked** chip appears at the front of the filter row,
+The count is on the list rows too, not only inside an open place: a small
+heart and a number beside the price, so a scroll down seventy-four rows shows
+which ones other people have kept without opening any of them. Rows at zero
+show nothing — a "0" against a restaurant reads as a verdict rather than as
+nobody having got there yet.
+
+Press one heart and a **Saved** chip appears at the front of the filter row,
 directly after All. Press it and the map narrows to the places you have
-hearted; the panel names the group **Places I liked** and shows them newest
+saved; the panel names the group **Places I saved** and shows them newest
 first — the order you pressed them in is information, and the alphabet throws
 it away.
 
@@ -809,18 +815,46 @@ the same thing.
 
 It carries the same limit as anything kept in a browser: the chip is per
 browser, so the phone's list and the laptop's list are different lists, and
-clearing the browser clears it. What it does *not* lose is the like itself —
+clearing the browser clears it. What it does *not* lose is the save itself —
 that is a row in the database, and it keeps counting whatever happens here.
 Losing the local list costs you the view of your own hearts, not the hearts.
 Making that list follow a person across devices needs accounts, and that is
 the one thing this site still does not have.
 
 The chip is drawn only when there is at least one heart, and it goes again
-with the last unlike. If the filter is on when the list empties, the filter
+with the last unsave. If the filter is on when the list empties, the filter
 comes off with the chip — a map narrowed by a chip that is no longer on the
-row is a map with no way back. `?type=liked` is deliberately never written to
+row is a map with no way back. `?type=saved` is deliberately never written to
 the address bar: a link filtered by one browser's hearts is an empty map for
 everybody else.
+
+### Why there is no separate "like"
+
+An earlier version of this had a like and planned a bookmark beside it. They
+collapsed into one heart, and the reason is worth keeping.
+
+Products split the two when a like is **publicly attributable to you**.
+Instagram, X, TikTok, YouTube and Reddit all pair a public like with a private
+save, and X added Bookmarks precisely because people were using Likes to keep
+things and disliked that it broadcast their interest. Where the heart is not
+public — Airbnb, Spotify, Zillow, Pinterest — one action covers both, and the
+heart simply means "keep this".
+
+Nothing here is attributable. There are no accounts, no profiles, and no
+visitor can see who saved what — not even the owner of the site. So the social
+problem that forces the split does not exist, and asking somebody for a heart
+*and* a bookmark that mean almost the same thing would be asking twice for one
+answer.
+
+Calling it a save rather than a like also makes the number honest. "Like" is a
+verdict, so a like count mixes *this was excellent* with *I want to try this*.
+A save is neither: both of those genuinely are saves, so the count means one
+clean thing — this many people kept this place.
+
+The closest analogue to this site, Google Maps, does split them: Save for your
+own lists, ratings for the public signal. But its ratings carry your name, and
+this site rules out ratings on the first page. One anonymous heart is the
+version of that which fits.
 
 ### On "no scores, stars or rankings"
 
@@ -828,36 +862,36 @@ The top of this file says there are none and there never will be, and a number
 next to a heart is close enough to that line to be worth naming where the line
 actually is.
 
-A like count is a count of people, not a verdict on a kitchen. Nobody rates
+A save count is a count of people, not a verdict on a kitchen. Nobody rates
 anything out of five, and — this is the part that matters — **nothing on this
-site sorts, ranks or orders by likes.** The list is alphabetical; your own
+site sorts, ranks or orders by saves.** The list is alphabetical; your own
 hearts are in the order you pressed them; the map draws every pin the same
-size whatever its count. There is deliberately no "Most liked" chip, because
+size whatever its count. There is deliberately no "Most saved" chip, because
 that would be a ranking, and the line above is not a slogan.
 
-If a future change wants to sort by likes, it is changing the argument of the
+If a future change wants to sort by saves, it is changing the argument of the
 site, not adding a feature. That is a decision for a person, not a patch.
 
-### How unique a like actually is
+### How unique a save actually is
 
-Be clear-eyed about this: **without accounts, no like is truly unique.** There
+Be clear-eyed about this: **without accounts, no save is truly unique.** There
 is no honest way to tell two people apart on a public web page. What can be
 done is make faking one cost more than it is worth, and that is what this does,
 in three layers — no accounts, no cookies, nothing a visitor has to do.
 
 **1. A client id in `localStorage`.** A random v4 UUID the browser makes for
-itself the first time it likes anything, kept under `ttb.cid`. It is the
-`UNIQUE` half of a like, so the same browser cannot like a place twice, and it
-is what lets somebody take a like back. It is client-supplied and therefore
+itself the first time it saves anything, kept under `ttb.cid`. It is the
+`UNIQUE` half of a save, so the same browser cannot like a place twice, and it
+is what lets somebody take a save back. It is client-supplied and therefore
 *not* a defence — anybody can send a fresh one. It is there to stop honest
 double-taps and to keep the heart filled when you come back.
 
 **2. A hashed network fingerprint, as a cap.** The Function computes
-`HMAC(LIKE_SALT, ip + '|' + user agent)` and allows at most **five** likes for
+`HMAC(SAVE_SALT, ip + '|' + user agent)` and allows at most **five** saves for
 one place from one fingerprint. The raw IP is never stored and cannot be
 recovered from the hash without the salt.
 
-A cap and not "one like per IP", deliberately. Estonian mobile carriers put
+A cap and not "one save per IP", deliberately. Estonian mobile carriers put
 thousands of phones behind one public address, and this map is opened from an
 Instagram link on a phone more than anywhere else — so a hard per-IP rule would
 let the first Elisa customer like a bakery and then silently refuse every other
@@ -884,7 +918,7 @@ No. **D1 has no public endpoint** — there is no host, no port and no connectio
 string anybody can point a tool at. It is reachable from a Worker holding a
 binding to it and from the Cloudflare API with your account credentials, and
 from nowhere else. A visitor can only ever reach the two handlers in
-`functions/api/likes.js`, which means the attack surface of the database is
+`functions/api/saves.js`, which means the attack surface of the database is
 that one file. So:
 
 - **Every query is a prepared statement with bound parameters.** No value out
@@ -910,15 +944,15 @@ is applied. Three things remain, all in the Cloudflare dashboard:
 1. **Bind it.** Pages project → Settings → Bindings → D1 database. Variable
    name `DB`, database `tallinntastebuds`. This is what `wrangler.toml`
    describes, and Pages needs it set in the project as well.
-2. **Set `LIKE_SALT`.** Settings → Variables and Secrets → add a *secret*
-   named `LIKE_SALT`, any long random string. **The like endpoint refuses to
+2. **Set `SAVE_SALT`.** Settings → Variables and Secrets → add a *secret*
+   named `SAVE_SALT`, any long random string. **The save endpoint refuses to
    write without it** — it fails closed rather than storing a weaker hash than
    it claims to. Changing it later makes every existing fingerprint
    unmatchable, which resets the caps and leaves the counts alone.
 3. **Turnstile, when you want it.** Create a widget in the Cloudflare
    dashboard, paste the site key into the `<meta name="turnstile-key">` in
-   `index.html`, and add the secret half as `TURNSTILE_SECRET`. Test a like
-   after enabling — a misconfigured widget refuses every like.
+   `index.html`, and add the secret half as `TURNSTILE_SECRET`. Test a save
+   after enabling — a misconfigured widget refuses every save.
 
 Re-applying the schema, if it is ever needed:
 
@@ -928,7 +962,7 @@ wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
 
 ### How it behaves when it is not there
 
-Every failure is quiet and none of them costs anybody the map. If `/api/likes`
+Every failure is quiet and none of them costs anybody the map. If `/api/saves`
 is not deployed, the binding is missing, the salt is unset or the visitor is
 offline, the counts simply do not appear — the heart is still a button, the map
 still draws, and nothing throws. The counts are fetched last in `boot()` and
@@ -941,10 +975,10 @@ exactly as they were and says so in a toast.
 
 ### The counts are cached for a minute
 
-`GET /api/likes` returns every place's count in one request — the map asks once
+`GET /api/saves` returns every place's count in one request — the map asks once
 on the way in rather than seventy-four times — and it is held at the edge for
 60 seconds, so the aggregate runs once a minute per location however much
-traffic arrives. Somebody who has just liked never sees the stale copy: the
+traffic arrives. Somebody who has just saved never sees the stale copy: the
 POST hands the new number straight back.
 
 ---
@@ -1617,7 +1651,7 @@ index.html                 the whole page
 assets/styles.css          design tokens at the top, then everything else
 assets/app.js              map, panel, filters, i18n, lightbox — no framework
 functions/_middleware.js   sends the pages.dev address to the real one
-functions/api/likes.js     the like count: the only server-side code here
+functions/api/saves.js     the save count: the only server-side code here
 db/schema.sql              the one table that Function talks to
 wrangler.toml              the D1 binding (the secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are
