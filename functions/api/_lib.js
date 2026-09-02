@@ -3,7 +3,10 @@
  *
  * Underscore-prefixed files under functions/ are not routed, so this is a
  * module and never an endpoint. Everything here is shared by /api/saves and
- * /api/account, and none of it holds state between requests.
+ * /api/account. Two things at the bottom hold a value between requests — the
+ * list of real places and which database this deployment is holding — and
+ * both are caches of something that does not change, kept per isolate and
+ * re-asked every five minutes. Nothing else here remembers anything.
  */
 
 export function json(body, status, maxAge) {
@@ -167,6 +170,55 @@ export async function sessionUser(request, env) {
   if (!row) return null;
   if (row.expires_at < Date.now()) return null;
   return { id: row.id, username: row.username };
+}
+
+/* ------------------------------------------------- which database is this
+ * The preview deployments and the live site run the same code against two
+ * different D1 databases — `tallinntastebuds-preview` and `tallinntastebuds`
+ * — and wrangler.toml is what keeps them apart. This is what notices when it
+ * has not.
+ *
+ * Two halves have to agree. The deployment carries an ENVIRONMENT variable
+ * out of wrangler.toml, saying which half of the split it belongs to; the
+ * database carries a meta row saying which one it was stamped as. A preview
+ * holding the live database disagrees with it, and this shuts the API down
+ * rather than let a save pressed while checking a change land in the live
+ * counts — the counts simply do not appear, which is a state the site already
+ * handles, instead of a test row nobody can pick out of the table afterwards.
+ *
+ * It only ever blocks a disagreement. An unstamped database, or a deployment
+ * with no ENVIRONMENT set, means the check cannot tell what it is looking at,
+ * and refusing to run on a missing row would be a worse failure than the one
+ * this guards against.
+ *
+ * One read per isolate rather than one per request: the answer is a property
+ * of the binding, which cannot change under a running isolate, and the five
+ * minutes are only so a database restamped by hand is picked up without a
+ * redeploy.
+ */
+let stamp = null;
+let stampAt = 0;
+
+export async function wrongDatabase(env) {
+  const expected = env.ENVIRONMENT || '';
+  if (!env.DB || !expected) return false;
+
+  if (stamp === null || Date.now() - stampAt > 300000) {
+    try {
+      const row = await env.DB
+        .prepare("SELECT value FROM meta WHERE key = 'environment'")
+        .first();
+      stamp = row && typeof row.value === 'string' ? row.value : '';
+    } catch (e) {
+      /* No meta table at all: a database from before the split. Unknowable,
+         so not blocked — and re-asked in five minutes rather than never, so
+         applying db/schema.sql to it is enough to switch the check on. */
+      stamp = '';
+    }
+    stampAt = Date.now();
+  }
+
+  return stamp !== '' && stamp !== expected;
 }
 
 /* ---------------------------------------------------------------- places

@@ -24,6 +24,8 @@
  *   - a story in stories.json with neither a start nor an end time, an end
  *     before its start, no video or photo (or both), a file that is not in
  *     the repo, or a link to a place that does not exist
+ *   - wrangler.toml pointing the preview deployments and the live site at the
+ *     same D1 database, or at no database of their own
  *
  * Warns on:
  *   - placeholder blurbs, missing reels, missing phone numbers, missing blurb translations
@@ -695,6 +697,94 @@ if (existsSync(PHOTOS)) {
    not something this script enforces at runtime. */
 
 readJSON('data/schema.json');
+
+/* --------------------------------------------------------- wrangler.toml
+   The preview deployments and the live site must not share a database. What
+   keeps them apart is four lines of wrangler.toml, and the failure mode if
+   those four lines are ever wrong is silent: a save pressed on a preview URL
+   while checking a change lands in the live counts and there is nothing in
+   the row to say it was not real. Nobody notices for weeks.
+
+   So it is checked here, on every push, with the same weight as bad data.
+   Not a parse of the whole TOML — this file has no dependencies and is not
+   going to grow a TOML parser for four keys — but the two environment blocks
+   are found, and what matters about them is read out of each:
+
+     - both exist, so neither environment is falling back to the top level;
+     - they name different database ids, which is the whole point;
+     - each says which environment it is, because functions/api/_lib.js
+       compares that against the database's own stamp at runtime and a
+       missing one turns that check off.
+
+   The top level is not checked for a database id, because Pages only reads
+   it for `wrangler pages dev`. */
+
+const WRANGLER = 'wrangler.toml';
+const wrangler = (() => {
+  const abs = join(ROOT, WRANGLER);
+  if (!existsSync(abs)) { fail(WRANGLER, 'file is missing'); return ''; }
+  try {
+    return readFileSync(abs, 'utf8');
+  } catch (err) {
+    fail(WRANGLER, `could not be read (${err.message})`);
+    return '';
+  }
+})();
+
+if (wrangler) {
+  /* Everything from a [[env.<name>....]] or [env.<name>....] header up to the
+     next header, so a value is only ever read out of the block it is in. */
+  const sectionsFor = (env) => {
+    const out = [];
+    const header = new RegExp(`^\\[\\[?env\\.${env}\\.[^\\]]+\\]\\]?\\s*$`);
+    let inside = false;
+    for (const line of wrangler.split(/\r?\n/)) {
+      if (/^\s*\[/.test(line)) inside = header.test(line.trim());
+      if (inside) out.push(line);
+    }
+    return out.join('\n');
+  };
+
+  const valueIn = (text, key) => {
+    const m = text.match(new RegExp(`^\\s*${key}\\s*=\\s*"([^"]*)"`, 'm'));
+    return m ? m[1] : '';
+  };
+
+  const seen = {};
+  for (const env of ['preview', 'production']) {
+    const where = `${WRANGLER} → [env.${env}]`;
+    const text = sectionsFor(env);
+    if (!text) {
+      fail(where, `has no configuration at all — Pages would hand ${env} deployments the top-level bindings, which is how the two environments end up sharing one database`);
+      continue;
+    }
+
+    const id = valueIn(text, 'database_id');
+    const name = valueIn(text, 'database_name');
+    if (!id) fail(where, 'declares no D1 database_id');
+    if (!name) fail(where, 'declares no D1 database_name');
+    seen[env] = { id, name };
+
+    /* Non-inheritable keys are all-or-nothing per environment in Pages: an
+       environment that overrides the binding and forgets the vars gets no
+       vars at all, not the top-level ones. */
+    const declared = valueIn(text, 'ENVIRONMENT');
+    if (!declared) {
+      fail(where, 'sets no ENVIRONMENT var — functions/api/_lib.js compares it against the database\'s own stamp, and without it a database bound to the wrong environment goes unnoticed');
+    } else if (declared !== env) {
+      fail(where, `says ENVIRONMENT = "${declared}"`);
+    }
+  }
+
+  if (seen.preview && seen.production) {
+    if (seen.preview.id && seen.preview.id === seen.production.id) {
+      fail(WRANGLER, `preview and production are bound to the same database (${seen.production.id}) — every save pressed on a preview URL would land in the live counts`);
+    }
+    if (seen.preview.name && seen.preview.name === seen.production.name) {
+      fail(WRANGLER, `preview and production name the same database ("${seen.production.name}")`);
+    }
+  }
+}
 
 /* ------------------------------------------------------------ asset stamps
    Every script and stylesheet is referenced with a hash of its own contents on

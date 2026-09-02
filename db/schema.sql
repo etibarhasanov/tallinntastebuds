@@ -1,27 +1,43 @@
 -- Tallinn Tastebuds — the saves table.
 --
--- Applied to the D1 database named "tallinntastebuds". Re-runnable: every
--- statement is IF NOT EXISTS, so this file is the schema rather than a
--- migration you have to remember whether you ran.
+-- Applied to both D1 databases — "tallinntastebuds" behind the live site and
+-- "tallinntastebuds-preview" behind every preview deployment. They hold the
+-- same tables and never the same rows; see the meta table at the bottom of
+-- this file for what keeps them apart. Re-runnable: every statement is IF NOT
+-- EXISTS, so this file is the schema rather than a migration you have to
+-- remember whether you ran.
 --
---   wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
+--   wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
+--   wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
 --
--- One row is one save. The primary key is what makes a save unique rather
--- than any code in the Function: a browser that sends the same (place,
--- client) twice hits the conflict and the second write is a no-op, whatever
--- the caller intended.
+-- One row is one save, and only a signed-in account can make one. The primary
+-- key is what makes a save unique rather than any code in the Function: the
+-- same (place, owner) sent twice hits the conflict and the second write is a
+-- no-op, whatever the caller intended.
 CREATE TABLE IF NOT EXISTS saves (
   -- The place's id from data/restaurants.json. Checked against that file by
   -- the Function before anything reaches this table, so a row here always
   -- points at somewhere real.
   place_id   TEXT    NOT NULL,
-  -- Who the save belongs to: a users.id when the request carried a signed-in
-  -- session, otherwise the v4 UUID the browser generated for itself. One
-  -- column rather than two, so the primary key below is the whole of the
-  -- uniqueness rule and there is no second index that could disagree with it.
+  -- Who the save belongs to. Every row written from now on is a users.id,
+  -- taken from the session cookie by the Function and never from the request
+  -- body, so a new row belongs to an account that was signed in when it was
+  -- made.
   owner      TEXT    NOT NULL,
-  -- 'user' or 'device'. Only claim() in account.js reads it, to find the rows
-  -- a signing-in browser is bringing with it.
+  -- 'user' or 'device', and now a record of how a row came to be rather than
+  -- a thing any code branches on.
+  --
+  -- A browser used to be able to save under a random UUID it made for itself,
+  -- and signing in moved those rows onto the account. That is gone — a device
+  -- id is one per browser, free to make and thrown away with the storage, so
+  -- a count built out of them counted browsers rather than people — but the
+  -- rows written while it was allowed are still here and still counted. They
+  -- are somebody's saves; they are simply not removable from the site any
+  -- more, because there is no longer a way to sign in as a browser.
+  --
+  -- The default is still 'device' and is deliberately never relied on: the
+  -- insert in saves.js names 'user' explicitly, so a row that says 'device'
+  -- is one that really was made by one.
   owner_kind TEXT    NOT NULL DEFAULT 'device',
   -- HMAC(SAVE_SALT, ip + '|' + user agent). The raw address is never stored
   -- and cannot be recovered from this without the salt, which lives only in
@@ -126,3 +142,36 @@ CREATE TABLE IF NOT EXISTS login_fails (
   at      INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_login_fails ON login_fails (ip_hash, at);
+
+
+-- ------------------------------------------------------------------- meta
+-- Which database this is. One row, written once, and the only thing in here
+-- that is not the same in every copy of this schema.
+--
+-- There are two of these databases — `tallinntastebuds` behind the live site
+-- and `tallinntastebuds-preview` behind every preview deployment — and the
+-- one thing that must never happen is a preview writing into the live one.
+-- wrangler.toml is what keeps them apart, and this row is what notices when
+-- it has not: every deployment carries an ENVIRONMENT variable, this row says
+-- what the database it is holding was stamped as, and functions/api/_lib.js
+-- compares the two and shuts the API down when they disagree. A test save
+-- then fails loudly instead of landing quietly in production.
+--
+-- Not created with a value, because the value differs per database. Stamp
+-- each one after applying this file:
+--
+--   wrangler d1 execute tallinntastebuds --remote --command \
+--     "INSERT INTO meta (key, value) VALUES ('environment', 'production') \
+--      ON CONFLICT(key) DO UPDATE SET value = excluded.value"
+--
+--   wrangler d1 execute tallinntastebuds-preview --remote --command \
+--     "INSERT INTO meta (key, value) VALUES ('environment', 'preview') \
+--      ON CONFLICT(key) DO UPDATE SET value = excluded.value"
+--
+-- An unstamped database is not blocked — the check cannot tell what it is
+-- looking at, and refusing to run because a row is missing would be a worse
+-- failure than the one it guards against. It only ever blocks a disagreement.
+CREATE TABLE IF NOT EXISTS meta (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);

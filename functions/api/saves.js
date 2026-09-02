@@ -23,30 +23,37 @@
  *
  * WHO A SAVE BELONGS TO
  *
- * One column, `owner`, holding one of two things:
+ * An account, and nothing else. `owner` is a users.id, taken from the session
+ * cookie and never from the request body — so there is no way to save as
+ * somebody, or as nobody, but by being signed in as them.
  *
- *   a user id     when the request carries a signed-in session. The save then
- *                 follows the person, and the same account saving the same
- *                 place from a second device is the same row rather than a
- *                 second one.
+ * It was not always this way: a browser used to be able to save under a
+ * random UUID it made for itself, and signing in later moved those rows onto
+ * the account. That is gone. A device id is not a person — it is one per
+ * browser, free to make, and thrown away by clearing storage — so a count
+ * built out of them was a count of browsers wearing a number's clothes. An
+ * account is not proof of a person either, but it costs something to make and
+ * it is the same one on the next phone, which is the difference between a
+ * number worth printing and a number worth nothing.
  *
- *   a client id   when it does not. A random UUID the browser made for
- *                 itself, so saving works with no account at all. Signing in
- *                 later moves these rows onto the account — see claim() in
- *                 account.js.
- *
- * Either way the primary key is (place_id, owner), so one owner can hold at
- * most one save per place and the count cannot be run up by pressing twice.
- * Neither is proof of a person, and this file does not pretend otherwise: the
- * cap below is what stands in for that, and the README has the honest write-up
- * of how far it goes.
+ * The primary key is (place_id, owner), so one account holds at most one save
+ * per place and the count cannot be run up by pressing twice. The cap below
+ * is what is left of the old defence, and it now limits how many accounts one
+ * network fingerprint may save a single place from — the README has the
+ * honest write-up of how far that goes.
  */
 
 import {
-  json, clientIp, fingerprint, sessionUser, knownPlaces, RECOUNT_SQL, countsKey
+  json, clientIp, fingerprint, sessionUser, knownPlaces, wrongDatabase,
+  RECOUNT_SQL, countsKey
 } from './_lib.js';
 
 /* How many saves for one place may come from a single network fingerprint.
+ *
+ * Since only a signed-in account can save, this is no longer standing in for
+ * a person — the account does that — and what it limits is somebody making a
+ * sixth account to press the same place a sixth time. It is kept for that,
+ * and because it costs one indexed read.
  *
  * A cap, deliberately, and not "one save per IP". Estonian mobile carriers
  * put thousands of phones behind one public address, and this site is opened
@@ -55,8 +62,8 @@ import {
  * refuse every other Elisa customer in the country. Folding the user agent in
  * separates most of them again, and a cap of five leaves room for a household,
  * a table of friends and the handful of identical phones that will still
- * collide, while the tenth attempt from one fingerprint on one place is the
- * clear-your-storage-and-do-it-again loop this is here to stop.
+ * collide, while the sixth account pressing one place from one fingerprint is
+ * the sign-up-again loop this is here to stop.
  */
 const PER_PLACE_CAP = 5;
 
@@ -118,6 +125,11 @@ const COUNTS_TTL = 60;
 
 export async function onRequestGet(context) {
   if (!context.env.DB) return json({}, 200, COUNTS_TTL);
+  /* A deployment holding the other environment's database answers as though
+     it had no database at all: no counts, no error, the map unaffected. The
+     alternative is a preview URL showing the live numbers, which is the same
+     mistake as writing to them. */
+  if (await wrongDatabase(context.env)) return json({}, 200, COUNTS_TTL);
 
   const cache = caches.default;
   const key = countsKey(context.request);
@@ -168,17 +180,22 @@ function withNotModified(request, res) {
 }
 
 /* -------------------------------------------------------------- one save
- * { place, client, on, token } in, { place, n, on } back.
+ * { place, on, token } in, { place, n, on } back. Signed in, or 401.
  *
  * `on: false` withdraws a save rather than adding one, because the mark is a
  * toggle and a save nobody can take back is a support request waiting to
- * happen. It can only remove a row that carries the caller's own client id.
+ * happen. It can only remove a row that belongs to the account that asked.
  */
 export async function onRequestPost(context) {
   const { request, env } = context;
 
   if (!env.DB) {
     return json({ error: 'no-database' }, 503);
+  }
+  /* The binding is there, but it is the wrong one — a preview pointed at the
+     live database, or the reverse. Nothing is written. See wrongDatabase(). */
+  if (await wrongDatabase(env)) {
+    return json({ error: 'wrong-database' }, 503);
   }
   /* Fail closed, and loudly. Without the salt the stored fingerprints would
      be a plain hash of an address, which is guessable given the whole of
@@ -196,28 +213,19 @@ export async function onRequestPost(context) {
   }
 
   const place = typeof body.place === 'string' ? body.place : '';
-  const client = typeof body.client === 'string' ? body.client : '';
   const on = body.on !== false;
 
-  /* Who this save belongs to. A signed-in session wins: the row then follows
-     the person rather than the browser, and the same account saving the same
-     place from a second device lands on the primary key instead of adding a
-     second row. Signed out, it is the device's own id.
+  /* Who this save belongs to, and the only answer this route accepts. The
+     session is read from an HttpOnly cookie the server set, so the owner of a
+     row is established here and can never be asserted by the caller — there
+     is nothing left in the body to forge.
 
-     The session is read from an HttpOnly cookie the server set, so nothing in
-     the request body can claim to be somebody — a forged `client` can only
-     ever be another anonymous device. */
+     401 rather than a quiet no-op: the map opens the sign-in sheet on this
+     answer, and a save that disappeared without saying why would be the worst
+     version of this. */
   const user = await sessionUser(request, env);
-  const owner = user ? user.id : client;
-  const ownerKind = user ? 'user' : 'device';
-
-  /* A UUID and nothing else. This is half of a primary key, so the shape is
-     checked before it is allowed anywhere near the table. Only the anonymous
-     path needs it: a session already carries an id this route did not have to
-     be told. */
-  if (!user && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(client)) {
-    return json({ error: 'client' }, 400);
-  }
+  if (!user) return json({ error: 'sign-in' }, 401);
+  const owner = user.id;
 
   let places;
   try {
@@ -269,9 +277,9 @@ export async function onRequestPost(context) {
       env.DB
         .prepare(
           'INSERT INTO saves (place_id, owner, owner_kind, ip_hash, created_at) ' +
-          'VALUES (?, ?, ?, ?, ?) ON CONFLICT DO NOTHING'
+          "VALUES (?, ?, 'user', ?, ?) ON CONFLICT DO NOTHING"
         )
-        .bind(place, owner, ownerKind, hash, Date.now()),
+        .bind(place, owner, hash, Date.now()),
       env.DB.prepare(recount).bind(place, place)
     ]);
   } else {

@@ -12,7 +12,7 @@ place means editing one JSON file and pushing.
 
 The one exception to "static" is the save count: a bookmark keeps a place and
 says how many other people kept it too, so those live in a Cloudflare D1
-database behind `/api/saves`. Everything else on the map — the places, the write-ups, the
+database behind `/api/saves`, and saving takes an account. Everything else on the map — the places, the write-ups, the
 discounts, the stories — is still a JSON file in this repository, and the site
 renders completely with the database switched off. See **Saves**.
 
@@ -809,9 +809,10 @@ The bookmark in the corner of an open place, and the number beside it: how many
 people have pressed it. It is the only thing on this site that is not a static
 file, because it is the only thing that is about other people.
 
-Press it again to take it back. The count hides at zero — a "0" under a bookmark
-reads as a verdict on the restaurant rather than as nobody having pressed it
-yet.
+**It takes an account**, and it is the only thing here that does — pressing it
+signed out opens the sheet rather than saving. Press it again to take it back.
+The count hides at zero — a "0" under a bookmark reads as a verdict on the
+restaurant rather than as nobody having pressed it yet.
 
 ### The Saved chip, and why one bookmark does both jobs
 
@@ -825,12 +826,18 @@ wears their name and so tells them whose list the map is holding. It is
 deployment without the bindings there is no sign-up sheet to find. If you
 cannot see it, that is why.
 
-Nobody is expected to find it on their own, though. A save made while signed
-out brings up a card offering an account, once per visit and never again for a
-fortnight after it is turned down. That is the moment worth asking at: there
-is now something to lose, and the person has just shown what it is. Asking
-before that would be a sign-up wall on a map nobody has decided about yet,
-which is the thing this site does not do.
+Nobody is expected to find it on their own, though. Pressing the bookmark
+while signed out opens the sheet itself, with a line at the top saying why it
+is in the way — which is the moment worth asking at, since the person has just
+said what they want. It opens on **sign in** rather than sign up, because
+somebody pressing a bookmark is more likely to have an account already, and
+"Need an account?" is one tap away inside the sheet.
+
+There used to be a card here instead — a gentle offer after a save that had
+already gone through, once a visit, quiet for a fortnight after a no. It made
+sense while saving worked without an account. It does not now, and it is gone
+rather than reworded: an offer you cannot decline and still save is not an
+offer, it is the sheet.
 
 The count is on the list rows too, not only inside an open place: a small
 bookmark and a number beside the price, so a scroll down seventy-four rows shows
@@ -849,19 +856,18 @@ narrow to your own places is a saved list by another name, and one bookmark is a
 better thing to ask of somebody than a bookmark and a bookmark that mean almost
 the same thing.
 
-It carries the same limit as anything kept in a browser: the chip is per
-browser, so the phone's list and the laptop's list are different lists, and
-clearing the browser clears it. What it does *not* lose is the save itself —
-that is a row in the database, and it keeps counting whatever happens here.
-Losing the local list costs you the view of your own saves, not the marks.
-Making that list follow a person across devices needs accounts, and that is
-the one thing this site still does not have.
+The list belongs to the account, not to the browser: sign in on a laptop and
+it is the same list that was on the phone, and clearing the browser costs
+nothing. `localStorage` still holds a copy under `ttb.saved`, but only so the
+marks are already filled on the next load instead of blank until the server
+answers — the account is the truth, it replaces the copy the moment it
+arrives, and signing out empties it.
 
 The chip is drawn only when there is at least one bookmark, and it goes again
 with the last unsave. If the filter is on when the list empties, the filter
 comes off with the chip — a map narrowed by a chip that is no longer on the
 row is a map with no way back. `?type=saved` is deliberately never written to
-the address bar: a link filtered by one browser's saves is an empty map for
+the address bar: a link filtered by one person's saves is an empty map for
 everybody else.
 
 ### Why there is no separate "like"
@@ -876,11 +882,11 @@ things and disliked that it broadcast their interest. Where the bookmark is not
 public — Airbnb, Spotify, Zillow, Pinterest — one action covers both, and the
 bookmark simply means "keep this".
 
-Nothing here is attributable. There are no accounts, no profiles, and no
-visitor can see who saved what — not even the owner of the site. So the social
-problem that forces the split does not exist, and asking somebody for a bookmark
-*and* a bookmark that mean almost the same thing would be asking twice for one
-answer.
+Nothing here is attributable. There are accounts, but no profiles and no
+public anything: no visitor can see who saved what, and a username never
+appears beside a place. So the social problem that forces the split does not
+exist, and asking somebody for a bookmark *and* a bookmark that mean almost
+the same thing would be asking twice for one answer.
 
 Calling it a save rather than a like also makes the number honest. "Like" is a
 verdict, so a like count mixes *this was excellent* with *I want to try this*.
@@ -889,7 +895,7 @@ clean thing — this many people kept this place.
 
 The closest analogue to this site, Google Maps, does split them: Save for your
 own lists, ratings for the public signal. But its ratings carry your name, and
-this site rules out ratings on the first page. One anonymous bookmark is the
+this site rules out ratings on the first page. One unattributed bookmark is the
 version of that which fits.
 
 ### On "no scores, stars or rankings"
@@ -910,17 +916,32 @@ site, not adding a feature. That is a decision for a person, not a patch.
 
 ### How unique a save actually is
 
-Be clear-eyed about this: **without accounts, no save is truly unique.** There
-is no honest way to tell two people apart on a public web page. What can be
-done is make faking one cost more than it is worth, and that is what this does,
-in three layers — no accounts, no cookies, nothing a visitor has to do.
+**It takes an account.** Pressing the mark while signed out opens the sign-up
+sheet instead of saving, and the server refuses a save that arrives without a
+session — 401, not a quiet no-op.
 
-**1. A client id in `localStorage`.** A random v4 UUID the browser makes for
-itself the first time it saves anything, kept under `ttb.cid`. It is the
-`UNIQUE` half of a save, so the same browser cannot like a place twice, and it
-is what lets somebody take a save back. It is client-supplied and therefore
-*not* a defence — anybody can send a fresh one. It is there to stop honest
-double-taps and to keep the bookmark filled when you come back.
+It was not always so. A browser used to be able to save under a random UUID it
+kept in `localStorage`, with no account anywhere; signing in later moved those
+rows onto the account. It was the friendlier design and it made the number
+underneath a place mean very little: a device id is one per browser, free to
+make, and a fresh one is a cleared storage away — so "saved by 40 people" was
+saved by up to 40 browsers, some of them the same person twice.
+
+The wall has a real cost and it is not pretended away: somebody who would have
+pressed the mark now has to sign up first, and some of them will not. The
+sheet is two fields, it opens on the press itself, and it offers a username so
+nobody has to invent one. That is as small as the wall can be made. What is
+bought with it is a count that means what it says.
+
+An account is still not proof of a person — nothing on a public web page is —
+but it costs something to make and it is the same one on the next phone, which
+is the difference. Two layers stand behind it:
+
+**1. The primary key.** `(place_id, owner)`, where `owner` is the account id
+taken from the session cookie and never from the request body. One account
+holds at most one save per place, pressing twice is a no-op the database
+refuses rather than something the code remembers to check, and there is no way
+to save as somebody else without being signed in as them.
 
 **2. A hashed network fingerprint, as a cap.** The Function computes
 `HMAC(SAVE_SALT, ip + '|' + user agent)` and allows at most **five** saves for
@@ -933,9 +954,16 @@ Instagram link on a phone more than anywhere else — so a hard per-IP rule woul
 let the first Elisa customer like a bakery and then silently refuse every other
 Elisa customer in the country. Folding the user agent in separates most of them
 again; a cap of five leaves room for a household, a table of friends and the
-handful of identical phones that will still collide, while the tenth attempt
-from one fingerprint on one place is the clear-your-storage-and-try-again loop
-this exists to stop.
+handful of identical phones that will still collide, while the sixth account
+pressing one place from one fingerprint is the sign-up-again loop this exists
+to stop.
+
+Since accounts became compulsory this is no longer standing in for a person —
+the account does that — and what is left of its job is limiting how many
+accounts one network may save a single place from. It is kept because that is
+still worth limiting and it costs one indexed read. The honest cost is the
+other way round now: a genuine sixth person behind one carrier NAT, signed in
+to their own account, is refused. Nobody has hit that yet on a map this size.
 
 **3. Turnstile, optional.** Cloudflare's CAPTCHA replacement, in invisible
 mode: no puzzle, no traffic lights, usually nothing the visitor ever sees. It
@@ -944,9 +972,9 @@ only handle humans being cheeky. It is off until you set both halves of the
 key, and the feature works without it.
 
 What this stops: honest duplicates, a curious visitor pressing twenty times,
-and casual gaming. What it does not stop: somebody determined, with a script
-and a VPN, if Turnstile is off. If a discount ever depends on these numbers,
-turn Turnstile on.
+and casual gaming. What it does not stop: somebody determined, with a script,
+a VPN and a fresh account each time, if Turnstile is off. If a discount ever
+depends on these numbers, turn Turnstile on.
 
 ### Is the database exposed?
 
@@ -959,9 +987,10 @@ that one file. So:
 
 - **Every query is a prepared statement with bound parameters.** No value out
   of a request is ever concatenated into SQL.
-- **The only `DELETE` takes a client id as well as a place**, so it can only
-  remove the caller's own row — removing somebody else's would mean guessing a
-  v4 UUID.
+- **The only `DELETE` takes the caller's account as well as a place**, and the
+  account comes from the session cookie rather than the request, so it can
+  only ever remove a row the caller owns. There is nothing in the body to
+  point at somebody else's.
 - **A place id not in `data/restaurants.json` is refused**, so the table cannot
   be filled with rows for places that do not exist.
 - **Nothing personal is stored.** No IP, no user agent, no name — one salted
@@ -971,36 +1000,119 @@ that one file. So:
 
 D1 also has Time Travel, so a bad write is recoverable for 30 days.
 
+### Two databases, and never one
+
+There are two, and the difference matters more than it looks:
+
+| | database | who writes to it |
+|---|---|---|
+| **production** | `tallinntastebuds` | tallinntastebuds.ee |
+| **preview** | `tallinntastebuds-preview` | every preview deployment, and `wrangler pages dev` |
+
+Cloudflare Pages gives a project two environments. Production is whatever is
+deployed from the production branch; **preview is everything else** — a pull
+request, a branch pushed to look at, a deploy from a laptop — each on its own
+`*.tallinntastebuds.pages.dev` URL, running the same Functions against the
+same bindings.
+
+For a while those bindings were the same binding. `wrangler.toml` declared the
+D1 database once, at the top level, and Pages hands the top level to both
+environments — so a bookmark pressed on a preview URL while checking a change
+was a save on the live map, a test account was a real account, and the live
+database's rows were part test data with nothing in them to say which was
+which. Nobody notices that for weeks; that is the whole problem with it.
+
+So the two environments are now declared separately, and the split is held in
+three places:
+
+1. **`wrangler.toml`** names a different `database_id` under
+   `[[env.production.d1_databases]]` and `[[env.preview.d1_databases]]`. Pages
+   allows exactly these two environment names — there is no staging — and
+   picks between them by whether the deployment's branch is the production
+   branch. The preview block is written once and covers every preview
+   deployment; Pages has no per-branch configuration.
+2. **`tools/validate.mjs`** fails the build if those two ever name the same
+   database again, or if either environment stops declaring one. It runs on
+   every push and in front of every deploy.
+3. **The database says which one it is.** Each carries a row in `meta`
+   — `environment` = `production` or `preview` — and every deployment carries
+   a matching `ENVIRONMENT` variable out of `wrangler.toml`. `wrongDatabase()`
+   in `functions/api/_lib.js` compares them once per isolate and switches the
+   whole API off when they disagree: no counts, no accounts, no writes. A
+   binding pointed at the wrong database is then a preview with no saves on
+   it, which is obvious, rather than a test row in the live counts, which is
+   not. A database with no stamp is not blocked — the check cannot tell what
+   it is looking at, and failing on a missing row would be worse than the
+   thing it guards against.
+
+**The two are not kept in step and are not meant to be.** The preview database
+starts empty and stays whatever testing leaves in it; nothing copies rows
+either way. If preview data ever gets in the way, empty it — it is not
+anybody's data.
+
+Because `wrangler.toml` is the [source of
+truth](https://developers.cloudflare.com/pages/functions/wrangler-configuration/#source-of-truth)
+once it exists, the D1 bindings can no longer be edited in the dashboard: the
+file wins. Each environment's configuration is written by a deployment *of
+that environment*, so the preview side only picks up a change to this file
+once a preview deployment has run with it — open a pull request, or run the
+`cloudflare` workflow by hand from a branch that is not the production branch.
+Previews deployed before that still hold the old binding, and the stamp check
+is what stops them writing anywhere they should not.
+
 ### Setting it up
 
-The database is already created — `tallinntastebuds`, id
-`3eb14127-0ef6-4935-954b-e0a593d465ba`, in the `EEUR` region — and its schema
-is applied. Three things remain, all in the Cloudflare dashboard:
+Both databases exist, in the `EEUR` region, with the schema applied and their
+`meta` row stamped:
 
-1. **Bind it.** Pages project → Settings → Bindings → D1 database. Variable
-   name `DB`, database `tallinntastebuds`. This is what `wrangler.toml`
-   describes, and Pages needs it set in the project as well.
-2. **Set `SAVE_SALT`.** Settings → Variables and Secrets → add a *secret*
-   named `SAVE_SALT`, any long random string. **The save endpoint refuses to
-   write without it** — it fails closed rather than storing a weaker hash than
-   it claims to. Changing it later makes every existing fingerprint
-   unmatchable, which resets the caps and leaves the counts alone.
-3. **Turnstile, when you want it.** Create a widget in the Cloudflare
+```
+tallinntastebuds          3eb14127-0ef6-4935-954b-e0a593d465ba
+tallinntastebuds-preview  3dd762d3-1d31-4e54-9f12-a3c0ad93dbca
+```
+
+What remains is in the Cloudflare dashboard, and **secrets are per-environment
+too** — the Production / Preview switch at the top of Settings → Variables and
+Secrets is not decoration, and a secret added to one is simply absent in the
+other:
+
+1. **Set `SAVE_SALT`, twice.** A *secret*, any long random string, once for
+   Production and once for Preview — different values, since there is nothing
+   to gain from fingerprints being comparable across the two. **The save
+   endpoint refuses to write without it**: it fails closed rather than storing
+   a weaker hash than it claims to. Changing it later makes every existing
+   fingerprint unmatchable, which resets the caps and leaves the counts alone.
+2. **Turnstile, when you want it.** Create a widget in the Cloudflare
    dashboard, paste the site key into the `<meta name="turnstile-key">` in
    `index.html`, and add the secret half as `TURNSTILE_SECRET`. Test a save
    after enabling — a misconfigured widget refuses every save.
+3. **Nothing to bind by hand.** The D1 bindings come from `wrangler.toml`, and
+   the dashboard cannot override them.
 
-Re-applying the schema, if it is ever needed:
+Re-applying the schema, or setting up a database from scratch:
 
 ```
-wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
+wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
+wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
+
+wrangler d1 execute tallinntastebuds --remote --command \
+  "INSERT INTO meta (key, value) VALUES ('environment', 'production') \
+   ON CONFLICT(key) DO UPDATE SET value = excluded.value"
+
+wrangler d1 execute tallinntastebuds-preview --remote --command \
+  "INSERT INTO meta (key, value) VALUES ('environment', 'preview') \
+   ON CONFLICT(key) DO UPDATE SET value = excluded.value"
 ```
+
+The stamp is the one thing `db/schema.sql` cannot carry, because it is the one
+value that differs between the two copies. A database that is missing it works
+normally and is simply unguarded, so run it.
 
 ### How it behaves when it is not there
 
 Every failure is quiet and none of them costs anybody the map. If `/api/saves`
-is not deployed, the binding is missing, the salt is unset or the visitor is
-offline, the counts simply do not appear — the bookmark is still a button, the map
+is not deployed, the binding is missing or points at the other environment's
+database, the salt is unset or the visitor is offline, the counts simply do not
+appear — the bookmark is still a button, the map
 still draws, and nothing throws. The counts are fetched last in `boot()` and
 nothing waits on them.
 
@@ -1050,28 +1162,35 @@ number regardless — the POST hands the new one straight back.
 
 ## Accounts
 
-Optional, and deliberately the smallest thing that does the job: **a username
-and a password**. No email required, no phone, no OAuth, no profile, no name.
+Required to save, and deliberately the smallest thing that does the job: **a
+username and a password**. No email required, no phone, no OAuth, no profile,
+no name.
 
-Saving works with no account at all — the device keeps a random id and the
-save is filed under that. An account is the upgrade that makes a list follow a
-person to another phone or browser, and signing in **claims** whatever this
-device already saved rather than starting anybody over. Nobody meets a wall
-before they have a reason to sign up.
+Everything else on the map works signed out. Reading, filtering, the write-ups,
+the photographs, the stories, the discount pass — none of them ask who you
+are. The account exists for one thing: **the mark**. Pressing it signed out
+opens the sheet, because a save has to belong to somebody for the number
+beside it to mean anything. See **How unique a save actually is** for why that
+is worth a sign-up sheet, and what it costs.
 
 ### What signing in actually does to the rows
 
-`saves.owner` holds a `users.id` when the request carries a session and the
-device's own UUID when it does not. The primary key is `(place_id, owner)`, so
-the same account saving the same place from two devices is one row and not two.
+`saves.owner` is a `users.id`, always, taken from the session cookie. The
+primary key is `(place_id, owner)`, so the same account saving the same place
+from two devices is one row and not two, and signing in on a new phone draws
+the marks filled from the account's own list rather than starting anybody over.
 
-Claiming is `UPDATE OR IGNORE` then `DELETE`, in that order. A row that cannot
-move — because the account already holds that place from another device — is
-left alone by the update rather than failing it, and the delete then clears it
-away. The result is a **merge**: the union of what the device had and what the
-account had, nothing counted twice. Every affected count is recomputed from
-the rows afterwards, so a place one person had saved from two devices correctly
-drops from two to one.
+There used to be more to this heading. A browser could save under a random
+UUID of its own, and signing in ran a `claim` — `UPDATE OR IGNORE` then
+`DELETE` — that merged those rows onto the account without double-counting.
+Both the device saves and the claim are gone.
+
+Rows written while device saves were allowed are **still in the table and
+still counted**. They belong to a browser that can no longer sign in, so
+nobody can take them back; they are somebody's saves and deleting them to tidy
+the model would be deleting real presses. `saves.owner_kind` still says
+`'device'` on those and `'user'` on everything written since — no code branches
+on it any more, it is just the record of how a row came to be.
 
 ### The email is optional and buys one thing
 
@@ -1611,8 +1730,10 @@ free tier permanently, HTTPS included.
 4. **Save and Deploy.** First build takes about a minute.
 
 Every push to the production branch redeploys. Pull requests get their own
-preview URL. Nothing needs enabling on the GitHub side — unlike GitHub Pages,
-Cloudflare authorises itself through your own GitHub account.
+preview URL, and a preview URL talks to its own database — see **Two
+databases, and never one** — so anything pressed while checking a change stays
+out of the live counts. Nothing needs enabling on the GitHub side — unlike
+GitHub Pages, Cloudflare authorises itself through your own GitHub account.
 
 ### Or deploy without touching the dashboard
 
@@ -1761,6 +1882,11 @@ curl -sI -H 'Host: tallinntastebuds.ee'        http://127.0.0.1:8788/   # 200
 committed or deployed — `wrangler` is a local tool, not a dependency of the
 site, which still has none.
 
+`wrangler pages dev` reads the top of `wrangler.toml`, which is pointed at
+`tallinntastebuds-preview` rather than the live database on purpose: a local
+session that reaches for the remote database should reach for the one it is
+allowed to break.
+
 [cf-redirects]: https://developers.cloudflare.com/pages/configuration/redirects/
 [cf-headers]: https://developers.cloudflare.com/pages/configuration/headers/
 
@@ -1834,8 +1960,8 @@ functions/_middleware.js   sends the pages.dev address to the real one
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, optional email recovery
 functions/api/_lib.js      what those two share (not a route: leading _)
-db/schema.sql              the one table that Function talks to
-wrangler.toml              the D1 binding (the secrets are NOT in here)
+db/schema.sql              the tables those Functions talk to
+wrangler.toml              the D1 bindings, one per environment (secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are
 verify.html                what a waiter sees after scanning  } unlinked and
 staff.html                 the current code, for the counter  } noindex
@@ -2307,8 +2433,12 @@ data; those do not belong in a static site at all.
 **The attribution control in the bottom-right corner is a licence condition of
 both OpenStreetMap and CARTO. Do not remove it.**
 
-No scripts or fonts beyond the table above. Apart from Google Analytics,
-the only thing stored on a visitor's device is their language choice.
+No scripts or fonts beyond the table above. Apart from Google Analytics, what
+is stored on a visitor's device is five `localStorage` keys and one cookie,
+all of them the visitor's own choices played back: `ttb.lang` and `ttb.style`,
+`ttb.stories.seen` and `ttb.stories.sound`, `ttb.saved` (a cache of the
+account's list, emptied on sign-out), and the `ttb_s` session cookie, which is
+set by the server and only exists once somebody has signed in.
 
 `assets/qr.js` is deliberately **not** in that table. Every QR library worth
 using is a dependency this repo would otherwise not have, and the discount
