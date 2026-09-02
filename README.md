@@ -1647,6 +1647,11 @@ button naming the new one.
 
 Delete the file, or empty it, and the button never appears at all.
 
+The button wears the station's name on a desktop, and on a phone it wears it
+for the first few seconds and again whenever you press play — see
+[The rail introduces itself on a phone](#the-rail-introduces-itself-on-a-phone).
+A station with no `name` gets no label and stays a play triangle.
+
 Requirements for the URL, all three or it will not work:
 
 - **HTTPS.** The page is served over HTTPS, so a plain `http://` stream is
@@ -1757,8 +1762,7 @@ TLS; neither is the test that counts. Pressing the button is.
 
 ## Surprise me
 
-The button under the colour switch on the left rail picks a place at random and
-opens it.
+The top button on the left rail picks a place at random and opens it.
 
 It picks from **whatever the chips currently allow**, so selecting "Korean" and
 "Cheap eats" and then pressing it answers the question you were actually
@@ -1767,9 +1771,40 @@ twice in a row.
 
 It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
-scrolls out of reach is no use. On a phone it collapses to just the die.
+scrolls out of reach is no use.
 
-Under it, at the foot of the rail, is the locate button, which frames you
+### The rail introduces itself on a phone
+
+The rail runs Surprise me, the radio, the colour swatch, the locate button —
+the two that change your evening above the two that change the map, because a
+rail that opens with a colour picker reads as a settings strip rather than as
+the shortcut it is.
+
+On a phone the top two used to lose their labels and arrive as a bare 32px
+disc each: a die and a play triangle over a map, saying nothing. A phone has
+no hover, so the `title` that carries the meaning on a desktop is never read
+out loud, and people did not press them.
+
+So they say what they are on arrival and then stop saying it. Surprise me
+opens wearing its label, the station name follows half a second later — the
+order they are stacked in — both hold for `HINT_MS` (4.2 seconds) and both
+collapse back to the icon, which is the same 32px disc as before. Pressing
+Surprise me shuts its label early, because the question it answered is the
+question the label was there to ask; starting the radio opens the station's
+name the same way, so a triangle in a circle is not the only thing saying what
+is playing. Nothing opens while the sheet is up: the rail lies along the top
+of it as a row there, and a pill at full width would push the buttons after it
+off the side of the screen.
+
+`openHint()` / `closeHint()` in `assets/app.js` do the timing; the pill itself
+is CSS, a `max-width` on the label from `0` to `20ch` — wide enough for the
+longest of the ten translations, `Bana sürpriz yap`, rather than a tidy number
+that would put an ellipsis through the label explaining the button. The
+`hint-open` class does nothing above 860px, where the labels never leave in
+the first place. The colour swatch and the locate button never get one: the
+swatch shows the style you are about to get, and a crosshair is a crosshair.
+
+At the foot of the rail is the locate button, which frames you
 together with the nearest place rather than dropping you at zoom 15 on
 whatever street you are standing in —
 [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
