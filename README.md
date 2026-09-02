@@ -22,6 +22,7 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [The Just added section](#the-just-added-section)
 - [Searching the list](#searching-the-list)
 - [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
+- [Saved places](#saved-places)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Languages](#languages)
 - [Restaurant discounts](#restaurant-discounts)
@@ -196,10 +197,13 @@ are split into their own entries.
 
 ## The order of the filter chips
 
-The chips appear in the order the types are written in `data/taxonomy.json`,
-left to right. That order is set by how many places carry each type, commonest
-first, so the chips people are most likely to want are the ones they do not
-have to scroll for. Today that is:
+Three chips come before any type, and none of them is one: **All**, then
+**Saved** when there is something in the visitor's list (see **Saved places**),
+then **Discount** when a deal is live. After those, the chips appear in the
+order the types are written in `data/taxonomy.json`, left to right. That order
+is set by how many places carry each type, commonest first, so the chips people
+are most likely to want are the ones they do not have to scroll for. Today that
+is:
 
 | # | Type | Places |
 | --- | --- | --- |
@@ -464,6 +468,110 @@ browser's own search boxes do. On a phone the field is 16px, because anything
 smaller makes iOS zoom the whole page on focus and never zoom back out — and
 see **The sheet** in the design notes for what happens to a fixed bottom sheet
 when the keyboard opens over it.
+
+---
+
+## Saved places
+
+The heart in the corner of an open place puts it on a list, and a **Saved**
+chip appears at the front of the filter row to open that list again. Press the
+chip and the map narrows to your places; the panel names the group **My list**
+and, alone among the lists on this site, shows it newest first rather than
+A–Z — the order you saved things in is information, and the place you hearted
+on the way home is the one you are looking for tonight.
+
+The chip is drawn only when there is at least one save, and it goes again with
+the last unsave. If the filter is on when the list empties, the filter comes
+off with the chip: a map narrowed by a chip that is no longer on the row is a
+map with no way back.
+
+### Where the list lives
+
+In the visitor's own browser, under one `localStorage` key, `ttb.saved`, and
+nowhere else:
+
+```js
+["magussoolane", "fotografiska", "180-degrees"]   // newest first
+```
+
+That is the whole storage layer. It means the site keeps its promise on line
+one of this file — static files, no backend, no database — and it means three
+things that are worth being blunt about:
+
+- **The list does not follow anybody.** Saved on a phone, it is not there on
+  a laptop. Clear the browser and it is gone. There is no way to get it back,
+  because nothing anywhere else ever had a copy.
+- **Nothing here is a vote.** Nobody can see anybody else's hearts, the site
+  cannot count them, and no ranking or ordering anywhere reads them. The heart
+  is a bookmark, not a rating.
+- **It is not shareable.** `?type=saved` is deliberately never written to the
+  address bar: a link filtered by a list that lives in one browser is an empty
+  map for everybody else, so the chip filters but does not travel.
+
+An id in storage for a place that has since left `restaurants.json` is dropped
+on the way in rather than counted and then not drawn, and an unparseable value
+is read as an empty list. A stored list can never take the map down with it.
+
+Everything outside the **my list** block in `assets/app.js` goes through
+`readSaved`, `isSaved`, `savedCount` and `toggleSaved`, so that block is the
+only thing that has to change shape if the list ever lives somewhere else.
+
+### What a public like count would take
+
+A number next to the heart saying how many *other* people saved a place is a
+different feature, not a bigger version of this one. It needs two things this
+site does not have: somewhere to keep a count, and a way to tell one visitor
+from another. Without the second, the first counts a script's afternoon.
+
+Nothing without accounts makes a like truly unique. What it can be made is
+more expensive to fake than it is worth, in four layers, all inside Cloudflare
+Pages' free tier and all invisible to a guest:
+
+1. **A signed device cookie.** A Pages Function sets an HttpOnly, `Secure`,
+   two-year cookie: a random id plus an HMAC of it under a secret in the
+   project's environment. Page scripts cannot read or forge it.
+2. **A dedupe row, not a counter.** Store `HMAC(secret, deviceToken +
+   placeId)` with a `UNIQUE (place_id, voter_hash)` constraint and make the
+   like an `INSERT … ON CONFLICT DO NOTHING`. One device, one like per place,
+   and nothing stored that reads back to a person.
+3. **A cap on the network as a second axis.** Also record `HMAC(daily salt, ip
+   + user agent)` and cap likes per day against it. This is what catches the
+   clear-storage-and-do-it-again loop. A cap, not a second dedupe: a café and
+   mobile CGNAT put real strangers behind one address, and the fourth honest
+   person at the same table must not be turned away.
+4. **Turnstile, invisible mode.** Free, no account for the visitor, usually no
+   interaction at all, and it is the layer that actually stops bots — the
+   three above only handle people being cheeky. `request.cf.asn` is on the
+   free plan too, so datacentre networks can be rate-limited harder.
+
+Use **D1** for the storage, not KV. KV is eventually consistent and rate-limits
+writes to a single key, which is precisely wrong for a counter; D1 gives the
+`UNIQUE` constraint that makes the dedupe correct rather than best-effort:
+
+```sql
+CREATE TABLE likes (
+  place_id   TEXT    NOT NULL,
+  voter_hash TEXT    NOT NULL,
+  created_at INTEGER NOT NULL,
+  PRIMARY KEY (place_id, voter_hash)
+);
+```
+
+Serve the counts from one aggregate query behind `GET /api/likes`, cached at
+the edge for a minute. Do **not** write them back into `data/restaurants.json`:
+that file is committed, validated and cache-stamped, and a count is runtime
+state, not data anybody edits.
+
+D1 is not the only free option — Supabase, Neon and Turso all have free tiers
+that would hold a table this size — but D1 is the one that needs no second
+account, no second dashboard and no outbound connection, because the site is
+already on Cloudflare. That is the whole argument for it.
+
+There is a stronger version that still asks nobody to sign up. The site already
+mints hourly HMAC codes per place in `assets/pass.js` and checks them at
+`verify.html` — see **Restaurant discounts**. Move that check server-side and a
+redeemed pass can mint a one-time like for that place, at which point a like
+means *somebody actually turned up*, which is harder to fake than any account.
 
 ---
 
@@ -1403,6 +1511,8 @@ to read and write first.
 - coordinates outside Tallinn's bounding box — which is what catches a swapped
   `lat`/`lng`
 - a `type` used in `restaurants.json` that is not in `taxonomy.json`
+- a taxonomy type claiming a reserved chip id — `discount` or `saved`, the two
+  chips in the row that are not types
 - a taxonomy type missing a label in any language
 - a UI string present in one language but missing in another
 - a photo listed in the data that does not exist in the repo

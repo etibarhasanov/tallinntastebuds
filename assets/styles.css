@@ -1272,6 +1272,58 @@ body.panel-detail .panel {
 .panel-close:hover { background: var(--wash); color: var(--ink); }
 .panel-close svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
 
+/* The heart, one disc to the left of the close. Same size, same paper, same
+   line of the panel's chrome: two things you do to the panel rather than read
+   inside it, so they are drawn as a pair. Both sit in the scroller's top
+   padding band, above where the write-up starts, which is why a second button
+   up here costs the name underneath no width. */
+.panel-like {
+  position: absolute;
+  z-index: 3;
+  top: 5px;
+  right: 52px;             /* the close, its 36px, and the same 8px again */
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: 100px;
+  background: var(--paper);
+  color: var(--muted);
+}
+/* display:grid on a class beats the UA sheet's [hidden] rule, so the list
+   view's hidden heart has to be told to go — the same trap .search-clear
+   falls into further down. */
+.panel-like[hidden] { display: none; }
+.panel-like:hover { background: var(--wash); color: var(--accent); }
+.panel-like svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: fill .18s var(--ease);
+}
+/* Saved is the outline filling in, and nothing else: the button is the same
+   button, in the same place, saying the same word. An empty heart and a full
+   one is the entire vocabulary here, and it is one everybody already reads. */
+.panel-like[aria-pressed="true"] { color: var(--accent); }
+.panel-like[aria-pressed="true"] svg { fill: currentColor; }
+
+/* One beat, on the press. A fill that simply appears reads as a colour that
+   was always there; the beat is what makes it read as something that just
+   happened. Short enough to be over before the toast underneath has finished
+   arriving — and the global reduced-motion rule at the foot of this file
+   takes it out for anyone who has asked for that. */
+.panel-like.is-beating svg { animation: like-beat .42s var(--ease); }
+@keyframes like-beat {
+  30%  { transform: scale(1.26); }
+  58%  { transform: scale(.95); }
+  100% { transform: scale(1); }
+}
+
 /* detail */
 
 .place-head { margin-bottom: 18px; padding-right: 30px; }
@@ -2407,6 +2459,16 @@ body.panel-detail .panel {
   }
   .panel-close svg { width: 19px; height: 19px; stroke-width: 1.8; }
 
+  /* The heart follows it: a target on a phone rather than a mark, and kept
+     the same distance to its left as the close is from the edge. */
+  .panel-like {
+    top: 4px;
+    right: 56px;
+    width: 40px;
+    height: 40px;
+  }
+  .panel-like svg { width: 20px; height: 20px; stroke-width: 1.8; }
+
   /* The sheet used to cover the chip row, which is why the row used to be
      hidden while the panel was open. At the top of the screen it clears even
      the fully dragged-up sheet, so it stays where it is and the filters can
@@ -2468,7 +2530,7 @@ body.panel-detail .panel {
 /* ---------- print: the list, on paper ---------- */
 
 @media print {
-  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .toast, .lightbox, .stories { display: none !important; }
+  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .panel-like, .toast, .lightbox, .stories { display: none !important; }
   body { overflow: visible; background: #fff; }
   .panel {
     position: static;
