@@ -718,6 +718,7 @@ Add an entry to `data/deals.json`:
 ```json
 {
   "id": "bekker-pagariari",
+  "name": "Bekker Pagariäri",
   "live": true,
   "key": "PR3S960YQP1RZ4HR74H5ABSBBZ3XNMCV",
   "offer": { "en": "10% off the bill", "et": "10% arvest" },
@@ -730,6 +731,7 @@ Add an entry to `data/deals.json`:
 | Field | |
 | --- | --- |
 | `id` | Must be a place in `restaurants.json` |
+| `name` | The same name that place has in `restaurants.json`, copied here so the three pass pages never have to load it — see [Why the name is written twice](#why-the-name-is-written-twice) |
 | `live` | `false` keeps it invisible on the map while remaining testable by URL |
 | `key` | 16–64 characters of `0-9 A-Z`, no `I L O U`. **Different for every place** |
 | `offer` | Translations, like `blurb`. A live deal must have `en` at minimum |
@@ -743,9 +745,25 @@ node -e "const A='0123456789ABCDEFGHJKMNPQRSTVWXYZ';console.log([...require('cry
 ```
 
 Then `node tools/validate.mjs`. It refuses a deal pointing at a place that does
-not exist, two deals sharing a key, and anything switched `live` with no words
-in it. The summary line ends with a live-deal count, so CI tells you what is
-switched on.
+not exist, two deals sharing a key, a name that `restaurants.json` disagrees
+with, and anything switched `live` with no words in it. The summary line ends
+with a live-deal count, so CI tells you what is switched on.
+
+### Why the name is written twice
+
+`restaurants.json` is around two hundred kilobytes — every pin on the map, with
+its photos, blurbs and translations. The three pass pages want exactly one
+string out of it, the restaurant's name for the heading, and they were waiting
+for the whole file before the QR could be drawn: on a phone on a slow
+connection that was a second and a half of blank card, in front of a guest
+standing at a till.
+
+So the name is copied into the deal, and the pass pages load `deals.json` and
+`ui.json` only. Copied data goes stale, which is what `tools/validate.mjs`
+exists for: rename a place on the map without renaming it here and CI fails
+with both spellings in the message. Nothing else about a place is duplicated —
+if a fourth field is ever wanted on these pages, the answer is a small
+generated file, not more copying by hand.
 
 ### Testing before anything is public
 
@@ -1467,6 +1485,7 @@ tools/validate.mjs         dependency-free data validator
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
+tools/qrperf.mjs           checks the QR encoder still draws the same code, and times it
 .github/workflows/validate.yml
 .github/workflows/stories.yml   the hourly tick, and the tidying up after it
 ```
@@ -1911,6 +1930,14 @@ pages are the ones most likely to be opened on a bad connection in a cellar,
 so the encoder is written out in the repo instead — ISO/IEC 18004 byte mode,
 error correction level M. It is checked against a reference encoder and a
 scanner, module for module, rather than trusted because it looks like a QR.
+
+`node tools/qrperf.mjs` is what holds it to that. Nine payloads covering
+versions 1 to 10, each recorded as the hash of the finished matrix: a code that
+scanned last week and hashes the same today still scans, so any change to the
+encoder that moves a single module says so immediately. It then times the
+encoder, because this runs on the main thread between the card being cleared
+and the QR appearing — every millisecond there is a millisecond of blank card
+in front of somebody at a till.
 
 ### Analytics
 

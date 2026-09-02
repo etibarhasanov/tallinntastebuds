@@ -19,7 +19,8 @@
  *   - a reel value that is not a real Instagram or TikTok permalink shape
  *   - a phone number that is not in international form, such as +372 661 0180
  *   - a deal in deals.json for a place that does not exist, sharing a key with
- *     another deal, or switched live with nothing written in it
+ *     another deal, switched live with nothing written in it, or carrying a
+ *     name that restaurants.json disagrees with
  *   - a story in stories.json with neither a start nor an end time, an end
  *     before its start, no video or photo (or both), a file that is not in
  *     the repo, or a link to a place that does not exist
@@ -190,6 +191,9 @@ if (taxonomy !== null) {
 
 const places = readJSON('data/restaurants.json');
 const seenIds = new Set();
+/* Kept so deals.json can be checked against it: the pass pages carry the name
+   in the deal rather than downloading the whole map to read one string. */
+const placeNames = new Map();
 const usedTypes = new Set();
 
 if (places !== null) {
@@ -224,6 +228,7 @@ if (places !== null) {
 
       /* name, address */
       if (!isNonEmptyString(place.name)) fail(where, '"name" must be a non-empty string');
+      else if (isNonEmptyString(place.id)) placeNames.set(place.id, place.name);
       if (!isNonEmptyString(place.address)) fail(where, '"address" must be a non-empty string');
 
       /* coordinates */
@@ -381,7 +386,7 @@ if (places !== null) {
    anyone can read them; the hourly rotation is what does the work. See the
    README before treating one as though it were private. */
 
-const DEAL_KEYS = new Set(['id', 'live', 'key', 'offer', 'terms', 'from', 'until']);
+const DEAL_KEYS = new Set(['id', 'name', 'live', 'key', 'offer', 'terms', 'from', 'until']);
 const DEAL_KEY_CHARS = /^[0-9A-HJKMNP-TV-Z]{16,64}$/;
 const DAY = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
 
@@ -411,6 +416,17 @@ if (deals !== null && !Array.isArray(deals)) {
       if (seenIds.size && !seenIds.has(deal.id)) {
         fail(where, `"${deal.id}" is not a place in restaurants.json`);
       }
+    }
+
+    /* The restaurant's name, copied from restaurants.json so that deal.html,
+       verify.html and staff.html never have to load it. Copied data goes
+       stale, so this is the check that stops it: rename a place on the map
+       and CI says so here rather than a guest finding the old name over the
+       QR code. */
+    if (!isNonEmptyString(deal.name)) {
+      fail(where, '"name" must be the restaurant\'s name, copied from restaurants.json');
+    } else if (placeNames.has(deal.id) && placeNames.get(deal.id) !== deal.name) {
+      fail(where, `"name" is "${deal.name}" but restaurants.json calls this place "${placeNames.get(deal.id)}"`);
     }
 
     if (typeof deal.live !== 'boolean') {

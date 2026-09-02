@@ -17,7 +17,7 @@
   var placeId = new URLSearchParams(window.location.search).get('r') || '';
   var timer = null;
 
-  function draw(data, deal, place, t) {
+  function draw(data, deal, t) {
     var hour = P.hourNow();
 
     /* The current code and the one before it: the verifier accepts both, so
@@ -34,7 +34,7 @@
 
       card.appendChild(el('div', { className: 'pass-head' }, [
         el('p', { className: 'eyebrow', textContent: t('staffTitle') }),
-        el('h1', { className: 'pass-name', textContent: place.name })
+        el('h1', { className: 'pass-name', textContent: deal.name })
       ]));
 
       card.appendChild(el('p', { className: 'pass-code', textContent: codes[0] }));
@@ -53,7 +53,7 @@
       /* Redraw a moment after the hour turns, rather than polling. A tablet
          left on this page all evening keeps up on its own. */
       if (timer) clearTimeout(timer);
-      timer = setTimeout(function () { draw(data, deal, place, t); }, P.untilNextHour() + 1000);
+      timer = setTimeout(function () { draw(data, deal, t); }, P.untilNextHour() + 1000);
     }).catch(function () {
       P.clear(card);
       card.appendChild(el('p', { className: 'pass-lede', textContent: t('passInsecure') }));
@@ -69,9 +69,8 @@
     document.title = t('staffTitle') + ' | Tallinn Tastebuds';
 
     var deal = P.find(data.deals, placeId);
-    var place = P.find(data.places, placeId);
 
-    if (!deal || !place) {
+    if (!deal) {
       P.clear(card);
       card.appendChild(el('p', { className: 'pass-lede', textContent: t('passNone') }));
       /* Landing here with no place at all is the likeliest way in, so say
@@ -82,7 +81,7 @@
       return;
     }
 
-    draw(data, deal, place, t);
+    draw(data, deal, t);
   }).catch(function () {
     card.textContent = 'Something went wrong loading the data. Try refreshing the page.';
   });

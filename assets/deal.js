@@ -74,7 +74,7 @@
     timer = setInterval(tick, 1000);
   }
 
-  function draw(data, deal, place) {
+  function draw(data, deal) {
     var hour = P.hourNow();
 
     P.code(deal.key, placeId, hour).then(function (value) {
@@ -86,7 +86,7 @@
 
       card.appendChild(el('div', { className: 'pass-head' }, [
         el('p', { className: 'eyebrow', textContent: t('passHeading') }),
-        el('h1', { className: 'pass-name', textContent: place.name })
+        el('h1', { className: 'pass-name', textContent: deal.name })
       ]));
 
       var offer = P.textFor(deal.offer, data.lang);
@@ -115,7 +115,7 @@
         className: 'pass-clock',
         textContent: t('passUntil', { time: P.clockOf(P.hourStart(hour + 1)) })
       }));
-      startClock(tick, dot, hour, function () { draw(data, deal, place); });
+      startClock(tick, dot, hour, function () { draw(data, deal); });
 
       var terms = P.textFor(deal.terms, data.lang);
       if (terms) card.appendChild(el('p', { className: 'pass-terms', textContent: terms }));
@@ -137,14 +137,13 @@
     document.title = t('passTitle') + ' | Tallinn Tastebuds';
 
     var deal = P.find(data.deals, placeId);
-    var place = P.find(data.places, placeId);
-    if (!deal || !place) { message(t('passNone')); return; }
+    if (!deal) { message(t('passNone')); return; }
 
     var run = P.windowState(deal);
     if (run === 'notyet') { message(t('verifyNotYetNote')); return; }
     if (run === 'ended') { message(t('verifyEndedNote')); return; }
 
-    draw(data, deal, place);
+    draw(data, deal);
   }).catch(function () {
     card.textContent = 'Something went wrong loading the data. Try refreshing the page.';
   });
