@@ -1272,33 +1272,42 @@ body.panel-detail .panel {
 .panel-close:hover { background: var(--wash); color: var(--ink); }
 .panel-close svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
 
-/* The heart, one disc to the left of the close. Same size, same paper, same
-   line of the panel's chrome: two things you do to the panel rather than read
-   inside it, so they are drawn as a pair. Both sit in the scroller's top
-   padding band, above where the write-up starts, which is why a second button
-   up here costs the name underneath no width. */
+/* The heart, one step to the left of the close. Same paper, same height, same
+   line of the panel's chrome — two things you do TO the panel rather than
+   read inside it, so they are drawn as a pair. Both sit in the scroller's top
+   padding band, above where the write-up begins, which is why a second
+   control up here costs the name underneath no width.
+
+   A disc while it is only a heart, a pill once it carries a number: the width
+   is left to the content so a count of 3 and a count of 148 both sit properly
+   inside it, and `right` is measured from the close rather than from the edge
+   so growing leftwards never walks into it. */
 .panel-like {
   position: absolute;
   z-index: 3;
   top: 5px;
   right: 52px;             /* the close, its 36px, and the same 8px again */
-  display: grid;
-  place-items: center;
-  width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 36px;
   height: 36px;
+  padding: 0 10px;
   border: 1px solid transparent;
   border-radius: 100px;
   background: var(--paper);
   color: var(--muted);
 }
-/* display:grid on a class beats the UA sheet's [hidden] rule, so the list
-   view's hidden heart has to be told to go — the same trap .search-clear
-   falls into further down. */
+/* display on a class beats the UA sheet's [hidden] rule, so the list view's
+   hidden heart has to be told to go — the same trap .search-clear falls into
+   further down. */
 .panel-like[hidden] { display: none; }
 .panel-like:hover { background: var(--wash); color: var(--accent); }
 .panel-like svg {
   width: 18px;
   height: 18px;
+  flex: 0 0 auto;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.7;
@@ -1306,22 +1315,44 @@ body.panel-detail .panel {
   stroke-linejoin: round;
   transition: fill .18s var(--ease);
 }
-/* Saved is the outline filling in, and nothing else: the button is the same
-   button, in the same place, saying the same word. An empty heart and a full
-   one is the entire vocabulary here, and it is one everybody already reads. */
+/* Liked is the outline filling in, and nothing else: the same button, in the
+   same place, saying the same word. An empty heart and a full one is the
+   entire vocabulary here, and everybody already reads it. */
 .panel-like[aria-pressed="true"] { color: var(--accent); }
 .panel-like[aria-pressed="true"] svg { fill: currentColor; }
 
-/* One beat, on the press. A fill that simply appears reads as a colour that
-   was always there; the beat is what makes it read as something that just
-   happened. Short enough to be over before the toast underneath has finished
-   arriving — and the global reduced-motion rule at the foot of this file
-   takes it out for anyone who has asked for that. */
+/* The count. Tabular figures so the pill does not jitter as it goes from 9 to
+   10, and no slot at all at zero — a "0" under a heart reads as a verdict on
+   the restaurant rather than as nobody having pressed it yet. */
+.like-n {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.panel-like:not(.has-n) { padding: 0; width: 36px; }
+.panel-like:not(.has-n) .like-n { display: none; }
+
+/* One beat, on the press. Short enough to be over before a toast underneath
+   has finished arriving, and the global reduced-motion rule at the foot of
+   this file takes it out for anyone who has asked for that. */
 .panel-like.is-beating svg { animation: like-beat .42s var(--ease); }
 @keyframes like-beat {
   30%  { transform: scale(1.26); }
   58%  { transform: scale(.95); }
   100% { transform: scale(1); }
+}
+
+/* Turnstile in invisible mode still wants somewhere to render. It draws
+   nothing a visitor can see, but left in the flow it is a 300px hole at the
+   foot of the page. */
+.turnstile-box {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
 }
 
 /* detail */
@@ -2459,15 +2490,17 @@ body.panel-detail .panel {
   }
   .panel-close svg { width: 19px; height: 19px; stroke-width: 1.8; }
 
-  /* The heart follows it: a target on a phone rather than a mark, and kept
-     the same distance to its left as the close is from the edge. */
+  /* The heart follows it: a target on a phone rather than a mark, kept the
+     same distance to its left as the close is from the edge. */
   .panel-like {
     top: 4px;
     right: 56px;
-    width: 40px;
+    min-width: 40px;
     height: 40px;
   }
+  .panel-like:not(.has-n) { width: 40px; }
   .panel-like svg { width: 20px; height: 20px; stroke-width: 1.8; }
+  .like-n { font-size: 13px; }
 
   /* The sheet used to cover the chip row, which is why the row used to be
      hidden while the panel was open. At the top of the screen it clears even

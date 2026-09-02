@@ -2,6 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- The public half of a Cloudflare Turnstile widget, which is the layer that
+     stops scripts rather than people from running the like count up. Empty
+     means off: assets/app.js does not load Turnstile at all, the like still
+     works, and the cap in functions/api/likes.js carries it alone. Paste the
+     site key here and set TURNSTILE_SECRET in the Pages project to turn it
+     on — nothing else changes. -->
+<meta name="turnstile-key" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tallinn Tastebuds | Where to eat in Tallinn</title>
 <meta name="description" content="A hand picked map of restaurants, bakeries, cafes and bars in Tallinn I have been to myself and approved. No scores: being on the map is the verdict.">
@@ -55,7 +62,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=a0de9384">
+<link rel="stylesheet" href="assets/styles.css?v=281eb2bf">
 </head>
 <body>
 
@@ -134,23 +141,23 @@
   <button type="button" class="panel-close" id="panel-close" data-i18n-aria-label="close" aria-label="Close">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
   </button>
-  <!-- The heart, next to the close, because saving a place and leaving it are
-       the two things you do TO a panel rather than read in one, and the corner
-       is where the thumb already is. It belongs to the chrome and not to the
-       write-up under it: the write-up is rebuilt on every language switch and
-       scrolls away, and neither should be able to take the heart with it.
+  <!-- The heart, and next to it how many other people have pressed it. In the
+       panel's chrome rather than in the write-up under it: the write-up is
+       rebuilt on every language switch and scrolls away, and the one thing on
+       this panel you act on should do neither.
 
-       Drawn only on a place. There is no one place to save from a list of
-       seventy, so the list view hides it — assets/app.js does that in
-       renderPanel, beside everything else that changes with the view.
+       Drawn only on a place — there is no one place to like from a list of
+       seventy — which assets/app.js decides in renderPanel alongside
+       everything else that turns on the view.
 
-       A toggle keeps one name and flips aria-pressed; it does not rename
-       itself to the opposite of what it is. So the label is set once from
-       ui.json and only the pressed state moves. -->
+       A toggle keeps one name and flips aria-pressed under it; it does not
+       rename itself to the opposite of what it is. The count rides in its own
+       span so it can change without the label being rebuilt, and it is
+       spelled into the button's label for anybody who cannot see it. -->
   <button type="button" class="panel-like" id="panel-like" aria-pressed="false"
-          data-i18n-aria-label="savePlace" data-i18n-title="savePlace"
-          aria-label="Save to my list" title="Save to my list" hidden>
+          aria-label="Like this place" title="Like this place" hidden>
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <span class="like-n" id="panel-like-n" aria-hidden="true"></span>
   </button>
   <div class="panel-scroll" id="panel-scroll">
     <article id="panel-detail" hidden></article>
@@ -276,6 +283,6 @@
      lookup and date helpers from it, to work out whether a place has a
      discount worth showing; with no deals set up that answer is always no. -->
 <script src="assets/pass.js?v=41008114" defer></script>
-<script src="assets/app.js?v=566caa13" defer></script>
+<script src="assets/app.js?v=b477cc41" defer></script>
 </body>
 </html>

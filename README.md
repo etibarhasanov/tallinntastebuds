@@ -7,8 +7,14 @@ read the write-up, watch the reel.
 There are no scores, stars or rankings anywhere, and there never will be.
 Being on the map is the verdict.
 
-Static files only — no backend, no database, no build step, no npm install, no
-API keys. Adding a place means editing one JSON file and pushing.
+Static files, one small Function, no build step and no npm install. Adding a
+place means editing one JSON file and pushing.
+
+The one exception to "static" is the like count: hearts are a number about
+other people, so they live in a Cloudflare D1 database behind
+`/api/likes`. Everything else on the map — the places, the write-ups, the
+discounts, the stories — is still a JSON file in this repository, and the site
+renders completely with the database switched off. See **Likes**.
 
 ---
 
@@ -22,10 +28,10 @@ API keys. Adding a place means editing one JSON file and pushing.
 - [The Just added section](#the-just-added-section)
 - [Searching the list](#searching-the-list)
 - [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
-- [Saved places](#saved-places)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Languages](#languages)
 - [Restaurant discounts](#restaurant-discounts)
+- [Likes](#likes)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -197,13 +203,10 @@ are split into their own entries.
 
 ## The order of the filter chips
 
-Three chips come before any type, and none of them is one: **All**, then
-**Saved** when there is something in the visitor's list (see **Saved places**),
-then **Discount** when a deal is live. After those, the chips appear in the
-order the types are written in `data/taxonomy.json`, left to right. That order
-is set by how many places carry each type, commonest first, so the chips people
-are most likely to want are the ones they do not have to scroll for. Today that
-is:
+The chips appear in the order the types are written in `data/taxonomy.json`,
+left to right. That order is set by how many places carry each type, commonest
+first, so the chips people are most likely to want are the ones they do not
+have to scroll for. Today that is:
 
 | # | Type | Places |
 | --- | --- | --- |
@@ -468,110 +471,6 @@ browser's own search boxes do. On a phone the field is 16px, because anything
 smaller makes iOS zoom the whole page on focus and never zoom back out — and
 see **The sheet** in the design notes for what happens to a fixed bottom sheet
 when the keyboard opens over it.
-
----
-
-## Saved places
-
-The heart in the corner of an open place puts it on a list, and a **Saved**
-chip appears at the front of the filter row to open that list again. Press the
-chip and the map narrows to your places; the panel names the group **My list**
-and, alone among the lists on this site, shows it newest first rather than
-A–Z — the order you saved things in is information, and the place you hearted
-on the way home is the one you are looking for tonight.
-
-The chip is drawn only when there is at least one save, and it goes again with
-the last unsave. If the filter is on when the list empties, the filter comes
-off with the chip: a map narrowed by a chip that is no longer on the row is a
-map with no way back.
-
-### Where the list lives
-
-In the visitor's own browser, under one `localStorage` key, `ttb.saved`, and
-nowhere else:
-
-```js
-["magussoolane", "fotografiska", "180-degrees"]   // newest first
-```
-
-That is the whole storage layer. It means the site keeps its promise on line
-one of this file — static files, no backend, no database — and it means three
-things that are worth being blunt about:
-
-- **The list does not follow anybody.** Saved on a phone, it is not there on
-  a laptop. Clear the browser and it is gone. There is no way to get it back,
-  because nothing anywhere else ever had a copy.
-- **Nothing here is a vote.** Nobody can see anybody else's hearts, the site
-  cannot count them, and no ranking or ordering anywhere reads them. The heart
-  is a bookmark, not a rating.
-- **It is not shareable.** `?type=saved` is deliberately never written to the
-  address bar: a link filtered by a list that lives in one browser is an empty
-  map for everybody else, so the chip filters but does not travel.
-
-An id in storage for a place that has since left `restaurants.json` is dropped
-on the way in rather than counted and then not drawn, and an unparseable value
-is read as an empty list. A stored list can never take the map down with it.
-
-Everything outside the **my list** block in `assets/app.js` goes through
-`readSaved`, `isSaved`, `savedCount` and `toggleSaved`, so that block is the
-only thing that has to change shape if the list ever lives somewhere else.
-
-### What a public like count would take
-
-A number next to the heart saying how many *other* people saved a place is a
-different feature, not a bigger version of this one. It needs two things this
-site does not have: somewhere to keep a count, and a way to tell one visitor
-from another. Without the second, the first counts a script's afternoon.
-
-Nothing without accounts makes a like truly unique. What it can be made is
-more expensive to fake than it is worth, in four layers, all inside Cloudflare
-Pages' free tier and all invisible to a guest:
-
-1. **A signed device cookie.** A Pages Function sets an HttpOnly, `Secure`,
-   two-year cookie: a random id plus an HMAC of it under a secret in the
-   project's environment. Page scripts cannot read or forge it.
-2. **A dedupe row, not a counter.** Store `HMAC(secret, deviceToken +
-   placeId)` with a `UNIQUE (place_id, voter_hash)` constraint and make the
-   like an `INSERT … ON CONFLICT DO NOTHING`. One device, one like per place,
-   and nothing stored that reads back to a person.
-3. **A cap on the network as a second axis.** Also record `HMAC(daily salt, ip
-   + user agent)` and cap likes per day against it. This is what catches the
-   clear-storage-and-do-it-again loop. A cap, not a second dedupe: a café and
-   mobile CGNAT put real strangers behind one address, and the fourth honest
-   person at the same table must not be turned away.
-4. **Turnstile, invisible mode.** Free, no account for the visitor, usually no
-   interaction at all, and it is the layer that actually stops bots — the
-   three above only handle people being cheeky. `request.cf.asn` is on the
-   free plan too, so datacentre networks can be rate-limited harder.
-
-Use **D1** for the storage, not KV. KV is eventually consistent and rate-limits
-writes to a single key, which is precisely wrong for a counter; D1 gives the
-`UNIQUE` constraint that makes the dedupe correct rather than best-effort:
-
-```sql
-CREATE TABLE likes (
-  place_id   TEXT    NOT NULL,
-  voter_hash TEXT    NOT NULL,
-  created_at INTEGER NOT NULL,
-  PRIMARY KEY (place_id, voter_hash)
-);
-```
-
-Serve the counts from one aggregate query behind `GET /api/likes`, cached at
-the edge for a minute. Do **not** write them back into `data/restaurants.json`:
-that file is committed, validated and cache-stamped, and a count is runtime
-state, not data anybody edits.
-
-D1 is not the only free option — Supabase, Neon and Turso all have free tiers
-that would hold a table this size — but D1 is the one that needs no second
-account, no second dashboard and no outbound connection, because the site is
-already on Cloudflare. That is the whole argument for it.
-
-There is a stronger version that still asks nobody to sign up. The site already
-mints hourly HMAC codes per place in `assets/pass.js` and checks them at
-`verify.html` — see **Restaurant discounts**. Move that check server-side and a
-redeemed pass can mint a one-time like for that place, at which point a like
-means *somebody actually turned up*, which is harder to fake than any account.
 
 ---
 
@@ -882,6 +781,127 @@ picks up a `functions/` directory on the deploy you already have. The key
 moves server-side, a KV write makes each code single-use, and only
 `assets/verify.js` changes — swap the local HMAC for a `fetch`. Roughly fifty
 lines, and the guest-facing half stays exactly as it is.
+
+---
+
+## Likes
+
+The heart in the corner of an open place, and the number beside it: how many
+people have pressed it. It is the only thing on this site that is not a static
+file, because it is the only thing that is about other people.
+
+Press it again to take it back. The count hides at zero — a "0" under a heart
+reads as a verdict on the restaurant rather than as nobody having pressed it
+yet.
+
+### How unique a like actually is
+
+Be clear-eyed about this: **without accounts, no like is truly unique.** There
+is no honest way to tell two people apart on a public web page. What can be
+done is make faking one cost more than it is worth, and that is what this does,
+in three layers — no accounts, no cookies, nothing a visitor has to do.
+
+**1. A client id in `localStorage`.** A random v4 UUID the browser makes for
+itself the first time it likes anything, kept under `ttb.cid`. It is the
+`UNIQUE` half of a like, so the same browser cannot like a place twice, and it
+is what lets somebody take a like back. It is client-supplied and therefore
+*not* a defence — anybody can send a fresh one. It is there to stop honest
+double-taps and to keep the heart filled when you come back.
+
+**2. A hashed network fingerprint, as a cap.** The Function computes
+`HMAC(LIKE_SALT, ip + '|' + user agent)` and allows at most **five** likes for
+one place from one fingerprint. The raw IP is never stored and cannot be
+recovered from the hash without the salt.
+
+A cap and not "one like per IP", deliberately. Estonian mobile carriers put
+thousands of phones behind one public address, and this map is opened from an
+Instagram link on a phone more than anywhere else — so a hard per-IP rule would
+let the first Elisa customer like a bakery and then silently refuse every other
+Elisa customer in the country. Folding the user agent in separates most of them
+again; a cap of five leaves room for a household, a table of friends and the
+handful of identical phones that will still collide, while the tenth attempt
+from one fingerprint on one place is the clear-your-storage-and-try-again loop
+this exists to stop.
+
+**3. Turnstile, optional.** Cloudflare's CAPTCHA replacement, in invisible
+mode: no puzzle, no traffic lights, usually nothing the visitor ever sees. It
+is the only layer that stops a *script* rather than a person — the two above
+only handle humans being cheeky. It is off until you set both halves of the
+key, and the feature works without it.
+
+What this stops: honest duplicates, a curious visitor pressing twenty times,
+and casual gaming. What it does not stop: somebody determined, with a script
+and a VPN, if Turnstile is off. If a discount ever depends on these numbers,
+turn Turnstile on.
+
+### Is the database exposed?
+
+No. **D1 has no public endpoint** — there is no host, no port and no connection
+string anybody can point a tool at. It is reachable from a Worker holding a
+binding to it and from the Cloudflare API with your account credentials, and
+from nowhere else. A visitor can only ever reach the two handlers in
+`functions/api/likes.js`, which means the attack surface of the database is
+that one file. So:
+
+- **Every query is a prepared statement with bound parameters.** No value out
+  of a request is ever concatenated into SQL.
+- **The only `DELETE` takes a client id as well as a place**, so it can only
+  remove the caller's own row — removing somebody else's would mean guessing a
+  v4 UUID.
+- **A place id not in `data/restaurants.json` is refused**, so the table cannot
+  be filled with rows for places that do not exist.
+- **Nothing personal is stored.** No IP, no user agent, no name — one salted
+  one-way hash, useless to anybody without the secret.
+- **The realistic worst case is an inflated number, not a breach.** There is
+  nothing in this table worth stealing.
+
+D1 also has Time Travel, so a bad write is recoverable for 30 days.
+
+### Setting it up
+
+The database is already created — `tallinntastebuds`, id
+`3eb14127-0ef6-4935-954b-e0a593d465ba`, in the `EEUR` region — and its schema
+is applied. Three things remain, all in the Cloudflare dashboard:
+
+1. **Bind it.** Pages project → Settings → Bindings → D1 database. Variable
+   name `DB`, database `tallinntastebuds`. This is what `wrangler.toml`
+   describes, and Pages needs it set in the project as well.
+2. **Set `LIKE_SALT`.** Settings → Variables and Secrets → add a *secret*
+   named `LIKE_SALT`, any long random string. **The like endpoint refuses to
+   write without it** — it fails closed rather than storing a weaker hash than
+   it claims to. Changing it later makes every existing fingerprint
+   unmatchable, which resets the caps and leaves the counts alone.
+3. **Turnstile, when you want it.** Create a widget in the Cloudflare
+   dashboard, paste the site key into the `<meta name="turnstile-key">` in
+   `index.html`, and add the secret half as `TURNSTILE_SECRET`. Test a like
+   after enabling — a misconfigured widget refuses every like.
+
+Re-applying the schema, if it is ever needed:
+
+```
+wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
+```
+
+### How it behaves when it is not there
+
+Every failure is quiet and none of them costs anybody the map. If `/api/likes`
+is not deployed, the binding is missing, the salt is unset or the visitor is
+offline, the counts simply do not appear — the heart is still a button, the map
+still draws, and nothing throws. The counts are fetched last in `boot()` and
+nothing waits on them.
+
+A press is optimistic: the heart fills and the number moves at once, because
+waiting for a round trip on mobile data feels broken. The server's answer
+replaces the number a moment later, and anything that goes wrong puts both back
+exactly as they were and says so in a toast.
+
+### The counts are cached for a minute
+
+`GET /api/likes` returns every place's count in one request — the map asks once
+on the way in rather than seventy-four times — and it is held at the edge for
+60 seconds, so the aggregate runs once a minute per location however much
+traffic arrives. Somebody who has just liked never sees the stale copy: the
+POST hands the new number straight back.
 
 ---
 
@@ -1511,8 +1531,6 @@ to read and write first.
 - coordinates outside Tallinn's bounding box — which is what catches a swapped
   `lat`/`lng`
 - a `type` used in `restaurants.json` that is not in `taxonomy.json`
-- a taxonomy type claiming a reserved chip id — `discount` or `saved`, the two
-  chips in the row that are not types
 - a taxonomy type missing a label in any language
 - a UI string present in one language but missing in another
 - a photo listed in the data that does not exist in the repo
@@ -1554,6 +1572,10 @@ to read and write first.
 index.html                 the whole page
 assets/styles.css          design tokens at the top, then everything else
 assets/app.js              map, panel, filters, i18n, lightbox — no framework
+functions/_middleware.js   sends the pages.dev address to the real one
+functions/api/likes.js     the like count: the only server-side code here
+db/schema.sql              the one table that Function talks to
+wrangler.toml              the D1 binding (the secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are
 verify.html                what a waiter sees after scanning  } unlinked and
 staff.html                 the current code, for the counter  } noindex
