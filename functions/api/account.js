@@ -166,7 +166,18 @@ async function savedByUser(env, userId) {
  */
 export async function onRequestGet(context) {
   const { request, env } = context;
-  if (!env.DB) return json({ user: null }, 200);
+
+  /* Whether accounts work at all here. Both are set in the Pages project and
+     neither has a sensible default: without the binding there is nowhere to
+     put a user, and without the salt the sign-in route refuses to write.
+
+     This is reported rather than assumed because the client hides the whole
+     account button unless it comes back true. A deploy that reaches the site
+     before the bindings do would otherwise show a sign-up sheet that could
+     only ever answer "something went wrong", which is worse than showing
+     nothing at all. */
+  const ready = !!(env.DB && env.SAVE_SALT);
+  if (!ready) return json({ ready: false, user: null, email: false }, 200);
 
   const url = new URL(request.url);
   if (url.searchParams.get('suggest')) {
@@ -176,7 +187,7 @@ export async function onRequestGet(context) {
   }
 
   const user = await sessionUser(request, env);
-  if (!user) return json({ user: null, email: emailReady(env) }, 200);
+  if (!user) return json({ ready: true, user: null, email: emailReady(env) }, 200);
 
   const row = await env.DB
     .prepare('SELECT email, email_verified FROM users WHERE id = ?')
@@ -184,6 +195,7 @@ export async function onRequestGet(context) {
     .first();
 
   return json({
+    ready: true,
     user: user.username,
     saved: await savedByUser(env, user.id),
     /* Whether an address is on the account, and whether the site can send to

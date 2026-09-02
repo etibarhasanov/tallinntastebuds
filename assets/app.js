@@ -89,7 +89,7 @@
     /* Who is signed in, whether they have a recovery address on file, and
        whether the site can send email at all. All three come from
        /api/account and all three are absent until it answers. */
-    account: { user: null, recovery: false, email: false },
+    account: { ready: false, user: null, recovery: false, email: false },
     selected: null,      // restaurant id, or null
     /* The place you last opened, kept lit on the map after the panel shuts.
        Closing a write-up used to put the pin back in the crowd, so the answer
@@ -1475,6 +1475,11 @@
       .then(function (out) {
         if (!out) return;
         state.account = {
+          /* The endpoint says whether accounts are actually usable — the
+             database bound, the salt set. Until it says yes there is no
+             button, because a sign-up sheet that can only fail is worse than
+             no sign-up sheet at all. */
+          ready: !!out.ready,
           user: out.user || null,
           recovery: !!out.recovery,
           email: !!out.email
@@ -1504,9 +1509,11 @@
 
   function paintAccountButton() {
     if (!dom.btnAccount) return;
-    /* Drawn only once the endpoint has answered: a sign-in button on a site
-       whose Function is not deployed is a button that can only disappoint. */
-    dom.btnAccount.hidden = false;
+    /* Drawn only once the endpoint has answered that it can do the job: a
+       sign-in button on a site whose Function is not deployed, or whose
+       database is not bound yet, is a button that can only disappoint. */
+    dom.btnAccount.hidden = !state.account.ready;
+    if (!state.account.ready) return;
     var name = state.account.user;
     dom.accountLabel.textContent = name || t('accountOpen');
     dom.btnAccount.setAttribute('aria-label', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
@@ -1702,7 +1709,16 @@
     var out = el('button', { type: 'button', className: 'ac-alt', textContent: t('accountSignOut') });
     out.addEventListener('click', function () {
       accountPost({ action: 'logout' }).then(function () {
-        state.account = { user: null, recovery: false, email: state.account.email };
+        /* Only the person changes. Whether accounts work here at all, and
+           whether email is configured, are facts about the deployment and
+           survive somebody signing out of it — dropping `ready` would hide
+           the button that is the way back in. */
+        state.account = {
+          ready: state.account.ready,
+          user: null,
+          recovery: false,
+          email: state.account.email
+        };
         /* The account's list goes with the account. What this browser saved
            before signing in was claimed on the way in and is not coming back
            here — it is on the account now, waiting for the next sign-in. */

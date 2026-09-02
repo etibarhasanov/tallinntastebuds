@@ -910,6 +910,14 @@ a:hover { color: var(--accent-lit); }
 
 /* ---------- random pick ---------- */
 
+/* display on a class beats the UA sheet's [hidden] rule, so every button in
+   here that can be taken away has to be told to go. Two are: the radio, when
+   data/radio.json has no station for the language, and the account, until
+   /api/account says the database behind it is actually bound. Without this
+   both draw as an empty pill instead of not drawing at all — the same trap
+   .search-clear and .panel-save fall into further down. */
+.dice[hidden] { display: none; }
+
 .dice {
   flex: 0 0 auto;
   display: flex;
