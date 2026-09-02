@@ -1636,10 +1636,11 @@ body.panel-detail .panel {
 .section > .eyebrow { margin-bottom: 8px; }
 
 .blurb { font-size: 15px; line-height: 1.65; }
-/* The write-up used to open the panel and so needed no room above it. The
-   reel and the photos took that spot, and without this the paragraph runs
-   straight on from whatever the section above it ended with. */
-.section + .blurb { margin-top: 18px; }
+/* The write-up opens the panel, and the head above it carries the gap. The
+   one thing that can come between them is the closed note, which is set
+   tight against the flag it explains — so the paragraph brings its own room
+   in that case rather than running straight on from a grey line. */
+.is-shut-note + .blurb { margin-top: 14px; }
 .blurb.is-todo { color: var(--muted); }
 
 .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
