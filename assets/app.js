@@ -85,7 +85,7 @@
     radio: null,         // the station from data/radio.json, or nothing
     active: [],          // selected type ids, OR semantics; empty means "All"
     saves: {},           // place id -> how many people, from /api/saves
-    saved: [],           // the places this browser (or account) has saved
+    saved: [],           // the places the signed-in account has saved
     /* Who is signed in, whether they have a recovery address on file, and
        whether the site can send email at all. All three come from
        /api/account and all three are absent until it answers. */
@@ -1111,25 +1111,27 @@
    * functions/api/saves.js for the server half and the README for the honest
    * account of how unique a save actually is.
    *
-   * What is kept locally is only what the browser needs to draw itself:
+   * IT TAKES AN ACCOUNT
    *
-   *   ttb.cid    a v4 UUID this browser made for itself the first time it
-   *              saved anything. It is what the server uses as the unique
-   *              half of a save, and what lets a save be taken back. It is
-   *              not an account and identifies nobody: it never leaves this
-   *              browser except as one opaque string on a save.
+   * Pressing the mark signed out opens the account sheet instead of saving.
+   * A browser used to be able to save under a random id it made for itself,
+   * which meant the number under a place counted browsers: one per phone, one
+   * more after clearing storage, and free to make as many as you liked. The
+   * wall is a real cost — some people will press once, see a sign-up sheet
+   * and go — and it is the price of the number meaning what it says.
    *
-   *   ttb.saved  which places this browser has saved, so the mark is already
-   *              filled when you come back rather than looking untouched
-   *              until the server is asked. Losing it costs the fill, not the
-   *              save — the save is in the database, and pressing again is
-   *              refused by the primary key rather than counted twice.
+   * What is kept locally is one thing, and it is a cache and not a record:
+   *
+   *   ttb.saved  which places the account signed in here has saved, so the
+   *              marks are already filled on the next load rather than blank
+   *              until /api/account answers. The account is the truth and
+   *              replaces this the moment it arrives; signing out empties it.
+   *              Losing it costs the fill, never the save.
    *
    * The counts themselves are never cached locally. A number that is meant to
    * be other people is worth being told fresh.
    */
 
-  var CID_KEY = 'ttb.cid';
   var SAVED_KEY = 'ttb.saved';
 
   /* A chip id that is not a taxonomy type, reserved the way "discount" is and
@@ -1156,33 +1158,6 @@
         if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderList();
       })
       .catch(function () { /* no counts is a fine state to be in */ });
-  }
-
-  /* Made once, on the first save, and never before: a browser that only ever
-     reads the map is not given an id for something it has not done. */
-  function clientId() {
-    var id = storeGet(CID_KEY);
-    if (id) return id;
-    id = (window.crypto && window.crypto.randomUUID)
-      ? window.crypto.randomUUID()
-      /* Safari before 15.4 has crypto but not randomUUID. getRandomValues is
-         everywhere, so the shape is assembled by hand from real entropy
-         rather than falling back to Math.random. */
-      : uuidFromBytes();
-    storeSet(CID_KEY, id);
-    return id;
-  }
-
-  function uuidFromBytes() {
-    var b = new Uint8Array(16);
-    window.crypto.getRandomValues(b);
-    b[6] = (b[6] & 0x0f) | 0x40;   /* version 4 */
-    b[8] = (b[8] & 0x3f) | 0x80;   /* variant 1 */
-    var hex = [];
-    for (var i = 0; i < 16; i++) hex.push((b[i] + 0x100).toString(16).slice(1));
-    return hex.slice(0, 4).join('') + '-' + hex.slice(4, 6).join('') + '-' +
-           hex.slice(6, 8).join('') + '-' + hex.slice(8, 10).join('') + '-' +
-           hex.slice(10, 16).join('');
   }
 
   function readSaved() {
@@ -1247,7 +1222,7 @@
   }
 
   /* The mark's three jobs: be on screen only when there is a place to save,
-     say whether this browser has saved it, and carry the count. The count is
+     say whether the signed-in account has saved it, and carry the count. It is
      hidden at zero — "0" under a mark reads as a verdict on the place rather
      than as nobody having pressed it yet. */
   function paintSave() {
@@ -1370,6 +1345,22 @@
     var place = state.selected ? byId(state.selected) : null;
     if (!place || saveBusy) return;
 
+    /* No account, no save. The sheet opens on the press rather than a toast
+       telling somebody to go and find the button themselves: they have just
+       said what they want, and the next thing on screen should be the way to
+       get it. It opens on sign-in, not sign-up, because somebody who already
+       has an account is the likelier of the two to be pressing this — and
+       "Need an account?" is one tap away inside the sheet.
+
+       If the endpoint has not answered yet, or answered that accounts are not
+       usable on this deployment, there is nothing to open and nothing that
+       could work; the mark says so and stays as it was. */
+    if (!state.account.user) {
+      if (!state.account.ready) { toast(t('saveFailed')); return; }
+      openAccount('in', t('saveSignIn'));
+      return;
+    }
+
     var wasSaved = isSaved(place.id);
     var wasCount = saveCount(place.id);
     var on = !wasSaved;
@@ -1399,7 +1390,6 @@
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           place: place.id,
-          client: clientId(),
           on: on,
           token: token
         })
@@ -1415,6 +1405,22 @@
            one, so it survives the revert. */
         if (typeof answer.out.n === 'number') state.saves[place.id] = answer.out.n;
         paintSave();
+        /* The session ended while this page was open — a year-long cookie, so
+           rare, but the sheet is a year old on somebody's phone eventually.
+           The page catches up with the server rather than arguing with it:
+           signed out here too, marks cleared, and the same sheet the press
+           would have opened had we known. */
+        if (answer.out.error === 'sign-in') {
+          state.account.user = null;
+          state.saved = [];
+          storeSet(SAVED_KEY, '[]');
+          paintSave();
+          paintAccountButton();
+          renderFilters();
+          if (state.view === 'list') renderPanel();
+          openAccount('in', t('saveSignIn'));
+          return;
+        }
         toast(t(answer.out.error === 'capped' ? 'saveCapped' : 'saveFailed'));
         return;
       }
@@ -1426,9 +1432,6 @@
         place: place.name,
         saves_total: saveCount(place.id)
       });
-      /* Only on the way in. Unsaving something is not the moment to suggest
-         keeping it somewhere safer. */
-      if (on) showNudge();
     }).catch(function () {
       revert();
       toast(t('saveFailed'));
@@ -1459,11 +1462,11 @@
   /* --------------------------------------------------------------- account
    * A username and a password, and nothing else required.
    *
-   * Saving works with no account: the device keeps a random id and the save
-   * is filed under that. An account is the upgrade that makes the list follow
-   * a person to another phone or browser — nobody is stopped at a wall before
-   * they have any reason to sign up, and signing in claims whatever this
-   * device already saved rather than starting them over.
+   * It is what saving runs on: the mark opens this sheet when nobody is
+   * signed in, and the list lives on the account rather than in this browser,
+   * so it is the same list on the next phone. Two fields and a suggested
+   * username, because the sheet is standing between somebody and a bakery
+   * they wanted to remember.
    *
    * An email is optional and buys exactly one thing: the ability to reset a
    * forgotten password. Without one there is nothing that proves an account
@@ -1472,51 +1475,6 @@
    */
 
   var ACCOUNT_URL = '/api/account';
-
-  /* --------------------------------------------------------- the offer
-   * A save made while signed out is the one moment when an account is worth
-   * mentioning: there is now something to lose, and the person has just shown
-   * what they would be losing. Before that it is a sign-up wall on a map
-   * nobody has decided about yet, which is the thing this site does not do.
-   *
-   * Once per visit, and never again after it is turned down. "Not now" is
-   * remembered for a fortnight rather than forever — somebody with one save
-   * in March may feel differently about six in April — but a visit that has
-   * already been asked is not asked twice however many places are kept in it.
-   */
-  var NUDGE_KEY = 'ttb.nudged';
-  var NUDGE_QUIET = 14 * 24 * 3600 * 1000;
-  var nudgedThisVisit = false;
-  var nudgeTimer = null;
-
-  function nudgeWelcome() {
-    if (nudgedThisVisit) return false;
-    if (!state.account.ready || state.account.user) return false;
-    var last = parseInt(storeGet(NUDGE_KEY) || '0', 10);
-    if (last && Date.now() - last < NUDGE_QUIET) return false;
-    return true;
-  }
-
-  function showNudge() {
-    if (!nudgeWelcome()) return;
-    nudgedThisVisit = true;
-
-    dom.nudgeSay.textContent = t('nudgeSay');
-    dom.nudgeGo.textContent = t('accountCreate');
-    dom.nudgeNo.textContent = t('nudgeLater');
-    dom.nudge.hidden = false;
-
-    /* Long enough to read and act on, and it takes itself away rather than
-       sitting over the map waiting to be dealt with. Turning it down is what
-       starts the quiet fortnight; ignoring it only ends the visit's one ask. */
-    window.clearTimeout(nudgeTimer);
-    nudgeTimer = window.setTimeout(hideNudge, 9000);
-  }
-
-  function hideNudge() {
-    window.clearTimeout(nudgeTimer);
-    dom.nudge.hidden = true;
-  }
 
   function accountPost(payload) {
     return fetch(ACCOUNT_URL, {
@@ -1548,16 +1506,21 @@
           recovery: !!out.recovery,
           email: !!out.email
         };
-        if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
+        /* The server is the only thing that knows. Signed in, its list
+           replaces whatever ttb.saved was holding; signed out, there are no
+           saves to draw and the cache goes — it is somebody else's browser
+           now, or the same person after signing out somewhere else. */
+        if (out.user) adoptSaved(Array.isArray(out.saved) ? out.saved : []);
+        else if (state.saved.length) adoptSaved([]);
         paintAccountButton();
       })
       .catch(function () { /* signed out is a fine place to be */ });
   }
 
-  /* The account's list replaces this browser's, because once somebody is
-     signed in the server is the one that knows. Written through to
+  /* The account's list, as the server has it. Written through to
      localStorage all the same, so the marks are right on the next load
-     before the network has answered. */
+     before the network has answered — a cache of the account's list and
+     never a second copy of it. */
   function adoptSaved(list) {
     var seen = {};
     state.saved = list.filter(function (id) {
@@ -1610,7 +1573,6 @@
     accountView = view || (state.account.user ? 'me' : 'in');
     accountNote = note || '';
     accountErr = '';
-    hideNudge();
     dom.accountScrim.hidden = false;
     document.body.classList.add('has-scrim');
     renderAccount();
@@ -1784,9 +1746,10 @@
           recovery: false,
           email: state.account.email
         };
-        /* The account's list goes with the account. What this browser saved
-           before signing in was claimed on the way in and is not coming back
-           here — it is on the account now, waiting for the next sign-in. */
+        /* The list goes with the account. Nothing is lost by signing out —
+           the rows are in the database under the account, and they come
+           back filled the moment somebody signs in again, here or anywhere
+           else. */
         state.saved = [];
         storeSet(SAVED_KEY, '[]');
         paintSave();
@@ -1847,8 +1810,7 @@
         action: creating ? 'create' : 'login',
         username: v.username,
         password: v.password,
-        email: creating ? v.email : '',
-        client: clientId()
+        email: creating ? v.email : ''
       }).then(function (a) {
         accountBusy = false;
         if (!a.ok) return accountFail(a.out);
@@ -1954,7 +1916,7 @@
 
   /* Chips are OR, so a place shows if it answers any active one — and two of
      them are not answered by the type list at all: the discount chip is
-     answered by the deal, and the saved chip by what this browser has
+     answered by the deal, and the saved chip by what the account has
      pressed. */
   function matchesFilters(place) {
     if (state.active.indexOf(SAVED_FILTER) !== -1 && isSaved(place.id)) return true;
@@ -4550,8 +4512,8 @@
     /* Chips in the address bar: a filtered map becomes a link worth sending,
        and the landing view GA records for it says which filters it was.
 
-       Every chip but one. The saved chip filters by what this browser has
-       pressed, so ?type=saved sent to somebody else is a link to an empty
+       Every chip but one. The saved chip filters by what the account signed
+       in here has saved, so ?type=saved sent to somebody else is a link to an empty
        map, and opened on your own laptop a link to a different one. It
        filters; it does not travel. Nothing has to strip it on the way back
        in — boot only accepts ids that are on the map — but a link nobody can
@@ -4686,22 +4648,6 @@
 
     dom.btnAccount.addEventListener('click', function () { openAccount(); });
 
-    dom.nudgeGo.addEventListener('click', function () {
-      hideNudge();
-      /* Straight to the sign-up sheet rather than the sign-in one: somebody
-         who pressed this does not have an account yet, and the sheet offers
-         the way across for the few who do. */
-      openAccount('up');
-      trackEvent('account_nudge', { taken: true });
-    });
-
-    dom.nudgeNo.addEventListener('click', function () {
-      hideNudge();
-      /* Turning it down buys the quiet fortnight. Letting it time out does
-         not: that is somebody being busy, not somebody saying no. */
-      storeSet(NUDGE_KEY, String(Date.now()));
-      trackEvent('account_nudge', { taken: false });
-    });
     /* The scrim is the way out, the card is not: a press that lands on the
        card itself must not close the sheet somebody is typing into. */
     dom.accountScrim.addEventListener('click', function (ev) {
@@ -5034,10 +4980,6 @@
       panelSave: $('panel-save'),
       panelSaveN: $('panel-save-n'),
       btnAccount: $('btn-account'),
-      nudge: $('nudge'),
-      nudgeSay: $('nudge-say'),
-      nudgeGo: $('nudge-go'),
-      nudgeNo: $('nudge-no'),
       accountLabel: $('account-label'),
       accountScrim: $('account-scrim'),
       accountCard: $('account-card'),
@@ -5101,7 +5043,7 @@
       state.ui = loaded[2] || {};
       state.langs = sortLanguages(Object.keys(state.ui));
 
-      /* Which places this browser has saved, and whether the bot check is
+      /* The cached list of the account's saves, and whether the bot check is
          switched on. Both are local and instant. The counts themselves are a
          request over the network and are not waited for — see loadSaves. */
       readSaved();

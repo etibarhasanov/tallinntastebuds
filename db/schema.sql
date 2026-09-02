@@ -10,22 +10,34 @@
 --   wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
 --   wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
 --
--- One row is one save. The primary key is what makes a save unique rather
--- than any code in the Function: a browser that sends the same (place,
--- client) twice hits the conflict and the second write is a no-op, whatever
--- the caller intended.
+-- One row is one save, and only a signed-in account can make one. The primary
+-- key is what makes a save unique rather than any code in the Function: the
+-- same (place, owner) sent twice hits the conflict and the second write is a
+-- no-op, whatever the caller intended.
 CREATE TABLE IF NOT EXISTS saves (
   -- The place's id from data/restaurants.json. Checked against that file by
   -- the Function before anything reaches this table, so a row here always
   -- points at somewhere real.
   place_id   TEXT    NOT NULL,
-  -- Who the save belongs to: a users.id when the request carried a signed-in
-  -- session, otherwise the v4 UUID the browser generated for itself. One
-  -- column rather than two, so the primary key below is the whole of the
-  -- uniqueness rule and there is no second index that could disagree with it.
+  -- Who the save belongs to. Every row written from now on is a users.id,
+  -- taken from the session cookie by the Function and never from the request
+  -- body, so a new row belongs to an account that was signed in when it was
+  -- made.
   owner      TEXT    NOT NULL,
-  -- 'user' or 'device'. Only claim() in account.js reads it, to find the rows
-  -- a signing-in browser is bringing with it.
+  -- 'user' or 'device', and now a record of how a row came to be rather than
+  -- a thing any code branches on.
+  --
+  -- A browser used to be able to save under a random UUID it made for itself,
+  -- and signing in moved those rows onto the account. That is gone — a device
+  -- id is one per browser, free to make and thrown away with the storage, so
+  -- a count built out of them counted browsers rather than people — but the
+  -- rows written while it was allowed are still here and still counted. They
+  -- are somebody's saves; they are simply not removable from the site any
+  -- more, because there is no longer a way to sign in as a browser.
+  --
+  -- The default is still 'device' and is deliberately never relied on: the
+  -- insert in saves.js names 'user' explicitly, so a row that says 'device'
+  -- is one that really was made by one.
   owner_kind TEXT    NOT NULL DEFAULT 'device',
   -- HMAC(SAVE_SALT, ip + '|' + user agent). The raw address is never stored
   -- and cannot be recovered from this without the salt, which lives only in

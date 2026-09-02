@@ -12,7 +12,7 @@ place means editing one JSON file and pushing.
 
 The one exception to "static" is the save count: a bookmark keeps a place and
 says how many other people kept it too, so those live in a Cloudflare D1
-database behind `/api/saves`. Everything else on the map — the places, the write-ups, the
+database behind `/api/saves`, and saving takes an account. Everything else on the map — the places, the write-ups, the
 discounts, the stories — is still a JSON file in this repository, and the site
 renders completely with the database switched off. See **Saves**.
 
@@ -809,9 +809,10 @@ The bookmark in the corner of an open place, and the number beside it: how many
 people have pressed it. It is the only thing on this site that is not a static
 file, because it is the only thing that is about other people.
 
-Press it again to take it back. The count hides at zero — a "0" under a bookmark
-reads as a verdict on the restaurant rather than as nobody having pressed it
-yet.
+**It takes an account**, and it is the only thing here that does — pressing it
+signed out opens the sheet rather than saving. Press it again to take it back.
+The count hides at zero — a "0" under a bookmark reads as a verdict on the
+restaurant rather than as nobody having pressed it yet.
 
 ### The Saved chip, and why one bookmark does both jobs
 
@@ -822,12 +823,18 @@ The account button sits in the rail, under the colour swatch — and it is
 deployment without the bindings there is no sign-up sheet to find. If you
 cannot see it, that is why.
 
-Nobody is expected to find it on their own, though. A save made while signed
-out brings up a card offering an account, once per visit and never again for a
-fortnight after it is turned down. That is the moment worth asking at: there
-is now something to lose, and the person has just shown what it is. Asking
-before that would be a sign-up wall on a map nobody has decided about yet,
-which is the thing this site does not do.
+Nobody is expected to find it on their own, though. Pressing the bookmark
+while signed out opens the sheet itself, with a line at the top saying why it
+is in the way — which is the moment worth asking at, since the person has just
+said what they want. It opens on **sign in** rather than sign up, because
+somebody pressing a bookmark is more likely to have an account already, and
+"Need an account?" is one tap away inside the sheet.
+
+There used to be a card here instead — a gentle offer after a save that had
+already gone through, once a visit, quiet for a fortnight after a no. It made
+sense while saving worked without an account. It does not now, and it is gone
+rather than reworded: an offer you cannot decline and still save is not an
+offer, it is the sheet.
 
 The count is on the list rows too, not only inside an open place: a small
 bookmark and a number beside the price, so a scroll down seventy-four rows shows
@@ -846,19 +853,18 @@ narrow to your own places is a saved list by another name, and one bookmark is a
 better thing to ask of somebody than a bookmark and a bookmark that mean almost
 the same thing.
 
-It carries the same limit as anything kept in a browser: the chip is per
-browser, so the phone's list and the laptop's list are different lists, and
-clearing the browser clears it. What it does *not* lose is the save itself —
-that is a row in the database, and it keeps counting whatever happens here.
-Losing the local list costs you the view of your own saves, not the marks.
-Making that list follow a person across devices needs accounts, and that is
-the one thing this site still does not have.
+The list belongs to the account, not to the browser: sign in on a laptop and
+it is the same list that was on the phone, and clearing the browser costs
+nothing. `localStorage` still holds a copy under `ttb.saved`, but only so the
+marks are already filled on the next load instead of blank until the server
+answers — the account is the truth, it replaces the copy the moment it
+arrives, and signing out empties it.
 
 The chip is drawn only when there is at least one bookmark, and it goes again
 with the last unsave. If the filter is on when the list empties, the filter
 comes off with the chip — a map narrowed by a chip that is no longer on the
 row is a map with no way back. `?type=saved` is deliberately never written to
-the address bar: a link filtered by one browser's saves is an empty map for
+the address bar: a link filtered by one person's saves is an empty map for
 everybody else.
 
 ### Why there is no separate "like"
@@ -873,11 +879,11 @@ things and disliked that it broadcast their interest. Where the bookmark is not
 public — Airbnb, Spotify, Zillow, Pinterest — one action covers both, and the
 bookmark simply means "keep this".
 
-Nothing here is attributable. There are no accounts, no profiles, and no
-visitor can see who saved what — not even the owner of the site. So the social
-problem that forces the split does not exist, and asking somebody for a bookmark
-*and* a bookmark that mean almost the same thing would be asking twice for one
-answer.
+Nothing here is attributable. There are accounts, but no profiles and no
+public anything: no visitor can see who saved what, and a username never
+appears beside a place. So the social problem that forces the split does not
+exist, and asking somebody for a bookmark *and* a bookmark that mean almost
+the same thing would be asking twice for one answer.
 
 Calling it a save rather than a like also makes the number honest. "Like" is a
 verdict, so a like count mixes *this was excellent* with *I want to try this*.
@@ -886,7 +892,7 @@ clean thing — this many people kept this place.
 
 The closest analogue to this site, Google Maps, does split them: Save for your
 own lists, ratings for the public signal. But its ratings carry your name, and
-this site rules out ratings on the first page. One anonymous bookmark is the
+this site rules out ratings on the first page. One unattributed bookmark is the
 version of that which fits.
 
 ### On "no scores, stars or rankings"
@@ -907,17 +913,32 @@ site, not adding a feature. That is a decision for a person, not a patch.
 
 ### How unique a save actually is
 
-Be clear-eyed about this: **without accounts, no save is truly unique.** There
-is no honest way to tell two people apart on a public web page. What can be
-done is make faking one cost more than it is worth, and that is what this does,
-in three layers — no accounts, no cookies, nothing a visitor has to do.
+**It takes an account.** Pressing the mark while signed out opens the sign-up
+sheet instead of saving, and the server refuses a save that arrives without a
+session — 401, not a quiet no-op.
 
-**1. A client id in `localStorage`.** A random v4 UUID the browser makes for
-itself the first time it saves anything, kept under `ttb.cid`. It is the
-`UNIQUE` half of a save, so the same browser cannot like a place twice, and it
-is what lets somebody take a save back. It is client-supplied and therefore
-*not* a defence — anybody can send a fresh one. It is there to stop honest
-double-taps and to keep the bookmark filled when you come back.
+It was not always so. A browser used to be able to save under a random UUID it
+kept in `localStorage`, with no account anywhere; signing in later moved those
+rows onto the account. It was the friendlier design and it made the number
+underneath a place mean very little: a device id is one per browser, free to
+make, and a fresh one is a cleared storage away — so "saved by 40 people" was
+saved by up to 40 browsers, some of them the same person twice.
+
+The wall has a real cost and it is not pretended away: somebody who would have
+pressed the mark now has to sign up first, and some of them will not. The
+sheet is two fields, it opens on the press itself, and it offers a username so
+nobody has to invent one. That is as small as the wall can be made. What is
+bought with it is a count that means what it says.
+
+An account is still not proof of a person — nothing on a public web page is —
+but it costs something to make and it is the same one on the next phone, which
+is the difference. Two layers stand behind it:
+
+**1. The primary key.** `(place_id, owner)`, where `owner` is the account id
+taken from the session cookie and never from the request body. One account
+holds at most one save per place, pressing twice is a no-op the database
+refuses rather than something the code remembers to check, and there is no way
+to save as somebody else without being signed in as them.
 
 **2. A hashed network fingerprint, as a cap.** The Function computes
 `HMAC(SAVE_SALT, ip + '|' + user agent)` and allows at most **five** saves for
@@ -930,9 +951,16 @@ Instagram link on a phone more than anywhere else — so a hard per-IP rule woul
 let the first Elisa customer like a bakery and then silently refuse every other
 Elisa customer in the country. Folding the user agent in separates most of them
 again; a cap of five leaves room for a household, a table of friends and the
-handful of identical phones that will still collide, while the tenth attempt
-from one fingerprint on one place is the clear-your-storage-and-try-again loop
-this exists to stop.
+handful of identical phones that will still collide, while the sixth account
+pressing one place from one fingerprint is the sign-up-again loop this exists
+to stop.
+
+Since accounts became compulsory this is no longer standing in for a person —
+the account does that — and what is left of its job is limiting how many
+accounts one network may save a single place from. It is kept because that is
+still worth limiting and it costs one indexed read. The honest cost is the
+other way round now: a genuine sixth person behind one carrier NAT, signed in
+to their own account, is refused. Nobody has hit that yet on a map this size.
 
 **3. Turnstile, optional.** Cloudflare's CAPTCHA replacement, in invisible
 mode: no puzzle, no traffic lights, usually nothing the visitor ever sees. It
@@ -941,9 +969,9 @@ only handle humans being cheeky. It is off until you set both halves of the
 key, and the feature works without it.
 
 What this stops: honest duplicates, a curious visitor pressing twenty times,
-and casual gaming. What it does not stop: somebody determined, with a script
-and a VPN, if Turnstile is off. If a discount ever depends on these numbers,
-turn Turnstile on.
+and casual gaming. What it does not stop: somebody determined, with a script,
+a VPN and a fresh account each time, if Turnstile is off. If a discount ever
+depends on these numbers, turn Turnstile on.
 
 ### Is the database exposed?
 
@@ -956,9 +984,10 @@ that one file. So:
 
 - **Every query is a prepared statement with bound parameters.** No value out
   of a request is ever concatenated into SQL.
-- **The only `DELETE` takes a client id as well as a place**, so it can only
-  remove the caller's own row — removing somebody else's would mean guessing a
-  v4 UUID.
+- **The only `DELETE` takes the caller's account as well as a place**, and the
+  account comes from the session cookie rather than the request, so it can
+  only ever remove a row the caller owns. There is nothing in the body to
+  point at somebody else's.
 - **A place id not in `data/restaurants.json` is refused**, so the table cannot
   be filled with rows for places that do not exist.
 - **Nothing personal is stored.** No IP, no user agent, no name — one salted
@@ -1130,28 +1159,35 @@ number regardless — the POST hands the new one straight back.
 
 ## Accounts
 
-Optional, and deliberately the smallest thing that does the job: **a username
-and a password**. No email required, no phone, no OAuth, no profile, no name.
+Required to save, and deliberately the smallest thing that does the job: **a
+username and a password**. No email required, no phone, no OAuth, no profile,
+no name.
 
-Saving works with no account at all — the device keeps a random id and the
-save is filed under that. An account is the upgrade that makes a list follow a
-person to another phone or browser, and signing in **claims** whatever this
-device already saved rather than starting anybody over. Nobody meets a wall
-before they have a reason to sign up.
+Everything else on the map works signed out. Reading, filtering, the write-ups,
+the photographs, the stories, the discount pass — none of them ask who you
+are. The account exists for one thing: **the mark**. Pressing it signed out
+opens the sheet, because a save has to belong to somebody for the number
+beside it to mean anything. See **How unique a save actually is** for why that
+is worth a sign-up sheet, and what it costs.
 
 ### What signing in actually does to the rows
 
-`saves.owner` holds a `users.id` when the request carries a session and the
-device's own UUID when it does not. The primary key is `(place_id, owner)`, so
-the same account saving the same place from two devices is one row and not two.
+`saves.owner` is a `users.id`, always, taken from the session cookie. The
+primary key is `(place_id, owner)`, so the same account saving the same place
+from two devices is one row and not two, and signing in on a new phone draws
+the marks filled from the account's own list rather than starting anybody over.
 
-Claiming is `UPDATE OR IGNORE` then `DELETE`, in that order. A row that cannot
-move — because the account already holds that place from another device — is
-left alone by the update rather than failing it, and the delete then clears it
-away. The result is a **merge**: the union of what the device had and what the
-account had, nothing counted twice. Every affected count is recomputed from
-the rows afterwards, so a place one person had saved from two devices correctly
-drops from two to one.
+There used to be more to this heading. A browser could save under a random
+UUID of its own, and signing in ran a `claim` — `UPDATE OR IGNORE` then
+`DELETE` — that merged those rows onto the account without double-counting.
+Both the device saves and the claim are gone.
+
+Rows written while device saves were allowed are **still in the table and
+still counted**. They belong to a browser that can no longer sign in, so
+nobody can take them back; they are somebody's saves and deleting them to tidy
+the model would be deleting real presses. `saves.owner_kind` still says
+`'device'` on those and `'user'` on everything written since — no code branches
+on it any more, it is just the record of how a row came to be.
 
 ### The email is optional and buys one thing
 
@@ -2365,8 +2401,12 @@ data; those do not belong in a static site at all.
 **The attribution control in the bottom-right corner is a licence condition of
 both OpenStreetMap and CARTO. Do not remove it.**
 
-No scripts or fonts beyond the table above. Apart from Google Analytics,
-the only thing stored on a visitor's device is their language choice.
+No scripts or fonts beyond the table above. Apart from Google Analytics, what
+is stored on a visitor's device is five `localStorage` keys and one cookie,
+all of them the visitor's own choices played back: `ttb.lang` and `ttb.style`,
+`ttb.stories.seen` and `ttb.stories.sound`, `ttb.saved` (a cache of the
+account's list, emptied on sign-out), and the `ttb_s` session cookie, which is
+set by the server and only exists once somebody has signed in.
 
 `assets/qr.js` is deliberately **not** in that table. Every QR library worth
 using is a dependency this repo would otherwise not have, and the discount
