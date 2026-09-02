@@ -817,7 +817,10 @@ yet.
 
 ### Where the account lives, and when it is offered
 
-The account button sits in the rail, under the colour swatch — and it is
+The account button is the **top button on the left rail** — above Surprise me,
+the radio, the colour swatch and the locate button, because it is the only one
+whose answer outlasts the visit, and because once somebody is signed in it
+wears their name and so tells them whose list the map is holding. It is
 **hidden until `/api/account` says the database behind it is bound**, so on a
 deployment without the bindings there is no sign-up sheet to find. If you
 cannot see it, that is why.
@@ -2152,7 +2155,9 @@ TLS; neither is the test that counts. Pressing the button is.
 
 ## Surprise me
 
-The top button on the left rail picks a place at random and opens it.
+The die on the left rail — under the account button, at the top of the four
+that are about tonight rather than about you — picks a place at random and
+opens it.
 
 It picks from **whatever the chips currently allow**, so selecting "Korean" and
 "Cheap eats" and then pressing it answers the question you were actually
@@ -2165,22 +2170,29 @@ scrolls out of reach is no use.
 
 ### The rail introduces itself on a phone
 
-The rail runs Surprise me, the radio, the colour swatch, the locate button —
-the two that change your evening above the two that change the map, because a
-rail that opens with a colour picker reads as a settings strip rather than as
-the shortcut it is.
+The rail runs the account, Surprise me, the radio, the colour swatch, the
+locate button — who you are, then the two that change your evening, then the
+two that change the map, because a rail that opens with a colour picker reads
+as a settings strip rather than as the shortcut it is.
 
-On a phone it used to arrive as a column of four bare discs: a die, a play
-triangle, a coloured dot and a crosshair over a map, saying nothing. A phone
-has no hover, so the `title` that carries the meaning on a desktop is never
-read out loud, and people did not press them.
+On a phone it used to arrive as a column of bare discs: a head and shoulders,
+a die, a play triangle, a coloured dot and a crosshair over a map, saying
+nothing. A phone has no hover, so the `title` that carries the meaning on a
+desktop is never read out loud, and people did not press them.
 
 So they say what they are on arrival and then stop saying it. Each opens
-wearing its label — Surprise me, the station, the style you are about to
-switch to, "Show my location" — 300ms apart in the order they are stacked, so
-the eye tracks down the rail rather than being asked to read four things at
-once. Each holds for `HINT_MS` (4.2 seconds) and collapses back to its icon,
-the same disc as before. Two of them say something again when pressed:
+wearing its label — your username or "Account", Surprise me, the station, the
+style you are about to switch to, "Show my location" — 300ms apart in the
+order they are stacked, so the eye tracks down the rail rather than being
+asked to read the whole column at once. Each holds for `HINT_MS` (4.2 seconds)
+and collapses back to its icon, the same disc as before.
+
+The account button is the one that cannot be in the cascade every time: it is
+drawn by an answer from `/api/account`, which usually lands after the rail has
+already started introducing itself. So `paintAccountButton()` opens its label
+the moment the button appears — the top of the rail says what it is rather
+than turning up as a silent disc above a column of pills that have all had
+their say. Two of them say something again when pressed:
 starting the radio opens the station's name, so a triangle in a circle is not
 the only thing saying what is playing, and pressing the swatch opens the name
 of the style it has just become the way back to. Pressing Surprise me instead
@@ -2188,10 +2200,13 @@ shuts its label early — the question it answered is the question the label was
 there to ask.
 
 **It repeats in the new language when you switch languages.** Every other
-label on the page changes in front of you; the two on the rail are the only
+label on the page changes in front of you; the ones on the rail are the only
 ones not on screen to change with them, and somebody switching to Ukrainian is
 telling you they did not read the English one. So `setLanguage()` runs the
-introduction again.
+introduction again. It repaints the account button first: the language sweep
+puts the word "Account" back on it through `data-i18n`, which is the right
+word for a stranger and the wrong one for somebody whose name was on it a
+moment ago.
 
 Nothing opens while the sheet is up: the rail lies along the top of it as a
 row there, and a pill at full width would push the buttons after it off the
@@ -2204,7 +2219,7 @@ map. Pressing Surprise me is not owed anything: closing the place it opened
 leaves the rail as it was.
 
 `openHint()` / `closeHint()` in `assets/app.js` do the timing; the pill itself
-is CSS. All four are the same shape — an icon, then a track for the words that
+is CSS. Every one of them is the same shape — an icon, then a track for the words that
 grows from `0fr` to `1fr`, which an auto-width grid resolves against the
 label's own max-content. A fixed ceiling in `ch` cannot do both halves of that
 job: one wide enough for Ukrainian's `Показати моє місцезнаходження` makes
@@ -2214,9 +2229,9 @@ the same slide and none of them gets cut — the widest of the forty labels
 reaches 276px on a 320px screen.
 
 The colour swatch has no button of its own to grow, so the group around it
-does the growing and the swatch sits in it where the other three keep their
-icon. Above 860px none of this applies: the two `.dice` pills never lose their
-labels there, and `.style-label` / `.locate-label` are `display: none` — a
+does the growing and the swatch sits in it where the others keep their icon.
+Above 860px none of this applies: the `.dice` pills never lose their labels
+there, and `.style-label` / `.locate-label` are `display: none` — a
 pointer that can hover has the `title` instead, and two more words down the
 left edge would be two more than the map can spare.
 
@@ -2424,8 +2439,8 @@ change those values and the whole site follows.
 One strip across the top — the brand card on the left, **List** and the
 language switch on the right — and the filter chips on the line directly
 beneath it. The controls that are questions about the *map* rather than about
-the page stand on the map instead, in the left rail: the colour switch, the
-radio, Surprise me, and locate at its foot. There are no zoom buttons; the wheel, a double-click, a pinch and
+the page stand on the map instead, in the left rail: the account at its head,
+then the colour switch, the radio, Surprise me, and locate at its foot. There are no zoom buttons; the wheel, a double-click, a pinch and
 the `+`/`-` keys all still zoom, and two more buttons standing on the map were
 paying for a job the map already does. The chips used to sit at the bottom,
 where the sheet covered them and they had to be hidden whenever the list was
