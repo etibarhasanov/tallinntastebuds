@@ -1519,6 +1519,67 @@
     }
   }
 
+  /* ------------------------------------------------------------ rail hints
+   * On a phone the two rail pills are icon-only: a die and a play triangle,
+   * because a label wide enough to read is a label wide enough to cover the
+   * map. Which left them explaining nothing — a phone has no hover, so the
+   * title that carries the meaning on a desktop is never read out loud, and
+   * a die over a map is not self-evident to anybody who has not seen this
+   * page before.
+   *
+   * So they say what they are on arrival and then stop saying it. Surprise me
+   * opens wearing its label, the station follows half a second later — the
+   * order they are stacked in, so the eye tracks down the rail rather than
+   * being asked to read two things at once — both hold for four seconds, and
+   * both collapse back to the icon. Long enough to read twice, gone before it
+   * is furniture.
+   *
+   * The class is inert above 860px, where the labels never leave in the first
+   * place, so none of this needs to ask how wide the window is.
+   */
+  var HINT_MS = 4200;
+  var hintTimers = {};
+
+  /* A pill with nothing to say does not get to open: the radio's label is the
+     station name, and a station with no name in radio.json would otherwise
+     expand the button around an empty span. */
+  function hintText(btn) {
+    var label = btn && btn.querySelector('.dice-label, .radio-name');
+    return label ? (label.textContent || '').replace(/^\s+|\s+$/g, '') : '';
+  }
+
+  function closeHint(key) {
+    if (hintTimers[key]) { clearTimeout(hintTimers[key]); hintTimers[key] = null; }
+    var btn = key === 'radio' ? dom.btnRadio : dom.btnRandom;
+    if (btn) btn.classList.remove('hint-open');
+  }
+
+  function openHint(key, delay) {
+    var btn = key === 'radio' ? dom.btnRadio : dom.btnRandom;
+    if (!btn || btn.hidden || !hintText(btn)) return;
+    closeHint(key);
+    hintTimers[key] = setTimeout(function () {
+      /* Never over an open sheet. With a place open the rail lies along the
+         strip above it as a row, and two pills at their full width push the
+         colour swatch and the locate button off the side of the screen. */
+      if (btn.hidden || !hintText(btn) ||
+          document.body.classList.contains('panel-open')) {
+        hintTimers[key] = null;
+        return;
+      }
+      btn.classList.add('hint-open');
+      hintTimers[key] = setTimeout(function () {
+        btn.classList.remove('hint-open');
+        hintTimers[key] = null;
+      }, HINT_MS);
+    }, delay || 0);
+  }
+
+  function introduceRail() {
+    openHint('random', 300);
+    openHint('radio', 800);
+  }
+
   /* ---------------------------------------------------------------- radio
    * A station on a button, for the same reason a restaurant map has a colour
    * rail: it is somebody's map, not a directory.
@@ -1558,6 +1619,7 @@
   function stopRadio() {
     if (radioEl) { radioEl.pause(); radioEl.removeAttribute('src'); radioEl.load(); }
     markRadio(false);
+    closeHint('radio');
   }
 
   function toggleRadio() {
@@ -1586,6 +1648,10 @@
       started.catch(function () { stopRadio(); toast(t('radioFail')); });
     }
     markRadio(true);
+    /* What you just started, by name, for as long as the intro label ran.
+       On a phone the pill is a triangle in a circle otherwise, which says a
+       stream is playing but never says whose. */
+    openHint('radio', 0);
     trackEvent('radio_play', { station: station.name || 'radio' });
   }
 
@@ -1927,6 +1993,11 @@
     dom.panel.removeAttribute('inert');
     document.body.classList.add('panel-open');
     dom.btnList.setAttribute('aria-expanded', 'true');
+    /* The rail turns into a row along the top of the sheet here, and a pill
+       still wearing its label would push the two buttons after it off the
+       side of the screen. Whatever it was saying, it has been read. */
+    closeHint('random');
+    closeHint('radio');
   }
 
   function closePanel(opts) {
@@ -3617,7 +3688,12 @@
       else { trackEvent('list_open', { places_shown: visiblePlaces().length }); showList(true); }
     });
 
-    dom.btnRandom.addEventListener('click', randomPick);
+    /* Pressing it answers the question the label was there to answer, and
+       the sheet it opens wants the room. */
+    dom.btnRandom.addEventListener('click', function () {
+      closeHint('random');
+      randomPick();
+    });
     dom.btnRadio.addEventListener('click', toggleRadio);
 
     document.addEventListener('click', function (ev) {
@@ -4058,6 +4134,10 @@
       lastTrackedPath = window.location.pathname + window.location.search;
 
       placeRail();
+      /* And on a phone, the rail says what it is for. After placeRail, which
+         measures it: a pill that opened mid-measurement would be measured
+         mid-animation. */
+      introduceRail();
       /* The JSON-LD block is for crawlers only — nobody reading the map ever
          sees it — so it must never be the reason a visitor gets the fatal
          card instead of the map. It sits alone in a try for that reason:

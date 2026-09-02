@@ -771,9 +771,9 @@ a:hover { color: var(--accent-lit); }
    controls at the top. It used to answer from the far bottom-left corner,
    which is the free one but also as far from every other map control as the
    screen allows — a thumb that had just pressed Surprise me had the length of
-   the page to travel. It sits under Surprise me now, at the foot of the rail,
-   and takes the rail's round shape so it reads as one of its buttons rather
-   than as a stray card parked beneath it. */
+   the page to travel. It sits at the foot of the rail now, under the colour
+   swatch, and takes the rail's round shape so it reads as one of its buttons
+   rather than as a stray card parked beneath it. */
 .locate-dock { border-radius: 100px; }
 .locate-dock .btn { border-radius: 100px; }
 
@@ -863,7 +863,12 @@ a:hover { color: var(--accent-lit); }
   background: rgba(176, 226, 197, .18);
 }
 
-/* ---------- the left rail: two colours, then the random pick ---------- */
+/* ---------- the left rail: the two picks, then the two settings ----------
+
+   Top to bottom: Surprise me, the radio, the colour swatch, where am I. The
+   first two change your evening and the last two change the map, and a rail
+   that opens with a colour picker reads as a settings strip rather than as
+   the shortcut it is. */
 
 .rail {
   position: fixed;
@@ -2438,8 +2443,49 @@ body.panel-detail .panel {
   }
   body.panel-open .styles { flex-direction: row; }
 
-  .dice-label, .radio-name { display: none; }
-  .dice { padding: 0; width: 32px; height: 32px; justify-content: center; }
+  /* The two pills introduce themselves, then get out of the way.
+
+     A phone has no hover and no title tooltip, so the desktop pill lost its
+     label here and both buttons arrived as a bare 32px disc: a die and a play
+     triangle, floating over a map, saying nothing about what pressing them
+     does. People did not press them. So on a phone they now open wearing
+     their label — Surprise me first, the station a beat later, in the order
+     the rail is stacked — hold it long enough to read, and collapse to the
+     icon so the map gets its screen back. The rail is body copy for four
+     seconds and chrome after that.
+
+     Only these two. The colour swatch shows the style you are about to get
+     and the locate button is the crosshair every map on earth uses; neither
+     is a mystery worth spending a label on. */
+  .dice-label, .radio-name {
+    display: block;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: max-width .34s var(--ease), opacity .22s var(--ease);
+  }
+  /* Collapsed it is the same 32px disc as before — 18px of icon, 6px each
+     side, the border on top of that — so the four buttons still read as one
+     column of circles down the edge of the map. */
+  .dice {
+    width: auto;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    gap: 0;
+    justify-content: center;
+    overflow: hidden;
+    transition: border-color .15s var(--ease), color .15s var(--ease),
+                padding .34s var(--ease), gap .34s var(--ease);
+  }
+  /* Wide enough for the longest of them — "Bana sürpriz yap" — rather than a
+     tidy number that would ellipsis the label of the very button the label is
+     there to explain. The pill is sized by its content, so the extra ceiling
+     costs nothing on the short ones. */
+  .dice.hint-open .dice-label,
+  .dice.hint-open .radio-name { max-width: 20ch; opacity: 1; }
+  .dice.hint-open { padding: 0 13px 0 6px; gap: 8px; }
   .rail { gap: 8px; }
   .styles { gap: 6px; padding: 6px; }
   .swatch { width: 18px; height: 18px; }
