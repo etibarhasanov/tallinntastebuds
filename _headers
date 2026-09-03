@@ -18,6 +18,18 @@
 /index.html
   Cache-Control: public, max-age=0, must-revalidate
 
+# The lists page. Same revalidating rule as the map for the same reason — the
+# ?v= stamps in it are what tell a browser which script to reuse — plus a
+# noindex, because there is nothing on it for anybody who is not signed in and
+# a search result for "your lists" would be a permanently empty page.
+#
+# /list/<id> is not here: it is served by functions/list/[id].js, which sets
+# its own headers. That one is noindex too, and deliberately not disallowed in
+# robots.txt — see the note there.
+/lists.html
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, follow
+
 # Scripts and stylesheets are content-addressed by tools/stamp.mjs — the URL
 # in the HTML carries a hash of the file — so a year-long cache would be safe
 # for a stamped request and is deliberately not used anyway. These rules match

@@ -40,18 +40,24 @@ import { dirname, join, resolve } from 'node:path';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /* Every page that loads something out of assets/. */
-export const PAGES = ['index.html', 'deal.html', 'verify.html', 'staff.html'];
+export const PAGES = ['index.html', 'lists.html', 'deal.html', 'verify.html', 'staff.html'];
 
 /* Scripts and stylesheets only. Images are addressed by name and replaced
    rather than edited, and no code reads them, so a stale one is a stale
-   picture and not a broken page. */
-const REF = /\b(src|href)="(assets\/[A-Za-z0-9._/-]+\.(?:js|css))(?:\?v=([0-9a-f]+))?"/g;
+   picture and not a broken page.
+
+   The leading slash is optional because the pages disagree about it, for a
+   reason: lists.html is also served at /list/<id>, where a relative
+   "assets/lists.js" would resolve to /list/assets/lists.js and 404, so that
+   page writes its asset URLs from the root. join() below normalises either
+   spelling to the same file. */
+const REF = /\b(src|href)="(\/?assets\/[A-Za-z0-9._/-]+\.(?:js|css))(?:\?v=([0-9a-f]+))?"/g;
 
 /* Eight hex characters: 32 bits, which is plenty to tell apart the handful of
    versions of one file that are ever in flight at once, and short enough to
    read in a network panel. */
 export function stampOf(relPath) {
-  const abs = join(ROOT, relPath);
+  const abs = join(ROOT, relPath.replace(/^\//, ''));
   if (!existsSync(abs)) return null;
   return createHash('sha256').update(readFileSync(abs)).digest('hex').slice(0, 8);
 }

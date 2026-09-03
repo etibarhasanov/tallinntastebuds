@@ -1,0 +1,594 @@
+[
+  {
+    "id": "180-degrees",
+    "name": "180° by Matthias Diether",
+    "address": "Staapli 4, 10415 Tallinn",
+    "lat": 59.4520538,
+    "lng": 24.7289234,
+    "map": true
+  },
+  {
+    "id": "annon",
+    "name": "Annön",
+    "address": "Kalevipoja põik 10, 13614 Tallinn",
+    "lat": 59.4389373,
+    "lng": 24.8311022,
+    "map": true
+  },
+  {
+    "id": "ariran",
+    "name": "Ariran",
+    "address": "Telliskivi 35, 10611 Tallinn",
+    "lat": 59.4372396,
+    "lng": 24.7227705,
+    "map": true
+  },
+  {
+    "id": "badam",
+    "name": "Badam",
+    "address": "Lastekodu tn 35, 10113 Tallinn",
+    "lat": 59.4276428,
+    "lng": 24.7754944,
+    "map": true
+  },
+  {
+    "id": "baklazaan",
+    "name": "Baklažaan",
+    "address": "Mäepealse 30, Tallinn",
+    "lat": 59.394698,
+    "lng": 24.6447491,
+    "map": true
+  },
+  {
+    "id": "balta-chill",
+    "name": "Balta Chill",
+    "address": "Vana-Kalamaja 3, 10415 Tallinn",
+    "lat": 59.4416944,
+    "lng": 24.7382778,
+    "map": true
+  },
+  {
+    "id": "bekker-pagariari",
+    "name": "Bekker Pagariäri",
+    "address": "Kopli 27, 10412 Tallinn",
+    "lat": 59.4489528,
+    "lng": 24.7104732,
+    "map": true
+  },
+  {
+    "id": "borsch-ja-varenyk",
+    "name": "Borsch & Varenyk",
+    "address": "Endla 56, 10613 Tallinn",
+    "lat": 59.4278699,
+    "lng": 24.718032,
+    "map": true
+  },
+  {
+    "id": "bruto-bakehouse",
+    "name": "Bruto Bakehouse",
+    "address": "Suur-Karja 12, 10140 Tallinn",
+    "lat": 59.4355717,
+    "lng": 24.7462442,
+    "map": true
+  },
+  {
+    "id": "bueno-gourmet-kadriorg",
+    "name": "Bueno Gourmet Kadriorg",
+    "address": "Vesivärava 7, 10126 Tallinn",
+    "lat": 59.4378103,
+    "lng": 24.7763952,
+    "map": true
+  },
+  {
+    "id": "burger-box",
+    "name": "Burger Box",
+    "address": "Kopli 4a, 10412 Tallinn",
+    "lat": 59.4413251,
+    "lng": 24.7368718,
+    "map": true
+  },
+  {
+    "id": "buxhowden-pagar",
+    "name": "Buxhöwden pagar",
+    "address": "Ranna tee 5/2, Miiduranna, Viimsi",
+    "lat": 59.4955512,
+    "lng": 24.8269404,
+    "map": true
+  },
+  {
+    "id": "cafe-cape-town",
+    "name": "Cafe Cape Town",
+    "address": "Kopli 1, 10412 Tallinn",
+    "lat": 59.4412173,
+    "lng": 24.7347696,
+    "map": true
+  },
+  {
+    "id": "cafe-tempo",
+    "name": "Cafe Tempo",
+    "address": "Reisijate 62-3, 10412 Tallinn",
+    "lat": 59.441043,
+    "lng": 24.7334466,
+    "map": true
+  },
+  {
+    "id": "chakra",
+    "name": "Chakra",
+    "address": "Bremeni käik 1, 10123 Tallinn",
+    "lat": 59.439357,
+    "lng": 24.7493884,
+    "map": true
+  },
+  {
+    "id": "chamber-tea",
+    "name": "Chamber Tea",
+    "address": "Ankru 8, 11713 Tallinn",
+    "lat": 59.4554149,
+    "lng": 24.6760982,
+    "map": true
+  },
+  {
+    "id": "chocolala",
+    "name": "Chocolala",
+    "address": "Suur-Karja 20, 10146 Tallinn",
+    "lat": 59.436,
+    "lng": 24.747,
+    "map": true
+  },
+  {
+    "id": "crustum-bakery",
+    "name": "Crustum Bakery",
+    "address": "Iva 12, Mustamäe, 12618 Tallinn",
+    "lat": 59.4030085,
+    "lng": 24.6476513,
+    "map": true
+  },
+  {
+    "id": "dvin",
+    "name": "DVIN",
+    "address": "Kopli 71, 11713 Tallinn",
+    "lat": 59.4553836,
+    "lng": 24.6799773,
+    "map": true
+  },
+  {
+    "id": "elman-bites",
+    "name": "Elmans Bites",
+    "address": "Kopli, 10412 Tallinn",
+    "lat": 59.441622,
+    "lng": 24.7374496,
+    "map": true
+  },
+  {
+    "id": "f-hoone",
+    "name": "F-Hoone",
+    "address": "Telliskivi tn 60a-4, 10412 Tallinn",
+    "lat": 59.4397095,
+    "lng": 24.7292113,
+    "map": true
+  },
+  {
+    "id": "faehlmanni-kohvik",
+    "name": "Faehlmanni kohvik",
+    "address": "F. R. Faehlmanni tn 18, 10125 Tallinn",
+    "lat": 59.4347529,
+    "lng": 24.7732181,
+    "map": true
+  },
+  {
+    "id": "faeton",
+    "name": "Faeton",
+    "address": "J. Köleri 2, 10150 Tallinn",
+    "lat": 59.4384988,
+    "lng": 24.7752398,
+    "map": true
+  },
+  {
+    "id": "ferment",
+    "name": "Ferment",
+    "address": "Peetri 6, 10414 Tallinn",
+    "lat": 59.4506949,
+    "lng": 24.7285009,
+    "map": true
+  },
+  {
+    "id": "fotografiska",
+    "name": "Fotografiska",
+    "address": "Telliskivi 60a-8, 10412 Tallinn",
+    "lat": 59.4383561,
+    "lng": 24.7284409,
+    "map": true
+  },
+  {
+    "id": "francois-boulangerie",
+    "name": "François Boulangerie",
+    "address": "Härjapea 17, 10320 Tallinn",
+    "lat": 59.4376932,
+    "lng": 24.7162062,
+    "map": true
+  },
+  {
+    "id": "gobi",
+    "name": "Gobi",
+    "address": "Rotermanni 14, 10111 Tallinn",
+    "lat": 59.4389817,
+    "lng": 24.7576905,
+    "map": true
+  },
+  {
+    "id": "gotsu-kyuho",
+    "name": "Gotsu Kyuho's Kitchen",
+    "address": "Pärnu mnt 62a, 10135 Tallinn",
+    "lat": 59.4257277,
+    "lng": 24.7420539,
+    "map": true
+  },
+  {
+    "id": "hans",
+    "name": "HAN's Restoran",
+    "address": "A. Lauteri 5, 10114 Tallinn",
+    "lat": 59.4314716,
+    "lng": 24.7577192,
+    "map": true
+  },
+  {
+    "id": "hell-hunt",
+    "name": "Hell Hunt",
+    "address": "Pikk 39, 10123 Tallinn",
+    "lat": 59.4393711,
+    "lng": 24.74666,
+    "map": true
+  },
+  {
+    "id": "izakaya-taro",
+    "name": "Izakaya Taro",
+    "address": "Müürivahe 31, 10140 Tallinn",
+    "lat": 59.4372248,
+    "lng": 24.7493633,
+    "map": true
+  },
+  {
+    "id": "kalve-kadriorg",
+    "name": "Kalve Kadriorg",
+    "address": "F. R. Faehlmanni tn 13, 10125 Tallinn",
+    "lat": 59.4350482,
+    "lng": 24.7732126,
+    "map": true
+  },
+  {
+    "id": "kartul",
+    "name": "Kartul",
+    "address": "Kopli 16, 10412 Tallinn",
+    "lat": 59.4418266,
+    "lng": 24.7332385,
+    "map": true
+  },
+  {
+    "id": "karu-talu-sokolaad",
+    "name": "Karu Talu Šokolaad",
+    "address": "Voorimehe 4, 10123 Tallinn",
+    "lat": 59.4376459,
+    "lng": 24.743759,
+    "map": true
+  },
+  {
+    "id": "klorofull",
+    "name": "Klorofüll",
+    "address": "Pärnu mnt 154, ruum 208, 11317 Tallinn",
+    "lat": 59.4082133,
+    "lng": 24.7341188,
+    "map": true
+  },
+  {
+    "id": "koho",
+    "name": "KoHo",
+    "address": "Telliskivi tn 60-1, 10412 Tallinn",
+    "lat": 59.4401373,
+    "lng": 24.7303523,
+    "map": true
+  },
+  {
+    "id": "koht",
+    "name": "Koht",
+    "address": "Lai 8, 10133 Tallinn",
+    "lat": 59.4383107,
+    "lng": 24.7439751,
+    "map": true
+  },
+  {
+    "id": "kokomo",
+    "name": "Kokomo Coffee Roasters",
+    "address": "Ankru 10, 11713 Tallinn",
+    "lat": 59.4552323,
+    "lng": 24.6757265,
+    "map": true
+  },
+  {
+    "id": "kotkot",
+    "name": "KotKot",
+    "address": "Peetri 12, 10411 Tallinn",
+    "lat": 59.4524531,
+    "lng": 24.7308239,
+    "map": true
+  },
+  {
+    "id": "kringel",
+    "name": "Kringel",
+    "address": "Koidu 101, Uue Maailm, Tallinn",
+    "lat": 59.4215893,
+    "lng": 24.7400125,
+    "map": true
+  },
+  {
+    "id": "la-boulangerie",
+    "name": "La Boulangerie",
+    "address": "Poordi 3, 10151 Tallinn",
+    "lat": 59.4409,
+    "lng": 24.7583,
+    "map": true
+  },
+  {
+    "id": "laboratooriumi-23",
+    "name": "Laboratooriumi 23",
+    "address": "Laboratooriumi 23, 10133 Tallinn",
+    "lat": 59.4407266,
+    "lng": 24.7443032,
+    "map": true
+  },
+  {
+    "id": "lendav-maaler",
+    "name": "Lendav Maaler",
+    "address": "Kentmanni 4, 10116 Tallinn",
+    "lat": 59.4324804,
+    "lng": 24.7483049,
+    "map": true
+  },
+  {
+    "id": "lokaal-tilk",
+    "name": "Lokaal Tilk",
+    "address": "Pärnu mnt 66, 10135 Tallinn",
+    "lat": 59.4249623,
+    "lng": 24.742078,
+    "map": true
+  },
+  {
+    "id": "magussoolane",
+    "name": "Magussoolane",
+    "address": "F. R. Faehlmanni tn 3, 10125 Tallinn",
+    "lat": 59.4344578,
+    "lng": 24.7782927,
+    "map": true
+  },
+  {
+    "id": "maison-francois",
+    "name": "Maison François",
+    "address": "Dunkri 8, 10123 Tallinn",
+    "lat": 59.4369683,
+    "lng": 24.7432969,
+    "map": true
+  },
+  {
+    "id": "mikkeller-old-town",
+    "name": "Mikkeller Tallinn Old Town",
+    "address": "Kullassepa 4, 10146 Tallinn",
+    "lat": 59.4365201,
+    "lng": 24.7444086,
+    "map": true
+  },
+  {
+    "id": "mix-resto",
+    "name": "MIX Resto",
+    "address": "Vana-Posti 11, 10146 Tallinn",
+    "lat": 59.4353205,
+    "lng": 24.7459026,
+    "map": true
+  },
+  {
+    "id": "morii-tea-house",
+    "name": "Morii Tea House",
+    "address": "Kopli 16, 10412 Tallinn",
+    "lat": 59.4418049,
+    "lng": 24.7324773,
+    "map": true
+  },
+  {
+    "id": "nullijook",
+    "name": "Nullijook",
+    "address": "Ankru, 11713 Tallinn",
+    "lat": 59.4551178,
+    "lng": 24.6756483,
+    "map": true
+  },
+  {
+    "id": "paper-mill-coffee",
+    "name": "Paper Mill Coffee",
+    "address": "Masina 20, 10144 Tallinn",
+    "lat": 59.4261018,
+    "lng": 24.7779116,
+    "map": true
+  },
+  {
+    "id": "paper-mill-coffee-volta",
+    "name": "Paper Mill Coffee Volta",
+    "address": "Tööstuse 47d, 10416 Tallinn",
+    "lat": 59.4499521,
+    "lng": 24.7235408,
+    "map": true
+  },
+  {
+    "id": "pilsneri-baar",
+    "name": "Pilsneri baar",
+    "address": "Kopli, 10412 Tallinn",
+    "lat": 59.4415391,
+    "lng": 24.7381598,
+    "map": true
+  },
+  {
+    "id": "pirosmani",
+    "name": "Pirosmani",
+    "address": "Tartu mnt 157, 10112 Tallinn",
+    "lat": 59.4026194,
+    "lng": 24.813618,
+    "map": true
+  },
+  {
+    "id": "pohja-konn",
+    "name": "Põhja Konn",
+    "address": "Telliskivi 60a-5, 10412 Tallinn",
+    "lat": 59.4389365,
+    "lng": 24.7283935,
+    "map": true
+  },
+  {
+    "id": "porgandipomm",
+    "name": "Porgandipomm",
+    "address": "Manufaktuuri kvartal, Tallinn",
+    "lat": 59.4491566,
+    "lng": 24.703142,
+    "map": true
+  },
+  {
+    "id": "pudel",
+    "name": "Pudel",
+    "address": "Telliskivi 62, 10412 Tallinn",
+    "lat": 59.4405426,
+    "lng": 24.7319195,
+    "map": true
+  },
+  {
+    "id": "puhaste-taproom",
+    "name": "Pühaste Taproom",
+    "address": "Rotermanni 2, 10111 Tallinn",
+    "lat": 59.4386681,
+    "lng": 24.758085,
+    "map": true
+  },
+  {
+    "id": "pulla-bakery",
+    "name": "Pulla Bakery",
+    "address": "Voorimehe 7, 10146 Tallinn",
+    "lat": 59.4375173,
+    "lng": 24.7438257,
+    "map": true
+  },
+  {
+    "id": "q-pizza-jaam",
+    "name": "Q Pizza Jaam",
+    "address": "Telliskivi tn 62, 10412 Tallinn",
+    "lat": 59.4405324,
+    "lng": 24.7306484,
+    "map": true
+  },
+  {
+    "id": "radio-restoran",
+    "name": "Radio",
+    "address": "Terase 16, 10125 Tallinn",
+    "lat": 59.4349703,
+    "lng": 24.7718684,
+    "map": true
+  },
+  {
+    "id": "ramen-taro",
+    "name": "Ramen Taro",
+    "address": "Laulupeo 1, 10121 Tallinn",
+    "lat": 59.4302614,
+    "lng": 24.7726871,
+    "map": true
+  },
+  {
+    "id": "saffron",
+    "name": "Saffron",
+    "address": "Gonsiori 12, 10117 Tallinn",
+    "lat": 59.4348202,
+    "lng": 24.7619912,
+    "map": true
+  },
+  {
+    "id": "shaurma-kebab-linnamae",
+    "name": "Shaurma Kebab Linnamäe",
+    "address": "Linnamäe tee 17-19, 13912 Tallinn",
+    "lat": 59.4496523,
+    "lng": 24.8677282,
+    "map": true
+  },
+  {
+    "id": "telliskivi-saslokk",
+    "name": "Telliskivi Šašlõkk",
+    "address": "Telliskivi tn 62, 10412 Tallinn",
+    "lat": 59.4405498,
+    "lng": 24.7304552,
+    "map": true
+  },
+  {
+    "id": "the-brick-coffee",
+    "name": "The Brick Coffee Roastery",
+    "address": "Telliskivi 60M, 10412 Tallinn",
+    "lat": 59.440262,
+    "lng": 24.7332009,
+    "map": true
+  },
+  {
+    "id": "tuletorn",
+    "name": "Tuletorn",
+    "address": "Ankru 10, 11713 Tallinn",
+    "lat": 59.4561323,
+    "lng": 24.6749319,
+    "map": true
+  },
+  {
+    "id": "uba-ja-humal",
+    "name": "Uba ja Humal",
+    "address": "Võrgu 3, 10415 Tallinn",
+    "lat": 59.445073,
+    "lng": 24.7478562,
+    "map": true
+  },
+  {
+    "id": "vaat-brewery",
+    "name": "Vaat Brewery and Taproom",
+    "address": "Paljassaare tee 18, Tallinn",
+    "lat": 59.4602996,
+    "lng": 24.707586,
+    "map": true
+  },
+  {
+    "id": "vabrik",
+    "name": "Vabrik",
+    "address": "Vabriku tn 6, 10414 Tallinn",
+    "lat": 59.442553,
+    "lng": 24.733203,
+    "map": true
+  },
+  {
+    "id": "vana-villem",
+    "name": "Vana Villem",
+    "address": "Tartu mnt 50, 10115 Tallinn",
+    "lat": 59.4303182,
+    "lng": 24.7707966,
+    "map": true
+  },
+  {
+    "id": "varav-coffee-toast",
+    "name": "Värav Coffee and toast",
+    "address": "Väike-Rannavärav 4, 10111 Tallinn",
+    "lat": 59.4415101,
+    "lng": 24.7508032,
+    "map": true
+  },
+  {
+    "id": "vesta",
+    "name": "Vesta",
+    "address": "Tööstuse 88, 10416 Tallinn",
+    "lat": 59.454133,
+    "lng": 24.7072027,
+    "map": true
+  },
+  {
+    "id": "xinhai-1911",
+    "name": "Xinhai 1911 Restoran & Baar",
+    "address": "Kopli 2c, 10412 Tallinn",
+    "lat": 59.4412874,
+    "lng": 24.7385644,
+    "map": true
+  }
+]

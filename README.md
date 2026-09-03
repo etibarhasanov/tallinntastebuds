@@ -10,13 +10,17 @@ Being on the map is the verdict.
 Static files, one small Function, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
-The one exception to "static" is the save count: a bookmark keeps a place and
-says how many other people kept it too, so those live in a Cloudflare D1
-database behind `/api/saves`. Saving takes no account — the list is this
-device's until somebody makes one. Everything else on the map — the places,
-the write-ups, the discounts, the stories — is still a JSON file in this
-repository, and the site renders completely with the database switched off.
-See **Saves**.
+Two things are not static. The save count — a bookmark keeps a place and says
+how many other people kept it too — and the lists, which are somebody else's
+top ten rather than mine: a name they chose, places they picked out of a much
+longer catalogue, and a sentence about each one, with a link they can send to
+a friend. Both live in a Cloudflare D1 database, behind `/api/saves` and
+`/api/lists`. Saving takes no account; making a list does, because it goes out
+under a name. See **Saves** and **Lists**.
+
+Everything the map itself draws — the places, the write-ups, the discounts,
+the stories — is still a JSON file in this repository, and the map renders
+completely with the database switched off.
 
 ---
 
@@ -35,6 +39,7 @@ See **Saves**.
 - [Restaurant discounts](#restaurant-discounts)
 - [Saves](#saves)
 - [Accounts](#accounts)
+- [Lists](#lists)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -1280,6 +1285,235 @@ feature's own setup:
 
 ---
 
+## Lists
+
+The map is mine. A list is somebody else's.
+
+Everything else on this site is one person's opinion — seventy-four places I
+have eaten at, in `data/restaurants.json`, and being on the map is the verdict.
+A list is the other thing: a name somebody chose, places they picked, and a
+sentence about each one. *Top ten burgers. Where to take your parents. The
+bakeries worth the walk.* It carries their username and it has a link they can
+send to a friend.
+
+Nothing about it touches the map. The pins, the write-ups, the filters and the
+"just added" section are exactly what they were; lists live on their own page
+and the map's only door to them is a line in the account sheet.
+
+### The two addresses
+
+```
+/lists.html      your own lists: the index, and the box that makes a new one
+/list/<id>       one list — the address that gets shared
+```
+
+One HTML file serves both. `/list/<id>` goes through
+`functions/list/[id].js`, which hands back that same file with the list's own
+title and social card written into the head and the list itself seeded into
+the page. That is what makes a shared link arrive looking like something: a
+static page has one `<title>`, and the crawler that builds the preview card in
+WhatsApp or Telegram does not run the script that would change it.
+
+The id is the title plus six random characters — `/list/top-ten-burgers-k3fmqw`
+— so the link says what it is before anybody opens it, and cannot be guessed
+at from a neighbouring one. The random half is what makes a private list
+private.
+
+### Making one
+
+Sign in, open the account sheet, press **Your lists**. Name it; you land in
+the empty list. **Add a place** opens a search over every place in the
+catalogue, and each row on the list has a box to say what is good about it.
+
+The order is the point of a top ten, so each row has an up and a down. Not a
+drag: a drag is the nicer gesture on a desktop and the worse one on a phone,
+where it fights the page's own scrolling, and it is no gesture at all on a
+keyboard.
+
+Nothing is saved with a button. The title and the line under it write
+themselves when you leave the field; a note writes itself a moment after you
+stop typing, again when you leave the box, and again when the page is hidden —
+which is what a phone does when the tab is switched away, and the last moment
+a script is promised.
+
+A list is shared by default. The pill on the card says which it is; pressing
+it makes the link stop working for everybody but you.
+
+### Why a list needs an account when a save does not
+
+A save is anonymous on purpose. It has to work in the first ten seconds,
+before anybody has decided anything about this site, so it is filed under a
+random id the browser made for itself and no name is ever asked for. See
+**Saves**.
+
+A list is the opposite kind of object. It is published: it has a title
+somebody wrote, it says things about restaurants in their words, and the whole
+point is a URL they hand to somebody else. That needs a byline. It also needs
+to survive a cleared browser — a device-owned list would be one Safari sweep
+away from a stranger's link going nowhere.
+
+So the one thing you must have before you can make a list is an account, and
+making one is still two fields and no email.
+
+There is exactly one sign-in form on this site and it is the one on the map.
+The lists page does not carry a second copy; it links to that one and names
+where to come back to:
+
+```
+/?account=up&then=/lists.html
+```
+
+`?account=` opens the account sheet on a view — `in`, `up`, `me` or `recover`
+— and `?then=` is where to go once somebody is signed in. Both are read during
+boot and taken straight back off the address bar. `?then=` only ever accepts a
+path on this site; anything else and the map would be an open redirector.
+
+### The catalogue
+
+A top ten of burgers needs every burger place in the city to choose from, not
+the four of them I have filmed. So there are two files and they are different
+things:
+
+```
+data/restaurants.json   the map. Mine, hand-written, every entry a place I
+                        have eaten at. Nothing in it is generated.
+data/places.json        the catalogue. Names and addresses, no opinion at all.
+                        GENERATED, and not edited by hand.
+```
+
+The catalogue is the map plus an import. Every place on the map is in it — so
+a list can hold one, and that row links to its write-up rather than to a
+Google search — and everything else comes out of `data/places.csv`, which is
+an export from Google Maps and the one file you actually put there.
+
+```
+node tools/places.mjs           rebuild data/places.json
+node tools/places.mjs --check   report that it is out of date, exit 1
+```
+
+There is no single Google Maps export format, so the header row is read rather
+than assumed. Any file with a column this recognises as a name will import:
+
+```
+Name,Address,Latitude,Longitude
+Burger House,"Viru 24, 10140 Tallinn",59.4372,24.7530
+```
+
+Only a name is required. An address is worth having and coordinates are a
+bonus: with them a row can point at a pin, without them the directions link is
+a search for the name. Coordinates are also pulled out of a Google Maps URL
+when there are no lat/lng columns, which is exactly the shape Takeout hands
+back. The column aliases are in `COLUMNS` at the top of `tools/places.mjs`.
+
+A CSV row that names a place already on the map is folded into it rather than
+added again — same name, and no positive disagreement about where it is —
+so the picker never shows one restaurant twice.
+
+Commit the CSV. `tools/validate.mjs` runs `--check`, which rebuilds the
+catalogue from whatever is in the repository and fails if the result differs —
+so a CSV left on your laptop reads as a catalogue full of places that came
+from nowhere, and CI refuses the deploy. It is public data either way: the
+same names and addresses the picker downloads.
+
+### Ids are kept, not recomputed
+
+A catalogue id is written into somebody's list, in a database `tools/places.mjs`
+cannot see. An id that changed when the CSV was re-exported would not be a
+cosmetic churn — it would be a place quietly falling out of a list that
+somebody wrote a sentence about.
+
+So ids are taken from the previous `data/places.json` wherever a row can be
+matched to one, on the folded name and address, and only a genuinely new row
+gets a new id. A row that has gone is reported loudly on the way past, because
+that id may be on a list.
+
+And lists survive it either way: `list_items` stores the name a place was
+added under alongside its id, so a list renders whole from the database alone.
+A place the catalogue has lost keeps its name and its sentence and stops
+linking anywhere, which is the smallest loss available.
+
+### The tables
+
+`lists` and `list_items` in `db/schema.sql`, applied the same way as
+everything else there. `list_items` carries `pos` — the order somebody dragged
+their top ten into — and the name snapshot above.
+
+Reordering sends the whole order rather than one move. A one-move message
+("this one, up two") can arrive after another one and leave the list in an
+order nobody asked for; the array is the truth and the rows are made to match
+it. Anything the array does not name — a place added on another phone between
+the drag and the save — is appended rather than left to collide.
+
+### The caps
+
+| | |
+|---|---|
+| lists per account | 24 |
+| places per list | 100 |
+| title | 60 characters |
+| the line under it | 200 |
+| what you say about a place | 280 |
+
+Every one of them is about somebody with a script rather than somebody with
+opinions. They are in `functions/api/lists.js`, and the page restates them so
+a field stops you at the keystroke rather than at the round trip.
+
+### What is not cached
+
+Nothing on `/api/lists`, and nothing `/list/<id>` serves. It is the one place
+in this codebase that does not reach for the edge, deliberately: a public list
+is read by strangers, which argues for a cache, and it is also read by its
+owner in the middle of writing it, which argues against one. Losing an edit
+behind a thirty-second TTL would be the feature feeling broken at the exact
+moment somebody is using it. A list read is a handful of rows on an indexed
+key. It can afford to be true.
+
+A private list is served only to the session that owns it, which is the other
+half of the reason: a shared copy of that response would be somebody's private
+page handed to the next person who asked for it.
+
+### Indexed, no. Unfurled, yes.
+
+A list is somebody else's writing on this domain and nothing moderates it, so
+`/list/<id>` carries `X-Robots-Tag: noindex`.
+
+It is deliberately **not** disallowed in `robots.txt`, and the difference
+matters: the crawler that builds the preview card has to fetch the page to
+read its `og:` tags, and a `Disallow` line would stop it fetching at all —
+every shared list would arrive as a bare blue link. `noindex` is a rule about
+what a crawler may *keep*, and it works precisely because the crawler is
+allowed to read the page first. A list gets to travel and not to be indexed.
+
+If that stops being the right trade it is one header in
+`functions/list/[id].js`.
+
+### Turning it on
+
+Nothing beyond what **Saves** and **Accounts** already need — the same D1
+binding and the same `SAVE_SALT`. Apply `db/schema.sql` again to pick up the
+two new tables (every statement in it is `IF NOT EXISTS`, so it is safe to
+re-run at any time):
+
+```
+wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
+wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
+```
+
+Without the binding the page says so and offers the map, the same way the
+account button simply does not appear.
+
+### What is not built yet
+
+- **A directory.** There is no page listing everybody's lists, and no "most
+  popular" anything. The index `idx_lists_public` is there for it; nothing
+  reads it. A list travels by its link.
+- **Reporting a missing place.** A place that is not in the catalogue cannot
+  be added, and there is no way to ask for one. The CSV is the way in.
+- **Anything social.** No following, no hearts, no comments on somebody
+  else's list.
+
+---
+
 ## Stories
 
 The one thing on this map that is not permanent. Everything else here is a
@@ -2003,6 +2237,10 @@ to read and write first.
   a `link`
 - a `?v=` cache stamp in the HTML that no longer matches the file it points at
   (run `node tools/stamp.mjs` and commit the result)
+- a `data/places.json` that is not what `tools/places.mjs` would write from the
+  map and the CSV beside it (run `node tools/places.mjs` and commit the
+  result), holds an id twice, or has lost a place that is on the map — any of
+  which would put somebody's sentence against the wrong restaurant
 
 **It warns, without failing, on:**
 
@@ -2033,7 +2271,13 @@ assets/app.js              map, panel, filters, i18n, lightbox — no framework
 functions/_middleware.js   sends the pages.dev address to the real one
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, optional email recovery
-functions/api/_lib.js      what those two share (not a route: leading _)
+functions/api/lists.js     somebody else's top ten: make one, fill it, share it
+functions/api/_lib.js      what those three share (not a route: leading _)
+functions/api/_lists.js    reading one list, shared with the page below
+functions/list/[id].js     /list/<id> — the page a shared link opens
+lists.html                 your lists, one list, and the one a stranger reads
+assets/lists.js            all three of those; no map, no Leaflet
+assets/lists.css           only what a list page has and the map does not
 db/schema.sql              the tables those Functions talk to
 wrangler.toml              the D1 bindings, one per environment (secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are
@@ -2047,6 +2291,8 @@ assets/deal.js             ) one small script
 assets/verify.js           ) per page
 assets/staff.js            )
 data/restaurants.json      the only file you edit regularly
+data/places.csv            the Google Maps export a list picks from (yours to drop in)
+data/places.json           the catalogue: the map plus that CSV — GENERATED
 data/taxonomy.json         the controlled vocabulary of types
 data/ui.json               every interface string, in every language
 data/deals.json            the discounts, and which of them are live
@@ -2056,6 +2302,7 @@ admin.html                 the admin door, self-contained and unlinked
 photos/<restaurant-id>/    photos, one folder per place
 stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
+tools/places.mjs           builds data/places.json from the CSV and the map
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
@@ -2070,6 +2317,10 @@ Deep links: `?spot=f-hoone` opens that place directly — that is the link to pu
 in a Story. `?lang=ru` opens it in Russian, `?style=green` in the dark
 palette. They all combine. `?story=kokomo-brunch` is the odd one out: it opens
 a story rather than a place, and takes itself back out of the address bar.
+`?account=up&then=/lists.html` is the other one that takes itself off: it
+opens the account sheet on a view and says where to go once somebody is signed
+in, and it is how the lists page borrows the map's sign-in form. See
+**Lists**.
 
 ---
 
