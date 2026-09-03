@@ -51,12 +51,17 @@ import { json, sessionUser, catalogue, wrongDatabase } from './_lib.js';
    page a link opens with the list already in it. */
 import { readList, LIST_ID } from './_lists.js';
 
-/* Caps. Every one of them is about somebody with a script rather than
-   somebody with opinions: twenty-four lists is more than anybody keeps, a
-   hundred places is ten times a top ten, and the lengths below are what fits
-   in the space the page draws for them. */
+/* Caps. Most of them are about somebody with a script rather than somebody
+   with opinions — twenty-four lists is more than anybody keeps, and the
+   lengths below are what fits in the space the page draws for them.
+
+   The places cap is the one exception, and it is a judgement about the
+   feature rather than a defence of the database. Twenty is twice a top ten:
+   room to overshoot and cut back, and short enough that the list still reads
+   as a recommendation somebody stands behind rather than everywhere they have
+   ever been. A list nobody finishes reading recommends nothing. */
 const MAX_LISTS = 24;
-const MAX_ITEMS = 100;
+const MAX_ITEMS = 20;
 const MAX_TITLE = 60;
 const MAX_INTRO = 200;
 const MAX_SAY = 280;

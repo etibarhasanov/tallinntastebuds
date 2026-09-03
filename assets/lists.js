@@ -41,6 +41,7 @@
   var MAX_TITLE = 60;
   var MAX_INTRO = 200;
   var MAX_SAY = 280;
+  var MAX_ITEMS = 20;
 
   /* How long the page waits after the last keystroke before it writes a note
      to the server. Long enough that typing a sentence is one request and not
@@ -825,6 +826,17 @@
     var on = {};
     state.list.items.forEach(function (it) { on[it.place] = true; });
 
+    /* Full: every row goes grey and says why, once, at the top. The server
+       refuses the twenty-first place anyway, but finding that out by watching
+       a row appear and then vanish is a worse way to be told. */
+    var full = state.list.items.length >= MAX_ITEMS;
+    if (full) {
+      dom.pickerBody.appendChild(el('p', {
+        className: 'picker-note',
+        textContent: t('listsErrFull')
+      }));
+    }
+
     var found = [];
     for (var i = 0; i < state.places.length && found.length <= PICKER_ROWS; i++) {
       var place = state.places[i];
@@ -847,7 +859,7 @@
     var more = found.length > PICKER_ROWS;
     var ul = el('ul', { className: 'picker-list' });
     found.slice(0, PICKER_ROWS).forEach(function (place) {
-      ul.appendChild(pickerRow(place, !!on[place.id]));
+      ul.appendChild(pickerRow(place, !!on[place.id], full));
     });
     dom.pickerBody.appendChild(ul);
 
@@ -856,23 +868,26 @@
     }
   }
 
-  function pickerRow(place, already) {
+  function pickerRow(place, already, full) {
     var row = el('button', {
       type: 'button',
       className: 'picker-row' + (already ? ' is-on' : ''),
-      disabled: already || null
+      disabled: already || full || null
     }, [
       el('span', { className: 'picker-name', textContent: place.name }),
       el('span', { className: 'picker-address mono', textContent: place.address || '' }),
       already ? el('span', { className: 'picker-on mono', textContent: t('listsAdded') }) : null
     ]);
-    if (!already) row.addEventListener('click', function () { addPlace(place); });
+    if (!already && !full) row.addEventListener('click', function () { addPlace(place); });
     return row;
   }
 
   function addPlace(place) {
     var list = state.list;
     if (!list) return;
+    /* The picker already greys these out; this is the second door, for a
+       click that got in before the last render caught up. */
+    if (list.items.length >= MAX_ITEMS) { toast(t('listsErrFull')); return; }
 
     /* Anything typed and not yet written goes first, for the same reason move()
        and drop() do it: render() below rebuilds every row, and a pending write
