@@ -999,7 +999,8 @@ a:hover { color: var(--accent-lit); }
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: right .3s var(--ease), opacity .2s var(--ease);
+  transition: right .3s var(--ease), opacity .2s var(--ease),
+              transform .38s var(--ease);
 }
 
 /* Under 860px the row is a drawer, and everything about it lives in the one
@@ -2492,15 +2493,66 @@ body.panel-detail .panel {
      which is a thing the text actually obeys. */
   .brand {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
+    gap: 0 10px;
     width: auto;
     padding: 0;
     background: none;
     border: 0;
     box-shadow: none;
   }
-  .brand .tagline { display: none; }
+  /* The one sentence on this site that says what it is: every place on this
+     map is a place I have eaten in myself. A stranger who arrives on a phone
+     and never reads it is looking at a map of pins like any other, so it is
+     no longer dropped here — it is the first thing the page says, and then it
+     stops saying it, the same bargain the rail buttons below make with their
+     labels. Out of the flex row and onto a line of its own under the mark and
+     the handle, where it has the width to be prose rather than three words a
+     line.
+
+     Collapsed by default and opened by .hint-open from assets/app.js: the
+     height animates so the sentence unrolls under the mark instead of
+     appearing over the map, and the paper glow behind the letters is the one
+     the handle beside it already wears, since there is no card down here to
+     put prose on. max-height is a ceiling for the transition to run to, set
+     well past the three lines the longest translation takes.
+
+     It never takes a tap: pointer-events go to the map under it, so the
+     sentence lying across the top left corner is not a piece of dead map for
+     the seconds it is up. */
+  .brand .tagline {
+    order: 3;
+    flex-basis: 100%;
+    max-width: min(78vw, 320px);
+    margin: 0;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--ink);
+    pointer-events: none;
+    text-shadow:
+       0   1px 2px var(--paper), 0  -1px 2px var(--paper),
+       1px 0   2px var(--paper), -1px 0   2px var(--paper),
+       0   0   8px var(--paper);
+    transition: opacity .3s var(--ease), max-height .38s var(--ease),
+                margin-top .38s var(--ease);
+  }
+  .brand.hint-open .tagline {
+    max-height: 6em;
+    margin-top: 7px;
+    opacity: 1;
+  }
+
+  /* The chip row begins where the mark ends, so a sentence unrolling under
+     the mark lands straight on top of Filters. It makes room instead: the
+     row slides down by the height of the line for as long as the line is up,
+     and comes back up with it — the corner empties in the order it filled.
+     --tell-h is measured in openBrandHint rather than guessed here, because
+     three lines of Estonian are not two lines of English. */
+  body.brand-telling .filter-bar { transform: translateY(var(--tell-h, 46px)); }
   .brand-head { margin: 0; }
 
   /* A paper ring rather than a border: it holds the circle apart from
@@ -2564,9 +2616,10 @@ body.panel-detail .panel {
      letter of the handle off the LIST button on the narrowest phone still
      being sold. */
   @media (max-width: 380px) {
-    .brand { gap: 8px; }
+    .brand { gap: 0 8px; }
     .brand-mark { width: 34px; height: 34px; }
     .brand .ig-link { font-size: 13px; }
+    .brand .tagline { font-size: 12.5px; max-width: 82vw; }
     .brand-ring::before { inset: -3px; }
   }
 
