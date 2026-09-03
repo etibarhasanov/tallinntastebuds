@@ -1534,6 +1534,53 @@ body.panel-detail .panel {
 #btn-account.is-on { color: var(--accent); }
 #btn-account .dice-label { max-width: 12ch; overflow: hidden; text-overflow: ellipsis; }
 
+/* The offer of an account, after a save made signed out. It stands where the
+   toast stands and looks like a quieter relative of it: same corner of the
+   screen, same distance up from the bottom, but a card rather than a pill
+   because it has two buttons and a sentence rather than a phrase. */
+.nudge {
+  position: fixed;
+  z-index: 2400;
+  left: 50%;
+  bottom: calc(84px + var(--safe-b));
+  transform: translateX(-50%);
+  width: min(320px, calc(100vw - 32px));
+  padding: 14px 16px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+.nudge[hidden] { display: none; }
+
+.nudge-say {
+  margin: 0 0 11px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.nudge-row { display: flex; gap: 8px; align-items: center; }
+
+.nudge-go, .nudge-no {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  border-radius: 100px;
+  padding: 7px 13px;
+}
+.nudge-go {
+  background: var(--paper);
+  border: 1px solid var(--paper);
+  color: var(--ink);
+}
+.nudge-no {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--paper);
+  opacity: .72;
+}
+.nudge-no:hover { opacity: 1; }
+
 /* Turnstile in invisible mode still wants somewhere to render. It draws
    nothing a visitor can see, but left in the flow it is a 300px hole at the
    foot of the page. */

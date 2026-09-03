@@ -21,20 +21,13 @@
  * a browser's password manager offer to keep the details, which is what
  * actually rescues people in practice.
  *
- * WHY AN ACCOUNT IS REQUIRED TO SAVE
+ * WHY AN ACCOUNT IS OPTIONAL
  *
- * It did not used to be. A browser could save under a random id it made for
- * itself, and signing in moved those rows onto the account. The trouble is
- * what that made the number underneath a place mean: a device id is one per
- * browser, free to make and gone the moment somebody clears their storage, so
- * "saved by 40 people" was saved by up to 40 browsers, some of them the same
- * person twice. An account costs something to make and is the same one on the
- * next phone. Requiring it is what makes the count worth printing.
- *
- * The cost is real and is not pretended away: somebody who would have pressed
- * the mark now has to sign up first, and some of them will not. The sheet is
- * two fields and opens on the press itself, which is as small as that wall
- * can be made.
+ * Saving works with no account at all: the device keeps a random id and the
+ * save is filed under that. Signing in claims those saves — the rows move
+ * from the device to the account — so nobody is asked to sign up before they
+ * have any reason to, and nothing anybody saved before signing in is lost.
+ * See `claim` below for how the move is made and why it cannot double-count.
  *
  * WHAT IS STORED
  *
@@ -49,7 +42,7 @@
 import {
   json, clientIp, fingerprint, sha256Hex, randomHex, derivePassword, sameSecret,
   pwIterations, sessionCookie, sessionUser, SESSION_DAYS, SESSION_COOKIE,
-  readCookie, wrongDatabase
+  readCookie, wrongDatabase, RECOUNT_SQL, countsKey
 } from './_lib.js';
 
 /* Guessing is the only way in — there is no reset link to phish and no email
@@ -112,6 +105,48 @@ async function noteFail(env, hash) {
        record of somebody's failures for no reason at all. */
     env.DB.prepare('DELETE FROM login_fails WHERE at < ?').bind(Date.now() - FAIL_WINDOW)
   ]);
+}
+
+/* ------------------------------------------------------------------ claim
+ * Move a device's saves onto an account.
+ *
+ * UPDATE OR IGNORE, then DELETE, and the order matters. A row that cannot
+ * move — because the account already has that place, saved on another device
+ * — is left alone by the update rather than failing the whole statement, and
+ * the delete then clears it away. The effect is a merge: the union of what
+ * the device had and what the account had, with nothing counted twice.
+ *
+ * Both places' counts are then recomputed from the rows, so a place that was
+ * saved on two devices by one person who has now signed in on both drops from
+ * two to one, which is the true number.
+ */
+async function claim(env, userId, clientId) {
+  if (!clientId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(clientId)) {
+    return [];
+  }
+
+  const { results } = await env.DB
+    .prepare("SELECT place_id FROM saves WHERE owner = ? AND owner_kind = 'device'")
+    .bind(clientId)
+    .all();
+  if (!results.length) return [];
+
+  const touched = results.map((r) => r.place_id);
+
+  const statements = [
+    env.DB
+      .prepare("UPDATE OR IGNORE saves SET owner = ?, owner_kind = 'user' WHERE owner = ? AND owner_kind = 'device'")
+      .bind(userId, clientId),
+    env.DB
+      .prepare("DELETE FROM saves WHERE owner = ? AND owner_kind = 'device'")
+      .bind(clientId)
+  ];
+  for (const place of touched) {
+    statements.push(env.DB.prepare(RECOUNT_SQL).bind(place, place));
+  }
+  await env.DB.batch(statements);
+
+  return touched;
 }
 
 /* The places this account has saved, so a fresh device can draw its marks
@@ -224,6 +259,7 @@ export async function onRequestPost(context) {
 
   const username = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
   const password = typeof body.password === 'string' ? body.password : '';
+  const clientId = typeof body.client === 'string' ? body.client : '';
 
   if (!USERNAME_RE.test(username)) return json({ error: 'username' }, 400);
   if (password.length < MIN_PASSWORD) return json({ error: 'password' }, 400);
@@ -309,6 +345,12 @@ export async function onRequestPost(context) {
       context.waitUntil(sendCode(env, offered, code, 'verify'));
     } catch (e) { /* an address is a convenience, never a blocker */ }
   }
+
+  const touched = await claim(env, userId, clientId);
+  /* Claiming can lower a count — a place one person had saved from two
+     devices is one save now, not two — so the copy this colo is handing out
+     may be wrong. */
+  if (touched.length) context.waitUntil(caches.default.delete(countsKey(request)));
 
   return new Response(
     JSON.stringify({ user: username, saved: await savedByUser(env, userId) }),
