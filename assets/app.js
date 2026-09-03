@@ -1585,6 +1585,9 @@
         if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
         paintAccountButton();
         accountSettled();
+        /* A link that arrived asking for the sheet has been waiting on this
+           answer — see readAccountLink. */
+        openAskedAccount();
       })
       .catch(function () { /* signed out is a fine place to be */ accountSettled(); });
   }
@@ -1629,6 +1632,90 @@
        their say. Nothing happens on a desktop, where the label is never
        hidden in the first place. */
     if (wasHidden && railIntroduced) openHint('account', 0);
+  }
+
+  /* ------------------------------------------------ arriving to sign in
+   * `/?account=up&then=/lists.html` opens the map with the sign-up sheet
+   * already open and comes back afterwards.
+   *
+   * It exists so that the lists page does not have to carry a second copy of
+   * the sign-in form. There is one password form on this site and it is the
+   * one below; anything else that needs somebody signed in sends them here
+   * and names where to return them to.
+   *
+   * Both parameters are read once, during boot and before syncUrl takes them
+   * back off the address bar, because the sheet cannot open until
+   * /api/account has said accounts work at all — by which time they are gone.
+   */
+  var accountAsked = '';
+  var accountThen = '';
+
+  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'recover'];
+
+  function readAccountLink(params) {
+    var view = params.get('account') || '';
+    if (ACCOUNT_VIEWS.indexOf(view) === -1) return;
+    accountAsked = view;
+
+    accountThen = samePlace(params.get('then') || '');
+  }
+
+  /* A path on this site and nothing else. A ?then= that could be any URL would
+     turn the map into an open redirector — a link that starts at
+     tallinntastebuds.ee and lands somewhere else — and the leading pair of
+     slashes, or a slash and a backslash, is exactly how that is done.
+
+     WHY THIS IS NOT A REGULAR EXPRESSION
+
+     It was one: /^\/[^/\\]/, a slash not followed by another slash or a
+     backslash. That is wrong, and quietly. Before a browser resolves a URL it
+     deletes every tab, newline and carriage return inside it, so a ?then= of
+     "/\n/evil.example" arrives here as four harmless-looking characters, passes
+     a test that only ever looks at the second one, and is then acted on as
+     "//evil.example" — which is protocol-relative, and lands on somebody
+     else's site.
+
+     So the string is put through the same two steps the browser will apply —
+     drop the characters it drops, then resolve against this origin — and what
+     is checked is the result. A rule about what a path may not contain has to
+     keep pace with every parser quirk; asking the parser where the URL
+     actually points does not. */
+  function samePlace(raw) {
+    var candidate = String(raw)
+      .replace(/^[\u0000-\u0020]+|[\u0000-\u0020]+$/g, '')  /* the browser trims these */
+      .replace(/[\t\n\r]/g, '');                            /* and deletes these */
+    if (candidate.charAt(0) !== '/') return '';
+
+    var url;
+    try { url = new URL(candidate, window.location.origin); }
+    catch (e) { return ''; }
+    if (url.origin !== window.location.origin) return '';
+
+    return url.pathname + url.search + url.hash;
+  }
+
+  /* Called once /api/account has answered, because until it has there is no
+     knowing whether a sheet can be offered at all. */
+  function openAskedAccount() {
+    if (!accountAsked || !state.account.ready) return;
+    var view = accountAsked;
+    accountAsked = '';
+    /* Asked for the signed-in sheet while signed out, or the reverse: open
+       the one that is actually true rather than the one the link named. */
+    if (view === 'me' && !state.account.user) view = 'in';
+    if (view !== 'me' && state.account.user) view = 'me';
+    openAccount(view);
+  }
+
+  /* Where somebody was sent from, once they are signed in. Nothing to go back
+     to is the ordinary case — the map is where most people sign in — and then
+     this does nothing at all. */
+  function returnAfterAccount() {
+    if (!accountThen) return false;
+    var back = accountThen;
+    accountThen = '';
+    window.location.href = back;
+    return true;
   }
 
   /* ------------------------------------------------------------- the sheet
@@ -1817,6 +1904,19 @@
       form.appendChild(el('p', { className: 'ac-why', textContent: t('accountRecoveryOn') }));
     }
 
+    /* The way into the lists, and the only one on the map. A list is a
+       different kind of object from everything else here — it is somebody
+       else's, it is published under their name, and it has nothing to do with
+       the pins — so it lives on its own page rather than as another sheet
+       over the map. This is the door to it, filed under who you are, which is
+       what a list belongs to. */
+    var lists = el('a', {
+      className: 'ac-alt',
+      href: '/lists.html',
+      textContent: t('listsYours')
+    });
+    form.appendChild(lists);
+
     var out = el('button', { type: 'button', className: 'ac-alt', textContent: t('accountSignOut') });
     out.addEventListener('click', function () {
       accountPost({ action: 'logout' }).then(function () {
@@ -1903,6 +2003,10 @@
         paintAccountButton();
         trackEvent(creating ? 'account_create' : 'account_login', {});
         closeAccount();
+        /* Sent here from somewhere that needed an account — the lists page.
+           Straight back to it, and no toast: the page they land on is about
+           to say who they are in its own header. */
+        if (returnAfterAccount()) return;
         toast(t('accountSignedIn', { name: a.out.user }));
       }).catch(function () { accountFail({}); });
     });
@@ -4707,8 +4811,17 @@
     else params.delete('style');
     /* ?story= is a door, not a state: it opens the queue on the way in and is
        taken off the address bar there and then, so nothing anybody copies out
-       of it later reopens a video that has since gone. */
+       of it later reopens a video that has since gone.
+
+       ?account= and ?then= are the same shape of thing — the lists page
+       sending somebody here to sign in and naming where to put them back —
+       and they are read during boot, before this runs. Leaving them on would
+       mean a link copied off a signed-in map reopened the sign-up sheet for
+       whoever it was sent to, and then walked them somewhere they had not
+       asked to go. */
     params.delete('story');
+    params.delete('account');
+    params.delete('then');
 
     var query = params.toString();
     var next = window.location.pathname + (query ? '?' + query : '') + window.location.hash;
@@ -5258,8 +5371,15 @@
       state.lang = chosen.lang;
       state.langPinned = chosen.pinned;
 
+      /* Read before anything else touches the address bar: syncUrl below
+         rebuilds the query out of state and takes ?account= and ?then= off it,
+         and the sheet they ask for cannot open until /api/account has
+         answered — which is long after that. See readAccountLink. */
+      var arrived = new URLSearchParams(window.location.search);
+      readAccountLink(arrived);
+
       /* Chips before the map, so the opening view fits the filtered set. */
-      var picked = new URLSearchParams(window.location.search).get('type');
+      var picked = arrived.get('type');
       if (picked) {
         var live = usedTypeIds();
         if (anyLiveDeal()) live = live.concat(DEAL_FILTER);

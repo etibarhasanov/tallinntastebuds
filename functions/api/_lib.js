@@ -2,11 +2,12 @@
  * Tallinn Tastebuds — the pieces both API routes need.
  *
  * Underscore-prefixed files under functions/ are not routed, so this is a
- * module and never an endpoint. Everything here is shared by /api/saves and
- * /api/account. Two things at the bottom hold a value between requests — the
- * list of real places and which database this deployment is holding — and
- * both are caches of something that does not change, kept per isolate and
- * re-asked every five minutes. Nothing else here remembers anything.
+ * module and never an endpoint. Everything here is shared by /api/saves,
+ * /api/account and /api/lists. Three things at the bottom hold a value
+ * between requests — which database this deployment is holding, the places on
+ * the map, and the catalogue a list draws from — and all three are caches of
+ * something that only a deploy changes, kept per isolate and re-asked every
+ * five minutes. Nothing else here remembers anything.
  */
 
 export function json(body, status, maxAge) {
@@ -240,6 +241,34 @@ export async function knownPlaces(context) {
   known = new Set(places.map((p) => p.id));
   knownAt = Date.now();
   return known;
+}
+
+/* ------------------------------------------------------------- catalogue
+ * The other roll of places, and a wider one: data/places.json is the map plus
+ * whatever came out of the Google Maps export, and it is what a list draws
+ * from. Same five-minute cache per isolate, same reason — it changes when a
+ * deploy changes it and not otherwise.
+ *
+ * A Map of whole entries rather than a Set of ids, because /api/lists answers
+ * with the address and the pin as well as the name: a shared list has to draw
+ * completely for somebody who has never been here, and making that browser
+ * fetch the entire catalogue to render ten rows would be a hundred kilobytes
+ * for a page that needs a few hundred bytes of it.
+ */
+let roll = null;
+let rollAt = 0;
+
+export async function catalogue(context) {
+  if (roll && Date.now() - rollAt < 300000) return roll;
+  const url = new URL('/data/places.json', context.request.url);
+  const res = context.env.ASSETS
+    ? await context.env.ASSETS.fetch(new Request(url.toString()))
+    : await fetch(url.toString());
+  if (!res.ok) throw new Error('places.json unreadable: ' + res.status);
+  const places = await res.json();
+  roll = new Map(places.map((p) => [p.id, p]));
+  rollAt = Date.now();
+  return roll;
 }
 
 /* save_counts is brought level with saves by the write that changes them, and

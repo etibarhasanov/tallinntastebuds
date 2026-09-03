@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lists | Tallinn Tastebuds</title>
+<meta name="description" content="Your own top ten. Pick places, say what is good about each one, and send somebody the link.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+
+<!-- The block between the two LIST-HEAD markers below is replaced, in place,
+     by functions/list/[id].js when this same file is served as /list/<id>:
+     the description and the social card become that list's own and a second
+     title is written above them, so a link somebody pastes into a message
+     unfurls as what it is rather than as "Lists | Tallinn Tastebuds". Opened
+     directly at /lists.html the markers are left alone and these defaults
+     stand.
+
+     The markers are spelled out only where they actually mark something — not
+     here. HTML comments do not nest, so writing one inside this sentence
+     would end this comment early, drop the rest of it into the head as text,
+     and take the whole document with it. It did once. -->
+<!--LIST-HEAD-->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tallinn Tastebuds">
+<meta property="og:title" content="Lists | Tallinn Tastebuds">
+<meta property="og:description" content="Your own top ten, from every place in Tallinn.">
+<meta property="og:image" content="https://tallinntastebuds.ee/assets/logo/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!--/LIST-HEAD-->
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The tokens, the card, the eyebrow and the toast all come from the map's
+     stylesheet; only what a list page has and the map does not is in the
+     second file. -->
+<link rel="stylesheet" href="/assets/styles.css?v=16f97155">
+<link rel="stylesheet" href="/assets/lists.css?v=1102526a">
+</head>
+<body class="lists-body">
+
+<a class="skip-link" href="#main" data-i18n="listsSkip">Skip to the list</a>
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" data-i18n-aria-label="listsBack" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
+  </a>
+  <!-- Only ever a link to the map's account sheet: the sign-in form lives in
+       exactly one place on this site and it is not here. See assets/lists.js. -->
+  <a class="lists-who" id="lists-who" href="/?account=in" hidden></a>
+</header>
+
+<!-- Every state this page has — your lists, one list, one list somebody else
+     made, signed out, and the four ways it can fail — is built by
+     assets/lists.js into this one element. Which of them is showing is decided
+     at the moment the data arrives, so there is one place that decides and
+     nothing can be left over from the state before. -->
+<main class="lists-main" id="main" tabindex="-1"></main>
+
+<!-- The picker: every place in Tallinn, searched down to the one being added.
+     Static markup because it is the same sheet whichever list is open, and
+     because the input inside it must not be rebuilt under somebody's
+     keystrokes. -->
+<div class="scrim" id="picker-scrim" role="dialog" aria-modal="true"
+     data-i18n-aria-label="listsAddPlace" aria-label="Add a place" hidden>
+  <div class="picker card" id="picker">
+    <button type="button" class="panel-close" id="picker-close"
+            data-i18n-aria-label="close" aria-label="Close">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <h2 class="picker-title" data-i18n="listsAddPlace">Add a place</h2>
+    <div class="search">
+      <div class="search-field">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/>
+        </svg>
+        <input type="search" class="search-input" id="picker-search" autocomplete="off"
+               autocorrect="off" autocapitalize="none" spellcheck="false"
+               data-i18n-aria-label="listsSearchPlaces" data-i18n-placeholder="listsSearchHint"
+               aria-label="Search every place in Tallinn" placeholder="Name or street">
+        <button type="button" class="search-clear" id="picker-clear"
+                data-i18n-aria-label="searchClear" aria-label="Clear the search" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="picker-body" id="picker-body" aria-live="polite"></div>
+  </div>
+</div>
+
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Tallinn</p>
+    <h2>Lists</h2>
+    <p>A list is built and read with JavaScript. The map itself works rather
+      better than this page does without it — <a href="/">it is over here</a>.</p>
+  </div>
+</noscript>
+
+<script src="/assets/lists.js?v=1c709c10" defer></script>
+</body>
+</html>

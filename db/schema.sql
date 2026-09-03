@@ -1,9 +1,10 @@
 -- Tallinn Tastebuds — every table the site has.
 --
--- Three things live here: the saves and their counts, the accounts a save can
--- follow a person on, and 750 Tallinn venues mirrored out of Google Places.
--- Everything the map itself draws — the places, the write-ups, the discounts,
--- the stories — is a JSON file in the repository and never a row.
+-- Five things live here: the saves and their counts, the accounts a save can
+-- follow a person on, the lists somebody builds and shares, 750 Tallinn venues
+-- mirrored out of Google Places, and one meta row saying which database this
+-- is. Everything the map itself draws — the places, the write-ups, the
+-- discounts, the stories — is a JSON file in the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
 -- "tallinntastebuds-preview" behind every preview deployment. They hold the
@@ -137,6 +138,81 @@ CREATE TABLE IF NOT EXISTS login_fails (
 CREATE INDEX IF NOT EXISTS idx_login_fails ON login_fails (ip_hash, at);
 
 
+-- ------------------------------------------------------------------- lists
+-- Somebody else's top ten.
+--
+-- The map is mine — seventy-four places I have been to, in
+-- data/restaurants.json, and nothing a visitor does changes it. A list is the
+-- other thing: a name somebody chose, a handful of places they picked out of
+-- data/places.json, and a sentence about each. "Top ten burgers." "Where to
+-- take your parents." It is theirs, it carries their username, and it has a
+-- link they can send to somebody.
+--
+-- An account is required to make one, and that is a deliberate difference
+-- from a save. A save is anonymous and belongs to a device because it has to
+-- work before anybody has decided anything; a list is published under a name,
+-- so there has to be a name. See functions/api/lists.js.
+CREATE TABLE IF NOT EXISTS lists (
+  -- The share code, and the whole of the URL: /list/<id>. Minted from the
+  -- title plus random characters, so it reads as what it is when it is
+  -- pasted somewhere and still cannot be guessed at from a neighbouring one.
+  id         TEXT    PRIMARY KEY,
+  -- users.id. Never a device: a list needs an account.
+  owner      TEXT    NOT NULL,
+  title      TEXT    NOT NULL,
+  -- A line under the title, optional, saying what the list is for.
+  intro      TEXT    NOT NULL DEFAULT '',
+  -- 1 = anybody holding the link can read it, which is what sharing means
+  -- here. 0 = only its owner. There is no third state and no per-person
+  -- sharing: a link either opens or it does not.
+  public     INTEGER NOT NULL DEFAULT 1,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+-- "My lists, newest first", which is the whole of the index page.
+CREATE INDEX IF NOT EXISTS idx_lists_owner ON lists (owner, updated_at DESC);
+-- The directory of public lists, when there is one. Nothing reads it yet.
+CREATE INDEX IF NOT EXISTS idx_lists_public ON lists (public, updated_at DESC);
+
+-- One row is one place on one list, with what its owner said about it.
+--
+-- WHY THE NAME IS STORED HERE AS WELL AS IN THE CATALOGUE
+--
+-- place_id points into data/places.json, which is generated from a CSV export
+-- and will be rebuilt — with corrections, with more places, with a row that
+-- turns out to have closed. tools/places.mjs works hard to keep an id stable
+-- across that, and warns when one goes anyway, but "works hard" is not
+-- "cannot happen".
+--
+-- A save that loses its place is a filled bookmark that stops being drawn.
+-- A list that loses one is a sentence somebody wrote about a restaurant,
+-- attached to nothing. So the name the place was added under is copied onto
+-- the row, and a list renders whole from this table alone: the catalogue is
+-- consulted for today's address and for the link back to the map, and its
+-- absence costs those two things rather than the entry.
+CREATE TABLE IF NOT EXISTS list_items (
+  list_id    TEXT    NOT NULL,
+  -- data/places.json id. Checked against that file before it is written, so a
+  -- row here pointed at somewhere real on the day it was made.
+  place_id   TEXT    NOT NULL,
+  -- The name at the moment it was added. See above.
+  name       TEXT    NOT NULL,
+  -- What its owner has to say about it. The point of the whole feature.
+  say        TEXT    NOT NULL DEFAULT '',
+  -- Position in the list, from 0. Not a rank anybody scores: it is the order
+  -- they dragged it into, and a "top ten" is a list whose owner cared about
+  -- the order.
+  pos        INTEGER NOT NULL,
+  created_at INTEGER NOT NULL,
+  -- One place appears on one list once. Pressing add twice is the conflict
+  -- clause and not a second row, the same way a save is.
+  PRIMARY KEY (list_id, place_id)
+);
+-- Reading a list in its own order. The primary key leads with list_id but
+-- then sorts by place, which is not an order anybody chose.
+CREATE INDEX IF NOT EXISTS idx_list_items_pos ON list_items (list_id, pos);
+
+
 -- ----------------------------------------------------------- google venues
 -- Every place in Tallinn you can eat or drink in, out of the Google Places
 -- API. 750 of them.
@@ -177,7 +253,9 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- Anything that later points at one of these venues stores this string. A
   -- slug from data/restaurants.json is lowercase letters, digits and hyphens
   -- and a Google key always carries capitals, so a single column can hold
-  -- either kind without a prefix and without ever being ambiguous.
+  -- either kind without a prefix and without ever being ambiguous.  --
+  -- It is also what a list item holds when it points at one of these; see
+  -- list_items.place_id.
   place_id      TEXT PRIMARY KEY,
 
   -- --------------------------------------------------- Google's, overwritten
