@@ -1,4 +1,9 @@
--- Tallinn Tastebuds — the saves table.
+-- Tallinn Tastebuds — every table the site has.
+--
+-- Three things live here: the saves and their counts, the accounts a save can
+-- follow a person on, and 750 Tallinn venues mirrored out of Google Places.
+-- Everything the map itself draws — the places, the write-ups, the discounts,
+-- the stories — is a JSON file in the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
 -- "tallinntastebuds-preview" behind every preview deployment. They hold the
@@ -130,6 +135,111 @@ CREATE TABLE IF NOT EXISTS login_fails (
   at      INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_login_fails ON login_fails (ip_hash, at);
+
+
+-- ----------------------------------------------------------- google venues
+-- Every place in Tallinn you can eat or drink in, out of the Google Places
+-- API. 750 of them.
+--
+-- "venues" rather than "places" because the site already has two files with
+-- "places" in the name and this is a third thing; "google_" because the rows
+-- are Google's and the name should say so before anybody edits one.
+--
+-- THIS IS A MIRROR, AND THAT IS THE WHOLE RULE
+--
+-- The columns below the first divider are Google's. They carry the names the
+-- export gave them, in the order the export gives them, and a refresh
+-- overwrites every one of them without asking. Do not hand-edit them: your
+-- correction would survive exactly until the next sync and then vanish, which
+-- is the worst way to lose work.
+--
+-- The columns below the second divider are mine. A refresh never touches
+-- them. That separation is the only thing standing between "we synced the
+-- export" and "we lost an afternoon of curation".
+--
+-- If a name or an address is wrong and it matters, the answer is to promote
+-- the place onto the map — data/restaurants.json is hand-written and mine —
+-- rather than to correct a mirror that is not.
+--
+-- Loaded and refreshed by tools/googlevenues.mjs, which writes
+-- db/google-venues.sql out of exports/tallinn_restaurants.csv:
+--
+--   node tools/googlevenues.mjs
+--   wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
+--   wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql
+CREATE TABLE IF NOT EXISTS google_venues (
+  -- Google's own key — "ChIJUdUjCV2TkkYRcg8TxVp1XUI". Unique across all 750,
+  -- stable across refreshes, and what the raw 44-column export joins on. It is
+  -- the primary key because it is the only identifier here that Google
+  -- guarantees; anything this file invented would drift the first time a name
+  -- changed.
+  --
+  -- Anything that later points at one of these venues stores this string. A
+  -- slug from data/restaurants.json is lowercase letters, digits and hyphens
+  -- and a Google key always carries capitals, so a single column can hold
+  -- either kind without a prefix and without ever being ambiguous.
+  place_id      TEXT PRIMARY KEY,
+
+  -- --------------------------------------------------- Google's, overwritten
+  name          TEXT    NOT NULL,
+  -- Google's venue label: "Restaurant", "Sushi Restaurant", "Bistro".
+  category      TEXT    NOT NULL DEFAULT '',
+  -- Derived and grouped by the export so it is filterable — sushi, ramen and
+  -- izakaya all become "Japanese". Empty on 367 of the 750.
+  cuisine       TEXT    NOT NULL DEFAULT '',
+  -- 2.2 to 5.0, and the review count it rests on. Neither is ever shown on the
+  -- map: there are no scores on this site. They are here to help decide which
+  -- places are worth promoting, and for nothing else.
+  rating        REAL,
+  reviews       INTEGER,
+  -- Google's own scale, "$" to "$$$$", kept verbatim rather than converted to
+  -- the map's 1-4. Converting on the way in would mean storing an opinion in a
+  -- mirror; it is one line wherever it is actually needed.
+  price         TEXT    NOT NULL DEFAULT '',
+  -- "Open" or "Temporarily closed".
+  status        TEXT    NOT NULL DEFAULT '',
+  address       TEXT    NOT NULL DEFAULT '',
+  postal_code   TEXT    NOT NULL DEFAULT '',
+  -- "Tallinn" on 744 rows and "Peetri" on six.
+  city          TEXT    NOT NULL DEFAULT '',
+  phone         TEXT    NOT NULL DEFAULT '',
+  website       TEXT    NOT NULL DEFAULT '',
+  -- One line, 24-hour, semicolons between days: "Mon 11:00-22:00; Sat closed".
+  -- The raw export had real newlines in this field, which is why it was 4,945
+  -- physical lines for 750 records. See exports/README.md.
+  opening_hours TEXT    NOT NULL DEFAULT '',
+  -- The remaining Google type tags, semicolon separated.
+  tags          TEXT    NOT NULL DEFAULT '',
+  latitude      REAL,
+  longitude     REAL,
+  maps_url      TEXT    NOT NULL DEFAULT '',
+
+  -- ------------------------------------------------- mine, never overwritten
+  -- The data/restaurants.json id, when this is also a place on my map. 32 of
+  -- the 750 are. It is what lets a list row pointing at a Google place link
+  -- through to a write-up instead of out to Google.
+  map_id        TEXT,
+  -- Keep it out of the picker. For a duplicate, a car park that Google thinks
+  -- is a restaurant, or anything else that should not be offered.
+  hidden        INTEGER NOT NULL DEFAULT 0,
+  -- A line to yourself while working through them.
+  note          TEXT    NOT NULL DEFAULT '',
+
+  -- ------------------------------------------------------------ bookkeeping
+  first_seen_at INTEGER NOT NULL,
+  synced_at     INTEGER NOT NULL,
+  -- Set when a refresh no longer carries this place — it closed for good, or
+  -- Google stopped returning it. Never deleted, because a list may be pointing
+  -- at it and somebody wrote a sentence about it.
+  missing_since INTEGER
+);
+
+-- Best-first, which is the order the export itself is sorted in and the order
+-- worth reviewing them in.
+CREATE INDEX IF NOT EXISTS idx_google_venues_rating ON google_venues (rating DESC, reviews DESC);
+-- The 32 that are already on the map, and the ones still to be looked at.
+CREATE INDEX IF NOT EXISTS idx_google_venues_map ON google_venues (map_id) WHERE map_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_google_venues_open ON google_venues (hidden, status);
 
 
 -- ------------------------------------------------------------------- meta

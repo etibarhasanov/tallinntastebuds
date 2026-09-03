@@ -13,6 +13,8 @@
  *   - coordinates outside Tallinn's bounding box (catches swapped lat/lng)
  *   - a type used in restaurants.json that is not in taxonomy.json
  *   - a taxonomy type claiming a reserved id, such as "discount" or "saved"
+ *   - a db/google-venues.sql that is out of step with the Google Places export
+ *     it is generated from
  *   - a taxonomy type missing a label in any language
  *   - a UI string present in one language but missing in another
  *   - a photo listed in the data that does not exist in the repo
@@ -43,6 +45,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
 import { stale as staleStamps } from './stamp.mjs';
+import { stale as staleGoogleVenues } from './googlevenues.mjs';
 import { STORY_HOURS, HOUR_MS, storyWindow, storyPhase } from './clock.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -700,6 +703,17 @@ if (existsSync(STORIES)) {
       warn('stories/', `"${entry}" is not named by any story in data/stories.json`);
     }
   }
+}
+
+/* ------------------------------------------------------- google-venues.sql
+   db/google-venues.sql is what loads the 750-venue Google Places export into
+   D1, and it is generated from exports/tallinn_restaurants.csv. A deploy where
+   the export moved and the SQL did not would be a database holding last
+   month's Tallinn, so the two are checked against each other here the same way
+   the asset stamps are. */
+
+if (staleGoogleVenues()) {
+  fail('db/google-venues.sql', 'is not what tools/googlevenues.mjs would write from exports/tallinn_restaurants.csv — run `node tools/googlevenues.mjs` and commit the result');
 }
 
 /* -------------------------------------------------- taxonomy / photo sweeps */
