@@ -1305,8 +1305,10 @@ viewer and nothing else on the page changes.
 
 ### Post one
 
-Drop the video in `stories/` — see [stories/README.md](stories/README.md) for
-the size and the one `ffmpeg` line that gets it there — and add an entry:
+From a phone, [the admin page](#the-admin-page) does the whole of this: pick
+the clip, pick the place, press the button. By hand it is two steps — drop the
+video in `stories/`, see [stories/README.md](stories/README.md) for the size
+and the one `ffmpeg` line that gets it there, and add an entry:
 
 ```json
 [
@@ -1394,6 +1396,33 @@ QUEUED
   kokomo-brunch                    photo kokomo-brunch.webp -> kokomo
                                    goes up 2026-09-14 09:00, comes down 2026-09-15 21:00  (36h window)
 ```
+
+### Whatever the browser could write
+
+A video posted from [the admin page](#the-admin-page) arrives in whichever
+container that browser could write — MP4 from Safari, WebM from Chrome and
+Firefox, and untouched off the camera where there was nothing to re-encode
+with. [`.github/workflows/story-media.yml`](.github/workflows/story-media.yml)
+runs on every push that touches `stories/` and makes it ordinary:
+
+```bash
+node tools/storymedia.mjs         # what each story video is, and what is wrong with it
+node tools/storymedia.mjs --fix   # convert the ones that are not web-ready, in place
+```
+
+It converts anything that is not already **H.264 in an MP4, inside 1080×1920,
+`yuv420p`, with its index at the front and under 8 MB** — tone mapping HDR on
+the way, which is the part not to skip, because without it an iPhone's colours
+decode grey. Then it renames the file, moves the story entry onto the new name,
+takes a poster frame if there is none, commits and asks for a deploy.
+
+A file that is already all of those things is not touched. That is also the
+loop guard: the commit this makes finds nothing to do on a second pass, and a
+push made with the built-in `GITHUB_TOKEN` does not start a workflow anyway.
+
+The same script is worth running before a hand-made file is committed — it says
+what is wrong with a video in the words a person would use, and changes nothing
+until it is asked to.
 
 ### And the cron picks it up afterwards
 
@@ -1547,13 +1576,15 @@ doing; the page asks for persistent storage itself.
 
 ### Posting a story
 
-Four fields and a button. What happens when you press it:
+Four fields and a button, and the first field takes **a photograph or a
+video**. What happens when you press it:
 
-1. The photograph is **shrunk on the device** — see
-   [What it does to a photograph](#what-it-does-to-a-photograph) below.
-2. The picture is committed to `stories/`, **then** the entry to
-   `data/stories.json` — that order, so a story naming a file that is not
-   there is never in the repository even for one commit.
+1. The file is **squeezed on the device** — see
+   [What it does to a photograph](#what-it-does-to-a-photograph) and
+   [What it does to a video](#what-it-does-to-a-video) below.
+2. The picture, or the video and its poster frame, is committed to `stories/`,
+   **then** the entry to `data/stories.json` — that order, so a story naming a
+   file that is not there is never in the repository even for one commit.
 3. Cloudflare redeploys. The ring appears by itself when `from` comes round;
    nothing has to be deployed at nine in the morning, because the file was
    already there.
@@ -1567,9 +1598,10 @@ printed under the field to check against. Only English is asked for; it is the
 fallback every other language uses, and the rest can be filled in from a laptop
 later without the story coming down.
 
-**Videos are still a laptop job.** A browser cannot transcode one, and an
-untouched phone video is 50 MB of HEVC that no browser but Safari will play —
-see [stories/README.md](stories/README.md) for the `ffmpeg` line.
+**A video is posted the same way**, and it used to be the one thing this page
+could not do. It takes as long as the clip lasts, because re-encoding one in a
+browser means playing it through once — the form says so on the button before
+you press it, and nothing comes out of the speaker while it runs.
 
 ### Adding a place
 
@@ -1669,6 +1701,50 @@ numbers are `SHRINK_STEPS` and `PHOTO_BUDGET` at the top of the script in
 
 A 4 MB phone photograph comes out somewhere near 150 KB. The form prints what
 went in and what came out, so you can see it happen.
+
+### What it does to a video
+
+There is no ffmpeg in a browser. There is the next best thing, and it has been
+in every one of them for years: play the clip through once, draw each frame
+onto a canvas that is already the right size, take that canvas as a video track
+and the file's own sound as an audio track, and hand the pair to
+`MediaRecorder`. What comes back has been re-encoded by the same hardware
+encoder the camera recorded with.
+
+- **Fitted inside 1080×1920**, never stretched past its own size, and forced
+  even on both sides because H.264 has no other option. Fitted rather than
+  filled: the viewer letterboxes what it is given and has never cropped a
+  picture nobody asked it to.
+- **The first 15 seconds.** A longer clip is trimmed to that and the form says
+  so, under the preview, before anything is posted.
+- **A bitrate worked out from the running time** — six megabytes divided by
+  however many seconds it runs, floored at 700 kbps and capped at 5 Mbps. One
+  pass, and the file lands under budget rather than near it.
+- **The sound goes through Web Audio into the recorder and nowhere else.** The
+  graph never reaches the speakers, so squeezing a video is silent on the
+  device doing it. Where there is no `AudioContext` to build that graph with,
+  the element is muted instead: a silent story beats a phone that suddenly
+  starts playing one out loud in a café.
+- **A poster frame** is taken from the same playback, a third of a second in,
+  at 540px — far enough that a fade from black is over, near enough that it is
+  still the opening shot.
+
+**What container comes out is not up to the page.** Safari writes MP4/H.264 —
+so an iPhone, which is where a story is shot, posts a finished file every
+browser can play. Chrome and Firefox write WebM, which Safari will not touch.
+A browser with no `MediaRecorder` at all uploads the file exactly as it came
+off the camera, up to the 25 MB Cloudflare Pages will serve.
+
+Teaching the form to refuse three of those four would mean a phone that can
+post a story on one browser. So it posts whatever it has, and
+[`.github/workflows/story-media.yml`](.github/workflows/story-media.yml) makes
+it ordinary on the other side — see
+[Whatever the browser could write](#whatever-the-browser-could-write). The
+worst case is a story that is a WebM in the repository for a minute, never a
+story an iPhone cannot watch.
+
+`STORY_SECONDS`, `VIDEO_BUDGET` and `RECORDER_TYPES` at the top of the script
+in `admin.html` are the whole of it, and nothing else depends on them.
 
 ### Where the token lives
 
@@ -1985,9 +2061,11 @@ tools/validate.mjs         dependency-free data validator
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
+tools/storymedia.mjs       makes every story video an H.264 MP4 a browser will play
 tools/qrperf.mjs           checks the QR encoder still draws the same code, and times it
 .github/workflows/validate.yml
-.github/workflows/stories.yml   the hourly tick, and the tidying up after it
+.github/workflows/stories.yml      the hourly tick, and the tidying up after it
+.github/workflows/story-media.yml  converts a video posted from a phone
 ```
 
 Deep links: `?spot=f-hoone` opens that place directly — that is the link to put
