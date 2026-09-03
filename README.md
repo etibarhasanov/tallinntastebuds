@@ -1547,14 +1547,19 @@ the drag and the save — is appended rather than left to collide.
 | | |
 |---|---|
 | lists per account | 24 |
-| places per list | 100 |
+| places per list | 20 |
 | title | 60 characters |
 | the line under it | 200 |
 | what you say about a place | 280 |
 
-Every one of them is about somebody with a script rather than somebody with
-opinions. They are in `functions/api/lists.js`, and the page restates them so
-a field stops you at the keystroke rather than at the round trip.
+Most of them are about somebody with a script rather than somebody with
+opinions. They are in `functions/api/lists.js`, and the page restates the
+lengths so a field stops you at the keystroke rather than at the round trip.
+
+Twenty places is the exception: a judgement about the feature, not a defence
+of the database. It is twice a top ten — room to overshoot and cut back, and
+short enough that a list still reads as a recommendation somebody stands
+behind rather than everywhere they have ever been.
 
 ### What is not cached
 
