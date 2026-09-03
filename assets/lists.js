@@ -614,26 +614,55 @@
     pending.push({ node: node, run: run });
   }
 
-  function flush(node) {
+  /* `leaving` says the page is going away, and it changes how the write is
+     sent — see beacon() below. It is passed down rather than read off a
+     variable so that the ordinary flushes, the ones a move or a removal does,
+     cannot be caught by it. */
+  function flush(node, leaving) {
     for (var i = pending.length - 1; i >= 0; i--) {
       if (node && pending[i].node !== node) continue;
       var job = pending[i].run;
       pending.splice(i, 1);
-      var out = job();
+      var out = job(leaving);
       if (out && out.then) out.then(function (a) { if (a && !a.ok) failed(a.out); }).catch(function () {});
     }
   }
 
-  function flushAll() { flush(null); }
+  function flushAll(leaving) { flush(null, leaving); }
+
+  /* The same write, for the moment the page is being taken away.
+   *
+   * A plain fetch is the wrong tool there and fails in the worst possible
+   * place: the browser cancels requests in flight as the document goes, so the
+   * sentence somebody has just finished typing — the one they are surest they
+   * saved — is the likeliest of all to be lost. sendBeacon is built for this.
+   * The request is handed over and the browser sends it once the page is gone.
+   *
+   * Nothing comes back, and there is nowhere to put an answer anyway: the page
+   * that would have shown the error no longer exists. A refusal — the queue is
+   * full, the body too large — falls back to the fetch, which at least has a
+   * chance while the document is still here.
+   */
+  function beacon(payload) {
+    if (!navigator.sendBeacon) return post(payload);
+    /* A Blob rather than a string, because its type becomes the request's
+       Content-Type, and the API only reads JSON bodies. */
+    var body = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+    try {
+      if (navigator.sendBeacon(API, body)) return null;
+    } catch (e) { /* fall through */ }
+    return post(payload);
+  }
 
   function debounceSay(node, item) {
     var timer = null;
 
-    var write = function () {
+    var write = function (leaving) {
       var value = node.value.trim().slice(0, MAX_SAY);
       if (value === (item.say || '')) return;
       item.say = value;
-      return post({ action: 'say', id: state.list.id, place: item.place, say: value });
+      var payload = { action: 'say', id: state.list.id, place: item.place, say: value };
+      return leaving ? beacon(payload) : post(payload);
     };
 
     node.addEventListener('input', function () {
@@ -845,6 +874,13 @@
     var list = state.list;
     if (!list) return;
 
+    /* Anything typed and not yet written goes first, for the same reason move()
+       and drop() do it: render() below rebuilds every row, and a pending write
+       reads its value off the textarea it was typed into. Once that node is
+       gone the write sends whatever the new node happens to hold — so adding a
+       place while a sentence was half typed used to overwrite the sentence. */
+    flushAll();
+
     /* Optimistic, the way the save mark on the map is: the row appears at once
        and the server's answer only ever corrects it. A place that fails to go
        on comes straight back off. */
@@ -899,9 +935,9 @@
        away, the screen is locked, the browser is put in the background. A
        sentence half typed is written now or possibly never. */
     document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'hidden') flushAll();
+      if (document.visibilityState === 'hidden') flushAll(true);
     });
-    window.addEventListener('pagehide', flushAll);
+    window.addEventListener('pagehide', function () { flushAll(true); });
   }
 
   /* ------------------------------------------------------------------ boot */

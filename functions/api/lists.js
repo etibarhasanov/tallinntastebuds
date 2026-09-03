@@ -327,7 +327,16 @@ async function add(context, body, id) {
         'INSERT INTO list_items (list_id, place_id, name, say, pos, created_at) ' +
         'VALUES (?, ?, ?, ?, ' +
         '(SELECT COALESCE(MAX(pos), -1) + 1 FROM list_items WHERE list_id = ?), ?) ' +
-        'ON CONFLICT DO NOTHING'
+        /* Already on the list: keep the row where it is — the position, the
+           name it was added under and when — and take the note if one came
+           with this call. DO NOTHING would have thrown the note away, which
+           is the one thing in the request somebody actually wrote.
+
+           The WHERE is what makes a bare re-add harmless. Adding a place that
+           is already there, with nothing to say about it, is a no-op rather
+           than a way to wipe the sentence underneath it. */
+        'ON CONFLICT (list_id, place_id) DO UPDATE SET say = excluded.say ' +
+        "WHERE excluded.say <> ''"
       )
       .bind(id, place, known.name, words(body.say, MAX_SAY), id, now),
     env.DB.prepare('UPDATE lists SET updated_at = ? WHERE id = ?').bind(now, id)

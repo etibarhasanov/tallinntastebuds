@@ -195,7 +195,15 @@ export async function onRequest(context) {
      pattern that ended at the quote would stop matching the moment the script
      was next edited. */
   const TAG = '<script src="/assets/lists.js';
-  html = html.replace(TAG, '<script>window.__TTB_LIST=' + payload + ';</script>\n' + TAG);
+  /* The replacement is a function and not a string, and that is the whole
+     point of it. String.replace reads $&, $`, $' and $$ out of a replacement
+     *string* and substitutes around the match — so a list titled `$'` would
+     have spliced the entire rest of the document into the middle of this
+     inline script, straight through JSON.stringify and everything seed() does,
+     because the substitution happens after all of that. A function's return
+     value is used literally, and there is nothing left to escape. */
+  html = html.replace(TAG, () =>
+    '<script>window.__TTB_LIST=' + payload + ';</script>\n' + TAG);
 
   return page(html, 200);
 }

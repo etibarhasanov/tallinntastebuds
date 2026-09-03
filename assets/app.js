@@ -1657,12 +1657,41 @@
     if (ACCOUNT_VIEWS.indexOf(view) === -1) return;
     accountAsked = view;
 
-    /* A path on this site and nothing else. A ?then= that could be any URL
-       would turn the map into an open redirector — a link that starts at
-       tallinntastebuds.ee and lands somewhere else — and the leading pair of
-       slashes, or a slash and a backslash, is exactly how that is done. */
-    var then = params.get('then') || '';
-    accountThen = /^\/[^/\\]/.test(then) ? then : '';
+    accountThen = samePlace(params.get('then') || '');
+  }
+
+  /* A path on this site and nothing else. A ?then= that could be any URL would
+     turn the map into an open redirector — a link that starts at
+     tallinntastebuds.ee and lands somewhere else — and the leading pair of
+     slashes, or a slash and a backslash, is exactly how that is done.
+
+     WHY THIS IS NOT A REGULAR EXPRESSION
+
+     It was one: /^\/[^/\\]/, a slash not followed by another slash or a
+     backslash. That is wrong, and quietly. Before a browser resolves a URL it
+     deletes every tab, newline and carriage return inside it, so a ?then= of
+     "/\n/evil.example" arrives here as four harmless-looking characters, passes
+     a test that only ever looks at the second one, and is then acted on as
+     "//evil.example" — which is protocol-relative, and lands on somebody
+     else's site.
+
+     So the string is put through the same two steps the browser will apply —
+     drop the characters it drops, then resolve against this origin — and what
+     is checked is the result. A rule about what a path may not contain has to
+     keep pace with every parser quirk; asking the parser where the URL
+     actually points does not. */
+  function samePlace(raw) {
+    var candidate = String(raw)
+      .replace(/^[\u0000-\u0020]+|[\u0000-\u0020]+$/g, '')  /* the browser trims these */
+      .replace(/[\t\n\r]/g, '');                            /* and deletes these */
+    if (candidate.charAt(0) !== '/') return '';
+
+    var url;
+    try { url = new URL(candidate, window.location.origin); }
+    catch (e) { return ''; }
+    if (url.origin !== window.location.origin) return '';
+
+    return url.pathname + url.search + url.hash;
   }
 
   /* Called once /api/account has answered, because until it has there is no
