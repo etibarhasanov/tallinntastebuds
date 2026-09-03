@@ -13,7 +13,7 @@
  * feature's query.
  */
 
-import { catalogue } from './_lib.js';
+import { catalogue, venuesByIds } from './_lib.js';
 
 /* The share code's shape. A slug, a dash and six characters, but written as a
    general slug rather than as that exact pattern: it is the primary key of a
@@ -75,6 +75,18 @@ export async function readList(context, id, user) {
     roll = await catalogue(context);
   } catch (e) { /* unreadable costs the addresses and the links, not the list */ }
 
+  /* Whatever the catalogue did not know is looked for in google_venues, which
+     is where the other seven hundred places live — a list holds a catalogue
+     slug or a Google key and does not care which. Twenty rows at the most,
+     and only the ids this list actually holds. */
+  let venues = new Map();
+  try {
+    const strangers = results
+      .map((r) => r.place_id)
+      .filter((id) => !roll || !roll.has(id));
+    if (strangers.length) venues = await venuesByIds(env, strangers);
+  } catch (e) { /* same cost, same reason */ }
+
   return {
     id: list.id,
     title: list.title,
@@ -84,7 +96,7 @@ export async function readList(context, id, user) {
     mine: mine,
     updated: list.updated_at,
     items: results.map((r) => {
-      const known = roll ? roll.get(r.place_id) : null;
+      const known = (roll ? roll.get(r.place_id) : null) || venues.get(r.place_id) || null;
       return {
         place: r.place_id,
         name: known ? known.name : r.name,
@@ -92,6 +104,9 @@ export async function readList(context, id, user) {
         lat: known && typeof known.lat === 'number' ? known.lat : null,
         lng: known && typeof known.lng === 'number' ? known.lng : null,
         map: !!(known && known.map),
+        /* Set only on a Google row for a place that is also on my map: the
+           write-up is filed under the map's id, not Google's key. */
+        mapId: (known && known.mapId) || null,
         say: r.say
       };
     })

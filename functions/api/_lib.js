@@ -271,6 +271,71 @@ export async function catalogue(context) {
   return roll;
 }
 
+/* --------------------------------------------------------------- venues
+ * google_venues — the Google Places export, seven hundred and fifty places
+ * this city can eat in, in the database rather than in a file. See the table
+ * in db/schema.sql for why it is a mirror and what the columns mean.
+ *
+ * The catalogue above is the map plus a hand-kept CSV, and it is small. This
+ * is everywhere else, and a list may point at either: a list item's place_id
+ * holds a catalogue slug or a Google key, and the two cannot be confused —
+ * a slug is lowercase and a Google key always carries capitals.
+ *
+ * Nothing here is cached the way the catalogue is. The catalogue is a file
+ * that changes when a deploy changes it; this is a table, and the two callers
+ * that read it ask for a handful of rows by key.
+ */
+
+/* One venue as the catalogue draws a place, so the rest of the lists code
+   cannot tell which of the two rolls an entry came out of.
+
+   The address is Google's street line and the two columns beside it, joined
+   the way the catalogue writes one: "Kopli tn 16, 10412 Tallinn". */
+export function venueEntry(row) {
+  const where = [row.address, [row.postal_code, row.city].filter(Boolean).join(' ')]
+    .map((part) => String(part || '').trim())
+    .filter(Boolean)
+    .join(', ');
+
+  return {
+    id: row.place_id,
+    name: row.name,
+    address: where,
+    lat: typeof row.latitude === 'number' ? row.latitude : null,
+    lng: typeof row.longitude === 'number' ? row.longitude : null,
+    /* Thirty-two of them are also places on my map. `map` is what makes a row
+       link to a write-up instead of out to Google, and `mapId` is where that
+       write-up lives — the map's own id, not Google's key. */
+    map: !!row.map_id,
+    mapId: row.map_id || null
+  };
+}
+
+/* The venues behind a set of ids, as a Map. Ids that are not in the table —
+   a catalogue slug, a key from an export that no longer carries it — are
+   simply not in the answer, which is what every caller here already handles.
+
+   The list is bound one placeholder per id and capped well above the twenty
+   places a list can hold, so nothing a request sends decides the shape of the
+   statement and nothing it sends can make it long. */
+export async function venuesByIds(env, ids) {
+  const keys = (Array.isArray(ids) ? ids : [])
+    .filter((id) => typeof id === 'string' && id.length > 0 && id.length <= 128)
+    .slice(0, 50);
+  if (!env.DB || keys.length === 0) return new Map();
+
+  const holes = keys.map(() => '?').join(', ');
+  const { results } = await env.DB
+    .prepare(
+      'SELECT place_id, name, address, postal_code, city, latitude, longitude, map_id ' +
+      'FROM google_venues WHERE place_id IN (' + holes + ')'
+    )
+    .bind(...keys)
+    .all();
+
+  return new Map((results || []).map((row) => [row.place_id, venueEntry(row)]));
+}
+
 /* save_counts is brought level with saves by the write that changes them, and
    it is recomputed FROM saves rather than nudged by one: an increment that ran
    when an insert had quietly hit its conflict clause would drift, and nothing
