@@ -18,5 +18,16 @@
       "hy": "Դարչնով բուլկիներ՝ ուղիղ վառարանից, Pulla Bakery։"
     },
     "spot": "pulla-bakery"
+  },
+  {
+    "id": "laboratooriumi-23-2026-09-03",
+    "live": true,
+    "video": "laboratooriumi-23-2026-09-03.mp4",
+    "poster": "laboratooriumi-23-2026-09-03.jpg",
+    "from": "2026-09-03T11:01",
+    "caption": {
+      "en": "LB23 is back"
+    },
+    "spot": "laboratooriumi-23"
   }
 ]
