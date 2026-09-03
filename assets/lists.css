@@ -217,13 +217,18 @@
 
 .lists-index { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 
-.lists-index-row { margin: 0; }
+/* The anchor for the map link below, which sits inside the card's own box
+   rather than under it. Floating between two cards it belonged to neither. */
+.lists-index-row { margin: 0; position: relative; }
 
 .lists-index-link {
   display: flex;
   align-items: baseline;
   gap: 12px;
-  padding: 15px 18px;
+  /* Room along the bottom for the map link, which is not part of this
+     element: a link inside a link is not a thing HTML has, so it is a sibling
+     laid over the space this padding leaves for it. */
+  padding: 15px 18px 34px;
   background: var(--paper);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
@@ -253,6 +258,83 @@
   white-space: nowrap;
 }
 .lists-private { color: var(--accent); }
+/* Whose list it is, on the rows in Lists you kept. First in the meta line and
+   the only part of it that is not a number: a list you kept is somebody
+   else's, and who they are is the thing that makes it worth keeping. */
+.lists-index-by { color: var(--muted); }
+
+/* The heading over the second half of the index. Quieter than the card title
+   above it — that one names the page, this one names a group inside it — and
+   given room above so the two sections read as two lists rather than as one
+   long one that changed its mind. */
+.lists-section {
+  margin: 26px 0 2px;
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  color: var(--muted);
+}
+
+/* The way onto the map from an index row: the card's second destination.
+   The card itself opens the list; this opens the same places as pins.
+
+   A sibling laid inside the card's bottom corner rather than a child of it,
+   because the card is an <a> and HTML has no link inside a link. It is above
+   the card in the stacking order, so a press on these words goes to the map
+   and a press anywhere else on the card goes to the list. */
+.lists-index-map {
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  padding: 4px;
+  font-size: 11px;
+}
+
+/* ---------- keeping somebody else's list ---------- */
+
+/* The bookmark and its count, kept together so the number cannot wrap away
+   from the mark it belongs to when the row runs out of width. */
+.lists-keep-wrap { display: inline-flex; align-items: center; gap: 8px; }
+
+/* Built on .lists-alt — same quiet weight as Share beside it — with the mark
+   in front of the word. The outline is "not kept"; the filled mark is
+   "kept", which is the same language the map's own bookmark speaks. */
+.lists-keep {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  padding: 8px 13px;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  background: var(--wash);
+}
+.lists-keep svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lists-keep:hover { border-color: var(--muted); color: var(--ink); }
+/* Kept: the mark fills and takes the accent, and the button says so rather
+   than saying what pressing it would do. */
+.lists-keep.is-kept { color: var(--accent); border-color: var(--accent); }
+.lists-keep.is-kept svg { fill: currentColor; }
+.lists-keep.is-kept:hover { color: var(--accent-lit); border-color: var(--accent-lit); }
+
+/* How many people kept it. Never drawn at zero — a "0 kept" under a list
+   reads as a verdict on the list rather than as nobody having pressed it
+   yet, which is the same reason the map hides a save count at zero. */
+.lists-keeps {
+  color: var(--muted);
+  font-size: 11.5px;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
 
 /* ---------- the places on a list ---------- */
 
@@ -480,7 +562,8 @@ body.has-scrim { overflow: hidden; }
   }
   .item-moves { grid-column: 2; flex-direction: row; justify-content: flex-end; margin-top: 6px; }
   .item-name { font-size: 15px; }
-  .lists-index-link { padding: 13px 14px; }
+  .lists-index-link { padding: 13px 14px 32px; }
+  .lists-index-map { right: 10px; bottom: 8px; }
   .picker { padding: 20px 16px 12px; }
 }
 

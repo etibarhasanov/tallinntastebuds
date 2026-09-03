@@ -14,18 +14,19 @@ Disallow: /staff.html
 # It carries a noindex header of its own too.
 Disallow: /lists.html
 
-# /list/<id> is deliberately NOT disallowed, and the difference matters.
+# /list/<id> is deliberately NOT disallowed, and it never was.
 #
 # A shared list has to unfurl — the little preview card in WhatsApp, Telegram
 # and a Slack message — and the crawler that builds that card has to fetch the
 # page to read its og: tags. A Disallow line here would stop it fetching at
 # all, and every list anybody shared would arrive as a bare blue link.
 #
-# Those pages are still kept out of the index, by the noindex header the
-# Function sets on each one: that is a rule about what a crawler may *keep*,
-# and it works precisely because the crawler is allowed to read the page
-# first. A list is somebody else's writing on this domain and nothing
-# moderates it, so it gets to travel and not to be indexed.
+# A public list is now indexed as well as fetched. It is a page somebody wrote
+# about restaurants in this city, under their own name, and being findable is
+# most of what it is for — a list that travels only by the link its author
+# remembers to send is a page nobody arrives at. A private list is not indexed
+# and cannot be: it is served only to the session that owns it, and a crawler
+# is never that session. functions/list/[id].js sets the header per list.
 
 # The admin page is not for anybody, crawler or otherwise. Nothing links to
 # it and it carries its own noindex tag.

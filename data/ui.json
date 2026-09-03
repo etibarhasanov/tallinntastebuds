@@ -212,7 +212,19 @@
     "listsErrTitle": "Siyahının adı olmalıdır.",
     "listsErrSignedOut": "Hesabdan çıxmısan. Yenidən daxil ol, siyahı yerindədir.",
     "listsErrPlace": "Bu yer nə xəritədə, nə də kataloqdadır.",
-    "listsErrGeneric": "Alınmadı. Yenidən yoxla."
+    "listsErrGeneric": "Alınmadı. Yenidən yoxla.",
+    "listsKeep": "Saxla",
+    "listsKeptThis": "Saxlanılıb",
+    "listsKeepIn": "Bu siyahını saxlamaq üçün daxil olun",
+    "listsKept": "Saxladığınız siyahılar",
+    "listsKeptOne": "1 nəfər saxlayıb",
+    "listsKeptN": "{n} nəfər saxlayıb",
+    "listsOnMap": "Xəritədə aç",
+    "listsErrOwn": "Bu artıq sizindir — Siyahılarınız bölməsindədir.",
+    "filterListOf": "\"{title}\" siyahısı",
+    "listOpenPage": "Siyahının özünü aç",
+    "listNotMine": "Mənim xəritəmdə deyil — bu siyahıdadır.",
+    "listNotMineBy": "Mənim xəritəmdə deyil — {name} onu bu siyahıya salıb."
   },
   "hy": {
     "langName": "Հայերեն",
@@ -427,7 +439,19 @@
     "listsErrTitle": "Ցանկը պետք է անուն ունենա։",
     "listsErrSignedOut": "Դուք դուրս եք եկել։ Մուտք գործեք նորից, ցանկը տեղում է։",
     "listsErrPlace": "Այդ վայրը ո՛չ քարտեզում է, ո՛չ էլ ցուցակում։",
-    "listsErrGeneric": "Չստացվեց։ Փորձեք նորից։"
+    "listsErrGeneric": "Չստացվեց։ Փորձեք նորից։",
+    "listsKeep": "Պահել",
+    "listsKeptThis": "Պահված է",
+    "listsKeepIn": "Մուտք գործեք՝ այս ցանկը պահելու համար",
+    "listsKept": "Ձեր պահած ցանկերը",
+    "listsKeptOne": "պահել է 1 մարդ",
+    "listsKeptN": "պահել է {n} մարդ",
+    "listsOnMap": "Բացել քարտեզի վրա",
+    "listsErrOwn": "Սա արդեն ձերն է — այն Ձեր ցանկերում է։",
+    "filterListOf": "«{title}» ցանկը",
+    "listOpenPage": "Բացել բուն ցանկը",
+    "listNotMine": "Իմ քարտեզին չէ — այն այս ցանկում է։",
+    "listNotMineBy": "Իմ քարտեզին չէ — {name}-ը այն ավելացրել է այս ցանկում։"
   },
   "en": {
     "langName": "English",
@@ -642,7 +666,19 @@
     "listsErrTitle": "A list needs a name.",
     "listsErrSignedOut": "You have been signed out. Sign in again and the list is still there.",
     "listsErrPlace": "That place is neither on the map nor in the catalogue.",
-    "listsErrGeneric": "That did not go through. Try again."
+    "listsErrGeneric": "That did not go through. Try again.",
+    "listsKeep": "Keep",
+    "listsKeptThis": "Kept",
+    "listsKeepIn": "Sign in to keep this list",
+    "listsKept": "Lists you kept",
+    "listsKeptOne": "kept by 1 person",
+    "listsKeptN": "kept by {n} people",
+    "listsOnMap": "Open on the map",
+    "listsErrOwn": "This one is already yours — it is under Your lists.",
+    "filterListOf": "The list \"{title}\"",
+    "listOpenPage": "Open the list itself",
+    "listNotMine": "Not on my map — it is on this list.",
+    "listNotMineBy": "Not on my map — {name} put it on this list."
   },
   "et": {
     "langName": "Eesti",
@@ -857,7 +893,19 @@
     "listsErrTitle": "Nimekirjal peab olema nimi.",
     "listsErrSignedOut": "Sind logiti välja. Logi uuesti sisse, nimekiri on alles.",
     "listsErrPlace": "Seda kohta pole kaardil ega nimistus.",
-    "listsErrGeneric": "See ei läinud läbi. Proovi uuesti."
+    "listsErrGeneric": "See ei läinud läbi. Proovi uuesti.",
+    "listsKeep": "Salvesta",
+    "listsKeptThis": "Salvestatud",
+    "listsKeepIn": "Selle nimekirja salvestamiseks logi sisse",
+    "listsKept": "Salvestatud nimekirjad",
+    "listsKeptOne": "1 inimene on salvestanud",
+    "listsKeptN": "{n} inimest on salvestanud",
+    "listsOnMap": "Ava kaardil",
+    "listsErrOwn": "See on juba sinu oma — see on jaotises Sinu nimekirjad.",
+    "filterListOf": "Nimekiri „{title}”",
+    "listOpenPage": "Ava nimekiri ise",
+    "listNotMine": "Ei ole minu kaardil — see on selles nimekirjas.",
+    "listNotMineBy": "Ei ole minu kaardil — {name} pani selle siia nimekirja."
   },
   "fi": {
     "langName": "Suomi",
@@ -1072,7 +1120,19 @@
     "listsErrTitle": "Listalla pitää olla nimi.",
     "listsErrSignedOut": "Sinut kirjattiin ulos. Kirjaudu uudelleen, lista on tallessa.",
     "listsErrPlace": "Tuota paikkaa ei ole kartalla eikä luettelossa.",
-    "listsErrGeneric": "Tämä ei mennyt läpi. Yritä uudelleen."
+    "listsErrGeneric": "Tämä ei mennyt läpi. Yritä uudelleen.",
+    "listsKeep": "Tallenna",
+    "listsKeptThis": "Tallennettu",
+    "listsKeepIn": "Kirjaudu sisään tallentaaksesi tämän listan",
+    "listsKept": "Tallentamasi listat",
+    "listsKeptOne": "1 henkilö tallensi",
+    "listsKeptN": "{n} henkilöä tallensi",
+    "listsOnMap": "Avaa kartalla",
+    "listsErrOwn": "Tämä on jo sinun — se on kohdassa Sinun listasi.",
+    "filterListOf": "Lista ”{title}”",
+    "listOpenPage": "Avaa itse lista",
+    "listNotMine": "Ei kartallani — se on tällä listalla.",
+    "listNotMineBy": "Ei kartallani — {name} lisäsi sen tälle listalle."
   },
   "pt": {
     "langName": "Português",
@@ -1287,7 +1347,19 @@
     "listsErrTitle": "Uma lista precisa de um nome.",
     "listsErrSignedOut": "A tua sessão terminou. Entra outra vez e a lista continua lá.",
     "listsErrPlace": "Esse lugar não está no mapa nem no catálogo.",
-    "listsErrGeneric": "Não passou. Tenta outra vez."
+    "listsErrGeneric": "Não passou. Tenta outra vez.",
+    "listsKeep": "Guardar",
+    "listsKeptThis": "Guardada",
+    "listsKeepIn": "Inicia sessão para guardar esta lista",
+    "listsKept": "Listas que guardaste",
+    "listsKeptOne": "guardada por 1 pessoa",
+    "listsKeptN": "guardada por {n} pessoas",
+    "listsOnMap": "Abrir no mapa",
+    "listsErrOwn": "Esta já é tua — está em As tuas listas.",
+    "filterListOf": "A lista «{title}»",
+    "listOpenPage": "Abrir a própria lista",
+    "listNotMine": "Não está no meu mapa — está nesta lista.",
+    "listNotMineBy": "Não está no meu mapa — {name} colocou-o nesta lista."
   },
   "ru": {
     "langName": "Русский",
@@ -1502,7 +1574,19 @@
     "listsErrTitle": "У списка должно быть название.",
     "listsErrSignedOut": "Вы вышли из аккаунта. Войдите снова — список на месте.",
     "listsErrPlace": "Этого места нет ни на карте, ни в каталоге.",
-    "listsErrGeneric": "Не получилось. Попробуйте ещё раз."
+    "listsErrGeneric": "Не получилось. Попробуйте ещё раз.",
+    "listsKeep": "Сохранить",
+    "listsKeptThis": "Сохранено",
+    "listsKeepIn": "Войдите, чтобы сохранить этот список",
+    "listsKept": "Сохранённые списки",
+    "listsKeptOne": "сохранил 1 человек",
+    "listsKeptN": "сохранили {n} человек",
+    "listsOnMap": "Открыть на карте",
+    "listsErrOwn": "Этот список уже ваш — он в разделе «Ваши списки».",
+    "filterListOf": "Список «{title}»",
+    "listOpenPage": "Открыть сам список",
+    "listNotMine": "Не на моей карте — оно в этом списке.",
+    "listNotMineBy": "Не на моей карте — {name} добавил его в этот список."
   },
   "es": {
     "langName": "Español",
@@ -1717,7 +1801,19 @@
     "listsErrTitle": "Una lista necesita un nombre.",
     "listsErrSignedOut": "Se cerró tu sesión. Entra otra vez y la lista sigue ahí.",
     "listsErrPlace": "Ese sitio no está en el mapa ni en el catálogo.",
-    "listsErrGeneric": "No ha salido. Inténtalo otra vez."
+    "listsErrGeneric": "No ha salido. Inténtalo otra vez.",
+    "listsKeep": "Guardar",
+    "listsKeptThis": "Guardada",
+    "listsKeepIn": "Inicia sesión para guardar esta lista",
+    "listsKept": "Listas que guardaste",
+    "listsKeptOne": "guardada por 1 persona",
+    "listsKeptN": "guardada por {n} personas",
+    "listsOnMap": "Abrir en el mapa",
+    "listsErrOwn": "Esta ya es tuya: está en Tus listas.",
+    "filterListOf": "La lista «{title}»",
+    "listOpenPage": "Abrir la lista en sí",
+    "listNotMine": "No está en mi mapa: está en esta lista.",
+    "listNotMineBy": "No está en mi mapa: {name} lo puso en esta lista."
   },
   "tr": {
     "langName": "Türkçe",
@@ -1932,7 +2028,19 @@
     "listsErrTitle": "Listenin bir adı olmalı.",
     "listsErrSignedOut": "Oturumun kapandı. Tekrar giriş yap, liste yerinde.",
     "listsErrPlace": "O mekân ne haritada ne de katalogda.",
-    "listsErrGeneric": "Bu geçmedi. Tekrar dene."
+    "listsErrGeneric": "Bu geçmedi. Tekrar dene.",
+    "listsKeep": "Kaydet",
+    "listsKeptThis": "Kaydedildi",
+    "listsKeepIn": "Bu listeyi kaydetmek için giriş yapın",
+    "listsKept": "Kaydettiğiniz listeler",
+    "listsKeptOne": "1 kişi kaydetti",
+    "listsKeptN": "{n} kişi kaydetti",
+    "listsOnMap": "Haritada aç",
+    "listsErrOwn": "Bu zaten sizin — Listeleriniz bölümünde.",
+    "filterListOf": "\"{title}\" listesi",
+    "listOpenPage": "Listenin kendisini aç",
+    "listNotMine": "Haritamda değil — bu listede.",
+    "listNotMineBy": "Haritamda değil — {name} bu listeye ekledi."
   },
   "uk": {
     "langName": "Українська",
@@ -2147,6 +2255,18 @@
     "listsErrTitle": "Список має мати назву.",
     "listsErrSignedOut": "Ви вийшли з облікового запису. Увійдіть знову — список на місці.",
     "listsErrPlace": "Цього місця немає ні на карті, ні в каталозі.",
-    "listsErrGeneric": "Не вийшло. Спробуйте ще раз."
+    "listsErrGeneric": "Не вийшло. Спробуйте ще раз.",
+    "listsKeep": "Зберегти",
+    "listsKeptThis": "Збережено",
+    "listsKeepIn": "Увійдіть, щоб зберегти цей список",
+    "listsKept": "Збережені списки",
+    "listsKeptOne": "зберегла 1 людина",
+    "listsKeptN": "зберегли {n} людей",
+    "listsOnMap": "Відкрити на карті",
+    "listsErrOwn": "Цей список уже ваш — він у розділі «Ваші списки».",
+    "filterListOf": "Список «{title}»",
+    "listOpenPage": "Відкрити сам список",
+    "listNotMine": "Не на моїй карті — воно в цьому списку.",
+    "listNotMineBy": "Не на моїй карті — {name} додав його до цього списку."
   }
 }

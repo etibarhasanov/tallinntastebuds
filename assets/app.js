@@ -49,6 +49,12 @@
      validator refuses a taxonomy type that tries to claim it, because two
      chips answering to the same id would filter each other's places. */
   var DEAL_FILTER = 'discount';
+  /* The other reserved id, and the second chip that is not a type. It is a
+     door somebody arrived through — /?list=<id> — rather than something the
+     map can offer on its own, so unlike the saved chip it never appears
+     unless a list was asked for. Reserved for the same reason `discount` is:
+     two chips answering to one id would filter each other's places. */
+  var LIST_FILTER = 'list';
   /* Every pin is the mark — the mouth out of the painting, cropped round.
      The circle is left to the one dot on the map that is not a place: the one
      that says where you are. So the sizes below are diameters of a picture,
@@ -86,6 +92,27 @@
     active: [],          // selected type ids, OR semantics; empty means "All"
     saves: {},           // place id -> how many people, from /api/saves
     saved: [],           // the places this browser (or account) has saved
+    /* Somebody else's list, when the map was opened on one: /?list=<id>.
+       Null on every other visit, and the map is exactly what it was.
+
+       It is read once, during boot, and never changes afterwards — the only
+       door into this is the address bar, so the list a page is showing is
+       fixed for that page's life. Which means everything below can treat it
+       as data and not as a thing that arrives late. */
+    list: null,          // { id, title, by, items: [...] }, or null
+    /* The places on that list which are not on the map. A list draws from
+       data/places.json — the map plus the Google import — so most of a top
+       ten is somewhere I have never filmed. These are the smallest possible
+       stand-ins: a name, an address and a pin, marked `fromList` so nothing
+       that renders a write-up mistakes one for a place that has one.
+
+       They are held apart from state.places rather than mixed into it, and
+       that is the whole design. state.places is the map: it feeds the type
+       chips, the search, the just-added section, Surprise me and the
+       structured data in the head, and none of those should grow a Google
+       venue because somebody opened a link. Only the four loops that turn a
+       place into a pin read both. */
+    listPlaces: [],
     /* Who is signed in, whether they have a recovery address on file, and
        whether the site can send email at all. All three come from
        /api/account and all three are absent until it answers. */
@@ -233,11 +260,46 @@
     return 'tel:' + String(phone || '').replace(/[^+0-9]/g, '');
   }
 
+  /* Everything that has a pin on the map right now: my seventy-four, plus the
+     stand-ins for a list's places that are not among them.
+
+     Deliberately not "everything the map knows about". state.places is the
+     map and stays the map — the chips, the search, Surprise me, the just-added
+     section and the JSON-LD in the head all read it directly and must not see
+     a Google venue that arrived with a link. Only the loops that draw, dress,
+     label and cluster pins ask for this wider set. */
+  function allPlaces() {
+    return state.listPlaces.length ? state.places.concat(state.listPlaces) : state.places;
+  }
+
   function byId(id) {
     for (var i = 0; i < state.places.length; i++) {
       if (state.places[i].id === id) return state.places[i];
     }
+    /* And then the list's own, so a pin, a panel row and ?spot= all resolve
+       to the same object whichever roll the place came off. */
+    for (var j = 0; j < state.listPlaces.length; j++) {
+      if (state.listPlaces[j].id === id) return state.listPlaces[j];
+    }
     return null;
+  }
+
+  /* What the list says about one place — the sentence its owner wrote, which
+     is the entire point of the feature. Empty for a place not on it. */
+  function listSay(id) {
+    if (!state.list) return '';
+    for (var i = 0; i < state.list.items.length; i++) {
+      if (state.list.items[i].place === id) return state.list.items[i].say || '';
+    }
+    return '';
+  }
+
+  function isOnList(id) {
+    if (!state.list) return false;
+    for (var i = 0; i < state.list.items.length; i++) {
+      if (state.list.items[i].place === id) return true;
+    }
+    return false;
   }
 
   /* A place only shows a discount when one is set up, switched on, and
@@ -609,7 +671,10 @@
   function buildMarkers() {
     var muted = cssVar('--muted') || '#536879';
 
-    state.places.forEach(function (place) {
+    /* Both rolls: the map's places, and the stand-ins for a list's places that
+       are not on it. Built once, at boot, because both are settled by then —
+       the list arrives with the same Promise.all as restaurants.json. */
+    allPlaces().forEach(function (place) {
       var marker = L.marker([place.lat, place.lng], {
         icon: pinIcon(),
         keyboard: false,        /* the button semantics are added by hand below */
@@ -706,19 +771,62 @@
 
      opts.floor lifts the low end (FIT_FLOOR by default, 0 to allow the whole
      way out to minZoom), opts.maxZoom caps the near end, opts.animate glides
-     rather than jumps. */
+     rather than jumps, opts.clearPanel fits into the strip of map the panel
+     leaves rather than into the whole window. */
   function fitLatLngs(pts, opts) {
     if (!map || !pts.length) return;
     var o = opts || {};
     var bounds = L.latLngBounds(pts);
     var pad = isNarrow() ? L.point(48, 48) : L.point(96, 96);
+
+    /* The panel covers the bottom of a phone and the right of a desktop, and
+       a pin underneath it is not on screen in any sense a visitor would
+       accept — which is the same judgement anyInView() already makes.
+
+       Half the panel is added to the padding and the centre is then shifted
+       by the same amount. getBoundsZoom pads both sides equally, so half on
+       each is one panel's worth of room taken out of the fit; moving the
+       centre the other way puts all of that on the side the panel is on. The
+       result is the whole set framed in the strip that is actually visible.
+
+       Asked for rather than assumed: most fits on this map happen with the
+       panel shut or about to shut, and a fit that always allowed for a panel
+       would leave the map sitting off-centre for them. */
+    var behind = 0;
+    if (o.clearPanel && dom.panel.classList.contains('is-open')) {
+      behind = isNarrow() ? dom.panel.offsetHeight : dom.panel.offsetWidth;
+      /* A sheet dragged to full height leaves no strip to fit into, so there
+         is nothing to correct for and the plain fit is the honest answer. */
+      var room = isNarrow() ? map.getSize().y : map.getSize().x;
+      if (behind > room - 120) behind = 0;
+      pad = isNarrow()
+        ? L.point(pad.x, pad.y + behind / 2)
+        : L.point(pad.x + behind / 2, pad.y);
+    }
+
     var floor = o.floor == null ? FIT_FLOOR : o.floor;
-    var zoom = Math.min(map.getBoundsZoom(bounds, false, pad), o.maxZoom == null ? 16 : o.maxZoom);
-    travelTo(bounds.getCenter(), Math.max(zoom, floor), !!o.animate);
+    var zoom = Math.max(
+      Math.min(map.getBoundsZoom(bounds, false, pad), o.maxZoom == null ? 16 : o.maxZoom),
+      floor
+    );
+
+    var centre = bounds.getCenter();
+    if (behind) {
+      /* In projected pixels at the zoom being flown to, not at the current
+         one: the same number of pixels is a different distance at each zoom,
+         and the move has not happened yet. */
+      var pt = map.project(centre, zoom);
+      if (isNarrow()) pt.y += behind / 2; else pt.x += behind / 2;
+      centre = map.unproject(pt, zoom);
+    }
+
+    travelTo(centre, zoom, !!o.animate);
   }
 
   function fitToPins(opts) {
     var pool = visiblePlaces();
+    /* A filter — or a list — matching nothing: fall back to the map rather
+       than to an empty bounds, which frames nowhere. */
     if (!pool.length) pool = state.places;
     fitLatLngs(pool.map(function (p) { return [p.lat, p.lng]; }), opts);
   }
@@ -949,7 +1057,7 @@
   function paintLabels() {
     if (!map) return;
     var plan = labelPlan();
-    state.places.forEach(function (place) {
+    allPlaces().forEach(function (place) {
       var marker = markers[place.id];
       if (!marker) return;
       var chosen = isChosen(place);
@@ -1027,7 +1135,7 @@
     var c = markerColours();
     syncMarkers();
 
-    state.places.forEach(function (place) {
+    allPlaces().forEach(function (place) {
       var marker = markers[place.id];
       if (!marker) return;
 
@@ -2108,15 +2216,21 @@
      pressed. */
   function matchesFilters(place) {
     if (state.active.indexOf(SAVED_FILTER) !== -1 && isSaved(place.id)) return true;
+    if (state.active.indexOf(LIST_FILTER) !== -1 && isOnList(place.id)) return true;
     if (state.active.indexOf(DEAL_FILTER) !== -1 && liveDealFor(place)) return true;
     return (place.types || []).some(function (id) {
       return state.active.indexOf(id) !== -1;
     });
   }
 
+  /* No chips is the whole map, and the whole map is mine: a stand-in that
+     came in with a list is only ever on screen because the list chip put it
+     there. Nothing else can match one — it has no types, no deal, and its id
+     is a Google key that has never been in anybody's saves — so widening the
+     pool here costs nothing and is what lets the list draw at all. */
   function visiblePlaces() {
     if (!state.active.length) return state.places.slice();
-    return state.places.filter(matchesFilters);
+    return allPlaces().filter(matchesFilters);
   }
 
   var filterOpenTimer = null;
@@ -2194,6 +2308,34 @@
       applyFilters();
     });
     dom.filters.appendChild(all);
+
+    /* Before every other chip, because it is why this page was opened. The
+       map was arrived at through somebody's list — /?list=<id> — and until
+       this is pressed off, the list is what the map is showing.
+
+       It wears the list's own title rather than a word like "List", so the
+       row says whose top ten you are looking at, and pressing it off is the
+       way back to the whole map without losing it. Unlike every other chip
+       here it is never offered on its own: no ?list=, no chip. */
+    if (state.list) {
+      var onIt = state.active.indexOf(LIST_FILTER) !== -1;
+      var listChip = el('button', {
+        type: 'button',
+        className: 'chip is-list',
+        'aria-pressed': String(onIt),
+        /* The title is somebody else's words, so the label spells out what
+           the chip is as well as what it says — a chip reading "Bakeries"
+           is otherwise indistinguishable from a type. */
+        'aria-label': t('filterListOf', { title: state.list.title }),
+        textContent: state.list.title
+      });
+      listChip.addEventListener('click', function () {
+        var at = state.active.indexOf(LIST_FILTER);
+        if (at === -1) state.active.push(LIST_FILTER); else state.active.splice(at, 1);
+        applyFilters({ id: LIST_FILTER, on: at === -1 });
+      });
+      dom.filters.appendChild(listChip);
+    }
 
     /* First of the real filters, and the only one that is about you rather
        than about food. It is the door to the marks you have pressed — and
@@ -2500,7 +2642,7 @@
       clusterPins.push(pin);
     });
 
-    state.places.forEach(function (p) {
+    allPlaces().forEach(function (p) {
       var marker = markers[p.id];
       if (!marker) return;
       var ring = closedRings[p.id];
@@ -3407,9 +3549,79 @@
 
   /* ---------------------------------------------------------------- detail */
 
+  /* A place on somebody's list that I have never eaten at.
+   *
+   * There is no write-up, no reel and no photographs, because being on the map
+   * is the verdict and this place is not on it. What there is: the name, the
+   * address the catalogue holds, whatever its owner said about it, and a way
+   * to walk there. Said plainly rather than dressed as a place page with
+   * every section empty — the honest version of "I have not been here" is a
+   * short card, not a long one with holes in it.
+   *
+   * It is also the one panel on this site showing text somebody else wrote, so
+   * it says whose list it came off. */
+  function renderListOnly(place) {
+    dom.detail.className = 'is-from-list';
+
+    dom.detail.appendChild(el('div', { className: 'place-head' }, [
+      el('h2', {
+        className: 'place-name',
+        id: 'panel-title',
+        tabindex: '-1',
+        textContent: place.name
+      })
+    ]));
+
+    dom.detail.appendChild(el('p', {
+      className: 'muted-note',
+      textContent: state.list && state.list.by
+        ? t('listNotMineBy', { name: state.list.by })
+        : t('listNotMine')
+    }));
+
+    var said = listSay(place.id);
+    if (said) {
+      dom.detail.appendChild(el('p', { className: 'blurb', textContent: said }));
+    }
+
+    if (place.address) {
+      dom.detail.appendChild(el('dl', { className: 'facts' }, [
+        el('dt', { textContent: t('address') }),
+        el('dd', { textContent: place.address })
+      ]));
+    }
+
+    /* The one link worth having on a place nobody has written about: how to
+       get there. The same button, the same tracking and the same destination
+       shape a real place's directions use, so a stand-in behaves like
+       everything else the panel draws.
+
+       Only when the catalogue knows where it is. A row imported from a CSV
+       with no coordinates has a name and an address and nothing to point a
+       map at, and a Directions button leading to the middle of the sea is
+       worse than no button. */
+    if (typeof place.lat === 'number' && typeof place.lng === 'number') {
+      dom.detail.appendChild(el('div', { className: 'link-row' }, [
+        trackClick(el('a', {
+          className: 'link-btn is-primary',
+          href: 'https://www.google.com/maps/dir/?api=1&destination=' + place.lat + ',' + place.lng,
+          target: '_blank',
+          rel: 'noopener',
+          textContent: t('directions')
+        }), 'directions', { place: place.name })
+      ]));
+    }
+  }
+
+
   function renderDetail(place) {
     clear(dom.detail);
     if (!place) return;
+    /* A place that came in with a list and is not on my map. Everything below
+       this line renders a write-up — the blurb, the reel, the photographs,
+       the types, the price, the save mark — and there is none. It gets its
+       own short card instead of a long one full of empty sections. */
+    if (place.fromList) return renderListOnly(place);
 
     dom.detail.className = place.closed ? 'is-closed' : '';
 
@@ -3869,7 +4081,22 @@
     var mine = !words.length && state.active.length === 1 &&
                state.active[0] === SAVED_FILTER;
 
-    if (mine) {
+    /* And the same question about the list: is what is on screen that list
+       and nothing else. The moment a second chip or a search joins in, this
+       stops being somebody's top ten and becomes a slice of the map that
+       happens to be cut out of one — so it is drawn like every other slice,
+       in the alphabet, without the order or the sentences. */
+    var reading = !words.length && state.active.length === 1 &&
+                  state.active[0] === LIST_FILTER && !!state.list;
+
+    if (reading) {
+      /* The order is the whole point of a top ten. Its owner dragged these
+         into the order they are in, and the alphabet would throw away the one
+         piece of information a list carries that a filter does not. */
+      var pos = {};
+      state.list.items.forEach(function (item, i) { pos[item.place] = i; });
+      places.sort(function (a, b) { return pos[a.id] - pos[b.id]; });
+    } else if (mine) {
       /* The one list here that is not alphabetical. The order you saved them in is information — the newest is what you were doing most
          recently, and most likely what you came back for — and the alphabet
          throws it away for a sort nobody asked for. */
@@ -3898,6 +4125,17 @@
     }
 
     function listRow(place) {
+      /* What the list's owner said about this one, when the list is what is
+         on screen. It is the reason a list is worth reading rather than
+         searching for, so it goes in the row and not behind a tap. */
+      var said = reading ? listSay(place.id) : '';
+      /* A place that is on the list but not on my map: a name, an address and
+         a pin out of the catalogue, and nothing to read. The badges a row
+         normally carries are all claims about a write-up that does not exist
+         — how much there is to look at, what it costs, which types it is —
+         so a stand-in row carries the sentence and the address instead. */
+      if (place.fromList) return listOnlyRow(place, said);
+
       /* A discount used to be something you could only find by opening the
          place, which meant opening seventy of them to learn that four save
          you money. It is the one thing in a row that is an
@@ -3954,7 +4192,31 @@
         /* Last in the row and among the first things the eye lands on: it
            holds the same edge on every row, so it can be read straight down
            the list without reading the rows themselves. */
-        depthMark(place)
+        depthMark(place),
+        /* Under everything else, full width, in the reading face rather than
+           the mono the rest of the row uses: it is a sentence somebody wrote,
+           not a piece of metadata, and it should look like one. */
+        said ? el('span', { className: 'list-said', textContent: said }) : null
+      ]);
+      row.addEventListener('click', function () { selectPlace(place.id, { fly: true }); });
+      return el('li', {}, [row]);
+    }
+
+    /* A place on the list that I have never filmed. The catalogue knows its
+       name, its address and roughly where it is, and the list's owner knows
+       why it is worth going — which between them is a complete row. What it
+       does not get is a badge claiming a write-up, a price or a type. */
+    function listOnlyRow(place, said) {
+      var row = el('button', {
+        type: 'button',
+        className: 'list-row is-from-list',
+        'aria-label': t('openPlace', { name: place.name }) + ', ' + t('listNotMine')
+      }, [
+        el('span', { className: 'list-name', textContent: place.name }),
+        el('span', { className: 'list-sub' }, [
+          el('span', { className: 'list-types', textContent: place.address || '' })
+        ]),
+        said ? el('span', { className: 'list-said', textContent: said }) : null
       ]);
       row.addEventListener('click', function () { selectPlace(place.id, { fly: true }); });
       return el('li', {}, [row]);
@@ -4006,17 +4268,62 @@
     /* Suppressed on your own list for the reason a search suppresses it: a
        handful of places you chose yourself, cut in two by a heading about when
        the site added them, makes you read your own list twice. */
-    var fresh = (words.length || mine) ? [] : recentlyAdded().filter(function (p) { return shown[p.id]; });
+    var fresh = (words.length || mine || reading) ? []
+      : recentlyAdded().filter(function (p) { return shown[p.id]; });
 
     if (fresh.length > 1) section('listNew', fresh, 'is-new');
     /* "All places" over a filtered list would be a lie the count sitting next
        to it immediately contradicts, so a narrowed list falls back to naming
        its sort order instead. */
     var everything = !words.length && !state.active.length;
+
+    /* A list is named as itself, by its owner's title, with their name under
+       it. It is the one group in this panel whose heading is not a string out
+       of data/ui.json, because it is not the site talking. */
+    if (reading) {
+      dom.listBody.appendChild(listCredit(places.length));
+      var ul = el('ul', { className: 'place-list is-list' });
+      places.forEach(function (place) { ul.appendChild(listRow(place)); });
+      dom.listBody.appendChild(ul);
+      return;
+    }
+
     /* And your own saves are named as themselves. "A–Z" over them would be
        true and useless: this is the one list on the site whose point is whose
        it is, not what order it came out in. */
     section(everything ? 'listTitle' : mine ? 'listSaved' : 'listAlphabet', places);
+  }
+
+  /* The heading over somebody else's list: their title, their byline, the
+     count, and a way through to the list's own page — where the sentences sit
+     in full and where the button to keep it is.
+
+     It takes the focus and labels the panel, the way the first group heading
+     normally does, because in this state it is the first group heading. */
+  function listCredit(n) {
+    var count = n === 1 ? t('listCountOne') : t('listCount', { n: n });
+    var by = state.list.by ? t('listsBy', { name: state.list.by }) : '';
+
+    return el('div', { className: 'list-credit' }, [
+      el('h2', {
+        className: 'list-label is-credit',
+        id: 'panel-list-title',
+        tabIndex: -1,
+        'aria-label': state.list.title + (by ? ', ' + by : '') + ', ' + count
+      }, [
+        el('span', { className: 'list-group', textContent: state.list.title }),
+        el('span', { className: 'list-label-n eyebrow', textContent: count })
+      ]),
+      by ? el('p', { className: 'list-credit-by eyebrow', textContent: by }) : null,
+      state.list.intro
+        ? el('p', { className: 'list-credit-intro', textContent: state.list.intro })
+        : null,
+      el('a', {
+        className: 'list-credit-link',
+        href: '/list/' + state.list.id,
+        textContent: t('listOpenPage')
+      })
+    ]);
   }
 
   /* -------------------------------------------------------------- lightbox */
@@ -4782,6 +5089,119 @@
     keepFocusIn(ev, [dom.storyClose, dom.storySound, dom.storyBack, dom.storyFwd, dom.storyCta]);
   }
 
+  /* ------------------------------------------------------------ arriving on
+   * a list. /?list=<id> — the door from /lists.html and from a list's own
+   * page, and the answer to "show me these places on the map".
+   *
+   * WHY THE MAP AND NOT A SECOND MAP ON THE LIST PAGE
+   *
+   * A list is ten restaurants in one city. The thing anybody wants to know
+   * about ten restaurants is where they are relative to each other and to
+   * wherever they are standing, which is a question this map already answers
+   * — with the pins, the clustering, the labels, the locate button and the
+   * write-ups for the places that have them. A second, smaller map on the
+   * lists page would be a worse copy of all of that, and a place on it that
+   * is also on my map would lose its write-up on the way across.
+   *
+   * WHAT ARRIVES, AND WHAT IS INVENTED
+   *
+   * The list comes off /api/lists?id=<id>, which is the same answer the list
+   * page reads and already carries everything needed: the name, the address
+   * and the coordinates for each place, filled in from the catalogue by the
+   * Function, plus whether that place is also on my map.
+   *
+   * A row whose place IS on the map is not invented at all — it is matched to
+   * the real entry by id and keeps its write-up, its reel, its price and its
+   * save mark. Only a row that is not gets a stand-in, and a stand-in carries
+   * exactly what the catalogue knew: a name, an address and a point.
+   *
+   * A row with no coordinates gets nothing, because a pin is the entire
+   * reason this page was opened and there is nowhere to put one. It is still
+   * on the list's own page, with its sentence, which is where it can be read.
+   *
+   * FAILING IS QUIET
+   *
+   * A list that is private, deleted, mistyped, or behind a database that is
+   * not bound leaves state.list null, and the map is exactly the map. No
+   * card, no toast: somebody who followed a dead link to a list gets the
+   * thing this site is, which is better than an error about a list they have
+   * never seen. The list's own page is where a missing list is reported,
+   * because that is the page that is about one.
+   */
+  function wantedList() {
+    var id = new URLSearchParams(window.location.search).get('list') || '';
+    /* The same shape functions/api/_lists.js insists on, checked here so a
+       junk parameter is not worth a request. */
+    return /^[a-z0-9][a-z0-9-]{2,47}$/.test(id) ? id : '';
+  }
+
+  function loadList(id) {
+    if (!id) return Promise.resolve(null);
+    return fetch('/api/lists?id=' + encodeURIComponent(id), { headers: { accept: 'application/json' } })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (out) {
+        return out && out.list && out.list.items ? out.list : null;
+      })
+      .catch(function () { return null; });
+  }
+
+  /* Split the list into the places the map already knows and the ones it does
+     not. Called once, after restaurants.json has landed, because "already
+     knows" is a question about that file. */
+  function seatList(list) {
+    if (!list) return;
+
+    var stand = [];
+    var items = [];
+
+    list.items.forEach(function (item) {
+      /* On my map: the real entry, with everything it carries. The id in a
+         list row is a catalogue id, and a catalogue id for a place on the map
+         IS its restaurants.json id — see tools/places.mjs, which folds the
+         two together rather than minting a second id for the same place. */
+      if (byId(item.place)) { items.push(item); return; }
+
+      /* Not on the map, and nowhere to draw: it stays on the list's own page
+         and is not on this one. Counting it in the panel would be a row that
+         no pin answers to. */
+      if (typeof item.lat !== 'number' || typeof item.lng !== 'number') return;
+
+      stand.push({
+        id: item.place,
+        name: item.name,
+        address: item.address || '',
+        lat: item.lat,
+        lng: item.lng,
+        /* Empty rather than absent, so every loop that reads types can read
+           this one without asking whether it is a stand-in first. */
+        types: [],
+        /* The one flag that matters. Everything that would render a write-up
+           checks it. */
+        fromList: true
+      });
+      items.push(item);
+    });
+
+    /* Nothing this page can draw: an empty list, or one whose every place the
+       catalogue has no coordinates for. The map does not become a list view
+       for it — a chip that filters to nothing and a panel saying so is a
+       worse answer than the map, and the list's own page is where a list with
+       nothing on it is reported. */
+    if (!items.length) return;
+
+    /* The list as this page can actually show it, in its owner's order. A row
+       dropped above is dropped from the count and from the panel too, so the
+       two never disagree about how many places are on screen. */
+    state.list = {
+      id: list.id,
+      title: list.title,
+      intro: list.intro || '',
+      by: list.by || null,
+      items: items
+    };
+    state.listPlaces = stand;
+  }
+
   /* ------------------------------------------------------------------- URL */
 
   /* Opening a place is a step you can come back from, so it gets a history
@@ -4802,9 +5222,25 @@
        filters; it does not travel. Nothing has to strip it on the way back
        in — boot only accepts ids that are on the map — but a link nobody can
        use should not be built in the first place. */
-    var shareable = state.active.filter(function (id) { return id !== SAVED_FILTER; });
+    var shareable = state.active.filter(function (id) {
+      return id !== SAVED_FILTER && id !== LIST_FILTER;
+    });
     if (shareable.length) params.set('type', shareable.join(','));
     else params.delete('type');
+
+    /* ?list= is not a chip in the address bar, it is which list this page is
+       holding — so it stays on while the list is loaded, whether or not the
+       chip is currently pressed. Pressing the chip off is "show me the whole
+       map", not "forget the list": the chip is still on the row, and a link
+       copied at that moment should still arrive as somebody's list rather
+       than as a bare map with a chip missing.
+
+       It is also the one door parameter here that is not taken straight back
+       off. ?story=, ?account= and ?then= all are, because each of them opens
+       something once; this one names what the page is about for as long as
+       it is on screen, the way ?spot= does. */
+    if (state.list) params.set('list', state.list.id);
+    else params.delete('list');
     if (state.langPinned) params.set('lang', state.lang);
     else params.delete('lang');
     if (state.stylePinned) params.set('style', state.style);
@@ -5351,7 +5787,14 @@
          button, and the rest of the map does not notice. */
       getJSON('data/radio.json').catch(function () { return null; }),
       /* And the stories the same: no file, no ring on the mark, no viewer. */
-      getJSON('data/stories.json').catch(function () { return []; })
+      getJSON('data/stories.json').catch(function () { return []; }),
+      /* Somebody else's list, when the map was opened on one. In here rather
+         than fetched afterwards so the pins are built once, with the list
+         already in hand: markers are made at boot and a list arriving later
+         would mean building a second set and keeping the two in step. It
+         resolves to null on every ordinary visit and on every failure, and
+         the map is the map. */
+      loadList(wantedList())
     ]).then(function (loaded) {
       state.places = loaded[0] || [];
       state.types = (loaded[1] && loaded[1].types) || [];
@@ -5387,6 +5830,18 @@
           return live.indexOf(id) !== -1;
         });
       }
+
+      /* The list, split into places the map has and stand-ins for the rest.
+         After state.places, because "does the map already have this" is a
+         question about that file, and before the chips are drawn and the map
+         is fitted, because both of those have to know about it.
+
+         Its chip goes on first and pressed: somebody who followed a link to a
+         list came for the list, so that is what the map opens showing. The
+         chip is how they get the rest of the map back — one press, and it
+         stays on the row. */
+      seatList(loaded[6]);
+      if (state.list) state.active = [LIST_FILTER];
 
       /* Style before the map, so the first tile request is already the right
          basemap and the pins are built from the right tokens. */
@@ -5454,6 +5909,24 @@
       var spot = params.get('spot');
       syncUrl();
       if (spot && byId(spot)) selectPlace(spot, { fly: true });
+
+      /* Arriving on a list opens the panel on it. The pins answer "where are
+         these"; the panel answers "why these" — the sentence its owner wrote
+         under each one — and a list is the one thing on this site where the
+         second question arrives with the first. A map of ten unexplained dots
+         is not what was shared.
+
+         Not when a place was named as well: that link is about the place, and
+         the list is still one press of the chip away. */
+      else if (state.list) {
+        showList(false);
+        /* And framed again now the panel is up. buildMarkers fitted the list
+           to the whole window a moment ago, before there was a panel to fit
+           around, which on a desktop leaves the places furthest east sitting
+           behind it — on the one page where seeing all of them at once is the
+           entire point. */
+        fitToPins({ clearPanel: true });
+      }
 
       /* ?story=<id> opens the queue standing on that one, which is the link
          to put in a post: it lands on the video while the video is still up,

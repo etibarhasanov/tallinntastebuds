@@ -1,9 +1,9 @@
 -- Tallinn Tastebuds — every table the site has.
 --
--- Five things live here: the saves and their counts, the accounts a save can
--- follow a person on, the lists somebody builds and shares, 750 Tallinn venues
--- mirrored out of Google Places, and one meta row saying which database this
--- is. Everything the map itself draws — the places, the write-ups, the
+-- Six things live here: the saves and their counts, the accounts a save can
+-- follow a person on, the lists somebody builds and shares, the keeps that are
+-- a bookmark on somebody else's list, 750 Tallinn venues mirrored out of
+-- Google Places, and one meta row saying which database this is. Everything the map itself draws — the places, the write-ups, the
 -- discounts, the stories — is a JSON file in the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
@@ -222,6 +222,60 @@ CREATE TABLE IF NOT EXISTS list_items (
 -- Reading a list in its own order. The primary key leads with list_id but
 -- then sorts by place, which is not an order anybody chose.
 CREATE INDEX IF NOT EXISTS idx_list_items_pos ON list_items (list_id, pos);
+
+
+-- One row is one person keeping one list: a bookmark on somebody else's top
+-- ten, the way a save is a bookmark on a place.
+--
+-- WHY THIS ONE NEEDS AN ACCOUNT WHEN A SAVE DOES NOT
+--
+-- A save is filed under whatever the browser calls itself, because it has to
+-- work in the first ten seconds, before anybody has decided anything. What it
+-- buys is one bookmark on one restaurant, and losing it to a cleared browser
+-- costs the view of your own marks and not the marks themselves.
+--
+-- A kept list is the other shape of thing. It is somebody else's page, held
+-- because you mean to go back to it — often weeks later, usually on the phone
+-- you were not holding when you found it. A device-owned keep would be one
+-- Safari sweep away from a collection nobody can get back to, and there is no
+-- link in a browser's history for a list read once on a laptop. So the owner
+-- is always a users.id, never a device, and the one thing you must have before
+-- you can keep a list is the same account that lets you make one.
+--
+-- Enforced here as well as in the Function: owner_kind does not exist on this
+-- table, and there is no statement in functions/api/lists.js that can write a
+-- row without a session behind it.
+CREATE TABLE IF NOT EXISTS list_keeps (
+  -- lists.id. Only ever a public list: a private one is not served to anybody
+  -- but its owner, so there is nothing to keep.
+  list_id    TEXT    NOT NULL,
+  -- users.id. Never a device. See above.
+  owner      TEXT    NOT NULL,
+  created_at INTEGER NOT NULL,
+  -- One person keeps one list once. Pressing the mark twice is the conflict
+  -- clause and not a second row, exactly as a save is — which is what makes
+  -- the count below a count of people rather than a count of presses.
+  PRIMARY KEY (list_id, owner)
+);
+
+-- "Every list this account kept, newest first", which is the whole of the
+-- second section on /lists.html. The primary key cannot serve it: it leads
+-- with list_id, and this asks only about owner.
+CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at DESC);
+
+-- HOW MANY PEOPLE KEPT ONE LIST is asked one list at a time — on the list's
+-- own page — and the primary key answers it on an indexed prefix, so there is
+-- deliberately no counts table here of the kind save_counts is.
+--
+-- save_counts exists because the map asks for seventy-four numbers at once and
+-- a GROUP BY over every save in the database would cost one row read per save
+-- to produce them. Nothing asks that question of lists yet. The day something
+-- does — a directory ordered by how many people kept each list — is the day
+-- this wants the same treatment save_counts got, and it should be written the
+-- same way: recomputed from this table inside the batch that changes it,
+-- never nudged by one.
+
+
 
 
 -- ----------------------------------------------------------- google venues

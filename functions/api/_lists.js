@@ -52,6 +52,31 @@ export async function readList(context, id, user) {
   const mine = !!user && user.id === list.owner;
   if (!list.public && !mine) return null;
 
+  /* How many people kept it, and whether the person reading is one of them.
+     Both come off the primary key of list_keeps — the count on its leading
+     column, the membership on the whole of it — so this is two indexed reads
+     and never a scan. See the note under that table in db/schema.sql about
+     why there is no counts table behind it yet.
+
+     The count is on a private list too, where it is always zero: a private
+     list cannot be kept, because it is not served to anybody who might keep
+     it. Answering with the column rather than omitting it means the page has
+     one shape to draw and not two. */
+  const keeps = await env.DB
+    .prepare('SELECT COUNT(*) AS n FROM list_keeps WHERE list_id = ?')
+    .bind(id)
+    .first();
+
+  /* Only asked when there is somebody to ask about. Signed out, the mark is
+     drawn as the door to an account rather than as a state, so the answer
+     would change nothing. */
+  const kept = user
+    ? await env.DB
+        .prepare('SELECT 1 AS x FROM list_keeps WHERE list_id = ? AND owner = ?')
+        .bind(id, user.id)
+        .first()
+    : null;
+
   const { results } = await env.DB
     .prepare('SELECT place_id, name, say, pos FROM list_items WHERE list_id = ? ORDER BY pos')
     .bind(id)
@@ -82,6 +107,11 @@ export async function readList(context, id, user) {
     by: list.username || null,
     public: !!list.public,
     mine: mine,
+    /* How many people have this list bookmarked, and whether the reader is
+       one of them. Not a score and nothing sorts by it — see the README —
+       but it is the number a directory would one day be ordered on. */
+    keeps: keeps ? keeps.n : 0,
+    kept: !!kept,
     updated: list.updated_at,
     items: results.map((r) => {
       const known = roll ? roll.get(r.place_id) : null;

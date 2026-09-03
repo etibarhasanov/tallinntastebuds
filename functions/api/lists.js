@@ -28,9 +28,15 @@
  *
  *   - Every query is a prepared statement with bound parameters. No value
  *     from a request is ever concatenated into SQL.
- *   - Every write is preceded by a read of `lists.owner` and refused unless
- *     it matches the session. There is no statement here that can touch a
- *     row without having proved whose it is.
+ *   - Every write to a list is preceded by a read of `lists.owner` and
+ *     refused unless it matches the session. There is no statement here that
+ *     can touch somebody's list without having proved whose it is.
+ *   - The one write that is deliberately not that is keeping one: a bookmark
+ *     on somebody else's list is the whole point of the gesture, so it is
+ *     routed above the ownership check and does its own narrower one — the
+ *     list must exist and be public, the row it writes is keyed by the
+ *     session's own user id, and it touches no column of the list itself.
+ *     See keep().
  *   - A place id that is not in data/places.json is refused, so nobody can
  *     fill the table with rows for places that do not exist.
  *   - Everything a person types is capped in length before it is stored, so
@@ -44,6 +50,14 @@
  * one, and losing an edit behind a thirty-second TTL would be the feature
  * feeling broken at the exact moment somebody is using it. A list read is a
  * handful of rows on an indexed key. It can afford to be true.
+ *
+ * The keep and its count are in the same answer and under the same rule. The
+ * count is the weaker case for freshness — nobody is harmed by a bookmark
+ * total a minute behind — but whether *you* kept this list is not: a mark
+ * that draws itself empty on a list you kept last week, because a cached
+ * response was made for somebody else, is the feature lying about your own
+ * collection. A private list is served only to the session that owns it for
+ * exactly the same reason.
  */
 
 import { json, sessionUser, catalogue, wrongDatabase } from './_lib.js';
@@ -62,6 +76,13 @@ import { readList, LIST_ID } from './_lists.js';
    ever been. A list nobody finishes reading recommends nothing. */
 const MAX_LISTS = 24;
 const MAX_ITEMS = 20;
+/* How many of other people's lists one account can keep. Higher than the
+   twenty-four you can make, because keeping is the cheap half of this feature
+   — it is a bookmark, and a bookmark drawer is allowed to be a drawer — and
+   because nothing here is published under your name, so there is nobody for a
+   long collection to be noise to. Like every other number in this block it is
+   a cap on somebody with a script rather than on somebody with opinions. */
+const MAX_KEPT = 200;
 const MAX_TITLE = 60;
 const MAX_INTRO = 200;
 const MAX_SAY = 280;
@@ -136,13 +157,47 @@ export async function onRequestGet(context) {
   /* The index: every list this account holds, newest edit first, each with
      how many places are on it. One row per list however long the lists are —
      the count comes out of the join rather than out of a second round of
-     queries, one per list. */
+     queries, one per list.
+
+     The keeps are a scalar subquery rather than a second join: two aggregates
+     over two different tables in one GROUP BY multiply each other, and a list
+     of ten places kept by three people would report thirty of each. At
+     twenty-four lists it is twenty-four counts on an indexed prefix. */
   const { results } = await env.DB
     .prepare(
       'SELECT l.id AS id, l.title AS title, l.intro AS intro, l.public AS public, ' +
-      'l.updated_at AS updated_at, COUNT(i.place_id) AS n ' +
+      'l.updated_at AS updated_at, COUNT(i.place_id) AS n, ' +
+      '(SELECT COUNT(*) FROM list_keeps k WHERE k.list_id = l.id) AS keeps ' +
       'FROM lists l LEFT JOIN list_items i ON i.list_id = l.id ' +
       'WHERE l.owner = ? GROUP BY l.id ORDER BY l.updated_at DESC'
+    )
+    .bind(user.id)
+    .all();
+
+  /* And the other half of the page: the lists this account has kept, which
+     are somebody else's. Newest keep first — the order you pressed them in is
+     information, the same argument the map's own saved list is sorted on, and
+     an alphabet would throw it away.
+     
+     `l.public = 1` is what makes a keep follow the list rather than outlive
+     it. A list whose owner has since made it private stops being served to
+     anybody but them, so it stops appearing here too; the row is left in
+     place rather than deleted, because privacy is a switch its owner can flip
+     back and a keep is not something to throw away on their behalf. A list
+     that was deleted has no row to join to and drops out for good — see
+     remove(), which takes the keeps with it. */
+  const kept = await env.DB
+    .prepare(
+      'SELECT l.id AS id, l.title AS title, l.intro AS intro, ' +
+      'l.updated_at AS updated_at, u.username AS by, k.created_at AS kept_at, ' +
+      'COUNT(i.place_id) AS n, ' +
+      '(SELECT COUNT(*) FROM list_keeps k2 WHERE k2.list_id = l.id) AS keeps ' +
+      'FROM list_keeps k ' +
+      'JOIN lists l ON l.id = k.list_id ' +
+      'LEFT JOIN users u ON u.id = l.owner ' +
+      'LEFT JOIN list_items i ON i.list_id = l.id ' +
+      'WHERE k.owner = ? AND l.public = 1 ' +
+      'GROUP BY l.id ORDER BY k.created_at DESC'
     )
     .bind(user.id)
     .all();
@@ -156,7 +211,18 @@ export async function onRequestGet(context) {
       intro: r.intro,
       public: !!r.public,
       updated: r.updated_at,
-      n: r.n
+      n: r.n,
+      keeps: r.keeps
+    })),
+    kept: kept.results.map((r) => ({
+      id: r.id,
+      title: r.title,
+      intro: r.intro,
+      by: r.by || null,
+      updated: r.updated_at,
+      keptAt: r.kept_at,
+      n: r.n,
+      keeps: r.keeps
     }))
   }, 200);
 }
@@ -192,10 +258,23 @@ export async function onRequestPost(context) {
   const id = typeof body.id === 'string' ? body.id : '';
   if (!LIST_ID.test(id)) return json({ error: 'not-found' }, 404);
 
-  const owner = await env.DB.prepare('SELECT owner FROM lists WHERE id = ?').bind(id).first();
+  const row = await env.DB
+    .prepare('SELECT owner, public FROM lists WHERE id = ?')
+    .bind(id)
+    .first();
+
+  /* Keeping is the one thing in this file you do to a list that is not yours
+     — that is the whole of what it is for — so it is routed above the
+     ownership check rather than through it, and does its own narrower one.
+     Everything below this line still cannot touch a row without having proved
+     whose it is. */
+  if (action === 'keep' || action === 'unkeep') {
+    return keep(context, id, row, user, action === 'keep');
+  }
+
   /* Somebody else's list and a list that does not exist get the same answer.
      Anything else would make this a way of asking which codes are taken. */
-  if (!owner || owner.owner !== user.id) return json({ error: 'not-found' }, 404);
+  if (!row || row.owner !== user.id) return json({ error: 'not-found' }, 404);
 
   if (action === 'edit')   return edit(context, body, id);
   if (action === 'delete') return remove(context, id);
@@ -246,6 +325,101 @@ async function create(context, body, user) {
   return json({ error: 'busy' }, 503);
 }
 
+/* --------------------------------------------------------------- keeping
+ * A bookmark on somebody else's list. The same gesture as the mark on a place
+ * and the same meaning — keep this, I am coming back to it — pointed at the
+ * other kind of object this site has.
+ *
+ * WHY THIS ONE NEEDS AN ACCOUNT WHEN A SAVE DOES NOT
+ *
+ * A save is anonymous and filed under whatever the browser calls itself,
+ * because it has to work in the first ten seconds. Losing it to a cleared
+ * browser costs the view of your own marks and not the marks themselves.
+ *
+ * A kept list is a page you mean to come back to, usually weeks later and
+ * usually not on the device you found it on. A device-owned keep would be one
+ * Safari sweep away from a collection with no way back to it — there is no
+ * link in a browser's history for a list read once on a laptop — so the owner
+ * is always a users.id, which the session above has already established.
+ *
+ * WHAT IT REFUSES, AND WHY EACH ONE
+ *
+ *   no such list          not-found
+ *   somebody's private    not-found, deliberately the same answer: telling
+ *                         the two apart would make this a way of asking
+ *                         which codes are real
+ *   your own list         'own'. It is already under Your lists, and a second
+ *                         copy of it under Lists you kept would be the same
+ *                         list twice on one page
+ *   two hundred kept      'too-many', and only when this would be a new row
+ *
+ * HOW HONEST THE COUNT IS
+ *
+ * As honest as an account is, which is the same answer /api/saves gives about
+ * its own numbers and worth being plain about. One row per (list, account),
+ * so nobody inflates a count by pressing twice; anybody willing to make ten
+ * accounts can add ten. Nothing on this site sorts or ranks by it, so what
+ * that buys is a bigger number next to a list and not a better position
+ * anywhere — which is most of the reason it is not worth doing.
+ */
+async function keep(context, id, row, user, on) {
+  const { env } = context;
+
+  /* A private list is not served to anybody but its owner, so there is
+     nothing here to keep — and it answers as a missing list rather than as a
+     refused one, for the reason in the block above. */
+  if (!row || (!row.public && row.owner !== user.id)) return json({ error: 'not-found' }, 404);
+  if (row.owner === user.id) return json({ error: 'own' }, 400);
+
+  const now = Date.now();
+
+  if (on) {
+    const held = await env.DB
+      .prepare('SELECT COUNT(*) AS n FROM list_keeps WHERE owner = ?')
+      .bind(user.id)
+      .first();
+    /* Checked against a row that may already exist, the way add() does: the
+       insert's conflict clause is silent by design, so a re-press on a list
+       already kept must not be turned into a refusal by a cap it is not
+       adding to. */
+    if (held && held.n >= MAX_KEPT) {
+      const already = await env.DB
+        .prepare('SELECT 1 AS x FROM list_keeps WHERE list_id = ? AND owner = ?')
+        .bind(id, user.id)
+        .first();
+      if (!already) return json({ error: 'too-many' }, 429);
+    }
+
+    /* DO NOTHING rather than an update: a keep carries nothing but the fact
+       and the moment, and a second press is not a new moment. Keeping the
+       first created_at is what holds a collection in the order it was
+       actually built. */
+    await env.DB
+      .prepare(
+        'INSERT INTO list_keeps (list_id, owner, created_at) VALUES (?, ?, ?) ' +
+        'ON CONFLICT (list_id, owner) DO NOTHING'
+      )
+      .bind(id, user.id, now)
+      .run();
+  } else {
+    await env.DB
+      .prepare('DELETE FROM list_keeps WHERE list_id = ? AND owner = ?')
+      .bind(id, user.id)
+      .run();
+  }
+
+  /* Read back rather than worked out from what was sent. A press that hit the
+     conflict clause changed nothing, and a page told "+1" for it would drift
+     from the database and never be corrected — the same reasoning that makes
+     save_counts a recount and not an increment. */
+  const keeps = await env.DB
+    .prepare('SELECT COUNT(*) AS n FROM list_keeps WHERE list_id = ?')
+    .bind(id)
+    .first();
+
+  return json({ id: id, kept: on, keeps: keeps ? keeps.n : 0 }, 200);
+}
+
 /* The title, the line under it, and whether the link works for anybody but
    its owner. Each is only changed when it was actually sent, so the page can
    flip one switch without having to resend the other two. */
@@ -284,6 +458,17 @@ async function remove(context, id) {
   const { env } = context;
   await env.DB.batch([
     env.DB.prepare('DELETE FROM list_items WHERE list_id = ?').bind(id),
+    /* Other people's bookmarks on it, which have nothing left to point at.
+       Left behind they would be invisible — the index joins them to a list
+       that is gone and they drop out of every answer — and still counted
+       against their owners' cap, which is the worst combination: a drawer
+       somebody cannot see and cannot empty. Deleting a list is the owner's
+       to do, and this is the honest cost of it.
+
+       Not a foreign key, because there is no ON DELETE CASCADE on that table
+       and adding one to a live database is a rebuild. One statement in the
+       same batch does the same job where it can be read. */
+    env.DB.prepare('DELETE FROM list_keeps WHERE list_id = ?').bind(id),
     env.DB.prepare('DELETE FROM lists WHERE id = ?').bind(id)
   ]);
   return json({ deleted: id }, 200);

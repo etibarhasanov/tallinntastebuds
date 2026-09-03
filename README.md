@@ -14,9 +14,11 @@ Two things are not static. The save count — a bookmark keeps a place and says
 how many other people kept it too — and the lists, which are somebody else's
 top ten rather than mine: a name they chose, places they picked out of a much
 longer catalogue, and a sentence about each one, with a link they can send to
-a friend. Both live in a Cloudflare D1 database, behind `/api/saves` and
-`/api/lists`. Saving takes no account; making a list does, because it goes out
-under a name. See **Saves** and **Lists**.
+a friend. A list can be kept the same way a place can, and opened on the map
+as pins. Both live in a Cloudflare D1 database, behind `/api/saves` and
+`/api/lists`. Saving a place takes no account; making a list needs one,
+because it goes out under a name, and keeping one needs the same account for a
+different reason. See **Saves** and **Lists**.
 
 Everything the map itself draws — the places, the write-ups, the discounts,
 the stories — is still a JSON file in this repository, and the map renders
@@ -928,6 +930,13 @@ saves are in the order you pressed them; the map draws every pin the same
 size whatever its count. There is deliberately no "Most saved" chip, because
 that would be a ranking, and the line above is not a slogan.
 
+A list carries a count of its own now — how many people kept it — and it is
+under the same rule and for the same reason. Nothing sorts by it: your lists
+are in the order you last edited them, the ones you kept are in the order you
+kept them, and there is no page anywhere that puts one list above another.
+See **Lists**, where the case for and against a directory that *would* rank is
+set out.
+
 If a future change wants to sort by saves, it is changing the argument of the
 site, not adding a feature. That is a decision for a person, not a patch.
 
@@ -1398,11 +1407,12 @@ Nothing about it touches the map. The pins, the write-ups, the filters and the
 "just added" section are exactly what they were; lists live on their own page
 and the map's only door to them is a line in the account sheet.
 
-### The two addresses
+### The three addresses
 
 ```
-/lists.html      your own lists: the index, and the box that makes a new one
+/lists.html      your own lists, and the ones you kept
 /list/<id>       one list — the address that gets shared
+/?list=<id>      the same list on the map, as pins
 ```
 
 One HTML file serves both. `/list/<id>` goes through
@@ -1436,6 +1446,93 @@ a script is promised.
 
 A list is shared by default. The pill on the card says which it is; pressing
 it makes the link stop working for everybody but you.
+
+### Keeping somebody else's
+
+A list has a bookmark on it, and it is the same mark the map draws on a place,
+saying the same thing: keep this, I am coming back to it. Press it and the list
+lands under **Lists you kept** on `/lists.html`, under your own lists and above
+nothing else. Press it again to let it go.
+
+The count beside it says how many other people kept it. It is hidden at zero,
+for the reason a save count is hidden at zero: a "0 kept" under somebody's top
+ten reads as a verdict on the list rather than as nobody having pressed it yet.
+
+Your own lists have no bookmark on them. They are already under **Your lists**,
+and the same list twice on one page is not a feature. They do carry the count,
+which is the one fact about a list you wrote that you cannot learn by reading
+it.
+
+**A keep needs an account, and a save does not.** They look like the same
+gesture and the reason they differ is worth writing down.
+
+A save is anonymous because it has to work in the first ten seconds, before
+anybody has decided anything about this site — so it is filed under a random id
+the browser made for itself, and losing it to a cleared browser costs you the
+view of your own marks, not the marks themselves.
+
+A kept list is a different object. It is somebody else's page, kept because you
+mean to go back to it — usually weeks later, and usually not on the device you
+were holding when you found it. A device-owned keep would be one Safari sweep
+away from a collection with no way back to it, and there is no entry in a
+browser's history for a list read once on a laptop. So the owner of a keep is
+always an account.
+
+Signed out, the bookmark is not a dead button and not a button that quietly
+does nothing: it is a link to the sign-in sheet on the map, named as what it is
+for, with the list as where to come back to. Somebody pressing it has just
+decided they want the list, which is the moment worth asking at.
+
+The count is as honest as an account is, and the same caveat applies to it as
+to a save count: one row per (list, account), so nobody inflates it by pressing
+twice, and anybody willing to make ten accounts can add ten. Since nothing on
+this site sorts or ranks by it, what that buys is a bigger number and not a
+better position anywhere.
+
+### On the map
+
+**Open on the map** sits on every list — yours and the ones you kept, on the
+index and on a list's own page — and it goes to `/?list=<id>`: the map,
+showing that list's places as pins, with the panel open on the list itself.
+
+That is the map this site already has, not a second smaller one drawn on the
+lists page. The question anybody has about ten restaurants in one city is where
+they are relative to each other and to wherever they are standing, and the map
+answers it with the pins, the clustering, the names, the locate button and the
+write-ups for the places that have them. A copy of all that on another page
+would be a worse copy, and a place on it that is also on my map would lose its
+write-up on the way across.
+
+**What is drawn, and what is invented.** A list draws from `data/places.json`,
+which is my map plus the Google import, so most of a top ten is somewhere I
+have never eaten. Two kinds of row come out of that, and they are drawn
+differently on purpose:
+
+- A place **on my map** is not invented at all. It is matched by id to the real
+  entry and keeps everything it has — its pin, its write-up, its reel, its
+  price, its types, its save mark. The list's sentence is added under it.
+- A place **not on my map** gets a stand-in: a pin, a name, an address, and
+  what the list's owner said. Opening it gives a short card saying plainly that
+  it is not on my map and whose list it came off, with the sentence and a way
+  to walk there — rather than a place page with every section empty. Being on
+  the map is the verdict, and a list is not a way around that.
+
+A row the catalogue has no coordinates for is not on this page at all. There is
+nowhere to put a pin, and a row in the panel that no pin answers to is worse
+than its absence. It is still on the list's own page, with its sentence, which
+is where it can be read.
+
+**The chip.** The list arrives as a chip at the front of the filter row,
+wearing its own title, pressed. Pressing it off is the whole map back; the chip
+stays on the row, and `?list=` stays in the address bar — pressing it is "show
+me everything", not "forget the list", and a link copied at that moment should
+still arrive as somebody's list.
+
+**Failing is quiet.** A list that is private, deleted, mistyped, or behind a
+database that is not bound leaves the map exactly as it is. No card and no
+toast: somebody who followed a dead link gets the thing this site is, which is
+better than an error about a list they have never seen. `/list/<id>` is the
+page that is about one list, so that is the page that reports a missing one.
 
 ### Why a list needs an account when a save does not
 
@@ -1532,9 +1629,25 @@ linking anywhere, which is the smallest loss available.
 
 ### The tables
 
-`lists` and `list_items` in `db/schema.sql`, applied the same way as
-everything else there. `list_items` carries `pos` — the order somebody dragged
-their top ten into — and the name snapshot above.
+`lists`, `list_items` and `list_keeps` in `db/schema.sql`, applied the same way
+as everything else there. `list_items` carries `pos` — the order somebody
+dragged their top ten into — and the name snapshot above. `list_keeps` is one
+row per person per list, keyed on the pair, which is what makes the count a
+count of people rather than a count of presses.
+
+There is deliberately no counts table behind the keeps, the way `save_counts`
+sits behind the saves. That one exists because the map asks for seventy-four
+numbers at once and a `GROUP BY` over every save would cost one row read per
+save to answer. Nothing asks that question of lists: a keep count is wanted one
+list at a time, and the primary key answers it on an indexed prefix. The day
+something does ask it in bulk — a directory ordered by how many people kept
+each list — is the day this wants the same treatment, written the same way:
+recomputed inside the batch that changes it, never nudged by one.
+
+Deleting a list deletes the keeps on it, in the same batch. Left behind they
+would be invisible — the index joins them to a list that is gone — and still
+counted against their owners' cap, which is the worst combination available: a
+drawer somebody can neither see nor empty.
 
 Reordering sends the whole order rather than one move. A one-move message
 ("this one, up two") can arrive after another one and leave the list in an
@@ -1547,6 +1660,7 @@ the drag and the save — is appended rather than left to collide.
 | | |
 |---|---|
 | lists per account | 24 |
+| lists you can keep | 200 |
 | places per list | 20 |
 | title | 60 characters |
 | the line under it | 200 |
@@ -1560,6 +1674,11 @@ Twenty places is the exception: a judgement about the feature, not a defence
 of the database. It is twice a top ten — room to overshoot and cut back, and
 short enough that a list still reads as a recommendation somebody stands
 behind rather than everywhere they have ever been.
+
+Two hundred keeps is higher than twenty-four lists because keeping is the cheap
+half of this. A list is published under your name and twenty-four of them is
+more than anybody maintains; a keep is a bookmark, nothing goes out under
+anybody's name, and a bookmark drawer is allowed to be a drawer.
 
 ### What is not cached
 
@@ -1575,27 +1694,42 @@ A private list is served only to the session that owns it, which is the other
 half of the reason: a shared copy of that response would be somebody's private
 page handed to the next person who asked for it.
 
-### Indexed, no. Unfurled, yes.
+### Indexed, and unfurled
 
-A list is somebody else's writing on this domain and nothing moderates it, so
-`/list/<id>` carries `X-Robots-Tag: noindex`.
+A public list carries `X-Robots-Tag: index, follow` and a `<link rel=canonical>`
+pointing at its address on the live domain. A private one carries `noindex`.
 
-It is deliberately **not** disallowed in `robots.txt`, and the difference
-matters: the crawler that builds the preview card has to fetch the page to
-read its `og:` tags, and a `Disallow` line would stop it fetching at all —
-every shared list would arrive as a bare blue link. `noindex` is a rule about
-what a crawler may *keep*, and it works precisely because the crawler is
-allowed to read the page first. A list gets to travel and not to be indexed.
+It was `noindex` for everything, once, on the reasoning that a list is somebody
+else's writing on this domain and nothing moderates it. That is still true. What
+changed is the reading of what a list is *for*: it is a page somebody wrote
+about restaurants in this city, under their own name, and being findable is most
+of the point. A list that travels only by the link its author remembers to send
+is a page nobody arrives at. Somebody searching for the bakeries worth the walk
+in Tallinn should be able to land on the list of them.
 
-If that stops being the right trade it is one header in
-`functions/list/[id].js`.
+A private list cannot be indexed with or without the header — it is served only
+to the session that owns it, and a crawler is never that session. The header
+goes on it anyway, because a page's own answer should not depend on nobody
+having made a mistake somewhere else.
+
+`/list/<id>` is deliberately **not** disallowed in `robots.txt`, and never was:
+the crawler that builds the preview card has to fetch the page to read its
+`og:` tags, and a `Disallow` line would stop it fetching at all — every shared
+list would arrive as a bare blue link.
+
+`/lists.html` stays `noindex`. It is your own lists, and signed out there is
+nothing on it.
+
+If the trade stops being the right one it is one line in
+`functions/list/[id].js`, where the header is chosen per list.
 
 ### Turning it on
 
 Nothing beyond what **Saves** and **Accounts** already need — the same D1
 binding and the same `SAVE_SALT`. Apply `db/schema.sql` again to pick up the
-two new tables (every statement in it is `IF NOT EXISTS`, so it is safe to
-re-run at any time):
+three tables this feature uses — `lists`, `list_items` and `list_keeps` (every
+statement in it is `IF NOT EXISTS`, so it is safe to re-run at any time, and
+re-running it is how `list_keeps` reaches a database that predates it):
 
 ```
 wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
@@ -1607,13 +1741,22 @@ account button simply does not appear.
 
 ### What is not built yet
 
-- **A directory.** There is no page listing everybody's lists, and no "most
-  popular" anything. The index `idx_lists_public` is there for it; nothing
-  reads it. A list travels by its link.
+- **A directory.** There is still no page listing everybody's lists, and no
+  "most popular" anything. The pieces for one are now here — `idx_lists_public`
+  for the query, `list_keeps` for the number to order on — and nothing reads
+  them that way. A list travels by its link and, now, by search.
+
+  Note what that would actually be, before building it: a page that ranks. The
+  **Saves** section below rules out ranking *places*, and that stands. Ranking
+  lists is a different claim — a list is a thing somebody made, not a kitchen,
+  and "the ones most people kept" says nothing about any restaurant on them.
+  It is still a leaderboard, and a leaderboard changes what people write for.
+  Worth deciding on its own terms rather than inheriting from this.
 - **Reporting a missing place.** A place that is not in the catalogue cannot
   be added, and there is no way to ask for one. The CSV is the way in.
 - **Anything social.** No following, no hearts, no comments on somebody
-  else's list.
+  else's list. A keep is the one thing you can do to a list somebody else made,
+  and it is silent: its owner sees a number and never who.
 
 ---
 
@@ -2374,11 +2517,13 @@ assets/app.js              map, panel, filters, i18n, lightbox — no framework
 functions/_middleware.js   sends the pages.dev address to the real one
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, optional email recovery
-functions/api/lists.js     somebody else's top ten: make one, fill it, share it
+functions/api/lists.js     somebody else's top ten: make one, fill it, share
+                           it, keep somebody else's
 functions/api/_lib.js      what those three share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
 functions/list/[id].js     /list/<id> — the page a shared link opens
-lists.html                 your lists, one list, and the one a stranger reads
+lists.html                 your lists, the ones you kept, and the one a
+                           stranger reads
 assets/lists.js            all three of those; no map, no Leaflet
 assets/lists.css           only what a list page has and the map does not
 db/schema.sql              the tables those Functions talk to
@@ -2422,12 +2567,17 @@ tools/qrperf.mjs           checks the QR encoder still draws the same code, and 
 
 Deep links: `?spot=f-hoone` opens that place directly — that is the link to put
 in a Story. `?lang=ru` opens it in Russian, `?style=green` in the dark
-palette. They all combine. `?story=kokomo-brunch` is the odd one out: it opens
-a story rather than a place, and takes itself back out of the address bar.
-`?account=up&then=/lists.html` is the other one that takes itself off: it
-opens the account sheet on a view and says where to go once somebody is signed
-in, and it is how the lists page borrows the map's sign-in form. See
-**Lists**.
+palette. `?list=top-ten-burgers-k3fmqw` opens the map on somebody's list, as
+pins with the list in the panel. They all combine, and all four stay in the
+address bar, because each of them says what the page currently is.
+
+The two that do not stay are doors rather than states, and they take themselves
+back off on the way in. `?story=kokomo-brunch` opens a story rather than a
+place — a link copied later should not reopen a video that has since gone.
+`?account=up&then=/lists.html` opens the account sheet on a view and says where
+to put somebody once they are signed in; it is how the lists page borrows the
+map's sign-in form, and leaving it on would reopen the sign-up sheet for
+whoever the link was sent to. See **Lists**.
 
 ---
 

@@ -59,7 +59,8 @@
     me: null,          // the signed-in username, or null
     ready: false,      // whether the API says lists work at all here
     reached: true,     // whether it answered at all
-    lists: [],         // the index
+    lists: [],         // the index: the ones you made
+    kept: [],          // the index: the ones you bookmarked, somebody else's
     list: null,        // the one being shown
     places: null,      // data/places.json, loaded the first time the picker opens
     hay: null          // id -> folded searchable text
@@ -200,7 +201,12 @@
     title: 'listsErrTitle',
     'signed-out': 'listsErrSignedOut',
     'not-found': 'listsErrGone',
-    place: 'listsErrPlace'
+    place: 'listsErrPlace',
+    /* Keeping your own list. The page never offers the button on one, so this
+       is a request that did not come from the page — but a refusal a visitor
+       could somehow reach still gets a sentence rather than a word out of the
+       source. */
+    own: 'listsErrOwn'
   };
 
   function failed(out) {
@@ -270,6 +276,41 @@
   var ICON_DOWN = '<path d="M12 5v13M18 12l-6 6-6-6"/>';
   var ICON_X = '<path d="M6 6l12 12M18 6L6 18"/>';
   var ICON_PIN = '<path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>';
+  /* The same bookmark the map draws on a place, because it is the same
+     gesture said about the other kind of object this site has: keep this. A
+     kept list fills; an unkept one is the outline. */
+  var ICON_KEEP = '<path d="M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z"/>';
+
+  /* Every list opens on the map, which is where places belong: the whole list
+     as pins, in the order its owner put them in. One href, built in one
+     place, so the two index sections and both list heads cannot drift.
+
+     ?list= rather than a path of its own. The map is one page and the map's
+     doors are query parameters — ?spot=, ?type=, ?story=, ?account= — and
+     this is another door onto the same map rather than a second map. */
+  function mapHref(id) {
+    return '/?list=' + encodeURIComponent(id);
+  }
+
+  function mapLink(id, className) {
+    return el('a', {
+      className: className || 'lists-alt',
+      href: mapHref(id),
+      textContent: t('listsOnMap')
+    });
+  }
+
+  /* How many people have this list bookmarked, drawn only once somebody has.
+     A "0 kept" under a list reads as a verdict on the list rather than as
+     nobody having pressed it yet, which is the same argument that hides a
+     save count at zero on the map. */
+  function keepCount(n) {
+    if (!n) return null;
+    return el('span', {
+      className: 'lists-keeps mono',
+      textContent: n === 1 ? t('listsKeptOne') : t('listsKeptN', { n: n })
+    });
+  }
 
   /* ----------------------------------------------------------------- render
    * One function decides which of the page's states is on screen, so nothing
@@ -328,12 +369,26 @@
 
     if (!state.lists.length) {
       wrap.appendChild(el('p', { className: 'lists-none', textContent: t('listsNone') }));
-      return wrap;
+    } else {
+      var ul = el('ul', { className: 'lists-index' });
+      state.lists.forEach(function (l) { ul.appendChild(indexRow(l)); });
+      wrap.appendChild(ul);
     }
 
-    var ul = el('ul', { className: 'lists-index' });
-    state.lists.forEach(function (l) { ul.appendChild(indexRow(l)); });
-    wrap.appendChild(ul);
+    /* The other half of the page: the lists you kept, which are somebody
+       else's. It is drawn only when there is one, and that is deliberate —
+       an empty "Lists you kept" heading under an empty "Your lists" is a page
+       explaining two features to somebody who has not used either. The
+       heading arriving with the first keep is how anybody learns the section
+       is there, the same way the map's Saved chip arrives with the first
+       mark. */
+    if (state.kept.length) {
+      wrap.appendChild(el('h2', { className: 'lists-section', textContent: t('listsKept') }));
+      var kul = el('ul', { className: 'lists-index' });
+      state.kept.forEach(function (l) { kul.appendChild(keptRow(l)); });
+      wrap.appendChild(kul);
+    }
+
     return wrap;
   }
 
@@ -381,10 +436,32 @@
       el('span', { className: 'lists-index-title', textContent: l.title }),
       el('span', { className: 'lists-index-meta mono' }, [
         el('span', { textContent: countLabel(l.n) }),
+        /* How many people kept it. On your own list this is the only place
+           the number appears in the index, and it is the one fact about a
+           list you wrote that you cannot know by looking at it. */
+        keepCount(l.keeps),
         !l.public ? el('span', { className: 'lists-private', textContent: t('listsPrivate') }) : null
       ])
     ]);
-    return el('li', { className: 'lists-index-row' }, [link]);
+    /* Sits outside the link rather than inside it: a link inside a link is
+       not a thing HTML has, and the row is a link to the list itself. */
+    return el('li', { className: 'lists-index-row' }, [link, mapLink(l.id, 'lists-index-map')]);
+  }
+
+  /* A list somebody else made, which you kept. The same row with one thing
+     added and one taken away: it says whose it is, and it has no private
+     pill — a list you can see is a list that is public, and a private one
+     would not be in this section at all. */
+  function keptRow(l) {
+    var link = el('a', { className: 'lists-index-link', href: '/list/' + l.id }, [
+      el('span', { className: 'lists-index-title', textContent: l.title }),
+      el('span', { className: 'lists-index-meta mono' }, [
+        l.by ? el('span', { className: 'lists-index-by', textContent: t('listsBy', { name: l.by }) }) : null,
+        el('span', { textContent: countLabel(l.n) }),
+        keepCount(l.keeps)
+      ])
+    ]);
+    return el('li', { className: 'lists-index-row' }, [link, mapLink(l.id, 'lists-index-map')]);
   }
 
   /* Signed out, on your own lists page. Not a wall in front of the map — the
@@ -447,7 +524,8 @@
   }
 
   /* Somebody else's list: their title, their name, their sentences, and
-     nothing that looks like a control. */
+     nothing that looks like a control — except the two things that are about
+     you rather than about them. Keeping it, and opening it on the map. */
   function listHead(list) {
     return card([
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
@@ -455,10 +533,103 @@
       list.by ? el('p', { className: 'lists-by mono', textContent: t('listsBy', { name: list.by }) }) : null,
       list.intro ? el('p', { className: 'lists-say', textContent: list.intro }) : null,
       el('div', { className: 'lists-row' }, [
+        keepControl(list),
+        mapLink(list.id),
         button(t('listsShare'), 'lists-alt', shareList),
         el('span', { className: 'lists-count mono', textContent: countLabel(list.items.length) })
       ])
     ]);
+  }
+
+  /* ------------------------------------------------------------ keeping one
+   * The bookmark on somebody else's list. The same mark the map draws on a
+   * place, because it is the same sentence about the other kind of object
+   * here: keep this, I am coming back to it.
+   *
+   * SIGNED OUT IT IS A DOOR, NOT A DEAD BUTTON
+   *
+   * A keep needs an account — see functions/api/lists.js for why, and it is
+   * the same reason making a list does. So signed out this is drawn as a link
+   * to the sign-in sheet on the map, named as what it is for, with this page
+   * as where to come back to. A button that could only fail, or one that
+   * silently did nothing, would both be worse than the honest ask: somebody
+   * pressing this has just decided they want the list, which is exactly the
+   * moment worth asking at.
+   *
+   * The count beside it is drawn whether or not anybody is signed in, and
+   * hidden at zero for the reason the map hides a save count at zero.
+   */
+  function keepControl(list) {
+    var count = el('span', { className: 'lists-keeps mono' });
+
+    function paintCount(n) {
+      count.textContent = !n ? '' : n === 1 ? t('listsKeptOne') : t('listsKeptN', { n: n });
+      count.hidden = !n;
+    }
+    paintCount(list.keeps || 0);
+
+    if (!state.me) {
+      return el('span', { className: 'lists-keep-wrap' }, [
+        el('a', {
+          className: 'lists-alt lists-keep',
+          href: accountHref('up'),
+          html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_KEEP + '</svg>',
+          'aria-label': t('listsKeepIn')
+        }, [el('span', { textContent: t('listsKeep') })]),
+        count
+      ]);
+    }
+
+    var b = el('button', {
+      type: 'button',
+      className: 'lists-alt lists-keep' + (list.kept ? ' is-kept' : ''),
+      'aria-pressed': String(!!list.kept),
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_KEEP + '</svg>'
+    }, [el('span', { textContent: t(list.kept ? 'listsKeptThis' : 'listsKeep') })]);
+
+    b.addEventListener('click', function () {
+      /* The mark flips first and the request follows it. A bookmark that
+         waits for a round trip before it looks pressed feels broken on a
+         phone, and there is nothing here that a failure cannot put back. */
+      var want = !list.kept;
+      list.kept = want;
+      list.keeps = Math.max(0, (list.keeps || 0) + (want ? 1 : -1));
+      b.classList.toggle('is-kept', want);
+      b.setAttribute('aria-pressed', String(want));
+      b.querySelector('span').textContent = t(want ? 'listsKeptThis' : 'listsKeep');
+      paintCount(list.keeps);
+
+      post({ action: want ? 'keep' : 'unkeep', id: list.id }).then(function (a) {
+        if (!a.ok) {
+          /* Back to what it was, and say why. The server is the one that
+             decides; this only ever guessed. */
+          list.kept = !want;
+          list.keeps = Math.max(0, (list.keeps || 0) + (want ? -1 : 1));
+          b.classList.toggle('is-kept', !want);
+          b.setAttribute('aria-pressed', String(!want));
+          b.querySelector('span').textContent = t(!want ? 'listsKeptThis' : 'listsKeep');
+          paintCount(list.keeps);
+          return failed(a.out);
+        }
+        /* The count the database actually holds, which is not necessarily the
+           one this page guessed: somebody else may have kept it in the
+           meantime, and a re-press that hit the conflict clause added
+           nothing at all. */
+        list.kept = !!a.out.kept;
+        list.keeps = a.out.keeps || 0;
+        paintCount(list.keeps);
+      }).catch(function () {
+        list.kept = !want;
+        list.keeps = Math.max(0, (list.keeps || 0) + (want ? -1 : 1));
+        b.classList.toggle('is-kept', !want);
+        b.setAttribute('aria-pressed', String(!want));
+        b.querySelector('span').textContent = t(!want ? 'listsKeptThis' : 'listsKeep');
+        paintCount(list.keeps);
+        failed({});
+      });
+    });
+
+    return el('span', { className: 'lists-keep-wrap' }, [b, count]);
   }
 
   /* Your own: the same card, with the title and the line under it as fields
@@ -520,9 +691,15 @@
       title,
       intro,
       el('div', { className: 'lists-row' }, [
+        /* Your own list has no keep button — it is already under Your lists,
+           and a second copy of it under Lists you kept would be the same list
+           twice on one page. The count is here though, and it is the one fact
+           about a list you wrote that you cannot learn by reading it. */
+        mapLink(list.id),
         button(t('listsShare'), 'lists-alt', shareList),
         share,
-        el('span', { className: 'lists-count mono', textContent: countLabel(list.items.length) })
+        el('span', { className: 'lists-count mono', textContent: countLabel(list.items.length) }),
+        keepCount(list.keeps)
       ])
     ]);
   }
@@ -1016,6 +1193,7 @@
       state.ready = answer.status === 404 ? true : !!out.ready;
       state.me = out.user || null;
       state.lists = out.lists || [];
+      state.kept = out.kept || [];
       state.list = out.list || null;
 
       /* A seeded page already carries the list's own title in the head; only
