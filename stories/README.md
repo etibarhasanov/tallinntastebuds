@@ -22,7 +22,8 @@ and it wants to be small:
   viewer never cuts a picture it was not given.
 - **Video: H.264 (`.mp4`), AAC audio.** The one pair every browser plays. VP9
   in a `.webm` is smaller and Safari will not touch it. HEVC is what an iPhone
-  records and what only Safari plays — always convert.
+  records and what only Safari plays — always convert. If something else lands
+  here anyway, `tools/storymedia.mjs` converts it; see below.
 - **Photo: `.webp` or `.jpg`,** the same as the photos on the places. A
   photo story stands for six seconds unless the entry says otherwise — and if
   the entry carries a `spot`, that file is going to *become* one of that
@@ -34,6 +35,34 @@ and it wants to be small:
   25 MB outright, and a phone on a tram gives up long before that.
 - **Burn the words in, or write them in `caption`.** There are no subtitles
   here, and a story always opens muted.
+
+## The short way: post it from the phone
+
+`/admin.html` takes a video now, and does all of the above on the device before
+it uploads anything: fitted inside 1080×1920, trimmed to the first fifteen
+seconds, re-encoded at a bitrate worked out from how long it runs, with a
+poster frame taken a third of a second in. It plays the clip through once to do
+it — that is what re-encoding means in a browser — so it takes as long as the
+clip lasts, and nothing comes out of the speaker while it does.
+
+What container comes back is not up to the page: Safari writes MP4/H.264,
+Chrome and Firefox write WebM, and a browser with no `MediaRecorder` in it
+uploads the file exactly as it came off the camera. So the form posts whatever
+it has and `.github/workflows/story-media.yml` converts anything that is not
+already web-ready the moment it lands, moving the story entry onto the new
+filename. Nothing to do; it is why a file can change name a minute after it
+goes up.
+
+That same pass is worth running by hand over a file you made yourself:
+
+```bash
+node tools/storymedia.mjs         # what each story video is, and what is wrong with it
+node tools/storymedia.mjs --fix   # convert the ones that are not web-ready, in place
+```
+
+It needs `ffmpeg` and `ffprobe` on the machine, changes nothing until `--fix`,
+and leaves a file that is already H.264, inside 1080×1920, `yuv420p`, faststart
+and under 8 MB exactly where it is.
 
 ## Straight off an iPhone
 

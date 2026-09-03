@@ -23,7 +23,8 @@
  *     name that restaurants.json disagrees with
  *   - a story in stories.json with neither a start nor an end time, an end
  *     before its start, no video or photo (or both), a file that is not in
- *     the repo, or a link to a place that does not exist
+ *     the repo, a video too big for Cloudflare Pages to serve, or a link to a
+ *     place that does not exist
  *   - wrangler.toml pointing the preview deployments and the live site at the
  *     same D1 database, or at no database of their own
  *
@@ -31,8 +32,9 @@
  *   - placeholder blurbs, missing reels, missing phone numbers, missing blurb translations
  *   - unused taxonomy types, photo folders with no matching restaurant
  *   - a story that is still switched on after its time ran out, a story asked
- *     to stand for much longer than the 36 hours one gets by default, and a
- *     video in stories/ that no story names
+ *     to stand for much longer than the 36 hours one gets by default, a video
+ *     in stories/ that no story names, and a story video that is over the
+ *     size budget or in a container story-media.yml has yet to convert
  *   - unknown keys in a restaurant object (catches typos)
  */
 
@@ -507,6 +509,14 @@ function todayStamp() {
 const STORY_KEYS = new Set(['id', 'live', 'video', 'photo', 'seconds', 'poster', 'from', 'until', 'caption', 'spot', 'link', 'linkLabel']);
 const STAMP = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]$/;
 const VIDEO_FILE = /^[A-Za-z0-9._-]+\.(mp4|webm|mov|m4v)$/i;
+/* Two ceilings on a story file, and only one of them is negotiable. Cloudflare
+   Pages refuses to serve anything over 25 MB at all, so that is a failure;
+   stories/README.md asks for eight, because a phone on a tram gives up long
+   before a file that size arrives, and that is worth saying rather than
+   stopping for. */
+const PAGES_LIMIT = 25 * 1024 * 1024;
+const STORY_BUDGET = 8 * 1024 * 1024;
+const mb = (bytes) => `${(bytes / 1048576).toFixed(1)} MB`;
 const POSTER_FILE = /^[A-Za-z0-9._-]+\.(webp|jpg|jpeg|png|avif)$/i;
 /* Where an explicitly written "until" stops being a story. Two days is what
    the README has always said is the most anyone will wait, and the default
@@ -558,10 +568,26 @@ if (stories !== null && !Array.isArray(stories)) {
         fail(where, '"video" must be a filename inside stories/, such as "kokomo-brunch.mp4"');
       } else {
         usedStoryFiles.add(story.video);
-        if (!existsSync(join(STORIES, story.video))) {
+        const file = join(STORIES, story.video);
+        if (!existsSync(file)) {
           fail(where, `"stories/${story.video}" is not in the repo`);
-        } else if (/\.(mov|m4v)$/i.test(story.video)) {
-          warn(where, `"${story.video}" is a QuickTime file — re-wrap it as .mp4 so every browser plays it`);
+        } else {
+          /* A story posted from a phone lands in whatever that browser could
+             write, and .github/workflows/story-media.yml converts it within a
+             minute or two. So this says what is wrong rather than stopping:
+             the story is watchable by most of the people looking at it in the
+             meantime, and by all of them shortly after. */
+          if (/\.(mov|m4v)$/i.test(story.video)) {
+            warn(where, `"${story.video}" is a QuickTime file — story-media.yml re-wraps it as .mp4, or run the ffmpeg line in stories/README.md`);
+          } else if (/\.webm$/i.test(story.video)) {
+            warn(where, `"${story.video}" is a WebM, which Safari will not play — story-media.yml converts it to .mp4`);
+          }
+          const bytes = statSync(file).size;
+          if (bytes > PAGES_LIMIT) {
+            fail(where, `"stories/${story.video}" is ${mb(bytes)} — Cloudflare Pages refuses to serve a file over ${mb(PAGES_LIMIT)}`);
+          } else if (bytes > STORY_BUDGET) {
+            warn(where, `"stories/${story.video}" is ${mb(bytes)} — stories/README.md asks for under ${mb(STORY_BUDGET)}`);
+          }
         }
       }
     }

@@ -1,0 +1,136 @@
+name: story-media
+
+# The other half of posting a video from a phone.
+#
+# admin.html re-encodes a clip on the device before it uploads it — 1080×1920,
+# fifteen seconds, under six megabytes — but what container that comes out in
+# is not up to the page. Safari writes MP4/H.264, which every browser plays.
+# Chrome and Firefox write WebM, which Safari will not touch. A browser with
+# no MediaRecorder in it uploads the file exactly as it came off the camera:
+# 4K HEVC, sideways, sixty megabytes.
+#
+# Teaching the form to refuse three of those four would mean a phone that can
+# post a story only on one browser. So it posts whatever it has, and this
+# makes it ordinary afterwards: `node tools/storymedia.mjs --fix` converts
+# anything that is not already an H.264 MP4 inside 1080×1920 with its index at
+# the front, renames the file, moves the story entry onto the new name and
+# takes a poster frame if there is none. A video that is already all of those
+# things is not touched — which is also the loop guard: the commit this makes
+# would find nothing to do on a second pass, and a push made with the built-in
+# GITHUB_TOKEN does not start a workflow anyway.
+#
+# Minutes, not seconds: a re-encode at -preset slow is the slowest thing in
+# this repository. That is deliberate. The story is up either way — the viewer
+# plays what is there — and this is what makes it watchable on an iPhone.
+
+on:
+  push:
+    # The branch the site publishes from, and the name it would have if this
+    # repository is ever renamed to the usual one. Same pair cloudflare.yml
+    # lists, for the same reason: a story posted from a phone lands on the
+    # publishing branch, and this has to run where it lands.
+    branches:
+      - main
+      - claude/tallinn-tastebuds-map-nzoqx0
+    paths:
+      - 'stories/**'
+      - 'data/stories.json'
+      - 'tools/storymedia.mjs'
+      - '.github/workflows/story-media.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# The same lock the hourly tick takes. Both of them commit data/stories.json,
+# and two of them doing it at once is one force-pushing over the other.
+concurrency:
+  group: stories
+  cancel-in-progress: false
+
+jobs:
+  convert:
+    name: Make every story video web-ready
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.fix.outputs.changed }}
+      sha: ${{ steps.push.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The whole history, because this job commits: a shallow checkout can
+          # push, but it cannot rebase onto somebody who pushed while it was
+          # thinking, and that is the one thing that goes wrong here.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # The runner image has carried ffmpeg for years, but a runner image is
+      # not a promise. This costs nothing when it is already there.
+      - name: Make sure ffmpeg is here
+        run: |
+          set -euo pipefail
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+          fi
+          ffmpeg -version | head -1
+
+      # No `npm install`, here or anywhere else in this repo.
+      - name: Convert what needs converting
+        id: fix
+        run: node tools/storymedia.mjs --fix
+
+      # The same gate every other path to the live site goes through: this
+      # writes data/stories.json, so it is held to the same standard as a
+      # person writing it.
+      - name: Validate data
+        if: steps.fix.outputs.changed == 'true'
+        run: node tools/validate.mjs
+
+      - name: Commit and push
+        id: push
+        if: steps.fix.outputs.changed == 'true'
+        # The summary is built out of story ids, which the validator holds to
+        # slugs — but it goes through the environment rather than into the
+        # script text all the same, because a shell that is handed data is a
+        # shell that can be handed anything.
+        env:
+          SUMMARY: ${{ steps.fix.outputs.summary }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data stories
+          if git diff --cached --quiet; then
+            echo "::notice::Nothing staged after all."
+            exit 0
+          fi
+          git commit -m "$SUMMARY" \
+                     -m "Converted by .github/workflows/story-media.yml — see tools/storymedia.mjs."
+          pushed=
+          for wait in 0 2 4 8; do
+            [ "$wait" = 0 ] || sleep "$wait"
+            if git push origin "HEAD:$BRANCH"; then pushed=yes; break; fi
+            # Either the network, or somebody committed while this was
+            # thinking. Take their work and go again; this is one commit on top
+            # of whatever is there, never a version of it.
+            git fetch origin "$BRANCH" && git rebase "origin/$BRANCH" || git rebase --abort || true
+          done
+          [ -n "$pushed" ] || { echo "::error::Could not push the conversion. Run this workflow again from the Actions tab."; exit 1; }
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  # A push made with GITHUB_TOKEN does not start another workflow, so the
+  # deploy is asked for rather than waited for. Nothing runs when nothing
+  # changed, which is every push that already had a web-ready video in it.
+  publish:
+    name: Publish
+    needs: convert
+    if: needs.convert.outputs.changed == 'true' && needs.convert.outputs.sha != ''
+    uses: ./.github/workflows/cloudflare.yml
+    secrets: inherit
+    with:
+      ref: ${{ needs.convert.outputs.sha }}

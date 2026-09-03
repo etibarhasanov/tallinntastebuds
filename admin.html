@@ -182,10 +182,12 @@ input[type="file"] {
   background: #fff; border: 1px dashed var(--hairline); border-radius: var(--radius);
 }
 .shot { margin-top: 12px; text-align: center; }
-.shot img {
+.shot img, .shot video {
   max-width: 100%; max-height: 44vh; border-radius: var(--radius);
   border: 1px solid var(--hairline);
 }
+.shot video { background: #000; }
+.shot button { margin-top: 10px; }
 .shot p { margin: 6px 0 0; font-family: var(--mono); font-size: .78rem; color: var(--muted); }
 .hint { font-size: .78rem; color: var(--muted); margin: 5px 0 0; }
 hr { border: 0; border-top: 1px solid var(--hairline); margin: 22px 0 4px; }
@@ -685,6 +687,334 @@ a { color: var(--accent); }
     return blob.arrayBuffer().then(function (buf) { return bytesToB64(new Uint8Array(buf)); });
   }
 
+  /* ------------------------------------------------------------- the video
+   * A story is a video more often than it is a photograph, and that was the
+   * one thing this page could not do. The reason was real: a phone hands you
+   * 4K HEVC at fifty megabytes, stories/README.md wants 1080×1920 H.264 under
+   * eight, and there is no ffmpeg in a browser.
+   *
+   * There is the next best thing, and it has been in every browser for years.
+   * Play the file through once, draw each frame onto a canvas that is already
+   * the right size, take that canvas as a video track and the file's own
+   * sound as an audio track, and hand the pair to MediaRecorder. What comes
+   * back is a small, upright, ordinary web video, re-encoded by the same
+   * hardware encoder the camera recorded with, at a bitrate worked out from
+   * how long it runs so the file lands under budget rather than near it.
+   *
+   * It costs what the video lasts: fifteen seconds of footage takes fifteen
+   * seconds to squeeze, because real time is the only clock a media element
+   * has. That is the trade for not shipping a WebAssembly ffmpeg, and on a
+   * phone standing in a bakery it is the right way round.
+   *
+   * WHAT COMES OUT
+   *
+   * Safari writes MP4/H.264 — so an iPhone, which is where a story is shot,
+   * posts a finished file every browser can play. Chrome and Firefox write
+   * WebM, which Safari will not touch, and that is deliberately somebody
+   * else's problem: .github/workflows/story-media.yml converts anything that
+   * is not already web-ready the moment it lands and moves the entry onto the
+   * new file. So the worst case is a story that is a WebM in the repository
+   * for a minute, never a story an iPhone cannot watch.
+   *
+   * And where none of this exists — an old browser, a locked-down webview —
+   * the original file is uploaded untouched and that same workflow does the
+   * whole job. Slower, bigger in the history, and it still works.
+   */
+  var STORY_SECONDS = 15;          /* stories/README.md: under fifteen */
+  var STORY_W = 1080, STORY_H = 1920;
+  var VIDEO_BUDGET = 6 * 1024 * 1024;      /* aim under the README's 8 MB */
+  var VIDEO_CEILING = 25 * 1024 * 1024;    /* Cloudflare Pages refuses more */
+  var AUDIO_BITS = 96000;
+  var POSTER_EDGE = 540;
+  var RAW_VIDEO = /\.(mp4|webm|mov|m4v)$/i;
+
+  /* Asked in order and taken at the first yes. MP4 first every time: it is
+     the only container all four engines play, and a browser that can write
+     one saves the workflow a job. */
+  var RECORDER_TYPES = [
+    'video/mp4;codecs=avc1.4d002a,mp4a.40.2',
+    'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+    'video/mp4',
+    'video/webm;codecs=h264,opus',
+    'video/webm;codecs=vp9,opus',
+    'video/webm;codecs=vp8,opus',
+    'video/webm'
+  ];
+
+  /* WHAT ACTUALLY CAME OUT, WHICH IS NOT WHAT WAS ASKED FOR
+   *
+   * MediaRecorder.isTypeSupported('video/mp4') answers about the container and
+   * is happy to leave the codec to the browser. A Chromium built without the
+   * H.264 encoder says yes to that and then writes VP9 inside an MP4 — a file
+   * with the right extension that Safari will not play, which is the worst
+   * shape a file can be in, because nothing downstream would look twice.
+   *
+   * It is the same trap `canvas.toBlob` set for the photograph path, where a
+   * browser asked for WebP quietly returned a PNG and a 1596 KB "webp" went up.
+   * The answer is the same one: do not believe it, read what came back.
+   *
+   * Both containers write the codec's name in plain ASCII near the front —
+   * `avc1` in an MP4's sample description, `V_VP9` and friends in a WebM's
+   * track entry — so a quarter of a megabyte off the top settles it. Nothing
+   * hangs on the answer but the truth: an honest line under the preview, and
+   * whether the page says the story is ready or says the workflow has a job to
+   * do when it lands.
+   */
+  function sniffCodec(blob) {
+    return blob.slice(0, 262144).arrayBuffer().then(function (buf) {
+      var bytes = new Uint8Array(buf);
+      var text = '';
+      for (var i = 0; i < bytes.length; i++) text += String.fromCharCode(bytes[i]);
+      if (text.indexOf('avc1') !== -1 || text.indexOf('avc3') !== -1 ||
+          text.indexOf('V_MPEG4/ISO/AVC') !== -1) return 'H.264';
+      if (text.indexOf('vp09') !== -1 || text.indexOf('V_VP9') !== -1) return 'VP9';
+      if (text.indexOf('V_VP8') !== -1) return 'VP8';
+      if (text.indexOf('hvc1') !== -1 || text.indexOf('hev1') !== -1) return 'HEVC';
+      return '';
+    }, function () { return ''; });
+  }
+
+  function recorderType() {
+    if (typeof window.MediaRecorder !== 'function') return null;
+    if (typeof MediaRecorder.isTypeSupported !== 'function') return null;
+    if (typeof document.createElement('canvas').captureStream !== 'function') return null;
+    for (var i = 0; i < RECORDER_TYPES.length; i++) {
+      if (MediaRecorder.isTypeSupported(RECORDER_TYPES[i])) {
+        return { type: RECORDER_TYPES[i],
+                 ext: RECORDER_TYPES[i].indexOf('mp4') !== -1 ? 'mp4' : 'webm' };
+      }
+    }
+    return null;
+  }
+
+  /* H.264 wants even numbers on both sides, and a browser asked for an odd
+     one pads it somewhere you cannot see. Decide it here instead. */
+  function even(n) { return Math.max(2, Math.round(n / 2) * 2); }
+
+  function isVideoFile(file) {
+    return /^video\//.test(file.type || '') || RAW_VIDEO.test(file.name || '');
+  }
+
+  /* The still behind the first moment of the video, so the frame is the story
+     rather than black while it buffers. Taken from the same element that has
+     just been played through, a third of a second in — far enough that a fade
+     from black is over, near enough that it is still the opening shot. */
+  function grabPoster(v, w, h, at) {
+    return new Promise(function (resolve, reject) {
+      var scale = Math.min(1, POSTER_EDGE / w);
+      var pw = even(w * scale), ph = even(h * scale);
+      var canvas = document.createElement('canvas');
+      canvas.width = pw; canvas.height = ph;
+
+      var taken = false;
+      function take() {
+        if (taken) return;
+        taken = true;
+        canvas.getContext('2d').drawImage(v, 0, 0, pw, ph);
+        encoder().then(function (enc) {
+          canvas.toBlob(function (blob) {
+            if (!blob) { reject(new Error('no poster')); return; }
+            /* Named after what came back rather than what was asked for —
+               the same trap the photograph path was caught by once. */
+            var ext = blob.type === 'image/webp' ? 'webp'
+                    : blob.type === 'image/png' ? 'png' : 'jpg';
+            resolve({ blob: blob, ext: ext, width: pw, height: ph });
+          }, enc.type, 0.72);
+        }, reject);
+      }
+
+      v.addEventListener('seeked', take, { once: true });
+      /* A seek that never answers is not worth a story without a poster. */
+      window.setTimeout(take, 3000);
+      try { v.currentTime = at; } catch (e) { take(); }
+    });
+  }
+
+  function squeeze(file, onProgress) {
+    var enc = recorderType();
+    if (!enc) return Promise.reject(new Error('This browser cannot re-encode video.'));
+
+    var url = URL.createObjectURL(file);
+    var v = document.createElement('video');
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+    v.playsInline = true;
+    v.preload = 'auto';
+    v.src = url;
+
+    var actx = null;
+    var settled = false;
+
+    function clean() {
+      try { v.pause(); } catch (e) { /* already stopped */ }
+      v.removeAttribute('src');
+      try { v.load(); } catch (e) { /* nothing to unload */ }
+      URL.revokeObjectURL(url);
+      if (actx && actx.close) { try { actx.close(); } catch (e) { /* already closed */ } }
+    }
+
+    return new Promise(function (resolve, reject) {
+      function fail(err) {
+        if (settled) return;
+        settled = true;
+        clean();
+        reject(err);
+      }
+
+      v.addEventListener('error', function () {
+        fail(new Error('This browser could not decode that video. An iPhone clip ' +
+                       'recorded in HEVC does this on a non-Apple browser — set ' +
+                       'Camera → Formats → Most Compatible and shoot it again, or ' +
+                       'post it from a laptop with the ffmpeg line in stories/README.md.'));
+      });
+
+      v.addEventListener('loadedmetadata', function () {
+        if (!v.videoWidth || !v.videoHeight) { fail(new Error('That file has no picture in it.')); return; }
+        var dur = v.duration;
+        if (!isFinite(dur) || dur <= 0) { fail(new Error('That video does not say how long it is.')); return; }
+
+        var secs = Math.min(dur, STORY_SECONDS);
+        /* Fitted inside 1080×1920 rather than filled: the viewer letterboxes
+           what it is given and has never cropped a picture nobody asked it
+           to. A portrait clip is untouched but for the scale; a landscape one
+           stays landscape and arrives with black above and below it. */
+        var scale = Math.min(1, STORY_W / v.videoWidth, STORY_H / v.videoHeight);
+        var w = even(v.videoWidth * scale), h = even(v.videoHeight * scale);
+
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, w, h);
+
+        var stream = canvas.captureStream(30);
+
+        /* The sound is routed through Web Audio into the recorder and nowhere
+           else — the graph never reaches the speakers, so squeezing a video is
+           silent on the device doing it. Where there is no AudioContext to
+           build that graph with, the element is muted instead: a story with no
+           sound beats a phone that suddenly starts playing one out loud. */
+        try {
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) {
+            actx = new AC();
+            if (actx.state === 'suspended' && actx.resume) actx.resume();
+            var dest = actx.createMediaStreamDestination();
+            actx.createMediaElementSource(v).connect(dest);
+            var track = dest.stream.getAudioTracks()[0];
+            if (track) stream.addTrack(track);
+          }
+        } catch (e) { actx = null; }
+        v.muted = !actx;
+
+        /* The budget divided by the running time, which is the only honest way
+           to hit a file size in one pass. Floored so a two-second clip is not
+           encoded at forty megabits, capped so a long one is still watchable. */
+        var bits = Math.round(Math.max(700000,
+          Math.min(5000000, (VIDEO_BUDGET * 8) / secs - AUDIO_BITS)));
+
+        var rec;
+        try {
+          rec = new MediaRecorder(stream, {
+            mimeType: enc.type,
+            videoBitsPerSecond: bits,
+            audioBitsPerSecond: AUDIO_BITS
+          });
+        } catch (e) {
+          fail(new Error('This browser would not start a recorder: ' + e.message));
+          return;
+        }
+
+        var chunks = [];
+        var guard = null;
+
+        rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+        rec.onerror = function () { fail(new Error('The re-encode stopped part way through.')); };
+        rec.onstop = function () {
+          if (guard) window.clearTimeout(guard);
+          if (settled) return;
+          var blob = new Blob(chunks, { type: enc.type.split(';')[0] });
+          if (!blob.size) { fail(new Error('The re-encode produced an empty file.')); return; }
+
+          function finish(still, codec) {
+            if (settled) return;
+            settled = true;
+            clean();
+            resolve({
+              kind: 'video', blob: blob, ext: enc.ext, width: w, height: h,
+              seconds: secs, trimmed: dur > secs + 0.05, poster: still || null,
+              source: file, raw: false, codec: codec,
+              /* The only thing that counts as finished: H.264 in an MP4. Every
+                 other pair is a job for story-media.yml, said plainly rather
+                 than guessed at from the container. */
+              ready: enc.ext === 'mp4' && codec === 'H.264'
+            });
+          }
+          sniffCodec(blob).then(function (codec) {
+            grabPoster(v, w, h, Math.min(0.3, secs / 2))
+              .then(function (still) { finish(still, codec); },
+                    function () { finish(null, codec); });
+          });
+        };
+
+        function stop() {
+          if (rec.state !== 'inactive') rec.stop();
+          try { v.pause(); } catch (e) { /* already stopped */ }
+        }
+
+        function step() {
+          if (settled || rec.state === 'inactive') return;
+          ctx.drawImage(v, 0, 0, w, h);
+          if (onProgress) onProgress(Math.min(1, v.currentTime / secs));
+          /* Past the fifteenth second the rest of the clip is not posted. The
+             form has already said so, in seconds, before this ran. */
+          if (v.ended || v.currentTime >= secs - 0.03) { stop(); return; }
+          if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(step);
+          else window.requestAnimationFrame(step);
+        }
+
+        v.addEventListener('ended', stop);
+
+        var started = v.play();
+        if (started && started.catch) {
+          started.catch(function () {
+            fail(new Error('This browser would not play the file back, which is how ' +
+                           'it is read. Try again with a tap on the button.'));
+          });
+        }
+        /* A file that stalls half way would otherwise spin for ever. Whatever
+           has been recorded by then is what gets posted. */
+        guard = window.setTimeout(stop, (secs + 20) * 1000);
+        rec.start(250);
+        if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(step);
+        else window.requestAnimationFrame(step);
+      });
+    });
+  }
+
+  /* Nothing to squeeze with. The file goes up as it came off the camera and
+     the workflow does the whole job on the other side — which is why there is
+     a ceiling here: 25 MB is what Cloudflare Pages will serve, and a file
+     bigger than that would be committed only to be rejected. */
+  function rawVideo(file) {
+    var m = RAW_VIDEO.exec(file.name || '');
+    if (!m) {
+      return Promise.reject(new Error('This browser cannot re-encode video, and ' +
+        '"' + (file.name || 'that file') + '" is not an .mp4, .webm, .mov or .m4v ' +
+        'that could be uploaded as it is.'));
+    }
+    if (file.size > VIDEO_CEILING) {
+      return Promise.reject(new Error('This browser cannot re-encode video, and at ' +
+        Math.round(file.size / 1048576) + ' MB the file is over the 25 MB Cloudflare ' +
+        'Pages will serve. Trim it, or use the ffmpeg line in stories/README.md.'));
+    }
+    return Promise.resolve({
+      kind: 'video', blob: file, ext: m[1].toLowerCase(), width: 0, height: 0,
+      seconds: 0, trimmed: false, poster: null, source: file, raw: true,
+      codec: '', ready: false
+    });
+  }
+
   /* ----------------------------------------------------------- the clock
    * What a Tallinn clock reads right now. The field below is the browser's
    * own wall clock, and the file wants Tallinn's — the same thing from a
@@ -780,17 +1110,25 @@ a { color: var(--accent); }
     body.appendChild(forget);
   }
 
-  /* ------------------------------------------------------------ a story */
+  /* ------------------------------------------------------------ a story
+   * A photograph or a video, and the difference between them is only how long
+   * the squeezing takes. The one thing this form will not do is post a file
+   * nobody looked at first: whatever comes back is played or shown here,
+   * with its size under it, before the button that commits it lights up.
+   */
   function storyForm(repo, into) {
-    var state = { photo: null, places: [] };
+    var state = { media: null, places: [], preview: null };
 
-    var fileIn = el('input', { type: 'file', id: 'photo', accept: 'image/*' });
-    into.appendChild(el('label', { for: 'photo', textContent: 'The photograph' }));
+    var fileIn = el('input', { type: 'file', id: 'shot', accept: 'image/*,video/*' });
+    into.appendChild(el('label', { for: 'shot', textContent: 'The photograph, or the video' }));
     into.appendChild(fileIn);
     into.appendChild(el('p', { className: 'hint', textContent:
-      'Shrunk on this device before it goes anywhere — 1600px, and WebP where the ' +
-      'browser can write one, JPEG where it cannot. The re-encode drops the EXIF ' +
-      'block and the GPS fix inside it. Videos are still a laptop job.' }));
+      'Squeezed on this device before it goes anywhere. A photograph: 1600px, ' +
+      'WebP where the browser can write one, JPEG where it cannot. A video: ' +
+      'fitted inside 1080×1920, the first ' + STORY_SECONDS + ' seconds, under 6 MB — ' +
+      'it plays the clip through once to do that, so it takes as long as the ' +
+      'clip lasts. Either way the re-encode drops the EXIF block and the GPS ' +
+      'fix inside it.' }));
     var shot = el('div', { className: 'shot' });
     into.appendChild(shot);
 
@@ -799,9 +1137,8 @@ a { color: var(--accent); }
     ]);
     into.appendChild(el('label', { for: 'place', textContent: 'The place it belongs to' }));
     into.appendChild(placeIn);
-    into.appendChild(el('p', { className: 'hint', textContent:
-      'The button under the story opens this place on the map, and the photograph ' +
-      'moves into its photos when the 36 hours are up.' }));
+    var placeHint = el('p', { className: 'hint' });
+    into.appendChild(placeHint);
 
     var whenIn = el('input', { type: 'datetime-local', id: 'when', value: tallinnNow() });
     into.appendChild(el('label', { for: 'when', textContent: 'When it goes up' }));
@@ -821,6 +1158,19 @@ a { color: var(--accent); }
     into.appendChild(post);
     var out = el('div');
     into.appendChild(out);
+
+    /* What happens to the file when the 36 hours are up is not the same for
+       the two of them, and it is the sort of thing to know before posting
+       rather than after: a photograph becomes one of the place's pictures, a
+       video is switched off and left where it is. */
+    function refreshPlaceHint() {
+      var video = state.media && state.media.kind === 'video';
+      placeHint.textContent = 'The button under the story opens this place on the map' +
+        (video
+          ? '. A video is switched off when its time is up and the file stays in stories/.'
+          : ', and the photograph moves into its photos when the 36 hours are up.');
+    }
+    refreshPlaceHint();
 
     function refreshWhen() {
       var v = whenIn.value.slice(0, 16);
@@ -843,38 +1193,132 @@ a { color: var(--accent); }
       placeIn.appendChild(el('option', { value: '', textContent: 'Could not load the places' }));
     });
 
-    function settle() { post.disabled = !(state.photo && placeIn.value && whenIn.value); }
+    function settle() { post.disabled = !(state.media && placeIn.value && whenIn.value); }
     placeIn.addEventListener('change', settle);
     whenIn.addEventListener('change', settle);
 
-    fileIn.addEventListener('change', function () {
-      var file = fileIn.files && fileIn.files[0];
+    function dropPreview() {
+      if (!state.preview) return;
+      URL.revokeObjectURL(state.preview);
+      state.preview = null;
+    }
+
+    /* Shown from the squeezed file, never the original: what is on screen
+       here is the thing that is about to be committed. */
+    function showMedia(media) {
       clear(shot);
-      state.photo = null;
-      settle();
-      if (!file) return;
+      dropPreview();
+      state.preview = URL.createObjectURL(media.blob);
+
+      if (media.kind === 'photo') {
+        var img = el('img', { alt: '' });
+        img.src = state.preview;
+        shot.appendChild(img);
+      } else {
+        var vid = el('video', { controls: true, muted: true, playsinline: true, preload: 'metadata' });
+        vid.src = state.preview;
+        shot.appendChild(vid);
+      }
+
+      shot.appendChild(el('p', { textContent: mediaLine(media) }));
+      if (media.trimmed) {
+        shot.appendChild(el('p', { textContent:
+          'The rest of the clip is not in it — a story runs ' + STORY_SECONDS + ' seconds at most.' }));
+      }
+      if (media.kind === 'video' && !media.ready && !media.raw) {
+        shot.appendChild(el('p', { textContent:
+          'This browser wrote ' + (media.codec ? media.codec + ' in ' : '') +
+          (media.ext === 'mp4' ? 'an MP4' : 'a WebM') + ', which Safari will not play. ' +
+          'The story-media workflow converts it a minute after it lands and moves ' +
+          'the entry onto the new file.' }));
+      }
+      if (media.raw) {
+        shot.appendChild(el('p', { textContent:
+          'Untouched, and in the history at that size for good. A laptop with ' +
+          'ffmpeg is kinder to the repository — see stories/README.md.' }));
+      }
+      refreshPlaceHint();
+    }
+
+    function takePhoto(file) {
       shot.appendChild(el('p', { textContent: 'Shrinking…' }));
       shrink(file).then(function (small) {
-        state.photo = small;
-        clear(shot);
-        var img = el('img', { alt: '' });
-        img.src = URL.createObjectURL(small.blob);
-        img.addEventListener('load', function () { URL.revokeObjectURL(img.src); });
-        shot.appendChild(img);
-        shot.appendChild(el('p', { textContent: sizeLine(small, file) }));
+        small.kind = 'photo';
+        small.source = file;
+        small.trimmed = false;
+        small.raw = false;
+        state.media = small;
+        showMedia(small);
         settle();
       }).catch(function (err) {
         clear(shot);
         shot.appendChild(el('p', { textContent: 'Could not read that picture. ' + err.message }));
       });
+    }
+
+    /* A video is not touched until it is asked for, and the asking is a
+       button of its own. Re-encoding one here means playing it back, and a
+       browser wants a gesture before it will play anything with sound in it —
+       so the gesture is this tap, and what it is going to cost in seconds is
+       written on it before it is pressed. */
+    function offerVideo(file) {
+      var can = recorderType();
+      shot.appendChild(el('p', { textContent:
+        (file.name || 'The clip') + ' — ' + (file.size / 1048576).toFixed(1) + ' MB' }));
+      shot.appendChild(el('p', { textContent: can
+        ? 'Squeezing plays it through once at normal speed, so give it as long as ' +
+          'the clip lasts, up to ' + STORY_SECONDS + ' seconds. Nothing comes out of the speaker.'
+        : 'This browser cannot re-encode a video, so the file goes up as it is and ' +
+          'the story-media workflow converts it after it lands.' }));
+
+      var go = el('button', { type: 'button',
+        textContent: can ? 'Squeeze it' : 'Upload it as it is' });
+      go.addEventListener('click', function () {
+        go.disabled = true;
+        var note = el('p', { textContent: can ? 'Reading it…' : 'Reading it…' });
+        shot.appendChild(note);
+        var work = can
+          ? squeeze(file, function (fraction) {
+              note.textContent = 'Squeezing… ' + Math.round(fraction * 100) + '%';
+            })
+          : rawVideo(file);
+        work.then(function (media) {
+          state.media = media;
+          showMedia(media);
+          settle();
+        }).catch(function (err) {
+          state.media = null;
+          settle();
+          clear(shot);
+          shot.appendChild(el('p', { textContent: err.message }));
+          offerVideo(file);
+        });
+      });
+      shot.appendChild(go);
+    }
+
+    fileIn.addEventListener('change', function () {
+      var file = fileIn.files && fileIn.files[0];
+      clear(shot);
+      dropPreview();
+      state.media = null;
+      refreshPlaceHint();
+      settle();
+      if (!file) return;
+      if (isVideoFile(file)) offerVideo(file);
+      else takePhoto(file);
     });
 
-    /* Two commits, and the order is the whole of it: the picture lands first,
-       so the entry naming it is never in the repository on its own. */
+    /* The file lands first and the entry naming it second — that order, so a
+       story pointing at something that is not in the repository is never in
+       the repository, not even for one commit. A video's poster frame goes in
+       between them for the same reason. */
     post.addEventListener('click', function () {
       var place = state.places.filter(function (pl) { return pl.id === placeIn.value; })[0];
+      var media = state.media;
       var when = whenIn.value.slice(0, 16);
       var caption = capIn.value.trim();
+      var word = media.kind === 'photo' ? 'photograph' : 'video';
 
       post.disabled = true;
       clear(out);
@@ -890,17 +1334,32 @@ a { color: var(--accent); }
           var n = 2;
           while (taken[id]) id = place.id + '-' + when.slice(0, 10) + '-' + n++;
 
-          var file = id + '.' + state.photo.ext;
-          var entry = { id: id, live: true, photo: file, from: when };
+          var file = id + '.' + media.ext;
+          var entry = { id: id, live: true };
+          if (media.kind === 'photo') {
+            entry.photo = file;
+          } else {
+            entry.video = file;
+            if (media.poster) entry.poster = id + '.' + media.poster.ext;
+          }
+          entry.from = when;
           if (caption) entry.caption = { en: caption };
           entry.spot = place.id;
           stories.push(entry);
 
-          step.textContent = 'Uploading the photograph…';
-          return blobToB64(state.photo.blob)
+          step.textContent = 'Uploading the ' + word + '…';
+          return blobToB64(media.blob)
             .then(function (b64) {
               return putFile('stories/' + file, b64,
-                'Add the photograph for the ' + place.name + ' story', repo.branch);
+                'Add the ' + word + ' for the ' + place.name + ' story', repo.branch);
+            })
+            .then(function () {
+              if (!entry.poster) return null;
+              step.textContent = 'Uploading the poster frame…';
+              return blobToB64(media.poster.blob).then(function (b64) {
+                return putFile('stories/' + entry.poster, b64,
+                  'Add the poster frame for the ' + place.name + ' story', repo.branch);
+              });
             })
             .then(function () {
               step.textContent = 'Writing the entry…';
@@ -923,10 +1382,18 @@ a { color: var(--accent); }
           ]));
           out.appendChild(el('p', { className: 'hint', textContent:
             'Cloudflare redeploys within the minute. Nothing else has to happen — the ' +
-            'ring appears by itself when the time comes, and the picture moves onto ' +
-            place.name + ' when it is over.' }));
+            'ring appears by itself when the time comes' +
+            (media.kind === 'photo'
+              ? ', and the picture moves onto ' + place.name + ' when it is over.'
+              : '.') }));
+          if (media.kind === 'video' && !media.ready) {
+            out.appendChild(el('p', { className: 'hint', textContent:
+              'The video is not an ordinary MP4 yet. story-media.yml converts it and ' +
+              'commits the entry pointing at the new file, usually inside a couple of ' +
+              'minutes. Nothing to do — but that is why the file changes name.' }));
+          }
           var again = el('button', { type: 'button', textContent: 'Post another' });
-          again.addEventListener('click', function () { clear(into); storyForm(repo, into); });
+          again.addEventListener('click', function () { dropPreview(); clear(into); storyForm(repo, into); });
           out.appendChild(again);
         })
         .catch(function (err) {
@@ -973,6 +1440,25 @@ a { color: var(--accent); }
       Math.round(small.blob.size / 1024) + ' KB, from ' +
       Math.round(file.size / 1024) + ' KB' +
       (small.over ? ' — over the 200 KB budget, and this is as small as it goes' : '');
+  }
+
+  /* Kilobytes up to a megabyte and megabytes after it, because a video is
+     never going to be readable in the same unit a photograph is. */
+  function weigh(bytes) {
+    return bytes >= 1048576 ? (bytes / 1048576).toFixed(1) + ' MB'
+                            : Math.round(bytes / 1024) + ' KB';
+  }
+
+  function mediaLine(media) {
+    if (media.kind === 'photo') return sizeLine(media, media.source);
+    if (media.raw) {
+      return weigh(media.blob.size) + ' of ' + media.ext.toUpperCase() +
+        ', uploaded exactly as it is';
+    }
+    return media.width + '×' + media.height + ' ' +
+      (media.codec ? media.codec + '/' : '') + media.ext.toUpperCase() + ', ' +
+      media.seconds.toFixed(1) + 's, ' + weigh(media.blob.size) +
+      ', from ' + weigh(media.source.size);
   }
 
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
