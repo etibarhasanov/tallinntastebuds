@@ -39,7 +39,7 @@ completely with the database switched off.
 - [Restaurant discounts](#restaurant-discounts)
 - [Saves](#saves)
 - [Accounts](#accounts)
-- [The Google Places export](#the-google-places-export)
+- [Google venues](#google-venues)
 - [Lists](#lists)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
@@ -1286,17 +1286,17 @@ feature's own setup:
 
 ---
 
-## The Google Places export
+## Google venues
 
-750 restaurants in Tallinn, out of Google Places, in the database as a table of
-their own. Separate from everything else here on purpose — this is somebody
+750 places in Tallinn you can eat or drink in, out of the Google Places API,
+in the database as a table of their own — `google_venues`. Separate from everything else here on purpose — this is somebody
 else's data about the city, not mine about the food.
 
 ```
 exports/tallinn_restaurants.csv   the export: 750 rows, 18 columns
-tools/googleplaces.mjs            turns it into SQL
-db/google-places.sql              GENERATED — what actually loads them
-google_places                     the table, in db/schema.sql
+tools/googlevenues.mjs            turns it into SQL
+db/google-venues.sql              GENERATED — what actually loads them
+google_venues                     the table, in db/schema.sql
 ```
 
 `exports/README.md` has the full account of how the export was cleaned: fifteen
@@ -1308,9 +1308,9 @@ records.
 ### Loading it
 
 ```
-node tools/googleplaces.mjs
-wrangler d1 execute tallinntastebuds         --remote --file=db/google-places.sql
-wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-places.sql
+node tools/googlevenues.mjs
+wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
+wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql
 ```
 
 `db/schema.sql` has to have been applied first — it is what creates the table.
@@ -2387,7 +2387,7 @@ data/places.csv            the Google Maps export a list picks from (yours to dr
 data/places.json           the catalogue: the map plus that CSV — GENERATED
 exports/tallinn_restaurants.csv    750 Tallinn restaurants out of Google Places
 exports/README.md          what was cleaned out of the raw export, and why
-db/google-places.sql       GENERATED — loads that export into D1
+db/google-venues.sql       GENERATED — loads that export into D1
 data/taxonomy.json         the controlled vocabulary of types
 data/ui.json               every interface string, in every language
 data/deals.json            the discounts, and which of them are live
@@ -2398,7 +2398,7 @@ photos/<restaurant-id>/    photos, one folder per place
 stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
 tools/places.mjs           builds data/places.json from the CSV and the map
-tools/googleplaces.mjs     turns the Google Places export into db/google-places.sql
+tools/googlevenues.mjs     turns the Google Places export into db/google-venues.sql
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick

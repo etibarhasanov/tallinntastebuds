@@ -214,8 +214,13 @@ CREATE TABLE IF NOT EXISTS list_items (
 CREATE INDEX IF NOT EXISTS idx_list_items_pos ON list_items (list_id, pos);
 
 
--- ----------------------------------------------------------- google places
--- Every restaurant in Tallinn, out of Google Places. 750 of them.
+-- ----------------------------------------------------------- google venues
+-- Every place in Tallinn you can eat or drink in, out of the Google Places
+-- API. 750 of them.
+--
+-- "venues" rather than "places" because the site already has two files with
+-- "places" in the name and this is a third thing; "google_" because the rows
+-- are Google's and the name should say so before anybody edits one.
 --
 -- THIS IS A MIRROR, AND THAT IS THE WHOLE RULE
 --
@@ -233,13 +238,13 @@ CREATE INDEX IF NOT EXISTS idx_list_items_pos ON list_items (list_id, pos);
 -- the place onto the map — data/restaurants.json is hand-written and mine —
 -- rather than to correct a mirror that is not.
 --
--- Loaded and refreshed by tools/googleplaces.mjs, which writes
--- db/google-places.sql out of exports/tallinn_restaurants.csv:
+-- Loaded and refreshed by tools/googlevenues.mjs, which writes
+-- db/google-venues.sql out of exports/tallinn_restaurants.csv:
 --
---   node tools/googleplaces.mjs
---   wrangler d1 execute tallinntastebuds         --remote --file=db/google-places.sql
---   wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-places.sql
-CREATE TABLE IF NOT EXISTS google_places (
+--   node tools/googlevenues.mjs
+--   wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
+--   wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql
+CREATE TABLE IF NOT EXISTS google_venues (
   -- Google's own key — "ChIJUdUjCV2TkkYRcg8TxVp1XUI". Unique across all 750,
   -- stable across refreshes, and what the raw 44-column export joins on. It is
   -- the primary key because it is the only identifier here that Google
@@ -307,10 +312,10 @@ CREATE TABLE IF NOT EXISTS google_places (
 
 -- Best-first, which is the order the export itself is sorted in and the order
 -- worth reviewing them in.
-CREATE INDEX IF NOT EXISTS idx_google_rating ON google_places (rating DESC, reviews DESC);
+CREATE INDEX IF NOT EXISTS idx_google_venues_rating ON google_venues (rating DESC, reviews DESC);
 -- The 32 that are already on the map, and the ones still to be looked at.
-CREATE INDEX IF NOT EXISTS idx_google_map ON google_places (map_id) WHERE map_id IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_google_open ON google_places (hidden, status);
+CREATE INDEX IF NOT EXISTS idx_google_venues_map ON google_venues (map_id) WHERE map_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_google_venues_open ON google_venues (hidden, status);
 
 
 -- ------------------------------------------------------------------- meta
