@@ -81,6 +81,20 @@ def metres(lat1, lng1, lat2, lng2):
     return math.hypot((lat1 - lat2) * 111320,
                       (lng1 - lng2) * 111320 * math.cos(math.radians(lat1)))
 
+CITY = re.compile(r"^\s*(\d{5}\s+)?(tallinn|peetri|viimsi|miiduranna|mustam[aä]e|"
+                  r"uue maailm|kadriorg)\s*$", re.I)
+
+def addrkey(addr):
+    """Street and house number, normalized. 'Port Noblessner, Staapli tn 4,
+    10415 Tallinn' and 'Staapli 4, 10415 Tallinn' both reduce to 'staapli4'."""
+    parts = [x for x in addr.split(",") if x.strip() and not CITY.match(x)]
+    parts = [x for x in parts if re.search(r"\d", x)] or parts
+    if not parts:
+        return ""
+    s = slugify(parts[-1]).replace("-", " ")
+    s = re.sub(r"\b(tn|tanav|t)\b", " ", s)          # 'Kopli tn 27' == 'Kopli 27'
+    return re.sub(r"[^a-z0-9]", "", s)
+
 def name_agrees(a, b):
     if not a or not b:
         return False
@@ -106,6 +120,12 @@ def already_published(row):
     d, p = min(hits, key=lambda x: x[0])
     return p, d
 
+pub_addr = collections.defaultdict(list)
+for _p in pub:
+    k = addrkey(_p["address"])
+    if k:
+        pub_addr[k].append(_p)
+
 # --- build ------------------------------------------------------------------
 FIELDS = ["decision","notes","already_on_site","name","rating","reviews","price",
           "cuisine","category","suggested_types","flag","address","postal_code",
@@ -125,6 +145,16 @@ for r in rows:
     elif near:
         flags.append(f'possible second location of "{near["name"]}" '
                      f'({d/1000:.1f} km away) - verify')
+    else:
+        # The name can miss what the address catches: "180 Degrees Restaurant"
+        # and the published "180° by Matthias Diether" share no comparable
+        # name, but both sit at Staapli 4. A shared address is not proof - malls
+        # and market halls put a dozen unrelated kitchens on one - so this asks
+        # for a look rather than declaring a duplicate.
+        same = pub_addr.get(addrkey(r["address"]), [])
+        if same:
+            flags.append("same address as published "
+                         + ", ".join(f'"{x["name"]}"' for x in same) + " - verify")
     if r["status"] != "Open":                flags.append("temporarily closed")
     if r["category"] in NOT_A_RESTAURANT:    flags.append("may not be a restaurant")
     if int(r["reviews"]) < 60:               flags.append("thin review count")

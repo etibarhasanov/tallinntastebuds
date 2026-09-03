@@ -110,6 +110,14 @@ def tidy_tags(types):
         out.append(t.replace("_", " ").title())
     return "; ".join(out)
 
+# Google prefixes an address with where the map pin sits, not where the door is.
+# "Parking lot, Keldrimäe tn 9" is not how Estonian post writes it. Venue names
+# ("Port Noblessner", "Balti Jaama Turg") are kept - those do locate a place.
+PIN_PREFIX = re.compile(r"^(parking lot|parkla)\s*,\s*", re.I)
+
+def clean_address(short, city):
+    return PIN_PREFIX.sub("", norm_ws(short)).removesuffix(f", {city}").strip()
+
 def titlecase_label(s):
     s = norm_ws(s)
     # The source has 'Shawarma restaurant' alongside 'Sushi Restaurant'.
@@ -130,7 +138,7 @@ for r in rows:
         "reviews":       int(r["user_rating_count"]),
         "price":         r["price_label"],
         "status":        "Open" if r["business_status"] == "OPERATIONAL" else "Temporarily closed",
-        "address":       norm_ws(r["short_address"]).removesuffix(f', {r["city"]}'),
+        "address":       clean_address(r["short_address"], r["city"]),
         "postal_code":   r["postal_code"],
         "city":          r["city"],
         # phone_international is unambiguous; the local format duplicates it.

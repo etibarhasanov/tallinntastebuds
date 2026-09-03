@@ -56,6 +56,10 @@ Rows are sorted best-first: rating descending, then review count, then name.
   start time's meridiem is implied by the end (`12:00 – 3:00 PM` → `12:00-15:00`).
 - Coordinate float noise rounded (`59.42788669999999` → `59.427887`).
 - `Shawarma restaurant` case-normalized to match the other 82 labels.
+- Google's `Parking lot,` / `Parkla,` address prefix stripped from 47 rows — it
+  says where the map pin sits, not where the door is, and the schema wants the
+  address "as Estonian post would write it". Venue prefixes that genuinely locate
+  a place (`Port Noblessner`, `Balti Jaama Turg`) are kept.
 
 No records were dropped or merged: `place_id` and name+address are already unique,
 and every rating and review count round-trips against the source.

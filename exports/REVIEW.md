@@ -50,7 +50,7 @@ top of the file is the live shortlist and you can work straight down it.
 
 | flag | count | |
 |---|---|---|
-| *(none)* | 581 | ready to judge |
+| *(none)* | 539 | ready to judge |
 | thin review count | 79 | under 60 reviews — rating is not yet reliable |
 | no hours | 51 | missing opening hours upstream |
 | temporarily closed | 45 | `business_status` was `CLOSED_TEMPORARILY` |
@@ -58,11 +58,19 @@ top of the file is the live shortlist and you can work straight down it.
 | may not be a restaurant | 7 | typed as theatre, grocery, caterer or delivery-only |
 | outside Tallinn (Peetri) | 6 | Peetri, not Tallinn — still inside the schema's coordinate bounds |
 | possible second location | 13 | name matches a published place but sits 0.5–10.9 km away, so it is a **different branch, not a duplicate**. `Pirosmani` has two, `HAN's Restoran` four, `Shaurma Kebab` two. Verify before accepting |
+| same address as published | 52 | shares a street address with a published place. Mostly innocent — Balti Jaama Turg, Depoo and the mall food courts put many unrelated kitchens at one address — but this is the only signal that catches a duplicate the name cannot, so check these |
 
 A row can carry several flags. Duplicate detection needs the name *and* the location
 to agree, within 250 m — name alone would have wrongly merged those branches, and
 matching on the name prefix alone wrongly merged `Telliskivi KoHo` with
 `Telliskivi Šašlõkk`.
+
+Names alone also **miss** duplicates, which is why the address is checked separately.
+`180 Degrees Restaurant` and the published `180° by Matthias Diether` share no
+comparable name — the degree sign normalizes away to `180` — yet both are Staapli 4.
+So do `kot.NOBLESSNER` / `KotKot` (Peetri 12) and `Q Pizza&Pan` / `Q Pizza Jaam`
+(Telliskivi 62). All three would have been published twice. A shared address is not
+proof, so these are flagged to verify rather than merged.
 
 ## Note on the 74 published places
 
