@@ -1,11 +1,10 @@
 -- Tallinn Tastebuds — every table the site has.
 --
 -- Five things live here: the saves and their counts, the accounts a save can
--- follow a person on, the lists somebody builds and shares, 750 Tallinn
--- restaurants mirrored out of Google Places, and one meta row saying which
--- database this is. Everything the map itself draws — the places, the
--- write-ups, the discounts, the stories — is a JSON file in the repository and
--- never a row.
+-- follow a person on, the lists somebody builds and shares, 750 Tallinn venues
+-- mirrored out of Google Places, and one meta row saying which database this
+-- is. Everything the map itself draws — the places, the write-ups, the
+-- discounts, the stories — is a JSON file in the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
 -- "tallinntastebuds-preview" behind every preview deployment. They hold the
@@ -251,9 +250,12 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- guarantees; anything this file invented would drift the first time a name
   -- changed.
   --
-  -- It is also what a list item holds when it points at one of these. A
-  -- catalogue slug is lowercase letters, digits and hyphens, so the two can
-  -- never be mistaken for each other — see list_items.place_id.
+  -- Anything that later points at one of these venues stores this string. A
+  -- slug from data/restaurants.json is lowercase letters, digits and hyphens
+  -- and a Google key always carries capitals, so a single column can hold
+  -- either kind without a prefix and without ever being ambiguous.  --
+  -- It is also what a list item holds when it points at one of these; see
+  -- list_items.place_id.
   place_id      TEXT PRIMARY KEY,
 
   -- --------------------------------------------------- Google's, overwritten

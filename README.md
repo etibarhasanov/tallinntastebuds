@@ -2385,7 +2385,7 @@ assets/staff.js            )
 data/restaurants.json      the only file you edit regularly
 data/places.csv            the Google Maps export a list picks from (yours to drop in)
 data/places.json           the catalogue: the map plus that CSV — GENERATED
-exports/tallinn_restaurants.csv    750 Tallinn restaurants out of Google Places
+exports/tallinn_restaurants.csv    750 Tallinn venues out of Google Places
 exports/README.md          what was cleaned out of the raw export, and why
 db/google-venues.sql       GENERATED — loads that export into D1
 data/taxonomy.json         the controlled vocabulary of types

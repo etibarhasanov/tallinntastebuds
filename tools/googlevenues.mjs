@@ -14,8 +14,9 @@
  *   wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
  *   wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql
  *
- * Zero dependencies, like every other tool in here, and it borrows the CSV
- * reader from tools/places.mjs rather than carrying a second one.
+ * Zero dependencies, like every other tool in here, and it carries its own CSV
+ * reader — exported, so anything else that needs one imports it from here
+ * rather than growing a second.
  *
  * WHY A FILE OF SQL RATHER THAN A SCRIPT THAT TALKS TO D1
  *
@@ -54,12 +55,84 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
-import { parseCsv, fold } from './places.mjs';
-
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CSV = join(ROOT, 'exports', 'tallinn_restaurants.csv');
 const OUT = join(ROOT, 'db', 'google-venues.sql');
 const MAP = join(ROOT, 'data', 'restaurants.json');
+
+/* ------------------------------------------------------------------- CSV
+ * RFC 4180 rather than split(','): an address is "Viru 24, 10140 Tallinn" more
+ * often than not, so the quoting is the whole point. A doubled quote inside a
+ * quoted field is one quote, and a newline inside one is part of the value —
+ * which the raw Google export relies on heavily.
+ */
+/* ------------------------------------------------------------------- CSV
+ * Written out rather than depended on, and it is RFC 4180 rather than
+ * `split(',')`: an address is "Viru 24, 10140 Tallinn" more often than not,
+ * so the quoting is the whole point. A doubled quote inside a quoted field is
+ * one quote, and a newline inside one is part of the value.
+ */
+export function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let field = '';
+  let quoted = false;
+  let started = false;
+
+  /* A byte-order mark is what a spreadsheet puts at the front of a UTF-8
+     file, and it would otherwise become part of the first column's name. */
+  const src = text.charCodeAt(0) === 0xfeff ? text.slice(1) : text;
+
+  const endField = () => { row.push(field); field = ''; started = false; };
+  const endRow = () => {
+    endField();
+    if (row.length > 1 || row[0] !== '') rows.push(row);
+    row = [];
+  };
+
+  for (let i = 0; i < src.length; i++) {
+    const c = src[i];
+
+    if (quoted) {
+      if (c === '"') {
+        if (src[i + 1] === '"') { field += '"'; i++; }
+        else quoted = false;
+      } else field += c;
+      continue;
+    }
+
+    if (c === '"' && !started) { quoted = true; started = true; continue; }
+    if (c === ',') { endField(); continue; }
+    if (c === '\r') continue;
+    if (c === '\n') { endRow(); continue; }
+    field += c;
+    started = true;
+  }
+
+  if (field !== '' || row.length) endRow();
+  return rows;
+}
+
+/* Google puts the coordinates in its own URLs in two shapes: the `@lat,lng`
+   in the address bar, and the `!3dlat!4dlng` in a share link. Takeout hands
+   back the second and no lat/lng columns at all, so this is what makes that
+   export usable without a round trip to an API. */
+export function coordsFromUrl(url) {
+  const s = String(url || '');
+  let m = /!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/.exec(s);
+  if (!m) m = /@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/.exec(s);
+  return m ? { lat: Number(m[1]), lng: Number(m[2]) } : null;
+}
+
+export function fold(value) {
+  return String(value == null ? '' : value)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[\u0131\u0130]/g, 'i')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 /* The export's own column names, in the export's own order. The table mirrors
    them exactly — no renaming, not even latitude/longitude to the lat/lng the
