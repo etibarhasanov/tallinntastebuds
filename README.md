@@ -431,11 +431,17 @@ history — the first commit in which each `id` appears — not guessed.
 
 ## Searching the list
 
-The **List** button carries a magnifier, because opening the list is how you
-get at the search field and with nothing on the button to say so nobody found
-out the map could be searched at all. The button still does one thing: it opens
-and closes the list. The glyph is the only part that is new, and it is there to
-answer a question people were not asking.
+The button that opens the panel says **Places** and carries a pin. It used to
+say List and carry a magnifier: List named the shape of the thing — a panel
+with rows in it — rather than what was inside, and people read it as a second
+menu rather than as the seventy-odd restaurants they were already looking at
+pins for. The word is the content now, and the glyph is the same pin the map is
+covered in, so the button and what it opens are drawn with one mark. It still
+does one thing: it opens and closes the panel.
+
+The search field lost the advertisement it had on that button, which is the
+price of the rename. It is still the first thing inside the panel, above the
+list, where it can actually be typed into.
 
 There is a field at the top of the list panel. It narrows **the list**, not the
 map: the pins are what the filter chips are for, and a search left behind in a
@@ -3006,7 +3012,7 @@ in `assets/styles.css` and each of the two styles restates every one of them;
 change those values and the whole site follows.
 
 **The chrome.** Everything floats on the map: nothing has a page around it.
-One strip across the top — the brand card on the left, **List** and the
+One strip across the top — the brand card on the left, **Places** and the
 language switch on the right — and the filter chips on the line directly
 beneath it. The controls that are questions about the *map* rather than about
 the page stand on the map instead, in the left rail: the account at its head,
@@ -3269,7 +3275,7 @@ way the chrome strip above it does, so a taller phone keeps the same clearance
 rather than eating into it.
 
 Which leaves four ways back from a sheet standing open, all of them on screen:
-**swipe it down**, the close button, a tap on the grip, and **List** in the
+**swipe it down**, the close button, a tap on the grip, and **Places** in the
 chrome strip above.
 
 The swipe arms only at the very top of the sheet's own scroll and only on a
