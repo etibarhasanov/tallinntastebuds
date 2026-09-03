@@ -46,6 +46,17 @@ CREATE TABLE IF NOT EXISTS saves (
 -- place_id, and this asks about ip_hash.
 CREATE INDEX IF NOT EXISTS idx_saves_ip ON saves (place_id, ip_hash);
 
+-- "Everything this person saved", which is what the account sheet lists and
+-- what signing in has to move across from the device. The primary key cannot
+-- serve that either: it leads with place_id, and this asks only about owner.
+--
+-- This index was live before it was written down. It existed in the production
+-- database and in neither this file nor the preview database, which is the
+-- shape schema drift takes here — nothing applies this file automatically, so
+-- what is deployed and what is described can part company and stay parted
+-- until something notices. Both databases have it now.
+CREATE INDEX IF NOT EXISTS idx_saves_owner ON saves (owner);
+
 -- The counts, one row per place, maintained by the write that changes them.
 --
 -- This is not a cache of the table above; it is the answer the map reads, and
