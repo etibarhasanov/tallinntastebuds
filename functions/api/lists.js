@@ -2,9 +2,10 @@
  * Tallinn Tastebuds — the lists.
  *
  * The map is mine. A list is somebody else's: a name they chose, places they
- * picked out of data/places.json, and a sentence about each one. "Top ten
- * burgers." "Where to take your parents." It carries their username and it
- * has a link they can send to a friend.
+ * picked off the roll behind /api/places — my map and the Google export in
+ * google_venues — and a sentence about each one. "Top ten burgers." "Where to
+ * take your parents." It carries their username and it has a link they can
+ * send to a friend.
  *
  * WHY THIS ONE NEEDS AN ACCOUNT WHEN A SAVE DOES NOT
  *
@@ -31,8 +32,9 @@
  *   - Every write is preceded by a read of `lists.owner` and refused unless
  *     it matches the session. There is no statement here that can touch a
  *     row without having proved whose it is.
- *   - A place id that is not in data/places.json is refused, so nobody can
- *     fill the table with rows for places that do not exist.
+ *   - A place id that is on neither roll — data/places.json or google_venues
+ *     — is refused, so nobody can fill the table with rows for places that do
+ *     not exist.
  *   - Everything a person types is capped in length before it is stored, so
  *     one list cannot become a megabyte of somebody's prose.
  *
@@ -46,7 +48,7 @@
  * handful of rows on an indexed key. It can afford to be true.
  */
 
-import { json, sessionUser, catalogue, wrongDatabase } from './_lib.js';
+import { json, sessionUser, catalogue, venuesByIds, wrongDatabase } from './_lib.js';
 /* Reading one list is shared with functions/list/[id].js, which serves the
    page a link opens with the list already in it. */
 import { readList, LIST_ID } from './_lists.js';
@@ -298,15 +300,31 @@ async function add(context, body, id) {
 
   const place = typeof body.place === 'string' ? body.place : '';
 
-  let roll;
+  /* Two rolls, asked in the order they cost: the catalogue is a file this
+     isolate probably already holds, google_venues is a query. Between them
+     they are what the picker offered — see functions/api/places.js. */
+  let known = null;
+  let asked = false;
   try {
-    roll = await catalogue(context);
-  } catch (e) {
-    return json({ error: 'places' }, 503);
+    const roll = await catalogue(context);
+    known = roll.get(place) || null;
+    asked = true;
+  } catch (e) { /* the export below may still know it */ }
+
+  if (!known) {
+    try {
+      known = (await venuesByIds(env, [place])).get(place) || null;
+      asked = true;
+    } catch (e) { /* answered below */ }
   }
+
+  /* Neither roll could be read at all. That is this site being unwell rather
+     than the place being wrong, and the two must not be reported as one:
+     "there is no such place" would send somebody looking for a typo. */
+  if (!known && !asked) return json({ error: 'places' }, 503);
+
   /* Nowhere real. The same refusal /api/saves gives, and for the same reason:
      nothing gets to put a row in here for a place that does not exist. */
-  const known = roll.get(place);
   if (!known) return json({ error: 'place' }, 400);
 
   const held = await env.DB

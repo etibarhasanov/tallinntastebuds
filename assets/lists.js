@@ -43,6 +43,13 @@
   var MAX_SAY = 280;
   var MAX_ITEMS = 20;
 
+  /* The other end of the same judgement. Two places is a pair of opinions
+     rather than a recommendation, so a list is three at the least: the page
+     offers three empty places from the moment it is made, and the link is not
+     worth sending until they are filled. Nothing is ever deleted for falling
+     under it — an unfinished list is simply not sharable yet. */
+  var MIN_ITEMS = 3;
+
   /* How long the page waits after the last keystroke before it writes a note
      to the server. Long enough that typing a sentence is one request and not
      forty; short enough that closing the tab a moment after finishing does
@@ -61,7 +68,7 @@
     reached: true,     // whether it answered at all
     lists: [],         // the index
     list: null,        // the one being shown
-    places: null,      // data/places.json, loaded the first time the picker opens
+    places: null,      // /api/places, loaded the first time the picker opens
     hay: null          // id -> folded searchable text
   };
 
@@ -425,18 +432,26 @@
     list.items.forEach(function (item, i) {
       ol.appendChild(list.mine ? itemRowMine(item, i) : itemRow(item, i));
     });
+
+    /* Your own list, and not yet three places long: the rest of the three are
+       drawn as empty rows you can press. An empty list used to be a sentence
+       saying it was empty and a button somewhere below it; three numbered
+       gaps say the same thing and also say how many, which is the part a
+       first list needs to be told. */
+    var short = list.mine ? MIN_ITEMS - list.items.length : 0;
+    for (var slot = 0; slot < short; slot++) {
+      ol.appendChild(slotRow(list.items.length + slot));
+    }
     wrap.appendChild(ol);
 
-    if (!list.items.length) {
-      wrap.appendChild(el('p', {
-        className: 'lists-none',
-        textContent: t(list.mine ? 'listsEmptyMine' : 'listsEmpty')
-      }));
+    if (!list.items.length && !list.mine) {
+      wrap.appendChild(el('p', { className: 'lists-none', textContent: t('listsEmpty') }));
     }
-
     if (list.mine) {
       wrap.appendChild(el('div', { className: 'lists-row lists-foot' }, [
-        button(t('listsAddPlace'), 'lists-go', openPicker),
+        /* Under three, the empty rows above are the invitation and a second
+           one here would only ask the same question twice. */
+        short > 0 ? null : button(t('listsAddMore'), 'lists-go', openPicker),
         button(t('listsDelete'), 'lists-alt is-danger', deleteList)
       ]));
     } else {
@@ -495,36 +510,90 @@
       return post({ action: 'edit', id: list.id, intro: next });
     });
 
-    /* One control, two states, and it says which one it is in rather than
-       what pressing it would do — the same rule the save mark on the map
-       follows. */
-    var share = el('button', {
-      type: 'button',
-      className: 'lists-toggle' + (list.public ? '' : ' is-private'),
-      'aria-pressed': String(list.public),
-      textContent: t(list.public ? 'listsPublic' : 'listsPrivate')
-    });
-    share.addEventListener('click', function () {
-      var next = !list.public;
-      list.public = next;
-      share.setAttribute('aria-pressed', String(next));
-      share.classList.toggle('is-private', !next);
-      share.textContent = t(next ? 'listsPublic' : 'listsPrivate');
-      post({ action: 'edit', id: list.id, public: next }).then(function (a) {
-        if (!a.ok) failed(a.out);
-      }).catch(function () { failed({}); });
-    });
+    var ready = list.items.length >= MIN_ITEMS;
+
+    /* Sharing is the last thing you do to a list, so it is the last button on
+       the card, and it waits until there is a list to send. Saving sits after
+       it because it is the one press that is always available and always
+       means the same thing. */
+    var share = button(t('listsShare'), 'lists-alt', shareList);
+    if (!ready) {
+      share.disabled = true;
+      share.title = t('listsShareNeeds');
+    }
 
     return card([
       el('p', { className: 'eyebrow', textContent: t('listsYours') }),
       title,
       intro,
       el('div', { className: 'lists-row' }, [
-        button(t('listsShare'), 'lists-alt', shareList),
-        share,
+        visibility(list),
         el('span', { className: 'lists-count mono', textContent: countLabel(list.items.length) })
-      ])
+      ]),
+      el('div', { className: 'lists-row lists-acts' }, [
+        share,
+        button(t('listsSave'), 'lists-go', saveList)
+      ]),
+      ready ? null : el('p', { className: 'lists-hint mono', textContent: t('listsShareNeeds') })
     ]);
+  }
+
+  /* Who can open it.
+   *
+   * It was one pill that printed the state it was in — "Anyone with the link
+   * can read it" — and that is the sentence somebody reads twice: it is
+   * either what is true now or what pressing it would make true, and a pill
+   * on its own cannot say which. Both states are drawn instead, as two radio
+   * buttons under a question, and the one that is filled in is the answer.
+   * There is nothing left to guess at.
+   *
+   * Real radios rather than buttons wearing the part, because arrow keys,
+   * screen readers and the word "selected" all come with them.
+   */
+  function visibility(list) {
+    var name = 'who-' + list.id;
+
+    var option = function (isPublic) {
+      var input = el('input', {
+        type: 'radio',
+        name: name,
+        value: isPublic ? 'link' : 'me',
+        checked: list.public === isPublic ? true : null
+      });
+      var label = el('label', {
+        className: 'lists-seg-opt' +
+          (list.public === isPublic ? ' is-on' : '') +
+          (isPublic ? '' : ' is-private')
+      }, [input, el('span', { textContent: t(isPublic ? 'listsWhoLink' : 'listsWhoMe') })]);
+
+      input.addEventListener('change', function () {
+        if (!input.checked || list.public === isPublic) return;
+        list.public = isPublic;
+        var opts = label.parentNode.querySelectorAll('.lists-seg-opt');
+        for (var i = 0; i < opts.length; i++) opts[i].classList.toggle('is-on', opts[i] === label);
+        post({ action: 'edit', id: list.id, public: isPublic }).then(function (a) {
+          if (!a.ok) failed(a.out);
+        }).catch(function () { failed({}); });
+      });
+
+      return label;
+    };
+
+    return el('fieldset', { className: 'lists-vis' }, [
+      el('legend', { className: 'lists-vis-legend mono', textContent: t('listsWho') }),
+      el('div', { className: 'lists-seg' }, [option(true), option(false)])
+    ]);
+  }
+
+  /* Everything on this page writes itself — a note when the typing pauses, a
+     title when you leave the field — so there is nothing here that a press
+     could fail to send. The button exists because that is not visible: it
+     takes whatever is half typed, sends it now, and says so. */
+  function saveList() {
+    var focused = document.activeElement;
+    if (focused && focused.blur && focused !== document.body) focused.blur();
+    flushAll();
+    toast(t('listsSaved'));
   }
 
   /* ------------------------------------------------------------- one place */
@@ -534,7 +603,10 @@
      name when it does not. A place the catalogue has lost since it was added
      points nowhere at all, and says so. */
   function placeHref(item) {
-    if (item.map) return '/?spot=' + encodeURIComponent(item.place);
+    /* `mapId` is set when the row's id is a Google key for a place that is
+       also on my map: the write-up is filed under the map's own id, not
+       Google's. Everything else points at itself. */
+    if (item.map) return '/?spot=' + encodeURIComponent(item.mapId || item.place);
     if (item.lat !== null && item.lng !== null) {
       return 'https://www.google.com/maps/search/?api=1&query=' +
         encodeURIComponent(item.lat + ',' + item.lng);
@@ -557,6 +629,16 @@
         className: 'item-where mono',
         html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_PIN + '</svg>'
       })
+    ]);
+  }
+
+  /* One of the empty places a new list starts with. It is numbered like a
+     real row, so the three of them read as the shape the list is going to
+     have, and pressing it opens the same picker the button does. */
+  function slotRow(i) {
+    return el('li', { className: 'item is-slot' }, [
+      el('span', { className: 'item-n mono', 'aria-hidden': 'true', textContent: String(i + 1) }),
+      button(t('listsSlot'), 'lists-slot', openPicker)
     ]);
   }
 
@@ -756,6 +838,13 @@
    * place: a URL in somebody's hand.
    */
   function shareList() {
+    /* The button is drawn disabled under three places; this is the click that
+       got in before the last render caught up. */
+    if (state.list.mine && state.list.items.length < MIN_ITEMS) {
+      toast(t('listsShareNeeds'));
+      return;
+    }
+
     var url = window.location.origin + '/list/' + state.list.id;
     var payload = { title: state.list.title, url: url };
 
@@ -775,10 +864,12 @@
   /* ---------------------------------------------------------------- picker
    * Every place in Tallinn, narrowed to the one being added.
    *
-   * data/places.json is fetched the first time this opens and never again. It
-   * is the one big file on this page, so it is not part of the load: somebody
-   * reading a list never asks for it, and somebody building one waits for it
-   * once, behind a sheet they have just opened.
+   * /api/places is fetched the first time this opens and never again. It is
+   * the map's own places and the Google export behind them — see
+   * functions/api/places.js — and it is the one big answer on this page, so it
+   * is not part of the load: somebody reading a list never asks for it, and
+   * somebody building one waits for it once, behind a sheet they have just
+   * opened.
    */
   function openPicker() {
     dom.pickerScrim.hidden = false;
@@ -792,8 +883,9 @@
     clear(dom.pickerBody);
     dom.pickerBody.appendChild(el('p', { className: 'picker-note', textContent: t('accountWorking') }));
 
-    getJSON('/data/places.json').then(function (places) {
-      state.places = Array.isArray(places) ? places : [];
+    getJSON('/api/places').then(function (answer) {
+      var places = Array.isArray(answer) ? answer : (answer && answer.places) || [];
+      state.places = places;
       state.hay = {};
       state.places.forEach(function (p) {
         state.hay[p.id] = fold(p.name + ' ' + (p.address || ''));
@@ -906,6 +998,7 @@
       lat: typeof place.lat === 'number' ? place.lat : null,
       lng: typeof place.lng === 'number' ? place.lng : null,
       map: !!place.map,
+      mapId: place.mapId || null,
       say: ''
     });
     render();

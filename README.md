@@ -1375,11 +1375,12 @@ apostrophe cannot break it. `map_id` carries the `data/restaurants.json` id,
 and it is only ever set when empty, so a correction made by hand survives every
 future run.
 
-### What is not connected yet
+### Where they are read
 
-The picker in the lists page still searches `data/places.json`, which is the
-map's 74 places. These 750 are in the database and nothing reads them. Wiring
-the two together is a decision rather than a chore — see **Lists**.
+The picker in the lists page. It asks `/api/places`, and that route hands back
+one roll made of two: the map's own places out of `data/places.json`, and
+these, out of the table. About 790 in all — see **The roll a list is built
+from**.
 
 ---
 
@@ -1419,23 +1420,40 @@ private.
 
 ### Making one
 
-Sign in, open the account sheet, press **Your lists**. Name it; you land in
-the empty list. **Add a place** opens a search over every place in the
-catalogue, and each row on the list has a box to say what is good about it.
+Sign in, open the account sheet, press **Your lists**. Name it; you land in a
+list with three empty places in it, numbered, each of them a row you press to
+open the search. Three is where a list starts: two places is a pair of
+opinions rather than a recommendation. Once the three are filled, **Add
+another place** puts more on, up to twenty.
+
+Each row has a box to say what is good about it, which is the point of the
+whole feature — a list of names is a search result, and a list of names with a
+line each is somebody telling you where to go.
 
 The order is the point of a top ten, so each row has an up and a down. Not a
 drag: a drag is the nicer gesture on a desktop and the worse one on a phone,
 where it fights the page's own scrolling, and it is no gesture at all on a
 keyboard.
 
-Nothing is saved with a button. The title and the line under it write
+Nothing has to be saved with a button. The title and the line under it write
 themselves when you leave the field; a note writes itself a moment after you
 stop typing, again when you leave the box, and again when the page is hidden —
 which is what a phone does when the tab is switched away, and the last moment
-a script is promised.
+a script is promised. **Save** is on the card anyway, as the last button,
+because none of that is visible: it takes whatever is half typed, sends it
+now, and says so.
 
-A list is shared by default. The pill on the card says which it is; pressing
-it makes the link stop working for everybody but you.
+**Who can open it** is two options and not one pill. A single pill printing
+the state it was in — "Anyone with the link can read it" — is the sentence
+somebody reads twice, because it is either what is true now or what pressing
+it would do and a pill cannot say which. Both answers are drawn instead, as
+radio buttons under the question, and the filled one is the answer. A list is
+shared by default; the accent is spent on **Only me**, because that is the
+exception and the one worth noticing before you go looking for a link that
+will not work.
+
+**Share** sits next to Save and waits for the third place: a link to two
+places is not worth sending, and the button says so rather than going quiet.
 
 ### Why a list needs an account when a save does not
 
@@ -1465,6 +1483,34 @@ where to come back to:
 — and `?then=` is where to go once somebody is signed in. Both are read during
 boot and taken straight back off the address bar. `?then=` only ever accepts a
 path on this site; anything else and the map would be an open redirector.
+
+### The roll a list is built from
+
+The picker asks `/api/places`, which is the one place the two rolls are put
+together — `functions/api/places.js`:
+
+```
+data/places.json    the map. Seventy-four places I have been to, and the only
+                    rows that link through to a write-up.
+google_venues       the Google Places export, in D1. Every place in the city
+                    you can eat or drink in — see The Google export above.
+```
+
+The map's entry always wins. A Google row is dropped when the table ties it to
+a place on the map (`map_id`), and dropped again when the name is a name the
+catalogue already carries, so the sheet never shows one restaurant twice.
+Rows Google says are shut, and rows marked `hidden`, are not offered at all.
+The answer is cached five minutes: it changes when a deploy or a sync changes
+it, and it is the same for everybody — unlike a list, which is read by its
+owner in the middle of writing it and is never cached.
+
+A list item stores whichever id it was added under, and the two cannot be
+confused: a catalogue id is a lowercase slug, a Google key always carries
+capitals. Reading a list looks in the catalogue first and in `google_venues`
+for whatever is left over.
+
+If the database is unreachable, or a preview has the schema but no sync run
+against it, the picker opens on the map's places rather than on an error.
 
 ### The catalogue
 
@@ -2375,6 +2421,7 @@ functions/_middleware.js   sends the pages.dev address to the real one
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, optional email recovery
 functions/api/lists.js     somebody else's top ten: make one, fill it, share it
+functions/api/places.js    the roll the picker searches: the map plus the export
 functions/api/_lib.js      what those three share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
 functions/list/[id].js     /list/<id> — the page a shared link opens
