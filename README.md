@@ -35,6 +35,7 @@ See **Saves**.
 - [Restaurant discounts](#restaurant-discounts)
 - [Saves](#saves)
 - [Accounts](#accounts)
+- [Google venues](#google-venues)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -1280,6 +1281,97 @@ feature's own setup:
 
 ---
 
+## Google venues
+
+750 places in Tallinn you can eat or drink in, out of the Google Places API,
+in the database as a table of their own — `google_venues`. Separate from everything else here on purpose — this is somebody
+else's data about the city, not mine about the food.
+
+```
+exports/tallinn_restaurants.csv   the export: 750 rows, 18 columns
+tools/googlevenues.mjs            turns it into SQL
+db/google-venues.sql              GENERATED — what actually loads them
+google_venues                     the table, in db/schema.sql
+```
+
+`exports/README.md` has the full account of how the export was cleaned: fifteen
+columns that were empty in every row dropped, times converted to 24-hour, and —
+the one that matters if you ever parse the raw file yourself — hours that
+embedded real newlines, so the raw export is 4,945 physical lines for 750
+records.
+
+### Loading it
+
+```
+node tools/googlevenues.mjs
+wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
+wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql
+```
+
+`db/schema.sql` has to have been applied first — it is what creates the table.
+Both databases, always: a preview deployment that cannot see these places would
+show an empty picker and look broken for no reason.
+
+### The table is a mirror, and that is the whole rule
+
+`place_id` — Google's own `ChIJ…` key — is the primary key. It is unique across
+all 750, stable across refreshes, and it is what a list item holds when it
+points at one of these. A catalogue slug is lowercase letters, digits and
+hyphens, so the two can never be mistaken for each other.
+
+The columns split in two, and the split is the point:
+
+| | |
+|---|---|
+| **Google's** — `name`, `category`, `cuisine`, `rating`, `reviews`, `price`, `status`, `address`, `postal_code`, `city`, `phone`, `website`, `opening_hours`, `tags`, `latitude`, `longitude`, `maps_url` | overwritten by every refresh, without asking |
+| **Mine** — `map_id`, `hidden`, `note` | never touched by a refresh |
+
+So do not hand-edit Google's columns: the correction would survive exactly
+until the next sync and then vanish, which is the worst way to lose an
+afternoon. If a name is wrong and it matters, promote the place onto the map —
+`data/restaurants.json` is hand-written and mine.
+
+They keep Google's own names, `latitude` and `longitude` included, even though
+the rest of the site says `lat` and `lng`. The contract of that table is "the
+export, in SQL", and a contract with exceptions is one you have to look up.
+
+`rating` and `reviews` are stored and never shown. There are no scores on this
+map and there never will be — see **On "no scores, stars or rankings"**. They
+are here to help decide which places are worth promoting, and for nothing else.
+
+### Re-running it is safe
+
+Every row is an upsert. Running the file twice changes nothing; running a
+refreshed export updates Google's columns and leaves yours alone. The file
+opens by marking every row missing and each upsert clears the mark, so whatever
+is still marked at the end genuinely is not in the export any more —
+`missing_since` gets a timestamp and **nothing is ever deleted**, because a
+list may be pointing at it and somebody wrote a sentence about it.
+
+The upserts are batched fifty to a statement. `wrangler d1 execute --remote`
+sends one HTTP request per statement, so this is the difference between
+sixteen round trips and seven hundred and fifty.
+
+`tools/validate.mjs` runs `--check`, so CI refuses a deploy where the export
+moved and the SQL did not.
+
+### The 32 that are already on the map
+
+Matched on coordinates rather than names — the names disagree ("Põhjala Tap
+Room" against "Põhjala Brewery & Tap Room") while a front door does not move —
+with the name as a sanity check, folded down to letters and digits so an
+apostrophe cannot break it. `map_id` carries the `data/restaurants.json` id,
+and it is only ever set when empty, so a correction made by hand survives every
+future run.
+
+### Nothing reads them yet
+
+These 750 are in the database and no page on the site queries them. That is
+deliberate: this lands the data and the pipeline on their own, so the feature
+that uses it can be reviewed separately.
+
+---
+
 ## Stories
 
 The one thing on this map that is not permanent. Everything else here is a
@@ -2047,6 +2139,9 @@ assets/deal.js             ) one small script
 assets/verify.js           ) per page
 assets/staff.js            )
 data/restaurants.json      the only file you edit regularly
+exports/tallinn_restaurants.csv    750 Tallinn venues out of Google Places
+exports/README.md          what was cleaned out of the raw export, and why
+db/google-venues.sql       GENERATED — loads that export into D1
 data/taxonomy.json         the controlled vocabulary of types
 data/ui.json               every interface string, in every language
 data/deals.json            the discounts, and which of them are live
@@ -2056,6 +2151,7 @@ admin.html                 the admin door, self-contained and unlinked
 photos/<restaurant-id>/    photos, one folder per place
 stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
+tools/googlevenues.mjs     turns the Google Places export into db/google-venues.sql
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
