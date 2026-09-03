@@ -15,6 +15,8 @@
  *   - a taxonomy type claiming a reserved id, such as "discount" or "saved"
  *   - a catalogue in data/places.json that is not what tools/places.mjs would
  *     write, holds a duplicate id, or has lost a place that is on the map
+ *   - a db/google-places.sql that is out of step with the Google Places export
+ *     it is generated from
  *   - a taxonomy type missing a label in any language
  *   - a UI string present in one language but missing in another
  *   - a photo listed in the data that does not exist in the repo
@@ -46,6 +48,7 @@ import { dirname, join, resolve } from 'node:path';
 
 import { stale as staleStamps } from './stamp.mjs';
 import { stale as staleCatalogue } from './places.mjs';
+import { stale as staleGooglePlaces } from './googleplaces.mjs';
 import { STORY_HOURS, HOUR_MS, storyWindow, storyPhase } from './clock.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -754,6 +757,17 @@ if (catalogue !== null) {
       }
     }
   }
+}
+
+/* ------------------------------------------------------- google-places.sql
+   db/google-places.sql is what loads the 750-restaurant Google Places export
+   into D1, and it is generated from exports/tallinn_restaurants.csv. A deploy
+   where the export moved and the SQL did not would be a database holding last
+   month's Tallinn, so the two are checked against each other here the same way
+   the asset stamps are. */
+
+if (staleGooglePlaces()) {
+  fail('db/google-places.sql', 'is not what tools/googleplaces.mjs would write from exports/tallinn_restaurants.csv — run `node tools/googleplaces.mjs` and commit the result');
 }
 
 /* And that it is current. data/places.csv is the file that actually changes,
