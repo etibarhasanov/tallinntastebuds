@@ -755,8 +755,8 @@ a:hover { color: var(--accent-lit); }
 }
 
 .btn-icon svg {
-  width: 19px;
-  height: 19px;
+  width: 28.5px;
+  height: 28.5px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.6;
@@ -775,7 +775,12 @@ a:hover { color: var(--accent-lit); }
    swatch, and takes the rail's round shape so it reads as one of its buttons
    rather than as a stray card parked beneath it. */
 .locate-dock { border-radius: 100px; }
-.locate-dock .btn { border-radius: 100px; }
+/* Sized here rather than left to .btn, whose 38px was drawn around a 19px
+   crosshair. The icon is half again as big now and the disc grows by exactly
+   what the icon grew, so the ring of space around it is the one it always
+   had — which is what keeps it reading as one of the rail's circles rather
+   than as a card parked under them. */
+.locate-dock .btn { border-radius: 100px; min-width: 48px; height: 48px; }
 
 /* The swatch and the locate button carry no label on a desktop: there is a
    hover title on both, the pointer that reads it is right there, and two more
@@ -907,8 +912,8 @@ a:hover { color: var(--accent-lit); }
    nothing. What is left shows the side you are not on: press the dark swatch
    to go dark, press the light one to come back. */
 .swatch {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   border-radius: 100px;
   border: 1px solid var(--swatch-edge);
   transition: transform .15s var(--ease);
@@ -920,7 +925,7 @@ a:hover { color: var(--accent-lit); }
    a ring, so the rail says which of the two you are about to get before you
    press it. */
 .sw-red    { background: #a81e28; }
-.sw-green  { background: #1d2a23; box-shadow: inset 0 0 0 4px #6fd39a; }
+.sw-green  { background: #1d2a23; box-shadow: inset 0 0 0 6px #6fd39a; }
 
 /* ---------- random pick ---------- */
 
@@ -953,8 +958,8 @@ a:hover { color: var(--accent-lit); }
 }
 .dice:hover { border-color: var(--accent); color: var(--accent); }
 .dice svg {
-  width: 18px;
-  height: 18px;
+  width: 27px;
+  height: 27px;
   fill: none;
   stroke: var(--accent);
   stroke-width: 1.5;
@@ -978,7 +983,8 @@ a:hover { color: var(--accent-lit); }
    needs 103px and 15ch only bought 90, so every name arrived clipped to
    "RAADIO TALL…". The label is uppercased and letter-spaced, which buys fewer
    characters per ch than the unit suggests. 18ch clears it and still leaves
-   the button inside the 168px rail; the ellipsis stays for anything longer. */
+   the button inside the rail, 9px wider now that the icon beside it is; the
+   ellipsis stays for anything longer. */
 .radio-name { max-width: 18ch; overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- filters ---------- */
@@ -2882,16 +2888,14 @@ body.panel-detail .panel {
     white-space: nowrap;
   }
 
-  /* Collapsed it is the same 32px disc as before — 18px of icon, 6px each
-     side, the border on top of that — so the buttons still read as one
-     column of circles down the edge of the map. */
-  /* The pill collapsed is the same disc it has always been: the icon, a few
-     pixels either side of it, the border on top of that. Each keeps its own
-     numbers because each starts from a different icon. */
+  /* Collapsed it is a 41px disc — 27px of icon, 6px each side, the border on
+     top of that — so the buttons still read as one column of circles down the
+     edge of the map. Each keeps its own numbers because each starts from a
+     different icon. */
   .dice {
     width: auto;
-    min-width: 32px;
-    height: 32px;
+    min-width: 41px;
+    height: 41px;
     padding: 0 6px;
     gap: 0;
     transition: border-color .15s var(--ease), color .15s var(--ease),
@@ -2918,7 +2922,11 @@ body.panel-detail .panel {
   .locate-dock .btn.hint-open { padding: 0 13px 0 7px; gap: 8px; }
 
   .rail { gap: 8px; }
-  .swatch { width: 18px; height: 18px; }
+  .swatch { width: 27px; height: 27px; }
+  /* .btn is 34px on a phone, drawn for the chrome at the top; the locate
+     button carries the rail's bigger crosshair, so it keeps the same margin
+     around it here as the discs above it do. */
+  .locate-dock .btn { min-width: 43px; height: 43px; }
 
   .place-name { font-size: 26px; }
   .photo-grid { grid-template-columns: repeat(3, 1fr); }
