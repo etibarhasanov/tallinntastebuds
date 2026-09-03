@@ -483,7 +483,21 @@
     /* With the sheet up the rail is anchored to its top edge by the
        stylesheet. Pinning a top as well would stretch it between the two. */
     if (isNarrow() && document.body.classList.contains('panel-open')) return;
-    var need = dom.brand.getBoundingClientRect().bottom + 14;
+    /* Measured to the foot of what stays. On a phone the brand grows a line
+       of prose for the first few seconds — see openBrandHint — and a rail
+       pushed down to clear a sentence that is on its way out would be left
+       standing there for the rest of the visit. */
+    var edge = dom.brand.getBoundingClientRect().bottom;
+    if (isNarrow() && dom.brand.classList.contains('hint-open')) {
+      edge = 0;
+      var stays = dom.brand.querySelectorAll('.brand-head, .ig-link');
+      for (var k = 0; k < stays.length; k++) {
+        var foot = stays[k].getBoundingClientRect().bottom;
+        if (foot > edge) edge = foot;
+      }
+      if (!edge) edge = dom.brand.getBoundingClientRect().bottom;
+    }
+    var need = edge + 14;
     /* And never so far down that the foot of the rail leaves the screen. The
        locate button used to be the thing it must not land on; now that the
        button is the foot of the rail, the floor is the bottom of the window,
@@ -2428,6 +2442,25 @@
   /* Top to bottom, which is the order they open in. */
   var HINT_KEYS = ['account', 'random', 'radio', 'style', 'locate'];
   var hintTimers = {};
+
+  /* Before any of them, the sentence. On a desktop it is printed in the card
+     and stays there; on a phone the card is gone and the line went with it,
+     so the page opened on a map of pins that never said whose pins they are
+     — every one of them a place I have eaten in myself, which is the whole
+     claim the site is making and the first thing a stranger should read.
+     It comes up under the mark on arrival, holds long enough to be read at
+     an unhurried pace, and clears. Longer than a rail label because it is a
+     sentence rather than two words, and it opens ahead of them so the claim
+     lands before the buttons start introducing themselves under it. */
+  var BRAND_MS = 7600;
+  var BRAND_IN = 260;
+  /* The rail follows it rather than racing it. By the time the first pill
+     opens the sentence has been up for the best part of a second, and the
+     last one collapses just before the sentence does, so the corner empties
+     in the order it filled. */
+  var RAIL_IN = 1150;
+  var brandInTimer = null;
+  var brandOutTimer = null;
   /* An introduction owed to a visitor who has had a sheet standing open ever
      since it was due. Paid off by closePanel. */
   var introPending = false;
@@ -2475,7 +2508,48 @@
     if (btn) btn.classList.remove('hint-open');
   }
 
+  function closeBrandHint() {
+    if (brandInTimer) { clearTimeout(brandInTimer); brandInTimer = null; }
+    if (brandOutTimer) { clearTimeout(brandOutTimer); brandOutTimer = null; }
+    if (dom.brand) dom.brand.classList.remove('hint-open');
+    document.body.classList.remove('brand-telling');
+  }
+
+  /* Same shape as openHint, with one difference: a sentence already on
+     screen is not blinked off and started again — a second call while it is
+     up only buys it a fresh stay. That is what a language switch does while
+     the arrival line is still open. */
+  function openBrandHint() {
+    if (!dom.brand) return;
+    var up = dom.brand.classList.contains('hint-open');
+    if (brandInTimer) { clearTimeout(brandInTimer); brandInTimer = null; }
+    if (brandOutTimer) { clearTimeout(brandOutTimer); brandOutTimer = null; }
+    var show = function () {
+      brandInTimer = null;
+      if (document.body.classList.contains('panel-open')) return;
+      /* Measured collapsed — the line is max-height: 0 with the overflow
+         hidden, and scrollHeight reads the content through that — so the chip
+         row below knows how far to step down before either of them moves.
+         Only the number goes in the style; both the unrolling and the step
+         are the stylesheet's, so they run on the same curve. */
+      var line = dom.brand.querySelector('.tagline');
+      if (line) {
+        document.body.style.setProperty('--tell-h', (line.scrollHeight + 7) + 'px');
+      }
+      dom.brand.classList.add('hint-open');
+      document.body.classList.add('brand-telling');
+      brandOutTimer = setTimeout(function () {
+        brandOutTimer = null;
+        dom.brand.classList.remove('hint-open');
+        document.body.classList.remove('brand-telling');
+      }, BRAND_MS);
+    };
+    if (up) show();
+    else brandInTimer = setTimeout(show, BRAND_IN);
+  }
+
   function closeHints() {
+    closeBrandHint();
     for (var i = 0; i < HINT_KEYS.length; i++) closeHint(HINT_KEYS[i]);
   }
 
@@ -2514,6 +2588,11 @@
       introPending = true;
       return;
     }
+    /* The sentence goes first and does not wait on anything. It is about the
+       places, not about the rail, so a slow /api/account must not hold it —
+       and the wait below can spend more than a second of the moment it is
+       supposed to open in. */
+    openBrandHint();
     /* Once, on the way in: after that the answer has either landed or been
        given up on, and a language switch introduces the rail as it stands. */
     if (!accountAnswered && !railWaited) {
@@ -2530,7 +2609,7 @@
     /* A cascade rather than the whole column at once: 300ms apart is slow
        enough to read down the rail and quick enough that they are all up
        together for most of the time they are up at all. */
-    for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], 300 + i * 300);
+    for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], RAIL_IN + i * 300);
   }
 
   /* ---------------------------------------------------------------- radio
