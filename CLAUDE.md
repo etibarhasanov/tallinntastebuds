@@ -29,11 +29,15 @@ but it reaches a measured distance, not an unbounded one:
 | the file it is in | **the whole file, if it is under ~600 lines** |
 | a file over ~600 lines | the functions you touched, plus what they call and what calls them — not the rest |
 
-Four files in this repo are over that line and it is deliberate that they are
-exempt: `assets/app.js` (6,250), `assets/lists.js` (2,358), `tools/validate.mjs`
-(926) and `functions/api/lists.js` (794). Everything else is small enough to
-read in full while you are in it. Do not "skim" a big file and report it as
-read — say which functions you read.
+`wc -l` settles which side of the line a file is on, and it is the only thing
+that should — a list of big files written into this paragraph would be wrong
+within a month, and `functions/api/account.js` has already crossed the line
+since this rule was written. As it stands the exempt ones are `assets/app.js`,
+`assets/lists.js`, `tools/validate.mjs`, `functions/api/lists.js` and
+`functions/api/account.js`; the rest of the repo is a few hundred lines a file
+and is meant to be read in full while you are in it.
+
+Do not "skim" a long file and report it as read. Say which functions you read.
 
 Do not step around a mess to get to your line and leave it exactly as you found
 it. "It was already like that" is not a reason — it is the reason it is still
