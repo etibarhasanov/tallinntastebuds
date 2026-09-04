@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+
+  "permissions": {
+    "allow": [
+      "mcp__Cloudflare_Developer_Platform__d1_databases_list",
+      "mcp__Cloudflare_Developer_Platform__d1_database_query",
+      "Bash(node tools/validate.mjs)",
+      "Bash(node tools/stamp.mjs)",
+      "Bash(node tools/stamp.mjs --check)",
+      "Bash(node tools/places.mjs)",
+      "Bash(node tools/places.mjs --check)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)"
+    ]
+  },
+
+  "autoMode": {
+    "hard_deny": [
+      "$defaults",
+      "Never run DROP TABLE, DROP INDEX, or DROP DATABASE against a Cloudflare D1 database. The owner of this project has said the tables are never to be dropped — including added_places, which is unused by any code in this repository and is kept deliberately. Removing a table is not recoverable from here: there is no backup of these databases in this repository.",
+      "Never run DELETE or UPDATE against a Cloudflare D1 database without a WHERE clause. The rows in `saves`, `users`, `lists`, `list_items` and `list_keeps` are other people's, and there is no way to put them back."
+    ]
+  }
+}

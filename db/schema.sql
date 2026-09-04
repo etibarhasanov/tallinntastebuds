@@ -1,9 +1,11 @@
 -- Tallinn Tastebuds — every table the site has.
 --
--- Six things live here: the saves and their counts, the accounts a save can
+-- Seven things live here: the saves and their counts, the accounts a save can
 -- follow a person on, the lists somebody builds and shares, the keeps that are
 -- a bookmark on somebody else's list, 750 Tallinn venues mirrored out of
--- Google Places, and one meta row saying which database this is. Everything the map itself draws — the places, the write-ups, the
+-- Google Places, one table nothing uses yet (see added_places, which is in
+-- both databases and in no code), and one meta row saying which database this
+-- is. Everything the map itself draws — the places, the write-ups, the
 -- discounts, the stories — is a JSON file in the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
@@ -276,6 +278,50 @@ CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at
 -- never nudged by one.
 
 
+
+
+-- ------------------------------------------------------------ added places
+-- IN BOTH DATABASES, IN NO CODE, AND KEPT ON PURPOSE.
+--
+-- This table exists in `tallinntastebuds` and `tallinntastebuds-preview` and
+-- nothing in this repository reads or writes it. Grep for "added_places" and
+-- the only hit is this file. It was found by listing sqlite_master rather than
+-- by reading any code, which is the shape schema drift takes here — nothing
+-- applies this file automatically, so what is deployed and what is described
+-- can part company and stay parted until somebody looks.
+--
+-- Written down rather than dropped, and that is a decision rather than
+-- caution: dropping a table is not recoverable, this one costs nothing to
+-- keep, and the next person to list the tables should find an explanation
+-- instead of finding it cold the way I did.
+--
+-- WHAT IT LOOKS LIKE IT IS FOR
+--
+-- The columns — an owner, a name, a point, and the two timestamps — are the
+-- start of "let somebody add a place the catalogue does not have", which is
+-- listed under **What is not built yet** in the README. A list can only hold
+-- what is in data/places.json, and the only way into that file is the CSV.
+--
+-- If that feature is ever built, this is the table to build it on, and its
+-- shape below is the real one: transcribed from the deployed databases, not
+-- reconstructed from intent. If it is abandoned instead, this block is what
+-- to delete — after the table, and deliberately, not by finding it unexplained.
+--
+-- Recorded here so re-running this file cannot create it differently from the
+-- copies that already exist. IF NOT EXISTS means the live tables are left
+-- exactly as they are.
+CREATE TABLE IF NOT EXISTS added_places (
+  id         TEXT PRIMARY KEY,
+  -- users.id, by analogy with lists.owner. Never verified against anything:
+  -- no code has ever written a row here.
+  owner      TEXT    NOT NULL,
+  name       TEXT    NOT NULL,
+  lat        REAL    NOT NULL,
+  lng        REAL    NOT NULL,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_added_places_owner ON added_places (owner, created_at DESC);
 
 
 -- ----------------------------------------------------------- google venues

@@ -1754,6 +1754,12 @@ account button simply does not appear.
   Worth deciding on its own terms rather than inheriting from this.
 - **Reporting a missing place.** A place that is not in the catalogue cannot
   be added, and there is no way to ask for one. The CSV is the way in.
+
+  There is a table for it, though — `added_places`, in both databases and in
+  no code, found by listing the tables rather than by reading any. It is
+  written into `db/schema.sql` with that said plainly, so the next person to
+  look finds an explanation instead of finding it cold. Kept rather than
+  dropped: dropping a table is not recoverable and this one costs nothing.
 - **Anything social.** No following, no hearts, no comments on somebody
   else's list. A keep is the one thing you can do to a list somebody else made,
   and it is silent: its owner sees a number and never who.
