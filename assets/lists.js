@@ -361,9 +361,14 @@
     return '/?list=' + encodeURIComponent(id);
   }
 
+  /* Every caller says how it should look, because the four places this link
+     turns up in are four different weights of the same door: filled on
+     somebody else's list, where it is the one thing that card asks for; an
+     outline on your own, where Save has the accent; and a small word in the
+     corner of an index row. */
   function mapLink(id, className) {
     return el('a', {
-      className: className || 'alt',
+      className: className,
       href: mapHref(id),
       textContent: t('listsOnMap')
     });
@@ -805,7 +810,11 @@
         keepCount(list.keeps)
       ]),
       el('div', { className: 'lists-row lists-acts' }, [
-        mapLink(list.id),
+        /* Outlined rather than filled: Save is this card's one press that
+           wears the accent. Not a line of underlined mono either — beside two
+           pills that reads as a caption on them rather than as the door onto
+           the map. */
+        mapLink(list.id, 'alt lists-map'),
         share,
         save
       ]),
@@ -821,6 +830,13 @@
    * on its own cannot say which. Both states are drawn instead, as two radio
    * buttons under a question, and the one that is filled in is the answer.
    * There is nothing left to guess at.
+   *
+   * Public and Private, in one word each. They were "Anyone with the link"
+   * and "Only me", which said more and fitted worse: two clauses in a
+   * segmented control that a narrow phone broke over four lines, to describe
+   * the two states everything else on the web already calls by these names.
+   * The legend above them is the sentence — who can open it — so the options
+   * under it do not each have to be one.
    *
    * Real radios rather than buttons wearing the part, because arrow keys,
    * screen readers and the word "selected" all come with them.
@@ -840,7 +856,7 @@
         className: 'lists-seg-opt' +
           (list.public === isPublic ? ' is-on' : '') +
           (isPublic ? '' : ' is-private')
-      }, [input, el('span', { textContent: t(isPublic ? 'listsWhoLink' : 'listsWhoMe') })]);
+      }, [input, el('span', { textContent: t(isPublic ? 'listsWhoPublic' : 'listsWhoPrivate') })]);
 
       input.addEventListener('change', function () {
         if (!input.checked || list.public === isPublic) return;
@@ -1551,9 +1567,16 @@
   }
 
   /* --------------------------------------------------------------- sharing
-   * The share sheet where there is one, which is every phone this site is
-   * actually read on, and the clipboard everywhere else. Both end in the same
-   * place: a URL in somebody's hand.
+   * The share sheet on a phone and the clipboard on a laptop. Both end in the
+   * same place: a URL in somebody's hand.
+   *
+   * WHICH ONE IS DECIDED BY THE POINTER, NOT BY navigator.share
+   * Every desktop browser has navigator.share now, and asking for it there
+   * opens an OS sheet listing applications to send the link to — with no
+   * "copy link" in it, which is the one thing somebody sharing from a laptop
+   * wants. It is not the sheet that is wrong, it is the question: a coarse
+   * pointer is a phone or a tablet, where the sheet is the whole point, and
+   * everything else has a clipboard and a place to paste into.
    */
   function shareList() {
     /* The button is drawn disabled under three places; this is the click that
@@ -1566,7 +1589,7 @@
     var url = window.location.origin + '/list/' + state.list.id;
     var payload = { title: state.list.title, url: url };
 
-    if (navigator.share) {
+    if (navigator.share && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
       navigator.share(payload).catch(function () { /* dismissed, which is fine */ });
       return;
     }
