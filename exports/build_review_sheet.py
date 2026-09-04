@@ -7,7 +7,7 @@ Turns exports/tallinn_restaurants.csv into a sheet for deciding which candidates
 join data/restaurants.json. Adds the three things that decision needs and the raw
 Google data cannot give you: whether a place is already published, a slug and
 taxonomy types pre-mapped to data/taxonomy.json, and a flag column surfacing rows
-that need a second look. Nothing is filtered out - all 750 candidates are listed.
+that need a second look. Nothing is filtered out - all 751 candidates are listed.
 """
 import csv, json, math, re, sys, unicodedata, collections
 from difflib import SequenceMatcher

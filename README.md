@@ -1329,12 +1329,16 @@ feature's own setup:
 
 ## Google venues
 
-750 places in Tallinn you can eat or drink in, out of the Google Places API,
+751 places in Tallinn you can eat or drink in, out of the Google Places API,
 in the database as a table of their own — `google_venues`. Separate from everything else here on purpose — this is somebody
 else's data about the city, not mine about the food.
 
+750 of them came out of the API in one pull. The odd one out is RØST Bakery,
+typed into the export by hand off its Maps listing, which is why it has no
+opening hours — `exports/README.md` says what that costs the next refresh.
+
 ```
-exports/tallinn_restaurants.csv   the export: 750 rows, 18 columns
+exports/tallinn_restaurants.csv   the export: 751 rows, 18 columns
 tools/googlevenues.mjs            turns it into SQL
 db/google-venues.sql              GENERATED — what actually loads them
 google_venues                     the table, in db/schema.sql
@@ -1361,7 +1365,7 @@ show an empty picker and look broken for no reason.
 ### The table is a mirror, and that is the whole rule
 
 `place_id` — Google's own `ChIJ…` key — is the primary key. It is unique across
-all 750, stable across refreshes, and it is what a list item holds when it
+all 751, stable across refreshes, and it is what a list item holds when it
 points at one of these. A catalogue slug is lowercase letters, digits and
 hyphens, so the two can never be mistaken for each other.
 
@@ -1396,7 +1400,7 @@ list may be pointing at it and somebody wrote a sentence about it.
 
 The upserts are batched fifty to a statement. `wrangler d1 execute --remote`
 sends one HTTP request per statement, so this is the difference between
-sixteen round trips and seven hundred and fifty.
+seventeen round trips and seven hundred and fifty-one.
 
 `tools/validate.mjs` runs `--check`, so CI refuses a deploy where the export
 moved and the SQL did not.
@@ -1745,7 +1749,7 @@ added here   new_k3fmqw8x2p                lowercase, and has an underscore
 
 Both halves of that last test are needed, and the numbers say so rather than
 the intent: all 74 catalogue ids are lowercase with no underscore, **161 of the
-750 Google keys do contain an underscore**, and none of the 750 is
+751 Google keys do contain an underscore**, and none of the 751 is
 all-lowercase. The underscore alone would misread 161 real places; lowercase
 alone would not separate one from a catalogue slug. `isAdded()` in
 `functions/api/_lib.js` carries the query to re-run that count if
@@ -2752,7 +2756,7 @@ assets/staff.js            )
 data/restaurants.json      the only file you edit regularly
 data/places.csv            the Google Maps export a list picks from (yours to drop in)
 data/places.json           the catalogue: the map plus that CSV — GENERATED
-exports/tallinn_restaurants.csv    750 Tallinn venues out of Google Places
+exports/tallinn_restaurants.csv    751 Tallinn venues out of Google Places
 exports/README.md          what was cleaned out of the raw export, and why
 db/google-venues.sql       GENERATED — loads that export into D1
 data/taxonomy.json         the controlled vocabulary of types

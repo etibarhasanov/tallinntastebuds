@@ -764,7 +764,7 @@ if (catalogue !== null) {
 }
 
 /* ------------------------------------------------------- google-venues.sql
-   db/google-venues.sql is what loads the 750-venue Google Places export into
+   db/google-venues.sql is what loads the 751-venue Google Places export into
    D1, and it is generated from exports/tallinn_restaurants.csv. A deploy where
    the export moved and the SQL did not would be a database holding last
    month's Tallinn, so the two are checked against each other here the same way

@@ -1,9 +1,15 @@
 # Tallinn restaurants — cleaned export
 
-`tallinn_restaurants.csv` — **750 restaurants, 18 columns**, reshaped from the raw
+`tallinn_restaurants.csv` — **751 restaurants, 18 columns**, reshaped from the raw
 Google Places export in
 [`etibarhasanov/allRestaurants`](https://github.com/etibarhasanov/allRestaurants/blob/claude/google-maps-restaurants-salesforce-iz2bj5/exports/tallinn_restaurants.csv)
 (44 columns). Regenerate with `clean_restaurants_csv.py` when the upstream export refreshes.
+
+One row is not from that export: **RØST Bakery** (`ChIJP73vtWCTkkYRAAmn7hNt9aM`) was
+added here by hand off its Google Maps listing. Its `opening_hours` is blank because
+the listing gives a closing time for today and not a week, and its `tags` carry only
+the type Google prints. Regenerating from upstream writes the 750 and drops it, so
+either get it into the upstream pull first or add it back afterwards.
 
 Rows are sorted best-first: rating descending, then review count, then name.
 
@@ -13,13 +19,13 @@ Rows are sorted best-first: rating descending, then review count, then name.
 |---|---|
 | `name` | whitespace-normalized |
 | `category` | Google's venue label — `Restaurant`, `Sushi Restaurant`, `Bistro`, … |
-| `cuisine` | derived; grouped so it is filterable (`sushi`/`ramen`/`izakaya` → `Japanese`). Blank for 367 rows — see gaps below |
+| `cuisine` | derived; grouped so it is filterable (`sushi`/`ramen`/`izakaya` → `Japanese`). Blank for 368 rows — see gaps below |
 | `rating` | 2.2 – 5.0 |
 | `reviews` | Google review count, 25 – 12,238 |
 | `price` | `$` – `$$$$` |
 | `status` | `Open` or `Temporarily closed` |
 | `address` | street address; city suffix moved to its own column |
-| `postal_code`, `city` | `city` is `Tallinn` (744) or `Peetri` (6) |
+| `postal_code`, `city` | `city` is `Tallinn` (745) or `Peetri` (6) |
 | `phone` | international format only, `+372 …` |
 | `website` | |
 | `opening_hours` | one line, 24-hour: `Mon 11:00-22:00; Sat closed`. Multiple sittings comma-separated; `00:00-24:00` = open 24h. A close time earlier than the open time means it closes after midnight |
@@ -73,8 +79,8 @@ holds 2.2 across 101 reviews.
 
 | rating | count | share |
 |---|---|---|
-| 4.5 – 5.0 | 398 | 53.1% |
-| 4.0 – 4.4 | 254 | 33.9% |
+| 4.5 – 5.0 | 399 | 53.1% |
+| 4.0 – 4.4 | 254 | 33.8% |
 | 3.5 – 3.9 | 72 | 9.6% |
 | 3.0 – 3.4 | 22 | 2.9% |
 | below 3.0 | 4 | 0.5% |
@@ -98,7 +104,7 @@ dataset; its locations span 3.0 to 4.1 and occupy most of the bottom of the tabl
 **Review volume tracks footfall, not quality.** McDonald's Viru is the
 second-most-reviewed place in Tallinn (10,388) at 3.8, while Olde Hansa tops the
 list outright (12,238) at a respectable 4.5. Sort by `reviews` and you get the
-busiest places; sort by `rating` and you get 398 near-ties. Neither column alone
+busiest places; sort by `rating` and you get 399 near-ties. Neither column alone
 is a recommendation.
 
 **Best-rated with real sample size** (4.9, 200+ reviews): Saffron Restoran (733),
@@ -108,7 +114,7 @@ Akadeemia Kohv (214). Every one of the eight is `$` or `$$` — nothing in the
 top tier is expensive.
 
 **Geography.** The two densest postal areas are 10111 — Rotermanni, Sadama and
-Mere pst, the port and new-development strip — with 79 places averaging 4.31, and
+Mere pst, the port and new-development strip — with 80 places averaging 4.32, and
 10412 — Kopli and Telliskivi, i.e. Kalamaja — with 64 averaging 4.51. Old Town
 proper (10123: Rataskaevu, Dunkri, Niguliste, Vene) is smaller at 27 places but
 rates highest of the dense areas at 4.60. Density and quality are not the same
@@ -122,11 +128,11 @@ past midnight. 45 restaurants are flagged temporarily closed — filter on
 
 | field | missing | why |
 |---|---|---|
-| `cuisine` | 367 (48.9%) | 267 rows are typed only as generic `Restaurant` upstream, with no cuisine token anywhere in their tags. Not recoverable from this export — it needs menu or name inspection |
+| `cuisine` | 368 (49.0%) | 267 rows are typed only as generic `Restaurant` upstream, with no cuisine token anywhere in their tags. Not recoverable from this export — it needs menu or name inspection |
 | `tags` | 189 (25.2%) | only boilerplate tags upstream |
 | `website` | 81 (10.8%) | |
 | `price` | 57 (7.6%) | |
-| `opening_hours` | 51 (6.8%) | |
+| `opening_hours` | 52 (6.9%) | |
 | `phone` | 31 (4.1%) | |
 
 The service flags are the biggest real loss. Vegetarian options, outdoor seating and
