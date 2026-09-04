@@ -32,17 +32,31 @@
      validator refuses a taxonomy type that tries to claim it, because two
      chips answering to the same id would filter each other's places. */
   var DEAL_FILTER = 'discount';
-  /* The other reserved id, and the second chip that is not a type. It is a
-     door somebody arrived through — /?list=<id> — rather than something the
-     map can offer on its own, so unlike the saved chip it never appears
-     unless a list was asked for. Reserved for the same reason `discount` is:
-     two chips answering to one id would filter each other's places. */
-  var LIST_FILTER = 'list';
+  /* A LIST IS NOT A FILTER
+     There used to be a third reserved id here, `list`, and somebody's top ten
+     narrowed the map by sitting in state.active next to Bakery and Discount.
+     It was the wrong shape twice over. On the row it read as a kind of food —
+     a category the map does not have. Underneath, it made the chips lie: All
+     drawn unpressed with nothing else pressed either, over a map showing four
+     places, because the thing doing the narrowing was a filter no chip stood
+     for.
+
+     So a list is a mode and not a filter. state.list holds one or it does
+     not; while it does, it is what the map is showing and state.active is
+     empty. The chips underneath are a different question, and asking one
+     — any chip, All included — ends the mode: see forgetList(). */
   /* Every pin is the mark — the mouth out of the painting, cropped round.
      The circle is left to the one dot on the map that is not a place: the one
      that says where you are. So the sizes below are diameters of a picture,
      not radii of a dot, and the box the picture is drawn in is fixed, so a
      pin can change size without Leaflet re-anchoring anything under it. */
+  /* The bookmark on a list, drawn the same on the map as on the lists page —
+     it is the same gesture about the same object, and two shapes for it would
+     read as two different things. Kept in step with ICON_KEEP in
+     assets/lists.js by hand; there are two of them because the two pages
+     share no script. */
+  var ICON_KEEP = '<path d="M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z"/>';
+
   var PIN_D = 22;            /* every pin */
   var PIN_D_WORDS = 17;      /* the write-up-only ones, drawn smaller */
   var PIN_D_SELECTED = 34;   /* the one you are looking at */
@@ -639,74 +653,113 @@
     var muted = cssVar('--muted') || '#536879';
 
     /* Both rolls: the map's places, and the stand-ins for a list's places that
-       are not on it. Built once, at boot, because both are settled by then —
-       the list arrives with the same Promise.all as restaurants.json. */
-    allPlaces().forEach(function (place) {
-      var marker = L.marker([place.lat, place.lng], {
-        icon: pinIcon(),
-        keyboard: false,        /* the button semantics are added by hand below */
-        bubblingMouseEvents: false
-      });
+       are not on it. Built at boot, when both are settled — the list arrives
+       with the same Promise.all as restaurants.json.
 
-      marker.bindTooltip(place.name, {
-        className: 'pin-tip',
-        direction: 'top',
-        offset: [0, -15],
-        opacity: 1
-      });
-
-      marker.on('click', function () { selectPlace(place.id, { fly: false }); });
-
-      /* Leaflet builds a fresh element every time the marker is re-attached —
-         clustering takes pins off the map and puts them back all day — so the
-         button semantics and the pin's face are applied on every add, not
-         once at construction. */
-      marker.on('add', function () {
-        var node = marker.getElement();
-        if (!node) return;
-        node.setAttribute('tabindex', '0');
-        node.setAttribute('role', 'button');
-        node.setAttribute('aria-label', t('openPlace', { name: place.name }) +
-          (place.closed ? ', ' + t('closed') : ''));
-        node.addEventListener('keydown', function (ev) {
-          if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
-            ev.preventDefault();
-            selectPlace(place.id, { fly: false });
-          }
-        });
-        dressPin(place);
-      });
-
-      markers[place.id] = marker;
-      marker.addTo(map);
-
-      /* A shut place gets a second mark rather than a quieter version of the
-         first one. Greying the dot was all it had, and grey is also what a
-         write-up-only place looks like from three streets away — so the one
-         thing worth knowing before you walk there was said in the same
-         language as how much there is to read about it. The ring is drawn
-         outside the pin, dashed, so the mark underneath keeps saying what
-         there is to watch: a closed place you can still see a reel of is a
-         full-collared mark inside a broken circle, two facts at once. */
-      if (place.closed) {
-        var ring = L.circleMarker([place.lat, place.lng], {
-          radius: PIN_D / 2 + 4,
-          weight: 1.5,
-          color: muted,
-          opacity: .9,
-          dashArray: '2 3',
-          fill: false,
-          className: 'pin-shut',
-          interactive: false
-        });
-        closedRings[place.id] = ring;
-        ring.addTo(map);
-        if (ring.bringToBack) ring.bringToBack();
-      }
-    });
+       The stand-ins are the half that does not stay. A chip drops the list
+       and dropPins() takes them off again; Back puts them back. So the body
+       of this loop is a function of its own rather than a closure over the
+       boot pass, and nothing here may assume it runs once. */
+    allPlaces().forEach(function (place) { addPin(place, muted); });
 
     fitToPins();
     paintMarkers();   /* also syncs; gives every pin its filmed or unfilmed face */
+  }
+
+  /* The stand-ins going on and coming off, without disturbing the seventy-four
+     that were on the map before anybody opened a link. addPin() is skipped for
+     a place that already has a marker: restoring is idempotent, and building
+     a second Leaflet marker over the first would leave the first on the map
+     with nothing left holding a reference to it. */
+  function addPins(places) {
+    var muted = cssVar('--muted') || '#536879';
+    places.forEach(function (place) {
+      if (!markers[place.id]) addPin(place, muted);
+    });
+  }
+
+  function dropPins(places) {
+    places.forEach(function (place) {
+      var marker = markers[place.id];
+      if (marker) {
+        if (map && map.hasLayer(marker)) map.removeLayer(marker);
+        /* Out of the register as well as off the map. syncMarkers() walks
+           allPlaces() to decide what to hide, and a stand-in is not in
+           allPlaces() any more — so a marker left behind here is one nothing
+           would ever hide again: a pin for a place the map has forgotten,
+           sitting there until the page is reloaded. */
+        delete markers[place.id];
+      }
+      var ring = closedRings[place.id];
+      if (ring) {
+        if (map && map.hasLayer(ring)) map.removeLayer(ring);
+        delete closedRings[place.id];
+      }
+    });
+  }
+
+  function addPin(place, muted) {
+    var marker = L.marker([place.lat, place.lng], {
+      icon: pinIcon(),
+      keyboard: false,        /* the button semantics are added by hand below */
+      bubblingMouseEvents: false
+    });
+
+    marker.bindTooltip(place.name, {
+      className: 'pin-tip',
+      direction: 'top',
+      offset: [0, -15],
+      opacity: 1
+    });
+
+    marker.on('click', function () { selectPlace(place.id, { fly: false }); });
+
+    /* Leaflet builds a fresh element every time the marker is re-attached —
+       clustering takes pins off the map and puts them back all day — so the
+       button semantics and the pin's face are applied on every add, not
+       once at construction. */
+    marker.on('add', function () {
+      var node = marker.getElement();
+      if (!node) return;
+      node.setAttribute('tabindex', '0');
+      node.setAttribute('role', 'button');
+      node.setAttribute('aria-label', t('openPlace', { name: place.name }) +
+        (place.closed ? ', ' + t('closed') : ''));
+      node.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
+          ev.preventDefault();
+          selectPlace(place.id, { fly: false });
+        }
+      });
+      dressPin(place);
+    });
+
+    markers[place.id] = marker;
+    marker.addTo(map);
+
+    /* A shut place gets a second mark rather than a quieter version of the
+       first one. Greying the dot was all it had, and grey is also what a
+       write-up-only place looks like from three streets away — so the one
+       thing worth knowing before you walk there was said in the same
+       language as how much there is to read about it. The ring is drawn
+       outside the pin, dashed, so the mark underneath keeps saying what
+       there is to watch: a closed place you can still see a reel of is a
+       full-collared mark inside a broken circle, two facts at once. */
+    if (place.closed) {
+      var ring = L.circleMarker([place.lat, place.lng], {
+        radius: PIN_D / 2 + 4,
+        weight: 1.5,
+        color: muted,
+        opacity: .9,
+        dashArray: '2 3',
+        fill: false,
+        className: 'pin-shut',
+        interactive: false
+      });
+      closedRings[place.id] = ring;
+      ring.addTo(map);
+      if (ring.bringToBack) ring.bringToBack();
+    }
   }
 
   /* Four places sit 7km out. Fitting every one of them on a phone squeezes
@@ -1668,6 +1721,12 @@
         };
         if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
         paintAccountButton();
+        /* The keep on a list is the one thing in the panel that waits on this
+           answer — it is not drawn at all until the endpoint says accounts
+           work — and the panel was painted before it arrived. Nothing else in
+           there depends on who is signed in, so this is the whole of the
+           catching up, and it is skipped unless a list is actually on screen. */
+        if (state.list && state.view === 'list') renderList();
         accountSettled();
         /* A link that arrived asking for the sheet has been waiting on this
            answer — see readAccountLink. */
@@ -2326,6 +2385,47 @@
 
   /* --------------------------------------------------------------- filters */
 
+  /* PRESSING A CHIP
+     Every chip on the row is one gesture — turn an id in state.active on or
+     off and repaint — so it is written once here rather than four times in
+     four listeners. All is the same gesture with the array emptied.
+
+     Both of them drop the list first, and that is the reason they exist as
+     functions at all. A list is the mode the map is in, the chips are a
+     different question, and asking one ends the other — so forgetList()
+     belongs at the single place that question is asked rather than in every
+     listener that asks it. A chip added to this row later gets it without
+     being told. */
+  function toggleChip(id) {
+    forgetList();
+    var at = state.active.indexOf(id);
+    if (at === -1) state.active.push(id); else state.active.splice(at, 1);
+    applyFilters({ id: id, on: at === -1 });
+  }
+
+  function clearChips() {
+    if (!state.active.length && !state.list) return;
+    forgetList();
+    state.active = [];
+    applyFilters();
+  }
+
+  /* The chips a URL is asking for, narrowed to the ones this map can answer.
+     An id that is not a live type or a live deal is dropped rather than
+     trusted: it arrives out of an address bar that anybody can type into.
+
+     Shared by boot and by Back, and that is the point of it being a function.
+     An entry restored has to be the view that made it — a half-restored one,
+     with the list back but the chip that dismissed it still on, is a Back
+     button that lands somewhere the visitor was never standing. */
+  function activeFromUrl(params) {
+    var picked = params.get('type');
+    if (!picked) return [];
+    var live = usedTypeIds();
+    if (anyLiveDeal()) live = live.concat(DEAL_FILTER);
+    return picked.split(',').filter(function (id) { return live.indexOf(id) !== -1; });
+  }
+
   function usedTypeIds() {
     var used = {};
     state.places.forEach(function (p) {
@@ -2346,19 +2446,22 @@
      pressed. */
   function matchesFilters(place) {
     if (state.active.indexOf(SAVED_FILTER) !== -1 && isSaved(place.id)) return true;
-    if (state.active.indexOf(LIST_FILTER) !== -1 && isOnList(place.id)) return true;
     if (state.active.indexOf(DEAL_FILTER) !== -1 && liveDealFor(place)) return true;
     return (place.types || []).some(function (id) {
       return state.active.indexOf(id) !== -1;
     });
   }
 
-  /* No chips is the whole map, and the whole map is mine: a stand-in that
-     came in with a list is only ever on screen because the list chip put it
-     there. Nothing else can match one — it has no types, no deal, and its id
-     is a Google key that has never been in anybody's saves — so widening the
-     pool here costs nothing and is what lets the list draw at all. */
+  /* A list first, because while one is open it is the whole of what the map
+     is showing — the mode above, answered before the chips are consulted at
+     all. It is also the only state in which a stand-in is on the map: nothing
+     else can match one, since it has no types, no deal, and an id that has
+     never been in anybody's saves.
+
+     Then the chips, over my own places. No chips is the whole map, and the
+     whole map is mine. */
   function visiblePlaces() {
+    if (state.list) return allPlaces().filter(function (p) { return isOnList(p.id); });
     if (!state.active.length) return state.places.slice();
     return allPlaces().filter(matchesFilters);
   }
@@ -2393,10 +2496,7 @@
       /* Exactly what pressing All does, because shutting the row is the same
          answer said a different way — on a phone. A desktop shuts nothing, so
          a stale class going out is not a visitor letting their filter go. */
-      if (isNarrow() && state.active.length) {
-        state.active = [];
-        applyFilters();
-      }
+      if (isNarrow()) clearChips();
       return;
     }
     /* The class the chips' entrance is hung on, held for exactly as long as
@@ -2432,40 +2532,25 @@
       'aria-pressed': String(state.active.length === 0),
       textContent: t('filterAll')
     });
-    all.addEventListener('click', function () {
-      if (!state.active.length) return;
-      state.active = [];
-      applyFilters();
-    });
+    all.addEventListener('click', clearChips);
     dom.filters.appendChild(all);
 
-    /* Before every other chip, because it is why this page was opened. The
-       map was arrived at through somebody's list — /?list=<id> — and until
-       this is pressed off, the list is what the map is showing.
+    /* THE LIST IS NOT A CHIP
+       Somebody's top ten used to sit here as a chip wearing its own title,
+       second in the row, between All and Discount. It read as a kind of food.
+       "shaurma bros" alongside Bakery and Casual/Solo says the map has a
+       category by that name, when what it actually has is one person's list
+       that this visitor was sent a link to — a different kind of thing, from
+       a different place, belonging to somebody with a name.
 
-       It wears the list's own title rather than a word like "List", so the
-       row says whose top ten you are looking at, and pressing it off is the
-       way back to the whole map without losing it. Unlike every other chip
-       here it is never offered on its own: no ?list=, no chip. */
-    if (state.list) {
-      var onIt = state.active.indexOf(LIST_FILTER) !== -1;
-      var listChip = el('button', {
-        type: 'button',
-        className: 'chip is-list',
-        'aria-pressed': String(onIt),
-        /* The title is somebody else's words, so the label spells out what
-           the chip is as well as what it says — a chip reading "Bakeries"
-           is otherwise indistinguishable from a type. */
-        'aria-label': t('filterListOf', { title: state.list.title }),
-        textContent: state.list.title
-      });
-      listChip.addEventListener('click', function () {
-        var at = state.active.indexOf(LIST_FILTER);
-        if (at === -1) state.active.push(LIST_FILTER); else state.active.splice(at, 1);
-        applyFilters({ id: LIST_FILTER, on: at === -1 });
-      });
-      dom.filters.appendChild(listChip);
-    }
+       So this row is types and nothing else, and the list says who it is in
+       the panel instead, over its own places, with its owner's name under it
+       and the button to keep it underneath that. See listCredit().
+
+       Nothing on this row is pressed while a list is open, and that is
+       honest rather than a gap: the chips are not what is narrowing the map.
+       Pressing any of them hands the map back to them — see toggleChip() and
+       clearChips(), which drop the list on the way. */
 
     /* First of the real filters, and the only one that is about you rather
        than about food. It is the door to the marks you have pressed — and
@@ -2484,11 +2569,7 @@
         'aria-pressed': String(onSaved),
         textContent: t('filterSaved')
       });
-      savedChip.addEventListener('click', function () {
-        var at = state.active.indexOf(SAVED_FILTER);
-        if (at === -1) state.active.push(SAVED_FILTER); else state.active.splice(at, 1);
-        applyFilters({ id: SAVED_FILTER, on: at === -1 });
-      });
+      savedChip.addEventListener('click', function () { toggleChip(SAVED_FILTER); });
       dom.filters.appendChild(savedChip);
     }
 
@@ -2503,11 +2584,7 @@
         'aria-pressed': String(onDeal),
         textContent: t('filterDiscount')
       });
-      dealChip.addEventListener('click', function () {
-        var at = state.active.indexOf(DEAL_FILTER);
-        if (at === -1) state.active.push(DEAL_FILTER); else state.active.splice(at, 1);
-        applyFilters({ id: DEAL_FILTER, on: at === -1 });
-      });
+      dealChip.addEventListener('click', function () { toggleChip(DEAL_FILTER); });
       dom.filters.appendChild(dealChip);
     }
 
@@ -2519,11 +2596,7 @@
         'aria-pressed': String(on),
         textContent: typeLabel(id)
       });
-      chip.addEventListener('click', function () {
-        var at = state.active.indexOf(id);
-        if (at === -1) state.active.push(id); else state.active.splice(at, 1);
-        applyFilters({ id: id, on: at === -1 });
-      });
+      chip.addEventListener('click', function () { toggleChip(id); });
       dom.filters.appendChild(chip);
     });
 
@@ -2790,13 +2863,92 @@
     soloPins = alone;
   }
 
+  /* ---------------------------------------------------------- forgetting one
+   * Pressing any chip drops the list.
+   *
+   * A list arrives as ?list=, opens the map on its own pins and has no chip
+   * of its own. So the first press of All, or Bakery, or Discount is somebody
+   * asking the map a question their list cannot be part of the answer to, and
+   * rather than sit underneath as a filter with nothing left to switch it, it
+   * goes — pins, panel, keep button and all.
+   *
+   * That is a decision about the feature and not about the code. The keep is
+   * offered at the one moment it means anything: the list is open, the pins
+   * are its pins, and the button sits under its owner's name. Press something
+   * else and the moment has passed. Nothing nags and nothing trails you
+   * around the map afterwards.
+   *
+   * LOST IS NOT GONE
+   *
+   * This page is driven by its address bar — a list is on screen because
+   * ?list= says so — so dropping one is a pushState and Back is the whole of
+   * the undo. It is the only history entry on this page besides an opened
+   * place, and it earns one for the same reason: a step somebody may not have
+   * meant to take. Filters still rewrite the entry they are on.
+   *
+   * The list is held in a variable rather than re-fetched. It has been
+   * downloaded once already and Back should not go to the network to undo a
+   * press; restoreList() below hands it straight back.
+   */
+  var dropped = null;
+
+  function forgetList() {
+    if (!state.list) return;
+
+    /* Everything needed to put it back, together, so restoreList() cannot
+       reassemble half of one. */
+    dropped = { list: state.list, places: state.listPlaces };
+
+    /* A stand-in is only ever on the map because the list put it there, so
+       one being read right now goes out with it. Left alone, the panel would
+       be showing a write-up for a place byId() can no longer find. Dropped
+       back to the list rather than closed: the panel stays where it is and
+       becomes the map's own places, which is what the chip just asked for. */
+    var standing = {};
+    state.listPlaces.forEach(function (p) { standing[p.id] = true; });
+    if (state.selected && standing[state.selected]) {
+      state.selected = null;
+      state.view = 'list';
+    }
+    if (state.marked && standing[state.marked]) state.marked = null;
+
+    dropPins(state.listPlaces);
+    state.list = null;
+    state.listPlaces = [];
+
+    /* Pushed here, before the chip that called this has changed anything, so
+       the entry left behind is the list exactly as it stood: its pins, and
+       whatever else was pressed at the time. The chip's own applyFilters()
+       rewrites the entry this just made, the way every filter does. */
+    syncUrl(true);
+  }
+
+  /* Back, or a ?list= that came round again on an entry this page has already
+     seen. Nothing is fetched: either the list is the one that was dropped, in
+     which case it is handed straight back, or it is somebody else's link and
+     boot is the thing that loads it. */
+  function restoreList(id) {
+    if (!dropped || dropped.list.id !== id) return false;
+    state.list = dropped.list;
+    state.listPlaces = dropped.places;
+    addPins(state.listPlaces);
+    dropped = null;
+    return true;
+  }
+
   function applyFilters(change) {
     /* A chip that rules the marked place out takes the mark with it: a lit
        pin for a place the filter says you are not looking at is the map
        arguing with the chips. */
     if (state.marked && state.marked !== state.selected) {
       var held = byId(state.marked);
-      if (!held || (state.active.length && !matchesFilters(held))) state.marked = null;
+      /* Whatever is narrowing the map right now, which is the list while one
+         is open and the chips otherwise — never both, since a chip press ends
+         the list before this runs. */
+      var keeps = !held ? false
+        : state.list ? isOnList(held.id)
+        : !state.active.length || matchesFilters(held);
+      if (!keeps) state.marked = null;
     }
     syncUrl();
     renderFilters();
@@ -4216,8 +4368,7 @@
        stops being somebody's top ten and becomes a slice of the map that
        happens to be cut out of one — so it is drawn like every other slice,
        in the alphabet, without the order or the sentences. */
-    var reading = !words.length && state.active.length === 1 &&
-                  state.active[0] === LIST_FILTER && !!state.list;
+    var reading = !words.length && !state.active.length && !!state.list;
 
     if (reading) {
       /* The order is the whole point of a top ten. Its owner dragged these
@@ -4448,12 +4599,124 @@
       state.list.intro
         ? el('p', { className: 'list-credit-intro', textContent: state.list.intro })
         : null,
+      listKeep(),
       el('a', {
         className: 'list-credit-link',
         href: '/list/' + state.list.id,
         textContent: t('listOpenPage')
       })
     ]);
+  }
+
+  /* The same mark the panel draws on a place, said about the other kind of
+     thing this site has: keep this, I am coming back to it. It is the one
+     control in this block — everything above it is somebody else's words —
+     and it is here rather than on the list's own page because here is where
+     people actually are. A link that was sent to you opens the map.
+
+     IT IS OFFERED ONCE
+     There is no second chance at this and that is deliberate. The list is on
+     screen because ?list= is in the address bar, and the first chip pressed
+     takes both away: see forgetList(). So the button is drawn at the moment
+     it means something — these pins, this person's name above it — and when
+     that moment goes, it goes with it. Nothing follows anybody around the
+     map asking again. Back is the only way to a moment already passed, and
+     it is enough.
+
+     SIGNED OUT IT IS A DOOR, NOT A DEAD BUTTON
+     A keep needs an account, for the reason functions/api/lists.js gives. So
+     signed out this opens the sign-up sheet, which is on this page already —
+     the lists page has to send somebody here for it; the map does not. A
+     button that could only fail, and one that silently did nothing, are both
+     worse than asking at the moment somebody has just decided they want the
+     list.
+
+     The count beside it is drawn for everybody and hidden at nought, the way
+     a save count is. */
+  function listKeep() {
+    /* No database, no keeps. Same rule the account button follows: a control
+       that could only fail is not drawn at all. */
+    if (!state.account.ready) return null;
+
+    var list = state.list;
+    var count = el('span', { className: 'list-keeps eyebrow' });
+
+    function paintCount(n) {
+      count.textContent = !n ? '' : n === 1 ? t('listsKeptOne') : t('listsKeptN', { n: n });
+      count.hidden = !n;
+    }
+    paintCount(list.keeps || 0);
+
+    var out = !state.account.user;
+    var b = el('button', {
+      type: 'button',
+      className: 'list-keep' + (list.kept ? ' is-kept' : ''),
+      /* A toggle keeps one name and flips aria-pressed under it, the way the
+         panel's save button does. Signed out there is nothing to be pressed
+         or unpressed yet, so it is an ordinary button that says what it is
+         for instead. */
+      'aria-pressed': out ? null : String(!!list.kept),
+      'aria-label': out ? t('listsKeepIn') : null,
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_KEEP + '</svg>'
+    }, [el('span', { textContent: t(list.kept ? 'listsKeptThis' : 'listsKeep') })]);
+
+    b.addEventListener('click', function () {
+      if (!state.account.user) { openAccount('up'); return; }
+      /* Whichever list this button was drawn for. Read off the closure rather
+         than off state.list, so a press that lands after the list has been
+         dropped writes the row it was about and not a different one. */
+      var want = !list.kept;
+
+      /* Moved before the answer comes back, and put back if it does not. The
+         press is the whole interaction and it should not wait on a round
+         trip; the server is still the one that decides, and its count is what
+         the button ends up wearing. */
+      list.kept = want;
+      list.keeps = Math.max(0, (list.keeps || 0) + (want ? 1 : -1));
+      paint();
+
+      fetch('/api/lists', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: want ? 'keep' : 'unkeep', id: list.id })
+      }).then(function (res) {
+        return res.json().catch(function () { return {}; })
+          .then(function (out2) { return { ok: res.ok, out: out2 || {} }; });
+      }).then(function (a) {
+        if (!a.ok) {
+          list.kept = !want;
+          list.keeps = Math.max(0, (list.keeps || 0) + (want ? -1 : 1));
+          /* Signed out underneath the press — a session that expired while
+             the map was open. The sheet is the honest answer, and the keep is
+             one press away once it is done. */
+          if (a.out && a.out.error === 'signed-out') {
+            state.account.user = null;
+            paintAccountButton();
+            openAccount('in');
+          }
+          paint();
+          return;
+        }
+        list.kept = !!a.out.kept;
+        list.keeps = a.out.keeps || 0;
+        paint();
+      }).catch(function () {
+        list.kept = !want;
+        list.keeps = Math.max(0, (list.keeps || 0) + (want ? -1 : 1));
+        paint();
+      });
+
+      trackEvent('list_keep', { list_id: list.id, list_state: want ? 'on' : 'off' });
+    });
+
+    function paint() {
+      b.classList.toggle('is-kept', !!list.kept);
+      b.setAttribute('aria-pressed', String(!!list.kept));
+      b.querySelector('span').textContent = t(list.kept ? 'listsKeptThis' : 'listsKeep');
+      paintCount(list.keeps);
+    }
+
+    return el('div', { className: 'list-credit-keep' }, [b, count]);
   }
 
   /* -------------------------------------------------------------- lightbox */
@@ -5327,6 +5590,12 @@
       title: list.title,
       intro: list.intro || '',
       by: list.by || null,
+      /* How many people have kept it, and whether this reader is one of them.
+         Both come out of /api/lists and neither is cached — see the module
+         comment in functions/api/lists.js for why a keep is the one thing on
+         this site that may not be a minute behind. */
+      keeps: list.keeps || 0,
+      kept: !!list.kept,
       items: items
     };
     state.listPlaces = stand;
@@ -5352,18 +5621,19 @@
        filters; it does not travel. Nothing has to strip it on the way back
        in — boot only accepts ids that are on the map — but a link nobody can
        use should not be built in the first place. */
-    var shareable = state.active.filter(function (id) {
-      return id !== SAVED_FILTER && id !== LIST_FILTER;
-    });
+    var shareable = state.active.filter(function (id) { return id !== SAVED_FILTER; });
     if (shareable.length) params.set('type', shareable.join(','));
     else params.delete('type');
 
-    /* ?list= is not a chip in the address bar, it is which list this page is
-       holding — so it stays on while the list is loaded, whether or not the
-       chip is currently pressed. Pressing the chip off is "show me the whole
-       map", not "forget the list": the chip is still on the row, and a link
-       copied at that moment should still arrive as somebody's list rather
-       than as a bare map with a chip missing.
+    /* ?list= is which list this page is holding, and it is on for exactly as
+       long as the page is holding one: it arrives on the link, and it comes
+       off the moment a chip drops the list. So a link copied off this page is
+       always what the page is actually showing — somebody's list while the
+       list is up, a bare map once it is not.
+
+       That symmetry is what makes Back the undo. forgetList() pushes rather
+       than replaces, so the entry behind still carries ?list= and going back
+       to it is going back to the list; see wireHistory().
 
        It is also the one door parameter here that is not taken straight back
        off. ?story=, ?account= and ?then= all are, because each of them opens
@@ -5401,11 +5671,61 @@
      browser lands on, match it, and write nothing back while doing so. */
   function wireHistory() {
     window.addEventListener('popstate', function () {
-      var spot = new URLSearchParams(window.location.search).get('spot');
+      var params = new URLSearchParams(window.location.search);
+
+      /* The list first, because it decides which places exist: byId() below
+         has to be able to find a stand-in before ?spot= is asked about one.
+
+         Only ever the list this page dropped. A ?list= for anything else is
+         somebody's link, and a link is boot's job — reaching an entry that
+         names a list this page never had is not a thing the history can
+         produce, and quietly fetching one here would be a second way into a
+         feature that already has one. */
+      var wanted = params.get('list') || '';
+      var moved = false;
+      if (wanted && (!state.list || state.list.id !== wanted)) {
+        moved = restoreList(wanted);
+      } else if (!wanted && state.list) {
+        /* Forward, back onto the entry where the list was let go. Not
+           forgetList(): that one pushes, and writing history from inside a
+           popstate is how a Back button starts fighting the person pressing
+           it. */
+        dropped = { list: state.list, places: state.listPlaces };
+        dropPins(state.listPlaces);
+        state.list = null;
+        state.listPlaces = [];
+        moved = true;
+      }
+
+      if (moved) {
+        /* And the chips this entry was standing on. Without it, going back to
+           a list would put the list back underneath the very chip that
+           dismissed it — the map narrowed by both at once, and an address bar
+           reading ?list=…&type=… for a view nothing could have produced.
+
+           The saved chip is the exception, because it is the one chip that
+           never travels in the address bar: it filters by what this browser
+           has pressed, so it cannot be read back out of a URL and is carried
+           across instead. */
+        var wasSaved = state.active.indexOf(SAVED_FILTER) !== -1;
+        state.active = activeFromUrl(params);
+        if (wasSaved && savedCount()) state.active.push(SAVED_FILTER);
+
+        renderFilters();
+        if (state.view === 'list') renderPanel();
+        paintMarkers();
+        fitToPins({ animate: true });
+      }
+
+      var spot = params.get('spot');
       if (spot && byId(spot)) {
         if (state.selected !== spot) selectPlace(spot, { fly: true, history: false });
         return;
       }
+      /* A list coming back opens the panel on it, the way arriving on a link
+         does: the pins say where, and the panel says why these. */
+      if (moved && state.list) { showList(false); return; }
+      if (moved) return;
       if (dom.panel.classList.contains('is-open')) closePanel({ history: false });
     });
   }
@@ -5952,26 +6272,18 @@
       readAccountLink(arrived);
 
       /* Chips before the map, so the opening view fits the filtered set. */
-      var picked = arrived.get('type');
-      if (picked) {
-        var live = usedTypeIds();
-        if (anyLiveDeal()) live = live.concat(DEAL_FILTER);
-        state.active = picked.split(',').filter(function (id) {
-          return live.indexOf(id) !== -1;
-        });
-      }
+      state.active = activeFromUrl(arrived);
 
       /* The list, split into places the map has and stand-ins for the rest.
          After state.places, because "does the map already have this" is a
          question about that file, and before the chips are drawn and the map
          is fitted, because both of those have to know about it.
 
-         Its chip goes on first and pressed: somebody who followed a link to a
-         list came for the list, so that is what the map opens showing. The
-         chip is how they get the rest of the map back — one press, and it
-         stays on the row. */
+         Nothing else is needed to make the map open on it. A list is a mode
+         rather than a filter — see visiblePlaces() — so seating one is all it
+         takes for the map to be showing it, and the chips stay unpressed
+         underneath. Any of them dropped on afterwards ends it. */
       seatList(loaded[6]);
-      if (state.list) state.active = [LIST_FILTER];
 
       /* Style before the map, so the first tile request is already the right
          basemap and the pins are built from the right tokens. */
@@ -6047,7 +6359,7 @@
          is not what was shared.
 
          Not when a place was named as well: that link is about the place, and
-         the list is still one press of the chip away. */
+         the list is still underneath it — closing the place lands on it. */
       else if (state.list) {
         showList(false);
         /* And framed again now the panel is up. buildMarkers fitted the list

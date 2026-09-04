@@ -120,10 +120,36 @@
 .lists-foot { margin-top: 6px; }
 .lists-count { margin-left: auto; color: var(--muted); font-size: 11.5px; letter-spacing: .04em; }
 
-/* The buttons this page presses are .go and .alt out of assets/styles.css,
-   the same two the account sheet uses. They used to be restated here as
+/* ---------- the button states this page adds ---------- */
+
+/* The two buttons themselves are .go and .alt out of assets/styles.css, the
+   same two the account sheet uses. They used to be restated here as
    .lists-go and .lists-alt, and had drifted: this page's primary action was
-   set in the display face at 14px while the map's was a mono pill. */
+   set in the display face at 14px while the map's was a mono pill. What is
+   left here is the one state a .go has nowhere else — Save, once there is
+   nothing left to save.
+
+   The filled accent is for the press that is still owed — something typed or
+   moved that the server has not got. When that is settled the button stops
+   asking: it steps back to the page's own wash and hairline, keeps its
+   position in the row, and reads "Saved". Every colour in both states is a
+   token, so the mark is brick on the light style and forest on the dark one
+   without either being named here. The transition is what makes the two
+   states one button changing rather than two buttons swapping over. */
+.lists-save { transition: background-color .18s ease, border-color .18s ease, color .18s ease; }
+.lists-save.is-saved {
+  background: var(--wash);
+  border-color: var(--hairline);
+  color: var(--muted);
+}
+/* Still pressable — a list you have not touched can still be pushed at the
+   server — so it answers the pointer, quietly and without going back to the
+   colour that means unsaved. */
+.lists-save.is-saved:hover {
+  background: var(--wash);
+  border-color: var(--muted);
+  color: var(--ink);
+}
 
 /* The row of buttons under the card's fields, and the line that says why one
    of them is not pressable yet. */
@@ -575,6 +601,7 @@ a.item-name:hover .item-where { color: var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   .list-items.is-sorting .item { transition: none; }
   .item.is-landed { animation: none; }
+  .lists-save { transition: none; }
 }
 
 /* ---------- the picker ---------- */

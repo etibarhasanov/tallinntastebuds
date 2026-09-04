@@ -109,6 +109,31 @@ export async function readList(context, id, user) {
     if (byHand.length) added = await addedByIds(env, byHand);
   } catch (e) { /* same cost, same reason */ }
 
+  /* How many people have kept this list, and whether the reader is one of
+     them. The module comment in functions/api/lists.js has promised both of
+     these were in this answer since the keep was written; they were not, so
+     every keep button on the site drew itself empty on a list you kept last
+     week and corrected itself only when you pressed it — which un-kept it.
+
+     Not wrapped in a try the way the catalogue lookups above are. Those are
+     enrichment, and a list without addresses is still a list; these come out
+     of the same database as the row this function has already read, so a
+     failure here is not a missing address, it is the request having failed.
+     A keep that reports itself as a nought is the feature lying about
+     somebody's own collection, and the one thing this must not do quietly. */
+  const keeps = await env.DB
+    .prepare('SELECT COUNT(*) AS n FROM list_keeps WHERE list_id = ?')
+    .bind(id)
+    .first();
+  /* Signed out there is nobody for this to be true of, and the query is
+     skipped rather than run with a null owner. */
+  const kept = user
+    ? !!(await env.DB
+        .prepare('SELECT 1 AS x FROM list_keeps WHERE list_id = ? AND owner = ?')
+        .bind(id, user.id)
+        .first())
+    : false;
+
   return {
     id: list.id,
     title: list.title,
@@ -117,6 +142,8 @@ export async function readList(context, id, user) {
     public: !!list.public,
     mine: mine,
     updated: list.updated_at,
+    keeps: keeps ? keeps.n : 0,
+    kept: kept,
     items: results.map((r) => {
       const known = (roll ? roll.get(r.place_id) : null) ||
                     venues.get(r.place_id) ||

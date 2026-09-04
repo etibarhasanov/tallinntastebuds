@@ -1489,13 +1489,30 @@ out and the drag only moves them with `transform`; the array is spliced once,
 on release, and the page is redrawn from it — so a drag interrupted by a phone
 call leaves nothing behind.
 
-Nothing has to be saved with a button. The title and the line under it write
-themselves when you leave the field; a note writes itself a moment after you
-stop typing, again when you leave the box, and again when the page is hidden —
-which is what a phone does when the tab is switched away, and the last moment
-a script is promised. **Save** is on the card anyway, as the last button,
-because none of that is visible: it takes whatever is half typed, sends it
-now, and says so.
+**Save** is the last button on the card and it is what writes the list. The
+title, the line under it, each note, who can open it and the order are all
+edits to a list you are looking at, and they are held until it is pressed —
+the page changes under your hands and the server hears about it once, when you
+say so. The button is the other half of that sentence too: filled, in the
+style's accent, while something is waiting; quiet, in the page's own wash, and
+reading **Saved**, when there is nothing left to send. Type a word and delete
+it again and it goes back to Saved, because there is nothing left to send.
+
+Two things do not wait, and both are membership rather than content. **Adding
+a place** is sent as it happens because the server is the one that decides
+whether a place may go on — it has to be on one of the three rolls and the
+list has to have room — and a refusal has to arrive while the picker is still
+open, not minutes later about a row that had been sitting there looking
+accepted. **Removing one** goes the same way, and takes any note typed under
+it with it.
+
+The page being hidden — which is what a phone does when the tab is switched
+away, and the last moment a script is promised — sends whatever is waiting
+over `sendBeacon`. That is not a second Save button; it is the one case where
+not sending loses the work outright. Somebody who meant to abandon an edit
+closes the tab and finds it kept, and somebody who meant to keep it and forgot
+to press Save finds it kept too, and only one of those is a story anybody
+minds.
 
 **Who can open it** is two options and not one pill. A single pill printing
 the state it was in — "Anyone with the link can read it" — is the sentence
@@ -1584,11 +1601,45 @@ nowhere to put a pin, and a row in the panel that no pin answers to is worse
 than its absence. It is still on the list's own page, with its sentence, which
 is where it can be read.
 
-**The chip.** The list arrives as a chip at the front of the filter row,
-wearing its own title, pressed. Pressing it off is the whole map back; the chip
-stays on the row, and `?list=` stays in the address bar — pressing it is "show
-me everything", not "forget the list", and a link copied at that moment should
-still arrive as somebody's list.
+**A list is a mode, not a filter.** It used to be a chip at the front of the
+filter row wearing its own title, and it was the wrong shape twice over. On the
+row it read as a kind of food — "shaurma bros" sitting between All and Bakery
+announces a category the map does not have. Underneath, it made the chips lie:
+the thing narrowing the map was a filter in `state.active` that no chip on the
+row stood for, so All could be drawn unpressed with nothing else pressed either
+over a map showing four places.
+
+So the filter row is types and nothing else. `state.list` holds a list or it
+does not, and while it does, that is what the map is showing — `visiblePlaces()`
+answers the list before it consults a chip. The list says who it is in the
+panel instead: its title, its owner's name, their sentence, and the button to
+keep it.
+
+**Pressing any chip forgets it.** All, Bakery, Discount — each is somebody
+asking the map a question their list cannot be part of the answer to, so the
+list goes: pins, panel, keep button, `?list=` and all. There is no control that
+puts it back, because it is not a thing you toggle.
+
+**Back is the undo.** The page is driven by its address bar, so dropping a list
+is a `pushState` — the only history entry on the map besides an opened place,
+and it earns one for the same reason: a step somebody may not have meant to
+take. Going back restores the entry whole, the chips it was standing on
+included, and the list itself is handed back out of a variable rather than
+re-fetched. Filters still rewrite the entry they are on.
+
+**Keeping one.** The bookmark is in the panel, under the byline — the same mark
+the map draws on a place, said about the other kind of object this site has.
+It is offered at the one moment it means anything: this list open, these pins,
+this person's name above it. Press a chip and the moment has passed. Nothing
+nags and nothing follows anybody around the map afterwards.
+
+Signed out it is a door rather than a dead button: it opens the sign-up sheet,
+which is on this page already. A keep needs an account for the reason
+**Why a list needs an account when a save does not** gives.
+
+The count beside it, and whether you have kept it, come out of `readList()` in
+`functions/api/_lists.js` with the list itself, and neither is cached — see
+**Lists** for why a keep is the one thing here that may not be a minute behind.
 
 **Failing is quiet.** A list that is private, deleted, mistyped, or behind a
 database that is not bound leaves the map exactly as it is. No card and no
