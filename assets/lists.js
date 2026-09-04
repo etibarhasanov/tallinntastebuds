@@ -1776,6 +1776,43 @@
       placeholder: t('listsAddAddressHint')
     });
 
+    /* The suggestions, and the button that takes the first one. Typing an
+       address and pressing enter is what people do, and before this it did
+       nothing at all: the pin sat on the city centre until it was dragged
+       there by hand.
+
+       The field is a combobox in the ARIA sense — an input that owns a list
+       somebody arrows through — so it is wired as one: the input announces
+       which option is active, the list is a listbox, and every option has an
+       id for the input to point at. Screen readers get told a list appeared;
+       a keyboard gets up, down, enter and escape.
+
+       The button stays even though the list does most of the work, because
+       the enter key is invisible and a phone keyboard shows "done" rather
+       than anything that suggests searching. */
+    var suggestId = 'picker-suggest';
+    address.setAttribute('role', 'combobox');
+    address.setAttribute('aria-expanded', 'false');
+    address.setAttribute('aria-controls', suggestId);
+    address.setAttribute('aria-autocomplete', 'list');
+
+    var suggest = el('ul', {
+      className: 'picker-suggest',
+      id: suggestId,
+      role: 'listbox',
+      hidden: true
+    });
+
+    var find = el('button', {
+      type: 'button',
+      className: 'lists-alt picker-find',
+      textContent: t('listsAddFind')
+    });
+    var addressRow = el('div', { className: 'picker-find-row' }, [
+      el('div', { className: 'picker-find-field' }, [address, suggest]),
+      find
+    ]);
+
     var canvas = el('div', { className: 'picker-map', id: 'picker-map' });
     var hint = el('p', { className: 'picker-note', textContent: t('listsAddPin') });
     var go = el('button', { type: 'button', className: 'lists-go', textContent: t('listsAddIt') });
@@ -1783,7 +1820,7 @@
     var form = el('div', { className: 'picker-add-form' }, [
       back,
       el('h3', { className: 'picker-title', textContent: t('listsAddMissing') }),
-      name, address, hint, canvas,
+      name, addressRow, hint, canvas,
       el('div', { className: 'lists-row lists-acts' }, [go])
     ]);
     dom.pickerBody.appendChild(form);
@@ -1793,6 +1830,9 @@
        submit below works the same whether or not the map ever loaded. */
     var at = { lat: CITY[0], lng: CITY[1] };
     var ready = false;
+    /* Set once the map exists, and left null when it does not: the address
+       lookup still moves `at`, it just has no pin to move with it. */
+    var movePin = null;
 
     ensureLeaflet().then(function (L) {
       var map = L.map(canvas, {
@@ -1801,11 +1841,11 @@
         zoomControl: true,
         attributionControl: true
       });
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
-          'contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-      }).addTo(map);
+      /* The tiles, the key and the attribution come from assets/basemap.js,
+         which the map page and the admin picker draw from too. This square
+         used to hold its own copy of that URL, which is how it ended up as
+         the one map on the site still wearing "API KEY REQUIRED". */
+      TTBBasemap.layer(L, { maxZoom: 19 }).addTo(map);
 
       /* A divIcon rather than Leaflet's default marker, for the reason the map
          page uses one too: the default is a PNG fetched from the CDN's images
@@ -1834,6 +1874,13 @@
         pin.setLatLng(ev.latlng);
         at = { lat: ev.latlng.lat, lng: ev.latlng.lng };
       });
+      movePin = function (lat, lng) {
+        pin.setLatLng([lat, lng]);
+        /* Close enough to read the street names, because the whole point of
+           having typed an address is to see that the pin landed on the right
+           building — and to drag it the last few metres to the door. */
+        map.setView([lat, lng], 17);
+      };
       ready = true;
     }).catch(function () {
       /* No map. The form still works — the pin stays where the city centre
@@ -1843,6 +1890,206 @@
       hint.textContent = t('listsAddNoMap');
       hint.classList.add('is-warn');
       ready = true;
+    });
+
+    /* The lookup.
+     *
+     * Debounced rather than sent per keystroke: /api/geocode goes out to
+     * Photon, which is built to answer a prefix but is still somebody else's
+     * machine, and a request per keystroke on "Telliskivi" is ten requests
+     * for one address. A pause in the typing is the signal that a prefix is
+     * worth asking about.
+     *
+     * Every answer carries the point with it, so picking a suggestion moves
+     * the pin without a second round trip — the list is not a list of things
+     * to then look up, it is the lookup.
+     */
+    var PAUSE = 300;
+    var MIN_Q = 3;
+
+    var timer = null;
+    var inflight = 0;
+    var hits = [];
+    var active = -1;
+    var chosen = '';
+
+    function say(key, warn) {
+      hint.textContent = t(key);
+      hint.classList.toggle('is-warn', !!warn);
+    }
+
+    function shut() {
+      suggest.hidden = true;
+      clear(suggest);
+      address.setAttribute('aria-expanded', 'false');
+      address.removeAttribute('aria-activedescendant');
+      hits = [];
+      active = -1;
+    }
+
+    function highlight(i) {
+      var rows = suggest.children;
+      if (!rows.length) return;
+      /* Wraps, because a list of five that stops dead at either end is a list
+         somebody presses down against wondering if the key is broken. */
+      active = (i + rows.length) % rows.length;
+      for (var n = 0; n < rows.length; n++) {
+        rows[n].classList.toggle('is-active', n === active);
+        rows[n].setAttribute('aria-selected', n === active ? 'true' : 'false');
+      }
+      address.setAttribute('aria-activedescendant', rows[active].id);
+      if (rows[active].scrollIntoView) rows[active].scrollIntoView({ block: 'nearest' });
+    }
+
+    /* Taking a suggestion: the pin moves, the field is filled in with the
+       address as the geocoder spells it, and the list goes away. `chosen`
+       stops the input handler that fires next from immediately asking about
+       the text it just wrote. */
+    function take(hit) {
+      if (!hit) return;
+      at = { lat: hit.lat, lng: hit.lng };
+      /* What the row said is not always what the field wants: a named venue
+         shows under its name and fills in the street it is on. */
+      chosen = hit.fill || hit.label;
+      address.value = chosen;
+      shut();
+      if (movePin) {
+        movePin(hit.lat, hit.lng);
+        /* The pin is on the building, not on the door, and this form is
+           asking for the door. */
+        say('listsAddFound');
+      } else {
+        say('listsAddNoMap', true);
+      }
+    }
+
+    function draw(list) {
+      clear(suggest);
+      hits = list;
+      active = -1;
+
+      if (!list.length) { shut(); return; }
+
+      for (var i = 0; i < list.length; i++) {
+        (function (hit, n) {
+          var row = el('li', {
+            className: 'picker-suggest-row',
+            id: suggestId + '-' + n,
+            role: 'option',
+            'aria-selected': 'false'
+          }, [
+            el('span', { className: 'picker-suggest-name', textContent: hit.label })
+          ]);
+          if (hit.where) {
+            row.appendChild(el('span', { className: 'picker-suggest-where', textContent: hit.where }));
+          }
+          /* mousedown and not click: the field is about to lose focus to this
+             press, and the blur handler below closes the list. mousedown gets
+             there first. */
+          row.addEventListener('mousedown', function (ev) {
+            ev.preventDefault();
+            take(hit);
+          });
+          row.addEventListener('mouseenter', function () { highlight(n); });
+          suggest.appendChild(row);
+        })(list[i], i);
+      }
+
+      suggest.hidden = false;
+      address.setAttribute('aria-expanded', 'true');
+    }
+
+    function lookUp(q, andTakeFirst) {
+      /* Same gate the Add button uses. Leaflet is still on its way down for
+         the first moment this form is open, and a suggestion taken before it
+         arrived would have a point and nowhere to draw it. */
+      if (!ready) return;
+
+      var mine = ++inflight;
+      if (andTakeFirst) { find.disabled = true; say('listsAddFinding'); }
+
+      ask('/api/geocode?q=' + encodeURIComponent(q)).then(function (a) {
+        /* An answer to a prefix somebody has already typed past is not an
+           answer to the question on screen any more. */
+        if (mine !== inflight) return;
+        if (andTakeFirst) find.disabled = false;
+
+        var list = a.status === 200 && Array.isArray(a.out.results) ? a.out.results : [];
+
+        if (!list.length) {
+          shut();
+          /* Silent while typing — a prefix matching nothing yet is the normal
+             state of a half-typed street, not a failure worth a line of red.
+             Only a deliberate press gets told. */
+          if (andTakeFirst) say(a.status === 429 ? 'listsAddFindBusy' : 'listsAddFindNone', true);
+          return;
+        }
+
+        if (andTakeFirst) { take(list[0]); return; }
+        draw(list);
+      });
+    }
+
+    function typed() {
+      var q = address.value.trim();
+      if (timer) clearTimeout(timer);
+
+      /* The text this field was just filled with by take(). Asking about it
+         would reopen the list under a suggestion somebody has already made. */
+      if (q === chosen) return;
+      chosen = '';
+
+      if (q.length < MIN_Q) { shut(); return; }
+      timer = setTimeout(function () { lookUp(q, false); }, PAUSE);
+    }
+
+    address.addEventListener('input', typed);
+    address.addEventListener('focus', typed);
+
+    /* Closing the list on the way out, but not before a press on it has been
+       heard — the rows listen on mousedown, which lands first. */
+    address.addEventListener('blur', function () { setTimeout(shut, 120); });
+
+    address.addEventListener('keydown', function (ev) {
+      var open = !suggest.hidden && hits.length;
+
+      if (ev.key === 'ArrowDown' && open) { ev.preventDefault(); highlight(active + 1); return; }
+      if (ev.key === 'ArrowUp' && open) { ev.preventDefault(); highlight(active - 1); return; }
+      /* Escape closes the suggestions and nothing else. The document listens
+         for it too and closes the whole sheet, which — with a name and an
+         address typed into a form that is about to be submitted — is the
+         worst thing this key could do. So the press is stopped here while
+         there is a list to close, and falls through to the sheet once there
+         is not. */
+      if (ev.key === 'Escape' && open) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        shut();
+        return;
+      }
+
+      if (ev.key !== 'Enter') return;
+
+      /* There is no <form> around this, so enter submits nothing by itself.
+         It is still the key people press, and this is what they mean by it —
+         take the suggestion under the cursor, or the first one, or go and
+         find one. Never "add the place", which is a button they have not
+         reached yet. */
+      ev.preventDefault();
+      if (open) { take(hits[active === -1 ? 0 : active]); return; }
+
+      var q = address.value.trim();
+      if (q.length < MIN_Q) { address.focus(); return; }
+      if (timer) clearTimeout(timer);
+      lookUp(q, true);
+    });
+
+    find.addEventListener('click', function () {
+      if (!suggest.hidden && hits.length) { take(hits[active === -1 ? 0 : active]); return; }
+      var q = address.value.trim();
+      if (q.length < MIN_Q) { address.focus(); return; }
+      if (timer) clearTimeout(timer);
+      lookUp(q, true);
     });
 
     go.addEventListener('click', function () {

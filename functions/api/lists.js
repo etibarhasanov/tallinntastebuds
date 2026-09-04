@@ -63,7 +63,7 @@
  * exactly the same reason.
  */
 
-import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDatabase } from './_lib.js';
+import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDatabase, nearTallinn } from './_lib.js';
 /* Reading one list is shared with functions/list/[id].js, which serves the
    page a link opens with the list already in it. */
 import { readList, LIST_ID } from './_lists.js';
@@ -404,11 +404,6 @@ async function create(context, body, user) {
  * read on a shared page.
  */
 
-/* Roughly 60km around the city, which is generous — it reaches Paldiski and
-   past Kehra — and still refuses a point in another country. The map itself
-   opens on Tallinn and this feature is for places on it. */
-const TALLINN = { lat: 59.437, lng: 24.7536, degLat: 0.55, degLng: 1.1 };
-
 function point(value) {
   const n = typeof value === 'number' ? value : parseFloat(value);
   return Number.isFinite(n) ? n : null;
@@ -423,10 +418,10 @@ async function addPlace(context, body, user) {
   const lat = point(body.lat);
   const lng = point(body.lng);
   if (lat === null || lng === null) return json({ error: 'where' }, 400);
-  if (Math.abs(lat - TALLINN.lat) > TALLINN.degLat ||
-      Math.abs(lng - TALLINN.lng) > TALLINN.degLng) {
-    return json({ error: 'where' }, 400);
-  }
+  /* The map itself opens on Tallinn and this feature is for places on it.
+     The box is TALLINN in ./_lib.js, shared with the geocoder so the two
+     cannot disagree about what counts as here. */
+  if (!nearTallinn(lat, lng)) return json({ error: 'where' }, 400);
 
   const held = await env.DB
     .prepare('SELECT COUNT(*) AS n FROM added_places WHERE owner = ?')

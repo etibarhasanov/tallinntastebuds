@@ -240,6 +240,12 @@ a { color: var(--accent); }
   <div id="body"></div>
 </main>
 
+<!-- The basemap the pin picker draws, shared with the map page and the lists
+     picker. Deferred, so it is there by the time a place form is opened; this
+     page is served no-store and /assets/* revalidates, so unlike the stamped
+     pages it needs no ?v= to stay off a stale copy. -->
+<script src="/assets/basemap.js" defer></script>
+
 <script>
 (function () {
   'use strict';
@@ -1478,11 +1484,9 @@ a { color: var(--accent); }
    * form says so and carries on: the numbers can always be typed, which is
    * how every place already in the file got there.
    */
-  var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-  var TILE_KEY = 'cb1_2ci9_1_e18f20c42b2e5346aa517b42';
-  var TILE_ATTRIBUTION =
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
-    '&copy; <a href="https://carto.com/attributions">CARTO</a>';
+  /* The tiles, the key and the attribution are in assets/basemap.js, which
+     the map page and the lists picker draw from too — see the note at the top
+     of that file for why there is only one copy of them now. */
   var TALLINN = [59.437, 24.7536];
   var leafletReady = null;
 
@@ -1521,10 +1525,7 @@ a { color: var(--accent); }
     loadLeaflet().then(function (L) {
       clear(host);
       var map = L.map(host).setView(start || TALLINN, start ? 17 : 13);
-      L.tileLayer(TILE_KEY ? TILE_URL + '?key=' + encodeURIComponent(TILE_KEY) : TILE_URL, {
-        subdomains: 'abcd', maxZoom: 20, detectRetina: true,
-        attribution: TILE_ATTRIBUTION
-      }).addTo(map);
+      TTBBasemap.layer(L).addTo(map);
 
       var pin = L.marker(start || TALLINN, { draggable: true, autoPan: true }).addTo(map);
       /* A place with no coordinates yet gets a faint pin in the middle of the
