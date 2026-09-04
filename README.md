@@ -3163,12 +3163,24 @@ ellipsis through the label explaining the button. This way every language gets
 the same slide and none of them gets cut — the widest of the forty labels
 reaches 276px on a 320px screen.
 
-The colour swatch has no button of its own to grow, so the group around it
-does the growing and the swatch sits in it where the others keep their icon.
-Above 860px none of this applies: the `.dice` pills never lose their labels
-there, and `.style-label` / `.locate-label` are `display: none` — a
-pointer that can hover has the `title` instead, and two more words down the
-left edge would be two more than the map can spare.
+One rule covers all five, because all five are the same button: `.rail-btn`,
+with an icon at the left and the label beside it — a coloured dot standing in
+for the icon on the colour switch, which is what lets the switch wear the pill
+instead of sitting in a case of its own.
+
+**Above 860px none of the timing applies, and all five keep their words.**
+They did not used to. Three of the pills had a label there and the two under
+them did not: a coloured dot in a round case of its own and a crosshair in a
+second one, both mute, under three buttons that say what they are. The
+argument for that was that a pointer can hover and read a `title`, and that
+two more words down the left edge are two more than the map can spare — but
+what it actually put on the screen was two things that looked unfinished, and
+the eye counts labels before it counts jobs. So the swatch says which style it
+is about to give you and the crosshair says *Show my location*, in the words
+they were already carrying for the phone's sake, and the rail is one column of
+one shape. The longest pill on the rail is Ukrainian's
+`ПОКАЗАТИ МОЄ МІСЦЕЗНАХОДЖЕННЯ` at 267px, which is the width of the brand's
+own column above it and a fifth of a 1280px window — the map can spare that.
 
 At the foot of the rail is the locate button, which frames you
 together with the nearest place rather than dropping you at zoom 15 on
@@ -3177,13 +3189,13 @@ whatever street you are standing in —
 has the rest of it. It used to sit in the
 far bottom-left corner — the free one, but also as far from every other map
 control as the screen allows, so a thumb that had just pressed Surprise me had
-the length of the page to travel. It takes the rail's round shape so it reads
-as one of its buttons rather than as a stray card parked beneath them.
+the length of the page to travel. It wears the rail's own pill, so it reads as
+one of its buttons rather than as a stray card parked beneath them.
 
 The rail is vertically centred, and `placeRail()` in `assets/app.js` nudges it
-down on short windows so it can never ride up under the brand card — never so
-far down that its own foot leaves the screen, which is the floor the locate
-button used to provide by standing in the corner.
+down on short windows so it can never ride up under the brand — never so far
+down that its own foot leaves the screen, which is the floor the locate button
+used to provide by standing in the corner.
 
 ## The map tiles need a key
 
@@ -3411,7 +3423,9 @@ and it is why a button in the display face read as somebody else's button.
 
 `--hairline` is the only border weight on the site. `--shadow` lifts a card,
 `--lift` lifts something logo-sized standing on the map, and there is no third
-one.
+one. Text standing on the map has no shadow at all: `--glow` is paper packed
+tight around the glyphs and hazing out past them, so a word carries its own
+ground instead of a box with an edge.
 
 Corners come from the same short list: `--radius` (4px) for anything holding a
 picture or a page of words, `--radius-soft` (12px) for chrome floating on the
@@ -3523,17 +3537,39 @@ hairline weight, one soft shadow, nothing else. The tokens are the first thing
 in `assets/styles.css` and each of the two styles restates every one of them;
 change those values and the whole site follows.
 
-**The chrome.** Everything floats on the map: nothing has a page around it.
-One strip across the top — the brand card on the left, **Places** and the
-language switch on the right — and the filter chips on the line directly
-beneath it. The controls that are questions about the *map* rather than about
-the page stand on the map instead, in the left rail: the account at its head,
-then the colour switch, the radio, Surprise me, and locate at its foot. There are no zoom buttons; the wheel, a double-click, a pinch and
+**The chrome.** Everything floats on the map: nothing has a page around it,
+and the brand does not even have that. One strip across the top — the mark,
+the name and the one sentence on the left, **Places** and the language switch
+on the right — and the filter chips on the line directly beneath it. The
+controls that are questions about the *map* rather than about the page stand
+on the map instead, in the left rail: the account at its head, then Surprise
+me and the radio, then the colour switch, with locate at its foot. There are no zoom buttons; the wheel, a double-click, a pinch and
 the `+`/`-` keys all still zoom, and two more buttons standing on the map were
 paying for a job the map already does. The chips used to sit at the bottom,
 where the sheet covered them and they had to be hidden whenever the list was
 open; at the top they clear even the fully dragged-up sheet, so the filters can
 be changed while the list is showing.
+
+**There is no card under the name.** There was one, for the tagline's sake: a
+line of serif prose over a map full of street names looked like the one thing
+a glow behind the letters could not rescue, so the corner of the map carried a
+filled panel with a border round it — on a site whose whole subject is the map
+underneath. The phone layout had been proving the other case for as long as it
+has existed, where the handle stands on the map in nothing but `--glow` and
+reads perfectly well over Positron's pale land. The desktop takes the same
+deal now: the mark, the name, the sentence and the handle lie straight on the
+city, the sentence in the ink rather than the muted grey it wore inside the
+card, and the underline under the handle goes with the panel — a hairline
+under text lying on a map is a stray line, and it comes back on hover and on
+focus where it is answering a question rather than decorating.
+
+What the card leaves behind is its measure. `--brand-w` is the 288px box less
+the padding it used to hold, which is what still breaks the name after
+*Tallinn* and the sentence into two lines, and it is the number the chip row
+starts after so the two columns clear each other. And with nothing drawn
+there, nothing there takes a press: the block hands its pointer events to the
+map and the mark and the handle take theirs back one at a time, because a
+transparent rectangle that swallows a drag is a piece of dead map.
 
 **The ring is the only thing on the page that moves on its own.** Nothing else
 here animates without being asked: pins settle, panels slide, and that is the
@@ -3559,7 +3595,7 @@ hairline colour and just sits there until it goes altogether. Under
 still the difference between something being up and not.
 
 **Nothing above the chips drags the map.** That strip is chrome, and the map
-shows through the gaps in it: between the card and the buttons, around the
+shows through the gaps in it: between the brand and the buttons, around the
 chips, along the edges. A thumb aimed at a chip lands a few pixels off often
 enough that the whole city used to come with it. A press that starts anywhere
 above the bottom of the chip row now turns Leaflet's drag handler off, and the
@@ -3575,8 +3611,8 @@ unbinds them before the event ever gets that far.
 The chip scroller claims an invisible strip around itself as well, because a
 finger aiming at a 38px row lands a few pixels off often enough to drag Tallinn
 sideways instead. Most of that cushion is below the chips now — the side a
-thumb reaching up overshoots on — and the brand card and the controls sit above
-the scroller in the stack, so a tap on a button is always a tap on that button.
+thumb reaching up overshoots on — and the brand and the controls sit above the
+scroller in the stack, so a tap on a button is always a tap on that button.
 
 Under about 380px the handle and the three controls stop fitting on one line,
 so the controls take a line of their own and the chips drop below both.
@@ -3833,11 +3869,11 @@ the map. Hover tooltips stay inert, since the pointer is already on the dot.
 
 **The mark.** A mouth, open, mid-laugh — the one in the painting at
 `assets/logo/source-artwork.jpg`, cut out of it rather than redrawn from it.
-It sits above the name in the brand card
-rather than beside it, because beside it the wordmark has to break over two
-lines to clear the mark and *Tallinn Tastebuds* reads as one line or not at
-all. On a phone the card gives up its words and the mark is what is left
-standing for the name, on one line with the handle. On the map itself it goes
+It sits beside the name rather than above it: stacked above, it was a picture
+parked in the corner with half a line of nothing next to it, and beside the
+name it has a job, because the wordmark breaks after *Tallinn* and two lines
+of it stand exactly as tall as the circle does. On a phone the name is hidden
+and the mark is what is left standing for it, on one line with the handle. On the map itself it goes
 on one pin only — whichever place is open — cut out of the dot in the dot's
 own ring colour, so the pin keeps saying what it said before. The full account
 of it is in [The mark](#the-mark).

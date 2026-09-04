@@ -575,23 +575,25 @@
 
   function markStyleSwitch() {
     if (!dom.styles) return;
-    var btn = dom.styles.querySelector('.swatch');
+    var btn = dom.styles.querySelector('.rail-btn');
     if (!btn) return;
     var next = nextStyle();
-    btn.className = 'swatch sw-' + next;
+    btn.querySelector('.sw-dot').className = 'sw-dot sw-' + next;
     btn.setAttribute('aria-label', t(styleKey(next)));
     btn.setAttribute('title', t(styleKey(next)));
-    /* The label the phone shows while the rail is introducing itself names
-       the style you are about to get, exactly as the title does — so a swatch
-       that has just been pressed says the way back. */
-    var name = dom.styles.querySelector('.style-label');
+    /* The label names the style you are about to get, exactly as the title
+       does — so a swatch that has just been pressed says the way back. */
+    var name = btn.querySelector('.rail-label');
     if (name) name.textContent = t(styleKey(next));
   }
 
+  /* The same pill the rest of the rail wears, with a coloured dot where the
+     others keep their icon: a lone swatch in a case of its own was the one
+     button down here that never said what it did. */
   function renderStyleSwitch() {
     if (!dom.styles) return;
     clear(dom.styles);
-    var btn = el('button', { type: 'button', className: 'swatch' });
+    var btn = el('button', { type: 'button', className: 'rail-btn' });
     /* Read at click time, not at render: the button outlives every switch. */
     btn.addEventListener('click', function () {
       setStyle(nextStyle());
@@ -599,8 +601,9 @@
          one press in and the swatch is showing the other side again. */
       openHint('style', 0);
     });
+    btn.appendChild(el('span', { className: 'sw-dot' }));
+    btn.appendChild(el('span', { className: 'rail-label' }));
     dom.styles.appendChild(btn);
-    dom.styles.appendChild(el('span', { className: 'style-label rail-label' }));
     markStyleSwitch();
   }
 
@@ -3000,9 +3003,9 @@
    * seconds and collapses back to its icon. Long enough to read twice, gone
    * before it is furniture.
    *
-   * The class is inert above 860px, where the pills that have a label there
-   * never lose it and the rest never want one, so none of this needs to ask
-   * how wide the window is.
+   * The class is inert above 860px, where every pill on the rail wears its
+   * label and none of them ever lets it go, so none of this needs to ask how
+   * wide the window is.
    */
   var HINT_MS = 4200;
   /* Top to bottom, which is the order they open in. */
@@ -3048,13 +3051,12 @@
   var railWaited = false;
   var railWaiting = false;
 
-  /* The colour swatch has no button of its own to grow: the group around it
-     is the pill, with the swatch sitting in it where the others keep their
-     icon. */
+  /* The swatch is the one that is not in the markup — renderStyleSwitch draws
+     it into the group — so it is asked for by class rather than held in dom. */
   function hintPill(key) {
     if (key === 'account') return dom.btnAccount;
     if (key === 'radio') return dom.btnRadio;
-    if (key === 'style') return dom.styles;
+    if (key === 'style') return dom.styles && dom.styles.querySelector('.rail-btn');
     if (key === 'locate') return dom.btnLocate;
     return dom.btnRandom;
   }
