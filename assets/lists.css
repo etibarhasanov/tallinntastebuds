@@ -539,6 +539,78 @@ a.item-name:hover .item-where { color: var(--accent); }
   stroke-linejoin: round;
 }
 
+/* ---------- carrying a row ---------- */
+
+/* The handle. It says "pick me up" three ways: the six dots, the hand the
+   cursor turns into, and — the one that matters on a phone — `touch-action:
+   none`, which takes it out of the page's own scrolling so a finger landing
+   here is carrying a row and cannot be doing anything else. The rest of the
+   row keeps its scroll and asks for a moment's hold instead; see lift(). */
+.row-grip {
+  cursor: grab;
+  touch-action: none;
+}
+.row-grip:active { cursor: grabbing; }
+/* Dots, not rings: the shared .row-btn svg rule strokes and does not fill. */
+.row-grip svg { width: 16px; height: 16px; fill: currentColor; stroke: none; }
+
+/* A long press is also how a phone offers to select text and open the callout
+   menu, and neither is what this gesture means. */
+.item.is-mine { -webkit-touch-callout: none; }
+
+/* Only while something is being carried, so a redraw of a settled list never
+   animates: the rows slide out of the way of the hole rather than jumping. */
+.list-items.is-sorting .item { transition: transform 170ms cubic-bezier(.2, .7, .3, 1); }
+/* The note box is not typed in mid-carry, and a caret landing in one under a
+   moving finger would be nobody's intention. */
+.list-items.is-sorting .item-input { pointer-events: none; }
+
+/* The row that is up. It follows the pointer frame by frame, so it is the one
+   row that must not be on a transition — it would lag behind the finger by the
+   whole length of it. */
+.list-items.is-sorting .item.is-lifted {
+  position: relative;
+  z-index: 3;
+  transition: none;
+  border-color: var(--accent);
+  box-shadow: 0 12px 28px rgba(60, 24, 18, .18);
+  cursor: grabbing;
+}
+
+.lists-body.is-carrying {
+  cursor: grabbing;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Where it landed, for a moment, for the eye that was following the finger
+   rather than the numbers. */
+@keyframes lists-landed {
+  from {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+  to { border-color: var(--hairline); box-shadow: var(--shadow); }
+}
+.item.is-landed { animation: lists-landed 620ms ease-out; }
+
+/* The move said out loud and drawn nowhere. */
+.lists-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .list-items.is-sorting .item { transition: none; }
+  .item.is-landed { animation: none; }
+}
+
 /* ---------- the picker ---------- */
 
 .picker {
