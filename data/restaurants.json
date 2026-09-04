@@ -1526,9 +1526,9 @@
     "price": 2,
     "types": [
       "restaurant",
-      "vegan",
       "date",
-      "asian"
+      "asian",
+      "vegan"
     ],
     "blurb": {
       "az": "Eston, Asiya və Avropa dadlarını birləşdirən rahat vegan kafe. İsindirən ramen, xırtıldayan portobello və ev desertləri. Fərqli bir şeylə yavaş şam yeməyi üçün əla yer.",
@@ -1548,11 +1548,10 @@
     ],
     "reel": "https://www.instagram.com/reel/DJqx5zFsZT2/",
     "photos": [],
-    "website": "",
     "phone": "+372 5656 9974",
     "added": "2026-08-23",
     "visited": "2025-05",
-    "closed": false
+    "closed": true
   },
   {
     "id": "magussoolane",
