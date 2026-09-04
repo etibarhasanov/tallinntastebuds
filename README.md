@@ -1752,14 +1752,20 @@ account button simply does not appear.
   and "the ones most people kept" says nothing about any restaurant on them.
   It is still a leaderboard, and a leaderboard changes what people write for.
   Worth deciding on its own terms rather than inheriting from this.
-- **Reporting a missing place.** A place that is not in the catalogue cannot
-  be added, and there is no way to ask for one. The CSV is the way in.
+- **Adding a place the catalogue does not have.** A place that is not in
+  `data/places.json` cannot go on a list, and there is no way to ask for one.
+  The CSV is the way in.
 
-  There is a table for it, though — `added_places`, in both databases and in
-  no code, found by listing the tables rather than by reading any. It is
-  written into `db/schema.sql` with that said plainly, so the next person to
-  look finds an explanation instead of finding it cold. Kept rather than
-  dropped: dropping a table is not recoverable and this one costs nothing.
+  The table for it exists — `added_places`, in both databases, holding no rows
+  and referenced by no code. It is written into `db/schema.sql` with the shape
+  it actually has and with what still has to be true before a row in it is
+  useful. The short version: the blocker is not the table, it is that
+  `add()` in `functions/api/lists.js` validates every place id against the
+  catalogue and refuses anything else — which is the check that stops the
+  table filling with places that do not exist, so it has to learn about
+  `added_places` rather than be relaxed. Two smaller decisions go with it: the
+  id has to be tellable apart from a catalogue slug and a Google key, and a row
+  there has no address column while every other place on a list has one.
 - **Anything social.** No following, no hearts, no comments on somebody
   else's list. A keep is the one thing you can do to a list somebody else made,
   and it is silent: its owner sees a number and never who.
