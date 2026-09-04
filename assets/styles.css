@@ -32,13 +32,24 @@
   --map-tint: rgba(168, 30, 40, .36);
   --swatch-edge: rgba(0, 0, 0, .14);
 
-  /* Two tokens for chrome that stands on the map with no card under it.
+  /* Three tokens for chrome that stands on the map with no card under it.
      --lift is a short shadow for a picture at logo size: --shadow is a card's
      shadow, 28px of blur meant to lift a 288px panel, and under a 40px circle
      it reads as a smudge rather than as a lift. --glass is the tint the
-     button bar is washed with when the map shows through it. */
+     button bar is washed with when the map shows through it. And --glow is
+     what holds a letter apart from the map when there is nothing behind it at
+     all: paper pressed tight around the glyph on all four sides and a wider
+     haze past that, so the ground reads as light around the word rather than
+     as a box with an edge. The brand's name, its sentence and its handle all
+     wear that one, in both layouts — and it is built out of var(--paper), so
+     it turns dark with the rest of the palette without a second line
+     anywhere. */
   --lift:  0 1px 6px rgba(74, 26, 22, .28);
   --glass: rgba(255, 240, 234, .74);
+  --glow:
+     0   1px 2px var(--paper), 0  -1px 2px var(--paper),
+     1px 0   2px var(--paper), -1px 0   2px var(--paper),
+     0   0   8px var(--paper);
 
   /* The ring round the mark when a story is up, and what is left of it once
      you have watched them all. A gradient rather than a colour because that
@@ -62,6 +73,11 @@
   --radius: 4px;
   --radius-soft: 12px;
   --gap: 16px;
+  /* The measure the brand is set to, and the number the chip row starts
+     after: two rules that have to agree, so they read the same one. It is
+     the width the sentence had inside the card that used to be drawn here —
+     the card is gone, the line breaks are not supposed to move with it. */
+  --brand-w: 250px;
   --panel-w: 420px;
   --ease: cubic-bezier(.22, .61, .36, 1);
 
@@ -597,23 +613,40 @@ a:hover { color: var(--accent-lit); }
 
 /* ---------- brand ---------- */
 
-/* On a desktop the card stays, because it is holding a sentence. The tagline
-   is a line of serif prose over a map full of street names, and prose is the
-   one thing a glow behind the letters cannot rescue — it needs a page under
-   it. So the surface lives here rather than on a shared .card class: below
-   860px there is no tagline left to carry and the card goes away entirely. */
+/* No card, at either width. There was one here for the tagline's sake — a
+   line of serif prose over a map full of street names looked like the one
+   thing a glow behind the letters could not rescue — and what it actually
+   put in the corner was a filled box with an edge, sitting on the map the
+   site is entirely about. The glow does hold the sentence: --glow is paper
+   packed tight around each glyph, so the letters carry their own ground with
+   them and the streets fade out behind the words instead of stopping at a
+   border. The phone layout had been proving that for the handle for as long
+   as it has existed; this is the desktop taking the same deal.
+
+   The measure stays what it was inside the card — --brand-w is the 288px box
+   less the padding it used to hold — because that is what breaks the name
+   after Tallinn and the sentence into two lines, and it is the number
+   .filter-bar starts the chip row after, so the two columns still clear each
+   other.
+
+   And with nothing drawn here, nothing here takes a press either. A card was
+   honest about swallowing the drag underneath it; a transparent box the same
+   size is not — the words are lying on the city and the city has to come away
+   under them. The two things that are actually pressed — the mark when a
+   story is up, and the handle — take their pointer events back one at a time.
+   Above the chip row nothing drags the map in any case, guard or no guard
+   (see wireTopGuard in assets/app.js), so what this frees in practice is the
+   sentence and the handle, which hang below that line. */
 .brand {
   position: fixed;
   z-index: 1001;
   top: calc(var(--gap) + var(--safe-t));
   left: calc(var(--gap) + var(--safe-l));
-  width: 288px;
-  padding: 16px 18px 15px;
-  background: var(--paper);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-soft);
-  box-shadow: var(--shadow);
+  width: var(--brand-w);
+  pointer-events: none;
 }
+.brand-ring,
+.brand .ig-link { pointer-events: auto; }
 
 /* The mark and the name, locked together. Stacked above it the mark was a
    picture parked in the corner of the card with half a line of nothing beside
@@ -644,6 +677,12 @@ a:hover { color: var(--accent-lit); }
   border-radius: 100px;
   object-fit: cover;
   flex: 0 0 auto;
+  /* A paper ring rather than a border: it holds the circle apart from
+     whatever the map puts behind it without drawing a second edge, and it is
+     the one the pins already wear. The short shadow under it is the same one
+     the pins take, for the same reason — a photograph lying straight on the
+     city needs a millimetre of air under it to read as a thing on top. */
+  box-shadow: 0 0 0 2px var(--paper), var(--lift);
 }
 
 /* ---------- the story ring ---------- */
@@ -700,7 +739,7 @@ a:hover { color: var(--accent-lit); }
 }
 .brand-ring .brand-mark {
   position: relative;
-  box-shadow: 0 0 0 2.5px var(--paper);
+  box-shadow: 0 0 0 2.5px var(--paper), var(--lift);
   transition: transform .18s var(--ease);
 }
 /* A pointer gets the last nudge: the mark leans up a step under it, which is
@@ -740,6 +779,10 @@ a:hover { color: var(--accent-lit); }
   100% { opacity: 0;   transform: scale(1.6); }
 }
 
+/* All three lines wear the glow, because all three of them are lying on the
+   map. The sentence takes the ink rather than the muted grey it wore inside
+   the card as well: on paper a second colour reads as a caption under a
+   name, and out here it reads as text that has not quite landed. */
 .wordmark {
   font-family: var(--display);
   font-size: 25px;
@@ -747,25 +790,34 @@ a:hover { color: var(--accent-lit); }
   letter-spacing: -.025em;
   line-height: 1.1;
   margin: 0;
+  text-shadow: var(--glow);
 }
 
 .tagline {
   font-size: 13.5px;
   line-height: 1.55;
-  color: var(--muted);
+  color: var(--ink);
   margin-bottom: 11px;
+  text-shadow: var(--glow);
 }
 
+/* The underline went with the card: a hairline under text lying on a map is
+   a stray line, one more thing in the corner with an edge. It comes back on
+   hover and on focus, where it is answering a question rather than
+   decorating — and the border stays in the box either way, so nothing shifts
+   by a pixel when it does. */
 .ig-link {
   display: inline-block;
   font-family: var(--mono);
   font-size: 11.5px;
   letter-spacing: .01em;
   text-decoration: none;
-  border-bottom: 1px solid var(--hairline);
+  border-bottom: 1px solid transparent;
   padding-bottom: 1px;
+  text-shadow: var(--glow);
 }
-.ig-link:hover { border-bottom-color: currentColor; }
+.ig-link:hover,
+.ig-link:focus-visible { border-bottom-color: currentColor; }
 
 /* ---------- top-right controls ---------- */
 
@@ -871,41 +923,6 @@ a:hover { color: var(--accent-lit); }
   letter-spacing: .1em;
   min-width: 0;
 }
-
-.btn-icon svg {
-  width: 22.8px;
-  height: 22.8px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-}
-#btn-locate svg circle:first-child { fill: currentColor; stroke: none; }
-
-/* ---------- the locate button: the foot of the rail ---------- */
-
-/* Where you are is a question about the map, not about the chrome, so the
-   button answers it from inside the map rather than from the strip of
-   controls at the top. It used to answer from the far bottom-left corner,
-   which is the free one but also as far from every other map control as the
-   screen allows — a thumb that had just pressed Surprise me had the length of
-   the page to travel. It sits at the foot of the rail now, under the colour
-   swatch, and takes the rail's round shape so it reads as one of its buttons
-   rather than as a stray card parked beneath it. */
-.locate-dock { border-radius: 100px; }
-/* Sized here rather than left to .btn, whose 38px was drawn around a 19px
-   crosshair. The disc follows the icon by exactly what the icon moves, so the
-   ring of space around it is the one it always had — which is what keeps it
-   reading as one of the rail's circles rather than as a card parked under
-   them. */
-.locate-dock .btn { border-radius: 100px; min-width: 42.3px; height: 42.3px; }
-
-/* The swatch and the locate button carry no label on a desktop: there is a
-   hover title on both, the pointer that reads it is right there, and two more
-   words down the left edge would be two more than the map can spare. They
-   borrow one for a few seconds on a phone — see the rail hints in the phone
-   layout, where hover does not exist. */
-.style-label, .locate-label { display: none; }
 
 /* ==========================================================================
    The two styles — brick by day, forest by night.
@@ -1015,48 +1032,25 @@ a:hover { color: var(--accent-lit); }
   gap: 10px;
 }
 
-.styles {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  padding: 7px;
-  background: var(--paper);
-  border: 1px solid var(--hairline);
-  border-radius: 100px;
-  box-shadow: var(--shadow);
-}
+/* One pill, written once, worn by all five. The account, Surprise me and the
+   radio had it and the two below them did not: a colour swatch in a round
+   case of its own and a crosshair in a second one, both of them mute, under
+   three buttons that say what they are. Down the left edge of the map that
+   read as two things somebody had forgotten to finish rather than as the
+   quieter half of one rail — the eye counts labels before it counts jobs. So
+   the swatch and the crosshair are pills too, wearing the words they were
+   already carrying for the phone's sake, and the rail is one column of one
+   shape.
 
-/* One button, not two. There are two styles and one of them is always the one
-   you are already looking at, so the second swatch was a control that did
-   nothing. What is left shows the side you are not on: press the dark swatch
-   to go dark, press the light one to come back. */
-.swatch {
-  width: 24px;
-  height: 24px;
-  border-radius: 100px;
-  border: 1px solid var(--swatch-edge);
-  transition: transform .15s var(--ease);
-}
-.swatch:hover { transform: scale(1.15); }
-.swatch:focus-visible { outline-offset: 3px; }
-
-/* The light style is its accent; the dark one is its card with the accent as
-   a ring, so the rail says which of the two you are about to get before you
-   press it. */
-.sw-red    { background: #a81e28; }
-.sw-green  { background: #1d2a23; box-shadow: inset 0 0 0 4.8px #6fd39a; }
-
-/* ---------- random pick ---------- */
-
-/* display on a class beats the UA sheet's [hidden] rule, so every button in
+   display on a class beats the UA sheet's [hidden] rule, so every button in
    here that can be taken away has to be told to go. Two are: the radio, when
    data/radio.json has no station for the language, and the account, until
    /api/account says the database behind it is actually bound. Without this
    both draw as an empty pill instead of not drawing at all — the same trap
    .search-clear and .panel-save fall into further down. */
-.dice[hidden] { display: none; }
+.rail-btn[hidden] { display: none; }
 
-.dice {
+.rail-btn {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
@@ -1075,8 +1069,8 @@ a:hover { color: var(--accent-lit); }
   white-space: nowrap;
   transition: border-color .15s var(--ease), color .15s var(--ease);
 }
-.dice:hover { border-color: var(--accent); color: var(--accent); }
-.dice svg {
+.rail-btn:hover { border-color: var(--accent); color: var(--accent); }
+.rail-btn svg {
   width: 21.6px;
   height: 21.6px;
   fill: none;
@@ -1084,8 +1078,44 @@ a:hover { color: var(--accent-lit); }
   stroke-width: 1.5;
   transition: transform .25s var(--ease);
 }
-.dice svg .pip { fill: var(--accent); stroke: none; }
-.dice:hover svg { transform: rotate(-20deg); }
+.rail-btn svg .pip { fill: var(--accent); stroke: none; }
+.rail-btn:hover svg { transform: rotate(-20deg); }
+
+/* ---------- the colour swatch ---------- */
+
+/* A group with nothing drawn on it. The button inside is the pill, the way it
+   is everywhere else on the rail; the group is only what assets/app.js
+   renders the switch into, and what names the pair of them to a screen
+   reader. */
+.styles { display: flex; }
+
+/* One button, not two. There are two styles and one of them is always the one
+   you are already looking at, so the second swatch was a control that did
+   nothing. What is left shows the side you are not on: press the dark swatch
+   to go dark, press the light one to come back — and the label beside it
+   names that side, so the pill reads as the thing you are about to get.
+
+   The colour is a dot inside the button rather than the button itself, which
+   is what lets the switch wear the same pill as the rest of the rail. It is
+   the size of the icons above it and it leans in under a pointer the way
+   they turn, so the one button here with no drawing in it still answers. */
+.sw-dot {
+  width: 21.6px;
+  height: 21.6px;
+  flex: 0 0 auto;
+  border-radius: 100px;
+  border: 1px solid var(--swatch-edge);
+  transition: transform .15s var(--ease);
+}
+.rail-btn:hover .sw-dot { transform: scale(1.15); }
+
+/* The light style is its accent; the dark one is its card with the accent as
+   a ring, so the rail says which of the two you are about to get before you
+   press it. */
+.sw-red    { background: #a81e28; }
+.sw-green  { background: #1d2a23; box-shadow: inset 0 0 0 4.3px #6fd39a; }
+
+/* ---------- the radio ---------- */
 
 /* The radio wears the same pill as Surprise me: it is the same kind of thing,
    a switch for the mood of the place rather than part of the map. */
@@ -1105,19 +1135,35 @@ a:hover { color: var(--accent-lit); }
    the button inside the rail; the ellipsis stays for anything longer. */
 .radio-name { max-width: 18ch; overflow: hidden; text-overflow: ellipsis; }
 
+/* ---------- the locate button: the foot of the rail ---------- */
+
+/* Where you are is a question about the map, not about the chrome, so the
+   button answers it from inside the map rather than from the strip of
+   controls at the top. It used to answer from the far bottom-left corner,
+   which is the free one but also as far from every other map control as the
+   screen allows — a thumb that had just pressed Surprise me had the length of
+   the page to travel. It is the foot of the rail now, and one of the rail's
+   own buttons rather than a card parked beneath them — which is also what
+   turns the crosshair from the muted grey of the chrome at the top into the
+   accent the rest of the rail's icons are drawn in. The dot in the middle of
+   it is filled with the accent for the same reason, rather than with the ink
+   the label beside it is set in. */
+#btn-locate svg circle:first-child { fill: var(--accent); stroke: none; }
+
 /* ---------- filters ---------- */
 
 /* The bar is fixed; only the chips inside it scroll, so the random-pick
    button stays reachable however far along the vocabulary you are. */
 /* The chips sit under the top strip of chrome. On a desktop they start where
-   the brand card ends, so the card keeps its own column and the row runs from
-   there to the edge; on a phone the card is one short line and the row spans
-   the full width beneath it. --chrome-h is the height of that strip. */
+   the brand's column ends, so the name and its sentence keep that column and
+   the row runs from there to the edge; on a phone the brand is one short line
+   and the row spans the full width beneath it. --chrome-h is the height of
+   that strip. */
 .filter-bar {
   position: fixed;
   z-index: 1000;
   --chrome-h: 40px;
-  left: calc(var(--gap) + var(--safe-l) + 288px + 16px);
+  left: calc(var(--gap) + var(--safe-l) + var(--brand-w) + 16px);
   right: calc(var(--gap) + var(--safe-r));
   top: calc(var(--gap) + var(--safe-t) + var(--chrome-h) + 12px);
   display: flex;
@@ -1691,7 +1737,7 @@ body.panel-detail .panel {
 /* The rail button wears the name of whoever is signed in, so it can run
    longer than the fixed-width buttons around it. */
 #btn-account.is-on { color: var(--accent); }
-#btn-account .dice-label { max-width: 12ch; overflow: hidden; text-overflow: ellipsis; }
+#btn-account .rail-label { max-width: 12ch; overflow: hidden; text-overflow: ellipsis; }
 
 /* The offer of an account, after a save made signed out. It stands where the
    toast stands and looks like a quieter relative of it: same corner of the
@@ -2799,10 +2845,6 @@ body.panel-detail .panel {
     align-items: center;
     gap: 0 10px;
     width: auto;
-    padding: 0;
-    background: none;
-    border: 0;
-    box-shadow: none;
   }
   /* The one sentence on this site that says what it is: every place on this
      map is a place I have eaten in myself. A stranger who arrives on a phone
@@ -2815,14 +2857,8 @@ body.panel-detail .panel {
 
      Collapsed by default and opened by .hint-open from assets/app.js: the
      height animates so the sentence unrolls under the mark instead of
-     appearing over the map, and the paper glow behind the letters is the one
-     the handle beside it already wears, since there is no card down here to
-     put prose on. max-height is a ceiling for the transition to run to, set
-     well past the three lines the longest translation takes.
-
-     It never takes a tap: pointer-events go to the map under it, so the
-     sentence lying across the top left corner is not a piece of dead map for
-     the seconds it is up. */
+     appearing over the map. max-height is a ceiling for the transition to
+     run to, set well past the three lines the longest translation takes. */
   .brand .tagline {
     order: 3;
     flex-basis: 100%;
@@ -2833,12 +2869,6 @@ body.panel-detail .panel {
     opacity: 0;
     font-size: 13px;
     line-height: 1.4;
-    color: var(--ink);
-    pointer-events: none;
-    text-shadow:
-       0   1px 2px var(--paper), 0  -1px 2px var(--paper),
-       1px 0   2px var(--paper), -1px 0   2px var(--paper),
-       0   0   8px var(--paper);
     transition: opacity .3s var(--ease), max-height .38s var(--ease),
                 margin-top .38s var(--ease);
   }
@@ -2857,21 +2887,13 @@ body.panel-detail .panel {
   body.brand-telling .filter-bar { transform: translateY(var(--tell-h, 46px)); }
   .brand-head { margin: 0; }
 
-  /* A paper ring rather than a border: it holds the circle apart from
-     whatever the map puts behind it without drawing a second edge, and it is
-     the one the pins already wear. */
-  .brand-mark {
-    width: 40px;
-    height: 40px;
-    box-shadow: 0 0 0 2px var(--paper), var(--lift);
-  }
+  .brand-mark { width: 40px; height: 40px; }
 
-  /* The ring comes in a step with the circle it is drawn round, and the mark
-     keeps the lift it wears out here on the map with no card under it. */
+  /* The ring comes in a step with the circle it is drawn round, and the paper
+     between the two comes in with it. */
   .brand-ring::before { inset: -4px; }
   .brand-ring .brand-mark { box-shadow: 0 0 0 2px var(--paper), var(--lift); }
 
-  .brand .eyebrow,
   .brand .wordmark {
     position: absolute;
     width: 1px;
@@ -2883,15 +2905,9 @@ body.panel-detail .panel {
     clip-path: inset(50%);
   }
   /* Up here the handle is not a username printed under a name — it is the
-     only name on the screen, so it takes the face the wordmark uses instead
-     of the mono the desktop card sets it in, and the size of a name rather
-     than of a footnote.
-     What replaces the card behind it is a glow in the paper colour, which
-     over Positron's pale land holds the letters as well as a filled box did
-     and puts nothing on the screen with an edge. The underline goes with the
-     card for the same reason: a hairline under text lying on a map is a
-     stray line. It comes back on hover and on focus, where it is answering
-     a question rather than decorating. */
+     only name on the screen, with the wordmark hidden above it, so it takes
+     the face the wordmark uses instead of the mono the desktop sets it in,
+     and the size of a name rather than of a footnote. */
   .brand .ig-link {
     font-family: var(--display);
     font-size: 15px;
@@ -2899,18 +2915,10 @@ body.panel-detail .panel {
     letter-spacing: -.015em;
     line-height: 1.2;
     color: var(--ink);
-    border-bottom-color: transparent;
     white-space: nowrap;
-    text-shadow:
-       0   1px 2px var(--paper), 0  -1px 2px var(--paper),
-       1px 0   2px var(--paper), -1px 0   2px var(--paper),
-       0   0   8px var(--paper);
   }
   .brand .ig-link:hover,
-  .brand .ig-link:focus-visible {
-    color: var(--accent);
-    border-bottom-color: currentColor;
-  }
+  .brand .ig-link:focus-visible { color: var(--accent); }
 
   /* A 320px screen has about 150px left over once LIST and the language
      button have taken theirs, and the mark and the handle at full size want
@@ -3137,10 +3145,9 @@ body.panel-detail .panel {
      after that.
 
      Every one of them is the same shape: an icon at the left, a label that
-     grows out of nothing beside it, and a pill drawn around the pair. The
-     colour swatch has no button of its own to grow, so the group around it
-     does the growing and the swatch sits in it where the others keep their
-     icon. */
+     grows out of nothing beside it, and a pill drawn around the pair — which
+     is one rule now that the swatch and the crosshair wear the same pill as
+     the three above them. */
   .rail-label {
     display: block;
     min-width: 0;
@@ -3156,39 +3163,19 @@ body.panel-detail .panel {
      that job — one wide enough for "Показать моё местоположение" makes "Red"
      snap open in a tenth of the time, and one tuned to "Red" puts an ellipsis
      through the label explaining the button. This way every language gets the
-     same slide and none of them gets cut. */
-  .dice, .styles, .locate-dock .btn {
+     same slide and none of them gets cut.
+
+     Collapsed it is a 35.6px disc — 21.6px of icon, 6px each side, the border
+     on top of that — so the buttons still read as one column of circles down
+     the edge of the map. One set of numbers for all five, because every icon
+     on the rail is drawn at the same size, the swatch's dot included. */
+  .rail-btn {
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: auto 0fr;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-  }
-  /* Spelled out one by one rather than as a bare .hint-open: the collapsed
-     rule above reaches the locate button through .locate-dock, and a single
-     class cannot outrank two. */
-  .dice.hint-open,
-  .styles.hint-open,
-  .locate-dock .btn.hint-open { grid-template-columns: auto 1fr; }
-
-  /* The swatch and the locate button borrow the rail's own voice for the few
-     seconds they are wearing words: the same mono the two above them wear, in
-     each one's own colour rather than a third one. */
-  .style-label, .locate-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: .13em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  /* Collapsed it is a 35.6px disc — 21.6px of icon, 6px each side, the border
-     on top of that — so the buttons still read as one column of circles down
-     the edge of the map. Each keeps its own numbers because each starts from a
-     different icon. */
-  .dice {
     width: auto;
     min-width: 35.6px;
     height: 35.6px;
@@ -3198,31 +3185,13 @@ body.panel-detail .panel {
                 grid-template-columns .34s var(--ease),
                 padding .34s var(--ease), gap .34s var(--ease);
   }
-  .dice.hint-open { padding: 0 13px 0 6px; gap: 8px; }
-
-  .styles {
-    gap: 0;
-    padding: 6px;
-    transition: grid-template-columns .34s var(--ease),
-                padding .34s var(--ease), gap .34s var(--ease);
+  .rail-btn.hint-open {
+    grid-template-columns: auto 1fr;
+    padding: 0 13px 0 6px;
+    gap: 8px;
   }
-  .styles.hint-open { padding: 6px 13px 6px 6px; gap: 8px; }
-
-  .locate-dock .btn {
-    gap: 0;
-    padding: 0 7px;
-    transition: background-color .15s var(--ease), color .15s var(--ease),
-                grid-template-columns .34s var(--ease),
-                padding .34s var(--ease), gap .34s var(--ease);
-  }
-  .locate-dock .btn.hint-open { padding: 0 13px 0 7px; gap: 8px; }
 
   .rail { gap: 8px; }
-  .swatch { width: 21.6px; height: 21.6px; }
-  /* .btn is 34px on a phone, drawn for the chrome at the top; the locate
-     button carries the rail's own crosshair, so it keeps the same margin
-     around it here as the discs above it do. */
-  .locate-dock .btn { min-width: 37.3px; height: 37.3px; }
 
   .place-name { font-size: 26px; }
   .photo-grid { grid-template-columns: repeat(3, 1fr); }
