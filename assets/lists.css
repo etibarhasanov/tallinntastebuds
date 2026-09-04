@@ -775,6 +775,79 @@ body.has-scrim { overflow: hidden; }
 .picker-add-form .picker-title { margin: 2px 0 12px; }
 .picker-add-form .lists-acts { margin-top: 12px; justify-content: flex-end; }
 
+/* The address, and the button that turns it into a point. One row, because
+   the button belongs to the field beside it and not to the form: pressing it
+   moves the pin, it does not add anything. The field takes the slack and the
+   button takes what it needs, so a longer word for "Find" in another language
+   is given room rather than wrapped. */
+/* The address, the suggestions it drops, and the button that takes the first
+   one. One row, because the button belongs to the field beside it and not to
+   the form: pressing it moves the pin, it does not add anything.
+
+   The row is a stacking context of its own and sits above the map below it —
+   Leaflet's panes climb into the hundreds, and a suggestion list that
+   disappeared behind the map would be the whole feature gone. */
+.picker-find-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  position: relative;
+  z-index: 500;
+}
+/* The field and its list, which is positioned against this rather than
+   against the row — so the list is the width of the input and does not run
+   under the button. */
+.picker-find-field { position: relative; flex: 1 1 auto; min-width: 0; }
+.picker-find-field .lists-input { width: 100%; }
+.picker-find { flex: 0 0 auto; padding: 10px 12px; white-space: nowrap; }
+
+/* Suggestions, hanging under the field. Absolute, so the map below does not
+   jump down by the height of the list every time somebody types. */
+.picker-suggest {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 1;
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  max-height: 216px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
+}
+
+.picker-suggest-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 10px;
+  border-radius: calc(var(--radius) - 3px);
+  cursor: pointer;
+}
+/* One highlight for both, because the arrow keys and the mouse are pointing
+   at the same thing and two different-looking "this one" states in one list
+   is a list that looks like it has two cursors. */
+.picker-suggest-row.is-active { background: var(--wash); }
+
+.picker-suggest-name {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  overflow-wrap: anywhere;
+}
+.picker-suggest-where {
+  color: var(--muted);
+  font-size: 10.5px;
+  letter-spacing: .03em;
+  overflow-wrap: anywhere;
+}
+
 /* The square of map. A fixed height rather than an aspect ratio: this sits in
    a sheet that is already clamped to the viewport, and a ratio would let it
    push the button underneath off the bottom on a short phone. */

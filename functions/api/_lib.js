@@ -243,6 +243,24 @@ export async function knownPlaces(context) {
   return known;
 }
 
+/* ---------------------------------------------------------------- Tallinn
+ * The box a point has to fall inside to be one of ours. Roughly 60km around
+ * the city, which is generous — it reaches Paldiski and past Kehra — and
+ * still refuses a point in another country.
+ *
+ * It lives here rather than beside either of its users because there are two:
+ * /api/lists checks a submitted pin against it, and /api/geocode asks
+ * Nominatim to look only inside it. Two copies would be one drifting copy,
+ * and the drift would show up as an address the geocoder was happy to find
+ * and the save then refused.
+ */
+export const TALLINN = { lat: 59.437, lng: 24.7536, degLat: 0.55, degLng: 1.1 };
+
+export function nearTallinn(lat, lng) {
+  return Math.abs(lat - TALLINN.lat) <= TALLINN.degLat &&
+    Math.abs(lng - TALLINN.lng) <= TALLINN.degLng;
+}
+
 /* ------------------------------------------------------------- catalogue
  * The other roll of places, and a wider one: data/places.json is the map plus
  * whatever came out of the Google Maps export, and it is what a list draws

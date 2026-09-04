@@ -45,7 +45,7 @@
      stylesheet; only what a list page has and the map does not is in the
      second file. -->
 <link rel="stylesheet" href="/assets/styles.css?v=d33aaef1">
-<link rel="stylesheet" href="/assets/lists.css?v=b00933f5">
+<link rel="stylesheet" href="/assets/lists.css?v=e60b507c">
 </head>
 <body class="lists-body">
 
@@ -116,6 +116,11 @@
   </div>
 </noscript>
 
-<script src="/assets/lists.js?v=2d692d71" defer></script>
+<!-- The basemap the "add a place" picker draws, shared with the map page.
+     Before lists.js and deferred like it, so document order puts the global
+     in place first. It is the only part of the map this page loads eagerly —
+     Leaflet itself is still fetched only when the picker is opened. -->
+<script src="/assets/basemap.js?v=bf2dd374" defer></script>
+<script src="/assets/lists.js?v=a4f13cbb" defer></script>
 </body>
 </html>
