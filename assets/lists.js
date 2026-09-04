@@ -363,7 +363,7 @@
 
   function mapLink(id, className) {
     return el('a', {
-      className: className || 'lists-alt',
+      className: className || 'alt',
       href: mapHref(id),
       textContent: t('listsOnMap')
     });
@@ -410,7 +410,7 @@
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
       heading(t('listsTitle')),
       el('p', { className: 'lists-say', textContent: t('loadError') }),
-      el('a', { className: 'lists-alt', href: '/', textContent: t('listsBack') })
+      el('a', { className: 'alt', href: '/', textContent: t('listsBack') })
     ]);
   }
 
@@ -423,7 +423,7 @@
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
       heading(t('listsTitle')),
       el('p', { className: 'lists-say', textContent: t('listsErrOff') }),
-      el('a', { className: 'lists-alt', href: '/', textContent: t('listsBack') })
+      el('a', { className: 'alt', href: '/', textContent: t('listsBack') })
     ]);
   }
 
@@ -477,7 +477,7 @@
       'aria-label': t('listsNewName'),
       placeholder: t('listsNewHint')
     });
-    var go = el('button', { type: 'submit', className: 'lists-go', textContent: t('listsCreate') });
+    var go = el('button', { type: 'submit', className: 'go', textContent: t('listsCreate') });
 
     form.appendChild(field);
     form.appendChild(go);
@@ -549,8 +549,8 @@
       el('p', { className: 'lists-say', textContent: t('listsWhat') }),
       el('p', { className: 'lists-say', textContent: t('listsNeedAccount') }),
       el('div', { className: 'lists-row' }, [
-        el('a', { className: 'lists-go', href: accountHref('up'), textContent: t('accountCreate') }),
-        el('a', { className: 'lists-alt', href: accountHref('in'), textContent: t('accountSignIn') })
+        el('a', { className: 'go', href: accountHref('up'), textContent: t('accountCreate') }),
+        el('a', { className: 'alt', href: accountHref('in'), textContent: t('accountSignIn') })
       ])
     ]);
   }
@@ -565,7 +565,7 @@
         el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
         heading(t('listsGoneTitle')),
         el('p', { className: 'lists-say', textContent: t('listsErrGone') }),
-        el('a', { className: 'lists-alt', href: '/', textContent: t('listsBack') })
+        el('a', { className: 'alt', href: '/', textContent: t('listsBack') })
       ]);
     }
 
@@ -595,11 +595,11 @@
       wrap.appendChild(el('div', { className: 'lists-row lists-foot' }, [
         /* Under three, the empty rows above are the invitation and a second
            one here would only ask the same question twice. */
-        short > 0 ? null : button(t('listsAddMore'), 'lists-go', openPicker),
-        button(t('listsDelete'), 'lists-alt is-danger', deleteList)
+        short > 0 ? null : button(t('listsAddMore'), 'go', openPicker),
+        button(t('listsDelete'), 'alt is-danger', deleteList)
       ]));
     } else {
-      wrap.appendChild(el('a', { className: 'lists-alt', href: '/', textContent: t('listsBack') }));
+      wrap.appendChild(el('a', { className: 'alt', href: '/', textContent: t('listsBack') }));
     }
 
     return wrap;
@@ -617,7 +617,7 @@
       el('div', { className: 'lists-row' }, [
         keepControl(list),
         mapLink(list.id),
-        button(t('listsShare'), 'lists-alt', shareList),
+        button(t('listsShare'), 'alt', shareList),
         el('span', { className: 'lists-count mono', textContent: countLabel(list.items.length) })
       ])
     ]);
@@ -653,7 +653,7 @@
     if (!state.me) {
       return el('span', { className: 'lists-keep-wrap' }, [
         el('a', {
-          className: 'lists-alt lists-keep',
+          className: 'alt lists-keep',
           href: accountHref('up'),
           html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_KEEP + '</svg>',
           'aria-label': t('listsKeepIn')
@@ -664,7 +664,7 @@
 
     var b = el('button', {
       type: 'button',
-      className: 'lists-alt lists-keep' + (list.kept ? ' is-kept' : ''),
+      className: 'alt lists-keep' + (list.kept ? ' is-kept' : ''),
       'aria-pressed': String(!!list.kept),
       html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_KEEP + '</svg>'
     }, [el('span', { textContent: t(list.kept ? 'listsKeptThis' : 'listsKeep') })]);
@@ -770,7 +770,7 @@
        it because it is the one press that is always available — and because
        it is also the card's state light, and the end of the row is where the
        eye lands last. */
-    var share = button(t('listsShare'), 'lists-alt', shareList);
+    var share = button(t('listsShare'), 'alt', shareList);
     if (!ready) {
       share.disabled = true;
       share.title = t('listsShareNeeds');
@@ -779,7 +779,7 @@
     /* The one button on the page that reports rather than only acts, so it is
        handed to the mark the moment it exists and painted into whichever
        state is true right now — which on a list just opened is Saved. */
-    var save = button(t('listsSave'), 'lists-go lists-save', saveList);
+    var save = button(t('listsSave'), 'go lists-save', saveList);
     mark.btn = save;
     paintSave();
 
@@ -1796,7 +1796,7 @@
 
     var back = el('button', {
       type: 'button',
-      className: 'lists-alt picker-back',
+      className: 'alt picker-back',
       textContent: t('listsBackToSearch')
     });
     back.addEventListener('click', paintPicker);
@@ -1849,7 +1849,7 @@
 
     var find = el('button', {
       type: 'button',
-      className: 'lists-alt picker-find',
+      className: 'alt picker-find',
       textContent: t('listsAddFind')
     });
     var addressRow = el('div', { className: 'picker-find-row' }, [
@@ -1859,7 +1859,7 @@
 
     var canvas = el('div', { className: 'picker-map', id: 'picker-map' });
     var hint = el('p', { className: 'picker-note', textContent: t('listsAddPin') });
-    var go = el('button', { type: 'button', className: 'lists-go', textContent: t('listsAddIt') });
+    var go = el('button', { type: 'button', className: 'go', textContent: t('listsAddIt') });
 
     var form = el('div', { className: 'picker-add-form' }, [
       back,

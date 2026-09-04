@@ -19,6 +19,10 @@
  *     it is generated from
  *   - a taxonomy type missing a label in any language
  *   - a UI string present in one language but missing in another
+ *   - a string the site asks for — a data-i18n key in the markup, a t('key')
+ *     in a script — that is in no language of data/ui.json at all
+ *   - a colour token one style declares and another leaves out, which is a
+ *     style quietly wearing the other one's value out of :root
  *   - a photo listed in the data that does not exist in the repo
  *   - a reel value that is not a real Instagram or TikTok permalink shape
  *   - a phone number that is not in international form, such as +372 661 0180
@@ -883,6 +887,96 @@ if (wrangler) {
     }
     if (seen.preview.name && seen.preview.name === seen.production.name) {
       fail(WRANGLER, `preview and production name the same database ("${seen.production.name}")`);
+    }
+  }
+}
+
+/* -------------------------------------------------------- the design rules
+   Two of the rules in the README's "The design rules" are mechanical, so they
+   are checked here rather than left to be noticed in review.
+
+   Everything else on that list is about judgement — a second filled button on
+   a card, a step that should have been its own view — and a linter that could
+   tell those from the legitimate cases would be a larger program than this
+   site. */
+
+/* 1. A string the site asks for that is in no language at all.
+
+   The cross-language check above catches a key that one language has and
+   another has not. This catches the other half: markup carrying a data-i18n
+   key, or a script calling t('key'), for a string nobody ever wrote. Both
+   show a visitor the key itself, which is the one failure mode of this
+   system that looks like a bug in the page rather than a missing word. */
+
+const I18N_ATTRS = ['data-i18n', 'data-i18n-aria-label', 'data-i18n-placeholder', 'data-i18n-title'];
+const KEY_SHAPE = /^[a-z][A-Za-z0-9]*$/;
+
+if (ui !== null && isPlainObject(ui)) {
+  const known = new Set();
+  for (const lang of Object.keys(ui)) {
+    if (isPlainObject(ui[lang])) for (const key of Object.keys(ui[lang])) known.add(key);
+  }
+
+  const pages = readdirSync(ROOT).filter((f) => f.endsWith('.html'));
+  for (const page of pages) {
+    const text = readFileSync(join(ROOT, page), 'utf8');
+    for (const attr of I18N_ATTRS) {
+      const re = new RegExp(attr + '="([^"]+)"', 'g');
+      let hit;
+      while ((hit = re.exec(text)) !== null) {
+        if (!known.has(hit[1])) fail(page, `asks for the string "${hit[1]}", which is in no language of data/ui.json`);
+      }
+    }
+  }
+
+  const ASSETS = join(ROOT, 'assets');
+  const scripts = existsSync(ASSETS) ? readdirSync(ASSETS).filter((f) => f.endsWith('.js')) : [];
+  for (const script of scripts) {
+    /* Comparisons first: `t(out.error === 'capped' ? 'saveCapped' : …)` holds
+       a string that is a value being tested and not a string id. */
+    const text = readFileSync(join(ASSETS, script), 'utf8').replace(/[!=]==?\s*'[^']*'/g, '');
+    const calls = text.match(/\bt\([^)]*\)/g) || [];
+    for (const call of calls) {
+      for (const lit of call.match(/'[^']*'/g) || []) {
+        const key = lit.slice(1, -1);
+        /* Only things shaped like a key. A t() call can hold a fallback or a
+           separator, and neither is a missing string. */
+        if (!KEY_SHAPE.test(key) || known.has(key)) continue;
+        fail(`assets/${script}`, `calls t('${key}'), which is in no language of data/ui.json`);
+      }
+    }
+  }
+}
+
+/* 2. A colour token one style has and the other has not.
+
+   Both styles are meant to restate every token, so that pressing the swatch
+   changes the whole colour world. One that declares a token the other leaves
+   out is a style wearing a value out of :root — which is the other style's,
+   and reads as the one thing on the page that did not follow the swatch. */
+
+const STYLE_BLOCK = /\[data-style="([a-z-]+)"\]\s*\{([^}]*)\}/g;
+const cssPath = join(ROOT, 'assets', 'styles.css');
+if (existsSync(cssPath)) {
+  const css = readFileSync(cssPath, 'utf8');
+  const declared = new Map();
+  let block;
+  while ((block = STYLE_BLOCK.exec(css)) !== null) {
+    const names = new Set((block[2].match(/--[a-z0-9-]+\s*:/g) || []).map((d) => d.replace(/\s*:$/, '')));
+    const already = declared.get(block[1]) || new Set();
+    for (const name of names) already.add(name);
+    declared.set(block[1], already);
+  }
+
+  const styles = [...declared.keys()];
+  const everyToken = new Set();
+  for (const style of styles) for (const name of declared.get(style)) everyToken.add(name);
+
+  for (const style of styles) {
+    for (const name of [...everyToken].sort()) {
+      if (!declared.get(style).has(name)) {
+        fail('assets/styles.css', `[data-style="${style}"] does not restate ${name}, which the other styles declare — it would wear whatever :root has`);
+      }
     }
   }
 }

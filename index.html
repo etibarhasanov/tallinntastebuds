@@ -62,7 +62,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=1b17498e">
+<link rel="stylesheet" href="assets/styles.css?v=e1fed8ec">
 </head>
 <body>
 
@@ -289,8 +289,9 @@
 </div>
 
 <!-- The account sheet. Everything in it is built by assets/app.js, because
-     which of the four states it is showing — signed out, signed in, confirming
-     an address, resetting a password — is decided at the moment it opens. -->
+     which view it is showing — signed out, signed in, changing the password,
+     putting an address on, confirming one, resetting a forgotten one — is
+     decided at the moment it opens. -->
 <div class="scrim" id="account-scrim" role="dialog" aria-modal="true"
      data-i18n-aria-label="accountTitle" aria-label="Your account" hidden>
   <div class="account card" id="account-card"></div>
@@ -348,6 +349,6 @@
      app.js and deferred like it: deferred scripts run in document order, so
      the global is there by the time the map is drawn. -->
 <script src="assets/basemap.js?v=bf2dd374" defer></script>
-<script src="assets/app.js?v=c69aafff" defer></script>
+<script src="assets/app.js?v=45b384b0" defer></script>
 </body>
 </html>
