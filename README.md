@@ -1575,11 +1575,45 @@ nowhere to put a pin, and a row in the panel that no pin answers to is worse
 than its absence. It is still on the list's own page, with its sentence, which
 is where it can be read.
 
-**The chip.** The list arrives as a chip at the front of the filter row,
-wearing its own title, pressed. Pressing it off is the whole map back; the chip
-stays on the row, and `?list=` stays in the address bar — pressing it is "show
-me everything", not "forget the list", and a link copied at that moment should
-still arrive as somebody's list.
+**A list is a mode, not a filter.** It used to be a chip at the front of the
+filter row wearing its own title, and it was the wrong shape twice over. On the
+row it read as a kind of food — "shaurma bros" sitting between All and Bakery
+announces a category the map does not have. Underneath, it made the chips lie:
+the thing narrowing the map was a filter in `state.active` that no chip on the
+row stood for, so All could be drawn unpressed with nothing else pressed either
+over a map showing four places.
+
+So the filter row is types and nothing else. `state.list` holds a list or it
+does not, and while it does, that is what the map is showing — `visiblePlaces()`
+answers the list before it consults a chip. The list says who it is in the
+panel instead: its title, its owner's name, their sentence, and the button to
+keep it.
+
+**Pressing any chip forgets it.** All, Bakery, Discount — each is somebody
+asking the map a question their list cannot be part of the answer to, so the
+list goes: pins, panel, keep button, `?list=` and all. There is no control that
+puts it back, because it is not a thing you toggle.
+
+**Back is the undo.** The page is driven by its address bar, so dropping a list
+is a `pushState` — the only history entry on the map besides an opened place,
+and it earns one for the same reason: a step somebody may not have meant to
+take. Going back restores the entry whole, the chips it was standing on
+included, and the list itself is handed back out of a variable rather than
+re-fetched. Filters still rewrite the entry they are on.
+
+**Keeping one.** The bookmark is in the panel, under the byline — the same mark
+the map draws on a place, said about the other kind of object this site has.
+It is offered at the one moment it means anything: this list open, these pins,
+this person's name above it. Press a chip and the moment has passed. Nothing
+nags and nothing follows anybody around the map afterwards.
+
+Signed out it is a door rather than a dead button: it opens the sign-up sheet,
+which is on this page already. A keep needs an account for the reason
+**Why a list needs an account when a save does not** gives.
+
+The count beside it, and whether you have kept it, come out of `readList()` in
+`functions/api/_lists.js` with the list itself, and neither is cached — see
+**Lists** for why a keep is the one thing here that may not be a minute behind.
 
 **Failing is quiet.** A list that is private, deleted, mistyped, or behind a
 database that is not bound leaves the map exactly as it is. No card and no

@@ -15,6 +15,40 @@ section you need before touching that area. This file is only the part a
 session needs *before* it starts: where things go, what to run, and what has
 bitten people already.
 
+## Leave the code better than you found it
+
+This is the main rule, and it outranks "keep the diff small".
+
+Touching a file means reading what is around the thing you came to change. If
+that code can be made cleaner, make it cleaner, in the same commit, as part of
+the work. Do not step around a mess to get to your line and leave it exactly as
+you found it.
+
+In practice:
+
+- **Four copies of the same three lines is a function.** If a change would add
+  a fifth, write the function first and change one place instead of five.
+  `toggleChip()` and `clearChips()` in `assets/app.js` are the worked example:
+  every chip on the row does one thing, so it is written once.
+- **A comment that has stopped being true is a bug.** This codebase explains
+  itself at length and that is only worth something while the explanations are
+  accurate. If a change makes a paragraph wrong, rewrite the paragraph —
+  README included. This is the other half of "do not strip or shorten existing
+  comments": do not leave a stale one standing either.
+- **A name that describes what something used to be is worth changing.** When a
+  list stopped being a filter, `LIST_FILTER` went with it rather than staying
+  as a constant that misled every reader after.
+- **Dead things go** in the commit that orphaned them: an unused `ui.json` key
+  in all ten languages, a CSS rule for an element nothing renders any more, a
+  helper with no callers.
+- **Refactoring and behaviour change belong in the same commit**, because the
+  point is the state the file is left in. Do not open a follow-up for tidying
+  the thing you were already standing in.
+
+Where a cleanup would grow past the change that prompted it — a rewrite of
+something only brushed against — say so rather than doing it silently or
+pretending not to have seen it.
+
 ## Branches and deploys
 
 - **There is no `main`.** The default branch is
