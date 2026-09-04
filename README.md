@@ -1523,12 +1523,31 @@ the state it was in — "Anyone with the link can read it" — is the sentence
 somebody reads twice, because it is either what is true now or what pressing
 it would do and a pill cannot say which. Both answers are drawn instead, as
 radio buttons under the question, and the filled one is the answer. A list is
-shared by default; the accent is spent on **Only me**, because that is the
+shared by default; the accent is spent on **Private**, because that is the
 exception and the one worth noticing before you go looking for a link that
 will not work.
 
+The two say **Public** and **Private**, one word each. They said "Anyone with
+the link" and "Only me", which is more accurate about what public means here —
+a list is unlisted, not indexed, and nothing on this site browses other
+people's — and it fitted badly: two clauses in a segmented control that a
+narrow phone breaks over four lines, for the two states the rest of the web
+already has names for. The legend above them carries the sentence.
+
 **Share** sits next to Save and waits for the third place: a link to two
 places is not worth sending, and the button says so rather than going quiet.
+It hands the URL to the phone's share sheet and to the laptop's clipboard, and
+which of those it does is decided by the pointer rather than by whether
+`navigator.share` exists. Every desktop browser has that function now, and
+there it opens a sheet listing applications with no "copy link" in it — which
+is the one thing somebody sharing from a laptop is trying to do. A coarse
+pointer is a phone, where the sheet is the whole point; everything else
+copies, and says so.
+
+The same button is on the map, in the block that names the list — see **On the
+map** above. A list opened from a link opens the map, and sharing it on from
+there used to mean a hop through its own page first, which is a hop a link
+meant to be forwarded does not always survive.
 
 ### Keeping somebody else's
 
@@ -1622,10 +1641,11 @@ over a map showing four places.
 So the filter row is types and nothing else. `state.list` holds a list or it
 does not, and while it does, that is what the map is showing — `visiblePlaces()`
 answers the list before it consults a chip. The list says who it is in the
-panel instead: its title, its owner's name, their sentence, and the two things
-you can do about it — keep it, or open the list's own page. Both wear the same
-pill, and neither is filled: on that block the accent behind a pill already
-means "kept", and spending it on a link would take that reading away.
+panel instead: its title, its owner's name, their sentence, and the three
+things you can do about it — keep it, open the list's own page, or send it on.
+All three wear the same pill, and none of them is filled: on that block the
+accent behind a pill already means "kept", and spending it twice would take
+that reading away.
 
 **Pressing any chip forgets it.** All, Bakery, Discount — each is somebody
 asking the map a question their list cannot be part of the answer to, so the

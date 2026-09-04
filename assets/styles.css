@@ -2265,15 +2265,15 @@ body.panel-detail .panel {
   line-height: 1.5;
   color: var(--ink);
 }
-/* The way through to the list's own page, where the owner's sentences sit in
-   full. It was eleven pixels of underlined mono below the keep, which read as
-   a footnote rather than as the other thing you can do here, so it wears the
-   same pill as the keep and stands on the same line as it.
+/* The way through to the list's own page and the way to send it on. Both were
+   or would have been eleven pixels of underlined mono below the keep, which
+   reads as a footnote rather than as the other things you can do here, so
+   they wear the same pill as the keep and stand on the same line as it.
 
    Not the accent, though: on this block the accent behind a pill already
-   means "you have kept this", and a second one that always wore it would take
-   that reading away. */
-.list-credit-link {
+   means "you have kept this", and another that always wore it would take that
+   reading away. */
+.list-credit-act {
   display: inline-block;
   padding: 7px 13px;
   border: 1px solid var(--hairline);
@@ -2286,14 +2286,19 @@ body.panel-detail .panel {
   letter-spacing: .06em;
   text-decoration: none;
   white-space: nowrap;
+  /* One of the two is a button and one is a link, so the line box is set here
+     rather than left to each element's default: side by side they have to be
+     the same height. */
+  line-height: 1.35;
+  cursor: pointer;
   transition: color .15s var(--ease), border-color .15s var(--ease);
 }
-.list-credit-link:hover { color: var(--ink); border-color: var(--muted); }
+.list-credit-act:hover { color: var(--ink); border-color: var(--muted); }
 
-/* The two controls, under the list's own words: keeping it, and opening it in
-   full. They are given a line of their own rather than set beside the byline,
-   because nothing here should read as though the site is speaking in the
-   owner's voice. */
+/* The three controls, under the list's own words: keeping it, opening it in
+   full, and sending it on. They are given a line of their own rather than set
+   beside the byline, because nothing here should read as though the site is
+   speaking in the owner's voice. */
 .list-credit-acts {
   display: flex;
   align-items: center;

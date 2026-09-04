@@ -4578,8 +4578,8 @@
   }
 
   /* The heading over somebody else's list: their title, their byline, the
-     count, and the two things you can do about it: keep it, or open the list's
-     own page, where the owner's sentences sit in full.
+     count, and the three things you can do about it: keep it, open the list's
+     own page where the owner's sentences sit in full, or send it on.
 
      It takes the focus and labels the panel, the way the first group heading
      normally does, because in this state it is the first group heading. */
@@ -4601,19 +4601,64 @@
       state.list.intro
         ? el('p', { className: 'list-credit-intro', textContent: state.list.intro })
         : null,
-      /* One row, and the two of them wear the same pill: the way through to
-         the page used to be a line of underlined mono below the keep, which
-         on a block that is otherwise somebody else's writing read as a
-         footnote rather than as a door. Neither is filled — see the CSS. */
+      /* One row, and all of them wear the same pill: the way through to the
+         page used to be a line of underlined mono below the keep, which on a
+         block that is otherwise somebody else's writing read as a footnote
+         rather than as a door. None of them is filled — see the CSS. */
       el('div', { className: 'list-credit-acts' }, [
         listKeep(),
         el('a', {
-          className: 'list-credit-link',
+          className: 'list-credit-act',
           href: '/list/' + state.list.id,
           textContent: t('listOpenPage')
-        })
+        }),
+        shareButton(state.list)
       ])
     ]);
+  }
+
+  /* Sending the list on, from the page somebody was actually sent to. A list
+     opened by link opens the map, and until now the map was where sharing it
+     stopped: the button was on the list's own page, one hop away, and a hop
+     away is where a link somebody meant to forward does not get forwarded.
+
+     The URL is the list's own page and not this map view, because a list has
+     one address whichever surface it was copied from — and that page opens
+     the map in one press anyway.
+
+     The three steps are shareList() in assets/lists.js: the sheet on a phone,
+     the clipboard on a laptop, a prompt for anything with neither. There are
+     two copies because the two pages share no script; they are kept in step
+     by hand, the way ICON_KEEP is. */
+  function shareButton(list) {
+    var b = el('button', {
+      type: 'button',
+      className: 'list-credit-act',
+      textContent: t('listsShare')
+    });
+
+    b.addEventListener('click', function () {
+      var url = window.location.origin + '/list/' + list.id;
+      /* Asked by pointer rather than by feature: every desktop browser has
+         navigator.share, and there it opens an OS sheet of applications with
+         no "copy link" in it — which is the one thing somebody sharing from a
+         laptop wants. A coarse pointer is a phone, where the sheet is the
+         whole point. */
+      if (navigator.share && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+        navigator.share({ title: list.title, url: url })
+          .catch(function () { /* dismissed, which is fine */ });
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url)
+          .then(function () { toast(t('listsCopied')); })
+          .catch(function () { window.prompt(t('listsShare'), url); });
+        return;
+      }
+      window.prompt(t('listsShare'), url);
+    });
+
+    return b;
   }
 
   /* The same mark the panel draws on a place, said about the other kind of

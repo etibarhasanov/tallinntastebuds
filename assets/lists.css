@@ -368,6 +368,20 @@
 /* How many people kept it. Never drawn at zero — a "0 kept" under a list
    reads as a verdict on the list rather than as nobody having pressed it
    yet, which is the same reason the map hides a save count at zero. */
+/* The way onto the map from your own list. Save is that card's one filled
+   press, so this is the outline of a control rather than the accent — and a
+   ring rather than the wash the keep above it sits on, because the Save
+   button settled reads as exactly that wash and two of them in one row would
+   be two buttons wearing the same clothes. Everything else about it is .alt,
+   which is what it still is. */
+.lists-map {
+  padding: 8px 13px;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  text-decoration: none;
+}
+.lists-map:hover { border-color: var(--muted); }
+
 .lists-keeps {
   color: var(--muted);
   font-size: 11.5px;
