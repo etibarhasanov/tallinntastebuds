@@ -290,8 +290,8 @@ export async function catalogue(context) {
 }
 
 /* --------------------------------------------------------------- venues
- * google_venues — the Google Places export, seven hundred and fifty places
- * this city can eat in, in the database rather than in a file. See the table
+ * google_venues — the Google Places export, seven hundred and fifty-one
+ * places this city can eat in, in the database rather than in a file. See the table
  * in db/schema.sql for why it is a mirror and what the columns mean.
  *
  * The catalogue above is the map plus a hand-kept CSV, and it is small. This
