@@ -1463,13 +1463,30 @@ out and the drag only moves them with `transform`; the array is spliced once,
 on release, and the page is redrawn from it — so a drag interrupted by a phone
 call leaves nothing behind.
 
-Nothing has to be saved with a button. The title and the line under it write
-themselves when you leave the field; a note writes itself a moment after you
-stop typing, again when you leave the box, and again when the page is hidden —
-which is what a phone does when the tab is switched away, and the last moment
-a script is promised. **Save** is on the card anyway, as the last button,
-because none of that is visible: it takes whatever is half typed, sends it
-now, and says so.
+**Save** is the last button on the card and it is what writes the list. The
+title, the line under it, each note, who can open it and the order are all
+edits to a list you are looking at, and they are held until it is pressed —
+the page changes under your hands and the server hears about it once, when you
+say so. The button is the other half of that sentence too: filled, in the
+style's accent, while something is waiting; quiet, in the page's own wash, and
+reading **Saved**, when there is nothing left to send. Type a word and delete
+it again and it goes back to Saved, because there is nothing left to send.
+
+Two things do not wait, and both are membership rather than content. **Adding
+a place** is sent as it happens because the server is the one that decides
+whether a place may go on — it has to be on one of the three rolls and the
+list has to have room — and a refusal has to arrive while the picker is still
+open, not minutes later about a row that had been sitting there looking
+accepted. **Removing one** goes the same way, and takes any note typed under
+it with it.
+
+The page being hidden — which is what a phone does when the tab is switched
+away, and the last moment a script is promised — sends whatever is waiting
+over `sendBeacon`. That is not a second Save button; it is the one case where
+not sending loses the work outright. Somebody who meant to abandon an edit
+closes the tab and finds it kept, and somebody who meant to keep it and forgot
+to press Save finds it kept too, and only one of those is a story anybody
+minds.
 
 **Who can open it** is two options and not one pill. A single pill printing
 the state it was in — "Anyone with the link can read it" — is the sentence

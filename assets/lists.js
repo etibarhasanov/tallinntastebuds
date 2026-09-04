@@ -63,13 +63,6 @@
      under it — an unfinished list is simply not sharable yet. */
   var MIN_ITEMS = 3;
 
-  /* How long the page waits after the last keystroke before it writes a note
-     to the server. Long enough that typing a sentence is one request and not
-     forty; short enough that closing the tab a moment after finishing does
-     not lose the sentence. Every pending write is also flushed on blur and on
-     the page being hidden, which is what actually catches the closed tab. */
-  var SAY_DEBOUNCE = 900;
-
   var state = {
     ui: {},
     lang: DEFAULT_LANG,
@@ -722,9 +715,9 @@
   }
 
   /* Your own: the same card, with the title and the line under it as fields
-     you can type into. No edit mode and no save button — a list is small
-     enough that the page can simply be the thing, and every field writes
-     itself when you leave it. */
+     you can type into. No edit mode: a list is small enough that the page can
+     simply be the thing. What you type is on the card the moment you type it
+     and on the server when you press Save. */
   function listHeadMine(list) {
     var title = el('input', {
       type: 'text',
@@ -733,11 +726,22 @@
       maxlength: String(MAX_TITLE),
       'aria-label': t('listsRename')
     });
-    commitOnLeave(title, function (value, leaving) {
+    firstSeen('title', list.title);
+    typedField('title', title, function (value) {
       var next = value.trim();
-      if (!next || next === list.title) { title.value = list.title; return; }
+      /* A list has to be called something, so an empty field is a field on
+         its way to being retyped rather than an edit: nothing is recorded and
+         nothing is queued. Leaving it empty puts the old name back. */
+      if (!next) return null;
       list.title = next;
-      return deliver({ action: 'edit', id: list.id, title: next }, leaving);
+      if (next === sent.title) return null;
+      return function (leaving) {
+        sent.title = next;
+        return deliver({ action: 'edit', id: list.id, title: next }, leaving);
+      };
+    });
+    title.addEventListener('blur', function () {
+      if (!title.value.trim()) title.value = list.title;
     });
 
     var intro = el('input', {
@@ -748,11 +752,15 @@
       'aria-label': t('listsIntro'),
       placeholder: t('listsIntroHint')
     });
-    commitOnLeave(intro, function (value, leaving) {
+    firstSeen('intro', list.intro);
+    typedField('intro', intro, function (value) {
       var next = value.trim();
-      if (next === list.intro) return;
       list.intro = next;
-      return deliver({ action: 'edit', id: list.id, intro: next }, leaving);
+      if (next === sent.intro) return null;
+      return function (leaving) {
+        sent.intro = next;
+        return deliver({ action: 'edit', id: list.id, intro: next }, leaving);
+      };
     });
 
     var ready = list.items.length >= MIN_ITEMS;
@@ -811,6 +819,7 @@
    */
   function visibility(list) {
     var name = 'who-' + list.id;
+    firstSeen('public', list.public);
 
     var option = function (isPublic) {
       var input = el('input', {
@@ -830,9 +839,14 @@
         list.public = isPublic;
         var opts = label.parentNode.querySelectorAll('.lists-seg-opt');
         for (var i = 0; i < opts.length; i++) opts[i].classList.toggle('is-on', opts[i] === label);
-        post({ action: 'edit', id: list.id, public: isPublic }).then(function (a) {
-          if (!a.ok) failed(a.out);
-        }).catch(function () { failed({}); });
+        /* The answer is filled in at once — the radio is the state, and a
+           radio that waited for a round trip to move would be the one control
+           on the page that argues with the finger. What waits is the write. */
+        if (isPublic === sent.public) { unqueue('public'); return; }
+        queue('public', function (leaving) {
+          sent.public = isPublic;
+          return deliver({ action: 'edit', id: list.id, public: isPublic }, leaving);
+        });
       });
 
       return label;
@@ -844,11 +858,10 @@
     ]);
   }
 
-  /* Everything on this page writes itself — a note when the typing pauses, a
-     title when you leave the field — so there is nothing here that a press
-     could fail to send. The button exists because that is not visible: it
-     takes whatever is half typed, sends it now, and says so. The rest of the
-     time it is simply reporting, which is the mark's job — see it below. */
+  /* The press that sends everything.
+     Whatever is in the field under the cursor counts, so the cursor is taken
+     out of it first — a blur is what finishes a half typed word — and then
+     the queue goes in one go. */
   function saveList() {
     /* Pressed rather than typed, so this one owes a word — and settled() says
        it when the last write has actually landed rather than here, where the
@@ -925,7 +938,7 @@
       placeholder: t('listsSayHint')
     });
     say.value = item.say || '';
-    debounceSay(say, item);
+    sayField(say, item);
 
     /* Two controls where there used to be three: the row is carried to where
        it belongs rather than clicked up to it one place at a time. The grip is
@@ -951,30 +964,57 @@
     return row;
   }
 
-  /* ------------------------------------------------------- writing a note
-   * The one field on this page somebody spends real time in, so it is the one
-   * that must not lose anything. Three things write it: a pause in the typing,
-   * leaving the field, and the page being hidden — which is what a phone does
-   * when the tab is switched away or the screen is locked, and the last moment
-   * a script gets before it may never run again.
+  /* --------------------------------------------------- what Save is holding
+   * The page used to write itself. A note went out when the typing paused, a
+   * title when you left the field, the order the moment a row was let go of —
+   * and the button underneath said "Save" over a list that was already saved.
+   * Pressing it changed nothing, which is the worst thing a button can do.
+   *
+   * So the writes wait here instead, and the button sends them. Everything
+   * that edits a list you are looking at — the title, the line under it, each
+   * note, who can open it, and the order — is held until Save is pressed.
+   * Adding and removing a place are not: see addPlace() and drop().
+   *
+   * KEYED BY WHAT IS BEING WRITTEN, NOT BY THE FIELD IT WAS TYPED INTO
+   *
+   * A row is rebuilt whenever the list is redrawn, so a queue keyed by the
+   * textarea would hold an entry against a node that is no longer in the
+   * document, and the next keystroke would file a second entry for the same
+   * note — two writes of one sentence, landing in whichever order the flush
+   * happened to take them. The key is "say:<place>" instead, so a second
+   * thought replaces the first however many times the page has been redrawn
+   * in between.
+   *
+   * For the same reason a queued write carries the value it was queued with
+   * rather than reading it back off a node when it finally goes. What is
+   * typed is also written straight into `state.list`, so a redraw shows what
+   * you typed rather than what the server last heard.
    */
-  var pending = [];   /* [{ node, run }] — writes typed but not yet sent */
+  var pending = [];   /* [{ key, run }] — edits made but not yet sent */
 
-  function queue(node, run) {
+  function queue(key, run) {
     for (var i = 0; i < pending.length; i++) {
-      if (pending[i].node === node) { pending[i].run = run; return; }
+      if (pending[i].key === key) { pending[i].run = run; return; }
     }
-    pending.push({ node: node, run: run });
+    pending.push({ key: key, run: run });
+    paintSave();
+  }
+
+  /* Take one back out without sending it — an emptied title, which is not an
+     edit but a field on its way to being retyped. */
+  function unqueue(key) {
+    for (var i = pending.length - 1; i >= 0; i--) {
+      if (pending[i].key === key) pending.splice(i, 1);
+    }
     paintSave();
   }
 
   /* `leaving` says the page is going away, and it changes how the write is
      sent — see beacon() below. It is passed down rather than read off a
-     variable so that the ordinary flushes, the ones a move or a removal does,
-     cannot be caught by it. */
-  function flush(node, leaving) {
+     variable so that an ordinary press of Save cannot be caught by it. */
+  function flush(key, leaving) {
     for (var i = pending.length - 1; i >= 0; i--) {
-      if (node && pending[i].node !== node) continue;
+      if (key && pending[i].key !== key) continue;
       var job = pending[i].run;
       pending.splice(i, 1);
       var out = job(leaving);
@@ -1019,23 +1059,23 @@
   /* ------------------------------------------------------------ the mark
    * What the Save button is saying.
    *
-   * Everything on this page writes itself, so the button was never the thing
-   * that saved a list — it is the thing that says whether one is saved. So it
-   * says it, in the only two states there are, and it is always in whichever
-   * one is true:
+   * The button is both halves of the same sentence: it is what sends the
+   * edits, and it is what says whether there are any. Two states, and it is
+   * always in whichever one is true:
    *
-   *   Save    filled, in the style's accent: something has been typed or
-   *           moved that the server has not got yet.
+   *   Save    filled, in the style's accent: something has been typed, moved
+   *           or switched that the server has not got.
    *   Saved   quiet, in the page's own wash: there is nothing left to send.
    *
    * Both are tokens, so the mark is brick on the light style and forest on
    * the dark one and names no colour of its own — see the note at the top of
    * assets/styles.css.
    *
-   * "Has not got yet" is two things and either one is enough: a write typed
-   * and still sitting in `pending`, and a write handed to the network and not
-   * yet answered. The second is why the button goes back to Save for the
-   * moment after a change and then settles — that is the request, drawn.
+   * "Has not got" is two things and either one is enough: an edit sitting in
+   * `pending`, and a write handed to the network and not yet answered. The
+   * second is what keeps the button filled for the moment after the press,
+   * and it is also the whole of what the two immediate writes — a place added,
+   * a place removed — ever put there.
    *
    * A write that fails is toasted where it fails and does not hold the mark
    * open: the page's other optimism works the same way — a place that will
@@ -1069,47 +1109,45 @@
     }
   }
 
-  function debounceSay(node, item) {
-    var timer = null;
+  /* What the server last heard, under the same keys the queue uses. It is
+     kept here rather than in each field's own closure because the fields are
+     rebuilt whenever the list is redrawn and this must not be: typing a word,
+     dragging a row, and then deleting the word again should leave nothing to
+     save, and after the redraw the field itself no longer remembers what the
+     word replaced. */
+  var sent = {};
 
-    var write = function (leaving) {
-      var value = node.value.trim().slice(0, MAX_SAY);
-      if (value === (item.say || '')) return;
-      item.say = value;
-      return deliver({ action: 'say', id: state.list.id, place: item.place, say: value }, leaving);
-    };
+  function firstSeen(key, value) { if (!(key in sent)) sent[key] = value; }
 
+  /* A field that edits the list in front of you and hands Save the write.
+     `edit` is given what was typed; it returns the request to make, or
+     nothing at all when there is no longer anything to send — which is what
+     typing something and then typing it back amounts to. */
+  function typedField(key, node, edit) {
     node.addEventListener('input', function () {
-      queue(node, write);
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(function () { flush(node); }, SAY_DEBOUNCE);
+      var run = edit(node.value);
+      if (run) queue(key, run); else unqueue(key);
     });
-    node.addEventListener('blur', function () {
-      if (timer) clearTimeout(timer);
-      flush(node);
+    /* Enter is the end of a one-line field, so it does what leaving does:
+       nothing goes anywhere, but the field is finished with. */
+    node.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter') { ev.preventDefault(); node.blur(); }
     });
   }
 
-  /* A field whose value is written when you leave it, and only if it changed.
-     Used for the title and the line under it, which are one line each and do
-     not want the typing-pause treatment. */
-  function commitOnLeave(node, write) {
-    var send = function (leaving) {
-      var out = write(node.value, leaving);
-      if (out && out.then) {
-        out.then(function (a) { if (!a.ok) failed(a.out); }).catch(function () { failed({}); });
-      }
-    };
-    /* Queued from the first keystroke rather than simply written on the way
-       out, which buys two things. The Save button can see it — a half typed
-       title is exactly the state the button exists to report — and the page
-       being hidden takes it along with everything else, where before a title
-       typed and then switched away from was lost. Leaving the field is now
-       just the flush that happens soonest. */
-    node.addEventListener('input', function () { queue(node, send); });
-    node.addEventListener('blur', function () { flush(node); });
-    node.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter') { ev.preventDefault(); node.blur(); }
+  /* The note under a place: the one field somebody spends real time in. What
+     is typed goes onto the item at once, so a redraw keeps it. */
+  function sayField(node, item) {
+    var key = 'say:' + item.place;
+    firstSeen(key, item.say || '');
+    typedField(key, node, function (value) {
+      var next = value.trim().slice(0, MAX_SAY);
+      item.say = next;
+      if (next === sent[key]) return null;
+      return function (leaving) {
+        sent[key] = next;
+        return deliver({ action: 'say', id: state.list.id, place: item.place, say: next }, leaving);
+      };
     });
   }
 
@@ -1192,16 +1230,11 @@
   }
 
   /* The one place the order actually changes, whichever gesture asked for it.
-     Everything above it decides `to`; this splices, redraws and tells the
-     server. */
+     Everything above it decides `to`; this splices, redraws and hands the new
+     order to Save. */
   function reorder(from, to, focus) {
     if (from === to) return;
     var items = state.list.items;
-
-    /* Anything typed and not yet written goes first: the rows are about to be
-       rebuilt, and a pending write reads its value off the node it was typed
-       into. */
-    flushAll();
 
     items.splice(to, 0, items.splice(from, 1)[0]);
     render();
@@ -1220,11 +1253,17 @@
     }
     announce(t('listsMoved', { n: to + 1 }));
 
-    post({
-      action: 'order',
-      id: state.list.id,
-      places: items.map(function (it) { return it.place; })
-    }).then(function (a) { if (!a.ok) failed(a.out); }).catch(function () { failed({}); });
+    /* One entry however many times a row is carried about: the order is a
+       single fact, and Save sends whatever it is by then. It reads the list
+       at the moment it goes rather than a copy taken here, so a place removed
+       in between is not sent back to the server as part of an order. */
+    queue('order', function (leaving) {
+      return deliver({
+        action: 'order',
+        id: state.list.id,
+        places: state.list.items.map(function (it) { return it.place; })
+      }, leaving);
+    });
   }
 
   /* Said to a screen reader and to nobody else. A move is obvious on a screen
@@ -1477,8 +1516,13 @@
     }
   }
 
+  /* Taking a place off, which goes to the server as it happens rather than
+     waiting for Save — see addPlace() for why membership is not held. What is
+     typed under the row goes with it: the note belongs to a place that is no
+     longer on the list, and sending it after the removal would be a write
+     about nothing. */
   function drop(place) {
-    flushAll();
+    unqueue('say:' + place);
     var items = state.list.items;
     for (var i = 0; i < items.length; i++) {
       if (items[i].place === place) { items.splice(i, 1); break; }
@@ -2150,14 +2194,15 @@
        click that got in before the last render caught up. */
     if (list.items.length >= MAX_ITEMS) { toast(t('listsErrFull')); return; }
 
-    /* Anything typed and not yet written goes first, for the same reason move()
-       and drop() do it: render() below rebuilds every row, and a pending write
-       reads its value off the textarea it was typed into. Once that node is
-       gone the write sends whatever the new node happens to hold — so adding a
-       place while a sentence was half typed used to overwrite the sentence. */
-    flushAll();
+    /* Going on the list is sent now rather than held for Save, and it is one
+       of only two writes on this page that are. The server decides whether a
+       place may go on at all — it has to be on one of the three rolls, and
+       the list has to have room — so the answer has to come back while the
+       picker is still open and the gesture is still the thing being done. Held
+       until Save, a refusal would arrive minutes later, about a row that had
+       been sitting there looking accepted.
 
-    /* Optimistic, the way the save mark on the map is: the row appears at once
+       Optimistic, the way the save mark on the map is: the row appears at once
        and the server's answer only ever corrects it. A place that fails to go
        on comes straight back off. */
     list.items.push({
@@ -2209,8 +2254,13 @@
     });
 
     /* The last moment a script is promised on a phone: the tab is switched
-       away, the screen is locked, the browser is put in the background. A
-       sentence half typed is written now or possibly never. */
+       away, the screen is locked, the browser is put in the background.
+       Saving is the button's job and this is not a second Save button — it is
+       the one case where not sending loses the work outright, so the queue
+       goes out over sendBeacon rather than down with the page. Somebody who
+       meant to abandon an edit closes the tab and finds it kept; somebody who
+       meant to keep it and forgot to press Save finds it kept too, and only
+       one of those two is a story anybody minds. */
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') flushAll(true);
     });
