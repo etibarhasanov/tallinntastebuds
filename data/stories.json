@@ -29,5 +29,15 @@
       "en": "LB23 is back"
     },
     "spot": "laboratooriumi-23"
+  },
+  {
+    "id": "kalve-kadriorg-2026-09-04",
+    "live": true,
+    "photo": "kalve-kadriorg-2026-09-04.jpg",
+    "from": "2026-09-04T15:14",
+    "caption": {
+      "en": "best Kalve spot"
+    },
+    "spot": "kalve-kadriorg"
   }
 ]
