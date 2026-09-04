@@ -1566,10 +1566,13 @@
    * words rather than letting somebody find out later.
    *
    * The sheet somebody signed in lands on is their name and a short menu:
-   * their lists, the password, the address if there is none on the account
-   * yet, and the way out. Each of those is a view of its own with a way back,
-   * rather than another block stacked on the one card — see "The design
-   * rules" in the README.
+   * their lists, the password, and the way out — plus, only where mail is
+   * configured at all and the account has no address on it yet, the offer of
+   * one. With no mail configured, which is how this site runs today, there is
+   * no recovery line and no address row: changing the password from inside
+   * the account is the whole of it. Each row that leads somewhere is a view
+   * of its own with a way back, rather than another block stacked on the one
+   * card — see "The design rules" in the README.
    */
 
   var ACCOUNT_URL = '/api/account';
