@@ -284,12 +284,16 @@
       title: t(labelKey),
       html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + path + '</svg>'
     });
-    b.addEventListener('click', onClick);
+    if (onClick) b.addEventListener('click', onClick);
     return b;
   }
 
-  var ICON_UP = '<path d="M12 19V6M6 12l6-6 6 6"/>';
-  var ICON_DOWN = '<path d="M12 5v13M18 12l-6 6-6-6"/>';
+  /* The grip: six dots, which is the mark a thing that can be picked up wears
+     everywhere. It is a real button and not a decoration, because a drag is no
+     gesture at all on a keyboard — the arrow keys on it make the same move. */
+  var ICON_GRIP = '<circle cx="9" cy="6" r="1.35"/><circle cx="15" cy="6" r="1.35"/>' +
+    '<circle cx="9" cy="12" r="1.35"/><circle cx="15" cy="12" r="1.35"/>' +
+    '<circle cx="9" cy="18" r="1.35"/><circle cx="15" cy="18" r="1.35"/>';
   var ICON_X = '<path d="M6 6l12 12M18 6L6 18"/>';
   var ICON_PIN = '<path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>';
   /* The same bookmark the map draws on a place, because it is the same
@@ -850,13 +854,18 @@
     say.value = item.say || '';
     debounceSay(say, item);
 
+    /* Two controls where there used to be three: the row is carried to where
+       it belongs rather than clicked up to it one place at a time. The grip is
+       what the hand goes for and what the keyboard lands on — see carry(). */
+    var grip = iconButton('listsDrag', ICON_GRIP, null, 'row-grip');
+    grip.setAttribute('draggable', 'false');
+
     var moves = el('div', { className: 'item-moves' }, [
-      iconButton('listsUp', ICON_UP, function () { move(item.place, -1); }),
-      iconButton('listsDown', ICON_DOWN, function () { move(item.place, 1); }),
+      grip,
       iconButton('listsRemove', ICON_X, function () { drop(item.place); }, 'is-danger')
     ]);
 
-    return el('li', { className: 'item is-mine' }, [
+    var row = el('li', { className: 'item is-mine' }, [
       el('span', { className: 'item-n mono', 'aria-hidden': 'true', textContent: String(i + 1) }),
       el('div', { className: 'item-body' }, [
         placeName(item),
@@ -865,6 +874,8 @@
       ]),
       moves
     ]);
+    carry(row, item, grip);
+    return row;
   }
 
   /* ------------------------------------------------------- writing a note
@@ -961,40 +972,368 @@
     });
   }
 
-  /* --------------------------------------------------------------- moving */
+  /* --------------------------------------------------------------- moving
+   *
+   * The order is most of the point of a top ten, so changing it is the one
+   * gesture on this page worth spending real code on. A row is carried to
+   * where it belongs: pressed and dragged with a mouse, held for a moment and
+   * then carried with a thumb.
+   *
+   * This used to be an up button and a down button, and the argument for them
+   * was that a drag fights the page's own scrolling on a phone and is no
+   * gesture at all on a keyboard. Both of those are still true, and both are
+   * answered here rather than avoided:
+   *
+   *   the phone     a touch does not lift a row until the finger has rested on
+   *                 it for a moment without travelling. Anything that moves
+   *                 sooner is somebody scrolling, and the page scrolls. Once a
+   *                 row is lifted the scrolling is held off — see block() —
+   *                 and the window follows the finger by itself near the top
+   *                 and bottom edges, which is how a row reaches the far end of
+   *                 a list taller than the screen. The grip is the exception:
+   *                 it answers a finger straight away, because CSS has already
+   *                 taken it out of the scroll (`touch-action: none`) and there
+   *                 is no other gesture there to be confused with.
+   *
+   *   the keyboard  the grip is a real button. Focus it and the arrow keys walk
+   *                 the row up and down the list, one place a press — exactly
+   *                 the move the two buttons made. It keeps the focus across
+   *                 the redraw, so the same key can be pressed again, and the
+   *                 new position is said out loud, which the old buttons never
+   *                 did.
+   *
+   * NOTHING IS REORDERED WHILE A FINGER IS DOWN
+   *
+   * The rows stay where the browser laid them out and a drag only writes
+   * `transform` on them: the carried row follows the pointer, and the rows it
+   * has passed slide out of its way by exactly the height of the hole it left
+   * behind. The array is spliced once, on release, and the page is redrawn from
+   * it — so what is on the screen and what is in `state.list.items` cannot
+   * disagree halfway through a gesture, and a drag abandoned by a phone call
+   * leaves nothing behind but some transforms to clear.
+   *
+   * The whole order goes to the server — see order() in the API for why a move
+   * is not sent as a move.
+   */
 
-  /* Two buttons rather than a drag. A drag is the nicer gesture on a desktop
-     and the worse one on a phone, where it fights the page's own scrolling,
-     and it is no gesture at all on a keyboard. Up and down are the same move
-     for a thumb, a mouse and a Tab key.
+  /* How long a thumb has to rest on a row before it lifts, and how far a
+     pointer may travel before a press counts as a carry. The hold is what
+     keeps a list scrollable; the slop is what keeps a mouse from lifting a row
+     somebody only clicked. */
+  var HOLD = 220;
+  var SLOP = 6;
+  /* How near the top or bottom of the window a carried row has to come before
+     the page starts moving under it, and how fast it moves at the very edge. */
+  var EDGE = 76;
+  var EDGE_STEP = 16;
+  /* The slide a row makes as it is set down. The same number is in the CSS
+     transition, and the redraw waits for it. */
+  var SETTLE = 170;
 
-     The whole order goes to the server — see order() in the API for why a
-     move is not sent as a move. */
-  function move(place, delta) {
+  /* Whether a row is up, and until the one being set down has landed. One at a
+     time: a second finger on another row would be two answers to one
+     question. */
+  var carrying = null;
+
+  function indexOfPlace(place) {
     var items = state.list.items;
-    var at = -1;
-    for (var i = 0; i < items.length; i++) if (items[i].place === place) { at = i; break; }
+    for (var i = 0; i < items.length; i++) if (items[i].place === place) return i;
+    return -1;
+  }
+
+  /* One place up or down: the arrow keys, and nothing else now. */
+  function move(place, delta) {
+    var at = indexOfPlace(place);
+    if (at === -1) return;
     var to = at + delta;
-    if (at === -1 || to < 0 || to >= items.length) return;
+    if (to < 0 || to >= state.list.items.length) return;
+    reorder(at, to, true);
+  }
+
+  /* The one place the order actually changes, whichever gesture asked for it.
+     Everything above it decides `to`; this splices, redraws and tells the
+     server. */
+  function reorder(from, to, focus) {
+    if (from === to) return;
+    var items = state.list.items;
 
     /* Anything typed and not yet written goes first: the rows are about to be
        rebuilt, and a pending write reads its value off the node it was typed
        into. */
     flushAll();
 
-    items.splice(to, 0, items.splice(at, 1)[0]);
+    items.splice(to, 0, items.splice(from, 1)[0]);
     render();
-    /* The row that moved keeps the focus, so a keyboard can press the same
-       button again and walk a place up the list. */
-    var row = dom.main.querySelectorAll('.item')[to];
-    var btn = row && row.querySelector(delta < 0 ? '.row-btn' : '.row-btn + .row-btn');
-    if (btn) btn.focus();
+
+    var row = dom.main.querySelectorAll('.item.is-mine')[to];
+    if (row) {
+      /* The row that moved keeps the focus, so a keyboard can press the same
+         key again and walk a place the length of the list. */
+      if (focus) {
+        var grip = row.querySelector('.row-grip');
+        if (grip) grip.focus();
+      }
+      /* And it says where it landed, for a second, to whichever eye was
+         following the finger rather than the numbers. */
+      row.classList.add('is-landed');
+    }
+    announce(t('listsMoved', { n: to + 1 }));
 
     post({
       action: 'order',
       id: state.list.id,
       places: items.map(function (it) { return it.place; })
     }).then(function (a) { if (!a.ok) failed(a.out); }).catch(function () { failed({}); });
+  }
+
+  /* Said to a screen reader and to nobody else. A move is obvious on a screen
+     — the row is under the finger and the numbers redraw — and completely
+     silent without one, which is what the two buttons were also guilty of.
+     The region is in the page rather than built here, because a live region
+     inserted and filled in the same breath is not announced. */
+  function announce(message) {
+    if (!dom.live) return;
+    dom.live.textContent = '';
+    setTimeout(function () { dom.live.textContent = message; }, 40);
+  }
+
+  function block(ev) { ev.preventDefault(); }
+
+  function within(node, selector) {
+    return node && node.closest ? node.closest(selector) : null;
+  }
+
+  /* Everything a row needs to be picked up, given to it as it is built. */
+  function carry(row, item, grip) {
+    grip.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'ArrowUp' && ev.key !== 'ArrowDown') return;
+      /* Otherwise the page scrolls under the row that is being moved. */
+      ev.preventDefault();
+      move(item.place, ev.key === 'ArrowUp' ? -1 : 1);
+    });
+
+    row.addEventListener('pointerdown', function (ev) {
+      if (carrying || ev.button > 0) return;
+      if (!state.list || state.list.items.length < 2) return;
+      var onGrip = !!within(ev.target, '.row-grip');
+      /* Everything that is already something to press or to type in keeps its
+         own gesture: a drag begun in the note box would take the caret out of
+         the sentence somebody is in the middle of writing. */
+      if (!onGrip && within(ev.target, 'a, button, textarea, input, select')) return;
+      lift(ev, row, onGrip);
+    });
+  }
+
+  /* One drag, from the press that might become one to the row being set down.
+     Everything it needs lives in here: nothing about a gesture outlives it. */
+  function lift(ev, row, onGrip) {
+    var list = row.parentNode;
+    var rows = [];
+    var all = list.querySelectorAll('.item.is-mine');
+    for (var i = 0; i < all.length; i++) rows.push(all[i]);
+
+    var from = rows.indexOf(row);
+    if (from === -1 || rows.length < 2) return;
+
+    var id = ev.pointerId;
+    var finger = ev.pointerType === 'touch' || ev.pointerType === 'pen';
+    var startX = ev.clientX;
+    var startY = ev.clientY;
+    var startTop = window.pageYOffset;
+    var lastY = ev.clientY;
+
+    var live = false;     /* whether the row is actually up */
+    var hold = null;      /* the thumb's rest, still to be waited out */
+    var frame = 0;        /* the edge-scrolling loop */
+    var geom = null;      /* every row's place on the page, measured once */
+    var span = 0;         /* the height of the hole the carried row leaves */
+    var to = from;
+    var shown = from;     /* the last position the numbers were drawn for */
+
+    document.addEventListener('pointermove', moved);
+    document.addEventListener('pointerup', dropped);
+    document.addEventListener('pointercancel', lost);
+
+    if (finger && onGrip) begin();
+    else if (finger) hold = setTimeout(function () { hold = null; begin(); }, HOLD);
+
+    /* Where every row stands, in page coordinates, taken at the moment of the
+       lift and not again: the page scrolls under a carried row and nothing
+       else about the layout moves, so measuring once is measuring right. */
+    function measure() {
+      var top = window.pageYOffset;
+      geom = rows.map(function (node) {
+        var box = node.getBoundingClientRect();
+        return { top: box.top + top, height: box.height };
+      });
+      var gap = geom.length > 1 ? geom[1].top - (geom[0].top + geom[0].height) : 0;
+      span = geom[from].height + gap;
+    }
+
+    function begin() {
+      live = true;
+      carrying = true;
+      measure();
+
+      /* A long press on a phone is also how text is selected and how the
+         callout menu is asked for. Neither is what this gesture means. */
+      try {
+        var selection = window.getSelection();
+        if (selection && selection.removeAllRanges) selection.removeAllRanges();
+      } catch (e) { /* nothing worth failing over */ }
+
+      list.classList.add('is-sorting');
+      row.classList.add('is-lifted');
+      document.body.classList.add('is-carrying');
+      /* So the row keeps the pointer even when it slides out from under it. */
+      try { row.setPointerCapture(id); } catch (e) { /* older engine */ }
+      /* The page does not scroll while a row is up. touch-action cannot say
+         this — it is read when the finger lands, and by then the browser does
+         not yet know this is a carry rather than a swipe — so the scroll is
+         refused one touchmove at a time instead. */
+      document.addEventListener('touchmove', block, { passive: false });
+      document.addEventListener('contextmenu', block);
+      frame = window.requestAnimationFrame(chase);
+      paint();
+    }
+
+    /* Where the carried row is, and where every other row has to be to leave
+       it a hole. Called on every move, and on every step of an edge scroll. */
+    function paint() {
+      var y = lastY + window.pageYOffset;
+      var dy = y - (startY + startTop);
+
+      /* A row cannot be carried out of its own list. */
+      var last = geom[geom.length - 1];
+      var lowest = last.top + last.height - (geom[from].top + geom[from].height);
+      dy = Math.max(geom[0].top - geom[from].top, Math.min(lowest, dy));
+
+      var middle = geom[from].top + geom[from].height / 2 + dy;
+
+      /* Where it would be dropped: the number of rows whose middle is above
+         it — each of them measured where it is standing now, which for the
+         ones below the hole is a whole row's height further up. */
+      to = 0;
+      for (var j = 0; j < geom.length; j++) {
+        if (j === from) continue;
+        var at = geom[j].top + geom[j].height / 2 - (j > from ? span : 0);
+        if (at < middle) to++;
+      }
+
+      row.style.transform = 'translateY(' + Math.round(dy) + 'px)';
+      for (var k = 0; k < rows.length; k++) {
+        if (k === from) continue;
+        var shift = (k > from && k <= to) ? -span : (k < from && k >= to) ? span : 0;
+        rows[k].style.transform = shift ? 'translateY(' + shift + 'px)' : '';
+      }
+
+      /* The numbers are the whole argument for the gesture, so they are told
+         the truth while it is happening rather than after it: a row sitting
+         first and still printing 3 is the list disagreeing with itself under
+         somebody's finger. Only when the answer changes — this is inside a
+         pointermove. */
+      if (to !== shown) {
+        shown = to;
+        for (var n = 0; n < rows.length; n++) {
+          var lands = n === from ? to
+            : (n > from && n <= to) ? n - 1
+            : (n < from && n >= to) ? n + 1
+            : n;
+          var digit = rows[n].querySelector('.item-n');
+          if (digit) digit.textContent = String(lands + 1);
+        }
+      }
+    }
+
+    /* The page moving under a finger that has run out of screen. Without it a
+       list of twenty is only reorderable within one screenful. */
+    function chase() {
+      if (!live) return;
+      var below = lastY - (window.innerHeight - EDGE);
+      var above = EDGE - lastY;
+      var by = below > 0 ? Math.min(below, EDGE) : above > 0 ? -Math.min(above, EDGE) : 0;
+      if (by) {
+        var was = window.pageYOffset;
+        window.scrollBy(0, by / EDGE * EDGE_STEP);
+        if (window.pageYOffset !== was) paint();
+      }
+      frame = window.requestAnimationFrame(chase);
+    }
+
+    function moved(ev2) {
+      if (ev2.pointerId !== id) return;
+      lastY = ev2.clientY;
+      if (live) { paint(); return; }
+      if (Math.abs(ev2.clientY - startY) <= SLOP && Math.abs(ev2.clientX - startX) <= SLOP) return;
+      /* Travel before the rest is over is somebody scrolling the page, and the
+         row stays where it is. */
+      if (hold) { clearTimeout(hold); hold = null; stop(false); return; }
+      if (finger) return;
+      begin();
+    }
+
+    function dropped(ev2) { if (ev2.pointerId === id) stop(true); }
+    function lost(ev2) { if (ev2.pointerId === id) stop(false); }
+
+    /* Setting the row down. `keep` is false when the gesture was taken away
+       rather than finished — a phone call, the browser deciding it was a
+       scroll after all — and then the row goes back where it came from. */
+    function stop(keep) {
+      document.removeEventListener('pointermove', moved);
+      document.removeEventListener('pointerup', dropped);
+      document.removeEventListener('pointercancel', lost);
+      if (hold) { clearTimeout(hold); hold = null; }
+      if (!live) return;
+
+      live = false;
+      if (frame) { window.cancelAnimationFrame(frame); frame = 0; }
+      document.removeEventListener('touchmove', block);
+      document.removeEventListener('contextmenu', block);
+      document.body.classList.remove('is-carrying');
+      try { row.releasePointerCapture(id); } catch (e) { /* never had it */ }
+
+      /* The press that ends a drag must not also be a click on whatever the
+         row happens to have been let go over. */
+      document.addEventListener('click', swallow, true);
+      setTimeout(function () { document.removeEventListener('click', swallow, true); }, 0);
+
+      var target = keep ? to : from;
+
+      /* It lands rather than snapping: the lift comes off it and it is sent to
+         the hole, and the redraw waits for that slide to finish. */
+      row.classList.remove('is-lifted');
+      row.style.transform = 'translateY(' + Math.round(rest(target)) + 'px)';
+
+      setTimeout(function () {
+        carrying = null;
+        if (target === from) {
+          list.classList.remove('is-sorting');
+          for (var k = 0; k < rows.length; k++) {
+            rows[k].style.transform = '';
+            var digit = rows[k].querySelector('.item-n');
+            if (digit) digit.textContent = String(k + 1);
+          }
+          return;
+        }
+        /* The redraw builds every row again from the array, transforms and
+           all, so there is nothing here to clean up after it. */
+        reorder(from, target, false);
+      }, SETTLE);
+    }
+
+    function swallow(ev2) { ev2.preventDefault(); ev2.stopPropagation(); }
+
+    /* How far the carried row has to travel from where it started to sit in
+       the hole. Going down it ends flush with the bottom of the row it passed,
+       because everything in between has come up by a row's height; going up it
+       simply takes that row's place. */
+    function rest(target) {
+      if (target === from) return 0;
+      if (target > from) {
+        return geom[target].top + geom[target].height - geom[from].height - geom[from].top;
+      }
+      return geom[target].top - geom[from].top;
+    }
   }
 
   function drop(place) {
@@ -1594,6 +1933,7 @@
       main: $('main'),
       who: $('lists-who'),
       toast: $('toast'),
+      live: $('lists-live'),
       pickerScrim: $('picker-scrim'),
       pickerClose: $('picker-close'),
       pickerSearch: $('picker-search'),
