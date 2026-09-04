@@ -83,6 +83,13 @@ const MAX_ITEMS = 20;
    long collection to be noise to. Like every other number in this block it is
    a cap on somebody with a script rather than on somebody with opinions. */
 const MAX_KEPT = 200;
+/* How many places one account can add by hand. Generous, because the whole
+   point is that the catalogue is missing things and nobody should hit a wall
+   while building one list — and finite, because this is the one table on the
+   site where a stranger types a name that other people then read. */
+const MAX_ADDED = 100;
+const MAX_NAME = 80;
+const MAX_ADDRESS = 120;
 const MAX_TITLE = 60;
 const MAX_INTRO = 200;
 const MAX_SAY = 280;
@@ -98,6 +105,42 @@ function code() {
   let out = '';
   for (let i = 0; i < CODE_LENGTH; i++) out += CODE_ALPHABET[bytes[i] % CODE_ALPHABET.length];
   return out;
+}
+
+/* An id for a place somebody added by hand.
+ *
+ * list_items.place_id holds three kinds of id and the column is the only thing
+ * that says which roll to go and read, so they have to be tellable apart by
+ * looking at them:
+ *
+ *   catalogue   180-degrees                   lowercase, digits and hyphens
+ *   Google      ChIJUdUjCV2TkkYRcg8TxVp1XUI   always carries a capital
+ *   added here  new_k3fmqw8x2p                lowercase, and has an underscore
+ *
+ * All 74 catalogue ids are lowercase slugs with no underscore, so an
+ * underscore rules that out; a Google key always carries a capital, so being
+ * lowercase rules that out. Both halves are needed — a Google key may itself
+ * contain an underscore, and lowercase alone would not separate this from a
+ * catalogue slug.
+ *
+ * The "new_" prefix is for the person reading a row in the database. The test
+ * below is what the code trusts.
+ */
+const ADDED_LENGTH = 10;
+
+function addedId() {
+  const bytes = new Uint8Array(ADDED_LENGTH);
+  crypto.getRandomValues(bytes);
+  let out = '';
+  for (let i = 0; i < ADDED_LENGTH; i++) out += CODE_ALPHABET[bytes[i] % CODE_ALPHABET.length];
+  return 'new_' + out;
+}
+
+/* Lowercase, and carries an underscore. Deliberately a test of shape rather
+   than of the prefix: the prefix is a label, and a check that reads
+   `startsWith('new_')` would quietly accept `New_x` from somewhere else. */
+export function isAdded(id) {
+  return typeof id === 'string' && id === id.toLowerCase() && id.indexOf('_') !== -1;
 }
 
 /* The readable half. A list called "Top ten burgers" gets
@@ -142,8 +185,24 @@ export async function onRequestGet(context) {
   const ready = !!(env.DB && env.SAVE_SALT) && !(await wrongDatabase(env));
   if (!ready) return json({ ready: false, user: null, lists: [] }, 200);
 
-  const id = new URL(request.url).searchParams.get('id') || '';
+  const params = new URL(request.url).searchParams;
+  const id = params.get('id') || '';
   const user = await sessionUser(request, env);
+
+  /* The picker asking for the places this account added by hand, so they can
+     go on a second list without being typed again. Only ever your own: a name
+     a stranger typed does not turn up in anybody else's search results. */
+  if (params.get('added')) {
+    if (!user) return json({ ready: true, user: null, added: [] }, 200);
+    const mine = await env.DB
+      .prepare(
+        'SELECT id, name, address, lat, lng FROM added_places ' +
+        'WHERE owner = ? ORDER BY created_at DESC'
+      )
+      .bind(user.id)
+      .all();
+    return json({ ready: true, user: user.username, added: mine.results }, 200);
+  }
 
   if (id) {
     if (!LIST_ID.test(id)) return json({ error: 'not-found' }, 404);
@@ -252,6 +311,10 @@ export async function onRequestPost(context) {
 
   const action = body.action;
   if (action === 'create') return create(context, body, user);
+  /* Adding a place to the catalogue-that-is-not-the-catalogue. It names no
+     list, so it is routed here with create() rather than below, where every
+     action has a list to prove ownership of. */
+  if (action === 'place') return addPlace(context, body, user);
 
   /* Everything else acts on a list that already exists, so it is the same
      two lines every time: is that a list id at all, and is it yours. */
@@ -320,6 +383,95 @@ async function create(context, body, user) {
       return json({ id: id, title: title }, 200);
     } catch (e) {
       /* Taken. Round again with a different code. */
+    }
+  }
+  return json({ error: 'busy' }, 503);
+}
+
+/* ---------------------------------------------------- adding a place
+ * The place the catalogue does not have.
+ *
+ * data/places.json is my map plus a Google export, and between them they miss
+ * things — somewhere that opened last month, somewhere Google files as not a
+ * restaurant. Before this, the picker's answer to "it is not in the list" was
+ * nothing at all, and the list simply could not be finished.
+ *
+ * WHAT IT IS NOT
+ *
+ * It is not a way onto the map. data/restaurants.json is hand-written and
+ * being on it is the verdict; this is somebody saying "this exists and I want
+ * it on my list", which is a much smaller claim and stays in its own table.
+ *
+ * WHY THE POINT IS REQUIRED AND THE ADDRESS IS NOT
+ *
+ * A place with no coordinates cannot be drawn, and being drawn on the map with
+ * the rest of the list is most of the reason anybody adds one — seatList() in
+ * assets/app.js drops a list row that has no point, so a place without one
+ * would go on the list and then quietly not be on the map. The form asks for
+ * the pin by making somebody drag it, so there is no such thing as a row here
+ * that does not know where it is. A street name is worth having and is not
+ * that.
+ *
+ * WHAT IS CHECKED
+ *
+ * A session, the same as everything else that writes here. A name. A point
+ * that is actually a number and actually near Tallinn — a pin dragged off the
+ * map, or a scripted call with a longitude of 900, is refused rather than
+ * stored and drawn somewhere in the Atlantic. And a cap, because this is the
+ * one table on the site where a stranger types a name that other people then
+ * read on a shared page.
+ */
+
+/* Roughly 60km around the city, which is generous — it reaches Paldiski and
+   past Kehra — and still refuses a point in another country. The map itself
+   opens on Tallinn and this feature is for places on it. */
+const TALLINN = { lat: 59.437, lng: 24.7536, degLat: 0.55, degLng: 1.1 };
+
+function point(value) {
+  const n = typeof value === 'number' ? value : parseFloat(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+async function addPlace(context, body, user) {
+  const { env } = context;
+
+  const name = words(body.name, MAX_NAME);
+  if (!name) return json({ error: 'name' }, 400);
+
+  const lat = point(body.lat);
+  const lng = point(body.lng);
+  if (lat === null || lng === null) return json({ error: 'where' }, 400);
+  if (Math.abs(lat - TALLINN.lat) > TALLINN.degLat ||
+      Math.abs(lng - TALLINN.lng) > TALLINN.degLng) {
+    return json({ error: 'where' }, 400);
+  }
+
+  const held = await env.DB
+    .prepare('SELECT COUNT(*) AS n FROM added_places WHERE owner = ?')
+    .bind(user.id)
+    .first();
+  if (held && held.n >= MAX_ADDED) return json({ error: 'too-many' }, 429);
+
+  const now = Date.now();
+  /* The same loop create() uses, and for the same reason: the primary key is
+     the only thing in this codebase allowed to decide what is unique. Ten
+     characters out of an alphabet of twenty-eight is not going to collide;
+     the loop is so that nothing depends on that being true. */
+  for (let tries = 0; tries < 5; tries++) {
+    const id = addedId();
+    try {
+      await env.DB
+        .prepare(
+          'INSERT INTO added_places (id, owner, name, address, lat, lng, created_at, updated_at) ' +
+          'VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        )
+        .bind(id, user.id, name, words(body.address, MAX_ADDRESS), lat, lng, now, now)
+        .run();
+      return json({
+        place: { id: id, name: name, address: words(body.address, MAX_ADDRESS), lat: lat, lng: lng }
+      }, 200);
+    } catch (e) {
+      /* Taken. Round again. */
     }
   }
   return json({ error: 'busy' }, 503);
@@ -483,16 +635,39 @@ async function add(context, body, id) {
 
   const place = typeof body.place === 'string' ? body.place : '';
 
-  let roll;
-  try {
-    roll = await catalogue(context);
-  } catch (e) {
-    return json({ error: 'places' }, 503);
+  /* Two rolls to look in now, and the id says which one.
+   *
+   * This check is the reason nothing can put a row in list_items for a place
+   * that does not exist, so it is widened rather than relaxed: an id that
+   * looks like an added place is looked up in added_places, everything else in
+   * the catalogue, and an id found in neither is refused exactly as before.
+   *
+   * Any account's added place is accepted, not only the session's own. Only
+   * its author can see one in a picker, but a list can be copied from and a
+   * place already on somebody's shared list is a place that exists — refusing
+   * it would be refusing a row this same API already serves to everybody. */
+  let known;
+
+  if (isAdded(place)) {
+    const row = await env.DB
+      .prepare('SELECT name FROM added_places WHERE id = ?')
+      .bind(place)
+      .first();
+    if (!row) return json({ error: 'place' }, 400);
+    known = { name: row.name };
+  } else {
+    let roll;
+    try {
+      roll = await catalogue(context);
+    } catch (e) {
+      return json({ error: 'places' }, 503);
+    }
+    /* Nowhere real. The same refusal /api/saves gives, and for the same
+       reason: nothing gets to put a row in here for a place that does not
+       exist. */
+    known = roll.get(place);
+    if (!known) return json({ error: 'place' }, 400);
   }
-  /* Nowhere real. The same refusal /api/saves gives, and for the same reason:
-     nothing gets to put a row in here for a place that does not exist. */
-  const known = roll.get(place);
-  if (!known) return json({ error: 'place' }, 400);
 
   const held = await env.DB
     .prepare('SELECT COUNT(*) AS n FROM list_items WHERE list_id = ?')

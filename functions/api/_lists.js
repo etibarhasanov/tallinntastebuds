@@ -14,6 +14,9 @@
  */
 
 import { catalogue } from './_lib.js';
+/* Which of the three kinds of id a list row holds. See addedId() there for
+   why the test is a shape and not a prefix. */
+import { isAdded } from './lists.js';
 
 /* The share code's shape. A slug, a dash and six characters, but written as a
    general slug rather than as that exact pattern: it is the primary key of a
@@ -100,6 +103,30 @@ export async function readList(context, id, user) {
     roll = await catalogue(context);
   } catch (e) { /* unreadable costs the addresses and the links, not the list */ }
 
+  /* The rows whose places somebody added by hand, fetched in one query rather
+     than one per row. Without this they would fall back to the stored name
+     with no address and no point — which reads as a place on the list and then
+     silently is not on the map, because seatList() in assets/app.js drops a
+     row that does not know where it is.
+
+     Anybody's, not just this reader's: the whole point is that a shared list
+     draws completely for a stranger. Only the author ever sees one in a
+     picker; everyone sees the ones on a list they opened. */
+  const wanted = results.filter((r) => isAdded(r.place_id)).map((r) => r.place_id);
+  const added = new Map();
+  if (wanted.length) {
+    /* One placeholder per id, built from the array's own length and never from
+       anything in it, so this stays a prepared statement with bound
+       parameters like every other query here. A list is capped at twenty
+       places, so this is at most twenty. */
+    const holes = wanted.map(() => '?').join(',');
+    const { results: rows } = await env.DB
+      .prepare('SELECT id, name, address, lat, lng FROM added_places WHERE id IN (' + holes + ')')
+      .bind(...wanted)
+      .all();
+    rows.forEach((row) => added.set(row.id, row));
+  }
+
   return {
     id: list.id,
     title: list.title,
@@ -114,14 +141,24 @@ export async function readList(context, id, user) {
     kept: !!kept,
     updated: list.updated_at,
     items: results.map((r) => {
-      const known = roll ? roll.get(r.place_id) : null;
+      /* The catalogue, or the added-places table, or neither — in which case
+         the row keeps the name it was added under and stops linking anywhere,
+         which is the smallest loss available. */
+      const known = added.get(r.place_id) || (roll ? roll.get(r.place_id) : null);
       return {
         place: r.place_id,
         name: known ? known.name : r.name,
         address: known ? known.address : '',
         lat: known && typeof known.lat === 'number' ? known.lat : null,
         lng: known && typeof known.lng === 'number' ? known.lng : null,
+        /* Never true for a place somebody added: `map` means "this is also on
+           data/restaurants.json, so link the row to its write-up", and an
+           added place has none. added_places rows carry no `map` column, so
+           this is already false for them — said here so it stays that way. */
         map: !!(known && known.map),
+        /* Whether this is a place somebody added rather than one off either
+           roll. The page draws it the same; this is what lets it say so. */
+        added: added.has(r.place_id),
         say: r.say
       };
     })

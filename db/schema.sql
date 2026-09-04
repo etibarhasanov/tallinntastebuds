@@ -4,8 +4,7 @@
 -- follow a person on, the lists somebody builds and shares, the keeps that are
 -- a bookmark on somebody else's list, 750 Tallinn venues mirrored out of
 -- Google Places, the places somebody adds by hand when the catalogue does not
--- have them (added_places — the table is here, the feature is not built yet),
--- and one meta row saying which database this is. Everything the map itself draws — the places, the write-ups, the
+-- have them, and one meta row saying which database this is. Everything the map itself draws — the places, the write-ups, the
 -- discounts, the stories — is a JSON file in the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
@@ -283,78 +282,73 @@ CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at
 -- ------------------------------------------------------------ added places
 -- A place somebody added by hand, because the catalogue does not have it.
 --
--- data/places.json is the map plus a Google Maps export, and between them they
--- miss things: a place that opened last month, a place Google files as
--- something other than a restaurant, a place nobody has exported since. A list
--- can only hold what is in that file, so today the answer to "the place I want
--- is not in the picker" is that there is no answer. This table is where that
--- place goes.
+-- data/places.json is my map plus a Google Maps export, and between them they
+-- miss things: somewhere that opened last month, somewhere Google files as not
+-- a restaurant, somewhere nobody has exported since. A list can only hold what
+-- is in that file, so "the place I want is not in the picker" used to have no
+-- answer. This table is the answer.
 --
 -- It is deliberately NOT the map. data/restaurants.json is hand-written and
--- mine and being on it is the verdict; a row here is somebody saying "this
--- exists and I want it on my list", which is a much smaller claim. Same
+-- mine, and being on it is the verdict. A row here is somebody saying "this
+-- exists and I want it on my list", which is a much smaller claim — the same
 -- separation google_venues keeps, for the same reason.
 --
--- NOTHING WRITES TO IT YET
+-- WHO SEES ONE
 --
--- Stated plainly because it is not obvious from the outside: this table is in
--- both deployed databases, it holds zero rows in each, and no code in this
--- repository has ever referenced it — `git log --all -S added_places` finds
--- nothing before the commit that wrote this comment. It was created straight
--- against D1 rather than through this file, which is why it was found by
--- listing sqlite_master instead of by reading anything.
+-- Its author, in their own picker, so they can put it on a second list without
+-- adding it twice. Nobody else's picker changes: a name a stranger typed does
+-- not turn up in other people's search results, which is the moderation
+-- surface this does not open.
 --
--- The shape below is transcribed from the deployed tables rather than
--- reconstructed, so applying this file to a fresh database produces the same
--- table the live ones already have. IF NOT EXISTS leaves those alone.
+-- But it is not private either, and that is the point of it. It goes on a
+-- list, the list gets shared, and anybody who opens that list sees the place
+-- and its pin exactly like every other place on it — see readList() in
+-- functions/api/_lists.js, which fills a list row from here when the catalogue
+-- does not have it, and seatList() in assets/app.js, which draws it.
 --
--- WHAT STILL HAS TO BE TRUE BEFORE A ROW HERE IS USEFUL
+-- WHY THE ID LOOKS LIKE THAT
 --
--- The table is the easy half. The part that is not built is the part that
--- makes a row here reachable, and there is one hard blocker and two decisions:
+-- list_items.place_id holds three kinds of id now, and they have to be
+-- tellable apart by looking, because that column is the only thing that says
+-- which roll to go and read:
 --
---   1. A LIST CANNOT HOLD ONE. add() in functions/api/lists.js reads
---      data/places.json through catalogue() and refuses any place_id that is
---      not in it — `if (!known) return json({ error: 'place' }, 400)`. That
---      refusal is load-bearing: it is what stops anybody filling list_items
---      with rows for places that do not exist. So it has to learn about this
---      table rather than be removed, and that is the whole of the work.
+--   catalogue   180-degrees                   lowercase, digits and hyphens
+--   Google      ChIJUdUjCV2TkkYRcg8TxVp1XUI   always carries a capital
+--   added here  new_k3fmqw8x2p                lowercase, and has an underscore
 --
---   2. THE ID HAS TO BE TELLABLE FROM THE OTHER TWO. list_items.place_id
---      already holds two kinds of id, and they are distinguishable by accident
---      of shape: a data/places.json slug is lowercase letters, digits and
---      hyphens, and a Google key always carries capitals (see the note on
---      google_venues.place_id). A third kind needs to be as unambiguous —
---      a prefix this time, chosen rather than inherited.
---
---   3. A ROW HERE HAS NO ADDRESS. The columns are a name and a point; every
---      other place on a list carries an address that the panel draws and the
---      map's stand-in card shows. Either this grows an address column, or a
---      manually added place is drawn without one and that is a decision
---      somebody made rather than a field somebody forgot.
---
--- And the thing to be careful of, whenever it is built: this is the one table
--- where a stranger types the name of a business that then appears on a page.
--- Everything on a list today is a name out of a file I control.
+-- All 74 catalogue ids are lowercase slugs with no underscore, so an
+-- underscore rules that out; a Google key always carries a capital, so being
+-- lowercase rules that out. The prefix is what a person reads; the two rules
+-- above are what the code checks. See addedId() in functions/api/lists.js.
 CREATE TABLE IF NOT EXISTS added_places (
-  -- What list_items.place_id would hold. See decision 2 above: whatever shape
-  -- is chosen has to be unmistakable next to a catalogue slug and a Google key.
+  -- What list_items.place_id holds for this place. "new_" and ten random
+  -- characters — see above for why that shape and not another.
   id         TEXT PRIMARY KEY,
   -- users.id — who added it. An account, by the same argument a list needs
   -- one: this is somebody putting a name into the world, not a bookmark.
   owner      TEXT    NOT NULL,
   name       TEXT    NOT NULL,
-  -- Required, both of them, which is the one thing the shape already decides:
-  -- a place with no point cannot be drawn on the map, and being drawn on the
-  -- map is most of why somebody would add one. See seatList() in assets/app.js,
-  -- which drops a list row that has no coordinates.
+  -- Required, both, and that is the one thing the shape decides for you: a
+  -- place with no point cannot be drawn, and being drawn on the map with the
+  -- rest of the list is most of why anybody adds one. The form asks for the
+  -- pin by making somebody drag it, so there is no such thing as a row here
+  -- that does not know where it is.
   lat        REAL    NOT NULL,
   lng        REAL    NOT NULL,
   created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL
+  updated_at INTEGER NOT NULL,
+  -- Added after the table was: every other place on a list carries an address
+  -- that the panel draws and the map's stand-in card shows, and a place added
+  -- by hand should not be the one row that reads as half a place. Optional,
+  -- because a pin is the part that cannot be missing and a street name is not.
+  --
+  -- Applied to the live databases with ALTER TABLE ADD COLUMN rather than by
+  -- rebuilding the table. Both are listed here in the order the columns
+  -- actually sit in, so this file describes what is deployed rather than what
+  -- would be tidiest.
+  address    TEXT    NOT NULL DEFAULT ''
 );
--- "Everything this person added", which is the query a page listing them would
--- run. Nothing runs it yet.
+-- "Everything this person added", which is what the picker asks for.
 CREATE INDEX IF NOT EXISTS idx_added_places_owner ON added_places (owner, created_at DESC);
 
 
