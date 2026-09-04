@@ -2265,29 +2265,49 @@ body.panel-detail .panel {
   line-height: 1.5;
   color: var(--ink);
 }
+/* The way through to the list's own page, where the owner's sentences sit in
+   full. It was eleven pixels of underlined mono below the keep, which read as
+   a footnote rather than as the other thing you can do here, so it wears the
+   same pill as the keep and stands on the same line as it.
+
+   Not the accent, though: on this block the accent behind a pill already
+   means "you have kept this", and a second one that always wore it would take
+   that reading away. */
 .list-credit-link {
   display: inline-block;
-  margin: 12px 0 2px;
+  padding: 7px 13px;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  background: var(--paper);
+  color: var(--muted);
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: .04em;
-  color: var(--muted);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color .15s var(--ease), border-color .15s var(--ease);
 }
-.list-credit-link:hover { color: var(--accent); }
+.list-credit-link:hover { color: var(--ink); border-color: var(--muted); }
 
-/* The keep, under the list's own words and above the way through to its page.
-   The one control in a block that is otherwise entirely somebody else's
-   writing, so it is given a line of its own rather than set beside the byline:
-   nothing here should read as though the site is speaking in the owner's
-   voice. */
-.list-credit-keep {
+/* The two controls, under the list's own words: keeping it, and opening it in
+   full. They are given a line of their own rather than set beside the byline,
+   because nothing here should read as though the site is speaking in the
+   owner's voice. */
+.list-credit-acts {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
   margin: 14px 0 2px;
+}
+/* The keep and its count travel together: a narrow panel breaks the line
+   between the two controls rather than between the button and the number
+   belonging to it. */
+.list-credit-keep {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 .list-keep {
   display: inline-flex;
