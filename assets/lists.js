@@ -606,8 +606,16 @@
   }
 
   /* Somebody else's list: their title, their name, their sentences, and
-     nothing that looks like a control — except the two things that are about
-     you rather than about them. Keeping it, and opening it on the map. */
+     nothing that looks like a control — except the three things that are
+     about you rather than about them. Opening it on the map, keeping it, and
+     passing it on.
+
+     The map is the filled one, and it leads the row. This card had no .go on
+     it at all: three quiet underlined words in a line, of which the one
+     somebody arriving on a shared link came to press read as the smallest.
+     A list is a set of places and the question about a set of places is where
+     they are — so that press is the card's one action, and Keep and Share are
+     the second thoughts beside it. */
   function listHead(list) {
     return card([
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
@@ -615,8 +623,8 @@
       list.by ? el('p', { className: 'lists-by mono', textContent: t('listsBy', { name: list.by }) }) : null,
       list.intro ? el('p', { className: 'lists-say', textContent: list.intro }) : null,
       el('div', { className: 'lists-row' }, [
+        mapLink(list.id, 'go'),
         keepControl(list),
-        mapLink(list.id),
         button(t('listsShare'), 'alt', shareList),
         el('span', { className: 'lists-count mono', textContent: countLabel(list.items.length) })
       ])
