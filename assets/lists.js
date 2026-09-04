@@ -39,6 +39,13 @@
 
   var DEFAULT_LANG = 'en';
   var LANG_KEY = 'ttb.lang';
+
+  /* The two styles the site has, and the one it opens on — the same names,
+     the same key and the same default as assets/app.js, which is where they
+     are chosen. */
+  var STYLES = ['red', 'green'];
+  var DEFAULT_STYLE = 'red';
+  var STYLE_KEY = 'ttb.style';
   var API = '/api/lists';
 
   /* What the server accepts, said again here so a field can stop somebody at
@@ -161,6 +168,40 @@
     return out.replace(/[\u0131\u0130]/g, 'i').replace(/\u00f8/g, 'o').replace(/\u00df/g, 'ss');
   }
 
+  /* The style the site is wearing.
+   *
+   * The map has the swatches and writes the choice to localStorage; this page
+   * has no switch of its own and reads it, the same way it reads the language
+   * and for the same reason — walking from the map to your own list should
+   * not feel like leaving. Same two keys and same fallback as the pass pages,
+   * see applyStyle() in assets/pass.js.
+   *
+   * Everything drawn here is built out of the tokens the styles restate, so
+   * this one attribute is the whole of it: the cards, the buttons and the
+   * Save mark all follow whichever one is on, and nothing on the page names
+   * a colour that could fail to change with it.
+   */
+  function applyStyle() {
+    var fromUrl = new URLSearchParams(window.location.search).get('style');
+    var stored = storeGet(STYLE_KEY);
+    var style = STYLES.indexOf(fromUrl) !== -1 ? fromUrl
+              : STYLES.indexOf(stored) !== -1 ? stored
+              : DEFAULT_STYLE;
+
+    document.documentElement.setAttribute('data-style', style);
+    /* Which form controls and scrollbars the browser should draw — this page
+       is mostly fields, so getting it wrong is a white box on a dark card. */
+    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
+
+    /* And the browser's own chrome, which the document had to name in the
+       head before any of this ran. */
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      var wash = getComputedStyle(document.documentElement).getPropertyValue('--wash').trim();
+      if (wash) meta.setAttribute('content', wash);
+    }
+  }
+
   function pickLanguage(langs) {
     var fromUrl = new URLSearchParams(window.location.search).get('lang');
     if (fromUrl && langs.indexOf(fromUrl) !== -1) return fromUrl;
@@ -193,7 +234,16 @@
 
   /* ------------------------------------------------------------------- api */
 
+  /* Every write this page makes goes through here, and that is what lets the
+     Save button be honest without each caller remembering to tell it: the
+     count of writes in the air goes up here and comes back down when the
+     answer does. See the mark, further down. */
   function post(payload) {
+    mark.sending++;
+    paintSave();
+
+    var landed = function () { mark.sending--; settled(); };
+
     return fetch(API, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -202,6 +252,12 @@
       return res.json().catch(function () { return {}; }).then(function (out) {
         return { ok: res.ok, out: out || {} };
       });
+    }).then(function (answer) {
+      landed();
+      return answer;
+    }, function (err) {
+      landed();
+      throw err;
     });
   }
 
@@ -338,6 +394,11 @@
    */
   function render() {
     clear(dom.main);
+    /* The Save button is about to be rebuilt, or not drawn at all on a view
+       that has none. A mark still pointing at the old node would be painting
+       a button that is no longer in the document; whoever draws one claims it
+       again on the way past. */
+    mark.btn = null;
     paintWho();
 
     if (!state.reached) return dom.main.appendChild(renderUnreachable());
@@ -672,11 +733,11 @@
       maxlength: String(MAX_TITLE),
       'aria-label': t('listsRename')
     });
-    commitOnLeave(title, function (value) {
+    commitOnLeave(title, function (value, leaving) {
       var next = value.trim();
       if (!next || next === list.title) { title.value = list.title; return; }
       list.title = next;
-      return post({ action: 'edit', id: list.id, title: next });
+      return deliver({ action: 'edit', id: list.id, title: next }, leaving);
     });
 
     var intro = el('input', {
@@ -687,24 +748,32 @@
       'aria-label': t('listsIntro'),
       placeholder: t('listsIntroHint')
     });
-    commitOnLeave(intro, function (value) {
+    commitOnLeave(intro, function (value, leaving) {
       var next = value.trim();
       if (next === list.intro) return;
       list.intro = next;
-      return post({ action: 'edit', id: list.id, intro: next });
+      return deliver({ action: 'edit', id: list.id, intro: next }, leaving);
     });
 
     var ready = list.items.length >= MIN_ITEMS;
 
     /* Sharing is the last thing you do to a list, so it is the last button on
        the card, and it waits until there is a list to send. Saving sits after
-       it because it is the one press that is always available and always
-       means the same thing. */
+       it because it is the one press that is always available — and because
+       it is also the card's state light, and the end of the row is where the
+       eye lands last. */
     var share = button(t('listsShare'), 'lists-alt', shareList);
     if (!ready) {
       share.disabled = true;
       share.title = t('listsShareNeeds');
     }
+
+    /* The one button on the page that reports rather than only acts, so it is
+       handed to the mark the moment it exists and painted into whichever
+       state is true right now — which on a list just opened is Saved. */
+    var save = button(t('listsSave'), 'lists-go lists-save', saveList);
+    mark.btn = save;
+    paintSave();
 
     return card([
       el('p', { className: 'eyebrow', textContent: t('listsYours') }),
@@ -722,7 +791,7 @@
       el('div', { className: 'lists-row lists-acts' }, [
         mapLink(list.id),
         share,
-        button(t('listsSave'), 'lists-go', saveList)
+        save
       ]),
       ready ? null : el('p', { className: 'lists-hint mono', textContent: t('listsShareNeeds') })
     ]);
@@ -778,12 +847,16 @@
   /* Everything on this page writes itself — a note when the typing pauses, a
      title when you leave the field — so there is nothing here that a press
      could fail to send. The button exists because that is not visible: it
-     takes whatever is half typed, sends it now, and says so. */
+     takes whatever is half typed, sends it now, and says so. The rest of the
+     time it is simply reporting, which is the mark's job — see it below. */
   function saveList() {
+    /* Pressed rather than typed, so this one owes a word — and settled() says
+       it when the last write has actually landed rather than here, where the
+       only true thing yet is that it has been sent. */
+    mark.asked = true;
     var focused = document.activeElement;
     if (focused && focused.blur && focused !== document.body) focused.blur();
     flushAll();
-    toast(t('listsSaved'));
   }
 
   /* ------------------------------------------------------------- one place */
@@ -892,6 +965,7 @@
       if (pending[i].node === node) { pending[i].run = run; return; }
     }
     pending.push({ node: node, run: run });
+    paintSave();
   }
 
   /* `leaving` says the page is going away, and it changes how the write is
@@ -906,6 +980,7 @@
       var out = job(leaving);
       if (out && out.then) out.then(function (a) { if (a && !a.ok) failed(a.out); }).catch(function () {});
     }
+    settled();
   }
 
   function flushAll(leaving) { flush(null, leaving); }
@@ -934,6 +1009,66 @@
     return post(payload);
   }
 
+  /* The same write, addressed rather than typed: `leaving` picks the way it
+     goes out, and every caller that has a payload and knows whether the page
+     is going away uses this rather than choosing for itself. */
+  function deliver(payload, leaving) {
+    return leaving ? beacon(payload) : post(payload);
+  }
+
+  /* ------------------------------------------------------------ the mark
+   * What the Save button is saying.
+   *
+   * Everything on this page writes itself, so the button was never the thing
+   * that saved a list — it is the thing that says whether one is saved. So it
+   * says it, in the only two states there are, and it is always in whichever
+   * one is true:
+   *
+   *   Save    filled, in the style's accent: something has been typed or
+   *           moved that the server has not got yet.
+   *   Saved   quiet, in the page's own wash: there is nothing left to send.
+   *
+   * Both are tokens, so the mark is brick on the light style and forest on
+   * the dark one and names no colour of its own — see the note at the top of
+   * assets/styles.css.
+   *
+   * "Has not got yet" is two things and either one is enough: a write typed
+   * and still sitting in `pending`, and a write handed to the network and not
+   * yet answered. The second is why the button goes back to Save for the
+   * moment after a change and then settles — that is the request, drawn.
+   *
+   * A write that fails is toasted where it fails and does not hold the mark
+   * open: the page's other optimism works the same way — a place that will
+   * not go on comes straight back off the list — and a button stuck on Save
+   * with nothing left to press would be the one state you cannot get out of.
+   */
+  var mark = {
+    btn: null,     /* the Save button, while one is on screen */
+    sending: 0,    /* writes handed to the network and not yet answered */
+    asked: false   /* the button was pressed, so it owes a word when it lands */
+  };
+
+  function allSent() { return !pending.length && !mark.sending; }
+
+  function paintSave() {
+    if (!mark.btn) return;
+    var done = allSent();
+    mark.btn.classList.toggle('is-saved', done);
+    mark.btn.textContent = t(done ? 'listsSaveDone' : 'listsSave');
+  }
+
+  /* Called wherever either count changes. It paints — and if somebody pressed
+     the button rather than simply typing, it says the word, once, at the
+     moment the last write actually lands, which is the only moment it is
+     true. */
+  function settled() {
+    paintSave();
+    if (mark.asked && allSent()) {
+      mark.asked = false;
+      toast(t('listsSaved'));
+    }
+  }
+
   function debounceSay(node, item) {
     var timer = null;
 
@@ -941,8 +1076,7 @@
       var value = node.value.trim().slice(0, MAX_SAY);
       if (value === (item.say || '')) return;
       item.say = value;
-      var payload = { action: 'say', id: state.list.id, place: item.place, say: value };
-      return leaving ? beacon(payload) : post(payload);
+      return deliver({ action: 'say', id: state.list.id, place: item.place, say: value }, leaving);
     };
 
     node.addEventListener('input', function () {
@@ -960,13 +1094,20 @@
      Used for the title and the line under it, which are one line each and do
      not want the typing-pause treatment. */
   function commitOnLeave(node, write) {
-    var send = function () {
-      var out = write(node.value);
+    var send = function (leaving) {
+      var out = write(node.value, leaving);
       if (out && out.then) {
         out.then(function (a) { if (!a.ok) failed(a.out); }).catch(function () { failed({}); });
       }
     };
-    node.addEventListener('blur', send);
+    /* Queued from the first keystroke rather than simply written on the way
+       out, which buys two things. The Save button can see it — a half typed
+       title is exactly the state the button exists to report — and the page
+       being hidden takes it along with everything else, where before a title
+       typed and then switched away from was lost. Leaving the field is now
+       just the flush that happens soonest. */
+    node.addEventListener('input', function () { queue(node, send); });
+    node.addEventListener('blur', function () { flush(node); });
     node.addEventListener('keydown', function (ev) {
       if (ev.key === 'Enter') { ev.preventDefault(); node.blur(); }
     });
@@ -1856,6 +1997,9 @@
       pickerClear: $('picker-clear'),
       pickerBody: $('picker-body')
     };
+
+    /* First, before anything is drawn: the style the map was left on. */
+    applyStyle();
 
     var id = wantedList();
     state.id = id;

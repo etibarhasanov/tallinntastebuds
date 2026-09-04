@@ -140,6 +140,29 @@
 .lists-go:hover { background: var(--accent-lit); border-color: var(--accent-lit); }
 .lists-go[disabled] { opacity: .6; cursor: default; }
 
+/* Save, once there is nothing left to save.
+   The filled accent is for the press that is still owed — something typed or
+   moved that the server has not got. When that is settled the button stops
+   asking: it steps back to the page's own wash and hairline, keeps its
+   position in the row, and reads "Saved". Every colour in both states is a
+   token, so the mark is brick on the light style and forest on the dark one
+   without either being named here. The transition is what makes the two
+   states one button changing rather than two buttons swapping over. */
+.lists-save { transition: background-color .18s ease, border-color .18s ease, color .18s ease; }
+.lists-save.is-saved {
+  background: var(--wash);
+  border-color: var(--hairline);
+  color: var(--muted);
+}
+/* Still pressable — a list you have not touched can still be pushed at the
+   server — so it answers the pointer, quietly and without going back to the
+   colour that means unsaved. */
+.lists-save.is-saved:hover {
+  background: var(--wash);
+  border-color: var(--muted);
+  color: var(--ink);
+}
+
 .lists-alt {
   display: inline-block;
   padding: 10px 14px;
@@ -609,6 +632,7 @@ a.item-name:hover .item-where { color: var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   .list-items.is-sorting .item { transition: none; }
   .item.is-landed { animation: none; }
+  .lists-save { transition: none; }
 }
 
 /* ---------- the picker ---------- */
