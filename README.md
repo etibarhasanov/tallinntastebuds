@@ -1578,6 +1578,12 @@ better position anywhere.
 index and on a list's own page — and it goes to `/?list=<id>`: the map,
 showing that list's places as pins, with the panel open on the list itself.
 
+On somebody else's list it is the card's filled action and the first thing in
+the row, because it is what the link was sent for: a list is a set of places,
+and the question about a set of places is where they are. Keep and Share are
+the second thoughts beside it. On your own list it stays quiet — Save is that
+card's one filled press, and the accent is spent once.
+
 That is the map this site already has, not a second smaller one drawn on the
 lists page. The question anybody has about ten restaurants in one city is where
 they are relative to each other and to wherever they are standing, and the map
