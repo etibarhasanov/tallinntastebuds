@@ -12,26 +12,9 @@
   var DEFAULT_LANG = 'en';
   var STORE_KEY = 'ttb.lang';
   var FALLBACK_CENTER = [59.437, 24.7536];
-  var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-  var TILE_URL_DARK = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-
-  /* CARTO used to serve these tiles to anyone who attributed them. They now
-     want a key, and they stamp "API KEY REQUIRED" diagonally across every
-     tile requested without one — the map still draws, it just wears the nag.
-     The key is free up to five million tiles a month, which this map will
-     never approach, and it is requested at carto.com/basemaps/apikey.
-
-     It sits here in plain sight because it has to: this is a static site with
-     no build step and no server to hide anything behind, so anything the
-     browser needs is public. That is fine for this particular kind of key —
-     it is a meter reading, not a password, and it unlocks nothing but the
-     tiles it is already drawing. Lock it to the site's domain in the CARTO
-     dashboard and someone copying it out of here gets nothing they could not
-     get by asking for their own.
-
-     Empty is a working state, deliberately: the map falls back to exactly
-     what it does today, watermark and all, rather than breaking. */
-  var TILE_KEY = 'cb1_2ci9_1_e18f20c42b2e5346aa517b42';
+  /* The tiles, the key and the attribution are in assets/basemap.js, loaded
+     just before this file — three maps on this site draw the same basemap and
+     used to hold three copies of it. See the note at the top of that file. */
 
   /* Two styles, which is the choice worth offering: day or night. Seven
      colours of the spectrum made the rail look like a settings screen and
@@ -84,10 +67,6 @@
      a block you can recognise and walk from, rather than in a city. */
   var FOCUS_ZOOM = 16;
   var STYLE_KEY = 'ttb.style';
-  var TILE_ATTRIBUTION =
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
-    '&copy; <a href="https://carto.com/attributions">CARTO</a>';
-
   /* ----------------------------------------------------------------- state */
 
   var state = {
@@ -500,20 +479,8 @@
     return { style: DEFAULT_STYLE, pinned: false };
   }
 
-  /* Leaflet fills in {s}, {z}, {x}, {y} and {r}; the key is ours to add, and
-     it goes on as a query string so those placeholders are untouched. */
-  function tileUrl(dark) {
-    var url = dark ? TILE_URL_DARK : TILE_URL;
-    return TILE_KEY ? url + '?key=' + encodeURIComponent(TILE_KEY) : url;
-  }
-
   function makeTiles(dark) {
-    return L.tileLayer(tileUrl(dark), {
-      subdomains: 'abcd',
-      maxZoom: 20,
-      detectRetina: true,
-      attribution: TILE_ATTRIBUTION
-    });
+    return TTBBasemap.layer(L, { dark: dark });
   }
 
   function applyStyle(id) {

@@ -39,6 +39,13 @@
 
   var DEFAULT_LANG = 'en';
   var LANG_KEY = 'ttb.lang';
+
+  /* The two styles the site has, and the one it opens on — the same names,
+     the same key and the same default as assets/app.js, which is where they
+     are chosen. */
+  var STYLES = ['red', 'green'];
+  var DEFAULT_STYLE = 'red';
+  var STYLE_KEY = 'ttb.style';
   var API = '/api/lists';
 
   /* What the server accepts, said again here so a field can stop somebody at
@@ -161,6 +168,40 @@
     return out.replace(/[\u0131\u0130]/g, 'i').replace(/\u00f8/g, 'o').replace(/\u00df/g, 'ss');
   }
 
+  /* The style the site is wearing.
+   *
+   * The map has the swatches and writes the choice to localStorage; this page
+   * has no switch of its own and reads it, the same way it reads the language
+   * and for the same reason — walking from the map to your own list should
+   * not feel like leaving. Same two keys and same fallback as the pass pages,
+   * see applyStyle() in assets/pass.js.
+   *
+   * Everything drawn here is built out of the tokens the styles restate, so
+   * this one attribute is the whole of it: the cards, the buttons and the
+   * Save mark all follow whichever one is on, and nothing on the page names
+   * a colour that could fail to change with it.
+   */
+  function applyStyle() {
+    var fromUrl = new URLSearchParams(window.location.search).get('style');
+    var stored = storeGet(STYLE_KEY);
+    var style = STYLES.indexOf(fromUrl) !== -1 ? fromUrl
+              : STYLES.indexOf(stored) !== -1 ? stored
+              : DEFAULT_STYLE;
+
+    document.documentElement.setAttribute('data-style', style);
+    /* Which form controls and scrollbars the browser should draw — this page
+       is mostly fields, so getting it wrong is a white box on a dark card. */
+    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
+
+    /* And the browser's own chrome, which the document had to name in the
+       head before any of this ran. */
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      var wash = getComputedStyle(document.documentElement).getPropertyValue('--wash').trim();
+      if (wash) meta.setAttribute('content', wash);
+    }
+  }
+
   function pickLanguage(langs) {
     var fromUrl = new URLSearchParams(window.location.search).get('lang');
     if (fromUrl && langs.indexOf(fromUrl) !== -1) return fromUrl;
@@ -193,7 +234,16 @@
 
   /* ------------------------------------------------------------------- api */
 
+  /* Every write this page makes goes through here, and that is what lets the
+     Save button be honest without each caller remembering to tell it: the
+     count of writes in the air goes up here and comes back down when the
+     answer does. See the mark, further down. */
   function post(payload) {
+    mark.sending++;
+    paintSave();
+
+    var landed = function () { mark.sending--; settled(); };
+
     return fetch(API, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -202,6 +252,12 @@
       return res.json().catch(function () { return {}; }).then(function (out) {
         return { ok: res.ok, out: out || {} };
       });
+    }).then(function (answer) {
+      landed();
+      return answer;
+    }, function (err) {
+      landed();
+      throw err;
     });
   }
 
@@ -284,12 +340,16 @@
       title: t(labelKey),
       html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + path + '</svg>'
     });
-    b.addEventListener('click', onClick);
+    if (onClick) b.addEventListener('click', onClick);
     return b;
   }
 
-  var ICON_UP = '<path d="M12 19V6M6 12l6-6 6 6"/>';
-  var ICON_DOWN = '<path d="M12 5v13M18 12l-6 6-6-6"/>';
+  /* The grip: six dots, which is the mark a thing that can be picked up wears
+     everywhere. It is a real button and not a decoration, because a drag is no
+     gesture at all on a keyboard — the arrow keys on it make the same move. */
+  var ICON_GRIP = '<circle cx="9" cy="6" r="1.35"/><circle cx="15" cy="6" r="1.35"/>' +
+    '<circle cx="9" cy="12" r="1.35"/><circle cx="15" cy="12" r="1.35"/>' +
+    '<circle cx="9" cy="18" r="1.35"/><circle cx="15" cy="18" r="1.35"/>';
   var ICON_X = '<path d="M6 6l12 12M18 6L6 18"/>';
   var ICON_PIN = '<path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>';
   /* The same bookmark the map draws on a place, because it is the same
@@ -334,6 +394,11 @@
    */
   function render() {
     clear(dom.main);
+    /* The Save button is about to be rebuilt, or not drawn at all on a view
+       that has none. A mark still pointing at the old node would be painting
+       a button that is no longer in the document; whoever draws one claims it
+       again on the way past. */
+    mark.btn = null;
     paintWho();
 
     if (!state.reached) return dom.main.appendChild(renderUnreachable());
@@ -668,11 +733,11 @@
       maxlength: String(MAX_TITLE),
       'aria-label': t('listsRename')
     });
-    commitOnLeave(title, function (value) {
+    commitOnLeave(title, function (value, leaving) {
       var next = value.trim();
       if (!next || next === list.title) { title.value = list.title; return; }
       list.title = next;
-      return post({ action: 'edit', id: list.id, title: next });
+      return deliver({ action: 'edit', id: list.id, title: next }, leaving);
     });
 
     var intro = el('input', {
@@ -683,24 +748,32 @@
       'aria-label': t('listsIntro'),
       placeholder: t('listsIntroHint')
     });
-    commitOnLeave(intro, function (value) {
+    commitOnLeave(intro, function (value, leaving) {
       var next = value.trim();
       if (next === list.intro) return;
       list.intro = next;
-      return post({ action: 'edit', id: list.id, intro: next });
+      return deliver({ action: 'edit', id: list.id, intro: next }, leaving);
     });
 
     var ready = list.items.length >= MIN_ITEMS;
 
     /* Sharing is the last thing you do to a list, so it is the last button on
        the card, and it waits until there is a list to send. Saving sits after
-       it because it is the one press that is always available and always
-       means the same thing. */
+       it because it is the one press that is always available — and because
+       it is also the card's state light, and the end of the row is where the
+       eye lands last. */
     var share = button(t('listsShare'), 'lists-alt', shareList);
     if (!ready) {
       share.disabled = true;
       share.title = t('listsShareNeeds');
     }
+
+    /* The one button on the page that reports rather than only acts, so it is
+       handed to the mark the moment it exists and painted into whichever
+       state is true right now — which on a list just opened is Saved. */
+    var save = button(t('listsSave'), 'lists-go lists-save', saveList);
+    mark.btn = save;
+    paintSave();
 
     return card([
       el('p', { className: 'eyebrow', textContent: t('listsYours') }),
@@ -718,7 +791,7 @@
       el('div', { className: 'lists-row lists-acts' }, [
         mapLink(list.id),
         share,
-        button(t('listsSave'), 'lists-go', saveList)
+        save
       ]),
       ready ? null : el('p', { className: 'lists-hint mono', textContent: t('listsShareNeeds') })
     ]);
@@ -774,12 +847,16 @@
   /* Everything on this page writes itself — a note when the typing pauses, a
      title when you leave the field — so there is nothing here that a press
      could fail to send. The button exists because that is not visible: it
-     takes whatever is half typed, sends it now, and says so. */
+     takes whatever is half typed, sends it now, and says so. The rest of the
+     time it is simply reporting, which is the mark's job — see it below. */
   function saveList() {
+    /* Pressed rather than typed, so this one owes a word — and settled() says
+       it when the last write has actually landed rather than here, where the
+       only true thing yet is that it has been sent. */
+    mark.asked = true;
     var focused = document.activeElement;
     if (focused && focused.blur && focused !== document.body) focused.blur();
     flushAll();
-    toast(t('listsSaved'));
   }
 
   /* ------------------------------------------------------------- one place */
@@ -850,13 +927,18 @@
     say.value = item.say || '';
     debounceSay(say, item);
 
+    /* Two controls where there used to be three: the row is carried to where
+       it belongs rather than clicked up to it one place at a time. The grip is
+       what the hand goes for and what the keyboard lands on — see carry(). */
+    var grip = iconButton('listsDrag', ICON_GRIP, null, 'row-grip');
+    grip.setAttribute('draggable', 'false');
+
     var moves = el('div', { className: 'item-moves' }, [
-      iconButton('listsUp', ICON_UP, function () { move(item.place, -1); }),
-      iconButton('listsDown', ICON_DOWN, function () { move(item.place, 1); }),
+      grip,
       iconButton('listsRemove', ICON_X, function () { drop(item.place); }, 'is-danger')
     ]);
 
-    return el('li', { className: 'item is-mine' }, [
+    var row = el('li', { className: 'item is-mine' }, [
       el('span', { className: 'item-n mono', 'aria-hidden': 'true', textContent: String(i + 1) }),
       el('div', { className: 'item-body' }, [
         placeName(item),
@@ -865,6 +947,8 @@
       ]),
       moves
     ]);
+    carry(row, item, grip);
+    return row;
   }
 
   /* ------------------------------------------------------- writing a note
@@ -881,6 +965,7 @@
       if (pending[i].node === node) { pending[i].run = run; return; }
     }
     pending.push({ node: node, run: run });
+    paintSave();
   }
 
   /* `leaving` says the page is going away, and it changes how the write is
@@ -895,6 +980,7 @@
       var out = job(leaving);
       if (out && out.then) out.then(function (a) { if (a && !a.ok) failed(a.out); }).catch(function () {});
     }
+    settled();
   }
 
   function flushAll(leaving) { flush(null, leaving); }
@@ -923,6 +1009,66 @@
     return post(payload);
   }
 
+  /* The same write, addressed rather than typed: `leaving` picks the way it
+     goes out, and every caller that has a payload and knows whether the page
+     is going away uses this rather than choosing for itself. */
+  function deliver(payload, leaving) {
+    return leaving ? beacon(payload) : post(payload);
+  }
+
+  /* ------------------------------------------------------------ the mark
+   * What the Save button is saying.
+   *
+   * Everything on this page writes itself, so the button was never the thing
+   * that saved a list — it is the thing that says whether one is saved. So it
+   * says it, in the only two states there are, and it is always in whichever
+   * one is true:
+   *
+   *   Save    filled, in the style's accent: something has been typed or
+   *           moved that the server has not got yet.
+   *   Saved   quiet, in the page's own wash: there is nothing left to send.
+   *
+   * Both are tokens, so the mark is brick on the light style and forest on
+   * the dark one and names no colour of its own — see the note at the top of
+   * assets/styles.css.
+   *
+   * "Has not got yet" is two things and either one is enough: a write typed
+   * and still sitting in `pending`, and a write handed to the network and not
+   * yet answered. The second is why the button goes back to Save for the
+   * moment after a change and then settles — that is the request, drawn.
+   *
+   * A write that fails is toasted where it fails and does not hold the mark
+   * open: the page's other optimism works the same way — a place that will
+   * not go on comes straight back off the list — and a button stuck on Save
+   * with nothing left to press would be the one state you cannot get out of.
+   */
+  var mark = {
+    btn: null,     /* the Save button, while one is on screen */
+    sending: 0,    /* writes handed to the network and not yet answered */
+    asked: false   /* the button was pressed, so it owes a word when it lands */
+  };
+
+  function allSent() { return !pending.length && !mark.sending; }
+
+  function paintSave() {
+    if (!mark.btn) return;
+    var done = allSent();
+    mark.btn.classList.toggle('is-saved', done);
+    mark.btn.textContent = t(done ? 'listsSaveDone' : 'listsSave');
+  }
+
+  /* Called wherever either count changes. It paints — and if somebody pressed
+     the button rather than simply typing, it says the word, once, at the
+     moment the last write actually lands, which is the only moment it is
+     true. */
+  function settled() {
+    paintSave();
+    if (mark.asked && allSent()) {
+      mark.asked = false;
+      toast(t('listsSaved'));
+    }
+  }
+
   function debounceSay(node, item) {
     var timer = null;
 
@@ -930,8 +1076,7 @@
       var value = node.value.trim().slice(0, MAX_SAY);
       if (value === (item.say || '')) return;
       item.say = value;
-      var payload = { action: 'say', id: state.list.id, place: item.place, say: value };
-      return leaving ? beacon(payload) : post(payload);
+      return deliver({ action: 'say', id: state.list.id, place: item.place, say: value }, leaving);
     };
 
     node.addEventListener('input', function () {
@@ -949,52 +1094,387 @@
      Used for the title and the line under it, which are one line each and do
      not want the typing-pause treatment. */
   function commitOnLeave(node, write) {
-    var send = function () {
-      var out = write(node.value);
+    var send = function (leaving) {
+      var out = write(node.value, leaving);
       if (out && out.then) {
         out.then(function (a) { if (!a.ok) failed(a.out); }).catch(function () { failed({}); });
       }
     };
-    node.addEventListener('blur', send);
+    /* Queued from the first keystroke rather than simply written on the way
+       out, which buys two things. The Save button can see it — a half typed
+       title is exactly the state the button exists to report — and the page
+       being hidden takes it along with everything else, where before a title
+       typed and then switched away from was lost. Leaving the field is now
+       just the flush that happens soonest. */
+    node.addEventListener('input', function () { queue(node, send); });
+    node.addEventListener('blur', function () { flush(node); });
     node.addEventListener('keydown', function (ev) {
       if (ev.key === 'Enter') { ev.preventDefault(); node.blur(); }
     });
   }
 
-  /* --------------------------------------------------------------- moving */
+  /* --------------------------------------------------------------- moving
+   *
+   * The order is most of the point of a top ten, so changing it is the one
+   * gesture on this page worth spending real code on. A row is carried to
+   * where it belongs: pressed and dragged with a mouse, held for a moment and
+   * then carried with a thumb.
+   *
+   * This used to be an up button and a down button, and the argument for them
+   * was that a drag fights the page's own scrolling on a phone and is no
+   * gesture at all on a keyboard. Both of those are still true, and both are
+   * answered here rather than avoided:
+   *
+   *   the phone     a touch does not lift a row until the finger has rested on
+   *                 it for a moment without travelling. Anything that moves
+   *                 sooner is somebody scrolling, and the page scrolls. Once a
+   *                 row is lifted the scrolling is held off — see block() —
+   *                 and the window follows the finger by itself near the top
+   *                 and bottom edges, which is how a row reaches the far end of
+   *                 a list taller than the screen. The grip is the exception:
+   *                 it answers a finger straight away, because CSS has already
+   *                 taken it out of the scroll (`touch-action: none`) and there
+   *                 is no other gesture there to be confused with.
+   *
+   *   the keyboard  the grip is a real button. Focus it and the arrow keys walk
+   *                 the row up and down the list, one place a press — exactly
+   *                 the move the two buttons made. It keeps the focus across
+   *                 the redraw, so the same key can be pressed again, and the
+   *                 new position is said out loud, which the old buttons never
+   *                 did.
+   *
+   * NOTHING IS REORDERED WHILE A FINGER IS DOWN
+   *
+   * The rows stay where the browser laid them out and a drag only writes
+   * `transform` on them: the carried row follows the pointer, and the rows it
+   * has passed slide out of its way by exactly the height of the hole it left
+   * behind. The array is spliced once, on release, and the page is redrawn from
+   * it — so what is on the screen and what is in `state.list.items` cannot
+   * disagree halfway through a gesture, and a drag abandoned by a phone call
+   * leaves nothing behind but some transforms to clear.
+   *
+   * The whole order goes to the server — see order() in the API for why a move
+   * is not sent as a move.
+   */
 
-  /* Two buttons rather than a drag. A drag is the nicer gesture on a desktop
-     and the worse one on a phone, where it fights the page's own scrolling,
-     and it is no gesture at all on a keyboard. Up and down are the same move
-     for a thumb, a mouse and a Tab key.
+  /* How long a thumb has to rest on a row before it lifts, and how far a
+     pointer may travel before a press counts as a carry. The hold is what
+     keeps a list scrollable; the slop is what keeps a mouse from lifting a row
+     somebody only clicked. */
+  var HOLD = 220;
+  var SLOP = 6;
+  /* How near the top or bottom of the window a carried row has to come before
+     the page starts moving under it, and how fast it moves at the very edge. */
+  var EDGE = 76;
+  var EDGE_STEP = 16;
+  /* The slide a row makes as it is set down. The same number is in the CSS
+     transition, and the redraw waits for it. */
+  var SETTLE = 170;
 
-     The whole order goes to the server — see order() in the API for why a
-     move is not sent as a move. */
-  function move(place, delta) {
+  /* Whether a row is up, and until the one being set down has landed. One at a
+     time: a second finger on another row would be two answers to one
+     question. */
+  var carrying = null;
+
+  function indexOfPlace(place) {
     var items = state.list.items;
-    var at = -1;
-    for (var i = 0; i < items.length; i++) if (items[i].place === place) { at = i; break; }
+    for (var i = 0; i < items.length; i++) if (items[i].place === place) return i;
+    return -1;
+  }
+
+  /* One place up or down: the arrow keys, and nothing else now. */
+  function move(place, delta) {
+    var at = indexOfPlace(place);
+    if (at === -1) return;
     var to = at + delta;
-    if (at === -1 || to < 0 || to >= items.length) return;
+    if (to < 0 || to >= state.list.items.length) return;
+    reorder(at, to, true);
+  }
+
+  /* The one place the order actually changes, whichever gesture asked for it.
+     Everything above it decides `to`; this splices, redraws and tells the
+     server. */
+  function reorder(from, to, focus) {
+    if (from === to) return;
+    var items = state.list.items;
 
     /* Anything typed and not yet written goes first: the rows are about to be
        rebuilt, and a pending write reads its value off the node it was typed
        into. */
     flushAll();
 
-    items.splice(to, 0, items.splice(at, 1)[0]);
+    items.splice(to, 0, items.splice(from, 1)[0]);
     render();
-    /* The row that moved keeps the focus, so a keyboard can press the same
-       button again and walk a place up the list. */
-    var row = dom.main.querySelectorAll('.item')[to];
-    var btn = row && row.querySelector(delta < 0 ? '.row-btn' : '.row-btn + .row-btn');
-    if (btn) btn.focus();
+
+    var row = dom.main.querySelectorAll('.item.is-mine')[to];
+    if (row) {
+      /* The row that moved keeps the focus, so a keyboard can press the same
+         key again and walk a place the length of the list. */
+      if (focus) {
+        var grip = row.querySelector('.row-grip');
+        if (grip) grip.focus();
+      }
+      /* And it says where it landed, for a second, to whichever eye was
+         following the finger rather than the numbers. */
+      row.classList.add('is-landed');
+    }
+    announce(t('listsMoved', { n: to + 1 }));
 
     post({
       action: 'order',
       id: state.list.id,
       places: items.map(function (it) { return it.place; })
     }).then(function (a) { if (!a.ok) failed(a.out); }).catch(function () { failed({}); });
+  }
+
+  /* Said to a screen reader and to nobody else. A move is obvious on a screen
+     — the row is under the finger and the numbers redraw — and completely
+     silent without one, which is what the two buttons were also guilty of.
+     The region is in the page rather than built here, because a live region
+     inserted and filled in the same breath is not announced. */
+  function announce(message) {
+    if (!dom.live) return;
+    dom.live.textContent = '';
+    setTimeout(function () { dom.live.textContent = message; }, 40);
+  }
+
+  function block(ev) { ev.preventDefault(); }
+
+  function within(node, selector) {
+    return node && node.closest ? node.closest(selector) : null;
+  }
+
+  /* Everything a row needs to be picked up, given to it as it is built. */
+  function carry(row, item, grip) {
+    grip.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'ArrowUp' && ev.key !== 'ArrowDown') return;
+      /* Otherwise the page scrolls under the row that is being moved. */
+      ev.preventDefault();
+      move(item.place, ev.key === 'ArrowUp' ? -1 : 1);
+    });
+
+    row.addEventListener('pointerdown', function (ev) {
+      if (carrying || ev.button > 0) return;
+      if (!state.list || state.list.items.length < 2) return;
+      var onGrip = !!within(ev.target, '.row-grip');
+      /* Everything that is already something to press or to type in keeps its
+         own gesture: a drag begun in the note box would take the caret out of
+         the sentence somebody is in the middle of writing. */
+      if (!onGrip && within(ev.target, 'a, button, textarea, input, select')) return;
+      lift(ev, row, onGrip);
+    });
+  }
+
+  /* One drag, from the press that might become one to the row being set down.
+     Everything it needs lives in here: nothing about a gesture outlives it. */
+  function lift(ev, row, onGrip) {
+    var list = row.parentNode;
+    var rows = [];
+    var all = list.querySelectorAll('.item.is-mine');
+    for (var i = 0; i < all.length; i++) rows.push(all[i]);
+
+    var from = rows.indexOf(row);
+    if (from === -1 || rows.length < 2) return;
+
+    var id = ev.pointerId;
+    var finger = ev.pointerType === 'touch' || ev.pointerType === 'pen';
+    var startX = ev.clientX;
+    var startY = ev.clientY;
+    var startTop = window.pageYOffset;
+    var lastY = ev.clientY;
+
+    var live = false;     /* whether the row is actually up */
+    var hold = null;      /* the thumb's rest, still to be waited out */
+    var frame = 0;        /* the edge-scrolling loop */
+    var geom = null;      /* every row's place on the page, measured once */
+    var span = 0;         /* the height of the hole the carried row leaves */
+    var to = from;
+    var shown = from;     /* the last position the numbers were drawn for */
+
+    document.addEventListener('pointermove', moved);
+    document.addEventListener('pointerup', dropped);
+    document.addEventListener('pointercancel', lost);
+
+    if (finger && onGrip) begin();
+    else if (finger) hold = setTimeout(function () { hold = null; begin(); }, HOLD);
+
+    /* Where every row stands, in page coordinates, taken at the moment of the
+       lift and not again: the page scrolls under a carried row and nothing
+       else about the layout moves, so measuring once is measuring right. */
+    function measure() {
+      var top = window.pageYOffset;
+      geom = rows.map(function (node) {
+        var box = node.getBoundingClientRect();
+        return { top: box.top + top, height: box.height };
+      });
+      var gap = geom.length > 1 ? geom[1].top - (geom[0].top + geom[0].height) : 0;
+      span = geom[from].height + gap;
+    }
+
+    function begin() {
+      live = true;
+      carrying = true;
+      measure();
+
+      /* A long press on a phone is also how text is selected and how the
+         callout menu is asked for. Neither is what this gesture means. */
+      try {
+        var selection = window.getSelection();
+        if (selection && selection.removeAllRanges) selection.removeAllRanges();
+      } catch (e) { /* nothing worth failing over */ }
+
+      list.classList.add('is-sorting');
+      row.classList.add('is-lifted');
+      document.body.classList.add('is-carrying');
+      /* So the row keeps the pointer even when it slides out from under it. */
+      try { row.setPointerCapture(id); } catch (e) { /* older engine */ }
+      /* The page does not scroll while a row is up. touch-action cannot say
+         this — it is read when the finger lands, and by then the browser does
+         not yet know this is a carry rather than a swipe — so the scroll is
+         refused one touchmove at a time instead. */
+      document.addEventListener('touchmove', block, { passive: false });
+      document.addEventListener('contextmenu', block);
+      frame = window.requestAnimationFrame(chase);
+      paint();
+    }
+
+    /* Where the carried row is, and where every other row has to be to leave
+       it a hole. Called on every move, and on every step of an edge scroll. */
+    function paint() {
+      var y = lastY + window.pageYOffset;
+      var dy = y - (startY + startTop);
+
+      /* A row cannot be carried out of its own list. */
+      var last = geom[geom.length - 1];
+      var lowest = last.top + last.height - (geom[from].top + geom[from].height);
+      dy = Math.max(geom[0].top - geom[from].top, Math.min(lowest, dy));
+
+      var middle = geom[from].top + geom[from].height / 2 + dy;
+
+      /* Where it would be dropped: the number of rows whose middle is above
+         it — each of them measured where it is standing now, which for the
+         ones below the hole is a whole row's height further up. */
+      to = 0;
+      for (var j = 0; j < geom.length; j++) {
+        if (j === from) continue;
+        var at = geom[j].top + geom[j].height / 2 - (j > from ? span : 0);
+        if (at < middle) to++;
+      }
+
+      row.style.transform = 'translateY(' + Math.round(dy) + 'px)';
+      for (var k = 0; k < rows.length; k++) {
+        if (k === from) continue;
+        var shift = (k > from && k <= to) ? -span : (k < from && k >= to) ? span : 0;
+        rows[k].style.transform = shift ? 'translateY(' + shift + 'px)' : '';
+      }
+
+      /* The numbers are the whole argument for the gesture, so they are told
+         the truth while it is happening rather than after it: a row sitting
+         first and still printing 3 is the list disagreeing with itself under
+         somebody's finger. Only when the answer changes — this is inside a
+         pointermove. */
+      if (to !== shown) {
+        shown = to;
+        for (var n = 0; n < rows.length; n++) {
+          var lands = n === from ? to
+            : (n > from && n <= to) ? n - 1
+            : (n < from && n >= to) ? n + 1
+            : n;
+          var digit = rows[n].querySelector('.item-n');
+          if (digit) digit.textContent = String(lands + 1);
+        }
+      }
+    }
+
+    /* The page moving under a finger that has run out of screen. Without it a
+       list of twenty is only reorderable within one screenful. */
+    function chase() {
+      if (!live) return;
+      var below = lastY - (window.innerHeight - EDGE);
+      var above = EDGE - lastY;
+      var by = below > 0 ? Math.min(below, EDGE) : above > 0 ? -Math.min(above, EDGE) : 0;
+      if (by) {
+        var was = window.pageYOffset;
+        window.scrollBy(0, by / EDGE * EDGE_STEP);
+        if (window.pageYOffset !== was) paint();
+      }
+      frame = window.requestAnimationFrame(chase);
+    }
+
+    function moved(ev2) {
+      if (ev2.pointerId !== id) return;
+      lastY = ev2.clientY;
+      if (live) { paint(); return; }
+      if (Math.abs(ev2.clientY - startY) <= SLOP && Math.abs(ev2.clientX - startX) <= SLOP) return;
+      /* Travel before the rest is over is somebody scrolling the page, and the
+         row stays where it is. */
+      if (hold) { clearTimeout(hold); hold = null; stop(false); return; }
+      if (finger) return;
+      begin();
+    }
+
+    function dropped(ev2) { if (ev2.pointerId === id) stop(true); }
+    function lost(ev2) { if (ev2.pointerId === id) stop(false); }
+
+    /* Setting the row down. `keep` is false when the gesture was taken away
+       rather than finished — a phone call, the browser deciding it was a
+       scroll after all — and then the row goes back where it came from. */
+    function stop(keep) {
+      document.removeEventListener('pointermove', moved);
+      document.removeEventListener('pointerup', dropped);
+      document.removeEventListener('pointercancel', lost);
+      if (hold) { clearTimeout(hold); hold = null; }
+      if (!live) return;
+
+      live = false;
+      if (frame) { window.cancelAnimationFrame(frame); frame = 0; }
+      document.removeEventListener('touchmove', block);
+      document.removeEventListener('contextmenu', block);
+      document.body.classList.remove('is-carrying');
+      try { row.releasePointerCapture(id); } catch (e) { /* never had it */ }
+
+      /* The press that ends a drag must not also be a click on whatever the
+         row happens to have been let go over. */
+      document.addEventListener('click', swallow, true);
+      setTimeout(function () { document.removeEventListener('click', swallow, true); }, 0);
+
+      var target = keep ? to : from;
+
+      /* It lands rather than snapping: the lift comes off it and it is sent to
+         the hole, and the redraw waits for that slide to finish. */
+      row.classList.remove('is-lifted');
+      row.style.transform = 'translateY(' + Math.round(rest(target)) + 'px)';
+
+      setTimeout(function () {
+        carrying = null;
+        if (target === from) {
+          list.classList.remove('is-sorting');
+          for (var k = 0; k < rows.length; k++) {
+            rows[k].style.transform = '';
+            var digit = rows[k].querySelector('.item-n');
+            if (digit) digit.textContent = String(k + 1);
+          }
+          return;
+        }
+        /* The redraw builds every row again from the array, transforms and
+           all, so there is nothing here to clean up after it. */
+        reorder(from, target, false);
+      }, SETTLE);
+    }
+
+    function swallow(ev2) { ev2.preventDefault(); ev2.stopPropagation(); }
+
+    /* How far the carried row has to travel from where it started to sit in
+       the hole. Going down it ends flush with the bottom of the row it passed,
+       because everything in between has come up by a row's height; going up it
+       simply takes that row's place. */
+    function rest(target) {
+      if (target === from) return 0;
+      if (target > from) {
+        return geom[target].top + geom[target].height - geom[from].height - geom[from].top;
+      }
+      return geom[target].top - geom[from].top;
+    }
   }
 
   function drop(place) {
@@ -1296,6 +1776,43 @@
       placeholder: t('listsAddAddressHint')
     });
 
+    /* The suggestions, and the button that takes the first one. Typing an
+       address and pressing enter is what people do, and before this it did
+       nothing at all: the pin sat on the city centre until it was dragged
+       there by hand.
+
+       The field is a combobox in the ARIA sense — an input that owns a list
+       somebody arrows through — so it is wired as one: the input announces
+       which option is active, the list is a listbox, and every option has an
+       id for the input to point at. Screen readers get told a list appeared;
+       a keyboard gets up, down, enter and escape.
+
+       The button stays even though the list does most of the work, because
+       the enter key is invisible and a phone keyboard shows "done" rather
+       than anything that suggests searching. */
+    var suggestId = 'picker-suggest';
+    address.setAttribute('role', 'combobox');
+    address.setAttribute('aria-expanded', 'false');
+    address.setAttribute('aria-controls', suggestId);
+    address.setAttribute('aria-autocomplete', 'list');
+
+    var suggest = el('ul', {
+      className: 'picker-suggest',
+      id: suggestId,
+      role: 'listbox',
+      hidden: true
+    });
+
+    var find = el('button', {
+      type: 'button',
+      className: 'lists-alt picker-find',
+      textContent: t('listsAddFind')
+    });
+    var addressRow = el('div', { className: 'picker-find-row' }, [
+      el('div', { className: 'picker-find-field' }, [address, suggest]),
+      find
+    ]);
+
     var canvas = el('div', { className: 'picker-map', id: 'picker-map' });
     var hint = el('p', { className: 'picker-note', textContent: t('listsAddPin') });
     var go = el('button', { type: 'button', className: 'lists-go', textContent: t('listsAddIt') });
@@ -1303,7 +1820,7 @@
     var form = el('div', { className: 'picker-add-form' }, [
       back,
       el('h3', { className: 'picker-title', textContent: t('listsAddMissing') }),
-      name, address, hint, canvas,
+      name, addressRow, hint, canvas,
       el('div', { className: 'lists-row lists-acts' }, [go])
     ]);
     dom.pickerBody.appendChild(form);
@@ -1313,6 +1830,9 @@
        submit below works the same whether or not the map ever loaded. */
     var at = { lat: CITY[0], lng: CITY[1] };
     var ready = false;
+    /* Set once the map exists, and left null when it does not: the address
+       lookup still moves `at`, it just has no pin to move with it. */
+    var movePin = null;
 
     ensureLeaflet().then(function (L) {
       var map = L.map(canvas, {
@@ -1321,11 +1841,11 @@
         zoomControl: true,
         attributionControl: true
       });
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
-          'contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-      }).addTo(map);
+      /* The tiles, the key and the attribution come from assets/basemap.js,
+         which the map page and the admin picker draw from too. This square
+         used to hold its own copy of that URL, which is how it ended up as
+         the one map on the site still wearing "API KEY REQUIRED". */
+      TTBBasemap.layer(L, { maxZoom: 19 }).addTo(map);
 
       /* A divIcon rather than Leaflet's default marker, for the reason the map
          page uses one too: the default is a PNG fetched from the CDN's images
@@ -1354,6 +1874,13 @@
         pin.setLatLng(ev.latlng);
         at = { lat: ev.latlng.lat, lng: ev.latlng.lng };
       });
+      movePin = function (lat, lng) {
+        pin.setLatLng([lat, lng]);
+        /* Close enough to read the street names, because the whole point of
+           having typed an address is to see that the pin landed on the right
+           building — and to drag it the last few metres to the door. */
+        map.setView([lat, lng], 17);
+      };
       ready = true;
     }).catch(function () {
       /* No map. The form still works — the pin stays where the city centre
@@ -1363,6 +1890,206 @@
       hint.textContent = t('listsAddNoMap');
       hint.classList.add('is-warn');
       ready = true;
+    });
+
+    /* The lookup.
+     *
+     * Debounced rather than sent per keystroke: /api/geocode goes out to
+     * Photon, which is built to answer a prefix but is still somebody else's
+     * machine, and a request per keystroke on "Telliskivi" is ten requests
+     * for one address. A pause in the typing is the signal that a prefix is
+     * worth asking about.
+     *
+     * Every answer carries the point with it, so picking a suggestion moves
+     * the pin without a second round trip — the list is not a list of things
+     * to then look up, it is the lookup.
+     */
+    var PAUSE = 300;
+    var MIN_Q = 3;
+
+    var timer = null;
+    var inflight = 0;
+    var hits = [];
+    var active = -1;
+    var chosen = '';
+
+    function say(key, warn) {
+      hint.textContent = t(key);
+      hint.classList.toggle('is-warn', !!warn);
+    }
+
+    function shut() {
+      suggest.hidden = true;
+      clear(suggest);
+      address.setAttribute('aria-expanded', 'false');
+      address.removeAttribute('aria-activedescendant');
+      hits = [];
+      active = -1;
+    }
+
+    function highlight(i) {
+      var rows = suggest.children;
+      if (!rows.length) return;
+      /* Wraps, because a list of five that stops dead at either end is a list
+         somebody presses down against wondering if the key is broken. */
+      active = (i + rows.length) % rows.length;
+      for (var n = 0; n < rows.length; n++) {
+        rows[n].classList.toggle('is-active', n === active);
+        rows[n].setAttribute('aria-selected', n === active ? 'true' : 'false');
+      }
+      address.setAttribute('aria-activedescendant', rows[active].id);
+      if (rows[active].scrollIntoView) rows[active].scrollIntoView({ block: 'nearest' });
+    }
+
+    /* Taking a suggestion: the pin moves, the field is filled in with the
+       address as the geocoder spells it, and the list goes away. `chosen`
+       stops the input handler that fires next from immediately asking about
+       the text it just wrote. */
+    function take(hit) {
+      if (!hit) return;
+      at = { lat: hit.lat, lng: hit.lng };
+      /* What the row said is not always what the field wants: a named venue
+         shows under its name and fills in the street it is on. */
+      chosen = hit.fill || hit.label;
+      address.value = chosen;
+      shut();
+      if (movePin) {
+        movePin(hit.lat, hit.lng);
+        /* The pin is on the building, not on the door, and this form is
+           asking for the door. */
+        say('listsAddFound');
+      } else {
+        say('listsAddNoMap', true);
+      }
+    }
+
+    function draw(list) {
+      clear(suggest);
+      hits = list;
+      active = -1;
+
+      if (!list.length) { shut(); return; }
+
+      for (var i = 0; i < list.length; i++) {
+        (function (hit, n) {
+          var row = el('li', {
+            className: 'picker-suggest-row',
+            id: suggestId + '-' + n,
+            role: 'option',
+            'aria-selected': 'false'
+          }, [
+            el('span', { className: 'picker-suggest-name', textContent: hit.label })
+          ]);
+          if (hit.where) {
+            row.appendChild(el('span', { className: 'picker-suggest-where', textContent: hit.where }));
+          }
+          /* mousedown and not click: the field is about to lose focus to this
+             press, and the blur handler below closes the list. mousedown gets
+             there first. */
+          row.addEventListener('mousedown', function (ev) {
+            ev.preventDefault();
+            take(hit);
+          });
+          row.addEventListener('mouseenter', function () { highlight(n); });
+          suggest.appendChild(row);
+        })(list[i], i);
+      }
+
+      suggest.hidden = false;
+      address.setAttribute('aria-expanded', 'true');
+    }
+
+    function lookUp(q, andTakeFirst) {
+      /* Same gate the Add button uses. Leaflet is still on its way down for
+         the first moment this form is open, and a suggestion taken before it
+         arrived would have a point and nowhere to draw it. */
+      if (!ready) return;
+
+      var mine = ++inflight;
+      if (andTakeFirst) { find.disabled = true; say('listsAddFinding'); }
+
+      ask('/api/geocode?q=' + encodeURIComponent(q)).then(function (a) {
+        /* An answer to a prefix somebody has already typed past is not an
+           answer to the question on screen any more. */
+        if (mine !== inflight) return;
+        if (andTakeFirst) find.disabled = false;
+
+        var list = a.status === 200 && Array.isArray(a.out.results) ? a.out.results : [];
+
+        if (!list.length) {
+          shut();
+          /* Silent while typing — a prefix matching nothing yet is the normal
+             state of a half-typed street, not a failure worth a line of red.
+             Only a deliberate press gets told. */
+          if (andTakeFirst) say(a.status === 429 ? 'listsAddFindBusy' : 'listsAddFindNone', true);
+          return;
+        }
+
+        if (andTakeFirst) { take(list[0]); return; }
+        draw(list);
+      });
+    }
+
+    function typed() {
+      var q = address.value.trim();
+      if (timer) clearTimeout(timer);
+
+      /* The text this field was just filled with by take(). Asking about it
+         would reopen the list under a suggestion somebody has already made. */
+      if (q === chosen) return;
+      chosen = '';
+
+      if (q.length < MIN_Q) { shut(); return; }
+      timer = setTimeout(function () { lookUp(q, false); }, PAUSE);
+    }
+
+    address.addEventListener('input', typed);
+    address.addEventListener('focus', typed);
+
+    /* Closing the list on the way out, but not before a press on it has been
+       heard — the rows listen on mousedown, which lands first. */
+    address.addEventListener('blur', function () { setTimeout(shut, 120); });
+
+    address.addEventListener('keydown', function (ev) {
+      var open = !suggest.hidden && hits.length;
+
+      if (ev.key === 'ArrowDown' && open) { ev.preventDefault(); highlight(active + 1); return; }
+      if (ev.key === 'ArrowUp' && open) { ev.preventDefault(); highlight(active - 1); return; }
+      /* Escape closes the suggestions and nothing else. The document listens
+         for it too and closes the whole sheet, which — with a name and an
+         address typed into a form that is about to be submitted — is the
+         worst thing this key could do. So the press is stopped here while
+         there is a list to close, and falls through to the sheet once there
+         is not. */
+      if (ev.key === 'Escape' && open) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        shut();
+        return;
+      }
+
+      if (ev.key !== 'Enter') return;
+
+      /* There is no <form> around this, so enter submits nothing by itself.
+         It is still the key people press, and this is what they mean by it —
+         take the suggestion under the cursor, or the first one, or go and
+         find one. Never "add the place", which is a button they have not
+         reached yet. */
+      ev.preventDefault();
+      if (open) { take(hits[active === -1 ? 0 : active]); return; }
+
+      var q = address.value.trim();
+      if (q.length < MIN_Q) { address.focus(); return; }
+      if (timer) clearTimeout(timer);
+      lookUp(q, true);
+    });
+
+    find.addEventListener('click', function () {
+      if (!suggest.hidden && hits.length) { take(hits[active === -1 ? 0 : active]); return; }
+      var q = address.value.trim();
+      if (q.length < MIN_Q) { address.focus(); return; }
+      if (timer) clearTimeout(timer);
+      lookUp(q, true);
     });
 
     go.addEventListener('click', function () {
@@ -1510,12 +2237,16 @@
       main: $('main'),
       who: $('lists-who'),
       toast: $('toast'),
+      live: $('lists-live'),
       pickerScrim: $('picker-scrim'),
       pickerClose: $('picker-close'),
       pickerSearch: $('picker-search'),
       pickerClear: $('picker-clear'),
       pickerBody: $('picker-body')
     };
+
+    /* First, before anything is drawn: the style the map was left on. */
+    applyStyle();
 
     var id = wantedList();
     state.id = id;
