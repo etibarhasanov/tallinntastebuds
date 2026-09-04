@@ -4578,8 +4578,8 @@
   }
 
   /* The heading over somebody else's list: their title, their byline, the
-     count, and a way through to the list's own page — where the sentences sit
-     in full and where the button to keep it is.
+     count, and the two things you can do about it: keep it, or open the list's
+     own page, where the owner's sentences sit in full.
 
      It takes the focus and labels the panel, the way the first group heading
      normally does, because in this state it is the first group heading. */
@@ -4601,20 +4601,25 @@
       state.list.intro
         ? el('p', { className: 'list-credit-intro', textContent: state.list.intro })
         : null,
-      listKeep(),
-      el('a', {
-        className: 'list-credit-link',
-        href: '/list/' + state.list.id,
-        textContent: t('listOpenPage')
-      })
+      /* One row, and the two of them wear the same pill: the way through to
+         the page used to be a line of underlined mono below the keep, which
+         on a block that is otherwise somebody else's writing read as a
+         footnote rather than as a door. Neither is filled — see the CSS. */
+      el('div', { className: 'list-credit-acts' }, [
+        listKeep(),
+        el('a', {
+          className: 'list-credit-link',
+          href: '/list/' + state.list.id,
+          textContent: t('listOpenPage')
+        })
+      ])
     ]);
   }
 
   /* The same mark the panel draws on a place, said about the other kind of
-     thing this site has: keep this, I am coming back to it. It is the one
-     control in this block — everything above it is somebody else's words —
-     and it is here rather than on the list's own page because here is where
-     people actually are. A link that was sent to you opens the map.
+     thing this site has: keep this, I am coming back to it. It is here rather
+     than only on the list's own page because here is where people actually
+     are — a link that was sent to you opens the map.
 
      IT IS OFFERED ONCE
      There is no second chance at this and that is deliberate. The list is on

@@ -1622,8 +1622,10 @@ over a map showing four places.
 So the filter row is types and nothing else. `state.list` holds a list or it
 does not, and while it does, that is what the map is showing — `visiblePlaces()`
 answers the list before it consults a chip. The list says who it is in the
-panel instead: its title, its owner's name, their sentence, and the button to
-keep it.
+panel instead: its title, its owner's name, their sentence, and the two things
+you can do about it — keep it, or open the list's own page. Both wear the same
+pill, and neither is filled: on that block the accent behind a pill already
+means "kept", and spending it on a link would take that reading away.
 
 **Pressing any chip forgets it.** All, Bakery, Discount — each is somebody
 asking the map a question their list cannot be part of the answer to, so the
