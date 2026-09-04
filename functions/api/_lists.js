@@ -13,10 +13,7 @@
  * feature's query.
  */
 
-import { catalogue } from './_lib.js';
-/* Which of the three kinds of id a list row holds. See addedId() there for
-   why the test is a shape and not a prefix. */
-import { isAdded } from './lists.js';
+import { catalogue, venuesByIds, addedByIds, isAdded } from './_lib.js';
 
 /* The share code's shape. A slug, a dash and six characters, but written as a
    general slug rather than as that exact pattern: it is the primary key of a
@@ -55,31 +52,6 @@ export async function readList(context, id, user) {
   const mine = !!user && user.id === list.owner;
   if (!list.public && !mine) return null;
 
-  /* How many people kept it, and whether the person reading is one of them.
-     Both come off the primary key of list_keeps — the count on its leading
-     column, the membership on the whole of it — so this is two indexed reads
-     and never a scan. See the note under that table in db/schema.sql about
-     why there is no counts table behind it yet.
-
-     The count is on a private list too, where it is always zero: a private
-     list cannot be kept, because it is not served to anybody who might keep
-     it. Answering with the column rather than omitting it means the page has
-     one shape to draw and not two. */
-  const keeps = await env.DB
-    .prepare('SELECT COUNT(*) AS n FROM list_keeps WHERE list_id = ?')
-    .bind(id)
-    .first();
-
-  /* Only asked when there is somebody to ask about. Signed out, the mark is
-     drawn as the door to an account rather than as a state, so the answer
-     would change nothing. */
-  const kept = user
-    ? await env.DB
-        .prepare('SELECT 1 AS x FROM list_keeps WHERE list_id = ? AND owner = ?')
-        .bind(id, user.id)
-        .first()
-    : null;
-
   const { results } = await env.DB
     .prepare('SELECT place_id, name, say, pos FROM list_items WHERE list_id = ? ORDER BY pos')
     .bind(id)
@@ -103,29 +75,39 @@ export async function readList(context, id, user) {
     roll = await catalogue(context);
   } catch (e) { /* unreadable costs the addresses and the links, not the list */ }
 
-  /* The rows whose places somebody added by hand, fetched in one query rather
-     than one per row. Without this they would fall back to the stored name
-     with no address and no point — which reads as a place on the list and then
-     silently is not on the map, because seatList() in assets/app.js drops a
-     row that does not know where it is.
+  /* Whatever the catalogue did not know is looked for in google_venues, which
+     is where the other seven hundred places live — a list holds a catalogue
+     slug or a Google key and does not care which. Twenty rows at the most,
+     and only the ids this list actually holds. */
+  let venues = new Map();
+  try {
+    const strangers = results
+      .map((r) => r.place_id)
+      .filter((id) => !roll || !roll.has(id))
+      /* Minus the ones somebody added by hand, which are in neither roll and
+         are looked for in their own table below. Filtered by the shape of the
+         id rather than by asking google_venues and finding nothing: a query
+         that can be skipped is better than a query that comes back empty. */
+      .filter((id) => !isAdded(id));
+    if (strangers.length) venues = await venuesByIds(env, strangers);
+  } catch (e) { /* same cost, same reason */ }
 
-     Anybody's, not just this reader's: the whole point is that a shared list
-     draws completely for a stranger. Only the author ever sees one in a
-     picker; everyone sees the ones on a list they opened. */
-  const wanted = results.filter((r) => isAdded(r.place_id)).map((r) => r.place_id);
-  const added = new Map();
-  if (wanted.length) {
-    /* One placeholder per id, built from the array's own length and never from
-       anything in it, so this stays a prepared statement with bound
-       parameters like every other query here. A list is capped at twenty
-       places, so this is at most twenty. */
-    const holes = wanted.map(() => '?').join(',');
-    const { results: rows } = await env.DB
-      .prepare('SELECT id, name, address, lat, lng FROM added_places WHERE id IN (' + holes + ')')
-      .bind(...wanted)
-      .all();
-    rows.forEach((row) => added.set(row.id, row));
-  }
+  /* And the third roll: the places somebody added by hand because neither of
+     the other two had them. Same shape as the other two, so the row below
+     cannot tell which it came out of.
+
+     Anybody's, not only this reader's. Only its author ever sees one in a
+     picker, but the whole point of the feature is that it goes on a list and
+     the list gets shared — so a stranger opening that list has to see the
+     place and its pin like every other place on it. Without this the row
+     would fall back to its stored name with no point, and the map would
+     silently drop it: seatList() in assets/app.js has nowhere to put a pin
+     for a place that does not know where it is. */
+  let added = new Map();
+  try {
+    const byHand = results.map((r) => r.place_id).filter(isAdded);
+    if (byHand.length) added = await addedByIds(env, byHand);
+  } catch (e) { /* same cost, same reason */ }
 
   return {
     id: list.id,
@@ -134,30 +116,25 @@ export async function readList(context, id, user) {
     by: list.username || null,
     public: !!list.public,
     mine: mine,
-    /* How many people have this list bookmarked, and whether the reader is
-       one of them. Not a score and nothing sorts by it — see the README —
-       but it is the number a directory would one day be ordered on. */
-    keeps: keeps ? keeps.n : 0,
-    kept: !!kept,
     updated: list.updated_at,
     items: results.map((r) => {
-      /* The catalogue, or the added-places table, or neither — in which case
-         the row keeps the name it was added under and stops linking anywhere,
-         which is the smallest loss available. */
-      const known = added.get(r.place_id) || (roll ? roll.get(r.place_id) : null);
+      const known = (roll ? roll.get(r.place_id) : null) ||
+                    venues.get(r.place_id) ||
+                    added.get(r.place_id) ||
+                    null;
       return {
         place: r.place_id,
         name: known ? known.name : r.name,
         address: known ? known.address : '',
         lat: known && typeof known.lat === 'number' ? known.lat : null,
         lng: known && typeof known.lng === 'number' ? known.lng : null,
-        /* Never true for a place somebody added: `map` means "this is also on
-           data/restaurants.json, so link the row to its write-up", and an
-           added place has none. added_places rows carry no `map` column, so
-           this is already false for them — said here so it stays that way. */
         map: !!(known && known.map),
-        /* Whether this is a place somebody added rather than one off either
-           roll. The page draws it the same; this is what lets it say so. */
+        /* Set only on a Google row for a place that is also on my map: the
+           write-up is filed under the map's id, not Google's key. */
+        mapId: (known && known.mapId) || null,
+        /* Whether this place was added by hand rather than found on either
+           roll. The page draws the row the same; this is what lets it say so,
+           and what stops a stranger's typed name reading as one of mine. */
         added: added.has(r.place_id),
         say: r.say
       };

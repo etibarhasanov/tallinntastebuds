@@ -204,8 +204,11 @@ CREATE INDEX IF NOT EXISTS idx_lists_public ON lists (public, updated_at DESC);
 -- absence costs those two things rather than the entry.
 CREATE TABLE IF NOT EXISTS list_items (
   list_id    TEXT    NOT NULL,
-  -- data/places.json id. Checked against that file before it is written, so a
-  -- row here pointed at somewhere real on the day it was made.
+  -- A data/places.json id or a google_venues.place_id — the two rolls the
+  -- picker offers, and they cannot be confused: a catalogue id is a lowercase
+  -- slug and a Google key always carries capitals. Checked against both before
+  -- it is written, so a row here pointed at somewhere real on the day it was
+  -- made.
   place_id   TEXT    NOT NULL,
   -- The name at the moment it was added. See above.
   name       TEXT    NOT NULL,

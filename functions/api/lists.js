@@ -2,9 +2,10 @@
  * Tallinn Tastebuds — the lists.
  *
  * The map is mine. A list is somebody else's: a name they chose, places they
- * picked out of data/places.json, and a sentence about each one. "Top ten
- * burgers." "Where to take your parents." It carries their username and it
- * has a link they can send to a friend.
+ * picked off the roll behind /api/places — my map and the Google export in
+ * google_venues — and a sentence about each one. "Top ten burgers." "Where to
+ * take your parents." It carries their username and it has a link they can
+ * send to a friend.
  *
  * WHY THIS ONE NEEDS AN ACCOUNT WHEN A SAVE DOES NOT
  *
@@ -37,8 +38,10 @@
  *     list must exist and be public, the row it writes is keyed by the
  *     session's own user id, and it touches no column of the list itself.
  *     See keep().
- *   - A place id that is not in data/places.json is refused, so nobody can
- *     fill the table with rows for places that do not exist.
+ *   - A place id that is on none of the three rolls — data/places.json,
+ *     google_venues, or the added_places somebody typed in — is refused, so
+ *     nobody can fill the table with rows for places that do not exist. That
+ *     check has been widened twice now and relaxed neither time.
  *   - Everything a person types is capped in length before it is stored, so
  *     one list cannot become a megabyte of somebody's prose.
  *
@@ -60,7 +63,7 @@
  * exactly the same reason.
  */
 
-import { json, sessionUser, catalogue, wrongDatabase } from './_lib.js';
+import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDatabase } from './_lib.js';
 /* Reading one list is shared with functions/list/[id].js, which serves the
    page a link opens with the list already in it. */
 import { readList, LIST_ID } from './_lists.js';
@@ -107,25 +110,10 @@ function code() {
   return out;
 }
 
-/* An id for a place somebody added by hand.
- *
- * list_items.place_id holds three kinds of id and the column is the only thing
- * that says which roll to go and read, so they have to be tellable apart by
- * looking at them:
- *
- *   catalogue   180-degrees                   lowercase, digits and hyphens
- *   Google      ChIJUdUjCV2TkkYRcg8TxVp1XUI   always carries a capital
- *   added here  new_k3fmqw8x2p                lowercase, and has an underscore
- *
- * All 74 catalogue ids are lowercase slugs with no underscore, so an
- * underscore rules that out; a Google key always carries a capital, so being
- * lowercase rules that out. Both halves are needed — a Google key may itself
- * contain an underscore, and lowercase alone would not separate this from a
- * catalogue slug.
- *
- * The "new_" prefix is for the person reading a row in the database. The test
- * below is what the code trusts.
- */
+/* An id for a place somebody added by hand: "new_" and ten random characters.
+   The prefix is what a person reads in a database row; isAdded() in _lib.js is
+   the test the code trusts, and the note there says why it is a shape rather
+   than a prefix. */
 const ADDED_LENGTH = 10;
 
 function addedId() {
@@ -136,12 +124,6 @@ function addedId() {
   return 'new_' + out;
 }
 
-/* Lowercase, and carries an underscore. Deliberately a test of shape rather
-   than of the prefix: the prefix is a label, and a check that reads
-   `startsWith('new_')` would quietly accept `New_x` from somewhere else. */
-export function isAdded(id) {
-  return typeof id === 'string' && id === id.toLowerCase() && id.indexOf('_') !== -1;
-}
 
 /* The readable half. A list called "Top ten burgers" gets
    /list/top-ten-burgers-k3fmqw, so a link says what it is before anybody
@@ -635,39 +617,53 @@ async function add(context, body, id) {
 
   const place = typeof body.place === 'string' ? body.place : '';
 
-  /* Two rolls to look in now, and the id says which one.
-   *
-   * This check is the reason nothing can put a row in list_items for a place
-   * that does not exist, so it is widened rather than relaxed: an id that
-   * looks like an added place is looked up in added_places, everything else in
-   * the catalogue, and an id found in neither is refused exactly as before.
-   *
-   * Any account's added place is accepted, not only the session's own. Only
-   * its author can see one in a picker, but a list can be copied from and a
-   * place already on somebody's shared list is a place that exists — refusing
-   * it would be refusing a row this same API already serves to everybody. */
-  let known;
+  /* Three rolls, asked in the order they cost: the catalogue is a file this
+     isolate probably already holds, google_venues is a query, and the places
+     somebody added by hand are a query the id itself tells us to skip. The
+     first two are what the picker offered — see functions/api/places.js — and
+     the third is what it offered when they had nothing.
 
+     This is the check that stops list_items filling with places that do not
+     exist, so each new roll widens it and none of them relaxes it: an id on
+     none of the three is refused exactly as it always was.
+
+     Any account's added place is accepted here, not only the session's own.
+     Only its author sees one in a picker, but a place already on somebody's
+     shared list is a place that exists, and refusing it would be refusing a
+     row this same API already serves to everybody who opens that list. */
+  let known = null;
+  let asked = false;
+
+  /* An added id cannot be in either of the other two — that is what the shape
+     of it guarantees — so it is one query instead of three. */
   if (isAdded(place)) {
-    const row = await env.DB
-      .prepare('SELECT name FROM added_places WHERE id = ?')
-      .bind(place)
-      .first();
-    if (!row) return json({ error: 'place' }, 400);
-    known = { name: row.name };
-  } else {
-    let roll;
     try {
-      roll = await catalogue(context);
-    } catch (e) {
-      return json({ error: 'places' }, 503);
+      known = (await addedByIds(env, [place])).get(place) || null;
+      asked = true;
+    } catch (e) { /* answered below */ }
+  } else {
+    try {
+      const roll = await catalogue(context);
+      known = roll.get(place) || null;
+      asked = true;
+    } catch (e) { /* the export below may still know it */ }
+
+    if (!known) {
+      try {
+        known = (await venuesByIds(env, [place])).get(place) || null;
+        asked = true;
+      } catch (e) { /* answered below */ }
     }
-    /* Nowhere real. The same refusal /api/saves gives, and for the same
-       reason: nothing gets to put a row in here for a place that does not
-       exist. */
-    known = roll.get(place);
-    if (!known) return json({ error: 'place' }, 400);
   }
+
+  /* No roll could be read at all. That is this site being unwell rather than
+     the place being wrong, and the two must not be reported as one: "there is
+     no such place" would send somebody looking for a typo. */
+  if (!known && !asked) return json({ error: 'places' }, 503);
+
+  /* Nowhere real. The same refusal /api/saves gives, and for the same reason:
+     nothing gets to put a row in here for a place that does not exist. */
+  if (!known) return json({ error: 'place' }, 400);
 
   const held = await env.DB
     .prepare('SELECT COUNT(*) AS n FROM list_items WHERE list_id = ?')

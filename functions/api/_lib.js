@@ -271,6 +271,138 @@ export async function catalogue(context) {
   return roll;
 }
 
+/* --------------------------------------------------------------- venues
+ * google_venues — the Google Places export, seven hundred and fifty places
+ * this city can eat in, in the database rather than in a file. See the table
+ * in db/schema.sql for why it is a mirror and what the columns mean.
+ *
+ * The catalogue above is the map plus a hand-kept CSV, and it is small. This
+ * is everywhere else, and a list may point at either: a list item's place_id
+ * holds a catalogue slug or a Google key, and the two cannot be confused —
+ * a slug is lowercase and a Google key always carries capitals.
+ *
+ * Nothing here is cached the way the catalogue is. The catalogue is a file
+ * that changes when a deploy changes it; this is a table, and the two callers
+ * that read it ask for a handful of rows by key.
+ */
+
+/* One venue as the catalogue draws a place, so the rest of the lists code
+   cannot tell which of the two rolls an entry came out of.
+
+   The address is Google's street line and the two columns beside it, joined
+   the way the catalogue writes one: "Kopli tn 16, 10412 Tallinn". */
+export function venueEntry(row) {
+  const where = [row.address, [row.postal_code, row.city].filter(Boolean).join(' ')]
+    .map((part) => String(part || '').trim())
+    .filter(Boolean)
+    .join(', ');
+
+  return {
+    id: row.place_id,
+    name: row.name,
+    address: where,
+    lat: typeof row.latitude === 'number' ? row.latitude : null,
+    lng: typeof row.longitude === 'number' ? row.longitude : null,
+    /* Thirty-two of them are also places on my map. `map` is what makes a row
+       link to a write-up instead of out to Google, and `mapId` is where that
+       write-up lives — the map's own id, not Google's key. */
+    map: !!row.map_id,
+    mapId: row.map_id || null
+  };
+}
+
+/* The venues behind a set of ids, as a Map. Ids that are not in the table —
+   a catalogue slug, a key from an export that no longer carries it — are
+   simply not in the answer, which is what every caller here already handles.
+
+   The list is bound one placeholder per id and capped well above the twenty
+   places a list can hold, so nothing a request sends decides the shape of the
+   statement and nothing it sends can make it long. */
+export async function venuesByIds(env, ids) {
+  const keys = (Array.isArray(ids) ? ids : [])
+    .filter((id) => typeof id === 'string' && id.length > 0 && id.length <= 128)
+    .slice(0, 50);
+  if (!env.DB || keys.length === 0) return new Map();
+
+  const holes = keys.map(() => '?').join(', ');
+  const { results } = await env.DB
+    .prepare(
+      'SELECT place_id, name, address, postal_code, city, latitude, longitude, map_id ' +
+      'FROM google_venues WHERE place_id IN (' + holes + ')'
+    )
+    .bind(...keys)
+    .all();
+
+  return new Map((results || []).map((row) => [row.place_id, venueEntry(row)]));
+}
+
+/* ----------------------------------------------------------- added places
+ * The third roll, and the smallest: the places somebody added by hand because
+ * neither the catalogue nor google_venues had them. See added_places in
+ * db/schema.sql, and addPlace() in lists.js which is the only thing that
+ * writes one.
+ */
+
+/* Which of the three kinds of id a list row holds.
+ *
+ *   catalogue   180-degrees                   lowercase, digits and hyphens
+ *   Google      ChIJUdUjCV2TkkYRcg8TxVp1XUI   always carries a capital
+ *   added here  new_k3fmqw8x2p                lowercase, and has an underscore
+ *
+ * Both halves of the test are needed. All 74 catalogue ids are lowercase slugs
+ * with no underscore, so an underscore rules that out; a Google key always
+ * carries a capital, so being lowercase rules that out — and a Google key may
+ * itself contain an underscore, which is why the underscore alone is not the
+ * test. The "new_" prefix is for a person reading a row in the database; this
+ * is what the code trusts.
+ */
+export function isAdded(id) {
+  return typeof id === 'string' && id === id.toLowerCase() && id.indexOf('_') !== -1;
+}
+
+/* One added place as the catalogue draws a place, so the rest of the lists
+   code cannot tell which of the three rolls an entry came out of.
+
+   `map` is false and `mapId` is null, always: those two mean "this is also on
+   data/restaurants.json, so link the row to its write-up", and a place
+   somebody typed in has no write-up. Being on the map is still the verdict. */
+export function addedEntry(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    address: row.address || '',
+    lat: typeof row.lat === 'number' ? row.lat : null,
+    lng: typeof row.lng === 'number' ? row.lng : null,
+    map: false,
+    mapId: null
+  };
+}
+
+/* The added places behind a set of ids, as a Map. Same contract as
+   venuesByIds: ids that are not in the table are simply not in the answer,
+   which every caller already handles.
+
+   Not filtered by owner, and that is deliberate. Only its author sees one of
+   these in a picker, but a list is shared and a stranger opening it has to see
+   every place on it — including this one, with its pin. Filtering by the
+   reader here would draw somebody's list with a hole in it. */
+export async function addedByIds(env, ids) {
+  const keys = (Array.isArray(ids) ? ids : [])
+    .filter((id) => typeof id === 'string' && id.length > 0 && id.length <= 128)
+    .slice(0, 50);
+  if (!env.DB || keys.length === 0) return new Map();
+
+  const holes = keys.map(() => '?').join(', ');
+  const { results } = await env.DB
+    .prepare('SELECT id, name, address, lat, lng FROM added_places WHERE id IN (' + holes + ')')
+    .bind(...keys)
+    .all();
+
+  const out = new Map();
+  results.forEach((row) => out.set(row.id, addedEntry(row)));
+  return out;
+}
+
 /* save_counts is brought level with saves by the write that changes them, and
    it is recomputed FROM saves rather than nudged by one: an increment that ran
    when an insert had quietly hit its conflict clause would drift, and nothing
