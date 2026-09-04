@@ -1440,10 +1440,28 @@ Each row has a box to say what is good about it, which is the point of the
 whole feature — a list of names is a search result, and a list of names with a
 line each is somebody telling you where to go.
 
-The order is the point of a top ten, so each row has an up and a down. Not a
-drag: a drag is the nicer gesture on a desktop and the worse one on a phone,
-where it fights the page's own scrolling, and it is no gesture at all on a
-keyboard.
+The order is the point of a top ten, so a row is carried to where it belongs.
+Press the grip — or anywhere on the row that is not the note box or a link —
+and drag it with a mouse; on a phone, hold a row for a moment and then carry it
+with your thumb. The rows it passes slide out of the way, the numbers keep up
+while the finger is still down, and the page scrolls by itself when a row is
+carried to the top or bottom of the screen.
+
+The two objections to a drag are real and both are answered rather than
+avoided. On a phone a drag fights the page's own scrolling, so a touch does not
+lift a row until the finger has rested on it without travelling: anything that
+moves sooner is somebody scrolling, and the page scrolls. The grip is the
+exception — CSS has already taken it out of the scroll, so a finger landing
+there is carrying a row and cannot be doing anything else. And a drag is no
+gesture at all on a keyboard, so the grip is a real button: focus it and the
+arrow keys walk the row up and down the list, one place a press, which is what
+the up and down buttons used to do. It keeps the focus across the redraw, and
+the new position is announced, which those buttons never did.
+
+Nothing is reordered while a finger is down. The rows stay where they were laid
+out and the drag only moves them with `transform`; the array is spliced once,
+on release, and the page is redrawn from it — so a drag interrupted by a phone
+call leaves nothing behind.
 
 Nothing has to be saved with a button. The title and the line under it write
 themselves when you leave the field; a note writes itself a moment after you
