@@ -110,6 +110,11 @@
   </div>
 </noscript>
 
-<script src="/assets/lists.js?v=50695ce8" defer></script>
+<!-- The basemap the "add a place" picker draws, shared with the map page.
+     Before lists.js and deferred like it, so document order puts the global
+     in place first. It is the only part of the map this page loads eagerly —
+     Leaflet itself is still fetched only when the picker is opened. -->
+<script src="/assets/basemap.js?v=bf2dd374" defer></script>
+<script src="/assets/lists.js?v=00ff3c14" defer></script>
 </body>
 </html>
