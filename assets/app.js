@@ -2496,10 +2496,21 @@
     window.clearTimeout(filterOpenTimer);
     if (!open) {
       dom.filterBar.classList.remove('is-opening');
-      /* Exactly what pressing All does, because shutting the row is the same
-         answer said a different way — on a phone. A desktop shuts nothing, so
-         a stale class going out is not a visitor letting their filter go. */
-      if (isNarrow()) clearChips();
+      /* Exactly what pressing All does to the chips, because shutting the row
+         is the same answer said a different way — on a phone. A desktop shuts
+         nothing, so a stale class going out is not a visitor letting their
+         filter go.
+
+         To the chips, and to nothing else. The rule this drawer rests on is
+         that a shut row can never be a filtered map, and a list is not a
+         filter: no chip stands for it, none of them is pressed while it is on,
+         and the panel says whose list it is in words above its own places. So
+         shutting an empty row is now nothing happening rather than clearChips()
+         letting a list go on the way past — opening the drawer to see what is
+         on it and shutting it again used to lose somebody's list, with nothing
+         pressed and nothing said. Pressing a chip still ends it; that is a
+         question about the map, and it is asked on purpose. */
+      if (isNarrow() && state.active.length) clearChips();
       return;
     }
     /* The class the chips' entrance is hung on, held for exactly as long as
@@ -4578,8 +4589,9 @@
   }
 
   /* The heading over somebody else's list: their title, their byline, the
-     count, and the three things you can do about it: keep it, open the list's
-     own page where the owner's sentences sit in full, or send it on.
+     count, the three things you can do about it — keep it, open the list's own
+     page where the owner's sentences sit in full, send it on — and, under
+     them, the way out.
 
      It takes the focus and labels the panel, the way the first group heading
      normally does, because in this state it is the first group heading. */
@@ -4613,8 +4625,30 @@
           textContent: t('listOpenPage')
         }),
         shareButton(state.list)
-      ])
+      ]),
+      leaveButton()
     ]);
+  }
+
+  /* The way back to the whole map, which is the one thing in this block that
+     is not about the list. So it is not a fourth pill: an .alt is what this
+     site's fourth control is for — the quiet one beside the things you do, a
+     way out — and it is the same shape and nearly the same words the list's
+     own page uses at the foot of the same content.
+
+     It is the All chip, printed where somebody reading a list can find it.
+     Pressing All has always done this and still does; what it was not, was
+     visible — the row it lives on says nothing about the list, and on a phone
+     it is behind a button. Somebody sent a link had to know that a chip they
+     had no reason to press was the way out of what they had been sent. */
+  function leaveButton() {
+    var b = el('button', {
+      type: 'button',
+      className: 'alt list-credit-out',
+      textContent: t('listLeave')
+    });
+    b.addEventListener('click', clearChips);
+    return b;
   }
 
   /* Sending the list on, from the page somebody was actually sent to. A list

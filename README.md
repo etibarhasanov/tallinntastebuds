@@ -1641,16 +1641,33 @@ over a map showing four places.
 So the filter row is types and nothing else. `state.list` holds a list or it
 does not, and while it does, that is what the map is showing — `visiblePlaces()`
 answers the list before it consults a chip. The list says who it is in the
-panel instead: its title, its owner's name, their sentence, and the three
-things you can do about it — keep it, open the list's own page, or send it on.
-All three wear the same pill, and none of them is filled: on that block the
-accent behind a pill already means "kept", and spending it twice would take
-that reading away.
+panel instead: its title, its owner's name, their sentence, the three things
+you can do about it — keep it, open the list's own page, or send it on — and,
+under those, the way out. The three wear the same pill and none of them is
+filled: on that block the accent behind a pill already means "kept", and
+spending it twice would take that reading away.
 
 **Pressing any chip forgets it.** All, Bakery, Discount — each is somebody
 asking the map a question their list cannot be part of the answer to, so the
 list goes: pins, panel, keep button, `?list=` and all. There is no control that
 puts it back, because it is not a thing you toggle.
+
+**Back to all places** is that same press, printed where the person reading a
+list can find it. It sits under the three pills as an `.alt`, not as a fourth
+one, because it is the one thing in that block that is not about the list —
+and because it is the same shape and nearly the same words the list's own page
+uses for its way out. Pressing All had always been the exit and always will
+be; what it was not, was visible. The chip row says nothing about the list, on
+a phone it is behind a button, and somebody who arrived on a link had to
+already know that a chip they had no reason to press was the way back.
+
+**Opening and shutting the Filters drawer is not pressing one.** Under 860px
+the chip row lives behind a button, and shutting it is the same answer as All
+— a shut drawer can never be a filtered map. That rule is about chips, and it
+used to be applied by calling the same function All does, list-dropping and
+all: opening the drawer to see what was on it and shutting it again lost
+somebody's list, with nothing pressed and nothing said. Shutting a row with no
+chip pressed is now nothing happening.
 
 **Back is the undo.** The page is driven by its address bar, so dropping a list
 is a `pushState` — the only history entry on the map besides an opened place,
