@@ -2074,7 +2074,12 @@
       });
     }
 
-    function typed() {
+    /* Not `typed`. That is addForm's own argument, and a function declaration
+       sharing a name with a parameter is not a second binding — it is the same
+       one, and the declaration wins from the first line of the body. So the
+       name field above was being filled with the source of this handler
+       instead of with what somebody had searched for. */
+    function addressTyped() {
       var q = address.value.trim();
       if (timer) clearTimeout(timer);
 
@@ -2087,8 +2092,8 @@
       timer = setTimeout(function () { lookUp(q, false); }, PAUSE);
     }
 
-    address.addEventListener('input', typed);
-    address.addEventListener('focus', typed);
+    address.addEventListener('input', addressTyped);
+    address.addEventListener('focus', addressTyped);
 
     /* Closing the list on the way out, but not before a press on it has been
        heard — the rows listen on mousedown, which lands first. */
