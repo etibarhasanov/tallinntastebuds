@@ -703,6 +703,15 @@ body.has-scrim { overflow: hidden; }
 .picker-add-form .picker-title { margin: 2px 0 12px; }
 .picker-add-form .lists-acts { margin-top: 12px; justify-content: flex-end; }
 
+/* The address, and the button that turns it into a point. One row, because
+   the button belongs to the field beside it and not to the form: pressing it
+   moves the pin, it does not add anything. The field takes the slack and the
+   button takes what it needs, so a longer word for "Find" in another language
+   is given room rather than wrapped. */
+.picker-find-row { display: flex; align-items: stretch; gap: 8px; }
+.picker-find-row .lists-input { flex: 1 1 auto; min-width: 0; }
+.picker-find { flex: 0 0 auto; padding: 10px 12px; white-space: nowrap; }
+
 /* The square of map. A fixed height rather than an aspect ratio: this sits in
    a sheet that is already clamped to the viewport, and a ratio would let it
    push the button underneath off the bottom on a short phone. */

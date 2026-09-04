@@ -1306,6 +1306,18 @@
       placeholder: t('listsAddAddressHint')
     });
 
+    /* Typing an address and pressing enter is what people do, and before this
+       it did nothing at all: the pin sat on the city centre until it was
+       dragged. The button is here because the enter key is invisible — it
+       says the field is a thing you can act on, and it is the only way to do
+       it on a phone keyboard that shows "done" instead. */
+    var find = el('button', {
+      type: 'button',
+      className: 'lists-alt picker-find',
+      textContent: t('listsAddFind')
+    });
+    var addressRow = el('div', { className: 'picker-find-row' }, [address, find]);
+
     var canvas = el('div', { className: 'picker-map', id: 'picker-map' });
     var hint = el('p', { className: 'picker-note', textContent: t('listsAddPin') });
     var go = el('button', { type: 'button', className: 'lists-go', textContent: t('listsAddIt') });
@@ -1313,7 +1325,7 @@
     var form = el('div', { className: 'picker-add-form' }, [
       back,
       el('h3', { className: 'picker-title', textContent: t('listsAddMissing') }),
-      name, address, hint, canvas,
+      name, addressRow, hint, canvas,
       el('div', { className: 'lists-row lists-acts' }, [go])
     ]);
     dom.pickerBody.appendChild(form);
@@ -1323,6 +1335,9 @@
        submit below works the same whether or not the map ever loaded. */
     var at = { lat: CITY[0], lng: CITY[1] };
     var ready = false;
+    /* Set once the map exists, and left null when it does not: the address
+       lookup still moves `at`, it just has no pin to move with it. */
+    var movePin = null;
 
     ensureLeaflet().then(function (L) {
       var map = L.map(canvas, {
@@ -1366,6 +1381,13 @@
         pin.setLatLng(ev.latlng);
         at = { lat: ev.latlng.lat, lng: ev.latlng.lng };
       });
+      movePin = function (lat, lng) {
+        pin.setLatLng([lat, lng]);
+        /* Close enough to read the street names, because the whole point of
+           having typed an address is to see that the pin landed on the right
+           building — and to drag it the last few metres to the door. */
+        map.setView([lat, lng], 17);
+      };
       ready = true;
     }).catch(function () {
       /* No map. The form still works — the pin stays where the city centre
@@ -1375,6 +1397,68 @@
       hint.textContent = t('listsAddNoMap');
       hint.classList.add('is-warn');
       ready = true;
+    });
+
+    /* The lookup. One at a time, and never on a keystroke: /api/geocode goes
+       out to Nominatim, whose usage policy asks for exactly that, and an
+       address is a thing somebody finishes typing rather than searches as
+       they go. */
+    var looking = false;
+    var lastLookup = '';
+
+    function say(key, warn) {
+      hint.textContent = t(key);
+      hint.classList.toggle('is-warn', !!warn);
+    }
+
+    function lookUp() {
+      var q = address.value.trim();
+      if (looking) return;
+      /* Same gate the Add button uses. Leaflet is still on its way down for
+         the first moment this form is open, and a lookup that landed before
+         it arrived would have a point and nowhere to draw it — which reads as
+         "the map did not load" when the map is merely late. */
+      if (!ready) return;
+      if (q.length < 3) { address.focus(); return; }
+      /* Pressing enter twice on the same address should not send it twice.
+         Anything edited since is a new question and goes out again. */
+      if (q === lastLookup) return;
+
+      looking = true;
+      lastLookup = q;
+      find.disabled = true;
+      say('listsAddFinding');
+
+      ask('/api/geocode?q=' + encodeURIComponent(q)).then(function (a) {
+        looking = false;
+        find.disabled = false;
+
+        if (a.status === 200 && typeof a.out.lat === 'number' && typeof a.out.lng === 'number') {
+          at = { lat: a.out.lat, lng: a.out.lng };
+          if (movePin) movePin(a.out.lat, a.out.lng);
+          /* The pin has moved but the door has not been found: a street
+             number puts you on the building, not on the entrance, and this
+             form is asking for the entrance. */
+          say(movePin ? 'listsAddFound' : 'listsAddNoMap', !movePin);
+          return;
+        }
+
+        /* Let it be asked again — the address was not wrong so much as
+           unanswered, and the next press should try rather than sit there
+           silently deduplicating. */
+        lastLookup = '';
+        say(a.status === 429 ? 'listsAddFindBusy' : 'listsAddFindNone', true);
+      });
+    }
+
+    find.addEventListener('click', lookUp);
+    address.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Enter') return;
+      /* There is no <form> around this, so enter submits nothing by itself.
+         It is still the key people press, and this is what they mean by it —
+         not "add the place", which is a button they have not reached yet. */
+      ev.preventDefault();
+      lookUp();
     });
 
     go.addEventListener('click', function () {
