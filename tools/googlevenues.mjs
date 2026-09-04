@@ -2,7 +2,7 @@
 /**
  * Tallinn Tastebuds — the Google Places export, into D1.
  *
- * Reads exports/tallinn_restaurants.csv — 750 restaurants, 18 columns, the
+ * Reads exports/tallinn_restaurants.csv — 751 restaurants, 18 columns, the
  * cleaned form of the raw Google export; see exports/README.md — and writes
  * db/google-venues.sql, which is what actually loads them.
  *
@@ -61,16 +61,11 @@ const OUT = join(ROOT, 'db', 'google-venues.sql');
 const MAP = join(ROOT, 'data', 'restaurants.json');
 
 /* ------------------------------------------------------------------- CSV
- * RFC 4180 rather than split(','): an address is "Viru 24, 10140 Tallinn" more
- * often than not, so the quoting is the whole point. A doubled quote inside a
- * quoted field is one quote, and a newline inside one is part of the value —
- * which the raw Google export relies on heavily.
- */
-/* ------------------------------------------------------------------- CSV
  * Written out rather than depended on, and it is RFC 4180 rather than
  * `split(',')`: an address is "Viru 24, 10140 Tallinn" more often than not,
  * so the quoting is the whole point. A doubled quote inside a quoted field is
- * one quote, and a newline inside one is part of the value.
+ * one quote, and a newline inside one is part of the value — which the raw
+ * Google export relies on heavily.
  */
 export function parseCsv(text) {
   const rows = [];
@@ -178,7 +173,7 @@ export function read() {
 
   /* The header is read rather than assumed, and then checked: a refreshed
      export that quietly drops a column should fail here, loudly, rather than
-     write NULLs over 750 rows of real data. */
+     write NULLs over 751 rows of real data. */
   const header = rows[0].map((h) => h.trim());
   const at = {};
   header.forEach((name, i) => { at[name] = i; });
@@ -199,7 +194,7 @@ export function read() {
     const id = cell('place_id');
     if (!id) continue;
     if (!PLACE_ID.test(id)) throw new Error(`row ${i + 1}: "${id}" is not a Google place id`);
-    /* Google's key is unique in this export — all 750 of them — and the table
+    /* Google's key is unique in this export — all 751 of them — and the table
        makes it a primary key, so a duplicate would silently become one row
        with the later one's values. Better to stop. */
     if (seen.has(id)) throw new Error(`row ${i + 1}: place_id ${id} appears twice`);
@@ -297,8 +292,8 @@ export function build() {
   out.push('');
 
   /* Rows per INSERT. `wrangler d1 execute --remote` sends one HTTP request per
-     statement, so a row-at-a-time file is 750 round trips to Cloudflare and
-     several minutes of watching a progress bar; batched, it is fifteen and a
+     statement, so a row-at-a-time file is 751 round trips to Cloudflare and
+     several minutes of watching a progress bar; batched, it is sixteen and a
      few seconds. Fifty keeps each statement around 17KB, which is comfortably
      inside every limit involved and still small enough to read one of if
      something ever goes wrong. */

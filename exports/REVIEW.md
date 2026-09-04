@@ -1,6 +1,6 @@
 # Shortlisting worksheet
 
-`tallinn_restaurants_review.csv` — all **750 candidates**, one row each, for deciding
+`tallinn_restaurants_review.csv` — all **751 candidates**, one row each, for deciding
 which ones join `data/restaurants.json`. Regenerate with `build_review_sheet.py`.
 Built from `tallinn_restaurants.csv`; nothing is filtered out.
 
@@ -52,13 +52,13 @@ top of the file is the live shortlist and you can work straight down it.
 |---|---|---|
 | *(none)* | 539 | ready to judge |
 | thin review count | 79 | under 60 reviews — rating is not yet reliable |
-| no hours | 51 | missing opening hours upstream |
+| no hours | 52 | missing opening hours upstream |
 | temporarily closed | 45 | `business_status` was `CLOSED_TEMPORARILY` |
 | already published | 32 | in `data/restaurants.json` already |
 | may not be a restaurant | 7 | typed as theatre, grocery, caterer or delivery-only |
 | outside Tallinn (Peetri) | 6 | Peetri, not Tallinn — still inside the schema's coordinate bounds |
-| possible second location | 13 | name matches a published place but sits 0.5–10.9 km away, so it is a **different branch, not a duplicate**. `Pirosmani` has two, `HAN's Restoran` four, `Shaurma Kebab` two. Verify before accepting |
-| same address as published | 52 | shares a street address with a published place. Mostly innocent — Balti Jaama Turg, Depoo and the mall food courts put many unrelated kitchens at one address — but this is the only signal that catches a duplicate the name cannot, so check these |
+| possible second location | 14 | name matches a published place but sits 0.5–10.9 km away, so it is a **different branch, not a duplicate**. `Pirosmani` has two, `HAN's Restoran` four, `Shaurma Kebab` two. Verify before accepting |
+| same address as published | 53 | shares a street address with a published place. Mostly innocent — Balti Jaama Turg, Depoo and the mall food courts put many unrelated kitchens at one address — but this is the only signal that catches a duplicate the name cannot, so check these |
 
 A row can carry several flags. Duplicate detection needs the name *and* the location
 to agree, within 250 m — name alone would have wrongly merged those branches, and
