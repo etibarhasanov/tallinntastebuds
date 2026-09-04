@@ -13,7 +13,7 @@
  * feature's query.
  */
 
-import { catalogue, venuesByIds } from './_lib.js';
+import { catalogue, venuesByIds, addedByIds, isAdded } from './_lib.js';
 
 /* The share code's shape. A slug, a dash and six characters, but written as a
    general slug rather than as that exact pattern: it is the primary key of a
@@ -83,8 +83,30 @@ export async function readList(context, id, user) {
   try {
     const strangers = results
       .map((r) => r.place_id)
-      .filter((id) => !roll || !roll.has(id));
+      .filter((id) => !roll || !roll.has(id))
+      /* Minus the ones somebody added by hand, which are in neither roll and
+         are looked for in their own table below. Filtered by the shape of the
+         id rather than by asking google_venues and finding nothing: a query
+         that can be skipped is better than a query that comes back empty. */
+      .filter((id) => !isAdded(id));
     if (strangers.length) venues = await venuesByIds(env, strangers);
+  } catch (e) { /* same cost, same reason */ }
+
+  /* And the third roll: the places somebody added by hand because neither of
+     the other two had them. Same shape as the other two, so the row below
+     cannot tell which it came out of.
+
+     Anybody's, not only this reader's. Only its author ever sees one in a
+     picker, but the whole point of the feature is that it goes on a list and
+     the list gets shared — so a stranger opening that list has to see the
+     place and its pin like every other place on it. Without this the row
+     would fall back to its stored name with no point, and the map would
+     silently drop it: seatList() in assets/app.js has nowhere to put a pin
+     for a place that does not know where it is. */
+  let added = new Map();
+  try {
+    const byHand = results.map((r) => r.place_id).filter(isAdded);
+    if (byHand.length) added = await addedByIds(env, byHand);
   } catch (e) { /* same cost, same reason */ }
 
   return {
@@ -96,7 +118,10 @@ export async function readList(context, id, user) {
     mine: mine,
     updated: list.updated_at,
     items: results.map((r) => {
-      const known = (roll ? roll.get(r.place_id) : null) || venues.get(r.place_id) || null;
+      const known = (roll ? roll.get(r.place_id) : null) ||
+                    venues.get(r.place_id) ||
+                    added.get(r.place_id) ||
+                    null;
       return {
         place: r.place_id,
         name: known ? known.name : r.name,
@@ -107,6 +132,10 @@ export async function readList(context, id, user) {
         /* Set only on a Google row for a place that is also on my map: the
            write-up is filed under the map's id, not Google's key. */
         mapId: (known && known.mapId) || null,
+        /* Whether this place was added by hand rather than found on either
+           roll. The page draws the row the same; this is what lets it say so,
+           and what stops a stranger's typed name reading as one of mine. */
+        added: added.has(r.place_id),
         say: r.say
       };
     })

@@ -29,13 +29,31 @@
  * script has asked. This route is an improvement on the load, never a
  * requirement for it.
  *
- * NOINDEX, AND WHY
+ * INDEXED, AND WHY
  *
- * A list is somebody else's writing on my domain, and nothing moderates it.
- * Unfurling and indexing are different things — the scrapers that build a
- * preview card do not consult this header — so a shared link still arrives
- * looking like itself, while Google is not asked to carry whatever anybody
- * types. If that stops being the right trade, it is the one header below.
+ * A public list is indexable. It was not, for a while, and the reasoning for
+ * the change is worth keeping.
+ *
+ * The case against was that a list is somebody else's writing on my domain
+ * and nothing moderates it. That is still true. What changed is the reading
+ * of what a list is *for*: it is a page somebody wrote about restaurants in
+ * this city, under their own name, and the whole point of it is that other
+ * people find it. A list that travels only by the link its author remembers
+ * to send is a page nobody arrives at. Somebody searching for the bakeries
+ * worth the walk in Tallinn should be able to land on the list of them.
+ *
+ * A private list is a different object entirely and is still noindex — with
+ * or without the header, since it is served only to the session that owns it
+ * and a crawler is never that session. The header goes on anyway, because a
+ * page's own answer should not depend on nobody having made a mistake
+ * somewhere else.
+ *
+ * TWO THINGS THIS DOES NOT CHANGE
+ *
+ * `/lists.html` stays noindex — it is your own lists, and signed out there is
+ * nothing on it. That header is in `_headers`.
+ *
+ * And nothing here is cached, indexable or not. See page().
  */
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
@@ -96,6 +114,11 @@ function headTags(list, url) {
        browser uses, and every unfurler reads og:title anyway. */
     '<title>' + esc(list.title) + ' | Tallinn Tastebuds</title>',
     '<meta name="description" content="' + description + '">',
+    /* Now that a public list can be indexed, it needs to say which address it
+       is: the same page is reachable at the live domain and at every preview
+       deployment, and a crawler that found two copies would have to pick one.
+       It points at the live site's URL for the same reason og:url does. */
+    '<link rel="canonical" href="' + esc(url) + '">',
     '<meta property="og:type" content="article">',
     '<meta property="og:site_name" content="Tallinn Tastebuds">',
     '<meta property="og:url" content="' + esc(url) + '">',
@@ -120,17 +143,26 @@ async function shell(context) {
   return res.text();
 }
 
-function page(html, status) {
+/* `indexable` is only ever true for a public list that was actually found.
+   Everything else through here — a 404, a database that is not bound, a
+   private list, the plain shell served when something went wrong — is a page
+   with no list on it or a page that is nobody's business but its owner's, and
+   none of those is worth a search result. */
+function page(html, status, indexable) {
   return new Response(html, {
     status: status || 200,
     headers: {
       'content-type': 'text/html; charset=utf-8',
-      /* Never cached. A list is edited by its owner while they are looking at
-         it, and — because a private list is served only to the session that
-         owns it — a shared copy of this response would be a copy of somebody's
-         private page handed to the next person to ask for it. */
+      /* Never cached, whether or not it is indexed. A list is edited by its
+         owner while they are looking at it, and — because a private list is
+         served only to the session that owns it — a shared copy of this
+         response would be a copy of somebody's private page handed to the
+         next person to ask for it.
+
+         A crawler is not harmed by this: it fetches a page once and keeps
+         what it finds. no-store is about the caches in between. */
       'cache-control': 'no-store',
-      'x-robots-tag': 'noindex, follow'
+      'x-robots-tag': indexable ? 'index, follow' : 'noindex, follow'
     }
   });
 }
@@ -205,5 +237,8 @@ export async function onRequest(context) {
   html = html.replace(TAG, () =>
     '<script>window.__TTB_LIST=' + payload + ';</script>\n' + TAG);
 
-  return page(html, 200);
+  /* Indexable only if it is public. A private list reaches this line only
+     when its own owner asked for it, and their session is not a crawler —
+     but the header says the true thing rather than relying on that. */
+  return page(html, 200, list.public);
 }

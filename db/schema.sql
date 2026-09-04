@@ -1,9 +1,10 @@
 -- Tallinn Tastebuds — every table the site has.
 --
--- Five things live here: the saves and their counts, the accounts a save can
--- follow a person on, the lists somebody builds and shares, 750 Tallinn venues
--- mirrored out of Google Places, and one meta row saying which database this
--- is. Everything the map itself draws — the places, the write-ups, the
+-- Seven things live here: the saves and their counts, the accounts a save can
+-- follow a person on, the lists somebody builds and shares, the keeps that are
+-- a bookmark on somebody else's list, 750 Tallinn venues mirrored out of
+-- Google Places, the places somebody adds by hand when the catalogue does not
+-- have them, and one meta row saying which database this is. Everything the map itself draws — the places, the write-ups, the
 -- discounts, the stories — is a JSON file in the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
@@ -225,6 +226,137 @@ CREATE TABLE IF NOT EXISTS list_items (
 -- Reading a list in its own order. The primary key leads with list_id but
 -- then sorts by place, which is not an order anybody chose.
 CREATE INDEX IF NOT EXISTS idx_list_items_pos ON list_items (list_id, pos);
+
+
+-- One row is one person keeping one list: a bookmark on somebody else's top
+-- ten, the way a save is a bookmark on a place.
+--
+-- WHY THIS ONE NEEDS AN ACCOUNT WHEN A SAVE DOES NOT
+--
+-- A save is filed under whatever the browser calls itself, because it has to
+-- work in the first ten seconds, before anybody has decided anything. What it
+-- buys is one bookmark on one restaurant, and losing it to a cleared browser
+-- costs the view of your own marks and not the marks themselves.
+--
+-- A kept list is the other shape of thing. It is somebody else's page, held
+-- because you mean to go back to it — often weeks later, usually on the phone
+-- you were not holding when you found it. A device-owned keep would be one
+-- Safari sweep away from a collection nobody can get back to, and there is no
+-- link in a browser's history for a list read once on a laptop. So the owner
+-- is always a users.id, never a device, and the one thing you must have before
+-- you can keep a list is the same account that lets you make one.
+--
+-- Enforced here as well as in the Function: owner_kind does not exist on this
+-- table, and there is no statement in functions/api/lists.js that can write a
+-- row without a session behind it.
+CREATE TABLE IF NOT EXISTS list_keeps (
+  -- lists.id. Only ever a public list: a private one is not served to anybody
+  -- but its owner, so there is nothing to keep.
+  list_id    TEXT    NOT NULL,
+  -- users.id. Never a device. See above.
+  owner      TEXT    NOT NULL,
+  created_at INTEGER NOT NULL,
+  -- One person keeps one list once. Pressing the mark twice is the conflict
+  -- clause and not a second row, exactly as a save is — which is what makes
+  -- the count below a count of people rather than a count of presses.
+  PRIMARY KEY (list_id, owner)
+);
+
+-- "Every list this account kept, newest first", which is the whole of the
+-- second section on /lists.html. The primary key cannot serve it: it leads
+-- with list_id, and this asks only about owner.
+CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at DESC);
+
+-- HOW MANY PEOPLE KEPT ONE LIST is asked one list at a time — on the list's
+-- own page — and the primary key answers it on an indexed prefix, so there is
+-- deliberately no counts table here of the kind save_counts is.
+--
+-- save_counts exists because the map asks for seventy-four numbers at once and
+-- a GROUP BY over every save in the database would cost one row read per save
+-- to produce them. Nothing asks that question of lists yet. The day something
+-- does — a directory ordered by how many people kept each list — is the day
+-- this wants the same treatment save_counts got, and it should be written the
+-- same way: recomputed from this table inside the batch that changes it,
+-- never nudged by one.
+
+
+
+
+-- ------------------------------------------------------------ added places
+-- A place somebody added by hand, because the catalogue does not have it.
+--
+-- data/places.json is my map plus a Google Maps export, and between them they
+-- miss things: somewhere that opened last month, somewhere Google files as not
+-- a restaurant, somewhere nobody has exported since. A list can only hold what
+-- is in that file, so "the place I want is not in the picker" used to have no
+-- answer. This table is the answer.
+--
+-- It is deliberately NOT the map. data/restaurants.json is hand-written and
+-- mine, and being on it is the verdict. A row here is somebody saying "this
+-- exists and I want it on my list", which is a much smaller claim — the same
+-- separation google_venues keeps, for the same reason.
+--
+-- WHO SEES ONE
+--
+-- Its author, in their own picker, so they can put it on a second list without
+-- adding it twice. Nobody else's picker changes: a name a stranger typed does
+-- not turn up in other people's search results, which is the moderation
+-- surface this does not open.
+--
+-- But it is not private either, and that is the point of it. It goes on a
+-- list, the list gets shared, and anybody who opens that list sees the place
+-- and its pin exactly like every other place on it — see readList() in
+-- functions/api/_lists.js, which fills a list row from here when the catalogue
+-- does not have it, and seatList() in assets/app.js, which draws it.
+--
+-- WHY THE ID LOOKS LIKE THAT
+--
+-- list_items.place_id holds three kinds of id now, and they have to be
+-- tellable apart by looking, because that column is the only thing that says
+-- which roll to go and read:
+--
+--   catalogue   180-degrees                   lowercase, digits and hyphens
+--   Google      ChIJUdUjCV2TkkYRcg8TxVp1XUI   always carries a capital
+--   added here  new_k3fmqw8x2p                lowercase, and has an underscore
+--
+-- Both halves are needed, and the numbers say so rather than the intent:
+-- all 74 catalogue ids are lowercase with no underscore, 161 of the 750 Google
+-- keys DO contain an underscore, and none of the 750 is all-lowercase. So the
+-- underscore alone would misread 161 real places, and lowercase alone would not
+-- separate one from a catalogue slug; together they match nothing on either
+-- roll. The prefix is what a person reads; isAdded() in functions/api/_lib.js
+-- is what the code checks, and it carries the query to re-run that count if
+-- google_venues is ever re-synced.
+CREATE TABLE IF NOT EXISTS added_places (
+  -- What list_items.place_id holds for this place. "new_" and ten random
+  -- characters — see above for why that shape and not another.
+  id         TEXT PRIMARY KEY,
+  -- users.id — who added it. An account, by the same argument a list needs
+  -- one: this is somebody putting a name into the world, not a bookmark.
+  owner      TEXT    NOT NULL,
+  name       TEXT    NOT NULL,
+  -- Required, both, and that is the one thing the shape decides for you: a
+  -- place with no point cannot be drawn, and being drawn on the map with the
+  -- rest of the list is most of why anybody adds one. The form asks for the
+  -- pin by making somebody drag it, so there is no such thing as a row here
+  -- that does not know where it is.
+  lat        REAL    NOT NULL,
+  lng        REAL    NOT NULL,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL,
+  -- Added after the table was: every other place on a list carries an address
+  -- that the panel draws and the map's stand-in card shows, and a place added
+  -- by hand should not be the one row that reads as half a place. Optional,
+  -- because a pin is the part that cannot be missing and a street name is not.
+  --
+  -- Applied to the live databases with ALTER TABLE ADD COLUMN rather than by
+  -- rebuilding the table. Both are listed here in the order the columns
+  -- actually sit in, so this file describes what is deployed rather than what
+  -- would be tidiest.
+  address    TEXT    NOT NULL DEFAULT ''
+);
+-- "Everything this person added", which is what the picker asks for.
+CREATE INDEX IF NOT EXISTS idx_added_places_owner ON added_places (owner, created_at DESC);
 
 
 -- ----------------------------------------------------------- google venues

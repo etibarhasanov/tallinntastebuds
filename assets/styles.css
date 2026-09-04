@@ -1996,6 +1996,98 @@ body.panel-detail .panel {
 }
 .list-row.is-closed .list-name { color: var(--muted); }
 
+/* ---------- somebody else's list, on the map ---------- */
+
+/* What the list's owner said about this place. It spans both columns and sits
+   under everything else, because it is a sentence somebody wrote and not a
+   piece of metadata — so it takes the reading face rather than the mono the
+   rest of the row uses, and the full width rather than the left column.
+
+   Quoted with a rule down the inside edge instead of quotation marks: the
+   marks would have to be chosen per language, and the rule says the same
+   thing in all ten. */
+.list-said {
+  grid-area: said;
+  margin-top: 8px;
+  padding-left: 10px;
+  border-left: 2px solid var(--hairline);
+  font-family: var(--body);
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+/* The row grows a third band for it. Only when there is one — a place with no
+   sentence under it keeps the two-line row every other list on the site
+   draws. */
+.list-row:has(> .list-said) {
+  grid-template-areas:
+    "name mark"
+    "sub  mark"
+    "said said";
+  align-items: start;
+}
+/* :has() is recent enough to be worth a floor under it. Without it the
+   sentence lands in the implicit row grid puts it in, which is under the name
+   and beside the mark — narrower than it should be, and still readable. */
+@supports not selector(:has(*)) {
+  .list-said { grid-column: 1 / -1; }
+}
+
+/* A place on the list that is not on the map: no write-up, no reel, nothing
+   to look at, and the row says so by being plainer rather than by carrying a
+   badge that explains its own absence. The name stays the name; what is
+   missing is the mark on the right, so the row is one column wide. */
+.list-row.is-from-list {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "name"
+    "sub";
+}
+.list-row.is-from-list:has(> .list-said) {
+  grid-template-areas:
+    "name"
+    "sub"
+    "said";
+}
+
+/* The heading over a list: its title, its owner's name, the line they wrote
+   under it, and the way through to the list's own page. It replaces the
+   ordinary group heading in this one state, so it carries the same sticky
+   band and the same type. */
+.list-credit .list-label.is-credit { margin-top: 10px; }
+.list-credit-by {
+  margin: 10px 0 0;
+  color: var(--muted);
+}
+.list-credit-intro {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.list-credit-link {
+  display: inline-block;
+  margin: 12px 0 2px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.list-credit-link:hover { color: var(--accent); }
+
+/* The chip that names the list. It wears somebody else's words, which are not
+   a vocabulary this site chose and can run to sixty characters, so it is the
+   one chip allowed to run out of room and say so rather than push every type
+   off the end of the row. */
+.chip.is-list {
+  max-width: 42vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* The row for the place the map is still holding lit. A rule down the inside
    edge and the name in the accent, which is the hover state made permanent —
    the list already says that colour means this place, so coming back to the

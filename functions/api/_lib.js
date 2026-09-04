@@ -336,6 +336,84 @@ export async function venuesByIds(env, ids) {
   return new Map((results || []).map((row) => [row.place_id, venueEntry(row)]));
 }
 
+/* ----------------------------------------------------------- added places
+ * The third roll, and the smallest: the places somebody added by hand because
+ * neither the catalogue nor google_venues had them. See added_places in
+ * db/schema.sql, and addPlace() in lists.js which is the only thing that
+ * writes one.
+ */
+
+/* Which of the three kinds of id a list row holds.
+ *
+ *   catalogue   180-degrees                   lowercase, digits and hyphens
+ *   Google      ChIJUdUjCV2TkkYRcg8TxVp1XUI   always carries a capital
+ *   added here  new_k3fmqw8x2p                lowercase, and has an underscore
+ *
+ * Both halves of the test are needed, and that is measured rather than
+ * assumed. Counted over the two tables as they actually stand:
+ *
+ *   all 74 catalogue ids     lowercase, and not one contains an underscore
+ *   161 of 750 Google keys   DO contain an underscore
+ *   0 of 750 Google keys     are all-lowercase
+ *
+ * So "contains an underscore" on its own would misread 161 real places as
+ * added-by-hand and send them to the wrong table; "is lowercase" on its own
+ * would not separate one from a catalogue slug. Together they are exact, with
+ * nothing on either roll matching. The "new_" prefix is for a person reading a
+ * row in the database; this is what the code trusts.
+ *
+ * Re-run the count if google_venues is ever re-synced from a different export:
+ *
+ *   SELECT SUM(place_id = lower(place_id) AND instr(place_id,'_') > 0)
+ *     FROM google_venues;   -- must be 0
+ */
+export function isAdded(id) {
+  return typeof id === 'string' && id === id.toLowerCase() && id.indexOf('_') !== -1;
+}
+
+/* One added place as the catalogue draws a place, so the rest of the lists
+   code cannot tell which of the three rolls an entry came out of.
+
+   `map` is false and `mapId` is null, always: those two mean "this is also on
+   data/restaurants.json, so link the row to its write-up", and a place
+   somebody typed in has no write-up. Being on the map is still the verdict. */
+export function addedEntry(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    address: row.address || '',
+    lat: typeof row.lat === 'number' ? row.lat : null,
+    lng: typeof row.lng === 'number' ? row.lng : null,
+    map: false,
+    mapId: null
+  };
+}
+
+/* The added places behind a set of ids, as a Map. Same contract as
+   venuesByIds: ids that are not in the table are simply not in the answer,
+   which every caller already handles.
+
+   Not filtered by owner, and that is deliberate. Only its author sees one of
+   these in a picker, but a list is shared and a stranger opening it has to see
+   every place on it — including this one, with its pin. Filtering by the
+   reader here would draw somebody's list with a hole in it. */
+export async function addedByIds(env, ids) {
+  const keys = (Array.isArray(ids) ? ids : [])
+    .filter((id) => typeof id === 'string' && id.length > 0 && id.length <= 128)
+    .slice(0, 50);
+  if (!env.DB || keys.length === 0) return new Map();
+
+  const holes = keys.map(() => '?').join(', ');
+  const { results } = await env.DB
+    .prepare('SELECT id, name, address, lat, lng FROM added_places WHERE id IN (' + holes + ')')
+    .bind(...keys)
+    .all();
+
+  const out = new Map();
+  results.forEach((row) => out.set(row.id, addedEntry(row)));
+  return out;
+}
+
 /* save_counts is brought level with saves by the write that changes them, and
    it is recomputed FROM saves rather than nudged by one: an increment that ran
    when an insert had quietly hit its conflict clause would drift, and nothing
