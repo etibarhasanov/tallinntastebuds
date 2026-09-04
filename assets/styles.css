@@ -2295,6 +2295,12 @@ body.panel-detail .panel {
 }
 .list-credit-act:hover { color: var(--ink); border-color: var(--muted); }
 
+/* The way out, under the three things you do with the list. An .alt rather
+   than a fourth pill, because it is not one of them: it hands the whole map
+   back. The negative margin pulls the words onto the same left edge as the
+   pills above, against .alt's own padding. */
+.list-credit-out { margin: 2px 0 0 -12px; }
+
 /* The three controls, under the list's own words: keeping it, opening it in
    full, and sending it on. They are given a line of their own rather than set
    beside the byline, because nothing here should read as though the site is
