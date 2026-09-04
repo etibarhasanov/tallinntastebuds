@@ -2078,14 +2078,65 @@ body.panel-detail .panel {
 }
 .list-credit-link:hover { color: var(--accent); }
 
-/* The chip that names the list. It wears somebody else's words, which are not
-   a vocabulary this site chose and can run to sixty characters, so it is the
-   one chip allowed to run out of room and say so rather than push every type
-   off the end of the row. */
-.chip.is-list {
-  max-width: 42vw;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* The keep, under the list's own words and above the way through to its page.
+   The one control in a block that is otherwise entirely somebody else's
+   writing, so it is given a line of its own rather than set beside the byline:
+   nothing here should read as though the site is speaking in the owner's
+   voice. */
+.list-credit-keep {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0 2px;
+}
+.list-keep {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  padding: 7px 13px 7px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  background: var(--paper);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color .15s var(--ease), border-color .15s var(--ease),
+              background-color .15s var(--ease);
+}
+.list-keep svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  /* Hollow until it is kept, filled after — the same before-and-after the
+     save mark on a place uses, so the two marks are read as one gesture
+     rather than as two controls that happen to share an outline. */
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+.list-keep:hover { color: var(--ink); border-color: var(--muted); }
+/* Kept is the filled state, and it is filled the way a pressed chip is: the
+   accent behind it rather than in front of it, so "I have this" is legible
+   across the panel at a glance and not a colour change you have to look for. */
+.list-keep.is-kept {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+}
+.list-keep.is-kept:hover { color: var(--paper); border-color: var(--accent); }
+.list-keep.is-kept svg { fill: currentColor; }
+.list-keeps {
+  color: var(--muted);
+  /* No wrapping mid-phrase in a row that is already allowed to wrap: the
+     count goes under the button whole or sits beside it whole. */
+  white-space: nowrap;
 }
 
 /* The row for the place the map is still holding lit. A rule down the inside
