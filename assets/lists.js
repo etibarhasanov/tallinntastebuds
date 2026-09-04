@@ -1248,6 +1248,16 @@
      allowed box is better than a refusal after the fact. */
   var CITY = [59.437, 24.7536];
 
+  /* The same basemap the map page draws, and the same key. CARTO stamps
+     "API KEY REQUIRED" diagonally across every tile fetched without one, so
+     the picker was wearing the nag while the main map was not — one copy of
+     the URL had simply been left behind. Keep this in step with TILE_URL and
+     TILE_KEY in assets/app.js, where the reasoning for a key sitting in
+     public lives. Empty stays a working state: tiles still draw, watermark
+     and all. */
+  var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+  var TILE_KEY = 'cb1_2ci9_1_e18f20c42b2e5346aa517b42';
+
   /* The door, at the foot of the picker. It carries whatever was typed into
      the search box, because that is almost always the name: somebody looking
      for Uus Burgerikoht has already typed "uus burger" by the time they
@@ -1321,8 +1331,10 @@
         zoomControl: true,
         attributionControl: true
       });
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer(TILE_KEY ? TILE_URL + '?key=' + encodeURIComponent(TILE_KEY) : TILE_URL, {
+        subdomains: 'abcd',
         maxZoom: 19,
+        detectRetina: true,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
           'contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
       }).addTo(map);
