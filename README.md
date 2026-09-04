@@ -1609,6 +1609,71 @@ for whatever is left over.
 If the database is unreachable, or a preview has the schema but no sync run
 against it, the picker opens on the map's places rather than on an error.
 
+### The place nobody has
+
+The picker searches about eight hundred places — my seventy-four and the Google
+export behind `/api/places` — and between them they still miss things:
+somewhere that opened last month, somewhere Google files as not a restaurant.
+Search for it, find nothing, and the picker offers **Can't find it? Add it
+yourself**.
+
+The form is a name, a street if you know it, and a pin you drag to the door.
+The pin is the part that cannot be skipped, and that is a consequence rather
+than a rule: `assets/app.js` drops a list row it cannot put a pin for, so a
+place with no coordinates would go on the list and then quietly not be on the
+map — which is the one thing somebody adding a place actually wanted.
+
+The door only appears once something has been typed. Under eight hundred
+unfiltered rows it would be an invitation to add a duplicate.
+
+**It is not a way onto the map.** `data/restaurants.json` is hand-written and
+mine, and being on it is the verdict. A row in `added_places` is somebody
+saying "this exists and I want it on my list", which is a much smaller claim
+and lives in its own table — the same separation `google_venues` keeps.
+
+**Who sees it.** Its author, in their own picker, so a place typed once can go
+on a second list without being typed again. Nobody else's picker changes: a
+name a stranger typed does not turn up in other people's search results, which
+is the moderation surface this deliberately does not open. But it is not
+private either — that is the point of it. It goes on a list, the list gets
+shared, and anybody who opens that list sees the place and its pin exactly like
+every other place on it.
+
+**The three kinds of id.** `list_items.place_id` now holds three, and the
+column is the only thing that says which roll to read:
+
+```
+catalogue    180-degrees                   lowercase, digits and hyphens
+Google       ChIJUdUjCV2TkkYRcg8TxVp1XUI   always carries a capital
+added here   new_k3fmqw8x2p                lowercase, and has an underscore
+```
+
+Both halves of that last test are needed, and the numbers say so rather than
+the intent: all 74 catalogue ids are lowercase with no underscore, **161 of the
+750 Google keys do contain an underscore**, and none of the 750 is
+all-lowercase. The underscore alone would misread 161 real places; lowercase
+alone would not separate one from a catalogue slug. `isAdded()` in
+`functions/api/_lib.js` carries the query to re-run that count if
+`google_venues` is ever re-synced.
+
+**Leaflet, on a page that does not have it.** `assets/lists.js` says at the top
+that this page draws no map, and for everybody reading a list that is still
+true: Leaflet is fetched the moment the add form opens and never before, from
+the same CDN and with the same integrity hashes `index.html` uses, so a browser
+that has been to the map already has it. The pin is a `divIcon` rather than
+Leaflet's default marker — the default is a PNG from the CDN's images
+directory, which would be one more request and the only asset here with no
+hash. If the script never arrives the form still works and says plainly that
+the place is going in at the city centre.
+
+**What is checked, and where.** A session, a name, and a point that is a real
+number inside a box around Tallinn — a pin dragged off the map, or a scripted
+call with a longitude of 900, is refused rather than stored and drawn in the
+Atlantic. A hundred added places per account. The caps and the box are in
+`functions/api/lists.js` and the server is the one that binds; the form
+restates them so a field stops you at the keystroke rather than at the round
+trip.
+
 ### The catalogue
 
 A top ten of burgers needs every burger place in the city to choose from, not
@@ -1798,20 +1863,6 @@ account button simply does not appear.
   and "the ones most people kept" says nothing about any restaurant on them.
   It is still a leaderboard, and a leaderboard changes what people write for.
   Worth deciding on its own terms rather than inheriting from this.
-- **Adding a place the catalogue does not have.** A place that is not in
-  `data/places.json` cannot go on a list, and there is no way to ask for one.
-  The CSV is the way in.
-
-  The table for it exists — `added_places`, in both databases, holding no rows
-  and referenced by no code. It is written into `db/schema.sql` with the shape
-  it actually has and with what still has to be true before a row in it is
-  useful. The short version: the blocker is not the table, it is that
-  `add()` in `functions/api/lists.js` validates every place id against the
-  catalogue and refuses anything else — which is the check that stops the
-  table filling with places that do not exist, so it has to learn about
-  `added_places` rather than be relaxed. Two smaller decisions go with it: the
-  id has to be tellable apart from a catalogue slug and a Google key, and a row
-  there has no address column while every other place on a list has one.
 - **Anything social.** No following, no hearts, no comments on somebody
   else's list. A keep is the one thing you can do to a list somebody else made,
   and it is silent: its owner sees a number and never who.

@@ -319,10 +319,14 @@ CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at
 --   Google      ChIJUdUjCV2TkkYRcg8TxVp1XUI   always carries a capital
 --   added here  new_k3fmqw8x2p                lowercase, and has an underscore
 --
--- All 74 catalogue ids are lowercase slugs with no underscore, so an
--- underscore rules that out; a Google key always carries a capital, so being
--- lowercase rules that out. The prefix is what a person reads; the two rules
--- above are what the code checks. See addedId() in functions/api/lists.js.
+-- Both halves are needed, and the numbers say so rather than the intent:
+-- all 74 catalogue ids are lowercase with no underscore, 161 of the 750 Google
+-- keys DO contain an underscore, and none of the 750 is all-lowercase. So the
+-- underscore alone would misread 161 real places, and lowercase alone would not
+-- separate one from a catalogue slug; together they match nothing on either
+-- roll. The prefix is what a person reads; isAdded() in functions/api/_lib.js
+-- is what the code checks, and it carries the query to re-run that count if
+-- google_venues is ever re-synced.
 CREATE TABLE IF NOT EXISTS added_places (
   -- What list_items.place_id holds for this place. "new_" and ten random
   -- characters — see above for why that shape and not another.

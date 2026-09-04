@@ -230,7 +230,19 @@
     "filterListOf": "\"{title}\" siyahısı",
     "listOpenPage": "Siyahının özünü aç",
     "listNotMine": "Mənim xəritəmdə deyil — bu siyahıdadır.",
-    "listNotMineBy": "Mənim xəritəmdə deyil — {name} onu bu siyahıya salıb."
+    "listNotMineBy": "Mənim xəritəmdə deyil — {name} onu bu siyahıya salıb.",
+    "listsAddMissing": "Tapa bilmirsiniz? Özünüz əlavə edin",
+    "listsBackToSearch": "Axtarışa qayıt",
+    "listsAddName": "Yerin adı",
+    "listsAddNameHint": "Uus Burgerikoht",
+    "listsAddAddress": "Bilirsinizsə, küçəsi",
+    "listsAddAddressHint": "Telliskivi 60a (istəyə bağlı)",
+    "listsAddPin": "Sancağı qapıya sürüşdürün və ya xəritəyə basın.",
+    "listsAddNoMap": "Xəritə yüklənmədi, ona görə bu şəhər mərkəzinə düşəcək.",
+    "listsAddIt": "Əlavə et",
+    "listsErrName": "Əvvəlcə yerə ad verin.",
+    "listsErrWhere": "Sancağı Tallinnə və ya yaxınlığına qoyun.",
+    "listAddedBy": "{name} əlavə edib"
   },
   "hy": {
     "langName": "Հայերեն",
@@ -463,7 +475,19 @@
     "filterListOf": "«{title}» ցանկը",
     "listOpenPage": "Բացել բուն ցանկը",
     "listNotMine": "Իմ քարտեզին չէ — այն այս ցանկում է։",
-    "listNotMineBy": "Իմ քարտեզին չէ — {name}-ը այն ավելացրել է այս ցանկում։"
+    "listNotMineBy": "Իմ քարտեզին չէ — {name}-ը այն ավելացրել է այս ցանկում։",
+    "listsAddMissing": "Չե՞ք գտնում։ Ավելացրեք ինքներդ",
+    "listsBackToSearch": "Վերադառնալ որոնմանը",
+    "listsAddName": "Վայրի անունը",
+    "listsAddNameHint": "Uus Burgerikoht",
+    "listsAddAddress": "Փողոցը, եթե գիտեք",
+    "listsAddAddressHint": "Telliskivi 60a (ըստ ցանկության)",
+    "listsAddPin": "Քաշեք կապիչը դեպի դուռը կամ սեղմեք քարտեզին։",
+    "listsAddNoMap": "Քարտեզը չբեռնվեց, ուստի սա կդրվի քաղաքի կենտրոնում։",
+    "listsAddIt": "Ավելացնել",
+    "listsErrName": "Սկզբում անուն տվեք վայրին։",
+    "listsErrWhere": "Դրեք կապիչը Տալլինում կամ մոտակայքում։",
+    "listAddedBy": "ավելացրել է {name}-ը"
   },
   "en": {
     "langName": "English",
@@ -696,7 +720,19 @@
     "filterListOf": "The list \"{title}\"",
     "listOpenPage": "Open the list itself",
     "listNotMine": "Not on my map — it is on this list.",
-    "listNotMineBy": "Not on my map — {name} put it on this list."
+    "listNotMineBy": "Not on my map — {name} put it on this list.",
+    "listsAddMissing": "Can't find it? Add it yourself",
+    "listsBackToSearch": "Back to the search",
+    "listsAddName": "The name of the place",
+    "listsAddNameHint": "Uus Burgerikoht",
+    "listsAddAddress": "The street it is on, if you know it",
+    "listsAddAddressHint": "Telliskivi 60a (optional)",
+    "listsAddPin": "Drag the pin to the door, or press the map.",
+    "listsAddNoMap": "The map did not load, so this will go in at the city centre.",
+    "listsAddIt": "Add it",
+    "listsErrName": "Give the place a name first.",
+    "listsErrWhere": "Put the pin somewhere in or near Tallinn.",
+    "listAddedBy": "added by {name}"
   },
   "et": {
     "langName": "Eesti",
@@ -929,7 +965,19 @@
     "filterListOf": "Nimekiri „{title}”",
     "listOpenPage": "Ava nimekiri ise",
     "listNotMine": "Ei ole minu kaardil — see on selles nimekirjas.",
-    "listNotMineBy": "Ei ole minu kaardil — {name} pani selle siia nimekirja."
+    "listNotMineBy": "Ei ole minu kaardil — {name} pani selle siia nimekirja.",
+    "listsAddMissing": "Ei leia? Lisa ise",
+    "listsBackToSearch": "Tagasi otsingusse",
+    "listsAddName": "Koha nimi",
+    "listsAddNameHint": "Uus Burgerikoht",
+    "listsAddAddress": "Tänav, kui tead",
+    "listsAddAddressHint": "Telliskivi 60a (valikuline)",
+    "listsAddPin": "Lohista nõel ukse juurde või vajuta kaardile.",
+    "listsAddNoMap": "Kaart ei laadinud, seega läheb see kesklinna.",
+    "listsAddIt": "Lisa",
+    "listsErrName": "Anna kohale kõigepealt nimi.",
+    "listsErrWhere": "Pane nõel Tallinnasse või selle lähedale.",
+    "listAddedBy": "lisas {name}"
   },
   "fi": {
     "langName": "Suomi",
@@ -1162,7 +1210,19 @@
     "filterListOf": "Lista ”{title}”",
     "listOpenPage": "Avaa itse lista",
     "listNotMine": "Ei kartallani — se on tällä listalla.",
-    "listNotMineBy": "Ei kartallani — {name} lisäsi sen tälle listalle."
+    "listNotMineBy": "Ei kartallani — {name} lisäsi sen tälle listalle.",
+    "listsAddMissing": "Etkö löydä? Lisää itse",
+    "listsBackToSearch": "Takaisin hakuun",
+    "listsAddName": "Paikan nimi",
+    "listsAddNameHint": "Uus Burgerikoht",
+    "listsAddAddress": "Katu, jos tiedät",
+    "listsAddAddressHint": "Telliskivi 60a (valinnainen)",
+    "listsAddPin": "Vedä nuppineula ovelle tai paina karttaa.",
+    "listsAddNoMap": "Kartta ei latautunut, joten tämä menee keskustaan.",
+    "listsAddIt": "Lisää",
+    "listsErrName": "Anna paikalle ensin nimi.",
+    "listsErrWhere": "Aseta nuppineula Tallinnaan tai sen lähelle.",
+    "listAddedBy": "lisäsi {name}"
   },
   "pt": {
     "langName": "Português",
@@ -1395,7 +1455,19 @@
     "filterListOf": "A lista «{title}»",
     "listOpenPage": "Abrir a própria lista",
     "listNotMine": "Não está no meu mapa — está nesta lista.",
-    "listNotMineBy": "Não está no meu mapa — {name} colocou-o nesta lista."
+    "listNotMineBy": "Não está no meu mapa — {name} colocou-o nesta lista.",
+    "listsAddMissing": "Não encontras? Adiciona tu",
+    "listsBackToSearch": "Voltar à pesquisa",
+    "listsAddName": "O nome do lugar",
+    "listsAddNameHint": "Uus Burgerikoht",
+    "listsAddAddress": "A rua, se souberes",
+    "listsAddAddressHint": "Telliskivi 60a (opcional)",
+    "listsAddPin": "Arrasta o pin até à porta, ou toca no mapa.",
+    "listsAddNoMap": "O mapa não carregou, por isso isto ficará no centro da cidade.",
+    "listsAddIt": "Adicionar",
+    "listsErrName": "Dá primeiro um nome ao lugar.",
+    "listsErrWhere": "Coloca o pin em Talin ou perto.",
+    "listAddedBy": "adicionado por {name}"
   },
   "ru": {
     "langName": "Русский",
@@ -1628,7 +1700,19 @@
     "filterListOf": "Список «{title}»",
     "listOpenPage": "Открыть сам список",
     "listNotMine": "Не на моей карте — оно в этом списке.",
-    "listNotMineBy": "Не на моей карте — {name} добавил его в этот список."
+    "listNotMineBy": "Не на моей карте — {name} добавил его в этот список.",
+    "listsAddMissing": "Не нашли? Добавьте сами",
+    "listsBackToSearch": "Назад к поиску",
+    "listsAddName": "Название места",
+    "listsAddNameHint": "Uus Burgerikoht",
+    "listsAddAddress": "Улица, если знаете",
+    "listsAddAddressHint": "Telliskivi 60a (необязательно)",
+    "listsAddPin": "Перетащите булавку ко входу или нажмите на карту.",
+    "listsAddNoMap": "Карта не загрузилась, поэтому место встанет в центре города.",
+    "listsAddIt": "Добавить",
+    "listsErrName": "Сначала укажите название места.",
+    "listsErrWhere": "Поставьте булавку в Таллинне или рядом.",
+    "listAddedBy": "добавил {name}"
   },
   "es": {
     "langName": "Español",
@@ -1861,7 +1945,19 @@
     "filterListOf": "La lista «{title}»",
     "listOpenPage": "Abrir la lista en sí",
     "listNotMine": "No está en mi mapa: está en esta lista.",
-    "listNotMineBy": "No está en mi mapa: {name} lo puso en esta lista."
+    "listNotMineBy": "No está en mi mapa: {name} lo puso en esta lista.",
+    "listsAddMissing": "¿No lo encuentras? Añádelo tú",
+    "listsBackToSearch": "Volver a la búsqueda",
+    "listsAddName": "El nombre del sitio",
+    "listsAddNameHint": "Uus Burgerikoht",
+    "listsAddAddress": "La calle, si la sabes",
+    "listsAddAddressHint": "Telliskivi 60a (opcional)",
+    "listsAddPin": "Arrastra el pin hasta la puerta, o pulsa el mapa.",
+    "listsAddNoMap": "El mapa no cargó, así que esto irá al centro de la ciudad.",
+    "listsAddIt": "Añadirlo",
+    "listsErrName": "Primero dale un nombre al sitio.",
+    "listsErrWhere": "Pon el pin en Tallin o cerca.",
+    "listAddedBy": "añadido por {name}"
   },
   "tr": {
     "langName": "Türkçe",
@@ -2094,7 +2190,19 @@
     "filterListOf": "\"{title}\" listesi",
     "listOpenPage": "Listenin kendisini aç",
     "listNotMine": "Haritamda değil — bu listede.",
-    "listNotMineBy": "Haritamda değil — {name} bu listeye ekledi."
+    "listNotMineBy": "Haritamda değil — {name} bu listeye ekledi.",
+    "listsAddMissing": "Bulamadınız mı? Kendiniz ekleyin",
+    "listsBackToSearch": "Aramaya dön",
+    "listsAddName": "Mekânın adı",
+    "listsAddNameHint": "Uus Burgerikoht",
+    "listsAddAddress": "Biliyorsanız sokağı",
+    "listsAddAddressHint": "Telliskivi 60a (isteğe bağlı)",
+    "listsAddPin": "İğneyi kapıya sürükleyin veya haritaya basın.",
+    "listsAddNoMap": "Harita yüklenmedi, bu yüzden şehir merkezine eklenecek.",
+    "listsAddIt": "Ekle",
+    "listsErrName": "Önce mekâna bir ad verin.",
+    "listsErrWhere": "İğneyi Tallinn’e veya yakınına koyun.",
+    "listAddedBy": "{name} ekledi"
   },
   "uk": {
     "langName": "Українська",
@@ -2327,6 +2435,18 @@
     "filterListOf": "Список «{title}»",
     "listOpenPage": "Відкрити сам список",
     "listNotMine": "Не на моїй карті — воно в цьому списку.",
-    "listNotMineBy": "Не на моїй карті — {name} додав його до цього списку."
+    "listNotMineBy": "Не на моїй карті — {name} додав його до цього списку.",
+    "listsAddMissing": "Не знайшли? Додайте самі",
+    "listsBackToSearch": "Назад до пошуку",
+    "listsAddName": "Назва місця",
+    "listsAddNameHint": "Uus Burgerikoht",
+    "listsAddAddress": "Вулиця, якщо знаєте",
+    "listsAddAddressHint": "Telliskivi 60a (необов’язково)",
+    "listsAddPin": "Перетягніть шпильку до входу або натисніть на карту.",
+    "listsAddNoMap": "Карта не завантажилася, тож місце стане в центрі міста.",
+    "listsAddIt": "Додати",
+    "listsErrName": "Спершу вкажіть назву місця.",
+    "listsErrWhere": "Поставте шпильку в Таллінні або поруч.",
+    "listAddedBy": "додав {name}"
   }
 }

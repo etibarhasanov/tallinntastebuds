@@ -4,8 +4,14 @@
  * making one, filling it, saying something about each place, and the page a
  * stranger lands on when the link is sent to them.
  *
- * Plain browser JavaScript, no modules, no build step, no Leaflet — a list is
- * text and this page does not draw a map. It shares the tokens, the card, the
+ * Plain browser JavaScript, no modules, no build step, and — for everybody who
+ * is reading a list rather than writing one — no Leaflet either. A list is
+ * text and this page does not draw a map.
+ *
+ * The one exception is the square of map inside the "add a place" form, which
+ * needs somewhere to drag a pin. Leaflet is fetched the moment that form is
+ * opened and never before, so somebody who opened a link to read a top ten
+ * downloads none of it. See ensureLeaflet(). It shares the tokens, the card, the
  * eyebrow and the toast with assets/styles.css and adds its own in
  * assets/lists.css.
  *
@@ -213,7 +219,10 @@
        is a request that did not come from the page — but a refusal a visitor
        could somehow reach still gets a sentence rather than a word out of the
        source. */
-    own: 'listsErrOwn'
+    own: 'listsErrOwn',
+    /* Adding a place: no name, or a pin that is not near Tallinn. */
+    name: 'listsErrName',
+    where: 'listsErrWhere'
   };
 
   function failed(out) {
@@ -1060,9 +1069,25 @@
     clear(dom.pickerBody);
     dom.pickerBody.appendChild(el('p', { className: 'picker-note', textContent: t('accountWorking') }));
 
-    getJSON('/api/places').then(function (answer) {
+    /* Both rolls the picker searches: the eight hundred behind /api/places,
+       and whatever this account has added by hand — so a place typed in for
+       one list can go on the next one without being typed again.
+
+       The added ones are asked for alongside and are allowed to fail on their
+       own: they are the smaller half, and a picker showing eight hundred
+       places is a working picker even if the four somebody added did not
+       arrive. */
+    Promise.all([
+      getJSON('/api/places'),
+      ask(API + '?added=1').then(function (a) {
+        return (a.out && a.out.added) || [];
+      }).catch(function () { return []; })
+    ]).then(function (loaded) {
+      var answer = loaded[0];
       var places = Array.isArray(answer) ? answer : (answer && answer.places) || [];
-      state.places = places;
+      /* Yours first. They are few, they are the ones you went to the trouble
+         of typing, and the picker stops at forty rows. */
+      state.places = loaded[1].concat(places);
       state.hay = {};
       state.places.forEach(function (p) {
         state.hay[p.id] = fold(p.name + ' ' + (p.address || ''));
@@ -1087,6 +1112,8 @@
 
   function paintPicker() {
     clear(dom.pickerBody);
+    /* Back from the add form, or never gone. */
+    dom.pickerSearch.closest('.search').hidden = false;
     if (!state.places) return;
 
     var words = fold(dom.pickerSearch.value).replace(/\s+/g, ' ').replace(/^ | $/g, '');
@@ -1117,11 +1144,15 @@
       if (hit) found.push(place);
     }
 
+    /* The place is not on either roll. This is the moment the feature exists
+       for, so the door is the answer to the empty state rather than a line
+       under it — there is nothing else on screen to read. */
     if (!found.length) {
       dom.pickerBody.appendChild(el('p', {
         className: 'picker-note',
         textContent: terms.length ? t('searchNone', { q: dom.pickerSearch.value.trim() }) : t('listsSearchHint')
       }));
+      if (terms.length && !full) dom.pickerBody.appendChild(addDoor(dom.pickerSearch.value.trim()));
       return;
     }
 
@@ -1135,6 +1166,240 @@
     if (more) {
       dom.pickerBody.appendChild(el('p', { className: 'picker-note', textContent: t('listsNarrow') }));
     }
+
+    /* And under the results, because "not found" is not always an empty
+       screen: searching "burger" can return nine places and still not the one
+       being looked for. Only once something has been typed — the door under
+       eight hundred unfiltered rows is an invitation to add a duplicate. */
+    if (terms.length && !full) {
+      dom.pickerBody.appendChild(addDoor(dom.pickerSearch.value.trim()));
+    }
+  }
+
+  /* ------------------------------------------------- adding a place
+   * The place neither roll has.
+   *
+   * The picker searches about eight hundred places — my seventy-four and the
+   * Google export behind /api/places — and between them they still miss
+   * things: somewhere that opened last month, somewhere Google files as not a
+   * restaurant. Before this, the answer to "it is not in the list" was nothing
+   * at all, and the list simply could not be finished.
+   *
+   * WHY THERE IS A MAP IN HERE
+   *
+   * Because a place without a point is a row that goes on the list and then
+   * quietly is not on the map — assets/app.js drops a list row it cannot put a
+   * pin for, so the one thing somebody adding a place actually wants would be
+   * the thing that silently did not happen. Dragging a pin is also the only
+   * way to say where somewhere is that needs no address to exist, no
+   * geocoder, and no second service to be up.
+   *
+   * Leaflet is fetched here and nowhere else on this page. Somebody who opened
+   * a link to read a top ten never asks for it.
+   */
+
+  var LEAFLET_JS = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  var LEAFLET_CSS = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  var LEAFLET_JS_HASH = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+  var LEAFLET_CSS_HASH = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+
+  /* The same version, the same integrity hashes and the same CDN index.html
+     uses, so a browser that has been to the map already has both files and
+     this costs nothing. Kept in step by hand: two files naming one version is
+     the price of the map page not loading a second copy of its own script. */
+  var leafletPromise = null;
+
+  function ensureLeaflet() {
+    if (window.L) return Promise.resolve(window.L);
+    if (leafletPromise) return leafletPromise;
+
+    leafletPromise = new Promise(function (resolve, reject) {
+      var css = el('link', {
+        rel: 'stylesheet',
+        href: LEAFLET_CSS,
+        integrity: LEAFLET_CSS_HASH,
+        crossorigin: ''
+      });
+      document.head.appendChild(css);
+
+      var js = el('script', {
+        src: LEAFLET_JS,
+        integrity: LEAFLET_JS_HASH,
+        crossorigin: ''
+      });
+      js.addEventListener('load', function () {
+        window.L ? resolve(window.L) : reject(new Error('leaflet loaded without L'));
+      });
+      js.addEventListener('error', function () { reject(new Error('leaflet unreachable')); });
+      document.head.appendChild(js);
+    }).catch(function (err) {
+      /* Let the next press try again rather than remembering the failure
+         forever: this is one flaky request on a CDN, not a broken page. */
+      leafletPromise = null;
+      throw err;
+    });
+
+    return leafletPromise;
+  }
+
+  /* Where the pin starts, and what the form means by "near Tallinn". The
+     server checks this again and is the one that binds — see TALLINN in
+     functions/api/lists.js — but a pin that cannot be dragged out of the
+     allowed box is better than a refusal after the fact. */
+  var CITY = [59.437, 24.7536];
+
+  /* The door, at the foot of the picker. It carries whatever was typed into
+     the search box, because that is almost always the name: somebody looking
+     for Uus Burgerikoht has already typed "uus burger" by the time they
+     conclude it is not there. */
+  function addDoor(typed) {
+    var b = el('button', {
+      type: 'button',
+      className: 'picker-add',
+      textContent: t('listsAddMissing')
+    });
+    b.addEventListener('click', function () { addForm(typed); });
+    return b;
+  }
+
+  function addForm(typed) {
+    clear(dom.pickerBody);
+    /* The search field is static markup above this, so it would otherwise sit
+       there live over a form that is not searching anything — type into it and
+       nothing happens, which is the worst kind of control. It comes back with
+       paintPicker(). */
+    dom.pickerSearch.closest('.search').hidden = true;
+
+    var back = el('button', {
+      type: 'button',
+      className: 'lists-alt picker-back',
+      textContent: t('listsBackToSearch')
+    });
+    back.addEventListener('click', paintPicker);
+
+    var name = el('input', {
+      type: 'text',
+      className: 'lists-input',
+      value: typed || '',
+      maxlength: '80',
+      autocomplete: 'off',
+      'aria-label': t('listsAddName'),
+      placeholder: t('listsAddNameHint')
+    });
+
+    var address = el('input', {
+      type: 'text',
+      className: 'lists-input',
+      maxlength: '120',
+      autocomplete: 'off',
+      'aria-label': t('listsAddAddress'),
+      placeholder: t('listsAddAddressHint')
+    });
+
+    var canvas = el('div', { className: 'picker-map', id: 'picker-map' });
+    var hint = el('p', { className: 'picker-note', textContent: t('listsAddPin') });
+    var go = el('button', { type: 'button', className: 'lists-go', textContent: t('listsAddIt') });
+
+    var form = el('div', { className: 'picker-add-form' }, [
+      back,
+      el('h3', { className: 'picker-title', textContent: t('listsAddMissing') }),
+      name, address, hint, canvas,
+      el('div', { className: 'lists-row lists-acts' }, [go])
+    ]);
+    dom.pickerBody.appendChild(form);
+    name.focus();
+
+    /* The pin's position, kept here rather than read off the marker, so the
+       submit below works the same whether or not the map ever loaded. */
+    var at = { lat: CITY[0], lng: CITY[1] };
+    var ready = false;
+
+    ensureLeaflet().then(function (L) {
+      var map = L.map(canvas, {
+        center: CITY,
+        zoom: 13,
+        zoomControl: true,
+        attributionControl: true
+      });
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+          'contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+      }).addTo(map);
+
+      /* A divIcon rather than Leaflet's default marker, for the reason the map
+         page uses one too: the default is a PNG fetched from the CDN's images
+         directory, at a path Leaflet works out from where its stylesheet came
+         from. That is one more request, the only asset here with no integrity
+         hash, and a pin that does not look like anything else on this site.
+         A styled span costs none of that. */
+      var pin = L.marker(CITY, {
+        draggable: true,
+        autoPan: true,
+        icon: L.divIcon({
+          className: 'picker-pin',
+          html: '<span></span>',
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        })
+      }).addTo(map);
+      pin.on('dragend', function () {
+        var p = pin.getLatLng();
+        at = { lat: p.lat, lng: p.lng };
+      });
+      /* Pressing the map moves the pin too. Dragging a 20px marker is the
+         fiddly half of this on a phone, and a tap is the gesture people try
+         first. */
+      map.on('click', function (ev) {
+        pin.setLatLng(ev.latlng);
+        at = { lat: ev.latlng.lat, lng: ev.latlng.lng };
+      });
+      ready = true;
+    }).catch(function () {
+      /* No map. The form still works — the pin stays where the city centre
+         is — but somebody has to be told that is what they are submitting,
+         rather than discovering it on the list afterwards. */
+      canvas.remove();
+      hint.textContent = t('listsAddNoMap');
+      hint.classList.add('is-warn');
+      ready = true;
+    });
+
+    go.addEventListener('click', function () {
+      var typedName = name.value.trim();
+      if (!typedName) { name.focus(); return; }
+      if (!ready) return;
+
+      go.disabled = true;
+      go.textContent = t('accountWorking');
+
+      post({
+        action: 'place',
+        name: typedName,
+        address: address.value.trim(),
+        lat: at.lat,
+        lng: at.lng
+      }).then(function (a) {
+        if (!a.ok || !a.out.place) {
+          go.disabled = false;
+          go.textContent = t('listsAddIt');
+          return failed(a.out);
+        }
+        /* Straight onto the list, because putting it there is the only reason
+           anybody filled this in. It also joins the picker's own roll, so a
+           second list can have it without it being typed again. */
+        var made = a.out.place;
+        if (state.places) {
+          state.places.push(made);
+          state.hay[made.id] = fold(made.name + ' ' + (made.address || ''));
+        }
+        addPlace(made);
+      }).catch(function () {
+        go.disabled = false;
+        go.textContent = t('listsAddIt');
+        failed({});
+      });
+    });
   }
 
   function pickerRow(place, already, full) {

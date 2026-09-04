@@ -675,3 +675,69 @@ body.has-scrim { overflow: hidden; }
   .lists-body { overflow: visible; padding: 0; background: #fff; }
   .lists-card, .item { box-shadow: none; border-color: #ddd; break-inside: avoid; }
 }
+
+
+/* ---------- adding a place the picker does not have ---------- */
+
+/* The door at the foot of the picker. Quiet — it is the answer to a search
+   that failed, not the thing to press instead of searching — but a whole row
+   wide, because when the results are empty it is the only thing on screen. */
+.picker-add {
+  display: block;
+  width: 100%;
+  margin: 10px 0 4px;
+  padding: 12px 14px;
+  background: var(--wash);
+  border: 1px dashed var(--hairline);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .02em;
+  cursor: pointer;
+}
+.picker-add:hover { border-color: var(--accent); color: var(--accent); }
+
+.picker-add-form { display: flex; flex-direction: column; }
+.picker-back { align-self: flex-start; padding-left: 0; }
+.picker-add-form .picker-title { margin: 2px 0 12px; }
+.picker-add-form .lists-acts { margin-top: 12px; justify-content: flex-end; }
+
+/* The square of map. A fixed height rather than an aspect ratio: this sits in
+   a sheet that is already clamped to the viewport, and a ratio would let it
+   push the button underneath off the bottom on a short phone. */
+.picker-map {
+  height: 220px;
+  min-height: 220px;
+  margin-top: 4px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  overflow: hidden;
+  /* Leaflet paints its own tiles; this is what is seen while they arrive, and
+     what is seen for good if they never do. */
+  background: var(--wash);
+}
+/* Leaflet writes its own font stack into the attribution and the zoom
+   buttons. These are the two places it shows through onto this page. */
+.picker-map .leaflet-container { font-family: var(--mono); font-size: 10px; }
+
+/* The pin somebody drags. The map's own pins are the mark cropped round; this
+   one is a plain dot, because it is not a place yet — it is a question about
+   where one is. Sized and anchored in the divIcon that carries it. */
+.picker-pin span {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 5px;
+  background: var(--accent);
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .35);
+  cursor: grab;
+}
+.picker-pin:active span { cursor: grabbing; }
+
+/* The line that stops being an instruction and becomes a warning: the map did
+   not load, and the pin is going in at the city centre unless somebody says
+   otherwise. */
+.picker-note.is-warn { color: var(--accent); }

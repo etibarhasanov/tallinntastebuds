@@ -349,12 +349,23 @@ export async function venuesByIds(env, ids) {
  *   Google      ChIJUdUjCV2TkkYRcg8TxVp1XUI   always carries a capital
  *   added here  new_k3fmqw8x2p                lowercase, and has an underscore
  *
- * Both halves of the test are needed. All 74 catalogue ids are lowercase slugs
- * with no underscore, so an underscore rules that out; a Google key always
- * carries a capital, so being lowercase rules that out — and a Google key may
- * itself contain an underscore, which is why the underscore alone is not the
- * test. The "new_" prefix is for a person reading a row in the database; this
- * is what the code trusts.
+ * Both halves of the test are needed, and that is measured rather than
+ * assumed. Counted over the two tables as they actually stand:
+ *
+ *   all 74 catalogue ids     lowercase, and not one contains an underscore
+ *   161 of 750 Google keys   DO contain an underscore
+ *   0 of 750 Google keys     are all-lowercase
+ *
+ * So "contains an underscore" on its own would misread 161 real places as
+ * added-by-hand and send them to the wrong table; "is lowercase" on its own
+ * would not separate one from a catalogue slug. Together they are exact, with
+ * nothing on either roll matching. The "new_" prefix is for a person reading a
+ * row in the database; this is what the code trusts.
+ *
+ * Re-run the count if google_venues is ever re-synced from a different export:
+ *
+ *   SELECT SUM(place_id = lower(place_id) AND instr(place_id,'_') > 0)
+ *     FROM google_venues;   -- must be 0
  */
 export function isAdded(id) {
   return typeof id === 'string' && id === id.toLowerCase() && id.indexOf('_') !== -1;
