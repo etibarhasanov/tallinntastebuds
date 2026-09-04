@@ -51,6 +51,7 @@ completely with the database switched off.
 - [Files](#files)
 - [The mark](#the-mark)
 - [Third-party pieces and their licences](#third-party-pieces-and-their-licences)
+- [The design rules](#the-design-rules)
 - [Design notes](#design-notes)
 
 ---
@@ -1225,6 +1226,30 @@ comes back. Only then does reset work. The address is never used for anything
 else: no list, no newsletter, no mail that is not a code somebody just asked
 for.
 
+### Changing the password
+
+On the account sheet, under the name: **Change password**, which asks for the
+one in use and the new one on the same card.
+
+The old password is asked for even though the browser is already signed in.
+A session is a browser, not a person — a sheet left open on a shared laptop
+would otherwise be a way to take somebody's account off them — so the current
+password is checked exactly the way a sign-in checks it, and a wrong one is
+counted against the same fingerprint that slows guessing down everywhere else.
+
+**It drops every session on the account and hands this browser a fresh one.**
+A password gets changed either because it was dull or because somebody else
+may have it, and in the second case leaving the other devices signed in is
+changing the lock and posting the old key back through the door. The sheet
+says so before the button, because being signed out of your own phone by a
+change made on a laptop is otherwise a mystery rather than a consequence. The
+new cookie is what keeps the person doing it signed in where they are.
+
+The new password is subject to the same eight-character minimum as a new
+account's, and re-derived at the *current* `PW_ITERATIONS` with a fresh salt —
+so changing a password on an old account is also the one moment its hash
+catches up with the setting, the same way a sign-in does.
+
 ### How it is kept safe
 
 - **Passwords** are PBKDF2-HMAC-SHA256 through WebCrypto — there is no bcrypt
@@ -1261,7 +1286,8 @@ for.
   fingerprint waits.
 - **"No such account" and "wrong password" give the same answer**, so the
   endpoint cannot be used to find out which usernames exist.
-- **A reset drops every session** on that account, not just the current one.
+- **A reset drops every session** on that account, not just the current one,
+  and so does a password change — see **Changing the password** above.
 
 ### Turning it on
 
@@ -2598,6 +2624,12 @@ to read and write first.
 - a `type` used in `restaurants.json` that is not in `taxonomy.json`
 - a taxonomy type missing a label in any language
 - a UI string present in one language but missing in another
+- a string the site asks for — a `data-i18n` key in the markup, a `t('key')`
+  in a script — that is in no language of `data/ui.json` at all, which is how
+  a visitor ends up reading the key itself off the page
+- a colour token one style declares and another leaves out, which is a style
+  quietly wearing the other one's value out of `:root`. See **The design
+  rules**
 - a photo listed in the data that does not exist in the repo
 - a `reel` value that is not a real Instagram or TikTok permalink shape
 - a `price` outside 1–4 or off the 0.5 step, a malformed `visited` month, a
@@ -3277,6 +3309,153 @@ required, which is what `TILE_KEY` is for. If they ever go further and stop
 serving free tiles altogether, the lines to change are `TILE_URL`,
 `TILE_URL_DARK` and `TILE_ATTRIBUTION` near the top of `assets/app.js`.
 There is no CSP to update alongside them — see above for why.
+
+---
+
+## The design rules
+
+**Design notes** below says what this site looks like. This says what anything
+new has to do to belong to it — the short list a new sheet, page or button is
+held to, so that building one is a decision about words rather than about
+pixels.
+
+It is written down because two things had already drifted without anybody
+deciding to. The account sheet, the one surface behind a sign-in, had become a
+title and three underlined links in a column: nothing on it said which of them
+was where you go next, and the one that signs you out looked exactly like the
+one that opens your lists. And the lists page's primary button had drifted a
+whole typeface away from the map's — same job, same colour, one set in mono
+and one in the display face — because each page had been given its own copy of
+it. Neither was a bad decision. Neither was a decision at all.
+
+### 1. Colour comes out of the tokens
+
+No component rule anywhere names a colour. The tokens are the first block in
+`assets/styles.css` and each style restates every one of them, so pressing the
+swatch changes the whole colour world and nothing is left behind wearing the
+style you came from. A component that named its own colour would be exactly
+the thing that failed to change.
+
+The exception, and it is the only one: the three surfaces that sit **over a
+photograph** — the lightbox, the stories, and the scrim behind a sheet. Those
+are black-and-white by construction, belong to no style, and say so where they
+are defined.
+
+### 2. Three faces, and a thing picks one
+
+| Face | Token | What wears it |
+| --- | --- | --- |
+| Familjen Grotesk | `--display` | names and titles: the wordmark, a place, a list, a sheet's heading, a row's name |
+| Literata | `--body` | sentences — the tagline, a blurb, the line under a title that says why |
+| IBM Plex Mono | `--mono` | anything that is a label rather than a sentence: eyebrows, field labels, buttons, counts, badges, addresses, the price gauge |
+
+The mono is the site's tell. It is what says "this is a control or a fact",
+and it is why a button in the display face read as somebody else's button.
+
+### 3. One hairline, and a short list of corners
+
+`--hairline` is the only border weight on the site. `--shadow` lifts a card,
+`--lift` lifts something logo-sized standing on the map, and there is no third
+one.
+
+Corners come from the same short list: `--radius` (4px) for anything holding a
+picture or a page of words, `--radius-soft` (12px) for chrome floating on the
+map and for a field, `100px` for a pill — which is only ever a button or a
+chip — and `50%` for a dot. A new value is a fourth thing to remember; use one
+of these.
+
+### 4. Four controls, defined once
+
+Everything pressable is one of four shapes, and all four live in
+`assets/styles.css` where both pages read them:
+
+| | What it is | Where |
+| --- | --- | --- |
+| `.go` | the filled action, a mono pill in the accent | any card or sheet |
+| `.alt` | the quiet one beside it: a way out, a switch, a second thought | under a `.go`, or at the top of a step |
+| `.chip` | a toggle that filters | the filter row |
+| `.menu` / `.menu-row` | a list of places to go, hairline-ruled, full width | the account sheet |
+
+A page does not get its own copy of one of these. If a fifth is genuinely
+needed it goes in the same block, with the sentence saying what the other four
+could not do.
+
+### 5. One filled action per surface, and never two
+
+The accent is spent once. Two filled buttons side by side is a surface that
+cannot say which of them it wants, and on this site the accent is also the
+colour of every pin, so spending it twice on one card spends it against the
+map as well. The second thing to do is an `.alt`.
+
+### 6. A sheet is built in one order
+
+Eyebrow, title, the line that says why, anything that just happened, the
+fields, the one action, the ways out. Every view of the account sheet is drawn
+in that order, so moving between them is the words changing rather than the
+furniture. Errors and confirmations sit **above** the fields, not under the
+button: nobody looks under the button they have already pressed.
+
+### 7. One surface asks one thing
+
+If a step needs its own fields, it gets its own view with a way back at the
+top of it, rather than another block stacked onto the sheet you started on.
+The account is a name and a menu; changing a password, adding an address and
+entering a code are steps behind it. A back is at the top, where a back is
+looked for — under the button it reads as a second action.
+
+### 8. A list of choices is rows, not a stack of links
+
+Three links in a column is a paragraph that has lost its sentences. A row has
+an edge, a line under the name saying what it does, a mark on the right saying
+it opens something, and **a target the width of the card rather than the width
+of the word**. That last part is the one that matters on a phone.
+
+### 9. A field is a mono label over a 16px input
+
+The label is uppercase mono in `--muted`; the input is `--paper` inside a
+hairline. **16px is not a taste decision**: anything smaller makes iOS zoom
+the page when the field takes focus, and it never zooms back out. A field that
+is smaller on a wide screen has to be bumped at the phone breakpoint, which is
+what the map's search box does and what the lists page's fields had been
+missing. Every field carries the `autocomplete` hint that lets a password
+manager do its job — which is what actually rescues people who forget things.
+
+### 10. Colour is never the only thing saying it
+
+The pins say filmed, photographed or written-up by silhouette as well as by
+tone, every row repeats it as a word, and the line saying whether an account
+can recover a password has a dot **and** the sentence. Anything that says
+something in colour alone says it twice.
+
+### 11. Every word is in `data/ui.json`
+
+Ten languages, and a string that exists in one and not another fails the
+build. Nothing user-facing is written into a script at all, and the words in
+the markup are only the English the page is served with — every one of them
+sits under a `data-i18n` key that replaces it as soon as the strings load.
+Both the keys in the markup and the `t('key')` calls in the scripts are
+checked against the file. See **Languages**.
+
+### 12. Nothing animates unless it was asked to
+
+Pins settle, panels slide, a hover moves a chevron two pixels. The one thing
+on the site that moves on its own is the ring round the mark when a story is
+up, because a clock is running on it. Everything with a transition has an
+answer under `prefers-reduced-motion`.
+
+### What the validator checks
+
+Rules are worth what is enforced. `node tools/validate.mjs` fails the build on:
+
+- a string the code asks for — a `data-i18n` key in the markup, a `t('key')`
+  in a script — that is in no language of `data/ui.json`, and a string that is
+  in one language and missing from another
+- a colour token declared by one style and not by the other, which is the
+  half-finished palette that leaves one style wearing the other's shadow
+
+The rest is read by a person. Rules 5 through 8 are about judgement, and a
+linter that could tell a second filled button from a legitimate one would be a
+larger program than this site.
 
 ---
 

@@ -209,7 +209,10 @@ export async function onRequestGet(context) {
 }
 
 /* ---------------------------------------------------------------- create,
- * sign in, sign out. One endpoint, because they share every check.
+ * sign in, sign out, change the password. One endpoint, because they share
+ * every check: the same username and password rules, the same slow-down on a
+ * fingerprint that keeps getting a password wrong, and the same session
+ * table on the way in and out.
  */
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -251,6 +254,70 @@ export async function onRequestPost(context) {
         'content-type': 'application/json; charset=utf-8',
         'cache-control': 'no-store',
         'set-cookie': sessionCookie('', 0)
+      }
+    });
+  }
+
+  /* ------------------------------------------------- changing a password
+   * The one account change that needs the old password as well as the new
+   * one: a sheet left open on a shared laptop must not be a way to take the
+   * account off whoever owns it. The current password is checked the same
+   * way a sign-in checks it, and a wrong one is counted against the same
+   * fingerprint that slows guessing down everywhere else.
+   *
+   * Every session goes, and this browser is handed a fresh one. A password
+   * is changed either because it was dull or because somebody else may have
+   * it, and in the second case leaving the other devices signed in would be
+   * changing the lock and posting the old key back through the door. The new
+   * cookie is what keeps the person doing it from being thrown out of their
+   * own account for their trouble.
+   */
+  if (action === 'password-change') {
+    const user = await sessionUser(request, env);
+    if (!user) return json({ error: 'signed-out' }, 401);
+
+    const current = typeof body.current === 'string' ? body.current : '';
+    const next = typeof body.password === 'string' ? body.password : '';
+    if (next.length < MIN_PASSWORD) return json({ error: 'password' }, 400);
+
+    const hash = await fingerprint(env.SAVE_SALT, clientIp(request), request.headers.get('User-Agent') || '');
+    if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
+
+    const row = await env.DB
+      .prepare('SELECT pw_hash, pw_salt, pw_iter FROM users WHERE id = ?')
+      .bind(user.id)
+      .first();
+    const ok = row && sameSecret(await derivePassword(current, row.pw_salt, row.pw_iter), row.pw_hash);
+    if (!ok) {
+      await noteFail(env, hash);
+      /* Its own answer, and not the sign-in's "wrong username or password":
+         the username is not in question here — this request came in on a
+         session that already proves it — so saying so would be telling
+         somebody who is signed in that they might have the wrong name. It
+         gives nothing away that the session does not already carry. */
+      return json({ error: 'current' }, 401);
+    }
+    /* Saying so rather than reporting a change that did not happen. */
+    if (next === current) return json({ error: 'same' }, 400);
+
+    const salt = randomHex(16);
+    const iter = pwIterations(env);
+    const token = randomHex(32);
+    await env.DB.batch([
+      env.DB
+        .prepare('UPDATE users SET pw_hash = ?, pw_salt = ?, pw_iter = ? WHERE id = ?')
+        .bind(await derivePassword(next, salt, iter), salt, iter, user.id),
+      env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(user.id),
+      env.DB
+        .prepare('INSERT INTO sessions (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)')
+        .bind(await sha256Hex(token), user.id, Date.now(), Date.now() + SESSION_DAYS * 86400000)
+    ]);
+
+    return new Response(JSON.stringify({ changed: true, user: user.username }), {
+      headers: {
+        'content-type': 'application/json; charset=utf-8',
+        'cache-control': 'no-store',
+        'set-cookie': sessionCookie(token, SESSION_DAYS)
       }
     });
   }

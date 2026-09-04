@@ -1564,6 +1564,12 @@
    * forgotten password. Without one there is nothing that proves an account
    * is yours except knowing its password, so the sheet says so in as many
    * words rather than letting somebody find out later.
+   *
+   * The sheet somebody signed in lands on is their name and a short menu:
+   * their lists, the password, the address if there is none on the account
+   * yet, and the way out. Each of those is a view of its own with a way back,
+   * rather than another block stacked on the one card — see "The design
+   * rules" in the README.
    */
 
   var ACCOUNT_URL = '/api/account';
@@ -1794,12 +1800,18 @@
   }
 
   /* ------------------------------------------------------------- the sheet
-   * Four states in one card: signed in, signing in, creating, recovering.
-   * Which one is showing is a variable rather than four hidden blocks, so
-   * there is exactly one place that decides and nothing can be left over from
-   * the state before.
+   * One card, and a view inside it: signed in, signing in, creating, changing
+   * the password, putting an address on, recovering, entering a code. Which
+   * one is showing is a variable rather than seven hidden blocks, so there is
+   * exactly one place that decides and nothing can be left over from the
+   * state before.
+   *
+   * Everything that is not "here is who you are" is a step of its own with a
+   * way back to the account, rather than another field stacked on the sheet
+   * you started on: one surface asks one thing.
    */
-  var accountView = 'in';        /* 'in' | 'up' | 'me' | 'recover' | 'code' */
+  var accountView = 'in';
+  /* 'in' | 'up' | 'me' | 'password' | 'email' | 'recover' | 'code' */
   var accountBusy = false;
   var accountNote = '';
   var accountErr = '';
@@ -1822,7 +1834,13 @@
     dom.accountScrim.hidden = false;
     document.body.classList.add('has-scrim');
     renderAccount();
-    var first = dom.accountCard.querySelector('input, button');
+    /* Where the sheet is asking for something, that is where the cursor
+       goes; on the account itself it is the first row, which is the first
+       thing there to press. The close button is drawn first so it holds the
+       corner, and it is never what a sheet opens focused on. */
+    var first = dom.accountCard.querySelector('input')
+      || dom.accountCard.querySelector('.menu-row')
+      || dom.accountCard.querySelector('.ac-close');
     if (first) first.focus();
     /* A suggested name, so the sign-up sheet is not a blank box asking
        somebody to be creative before they can save a bakery. */
@@ -1874,13 +1892,15 @@
      This has to happen before anything sets the busy state, because showing
      that state re-renders the card and re-rendering builds the inputs afresh
      — so a value read afterwards is the field's default and not a word of
-     what was typed into it. The password deliberately keeps its spaces: they
-     are characters somebody chose. */
+     what was typed into it. Both passwords deliberately keep their spaces:
+     they are characters somebody chose. */
   function accountValues() {
     var pass = dom.accountCard.querySelector('#ac-pass');
+    var current = dom.accountCard.querySelector('#ac-current');
     return {
       username: accountValue('ac-user'),
       password: pass ? pass.value : '',
+      current: current ? current.value : '',
       email: accountValue('ac-email'),
       code: accountValue('ac-code')
     };
@@ -1889,7 +1909,7 @@
   function accountSubmit(labelKey, run) {
     var btn = el('button', {
       type: 'submit',
-      className: 'ac-go',
+      className: 'go',
       textContent: t(accountBusy ? 'accountWorking' : labelKey),
       disabled: accountBusy || null
     });
@@ -1897,7 +1917,7 @@
   }
 
   function accountSwitch(labelKey, view) {
-    var link = el('button', { type: 'button', className: 'ac-alt', textContent: t(labelKey) });
+    var link = el('button', { type: 'button', className: 'alt', textContent: t(labelKey) });
     link.addEventListener('click', function () { openAccount(view); });
     return link;
   }
@@ -1915,7 +1935,10 @@
     'slow-down': 'accountErrSlow',
     'email-taken': 'accountErrEmailTaken',
     'no-email': 'accountErrNoEmail',
-    'send-failed': 'accountErrSend'
+    'send-failed': 'accountErrSend',
+    current: 'accountErrCurrent',
+    same: 'accountErrSame',
+    'signed-out': 'accountErrSignedOut'
   };
 
   function accountFail(out) {
@@ -1924,6 +1947,11 @@
     renderAccount();
   }
 
+  /* One sheet, one shape. Every view is drawn in the same order — what this
+     is, what it is called, why it exists, anything that just happened, the
+     fields, the one action, the ways out — so moving between them is the
+     words changing rather than the furniture. See "The design rules" in the
+     README. */
   function renderAccount() {
     clear(dom.accountCard);
 
@@ -1940,7 +1968,13 @@
     form.addEventListener('submit', function (ev) { ev.preventDefault(); });
     dom.accountCard.appendChild(form);
 
+    /* The same word over every view, so the sheet says what it is before it
+       says which step of it you are looking at. */
+    form.appendChild(el('p', { className: 'eyebrow ac-eyebrow', textContent: t('accountOpen') }));
+
     if (accountView === 'me') return renderAccountMe(form);
+    if (accountView === 'password') return renderAccountPassword(form);
+    if (accountView === 'email') return renderAccountEmail(form);
     if (accountView === 'recover') return renderAccountRecover(form);
     if (accountView === 'code') return renderAccountCode(form);
     return renderAccountAuth(form);
@@ -1951,33 +1985,83 @@
     if (accountNote) form.appendChild(el('p', { className: 'ac-note', role: 'status', textContent: accountNote }));
   }
 
+  /* The way back up out of a step, at the top of it where a back is looked
+     for, rather than under the button where it reads as a second action. */
+  function accountBack(view) {
+    var link = accountSwitch('accountBack', view || 'me');
+    link.className = 'alt ac-back';
+    link.insertBefore(el('span', {
+      className: 'ac-back-ico',
+      'aria-hidden': 'true',
+      html: '<svg viewBox="0 0 24 24" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>'
+    }), link.firstChild);
+    return link;
+  }
+
+  /* Something that cannot be undone by pressing the same button again, said
+     at the weight of a notice rather than of a footnote: the accent colour, a
+     rule down its edge, and the same size as the words it is warning about.
+     Both places it is used — losing a forgotten password for good, and
+     turning every other device out — are that kind of thing. */
+  function accountWarn(words) {
+    return el('p', { className: 'ac-warn', role: 'note' }, [
+      el('span', { className: 'ac-warn-ico', 'aria-hidden': 'true', html:
+        '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.5 21 19.5H3z"/>' +
+        '<path d="M12 10v4"/><circle cx="12" cy="16.7" r=".9"/></svg>' }),
+      el('span', { textContent: words })
+    ]);
+  }
+
+  var AC_CHEVRON = '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>';
+  var AC_LEAVE =
+    '<svg viewBox="0 0 24 24" focusable="false">' +
+    '<path d="M14 4h5v16h-5"/><path d="M10.5 8.5 14 12l-3.5 3.5"/><path d="M14 12H5"/></svg>';
+
+  /* A row in the account's menu: the name of the thing, a line saying what it
+     is for, and a mark on the right saying it opens something.
+
+     Rows and not a stack of underlined links. Three links in a column is a
+     paragraph that has lost its sentences — nothing in it says which of them
+     is where you go next, and the one that signs you out looks exactly like
+     the one that opens your lists. A row has an edge, a target the width of
+     the card, and room for the line that says what it does. */
+  function accountRow(opts) {
+    var kids = [
+      el('span', { className: 'menu-say' }, [
+        el('span', { className: 'menu-name', textContent: opts.name }),
+        opts.why ? el('span', { className: 'menu-why', textContent: opts.why }) : null
+      ]),
+      el('span', { className: 'menu-go', 'aria-hidden': 'true', html: opts.icon || AC_CHEVRON })
+    ];
+    var row = opts.href
+      ? el('a', { className: 'menu-row', href: opts.href }, kids)
+      : el('button', { type: 'button', className: 'menu-row' + (opts.danger ? ' is-danger' : '') }, kids);
+    if (opts.on) row.addEventListener('click', opts.on);
+    return el('li', { className: 'menu-item' }, [row]);
+  }
+
   /* -------------------------------------------------- signed in already */
+
+  /* The name is the title. Whose account this is is the one thing the sheet
+     is here to say, and the rail button beside it is already wearing the same
+     name — the sheet opening on it is what joins the two. */
   function renderAccountMe(form) {
-    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountTitle') }));
-    form.appendChild(el('p', {
-      className: 'ac-who',
-      textContent: t('accountSignedIn', { name: state.account.user })
-    }));
+    form.appendChild(el('h2', { className: 'ac-title', textContent: state.account.user }));
+
+    /* Whether a forgotten password could be got back, in one line, on the
+       sheet rather than only inside the step that sets it up. It is only ever
+       drawn where the site can send mail at all; where it cannot there is
+       nothing to say and no row to press. */
+    if (state.account.email) {
+      form.appendChild(el('p', {
+        className: 'ac-state mono' + (state.account.recovery ? ' is-on' : ''),
+        textContent: t(state.account.recovery ? 'accountRecoveryOn' : 'accountRecoveryOff')
+      }));
+    }
+
     accountMessages(form);
 
-    if (state.account.email && !state.account.recovery) {
-      form.appendChild(el('p', { className: 'ac-why', textContent: t('accountEmailWhy') }));
-      form.appendChild(accountField('ac-email', 'accountEmail', 'email', { autocomplete: 'email' }));
-      var add = accountSubmit('accountSendCode');
-      add.addEventListener('click', function () {
-        if (accountBusy) return;
-        var v = accountValues();
-        accountBusy = true; accountErr = ''; renderAccount();
-        accountPost({ action: 'email-add', email: v.email }).then(function (a) {
-          accountBusy = false;
-          if (!a.ok) return accountFail(a.out);
-          openAccount('code', t('accountEmailSent'));
-        }).catch(function () { accountFail({}); });
-      });
-      form.appendChild(add);
-    } else if (state.account.recovery) {
-      form.appendChild(el('p', { className: 'ac-why', textContent: t('accountRecoveryOn') }));
-    }
+    var menu = el('ul', { className: 'menu' });
 
     /* The way into the lists, and the only one on the map. A list is a
        different kind of object from everything else here — it is somebody
@@ -1985,39 +2069,61 @@
        the pins — so it lives on its own page rather than as another sheet
        over the map. This is the door to it, filed under who you are, which is
        what a list belongs to. */
-    var lists = el('a', {
-      className: 'ac-alt',
-      href: '/lists.html',
-      textContent: t('listsYours')
-    });
-    form.appendChild(lists);
+    menu.appendChild(accountRow({
+      name: t('listsYours'),
+      why: t('accountListsWhy'),
+      href: '/lists.html'
+    }));
 
-    var out = el('button', { type: 'button', className: 'ac-alt', textContent: t('accountSignOut') });
-    out.addEventListener('click', function () {
-      accountPost({ action: 'logout' }).then(function () {
-        /* Only the person changes. Whether accounts work here at all, and
-           whether email is configured, are facts about the deployment and
-           survive somebody signing out of it — dropping `ready` would hide
-           the button that is the way back in. */
-        state.account = {
-          ready: state.account.ready,
-          user: null,
-          recovery: false,
-          email: state.account.email
-        };
-        /* The account's list goes with the account. What this browser saved
-           before signing in was claimed on the way in and is not coming back
-           here — it is on the account now, waiting for the next sign-in. */
-        state.saved = [];
-        storeSet(SAVED_KEY, '[]');
-        paintSave();
-        paintAccountButton();
-        renderFilters();
-        if (state.view === 'list') renderPanel();
-        closeAccount();
-      });
+    menu.appendChild(accountRow({
+      name: t('accountChange'),
+      why: t('accountChangeWhy'),
+      on: function () { openAccount('password'); }
+    }));
+
+    /* Only when there is something to do: an address that is already on and
+       confirmed says so in the line above instead. */
+    if (state.account.email && !state.account.recovery) {
+      menu.appendChild(accountRow({
+        name: t('accountEmailAdd'),
+        why: t('accountEmailShort'),
+        on: function () { openAccount('email'); }
+      }));
+    }
+
+    menu.appendChild(accountRow({
+      name: t('accountSignOut'),
+      danger: true,
+      icon: AC_LEAVE,
+      on: signOut
+    }));
+
+    form.appendChild(menu);
+  }
+
+  function signOut() {
+    accountPost({ action: 'logout' }).then(function () {
+      /* Only the person changes. Whether accounts work here at all, and
+         whether email is configured, are facts about the deployment and
+         survive somebody signing out of it — dropping `ready` would hide
+         the button that is the way back in. */
+      state.account = {
+        ready: state.account.ready,
+        user: null,
+        recovery: false,
+        email: state.account.email
+      };
+      /* The account's list goes with the account. What this browser saved
+         before signing in was claimed on the way in and is not coming back
+         here — it is on the account now, waiting for the next sign-in. */
+      state.saved = [];
+      storeSet(SAVED_KEY, '[]');
+      paintSave();
+      paintAccountButton();
+      renderFilters();
+      if (state.view === 'list') renderPanel();
+      closeAccount();
     });
-    form.appendChild(out);
   }
 
   /* ------------------------------------------- signing in or signing up */
@@ -2047,16 +2153,8 @@
       /* Always, whether or not an address was asked for. It says what happens
          if the password goes, which is true in every configuration of this
          site — with no email set up at all, or with a field that somebody
-         chose to skip. It is drawn as a warning rather than a footnote: it is
-         the one thing on this sheet that cannot be undone later, and it spent
-         its first version as small grey text under the button, which is where
-         notices go to be missed. */
-      form.appendChild(el('p', { className: 'ac-warn', role: 'note' }, [
-        el('span', { className: 'ac-warn-ico', 'aria-hidden': 'true', html:
-          '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.5 21 19.5H3z"/>' +
-          '<path d="M12 10v4"/><circle cx="12" cy="16.7" r=".9"/></svg>' }),
-        el('span', { textContent: t('accountNoReset') })
-      ]));
+         chose to skip. */
+      form.appendChild(accountWarn(t('accountNoReset')));
     }
 
     var go = accountSubmit(creating ? 'accountCreate' : 'accountSignIn');
@@ -2094,12 +2192,74 @@
     }
   }
 
+  /* ------------------------------------------------ changing a password
+   * The old one and the new one on one sheet, because that is what the
+   * server asks for: a sheet somebody left open is not a way to take an
+   * account off whoever owns it. The warning is the part worth reading — it
+   * turns every other device out, which is the point of doing this when a
+   * password may have got away from you, and a surprise when it has not.
+   */
+  function renderAccountPassword(form) {
+    form.appendChild(accountBack());
+    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountChange') }));
+    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountChangeWhy') }));
+    accountMessages(form);
+
+    form.appendChild(accountField('ac-current', 'accountCurrentPassword', 'password', {
+      autocomplete: 'current-password'
+    }));
+    form.appendChild(accountField('ac-pass', 'accountNewPassword', 'password', {
+      autocomplete: 'new-password'
+    }));
+    form.appendChild(accountWarn(t('accountChangeSignsOut')));
+
+    var go = accountSubmit('accountChangeGo');
+    go.addEventListener('click', function () {
+      if (accountBusy) return;
+      var v = accountValues();
+      accountBusy = true; accountErr = ''; renderAccount();
+      accountPost({ action: 'password-change', current: v.current, password: v.password })
+        .then(function (a) {
+          accountBusy = false;
+          if (!a.ok) return accountFail(a.out);
+          /* Back to the sheet it was opened from, saying what happened
+             there: the account is the same account, and this browser is
+             still signed in to it. */
+          openAccount('me', t('accountChangeDone'));
+        }).catch(function () { accountFail({}); });
+    });
+    form.appendChild(go);
+  }
+
+  /* --------------------------------------------- putting an address on */
+  function renderAccountEmail(form) {
+    form.appendChild(accountBack());
+    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountEmailAdd') }));
+    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountEmailWhy') }));
+    accountMessages(form);
+    form.appendChild(accountField('ac-email', 'accountEmailField', 'email', { autocomplete: 'email' }));
+
+    var go = accountSubmit('accountSendCode');
+    go.addEventListener('click', function () {
+      if (accountBusy) return;
+      var v = accountValues();
+      accountBusy = true; accountErr = ''; renderAccount();
+      accountPost({ action: 'email-add', email: v.email }).then(function (a) {
+        accountBusy = false;
+        if (!a.ok) return accountFail(a.out);
+        openAccount('code', t('accountEmailSent'));
+      }).catch(function () { accountFail({}); });
+    });
+    form.appendChild(go);
+  }
+
   /* ------------------------------------------------ asking for a code */
   function renderAccountRecover(form) {
+    form.appendChild(accountBack('in'));
     form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountRecoverTitle') }));
     form.appendChild(el('p', { className: 'ac-why', textContent: t('accountRecoverWhy') }));
     accountMessages(form);
-    form.appendChild(accountField('ac-email', 'accountEmail', 'email', { autocomplete: 'email' }));
+    form.appendChild(accountField('ac-email', 'accountEmailField', 'email', { autocomplete: 'email' }));
 
     var go = accountSubmit('accountSendCode');
     go.addEventListener('click', function () {
@@ -2113,12 +2273,12 @@
       }).catch(function () { accountFail({}); });
     });
     form.appendChild(go);
-    form.appendChild(accountSwitch('accountSwitchSignIn', 'in'));
   }
 
   /* --------------------------------- entering one, for either purpose */
   function renderAccountCode(form) {
     var resetting = !state.account.user;
+    form.appendChild(accountBack(resetting ? 'in' : 'me'));
     form.appendChild(el('h2', {
       className: 'ac-title',
       textContent: t(resetting ? 'accountRecoverTitle' : 'accountConfirmTitle')

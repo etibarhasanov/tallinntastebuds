@@ -120,44 +120,10 @@
 .lists-foot { margin-top: 6px; }
 .lists-count { margin-left: auto; color: var(--muted); font-size: 11.5px; letter-spacing: .04em; }
 
-/* ---------- the two buttons this page has ---------- */
-
-/* The filled one, borrowed in shape from .ac-go on the account sheet: one
-   accent-coloured action per card and never two. */
-.lists-go {
-  display: inline-block;
-  padding: 10px 18px;
-  background: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: 100px;
-  color: var(--paper);
-  font-family: var(--display);
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-}
-.lists-go:hover { background: var(--accent-lit); border-color: var(--accent-lit); }
-.lists-go[disabled] { opacity: .6; cursor: default; }
-
-.lists-alt {
-  display: inline-block;
-  padding: 10px 14px;
-  background: none;
-  border: 0;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: .02em;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-.lists-alt:hover { color: var(--ink); }
-.lists-alt.is-danger:hover { color: var(--accent); }
-
-.lists-alt[disabled] { opacity: .5; cursor: default; }
-.lists-alt[disabled]:hover { color: var(--muted); }
+/* The buttons this page presses are .go and .alt out of assets/styles.css,
+   the same two the account sheet uses. They used to be restated here as
+   .lists-go and .lists-alt, and had drifted: this page's primary action was
+   set in the display face at 14px while the map's was a mono pill. */
 
 /* The row of buttons under the card's fields, and the line that says why one
    of them is not pressable yet. */
@@ -344,7 +310,7 @@
    from the mark it belongs to when the row runs out of width. */
 .lists-keep-wrap { display: inline-flex; align-items: center; gap: 8px; }
 
-/* Built on .lists-alt — same quiet weight as Share beside it — with the mark
+/* Built on .alt — same quiet weight as Share beside it — with the mark
    in front of the word. The outline is "not kept"; the filled mark is
    "kept", which is the same language the map's own bookmark speaks. */
 .lists-keep {
@@ -728,6 +694,12 @@ body.has-scrim { overflow: hidden; }
   .lists-index-link { padding: 13px 14px 32px; }
   .lists-index-map { right: 10px; bottom: 8px; }
   .picker { padding: 20px 16px 12px; }
+  /* 16px is the smallest a field can be before iOS zooms the whole page to
+     reach it, and it never zooms back out. The map's search field has been
+     bumped here for the same reason since the day it was written; these two had
+     been missed, and this is the page with the most typing on it. */
+  .lists-input,
+  .item-input { font-size: 16px; }
 }
 
 /* ---------- print: a list, on paper ---------- */
