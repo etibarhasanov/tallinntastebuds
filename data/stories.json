@@ -29,5 +29,16 @@
       "en": "LB23 is back"
     },
     "spot": "laboratooriumi-23"
+  },
+  {
+    "id": "pohja-konn-2026-09-06",
+    "live": true,
+    "video": "pohja-konn-2026-09-06.mp4",
+    "poster": "pohja-konn-2026-09-06.jpg",
+    "from": "2026-09-06T20:39",
+    "caption": {
+      "en": "back to chess"
+    },
+    "spot": "pohja-konn"
   }
 ]
