@@ -1,7 +1,7 @@
 /* ==========================================================================
    Tallinn Tastebuds — the Google Places directory.
 
-   Loaded after assets/styles.css and only by venues.html, so everything the
+   Loaded after assets/styles.css and only by google.html, so everything the
    pages share — the tokens, .card, .eyebrow, .chip, .btn, .seg, the search
    field, the price gauge, .toast, .skip-link — is already there and none of it
    is restated. What is in this file is only what a directory has and the map

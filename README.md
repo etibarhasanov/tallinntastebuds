@@ -10,7 +10,7 @@ Being on the map is the verdict.
 A number does appear on Google's places — the ones off the Places export that
 are not on my map — and every time it does it says whose it is: "According to
 Google 4.8 from 3,041 reviews". The one page where those numbers can be sorted
-by is `/venues.html`, which is Google's directory of the city rather than mine,
+by is `/google`, which is Google's directory of the city rather than mine,
 which nothing links to. See **On "no scores, stars or rankings"** and **The
 directory**.
 
@@ -984,7 +984,7 @@ description it is**.
 If a future change wants to sort by saves, it is changing the argument of the
 site, not adding a feature. That is a decision for a person, not a patch.
 
-**And on sorting by one, which `/venues.html` does.** Google's numbers already
+**And on sorting by one, which `/google` does.** Google's numbers already
 appear on Google's places, attributed every time — that is settled above and in
 **A Google row says whose description it is**. The directory goes one step
 further: it offers "Best rated" and "Most reviewed" as orders, which is a
@@ -1460,7 +1460,7 @@ by one, and that is the rule these numbers do not touch — see **On "no scores,
 stars or rankings"** and **A Google row says whose description it is**. They are
 also still what decides which of these places are worth promoting onto the map.
 
-`/venues.html` is the one page where they are sorted by, and it is the one page
+`/google` is the one page where they are sorted by, and it is the one page
 where that is not a ranking of anything this site vouches for: it is a directory
 of Google's rows, in Google's order, and it says so. See **The directory**.
 
@@ -1507,7 +1507,7 @@ and `maps_url` — so `venuesByIds()` in `functions/api/_lib.js` selects them an
 `/api/places` does not: the picker fetches all 751 rows at once, and the
 difference is sixty kilobytes of numbers no row on that page prints.
 
-And `/venues.html`, which is the whole table rather than the part either of
+And `/google`, which is the whole table rather than the part either of
 those needs: all 751 rows in one answer, so a filter can run over them. See
 **The directory**.
 
@@ -1515,7 +1515,7 @@ those needs: all 751 rows in one answer, so a filter can run over them. See
 
 ## The directory
 
-`/venues.html` — every place in this city you can eat or drink in, searchable,
+`/google` — every place in this city you can eat or drink in, searchable,
 filterable, with a map of the matches beside the list. Seven hundred and fifty
 one of them, out of `google_venues`.
 
@@ -1527,7 +1527,7 @@ each other by a reader or by a search engine. The first paragraph on the page
 says which one it is, in ten languages, before anything else is drawn.
 
 ```
-venues.html            the page
+google.html            the page, served at /google
 assets/venues.js       ES5, one IIFE, like every other file in assets/
 assets/venues.css      only what a directory has and the map does not
 functions/api/venues.js  GET /api/venues
@@ -3129,7 +3129,7 @@ lists.html                 your lists, the ones you kept, and the one a
                            stranger reads
 assets/lists.js            all three of those; no map, no Leaflet
 assets/lists.css           only what a list page has and the map does not
-venues.html                Google's directory of the city   } unlinked and
+google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
 assets/basemap.js          the CARTO tiles, said once for every map that draws them

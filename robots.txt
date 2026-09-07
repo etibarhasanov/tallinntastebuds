@@ -32,7 +32,8 @@ Disallow: /lists.html
 # ratings on it are Google's and nothing on it has been visited. Being indexed
 # beside the pages that are the verdict is exactly what it must not be, so
 # nothing links to it and it carries its own noindex tag as well.
-Disallow: /venues.html
+# One line for both spellings: Pages serves google.html at /google as well.
+Disallow: /google
 
 # The admin page is not for anybody, crawler or otherwise. Nothing links to
 # it and it carries its own noindex tag.
