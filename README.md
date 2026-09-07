@@ -834,24 +834,7 @@ already saved goes with you. Press the bookmark again to take it back. The
 count hides at zero — a "0" under a bookmark reads as a verdict on the
 restaurant rather than as nobody having pressed it yet.
 
-### The Saved chip, and why one bookmark does both jobs
-
-### Where the account lives, and when it is offered
-
-The account button is the **top button on the left rail** — above Surprise me,
-the radio, the colour swatch and the locate button, because it is the only one
-whose answer outlasts the visit, and because once somebody is signed in it
-wears their name and so tells them whose list the map is holding. It is
-**hidden until `/api/account` says the database behind it is bound**, so on a
-deployment without the bindings there is no sign-up sheet to find. If you
-cannot see it, that is why.
-
-Nobody is expected to find it on their own, though. A save made while signed
-out brings up a card offering an account, once per visit and never again for a
-fortnight after it is turned down. That is the moment worth asking at: there
-is now something to lose, and the person has just shown what it is. Asking
-before that would be a sign-up wall on a map nobody has decided about yet,
-which is the thing this site does not do.
+### Where your own saves live, and why one bookmark does both jobs
 
 The count is on the list rows too, not only inside an open place: a small
 bookmark and a number beside the price, so a scroll down seventy-four rows shows
@@ -859,22 +842,34 @@ which ones other people have kept without opening any of them. Rows at zero
 show nothing — a "0" against a restaurant reads as a verdict rather than as
 nobody having got there yet.
 
-Press one bookmark and a **Saved** chip appears at the front of the filter row,
-directly after All. Press it and the map narrows to the places you have
-saved; the panel names the group **Places I saved** and shows them newest
+Press one bookmark and **Places I saved** appears in the account sheet, at the
+top of it, above your lists. Press that and the map narrows to the places you
+have saved; the panel names the group **Places I saved** and shows them newest
 first — the order you pressed them in is information, and the alphabet throws
-it away.
+it away. Pressing **All** on the filter row hands the whole map back, the way
+it does out of somebody's list.
 
-That chip is the reason this site has no separate "save" button. A map you can
+It used to be a chip on the filter row, second in it, between All and
+Discount, and it was in the wrong place. That row answers one question — what
+kind of food — and a bookmark is not a kind of food; sitting among the types
+it read as a category of the map rather than as something of yours, which is
+exactly backwards. The marks are the one thing on this page that somebody put
+there themselves, so they live under whoever you are, next to the lists, which
+are the other thing.
+
+That door is the reason this site has no separate "save" button. A map you can
 narrow to your own places is a saved list by another name, and one bookmark is a
 better thing to ask of somebody than a bookmark and a bookmark that mean almost
 the same thing.
 
-Signed out, the chip is per browser: the list is kept on **this device**, so
-the phone's list and the laptop's list are different lists and clearing the
-browser clears it. What that does *not* lose is the save itself — that is a
-row in the database, and it keeps counting whatever happens here. Losing the
-local list costs you the view of your own saves, not the marks.
+Signed out, the list is per browser: it is kept on **this device**, so the
+phone's list and the laptop's list are different lists and clearing the browser
+clears it. The account sheet shows the row all the same — signed out is where
+most of the saves on this site are, and it sits directly under the sentence
+offering to keep them somewhere better. What clearing the browser does *not*
+lose is the save itself — that is a row in the database, and it keeps counting
+whatever happens here. Losing the local list costs you the view of your own
+saves, not the marks.
 
 Signing in is what makes the list follow a person instead of a device: the
 account's list replaces the browser's, it is the same list on the next phone,
@@ -883,12 +878,33 @@ rather than left behind. That is the whole of what an account buys, and it is
 offered rather than required — see **Where the account lives, and when it is
 offered**.
 
-The chip is drawn only when there is at least one bookmark, and it goes again
+The row is drawn only when there is at least one bookmark, and it goes again
 with the last unsave. If the filter is on when the list empties, the filter
-comes off with the chip — a map narrowed by a chip that is no longer on the
-row is a map with no way back. `?type=saved` is deliberately never written to
-the address bar: a link filtered by one person's saves is an empty map for
-everybody else.
+comes off with the row — a map narrowed by something nothing on the screen
+names any more is a map with no way back. `?type=saved` is deliberately never
+written to the address bar: a link filtered by one person's saves is an empty
+map for everybody else.
+
+### Where the account lives, and when it is offered
+
+The account button is the **top button on the left rail** — above Surprise me,
+the radio, the colour swatch and the locate button, because it is the only one
+whose answer outlasts the visit, and because once somebody is signed in it
+wears their name and so tells them whose list the map is holding. It is
+**hidden until `/api/account` says the database behind it is bound**, so on a
+deployment without the bindings there is no sign-up sheet to find — with one
+exception, which is a browser that has saved something. Saving needs no
+Function and no database, and since the marks moved off the filter row this
+button is the only way back to them, so it is drawn for them regardless. What
+is behind it in that state is the one row and no form: a sign-in that could
+only fail is worse than no sign-in at all.
+
+Nobody is expected to find it on their own, though. A save made while signed
+out brings up a card offering an account, once per visit and never again for a
+fortnight after it is turned down. That is the moment worth asking at: there
+is now something to lose, and the person has just shown what it is. Asking
+before that would be a sign-up wall on a map nobody has decided about yet,
+which is the thing this site does not do.
 
 ### Why there is no separate "like"
 
