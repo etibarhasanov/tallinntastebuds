@@ -1,0 +1,439 @@
+/* ==========================================================================
+   Tallinn Tastebuds — the Google Places directory.
+
+   Loaded after assets/styles.css and only by venues.html, so everything the
+   pages share — the tokens, .card, .eyebrow, .chip, .btn, .seg, the search
+   field, the price gauge, .toast, .skip-link — is already there and none of it
+   is restated. What is in this file is only what a directory has and the map
+   does not: a filter bar, a column of results, and a map beside them rather
+   than under everything.
+
+   Nothing here names a colour. Both styles restate every token in
+   assets/styles.css, so a swatch pressed on the map changes this page too —
+   including the dots, which read --accent out of the computed style rather
+   than carrying a hex of their own. See paintDots() in assets/venues.js.
+
+   The one thing it has to undo, same as the lists page: the map sets
+   `overflow: hidden` on the body because a map fills the window and nothing
+   behind it scrolls. A directory is a document. It scrolls.
+   ========================================================================== */
+
+.venues-body {
+  overflow: auto;
+  overflow-x: hidden;
+  min-height: 100%;
+  background: var(--wash);
+}
+
+/* ---------- the header ----------
+
+   The three media queries below all break at 899px, which is where a 340px
+   column of cards stops crowding the map beside it: narrower than that and the
+   map is a strip neither half of the page is any use in. */
+
+.venues-brand {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: calc(18px + var(--safe-t)) max(var(--gap), var(--safe-r)) 14px max(var(--gap), var(--safe-l));
+}
+
+.venues-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+.venues-mark {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: var(--lift);
+}
+.venues-wordmark {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+.venues-home:hover .venues-wordmark { color: var(--accent); }
+
+.venues-intro { margin-top: 14px; max-width: 62ch; }
+
+.venues-title {
+  font-family: var(--display);
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -.02em;
+  margin: 2px 0 6px;
+}
+
+/* The paragraph that says this is not the map. Set in the reading face rather
+   than the display one and given the full measure, because it is the only
+   thing on the page anybody has to actually read. */
+.venues-lead {
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ---------- the filters ---------- */
+
+/* Pinned, because the results are seven hundred long and the controls are what
+   the page is for: scrolling past them and having to come back up to change a
+   filter is the one thing a directory must not do.
+
+   How tall it ends up is a question for the browser — five controls, ten
+   languages, and a phone that scrolls them sideways — so nothing here guesses
+   at it. assets/venues.js measures it into --venues-bar, and the map below
+   reads that rather than a number somebody would have to keep in step. */
+.venues-bar {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background: var(--wash);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.venues-filters {
+  padding: 12px max(var(--gap), var(--safe-r)) 12px max(var(--gap), var(--safe-l));
+}
+
+.venues-filters .search {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.venues-controls {
+  max-width: 1320px;
+  margin: 10px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* A select and the word above it, in one pill the same height as the chips
+   beside it, so the row reads as one row of controls rather than as a chip
+   and then a form. */
+.venues-pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px 0 12px;
+  height: 34px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+.venues-pick:focus-within { border-color: var(--accent); }
+
+.venues-pick-label {
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.venues-select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  /* Room on the right for the arrow drawn behind it, which is a background
+     rather than a glyph so it cannot be selected with the text. */
+  padding: 0 18px 0 0;
+  max-width: 44vw;
+  cursor: pointer;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 7px center, right 3px center;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+.venues-select:focus { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* The one chip in the row that toggles rather than picks. It wears the same
+   pressed state every chip on the site does; only the clock face is new. */
+.venues-toggle { gap: 6px; }
+.venues-toggle-ico {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.venues-clear { margin-left: auto; }
+.venues-clear[hidden] { display: none; }
+
+/* On a phone the five controls wrap into four rows, and a sticky bar four rows
+   tall eats half the screen the results are supposed to be in. So they stop
+   wrapping and scroll sideways instead — which is what Google's own filter
+   chips do on a phone, and for the same reason. The bar is then two rows at
+   any width and can stay pinned. */
+@media (max-width: 899px) {
+  .venues-controls {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* The shadow under each pill is clipped by the scroller otherwise. */
+    padding: 2px 0;
+  }
+  .venues-controls::-webkit-scrollbar { display: none; }
+  .venues-controls > * { flex: 0 0 auto; }
+  /* Last in the row rather than pushed to an edge that scrolls away. */
+  .venues-clear { margin-left: 0; }
+}
+
+/* Drawn at every width and taken away as soon as both halves fit, which is the
+   width at which there is nothing to switch between.
+
+   .seg gives it the row and the clipped corners; the surface under it is this
+   file's, because the only other pair on the site sits on the map and is
+   frosted so the city shows through. There is no map under this one. */
+.venues-view {
+  display: none;
+  width: fit-content;
+  margin: 0 max(var(--gap), var(--safe-r)) 12px max(var(--gap), var(--safe-l));
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+@media (max-width: 899px) {
+  .venues-view { display: flex; }
+}
+
+/* ---------- the split: results down one side, the map down the other ---- */
+
+.venues-split {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 max(var(--gap), var(--safe-r)) calc(32px + var(--safe-b)) max(var(--gap), var(--safe-l));
+  display: grid;
+  grid-template-columns: minmax(340px, 440px) 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.venues-results { padding-top: 16px; }
+.venues-results:focus { outline: none; }
+
+.venues-count {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.venues-list { display: grid; gap: 10px; }
+
+/* .btn is a shape rather than a surface — every one of them on the map has a
+   pane of its own around it — so the one on this page brings its own. */
+.venues-more {
+  margin-top: 12px;
+  width: 100%;
+  height: 42px;
+  justify-content: center;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+.venues-more[hidden] { display: none; }
+
+.venues-source {
+  margin: 20px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* The map holds its own column and stays put while the list scrolls past it,
+   which is the whole reason it is worth having beside the list rather than
+   above it. Its height is the window less the pinned bar. */
+.venues-map-wrap {
+  position: sticky;
+  top: var(--venues-bar, 108px);
+  height: calc(100vh - var(--venues-bar, 108px) - 20px);
+  padding-top: 16px;
+}
+
+#venues-map {
+  height: 100%;
+  border-radius: var(--radius-soft);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow);
+  background: var(--paper);
+}
+
+/* Leaflet writes its own colours into the attribution and the zoom buttons,
+   and on the dark style they are a white box in the corner of a dark map. */
+#venues-map .leaflet-control-attribution {
+  background: var(--attrib-bg);
+  color: var(--muted);
+}
+#venues-map .leaflet-control-attribution a { color: var(--accent); }
+#venues-map .leaflet-bar a {
+  background: var(--paper);
+  color: var(--ink);
+  border-bottom-color: var(--hairline);
+}
+#venues-map .leaflet-bar a:hover { background: var(--wash); }
+#venues-map .leaflet-tooltip {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--lift);
+  font-family: var(--display);
+  font-size: 12px;
+  font-weight: 600;
+}
+#venues-map .leaflet-tooltip-top::before { border-top-color: var(--hairline); }
+
+@media (max-width: 899px) {
+  .venues-split { grid-template-columns: 1fr; }
+  /* One at a time under the breakpoint: the button in .venues-view puts the
+     class on the body and this is the whole of what it means. */
+  .venues-map-wrap { display: none; }
+  .venues-on-map .venues-map-wrap {
+    display: block;
+    position: static;
+    /* The window less the bar it is scrolled up under — showMap() in
+       assets/venues.js is what does the scrolling. */
+    height: calc(100vh - var(--venues-bar, 170px));
+    padding-top: 0;
+  }
+  .venues-on-map .venues-results { display: none; }
+}
+
+/* ---------- one place ---------- */
+
+.venue {
+  padding: 14px 16px;
+  scroll-margin-top: 120px;
+}
+
+/* Lit because its dot on the map was pressed, or because pressing its name
+   put the map on it. The accent edge is the only thing that says which of
+   seven hundred dots is this card. */
+.venue.is-lit { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), var(--shadow); }
+
+/* Shut for good. Everything greys down together — the price gauge already
+   knows how, through .is-closed in assets/styles.css. */
+.venue.is-closed { opacity: .72; }
+
+/* The type is on the heading and not on the button inside it: assets/
+   styles.css gives every button `font: inherit`, so the one below wears this
+   without restating a word of it. */
+.venue-name {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  line-height: 1.3;
+}
+
+/* Pressing it lights the place on the map rather than going anywhere, so it
+   must not read as a link. Full width and ranged left, which is the whole of
+   what it needs: the rest of a button's chrome is already reset. */
+.venue-pick {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+.venue-pick:hover { color: var(--accent); }
+.venue-pick:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+.venue-facts {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 0;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.venue-score { font-weight: 500; }
+.venue-star { color: var(--accent); }
+.venue-reviews { color: var(--muted); }
+/* The gauge sits in a row of numbers, so it gets the gap and nothing else. */
+.venue-facts .price { margin-left: 2px; }
+
+.venue-kitchens {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.venue-when {
+  margin: 6px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.venue-when.is-open { color: var(--accent); }
+.venue-when.is-unknown { font-weight: 400; font-style: italic; }
+
+.venue-where {
+  margin: 4px 0 0;
+  font-family: var(--body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* How far away, when the list is sorted by that. In the mono face because it
+   is a measurement, and after the street rather than before it. */
+.venue-away {
+  margin-left: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.venue-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 0;
+}
+
+.venue-link {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.venue-link:hover { color: var(--ink); border-color: var(--muted); }
+
+/* The one link on the card that is not Google's: this place is also on my map,
+   and behind it there is a write-up. It wears the accent because on this page
+   that is the rare thing. */
+.venue-mine { color: var(--accent); border-color: var(--accent); }
+.venue-mine:hover { color: var(--paper); background: var(--accent); border-color: var(--accent); }
+
+.venue-google { margin-left: auto; }

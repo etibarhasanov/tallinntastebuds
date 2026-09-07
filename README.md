@@ -4,8 +4,13 @@ A full-screen map of the places in Tallinn I have eaten at and approved for
 [@tallinntastebuds](https://www.instagram.com/tallinntastebuds/). Tap a pin,
 read the write-up, watch the reel.
 
-There are no scores, stars or rankings anywhere, and there never will be.
+There are no scores, stars or rankings on the map, and there never will be.
 Being on the map is the verdict.
+
+There is exactly one page that shows a number out of five, and it is not the
+map: `/venues.html` is Google's own directory of the city, nothing links to
+it, and every rating on it says on the page that it is Google's. See **The
+directory**.
 
 Static files, one small Function, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
@@ -42,6 +47,7 @@ completely with the database switched off.
 - [Saves](#saves)
 - [Accounts](#accounts)
 - [Google venues](#google-venues)
+- [The directory](#the-directory)
 - [Lists](#lists)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
@@ -965,6 +971,21 @@ set out.
 If a future change wants to sort by saves, it is changing the argument of the
 site, not adding a feature. That is a decision for a person, not a patch.
 
+**Where the one exception is, and why it is not one.** `/venues.html` shows a
+rating out of five, a review count and a "Best rated" order, and all three are
+Google's — see **The directory**. The rule above is about a verdict on a
+kitchen, and this site's verdict is the map: seventy-four places somebody ate
+at, no numbers on any of them. The directory is the opposite kind of object. It
+is a mirror of what Google says about seven hundred places nobody here has been
+to, it says so in its first paragraph, it is `noindex` and nothing on the site
+links to it. Hiding Google's numbers on a page that *is* Google's description
+would not be principled; it would be a directory pretending to be a
+recommendation, which is the thing this rule exists to stop.
+
+The line it must not cross is the map. A rating from that table must never be
+drawn on a pin, in the panel, or anywhere in the list on the front page, and
+nothing on the map may ever be ordered by one.
+
 ### How unique a save actually is
 
 Be clear-eyed about this: **no save here is proof of a person.** There is no
@@ -1409,9 +1430,11 @@ They keep Google's own names, `latitude` and `longitude` included, even though
 the rest of the site says `lat` and `lng`. The contract of that table is "the
 export, in SQL", and a contract with exceptions is one you have to look up.
 
-`rating` and `reviews` are stored and never shown. There are no scores on this
-map and there never will be — see **On "no scores, stars or rankings"**. They
-are here to help decide which places are worth promoting, and for nothing else.
+`rating` and `reviews` never reach the map. There are no scores on it and there
+never will be — see **On "no scores, stars or rankings"**. They are read in two
+places and neither is the map: deciding which places are worth promoting, and
+`/venues.html`, which is Google's own directory and draws them as Google's. See
+**The directory**.
 
 ### Re-running it is safe
 
@@ -1448,7 +1471,148 @@ from**.
 A row out of this table brings `category`, `cuisine`, `tags` and `price` with
 it, turned into the map's own vocabulary on the way out and drawn under the
 name with Google's name on it — see **A Google row says whose description it
-is**. `rating` and `reviews` do not travel, here or anywhere.
+is**. `rating` and `reviews` do not travel through this route.
+
+And `/venues.html`, which is the whole table rather than the part a picker
+needs. It asks `/api/venues`, and that is the one route where the rating, the
+review count and the week's opening hours do travel. See **The directory**.
+
+---
+
+## The directory
+
+`/venues.html` — every place in this city you can eat or drink in, searchable,
+filterable, with a map of the matches beside the list. Seven hundred and fifty
+one of them, out of `google_venues`.
+
+**Nothing links to it.** Not the map, not the lists page, not the sitemap. It
+carries `noindex, nofollow` and `robots.txt` disallows it. That is deliberate
+and it is the price of the page existing at all: it is Google's description of
+Tallinn and this site is one person's, and the two must not be mistaken for
+each other by a reader or by a search engine. The first paragraph on the page
+says which one it is, in ten languages, before anything else is drawn.
+
+```
+venues.html            the page
+assets/venues.js       ES5, one IIFE, like every other file in assets/
+assets/venues.css      only what a directory has and the map does not
+functions/api/venues.js  GET /api/venues
+data/cuisines.json     37 cuisine labels in ten languages
+```
+
+### What it shows
+
+A card per place: the name, Google's rating and review count, the price band as
+the map's own four-euro gauge, what it cooks, whether it is open right now, the
+street, and a row of links — Call, Website, Directions, Open in Google Maps.
+Thirty-two of them carry one more, **On the map**, which is the door to a
+write-up: those are the places that are on `data/restaurants.json` as well, and
+on this page that is the rarest and most interesting thing a row can say.
+
+The forty-five places Google calls temporarily closed are in the list and
+marked, never dropped and never first. A directory that quietly omitted them
+would have somebody walking to one to find out.
+
+### The filters
+
+Search, and five controls: **Open now**, **Cuisine**, **Rating**, **Price** and
+the order — best rated, most reviewed, A–Z, or nearest to where you are
+standing, which is the one that has to ask permission and the one that reverts
+rather than sit on an order it cannot produce.
+
+Everything but the last is in the address bar, so a narrowed directory is a
+link somebody can send. `?sort=near` deliberately is not: it means "nearest to
+where I am", which is nowhere for whoever the link was sent to.
+
+### Open now is asked of Tallinn's clock
+
+Not the reader's. Somebody looking this up from Lisbon at nine in the evening
+is asking what is open in Tallinn, where it is eleven, and answering in their
+own timezone would be wrong in the one way they could not spot. Same
+`Europe/Tallinn` reading `assets/app.js` uses for story windows, with the same
+fallback to Estonia's own rule when a browser has no tzdata.
+
+The endpoint parses Google's one-line week — `Mon 11:00-22:00; Tue closed; …` —
+into seven days of minutes past midnight before it sends it. Two reasons, and
+the first is the one that decided it: that string is English, and printing
+"Mon" at a Ukrainian reader is the thing this codebase refuses to do. The
+second is that "is it open now" becomes a comparison rather than a parser
+shipped to every visitor. A day is an array of `[open, close]` pairs — empty
+when it is shut, more than one pair when it closes for the afternoon, and a
+close earlier than its open runs past midnight, which 683 of the week-days in
+the export do.
+
+`null` rather than seven empty days when Google gave no hours at all. Fifty-two
+rows have none, and "we do not know" and "shut all week" are different
+sentences.
+
+### Cuisines, in ten languages
+
+Google files these places as "Sushi Restaurant" and "Middle Eastern", in
+English. None of that reaches the page. `KITCHENS` in `functions/api/venues.js`
+matches the category, cuisine and leftover tags as one string and answers with
+ids; `data/cuisines.json` and `data/taxonomy.json` say those ids in ten
+languages between them.
+
+The two label files are deliberately disjoint. `taxonomy.json` already carries
+`asian`, `vegan`, `bakery`, `coffee`, `pub` and `fine-dining` for the map's own
+chips, so `cuisines.json` holds only the thirty-seven the export needs on top
+of them — copying the six across would be six translations to keep in step with
+another six. It is a file of its own rather than a second array in
+`taxonomy.json` because the map downloads that one and would be carrying nine
+kilobytes it never reads.
+
+Forty-three ids, and every one of them matches at least one row of the export as
+it stands. `tools/validate.mjs` fails the build if a pattern stops matching
+anything, if an id has no label, or if a label has no pattern. That standard is
+why **european** is not in the table: Google hangs it on ninety-five rows as the
+parent of Italian, French and Greek, so a chip for it would return mostly
+pizzerias while saying nothing a more exact chip does not.
+
+Two hundred and thirteen places get no cuisine at all, because Google says only
+"Restaurant" about them. No chip is the truthful answer there rather than a gap.
+
+### One answer, cached, and the page does the narrowing
+
+`/api/venues` takes no query parameters. The whole roll goes out in one response
+with five minutes on it, exactly as `/api/places` does, and the browser filters
+it. That is not laziness about SQL: the page draws a map of every match beside
+the list, so it needs every matching pin whatever the filter says, and "open
+now" is a question about a week of opening hours rather than something a `WHERE`
+clause can answer. A filtered endpoint would mean a round trip per keystroke to
+hand back most of the same rows.
+
+The answer is about 265 kB, which is 60 kB on the wire. One rule keeps it
+there: **a field with nothing in it is left out** rather than sent as `""`,
+`null` or `false`. `maps_url` is not sent at all — the page builds Google's own
+URL for a place out of the key it already has, which is forty kilobytes saved
+and the same link.
+
+### The dots are not the map's pins
+
+Seven hundred of the map's markers would be seven hundred elements and a page
+that stops scrolling. These are `L.circleMarker` on the canvas renderer, one
+path each, and the whole export draws in a frame. They read `--accent` out of
+the computed style rather than carrying a hex, so pressing a swatch on the map
+changes this page too.
+
+Pressing a card lights its dot and moves the map to it; pressing a dot lights
+its card and scrolls the list to it — growing the list first if the card has
+not been built yet, because the list arrives a screenful at a time and the map
+has always shown the whole match.
+
+### On a phone
+
+The list and the map cannot share a phone screen and both be useful, so one is
+shown at a time and a switch in the pinned bar swaps them. The filter controls
+stop wrapping and scroll sideways instead, which is what Google's own chips do
+and for the same reason: a bar four rows tall eats half the screen the results
+are supposed to be in.
+
+How tall that bar ends up is a question for the browser — five controls, ten
+languages, a switch that is only drawn under the breakpoint — so nothing
+guesses at it. `assets/venues.js` measures it into `--venues-bar` and the
+stylesheet reads that.
 
 ---
 
@@ -2817,6 +2981,11 @@ to read and write first.
   `lat`/`lng`
 - a `type` used in `restaurants.json` that is not in `taxonomy.json`
 - a taxonomy type missing a label in any language
+- a cuisine in `data/cuisines.json` missing a label in any language, or one
+  claiming an id `taxonomy.json` already uses
+- a `KITCHENS` pattern in `functions/api/venues.js` that no longer matches a
+  single row of the Google Places export, an id nothing can say in ten
+  languages, or a label no pattern can ever produce — see **The directory**
 - a UI string present in one language but missing in another
 - a string the site asks for — a `data-i18n` key in the markup, a `t('key')`
   in a script — that is in no language of `data/ui.json` at all, which is how
@@ -2873,6 +3042,7 @@ functions/api/account.js   sign up, sign in, optional email recovery
 functions/api/lists.js     somebody else's top ten: make one, fill it, share
                            it, keep somebody else's, add a place nobody has
 functions/api/places.js    the roll the picker searches: the map plus the export
+functions/api/venues.js    the Google Places directory, whole and unmerged
 functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
 functions/list/[id].js     /list/<id> — the page a shared link opens
@@ -2880,6 +3050,9 @@ lists.html                 your lists, the ones you kept, and the one a
                            stranger reads
 assets/lists.js            all three of those; no map, no Leaflet
 assets/lists.css           only what a list page has and the map does not
+venues.html                Google's directory of the city   } unlinked and
+assets/venues.js           search, five filters, four orders } noindex
+assets/venues.css          only what a directory has and the map does not
 db/schema.sql              the tables those Functions talk to
 wrangler.toml              the D1 bindings, one per environment (secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are
@@ -2899,6 +3072,8 @@ exports/tallinn_restaurants.csv    751 Tallinn venues out of Google Places
 exports/README.md          what was cleaned out of the raw export, and why
 db/google-venues.sql       GENERATED — loads that export into D1
 data/taxonomy.json         the controlled vocabulary of types
+data/cuisines.json         the 37 cuisines only the directory needs, in ten
+                           languages — taxonomy.json holds the other six
 data/ui.json               every interface string, in every language
 data/deals.json            the discounts, and which of them are live
 data/stories.json          the stories, when each goes up and when it goes away

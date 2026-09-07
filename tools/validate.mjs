@@ -18,6 +18,10 @@
  *   - a db/google-venues.sql that is out of step with the Google Places export
  *     it is generated from
  *   - a taxonomy type missing a label in any language
+ *   - a cuisine in data/cuisines.json missing a label in any language, or one
+ *     the directory's KITCHENS table cannot produce
+ *   - a KITCHENS pattern that no longer matches a single row of the Google
+ *     Places export, or one whose id nothing can say in ten languages
  *   - a UI string present in one language but missing in another
  *   - a string the site asks for — a data-i18n key in the markup, a t('key')
  *     in a script — that is in no language of data/ui.json at all
@@ -52,7 +56,12 @@ import { dirname, join, resolve } from 'node:path';
 
 import { stale as staleStamps } from './stamp.mjs';
 import { stale as staleCatalogue } from './places.mjs';
-import { stale as staleGoogleVenues } from './googlevenues.mjs';
+import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
+/* The directory's own vocabulary. It is a table in the endpoint rather than a
+   file, the way VENUE_TYPES is, and the checks below are what keep it honest:
+   every id has a label in ten languages, and every pattern still matches
+   something in the export it was measured against. */
+import { KITCHENS } from '../functions/api/venues.js';
 import { STORY_HOURS, HOUR_MS, storyWindow, storyPhase } from './clock.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -199,6 +208,90 @@ if (taxonomy !== null) {
         }
       }
     });
+  }
+}
+
+/* ---------------------------------------------------------- cuisines.json
+ * The directory at /venues.html files each of Google's 751 places under the
+ * cuisines it looks like it cooks, and says those words in ten languages. Two
+ * files hold the labels and they are meant to be disjoint: taxonomy.json above
+ * already says asian, vegan, bakery, coffee, pub and fine-dining for the map's
+ * own chips, and this one carries the thirty-seven the export needs on top of
+ * them. Copying the six across would be six translations to keep in step with
+ * another six, so the page reads both files instead — see label() in
+ * assets/venues.js.
+ *
+ * Which ids exist at all is decided by KITCHENS in functions/api/venues.js, so
+ * the three checks here are the three ways the two halves can part company: an
+ * id nothing can say, a label nothing can reach, and a name in both files.
+ */
+
+const cuisines = readJSON('data/cuisines.json');
+const cuisineIds = new Set();
+
+if (cuisines !== null) {
+  if (!isPlainObject(cuisines) || !Array.isArray(cuisines.cuisines)) {
+    fail('data/cuisines.json', 'must be an object with a "cuisines" array');
+  } else {
+    cuisines.cuisines.forEach((cuisine, i) => {
+      const where = `data/cuisines.json → cuisines[${i}]`;
+      if (!isPlainObject(cuisine)) { fail(where, 'must be an object'); return; }
+      if (!isNonEmptyString(cuisine.id)) { fail(where, 'has no "id"'); return; }
+      if (!SLUG.test(cuisine.id)) fail(where, `id "${cuisine.id}" is not a lowercase slug`);
+      if (cuisineIds.has(cuisine.id)) fail(where, `id "${cuisine.id}" is used twice`);
+      if (typeIds.has(cuisine.id)) {
+        fail(where, `id "${cuisine.id}" is already a type in data/taxonomy.json — the two files hold different ids, and the page reads whichever has one`);
+      }
+      cuisineIds.add(cuisine.id);
+
+      for (const lang of languages) {
+        if (!isNonEmptyString(cuisine[lang])) {
+          fail(where, `cuisine "${cuisine.id}" has no "${lang}" label`);
+        }
+      }
+      for (const key of Object.keys(cuisine)) {
+        if (key !== 'id' && !languages.includes(key)) {
+          warn(where, `cuisine "${cuisine.id}" has an extra key "${key}" that is not a language in ui.json`);
+        }
+      }
+    });
+  }
+}
+
+/* Every id the endpoint can hand the page has to be a word somebody can read,
+   and every label has to be an id the endpoint can hand it. A cuisine only one
+   side knows about is a chip that says nothing or a translation nobody sees. */
+const kitchenIds = new Set(KITCHENS.map(([id]) => id));
+for (const id of kitchenIds) {
+  if (!cuisineIds.has(id) && !typeIds.has(id)) {
+    fail('functions/api/venues.js', `KITCHENS has "${id}", which is in neither data/cuisines.json nor data/taxonomy.json — the directory would have nothing to call it`);
+  }
+}
+for (const id of cuisineIds) {
+  if (!kitchenIds.has(id)) {
+    fail('data/cuisines.json', `cuisine "${id}" is in no KITCHENS pattern, so nothing can ever be filed under it`);
+  }
+}
+
+/* And the patterns themselves, against the export they were measured on. A
+   word that has stopped matching anything is a line the next person has to
+   work out the intent of — the same standard VENUE_TYPES in
+   functions/api/_lib.js is held to, and the reason "european" is not in the
+   table at all. */
+{
+  const csv = join(ROOT, 'exports', 'tallinn_restaurants.csv');
+  if (existsSync(csv)) {
+    const rows = parseCsv(readFileSync(csv, 'utf8'));
+    const head = rows[0] || [];
+    const at = (name) => head.indexOf(name);
+    const said = rows.slice(1).map((row) =>
+      [row[at('category')], row[at('cuisine')], row[at('tags')]].join(' ').toLowerCase());
+
+    for (const [id, pattern] of KITCHENS) {
+      if (!said.some((text) => pattern.test(text))) {
+        fail('functions/api/venues.js', `the KITCHENS pattern for "${id}" matches nothing in the Google Places export any more`);
+      }
+    }
   }
 }
 
