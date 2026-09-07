@@ -18,11 +18,13 @@
  * rather than whenever it felt like it, and the part that actually cleans up
  * afterwards.
  *
- * Coming down is where the work is. A photograph posted as a story was taken
- * at a place on this map, and when its day and a half is over the picture is
- * still a good picture — so it moves into `photos/<spot>/`, gets listed on the
- * place, and the story entry and the file in `stories/` go away. The story
- * expires; the photograph does not.
+ * Coming down is where the work is. A story is shot at a place on this map,
+ * and when its day and a half is over the picture in it is still a good
+ * picture — the photograph a photo story is, or the poster frame a video was
+ * watched from. So that file moves into `photos/<spot>/` and is listed on the
+ * place: a photo story goes with it, entry and all, and a video is switched
+ * off and left in `stories/` for somebody to decide about. The story expires;
+ * the photograph does not.
  *
  * Zero dependencies, on purpose. Same rule as the validator.
  */
@@ -194,7 +196,7 @@ function schedule(args, stories) {
   console.log(`Queued "${id}".`);
   console.log(`  up      ${human(w.from)}`);
   console.log(`  down    ${human(w.until)}${w.explicit ? '' : `  (${STORY_HOURS} hours later)`}`);
-  if (spot) console.log(`  place   ${spot}${entry.photo ? ` — the picture moves into photos/${spot}/ when it is over` : ''}`);
+  if (spot) console.log(`  place   ${spot} — the ${entry.photo ? 'picture' : 'poster frame'} moves into photos/${spot}/ when it is over`);
   if (!entry.caption) console.log('  Write a "caption" in data/stories.json before it goes up.');
 }
 
@@ -219,28 +221,53 @@ function tick(stories, { dry }) {
     if (storyPhase(story, now) !== 'over') { kept.push(story); continue; }
     const w = storyWindow(story);
 
-    /* A photograph of a place goes and lives on that place. This is the whole
-       point of posting one here rather than somewhere that forgets it. */
-    const archive = story.photo && story.spot ? archivePhoto(story, places, dry) : null;
+    /* The picture outlives the story. A photograph is the story itself; a
+       video's poster frame is the still it was watched from. Either one is a
+       photograph of the place it was taken at, so either one goes and lives
+       on that place — which is the whole point of posting here rather than
+       somewhere that forgets it. A file that has already gone is nothing to
+       file and no reason to hold anything up, so it is asked about here
+       rather than inside. */
+    const picture = story.photo || story.poster;
+    const archive = picture && story.spot && existsSync(join(STORIES, picture))
+      ? archivePhoto(story.spot, picture, places, dry)
+      : null;
 
-    if (archive && archive.ok) {
-      notes.push(`${story.id}: ran out ${human(w.until)} — photo filed as photos/${story.spot}/${archive.name}, entry and file removed`);
+    /* A refusal is something for a person to fix, so the story is left
+       exactly as it is: it stays in the OVER bucket where `node
+       tools/stories.mjs` keeps saying so, and the next tick tries again.
+       Switching it off here would file the picture nowhere and stop asking. */
+    if (archive && !archive.ok) {
+      notes.push(`${story.id}: ${archive.why}`);
+      kept.push(story);
+      continue;
+    }
+
+    if (archive) {
       filed.push(`${story.spot}/${archive.name}`);
       placesChanged = true;
-      storiesChanged = true;
-      continue;                       /* the entry goes with the file */
     }
-    if (archive && !archive.ok) notes.push(`${story.id}: ${archive.why}`);
 
-    /* Everything else is switched off and left alone. A video is somebody's
-       work and deleting it is somebody's decision, and the validator already
-       says, gently, that the file is no longer named by anything. */
-    if (story.live === true) {
-      notes.push(`${story.id}: ran out ${human(w.until)} — switched off, stories/${story.video || story.photo} is yours to delete`);
-      retired.push(story.id);
-      if (!dry) story.live = false;
+    /* A photograph story *is* the picture, so once that has moved there is
+       nothing left of it: the entry goes with the file. */
+    if (archive && story.photo) {
+      notes.push(`${story.id}: ran out ${human(w.until)} — photo filed as photos/${story.spot}/${archive.name}, entry and file removed`);
       storiesChanged = true;
+      continue;
     }
+
+    /* A video is switched off and left alone: it is somebody's work and
+       deleting it is somebody's decision, and the validator already says,
+       gently, that the file is no longer named by anything. Its poster has
+       moved out from under it, so the entry stops naming one. */
+    const done = archive ? `poster filed as photos/${story.spot}/${archive.name}, switched off` : 'switched off';
+    notes.push(`${story.id}: ran out ${human(w.until)} — ${done}, stories/${story.video || story.photo} is yours to delete`);
+    retired.push(story.id);
+    if (!dry) {
+      story.live = false;
+      if (archive) delete story.poster;
+    }
+    storiesChanged = true;
     kept.push(story);
   }
 
@@ -274,15 +301,13 @@ function tick(stories, { dry }) {
   return { changed: storiesChanged || placesChanged, summary };
 }
 
-/* Move the picture out of stories/ and into the place's own folder, numbered
+/* Move a picture out of stories/ and into the place's own folder, numbered
    the way every other photo there is. Nothing is overwritten: a name that is
    taken is a reason to stop, not to pick a different one quietly. */
-function archivePhoto(story, places, dry) {
-  const place = places.find((p) => p.id === story.spot);
-  if (!place) return { ok: false, why: `"${story.spot}" is no longer a place in restaurants.json — left switched on for you to look at` };
-
-  const src = join(STORIES, story.photo);
-  if (!existsSync(src)) return { ok: false, why: `stories/${story.photo} is already gone — nothing to file` };
+function archivePhoto(spot, file, places, dry) {
+  const place = places.find((p) => p.id === spot);
+  if (!place) return { ok: false, why: `"${spot}" is no longer a place in restaurants.json — left switched on for you to look at` };
+  if (!Array.isArray(place.photos)) return { ok: false, why: `"${place.id}" has no "photos" array — left switched on` };
 
   const dir = join(PHOTOS, place.id);
   const taken = existsSync(dir) ? readdirSync(dir) : [];
@@ -291,14 +316,13 @@ function archivePhoto(story, places, dry) {
     .filter(Boolean)
     .map((m) => Number(m[1]));
   const next = (numbered.length ? Math.max(...numbered) : 0) + 1;
-  const name = `${String(next).padStart(2, '0')}${extname(story.photo).toLowerCase()}`;
+  const name = `${String(next).padStart(2, '0')}${extname(file).toLowerCase()}`;
 
   if (taken.includes(name)) return { ok: false, why: `photos/${place.id}/${name} already exists — left switched on` };
-  if (!Array.isArray(place.photos)) return { ok: false, why: `"${place.id}" has no "photos" array — left switched on` };
 
   if (!dry) {
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-    renameSync(src, join(dir, name));
+    renameSync(join(STORIES, file), join(dir, name));
     place.photos.push(name);
   }
   return { ok: true, name };
@@ -322,8 +346,9 @@ if (args.help || args.h) {
 
   node tools/stories.mjs --tick [--dry-run]
       What the clock says is due: a story that has run out is switched off,
-      and a photograph of a place is filed into photos/<spot>/ and listed on
-      the place. Run hourly by .github/workflows/stories.yml.
+      and the picture in it — the photograph, or the video's poster frame — is
+      filed into photos/<spot>/ and listed on the place. A photo story's entry
+      goes with its file. Run hourly by .github/workflows/stories.yml.
 `);
   process.exit(0);
 }

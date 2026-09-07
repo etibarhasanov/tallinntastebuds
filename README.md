@@ -2020,9 +2020,10 @@ place that will still be there next year; a story is a video — or a
 photograph — that is up for **a day and a half** and then is gone, which is
 the whole reason anybody opens one now rather than later.
 
-It can be written today and go up on Saturday, and the photograph in it does
-not disappear when the story does: it moves onto the place it was taken at and
-joins that place's photos. So the story is the moment, and the picture stays.
+It can be written today and go up on Saturday, and the picture in it does not
+disappear when the story does — the photograph a photo story is, or the still a
+video was watched from. It moves onto the place it was shot at and joins that
+place's photos. So the story is the moment, and the picture stays.
 
 When something is up, the mark in the top left grows a turning ring — the same
 ring, in the site's own brick and ember, that every profile picture wears when
@@ -2065,7 +2066,7 @@ and the one `ffmpeg` line that gets it there, and add an entry:
 | `video` | one or the other | A filename inside `stories/`, never a path. `.mp4` unless you have a reason. |
 | `photo` | one or the other | An image filename inside `stories/`, for a story that is a picture rather than a film. |
 | `seconds` | optional | How long a **photo** stands there. 6 by default, 2 to 20 allowed. A video has a length of its own, so this does nothing to one. |
-| `poster` | optional | An image filename inside `stories/`, shown for the moment before the **video** has enough of itself to play. |
+| `poster` | optional | An image filename inside `stories/`, shown for the moment before the **video** has enough of itself to play — and, with a `spot`, the picture that joins that place once the story is over. |
 | `from` | one of the two | When it goes up. Leave it out and it is up the moment `live` is `true`. |
 | `until` | one of the two | When it goes. Leave it out and it is **36 hours after `from`**, which is the usual way to write one. |
 | `caption` | optional | A line under the video, per language, exactly like a `blurb`. |
@@ -2167,9 +2168,19 @@ forgets:
   every other photo there, and is listed on the place. The entry and the file
   in `stories/` go with it. The story expires; the picture becomes one of that
   restaurant's photos, and is in the lightbox from then on.
-- **Anything else** — a video, or a photograph of nothing in particular — is
-  switched to `live: false` and left exactly where it is. Deleting somebody's
-  video is somebody's decision, not a cron job's.
+- A **video with a `spot`** sends its **poster frame** the same way. The still
+  is a photograph of that place too — the frame the story opened on — and it
+  is the part of a video a lightbox can keep. The entry is then switched to
+  `live: false` and stops naming a poster, and the video is left exactly where
+  it is: deleting somebody's film is somebody's decision, not a cron job's.
+- **Anything else** — a story of nothing in particular, or a video nobody took
+  a poster for — is switched off and left alone in the same way.
+
+A picture that cannot be filed — the `spot` is not a place any more, the place
+has no `photos` array — leaves the story switched on and says why. It stays in
+the `OVER` list where `node tools/stories.mjs` keeps mentioning it, and the
+next tick tries again once it is fixed, which is the point: a story quietly
+switched off is a picture quietly not filed.
 
 Then it commits, and asks the Cloudflare workflow to publish, so the site
 catches up within the hour. On an hour with nothing due it touches nothing and
@@ -2256,11 +2267,11 @@ to a pointer.
 ### Taking one down
 
 Nothing needs taking down. The clock does it, and the cron tidies up after the
-clock: a photograph of a place ends up on that place, and everything else is
-switched off and left for you. Once a video has been gone for a while, delete
-its entry and the file together — the repo does not need to carry every video
-ever posted, and the validator says so, gently, about a file in `stories/`
-that no entry names.
+clock: the picture of a place ends up on that place — the photograph, or the
+video's poster frame — and the video itself is switched off and left for you.
+Once it has been gone for a while, delete its entry and the file together —
+the repo does not need to carry every video ever posted, and the validator
+says so, gently, about a file in `stories/` that no entry names.
 
 To pull something down early, set `live` to `false`, or take the entry out
 altogether. Both are immediate for anybody who loads the map after it, which
@@ -2458,7 +2469,9 @@ encoder the camera recorded with.
   starts playing one out loud in a café.
 - **A poster frame** is taken from the same playback, a third of a second in,
   at 540px — far enough that a fade from black is over, near enough that it is
-  still the opening shot.
+  still the opening shot. It is also the picture the place is left with when
+  the story is over, which is the other reason it wants to be a frame worth
+  looking at.
 
 **What container comes out is not up to the page.** Safari writes MP4/H.264 —
 so an iPhone, which is where a story is shot, posts a finished file every
