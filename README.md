@@ -1488,10 +1488,13 @@ of Google's rows, in Google's order, and it says so. See **The directory**.
 
 Every row is an upsert. Running the file twice changes nothing; running a
 refreshed export updates Google's columns and leaves yours alone. The file
-opens by marking every row missing and each upsert clears the mark, so whatever
-is still marked at the end genuinely is not in the export any more —
-`missing_since` gets a timestamp and **nothing is ever deleted**, because a
-list may be pointing at it and somebody wrote a sentence about it.
+closes by marking as missing every row whose key is not in the list it has just
+written — the list is in the statement, so what it touches can be read off the
+file — and `missing_since` gets a timestamp. **Nothing is ever deleted**,
+because a list may be pointing at it and somebody wrote a sentence about it. A
+place that comes back is cleared by its own upsert. No statement in the file
+touches a row it does not name, so a load that stops halfway has done exactly
+the rows above the point it stopped and nothing else.
 
 The upserts are batched fifty to a statement. `wrangler d1 execute --remote`
 sends one HTTP request per statement, so this is the difference between

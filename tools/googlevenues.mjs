@@ -41,14 +41,16 @@
  *
  * HOW A PLACE THAT LEFT THE EXPORT IS NOTICED
  *
- * The file opens by marking every row as missing and each upsert clears the
- * mark, so whatever is still marked at the end is genuinely not in this
- * export any more. Nothing is ever deleted: a list may be pointing at it, and
- * somebody wrote a sentence about it.
+ * The file closes by marking as missing every row whose key is not in the
+ * list of keys it has just written — one statement, and the list is in it,
+ * so what it touches can be read off the file. Nothing is ever deleted: a
+ * list may be pointing at it, and somebody wrote a sentence about it. A row
+ * that comes back is cleared by its own upsert.
  *
- * A half-applied file therefore leaves some rows wrongly marked missing. That
- * is advisory rather than destructive — nothing reads missing_since to decide
- * whether a place exists — and the next complete run clears it.
+ * It used to open by marking every row missing and let the upserts clear
+ * the marks, which reads as neat and is not: a file that stops after that
+ * first statement has flagged the whole table, and nothing in it names a
+ * row. Every statement here now touches only rows it names.
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -298,11 +300,6 @@ export function build() {
   out.push('-- table these rows go into.');
   out.push(`-- ${places.length} places, ${matched.length} of them also on the map.`);
   out.push('');
-  out.push('-- Everything is marked missing, and every upsert below clears the mark.');
-  out.push('-- Whatever is still marked when this file finishes is genuinely no longer');
-  out.push('-- in the export. Nothing is deleted: a list may be pointing at it.');
-  out.push(`UPDATE google_venues SET missing_since = ${NOW} WHERE missing_since IS NULL;`);
-  out.push('');
 
   /* Rows per INSERT. `wrangler d1 execute --remote` sends one HTTP request per
      statement, so a row-at-a-time file is 1,110 round trips to Cloudflare and
@@ -331,6 +328,15 @@ export function build() {
     );
   }
 
+  out.push('');
+  out.push('-- Whatever is in the table and not in the list above has left the export.');
+  out.push('-- Marked rather than deleted: a list may be pointing at it. A place that');
+  out.push('-- comes back is cleared by its own upsert.');
+  out.push(
+    `UPDATE google_venues SET missing_since = ${NOW}\n` +
+    'WHERE missing_since IS NULL AND place_id NOT IN (\n' +
+    places.map((place) => '  ' + q(place.place_id)).join(',\n') + '\n);'
+  );
   out.push('');
   out.push('-- The places that are also on my map, so a list row pointing at one can');
   out.push('-- link through to its write-up. Only ever set when it is empty, so a');
