@@ -45,7 +45,7 @@
      stylesheet; only what a list page has and the map does not is in the
      second file. -->
 <link rel="stylesheet" href="/assets/styles.css?v=679bea78">
-<link rel="stylesheet" href="/assets/lists.css?v=754a313f">
+<link rel="stylesheet" href="/assets/lists.css?v=6c65b960">
 </head>
 <body class="lists-body">
 
@@ -59,6 +59,20 @@
   <!-- Only ever a link to the map's account sheet: the sign-in form lives in
        exactly one place on this site and it is not here. See assets/lists.js. -->
   <a class="lists-who" id="lists-who" href="/?account=in" hidden></a>
+  <!-- The map's radio, wearing the map's pill. It is the same station and the
+       same on/off — assets/radio.js keeps both across the walk from the map to
+       here — so it is the same button too, rather than a second design for one
+       control. Hidden until data/radio.json is read, and for good if there is
+       no station in it. -->
+  <button type="button" class="rail-btn radio" id="btn-radio" aria-pressed="false" hidden
+          data-i18n-title="radioPlay" data-i18n-aria-label="radioPlay"
+          aria-label="Play the radio" title="Play the radio">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path class="ico-play" d="M8 5.5l11 6.5-11 6.5z"/>
+      <path class="ico-stop" d="M8 6.5h3v11H8zM13 6.5h3v11h-3z"/>
+    </svg>
+    <span class="radio-name rail-label" id="radio-name"></span>
+  </button>
 </header>
 
 <!-- Every state this page has — your lists, one list, one list somebody else
@@ -121,6 +135,10 @@
      in place first. It is the only part of the map this page loads eagerly —
      Leaflet itself is still fetched only when the picker is opened. -->
 <script src="/assets/basemap.js?v=bf2dd374" defer></script>
-<script src="/assets/lists.js?v=651842b6" defer></script>
+<!-- The radio, shared with the map: the station carries across the walk from
+     one page to the other. Before lists.js and deferred like it, the same way
+     the basemap is. -->
+<script src="/assets/radio.js?v=dac5f009" defer></script>
+<script src="/assets/lists.js?v=501878ac" defer></script>
 </body>
 </html>

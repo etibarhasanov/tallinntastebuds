@@ -2384,6 +2384,28 @@
     sync();
   }
 
+  /* ----------------------------------------------------------------- radio
+   * The map's button, playing the map's station, because it is the same
+   * radio: assets/radio.js holds the station and the on/off across the walk
+   * from the map to a list, so the music does not stop halfway. It draws the
+   * button and wires the press itself; all this page owns is the one thing it
+   * cannot say — a stream that would not start, in the visitor's language.
+   *
+   * There is no language switch on this page, so unlike the map there is
+   * nothing to tell it about afterwards.
+   */
+  function mountRadio() {
+    window.TTBRadio.mount({
+      button: dom.btnRadio,
+      name: dom.radioName,
+      lang: state.lang,
+      t: t,
+      onchange: function (what) {
+        if (what === 'fail') toast(t('radioFail'));
+      }
+    });
+  }
+
   /* ------------------------------------------------------------------ wire */
 
   function wire() {
@@ -2439,6 +2461,8 @@
     dom = {
       main: $('main'),
       who: $('lists-who'),
+      btnRadio: $('btn-radio'),
+      radioName: $('radio-name'),
       toast: $('toast'),
       live: $('lists-live'),
       pickerScrim: $('picker-scrim'),
@@ -2501,6 +2525,7 @@
       if (state.list) document.title = state.list.title + ' | Tallinn Tastebuds';
 
       wire();
+      mountRadio();
       render();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);

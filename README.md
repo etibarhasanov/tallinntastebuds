@@ -2880,6 +2880,8 @@ lists.html                 your lists, the ones you kept, and the one a
                            stranger reads
 assets/lists.js            all three of those; no map, no Leaflet
 assets/lists.css           only what a list page has and the map does not
+assets/basemap.js          the CARTO tiles, said once for every map that draws them
+assets/radio.js            the station, and the on/off that survives a navigation
 db/schema.sql              the tables those Functions talk to
 wrangler.toml              the D1 bindings, one per environment (secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are
@@ -3124,7 +3126,9 @@ Requirements for the URL, all three or it will not work:
 It is a plain `<audio>` element built on first press, not an embed. A visitor
 who never presses it downloads nothing and is handed no third-party cookie,
 which is not true of a SoundCloud or YouTube iframe. Autoplay is blocked by
-every browser and that is right: it plays because somebody asked it to.
+every browser and that is right: it plays because somebody asked it to — see
+**It keeps playing when you walk to a list** for what that means once there is
+more than one page to ask it on.
 
 If the stream fails, the button resets and says so in a toast. If the URL dies
 for good, it is one line in this file, which is the same maintenance the rest
@@ -3216,6 +3220,52 @@ Reach for a mirror only once the official address has actually failed **in a
 browser**. Scraped stream indexes disagree with each other about that address
 and a link checker can call it dead from the wrong country or over the wrong
 TLS; neither is the test that counts. Pressing the button is.
+
+### It keeps playing when you walk to a list
+
+The map and the lists are two documents, and a navigation between them tears
+the first one down — audio element, stream and all. So the radio used to stop
+dead the moment somebody opened a list, which is not what a radio is: it plays
+until you turn it off.
+
+It cannot be the same element on both pages, so it is the same station and the
+same on or off. `assets/radio.js` holds all three — the station list, the
+`<audio>` and the switch — and writes on or off to `sessionStorage` under
+`ttb.radio`. Every page that mounts the button reads that, and one that finds
+the radio on rejoins the stream where it now is. A live stream has no position
+to resume from, so there is nothing else to carry across; the couple of
+hundred milliseconds it takes to reconnect is the whole of the seam.
+
+`sessionStorage` and not `localStorage`, deliberately. The tab that was playing
+keeps playing, and a visit tomorrow opens silent — the same judgement as the
+autoplay rule above, and the same reason.
+
+The browser holds that rule harder than we do. A fresh document has no gesture
+behind it, so `play()` on arrival is refused unless the browser has decided
+this is a site the visitor plays sound on: Chrome usually has by then, Safari
+and Firefox usually have not. A refusal here is not a failure — somebody did
+press play, one page ago — so nothing is reset and nothing is said. The button
+stays on and the stream starts on the first tap or keypress anywhere on the
+new page, which in practice is the tap that opens the list they came for.
+
+The lists page wears the same button in its header, next to the username: the
+map's pill, the map's station name, the same press to stop. It is the map's
+control on a page that has no rail rather than a second design for one switch,
+and `/list/<id>` gets it too — somebody reading a list a friend sent them can
+put the radio on from there. On a phone it is the icon alone, which is the
+disc the rail collapses to; this page has no rail and so does not run the
+introduction that opens those labels for a few seconds.
+
+The three pass pages do not carry it. `deal.html`, `verify.html` and
+`staff.html` are scanned at a table rather than browsed, and a discount that
+started playing music would be a surprise nobody asked for. The radio goes
+quiet while one of them is open and comes back on the next page that has the
+button, because the switch is still on.
+
+Opening a story stops it outright rather than pausing it: two things playing
+at once is one too many. The switch is left off, so it stays off when the
+visitor walks on — turning the radio down for a story is a decision about the
+radio rather than about the page it was made on.
 
 ## Surprise me
 

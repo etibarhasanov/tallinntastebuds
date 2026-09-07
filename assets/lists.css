@@ -37,6 +37,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  /* Everything else in the header is pushed to the far end by this, rather
+     than each of them claiming the gap for itself: the mark and the wordmark
+     are the only things anchored to the left, and the username and the radio
+     ride along together on the right whether or not both are showing. */
+  margin-right: auto;
   color: inherit;
   text-decoration: none;
   min-width: 0;
@@ -63,7 +68,6 @@
    map's account sheet, which is the only place on this site that knows how to
    sign anybody in or out. */
 .lists-who {
-  margin-left: auto;
   padding: 5px 12px;
   border: 1px solid var(--hairline);
   border-radius: 100px;
