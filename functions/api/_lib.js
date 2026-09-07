@@ -290,9 +290,9 @@ export async function catalogue(context) {
 }
 
 /* --------------------------------------------------------------- venues
- * google_venues — the Google Places export, seven hundred and fifty-one
- * places this city can eat in, in the database rather than in a file. See the table
- * in db/schema.sql for why it is a mirror and what the columns mean.
+ * google_venues — the Google Places export, seven hundred and fifty-one places
+ * this city can eat in, in the database rather than in a file. See the table in
+ * db/schema.sql for why it is a mirror and what the columns mean.
  *
  * The catalogue above is the map plus a hand-kept CSV, and it is small. This
  * is everywhere else, and a list may point at either: a list item's place_id
@@ -350,10 +350,24 @@ const VENUE_TYPES = [
  *
  * The name, the address, the pin, `map` and `mapId` are what all three rolls
  * answer with, so a row can be drawn without knowing which one it came out
- * of. `types`, `price` and `google` are the exception, and a deliberate one:
- * they are Google's description of a place I have never eaten at, and the
- * page that draws them has to be able to say so. See sourceLine() in
- * assets/lists.js, which is the only thing that reads them.
+ * of. `types`, `price`, `rating`, `reviews` and `google` are the exception,
+ * and a deliberate one: they are Google's description of a place I have never
+ * eaten at, and the page that draws them has to be able to say so. See
+ * sourceLine() in assets/lists.js and in assets/app.js, which are the two
+ * things that read them, and which print the attribution before anything
+ * else on the line.
+ *
+ * The score travels here and nowhere near the map's own places. There are no
+ * scores on this site — none of the seventy-four places I have eaten at is
+ * ranked, and none ever will be — and this is not one: it is Google's number,
+ * on Google's place, with Google's name on it, which is the only shape in
+ * which a number like that can be honest here.
+ *
+ * The contact half — the phone, the site, the week of opening hours and the
+ * Google listing — is not here. It is added by venuesByIds() below, because
+ * it is drawn on one card and asked for by one caller: the picker fetches all
+ * 751 rows and would carry sixty kilobytes of numbers no row on that page
+ * prints.
  *
  * The address is Google's street line and the two columns beside it, joined
  * the way the catalogue writes one: "Kopli tn 16, 10412 Tallinn".
@@ -385,6 +399,12 @@ export function venueEntry(row) {
     mapId: row.map_id || null,
     types: VENUE_TYPES.filter((pair) => pair[1].test(said)).map((pair) => pair[0]),
     price: dollars >= 1 && dollars <= 4 ? dollars : null,
+    /* Google's own, both of them, and null where the export has neither. The
+       count travels with the score because a 5.0 is worth what the number of
+       people behind it is worth, and one without the other is the half that
+       flatters. */
+    rating: typeof row.rating === 'number' ? row.rating : null,
+    reviews: typeof row.reviews === 'number' ? row.reviews : null,
     /* Not "is this row from the table" — the id already says that. It is
        "whose description this is", and it travels with the description so
        that nothing downstream can draw one without the other. */
@@ -408,14 +428,65 @@ export async function venuesByIds(env, ids) {
   const holes = keys.map(() => '?').join(', ');
   const { results } = await env.DB
     .prepare(
-      'SELECT place_id, name, category, cuisine, tags, price, address, postal_code, city, ' +
+      'SELECT place_id, name, category, cuisine, tags, price, rating, reviews, ' +
+      'address, postal_code, city, phone, website, opening_hours, maps_url, ' +
       'latitude, longitude, map_id ' +
       'FROM google_venues WHERE place_id IN (' + holes + ')'
     )
     .bind(...keys)
     .all();
 
-  return new Map((results || []).map((row) => [row.place_id, venueEntry(row)]));
+  /* The contact half, added here rather than in venueEntry() because these
+     four columns are selected here and nowhere else. A place off the export
+     has no write-up behind its name, and until this travelled the card the
+     map drew for one was a name, an address and a Directions button — while
+     the row it came from held the number to ring, the site to read, the hours
+     to turn up in and the listing all three came off. */
+  return new Map((results || []).map((row) => [row.place_id, {
+    ...venueEntry(row),
+    phone: row.phone || '',
+    website: row.website || '',
+    hours: venueHours(row.opening_hours),
+    mapsUrl: row.maps_url || ''
+  }]));
+}
+
+/* Google's one-line week as seven days the browser can draw.
+ *
+ * The column holds "Mon 11:00-22:00; Tue closed; ..." — one line, 24-hour,
+ * semicolons between days, and the only English in it is the word "closed".
+ * That word is the reason this is parsed here rather than sent as it stands:
+ * a card that prints "closed" at a Ukrainian reader has broken the rule every
+ * other string on this site keeps, and a day the place is shut is exactly the
+ * day somebody needs to read.
+ *
+ * Out comes an array of seven, Monday first, each either the times as Google
+ * wrote them — "11:00-22:00", or "12:00-15:00, 17:00-22:00" where a kitchen
+ * shuts in the afternoon — or null for a day it does not open. The times are
+ * digits and a hyphen and carry no language at all, so they travel verbatim.
+ *
+ * An empty column, or one in a shape this does not recognise, comes back as
+ * an empty array: no hours rather than a week with holes in it. Fifty-odd of
+ * the 751 rows carry no hours, RØST Bakery among them.
+ */
+const HOUR_DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+
+export function venueHours(text) {
+  const week = [null, null, null, null, null, null, null];
+  let said = false;
+
+  for (const part of String(text || '').split(';')) {
+    const m = /^\s*([a-z]{3})\s+(\S.*?)\s*$/i.exec(part);
+    if (!m) continue;
+    const day = HOUR_DAYS.indexOf(m[1].toLowerCase());
+    if (day === -1) continue;
+    said = true;
+    /* Left null, which is what the card draws as shut. */
+    if (/^closed$/i.test(m[2])) continue;
+    week[day] = m[2];
+  }
+
+  return said ? week : [];
 }
 
 /* ----------------------------------------------------------- added places

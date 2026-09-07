@@ -4,12 +4,14 @@ A full-screen map of the places in Tallinn I have eaten at and approved for
 [@tallinntastebuds](https://www.instagram.com/tallinntastebuds/). Tap a pin,
 read the write-up, watch the reel.
 
-There are no scores, stars or rankings on the map, and there never will be.
+There are no scores, stars or rankings on my places, and there never will be.
 Being on the map is the verdict.
 
-There is exactly one page that shows a number out of five, and it is not the
-map: `/venues.html` is Google's own directory of the city, nothing links to
-it, and every rating on it says on the page that it is Google's. See **The
+A number does appear on Google's places — the ones off the Places export that
+are not on my map — and every time it does it says whose it is: "According to
+Google 4.8 from 3,041 reviews". The one page where those numbers can be sorted
+by is `/venues.html`, which is Google's directory of the city rather than mine,
+which nothing links to. See **On "no scores, stars or rankings"** and **The
 directory**.
 
 Static files, one small Function, no build step and no npm install. Adding a
@@ -968,23 +970,42 @@ kept them, and there is no page anywhere that puts one list above another.
 See **Lists**, where the case for and against a directory that *would* rank is
 set out.
 
+A place off the Google export is the one thing on this site with a number out
+of five next to it, and it is the exception that says what the rule is. It is
+not on my map; it has no write-up, because nobody here has eaten there; and the
+number is printed with "According to Google" in front of it, in the same line
+and the same breath. The rule is that **this site does not rate anything** —
+not that a card may never repeat what somebody else's rating is, on somebody
+else's place, with their name attached. Nothing sorts by it, no place of mine
+has one, and the day a score of Google's appears without the attribution is the
+day the rule has actually been broken. See **A Google row says whose
+description it is**.
+
 If a future change wants to sort by saves, it is changing the argument of the
 site, not adding a feature. That is a decision for a person, not a patch.
 
-**Where the one exception is, and why it is not one.** `/venues.html` shows a
-rating out of five, a review count and a "Best rated" order, and all three are
-Google's — see **The directory**. The rule above is about a verdict on a
-kitchen, and this site's verdict is the map: seventy-four places somebody ate
-at, no numbers on any of them. The directory is the opposite kind of object. It
-is a mirror of what Google says about seven hundred places nobody here has been
-to, it says so in its first paragraph, it is `noindex` and nothing on the site
-links to it. Hiding Google's numbers on a page that *is* Google's description
-would not be principled; it would be a directory pretending to be a
-recommendation, which is the thing this rule exists to stop.
+**And on sorting by one, which `/venues.html` does.** Google's numbers already
+appear on Google's places, attributed every time — that is settled above and in
+**A Google row says whose description it is**. The directory goes one step
+further: it offers "Best rated" and "Most reviewed" as orders, which is a
+ranking, and the rule says there are none.
 
-The line it must not cross is the map. A rating from that table must never be
-drawn on a pin, in the panel, or anywhere in the list on the front page, and
-nothing on the map may ever be ordered by one.
+It holds because of what is being ranked. A ranking is a claim by whoever
+publishes it, and the only claim this site makes is the map — seventy-four
+places somebody ate at, in no order but the alphabet. The directory publishes
+no claim at all: it is a mirror of what Google says about seven hundred places
+nobody here has been to, it says so in its first paragraph before anything else
+is drawn, and sorting a mirror by the number written on it is a way of reading
+Google's opinion rather than a way of stating one. Refusing to sort it would
+not be principled either; it would just make Google's directory harder to use
+without making it any less Google's.
+
+So the line is not "no number is ever ordered by". It is this: **nothing on the
+map may ever be ordered by a score, and no place of mine may ever carry one.**
+The list on the front page stays alphabetical, the pins stay the same size, and
+`data/restaurants.json` has no field for a rating and is not getting one. If a
+future change wants to rank my own places — by saves, by Google, by anything —
+it is changing the argument of the site, and that is the paragraph above.
 
 ### How unique a save actually is
 
@@ -1430,11 +1451,18 @@ They keep Google's own names, `latitude` and `longitude` included, even though
 the rest of the site says `lat` and `lng`. The contract of that table is "the
 export, in SQL", and a contract with exceptions is one you have to look up.
 
-`rating` and `reviews` never reach the map. There are no scores on it and there
-never will be — see **On "no scores, stars or rankings"**. They are read in two
-places and neither is the map: deciding which places are worth promoting, and
-`/venues.html`, which is Google's own directory and draws them as Google's. See
-**The directory**.
+`rating` and `reviews` are Google's, and they are shown on Google's places and
+nowhere else: the card the map draws for a place off this export, and the rows
+that lead to it, print "According to Google 4.8 from 3,041 reviews" — attributed,
+every time, in the same line as the kinds and the band. Not one of the
+seventy-four places on my map carries a score, nothing anywhere sorts or ranks
+by one, and that is the rule these numbers do not touch — see **On "no scores,
+stars or rankings"** and **A Google row says whose description it is**. They are
+also still what decides which of these places are worth promoting onto the map.
+
+`/venues.html` is the one page where they are sorted by, and it is the one page
+where that is not a ranking of anything this site vouches for: it is a directory
+of Google's rows, in Google's order, and it says so. See **The directory**.
 
 ### Re-running it is safe
 
@@ -1468,14 +1496,20 @@ one roll made of two: the map's own places out of `data/places.json`, and
 these, out of the table. About 790 in all — see **The roll a list is built
 from**.
 
-A row out of this table brings `category`, `cuisine`, `tags` and `price` with
-it, turned into the map's own vocabulary on the way out and drawn under the
-name with Google's name on it — see **A Google row says whose description it
-is**. `rating` and `reviews` do not travel through this route.
+A row out of this table brings `category`, `cuisine`, `tags`, `price`, `rating`
+and `reviews` with it, turned into the map's own vocabulary on the way out and
+drawn under the name with Google's name on it — see **A Google row says whose
+description it is**.
 
-And `/venues.html`, which is the whole table rather than the part a picker
-needs. It asks `/api/venues`, and that is the one route where the rating, the
-review count and the week's opening hours do travel. See **The directory**.
+And the map, for a place on somebody's list that is not on mine. That card asks
+for four more columns nothing else needs — `phone`, `website`, `opening_hours`
+and `maps_url` — so `venuesByIds()` in `functions/api/_lib.js` selects them and
+`/api/places` does not: the picker fetches all 751 rows at once, and the
+difference is sixty kilobytes of numbers no row on that page prints.
+
+And `/venues.html`, which is the whole table rather than the part either of
+those needs: all 751 rows in one answer, so a filter can run over them. See
+**The directory**.
 
 ---
 
@@ -1529,22 +1563,26 @@ where I am", which is nowhere for whoever the link was sent to.
 Not the reader's. Somebody looking this up from Lisbon at nine in the evening
 is asking what is open in Tallinn, where it is eleven, and answering in their
 own timezone would be wrong in the one way they could not spot. Same
-`Europe/Tallinn` reading `assets/app.js` uses for story windows, with the same
-fallback to Estonia's own rule when a browser has no tzdata.
+`Europe/Tallinn` reading `assets/app.js` takes for story windows. The fallback,
+for a browser built without tzdata, is the reader's own clock rather than
+Estonia's rule written out a second time: the two disagree by an hour for
+somebody abroad and not at all for anybody standing in the city.
 
-The endpoint parses Google's one-line week — `Mon 11:00-22:00; Tue closed; …` —
-into seven days of minutes past midnight before it sends it. Two reasons, and
-the first is the one that decided it: that string is English, and printing
-"Mon" at a Ukrainian reader is the thing this codebase refuses to do. The
-second is that "is it open now" becomes a comparison rather than a parser
-shipped to every visitor. A day is an array of `[open, close]` pairs — empty
-when it is shut, more than one pair when it closes for the afternoon, and a
-close earlier than its open runs past midnight, which 683 of the week-days in
-the export do.
+The week itself comes through `venueHours()` in `functions/api/_lib.js` — the
+same parser the map's own card for one of these places already used, which is
+why there is one reader of that column and not two. It turns
+`Mon 11:00-22:00; Tue closed; …` into seven days, Monday first, each either the
+times as Google wrote them or `null` for a day it does not open, and an empty
+array when Google gave no hours at all. Fifty-two rows have none, and "we do
+not know" and "shut all week" are different sentences.
 
-`null` rather than seven empty days when Google gave no hours at all. Fifty-two
-rows have none, and "we do not know" and "shut all week" are different
-sentences.
+The day names come off there, which is the half that matters: `Mon` is English
+and the times are digits and a hyphen, so what travels carries no language.
+`spansOf()` in `assets/venues.js` turns one day into minutes to answer "open
+now" — four lines, at the one place that asks the question, rather than a
+second shape sent down the wire. It reads all 4,704 spans in the export,
+including the four kitchens that shut for the afternoon and the 683 week-days
+that close after midnight.
 
 ### Cuisines, in ten languages
 
@@ -1582,7 +1620,7 @@ now" is a question about a week of opening hours rather than something a `WHERE`
 clause can answer. A filtered endpoint would mean a round trip per keystroke to
 hand back most of the same rows.
 
-The answer is about 265 kB, which is 60 kB on the wire. One rule keeps it
+The answer is about 270 kB, which is 60 kB on the wire. One rule keeps it
 there: **a field with nothing in it is left out** rather than sent as `""`,
 `null` or `false`. `maps_url` is not sent at all — the page builds Google's own
 URL for a place out of the key it already has, which is forty kilobytes saved
@@ -1815,10 +1853,13 @@ differently on purpose:
   entry and keeps everything it has — its pin, its write-up, its reel, its
   price, its types, its save mark. The list's sentence is added under it.
 - A place **not on my map** gets a stand-in: a pin, a name, an address, and
-  what the list's owner said. Opening it gives a short card saying plainly that
-  it is not on my map and whose list it came off, with the sentence and a way
-  to walk there — rather than a place page with every section empty. Being on
-  the map is the verdict, and a list is not a way around that.
+  what the list's owner said. Opening it gives a card that says plainly that it
+  is not on my map and whose list it came off — no write-up, no reel and no
+  photographs, because being on the map is the verdict and a list is not a way
+  around it. What it does carry, when the place came off the Google export, is
+  everything Google holds about it, under Google's name: the score, the band,
+  the kinds, the phone, the week of opening hours and the way to its listing.
+  See **The card for a place I have never eaten at**.
 
 A row the catalogue has no coordinates for is not on this page at all. There is
 nowhere to put a pin, and a row in the panel that no pin answers to is worse
@@ -1956,10 +1997,10 @@ what Google says about the place instead — and says that it was Google saying
 it, every time:
 
 ```
-According to Google   €€€€   Restaurant · Asian
+According to Google   4.8 from 3,041 reviews   €€€€   Restaurant · Asian
 ```
 
-Both halves are turned into the map's own words on the way out, in
+The kinds and the band are turned into the map's own words on the way out, in
 `venueEntry()` in `functions/api/_lib.js`, and neither is stored that way:
 
 **The kinds.** `category`, `cuisine` and `tags` are matched as one string
@@ -1984,19 +2025,57 @@ stored an opinion — `db/schema.sql` says the conversion is one line wherever i
 is actually needed, and that line is here. Fifty-seven rows carry no price and
 get no gauge.
 
+**The score.** `rating` and `reviews`, printed together and never apart: a 5.0
+out of six visits and a 4.6 out of three thousand are not the same claim, and
+the score on its own cannot tell them apart. Both are set in the reading
+language's own digits, so Estonian gets "4,8" where English gets "4.8". This is
+the one number out of five anywhere on this site, and **On "no scores, stars or
+rankings"** says why it does not break that rule: it is Google's number, on
+Google's place, with Google's name in front of it. Nothing sorts by it.
+
 **Why it is attributed.** The gauge is drawn in the site's accent, in the
 vocabulary the map uses for the seventy-four places I have eaten at. Without a
 word saying where it came from it would be borrowing that verdict for a place
-nobody here has been to — which is exactly what `assets/app.js` refuses when it
-draws a list row with no badges on it at all. So the line leads with the
-attribution rather than trailing it: whose description this is, and then the
-description.
+nobody here has been to. So the line leads with the attribution rather than
+trailing it: whose description this is, and then the description.
 
 **Where it shows.** Rows in the picker, where it is the difference between two
-namesakes, and rows on a list, in both the editing and the reading view. The
-map's own places carry no such line — they link through to a write-up, which is
-the fuller version of the same thing — and a hand-typed place carries none
-either, because a name somebody typed is not a description of anything.
+namesakes; rows on a list, in both the editing and the reading view; the rows
+in the map's own panel while somebody's list is open; and the card the map
+draws when one of those rows is pressed — see **The card for a place I have
+never eaten at**. The map's own places carry no such line — they link through
+to a write-up, which is the fuller version of the same thing — and a hand-typed
+place carries none either, because a name somebody typed is not a description
+of anything.
+
+### The card for a place I have never eaten at
+
+Pressing one of those rows on the map opens a card, and for a long time that
+card was a name, a line saying whose list it came off, an address and a
+Directions button — while the row behind it held the number to ring, the site
+to read and the hours to turn up in. It was the honest shape for a place with
+no write-up and the wrong one for a place somebody is deciding whether to walk
+to.
+
+So the card carries the whole of Google's half now, in one block under the
+sentence the list's owner wrote, led by the attribution:
+
+- the source line above — the score, the band and the kinds
+- the address and the phone number, in the same two columns a place of mine
+  sets its facts in
+- **the week**, seven rows, Monday first, with today in ink and the other six
+  quiet. `opening_hours` is one line of English in the table — `"Mon 11:00-22:00;
+  Sun closed"` — so `venueHours()` in `functions/api/_lib.js` turns it into
+  seven days on the way out and the browser draws the day names out of
+  `data/ui.json`. The times are digits and belong to no language, so they
+  travel verbatim; the only word in that column is "Closed", in the reader's
+  own. Fifty-odd rows carry no hours at all and get no section.
+- Directions, Call, Website, and last, **See on Google** — `maps_url`, for the
+  half the export does not carry: the photographs, the reviews, and what
+  somebody said about the queue on a Saturday.
+
+A place somebody added by hand draws none of it and keeps the short card: a
+name typed into a form is not a description, a phone number or a week.
 
 ### The place nobody has
 
@@ -3053,6 +3132,8 @@ assets/lists.css           only what a list page has and the map does not
 venues.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
+assets/basemap.js          the CARTO tiles, said once for every map that draws them
+assets/radio.js            the station, and the on/off that survives a navigation
 db/schema.sql              the tables those Functions talk to
 wrangler.toml              the D1 bindings, one per environment (secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are
@@ -3299,7 +3380,9 @@ Requirements for the URL, all three or it will not work:
 It is a plain `<audio>` element built on first press, not an embed. A visitor
 who never presses it downloads nothing and is handed no third-party cookie,
 which is not true of a SoundCloud or YouTube iframe. Autoplay is blocked by
-every browser and that is right: it plays because somebody asked it to.
+every browser and that is right: it plays because somebody asked it to — see
+**It keeps playing when you walk to a list** for what that means once there is
+more than one page to ask it on.
 
 If the stream fails, the button resets and says so in a toast. If the URL dies
 for good, it is one line in this file, which is the same maintenance the rest
@@ -3391,6 +3474,52 @@ Reach for a mirror only once the official address has actually failed **in a
 browser**. Scraped stream indexes disagree with each other about that address
 and a link checker can call it dead from the wrong country or over the wrong
 TLS; neither is the test that counts. Pressing the button is.
+
+### It keeps playing when you walk to a list
+
+The map and the lists are two documents, and a navigation between them tears
+the first one down — audio element, stream and all. So the radio used to stop
+dead the moment somebody opened a list, which is not what a radio is: it plays
+until you turn it off.
+
+It cannot be the same element on both pages, so it is the same station and the
+same on or off. `assets/radio.js` holds all three — the station list, the
+`<audio>` and the switch — and writes on or off to `sessionStorage` under
+`ttb.radio`. Every page that mounts the button reads that, and one that finds
+the radio on rejoins the stream where it now is. A live stream has no position
+to resume from, so there is nothing else to carry across; the couple of
+hundred milliseconds it takes to reconnect is the whole of the seam.
+
+`sessionStorage` and not `localStorage`, deliberately. The tab that was playing
+keeps playing, and a visit tomorrow opens silent — the same judgement as the
+autoplay rule above, and the same reason.
+
+The browser holds that rule harder than we do. A fresh document has no gesture
+behind it, so `play()` on arrival is refused unless the browser has decided
+this is a site the visitor plays sound on: Chrome usually has by then, Safari
+and Firefox usually have not. A refusal here is not a failure — somebody did
+press play, one page ago — so nothing is reset and nothing is said. The button
+stays on and the stream starts on the first tap or keypress anywhere on the
+new page, which in practice is the tap that opens the list they came for.
+
+The lists page wears the same button in its header, next to the username: the
+map's pill, the map's station name, the same press to stop. It is the map's
+control on a page that has no rail rather than a second design for one switch,
+and `/list/<id>` gets it too — somebody reading a list a friend sent them can
+put the radio on from there. On a phone it is the icon alone, which is the
+disc the rail collapses to; this page has no rail and so does not run the
+introduction that opens those labels for a few seconds.
+
+The three pass pages do not carry it. `deal.html`, `verify.html` and
+`staff.html` are scanned at a table rather than browsed, and a discount that
+started playing music would be a surprise nobody asked for. The radio goes
+quiet while one of them is open and comes back on the next page that has the
+button, because the switch is still on.
+
+Opening a story stops it outright rather than pausing it: two things playing
+at once is one too many. The switch is left off, so it stays off when the
+visitor walks on — turning the radio down for a story is a decision about the
+radio rather than about the page it was made on.
 
 ## Surprise me
 

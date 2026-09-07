@@ -81,7 +81,6 @@
     style: DEFAULT_STYLE,
     stylePinned: false,
     lastPick: null,
-    radio: null,         // the station from data/radio.json, or nothing
     active: [],          // selected type ids, OR semantics; empty means "All"
     saves: {},           // place id -> how many people, from /api/saves
     saved: [],           // the places this browser (or account) has saved
@@ -432,7 +431,7 @@
     renderStyleSwitch();
     renderFilters();
     renderPanel();
-    renderRadio();
+    window.TTBRadio.language(code);
     /* applyStaticStrings has just put "Account" back on the button through
        its data-i18n, which is the right word for a stranger and the wrong one
        for somebody signed in: the button wears their name. So it is repainted
@@ -2524,9 +2523,11 @@
 
   /* A list first, because while one is open it is the whole of what the map
      is showing — the mode above, answered before the chips are consulted at
-     all. It is also the only state in which a stand-in is on the map: nothing
-     else can match one, since it has no types, no deal, and an id that has
-     never been in anybody's saves.
+     all. It is also the only state in which a stand-in is on the map at all:
+     leaving a list empties state.listPlaces, so allPlaces() below the first
+     line is my seventy-four and nothing else. That is what keeps a chip from
+     ever standing over a place I have not eaten at — a stand-in off the Google
+     export does carry types now, and would answer one.
 
      Then the chips, over my own places. No chips is the whole map, and the
      whole map is mine. */
@@ -3245,98 +3246,28 @@
   }
 
   /* ---------------------------------------------------------------- radio
-   * A station on a button, for the same reason a restaurant map has a colour
-   * rail: it is somebody's map, not a directory.
-   *
-   * A plain <audio> element and one URL. No SoundCloud or YouTube iframe,
-   * which would cost a visitor third party cookies, a megabyte of player and
-   * a track that gets taken down while nobody is looking. The element is
-   * built on first press, so a visitor who never presses it pays nothing.
-   *
-   * Autoplay is blocked in every browser and should be: a map that starts
-   * making noise on its own is a map people close. This one only ever plays
-   * because somebody asked it to.
-   *
-   * The station lives in data/radio.json. With none set the button never
-   * appears, which is the state the site ships in.
+   * The audio, the station list, the button and the on/off are all
+   * assets/radio.js, shared with the lists page so that walking from the map
+   * to a list does not stop the music. What is left here is what the rail
+   * does around it: the label that opens with the station's name, and the
+   * report to analytics.
    */
-  var radioEl = null;
-
-  /* One station per language where there is one, and the default everywhere
-     else. A visitor reading the map in Russian gets Наше Радио rather than a
-     station they cannot follow, and nobody gets silence for want of an entry. */
-  function stationFor(lang) {
-    var r = state.radio;
-    if (!r) return null;
-    var byLang = r.byLanguage || {};
-    return byLang[lang] || r['default'] || null;
-  }
-
-  function markRadio(on) {
-    if (!dom.btnRadio) return;
-    dom.btnRadio.setAttribute('aria-pressed', String(on));
-    var label = t(on ? 'radioStop' : 'radioPlay');
-    dom.btnRadio.setAttribute('aria-label', label);
-    dom.btnRadio.setAttribute('title', label);
-  }
-
-  function stopRadio() {
-    if (radioEl) { radioEl.pause(); radioEl.removeAttribute('src'); radioEl.load(); }
-    markRadio(false);
-    closeHint('radio');
-  }
-
-  function toggleRadio() {
-    var station = stationFor(state.lang);
-    if (!station || !station.url) return;
-
-    if (dom.btnRadio.getAttribute('aria-pressed') === 'true') {
-      stopRadio();
-      trackEvent('radio_stop', { station: station.name || 'radio' });
-      return;
-    }
-
-    if (!radioEl) {
-      radioEl = document.createElement('audio');
-      radioEl.preload = 'none';
-      radioEl.addEventListener('error', function () {
-        stopRadio();
-        toast(t('radioFail'));
-      });
-    }
-    /* A live stream has no position to resume from, so it is re-attached
-       rather than un-paused: pressing play always joins it where it is now. */
-    radioEl.src = station.url;
-    var started = radioEl.play();
-    if (started && started.catch) {
-      started.catch(function () { stopRadio(); toast(t('radioFail')); });
-    }
-    markRadio(true);
-    /* What you just started, by name, for as long as the intro label ran.
-       On a phone the pill is a triangle in a circle otherwise, which says a
-       stream is playing but never says whose. */
-    openHint('radio', 0);
-    trackEvent('radio_play', { station: station.name || 'radio' });
-  }
-
-  function renderRadio() {
-    if (!dom.btnRadio) return;
-    var station = stationFor(state.lang);
-    if (!station || !station.url) { dom.btnRadio.hidden = true; return; }
-    dom.btnRadio.hidden = false;
-    if (dom.radioName) dom.radioName.textContent = station.name || '';
-
-    /* Changing language mid-song changes the station under it, rather than
-       leaving the old one playing behind a button naming the new one. */
-    if (radioEl && !radioEl.paused && radioEl.src !== station.url) {
-      radioEl.src = station.url;
-      var again = radioEl.play();
-      if (again && again.catch) {
-        again.catch(function () { stopRadio(); toast(t('radioFail')); });
+  function mountRadio() {
+    window.TTBRadio.mount({
+      button: dom.btnRadio,
+      name: dom.radioName,
+      lang: state.lang,
+      t: t,
+      onchange: function (what, station) {
+        if (what === 'fail') { closeHint('radio'); toast(t('radioFail')); return; }
+        if (what === 'stop') { closeHint('radio'); trackEvent('radio_stop', { station: station.name || 'radio' }); return; }
+        /* What you just started, by name, for as long as the intro label ran.
+           On a phone the pill is a triangle in a circle otherwise, which says
+           a stream is playing but never says whose. */
+        openHint('radio', 0);
+        trackEvent('radio_play', { station: station.name || 'radio' });
       }
-      trackEvent('radio_play', { station: station.name || 'radio' });
-    }
-    markRadio(!!(radioEl && !radioEl.paused));
+    });
   }
 
   /* ----------------------------------------------------------- random pick
@@ -3804,7 +3735,7 @@
     var wrap = el('span', {
       className: 'price',
       role: 'img',
-      'aria-label': t('priceOf', { n: formatPrice(n) })
+      'aria-label': t('priceOf', { n: formatDecimal(n) })
     });
     for (var i = 1; i <= 4; i++) {
       /* How much of this slot the band fills: 1 or more is a full sign, half
@@ -3823,12 +3754,17 @@
     return wrap;
   }
 
-  /* The band as it reads out loud: whole numbers stay whole, half steps keep
-     the one decimal they need, written with the reading language's own decimal
-     mark so Estonian hears "2,5" where English hears "2.5". */
-  function formatPrice(n) {
+  /* A number as this language writes it, with the decimal mark its readers
+     use: Estonian gets "2,5" where English gets "2.5".
+
+     How many decimals is the caller's, because the two things asking want
+     different answers. The price band reads out loud as a band — whole where
+     it is whole, and half a step where it is one — so it asks for neither and
+     gets that. A score is always written to one place, because "5" and "5.0"
+     are the same number and only one of them reads as a rating. */
+  function formatDecimal(n, digits) {
     if (typeof n !== 'number' || !isFinite(n)) return String(n);
-    var digits = n % 1 === 0 ? 0 : 1;
+    if (typeof digits !== 'number') digits = n % 1 === 0 ? 0 : 1;
     try {
       return n.toLocaleString(state.lang, {
         minimumFractionDigits: digits,
@@ -3914,11 +3850,20 @@
   /* A place on somebody's list that I have never eaten at.
    *
    * There is no write-up, no reel and no photographs, because being on the map
-   * is the verdict and this place is not on it. What there is: the name, the
-   * address the catalogue holds, whatever its owner said about it, and a way
-   * to walk there. Said plainly rather than dressed as a place page with
-   * every section empty — the honest version of "I have not been here" is a
-   * short card, not a long one with holes in it.
+   * is the verdict and this place is not on it. What there is: the name,
+   * whatever its owner said about it, and — when the place came off the Google
+   * export rather than out of somebody's typing — what Google holds about it.
+   * That last part is a block of its own led by the words "According to
+   * Google", because the alternative is a card drawing somebody else's
+   * description in my accent, which would be borrowing the verdict this whole
+   * site is.
+   *
+   * Google's half includes the score, which is the one number out of five
+   * anywhere on this site. It is allowed here and nowhere else for the same
+   * reason the rest of the block is: it is Google's number, on Google's place,
+   * with Google's name in front of it. No place on my map carries one, nothing
+   * anywhere sorts by one, and the attribution is not decoration — it is the
+   * whole of what makes the number honest.
    *
    * It is also the one panel on this site showing text somebody else wrote, so
    * it says whose list it came off. */
@@ -3941,38 +3886,173 @@
         : t('listNotMine')
     }));
 
+    /* The sentence its owner wrote, straight under the note and above
+       everything Google has to say: it is the reason this place is on a list
+       at all, and the only part of the card written by a person. */
     var said = listSay(place.id);
     if (said) {
       dom.detail.appendChild(el('p', { className: 'blurb', textContent: said }));
     }
 
-    if (place.address) {
+    var source = sourceLine(place);
+    if (source) dom.detail.appendChild(source);
+
+    if (place.address || place.phone) {
       dom.detail.appendChild(el('dl', { className: 'facts' }, [
-        el('dt', { textContent: t('address') }),
-        el('dd', { textContent: place.address })
+        place.address ? el('dt', { textContent: t('address') }) : null,
+        place.address ? el('dd', { textContent: place.address }) : null,
+        place.phone ? el('dt', { textContent: t('phone') }) : null,
+        place.phone
+          ? el('dd', {}, [
+              el('a', { href: telHref(place.phone), textContent: place.phone })
+            ])
+          : null
       ]));
     }
 
-    /* The one link worth having on a place nobody has written about: how to
-       get there. The same button, the same tracking and the same destination
-       shape a real place's directions use, so a stand-in behaves like
-       everything else the panel draws.
+    var hours = hoursBlock(place);
+    if (hours) dom.detail.appendChild(section('hours', hours));
 
-       Only when the catalogue knows where it is. A row imported from a CSV
-       with no coordinates has a name and an address and nothing to point a
-       map at, and a Directions button leading to the middle of the sea is
-       worse than no button. */
+    /* Directions, and then the things the export knows that a card can act on.
+       The same buttons, the same tracking and the same destinations a place of
+       mine draws, so a stand-in behaves like everything else the panel
+       builds.
+
+       Directions only when the catalogue knows where it is. A row imported
+       from a CSV with no coordinates has a name and an address and nothing to
+       point a map at, and a button leading to the middle of the sea is worse
+       than no button. */
+    var ways = [];
     if (typeof place.lat === 'number' && typeof place.lng === 'number') {
-      dom.detail.appendChild(el('div', { className: 'link-row' }, [
-        trackClick(el('a', {
-          className: 'link-btn is-primary',
-          href: 'https://www.google.com/maps/dir/?api=1&destination=' + place.lat + ',' + place.lng,
-          target: '_blank',
-          rel: 'noopener',
-          textContent: t('directions')
-        }), 'directions', { place: place.name })
-      ]));
+      ways.push(trackClick(el('a', {
+        className: 'link-btn is-primary',
+        href: 'https://www.google.com/maps/dir/?api=1&destination=' + place.lat + ',' + place.lng,
+        target: '_blank',
+        rel: 'noopener',
+        textContent: t('directions')
+      }), 'directions', { place: place.name }));
     }
+    if (place.phone) ways.push(callButton(place));
+    if (place.website) {
+      ways.push(trackClick(el('a', {
+        className: 'link-btn',
+        href: place.website,
+        target: '_blank',
+        rel: 'noopener',
+        textContent: t('website')
+      }), 'website', { place: place.name }));
+    }
+    /* And the listing everything above it came off. It is last on the row on
+       purpose — the address, the number and the hours are already here, so
+       this is for the half the export does not carry: the photographs, the
+       reviews, and what somebody said about the queue on a Saturday. */
+    if (place.mapsUrl) {
+      ways.push(trackClick(el('a', {
+        className: 'link-btn',
+        href: place.mapsUrl,
+        target: '_blank',
+        rel: 'noopener',
+        textContent: t('googleSee')
+      }), 'google_listing', { place: place.name }));
+    }
+    if (ways.length) dom.detail.appendChild(el('div', { className: 'link-row' }, ways));
+  }
+
+  /* --------------------------------------------------------- Google's words
+   * What the export says about a place, in the map's own vocabulary: the
+   * kinds and the band, both turned out of Google's English by venueEntry()
+   * in functions/api/_lib.js, and the week of opening hours as seven days.
+   *
+   * Whose description it is leads the line, every time. That is the whole
+   * reason the line is allowed to exist: being on my map is the verdict here,
+   * and a price gauge drawn in the site's accent with nothing to say where it
+   * came from would be quietly claiming that verdict for a place nobody has
+   * eaten at. assets/lists.js draws the same line, in the same words, on the
+   * rows of a list's own page.
+   */
+  function sourceLine(place) {
+    if (!place.google) return null;
+    var kinds = (place.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
+    if (!kinds && !place.price && !place.rating) return null;
+    /* A span rather than a paragraph because one of the two places it goes is
+       a row in the panel, and a row is a button: a button holds phrasing
+       content and nothing else. assets/lists.js draws it as a span for the
+       same reason. */
+    return el('span', { className: 'place-source mono' }, [
+      el('span', { textContent: t('googleSays') }),
+      place.rating ? scoreMark(place) : null,
+      place.price ? priceGauge(place.price) : null,
+      kinds ? el('span', { textContent: kinds }) : null
+    ]);
+  }
+
+  /* Google's score and the number of people behind it, as one span: "4.8 from
+     3,041". The count is never left off, because a 5.0 out of six visits and a
+     4.6 out of three thousand are not the same claim and the score alone
+     cannot tell them apart. Both numbers are set in the reading language's own
+     digits and separators. */
+  function scoreMark(place) {
+    var out = formatDecimal(place.rating, 1);
+    if (place.reviews) {
+      /* Grouped the way this language groups a thousand — "3,041" in English,
+         "3 041" in Estonian — which is the difference between a number and a
+         string of digits. */
+      out += ' ' + t(place.reviews === 1 ? 'googleReviewsOne' : 'googleReviews', {
+        n: formatDecimal(place.reviews, 0)
+      });
+    }
+    return el('span', { className: 'score', textContent: out });
+  }
+
+  /* Google's week, Monday first: seven days, each either the hours it opens
+     or the word for shut. The times arrive as digits — "11:00-22:00", or
+     "12:00-15:00, 17:00-22:00" where the kitchen shuts in the afternoon — and
+     nothing in them belongs to a language, so the only translated things here
+     are the day names and "Closed".
+
+     A place with no hours in the export gets no section, and so does a reader
+     whose language has not filled the day names in: seven rows labelled by
+     nothing are worse than no rows at all. */
+  function hoursBlock(place) {
+    var week = place.hours || [];
+    if (week.length !== 7) return null;
+    var names = (t('days') || '').split('|');
+    if (names.length !== 7) return null;
+
+    var today = tallinnWeekday();
+    var dl = el('dl', { className: 'facts is-hours' });
+    for (var i = 0; i < 7; i++) {
+      var mark = i === today ? 'is-today' : null;
+      dl.appendChild(el('dt', { className: mark, textContent: names[i] }));
+      dl.appendChild(el('dd', {
+        className: mark,
+        /* An en dash between the two times, which is what a range is set with
+           everywhere else on this site. Google writes a hyphen. */
+        textContent: week[i] ? week[i].split('-').join('\u2013') : t('closed')
+      }));
+    }
+    return dl;
+  }
+
+  /* Which day it is where the food is, 0 for Monday.
+     Tallinn rather than the reader's own clock: the hours are a fact about a
+     door in this city, and somebody reading this from Lisbon on a Sunday
+     evening should see Monday marked exactly when the city they are flying to
+     has got there. The locale asked for is English and the names it returns
+     are never shown — they are compared, and thrown away — so none of what
+     formatMonth() says about thin locale data applies. A browser without a
+     time zone database falls back to its own day, which is the right day for
+     anybody actually in the city. */
+  function tallinnWeekday() {
+    var order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    try {
+      var name = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Tallinn', weekday: 'short'
+      }).format(new Date());
+      var found = order.indexOf(name);
+      if (found !== -1) return found;
+    } catch (e) { /* no Intl, or no zone data: the reader's own day will do */ }
+    return (new Date().getDay() + 6) % 7;
   }
 
 
@@ -4565,8 +4645,14 @@
 
     /* A place on the list that I have never filmed. The catalogue knows its
        name, its address and roughly where it is, and the list's owner knows
-       why it is worth going — which between them is a complete row. What it
-       does not get is a badge claiming a write-up, a price or a type. */
+       why it is worth going — which between them is a complete row.
+
+       What it does not get is the badges a row of mine carries: the depth
+       mark, the discount, the save count and the type list are all claims
+       about a write-up that does not exist. Google's own description of the
+       place goes in instead, on a line that says it is Google's — the same
+       line the card draws when the row is pressed, and the same one a list's
+       own page draws. */
     function listOnlyRow(place, said) {
       var row = el('button', {
         type: 'button',
@@ -4577,6 +4663,7 @@
         el('span', { className: 'list-sub' }, [
           el('span', { className: 'list-types', textContent: place.address || '' })
         ]),
+        sourceLine(place),
         said ? el('span', { className: 'list-said', textContent: said }) : null
       ]);
       row.addEventListener('click', function () { selectPlace(place.id, { fly: true }); });
@@ -5197,8 +5284,10 @@
        phone everybody already knows. */
     state.story.muted = storeGet(STORY_SOUND_KEY) !== 'on';
 
-    /* Two things playing at once is one too many. */
-    if (radioEl && !radioEl.paused) stopRadio();
+    /* Two things playing at once is one too many, and it stays off from
+       here: turning the radio down for a story is a decision about the
+       radio, not about this page. */
+    window.TTBRadio.stop();
 
     dom.stories.hidden = false;
     buildStoryBars();
@@ -5719,8 +5808,23 @@
         lat: item.lat,
         lng: item.lng,
         /* Empty rather than absent, so every loop that reads types can read
-           this one without asking whether it is a stand-in first. */
-        types: [],
+           this one without asking whether it is a stand-in first. On a place
+           off the Google export these are Google's kinds and Google's band,
+           already in the map's own vocabulary — and `google` is what says so,
+           without which the card would be drawing somebody else's description
+           in my accent. See renderListOnly(). */
+        types: item.types || [],
+        price: typeof item.price === 'number' ? item.price : null,
+        rating: typeof item.rating === 'number' ? item.rating : null,
+        reviews: typeof item.reviews === 'number' ? item.reviews : null,
+        google: !!item.google,
+        /* The four things a card can act on, when the export has them: the
+           number to ring, the site to read, the week as seven days, and the
+           Google listing all three came off. */
+        phone: item.phone || '',
+        website: item.website || '',
+        hours: item.hours || [],
+        mapsUrl: item.mapsUrl || '',
         /* The one flag that matters. Everything that would render a write-up
            checks it. */
         fromList: true
@@ -5969,7 +6073,6 @@
       closeHint('random');
       randomPick();
     });
-    dom.btnRadio.addEventListener('click', toggleRadio);
 
     document.addEventListener('click', function (ev) {
       if (!dom.langSwitch.contains(ev.target)) closeLangMenu();
@@ -6383,12 +6486,9 @@
       getJSON('data/restaurants.json'),
       getJSON('data/taxonomy.json'),
       getJSON('data/ui.json'),
-      /* Optional in the same way the station is: no file, no deals, and the
-         panel never grows the section. */
+      /* Optional: no file, no deals, and the panel never grows the
+         section. */
       getJSON('data/deals.json').catch(function () { return []; }),
-      /* The station is optional in every sense: no file, no station, no
-         button, and the rest of the map does not notice. */
-      getJSON('data/radio.json').catch(function () { return null; }),
       /* And the stories the same: no file, no ring on the mark, no viewer. */
       getJSON('data/stories.json').catch(function () { return []; }),
       /* Somebody else's list, when the map was opened on one. In here rather
@@ -6402,8 +6502,7 @@
       state.places = loaded[0] || [];
       state.types = (loaded[1] && loaded[1].types) || [];
       state.deals = loaded[3] || [];
-      state.radio = loaded[4] || null;
-      state.stories = Array.isArray(loaded[5]) ? loaded[5] : [];
+      state.stories = Array.isArray(loaded[4]) ? loaded[4] : [];
       state.ui = loaded[2] || {};
       state.langs = sortLanguages(Object.keys(state.ui));
 
@@ -6436,7 +6535,7 @@
          rather than a filter — see visiblePlaces() — so seating one is all it
          takes for the map to be showing it, and the chips stay unpressed
          underneath. Any of them dropped on afterwards ends it. */
-      seatList(loaded[6]);
+      seatList(loaded[5]);
 
       /* Style before the map, so the first tile request is already the right
          basemap and the pins are built from the right tokens. */
@@ -6457,7 +6556,7 @@
          this browser saved is already read, and the button is their door. */
       paintAccountButton();
       renderPanel();
-      renderRadio();
+      mountRadio();
       renderStoryRing();
       wireControls();
       wireStories();

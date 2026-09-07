@@ -171,10 +171,24 @@ export async function readList(context, id, user) {
            what it costs on Google's scale — see venueEntry() in
            functions/api/_lib.js. Only a row out of google_venues has either,
            and `google` is what makes the page say whose description it is
-           drawing. A place of mine says it in a write-up instead. */
+           drawing. A place of mine says it in a write-up instead.
+
+           And the four things a card can act on: the number to ring, the site
+           to read, the week of opening hours as seven days — see venueHours()
+           — and the Google listing the lot came off. They go the same way and
+           for the same reason: the map draws a place off the export as a card
+           of its own, and a card that knows the address but not whether the
+           door is open on a Sunday is thinner than the row it was filled
+           from. */
         types: (known && known.types) || [],
         price: (known && typeof known.price === 'number') ? known.price : null,
+        rating: (known && typeof known.rating === 'number') ? known.rating : null,
+        reviews: (known && typeof known.reviews === 'number') ? known.reviews : null,
         google: !!(known && known.google),
+        phone: (known && known.phone) || '',
+        website: (known && known.website) || '',
+        hours: (known && known.hours) || [],
+        mapsUrl: (known && known.mapsUrl) || '',
         say: r.say
       };
     })

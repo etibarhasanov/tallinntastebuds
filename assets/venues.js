@@ -27,9 +27,10 @@
  * Google files these places in English — "Sushi Restaurant", "Mon 11:00-22:00"
  * — and none of that reaches the page. The endpoint turns the category into
  * cuisine ids that data/cuisines.json and data/taxonomy.json say in ten
- * languages, and the week into numbers this file formats. The two things left
- * as Google wrote them are the name of the restaurant and its street, which is
- * what you would say out loud to a taxi driver.
+ * languages, and the week into seven days with the day names taken off, so
+ * what arrives is "11:00-22:00" and an index. The three things left as Google
+ * wrote them are the times, which are digits and a hyphen, and the name of the
+ * restaurant and its street, which is what you would say to a taxi driver.
  */
 (function () {
   'use strict';
@@ -54,6 +55,9 @@
   /* Monday first, which is how the endpoint numbers the week and how this city
      counts one. Used only to read the browser's own idea of the weekday. */
   var DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  /* One "HH:MM-HH:MM" out of a day of Google's week. See spansOf(). */
+  var SPAN = /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/;
 
   /* The ratings worth offering. Four fifths of the export is 4.0 or better and
      more than half is 4.5 or better, so anything under 3.5 would be a filter
@@ -287,9 +291,35 @@
     return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
   }
 
+  /* One day of Google's week as minutes past midnight.
+   *
+   * The endpoint sends the times exactly as Google wrote them — "11:00-22:00",
+   * or "12:00-15:00, 17:00-22:00" where a kitchen shuts in the afternoon —
+   * because that is what the map's own card for one of these places prints,
+   * and one parser of that column is enough for the whole site. Turning a day
+   * into numbers is what "open now" needs and it is four lines, so it happens
+   * here rather than being a second shape sent down the wire.
+   *
+   * A pair whose close is earlier than its open runs past midnight: "14:00-
+   * 04:00" comes back as [840, 240], and 683 of the week-days in the export
+   * do that, most of them by closing at 00:00.
+   */
+  function spansOf(day) {
+    var out = [];
+    if (!day) return out;
+    var chunks = String(day).split(',');
+    for (var i = 0; i < chunks.length; i++) {
+      var at = SPAN.exec(chunks[i]);
+      if (at) out.push([Number(at[1]) * 60 + Number(at[2]), Number(at[3]) * 60 + Number(at[4])]);
+    }
+    return out;
+  }
+
   /* Where a place stands right now, or null when Google gave no hours at all —
    * fifty-two of them did not, and "we do not know" is a different sentence
-   * from "shut", so the two are kept apart all the way to the card.
+   * from "shut", so the two are kept apart all the way to the card. An empty
+   * week is how the endpoint says the first; a null day inside one is how it
+   * says the place does not open that day.
    *
    * `at` is the minute that matters: when it is open, the one it shuts; when
    * it is shut, the next one it opens today, or null if that is tomorrow.
@@ -297,21 +327,18 @@
   function opening(venue, clock) {
     if (!venue.hours) return null;
 
-    var today = venue.hours[clock.day] || [];
+    var today = spansOf(venue.hours[clock.day]);
     var i;
     for (i = 0; i < today.length; i++) {
       var from = today[i][0], to = today[i][1];
-      /* A close earlier than its open runs past midnight — "Fri 14:00-04:00"
-         arrives as [840, 240] — so from there on the evening has no end until
-         tomorrow's small hours. */
       if (to > from ? (clock.minute >= from && clock.minute < to) : (to < from && clock.minute >= from)) {
         return { open: true, at: to };
       }
     }
 
-    /* And the other half of the same case: at two in the morning the place
-       that is open is the one that opened yesterday evening. */
-    var last = venue.hours[(clock.day + 6) % 7] || [];
+    /* The other half of the same case: at two in the morning the place that is
+       open is the one that opened yesterday evening. */
+    var last = spansOf(venue.hours[(clock.day + 6) % 7]);
     for (i = 0; i < last.length; i++) {
       if (last[i][1] < last[i][0] && clock.minute < last[i][1]) {
         return { open: true, at: last[i][1] };

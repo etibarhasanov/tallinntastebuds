@@ -20,8 +20,15 @@
  *
  *   /api/venues   Google's description of Tallinn, whole and unmerged. The
  *                 rating, the review count, the price band, the phone, the
- *                 website and the week's opening hours: everything that page
- *                 filters and sorts on, and none of it is in the other answer.
+ *                 website and the week's opening hours, for all 751 rows at
+ *                 once — which is what a directory filters and sorts on, and
+ *                 what the picker deliberately leaves behind.
+ *
+ * venuesByIds() in _lib.js hands the map that same contact half for a place on
+ * somebody's list, a handful of rows at a time. This is the other shape of the
+ * same need: everything, in one answer, so a filter can run over it. Both read
+ * the week through venueHours() in that file, so there is one parser of that
+ * column and not two.
  *
  * Merging would be actively wrong here. The thirty-two places that are on both
  * rolls are the interesting ones on this page — they are the rows that link
@@ -46,7 +53,7 @@
  * costs more than the values do. The page reads every one of them as absent.
  */
 
-import { json, wrongDatabase } from './_lib.js';
+import { json, wrongDatabase, venueHours } from './_lib.js';
 
 /* Google's words for what a place cooks, in ids the site can say in ten
  * languages. data/cuisines.json carries the labels; this is the only thing
@@ -122,53 +129,6 @@ export const KITCHENS = [
   ['fine-dining',      /fine dining/]
 ];
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const SPAN = /^(\d{2}):(\d{2})-(\d{2}):(\d{2})$/;
-
-/* Google's one-line week — "Mon 11:00-22:00; Tue closed; …" — as seven days of
- * minutes past midnight, Monday first.
- *
- * The browser gets numbers rather than that sentence for two reasons. It is
- * Google's English, and printing "Mon" at a Ukrainian reader is the one thing
- * this codebase refuses to do; and "is it open now" is then a comparison
- * rather than a parser shipped to every visitor.
- *
- * A day is an array of [open, close] pairs: empty when the place is shut that
- * day, and more than one pair when it closes for the afternoon, which four of
- * the export's places do. A close earlier than its open runs past midnight —
- * "Fri 14:00-04:00" is [840, 240] — and six hundred and eighty-three of the
- * week-days in the export do that, most of them by closing at 00:00.
- *
- * null, not seven empty days, when Google gave no hours at all. Fifty-two rows
- * have none, and "we do not know" and "shut all week" are different answers:
- * the page says the first and would be lying with the second.
- */
-export function parseHours(text) {
-  const week = [null, null, null, null, null, null, null];
-  let said = false;
-
-  for (const part of String(text || '').split(';')) {
-    const line = /^\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+(.*?)\s*$/.exec(part);
-    if (!line) continue;
-    const day = DAYS.indexOf(line[1]);
-
-    if (/^closed$/i.test(line[2])) { week[day] = []; said = true; continue; }
-
-    const spans = [];
-    for (const chunk of line[2].split(',')) {
-      const at = SPAN.exec(chunk.trim());
-      /* Anything this does not recognise is dropped whole rather than half
-         read: a day with one of its two shifts missing would have the page
-         saying a place is shut at seven when it is open. */
-      if (!at) { spans.length = 0; break; }
-      spans.push([Number(at[1]) * 60 + Number(at[2]), Number(at[3]) * 60 + Number(at[4])]);
-    }
-    if (spans.length) { week[day] = spans; said = true; }
-  }
-
-  return said ? week.map((day) => day || []) : null;
-}
-
 /* One row as the page draws it. See the note at the top about empty fields:
    everything here is added only when there is something to add. */
 function entry(row) {
@@ -196,8 +156,15 @@ function entry(row) {
   if (row.phone) out.phone = row.phone;
   if (row.website) out.website = row.website;
 
-  const week = parseHours(row.opening_hours);
-  if (week) out.hours = week;
+  /* Google's one-line week as seven days of the times themselves, Monday
+     first, out of the parser the map's own card for one of these places
+     already uses. Two things wanted the same column read the same way and
+     there is only one function that does it. The strings are digits and a
+     hyphen and carry no language, which is the whole reason they can travel
+     verbatim; assets/venues.js turns them into minutes to answer "open now"
+     and prints them as they are. */
+  const week = venueHours(row.opening_hours);
+  if (week.length) out.hours = week;
 
   /* Thirty-two of these are also places on my map, and on this page that is
      the most interesting thing a row can say: it is what turns "Google rates
