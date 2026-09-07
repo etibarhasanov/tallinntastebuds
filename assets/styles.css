@@ -646,7 +646,19 @@ a:hover { color: var(--accent-lit); }
   pointer-events: none;
 }
 .brand-ring,
+.brand-home,
 .brand .ig-link { pointer-events: auto; }
+
+/* The name, which is the way back to the whole map. It takes the ink and the
+   size of the heading it is inside — a logo that goes home is not a link to
+   be picked out of a sentence — and answers on hover the way the same name
+   does at the top of the lists page. */
+.brand-home {
+  color: inherit;
+  text-decoration: none;
+}
+.brand-home:hover,
+.brand-home:focus-visible { color: var(--accent); }
 
 /* The mark and the name, locked together. Stacked above it the mark was a
    picture parked in the corner of the card with half a line of nothing beside
@@ -2862,20 +2874,26 @@ body.panel-detail .panel {
 
   /* On a phone there is no room for the tagline, and with the tagline gone
      there is nothing left in the card that needed a card. What stands on the
-     map instead is the account itself: the round mark and the handle beside
-     it, the same two things at the same size and in the same corner as a
-     profile page opens with. The name stays in the markup for search engines
-     and screen readers, out of sight.
+     map instead is the account itself: the round mark, and beside it the name
+     over the handle — the same three things in the same arrangement and the
+     same corner as a profile page opens with.
+
+     A grid rather than the flex row this was, because the mark has to stand
+     against two lines of text instead of one. Spanning it across both rows is
+     what keeps this corner exactly as tall as it was when the handle stood
+     here alone: the text column is shorter than the mark, so the mark is
+     still what sets the height, and the chip row below it has not moved.
+
      No max-width any more. The old card had one, and it never held anything:
      the handle is a single unbreakable word, so a narrow box does not wrap it,
      it just lets it hang out of the far side. What keeps it clear of the two
      buttons in the other corner is the size step at the bottom of this block,
      which is a thing the text actually obeys. */
   .brand {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto 1fr;
     align-items: center;
-    gap: 0 10px;
+    column-gap: 10px;
     width: auto;
   }
   /* The one sentence on this site that says what it is: every place on this
@@ -2883,8 +2901,8 @@ body.panel-detail .panel {
      and never reads it is looking at a map of pins like any other, so it is
      no longer dropped here — it is the first thing the page says, and then it
      stops saying it, the same bargain the rail buttons below make with their
-     labels. Out of the flex row and onto a line of its own under the mark and
-     the handle, where it has the width to be prose rather than three words a
+     labels. On a line of its own under the mark and the handle, across both
+     columns, where it has the width to be prose rather than three words a
      line.
 
      Collapsed by default and opened by .hint-open from assets/app.js: the
@@ -2892,8 +2910,8 @@ body.panel-detail .panel {
      appearing over the map. max-height is a ceiling for the transition to
      run to, set well past the three lines the longest translation takes. */
   .brand .tagline {
-    order: 3;
-    flex-basis: 100%;
+    grid-row: 3;
+    grid-column: 1 / -1;
     max-width: min(78vw, 320px);
     margin: 0;
     max-height: 0;
@@ -2917,50 +2935,72 @@ body.panel-detail .panel {
      --tell-h is measured in openBrandHint rather than guessed here, because
      three lines of Estonian are not two lines of English. */
   body.brand-telling .filter-bar { transform: translateY(var(--tell-h, 46px)); }
-  .brand-head { margin: 0; }
+
+  /* The mark and the name are laid out against the handle and the sentence,
+     which are not inside this box, so up here it stops being a box and lets
+     its two children stand in the grid themselves. Anything measuring it —
+     placeRail in assets/app.js — measures the mark and the handle instead. */
+  .brand-head { display: contents; }
 
   .brand-mark { width: 40px; height: 40px; }
+  /* Down the left of both text lines, whichever of the two is drawn: the ring
+     is what the mark sits inside once a story is up. */
+  .brand-mark,
+  .brand-ring { grid-row: 1 / span 2; }
 
   /* The ring comes in a step with the circle it is drawn round, and the paper
      between the two comes in with it. */
   .brand-ring::before { inset: -4px; }
   .brand-ring .brand-mark { box-shadow: 0 0 0 2px var(--paper), var(--lift); }
 
+  /* The name, at the size a name is given at the top of a profile rather
+     than the 25px it takes on a screen with room for it. It was hidden here
+     for as long as the handle was standing in for it, which left this corner
+     with nothing that went home — the mark opens the stories, and a visitor
+     who wanted the whole map back had nowhere to press. */
   .brand .wordmark {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    padding: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    clip-path: inset(50%);
-  }
-  /* Up here the handle is not a username printed under a name — it is the
-     only name on the screen, with the wordmark hidden above it, so it takes
-     the face the wordmark uses instead of the mono the desktop sets it in,
-     and the size of a name rather than of a footnote. */
-  .brand .ig-link {
-    font-family: var(--display);
+    grid-row: 1;
+    grid-column: 2;
     font-size: 15px;
-    font-weight: 600;
-    letter-spacing: -.015em;
     line-height: 1.2;
-    color: var(--ink);
+    white-space: nowrap;
+  }
+  /* And the handle under it, in the same face a step down, which is how a
+     username is printed under a name. Not the mono the desktop sets it in:
+     seventeen characters of it are half as wide again in mono as in the
+     display face, and that width is the whole argument up here — what the
+     two lines have to stay clear of is the PLACES button in the other
+     corner. */
+  .brand .ig-link {
+    grid-row: 2;
+    grid-column: 2;
+    /* As wide as the handle and no wider. A grid item fills its track unless
+       it is told not to, and this one takes its pointer events back — left to
+       stretch, it would lie across the corner under the PLACES button and
+       take the presses meant for it. */
+    justify-self: start;
+    font-family: var(--display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    line-height: 1.2;
+    color: var(--muted);
     white-space: nowrap;
   }
   .brand .ig-link:hover,
   .brand .ig-link:focus-visible { color: var(--accent); }
 
-  /* A 320px screen has about 150px left over once LIST and the language
-     button have taken theirs, and the mark and the handle at full size want
-     more than that. Both come down a step here, which is what keeps the last
-     letter of the handle off the LIST button on the narrowest phone still
-     being sold. */
+  /* A 320px screen has about 150px left over once PLACES and the language
+     button have taken theirs, and the mark and two lines of text at full size
+     want more than that. Everything comes down a step here, which is what
+     keeps the last letter of each line off the PLACES button on the narrowest
+     phone still being sold — measured there at 99px and 81px against the 107
+     the corner has. */
   @media (max-width: 380px) {
-    .brand { gap: 0 8px; }
+    .brand { column-gap: 8px; }
     .brand-mark { width: 34px; height: 34px; }
-    .brand .ig-link { font-size: 13px; }
+    .brand .wordmark { font-size: 12.5px; }
+    .brand .ig-link { font-size: 10.5px; }
     .brand .tagline { font-size: 12.5px; max-width: 82vw; }
     .brand-ring::before { inset: -3px; }
   }

@@ -1630,7 +1630,9 @@ On somebody else's list it is the card's filled action and the first thing in
 the row, because it is what the link was sent for: a list is a set of places,
 and the question about a set of places is where they are. Keep and Share are
 the second thoughts beside it. On your own list it stays quiet — Save is that
-card's one filled press, and the accent is spent once.
+card's one filled press, and the accent is spent once. That quiet one is an
+outlined pill, and it is what each index row carries in its bottom corner too,
+so the door onto the map looks the same wherever it turns up.
 
 That is the map this site already has, not a second smaller one drawn on the
 lists page. The question anybody has about ten restaurants in one city is where
@@ -3695,7 +3697,10 @@ change those values and the whole site follows.
 **The chrome.** Everything floats on the map: nothing has a page around it,
 and the brand does not even have that. One strip across the top — the mark,
 the name and the one sentence on the left, **Places** and the language switch
-on the right — and the filter chips on the line directly beneath it. The
+on the right — and the filter chips on the line directly beneath it. The two
+things in that corner are two doors: the name goes home, which from a place,
+a list, a type or a story is the way back to the whole map, and the mark opens
+the stories when there are any. Neither does the other's job. The
 controls that are questions about the *map* rather than about the page stand
 on the map instead, in the left rail: the account at its head, then Surprise
 me and the radio, then the colour switch, with locate at its foot. There are no zoom buttons; the wheel, a double-click, a pinch and
@@ -3723,8 +3728,8 @@ the padding it used to hold, which is what still breaks the name after
 *Tallinn* and the sentence into two lines, and it is the number the chip row
 starts after so the two columns clear each other. And with nothing drawn
 there, nothing there takes a press: the block hands its pointer events to the
-map and the mark and the handle take theirs back one at a time, because a
-transparent rectangle that swallows a drag is a piece of dead map.
+map and the mark, the name and the handle take theirs back one at a time,
+because a transparent rectangle that swallows a drag is a piece of dead map.
 
 **The ring is the only thing on the page that moves on its own.** Nothing else
 here animates without being asked: pins settle, panels slide, and that is the
@@ -3769,8 +3774,10 @@ sideways instead. Most of that cushion is below the chips now — the side a
 thumb reaching up overshoots on — and the brand and the controls sit above the
 scroller in the stack, so a tap on a button is always a tap on that button.
 
-Under about 380px the handle and the three controls stop fitting on one line,
-so the controls take a line of their own and the chips drop below both.
+Under about 380px the corner and the two controls stop fitting beside each
+other at full size, so the mark, the name and the handle all come down a step
+— which is measured against **Places**, the thing the last letter of each line
+has to stay clear of.
 
 **Pins.** Every pin is the mark — see **The mark**. One picture, three collars
 round it, for the three amounts of place behind it:
@@ -4031,8 +4038,9 @@ the map. Hover tooltips stay inert, since the pointer is already on the dot.
 It sits beside the name rather than above it: stacked above, it was a picture
 parked in the corner with half a line of nothing next to it, and beside the
 name it has a job, because the wordmark breaks after *Tallinn* and two lines
-of it stand exactly as tall as the circle does. On a phone the name is hidden
-and the mark is what is left standing for it, on one line with the handle. On the map itself it goes
+of it stand exactly as tall as the circle does. On a phone the name comes down
+to the size a name is given at the top of a profile and the handle sits under
+it, and the circle stands against both lines rather than one. On the map itself it goes
 on one pin only — whichever place is open — cut out of the dot in the dot's
 own ring colour, so the pin keeps saying what it said before. The full account
 of it is in [The mark](#the-mark).

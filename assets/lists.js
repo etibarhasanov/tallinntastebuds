@@ -362,11 +362,11 @@
     return '/?list=' + encodeURIComponent(id);
   }
 
-  /* Every caller says how it should look, because the four places this link
-     turns up in are four different weights of the same door: filled on
-     somebody else's list, where it is the one thing that card asks for; an
-     outline on your own, where Save has the accent; and a small word in the
-     corner of an index row. */
+  /* Every caller says how it should look, because the places this link turns
+     up in are two weights of the same door: filled on somebody else's list,
+     where it is the one thing that card asks for; and the outlined pill
+     everywhere else — on your own list, where Save has the accent, and in the
+     corner of each index row. */
   function mapLink(id, className) {
     return el('a', {
       className: className,
@@ -525,7 +525,7 @@
     ]);
     /* Sits outside the link rather than inside it: a link inside a link is
        not a thing HTML has, and the row is a link to the list itself. */
-    return el('li', { className: 'lists-index-row' }, [link, mapLink(l.id, 'lists-index-map')]);
+    return el('li', { className: 'lists-index-row' }, [link, mapLink(l.id, 'alt lists-map lists-index-map')]);
   }
 
   /* A list somebody else made, which you kept. The same row with one thing
@@ -541,7 +541,7 @@
         keepCount(l.keeps)
       ])
     ]);
-    return el('li', { className: 'lists-index-row' }, [link, mapLink(l.id, 'lists-index-map')]);
+    return el('li', { className: 'lists-index-row' }, [link, mapLink(l.id, 'alt lists-map lists-index-map')]);
   }
 
   /* Signed out, on your own lists page. Not a wall in front of the map — the

@@ -529,11 +529,14 @@
     /* Measured to the foot of what stays. On a phone the brand grows a line
        of prose for the first few seconds — see openBrandHint — and a rail
        pushed down to clear a sentence that is on its way out would be left
-       standing there for the rest of the visit. */
+       standing there for the rest of the visit.
+
+       The mark and the handle, not the box around them: up here .brand-head
+       is display: contents, so it has no rectangle of its own to measure. */
     var edge = dom.brand.getBoundingClientRect().bottom;
     if (isNarrow() && dom.brand.classList.contains('hint-open')) {
       edge = 0;
-      var stays = dom.brand.querySelectorAll('.brand-head, .ig-link');
+      var stays = dom.brand.querySelectorAll('.brand-mark, .ig-link');
       for (var k = 0; k < stays.length; k++) {
         var foot = stays[k].getBoundingClientRect().bottom;
         if (foot > edge) edge = foot;

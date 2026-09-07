@@ -265,10 +265,10 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: 12px;
-  /* Room along the bottom for the map link, which is not part of this
+  /* Room along the bottom for the map button, which is not part of this
      element: a link inside a link is not a thing HTML has, so it is a sibling
      laid over the space this padding leaves for it. */
-  padding: 15px 18px 34px;
+  padding: 15px 18px 54px;
   background: var(--paper);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
@@ -332,16 +332,19 @@
 /* The way onto the map from an index row: the card's second destination.
    The card itself opens the list; this opens the same places as pins.
 
+   It wears .lists-map, the same outlined pill as the one on your own list's
+   head, so the door onto the map is the same door everywhere. It was three
+   underlined words here, which on a card whose whole face is already a link
+   read as a caption on the row rather than as something to press.
+
    A sibling laid inside the card's bottom corner rather than a child of it,
    because the card is an <a> and HTML has no link inside a link. It is above
-   the card in the stacking order, so a press on these words goes to the map
-   and a press anywhere else on the card goes to the list. */
+   the card in the stacking order, so a press on the pill goes to the map and
+   a press anywhere else on the card goes to the list. */
 .lists-index-map {
   position: absolute;
-  right: 14px;
-  bottom: 10px;
-  padding: 4px;
-  font-size: 11px;
+  right: 18px;
+  bottom: 12px;
 }
 
 /* ---------- keeping somebody else's list ---------- */
@@ -771,8 +774,8 @@ body.has-scrim { overflow: hidden; }
   }
   .item-moves { grid-column: 2; flex-direction: row; justify-content: flex-end; margin-top: 6px; }
   .item-name { font-size: 15px; }
-  .lists-index-link { padding: 13px 14px 32px; }
-  .lists-index-map { right: 10px; bottom: 8px; }
+  .lists-index-link { padding: 13px 14px 52px; }
+  .lists-index-map { right: 14px; bottom: 10px; }
   .picker { padding: 20px 16px 12px; }
   /* 16px is the smallest a field can be before iOS zooms the whole page to
      reach it, and it never zooms back out. The map's search field has been
