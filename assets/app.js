@@ -81,7 +81,6 @@
     style: DEFAULT_STYLE,
     stylePinned: false,
     lastPick: null,
-    radio: null,         // the station from data/radio.json, or nothing
     active: [],          // selected type ids, OR semantics; empty means "All"
     saves: {},           // place id -> how many people, from /api/saves
     saved: [],           // the places this browser (or account) has saved
@@ -432,7 +431,7 @@
     renderStyleSwitch();
     renderFilters();
     renderPanel();
-    renderRadio();
+    window.TTBRadio.language(code);
     /* applyStaticStrings has just put "Account" back on the button through
        its data-i18n, which is the right word for a stranger and the wrong one
        for somebody signed in: the button wears their name. So it is repainted
@@ -3247,98 +3246,28 @@
   }
 
   /* ---------------------------------------------------------------- radio
-   * A station on a button, for the same reason a restaurant map has a colour
-   * rail: it is somebody's map, not a directory.
-   *
-   * A plain <audio> element and one URL. No SoundCloud or YouTube iframe,
-   * which would cost a visitor third party cookies, a megabyte of player and
-   * a track that gets taken down while nobody is looking. The element is
-   * built on first press, so a visitor who never presses it pays nothing.
-   *
-   * Autoplay is blocked in every browser and should be: a map that starts
-   * making noise on its own is a map people close. This one only ever plays
-   * because somebody asked it to.
-   *
-   * The station lives in data/radio.json. With none set the button never
-   * appears, which is the state the site ships in.
+   * The audio, the station list, the button and the on/off are all
+   * assets/radio.js, shared with the lists page so that walking from the map
+   * to a list does not stop the music. What is left here is what the rail
+   * does around it: the label that opens with the station's name, and the
+   * report to analytics.
    */
-  var radioEl = null;
-
-  /* One station per language where there is one, and the default everywhere
-     else. A visitor reading the map in Russian gets Наше Радио rather than a
-     station they cannot follow, and nobody gets silence for want of an entry. */
-  function stationFor(lang) {
-    var r = state.radio;
-    if (!r) return null;
-    var byLang = r.byLanguage || {};
-    return byLang[lang] || r['default'] || null;
-  }
-
-  function markRadio(on) {
-    if (!dom.btnRadio) return;
-    dom.btnRadio.setAttribute('aria-pressed', String(on));
-    var label = t(on ? 'radioStop' : 'radioPlay');
-    dom.btnRadio.setAttribute('aria-label', label);
-    dom.btnRadio.setAttribute('title', label);
-  }
-
-  function stopRadio() {
-    if (radioEl) { radioEl.pause(); radioEl.removeAttribute('src'); radioEl.load(); }
-    markRadio(false);
-    closeHint('radio');
-  }
-
-  function toggleRadio() {
-    var station = stationFor(state.lang);
-    if (!station || !station.url) return;
-
-    if (dom.btnRadio.getAttribute('aria-pressed') === 'true') {
-      stopRadio();
-      trackEvent('radio_stop', { station: station.name || 'radio' });
-      return;
-    }
-
-    if (!radioEl) {
-      radioEl = document.createElement('audio');
-      radioEl.preload = 'none';
-      radioEl.addEventListener('error', function () {
-        stopRadio();
-        toast(t('radioFail'));
-      });
-    }
-    /* A live stream has no position to resume from, so it is re-attached
-       rather than un-paused: pressing play always joins it where it is now. */
-    radioEl.src = station.url;
-    var started = radioEl.play();
-    if (started && started.catch) {
-      started.catch(function () { stopRadio(); toast(t('radioFail')); });
-    }
-    markRadio(true);
-    /* What you just started, by name, for as long as the intro label ran.
-       On a phone the pill is a triangle in a circle otherwise, which says a
-       stream is playing but never says whose. */
-    openHint('radio', 0);
-    trackEvent('radio_play', { station: station.name || 'radio' });
-  }
-
-  function renderRadio() {
-    if (!dom.btnRadio) return;
-    var station = stationFor(state.lang);
-    if (!station || !station.url) { dom.btnRadio.hidden = true; return; }
-    dom.btnRadio.hidden = false;
-    if (dom.radioName) dom.radioName.textContent = station.name || '';
-
-    /* Changing language mid-song changes the station under it, rather than
-       leaving the old one playing behind a button naming the new one. */
-    if (radioEl && !radioEl.paused && radioEl.src !== station.url) {
-      radioEl.src = station.url;
-      var again = radioEl.play();
-      if (again && again.catch) {
-        again.catch(function () { stopRadio(); toast(t('radioFail')); });
+  function mountRadio() {
+    window.TTBRadio.mount({
+      button: dom.btnRadio,
+      name: dom.radioName,
+      lang: state.lang,
+      t: t,
+      onchange: function (what, station) {
+        if (what === 'fail') { closeHint('radio'); toast(t('radioFail')); return; }
+        if (what === 'stop') { closeHint('radio'); trackEvent('radio_stop', { station: station.name || 'radio' }); return; }
+        /* What you just started, by name, for as long as the intro label ran.
+           On a phone the pill is a triangle in a circle otherwise, which says
+           a stream is playing but never says whose. */
+        openHint('radio', 0);
+        trackEvent('radio_play', { station: station.name || 'radio' });
       }
-      trackEvent('radio_play', { station: station.name || 'radio' });
-    }
-    markRadio(!!(radioEl && !radioEl.paused));
+    });
   }
 
   /* ----------------------------------------------------------- random pick
@@ -5355,8 +5284,10 @@
        phone everybody already knows. */
     state.story.muted = storeGet(STORY_SOUND_KEY) !== 'on';
 
-    /* Two things playing at once is one too many. */
-    if (radioEl && !radioEl.paused) stopRadio();
+    /* Two things playing at once is one too many, and it stays off from
+       here: turning the radio down for a story is a decision about the
+       radio, not about this page. */
+    window.TTBRadio.stop();
 
     dom.stories.hidden = false;
     buildStoryBars();
@@ -6142,7 +6073,6 @@
       closeHint('random');
       randomPick();
     });
-    dom.btnRadio.addEventListener('click', toggleRadio);
 
     document.addEventListener('click', function (ev) {
       if (!dom.langSwitch.contains(ev.target)) closeLangMenu();
@@ -6556,12 +6486,9 @@
       getJSON('data/restaurants.json'),
       getJSON('data/taxonomy.json'),
       getJSON('data/ui.json'),
-      /* Optional in the same way the station is: no file, no deals, and the
-         panel never grows the section. */
+      /* Optional: no file, no deals, and the panel never grows the
+         section. */
       getJSON('data/deals.json').catch(function () { return []; }),
-      /* The station is optional in every sense: no file, no station, no
-         button, and the rest of the map does not notice. */
-      getJSON('data/radio.json').catch(function () { return null; }),
       /* And the stories the same: no file, no ring on the mark, no viewer. */
       getJSON('data/stories.json').catch(function () { return []; }),
       /* Somebody else's list, when the map was opened on one. In here rather
@@ -6575,8 +6502,7 @@
       state.places = loaded[0] || [];
       state.types = (loaded[1] && loaded[1].types) || [];
       state.deals = loaded[3] || [];
-      state.radio = loaded[4] || null;
-      state.stories = Array.isArray(loaded[5]) ? loaded[5] : [];
+      state.stories = Array.isArray(loaded[4]) ? loaded[4] : [];
       state.ui = loaded[2] || {};
       state.langs = sortLanguages(Object.keys(state.ui));
 
@@ -6609,7 +6535,7 @@
          rather than a filter — see visiblePlaces() — so seating one is all it
          takes for the map to be showing it, and the chips stay unpressed
          underneath. Any of them dropped on afterwards ends it. */
-      seatList(loaded[6]);
+      seatList(loaded[5]);
 
       /* Style before the map, so the first tile request is already the right
          basemap and the pins are built from the right tokens. */
@@ -6630,7 +6556,7 @@
          this browser saved is already read, and the button is their door. */
       paintAccountButton();
       renderPanel();
-      renderRadio();
+      mountRadio();
       renderStoryRing();
       wireControls();
       wireStories();
