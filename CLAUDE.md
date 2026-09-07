@@ -314,7 +314,7 @@ file's header block explains the rule; keep it true.
 
 ## Data files
 
-`data/restaurants.json` is the map: 74 places, hand-written, nothing generated.
+`data/restaurants.json` is the map: 75 places, hand-written, nothing generated.
 `data/places.json` is the much longer catalogue a list picks from, and it *is*
 generated. `taxonomy.json` holds the types, `deals.json` the discounts,
 `stories.json` the queue, `ui.json` the strings, `schema.json` the shapes.
