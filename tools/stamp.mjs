@@ -40,7 +40,7 @@ import { dirname, join, resolve } from 'node:path';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /* Every page that loads something out of assets/. */
-export const PAGES = ['index.html', 'lists.html', 'venues.html', 'deal.html', 'verify.html', 'staff.html'];
+export const PAGES = ['index.html', 'lists.html', 'google.html', 'deal.html', 'verify.html', 'staff.html'];
 
 /* Scripts and stylesheets only. Images are addressed by name and replaced
    rather than edited, and no code reads them, so a stale one is a stale

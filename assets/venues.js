@@ -1,6 +1,6 @@
 /* Tallinn Tastebuds — the Google Places directory.
  *
- * /venues.html, and nothing else on this site links to it. The map is
+ * /google, and nothing else on this site links to it. The map is
  * seventy-four places I have been to and it is the whole point of Tallinn
  * Tastebuds; this is the other seven hundred, out of Google's export, with
  * Google's ratings and Google's opening hours on them. Being on this page is

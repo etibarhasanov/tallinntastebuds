@@ -30,13 +30,23 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, follow
 
-# Google's directory of the city. Same revalidating rule again, for the ?v=
-# stamps, and the strongest noindex on the site after the pass pages: this one
-# is somebody else's description of Tallinn and the map is mine, and a search
-# result that put the two side by side would be the whole point of keeping them
-# apart, lost. The page carries the tag in its markup too; this is the half
-# that binds for anything that does not parse the HTML to find it.
-/venues.html
+# Google's directory of the city. It is stored as google.html and Pages serves
+# it at /google as well, and these rules match the request path rather than the
+# file, so both spellings are spelled out — the same reason "/" and
+# "/index.html" both appear at the top of this file. The address people are
+# given is the short one.
+#
+# Same revalidating Cache-Control as the map, for the ?v= stamps, and the
+# strongest noindex on the site after the pass pages: this is somebody else's
+# description of Tallinn and the map is mine, and a search result that put the
+# two side by side would be the whole point of keeping them apart, lost. The
+# page carries the tag in its markup too; this is the half that binds for
+# anything that does not parse the HTML to find it.
+/google.html
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
+/google
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, nofollow
 

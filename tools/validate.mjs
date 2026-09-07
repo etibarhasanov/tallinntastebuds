@@ -212,7 +212,7 @@ if (taxonomy !== null) {
 }
 
 /* ---------------------------------------------------------- cuisines.json
- * The directory at /venues.html files each of Google's 751 places under the
+ * The directory at /google files each of Google's 751 places under the
  * cuisines it looks like it cooks, and says those words in ten languages. Two
  * files hold the labels and they are meant to be disjoint: taxonomy.json above
  * already says asian, vegan, bakery, coffee, pub and fine-dining for the map's

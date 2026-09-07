@@ -5,7 +5,7 @@
  *
  * Every place in this city you can eat or drink in, out of `google_venues` —
  * the Google Places export mirrored into D1, seven hundred and fifty-one rows,
- * see db/schema.sql. It is what /venues.html draws and the only thing that
+ * see db/schema.sql. It is what /google draws and the only thing that
  * asks for it.
  *
  * WHY THIS IS NOT /api/places
