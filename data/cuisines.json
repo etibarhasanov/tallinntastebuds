@@ -16,6 +16,7 @@
     { "id": "pizza", "en": "Pizza", "et": "Pitsa", "fi": "Pizza", "az": "Pizza", "ru": "Пицца", "pt": "Pizza", "es": "Pizza", "tr": "Pizza", "uk": "Піца", "hy": "Պիցցա" },
     { "id": "burgers", "en": "Burgers", "et": "Burgerid", "fi": "Burgerit", "az": "Burger", "ru": "Бургеры", "pt": "Hambúrgueres", "es": "Hamburguesas", "tr": "Burger", "uk": "Бургери", "hy": "Բուրգերներ" },
     { "id": "american", "en": "American", "et": "Ameerika", "fi": "Amerikkalainen", "az": "Amerika", "ru": "Американская", "pt": "Americana", "es": "Americana", "tr": "Amerikan", "uk": "Американська", "hy": "Ամերիկյան" },
+    { "id": "bar", "en": "Bar", "et": "Baar", "fi": "Baari", "az": "Bar", "ru": "Бар", "pt": "Bar", "es": "Bar", "tr": "Bar", "uk": "Бар", "hy": "Բար" },
     { "id": "barbecue", "en": "Barbecue", "et": "Grill", "fi": "Grilli", "az": "Barbekü", "ru": "Барбекю", "pt": "Churrasco", "es": "Barbacoa", "tr": "Barbekü", "uk": "Барбекю", "hy": "Խորոված" },
     { "id": "mexican", "en": "Mexican", "et": "Mehhiko", "fi": "Meksikolainen", "az": "Meksika", "ru": "Мексиканская", "pt": "Mexicana", "es": "Mexicana", "tr": "Meksika", "uk": "Мексиканська", "hy": "Մեքսիկական" },
     { "id": "spanish", "en": "Spanish", "et": "Hispaania", "fi": "Espanjalainen", "az": "İspan", "ru": "Испанская", "pt": "Espanhola", "es": "Española", "tr": "İspanyol", "uk": "Іспанська", "hy": "Իսպանական" },

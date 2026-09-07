@@ -1600,15 +1600,45 @@ another six. It is a file of its own rather than a second array in
 `taxonomy.json` because the map downloads that one and would be carrying nine
 kilobytes it never reads.
 
-Forty-three ids, and every one of them matches at least one row of the export as
+Forty-four ids, and every one of them matches at least one row of the export as
 it stands. `tools/validate.mjs` fails the build if a pattern stops matching
 anything, if an id has no label, or if a label has no pattern. That standard is
 why **european** is not in the table: Google hangs it on ninety-five rows as the
 parent of Italian, French and Greek, so a chip for it would return mostly
 pizzerias while saying nothing a more exact chip does not.
 
-Two hundred and thirteen places get no cuisine at all, because Google says only
-"Restaurant" about them. No chip is the truthful answer there rather than a gap.
+Two hundred and twenty-five places get no cuisine at all, because Google says
+only "Restaurant" about them. No chip is the truthful answer there rather than
+a gap.
+
+#### Which column a word came from, for one pattern only
+
+`said()` in `functions/api/venues.js` joins the three columns with a pipe, and
+`bar` is the single pattern that cares. **Bar** in Google's `category` is what
+the place *is* — "Bar", "Oyster Bar Restaurant", "Hookah Bar" — and `^[^|]*` is
+what pins the match there. **Bar** in the `tags` is what it also *has*, which
+for a ramen shop and a burger place called Hungry Papa is a drinks licence and
+nothing anybody chooses them for.
+
+That distinction exists because the first version did not make it. `pub` carried
+a bare `\bbar\b`, which filed **92** places under the map's word for a beer
+hall — of which 23 had a beer word in them and the rest were wine bars, cocktail
+bars, hookah bars, and restaurants Google had merely tagged. So the two are
+separate now:
+
+| id | label | matches | what it catches |
+|---|---|---|---|
+| `pub` | Beer/pub | 23 | `pub`, `brewpub`, `brewery`, `beer`, `gastropub` |
+| `bar` | Bar | 44 | `cocktail`, `wine bar`, `hookah`, or **Bar** as the category |
+
+Three places are both, which is right: BWB Gastro Bar is a bar with a gastropub
+tag. Thirty are neither any more, which is also right — Google said nothing
+about them but that they serve drinks.
+
+The same over-broad pattern is still in `VENUE_TYPES` in
+`functions/api/_lib.js`, which feeds the lists picker and the map's card for an
+export place, so the map calls that ramen shop a beer pub too. Different file,
+different callers, its own change.
 
 ### One answer, cached, and the page does the narrowing
 

@@ -68,11 +68,12 @@ import { json, wrongDatabase, venueHours } from './_lib.js';
  * vocabulary: `japanese` and `thai` where the map says `asian`, `pizza` and
  * `burgers` where it says `restaurant`.
  *
- * Category, cuisine and the leftover tags are matched as one lowercased
- * string, so "Bar & Grill" is a pub and "Pizza Restaurant; Italian Restaurant"
- * is both. A row can carry several and 244 of them do; 213 carry none at all,
- * and those are the rows where Google says only "Restaurant" and nothing else,
- * so no kitchen is a truthful answer rather than a gap.
+ * Category, cuisine and the leftover tags are matched as one lowercased string
+ * — see said() below for how they are joined and why — so "Pizza Restaurant;
+ * Italian Restaurant" is both of those. A row can carry several and 195 of them
+ * do, up to six; 225 carry none at all, and those are the rows where Google
+ * says only "Restaurant" and nothing else, so no kitchen is a truthful answer
+ * rather than a gap.
  *
  * Every pattern below matches at least one row of the export as it stands, and
  * tools/validate.mjs fails the build if one stops doing so — the same standard
@@ -122,7 +123,24 @@ export const KITCHENS = [
   ['vegan',            /vegan|vegetarian/],
   ['bakery',           /bakery|pastry|donut|dessert|confectionery|patisserie/],
   ['coffee',           /\bcafe\b|coffee|tea house|cafeteria/],
-  ['pub',              /\bbar\b|\bpub\b|brewpub|brewery|beer|wine|cocktail|hookah/],
+  /* Beer, and only beer. This used to carry \bbar\b as well, which Google hangs
+     on any restaurant with a drinks licence: it filed 92 places under the map's
+     word for a beer hall, of which 23 had a beer word and the rest were wine
+     bars, cocktail bars, and a ramen shop. See `bar` below for where those
+     went. */
+  ['pub',              /\bpub\b|brewpub|brewery|\bbeer\b|gastropub/],
+  /* Everywhere you would go for the drink rather than the meal, and the one
+     pattern in this table that cares which column a word came from. "Bar" in
+     the category is what the place IS — "Bar", "Oyster Bar Restaurant",
+     "Hookah Bar" — and `^[^|]*` is what holds it there, because said() keeps
+     the three columns apart with a pipe. "Bar" in the tags is what the place
+     also HAS, which for Kanuti Ramen Bar and a burger place called Hungry Papa
+     is a drinks licence and nothing anybody is choosing them for.
+
+     Cocktail, wine and hookah are named outright because those three do say
+     what somebody is going out for, wherever Google files them. Bare `wine` is
+     not: it would take in the wine shops. */
+  ['bar',              /^[^|]*\bbar\b|cocktail|wine bar|hookah/],
   ['fast-food',        /fast food|takeout|street food|sandwich|snack/],
   ['breakfast',        /breakfast|brunch|pancake/],
   ['buffet',           /buffet/],
@@ -131,8 +149,26 @@ export const KITCHENS = [
 
 /* One row as the page draws it. See the note at the top about empty fields:
    everything here is added only when there is something to add. */
+/* The three columns a kitchen is decided from, lowercased and kept apart.
+ *
+ * The pipe is load-bearing for exactly one pattern — `bar`, which has to know
+ * whether the word was Google's category or one of its tags — and harmless to
+ * the other forty-three, none of which spans a column boundary. Measured: not
+ * one of them matches a different set of rows for the separator being there.
+ *
+ * Exported because tools/validate.mjs holds every pattern in this table to
+ * still matching a row of the export, and it has to ask that question of the
+ * same string this does. Two copies of this line would be two copies that
+ * drift, and the check would then be passing on a haystack the site does not
+ * build.
+ */
+export function said(row) {
+  return [row.category, row.cuisine, row.tags]
+    .map((part) => String(part || '').toLowerCase())
+    .join(' | ');
+}
+
 function entry(row) {
-  const said = [row.category, row.cuisine, row.tags].join(' ').toLowerCase();
   const where = [row.address, [row.postal_code, row.city].filter(Boolean).join(' ')]
     .map((part) => String(part || '').trim())
     .filter(Boolean)
@@ -141,7 +177,7 @@ function entry(row) {
   const out = {
     id: row.place_id,
     name: row.name,
-    kitchens: KITCHENS.filter((pair) => pair[1].test(said)).map((pair) => pair[0])
+    kitchens: KITCHENS.filter((pair) => pair[1].test(said(row))).map((pair) => pair[0])
   };
 
   if (where) out.address = where;
