@@ -263,6 +263,7 @@
 .lists-index-link {
   display: flex;
   align-items: baseline;
+  flex-wrap: wrap;
   gap: 12px;
   /* Room along the bottom for the map link, which is not part of this
      element: a link inside a link is not a thing HTML has, so it is a sibling
@@ -286,11 +287,24 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+/* The numbers along the row, and the private pill when there is one.
+
+   Both halves wrap. This was one line that could not break, and a `flex:
+   0 0 auto` here that said so: a private list with a keep count — "19 places
+   kept by 1 person Only you can read it" — took nearly the whole width and
+   left the title none, so `overflow-wrap: anywhere` above did as it was told
+   and set the name down one letter per line, and the meta ran off the card's
+   edge anyway. Now the link wraps and the meta drops under the name when the
+   two do not fit beside each other, and the meta wraps inside itself for the
+   width where even it alone is too long. `white-space: nowrap` still holds
+   each phrase together; it is the flex lines that break, not the words. */
 .lists-index-meta {
   margin-left: auto;
   display: flex;
-  gap: 10px;
-  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 2px 10px;
   color: var(--muted);
   font-size: 11px;
   letter-spacing: .04em;
