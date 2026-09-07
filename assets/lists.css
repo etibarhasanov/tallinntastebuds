@@ -511,30 +511,6 @@ a.item-name:hover .item-where { color: var(--accent); }
   overflow-wrap: anywhere;
 }
 
-/* What Google says a place is, on the rows that have no write-up to link to:
-   the source, then the band, then the kinds. One rule for both surfaces it
-   appears on — a row on a list and a row in the picker — because it is one
-   line saying one thing, and two copies of it would be two copies to keep in
-   step. It leads with whose description it is rather than trailing it, so the
-   accent on the gauge is read as Google's claim and not as mine.
-
-   The gauge is set a point and a half above the words beside it. At the same
-   size the four signs read as four more characters of the sentence — legible,
-   but flat — and the ghosted pair all but vanishes; the step up is what makes
-   the row read as a gauge with two of its four lit. */
-.place-source {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 2px 9px;
-  margin-top: 3px;
-  color: var(--muted);
-  font-size: 10.5px;
-  letter-spacing: .03em;
-  overflow-wrap: anywhere;
-}
-.place-source .price { font-size: 12px; }
-
 /* What its owner had to say. The reason a list is worth reading, so it is set
    in the body face at reading size and not as a caption. */
 .item-say { margin: 8px 0 0; font-size: 14.5px; line-height: 1.55; overflow-wrap: anywhere; }

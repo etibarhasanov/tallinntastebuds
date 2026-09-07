@@ -962,6 +962,17 @@ kept them, and there is no page anywhere that puts one list above another.
 See **Lists**, where the case for and against a directory that *would* rank is
 set out.
 
+A place off the Google export is the one thing on this site with a number out
+of five next to it, and it is the exception that says what the rule is. It is
+not on my map; it has no write-up, because nobody here has eaten there; and the
+number is printed with "According to Google" in front of it, in the same line
+and the same breath. The rule is that **this site does not rate anything** —
+not that a card may never repeat what somebody else's rating is, on somebody
+else's place, with their name attached. Nothing sorts by it, no place of mine
+has one, and the day a score of Google's appears without the attribution is the
+day the rule has actually been broken. See **A Google row says whose
+description it is**.
+
 If a future change wants to sort by saves, it is changing the argument of the
 site, not adding a feature. That is a decision for a person, not a patch.
 
@@ -1409,9 +1420,14 @@ They keep Google's own names, `latitude` and `longitude` included, even though
 the rest of the site says `lat` and `lng`. The contract of that table is "the
 export, in SQL", and a contract with exceptions is one you have to look up.
 
-`rating` and `reviews` are stored and never shown. There are no scores on this
-map and there never will be — see **On "no scores, stars or rankings"**. They
-are here to help decide which places are worth promoting, and for nothing else.
+`rating` and `reviews` are Google's, and they are shown on Google's places and
+nowhere else: the card the map draws for a place off this export, and the rows
+that lead to it, print "According to Google 4.8 from 3,041 reviews" — attributed,
+every time, in the same line as the kinds and the band. Not one of the
+seventy-four places on my map carries a score, nothing anywhere sorts or ranks
+by one, and that is the rule these numbers do not touch — see **On "no scores,
+stars or rankings"** and **A Google row says whose description it is**. They are
+also still what decides which of these places are worth promoting onto the map.
 
 ### Re-running it is safe
 
@@ -1445,10 +1461,16 @@ one roll made of two: the map's own places out of `data/places.json`, and
 these, out of the table. About 790 in all — see **The roll a list is built
 from**.
 
-A row out of this table brings `category`, `cuisine`, `tags` and `price` with
-it, turned into the map's own vocabulary on the way out and drawn under the
-name with Google's name on it — see **A Google row says whose description it
-is**. `rating` and `reviews` do not travel, here or anywhere.
+A row out of this table brings `category`, `cuisine`, `tags`, `price`, `rating`
+and `reviews` with it, turned into the map's own vocabulary on the way out and
+drawn under the name with Google's name on it — see **A Google row says whose
+description it is**.
+
+And the map, for a place on somebody's list that is not on mine. That card asks
+for four more columns nothing else needs — `phone`, `website`, `opening_hours`
+and `maps_url` — so `venuesByIds()` in `functions/api/_lib.js` selects them and
+`/api/places` does not: the picker fetches all 751 rows at once, and the
+difference is sixty kilobytes of numbers no row on that page prints.
 
 ---
 
@@ -1651,10 +1673,13 @@ differently on purpose:
   entry and keeps everything it has — its pin, its write-up, its reel, its
   price, its types, its save mark. The list's sentence is added under it.
 - A place **not on my map** gets a stand-in: a pin, a name, an address, and
-  what the list's owner said. Opening it gives a short card saying plainly that
-  it is not on my map and whose list it came off, with the sentence and a way
-  to walk there — rather than a place page with every section empty. Being on
-  the map is the verdict, and a list is not a way around that.
+  what the list's owner said. Opening it gives a card that says plainly that it
+  is not on my map and whose list it came off — no write-up, no reel and no
+  photographs, because being on the map is the verdict and a list is not a way
+  around it. What it does carry, when the place came off the Google export, is
+  everything Google holds about it, under Google's name: the score, the band,
+  the kinds, the phone, the week of opening hours and the way to its listing.
+  See **The card for a place I have never eaten at**.
 
 A row the catalogue has no coordinates for is not on this page at all. There is
 nowhere to put a pin, and a row in the panel that no pin answers to is worse
@@ -1792,10 +1817,10 @@ what Google says about the place instead — and says that it was Google saying
 it, every time:
 
 ```
-According to Google   €€€€   Restaurant · Asian
+According to Google   4.8 from 3,041 reviews   €€€€   Restaurant · Asian
 ```
 
-Both halves are turned into the map's own words on the way out, in
+The kinds and the band are turned into the map's own words on the way out, in
 `venueEntry()` in `functions/api/_lib.js`, and neither is stored that way:
 
 **The kinds.** `category`, `cuisine` and `tags` are matched as one string
@@ -1820,19 +1845,57 @@ stored an opinion — `db/schema.sql` says the conversion is one line wherever i
 is actually needed, and that line is here. Fifty-seven rows carry no price and
 get no gauge.
 
+**The score.** `rating` and `reviews`, printed together and never apart: a 5.0
+out of six visits and a 4.6 out of three thousand are not the same claim, and
+the score on its own cannot tell them apart. Both are set in the reading
+language's own digits, so Estonian gets "4,8" where English gets "4.8". This is
+the one number out of five anywhere on this site, and **On "no scores, stars or
+rankings"** says why it does not break that rule: it is Google's number, on
+Google's place, with Google's name in front of it. Nothing sorts by it.
+
 **Why it is attributed.** The gauge is drawn in the site's accent, in the
 vocabulary the map uses for the seventy-four places I have eaten at. Without a
 word saying where it came from it would be borrowing that verdict for a place
-nobody here has been to — which is exactly what `assets/app.js` refuses when it
-draws a list row with no badges on it at all. So the line leads with the
-attribution rather than trailing it: whose description this is, and then the
-description.
+nobody here has been to. So the line leads with the attribution rather than
+trailing it: whose description this is, and then the description.
 
 **Where it shows.** Rows in the picker, where it is the difference between two
-namesakes, and rows on a list, in both the editing and the reading view. The
-map's own places carry no such line — they link through to a write-up, which is
-the fuller version of the same thing — and a hand-typed place carries none
-either, because a name somebody typed is not a description of anything.
+namesakes; rows on a list, in both the editing and the reading view; the rows
+in the map's own panel while somebody's list is open; and the card the map
+draws when one of those rows is pressed — see **The card for a place I have
+never eaten at**. The map's own places carry no such line — they link through
+to a write-up, which is the fuller version of the same thing — and a hand-typed
+place carries none either, because a name somebody typed is not a description
+of anything.
+
+### The card for a place I have never eaten at
+
+Pressing one of those rows on the map opens a card, and for a long time that
+card was a name, a line saying whose list it came off, an address and a
+Directions button — while the row behind it held the number to ring, the site
+to read and the hours to turn up in. It was the honest shape for a place with
+no write-up and the wrong one for a place somebody is deciding whether to walk
+to.
+
+So the card carries the whole of Google's half now, in one block under the
+sentence the list's owner wrote, led by the attribution:
+
+- the source line above — the score, the band and the kinds
+- the address and the phone number, in the same two columns a place of mine
+  sets its facts in
+- **the week**, seven rows, Monday first, with today in ink and the other six
+  quiet. `opening_hours` is one line of English in the table — `"Mon 11:00-22:00;
+  Sun closed"` — so `venueHours()` in `functions/api/_lib.js` turns it into
+  seven days on the way out and the browser draws the day names out of
+  `data/ui.json`. The times are digits and belong to no language, so they
+  travel verbatim; the only word in that column is "Closed", in the reader's
+  own. Fifty-odd rows carry no hours at all and get no section.
+- Directions, Call, Website, and last, **See on Google** — `maps_url`, for the
+  half the export does not carry: the photographs, the reviews, and what
+  somebody said about the queue on a Saturday.
+
+A place somebody added by hand draws none of it and keeps the short card: a
+name typed into a form is not a description, a phone number or a week.
 
 ### The place nobody has
 

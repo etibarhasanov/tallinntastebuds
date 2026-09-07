@@ -2024,6 +2024,53 @@ body.panel-detail .panel {
 
 .muted-note { font-size: 13.5px; color: var(--muted); }
 
+/* What Google says a place is, on everything that has no write-up to link to:
+   whose description it is, then the score, then the band, then the kinds. One
+   rule for the four surfaces it appears on — the card the map draws for a
+   place off the export, the row in the panel behind it, a row on a list's own
+   page and a row in the picker — because it is one line saying one thing, and
+   four copies of it would be four copies to keep in step. It lives here
+   rather than in lists.css for that reason: the map draws it too now.
+
+   It leads with the attribution rather than trailing it, so the accent on the
+   gauge is read as Google's claim and not as mine.
+
+   The gauge is set a point and a half above the words beside it. At the same
+   size the four signs read as four more characters of the sentence — legible,
+   but flat — and the ghosted pair all but vanishes; the step up is what makes
+   the row read as a gauge with two of its four lit. */
+.place-source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 9px;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10.5px;
+  letter-spacing: .03em;
+  overflow-wrap: anywhere;
+}
+.place-source .price { font-size: 12px; }
+/* The one number on the line that is a measurement rather than a label, so it
+   is set in the ink the card reads in while the words around it stay quiet. */
+.place-source .score { color: var(--ink); }
+
+/* On the card it is a line of its own under the owner's sentence rather than
+   a caption inside a row, so it gets the room and the size of one. */
+.is-from-list .place-source {
+  margin: 14px 0 0;
+  font-size: 11.5px;
+  gap: 3px 12px;
+}
+.is-from-list .place-source .price { font-size: 13px; }
+
+/* Google's week, in the same two columns the address and the phone are set
+   in. Today is the row somebody is actually asking about, so it is the one in
+   ink; the other six are there to be scanned past. */
+.facts.is-hours dd { font-variant-numeric: tabular-nums; color: var(--muted); }
+.facts.is-hours .is-today { color: var(--ink); }
+.facts.is-hours dt.is-today { color: var(--accent); }
+
 /* Places visited but not filmed. It has a heading of its own now, in the slot
    the reel and the photos take, so the line under it is a sentence rather than
    another label: the rule and the mono caps belonged to a stray line and would
@@ -2249,19 +2296,28 @@ body.panel-detail .panel {
 /* A place on the list that is not on the map: no write-up, no reel, nothing
    to look at, and the row says so by being plainer rather than by carrying a
    badge that explains its own absence. The name stays the name; what is
-   missing is the mark on the right, so the row is one column wide. */
+   missing is the mark on the right, so the row is one column wide.
+
+   Under the address, what Google says the place is — and above the sentence
+   its owner wrote, which is the last word on the row for the same reason it is
+   the last word on the card. A row whose place came off nobody's export draws
+   no such line and leaves the track empty, which costs nothing: the row has no
+   gap between its tracks. */
 .list-row.is-from-list {
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
     "name"
-    "sub";
+    "sub"
+    "source";
 }
 .list-row.is-from-list:has(> .list-said) {
   grid-template-areas:
     "name"
     "sub"
+    "source"
     "said";
 }
+.list-row.is-from-list > .place-source { grid-area: source; }
 
 /* The heading over a list: its title, its owner's name, the line they wrote
    under it, and the way through to the list's own page. It replaces the

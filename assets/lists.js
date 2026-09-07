@@ -946,12 +946,40 @@
   function sourceLine(item) {
     if (!item.google) return null;
     var kinds = (item.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
-    if (!kinds && !item.price) return null;
+    if (!kinds && !item.price && !item.rating) return null;
     return el('span', { className: 'place-source mono' }, [
-      el('span', { textContent: t('listsGoogleSays') }),
+      el('span', { textContent: t('googleSays') }),
+      item.rating ? scoreMark(item) : null,
       item.price ? priceGauge(item.price) : null,
       kinds ? el('span', { textContent: kinds }) : null
     ]);
+  }
+
+  /* Google's score and the number of people behind it: "4.8 from 3,041". The
+     count never comes off, because a 5.0 out of six visits and a 4.6 out of
+     three thousand are not the same claim and the score alone cannot tell them
+     apart. Both numbers in the reading language's own digits and separators —
+     "3 041" in Estonian — and neither is ever drawn for a place on my map,
+     which is not scored by anybody. */
+  function scoreMark(item) {
+    var out = formatNumber(item.rating, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    if (item.reviews) {
+      out += ' ' + t(item.reviews === 1 ? 'googleReviewsOne' : 'googleReviews', {
+        n: formatNumber(item.reviews)
+      });
+    }
+    return el('span', { className: 'score', textContent: out });
+  }
+
+  /* Wrapped because toLocaleString throws on a language tag the browser will
+     not take, and a row that has lost its score to an exception has lost the
+     rest of the page with it. */
+  function formatNumber(n, opts) {
+    try {
+      return n.toLocaleString(state.lang, opts);
+    } catch (e) {
+      return String(n);
+    }
   }
 
   /* ------------------------------------------------------------- one place */
