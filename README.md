@@ -1580,9 +1580,9 @@ The day names come off there, which is the half that matters: `Mon` is English
 and the times are digits and a hyphen, so what travels carries no language.
 `spansOf()` in `assets/venues.js` turns one day into minutes to answer "open
 now" — four lines, at the one place that asks the question, rather than a
-second shape sent down the wire. It reads all 4,704 spans in the export,
-including the four kitchens that shut for the afternoon and the 683 week-days
-that close after midnight.
+second shape sent down the wire. It reads all 4,704 spans across the 4,642 open
+days in the export, including the 62 days on which one of twelve kitchens shuts
+for the afternoon and reopens, and the 685 spans that close after midnight.
 
 ### Cuisines, in ten languages
 
