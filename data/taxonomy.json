@@ -14,19 +14,6 @@
       "hy": "Հանգիստ/մենակ"
     },
     {
-      "id": "restaurant",
-      "en": "Restaurant",
-      "et": "Restoran",
-      "fi": "Ravintola",
-      "az": "Restoran",
-      "ru": "Ресторан",
-      "pt": "Restaurante",
-      "es": "Restaurante",
-      "tr": "Restoran",
-      "uk": "Ресторан",
-      "hy": "Ռեստորան"
-    },
-    {
       "id": "bakery",
       "en": "Bakery",
       "et": "Pagariäri",
@@ -92,19 +79,6 @@
       "hy": "Էժան"
     },
     {
-      "id": "date",
-      "en": "Date night",
-      "et": "Kohting",
-      "fi": "Treffit",
-      "az": "Görüş",
-      "ru": "Свидание",
-      "pt": "Encontro",
-      "es": "Cita",
-      "tr": "Buluşma",
-      "uk": "Побачення",
-      "hy": "Ժամադրություն"
-    },
-    {
       "id": "laptop",
       "en": "Laptop friendly",
       "et": "Sülearvutisõbralik",
@@ -116,6 +90,19 @@
       "tr": "Laptopa uygun",
       "uk": "З ноутбуком",
       "hy": "Նոութբուքով"
+    },
+    {
+      "id": "date",
+      "en": "Date night",
+      "et": "Kohting",
+      "fi": "Treffit",
+      "az": "Görüş",
+      "ru": "Свидание",
+      "pt": "Encontro",
+      "es": "Cita",
+      "tr": "Buluşma",
+      "uk": "Побачення",
+      "hy": "Ժամադրություն"
     },
     {
       "id": "asian",
@@ -168,6 +155,19 @@
       "tr": "Kafkasya",
       "uk": "Кавказька",
       "hy": "Կովկասյան"
+    },
+    {
+      "id": "restaurant",
+      "en": "Restaurant",
+      "et": "Restoran",
+      "fi": "Ravintola",
+      "az": "Restoran",
+      "ru": "Ресторан",
+      "pt": "Restaurante",
+      "es": "Restaurante",
+      "tr": "Restoran",
+      "uk": "Ресторан",
+      "hy": "Ռեստորան"
     }
   ]
 }
