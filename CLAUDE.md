@@ -17,27 +17,34 @@ what has bitten people already — and an index to the rest.
 
 ## Which process is this?
 
-Work here arrives in a few recurring shapes, and each has a file of its own
-under `.claude/processes/`. Find the row that matches the task and read that
-file end to end before touching anything: it says which README sections to
-read, what to run, what to check in a browser, how the commit reads, and what
-has gone wrong before. A task that spans two rows reads both. A task that
-matches none — a README correction, a workflow change — still reads
-`leave-it-better.md` and follows the sections below.
+Work here arrives in a few recurring shapes, and each has a **skill** of its
+own under `.claude/skills/<name>/SKILL.md`. Claude Code reads every skill's
+one-line description at the start of a session and loads the whole file the
+moment a task matches it — so "add a place" or "queue a story" brings the
+right checklist in on its own, before anything is opened. Typing the slash
+command does the same by hand, and is the way to be sure.
 
-| The task | Read |
+| The task | Skill |
 |---|---|
-| Add a place, change one, add its photos, mark it closed | `.claude/processes/place.md` |
-| Post a story, schedule one, take one down | `.claude/processes/story.md` |
-| Switch a discount on or off, or change what it offers | `.claude/processes/discount.md` |
-| Change what a page does or looks like — anything in `assets/`, an HTML file, `data/ui.json`, a language | `.claude/processes/site.md` |
-| Change a Function, the schema, `wrangler.toml`, or anything that reads or writes D1 | `.claude/processes/api.md` |
-| Refresh the Google Places export | `.claude/processes/google-venues.md` |
-| Nothing asked, or asked to tidy: clean one file | `.claude/processes/leave-it-better.md` |
+| Add a place, change one, add its photos, mark it closed | `/place` |
+| Post a story, schedule one, take one down | `/story` |
+| Switch a discount on or off, or change what it offers | `/discount` |
+| Change what a page does or looks like — anything in `assets/`, an HTML file, `data/ui.json`, a language | `/site` |
+| Change a Function, the schema, `wrangler.toml`, or anything that reads or writes D1 | `/api` |
+| Refresh the Google Places export | `/google-venues` |
 
-`leave-it-better.md` is the main rule of this repo, and it outranks "keep the
-diff small". `site.md` and `api.md` both send you there; the data processes
-only do when the change reaches into a tool or a script.
+Each skill is written from the code, not from memory: which files a change
+touches, in what order, the exact commands and flags, every check the
+validator will apply, the path through `/admin.html` where one exists, and
+where that kind of change has gone wrong before. A task that spans two rows
+loads both. A task that matches none — a README correction, a workflow
+change — follows the sections below.
+
+The seventh file is a **rule**, not a skill: `.claude/rules/leave-it-better.md`
+is the main rule of the repo, and it is path-scoped so that it loads by itself
+the moment a session reads or edits anything under `assets/`, `functions/`,
+`tools/`, `db/` or an HTML page. It outranks "keep the diff small", and its
+last section is the process for a session with nothing else to do.
 
 The files are templates as much as instructions: when a process turns out to
 have a step nobody wrote down, or a way of going wrong that is not in its
@@ -118,7 +125,7 @@ install step in front of it. Warnings never fail the build; errors do. CI runs
 `node tools/qrperf.mjs --check` alongside it, which holds `assets/qr.js` to the
 exact matrix it drew when it was last scanned with a real camera.
 
-And before the PR, the pass in `.claude/processes/leave-it-better.md`: read
+And before the PR, the pass in `.claude/rules/leave-it-better.md`: read
 every file in the diff end to end and clean up what reading it as a whole
 turns up. The generators and the validator only check that the change is
 consistent — they have nothing to say about whether it is any good.
@@ -134,7 +141,7 @@ hash of nothing.
 
 There are two dialects and they do not mix: browser JavaScript in `assets/` is
 ES5, served raw, and the Functions in `functions/` are modern ESM on the
-Workers runtime. `site.md` and `api.md` each say what theirs looks like.
+Workers runtime. The `/site` and `/api` skills each say what theirs looks like.
 
 **Comments carry the reasoning, not the mechanics.** Every file here opens
 with a block explaining what the thing is and why it is that way, and the

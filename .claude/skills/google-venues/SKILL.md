@@ -1,3 +1,8 @@
+---
+name: google-venues
+description: Refresh the Google Places export: a new exports/tallinn_restaurants.csv, the generated db/google-venues.sql, and loading it into both databases.
+---
+
 # Refresh the Google Places export
 
 751 places in Tallinn out of the Google Places API, mirrored into the

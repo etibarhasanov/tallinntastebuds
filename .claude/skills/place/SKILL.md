@@ -1,3 +1,8 @@
+---
+name: place
+description: Add a place to the map, change one, add its photos, or mark it closed. Use for anything in data/restaurants.json or photos/, by hand or through /admin.html.
+---
+
 # Add, change or close a place
 
 The map is `data/restaurants.json`: one object per place, hand-written, nothing

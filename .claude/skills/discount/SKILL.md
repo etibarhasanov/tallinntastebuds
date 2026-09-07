@@ -1,3 +1,8 @@
+---
+name: discount
+description: Switch a restaurant discount on or off, or change what it offers. Use for anything in data/deals.json and the deal, verify and staff pass pages.
+---
+
 # Switch a discount on or off
 
 A few places give readers of the map something off the bill. Which ones, and

@@ -1,3 +1,8 @@
+---
+name: api
+description: Change a Cloudflare Function, db/schema.sql, wrangler.toml, or anything that reads or writes the D1 database.
+---
+
 # Change a Function or the database
 
 Everything under `functions/`, `db/schema.sql` and `wrangler.toml`: the save
