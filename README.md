@@ -1427,17 +1427,19 @@ records.
 node tools/googlevenues.mjs
 ```
 
-Then commit, and the deploy does the rest: `.github/workflows/cloudflare.yml`
-runs `db/google-venues.sql` against the database its deployment talks to —
-production from the production branch, preview from anything else — whenever a
-push changed that file. A run started by hand from the Actions tab loads it
-whether it changed or not. The story cron's hourly deploys never do, which is
-the point of the gate: the file is safe to run twice but it writes every row,
-and every hour would spend the day's D1 writes on rows that had not moved.
+Then commit, and `.github/workflows/venues.yml` does the rest: when a push to
+the live branch changes `db/google-venues.sql`, it runs the file against the
+live database. The path filter is the whole of the gate — the file is safe to
+run twice but it writes every row, and running it on every commit would spend
+the day's D1 writes on rows that had not moved. Started by hand from the
+Actions tab, it loads whichever database you pick, which is how the preview
+database gets it.
 
-The token behind that workflow needs **D1 — Edit** as well as Pages, and the
-workflow's header says where to add it. By hand, for a database that is not
-the one a deploy would reach:
+That workflow needs a token that can write to D1 and nothing else, and its
+header says how to make one. It is separate from the site's own deploys on
+purpose: the site is published by Cloudflare's Git integration, and
+`.github/workflows/cloudflare.yml` is the other way of doing that, which this
+repository does not use. By hand, from anywhere with wrangler signed in:
 
 ```
 wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
