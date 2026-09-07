@@ -200,6 +200,14 @@
     "map": true
   },
   {
+    "id": "fotografiska-cafe",
+    "name": "Fotografiska Café & Bakery",
+    "address": "Telliskivi 60a-8, 10412 Tallinn",
+    "lat": 59.4381678,
+    "lng": 24.7282801,
+    "map": true
+  },
+  {
     "id": "francois-boulangerie",
     "name": "François Boulangerie",
     "address": "Härjapea 17, 10320 Tallinn",

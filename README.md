@@ -188,7 +188,7 @@ A place can be a restaurant *and* something else — KoHo is a restaurant and a
 bakery, Gobi is a restaurant and fine dining — but if the tag went on
 everything that serves food it would match the whole map and filter nothing.
 
-29 of the 74 carry it today — nearly two places in five, which is why the
+29 of the 75 carry it today — nearly two places in five, which is why the
 chip sits at the end of the row rather than near the front. If one of them
 looks wrong to you, it is one line in `data/restaurants.json`.
 
@@ -216,9 +216,11 @@ one.
 It goes on a place, never on a counter inside one. Somewhere that is a bakery
 in the morning and a restaurant at night is two different rooms with two
 different answers, and one chip cannot say both — so it stays off until the two
-are split into their own entries.
+are split into their own entries. Fotografiska is that split: the fine dining
+upstairs and the bakery on the ground floor are two entries, and only the
+ground floor carries the tag.
 
-7 of the 74 carry it today, and all seven are coffee or tea.
+8 of the 75 carry it today, and all eight are coffee or tea.
 
 ---
 
@@ -231,13 +233,13 @@ do not have to scroll for. Today that is:
 
 | # | Type | Places |
 | --- | --- | --- |
-| 1 | Casual/Solo | 44 |
-| 2 | Bakery | 16 |
-| 3 | Coffee/tea | 16 |
+| 1 | Casual/Solo | 45 |
+| 2 | Bakery | 17 |
+| 3 | Coffee/tea | 17 |
 | 4 | Beer/pub | 13 |
 | 5 | Hidden gem | 13 |
 | 6 | Cheap eats | 11 |
-| 7 | Laptop friendly | 7 |
+| 7 | Laptop friendly | 8 |
 | 8 | Date night | 11 |
 | 9 | Asian | 11 |
 | 10 | Vegan | 7 |
@@ -2147,7 +2149,7 @@ added here   new_k3fmqw8x2p                lowercase, and has an underscore
 ```
 
 Both halves of that last test are needed, and the numbers say so rather than
-the intent: all 74 catalogue ids are lowercase with no underscore, **161 of the
+the intent: all 75 catalogue ids are lowercase with no underscore, **161 of the
 751 Google keys do contain an underscore**, and none of the 751 is
 all-lowercase. The underscore alone would misread 161 real places; lowercase
 alone would not separate one from a catalogue slug. `isAdded()` in

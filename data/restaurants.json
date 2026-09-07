@@ -882,6 +882,43 @@
     "closed": false
   },
   {
+    "id": "fotografiska-cafe",
+    "name": "Fotografiska Café & Bakery",
+    "address": "Telliskivi 60a-8, 10412 Tallinn",
+    "lat": 59.4381678,
+    "lng": 24.7282801,
+    "price": 2,
+    "types": [
+      "casual",
+      "bakery",
+      "coffee",
+      "laptop"
+    ],
+    "blurb": {
+      "az": "Fotografiska binasının birinci mərtəbəsi: qapıda mağaza, bir tərəfdə muzey, yuxarıda restoran, ortada isə bu çörəkxana. Hər şeyi elə burada bişirirlər, ona görə səni bura muzey gətirsə belə, çörəkçiyə görə dayanmağa dəyər. Zal noutbukla bir neçə saat oturmaq üçün həqiqətən gözəldir.",
+      "hy": "Fotografiska-ի շենքի առաջին հարկը՝ մուտքի մոտ խանութ, մի կողմում թանգարան, վերևում՝ ռեստորան, իսկ մեջտեղում այս հացատունը։ Ամեն ինչ թխվում է տեղում, այնպես որ արժե կանգ առնել հացթուխի համար, նույնիսկ եթե քեզ այստեղ թանգարանն է բերել։ Դահլիճն իսկապես հաճելի վայր է մի քանի ժամ նոութբուքով նստելու համար։",
+      "en": "The ground floor of the Fotografiska building: a shop at the door, the museum one way, the restaurant upstairs, and this bakery filling the middle. Everything is baked on the spot, so it is worth stopping for the baker even if the museum is what brought you in. The room is a genuinely lovely place to sit with a laptop for a couple of hours.",
+      "et": "Fotografiska maja esimene korrus: uksest sisse pood, ühele poole muuseum, üles restoran, ja keskel see pagariäri. Kõik küpsetatakse kohapeal, nii et pagari pärast tasub peatuda ka siis, kui sind tõi siia muuseum. Saal on tõesti mõnus koht, kus paar tundi sülearvutiga istuda.",
+      "fi": "Fotografiskan rakennuksen ensimmäinen kerros: ovella kauppa, toisaalla museo, yläkerrassa ravintola ja keskellä tämä leipomo. Kaikki paistetaan paikan päällä, joten leipurin takia kannattaa pysähtyä, vaikka museo olisi tuonut sinut tänne. Sali on todella mukava paikka istua pari tuntia läppärin kanssa.",
+      "pt": "O rés do chão do edifício da Fotografiska: uma loja à entrada, o museu de um lado, o restaurante lá em cima e esta padaria no meio de tudo. Tudo é feito ali mesmo, por isso vale a pena parar pelo padeiro mesmo que tenha sido o museu a trazê-lo. A sala é um sítio mesmo agradável para ficar umas duas horas com o portátil.",
+      "ru": "Первый этаж здания Fotografiska: у входа магазин, в одну сторону музей, наверху ресторан, а посередине эта пекарня. Всё пекут прямо здесь, так что заглянуть к пекарю стоит, даже если привёл вас сюда музей. В зале по-настоящему приятно посидеть пару часов с ноутбуком.",
+      "es": "La planta baja del edificio de Fotografiska: una tienda en la entrada, el museo hacia un lado, el restaurante arriba y esta panadería en medio de todo. Todo se hornea allí mismo, así que merece la pena parar por el panadero aunque lo que te haya traído sea el museo. La sala es un sitio realmente agradable para pasar un par de horas con el portátil.",
+      "tr": "Fotografiska binasının giriş katı: kapıda bir dükkân, bir yanda müze, üst katta restoran ve tam ortada bu fırın. Her şey yerinde pişiyor, yani sizi buraya müze getirmiş olsa bile fırıncı için durmaya değer. Salon, birkaç saat laptopla oturmak için gerçekten güzel bir yer.",
+      "uk": "Перший поверх будівлі Fotografiska: біля входу крамниця, в один бік музей, нагорі ресторан, а посередині ця пекарня. Усе печуть просто тут, тож зазирнути до пекаря варто, навіть якщо привів вас сюди музей. У залі справді приємно посидіти пару годин із ноутбуком."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [
+      "01.webp",
+      "02.webp"
+    ],
+    "website": "",
+    "phone": "",
+    "added": "2026-09-07",
+    "visited": "2026-09",
+    "closed": false
+  },
+  {
     "id": "francois-boulangerie",
     "name": "François Boulangerie",
     "address": "Härjapea 17, 10320 Tallinn",
