@@ -61,7 +61,7 @@ import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
    file, the way VENUE_TYPES is, and the checks below are what keep it honest:
    every id has a label in ten languages, and every pattern still matches
    something in the export it was measured against. */
-import { KITCHENS } from '../functions/api/venues.js';
+import { KITCHENS, said } from '../functions/api/venues.js';
 import { STORY_HOURS, HOUR_MS, storyWindow, storyPhase } from './clock.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -284,11 +284,16 @@ for (const id of cuisineIds) {
     const rows = parseCsv(readFileSync(csv, 'utf8'));
     const head = rows[0] || [];
     const at = (name) => head.indexOf(name);
-    const said = rows.slice(1).map((row) =>
-      [row[at('category')], row[at('cuisine')], row[at('tags')]].join(' ').toLowerCase());
+    /* Built by the endpoint's own said(), not by a second copy of it here. One
+       pattern in that table asks which column a word came from, so a haystack
+       assembled differently would answer this check on a string the site never
+       builds. */
+    const haystacks = rows.slice(1).map((row) => said({
+      category: row[at('category')], cuisine: row[at('cuisine')], tags: row[at('tags')]
+    }));
 
     for (const [id, pattern] of KITCHENS) {
-      if (!said.some((text) => pattern.test(text))) {
+      if (!haystacks.some((text) => pattern.test(text))) {
         fail('functions/api/venues.js', `the KITCHENS pattern for "${id}" matches nothing in the Google Places export any more`);
       }
     }

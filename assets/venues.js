@@ -592,13 +592,20 @@
     if (venue.price) facts.appendChild(priceGauge(venue.price));
     if (facts.firstChild) node.appendChild(facts);
 
-    var kitchens = venue.kitchens.map(label).filter(Boolean);
+    var ids = venue.kitchens.slice();
+    /* Whatever is being filtered by goes first. Only two of these fit on a
+       phone without wrapping, and the table's own order runs from the most
+       exact word to the broadest — which means picking Beer/pub could hand
+       back a card reading "Burgers · American". True, and it looks like a
+       mistake. A card should always say why it is in the list. */
+    if (state.cuisine) {
+      var at = ids.indexOf(state.cuisine);
+      if (at > 0) ids.unshift(ids.splice(at, 1)[0]);
+    }
+    var kitchens = ids.map(label).filter(Boolean);
     if (kitchens.length) {
       node.appendChild(el('p', {
         className: 'venue-kitchens',
-        /* Two is what fits on a phone without wrapping, and the rest say
-           nothing the first two have not: the list is in the order the table
-           is written, which runs from the most exact word to the broadest. */
         textContent: kitchens.slice(0, 2).join(' · ')
       }));
     }
