@@ -1165,15 +1165,17 @@ a { color: var(--accent); }
     var out = el('div');
     into.appendChild(out);
 
-    /* What happens to the file when the 36 hours are up is not the same for
-       the two of them, and it is the sort of thing to know before posting
-       rather than after: a photograph becomes one of the place's pictures, a
-       video is switched off and left where it is. */
+    /* What happens when the 36 hours are up is the sort of thing to know
+       before posting rather than after, and the picture outlives the story
+       either way: a photograph becomes one of the place's pictures, and a
+       video leaves its poster frame behind as one before it is switched
+       off. */
     function refreshPlaceHint() {
       var video = state.media && state.media.kind === 'video';
       placeHint.textContent = 'The button under the story opens this place on the map' +
         (video
-          ? '. A video is switched off when its time is up and the file stays in stories/.'
+          ? ', and its poster frame moves into that place\'s photos when the 36 ' +
+            'hours are up. The video itself is switched off and stays in stories/.'
           : ', and the photograph moves into its photos when the 36 hours are up.');
     }
     refreshPlaceHint();
@@ -1388,10 +1390,8 @@ a { color: var(--accent); }
           ]));
           out.appendChild(el('p', { className: 'hint', textContent:
             'Cloudflare redeploys within the minute. Nothing else has to happen — the ' +
-            'ring appears by itself when the time comes' +
-            (media.kind === 'photo'
-              ? ', and the picture moves onto ' + place.name + ' when it is over.'
-              : '.') }));
+            'ring appears by itself when the time comes, and the picture moves onto ' +
+            place.name + ' when it is over.' }));
           if (media.kind === 'video' && !media.ready) {
             out.appendChild(el('p', { className: 'hint', textContent:
               'The video is not an ordinary MP4 yet. story-media.yml converts it and ' +

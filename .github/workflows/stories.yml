@@ -13,11 +13,12 @@ name: stories
 # person forgets. When a story's day and a half is over,
 # `node tools/stories.mjs --tick`:
 #
-#   - moves a photograph of a place into photos/<spot>/, lists it on the
-#     place, and drops the story entry and the file — the story expires, the
-#     photograph does not;
-#   - switches off anything else that has run out, and leaves the file alone,
-#     because deleting somebody's video is somebody's decision.
+#   - moves the picture of a place into photos/<spot>/ and lists it on the
+#     place — the photograph a photo story is, or the poster frame a video was
+#     watched from. The story expires; the photograph does not. A photo
+#     story's entry goes with its file;
+#   - switches off anything else that has run out, and leaves the video alone,
+#     because deleting somebody's film is somebody's decision.
 #
 # It commits only when there is something to commit, so a quiet hour is a run
 # that touches nothing.

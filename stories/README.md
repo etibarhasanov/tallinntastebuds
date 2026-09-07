@@ -5,7 +5,7 @@ named after the story's `id` in `data/stories.json`:
 
 ```
 stories/pulla-bakery-cinnamon-bun.mp4     the video
-stories/pulla-bakery-cinnamon-bun.jpg     optional — the frame shown while it loads
+stories/pulla-bakery-cinnamon-bun.jpg     optional — the frame it loads behind, and the photo the place keeps
 stories/pulla-bakery-window.webp          or a photo story, which is just the picture
 ```
 
@@ -30,7 +30,8 @@ and it wants to be small:
   place's photos once the story is over, so shoot it as a picture worth
   keeping rather than a frame with words across it. It arrives in the
   lightbox upright, which is fine: the lightbox has always taken a photo the
-  shape it was given.
+  shape it was given. A video's poster frame goes the same way, so it is worth
+  a thought as well: it is the frame the place is left with.
 - **Under 15 seconds and under 8 MB.** Cloudflare Pages refuses a file over
   25 MB outright, and a phone on a tram gives up long before that.
 - **Burn the words in, or write them in `caption`.** There are no subtitles
@@ -113,7 +114,11 @@ without being asked:
 - **A photograph with a `spot`** is moved into `photos/<that place>/`, numbered
   after the photos already there, and listed on the place. It leaves this
   folder entirely. The story was the moment; the picture stays.
-- **A video, or a photograph of nothing in particular,** is switched to
+- **A video with a `spot`** sends its **poster frame** the same way, and for
+  the same reason: the still is a photograph of that place, and the frame a
+  story opened on is worth keeping. The entry stops naming a poster once it
+  has gone.
+- **The video itself, and anything with no `spot`,** is switched to
   `live: false` and left here. Deleting it is your decision — do it once it has
   been gone a while, entry and file together, and the validator will mention
   the file until you do.

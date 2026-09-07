@@ -34,6 +34,8 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve, extname, basename } from 'node:path';
 
+import { storyWindow } from './clock.mjs';
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const STORIES = join(ROOT, 'stories');
 const STORIES_JSON = join(ROOT, 'data', 'stories.json');
@@ -328,12 +330,18 @@ for (const story of withVideo) {
 
 /* A poster is what stands in the frame while the video is still arriving, and
    a story posted from a browser that could not make one has none. Taken from
-   the finished file, so it is the frame the viewer will actually see. */
+   the finished file, so it is the frame the viewer will actually see.
+   Nothing is taken for a story whose time is already up: its poster has gone
+   to live on the place it was shot at — that is what tools/stories.mjs does
+   with it — and drawing another would put the picture back in stories/ for a
+   story nobody is going to watch again. */
 if (fix) {
+  const now = Date.now();
   for (const story of withVideo) {
     const video = join(STORIES, story.video);
     if (!existsSync(video)) continue;
     if (story.poster && existsSync(join(STORIES, story.poster))) continue;
+    if (storyWindow(story).untilMs <= now) continue;
 
     const name = freeName(basename(story.video, extname(story.video)), 'jpg', story, story.poster);
     try {
