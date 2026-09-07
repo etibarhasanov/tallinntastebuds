@@ -653,7 +653,8 @@ a.item-name:hover .item-where { color: var(--accent); }
      the ceiling, and the list ran off the bottom of a window that cannot
      scroll, because the body is held still while the sheet is open. The
      window is the only real ceiling. The scrim's own padding comes off it,
-     and so does the on-screen keyboard the map measures into --kbd. */
+     and so does whatever the on-screen keyboard covers — wireKeyboard() in
+     assets/lists.js measures that into --kbd. */
   max-height: calc(100vh - 40px - var(--kbd, 0px));
   max-height: calc(100dvh - 40px - var(--kbd, 0px));
 }
