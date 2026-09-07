@@ -1601,7 +1601,9 @@ On somebody else's list it is the card's filled action and the first thing in
 the row, because it is what the link was sent for: a list is a set of places,
 and the question about a set of places is where they are. Keep and Share are
 the second thoughts beside it. On your own list it stays quiet — Save is that
-card's one filled press, and the accent is spent once.
+card's one filled press, and the accent is spent once. That quiet one is an
+outlined pill, and it is what each index row carries in its bottom corner too,
+so the door onto the map looks the same wherever it turns up.
 
 That is the map this site already has, not a second smaller one drawn on the
 lists page. The question anybody has about ten restaurants in one city is where
