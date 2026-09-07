@@ -180,8 +180,9 @@ A place can be a restaurant *and* something else — KoHo is a restaurant and a
 bakery, Gobi is a restaurant and fine dining — but if the tag went on
 everything that serves food it would match the whole map and filter nothing.
 
-27 of the 69 carry it today. If one of them looks wrong to you, it is one line
-in `data/restaurants.json`.
+29 of the 74 carry it today — nearly two places in five, which is why the
+chip sits at the end of the row rather than near the front. If one of them
+looks wrong to you, it is one line in `data/restaurants.json`.
 
 ---
 
@@ -209,48 +210,55 @@ in the morning and a restaurant at night is two different rooms with two
 different answers, and one chip cannot say both — so it stays off until the two
 are split into their own entries.
 
-6 of the 70 carry it today, and all six are coffee or tea.
+7 of the 74 carry it today, and all seven are coffee or tea.
 
 ---
 
 ## The order of the filter chips
 
 The chips appear in the order the types are written in `data/taxonomy.json`,
-left to right. That order is set by how many places carry each type, commonest
-first, so the chips people are most likely to want are the ones they do not
-have to scroll for. Today that is:
+left to right. That order starts from how many places carry each type,
+commonest first, so the chips people are most likely to want are the ones they
+do not have to scroll for. Today that is:
 
 | # | Type | Places |
 | --- | --- | --- |
-| 1 | Casual/Solo | 40 |
-| 2 | Bakery | 15 |
-| 3 | Coffee/tea | 15 |
-| 4 | Beer/pub | 12 |
-| 5 | Hidden gem | 11 |
-| 6 | Cheap eats | 10 |
-| 7 | Date night | 11 |
-| 8 | Laptop friendly | 6 |
-| 9 | Asian | 9 |
+| 1 | Casual/Solo | 44 |
+| 2 | Bakery | 16 |
+| 3 | Coffee/tea | 16 |
+| 4 | Beer/pub | 13 |
+| 5 | Hidden gem | 13 |
+| 6 | Cheap eats | 11 |
+| 7 | Laptop friendly | 7 |
+| 8 | Date night | 11 |
+| 9 | Asian | 11 |
 | 10 | Vegan | 7 |
 | 11 | Fine dining | 5 |
-| 12 | Caucasus | 6 |
+| 12 | Caucasus | 7 |
+| 13 | Restaurant | 29 |
 
-The counts above are the live ones, and the order no longer follows them
-exactly: Date night has grown past Cheap eats, and Caucasus past Fine dining,
-without the chips moving. That is the deliberate part — see below — but it is
-worth a re-sort the next time somebody is in here.
+Two places in that table are hand-set against the counts, and both are about
+what a chip is *for* rather than how big it is.
 
-Ties are broken by hand: bakery before coffee before pub, cheap eats before
-date night, and the two cuisines last, since somebody scanning the row is
-usually after a kind of evening rather than a kind of kitchen. Laptop friendly
-sits above Asian and Vegan on six places for the same reason — it is a kind of
-afternoon, and the row reads better with the use cases together and the
-kitchens at the end. It is the newest chip and the smallest, so it is the one
-to watch: if it stays this short it belongs further right.
+**Restaurant is last, on 29 places.** By frequency it would be second, ahead of
+everything but Casual/Solo, and that is exactly the problem: a chip that keeps
+two places in five has barely answered the question it was pressed to answer.
+It earns its place in the row — the shape of a place is a real thing to ask
+about, and the line is drawn above — but it is the one people reach for last,
+so it is the one they scroll to.
 
-Nothing re-sorts itself as you add places, and that is deliberate: a row of
-chips that rearranges between visits is a row nobody learns. Re-check it when
-a type has visibly grown, and move the line in `taxonomy.json`.
+**Laptop friendly sits with Date night**, above the cuisines, on fewer places
+than either. Somebody scanning the row is usually after a kind of afternoon or
+a kind of evening rather than a kind of kitchen, and the row reads better with
+the use cases together and the kitchens at the end. Ties are broken by hand for
+the same reason: bakery before coffee before pub, cheap eats before the two
+occasions.
+
+The rest of the counts have drifted from the order without the chips moving —
+Date night and Asian have both grown past Cheap eats, and Caucasus past Fine
+dining. Nothing re-sorts itself as you add places, and that is deliberate: a
+row of chips that rearranges between visits is a row nobody learns. Re-check it
+when a type has visibly grown, and move the line in `taxonomy.json`.
 
 ## A filter never answers with an empty screen
 
