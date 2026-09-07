@@ -85,7 +85,8 @@ export async function onRequestGet(context) {
     try {
       const { results } = await env.DB
         .prepare(
-          'SELECT place_id, name, address, postal_code, city, latitude, longitude, map_id ' +
+          'SELECT place_id, name, category, cuisine, tags, price, address, postal_code, city, ' +
+          'latitude, longitude, map_id ' +
           'FROM google_venues ' +
           /* hidden is the curation switch — a duplicate, or a car park Google
              thinks is a restaurant. missing_since is a row the last sync no

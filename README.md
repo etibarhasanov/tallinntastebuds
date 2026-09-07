@@ -1421,6 +1421,11 @@ one roll made of two: the map's own places out of `data/places.json`, and
 these, out of the table. About 790 in all — see **The roll a list is built
 from**.
 
+A row out of this table brings `category`, `cuisine`, `tags` and `price` with
+it, turned into the map's own vocabulary on the way out and drawn under the
+name with Google's name on it — see **A Google row says whose description it
+is**. `rating` and `reviews` do not travel, here or anywhere.
+
 ---
 
 ## Lists
@@ -1752,6 +1757,56 @@ for whatever is left over.
 
 If the database is unreachable, or a preview has the schema but no sync run
 against it, the picker opens on the map's places rather than on an error.
+
+### A Google row says whose description it is
+
+A place off the export has no write-up to link to. Being on my map is the
+verdict on this site and 750 of these are not on it, so a row for one carries
+what Google says about the place instead — and says that it was Google saying
+it, every time:
+
+```
+According to Google   €€€€   Restaurant · Asian
+```
+
+Both halves are turned into the map's own words on the way out, in
+`venueEntry()` in `functions/api/_lib.js`, and neither is stored that way:
+
+**The kinds.** `category`, `cuisine` and `tags` are matched as one string
+against seven taxonomy ids, so "Sushi Restaurant" and "Japanese" come out as
+`restaurant` and `asian` — and the row prints the names `data/taxonomy.json`
+already carries in ten languages instead of Google's English, which is the
+same rule every other visible string on this site follows. Matching all three
+columns at once is what makes "Bar & Grill" both a pub and a restaurant. Over
+the export as it stands, 740 of the 751 rows come out with at least one kind,
+exactly one comes out with four, and the eleven with none — kebab shops,
+sandwich shops, a theatre, a caterer — draw no kinds rather than a wrong one.
+
+Only the descriptive half of the taxonomy is reachable from there. `casual`,
+`date`, `laptop`, `hidden-gem` and `cheap-eats` are verdicts about a place I
+have eaten at, and no amount of Google's category text is evidence for one.
+`caucasian` is descriptive and still not in the table: nothing in the 751 rows
+says Georgian or Armenian, so a rule for it would be a line that has never run.
+
+**The band.** Google's `"$"` to `"$$$$"` as the map's gauge of four. The table
+keeps the string verbatim, because a mirror that converts on the way in has
+stored an opinion — `db/schema.sql` says the conversion is one line wherever it
+is actually needed, and that line is here. Fifty-seven rows carry no price and
+get no gauge.
+
+**Why it is attributed.** The gauge is drawn in the site's accent, in the
+vocabulary the map uses for the seventy-four places I have eaten at. Without a
+word saying where it came from it would be borrowing that verdict for a place
+nobody here has been to — which is exactly what `assets/app.js` refuses when it
+draws a list row with no badges on it at all. So the line leads with the
+attribution rather than trailing it: whose description this is, and then the
+description.
+
+**Where it shows.** Rows in the picker, where it is the difference between two
+namesakes, and rows on a list, in both the editing and the reading view. The
+map's own places carry no such line — they link through to a write-up, which is
+the fuller version of the same thing — and a hand-typed place carries none
+either, because a name somebody typed is not a description of anything.
 
 ### The place nobody has
 

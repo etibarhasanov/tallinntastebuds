@@ -304,16 +304,73 @@ export async function catalogue(context) {
  * that read it ask for a handful of rows by key.
  */
 
-/* One venue as the catalogue draws a place, so the rest of the lists code
-   cannot tell which of the two rolls an entry came out of.
+/* Google's category and cuisine, said in the map's own words.
+ *
+ * The export files a place as "Sushi Restaurant" and "Japanese";
+ * data/taxonomy.json calls those `restaurant` and `asian`, and carries both
+ * in ten languages. A list row draws the taxonomy ids for the same reason
+ * every other visible string on this site comes out of a translated file: a
+ * picker that prints Google's English at a Ukrainian reader is the one thing
+ * this codebase refuses to do.
+ *
+ * Only the descriptive half of the taxonomy is reachable from here. `casual`,
+ * `date`, `laptop`, `hidden-gem` and `cheap-eats` are verdicts about a place
+ * I have eaten at, and no amount of Google's category text is evidence for
+ * one. `caucasian` is descriptive and still not in the table: nothing in the
+ * export's 751 rows says Georgian or Armenian, so a rule for it would be a
+ * line that has never once run.
+ *
+ * Category, cuisine and the leftover tags are matched as one string, which is
+ * what makes "Bar & Grill" both a pub and a restaurant. Counted over the
+ * export as it stands: 740 of the 751 rows come out with at least one type,
+ * exactly one comes out with four, and the eleven with none are kebab shops,
+ * sandwich shops, a theatre and a caterer — which get no types at all rather
+ * than a wrong one.
+ *
+ * Every word below matches at least one of those rows. "Diner", "eatery",
+ * "patisserie", "tavern" and "poke" all read like they belong in this table
+ * and matched nothing at all, so they are not in it, for the same reason
+ * `caucasian` is not: a line that has never run is a line the next person has
+ * to work out the intent of. Worth re-measuring against a refreshed export —
+ * counting the rows each word is the only match for takes a minute and says
+ * which of these have started or stopped earning their place.
+ */
+const VENUE_TYPES = [
+  ['restaurant',  /restaurant|bistro|steak|grill|buffet/],
+  ['bakery',      /bakery|pastry|donut|dessert/],
+  ['coffee',      /cafe|coffee|tea house|brunch|cafeteria/],
+  ['pub',         /\bbar\b|\bpub\b|brewpub|brewery|beer|wine|cocktail/],
+  ['asian',       /asian|japanese|sushi|ramen|izakaya|chinese|thai|korean|vietnamese|taiwanese|indonesian|malaysian|filipino|noodle|dumpling/],
+  ['vegan',       /vegan|vegetarian/],
+  ['fine-dining', /fine dining/]
+];
 
-   The address is Google's street line and the two columns beside it, joined
-   the way the catalogue writes one: "Kopli tn 16, 10412 Tallinn". */
+/* One venue as the catalogue draws a place — with two things the catalogue
+ * has no column for, and one flag that says where they came from.
+ *
+ * The name, the address, the pin, `map` and `mapId` are what all three rolls
+ * answer with, so a row can be drawn without knowing which one it came out
+ * of. `types`, `price` and `google` are the exception, and a deliberate one:
+ * they are Google's description of a place I have never eaten at, and the
+ * page that draws them has to be able to say so. See sourceLine() in
+ * assets/lists.js, which is the only thing that reads them.
+ *
+ * The address is Google's street line and the two columns beside it, joined
+ * the way the catalogue writes one: "Kopli tn 16, 10412 Tallinn".
+ */
 export function venueEntry(row) {
   const where = [row.address, [row.postal_code, row.city].filter(Boolean).join(' ')]
     .map((part) => String(part || '').trim())
     .filter(Boolean)
     .join(', ');
+
+  /* Google's "$" to "$$$$" as the map's band of four. db/schema.sql keeps the
+     string verbatim rather than converting it on the way in — a mirror that
+     stores an opinion has stopped being a mirror — and says the conversion is
+     one line wherever it is actually needed. This is that line. Fifty-seven
+     of the rows carry no price at all and get no gauge. */
+  const dollars = /^\$+$/.test(row.price || '') ? String(row.price).length : 0;
+  const said = [row.category, row.cuisine, row.tags].join(' ').toLowerCase();
 
   return {
     id: row.place_id,
@@ -325,7 +382,13 @@ export function venueEntry(row) {
        link to a write-up instead of out to Google, and `mapId` is where that
        write-up lives — the map's own id, not Google's key. */
     map: !!row.map_id,
-    mapId: row.map_id || null
+    mapId: row.map_id || null,
+    types: VENUE_TYPES.filter((pair) => pair[1].test(said)).map((pair) => pair[0]),
+    price: dollars >= 1 && dollars <= 4 ? dollars : null,
+    /* Not "is this row from the table" — the id already says that. It is
+       "whose description this is", and it travels with the description so
+       that nothing downstream can draw one without the other. */
+    google: true
   };
 }
 
@@ -345,7 +408,8 @@ export async function venuesByIds(env, ids) {
   const holes = keys.map(() => '?').join(', ');
   const { results } = await env.DB
     .prepare(
-      'SELECT place_id, name, address, postal_code, city, latitude, longitude, map_id ' +
+      'SELECT place_id, name, category, cuisine, tags, price, address, postal_code, city, ' +
+      'latitude, longitude, map_id ' +
       'FROM google_venues WHERE place_id IN (' + holes + ')'
     )
     .bind(...keys)
