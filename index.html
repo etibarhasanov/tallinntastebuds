@@ -62,7 +62,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=7a4ccf85">
+<link rel="stylesheet" href="assets/styles.css?v=383bc3b6">
 </head>
 <body>
 
@@ -145,6 +145,29 @@
 
 <div class="controls">
   <div class="seg" id="lang-switch" role="group" data-i18n-aria-label="language" aria-label="Language"></div>
+  <!-- The way to everybody else's lists, beside the way to the places. The two
+       of them are what this site is: the pins, and what people wrote about
+       them.
+
+       A link and not a button, and the only control up here that is. Everything
+       else in this corner opens something over the map; this one leaves for a
+       page of its own, and it is drawn as a link so that a long press offers to
+       open it in a tab the way a link does.
+
+       Not behind the account sheet, where the only other door to lists is. That
+       one says Your lists and belongs to whoever you are. This one needs no
+       account at all, and most of the people it is for have never signed in. -->
+  <div class="seg">
+    <a class="btn btn-wide" id="btn-lists" href="/lists/kept">
+      <!-- The same bookmark the map draws on a place and a list wears on its
+           own page, because it is the same word said about a different object:
+           kept. -->
+      <svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z"/>
+      </svg>
+      <span data-i18n="listsOpenAll">Lists</span>
+    </a>
+  </div>
   <div class="seg">
     <button type="button" class="btn btn-wide" id="btn-list" aria-expanded="false" aria-controls="panel">
       <!-- A pin, not the magnifier that used to be here. The button says
@@ -354,6 +377,6 @@
      playing when somebody walks from the map to a list. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
 <script src="assets/radio.js?v=dac5f009" defer></script>
-<script src="assets/app.js?v=0dd4dee7" defer></script>
+<script src="assets/app.js?v=29206c66" defer></script>
 </body>
 </html>

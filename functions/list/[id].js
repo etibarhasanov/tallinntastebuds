@@ -53,39 +53,19 @@
  * `/lists.html` stays noindex — it is your own lists, and signed out there is
  * nothing on it. That header is in `_headers`.
  *
- * And nothing here is cached, indexable or not. See page().
+ * And nothing here is cached, indexable or not. See page() in
+ * functions/_shell.js, which is where the response itself is built.
  */
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import { readList, LIST_ID } from '../api/_lists.js';
+/* Escaping, the page out of the deployment, the head swap and the seeding are
+   shared with functions/lists/kept.js, which serves the same document with
+   everybody's lists in it. See functions/_shell.js for why they are not
+   written out twice. */
+import { esc, shell, sow, rehead, page } from '../_shell.js';
 
 const SITE = 'https://tallinntastebuds.ee';
-const HEAD_OPEN = '<!--LIST-HEAD-->';
-const HEAD_CLOSE = '<!--/LIST-HEAD-->';
-
-/* Text on its way into an attribute or an element. The quotes matter most —
-   every use below is inside a content="…" — and the ampersand has to go first
-   or it would double-escape the entities the others introduce. */
-function esc(text) {
-  return String(text == null ? '' : text)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-/* JSON on its way into a <script> element. JSON.stringify is not enough on its
-   own: a title containing the characters "</script>" would close the element
-   from inside the string, and U+2028 and U+2029 are line terminators to a
-   JavaScript parser but ordinary characters to a JSON one. */
-function seed(value) {
-  return JSON.stringify(value)
-    .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e')
-    .replace(/&/g, '\\u0026')
-    .replace(/\u2028/g, '\\u2028')
-    .replace(/\u2029/g, '\\u2029');
-}
 
 /* The line under the title in a preview card. Their own if they wrote one,
    and otherwise a plain statement of what the link holds.
@@ -131,42 +111,6 @@ function headTags(list, url) {
   ].join('\n');
 }
 
-/* The page itself, out of the deployment. ASSETS is the binding Pages gives a
-   Function for its own static files; the plain fetch is what makes this work
-   under `wrangler pages dev`, where the binding is not always there. */
-async function shell(context) {
-  const url = new URL('/lists.html', context.request.url);
-  const res = context.env.ASSETS
-    ? await context.env.ASSETS.fetch(new Request(url.toString()))
-    : await fetch(url.toString());
-  if (!res.ok) throw new Error('lists.html unreadable: ' + res.status);
-  return res.text();
-}
-
-/* `indexable` is only ever true for a public list that was actually found.
-   Everything else through here — a 404, a database that is not bound, a
-   private list, the plain shell served when something went wrong — is a page
-   with no list on it or a page that is nobody's business but its owner's, and
-   none of those is worth a search result. */
-function page(html, status, indexable) {
-  return new Response(html, {
-    status: status || 200,
-    headers: {
-      'content-type': 'text/html; charset=utf-8',
-      /* Never cached, whether or not it is indexed. A list is edited by its
-         owner while they are looking at it, and — because a private list is
-         served only to the session that owns it — a shared copy of this
-         response would be a copy of somebody's private page handed to the
-         next person to ask for it.
-
-         A crawler is not harmed by this: it fetches a page once and keeps
-         what it finds. no-store is about the caches in between. */
-      'cache-control': 'no-store',
-      'x-robots-tag': indexable ? 'index, follow' : 'noindex, follow'
-    }
-  });
-}
-
 export async function onRequest(context) {
   const { request, env, params } = context;
 
@@ -206,36 +150,17 @@ export async function onRequest(context) {
   const url = new URL(request.url);
   const shared = SITE + '/list/' + list.id;
 
-  const open = html.indexOf(HEAD_OPEN);
-  const close = html.indexOf(HEAD_CLOSE);
-  if (open !== -1 && close > open) {
-    html = html.slice(0, open) +
-      headTags(list, url.hostname === 'tallinntastebuds.ee' ? shared : url.toString()) +
-      html.slice(close + HEAD_CLOSE.length);
-  }
+  html = rehead(html, headTags(
+    list, url.hostname === 'tallinntastebuds.ee' ? shared : url.toString()));
 
   /* The list, into the document, so the page draws on the first paint instead
      of after a round trip it has all the answers for. assets/lists.js reads
      window.__TTB_LIST and falls back to fetching when it is not there. */
-  const payload = seed({
+  html = sow(html, '__TTB_LIST', {
     id: list.id,
     user: user ? user.username : null,
     list: list
   });
-  /* Matched without the closing quote, because tools/stamp.mjs writes a
-     content hash into that attribute — `assets/lists.js?v=1a2b3c4d` — and a
-     pattern that ended at the quote would stop matching the moment the script
-     was next edited. */
-  const TAG = '<script src="/assets/lists.js';
-  /* The replacement is a function and not a string, and that is the whole
-     point of it. String.replace reads $&, $`, $' and $$ out of a replacement
-     *string* and substitutes around the match — so a list titled `$'` would
-     have spliced the entire rest of the document into the middle of this
-     inline script, straight through JSON.stringify and everything seed() does,
-     because the substitution happens after all of that. A function's return
-     value is used literally, and there is nothing left to escape. */
-  html = html.replace(TAG, () =>
-    '<script>window.__TTB_LIST=' + payload + ';</script>\n' + TAG);
 
   /* Indexable only if it is public. A private list reaches this line only
      when its own owner asked for it, and their session is not a crawler —

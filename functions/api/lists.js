@@ -67,6 +67,9 @@ import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDa
 /* Reading one list is shared with functions/list/[id].js, which serves the
    page a link opens with the list already in it. */
 import { readList, LIST_ID } from './_lists.js';
+/* Every public list, most kept first — shared with functions/lists/kept.js,
+   which seeds the first page into the document it serves. */
+import { mostKept } from './_mostkept.js';
 
 /* Caps. Most of them are about somebody with a script rather than somebody
    with opinions — twenty-four lists is more than anybody keeps, and the
@@ -191,6 +194,20 @@ export async function onRequestGet(context) {
     const list = await readList(context, id, user);
     if (!list) return json({ error: 'not-found' }, 404);
     return json({ ready: true, user: user ? user.username : null, list: list }, 200);
+  }
+
+  /* Everybody's lists, for /lists/kept. The one answer on this route that
+     does not depend on who is asking, so it sits above the session check the
+     rest of the page is under: it is read by strangers, and most of them are
+     signed out. */
+  if (params.get('all')) {
+    const page = await mostKept(context, params.get('from') || '');
+    return json({
+      ready: true,
+      user: user ? user.username : null,
+      all: page.all,
+      next: page.next
+    }, 200);
   }
 
   if (!user) return json({ ready: true, user: null, lists: [] }, 200);
@@ -540,7 +557,10 @@ async function keep(context, id, row, user, on) {
   /* Read back rather than worked out from what was sent. A press that hit the
      conflict clause changed nothing, and a page told "+1" for it would drift
      from the database and never be corrected — the same reasoning that makes
-     save_counts a recount and not an increment. */
+     save_counts a recount and not an increment.
+
+     Counted off the rows themselves, here and everywhere else this number is
+     asked for, so there is nothing that can be a version behind them. */
   const keeps = await env.DB
     .prepare('SELECT COUNT(*) AS n FROM list_keeps WHERE list_id = ?')
     .bind(id)

@@ -2171,12 +2171,16 @@
 
     if (savedCount()) menu.appendChild(savedRow());
 
-    /* The way into the lists, and the only one on the map. A list is a
-       different kind of object from everything else here — it is somebody
-       else's, it is published under their name, and it has nothing to do with
-       the pins — so it lives on its own page rather than as another sheet
-       over the map. This is the door to it, filed under who you are, which is
-       what a list belongs to. */
+    /* The way into your own lists. A list is a different kind of object from
+       everything else here — it is somebody else's, it is published under
+       their name, and it has nothing to do with the pins — so it lives on its
+       own page rather than as another sheet over the map. This is the door to
+       it, filed under who you are, which is what a list belongs to.
+
+       The other door is the Lists control in the top-right corner, and the two
+       are not the same door twice. That one is everybody's lists and needs no
+       account; this one is yours and cannot exist without one, which is why it
+       is here, in the sheet that knows who you are. */
     menu.appendChild(accountRow({
       name: t('listsYours'),
       why: t('accountListsWhy'),

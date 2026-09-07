@@ -351,6 +351,75 @@
   bottom: 12px;
 }
 
+/* ---------- lists people kept ---------- */
+
+/* The row on /lists/kept, and the same row at the foot of a list's own page.
+   It is the index row above restacked rather than a second kind of card: the
+   title, one line of facts under it, and the first three places under that.
+
+   No room is left along the bottom the way .lists-index-link leaves it. That
+   padding is there for the map pill in the corner, and this row has no second
+   destination — on a page whose whole job is to get somebody into a list, the
+   row does one thing. */
+.lists-all-link {
+  display: block;
+  padding: 15px 18px 16px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  color: inherit;
+  text-decoration: none;
+}
+.lists-all-link:hover { border-color: var(--accent); }
+.lists-all-link:hover .lists-index-title { color: var(--accent); }
+
+/* One line, and it wraps as text. It began as a flex row justified to both
+   ends, with the count against the right edge, and on a narrow phone the count
+   dropped to a line of its own and sat there right-aligned under the title,
+   belonging to nothing. Ordinary text cannot strand itself. */
+.lists-all-meta {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  letter-spacing: .03em;
+  line-height: 1.65;
+}
+
+/* The count the page is ordered on, so it carries the ink the rest of the line
+   does not, and holds together with its mark when the line wraps. */
+.lists-all-keeps { color: var(--ink); white-space: nowrap; }
+.lists-all-mark svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+  stroke: none;
+  vertical-align: -1px;
+  margin-right: 5px;
+}
+
+/* The first three places. The difference between a directory and a search
+   result — a title alone tells a stranger nothing about a list by somebody
+   they have never heard of. Two lines at the outside: a list of twenty places
+   with long names is still a row here, not a paragraph. */
+.lists-all-taste {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Show more, and the way to the whole directory from the foot of a list. */
+.lists-more { display: flex; justify-content: center; margin: 4px 0 0; }
+
+/* Three more lists under the one being read. Given room above it so it reads
+   as something after the list rather than as part of it. */
+.lists-foot-more { margin-top: 8px; }
+
 /* ---------- keeping somebody else's list ---------- */
 
 /* The bookmark and its count, kept together so the number cannot wrap away

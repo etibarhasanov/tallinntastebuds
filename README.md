@@ -51,6 +51,7 @@ completely with the database switched off.
 - [Google venues](#google-venues)
 - [The directory](#the-directory)
 - [Lists](#lists)
+- [Lists people kept](#lists-people-kept)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -965,12 +966,19 @@ saves are in the order you pressed them; the map draws every pin the same
 size whatever its count. There is deliberately no "Most saved" chip, because
 that would be a ranking, and the line above is not a slogan.
 
-A list carries a count of its own now — how many people kept it — and it is
-under the same rule and for the same reason. Nothing sorts by it: your lists
-are in the order you last edited them, the ones you kept are in the order you
-kept them, and there is no page anywhere that puts one list above another.
-See **Lists**, where the case for and against a directory that *would* rank is
-set out.
+A list carries a count of its own — how many people kept it — and **one page
+does sort by it**: `/lists/kept`, every public list with the most kept first.
+That is a ranking, it is the only one on this site, and it was decided rather
+than inherited. The reasoning is under **Lists people kept**; the short of it
+is that ranking lists is a different claim from ranking kitchens, because a
+list is a thing somebody made and "the ones most people kept" says nothing
+about any restaurant on them.
+
+The line has not moved anywhere else, and the paragraph above still holds
+whole: no place is scored, the list of places is alphabetical, every pin is
+the same size whatever its count, and there is still no "Most saved" chip.
+Your own lists are in the order you last edited them and the ones you kept
+are in the order you kept them.
 
 A place off the Google export is the one thing on this site with a number out
 of five next to it, and it is the exception that says what the rule is. It is
@@ -983,8 +991,10 @@ has one, and the day a score of Google's appears without the attribution is the
 day the rule has actually been broken. See **A Google row says whose
 description it is**.
 
-If a future change wants to sort by saves, it is changing the argument of the
-site, not adding a feature. That is a decision for a person, not a patch.
+If a future change wants to sort *places* by saves, it is changing the
+argument of the site rather than adding a feature. That is a decision for a
+person, not a patch — which is how the page above was arrived at, and it took
+the argument in **Lists people kept** to arrive at it.
 
 **And on sorting by one, which `/google` does.** Google's numbers already
 appear on Google's places, attributed every time — that is settled above and in
@@ -1816,11 +1826,13 @@ exception and the one worth noticing before you go looking for a link that
 will not work.
 
 The two say **Public** and **Private**, one word each. They said "Anyone with
-the link" and "Only me", which is more accurate about what public means here —
-a list is unlisted, not indexed, and nothing on this site browses other
-people's — and it fitted badly: two clauses in a segmented control that a
-narrow phone breaks over four lines, for the two states the rest of the web
-already has names for. The legend above them carries the sentence.
+the link" and "Only me", which fitted badly — two clauses in a segmented
+control that a narrow phone breaks over four lines, for the two states the
+rest of the web already has names for — and which has since stopped being
+accurate besides. **Public** now means public: the list is indexed, and it is
+on `/lists/kept` with everybody else's. There is still no third state and no
+per-person sharing: a link either opens or it does not. The legend above them
+carries the sentence.
 
 **Share** sits next to Save and waits for the third place: a link to two
 places is not worth sending, and the button says so rather than going quiet.
@@ -1878,6 +1890,120 @@ to a save count: one row per (list, account), so nobody inflates it by pressing
 twice, and anybody willing to make ten accounts can add ten. Since nothing on
 this site sorts or ranks by it, what that buys is a bigger number and not a
 better position anywhere.
+
+### Lists people kept
+
+`/lists/kept` is every public list on this site, the most kept first. It is
+the only page here that puts one person's writing above another's, and it is
+the one thing in this repository that had a standing note against it. That
+note is worth quoting, because it is the argument this section has to answer:
+
+> Note what that would actually be, before building it: a page that ranks.
+> The **Saves** section rules out ranking *places*, and that stands. Ranking
+> lists is a different claim — a list is a thing somebody made, not a kitchen,
+> and "the ones most people kept" says nothing about any restaurant on them.
+> It is still a leaderboard, and a leaderboard changes what people write for.
+> Worth deciding on its own terms rather than inheriting from this.
+
+It was decided on its own terms, and the decision was yes. Both halves of the
+note are true and they do not weigh the same. A list is authorship, not a
+kitchen: putting one above another says nothing about anybody's cooking, and
+the count under it counts people who bookmarked a piece of writing. Against
+that, a leaderboard does change what people write for, and this page will
+have made somebody's list worth gaming to somebody. That cost is real and it
+is accepted rather than argued away.
+
+What tipped it is that the alternative was not neutrality. A list travelled by
+a link its author remembered to send, and by a search result nothing linked
+to. Every list was an island. "No page ranks them" was, in practice, "no page
+shows them", and the honest name for that is not restraint.
+
+**What is on it.** Every public list with at least three places — the same
+three `assets/lists.js` has always wanted before it will offer to share one,
+because two places is a pair of opinions rather than a recommendation, and a
+page whose first impression is somebody's half-filled draft recommends
+nothing. Nothing is deleted for falling under it; a short list simply is not
+listed yet.
+
+**The order** is the keep count, then the last edit, then the id. The last of
+those three is doing real work: two lists kept by the same number of people
+and edited in the same millisecond still have exactly one order, and without
+it a page boundary falling between them could show one of them twice. Twenty
+rows at a time, and **Show more** appears only while there is a page after
+this one.
+
+**Lists nobody has kept are not filtered out.** They sort to the bottom and
+they draw no count, because a "0 kept" reads as a verdict rather than as
+nobody having pressed anything — the same reason a save count is hidden at
+zero on the map. It is also what makes the page work at all on the day it
+ships, before anybody has kept anything.
+
+**The row carries the first three places.** A page of titles is a search
+result: "Top ten burgers" tells somebody who has never heard of its author
+nothing whatever. `Ferment · Kaerajaan · Rataskaevu 16` under it tells them
+whether to open it, and that is the whole difference between this page and a
+list of links. There are no rank numerals down the side. The count is the
+fact and the position is its consequence; numbering the rows would make the
+position the identity, and a list slipping from third to fourth would read as
+a demotion nobody did anything to deserve.
+
+**It does not say how many places are on the list**, and it did. That number
+cannot be known without reading every item of every list on the page: twenty
+rows cost four hundred, and the cost grows with how much people write. Four
+hundred rows to print the least informative thing on the row, next to three
+names that say the same thing better. The names cost sixty rows for the page
+however long the lists are — one small indexed read each, sent as one batch —
+and the count is still on your own lists and on a list's own page, where the
+rows are in hand anyway.
+
+**Reading it costs about three hundred rows a page**, and that is the number
+to watch. Roughly two hundred and forty to pick and order twenty lists, sixty
+for their names. The first of those two grows with how many public lists
+exist, because ordering by a count means knowing the count for every candidate
+— which is what the note over `list_keeps` in `db/schema.sql` is about.
+
+**How anybody gets there.** Four ways, and the first two matter most:
+
+- **The map**, from a **Lists** control beside **Places** in the top-right
+  corner. It is a link and not a button — the only one up there — because it
+  leaves for a page rather than opening a panel over the map. It is not behind
+  the account sheet, where the *other* door to lists is: that one says **Your
+  lists** and cannot exist without an account, and this one needs none.
+- **The foot of every public list**, which carries three more and a way to all
+  of them. This is the surface that should get the most use, and the reason is
+  where it is: somebody who has just finished reading a top ten is exactly the
+  person who wants another one.
+- **`/lists.html`**, under the box that makes a new list, and again in the
+  signed-out invitation — where "make an account" is a poor answer on its own
+  to somebody who has not been shown yet what a list looks like.
+- **Search.** The page is indexed and is in `sitemap.xml`, and it is the only
+  thing that links the lists to each other. Public lists have been indexable
+  for a while; each one was an island until this.
+
+**Where the number comes from.** `list_keeps`, counted, every time it is
+asked. There is no counts table, and there was one for about an hour.
+
+The note over `list_keeps` in `db/schema.sql` had been standing for a while
+saying that the day something asked for these counts in bulk was the day to
+give them the `save_counts` treatment. This page is that day, so the table
+was written — and then taken out again, because the comparison the note was
+making does not hold. `save_counts` exists because the map asks for
+seventy-four numbers on every load, over a table that grows with every
+anonymous save from every visitor. A keep needs an account, one account can
+hold two hundred of them, and one page asks. It is one row read per keep in
+the database, to draw twenty rows.
+
+What the table cost, against that, was a migration and a backfill to be run
+by hand on a live database that has no backup in this repository — plus a
+second home for a number that already had one, and a way for the two to
+disagree. That is a real cost today bought against a hypothetical one later,
+which is the wrong way round. The note is still in `db/schema.sql`, now
+naming the day more precisely: when the `GROUP BY` in
+`functions/api/_mostkept.js` shows up in a query time.
+
+**Nothing about a list itself changed.** No new button on it, no new state,
+no third option under **Who can open it**. A keep already existed and was a
+private bookmark that nothing consumed; this is the page that consumes it.
 
 ### On the map
 
@@ -2302,10 +2428,16 @@ the drag and the save — is appended rather than left to collide.
 | title | 60 characters |
 | the line under it | 200 |
 | what you say about a place | 280 |
+| places before a list is listed on `/lists/kept` | 3 |
 
 Most of them are about somebody with a script rather than somebody with
 opinions. They are in `functions/api/lists.js`, and the page restates the
 lengths so a field stops you at the keystroke rather than at the round trip.
+
+The last one is the only floor among them, and it is in
+`functions/api/_mostkept.js` beside the page it governs, restated from the
+same three `assets/lists.js` has always wanted before it offers **Share**.
+Nothing is deleted for falling under it.
 
 Twenty places is the exception: a judgement about the feature, not a defence
 of the database. It is twice a top ten — room to overshoot and cut back, and
@@ -2378,20 +2510,14 @@ account button simply does not appear.
 
 ### What is not built yet
 
-- **A directory.** There is still no page listing everybody's lists, and no
-  "most popular" anything. The pieces for one are now here — `idx_lists_public`
-  for the query, `list_keeps` for the number to order on — and nothing reads
-  them that way. A list travels by its link and, now, by search.
-
-  Note what that would actually be, before building it: a page that ranks. The
-  **Saves** section below rules out ranking *places*, and that stands. Ranking
-  lists is a different claim — a list is a thing somebody made, not a kitchen,
-  and "the ones most people kept" says nothing about any restaurant on them.
-  It is still a leaderboard, and a leaderboard changes what people write for.
-  Worth deciding on its own terms rather than inheriting from this.
 - **Anything social.** No following, no hearts, no comments on somebody
   else's list. A keep is the one thing you can do to a list somebody else made,
-  and it is silent: its owner sees a number and never who.
+  and it is silent: its owner sees a number and never who — including on
+  `/lists/kept`, where that number orders the page and still names nobody.
+- **Any way to say a list is bad.** Nothing is reported, hidden or taken down
+  by anybody but its owner, and the page that now ranks them gives a reader no
+  way to push one down. The only lever on that order is keeping a list, which
+  is the lever the feature already had.
 
 ---
 

@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  One page, one URL. ?spot=, ?type=, ?lang= and ?style= are deep links into
-  this same document and the canonical tag points them all back here, so
-  listing them would only ask Google to index the same page sixty times.
+  Two pages, two URLs. ?spot=, ?type=, ?lang= and ?style= are deep links into
+  the map and the canonical tag points them all back to it, so listing them
+  would only ask Google to index the same page sixty times.
 
-  The two hostnames here and in robots.txt name the live host, tallinntastebuds.ee.
+  /lists/kept is the second one, and it is here because it is the only page
+  that links the lists together. Every public list is indexable and always has
+  been, but each was an island a crawler could reach only if somebody had
+  posted the link somewhere. The individual lists are still not listed here —
+  there are as many of them as people have made, they change as people write,
+  and this page is the way in to all of them.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -12,5 +17,11 @@
     <lastmod>2026-08-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/lists/kept</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

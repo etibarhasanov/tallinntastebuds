@@ -63,11 +63,17 @@
      under it — an unfinished list is simply not sharable yet. */
   var MIN_ITEMS = 3;
 
+  /* Where everybody's lists are, and how many of them a list's own page
+     carries at the foot. Three, because it is an offer of somewhere to go next
+     and not a second page of them under the one somebody came to read. */
+  var ALL_PATH = '/lists/kept';
+  var FOOT = 3;
+
   var state = {
     ui: {},
     types: [],         // data/taxonomy.json, for the rows that carry Google's words
     lang: DEFAULT_LANG,
-    /* 'index' | 'one'. Which of the two addresses this is. */
+    /* 'index' | 'one' | 'all'. Which of the three addresses this is. */
     view: 'index',
     id: '',
     me: null,          // the signed-in username, or null
@@ -75,6 +81,9 @@
     reached: true,     // whether it answered at all
     lists: [],         // the index: the ones you made
     kept: [],          // the index: the ones you bookmarked, somebody else's
+    all: null,         // the directory: everybody's, most kept first
+    next: '',          // where the directory's next page starts, '' at the end
+    asking: false,     // a page of the directory is in flight
     list: null,        // the one being shown
     places: null,      // /api/places, loaded the first time the picker opens
     hay: null          // id -> folded searchable text
@@ -400,10 +409,17 @@
     mark.btn = null;
     paintWho();
 
-    if (!state.reached) return dom.main.appendChild(renderUnreachable());
-    if (!state.ready) return dom.main.appendChild(renderNotReady());
-    if (state.view === 'one') return dom.main.appendChild(renderOne());
-    return dom.main.appendChild(renderIndex());
+    if (!state.reached) { dom.main.appendChild(renderUnreachable()); return; }
+    if (!state.ready) { dom.main.appendChild(renderNotReady()); return; }
+    if (state.view === 'all') { dom.main.appendChild(renderAll()); return; }
+    if (state.view === 'one') {
+      dom.main.appendChild(renderOne());
+      /* And, under it, three more. Appended rather than built into the card
+         because it arrives later than the card does — see moreLists(). */
+      moreLists();
+      return;
+    }
+    dom.main.appendChild(renderIndex());
   }
 
   /* The site answered nothing at all: offline, or a Function that is not
@@ -444,7 +460,13 @@
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
       heading(t('listsYours')),
       el('p', { className: 'lists-say', textContent: t('listsWhat') }),
-      newListForm()
+      newListForm(),
+      /* The way to everybody else's, under the box that makes your own. It is
+         the quiet half of this card: the page is called Your lists and the
+         other people's are the offer, not the point. */
+      el('p', { className: 'lists-foot' }, [
+        el('a', { className: 'alt', href: ALL_PATH, textContent: t('listsAllEverything') })
+      ])
     ]));
 
     if (!state.lists.length) {
@@ -556,12 +578,182 @@
       el('p', { className: 'lists-say', textContent: t('listsNeedAccount') }),
       el('div', { className: 'lists-row' }, [
         el('a', { className: 'go', href: accountHref('up'), textContent: t('accountCreate') }),
-        el('a', { className: 'alt', href: accountHref('in'), textContent: t('accountSignIn') })
+        el('a', { className: 'alt', href: accountHref('in'), textContent: t('accountSignIn') }),
+        /* Signed out this page can show nothing of its own, and asking for an
+           account is a poor answer on its own to somebody who has not been
+           told yet what a list looks like. The directory is that answer: it
+           needs no account and it is full of them. */
+        el('a', { className: 'alt', href: ALL_PATH, textContent: t('listsAllEverything') })
       ])
     ]);
   }
 
   /* -------------------------------------------------------------- one list */
+
+  /* ----------------------------------------------------- lists people kept
+   * Every public list on this site, the most kept first.
+   *
+   * It is the one page here that puts one person's writing above another's.
+   * The argument for that, and what it costs, is in README.md under **Lists
+   * people kept** — this is only how it is drawn.
+   *
+   * The row is the index row restacked. The title, then one line led by the
+   * count the page is ordered on, then the first three places off the list.
+   * Those three names are the difference between this page and a page of
+   * links: "Top ten burgers" tells somebody who has never heard of its author
+   * nothing at all, and "Ferment · Kaerajaan · Rataskaevu 16" tells them
+   * whether to open it.
+   *
+   * The count leads the line rather than sitting against the right edge, where
+   * it started. Justified to the two ends of a flex row it strands itself on a
+   * line of its own the moment a phone is narrow enough — right-aligned under
+   * a title, belonging to nothing. Written as text it simply wraps.
+   *
+   * There is no "7 places" on this row, and there was. Knowing how many places
+   * a list holds means reading every one of them, so twenty rows cost four
+   * hundred to draw and the cost grew with how much people wrote — to print
+   * the least informative thing on the row, beside three names that say the
+   * same thing better. It is on your own lists and on a list's own page, where
+   * the rows are already in hand. See functions/api/_mostkept.js.
+   */
+
+  function renderAll() {
+    var rows = state.all || [];
+    var wrap = el('div', { className: 'lists-stack' });
+
+    wrap.appendChild(card([
+      el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
+      heading(t('listsAllTitle')),
+      el('p', { className: 'lists-say', textContent: t('listsAllSay') })
+    ]));
+
+    if (!rows.length) {
+      wrap.appendChild(el('p', { className: 'lists-none', textContent: t('listsAllNone') }));
+      return wrap;
+    }
+
+    var ul = el('ul', { className: 'lists-index' });
+    rows.forEach(function (l) { ul.appendChild(allRow(l)); });
+    wrap.appendChild(ul);
+
+    /* Only while there is a page after this one. The button is the only thing
+       that says how far the page goes, so its absence is the end of it. */
+    if (state.next) {
+      var go = button(t('listsAllMore'), 'alt', function () { more(go); });
+      wrap.appendChild(el('p', { className: 'lists-more' }, [go]));
+    }
+
+    return wrap;
+  }
+
+  /* One list on /lists/kept, and the same row at the foot of a list's own
+     page. One function because they are the same row and not two rows that
+     happen to look alike — a change to what a stranger needs in order to judge
+     a list is a change to both of them. */
+  function allRow(l) {
+    var meta = [
+      /* Hidden at zero, the way every other count on this site is. A "0 kept"
+         under somebody's top ten reads as a verdict on the list rather than as
+         nobody having pressed it yet — and on this page, where the number is
+         also the position, it would read as last place. */
+      l.keeps
+        ? el('span', { className: 'lists-all-keeps' }, [
+            el('span', {
+              className: 'lists-all-mark',
+              html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                ICON_KEEP + '</svg>'
+            }),
+            document.createTextNode(
+              l.keeps === 1 ? t('listsKeptOne') : t('listsKeptN', { n: l.keeps })
+            )
+          ])
+        : null,
+      l.by ? el('span', { textContent: t('listsBy', { name: l.by }) }) : null
+    ].filter(Boolean);
+
+    var line = el('p', { className: 'lists-all-meta mono' });
+    meta.forEach(function (part, i) {
+      if (i) line.appendChild(document.createTextNode(' \u00b7 '));
+      line.appendChild(part);
+    });
+
+    return el('li', { className: 'lists-index-row' }, [
+      el('a', { className: 'lists-all-link', href: '/list/' + l.id }, [
+        el('span', { className: 'lists-index-title', textContent: l.title }),
+        line,
+        l.taste && l.taste.length
+          ? el('p', { className: 'lists-all-taste', textContent: l.taste.join(' \u00b7 ') })
+          : null
+      ])
+    ]);
+  }
+
+  /* The next page, onto the end of the one on screen.
+     
+     The whole view is redrawn rather than the new rows appended, because the
+     Show more button has to go when the last page arrives and the rows have to
+     be in the document in their order — and this page holds nothing anybody is
+     part-way through typing, so there is nothing a redraw can lose. */
+  function more(btn) {
+    if (state.asking || !state.next) return;
+    state.asking = true;
+    btn.disabled = true;
+    btn.textContent = t('accountWorking');
+
+    ask(API + '?all=1&from=' + encodeURIComponent(state.next)).then(function (a) {
+      state.asking = false;
+      if (a.status === 0 || !a.out || !a.out.all) {
+        btn.disabled = false;
+        btn.textContent = t('listsAllMore');
+        return toast(t('loadError'));
+      }
+      state.all = state.all.concat(a.out.all);
+      state.next = a.out.next || '';
+      render();
+    });
+  }
+
+  /* Three more lists, under the one being read.
+   *
+   * This is the surface that actually gets used, and the reason is where it
+   * is: somebody who has just finished reading a top ten is exactly the person
+   * who wants another one, and until now the page ended and that was that.
+   *
+   * It arrives after the list rather than with it. The list is the page and
+   * must not wait on anything; these are a second request that either turns up
+   * or does not, and a list page that never gets them is the page as it was.
+   * Appended to <main> beside the view rather than built into it, so the redraw
+   * that follows an edit does not have to know about it.
+   */
+  function moreLists() {
+    if (state.all === null) {
+      if (state.asking) return;
+      state.asking = true;
+      ask(API + '?all=1').then(function (a) {
+        state.asking = false;
+        state.all = (a.out && a.out.all) || [];
+        state.next = (a.out && a.out.next) || '';
+        /* Only if the page is still the one that asked. An edit that navigated
+           away in the meantime has already drawn something else. */
+        if (state.view === 'one') moreLists();
+      });
+      return;
+    }
+
+    var them = state.all.filter(function (l) { return l.id !== state.id; }).slice(0, FOOT);
+    if (!them.length) return;
+
+    var foot = el('section', { className: 'lists-foot-more' }, [
+      el('h2', { className: 'lists-section', textContent: t('listsAllFoot') })
+    ]);
+    var ul = el('ul', { className: 'lists-index' });
+    them.forEach(function (l) { ul.appendChild(allRow(l)); });
+    foot.appendChild(ul);
+    foot.appendChild(el('p', { className: 'lists-more' }, [
+      el('a', { className: 'alt', href: ALL_PATH, textContent: t('listsAllEverything') })
+    ]));
+    dom.main.appendChild(foot);
+  }
 
   function renderOne() {
     var list = state.list;
@@ -2477,6 +2669,17 @@
      case draws with no request at all. ?list= is the same thing without the
      pretty path, kept so the page still works if the Function is not
      deployed. */
+  /* Whether this is the directory. /lists/kept is the address it is linked and
+     indexed at, served by functions/lists/kept.js — which is also what seeds
+     the first page in, so the common case draws with no request at all. ?all
+     is the same door without the pretty path, kept for the reason ?list= is:
+     the page still works when the Function is not deployed. */
+  function wantedAll() {
+    if (window.__TTB_ALL) return true;
+    if (/^\/lists\/kept\/?$/.test(window.location.pathname)) return true;
+    return new URLSearchParams(window.location.search).has('all');
+  }
+
   function wantedList() {
     var seeded = window.__TTB_LIST;
     if (seeded && seeded.id) return seeded.id;
@@ -2504,9 +2707,10 @@
     /* First, before anything is drawn: the style the map was left on. */
     applyStyle();
 
-    var id = wantedList();
+    var all = wantedAll();
+    var id = all ? '' : wantedList();
     state.id = id;
-    state.view = id ? 'one' : 'index';
+    state.view = all ? 'all' : id ? 'one' : 'index';
 
     /* The strings and the data at once. The strings are a static file behind a
        revalidating cache and usually free; the data is the one request this
@@ -2519,12 +2723,28 @@
        at all. */
     var types = getJSON('/data/taxonomy.json').catch(function () { return null; });
     var seeded = window.__TTB_LIST && window.__TTB_LIST.list;
-    var data = seeded
-      ? Promise.resolve({
-          status: 200,
-          out: { ready: true, user: window.__TTB_LIST.user || null, list: seeded }
-        })
-      : ask(id ? API + '?id=' + encodeURIComponent(id) : API);
+    var seededAll = window.__TTB_ALL && window.__TTB_ALL.all;
+    var data;
+    if (state.view === 'all' && seededAll) {
+      data = Promise.resolve({
+        status: 200,
+        out: {
+          ready: true,
+          user: window.__TTB_ALL.user || null,
+          all: seededAll,
+          next: window.__TTB_ALL.next || ''
+        }
+      });
+    } else if (state.view === 'all') {
+      data = ask(API + '?all=1');
+    } else if (seeded) {
+      data = Promise.resolve({
+        status: 200,
+        out: { ready: true, user: window.__TTB_LIST.user || null, list: seeded }
+      });
+    } else {
+      data = ask(id ? API + '?id=' + encodeURIComponent(id) : API);
+    }
 
     Promise.all([strings, data, types]).then(function (loaded) {
       state.ui = loaded[0] || {};
@@ -2547,10 +2767,16 @@
       state.lists = out.lists || [];
       state.kept = out.kept || [];
       state.list = out.list || null;
+      /* Null and not an empty array while nothing has asked: it is what
+         moreLists() reads to tell "there are no other lists" from "the other
+         lists have not been fetched yet". */
+      state.all = out.all || null;
+      state.next = out.next || '';
 
-      /* A seeded page already carries the list's own title in the head; only
-         a page that fetched one has to set it. */
+      /* A seeded page already carries its own title in the head; only a page
+         that fetched what it is showing has to set one. */
       if (state.list) document.title = state.list.title + ' | Tallinn Tastebuds';
+      if (state.view === 'all') document.title = t('listsAllDocumentTitle');
 
       wire();
       mountRadio();

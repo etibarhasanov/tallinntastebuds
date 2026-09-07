@@ -4,8 +4,9 @@
 -- follow a person on, the lists somebody builds and shares, the keeps that are
 -- a bookmark on somebody else's list, 1,110 Tallinn venues mirrored out of
 -- Google Places, the places somebody adds by hand when the catalogue does not
--- have them, and one meta row saying which database this is. Everything the map itself draws — the places, the write-ups, the
--- discounts, the stories — is a JSON file in the repository and never a row.
+-- have them, and one meta row saying which database this is. Everything the
+-- map itself draws — the places, the write-ups, the discounts, the stories —
+-- is a JSON file in the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
 -- "tallinntastebuds-preview" behind every preview deployment. They hold the
@@ -183,7 +184,11 @@ CREATE TABLE IF NOT EXISTS lists (
 );
 -- "My lists, newest first", which is the whole of the index page.
 CREATE INDEX IF NOT EXISTS idx_lists_owner ON lists (owner, updated_at DESC);
--- The directory of public lists, when there is one. Nothing reads it yet.
+-- /lists/kept, which reads every public list and puts the most kept first.
+-- This index is what narrows that to the public ones. The order itself is a
+-- count over list_keeps, which no index on this table can reach, so the
+-- tie-break between two lists kept by the same number of people is the only
+-- part of the sort this half serves.
 CREATE INDEX IF NOT EXISTS idx_lists_public ON lists (public, updated_at DESC);
 
 -- One row is one place on one list, with what its owner said about it.
@@ -267,17 +272,28 @@ CREATE TABLE IF NOT EXISTS list_keeps (
 -- with list_id, and this asks only about owner.
 CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at DESC);
 
--- HOW MANY PEOPLE KEPT ONE LIST is asked one list at a time — on the list's
--- own page — and the primary key answers it on an indexed prefix, so there is
--- deliberately no counts table here of the kind save_counts is.
+-- HOW MANY PEOPLE KEPT ONE LIST is counted off this table every time it is
+-- asked, and there is deliberately no counts table here of the kind
+-- save_counts is.
 --
--- save_counts exists because the map asks for seventy-five numbers at once and
--- a GROUP BY over every save in the database would cost one row read per save
--- to produce them. Nothing asks that question of lists yet. The day something
--- does — a directory ordered by how many people kept each list — is the day
--- this wants the same treatment save_counts got, and it should be written the
--- same way: recomputed from this table inside the batch that changes it,
--- never nudged by one.
+-- /lists/kept asks it of every public list at once, which is the bulk question
+-- an earlier version of this note said would call for one. It was built with a
+-- counts table and the table was taken out again, because the comparison the
+-- note was making does not hold. save_counts exists because the map asks for
+-- seventy-five numbers on every load, over a table that grows with every
+-- anonymous save from every visitor. A keep needs an account, one account can
+-- hold two hundred of them, and one page asks. Counting is one row read per
+-- keep in the database, and the page reads twenty rows.
+--
+-- What a counts table costs, against that, is a migration and a backfill run
+-- by hand on a live database with no backup in this repository, plus a second
+-- place for the same number to live and a way for the two to disagree. That is
+-- a real cost today against a hypothetical one later.
+--
+-- The day it stops being cheap — enough keeps that the GROUP BY in
+-- functions/api/_mostkept.js shows up in a query time — is the day to write
+-- one, and it should be written the way save_counts is: recomputed from this
+-- table inside the batch that changes it, never nudged by one.
 
 
 

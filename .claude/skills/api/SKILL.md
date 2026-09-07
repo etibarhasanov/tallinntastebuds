@@ -43,6 +43,11 @@ leading underscore are modules, not routes.
 | `GET /api/venues` | `venues.js` | none; the whole `google_venues` table | `public, max-age=300` |
 | `GET /api/geocode` | `geocode.js` | none; proxies Photon, cached upstream a day | `no-store` |
 | `/list/<id>` | `list/[id].js` | none; `lists.html` with the list unfurled | `no-store` |
+| `/lists/kept` | `lists/kept.js` | none; `lists.html` with the first page of everybody's lists seeded in | `no-store` |
+
+Both of those two serve the same `lists.html` with a head of their own, and
+the escaping, head swap and seeding they share are in `functions/_shell.js` —
+a module, so it is not a route either.
 
 `json(body, status, maxAge)` in `_lib.js` is how every answer is built: with
 `maxAge` it is `public, max-age=N`, without it `no-store`. **Never put a
