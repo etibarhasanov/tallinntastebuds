@@ -1425,6 +1425,21 @@ records.
 
 ```
 node tools/googlevenues.mjs
+```
+
+Then commit, and the deploy does the rest: `.github/workflows/cloudflare.yml`
+runs `db/google-venues.sql` against the database its deployment talks to —
+production from the production branch, preview from anything else — whenever a
+push changed that file. A run started by hand from the Actions tab loads it
+whether it changed or not. The story cron's hourly deploys never do, which is
+the point of the gate: the file is safe to run twice but it writes every row,
+and every hour would spend the day's D1 writes on rows that had not moved.
+
+The token behind that workflow needs **D1 — Edit** as well as Pages, and the
+workflow's header says where to add it. By hand, for a database that is not
+the one a deploy would reach:
+
+```
 wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
 wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql
 ```
