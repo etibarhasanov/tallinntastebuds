@@ -3290,6 +3290,11 @@
    * Picks from whatever the filter chips currently allow, so "Asian + solo"
    * then Surprise me answers the actual question being asked. Closed places
    * are never suggested, and the same place is never returned twice running.
+   *
+   * It opens the place at the low stop rather than the full one — see the
+   * comment in selectPlace. A name you have never heard of is a question
+   * about where it is, and the answer is the map the sheet would otherwise
+   * be standing on.
    */
   function randomPick() {
     var pool = visiblePlaces().filter(function (p) { return !p.closed; });
@@ -3308,7 +3313,7 @@
 
     state.lastPick = choice.id;
     trackEvent('random_pick', { place: choice.name, pool: pool.length });
-    selectPlace(choice.id, { fly: true });
+    selectPlace(choice.id, { fly: true, peek: true });
   }
 
   /* ------------------------------------------------------------ the sheet
@@ -3672,8 +3677,17 @@
        which left the reel sliced across the bottom edge of the screen and a
        scroll between you and the thing you tapped for. The strip of map above
        it still holds the pin, the chip row and the way back out, and the grip
-       drags the sheet down for anyone who wants the map back. */
-    var full = isNarrow();
+       drags the sheet down for anyone who wants the map back.
+
+       A pick you did not make is the exception. Surprise me answers with a
+       name you never asked for, and the first thing wanted back is not the
+       write-up but where the thing is — so it opens at the low stop instead
+       and the map keeps the half above it, with the pin it has just flown to
+       sitting in the middle of that half. That is also the half that keeps
+       the rail on screen: the rail hides behind a full sheet, and the one
+       button a surprise you do not fancy wants is the die that rolls it
+       again. */
+    var full = isNarrow() && !opts.peek;
     document.body.classList.toggle('sheet-full', full);
     if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', String(full));
     releaseSheetHeight();

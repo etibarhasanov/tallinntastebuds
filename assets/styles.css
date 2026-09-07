@@ -3105,10 +3105,6 @@ body.panel-detail .panel {
   .depth-mark { gap: 4px; padding: 2px 7px; font-size: 9px; letter-spacing: .08em; }
   .depth-mark svg { width: 8px; height: 8px; }
   /* On a phone this is the way out of a sheet standing over the whole screen,
-     so it is a target rather than a mark: 44px, the size a thumb expects, and
-     drawn as its own disc so it cannot be lost in whatever it is sitting on
-     top of. */
-  /* On a phone this is the way out of a sheet standing over the whole screen,
      so it is a target rather than a mark. It sits in the grip bar, which is
      the sheet's header: the pill to grab in the middle, the way out on the
      right, and the content scrolling underneath both. */
@@ -3143,7 +3139,12 @@ body.panel-detail .panel {
      across the bottom edge of the screen. Drag the grip down for the half
      stop, where the map keeps the other half and the chosen pin has somewhere
      to be. The map is not worth much while you are reading anyway, so the
-     rail steps out of the way at full height. */
+     rail steps out of the way at full height.
+
+     Surprise me opens at the half stop instead — a place nobody chose is a
+     question about where it is — which is also what keeps the rail on screen
+     for the press that rolls again. selectPlace() in assets/app.js decides
+     which of the two a place arrives at; both stops are these two rules. */
   body.panel-detail { --sheet-h: min(50vh, 470px); }
   body.panel-detail { --sheet-h: min(calc(var(--vph, 100dvh) * .5), 470px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
   body.panel-detail.sheet-full { --sheet-h: min(88vh, 780px); }
