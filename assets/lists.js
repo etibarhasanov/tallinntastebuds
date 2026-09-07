@@ -1677,7 +1677,13 @@
     document.body.classList.add('has-scrim');
     dom.pickerSearch.value = '';
     dom.pickerClear.hidden = true;
-    dom.pickerSearch.focus();
+    /* Focus lands on the sheet and not on the field inside it. Focusing the
+       field summoned the on-screen keyboard the moment the picker opened —
+       half the screen gone before anybody had decided to search, and on iOS
+       the sheet dragged up behind the keys with it, so the first thing a
+       phone showed of "Add a place" was everything except the title. The
+       keyboard belongs to the field and comes up when the field is tapped. */
+    dom.picker.focus({ preventScroll: true });
 
     if (state.places) { paintPicker(); return; }
 
@@ -2335,9 +2341,53 @@
       .catch(function () { undo({}); });
   }
 
+  /* --------------------------------------------------------- soft keyboard
+   * What the keyboard covers, handed to the stylesheet as --kbd.
+   *
+   * The picker is the one thing on this page that takes typing, and both it
+   * and the scrim behind it are already written against that number: the
+   * scrim pads its bottom by it, the sheet takes it off its own ceiling. But
+   * nothing here was ever setting it, so on a phone it stayed at zero and
+   * both of them sized themselves against a screen half of which was behind
+   * the keys. Safari then scrolled the difference to keep the field in view,
+   * which is the same scroll that took the title off the top: what came back
+   * from clearing a search was eight hundred rows and no "Add a place".
+   *
+   * iOS shrinks the visual viewport and leaves the layout viewport — and the
+   * fixed scrim with it — at full height, which is what makes the measurement
+   * possible. Android resizes the layout viewport itself and comes out at
+   * zero, which is the right answer there. assets/app.js measures the same
+   * number for the map's bottom sheet, and also keeps a --vph the drag stops
+   * read; there is nothing to drag here, so this is the measurement alone.
+   */
+  function wireKeyboard() {
+    var vv = window.visualViewport;
+    if (!vv) return;
+
+    function sync() {
+      /* A pinch shrinks the visual viewport in exactly the way a keyboard
+         does and the subtraction cannot tell them apart. The fields on this
+         page are 16px precisely so that focusing one never zooms, so a scale
+         that is not 1 is a pinch and not a keyboard. */
+      if (vv.scale && Math.abs(vv.scale - 1) > .01) {
+        document.documentElement.style.setProperty('--kbd', '0px');
+        return;
+      }
+      var covered = window.innerHeight - vv.height - vv.offsetTop;
+      /* Only a keyboard, not a URL bar sliding away. */
+      var kbd = covered > 90 ? Math.round(covered) : 0;
+      document.documentElement.style.setProperty('--kbd', kbd + 'px');
+    }
+
+    vv.addEventListener('resize', sync);
+    vv.addEventListener('scroll', sync);
+    sync();
+  }
+
   /* ------------------------------------------------------------------ wire */
 
   function wire() {
+    wireKeyboard();
     dom.pickerClose.addEventListener('click', closePicker);
     dom.pickerScrim.addEventListener('click', function (ev) {
       if (ev.target === dom.pickerScrim) closePicker();
@@ -2392,6 +2442,7 @@
       toast: $('toast'),
       live: $('lists-live'),
       pickerScrim: $('picker-scrim'),
+      picker: $('picker'),
       pickerClose: $('picker-close'),
       pickerSearch: $('picker-search'),
       pickerClear: $('picker-clear'),
