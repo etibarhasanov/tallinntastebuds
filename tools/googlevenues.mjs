@@ -2,7 +2,7 @@
 /**
  * Tallinn Tastebuds — the Google Places export, into D1.
  *
- * Reads exports/tallinn_restaurants.csv — 751 restaurants, 18 columns, the
+ * Reads exports/tallinn_restaurants.csv — 1,110 places, 18 columns, the
  * cleaned form of the raw Google export; see exports/README.md — and writes
  * db/google-venues.sql, which is what actually loads them.
  *
@@ -173,7 +173,7 @@ export function read() {
 
   /* The header is read rather than assumed, and then checked: a refreshed
      export that quietly drops a column should fail here, loudly, rather than
-     write NULLs over 751 rows of real data. */
+     write NULLs over eleven hundred rows of real data. */
   const header = rows[0].map((h) => h.trim());
   const at = {};
   header.forEach((name, i) => { at[name] = i; });
@@ -194,7 +194,7 @@ export function read() {
     const id = cell('place_id');
     if (!id) continue;
     if (!PLACE_ID.test(id)) throw new Error(`row ${i + 1}: "${id}" is not a Google place id`);
-    /* Google's key is unique in this export — all 751 of them — and the table
+    /* Google's key is unique in this export — all 1,110 of them — and the table
        makes it a primary key, so a duplicate would silently become one row
        with the later one's values. Better to stop. */
     if (seen.has(id)) throw new Error(`row ${i + 1}: place_id ${id} appears twice`);
@@ -208,7 +208,7 @@ export function read() {
   return places;
 }
 
-/* The 32 places that are on my map as well as in the export.
+/* The 60 places that are on my map as well as in the export.
  *
  * Matched on the coordinates rather than the name, because the names disagree
  * — "Põhjala Tap Room" against "Põhjala Brewery & Tap Room" — while a
@@ -230,15 +230,28 @@ function metresApart(a, b) {
    Punctuation and spacing go, because they are exactly what the two sources
    disagree about and never what makes two restaurants different — Google's
    "Elmans Bite's" and the map's "Elmans Bites" are the same doorway, and the
-   apostrophe was the only thing that said otherwise. Safe to be this loose
-   only because the caller has already required the two pins to be within
-   sixty metres of each other. */
+   apostrophe was the only thing that said otherwise.
+
+   Or does every word of the shorter name appear in the longer? Google writes
+   "Fotografiska Tallinn Café & Bakery" for the map's "Fotografiska Café &
+   Bakery", and with the city dropped into the middle neither string contains
+   the other — while the bare "Fotografiska" upstairs is contained by both, so
+   without this the café's row was handed the restaurant's write-up. The two
+   tests are kept separate rather than replaced by the word one alone: split
+   into words, "Bite's" is "bite" and "s", and Elmans would stop matching.
+
+   Safe to be this loose only because the caller has already required the two
+   pins to be within sixty metres of each other. */
 function namesAgree(a, b) {
   const bare = (s) => fold(s).replace(/[^a-z0-9]/g, '');
   const x = bare(a);
   const y = bare(b);
   if (!x || !y) return false;
-  return x.includes(y) || y.includes(x);
+  if (x.includes(y) || y.includes(x)) return true;
+
+  const words = (s) => fold(s).split(/[^a-z0-9]+/).filter(Boolean);
+  const [shorter, longer] = [words(a), words(b)].sort((p, q) => p.length - q.length);
+  return shorter.every((w) => longer.includes(w));
 }
 
 export function overlaps(places) {
@@ -292,8 +305,8 @@ export function build() {
   out.push('');
 
   /* Rows per INSERT. `wrangler d1 execute --remote` sends one HTTP request per
-     statement, so a row-at-a-time file is 751 round trips to Cloudflare and
-     several minutes of watching a progress bar; batched, it is sixteen and a
+     statement, so a row-at-a-time file is 1,110 round trips to Cloudflare and
+     several minutes of watching a progress bar; batched, it is twenty-three and a
      few seconds. Fifty keeps each statement around 17KB, which is comfortably
      inside every limit involved and still small enough to read one of if
      something ever goes wrong. */

@@ -4,7 +4,7 @@
  * GET /api/venues
  *
  * Every place in this city you can eat or drink in, out of `google_venues` —
- * the Google Places export mirrored into D1, seven hundred and fifty-one rows,
+ * the Google Places export mirrored into D1, eleven hundred and ten rows,
  * see db/schema.sql. It is what /google draws and the only thing that
  * asks for it.
  *
@@ -20,7 +20,7 @@
  *
  *   /api/venues   Google's description of Tallinn, whole and unmerged. The
  *                 rating, the review count, the price band, the phone, the
- *                 website and the week's opening hours, for all 751 rows at
+ *                 website and the week's opening hours, for all 1,110 rows at
  *                 once — which is what a directory filters and sorts on, and
  *                 what the picker deliberately leaves behind.
  *
@@ -30,7 +30,7 @@
  * the week through venueHours() in that file, so there is one parser of that
  * column and not two.
  *
- * Merging would be actively wrong here. The thirty-two places that are on both
+ * Merging would be actively wrong here. The sixty places that are on both
  * rolls are the interesting ones on this page — they are the rows that link
  * through to a write-up — so they carry `mapId` and stay where Google filed
  * them, rather than being replaced by my entry for them.
@@ -48,9 +48,10 @@
  * EMPTY FIELDS ARE NOT SENT
  *
  * One rule for the whole answer: a field with nothing in it is left out rather
- * than sent as "", null or false. Fifty-seven rows have no price, eighty-one no
- * website, fifty-two no opening hours at all, and spelling each of those out
- * costs more than the values do. The page reads every one of them as absent.
+ * than sent as "", null or false. A hundred and eighteen rows have no price, a
+ * hundred and forty-three no website, seventy-seven no opening hours at all,
+ * and spelling each of those out costs more than the values do. The page reads
+ * every one of them as absent.
  */
 
 import { json, wrongDatabase, venueHours } from './_lib.js';
@@ -70,17 +71,19 @@ import { json, wrongDatabase, venueHours } from './_lib.js';
  *
  * Category, cuisine and the leftover tags are matched as one lowercased string
  * — see said() below for how they are joined and why — so "Pizza Restaurant;
- * Italian Restaurant" is both of those. A row can carry several and 195 of them
- * do, up to six; 225 carry none at all, and those are the rows where Google
- * says only "Restaurant" and nothing else, so no kitchen is a truthful answer
- * rather than a gap.
+ * Italian Restaurant" is both of those. A row can carry several and 233 of them
+ * do, up to six; 249 carry none at all, and nearly all of those are the rows
+ * where Google says only "Restaurant" and nothing else — the remainder are a
+ * handful of bistros and family restaurants, and the barber, the theatre and
+ * the sports club the wider sweep dragged in — so no kitchen is a truthful
+ * answer rather than a gap.
  *
  * Every pattern below matches at least one row of the export as it stands, and
  * tools/validate.mjs fails the build if one stops doing so — the same standard
  * VENUE_TYPES is held to, and the reason "european" is not in the table. Google
- * hangs it on ninety-five rows as the parent of Italian, French and Greek, so a
- * chip for it would return mostly pizzerias while saying nothing a more exact
- * chip does not already say.
+ * hangs it on a hundred and four rows as the parent of Italian, French and
+ * Greek, so a chip for it would return mostly pizzerias while saying nothing a
+ * more exact chip does not already say.
  */
 export const KITCHENS = [
   ['japanese',         /japanese|sushi|ramen|izakaya|yakitori|teppan|onigiri/],
@@ -124,10 +127,10 @@ export const KITCHENS = [
   ['bakery',           /bakery|pastry|donut|dessert|confectionery|patisserie/],
   ['coffee',           /\bcafe\b|coffee|tea house|cafeteria/],
   /* Beer, and only beer. This used to carry \bbar\b as well, which Google hangs
-     on any restaurant with a drinks licence: it filed 92 places under the map's
-     word for a beer hall, of which 23 had a beer word and the rest were wine
-     bars, cocktail bars, and a ramen shop. See `bar` below for where those
-     went. */
+     on any restaurant with a drinks licence: it would file 202 places under
+     the map's word for a beer hall, of which 30 have a beer word and the rest
+     are wine bars, cocktail bars, and a ramen shop. See `bar` below for where
+     those went. */
   ['pub',              /\bpub\b|brewpub|brewery|\bbeer\b|gastropub/],
   /* Everywhere you would go for the drink rather than the meal, and the one
      pattern in this table that cares which column a word came from. "Bar" in
@@ -208,7 +211,7 @@ function entry(row) {
   if (row.map_id) out.mapId = row.map_id;
   /* Kept in the answer rather than filtered out of it, unlike /api/places,
      which is a picker and should not offer somewhere shut. A directory that
-     silently omitted the forty-five places Google says are temporarily closed
+     silently omitted the sixty-six places Google says are temporarily closed
      would have somebody walking to one to find out. */
   if (row.status === 'Temporarily closed') out.closed = true;
 
@@ -219,7 +222,7 @@ export async function onRequestGet(context) {
   const { env } = context;
 
   /* Nothing to fall back on here. The map's own places are a roll of
-     seventy-four and this page is a directory of everywhere else, so a
+     seventy-five and this page is a directory of everywhere else, so a
      database that cannot answer means the page has nothing — and it says so,
      rather than drawing an empty directory that reads as a city with no
      restaurants in it. */

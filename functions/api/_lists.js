@@ -78,7 +78,7 @@ export async function readList(context, id, user) {
   } catch (e) { /* unreadable costs the addresses and the links, not the list */ }
 
   /* Whatever the catalogue did not know is looked for in google_venues, which
-     is where the other seven hundred places live — a list holds a catalogue
+     is where the other eleven hundred places live — a list holds a catalogue
      slug or a Google key and does not care which. Twenty rows at the most,
      and only the ids this list actually holds. */
   let venues = new Map();

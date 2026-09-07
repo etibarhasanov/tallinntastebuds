@@ -290,7 +290,7 @@ export async function catalogue(context) {
 }
 
 /* --------------------------------------------------------------- venues
- * google_venues — the Google Places export, seven hundred and fifty-one places
+ * google_venues — the Google Places export, eleven hundred and ten places
  * this city can eat in, in the database rather than in a file. See the table in
  * db/schema.sql for why it is a mirror and what the columns mean.
  *
@@ -317,15 +317,15 @@ export async function catalogue(context) {
  * `date`, `laptop`, `hidden-gem` and `cheap-eats` are verdicts about a place
  * I have eaten at, and no amount of Google's category text is evidence for
  * one. `caucasian` is descriptive and still not in the table: nothing in the
- * export's 751 rows says Georgian or Armenian, so a rule for it would be a
+ * export's 1,110 rows says Georgian or Armenian, so a rule for it would be a
  * line that has never once run.
  *
  * Category, cuisine and the leftover tags are matched as one string, which is
  * what makes "Bar & Grill" both a pub and a restaurant. Counted over the
- * export as it stands: 740 of the 751 rows come out with at least one type,
- * exactly one comes out with four, and the eleven with none are kebab shops,
- * sandwich shops, a theatre and a caterer — which get no types at all rather
- * than a wrong one.
+ * export as it stands: 1,098 of the 1,110 rows come out with at least one
+ * type, exactly one comes out with four, and the twelve with none are kebab
+ * shops, sandwich shops, a juice bar, a theatre and a caterer — which get no
+ * types at all rather than a wrong one.
  *
  * Every word below matches at least one of those rows. "Diner", "eatery",
  * "patisserie", "tavern" and "poke" all read like they belong in this table
@@ -358,7 +358,7 @@ const VENUE_TYPES = [
  * else on the line.
  *
  * The score travels here and nowhere near the map's own places. There are no
- * scores on this site — none of the seventy-four places I have eaten at is
+ * scores on this site — none of the seventy-five places I have eaten at is
  * ranked, and none ever will be — and this is not one: it is Google's number,
  * on Google's place, with Google's name on it, which is the only shape in
  * which a number like that can be honest here.
@@ -366,7 +366,7 @@ const VENUE_TYPES = [
  * The contact half — the phone, the site, the week of opening hours and the
  * Google listing — is not here. It is added by venuesByIds() below, because
  * it is drawn on one card and asked for by one caller: the picker fetches all
- * 751 rows and would carry sixty kilobytes of numbers no row on that page
+ * 1,110 rows and would carry ninety kilobytes of numbers no row on that page
  * prints.
  *
  * The address is Google's street line and the two columns beside it, joined
@@ -381,8 +381,8 @@ export function venueEntry(row) {
   /* Google's "$" to "$$$$" as the map's band of four. db/schema.sql keeps the
      string verbatim rather than converting it on the way in — a mirror that
      stores an opinion has stopped being a mirror — and says the conversion is
-     one line wherever it is actually needed. This is that line. Fifty-seven
-     of the rows carry no price at all and get no gauge. */
+     one line wherever it is actually needed. This is that line. A hundred
+     and eighteen of the rows carry no price at all and get no gauge. */
   const dollars = /^\$+$/.test(row.price || '') ? String(row.price).length : 0;
   const said = [row.category, row.cuisine, row.tags].join(' ').toLowerCase();
 
@@ -392,7 +392,7 @@ export function venueEntry(row) {
     address: where,
     lat: typeof row.latitude === 'number' ? row.latitude : null,
     lng: typeof row.longitude === 'number' ? row.longitude : null,
-    /* Thirty-two of them are also places on my map. `map` is what makes a row
+    /* Sixty of them are also places on my map. `map` is what makes a row
        link to a write-up instead of out to Google, and `mapId` is where that
        write-up lives — the map's own id, not Google's key. */
     map: !!row.map_id,
@@ -466,8 +466,8 @@ export async function venuesByIds(env, ids) {
  * digits and a hyphen and carry no language at all, so they travel verbatim.
  *
  * An empty column, or one in a shape this does not recognise, comes back as
- * an empty array: no hours rather than a week with holes in it. Fifty-odd of
- * the 751 rows carry no hours, RØST Bakery among them.
+ * an empty array: no hours rather than a week with holes in it. Seventy-seven
+ * of the 1,110 rows carry no hours.
  */
 const HOUR_DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
@@ -505,11 +505,11 @@ export function venueHours(text) {
  * Both halves of the test are needed, and that is measured rather than
  * assumed. Counted over the two tables as they actually stand:
  *
- *   all 74 catalogue ids     lowercase, and not one contains an underscore
- *   161 of 750 Google keys   DO contain an underscore
- *   0 of 750 Google keys     are all-lowercase
+ *   all 75 catalogue ids     lowercase, and not one contains an underscore
+ *   215 of 1,110 Google keys DO contain an underscore
+ *   0 of 1,110 Google keys   are all-lowercase
  *
- * So "contains an underscore" on its own would misread 161 real places as
+ * So "contains an underscore" on its own would misread 215 real places as
  * added-by-hand and send them to the wrong table; "is lowercase" on its own
  * would not separate one from a catalogue slug. Together they are exact, with
  * nothing on either roll matching. The "new_" prefix is for a person reading a

@@ -11,8 +11,8 @@
  *                      through to a write-up.
  *
  *   google_venues      the Google Places export, in the database. Every place
- *                      in Tallinn you can eat or drink in — seven hundred and
- *                      fifty-one of them — so that somebody building "top ten
+ *                      in Tallinn you can eat or drink in — eleven hundred and
+ *                      ten of them — so that somebody building "top ten
  *                      bars" can find the bar whether or not I have filmed
  *                      it. See db/schema.sql.
  *
