@@ -3138,6 +3138,24 @@ It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
 scrolls out of reach is no use.
 
+**On a phone it opens the place at the low stop, not the full one.** A place
+you tapped opens the sheet at 88% of the screen, which is the right answer to a
+tap: you picked that name, so the page belonging to it is what you asked for.
+A surprise is the opposite errand. The name means nothing to you yet, and the
+first thing you want back is not the write-up but whether the place is round
+the corner or out in Lasnamäe — and the sheet at its full height was standing
+on the only thing that could tell you, leaving the pin it had just flown to
+crushed into the 110px strip along the top of the screen, under the brand card.
+
+At the low stop the map keeps the half above it and the pin sits in the middle
+of that half, wearing its name and its halo. The half also keeps the rail on
+screen, which matters more here than anywhere else: the rail is hidden behind a
+full sheet, and the one button a surprise you do not fancy wants is the die
+that rolls it again. So it can be pressed repeatedly, and it goes on answering
+in the same place with the map still under it. The grip pulls the sheet up to
+the full stop for the reel and the rest of the write-up, exactly as it does for
+a place you tapped.
+
 ### The rail introduces itself on a phone
 
 The rail runs the account, Surprise me, the radio, the colour swatch, the
@@ -3852,6 +3870,10 @@ the screen and half under the bottom edge and a scroll between you and the
 thing you had tapped for. The half stop is still there — drag the grip down —
 and the strip above the full sheet still holds the pin, the chips and the way
 out.
+
+The one place that opens at the half stop by itself is **Surprise me**, because
+a name nobody chose is a question about where it is before it is anything else.
+[Surprise me](#surprise-me) has the argument.
 
 It is sized against `--vph`, which is `window.innerHeight` written back to CSS
 on every resize, falling back to `dvh` before the script runs and to plain `vh`
