@@ -1577,10 +1577,11 @@ body.panel-detail .panel {
 
 /* ==========================================================================
    The account sheet.
-   One card over a dimmed map. It is the only modal on this site that takes
-   typing, so it is centred rather than dropped from an edge, and it sits
-   above the --kbd variable the keyboard handler maintains so an on-screen
-   keyboard pushes it up instead of covering the field being filled in.
+   One card over a dimmed map. The scrim under it is shared with the place
+   picker on the lists page, and both of them are modals that take typing, so
+   they are centred rather than dropped from an edge and they sit above the
+   --kbd variable each page's keyboard handler maintains — so an on-screen
+   keyboard pushes them up instead of covering the field being filled in.
    ========================================================================== */
 
 .scrim {

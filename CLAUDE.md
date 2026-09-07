@@ -183,6 +183,25 @@ own justification; a cleanup has to state one.
 
 ## Before you push
 
+**Bring the default branch in first** — before the generators run, before the
+validator, and before anything is driven in a browser:
+
+```
+git fetch origin claude/tallinn-tastebuds-map-nzoqx0
+git merge origin/claude/tallinn-tastebuds-map-nzoqx0
+```
+
+A branch cut yesterday is a branch testing a site that no longer exists. The
+stamps are the loud half of that and the pull request will at least say so; the
+quiet half is worse — the validator passed, the page was driven in a browser,
+and both were looking at a tree the deploy will not be made from. It also puts
+the conflict in front of you while you still hold the reason for every line you
+changed, instead of at the end, when the merge is somebody else's afternoon.
+
+Do it again if a review runs long enough for the branch to fall behind again,
+and re-run everything below afterwards each time: merging in somebody else's
+`assets/` change is exactly what makes the stamps stale.
+
 Three files in this repo are **generated**. Editing their source without
 re-running the generator is the single most common way to fail CI:
 

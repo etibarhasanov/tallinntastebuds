@@ -65,6 +65,7 @@
 
   var state = {
     ui: {},
+    types: [],         // data/taxonomy.json, for the rows that carry Google's words
     lang: DEFAULT_LANG,
     /* 'index' | 'one'. Which of the two addresses this is. */
     view: 'index',
@@ -896,6 +897,63 @@
     flushAll();
   }
 
+  /* --------------------------------------------------------- Google's words
+   * A place off the Google export has no write-up to link to, so its row
+   * carries what Google says about it instead: what kind of place it is, and
+   * what it charges. Both arrive already turned into the map's own vocabulary
+   * — see venueEntry() in functions/api/_lib.js — so what is drawn here is the
+   * gauge and the type names the map itself draws, in the reader's language
+   * rather than in Google's English.
+   *
+   * And it says whose description it is, every time. That is the whole reason
+   * the line is allowed to exist: being on my map is the verdict on this site,
+   * and a row showing a price band in my accent with nothing to say where the
+   * band came from would be quietly borrowing that verdict for a place I have
+   * never eaten at.
+   */
+
+  /* The map's typeLabel(), restated here for the same reason fold() is: two
+     pages, no module between them. Unknown ids come back empty rather than as
+     themselves — data/taxonomy.json is optional at boot, and a row that has
+     lost it should lose its types, not print "fine-dining" at somebody. */
+  function typeLabel(id) {
+    for (var i = 0; i < state.types.length; i++) {
+      if (state.types[i].id === id) {
+        return state.types[i][state.lang] || state.types[i][DEFAULT_LANG] || '';
+      }
+    }
+    return '';
+  }
+
+  /* The map's gauge: four slots, the filled ones in the accent and the rest
+     ghosted in the hairline. Google's scale is whole "$" signs, so a slot here
+     is lit or it is not — none of the half-step arithmetic assets/app.js needs
+     for a band of 2.5 has anything to do on this page. */
+  function priceGauge(n) {
+    var wrap = el('span', {
+      className: 'price',
+      role: 'img',
+      'aria-label': t('priceOf', { n: String(n) })
+    });
+    for (var i = 1; i <= 4; i++) {
+      wrap.appendChild(el('i', { className: i <= n ? 'on' : null, textContent: '\u20ac' }));
+    }
+    return wrap;
+  }
+
+  /* A span rather than a paragraph because one of the three rows it goes in is
+     a button, and a button holds phrasing content only. */
+  function sourceLine(item) {
+    if (!item.google) return null;
+    var kinds = (item.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
+    if (!kinds && !item.price) return null;
+    return el('span', { className: 'place-source mono' }, [
+      el('span', { textContent: t('listsGoogleSays') }),
+      item.price ? priceGauge(item.price) : null,
+      kinds ? el('span', { textContent: kinds }) : null
+    ]);
+  }
+
   /* ------------------------------------------------------------- one place */
 
   /* Where a row points. A place on my map goes to its write-up; anything else
@@ -948,6 +1006,7 @@
       el('div', { className: 'item-body' }, [
         placeName(item),
         item.address ? el('p', { className: 'item-address mono', textContent: item.address }) : null,
+        sourceLine(item),
         item.say ? el('p', { className: 'item-say', textContent: item.say }) : null
       ])
     ]);
@@ -980,6 +1039,7 @@
       el('div', { className: 'item-body' }, [
         placeName(item),
         item.address ? el('p', { className: 'item-address mono', textContent: item.address }) : null,
+        sourceLine(item),
         say
       ]),
       moves
@@ -1617,7 +1677,13 @@
     document.body.classList.add('has-scrim');
     dom.pickerSearch.value = '';
     dom.pickerClear.hidden = true;
-    dom.pickerSearch.focus();
+    /* Focus lands on the sheet and not on the field inside it. Focusing the
+       field summoned the on-screen keyboard the moment the picker opened —
+       half the screen gone before anybody had decided to search, and on iOS
+       the sheet dragged up behind the keys with it, so the first thing a
+       phone showed of "Add a place" was everything except the title. The
+       keyboard belongs to the field and comes up when the field is tapped. */
+    dom.picker.focus({ preventScroll: true });
 
     if (state.places) { paintPicker(); return; }
 
@@ -2217,6 +2283,7 @@
     }, [
       el('span', { className: 'picker-name', textContent: place.name }),
       el('span', { className: 'picker-address mono', textContent: place.address || '' }),
+      sourceLine(place),
       already ? el('span', { className: 'picker-on mono', textContent: t('listsAdded') }) : null
     ]);
     if (!already && !full) row.addEventListener('click', function () { addPlace(place); });
@@ -2249,6 +2316,12 @@
       lng: typeof place.lng === 'number' ? place.lng : null,
       map: !!place.map,
       mapId: place.mapId || null,
+      /* Carried across so the row the picker just drew and the row the list
+         draws are the same row. Without these the line under the name would
+         appear in the picker and then vanish the moment the place went on. */
+      types: place.types || [],
+      price: typeof place.price === 'number' ? place.price : null,
+      google: !!place.google,
       say: ''
     });
     render();
@@ -2268,9 +2341,53 @@
       .catch(function () { undo({}); });
   }
 
+  /* --------------------------------------------------------- soft keyboard
+   * What the keyboard covers, handed to the stylesheet as --kbd.
+   *
+   * The picker is the one thing on this page that takes typing, and both it
+   * and the scrim behind it are already written against that number: the
+   * scrim pads its bottom by it, the sheet takes it off its own ceiling. But
+   * nothing here was ever setting it, so on a phone it stayed at zero and
+   * both of them sized themselves against a screen half of which was behind
+   * the keys. Safari then scrolled the difference to keep the field in view,
+   * which is the same scroll that took the title off the top: what came back
+   * from clearing a search was eight hundred rows and no "Add a place".
+   *
+   * iOS shrinks the visual viewport and leaves the layout viewport — and the
+   * fixed scrim with it — at full height, which is what makes the measurement
+   * possible. Android resizes the layout viewport itself and comes out at
+   * zero, which is the right answer there. assets/app.js measures the same
+   * number for the map's bottom sheet, and also keeps a --vph the drag stops
+   * read; there is nothing to drag here, so this is the measurement alone.
+   */
+  function wireKeyboard() {
+    var vv = window.visualViewport;
+    if (!vv) return;
+
+    function sync() {
+      /* A pinch shrinks the visual viewport in exactly the way a keyboard
+         does and the subtraction cannot tell them apart. The fields on this
+         page are 16px precisely so that focusing one never zooms, so a scale
+         that is not 1 is a pinch and not a keyboard. */
+      if (vv.scale && Math.abs(vv.scale - 1) > .01) {
+        document.documentElement.style.setProperty('--kbd', '0px');
+        return;
+      }
+      var covered = window.innerHeight - vv.height - vv.offsetTop;
+      /* Only a keyboard, not a URL bar sliding away. */
+      var kbd = covered > 90 ? Math.round(covered) : 0;
+      document.documentElement.style.setProperty('--kbd', kbd + 'px');
+    }
+
+    vv.addEventListener('resize', sync);
+    vv.addEventListener('scroll', sync);
+    sync();
+  }
+
   /* ------------------------------------------------------------------ wire */
 
   function wire() {
+    wireKeyboard();
     dom.pickerClose.addEventListener('click', closePicker);
     dom.pickerScrim.addEventListener('click', function (ev) {
       if (ev.target === dom.pickerScrim) closePicker();
@@ -2325,6 +2442,7 @@
       toast: $('toast'),
       live: $('lists-live'),
       pickerScrim: $('picker-scrim'),
+      picker: $('picker'),
       pickerClose: $('picker-close'),
       pickerSearch: $('picker-search'),
       pickerClear: $('picker-clear'),
@@ -2342,6 +2460,12 @@
        revalidating cache and usually free; the data is the one request this
        page cannot start without. */
     var strings = getJSON('/data/ui.json');
+    /* And the type names, which are four kilobytes next to the strings' hundred
+       and fifty and come from the same cache. Only the rows carrying Google's
+       description of a place use them — see sourceLine() — so a list that
+       cannot fetch them draws those rows without their types rather than not
+       at all. */
+    var types = getJSON('/data/taxonomy.json').catch(function () { return null; });
     var seeded = window.__TTB_LIST && window.__TTB_LIST.list;
     var data = seeded
       ? Promise.resolve({
@@ -2350,8 +2474,9 @@
         })
       : ask(id ? API + '?id=' + encodeURIComponent(id) : API);
 
-    Promise.all([strings, data]).then(function (loaded) {
+    Promise.all([strings, data, types]).then(function (loaded) {
       state.ui = loaded[0] || {};
+      state.types = (loaded[2] && loaded[2].types) || [];
       state.lang = pickLanguage(Object.keys(state.ui).sort());
       applyStaticStrings();
       document.title = t('listsDocumentTitle');

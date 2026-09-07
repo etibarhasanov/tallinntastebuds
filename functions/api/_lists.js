@@ -59,7 +59,9 @@ export async function readList(context, id, user) {
 
   /* Each row filled out from the catalogue: today's name, the address, the
      pin, and whether the place is also on my map. That last one is what lets
-     a row link to a write-up rather than to a Google search.
+     a row link to a write-up rather than to a Google search — and a row out
+     of google_venues brings Google's own description of the place with it,
+     since it has no write-up to link to.
 
      The row's own stored name is the fallback, and the reason a list never
      renders with a hole in it — see list_items in db/schema.sql. A place the
@@ -93,8 +95,10 @@ export async function readList(context, id, user) {
   } catch (e) { /* same cost, same reason */ }
 
   /* And the third roll: the places somebody added by hand because neither of
-     the other two had them. Same shape as the other two, so the row below
-     cannot tell which it came out of.
+     the other two had them. The same shape as the other two, bar the
+     description only a Google row carries: a name somebody typed is not a
+     description of anything, and the row below draws it as it draws a place
+     of mine.
 
      Anybody's, not only this reader's. Only its author ever sees one in a
      picker, but the whole point of the feature is that it goes on a list and
@@ -163,6 +167,14 @@ export async function readList(context, id, user) {
            roll. The page draws the row the same; this is what lets it say so,
            and what stops a stranger's typed name reading as one of mine. */
         added: added.has(r.place_id),
+        /* What Google says this place is, in the map's own vocabulary, and
+           what it costs on Google's scale — see venueEntry() in
+           functions/api/_lib.js. Only a row out of google_venues has either,
+           and `google` is what makes the page say whose description it is
+           drawing. A place of mine says it in a write-up instead. */
+        types: (known && known.types) || [],
+        price: (known && typeof known.price === 'number') ? known.price : null,
+        google: !!(known && known.google),
         say: r.say
       };
     })
