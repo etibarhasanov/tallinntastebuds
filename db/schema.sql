@@ -411,9 +411,12 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- Derived and grouped by the export so it is filterable — sushi, ramen and
   -- izakaya all become "Japanese". Empty on 367 of the 750.
   cuisine       TEXT    NOT NULL DEFAULT '',
-  -- 2.2 to 5.0, and the review count it rests on. Neither is ever shown on the
-  -- map: there are no scores on this site. They are here to help decide which
-  -- places are worth promoting, and for nothing else.
+  -- 2.2 to 5.0, and the review count it rests on. Shown only where the place is
+  -- Google's and the number is said to be Google's — the card the map draws for
+  -- a place off this export, and the rows that lead to it, print both behind
+  -- "According to Google". No place on my map has a score, and nothing anywhere
+  -- sorts by one. They are also what decides which of these are worth promoting
+  -- onto the map.
   rating        REAL,
   reviews       INTEGER,
   -- Google's own scale, "$" to "$$$$", kept verbatim rather than converted to
