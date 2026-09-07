@@ -605,9 +605,9 @@ preference between visits.
 
 1. Add a block to `data/ui.json` with the same string ids as the others, plus
    a `langName`.
-2. Add the matching label to every type in `data/taxonomy.json`.
+2. Add the matching label to every type in `data/taxonomy.json` and every
+   cuisine in `data/cuisines.json`.
 3. Add the language to each `blurb` in `data/restaurants.json`.
-
 4. Add `months` — the twelve month names separated by `|` — and `monthYear`,
    the pattern that joins them, in case the language wants a different order.
 5. Add the code to `translated` in `data/schema.json`. That one is a literal
@@ -3170,6 +3170,10 @@ to read and write first.
 ## Files
 
 ```
+CLAUDE.md                  what a session reads before it starts, and which
+                           process file to read next
+.claude/processes/         one file per kind of change — a place, a story, a
+                           discount, a page, a Function, the export, a cleanup
 index.html                 the whole page
 assets/styles.css          design tokens at the top, then everything else
 assets/app.js              map, panel, filters, i18n, lightbox — no framework
