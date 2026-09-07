@@ -171,15 +171,27 @@ own justification; a cleanup has to state one.
 ## Branches and deploys
 
 - **There is no `main`.** The default branch is
-  `claude/tallinn-tastebuds-map-nzoqx0`. Branch from it, merge back into it.
+  `claude/tallinn-tastebuds-map-nzoqx0`. Branch from it, rebase onto it, land
+  back on it.
 - That branch is also the live site.
   `.github/workflows/cloudflare.yml` names it as `PROD_BRANCH` and deploys it
   to Cloudflare Pages at tallinntastebuds.ee. Everything else deploys as a
   preview under `*.tallinntastebuds.pages.dev`, against a separate database.
 - `.github/workflows/deploy.yml` (GitHub Pages) is manual-only and is **not**
   the live host. Do not reach for it.
-- Work lands through a PR merged into the default branch — that is how all 80+
-  of them have.
+- Work lands through a PR into the default branch — that is how all 80+ of
+  them have.
+- **Always rebase.** A PR lands with GitHub's **Rebase and merge**, and a
+  branch catches up with `git rebase`, never `git merge`. The history of the
+  default branch is the list of changes that were made, in the order they were
+  made, each one a commit that stands on its own — not a braid of merge
+  commits recording who happened to be working at the same time. A rebase also
+  puts the conflict where the change that caused it is, rather than in one
+  merge commit that owns every line either side touched.
+- Rebasing a branch that is already pushed rewrites it, so the push afterwards
+  is `git push --force-with-lease`. That is fine on a branch you own — which
+  every branch here is — and `--force-with-lease` is what refuses to do it if
+  somebody else has pushed to it since.
 
 ## Before you push
 
@@ -188,7 +200,7 @@ validator, and before anything is driven in a browser:
 
 ```
 git fetch origin claude/tallinn-tastebuds-map-nzoqx0
-git merge origin/claude/tallinn-tastebuds-map-nzoqx0
+git rebase origin/claude/tallinn-tastebuds-map-nzoqx0
 ```
 
 A branch cut yesterday is a branch testing a site that no longer exists. The
@@ -196,11 +208,11 @@ stamps are the loud half of that and the pull request will at least say so; the
 quiet half is worse — the validator passed, the page was driven in a browser,
 and both were looking at a tree the deploy will not be made from. It also puts
 the conflict in front of you while you still hold the reason for every line you
-changed, instead of at the end, when the merge is somebody else's afternoon.
+changed, instead of at the end, when it is somebody else's afternoon.
 
 Do it again if a review runs long enough for the branch to fall behind again,
-and re-run everything below afterwards each time: merging in somebody else's
-`assets/` change is exactly what makes the stamps stale.
+and re-run everything below afterwards each time: replaying your commits over
+somebody else's `assets/` change is exactly what makes the stamps stale.
 
 Three files in this repo are **generated**. Editing their source without
 re-running the generator is the single most common way to fail CI:
@@ -236,10 +248,11 @@ turns up. The generators and the validator only check that the change is
 consistent — they have nothing to say about whether it is any good.
 
 **The stamps are why `lists.html` and `index.html` conflict on nearly every
-merge.** Two branches that both touched `assets/` both rewrote the same `?v=`
-lines. Resolve by taking the *structure* from whichever side has it (a new
-`<script>` tag, say), then run `node tools/stamp.mjs` and let it rewrite the
-hashes. Never hand-merge a hash.
+rebase.** Two branches that both touched `assets/` both rewrote the same `?v=`
+lines. Resolve by taking the *structure* from both sides (a new `<script>` tag,
+say), then `node tools/stamp.mjs`, `git add`, `git rebase --continue`, and let
+the stamper write the hashes. Never hand-merge a hash — a hash you typed is a
+hash of nothing.
 
 ## How the code is written
 
