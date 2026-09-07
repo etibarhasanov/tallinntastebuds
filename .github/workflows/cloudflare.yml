@@ -9,7 +9,9 @@ name: cloudflare
 #
 # Setup, once:
 #   1. Cloudflare dashboard -> Manage Account -> Account API Tokens -> Create
-#      Token -> use the "Cloudflare Pages — Edit" template.
+#      Token -> use the "Cloudflare Pages — Edit" template, and add
+#      "D1 — Edit" to it: the last step below loads the Google venues into
+#      the database, and a token scoped to Pages alone cannot.
 #   2. Copy your Account ID from the right-hand sidebar of any Cloudflare page.
 #   3. In GitHub: Settings -> Secrets and variables -> Actions -> New
 #      repository secret, twice:
@@ -107,3 +109,50 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy . --project-name=tallinntastebuds --branch=${{ github.ref_name }} --commit-dirty=true
+
+      # The Google venues, into the database the deployment above talks to.
+      #
+      # db/google-venues.sql is a mirror of the Google Places export and is
+      # what loads it — see the Google venues section of README.md. It used to
+      # be run by hand with wrangler after a refresh, and the one time it was
+      # not, the site spent a week describing a directory it did not have. So
+      # a deploy runs it, against the same database the deployment gets:
+      # production from the production branch, preview from anything else.
+      #
+      # Only when the file changed, though. The file is safe to run twice —
+      # every row is an upsert — but it is eighty-odd statements and a write
+      # to every row, and the story cron above deploys every hour; run each
+      # time, that would spend most of D1's free daily writes on rows that had
+      # not moved. A push says what it changed, so that is what decides. A run
+      # started by hand loads regardless, because that is what starting one by
+      # hand is for; the cron's runs never do, because a story cannot change
+      # this file.
+      - name: Did the Google venues change
+        id: venues
+        if: env.CF_TOKEN != '' && env.CF_ACCOUNT != ''
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          load=no
+          case "${{ github.event_name }}" in
+            workflow_dispatch) load=yes ;;
+            push)
+              # Shallow checkout, so the previous head has to be fetched by
+              # hand before the two can be compared. A branch pushed for the
+              # first time has no previous head, and loads.
+              if ! git fetch --quiet --depth=1 origin "$BEFORE" 2>/dev/null; then
+                load=yes
+              elif ! git diff --quiet "$BEFORE" HEAD -- db/google-venues.sql; then
+                load=yes
+              fi ;;
+          esac
+          echo "load=$load" >> "$GITHUB_OUTPUT"
+          echo "db/google-venues.sql changed, load it: $load"
+
+      - name: Load the Google venues
+        if: steps.venues.outputs.load == 'yes'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 execute ${{ github.ref_name == env.PROD_BRANCH && 'tallinntastebuds' || 'tallinntastebuds-preview' }} --remote --file=db/google-venues.sql
