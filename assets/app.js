@@ -1286,9 +1286,11 @@
   var CID_KEY = 'ttb.cid';
   var SAVED_KEY = 'ttb.saved';
 
-  /* A chip id that is not a taxonomy type, reserved the way "discount" is and
-     refused to the taxonomy by the same list in tools/validate.mjs: two chips
-     answering to one name would each filter the other's places out. */
+  /* A filter id that is not a taxonomy type, reserved the way "discount" is
+     and refused to the taxonomy by the same list in tools/validate.mjs: two
+     filters answering to one name would each filter the other's places out.
+     Nothing on the chip row sets this one — the account sheet does, from
+     savedRow(). */
   var SAVED_FILTER = 'saved';
 
   /* Nothing on the map waits for this. The counts arrive when they arrive and
@@ -1574,7 +1576,7 @@
       }
       if (typeof answer.out.n === 'number') state.saves[place.id] = answer.out.n;
       paintSave();
-      syncSavedChip(on);
+      syncSavedFilter(on);
       trackEvent(on ? 'save_place' : 'unsave_place', {
         place_id: place.id,
         place: place.name,
@@ -1591,22 +1593,20 @@
     });
   }
 
-  /* The chip row and the map, after a save has changed what the saved chip
-     would filter to. Only the first save and the last unsave change whether
-     there is a chip at all; every press in between leaves the row exactly as
-     it was and does not need it built again. */
-  function syncSavedChip(on) {
-    if (state.active.indexOf(SAVED_FILTER) !== -1) {
-      /* The list being filtered by just changed underneath the filter, so the
-         map and the panel are both out of date. And if that was the last
-         mark, the chip goes out with it — which would leave the map filtered
-         by a chip that is no longer drawn, with no way to press it off. So the
-         filter comes off with the chip. */
-      if (!savedCount()) state.active.splice(state.active.indexOf(SAVED_FILTER), 1);
-      applyFilters();
-      return;
-    }
-    if (savedCount() === (on ? 1 : 0)) renderFilters();
+  /* The rail and the map, after a save has changed what the saved filter
+     would narrow to. Only the first save and the last unsave change whether
+     there is a door to the saves at all; every press in between leaves the
+     rail exactly as it was. */
+  function syncSavedFilter(on) {
+    if (savedCount() === (on ? 1 : 0)) paintAccountButton();
+    if (state.active.indexOf(SAVED_FILTER) === -1) return;
+    /* The list being filtered by just changed underneath the filter, so the
+       map and the panel are both out of date. And if that was the last mark,
+       the row that turns this on goes with it — which would leave the map
+       narrowed to nothing, by a filter nothing on the screen names. So the
+       filter comes off with the row. */
+    if (!savedCount()) state.active.splice(state.active.indexOf(SAVED_FILTER), 1);
+    applyFilters();
   }
 
 
@@ -1624,14 +1624,21 @@
    * is yours except knowing its password, so the sheet says so in as many
    * words rather than letting somebody find out later.
    *
-   * The sheet somebody signed in lands on is their name and a short menu:
-   * their lists, the password, and the way out — plus, only where mail is
-   * configured at all and the account has no address on it yet, the offer of
-   * one. With no mail configured, which is how this site runs today, there is
-   * no recovery line and no address row: changing the password from inside
-   * the account is the whole of it. Each row that leads somewhere is a view
-   * of its own with a way back, rather than another block stacked on the one
-   * card — see "The design rules" in the README.
+   * The sheet somebody signed in lands on is their name and a short menu: the
+   * places they saved, their lists, the password, and the way out — plus, only
+   * where mail is configured at all and the account has no address on it yet,
+   * the offer of one. With no mail configured, which is how this site runs
+   * today, there is no recovery line and no address row: changing the password
+   * from inside the account is the whole of it. Each row that leads somewhere
+   * is a view of its own with a way back, rather than another block stacked on
+   * the one card — see "The design rules" in the README.
+   *
+   * The saves are the one row there that is not about the account at all.
+   * They are kept per browser until somebody signs in, so the row is on the
+   * signed-out sheet too, directly under the sentence offering to keep them
+   * somewhere better — and the button that opens the sheet is drawn for them
+   * even where accounts do not work here at all. See savedRow() and
+   * paintAccountButton().
    */
 
   var ACCOUNT_URL = '/api/account';
@@ -1754,18 +1761,24 @@
     });
     storeSet(SAVED_KEY, JSON.stringify(state.saved));
     paintSave();
-    renderFilters();
+    paintAccountButton();
     if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderList();
   }
 
   function paintAccountButton() {
     if (!dom.btnAccount) return;
-    /* Drawn only once the endpoint has answered that it can do the job: a
-       sign-in button on a site whose Function is not deployed, or whose
-       database is not bound yet, is a button that can only disappoint. */
+    /* Drawn once the endpoint has answered that it can do the job: a sign-in
+       button on a site whose Function is not deployed, or whose database is
+       not bound yet, is a button that can only disappoint.
+
+       And drawn anyway for a browser that has saved something, whatever the
+       endpoint says, because since the marks came off the chip row this
+       button is the only way back to them — and saving has never needed the
+       endpoint to work. What that sheet holds in that state is one row and
+       no form: see renderAccountAuth. */
     var wasHidden = dom.btnAccount.hidden;
-    dom.btnAccount.hidden = !state.account.ready;
-    if (!state.account.ready) return;
+    dom.btnAccount.hidden = !state.account.ready && !savedCount();
+    if (dom.btnAccount.hidden) return;
     var name = state.account.user;
     dom.accountLabel.textContent = name || t('accountOpen');
     dom.btnAccount.setAttribute('aria-label', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
@@ -2108,6 +2121,32 @@
     return el('li', { className: 'menu-item' }, [row]);
   }
 
+  /* The way back to your own marks, and the only one on the map. It sits
+     under whoever you are because that is whose they are, rather than on the
+     chip row, which answers a different question — see renderFilters().
+
+     It shows the saves and nothing else rather than adding a filter to
+     whatever was already pressed: a row named "Places I saved" that hands
+     back your saves mixed in with every bakery in Tallinn has not done what
+     it says. Pressing All gives the map back, the way it does out of a list.
+
+     Drawn only where there is something to open — a door onto an empty map
+     teaches nobody anything — which also means it is the first mark, not an
+     account, that makes it appear. */
+  function savedRow() {
+    return accountRow({
+      name: t('listSaved'),
+      why: t('accountSavedWhy'),
+      on: function () {
+        closeAccount();
+        forgetList();
+        state.active = [SAVED_FILTER];
+        applyFilters({ id: SAVED_FILTER, on: true });
+        showList(true);
+      }
+    });
+  }
+
   /* -------------------------------------------------- signed in already */
 
   /* The name is the title. Whose account this is is the one thing the sheet
@@ -2130,6 +2169,8 @@
     accountMessages(form);
 
     var menu = el('ul', { className: 'menu' });
+
+    if (savedCount()) menu.appendChild(savedRow());
 
     /* The way into the lists, and the only one on the map. A list is a
        different kind of object from everything else here — it is somebody
@@ -2188,20 +2229,43 @@
       storeSet(SAVED_KEY, '[]');
       paintSave();
       paintAccountButton();
-      renderFilters();
-      if (state.view === 'list') renderPanel();
+      /* And a map still narrowed to them would be an empty one, narrowed by
+         a filter nothing on the screen names any more. */
+      var at = state.active.indexOf(SAVED_FILTER);
+      if (at !== -1) {
+        state.active.splice(at, 1);
+        applyFilters();
+      } else if (state.view === 'list') renderPanel();
       closeAccount();
     });
   }
 
   /* ------------------------------------------- signing in or signing up */
   function renderAccountAuth(form) {
+    /* Where /api/account says accounts are not usable here — the Function not
+       deployed, the database not bound — there is no form to draw: a sign-in
+       that can only fail is worse than no sign-in at all, which is why the
+       rail button used to be hidden outright in this state. It is not hidden
+       any more once something has been saved, because the saves are local and
+       work regardless, so this is what is behind it then: the one row that
+       leads to them. */
+    if (!state.account.ready) {
+      form.appendChild(el('ul', { className: 'menu' }, [savedRow()]));
+      return;
+    }
+
     var creating = accountView === 'up';
     form.appendChild(el('h2', {
       className: 'ac-title',
       textContent: t(creating ? 'accountCreate' : 'accountSignIn')
     }));
     form.appendChild(el('p', { className: 'ac-why', textContent: t('accountWhy') }));
+
+    /* Directly under the sentence about them, because that sentence is about
+       these: the places on this phone, kept here until an account is what is
+       holding them. Signed out is where most of the saves on this site are. */
+    if (savedCount()) form.appendChild(el('ul', { className: 'menu' }, [savedRow()]));
+
     accountMessages(form);
 
     form.appendChild(accountField('ac-user', 'accountUsername', 'text', {
@@ -2446,9 +2510,9 @@
     return state.places.some(function (p) { return !!liveDealFor(p); });
   }
 
-  /* Chips are OR, so a place shows if it answers any active one — and two of
-     them are not answered by the type list at all: the discount chip is
-     answered by the deal, and the saved chip by what this browser has
+  /* Filters are OR, so a place shows if it answers any active one — and two
+     of them are not answered by the type list at all: the discount chip is
+     answered by the deal, and the saved filter by what this browser has
      pressed. */
   function matchesFilters(place) {
     if (state.active.indexOf(SAVED_FILTER) !== -1 && isSaved(place.id)) return true;
@@ -2564,31 +2628,17 @@
        the panel instead, over its own places, with its owner's name under it
        and the button to keep it underneath that. See listCredit().
 
-       Nothing on this row is pressed while a list is open, and that is
-       honest rather than a gap: the chips are not what is narrowing the map.
-       Pressing any of them hands the map back to them — see toggleChip() and
-       clearChips(), which drop the list on the way. */
+       Neither are your own saves, and for the same reason. A chip called
+       Saved used to sit second in this row and read as a category of the map
+       rather than as something of yours, which is backwards: the marks are
+       the one thing on the page that somebody put there themselves. They are
+       behind the account button now, with the lists — see savedRow(). The
+       filter itself is unchanged; only the door to it moved.
 
-    /* First of the real filters, and the only one that is about you rather
-       than about food. It is the door to the marks you have pressed — and
-       the reason the mark is the whole of it: the button that says "this one"
-       and the button that keeps it are the same button, since a
-       map you can narrow to your own is a saved list by another name.
-
-       No saves means no chip: a filter whose only possible answer is an empty
-       map is not worth the width, and the chip arriving with the first mark
-       is how anybody learns it is there at all. */
-    if (savedCount()) {
-      var onSaved = state.active.indexOf(SAVED_FILTER) !== -1;
-      var savedChip = el('button', {
-        type: 'button',
-        className: 'chip',
-        'aria-pressed': String(onSaved),
-        textContent: t('filterSaved')
-      });
-      savedChip.addEventListener('click', function () { toggleChip(SAVED_FILTER); });
-      dom.filters.appendChild(savedChip);
-    }
+       Nothing on this row is pressed while either of them is what the map is
+       showing, and that is honest rather than a gap: the chips are not what
+       is narrowing it. Pressing any of them hands the map back to them — see
+       toggleChip() and clearChips(), which drop the list on the way. */
 
     /* The only chip that is an offer rather than a description — and last to
        appear, since with no live deal anywhere it is a chip that would filter
@@ -5718,8 +5768,8 @@
     /* Chips in the address bar: a filtered map becomes a link worth sending,
        and the landing view GA records for it says which filters it was.
 
-       Every chip but one. The saved chip filters by what this browser has
-       pressed, so ?type=saved sent to somebody else is a link to an empty
+       Every filter but one. The saved filter narrows to what this browser
+       has pressed, so ?type=saved sent to somebody else is a link to an empty
        map, and opened on your own laptop a link to a different one. It
        filters; it does not travel. Nothing has to strip it on the way back
        in — boot only accepts ids that are on the map — but a link nobody can
@@ -5806,8 +5856,8 @@
            dismissed it — the map narrowed by both at once, and an address bar
            reading ?list=…&type=… for a view nothing could have produced.
 
-           The saved chip is the exception, because it is the one chip that
-           never travels in the address bar: it filters by what this browser
+           The saved filter is the exception, because it is the one that
+           never travels in the address bar: it narrows to what this browser
            has pressed, so it cannot be read back out of a URL and is carried
            across instead. */
         var wasSaved = state.active.indexOf(SAVED_FILTER) !== -1;
@@ -6403,6 +6453,9 @@
       wireLocation();
       buildMarkers();
       renderFilters();
+      /* Before loadAccount answers, and whether or not it ever does: what
+         this browser saved is already read, and the button is their door. */
+      paintAccountButton();
       renderPanel();
       renderRadio();
       renderStoryRing();
