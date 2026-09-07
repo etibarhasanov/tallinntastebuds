@@ -212,7 +212,7 @@ if (taxonomy !== null) {
 }
 
 /* ---------------------------------------------------------- cuisines.json
- * The directory at /google files each of Google's 751 places under the
+ * The directory at /google files each of Google's 1,110 places under the
  * cuisines it looks like it cooks, and says those words in ten languages. Two
  * files hold the labels and they are meant to be disjoint: taxonomy.json above
  * already says asian, vegan, bakery, coffee, pub and fine-dining for the map's
@@ -862,7 +862,7 @@ if (catalogue !== null) {
 }
 
 /* ------------------------------------------------------- google-venues.sql
-   db/google-venues.sql is what loads the 751-venue Google Places export into
+   db/google-venues.sql is what loads the 1,110-venue Google Places export into
    D1, and it is generated from exports/tallinn_restaurants.csv. A deploy where
    the export moved and the SQL did not would be a database holding last
    month's Tallinn, so the two are checked against each other here the same way

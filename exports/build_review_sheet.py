@@ -7,7 +7,7 @@ Turns exports/tallinn_restaurants.csv into a sheet for deciding which candidates
 join data/restaurants.json. Adds the three things that decision needs and the raw
 Google data cannot give you: whether a place is already published, a slug and
 taxonomy types pre-mapped to data/taxonomy.json, and a flag column surfacing rows
-that need a second look. Nothing is filtered out - all 751 candidates are listed.
+that need a second look. Nothing is filtered out - every candidate is listed.
 """
 import csv, json, math, re, sys, unicodedata, collections
 from difflib import SequenceMatcher
@@ -63,9 +63,13 @@ def suggest_types(row):
 
 PRICE_BAND = {"$": "1", "$$": "2", "$$$": "3", "$$$$": "4"}
 
-# Categories that are not a place you sit down and eat at.
+# Categories that are not a place you sit down and eat at. The second line is
+# what a sweep for cafes, bars and bakeries drags in alongside them: shops that
+# happen to serve coffee, and things Google tags "bar" for the drinks licence.
 NOT_A_RESTAURANT = {"Performing Arts Theater", "Asian Grocery Store", "Caterer",
-                    "Delivery Restaurant", "Food"}
+                    "Delivery Restaurant", "Food",
+                    "Barber shop", "Book Store", "Toy Store", "Manufacturer",
+                    "Video Arcade", "Sports Club", "Association / Organization"}
 
 # --- already published ------------------------------------------------------
 # A candidate is a duplicate only when the name AND the location agree. Name
@@ -81,7 +85,7 @@ def metres(lat1, lng1, lat2, lng2):
     return math.hypot((lat1 - lat2) * 111320,
                       (lng1 - lng2) * 111320 * math.cos(math.radians(lat1)))
 
-CITY = re.compile(r"^\s*(\d{5}\s+)?(tallinn|peetri|viimsi|miiduranna|mustam[aä]e|"
+CITY = re.compile(r"^\s*(\d{5}\s+)?(tallinn|peetri|viimsi|miiduranna|haabneeme|mustam[aä]e|"
                   r"uue maailm|kadriorg)\s*$", re.I)
 
 def addrkey(addr):

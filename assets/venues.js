@@ -1,8 +1,8 @@
 /* Tallinn Tastebuds — the Google Places directory.
  *
  * /google, and nothing else on this site links to it. The map is
- * seventy-four places I have been to and it is the whole point of Tallinn
- * Tastebuds; this is the other seven hundred, out of Google's export, with
+ * seventy-five places I have been to and it is the whole point of Tallinn
+ * Tastebuds; this is the other eleven hundred, out of Google's export, with
  * Google's ratings and Google's opening hours on them. Being on this page is
  * not a recommendation and the page says so in its first paragraph, which is
  * the entire reason it is kept apart from the map rather than folded into it.
@@ -316,7 +316,7 @@
   }
 
   /* Where a place stands right now, or null when Google gave no hours at all —
-   * fifty-two of them did not, and "we do not know" is a different sentence
+   * seventy-seven of them did not, and "we do not know" is a different sentence
    * from "shut", so the two are kept apart all the way to the card. An empty
    * week is how the endpoint says the first; a null day inside one is how it
    * says the place does not open that day.
@@ -480,7 +480,7 @@
   function order(list) {
     var by = ORDERS[state.sort];
     /* Whatever the order, somewhere shut for good goes to the bottom of it. It
-       stays in the list because a directory that quietly dropped forty-five
+       stays in the list because a directory that quietly dropped sixty-six
        places would have somebody walking to one to find out, but it is never
        the first thing anybody is offered. */
     return list.sort(function (a, b) {
@@ -625,7 +625,7 @@
     }
 
     var links = el('p', { className: 'venue-links' });
-    /* The one row that is not Google's: thirty-two of these are places on my
+    /* The one row that is not Google's: sixty of these are places on my
        map, and this is the door to the write-up. First in the row because it
        is the only thing on this page that carries an opinion. */
     if (venue.mapId) {
@@ -673,8 +673,8 @@
 
   /* --------------------------------------------------------------- the map */
 
-  /* A dot per match rather than a pin per match. Seven hundred of the map's
-     own markers is seven hundred elements and a page that stops scrolling;
+  /* A dot per match rather than a pin per match. Eleven hundred of the map's
+     own markers is eleven hundred elements and a page that stops scrolling;
      circles on the canvas renderer are one path each and the whole export
      draws in a frame. They are not the map's pins for the same reason the page
      is not the map: nothing on it has been visited. */
@@ -722,7 +722,7 @@
   function drawMap() {
     if (map || !window.L || !window.TTBBasemap) return;
 
-    /* preferCanvas is the whole reason seven hundred dots is a frame rather
+    /* preferCanvas is the whole reason eleven hundred dots is a frame rather
        than a stall: without it Leaflet gives each circle its own SVG path in
        the document. Everything else here is Leaflet's own default. */
     map = window.L.map('venues-map', { preferCanvas: true }).setView(CENTRE, ZOOM);
@@ -908,7 +908,7 @@
     dom.search.addEventListener('input', function () {
       state.q = dom.search.value;
       dom.searchClear.hidden = !state.q;
-      /* A keystroke rebuilds seven hundred dots and a screenful of cards, so
+      /* A keystroke rebuilds eleven hundred dots and a screenful of cards, so
          it waits for the typing to stop rather than doing it per letter. */
       if (searchTimer) clearTimeout(searchTimer);
       searchTimer = setTimeout(refresh, 140);
@@ -967,7 +967,7 @@
 
     /* One listener for every card there will ever be, on the container that
        outlives them: the list is rebuilt whole on every change, and a listener
-       per card would be seven hundred of them to hang and drop again. */
+       per card would be eleven hundred of them to hang and drop again. */
     dom.list.addEventListener('click', function (e) {
       var button = e.target.closest ? e.target.closest('.venue-pick') : null;
       if (!button) return;

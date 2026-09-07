@@ -84,7 +84,7 @@
 
 /* ---------- the filters ---------- */
 
-/* Pinned, because the results are seven hundred long and the controls are what
+/* Pinned, because the results are eleven hundred long and the controls are what
    the page is for: scrolling past them and having to come back up to change a
    filter is the one thing a directory must not do.
 
@@ -333,7 +333,7 @@
 
 /* Lit because its dot on the map was pressed, or because pressing its name
    put the map on it. The accent edge is the only thing that says which of
-   seven hundred dots is this card. */
+   eleven hundred dots is this card. */
 .venue.is-lit { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), var(--shadow); }
 
 /* Shut for good. Everything greys down together — the price gauge already

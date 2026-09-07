@@ -656,7 +656,7 @@ a.item-name:hover .item-where { color: var(--accent); }
   /* Why not `max-height: 100%`.
      The scrim is a grid with one centred row, and that row is sized by what
      is in it — this sheet. So a percentage height resolves against a row that
-     the sheet itself made: seven hundred places grew the row, the row grew
+     the sheet itself made: eleven hundred places grew the row, the row grew
      the ceiling, and the list ran off the bottom of a window that cannot
      scroll, because the body is held still while the sheet is open. The
      window is the only real ceiling. The scrim's own padding comes off it,

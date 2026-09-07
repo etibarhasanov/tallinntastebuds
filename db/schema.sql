@@ -2,7 +2,7 @@
 --
 -- Seven things live here: the saves and their counts, the accounts a save can
 -- follow a person on, the lists somebody builds and shares, the keeps that are
--- a bookmark on somebody else's list, 750 Tallinn venues mirrored out of
+-- a bookmark on somebody else's list, 1,110 Tallinn venues mirrored out of
 -- Google Places, the places somebody adds by hand when the catalogue does not
 -- have them, and one meta row saying which database this is. Everything the map itself draws — the places, the write-ups, the
 -- discounts, the stories — is a JSON file in the repository and never a row.
@@ -64,7 +64,7 @@ CREATE INDEX IF NOT EXISTS idx_saves_owner ON saves (owner);
 -- it exists because the obvious query does not scale. "How many saves has
 -- each place got" as COUNT(*) GROUP BY over `saves` costs one row read per
 -- save, forever: ten thousand saves is ten thousand rows read to produce
--- seventy-four numbers, on a table that only ever grows. Reading it from here
+-- seventy-five numbers, on a table that only ever grows. Reading it from here
 -- costs one row per place on the map and never more, however popular the map
 -- gets.
 --
@@ -153,7 +153,7 @@ CREATE INDEX IF NOT EXISTS idx_login_fails ON login_fails (ip_hash, at);
 -- ------------------------------------------------------------------- lists
 -- Somebody else's top ten.
 --
--- The map is mine — seventy-four places I have been to, in
+-- The map is mine — seventy-five places I have been to, in
 -- data/restaurants.json, and nothing a visitor does changes it. A list is the
 -- other thing: a name somebody chose, a handful of places they picked out of
 -- data/places.json, and a sentence about each. "Top ten burgers." "Where to
@@ -271,7 +271,7 @@ CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at
 -- own page — and the primary key answers it on an indexed prefix, so there is
 -- deliberately no counts table here of the kind save_counts is.
 --
--- save_counts exists because the map asks for seventy-four numbers at once and
+-- save_counts exists because the map asks for seventy-five numbers at once and
 -- a GROUP BY over every save in the database would cost one row read per save
 -- to produce them. Nothing asks that question of lists yet. The day something
 -- does — a directory ordered by how many people kept each list — is the day
@@ -320,13 +320,13 @@ CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at
 --   added here  new_k3fmqw8x2p                lowercase, and has an underscore
 --
 -- Both halves are needed, and the numbers say so rather than the intent:
--- all 74 catalogue ids are lowercase with no underscore, 161 of the 750 Google
--- keys DO contain an underscore, and none of the 750 is all-lowercase. So the
--- underscore alone would misread 161 real places, and lowercase alone would not
--- separate one from a catalogue slug; together they match nothing on either
--- roll. The prefix is what a person reads; isAdded() in functions/api/_lib.js
--- is what the code checks, and it carries the query to re-run that count if
--- google_venues is ever re-synced.
+-- all 75 catalogue ids are lowercase with no underscore, 215 of the 1,110
+-- Google keys DO contain an underscore, and none of the 1,110 is all-lowercase.
+-- So the underscore alone would misread 215 real places, and lowercase alone
+-- would not separate one from a catalogue slug; together they match nothing on
+-- either roll. The prefix is what a person reads; isAdded() in
+-- functions/api/_lib.js is what the code checks, and it carries the query to
+-- re-run that count if google_venues is ever re-synced.
 CREATE TABLE IF NOT EXISTS added_places (
   -- What list_items.place_id holds for this place. "new_" and ten random
   -- characters — see above for why that shape and not another.
@@ -361,7 +361,7 @@ CREATE INDEX IF NOT EXISTS idx_added_places_owner ON added_places (owner, create
 
 -- ----------------------------------------------------------- google venues
 -- Every place in Tallinn you can eat or drink in, out of the Google Places
--- API. 750 of them.
+-- API. 1,110 of them.
 --
 -- "venues" rather than "places" because the site already has two files with
 -- "places" in the name and this is a third thing; "google_" because the rows
@@ -390,11 +390,11 @@ CREATE INDEX IF NOT EXISTS idx_added_places_owner ON added_places (owner, create
 --   wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
 --   wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql
 CREATE TABLE IF NOT EXISTS google_venues (
-  -- Google's own key — "ChIJUdUjCV2TkkYRcg8TxVp1XUI". Unique across all 750,
-  -- stable across refreshes, and what the raw 44-column export joins on. It is
-  -- the primary key because it is the only identifier here that Google
-  -- guarantees; anything this file invented would drift the first time a name
-  -- changed.
+  -- Google's own key — "ChIJUdUjCV2TkkYRcg8TxVp1XUI". Unique across all
+  -- 1,110, stable across refreshes, and what the raw 44-column export joins
+  -- on. It is the primary key because it is the only identifier here that
+  -- Google guarantees; anything this file invented would drift the first time
+  -- a name changed.
   --
   -- Anything that later points at one of these venues stores this string. A
   -- slug from data/restaurants.json is lowercase letters, digits and hyphens
@@ -409,7 +409,7 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- Google's venue label: "Restaurant", "Sushi Restaurant", "Bistro".
   category      TEXT    NOT NULL DEFAULT '',
   -- Derived and grouped by the export so it is filterable — sushi, ramen and
-  -- izakaya all become "Japanese". Empty on 367 of the 750.
+  -- izakaya all become "Japanese". Empty on 692 of the 1,110.
   cuisine       TEXT    NOT NULL DEFAULT '',
   -- 2.2 to 5.0, and the review count it rests on. Shown only where the place is
   -- Google's and the number is said to be Google's — the card the map draws for
@@ -427,13 +427,14 @@ CREATE TABLE IF NOT EXISTS google_venues (
   status        TEXT    NOT NULL DEFAULT '',
   address       TEXT    NOT NULL DEFAULT '',
   postal_code   TEXT    NOT NULL DEFAULT '',
-  -- "Tallinn" on 744 rows and "Peetri" on six.
+  -- "Tallinn" on 1,086 rows; the other twenty-four are Haabneeme, Peetri,
+  -- Viimsi and Miiduranna, just over the city line.
   city          TEXT    NOT NULL DEFAULT '',
   phone         TEXT    NOT NULL DEFAULT '',
   website       TEXT    NOT NULL DEFAULT '',
   -- One line, 24-hour, semicolons between days: "Mon 11:00-22:00; Sat closed".
-  -- The raw export had real newlines in this field, which is why it was 4,945
-  -- physical lines for 750 records. See exports/README.md.
+  -- The raw export had real newlines in this field, which is why it was 7,309
+  -- physical lines for 1,110 records. See exports/README.md.
   opening_hours TEXT    NOT NULL DEFAULT '',
   -- The remaining Google type tags, semicolon separated.
   tags          TEXT    NOT NULL DEFAULT '',
@@ -442,8 +443,8 @@ CREATE TABLE IF NOT EXISTS google_venues (
   maps_url      TEXT    NOT NULL DEFAULT '',
 
   -- ------------------------------------------------- mine, never overwritten
-  -- The data/restaurants.json id, when this is also a place on my map. 32 of
-  -- the 750 are. It is what lets a list row pointing at a Google place link
+  -- The data/restaurants.json id, when this is also a place on my map. 60 of
+  -- the 1,110 are. It is what lets a list row pointing at a Google place link
   -- through to a write-up instead of out to Google.
   map_id        TEXT,
   -- Keep it out of the picker. For a duplicate, a car park that Google thinks
@@ -464,7 +465,7 @@ CREATE TABLE IF NOT EXISTS google_venues (
 -- Best-first, which is the order the export itself is sorted in and the order
 -- worth reviewing them in.
 CREATE INDEX IF NOT EXISTS idx_google_venues_rating ON google_venues (rating DESC, reviews DESC);
--- The 32 that are already on the map, and the ones still to be looked at.
+-- The 60 that are already on the map, and the ones still to be looked at.
 CREATE INDEX IF NOT EXISTS idx_google_venues_map ON google_venues (map_id) WHERE map_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_google_venues_open ON google_venues (hidden, status);
 

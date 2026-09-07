@@ -993,9 +993,9 @@ further: it offers "Best rated" and "Most reviewed" as orders, which is a
 ranking, and the rule says there are none.
 
 It holds because of what is being ranked. A ranking is a claim by whoever
-publishes it, and the only claim this site makes is the map — seventy-four
+publishes it, and the only claim this site makes is the map — seventy-five
 places somebody ate at, in no order but the alphabet. The directory publishes
-no claim at all: it is a mirror of what Google says about seven hundred places
+no claim at all: it is a mirror of what Google says about eleven hundred places
 nobody here has been to, it says so in its first paragraph before anything else
 is drawn, and sorting a mirror by the number written on it is a way of reading
 Google's opinion rather than a way of stating one. Refusing to sort it would
@@ -1397,16 +1397,19 @@ feature's own setup:
 
 ## Google venues
 
-751 places in Tallinn you can eat or drink in, out of the Google Places API,
+1,110 places in Tallinn you can eat or drink in, out of the Google Places API,
 in the database as a table of their own — `google_venues`. Separate from everything else here on purpose — this is somebody
 else's data about the city, not mine about the food.
 
-750 of them came out of the API in one pull. The odd one out is RØST Bakery,
-typed into the export by hand off its Maps listing, which is why it has no
-opening hours — `exports/README.md` says what that costs the next refresh.
+They come out of `etibarhasanov/allRestaurants`, which sweeps the city with
+Google's nearby search and keeps everything with twenty-five reviews or more.
+The first pull asked Google for restaurants only and found 750; Google does not
+call a café, a pub or a bakery a restaurant, so the sweep was widened to
+seventeen types and found the other 360. Refreshing from there is one script,
+and `exports/README.md` says which.
 
 ```
-exports/tallinn_restaurants.csv   the export: 751 rows, 18 columns
+exports/tallinn_restaurants.csv   the export: 1,110 rows, 18 columns
 tools/googlevenues.mjs            turns it into SQL
 db/google-venues.sql              GENERATED — what actually loads them
 google_venues                     the table, in db/schema.sql
@@ -1415,7 +1418,7 @@ google_venues                     the table, in db/schema.sql
 `exports/README.md` has the full account of how the export was cleaned: fifteen
 columns that were empty in every row dropped, times converted to 24-hour, and —
 the one that matters if you ever parse the raw file yourself — hours that
-embedded real newlines, so the raw export is 4,945 physical lines for 750
+embedded real newlines, so the raw export is 7,309 physical lines for 1,110
 records.
 
 ### Loading it
@@ -1433,7 +1436,7 @@ show an empty picker and look broken for no reason.
 ### The table is a mirror, and that is the whole rule
 
 `place_id` — Google's own `ChIJ…` key — is the primary key. It is unique across
-all 751, stable across refreshes, and it is what a list item holds when it
+all 1,110, stable across refreshes, and it is what a list item holds when it
 points at one of these. A catalogue slug is lowercase letters, digits and
 hyphens, so the two can never be mistaken for each other.
 
@@ -1457,7 +1460,7 @@ export, in SQL", and a contract with exceptions is one you have to look up.
 nowhere else: the card the map draws for a place off this export, and the rows
 that lead to it, print "According to Google 4.8 from 3,041 reviews" — attributed,
 every time, in the same line as the kinds and the band. Not one of the
-seventy-four places on my map carries a score, nothing anywhere sorts or ranks
+seventy-five places on my map carries a score, nothing anywhere sorts or ranks
 by one, and that is the rule these numbers do not touch — see **On "no scores,
 stars or rankings"** and **A Google row says whose description it is**. They are
 also still what decides which of these places are worth promoting onto the map.
@@ -1477,17 +1480,19 @@ list may be pointing at it and somebody wrote a sentence about it.
 
 The upserts are batched fifty to a statement. `wrangler d1 execute --remote`
 sends one HTTP request per statement, so this is the difference between
-seventeen round trips and seven hundred and fifty-one.
+twenty-four round trips and eleven hundred and ten.
 
 `tools/validate.mjs` runs `--check`, so CI refuses a deploy where the export
 moved and the SQL did not.
 
-### The 32 that are already on the map
+### The 60 that are already on the map
 
 Matched on coordinates rather than names — the names disagree ("Põhjala Tap
 Room" against "Põhjala Brewery & Tap Room") while a front door does not move —
 with the name as a sanity check, folded down to letters and digits so an
-apostrophe cannot break it. `map_id` carries the `data/restaurants.json` id,
+apostrophe cannot break it, and one name allowed to be the other with a word
+dropped into it, which is what Google's "Fotografiska Tallinn Café & Bakery"
+is to the map's. `map_id` carries the `data/restaurants.json` id,
 and it is only ever set when empty, so a correction made by hand survives every
 future run.
 
@@ -1495,7 +1500,7 @@ future run.
 
 The picker in the lists page. It asks `/api/places`, and that route hands back
 one roll made of two: the map's own places out of `data/places.json`, and
-these, out of the table. About 790 in all — see **The roll a list is built
+these, out of the table. About 1,125 in all — see **The roll a list is built
 from**.
 
 A row out of this table brings `category`, `cuisine`, `tags`, `price`, `rating`
@@ -1506,11 +1511,11 @@ description it is**.
 And the map, for a place on somebody's list that is not on mine. That card asks
 for four more columns nothing else needs — `phone`, `website`, `opening_hours`
 and `maps_url` — so `venuesByIds()` in `functions/api/_lib.js` selects them and
-`/api/places` does not: the picker fetches all 751 rows at once, and the
-difference is sixty kilobytes of numbers no row on that page prints.
+`/api/places` does not: the picker fetches all 1,110 rows at once, and the
+difference is ninety kilobytes of numbers no row on that page prints.
 
 And `/google`, which is the whole table rather than the part either of
-those needs: all 751 rows in one answer, so a filter can run over them. See
+those needs: all 1,110 rows in one answer, so a filter can run over them. See
 **The directory**.
 
 ---
@@ -1518,8 +1523,8 @@ those needs: all 751 rows in one answer, so a filter can run over them. See
 ## The directory
 
 `/google` — every place in this city you can eat or drink in, searchable,
-filterable, with a map of the matches beside the list. Seven hundred and fifty
-one of them, out of `google_venues`.
+filterable, with a map of the matches beside the list. Eleven hundred and ten
+of them, out of `google_venues`.
 
 **Nothing links to it.** Not the map, not the lists page, not the sitemap. It
 carries `noindex, nofollow` and `robots.txt` disallows it. That is deliberate
@@ -1545,7 +1550,7 @@ Thirty-two of them carry one more, **On the map**, which is the door to a
 write-up: those are the places that are on `data/restaurants.json` as well, and
 on this page that is the rarest and most interesting thing a row can say.
 
-The forty-five places Google calls temporarily closed are in the list and
+The sixty-six places Google calls temporarily closed are in the list and
 marked, never dropped and never first. A directory that quietly omitted them
 would have somebody walking to one to find out.
 
@@ -1605,9 +1610,9 @@ kilobytes it never reads.
 Forty-four ids, and every one of them matches at least one row of the export as
 it stands. `tools/validate.mjs` fails the build if a pattern stops matching
 anything, if an id has no label, or if a label has no pattern. That standard is
-why **european** is not in the table: Google hangs it on ninety-five rows as the
-parent of Italian, French and Greek, so a chip for it would return mostly
-pizzerias while saying nothing a more exact chip does not.
+why **european** is not in the table: Google hangs it on a hundred and four
+rows as the parent of Italian, French and Greek, so a chip for it would return
+mostly pizzerias while saying nothing a more exact chip does not.
 
 Two hundred and twenty-five places get no cuisine at all, because Google says
 only "Restaurant" about them. No chip is the truthful answer there rather than
@@ -1660,7 +1665,7 @@ and the same link.
 
 ### The dots are not the map's pins
 
-Seven hundred of the map's markers would be seven hundred elements and a page
+Eleven hundred of the map's markers would be eleven hundred elements and a page
 that stops scrolling. These are `L.circleMarker` on the canvas renderer, one
 path each, and the whole export draws in a frame. They read `--accent` out of
 the computed style rather than carrying a hex, so pressing a swatch on the map
@@ -2024,7 +2029,7 @@ against it, the picker opens on the map's places rather than on an error.
 ### A Google row says whose description it is
 
 A place off the export has no write-up to link to. Being on my map is the
-verdict on this site and 750 of these are not on it, so a row for one carries
+verdict on this site and 1,050 of these are not on it, so a row for one carries
 what Google says about the place instead — and says that it was Google saying
 it, every time:
 
@@ -2041,21 +2046,22 @@ against seven taxonomy ids, so "Sushi Restaurant" and "Japanese" come out as
 already carries in ten languages instead of Google's English, which is the
 same rule every other visible string on this site follows. Matching all three
 columns at once is what makes "Bar & Grill" both a pub and a restaurant. Over
-the export as it stands, 740 of the 751 rows come out with at least one kind,
-exactly one comes out with four, and the eleven with none — kebab shops,
-sandwich shops, a theatre, a caterer — draw no kinds rather than a wrong one.
+the export as it stands, 1,098 of the 1,110 rows come out with at least one
+kind, exactly one comes out with four, and the twelve with none — kebab shops,
+sandwich shops, a juice bar, a theatre, a caterer — draw no kinds rather than a
+wrong one.
 
 Only the descriptive half of the taxonomy is reachable from there. `casual`,
 `date`, `laptop`, `hidden-gem` and `cheap-eats` are verdicts about a place I
 have eaten at, and no amount of Google's category text is evidence for one.
-`caucasian` is descriptive and still not in the table: nothing in the 751 rows
+`caucasian` is descriptive and still not in the table: nothing in the 1,110 rows
 says Georgian or Armenian, so a rule for it would be a line that has never run.
 
 **The band.** Google's `"$"` to `"$$$$"` as the map's gauge of four. The table
 keeps the string verbatim, because a mirror that converts on the way in has
 stored an opinion — `db/schema.sql` says the conversion is one line wherever it
-is actually needed, and that line is here. Fifty-seven rows carry no price and
-get no gauge.
+is actually needed, and that line is here. A hundred and eighteen rows carry no
+price and get no gauge.
 
 **The score.** `rating` and `reviews`, printed together and never apart: a 5.0
 out of six visits and a 4.6 out of three thousand are not the same claim, and
@@ -2111,7 +2117,7 @@ name typed into a form is not a description, a phone number or a week.
 
 ### The place nobody has
 
-The picker searches about eight hundred places — my seventy-four and the Google
+The picker searches about eleven hundred places — my seventy-five and the Google
 export behind `/api/places` — and between them they still miss things:
 somewhere that opened last month, somewhere Google files as not a restaurant.
 Search for it, find nothing, and the picker offers **Can't find it? Add it
@@ -2149,9 +2155,9 @@ added here   new_k3fmqw8x2p                lowercase, and has an underscore
 ```
 
 Both halves of that last test are needed, and the numbers say so rather than
-the intent: all 75 catalogue ids are lowercase with no underscore, **161 of the
-751 Google keys do contain an underscore**, and none of the 751 is
-all-lowercase. The underscore alone would misread 161 real places; lowercase
+the intent: all 75 catalogue ids are lowercase with no underscore, **215 of the
+1,110 Google keys do contain an underscore**, and none of the 1,110 is
+all-lowercase. The underscore alone would misread 215 real places; lowercase
 alone would not separate one from a catalogue slug. `isAdded()` in
 `functions/api/_lib.js` carries the query to re-run that count if
 `google_venues` is ever re-synced.
@@ -3181,7 +3187,7 @@ assets/staff.js            )
 data/restaurants.json      the only file you edit regularly
 data/places.csv            the Google Maps export a list picks from (yours to drop in)
 data/places.json           the catalogue: the map plus that CSV — GENERATED
-exports/tallinn_restaurants.csv    751 Tallinn venues out of Google Places
+exports/tallinn_restaurants.csv    1,110 Tallinn venues out of Google Places
 exports/README.md          what was cleaned out of the raw export, and why
 db/google-venues.sql       GENERATED — loads that export into D1
 data/taxonomy.json         the controlled vocabulary of types
