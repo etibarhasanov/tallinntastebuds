@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Every place in Tallinn | Tallinn Tastebuds</title>
+<meta name="description" content="Google's own directory of everywhere in Tallinn you can eat or drink, searchable and filterable. Not the map — nothing here has been visited.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+
+<!-- Not part of the map, and deliberately not linked from it. This is Google's
+     description of the city rather than anywhere I have been, so it must never
+     turn up in a search for Tallinn Tastebuds beside the pages that are the
+     verdict. robots.txt says the same thing; this tag is the half that binds. -->
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- Eagerly, unlike the lists page: there the map is a square inside a form
+     nobody may open, here it is half the page and drawing it late would mean
+     the results arriving beside a hole. -->
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="">
+<link rel="stylesheet" href="/assets/styles.css?v=7a4ccf85">
+<link rel="stylesheet" href="/assets/venues.css?v=7563e290">
+</head>
+<body class="venues-body">
+
+<a class="skip-link" href="#venues-results" data-i18n="venuesSkip">Skip to the results</a>
+
+<header class="venues-brand">
+  <a class="venues-home" href="/" data-i18n-aria-label="venuesBack" aria-label="Back to the map">
+    <img class="venues-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="venues-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
+  </a>
+  <div class="venues-intro">
+    <p class="eyebrow" data-i18n="eyebrow">Tallinn</p>
+    <h1 class="venues-title" data-i18n="venuesTitle">Every place in Tallinn</h1>
+    <!-- Said at the top rather than in a footnote, because it is the one thing
+         that separates this page from the rest of the site: on the map, being
+         listed is the verdict. Here nothing is. -->
+    <p class="venues-lead" data-i18n="venuesLead">Google’s own list of everywhere in this city you can eat or drink. It is not the map: nothing here has been visited, and the ratings are Google’s.</p>
+  </div>
+</header>
+
+<!-- Everything that stays on screen while the results scroll past: the filters
+     and, on a phone, the switch between the two halves. One element so that
+     assets/venues.js can measure the whole of it in one go — how tall it is
+     decides how tall the map beside it can be, and a translation that wraps a
+     control onto a second line changes that. -->
+<div class="venues-bar" id="venues-bar">
+
+<!-- A form so that a phone keyboard offers Search and Enter does nothing
+     surprising; every control inside it acts the moment it changes, so there
+     is no submit button and submitting is cancelled. -->
+<form class="venues-filters" id="venues-filters" role="search"
+      data-i18n-aria-label="venuesFilters" aria-label="Narrow the directory">
+  <div class="search">
+    <div class="search-field">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/>
+      </svg>
+      <input type="search" class="search-input" id="venues-search" autocomplete="off"
+             autocorrect="off" autocapitalize="none" spellcheck="false"
+             data-i18n-aria-label="search" data-i18n-placeholder="searchPlaceholder"
+             aria-label="Search places" placeholder="Name, street or dish">
+      <button type="button" class="search-clear" id="venues-search-clear"
+              data-i18n-aria-label="searchClear" aria-label="Clear the search" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Four selects and a toggle. Selects rather than rows of chips because
+       there are forty-three cuisines in the export and a chip apiece would be
+       a filter bar taller than the results it filters; the browser's own
+       control also opens as a proper picker on a phone, which nothing written
+       here would do as well. -->
+  <div class="venues-controls">
+    <button type="button" class="chip venues-toggle" id="venues-open" aria-pressed="false">
+      <svg class="venues-toggle-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="8"/><path d="M12 7.4V12l3 1.8"/>
+      </svg>
+      <span data-i18n="venuesOpenNow">Open now</span>
+    </button>
+
+    <label class="venues-pick">
+      <span class="venues-pick-label" data-i18n="venuesCuisine">Cuisine</span>
+      <select class="venues-select" id="venues-cuisine"></select>
+    </label>
+
+    <label class="venues-pick">
+      <span class="venues-pick-label" data-i18n="venuesRating">Rating</span>
+      <select class="venues-select" id="venues-rating"></select>
+    </label>
+
+    <label class="venues-pick">
+      <span class="venues-pick-label" data-i18n="price">Price</span>
+      <select class="venues-select" id="venues-price"></select>
+    </label>
+
+    <label class="venues-pick">
+      <span class="venues-pick-label" data-i18n="venuesSort">Sort by</span>
+      <select class="venues-select" id="venues-sort"></select>
+    </label>
+
+    <button type="button" class="chip venues-clear" id="venues-clear" hidden
+            data-i18n="venuesClear">Clear the filters</button>
+  </div>
+</form>
+
+<!-- On a phone the list and the map cannot both be on screen and be any use,
+     so one is shown at a time and this switches them. It is drawn at every
+     width and hidden by the stylesheet on anything wide enough to hold both,
+     which keeps the decision in the one file that knows how wide that is. -->
+<div class="seg venues-view" id="venues-view">
+  <button type="button" class="btn btn-wide" id="venues-see-list" aria-pressed="true" data-i18n="venuesShowList">List</button>
+  <button type="button" class="btn btn-wide" id="venues-see-map" aria-pressed="false" data-i18n="venuesShowMap">Map</button>
+</div>
+
+</div>
+
+<div class="venues-split" id="venues-split">
+  <section class="venues-results" id="venues-results" tabindex="-1" aria-labelledby="venues-count">
+    <!-- How many matched, and the one place on the page that says a filter did
+         something. A live region because the list below it is rebuilt in
+         silence otherwise. -->
+    <p class="venues-count" id="venues-count" role="status" aria-live="polite"></p>
+    <div class="venues-list" id="venues-list"></div>
+    <button type="button" class="btn btn-wide venues-more" id="venues-more" hidden
+            data-i18n="venuesMore">Show more</button>
+    <p class="venues-source" data-i18n="venuesSource">Names, ratings, prices and opening hours come from Google Maps.</p>
+  </section>
+
+  <div class="venues-map-wrap">
+    <div id="venues-map" role="application"
+         data-i18n-aria-label="venuesMapLabel" aria-label="Map of the places matching the filters"></div>
+  </div>
+</div>
+
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Tallinn</p>
+    <h2>Every place in Tallinn</h2>
+    <p>This directory is searched and drawn with JavaScript. The map itself
+      works rather better without it — <a href="/">it is over here</a>.</p>
+  </div>
+</noscript>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+        defer></script>
+<!-- The tiles, the key and the attribution, shared with the map and the lists
+     picker. Before venues.js and deferred like it, so document order puts the
+     global in place first. -->
+<script src="/assets/basemap.js?v=bf2dd374" defer></script>
+<script src="/assets/venues.js?v=d29e0cfb" defer></script>
+</body>
+</html>

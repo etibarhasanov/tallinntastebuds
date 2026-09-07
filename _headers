@@ -30,6 +30,16 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, follow
 
+# Google's directory of the city. Same revalidating rule again, for the ?v=
+# stamps, and the strongest noindex on the site after the pass pages: this one
+# is somebody else's description of Tallinn and the map is mine, and a search
+# result that put the two side by side would be the whole point of keeping them
+# apart, lost. The page carries the tag in its markup too; this is the half
+# that binds for anything that does not parse the HTML to find it.
+/venues.html
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
 # Scripts and stylesheets are content-addressed by tools/stamp.mjs — the URL
 # in the HTML carries a hash of the file — so a year-long cache would be safe
 # for a stamped request and is deliberately not used anyway. These rules match
