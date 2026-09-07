@@ -1,3 +1,8 @@
+---
+name: site
+description: Change what a page does or looks like: anything in assets/, an HTML file, data/ui.json, a style, or adding a language.
+---
+
 # Change a page
 
 Anything a visitor sees or presses: the scripts and stylesheets in `assets/`,

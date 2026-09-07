@@ -1,9 +1,19 @@
+---
+paths:
+  - "assets/**"
+  - "functions/**"
+  - "tools/**"
+  - "db/**"
+  - "*.html"
+---
+
 # Leave the code better than you found it
 
 This is the main rule of the repo, and it outranks "keep the diff small". It
-applies to every change that touches code — `site.md` and `api.md` both send
-you here — and its last section is a process of its own, for a session with
-nothing else to do.
+is a path-scoped rule: Claude Code loads it the moment a session reads or
+edits a file under the paths above, so it arrives with the code rather than
+having to be remembered. Its last section is a process of its own, for a
+session with nothing else to do.
 
 Rubbish nobody's change happens to land on top of never gets cleaned, because
 nothing ever quite touches it. So the rule reaches past the lines you edited —

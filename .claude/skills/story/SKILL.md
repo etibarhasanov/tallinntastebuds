@@ -1,3 +1,8 @@
+---
+name: story
+description: Post a story, schedule one for a day and time, or take one down. Use for anything in data/stories.json or stories/, by hand, with tools/stories.mjs, or through /admin.html.
+---
+
 # Post a story, schedule one, take one down
 
 A story is the one thing on this map that is not permanent: a video or a
