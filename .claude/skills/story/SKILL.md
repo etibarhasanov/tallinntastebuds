@@ -7,65 +7,160 @@ description: Post a story, schedule one for a day and time, or take one down. Us
 
 A story is the one thing on this map that is not permanent: a video or a
 photograph, up for 36 hours and then gone, with its picture moving onto the
-place it was shot at. It is an entry in `data/stories.json` and one file in
-`stories/`, and the browser does the going up and coming down on its own —
-there is nothing to deploy on Saturday morning, because `data/*` is served
-`must-revalidate` and a phone opening the map at 09:01 asks the origin.
+place it was shot at. It is one entry in `data/stories.json` and one file in
+`stories/`, and the browser does the going up and the coming down on its own:
+`assets/app.js` reads the same `from` and `until` out of the file, re-evaluates
+every minute, and `data/*` is served `must-revalidate`, so a phone opening the
+map at 09:01 asks the origin and gets a story that was sitting there all week.
+Nothing is deployed on Saturday morning.
+
+There are two roads in, and they differ in where the commit lands. The admin
+page commits **straight to the default branch**, the live site, because a
+story that waits for a review has missed the morning it was about. By hand,
+the entry goes through a branch and a PR like everything else.
 
 ## Read first
 
-- `README.md` → **Stories**, all of it: the entry field by field, **Post it on
-  Saturday**, **The clock**, **And the cron picks it up afterwards**, **Taking
-  one down**. Every paragraph in it is a rule.
-- `stories/README.md` — what a file should be, the `ffmpeg` line that gets an
-  iPhone clip there, and what the poster frame is for.
-- `tools/stories.mjs` and `tools/clock.mjs` headers. The clock arithmetic is
-  copied into `assets/app.js` because the browser cannot import from `tools/`;
-  the two have to match, and `clock.mjs` says which number does.
+- `README.md` → **Stories**, and **The admin page** → **Posting a story** and
+  **What it does to a video**.
+- `stories/README.md` — what a file should be and the `ffmpeg` lines.
+- The headers of `tools/stories.mjs`, `tools/storymedia.mjs` and
+  `tools/clock.mjs`.
 
-## Posting one
+## The entry
 
-1. **The file.** 9:16 inside 1080×1920, H.264 in an MP4 with AAC audio, under
-   15 seconds and under 8 MB; a photo story is a `.webp` or `.jpg`. Straight
-   off an iPhone it is HEVC, 4K, HDR and sideways, and all four have to go —
-   tone mapping is the step not to skip, or the colours decode grey. Run
-   `node tools/storymedia.mjs` over it: it says what is wrong in plain words
-   and changes nothing until `--fix`. It needs `ffmpeg` and `ffprobe`.
-2. **The poster frame** is the photograph the place keeps once a video story
-   is over, so pick the moment rather than taking the first frame by reflex.
-   A photo story with a `spot` *becomes* one of that place's photos, so shoot
-   it as a picture worth keeping, not a frame with words across it.
-3. **The entry.** `node tools/stories.mjs --schedule <file> --spot <id>
-   --at YYYY-MM-DDTHH:MM --caption "…"` writes it, for a photo or a video —
-   or write it by hand in the same shape. `from` in Tallinn wall clock; leave
-   `until` out and it is 36 hours later, which is the answer. `spot` *or*
-   `link`, never both. Then open the file: write the caption in the other nine
-   languages, since the tool writes one, and for a video name the `poster`,
-   which the tool does not.
-4. **Burn the words in, or write them in `caption`.** A story opens muted,
-   every time.
-5. `node tools/stories.mjs` — the queue as it stands. The new entry should be
-   in QUEUED or UP NOW, with the window it will stand for.
-6. `node tools/validate.mjs`. A story with neither `from` nor `until`, a file
-   not in `stories/`, both a `video` and a `photo`, or a `spot` that is not a
-   place is an error. An `until` past two days is a warning, and usually
-   right.
-7. **Watch it** on a local server with the story live: the ring on the mark,
-   the viewer, the countdown, the button to the place. A `?story=<id>` link
-   opens straight into it.
+`tools/validate.mjs` (the story block, lines 604–811) allows exactly these
+keys — `id, live, video, photo, seconds, poster, from, until, caption, spot,
+link, linkLabel` — and holds them to this:
+
+| Field | Rule | If wrong |
+|---|---|---|
+| `id` | lowercase slug, unique. A browser remembers watched stories by id, so two sharing one would mark each other seen | error |
+| `live` | boolean. `false` parks a draft that nothing shows | error |
+| `video` / `photo` | **exactly one**. Video name `^[A-Za-z0-9._-]+\.(mp4\|webm\|mov\|m4v)$`, photo `\.(webp\|jpg\|jpeg\|png\|avif)$`, a bare filename, and the file must be in `stories/` | error |
+| a video | over 25 MB, which Cloudflare Pages will not serve | error |
+| a video | over 8 MB; a `.webm`; a `.mov` or `.m4v` | warning |
+| `seconds` | a photo's stand time, 2 to 20; on a video it does nothing | error / warning |
+| `poster` | image filename, must exist; on a photo story it does nothing | error / warning |
+| `from`, `until` | `YYYY-MM-DDTHH:MM`, Tallinn wall clock, no offset. At least one of them; `from` before `until` | error |
+| an explicit `until` | more than 48 hours after `from` | warning |
+| `caption`, `linkLabel` | objects keyed by language code; only codes `ui.json` knows; no empty strings | error |
+| `spot` / `link` | never both. `spot` must be a place; `link` must be `https?://…` | error |
+| a live story | already over, or with no `caption.en` | warning |
+| `stories/` | a file no entry names, or a subfolder | warning |
+
+Nothing weighs a photo or a poster. Leave `until` out and the window is
+`from` + 36 hours, which is `STORY_HOURS` in `tools/clock.mjs` **and** a
+second copy at `assets/app.js:5059`, because the browser cannot import from
+`tools/`; change one, change the other.
+
+## The admin road
+
+`/admin.html`, unlocked with the device's passphrase, on a device that was set
+up once with a fine-grained token (**Contents** and **Pull requests**, read and
+write, 90 days). It targets whatever GitHub reports as the repo's default
+branch, and it needs nothing from a laptop.
+
+1. **Pick a photograph or a video.** A photo is shrunk on the device down the
+   ladder 1600/0.72, 1400/0.68, 1200/0.62, 1100/0.58 until it is under 200 KB,
+   as WebP where the browser can really write one and JPEG where it cannot,
+   EXIF gone with the re-encode. A video is played through once and drawn onto
+   a canvas fitted inside 1080×1920, trimmed to the first 15 seconds, recorded
+   at a bitrate worked out from its length (700 kbps to 5 Mbps, aiming under
+   6 MB) with the sound routed through Web Audio so nothing comes out of the
+   speaker, and a poster frame taken 0.3 s in at 540 px. Press **Squeeze it**,
+   and wait as long as the clip lasts. A browser with no `MediaRecorder`
+   offers **Upload it as it is** instead, up to 25 MB.
+2. **Pick the place** from the list of open places, and **when it goes up**,
+   pre-filled with the current Tallinn time; the hint under it prints Tallinn
+   now and the come-down time. Only the English caption is asked for.
+3. **Post it.** The page writes, in this order, so no commit ever names a
+   file that is not there: the media file to `stories/<place>-<date>.<ext>`
+   ("Add the photograph|video for the <Place> story"), the poster if there is
+   one ("Add the poster frame for the <Place> story"), then the entry
+   appended to `data/stories.json` ("Queue a story for <Place>, up <date
+   time>") — `live: true`, `from`, `spot`, `caption.en`, and no `until`. The
+   id is the place and the day, `-2` for a second one that day.
+4. **What happens next without you.** The push starts the validate and
+   Cloudflare deploys, and `.github/workflows/story-media.yml`, which runs
+   `node tools/storymedia.mjs --fix` on every push touching `stories/`: a
+   video that is not already H.264 in an MP4, `yuv420p`, inside 1080×1920,
+   even-sided, not HDR, not rotated by metadata, under 8 MB and with its
+   `moov` atom at the front is re-encoded in place (Chrome and Firefox write
+   WebM; some browsers write VP9 inside an MP4), renamed if the extension
+   changed, given a poster if it had none, committed as "Convert <id> to
+   web-ready MP4" and deployed again. Then the hourly tick below files it
+   away when the 36 hours are over.
+5. **What is left for a laptop:** the caption in the other nine languages,
+   which can be added while the story is up without it coming down.
+
+## The hand road
+
+1. **The file.** Video: 9:16 inside 1080×1920, H.264 in an MP4 with AAC,
+   under 15 seconds and under 8 MB, index at the front. Straight off an iPhone
+   it is HEVC, 4K, HDR and rotated by a display matrix, and `stories/README.md`
+   has the one `ffmpeg` line; tone mapping is the step not to skip, or the
+   colours decode grey. Or drop any file in `stories/` and let
+   `node tools/storymedia.mjs` say what is wrong with it, then `--fix`
+   convert it (needs `ffmpeg` and `ffprobe`). Photo: `.webp` or `.jpg`.
+2. **The poster** is the photograph the place keeps once a video story is
+   over, so pick the frame; `storymedia.mjs --fix` takes one 0.3 s in if you
+   do not. A photo story with a `spot` *becomes* one of that place's photos,
+   so shoot it as a picture worth keeping.
+3. **The entry.** With the file already in `stories/`:
+
+   ```
+   node tools/stories.mjs --schedule <file> --spot <place-id> --at YYYY-MM-DDTHH:MM \
+        [--until YYYY-MM-DDTHH:MM] [--id <slug>] [--caption "…"]
+   ```
+
+   It takes a picture or an `.mp4`/`.webm` (not `.mov`), refuses a file that
+   is not in `stories/`, a `--spot` that is not a place, and an id that is
+   taken; the id defaults to the filename. It writes `live: true`, `from`,
+   and `caption.en` only, and prints when the story goes up and comes down.
+   It does not write a `poster`: add one by hand for a video. Or write the
+   entry yourself in the same shape.
+4. **Open `data/stories.json`** and write the caption in the other nine
+   languages, and the `poster`.
+5. `node tools/stories.mjs` with no flags prints UP NOW, QUEUED, OVER, DRAFT
+   and BROKEN, each entry with its window and `(36h window)` where `until`
+   was left out, and ends with what Tallinn's clock says. The new entry
+   should be in QUEUED or UP NOW.
+6. `node tools/validate.mjs`.
+7. **Watch it** on a local server with `from` in the past: the turning ring
+   on the mark, the viewer, the countdown, the button to the place.
+   `?story=<id>` opens straight into it and takes itself off the address bar.
+8. Commit, push, PR. The push is the deploy; the story appears when `from`
+   comes round with nothing further done.
 
 ## Taking one down
 
-Nothing needs taking down. The clock stops showing it and
-`.github/workflows/stories.yml` runs `node tools/stories.mjs --tick` on the
-hour: a photograph with a `spot` moves into `photos/<spot>/` and onto the
-place, entry and all; a video with a `spot` sends its poster frame the same
-way and is switched to `live: false` and left in `stories/` for a person to
-decide about. `--tick --dry-run` says what it would do.
+Nothing needs taking down. `.github/workflows/stories.yml` runs
+`node tools/stories.mjs --tick` at five past every hour, and for every live
+story whose window has ended:
 
-To pull one early, set `live` to `false` or remove the entry. Once a video has
-been gone a while, delete its entry and its file together; the validator
-mentions a file no entry names until you do.
+- a **photo with a `spot`** is renamed into `photos/<spot>/NN.<ext>`, numbered
+  past the highest already there, listed on the place in
+  `data/restaurants.json`, and its entry is **removed**;
+- a **video with a `spot`** sends its poster the same way, drops the `poster`
+  key, and is switched to `live: false` — the video stays in `stories/`,
+  because deleting somebody's film is a person's decision;
+- **anything else** is switched to `live: false` and left alone;
+- a picture that **cannot be filed** — the place is gone, or has no `photos`
+  array, or the name is taken — leaves the story live and in OVER with a
+  note, and is tried again next hour. Nothing is ever overwritten.
+
+It commits as `github-actions[bot]` with the subject the tool prints ("File
+kalve-kadriorg/02.jpg", "Take down laboratooriumi-23-2026-09-03") and asks
+`cloudflare.yml` for a deploy by name, because a push made with the built-in
+token does not start workflows. `node tools/stories.mjs --tick --dry-run`
+shows what the next tick would do.
+
+To pull one early, set `live` to `false` or remove the entry; either is
+immediate for everybody. Once a switched-off video has been gone a while,
+delete its entry and its file together — the validator mentions the file
+until you do. A `live: false` entry is a DRAFT and the tick never looks at it
+again, so a poster still named on one is yours to move or delete.
 
 If stories stop clearing themselves, the first thing to check is the Actions
 tab: GitHub stops scheduled workflows in a repository with no activity for 60
@@ -73,21 +168,27 @@ days, and one push starts them again.
 
 ## The commit
 
-The tool's own subject is the shape to follow:
+The tools' own subjects are the shape:
 
 > Queue a story for Põhja Konn, up 2026-09-06 20:39
+> Add the video for the Põhja Konn story
 > Take down laboratooriumi-23-2026-09-03
 
-The admin page writes a story as three commits — the video, the poster, the
-entry. By hand, one commit carrying the file and the entry is fine; what
-matters is that no commit has an entry pointing at a file that is not there
-yet.
+Two or three commits from the admin page; by hand, one commit carrying the
+file and the entry is fine. What matters is that no commit has an entry
+pointing at a file that is not there yet.
 
 ## Where it goes wrong
 
-- A `.mov` or a `.webm` committed as-is. Safari will not play the one and
-  nothing but Safari plays the other; `storymedia.mjs --fix` is the answer.
-- A time written in the laptop's clock rather than Tallinn's. Every time in
-  the data is Tallinn wall clock, and summer time is worked out for you.
-- A caption in English only, on a site with ten languages.
+- A `.mov` or a `.webm` committed as-is: `storymedia.mjs --fix`, or the
+  workflow, converts it, but the story is unwatchable on an iPhone until
+  then. An iPhone recording HEVC on a non-Apple browser is the usual cause;
+  Camera → Formats → Most Compatible avoids it.
+- A time written in the laptop's clock rather than Tallinn's. Every stamp is
+  Tallinn wall clock; summer time is worked out for you, and the admin page
+  prints Tallinn's clock under the field for exactly this.
+- A caption in English only, on a site with ten languages. The validator
+  only warns about a missing `en`, so nothing catches the other nine.
+- A replaced file under the same name: `/stories/*` is cached for a week, so
+  anyone who saw the old one keeps seeing it. New content is a new name.
 - The cron silently stopped after two quiet months.
