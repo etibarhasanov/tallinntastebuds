@@ -3596,18 +3596,16 @@
       ? { say: model.say || '', picks: model.picks || [], source: 'ai' }
       : { say: '', picks: [], source: 'none' };
 
-    /* Whether the answer reached past the map. On the map scope that is the
-       fallback, and the pressed button and the sentence over the answer both
-       say so: three places off Google under "here is where I would go"
-       would be the site recommending somewhere it has not been. */
+    /* Which of the picks are Google's: those are the stand-ins that need a
+       pin put down and a card drawn without a write-up. On the map scope
+       this is always empty, because the Function sends the model no Google
+       rows there — the button means what it says, and it never used to:
+       a question the map could not answer was answered off the city and
+       the pressed button was moved to All Tallinn behind the reader's
+       back, which read as the switch working the wrong way round. */
     var named = {};
     said.picks.forEach(function (pick) { named[pick.id] = true; });
     var fromCity = city.filter(function (row) { return named[row.id]; });
-    if (fromCity.length && turn.scope === 'map') {
-      said.say = t('askFellBack');
-      if (state.askScope === 'map') { state.askScope = 'all'; paintAskScope(); }
-      trackEvent('ask_fallback', { search_term: turn.q.toLowerCase() });
-    }
 
     turn.say = said.say;
     turn.picks = said.picks;

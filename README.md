@@ -621,14 +621,11 @@ city, and for a while it did not get one: the prompt told the model to prefer
 a place of mine when it answered as well, and a vague question that scored no
 Google row was sent none at all, so the model had no city to choose from and
 every answer leant on the map whatever button was pressed. Both thumbs are
-off the scale now. The model is told to choose by which place best answers
-the question and never by which list it is on, the Google rows get the same
-floor my places have had since they were narrowed — a question that names
-nothing still gets the forty best-rated — and the browser's own reader ranks
-the two rolls together on the city rather than reaching for Google only when
-mine come to nothing. A tie still goes to a place of mine, because the
-tie-break is how many people saved it and Google's rows have no saves. It is
-not a recommendation, and says so. A Google place in an answer is
+off the scale now, and a rule is on it instead: at least one of each list in
+every answer — see below. The Google rows also get the same floor my places
+have had since they were narrowed, so a question that names nothing still
+gets the forty best-rated to choose from. A Google place in an answer is not
+a recommendation, and says so. It is
 the stand-in a list draws for one, in the same row shape as a place of mine —
 the gauge and the types in the same slots, so the two rolls read as one list —
 with a **Google 4.8** mark in the slot where a row of mine says how much there
@@ -638,18 +635,19 @@ Google" line, the hours, the phone, the listing, and a note at the top saying I
 have never been. It wears Google's name and none of my words, because the
 alternative is the site borrowing a verdict it has not earned.
 
-**A question the map cannot answer goes to the city on its own.** Ask for
-bowling on the map and there is no bowling; rather than a shrug, the answer
-comes off All Tallinn, the pressed button moves to say so, and the sentence
-over the answer says *Nothing on my map fits, so this is the rest of Tallinn* — because
-three places off Google under *here is where I would go* would be the site
-recommending somewhere it has not been. It costs no second request: the city's
-forty rows travel with every answer, on the map scope too, and the scope
-decides how far the model may reach for one — only when nothing of mine fits,
-or whenever one answers better — rather than whether it is shown them at all.
-With no model, the browser ranks my places first and reaches for the forty
-only when mine come to nothing. Only if the city has nothing either does the
-answer say nothing fits.
+**The map means the map, and the city means both.** On the map the model is
+shown no Google row at all, so it cannot name one: ask for bowling and there
+is no bowling, and the chat says so and suggests the other button. It used to
+do something cleverer — answer off the city anyway and move the pressed
+button to All Tallinn to match — and from a phone that read as the switch
+working the wrong way round, an answer arriving from the roll you had not
+pressed. Now the button never moves on its own. On the city, every answer
+with places in it names **at least one place of mine and at least one from
+the rest of Tallinn**. That is the rule the model is given, in those words,
+because it needs to be a rule: my lines carry a dish and a write-up where
+Google's carry a rating, and a model asked for a reason on every pick reaches
+for the lines it can give one from, so without the rule every answer leant on
+my map whatever the button said.
 
 **Eleven hundred rows do not go into a prompt.** That is thirty thousand
 tokens a question against a free allowance that would then last an afternoon.
@@ -705,8 +703,8 @@ went to the model on every question, including the ones that were not about
 food. They are now narrowed the way Google's eleven hundred already were, by
 the same scoring, down to the thirty a question could plausibly be about with
 a floor of twenty so a question that names nothing still has a map to choose
-from — and the blurbs are cut to a clause, and the map scope carries fifteen
-Google rows rather than forty, since there they are a last resort. That is
+from — and the blurbs are cut to a clause, and the map scope carries no Google
+rows at all, since there the model may not name one. That is
 **about 1,500 tokens a question, and something like three hundred a day**.
 
 The floor is what makes the narrowing safe rather than clever. Every place on
