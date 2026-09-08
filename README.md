@@ -517,13 +517,43 @@ when the keyboard opens over it.
 ## Ask for somewhere
 
 The speech bubble on the left rail, next to the die, opens the panel on a
-field you type a sentence into: *cheap asian food*, *somewhere for a date*,
-*khachapuri, still open*. Two or three places come back, best first, each with
-a line saying why it is there, and the map narrows to their pins.
+chat: a field you type a sentence into — *cheap asian food*, *somewhere for a
+date*, *khachapuri, still open* — and under it the thread of what you asked.
+Each question sits on the right, the way your own words do in any chat, with
+the answer under it: a sentence, then two or three places as the panel's own
+rows, best first, each with a line saying why it is there. The map narrows to
+the newest answer's pins. Earlier questions stay below, so it is a
+conversation rather than a search box that forgets.
 
 It is Surprise me with the question put back in. The die answers "anywhere,
 you choose"; this answers "somewhere like this". Both hand back a place with
 the map still under it, and neither is a filter.
+
+It had a first life as a second field in the list panel, stacked above the
+search with a switch under it and a heading over the rows, and it read as a
+filter that was oddly slow. A question for an evening you cannot name is not a
+search, so it has a panel of its own.
+
+### It answers at once, and better a moment later
+
+Type a question and the answer is on the screen before your thumb leaves the
+arrow: the local reader in `assets/ask.js` — see below — runs over my places
+the moment the question is sent, and draws its rows under it. The arrow
+pulses while the Function is asked, and when the model answers, its picks and
+its clauses replace the local ones under the same question. The field is never
+disabled: a second question can follow the first without waiting for it, and
+each reply lands under its own question. So the wait is for a better answer
+under a question that already has one, which is a different thing from
+waiting.
+
+The model's side was slow on its first day, and most of it was one line. The
+first model was a reasoning one, left to reason: it thought through several
+hundred tokens before writing three ids, inside an output budget the thinking
+sometimes used up. Thinking is switched off now, the model is a smaller one
+built for latency that reads all ten languages, the blurbs it is shown are a
+clause each, and the output budget is what three picks and a sentence need.
+And a question the map cannot answer no longer costs a second whole request
+to find out — see the next section.
 
 **An answer is a mode, not a filter**, in exactly the way a list is one — see
 [Lists](#lists) for the argument in full. No chip stands for it, none of them
@@ -569,12 +599,17 @@ have never been. It wears Google's name and none of my words, because the
 alternative is the site borrowing a verdict it has not earned.
 
 **A question the map cannot answer goes to the city on its own.** Ask for
-bowling on the map and there is no bowling; rather than a shrug, the same
-question is asked again of All Tallinn, the switch moves to say so, and the
-heading over the answer says *Nothing on my map fits, so this is the rest of
-Tallinn* — because three places off Google under *here is where I would go*
-would be the site recommending somewhere it has not been. Only if the city has
-nothing either does the panel say nothing fits, and it says it once.
+bowling on the map and there is no bowling; rather than a shrug, the answer
+comes off All Tallinn, the switch moves to say so, and the sentence over the
+answer says *Nothing on my map fits, so this is the rest of Tallinn* — because
+three places off Google under *here is where I would go* would be the site
+recommending somewhere it has not been. It costs no second request: the city's
+forty rows travel with every answer, on the map scope too, and the scope
+decides how far the model may reach for one — only when nothing of mine fits,
+or whenever one answers better — rather than whether it is shown them at all.
+With no model, the browser ranks my places first and reaches for the forty
+only when mine come to nothing. Only if the city has nothing either does the
+answer say nothing fits.
 
 **Eleven hundred rows do not go into a prompt.** That is thirty thousand
 tokens a question against a free allowance that would then last an afternoon.

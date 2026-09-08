@@ -43,15 +43,20 @@
  *
  * ELEVEN HUNDRED ROWS DO NOT GO INTO A PROMPT
  *
- * On `all` the model cannot be shown the whole export: that is thirty
- * thousand tokens a question against a free allowance that would then last an
- * afternoon. So the browser sends what it read the question as — the wish
- * assets/ask.js produces, types and price and open-now and the words left
- * over — and this narrows the export with the same scoring that reader uses,
- * hands the model the forty likeliest, and hands the browser those same forty
- * so that with no model it can rank them itself. The cut is generous on
- * purpose: its one job is "plausibly what was asked for", and the real
- * ranking happens once, in the browser, over my places and these together.
+ * The model cannot be shown the whole export: that is thirty thousand tokens
+ * a question against a free allowance that would then last an afternoon. So
+ * the browser sends what it read the question as — the wish assets/ask.js
+ * produces, types and price and open-now and the words left over — and this
+ * narrows the export with the same scoring that reader uses, hands the model
+ * the forty likeliest, and hands the browser those same forty so that with no
+ * model it can rank them itself. The cut is generous on purpose: its one job
+ * is "plausibly what was asked for", and the real ranking happens once, in
+ * the browser, over my places and these together.
+ *
+ * The forty go with every answer, on the map scope too. The scope decides
+ * how far the model may reach for one — only when nothing of mine fits, or
+ * whenever one answers better — rather than whether it is shown them at
+ * all, so a question the map cannot answer costs one call and not two.
  *
  * IT IS FREE, AND WHAT HAPPENS WHEN IT STOPS BEING
  *
@@ -75,13 +80,22 @@ import { json, mapPlaces, venueCard, venueHours, wrongDatabase } from './_lib.js
    map's own vocabulary says only "asian". */
 import { KITCHENS, said } from './venues.js';
 
-/* A model that is on the Workers Free plan. Cloudflare has moved the
-   larger ones behind Workers Paid before now — @cf/moonshotai/kimi-k2.6 and
-   @cf/zai-org/glm-5.2 went that way in July 2026 — so the one named here is
-   deliberately from the list that stayed free, and changing it is this line.
-   A model that has been moved answers 403 and is handled like any other
-   failure below: the browser reads the question itself. */
-const MODEL = '@cf/google/gemma-4-26b-a4b-it';
+/* A model that is on the Workers Free plan, and a fast one. Cloudflare has
+   moved the larger ones behind Workers Paid before now — @cf/moonshotai/kimi-k2.6
+   and @cf/zai-org/glm-5.2 went that way in July 2026 — so the one named here
+   is deliberately from the list that stayed free, and changing it is this
+   line. A model that has been moved answers 403 and is handled like any
+   other failure below: the browser reads the question itself.
+
+   It started life on @cf/google/gemma-4-26b-a4b-it, which was the slow part
+   of the whole feature: a reasoning model, thinking through several hundred
+   tokens before writing three ids, inside an output budget the thinking
+   sometimes used up. This one is a quarter of the size, built for latency,
+   and reads all ten of this site's languages; and thinking is switched off
+   below either way, because picking three lines out of a list is not a
+   thing to deliberate over. @cf/meta/llama-3.1-8b-instruct-fast is the
+   other reasonable choice, and weaker in Estonian and Armenian. */
+const MODEL = '@cf/zai-org/glm-4.7-flash';
 
 /* Long enough for a real sentence in any of the ten languages, short enough
    that nothing anybody pastes in decides what this costs to run.
@@ -105,10 +119,11 @@ const MAX_PICKS = 3;
 const MAX_CANDIDATES = 40;
 
 /* The blurb is the only long field in the catalogue the model sees, and the
-   first sentence or so of one is enough to choose on. Sending all of them
-   whole would be a hundred and eighty kilobytes of prompt for an answer that
-   names three places. */
-const BLURB_CHARS = 150;
+   first clause of one is enough to choose on. Sending all of them whole
+   would be a hundred and eighty kilobytes of prompt for an answer that names
+   three places, and every character here is read seventy-four times a
+   question. */
+const BLURB_CHARS = 100;
 
 const SCHEMA = {
   type: 'object',
@@ -220,20 +235,33 @@ function openUntil(week, now) {
  * empty answer, and every caller of this reads that as "no hours known" rather
  * than as "nothing is open".
  */
+let linked = null;
+let linkedAt = 0;
+
 async function openPlaces(env, now) {
   if (!env.DB) return {};
 
-  let rows = [];
-  try {
-    const out = await env.DB
-      .prepare(
-        'SELECT map_id, opening_hours FROM google_venues ' +
-        "WHERE map_id IS NOT NULL AND opening_hours != '' AND status = 'Open'"
-      )
-      .all();
-    rows = out.results || [];
-  } catch (e) {
-    return {};
+  /* The sixty linked rows, kept a minute: the join changes when somebody
+     links a row in the database, which is a monthly thing, and a D1 round
+     trip a question for it was measurable on the slow path. A minute rather
+     than five so a link made by hand shows up while the person is still
+     looking. */
+  let rows = linked;
+  if (!rows || Date.now() - linkedAt > 60000) {
+    rows = [];
+    try {
+      const out = await env.DB
+        .prepare(
+          'SELECT map_id, opening_hours FROM google_venues ' +
+          "WHERE map_id IS NOT NULL AND opening_hours != '' AND status = 'Open'"
+        )
+        .all();
+      rows = out.results || [];
+    } catch (e) {
+      return {};
+    }
+    linked = rows;
+    linkedAt = Date.now();
   }
 
   const open = {};
@@ -421,18 +449,27 @@ function googleFor(rows, open) {
     .join('\n');
 }
 
-function promptFor(question, places, google, lang, open) {
+function promptFor(question, places, google, wholeCity, lang, open) {
   const lines = [
     'Places I have eaten at and written up:',
     'id | name | types | price out of 4 | must order | open now | description',
     catalogueFor(places, lang, open)
   ];
 
+  /* The city's forty go in on both scopes, and the scope is the sentence
+     over them. On the map they are a last resort — the model may reach for
+     one only when nothing of mine fits, which is the fallback the browser
+     used to make as a second whole request; on the city they are fair game
+     wherever one answers better. One call either way. */
   if (google.length) {
     lines.push(
       '',
-      'Places from Google that I have not been to. Prefer a place above when' +
-        ' one answers the question as well; these are for when none does:',
+      wholeCity
+        ? 'Places from Google that I have not been to. Prefer a place above' +
+          ' when it answers the question as well; use these when one of them' +
+          ' answers it better:'
+        : 'Places from Google that I have not been to. Use these ONLY if' +
+          ' nothing in the first list answers the question at all:',
       'id | name | types and cuisine | price out of 4 | Google rating | open now',
       googleFor(google, open)
     );
@@ -445,12 +482,13 @@ function promptFor(question, places, google, lang, open) {
     'Pick at most ' + MAX_PICKS + ' from the lists above that best answer them,' +
       ' best first. Use only ids copied exactly from the lists. If nothing above' +
       ' fits, return an empty picks array rather than the closest thing.',
-    'For each pick write "why" as one short clause about why it answers this' +
-      ' particular question — not a description of the place. For a place from' +
-      ' Google say only what the line says: do not invent what it is like.',
+    'For each pick write "why": at most twelve words on why it answers this' +
+      ' particular question, not a description of the place. For a place from' +
+      ' Google say only what its line says.',
     'Write "say" as one short sentence introducing the picks.',
     'Write "why" and "say" in this language: ' + lang + '.',
-    'Answer with JSON only: {"say": "...", "picks": [{"id": "...", "why": "..."}]}'
+    'Answer with JSON only, nothing before or after it:' +
+      ' {"say": "...", "picks": [{"id": "...", "why": "..."}]}'
   );
 
   return lines.join('\n');
@@ -537,25 +575,18 @@ export async function onRequestPost(context) {
   const now = tallinnNow();
   const open = await openPlaces(env, now);
 
-  /* The city, narrowed to what the question could be about. An empty list
-     here is a complete answer too: nothing in the export scored, and the
-     browser draws whatever my places make of the question. */
-  let google = [];
-  if (wholeCity) {
-    const cut = candidates(await googleVenues(env), readWish(body.wish), now);
-    google = cut.venues;
-    Object.assign(open, cut.open);
-  }
+  /* The city, narrowed to what the question could be about — on both scopes.
+     It used to be asked for only on the city, and a question the map had no
+     answer to cost a second whole request, model and all, to find out. Now
+     the forty travel with every answer: the model sees them under a sentence
+     that says how far it may reach for one, and the browser, with no model,
+     ranks my places first and these only when mine come to nothing. An empty
+     list is a complete answer too: nothing in the export scored. */
+  const cut = candidates(await googleVenues(env), readWish(body.wish), now);
+  const google = cut.venues;
+  Object.assign(open, cut.open);
 
-  /* What goes back whether or not the model has anything to add. The Google
-     rows travel on every `all` answer — not just under the model's picks —
-     because with no model the browser has to rank them itself, and that is
-     these forty against my seventy-five with the one function it has. */
-  const answer = (source, picks, say) => {
-    const out = { ok: true, source, picks, say, open };
-    if (wholeCity) out.venues = google;
-    return json(out);
-  };
+  const answer = (source, picks, say) => json({ ok: true, source, picks, say, open, venues: google });
 
   /* Everything from here on is the model's half, and none of it is allowed to
      take the answer down with it. `source: "none"` is a complete, correct
@@ -579,13 +610,20 @@ export async function onRequestPost(context) {
             ' of places. You never invent a place, never use an id that is not' +
             ' in the lists, and never describe a place beyond what the lists say.'
         },
-        { role: 'user', content: promptFor(question, places, google, lang, open) }
+        { role: 'user', content: promptFor(question, places, google, wholeCity, lang, open) }
       ],
       /* Asked for, not relied on: unwrap() above handles an answer that
          arrives as prose around the JSON, which is what happens when a model
          or a runtime quietly ignores this. */
       response_format: { type: 'json_schema', json_schema: SCHEMA },
-      max_tokens: 400
+      /* No thinking. This is the line the first model was missing, and it
+         was most of the wait: a reasoning model left to reason deliberates
+         through hundreds of tokens before the first character of an answer
+         that is three ids long. Cloudflare's own example passes this. */
+      chat_template_kwargs: { enable_thinking: false },
+      /* Three picks of a dozen words, a sentence, and the JSON around them.
+         The budget is the ceiling on how long a question can take. */
+      max_tokens: 220
     });
 
     said = keep(unwrap(out && (out.response !== undefined ? out.response : out)), shown);

@@ -62,7 +62,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=8e860552">
+<link rel="stylesheet" href="assets/styles.css?v=29dc690a">
 </head>
 <body>
 
@@ -215,15 +215,20 @@
   </button>
   <div class="panel-scroll" id="panel-scroll">
     <article id="panel-detail" hidden></article>
-    <section id="panel-list">
+    <!-- The chat. What you feel like, typed into the field; the answer under
+         it as the panel's own rows, and every earlier question below that.
+         Built by renderAsk() in assets/app.js; the field and the switch are
+         static so the language switch relabels them with everything else. -->
+    <section id="panel-ask" hidden>
       <div class="list-head">
         <p class="eyebrow" data-i18n="eyebrow">Tallinn</p>
       </div>
-      <!-- Above the search rather than beside it, because it is the wider
-           question: the search field finds a place you can already name, and
-           this one is for an evening you cannot. The two look different on
-           purpose — this one wears the accent and carries a button you press,
-           the search narrows as you type and never has one.
+      <h2 class="ask-title" id="panel-ask-title" tabindex="-1" data-i18n="askTitle">What do you feel like?</h2>
+      <!-- The field, and under it the switch. It used to sit in the list
+           panel above the search, which made it read as a second search that
+           was oddly slow; a question for an evening you cannot name is not a
+           search, so it has a panel of its own now, with the thread of what
+           was asked under it.
 
            maxlength is the same 200 functions/api/ask.js cuts a question to.
            Restated here, like every other cap on this site, so the field
@@ -260,6 +265,12 @@
                   aria-pressed="false" data-i18n="askScopeAll">All Tallinn</button>
         </div>
       </form>
+      <div class="ask-thread" id="ask-thread"></div>
+    </section>
+    <section id="panel-list">
+      <div class="list-head">
+        <p class="eyebrow" data-i18n="eyebrow">Tallinn</p>
+      </div>
       <div class="search">
         <div class="search-field">
           <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -412,6 +423,6 @@
      cannot: no allowance left, no binding, no network. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
 <script src="assets/ask.js?v=73a55172" defer></script>
-<script src="assets/app.js?v=e6b14956" defer></script>
+<script src="assets/app.js?v=78c6efc3" defer></script>
 </body>
 </html>
