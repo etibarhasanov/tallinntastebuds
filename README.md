@@ -52,7 +52,7 @@ completely with the database switched off.
 - [Google venues](#google-venues)
 - [The directory](#the-directory)
 - [Lists](#lists)
-- [Lists people kept](#lists-people-kept)
+- [Public lists](#public-lists)
 - [Profiles](#profiles)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
@@ -979,9 +979,9 @@ size whatever its count. There is deliberately no "Most saved" chip, because
 that would be a ranking, and the line above is not a slogan.
 
 A list carries a count of its own — how many people kept it — and **one page
-does sort by it**: `/lists/kept`, every public list with the most kept first.
+does sort by it**: `/lists/public`, every public list with the most kept first.
 That is a ranking, it is the only one on this site, and it was decided rather
-than inherited. The reasoning is under **Lists people kept**; the short of it
+than inherited. The reasoning is under **Public lists**; the short of it
 is that ranking lists is a different claim from ranking kitchens, because a
 list is a thing somebody made and "the ones most people kept" says nothing
 about any restaurant on them.
@@ -1006,7 +1006,7 @@ description it is**.
 If a future change wants to sort *places* by saves, it is changing the
 argument of the site rather than adding a feature. That is a decision for a
 person, not a patch — which is how the page above was arrived at, and it took
-the argument in **Lists people kept** to arrive at it.
+the argument in **Public lists** to arrive at it.
 
 **And on sorting by one, which `/google` does.** Google's numbers already
 appear on Google's places, attributed every time — that is settled above and in
@@ -1468,7 +1468,7 @@ because those never needed the database.
 
 `styles.css` for the tokens, the card, the eyebrow and the four controls;
 `lists.css` for the brand header, the stack and the row a column of things is
-built from. The rows are `.lists-all-link` — the row `/lists/kept` draws — and
+built from. The rows are `.lists-all-link` — the row `/lists/public` draws — and
 not `.lists-index-link`, which leaves 54px along its bottom edge for the map
 pill laid over it. These rows have one destination, so that padding would be a
 hole in a card with nothing standing in it. Its own comment in `lists.css` says
@@ -1891,14 +1891,14 @@ are.
 ```
 /lists.html      your own lists, and the ones you kept
 /list/<id>       one list — the address that gets shared
-/lists/kept      everybody's, the most kept first
+/lists/public    everybody's, the most kept first, and a field to search them
 /u/<name>        who made it, and everything else they published
 /?list=<id>      the same list on the map, as pins
 ```
 
-One HTML file serves the first four. `/list/<id>`, `/lists/kept` and
+One HTML file serves the first four. `/list/<id>`, `/lists/public` and
 `/u/<name>` each go through a Function of their own — `functions/list/[id].js`,
-`functions/lists/kept.js`, `functions/u/[name].js` — and each hands back that
+`functions/lists/public.js`, `functions/u/[name].js` — and each hands back that
 same file with the page's own title and social card written into the head and
 its answer seeded into the document. That is what makes a shared link arrive
 looking like something: a static page has one `<title>`, and the crawler that
@@ -1908,8 +1908,12 @@ head swap, the seeding and the headers — is in `functions/_shell.js`, written
 once because two of those five are the difference between a title somebody
 typed and a title somebody typed being executed.
 
-The last two have sections of their own: see [Lists people
-kept](#lists-people-kept) and [Profiles](#profiles).
+The last two have sections of their own: see [Public
+lists](#public-lists) and [Profiles](#profiles).
+
+`/lists/public` was `/lists/kept`, and the old address is a 301 to it —
+`functions/lists/kept.js` is that redirect and nothing else. Why it moved, and
+why the old one stays, is at the end of [Public lists](#public-lists).
 
 The id is the title plus six random characters — `/list/top-ten-burgers-k3fmqw`
 — so the link says what it is before anybody opens it, and cannot be guessed
@@ -1920,7 +1924,7 @@ private.
 
 Your lists are named on `/account.html`, one row each, and that card's foot
 carries the three ways further in: **Make a list** to `/lists.html`, **Your
-public profile**, and **All lists people kept**.
+public profile**, and **Public lists**.
 
 The map's sheet had three rows for this once — **Your lists**, **Your public
 profile**, **Lists people kept** — and then one, and now none, and each step
@@ -1931,9 +1935,9 @@ account page names the lists, so there is nothing left to promise.
 
 The signed-out cost of having moved everybody's lists off the map's corner is
 unchanged, because it was never about which row: a stranger sees the sign-in
-form and no menu at all, so `/lists/kept` is reached from a shared list, from
-`/lists.html`, from a search result, or from a byline — which is what [Lists
-people kept](#lists-people-kept) is about at more length.
+form and no menu at all, so `/lists/public` is reached from a shared list, from
+`/lists.html`, from a search result, or from a byline — which is what [Public
+lists](#public-lists) is about at more length.
 
 ### Making one
 
@@ -2009,7 +2013,7 @@ the link" and "Only me", which fitted badly — two clauses in a segmented
 control that a narrow phone breaks over four lines, for the two states the
 rest of the web already has names for — and which has since stopped being
 accurate besides. **Public** now means public: the list is indexed, and it is
-on `/lists/kept` with everybody else's. There is still no third state and no
+on `/lists/public` with everybody else's. There is still no third state and no
 per-person sharing: a link either opens or it does not. The legend above them
 carries the sentence.
 
@@ -2070,9 +2074,10 @@ twice, and anybody willing to make ten accounts can add ten. Since nothing on
 this site sorts or ranks by it, what that buys is a bigger number and not a
 better position anywhere.
 
-### Lists people kept
+### Public lists
 
-`/lists/kept` is every public list on this site, the most kept first. It is
+`/lists/public` is every public list on this site, the most kept first, with a
+field to search them and a bookmark on every row. It is
 the only page here that puts one person's writing above another's, and it is
 the one thing in this repository that had a standing note against it. That
 note is worth quoting, because it is the argument this section has to answer:
@@ -2126,6 +2131,50 @@ fact and the position is its consequence; numbering the rows would make the
 position the identity, and a list slipping from third to fourth would read as
 a demotion nobody did anything to deserve.
 
+**And a bookmark in its corner.** Keeping a list was on the list's own page
+and nowhere else, so on a page built to hand somebody twenty of them, keeping
+three meant three journeys out and back. The mark on a row is the same
+control, in the same two states, wearing the same filled-or-outlined mark the
+map draws on a place — signed out it is the same honest door to the sign-in
+sheet rather than a button that could only fail.
+
+Pressing it repaints the count in the line above it and moves nothing else.
+The page is ordered on that count, so a row could climb under the finger that
+pressed it and take the rows somebody was reading with it; the order is
+settled on load and stays settled until the next one. Your own lists draw no
+mark at all — the API refuses to keep one, because it is already under **Your
+lists** — and keep no room for one either, so a row without a corner is how
+you pick your own out of the page.
+
+**The search field** is on the card at the top, and it asks the database
+rather than filtering what is on the screen: a page holds twenty rows and the
+list you are looking for is usually not among them. It matches a list's title,
+the line under the title, and the username of whoever wrote it — a substring,
+case-blind for ASCII and no further, which is what SQLite's `LIKE` gives and
+is stated plainly in `functions/api/_mostkept.js` rather than papered over.
+
+What it deliberately does **not** search is the places on the lists. Matching a
+place name means reading every item of every public list on the site for one
+keystroke, which is the exact join taken out of this file's query when the row
+stopped printing a place count — so a search would cost several times what the
+unsearched page costs, and grow with how much people write. A place is found on
+the map, which is the page built for finding places. This field finds a piece
+of writing, by its name or by its author.
+
+A search is in the address — `/lists/public?q=coffee` — written there by
+`replaceState` as the field is typed into, and read back by the Function that
+serves the page, so a search somebody sends draws its answer rather than
+drawing everything and replacing it. Keystrokes are held for a fifth of a
+second before they become a request, and an answer is drawn only if it is the
+answer to the last thing asked: a one-letter query matches more and so answers
+slower, and without that check the page could settle on the rows for `c` while
+the field says `coffee`. The rows on the screen are left alone until the
+answer comes, and **Show more** carries the search with it — and refuses while
+one is out, because the cursor it holds belongs to the question before. What a
+search found is said to a screen reader through the page's live region and
+drawn nowhere: a number over rows with a Show more under them would be the
+size of the page, not of the answer.
+
 **It does not say how many places are on the list**, and it did. That number
 cannot be known without reading every item of every list on the page: twenty
 rows cost four hundred, and the cost grows with how much people write. Four
@@ -2140,6 +2189,14 @@ to watch. Roughly two hundred and forty to pick and order twenty lists, sixty
 for their names. The first of those two grows with how many public lists
 exist, because ordering by a count means knowing the count for every candidate
 — which is what the note over `list_keeps` in `db/schema.sql` is about.
+
+Neither of the two things the page grew moves that number much. A search adds
+three `LIKE`s to a `WHERE` that was already visiting every candidate row, over
+columns on `lists` and `users` — which is why it is those columns and not the
+places on the lists. The bookmarks add one `LEFT JOIN` on `list_keeps`, keyed
+on the reader's own account, over the index that table is already unique on,
+and only for somebody signed in: the statement is written without it for
+everybody else, which is most of the traffic this page gets.
 
 **How anybody gets there.** Four ways, and the first two matter most:
 
@@ -2169,6 +2226,16 @@ exist, because ordering by a count means knowing the count for every candidate
 - **Search.** The page is indexed and is in `sitemap.xml`, and it is the only
   thing that links the lists to each other. Public lists have been indexable
   for a while; each one was an island until this.
+
+**It was `/lists/kept`.** The address named the order rather than the page,
+which stopped fitting the moment the page grew a way to look for one list among
+them: somebody searching is asking what is on it, not how it is sorted.
+`functions/lists/kept.js` is now a 301 to `/lists/public` and nothing else,
+because that address is in `sitemap.xml`'s history, in search results, at the
+foot of every list read before the rename, and in whatever anybody pasted into
+a message. An indexed address is not a name you take back, only one you
+forward. `assets/lists.js` still recognises both paths, for the deployment with
+no Functions in it where there is nothing to answer the redirect.
 
 **Where the number comes from.** `list_keeps`, counted, every time it is
 asked. There is no counts table, and there was one for about an hour.
@@ -2630,7 +2697,7 @@ the drag and the save — is appended rather than left to collide.
 | title | 60 characters |
 | the line under it | 200 |
 | what you say about a place | 280 |
-| places before a list is listed on `/lists/kept` | 3 |
+| places before a list is listed on `/lists/public` | 3 |
 
 Most of them are about somebody with a script rather than somebody with
 opinions. They are in `functions/api/lists.js`, and the page restates the
@@ -2717,12 +2784,12 @@ account button simply does not appear.
   that is as far as it goes: no following, no hearts, no comments on somebody
   else's list. A keep is the one thing you can do to a list somebody else made,
   and it is silent: its owner sees a number and never who — including on
-  `/lists/kept`, where that number orders the page and still names nobody.
+  `/lists/public`, where that number orders the page and still names nobody.
 - **Any way to say a list is bad.** Nothing is reported, hidden or taken down
   by anybody but its owner, and the page that now ranks them gives a reader no
   way to push one down. The only lever on that order is keeping a list, which
   is the lever the feature already had.
-- **A ranking of people.** `/lists/kept` orders lists; a profile prints one
+- **A ranking of people.** `/lists/public` orders lists; a profile prints one
   person's total and no position in anything. See the end of **Profiles** for
   why the number was built and the table of people was not.
 
@@ -2741,7 +2808,7 @@ it.
 It is the same page `lists.html` has always been, served at another address by
 `functions/u/[name].js` — the head swapped for that person's own tags, the
 profile seeded into the document, exactly the way `/list/<id>` and
-`/lists/kept` work. There is no second HTML file, no second stylesheet and no
+`/lists/public` work. There is no second HTML file, no second stylesheet and no
 second boot.
 
 ### What is on one
@@ -2786,12 +2853,12 @@ It is honest exactly as far as an account is, which is the same thing
 `/api/saves` says about its own numbers: one row per (list, account), so
 nobody inflates it by pressing twice, and anybody willing to make ten accounts
 can add ten. That is worth being plainer about here than it was when only a
-list carried the number, because **Lists people kept** now orders a page on
+list carried the number, because **Public lists** now orders a page on
 the same counts — and it is the same answer: ten accounts buy ten keeps and
 nobody has found that worth doing.
 
 **A profile is deliberately not a position, and that is what separates it from
-the directory.** `/lists/kept` ranks *lists*, one page of them at a time, and
+the directory.** `/lists/public` ranks *lists*, one page of them at a time, and
 the argument for doing that is in its own section. Ranking *people* is a
 further claim, and it costs more: "third of everybody" means grouping every
 row of `list_keeps` by owner on every profile view, where a profile's own
@@ -3627,7 +3694,9 @@ functions/api/_profile.js  reading one person, shared the same way
 functions/_shell.js        lists.html with a head and an answer written in,
                            shared by the three Functions that serve it
 functions/list/[id].js     /list/<id> — the page a shared link opens
-functions/lists/kept.js    /lists/kept — everybody's, the most kept first
+functions/lists/public.js  /lists/public — everybody's, most kept first
+functions/lists/kept.js    /lists/kept — a 301 to the address above, which
+                           this page had before it was renamed
 functions/u/[name].js      /u/<name> — the page a byline leads to
 lists.html                 your lists, the ones you kept, the one a stranger
                            reads, everybody's, and whoever wrote one

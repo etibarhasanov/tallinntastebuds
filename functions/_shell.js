@@ -5,7 +5,7 @@
  * hand back that one page with different tags written into it:
  *
  *   functions/list/[id].js   one list, so a shared link unfurls as what it is
- *   functions/lists/kept.js  the directory, so it is a page a search can find
+ *   functions/lists/public.js  the directory, so a search can find it
  *   functions/u/[name].js    one person, which is where a byline leads
  *
  * What is in here is the part they cannot each have their own copy of: the two

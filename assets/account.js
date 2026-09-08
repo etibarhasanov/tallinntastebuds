@@ -251,12 +251,13 @@
     return out;
   }
 
-  /* The row on /lists/kept, borrowed whole: a title with one line of quiet
+  /* The row on /lists/public, borrowed whole: a title with one line of quiet
      facts under it. Not the row /lists.html draws for a list, which leaves
      54px along its bottom edge for a second destination laid over it — these
      rows have one destination, and that padding is a hole in a card nothing
-     is standing in. Its own comment in lists.css says exactly that, which is
-     how this page came to use it. */
+     is standing in. The directory's own rows take that room back with
+     .has-keep when they carry a bookmark; without the class the row is the
+     bare card, which is what this page wants. */
   function row(href, title, meta) {
     var line = el('p', { className: 'lists-all-meta mono' });
     meta.filter(Boolean).forEach(function (part, i) {
@@ -355,7 +356,7 @@
     kids.push(foot([
       link('accountMake', '/lists.html'),
       link('profileYours', '/u/' + encodeURIComponent(state.user)),
-      link('listsAllEverything', '/lists/kept')
+      link('listsAllEverything', '/lists/public')
     ]));
     return card(kids);
   }

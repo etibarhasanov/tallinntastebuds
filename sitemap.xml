@@ -4,7 +4,7 @@
   the map and the canonical tag points them all back to it, so listing them
   would only ask Google to index the same page sixty times.
 
-  /lists/kept is the second one, and it is here because it is the only page
+  /lists/public is the second one, and it is here because it is the only page
   that links the lists together. Every public list is indexable and always has
   been, but each was an island a crawler could reach only if somebody had
   posted the link somewhere. The individual lists are still not listed here —
@@ -19,8 +19,8 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://tallinntastebuds.ee/lists/kept</loc>
-    <lastmod>2026-09-07</lastmod>
+    <loc>https://tallinntastebuds.ee/lists/public</loc>
+    <lastmod>2026-09-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>

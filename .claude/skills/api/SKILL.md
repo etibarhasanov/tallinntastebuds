@@ -43,7 +43,8 @@ leading underscore are modules, not routes.
 | `GET /api/venues` | `venues.js` | none; the whole `google_venues` table | `public, max-age=300` |
 | `GET /api/geocode` | `geocode.js` | none; proxies Photon, cached upstream a day | `no-store` |
 | `/list/<id>` | `list/[id].js` | none; `lists.html` with the list unfurled | `no-store` |
-| `/lists/kept` | `lists/kept.js` | none; `lists.html` with the first page of everybody's lists seeded in | `no-store` |
+| `/lists/public` | `lists/public.js` | none; `lists.html` with the first page of everybody's lists seeded in, searched when the address carries `?q=` | `no-store` |
+| `/lists/kept` | `lists/kept.js` | none; 301 to `/lists/public`, the address this page had before it was renamed | — |
 
 Both of those two serve the same `lists.html` with a head of their own, and
 the escaping, head swap and seeding they share are in `functions/_shell.js` —
