@@ -705,7 +705,10 @@ the same scoring, down to the thirty a question could plausibly be about with
 a floor of twenty so a question that names nothing still has a map to choose
 from — and the blurbs are cut to a clause, and the map scope carries no Google
 rows at all, since there the model may not name one. That is
-**about 1,500 tokens a question, and something like three hundred a day**.
+**about 1,700 tokens a question, and something like three hundred a day**;
+the street on every line is a few hundred of those, and worth it, because
+where a place is turned out to be the thing the model most needed and least
+had.
 
 The floor is what makes the narrowing safe rather than clever. Every place on
 this map is one I have been to and would send somebody to, so any twenty of
@@ -810,6 +813,23 @@ place, and a small model still sometimes leaves one blank, so
 no reason is not a pick, and if every place goes the sentence still stands.
 A row appearing with nothing under it was the answer refusing to say why it
 was an answer, and for a year it was what this panel mostly drew.
+
+**And it has to be true.** Requiring a reason on every pick makes a model
+invent one when the line gives it none: asked for *kesklinn*, it once put
+*cool bakery in the city center* under a place whose line says it is out on
+the way to Viimsi — the question's word stamped onto a place to satisfy the
+rule, in the site's own voice, under a row. Two things stop that. The model
+now sees **where** every place is — the street and district, on my lines and
+on Google's, which for a year it did not; a model that can read *Ranna tee,
+Miiduranna, Viimsi* has no business calling it central. And the prompt says
+in so many words that a reason must be true to the line, that the question's
+words are not a reason unless the line supports them, and that when the line
+gives no true reason for *this* question the place is to be left out: a
+shorter honest answer beats an invented reason. The address also joins the
+haystack the narrowing scores on, so *kopli* reaches Bekker and *viimsi*
+reaches Buxhöwden, and the floor a question falls to when it names nothing is
+one place per type in turn rather than the top of the alphabet — which is how
+*kesklinn* got three bakeries beginning with B.
 
 ## Close a place instead of deleting it
 

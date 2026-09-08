@@ -517,11 +517,14 @@ function shortlist(places, wish, open, lang, named) {
     if (wish.open && open[place.id]) score += 3;
 
     if (wish.rest.length) {
-      /* Name, dishes, types and the write-up — the same haystack the browser
-         builds for its own reader, so a dish nobody wrote into the taxonomy
-         still finds its place. */
+      /* Name, street, dishes, types and the write-up, so a dish nobody
+         wrote into the taxonomy still finds its place and so does a street:
+         "kopli" reaches Bekker, "viimsi" reaches Buxhöwden. The address was
+         missing from this for a while, and a question naming a place in the
+         city narrowed on nothing. */
       const hay = ' ' + foldWords([
         place.name,
+        place.address,
         (place.mustOrder || []).join(' '),
         types.join(' '),
         (place.blurb && (place.blurb[lang] || place.blurb.en)) || ''
@@ -538,9 +541,27 @@ function shortlist(places, wish, open, lang, named) {
   scored.sort((a, b) => b.score - a.score);
 
   const out = scored.slice(0, MAX_CATALOGUE).map((hit) => hit.place);
+
+  /* The floor is a cross-section, not the top of the alphabet. It used to be
+     the first of the rest in catalogue order, which is alphabetical, so every
+     question that scored nothing put the same A-to-F slice in front of the
+     model — and "kesklinn" was answered with three bakeries that happened to
+     begin with B. Taking one place per type in turn, and round again, gives
+     a mood question one bakery, one bar, one restaurant and so on to choose
+     from. Still deterministic, so the same question twice is the same
+     answer. */
+  const byType = {};
   for (const place of rest) {
-    if (out.length >= MIN_CATALOGUE) break;
-    out.push(place);
+    const type = (place.types || [])[0] || '';
+    (byType[type] = byType[type] || []).push(place);
+  }
+  const lanes = Object.keys(byType).sort().map((type) => byType[type]);
+  for (let i = 0; out.length < MIN_CATALOGUE; i++) {
+    let took = false;
+    for (const lane of lanes) {
+      if (i < lane.length && out.length < MIN_CATALOGUE) { out.push(lane[i]); took = true; }
+    }
+    if (!took) break;
   }
 
   return out;
@@ -556,6 +577,16 @@ function shortlist(places, wish, open, lang, named) {
  * an Estonian question writes Estonian back; one shown English and asked in
  * Estonian tends to drift into English halfway down.
  */
+/* An address as the model should read it: the street and the district, and
+   not ", 10140 Tallinn" on the end of every line, which is thirty tokens a
+   question that say nothing — everything here is in Tallinn. What is kept
+   is what places a place: "Suur-Karja 12" is the Old Town, "Ranna tee 5/2,
+   Miiduranna, Viimsi" is out past Pirita, and a model that can read either
+   has no business calling the second one central. */
+function whereIs(address) {
+  return String(address || '').replace(/,\s*\d{5}\s+Tallinn\s*$/i, '').trim();
+}
+
 function catalogueFor(places, lang) {
   return places
     .filter((place) => !place.closed)
@@ -564,6 +595,7 @@ function catalogueFor(places, lang) {
       return [
         place.id,
         place.name,
+        whereIs(place.address),
         (place.types || []).join(' '),
         place.price ? place.price + '/4' : '',
         (place.mustOrder || []).join(', '),
@@ -593,6 +625,7 @@ function googleFor(rows) {
     .map((row) => [
       row.id,
       row.name,
+      whereIs(row.address),
       (row.types || []).concat(row.kitchens || []).join(' '),
       row.price ? row.price + '/4' : '',
       row.rating ? row.rating + ' from ' + (row.reviews || 0) + ' reviews' : ''
@@ -613,7 +646,7 @@ function briefFor(places, google, wholeCity, lang, open) {
       ' lists say.',
     '',
     'MY MAP — places I have eaten at and written up:',
-    'id | name | types | price out of 4 | must order | description',
+    'id | name | where | types | price out of 4 | must order | description',
     catalogueFor(places, lang)
   ];
 
@@ -630,7 +663,7 @@ function briefFor(places, google, wholeCity, lang, open) {
     lines.push(
       '',
       'REST OF TALLINN — places from Google that I have NOT been to:',
-      'id | name | types and cuisine | price out of 4 | Google rating',
+      'id | name | where | types and cuisine | price out of 4 | Google rating',
       googleFor(google),
       '',
       'The visitor asked for all of Tallinn. EVERY answer with places MUST' +
@@ -668,6 +701,14 @@ function briefFor(places, google, wholeCity, lang, open) {
       ' the occasion, what makes it the cheap one. Never a description of the' +
       ' place and never its type or price read back, which the card under it' +
       ' already prints. For a place from Google say only what its line says.',
+    'A "why" must be TRUE TO THE LINE. Say a place is central, near the' +
+      ' harbour, open late, cheap, quiet, anything — only if its line says so' +
+      ' or its "where" shows it. Never repeat the question\'s words back as a' +
+      ' reason the line does not support: a place whose line says it is out' +
+      ' towards Viimsi is not "in the city centre" because the centre was' +
+      ' asked for. If the line gives you no true reason for THIS question,' +
+      ' leave the place out; a shorter honest answer beats an invented' +
+      ' reason, and the "say" must not claim what the picks do not support.',
     'Write "say" as one or two short sentences, the way a person replies in' +
       ' a chat, introducing the picks or answering what was asked.',
     'Write "why" and "say" in this language: ' + lang + '.',
