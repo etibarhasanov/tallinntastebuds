@@ -2098,13 +2098,23 @@ body.panel-detail .panel {
    the list offers, not the thing the panel is about. The magnifier and the
    clear button are laid over the input rather than beside it, so the text
    starts and ends where the row names do. */
-/* The chat: a title, the field, the switch, and the thread under them.
+/* The chat: a title, the thread, and the field under it all.
+ *
+ * It is laid out as a chat is: the conversation reads down from the top, and
+ * the field is the last thing in the panel and held to its bottom edge, so
+ * a thread shorter than the panel still puts the field where a thumb
+ * expects it and a longer one scrolls up behind it. The scroller grows to
+ * the panel and becomes a column only while the chat is showing —
+ * body.panel-ask, set by renderPanel() in assets/app.js — because the list
+ * and a place lay themselves out as blocks and their margins collapse on
+ * that, and the scroller is otherwise only as tall as what is in it.
  *
  * The field is a question you finish writing and send, so it has a button on
  * it and the accent on its edge — it is the one field on this site that does
- * not narrow as you type. Sticky like the search is in the list panel, for
- * the same reason: the thread grows under it and the way to ask again should
- * never scroll off. */
+ * not narrow as you type. */
+body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: column; }
+#panel-ask { display: flex; flex-direction: column; flex: 1 0 auto; }
+#panel-ask[hidden] { display: none; }
 .ask-title {
   margin: 10px 0 12px;
   font-family: var(--display);
@@ -2116,10 +2126,10 @@ body.panel-detail .panel {
 .ask-title:focus { outline: none; }
 .ask {
   position: sticky;
-  top: 0;
+  bottom: 0;
   z-index: 2;
-  margin: 0 calc(var(--panel-pad) * -1);
-  padding: 0 var(--panel-pad) 10px;
+  margin: auto calc(var(--panel-pad) * -1) 0;
+  padding: 12px var(--panel-pad) 10px;
   background: inherit;
 }
 .ask-field { position: relative; }
@@ -2143,6 +2153,8 @@ body.panel-detail .panel {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
 }
+/* Until a roll is chosen there is nothing to ask it of: the field and its
+   arrow fade together, and the two buttons above are the only reply. */
 .ask-input:disabled { opacity: .6; }
 .ask-icon {
   position: absolute;
@@ -2186,14 +2198,16 @@ body.panel-detail .panel {
   .ask.is-asking .ask-go { animation: none; }
 }
 
-/* Which roll the question goes to, under the field. The same two-button
-   segment the top of the map uses for the language, at the panel's own
-   scale: a hairline pill rather than a glass pane, and the mono the rest of
-   the panel's small words are set in. The pressed half wears the accent the
-   way a pressed chip does. */
+/* The two rolls, offered under the site's first line as the reply to it.
+   The same two-button segment the top of the map uses for the language, at
+   the panel's own scale: a hairline pill rather than a glass pane, and the
+   mono the rest of the panel's small words are set in. The chosen half
+   wears the accent the way a pressed chip does; before a choice neither
+   does. */
 .ask-scope {
   width: max-content;
-  margin: 8px 0 0;
+  max-width: 100%;
+  margin: 10px 0 0;
   border: 1px solid var(--hairline);
   border-radius: 100px;
   background: var(--paper);
@@ -2239,6 +2253,8 @@ body.panel-detail .panel {
   line-height: 1.5;
   color: var(--ink);
 }
+/* The site's opening line has nothing of yours above it to sit under. */
+.ask-turn > .ask-say:first-child { margin-top: 0; }
 /* The sentence over an answer still on its way is the site thinking out
    loud, and it fades the way the arrow does so the two read as one state. */
 .ask-turn.is-pending .ask-say { color: var(--muted); }

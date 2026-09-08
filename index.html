@@ -62,7 +62,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=29dc690a">
+<link rel="stylesheet" href="assets/styles.css?v=84250f6e">
 </head>
 <body>
 
@@ -215,57 +215,67 @@
   </button>
   <div class="panel-scroll" id="panel-scroll">
     <article id="panel-detail" hidden></article>
-    <!-- The chat. What you feel like, typed into the field; the answer under
-         it as the panel's own rows, and every earlier question below that.
-         Built by renderAsk() in assets/app.js; the field and the switch are
-         static so the language switch relabels them with everything else. -->
+    <!-- The chat. It reads top to bottom the way a conversation does: the
+         site asks which roll to answer from and offers the two as buttons,
+         then every question sits on the right with the answer under it, and
+         the field is the last thing, held to the bottom of the panel so the
+         way to ask again is always in reach. Built by renderAsk() in
+         assets/app.js; the opening exchange, the field and the buttons are
+         static so the language switch relabels them with everything else.
+         Closing the panel clears the thread, the way closing a chat does. -->
     <section id="panel-ask" hidden>
       <div class="list-head">
         <p class="eyebrow" data-i18n="eyebrow">Tallinn</p>
       </div>
-      <h2 class="ask-title" id="panel-ask-title" tabindex="-1" data-i18n="askTitle">What do you feel like?</h2>
-      <!-- The field, and under it the switch. It used to sit in the list
-           panel above the search, which made it read as a second search that
-           was oddly slow; a question for an evening you cannot name is not a
-           search, so it has a panel of its own now, with the thread of what
-           was asked under it.
+      <h2 class="ask-title" id="panel-ask-title" tabindex="-1" data-i18n="askOpen">Ask</h2>
+      <div class="ask-thread" id="ask-thread">
+        <!-- The first thing said, and the site says it: which roll the
+             questions are about. The map is the narrower answer and the one
+             this site stands behind; the city adds Google's eleven hundred,
+             each of which comes back wearing Google's name and none of my
+             words. The buttons are the reply, and nothing can be typed until
+             one is pressed. A question the map has no answer to goes to the
+             city on its own — see arrive() in assets/app.js — and the
+             pressed button follows it. The script only says which is
+             pressed. -->
+        <article class="ask-turn">
+          <p class="ask-say" data-i18n="askWhich">Are you looking for somewhere on the Tallinn Tastebuds map, or anywhere in Tallinn?</p>
+          <div class="seg ask-scope" id="ask-scope" role="group"
+               data-i18n-aria-label="askScope" aria-label="Recommend from">
+            <button type="button" class="btn ask-scope-btn" data-scope="map"
+                    aria-pressed="false" data-i18n="askScopeMap">Tallinn Tastebuds map</button>
+            <button type="button" class="btn ask-scope-btn" data-scope="all"
+                    aria-pressed="false" data-i18n="askScopeAll">All Tallinn</button>
+          </div>
+        </article>
+      </div>
+      <!-- The field, at the bottom where a chat's is. It used to sit in the
+           list panel above the search, which made it read as a second search
+           that was oddly slow; a question for an evening you cannot name is
+           not a search, so it has a panel of its own now, with the thread
+           of what was asked above it.
 
            maxlength is the same 200 functions/api/ask.js cuts a question to.
            Restated here, like every other cap on this site, so the field
-           stops you rather than the server silently trimming what you typed. -->
+           stops you rather than the server silently trimming what you typed.
+           Disabled until a roll is chosen above; assets/app.js lifts it. -->
       <form class="ask" id="ask-form">
         <div class="ask-field">
           <svg class="ask-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M20.5 12.4c0 3.9-3.8 7-8.5 7-1 0-2-.15-2.9-.4L4 20.5l1.6-3.7a6.5 6.5 0 0 1-2.1-4.4c0-3.9 3.8-7 8.5-7s8.5 3.1 8.5 7z"/>
           </svg>
           <input type="text" class="ask-input" id="ask-input" autocomplete="off"
-                 autocorrect="off" spellcheck="false" maxlength="200"
+                 autocorrect="off" spellcheck="false" maxlength="200" disabled
                  data-i18n-aria-label="askTitle" data-i18n-placeholder="askPlaceholder"
                  aria-label="What do you feel like?" placeholder="cheap ramen, open now">
-          <button type="submit" class="ask-go" id="ask-go"
+          <button type="submit" class="ask-go" id="ask-go" disabled
                   data-i18n-aria-label="askSend" aria-label="Ask">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="M5 12h13M12 6l6 6-6 6"/>
             </svg>
           </button>
         </div>
-        <!-- Which roll the question is asked of. The map is the default and
-             the narrower answer; the city adds Google's eleven hundred, each
-             of which comes back wearing Google's name and none of my words.
-             A question the map has no answer to goes to the city on its own
-             — see askSubmit() in assets/app.js — and the switch follows it.
-             Static buttons rather than ones assets/app.js builds, so the
-             language switch relabels them with everything else and the
-             script only has to say which is pressed. -->
-        <div class="seg ask-scope" id="ask-scope" role="group"
-             data-i18n-aria-label="askScope" aria-label="Recommend from">
-          <button type="button" class="btn ask-scope-btn" data-scope="map"
-                  aria-pressed="true" data-i18n="askScopeMap">Tallinn Tastebuds map</button>
-          <button type="button" class="btn ask-scope-btn" data-scope="all"
-                  aria-pressed="false" data-i18n="askScopeAll">All Tallinn</button>
-        </div>
       </form>
-      <div class="ask-thread" id="ask-thread"></div>
     </section>
     <section id="panel-list">
       <div class="list-head">
@@ -423,6 +433,6 @@
      cannot: no allowance left, no binding, no network. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
 <script src="assets/ask.js?v=73a55172" defer></script>
-<script src="assets/app.js?v=8c38d67b" defer></script>
+<script src="assets/app.js?v=099df5f5" defer></script>
 </body>
 </html>

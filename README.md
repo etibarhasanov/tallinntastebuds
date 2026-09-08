@@ -517,13 +517,31 @@ when the keyboard opens over it.
 ## Ask for somewhere
 
 The speech bubble on the left rail, next to the die, opens the panel on a
-chat: a field you type a sentence into — *cheap asian food*, *somewhere for a
-date*, *khachapuri, still open* — and under it the thread of what you asked.
-Each question sits on the right, the way your own words do in any chat, with
-the answer under it: a sentence, then two or three places as the panel's own
-rows, best first, each with a line saying why it is there. The map narrows to
-the newest answer's pins. Earlier questions stay below, so it is a
-conversation rather than a search box that forgets.
+chat, and the site speaks first: *Are you looking for somewhere on the Tallinn
+Tastebuds map, or anywhere in Tallinn?*, with the two as buttons under it.
+Press one and it is your reply in the thread, the site asks *What do you feel
+like?*, and the field at the bottom of the panel wakes up. Type a sentence
+into it — *cheap asian food*, *somewhere for a date*, *khachapuri, still
+open* — and it sits on the right, the way your own words do in any chat, with
+the answer under it: a sentence or two, then one to three places as the
+panel's own rows, best first, each with a line saying why it is there. The
+map narrows to the newest answer's pins. The thread reads down from the top
+and the field is held to the bottom, so the newest exchange is always by the
+place you ask the next one, and earlier questions scroll up behind it.
+
+It is a conversation, and the model is told the whole of it: every question
+goes to `/api/ask` with the exchanges before it — what was asked and what was
+answered, ids and clauses, the last six — so *somewhere cheaper* or *is the
+second one open late* mean what they would to a person, and the reply reads
+like one. One place is a whole answer when one is what fits, and the model is
+told so; a model asked for "at most three" pads to three. A reply with no
+places at all is also a turn — the model asking which of two you meant, or
+saying in its own words that nothing fits — and it is drawn as one.
+
+Closing the panel ends the conversation. The thread is emptied, the map goes
+back to the whole city, and the next press of the bubble starts again from
+the site's first question. Nothing is written anywhere: what was asked is a
+moment, not a record.
 
 It is Surprise me with the question put back in. The die answers "anywhere,
 you choose"; this answers "somewhere like this". Both hand back a place with
@@ -582,10 +600,14 @@ unreachable.
 
 ### My map, or the whole city
 
-Under the field is a switch: **Tallinn Tastebuds map**, or **All Tallinn**.
-It arrives on the first, which is the narrower answer and the one this site
-stands behind: being on the map is the verdict, and a chat box suggesting
-places I have never eaten in would be a different site.
+The site's first question, and the two buttons that answer it:
+**Tallinn Tastebuds map**, or **All Tallinn**. Nothing can be typed until one
+is pressed, and neither is pressed for you: the first is the narrower answer
+and the one this site stands behind — being on the map is the verdict, and a
+chat box suggesting places I have never eaten in would be a different site —
+but which of the two you want is the one thing the site cannot guess. Pressing
+the other button later is the same reply again, in the thread, and the
+questions after it are asked of the new roll.
 
 The second adds Google's eleven hundred — see [Google venues](#google-venues) —
 and it is not a recommendation, and says so. A Google place in an answer is
@@ -600,8 +622,8 @@ alternative is the site borrowing a verdict it has not earned.
 
 **A question the map cannot answer goes to the city on its own.** Ask for
 bowling on the map and there is no bowling; rather than a shrug, the answer
-comes off All Tallinn, the switch moves to say so, and the sentence over the
-answer says *Nothing on my map fits, so this is the rest of Tallinn* — because
+comes off All Tallinn, the pressed button moves to say so, and the sentence
+over the answer says *Nothing on my map fits, so this is the rest of Tallinn* — because
 three places off Google under *here is where I would go* would be the site
 recommending somewhere it has not been. It costs no second request: the city's
 forty rows travel with every answer, on the map scope too, and the scope
@@ -621,7 +643,9 @@ no model it can rank them itself. The cut is generous on purpose: its one job
 is "plausibly what was asked for", and the real ranking happens once, in the
 browser, over my places and these together — **my places first** when a tie
 has to be broken, and Google's own score breaking ties among Google's rows,
-which on Google's rows is the only honest tie-break there is.
+which on Google's rows is the only honest tie-break there is. A Google row an
+earlier answer in the thread named rides along whatever the new question
+scored, so that a follow-up about it can still name it.
 
 What a Google row can answer with is less than one of mine: a category, a
 cuisine, a price band, a rating and the week. No write-up, no must-order dish.
@@ -663,8 +687,11 @@ gone, or it answers with something unparseable. So there is a second reader,
 | the model | mood, occasion, a sentence with no keyword in it — *somewhere I can hear myself think* |
 | `assets/ask.js` | the thirteen types in ten languages, cheap and fancy, open now, and every dish and street in the index |
 
-The local one is not a stub. Its vocabulary is the taxonomy labels this page
-already holds in all ten languages, so *pagariäri*, *bakery* and *пекарня* all
+The local one is not a stub, though it reads each sentence on its own — it
+has no way to hold a thread, and a follow-up it cannot read is the one case
+where the model's answer replaces nothing rather than something. Its
+vocabulary is the taxonomy labels this page already holds in all ten
+languages, so *pagariäri*, *bakery* and *пекарня* all
 reach the bakeries without a word of it being written down twice. The three
 things people ask for that have no words in the data — cheap, fancy, open now
 — live in `data/ui.json` under `askWordsCheap`, `askWordsFancy` and

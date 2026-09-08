@@ -119,17 +119,25 @@
 
        Null on arrival and on every visit that never asks anything. */
     answer: null,        // { picks: [{ id, why }], open: {} }, or null
-    /* Every question asked this visit and what came back, oldest first —
-       the thread the chat view draws. An exchange is pending from the moment
-       it is typed until the Function has answered, and the rows under it
-       can change twice in that time: the local reader's answer at once, the
-       model's when it arrives. The last one with places in it is what
-       state.answer holds and the map narrows to. */
+    /* The conversation, oldest first — the thread the chat view draws, and
+       what the model is shown again with every question so that "somewhere
+       cheaper" means cheaper than what it just said. Two kinds of turn: a
+       roll chosen with a button ({ choice }), and a question ({ q, ... }).
+       A question is pending from the moment it is typed until the Function
+       has answered, and the rows under it can change twice in that time:
+       the local reader's answer at once, the model's when it arrives. The
+       last one with places in it is what state.answer holds and the map
+       narrows to.
+
+       Emptied when the chat is closed — closePanel() — the way a chat is:
+       what was asked is a moment, not a record, and the next opening starts
+       again from the site's first question. Never written anywhere. */
     asks: [],
-    /* Whether the question is asked of my map or of the whole city. Held
-       here rather than in localStorage: the narrower answer is the one to
-       arrive on, and a visitor who wants the city presses for it. */
-    askScope: 'map',     // 'map' | 'all'
+    /* Whether the questions are asked of my map or of the whole city, and
+       empty until one of the two is pressed: the site's opening line asks,
+       and nothing can be typed until it is answered. Held here rather than
+       in localStorage for the same reason the thread is. */
+    askScope: '',        // '' | 'map' | 'all'
     /* The Google rows an answer on the whole city put on the map: stand-ins
        in the same shape as listPlaces, drawn by the same code, and gone the
        moment the answer is. Held apart from listPlaces because the two go
@@ -3204,6 +3212,16 @@
    * /api/*, and this is no exception — the chat is slower without the
    * Function and never absent.
    *
+   * IT IS A CONVERSATION, AND ONLY THE MODEL'S HALF KNOWS IT
+   *
+   * Every question goes to the Function with the exchanges before it — what
+   * was asked and what was answered, ids and clauses — so "somewhere
+   * cheaper" or "the second one" mean what they would to a person. The local
+   * reader reads each sentence on its own: it has no way to hold a thread,
+   * and a follow-up it cannot read is the one case where the model's answer
+   * replaces nothing rather than something. The thread lives in state.asks
+   * and goes when the chat is closed.
+   *
    * THE PLACES ARE ALWAYS MINE
    *
    * Whichever half answered, what is drawn is byId() over data/restaurants.json
@@ -3321,6 +3339,11 @@
   }
 
   function askSubmit() {
+    /* Nothing to ask of until a roll is chosen, and the field says so by
+       being disabled; a submit that reaches here anyway — a form submitted
+       by script — is ignored rather than asked of nothing. */
+    if (!state.askScope) return;
+
     /* The cap lives in assets/ask.js, which is also what applies it when it
        reads a question — one number rather than two that can drift. It is
        said twice more, and deliberately: as the field's maxlength in
@@ -3336,6 +3359,25 @@
     /* The search index is built lazily on the first search; an answer is the
        other thing that reads it, and it may well be what reads it first. */
     if (!hayIndex) buildSearchIndex();
+
+    /* What the model is reminded of: the last six questions before this
+       one and what each was answered with, as it stands on the screen — the
+       model's answer where it gave one, the local reader's where it did
+       not, since that is what the person is replying to. A choice of roll
+       is not an exchange the model needs, the scope travels with every
+       question; a question still waiting on its answer has nothing to be
+       reminded of yet. Read before the new turn goes in, so the question is
+       not its own history. Six is a conversation; the Function cuts it
+       there too. */
+    var history = state.asks.filter(function (turn) {
+      return turn.q && !turn.pending;
+    }).slice(-6).map(function (turn) {
+      return {
+        q: turn.q,
+        say: turn.say,
+        picks: turn.picks.map(function (pick) { return { id: pick.id, why: pick.why }; })
+      };
+    });
 
     /* The exchange goes into the thread before anything has answered, so
        the question is on the screen the moment it is sent, with the field
@@ -3357,6 +3399,7 @@
     dom.askInput.value = '';
     setAsking(true);
     renderAsk();
+    scrollThread();
 
     loadCuisines().then(function (cuisines) {
       var wish = readWish(question, cuisines);
@@ -3371,7 +3414,9 @@
       return fetch(ASK_URL, {
         method: 'POST',
         headers: { 'content-type': 'application/json', accept: 'application/json' },
-        body: JSON.stringify({ q: question, lang: state.lang, scope: turn.scope, wish: wish })
+        body: JSON.stringify({
+          q: question, lang: state.lang, scope: turn.scope, wish: wish, history: history
+        })
       })
         .then(function (res) { return res.ok ? res.json() : null; })
         .catch(function () { return null; })
@@ -3387,26 +3432,35 @@
      when there are any; otherwise the local reader runs again over my places
      and the city's rows together, with the hours it now has. The city is
      reached for only when the map came to nothing, on either half — that is
-     the fallback, and it costs nothing now: the rows came with the answer. */
+     the fallback, and it costs nothing now: the rows came with the answer.
+
+     A model that answered with a sentence and no places — asked back which
+     of two it meant, or said in its own words that nothing fits — is heard
+     last: the local reader is literal in a way the model is not and finds
+     the khachapuri the model talked itself out of, so it gets its say
+     first, and the model's sentence stands only over an answer with no
+     rows at all. */
   function arrive(turn, wish, out) {
     var open = (out && out.open) || {};
     var city = ((out && out.venues) || []).filter(function (row) {
       return typeof row.lat === 'number' && typeof row.lng === 'number';
     }).map(cityStandIn);
+    var model = out && out.source === 'ai' ? out : null;
 
     var said = null;
-    if (out && out.source === 'ai' && out.picks && out.picks.length) {
-      said = { say: out.say || '', picks: out.picks, source: 'ai' };
+    if (model && model.picks && model.picks.length) {
+      said = { say: model.say || '', picks: model.picks, source: 'ai' };
     } else if (wish) {
       said = askLocally(wish, open, []);
       if (!said.picks.length && city.length) said = askLocally(wish, open, city);
     }
     if (!said) said = { say: '', picks: [], source: 'rules' };
+    if (!said.picks.length && model && model.say) said = { say: model.say, picks: [], source: 'ai' };
 
     /* Whether the answer reached past the map. On the map scope that is the
-       fallback, and the switch and the sentence over the answer both say so:
-       three places off Google under "here is where I would go" would be the
-       site recommending somewhere it has not been. */
+       fallback, and the pressed button and the sentence over the answer both
+       say so: three places off Google under "here is where I would go"
+       would be the site recommending somewhere it has not been. */
     var named = {};
     said.picks.forEach(function (pick) { named[pick.id] = true; });
     var fromCity = city.filter(function (row) { return named[row.id]; });
@@ -3443,7 +3497,7 @@
        card somebody had already opened from the first answer. The thread
        has the better answer the next time it is looked at. */
     if (newest && turn.picks.length && state.view !== 'detail') showAnswer(turn);
-    else if (state.view === 'ask') renderAsk();
+    else if (state.view === 'ask') { renderAsk(); if (newest) scrollThread(); }
   }
 
   /* A Google row as this page draws a place it has no write-up for: the
@@ -3511,7 +3565,7 @@
     openPanel();
     paintMarkers();
     fitToPins({ animate: true });
-    dom.panelScroll.scrollTop = 0;
+    scrollThread();
   }
 
   /* The map back. Called by anything that is not an answer taking the map
@@ -3539,29 +3593,71 @@
     paintMarkers();
   }
 
+  /* Which roll is pressed, and whether there is anything to type into yet.
+     Neither button is pressed until one has been, and until then the field
+     and its arrow are disabled: the site asked first, and the buttons are
+     the reply. */
   function paintAskScope() {
     var btns = dom.askScope.querySelectorAll('[data-scope]');
     for (var i = 0; i < btns.length; i++) {
       btns[i].setAttribute('aria-pressed', String(btns[i].getAttribute('data-scope') === state.askScope));
     }
+    dom.askInput.disabled = !state.askScope;
+    dom.askGo.disabled = !state.askScope;
   }
 
-  /* The thread: every exchange this visit, newest at the top where the
-     field is, each one the question as it was typed and the answer under
-     it. The rows are the panel's own rows, so a place here is the same
-     place it is in the list — and a Google place the same stand-in a list
-     draws for one — with the answer's clause under each in the slot a
-     list's owner's sentence uses.
+  /* A roll chosen with one of the two buttons: your reply in the thread,
+     the site's next line under it, and the field ready. Changing it later is
+     the same press and reads the same way, and it does not re-ask — the
+     next question is asked of the new roll, and a switch that fired a
+     request would spend the allowance on every flick of it. */
+  function chooseScope(scope) {
+    if (scope === state.askScope) return;
+    state.askScope = scope;
+    state.asks.push({ choice: scope });
+    paintAskScope();
+    renderAsk();
+    scrollThread();
+    /* In the same turn as the press, so iOS raises the keyboard — see
+       openAsk() for why, and for why it must not scroll. */
+    try {
+      dom.askInput.focus({ preventScroll: true });
+    } catch (e) {
+      dom.askInput.focus();
+    }
+  }
 
-     Newest first rather than last because the field is at the top, and the
-     answer belongs under the question that was just typed into it, not at
-     the bottom of a scroll. Earlier questions are still there below, which
-     is what makes it a conversation rather than a search box that forgets. */
+  /* The newest line into view. The thread reads downwards and the field is
+     at the bottom, so the bottom is where the conversation is. */
+  function scrollThread() {
+    dom.panelScroll.scrollTop = dom.panelScroll.scrollHeight;
+  }
+
+  /* The thread: the site's opening line and its two buttons, which are
+     static in index.html and stay, then every exchange this visit under
+     them, oldest first and the newest at the bottom by the field — the way
+     a chat reads, and the way one is read back to the model. A choice of
+     roll is your reply as the button said it, with the site asking what you
+     feel like under it. A question is the question as it was typed and the
+     answer under it: the sentence, then the rows. The rows are the panel's
+     own rows, so a place here is the same place it is in the list — and a
+     Google place the same stand-in a list draws for one — with the answer's
+     clause under each in the slot a list's owner's sentence uses. */
   function renderAsk() {
-    clear(dom.askThread);
+    paintAskScope();
+    while (dom.askThread.children.length > 1) dom.askThread.removeChild(dom.askThread.lastChild);
 
-    for (var i = state.asks.length - 1; i >= 0; i--) {
-      var turn = state.asks[i];
+    state.asks.forEach(function (turn, i) {
+      var newest = i === state.asks.length - 1;
+
+      if (turn.choice) {
+        dom.askThread.appendChild(el('article', { className: 'ask-turn' }, [
+          el('p', { className: 'ask-you', textContent: t(turn.choice === 'all' ? 'askScopeAll' : 'askScopeMap') }),
+          el('p', { className: 'ask-say', textContent: t('askTitle') })
+        ]));
+        return;
+      }
+
       var say = turn.say ||
         (turn.pending ? t('askThinking') : turn.picks.length ? t('askHere') : t('askNothing'));
 
@@ -3584,13 +3680,13 @@
         /* A live region on the newest only: an answer arriving under the
            question just asked is worth announcing, one arriving under an
            older question is not. */
-        'aria-live': i === state.asks.length - 1 ? 'polite' : null
+        'aria-live': newest ? 'polite' : null
       }, [
         el('p', { className: 'ask-you', textContent: turn.q }),
         el('p', { className: 'ask-say', textContent: say }),
         turn.picks.length ? rows : null
       ]));
-    }
+    });
   }
 
   /* The panel opened on the chat rather than on the list. The rail's button,
@@ -3610,7 +3706,11 @@
     if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', String(full));
     releaseSheetHeight();
     paintMarkers();
-    dom.panelScroll.scrollTop = 0;
+    scrollThread();
+
+    /* A field that cannot be typed into yet has no keyboard to take: the
+       first thing to press is one of the two buttons above it. */
+    if (!state.askScope) return;
 
     /* iOS will not raise the keyboard for a focus() that is not inside the
        gesture that asked for it, and the panel has just been opened by one.
@@ -3935,6 +4035,18 @@
   function closePanel(opts) {
     if (!dom.panel.classList.contains('is-open')) return;
     var was = state.selected;
+    /* Closing the chat is the end of the conversation, not a pause in it:
+       the thread goes, the roll is unchosen, and the map comes back — an
+       answer's pins with nobody reading the answer would be a map narrowed
+       to a question nobody can see. The next press of the speech bubble
+       starts again from the site's first question. A place opened from an
+       answer and closed is not that — the thread is still there behind the
+       bubble. */
+    if (state.view === 'ask') {
+      state.asks = [];
+      state.askScope = '';
+      forgetAnswer({ redraw: false });
+    }
     dom.panel.classList.remove('is-open');
     dom.panel.setAttribute('inert', '');
     document.body.classList.remove('panel-open', 'sheet-full');
@@ -4045,6 +4157,9 @@
     paintSave();
     var detail = state.view === 'detail' && state.selected;
     var asking = state.view === 'ask';
+    /* The scroller lays the chat out as a column so the field can hold the
+       bottom — see .ask in assets/styles.css — and only the chat. */
+    document.body.classList.toggle('panel-ask', asking);
     if (detail) renderDetail(byId(state.selected)); else clear(dom.detail);
     if (asking) renderAsk(); else if (!detail) renderList();
     dom.detail.hidden = !detail;
@@ -6462,14 +6577,11 @@
       openAsk();
     });
 
-    /* Two buttons, one pressed. Changing it does not re-ask: the question
-       is still in the field and the arrow is right there, and a switch that
-       fired a request would spend the allowance on every flick of it. */
+    /* The reply to the site's first line: one of two buttons, and the
+       press is a turn in the thread. See chooseScope(). */
     dom.askScope.addEventListener('click', function (ev) {
       var btn = ev.target.closest('[data-scope]');
-      if (!btn || btn.getAttribute('data-scope') === state.askScope) return;
-      state.askScope = btn.getAttribute('data-scope');
-      paintAskScope();
+      if (btn) chooseScope(btn.getAttribute('data-scope'));
     });
 
     dom.askForm.addEventListener('submit', function (ev) {
@@ -6575,6 +6687,9 @@
            empty does it go on to close the panel, which is what a browser's
            own search inputs do. */
         if (document.activeElement === dom.search && state.q) { setQuery(''); return; }
+        /* And in the chat's field, where closing the panel would also end
+           the conversation: a half-typed question goes before the thread. */
+        if (document.activeElement === dom.askInput && dom.askInput.value) { dom.askInput.value = ''; return; }
         if (dom.panel.classList.contains('is-open')) closePanel();
         return;
       }
@@ -6870,6 +6985,7 @@
       ask: $('panel-ask'),
       askForm: $('ask-form'),
       askInput: $('ask-input'),
+      askGo: $('ask-go'),
       askGo: $('ask-go'),
       askScope: $('ask-scope'),
       askThread: $('ask-thread'),
