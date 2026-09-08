@@ -4794,26 +4794,31 @@ which is what a first visitor is short of.
 
 The walk, in order, and what each step is anchored to:
 
-1. The mark, for the one sentence the site rests on: every pin is a place I
-   have eaten at myself and approved, and nothing is here because it paid
-   to be. Set large, in the display face; every other step is a line of
-   reading text.
-2. A pin — whichever is nearest the middle of the screen, or the bubble
+1. A pin — whichever is nearest the middle of the screen, or the bubble
    sits in the middle with no ring when none is on it.
-3. The filters: the chip row on a desktop, the **Filters** button on a phone
+2. The filters: the chip row on a desktop, the **Filters** button on a phone
    where the row is folded behind it.
-4. **Surprise me**, with its label and Ask's held open on a phone for as
+3. **Surprise me**, with its label and Ask's held open on a phone for as
    long as the step is up.
-5. The account button, left out when `/api/account` never said accounts
+4. The account button, left out when `/api/account` never said accounts
    work — there is no button to point at.
-6. The discount chip, second in the row after All, or the Filters button on
+5. The discount chip, second in the row after All, or the Filters button on
    a phone; left out when no deal is on.
+
+Every step is about something that can be pressed. The walk used to open
+on the mark, with the one sentence the site rests on set large in the
+display face: every pin a place I have eaten at myself and approved,
+nothing here because it paid to be. That sentence is the tagline, which
+the page has already said under the mark, and a first step that points at
+nothing to do and repeats what was just read is a step that gets skipped —
+with the useful ones behind it. It went, and the walk opens on a pin.
 
 Every step points at something real on the page as it stands, which is why
 the steps are functions and not co-ordinates, and why the pieces are put
 back on every resize. Nothing under the walk can be pressed while it is up:
 the layer swallows the taps, so the thing being pointed at is not opened
-mid-sentence.
+mid-sentence — and the same layer is why a tap anywhere outside the bubble
+is Next: on a phone, it is there rather than a button the size of a word.
 
 On a phone it introduces itself with the rest of the rail, last in the
 cascade, and a question mark is the icon on the rail that says the least on
@@ -4827,9 +4832,9 @@ asked, and a second unasked-for overlay on top of that is the kind of thing
 that gets closed unread; a button pressed when it is wanted is the better
 version of the same words.
 
-The strings are `explainOpen` — the button — `explainLead`, the five
-`explainPin` … `explainDiscount` lines, `explainNext`, `explainSkip` and
-`explainClose`, in all ten languages. The pieces are `#tour` in
+The strings are `explainOpen` — the button — the five `explainPin` …
+`explainDiscount` lines, `explainNext`, `explainSkip` and `explainClose`,
+in all ten languages. The pieces are `#tour` in
 `index.html`; the steps are `TOUR_STEPS` in `assets/app.js`, run by
 `openExplain()`, `showStep()` and `placeTourStep()`; and under
 `prefers-reduced-motion` nothing slides, breathes or rocks.

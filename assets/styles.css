@@ -3123,9 +3123,9 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
 /* The bubble is the card the rest of the site uses, with the mark sitting
    on its top edge like a face over a fence — that is who is talking. The
-   mark rocks gently while it talks. The lead, the one sentence the site is
-   built on, is set in the display face; every other step is a line of
-   reading text. */
+   mark rocks gently while it talks. Every step is a line of reading text:
+   the walk once opened with the site's one sentence set large in the
+   display face, and that step went with its styling. */
 .tour-bubble {
   position: absolute;
   left: 0;
@@ -3153,13 +3153,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   margin: 16px 0 0;
   font-size: 15px;
   line-height: 1.45;
-}
-.tour-say.is-lead {
-  font-family: var(--display);
-  font-size: 19px;
-  font-weight: 600;
-  letter-spacing: -.015em;
-  line-height: 1.25;
 }
 .tour-row {
   display: flex;
