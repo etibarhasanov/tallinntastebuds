@@ -270,14 +270,14 @@ CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at
 -- asked, and there is deliberately no counts table here of the kind
 -- save_counts is.
 --
--- /lists/public asks it of every public list at once, which is the bulk question
--- an earlier version of this note said would call for one. It was built with a
--- counts table and the table was taken out again, because the comparison the
--- note was making does not hold. save_counts exists because the map asks for
--- seventy-five numbers on every load, over a table that grows with every
--- anonymous save from every visitor. A keep needs an account, one account can
--- hold two hundred of them, and one page asks. Counting is one row read per
--- keep in the database, and the page reads twenty rows.
+-- /lists/public asks it of every public list at once, which is the bulk
+-- question an earlier version of this note said would call for one. It was
+-- built with a counts table and the table was taken out again, because the
+-- comparison the note was making does not hold. save_counts exists because the
+-- map asks for seventy-five numbers on every load, over a table that grows
+-- with every anonymous save from every visitor. A keep needs an account, one
+-- account can hold two hundred of them, and one page asks. Counting is one row
+-- read per keep in the database, and the page reads twenty rows.
 --
 -- What a counts table costs, against that, is a migration and a backfill run
 -- by hand on a live database with no backup in this repository, plus a second
