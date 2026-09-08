@@ -42,6 +42,7 @@ completely with the database switched off.
 - [Add photos](#add-photos)
 - [The Just added section](#the-just-added-section)
 - [Searching the list](#searching-the-list)
+- [Ask for somewhere](#ask-for-somewhere)
 - [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Languages](#languages)
@@ -512,6 +513,123 @@ see **The sheet** in the design notes for what happens to a fixed bottom sheet
 when the keyboard opens over it.
 
 ---
+
+## Ask for somewhere
+
+The speech bubble on the left rail, next to the die, opens the panel on a
+field you type a sentence into: *cheap asian food*, *somewhere for a date*,
+*khachapuri, still open*. Two or three places come back, best first, each with
+a line saying why it is there, and the map narrows to their pins.
+
+It is Surprise me with the question put back in. The die answers "anywhere,
+you choose"; this answers "somewhere like this". Both hand back a place with
+the map still under it, and neither is a filter.
+
+**An answer is a mode, not a filter**, in exactly the way a list is one — see
+[Lists](#lists) for the argument in full. No chip stands for it, none of them
+goes down while it is on, and the places on screen are the ones it named rather
+than the ones left over after a narrowing. So pressing a chip or typing in the
+search field puts the answer away, the same as either puts a list away.
+
+The answer is deliberately **not in the address bar**, which is the one thing
+it does differently from a filter or a list. Those are places on this site you
+can send somebody to. An answer is a moment: it was true at nine on a Friday
+partly because of what was open, and the same link opened on Sunday afternoon
+would draw three shut restaurants under a sentence saying they are open.
+
+### The places are always mine
+
+Whatever answers, what gets drawn is the ordinary row this panel draws for
+every other place, built out of `data/restaurants.json`. The model contributes
+an **ordering and a clause** and nothing else — it never writes a name, a
+price, a dish or a description, and an id it invented is dropped by
+`functions/api/ask.js` before the browser ever sees it.
+
+That is the whole design rather than a precaution. A hallucinated sentence
+about a real restaurant is a bad recommendation; a hallucinated restaurant is
+the site lying in its own voice, and this shape makes the second one
+unreachable.
+
+It also only ever recommends off **my** roll, never Google's eleven hundred.
+Being on the map is the verdict, and a chat box suggesting places I have never
+eaten in would be a different site. Google's rows are read for exactly one
+thing — see the hours below.
+
+### It is free, and it stays working when it stops being
+
+Workers AI gives every Cloudflare account **ten thousand Neurons a day at no
+charge**, on the free Workers plan as well as the paid one. A question here is
+a few hundred tokens against a small model, so the allowance is a great many
+questions — and on the free plan going past it *fails the request rather than
+billing for it*. That is the rate limit and the budget in one, and there is
+nothing to configure: no key, no npm, no account to open. The binding is three
+lines of `wrangler.toml` and the model is one constant in the Function.
+
+Which leaves the interesting half: what happens when the model is not there.
+It is not there quite often — the allowance runs out, a model gets moved behind
+the paid plan (`kimi-k2.6` and `glm-5.2` both did in July 2026), the network is
+gone, or it answers with something unparseable. So there is a second reader,
+`assets/ask.js`, in the browser:
+
+| | what it understands |
+|---|---|
+| the model | mood, occasion, a sentence with no keyword in it — *somewhere I can hear myself think* |
+| `assets/ask.js` | the thirteen types in ten languages, cheap and fancy, open now, and every dish and street in the index |
+
+The local one is not a stub. Its vocabulary is the taxonomy labels this page
+already holds in all ten languages, so *pagariäri*, *bakery* and *пекарня* all
+reach the bakeries without a word of it being written down twice. The three
+things people ask for that have no words in the data — cheap, fancy, open now
+— live in `data/ui.json` under `askWordsCheap`, `askWordsFancy` and
+`askWordsOpen`, as synonyms joined by `|`, the same shape `days` and `months`
+already use. Which means the validator holds them to all ten languages like
+every other string, and adding a language stays one file.
+
+What it cannot do is mood, and it does not pretend to. That is the whole of
+what the model buys.
+
+`/api/ask` answers `source: "none"` when it has no opinion, the browser reads
+the question itself, and the same cards are drawn either way. The chat gets
+less clever for the rest of the day; it does not break.
+
+### Where the opening hours come from
+
+The map's own places carry no hours — there is no such field in
+`data/restaurants.json` — but sixty of the seventy-five are also rows in
+[Google venues](#google-venues), joined on `google_venues.map_id`, and those
+rows carry the week. So `/api/ask` reads that column and answers with which
+places are open **right now and until when**, whether or not it has an opinion
+about the question. "Open until 23:00" under a row is the one thing the panel
+cannot say for itself.
+
+The clock is Tallinn's and never the reader's, for the reason
+[The directory](#the-directory) gives at length: the hours are a fact about a
+door in this city, and somebody planning tonight from Lisbon is asking about
+that door. Split days — a kitchen that shuts between three and five — and
+spans past midnight both read correctly; a bar open until one in the morning is
+open at half past midnight, off the previous day's row.
+
+The fifteen places with no Google row, and the seventy-seven Google rows with
+no hours in the export, simply say nothing about hours. An answer that is
+silent about them is honest; one that guesses is not.
+
+### What a line under a row is allowed to say
+
+Very little, from the local reader, and that is on purpose. It matched a type,
+a price band and some words — and the row above already prints the types and
+draws the price gauge, so repeating them put *Cheap eats · Asian · On the
+cheaper side* directly underneath *Restaurant · Asian · Cheap eats · Hidden
+gem*: the row explaining itself with itself.
+
+Two things are worth the line, because neither is anywhere else on the row: the
+**closing time**, and the **must-order dish** a word matched. Asking for
+khachapuri answers Gobi and Pirosmani with *Adjaruli khachapuri* and *Adjarian
+khachapuri* under them, which is the answer to "why these two" — the dishes are
+the half of the search index that never reaches the screen. Everything else
+gets no line at all, and most rows have none.
+
+The model's clause goes in the same slot, and it is the half that can say
+something about an evening.
 
 ## Close a place instead of deleting it
 
@@ -3907,6 +4025,10 @@ assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
 assets/basemap.js          the CARTO tiles, said once for every map that draws them
 assets/radio.js            the station, and the on/off that survives a navigation
+assets/ask.js              a typed sentence read as a wish, for when the model
+                           cannot: no DOM, no state, one global
+functions/api/ask.js       the chat box answered — a model on the free
+                           allowance, and Google's opening hours
 db/schema.sql              the tables those Functions talk to
 wrangler.toml              the D1 bindings, one per environment (secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are

@@ -58,6 +58,28 @@
 # There were three more — CF_ACCOUNT_ID, CF_EMAIL_TOKEN and MAIL_FROM — for a
 # password reset by email. Nothing reads them any more, so if they are set in
 # either environment they can be deleted from the Pages project.
+#
+# THE AI BINDING
+#
+# [ai] below is what /api/ask puts a question to, and it is not a secret and
+# not a key: Workers AI is bound the way D1 is, by name, and the account it
+# runs against is the account the Pages project is already in. Ten thousand
+# Neurons a day come free with every account, which is a great many questions
+# at a few hundred tokens each, and on the Workers Free plan going past the
+# allowance fails the request rather than billing for it.
+#
+# It is repeated in each environment for the same reason the database is —
+# Pages inherits nothing from the top level once an environment overrides
+# anything — but unlike the database the two may name the same thing, because
+# there are no rows to keep apart. A preview asking a question and a
+# production one asking the same question both spend from the same daily
+# allowance, and neither can write anything the other reads.
+#
+# Unlike D1 there is nothing to create first: the binding works the moment a
+# deployment carries it. Without it /api/ask still answers — with the opening
+# hours and no opinion — and assets/ask.js reads the question in the browser
+# instead. So this is the one binding in this file whose absence is a quieter
+# feature rather than a broken route.
 name = "tallinntastebuds"
 pages_build_output_dir = "."
 compatibility_date = "2026-09-02"
@@ -67,6 +89,9 @@ compatibility_date = "2026-09-02"
 binding = "DB"
 database_name = "tallinntastebuds-preview"
 database_id = "3dd762d3-1d31-4e54-9f12-a3c0ad93dbca"
+
+[ai]
+binding = "AI"
 
 [vars]
 # Which half of the split this deployment believes it is. Compared against the
@@ -81,6 +106,9 @@ binding = "DB"
 database_name = "tallinntastebuds-preview"
 database_id = "3dd762d3-1d31-4e54-9f12-a3c0ad93dbca"
 
+[env.preview.ai]
+binding = "AI"
+
 [env.preview.vars]
 ENVIRONMENT = "preview"
 
@@ -90,6 +118,9 @@ ENVIRONMENT = "preview"
 binding = "DB"
 database_name = "tallinntastebuds"
 database_id = "3eb14127-0ef6-4935-954b-e0a593d465ba"
+
+[env.production.ai]
+binding = "AI"
 
 [env.production.vars]
 ENVIRONMENT = "production"

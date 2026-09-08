@@ -105,6 +105,21 @@
        venue because somebody opened a link. Only the four loops that turn a
        place into a pin read both. */
     listPlaces: [],
+    /* What the chat box was last asked, and what came back: the question, the
+       sentence to print over the answer, and two or three place ids each with
+       a clause saying why it is there.
+
+       An answer is a mode and not a filter, for exactly the reason a list is
+       one — see the note at the top of this file. No chip stands for it,
+       nothing on the filter row goes down while it is on, and the places it
+       shows are the ones it names rather than the ones left after a narrowing.
+       So pressing a chip or typing in the search puts it away, the way either
+       puts a list away, instead of quietly narrowing an answer somebody is
+       still reading.
+
+       Null on arrival and on every visit that never asks anything. */
+    answer: null,        // { q, say, picks: [{ id, why }], open: {} }, or null
+    asking: false,       // a question is in the air; the field is disabled
     /* Who is signed in, and whether accounts work here at all. Both come
        from /api/account and both are absent until it answers. */
     account: { ready: false, user: null },
@@ -2261,6 +2276,10 @@
      listener that asks it. A chip added to this row later gets it without
      being told. */
   function toggleChip(id) {
+    /* Both modes go, and for one reason: a chip is a narrowing of the map,
+       and neither a list nor an answer is the map. The redraw is left to
+       applyFilters() below rather than done twice. */
+    forgetAnswer({ redraw: false });
     forgetList();
     var at = state.active.indexOf(id);
     if (at === -1) state.active.push(id); else state.active.splice(at, 1);
@@ -2268,7 +2287,8 @@
   }
 
   function clearChips() {
-    if (!state.active.length && !state.list) return;
+    if (!state.active.length && !state.list && !state.answer) return;
+    forgetAnswer({ redraw: false });
     forgetList();
     state.active = [];
     applyFilters();
@@ -2338,9 +2358,35 @@
      Then the chips, over my own places. No chips is the whole map, and the
      whole map is mine. */
   function visiblePlaces() {
+    if (state.answer) return answerPlaces();
     if (state.list) return allPlaces().filter(function (p) { return isOnList(p.id); });
     if (!state.active.length) return state.places.slice();
     return allPlaces().filter(matchesFilters);
+  }
+
+  /* The places an answer named, in the order it named them.
+     Best first and not alphabetically: the whole of what was asked for is
+     which one to go to, and an answer that reorders its own ranking into the
+     alphabet has thrown that away. Anything the answer names that is no
+     longer on the map is skipped rather than drawn as a gap. */
+  function answerPlaces() {
+    var out = [];
+    state.answer.picks.forEach(function (pick) {
+      var place = byId(pick.id);
+      if (place) out.push(place);
+    });
+    return out;
+  }
+
+  /* The clause an answer gave for one of its places, for the row to print.
+     Empty for every place an answer did not name, and for every mode that is
+     not an answer. */
+  function answerWhy(id) {
+    if (!state.answer) return '';
+    for (var i = 0; i < state.answer.picks.length; i++) {
+      if (state.answer.picks[i].id === id) return state.answer.picks[i].why || '';
+    }
+    return '';
   }
 
   var filterOpenTimer = null;
@@ -3104,6 +3150,220 @@
     state.lastPick = choice.id;
     trackEvent('random_pick', { place: choice.name, pool: pool.length });
     selectPlace(choice.id, { fly: true, peek: true });
+  }
+
+  /* --------------------------------------------------------------- the ask
+   * "Somewhere cheap and asian, still open." Surprise me with the question
+   * put back in.
+   *
+   * WHERE THE ANSWER COMES FROM, AND WHY THERE ARE TWO OF THEM
+   *
+   * /api/ask puts the question and my seventy-five places to a language model
+   * on Cloudflare's free allowance and hands back two or three ids, each with
+   * a clause. When it cannot — the allowance is spent for the day, the
+   * binding is not configured, the model is overloaded — it says so by
+   * answering `source: "none"`, and assets/ask.js reads the question here
+   * instead. That reader is not clever about mood but it is very good at the
+   * things people actually type, because the vocabulary it needs is the
+   * taxonomy labels this page already holds in ten languages.
+   *
+   * A dead network is the third case and lands in the same place: the fetch
+   * rejects, and the local reader answers. Nothing on this page waits on
+   * /api/*, and this is no exception — the chat is slower without the
+   * Function and never absent.
+   *
+   * THE PLACES ARE ALWAYS MINE
+   *
+   * Whichever half answered, what is drawn is byId() over data/restaurants.json
+   * and the ordinary row this list draws for every other place. The model
+   * contributes an ordering and a clause and nothing else; it cannot put a
+   * name, a price or a dish on this page. See the header of
+   * functions/api/ask.js for why that is the whole design.
+   */
+  var ASK_URL = '/api/ask';
+
+  /* Which of a place's must-order dishes a matched word came out of, in the
+     spelling the place wrote it in. Empty when the word landed somewhere the
+     row already shows.
+
+     It is the one thing the local reader can say that the row does not
+     already say for itself. The dishes are the half of the search index that
+     never reaches the screen — a row prints the name, the price and the
+     types, and never the food — so "Khachapuri" under Gobi is the answer to
+     "why this one", where "Caucasus · Restaurant" would be the row read back
+     to itself. */
+  function dishBehind(place, word) {
+    var dishes = place.mustOrder || [];
+    for (var i = 0; i < dishes.length; i++) {
+      if (fold(dishes[i]).indexOf(word) !== -1) return dishes[i];
+    }
+    return '';
+  }
+
+  /* The local reader's answer, in the shape the Function's answer arrives in,
+     so that everything downstream has one thing to draw rather than two.
+
+     What it says under a row is deliberately thin, and thin on purpose rather
+     than for want of material. The reading matched a type, a price band and
+     some words; the row above already prints the types and the price gauge,
+     so repeating them there put "Cheap eats · Asian · On the cheaper side"
+     directly under "Restaurant · Asian · Cheap eats · Hidden gem" — the row
+     explaining itself with itself. Only two things are worth the line: the
+     dish that is not in the row, and the closing time that is not on this
+     page at all.
+
+     Which leaves most rows with nothing under them, and that is the honest
+     shape of it. This half ranks; the model's half is the one that can say
+     something about an evening, and its clause goes in this same slot. */
+  function askLocally(question, open) {
+    var wish = window.TTBAsk.read(question, {
+      fold: fold,
+      types: state.types,
+      /* The three wishes with no words in the data. Everything else a question
+         can name is a taxonomy label, and read() finds those itself. */
+      words: {
+        cheap: t('askWordsCheap'),
+        fancy: t('askWordsFancy'),
+        open: t('askWordsOpen')
+      }
+    });
+    if (wish.empty) return { say: '', picks: [], source: 'rules' };
+
+    var ranked = window.TTBAsk.rank(state.places, wish, {
+      hay: hayIndex, open: open, saves: state.saves
+    });
+
+    return {
+      say: ranked.length ? t('askHere') : '',
+      source: 'rules',
+      picks: ranked.map(function (hit) {
+        var said = [];
+        hit.why.forEach(function (why) {
+          var line = why.key === 'askWhyOpen' ? t('askWhyOpen', { time: why.until })
+            : why.key === 'askWhyWord' ? dishBehind(hit.place, why.word)
+            : '';
+          /* Two words of a question can land on one dish — "beef khachapuri"
+             — and the dish should be named once. */
+          if (line && said.indexOf(line) === -1) said.push(line);
+        });
+        return { id: hit.place.id, why: said.join(' \u00b7 ') };
+      })
+    };
+  }
+
+  function setAsking(on) {
+    state.asking = on;
+    dom.askInput.disabled = on;
+    dom.askGo.disabled = on;
+    dom.askForm.classList.toggle('is-asking', on);
+  }
+
+  function askSubmit() {
+    /* The cap lives in assets/ask.js, which is also what applies it when it
+       reads a question — one number rather than two that can drift. It is
+       said twice more, and deliberately: as the field's maxlength in
+       index.html so typing stops rather than being silently trimmed, and in
+       functions/api/ask.js, which binds it because nothing a browser sends
+       can be trusted to have obeyed either. */
+    var question = String(dom.askInput.value || '')
+      .slice(0, window.TTBAsk.MAX_QUESTION).trim();
+    if (!question || state.asking) return;
+
+    setAsking(true);
+    trackEvent('ask', { search_term: question.toLowerCase() });
+
+    /* The search index is built lazily on the first search; an answer is the
+       other thing that reads it, and it may well be what reads it first. */
+    if (!hayIndex) buildSearchIndex();
+
+    fetch(ASK_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ q: question, lang: state.lang })
+    })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .catch(function () { return null; })
+      .then(function (out) {
+        var open = (out && out.open) || {};
+        /* The Function answers with the hours whether or not it has an
+           opinion, so "open until 22:00" is on the row either way. Only the
+           picking falls back. */
+        var said = out && out.source === 'ai' && out.picks && out.picks.length
+          ? { say: out.say || '', picks: out.picks, source: 'ai' }
+          : askLocally(question, open);
+
+        setAsking(false);
+        showAnswer(question, said, open);
+      });
+  }
+
+  /* An answer on the screen: the pins, the rows, the sentence over them, and
+     the address bar left alone.
+
+     Deliberately not in the URL, unlike a filter or a list. Those two are
+     places on this site somebody can be sent to; an answer is a moment — it
+     was true at nine on a Friday because of what was open, and a link to it
+     opened on Sunday afternoon would draw three closed restaurants under a
+     sentence explaining that they are open. */
+  function showAnswer(question, said, open) {
+    if (!said.picks.length) {
+      toast(t('askNothing'));
+      trackEvent('ask_none', { search_term: question.toLowerCase() });
+      return;
+    }
+
+    /* An answer is a mode, so it arrives the way a list does: everything else
+       that decides what is on the map comes off first. A chip still down
+       under an answer would be a filter nothing on screen is obeying. */
+    forgetList();
+    state.active = [];
+    setQuery('');
+
+    state.answer = { q: question, say: said.say, picks: said.picks, open: open };
+    state.selected = null;
+    state.view = 'list';
+
+    /* The mark goes if the answer does not name the place wearing it, the
+       same rule applyFilters() applies when a chip rules one out: a lit pin
+       for a place nothing on screen is about is the map contradicting the
+       panel. */
+    if (state.marked && !answerWhy(state.marked)) state.marked = null;
+
+    renderFilters();
+    renderPanel();
+    openPanel();
+    paintMarkers();
+    fitToPins({ animate: true });
+    dom.panelScroll.scrollTop = 0;
+
+    trackEvent('ask_answer', {
+      search_term: question.toLowerCase(),
+      source: said.source || 'rules',
+      places_shown: said.picks.length
+    });
+  }
+
+  /* The map back, and the field cleared with it. Called by the button on the
+     answer, and by anything that is not an answer taking the panel over. */
+  function forgetAnswer(opts) {
+    if (!state.answer) return;
+    state.answer = null;
+    if (dom.askInput) dom.askInput.value = '';
+    if (opts && opts.redraw === false) return;
+    renderPanel();
+    paintMarkers();
+  }
+
+  /* The panel opened on the question rather than on the list. The rail's
+     button, and the only way in that is not typing in the field itself. */
+  function openAsk() {
+    showList(false);
+    /* iOS will not raise the keyboard for a focus() that is not inside the
+       gesture that asked for it, and the panel has just been opened by one.
+       A field that does not take the keyboard on a phone is a field nobody
+       uses, so this runs in the same turn as the press. */
+    dom.askInput.focus();
+    dom.askInput.select();
   }
 
   /* ------------------------------------------------------------ the sheet
@@ -4296,6 +4556,11 @@
     var next = String(value == null ? '' : value);
     if (dom.search.value !== next) dom.search.value = next;
     if (next === state.q) return;
+    /* Typing here puts an answer away, the same as pressing a chip does: the
+       search narrows the map, and an answer is not the map. The redraw below
+       covers both, and the early return above is what lets showAnswer() call
+       this to clear the field without clearing the answer it is about to set. */
+    forgetAnswer({ redraw: false });
     state.q = next;
     dom.searchClear.hidden = !next;
     renderList();
@@ -4336,6 +4601,31 @@
        in the alphabet, without the order or the sentences. */
     var reading = !words.length && !state.active.length && !!state.list;
 
+    /* And the third mode. An answer holds the panel on its own — anything
+       that would narrow it has already put it away, see forgetAnswer() — so
+       unlike the two above there is no "and nothing else" to test for. */
+    var answering = !!state.answer;
+
+    if (answering) {
+      /* Already in the order the answer put them in. answerPlaces() is what
+         built this list and ranking is the whole of what was asked for. */
+      dom.listBody.appendChild(answerHead(places.length));
+      var answered = el('ul', { className: 'place-list is-answer' });
+      places.forEach(function (place) { answered.appendChild(listRow(place)); });
+      dom.listBody.appendChild(answered);
+      var again = el('button', {
+        type: 'button',
+        className: 'ask-again',
+        textContent: t('askClear')
+      });
+      again.addEventListener('click', function () {
+        forgetAnswer();
+        dom.askInput.focus();
+      });
+      dom.listBody.appendChild(again);
+      return;
+    }
+
     if (reading) {
       /* The order is the whole point of a top ten. Its owner dragged these
          into the order they are in, and the alphabet would throw away the one
@@ -4375,7 +4665,7 @@
       /* What the list's owner said about this one, when the list is what is
          on screen. It is the reason a list is worth reading rather than
          searching for, so it goes in the row and not behind a tap. */
-      var said = reading ? listSay(place.id) : '';
+      var said = reading ? listSay(place.id) : answerWhy(place.id);
       /* A place that is on the list but not on my map: a name, an address and
          a pin out of the catalogue, and nothing to read. The badges a row
          normally carries are all claims about a write-up that does not exist
@@ -4546,6 +4836,35 @@
        true and useless: this is the one list on the site whose point is whose
        it is, not what order it came out in. */
     section(everything ? 'listTitle' : mine ? 'listSaved' : 'listAlphabet', places);
+  }
+
+  /* The heading over an answer: the sentence the model wrote, or my own where
+     the local reader answered and there is none, with the count beside it.
+
+     It is the second heading in this panel that is not a data/ui.json string,
+     and for the same reason listCredit() is the first: it is not the site
+     talking. It takes the focus and labels the panel because in this state it
+     is the first group heading — and a sentence written somewhere else is set
+     with textContent, never as markup. */
+  function answerHead(n) {
+    var count = n === 1 ? t('listCountOne') : t('listCount', { n: n });
+    var say = state.answer.say || t('askHere');
+
+    return el('div', { className: 'list-credit is-answer' }, [
+      el('h2', {
+        className: 'list-label is-credit',
+        id: 'panel-list-title',
+        tabIndex: -1,
+        'aria-label': say + ', ' + count
+      }, [
+        el('span', { className: 'list-group', textContent: say }),
+        el('span', { className: 'list-label-n eyebrow', textContent: count })
+      ]),
+      /* What was typed, under the answer to it. An answer that has scrolled a
+         little stops saying which question it belongs to, and the field it was
+         typed into is above the fold by then. */
+      el('p', { className: 'ask-asked mono', textContent: state.answer.q })
+    ]);
   }
 
   /* The heading over somebody else's list: their title, their byline, the
@@ -5896,6 +6215,21 @@
       randomPick();
     });
 
+    dom.btnAsk.addEventListener('click', function () {
+      closeHint('random');
+      openAsk();
+    });
+
+    dom.askForm.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      /* The field keeps what was typed while the answer stands, so "cheap
+         ramen" can be edited into "cheap ramen, open now" rather than typed
+         again. Blurring puts the phone's keyboard away over the answer that
+         is about to be drawn under it. */
+      dom.askInput.blur();
+      askSubmit();
+    });
+
     document.addEventListener('click', function (ev) {
       if (!dom.langSwitch.contains(ev.target)) closeLangMenu();
     });
@@ -6261,6 +6595,7 @@
       styles: $('styles'),
       rail: $('rail'),
       btnRandom: $('btn-random'),
+      btnAsk: $('btn-ask'),
       panel: $('panel'),
       panelScroll: $('panel-scroll'),
       panelClose: $('panel-close'),
@@ -6282,6 +6617,9 @@
       listBody: $('list-body'),
       search: $('list-search'),
       searchClear: $('search-clear'),
+      askForm: $('ask-form'),
+      askInput: $('ask-input'),
+      askGo: $('ask-go'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
       stories: $('stories'),

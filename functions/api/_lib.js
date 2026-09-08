@@ -223,23 +223,35 @@ export async function wrongDatabase(env) {
 }
 
 /* ---------------------------------------------------------------- places
- * The list of real places, kept for five minutes per isolate. It comes from
- * the deployed data/restaurants.json rather than a copy in here, so adding a
- * place to the map is all it takes for saving to work on it.
+ * The map's own places, kept for five minutes per isolate. They come from the
+ * deployed data/restaurants.json rather than a copy in here, so adding a place
+ * to the map is all it takes for saving to work on it.
+ *
+ * Two shapes of the same fetch, because two callers want different halves of
+ * it and neither should cost a second request. /api/saves and /api/lists ask
+ * only "is this a real id", which is the Set; /api/ask needs the write-ups,
+ * the types and the prices to put in front of a model, which is the array.
+ * The array is what is read, and the Set is built from it once beside it.
  */
+let mapped = null;
 let known = null;
 let knownAt = 0;
 
-export async function knownPlaces(context) {
-  if (known && Date.now() - knownAt < 300000) return known;
+export async function mapPlaces(context) {
+  if (mapped && Date.now() - knownAt < 300000) return mapped;
   const url = new URL('/data/restaurants.json', context.request.url);
   const res = context.env.ASSETS
     ? await context.env.ASSETS.fetch(new Request(url.toString()))
     : await fetch(url.toString());
   if (!res.ok) throw new Error('restaurants.json unreadable: ' + res.status);
-  const places = await res.json();
-  known = new Set(places.map((p) => p.id));
+  mapped = await res.json();
+  known = new Set(mapped.map((p) => p.id));
   knownAt = Date.now();
+  return mapped;
+}
+
+export async function knownPlaces(context) {
+  await mapPlaces(context);
   return known;
 }
 
