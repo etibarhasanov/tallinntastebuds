@@ -14,9 +14,10 @@
  *
  * The public lists somebody has made, and how many times anybody has kept
  * them. Nothing else. Not their saves — those are anonymous by design and
- * filed under a device as often as under an account — not their email, not
- * when they were last seen, and not the lists they have kept, which are a
- * drawer of somebody else's pages rather than anything they published.
+ * filed under a device as often as under an account — not when they were
+ * last seen, and not the lists they have kept, which are a drawer of somebody
+ * else's pages rather than anything they published. An account holds no
+ * address to leave off in the first place; see functions/api/account.js.
  *
  * A private list is not on it. That is the whole of the privacy rule here and
  * it is the same one /list/<id> already enforces: a list is public or it is

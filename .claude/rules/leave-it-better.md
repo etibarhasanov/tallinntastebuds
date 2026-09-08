@@ -27,10 +27,11 @@ but it reaches a measured distance, not an unbounded one:
 
 `wc -l` settles which side of the line a file is on, and it is the only thing
 that should — a list of big files written into this paragraph would be wrong
-within a month, and `functions/api/account.js` has already crossed the line
-since this rule was written. As it stands the exempt ones are `assets/app.js`,
-`assets/lists.js`, `tools/validate.mjs`, `functions/api/lists.js` and
-`functions/api/account.js`; the rest of the repo is a few hundred lines a file
+within a month, and `functions/api/account.js` has crossed the line twice
+since this rule was written: over it as the account grew, and back under it
+when the email reset came out. As it stands the exempt ones are
+`assets/app.js`, `assets/lists.js`, `tools/validate.mjs` and
+`functions/api/lists.js`; the rest of the repo is a few hundred lines a file
 and is meant to be read in full while you are in it.
 
 Do not "skim" a long file and report it as read. Say which functions you read.

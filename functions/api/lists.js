@@ -19,7 +19,7 @@
  * it needs to survive a cleared browser — a device-owned list would be one
  * Safari sweep away from a stranger's link going nowhere. So the one thing
  * you must have before you can make a list is an account, and making one is
- * two fields and no email. See functions/api/account.js.
+ * two fields and nothing else. See functions/api/account.js.
  *
  * WHAT THIS FILE IS ALLOWED TO DO
  *

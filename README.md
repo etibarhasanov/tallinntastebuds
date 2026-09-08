@@ -1261,7 +1261,7 @@ number regardless — the POST hands the new one straight back.
 ## Accounts
 
 Optional, and deliberately the smallest thing that does the job: **a username
-and a password**. No email required, no phone, no OAuth, no profile, no name.
+and a password**. No email, no phone, no OAuth, no profile, no name.
 
 Saving works with no account at all — the device keeps a random id and the
 save is filed under that. An account is the upgrade that makes a list follow a
@@ -1291,19 +1291,40 @@ account had, nothing counted twice. Every affected count is recomputed from
 the rows afterwards, so a place one person had saved from two devices correctly
 drops from two to one.
 
-### The email is optional and buys one thing
+### There is no reset, and the sheet says so
 
-A reset. Without an address there is nothing that proves an account is yours
-except knowing its password, so **a forgotten password cannot be recovered by
-anyone, including whoever runs this site**. The sign-up sheet says so in as
-many words rather than letting somebody find out later, and the fields carry
-the autocomplete hints that make a browser's password manager offer to keep
-the details — which is what actually rescues people in practice.
+Nothing proves an account is yours except knowing its password, so **a
+forgotten password cannot be recovered by anyone, including whoever runs this
+site**. The sign-up sheet says that above the button rather than letting
+somebody find out later, and the fields carry the autocomplete hints that make
+a browser's password manager offer to keep the details — which is what
+actually rescues people in practice.
 
-Give an address and it is stored unverified until a six-digit code sent to it
-comes back. Only then does reset work. The address is never used for anything
-else: no list, no newsletter, no mail that is not a code somebody just asked
-for.
+**There was a reset, and it never ran.** An optional address on the account, a
+six-digit code to confirm it, another to reset with, all of it through
+Cloudflare's own Email Service — written, documented, and switched off on
+every deployment this site has ever had, because Email Sending is not on the
+free plan. What that bought in practice was a paragraph in this file promising
+something the site did not do, three variables nobody set, two columns and a
+table nobody wrote to, and a few hundred lines across the Function and the map
+that only ever answered "not available".
+
+So it is gone: no address field on the sign-up sheet, no *forgotten your
+password*, no `email-add`, `email-confirm`, `recover-start` or `recover-finish`
+on `/api/account`, and no `CF_ACCOUNT_ID`, `CF_EMAIL_TOKEN` or `MAIL_FROM`. The
+sentence about a lost password was already the truth in this configuration and
+is now the truth in every configuration.
+
+**What it left in the database.** `users.email`, `users.email_verified` and
+the `email_codes` table are out of `db/schema.sql` and still in both deployed
+databases — the file is applied with `IF NOT EXISTS` and so cannot take a
+column away. Nothing reads them. The statements that clear them, and the two
+counts to run first, are in the comment over `users` in `db/schema.sql`; they
+are a hand-run job on a live database and nothing here does it for you.
+
+**If it is ever wanted back**, the shape it had is worth knowing: an address
+stored unverified until a code came back, used for nothing but codes somebody
+had just asked for. The git history has the whole of it.
 
 ### Changing the password
 
@@ -1360,49 +1381,19 @@ catches up with the setting, the same way a sign-in does.
   seven-day cap on script-written storage does not apply to a cookie the
   server set, which is the difference between a sign-in lasting a week and
   lasting a year on an iPhone.
-- **Guessing is the attack**, since there is no reset link to phish. Ten wrong
-  passwords from one network fingerprint in fifteen minutes and that
-  fingerprint waits.
+- **Guessing is the attack**, since there is no reset link to phish and no
+  address to intercept. Ten wrong passwords from one network fingerprint in
+  fifteen minutes and that fingerprint waits.
 - **"No such account" and "wrong password" give the same answer**, so the
   endpoint cannot be used to find out which usernames exist.
-- **A reset drops every session** on that account, not just the current one,
-  and so does a password change — see **Changing the password** above.
+- **A password change drops every session** on that account, not just the
+  current one — see **Changing the password** above.
 
 ### Turning it on
 
-The account tables are already applied. Two things it needs beyond the save
-feature's own setup:
-
-1. Nothing, for username and password. It works as soon as `DB` is bound and
-   `SAVE_SALT` is set.
-2. For password-reset email, **Cloudflare's own Email Service** — no third
-   party, since the domain and the DNS are already here. **This needs the
-   Workers Paid plan**, which is why it is off: Email Sending is not on the
-   free tier. Until it is configured there is no address field on the sign-up
-   sheet and no "forgotten your password" — the sheet says plainly that a lost
-   password cannot be recovered, which is the truth in that configuration.
-
-   1. Dashboard → **Compute → Email Service → Email Sending → Onboard
-      Domain**, and pick `tallinntastebuds.ee`. Cloudflare writes the SPF,
-      DKIM and DMARC records itself, on the `cf-bounce` subdomain. Usually
-      live in 5–15 minutes. **Until the domain is onboarded you can only send
-      to verified destination addresses on your own account** — which is
-      exactly how to test it before letting anybody else near it.
-   2. Create an API token with **Email Sending: Edit**.
-   3. In the Pages project set three variables: `CF_ACCOUNT_ID` (text),
-      `CF_EMAIL_TOKEN` (**secret**) and `MAIL_FROM` (text, e.g.
-      `Tallinn Tastebuds <noreply@tallinntastebuds.ee>`).
-
-   Until all three are set the email parts switch themselves off: no address
-   field on the sign-up sheet, no "forgotten your password", and everything
-   else carries on unchanged. Same shape as Turnstile.
-
-   A note on `noreply@`: nothing needs to *exist* at that address for sending
-   to work — DKIM signs for the domain, not for a mailbox. If you would rather
-   replies to it went somewhere instead of bouncing, Email Routing (free, same
-   dashboard) will forward them to a real inbox. Cloudflare cannot *send* from
-   a routing address, only receive at one; sending is what Email Sending is
-   for, and the two are configured separately.
+Nothing to do. The account tables are already applied, and accounts work as
+soon as `DB` is bound and `SAVE_SALT` is set — both of which the save feature
+needs anyway. There is no third variable and no second service.
 
 ---
 
@@ -2615,9 +2606,10 @@ other people have kept these lists.**
 
 Nothing else. Not their saves — those are anonymous by design and filed under
 a device as often as under an account, and a page that turned them into a
-public record of where somebody eats would be a different site. Not their
-email. Not when they were last here. Not the lists they *kept*, which are a
-drawer of other people's pages rather than anything they published.
+public record of where somebody eats would be a different site. Not when they
+were last here. Not the lists they *kept*, which are a drawer of other
+people's pages rather than anything they published. There is no email on an
+account to leave off — see **Accounts**.
 
 A profile adds no fact about anybody that a list of theirs was not already
 printing. That is the test it was built to pass.
@@ -3478,7 +3470,7 @@ assets/styles.css          design tokens at the top, then everything else
 assets/app.js              map, panel, filters, i18n, lightbox — no framework
 functions/_middleware.js   sends the pages.dev address to the real one
 functions/api/saves.js     the save count
-functions/api/account.js   sign up, sign in, optional email recovery
+functions/api/account.js   sign up, sign in, change a password
 functions/api/lists.js     somebody else's top ten: make one, fill it, share
                            it, keep somebody else's, add a place nobody has
 functions/api/places.js    the roll the picker searches: the map plus the export

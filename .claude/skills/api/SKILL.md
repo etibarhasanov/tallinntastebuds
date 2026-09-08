@@ -78,7 +78,6 @@ production sharing an id or a name.
 | `ENVIRONMENT` mismatch | the same answers as no database, `wrong-database` |
 | `SAVE_SALT` | saves, account and lists POST **fail closed**, `503 no-salt`, rather than store a weaker hash. Changing it later resets every cap and leaves the counts alone |
 | `TURNSTILE_SECRET` | optional; set, a save without a token is 403 |
-| `CF_ACCOUNT_ID`, `CF_EMAIL_TOKEN`, `MAIL_FROM` | all three or no email: `503 no-email`, and sign-up silently sends nothing |
 
 Secrets live in the Pages dashboard, per environment, and never in the repo.
 
@@ -105,9 +104,9 @@ database in this repository; D1 Time Travel's 30 days is the only recovery.
 **Caps live in two places** and the server is the one that binds. `MAX_TITLE
 60`, `MAX_INTRO 200`, `MAX_SAY 280`, `MAX_ITEMS 20` in `lists.js` are restated
 at `assets/lists.js:54-57`; `MAX_NAME 80` and `MAX_ADDRESS 120` as literal
-`maxlength`s at lines 1933 and 1942; the username's 3–24 and the six-digit
-code in `account.js` as `maxlength`s in `app.js`. Change one, change the
-other, and the README's table under **The caps**.
+`maxlength`s at lines 1933 and 1942; the username's 3–24 in `account.js` as a
+`maxlength` in `app.js`. Change one, change the other, and the README's table
+under **The caps**.
 
 ## The schema
 
