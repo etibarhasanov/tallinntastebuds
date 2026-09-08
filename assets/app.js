@@ -3396,31 +3396,32 @@
    * "Somewhere cheap and asian, still open." Surprise me with the question
    * put back in.
    *
-   * WHERE THE ANSWER COMES FROM, AND WHY THERE ARE TWO OF THEM
+   * WHERE THE ANSWER COMES FROM, AND WHERE IT DOES NOT
    *
-   * /api/ask puts the question and my seventy-five places to a language model
-   * on Cloudflare's free allowance and hands back two or three ids, each with
-   * a clause. When it cannot — the allowance is spent for the day, the
-   * binding is not configured, the model is overloaded — it says so by
-   * answering `source: "none"`, and assets/ask.js reads the question here
-   * instead. That reader is not clever about mood but it is very good at the
-   * things people actually type, because the vocabulary it needs is the
-   * taxonomy labels this page already holds in ten languages.
+   * /api/ask puts the question and a slice of my places to a language model
+   * on Cloudflare's free allowance and hands back one to three ids, each with
+   * a clause saying why. That is the only thing that ever draws a row in
+   * this panel. When the model cannot — the allowance is spent, the binding
+   * is missing, the reply was unreadable, the network is gone — the chat
+   * says it has nothing, and draws nothing.
    *
-   * A dead network is the third case and lands in the same place: the fetch
-   * rejects, and the local reader answers. Nothing on this page waits on
-   * /api/*, and this is no exception — the chat is slower without the
-   * Function and never absent.
+   * It used to do otherwise. assets/ask.js had a second half, a ranker, and
+   * this panel ran it the moment a question was sent and drew its rows at
+   * once, then swapped them for the model's a moment later. It was fast and
+   * it was the wrong kind of fast: a substring matcher choosing three places
+   * for "not sure", with nothing under any of them saying why, and then the
+   * rows changing under the reader's eyes. What the owner saw was a chat
+   * that brought something whether or not it had a clue, then changed its
+   * mind. So the ranker is gone, assets/ask.js only reads a sentence into
+   * the wish the Function narrows on, and the panel says "Looking…" until
+   * the one answer arrives.
    *
-   * IT IS A CONVERSATION, AND ONLY THE MODEL'S HALF KNOWS IT
+   * IT IS A CONVERSATION
    *
    * Every question goes to the Function with the exchanges before it — what
    * was asked and what was answered, ids and clauses — so "somewhere
-   * cheaper" or "the second one" mean what they would to a person. The local
-   * reader reads each sentence on its own: it has no way to hold a thread,
-   * and a follow-up it cannot read is the one case where the model's answer
-   * replaces nothing rather than something. The thread lives in state.asks
-   * and goes when the chat is closed.
+   * cheaper" or "the second one" mean what they would to a person. The
+   * thread lives in state.asks and goes when the chat is closed.
    *
    * THE PLACES ARE ALWAYS MINE
    *
@@ -3432,39 +3433,6 @@
    */
   var ASK_URL = '/api/ask';
 
-  /* Which of a place's must-order dishes a matched word came out of, in the
-     spelling the place wrote it in. Empty when the word landed somewhere the
-     row already shows.
-
-     It is the one thing the local reader can say that the row does not
-     already say for itself. The dishes are the half of the search index that
-     never reaches the screen — a row prints the name, the price and the
-     types, and never the food — so "Khachapuri" under Gobi is the answer to
-     "why this one", where "Caucasus · Restaurant" would be the row read back
-     to itself. */
-  function dishBehind(place, word) {
-    var dishes = place.mustOrder || [];
-    for (var i = 0; i < dishes.length; i++) {
-      if (fold(dishes[i]).indexOf(word) !== -1) return dishes[i];
-    }
-    return '';
-  }
-
-  /* The local reader's answer, in the shape the Function's answer arrives in,
-     so that everything downstream has one thing to draw rather than two.
-
-     What it says under a row is deliberately thin, and thin on purpose rather
-     than for want of material. The reading matched a type, a price band and
-     some words; the row above already prints the types and the price gauge,
-     so repeating them there put "Cheap eats · Asian · On the cheaper side"
-     directly under "Restaurant · Asian · Cheap eats · Hidden gem" — the row
-     explaining itself with itself. Only two things are worth the line: the
-     dish that is not in the row, and the closing time that is not on this
-     page at all.
-
-     Which leaves most rows with nothing under them, and that is the honest
-     shape of it. This half ranks; the model's half is the one that can say
-     something about an evening, and its clause goes in this same slot. */
   /* data/cuisines.json, fetched the first time a question is asked and not
      before: the map never draws a cuisine, so ten kilobytes of labels for
      them would be weight on every load for the one visitor in a hundred who
@@ -3496,40 +3464,6 @@
     });
   }
 
-  /* `city` is the Google rows /api/ask narrowed the export to, each carrying
-     the folded haystack it was scored on, so they are ranked here exactly as
-     my own places are — one function over both, my places first in the order
-     it is handed so that a tie goes to a place I have been to. Empty on the
-     map scope, and empty whenever the Function did not answer. */
-  function askLocally(wish, open, city) {
-    if (wish.empty) return { say: '', picks: [], source: 'rules' };
-
-    var hay = {};
-    Object.keys(hayIndex).forEach(function (id) { hay[id] = hayIndex[id]; });
-    city.forEach(function (row) { hay[row.id] = row.hay; });
-
-    var ranked = window.TTBAsk.rank(state.places.concat(city), wish, {
-      hay: hay, open: open, saves: state.saves
-    });
-
-    return {
-      say: ranked.length ? t('askHere') : '',
-      source: 'rules',
-      picks: ranked.map(function (hit) {
-        var said = [];
-        hit.why.forEach(function (why) {
-          var line = why.key === 'askWhyOpen' ? t('askWhyOpen', { time: why.until })
-            : why.key === 'askWhyWord' ? dishBehind(hit.place, why.word)
-            : '';
-          /* Two words of a question can land on one dish — "beef khachapuri"
-             — and the dish should be named once. */
-          if (line && said.indexOf(line) === -1) said.push(line);
-        });
-        return { id: hit.place.id, why: said.join(' \u00b7 ') };
-      })
-    };
-  }
-
   /* A question in the air: the arrow pulses. Nothing is disabled — the field
      stays typeable so a second question can follow the first without waiting
      for it, and the reply to the first then updates its own exchange in the
@@ -3556,10 +3490,6 @@
 
     trackEvent('ask', { search_term: question.toLowerCase(), scope: state.askScope });
 
-    /* The search index is built lazily on the first search; an answer is the
-       other thing that reads it, and it may well be what reads it first. */
-    if (!hayIndex) buildSearchIndex();
-
     /* What the model is reminded of: the last six questions before this
        one and what each was answered with, as it stands on the screen — the
        model's answer where it gave one, the local reader's where it did
@@ -3581,19 +3511,14 @@
 
     /* The exchange goes into the thread before anything has answered, so
        the question is on the screen the moment it is sent, with the field
-       cleared for the next one. Then two answers arrive, and the second
-       overwrites the first:
-
-         at once     the local reader over my places, which takes no time
-                     and is right about most questions people type
-         a moment    the Function — the model's picks, the hours, and the
-         later       city's rows for a question the map has no answer to
-
-       That is what makes the box feel quick: the wait is for a better
-       answer under a question that already has one, not for anything. */
+       cleared for the next one, and "Looking…" under it while the arrow
+       pulses. Then one answer arrives, and it is the model's. There is no
+       draft drawn first and replaced: a row that appears and then changes
+       is worse than a row that takes a moment, and a row with nothing under
+       it saying why is not an answer at all. */
     var turn = {
       q: question, scope: state.askScope, pending: true,
-      say: '', picks: [], city: [], open: {}, source: 'rules'
+      say: '', picks: [], city: [], open: {}, source: ''
     };
     state.asks.push(turn);
     dom.askInput.value = '';
@@ -3602,14 +3527,10 @@
     scrollThread();
 
     loadCuisines().then(function (cuisines) {
+      /* The wish is not read here to answer with — it goes to the Function,
+         which narrows my places and Google's to the ones the question could
+         be about before the model sees them. */
       var wish = readWish(question, cuisines);
-
-      var first = askLocally(wish, {}, []);
-      if (first.picks.length) {
-        turn.say = first.say;
-        turn.picks = first.picks;
-        settle(turn);
-      }
 
       return fetch(ASK_URL, {
         method: 'POST',
@@ -3664,18 +3585,16 @@
       return;
     }
 
-    var said = null;
-    if (model && ((model.picks && model.picks.length) || model.say)) {
-      said = { say: model.say || '', picks: model.picks || [], source: 'ai' };
-    } else if (wish) {
-      /* On the city, mine and Google's are ranked together — a press of All
-         Tallinn asked for the city, and mine still win a tie because the
-         tie-break is saves and Google's rows have none. On the map, mine
-         first and the city only when mine come to nothing: the fallback. */
-      said = askLocally(wish, open, turn.scope === 'all' ? city : []);
-      if (!said.picks.length && city.length) said = askLocally(wish, open, city);
-    }
-    if (!said) said = { say: '', picks: [], source: 'rules' };
+    /* The model's reply, or nothing. A reply with places draws them, each
+       with its reason; a reply that is only a sentence draws the sentence;
+       and no reply at all — unreadable, unreachable, the binding gone —
+       draws the shrug renderAsk() has for an empty answer. Nothing else is
+       ever drawn here: the keyword reader that used to fill this gap is the
+       reason this panel brought three places for "not sure" and then swapped
+       them, and it is gone. */
+    var said = model && ((model.picks && model.picks.length) || model.say)
+      ? { say: model.say || '', picks: model.picks || [], source: 'ai' }
+      : { say: '', picks: [], source: 'none' };
 
     /* Whether the answer reached past the map. On the map scope that is the
        fallback, and the pressed button and the sentence over the answer both
@@ -3722,8 +3641,7 @@
 
   /* A Google row as this page draws a place it has no write-up for: the
      shape listPlaces holds, so every loop that draws, dresses and labels a
-     pin reads it without asking which door it came in by. The haystack
-     rides along for askLocally() and is never drawn. */
+     pin reads it without asking which door it came in by. */
   function cityStandIn(row) {
     return {
       id: row.id,
@@ -3744,7 +3662,6 @@
       website: row.website || '',
       hours: row.hours || [],
       mapsUrl: row.mapsUrl || '',
-      hay: row.hay || '',
       standIn: true
     };
   }

@@ -552,17 +552,23 @@ search with a switch under it and a heading over the rows, and it read as a
 filter that was oddly slow. A question for an evening you cannot name is not a
 search, so it has a panel of its own.
 
-### It answers at once, and better a moment later
+### It loads, then answers once
 
-Type a question and the answer is on the screen before your thumb leaves the
-arrow: the local reader in `assets/ask.js` — see below — runs over my places
-the moment the question is sent, and draws its rows under it. The arrow
-pulses while the Function is asked, and when the model answers, its picks and
-its clauses replace the local ones under the same question. The field is never
-disabled: a second question can follow the first without waiting for it, and
-each reply lands under its own question. So the wait is for a better answer
-under a question that already has one, which is a different thing from
-waiting.
+Type a question and *Looking…* sits under it while the arrow pulses; then
+the model's answer lands, once, and stays. The field is never disabled: a
+second question can follow the first without waiting for it, and each reply
+lands under its own question.
+
+It did not always work that way. For its first year the panel ran a keyword
+reader over my places the instant a question was sent and drew its rows at
+once, then swapped them for the model's a moment later — and for most of that
+year the model's reply was being thrown away, so the swap never came and the
+reader was the whole chat. What that looked like from a phone was a chat that
+brought three places for *not sure*, with nothing under any of them saying
+why, and then changed its mind. The reader is gone. `assets/ask.js` still
+reads a sentence into the wish the Function narrows on, but nothing in the
+browser ranks places any more, and no row is ever drawn in this panel that
+the model did not name with a reason.
 
 The model's side was slow on its first day, and most of it was one line. The
 first model was a reasoning one, left to reason: it thought through several
@@ -727,35 +733,27 @@ which of the two answered in **`note`** — `workers-ai`, `workers-ai-none`,
 `workers-ai-spent`, `no-ai` — so the next time this goes quiet it is one
 request to find rather than a year.
 
-Which leaves the interesting half: what happens when the model is not there.
-That happens quite often — the allowance runs out, a model gets moved behind
-the paid plan (`kimi-k2.6` and `glm-5.2` both did in July 2026), the network is
-gone, or it answers with something unparseable. So there is a second reader,
-`assets/ask.js`, in the browser:
+Which leaves the other half: what happens when the model is not there. That
+happens — the allowance runs out, a model gets moved behind the paid plan
+(`kimi-k2.6` and `glm-5.2` both did in July 2026), the network is gone, or it
+answers with something unparseable. `/api/ask` answers `source: "none"`, and
+the chat says *Nothing on the map answers that* and draws no rows. It does
+not guess. There used to be a keyword reader in the browser for exactly this
+moment, and it is what made the chat look broken: it matched substrings and
+drew three places for a question it had no clue about, with nothing under
+them, in the model's voice. A shrug is honest; that was not.
 
-| | what it understands |
-|---|---|
-| the model | a conversation — *somewhere cheaper*, *what is similar to that*, a question about the chat itself answered as one — and mood, occasion, a sentence with no keyword in it |
-| `assets/ask.js` | the thirteen types in ten languages, cheap and fancy, open now, and every dish and street in the index |
-
-The local one is not a stub, though it reads each sentence on its own — it
-has no way to hold a thread, and a follow-up it cannot read is the one case
-where the model's answer replaces nothing rather than something. Its
-vocabulary is the taxonomy labels this page already holds in all ten
-languages, so *pagariäri*, *bakery* and *пекарня* all
-reach the bakeries without a word of it being written down twice. The three
-things people ask for that have no words in the data — cheap, fancy, open now
-— live in `data/ui.json` under `askWordsCheap`, `askWordsFancy` and
-`askWordsOpen`, as synonyms joined by `|`, the same shape `days` and `months`
-already use. Which means the validator holds them to all ten languages like
-every other string, and adding a language stays one file.
-
-What it cannot do is mood, and it does not pretend to. That is the whole of
-what the model buys.
-
-`/api/ask` answers `source: "none"` when neither model has an opinion, the
-browser reads the question itself, and the same cards are drawn either way.
-The chat gets less clever for the rest of the day; it does not break.
+What `assets/ask.js` still does is read. It turns a sentence into the wish
+the Function narrows on — which of the thirteen types, cheap or fancy, open
+now, and the words left over that might be a dish or a street — in all ten
+languages at once, because its vocabulary is the taxonomy labels this page
+already holds, so *pagariäri*, *bakery* and *пекарня* all reach the bakeries
+without a word of it being written down twice. The three things people ask
+for that have no words in the data — cheap, fancy, open now — live in
+`data/ui.json` under `askWordsCheap`, `askWordsFancy` and `askWordsOpen`, as
+synonyms joined by `|`, the same shape `days` and `months` already use. Which
+means the validator holds them to all ten languages like every other string,
+and adding a language stays one file.
 
 **Except when it is the allowance, in which case the chat says so.** Workers
 AI answers a spent day with error 3036, which is a 429 like the transient
@@ -798,27 +796,22 @@ The fifteen places with no Google row, and the seventy-seven Google rows with
 no hours in the export, simply say nothing about hours. An answer that is
 silent about them is honest; one that guesses is not.
 
-### What a line under a row is allowed to say
+### Every row says why
 
-Very little, from the local reader, and that is on purpose. It matched a type,
-a price band and some words — and the row above already prints the types and
-draws the price gauge, so repeating them put *Cheap eats · Asian · On the
-cheaper side* directly underneath *Restaurant · Asian · Cheap eats · Hidden
-gem*: the row explaining itself with itself.
+The line under a row is the model's, and every row has one. It is at most
+twelve words on why *that* place answers *this* question — the dish they
+asked for, what suits the occasion, what makes it the cheap one — and never
+the type or the price read back, because the row above already prints the
+types and draws the gauge, and *Cheap eats · Asian · On the cheaper side*
+directly underneath *Restaurant · Asian · Cheap eats · Hidden gem* is the row
+explaining itself with itself.
 
-Two things are worth the line, because neither is anywhere else on the row: the
-**closing time**, and the **must-order dish** a word matched. Asking for
-khachapuri answers Gobi and Pirosmani with *Adjaruli khachapuri* and *Adjarian
-khachapuri* under them, which is the answer to "why these two" — the dishes are
-the half of the search index that never reaches the screen. Everything else
-gets no line at all, and most rows have none.
-
-The model's clause goes in the same slot, and it is the half that can say
-something about an evening. The model is **required** to write one for every
-place it names — a row appearing with nothing under it is the answer refusing
-to say why it is an answer — under the same rule the reader follows: the dish,
-the occasion, what makes it the cheap one, and never the type or the price
-read back off the card underneath.
+It is required rather than requested. The prompt asks for a reason on every
+place, and a small model still sometimes leaves one blank, so
+`functions/api/ask.js` drops any pick that arrives without one: a place with
+no reason is not a pick, and if every place goes the sentence still stands.
+A row appearing with nothing under it was the answer refusing to say why it
+was an answer, and for a year it was what this panel mostly drew.
 
 ## Close a place instead of deleting it
 
