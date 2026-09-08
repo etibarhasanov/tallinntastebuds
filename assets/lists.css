@@ -308,7 +308,13 @@
   margin-bottom: 10px;
 }
 
-.lists-new { display: flex; gap: 10px; flex-wrap: wrap; }
+/* The box that makes a list. It stands between the two folds on the account
+   page, and the room above and below it is its own: what is over it is a
+   <summary> when the fold is closed and a column of lists when it is open, and
+   neither of those can be given a margin that only means something under this
+   form. */
+.lists-new { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
+.lists-new:last-child { margin-bottom: 0; }
 .lists-new .lists-input { flex: 1 1 200px; min-width: 0; }
 
 /* ---------- the index of your lists ---------- */

@@ -15,10 +15,16 @@
  * eyebrow and the toast with assets/styles.css and adds its own in
  * assets/lists.css.
  *
- * FOUR ADDRESSES, ONE FILE
+ * THREE ADDRESSES, ONE FILE, AND NONE OF THEM IS YOU
  *
- *   /lists.html      your own lists: the index, and the box that makes a new
- *                    one. Nothing here without an account.
+ * This page had a fourth for as long as lists have existed — /lists.html
+ * itself, the index of your own, with the box that made a new one. It has gone
+ * to /account.html, where your saved places already were, because two pages
+ * naming the same lists is a fork: your things were on your account, except
+ * the half of them that was over here, and each page carried a row pointing at
+ * the other. What is left in this file is the three addresses that are about
+ * something which is not you, and /lists.html now replaces itself with the
+ * account page before it draws — see boot().
  *
  *   /list/<id>       one list. Served by functions/list/[id].js, which hands
  *                    back this same document with the list's own title and
@@ -100,14 +106,12 @@
     ui: {},
     types: [],         // data/taxonomy.json, for the rows that carry Google's words
     lang: DEFAULT_LANG,
-    /* 'index' | 'one' | 'all' | 'who'. Which of the four addresses this is. */
-    view: 'index',
+    /* 'one' | 'all' | 'who'. Which of the three addresses this is. */
+    view: 'one',
     id: '',            // the list being shown, which moreLists() leaves out
     me: null,          // the signed-in username, or null
     ready: false,      // whether the API says lists work at all here
     reached: true,     // whether it answered at all
-    lists: [],         // the index: the ones you made
-    kept: [],          // the index: the ones you bookmarked, somebody else's
     all: null,         // the directory: everybody's, most kept first
     next: '',          // where the directory's next page starts, '' at the end
     q: '',             // what the directory is being searched for, '' for all
@@ -394,10 +398,6 @@
      gesture said about the other kind of object this site has: keep this. A
      kept list fills; an unkept one is the outline. */
   var ICON_KEEP = '<path d="M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z"/>';
-  /* The chevron on a row that opens something — the same mark the map's
-     account sheet puts on its rows, for the same sentence. */
-  var ICON_GO = '<path d="M9 5l7 7-7 7"/>';
-
   /* Every list opens on the map, which is where places belong: the whole list
      as pins, in the order its owner put them in. One href, built in one
      place, so the two index sections and both list heads cannot drift.
@@ -442,37 +442,13 @@
      up in are two weights of the same door: filled on somebody else's list,
      where it is the one thing that card asks for; and the outlined pill
      everywhere else — on your own list, where Save has the accent, and in the
-     corner of each index row. */
+     corner of each row on a profile. */
   function mapLink(id, className) {
     return el('a', {
       className: className,
       href: mapHref(id),
       textContent: t('listsOnMap')
     });
-  }
-
-  /* A way on from a card, as a row: the name, the line under it saying what
-     is behind it, and the chevron. It is .menu-row out of assets/styles.css,
-     the shape the map's account sheet draws its places-to-go in, because
-     that is what these are. They were three underlined words along the foot
-     of the card, which is the exact thing README's design rule 8 is about —
-     a paragraph that has lost its sentences, with a target the width of the
-     word on a phone — and the rule was written after looking at a sheet that
-     had done the same. */
-  function door(nameKey, whyKey, href) {
-    return el('li', { className: 'menu-item' }, [
-      el('a', { className: 'menu-row', href: href }, [
-        el('span', { className: 'menu-say' }, [
-          el('span', { className: 'menu-name', textContent: t(nameKey) }),
-          el('span', { className: 'menu-why', textContent: t(whyKey) })
-        ]),
-        el('span', {
-          className: 'menu-go',
-          'aria-hidden': 'true',
-          html: '<svg viewBox="0 0 24 24" focusable="false">' + ICON_GO + '</svg>'
-        })
-      ])
-    ]);
   }
 
   /* How many people have this list bookmarked, drawn only once somebody has.
@@ -504,14 +480,11 @@
     if (!state.ready) { dom.main.appendChild(renderNotReady()); return; }
     if (state.view === 'all') { dom.main.appendChild(renderAll()); return; }
     if (state.view === 'who') { dom.main.appendChild(renderProfile()); return; }
-    if (state.view === 'one') {
-      dom.main.appendChild(renderOne());
-      /* And, under it, three more. Appended rather than built into the card
-         because it arrives later than the card does — see moreLists(). */
-      moreLists();
-      return;
-    }
-    dom.main.appendChild(renderIndex());
+
+    dom.main.appendChild(renderOne());
+    /* And, under it, three more. Appended rather than built into the card
+       because it arrives later than the card does — see moreLists(). */
+    moreLists();
   }
 
   /* The site answered nothing at all: offline, or a Function that is not
@@ -541,112 +514,22 @@
     ]);
   }
 
-  /* ------------------------------------------------------------ your lists */
-
-  function renderIndex() {
-    if (!state.me) return renderInvitation();
-
-    var wrap = el('div', { className: 'lists-stack' });
-
-    wrap.appendChild(card([
-      el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
-      heading(t('listsYours')),
-      el('p', { className: 'lists-say', textContent: t('listsWhat') }),
-      newListForm(),
-      /* Two doors under the box that makes a list, in the order they are
-         about you: your own page as everybody else sees it, and then
-         everybody else's. Rows and not links — see door() — because the
-         card is called Your lists and these are the two places that are
-         about them, and a visitor who has never opened either has to be
-         able to tell them apart before pressing one. */
-      el('ul', { className: 'menu' }, [
-        door('profileYours', 'profileYoursWhy', profileHref(state.me)),
-        door('listsAllEverything', 'listsAllWhy', ALL_PATH)
-      ])
-    ]));
-
-    if (!state.lists.length) {
-      wrap.appendChild(el('p', { className: 'lists-none', textContent: t('listsNone') }));
-    } else {
-      var ul = el('ul', { className: 'lists-index' });
-      state.lists.forEach(function (l) { ul.appendChild(listRow(l)); });
-      wrap.appendChild(ul);
-    }
-
-    /* The other half of the page: the lists you kept, which are somebody
-       else's. It is drawn only when there is one, and that is deliberate —
-       an empty "Lists you kept" heading under an empty "Your lists" is a page
-       explaining two features to somebody who has not used either. The
-       heading arriving with the first keep is how anybody learns the section
-       is there, the same way the map's Saved chip arrives with the first
-       mark. */
-    if (state.kept.length) {
-      wrap.appendChild(el('h2', { className: 'lists-section', textContent: t('listsKept') }));
-      var kul = el('ul', { className: 'lists-index' });
-      state.kept.forEach(function (l) { kul.appendChild(listRow(l)); });
-      wrap.appendChild(kul);
-    }
-
-    return wrap;
-  }
-
-  function newListForm() {
-    var form = el('form', { className: 'lists-new' });
-    var field = el('input', {
-      type: 'text',
-      className: 'lists-input',
-      id: 'new-title',
-      maxlength: String(MAX_TITLE),
-      autocomplete: 'off',
-      'aria-label': t('listsNewName'),
-      placeholder: t('listsNewHint')
-    });
-    var go = el('button', { type: 'submit', className: 'go', textContent: t('listsCreate') });
-
-    form.appendChild(field);
-    form.appendChild(go);
-    form.addEventListener('submit', function (ev) {
-      ev.preventDefault();
-      var title = field.value.trim();
-      if (!title) { field.focus(); return; }
-      go.disabled = true;
-      go.textContent = t('accountWorking');
-      post({ action: 'create', title: title }).then(function (a) {
-        if (!a.ok) {
-          go.disabled = false;
-          go.textContent = t('listsCreate');
-          return failed(a.out);
-        }
-        /* Straight into the empty list, because the next thing anybody wants
-           after naming one is to put something on it. */
-        window.location.href = '/list/' + a.out.id;
-      }).catch(function () {
-        go.disabled = false;
-        go.textContent = t('listsCreate');
-        failed({});
-      });
-    });
-    return form;
-  }
-
-  /* One list, as a row in a column of them. Three places draw this — your own
-     lists, the ones you kept, and the public ones on somebody's profile — and
-     it was two near-identical functions before the third arrived.
-
-     What differs is two parts, and each is decided by what the row actually
-     carries rather than by which section it is in: a byline where the list is
-     somebody else's, and the private pill where it is yours and shut. That
-     second test is `=== false` and not `!l.public`, because the answers that
-     hold other people's lists do not send the column at all — every list in
-     them is public by the query that found it — and a missing value must not
-     read as a private one.
+  /* One list, as a row in a column of them — a profile's, which is the one
+     column of these left in this file. It drew three at its widest: your own
+     lists, the ones you kept and a profile's, with a byline where the list was
+     somebody else's and a private pill where it was yours and shut. The first
+     two are on /account.html now, which draws the flatter .lists-all-card for
+     them, and neither of those two parts survived the move: a profile is one
+     person's public lists, so there is nobody to name over them and nothing on
+     the page that a stranger may not read. The same row on /account.html
+     carries both again, out of assets/account.js.
 
      The card is a box and the title is the link, which .lists-open stretches
      over the whole face of it. It was the card itself until the byline became
      a door of its own, and a link inside a link is not a thing HTML has; the
      map button in the corner was already a sibling laid over it for the same
-     reason. What it buys besides the byline is the name of the link: the title,
-     rather than the title and every number beside it read out in one breath. */
+     reason. What it buys is the name of the link: the title, rather than the
+     title and every number beside it read out in one breath. */
   function listRow(l) {
     var box = el('div', { className: 'lists-index-card' }, [
       el('a', {
@@ -655,43 +538,14 @@
         textContent: l.title
       }),
       el('span', { className: 'lists-index-meta mono' }, [
-        l.by ? byline(l.by) : null,
         el('span', { textContent: countLabel(l.n) }),
-        /* How many people kept it. On your own list this is the only place
-           the number appears in the index, and it is the one fact about a
-           list you wrote that you cannot know by looking at it. */
-        keepCount(l.keeps),
-        l.public === false ? el('span', { className: 'lists-private', textContent: t('listsPrivate') }) : null
+        /* How many people kept it — the one fact about a list its own author
+           cannot know by looking at it, which is why their own profile prints
+           it back to them the same way a stranger reads it. */
+        keepCount(l.keeps)
       ])
     ]);
     return el('li', { className: 'lists-index-row' }, [box, mapLink(l.id, 'alt lists-map lists-index-map')]);
-  }
-
-  /* Signed out, on your own lists page. Not a wall in front of the map — the
-     map needs no account and never will — but this page genuinely cannot show
-     anything without knowing whose lists to show. So it says what a list is
-     first and asks second. */
-  function renderInvitation() {
-    return card([
-      el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
-      heading(t('listsTitle')),
-      el('p', { className: 'lists-say', textContent: t('listsWhat') }),
-      el('p', { className: 'lists-say', textContent: t('listsNeedAccount') }),
-      el('div', { className: 'lists-row' }, [
-        el('a', { className: 'go', href: accountHref('up'), textContent: t('accountCreate') }),
-        el('a', { className: 'alt', href: accountHref('in'), textContent: t('accountSignIn') })
-      ]),
-      /* Signed out this page can show nothing of its own, and asking for an
-         account is a poor answer on its own to somebody who has not been
-         told yet what a list looks like. The directory is that answer: it
-         needs no account and it is full of them. A row of its own under the
-         two account buttons rather than a third word beside them, because it
-         is not about the account and it is the one thing here a stranger can
-         actually open. */
-      el('ul', { className: 'menu' }, [
-        door('listsAllEverything', 'listsAllWhy', ALL_PATH)
-      ])
-    ]);
   }
 
   /* ------------------------------------------------------------ one person
@@ -707,7 +561,7 @@
    * The page shows the same thing to everybody, and that is deliberate rather
    * than a limitation nobody got round to: the value of a profile you can see
    * is knowing what other people see on it. Your own private lists are one
-   * link away, on /lists.html, which is where the editing is anyway.
+   * link away, on /account.html, where every list you wrote is named.
    */
   function renderProfile() {
     var who = state.profile;
@@ -738,7 +592,7 @@
       /* Your own profile, with the way back to the half of it nobody else
          gets: the private lists, and every control this page has none of. */
       who.mine
-        ? el('a', { className: 'alt', href: '/lists.html', textContent: t('profileMine') })
+        ? el('a', { className: 'alt', href: '/account.html', textContent: t('profileMine') })
         : null
     ]));
 
@@ -2290,7 +2144,7 @@
     if (!window.confirm(t('listsDeleteSure', { title: list.title }))) return;
     post({ action: 'delete', id: list.id }).then(function (a) {
       if (!a.ok) return failed(a.out);
-      window.location.href = '/lists.html';
+      window.location.href = '/account.html';
     }).catch(function () { failed({}); });
   }
 
@@ -3186,14 +3040,26 @@
     /* First, before anything is drawn: the style the map was left on. */
     applyStyle();
 
-    /* Four addresses, asked in the order they are specific: the directory is
+    /* Three addresses, asked in the order they are specific: the directory is
        one fixed path, a person is another, and a list is what is left. No two
-       of them can be the address at once. */
+       of them can be the address at once.
+
+       And if it is none of them, this is /lists.html itself — the index of
+       your own lists, which is on /account.html now, along with the box that
+       makes one and the places you saved. Replaced rather than pushed, so the
+       back button goes wherever somebody came from instead of to a page that
+       would only send them here again; and before a single fetch is made, so
+       there is nothing to flash. The query string goes with it because ?lang=
+       and ?style= are read the same way on the page it lands on. */
     var all = wantedAll();
     var who = all ? '' : wantedWho();
     var id = all || who ? '' : wantedList();
+    if (!all && !who && !id) {
+      window.location.replace('/account.html' + window.location.search);
+      return;
+    }
     state.id = id;
-    state.view = all ? 'all' : who ? 'who' : id ? 'one' : 'index';
+    state.view = all ? 'all' : who ? 'who' : 'one';
     if (all) state.q = wantedQuery();
 
     /* The strings and the data at once. The strings are a static file behind a
@@ -3241,7 +3107,7 @@
         out: { ready: true, user: window.__TTB_LIST.user || null, list: seeded }
       });
     } else {
-      data = ask(id ? API + '?id=' + encodeURIComponent(id) : API);
+      data = ask(API + '?id=' + encodeURIComponent(id));
     }
 
     Promise.all([strings, data, types]).then(function (loaded) {
@@ -3262,8 +3128,6 @@
          something about the site being switched off. */
       state.ready = answer.status === 404 ? true : !!out.ready;
       state.me = out.user || null;
-      state.lists = out.lists || [];
-      state.kept = out.kept || [];
       state.list = out.list || null;
       /* Null and not an empty array while nothing has asked: it is what
          moreLists() reads to tell "there are no other lists" from "the other
