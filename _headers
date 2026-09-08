@@ -23,10 +23,10 @@
 # noindex, because there is nothing on it for anybody who is not signed in and
 # a search result for "your lists" would be a permanently empty page.
 #
-# /list/<id> and /lists/kept are not here: they are served by
-# functions/list/[id].js and functions/lists/kept.js, which set their own
+# /list/<id> and /lists/public are not here: they are served by
+# functions/list/[id].js and functions/lists/public.js, which set their own
 # headers. Both are indexable — a public list is a page somebody wrote and
-# /lists/kept is what links them together — and neither is disallowed in
+# /lists/public is what links them together — and neither is disallowed in
 # robots.txt. See the note there, and the head of each Function.
 /lists.html
   Cache-Control: public, max-age=0, must-revalidate

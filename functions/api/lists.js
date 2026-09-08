@@ -67,7 +67,7 @@ import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDa
 /* Reading one list is shared with functions/list/[id].js, which serves the
    page a link opens with the list already in it. */
 import { readList, LIST_ID } from './_lists.js';
-/* Every public list, most kept first — shared with functions/lists/kept.js,
+/* Every public list, most kept first — shared with functions/lists/public.js,
    which seeds the first page into the document it serves. */
 import { mostKept } from './_mostkept.js';
 
@@ -196,12 +196,21 @@ export async function onRequestGet(context) {
     return json({ ready: true, user: user ? user.username : null, list: list }, 200);
   }
 
-  /* Everybody's lists, for /lists/kept. The one answer on this route that
-     does not depend on who is asking, so it sits above the session check the
-     rest of the page is under: it is read by strangers, and most of them are
-     signed out. */
+  /* Everybody's lists, for /lists/public. It sits above the session check the
+     rest of the page is under, because it is read by strangers and most of
+     them are signed out.
+
+     It is not quite the one answer here that ignores who is asking, and it was
+     until the rows grew a bookmark of their own: the lists and their order are
+     the same twenty for everybody, and `kept` and `mine` on each of them are
+     about the session. That is why the answer is no-store like the rest of
+     this route — a shared copy of it would draw somebody else's bookmarks. */
   if (params.get('all')) {
-    const page = await mostKept(context, params.get('from') || '');
+    const page = await mostKept(context, {
+      from: params.get('from') || '',
+      q: params.get('q') || '',
+      user: user
+    });
     return json({
       ready: true,
       user: user ? user.username : null,

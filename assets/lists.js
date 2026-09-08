@@ -26,10 +26,13 @@
  *                    the page — so a shared link unfurls as what it is, and
  *                    draws without a second round trip.
  *
- *   /lists/kept      everybody's, the most kept first. Served the same way by
- *                    functions/lists/kept.js. It is the page that joins the
- *                    lists to each other rather than leaving each one an
- *                    island reachable only by its own link.
+ *   /lists/public    everybody's, the most kept first, with a field to search
+ *                    them. Served the same way by functions/lists/public.js.
+ *                    It is the page that joins the lists to each other rather
+ *                    than leaving each one an island reachable only by its own
+ *                    link. It was /lists/kept, which said what the page was
+ *                    ordered by rather than what was on it; that address is a
+ *                    301 to this one.
  *
  *   /u/<name>        one person: their public lists, and how many times those
  *                    have been kept. Served the same way by
@@ -78,8 +81,20 @@
   /* Where everybody's lists are, and how many of them a list's own page
      carries at the foot. Three, because it is an offer of somewhere to go next
      and not a second page of them under the one somebody came to read. */
-  var ALL_PATH = '/lists/kept';
+  var ALL_PATH = '/lists/public';
   var FOOT = 3;
+
+  /* The longest search the field will take, and how long a keystroke is held
+     before it becomes a request. The cap is the server's — see MAX_QUERY in
+     functions/api/_mostkept.js — said again here so the field stops somebody
+     at the keystroke rather than at the round trip, the way the four caps
+     above it do.
+
+     The wait is a judgement rather than a limit: long enough that a word typed
+     at speed is one request instead of six, short enough that nobody who has
+     stopped typing is waiting on it. */
+  var MAX_QUERY = 60;
+  var SEARCH_WAIT = 220;
 
   var state = {
     ui: {},
@@ -95,7 +110,9 @@
     kept: [],          // the index: the ones you bookmarked, somebody else's
     all: null,         // the directory: everybody's, most kept first
     next: '',          // where the directory's next page starts, '' at the end
+    q: '',             // what the directory is being searched for, '' for all
     asking: false,     // a page of the directory is in flight
+    searching: false,  // a search is in flight, so the rows on screen are the old one's
     list: null,        // the one being shown
     profile: null,     // the person being shown
     places: null,      // /api/places, loaded the first time the picker opens
@@ -104,6 +121,11 @@
 
   var dom = {};
   var toastTimer = null;
+  /* The keystroke waiting to become a search, and the number of the last search
+     asked for. Both belong to the directory's field and neither is state the
+     page draws, which is why they are here rather than in state. */
+  var searchTimer = null;
+  var searchSeq = 0;
 
   /* --------------------------------------------------------------- helpers */
 
@@ -687,19 +709,20 @@
     });
   }
 
-  /* ----------------------------------------------------- lists people kept
-   * Every public list on this site, the most kept first.
+  /* ---------------------------------------------------------- public lists
+   * Every public list on this site, the most kept first, and a field to find
+   * one among them.
    *
    * It is the one page here that puts one person's writing above another's.
-   * The argument for that, and what it costs, is in README.md under **Lists
-   * people kept** — this is only how it is drawn.
+   * The argument for that, and what it costs, is in README.md under **Public
+   * lists** — this is only how it is drawn.
    *
    * The row is the index row restacked. The title, then one line led by the
-   * count the page is ordered on, then the first three places off the list.
-   * Those three names are the difference between this page and a page of
-   * links: "Top ten burgers" tells somebody who has never heard of its author
-   * nothing at all, and "Ferment · Kaerajaan · Rataskaevu 16" tells them
-   * whether to open it.
+   * count the page is ordered on, then the first three places off the list,
+   * and the bookmark in the corner. Those three names are the difference
+   * between this page and a page of links: "Top ten burgers" tells somebody
+   * who has never heard of its author nothing at all, and
+   * "Ferment · Kaerajaan · Rataskaevu 16" tells them whether to open it.
    *
    * The count leads the line rather than sitting against the right edge, where
    * it started. Justified to the two ends of a flex row it strands itself on a
@@ -712,42 +735,274 @@
    * the least informative thing on the row, beside three names that say the
    * same thing better. It is on your own lists and on a list's own page, where
    * the rows are already in hand. See functions/api/_mostkept.js.
+   *
+   * THE ONE VIEW HERE THAT IS NOT REDRAWN WHOLE
+   *
+   * Every other state of this page is built by render(), which empties <main>
+   * first so nothing can be left over from the state before. This one cannot
+   * be: the search field is in it, and a field rebuilt between two keystrokes
+   * loses the caret, the selection and — on a phone — the keyboard. It is the
+   * same reason the "add a place" picker is static markup in lists.html rather
+   * than built each time it is opened.
+   *
+   * So render() builds the head of this page once, and everything under it
+   * that changes — the rows, Show more, the note where there are none — is
+   * painted into dom.allBody by paintAll(). A search and a Show more both end
+   * there.
    */
 
   function renderAll() {
-    var rows = state.all || [];
     var wrap = el('div', { className: 'lists-stack' });
 
     wrap.appendChild(card([
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
       heading(t('listsAllTitle')),
-      el('p', { className: 'lists-say', textContent: t('listsAllSay') })
+      el('p', { className: 'lists-say', textContent: t('listsAllSay') }),
+      searchField()
     ]));
 
+    dom.allBody = el('div', { className: 'lists-all-body' });
+    wrap.appendChild(dom.allBody);
+    paintAll();
+
+    return wrap;
+  }
+
+  /* The field, with the magnifier and the clear button laid over it. The same
+     three elements the "add a place" picker searches with, wearing the same
+     classes out of assets/styles.css, because it is the same tool asked about
+     a different kind of thing — and a second design for one control is a
+     second thing to keep in step. Only the box around them is this page's own:
+     the picker's is sticky inside a panel and this one is the last line of a
+     card.
+
+     It searches titles, the line under a title, and usernames. Not the places
+     on the lists: see functions/api/_mostkept.js for what that would cost per
+     keystroke, and the map for where a place is found. */
+  function searchField() {
+    var input = el('input', {
+      type: 'search',
+      className: 'search-input',
+      autocomplete: 'off',
+      autocorrect: 'off',
+      autocapitalize: 'none',
+      spellcheck: 'false',
+      maxlength: String(MAX_QUERY),
+      'aria-label': t('listsAllSearch'),
+      placeholder: t('listsAllSearchHint')
+    });
+    /* On the property and not through el(), which would set it as an
+       attribute — and an input's value attribute is its *default* value, the
+       one a form reset goes back to, rather than what is in the field. */
+    input.value = state.q;
+
+    var clearBtn = el('button', {
+      type: 'button',
+      className: 'search-clear',
+      'aria-label': t('searchClear'),
+      hidden: !state.q,
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_X + '</svg>'
+    });
+
+    var field = el('div', {
+      className: 'search-field',
+      html: '<svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/></svg>'
+    });
+    field.appendChild(input);
+    field.appendChild(clearBtn);
+
+    /* A form with nothing to submit. Every keystroke is already a search, so
+       there is no button and no submit worth having — but a lone input is a
+       Go key on a phone keyboard that reloads the page out from under the
+       answer already on it, and role="search" is how the field says what it
+       is to anybody not looking at the magnifier. */
+    var form = el('form', { className: 'lists-all-search', role: 'search' }, [field]);
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      input.blur();
+    });
+
+    input.addEventListener('input', function () {
+      clearBtn.hidden = !input.value;
+      typed(input.value);
+    });
+
+    clearBtn.addEventListener('click', function () {
+      input.value = '';
+      clearBtn.hidden = true;
+      input.focus();
+      typed('');
+    });
+
+    return form;
+  }
+
+  /* A keystroke, held for a moment before it becomes a request.
+   *
+   * Nobody types a word in one event, and a request per character is a dozen
+   * of them for one search, all but the last answering half-typed words that
+   * are thrown away. A short wait turns a word into one question: long enough
+   * to hold a fast typist, short enough that nobody waiting on an answer
+   * notices it.
+   *
+   * The timer is cleared and restarted rather than left to fire, so the wait
+   * runs from the last keystroke and not from the first. */
+  function typed(value) {
+    if (searchTimer) window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(function () {
+      searchTimer = null;
+      search(value);
+    }, SEARCH_WAIT);
+  }
+
+  /* The search itself, and the three things that make it behave.
+   *
+   * An answer is used only if it is the answer to the last thing asked. Two
+   * searches can land in either order — a one-letter query is the slower of
+   * the two to answer, because it matches more — and without the sequence
+   * number a page could settle on the rows for "c" while the field says
+   * "coffee". A counter and not the text, because a word typed, cleared and
+   * typed again is two questions and the second one deserves its answer.
+   *
+   * The rows on the screen are left alone until the answer comes. Redrawing
+   * them at the keystroke would have nothing new to draw, and a bookmark
+   * somebody pressed a moment ago would be rebuilt under its own round trip.
+   * Show more is the one thing that must not be pressed in the gap — it would
+   * page the old question under the new one — and more() refuses while a
+   * search is out.
+   *
+   * And the address follows the field, so the page somebody is looking at is
+   * the page they can send. replaceState rather than pushState: a search is
+   * not somewhere you went, and a dozen history entries between a reader and
+   * wherever they came from is a Back button that does not work.
+   */
+  function search(q) {
+    /* The same tidying the server does before it looks, so "coffee " and
+       "coffee" are one question here too and the address never carries the
+       trailing space. */
+    q = q.replace(/\s+/g, ' ').trim();
+    if (q === state.q) return;
+    var was = state.q;
+    state.q = q;
+
+    var seq = ++searchSeq;
+    try {
+      window.history.replaceState(null, '', ALL_PATH + (q ? '?q=' + encodeURIComponent(q) : ''));
+    } catch (e) { /* a browser that will not have it still searches */ }
+
+    state.searching = true;
+    ask(API + '?all=1' + (q ? '&q=' + encodeURIComponent(q) : '')).then(function (a) {
+      if (seq !== searchSeq) return;
+      state.searching = false;
+      if (a.status === 0 || !a.out || !a.out.all) {
+        /* The rows on the screen are still the answer to the question before
+           this one, so that is the question the page goes back to holding.
+           The field keeps what was typed — the next keystroke is the retry,
+           and the guard at the top of this function will not block it,
+           because the question it repeats is no longer the one the page
+           thinks it asked. */
+        state.q = was;
+        return toast(t('loadError'));
+      }
+      state.all = a.out.all;
+      state.next = a.out.next || '';
+      paintAll();
+
+      /* Said to a screen reader, and nowhere else. On a screen the rows
+         changing under the field is the answer; without one a search that
+         found eleven lists and a search that found none are the same silence.
+         Through the region lists.html already carries for the same reason —
+         see announce() — rather than a live region built with the rows, which
+         is the thing that is not announced. */
+      if (q) {
+        announce(!state.all.length ? t('listsAllNoMatch')
+          : state.all.length === 1 ? t('listsAllFoundOne')
+          : t('listsAllFound', { n: state.all.length }));
+      }
+    });
+  }
+
+  /* The rows, and whatever stands in for them. Everything below the head of
+     the page, painted into one element so the field above it is never touched.
+     Nothing here counts the rows: a number over a page that has a Show more
+     under it would be the size of the page and not of the answer. */
+  function paintAll() {
+    var rows = state.all || [];
+    clear(dom.allBody);
+
     if (!rows.length) {
-      wrap.appendChild(el('p', { className: 'lists-none', textContent: t('listsAllNone') }));
-      return wrap;
+      dom.allBody.appendChild(el('p', {
+        className: 'lists-none',
+        textContent: t(state.q ? 'listsAllNoMatch' : 'listsAllNone')
+      }));
+      return;
     }
 
     var ul = el('ul', { className: 'lists-index' });
     rows.forEach(function (l) { ul.appendChild(allRow(l)); });
-    wrap.appendChild(ul);
+    dom.allBody.appendChild(ul);
 
     /* Only while there is a page after this one. The button is the only thing
        that says how far the page goes, so its absence is the end of it. */
     if (state.next) {
       var go = button(t('listsAllMore'), 'alt', function () { more(go); });
-      wrap.appendChild(el('p', { className: 'lists-more' }, [go]));
+      dom.allBody.appendChild(el('p', { className: 'lists-more' }, [go]));
     }
-
-    return wrap;
   }
 
-  /* One list on /lists/kept, and the same row at the foot of a list's own
+  /* One list on /lists/public, and the same row at the foot of a list's own
      page. One function because they are the same row and not two rows that
      happen to look alike — a change to what a stranger needs in order to judge
      a list is a change to both of them. */
   function allRow(l) {
+    var line = el('p', { className: 'lists-all-meta mono' });
+    allMeta(l, line);
+
+    /* The bookmark, in the corner of the row rather than at the end of the
+       line, and a sibling of the link rather than a child of it: a link inside
+       a link is not a thing HTML has, which is the same arrangement the map
+       pill has on an index row.
+
+       It was on a list's own page and nowhere else, so keeping one meant
+       opening it first — on a page whose whole job is to hand somebody twenty
+       lists, that is nineteen journeys back. What it repaints is the count in
+       the line above it, and nothing else: the order is left alone, because a
+       row that climbed the page under the finger that pressed it would take
+       the rows somebody was reading with it. The page is a ranking again on
+       the next load.
+
+       Nothing at all is drawn on your own list. Keeping it is refused by the
+       API — it is already under Your lists, and a second copy of it under
+       Lists you kept would be the same list twice on one page — so the honest
+       thing is not to offer the gesture, and the link keeps no room for it.
+       The class says what is in the corner rather than whose list it is,
+       because /account.html borrows this row too and has nothing in the
+       corner either. */
+    return el('li', { className: 'lists-index-row' }, [
+      el('a', {
+        className: 'lists-all-link' + (l.mine ? '' : ' has-keep'),
+        href: '/list/' + l.id
+      }, [
+        el('span', { className: 'lists-index-title', textContent: l.title }),
+        line,
+        l.taste && l.taste.length
+          ? el('p', { className: 'lists-all-taste', textContent: l.taste.join(' \u00b7 ') })
+          : null
+      ]),
+      l.mine ? null : keepControl(l, function (n) {
+        l.keeps = n;
+        allMeta(l, line);
+      })
+    ]);
+  }
+
+  /* The one line of facts under a title: how many people kept it, and whose it
+     is. Painted into a line that already exists rather than returned, because
+     the bookmark on the row rewrites it every time it is pressed and a fresh
+     node would have to be swapped into a list somebody is looking at. */
+  function allMeta(l, line) {
+    clear(line);
     var meta = [
       /* Hidden at zero, the way every other count on this site is. A "0 kept"
          under somebody's top ten reads as a verdict on the list rather than as
@@ -768,37 +1023,39 @@
       l.by ? el('span', { textContent: t('listsBy', { name: l.by }) }) : null
     ].filter(Boolean);
 
-    var line = el('p', { className: 'lists-all-meta mono' });
     meta.forEach(function (part, i) {
       if (i) line.appendChild(document.createTextNode(' \u00b7 '));
       line.appendChild(part);
     });
-
-    return el('li', { className: 'lists-index-row' }, [
-      el('a', { className: 'lists-all-link', href: '/list/' + l.id }, [
-        el('span', { className: 'lists-index-title', textContent: l.title }),
-        line,
-        l.taste && l.taste.length
-          ? el('p', { className: 'lists-all-taste', textContent: l.taste.join(' \u00b7 ') })
-          : null
-      ])
-    ]);
   }
 
   /* The next page, onto the end of the one on screen.
-     
-     The whole view is redrawn rather than the new rows appended, because the
-     Show more button has to go when the last page arrives and the rows have to
-     be in the document in their order — and this page holds nothing anybody is
-     part-way through typing, so there is nothing a redraw can lose. */
+   *
+   * The rows below the head of the page are repainted rather than appended to,
+   * because the Show more button has to go when the last page arrives and the
+   * new rows have to land in the document in their order. Only the rows: this
+   * page does hold something somebody may be part-way through typing, and it
+   * is the field the search is in. See paintAll().
+   *
+   * The search goes with the cursor. A page of results is paged the same way a
+   * page of everything is, and asking for "everything after this row" without
+   * saying what was being asked for would hand back the next twenty of the
+   * wrong question. Which is also why this does nothing while a search is out
+   * — the cursor on the screen belongs to the question before it — and why a
+   * page that comes back after a search has replaced the rows is dropped
+   * rather than joined onto them.
+   */
   function more(btn) {
-    if (state.asking || !state.next) return;
+    if (state.asking || state.searching || !state.next) return;
     state.asking = true;
     btn.disabled = true;
     btn.textContent = t('accountWorking');
 
-    ask(API + '?all=1&from=' + encodeURIComponent(state.next)).then(function (a) {
+    var seq = searchSeq;
+    ask(API + '?all=1' + (state.q ? '&q=' + encodeURIComponent(state.q) : '') +
+        '&from=' + encodeURIComponent(state.next)).then(function (a) {
       state.asking = false;
+      if (seq !== searchSeq) return;
       if (a.status === 0 || !a.out || !a.out.all) {
         btn.disabled = false;
         btn.textContent = t('listsAllMore');
@@ -806,7 +1063,7 @@
       }
       state.all = state.all.concat(a.out.all);
       state.next = a.out.next || '';
-      render();
+      paintAll();
     });
   }
 
@@ -826,6 +1083,9 @@
     if (state.all === null) {
       if (state.asking) return;
       state.asking = true;
+      /* Unsearched, whatever the field on the directory would have said: these
+         three are an offer of somewhere to go next, and the page they are on
+         is not the page anybody typed into. */
       ask(API + '?all=1').then(function (a) {
         state.asking = false;
         state.all = (a.out && a.out.all) || [];
@@ -955,15 +1215,28 @@
    *
    * The count beside it is drawn whether or not anybody is signed in, and
    * hidden at zero for the reason the map hides a save count at zero.
+   *
+   * WHERE THAT COUNT GOES
+   *
+   * On a list's own page it is the span this draws beside the button. On a row
+   * of the directory the number is already in the line under the title, where
+   * it is also what the page is ordered by, and a second copy of it an inch
+   * away would be the same fact said twice. So a caller with somewhere of its
+   * own to put the number passes `onCount` and gets no span; everybody else
+   * gets the span.
    */
-  function keepControl(list) {
-    var count = el('span', { className: 'lists-keeps mono' });
+  function keepControl(list, onCount) {
+    var count = onCount ? null : el('span', { className: 'lists-keeps mono' });
 
     function paintCount(n) {
+      if (onCount) return onCount(n);
       count.textContent = !n ? '' : n === 1 ? t('listsKeptOne') : t('listsKeptN', { n: n });
       count.hidden = !n;
     }
-    paintCount(list.keeps || 0);
+    /* Only the span this made needs filling: it was created empty. A caller
+       that passed onCount has already drawn the number wherever it keeps it,
+       and painting it again here would be the same line built twice. */
+    if (count) paintCount(list.keeps || 0);
 
     if (!state.me) {
       return el('span', { className: 'lists-keep-wrap' }, [
@@ -2778,15 +3051,31 @@
      case draws with no request at all. ?list= is the same thing without the
      pretty path, kept so the page still works if the Function is not
      deployed. */
-  /* Whether this is the directory. /lists/kept is the address it is linked and
-     indexed at, served by functions/lists/kept.js — which is also what seeds
-     the first page in, so the common case draws with no request at all. ?all
-     is the same door without the pretty path, kept for the reason ?list= is:
-     the page still works when the Function is not deployed. */
+  /* Whether this is the directory. /lists/public is the address it is linked
+     and indexed at, served by functions/lists/public.js — which is also what
+     seeds it, so a page carrying the seed is the directory whatever the path
+     says. ?all= is the spelling that works on a deployment with no Functions
+     at all, where lists.html is the only address there is.
+
+     /lists/kept was this page's address until it was renamed, and it is a 301
+     to /lists/public now. It is matched here anyway: the redirect is a
+     Function, and on a static deployment — where ?all= is what this clause
+     exists for — there is nothing to answer it. */
   function wantedAll() {
     if (window.__TTB_ALL) return true;
-    if (/^\/lists\/kept\/?$/.test(window.location.pathname)) return true;
+    if (/^\/lists\/(public|kept)\/?$/.test(window.location.pathname)) return true;
     return new URLSearchParams(window.location.search).has('all');
+  }
+
+  /* And what it is being searched for. Seeded by the Function when the address
+     carried one, so a search anybody sent draws its own answer rather than
+     drawing everything and replacing it a moment later; read off the address
+     otherwise, which is what a static deployment and a reload of a search both
+     come down. */
+  function wantedQuery() {
+    var seeded = window.__TTB_ALL;
+    if (seeded && typeof seeded.q === 'string') return seeded.q;
+    return new URLSearchParams(window.location.search).get('q') || '';
   }
 
   function wantedList() {
@@ -2810,6 +3099,11 @@
   function boot() {
     dom = {
       main: $('main'),
+      /* Everything on the directory below its head: the rows, Show more, and
+         the note where there are none. Claimed by renderAll() rather than
+         found by id, because it is built with the view and not in
+         lists.html. */
+      allBody: null,
       who: $('lists-who'),
       btnRadio: $('btn-radio'),
       radioName: $('radio-name'),
@@ -2834,6 +3128,7 @@
     var id = all || who ? '' : wantedList();
     state.id = id;
     state.view = all ? 'all' : who ? 'who' : id ? 'one' : 'index';
+    if (all) state.q = wantedQuery();
 
     /* The strings and the data at once. The strings are a static file behind a
        revalidating cache and usually free; the data is the one request this
@@ -2846,7 +3141,7 @@
        at all. */
     var types = getJSON('/data/taxonomy.json').catch(function () { return null; });
     /* The answer the Function that served this page wrote into it, when there
-       was one — a list at /list/<id>, the directory at /lists/kept, a person
+       was one — a list at /list/<id>, the directory at /lists/public, a person
        at /u/<name> — and otherwise the request that asks for the same thing.
        Every address draws from the same shapes either way, so a deployment
        without the Functions is a page that loads a beat later and never a page
@@ -2866,7 +3161,7 @@
         }
       });
     } else if (state.view === 'all') {
-      data = ask(API + '?all=1');
+      data = ask(API + '?all=1' + (state.q ? '&q=' + encodeURIComponent(state.q) : ''));
     } else if (seededWho) {
       data = Promise.resolve({
         status: 200,

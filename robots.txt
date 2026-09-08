@@ -13,7 +13,7 @@ Disallow: /staff.html
 # Your own lists, which is a page with nothing on it until somebody signs in.
 # It carries a noindex header of its own too.
 #
-# This does not cover /lists/kept, and must not: a Disallow is a path prefix
+# This does not cover /lists/public, and must not: a Disallow is a path prefix
 # and that is a different path. Everybody's lists, most kept first, is the one
 # page that links every public list to every other, so it is the way a crawler
 # reaches any of them at all. It is in sitemap.xml for the same reason.

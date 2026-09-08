@@ -364,16 +364,44 @@
   bottom: 12px;
 }
 
-/* ---------- lists people kept ---------- */
+/* ---------- public lists ---------- */
 
-/* The row on /lists/kept, and the same row at the foot of a list's own page.
+/* The search field at the foot of the page's own card. It borrows the field,
+   the magnifier and the clear button from the map's panel — same classes, same
+   shapes — and only the box around them is this page's: the panel's is sticky
+   and bleeds to the panel's edges, and this one is the last line of a card.
+
+   Given air above it rather than sitting against the sentence over it, so it
+   reads as the tool the page offers rather than as part of what the page says
+   about itself. */
+.lists-all-search {
+  margin: 16px 0 2px;
+  /* The token .search-input reads its height from. It is declared on .panel
+     and on .picker, each for the field inside it, and this is the third such
+     field — 40px like the picker's, because both of them sit on a card a
+     thumb reaches rather than in the map's rail. */
+  --search-field-h: 40px;
+}
+
+/* Everything under the head of the page: the rows, Show more, and the note
+   where there are none. It exists because it is what a search repaints — the
+   field above it must survive a keystroke — and it carries the stack's own gap
+   so a wrapper that is there for the script's sake changes nothing anybody
+   sees. */
+.lists-all-body { display: flex; flex-direction: column; gap: 18px; }
+
+/* The row on /lists/public, and the same row at the foot of a list's own page.
    It is the index row above restacked rather than a second kind of card: the
    title, one line of facts under it, and the first three places under that.
 
-   No room is left along the bottom the way .lists-index-link leaves it. That
-   padding is there for the map pill in the corner, and this row has no second
-   destination — on a page whose whole job is to get somebody into a list, the
-   row does one thing. */
+   No room is left along the bottom the way .lists-index-link leaves it, unless
+   the row says it needs it: .has-keep is the row on the directory with the
+   bookmark laid in its corner, and it takes the same 54px the map pill takes,
+   for the same reason — a link inside a link is not a thing HTML has, so the
+   control is a sibling laid over space this padding keeps for it. Everywhere
+   else — your own lists on the directory, the rows /account.html borrows this
+   class for — the row has one destination and a corner with nothing in it
+   would be a hole in the card. */
 .lists-all-link {
   display: block;
   padding: 15px 18px 16px;
@@ -384,8 +412,21 @@
   color: inherit;
   text-decoration: none;
 }
+.lists-all-link.has-keep { padding-bottom: 54px; }
 .lists-all-link:hover { border-color: var(--accent); }
 .lists-all-link:hover .lists-index-title { color: var(--accent); }
+
+/* The bookmark in the row's bottom corner, laid inside the card the way the
+   map pill is on an index row: above it in the stacking order, so a press on
+   the mark keeps the list and a press anywhere else opens it.
+
+   It is drawn on every row but your own — see allRow() — and the link beside
+   it wears .has-keep, which is what keeps the corner clear for it. */
+.lists-index-row > .lists-keep-wrap {
+  position: absolute;
+  right: 18px;
+  bottom: 12px;
+}
 
 /* One line, and it wraps as text. It began as a flex row justified to both
    ends, with the count against the right edge, and on a narrow phone the count
@@ -837,7 +878,10 @@ body.has-scrim { overflow: hidden; }
   .item-moves { grid-column: 2; flex-direction: row; justify-content: flex-end; margin-top: 6px; }
   .item-name { font-size: 15px; }
   .lists-index-link { padding: 13px 14px 52px; }
-  .lists-index-map { right: 14px; bottom: 10px; }
+  .lists-all-link { padding: 13px 14px 14px; }
+  .lists-all-link.has-keep { padding-bottom: 52px; }
+  .lists-index-map,
+  .lists-index-row > .lists-keep-wrap { right: 14px; bottom: 10px; }
   .picker { padding: 20px 16px 12px; }
   /* 16px is the smallest a field can be before iOS zooms the whole page to
      reach it, and it never zooms back out. The map's search field has been
@@ -854,6 +898,7 @@ body.has-scrim { overflow: hidden; }
   .lists-who,
   .lists-row,
   .lists-hint,
+  .lists-all-search,
   .item.is-slot,
   .lists-foot,
   .item-moves,
