@@ -247,7 +247,7 @@ export async function onRequestGet(context) {
   }
 
   /* In whatever order the database hands them back, and deliberately not
-     sorted here. The page offers four orders and applies one of them to every
+     sorted here. The page offers five orders and applies one of them to every
      answer before it draws a card, so a sort on the way out would be a second
      opinion about the order that nothing ever sees — and one that would drift
      from the page's the first time either changed. */

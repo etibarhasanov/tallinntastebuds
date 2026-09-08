@@ -1000,8 +1000,10 @@ the argument in **Lists people kept** to arrive at it.
 **And on sorting by one, which `/google` does.** Google's numbers already
 appear on Google's places, attributed every time — that is settled above and in
 **A Google row says whose description it is**. The directory goes one step
-further: it offers "Best rated" and "Most reviewed" as orders, which is a
-ranking, and the rule says there are none.
+further: it offers "Highest rated", "Most reviewed" and "Best overall" — the
+rating weighted by the review count, see **Best overall is not the rating**
+under **The directory** — as orders, which is a ranking, and the rule says
+there are none.
 
 It holds because of what is being ranked. A ranking is a claim by whoever
 publishes it, and the only claim this site makes is the map — seventy-five
@@ -1593,9 +1595,47 @@ would have somebody walking to one to find out.
 ### The filters
 
 Search, and five controls: **Open now**, **Cuisine**, **Rating**, **Price** and
-the order — best rated, most reviewed, A–Z, or nearest to where you are
-standing, which is the one that has to ask permission and the one that reverts
-rather than sit on an order it cannot produce.
+the order — best overall, highest rated, most reviewed, A–Z, or nearest to
+where you are standing, which is the one that has to ask permission and the
+one that reverts rather than sit on an order it cannot produce.
+
+### Best overall is not the rating
+
+The page opens on **Best overall**, and it is a different order from
+**Highest rated**, which is also offered. Sorted by Google's rating alone,
+the first screen is the nineteen places rated a flat 5.0, none of which has
+more than a hundred and fifty reviews — a tea shop with thirty-four sits above
+a restaurant four thousand people rated 4.8, and the tie-break on review
+count never gets a say because the ratings are not tied. Thirty people all
+giving five stars and four thousand averaging 4.8 are not the same claim,
+and a directory whose first page is the small one is not telling the reader
+what they came to find out.
+
+Best overall is the Bayesian average — the arithmetic IMDb's top list has
+used for years — in `weigh()` in `assets/venues.js`:
+
+```
+(n / (n + 100)) * rating  +  (100 / (n + 100)) * mean
+```
+
+`n` is the place's review count, `mean` is the review-weighted mean of the
+whole roll (4.39 on the export as it stands), and the constant is how many
+reviews a place needs before its own rating counts for half. A hundred is
+under the export's median of 237, so most of the roll is judged on its own
+number; thirty reviews at 5.0 comes out at 4.53, in the top half rather than
+the top, and 4.8 from six thousand stays 4.79. The mean is computed from the
+roll every load rather than typed in, so a refresh of the export moves it
+without anybody remembering to.
+
+Both orders are offered because they answer different questions. Highest
+rated is Google's number, plainly, and somebody who wants exactly that should
+get exactly that. Best overall is that number read with the count beside it,
+which is what a person does in their head when they see "5.0 from 34
+reviews" — and the score itself is never printed. Every card still shows
+Google's rating and Google's count; the weighting only decides who stands
+above whom, so the page publishes nothing Google did not say. The
+**Rating** filter is on the raw rating, not the weighted one, because "4.5 and
+up" is a statement about the number on the card.
 
 Everything but the last is in the address bar, so a narrowed directory is a
 link somebody can send. `?sort=near` deliberately is not: it means "nearest to
