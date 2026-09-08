@@ -4619,7 +4619,7 @@ radio rather than about the page it was made on.
 
 ## Surprise me
 
-The die on the left rail — under the account button, at the top of the five
+The die on the left rail — under the account button, at the top of the six
 that are about tonight rather than about you — picks a place at random and
 opens it.
 
@@ -4659,31 +4659,33 @@ about the rest, because a rail that opens with a colour picker reads as a
 settings strip rather than as the shortcut it is.
 
 On a phone it used to arrive as a column of bare discs: a head and shoulders,
-a die, a speech bubble, a play triangle, a coloured dot and a crosshair over a
-map, saying nothing. A phone has no hover, so the `title` that carries the
-meaning on a desktop is never read out loud, and people did not press them.
+a die, a speech bubble, a play triangle, a coloured dot, a crosshair and a
+question mark over a map, saying nothing. A phone has no hover, so the `title`
+that carries the meaning on a desktop is never read out loud, and people did
+not press them.
 
 So they say what they are on arrival and then stop saying it. Each opens
 wearing its label — your username or "Account", Surprise me, Ask, the station,
-the style you are about to switch to, "Show my location" — 300ms apart in the
-order they are stacked, so the eye tracks down the rail rather than being
-asked to read the whole column at once. Each holds for `HINT_MS` (4.2 seconds)
-and collapses back to its icon, the same disc as before.
+the style you are about to switch to, "Show my location", "How this works" —
+300ms apart in the order they are stacked, so the eye tracks down the rail
+rather than being asked to read the whole column at once. Each holds for
+`HINT_MS` (4.2 seconds) and collapses back to its icon, the same disc as
+before.
 
 The account button is the one the rail has to wait for. It leads the cascade
 and it is the one button not in the markup: it is drawn by an answer from
 `/api/account`. So the introduction holds for that answer, up to
 `RAIL_WAIT_MS` (1.4 seconds), and then runs with the account at its head. A
-pill that opens after the five below it and closes before they do reads as a
-sixth thing rather than as the first, and on a fast answer it was up and gone
-again before the eye had got down the rail.
+pill that opens after the six below it and closes before they do reads as a
+seventh thing rather than as the first, and on a fast answer it was up and
+gone again before the eye had got down the rail.
 
 The wait is capped because it has to be: a slow endpoint, an unbound database
-or no Function at all must not cost the other five their labels. So an answer
+or no Function at all must not cost the other six their labels. So an answer
 slower than the hold gets the old behaviour — `paintAccountButton()` opens the
 label the moment the button appears, rather than leaving a silent disc above a
 column of pills that have all had their say — and an answer that never comes
-leaves a rail of five that introduced itself on time.
+leaves a rail of six that introduced itself on time.
 
 Two of them say something again when pressed: starting the radio opens the
 station's name, so a triangle in a circle is not the only thing saying what is
@@ -4691,7 +4693,9 @@ playing, and pressing the swatch opens the name of the style it has just
 become the way back to. Surprise me and Ask do the opposite and shut their own
 label early — the question each of them answers is the question its label was
 there to ask, and each shuts its own: pressing one of the two is not an answer
-to the other.
+to the other. How this works shuts all of them, the arrival sentence included,
+because the walk it starts opens the labels it wants itself and two
+introductions talking at once is neither.
 
 **It repeats in the new language when you switch languages.** Every other
 label on the page changes in front of you; the ones on the rail are the only
@@ -4719,15 +4723,15 @@ label's own max-content. A fixed ceiling in `ch` cannot do both halves of that
 job: one wide enough for Ukrainian's `Показати моє місцезнаходження` makes
 `Red` snap open in a tenth of the time, and one tuned to `Red` puts an
 ellipsis through the label explaining the button. This way every language gets
-the same slide and none of them gets cut — the widest of the fifty labels
+the same slide and none of them gets cut — the widest of the sixty labels
 reaches 276px on a 320px screen.
 
-One rule covers all six, because all six are the same button: `.rail-btn`,
+One rule covers all seven, because all seven are the same button: `.rail-btn`,
 with an icon at the left and the label beside it — a coloured dot standing in
 for the icon on the colour switch, which is what lets the switch wear the pill
 instead of sitting in a case of its own.
 
-**Above 860px none of the timing applies, and all six keep their words.**
+**Above 860px none of the timing applies, and all seven keep their words.**
 They did not used to. Three of the pills had a label there and the two under
 them did not: a coloured dot in a round case of its own and a crosshair in a
 second one, both mute, under three buttons that say what they are. The
@@ -4799,6 +4803,11 @@ the steps are functions and not co-ordinates, and why the pieces are put
 back on every resize. Nothing under the walk can be pressed while it is up:
 the layer swallows the taps, so the thing being pointed at is not opened
 mid-sentence.
+
+On a phone it introduces itself with the rest of the rail, last in the
+cascade, and a question mark is the icon on the rail that says the least on
+its own: a die at least looks like chance and a crosshair like a location,
+where a question mark over a map could be help, an about page or a search.
 
 The button is last because it is about the rest: a rail that opened with the
 help button would be a rail saying it needs one. It is not opened by itself
