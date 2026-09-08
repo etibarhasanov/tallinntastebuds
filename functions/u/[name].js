@@ -49,7 +49,7 @@ function describe(profile) {
   if (!n) return profile.name + ' has not published a list yet.';
   const lists = n === 1 ? '1 list' : n + ' lists';
   const kept = profile.kept === 1 ? 'kept once' : 'kept ' + profile.kept + ' times';
-  return lists + ' of places in Tallinn, put together by ' + profile.name +
+  return lists + ' of places in Tallinn, created by ' + profile.name +
     (profile.kept ? ', ' + kept + '.' : '.');
 }
 
