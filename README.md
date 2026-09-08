@@ -94,8 +94,8 @@ It needs Node 18 or newer and has no dependencies.
 node tools/stamp.mjs
 ```
 
-It rewrites the `?v=` hash on every script and stylesheet reference in the four
-HTML pages. The validator fails on a stale one, so CI will catch it if you
+It rewrites the `?v=` hash on every script and stylesheet reference in the six
+HTML pages that load something out of `assets/`. The validator fails on a stale one, so CI will catch it if you
 forget — but it is one command and it saves a round trip. See
 [Cache stamps](#cache-stamps).
 
@@ -562,8 +562,8 @@ map, and in the list, and at their own `?spot=` link — that is the whole point
 — but nothing ever *suggests* them.
 
 Five places in `data/restaurants.json` are marked closed today — Bueno Gourmet
-Kadriorg, Cafe Cape Town, Laboratooriumi 23, Lendav Maaler and Maison
-François. All five have a reel, so all five get `closedReelNote`.
+Kadriorg, Cafe Cape Town, Lendav Maaler, Lokaal Tilk and Maison François. All
+five have a reel, so all five get `closedReelNote`.
 
 Do not write the closure into the `blurb` as well. The panel says it in every
 language already, and Laboratooriumi 23 used to end with "Sadly closed now,
@@ -574,10 +574,10 @@ but the video stays up" directly under a note that said the same thing.
 ## Languages
 
 Azerbaijani, Armenian, English, Estonian, Finnish, Portuguese, Russian,
-Spanish, Turkish and Ukrainian — the switcher shows them in that order,
-Azerbaijani first and the rest alphabetical. The order of the blocks in
-`ui.json` is the order of the buttons; the language a visitor *lands* in is a
-separate thing, still English by default, and set by `DEFAULT_LANG` in
+Spanish, Turkish and Ukrainian — the switcher shows them sorted by their
+two-letter code, so `az` first and `uk` last, whatever order the blocks in
+`ui.json` are written in. The language a visitor *lands* in is a separate
+thing, still English by default, and set by `DEFAULT_LANG` in
 `assets/app.js`.
 
 The switch has two shapes, from the same markup. Wide enough, it is a row of
