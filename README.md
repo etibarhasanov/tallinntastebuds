@@ -1434,22 +1434,38 @@ records.
 ### Loading it
 
 ```
-node tools/googlevenues.mjs
+node tools/googlevenues.mjs --parts
 ```
 
-Then commit, and `.github/workflows/venues.yml` does the rest: when a push to
-the live branch changes `db/google-venues.sql`, it runs the file against the
-live database. The path filter is the whole of the gate — the file is safe to
-run twice but it writes every row, and running it on every commit would spend
-the day's D1 writes on rows that had not moved. Started by hand from the
-Actions tab, it loads whichever database you pick, which is how the preview
-database gets it.
+That rewrites `db/google-venues.sql` and cuts a copy of it into pieces of
+under eighty kilobytes, which is what one paste into the D1 console will take.
+Commit the file; the pieces are what you load, and they live outside the
+repository because they are the file again.
 
-That workflow needs a token that can write to D1 and nothing else, and its
-header says how to make one. It is separate from the site's own deploys on
-purpose: the site is published by Cloudflare's Git integration, and
-`.github/workflows/cloudflare.yml` is the other way of doing that, which this
-repository does not use. By hand, from anywhere with wrangler signed in:
+Then, in the Cloudflare dashboard — Storage & Databases, D1 SQL Database, the
+database, its **Console** tab — paste each piece in order and press Execute.
+Preview first, then production; both, always, because a preview deployment
+that cannot see these places would show an empty picker and look broken for
+no reason. Afterwards, in the same console:
+
+```sql
+select count(*), sum(map_id is not null), sum(missing_since is not null) from google_venues;
+```
+
+The first number is the export's row count, the second how many are also on
+the map, and the third should be zero unless a place has genuinely left the
+export. A piece that failed halfway can simply be pasted again: every row is
+an upsert on its own key.
+
+The file carries no comments, and that is deliberate. The console folds a paste
+onto one line, and a `--` comment runs to the end of its line, so the first
+heading in the file once swallowed every statement after it. What the
+statements are and why is explained in `tools/googlevenues.mjs`, where a
+reader is.
+
+Nothing needs installing and no token exists anywhere for this, which is the
+whole reason it is done by hand. From a terminal with wrangler signed in, the
+same load is:
 
 ```
 wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
@@ -1457,8 +1473,6 @@ wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sq
 ```
 
 `db/schema.sql` has to have been applied first — it is what creates the table.
-Both databases, always: a preview deployment that cannot see these places would
-show an empty picker and look broken for no reason.
 
 ### The table is a mirror, and that is the whole rule
 
