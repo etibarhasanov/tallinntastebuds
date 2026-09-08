@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Account | Tallinn Tastebuds</title>
+<meta name="description" content="The places you saved and the lists you wrote, in one place.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+
+<!-- No PAGE-HEAD markers and no social card. This page is one person's own
+     things behind a session cookie: there is nothing here to unfurl in a
+     message, nothing to index, and a link somebody sent would open as their
+     own account or as the invitation to make one. _headers carries the
+     noindex to match, and it is not in sitemap.xml. -->
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The tokens, the card, the eyebrow and the four controls come from the
+     map's stylesheet; the brand header, the stack and the rows a column of
+     things is built from come from the lists page's. This page adds neither —
+     it is the same furniture arranged for a different room, which is the
+     whole reason it needed no stylesheet of its own. -->
+<link rel="stylesheet" href="/assets/styles.css?v=a26d837b">
+<link rel="stylesheet" href="/assets/lists.css?v=8c3b9978">
+</head>
+<body class="lists-body">
+
+<a class="skip-link" href="#main" data-i18n="accountSkip">Skip to your account</a>
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" data-i18n-aria-label="listsBack" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
+  </a>
+  <!-- No account chip up here, unlike the lists page: this is the page that
+       chip leads to, and a link to itself in its own header is furniture that
+       does nothing. -->
+  <!-- The map's radio, wearing the map's pill. It is the same station and the
+       same on/off — assets/radio.js keeps both across the walk from the map to
+       here — so it is the same button too, rather than a second design for one
+       control. Hidden until data/radio.json is read, and for good if there is
+       no station in it. -->
+  <button type="button" class="rail-btn radio" id="btn-radio" aria-pressed="false" hidden
+          data-i18n-title="radioPlay" data-i18n-aria-label="radioPlay"
+          aria-label="Play the radio" title="Play the radio">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path class="ico-play" d="M8 5.5l11 6.5-11 6.5z"/>
+      <path class="ico-stop" d="M8 6.5h3v11H8zM13 6.5h3v11h-3z"/>
+    </svg>
+    <span class="radio-name rail-label" id="radio-name"></span>
+  </button>
+</header>
+
+<!-- Signed in, signed out, and accounts switched off: all three are built by
+     assets/account.js into this one element, decided once when every answer is
+     in. Nothing is in the markup that depends on which of them it is, so
+     nothing can be left standing from a state the page is no longer in. -->
+<main class="lists-main" id="main" tabindex="-1"></main>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Account</p>
+    <h2>Your account</h2>
+    <p>This page is built from what the site knows about your session, which
+      takes JavaScript. The map itself works rather better than this page does
+      without it — <a href="/">it is over here</a>.</p>
+  </div>
+</noscript>
+
+<!-- The radio, shared with the map and the lists page: the station carries
+     across the walk between them. Before account.js and deferred like it, so
+     document order puts the global in place first. -->
+<script src="/assets/radio.js?v=dac5f009" defer></script>
+<script src="/assets/account.js?v=6f93d560" defer></script>
+</body>
+</html>

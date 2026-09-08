@@ -48,6 +48,7 @@ completely with the database switched off.
 - [Restaurant discounts](#restaurant-discounts)
 - [Saves](#saves)
 - [Accounts](#accounts)
+- [The account page](#the-account-page)
 - [Google venues](#google-venues)
 - [The directory](#the-directory)
 - [Lists](#lists)
@@ -862,12 +863,16 @@ which ones other people have kept without opening any of them. Rows at zero
 show nothing — a "0" against a restaurant reads as a verdict rather than as
 nobody having got there yet.
 
-Press one bookmark and **Places I saved** appears in the account sheet, at the
-top of it, above your lists. Press that and the map narrows to the places you
-have saved; the panel names the group **Places I saved** and shows them newest
-first — the order you pressed them in is information, and the alphabet throws
-it away. Pressing **All** on the filter row hands the whole map back, the way
-it does out of somebody's list.
+Press one bookmark and the places are yours to find again in two places, and
+both are behind your name: **/account.html** names them, one row each with its
+street, and the map narrows to them. Signed out the row is on the map's sheet;
+signed in the page is what the button opens, and the page's **See them on the
+map** is the same narrowing under a different roof — see **The account page**.
+
+Narrowed, the panel names the group **Places I saved** and shows them newest
+first: the order you pressed them in is information, and the alphabet throws it
+away. Pressing **All** on the filter row hands the whole map back, the way it
+does out of somebody's list.
 
 It used to be a chip on the filter row, second in it, between All and
 Discount, and it was in the wrong place. That row answers one question — what
@@ -884,9 +889,9 @@ the same thing.
 
 Signed out, the list is per browser: it is kept on **this device**, so the
 phone's list and the laptop's list are different lists and clearing the browser
-clears it. The account sheet shows the row all the same — signed out is where
-most of the saves on this site are, and it sits directly under the sentence
-offering to keep them somewhere better. What clearing the browser does *not*
+clears it. The sheet shows the row all the same — signed out is where most of
+the saves on this site are, and it sits directly under the sentence offering to
+keep them somewhere better. What clearing the browser does *not*
 lose is the save itself — that is a row in the database, and it keeps counting
 whatever happens here. Losing the local list costs you the view of your own
 saves, not the marks.
@@ -918,6 +923,12 @@ Function and no database, and since the marks moved off the filter row this
 button is the only way back to them, so it is drawn for them regardless. What
 is behind it in that state is the one row and no form: a sign-in that could
 only fail is worse than no sign-in at all.
+
+**What it does depends on whether it knows you.** Signed out it opens the
+sheet, which is the sign-in form and is a step you take with the map still
+behind it. Signed in it leaves for `/account.html`, because what used to be
+behind it — your saved places, your lists — are things to read rather than a
+step to take. See **The account page**.
 
 Nobody is expected to find it on their own, though. A save made while signed
 out brings up a card offering an account, once per visit and never again for a
@@ -1330,8 +1341,10 @@ had just asked for. The git history has the whole of it.
 
 ### Changing the password
 
-On the account sheet, under the name: **Change password**, which asks for the
-one in use and the new one on the same card.
+On **/account.html**, under the name: **Change password**, which opens the
+map's sheet on that step and comes back here afterwards. The form itself is on
+the map because there is one password form on this site — see **The account
+page**. It asks for the one in use and the new one on the same card.
 
 The old password is asked for even though the browser is already signed in.
 A session is a browser, not a person — a sheet left open on a shared laptop
@@ -1396,6 +1409,91 @@ catches up with the setting, the same way a sign-in does.
 Nothing to do. The account tables are already applied, and accounts work as
 soon as `DB` is bound and `SAVE_SALT` is set — both of which the save feature
 needs anyway. There is no third variable and no second service.
+
+---
+
+## The account page
+
+`/account.html`. Your name, the places you saved, the lists you wrote, and the
+two things you can do to an account: change its password, or leave.
+
+It was a menu in the sheet the map opens, and the menu is what went wrong with
+it. A sheet over the map is for something you do and dismiss — sign in, change
+a password, read one sentence — and it is drawn small on purpose, because the
+map is behind it and the map is the site. What had collected in there was not
+that: saved places and lists are things to look at and come back to, and four
+rows that each said "somewhere else" was a table of contents standing in for
+all of them.
+
+So the doors became the things. The page names the places rather than offering
+to filter the map by them, and names the lists rather than linking to the page
+that names them. Three cards, and each is what it is called:
+
+```
+etibar                     3 places saved · 2 lists, and the way out
+Places I saved             one row a place, newest first, and the map
+Your lists                 one row a list, and the three ways further in
+```
+
+### What is left on the map
+
+The sheet, and only what a sheet is good at: **signing in**, **creating an
+account**, and the **password** step. All three are a thing you do and dismiss
+with the map still behind you, which is the test. The button on the rail is
+what tells the two apart — signed out it opens the sheet, signed in it leaves
+for this page — and `?account=me`, the old link to the menu, redirects here.
+
+There is still exactly one password form on this site and it is still the map's.
+This page links into it with `?then=/account.html`, the same road `/lists.html`
+has always taken to the sign-in form, and for the same reason: a second copy of
+a password form is a copy that quietly stops matching the API. The step comes
+back here when it is done, because here is where it was pressed.
+
+### Signed out is a real state on it
+
+A save needs no account, so the page has something of its own to show before
+anybody has signed up, and shows it: the places kept on **this browser**, out
+of `localStorage`, with the offer of an account above them rather than a wall
+in front of them. The one filled button on the page is that offer, and it is
+the only place the accent is spent — see **The design rules**.
+
+Accounts switched off on a deployment is the third state, and it is not an
+empty page either: it says so in one line and draws the saved places anyway,
+because those never needed the database.
+
+### It has no stylesheet of its own
+
+`styles.css` for the tokens, the card, the eyebrow and the four controls;
+`lists.css` for the brand header, the stack and the row a column of things is
+built from. The rows are `.lists-all-link` — the row `/lists/kept` draws — and
+not `.lists-index-link`, which leaves 54px along its bottom edge for the map
+pill laid over it. These rows have one destination, so that padding would be a
+hole in a card with nothing standing in it. Its own comment in `lists.css` says
+as much, which is how this page came to use it.
+
+That is the whole reason a third stylesheet was not written. A page that needed
+new furniture would be a page that had drifted from the two that were already
+here.
+
+### What it costs to open
+
+Four requests, all at once, and one paint when the last of them lands:
+`data/ui.json` and `data/places.json` off the static side, `/api/account` and
+`/api/lists` off the Functions. The lists answer is asked in the same breath as
+the one that says whether there is anybody to ask about — waiting would be a
+second round trip, and a page that drew twice would draw a card and then move
+it.
+
+Nothing is cached: both API answers are `no-store` and both are about a
+session. `data/places.json` is 13KB and revalidates like everything else.
+
+### The one thing it costs a visitor
+
+Places I saved used to be one press from the map. It is now the account page
+and then **See them on the map**, which is two — `?saved=1`, documented with
+the map's other doors in **Lists**. That is the honest price of
+the swap, and the map itself is unchanged: the filter, the panel, the way
+**All** hands the whole map back are all what they were.
 
 ---
 
@@ -1782,8 +1880,8 @@ send to a friend.
 
 Nothing about it touches the map. The pins, the write-ups, the filters and the
 "just added" section are exactly what they were; lists live on their own pages,
-and the map's door to them is one row in the account sheet, filed under
-whoever you are.
+and the map's door to them is your own account page, filed under whoever you
+are.
 
 ### The five addresses
 
@@ -1817,34 +1915,26 @@ private.
 
 ### One door to the lists
 
-The map's account sheet has one row for all of this, **Your lists**, and it
-opens `/lists.html`.
+Your lists are named on `/account.html`, one row each, and that card's foot
+carries the three ways further in: **Make a list** to `/lists.html`, **Your
+public profile**, and **All lists people kept**.
 
-It had three for a while, running from yours outwards: **Your lists**, **Your
-public profile**, **Lists people kept**. Each was written when the page behind
-it was, each said something true, and together they were the problem — three
-of the sheet's six rows saying "lists" three ways, above the password and the
-way out. A row in that menu is meant to be a place to go, and a visitor who
-has never made a list cannot tell those three apart until they have opened
-one of them; the sheet had stopped being a short list of your own things and
-become a table of contents for a feature.
+The map's sheet had three rows for this once — **Your lists**, **Your public
+profile**, **Lists people kept** — and then one, and now none, and each step
+was the same argument getting shorter. A row in a menu is a promise about a
+page, and three promises about the same page is a table of contents; one row
+was honest but still a door standing where the thing itself could stand. The
+account page names the lists, so there is nothing left to promise.
 
-All three land on the same file, and the two that went are a press further on
-rather than gone: `/lists.html` has drawn your profile and everybody's lists
-under the box that makes a new list since the day profiles were written. That
-is the trade, stated plainly — one press, in exchange for a sheet that reads
-at a glance: what you saved, what you wrote, your password, the way out.
-
-The one thing it does not change is the signed-out cost of moving everybody's
-lists off the map's corner, because that cost was never about which row: a
-stranger sees the sign-in form and no menu at all, so `/lists/kept` is reached
-from a shared list, from `/lists.html`, from a search result, or from a byline
-— which is what [Lists people kept](#lists-people-kept) is about at more
-length.
+The signed-out cost of having moved everybody's lists off the map's corner is
+unchanged, because it was never about which row: a stranger sees the sign-in
+form and no menu at all, so `/lists/kept` is reached from a shared list, from
+`/lists.html`, from a search result, or from a byline — which is what [Lists
+people kept](#lists-people-kept) is about at more length.
 
 ### Making one
 
-Sign in, open the account sheet, press **Your lists**. Name it; you land in a
+Sign in, open your account, press **Make a list**. Name it; you land in a
 list with three empty places in it, numbered, each of them a row you press to
 open the search. Three is where a list starts: two places is a pair of
 opinions rather than a recommendation. Once the three are filled, **Add
@@ -2050,10 +2140,10 @@ exist, because ordering by a count means knowing the count for every candidate
 
 **How anybody gets there.** Four ways, and the first two matter most:
 
-- **The map**, from the account sheet, under **Your lists** — and then from
-  `/lists.html`, which is the next bullet but one. The sheet had a row of its
-  own for this page for a while, and one for a profile beside it; all three
-  landed on the same file, so they are one row now. See [One door to the
+- **The map**, from the button that wears your name: it opens `/account.html`,
+  and the foot of the lists card there links straight here. The sheet had a row
+  of its own for this page for a while, and one for a profile beside it; the
+  page has the lists themselves and the links under them. See [One door to the
   lists](#one-door-to-the-lists).
 
   It was a **Lists** control beside **Places** in the top-right corner first,
@@ -2236,10 +2326,22 @@ where to come back to:
 /?account=up&then=/lists.html
 ```
 
-`?account=` opens the account sheet on a view — `in`, `up`, `me` or `recover`
-— and `?then=` is where to go once somebody is signed in. Both are read during
-boot and taken straight back off the address bar. `?then=` only ever accepts a
-path on this site; anything else and the map would be an open redirector.
+`?account=` opens the account sheet on a view — `in`, `up` or `password` — and
+`?then=` is where to go once somebody is signed in. Both are read during boot
+and taken straight back off the address bar. `?then=` only ever accepts a path
+on this site; anything else and the map would be an open redirector.
+
+`?account=me` is still accepted and no longer opens anything: it is the old
+name for what is now `/account.html`, so it redirects there. Asking to sign in
+while already signed in does the same, because the honest answer to that is
+somebody's account and their account is a page.
+
+`?saved=1` is the door beside it: the map, narrowed to your own marks, which
+is what **See them on the map** on the account page asks for. It is a door and
+not a chip — `?type=saved` is deliberately never written to the address bar,
+because a link narrowed to one person's saves is an empty map for everybody it
+is sent to — so this one is read once, applied only where there is something
+to narrow to, and taken off.
 
 ### The roll a list is built from
 
@@ -2583,8 +2685,9 @@ the crawler that builds the preview card has to fetch the page to read its
 `og:` tags, and a `Disallow` line would stop it fetching at all — every shared
 list would arrive as a bare blue link.
 
-`/lists.html` stays `noindex`. It is your own lists, and signed out there is
-nothing on it.
+`/lists.html` stays `noindex`, and `/account.html` is `noindex, nofollow` and
+disallowed in `robots.txt` besides. Both are one session's own and neither has
+anything on it for somebody who is not signed in.
 
 If the trade stops being the right one it is one line in
 `functions/list/[id].js`, where the header is chosen per list.
@@ -2699,10 +2802,10 @@ made.
 
 - **The byline under a shared list**, which is the whole point — the phrase is
   the link, on the list's own page and in the panel the map draws for a list.
+- **Your own account page**, under your lists, beside **Make a list** and the
+  way through to everybody's.
 - **Your own lists page**, under the box that makes a new one, beside the way
-  through to everybody's. The account sheet on the map had a row of its own
-  for this, as *Your public profile*, and it is one press further on now —
-  [One door to the lists](#one-door-to-the-lists) says why.
+  through to everybody's.
 
 ### Indexed, like a public list
 
@@ -3526,7 +3629,10 @@ functions/u/[name].js      /u/<name> — the page a byline leads to
 lists.html                 your lists, the ones you kept, the one a stranger
                            reads, everybody's, and whoever wrote one
 assets/lists.js            all five of those; no map, no Leaflet
-assets/lists.css           only what a list page has and the map does not
+assets/lists.css           what a list page has and the map does not, and the
+                           furniture the account page is built from too
+account.html               your saved places and your lists, behind your name
+assets/account.js          all three of its states; no stylesheet of its own
 google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not

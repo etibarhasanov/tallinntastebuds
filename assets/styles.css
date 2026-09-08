@@ -301,11 +301,6 @@ a:hover { color: var(--accent-lit); }
 .menu-row:hover .menu-go { color: var(--accent); }
 .menu-row:hover .menu-go { transform: translateX(2px); }
 
-/* The way out of the account is a row like the others, because it belongs
-   with them — but it is nobody's next step, so it is drawn at the weight of
-   the line under a name rather than at the weight of a name. */
-.menu-row.is-danger .menu-name { color: var(--muted); }
-.menu-row.is-danger:hover .menu-name { color: var(--accent); }
 
 @media (prefers-reduced-motion: reduce) {
   .menu-go { transition: none; }

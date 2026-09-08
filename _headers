@@ -32,6 +32,15 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, follow
 
+# The account page. Same revalidating rule and the same noindex as the lists
+# page, and for stronger reasons: everything on it is one session's own, a
+# search result for it would be the sign-in offer for everybody who was not
+# the person who signed in, and there is nothing on it a crawler could reach
+# in the first place. account.html carries the meta robots tag to match.
+/account.html
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
 # Google's directory of the city. It is stored as google.html and Pages serves
 # it at /google as well, and these rules match the request path rather than the
 # file, so both spellings are spelled out — the same reason "/" and
