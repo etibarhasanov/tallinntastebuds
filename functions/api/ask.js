@@ -41,11 +41,16 @@
  *   map   my seventy-five and nothing else. The narrower answer, and what a
  *         question that did not say is read as. Being on the map is the
  *         verdict, and an answer off this roll is a recommendation.
- *   all   the city. My places first, and behind them the Google rows I have
- *         not been to — every one of which goes out wearing Google's name,
- *         Google's score and none of my words, drawn on the same "According
- *         to Google" card a list draws for a place off that export. It is
- *         not a recommendation and the card says so.
+ *   all   the city: my places and the Google rows I have not been to, on
+ *         equal terms. A visitor who pressed All Tallinn asked for the city,
+ *         and for a while what they got was still mostly my map — the prompt
+ *         told the model to prefer mine when they answered as well, and a
+ *         question that scored no Google row was sent none at all, so there
+ *         was nothing else it could name. Both are gone. Every Google row
+ *         goes out wearing Google's name, Google's score and none of my
+ *         words, drawn on the same "According to Google" card a list draws
+ *         for a place off that export. It is not a recommendation and the
+ *         card says so.
  *
  * Google's roll is read on the `map` scope for exactly one thing, opening
  * hours, joined on `google_venues.map_id` — the column that says which Google
@@ -439,12 +444,21 @@ function readHistory(raw) {
  * ahead of everything: "is the second one open late" scores nothing in the
  * export, and the second one has to be in the lists for the model to say.
  *
+ * On the city, rows that score nothing come too, best-rated first, up to
+ * the cap. Without that a vague question — "somewhere nice", "not sure" —
+ * scored no Google row and sent none, so a visitor who pressed All Tallinn
+ * and asked for a mood could only ever be answered off my map: the model
+ * had no city to choose from. My own places have had that floor since they
+ * were narrowed; this is the same floor for the other roll. On the map the
+ * Google rows are a last resort and are not padded.
+ *
  * What comes back is the card with the haystack on it, so the browser can
  * score it exactly as it scores a place of its own, and — separately, so the
  * browser's one `open` map holds every place on screen — the closing time of
  * each that is open now.
  */
-function candidates(roll, wish, now, named, cap) {
+function candidates(roll, wish, now, named, wholeCity) {
+  const cap = wholeCity ? MAX_CANDIDATES : MAX_CANDIDATES_MAP;
   const scored = [];
   const open = {};
 
@@ -460,7 +474,7 @@ function candidates(roll, wish, now, named, cap) {
     if (wish.open && shuts) score += 3;
     for (const word of wish.rest) if ((' ' + venue.hay).includes(' ' + word)) score += 1;
 
-    if (score > 0) scored.push({ venue, score, shuts });
+    if (score > 0 || wholeCity) scored.push({ venue, score, shuts });
   }
 
   scored.sort((a, b) =>
@@ -619,9 +633,11 @@ function briefFor(places, google, wholeCity, lang, open) {
     lines.push(
       '',
       wholeCity
-        ? 'Places from Google that I have not been to. Prefer a place above' +
-          ' when it answers the question as well; use these when one of them' +
-          ' answers it better:'
+        ? 'Places from Google across the whole of Tallinn, which I have not' +
+          ' been to. The visitor asked for all of Tallinn, so choose from both' +
+          ' lists on equal terms — by which place best answers the question,' +
+          ' never by which list it is on. About a Google place say only what' +
+          ' its line says:'
         : 'Places from Google that I have not been to. Use these ONLY if' +
           ' nothing in the first list answers the question at all:',
       'id | name | types and cuisine | price out of 4 | Google rating | open now',
@@ -756,10 +772,7 @@ export async function onRequestPost(context) {
   const history = readHistory(body.history);
   const named = new Set(history.flatMap((turn) => turn.picks.map((pick) => pick.id)));
   const wish = readWish(body.wish);
-  const cut = candidates(
-    await googleVenues(env), wish, now, named,
-    wholeCity ? MAX_CANDIDATES : MAX_CANDIDATES_MAP
-  );
+  const cut = candidates(await googleVenues(env), wish, now, named, wholeCity);
   const google = cut.venues;
   Object.assign(open, cut.open);
 

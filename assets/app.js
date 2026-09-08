@@ -3668,7 +3668,11 @@
     if (model && ((model.picks && model.picks.length) || model.say)) {
       said = { say: model.say || '', picks: model.picks || [], source: 'ai' };
     } else if (wish) {
-      said = askLocally(wish, open, []);
+      /* On the city, mine and Google's are ranked together — a press of All
+         Tallinn asked for the city, and mine still win a tie because the
+         tie-break is saves and Google's rows have none. On the map, mine
+         first and the city only when mine come to nothing: the fallback. */
+      said = askLocally(wish, open, turn.scope === 'all' ? city : []);
       if (!said.picks.length && city.length) said = askLocally(wish, open, city);
     }
     if (!said) said = { say: '', picks: [], source: 'rules' };
