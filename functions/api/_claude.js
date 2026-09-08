@@ -12,10 +12,11 @@
  * once the catalogue is narrowed — see shortlist() in ask.js — and past that
  * every request is a 429, /api/ask answers `source: "none"`, and the
  * browser's keyword reader answers instead, which matches substrings and
- * cannot hold a thread. "How does it work" came back with three restaurants
- * because of exactly that, and no amount of work on the reader fixes it,
- * because the reader is a substring matcher and the ask is for a
- * conversation.
+ * cannot hold a thread. That reader is what "how does it work" got three
+ * restaurants from — for a year, as it turned out, because the Function was
+ * reading the model's reply at the wrong key and discarding it; see the read
+ * of choices[] in ask.js — and no amount of work on the reader makes it a
+ * conversation, because a substring matcher is not one.
  *
  * So when ANTHROPIC_API_KEY is set in the Pages environment this answers
  * first and Workers AI becomes the fallback. Without the key nothing here
@@ -214,8 +215,10 @@ function messagesFor(question, history, google, wholeCity, open) {
  * spending cap reached, a network that is gone. The route above turns that
  * into Workers AI and then into the browser's own reader, so the map never
  * sits there apologising. `note` on the way out says which of them it was,
- * as a short code, because the whole reason this feature was silent for a
- * day is that every failure looked identical from the outside.
+ * as a short code, because this feature answered with the keyword reader for
+ * its whole first year and nobody could tell — every path out looked
+ * identical from outside — and a code here is what makes it one request to
+ * find out rather than a year.
  */
 export async function askClaude(env, { question, history, catalogue, google, wholeCity, lang, open, maxPicks }) {
   const key = env.ANTHROPIC_API_KEY;

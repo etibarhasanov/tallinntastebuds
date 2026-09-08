@@ -845,7 +845,25 @@ export async function onRequestPost(context) {
       max_tokens: 300
     });
 
-    said = keep(unwrap(out && (out.response !== undefined ? out.response : out)), shown);
+    /* Two shapes come back from env.AI.run(), and this model uses the second.
+       The older models on Workers AI answer as { response: "..." }; the ones
+       with an OpenAI-style parameter list — max_completion_tokens,
+       service_tier, this one — answer as a chat completion, with the words
+       at choices[0].message.content and any thinking beside them in a field
+       of their own. Reading only `response` here meant `undefined`, then the
+       whole object handed to unwrap(), which stringified it to
+       "[object Object]", found no brace and returned null: every answer this
+       model ever gave was thrown away, quietly, and the browser's keyword
+       reader answered in its place for the whole of its first year. Nobody
+       could tell, because the reader is right about most questions people
+       type. Both shapes are read now, so a future model swap cannot do this
+       again. */
+    const text = out && typeof out.response === 'string'
+      ? out.response
+      : out && out.choices && out.choices[0] && out.choices[0].message
+        ? out.choices[0].message.content
+        : null;
+    said = keep(unwrap(text), shown);
   } catch (e) {
     /* The daily Neurons are spent, the model is overloaded, or it has been
        moved behind a paid plan. Two of those are worth nothing to a reader

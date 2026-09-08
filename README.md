@@ -718,13 +718,24 @@ this map is one I have been to and would send somebody to, so any twenty of
 them is a legitimate pool for a question about a mood; what the scoring has
 to guarantee is only that when a question *does* name something — khinkali,
 ramen, a date — the places that answer it are in the slice, and first. There
-is a test for exactly that. For a long time that ceiling was invisible: the
-Function collapsed every failure into the same empty answer, so a chat that
-had quietly stopped thinking looked exactly like a chat that had nothing to
-say, and *how does it work* came back with three restaurants. `/api/ask` now
-reports which half answered in **`note`** — `claude`, `workers-ai`,
-`no-key`, `http-429` — so the difference is one request to find rather than
-a day.
+is a test for exactly that.
+
+**For its whole first year, nobody ever saw this model answer.** Not because
+of the allowance: because of the shape of the reply. The older models on
+Workers AI answer `{ response: "..." }`, and this one, like every model with
+an OpenAI-style parameter list, answers as a chat completion with the words
+at `choices[0].message.content`. The Function read `response`, got
+`undefined`, and handed the whole object to `unwrap()`, which stringified it
+to `[object Object]`, found no brace and returned null — so every answer the
+model gave was thrown away, quietly, and the keyword reader answered in its
+place. Nobody could tell, because the reader is right about most questions
+people type; it took *how does it work* coming back with three restaurants,
+and *All Tallinn* giving the same answer as the map, to notice. Both shapes
+are read now, there is a test that feeds the route the real chat-completion
+shape and checks the model's own words come out, and `/api/ask` reports
+which half answered in **`note`** — `claude`, `workers-ai`, `no-key`,
+`http-429` — so the next time this goes quiet it is one request to find
+rather than a year.
 
 Which leaves the interesting half: what happens when neither model is there.
 That happens quite often — the allowance runs out, a model gets moved behind
