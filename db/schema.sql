@@ -98,9 +98,31 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- code so it can be raised later and old rows re-derived on their next
 -- successful sign-in, without a migration.
 --
--- email is optional and buys exactly one thing: the ability to reset a
--- forgotten password. Nothing else ever sends to it. Without one there is no
--- reset at all — nothing proves an account is yours but knowing its password.
+-- There is no address on an account and no reset: nothing proves an account
+-- is yours but knowing its password, and a forgotten one is gone for good.
+--
+-- THE COLUMNS THIS TABLE STILL HAS ON A DEPLOYED DATABASE
+--
+-- It had `email` and `email_verified`, and there was an `email_codes` table
+-- beside it, for a password reset that was never switched on — sending needs
+-- the Workers Paid plan. Nothing reads any of them now.
+--
+-- They are gone from this file and they are still in both databases, because
+-- this file is applied with IF NOT EXISTS and so cannot take a column away.
+-- That divergence is deliberate: a fresh database gets the table as it is
+-- described here, and the deployed ones carry three dead things that cost
+-- nothing to leave. To clear them, having first checked there is nothing in
+-- them to lose:
+--
+--   SELECT COUNT(*) FROM users WHERE email IS NOT NULL;   -- expect 0
+--   SELECT COUNT(*) FROM email_codes;                     -- expect 0
+--
+--   DROP INDEX IF EXISTS idx_users_email;
+--   ALTER TABLE users DROP COLUMN email;
+--   ALTER TABLE users DROP COLUMN email_verified;
+--   DROP TABLE IF EXISTS email_codes;
+--
+-- The index has to go first: SQLite refuses to drop an indexed column.
 CREATE TABLE IF NOT EXISTS users (
   id             TEXT PRIMARY KEY,
   username       TEXT NOT NULL,
@@ -108,13 +130,9 @@ CREATE TABLE IF NOT EXISTS users (
   pw_salt        TEXT NOT NULL,
   pw_iter        INTEGER NOT NULL,
   created_at     INTEGER NOT NULL,
-  last_seen_at   INTEGER NOT NULL,
-  email          TEXT,
-  email_verified INTEGER NOT NULL DEFAULT 0
+  last_seen_at   INTEGER NOT NULL
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username COLLATE NOCASE);
--- Partial, so the many accounts with no address at all do not collide on NULL.
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users (email COLLATE NOCASE) WHERE email IS NOT NULL;
 
 -- Only the SHA-256 of a session token is kept. A leaked copy of this table is
 -- a list of hashes rather than a drawer full of working keys.
@@ -125,19 +143,6 @@ CREATE TABLE IF NOT EXISTS sessions (
   expires_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions (user_id);
-
--- Six-digit codes, again stored only as hashes, single use and short lived.
--- purpose is 'verify' (confirming an address) or 'recover' (resetting a
--- password). Rows are swept whenever a new code is issued.
-CREATE TABLE IF NOT EXISTS email_codes (
-  code_hash  TEXT PRIMARY KEY,
-  user_id    TEXT NOT NULL,
-  email      TEXT NOT NULL,
-  purpose    TEXT NOT NULL,
-  created_at INTEGER NOT NULL,
-  expires_at INTEGER NOT NULL
-);
-CREATE INDEX IF NOT EXISTS idx_email_codes_user ON email_codes (user_id, purpose);
 
 -- Failed sign-ins, so guessing can be slowed down. Guessing is the only way
 -- into an account here — there is no reset link to phish — so this is the

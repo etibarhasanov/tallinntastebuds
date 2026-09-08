@@ -55,15 +55,9 @@
 #                      Unset, the bot check is skipped and the rest works
 #                      unchanged.
 #
-#   CF_ACCOUNT_ID      text     ) optional, and only for password-reset email,
-#   CF_EMAIL_TOKEN     SECRET   ) through Cloudflare's own Email Service. All
-#   MAIL_FROM          text     ) three must be set before the sign-up sheet
-#                      offers an address field at all: a field that collects an
-#                      address the site cannot send a code to would leave
-#                      somebody believing they have a way back in. The token
-#                      needs the "Email Sending: Edit" permission, and the
-#                      domain in MAIL_FROM has to be onboarded under Email
-#                      Service → Email Sending. See the README.
+# There were three more — CF_ACCOUNT_ID, CF_EMAIL_TOKEN and MAIL_FROM — for a
+# password reset by email. Nothing reads them any more, so if they are set in
+# either environment they can be deleted from the Pages project.
 name = "tallinntastebuds"
 pages_build_output_dir = "."
 compatibility_date = "2026-09-02"

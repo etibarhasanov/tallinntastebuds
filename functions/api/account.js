@@ -4,22 +4,23 @@
  * A username and a password, and nothing else. No email, no phone, no OAuth,
  * no profile, no name. The site collects the least it can while still being
  * able to say "these saves are yours" on a second device, and a username the
- * visitor never chose and an address nobody asked for is as little as that
- * can be.
+ * visitor never chose is as little as that can be.
  *
- * AN EMAIL IS OPTIONAL, AND IT BUYS ONE THING
+ * THERE IS NO RESET, AND THAT IS THE TRADE
  *
- * Without one there is no reset: nothing proves an account is yours except
- * knowing its password, so a forgotten one is gone for good, for everybody
- * including whoever runs the site. Adding an address and confirming it with a
- * code is what makes a reset possible later, and it is the only thing the
- * address is ever used for — no list, no newsletter, no mail that is not a
- * six-digit code somebody just asked for.
- *
- * Nobody is made to give one. The sign-up sheet says what it is for and lets
- * you past without it, and the fields carry the autocomplete hints that make
- * a browser's password manager offer to keep the details, which is what
+ * Nothing proves an account is yours except knowing its password, so a
+ * forgotten one is gone for good, for everybody including whoever runs the
+ * site. The sign-up sheet says so before the button rather than letting
+ * somebody find out later, and the fields carry the autocomplete hints that
+ * make a browser's password manager offer to keep the details, which is what
  * actually rescues people in practice.
+ *
+ * There was a reset for a while, behind an optional address and a six-digit
+ * code through Cloudflare's Email Service. It was never switched on — Email
+ * Sending is not on the free plan — so every deployment this site has ever
+ * had ran the paragraph above, with a few hundred lines underneath it that
+ * only ever answered "not available". They are gone; see **Accounts** in
+ * README.md for the columns they left behind.
  *
  * WHY AN ACCOUNT IS OPTIONAL
  *
@@ -45,20 +46,15 @@ import {
   readCookie, wrongDatabase, RECOUNT_SQL, countsKey
 } from './_lib.js';
 
-/* Guessing is the only way in — there is no reset link to phish and no email
-   to intercept — so it is the thing to make slow. Ten wrong passwords from
-   one network fingerprint in fifteen minutes and that fingerprint waits. */
+/* Guessing is the only way in — there is no reset link to phish and no
+   address to intercept — so it is the thing to make slow. Ten wrong passwords
+   from one network fingerprint in fifteen minutes and that fingerprint
+   waits. */
 const MAX_FAILS = 10;
 const FAIL_WINDOW = 15 * 60 * 1000;
 
 const USERNAME_RE = /^[a-z0-9][a-z0-9-]{2,23}$/;
 const MIN_PASSWORD = 8;
-
-/* Deliberately loose. The confirmation code is what actually establishes that
-   an address is real and reachable, so a stricter pattern here would only
-   turn away the unusual-but-valid ones. */
-const EMAIL_RE = /^[^\s@]+@[^\s@.]+\.[^\s@]+$/;
-const CODE_TTL = 15 * 60 * 1000;
 
 /* Suggested usernames are built from these, so the name somebody is handed
    reads like the site rather than like a serial number. Two words and a
@@ -180,7 +176,7 @@ export async function onRequestGet(context) {
      only ever answer "something went wrong", which is worse than showing
      nothing at all. */
   const ready = !!(env.DB && env.SAVE_SALT) && !(await wrongDatabase(env));
-  if (!ready) return json({ ready: false, user: null, email: false }, 200);
+  if (!ready) return json({ ready: false, user: null }, 200);
 
   const url = new URL(request.url);
   if (url.searchParams.get('suggest')) {
@@ -190,21 +186,12 @@ export async function onRequestGet(context) {
   }
 
   const user = await sessionUser(request, env);
-  if (!user) return json({ ready: true, user: null, email: emailReady(env) }, 200);
-
-  const row = await env.DB
-    .prepare('SELECT email, email_verified FROM users WHERE id = ?')
-    .bind(user.id)
-    .first();
+  if (!user) return json({ ready: true, user: null }, 200);
 
   return json({
     ready: true,
     user: user.username,
-    saved: await savedByUser(env, user.id),
-    /* Whether an address is on the account, and whether the site can send to
-       one at all — the sheet needs both to know what to offer. */
-    recovery: !!(row && row.email && row.email_verified),
-    email: emailReady(env)
+    saved: await savedByUser(env, user.id)
   }, 200);
 }
 
@@ -232,14 +219,6 @@ export async function onRequestPost(context) {
   }
 
   const action = body.action;
-
-  if (action === 'email-add' || action === 'email-confirm' ||
-      action === 'recover-start' || action === 'recover-finish') {
-    const hash = await fingerprint(
-      env.SAVE_SALT, clientIp(request), request.headers.get('User-Agent') || ''
-    );
-    return handleEmail(context, body, hash);
-  }
 
   if (action === 'logout') {
     const token = readCookie(request, SESSION_COOKIE);
@@ -400,19 +379,6 @@ export async function onRequestPost(context) {
     .bind(await sha256Hex(token), userId, Date.now(), Date.now() + SESSION_DAYS * 86400000)
     .run();
 
-  /* An address given on the sign-up sheet is stored but not trusted: it is
-     written unverified and a code goes out, so recovery only starts working
-     once somebody has proved they can read the inbox. Failing to send does
-     not fail the sign-up — the account is already made, and the address can
-     be confirmed later from the account sheet. */
-  const offered = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
-  if (action === 'create' && offered && EMAIL_RE.test(offered) && emailReady(env)) {
-    try {
-      const code = await issueCode(env, userId, offered, 'verify');
-      context.waitUntil(sendCode(env, offered, code, 'verify'));
-    } catch (e) { /* an address is a convenience, never a blocker */ }
-  }
-
   const touched = await claim(env, userId, clientId);
   /* Claiming can lower a count — a place one person had saved from two
      devices is one save now, not two — so the copy this colo is handing out
@@ -429,188 +395,4 @@ export async function onRequestPost(context) {
       }
     }
   );
-}
-
-/* ------------------------------------------------------------------ email
- * Optional throughout, and switched off entirely until sending is configured
- * — the same shape Turnstile has. Until all three variables are set the
- * routes below answer "not available", the sign-up sheet draws no address
- * field, and every other part of the account system carries on exactly as it
- * did.
- */
-
-/* Sending goes through Cloudflare's own Email Service rather than a third
-   party, because the domain, the DNS and the site are already here: one
-   account to hold, one place the DKIM is signed, and no other company handed
-   a list of this site's visitors' addresses.
-
-   The REST API rather than the send_email Workers binding. The binding is the
-   more native of the two, but it is configured in a Wrangler file for a
-   Worker, and this is a Pages project — the REST endpoint is documented for
-   exactly this case ("any backend, serverless function") and needs nothing
-   but a token.
-
-   All three have to be set before a single line of this runs; see
-   emailReady, and the README for where each comes from. */
-const SEND_URL = 'https://api.cloudflare.com/client/v4/accounts/';
-
-function emailReady(env) {
-  return !!(env.CF_ACCOUNT_ID && env.CF_EMAIL_TOKEN && env.MAIL_FROM);
-}
-
-async function sendCode(env, to, code, purpose) {
-  const recover = purpose === 'recover';
-  const subject = recover
-    ? 'Your Tallinn Tastebuds reset code'
-    : 'Confirm your email for Tallinn Tastebuds';
-  const line = recover
-    ? 'Somebody asked to reset the password on your Tallinn Tastebuds account.'
-    : 'Somebody added this address to a Tallinn Tastebuds account.';
-
-  const text = line + '\n\nYour code is ' + code +
-    '\n\nIt is good for 15 minutes and can be used once. ' +
-    'If this was not you, ignore this message — nothing has changed.\n\n' +
-    'This address is only ever used to send codes you asked for. ' +
-    'Nobody is on a list.';
-
-  const res = await fetch(SEND_URL + env.CF_ACCOUNT_ID + '/email/sending/send', {
-    method: 'POST',
-    headers: {
-      authorization: 'Bearer ' + env.CF_EMAIL_TOKEN,
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
-      to: to,
-      from: env.MAIL_FROM,
-      subject: subject,
-      text: text
-    })
-  });
-  return res.ok;
-}
-
-/* Six digits, from real entropy rather than Math.random, and only the hash of
-   it is kept: the codes table is then useless to anybody who reads it. Any
-   code still outstanding for the same person and purpose is dropped first, so
-   asking again always invalidates the last one. */
-async function issueCode(env, userId, email, purpose) {
-  const bytes = new Uint32Array(1);
-  crypto.getRandomValues(bytes);
-  const code = String(bytes[0] % 1000000).padStart(6, '0');
-
-  await env.DB.batch([
-    env.DB.prepare('DELETE FROM email_codes WHERE user_id = ? AND purpose = ?').bind(userId, purpose),
-    env.DB.prepare('DELETE FROM email_codes WHERE expires_at < ?').bind(Date.now()),
-    env.DB
-      .prepare(
-        'INSERT INTO email_codes (code_hash, user_id, email, purpose, created_at, expires_at) ' +
-        'VALUES (?, ?, ?, ?, ?, ?)'
-      )
-      .bind(await sha256Hex(code), userId, email, purpose, Date.now(), Date.now() + CODE_TTL)
-  ]);
-  return code;
-}
-
-async function takeCode(env, code, purpose) {
-  if (!/^[0-9]{6}$/.test(code || '')) return null;
-  const hash = await sha256Hex(code);
-  const row = await env.DB
-    .prepare('SELECT user_id, email, expires_at FROM email_codes WHERE code_hash = ? AND purpose = ?')
-    .bind(hash, purpose)
-    .first();
-  if (!row || row.expires_at < Date.now()) return null;
-  /* Single use: spent on the way out, whatever the caller does next. */
-  await env.DB.prepare('DELETE FROM email_codes WHERE code_hash = ?').bind(hash).run();
-  return { userId: row.user_id, email: row.email };
-}
-
-export async function handleEmail(context, body, hash) {
-  const { request, env } = context;
-  const action = body.action;
-
-  if (!emailReady(env)) return json({ error: 'no-email' }, 503);
-
-  /* -------- adding an address to the account you are signed in to -------- */
-  if (action === 'email-add') {
-    const user = await sessionUser(request, env);
-    if (!user) return json({ error: 'signed-out' }, 401);
-
-    const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
-    if (!EMAIL_RE.test(email)) return json({ error: 'email' }, 400);
-    if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
-
-    const code = await issueCode(env, user.id, email, 'verify');
-    if (!(await sendCode(env, email, code, 'verify'))) return json({ error: 'send-failed' }, 502);
-    return json({ sent: true }, 200);
-  }
-
-  if (action === 'email-confirm') {
-    const user = await sessionUser(request, env);
-    if (!user) return json({ error: 'signed-out' }, 401);
-    if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
-
-    const taken = await takeCode(env, body.code, 'verify');
-    if (!taken || taken.userId !== user.id) {
-      await noteFail(env, hash);
-      return json({ error: 'bad-code' }, 400);
-    }
-    /* Somebody else may have claimed the address between the code going out
-       and it coming back, and the unique index is what settles it. */
-    try {
-      await env.DB
-        .prepare('UPDATE users SET email = ?, email_verified = 1 WHERE id = ?')
-        .bind(taken.email, user.id)
-        .run();
-    } catch (e) {
-      return json({ error: 'email-taken' }, 409);
-    }
-    return json({ email: taken.email, verified: true }, 200);
-  }
-
-  /* ----------------------------- resetting ------------------------------ */
-  if (action === 'recover-start') {
-    const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
-    if (!EMAIL_RE.test(email)) return json({ error: 'email' }, 400);
-    if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
-
-    const row = await env.DB
-      .prepare('SELECT id FROM users WHERE email = ? COLLATE NOCASE AND email_verified = 1')
-      .bind(email)
-      .first();
-
-    /* The same answer whether or not that address is on an account. Anything
-       else turns this endpoint into a way of asking who has registered. */
-    if (row) {
-      const code = await issueCode(env, row.id, email, 'recover');
-      context.waitUntil(sendCode(env, email, code, 'recover'));
-    }
-    return json({ sent: true }, 200);
-  }
-
-  if (action === 'recover-finish') {
-    const password = typeof body.password === 'string' ? body.password : '';
-    if (password.length < MIN_PASSWORD) return json({ error: 'password' }, 400);
-    if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
-
-    const taken = await takeCode(env, body.code, 'recover');
-    if (!taken) {
-      await noteFail(env, hash);
-      return json({ error: 'bad-code' }, 400);
-    }
-
-    const salt = randomHex(16);
-    await env.DB.batch([
-      env.DB
-        .prepare('UPDATE users SET pw_hash = ?, pw_salt = ?, pw_iter = ? WHERE id = ?')
-        .bind(await derivePassword(password, salt, pwIterations(env)), salt, pwIterations(env), taken.userId),
-      /* Every session goes. A reset is the one moment where somebody may be
-         doing this precisely because a session they do not control exists. */
-      env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(taken.userId)
-    ]);
-
-    const who = await env.DB.prepare('SELECT username FROM users WHERE id = ?').bind(taken.userId).first();
-    return json({ reset: true, user: who ? who.username : null }, 200);
-  }
-
-  return json({ error: 'action' }, 400);
 }

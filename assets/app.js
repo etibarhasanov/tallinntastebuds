@@ -105,10 +105,9 @@
        venue because somebody opened a link. Only the four loops that turn a
        place into a pin read both. */
     listPlaces: [],
-    /* Who is signed in, whether they have a recovery address on file, and
-       whether the site can send email at all. All three come from
-       /api/account and all three are absent until it answers. */
-    account: { ready: false, user: null, recovery: false, email: false },
+    /* Who is signed in, and whether accounts work here at all. Both come
+       from /api/account and both are absent until it answers. */
+    account: { ready: false, user: null },
     selected: null,      // restaurant id, or null
     /* The place you last opened, kept lit on the map after the panel shuts.
        Closing a write-up used to put the pin back in the crowd, so the answer
@@ -1618,19 +1617,18 @@
    * they have any reason to sign up, and signing in claims whatever this
    * device already saved rather than starting them over.
    *
-   * An email is optional and buys exactly one thing: the ability to reset a
-   * forgotten password. Without one there is nothing that proves an account
-   * is yours except knowing its password, so the sheet says so in as many
-   * words rather than letting somebody find out later.
+   * There is no address on an account and no way to reset a password. That
+   * is the whole of what this sheet is short of, and it is said out loud on
+   * the sign-up sheet rather than left to be discovered: nothing proves an
+   * account is yours except knowing its password, so a forgotten one is gone.
+   * What rescues people in practice is the browser's password manager, which
+   * is why the fields carry the autocomplete hints they do.
    *
    * The sheet somebody signed in lands on is their name and a short menu: the
-   * places they saved, their lists, the password, and the way out — plus, only
-   * where mail is configured at all and the account has no address on it yet,
-   * the offer of one. With no mail configured, which is how this site runs
-   * today, there is no recovery line and no address row: changing the password
-   * from inside the account is the whole of it. Each row that leads somewhere
-   * is a view of its own with a way back, rather than another block stacked on
-   * the one card — see "The design rules" in the README.
+   * places they saved, their lists, the password, and the way out. Each row
+   * that leads somewhere is a view of its own with a way back, rather than
+   * another block stacked on the one card — see "The design rules" in the
+   * README.
    *
    * The saves are the one row there that is not about the account at all.
    * They are kept per browser until somebody signs in, so the row is on the
@@ -1727,9 +1725,7 @@
              button, because a sign-up sheet that can only fail is worse than
              no sign-up sheet at all. */
           ready: !!out.ready,
-          user: out.user || null,
-          recovery: !!out.recovery,
-          email: !!out.email
+          user: out.user || null
         };
         if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
         paintAccountButton();
@@ -1811,7 +1807,7 @@
   var accountAsked = '';
   var accountThen = '';
 
-  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'recover'];
+  var ACCOUNT_VIEWS = ['in', 'up', 'me'];
 
   function readAccountLink(params) {
     var view = params.get('account') || '';
@@ -1881,17 +1877,16 @@
 
   /* ------------------------------------------------------------- the sheet
    * One card, and a view inside it: signed in, signing in, creating, changing
-   * the password, putting an address on, recovering, entering a code. Which
-   * one is showing is a variable rather than seven hidden blocks, so there is
-   * exactly one place that decides and nothing can be left over from the
-   * state before.
+   * the password. Which one is showing is a variable rather than four hidden
+   * blocks, so there is exactly one place that decides and nothing can be
+   * left over from the state before.
    *
    * Everything that is not "here is who you are" is a step of its own with a
    * way back to the account, rather than another field stacked on the sheet
    * you started on: one surface asks one thing.
    */
   var accountView = 'in';
-  /* 'in' | 'up' | 'me' | 'password' | 'email' | 'recover' | 'code' */
+  /* 'in' | 'up' | 'me' | 'password' */
   var accountBusy = false;
   var accountNote = '';
   var accountErr = '';
@@ -1980,9 +1975,7 @@
     return {
       username: accountValue('ac-user'),
       password: pass ? pass.value : '',
-      current: current ? current.value : '',
-      email: accountValue('ac-email'),
-      code: accountValue('ac-code')
+      current: current ? current.value : ''
     };
   }
 
@@ -2010,12 +2003,7 @@
     'no-match': 'accountErrNoMatch',
     password: 'accountErrPassword',
     username: 'accountErrUsername',
-    email: 'accountErrEmail',
-    'bad-code': 'accountErrCode',
     'slow-down': 'accountErrSlow',
-    'email-taken': 'accountErrEmailTaken',
-    'no-email': 'accountErrNoEmail',
-    'send-failed': 'accountErrSend',
     current: 'accountErrCurrent',
     same: 'accountErrSame',
     'signed-out': 'accountErrSignedOut'
@@ -2054,9 +2042,6 @@
 
     if (accountView === 'me') return renderAccountMe(form);
     if (accountView === 'password') return renderAccountPassword(form);
-    if (accountView === 'email') return renderAccountEmail(form);
-    if (accountView === 'recover') return renderAccountRecover(form);
-    if (accountView === 'code') return renderAccountCode(form);
     return renderAccountAuth(form);
   }
 
@@ -2067,8 +2052,8 @@
 
   /* The way back up out of a step, at the top of it where a back is looked
      for, rather than under the button where it reads as a second action. */
-  function accountBack(view) {
-    var link = accountSwitch('accountBack', view || 'me');
+  function accountBack() {
+    var link = accountSwitch('accountBack', 'me');
     link.className = 'alt ac-back';
     link.insertBefore(el('span', {
       className: 'ac-back-ico',
@@ -2154,17 +2139,6 @@
   function renderAccountMe(form) {
     form.appendChild(el('h2', { className: 'ac-title', textContent: state.account.user }));
 
-    /* Whether a forgotten password could be got back, in one line, on the
-       sheet rather than only inside the step that sets it up. It is only ever
-       drawn where the site can send mail at all; where it cannot there is
-       nothing to say and no row to press. */
-    if (state.account.email) {
-      form.appendChild(el('p', {
-        className: 'ac-state mono' + (state.account.recovery ? ' is-on' : ''),
-        textContent: t(state.account.recovery ? 'accountRecoveryOn' : 'accountRecoveryOff')
-      }));
-    }
-
     accountMessages(form);
 
     var menu = el('ul', { className: 'menu' });
@@ -2204,16 +2178,6 @@
       on: function () { openAccount('password'); }
     }));
 
-    /* Only when there is something to do: an address that is already on and
-       confirmed says so in the line above instead. */
-    if (state.account.email && !state.account.recovery) {
-      menu.appendChild(accountRow({
-        name: t('accountEmailAdd'),
-        why: t('accountEmailShort'),
-        on: function () { openAccount('email'); }
-      }));
-    }
-
     menu.appendChild(accountRow({
       name: t('accountSignOut'),
       danger: true,
@@ -2226,16 +2190,10 @@
 
   function signOut() {
     accountPost({ action: 'logout' }).then(function () {
-      /* Only the person changes. Whether accounts work here at all, and
-         whether email is configured, are facts about the deployment and
-         survive somebody signing out of it — dropping `ready` would hide
-         the button that is the way back in. */
-      state.account = {
-        ready: state.account.ready,
-        user: null,
-        recovery: false,
-        email: state.account.email
-      };
+      /* Only the person changes. Whether accounts work here at all is a fact
+         about the deployment and survives somebody signing out of it —
+         dropping `ready` would hide the button that is the way back in. */
+      state.account = { ready: state.account.ready, user: null };
       /* The account's list goes with the account. What this browser saved
          before signing in was claimed on the way in and is not coming back
          here — it is on the account now, waiting for the next sign-in. */
@@ -2291,17 +2249,11 @@
       autocomplete: creating ? 'new-password' : 'current-password'
     }));
 
-    if (creating) {
-      if (state.account.email) {
-        form.appendChild(accountField('ac-email', 'accountEmail', 'email', { autocomplete: 'email' }));
-        form.appendChild(el('p', { className: 'ac-why is-small', textContent: t('accountEmailWhy') }));
-      }
-      /* Always, whether or not an address was asked for. It says what happens
-         if the password goes, which is true in every configuration of this
-         site — with no email set up at all, or with a field that somebody
-         chose to skip. */
-      form.appendChild(accountWarn(t('accountNoReset')));
-    }
+    /* What happens if the password goes, said before the button rather than
+       discovered afterwards: there is nothing on an account that could prove
+       it is yours, so nobody — including whoever runs this site — can hand it
+       back. */
+    if (creating) form.appendChild(accountWarn(t('accountNoReset')));
 
     var go = accountSubmit(creating ? 'accountCreate' : 'accountSignIn');
     go.addEventListener('click', function () {
@@ -2312,7 +2264,6 @@
         action: creating ? 'create' : 'login',
         username: v.username,
         password: v.password,
-        email: creating ? v.email : '',
         client: clientId()
       }).then(function (a) {
         accountBusy = false;
@@ -2333,9 +2284,6 @@
 
     form.appendChild(accountSwitch(creating ? 'accountSwitchSignIn' : 'accountSwitchCreate',
                                    creating ? 'in' : 'up'));
-    if (!creating && state.account.email) {
-      form.appendChild(accountSwitch('accountForgot', 'recover'));
-    }
   }
 
   /* ------------------------------------------------ changing a password
@@ -2373,96 +2321,6 @@
              still signed in to it. */
           openAccount('me', t('accountChangeDone'));
         }).catch(function () { accountFail({}); });
-    });
-    form.appendChild(go);
-  }
-
-  /* --------------------------------------------- putting an address on */
-  function renderAccountEmail(form) {
-    form.appendChild(accountBack());
-    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountEmailAdd') }));
-    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountEmailWhy') }));
-    accountMessages(form);
-    form.appendChild(accountField('ac-email', 'accountEmailField', 'email', { autocomplete: 'email' }));
-
-    var go = accountSubmit('accountSendCode');
-    go.addEventListener('click', function () {
-      if (accountBusy) return;
-      var v = accountValues();
-      accountBusy = true; accountErr = ''; renderAccount();
-      accountPost({ action: 'email-add', email: v.email }).then(function (a) {
-        accountBusy = false;
-        if (!a.ok) return accountFail(a.out);
-        openAccount('code', t('accountEmailSent'));
-      }).catch(function () { accountFail({}); });
-    });
-    form.appendChild(go);
-  }
-
-  /* ------------------------------------------------ asking for a code */
-  function renderAccountRecover(form) {
-    form.appendChild(accountBack('in'));
-    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountRecoverTitle') }));
-    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountRecoverWhy') }));
-    accountMessages(form);
-    form.appendChild(accountField('ac-email', 'accountEmailField', 'email', { autocomplete: 'email' }));
-
-    var go = accountSubmit('accountSendCode');
-    go.addEventListener('click', function () {
-      if (accountBusy) return;
-      var v = accountValues();
-      accountBusy = true; accountErr = ''; renderAccount();
-      accountPost({ action: 'recover-start', email: v.email }).then(function (a) {
-        accountBusy = false;
-        if (!a.ok) return accountFail(a.out);
-        openAccount('code', t('accountEmailSent'));
-      }).catch(function () { accountFail({}); });
-    });
-    form.appendChild(go);
-  }
-
-  /* --------------------------------- entering one, for either purpose */
-  function renderAccountCode(form) {
-    var resetting = !state.account.user;
-    form.appendChild(accountBack(resetting ? 'in' : 'me'));
-    form.appendChild(el('h2', {
-      className: 'ac-title',
-      textContent: t(resetting ? 'accountRecoverTitle' : 'accountConfirmTitle')
-    }));
-    accountMessages(form);
-
-    form.appendChild(accountField('ac-code', 'accountCode', 'text', {
-      inputmode: 'numeric',
-      maxlength: '6',
-      autocomplete: 'one-time-code'
-    }));
-    if (resetting) {
-      form.appendChild(accountField('ac-pass', 'accountNewPassword', 'password', {
-        autocomplete: 'new-password'
-      }));
-    }
-
-    var go = accountSubmit('accountConfirm');
-    go.addEventListener('click', function () {
-      if (accountBusy) return;
-      var v = accountValues();
-      accountBusy = true; accountErr = ''; renderAccount();
-      var payload = resetting
-        ? { action: 'recover-finish', code: v.code, password: v.password }
-        : { action: 'email-confirm', code: v.code };
-
-      accountPost(payload).then(function (a) {
-        accountBusy = false;
-        if (!a.ok) return accountFail(a.out);
-        if (resetting) {
-          /* The reset dropped every session, this one included, so the way
-             back in is the sign-in sheet with the new password. */
-          openAccount('in', t('accountResetDone'));
-          return;
-        }
-        state.account.recovery = true;
-        openAccount('me', t('accountEmailDone'));
-      }).catch(function () { accountFail({}); });
     });
     form.appendChild(go);
   }
