@@ -11,7 +11,7 @@
  *
  * One request to /api/venues, which answers with the whole roll and five
  * minutes of cache on it, and everything after that happens in the browser: a
- * search, four narrowing controls, five orders, and a map beside the list with
+ * search, four narrowing controls, three orders, and a map beside the list with
  * a dot for every match. See functions/api/venues.js for why the filtering is
  * this side and not in a WHERE clause — briefly, the map needs every matching
  * pin whatever the filter says, and "open now" is a question about a week of
@@ -19,8 +19,8 @@
  *
  * Plain browser JavaScript, no modules, no build step, same as every other
  * file in assets/. It shares the tokens, the card, the eyebrow, the search
- * field, the price gauge and the toast with assets/styles.css and adds only
- * what a directory has in assets/venues.css.
+ * field and the price gauge with assets/styles.css and adds only what a
+ * directory has in assets/venues.css.
  *
  * NOTHING HERE IS ENGLISH BY ACCIDENT
  *
@@ -70,7 +70,7 @@
      does. */
   var PRICES = [1, 2, 3, 4];
 
-  var SORTS = ['best', 'rating', 'reviews', 'name', 'near'];
+  var SORTS = ['best', 'rating', 'reviews'];
 
   /* How many reviews a place needs before its own rating counts for half of
      its place in the "best overall" order — see weigh(). A hundred is under
@@ -98,7 +98,6 @@
     all: [],        // every venue the endpoint answered with
     shown: [],      // the ones matching the filters, in the chosen order
     pages: 1,       // how many screenfuls of cards are built
-    here: null,     // { lat, lng } once somebody has agreed to be located
     selected: '',   // the venue whose card and dot are lit
 
     q: '',
@@ -110,15 +109,14 @@
   };
 
   var dom = {};
-  /* Built once the language is known and read by everything that puts words in
-     order — the cuisine picker and the A-Z sort. Estonian files õ after w, and
-     a page that sorted its own filter list the browser's way would be the one
-     thing on it not in the reader's alphabet. */
+  /* Built once the language is known and read by the cuisine picker, which
+     puts its words in order. Estonian files õ after w, and a page that sorted
+     its own filter list the browser's way would be the one thing on it not in
+     the reader's alphabet. */
   var collator = null;
   var map = null;
   var dots = null;        // the layer holding one circle per match
   var byPlace = {};       // place id -> its circle, for lighting one up
-  var toastTimer = null;
   var searchTimer = null;
 
   /* --------------------------------------------------------------- helpers */
@@ -169,13 +167,6 @@
     var row = state.labels[id];
     if (!row) return '';
     return row[state.lang] || row[DEFAULT_LANG] || '';
-  }
-
-  function toast(message) {
-    dom.toast.textContent = message;
-    dom.toast.hidden = false;
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { dom.toast.hidden = true; }, 3800);
   }
 
   function getJSON(url) {
@@ -367,27 +358,6 @@
     return { text: t('venuesShutToday'), open: false, known: true };
   }
 
-  /* ----------------------------------------------------------- distance
-   * Straight-line, in metres. Nothing here needs a route: it is used to sort
-   * the list and to say "400 m" under a name, and both of those are answers
-   * about which end of town a place is in.
-   */
-  function metresBetween(a, b) {
-    var R = 6371000;
-    var toRad = Math.PI / 180;
-    var dLat = (b.lat - a.lat) * toRad;
-    var dLng = (b.lng - a.lng) * toRad;
-    var s = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(a.lat * toRad) * Math.cos(b.lat * toRad) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    return 2 * R * Math.atan2(Math.sqrt(s), Math.sqrt(1 - s));
-  }
-
-  function distanceLine(metres) {
-    if (metres < 950) return t('venuesM', { n: number(Math.round(metres / 10) * 10) });
-    return t('venuesKm', { n: score(metres / 1000) });
-  }
-
   /* ------------------------------------------------------------- the URL
    * What the page is showing, in the address bar, so a filtered directory can
    * be sent to somebody. Same idea as the map's ?type= and ?spot=, and the
@@ -407,9 +377,7 @@
     var price = Number(p.get('price'));
     state.price = PRICES.indexOf(price) !== -1 ? price : 0;
     var sort = p.get('sort');
-    /* Not 'near': it means "nearest to where I am standing", which is nowhere
-       for whoever the link was sent to. */
-    state.sort = SORTS.indexOf(sort) !== -1 && sort !== 'near' ? sort : 'best';
+    state.sort = SORTS.indexOf(sort) !== -1 ? sort : 'best';
   }
 
   function writeUrl() {
@@ -423,7 +391,7 @@
     set('cuisine', state.cuisine);
     set('rating', state.rating || '');
     set('price', state.price || '');
-    set('sort', state.sort === 'best' || state.sort === 'near' ? '' : state.sort);
+    set('sort', state.sort === 'best' ? '' : state.sort);
 
     var query = p.toString();
     try {
@@ -502,25 +470,21 @@
     });
   }
 
-  /* The five orders the page offers, by the name the control uses. state.sort
+  /* The three orders the page offers, by the name the control uses. state.sort
      can only ever hold one of them: readUrl() checks what arrives in the
-     address bar and the select holds nothing else. */
+     address bar and the select holds nothing else.
+
+     There used to be five. A–Z went because nobody scans eleven hundred
+     places by name — somebody who knows the name types it into the search —
+     and nearest-first went with the permission prompt it needed, the reverting
+     it did when the prompt was refused, and the distance under every address.
+     The three left are all readings of the two numbers on the card. */
   var ORDERS = {
     best: function (a, b) { return (b.best || 0) - (a.best || 0) || (b.reviews || 0) - (a.reviews || 0); },
     /* Reviews break the tie, because a lone five-star rating and four hundred
        of them are not the same claim. */
     rating: function (a, b) { return (b.rating || 0) - (a.rating || 0) || (b.reviews || 0) - (a.reviews || 0); },
-    reviews: function (a, b) { return (b.reviews || 0) - (a.reviews || 0); },
-    name: function (a, b) {
-      if (collator) return collator.compare(a.name, b.name);
-      var x = fold(a.name), y = fold(b.name);
-      return x < y ? -1 : x > y ? 1 : 0;
-    },
-    /* A place with no pin cannot be near anything, so it goes last rather
-       than to the top on a comparison against null. */
-    near: function (a, b) {
-      return (a.away == null ? Infinity : a.away) - (b.away == null ? Infinity : b.away);
-    }
+    reviews: function (a, b) { return (b.reviews || 0) - (a.reviews || 0); }
   };
 
   function order(list) {
@@ -540,14 +504,6 @@
     var clock = tallinnClock();
 
     state.shown = state.all.filter(function (venue) { return matches(venue, needle, clock); });
-
-    if (state.sort === 'near' && state.here) {
-      state.shown.forEach(function (venue) {
-        venue.away = (typeof venue.lat === 'number' && typeof venue.lng === 'number')
-          ? metresBetween(state.here, venue) : null;
-      });
-    }
-
     order(state.shown);
     state.pages = 1;
   }
@@ -663,11 +619,7 @@
     }));
 
     if (venue.address) {
-      var where = el('p', { className: 'venue-where' }, [venue.address]);
-      if (state.sort === 'near' && typeof venue.away === 'number') {
-        where.appendChild(el('span', { className: 'venue-away', textContent: distanceLine(venue.away) }));
-      }
-      node.appendChild(where);
+      node.appendChild(el('p', { className: 'venue-where' }, [venue.address]));
     }
 
     var links = el('p', { className: 'venue-links' });
@@ -904,8 +856,6 @@
     dom.sort.appendChild(option('best', t('venuesSortBest')));
     dom.sort.appendChild(option('rating', t('venuesSortRating')));
     dom.sort.appendChild(option('reviews', t('venuesSortReviews')));
-    dom.sort.appendChild(option('name', t('listAlphabet')));
-    dom.sort.appendChild(option('near', t('venuesSortNear')));
     dom.sort.value = state.sort;
 
     dom.search.value = state.q;
@@ -921,32 +871,6 @@
     renderList();
     refitMap();
     writeUrl();
-  }
-
-  /* Sorting by distance is the only control that has to ask permission, so it
-     is the only one that can fail. It reverts rather than sitting on an order
-     it cannot produce: a list claiming to be nearest-first from a location
-     nobody gave is worse than the order it replaced. */
-  function sortByDistance() {
-    if (state.here) { refresh(); return; }
-
-    /* Reverting has to check that nearest-first is still what is chosen. The
-       permission prompt is modal to the browser and not to the page, so
-       somebody can pick another order while it is standing there, and
-       answering No to it afterwards must not undo that. */
-    var giveUp = function () {
-      if (state.sort !== 'near') return;
-      dom.sort.value = state.sort = 'best';
-      toast(t('locateFail'));
-      refresh();
-    };
-
-    if (!navigator.geolocation) { giveUp(); return; }
-
-    navigator.geolocation.getCurrentPosition(function (pos) {
-      state.here = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      refresh();
-    }, giveUp, { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 });
   }
 
   function wire() {
@@ -992,8 +916,7 @@
 
     dom.sort.addEventListener('change', function () {
       state.sort = dom.sort.value;
-      if (state.sort === 'near') sortByDistance();
-      else refresh();
+      refresh();
     });
 
     dom.clear.addEventListener('click', function () {
@@ -1052,8 +975,7 @@
       mapWrap: document.querySelector('.venues-map-wrap'),
       more: $('venues-more'),
       seeList: $('venues-see-list'),
-      seeMap: $('venues-see-map'),
-      toast: $('toast')
+      seeMap: $('venues-see-map')
     };
 
     applyStyle();

@@ -1595,9 +1595,12 @@ would have somebody walking to one to find out.
 ### The filters
 
 Search, and five controls: **Open now**, **Cuisine**, **Rating**, **Price** and
-the order — best overall, highest rated, most reviewed, A–Z, or nearest to
-where you are standing, which is the one that has to ask permission and the
-one that reverts rather than sit on an order it cannot produce.
+the order — best overall, highest rated or most reviewed. There used to be an
+A–Z and a nearest-first as well. A–Z went because nobody scans eleven hundred
+places by name; somebody who knows the name types it into the search.
+Nearest-first went with the permission prompt it needed, the revert it did
+when the prompt was refused, and the distance it wrote under every address.
+The three left are all readings of the two numbers on the card.
 
 ### Best overall is not the rating
 
@@ -1637,9 +1640,8 @@ above whom, so the page publishes nothing Google did not say. The
 **Rating** filter is on the raw rating, not the weighted one, because "4.5 and
 up" is a statement about the number on the card.
 
-Everything but the last is in the address bar, so a narrowed directory is a
-link somebody can send. `?sort=near` deliberately is not: it means "nearest to
-where I am", which is nowhere for whoever the link was sent to.
+All of it is in the address bar, so a narrowed directory is a link somebody
+can send.
 
 ### Open now is asked of Tallinn's clock
 

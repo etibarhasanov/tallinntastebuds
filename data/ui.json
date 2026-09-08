@@ -278,7 +278,6 @@
     "venuesSortBest": "Ümumilikdə ən yaxşı",
     "venuesSortRating": "Ən yüksək reytinq",
     "venuesSortReviews": "Ən çox rəy",
-    "venuesSortNear": "Əvvəlcə ən yaxın",
     "venuesOpenNow": "İndi açıqdır",
     "venuesClear": "Süzgəcləri təmizlə",
     "venuesReviews": "{n} rəy",
@@ -296,9 +295,7 @@
     "venuesShowMap": "Xəritə",
     "venuesShowList": "Siyahı",
     "venuesMore": "Daha çox göstər",
-    "venuesMapLabel": "Süzgəclərə uyğun məkanların xəritəsi",
-    "venuesKm": "{n} km",
-    "venuesM": "{n} m"
+    "venuesMapLabel": "Süzgəclərə uyğun məkanların xəritəsi"
   },
   "hy": {
     "langName": "Հայերեն",
@@ -579,7 +576,6 @@
     "venuesSortBest": "Ընդհանուր առմամբ լավագույնները",
     "venuesSortRating": "Ամենաբարձր գնահատականը",
     "venuesSortReviews": "Ամենաշատ կարծիքները",
-    "venuesSortNear": "Սկզբում ամենամոտերը",
     "venuesOpenNow": "Հիմա բաց է",
     "venuesClear": "Մաքրել զտիչները",
     "venuesReviews": "{n} կարծիք",
@@ -597,9 +593,7 @@
     "venuesShowMap": "Քարտեզ",
     "venuesShowList": "Ցանկ",
     "venuesMore": "Ցույց տալ ավելին",
-    "venuesMapLabel": "Զտիչներին համապատասխանող վայրերի քարտեզը",
-    "venuesKm": "{n} կմ",
-    "venuesM": "{n} մ"
+    "venuesMapLabel": "Զտիչներին համապատասխանող վայրերի քարտեզը"
   },
   "en": {
     "langName": "English",
@@ -880,7 +874,6 @@
     "venuesSortBest": "Best overall",
     "venuesSortRating": "Highest rated",
     "venuesSortReviews": "Most reviewed",
-    "venuesSortNear": "Nearest first",
     "venuesOpenNow": "Open now",
     "venuesClear": "Clear the filters",
     "venuesReviews": "{n} reviews",
@@ -898,9 +891,7 @@
     "venuesShowMap": "Map",
     "venuesShowList": "List",
     "venuesMore": "Show more",
-    "venuesMapLabel": "Map of the places matching the filters",
-    "venuesKm": "{n} km",
-    "venuesM": "{n} m"
+    "venuesMapLabel": "Map of the places matching the filters"
   },
   "et": {
     "langName": "Eesti",
@@ -1181,7 +1172,6 @@
     "venuesSortBest": "Parimad kokkuvõttes",
     "venuesSortRating": "Kõrgeima hindega",
     "venuesSortReviews": "Enim arvustatud",
-    "venuesSortNear": "Lähimad enne",
     "venuesOpenNow": "Praegu avatud",
     "venuesClear": "Tühjenda filtrid",
     "venuesReviews": "{n} arvustust",
@@ -1199,9 +1189,7 @@
     "venuesShowMap": "Kaart",
     "venuesShowList": "Nimekiri",
     "venuesMore": "Näita veel",
-    "venuesMapLabel": "Filtritele vastavate kohtade kaart",
-    "venuesKm": "{n} km",
-    "venuesM": "{n} m"
+    "venuesMapLabel": "Filtritele vastavate kohtade kaart"
   },
   "fi": {
     "langName": "Suomi",
@@ -1482,7 +1470,6 @@
     "venuesSortBest": "Parhaat kaikkiaan",
     "venuesSortRating": "Korkein arvosana",
     "venuesSortReviews": "Eniten arvioita",
-    "venuesSortNear": "Lähimmät ensin",
     "venuesOpenNow": "Auki nyt",
     "venuesClear": "Tyhjennä suodattimet",
     "venuesReviews": "{n} arviota",
@@ -1500,9 +1487,7 @@
     "venuesShowMap": "Kartta",
     "venuesShowList": "Lista",
     "venuesMore": "Näytä lisää",
-    "venuesMapLabel": "Kartta suodattimia vastaavista paikoista",
-    "venuesKm": "{n} km",
-    "venuesM": "{n} m"
+    "venuesMapLabel": "Kartta suodattimia vastaavista paikoista"
   },
   "pt": {
     "langName": "Português",
@@ -1783,7 +1768,6 @@
     "venuesSortBest": "Melhores no geral",
     "venuesSortRating": "Classificação mais alta",
     "venuesSortReviews": "Mais avaliados",
-    "venuesSortNear": "Mais próximos primeiro",
     "venuesOpenNow": "Aberto agora",
     "venuesClear": "Limpar os filtros",
     "venuesReviews": "{n} avaliações",
@@ -1801,9 +1785,7 @@
     "venuesShowMap": "Mapa",
     "venuesShowList": "Lista",
     "venuesMore": "Mostrar mais",
-    "venuesMapLabel": "Mapa dos lugares que correspondem aos filtros",
-    "venuesKm": "{n} km",
-    "venuesM": "{n} m"
+    "venuesMapLabel": "Mapa dos lugares que correspondem aos filtros"
   },
   "ru": {
     "langName": "Русский",
@@ -2084,7 +2066,6 @@
     "venuesSortBest": "Лучшие в целом",
     "venuesSortRating": "Самая высокая оценка",
     "venuesSortReviews": "Больше всего отзывов",
-    "venuesSortNear": "Сначала ближайшие",
     "venuesOpenNow": "Открыто сейчас",
     "venuesClear": "Сбросить фильтры",
     "venuesReviews": "{n} отзывов",
@@ -2102,9 +2083,7 @@
     "venuesShowMap": "Карта",
     "venuesShowList": "Список",
     "venuesMore": "Показать ещё",
-    "venuesMapLabel": "Карта заведений, подходящих под фильтры",
-    "venuesKm": "{n} км",
-    "venuesM": "{n} м"
+    "venuesMapLabel": "Карта заведений, подходящих под фильтры"
   },
   "es": {
     "langName": "Español",
@@ -2385,7 +2364,6 @@
     "venuesSortBest": "Mejores en general",
     "venuesSortRating": "Puntuación más alta",
     "venuesSortReviews": "Más reseñados",
-    "venuesSortNear": "Los más cercanos primero",
     "venuesOpenNow": "Abierto ahora",
     "venuesClear": "Quitar los filtros",
     "venuesReviews": "{n} reseñas",
@@ -2403,9 +2381,7 @@
     "venuesShowMap": "Mapa",
     "venuesShowList": "Lista",
     "venuesMore": "Mostrar más",
-    "venuesMapLabel": "Mapa de los locales que coinciden con los filtros",
-    "venuesKm": "{n} km",
-    "venuesM": "{n} m"
+    "venuesMapLabel": "Mapa de los locales que coinciden con los filtros"
   },
   "tr": {
     "langName": "Türkçe",
@@ -2686,7 +2662,6 @@
     "venuesSortBest": "Genel olarak en iyi",
     "venuesSortRating": "En yüksek puan",
     "venuesSortReviews": "En çok yorum",
-    "venuesSortNear": "Önce en yakın",
     "venuesOpenNow": "Şu an açık",
     "venuesClear": "Filtreleri temizle",
     "venuesReviews": "{n} yorum",
@@ -2704,9 +2679,7 @@
     "venuesShowMap": "Harita",
     "venuesShowList": "Liste",
     "venuesMore": "Daha fazla göster",
-    "venuesMapLabel": "Filtrelere uyan mekânların haritası",
-    "venuesKm": "{n} km",
-    "venuesM": "{n} m"
+    "venuesMapLabel": "Filtrelere uyan mekânların haritası"
   },
   "uk": {
     "langName": "Українська",
@@ -2987,7 +2960,6 @@
     "venuesSortBest": "Найкращі загалом",
     "venuesSortRating": "Найвища оцінка",
     "venuesSortReviews": "Найбільше відгуків",
-    "venuesSortNear": "Спершу найближчі",
     "venuesOpenNow": "Зараз відчинено",
     "venuesClear": "Скинути фільтри",
     "venuesReviews": "{n} відгуків",
@@ -3005,8 +2977,6 @@
     "venuesShowMap": "Карта",
     "venuesShowList": "Список",
     "venuesMore": "Показати ще",
-    "venuesMapLabel": "Карта закладів, що відповідають фільтрам",
-    "venuesKm": "{n} км",
-    "venuesM": "{n} м"
+    "venuesMapLabel": "Карта закладів, що відповідають фільтрам"
   }
 }

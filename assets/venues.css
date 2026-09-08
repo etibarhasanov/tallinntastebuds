@@ -3,7 +3,7 @@
 
    Loaded after assets/styles.css and only by google.html, so everything the
    pages share — the tokens, .card, .eyebrow, .chip, .btn, .seg, the search
-   field, the price gauge, .toast, .skip-link — is already there and none of it
+   field, the price gauge, .skip-link — is already there and none of it
    is restated. What is in this file is only what a directory has and the map
    does not: a filter bar, a column of results, and a map beside them rather
    than under everything.
@@ -398,16 +398,6 @@
   font-size: 13px;
   line-height: 1.45;
   color: var(--muted);
-}
-
-/* How far away, when the list is sorted by that. In the mono face because it
-   is a measurement, and after the street rather than before it. */
-.venue-away {
-  margin-left: 8px;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--accent);
-  white-space: nowrap;
 }
 
 .venue-links {
