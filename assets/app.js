@@ -1807,7 +1807,11 @@
   var accountAsked = '';
   var accountThen = '';
 
-  var ACCOUNT_VIEWS = ['in', 'up', 'me'];
+  /* The page the account lives on now. 'me' is still a view a link may ask
+     for, and it is answered by sending them there. */
+  var ACCOUNT_PAGE = '/account.html';
+
+  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'password'];
 
   function readAccountLink(params) {
     var view = params.get('account') || '';
@@ -1857,10 +1861,16 @@
     if (!accountAsked || !state.account.ready) return;
     var view = accountAsked;
     accountAsked = '';
-    /* Asked for the signed-in sheet while signed out, or the reverse: open
-       the one that is actually true rather than the one the link named. */
-    if (view === 'me' && !state.account.user) view = 'in';
-    if (view !== 'me' && state.account.user) view = 'me';
+    /* ?account=me is the old name for what is now a page of its own, and the
+       links carrying it are in messages and bookmarks nobody can edit. So it
+       is answered rather than ignored: signed in, by going to the page;
+       signed out, by the sheet that is the way to being signed in. The same
+       goes for a link asking to sign in when somebody already is — the
+       honest answer to that is their account, and their account is a page. */
+    if (view === 'me' || state.account.user) {
+      if (!state.account.user) view = 'in';
+      else if (view !== 'password') { window.location.href = ACCOUNT_PAGE; return; }
+    }
     openAccount(view);
   }
 
@@ -1902,7 +1912,10 @@
        sheet must not record a field in the sheet as the thing to hand focus
        back to when it shuts. */
     if (dom.accountScrim.hidden) state.lastFocus = document.activeElement;
-    accountView = view || (state.account.user ? 'me' : 'in');
+    /* Signing in is the only thing this sheet opens on its own, because the
+       one caller that names no view is the rail button and it only reaches
+       here signed out — signed in it leaves for the account page. */
+    accountView = view || 'in';
     accountNote = note || '';
     accountErr = '';
     hideNudge();
@@ -2040,7 +2053,6 @@
        says which step of it you are looking at. */
     form.appendChild(el('p', { className: 'eyebrow ac-eyebrow', textContent: t('accountOpen') }));
 
-    if (accountView === 'me') return renderAccountMe(form);
     if (accountView === 'password') return renderAccountPassword(form);
     return renderAccountAuth(form);
   }
@@ -2051,10 +2063,13 @@
   }
 
   /* The way back up out of a step, at the top of it where a back is looked
-     for, rather than under the button where it reads as a second action. */
+     for, rather than under the button where it reads as a second action.
+
+     A link and not a switch: what it goes back to is the account page, which
+     is where whoever is standing in this step pressed the thing that opened
+     it. */
   function accountBack() {
-    var link = accountSwitch('accountBack', 'me');
-    link.className = 'alt ac-back';
+    var link = el('a', { className: 'alt ac-back', href: ACCOUNT_PAGE, textContent: t('accountBack') });
     link.insertBefore(el('span', {
       className: 'ac-back-ico',
       'aria-hidden': 'true',
@@ -2078,36 +2093,17 @@
   }
 
   var AC_CHEVRON = '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>';
-  var AC_LEAVE =
-    '<svg viewBox="0 0 24 24" focusable="false">' +
-    '<path d="M14 4h5v16h-5"/><path d="M10.5 8.5 14 12l-3.5 3.5"/><path d="M14 12H5"/></svg>';
 
-  /* A row in the account's menu: the name of the thing, a line saying what it
-     is for, and a mark on the right saying it opens something.
+  /* The way back to your own marks, on the one sheet that still has a row in
+     it. It sits under the offer of an account because that is what the offer
+     is about — these, kept somewhere better than one browser — rather than on
+     the chip row, which answers a different question. See renderFilters().
 
-     Rows and not a stack of underlined links. Three links in a column is a
-     paragraph that has lost its sentences — nothing in it says which of them
-     is where you go next, and the one that signs you out looks exactly like
-     the one that opens your lists. A row has an edge, a target the width of
-     the card, and room for the line that says what it does. */
-  function accountRow(opts) {
-    var kids = [
-      el('span', { className: 'menu-say' }, [
-        el('span', { className: 'menu-name', textContent: opts.name }),
-        opts.why ? el('span', { className: 'menu-why', textContent: opts.why }) : null
-      ]),
-      el('span', { className: 'menu-go', 'aria-hidden': 'true', html: opts.icon || AC_CHEVRON })
-    ];
-    var row = opts.href
-      ? el('a', { className: 'menu-row', href: opts.href }, kids)
-      : el('button', { type: 'button', className: 'menu-row' + (opts.danger ? ' is-danger' : '') }, kids);
-    if (opts.on) row.addEventListener('click', opts.on);
-    return el('li', { className: 'menu-item' }, [row]);
-  }
-
-  /* The way back to your own marks, and the only one on the map. It sits
-     under whoever you are because that is whose they are, rather than on the
-     chip row, which answers a different question — see renderFilters().
+     A row and not an underlined link: it has an edge, a target the width of
+     the card, and room for the line saying what it does. It was one of five
+     such rows until the signed-in half of this sheet became /account.html,
+     which is why the row is written here rather than by a builder that now
+     has nothing else to build.
 
      It shows the saves and nothing else rather than adding a filter to
      whatever was already pressed: a row named "Places I saved" that hands
@@ -2118,98 +2114,21 @@
      teaches nobody anything — which also means it is the first mark, not an
      account, that makes it appear. */
   function savedRow() {
-    return accountRow({
-      name: t('listSaved'),
-      why: t('accountSavedWhy'),
-      on: function () {
-        closeAccount();
-        forgetList();
-        state.active = [SAVED_FILTER];
-        applyFilters({ id: SAVED_FILTER, on: true });
-        showList(true);
-      }
-    });
-  }
-
-  /* -------------------------------------------------- signed in already */
-
-  /* The name is the title. Whose account this is is the one thing the sheet
-     is here to say, and the rail button beside it is already wearing the same
-     name — the sheet opening on it is what joins the two. */
-  function renderAccountMe(form) {
-    form.appendChild(el('h2', { className: 'ac-title', textContent: state.account.user }));
-
-    accountMessages(form);
-
-    var menu = el('ul', { className: 'menu' });
-
-    if (savedCount()) menu.appendChild(savedRow());
-
-    /* The way into the lists, and the only one on the map. A list is a
-       different kind of object from everything else here — it is somebody
-       else's, it is published under their name, and it has nothing to do with
-       the pins — so lists live on their own pages rather than as another sheet
-       over the map. This is the door to them, filed under who you are.
-
-       It was three doors for a while, running from yours outwards: your lists,
-       your profile, everybody's. All three landed on the same file, and two of
-       them landed a press away from the first — /lists.html has drawn the
-       other two under the box that makes a new list since the day profiles
-       were written. So the sheet spent half its rows saying "lists" three ways
-       and asked a visitor to tell apart doors that only differ once you are
-       through one of them. This row is the answer to all three questions, and
-       the page behind it is where the answer is anyway.
-
-       Everybody's lists sat in the top-right corner of the map before they sat
-       here, beside Places, and the cost of that move is unchanged: signed out,
-       this sheet is the sign-in form and has no menu, so a stranger on the map
-       has no way to /lists/kept at all. They reach it from a list somebody sent
-       them, from /lists.html, from a search result, or from the byline on any
-       list they are reading, which leads to a profile full of them. */
-    menu.appendChild(accountRow({
-      name: t('listsYours'),
-      why: t('accountListsWhy'),
-      href: '/lists.html'
-    }));
-
-    menu.appendChild(accountRow({
-      name: t('accountChange'),
-      why: t('accountChangeWhy'),
-      on: function () { openAccount('password'); }
-    }));
-
-    menu.appendChild(accountRow({
-      name: t('accountSignOut'),
-      danger: true,
-      icon: AC_LEAVE,
-      on: signOut
-    }));
-
-    form.appendChild(menu);
-  }
-
-  function signOut() {
-    accountPost({ action: 'logout' }).then(function () {
-      /* Only the person changes. Whether accounts work here at all is a fact
-         about the deployment and survives somebody signing out of it —
-         dropping `ready` would hide the button that is the way back in. */
-      state.account = { ready: state.account.ready, user: null };
-      /* The account's list goes with the account. What this browser saved
-         before signing in was claimed on the way in and is not coming back
-         here — it is on the account now, waiting for the next sign-in. */
-      state.saved = [];
-      storeSet(SAVED_KEY, '[]');
-      paintSave();
-      paintAccountButton();
-      /* And a map still narrowed to them would be an empty one, narrowed by
-         a filter nothing on the screen names any more. */
-      var at = state.active.indexOf(SAVED_FILTER);
-      if (at !== -1) {
-        state.active.splice(at, 1);
-        applyFilters();
-      } else if (state.view === 'list') renderPanel();
+    var row = el('button', { type: 'button', className: 'menu-row' }, [
+      el('span', { className: 'menu-say' }, [
+        el('span', { className: 'menu-name', textContent: t('listSaved') }),
+        el('span', { className: 'menu-why', textContent: t('accountSavedWhy') })
+      ]),
+      el('span', { className: 'menu-go', 'aria-hidden': 'true', html: AC_CHEVRON })
+    ]);
+    row.addEventListener('click', function () {
       closeAccount();
+      forgetList();
+      state.active = [SAVED_FILTER];
+      applyFilters({ id: SAVED_FILTER, on: true });
+      showList(true);
     });
+    return el('li', { className: 'menu-item' }, [row]);
   }
 
   /* ------------------------------------------- signing in or signing up */
@@ -2316,10 +2235,13 @@
         .then(function (a) {
           accountBusy = false;
           if (!a.ok) return accountFail(a.out);
-          /* Back to the sheet it was opened from, saying what happened
-             there: the account is the same account, and this browser is
-             still signed in to it. */
-          openAccount('me', t('accountChangeDone'));
+          /* Back where it was pressed, which is the account page: the sheet
+             this step is drawn in has nothing behind it any more. The toast
+             is what says it worked, because the page it lands on is a fresh
+             load and cannot carry a note across. */
+          closeAccount();
+          toast(t('accountChangeDone'));
+          returnAfterAccount();
         }).catch(function () { accountFail({}); });
     });
     form.appendChild(go);
@@ -2361,6 +2283,17 @@
      with the list back but the chip that dismissed it still on, is a Back
      button that lands somewhere the visitor was never standing. */
   function activeFromUrl(params) {
+    /* ?saved=1, which is how /account.html says "these, on the map". It is a
+       door and not a chip in the address bar: ?type=saved is deliberately
+       never written — see syncUrl — because a link narrowed to one person's
+       marks is an empty map for everybody it is sent to. This is the same
+       filter asked for by a page that already knows whose browser it is on,
+       and syncUrl takes it straight back off.
+
+       Only where there is something to narrow to. Arriving on an empty saved
+       map teaches nobody what the link was for. */
+    if (params.get('saved') === '1' && savedCount()) return [SAVED_FILTER];
+
     var picked = params.get('type');
     if (!picked) return [];
     var live = usedTypeIds();
@@ -5800,6 +5733,10 @@
     params.delete('story');
     params.delete('account');
     params.delete('then');
+    /* ?saved= is one of those doors too: the account page opens the map on
+       your own marks with it, and a link copied afterwards is a link to the
+       map, not to a filter nobody else can answer. */
+    params.delete('saved');
 
     var query = params.toString();
     var next = window.location.pathname + (query ? '?' + query : '') + window.location.hash;
@@ -5968,8 +5905,17 @@
 
     /* Same as Surprise me: pressing it answers the question the label was
        there to ask, and the sheet it opens wants the room. */
+    /* Signed out this opens the sheet, which is the sign-in form and the one
+       thing on this site that genuinely belongs over the map: it is a step you
+       take and dismiss, with the map still behind it.
+
+       Signed in it leaves for /account.html, because what used to be behind
+       this button — your saved places and your lists — are things to read
+       rather than a step to take, and a sheet was the wrong room for them.
+       See the header of assets/account.js. */
     dom.btnAccount.addEventListener('click', function () {
       closeHint('account');
+      if (state.account.user) { window.location.href = ACCOUNT_PAGE; return; }
       openAccount();
     });
 

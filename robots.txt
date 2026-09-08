@@ -19,6 +19,11 @@ Disallow: /staff.html
 # reaches any of them at all. It is in sitemap.xml for the same reason.
 Disallow: /lists.html
 
+# The account page, for the same reason and more of it: there is nothing on it
+# that is not one session's own, so a crawler sees the offer of an account and
+# nothing else. It carries a noindex header and a meta tag of its own too.
+Disallow: /account.html
+
 # /list/<id> is deliberately NOT disallowed, and it never was.
 #
 # A shared list has to unfurl — the little preview card in WhatsApp, Telegram
