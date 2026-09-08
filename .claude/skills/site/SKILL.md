@@ -152,6 +152,26 @@ The subject is what a visitor can now do, or what they no longer see:
 The body says what was wrong, what it is now, which README section moved with
 it, and what was driven in a browser to check it.
 
+## The pull request
+
+1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`.
+   When `index.html` or `lists.html` conflicts on a `?v=` line, take the
+   structure from both sides, `node tools/stamp.mjs`, `git add`,
+   `git rebase --continue`; never type a hash.
+2. `node tools/stamp.mjs`, then `node tools/validate.mjs`, then
+   `node tools/qrperf.mjs --check` if `assets/qr.js` moved.
+3. The page in a browser, both styles, 390 px, and the README paragraph
+   rewritten. The `leave-it-better.md` pass over every file in the diff.
+4. Commits that stand alone, subjects about what a visitor can now do.
+5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
+6. Open the PR against the default branch. The body says what was wrong,
+   what it is now, the trade-off, which README section moved, and exactly
+   what was driven in a browser and how. Open the preview URL the Cloudflare
+   workflow posts and look at it on a phone.
+7. CI green, then **Rebase and merge**, and delete the branch. The stamps
+   mean every visitor gets the new files on their next load, no cache to
+   wait out.
+
 ## Where it goes wrong
 
 - The stamps: not run, or hand-merged after a rebase. `index.html` and
