@@ -64,11 +64,11 @@
  * a question against a free allowance that would then last an afternoon. So
  * the browser sends what it read the question as — the wish assets/ask.js
  * produces, types and price and open-now and the words left over — and this
- * narrows the export with the same scoring that reader uses, hands the model
- * the forty likeliest, and hands the browser those same forty so that with no
- * model it can rank them itself. The cut is generous on purpose: its one job
- * is "plausibly what was asked for", and the real ranking happens once, in
- * the browser, over my places and these together.
+ * narrows the export with the same scoring, hands the model the forty
+ * likeliest, and hands the browser those same forty so it can draw and pin
+ * whichever the model names. The cut is generous on purpose: its one job is
+ * "plausibly what was asked for", and the choosing happens once, in the
+ * model, over my places and these together.
  *
  * The forty go with every answer, on the map scope too. The scope decides
  * how far the model may reach for one — only when nothing of mine fits, or
@@ -85,9 +85,10 @@
  *
  * Every way this can fail — no binding, allowance spent, model overloaded,
  * unparseable answer, every id invented — comes back as `source: "none"` with
- * the hours still in it and a 200, because assets/ask.js in the browser can
- * read the question by itself and the map should never sit there apologising.
- * The chat gets less clever for the rest of the day; it does not break.
+ * the hours still in it and a 200, and the chat says it has nothing. It
+ * used to fall back to a keyword reader in the browser at that point, and
+ * that reader drew rows for questions it had no clue about with nothing
+ * under them saying why; the chat brings nothing rather than that now.
  */
 
 import { json, mapPlaces, venueCard, venueHours, wrongDatabase } from './_lib.js';
@@ -452,10 +453,10 @@ function readHistory(raw) {
  * were narrowed; this is the same floor for the other roll. On the map the
  * Google rows are a last resort and are not padded.
  *
- * What comes back is the card with the haystack on it, so the browser can
- * score it exactly as it scores a place of its own, and — separately, so the
- * browser's one `open` map holds every place on screen — the closing time of
- * each that is open now.
+ * What comes back is the card, so the browser can draw whichever of these
+ * the model names as the stand-in a list draws for a Google place, and —
+ * separately, so the browser's one `open` map holds every place on screen —
+ * the closing time of each that is open now.
  */
 function candidates(roll, wish, now, named, wholeCity) {
   const cap = wholeCity ? MAX_CANDIDATES : MAX_CANDIDATES_MAP;
@@ -484,7 +485,7 @@ function candidates(roll, wish, now, named, wholeCity) {
 
   const out = scored.slice(0, cap).map(({ venue, shuts }) => {
     if (shuts) open[venue.card.id] = shuts;
-    return { ...venue.card, hay: venue.hay };
+    return venue.card;
   });
 
   return { venues: out, open };
@@ -718,9 +719,15 @@ function keep(said, shown) {
 
   for (const pick of said.picks) {
     const id = pick && typeof pick.id === 'string' ? pick.id.trim() : '';
-    if (!shown.has(id) || seen[id]) continue;
+    const why = String((pick && pick.why) || '').trim().slice(0, 160);
+    /* A place with no reason is not a pick. The prompt asks for one on
+       every place and a small model still sometimes leaves it blank; a row
+       drawn with nothing under it is the answer refusing to say why it is an
+       answer, and the owner would rather have the sentence alone. So the id
+       is dropped here, and if every id goes the sentence still stands. */
+    if (!why || !shown.has(id) || seen[id]) continue;
     seen[id] = true;
-    picks.push({ id, why: String((pick && pick.why) || '').slice(0, 160) });
+    picks.push({ id, why });
     if (picks.length === MAX_PICKS) break;
   }
 

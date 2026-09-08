@@ -1,16 +1,20 @@
-/* Tallinn Tastebuds — reading a sentence as a wish, without a model.
+/* Tallinn Tastebuds — reading a sentence as a wish, for the model to narrow on.
  *
  * The chat box on the map takes a sentence — "somewhere cheap and asian, open
- * now" — and has to turn it into places. Most of the time a language model in
- * a Function does that (see functions/api/ask.js). This is what answers when
- * it does not: the daily allowance is spent, the binding is not configured,
- * the network is gone, or the model came back with something unusable.
+ * now" — and a language model in a Function turns it into places (see
+ * functions/api/ask.js). Before it does, the Function narrows the seventy
+ * places and the eleven hundred Google rows to the ones the sentence could
+ * be about, and this is what tells it what the sentence is about: which
+ * types, whether cheap or fancy, whether open now, and the words left over
+ * that might be a dish or a street.
  *
- * It is not a fallback in the apologetic sense. A hand-written reader over
- * seventy-five places is genuinely good at the questions people actually type,
- * because the vocabulary it needs is small and already written down. What it
- * cannot do is mood — "somewhere I can hear myself think" means nothing here —
- * and that is the whole of what the model buys.
+ * It used to be a second half of the chat as well — a ranker that drew rows
+ * in the panel at once and again whenever the model was away. That is gone.
+ * A substring matcher choosing three places for "not sure", with nothing
+ * under them saying why, and then the model's rows replacing them, was the
+ * chat bringing something whether or not it had a clue and then changing its
+ * mind. Now the model is the only thing that ever names a place, and this
+ * only reads.
  *
  * WHY A GLOBAL AND NOT A MODULE
  *
@@ -21,11 +25,9 @@
  *
  * IT TOUCHES NO DOM AND HOLDS NO STATE
  *
- * Two functions in and out of it, both pure. The panel, the cards and the map
- * are app.js's — it already draws all three — and this only ever answers the
- * question "which places, and why". That is what makes it readable in one
- * sitting and what lets app.js render an answer from the model and an answer
- * from here through exactly the same code.
+ * One function in and out of it, pure. The panel, the cards and the map are
+ * app.js's, and this only ever answers "what is this sentence asking for" —
+ * never "which places". That is what keeps it readable in one sitting.
  *
  * IT DOES NOT FOLD ITS OWN TEXT
  *
@@ -55,10 +57,6 @@ window.TTBAsk = (function () {
      playing rather than asking. Cut rather than refused: the first part of a
      long question is usually still the question. */
   var MAX_QUESTION = 200;
-
-  /* How many places an answer names. Three is the number a person reads; a
-     list of ten is the map again, and they already had the map. */
-  var MAX_PICKS = 3;
 
   /* Words that carry no wish in any of the ten languages — the joins and
      articles a sentence is made of. Left in, each would match a place whose
@@ -200,9 +198,10 @@ window.TTBAsk = (function () {
    *   opts.words     { cheap, fancy, open } — the ui.json synonym lists
    *
    * Out comes what was asked for, and `rest`: the words left over once the
-   * wishes and the noise are taken out. Those are what the place index is
-   * searched with — a dish, a street, a name — and they are the reason
-   * "khachapuri" works without khachapuri being a word anybody wrote down.
+   * wishes and the noise are taken out. The Function matches those against
+   * each place's name, street, types and dishes when it narrows — a dish, a
+   * street, a name — and they are the reason "khachapuri" works without
+   * khachapuri being a word anybody wrote down.
    */
   function read(question, opts) {
     var fold = opts.fold;
@@ -260,105 +259,5 @@ window.TTBAsk = (function () {
     };
   }
 
-  /* ------------------------------------------------------------------ rank
-   * The wish against the places, best first.
-   *
-   *   opts.hay     place id -> the folded haystack app.js already built
-   *   opts.open    place id -> "22:00" for somewhere open now, or absent
-   *   opts.saves   place id -> how many people saved it, for the tie-break
-   *
-   * Every place starts at nothing and earns its way up, and a place that
-   * earns nothing is not in the answer. Nothing here subtracts: a wish a
-   * place does not answer simply does not pay it, which is what keeps a
-   * question with four things in it from ruling out everywhere in the city.
-   *
-   * `why` on a hit is not a record of everything that scored — it is the two
-   * things a row cannot say for itself, the closing time and the word that
-   * matched. Everything else a place earned its place with is already printed
-   * on the row that gets drawn.
-   */
-  function rank(places, wish, opts) {
-    var open = opts.open || {};
-    var hay = opts.hay || {};
-    var scored = [];
-
-    places.forEach(function (place) {
-      /* Somewhere shut for good is never an answer to "where should I go".
-         It stays on the map, because every link ever shared still lands on
-         it, but it is not somewhere to be sent tonight. */
-      if (place.closed) return;
-
-      var score = 0;
-      var why = [];
-      var mine = place.types || [];
-
-      /* A type is the strongest thing a question can say, because it is the
-         one the map itself is organised by. It scores and says nothing: the
-         row that gets drawn already prints its own types, so a line under it
-         naming them again is the row explaining itself with itself. Same for
-         the price below, which the row draws as a gauge. See askLocally() in
-         assets/app.js, where the two things worth saying are turned into the
-         sentence under a row. */
-      wish.types.forEach(function (id) {
-        if (mine.indexOf(id) !== -1) score += 4;
-      });
-
-      /* And a cuisine the same, on the rows that carry one — Google's, which
-         arrive with `kitchens` already read off the export by /api/ask. My own
-         places have no such field, so "thai" reaches one of them only as a
-         word, which is the honest weight: nothing in my data says what a
-         place of mine cooks except its name and its dishes. */
-      var cooks = place.kitchens || [];
-      wish.kitchens.forEach(function (id) {
-        if (cooks.indexOf(id) !== -1) score += 4;
-      });
-
-      /* Price, as the map counts it: 1 and 2 are cheap, 3 and 4 are not.
-         The half-steps in the data — 2.5 — round the way the question would
-         read them, which is down for cheap and up for fancy. */
-      if (wish.cheap && place.price && place.price <= 2) score += 3;
-      if (wish.fancy && place.price && place.price >= 3) score += 3;
-
-      /* Open now is a fact rather than an opinion, and it comes from Google's
-         week through the Function. Without the Function there is no `open`
-         map at all, and the wish quietly stops paying — an answer that is
-         silent about hours is honest, one that guesses is not. */
-      if (wish.open && open[place.id]) {
-        score += 3;
-        why.push({ key: 'askWhyOpen', until: open[place.id] });
-      }
-
-      /* Whatever is left of the sentence, against the name, the street, the
-         type labels and the dishes. One point a word, so a question naming
-         two of them beats one naming either.
-
-         A word has to start a word in the haystack, not merely occur in
-         one: "khinkal" still finds khinkali and "dumpling" the dumplings,
-         but "ramen" no longer finds a street with "ramen" in the middle of
-         it. candidates() in functions/api/ask.js matches the same way. */
-      var straw = ' ' + (hay[place.id] || '');
-      wish.rest.forEach(function (word) {
-        if (straw.indexOf(' ' + word) === -1) return;
-        score += 1;
-        why.push({ key: 'askWhyWord', word: word });
-      });
-
-      if (score > 0) scored.push({ place: place, score: score, why: why });
-    });
-
-    /* Score first, and the tie broken by how many people have saved the place
-       — which is the only measure of quality this site keeps, and the honest
-       thing to fall back on when the question cannot choose between two.
-       Places with no saves at all keep the alphabet they arrived in, because
-       a stable order means the same question twice gives the same answer. */
-    var saves = opts.saves || {};
-    scored.sort(function (a, b) {
-      if (b.score !== a.score) return b.score - a.score;
-      return (saves[b.place.id] || 0) - (saves[a.place.id] || 0);
-    });
-
-    return scored.slice(0, MAX_PICKS);
-  }
-
-  return { read: read, rank: rank, MAX_QUESTION: MAX_QUESTION };
+  return { read: read, MAX_QUESTION: MAX_QUESTION };
 })();
