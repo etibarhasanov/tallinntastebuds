@@ -3601,15 +3601,36 @@
     state.view = 'ask';
     renderPanel();
     openPanel();
-    document.body.classList.remove('sheet-full');
+
+    /* At the full stop on a phone, the way a place opens, and not the low
+       one: the field is about to take the keyboard, and at the low stop the
+       keyboard covers the sheet, field and all. */
+    var full = isNarrow();
+    document.body.classList.toggle('sheet-full', full);
+    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', String(full));
     releaseSheetHeight();
     paintMarkers();
     dom.panelScroll.scrollTop = 0;
+
     /* iOS will not raise the keyboard for a focus() that is not inside the
        gesture that asked for it, and the panel has just been opened by one.
        A field that does not take the keyboard on a phone is a field nobody
-       uses, so this runs in the same turn as the press. */
-    dom.askInput.focus();
+       uses, so this runs in the same turn as the press.
+
+       And it must not scroll. Safari answers a focus() by scrolling the
+       layout viewport to reveal the field, and on a page where everything
+       is position:fixed that drags the map, the sheet and the field itself
+       off the top of the screen, leaving a blank page with a keyboard under
+       it — which is exactly how this looked on the first phone it was opened
+       on. preventScroll is the one word that stops it; wireKeyboard() then
+       measures the keyboard and folds the sheet up over it as it does for
+       the search field. Older engines without the option take the plain
+       focus and the sheet's full stop keeps the field on screen anyway. */
+    try {
+      dom.askInput.focus({ preventScroll: true });
+    } catch (e) {
+      dom.askInput.focus();
+    }
   }
 
   /* ------------------------------------------------------------ the sheet
