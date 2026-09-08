@@ -72,12 +72,17 @@ window.TTBAsk = (function () {
   var NOISE = (
     'a an the and or of for in on at to me i im is are want would like some ' +
     'something somewhere place places good nice please can you find show ' +
-    'ja voi vai see on ning kus midagi kohta koht hea palun ' +
-    'и или на в где что нибудь место хорошее пожалуйста хочу'
+    'how does do it this that what which why who there here ' +
+    'ja voi vai see on ning kus midagi kohta koht hea palun kuidas mis kas kuhu ' +
+    'и или на в где что нибудь место хорошее пожалуйста хочу как это куда'
   ).split(' ');
 
+  /* Two letters is not a word anybody asks for a place by, in any of the
+     ten languages, and it is a substring of half the map: "it" is in Piti
+     and in Vesta, and "how does it work" was answered with three
+     restaurants before this said so. */
   function isNoise(word) {
-    return word.length < 2 || NOISE.indexOf(word) !== -1;
+    return word.length < 3 || NOISE.indexOf(word) !== -1;
   }
 
   /* The punctuation a typed sentence carries, spelled out rather than written
@@ -325,10 +330,15 @@ window.TTBAsk = (function () {
 
       /* Whatever is left of the sentence, against the name, the street, the
          type labels and the dishes. One point a word, so a question naming
-         two of them beats one naming either. */
-      var straw = hay[place.id] || '';
+         two of them beats one naming either.
+
+         A word has to start a word in the haystack, not merely occur in
+         one: "khinkal" still finds khinkali and "dumpling" the dumplings,
+         but "ramen" no longer finds a street with "ramen" in the middle of
+         it. candidates() in functions/api/ask.js matches the same way. */
+      var straw = ' ' + (hay[place.id] || '');
       wish.rest.forEach(function (word) {
-        if (straw.indexOf(word) === -1) return;
+        if (straw.indexOf(' ' + word) === -1) return;
         score += 1;
         why.push({ key: 'askWhyWord', word: word });
       });

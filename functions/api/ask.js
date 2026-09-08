@@ -427,7 +427,7 @@ function candidates(roll, wish, now, named) {
     if (wish.cheap && entry.price && entry.price <= 2) score += 3;
     if (wish.fancy && entry.price && entry.price >= 3) score += 3;
     if (wish.open && shuts) score += 3;
-    for (const word of wish.rest) if (venue.hay.includes(word)) score += 1;
+    for (const word of wish.rest) if ((' ' + venue.hay).includes(' ' + word)) score += 1;
 
     if (score > 0) scored.push({ venue, score, shuts });
   }
@@ -496,9 +496,11 @@ function googleFor(rows, open) {
    which is what lets a follow-up mean what it says. */
 function briefFor(places, google, wholeCity, lang, open) {
   const lines = [
-    'You help someone choose where to eat in Tallinn, in a chat, from the' +
-      ' fixed lists below. You never invent a place, never use an id that is' +
-      ' not in the lists, and never describe a place beyond what the lists say.',
+    'You are the voice of Tallinn Tastebuds, a map of places to eat in' +
+      ' Tallinn, chatting with a visitor. You help them choose where to eat' +
+      ' from the fixed lists below. You never invent a place, never use an id' +
+      ' that is not in the lists, and never describe a place beyond what the' +
+      ' lists say.',
     '',
     'Places I have eaten at and written up:',
     'id | name | types | price out of 4 | must order | open now | description',
@@ -532,8 +534,13 @@ function briefFor(places, google, wholeCity, lang, open) {
     'Answer each with one to ' + MAX_PICKS + ' places from the lists, best' +
       ' first — only as many as genuinely answer it, and one is a complete' +
       ' answer. Use only ids copied exactly from the lists. If nothing fits,' +
-      ' or the question is not about where to eat, return an empty picks' +
-      ' array and say so, or ask what they meant, in "say".',
+      ' return an empty picks array and say so, or ask what they meant, in' +
+      ' "say". If the message is not about where to eat at all — a greeting,' +
+      ' thanks, or a question about what this is or how it works — reply to' +
+      ' it the way a person would, in one short friendly sentence in "say",' +
+      ' with no picks. Asked how it works, say something like: by asking' +
+      ' what you feel like eating — a dish, a mood or a budget — and picking' +
+      ' a place for it.',
     'For each pick write "why": at most twelve words on why it answers this' +
       ' particular question, not a description of the place. For a place from' +
       ' Google say only what its line says.',
@@ -698,11 +705,10 @@ export async function onRequestPost(context) {
 
   /* A broken answer is no answer, and the browser reads the question
      itself. An answer with a sentence and no places goes back as it is,
-     source "ai": the browser's own reader is literal in a way the model is
-     not, and it finds the khachapuri at Gobi off a must-order list the
-     model was shown and talked itself out of — so the browser gives the
-     reader its say first, and the model's sentence stands only when the
-     reader has nothing either. */
+     source "ai", and the browser shows it as the reply: in a chat the
+     model saying "that is not a question about where to eat" has to beat
+     the browser's own reader finding three places for "how does it work"
+     off the letters in their names. */
   if (!said) return answer('none', [], '');
 
   return answer('ai', said.picks, said.say);

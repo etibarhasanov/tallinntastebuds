@@ -3428,18 +3428,17 @@
       .catch(function () { arrive(turn, null, null); });
   }
 
-  /* The Function's answer folded into its exchange. The model's picks win
-     when there are any; otherwise the local reader runs again over my places
-     and the city's rows together, with the hours it now has. The city is
-     reached for only when the map came to nothing, on either half — that is
-     the fallback, and it costs nothing now: the rows came with the answer.
-
-     A model that answered with a sentence and no places — asked back which
-     of two it meant, or said in its own words that nothing fits — is heard
-     last: the local reader is literal in a way the model is not and finds
-     the khachapuri the model talked itself out of, so it gets its say
-     first, and the model's sentence stands only over an answer with no
-     rows at all. */
+  /* The Function's answer folded into its exchange. The model's reply wins
+     whenever there is one — places, or only a sentence: asked back which of
+     two it meant, told that "how does it work" is not a question about
+     where to eat. The reply is the conversation, and the local reader's
+     rows replacing it would be the site talking over itself; it had its
+     turn the moment the question was sent, and the model's answer is the
+     better one that was waited for. Only when the model said nothing at
+     all does the reader run again, over my places and the city's rows
+     together, with the hours it now has. The city is reached for only when
+     the map came to nothing — that is the fallback, and it costs nothing
+     now: the rows came with the answer. */
   function arrive(turn, wish, out) {
     var open = (out && out.open) || {};
     var city = ((out && out.venues) || []).filter(function (row) {
@@ -3448,14 +3447,13 @@
     var model = out && out.source === 'ai' ? out : null;
 
     var said = null;
-    if (model && model.picks && model.picks.length) {
-      said = { say: model.say || '', picks: model.picks, source: 'ai' };
+    if (model && ((model.picks && model.picks.length) || model.say)) {
+      said = { say: model.say || '', picks: model.picks || [], source: 'ai' };
     } else if (wish) {
       said = askLocally(wish, open, []);
       if (!said.picks.length && city.length) said = askLocally(wish, open, city);
     }
     if (!said) said = { say: '', picks: [], source: 'rules' };
-    if (!said.picks.length && model && model.say) said = { say: model.say, picks: [], source: 'ai' };
 
     /* Whether the answer reached past the map. On the map scope that is the
        fallback, and the pressed button and the sentence over the answer both
