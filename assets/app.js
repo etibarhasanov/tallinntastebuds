@@ -95,7 +95,7 @@
     /* The places on that list which are not on the map. A list draws from
        data/places.json — the map plus the Google import — so most of a top
        ten is somewhere I have never filmed. These are the smallest possible
-       stand-ins: a name, an address and a pin, marked `fromList` so nothing
+       stand-ins: a name, an address and a pin, marked `standIn` so nothing
        that renders a write-up mistakes one for a place that has one.
 
        They are held apart from state.places rather than mixed into it, and
@@ -103,7 +103,8 @@
        chips, the search, the just-added section, Surprise me and the
        structured data in the head, and none of those should grow a Google
        venue because somebody opened a link. Only the four loops that turn a
-       place into a pin read both. */
+       place into a pin read both — and askPlaces below, which is the same
+       kind of stand-in arriving by the other door. */
     listPlaces: [],
     /* What the chat box was last asked, and what came back: the question, the
        sentence to print over the answer, and two or three place ids each with
@@ -120,6 +121,15 @@
        Null on arrival and on every visit that never asks anything. */
     answer: null,        // { q, say, picks: [{ id, why }], open: {} }, or null
     asking: false,       // a question is in the air; the field is disabled
+    /* Whether the question is asked of my map or of the whole city. Held
+       here rather than in localStorage: the narrower answer is the one to
+       arrive on, and a visitor who wants the city presses for it. */
+    askScope: 'map',     // 'map' | 'all'
+    /* The Google rows an answer on the whole city put on the map: stand-ins
+       in the same shape as listPlaces, drawn by the same code, and gone the
+       moment the answer is. Held apart from listPlaces because the two go
+       away for different reasons — see forgetList() and forgetAnswer(). */
+    askPlaces: [],
     /* Who is signed in, and whether accounts work here at all. Both come
        from /api/account and both are absent until it answers. */
     account: { ready: false, user: null },
@@ -267,7 +277,9 @@
   }
 
   /* Everything that has a pin on the map right now: my seventy-four, plus the
-     stand-ins for a list's places that are not among them.
+     stand-ins for a list's places that are not among them, plus the ones an
+     answer on the whole city put there. Never both at once — an answer puts
+     a list away before it draws — but the loops below do not need to know.
 
      Deliberately not "everything the map knows about". state.places is the
      map and stays the map — the chips, the search, Surprise me, the just-added
@@ -275,7 +287,8 @@
      a Google venue that arrived with a link. Only the loops that draw, dress,
      label and cluster pins ask for this wider set. */
   function allPlaces() {
-    return state.listPlaces.length ? state.places.concat(state.listPlaces) : state.places;
+    if (!state.listPlaces.length && !state.askPlaces.length) return state.places;
+    return state.places.concat(state.listPlaces, state.askPlaces);
   }
 
   function byId(id) {
@@ -287,7 +300,21 @@
     for (var j = 0; j < state.listPlaces.length; j++) {
       if (state.listPlaces[j].id === id) return state.listPlaces[j];
     }
+    for (var k = 0; k < state.askPlaces.length; k++) {
+      if (state.askPlaces[k].id === id) return state.askPlaces[k];
+    }
     return null;
+  }
+
+  /* Why a place with no write-up is on this map at all. A stand-in arrives
+     one of two ways, and they are never on screen together — an answer puts
+     a list away before it draws — so the mode says which, and the place
+     carries no flag for it. */
+  function standInNote() {
+    if (state.answer) return t('askNotMine');
+    return state.list && state.list.by
+      ? t('listNotMineBy', { name: state.list.by })
+      : t('listNotMine');
   }
 
   /* What the list says about one place — the sentence its owner wrote, which
@@ -3215,10 +3242,27 @@
      Which leaves most rows with nothing under them, and that is the honest
      shape of it. This half ranks; the model's half is the one that can say
      something about an evening, and its clause goes in this same slot. */
-  function askLocally(question, open) {
-    var wish = window.TTBAsk.read(question, {
+  /* data/cuisines.json, fetched the first time a question is asked and not
+     before: the map never draws a cuisine, so ten kilobytes of labels for
+     them would be weight on every load for the one visitor in a hundred who
+     types "thai". Unreadable is an empty list, and a question is still read
+     without it — a cuisine then reaches the export only as a word. */
+  var cuisinesLoading = null;
+
+  function loadCuisines() {
+    if (!cuisinesLoading) {
+      cuisinesLoading = getJSON('data/cuisines.json')
+        .then(function (data) { return (data && data.cuisines) || []; })
+        .catch(function () { return []; });
+    }
+    return cuisinesLoading;
+  }
+
+  function readWish(question, cuisines) {
+    return window.TTBAsk.read(question, {
       fold: fold,
       types: state.types,
+      cuisines: cuisines,
       /* The three wishes with no words in the data. Everything else a question
          can name is a taxonomy label, and read() finds those itself. */
       words: {
@@ -3227,10 +3271,22 @@
         open: t('askWordsOpen')
       }
     });
+  }
+
+  /* `city` is the Google rows /api/ask narrowed the export to, each carrying
+     the folded haystack it was scored on, so they are ranked here exactly as
+     my own places are — one function over both, my places first in the order
+     it is handed so that a tie goes to a place I have been to. Empty on the
+     map scope, and empty whenever the Function did not answer. */
+  function askLocally(wish, open, city) {
     if (wish.empty) return { say: '', picks: [], source: 'rules' };
 
-    var ranked = window.TTBAsk.rank(state.places, wish, {
-      hay: hayIndex, open: open, saves: state.saves
+    var hay = {};
+    Object.keys(hayIndex).forEach(function (id) { hay[id] = hayIndex[id]; });
+    city.forEach(function (row) { hay[row.id] = row.hay; });
+
+    var ranked = window.TTBAsk.rank(state.places.concat(city), wish, {
+      hay: hay, open: open, saves: state.saves
     });
 
     return {
@@ -3270,31 +3326,80 @@
     if (!question || state.asking) return;
 
     setAsking(true);
-    trackEvent('ask', { search_term: question.toLowerCase() });
+    trackEvent('ask', { search_term: question.toLowerCase(), scope: state.askScope });
 
     /* The search index is built lazily on the first search; an answer is the
        other thing that reads it, and it may well be what reads it first. */
     if (!hayIndex) buildSearchIndex();
 
-    fetch(ASK_URL, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify({ q: question, lang: state.lang })
-    })
+    /* Read here as well as sent: on the whole city the Function narrows a
+       thousand Google rows with this before the model sees any, and with no
+       model at all it is what ranks the answer on this side. */
+    var wish = null;
+
+    loadCuisines()
+      .then(function (cuisines) {
+        wish = readWish(question, cuisines);
+        return fetch(ASK_URL, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', accept: 'application/json' },
+          body: JSON.stringify({ q: question, lang: state.lang, scope: state.askScope, wish: wish })
+        });
+      })
       .then(function (res) { return res.ok ? res.json() : null; })
       .catch(function () { return null; })
       .then(function (out) {
         var open = (out && out.open) || {};
+        /* The city's rows, as stand-ins the map can draw. Only ones with a
+           pin: a row with no coordinates is a row nothing on this page can
+           point at, the same rule a list's stand-ins are held to. */
+        var city = ((out && out.venues) || []).filter(function (row) {
+          return typeof row.lat === 'number' && typeof row.lng === 'number';
+        }).map(cityStandIn);
+
         /* The Function answers with the hours whether or not it has an
            opinion, so "open until 22:00" is on the row either way. Only the
            picking falls back. */
         var said = out && out.source === 'ai' && out.picks && out.picks.length
           ? { say: out.say || '', picks: out.picks, source: 'ai' }
-          : askLocally(question, open);
+          : askLocally(wish, open, city);
+
+        /* Of the forty, only the ones the answer names go on the map. */
+        var named = {};
+        said.picks.forEach(function (pick) { named[pick.id] = true; });
 
         setAsking(false);
-        showAnswer(question, said, open);
+        showAnswer(question, said, open, city.filter(function (row) { return named[row.id]; }));
       });
+  }
+
+  /* A Google row as this page draws a place it has no write-up for: the
+     shape listPlaces holds, so every loop that draws, dresses and labels a
+     pin reads it without asking which door it came in by. The haystack
+     rides along for askLocally() and is never drawn. */
+  function cityStandIn(row) {
+    return {
+      id: row.id,
+      name: row.name,
+      address: row.address || '',
+      lat: row.lat,
+      lng: row.lng,
+      types: row.types || [],
+      /* What Google says the place cooks, in data/cuisines.json's ids. Read
+         by rank() in assets/ask.js and drawn by nothing: the row prints the
+         types, which are the map's own words for the same thing. */
+      kitchens: row.kitchens || [],
+      price: typeof row.price === 'number' ? row.price : null,
+      rating: typeof row.rating === 'number' ? row.rating : null,
+      reviews: typeof row.reviews === 'number' ? row.reviews : null,
+      google: true,
+      phone: row.phone || '',
+      website: row.website || '',
+      hours: row.hours || [],
+      mapsUrl: row.mapsUrl || '',
+      hay: row.hay || '',
+      standIn: true
+    };
   }
 
   /* An answer on the screen: the pins, the rows, the sentence over them, and
@@ -3305,7 +3410,7 @@
      was true at nine on a Friday because of what was open, and a link to it
      opened on Sunday afternoon would draw three closed restaurants under a
      sentence explaining that they are open. */
-  function showAnswer(question, said, open) {
+  function showAnswer(question, said, open, city) {
     if (!said.picks.length) {
       toast(t('askNothing'));
       trackEvent('ask_none', { search_term: question.toLowerCase() });
@@ -3320,6 +3425,8 @@
     setQuery('');
 
     state.answer = { q: question, say: said.say, picks: said.picks, open: open };
+    state.askPlaces = city;
+    addPins(city);
     state.selected = null;
     state.view = 'list';
 
@@ -3339,7 +3446,9 @@
     trackEvent('ask_answer', {
       search_term: question.toLowerCase(),
       source: said.source || 'rules',
-      places_shown: said.picks.length
+      scope: state.askScope,
+      places_shown: said.picks.length,
+      from_google: city.length
     });
   }
 
@@ -3349,9 +3458,30 @@
     if (!state.answer) return;
     state.answer = null;
     if (dom.askInput) dom.askInput.value = '';
+
+    /* The city's stand-ins came in with the answer and leave with it, pins
+       and all — and one being read right now goes too, the panel dropping
+       back to the list rather than showing a card byId() cannot find. The
+       same rule forgetList() applies to a list's. */
+    var standing = {};
+    state.askPlaces.forEach(function (p) { standing[p.id] = true; });
+    if (state.selected && standing[state.selected]) {
+      state.selected = null;
+      state.view = 'list';
+    }
+    if (state.marked && standing[state.marked]) state.marked = null;
+    dropPins(state.askPlaces);
+    state.askPlaces = [];
     if (opts && opts.redraw === false) return;
     renderPanel();
     paintMarkers();
+  }
+
+  function paintAskScope() {
+    var btns = dom.askScope.querySelectorAll('[data-scope]');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].setAttribute('aria-pressed', String(btns[i].getAttribute('data-scope') === state.askScope));
+    }
   }
 
   /* The panel opened on the question rather than on the list. The rail's
@@ -3945,12 +4075,7 @@
       })
     ]));
 
-    dom.detail.appendChild(el('p', {
-      className: 'muted-note',
-      textContent: state.list && state.list.by
-        ? t('listNotMineBy', { name: state.list.by })
-        : t('listNotMine')
-    }));
+    dom.detail.appendChild(el('p', { className: 'muted-note', textContent: standInNote() }));
 
     /* The sentence its owner wrote, straight under the note and above
        everything Google has to say: it is the reason this place is on a list
@@ -4129,7 +4254,7 @@
        this line renders a write-up — the blurb, the reel, the photographs,
        the types, the price, the save mark — and there is none. It gets its
        own short card instead of a long one full of empty sections. */
-    if (place.fromList) return renderListOnly(place);
+    if (place.standIn) return renderListOnly(place);
 
     dom.detail.className = place.closed ? 'is-closed' : '';
 
@@ -4671,7 +4796,7 @@
          normally carries are all claims about a write-up that does not exist
          — how much there is to look at, what it costs, which types it is —
          so a stand-in row carries the sentence and the address instead. */
-      if (place.fromList) return listOnlyRow(place, said);
+      if (place.standIn) return listOnlyRow(place, said);
 
       /* A discount used to be something you could only find by opening the
          place, which meant opening seventy of them to learn that four save
@@ -4753,7 +4878,7 @@
       var row = el('button', {
         type: 'button',
         className: 'list-row is-from-list',
-        'aria-label': t('openPlace', { name: place.name }) + ', ' + t('listNotMine')
+        'aria-label': t('openPlace', { name: place.name }) + ', ' + standInNote()
       }, [
         el('span', { className: 'list-name', textContent: place.name }),
         el('span', { className: 'list-sub' }, [
@@ -5963,8 +6088,9 @@
         hours: item.hours || [],
         mapsUrl: item.mapsUrl || '',
         /* The one flag that matters. Everything that would render a write-up
-           checks it. */
-        fromList: true
+           checks it. Not "from a list": an answer on the whole city makes the
+           same stand-ins out of the same export, and they wear the same flag. */
+        standIn: true
       });
       items.push(item);
     });
@@ -6218,6 +6344,16 @@
     dom.btnAsk.addEventListener('click', function () {
       closeHint('random');
       openAsk();
+    });
+
+    /* Two buttons, one pressed. Changing it does not re-ask: the question
+       is still in the field and the arrow is right there, and a switch that
+       fired a request would spend the allowance on every flick of it. */
+    dom.askScope.addEventListener('click', function (ev) {
+      var btn = ev.target.closest('[data-scope]');
+      if (!btn || btn.getAttribute('data-scope') === state.askScope) return;
+      state.askScope = btn.getAttribute('data-scope');
+      paintAskScope();
     });
 
     dom.askForm.addEventListener('submit', function (ev) {
@@ -6620,6 +6756,7 @@
       askForm: $('ask-form'),
       askInput: $('ask-input'),
       askGo: $('ask-go'),
+      askScope: $('ask-scope'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
       stories: $('stories'),

@@ -187,9 +187,12 @@ window.TTBAsk = (function () {
   /* ------------------------------------------------------------------ read
    * A sentence as the wish behind it.
    *
-   *   opts.fold    the caller's accent folding, as above
-   *   opts.types   data/taxonomy.json's types, whole, with all ten labels
-   *   opts.words   { cheap, fancy, open } — the ui.json synonym lists
+   *   opts.fold      the caller's accent folding, as above
+   *   opts.types     data/taxonomy.json's types, whole, with all ten labels
+   *   opts.cuisines  data/cuisines.json's cuisines, the same shape — what a
+   *                  Google row can be asked for by, since the export files a
+   *                  place as Thai or Georgian and my taxonomy does not
+   *   opts.words     { cheap, fancy, open } — the ui.json synonym lists
    *
    * Out comes what was asked for, and `rest`: the words left over once the
    * wishes and the noise are taken out. Those are what the place index is
@@ -216,6 +219,11 @@ window.TTBAsk = (function () {
     var wantsOpen = said(q, open);
 
     var types = typeSaid(q, opts.types, fold);
+    /* The same reading over the directory's vocabulary: "thai", "tai" and
+       "тайская" all reach `thai`. Nothing on my map carries one of these ids
+       — the export's rows do — so on the map scope this is read and scores
+       nothing, which costs nothing. */
+    var kitchens = typeSaid(q, opts.cuisines || [], fold);
 
     /* What is left is a dish or a name. The wish phrases come out first so
        that "cheap" does not also go looking for a place called Cheap. */
@@ -233,6 +241,7 @@ window.TTBAsk = (function () {
 
     return {
       types: types,
+      kitchens: kitchens,
       cheap: !!wantsCheap,
       fancy: !!wantsFancy,
       open: !!wantsOpen,
@@ -241,7 +250,8 @@ window.TTBAsk = (function () {
          question that reads as nothing — "hello", "what is this" — should be
          answered with a shrug rather than with three places chosen by a
          scoring pass that had nothing to score. */
-      empty: !types.length && !wantsCheap && !wantsFancy && !wantsOpen && !rest.length
+      empty: !types.length && !kitchens.length &&
+        !wantsCheap && !wantsFancy && !wantsOpen && !rest.length
     };
   }
 
@@ -286,6 +296,16 @@ window.TTBAsk = (function () {
          sentence under a row. */
       wish.types.forEach(function (id) {
         if (mine.indexOf(id) !== -1) score += 4;
+      });
+
+      /* And a cuisine the same, on the rows that carry one — Google's, which
+         arrive with `kitchens` already read off the export by /api/ask. My own
+         places have no such field, so "thai" reaches one of them only as a
+         word, which is the honest weight: nothing in my data says what a
+         place of mine cooks except its name and its dishes. */
+      var cooks = place.kitchens || [];
+      wish.kitchens.forEach(function (id) {
+        if (cooks.indexOf(id) !== -1) score += 4;
       });
 
       /* Price, as the map counts it: 1 and 2 are cheap, 3 and 4 are not.

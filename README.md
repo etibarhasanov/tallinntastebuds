@@ -550,10 +550,51 @@ about a real restaurant is a bad recommendation; a hallucinated restaurant is
 the site lying in its own voice, and this shape makes the second one
 unreachable.
 
-It also only ever recommends off **my** roll, never Google's eleven hundred.
-Being on the map is the verdict, and a chat box suggesting places I have never
-eaten in would be a different site. Google's rows are read for exactly one
-thing — see the hours below.
+### My map, or the whole city
+
+Under the field is a switch: **My map**, or **All of Tallinn**. It arrives on
+the first, which is the narrower answer and the one this site stands behind:
+being on the map is the verdict, and a chat box suggesting places I have never
+eaten in would be a different site.
+
+The second adds Google's eleven hundred — see [Google venues](#google-venues) —
+and it is not a recommendation, and says so. A Google place in an answer is
+drawn as the stand-in a list draws for one: the same "According to Google" line
+with the score and the count behind it, the same card with the hours, the phone
+and the listing, and a note at the top saying I have never been. It wears
+Google's name and none of my words, because the alternative is the site
+borrowing a verdict it has not earned.
+
+**Eleven hundred rows do not go into a prompt.** That is thirty thousand
+tokens a question against a free allowance that would then last an afternoon.
+So the browser sends what it read the question as — the wish `assets/ask.js`
+produces: types, cheap or fancy, open now, and the words left over — and
+`/api/ask` narrows the export with the same scoring that reader uses, hands the
+model the forty likeliest, and hands the browser those same forty so that with
+no model it can rank them itself. The cut is generous on purpose: its one job
+is "plausibly what was asked for", and the real ranking happens once, in the
+browser, over my places and these together — **my places first** when a tie
+has to be broken, and Google's own score breaking ties among Google's rows,
+which on Google's rows is the only honest tie-break there is.
+
+What a Google row can answer with is less than one of mine: a category, a
+cuisine, a price band, a rating and the week. No write-up, no must-order dish.
+The cuisine is the part that earns its keep. Nothing on my map says what a
+place cooks beyond its name and its dishes, but the export files a place as
+*Thai Restaurant* or *Georgian*, and `data/cuisines.json` already carries
+those ids in ten languages for [the directory](#the-directory) — so the reader
+takes them the way it takes the taxonomy, and *thai*, *tai* and *тайская* all
+score a Thai row as a type would. The file is fetched the first time a
+question is asked, not on load. So "cheap thai" on the whole city answers
+three Thai places Google rates well; "khachapuri" still answers Gobi and
+Pirosmani first, off their dishes, with a Georgian place from the export after
+them; and "somewhere I can hear myself think" finds nothing in the export it
+can score, and the answer is whatever my places make of it. The sixty Google rows
+that are already places of mine are left out of the export's half — offering
+the Google copy beside the write-up would be the same door twice.
+
+Google's rows are read on the map scope for exactly one thing — see the hours
+below.
 
 ### It is free, and it stays working when it stops being
 

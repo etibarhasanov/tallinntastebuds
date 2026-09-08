@@ -448,19 +448,26 @@ export async function venuesByIds(env, ids) {
     .bind(...keys)
     .all();
 
-  /* The contact half, added here rather than in venueEntry() because these
-     four columns are selected here and nowhere else. A place off the export
-     has no write-up behind its name, and until this travelled the card the
-     map drew for one was a name, an address and a Directions button — while
-     the row it came from held the number to ring, the site to read, the hours
-     to turn up in and the listing all three came off. */
-  return new Map((results || []).map((row) => [row.place_id, {
+  return new Map((results || []).map((row) => [row.place_id, venueCard(row)]));
+}
+
+/* A venue with its contact half: the entry above plus the number to ring,
+ * the site to read, the week as seven days and the Google listing all three
+ * came off. Kept apart from venueEntry() because these four columns are
+ * selected by the two callers that draw a card — venuesByIds() above for a
+ * place on somebody's list, and /api/ask for a place it is recommending —
+ * and by nothing that draws a row. A place off the export has no write-up
+ * behind its name, and until this travelled the card the map drew for one
+ * was a name, an address and a Directions button, while the row it came from
+ * held all four. */
+export function venueCard(row) {
+  return {
     ...venueEntry(row),
     phone: row.phone || '',
     website: row.website || '',
     hours: venueHours(row.opening_hours),
     mapsUrl: row.maps_url || ''
-  }]));
+  };
 }
 
 /* Google's one-line week as seven days the browser can draw.
