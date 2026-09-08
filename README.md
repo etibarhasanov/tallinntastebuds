@@ -757,6 +757,19 @@ what the model buys.
 browser reads the question itself, and the same cards are drawn either way.
 The chat gets less clever for the rest of the day; it does not break.
 
+**Except when it is the allowance, in which case the chat says so.** Workers
+AI answers a spent day with error 3036, which is a 429 like the transient
+"out of capacity" 3040 but means the opposite thing: nothing clears it before
+midnight UTC. So the Function answers `source: "resting"` for that one, and
+the browser draws the sentence *We have overworked today. We are on a break
+until the new day — come back tomorrow* and stops there. It does **not** fall
+through to the keyword reader: three places matched on letters under a
+sentence about an evening is the reader impersonating the model, which is the
+thing this panel is for stopping. Every other failure — a blip, a moved
+model, a dead network — is still the quiet fallback above, because those may
+be gone by the next question and a visitor told to come back tomorrow would
+have been lied to.
+
 The reader is a substring matcher, and the honest limit of it is that it
 cannot hold a thread at all — it reads each sentence on its own. It also
 used to answer questions that were not questions about food, because *it* is

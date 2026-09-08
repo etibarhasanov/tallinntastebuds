@@ -133,6 +133,14 @@ const MAX_PICKS = 3;
    every question. The browser sends the same six. */
 const MAX_HISTORY = 6;
 
+/* Workers AI's code for "you have used up your daily free allocation of
+   10,000 Neurons". It arrives as a 429 like the other one that matters —
+   3040, out of capacity — and the two mean opposite things: 3040 clears when
+   a colo frees up, 3036 clears at midnight UTC and not before. So only this
+   one is worth telling somebody about, and it is matched on the code rather
+   than on the sentence because the sentence is Cloudflare's to reword. */
+const SPENT = '3036';
+
 /* How many Google rows go to the model, and back to the browser.
  *
  * Forty on the whole city, where those rows are the point of the question.
@@ -819,6 +827,7 @@ export async function onRequestPost(context) {
   messages.push({ role: 'user', content: question });
 
   let said = null;
+  let spent = false;
   try {
     const out = await env.AI.run(MODEL, {
       messages,
@@ -838,11 +847,12 @@ export async function onRequestPost(context) {
 
     said = keep(unwrap(out && (out.response !== undefined ? out.response : out)), shown);
   } catch (e) {
-    /* The daily ten thousand Neurons are spent, the model is overloaded, or
-       it has been moved behind a paid plan. All three are the same thing
-       here, and the first is much the commonest: a question carries the
-       whole catalogue, so the free allowance is something like a hundred and
-       thirty questions a day and then this throws until midnight UTC. */
+    /* The daily Neurons are spent, the model is overloaded, or it has been
+       moved behind a paid plan. Two of those are worth nothing to a reader
+       and are handled below as they always were; the first is worth saying
+       out loud, because it is the one that will still be true in an hour and
+       the only one somebody can do something about — come back tomorrow. */
+    spent = String((e && e.message) || '').includes(SPENT);
     said = null;
   }
 
@@ -852,6 +862,13 @@ export async function onRequestPost(context) {
      model saying "that is not a question about where to eat" has to beat
      the browser's own reader finding three places for "how does it work"
      off the letters in their names. */
+  /* Out of Neurons until midnight UTC. The browser draws this as the chat
+     saying it is resting rather than as an answer, and does not fall through
+     to its own keyword reader: three places matched on letters under a
+     sentence about an evening is exactly the impersonation this whole
+     feature has been trying to stop doing. */
+  if (spent) return answer('resting', [], '', claude.note + '/workers-ai-spent');
+
   if (!said) return answer('none', [], '', claude.note + '/workers-ai-none');
 
   return answer('ai', said.picks, said.say, 'workers-ai');
