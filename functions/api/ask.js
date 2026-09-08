@@ -86,10 +86,6 @@
  */
 
 import { json, mapPlaces, venueCard, venueHours, wrongDatabase } from './_lib.js';
-/* Claude, when there is a key for it in the Pages environment. Without one
-   this returns "no-key" and the Workers AI half below is the whole feature,
-   exactly as it was. See the header of _claude.js for why there are two. */
-import { askClaude } from './_claude.js';
 /* What a Google row cooks, in the directory's ids: the one table that decides
    it, and the string it is asked of. See the note above KITCHENS for why it
    is that table and not VENUE_TYPES — "thai" is a thing to ask for, and the
@@ -567,13 +563,10 @@ function catalogueFor(places, lang) {
     .join('\n');
 }
 
-/* Which of my places are open, as a line rather than as a column in the
-   catalogue above.
-
-   It reads worse there and it is worth it: the hours change through the
-   evening and the catalogue does not, and on the Claude path the catalogue
-   is a cached prefix that anything changing inside it would invalidate. One
-   builder feeds both models, so the split lives here rather than twice. */
+/* Which of my places are open, as one line rather than as a column in the
+   catalogue above. The hours change through the evening and the catalogue
+   does not, and most of that column was empty cells: one line naming the
+   handful that are open is fewer tokens and easier to read. */
 function openLine(open) {
   const ids = Object.keys(open || {});
   if (!ids.length) return '';
@@ -651,9 +644,11 @@ function briefFor(places, google, wholeCity, lang, open) {
       ' with no picks. Asked how it works, say something like: by asking' +
       ' what you feel like eating — a dish, a mood or a budget — and picking' +
       ' a place for it.',
-    'For each pick write "why": at most twelve words on why it answers this' +
-      ' particular question, not a description of the place. For a place from' +
-      ' Google say only what its line says.',
+    'EVERY pick carries a "why", never empty: at most twelve words on why' +
+      ' THAT place answers THIS question — the dish they asked for, what suits' +
+      ' the occasion, what makes it the cheap one. Never a description of the' +
+      ' place and never its type or price read back, which the card under it' +
+      ' already prints. For a place from Google say only what its line says.',
     'Write "say" as one or two short sentences, the way a person replies in' +
       ' a chat, introducing the picks or answering what was asked.',
     'Write "why" and "say" in this language: ' + lang + '.',
@@ -770,17 +765,18 @@ export async function onRequestPost(context) {
 
   /* Not the whole map any more — the slice of it this question could be
      about. See shortlist(): the catalogue was most of what a question cost
-     and none of it was chosen. Both models are shown the same slice, so
-     which one answers cannot change which places were available to name. */
+     and none of it was chosen. */
   const mine = shortlist(places, wish, open, lang, named);
 
   /* `note` is not for the page — nothing draws it — it is so that a chat
      answering with the browser's keyword reader can be told apart from a
-     chat answering with a model, from outside, in one request. This feature
-     was silently down for a day because every failure looked identical: no
-     key, spent allowance, overloaded model and dead network all arrived as
-     the same empty answer. It names which, never why in the provider's own
-     words, so nothing quotes a request back at a stranger. */
+     chat answering with the model, from outside, in one request. This
+     feature answered with the reader for its whole first year and nobody
+     could tell, because every way out looked identical: no binding, spent
+     allowance, overloaded model and a reply read at the wrong key all
+     arrived as the same empty answer. It names which, never why in
+     Cloudflare's own words, so nothing quotes a request back at a
+     stranger. */
   const answer = (source, picks, say, note) =>
     json({ ok: true, source, picks, say, note, open, venues: google });
 
@@ -789,31 +785,11 @@ export async function onRequestPost(context) {
      — see the header — and it is built from the slice for that reason. */
   const shown = new Set([...mine.map((p) => p.id), ...google.map((g) => g.id)]);
 
-  /* Claude first, when the key is there. It is the half that can hold a
-     conversation — a follow-up read against what was just said, and a
-     greeting answered as a greeting — which is the whole reason it was
-     added; see the header of _claude.js. */
-  const claude = await askClaude(env, {
-    question,
-    history,
-    catalogue: catalogueFor(mine, lang),
-    google: googleFor(google),
-    wholeCity,
-    lang,
-    open,
-    maxPicks: MAX_PICKS
-  });
-
-  if (claude.ok) {
-    const kept = keep(claude.said, shown);
-    if (kept) return answer('ai', kept.picks, kept.say, 'claude');
-  }
-
-  /* Everything from here on is Workers AI's half, and none of it is allowed
+  /* Everything from here on is the model's half, and none of it is allowed
      to take the answer down with it. `source: "none"` is a complete, correct
      answer that the browser knows what to do with — it reads the question
      itself with assets/ask.js and draws the same cards. */
-  if (!env.AI) return answer('none', [], '', claude.note);
+  if (!env.AI) return answer('none', [], '', 'no-ai');
 
   /* The conversation as the model sees it: the brief, then every earlier
      exchange as the two turns it was — the question, and the answer in the
@@ -885,9 +861,9 @@ export async function onRequestPost(context) {
      to its own keyword reader: three places matched on letters under a
      sentence about an evening is exactly the impersonation this whole
      feature has been trying to stop doing. */
-  if (spent) return answer('resting', [], '', claude.note + '/workers-ai-spent');
+  if (spent) return answer('resting', [], '', 'workers-ai-spent');
 
-  if (!said) return answer('none', [], '', claude.note + '/workers-ai-none');
+  if (!said) return answer('none', [], '', 'workers-ai-none');
 
   return answer('ai', said.picks, said.say, 'workers-ai');
 }

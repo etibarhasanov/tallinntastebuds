@@ -666,37 +666,15 @@ the Google copy beside the write-up would be the same door twice.
 Google's rows are read on the map scope for exactly one thing — see the hours
 below.
 
-### Two models, and which one answers
+### It is free, and what that buys
 
-The chat asks **Claude** first, and falls back to **Workers AI**, and falls
-back again to a keyword reader in the browser. Each step down is a step
-further from a conversation, and the site never says which — it just gets
-less clever.
-
-**Claude** answers when `ANTHROPIC_API_KEY` is set in the Pages environment.
-It is the half that can actually hold a conversation: a follow-up read
-against what it just said, a greeting answered as a greeting, *what is
-similar to that* meaning what it plainly means. `functions/api/_claude.js` is
-the whole of it — a `fetch` against the Messages API, because there is no
-`package.json` in this repository and one HTTPS call is not a reason to grow
-one.
-
-The catalogue is the same seventy lines on every question ever asked, so it
-goes in the system prompt under a cache breakpoint and is read back at the
-cache rate rather than written again. That split is the whole cost story and
-it is easy to undo by accident: a prompt cache is a **prefix** match, so
-anything that changes between two questions has to sit after the breakpoint.
-Two things change — the opening hours, which move through the evening, and
-the forty Google rows, which are narrowed per question — and both are named
-in the question's own turn for that reason. Put either in the catalogue and
-it still answers, it just quietly costs several times more. There is a test
-for it: the system block has to come out byte-identical for two different
-questions.
-
-**Workers AI** answers when there is no key, or when Claude cannot be
-reached. Cloudflare gives every account **ten thousand Neurons a day at no
-charge** and there is nothing to configure — no key, no npm, no account to
-open; the binding is three lines of `wrangler.toml`.
+The model is **Workers AI**, and only that. Cloudflare gives every account
+**ten thousand Neurons a day at no charge** and there is nothing to
+configure — no key, no npm, no account to open, no card; the binding is three
+lines of `wrangler.toml` and the model is one constant in the Function. A
+paid model was wired in ahead of it for an afternoon and taken out again the
+same day: this site is meant to cost nothing to run, and a key that has to be
+bought, capped and rotated is not nothing.
 
 What that allowance actually buys is the thing worth knowing. A question
 A question used to carry the whole catalogue, about 4,750 tokens, which was
@@ -733,20 +711,19 @@ people type; it took *how does it work* coming back with three restaurants,
 and *All Tallinn* giving the same answer as the map, to notice. Both shapes
 are read now, there is a test that feeds the route the real chat-completion
 shape and checks the model's own words come out, and `/api/ask` reports
-which half answered in **`note`** — `claude`, `workers-ai`, `no-key`,
-`http-429` — so the next time this goes quiet it is one request to find
-rather than a year.
+which of the two answered in **`note`** — `workers-ai`, `workers-ai-none`,
+`workers-ai-spent`, `no-ai` — so the next time this goes quiet it is one
+request to find rather than a year.
 
-Which leaves the interesting half: what happens when neither model is there.
+Which leaves the interesting half: what happens when the model is not there.
 That happens quite often — the allowance runs out, a model gets moved behind
 the paid plan (`kimi-k2.6` and `glm-5.2` both did in July 2026), the network is
-gone, or it answers with something unparseable. So there is a third reader,
+gone, or it answers with something unparseable. So there is a second reader,
 `assets/ask.js`, in the browser:
 
 | | what it understands |
 |---|---|
-| Claude | a conversation: *somewhere cheaper*, *what is similar to that*, and a question about the chat itself answered as one |
-| Workers AI | mood, occasion, a sentence with no keyword in it — *somewhere I can hear myself think* |
+| the model | a conversation — *somewhere cheaper*, *what is similar to that*, a question about the chat itself answered as one — and mood, occasion, a sentence with no keyword in it |
 | `assets/ask.js` | the thirteen types in ten languages, cheap and fancy, open now, and every dish and street in the index |
 
 The local one is not a stub, though it reads each sentence on its own — it
@@ -825,7 +802,7 @@ the half of the search index that never reaches the screen. Everything else
 gets no line at all, and most rows have none.
 
 The model's clause goes in the same slot, and it is the half that can say
-something about an evening. Claude is **required** to write one for every
+something about an evening. The model is **required** to write one for every
 place it names — a row appearing with nothing under it is the answer refusing
 to say why it is an answer — under the same rule the reader follows: the dish,
 the occasion, what makes it the cheap one, and never the type or the price
