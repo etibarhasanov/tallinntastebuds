@@ -315,29 +315,32 @@
 
 .lists-index { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 
-/* The anchor for the map link below, which sits inside the card's own box
-   rather than under it. Floating between two cards it belonged to neither. */
+/* The box the things laid inside a card are positioned against: the map button
+   in its corner, the bookmark in the other one, and the reach of the title's
+   own link over the whole face. Floating between two cards they belonged to
+   neither. */
 .lists-index-row { margin: 0; position: relative; }
 
-.lists-index-link {
+.lists-index-card {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 12px;
   /* Room along the bottom for the map button, which is not part of this
-     element: a link inside a link is not a thing HTML has, so it is a sibling
-     laid over the space this padding leaves for it. */
+     element: it is a sibling laid over the space this padding leaves for it,
+     because the card's face already belongs to the title's link. */
   padding: 15px 18px 54px;
   background: var(--paper);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  color: inherit;
-  text-decoration: none;
 }
-.lists-index-link:hover { border-color: var(--accent); }
-.lists-index-link:hover .lists-index-title { color: var(--accent); }
+.lists-index-card:hover { border-color: var(--accent); }
+.lists-index-card:hover .lists-index-title { color: var(--accent); }
 
+/* The title, which is also the card's link: it wears .lists-open below, so the
+   whole card opens the list and the accessible name of that link is the title
+   alone rather than every word on the card read out in one breath. */
 .lists-index-title {
   font-family: var(--display);
   font-size: 17px;
@@ -345,6 +348,37 @@
   letter-spacing: -.01em;
   min-width: 0;
   overflow-wrap: anywhere;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* What makes a card open without being an <a> itself.
+ *
+ * Every one of these cards was the link — one <a> around the title, the facts
+ * and the places — until the byline in the line of facts became a door to the
+ * person who wrote the list, and a link inside a link is not a thing HTML has.
+ * So the card is a plain box now, the title is the link, and this fills the
+ * card behind everything in it: a press anywhere still opens the list.
+ *
+ * It fills .lists-index-row and not the card, because the row is the positioned
+ * one and the card is its only child in flow — the same rectangle, reached
+ * without positioning the card and pulling the map button's corner into it.
+ *
+ * Anything meant to be pressed on top of it is positioned too and comes later
+ * in the document, which is all it takes to sit above: the map button, the
+ * bookmark, and the byline. */
+.lists-open::after { content: ''; position: absolute; inset: 0; }
+
+/* And the ring goes round the card, not round the title. The card is what the
+   link opens, and the title is a line of text in the top corner of it — a ring
+   drawn there would point at a fragment of the thing that is about to open.
+   Same outline as :focus-visible in assets/styles.css, on the box that already
+   has the card's shape. */
+.lists-open:focus-visible { outline: none; }
+.lists-open:focus-visible::after {
+  outline: 2px solid var(--accent-lit);
+  outline-offset: 2px;
+  border-radius: var(--radius);
 }
 
 /* The numbers along the row, and the private pill when there is one.
@@ -354,7 +388,7 @@
    kept by 1 person Only you can read it" — took nearly the whole width and
    left the title none, so `overflow-wrap: anywhere` above did as it was told
    and set the name down one letter per line, and the meta ran off the card's
-   edge anyway. Now the link wraps and the meta drops under the name when the
+   edge anyway. Now the card wraps and the meta drops under the name when the
    two do not fit beside each other, and the meta wraps inside itself for the
    width where even it alone is too long. `white-space: nowrap` still holds
    each phrase together; it is the flex lines that break, not the words. */
@@ -370,10 +404,21 @@
   white-space: nowrap;
 }
 .lists-private { color: var(--accent); }
-/* Whose list it is, on the rows in Lists you kept. First in the meta line and
-   the only part of it that is not a number: a list you kept is somebody
-   else's, and who they are is the thing that makes it worth keeping. */
-.lists-index-by { color: var(--muted); }
+/* Whose list it is, on every row that draws a list somebody else wrote. First
+   in the line and the only part of it that is not a number: a list you kept or
+   found on the directory is somebody else's, and who they are is the thing
+   that makes it worth opening.
+
+   It is also the door to them. The whole phrase is the link and it keeps the
+   line's own colour, for the two reasons .lists-by gives — and it is
+   positioned, because the title's link covers the card and only a positioned
+   box later in the document is pressed instead of it. */
+.lists-index-by {
+  position: relative;
+  color: inherit;
+  text-underline-offset: 3px;
+}
+.lists-index-by:hover { color: var(--accent); }
 
 /* The heading over the second half of the index. Quieter than the card title
    above it — that one names the page, this one names a group inside it — and
@@ -397,9 +442,9 @@
    read as a caption on the row rather than as something to press.
 
    A sibling laid inside the card's bottom corner rather than a child of it,
-   because the card is an <a> and HTML has no link inside a link. It is above
-   the card in the stacking order, so a press on the pill goes to the map and
-   a press anywhere else on the card goes to the list. */
+   because the card's face is the reach of the title's link — see .lists-open.
+   It is above that reach in the stacking order, so a press on the pill goes to
+   the map and a press anywhere else on the card goes to the list. */
 .lists-index-map {
   position: absolute;
   right: 18px;
@@ -436,33 +481,31 @@
    It is the index row above restacked rather than a second kind of card: the
    title, one line of facts under it, and the first three places under that.
 
-   No room is left along the bottom the way .lists-index-link leaves it, unless
+   No room is left along the bottom the way .lists-index-card leaves it, unless
    the row says it needs it: .has-keep is the row on the directory with the
    bookmark laid in its corner, and it takes the same 54px the map pill takes,
-   for the same reason — a link inside a link is not a thing HTML has, so the
-   control is a sibling laid over space this padding keeps for it. Everywhere
-   else — your own lists on the directory, the rows /account.html borrows this
-   class for — the row has one destination and a corner with nothing in it
-   would be a hole in the card. */
-.lists-all-link {
+   for the same reason — the card's face is the title's link, so the control is
+   a sibling laid over space this padding keeps for it. Everywhere else — your
+   own lists on the directory, the rows /account.html borrows this class for —
+   the row has one destination and a corner with nothing in it would be a hole
+   in the card. */
+.lists-all-card {
   display: block;
   padding: 15px 18px 16px;
   background: var(--paper);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  color: inherit;
-  text-decoration: none;
 }
-.lists-all-link.has-keep { padding-bottom: 54px; }
-.lists-all-link:hover { border-color: var(--accent); }
-.lists-all-link:hover .lists-index-title { color: var(--accent); }
+.lists-all-card.has-keep { padding-bottom: 54px; }
+.lists-all-card:hover { border-color: var(--accent); }
+.lists-all-card:hover .lists-index-title { color: var(--accent); }
 
 /* The bookmark in the row's bottom corner, laid inside the card the way the
-   map pill is on an index row: above it in the stacking order, so a press on
-   the mark keeps the list and a press anywhere else opens it.
+   map pill is on an index row: above the title's link in the stacking order, so
+   a press on the mark keeps the list and a press anywhere else opens it.
 
-   It is drawn on every row but your own — see allRow() — and the link beside
+   It is drawn on every row but your own — see allRow() — and the card beside
    it wears .has-keep, which is what keeps the corner clear for it. */
 .lists-index-row > .lists-keep-wrap {
   position: absolute;
@@ -919,9 +962,9 @@ body.has-scrim { overflow: hidden; }
   }
   .item-moves { grid-column: 2; flex-direction: row; justify-content: flex-end; margin-top: 6px; }
   .item-name { font-size: 15px; }
-  .lists-index-link { padding: 13px 14px 52px; }
-  .lists-all-link { padding: 13px 14px 14px; }
-  .lists-all-link.has-keep { padding-bottom: 52px; }
+  .lists-index-card { padding: 13px 14px 52px; }
+  .lists-all-card { padding: 13px 14px 14px; }
+  .lists-all-card.has-keep { padding-bottom: 52px; }
   .lists-index-map,
   .lists-index-row > .lists-keep-wrap { right: 14px; bottom: 10px; }
   .picker { padding: 20px 16px 12px; }
