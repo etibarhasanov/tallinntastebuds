@@ -610,7 +610,19 @@ the other button later is the same reply again, in the thread, and the
 questions after it are asked of the new roll.
 
 The second adds Google's eleven hundred — see [Google venues](#google-venues) —
-and it is not a recommendation, and says so. A Google place in an answer is
+**on equal terms with mine**. A press of All Tallinn is a request for the
+city, and for a while it did not get one: the prompt told the model to prefer
+a place of mine when it answered as well, and a vague question that scored no
+Google row was sent none at all, so the model had no city to choose from and
+every answer leant on the map whatever button was pressed. Both thumbs are
+off the scale now. The model is told to choose by which place best answers
+the question and never by which list it is on, the Google rows get the same
+floor my places have had since they were narrowed — a question that names
+nothing still gets the forty best-rated — and the browser's own reader ranks
+the two rolls together on the city rather than reaching for Google only when
+mine come to nothing. A tie still goes to a place of mine, because the
+tie-break is how many people saved it and Google's rows have no saves. It is
+not a recommendation, and says so. A Google place in an answer is
 the stand-in a list draws for one, in the same row shape as a place of mine —
 the gauge and the types in the same slots, so the two rolls read as one list —
 with a **Google 4.8** mark in the slot where a row of mine says how much there
