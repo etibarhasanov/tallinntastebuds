@@ -1,12 +1,24 @@
 /**
  * Tallinn Tastebuds — the chat box on the map, answered.
  *
- * POST /api/ask   { q, lang }  ->  { ok, source, picks, say, open }
+ * POST /api/ask   { q, lang, scope, wish, history }
+ *                 ->  { ok, source, picks, say, open, venues }
  *
  * Somebody types "somewhere cheap and asian, still open" into the map and this
- * turns it into two or three places off my own list, each with a line saying
+ * turns it into one to three places off my own list, each with a line saying
  * why. It is the only route here that calls a language model, and the only one
  * that is allowed to answer with nothing and still be working correctly.
+ *
+ * IT IS A CONVERSATION
+ *
+ * The question arrives with the exchanges before it — up to six, each what
+ * was asked and what was answered, ids and clauses — and they go to the
+ * model as the turns they were, so "somewhere cheaper" or "the second one"
+ * mean what they would to a person. Nothing is kept here between requests:
+ * the browser holds the thread and sends it again each time, and the thread
+ * goes when the chat is closed. A Google row named in an earlier answer
+ * rides along in the lists whatever the new question scored, so that a
+ * follow-up about it can still name it.
  *
  * WHAT IT IS ALLOWED TO SAY, AND WHY THAT IS THE WHOLE DESIGN
  *
@@ -26,9 +38,9 @@
  * I have been to and written up; the eleven hundred in `google_venues` are
  * Google's description of the city. The question arrives with a `scope`:
  *
- *   map   my seventy-five and nothing else. The default, and what the switch
- *         on the field says when nobody has touched it. Being on the map is
- *         the verdict, and an answer off this roll is a recommendation.
+ *   map   my seventy-five and nothing else. The narrower answer, and what a
+ *         question that did not say is read as. Being on the map is the
+ *         verdict, and an answer off this roll is a recommendation.
  *   all   the city. My places first, and behind them the Google rows I have
  *         not been to — every one of which goes out wearing Google's name,
  *         Google's score and none of my words, drawn on the same "According
@@ -106,10 +118,16 @@ const MODEL = '@cf/zai-org/glm-4.7-flash';
    nothing a browser sends can be trusted to have obeyed either of the others. */
 const MAX_QUESTION = 200;
 
-/* What the browser draws, and so what the model is asked for. Three is what a
-   person reads before deciding; the map is already there for the other
-   seventy-two. */
+/* The most the browser draws, and so the most the model is asked for. Three
+   is what a person reads before deciding; the map is already there for the
+   other seventy-two. One is a whole answer, and the prompt says so: a model
+   told "at most three" pads to three. */
 const MAX_PICKS = 3;
+
+/* How many earlier exchanges go back to the model. Six is a conversation
+   about an evening; more is a transcript, and each one is read again on
+   every question. The browser sends the same six. */
+const MAX_HISTORY = 6;
 
 /* How many Google rows go to the model, and back to the browser, on the
    `all` scope. Forty is a page of the export at the size the model reads —
@@ -356,6 +374,25 @@ function readWish(raw) {
   };
 }
 
+/* The thread as the browser sent it, checked to a shape rather than trusted,
+   for the same reason and to the same standard as the wish: it goes into a
+   prompt, so what matters is that nothing in it is long. Every clause is a
+   string the model wrote and the browser sent back, cut here exactly as
+   keep() cut it on the way out. */
+function readHistory(raw) {
+  return (Array.isArray(raw) ? raw : [])
+    .filter((turn) => turn && typeof turn.q === 'string' && turn.q.trim())
+    .slice(-MAX_HISTORY)
+    .map((turn) => ({
+      q: turn.q.slice(0, MAX_QUESTION).trim(),
+      say: String(turn.say || '').slice(0, 280),
+      picks: (Array.isArray(turn.picks) ? turn.picks : [])
+        .filter((pick) => pick && typeof pick.id === 'string' && pick.id.length <= 80)
+        .slice(0, MAX_PICKS)
+        .map((pick) => ({ id: pick.id, why: String(pick.why || '').slice(0, 160) }))
+    }));
+}
+
 /* The forty Google rows a question is likeliest to be about, best first.
  *
  * The score is rank() in assets/ask.js, number for number — four a type or
@@ -367,19 +404,23 @@ function readWish(raw) {
  * score and the count behind it, which on Google's rows is the honest
  * tie-break and the only one there is.
  *
+ * A row an earlier answer in the thread named comes whatever it scores now,
+ * ahead of everything: "is the second one open late" scores nothing in the
+ * export, and the second one has to be in the lists for the model to say.
+ *
  * What comes back is the card with the haystack on it, so the browser can
  * score it exactly as it scores a place of its own, and — separately, so the
  * browser's one `open` map holds every place on screen — the closing time of
  * each that is open now.
  */
-function candidates(roll, wish, now) {
+function candidates(roll, wish, now, named) {
   const scored = [];
   const open = {};
 
   for (const venue of roll) {
     const entry = venue.card;
     const shuts = openUntil(venue.week, now);
-    let score = 0;
+    let score = named.has(entry.id) ? 1000 : 0;
 
     for (const id of wish.types) if (entry.types.includes(id)) score += 4;
     for (const id of wish.kitchens) if (entry.kitchens.includes(id)) score += 4;
@@ -449,8 +490,16 @@ function googleFor(rows, open) {
     .join('\n');
 }
 
-function promptFor(question, places, google, wholeCity, lang, open) {
+/* What the model is told once, before the conversation: who it is, the
+   lists, and the rules. The lists go here rather than with the question so
+   that the thread under them reads as turns of a conversation about them,
+   which is what lets a follow-up mean what it says. */
+function briefFor(places, google, wholeCity, lang, open) {
   const lines = [
+    'You help someone choose where to eat in Tallinn, in a chat, from the' +
+      ' fixed lists below. You never invent a place, never use an id that is' +
+      ' not in the lists, and never describe a place beyond what the lists say.',
+    '',
     'Places I have eaten at and written up:',
     'id | name | types | price out of 4 | must order | open now | description',
     catalogueFor(places, lang, open)
@@ -477,15 +526,19 @@ function promptFor(question, places, google, wholeCity, lang, open) {
 
   lines.push(
     '',
-    'Someone asked: ' + question,
-    '',
-    'Pick at most ' + MAX_PICKS + ' from the lists above that best answer them,' +
-      ' best first. Use only ids copied exactly from the lists. If nothing above' +
-      ' fits, return an empty picks array rather than the closest thing.',
+    'Each message is a question or a reply from the same person, in a' +
+      ' conversation; a follow-up refers to what you said before, so read it' +
+      ' that way.',
+    'Answer each with one to ' + MAX_PICKS + ' places from the lists, best' +
+      ' first — only as many as genuinely answer it, and one is a complete' +
+      ' answer. Use only ids copied exactly from the lists. If nothing fits,' +
+      ' or the question is not about where to eat, return an empty picks' +
+      ' array and say so, or ask what they meant, in "say".',
     'For each pick write "why": at most twelve words on why it answers this' +
       ' particular question, not a description of the place. For a place from' +
       ' Google say only what its line says.',
-    'Write "say" as one short sentence introducing the picks.',
+    'Write "say" as one or two short sentences, the way a person replies in' +
+      ' a chat, introducing the picks or answering what was asked.',
     'Write "why" and "say" in this language: ' + lang + '.',
     'Answer with JSON only, nothing before or after it:' +
       ' {"say": "...", "picks": [{"id": "...", "why": "..."}]}'
@@ -516,14 +569,19 @@ function unwrap(text) {
   }
 }
 
-/* Whatever came back, reduced to picks that name real places.
+/* Whatever came back, reduced to picks that name real places, and what was
+ * said over them.
  *
  * Every id is checked against what the model was actually shown — my places
- * and, on the `all` scope, the forty Google rows — and every duplicate
- * dropped, so the worst a confused model can do is return fewer places than
- * asked for. The clauses are cut to a length that fits the card rather than
- * trusted: `why` is the one string on this page written by something other
- * than a person, and the browser sets it as text, never as markup. */
+ * and the forty Google rows — and every duplicate dropped, so the worst a
+ * confused model can do is return fewer places than asked for. The clauses
+ * are cut to a length that fits the card rather than trusted: `why` and
+ * `say` are the strings on this page written by something other than a
+ * person, and the browser sets them as text, never as markup.
+ *
+ * No picks and a sentence is an answer, not a failure: the model asked
+ * back, or said in its own words that nothing fits, and in a conversation
+ * that is a turn. No picks and nothing said is the failure. */
 function keep(said, shown) {
   if (!said || !Array.isArray(said.picks)) return null;
 
@@ -538,8 +596,9 @@ function keep(said, shown) {
     if (picks.length === MAX_PICKS) break;
   }
 
-  if (!picks.length) return null;
-  return { picks, say: String(said.say || '').slice(0, 200) };
+  const say = String(said.say || '').slice(0, 280);
+  if (!picks.length && !say) return null;
+  return { picks, say };
 }
 
 export async function onRequestPost(context) {
@@ -582,7 +641,9 @@ export async function onRequestPost(context) {
      that says how far it may reach for one, and the browser, with no model,
      ranks my places first and these only when mine come to nothing. An empty
      list is a complete answer too: nothing in the export scored. */
-  const cut = candidates(await googleVenues(env), readWish(body.wish), now);
+  const history = readHistory(body.history);
+  const named = new Set(history.flatMap((turn) => turn.picks.map((pick) => pick.id)));
+  const cut = candidates(await googleVenues(env), readWish(body.wish), now, named);
   const google = cut.venues;
   Object.assign(open, cut.open);
 
@@ -599,19 +660,21 @@ export async function onRequestPost(context) {
     ...google.map((g) => g.id)
   ]);
 
+  /* The conversation as the model sees it: the brief, then every earlier
+     exchange as the two turns it was — the question, and the answer in the
+     exact JSON shape asked for, which is also the shape it will write next
+     — and the new question last. */
+  const messages = [{ role: 'system', content: briefFor(places, google, wholeCity, lang, open) }];
+  for (const turn of history) {
+    messages.push({ role: 'user', content: turn.q });
+    messages.push({ role: 'assistant', content: JSON.stringify({ say: turn.say, picks: turn.picks }) });
+  }
+  messages.push({ role: 'user', content: question });
+
   let said = null;
   try {
     const out = await env.AI.run(MODEL, {
-      messages: [
-        {
-          role: 'system',
-          content:
-            'You help someone choose where to eat in Tallinn from fixed lists' +
-            ' of places. You never invent a place, never use an id that is not' +
-            ' in the lists, and never describe a place beyond what the lists say.'
-        },
-        { role: 'user', content: promptFor(question, places, google, wholeCity, lang, open) }
-      ],
+      messages,
       /* Asked for, not relied on: unwrap() above handles an answer that
          arrives as prose around the JSON, which is what happens when a model
          or a runtime quietly ignores this. */
@@ -621,9 +684,9 @@ export async function onRequestPost(context) {
          through hundreds of tokens before the first character of an answer
          that is three ids long. Cloudflare's own example passes this. */
       chat_template_kwargs: { enable_thinking: false },
-      /* Three picks of a dozen words, a sentence, and the JSON around them.
-         The budget is the ceiling on how long a question can take. */
-      max_tokens: 220
+      /* Three picks of a dozen words, a sentence or two, and the JSON around
+         them. The budget is the ceiling on how long a question can take. */
+      max_tokens: 300
     });
 
     said = keep(unwrap(out && (out.response !== undefined ? out.response : out)), shown);
@@ -633,12 +696,13 @@ export async function onRequestPost(context) {
     said = null;
   }
 
-  /* An empty answer and a broken one are the same answer here, and that is
-     deliberate rather than lazy. The prompt does ask for an empty picks array
-     over a bad guess — but the browser's own reader is literal in a way the
-     model is not, and it finds the khachapuri at Gobi off a must-order list
-     the model was shown and talked itself out of. A second opinion beats a
-     shrug, and if the reader also has nothing the panel says so. */
+  /* A broken answer is no answer, and the browser reads the question
+     itself. An answer with a sentence and no places goes back as it is,
+     source "ai": the browser's own reader is literal in a way the model is
+     not, and it finds the khachapuri at Gobi off a must-order list the
+     model was shown and talked itself out of — so the browser gives the
+     reader its say first, and the model's sentence stands only when the
+     reader has nothing either. */
   if (!said) return answer('none', [], '');
 
   return answer('ai', said.picks, said.say);
