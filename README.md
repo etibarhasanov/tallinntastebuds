@@ -2320,9 +2320,35 @@ why **european** is not in the table: Google hangs it on a hundred and four
 rows as the parent of Italian, French and Greek, so a chip for it would return
 mostly pizzerias while saying nothing a more exact chip does not.
 
-Two hundred and twenty-five places get no cuisine at all, because Google says
+Two hundred and forty-nine places get no cuisine at all, because Google says
 only "Restaurant" about them. No chip is the truthful answer there rather than
 a gap.
+
+#### Which two words a card says, and in which order
+
+A card has room for two, and `kitchensOf()` in `functions/api/venues.js` is
+what picks them: first everything Google's own `category` and `cuisine` say
+about the place, in the table's order, and then everything its tag list adds,
+in the table's order. The table runs from the most exact word to the broadest,
+which is the right order between two words Google is equally sure about and the
+wrong one between what a place *is* and what it also happens to have. Siga la
+Vaca is an Argentinian steakhouse that Google types `argentinian_restaurant`
+first and `korean_restaurant` fifth, and a directory whose card opened with
+**Korean** — because `korean` sits thirty rows higher up the table — was saying
+something plainly untrue about it in the two words it had. The one thing that
+outranks both groups is the filter: whatever is being narrowed by is hoisted to
+the front in `assets/venues.js`, so a card always says why it is in the list.
+
+The `cuisine` column those chips lean on is derived in
+`exports/clean_restaurants_csv.py` rather than handed over by Google, and the
+same reasoning decides it: the first of a row's types that names a kitchen
+wins, an exact kitchen anywhere on the row beats a family name like `asian` at
+the front of it, and a `*_delivery` type is skipped because it says how food
+travels rather than what it is. That is what turns six Indian restaurants
+Google also tagged Chinese or Thai into **Indian**, and every Hesburger into
+**Burgers** rather than **American**. Seventy-four of the eleven hundred rows
+changed word when that landed, and the count with no cuisine at all did not
+move: this is the same evidence read in the row's own order, not more of it.
 
 #### Which column a word came from, for one pattern only
 

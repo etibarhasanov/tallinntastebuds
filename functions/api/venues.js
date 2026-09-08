@@ -71,7 +71,7 @@ import { json, wrongDatabase, venueHours } from './_lib.js';
  *
  * Category, cuisine and the leftover tags are matched as one lowercased string
  * — see said() below for how they are joined and why — so "Pizza Restaurant;
- * Italian Restaurant" is both of those. A row can carry several and 233 of them
+ * Italian Restaurant" is both of those. A row can carry several and 232 of them
  * do, up to six; 249 carry none at all, and nearly all of those are the rows
  * where Google says only "Restaurant" and nothing else — the remainder are a
  * handful of bistros and family restaurants, and the barber, the theatre and
@@ -104,7 +104,13 @@ export const KITCHENS = [
   ['italian',          /italian|pasta|trattoria|osteria/],
   ['pizza',            /pizza/],
   ['burgers',          /hamburger|burger/],
-  ['american',         /american|hot dog|wings/],
+  /* Not latin_american_restaurant or south_american_restaurant. Google types
+     three places that way — two Argentinian steakhouses and a seafood
+     restaurant — and none of the three is anybody's idea of American food, so
+     the chip was three rows of nonsense out of sixty-four. A lookbehind rather
+     than \b, because the word boundary is there in "latin american": it is the
+     neighbouring word that says the claim is not being made. */
+  ['american',         /(?<!latin |south |central |north )american|hot dog|wings/],
   ['barbecue',         /barbecue|\bbbq\b|smokehouse/],
   ['mexican',          /mexican|taco|burrito|tex-mex/],
   ['spanish',          /spanish|tapas|paella/],
@@ -171,6 +177,37 @@ export function said(row) {
     .join(' | ');
 }
 
+/* A row's kitchens, in the order a card should say them.
+ *
+ * Two orders at once, which is why this is a function now rather than the
+ * filter it was written as. KITCHENS runs from the most exact word to the
+ * broadest, which is the right order between two words Google is equally sure
+ * about. It is the wrong one between a word out of Google's own category or
+ * cuisine — what the place IS — and a word out of the tag list, which is
+ * everything a place also happens to have. Siga la Vaca is typed
+ * argentinian_restaurant first and korean_restaurant fifth; the page prints the
+ * first two of these and nothing more, so filing "Korean" above "Argentinian"
+ * because korean sits thirty rows higher up the table put a wrong sentence on a
+ * card about a steakhouse.
+ *
+ * So the two leading columns win outright, and the table's order decides inside
+ * each group. Both tests are made against the same pipe-joined string rather
+ * than the columns apart, with the tags cut off the end for the first group,
+ * because `bar` is anchored to the category with ^[^|]* and would answer
+ * differently if it were handed a column on its own.
+ */
+export function kitchensOf(row) {
+  const whole = said(row);
+  const primary = whole.split(' | ').slice(0, 2).join(' | ');
+  const first = [];
+  const rest = [];
+  for (const [id, pattern] of KITCHENS) {
+    if (!pattern.test(whole)) continue;
+    (pattern.test(primary) ? first : rest).push(id);
+  }
+  return first.concat(rest);
+}
+
 function entry(row) {
   const where = [row.address, [row.postal_code, row.city].filter(Boolean).join(' ')]
     .map((part) => String(part || '').trim())
@@ -180,7 +217,7 @@ function entry(row) {
   const out = {
     id: row.place_id,
     name: row.name,
-    kitchens: KITCHENS.filter((pair) => pair[1].test(said(row))).map((pair) => pair[0])
+    kitchens: kitchensOf(row)
   };
 
   if (where) out.address = where;
