@@ -4619,7 +4619,7 @@ radio rather than about the page it was made on.
 
 ## Surprise me
 
-The die on the left rail — under the account button, at the top of the four
+The die on the left rail — under the account button, at the top of the five
 that are about tonight rather than about you — picks a place at random and
 opens it.
 
@@ -4659,13 +4659,13 @@ about the rest, because a rail that opens with a colour picker reads as a
 settings strip rather than as the shortcut it is.
 
 On a phone it used to arrive as a column of bare discs: a head and shoulders,
-a die, a play triangle, a coloured dot and a crosshair over a map, saying
-nothing. A phone has no hover, so the `title` that carries the meaning on a
-desktop is never read out loud, and people did not press them.
+a die, a speech bubble, a play triangle, a coloured dot and a crosshair over a
+map, saying nothing. A phone has no hover, so the `title` that carries the
+meaning on a desktop is never read out loud, and people did not press them.
 
 So they say what they are on arrival and then stop saying it. Each opens
-wearing its label — your username or "Account", Surprise me, the station, the
-style you are about to switch to, "Show my location" — 300ms apart in the
+wearing its label — your username or "Account", Surprise me, Ask, the station,
+the style you are about to switch to, "Show my location" — 300ms apart in the
 order they are stacked, so the eye tracks down the rail rather than being
 asked to read the whole column at once. Each holds for `HINT_MS` (4.2 seconds)
 and collapses back to its icon, the same disc as before.
@@ -4674,23 +4674,24 @@ The account button is the one the rail has to wait for. It leads the cascade
 and it is the one button not in the markup: it is drawn by an answer from
 `/api/account`. So the introduction holds for that answer, up to
 `RAIL_WAIT_MS` (1.4 seconds), and then runs with the account at its head. A
-pill that opens after the four below it and closes before they do reads as a
-fifth thing rather than as the first, and on a fast answer it was up and gone
+pill that opens after the five below it and closes before they do reads as a
+sixth thing rather than as the first, and on a fast answer it was up and gone
 again before the eye had got down the rail.
 
 The wait is capped because it has to be: a slow endpoint, an unbound database
-or no Function at all must not cost the other four their labels. So an answer
+or no Function at all must not cost the other five their labels. So an answer
 slower than the hold gets the old behaviour — `paintAccountButton()` opens the
 label the moment the button appears, rather than leaving a silent disc above a
 column of pills that have all had their say — and an answer that never comes
-leaves a rail of four that introduced itself on time.
+leaves a rail of five that introduced itself on time.
 
 Two of them say something again when pressed: starting the radio opens the
 station's name, so a triangle in a circle is not the only thing saying what is
 playing, and pressing the swatch opens the name of the style it has just
-become the way back to. Pressing Surprise me instead
-shuts its label early — the question it answered is the question the label was
-there to ask.
+become the way back to. Surprise me and Ask do the opposite and shut their own
+label early — the question each of them answers is the question its label was
+there to ask, and each shuts its own: pressing one of the two is not an answer
+to the other.
 
 **It repeats in the new language when you switch languages.** Every other
 label on the page changes in front of you; the ones on the rail are the only
@@ -4718,15 +4719,15 @@ label's own max-content. A fixed ceiling in `ch` cannot do both halves of that
 job: one wide enough for Ukrainian's `Показати моє місцезнаходження` makes
 `Red` snap open in a tenth of the time, and one tuned to `Red` puts an
 ellipsis through the label explaining the button. This way every language gets
-the same slide and none of them gets cut — the widest of the forty labels
+the same slide and none of them gets cut — the widest of the fifty labels
 reaches 276px on a 320px screen.
 
-One rule covers all five, because all five are the same button: `.rail-btn`,
+One rule covers all six, because all six are the same button: `.rail-btn`,
 with an icon at the left and the label beside it — a coloured dot standing in
 for the icon on the colour switch, which is what lets the switch wear the pill
 instead of sitting in a case of its own.
 
-**Above 860px none of the timing applies, and all five keep their words.**
+**Above 860px none of the timing applies, and all six keep their words.**
 They did not used to. Three of the pills had a label there and the two under
 them did not: a coloured dot in a round case of its own and a crosshair in a
 second one, both mute, under three buttons that say what they are. The
@@ -5170,9 +5171,10 @@ a list, a type or a story is the way back to the whole map, and the mark opens
 the stories when there are any. Neither does the other's job. The
 controls that are questions about the *map* rather than about the page stand
 on the map instead, in the left rail: the account at its head, then Surprise
-me and the radio, then the colour switch, with locate at its foot. There are no zoom buttons; the wheel, a double-click, a pinch and
-the `+`/`-` keys all still zoom, and two more buttons standing on the map were
-paying for a job the map already does. The chips used to sit at the bottom,
+me, Ask and the radio, then the colour switch, with locate at its foot. There
+are no zoom buttons; the wheel, a double-click, a pinch and the `+`/`-` keys
+all still zoom, and two more buttons standing on the map were paying for a job
+the map already does. The chips used to sit at the bottom,
 where the sheet covered them and they had to be hidden whenever the list was
 open; at the top they clear even the fully dragged-up sheet, so the filters can
 be changed while the list is showing.

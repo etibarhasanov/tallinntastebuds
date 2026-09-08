@@ -3585,9 +3585,9 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
      A phone has no hover and no title tooltip, so the desktop pill lost its
      label here and the rail arrived as a column of bare discs: a head and
-     shoulders, a die, a play triangle, a coloured dot and a crosshair,
-     floating over a map, saying nothing about what pressing them does. People
-     did not press them.
+     shoulders, a die, a speech bubble, a play triangle, a coloured dot and a
+     crosshair, floating over a map, saying nothing about what pressing them
+     does. People did not press them.
      So on a phone they now open wearing their label, in the order they are
      stacked, hold it long enough to read, and collapse to the icon so the map
      gets its screen back. The rail is body copy for four seconds and chrome
@@ -3596,7 +3596,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      Every one of them is the same shape: an icon at the left, a label that
      grows out of nothing beside it, and a pill drawn around the pair — which
      is one rule now that the swatch and the crosshair wear the same pill as
-     the three above them. */
+     the four above them. */
   .rail-label {
     display: block;
     min-width: 0;
@@ -3616,7 +3616,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
      Collapsed it is a 35.6px disc — 21.6px of icon, 6px each side, the border
      on top of that — so the buttons still read as one column of circles down
-     the edge of the map. One set of numbers for all five, because every icon
+     the edge of the map. One set of numbers for all six, because every icon
      on the rail is drawn at the same size, the swatch's dot included. */
   .rail-btn {
     display: grid;

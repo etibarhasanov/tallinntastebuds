@@ -3135,11 +3135,11 @@
 
   /* ------------------------------------------------------------ rail hints
    * On a phone the rail is a column of icons: a head and shoulders, a die, a
-   * play triangle, a coloured dot and a crosshair, because a label wide
-   * enough to read is a label wide enough to cover the map. Which left them
-   * explaining nothing — a phone has no hover, so the title that carries the
-   * meaning on a desktop is never read out loud, and a die over a map is not
-   * self-evident to anybody who has not seen this page before.
+   * speech bubble, a play triangle, a coloured dot and a crosshair, because a
+   * label wide enough to read is a label wide enough to cover the map. Which
+   * left them explaining nothing — a phone has no hover, so the title that
+   * carries the meaning on a desktop is never read out loud, and a die over a
+   * map is not self-evident to anybody who has not seen this page before.
    *
    * So they say what they are on arrival — and again in the new language the
    * moment one is picked — and then stop saying it. They open in the order
@@ -3154,7 +3154,7 @@
    */
   var HINT_MS = 4200;
   /* Top to bottom, which is the order they open in. */
-  var HINT_KEYS = ['account', 'random', 'radio', 'style', 'locate'];
+  var HINT_KEYS = ['account', 'random', 'ask', 'radio', 'style', 'locate'];
   var hintTimers = {};
 
   /* Before any of them, the sentence. On a desktop it is printed in the card
@@ -3183,11 +3183,11 @@
   /* The button at the head of the rail is the one that is not in the markup:
      it waits on /api/account. So the introduction waits on it too, rather
      than starting without it and letting the account catch up out of turn —
-     a pill that opens after the four below it have opened, and closes before
-     they do, reads as a fifth thing rather than as the first, and on a
+     a pill that opens after the five below it have opened, and closes before
+     they do, reads as a sixth thing rather than as the first, and on a
      fast answer it can be up and gone before the eye has got down the rail.
      The wait is short and it is capped: a slow endpoint, an unbound database
-     or no Function at all must not cost the other four their labels, so
+     or no Function at all must not cost the other five their labels, so
      after RAIL_WAIT_MS the rail goes ahead without it and paintAccountButton
      catches it up as before. */
   var RAIL_WAIT_MS = 1400;
@@ -3200,6 +3200,7 @@
      it into the group — so it is asked for by class rather than held in dom. */
   function hintPill(key) {
     if (key === 'account') return dom.btnAccount;
+    if (key === 'ask') return dom.btnAsk;
     if (key === 'radio') return dom.btnRadio;
     if (key === 'style') return dom.styles && dom.styles.querySelector('.rail-btn');
     if (key === 'locate') return dom.btnLocate;
@@ -6776,8 +6777,11 @@
       randomPick();
     });
 
+    /* And the one beside it, for the same reason — its own label rather than
+       the die's, because pressing one of the two is not an answer to the
+       other. */
     dom.btnAsk.addEventListener('click', function () {
-      closeHint('random');
+      closeHint('ask');
       openAsk();
     });
 
