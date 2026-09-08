@@ -889,10 +889,6 @@ a:hover { color: var(--accent-lit); }
   min-width: 38px;
   height: 38px;
   color: var(--muted);
-  /* One of these is an <a> — the Lists door in index.html — and everything
-     else about it is a .btn. Without this it is the one control in the corner
-     wearing an underline. */
-  text-decoration: none;
   transition: background-color .15s var(--ease), color .15s var(--ease);
 }
 .btn + .btn { border-left: 1px solid var(--hairline); }

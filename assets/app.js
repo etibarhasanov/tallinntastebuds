@@ -2171,20 +2171,30 @@
 
     if (savedCount()) menu.appendChild(savedRow());
 
-    /* The way into your own lists. A list is a different kind of object from
-       everything else here — it is somebody else's, it is published under
-       their name, and it has nothing to do with the pins — so it lives on its
-       own page rather than as another sheet over the map. This is the door to
-       it, filed under who you are, which is what a list belongs to.
+    /* The two ways into the lists, and the only ones on the map. A list is a
+       different kind of object from everything else here — it is somebody
+       else's, it is published under their name, and it has nothing to do with
+       the pins — so lists live on their own pages rather than as another sheet
+       over the map. These are the doors to them, filed under who you are.
 
-       The other door is the Lists control in the top-right corner, and the two
-       are not the same door twice. That one is everybody's lists and needs no
-       account; this one is yours and cannot exist without one, which is why it
-       is here, in the sheet that knows who you are. */
+       Everybody's lists sat in the top-right corner for a while, beside
+       Places, and came back here. It needs no account to read, so the corner
+       was the honest place for it; but the corner is where the map's own
+       controls live, and a door that leaves the map was the odd one among
+       them. The cost is real and worth writing down: signed out, this sheet is
+       the sign-in form and has no menu, so a stranger on the map now has no
+       way to /lists/kept at all. They reach it from a list somebody sent them,
+       from /lists.html, or from a search result. */
     menu.appendChild(accountRow({
       name: t('listsYours'),
       why: t('accountListsWhy'),
       href: '/lists.html'
+    }));
+
+    menu.appendChild(accountRow({
+      name: t('listsAllTitle'),
+      why: t('accountKeptWhy'),
+      href: '/lists/kept'
     }));
 
     menu.appendChild(accountRow({

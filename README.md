@@ -1978,11 +1978,17 @@ exist, because ordering by a count means knowing the count for every candidate
 
 **How anybody gets there.** Four ways, and the first two matter most:
 
-- **The map**, from a **Lists** control beside **Places** in the top-right
-  corner. It is a link and not a button — the only one up there — because it
-  leaves for a page rather than opening a panel over the map. It is not behind
-  the account sheet, where the *other* door to lists is: that one says **Your
-  lists** and cannot exist without an account, and this one needs none.
+- **The map**, from the account sheet, under **Your lists**. Both doors to
+  lists are in there, filed under whoever you are.
+
+  It was a **Lists** control beside **Places** in the top-right corner first,
+  and moved. The corner is where the map's own controls live and every one of
+  them opens something over the map; a door that leaves for another page was
+  the odd one among them. The cost is worth stating rather than glossing:
+  signed out, that sheet is the sign-in form and has no menu at all, so a
+  stranger on the map has no route to this page. They arrive from a list
+  somebody sent them, from `/lists.html`, or from a search result — which is
+  three of the four ways below, and the reason the page is indexed.
 - **The foot of every public list**, which carries three more and a way to all
   of them. This is the surface that should get the most use, and the reason is
   where it is: somebody who has just finished reading a top ten is exactly the
