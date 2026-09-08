@@ -62,7 +62,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=f7739981">
+<link rel="stylesheet" href="assets/styles.css?v=8e860552">
 </head>
 <body>
 
@@ -244,18 +244,20 @@
             </svg>
           </button>
         </div>
-        <!-- Which roll the question is asked of. My map is the default and
+        <!-- Which roll the question is asked of. The map is the default and
              the narrower answer; the city adds Google's eleven hundred, each
              of which comes back wearing Google's name and none of my words.
+             A question the map has no answer to goes to the city on its own
+             — see askSubmit() in assets/app.js — and the switch follows it.
              Static buttons rather than ones assets/app.js builds, so the
              language switch relabels them with everything else and the
              script only has to say which is pressed. -->
         <div class="seg ask-scope" id="ask-scope" role="group"
              data-i18n-aria-label="askScope" aria-label="Recommend from">
           <button type="button" class="btn ask-scope-btn" data-scope="map"
-                  aria-pressed="true" data-i18n="askScopeMap">My map</button>
+                  aria-pressed="true" data-i18n="askScopeMap">Tallinn Tastebuds map</button>
           <button type="button" class="btn ask-scope-btn" data-scope="all"
-                  aria-pressed="false" data-i18n="askScopeAll">All of Tallinn</button>
+                  aria-pressed="false" data-i18n="askScopeAll">All Tallinn</button>
         </div>
       </form>
       <div class="search">
@@ -410,6 +412,6 @@
      cannot: no allowance left, no binding, no network. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
 <script src="assets/ask.js?v=73a55172" defer></script>
-<script src="assets/app.js?v=bfdddd1d" defer></script>
+<script src="assets/app.js?v=e6b14956" defer></script>
 </body>
 </html>

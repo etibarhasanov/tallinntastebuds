@@ -3332,20 +3332,37 @@
        other thing that reads it, and it may well be what reads it first. */
     if (!hayIndex) buildSearchIndex();
 
-    /* Read here as well as sent: on the whole city the Function narrows a
-       thousand Google rows with this before the model sees any, and with no
-       model at all it is what ranks the answer on this side. */
-    var wish = null;
+    /* Read once and sent with every ask: on the whole city the Function
+       narrows a thousand Google rows with this before the model sees any,
+       and with no model at all it is what ranks the answer on this side. */
+    loadCuisines().then(function (cuisines) {
+      var wish = readWish(question, cuisines);
+      ask(question, wish, state.askScope).then(function (found) {
+        /* The map had nothing. Rather than a shrug, the same question goes
+           to the city — once, and the switch moves with it, so what is on
+           screen and what the switch says are the same thing. The head
+           sentence says why, because three places off Google under "here is
+           where I would go" would be the site recommending somewhere it has
+           not been. A question the city has no answer to either gets the
+           shrug, from the second ask. */
+        if (found || state.askScope !== 'map') return;
+        state.askScope = 'all';
+        paintAskScope();
+        trackEvent('ask_fallback', { search_term: question.toLowerCase() });
+        ask(question, wish, 'all', true);
+      });
+    });
+  }
 
-    loadCuisines()
-      .then(function (cuisines) {
-        wish = readWish(question, cuisines);
-        return fetch(ASK_URL, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json', accept: 'application/json' },
-          body: JSON.stringify({ q: question, lang: state.lang, scope: state.askScope, wish: wish })
-        });
-      })
+  /* One question to one roll, and whether it found anything. The answer is
+     drawn from in here; the boolean is for askSubmit() to decide about the
+     city. */
+  function ask(question, wish, scope, fellBack) {
+    return fetch(ASK_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ q: question, lang: state.lang, scope: scope, wish: wish })
+    })
       .then(function (res) { return res.ok ? res.json() : null; })
       .catch(function () { return null; })
       .then(function (out) {
@@ -3364,12 +3381,30 @@
           ? { say: out.say || '', picks: out.picks, source: 'ai' }
           : askLocally(wish, open, city);
 
+        if (fellBack && said.picks.length) said.say = t('askFellBack');
+
         /* Of the forty, only the ones the answer names go on the map. */
         var named = {};
         said.picks.forEach(function (pick) { named[pick.id] = true; });
 
+        /* A map that found nothing is not shown as nothing while the city is
+           still to be asked: the field stays busy across both asks, and the
+           shrug, if it comes, comes from the second. */
+        var found = said.picks.length > 0;
+        if (!found && scope === 'map') return false;
+
         setAsking(false);
         showAnswer(question, said, open, city.filter(function (row) { return named[row.id]; }));
+        return found;
+      })
+      /* Anything that went wrong drawing the answer — an answer in a shape
+         this did not expect, most likely — is a shrug and a field handed
+         back, never a field left disabled with nothing on the screen to say
+         why. Reported as "found nothing" so a map-scope ask still goes on to
+         the city. */
+      .catch(function () {
+        if (scope !== 'map') { setAsking(false); toast(t('askNothing')); }
+        return false;
       });
   }
 
@@ -4177,6 +4212,18 @@
     ]);
   }
 
+  /* Whose description a row is, in the slot a row of mine uses for how much
+     there is to look at: the word Google and the score, or the word alone
+     where the export has none. The word is the attribution and is never
+     dropped for room — the number on its own is exactly the claim this site
+     does not make. */
+  function googleMark(place) {
+    return el('span', { className: 'depth-mark is-google' }, [
+      el('span', { textContent: 'Google' }),
+      place.rating ? el('span', { className: 'google-score', textContent: formatDecimal(place.rating, 1) }) : null
+    ]);
+  }
+
   /* Google's score and the number of people behind it, as one span: "4.8 from
      3,041". The count is never left off, because a 5.0 out of six visits and a
      4.6 out of three thousand are not the same claim and the score alone
@@ -4864,27 +4911,43 @@
       return el('li', {}, [row]);
     }
 
-    /* A place on the list that I have never filmed. The catalogue knows its
-       name, its address and roughly where it is, and the list's owner knows
-       why it is worth going — which between them is a complete row.
+    /* A place I have never filmed, in the same shape as one I have.
 
-       What it does not get is the badges a row of mine carries: the depth
-       mark, the discount, the save count and the type list are all claims
-       about a write-up that does not exist. Google's own description of the
-       place goes in instead, on a line that says it is Google's — the same
-       line the card draws when the row is pressed, and the same one a list's
-       own page draws. */
+       It used to be a plainer row — the name, the address, and Google's
+       description on a line of its own underneath — on the argument that the
+       badges a row of mine carries are claims about a write-up that does not
+       exist. True of the depth mark, the discount and the save count, which
+       it still does not get. But drawn beside a row of mine it read as a
+       different kind of thing rather than a different place, and an answer
+       that mixes the two rolls needs them to read as one list. So it takes
+       the row's shape: the gauge and the types in the same slots, and in the
+       slot where a row of mine says how much there is to look at, a mark
+       saying whose description this is, with Google's score on it. The score
+       travels only with Google's name in front of it, here as everywhere —
+       see the note above venueEntry() in functions/api/_lib.js — and the
+       card still draws the full "According to Google" line.
+
+       A place off nobody's export — added by hand to a list — has no gauge,
+       no types and no score, and keeps the plainer row: the address is the
+       whole of what is known about it. */
     function listOnlyRow(place, said) {
+      var kinds = (place.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
+      var described = !!place.google && !!(kinds || place.price || place.rating);
+
       var row = el('button', {
         type: 'button',
-        className: 'list-row is-from-list',
-        'aria-label': t('openPlace', { name: place.name }) + ', ' + standInNote()
+        className: 'list-row' + (described ? '' : ' is-from-list'),
+        'aria-label': t('openPlace', { name: place.name }) + ', ' + standInNote() +
+          (place.rating ? ', ' + t('googleSays') + ' ' + scoreMark(place).textContent : '')
       }, [
         el('span', { className: 'list-name', textContent: place.name }),
-        el('span', { className: 'list-sub' }, [
+        el('span', { className: 'list-sub' }, described ? [
+          place.price ? priceGauge(place.price) : null,
+          el('span', { className: 'list-types', textContent: kinds })
+        ] : [
           el('span', { className: 'list-types', textContent: place.address || '' })
         ]),
-        sourceLine(place),
+        described ? googleMark(place) : null,
         said ? el('span', { className: 'list-said', textContent: said }) : null
       ]);
       row.addEventListener('click', function () { selectPlace(place.id, { fly: true }); });
