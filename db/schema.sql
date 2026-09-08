@@ -294,6 +294,13 @@ CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at
 -- functions/api/_mostkept.js shows up in a query time — is the day to write
 -- one, and it should be written the way save_counts is: recomputed from this
 -- table inside the batch that changes it, never nudged by one.
+--
+-- One more thing reads these, and it is the same question narrowed rather than
+-- a new one: a profile at /u/<name> sums the keeps of one person's public
+-- lists, at most twenty-four of them and one indexed prefix of this key each.
+-- See functions/api/_profile.js. What it deliberately does not print is a
+-- position — "third of everybody" is the GROUP BY above with nothing to narrow
+-- it — so it moves the day above no nearer.
 
 
 

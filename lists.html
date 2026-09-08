@@ -8,19 +8,23 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
-<!-- The block between the two LIST-HEAD markers below is replaced, in place,
-     by functions/list/[id].js when this same file is served as /list/<id>:
-     the description and the social card become that list's own and a second
-     title is written above them, so a link somebody pastes into a message
-     unfurls as what it is rather than as "Lists | Tallinn Tastebuds". Opened
-     directly at /lists.html the markers are left alone and these defaults
-     stand.
+<!-- The block between the two PAGE-HEAD markers below is replaced, in place,
+     whenever this same file is served at one of its other three addresses:
+     functions/list/[id].js at /list/<id>, functions/lists/kept.js at
+     /lists/kept, and functions/u/[name].js at /u/<name>. The description and
+     the social card become that page's own and a second title is written
+     above them, so a link somebody pastes into a message unfurls as what it
+     is rather than as "Lists | Tallinn Tastebuds". Opened directly at
+     /lists.html the markers are left alone and these defaults stand.
+
+     PAGE-HEAD rather than LIST-HEAD, which is what it was called when a list
+     was the only thing served through here.
 
      The markers are spelled out only where they actually mark something — not
      here. HTML comments do not nest, so writing one inside this sentence
      would end this comment early, drop the rest of it into the head as text,
      and take the whole document with it. It did once. -->
-<!--LIST-HEAD-->
+<!--PAGE-HEAD-->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Tallinn Tastebuds">
 <meta property="og:title" content="Lists | Tallinn Tastebuds">
@@ -29,7 +33,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<!--/LIST-HEAD-->
+<!--/PAGE-HEAD-->
 
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
@@ -44,8 +48,8 @@
 <!-- The tokens, the card, the eyebrow and the toast all come from the map's
      stylesheet; only what a list page has and the map does not is in the
      second file. -->
-<link rel="stylesheet" href="/assets/styles.css?v=7a4ccf85">
-<link rel="stylesheet" href="/assets/lists.css?v=007f0b8b">
+<link rel="stylesheet" href="/assets/styles.css?v=a7910dd4">
+<link rel="stylesheet" href="/assets/lists.css?v=8c3b9978">
 </head>
 <body class="lists-body">
 
@@ -76,10 +80,10 @@
 </header>
 
 <!-- Every state this page has — your lists, one list, one list somebody else
-     made, signed out, and the four ways it can fail — is built by
-     assets/lists.js into this one element. Which of them is showing is decided
-     at the moment the data arrives, so there is one place that decides and
-     nothing can be left over from the state before. -->
+     made, everybody's lists, one person's, signed out, and the four ways it
+     can fail — is built by assets/lists.js into this one element. Which of
+     them is showing is decided at the moment the data arrives, so there is one
+     place that decides and nothing can be left over from the state before. -->
 <main class="lists-main" id="main" tabindex="-1"></main>
 
 <!-- The picker: every place in Tallinn, searched down to the one being added.
@@ -139,6 +143,6 @@
      one page to the other. Before lists.js and deferred like it, the same way
      the basemap is. -->
 <script src="/assets/radio.js?v=dac5f009" defer></script>
-<script src="/assets/lists.js?v=7aa38613" defer></script>
+<script src="/assets/lists.js?v=01894282" defer></script>
 </body>
 </html>

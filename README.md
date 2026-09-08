@@ -52,6 +52,7 @@ completely with the database switched off.
 - [The directory](#the-directory)
 - [Lists](#lists)
 - [Lists people kept](#lists-people-kept)
+- [Profiles](#profiles)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -1747,23 +1748,34 @@ bakeries worth the walk.* It carries their username and it has a link they can
 send to a friend.
 
 Nothing about it touches the map. The pins, the write-ups, the filters and the
-"just added" section are exactly what they were; lists live on their own page
-and the map's only door to them is a line in the account sheet.
+"just added" section are exactly what they were; lists live on their own pages,
+and the map's doors to them are three rows in the account sheet, filed under
+whoever you are.
 
-### The three addresses
+### The five addresses
 
 ```
 /lists.html      your own lists, and the ones you kept
 /list/<id>       one list — the address that gets shared
+/lists/kept      everybody's, the most kept first
+/u/<name>        who made it, and everything else they published
 /?list=<id>      the same list on the map, as pins
 ```
 
-One HTML file serves both. `/list/<id>` goes through
-`functions/list/[id].js`, which hands back that same file with the list's own
-title and social card written into the head and the list itself seeded into
-the page. That is what makes a shared link arrive looking like something: a
-static page has one `<title>`, and the crawler that builds the preview card in
-WhatsApp or Telegram does not run the script that would change it.
+One HTML file serves the first four. `/list/<id>`, `/lists/kept` and
+`/u/<name>` each go through a Function of their own — `functions/list/[id].js`,
+`functions/lists/kept.js`, `functions/u/[name].js` — and each hands back that
+same file with the page's own title and social card written into the head and
+its answer seeded into the document. That is what makes a shared link arrive
+looking like something: a static page has one `<title>`, and the crawler that
+builds the preview card in WhatsApp or Telegram does not run the script that
+would change it. What the three of them share — the escaping, the head, the
+head swap, the seeding and the headers — is in `functions/_shell.js`, written
+once because two of those five are the difference between a title somebody
+typed and a title somebody typed being executed.
+
+The last two have sections of their own: see [Lists people
+kept](#lists-people-kept) and [Profiles](#profiles).
 
 The id is the title plus six random characters — `/list/top-ten-burgers-k3fmqw`
 — so the link says what it is before anybody opens it, and cannot be guessed
@@ -1978,8 +1990,9 @@ exist, because ordering by a count means knowing the count for every candidate
 
 **How anybody gets there.** Four ways, and the first two matter most:
 
-- **The map**, from the account sheet, under **Your lists**. Both doors to
-  lists are in there, filed under whoever you are.
+- **The map**, from the account sheet, under **Your lists** and **Your public
+  profile**. All three doors to lists are in there, filed under whoever you
+  are.
 
   It was a **Lists** control beside **Places** in the top-right corner first,
   and moved. The corner is where the map's own controls live and every one of
@@ -1988,7 +2001,9 @@ exist, because ordering by a count means knowing the count for every candidate
   signed out, that sheet is the sign-in form and has no menu at all, so a
   stranger on the map has no route to this page. They arrive from a list
   somebody sent them, from `/lists.html`, or from a search result — which is
-  three of the four ways below, and the reason the page is indexed.
+  three of the four ways below, and the reason the page is indexed. A byline
+  is a fourth route to lists, though not to this page: it leads to one
+  person's, and [Profiles](#profiles) is where that goes.
 - **The foot of every public list**, which carries three more and a way to all
   of them. This is the surface that should get the most use, and the reason is
   where it is: somebody who has just finished reading a top ten is exactly the
@@ -2530,7 +2545,8 @@ account button simply does not appear.
 
 ### What is not built yet
 
-- **Anything social.** No following, no hearts, no comments on somebody
+- **Anything social beyond a name.** A profile is a page about a person, and
+  that is as far as it goes: no following, no hearts, no comments on somebody
   else's list. A keep is the one thing you can do to a list somebody else made,
   and it is silent: its owner sees a number and never who — including on
   `/lists/kept`, where that number orders the page and still names nobody.
@@ -2538,6 +2554,111 @@ account button simply does not appear.
   by anybody but its owner, and the page that now ranks them gives a reader no
   way to push one down. The only lever on that order is keeping a list, which
   is the lever the feature already had.
+- **A ranking of people.** `/lists/kept` orders lists; a profile prints one
+  person's total and no position in anything. See the end of **Profiles** for
+  why the number was built and the table of people was not.
+
+---
+
+## Profiles
+
+Every list on this site has said who put it together since the day lists were
+written. The name was where the sentence stopped. `/u/<name>` is the rest of
+it.
+
+```
+/u/kate          kate's public lists, and how often they have been kept
+```
+
+It is the same page `lists.html` has always been, served at another address by
+`functions/u/[name].js` — the head swapped for that person's own tags, the
+profile seeded into the document, exactly the way `/list/<id>` and
+`/lists/kept` work. There is no second HTML file, no second stylesheet and no
+second boot.
+
+### What is on one
+
+The public lists somebody has made, newest edit first, each with how many
+places are on it and how many people kept it — the same row `/lists.html`
+draws for your own, which is what `listRow()` in `assets/lists.js` is for. The
+year they turned up. And one number over the lot: **how many times, in all,
+other people have kept these lists.**
+
+Nothing else. Not their saves — those are anonymous by design and filed under
+a device as often as under an account, and a page that turned them into a
+public record of where somebody eats would be a different site. Not their
+email. Not when they were last here. Not the lists they *kept*, which are a
+drawer of other people's pages rather than anything they published.
+
+A profile adds no fact about anybody that a list of theirs was not already
+printing. That is the test it was built to pass.
+
+### Private lists are not on it, including for its owner
+
+The page shows the same thing to everybody. Your own profile is not your own
+lists with the private ones added back — it is what a stranger sees, which is
+the only thing a profile is useful for knowing. The private half is one link
+away on `/lists.html`, which is where the editing lives anyway, and your own
+profile draws that link.
+
+### The number, and what it is not
+
+The standing is a sum: the keeps of every public list on the page, added up.
+It is the only thing this site counts about a person, and it counts the one
+gesture anybody can make towards somebody else's list — *keep this, I am
+coming back to it.*
+
+It is drawn only once it is more than nought, the same way a keep count under
+a list and a save count on the map are. A "kept 0 times" line on somebody's
+page reads as a verdict on them rather than as a number that has not started
+yet, and the first keep is how anybody finds out the number is there at all.
+
+It is honest exactly as far as an account is, which is the same thing
+`/api/saves` says about its own numbers: one row per (list, account), so
+nobody inflates it by pressing twice, and anybody willing to make ten accounts
+can add ten. That is worth being plainer about here than it was when only a
+list carried the number, because **Lists people kept** now orders a page on
+the same counts — and it is the same answer: ten accounts buy ten keeps and
+nobody has found that worth doing.
+
+**A profile is deliberately not a position, and that is what separates it from
+the directory.** `/lists/kept` ranks *lists*, one page of them at a time, and
+the argument for doing that is in its own section. Ranking *people* is a
+further claim, and it costs more: "third of everybody" means grouping every
+row of `list_keeps` by owner on every profile view, where a profile's own
+total is twenty-four indexed prefixes and the sum of numbers already printed
+under the lists on the page. So a profile says what happened to somebody's
+lists and never where that puts them, and there is no table of people
+anywhere. That decision is in **What is not built yet**, and it is still to be
+made.
+
+### Where they are linked from
+
+- **The byline under a shared list**, which is the whole point — the phrase is
+  the link, on the list's own page and in the panel the map draws for a list.
+- **The account sheet on the map**, as *Your public profile*, under the row
+  that opens your lists. They answer different questions: that one is where
+  you go to write, this one is what came of it.
+- **Your own lists page**, under the box that makes a new one, beside the way
+  through to everybody's.
+
+### Indexed, like a public list
+
+Same reasoning: it is a page of somebody's writing about restaurants in this
+city, under the name they chose, and a page nobody can arrive at is most of
+the way to not being published. A profile with no public lists on it is a page
+with nothing to find, so that one is served and not indexed; so is a name
+nobody has, which answers 404 with the page on it and a line saying so.
+
+Nothing is cached, for the reason a list is not: the number changes when
+somebody presses Keep, and a profile is most often opened by the person who
+has just been told about it. `GET /api/profile` is the same answer for a page
+the Function did not get to seed.
+
+### Turning it on
+
+Nothing to do. There is no new table and no new column — a profile is a query
+over `users`, `lists` and `list_keeps`, all of which **Lists** already needs.
 
 ---
 
@@ -3334,12 +3455,19 @@ functions/api/lists.js     somebody else's top ten: make one, fill it, share
                            it, keep somebody else's, add a place nobody has
 functions/api/places.js    the roll the picker searches: the map plus the export
 functions/api/venues.js    the Google Places directory, whole and unmerged
+functions/api/profile.js   one person's public lists, and their standing
 functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
+functions/api/_mostkept.js reading a page of everybody's, most kept first
+functions/api/_profile.js  reading one person, shared the same way
+functions/_shell.js        lists.html with a head and an answer written in,
+                           shared by the three Functions that serve it
 functions/list/[id].js     /list/<id> — the page a shared link opens
-lists.html                 your lists, the ones you kept, and the one a
-                           stranger reads
-assets/lists.js            all three of those; no map, no Leaflet
+functions/lists/kept.js    /lists/kept — everybody's, the most kept first
+functions/u/[name].js      /u/<name> — the page a byline leads to
+lists.html                 your lists, the ones you kept, the one a stranger
+                           reads, everybody's, and whoever wrote one
+assets/lists.js            all five of those; no map, no Leaflet
 assets/lists.css           only what a list page has and the map does not
 google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex

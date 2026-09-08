@@ -1,21 +1,30 @@
 /**
  * Tallinn Tastebuds — serving lists.html with a head of its own.
  *
- * Underscore-prefixed, so this is a module and never a route. Two Functions
+ * Underscore-prefixed, so this is a module and never a route. Three Functions
  * hand back that one page with different tags written into it:
  *
  *   functions/list/[id].js   one list, so a shared link unfurls as what it is
  *   functions/lists/kept.js  the directory, so it is a page a search can find
+ *   functions/u/[name].js    one person, which is where a byline leads
  *
- * What is in here is the part they cannot each have their own copy of. Two of
- * the four are escaping — the rules below are the difference between a title
- * somebody typed and a title somebody typed being executed — and two copies of
- * an escaping rule is two places for one of them to fall behind. That is the
- * same argument assets/lists.js makes about the sign-in form living in exactly
- * one place, and it matters more here.
+ * What is in here is the part they cannot each have their own copy of: the two
+ * escaping rules, the page out of the deployment, the head, the head swap, the
+ * seeding and the response. The escaping is the reason this file exists — the
+ * rules below are the difference between a title somebody typed and a title
+ * somebody typed being executed, and two copies of one is two places for one
+ * of them to fall behind. That is the same argument assets/lists.js makes
+ * about the sign-in form living in exactly one place, and it matters more
+ * here.
  *
- * What each route decides for itself: which tags go in, what is seeded, what
- * status it answers with, and whether the page is worth indexing.
+ * The head came here when the third route arrived, and was written out per
+ * route before that. Eight of a page's twelve tags are the same eight on all
+ * three — the site name, the card image and its size, the twitter card — and
+ * the four that differ are the four arguments head() takes.
+ *
+ * What each route decides for itself: what it calls itself and says about
+ * itself, what is seeded, what status it answers with, and whether the page is
+ * worth indexing.
  */
 
 /* Text on its way into an attribute or an element. The quotes matter most —
@@ -77,11 +86,56 @@ export function sow(html, global, value) {
     '<script>window.' + global + '=' + seed(value) + ';</script>\n' + TAG);
 }
 
+const SITE = 'https://tallinntastebuds.ee';
+const HOST = new URL(SITE).hostname;
+
+/* Which address a page should say it is. The same document answers at the live
+   domain and at every preview deployment, and a crawler that found two copies
+   would have to pick one — so on the live host it names the live URL, and
+   anywhere else it names itself rather than pointing a preview at a page that
+   may not be deployed yet. */
+export function canonical(request, path) {
+  const url = new URL(request.url);
+  return url.hostname === HOST ? SITE + path : url.toString();
+}
+
+/* The head of one of these pages: what it is called, what it says about
+   itself, where it lives, and the card an unfurler builds out of those.
+ *
+ * `title` is the bare name — the suffix is added here, so no caller can spell
+ * it differently — and `type` is the og:type: "article" for a list somebody
+ * wrote, "profile" for the person who wrote it, "website" for the directory.
+ * Everything is escaped on the way in, including the values that are constants
+ * today, because the next caller's may not be. */
+export function head(meta) {
+  const title = esc(meta.title) + ' | Tallinn Tastebuds';
+  const description = esc(meta.description);
+  const url = esc(meta.url);
+
+  return [
+    /* The <title> in lists.html sits above the marker and is left alone, so
+       this one is second and wins: the last <title> in a head is the one a
+       browser uses, and every unfurler reads og:title anyway. */
+    '<title>' + title + '</title>',
+    '<meta name="description" content="' + description + '">',
+    '<link rel="canonical" href="' + url + '">',
+    '<meta property="og:type" content="' + esc(meta.type) + '">',
+    '<meta property="og:site_name" content="Tallinn Tastebuds">',
+    '<meta property="og:url" content="' + url + '">',
+    '<meta property="og:title" content="' + title + '">',
+    '<meta property="og:description" content="' + description + '">',
+    '<meta property="og:image" content="' + SITE + '/assets/logo/og.jpg">',
+    '<meta property="og:image:width" content="1200">',
+    '<meta property="og:image:height" content="630">',
+    '<meta name="twitter:card" content="summary_large_image">'
+  ].join('\n');
+}
+
 /* The block between the two markers in lists.html, swapped for tags of this
    page's own. Left alone when the markers are not both there, which is a
    broken build rather than anything this can improve on. */
-const HEAD_OPEN = '<!--LIST-HEAD-->';
-const HEAD_CLOSE = '<!--/LIST-HEAD-->';
+const HEAD_OPEN = '<!--PAGE-HEAD-->';
+const HEAD_CLOSE = '<!--/PAGE-HEAD-->';
 
 export function rehead(html, tags) {
   const open = html.indexOf(HEAD_OPEN);

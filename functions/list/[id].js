@@ -59,13 +59,12 @@
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import { readList, LIST_ID } from '../api/_lists.js';
-/* Escaping, the page out of the deployment, the head swap and the seeding are
-   shared with functions/lists/kept.js, which serves the same document with
-   everybody's lists in it. See functions/_shell.js for why they are not
-   written out twice. */
-import { esc, shell, sow, rehead, page } from '../_shell.js';
-
-const SITE = 'https://tallinntastebuds.ee';
+/* The page out of the deployment, the head, the head swap and the seeding are
+   shared with the two other routes that serve this same document —
+   functions/lists/kept.js with everybody's lists in it, functions/u/[name].js
+   with one person's. See functions/_shell.js for why they are not written out
+   three times. */
+import { canonical, head, shell, sow, rehead, page } from '../_shell.js';
 
 /* The line under the title in a preview card. Their own if they wrote one,
    and otherwise a plain statement of what the link holds.
@@ -82,33 +81,6 @@ function describe(list) {
   return list.by
     ? places + ' in Tallinn, picked by ' + list.by + '.'
     : places + ' in Tallinn.';
-}
-
-function headTags(list, url) {
-  const title = esc(list.title) + ' | Tallinn Tastebuds';
-  const description = esc(describe(list));
-
-  return [
-    /* The <title> in lists.html sits above the marker and is left alone, so
-       this one is second and wins: the last <title> in a head is the one a
-       browser uses, and every unfurler reads og:title anyway. */
-    '<title>' + esc(list.title) + ' | Tallinn Tastebuds</title>',
-    '<meta name="description" content="' + description + '">',
-    /* Now that a public list can be indexed, it needs to say which address it
-       is: the same page is reachable at the live domain and at every preview
-       deployment, and a crawler that found two copies would have to pick one.
-       It points at the live site's URL for the same reason og:url does. */
-    '<link rel="canonical" href="' + esc(url) + '">',
-    '<meta property="og:type" content="article">',
-    '<meta property="og:site_name" content="Tallinn Tastebuds">',
-    '<meta property="og:url" content="' + esc(url) + '">',
-    '<meta property="og:title" content="' + title + '">',
-    '<meta property="og:description" content="' + description + '">',
-    '<meta property="og:image" content="' + SITE + '/assets/logo/og.jpg">',
-    '<meta property="og:image:width" content="1200">',
-    '<meta property="og:image:height" content="630">',
-    '<meta name="twitter:card" content="summary_large_image">'
-  ].join('\n');
 }
 
 export async function onRequest(context) {
@@ -147,11 +119,15 @@ export async function onRequest(context) {
      and offers the map. */
   if (!list) return page(html, 404);
 
-  const url = new URL(request.url);
-  const shared = SITE + '/list/' + list.id;
-
-  html = rehead(html, headTags(
-    list, url.hostname === 'tallinntastebuds.ee' ? shared : url.toString()));
+  html = rehead(html, head({
+    title: list.title,
+    description: describe(list),
+    /* A public list is indexed, so it has to say which address it is: the
+       same page answers at the live domain and at every preview deployment,
+       and a crawler that found two copies would have to pick one. */
+    url: canonical(request, '/list/' + list.id),
+    type: 'article'
+  }));
 
   /* The list, into the document, so the page draws on the first paint instead
      of after a round trip it has all the answers for. assets/lists.js reads
