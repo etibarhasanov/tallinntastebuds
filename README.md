@@ -4877,14 +4877,33 @@ The walk, in order, and what each step is anchored to:
 
 1. A pin — whichever is nearest the middle of the screen, or the bubble
    sits in the middle with no ring when none is on it.
-2. The filters: the chip row on a desktop, the **Filters** button on a phone
+2. The **Places** button: the whole map as a list, with the search field at
+   the top of it.
+3. The language switcher.
+4. The filters: the chip row on a desktop, the **Filters** button on a phone
    where the row is folded behind it.
-3. **Surprise me**, with its label and Ask's held open on a phone for as
-   long as the step is up.
-4. The account button, left out when `/api/account` never said accounts
+5. **Surprise me**, with its label held open on a phone for as long as the
+   step is up.
+6. **Ask**, the same way.
+7. The radio, left out when `data/radio.json` gave the language no station
+   and the button never appeared.
+8. The account button, left out when `/api/account` never said accounts
    work — there is no button to point at.
-5. The discount chip, second in the row after All, or the Filters button on
+9. The discount chip, second in the row after All, or the Filters button on
    a phone; left out when no deal is on.
+
+One step is about one thing. Surprise me and Ask used to share a step — the
+ring round the die, both labels held open, one sentence saying what each
+did — and a sentence introducing two buttons while pointing at one of them
+read as one button with two names. Each has its own step now. The Places
+button, the language switcher and the radio had no step at all, and a
+visitor who had just been told what some of the buttons do was left to
+guess at the rest; the walk now takes in everything on the page that a
+first visitor might press, in the order it sits on the page: the pin, the
+two buttons top right, the filters, the rail from the top down, and last
+the chip. The colour swatch and the locate button are the two it still
+passes over: both are settings, both are plain on sight, and a walk that
+stops to explain a crosshair is a walk that gets skipped.
 
 Every step is about something that can be pressed. The walk used to open
 on the mark, with the one sentence the site rests on set large in the
@@ -4913,7 +4932,7 @@ asked, and a second unasked-for overlay on top of that is the kind of thing
 that gets closed unread; a button pressed when it is wanted is the better
 version of the same words.
 
-The strings are `explainOpen` — the button — the five `explainPin` …
+The strings are `explainOpen` — the button — the nine `explainPin` …
 `explainDiscount` lines, `explainNext`, `explainSkip` and `explainClose`,
 in all ten languages. The pieces are `#tour` in
 `index.html`; the steps are `TOUR_STEPS` in `assets/app.js`, run by
