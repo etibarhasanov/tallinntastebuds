@@ -11,7 +11,7 @@
  *
  * One request to /api/venues, which answers with the whole roll and five
  * minutes of cache on it, and everything after that happens in the browser: a
- * search, four narrowing controls, four orders, and a map beside the list with
+ * search, four narrowing controls, five orders, and a map beside the list with
  * a dot for every match. See functions/api/venues.js for why the filtering is
  * this side and not in a WHERE clause — briefly, the map needs every matching
  * pin whatever the filter says, and "open now" is a question about a week of
@@ -70,7 +70,14 @@
      does. */
   var PRICES = [1, 2, 3, 4];
 
-  var SORTS = ['rating', 'reviews', 'name', 'near'];
+  var SORTS = ['best', 'rating', 'reviews', 'name', 'near'];
+
+  /* How many reviews a place needs before its own rating counts for half of
+     its place in the "best overall" order — see weigh(). A hundred is under
+     the export's median of 237, so most of the roll is judged on its own
+     number, and a place with thirty reviews, however many stars, cannot
+     stand above one with three thousand. */
+  var PRIOR = 100;
 
   /* Where the map opens before anything has been drawn on it: the middle of
      Tallinn, wide enough to hold the whole export. Same point functions/api/
@@ -99,7 +106,7 @@
     cuisine: '',
     rating: 0,
     price: 0,
-    sort: 'rating'
+    sort: 'best'
   };
 
   var dom = {};
@@ -402,7 +409,7 @@
     var sort = p.get('sort');
     /* Not 'near': it means "nearest to where I am standing", which is nowhere
        for whoever the link was sent to. */
-    state.sort = SORTS.indexOf(sort) !== -1 && sort !== 'near' ? sort : 'rating';
+    state.sort = SORTS.indexOf(sort) !== -1 && sort !== 'near' ? sort : 'best';
   }
 
   function writeUrl() {
@@ -416,7 +423,7 @@
     set('cuisine', state.cuisine);
     set('rating', state.rating || '');
     set('price', state.price || '');
-    set('sort', state.sort === 'rating' || state.sort === 'near' ? '' : state.sort);
+    set('sort', state.sort === 'best' || state.sort === 'near' ? '' : state.sort);
 
     var query = p.toString();
     try {
@@ -457,10 +464,49 @@
     return true;
   }
 
-  /* The four orders the page offers, by the name the control uses. state.sort
+  /* The score "best overall" orders by, written onto every row once the roll
+     has landed.
+
+     Google's rating alone is a poor first page. Nineteen rows in the export
+     are a flat 5.0 and none of them has more than a hundred and fifty
+     reviews; sorted by the number, a tea shop with thirty-four sits above a
+     restaurant that four thousand people rated 4.8, and the tie-break on
+     review count never gets a say because the ratings are not tied. That
+     order is still offered — it is Google's number, plainly — but it is not
+     the one the page opens on.
+
+     This is the Bayesian average, the same arithmetic IMDb's top list uses:
+     each rating is pulled towards the whole roll's mean by a weight that
+     fades as the review count grows.
+
+         (n / (n + PRIOR)) * rating  +  (PRIOR / (n + PRIOR)) * mean
+
+     With PRIOR at a hundred, thirty reviews at 5.0 comes out about 4.53 —
+     the top half, not the top — and 4.8 from six thousand stays 4.79. The
+     mean is the roll's own, weighted by review count, so it tracks the next
+     export rather than being a constant that was true the year it was typed.
+     Nothing on a card prints the score: the rating and the count shown are
+     Google's, and this only decides who is above whom. */
+  function weigh(list) {
+    var stars = 0, votes = 0;
+    list.forEach(function (venue) {
+      if (typeof venue.rating !== 'number' || typeof venue.reviews !== 'number') return;
+      stars += venue.rating * venue.reviews;
+      votes += venue.reviews;
+    });
+    var mean = votes ? stars / votes : 0;
+    list.forEach(function (venue) {
+      var n = typeof venue.reviews === 'number' ? venue.reviews : 0;
+      var rating = typeof venue.rating === 'number' ? venue.rating : mean;
+      venue.best = (n * rating + PRIOR * mean) / (n + PRIOR);
+    });
+  }
+
+  /* The five orders the page offers, by the name the control uses. state.sort
      can only ever hold one of them: readUrl() checks what arrives in the
      address bar and the select holds nothing else. */
   var ORDERS = {
+    best: function (a, b) { return (b.best || 0) - (a.best || 0) || (b.reviews || 0) - (a.reviews || 0); },
     /* Reviews break the tie, because a lone five-star rating and four hundred
        of them are not the same claim. */
     rating: function (a, b) { return (b.rating || 0) - (a.rating || 0) || (b.reviews || 0) - (a.reviews || 0); },
@@ -855,6 +901,7 @@
     dom.price.value = state.price ? String(state.price) : '';
 
     clear(dom.sort);
+    dom.sort.appendChild(option('best', t('venuesSortBest')));
     dom.sort.appendChild(option('rating', t('venuesSortRating')));
     dom.sort.appendChild(option('reviews', t('venuesSortReviews')));
     dom.sort.appendChild(option('name', t('listAlphabet')));
@@ -889,7 +936,7 @@
        answering No to it afterwards must not undo that. */
     var giveUp = function () {
       if (state.sort !== 'near') return;
-      dom.sort.value = state.sort = 'rating';
+      dom.sort.value = state.sort = 'best';
       toast(t('locateFail'));
       refresh();
     };
@@ -1038,6 +1085,7 @@
 
       if (!loaded[3] || !Array.isArray(loaded[3])) { failed(); return; }
       state.all = loaded[3];
+      weigh(state.all);
 
       fillControls();
       refresh();
