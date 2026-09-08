@@ -213,6 +213,30 @@
     return el('a', { className: className || 'alt', href: href, textContent: t(labelKey) });
   }
 
+  /* A way on from a card, as a row: the name, the line under it saying what
+     is behind it, and the chevron. It is .menu-row out of assets/styles.css,
+     the shape the map's account sheet draws its places-to-go in, and the
+     lists page draws the same row with the same function — see door() in
+     assets/lists.js, which also says why these stopped being underlined
+     words along the foot of the card. */
+  var ICON_GO = '<path d="M9 5l7 7-7 7"/>';
+
+  function door(nameKey, whyKey, href) {
+    return el('li', { className: 'menu-item' }, [
+      el('a', { className: 'menu-row', href: href }, [
+        el('span', { className: 'menu-say' }, [
+          el('span', { className: 'menu-name', textContent: t(nameKey) }),
+          el('span', { className: 'menu-why', textContent: t(whyKey) })
+        ]),
+        el('span', {
+          className: 'menu-go',
+          'aria-hidden': 'true',
+          html: '<svg viewBox="0 0 24 24" focusable="false">' + ICON_GO + '</svg>'
+        })
+      ])
+    ]);
+  }
+
   /* ------------------------------------------------------------------ saves
    * The one thing on this page that works with no account at all, so it is
    * drawn the same way in both states and reads the same two sources the map
@@ -349,14 +373,18 @@
     }
 
     /* The three ways on, in the order they are about you: where a list gets
-       written, what yours look like from outside, and then everybody's. The
-       lists you kept are not here at all — they are somebody else's pages, and
-       /lists.html is where they are read and where they can be dropped
-       again. */
-    kids.push(foot([
-      link('accountMake', '/lists.html'),
-      link('profileYours', '/u/' + encodeURIComponent(state.user)),
-      link('listsAllEverything', '/lists/public')
+       written, what yours look like from outside, and then everybody's. Rows,
+       each with the line saying what is behind it, because three of them in a
+       row of underlined words was three doors a visitor could not tell apart
+       — the lists page says the same about its own two. The line under Make
+       a list is the sentence the lists page opens with, because it is the
+       same promise and one copy of it is enough. The lists you kept are not
+       here at all — they are somebody else's pages, and /lists.html is where
+       they are read and where they can be dropped again. */
+    kids.push(el('ul', { className: 'menu' }, [
+      door('accountMake', 'listsWhat', '/lists.html'),
+      door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user)),
+      door('listsAllEverything', 'listsAllWhy', '/lists/public')
     ]));
     return card(kids);
   }

@@ -135,6 +135,12 @@
 
 .lists-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .lists-foot { margin-top: 6px; }
+
+/* The ways on from a card, as rows — .menu out of assets/styles.css, the
+   account sheet's own shape. Given the same air above it a foot of links had,
+   plus a little: a ruled row sits closer to the thing over it than a word
+   does, and the hairline wants a breath before it. */
+.lists-card > .menu { margin-top: 18px; }
 .lists-count { margin-left: auto; color: var(--muted); font-size: 11.5px; letter-spacing: .04em; }
 
 /* ---------- the button states this page adds ---------- */
