@@ -2026,20 +2026,35 @@
    * with the useful ones behind it. So the first thing the cursor
    * lands on is a pin.
    *
+   * And one step is about one thing. Surprise me and Ask were once a single
+   * step, ringed round the die and saying both in one breath, and a
+   * sentence introducing two buttons while pointing at one of them was
+   * read as one button with two names. Each gets its own step now, and so
+   * do the things the walk used to leave out — the Places button, the
+   * language switcher, the radio — because a visitor who has just been
+   * told what some of the buttons do is left wondering about the rest.
+   *
    * Every step points at something real on the page as it stands, which is
    * why the steps are functions and not co-ordinates: the pin is whichever
    * pin is nearest the middle of the screen, the filters are the row on a
-   * desktop and the Filters button on a phone, and the two steps about
-   * things that may not be there — an account when /api/account never
-   * answered, the discount chip when nothing is on — are left out rather
-   * than pointed at nothing.
+   * desktop and the Filters button on a phone, and the three steps about
+   * things that may not be there — the radio when data/radio.json has no
+   * station, an account when /api/account never answered, the discount
+   * chip when nothing is on — are left out rather than pointed at nothing.
    */
   var TOUR_STEPS = [
     { key: 'explainPin', at: nearestPin },
+    { key: 'explainList', at: function () { return dom.btnList; } },
+    { key: 'explainLang', at: function () { return dom.langSwitch; } },
     { key: 'explainChips',
       at: function () { return isNarrow() ? dom.btnFilters : dom.filters; } },
-    { key: 'explainAsk', at: function () { return dom.btnRandom; },
-      pills: function () { return [dom.btnRandom, dom.btnAsk]; } },
+    { key: 'explainRandom', at: function () { return dom.btnRandom; },
+      pills: function () { return [dom.btnRandom]; } },
+    { key: 'explainAsk', at: function () { return dom.btnAsk; },
+      pills: function () { return [dom.btnAsk]; } },
+    { key: 'explainRadio', at: function () { return dom.btnRadio; },
+      when: function () { return !dom.btnRadio.hidden; },
+      pills: function () { return [dom.btnRadio]; } },
     { key: 'explainSave', at: function () { return dom.btnAccount; },
       when: function () { return !dom.btnAccount.hidden; },
       pills: function () { return [dom.btnAccount]; } },
@@ -7133,7 +7148,6 @@
       ask: $('panel-ask'),
       askForm: $('ask-form'),
       askInput: $('ask-input'),
-      askGo: $('ask-go'),
       askGo: $('ask-go'),
       askScope: $('ask-scope'),
       askThread: $('ask-thread'),
