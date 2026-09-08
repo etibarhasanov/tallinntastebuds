@@ -666,25 +666,60 @@ the Google copy beside the write-up would be the same door twice.
 Google's rows are read on the map scope for exactly one thing — see the hours
 below.
 
-### It is free, and it stays working when it stops being
+### Two models, and which one answers
 
-Workers AI gives every Cloudflare account **ten thousand Neurons a day at no
-charge**, on the free Workers plan as well as the paid one. A question here is
-a few hundred tokens against a small model, so the allowance is a great many
-questions — and on the free plan going past it *fails the request rather than
-billing for it*. That is the rate limit and the budget in one, and there is
-nothing to configure: no key, no npm, no account to open. The binding is three
-lines of `wrangler.toml` and the model is one constant in the Function.
+The chat asks **Claude** first, and falls back to **Workers AI**, and falls
+back again to a keyword reader in the browser. Each step down is a step
+further from a conversation, and the site never says which — it just gets
+less clever.
 
-Which leaves the interesting half: what happens when the model is not there.
-It is not there quite often — the allowance runs out, a model gets moved behind
+**Claude** answers when `ANTHROPIC_API_KEY` is set in the Pages environment.
+It is the half that can actually hold a conversation: a follow-up read
+against what it just said, a greeting answered as a greeting, *what is
+similar to that* meaning what it plainly means. `functions/api/_claude.js` is
+the whole of it — a `fetch` against the Messages API, because there is no
+`package.json` in this repository and one HTTPS call is not a reason to grow
+one.
+
+The catalogue is the same seventy lines on every question ever asked, so it
+goes in the system prompt under a cache breakpoint and is read back at the
+cache rate rather than written again. That split is the whole cost story and
+it is easy to undo by accident: a prompt cache is a **prefix** match, so
+anything that changes between two questions has to sit after the breakpoint.
+Two things change — the opening hours, which move through the evening, and
+the forty Google rows, which are narrowed per question — and both are named
+in the question's own turn for that reason. Put either in the catalogue and
+it still answers, it just quietly costs several times more. There is a test
+for it: the system block has to come out byte-identical for two different
+questions.
+
+**Workers AI** answers when there is no key, or when Claude cannot be
+reached. Cloudflare gives every account **ten thousand Neurons a day at no
+charge** and there is nothing to configure — no key, no npm, no account to
+open; the binding is three lines of `wrangler.toml`.
+
+What that allowance actually buys is the thing worth knowing. A question
+carries the whole catalogue, about 4,750 tokens, so it is **something like a
+hundred and thirty questions a day** — and then every request is a 429 until
+midnight UTC and the keyword reader answers instead. Preview and production
+spend from the same pot. For a long time that ceiling was invisible: the
+Function collapsed every failure into the same empty answer, so a chat that
+had quietly stopped thinking looked exactly like a chat that had nothing to
+say, and *how does it work* came back with three restaurants. `/api/ask` now
+reports which half answered in **`note`** — `claude`, `workers-ai`,
+`no-key`, `http-429` — so the difference is one request to find rather than
+a day.
+
+Which leaves the interesting half: what happens when neither model is there.
+That happens quite often — the allowance runs out, a model gets moved behind
 the paid plan (`kimi-k2.6` and `glm-5.2` both did in July 2026), the network is
-gone, or it answers with something unparseable. So there is a second reader,
+gone, or it answers with something unparseable. So there is a third reader,
 `assets/ask.js`, in the browser:
 
 | | what it understands |
 |---|---|
-| the model | mood, occasion, a sentence with no keyword in it — *somewhere I can hear myself think* |
+| Claude | a conversation: *somewhere cheaper*, *what is similar to that*, and a question about the chat itself answered as one |
+| Workers AI | mood, occasion, a sentence with no keyword in it — *somewhere I can hear myself think* |
 | `assets/ask.js` | the thirteen types in ten languages, cheap and fancy, open now, and every dish and street in the index |
 
 The local one is not a stub, though it reads each sentence on its own — it
@@ -702,9 +737,16 @@ every other string, and adding a language stays one file.
 What it cannot do is mood, and it does not pretend to. That is the whole of
 what the model buys.
 
-`/api/ask` answers `source: "none"` when it has no opinion, the browser reads
-the question itself, and the same cards are drawn either way. The chat gets
-less clever for the rest of the day; it does not break.
+`/api/ask` answers `source: "none"` when neither model has an opinion, the
+browser reads the question itself, and the same cards are drawn either way.
+The chat gets less clever for the rest of the day; it does not break.
+
+The reader is a substring matcher, and the honest limit of it is that it
+cannot hold a thread at all — it reads each sentence on its own. It also
+used to answer questions that were not questions about food, because *it* is
+a substring of Piti and of Vesta: a leftover word now has to be three
+letters and has to start a word, so *khinkal* still finds khinkali and *how
+does it work* finds nothing.
 
 ### Where the opening hours come from
 
@@ -743,7 +785,11 @@ the half of the search index that never reaches the screen. Everything else
 gets no line at all, and most rows have none.
 
 The model's clause goes in the same slot, and it is the half that can say
-something about an evening.
+something about an evening. Claude is **required** to write one for every
+place it names — a row appearing with nothing under it is the answer refusing
+to say why it is an answer — under the same rule the reader follows: the dish,
+the occasion, what makes it the cheap one, and never the type or the price
+read back off the card underneath.
 
 ## Close a place instead of deleting it
 

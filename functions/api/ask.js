@@ -86,6 +86,10 @@
  */
 
 import { json, mapPlaces, venueCard, venueHours, wrongDatabase } from './_lib.js';
+/* Claude, when there is a key for it in the Pages environment. Without one
+   this returns "no-key" and the Workers AI half below is the whole feature,
+   exactly as it was. See the header of _claude.js for why there are two. */
+import { askClaude } from './_claude.js';
 /* What a Google row cooks, in the directory's ids: the one table that decides
    it, and the string it is asked of. See the note above KITCHENS for why it
    is that table and not VENUE_TYPES — "thai" is a thing to ask for, and the
@@ -455,7 +459,7 @@ function candidates(roll, wish, now, named) {
  * an Estonian question writes Estonian back; one shown English and asked in
  * Estonian tends to drift into English halfway down.
  */
-function catalogueFor(places, lang, open) {
+function catalogueFor(places, lang) {
   return places
     .filter((place) => !place.closed)
     .map((place) => {
@@ -466,26 +470,38 @@ function catalogueFor(places, lang, open) {
         (place.types || []).join(' '),
         place.price ? place.price + '/4' : '',
         (place.mustOrder || []).join(', '),
-        open[place.id] ? 'open until ' + open[place.id] : '',
         blurb.slice(0, BLURB_CHARS)
       ].join(' | ');
     })
     .join('\n');
 }
 
+/* Which of my places are open, as a line rather than as a column in the
+   catalogue above.
+
+   It reads worse there and it is worth it: the hours change through the
+   evening and the catalogue does not, and on the Claude path the catalogue
+   is a cached prefix that anything changing inside it would invalidate. One
+   builder feeds both models, so the split lives here rather than twice. */
+function openLine(open) {
+  const ids = Object.keys(open || {});
+  if (!ids.length) return '';
+  return 'Open in Tallinn right now, and until when: ' +
+    ids.map((id) => id + ' until ' + open[id]).join(', ');
+}
+
 /* Google's rows as the model reads them: what Google files the place as and
    what Google's reviewers make of it, which is all anybody knows. No
    description, because there is none — and the model is told as much, so it
    does not write one. */
-function googleFor(rows, open) {
+function googleFor(rows) {
   return rows
     .map((row) => [
       row.id,
       row.name,
       (row.types || []).concat(row.kitchens || []).join(' '),
       row.price ? row.price + '/4' : '',
-      row.rating ? row.rating + ' from ' + (row.reviews || 0) + ' reviews' : '',
-      open[row.id] ? 'open until ' + open[row.id] : ''
+      row.rating ? row.rating + ' from ' + (row.reviews || 0) + ' reviews' : ''
     ].join(' | '))
     .join('\n');
 }
@@ -503,9 +519,12 @@ function briefFor(places, google, wholeCity, lang, open) {
       ' lists say.',
     '',
     'Places I have eaten at and written up:',
-    'id | name | types | price out of 4 | must order | open now | description',
-    catalogueFor(places, lang, open)
+    'id | name | types | price out of 4 | must order | description',
+    catalogueFor(places, lang)
   ];
+
+  const hours = openLine(open);
+  if (hours) lines.push('', hours);
 
   /* The city's forty go in on both scopes, and the scope is the sentence
      over them. On the map they are a last resort — the model may reach for
@@ -522,7 +541,7 @@ function briefFor(places, google, wholeCity, lang, open) {
         : 'Places from Google that I have not been to. Use these ONLY if' +
           ' nothing in the first list answers the question at all:',
       'id | name | types and cuisine | price out of 4 | Google rating | open now',
-      googleFor(google, open)
+      googleFor(google)
     );
   }
 
@@ -654,18 +673,46 @@ export async function onRequestPost(context) {
   const google = cut.venues;
   Object.assign(open, cut.open);
 
-  const answer = (source, picks, say) => json({ ok: true, source, picks, say, open, venues: google });
-
-  /* Everything from here on is the model's half, and none of it is allowed to
-     take the answer down with it. `source: "none"` is a complete, correct
-     answer that the browser knows what to do with — it reads the question
-     itself with assets/ask.js and draws the same cards. */
-  if (!env.AI) return answer('none', [], '');
+  /* `note` is not for the page — nothing draws it — it is so that a chat
+     answering with the browser's keyword reader can be told apart from a
+     chat answering with a model, from outside, in one request. This feature
+     was silently down for a day because every failure looked identical: no
+     key, spent allowance, overloaded model and dead network all arrived as
+     the same empty answer. It names which, never why in the provider's own
+     words, so nothing quotes a request back at a stranger. */
+  const answer = (source, picks, say, note) =>
+    json({ ok: true, source, picks, say, note, open, venues: google });
 
   const shown = new Set([
     ...places.filter((p) => !p.closed).map((p) => p.id),
     ...google.map((g) => g.id)
   ]);
+
+  /* Claude first, when the key is there. It is the half that can hold a
+     conversation — a follow-up read against what was just said, and a
+     greeting answered as a greeting — which is the whole reason it was
+     added; see the header of _claude.js. */
+  const claude = await askClaude(env, {
+    question,
+    history,
+    catalogue: catalogueFor(places, lang),
+    google: googleFor(google),
+    wholeCity,
+    lang,
+    open,
+    maxPicks: MAX_PICKS
+  });
+
+  if (claude.ok) {
+    const kept = keep(claude.said, shown);
+    if (kept) return answer('ai', kept.picks, kept.say, 'claude');
+  }
+
+  /* Everything from here on is Workers AI's half, and none of it is allowed
+     to take the answer down with it. `source: "none"` is a complete, correct
+     answer that the browser knows what to do with — it reads the question
+     itself with assets/ask.js and draws the same cards. */
+  if (!env.AI) return answer('none', [], '', claude.note);
 
   /* The conversation as the model sees it: the brief, then every earlier
      exchange as the two turns it was — the question, and the answer in the
@@ -698,8 +745,11 @@ export async function onRequestPost(context) {
 
     said = keep(unwrap(out && (out.response !== undefined ? out.response : out)), shown);
   } catch (e) {
-    /* The allowance is spent, the model is overloaded, or it has been moved
-       behind a paid plan. All three are the same thing here. */
+    /* The daily ten thousand Neurons are spent, the model is overloaded, or
+       it has been moved behind a paid plan. All three are the same thing
+       here, and the first is much the commonest: a question carries the
+       whole catalogue, so the free allowance is something like a hundred and
+       thirty questions a day and then this throws until midnight UTC. */
     said = null;
   }
 
@@ -709,7 +759,7 @@ export async function onRequestPost(context) {
      model saying "that is not a question about where to eat" has to beat
      the browser's own reader finding three places for "how does it work"
      off the letters in their names. */
-  if (!said) return answer('none', [], '');
+  if (!said) return answer('none', [], '', claude.note + '/workers-ai-none');
 
-  return answer('ai', said.picks, said.say);
+  return answer('ai', said.picks, said.say, 'workers-ai');
 }
