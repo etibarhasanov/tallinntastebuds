@@ -15,7 +15,10 @@ DST = sys.argv[2] if len(sys.argv) > 2 else "tallinn_restaurants_clean.csv"
 DAYS = {"Monday":"Mon","Tuesday":"Tue","Wednesday":"Wed","Thursday":"Thu",
         "Friday":"Fri","Saturday":"Sat","Sunday":"Sun"}
 
-# Most specific first: the first token that matches wins.
+# Within one Google type, most specific first: "sushi_restaurant" is Japanese
+# before it is Asian. Across a row's types, though, the list order says nothing -
+# see cuisine_of() for what decides between Korean and Argentinian when Google
+# says both.
 CUISINE = [
     ("izakaya","Japanese"),("ramen","Japanese"),("sushi","Japanese"),("japanese","Japanese"),
     ("taiwanese","Taiwanese"),("chinese","Chinese"),("thai","Thai"),("korean","Korean"),
@@ -35,6 +38,11 @@ CUISINE = [
     ("barbecue","Barbecue"),("vegan","Vegan / Vegetarian"),("vegetarian","Vegan / Vegetarian"),
     ("asian","Asian"),("european","European"),
 ]
+# The six tokens above that name a family of kitchens rather than one of them.
+# Google hands them out alongside the exact type - Shaurma Kebab is a
+# "turkish_restaurant" and a "middle_eastern_restaurant" both - so they are the
+# answer only when nothing exact matched anywhere on the row.
+BROAD = {"middle_eastern","mediterranean","american","eastern_european","asian","european"}
 # Tokens shared by nearly every row - they carry no information.
 BOILERPLATE = {"restaurant","food","point_of_interest","establishment","store"}
 
@@ -95,10 +103,45 @@ def fmt_hours(raw, name):
     return "; ".join(out)
 
 def cuisine_of(primary, types):
-    hay = f"{primary},{types}".lower()
-    for token, label in CUISINE:
-        if token in hay:
-            return label
+    """One word for what a place cooks, out of Google's primary type and its types.
+
+    This used to search the primary type and the types as one string and take the
+    first token in CUISINE that appeared anywhere in it, which meant the list's own
+    order decided between two kitchens Google had named with equal confidence.
+    Siga la Vaca - an Argentinian steakhouse Google types as argentinian_restaurant
+    first and korean_restaurant fifth - came out "Korean", because korean sits
+    higher up the list than argentinian. Six Indian restaurants came out
+    "Chinese" or "Thai" the same way, and every Hesburger came out "American"
+    rather than "Burgers".
+
+    So the row's own order decides now. Google lists the primary type first and then
+    the types from most to least characteristic, and that order is the only opinion
+    about the place either of us has: the first type that names a kitchen wins.
+    Two things bend it, both of them about what a type actually claims:
+
+      - a BROAD label is held back to a second pass, so an exact kitchen anywhere
+        on the row beats a family name at the front of it. Nine rows turn on this
+        and all nine read better for it: Farm is Nordic and not European, Sakura
+        Resto is Japanese and not Asian.
+      - a "*_delivery" type is skipped, because it says how food travels rather
+        than what it is. Restoran Kishmish is a Middle Eastern restaurant that
+        also delivers pizza, and one "pizza_delivery" in twelve types is not a
+        claim that it is a pizzeria.
+
+    Tokens match a whole underscore-delimited word, not a substring, so "american"
+    no longer answers for latin_american_restaurant and south_american_restaurant -
+    the three rows carrying those are two Argentinian steakhouses and a seafood
+    restaurant. KITCHENS in functions/api/venues.js had the same hole.
+    """
+    parts = [(primary or "").lower()] + [t.strip().lower() for t in (types or "").split(",")]
+    parts = [p for p in parts if p and not p.endswith("_delivery")]
+    for broad in (False, True):
+        for part in parts:
+            for token, label in CUISINE:
+                if (token in BROAD) != broad:
+                    continue
+                if re.search(rf"(^|_){token}(_|$)", part):
+                    return label
     return ""
 
 def tidy_tags(types):
