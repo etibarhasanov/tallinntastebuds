@@ -419,6 +419,25 @@
     return '/u/' + encodeURIComponent(name);
   }
 
+  /* The byline on a row, and the door it is. Every row that draws a list
+     somebody else wrote says who wrote it — Lists you kept, the directory, the
+     three rows at the foot of a list — and that name led nowhere on any of
+     them, while the same phrase under a list's own title has led to the person
+     since profiles were built. A profile's own rows carry no byline: they are
+     all that person's, and the name is the heading over them.
+
+     The whole phrase is the link and not the name inside it, for the reason
+     listHead() gives below: the name is three or four characters on a phone,
+     and splitting a translated sentence around it to underline only that would
+     be a sentence assembled out of pieces in ten languages. */
+  function byline(name) {
+    return el('a', {
+      className: 'lists-index-by',
+      href: profileHref(name),
+      textContent: t('listsBy', { name: name })
+    });
+  }
+
   /* Every caller says how it should look, because the places this link turns
      up in are two weights of the same door: filled on somebody else's list,
      where it is the one thing that card asks for; and the outlined pill
@@ -614,18 +633,29 @@
      lists, the ones you kept, and the public ones on somebody's profile — and
      it was two near-identical functions before the third arrived.
 
-     What differs is two spans, and each is decided by what the row actually
+     What differs is two parts, and each is decided by what the row actually
      carries rather than by which section it is in: a byline where the list is
      somebody else's, and the private pill where it is yours and shut. That
      second test is `=== false` and not `!l.public`, because the answers that
      hold other people's lists do not send the column at all — every list in
      them is public by the query that found it — and a missing value must not
-     read as a private one. */
+     read as a private one.
+
+     The card is a box and the title is the link, which .lists-open stretches
+     over the whole face of it. It was the card itself until the byline became
+     a door of its own, and a link inside a link is not a thing HTML has; the
+     map button in the corner was already a sibling laid over it for the same
+     reason. What it buys besides the byline is the name of the link: the title,
+     rather than the title and every number beside it read out in one breath. */
   function listRow(l) {
-    var link = el('a', { className: 'lists-index-link', href: '/list/' + l.id }, [
-      el('span', { className: 'lists-index-title', textContent: l.title }),
+    var box = el('div', { className: 'lists-index-card' }, [
+      el('a', {
+        className: 'lists-index-title lists-open',
+        href: '/list/' + l.id,
+        textContent: l.title
+      }),
       el('span', { className: 'lists-index-meta mono' }, [
-        l.by ? el('span', { className: 'lists-index-by', textContent: t('listsBy', { name: l.by }) }) : null,
+        l.by ? byline(l.by) : null,
         el('span', { textContent: countLabel(l.n) }),
         /* How many people kept it. On your own list this is the only place
            the number appears in the index, and it is the one fact about a
@@ -634,9 +664,7 @@
         l.public === false ? el('span', { className: 'lists-private', textContent: t('listsPrivate') }) : null
       ])
     ]);
-    /* Sits outside the link rather than inside it: a link inside a link is
-       not a thing HTML has, and the row is a link to the list itself. */
-    return el('li', { className: 'lists-index-row' }, [link, mapLink(l.id, 'alt lists-map lists-index-map')]);
+    return el('li', { className: 'lists-index-row' }, [box, mapLink(l.id, 'alt lists-map lists-index-map')]);
   }
 
   /* Signed out, on your own lists page. Not a wall in front of the map — the
@@ -993,10 +1021,13 @@
     var line = el('p', { className: 'lists-all-meta mono' });
     allMeta(l, line);
 
-    /* The bookmark, in the corner of the row rather than at the end of the
-       line, and a sibling of the link rather than a child of it: a link inside
-       a link is not a thing HTML has, which is the same arrangement the map
-       pill has on an index row.
+    /* The card is a box and the title is the link that fills it — see
+       listRow() above, and .lists-open in assets/lists.css — so the byline in
+       the line of facts can be a door to the person who wrote the list.
+
+       The bookmark, in the corner of the row rather than at the end of the
+       line, and a sibling of the card rather than something inside it: it sits
+       above the title's reach the way the map pill does on an index row.
 
        It was on a list's own page and nowhere else, so keeping one meant
        opening it first — on a page whose whole job is to hand somebody twenty
@@ -1009,16 +1040,17 @@
        Nothing at all is drawn on your own list. Keeping it is refused by the
        API — it is already under Your lists, and a second copy of it under
        Lists you kept would be the same list twice on one page — so the honest
-       thing is not to offer the gesture, and the link keeps no room for it.
+       thing is not to offer the gesture, and the card keeps no room for it.
        The class says what is in the corner rather than whose list it is,
        because /account.html borrows this row too and has nothing in the
        corner either. */
     return el('li', { className: 'lists-index-row' }, [
-      el('a', {
-        className: 'lists-all-link' + (l.mine ? '' : ' has-keep'),
-        href: '/list/' + l.id
-      }, [
-        el('span', { className: 'lists-index-title', textContent: l.title }),
+      el('div', { className: 'lists-all-card' + (l.mine ? '' : ' has-keep') }, [
+        el('a', {
+          className: 'lists-index-title lists-open',
+          href: '/list/' + l.id,
+          textContent: l.title
+        }),
         line,
         l.taste && l.taste.length
           ? el('p', { className: 'lists-all-taste', textContent: l.taste.join(' \u00b7 ') })
@@ -1054,7 +1086,7 @@
             )
           ])
         : null,
-      l.by ? el('span', { textContent: t('listsBy', { name: l.by }) }) : null
+      l.by ? byline(l.by) : null
     ].filter(Boolean);
 
     meta.forEach(function (part, i) {

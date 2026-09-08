@@ -1505,11 +1505,16 @@ because those never needed the database.
 
 `styles.css` for the tokens, the card, the eyebrow and the four controls;
 `lists.css` for the brand header, the stack and the row a column of things is
-built from. The rows are `.lists-all-link` — the row `/lists/public` draws — and
-not `.lists-index-link`, which leaves 54px along its bottom edge for the map
+built from. The rows are `.lists-all-card` — the row `/lists/public` draws — and
+not `.lists-index-card`, which leaves 54px along its bottom edge for the map
 pill laid over it. These rows have one destination, so that padding would be a
 hole in a card with nothing standing in it. Its own comment in `lists.css` says
 as much, which is how this page came to use it.
+
+The card is a box and the title inside it is the link, stretched over the whole
+face by `.lists-open`. Nothing on this page needs a second link inside a row —
+that arrangement is there for the directory, where the byline leads to whoever
+wrote the list — but the row is one shape wherever it is drawn.
 
 The fold is the one thing this page has cost either sheet: a dozen lines of
 `.lists-fold` in `lists.css` that take the browser's own marker off a
@@ -2186,6 +2191,21 @@ list of links. There are no rank numerals down the side. The count is the
 fact and the position is its consequence; numbering the rows would make the
 position the identity, and a list slipping from third to fourth would read as
 a demotion nobody did anything to deserve.
+
+**The byline is a door.** The line of facts under a title says whose list it
+is, and that name leads to `/u/<name>` — the rest of what that person has
+published. It is the same door the byline under a list's own title has been
+since profiles were built, and it now stands on every row that draws somebody
+else's list: the directory, the three rows at the foot of a list, and **Lists
+you kept** on `/lists.html`.
+
+The card is what makes that possible, and it changed shape for it. Every one
+of these rows was a single `<a>` around the title, the facts and the places; a
+link inside a link is not a thing HTML has, so the card is a plain box now,
+the title is the link, and `.lists-open` stretches that link over the whole
+face of the card. A press anywhere still opens the list. What it buys besides
+the byline is what a screen reader announces: the title, rather than the title
+and every number beside it read out as one link name.
 
 **And a bookmark in its corner.** Keeping a list was on the list's own page
 and nowhere else, so on a page built to hand somebody twenty of them, keeping
@@ -2929,6 +2949,10 @@ made.
 
 - **The byline under a shared list**, which is the whole point — the phrase is
   the link, on the list's own page and in the panel the map draws for a list.
+- **The byline on a row**, wherever a list somebody else wrote is drawn as one:
+  `/lists/public`, the three rows at the foot of a list, and **Lists you kept**.
+  See **The row carries the first three places** under [Public
+  lists](#public-lists) for the shape that made room for it.
 - **Your own account page**, as a row under your lists, between **Make a
   list** and the way through to everybody's.
 - **Your own lists page**, as a row under the box that makes a new one, above

@@ -361,17 +361,25 @@
      rows have one destination, and that padding is a hole in a card nothing
      is standing in. The directory's own rows take that room back with
      .has-keep when they carry a bookmark; without the class the row is the
-     bare card, which is what this page wants. */
+     bare card, which is what this page wants.
+
+     The card is a box and the title is the link, which .lists-open stretches
+     over the whole face of it. Nothing on this page needs a second link inside
+     a row — that is what the arrangement is for on the directory, where the
+     byline leads to its author — but the row is one shape wherever it is
+     drawn, and a copy here that was still an <a> would be the copy that
+     quietly stopped matching. */
   function row(href, title, meta) {
+    var parts = meta.filter(Boolean);
     var line = el('p', { className: 'lists-all-meta mono' });
-    meta.filter(Boolean).forEach(function (part, i) {
+    parts.forEach(function (part, i) {
       if (i) line.appendChild(document.createTextNode(' \u00b7 '));
       line.appendChild(part);
     });
     return el('li', { className: 'lists-index-row' }, [
-      el('a', { className: 'lists-all-link', href: href }, [
-        el('span', { className: 'lists-index-title', textContent: title }),
-        meta.length ? line : null
+      el('div', { className: 'lists-all-card' }, [
+        el('a', { className: 'lists-index-title lists-open', href: href, textContent: title }),
+        parts.length ? line : null
       ])
     ]);
   }
