@@ -2171,43 +2171,31 @@
 
     if (savedCount()) menu.appendChild(savedRow());
 
-    /* The three ways into the lists, and the only ones on the map. A list is a
+    /* The way into the lists, and the only one on the map. A list is a
        different kind of object from everything else here — it is somebody
        else's, it is published under their name, and it has nothing to do with
        the pins — so lists live on their own pages rather than as another sheet
-       over the map. These are the doors to them, filed under who you are, and
-       they run from yours outwards: where you write, what that looks like from
-       outside, and then everybody's. */
+       over the map. This is the door to them, filed under who you are.
+
+       It was three doors for a while, running from yours outwards: your lists,
+       your profile, everybody's. All three landed on the same file, and two of
+       them landed a press away from the first — /lists.html has drawn the
+       other two under the box that makes a new list since the day profiles
+       were written. So the sheet spent half its rows saying "lists" three ways
+       and asked a visitor to tell apart doors that only differ once you are
+       through one of them. This row is the answer to all three questions, and
+       the page behind it is where the answer is anyway.
+
+       Everybody's lists sat in the top-right corner of the map before they sat
+       here, beside Places, and the cost of that move is unchanged: signed out,
+       this sheet is the sign-in form and has no menu, so a stranger on the map
+       has no way to /lists/kept at all. They reach it from a list somebody sent
+       them, from /lists.html, from a search result, or from the byline on any
+       list they are reading, which leads to a profile full of them. */
     menu.appendChild(accountRow({
       name: t('listsYours'),
       why: t('accountListsWhy'),
       href: '/lists.html'
-    }));
-
-    /* The page under your name, which is the same lists seen from outside:
-       the public ones, and the number of times anybody has kept them. It is a
-       row of its own rather than a line on the one above because they answer
-       different questions — that one is where you go to write, this one is
-       what came of it. */
-    menu.appendChild(accountRow({
-      name: t('profileYours'),
-      why: t('profileWhy'),
-      href: '/u/' + encodeURIComponent(state.account.user)
-    }));
-
-    /* Everybody's lists sat in the top-right corner for a while, beside
-       Places, and came back here. It needs no account to read, so the corner
-       was the honest place for it; but the corner is where the map's own
-       controls live, and a door that leaves the map was the odd one among
-       them. The cost is real and worth writing down: signed out, this sheet is
-       the sign-in form and has no menu, so a stranger on the map now has no
-       way to /lists/kept at all. They reach it from a list somebody sent them,
-       from /lists.html, from a search result — or, now, from the byline on any
-       list they are reading, which leads to a profile full of them. */
-    menu.appendChild(accountRow({
-      name: t('listsAllTitle'),
-      why: t('accountKeptWhy'),
-      href: '/lists/kept'
     }));
 
     menu.appendChild(accountRow({
