@@ -2018,6 +2018,14 @@
    * a ring settles round it, and the mouth says what it is from a bubble
    * beside it. Then the next.
    *
+   * Every step is about something that can be pressed. The walk used to
+   * open on the mark with the sentence the site rests on — every pin a
+   * place eaten at and approved — but that is the tagline, which the page
+   * has already said under the mark, and a first step that points at
+   * nothing to do and says what was just read is a step that gets skipped,
+   * with the useful ones behind it. So the first thing the cursor
+   * lands on is a pin.
+   *
    * Every step points at something real on the page as it stands, which is
    * why the steps are functions and not co-ordinates: the pin is whichever
    * pin is nearest the middle of the screen, the filters are the row on a
@@ -2027,8 +2035,6 @@
    * than pointed at nothing.
    */
   var TOUR_STEPS = [
-    { key: 'explainLead', lead: true,
-      at: function () { return dom.brand.querySelector('.brand-mark'); } },
     { key: 'explainPin', at: nearestPin },
     { key: 'explainChips',
       at: function () { return isNarrow() ? dom.btnFilters : dom.filters; } },
@@ -2116,7 +2122,6 @@
     var step = tour.steps[i];
     litPills(step.pills ? step.pills() : []);
     dom.tourSay.textContent = t(step.key);
-    dom.tourSay.classList.toggle('is-lead', !!step.lead);
     var last = i === tour.steps.length - 1;
     dom.tourNext.textContent = t(last ? 'explainClose' : 'explainNext');
     dom.tourSkip.hidden = last;
