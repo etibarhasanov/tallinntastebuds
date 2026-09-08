@@ -101,28 +101,17 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- There is no address on an account and no reset: nothing proves an account
 -- is yours but knowing its password, and a forgotten one is gone for good.
 --
--- THE COLUMNS THIS TABLE STILL HAS ON A DEPLOYED DATABASE
+-- It had `email` and `email_verified` for a while, with an `email_codes`
+-- table beside it, for a password reset that was never switched on. Both
+-- databases have been through the ALTERs since, so the seven columns below
+-- are the seven columns there are — this file describes what is deployed
+-- rather than what is deployed plus three dead things.
 --
--- It had `email` and `email_verified`, and there was an `email_codes` table
--- beside it, for a password reset that was never switched on — sending needs
--- the Workers Paid plan. Nothing reads any of them now.
---
--- They are gone from this file and they are still in both databases, because
--- this file is applied with IF NOT EXISTS and so cannot take a column away.
--- That divergence is deliberate: a fresh database gets the table as it is
--- described here, and the deployed ones carry three dead things that cost
--- nothing to leave. To clear them, having first checked there is nothing in
--- them to lose:
---
---   SELECT COUNT(*) FROM users WHERE email IS NOT NULL;   -- expect 0
---   SELECT COUNT(*) FROM email_codes;                     -- expect 0
---
---   DROP INDEX IF EXISTS idx_users_email;
---   ALTER TABLE users DROP COLUMN email;
---   ALTER TABLE users DROP COLUMN email_verified;
---   DROP TABLE IF EXISTS email_codes;
---
--- The index has to go first: SQLite refuses to drop an indexed column.
+-- That took a hand-run migration, and it is the reason to notice what this
+-- file cannot do: it is applied with IF NOT EXISTS throughout, so it can add
+-- a table or an index and can never take a column away. Anything that
+-- removes one is an ALTER somebody runs against both databases, and the file
+-- is only true again once they have.
 CREATE TABLE IF NOT EXISTS users (
   id             TEXT PRIMARY KEY,
   username       TEXT NOT NULL,
