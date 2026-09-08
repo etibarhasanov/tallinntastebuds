@@ -596,10 +596,12 @@
 
     var ids = venue.kitchens.slice();
     /* Whatever is being filtered by goes first. Only two of these fit on a
-       phone without wrapping, and the table's own order runs from the most
-       exact word to the broadest — which means picking Beer/pub could hand
-       back a card reading "Burgers · American". True, and it looks like a
-       mistake. A card should always say why it is in the list. */
+       phone without wrapping, and they arrive in the order /api/venues sends
+       them — what Google's own category and cuisine say about the place before
+       what its tag list adds, most exact word first within each — which means
+       picking Beer/pub could hand back a card reading "Burgers · American".
+       True, and it looks like a mistake. A card should always say why it is in
+       the list. */
     if (state.cuisine) {
       var at = ids.indexOf(state.cuisine);
       if (at > 0) ids.unshift(ids.splice(at, 1)[0]);

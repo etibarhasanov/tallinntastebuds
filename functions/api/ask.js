@@ -94,11 +94,12 @@
  */
 
 import { json, mapPlaces, venueCard, venueHours, wrongDatabase } from './_lib.js';
-/* What a Google row cooks, in the directory's ids: the one table that decides
-   it, and the string it is asked of. See the note above KITCHENS for why it
-   is that table and not VENUE_TYPES — "thai" is a thing to ask for, and the
-   map's own vocabulary says only "asian". */
-import { KITCHENS, said } from './venues.js';
+/* What a Google row cooks, in the directory's ids, off the one table that
+   decides it — and in the order the directory says them, so a card here reads
+   the same as a card there. See the note above KITCHENS for why it is that
+   table and not VENUE_TYPES — "thai" is a thing to ask for, and the map's own
+   vocabulary says only "asian". */
+import { kitchensOf } from './venues.js';
 
 /* A model that is on the Workers Free plan, and a fast one. Cloudflare has
    moved the larger ones behind Workers Paid before now — @cf/moonshotai/kimi-k2.6
@@ -379,7 +380,7 @@ async function googleVenues(env) {
   venues = rows.map((row) => ({
     card: {
       ...venueCard(row),
-      kitchens: KITCHENS.filter((pair) => pair[1].test(said(row))).map((pair) => pair[0])
+      kitchens: kitchensOf(row)
     },
     week: venueHours(row.opening_hours),
     hay: foldWords([row.name, row.category, row.cuisine, row.tags, row.address].join(' '))
