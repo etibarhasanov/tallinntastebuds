@@ -3634,6 +3634,24 @@
     }).map(cityStandIn);
     var model = out && out.source === 'ai' ? out : null;
 
+    /* Out of model for the day. The chat says so and stops there — it does
+       not fall through to the local reader, because three places matched on
+       letters under "here is where I would go" is the reader impersonating
+       the model, which is the thing this panel is not for. The allowance
+       comes back at midnight in Tallinn's small hours, so the sentence says
+       to come back tomorrow rather than to try again. */
+    if (out && out.source === 'resting') {
+      turn.say = t('askResting');
+      turn.picks = [];
+      turn.city = [];
+      turn.open = open;
+      turn.source = 'resting';
+      turn.pending = false;
+      settle(turn);
+      trackEvent('ask_resting', { search_term: turn.q.toLowerCase(), scope: turn.scope });
+      return;
+    }
+
     var said = null;
     if (model && ((model.picks && model.picks.length) || model.say)) {
       said = { say: model.say || '', picks: model.picks || [], source: 'ai' };
