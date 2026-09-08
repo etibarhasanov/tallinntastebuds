@@ -19,6 +19,25 @@
  * the map's sheet is exactly what a sheet is good at — signing in, creating an
  * account, changing a password — and nothing that wants a page.
  *
+ * THE COLUMNS FOLD, AND THE WAYS ON DO NOT
+ *
+ * A column of names is what this page is for, and it is also what buried the
+ * rest of it. Forty saved places and a dozen lists put Make a list, Your
+ * public profile and Public lists a scroll and a half down the page, under
+ * the very things they were the way out of. So each column is a <details>
+ * behind its own title, with the count of what is inside it on the line you
+ * press, and the ways on sit outside the fold, where a card that is one line
+ * high keeps them in sight.
+ *
+ * A closed fold is not the menu this page was made out of. A menu row said
+ * the name of another page; this one says how many of your things are behind
+ * it and opens them where you are standing. Which folds are open is
+ * remembered on the browser, so somebody who wants their saves in front of
+ * them every time opens them once.
+ *
+ * And your public profile is not filed under your lists any more. It is your
+ * name as everybody else reads it, so it is a row under your name.
+ *
  * WHAT IT DOES NOT DO
  *
  * There is one password form on this site and it is not here. The map's sheet
@@ -57,6 +76,11 @@
   var STYLE_KEY = 'ttb.style';
   var LANG_KEY = 'ttb.lang';
   var SAVED_KEY = 'ttb.saved';
+
+  /* Which of this page's two columns are unfolded, comma-joined. Nothing else
+     on the site reads it, and a browser that refuses storage simply gets the
+     folded page every time — which is the page a first visit gets anyway. */
+  var OPEN_KEY = 'ttb.account.open';
 
   var STYLES = ['red', 'green'];
   var DEFAULT_STYLE = 'red';
@@ -107,6 +131,10 @@
 
   function storeGet(key) {
     try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  function storeSet(key, value) {
+    try { window.localStorage.setItem(key, value); } catch (e) { /* fine */ }
   }
 
   function t(key, vars) {
@@ -228,13 +256,65 @@
           el('span', { className: 'menu-name', textContent: t(nameKey) }),
           el('span', { className: 'menu-why', textContent: t(whyKey) })
         ]),
-        el('span', {
-          className: 'menu-go',
-          'aria-hidden': 'true',
-          html: '<svg viewBox="0 0 24 24" focusable="false">' + ICON_GO + '</svg>'
-        })
+        chevron()
       ])
     ]);
+  }
+
+  /* The mark itself, drawn for a door and for the title of a fold alike: one
+     says the page it opens, the other says it opens where it stands, and a
+     visitor should not have to learn two shapes for "there is more this
+     way". */
+  function chevron() {
+    return el('span', {
+      className: 'menu-go',
+      'aria-hidden': 'true',
+      html: '<svg viewBox="0 0 24 24" focusable="false">' + ICON_GO + '</svg>'
+    });
+  }
+
+  /* ---------------------------------------------------------------- folding
+   * A column of things behind its own title. What is on the line you press is
+   * the heading, how many are inside, and the chevron the rows below wear —
+   * and the count is what keeps a closed fold from being a door again: it
+   * names what it is holding rather than where it would take you.
+   *
+   * The heading is the summary's only child because that is all a <summary>
+   * is allowed to hold besides words, so the count and the chevron ride
+   * inside it.
+   */
+  function openFolds() {
+    return (storeGet(OPEN_KEY) || '').split(',');
+  }
+
+  function fold(name, title, count, kids) {
+    var box = el('details', {
+      className: 'lists-fold',
+      open: openFolds().indexOf(name) !== -1
+    }, [
+      el('summary', null, [
+        el('h2', { className: 'lists-title' }, [
+          title,
+          el('span', { className: 'lists-count mono', textContent: count }),
+          chevron()
+        ])
+      ])
+    ].concat(kids));
+
+    /* Written on the way out of the fold rather than read on the way in:
+       whichever of the two moved is the only one that changed. */
+    box.addEventListener('toggle', function () {
+      var open = openFolds().filter(function (n) { return n && n !== name; });
+      if (box.open) open.push(name);
+      storeSet(OPEN_KEY, open.join(','));
+    });
+    return box;
+  }
+
+  /* Singular and all: "1 place" and "kept by 1 person" are sentences somebody
+     reads, and "1 places" is the tell that nobody did. */
+  function countLabel(n) {
+    return n === 1 ? t('listCountOne') : t('listCount', { n: n });
   }
 
   /* ------------------------------------------------------------------ saves
@@ -305,26 +385,36 @@
   function savedCard() {
     var places = savedPlaces();
 
-    var kids = [
-      heading(t('listSaved'), 'h2'),
-      el('p', { className: 'lists-say', textContent: t('accountSavedWhy') })
-    ];
-
+    /* Nothing kept is not a fold. A title with a chevron on it promises
+       something behind it, and there is nothing behind this one — so the
+       card says so plainly and leaves for the map, which is where a save is
+       made. */
     if (!places.length) {
-      kids.push(el('p', { className: 'lists-none', textContent: t('accountSavedNone') }));
-      kids.push(foot([link('listsBack', '/')]));
-      return card(kids);
+      return card([
+        heading(t('listSaved'), 'h2'),
+        el('p', { className: 'lists-say', textContent: t('accountSavedWhy') }),
+        el('p', { className: 'lists-none', textContent: t('accountSavedNone') }),
+        foot([link('listsBack', '/')])
+      ]);
     }
 
     var ul = el('ul', { className: 'lists-index' });
     places.forEach(function (place) { ul.appendChild(placeRow(place)); });
-    kids.push(ul);
-    /* The map narrowed to these, which is what the row in the sheet used to
-       do and the one thing a column of names cannot: seeing where they are in
-       the city next to each other. ?saved=1 is a door the map opens once and
-       takes back off — see readDoors() in assets/app.js. */
-    kids.push(foot([link('accountSavedMap', '/?saved=1')]));
-    return card(kids);
+
+    return card([
+      fold('saved', t('listSaved'), countLabel(places.length), [
+        el('p', { className: 'lists-say', textContent: t('accountSavedWhy') }),
+        ul
+      ]),
+      /* The map narrowed to these, which is what the row in the sheet used to
+         do and the one thing a column of names cannot: seeing where they are
+         in the city next to each other. Outside the fold, like the ways on
+         from the lists card and for the same reason — it is still two presses
+         from the map to the map, which is what this page cost when it took
+         the saves off the sheet. ?saved=1 is a door the map opens once and
+         takes back off; see readDoors() in assets/app.js. */
+      foot([link('accountSavedMap', '/?saved=1')])
+    ]);
   }
 
   /* ------------------------------------------------------------------ lists
@@ -333,12 +423,6 @@
    * would be two things to change every time it grew a field. What this card
    * adds is the way in — /lists.html, where a list is actually written.
    */
-
-  /* Singular and all: "1 place" and "kept by 1 person" are sentences somebody
-     reads, and "1 places" is the tell that nobody did. */
-  function countLabel(n) {
-    return n === 1 ? t('listCountOne') : t('listCount', { n: n });
-  }
 
   function keepCount(n) {
     if (!n) return null;
@@ -359,59 +443,63 @@
   }
 
   function listsCard() {
-    var kids = [
-      heading(t('listsYours'), 'h2'),
-      el('p', { className: 'lists-say', textContent: t('accountListsWhy') })
-    ];
+    var n = state.lists.length;
 
-    if (!state.lists.length) {
-      kids.push(el('p', { className: 'lists-none', textContent: t('accountListsNone') }));
-    } else {
-      var ul = el('ul', { className: 'lists-index' });
-      state.lists.forEach(function (l) { ul.appendChild(listRow(l)); });
-      kids.push(ul);
+    /* The two ways on, under the fold rather than inside it: where a list
+       gets written, and then everybody else's. Rows, each with the line
+       saying what is behind it, because two of them in a row of underlined
+       words was two doors a visitor could not tell apart — the lists page
+       says the same about its own. The line under Make a list is the sentence
+       the lists page opens with, because it is the same promise and one copy
+       of it is enough. The lists you kept are not here at all — they are
+       somebody else's pages, and /lists.html is where they are read and where
+       they can be dropped again. */
+    var ways = el('ul', { className: 'menu' }, [
+      door('accountMake', 'listsWhat', '/lists.html'),
+      door('listsAllEverything', 'listsAllWhy', '/lists/public')
+    ]);
+
+    if (!n) {
+      return card([
+        heading(t('listsYours'), 'h2'),
+        el('p', { className: 'lists-say', textContent: t('accountListsWhy') }),
+        el('p', { className: 'lists-none', textContent: t('accountListsNone') }),
+        ways
+      ]);
     }
 
-    /* The three ways on, in the order they are about you: where a list gets
-       written, what yours look like from outside, and then everybody's. Rows,
-       each with the line saying what is behind it, because three of them in a
-       row of underlined words was three doors a visitor could not tell apart
-       — the lists page says the same about its own two. The line under Make
-       a list is the sentence the lists page opens with, because it is the
-       same promise and one copy of it is enough. The lists you kept are not
-       here at all — they are somebody else's pages, and /lists.html is where
-       they are read and where they can be dropped again. */
-    kids.push(el('ul', { className: 'menu' }, [
-      door('accountMake', 'listsWhat', '/lists.html'),
-      door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user)),
-      door('listsAllEverything', 'listsAllWhy', '/lists/public')
-    ]));
-    return card(kids);
+    var ul = el('ul', { className: 'lists-index' });
+    state.lists.forEach(function (l) { ul.appendChild(listRow(l)); });
+
+    return card([
+      fold('lists', t('listsYours'),
+           n === 1 ? t('accountStatListsOne') : t('accountStatLists', { n: n }), [
+        el('p', { className: 'lists-say', textContent: t('accountListsWhy') }),
+        ul
+      ]),
+      ways
+    ]);
   }
 
   /* ------------------------------------------------------------------- you */
 
-  /* The counts, in one mono line under the name. They are the only numbers
-     this page keeps about anybody and they are both about things you did:
-     what you kept, and what you wrote. A count at nought is left out rather
-     than printed — a "0 lists" under somebody's name reads as a verdict on
-     them, the same reason a save count hides at zero on the map. */
-  function tally() {
-    var parts = [];
-    var saves = savedPlaces().length;
-    var lists = state.lists.length;
-    if (saves) parts.push(saves === 1 ? t('accountStatSavedOne') : t('accountStatSaved', { n: saves }));
-    if (lists) parts.push(lists === 1 ? t('accountStatListsOne') : t('accountStatLists', { n: lists }));
-    if (!parts.length) return null;
-    return el('p', { className: 'lists-standing mono', textContent: parts.join(' · ') });
-  }
+  /* Your name, what an account is for, and the one page that is your name:
+     /u/<you>, everything you have published, read the way a stranger reads
+     it. It was filed under Your lists, which was the wrong drawer twice over
+     — it is about you rather than about any one list, and down there it sat
+     under the very column it is the outside view of.
 
+     The counts that used to be a mono line under the name have gone to the
+     folds below, where they say what a closed one is holding. Printed here
+     as well they were the same two numbers twice on one screen. */
   function youCard() {
     return card([
       el('p', { className: 'eyebrow', textContent: t('accountOpen') }),
       heading(state.user),
-      tally(),
       el('p', { className: 'lists-say', textContent: t('accountWhat') }),
+      el('ul', { className: 'menu' }, [
+        door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user))
+      ]),
       foot([
         /* Into the map's sheet and back again. The ?then= is what makes the
            password step land here rather than on the map, which is not where
@@ -444,7 +532,7 @@
            before signing in was claimed on the way in and is on the account
            now, so leaving a copy here would be a list of places this browser
            never chose. */
-        try { window.localStorage.setItem(SAVED_KEY, '[]'); } catch (e) { /* fine */ }
+        storeSet(SAVED_KEY, '[]');
         window.location.href = '/';
       }).catch(function () {
         btn.disabled = false;

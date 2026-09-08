@@ -143,6 +143,42 @@
 .lists-card > .menu { margin-top: 18px; }
 .lists-count { margin-left: auto; color: var(--muted); font-size: 11.5px; letter-spacing: .04em; }
 
+/* ---------- a card that folds ---------- */
+
+/* A column of things behind its own title: /account.html draws its saved
+   places and its lists this way, so the card is one line high until you ask
+   for the rest of it and the ways on from it are never below a scroll.
+
+   It is a <details>, not a button and a list with `hidden` on it. The open
+   state, the keyboard, the word a screen reader says before the title and
+   find-in-page reaching into a closed one are all things the browser already
+   does; what is left for the script is remembering the choice. See fold() in
+   assets/account.js.
+
+   The chevron is .menu-go out of assets/styles.css — the same mark the rows
+   under it wear, turned a quarter when the fold is open — so a card of things
+   and a card of doors point the same way at what they do.
+
+   `list-style` takes off the marker the browser draws for itself, and the
+   line after it takes off Safari's, which is not a list marker and does not
+   listen. Ours is the chevron, inside the title. */
+.lists-fold > summary { cursor: pointer; padding: 2px 0; list-style: none; }
+.lists-fold > summary::-webkit-details-marker { display: none; }
+
+.lists-fold > summary > .lists-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+.lists-fold[open] > summary > .lists-title { margin-bottom: 12px; }
+/* The count is one unit — Armenian's "3 վայր" broken over two lines is two
+   things. The title beside it gives up the width instead; it is a sentence
+   and it can wrap. */
+.lists-fold > summary .lists-count { white-space: nowrap; }
+.lists-fold > summary:hover .menu-go { color: var(--accent); }
+.lists-fold[open] > summary .menu-go { transform: rotate(90deg); }
+
 /* ---------- the button states this page adds ---------- */
 
 /* The two buttons themselves are .go and .alt out of assets/styles.css, the

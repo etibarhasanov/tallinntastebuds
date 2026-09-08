@@ -865,9 +865,10 @@ nobody having got there yet.
 
 Press one bookmark and the places are yours to find again in two places, and
 both are behind your name: **/account.html** names them, one row each with its
-street, and the map narrows to them. Signed out the row is on the map's sheet;
-signed in the page is what the button opens, and the page's **See them on the
-map** is the same narrowing under a different roof — see **The account page**.
+street, behind a fold that says how many, and the map narrows to them. Signed
+out the row is on the map's sheet; signed in the page is what the button opens,
+and the page's **See them on the map** is the same narrowing under a different
+roof — see **The account page**.
 
 Narrowed, the panel names the group **Places I saved** and shows them newest
 first: the order you pressed them in is information, and the alphabet throws it
@@ -1433,10 +1434,46 @@ to filter the map by them, and names the lists rather than linking to the page
 that names them. Three cards, and each is what it is called:
 
 ```
-etibar                     3 places saved · 2 lists, and the way out
-Places I saved             one row a place, newest first, and the map
-Your lists                 one row a list, and the three ways further in
+etibar                        your public profile, and the way out
+Places I saved      8 places  a fold: one row a place, newest first
+                              and, outside it, the map
+Your lists           3 lists  a fold: one row a list
+                              and, outside it, Make a list and Public lists
 ```
+
+### The columns fold, and the ways on do not
+
+A column of names is what this page is for, and it is also what buried the rest
+of it. Forty saved places and a dozen lists put **Make a list**, **Your public
+profile** and **Public lists** a scroll and a half down the page, under the
+very things they were the way out of.
+
+So each column is a `<details>` behind its own title, with the count of what is
+inside it on the line you press, and the ways on sit outside the fold. Signed
+in with both closed, the whole account is one phone screen: your name and the
+two things you can do to it, how many places you kept, how many lists you
+wrote, and every door out in sight without scrolling.
+
+A closed fold is not the menu this page was made out of. A menu row said the
+name of another page; this one says how many of your things are behind it and
+opens them where you are standing. Which folds are open is remembered on the
+browser under `ttb.account.open`, so somebody who wants their saves in front of
+them every time opens them once. A card with nothing in it — no saves yet, no
+lists yet — is not a fold at all, because a chevron promises something behind
+it.
+
+`<details>`, rather than a button and a list with `hidden` on it. The open
+state, the keyboard, the word a screen reader says before the title, and
+find-in-page reaching into a closed one are all things the browser already
+does; what is left for the script is remembering the choice.
+
+**Your public profile** moved as part of the same change. It was the middle of
+three rows under Your lists, which was the wrong drawer twice over: it is about
+you rather than about any one list, and down there it sat under the very column
+it is the outside view of. It is a row under your name now. The counts that
+used to be a mono line under that name went the other way, on to the folds,
+where they say what a closed one is holding — printed in both places they were
+the same two numbers twice on one screen.
 
 ### What is left on the map
 
@@ -1474,6 +1511,13 @@ pill laid over it. These rows have one destination, so that padding would be a
 hole in a card with nothing standing in it. Its own comment in `lists.css` says
 as much, which is how this page came to use it.
 
+The fold is the one thing this page has cost either sheet: a dozen lines of
+`.lists-fold` in `lists.css` that take the browser's own marker off a
+`<summary>`, lay the title, the count and the chevron along one line, and turn
+the chevron a quarter when it opens. The chevron is `.menu-go`, the same mark
+the rows under it wear, so a row that opens another page and a title that opens
+where it stands point the same way at what they do.
+
 That is the whole reason a third stylesheet was not written. A page that needed
 new furniture would be a page that had drifted from the two that were already
 here.
@@ -1495,8 +1539,10 @@ session. `data/places.json` is 13KB and revalidates like everything else.
 Places I saved used to be one press from the map. It is now the account page
 and then **See them on the map**, which is two — `?saved=1`, documented with
 the map's other doors in **Lists**. That is the honest price of
-the swap, and the map itself is unchanged: the filter, the panel, the way
-**All** hands the whole map back are all what they were.
+the swap, and it is why that link sits outside the fold rather than in with the
+names: folded, the press is still there to be made. The map itself is
+unchanged: the filter, the panel, the way **All** hands the whole map back are
+all what they were.
 
 ---
 
@@ -1922,14 +1968,19 @@ private.
 
 ### One door to the lists
 
-Your lists are named on `/account.html`, one row each, and under them the
-three ways further in — **Make a list** to `/lists.html`, **Your public
-profile**, and **Public lists** — each as a row of its own, with the line under
-the name saying what is behind it and a chevron saying it opens something.
-They were three underlined words along the foot of the card, and that is the
-arrangement design rule 8 was written against: three doors a visitor who has
+Your lists are named on `/account.html`, one row each, behind a fold with the
+count on it, and under that fold the two ways further in — **Make a list** to
+`/lists.html`, and **Public lists** — each as a row of its own, with the line
+under the name saying what is behind it and a chevron saying it opens
+something. They were underlined words along the foot of the card, and that is
+the arrangement design rule 8 was written against: doors a visitor who has
 opened none of them cannot tell apart, each with a target the width of the
 word. `/lists.html` draws its own two the same way, with the same function.
+
+Outside the fold rather than in it, which is the point of the fold: closed, the
+card is its title and those two rows, and neither of them is at the bottom of a
+column of forty. **Your public profile** was the third row here and is now a
+row under your name — see **The account page**.
 
 The map's sheet had three rows for this once — **Your lists**, **Your public
 profile**, **Lists people kept** — and then one, and now none, and each step
@@ -4491,6 +4542,14 @@ Everything pressable is one of four shapes, and all four live in
 A page does not get its own copy of one of these. If a fifth is genuinely
 needed it goes in the same block, with the sentence saying what the other four
 could not do.
+
+One pressable thing on the site is none of the four, and it is not a fifth: a
+card's own title, on the two cards that fold — the saved places and the lists
+on `/account.html`. It is a `<summary>`, and what it is made of was all here
+already, the title, the count and the `.menu-go` chevron. A control takes you
+somewhere or changes something; this one opens the card it is the title of. It
+lives with the card in `lists.css` rather than in this block — see **The
+account page**.
 
 ### 5. One filled action per surface, and never two
 
