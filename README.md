@@ -1749,7 +1749,7 @@ send to a friend.
 
 Nothing about it touches the map. The pins, the write-ups, the filters and the
 "just added" section are exactly what they were; lists live on their own pages,
-and the map's doors to them are three rows in the account sheet, filed under
+and the map's door to them is one row in the account sheet, filed under
 whoever you are.
 
 ### The five addresses
@@ -1781,6 +1781,33 @@ The id is the title plus six random characters — `/list/top-ten-burgers-k3fmqw
 — so the link says what it is before anybody opens it, and cannot be guessed
 at from a neighbouring one. The random half is what makes a private list
 private.
+
+### One door to the lists
+
+The map's account sheet has one row for all of this, **Your lists**, and it
+opens `/lists.html`.
+
+It had three for a while, running from yours outwards: **Your lists**, **Your
+public profile**, **Lists people kept**. Each was written when the page behind
+it was, each said something true, and together they were the problem — three
+of the sheet's six rows saying "lists" three ways, above the password and the
+way out. A row in that menu is meant to be a place to go, and a visitor who
+has never made a list cannot tell those three apart until they have opened
+one of them; the sheet had stopped being a short list of your own things and
+become a table of contents for a feature.
+
+All three land on the same file, and the two that went are a press further on
+rather than gone: `/lists.html` has drawn your profile and everybody's lists
+under the box that makes a new list since the day profiles were written. That
+is the trade, stated plainly — one press, in exchange for a sheet that reads
+at a glance: what you saved, what you wrote, your password, the way out.
+
+The one thing it does not change is the signed-out cost of moving everybody's
+lists off the map's corner, because that cost was never about which row: a
+stranger sees the sign-in form and no menu at all, so `/lists/kept` is reached
+from a shared list, from `/lists.html`, from a search result, or from a byline
+— which is what [Lists people kept](#lists-people-kept) is about at more
+length.
 
 ### Making one
 
@@ -1990,9 +2017,11 @@ exist, because ordering by a count means knowing the count for every candidate
 
 **How anybody gets there.** Four ways, and the first two matter most:
 
-- **The map**, from the account sheet, under **Your lists** and **Your public
-  profile**. All three doors to lists are in there, filed under whoever you
-  are.
+- **The map**, from the account sheet, under **Your lists** — and then from
+  `/lists.html`, which is the next bullet but one. The sheet had a row of its
+  own for this page for a while, and one for a profile beside it; all three
+  landed on the same file, so they are one row now. See [One door to the
+  lists](#one-door-to-the-lists).
 
   It was a **Lists** control beside **Places** in the top-right corner first,
   and moved. The corner is where the map's own controls live and every one of
@@ -2636,11 +2665,10 @@ made.
 
 - **The byline under a shared list**, which is the whole point — the phrase is
   the link, on the list's own page and in the panel the map draws for a list.
-- **The account sheet on the map**, as *Your public profile*, under the row
-  that opens your lists. They answer different questions: that one is where
-  you go to write, this one is what came of it.
 - **Your own lists page**, under the box that makes a new one, beside the way
-  through to everybody's.
+  through to everybody's. The account sheet on the map had a row of its own
+  for this, as *Your public profile*, and it is one press further on now —
+  [One door to the lists](#one-door-to-the-lists) says why.
 
 ### Indexed, like a public list
 
