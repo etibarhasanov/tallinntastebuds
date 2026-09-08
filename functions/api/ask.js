@@ -19,20 +19,39 @@
  * a real place is a bad recommendation; a hallucinated place is a lie the site
  * told in its own voice, and this shape makes the second one unreachable.
  *
- * TWO ROLLS, AND ONLY ONE OF THEM IS RECOMMENDED FROM
+ * TWO ROLLS, AND WHICH ONE IS ASKED
  *
  * This site has two lists of places and the difference is the point — see the
  * header of /api/venues. The seventy-five in data/restaurants.json are places
  * I have been to and written up; the eleven hundred in `google_venues` are
- * Google's description of the city. A recommendation comes off the first,
- * always: being on my map is the verdict, and a chat box that started
- * suggesting places I have never eaten in would be a different site.
+ * Google's description of the city. The question arrives with a `scope`:
  *
- * Google's roll is read here for exactly one thing, opening hours, joined on
- * `google_venues.map_id` — the column that says which Google row is which of
- * my places. Sixty of my seventy-five have one. The other fifteen simply have
- * no hours, and an answer about them says nothing about hours rather than
- * guessing.
+ *   map   my seventy-five and nothing else. The default, and what the switch
+ *         on the field says when nobody has touched it. Being on the map is
+ *         the verdict, and an answer off this roll is a recommendation.
+ *   all   the city. My places first, and behind them the Google rows I have
+ *         not been to — every one of which goes out wearing Google's name,
+ *         Google's score and none of my words, drawn on the same "According
+ *         to Google" card a list draws for a place off that export. It is
+ *         not a recommendation and the card says so.
+ *
+ * Google's roll is read on the `map` scope for exactly one thing, opening
+ * hours, joined on `google_venues.map_id` — the column that says which Google
+ * row is which of my places. Sixty of my seventy-five have one. The other
+ * fifteen simply have no hours, and an answer about them says nothing about
+ * hours rather than guessing.
+ *
+ * ELEVEN HUNDRED ROWS DO NOT GO INTO A PROMPT
+ *
+ * On `all` the model cannot be shown the whole export: that is thirty
+ * thousand tokens a question against a free allowance that would then last an
+ * afternoon. So the browser sends what it read the question as — the wish
+ * assets/ask.js produces, types and price and open-now and the words left
+ * over — and this narrows the export with the same scoring that reader uses,
+ * hands the model the forty likeliest, and hands the browser those same forty
+ * so that with no model it can rank them itself. The cut is generous on
+ * purpose: its one job is "plausibly what was asked for", and the real
+ * ranking happens once, in the browser, over my places and these together.
  *
  * IT IS FREE, AND WHAT HAPPENS WHEN IT STOPS BEING
  *
@@ -49,7 +68,12 @@
  * The chat gets less clever for the rest of the day; it does not break.
  */
 
-import { json, mapPlaces, venueHours, wrongDatabase } from './_lib.js';
+import { json, mapPlaces, venueCard, venueHours, wrongDatabase } from './_lib.js';
+/* What a Google row cooks, in the directory's ids: the one table that decides
+   it, and the string it is asked of. See the note above KITCHENS for why it
+   is that table and not VENUE_TYPES — "thai" is a thing to ask for, and the
+   map's own vocabulary says only "asian". */
+import { KITCHENS, said } from './venues.js';
 
 /* A model that is on the Workers Free plan. Cloudflare has moved the
    larger ones behind Workers Paid before now — @cf/moonshotai/kimi-k2.6 and
@@ -72,6 +96,13 @@ const MAX_QUESTION = 200;
    person reads before deciding; the map is already there for the other
    seventy-two. */
 const MAX_PICKS = 3;
+
+/* How many Google rows go to the model, and back to the browser, on the
+   `all` scope. Forty is a page of the export at the size the model reads —
+   about four thousand tokens — and comfortably more than any one question
+   has ever needed; what decides it is the cost of a question rather than a
+   view about the city. */
+const MAX_CANDIDATES = 40;
 
 /* The blurb is the only long field in the catalogue the model sees, and the
    first sentence or so of one is enough to choose on. Sending all of them
@@ -189,7 +220,7 @@ function openUntil(week, now) {
  * empty answer, and every caller of this reads that as "no hours known" rather
  * than as "nothing is open".
  */
-async function openPlaces(env) {
+async function openPlaces(env, now) {
   if (!env.DB) return {};
 
   let rows = [];
@@ -205,15 +236,144 @@ async function openPlaces(env) {
     return {};
   }
 
-  const now = tallinnNow();
   const open = {};
-
   for (const row of rows) {
     const shuts = openUntil(venueHours(row.opening_hours), now);
     if (shuts) open[row.map_id] = shuts;
   }
-
   return open;
+}
+
+/* ---------------------------------------------------------------- Google
+ * The rest of the city, for a question asked on the `all` scope.
+ *
+ * Every open, unhidden, still-present row that is not already one of my
+ * places — those sixty are on the map roll with a write-up, and offering the
+ * Google copy of one beside it would be the same door twice. Kept for five
+ * minutes per isolate the way the catalogue is: the table changes when a
+ * refresh is loaded and not otherwise, and reading a thousand rows a question
+ * for a table that changes monthly is work for nothing. /api/venues reads it
+ * fresh because it is a cached GET; this is a POST and has to remember for
+ * itself.
+ *
+ * Each row is carried three ways at once: the card the browser draws (see
+ * venueCard() in _lib.js), the week for "open now", and a folded haystack of
+ * everything Google says about it, which is what a question's leftover words
+ * are matched against.
+ */
+let venues = null;
+let venuesAt = 0;
+
+/* Lowercased and with the accents taken off, and nothing else: "Põhja Konn"
+   and "pohja konn" are one string, "Пельменная" keeps every letter. It is not
+   fold() in /api/places, which strips to a-z0-9 to ask whether two names are
+   one place; this has to leave words as words so a question can land on one. */
+function foldWords(value) {
+  return String(value == null ? '' : value)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+async function googleVenues(env) {
+  if (venues && Date.now() - venuesAt < 300000) return venues;
+  if (!env.DB) return [];
+
+  let rows = [];
+  try {
+    const out = await env.DB
+      .prepare(
+        'SELECT place_id, name, category, cuisine, tags, price, rating, reviews, ' +
+        'address, postal_code, city, phone, website, opening_hours, maps_url, ' +
+        'latitude, longitude, map_id FROM google_venues ' +
+        "WHERE hidden = 0 AND missing_since IS NULL AND status = 'Open' " +
+        'AND map_id IS NULL AND latitude IS NOT NULL'
+      )
+      .all();
+    rows = out.results || [];
+  } catch (e) {
+    return [];
+  }
+
+  venues = rows.map((row) => ({
+    card: {
+      ...venueCard(row),
+      kitchens: KITCHENS.filter((pair) => pair[1].test(said(row))).map((pair) => pair[0])
+    },
+    week: venueHours(row.opening_hours),
+    hay: foldWords([row.name, row.category, row.cuisine, row.tags, row.address].join(' '))
+  }));
+  venuesAt = Date.now();
+  return venues;
+}
+
+/* The wish as the browser read it, checked to a shape rather than trusted.
+   Nothing here is a secret or a write — it decides which rows are looked at —
+   so the checks are about size: a wish with a thousand words in it is not a
+   wish, it is somebody seeing what the Function does with one. */
+function readWish(raw) {
+  const wish = raw && typeof raw === 'object' ? raw : {};
+  const words = (list, max) => (Array.isArray(list) ? list : [])
+    .filter((w) => typeof w === 'string' && w.length > 0 && w.length <= 40)
+    .slice(0, max)
+    .map(foldWords);
+  return {
+    types: words(wish.types, 13),
+    kitchens: words(wish.kitchens, 40),
+    cheap: !!wish.cheap,
+    fancy: !!wish.fancy,
+    open: !!wish.open,
+    rest: words(wish.rest, 20)
+  };
+}
+
+/* The forty Google rows a question is likeliest to be about, best first.
+ *
+ * The score is rank() in assets/ask.js, number for number — four a type or
+ * a cuisine, three each for the price band and open now, one a word — and that is on
+ * purpose rather than by accident: the browser ranks my places and these
+ * together with that function afterwards, and a row cut here on a different
+ * scale would be a row the real ranking never got to see. The two cannot
+ * share a file, so change one and look at the other. Ties go to Google's own
+ * score and the count behind it, which on Google's rows is the honest
+ * tie-break and the only one there is.
+ *
+ * What comes back is the card with the haystack on it, so the browser can
+ * score it exactly as it scores a place of its own, and — separately, so the
+ * browser's one `open` map holds every place on screen — the closing time of
+ * each that is open now.
+ */
+function candidates(roll, wish, now) {
+  const scored = [];
+  const open = {};
+
+  for (const venue of roll) {
+    const entry = venue.card;
+    const shuts = openUntil(venue.week, now);
+    let score = 0;
+
+    for (const id of wish.types) if (entry.types.includes(id)) score += 4;
+    for (const id of wish.kitchens) if (entry.kitchens.includes(id)) score += 4;
+    if (wish.cheap && entry.price && entry.price <= 2) score += 3;
+    if (wish.fancy && entry.price && entry.price >= 3) score += 3;
+    if (wish.open && shuts) score += 3;
+    for (const word of wish.rest) if (venue.hay.includes(word)) score += 1;
+
+    if (score > 0) scored.push({ venue, score, shuts });
+  }
+
+  scored.sort((a, b) =>
+    b.score - a.score ||
+    (b.venue.card.rating || 0) - (a.venue.card.rating || 0) ||
+    (b.venue.card.reviews || 0) - (a.venue.card.reviews || 0));
+
+  const out = scored.slice(0, MAX_CANDIDATES).map(({ venue, shuts }) => {
+    if (shuts) open[venue.card.id] = shuts;
+    return { ...venue.card, hay: venue.hay };
+  });
+
+  return { venues: out, open };
 }
 
 /* --------------------------------------------------------------- the ask
@@ -244,23 +404,56 @@ function catalogueFor(places, lang, open) {
     .join('\n');
 }
 
-function promptFor(question, places, lang, open) {
-  return [
-    'Places:',
+/* Google's rows as the model reads them: what Google files the place as and
+   what Google's reviewers make of it, which is all anybody knows. No
+   description, because there is none — and the model is told as much, so it
+   does not write one. */
+function googleFor(rows, open) {
+  return rows
+    .map((row) => [
+      row.id,
+      row.name,
+      (row.types || []).concat(row.kitchens || []).join(' '),
+      row.price ? row.price + '/4' : '',
+      row.rating ? row.rating + ' from ' + (row.reviews || 0) + ' reviews' : '',
+      open[row.id] ? 'open until ' + open[row.id] : ''
+    ].join(' | '))
+    .join('\n');
+}
+
+function promptFor(question, places, google, lang, open) {
+  const lines = [
+    'Places I have eaten at and written up:',
     'id | name | types | price out of 4 | must order | open now | description',
-    catalogueFor(places, lang, open),
+    catalogueFor(places, lang, open)
+  ];
+
+  if (google.length) {
+    lines.push(
+      '',
+      'Places from Google that I have not been to. Prefer a place above when' +
+        ' one answers the question as well; these are for when none does:',
+      'id | name | types and cuisine | price out of 4 | Google rating | open now',
+      googleFor(google, open)
+    );
+  }
+
+  lines.push(
     '',
     'Someone asked: ' + question,
     '',
-    'Pick at most ' + MAX_PICKS + ' from the list above that best answer them,' +
-      ' best first. Use only ids copied exactly from the list. If nothing above' +
+    'Pick at most ' + MAX_PICKS + ' from the lists above that best answer them,' +
+      ' best first. Use only ids copied exactly from the lists. If nothing above' +
       ' fits, return an empty picks array rather than the closest thing.',
     'For each pick write "why" as one short clause about why it answers this' +
-      ' particular question — not a description of the place.',
+      ' particular question — not a description of the place. For a place from' +
+      ' Google say only what the line says: do not invent what it is like.',
     'Write "say" as one short sentence introducing the picks.',
     'Write "why" and "say" in this language: ' + lang + '.',
     'Answer with JSON only: {"say": "...", "picks": [{"id": "...", "why": "..."}]}'
-  ].join('\n');
+  );
+
+  return lines.join('\n');
 }
 
 /* The model's answer as an object, however it chose to wrap it.
@@ -287,21 +480,21 @@ function unwrap(text) {
 
 /* Whatever came back, reduced to picks that name real places.
  *
- * Every id is checked against the catalogue and every duplicate dropped, so
- * the worst a confused model can do is return fewer places than asked for.
- * The clauses are cut to a length that fits the card rather than trusted:
- * `why` is the one string on this page written by something other than a
- * person, and the browser sets it as text, never as markup. */
-function keep(said, places) {
+ * Every id is checked against what the model was actually shown — my places
+ * and, on the `all` scope, the forty Google rows — and every duplicate
+ * dropped, so the worst a confused model can do is return fewer places than
+ * asked for. The clauses are cut to a length that fits the card rather than
+ * trusted: `why` is the one string on this page written by something other
+ * than a person, and the browser sets it as text, never as markup. */
+function keep(said, shown) {
   if (!said || !Array.isArray(said.picks)) return null;
 
-  const real = new Map(places.filter((p) => !p.closed).map((p) => [p.id, p]));
   const picks = [];
   const seen = {};
 
   for (const pick of said.picks) {
     const id = pick && typeof pick.id === 'string' ? pick.id.trim() : '';
-    if (!real.has(id) || seen[id]) continue;
+    if (!shown.has(id) || seen[id]) continue;
     seen[id] = true;
     picks.push({ id, why: String((pick && pick.why) || '').slice(0, 160) });
     if (picks.length === MAX_PICKS) break;
@@ -328,6 +521,9 @@ export async function onRequestPost(context) {
      goes into a prompt. Anything else is read as English rather than refused —
      the question is still answerable. */
   const lang = /^[a-z]{2}$/.test(String((body && body.lang) || '')) ? body.lang : 'en';
+  /* Anything that is not the whole city is the map: the narrower answer is
+     the safe one to give a request that did not say. */
+  const wholeCity = body && body.scope === 'all';
 
   if (!question) return json({ ok: false, error: 'no-question' }, 400);
 
@@ -338,13 +534,39 @@ export async function onRequestPost(context) {
     return json({ ok: false, error: 'no-catalogue' }, 503);
   }
 
-  const open = await openPlaces(env);
+  const now = tallinnNow();
+  const open = await openPlaces(env, now);
+
+  /* The city, narrowed to what the question could be about. An empty list
+     here is a complete answer too: nothing in the export scored, and the
+     browser draws whatever my places make of the question. */
+  let google = [];
+  if (wholeCity) {
+    const cut = candidates(await googleVenues(env), readWish(body.wish), now);
+    google = cut.venues;
+    Object.assign(open, cut.open);
+  }
+
+  /* What goes back whether or not the model has anything to add. The Google
+     rows travel on every `all` answer — not just under the model's picks —
+     because with no model the browser has to rank them itself, and that is
+     these forty against my seventy-five with the one function it has. */
+  const answer = (source, picks, say) => {
+    const out = { ok: true, source, picks, say, open };
+    if (wholeCity) out.venues = google;
+    return json(out);
+  };
 
   /* Everything from here on is the model's half, and none of it is allowed to
      take the answer down with it. `source: "none"` is a complete, correct
      answer that the browser knows what to do with — it reads the question
      itself with assets/ask.js and draws the same cards. */
-  if (!env.AI) return json({ ok: true, source: 'none', picks: [], say: '', open });
+  if (!env.AI) return answer('none', [], '');
+
+  const shown = new Set([
+    ...places.filter((p) => !p.closed).map((p) => p.id),
+    ...google.map((g) => g.id)
+  ]);
 
   let said = null;
   try {
@@ -353,11 +575,11 @@ export async function onRequestPost(context) {
         {
           role: 'system',
           content:
-            'You help someone choose where to eat in Tallinn from a fixed list' +
+            'You help someone choose where to eat in Tallinn from fixed lists' +
             ' of places. You never invent a place, never use an id that is not' +
-            ' in the list, and never describe a place beyond what the list says.'
+            ' in the lists, and never describe a place beyond what the lists say.'
         },
-        { role: 'user', content: promptFor(question, places, lang, open) }
+        { role: 'user', content: promptFor(question, places, google, lang, open) }
       ],
       /* Asked for, not relied on: unwrap() above handles an answer that
          arrives as prose around the JSON, which is what happens when a model
@@ -366,7 +588,7 @@ export async function onRequestPost(context) {
       max_tokens: 400
     });
 
-    said = keep(unwrap(out && (out.response !== undefined ? out.response : out)), places);
+    said = keep(unwrap(out && (out.response !== undefined ? out.response : out)), shown);
   } catch (e) {
     /* The allowance is spent, the model is overloaded, or it has been moved
        behind a paid plan. All three are the same thing here. */
@@ -379,7 +601,7 @@ export async function onRequestPost(context) {
      model is not, and it finds the khachapuri at Gobi off a must-order list
      the model was shown and talked itself out of. A second opinion beats a
      shrug, and if the reader also has nothing the panel says so. */
-  if (!said) return json({ ok: true, source: 'none', picks: [], say: '', open });
+  if (!said) return answer('none', [], '');
 
-  return json({ ok: true, source: 'ai', picks: said.picks, say: said.say, open });
+  return answer('ai', said.picks, said.say);
 }

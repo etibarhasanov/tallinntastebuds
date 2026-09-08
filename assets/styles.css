@@ -2174,6 +2174,29 @@ body.panel-detail .panel {
   .ask.is-asking .ask-go { animation: none; }
 }
 
+/* Which roll the question goes to, under the field. The same two-button
+   segment the top of the map uses for the language, at the panel's own
+   scale: a hairline pill rather than a glass pane, and the mono the rest of
+   the panel's small words are set in. The pressed half wears the accent the
+   way a pressed chip does. */
+.ask-scope {
+  width: max-content;
+  margin: 8px 0 0;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  background: var(--paper);
+}
+.ask-scope .btn {
+  min-width: 0;
+  height: 28px;
+  padding: 0 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  border-radius: 100px;
+}
+.ask-scope .btn + .btn { border-left: 0; }
+
 /* What was typed, under the answer to it. Mono and muted: it is a quotation
    of the reader's own words, not the site saying something. */
 .ask-asked {
