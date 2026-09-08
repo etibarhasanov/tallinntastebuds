@@ -6,100 +6,140 @@ description: Change what a page does or looks like: anything in assets/, an HTML
 # Change a page
 
 Anything a visitor sees or presses: the scripts and stylesheets in `assets/`,
-the HTML pages, `data/ui.json`, the taxonomy's labels, a language. This is the
-process with the most rules because it is the one where a mistake reaches
-every phone that opens the map, and where a browser holding yesterday's script
-against today's data has already taken the site down once.
+the HTML pages, `data/ui.json`, the labels in the taxonomy and the cuisines, a
+language. It is the process with the most rules because a mistake here reaches
+every phone that opens the map, and a browser holding yesterday's script
+against today's data has already taken the site down once — that story is in
+the header of `tools/stamp.mjs`.
 
-Read `leave-it-better.md` as well. It is the main rule and it applies to
-every line you touch here.
+`.claude/rules/leave-it-better.md` loads itself the moment you open a file
+here. It is the main rule and it applies to every line you touch.
 
 ## Read first
 
-- The README section for the feature you are standing in. Every one of them
-  has one — **Saves**, **Lists**, **Stories**, **The directory**, **The
-  radio**, **Surprise me**, **Languages**, **The two styles** — and the
-  section carries the reasoning the code only hints at.
-- `README.md` → **The design rules**: twelve rules a new sheet, page or button
-  is held to, so building one is a decision about words rather than pixels.
-  Two of them the validator enforces; the other ten are read by a person, and
-  that person is you.
-- The header block of the file you are about to change. `assets/lists.js` and
-  `assets/app.js` are over the ~600-line mark, so the reach is the functions
-  you touch plus what they call and what calls them — say which ones you read.
+- The README section for the feature you are standing in. Every one has one —
+  **Saves**, **Lists**, **Stories**, **The directory**, **The radio**,
+  **Surprise me**, **Languages**, **The two styles** — and it carries the
+  reasoning the code only hints at.
+- `README.md` → **The design rules**: twelve rules a new sheet, page or
+  button is held to. Two of them the validator enforces; the other ten are
+  read by a person, and that person is you.
+- The header block of the file you are about to change. `assets/app.js` and
+  `assets/lists.js` are far over the ~600-line mark, so the reach there is the
+  functions you touch plus what they call and what calls them. Say which
+  ones you read.
 
 ## How the browser code is written
 
 **ES5, and nothing else.** `var`, `function`, no arrow functions, no `const`
-or `let`, no template literals, no spread — grep the files, there are zero.
-Each is wrapped in an IIFE with `'use strict'`. It is served raw to whatever
-browser opens it, so it is written for the browser as it is, not for a
-transpiler. A patch in the other dialect is the fastest way to look foreign.
+or `let`, no template literals — `grep -nE '\bconst |\blet |=>' assets/*.js`
+hits only prose in comments. Every file is one IIFE with `'use strict'`. It
+is served raw to whatever browser opens it, written for the browser as it is,
+not for a transpiler. A patch in the other dialect is the fastest way to look
+foreign.
 
-**Nothing names a colour.** `assets/styles.css` defines tokens — `--ink`,
-`--muted`, `--paper`, `--wash`, `--hairline`, `--accent`, `--accent-lit` — and
-the two styles restate every one of them: `[data-style="red"]` (light, brick)
-and `[data-style="green"]` (dark, forest). A component that hardcodes a hex is
-the one thing that fails to change when somebody presses a swatch. There is no
-`prefers-color-scheme` switch; the style is a choice, stored in `localStorage`
-under `ttb.style`. A token one style declares and the other leaves out fails
-validation.
+**Nothing names a colour.** The tokens are the first block of
+`assets/styles.css` — `:root` holds Red's palette so a cold load never
+flashes a third one — and `[data-style="red"]` and `[data-style="green"]`
+each restate every one of them. A component that hardcodes a hex is the one
+thing that fails to change when somebody presses a swatch. There is no
+`prefers-color-scheme` switch; the style is a choice, kept in `localStorage`
+under `ttb.style`.
 
-**Secondary pages apply the style themselves.** `assets/app.js` owns the
-swatches on the map; `lists.js` and `pass.js` read `ttb.style` (and `ttb.lang`)
-out of `localStorage` on boot and set `data-style` on `<html>` — plus
-`colorScheme` and the `theme-color` meta. A new page that skips this silently
-renders in the light palette whatever the visitor chose. Both keys also accept
-a `?style=` / `?lang=` override, so a shared link can carry them.
+**Every page applies the style and the language itself, on boot, first.**
+`applyStyle()` at `assets/lists.js:179-197` is the fullest copy: `?style=`,
+else `ttb.style`, else `red`; set `data-style` on `<html>`; set
+`colorScheme` to `dark` for green, or a native control is "a white box on a
+dark card"; write the computed `--wash` into `<meta name="theme-color">`.
+Then `pickLanguage()` — `?lang=`, else `ttb.lang`, else the browser's
+languages, else `en` — and `applyStaticStrings()` over the `data-i18n`,
+`data-i18n-aria-label`, `data-i18n-placeholder` and `data-i18n-title`
+attributes. `app.js`, `lists.js` and `venues.js` each carry that block;
+`pass.js` carries it without the `theme-color` line, so the three pass pages
+keep light browser chrome under the dark style. A new page copies the block
+whole, and its head carries `<meta name="color-scheme">` and
+`<meta name="theme-color">` like `lists.html`'s.
 
-**Every UI string lives in `data/ui.json`, in all ten languages** (az, hy, en,
-et, fi, pt, ru, es, tr, uk). A key present in one and missing in another fails
-validation; so does a `data-i18n` key in the markup or a `t('key')` in a
-script that is in no language at all. Never print a raw key or an English
-fallback to a visitor. A key nothing prints any more goes, in all ten, in the
-commit that orphaned it.
+**Every UI string lives in `data/ui.json`, in all ten languages** — az, hy,
+en, et, fi, pt, ru, es, tr, uk. Never print a raw key or an English fallback
+to a visitor. A key nothing prints any more goes, in all ten, in the commit
+that orphaned it.
 
-**Every touch of `localStorage` is in a `try/catch`.** It throws outright in
-some private-browsing modes, and the site is meant to work with it absent.
+**Every touch of `localStorage` is inside `try/catch`.** It throws outright
+in some private-browsing modes, and the site is meant to work with it absent.
 
 **Two files are held to something stricter than the validator.**
-`assets/qr.js` is fingerprinted by `node tools/qrperf.mjs --check`: a change
-to the matrix it draws is a bug however much faster it is, and a deliberate
-change means `--record` and scanning one of the codes with a real camera
-before it lands. And the story-clock arithmetic in `assets/app.js` is a copy
-of `tools/clock.mjs`, because the browser cannot import from `tools/`; change
-one, change the other.
+`assets/qr.js` is fingerprinted by `node tools/qrperf.mjs --check`, which CI
+runs: nine payloads, each with the expected version and a SHA-256 of the
+matrix, so a change to what it draws is a bug however much faster it is. A
+deliberate change means `--record`, pasting the new fixtures in, and scanning
+one of the codes with a real camera before it lands. And the story clock in
+`assets/app.js` — `STORY_HOURS` at line 5059, `tallinnOffset`, `tallinnTime`,
+`storyStart`/`storyEnd` — is a copy of `tools/clock.mjs`, because the
+browser cannot import from `tools/`; change one, change the other.
+
+## What the validator holds a page change to
+
+`tools/validate.mjs`, and CI runs exactly it plus `qrperf --check`:
+
+- **Parity in `ui.json`**: a key that is a non-empty string in some
+  languages and not all fails; every language needs `langName`.
+- **Keys the markup asks for**: every `data-i18n*="…"` in every `*.html` in
+  the repo root, `admin.html` included, must exist in some language.
+- **Keys the scripts ask for**: every `t('key')` in every `assets/*.js`,
+  after stripping `=== '…'` comparisons, must exist; only literals shaped
+  `^[a-z][A-Za-z0-9]*$` count, so a fallback string is ignored and a key
+  passed through a variable is not seen.
+- **Colour tokens**: every `[data-style="…"]` block must declare the union of
+  the tokens any block declares. `:root` is not compared.
+- **Labels**: every taxonomy type and every cuisine needs a label in every
+  language; a blurb missing a language only warns.
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in `index.html`,
+  `lists.html`, `google.html`, `deal.html`, `verify.html` and `staff.html`
+  must carry `?v=` equal to the first eight hex of the file's SHA-256.
+  `admin.html` is deliberately unstamped; it is served `no-store`.
 
 ## The steps
 
 1. Make the change, in the dialect above, with the README section open.
-2. `node tools/stamp.mjs`. The `?v=` hash on every asset URL in every HTML
-   page is what stops a browser answering for a changed file out of its own
-   cache, and CI refuses a stale one. Never type a hash by hand.
+2. `node tools/stamp.mjs`. It rewrites only the pages whose stamps changed,
+   and CI refuses a stale one. Never type a hash by hand.
 3. `node tools/validate.mjs`.
-4. **Drive it in a browser.** There is no test suite, and reading the diff is
-   not the same as watching it. A static server over the repo root is enough
-   for the map — `python3 -m http.server 8000`, then `localhost:8000`, because
-   `fetch()` refuses `file://` and the map comes up empty. For a page that
-   needs a live-looking API, Playwright with a stubbed `/api/*` route is
-   enough; Chromium is installed at `/opt/pw-browsers/chromium`. Look at both
-   styles and at a 390px width, which is the phone the README measures its
-   layouts against. A change that reaches the Functions for real is `api.md`'s
-   business and runs under `wrangler pages dev`.
+4. **Drive it in a browser.** There is no test suite and no Playwright
+   harness in the repo; reading the diff is not the same as watching it.
+   `python3 -m http.server 8000` over the repo root is enough for the map,
+   because `fetch()` refuses `file://` and the page comes up empty. For a
+   page that needs a live-looking API, Playwright with `/api/*` stubbed —
+   Chromium is at `/opt/pw-browsers/chromium` in this environment — or
+   `npx wrangler pages dev .` for the real bindings against the preview
+   database. Look at both styles, and at a 390 px width, which is the phone
+   the README measures its layouts against.
 5. **Rewrite the README paragraph** the change made wrong, and the comment
    above the function. A paragraph that now describes the version that lost
    the argument is a bug.
-6. The pass in `leave-it-better.md`, over every file in the diff, as a whole.
+6. The pass in `leave-it-better.md`, over every file in the diff, whole.
 
 ## Adding a language
 
-`README.md` → **Adding a language** is the checklist: a block in `ui.json`
-with every string id and a `langName`, `months` and `monthYear`, the label on
-every type in `taxonomy.json` and every cuisine in `cuisines.json`, the blurb
-on every place, and the code in `translated` in `data/schema.json`, which is
-the one literal list that has to be told. The switcher and the validator read
-the language list out of `ui.json`, so nothing else changes. Estonian is
-`et`, not `ee`, and the README says why.
+What the code actually reads per language, in the order the validator will
+complain about them:
+
+1. `data/ui.json`: a top-level block with every key the others have, plus
+   `langName`, `styleRed`, `styleGreen`, `months` (twelve names joined by `|`,
+   or `formatMonth()` falls back to `Intl`, which draws April as `M04` in
+   Chromium for some locales) and `monthYear`.
+2. `data/taxonomy.json`: a label on every type. Fails without.
+3. `data/cuisines.json`: a label on every cuisine. Fails without.
+4. `data/restaurants.json`: `blurb` on every place. Warns without, so you can
+   ship as you translate.
+5. `data/schema.json`: the code in `$defs.translated`, the one literal list;
+   the validator does not check it, your editor will.
+6. `data/radio.json` `byLanguage`, optionally; `stationFor()` falls back to
+   `default`, and `et` has no entry today.
+
+The switcher and the validator read the language list out of `ui.json`, and
+the switcher sorts by the two-letter code, so nothing else changes. Estonian
+is `et`, not `ee`, and the README says why.
 
 ## The commit
 
@@ -116,10 +156,14 @@ it, and what was driven in a browser to check it.
 
 - The stamps: not run, or hand-merged after a rebase. `index.html` and
   `lists.html` conflict on the `?v=` lines whenever two branches touch
-  `assets/`. Take the structure from both sides, run the stamper, let it write
-  the hashes.
-- A string added in English, in one language, with a fallback in the code.
-- A new page that renders light for somebody who chose the dark style.
-- A change to the map's data shape shipped without the script that reads it,
-  so a browser holding the old script threw on the new data. That is the
-  incident the stamps exist for; it is in `tools/stamp.mjs`'s header.
+  `assets/`. Take the structure from both sides, run the stamper, let it
+  write the hashes.
+- A data shape shipped without the script that reads it: half-step prices
+  landed with the script on one deploy, and every phone holding the old
+  script threw `RangeError: Invalid array length` over a map that had
+  already drawn. That is the incident the stamps exist for.
+- A string added in one language, with a fallback in the code.
+- A new page that renders light for somebody who chose the dark style,
+  because the boot block was not copied.
+- A `t()` key that the scanner cannot see, so the validator passes and a
+  visitor reads the key off the page.

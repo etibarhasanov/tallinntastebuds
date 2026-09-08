@@ -17,7 +17,7 @@
   "autoMode": {
     "hard_deny": [
       "$defaults",
-      "Never run DROP TABLE, DROP INDEX, or DROP DATABASE against a Cloudflare D1 database. The owner of this project has said the tables are never to be dropped. That includes added_places, which holds no rows and is referenced by no code yet: it is the table for places somebody adds by hand when the catalogue does not have them, and it is kept on purpose \u2014 see the comment on it in db/schema.sql. Dropping a table is not recoverable from here: there is no backup of either database in this repository.",
+      "Never run DROP TABLE, DROP INDEX, or DROP DATABASE against a Cloudflare D1 database. The owner of this project has said the tables are never to be dropped. That includes added_places, the table for places somebody adds by hand when the catalogue does not have them, which functions/api/lists.js writes and reads \u2014 see the comment on it in db/schema.sql. Dropping a table is not recoverable from here: there is no backup of either database in this repository.",
       "Never run DELETE or UPDATE against a Cloudflare D1 database without a WHERE clause. The rows in `saves`, `users`, `lists`, `list_items` and `list_keeps` are other people's, and there is no way to put them back."
     ]
   }
