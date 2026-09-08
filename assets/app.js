@@ -106,9 +106,8 @@
        place into a pin read both — and askPlaces below, which is the same
        kind of stand-in arriving by the other door. */
     listPlaces: [],
-    /* What the chat box was last asked, and what came back: the question, the
-       sentence to print over the answer, and two or three place ids each with
-       a clause saying why it is there.
+    /* What the map is narrowed to when the chat has answered: two or three
+       place ids, and the hours that were true when it answered.
 
        An answer is a mode and not a filter, for exactly the reason a list is
        one — see the note at the top of this file. No chip stands for it,
@@ -119,8 +118,14 @@
        still reading.
 
        Null on arrival and on every visit that never asks anything. */
-    answer: null,        // { q, say, picks: [{ id, why }], open: {} }, or null
-    asking: false,       // a question is in the air; the field is disabled
+    answer: null,        // { picks: [{ id, why }], open: {} }, or null
+    /* Every question asked this visit and what came back, oldest first —
+       the thread the chat view draws. An exchange is pending from the moment
+       it is typed until the Function has answered, and the rows under it
+       can change twice in that time: the local reader's answer at once, the
+       model's when it arrives. The last one with places in it is what
+       state.answer holds and the map narrows to. */
+    asks: [],
     /* Whether the question is asked of my map or of the whole city. Held
        here rather than in localStorage: the narrower answer is the one to
        arrive on, and a visitor who wants the city presses for it. */
@@ -3307,10 +3312,11 @@
     };
   }
 
+  /* A question in the air: the arrow pulses. Nothing is disabled — the field
+     stays typeable so a second question can follow the first without waiting
+     for it, and the reply to the first then updates its own exchange in the
+     thread, not the newest one's. */
   function setAsking(on) {
-    state.asking = on;
-    dom.askInput.disabled = on;
-    dom.askGo.disabled = on;
     dom.askForm.classList.toggle('is-asking', on);
   }
 
@@ -3323,89 +3329,121 @@
        can be trusted to have obeyed either. */
     var question = String(dom.askInput.value || '')
       .slice(0, window.TTBAsk.MAX_QUESTION).trim();
-    if (!question || state.asking) return;
+    if (!question) return;
 
-    setAsking(true);
     trackEvent('ask', { search_term: question.toLowerCase(), scope: state.askScope });
 
     /* The search index is built lazily on the first search; an answer is the
        other thing that reads it, and it may well be what reads it first. */
     if (!hayIndex) buildSearchIndex();
 
-    /* Read once and sent with every ask: on the whole city the Function
-       narrows a thousand Google rows with this before the model sees any,
-       and with no model at all it is what ranks the answer on this side. */
+    /* The exchange goes into the thread before anything has answered, so
+       the question is on the screen the moment it is sent, with the field
+       cleared for the next one. Then two answers arrive, and the second
+       overwrites the first:
+
+         at once     the local reader over my places, which takes no time
+                     and is right about most questions people type
+         a moment    the Function — the model's picks, the hours, and the
+         later       city's rows for a question the map has no answer to
+
+       That is what makes the box feel quick: the wait is for a better
+       answer under a question that already has one, not for anything. */
+    var turn = {
+      q: question, scope: state.askScope, pending: true,
+      say: '', picks: [], city: [], open: {}, source: 'rules'
+    };
+    state.asks.push(turn);
+    dom.askInput.value = '';
+    setAsking(true);
+    renderAsk();
+
     loadCuisines().then(function (cuisines) {
       var wish = readWish(question, cuisines);
-      ask(question, wish, state.askScope).then(function (found) {
-        /* The map had nothing. Rather than a shrug, the same question goes
-           to the city — once, and the switch moves with it, so what is on
-           screen and what the switch says are the same thing. The head
-           sentence says why, because three places off Google under "here is
-           where I would go" would be the site recommending somewhere it has
-           not been. A question the city has no answer to either gets the
-           shrug, from the second ask. */
-        if (found || state.askScope !== 'map') return;
-        state.askScope = 'all';
-        paintAskScope();
-        trackEvent('ask_fallback', { search_term: question.toLowerCase() });
-        ask(question, wish, 'all', true);
-      });
+
+      var first = askLocally(wish, {}, []);
+      if (first.picks.length) {
+        turn.say = first.say;
+        turn.picks = first.picks;
+        settle(turn);
+      }
+
+      return fetch(ASK_URL, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify({ q: question, lang: state.lang, scope: turn.scope, wish: wish })
+      })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .catch(function () { return null; })
+        .then(function (out) { arrive(turn, wish, out); });
+    })
+      /* Anything that went wrong on the way — an answer in a shape this did
+         not expect, most likely — is an exchange that says it found nothing,
+         never a question left hanging with its arrow pulsing. */
+      .catch(function () { arrive(turn, null, null); });
+  }
+
+  /* The Function's answer folded into its exchange. The model's picks win
+     when there are any; otherwise the local reader runs again over my places
+     and the city's rows together, with the hours it now has. The city is
+     reached for only when the map came to nothing, on either half — that is
+     the fallback, and it costs nothing now: the rows came with the answer. */
+  function arrive(turn, wish, out) {
+    var open = (out && out.open) || {};
+    var city = ((out && out.venues) || []).filter(function (row) {
+      return typeof row.lat === 'number' && typeof row.lng === 'number';
+    }).map(cityStandIn);
+
+    var said = null;
+    if (out && out.source === 'ai' && out.picks && out.picks.length) {
+      said = { say: out.say || '', picks: out.picks, source: 'ai' };
+    } else if (wish) {
+      said = askLocally(wish, open, []);
+      if (!said.picks.length && city.length) said = askLocally(wish, open, city);
+    }
+    if (!said) said = { say: '', picks: [], source: 'rules' };
+
+    /* Whether the answer reached past the map. On the map scope that is the
+       fallback, and the switch and the sentence over the answer both say so:
+       three places off Google under "here is where I would go" would be the
+       site recommending somewhere it has not been. */
+    var named = {};
+    said.picks.forEach(function (pick) { named[pick.id] = true; });
+    var fromCity = city.filter(function (row) { return named[row.id]; });
+    if (fromCity.length && turn.scope === 'map') {
+      said.say = t('askFellBack');
+      if (state.askScope === 'map') { state.askScope = 'all'; paintAskScope(); }
+      trackEvent('ask_fallback', { search_term: turn.q.toLowerCase() });
+    }
+
+    turn.say = said.say;
+    turn.picks = said.picks;
+    turn.city = fromCity;
+    turn.open = open;
+    turn.source = said.source;
+    turn.pending = false;
+    settle(turn);
+
+    trackEvent(said.picks.length ? 'ask_answer' : 'ask_none', {
+      search_term: turn.q.toLowerCase(),
+      source: said.source,
+      scope: turn.scope,
+      places_shown: said.picks.length,
+      from_google: fromCity.length
     });
   }
 
-  /* One question to one roll, and whether it found anything. The answer is
-     drawn from in here; the boolean is for askSubmit() to decide about the
-     city. */
-  function ask(question, wish, scope, fellBack) {
-    return fetch(ASK_URL, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify({ q: question, lang: state.lang, scope: scope, wish: wish })
-    })
-      .then(function (res) { return res.ok ? res.json() : null; })
-      .catch(function () { return null; })
-      .then(function (out) {
-        var open = (out && out.open) || {};
-        /* The city's rows, as stand-ins the map can draw. Only ones with a
-           pin: a row with no coordinates is a row nothing on this page can
-           point at, the same rule a list's stand-ins are held to. */
-        var city = ((out && out.venues) || []).filter(function (row) {
-          return typeof row.lat === 'number' && typeof row.lng === 'number';
-        }).map(cityStandIn);
-
-        /* The Function answers with the hours whether or not it has an
-           opinion, so "open until 22:00" is on the row either way. Only the
-           picking falls back. */
-        var said = out && out.source === 'ai' && out.picks && out.picks.length
-          ? { say: out.say || '', picks: out.picks, source: 'ai' }
-          : askLocally(wish, open, city);
-
-        if (fellBack && said.picks.length) said.say = t('askFellBack');
-
-        /* Of the forty, only the ones the answer names go on the map. */
-        var named = {};
-        said.picks.forEach(function (pick) { named[pick.id] = true; });
-
-        /* A map that found nothing is not shown as nothing while the city is
-           still to be asked: the field stays busy across both asks, and the
-           shrug, if it comes, comes from the second. */
-        var found = said.picks.length > 0;
-        if (!found && scope === 'map') return false;
-
-        setAsking(false);
-        showAnswer(question, said, open, city.filter(function (row) { return named[row.id]; }));
-        return found;
-      })
-      /* Anything that went wrong drawing the answer — an answer in a shape
-         this did not expect, most likely — is a shrug and a field handed
-         back, never a field left disabled with nothing on the screen to say
-         why. Reported as "found nothing" so a map-scope ask still goes on to
-         the city. */
-      .catch(function () {
-        if (scope !== 'map') { setAsking(false); toast(t('askNothing')); }
-        return false;
-      });
+  /* An exchange as it now stands, on the screen: its rows in the thread,
+     and — when it is the newest one — its places on the map. */
+  function settle(turn) {
+    var newest = state.asks[state.asks.length - 1] === turn;
+    if (!state.asks.some(function (t2) { return t2.pending; })) setAsking(false);
+    /* Not while a place is being read. The model's answer landing a few
+       seconds after the local one would otherwise pull the panel back off a
+       card somebody had already opened from the first answer. The thread
+       has the better answer the next time it is looked at. */
+    if (newest && turn.picks.length && state.view !== 'detail') showAnswer(turn);
+    else if (state.view === 'ask') renderAsk();
   }
 
   /* A Google row as this page draws a place it has no write-up for: the
@@ -3437,33 +3475,30 @@
     };
   }
 
-  /* An answer on the screen: the pins, the rows, the sentence over them, and
-     the address bar left alone.
+  /* An answer on the map: its pins, and everything else that narrows the map
+     put away first, the way a list arrives. A chip still down under an
+     answer would be a filter nothing on screen is obeying.
 
      Deliberately not in the URL, unlike a filter or a list. Those two are
      places on this site somebody can be sent to; an answer is a moment — it
      was true at nine on a Friday because of what was open, and a link to it
      opened on Sunday afternoon would draw three closed restaurants under a
      sentence explaining that they are open. */
-  function showAnswer(question, said, open, city) {
-    if (!said.picks.length) {
-      toast(t('askNothing'));
-      trackEvent('ask_none', { search_term: question.toLowerCase() });
-      return;
-    }
-
-    /* An answer is a mode, so it arrives the way a list does: everything else
-       that decides what is on the map comes off first. A chip still down
-       under an answer would be a filter nothing on screen is obeying. */
+  function showAnswer(turn) {
     forgetList();
     state.active = [];
     setQuery('');
 
-    state.answer = { q: question, say: said.say, picks: said.picks, open: open };
-    state.askPlaces = city;
-    addPins(city);
+    /* The stand-ins of the answer before this one go, pins and all, before
+       this one's come in — the two may well name the same Google row, and
+       addPins() is idempotent, but a row named last time and not this time
+       would otherwise be a pin nothing on screen is about. */
+    dropPins(state.askPlaces);
+    state.answer = { picks: turn.picks, open: turn.open };
+    state.askPlaces = turn.city;
+    addPins(turn.city);
     state.selected = null;
-    state.view = 'list';
+    state.view = 'ask';
 
     /* The mark goes if the answer does not name the place wearing it, the
        same rule applyFilters() applies when a chip rules one out: a lit pin
@@ -3477,22 +3512,14 @@
     paintMarkers();
     fitToPins({ animate: true });
     dom.panelScroll.scrollTop = 0;
-
-    trackEvent('ask_answer', {
-      search_term: question.toLowerCase(),
-      source: said.source || 'rules',
-      scope: state.askScope,
-      places_shown: said.picks.length,
-      from_google: city.length
-    });
   }
 
-  /* The map back, and the field cleared with it. Called by the button on the
-     answer, and by anything that is not an answer taking the panel over. */
+  /* The map back. Called by anything that is not an answer taking the map
+     over — a chip, the search, the Places button. The thread is not touched:
+     what was asked is still there behind the speech bubble. */
   function forgetAnswer(opts) {
     if (!state.answer) return;
     state.answer = null;
-    if (dom.askInput) dom.askInput.value = '';
 
     /* The city's stand-ins came in with the answer and leave with it, pins
        and all — and one being read right now goes too, the panel dropping
@@ -3500,13 +3527,13 @@
        same rule forgetList() applies to a list's. */
     var standing = {};
     state.askPlaces.forEach(function (p) { standing[p.id] = true; });
-    if (state.selected && standing[state.selected]) {
-      state.selected = null;
-      state.view = 'list';
-    }
+    if (state.selected && standing[state.selected]) state.selected = null;
     if (state.marked && standing[state.marked]) state.marked = null;
     dropPins(state.askPlaces);
     state.askPlaces = [];
+    /* Whatever took the answer away wants the map, and the map's panel is
+       the list. */
+    if (state.view === 'ask' || !state.selected) state.view = 'list';
     if (opts && opts.redraw === false) return;
     renderPanel();
     paintMarkers();
@@ -3519,16 +3546,70 @@
     }
   }
 
-  /* The panel opened on the question rather than on the list. The rail's
-     button, and the only way in that is not typing in the field itself. */
+  /* The thread: every exchange this visit, newest at the top where the
+     field is, each one the question as it was typed and the answer under
+     it. The rows are the panel's own rows, so a place here is the same
+     place it is in the list — and a Google place the same stand-in a list
+     draws for one — with the answer's clause under each in the slot a
+     list's owner's sentence uses.
+
+     Newest first rather than last because the field is at the top, and the
+     answer belongs under the question that was just typed into it, not at
+     the bottom of a scroll. Earlier questions are still there below, which
+     is what makes it a conversation rather than a search box that forgets. */
+  function renderAsk() {
+    clear(dom.askThread);
+
+    for (var i = state.asks.length - 1; i >= 0; i--) {
+      var turn = state.asks[i];
+      var say = turn.say ||
+        (turn.pending ? t('askThinking') : turn.picks.length ? t('askHere') : t('askNothing'));
+
+      var rows = el('ul', { className: 'place-list is-answer' });
+      turn.picks.forEach(function (pick) {
+        var place = byId(pick.id);
+        if (!place) {
+          /* A city row named by an exchange that is no longer the newest has
+             no pin and no entry in byId(); the exchange still holds it. */
+          for (var j = 0; j < turn.city.length; j++) {
+            if (turn.city[j].id === pick.id) place = turn.city[j];
+          }
+        }
+        if (!place) return;
+        rows.appendChild(place.standIn ? listOnlyRow(place, pick.why || '') : listRow(place, pick.why || ''));
+      });
+
+      dom.askThread.appendChild(el('article', {
+        className: 'ask-turn' + (turn.pending ? ' is-pending' : ''),
+        /* A live region on the newest only: an answer arriving under the
+           question just asked is worth announcing, one arriving under an
+           older question is not. */
+        'aria-live': i === state.asks.length - 1 ? 'polite' : null
+      }, [
+        el('p', { className: 'ask-you', textContent: turn.q }),
+        el('p', { className: 'ask-say', textContent: say }),
+        turn.picks.length ? rows : null
+      ]));
+    }
+  }
+
+  /* The panel opened on the chat rather than on the list. The rail's button,
+     and the only way in that is not typing in the field itself. */
   function openAsk() {
-    showList(false);
+    if (!state.lastFocus) state.lastFocus = document.activeElement;
+    state.selected = null;
+    state.view = 'ask';
+    renderPanel();
+    openPanel();
+    document.body.classList.remove('sheet-full');
+    releaseSheetHeight();
+    paintMarkers();
+    dom.panelScroll.scrollTop = 0;
     /* iOS will not raise the keyboard for a focus() that is not inside the
        gesture that asked for it, and the panel has just been opened by one.
        A field that does not take the keyboard on a phone is a field nobody
        uses, so this runs in the same turn as the press. */
     dom.askInput.focus();
-    dom.askInput.select();
   }
 
   /* ------------------------------------------------------------ the sheet
@@ -3920,6 +4001,9 @@
 
   function showList(focus) {
     if (!state.lastFocus) state.lastFocus = document.activeElement;
+    /* Asking for the list is asking for the map: the same door out of an
+       answer that a chip is. The thread keeps what was asked. */
+    forgetAnswer({ redraw: false });
     state.selected = null;
     state.view = 'list';
     renderPanel();
@@ -3938,18 +4022,15 @@
   function renderPanel() {
     document.body.classList.toggle('panel-detail', state.view === 'detail' && !!state.selected);
     paintSave();
-    if (state.view === 'detail' && state.selected) {
-      renderDetail(byId(state.selected));
-      dom.detail.hidden = false;
-      dom.list.hidden = true;
-      dom.panel.setAttribute('aria-labelledby', 'panel-title');
-    } else {
-      clear(dom.detail);
-      renderList();
-      dom.detail.hidden = true;
-      dom.list.hidden = false;
-      dom.panel.setAttribute('aria-labelledby', 'panel-list-title');
-    }
+    var detail = state.view === 'detail' && state.selected;
+    var asking = state.view === 'ask';
+    if (detail) renderDetail(byId(state.selected)); else clear(dom.detail);
+    if (asking) renderAsk(); else if (!detail) renderList();
+    dom.detail.hidden = !detail;
+    dom.ask.hidden = !asking;
+    dom.list.hidden = detail || asking;
+    dom.panel.setAttribute('aria-labelledby',
+      detail ? 'panel-title' : asking ? 'panel-ask-title' : 'panel-list-title');
   }
 
   /* ------------------------------------------------------------ price gauge
@@ -4750,6 +4831,132 @@
     }, 900);
   }
 
+  /* One place as a row in the panel, and `said` the sentence under it when
+     there is one: what a list's owner wrote, or why an answer named it. Both
+     are the reason the row is worth reading rather than searching for, so
+     they go in the row and not behind a tap.
+
+     Module-level rather than inside renderList(), because the thread the
+     chat draws is rows too, and one builder drawn from two places is the
+     whole reason a Google place and a place of mine read alike wherever
+     they meet. */
+  function listRow(place, said) {
+    /* A place that is on the list but not on my map: a name, an address and
+       a pin out of the catalogue, and nothing to read. The badges a row
+       normally carries are all claims about a write-up that does not exist
+       — how much there is to look at, what it costs, which types it is —
+       so a stand-in row carries the sentence and the address instead. */
+    if (place.standIn) return listOnlyRow(place, said);
+
+    /* A discount used to be something you could only find by opening the
+       place, which meant opening seventy of them to learn that four save
+       you money. It is the one thing in a row that is an
+       offer rather than a description, so it is shown where the choosing
+       happens — and spelled into the label in full, since "−15%" read out
+       on its own says a number and not what it comes off. */
+    var deal = liveDealFor(place);
+    var offer = deal ? window.TTBPass.textFor(deal.offer, state.lang) : '';
+
+    /* The list says the same thing the map now says: this is the one you
+       were just reading. It is where you come back to, so it is worth being
+       findable in a list of seventy. */
+    var kept = isKept(place);
+
+    var row = el('button', {
+      type: 'button',
+      className: 'list-row' + (place.closed ? ' is-closed' : '') + (kept ? ' is-kept' : ''),
+      /* Which is a mark on the list as well as a word in the row's label:
+         aria-current is the one announcement for "the one you are on" that
+         needs no wording of its own in five languages. */
+      'aria-current': kept ? 'true' : null,
+      /* The row's own label is what a screen reader reads, so anything the
+         row shows has to be spelled into it or it is not there at all. */
+      'aria-label': t('openPlace', { name: place.name }) +
+        (place.closed ? ', ' + t('closed') : '') + ', ' + t(depthMarkKey(place)) +
+        (deal ? ', ' + (offer || t('filterDiscount')) : '') +
+        /* The count is drawn aria-hidden, so a row that shows one has to
+           spell it out or a screen reader gets the digit and nothing to
+           hang it on. */
+        (saveCount(place.id)
+          ? ', ' + (saveCount(place.id) === 1
+              ? t('saveCountOne')
+              : t('saveCount', { n: saveCount(place.id) }))
+          : '')
+    }, [
+      el('span', { className: 'list-name', textContent: place.name }),
+      el('span', { className: 'list-sub' }, [
+        /* After the price, which holds the same edge on every row, and
+           before the types, which are the part that can run long. */
+        priceGauge(place.price),
+        deal ? dealMark(deal) : null,
+        /* It used to ride at the end of the type list, in the same grey and
+           the same size as "Bakery · Coffee", which made the one thing that
+           decides whether to set off at all the last word of a description.
+           It sits with the badges now, where the discount sits: the row's
+           two facts about the place rather than about the food. */
+        place.closed ? shutMark() : null,
+        saveMark(place),
+        el('span', {
+          className: 'list-types',
+          textContent: (place.types || []).map(typeLabel).join(' · ')
+        })
+      ]),
+      /* Last in the row and among the first things the eye lands on: it
+         holds the same edge on every row, so it can be read straight down
+         the list without reading the rows themselves. */
+      depthMark(place),
+      /* Under everything else, full width, in the reading face rather than
+         the mono the rest of the row uses: it is a sentence somebody wrote,
+         not a piece of metadata, and it should look like one. */
+      said ? el('span', { className: 'list-said', textContent: said }) : null
+    ]);
+    row.addEventListener('click', function () { selectPlace(place.id, { fly: true }); });
+    return el('li', {}, [row]);
+  }
+
+  /* A place I have never filmed, in the same shape as one I have.
+
+     It used to be a plainer row — the name, the address, and Google's
+     description on a line of its own underneath — on the argument that the
+     badges a row of mine carries are claims about a write-up that does not
+     exist. True of the depth mark, the discount and the save count, which
+     it still does not get. But drawn beside a row of mine it read as a
+     different kind of thing rather than a different place, and an answer
+     that mixes the two rolls needs them to read as one list. So it takes
+     the row's shape: the gauge and the types in the same slots, and in the
+     slot where a row of mine says how much there is to look at, a mark
+     saying whose description this is, with Google's score on it. The score
+     travels only with Google's name in front of it, here as everywhere —
+     see the note above venueEntry() in functions/api/_lib.js — and the
+     card still draws the full "According to Google" line.
+
+     A place off nobody's export — added by hand to a list — has no gauge,
+     no types and no score, and keeps the plainer row: the address is the
+     whole of what is known about it. */
+  function listOnlyRow(place, said) {
+    var kinds = (place.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
+    var described = !!place.google && !!(kinds || place.price || place.rating);
+
+    var row = el('button', {
+      type: 'button',
+      className: 'list-row' + (described ? '' : ' is-from-list'),
+      'aria-label': t('openPlace', { name: place.name }) + ', ' + standInNote() +
+        (place.rating ? ', ' + t('googleSays') + ' ' + scoreMark(place).textContent : '')
+    }, [
+      el('span', { className: 'list-name', textContent: place.name }),
+      el('span', { className: 'list-sub' }, described ? [
+        place.price ? priceGauge(place.price) : null,
+        el('span', { className: 'list-types', textContent: kinds })
+      ] : [
+        el('span', { className: 'list-types', textContent: place.address || '' })
+      ]),
+      described ? googleMark(place) : null,
+      said ? el('span', { className: 'list-said', textContent: said }) : null
+    ]);
+    row.addEventListener('click', function () { selectPlace(place.id, { fly: true }); });
+    return el('li', {}, [row]);
+  }
+
   function renderList() {
     clear(dom.listBody);
 
@@ -4772,31 +4979,6 @@
        happens to be cut out of one — so it is drawn like every other slice,
        in the alphabet, without the order or the sentences. */
     var reading = !words.length && !state.active.length && !!state.list;
-
-    /* And the third mode. An answer holds the panel on its own — anything
-       that would narrow it has already put it away, see forgetAnswer() — so
-       unlike the two above there is no "and nothing else" to test for. */
-    var answering = !!state.answer;
-
-    if (answering) {
-      /* Already in the order the answer put them in. answerPlaces() is what
-         built this list and ranking is the whole of what was asked for. */
-      dom.listBody.appendChild(answerHead(places.length));
-      var answered = el('ul', { className: 'place-list is-answer' });
-      places.forEach(function (place) { answered.appendChild(listRow(place)); });
-      dom.listBody.appendChild(answered);
-      var again = el('button', {
-        type: 'button',
-        className: 'ask-again',
-        textContent: t('askClear')
-      });
-      again.addEventListener('click', function () {
-        forgetAnswer();
-        dom.askInput.focus();
-      });
-      dom.listBody.appendChild(again);
-      return;
-    }
 
     if (reading) {
       /* The order is the whole point of a top ten. Its owner dragged these
@@ -4833,127 +5015,6 @@
       return;
     }
 
-    function listRow(place) {
-      /* What the list's owner said about this one, when the list is what is
-         on screen. It is the reason a list is worth reading rather than
-         searching for, so it goes in the row and not behind a tap. */
-      var said = reading ? listSay(place.id) : answerWhy(place.id);
-      /* A place that is on the list but not on my map: a name, an address and
-         a pin out of the catalogue, and nothing to read. The badges a row
-         normally carries are all claims about a write-up that does not exist
-         — how much there is to look at, what it costs, which types it is —
-         so a stand-in row carries the sentence and the address instead. */
-      if (place.standIn) return listOnlyRow(place, said);
-
-      /* A discount used to be something you could only find by opening the
-         place, which meant opening seventy of them to learn that four save
-         you money. It is the one thing in a row that is an
-         offer rather than a description, so it is shown where the choosing
-         happens — and spelled into the label in full, since "−15%" read out
-         on its own says a number and not what it comes off. */
-      var deal = liveDealFor(place);
-      var offer = deal ? window.TTBPass.textFor(deal.offer, state.lang) : '';
-
-      /* The list says the same thing the map now says: this is the one you
-         were just reading. It is where you come back to, so it is worth being
-         findable in a list of seventy. */
-      var kept = isKept(place);
-
-      var row = el('button', {
-        type: 'button',
-        className: 'list-row' + (place.closed ? ' is-closed' : '') + (kept ? ' is-kept' : ''),
-        /* Which is a mark on the list as well as a word in the row's label:
-           aria-current is the one announcement for "the one you are on" that
-           needs no wording of its own in five languages. */
-        'aria-current': kept ? 'true' : null,
-        /* The row's own label is what a screen reader reads, so anything the
-           row shows has to be spelled into it or it is not there at all. */
-        'aria-label': t('openPlace', { name: place.name }) +
-          (place.closed ? ', ' + t('closed') : '') + ', ' + t(depthMarkKey(place)) +
-          (deal ? ', ' + (offer || t('filterDiscount')) : '') +
-          /* The count is drawn aria-hidden, so a row that shows one has to
-             spell it out or a screen reader gets the digit and nothing to
-             hang it on. */
-          (saveCount(place.id)
-            ? ', ' + (saveCount(place.id) === 1
-                ? t('saveCountOne')
-                : t('saveCount', { n: saveCount(place.id) }))
-            : '')
-      }, [
-        el('span', { className: 'list-name', textContent: place.name }),
-        el('span', { className: 'list-sub' }, [
-          /* After the price, which holds the same edge on every row, and
-             before the types, which are the part that can run long. */
-          priceGauge(place.price),
-          deal ? dealMark(deal) : null,
-          /* It used to ride at the end of the type list, in the same grey and
-             the same size as "Bakery · Coffee", which made the one thing that
-             decides whether to set off at all the last word of a description.
-             It sits with the badges now, where the discount sits: the row's
-             two facts about the place rather than about the food. */
-          place.closed ? shutMark() : null,
-          saveMark(place),
-          el('span', {
-            className: 'list-types',
-            textContent: (place.types || []).map(typeLabel).join(' · ')
-          })
-        ]),
-        /* Last in the row and among the first things the eye lands on: it
-           holds the same edge on every row, so it can be read straight down
-           the list without reading the rows themselves. */
-        depthMark(place),
-        /* Under everything else, full width, in the reading face rather than
-           the mono the rest of the row uses: it is a sentence somebody wrote,
-           not a piece of metadata, and it should look like one. */
-        said ? el('span', { className: 'list-said', textContent: said }) : null
-      ]);
-      row.addEventListener('click', function () { selectPlace(place.id, { fly: true }); });
-      return el('li', {}, [row]);
-    }
-
-    /* A place I have never filmed, in the same shape as one I have.
-
-       It used to be a plainer row — the name, the address, and Google's
-       description on a line of its own underneath — on the argument that the
-       badges a row of mine carries are claims about a write-up that does not
-       exist. True of the depth mark, the discount and the save count, which
-       it still does not get. But drawn beside a row of mine it read as a
-       different kind of thing rather than a different place, and an answer
-       that mixes the two rolls needs them to read as one list. So it takes
-       the row's shape: the gauge and the types in the same slots, and in the
-       slot where a row of mine says how much there is to look at, a mark
-       saying whose description this is, with Google's score on it. The score
-       travels only with Google's name in front of it, here as everywhere —
-       see the note above venueEntry() in functions/api/_lib.js — and the
-       card still draws the full "According to Google" line.
-
-       A place off nobody's export — added by hand to a list — has no gauge,
-       no types and no score, and keeps the plainer row: the address is the
-       whole of what is known about it. */
-    function listOnlyRow(place, said) {
-      var kinds = (place.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
-      var described = !!place.google && !!(kinds || place.price || place.rating);
-
-      var row = el('button', {
-        type: 'button',
-        className: 'list-row' + (described ? '' : ' is-from-list'),
-        'aria-label': t('openPlace', { name: place.name }) + ', ' + standInNote() +
-          (place.rating ? ', ' + t('googleSays') + ' ' + scoreMark(place).textContent : '')
-      }, [
-        el('span', { className: 'list-name', textContent: place.name }),
-        el('span', { className: 'list-sub' }, described ? [
-          place.price ? priceGauge(place.price) : null,
-          el('span', { className: 'list-types', textContent: kinds })
-        ] : [
-          el('span', { className: 'list-types', textContent: place.address || '' })
-        ]),
-        described ? googleMark(place) : null,
-        said ? el('span', { className: 'list-said', textContent: said }) : null
-      ]);
-      row.addEventListener('click', function () { selectPlace(place.id, { fly: true }); });
-      return el('li', {}, [row]);
-    }
-
     /* Each group carries its own count, so the number always sits next to the
        list it is counting rather than under a panel title, where it read as a
        claim about the whole map.
@@ -4986,7 +5047,7 @@
       }
       dom.listBody.appendChild(head);
       var ul = el('ul', { className: 'place-list' + (className ? ' ' + className : '') });
-      rows.forEach(function (place) { ul.appendChild(listRow(place)); });
+      rows.forEach(function (place) { ul.appendChild(listRow(place, reading ? listSay(place.id) : '')); });
       dom.listBody.appendChild(ul);
     }
 
@@ -5015,7 +5076,7 @@
     if (reading) {
       dom.listBody.appendChild(listCredit(places.length));
       var ul = el('ul', { className: 'place-list is-list' });
-      places.forEach(function (place) { ul.appendChild(listRow(place)); });
+      places.forEach(function (place) { ul.appendChild(listRow(place, reading ? listSay(place.id) : '')); });
       dom.listBody.appendChild(ul);
       return;
     }
@@ -5024,35 +5085,6 @@
        true and useless: this is the one list on the site whose point is whose
        it is, not what order it came out in. */
     section(everything ? 'listTitle' : mine ? 'listSaved' : 'listAlphabet', places);
-  }
-
-  /* The heading over an answer: the sentence the model wrote, or my own where
-     the local reader answered and there is none, with the count beside it.
-
-     It is the second heading in this panel that is not a data/ui.json string,
-     and for the same reason listCredit() is the first: it is not the site
-     talking. It takes the focus and labels the panel because in this state it
-     is the first group heading — and a sentence written somewhere else is set
-     with textContent, never as markup. */
-  function answerHead(n) {
-    var count = n === 1 ? t('listCountOne') : t('listCount', { n: n });
-    var say = state.answer.say || t('askHere');
-
-    return el('div', { className: 'list-credit is-answer' }, [
-      el('h2', {
-        className: 'list-label is-credit',
-        id: 'panel-list-title',
-        tabIndex: -1,
-        'aria-label': say + ', ' + count
-      }, [
-        el('span', { className: 'list-group', textContent: say }),
-        el('span', { className: 'list-label-n eyebrow', textContent: count })
-      ]),
-      /* What was typed, under the answer to it. An answer that has scrolled a
-         little stops saying which question it belongs to, and the field it was
-         typed into is above the fold by then. */
-      el('p', { className: 'ask-asked mono', textContent: state.answer.q })
-    ]);
   }
 
   /* The heading over somebody else's list: their title, their byline, the
@@ -6421,10 +6453,8 @@
 
     dom.askForm.addEventListener('submit', function (ev) {
       ev.preventDefault();
-      /* The field keeps what was typed while the answer stands, so "cheap
-         ramen" can be edited into "cheap ramen, open now" rather than typed
-         again. Blurring puts the phone's keyboard away over the answer that
-         is about to be drawn under it. */
+      /* Blurring puts the phone's keyboard away over the answer that is
+         about to be drawn under it. */
       dom.askInput.blur();
       askSubmit();
     });
@@ -6816,10 +6846,12 @@
       listBody: $('list-body'),
       search: $('list-search'),
       searchClear: $('search-clear'),
+      ask: $('panel-ask'),
       askForm: $('ask-form'),
       askInput: $('ask-input'),
       askGo: $('ask-go'),
       askScope: $('ask-scope'),
+      askThread: $('ask-thread'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
       stories: $('stories'),

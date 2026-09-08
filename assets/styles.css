@@ -2098,18 +2098,29 @@ body.panel-detail .panel {
    the list offers, not the thing the panel is about. The magnifier and the
    clear button are laid over the input rather than beside it, so the text
    starts and ends where the row names do. */
-/* The chat box, above the search and deliberately unlike it.
+/* The chat: a title, the field, the switch, and the thread under them.
  *
- * The search narrows as you type and never needs pressing; this one is a
- * question you finish writing and send, so it has a button on it and the
- * accent on its edge. Two fields stacked only work if you can tell at a
- * glance which is which, and the button is that glance.
- *
- * Not sticky, unlike the search under it. Only one thing can hold the top of
- * a scrolling panel, and the field worth keeping there is the one you use
- * while reading a long list — an answer is three rows and never scrolls. */
+ * The field is a question you finish writing and send, so it has a button on
+ * it and the accent on its edge — it is the one field on this site that does
+ * not narrow as you type. Sticky like the search is in the list panel, for
+ * the same reason: the thread grows under it and the way to ask again should
+ * never scroll off. */
+.ask-title {
+  margin: 10px 0 12px;
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
+.ask-title:focus { outline: none; }
 .ask {
-  margin: 14px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 0 calc(var(--panel-pad) * -1);
+  padding: 0 var(--panel-pad) 10px;
+  background: inherit;
 }
 .ask-field { position: relative; }
 .ask-input {
@@ -2165,9 +2176,10 @@ body.panel-detail .panel {
 }
 .ask-go:disabled { opacity: .45; }
 .ask-go svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-/* A question in the air. The field cannot be typed in and the arrow pulses,
-   which is the whole of the waiting state: a spinner over a panel that still
-   holds the last answer would hide the thing somebody is reading. */
+/* A question in the air: the arrow pulses, and that is the whole of the
+   waiting state. The field stays typeable, and the answer that is already
+   under the question — the local reader's — stays readable; a spinner over
+   either would hide the thing somebody is looking at. */
 .ask.is-asking .ask-go { animation: ask-wait 1s var(--ease) infinite; }
 @keyframes ask-wait { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
@@ -2197,28 +2209,42 @@ body.panel-detail .panel {
 }
 .ask-scope .btn + .btn { border-left: 0; }
 
-/* What was typed, under the answer to it. Mono and muted: it is a quotation
-   of the reader's own words, not the site saying something. */
-.ask-asked {
-  margin: 6px 0 0;
-  font-size: 11px;
-  letter-spacing: .04em;
-  color: var(--muted);
+/* The thread. Each exchange is the question as it was typed, set apart on
+   the right the way a message of your own is in every chat anybody has used,
+   and the answer under it in the reading face with the rows beneath. The
+   bubble is the only one on this site and it is here because it is the one
+   place the reader's own words are printed back at them: it has to be
+   unmistakable which line is theirs and which is the site's. */
+.ask-thread { padding-top: 6px; }
+.ask-turn + .ask-turn {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hairline);
 }
-/* The way back to the whole map, under the answer. An .alt-shaped word rather
-   than a pill: it undoes a mode, the same job "leave this list" does. */
-.ask-again {
-  margin: 14px 0 4px;
-  padding: 0;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .06em;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
+.ask-you {
+  width: max-content;
+  max-width: 88%;
+  margin: 0 0 0 auto;
+  padding: 8px 14px;
+  border-radius: 18px 18px 4px 18px;
+  background: var(--wash);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
-.ask-again:hover { color: var(--accent); }
+.ask-say {
+  margin: 14px 0 2px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+/* The sentence over an answer still on its way is the site thinking out
+   loud, and it fades the way the arrow does so the two read as one state. */
+.ask-turn.is-pending .ask-say { color: var(--muted); }
+/* Under the sentence rather than under a group heading: the sentence is the
+   heading. */
+.ask-thread .place-list { margin-top: 0; }
 
 .search {
   position: sticky;
