@@ -2007,6 +2007,194 @@
     if (back && document.contains(back) && back.focus) back.focus();
   }
 
+  /* ---------- how this works ----------
+   * The introduction, for the asking, and walked rather than read. On
+   * arrival the page says what it is once: the tagline under the mark for a
+   * few seconds, then each pill on the rail wearing its label for four. A
+   * visitor who landed on a place, or was looking at the pins, gets a map
+   * that never introduced itself, and a card of prose over it would be the
+   * introduction as a document. This is it as a person: a big cursor sets
+   * off from the button that was pressed and glides to each thing in turn,
+   * a ring settles round it, and the mouth says what it is from a bubble
+   * beside it. Then the next.
+   *
+   * Every step points at something real on the page as it stands, which is
+   * why the steps are functions and not co-ordinates: the pin is whichever
+   * pin is nearest the middle of the screen, the filters are the row on a
+   * desktop and the Filters button on a phone, and the two steps about
+   * things that may not be there — an account when /api/account never
+   * answered, the discount chip when nothing is on — are left out rather
+   * than pointed at nothing.
+   */
+  var TOUR_STEPS = [
+    { key: 'explainLead', lead: true,
+      at: function () { return dom.brand.querySelector('.brand-mark'); } },
+    { key: 'explainPin', at: nearestPin },
+    { key: 'explainChips',
+      at: function () { return isNarrow() ? dom.btnFilters : dom.filters; } },
+    { key: 'explainAsk', at: function () { return dom.btnRandom; },
+      pills: function () { return [dom.btnRandom, dom.btnAsk]; } },
+    { key: 'explainSave', at: function () { return dom.btnAccount; },
+      when: function () { return !dom.btnAccount.hidden; },
+      pills: function () { return [dom.btnAccount]; } },
+    /* Second in the row, after All: renderFilters draws the discount chip
+       ahead of the types. On a phone the row is folded behind Filters. */
+    { key: 'explainDiscount', when: anyLiveDeal,
+      at: function () { return isNarrow() ? dom.btnFilters : dom.filters.children[1]; } }
+  ];
+  /* The steps this open is taking, which of them is up (-1 when the tour is
+     closed), the timer for the cursor's press on arrival, and the pills
+     holding their label open for the step. */
+  var tour = { steps: [], i: -1, press: null, lit: [] };
+
+  /* The pin nearest the middle of the screen, or null when none is on it —
+     zoomed out to the whole of Estonia, say — and the bubble then sits in
+     the middle with nothing to point at. */
+  function nearestPin() {
+    var pins = dom.map.querySelectorAll('.leaflet-marker-icon');
+    var cx = window.innerWidth / 2;
+    var cy = window.innerHeight / 2;
+    var best = null;
+    var bestD = Infinity;
+    for (var i = 0; i < pins.length; i++) {
+      var r = pins[i].getBoundingClientRect();
+      if (!r.width || r.right < 0 || r.bottom < 0 ||
+          r.left > window.innerWidth || r.top > window.innerHeight) continue;
+      var dx = r.left + r.width / 2 - cx;
+      var dy = r.top + r.height / 2 - cy;
+      if (dx * dx + dy * dy < bestD) { bestD = dx * dx + dy * dy; best = pins[i]; }
+    }
+    return best;
+  }
+
+  function openExplain() {
+    if (!dom.tour || tour.i >= 0) return;
+    trackEvent('explain_open');
+    /* Over the map, not over a sheet: the walk points at the pins and the
+       rail, and on a phone a sheet covers the one and lays the other along
+       its top edge. And not with the rail mid-cascade, which would be two
+       introductions talking at once. */
+    if (dom.panel.classList.contains('is-open')) closePanel();
+    closeHints();
+    tour.steps = [];
+    for (var k = 0; k < TOUR_STEPS.length; k++) {
+      if (!TOUR_STEPS[k].when || TOUR_STEPS[k].when()) tour.steps.push(TOUR_STEPS[k]);
+    }
+    state.lastFocus = document.activeElement;
+    dom.tour.hidden = false;
+    /* The cursor sets off from the button that was pressed, so it is seen
+       to leave somewhere rather than to appear, and the first step is placed
+       without a slide from wherever the last open left the pieces. */
+    dom.tour.classList.add('no-move');
+    var from = dom.btnExplain.getBoundingClientRect();
+    moveCursor(from.left + from.width / 2, from.top + from.height / 2);
+    /* The reflow is what makes the jump a jump: without it the browser
+       coalesces the two transforms into one transition. */
+    void dom.tour.offsetWidth;
+    dom.tour.classList.remove('no-move');
+    window.addEventListener('resize', placeTourStep);
+    showStep(0);
+  }
+
+  function closeExplain() {
+    if (tour.i < 0) return;
+    tour.i = -1;
+    litPills([]);
+    clearTimeout(tour.press);
+    dom.tourCursor.classList.remove('is-click');
+    dom.tour.hidden = true;
+    window.removeEventListener('resize', placeTourStep);
+    var back = state.lastFocus;
+    state.lastFocus = null;
+    if (back && document.contains(back) && back.focus) back.focus();
+  }
+
+  /* Past the last step is the way out. */
+  function showStep(i) {
+    if (i >= tour.steps.length) { closeExplain(); return; }
+    tour.i = i;
+    var step = tour.steps[i];
+    litPills(step.pills ? step.pills() : []);
+    dom.tourSay.textContent = t(step.key);
+    dom.tourSay.classList.toggle('is-lead', !!step.lead);
+    var last = i === tour.steps.length - 1;
+    dom.tourNext.textContent = t(last ? 'explainClose' : 'explainNext');
+    dom.tourSkip.hidden = last;
+    clear(dom.tourDots);
+    for (var d = 0; d < tour.steps.length; d++) {
+      dom.tourDots.appendChild(el('i', { className: d === i ? 'is-on' : '' }));
+    }
+    placeTourStep();
+    dom.tourNext.focus();
+  }
+
+  /* On a phone a pill is a disc until it opens its label; the ones a step is
+     about wear theirs for as long as the step is up. */
+  function litPills(pills) {
+    for (var i = 0; i < tour.lit.length; i++) tour.lit[i].classList.remove('hint-open');
+    tour.lit = pills;
+    for (var j = 0; j < pills.length; j++) pills[j].classList.add('hint-open');
+  }
+
+  /* The tip of the cursor goes to x,y. The press on arrival is timed to the
+     slide in the stylesheet, and cancelled if the cursor is sent on again
+     before it lands. */
+  function moveCursor(x, y) {
+    clearTimeout(tour.press);
+    dom.tourCursor.classList.remove('is-click');
+    dom.tourCursor.style.transform = 'translate(' + Math.round(x - 16) + 'px,' + Math.round(y - 6) + 'px)';
+    tour.press = setTimeout(function () { dom.tourCursor.classList.add('is-click'); }, 800);
+  }
+
+  /* Where the three pieces go for the step that is up: the ring round the
+     target, the bubble under it when there is room and over it when there is
+     not, and the cursor's tip a little inside its lower right, where it
+     covers the least of it. On resize as well as on each step, because the
+     target has moved. A target that has gone — the pin scrolled off, the
+     filters folded away — leaves the bubble in the middle with no ring. */
+  function placeTourStep() {
+    if (tour.i < 0) return;
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var target = tour.steps[tour.i].at();
+    var r = target ? target.getBoundingClientRect() : null;
+    if (r && (!r.width || r.bottom < 0 || r.top > vh)) r = null;
+    var ring = dom.tourRing;
+    var bubble = dom.tourBubble;
+    var bw = bubble.offsetWidth;
+    var bh = bubble.offsetHeight;
+    var bx, by;
+    if (r) {
+      /* Clipped to the screen: the chip row runs off the right edge, and the
+         ring should not go with it. */
+      var left = Math.max(r.left, 8);
+      var right = Math.min(r.right, vw - 8);
+      var pad = 5;
+      ring.hidden = false;
+      ring.style.width = Math.round(right - left + pad * 2) + 'px';
+      ring.style.height = Math.round(r.height + pad * 2) + 'px';
+      ring.style.transform = 'translate(' + Math.round(left - pad) + 'px,' + Math.round(r.top - pad) + 'px)';
+      /* Beside, to the right, for a target down the left edge with room
+         for it — a pill on the rail, whose bubble put under it would cover
+         the pills under it. Otherwise under, then over, then wherever it
+         fits. The 34px under is the face's overhang plus a gap. */
+      var beside = right < vw / 3 && right + 16 + bw <= vw - 12;
+      if (beside) by = Math.min(Math.max(30, r.top + r.height / 2 - bh / 2), vh - bh - 12);
+      else if (r.bottom + 34 + bh <= vh - 12) by = r.bottom + 34;
+      else if (r.top - 14 - bh >= 30) by = r.top - 14 - bh;
+      else by = Math.min(Math.max(30, r.top + r.height / 2 - bh / 2), vh - bh - 12);
+      bx = beside ? right + 16 : (left + right) / 2 - bw / 2;
+      bx = Math.min(Math.max(12, bx), vw - bw - 12);
+      moveCursor(Math.min(left + (right - left) * .6, right - 8), r.top + r.height * .62);
+    } else {
+      ring.hidden = true;
+      bx = (vw - bw) / 2;
+      by = (vh - bh) / 2;
+      moveCursor(bx + bw - 44, by - 8);
+    }
+    bubble.style.transform = 'translate(' + Math.round(bx) + 'px,' + Math.round(by) + 'px)';
+  }
+
   function accountField(id, labelKey, type, opts) {
     opts = opts || {};
     return el('label', { className: 'ac-field' }, [
@@ -6634,6 +6822,15 @@
     dom.accountScrim.addEventListener('click', function (ev) {
       if (ev.target === dom.accountScrim) closeAccount();
     });
+    dom.btnExplain.addEventListener('click', openExplain);
+    dom.tourNext.addEventListener('click', function () { showStep(tour.i + 1); });
+    dom.tourSkip.addEventListener('click', closeExplain);
+    /* A tap anywhere that is not the bubble is Next. The layer is there so
+       the thing being pointed at cannot be pressed mid-sentence, not to make
+       somebody find a button the size of a word on a phone. */
+    dom.tour.addEventListener('click', function (ev) {
+      if (ev.target === dom.tour) showStep(tour.i + 1);
+    });
     wireSheet();
     wireKeyboard();
 
@@ -6674,6 +6871,7 @@
         /* Ahead of the lightbox: the account sheet stands over everything, so
            it is the thing Escape means when it is open. */
         if (!dom.accountScrim.hidden) { closeAccount(); return; }
+        if (tour.i >= 0) { closeExplain(); return; }
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
         if (isNarrow() && filterMenuOpen()) {
@@ -6989,6 +7187,15 @@
       askThread: $('ask-thread'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
+      btnExplain: $('btn-explain'),
+      tour: $('tour'),
+      tourRing: $('tour-ring'),
+      tourCursor: $('tour-cursor'),
+      tourBubble: $('tour-bubble'),
+      tourSay: $('tour-say'),
+      tourNext: $('tour-next'),
+      tourSkip: $('tour-skip'),
+      tourDots: $('tour-dots'),
       stories: $('stories'),
       storyStage: $('story-stage'),
       storyVideo: $('story-video'),
