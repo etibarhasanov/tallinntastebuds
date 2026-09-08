@@ -1418,8 +1418,10 @@ needs anyway. There is no third variable and no second service.
 
 ## The account page
 
-`/account.html`. Your name, the places you saved, the lists you wrote, and the
-two things you can do to an account: change its password, or leave.
+`/account.html`. Your name, three of everybody else's lists, the places you
+saved, the lists you wrote, the ones you kept, the box that makes another —
+and, at the end, the two things you can do to an account: change its password,
+or leave.
 
 It was a menu in the sheet the map opens, and the menu is what went wrong with
 it. A sheet over the map is for something you do and dismiss — sign in, change
@@ -1431,28 +1433,90 @@ all of them.
 
 So the doors became the things. The page names the places rather than offering
 to filter the map by them, and names the lists rather than linking to the page
-that names them. Three cards, and each is what it is called:
+that names them:
 
 ```
-etibar                        your public profile, and the way out
-Places I saved      8 places  a fold: one row a place, newest first
-                              and, outside it, the map
-Your lists           3 lists  a fold: one row a list
-                              and, outside it, Make a list and Public lists
+etibar                          the name, and one line saying what the page is
+Public lists                    three of everybody else's, named, and
+                                Every public list under them
+Places I saved        8 places  a fold: one row a place, newest first
+  See them on the map           outside it, so a long fold cannot bury it
+Your lists             3 lists  a fold: one row a list
+  [ Name a list ] [ Make it ]   outside both folds, one line high
+Lists you kept          1 list  a fold: one row somebody else's
+Your account                    your public profile, the password, the way out
 ```
+
+Five cards, and the fourth holds both folds a list can be in — the ones you
+wrote and the ones you kept — with the box that makes the next one standing
+between them.
+
+### There is one page about you, and this is it
+
+For a while there were two. This page named your lists under your account;
+`/lists.html` named them again, with the box that made a new one and **Lists
+you kept** beside it. Neither page was wrong on its own, and together they were
+a fork: your things were on your account, except the half of them that was
+somewhere else, and each of the two carried a row pointing at the other —
+**Make a list** led from here to a page that led back.
+
+The box is here now, and so are the lists you kept. `/lists.html` no longer has
+an index at all: opened with no list, no person and no directory to draw, it
+replaces itself with this page before it fetches anything, carrying the query
+string so `?lang=` and `?style=` survive the hop. `location.replace` rather
+than an assignment, so the back button goes wherever somebody came from instead
+of to a page that would only send them here again — and it happens in `boot()`
+before the first request, so there is nothing to flash.
+
+What is left in `lists.html` is the three addresses that are about something
+which is not you: one list, one person, and everybody's. See **The three
+addresses** under **Lists**.
+
+Deleting a list ends here too, for the same reason: it used to end on the index
+of your own, and that is this page.
+
+### Everybody else's lists come first
+
+**Public lists** was a row at the foot of the lists card — a name, a line
+saying what was behind it, a chevron — under a fold that could be forty rows
+deep. It was the only way from your own things to anybody else's and it read
+like a footnote to your own.
+
+It is a card of its own now, directly under your name, and it names three real
+lists: the title, how many people kept each one, whose it is, and the first
+three places on it. That is the whole difference between an invitation and a
+label. "Public lists" tells somebody who has never opened one nothing they did
+not already know; *The bakeries worth the walk · kept by 5 people · created by
+kringel · Ferment · Kaerajaan · Rataskaevu 16* tells them whether to press it.
+
+They are the same three rows the foot of every list already draws, off the same
+request and in the same class — `allRow()` on `/lists/public`, `row()` here.
+Two things are deliberately missing. There is no **bookmark** in the corner:
+keeping a list is a gesture for the page built to hand somebody twenty of them,
+and three rows on an account page are an offer of somewhere to go rather than a
+shelf to take things off. And **your own lists are left out**, wherever they
+stand in the order — they are two cards down under **Your lists**, with their
+counts and their private ones, and a page that named the same list twice would
+be the fork this page was built to close. The answer holds twenty and three are
+drawn, which is what leaves the room to take yours out of it first.
+
+The card is not drawn at all when there is nothing in it. A "nothing here yet"
+at the top of somebody's own account is the site apologising for itself on the
+one page that is about them.
 
 ### The columns fold, and the ways on do not
 
 A column of names is what this page is for, and it is also what buried the rest
-of it. Forty saved places and a dozen lists put **Make a list**, **Your public
-profile** and **Public lists** a scroll and a half down the page, under the
-very things they were the way out of.
+of it. Forty saved places and a dozen lists put the box that makes a list and
+every way out a scroll and a half down the page, under the very things they
+were the way out of.
 
 So each column is a `<details>` behind its own title, with the count of what is
 inside it on the line you press, and the ways on sit outside the fold. Signed
-in with both closed, the whole account is one phone screen: your name and the
-two things you can do to it, how many places you kept, how many lists you
-wrote, and every door out in sight without scrolling.
+in with all three closed, the whole account is one phone screen: your name,
+three lists worth opening, how many places you kept, how many lists you wrote,
+how many you kept of other people's, the field that names the next one, and
+every door out in sight without scrolling.
 
 A closed fold is not the menu this page was made out of. A menu row said the
 name of another page; this one says how many of your things are behind it and
@@ -1467,13 +1531,23 @@ state, the keyboard, the word a screen reader says before the title, and
 find-in-page reaching into a closed one are all things the browser already
 does; what is left for the script is remembering the choice.
 
-**Your public profile** moved as part of the same change. It was the middle of
-three rows under Your lists, which was the wrong drawer twice over: it is about
-you rather than about any one list, and down there it sat under the very column
-it is the outside view of. It is a row under your name now. The counts that
-used to be a mono line under that name went the other way, on to the folds,
-where they say what a closed one is holding — printed in both places they were
-the same two numbers twice on one screen.
+**The box that makes a list is the thing that rule was written for.** It stands
+between the two folds, one line high, and neither of them can push it off the
+screen however long they get. It carries the page's one filled button, because
+it is what the page is asking for — see **The design rules**, rule 5. Its
+refusals are drawn above the field and not under the button: nobody looks under
+a button they have already pressed, and `.ac-err` is the same line the account
+sheet uses for the same job.
+
+**Your public profile**, the password and the way out went the other way, to a
+card of their own at the foot. They were three controls under your name, which
+is where a menu puts them and not where anybody wants them: nobody opens this
+page to change a password, and standing them between your name and your things
+made the page read as a settings screen with the saves filed underneath. The
+name is the top of the page; what you can do to the account is the end of it.
+The profile is a `.menu-row` down there rather than a word along the foot,
+because it is a place to go — everything you have published, read the way a
+stranger reads it — and the two beside it are things to do.
 
 ### What is left on the map
 
@@ -1485,9 +1559,10 @@ for this page — and `?account=me`, the old link to the menu, redirects here.
 
 There is still exactly one password form on this site and it is still the map's.
 This page links into it with `?then=/account.html`, the same road `/lists.html`
-has always taken to the sign-in form, and for the same reason: a second copy of
-a password form is a copy that quietly stops matching the API. The step comes
-back here when it is done, because here is where it was pressed.
+took to the sign-in form for as long as it had an index, and for the same
+reason: a second copy of a password form is a copy that quietly stops matching
+the API. The step comes back here when it is done, because here is where it was
+pressed.
 
 ### Signed out is a real state on it
 
@@ -1497,31 +1572,46 @@ of `localStorage`, with the offer of an account above them rather than a wall
 in front of them. The one filled button on the page is that offer, and it is
 the only place the accent is spent — see **The design rules**.
 
+The offer makes two sentences and not one, because this is where `/lists.html`
+sends a stranger now: a save needs no account and a list does, and somebody who
+arrived asking about lists should not have to work out which of the two this
+page is about. Under it, the public lists — the one thing here anybody can
+open without signing in, and the answer to "make an account" being a poor thing
+to say to somebody who has not been shown yet what a list looks like. That
+invitation was the lists page's, and it is made here now because here is where
+the lists page sends them.
+
 Accounts switched off on a deployment is the third state, and it is not an
 empty page either: it says so in one line and draws the saved places anyway,
-because those never needed the database.
+because those never needed the database. Nothing else is drawn — the lists and
+everybody's lists are the database, and there is none.
 
 ### It has no stylesheet of its own
 
-`styles.css` for the tokens, the card, the eyebrow and the four controls;
-`lists.css` for the brand header, the stack and the row a column of things is
-built from. The rows are `.lists-all-card` — the row `/lists/public` draws — and
-not `.lists-index-card`, which leaves 54px along its bottom edge for the map
-pill laid over it. These rows have one destination, so that padding would be a
-hole in a card with nothing standing in it. Its own comment in `lists.css` says
-as much, which is how this page came to use it.
+`styles.css` for the tokens, the card, the eyebrow, the four controls and the
+error line; `lists.css` for the brand header, the stack, the field, the box
+that makes a list and the row a column of things is built from. The rows are
+`.lists-all-card` — the row `/lists/public` draws — and not `.lists-index-card`,
+which leaves 54px along its bottom edge for the map pill laid over it. These
+rows have one destination, so that padding would be a hole in a card with
+nothing standing in it. Its own comment in `lists.css` says as much, which is
+how this page came to use it.
 
 The card is a box and the title inside it is the link, stretched over the whole
-face by `.lists-open`. Nothing on this page needs a second link inside a row —
-that arrangement is there for the directory, where the byline leads to whoever
-wrote the list — but the row is one shape wherever it is drawn.
+face by `.lists-open`. That arrangement is here for the same reason it is on
+the directory: a byline in the line of facts is a door to whoever wrote the
+list, and a link inside a link is not a thing HTML has.
 
 The fold is the one thing this page has cost either sheet: a dozen lines of
 `.lists-fold` in `lists.css` that take the browser's own marker off a
 `<summary>`, lay the title, the count and the chevron along one line, and turn
 the chevron a quarter when it opens. The chevron is `.menu-go`, the same mark
 the rows under it wear, so a row that opens another page and a title that opens
-where it stands point the same way at what they do.
+where it stands point the same way at what they do. `.lists-new` grew a margin
+of its own when the box arrived here, for the reason its comment gives: what is
+over it is a `<summary>` when the fold is closed and a column of lists when it
+is open, and neither of those can carry a margin that only means something
+under a form.
 
 That is the whole reason a third stylesheet was not written. A page that needed
 new furniture would be a page that had drifted from the two that were already
@@ -1529,15 +1619,27 @@ here.
 
 ### What it costs to open
 
-Four requests, all at once, and one paint when the last of them lands:
-`data/ui.json` and `data/places.json` off the static side, `/api/account` and
-`/api/lists` off the Functions. The lists answer is asked in the same breath as
-the one that says whether there is anybody to ask about — waiting would be a
-second round trip, and a page that drew twice would draw a card and then move
-it.
+Five requests, all at once, and one paint when the last of them lands:
+`data/ui.json` and `data/places.json` off the static side, `/api/account`,
+`/api/lists` and `/api/lists?all=1` off the Functions. The two list answers are
+asked in the same breath as the one that says whether there is anybody to ask
+about — waiting would be a second round trip, and a page that drew twice would
+draw a card and then move it.
 
-Nothing is cached: both API answers are `no-store` and both are about a
-session. `data/places.json` is 13KB and revalidates like everything else.
+They stay two questions rather than one answer with both halves in it. Your
+lists and everybody's are kept apart all the way down — `functions/api/_lists.js`
+and `functions/api/_mostkept.js` are separate modules for exactly this reason —
+and folding them together here would be the account page's shape deciding the
+API's. It costs one more request and no more database work: the same two
+queries run either way.
+
+The directory's page is the expensive half, at roughly three hundred rows —
+see **Public lists**, where that number is broken down. It is the same request
+the foot of every list already makes, so this page is not a new cost so much as
+one more surface paying a cost the site had already taken on.
+
+Nothing is cached: all three API answers are `no-store` and all three are about
+a session. `data/places.json` is 13KB and revalidates like everything else.
 
 ### The one thing it costs a visitor
 
@@ -1937,17 +2039,22 @@ Nothing about it touches the map. The pins, the write-ups, the filters and the
 and the map's door to them is your own account page, filed under whoever you
 are.
 
-### The five addresses
+### The three addresses
 
 ```
-/lists.html      your own lists, and the ones you kept
 /list/<id>       one list — the address that gets shared
 /lists/public    everybody's, the most kept first, and a field to search them
 /u/<name>        who made it, and everything else they published
 /?list=<id>      the same list on the map, as pins
 ```
 
-One HTML file serves the first four. `/list/<id>`, `/lists/public` and
+There were five. `/lists.html` was the first of them — the index of your own
+lists, with the box that made a new one — and it is `/account.html` now, beside
+the places you saved; the address is still there and replaces itself with that
+page before it draws. See **There is one page about you, and this is it** under
+**The account page** for why the two were one page's worth of thing all along.
+
+One HTML file serves the first three. `/list/<id>`, `/lists/public` and
 `/u/<name>` each go through a Function of their own — `functions/list/[id].js`,
 `functions/lists/public.js`, `functions/u/[name].js` — and each hands back that
 same file with the page's own title and social card written into the head and
@@ -1959,7 +2066,7 @@ head swap, the seeding and the headers — is in `functions/_shell.js`, written
 once because two of those five are the difference between a title somebody
 typed and a title somebody typed being executed.
 
-The last two have sections of their own: see [Public
+The last two of the three have sections of their own: see [Public
 lists](#public-lists) and [Profiles](#profiles).
 
 `/lists/public` was `/lists/kept`, and the old address is a 301 to it —
@@ -1974,36 +2081,34 @@ private.
 ### One door to the lists
 
 Your lists are named on `/account.html`, one row each, behind a fold with the
-count on it, and under that fold the two ways further in — **Make a list** to
-`/lists.html`, and **Public lists** — each as a row of its own, with the line
-under the name saying what is behind it and a chevron saying it opens
-something. They were underlined words along the foot of the card, and that is
-the arrangement design rule 8 was written against: doors a visitor who has
-opened none of them cannot tell apart, each with a target the width of the
-word. `/lists.html` draws its own two the same way, with the same function.
+count on it — and under that fold the box that makes another one, and under
+that the ones you kept. Everybody else's are a card above all of it, three of
+them named rather than promised. That is the whole of the way in, and there is
+nothing else in front of it.
 
-Outside the fold rather than in it, which is the point of the fold: closed, the
-card is its title and those two rows, and neither of them is at the bottom of a
-column of forty. **Your public profile** was the third row here and is now a
-row under your name — see **The account page**.
-
-The map's sheet had three rows for this once — **Your lists**, **Your public
-profile**, **Lists people kept** — and then one, and now none, and each step
-was the same argument getting shorter. A row in a menu is a promise about a
-page, and three promises about the same page is a table of contents; one row
-was honest but still a door standing where the thing itself could stand. The
-account page names the lists, so there is nothing left to promise.
+There used to be more, and every step of this argument has been the same one
+getting shorter. The map's sheet had three rows for lists once — **Your
+lists**, **Your public profile**, **Lists people kept** — and then one, and
+then none, because a row in a menu is a promise about a page and three promises
+about the same page is a table of contents. The account page then carried two
+rows of its own, **Make a list** and **Public lists**, which were the same
+mistake one floor down: **Make a list** promised a page that existed to name
+the lists this card had just named, and **Public lists** was a footnote at the
+bottom of a fold. The first is a text field on this page now and the second is
+a card with three lists in it.
 
 The signed-out cost of having moved everybody's lists off the map's corner is
 unchanged, because it was never about which row: a stranger sees the sign-in
-form and no menu at all, so `/lists/public` is reached from a shared list, from
-`/lists.html`, from a search result, or from a byline — which is what [Public
-lists](#public-lists) is about at more length.
+form and no menu at all. What did change is where they land. `/lists.html` sent
+them to an invitation with a single row on it; it sends them to `/account.html`
+now, where the same invitation stands over three public lists they can open
+without an account — which is what [Public lists](#public-lists) is about at
+more length.
 
 ### Making one
 
-Sign in, open your account, press **Make a list**. Name it; you land in a
-list with three empty places in it, numbered, each of them a row you press to
+Sign in and open your account. The box is on it, between your lists and the
+ones you kept: name a list and you land in it, with three empty places in it, numbered, each of them a row you press to
 open the search. Three is where a list starts: two places is a pair of
 opinions rather than a recommendation. Once the three are filled, **Add
 another place** puts more on, up to twenty.
@@ -2097,8 +2202,8 @@ meant to be forwarded does not always survive.
 
 A list has a bookmark on it, and it is the same mark the map draws on a place,
 saying the same thing: keep this, I am coming back to it. Press it and the list
-lands under **Lists you kept** on `/lists.html`, under your own lists and above
-nothing else. Press it again to let it go.
+lands under **Lists you kept** on `/account.html`, its own fold under the box
+that makes one of your own. Press it again to let it go.
 
 The count beside it says how many other people kept it. It is hidden at zero,
 for the reason a save count is hidden at zero: a "0 kept" under somebody's top
@@ -2196,8 +2301,8 @@ a demotion nobody did anything to deserve.
 is, and that name leads to `/u/<name>` — the rest of what that person has
 published. It is the same door the byline under a list's own title has been
 since profiles were built, and it now stands on every row that draws somebody
-else's list: the directory, the three rows at the foot of a list, and **Lists
-you kept** on `/lists.html`.
+else's list: the directory, the three rows at the foot of a list, the three at
+the top of `/account.html`, and **Lists you kept** under them.
 
 The card is what makes that possible, and it changed shape for it. Every one
 of these rows was a single `<a>` around the title, the facts and the places; a
@@ -2277,9 +2382,12 @@ everybody else, which is most of the traffic this page gets.
 **How anybody gets there.** Four ways, and the first two matter most:
 
 - **The map**, from the button that wears your name: it opens `/account.html`,
-  and the lists card there carries a row straight here. The sheet had a row
-  of its own for this page for a while, and one for a profile beside it; the
-  page has the lists themselves and the rows under them. See [One door to the
+  where three of these lists are named directly under your own name, with
+  **Every public list** under them. It was a row at the foot of the lists card
+  saying "Public lists", under a fold that could be forty rows deep — a
+  footnote to somebody's own things, which is the wrong shape for the one page
+  on this site that is everybody else's. The sheet had a row of its own for
+  this page for a while, and one for a profile beside it. See [One door to the
   lists](#one-door-to-the-lists).
 
   It was a **Lists** control beside **Places** in the top-right corner first,
@@ -2288,7 +2396,7 @@ everybody else, which is most of the traffic this page gets.
   the odd one among them. The cost is worth stating rather than glossing:
   signed out, that sheet is the sign-in form and has no menu at all, so a
   stranger on the map has no route to this page. They arrive from a list
-  somebody sent them, from `/lists.html`, or from a search result — which is
+  somebody sent them, from `/account.html`, or from a search result — which is
   three of the four ways below, and the reason the page is indexed. A byline
   is a fourth route to lists, though not to this page: it leads to one
   person's, and [Profiles](#profiles) is where that goes.
@@ -2296,10 +2404,11 @@ everybody else, which is most of the traffic this page gets.
   of them. This is the surface that should get the most use, and the reason is
   where it is: somebody who has just finished reading a top ten is exactly the
   person who wants another one.
-- **`/lists.html`**, as a row under the box that makes a new list, and again
-  under the signed-out invitation — where "make an account" is a poor answer
-  on its own to somebody who has not been shown yet what a list looks like,
-  and this is the one row there a stranger can actually open.
+- **`/account.html` signed out**, which is where `/lists.html` now sends
+  anybody who has no account: three of these lists under the offer of one,
+  because "make an account" is a poor answer on its own to somebody who has not
+  been shown yet what a list looks like, and these are the one thing on that
+  page a stranger can actually open.
 - **Search.** The page is indexed and is in `sitemap.xml`, and it is the only
   thing that links the lists to each other. Public lists have been indexable
   for a while; each one was an island until this.
@@ -2466,11 +2575,11 @@ So the one thing you must have before you can make a list is an account, and
 making one is still two fields and no email.
 
 There is exactly one sign-in form on this site and it is the one on the map.
-The lists page does not carry a second copy; it links to that one and names
-where to come back to:
+Neither the account page nor the lists page carries a second copy; each links
+to that one and names where to come back to:
 
 ```
-/?account=up&then=/lists.html
+/?account=up&then=/account.html
 ```
 
 `?account=` opens the account sheet on a view — `in`, `up` or `password` — and
@@ -2777,8 +2886,11 @@ the drag and the save — is appended rather than left to collide.
 | places before a list is listed on `/lists/public` | 3 |
 
 Most of them are about somebody with a script rather than somebody with
-opinions. They are in `functions/api/lists.js`, and the page restates the
+opinions. They are in `functions/api/lists.js`, and the pages restate the
 lengths so a field stops you at the keystroke rather than at the round trip.
+The title's 60 is restated twice, because a list is named in two places now:
+`assets/lists.js` where it is renamed, and `assets/account.js` where it is
+first given a name. Change one, change all three.
 
 The last one is the only floor among them, and it is in
 `functions/api/_mostkept.js` beside the page it governs, restated from the
@@ -2832,9 +2944,11 @@ the crawler that builds the preview card has to fetch the page to read its
 `og:` tags, and a `Disallow` line would stop it fetching at all — every shared
 list would arrive as a bare blue link.
 
-`/lists.html` stays `noindex`, and `/account.html` is `noindex, nofollow` and
-disallowed in `robots.txt` besides. Both are one session's own and neither has
-anything on it for somebody who is not signed in.
+`/lists.html` stays `noindex` — it draws nothing of its own any more and
+replaces itself with `/account.html`, which is `noindex, nofollow` and
+disallowed in `robots.txt` besides. That page is one session's own, and what a
+stranger who lands on it sees is an invitation rather than anything worth
+indexing.
 
 If the trade stops being the right one it is one line in
 `functions/list/[id].js`, where the header is chosen per list.
@@ -2891,7 +3005,7 @@ second boot.
 ### What is on one
 
 The public lists somebody has made, newest edit first, each with how many
-places are on it and how many people kept it — the same row `/lists.html`
+places are on it and how many people kept it — the same row `/account.html`
 draws for your own, which is what `listRow()` in `assets/lists.js` is for. The
 year they turned up. And one number over the lot: **how many times, in all,
 other people have kept these lists.**
@@ -2911,7 +3025,7 @@ printing. That is the test it was built to pass.
 The page shows the same thing to everybody. Your own profile is not your own
 lists with the private ones added back — it is what a stranger sees, which is
 the only thing a profile is useful for knowing. The private half is one link
-away on `/lists.html`, which is where the editing lives anyway, and your own
+away on `/account.html`, where every list you wrote is named, and your own
 profile draws that link.
 
 ### The number, and what it is not
@@ -3779,12 +3893,14 @@ functions/lists/public.js  /lists/public — everybody's, most kept first
 functions/lists/kept.js    /lists/kept — a 301 to the address above, which
                            this page had before it was renamed
 functions/u/[name].js      /u/<name> — the page a byline leads to
-lists.html                 your lists, the ones you kept, the one a stranger
-                           reads, everybody's, and whoever wrote one
-assets/lists.js            all five of those; no map, no Leaflet
+lists.html                 the one a stranger reads, everybody's, and whoever
+                           wrote one; the address itself sends you to the page
+                           below
+assets/lists.js            all three of those; no map, no Leaflet
 assets/lists.css           what a list page has and the map does not, and the
                            furniture the account page is built from too
-account.html               your saved places and your lists, behind your name
+account.html               your name, everybody else's lists, your saved
+                           places, your lists and the ones you kept
 assets/account.js          all three of its states; no stylesheet of its own
 google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex
@@ -3841,9 +3957,9 @@ address bar, because each of them says what the page currently is.
 The two that do not stay are doors rather than states, and they take themselves
 back off on the way in. `?story=kokomo-brunch` opens a story rather than a
 place — a link copied later should not reopen a video that has since gone.
-`?account=up&then=/lists.html` opens the account sheet on a view and says where
-to put somebody once they are signed in; it is how the lists page borrows the
-map's sign-in form, and leaving it on would reopen the sign-up sheet for
+`?account=up&then=/account.html` opens the account sheet on a view and says
+where to put somebody once they are signed in; it is how the account page
+borrows the map's sign-in form, and leaving it on would reopen the sign-up sheet for
 whoever the link was sent to. See **Lists**.
 
 ---
@@ -4568,8 +4684,8 @@ needed it goes in the same block, with the sentence saying what the other four
 could not do.
 
 One pressable thing on the site is none of the four, and it is not a fifth: a
-card's own title, on the two cards that fold — the saved places and the lists
-on `/account.html`. It is a `<summary>`, and what it is made of was all here
+card's own title, on the three that fold — the saved places, your lists and
+the ones you kept, all on `/account.html`. It is a `<summary>`, and what it is made of was all here
 already, the title, the count and the `.menu-go` chevron. A control takes you
 somewhere or changes something; this one opens the card it is the title of. It
 lives with the card in `lists.css` rather than in this block — see **The

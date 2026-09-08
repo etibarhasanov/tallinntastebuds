@@ -104,7 +104,8 @@ database in this repository; D1 Time Travel's 30 days is the only recovery.
 
 **Caps live in two places** and the server is the one that binds. `MAX_TITLE
 60`, `MAX_INTRO 200`, `MAX_SAY 280`, `MAX_ITEMS 20` in `lists.js` are restated
-at `assets/lists.js:54-57`; `MAX_NAME 80` and `MAX_ADDRESS 120` as literal
+in `assets/lists.js`, and `MAX_TITLE` a third time in `assets/account.js`,
+which carries the box that names a new list; `MAX_NAME 80` and `MAX_ADDRESS 120` as literal
 `maxlength`s at lines 1933 and 1942; the username's 3–24 in `account.js` as a
 `maxlength` in `app.js`. Change one, change the other, and the README's table
 under **The caps**.
