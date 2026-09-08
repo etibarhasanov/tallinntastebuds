@@ -3135,11 +3135,12 @@
 
   /* ------------------------------------------------------------ rail hints
    * On a phone the rail is a column of icons: a head and shoulders, a die, a
-   * speech bubble, a play triangle, a coloured dot and a crosshair, because a
-   * label wide enough to read is a label wide enough to cover the map. Which
-   * left them explaining nothing — a phone has no hover, so the title that
-   * carries the meaning on a desktop is never read out loud, and a die over a
-   * map is not self-evident to anybody who has not seen this page before.
+   * speech bubble, a play triangle, a coloured dot, a crosshair and a question
+   * mark, because a label wide enough to read is a label wide enough to cover
+   * the map. Which left them explaining nothing — a phone has no hover, so
+   * the title that carries the meaning on a desktop is never read out loud,
+   * and a die over a map is not self-evident to anybody who has not seen this
+   * page before.
    *
    * So they say what they are on arrival — and again in the new language the
    * moment one is picked — and then stop saying it. They open in the order
@@ -3154,7 +3155,8 @@
    */
   var HINT_MS = 4200;
   /* Top to bottom, which is the order they open in. */
-  var HINT_KEYS = ['account', 'random', 'ask', 'radio', 'style', 'locate'];
+  var HINT_KEYS = ['account', 'random', 'ask', 'radio', 'style', 'locate',
+                   'explain'];
   var hintTimers = {};
 
   /* Before any of them, the sentence. On a desktop it is printed in the card
@@ -3171,7 +3173,10 @@
   /* The rail follows it rather than racing it. By the time the first pill
      opens the sentence has been up for the best part of a second, and the
      last one collapses just before the sentence does, so the corner empties
-     in the order it filled. */
+     in the order it filled. Seven pills, 300ms apart and held for 4.2s each,
+     put that last collapse at 7.25s against the sentence's 7.86s: there is
+     room on the rail for two more buttons at these numbers and not a third,
+     after which the rail is still talking over a sentence that has gone. */
   var RAIL_IN = 1150;
   var brandInTimer = null;
   var brandOutTimer = null;
@@ -3183,11 +3188,11 @@
   /* The button at the head of the rail is the one that is not in the markup:
      it waits on /api/account. So the introduction waits on it too, rather
      than starting without it and letting the account catch up out of turn —
-     a pill that opens after the five below it have opened, and closes before
-     they do, reads as a sixth thing rather than as the first, and on a
+     a pill that opens after the six below it have opened, and closes before
+     they do, reads as a seventh thing rather than as the first, and on a
      fast answer it can be up and gone before the eye has got down the rail.
      The wait is short and it is capped: a slow endpoint, an unbound database
-     or no Function at all must not cost the other five their labels, so
+     or no Function at all must not cost the other six their labels, so
      after RAIL_WAIT_MS the rail goes ahead without it and paintAccountButton
      catches it up as before. */
   var RAIL_WAIT_MS = 1400;
@@ -3204,6 +3209,7 @@
     if (key === 'radio') return dom.btnRadio;
     if (key === 'style') return dom.styles && dom.styles.querySelector('.rail-btn');
     if (key === 'locate') return dom.btnLocate;
+    if (key === 'explain') return dom.btnExplain;
     return dom.btnRandom;
   }
 
