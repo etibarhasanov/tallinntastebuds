@@ -170,10 +170,14 @@ is small — the small ones are the ones that ship broken.
    hand after it lands — a schema to apply, a database to load, a staff link
    to send. There is no template.
 5. **CI** runs `node tools/validate.mjs` and `node tools/qrperf.mjs --check`
-   on the push and on the PR, and the Cloudflare workflow deploys the branch
-   as a preview under `*.tallinntastebuds.pages.dev` against the preview
-   database. Red CI is yours to fix before anything else happens; a preview
-   URL is where a reviewer looks.
+   on the push and on the PR. Red CI is yours to fix before anything else
+   happens. The `cloudflare` workflow does **not** run on a PR by itself —
+   only on the default branch and by hand — so a preview under
+   `*.tallinntastebuds.pages.dev`, against the preview database, comes from
+   running that workflow by hand from the branch (Actions → cloudflare → Run
+   workflow), or from Cloudflare's own Git connection where that is what the
+   project uses. Get one for anything with a visible effect; it is where a
+   reviewer looks.
 6. **Merge with Rebase and merge**, never a merge commit, never a squash of
    commits that were written to stand alone. Delete the branch after.
 7. A push to the default branch is the deploy. A story goes live when its
