@@ -134,7 +134,7 @@ categories renamed, patterns dropped — and that both databases were loaded.
    the SQL diff before going on.
 3. Load the SQL into **preview** from the branch —
    `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`
-   — then run the `cloudflare` workflow by hand from the branch and open the
+   — then push the branch, which deploys a preview of it, and open that
    preview's `/google` and the list picker to see the rows arrive, and RØST
    still there.
 4. One commit for the export and its SQL; a second for any `KITCHENS`

@@ -151,10 +151,12 @@ story whose window has ended:
   note, and is tried again next hour. Nothing is ever overwritten.
 
 It commits as `github-actions[bot]` with the subject the tool prints ("File
-kalve-kadriorg/02.jpg", "Take down laboratooriumi-23-2026-09-03") and asks
-`cloudflare.yml` for a deploy by name, because a push made with the built-in
-token does not start workflows. `node tools/stories.mjs --tick --dry-run`
-shows what the next tick would do.
+kalve-kadriorg/02.jpg", "Take down laboratooriumi-23-2026-09-03") and pushes.
+The push is the deploy — Cloudflare's Git connection sees it like any other;
+what a push made with the built-in token does not start is another Actions
+workflow, so `validate.yml` does not run on a tick's commit, which is why the
+tick runs the validator itself before it pushes. `node tools/stories.mjs
+--tick --dry-run` shows what the next tick would do.
 
 To pull one early, set `live` to `false` or remove the entry; either is
 immediate for everybody. Once a switched-off video has been gone a while,
