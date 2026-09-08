@@ -1922,9 +1922,14 @@ private.
 
 ### One door to the lists
 
-Your lists are named on `/account.html`, one row each, and that card's foot
-carries the three ways further in: **Make a list** to `/lists.html`, **Your
-public profile**, and **Public lists**.
+Your lists are named on `/account.html`, one row each, and under them the
+three ways further in — **Make a list** to `/lists.html`, **Your public
+profile**, and **Public lists** — each as a row of its own, with the line under
+the name saying what is behind it and a chevron saying it opens something.
+They were three underlined words along the foot of the card, and that is the
+arrangement design rule 8 was written against: three doors a visitor who has
+opened none of them cannot tell apart, each with a target the width of the
+word. `/lists.html` draws its own two the same way, with the same function.
 
 The map's sheet had three rows for this once — **Your lists**, **Your public
 profile**, **Lists people kept** — and then one, and now none, and each step
@@ -2201,9 +2206,9 @@ everybody else, which is most of the traffic this page gets.
 **How anybody gets there.** Four ways, and the first two matter most:
 
 - **The map**, from the button that wears your name: it opens `/account.html`,
-  and the foot of the lists card there links straight here. The sheet had a row
+  and the lists card there carries a row straight here. The sheet had a row
   of its own for this page for a while, and one for a profile beside it; the
-  page has the lists themselves and the links under them. See [One door to the
+  page has the lists themselves and the rows under them. See [One door to the
   lists](#one-door-to-the-lists).
 
   It was a **Lists** control beside **Places** in the top-right corner first,
@@ -2220,9 +2225,10 @@ everybody else, which is most of the traffic this page gets.
   of them. This is the surface that should get the most use, and the reason is
   where it is: somebody who has just finished reading a top ten is exactly the
   person who wants another one.
-- **`/lists.html`**, under the box that makes a new list, and again in the
-  signed-out invitation — where "make an account" is a poor answer on its own
-  to somebody who has not been shown yet what a list looks like.
+- **`/lists.html`**, as a row under the box that makes a new list, and again
+  under the signed-out invitation — where "make an account" is a poor answer
+  on its own to somebody who has not been shown yet what a list looks like,
+  and this is the one row there a stranger can actually open.
 - **Search.** The page is indexed and is in `sitemap.xml`, and it is the only
   thing that links the lists to each other. Public lists have been indexable
   for a while; each one was an island until this.
@@ -2872,10 +2878,10 @@ made.
 
 - **The byline under a shared list**, which is the whole point — the phrase is
   the link, on the list's own page and in the panel the map draws for a list.
-- **Your own account page**, under your lists, beside **Make a list** and the
-  way through to everybody's.
-- **Your own lists page**, under the box that makes a new one, beside the way
-  through to everybody's.
+- **Your own account page**, as a row under your lists, between **Make a
+  list** and the way through to everybody's.
+- **Your own lists page**, as a row under the box that makes a new one, above
+  the way through to everybody's.
 
 ### Indexed, like a public list
 

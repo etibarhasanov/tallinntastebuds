@@ -394,6 +394,9 @@
      gesture said about the other kind of object this site has: keep this. A
      kept list fills; an unkept one is the outline. */
   var ICON_KEEP = '<path d="M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z"/>';
+  /* The chevron on a row that opens something — the same mark the map's
+     account sheet puts on its rows, for the same sentence. */
+  var ICON_GO = '<path d="M9 5l7 7-7 7"/>';
 
   /* Every list opens on the map, which is where places belong: the whole list
      as pins, in the order its owner put them in. One href, built in one
@@ -427,6 +430,30 @@
       href: mapHref(id),
       textContent: t('listsOnMap')
     });
+  }
+
+  /* A way on from a card, as a row: the name, the line under it saying what
+     is behind it, and the chevron. It is .menu-row out of assets/styles.css,
+     the shape the map's account sheet draws its places-to-go in, because
+     that is what these are. They were three underlined words along the foot
+     of the card, which is the exact thing README's design rule 8 is about —
+     a paragraph that has lost its sentences, with a target the width of the
+     word on a phone — and the rule was written after looking at a sheet that
+     had done the same. */
+  function door(nameKey, whyKey, href) {
+    return el('li', { className: 'menu-item' }, [
+      el('a', { className: 'menu-row', href: href }, [
+        el('span', { className: 'menu-say' }, [
+          el('span', { className: 'menu-name', textContent: t(nameKey) }),
+          el('span', { className: 'menu-why', textContent: t(whyKey) })
+        ]),
+        el('span', {
+          className: 'menu-go',
+          'aria-hidden': 'true',
+          html: '<svg viewBox="0 0 24 24" focusable="false">' + ICON_GO + '</svg>'
+        })
+      ])
+    ]);
   }
 
   /* How many people have this list bookmarked, drawn only once somebody has.
@@ -507,13 +534,15 @@
       heading(t('listsYours')),
       el('p', { className: 'lists-say', textContent: t('listsWhat') }),
       newListForm(),
-      /* Two quiet doors under the box that makes a list, in the order they
-         are about you: your own page as everybody else sees it, and then
-         everybody else's. Both are the quiet half of this card — it is called
-         Your lists, and these are what is around them. */
-      el('p', { className: 'lists-row lists-foot' }, [
-        el('a', { className: 'alt', href: profileHref(state.me), textContent: t('profileYours') }),
-        el('a', { className: 'alt', href: ALL_PATH, textContent: t('listsAllEverything') })
+      /* Two doors under the box that makes a list, in the order they are
+         about you: your own page as everybody else sees it, and then
+         everybody else's. Rows and not links — see door() — because the
+         card is called Your lists and these are the two places that are
+         about them, and a visitor who has never opened either has to be
+         able to tell them apart before pressing one. */
+      el('ul', { className: 'menu' }, [
+        door('profileYours', 'profileYoursWhy', profileHref(state.me)),
+        door('listsAllEverything', 'listsAllWhy', ALL_PATH)
       ])
     ]));
 
@@ -622,12 +651,17 @@
       el('p', { className: 'lists-say', textContent: t('listsNeedAccount') }),
       el('div', { className: 'lists-row' }, [
         el('a', { className: 'go', href: accountHref('up'), textContent: t('accountCreate') }),
-        el('a', { className: 'alt', href: accountHref('in'), textContent: t('accountSignIn') }),
-        /* Signed out this page can show nothing of its own, and asking for an
-           account is a poor answer on its own to somebody who has not been
-           told yet what a list looks like. The directory is that answer: it
-           needs no account and it is full of them. */
-        el('a', { className: 'alt', href: ALL_PATH, textContent: t('listsAllEverything') })
+        el('a', { className: 'alt', href: accountHref('in'), textContent: t('accountSignIn') })
+      ]),
+      /* Signed out this page can show nothing of its own, and asking for an
+         account is a poor answer on its own to somebody who has not been
+         told yet what a list looks like. The directory is that answer: it
+         needs no account and it is full of them. A row of its own under the
+         two account buttons rather than a third word beside them, because it
+         is not about the account and it is the one thing here a stranger can
+         actually open. */
+      el('ul', { className: 'menu' }, [
+        door('listsAllEverything', 'listsAllWhy', ALL_PATH)
       ])
     ]);
   }
