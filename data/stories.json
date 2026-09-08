@@ -32,9 +32,8 @@
   },
   {
     "id": "pohja-konn-2026-09-06",
-    "live": true,
+    "live": false,
     "video": "pohja-konn-2026-09-06.mp4",
-    "poster": "pohja-konn-2026-09-06.jpg",
     "from": "2026-09-06T20:39",
     "caption": {
       "en": "back to chess"
