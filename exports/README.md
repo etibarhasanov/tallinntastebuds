@@ -25,7 +25,7 @@ Rows are sorted best-first: rating descending, then review count, then name.
 |---|---|
 | `name` | whitespace-normalized |
 | `category` | Google's venue label — `Restaurant`, `Cafe`, `Bar`, `Sushi Restaurant`, … 100 distinct |
-| `cuisine` | derived; grouped so it is filterable (`sushi`/`ramen`/`izakaya` → `Japanese`). Blank for 692 rows — see gaps below |
+| `cuisine` | derived; grouped so it is filterable (`sushi`/`ramen`/`izakaya` → `Japanese`). One word per row, off the first Google type that names a kitchen, an exact one anywhere on the row before a family name like `asian` at the front of it. Blank for 692 rows — see gaps below |
 | `rating` | 2.2 – 5.0 |
 | `reviews` | Google review count, 25 – 12,239 |
 | `price` | `$` – `$$$$` |
@@ -98,16 +98,17 @@ thin top end pulls clear: `$$$` 4.53 (30 places), `$$$$` 4.68 (13). Cheap eating
 Tallinn is not a compromise.
 
 **Cuisine leaders by volume, and who over-delivers.** Japanese is the largest
-identifiable cuisine (58), then Pizza (56), American (49), Italian (37),
-Middle Eastern (35). But the standouts are small categories: **Vegan/Vegetarian
-averages 4.86 across 7 places** — the highest of any group by a wide margin —
-followed by Ukrainian (4.62, 5), Thai (4.56, 16) and Barbecue (4.52, 5).
+identifiable cuisine (58), then Pizza (53), Burgers (49), Italian (37), Asian
+(27) and Turkish and Middle Eastern level at 23 each. But the standouts are
+small categories: **Vegan/Vegetarian averages 4.74 across 8 places** — the
+highest of any group — followed by Ukrainian (4.62, 5), Thai (4.58, 15) and
+Seafood (4.58, 6).
 
-**American's weak 4.04 average is entirely a chain artifact.** 25 of the 49
-American-cuisine rows are Hesburger (19 locations, avg 3.66) or McDonald's
-(6, avg 4.05). Strip those two brands and the remaining 24 average 4.33 — in line
-with everything else. Hesburger is the single biggest downward force in the
-dataset; its locations span 3.0 to 4.1 and occupy most of the bottom of the table.
+**Burgers' weak 4.06 average is entirely a chain artifact.** 25 of the 49
+Burgers rows are Hesburger (19 locations, avg 3.66) or McDonald's (6, avg 4.05).
+Strip those two brands and the remaining 24 average 4.37 — in line with
+everything else. Hesburger is the single biggest downward force in the dataset;
+its locations span 3.0 to 4.1 and occupy most of the bottom of the table.
 
 **Review volume tracks footfall, not quality.** McDonald's Viru is the
 second-most-reviewed place in Tallinn (10,389) at 3.8, while Olde Hansa tops the
