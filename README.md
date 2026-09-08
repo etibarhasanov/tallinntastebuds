@@ -1153,8 +1153,8 @@ truth](https://developers.cloudflare.com/pages/functions/wrangler-configuration/
 once it exists, the D1 bindings can no longer be edited in the dashboard: the
 file wins. Each environment's configuration is written by a deployment *of
 that environment*, so the preview side only picks up a change to this file
-once a preview deployment has run with it — open a pull request, or run the
-`cloudflare` workflow by hand from a branch that is not the production branch.
+once a preview deployment has run with it — push a branch that is not the
+production branch, and Cloudflare's Git connection deploys it as one.
 Previews deployed before that still hold the old binding, and the stamp check
 is what stops them writing anywhere they should not.
 
@@ -2851,9 +2851,12 @@ the `OVER` list where `node tools/stories.mjs` keeps mentioning it, and the
 next tick tries again once it is fixed, which is the point: a story quietly
 switched off is a picture quietly not filed.
 
-Then it commits, and asks the Cloudflare workflow to publish, so the site
-catches up within the hour. On an hour with nothing due it touches nothing and
-writes no commit, which is almost every hour.
+Then it commits and pushes, and the push is the deploy: Cloudflare's Git
+connection sees a push from `github-actions[bot]` like any other, so the site
+catches up within the minute. (The rule that a push made with the built-in
+token starts nothing is about Actions workflows, not about apps listening to
+the repository.) On an hour with nothing due it touches nothing and writes no
+commit, which is almost every hour.
 
 You can run the same thing yourself, and look before you leap:
 
@@ -3224,24 +3227,17 @@ databases, and never one** — so anything pressed while checking a change stays
 out of the live counts. Nothing needs enabling on the GitHub side — unlike
 GitHub Pages, Cloudflare authorises itself through your own GitHub account.
 
-### Or deploy without touching the dashboard
-
-`.github/workflows/cloudflare.yml` publishes to Cloudflare Pages from GitHub's
-runners instead, so the only thing you do in Cloudflare is create a token.
-
-1. Cloudflare → **Manage Account → Account API Tokens → Create Token**, using
-   the **Cloudflare Pages — Edit** template.
-2. Copy your **Account ID** from the sidebar of any Cloudflare page.
-3. GitHub → **Settings → Secrets and variables → Actions → New repository
-   secret**, twice: `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
-
-Push, and it deploys. The first run creates the `tallinntastebuds` project;
-later runs reuse it. The token is scoped to Pages, lives only in GitHub's
-secret store, and is never printed. Until both secrets exist the workflow
-passes and does nothing, so it will not sit red while you get round to it.
-
-**Use this or the dashboard Git connection, not both.** Two deploy paths on one
-project race each other and produce out-of-order deployments.
+**This connection is the only deploy path, on purpose.** There used to be a
+second one, a workflow that published from GitHub's runners with a Cloudflare
+API token and account id held as repository secrets. The secrets were never
+created, so on every one of its two-hundred-odd runs it validated, printed a
+notice that the secrets were missing, skipped its publish steps, and went
+green — and its header, its notice and its README section each told the next
+person to go and create them. Two deploy paths on one project would have raced
+each other and produced out-of-order deployments, which the workflow's own
+header warned about, so the workflow went rather than the secrets arriving.
+There is no Cloudflare token anywhere in GitHub, and nothing needs one: a
+push is a deploy, whoever makes it, the hourly story cron's included.
 
 ### Caching
 
@@ -3263,9 +3259,9 @@ its own contents on the end:
 ```
 
 `node tools/stamp.mjs` writes those hashes, `node tools/validate.mjs` fails the
-build on a stale one, and CI runs the validator before every deploy — so a
-changed file always reaches visitors under a URL no browser has ever seen, and
-no browser can answer for it out of its own cache.
+build on a stale one, and CI runs the validator on every push and every pull
+request — so a changed file always reaches visitors under a URL no browser has
+ever seen, and no browser can answer for it out of its own cache.
 
 That is not belt and braces. The pages are not independent: `assets/app.js`
 reads `data/restaurants.json`, so a browser holding yesterday's script against

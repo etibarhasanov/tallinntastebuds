@@ -26,9 +26,8 @@ name: story-media
 on:
   push:
     # The branch the site publishes from, and the name it would have if this
-    # repository is ever renamed to the usual one. Same pair cloudflare.yml
-    # lists, for the same reason: a story posted from a phone lands on the
-    # publishing branch, and this has to run where it lands.
+    # repository is ever renamed to the usual one: a story posted from a phone
+    # lands on the publishing branch, and this has to run where it lands.
     branches:
       - main
       - claude/tallinn-tastebuds-map-nzoqx0
@@ -52,9 +51,6 @@ jobs:
   convert:
     name: Make every story video web-ready
     runs-on: ubuntu-latest
-    outputs:
-      changed: ${{ steps.fix.outputs.changed }}
-      sha: ${{ steps.push.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -90,8 +86,10 @@ jobs:
         if: steps.fix.outputs.changed == 'true'
         run: node tools/validate.mjs
 
+      # The push is the deploy, exactly as in stories.yml: Cloudflare's Git
+      # connection sees the push whoever made it, and only Actions ignores a
+      # push made with GITHUB_TOKEN. Nothing here asks for a deploy by name.
       - name: Commit and push
-        id: push
         if: steps.fix.outputs.changed == 'true'
         # The summary is built out of story ids, which the validator holds to
         # slugs — but it goes through the environment rather than into the
@@ -121,16 +119,3 @@ jobs:
             git fetch origin "$BRANCH" && git rebase "origin/$BRANCH" || git rebase --abort || true
           done
           [ -n "$pushed" ] || { echo "::error::Could not push the conversion. Run this workflow again from the Actions tab."; exit 1; }
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-  # A push made with GITHUB_TOKEN does not start another workflow, so the
-  # deploy is asked for rather than waited for. Nothing runs when nothing
-  # changed, which is every push that already had a web-ready video in it.
-  publish:
-    name: Publish
-    needs: convert
-    if: needs.convert.outputs.changed == 'true' && needs.convert.outputs.sha != ''
-    uses: ./.github/workflows/cloudflare.yml
-    secrets: inherit
-    with:
-      ref: ${{ needs.convert.outputs.sha }}

@@ -66,10 +66,14 @@ this one ever was.
 - **There is no `main`.** The default branch is
   `claude/tallinn-tastebuds-map-nzoqx0`. Branch from it, rebase onto it, land
   back on it.
-- That branch is also the live site.
-  `.github/workflows/cloudflare.yml` names it as `PROD_BRANCH` and deploys it
-  to Cloudflare Pages at tallinntastebuds.ee. Everything else deploys as a
-  preview under `*.tallinntastebuds.pages.dev`, against a separate database.
+- That branch is also the live site. Cloudflare Pages is connected to this
+  repository through its own Git integration, with that branch set as the
+  production branch, and every push to it deploys tallinntastebuds.ee within
+  the minute. Every push to any other branch deploys a preview under
+  `*.tallinntastebuds.pages.dev`, against a separate database. **That
+  connection is the only deploy path.** No workflow in this repository
+  publishes, and there is no Cloudflare token or account id in GitHub's
+  secret store — nothing is missing, so do not ask for one to be added.
 - `.github/workflows/deploy.yml` (GitHub Pages) is manual-only and is **not**
   the live host. Do not reach for it.
 - Work lands through a PR into the default branch — that is how all 100+ of
@@ -171,13 +175,11 @@ is small — the small ones are the ones that ship broken.
    to send. There is no template.
 5. **CI** runs `node tools/validate.mjs` and `node tools/qrperf.mjs --check`
    on the push and on the PR. Red CI is yours to fix before anything else
-   happens. The `cloudflare` workflow does **not** run on a PR by itself —
-   only on the default branch and by hand — so a preview under
-   `*.tallinntastebuds.pages.dev`, against the preview database, comes from
-   running that workflow by hand from the branch (Actions → cloudflare → Run
-   workflow), or from Cloudflare's own Git connection where that is what the
-   project uses. Get one for anything with a visible effect; it is where a
-   reviewer looks.
+   happens. The push itself is what gets a preview: Cloudflare's Git
+   connection deploys every branch it sees, and puts the URL, under
+   `*.tallinntastebuds.pages.dev` and against the preview database, in the
+   PR's checks. There is nothing to run by hand. Look at it for anything with
+   a visible effect; it is where a reviewer looks.
 6. **Merge with Rebase and merge**, never a merge commit, never a squash of
    commits that were written to stand alone. Delete the branch after.
 7. A push to the default branch is the deploy. A story goes live when its

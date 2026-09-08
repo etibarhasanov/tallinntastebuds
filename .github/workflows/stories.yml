@@ -47,9 +47,6 @@ jobs:
   tick:
     name: What the clock says is due
     runs-on: ubuntu-latest
-    outputs:
-      changed: ${{ steps.tick.outputs.changed }}
-      sha: ${{ steps.push.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -74,8 +71,14 @@ jobs:
         if: steps.tick.outputs.changed == 'true'
         run: node tools/validate.mjs
 
+      # The push is the deploy. Cloudflare's Git connection is what publishes
+      # this site, and it listens to the repository's push events, which
+      # GitHub delivers to an installed app whoever made the push. The rule
+      # that a push made with GITHUB_TOKEN starts nothing is about Actions
+      # workflows only — it is how GitHub stops a workflow triggering itself
+      # round and round — so nothing here asks for a deploy by name, and the
+      # site catches up within the minute like it does for any other push.
       - name: Commit and push
-        id: push
         if: steps.tick.outputs.changed == 'true'
         # The summary is built out of story ids and photo filenames, which the
         # validator holds to slugs — but it goes through the environment
@@ -105,16 +108,3 @@ jobs:
             git fetch origin "$BRANCH" && git rebase "origin/$BRANCH" || git rebase --abort || true
           done
           [ -n "$pushed" ] || { echo "::error::Could not push the tick. The next hour will try again."; exit 1; }
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-  # A push made with GITHUB_TOKEN does not start another workflow, so the
-  # deploy is asked for rather than waited for. Nothing runs when nothing
-  # changed, which is almost every hour.
-  publish:
-    name: Publish
-    needs: tick
-    if: needs.tick.outputs.changed == 'true' && needs.tick.outputs.sha != ''
-    uses: ./.github/workflows/cloudflare.yml
-    secrets: inherit
-    with:
-      ref: ${{ needs.tick.outputs.sha }}
