@@ -1328,12 +1328,15 @@ on `/api/account`, and no `CF_ACCOUNT_ID`, `CF_EMAIL_TOKEN` or `MAIL_FROM`. The
 sentence about a lost password was already the truth in this configuration and
 is now the truth in every configuration.
 
-**What it left in the database.** `users.email`, `users.email_verified` and
-the `email_codes` table are out of `db/schema.sql` and still in both deployed
-databases — the file is applied with `IF NOT EXISTS` and so cannot take a
-column away. Nothing reads them. The statements that clear them, and the two
-counts to run first, are in the comment over `users` in `db/schema.sql`; they
-are a hand-run job on a live database and nothing here does it for you.
+**What it left in the database, and what happened to it.** `users.email`,
+`users.email_verified` and the `email_codes` table outlived the code by a
+few hours. `db/schema.sql` could not take them: it is applied with `IF NOT
+EXISTS` throughout, so it can add a table and never remove a column. They
+went by hand — `DROP INDEX` first, because SQLite refuses to drop an indexed
+column, then the two `ALTER TABLE ... DROP COLUMN`s and the `DROP TABLE` —
+against **both** databases, which is the only way a schema change of that
+shape happens here. `users` now has the seven columns the file declares and
+nothing else.
 
 **If it is ever wanted back**, the shape it had is worth knowing: an address
 stored unverified until a code came back, used for nothing but codes somebody
