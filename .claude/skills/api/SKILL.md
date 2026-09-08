@@ -167,8 +167,9 @@ what it costs per request, and what has to be applied by hand and where.
    looked like before and after, what it costs per request, and **what has
    to be applied by hand on landing and to which database** — the schema
    statement, the meta stamp, a load. A `wrangler.toml` change to the
-   preview block only takes effect once a preview has deployed with it,
-   which the PR's own preview deployment does; say that you looked.
+   preview block only takes effect once a preview has deployed with it, so
+   run the `cloudflare` workflow by hand from the branch and say that you
+   looked at what it deployed.
 7. CI green, then **Rebase and merge**, delete the branch, and **apply to
    production** whatever the body said, immediately: the code is live the
    moment the push lands, and a route that expects a column production does

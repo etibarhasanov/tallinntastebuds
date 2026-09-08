@@ -166,8 +166,8 @@ it, and what was driven in a browser to check it.
 5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
 6. Open the PR against the default branch. The body says what was wrong,
    what it is now, the trade-off, which README section moved, and exactly
-   what was driven in a browser and how. Open the preview URL the Cloudflare
-   workflow posts and look at it on a phone.
+   what was driven in a browser and how. Run the `cloudflare` workflow by
+   hand from the branch for a preview URL, and look at it on a phone.
 7. CI green, then **Rebase and merge**, and delete the branch. The stamps
    mean every visitor gets the new files on their next load, no cache to
    wait out.
