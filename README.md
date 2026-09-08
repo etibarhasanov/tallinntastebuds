@@ -552,18 +552,29 @@ unreachable.
 
 ### My map, or the whole city
 
-Under the field is a switch: **My map**, or **All of Tallinn**. It arrives on
-the first, which is the narrower answer and the one this site stands behind:
-being on the map is the verdict, and a chat box suggesting places I have never
-eaten in would be a different site.
+Under the field is a switch: **Tallinn Tastebuds map**, or **All Tallinn**.
+It arrives on the first, which is the narrower answer and the one this site
+stands behind: being on the map is the verdict, and a chat box suggesting
+places I have never eaten in would be a different site.
 
 The second adds Google's eleven hundred — see [Google venues](#google-venues) —
 and it is not a recommendation, and says so. A Google place in an answer is
-drawn as the stand-in a list draws for one: the same "According to Google" line
-with the score and the count behind it, the same card with the hours, the phone
-and the listing, and a note at the top saying I have never been. It wears
-Google's name and none of my words, because the alternative is the site
-borrowing a verdict it has not earned.
+the stand-in a list draws for one, in the same row shape as a place of mine —
+the gauge and the types in the same slots, so the two rolls read as one list —
+with a **Google 4.8** mark in the slot where a row of mine says how much there
+is to look at. The score never travels without Google's name in front of it.
+Opening it gives the card a list's stand-in gets: the full "According to
+Google" line, the hours, the phone, the listing, and a note at the top saying I
+have never been. It wears Google's name and none of my words, because the
+alternative is the site borrowing a verdict it has not earned.
+
+**A question the map cannot answer goes to the city on its own.** Ask for
+bowling on the map and there is no bowling; rather than a shrug, the same
+question is asked again of All Tallinn, the switch moves to say so, and the
+heading over the answer says *Nothing on my map fits, so this is the rest of
+Tallinn* — because three places off Google under *here is where I would go*
+would be the site recommending somewhere it has not been. Only if the city has
+nothing either does the panel say nothing fits, and it says it once.
 
 **Eleven hundred rows do not go into a prompt.** That is thirty thousand
 tokens a question against a free allowance that would then last an afternoon.
@@ -2637,11 +2648,16 @@ differently on purpose:
 - A place **on my map** is not invented at all. It is matched by id to the real
   entry and keeps everything it has — its pin, its write-up, its reel, its
   price, its types, its save mark. The list's sentence is added under it.
-- A place **not on my map** gets a stand-in: a pin, a name, an address, and
-  what the list's owner said. Opening it gives a card that says plainly that it
-  is not on my map and whose list it came off — no write-up, no reel and no
+- A place **not on my map** gets a stand-in: a pin, a name, and what the
+  list's owner said. When it came off the Google export the row takes the
+  same shape as a row of mine — Google's band and kinds in the slots the gauge
+  and the types use, and a **Google 4.8** mark where a row of mine says how
+  much there is to look at — so a list that mixes the two rolls reads as one
+  list; a place added by hand, off nobody's export, shows its address and
+  nothing else. Opening either gives a card that says plainly that it is not
+  on my map and whose list it came off — no write-up, no reel and no
   photographs, because being on the map is the verdict and a list is not a way
-  around it. What it does carry, when the place came off the Google export, is
+  around it. What the card does carry, when the place came off the export, is
   everything Google holds about it, under Google's name: the score, the band,
   the kinds, the phone, the week of opening hours and the way to its listing.
   See **The card for a place I have never eaten at**.
@@ -2796,6 +2812,13 @@ it, every time:
 ```
 According to Google   4.8 from 3,041 reviews   €€€€   Restaurant · Asian
 ```
+
+That is the line on the list's own page and on the map's card. A row on the
+map compresses it into the map row's own shape — the band and the kinds where
+a row of mine has them, and a `Google 4.8` mark on the right, in the pill a
+row of mine uses to say how much there is to look at — so the two kinds of
+row read as one list; the attribution is the mark, and the full line is one
+tap away.
 
 The kinds and the band are turned into the map's own words on the way out, in
 `venueEntry()` in `functions/api/_lib.js`, and neither is stored that way:

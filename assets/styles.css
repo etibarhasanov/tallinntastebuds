@@ -2410,31 +2410,25 @@ body.panel-detail .panel {
   .list-said { grid-column: 1 / -1; }
 }
 
-/* A place on the list that is not on the map: no write-up, no reel, nothing
-   to look at, and the row says so by being plainer rather than by carrying a
-   badge that explains its own absence. The name stays the name; what is
-   missing is the mark on the right, so the row is one column wide.
-
-   Under the address, what Google says the place is — and above the sentence
-   its owner wrote, which is the last word on the row for the same reason it is
-   the last word on the card. A row whose place came off nobody's export draws
-   no such line and leaves the track empty, which costs nothing: the row has no
-   gap between its tracks. */
+/* A place added to a list by hand, off nobody's export: a name and an
+   address and nothing else is known, and the row says so by being plainer
+   rather than by carrying a badge that explains its own absence. The name
+   stays the name; what is missing is the mark on the right, so the row is
+   one column wide. A place off the Google export is not this — it takes the
+   ordinary row's shape with a Google mark in the right-hand slot, see
+   listOnlyRow() in assets/app.js. */
 .list-row.is-from-list {
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
     "name"
-    "sub"
-    "source";
+    "sub";
 }
 .list-row.is-from-list:has(> .list-said) {
   grid-template-areas:
     "name"
     "sub"
-    "source"
     "said";
 }
-.list-row.is-from-list > .place-source { grid-area: source; }
 
 /* The heading over a list: its title, its owner's name, the line they wrote
    under it, and the way through to the list's own page. It replaces the
@@ -2645,6 +2639,18 @@ body.panel-detail .panel {
   color: var(--muted);
 }
 .depth-mark.is-words svg { opacity: .5; }
+
+/* Whose description a row is. The pill a row of mine wears for its depth, in
+   the quiet reading — hairline and muted, the same as "words" — because it is
+   an attribution and not a verdict, and the score beside the word sits in the
+   ink so the number can be read without the pill shouting it. */
+.depth-mark.is-google {
+  border-color: var(--hairline);
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: .06em;
+}
+.depth-mark.is-google .google-score { color: var(--ink); font-weight: 500; }
 
 /* The depth mark keeps its accent on a closed row, which it used to lose. It
    is the one thing in the row that did not close: the door is shut and the
