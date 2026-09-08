@@ -1039,7 +1039,7 @@ a:hover { color: var(--accent-lit); }
   gap: 10px;
 }
 
-/* One pill, written once, worn by all five. The account, Surprise me and the
+/* One pill, written once, worn by every button on it. The account, Surprise me and the
    radio had it and the two below them did not: a colour swatch in a round
    case of its own and a crosshair in a second one, both of them mute, under
    three buttons that say what they are. Down the left edge of the map that
@@ -3040,6 +3040,154 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     width: 100%;
     border-radius: 0;
   }
+}
+
+/* ---------- how this works: the tour ---------- */
+
+/* Three things on one layer over the whole page, each put where it goes by
+   placeTourStep() in assets/app.js and left to the stylesheet to get there:
+   a ring round the thing being talked about, a cursor whose tip lands on it,
+   and the bubble the mouth talks from. All three are positioned with a
+   transform so the move between two steps is one eased slide rather than a
+   layout, and so a change of step animates the same way a hand would move —
+   the cursor most slowly, because it is the thing the eye follows.
+
+   Over the nudge and the account sheet, under the toast: a toast saying the
+   location could not be found is worth more than the step that pointed at
+   the button. */
+.tour {
+  position: fixed;
+  inset: 0;
+  z-index: 2450;
+  overscroll-behavior: contain;
+}
+.tour[hidden] { display: none; }
+/* The first placement of each open is a jump, not a slide from wherever
+   the pieces were left last time. */
+.tour.no-move * { transition: none !important; }
+
+/* The ring is the accent on a paper halo, the same two rings a pin wears,
+   and a second ring breathes out from it so the eye is drawn there even
+   while the cursor is still on its way. */
+.tour-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  border: 2px solid var(--accent);
+  border-radius: 100px;
+  box-shadow: 0 0 0 3px var(--paper);
+  pointer-events: none;
+  transition: transform .6s var(--ease), width .6s var(--ease), height .6s var(--ease);
+}
+.tour-ring[hidden] { display: none; }
+.tour-ring::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--accent);
+  border-radius: inherit;
+  animation: tour-breathe 1.6s ease-out infinite;
+}
+@keyframes tour-breathe {
+  from { transform: scale(1); opacity: .7; }
+  to   { transform: scale(1.22); opacity: 0; }
+}
+
+/* A cursor the size of a thumb: paper with an ink edge, so it reads on both
+   the light map and the dark one, and a shadow under it so it is over the
+   page rather than drawn on it. Its tip is at 8,3 of a 32 box, which is
+   what placeTourStep() offsets for when it sends the tip somewhere. It
+   presses when it arrives — a short scale about the tip. */
+.tour-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 64px;
+  height: 64px;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .3));
+  transition: transform .8s cubic-bezier(.35, .9, .25, 1);
+}
+.tour-cursor svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  transform-origin: 16px 6px;
+}
+.tour-cursor.is-click svg { animation: tour-click .4s var(--ease); }
+@keyframes tour-click { 45% { transform: scale(.8); } }
+
+/* The bubble is the card the rest of the site uses, with the mark sitting
+   on its top edge like a face over a fence — that is who is talking. The
+   mark rocks gently while it talks. The lead, the one sentence the site is
+   built on, is set in the display face; every other step is a line of
+   reading text. */
+.tour-bubble {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: min(340px, calc(100vw - 24px));
+  padding: 16px 16px 14px;
+  transition: transform .6s var(--ease);
+}
+.tour-face {
+  position: absolute;
+  top: -24px;
+  left: 14px;
+  width: 48px;
+  height: 48px;
+  border-radius: 100px;
+  object-fit: cover;
+  box-shadow: 0 0 0 3px var(--paper), var(--shadow);
+  animation: tour-talk 2.6s ease-in-out infinite;
+}
+@keyframes tour-talk {
+  0%, 100% { transform: rotate(-7deg); }
+  50%      { transform: rotate(7deg) translateY(-2px); }
+}
+.tour-say {
+  margin: 16px 0 0;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.tour-say.is-lead {
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -.015em;
+  line-height: 1.25;
+}
+.tour-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+}
+/* .alt is display: inline-block, which beats the UA sheet's [hidden] — the
+   same trap .rail-btn notes. Skip is hidden on the last step, where Got it
+   is the only way out and a second way out beside it would be a choice
+   between two things that do the same. */
+#tour-skip[hidden] { display: none; }
+.tour-dots {
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+}
+.tour-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 100px;
+  background: var(--hairline);
+}
+.tour-dots i.is-on { background: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-ring, .tour-cursor, .tour-bubble { transition: none; }
+  .tour-ring::after, .tour-face, .tour-cursor.is-click svg { animation: none; }
 }
 
 /* ---------- toast ---------- */

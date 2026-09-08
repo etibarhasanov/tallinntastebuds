@@ -4577,10 +4577,11 @@ a place you tapped.
 
 ### The rail introduces itself on a phone
 
-The rail runs the account, Surprise me, the radio, the colour swatch, the
-locate button — who you are, then the two that change your evening, then the
-two that change the map, because a rail that opens with a colour picker reads
-as a settings strip rather than as the shortcut it is.
+The rail runs the account, Surprise me, Ask, the radio, the colour swatch,
+the locate button and, last, How this works — who you are, then the ones that
+change your evening, then the two that change the map, then the one that is
+about the rest, because a rail that opens with a colour picker reads as a
+settings strip rather than as the shortcut it is.
 
 On a phone it used to arrive as a column of bare discs: a head and shoulders,
 a die, a play triangle, a coloured dot and a crosshair over a map, saying
@@ -4664,7 +4665,7 @@ one shape. The longest pill on the rail is Ukrainian's
 `ПОКАЗАТИ МОЄ МІСЦЕЗНАХОДЖЕННЯ` at 267px, which is the width of the brand's
 own column above it and a fifth of a 1280px window — the map can spare that.
 
-At the foot of the rail is the locate button, which frames you
+Next to last on the rail is the locate button, which frames you
 together with the nearest place rather than dropping you at zoom 15 on
 whatever street you are standing in —
 [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
@@ -4678,6 +4679,64 @@ The rail is vertically centred, and `placeRail()` in `assets/app.js` nudges it
 down on short windows so it can never ride up under the brand — never so far
 down that its own foot leaves the screen, which is the floor the locate button
 used to provide by standing in the corner.
+
+### How this works, for the asking
+
+Everything above is an introduction that runs once, for a few seconds, and
+only for somebody who happened to be looking at the rail when it ran. A
+visitor who landed on a place, or on a story, or who spent the first ten
+seconds looking at the pins, gets a map that never said whose pins they are
+or what the buttons down the side do. The tagline under the mark says the
+first half on a desktop and says it briefly on a phone; nothing on the page
+said the second half twice.
+
+So the last pill on the rail is a question mark labelled **How this works**,
+and pressing it walks the page rather than describing it. A cursor the size
+of a thumb sets off from the button that was pressed and glides to each
+thing in turn; a ring settles round it and breathes; and the mouth — the
+mark, sitting on the top edge of a bubble like a face over a fence, rocking
+gently while it talks — says what the thing is. **Next** sends the cursor
+on, and so does a tap anywhere that is not the bubble; **Skip** ends it,
+and so does Escape. The first version of this was a card of prose over the
+map, which was the introduction as a document. This is it as a person,
+which is what a first visitor is short of.
+
+The walk, in order, and what each step is anchored to:
+
+1. The mark, for the one sentence the site rests on: every pin is a place I
+   have eaten at myself and approved, and nothing is here because it paid
+   to be. Set large, in the display face; every other step is a line of
+   reading text.
+2. A pin — whichever is nearest the middle of the screen, or the bubble
+   sits in the middle with no ring when none is on it.
+3. The filters: the chip row on a desktop, the **Filters** button on a phone
+   where the row is folded behind it.
+4. **Surprise me**, with its label and Ask's held open on a phone for as
+   long as the step is up.
+5. The account button, left out when `/api/account` never said accounts
+   work — there is no button to point at.
+6. The discount chip, second in the row after All, or the Filters button on
+   a phone; left out when no deal is on.
+
+Every step points at something real on the page as it stands, which is why
+the steps are functions and not co-ordinates, and why the pieces are put
+back on every resize. Nothing under the walk can be pressed while it is up:
+the layer swallows the taps, so the thing being pointed at is not opened
+mid-sentence.
+
+The button is last because it is about the rest: a rail that opened with the
+help button would be a rail saying it needs one. It is not opened by itself
+on a first visit. The page already introduces itself once without being
+asked, and a second unasked-for overlay on top of that is the kind of thing
+that gets closed unread; a button pressed when it is wanted is the better
+version of the same words.
+
+The strings are `explainOpen` — the button — `explainLead`, the five
+`explainPin` … `explainDiscount` lines, `explainNext`, `explainSkip` and
+`explainClose`, in all ten languages. The pieces are `#tour` in
+`index.html`; the steps are `TOUR_STEPS` in `assets/app.js`, run by
+`openExplain()`, `showStep()` and `placeTourStep()`; and under
+`prefers-reduced-motion` nothing slides, breathes or rocks.
 
 ## The map tiles need a key
 

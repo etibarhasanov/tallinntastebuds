@@ -62,7 +62,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=84250f6e">
+<link rel="stylesheet" href="assets/styles.css?v=5a25b242">
 </head>
 <body>
 
@@ -153,6 +153,20 @@
     <!-- The button keeps its own aria-label, so the words are decoration to a
          reader rather than a second name for the same control. -->
     <span class="rail-label" data-i18n="locate" aria-hidden="true">Show my location</span>
+  </button>
+  <!-- Last, and the one that is about the rest: what this map is and what
+       the buttons above it do, on demand. The page already says all of it on
+       arrival — the tagline under the mark, the labels down the rail — but
+       only once, and only for a few seconds, and a visitor who landed on a
+       place or was looking at the pins gets a map that never introduced
+       itself. This is the introduction for the asking. -->
+  <button type="button" class="rail-btn" id="btn-explain" data-i18n-title="explainOpen" data-i18n-aria-label="explainOpen" aria-label="How this works" title="How this works">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="12" r="8.4"/>
+      <path d="M9.6 9.7a2.4 2.4 0 1 1 3.4 2.2c-.7.35-1 .8-1 1.5v.5"/>
+      <circle cx="12" cy="16.6" r="1.1" class="pip"/>
+    </svg>
+    <span class="rail-label" data-i18n="explainOpen">How this works</span>
   </button>
 </div>
 
@@ -373,6 +387,32 @@
   <div class="account card" id="account-card"></div>
 </div>
 
+<!-- How this works: a walk round the page, opened from the foot of the
+     rail. A big cursor sets off from the button that was pressed and glides
+     to each thing in turn — the mark, a pin, the filters, Surprise me, the
+     account, the discount chip — a ring settles round it, and the mouth says
+     what it is from a bubble beside it. The layer swallows the taps, so
+     nothing being pointed at gets pressed mid-sentence, and a tap anywhere
+     on it that is not the bubble is Next. -->
+<div class="tour" id="tour" hidden>
+  <div class="tour-ring" id="tour-ring" hidden></div>
+  <div class="tour-cursor" id="tour-cursor" aria-hidden="true">
+    <svg viewBox="0 0 32 32" focusable="false">
+      <path d="M8 3l17 13.5-7.6 1.3 4.4 8.6-3.6 1.8-4.4-8.7L8 25z"/>
+    </svg>
+  </div>
+  <div class="tour-bubble card" id="tour-bubble" role="dialog" aria-live="polite"
+       data-i18n-aria-label="explainOpen" aria-label="How this works">
+    <img class="tour-face" src="assets/logo/mark-round.webp" alt="" width="48" height="48">
+    <p class="tour-say" id="tour-say"></p>
+    <div class="tour-row">
+      <button type="button" class="go" id="tour-next"></button>
+      <button type="button" class="alt" id="tour-skip" data-i18n="explainSkip">Skip</button>
+      <span class="tour-dots" id="tour-dots" aria-hidden="true"></span>
+    </div>
+  </div>
+</div>
+
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" data-i18n-aria-label="photos" aria-label="Photos" hidden>
   <button type="button" class="lb-btn lb-close" id="lb-close" data-i18n-aria-label="photoClose" aria-label="Close photo">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -433,6 +473,6 @@
      cannot: no allowance left, no binding, no network. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
 <script src="assets/ask.js?v=f8a051ac" defer></script>
-<script src="assets/app.js?v=39af702e" defer></script>
+<script src="assets/app.js?v=9df2632a" defer></script>
 </body>
 </html>
