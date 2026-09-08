@@ -15,7 +15,7 @@
  * eyebrow and the toast with assets/styles.css and adds its own in
  * assets/lists.css.
  *
- * TWO ADDRESSES, ONE FILE
+ * FOUR ADDRESSES, ONE FILE
  *
  *   /lists.html      your own lists: the index, and the box that makes a new
  *                    one. Nothing here without an account.
@@ -25,6 +25,17 @@
  *                    social card in the head and the list itself seeded into
  *                    the page — so a shared link unfurls as what it is, and
  *                    draws without a second round trip.
+ *
+ *   /lists/kept      everybody's, the most kept first. Served the same way by
+ *                    functions/lists/kept.js. It is the page that joins the
+ *                    lists to each other rather than leaving each one an
+ *                    island reachable only by its own link.
+ *
+ *   /u/<name>        one person: their public lists, and how many times those
+ *                    have been kept. Served the same way by
+ *                    functions/u/[name].js. It is where a byline leads —
+ *                    every list on this site says who put it together, and
+ *                    this is the rest of that sentence.
  *
  * THE SIGN-IN FORM IS NOT IN HERE
  *
@@ -47,6 +58,7 @@
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
   var API = '/api/lists';
+  var WHO_API = '/api/profile';
 
   /* What the server accepts, said again here so a field can stop somebody at
      the keystroke rather than at the round trip. The server is the one that
@@ -73,9 +85,9 @@
     ui: {},
     types: [],         // data/taxonomy.json, for the rows that carry Google's words
     lang: DEFAULT_LANG,
-    /* 'index' | 'one' | 'all'. Which of the three addresses this is. */
+    /* 'index' | 'one' | 'all' | 'who'. Which of the four addresses this is. */
     view: 'index',
-    id: '',
+    id: '',            // the list being shown, which moreLists() leaves out
     me: null,          // the signed-in username, or null
     ready: false,      // whether the API says lists work at all here
     reached: true,     // whether it answered at all
@@ -85,6 +97,7 @@
     next: '',          // where the directory's next page starts, '' at the end
     asking: false,     // a page of the directory is in flight
     list: null,        // the one being shown
+    profile: null,     // the person being shown
     places: null,      // /api/places, loaded the first time the picker opens
     hay: null          // id -> folded searchable text
   };
@@ -371,6 +384,16 @@
     return '/?list=' + encodeURIComponent(id);
   }
 
+  /* Where a byline goes. Every list on this site says who put it together,
+     and this is what that name leads to: the rest of what they have published.
+
+     A path and not a query, unlike the map's doors, because it is not another
+     way of looking at the map — it is a page about a person, the way
+     /list/<id> is a page about a list. */
+  function profileHref(name) {
+    return '/u/' + encodeURIComponent(name);
+  }
+
   /* Every caller says how it should look, because the places this link turns
      up in are two weights of the same door: filled on somebody else's list,
      where it is the one thing that card asks for; and the outlined pill
@@ -412,6 +435,7 @@
     if (!state.reached) { dom.main.appendChild(renderUnreachable()); return; }
     if (!state.ready) { dom.main.appendChild(renderNotReady()); return; }
     if (state.view === 'all') { dom.main.appendChild(renderAll()); return; }
+    if (state.view === 'who') { dom.main.appendChild(renderProfile()); return; }
     if (state.view === 'one') {
       dom.main.appendChild(renderOne());
       /* And, under it, three more. Appended rather than built into the card
@@ -461,10 +485,12 @@
       heading(t('listsYours')),
       el('p', { className: 'lists-say', textContent: t('listsWhat') }),
       newListForm(),
-      /* The way to everybody else's, under the box that makes your own. It is
-         the quiet half of this card: the page is called Your lists and the
-         other people's are the offer, not the point. */
-      el('p', { className: 'lists-foot' }, [
+      /* Two quiet doors under the box that makes a list, in the order they
+         are about you: your own page as everybody else sees it, and then
+         everybody else's. Both are the quiet half of this card — it is called
+         Your lists, and these are what is around them. */
+      el('p', { className: 'lists-row lists-foot' }, [
+        el('a', { className: 'alt', href: profileHref(state.me), textContent: t('profileYours') }),
         el('a', { className: 'alt', href: ALL_PATH, textContent: t('listsAllEverything') })
       ])
     ]));
@@ -473,7 +499,7 @@
       wrap.appendChild(el('p', { className: 'lists-none', textContent: t('listsNone') }));
     } else {
       var ul = el('ul', { className: 'lists-index' });
-      state.lists.forEach(function (l) { ul.appendChild(indexRow(l)); });
+      state.lists.forEach(function (l) { ul.appendChild(listRow(l)); });
       wrap.appendChild(ul);
     }
 
@@ -487,7 +513,7 @@
     if (state.kept.length) {
       wrap.appendChild(el('h2', { className: 'lists-section', textContent: t('listsKept') }));
       var kul = el('ul', { className: 'lists-index' });
-      state.kept.forEach(function (l) { kul.appendChild(keptRow(l)); });
+      state.kept.forEach(function (l) { kul.appendChild(listRow(l)); });
       wrap.appendChild(kul);
     }
 
@@ -533,36 +559,32 @@
     return form;
   }
 
-  function indexRow(l) {
-    var link = el('a', { className: 'lists-index-link', href: '/list/' + l.id }, [
-      el('span', { className: 'lists-index-title', textContent: l.title }),
-      el('span', { className: 'lists-index-meta mono' }, [
-        el('span', { textContent: countLabel(l.n) }),
-        /* How many people kept it. On your own list this is the only place
-           the number appears in the index, and it is the one fact about a
-           list you wrote that you cannot know by looking at it. */
-        keepCount(l.keeps),
-        !l.public ? el('span', { className: 'lists-private', textContent: t('listsPrivate') }) : null
-      ])
-    ]);
-    /* Sits outside the link rather than inside it: a link inside a link is
-       not a thing HTML has, and the row is a link to the list itself. */
-    return el('li', { className: 'lists-index-row' }, [link, mapLink(l.id, 'alt lists-map lists-index-map')]);
-  }
+  /* One list, as a row in a column of them. Three places draw this — your own
+     lists, the ones you kept, and the public ones on somebody's profile — and
+     it was two near-identical functions before the third arrived.
 
-  /* A list somebody else made, which you kept. The same row with one thing
-     added and one taken away: it says whose it is, and it has no private
-     pill — a list you can see is a list that is public, and a private one
-     would not be in this section at all. */
-  function keptRow(l) {
+     What differs is two spans, and each is decided by what the row actually
+     carries rather than by which section it is in: a byline where the list is
+     somebody else's, and the private pill where it is yours and shut. That
+     second test is `=== false` and not `!l.public`, because the answers that
+     hold other people's lists do not send the column at all — every list in
+     them is public by the query that found it — and a missing value must not
+     read as a private one. */
+  function listRow(l) {
     var link = el('a', { className: 'lists-index-link', href: '/list/' + l.id }, [
       el('span', { className: 'lists-index-title', textContent: l.title }),
       el('span', { className: 'lists-index-meta mono' }, [
         l.by ? el('span', { className: 'lists-index-by', textContent: t('listsBy', { name: l.by }) }) : null,
         el('span', { textContent: countLabel(l.n) }),
-        keepCount(l.keeps)
+        /* How many people kept it. On your own list this is the only place
+           the number appears in the index, and it is the one fact about a
+           list you wrote that you cannot know by looking at it. */
+        keepCount(l.keeps),
+        l.public === false ? el('span', { className: 'lists-private', textContent: t('listsPrivate') }) : null
       ])
     ]);
+    /* Sits outside the link rather than inside it: a link inside a link is
+       not a thing HTML has, and the row is a link to the list itself. */
     return el('li', { className: 'lists-index-row' }, [link, mapLink(l.id, 'alt lists-map lists-index-map')]);
   }
 
@@ -588,7 +610,82 @@
     ]);
   }
 
-  /* -------------------------------------------------------------- one list */
+  /* ------------------------------------------------------------ one person
+   * /u/<name>: what a byline leads to.
+   *
+   * Every list on this site has said who put it together since the day lists
+   * were written, and the name was where the sentence stopped. This is the
+   * rest of it — the other lists that person has published, and the one
+   * number this site keeps about anybody.
+   *
+   * PUBLIC ONLY, INCLUDING FOR ITS OWNER
+   *
+   * The page shows the same thing to everybody, and that is deliberate rather
+   * than a limitation nobody got round to: the value of a profile you can see
+   * is knowing what other people see on it. Your own private lists are one
+   * link away, on /lists.html, which is where the editing is anyway.
+   */
+  function renderProfile() {
+    var who = state.profile;
+
+    if (!who) {
+      return card([
+        el('p', { className: 'eyebrow', textContent: t('profileEyebrow') }),
+        heading(t('listsGoneTitle')),
+        el('p', { className: 'lists-say', textContent: t('profileErrGone') }),
+        el('a', { className: 'alt', href: '/', textContent: t('listsBack') })
+      ]);
+    }
+
+    var wrap = el('div', { className: 'lists-stack' });
+
+    wrap.appendChild(card([
+      el('p', { className: 'eyebrow', textContent: t('profileEyebrow') }),
+      heading(who.name),
+      standing(who.kept),
+      /* The year and not the day. When somebody made an account is context
+         for the number above it rather than a record of them — and a year is
+         the one unit of time that needs no case, no ordinal and no month name
+         to sit inside a sentence in all ten of these languages. */
+      el('p', {
+        className: 'lists-say',
+        textContent: t('profileSince', { when: new Date(who.since).getFullYear() })
+      }),
+      /* Your own profile, with the way back to the half of it nobody else
+         gets: the private lists, and every control this page has none of. */
+      who.mine
+        ? el('a', { className: 'alt', href: '/lists.html', textContent: t('profileMine') })
+        : null
+    ]));
+
+    if (!who.lists.length) {
+      wrap.appendChild(el('p', { className: 'lists-none', textContent: t('profileNone') }));
+    } else {
+      var ul = el('ul', { className: 'lists-index' });
+      who.lists.forEach(function (l) { ul.appendChild(listRow(l)); });
+      wrap.appendChild(ul);
+    }
+
+    wrap.appendChild(el('a', { className: 'alt', href: '/', textContent: t('listsBack') }));
+    return wrap;
+  }
+
+  /* The standing: how many times, in all, other people have kept the lists on
+     this page. It is the sum of the numbers under them, which is why it is
+     the number and not a position — see functions/api/_profile.js for what
+     "third of everybody" would have cost.
+
+     Nothing at all at nought, the same as a keep count under a list and a
+     save count on the map. A "kept 0 times" line on somebody's page reads as
+     a verdict on them rather than as a feature they have not been given yet,
+     and the first keep is how anybody finds out the number is there. */
+  function standing(n) {
+    if (!n) return null;
+    return el('p', {
+      className: 'lists-standing mono',
+      textContent: n === 1 ? t('profileKeptOne') : t('profileKept', { n: formatNumber(n) })
+    });
+  }
 
   /* ----------------------------------------------------- lists people kept
    * Every public list on this site, the most kept first.
@@ -755,6 +852,8 @@
     dom.main.appendChild(foot);
   }
 
+  /* -------------------------------------------------------------- one list */
+
   function renderOne() {
     var list = state.list;
 
@@ -818,7 +917,17 @@
     return card([
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
       heading(list.title),
-      list.by ? el('p', { className: 'lists-by mono', textContent: t('listsBy', { name: list.by }) }) : null,
+      /* The byline, and the door out of this page onto the rest of what its
+         owner has published. The whole phrase is the link rather than the
+         name inside it: the name is three or four characters on a phone, and
+         splitting a translated sentence around it to underline only that
+         would be a sentence assembled out of pieces in ten languages for the
+         sake of a smaller target. */
+      list.by
+        ? el('p', { className: 'lists-by mono' }, [
+            el('a', { href: profileHref(list.by), textContent: t('listsBy', { name: list.by }) })
+          ])
+        : null,
       list.intro ? el('p', { className: 'lists-say', textContent: list.intro }) : null,
       el('div', { className: 'lists-row' }, [
         mapLink(list.id, 'go'),
@@ -2688,6 +2797,16 @@
     return new URLSearchParams(window.location.search).get('list') || '';
   }
 
+  /* And whose profile, the same way. There is no query-string spelling of
+     this one: /u/<name> is served by a Function, and a page that reached this
+     script at that address is a page that Function answered. */
+  function wantedWho() {
+    var seeded = window.__TTB_PROFILE;
+    if (seeded && seeded.profile && seeded.profile.name) return seeded.profile.name;
+    var m = /^\/u\/([a-zA-Z0-9][a-zA-Z0-9-]{2,23})\/?$/.exec(window.location.pathname);
+    return m ? m[1].toLowerCase() : '';
+  }
+
   function boot() {
     dom = {
       main: $('main'),
@@ -2707,10 +2826,14 @@
     /* First, before anything is drawn: the style the map was left on. */
     applyStyle();
 
+    /* Four addresses, asked in the order they are specific: the directory is
+       one fixed path, a person is another, and a list is what is left. No two
+       of them can be the address at once. */
     var all = wantedAll();
-    var id = all ? '' : wantedList();
+    var who = all ? '' : wantedWho();
+    var id = all || who ? '' : wantedList();
     state.id = id;
-    state.view = all ? 'all' : id ? 'one' : 'index';
+    state.view = all ? 'all' : who ? 'who' : id ? 'one' : 'index';
 
     /* The strings and the data at once. The strings are a static file behind a
        revalidating cache and usually free; the data is the one request this
@@ -2722,8 +2845,15 @@
        cannot fetch them draws those rows without their types rather than not
        at all. */
     var types = getJSON('/data/taxonomy.json').catch(function () { return null; });
+    /* The answer the Function that served this page wrote into it, when there
+       was one — a list at /list/<id>, the directory at /lists/kept, a person
+       at /u/<name> — and otherwise the request that asks for the same thing.
+       Every address draws from the same shapes either way, so a deployment
+       without the Functions is a page that loads a beat later and never a page
+       that cannot load. */
     var seeded = window.__TTB_LIST && window.__TTB_LIST.list;
     var seededAll = window.__TTB_ALL && window.__TTB_ALL.all;
+    var seededWho = window.__TTB_PROFILE && window.__TTB_PROFILE.profile;
     var data;
     if (state.view === 'all' && seededAll) {
       data = Promise.resolve({
@@ -2737,6 +2867,13 @@
       });
     } else if (state.view === 'all') {
       data = ask(API + '?all=1');
+    } else if (seededWho) {
+      data = Promise.resolve({
+        status: 200,
+        out: { ready: true, user: window.__TTB_PROFILE.user || null, profile: seededWho }
+      });
+    } else if (who) {
+      data = ask(WHO_API + '?name=' + encodeURIComponent(who));
     } else if (seeded) {
       data = Promise.resolve({
         status: 200,
@@ -2759,9 +2896,9 @@
       /* Nothing came back at all. Everything below would be a guess. */
       state.reached = answer.status !== 0;
       /* A 404 is an answer, and a specific one: the API is working and that
-         list is not there — deleted, mistyped, or private and not yours. It
-         leaves `ready` true so the page says that rather than something
-         about the site being switched off. */
+         list — or that name — is not there. Deleted, mistyped, or private and
+         not yours. It leaves `ready` true so the page says that rather than
+         something about the site being switched off. */
       state.ready = answer.status === 404 ? true : !!out.ready;
       state.me = out.user || null;
       state.lists = out.lists || [];
@@ -2772,10 +2909,12 @@
          lists have not been fetched yet". */
       state.all = out.all || null;
       state.next = out.next || '';
+      state.profile = out.profile || null;
 
       /* A seeded page already carries its own title in the head; only a page
          that fetched what it is showing has to set one. */
       if (state.list) document.title = state.list.title + ' | Tallinn Tastebuds';
+      if (state.profile) document.title = state.profile.name + ' | Tallinn Tastebuds';
       if (state.view === 'all') document.title = t('listsAllDocumentTitle');
 
       wire();

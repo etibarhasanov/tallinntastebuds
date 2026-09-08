@@ -29,10 +29,9 @@
  */
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
-import { esc, shell, sow, rehead, page } from '../_shell.js';
+import { canonical, head, shell, sow, rehead, page } from '../_shell.js';
 import { mostKept } from '../api/_mostkept.js';
 
-const SITE = 'https://tallinntastebuds.ee';
 const PATH = '/lists/kept';
 
 /* English, on a site read in ten languages, for the reason the same decision
@@ -40,32 +39,10 @@ const PATH = '/lists/kept';
    Accept-Language is whatever its operator set, and the card built from these
    tags is shown to everybody a link is forwarded to rather than to whoever
    fetched it. The page underneath follows the reader's own language. */
-const TITLE = 'Lists people kept | Tallinn Tastebuds';
+const TITLE = 'Lists people kept';
 const DESCRIPTION =
   'Lists of places in Tallinn, written by the people whose names are on them, ' +
   'with the most kept first.';
-
-function headTags(url) {
-  return [
-    /* The <title> in lists.html sits above the marker and is left alone, so
-       this one is second and wins: the last <title> in a head is the one a
-       browser uses, and every unfurler reads og:title anyway. */
-    '<title>' + TITLE + '</title>',
-    '<meta name="description" content="' + DESCRIPTION + '">',
-    /* The same page answers at the live domain and at every preview
-       deployment. This says which of them is the one to index. */
-    '<link rel="canonical" href="' + esc(url) + '">',
-    '<meta property="og:type" content="website">',
-    '<meta property="og:site_name" content="Tallinn Tastebuds">',
-    '<meta property="og:url" content="' + esc(url) + '">',
-    '<meta property="og:title" content="' + TITLE + '">',
-    '<meta property="og:description" content="' + DESCRIPTION + '">',
-    '<meta property="og:image" content="' + SITE + '/assets/logo/og.jpg">',
-    '<meta property="og:image:width" content="1200">',
-    '<meta property="og:image:height" content="630">',
-    '<meta name="twitter:card" content="summary_large_image">'
-  ].join('\n');
-}
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -77,9 +54,14 @@ export async function onRequest(context) {
     return new Response('Not found', { status: 404 });
   }
 
-  const url = new URL(request.url);
-  html = rehead(html, headTags(
-    url.hostname === 'tallinntastebuds.ee' ? SITE + PATH : url.toString()));
+  html = rehead(html, head({
+    title: TITLE,
+    description: DESCRIPTION,
+    /* The same page answers at the live domain and at every preview
+       deployment. This says which of them is the one to index. */
+    url: canonical(request, PATH),
+    type: 'website'
+  }));
 
   /* Indexable whatever happens below. The two failures this can have are a
      database that is not bound and a query that threw, and neither is a

@@ -33,6 +33,14 @@ Disallow: /lists.html
 # and cannot be: it is served only to the session that owns it, and a crawler
 # is never that session. functions/list/[id].js sets the header per list.
 
+# /u/<name> is not disallowed either, and for the same two reasons /list/<id>
+# is not. A profile is where a byline leads — somebody's public lists and how
+# often they have been kept — so it has to unfurl when the link is passed on,
+# and it is a page about a person's writing on this site, which is the kind of
+# page being findable is the point of. A profile with no public lists on it has
+# nothing to find and says so itself: functions/u/[name].js sets the header per
+# person, the way the list route does.
+
 # Google's own directory of the city, which is emphatically not the map: the
 # ratings on it are Google's and nothing on it has been visited. Being indexed
 # beside the pages that are the verdict is exactly what it must not be, so

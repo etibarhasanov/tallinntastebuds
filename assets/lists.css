@@ -109,6 +109,19 @@
 .lists-say:last-child { margin-bottom: 0; }
 
 .lists-by { margin: -4px 0 12px; font-size: 11.5px; letter-spacing: .04em; color: var(--muted); }
+/* The byline is a door: it leads to /u/<name>, the rest of what its owner has
+   published. It keeps the line's own colour rather than taking the accent a
+   bare link wears, because a whole accent-coloured sentence under the title
+   would read as the loudest thing on a card whose title is the point — the
+   underline is enough to say it opens, and the hover says the rest. */
+.lists-by a { color: inherit; text-underline-offset: 3px; }
+.lists-by a:hover { color: var(--accent); }
+
+/* The one number a profile keeps: how many times, in all, other people have
+   kept the lists on it. It sits where a list's own byline sits, in the accent,
+   because on that card it is the fact the page was opened for. Never drawn at
+   nought — see standing() in assets/lists.js. */
+.lists-standing { margin: -2px 0 12px; font-size: 12px; letter-spacing: .04em; color: var(--accent); }
 
 .lists-none {
   margin: 0;
