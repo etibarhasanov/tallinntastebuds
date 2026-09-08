@@ -95,11 +95,11 @@
 # instead. So this is the one binding in this file whose absence is a quieter
 # feature rather than a broken route.
 #
-# What the allowance actually buys is worth knowing before relying on it: a
-# question carries the whole catalogue, so it is something like a hundred and
-# thirty questions a day, and past that every request is a 429 until midnight
-# UTC and the browser's keyword reader answers instead. Preview and production
-# spend from the same daily pot. That ceiling is why ANTHROPIC_API_KEY exists
+# What the allowance actually buys is worth knowing before relying on it:
+# roughly three hundred questions a day, and past that every request is a 429
+# until midnight UTC and the browser's keyword reader answers instead. Preview
+# and production spend from the same daily pot, so an afternoon of testing
+# against a preview empties the live site's allowance too. That ceiling is why ANTHROPIC_API_KEY exists
 # above, and /api/ask reports which of the two answered in `note` so the
 # difference is visible from outside rather than guessed at.
 name = "tallinntastebuds"

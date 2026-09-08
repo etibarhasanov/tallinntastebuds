@@ -8,13 +8,14 @@
  *
  * Workers AI is free and bound by name, and for a year it was the whole of
  * this feature. What it is not is a conversation. The free allowance is ten
- * thousand Neurons a day and a question here carries the whole catalogue, so
- * it buys something like a hundred and thirty questions; past that every
- * request is a 429, /api/ask answers `source: "none"`, and the browser's
- * keyword reader answers instead — which matches substrings and cannot hold
- * a thread. "How does it work" came back with three restaurants because of
- * exactly that, and no amount of work on the reader fixes it, because the
- * reader is a substring matcher and the ask is for a conversation.
+ * thousand Neurons a day, which is something like three hundred questions
+ * once the catalogue is narrowed — see shortlist() in ask.js — and past that
+ * every request is a 429, /api/ask answers `source: "none"`, and the
+ * browser's keyword reader answers instead, which matches substrings and
+ * cannot hold a thread. "How does it work" came back with three restaurants
+ * because of exactly that, and no amount of work on the reader fixes it,
+ * because the reader is a substring matcher and the ask is for a
+ * conversation.
  *
  * So when ANTHROPIC_API_KEY is set in the Pages environment this answers
  * first and Workers AI becomes the fallback. Without the key nothing here

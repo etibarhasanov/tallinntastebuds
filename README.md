@@ -699,10 +699,26 @@ charge** and there is nothing to configure — no key, no npm, no account to
 open; the binding is three lines of `wrangler.toml`.
 
 What that allowance actually buys is the thing worth knowing. A question
-carries the whole catalogue, about 4,750 tokens, so it is **something like a
-hundred and thirty questions a day** — and then every request is a 429 until
-midnight UTC and the keyword reader answers instead. Preview and production
-spend from the same pot. For a long time that ceiling was invisible: the
+A question used to carry the whole catalogue, about 4,750 tokens, which was
+**something like a hundred and thirty questions a day** — and then every
+request is a 429 until midnight UTC and the keyword reader answers instead.
+Preview and production spend from the same pot.
+
+Most of that was the catalogue, and none of it was chosen: all seventy places
+went to the model on every question, including the ones that were not about
+food. They are now narrowed the way Google's eleven hundred already were, by
+the same scoring, down to the thirty a question could plausibly be about with
+a floor of twenty so a question that names nothing still has a map to choose
+from — and the blurbs are cut to a clause, and the map scope carries fifteen
+Google rows rather than forty, since there they are a last resort. That is
+**about 1,500 tokens a question, and something like three hundred a day**.
+
+The floor is what makes the narrowing safe rather than clever. Every place on
+this map is one I have been to and would send somebody to, so any twenty of
+them is a legitimate pool for a question about a mood; what the scoring has
+to guarantee is only that when a question *does* name something — khinkali,
+ramen, a date — the places that answer it are in the slice, and first. There
+is a test for exactly that. For a long time that ceiling was invisible: the
 Function collapsed every failure into the same empty answer, so a chat that
 had quietly stopped thinking looked exactly like a chat that had nothing to
 say, and *how does it work* came back with three restaurants. `/api/ask` now

@@ -133,19 +133,42 @@ const MAX_PICKS = 3;
    every question. The browser sends the same six. */
 const MAX_HISTORY = 6;
 
-/* How many Google rows go to the model, and back to the browser, on the
-   `all` scope. Forty is a page of the export at the size the model reads —
-   about four thousand tokens — and comfortably more than any one question
-   has ever needed; what decides it is the cost of a question rather than a
-   view about the city. */
+/* How many Google rows go to the model, and back to the browser.
+ *
+ * Forty on the whole city, where those rows are the point of the question.
+ * Fifteen on the map, where they are a last resort the model may only reach
+ * for when nothing of mine fits — carrying forty of them there was paying a
+ * thousand tokens a question for a list that is usually not read at all. */
 const MAX_CANDIDATES = 40;
+const MAX_CANDIDATES_MAP = 15;
+
+/* How many of my own places go to the model.
+ *
+ * It used to be all seventy, on every question, including the ones that were
+ * not about food — about 3,400 tokens of the 4,750 a question cost. That is
+ * the whole reason the free Workers AI allowance ran out after something like
+ * a hundred and thirty questions: the catalogue was most of the bill and none
+ * of it was chosen. Narrowed, with the blurbs cut to a clause, a question is
+ * about 1,500 tokens and the same free allowance runs to roughly three
+ * hundred.
+ *
+ * So my places are now narrowed the way the export already was, by the same
+ * scoring, and the floor is what makes that safe. A question that names a
+ * dish or a type or a price picks its own candidates and they go first; a
+ * question that names nothing scores nothing and gets the floor instead. That
+ * is not a worse answer, because every place on this map is one I have been
+ * to and would send somebody to — there is no bad twenty in it — and the
+ * model only ever names three. What the floor buys is the model still having
+ * somewhere to choose from when the question is a mood rather than a dish. */
+const MAX_CATALOGUE = 30;
+const MIN_CATALOGUE = 20;
 
 /* The blurb is the only long field in the catalogue the model sees, and the
    first clause of one is enough to choose on. Sending all of them whole
    would be a hundred and eighty kilobytes of prompt for an answer that names
    three places, and every character here is read seventy-four times a
    question. */
-const BLURB_CHARS = 100;
+const BLURB_CHARS = 60;
 
 const SCHEMA = {
   type: 'object',
@@ -417,7 +440,7 @@ function readHistory(raw) {
  * browser's one `open` map holds every place on screen — the closing time of
  * each that is open now.
  */
-function candidates(roll, wish, now, named) {
+function candidates(roll, wish, now, named, cap) {
   const scored = [];
   const open = {};
 
@@ -441,12 +464,72 @@ function candidates(roll, wish, now, named) {
     (b.venue.card.rating || 0) - (a.venue.card.rating || 0) ||
     (b.venue.card.reviews || 0) - (a.venue.card.reviews || 0));
 
-  const out = scored.slice(0, MAX_CANDIDATES).map(({ venue, shuts }) => {
+  const out = scored.slice(0, cap).map(({ venue, shuts }) => {
     if (shuts) open[venue.card.id] = shuts;
     return { ...venue.card, hay: venue.hay };
   });
 
   return { venues: out, open };
+}
+
+/* My own places, narrowed to the ones this question could be about.
+ *
+ * The same scoring as candidates() above and as rank() in assets/ask.js —
+ * four a type, three a price band, three for open now, one a word — because
+ * a place cut here is a place the answer can never name, and cutting on a
+ * different scale from the one that does the real ranking would drop exactly
+ * the places the ranking was about to choose.
+ *
+ * Two things go in whatever they score. A place an earlier answer in this
+ * thread named, so "is the second one open late" still has the second one to
+ * be about; and, once the scorers are in, enough of the rest to reach the
+ * floor, in catalogue order, so a question that names nothing still has a map
+ * to choose from.
+ */
+function shortlist(places, wish, open, lang, named) {
+  const live = places.filter((place) => !place.closed);
+  if (live.length <= MIN_CATALOGUE) return live;
+
+  const scored = [];
+  const rest = [];
+
+  for (const place of live) {
+    const types = place.types || [];
+    let score = named.has(place.id) ? 1000 : 0;
+
+    for (const id of wish.types) if (types.includes(id)) score += 4;
+    if (wish.cheap && place.price && place.price <= 2) score += 3;
+    if (wish.fancy && place.price && place.price >= 3) score += 3;
+    if (wish.open && open[place.id]) score += 3;
+
+    if (wish.rest.length) {
+      /* Name, dishes, types and the write-up — the same haystack the browser
+         builds for its own reader, so a dish nobody wrote into the taxonomy
+         still finds its place. */
+      const hay = ' ' + foldWords([
+        place.name,
+        (place.mustOrder || []).join(' '),
+        types.join(' '),
+        (place.blurb && (place.blurb[lang] || place.blurb.en)) || ''
+      ].join(' '));
+      for (const word of wish.rest) if (hay.includes(' ' + word)) score += 1;
+    }
+
+    if (score > 0) scored.push({ place, score });
+    else rest.push(place);
+  }
+
+  /* Stable, so places that scored the same keep the order the catalogue put
+     them in and the same question twice is the same answer. */
+  scored.sort((a, b) => b.score - a.score);
+
+  const out = scored.slice(0, MAX_CATALOGUE).map((hit) => hit.place);
+  for (const place of rest) {
+    if (out.length >= MIN_CATALOGUE) break;
+    out.push(place);
+  }
+
+  return out;
 }
 
 /* --------------------------------------------------------------- the ask
@@ -669,9 +752,19 @@ export async function onRequestPost(context) {
      list is a complete answer too: nothing in the export scored. */
   const history = readHistory(body.history);
   const named = new Set(history.flatMap((turn) => turn.picks.map((pick) => pick.id)));
-  const cut = candidates(await googleVenues(env), readWish(body.wish), now, named);
+  const wish = readWish(body.wish);
+  const cut = candidates(
+    await googleVenues(env), wish, now, named,
+    wholeCity ? MAX_CANDIDATES : MAX_CANDIDATES_MAP
+  );
   const google = cut.venues;
   Object.assign(open, cut.open);
+
+  /* Not the whole map any more — the slice of it this question could be
+     about. See shortlist(): the catalogue was most of what a question cost
+     and none of it was chosen. Both models are shown the same slice, so
+     which one answers cannot change which places were available to name. */
+  const mine = shortlist(places, wish, open, lang, named);
 
   /* `note` is not for the page — nothing draws it — it is so that a chat
      answering with the browser's keyword reader can be told apart from a
@@ -683,10 +776,10 @@ export async function onRequestPost(context) {
   const answer = (source, picks, say, note) =>
     json({ ok: true, source, picks, say, note, open, venues: google });
 
-  const shown = new Set([
-    ...places.filter((p) => !p.closed).map((p) => p.id),
-    ...google.map((g) => g.id)
-  ]);
+  /* Exactly what was sent, so an id the model did not see is dropped rather
+     than drawn. It is the guard that makes a hallucinated place unreachable
+     — see the header — and it is built from the slice for that reason. */
+  const shown = new Set([...mine.map((p) => p.id), ...google.map((g) => g.id)]);
 
   /* Claude first, when the key is there. It is the half that can hold a
      conversation — a follow-up read against what was just said, and a
@@ -695,7 +788,7 @@ export async function onRequestPost(context) {
   const claude = await askClaude(env, {
     question,
     history,
-    catalogue: catalogueFor(places, lang),
+    catalogue: catalogueFor(mine, lang),
     google: googleFor(google),
     wholeCity,
     lang,
@@ -718,7 +811,7 @@ export async function onRequestPost(context) {
      exchange as the two turns it was — the question, and the answer in the
      exact JSON shape asked for, which is also the shape it will write next
      — and the new question last. */
-  const messages = [{ role: 'system', content: briefFor(places, google, wholeCity, lang, open) }];
+  const messages = [{ role: 'system', content: briefFor(mine, google, wholeCity, lang, open) }];
   for (const turn of history) {
     messages.push({ role: 'user', content: turn.q });
     messages.push({ role: 'assistant', content: JSON.stringify({ say: turn.say, picks: turn.picks }) });
