@@ -35,16 +35,26 @@ command does the same by hand, and is the way to be sure.
 
 Each skill is written from the code, not from memory: which files a change
 touches, in what order, the exact commands and flags, every check the
-validator will apply, the path through `/admin.html` where one exists, and
-where that kind of change has gone wrong before. A task that spans two rows
-loads both. A task that matches none — a README correction, a workflow
-change — follows the sections below.
+validator will apply, the path through `/admin.html` where one exists, how
+the pull request for that kind of change is opened and landed, and where
+that kind of change has gone wrong before. A task that spans two rows loads
+both. A task that matches none — a README correction, a workflow change —
+follows the sections below.
 
-The seventh file is a **rule**, not a skill: `.claude/rules/leave-it-better.md`
-is the main rule of the repo, and it is path-scoped so that it loads by itself
-the moment a session reads or edits anything under `assets/`, `functions/`,
-`tools/`, `db/` or an HTML page. It outranks "keep the diff small", and its
-last section is the process for a session with nothing else to do.
+**The files find their skill too.** A task does not always announce itself in
+the prompt — "fix the thing in deals.json" names no process — so each skill
+has a small **rule** beside it under `.claude/rules/<name>.md`, path-scoped to
+the files that process touches. Claude Code loads a path-scoped rule the
+moment a session reads or edits a matching file, and the rule says which
+skill to load. Two roads, then: the prompt loads the skill by its
+description, and failing that, the first file opened does. Either way the
+checklist arrives before the change is made.
+
+The seventh rule is the main one: `.claude/rules/leave-it-better.md` loads by
+itself the moment a session reads or edits anything under `assets/`,
+`functions/`, `tools/`, `db/` or an HTML page. It outranks "keep the diff
+small", and its last section is the process for a session with nothing else
+to do.
 
 The files are templates as much as instructions: when a process turns out to
 have a step nobody wrote down, or a way of going wrong that is not in its
@@ -63,7 +73,7 @@ this one ever was.
 - `.github/workflows/deploy.yml` (GitHub Pages) is manual-only and is **not**
   the live host. Do not reach for it.
 - Work lands through a PR into the default branch — that is how all 100+ of
-  them have.
+  them have. **The pull request** below is the exact sequence.
 - **Always rebase.** A PR lands with GitHub's **Rebase and merge**, and a
   branch catches up with `git rebase`, never `git merge`. The history of the
   default branch is the list of changes that were made, in the order they were
@@ -137,6 +147,43 @@ say), then `node tools/stamp.mjs`, `git add`, `git rebase --continue`, and let
 the stamper write the hashes. Never hand-merge a hash — a hash you typed is a
 hash of nothing.
 
+## The pull request
+
+Every change lands the same way, and each skill restates this with its own
+particulars. Do it in this order, and do not skip a step because the change
+is small — the small ones are the ones that ship broken.
+
+1. **Rebase** onto the default branch (above), then the generators, then
+   `node tools/validate.mjs`, then the `leave-it-better.md` pass over every
+   file in the diff, then a browser for anything with a visible effect.
+2. **Commit** in the voice below: a sentence about behaviour for the subject,
+   prose for the body. Each commit stands alone: a branch that grew three
+   commits saying "fix" squashes them into the one they were fixing before
+   it is pushed.
+3. **Push** the branch: `git push -u origin <branch>` the first time,
+   `git push --force-with-lease` after a rebase.
+4. **Open the pull request** against `claude/tallinn-tastebuds-map-nzoqx0`.
+   The title is the commit subject when there is one commit, and a sentence
+   about the whole when there are several. The body is prose, the same voice
+   as the commit: what was wrong, what it is now, the trade-off, what was
+   run and what was driven in a browser, and anything a person has to do by
+   hand after it lands — a schema to apply, a database to load, a staff link
+   to send. There is no template.
+5. **CI** runs `node tools/validate.mjs` and `node tools/qrperf.mjs --check`
+   on the push and on the PR, and the Cloudflare workflow deploys the branch
+   as a preview under `*.tallinntastebuds.pages.dev` against the preview
+   database. Red CI is yours to fix before anything else happens; a preview
+   URL is where a reviewer looks.
+6. **Merge with Rebase and merge**, never a merge commit, never a squash of
+   commits that were written to stand alone. Delete the branch after.
+7. A push to the default branch is the deploy. A story goes live when its
+   `from` comes round; everything else is live within the minute.
+
+A pull request the admin page opened — a branch named `admin/add-<id>` or
+`admin/edit-<id>` — is landed the same way, with one step in front: check it
+out, `node tools/places.mjs`, commit `data/places.json`, push. The `/place`
+skill says why.
+
 ## How the code is written
 
 There are two dialects and they do not mix: browser JavaScript in `assets/` is
@@ -155,7 +202,7 @@ feature.** A change that makes a paragraph wrong rewrites the paragraph in
 the same commit; a new thing gets its own. The README is long because it is
 where the reasoning lives, and it is only worth something while it is true.
 
-## Commits and pull requests
+## How a commit reads
 
 Commit subjects are sentences about behaviour, in the imperative, with no
 `feat:`/`fix:` prefix and no scope tag:

@@ -151,6 +151,29 @@ live table is a rebuild; do not reach for one.
 The body says what the rows looked like before, what they look like after,
 what it costs per request, and what has to be applied by hand and where.
 
+## The pull request
+
+1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
+2. `node tools/validate.mjs`. If `db/schema.sql` changed, apply it to
+   **preview** now — `wrangler d1 execute tallinntastebuds-preview --remote
+   --file=db/schema.sql` — so the preview deployment has the table the code
+   expects.
+3. `npx wrangler pages dev .` against the preview database, and the page
+   half driven in a browser through it.
+4. Commits that stand alone, subjects about what the rows or the answer now
+   are.
+5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
+6. Open the PR against the default branch. The body says what the rows
+   looked like before and after, what it costs per request, and **what has
+   to be applied by hand on landing and to which database** — the schema
+   statement, the meta stamp, a load. A `wrangler.toml` change to the
+   preview block only takes effect once a preview has deployed with it,
+   which the PR's own preview deployment does; say that you looked.
+7. CI green, then **Rebase and merge**, delete the branch, and **apply to
+   production** whatever the body said, immediately: the code is live the
+   moment the push lands, and a route that expects a column production does
+   not have fails quietly, which is the worst way.
+
 ## Where it goes wrong
 
 - One D1 binding declared at the top level of `wrangler.toml` and handed to

@@ -166,6 +166,35 @@ The body says why the place is on the map, what it was tagged and why, what
 the counts did, and that `data/places.json` was regenerated. Photos and the
 entry land in one commit, so no commit lists a photo that is not there.
 
+## The pull request
+
+1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
+2. `node tools/places.mjs`, then `node tools/validate.mjs`. The catalogue is
+   the check this process fails most.
+3. The map on a local server: the pin where the door is, the panel, the
+   photos, the chips.
+4. One commit with the photos and the entry together, subject a sentence
+   about the place.
+5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
+6. Open the PR against the default branch. The body says why the place is on
+   the map, what it was tagged and why, what the counts did, that the
+   catalogue was regenerated, and which blurb languages are still to come.
+7. CI green — the validator, the QR check, the preview deploy — then **Rebase
+   and merge**, and delete the branch. The place is on the live map within
+   the minute.
+
+**A PR the admin page opened** (`admin/add-<id>` or `admin/edit-<id>`) is
+red until the catalogue is regenerated, so it is landed like this:
+
+```
+git fetch origin admin/add-<id> && git checkout admin/add-<id>
+node tools/places.mjs && node tools/validate.mjs
+git commit -am "The catalogue knows <name>" && git push
+```
+
+Then the other nine blurb languages on the same branch, if you have them,
+and the same merge. Nothing has to be applied anywhere afterwards.
+
 ## Where it goes wrong
 
 - `data/places.json` not regenerated — by hand, or by every **Add** PR the

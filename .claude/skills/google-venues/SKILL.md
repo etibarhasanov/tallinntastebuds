@@ -127,6 +127,27 @@ upstream pull or add the row back to the CSV after cleaning.
 The body says what changed in the export — rows added, rows now missing,
 categories renamed, patterns dropped — and that both databases were loaded.
 
+## The pull request
+
+1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
+2. `node tools/googlevenues.mjs`, then `node tools/validate.mjs`, and read
+   the SQL diff before going on.
+3. Load the SQL into **preview** from the branch —
+   `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`
+   — and open the PR's preview deployment at `/google` and the list picker
+   to see the rows arrive, and RØST still there.
+4. One commit for the export and its SQL; a second for any `KITCHENS`
+   pattern and cuisine label that had to go with it, and a third for the
+   counts, if they moved.
+5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
+6. Open the PR against the default branch. The body says how many rows came
+   and went, which categories renamed, which patterns were dropped, that
+   preview was loaded, and that **production needs the same load on
+   landing**.
+7. CI green, then **Rebase and merge**, delete the branch, and
+   `wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql`
+   at once, so the live directory and the file say the same thing.
+
 ## Where it goes wrong
 
 - The SQL regenerated and applied to production only.

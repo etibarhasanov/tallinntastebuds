@@ -178,6 +178,29 @@ Two or three commits from the admin page; by hand, one commit carrying the
 file and the entry is fine. What matters is that no commit has an entry
 pointing at a file that is not there yet.
 
+## The pull request
+
+From the admin page there is none: the commits land on the default branch
+and the deploy follows each one. By hand:
+
+1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
+2. `node tools/storymedia.mjs` says the video is web-ready, or `--fix` makes
+   it so; `node tools/stories.mjs` shows the entry queued;
+   `node tools/validate.mjs`.
+3. The story watched on a local server with `from` in the past.
+4. One commit with the file and the entry, subject in the tool's shape:
+   "Queue a story for <Place>, up <date time>".
+5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
+6. Open the PR against the default branch. The body says what the story is,
+   when it goes up and comes down, and which caption languages are in.
+7. CI green, then **Rebase and merge**, and delete the branch. Nothing else:
+   the browser starts the story when `from` comes round, and the hourly tick
+   files it away after. If `story-media.yml` converts the video on the push,
+   its commit lands on your branch; rebase it in rather than fighting it.
+
+Taking one down early is the same PR with `live: false`, or from the admin
+device a direct edit of `data/stories.json` on the default branch.
+
 ## Where it goes wrong
 
 - A `.mov` or a `.webm` committed as-is: `storymedia.mjs --fix`, or the

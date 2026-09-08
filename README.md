@@ -3315,7 +3315,9 @@ CLAUDE.md                  what a session reads before it starts, and which
 .claude/skills/            one checklist per kind of change — a place, a story,
                            a discount, a page, a Function, the export — loaded
                            when the task matches, or by /name
-.claude/rules/             the cleanup rule, loaded whenever code is opened
+.claude/rules/             the cleanup rule, loaded whenever code is opened,
+                           and one pointer per checklist, loaded by the
+                           files that process touches
 index.html                 the whole page
 assets/styles.css          design tokens at the top, then everything else
 assets/app.js              map, panel, filters, i18n, lightbox — no framework
