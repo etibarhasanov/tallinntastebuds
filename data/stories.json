@@ -39,5 +39,16 @@
       "en": "back to chess"
     },
     "spot": "pohja-konn"
+  },
+  {
+    "id": "elman-bites-2026-09-10",
+    "live": true,
+    "video": "elman-bites-2026-09-10.mp4",
+    "poster": "elman-bites-2026-09-10.jpg",
+    "from": "2026-09-10T00:33",
+    "caption": {
+      "en": "in germany"
+    },
+    "spot": "elman-bites"
   }
 ]
