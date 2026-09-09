@@ -1831,7 +1831,7 @@ Places I saved        8 places  a fold: one row a place, newest first
   See them on the map           outside it, so a long fold cannot bury it
 Your lists             3 lists  a fold: one row a list
   [ Name a list ] [ Make it ]   outside the fold, one line high
-Lists you kept          1 list  a fold: one row somebody else's
+Lists you saved         1 list  a fold: one row somebody else's
 Everybody else's
 Public lists           3 lists  a fold: three of everybody else's, most kept first
   Every public list             outside it, the way on to all of them
@@ -1880,7 +1880,7 @@ two words under the name are not the menu that made it a settings screen.
 
 For a while there were two. This page named your lists under your account;
 `/lists.html` named them again, with the box that made a new one and **Lists
-you kept** beside it. Neither page was wrong on its own, and together they were
+you saved** beside it. Neither page was wrong on its own, and together they were
 a fork: your things were on your account, except the half of them that was
 somewhere else, and each of the two carried a row pointing at the other —
 **Make a list** led from here to a page that led back.
@@ -1912,7 +1912,7 @@ names three real lists: the title, how many people kept each one, whose it
 is, and the first three places on it. That is the whole difference between
 an invitation and a label. "Public
 lists" tells somebody who has never opened one nothing they did not already
-know; *The bakeries worth the walk · kept by 5 people · created by kringel ·
+know; *The bakeries worth the walk · saved by 5 people · created by kringel ·
 Ferment · Kaerajaan · Rataskaevu 16* tells them whether to press it.
 
 It stood directly under your name for a while, above everything of your own,
@@ -2665,36 +2665,60 @@ map** above. A list opened from a link opens the map, and sharing it on from
 there used to mean a hop through its own page first, which is a hop a link
 meant to be forwarded does not always survive.
 
-### Keeping somebody else's
+### Saving somebody else's
 
 A list has a bookmark on it, and it is the same mark the map draws on a place,
 saying the same thing: keep this, I am coming back to it. Press it and the list
-lands under **Lists you kept** on `/account.html`, a card of its own under
+lands under **Lists you saved** on `/account.html`, a card of its own under
 the one that makes your own. Press it again to let it go.
 
 The count beside it says how many other people kept it. It is hidden at zero,
-for the reason a save count is hidden at zero: a "0 kept" under somebody's top
-ten reads as a verdict on the list rather than as nobody having pressed it yet.
+for the reason a save count is hidden at zero: a "saved by 0 people" under
+somebody's top ten reads as a verdict on the list rather than as nobody having
+pressed it yet.
 
 Your own lists have no bookmark on them. They are already under **Your lists**,
 and the same list twice on one page is not a feature. They do carry the count,
 which is the one fact about a list you wrote that you cannot learn by reading
 it.
 
-**A keep needs an account, and a save does not.** They look like the same
-gesture and the reason they differ is worth writing down.
+**Saving a list needs an account; saving a place does not.** On screen the two
+are the same word and the same mark, which is the honest thing to show — it is
+one gesture aimed at two kinds of thing. Underneath they are different objects
+and the rules on them differ, and that is worth writing down.
 
-A save is anonymous because it has to work in the first ten seconds, before
-anybody has decided anything about this site — so it is filed under a random id
-the browser made for itself, and losing it to a cleared browser costs you the
-view of your own marks, not the marks themselves.
+Saving a place is anonymous because it has to work in the first ten seconds,
+before anybody has decided anything about this site — so it is filed under a
+random id the browser made for itself, and losing it to a cleared browser costs
+you the view of your own marks, not the marks themselves.
 
-A kept list is a different object. It is somebody else's page, kept because you
-mean to go back to it — usually weeks later, and usually not on the device you
-were holding when you found it. A device-owned keep would be one Safari sweep
-away from a collection with no way back to it, and there is no entry in a
-browser's history for a list read once on a laptop. So the owner of a keep is
-always an account.
+A saved list is a different object. It is somebody else's page, kept because
+you mean to go back to it — usually weeks later, and usually not on the device
+you were holding when you found it. A device-owned one would be one Safari
+sweep away from a collection with no way back to it, and there is no entry in a
+browser's history for a list read once on a laptop. So the owner of a saved
+list is always an account.
+
+**The screen says "save"; the code and this document say "keep".** English was
+alone in drawing a second verb across the two: every other language on the site
+has always used its own word for *save* on both, and a button reading Keep
+beside a card called Places I saved read as two features rather than as one
+gesture. So the label is Save everywhere a visitor can see it.
+
+Prose still wants the two apart, though — "the lists you saved" next to "the
+lists you wrote" is a sentence with a hesitation in it, and the schema has to
+name the thing in one word. So the API action is still `keep`, the column is
+still `keeps`, `functions/api/_mostkept.js` keeps its name, the `ui.json` keys
+are still `listsKeep*`, and anything written down here about holding on to
+somebody else's list still calls it a keep. The keys were never tied to the
+English string anyway: nine of the ten languages have said *save* under
+`listsKeptThis` since the day it was written.
+
+The one thing this costs is that **Save** now names two different presses on
+two different pages: the bookmark on somebody else's list, and the button that
+commits your edits to your own. They never share a surface — your own lists
+carry no bookmark, and the editor card is only ever drawn on a list you own —
+and each is the ordinary word for what it does where it stands.
 
 Signed out, the bookmark is not a dead button and not a button that quietly
 does nothing: it is a link to the sign-in sheet on the map, named as what it is
@@ -2750,10 +2774,10 @@ rows at a time, and **Show more** appears only while there is a page after
 this one.
 
 **Lists nobody has kept are not filtered out.** They sort to the bottom and
-they draw no count, because a "0 kept" reads as a verdict rather than as
-nobody having pressed anything — the same reason a save count is hidden at
-zero on the map. It is also what makes the page work at all on the day it
-ships, before anybody has kept anything.
+they draw no count, because a "saved by 0 people" reads as a verdict rather
+than as nobody having pressed anything — the same reason a save count is
+hidden at zero on the map. It is also what makes the page work at all on the
+day it ships, before anybody has kept anything.
 
 **The row carries the first three places.** A page of titles is a search
 result: "Top ten burgers" tells somebody who has never heard of its author
@@ -2769,7 +2793,7 @@ is, and that name leads to `/u/<name>` — the rest of what that person has
 published. It is the same door the byline under a list's own title has been
 since profiles were built, and it now stands on every row that draws somebody
 else's list: the directory, the three rows at the foot of a list, the three
-on `/account.html`, and **Lists you kept** over them.
+on `/account.html`, and **Lists you saved** over them.
 
 The card is what makes that possible, and it changed shape for it. Every one
 of these rows was a single `<a>` around the title, the facts and the places; a
@@ -2923,11 +2947,12 @@ showing that list's places as pins, with the panel open on the list itself.
 
 On somebody else's list it is the card's filled action and the first thing in
 the row, because it is what the link was sent for: a list is a set of places,
-and the question about a set of places is where they are. Keep and Share are
-the second thoughts beside it. On your own list it stays quiet — Save is that
-card's one filled press, and the accent is spent once. That quiet one is an
-outlined pill, and it is what each index row carries in its bottom corner too,
-so the door onto the map looks the same wherever it turns up.
+and the question about a set of places is where they are. The bookmark and
+Share are the second thoughts beside it. On your own list it stays quiet —
+there the card's one filled press is Save, meaning save these edits, and the
+accent is spent once. That quiet one is an outlined pill, and it is what each
+index row carries in its bottom corner too, so the door onto the map looks the
+same wherever it turns up.
 
 That is the map this site already has, not a second smaller one drawn on the
 lists page. The question anybody has about ten restaurants in one city is where
@@ -2978,7 +3003,7 @@ answers the list before it consults a chip. The list says who it is in the
 panel instead: its title, its owner's name, their sentence, the three things
 you can do about it — keep it, open the list's own page, or send it on — and,
 under those, the way out. The three wear the same pill and none of them is
-filled: on that block the accent behind a pill already means "kept", and
+filled: on that block the accent behind a pill already means "saved", and
 spending it twice would take that reading away.
 
 **Pressing any chip forgets it.** All, Bakery, Discount — each is somebody
@@ -3018,7 +3043,7 @@ nags and nothing follows anybody around the map afterwards.
 
 Signed out it is a door rather than a dead button: it opens the sign-up sheet,
 which is on this page already. A keep needs an account for the reason
-**Why a list needs an account when a save does not** gives.
+**Why a list needs an account when saving a place does not** gives.
 
 The count beside it, and whether you have kept it, come out of `readList()` in
 `functions/api/_lists.js` with the list itself, and neither is cached — see
@@ -3030,7 +3055,7 @@ toast: somebody who followed a dead link gets the thing this site is, which is
 better than an error about a list they have never seen. `/list/<id>` is the
 page that is about one list, so that is the page that reports a missing one.
 
-### Why a list needs an account when a save does not
+### Why a list needs an account when saving a place does not
 
 A save is anonymous on purpose. It has to work in the first ten seconds,
 before anybody has decided anything about this site, so it is filed under a
@@ -3515,7 +3540,7 @@ gesture anybody can make towards somebody else's list — *keep this, I am
 coming back to it.*
 
 It is drawn only once it is more than nought, the same way a keep count under
-a list and a save count on the map are. A "kept 0 times" line on somebody's
+a list and a save count on the map are. A "saved 0 times" line on somebody's
 page reads as a verdict on them rather than as a number that has not started
 yet, and the first keep is how anybody finds out the number is there at all.
 
@@ -3543,7 +3568,7 @@ made.
 - **The byline under a shared list**, which is the whole point — the phrase is
   the link, on the list's own page and in the panel the map draws for a list.
 - **The byline on a row**, wherever a list somebody else wrote is drawn as one:
-  `/lists/public`, the three rows at the foot of a list, and **Lists you kept**.
+  `/lists/public`, the three rows at the foot of a list, and **Lists you saved**.
   See **The row carries the first three places** under [Public
   lists](#public-lists) for the shape that made room for it.
 - **Your own account page**, as the one row on the card that carries your
@@ -3560,7 +3585,7 @@ with nothing to find, so that one is served and not indexed; so is a name
 nobody has, which answers 404 with the page on it and a line saying so.
 
 Nothing is cached, for the reason a list is not: the number changes when
-somebody presses Keep, and a profile is most often opened by the person who
+somebody presses Save, and a profile is most often opened by the person who
 has just been told about it. `GET /api/profile` is the same answer for a page
 the Function did not get to seed.
 
