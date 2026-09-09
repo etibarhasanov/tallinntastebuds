@@ -193,6 +193,15 @@
 
   function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
 
+  var toastTimer = null;
+  function toast(message) {
+    var node = document.getElementById('toast');
+    node.textContent = message;
+    node.hidden = false;
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { node.hidden = true; }, 3800);
+  }
+
   function storeGet(key) {
     try { return window.localStorage.getItem(key); } catch (e) { return null; }
   }
@@ -863,6 +872,24 @@
     main.appendChild(wrap);
   }
 
+  /* ------------------------------------------------------------------ radio
+   * The map's button, in this page's header, playing the map's station:
+   * assets/radio.js holds the station and the on/off across the walk from the
+   * map to here, so the music does not stop at your own name. It draws the
+   * button and wires the press itself; all this page owns is the one thing it
+   * cannot say — a stream that would not start, in the visitor's language. */
+  function mountRadio() {
+    window.TTBRadio.mount({
+      button: document.getElementById('btn-radio'),
+      name: document.getElementById('radio-name'),
+      lang: state.lang,
+      t: t,
+      onchange: function (what) {
+        if (what === 'fail') toast(t('radioFail'));
+      }
+    });
+  }
+
   /* ------------------------------------------------------------------- boot */
 
   function boot() {
@@ -904,6 +931,7 @@
          and the page they are on is not the page anybody typed into. */
       state.all = loaded[4].out.all || [];
 
+      mountRadio();
       render();
     }).catch(function () {
       /* The strings themselves did not arrive, so there is nothing to say in
