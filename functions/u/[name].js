@@ -75,7 +75,7 @@ export async function onRequest(context) {
   let user;
   try {
     user = await sessionUser(request, env);
-    profile = await readProfile(context, name, user);
+    profile = await readProfile(context, name);
   } catch (e) {
     /* The database being unreachable is not this page's failure to report:
        the script will ask /api/profile in a moment and say whatever is true

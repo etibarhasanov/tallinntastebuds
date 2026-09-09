@@ -58,11 +58,12 @@ export const USERNAME = /^[a-z0-9][a-z0-9-]{2,23}$/;
  * usernames are taken. The sign-up sheet is where that question belongs, and
  * it is rate-limited.
  *
- * `mine` is what the page reads to offer the way through to /lists.html,
- * where the private ones and the editing are. It changes nothing about what
- * is served.
+ * Who is asking does not come into it. The answer is the same for the owner
+ * and for a stranger, and the page has nothing to draw differently for the
+ * owner either — it once offered them a link back to /account.html, and the
+ * name in the header was already that.
  */
-export async function readProfile(context, name, user) {
+export async function readProfile(context, name) {
   const { env } = context;
 
   const who = String(name || '').trim().toLowerCase();
@@ -96,7 +97,6 @@ export async function readProfile(context, name, user) {
   return {
     name: row.username,
     since: row.created_at,
-    mine: !!user && user.id === row.id,
     kept: kept,
     /* The four things a row on this page draws and no more — listRow() in
        assets/lists.js takes a title, a count and a number of keeps, and the

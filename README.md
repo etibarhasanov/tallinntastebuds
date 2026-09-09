@@ -1904,13 +1904,17 @@ sentence — and for a while nothing on either said how they differed. The
 first card here carries the one door that is about *you* rather than about
 any of your things: **Your public profile**, with the line *How your lists
 look to everybody else* under it. That line is what tells this page from
-that one, and the profile's own card carries the matching door back —
-**Your lists, private ones included** — to the half nobody else gets. The
-door was filed under **Your lists** once, which was the wrong drawer twice
-over: it is about you rather than about any one list, and down there it sat
-under the very column it is the outside view of. Then it shared a card at
-the foot of the page with the password and the way out, which were the wrong
-company: those two change the account, and this opens a page.
+that one. The door was filed under **Your lists** once, which was the wrong
+drawer twice over: it is about you rather than about any one list, and down
+there it sat under the very column it is the outside view of. Then it shared
+a card at the foot of the page with the password and the way out, which were
+the wrong company: those two change the account, and this opens a page.
+
+The door goes one way. For a while the profile's own card carried a matching
+one back — **Your lists, private ones included** — and it was a second link
+to a page every visitor already has a link to: your name, in the header of
+every page, is the account. A door that duplicates the header is a line on
+the one card that is meant to read the same to everybody, so it went.
 
 The password and the way out are on the same card, along its foot, as the
 quiet pair under the row. They have been everywhere else. Under the name as a
@@ -3575,9 +3579,11 @@ printing. That is the test it was built to pass.
 
 The page shows the same thing to everybody. Your own profile is not your own
 lists with the private ones added back — it is what a stranger sees, which is
-the only thing a profile is useful for knowing. The private half is one link
-away on `/account.html`, where every list you wrote is named, and your own
-profile draws that link.
+the only thing a profile is useful for knowing. The private half is on
+`/account.html`, where every list you wrote is named, and your name in the
+header is the way there — the profile's card no longer draws a link of its
+own, and `/api/profile` no longer says whether the person reading is the
+person on it; there was nothing left for the page to do with the answer.
 
 ### The number, and what it is not
 
