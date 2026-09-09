@@ -2254,6 +2254,16 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 /* The sentence over an answer still on its way is the site thinking out
    loud, and it fades the way the arrow does so the two read as one state. */
 .ask-turn.is-pending .ask-say { color: var(--muted); }
+/* Where "near" was measured from — "Distances are from Tallinna bussijaam,
+   Kesklinn" — under the sentence, in the muted small type the rows use for
+   their own notes. It is the visitor's check on what the site understood,
+   and it earns a line only when there was a place to measure from. */
+.ask-from {
+  margin: 0 0 6px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--muted);
+}
 /* Under the sentence rather than under a group heading: the sentence is the
    heading. */
 .ask-thread .place-list { margin-top: 0; }
