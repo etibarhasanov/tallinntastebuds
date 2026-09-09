@@ -263,7 +263,7 @@ export async function knownPlaces(context) {
  *
  * It lives here rather than beside either of its users because there are two:
  * /api/lists checks a submitted pin against it, and /api/geocode asks
- * Nominatim to look only inside it. Two copies would be one drifting copy,
+ * Photon to look only inside it. Two copies would be one drifting copy,
  * and the drift would show up as an address the geocoder was happy to find
  * and the save then refused.
  */

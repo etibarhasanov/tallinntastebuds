@@ -43,7 +43,7 @@ leading underscore are modules, not routes.
 | `GET/POST /api/lists` | `lists.js` | `lists`, `list_items`, `list_keeps`, `added_places` | `no-store`, on purpose: the owner reads it mid-edit |
 | `GET /api/places` | `places.js` | none; `data/places.json` merged with open `google_venues` | `public, max-age=300` |
 | `GET /api/venues` | `venues.js` | none; the whole `google_venues` table | `public, max-age=300` |
-| `GET /api/geocode` | `geocode.js` | none; proxies Photon for the add-a-place form, session required, cached a day | `no-store` |
+| `GET /api/geocode` | `geocode.js` | none; proxies Photon for the add-a-place form, session required, cached a day; its `suggest()` is also what `/api/ask` measures "near" from | `no-store` |
 | `GET /api/profile` | `profile.js` | none; one person's public lists and their keep total | `no-store` |
 | `POST /api/ask` | `ask.js` | none; narrows the two rolls to what a question could be about and puts it to Workers AI | `no-store` |
 | `/list/<id>` | `list/[id].js` | none; `lists.html` with the list unfurled | `no-store` |

@@ -67,15 +67,37 @@
  * The model cannot be shown the whole export: that is thirty thousand tokens
  * a question against a free allowance that would then last an afternoon. So
  * the browser sends what it read the question as — the wish assets/ask.js
- * produces, types and price and open-now and the words left over — and this
- * narrows the export with the same scoring, hands the model the forty
- * likeliest, and hands the browser those same forty so it can draw and pin
- * whichever the model names. The cut is generous on purpose: its one job is
+ * produces: types and price and open-now, what to be near, and the words
+ * left over — and this narrows the export with the same scoring, hands the
+ * model the forty likeliest, and hands the browser those same forty so it
+ * can draw and pin whichever the model names. The cut is generous on purpose: its one job is
  * "plausibly what was asked for", and the choosing happens once, in the
  * model, over my places and these together.
  *
  * The forty go only on the city. On the map the model is shown none, which
  * is what makes the map scope mean what it says.
+ *
+ * WHERE THE VISITOR IS
+ *
+ * "Something close to my place, Laulupeo street" was once answered with "I
+ * don't have a place on Telliskivi 35 in my map" over Ariran, "2 minutes
+ * from your place" — Telliskivi 35 being Ariran's own line. Every place here
+ * has a point and the model was shown none of them, and the street the
+ * visitor typed was text: it had nothing to measure with, so it borrowed a
+ * street off the catalogue for theirs and invented a walk between the two.
+ *
+ * So a question that says near — close to, lähedal, рядом; the words are in
+ * data/ui.json beside cheap and open — is read by the browser for what it
+ * wants to be near, and that goes to Photon through the lookup /api/geocode
+ * already has for the add-a-place form, and comes back as a point in Tallinn
+ * or as nothing. With a point, every line the model reads ends with its
+ * straight-line distance from there, the nearest score as a named type
+ * would, and the prompt says where the visitor is. Without one — a spelling
+ * Photon cannot place, a street outside the box, Photon busy — the prompt
+ * says the visitor's whereabouts are unknown, that a street in the question
+ * is theirs and never a place's, and that no distance may be stated; the
+ * honest answer to that question is then to say so and ask which part of
+ * town. One lookup a question, only when asked for, cached upstream a day.
  *
  * IT IS FREE, AND WHAT HAPPENS WHEN IT STOPS BEING
  *
@@ -100,6 +122,9 @@ import { json, mapPlaces, venueCard, venueHours, wrongDatabase } from './_lib.js
    table and not VENUE_TYPES — "thai" is a thing to ask for, and the map's own
    vocabulary says only "asian". */
 import { kitchensOf } from './venues.js';
+/* The one lookup behind /api/geocode's suggestions, asked here for where a
+   visitor said they are. See WHERE THE VISITOR IS above. */
+import { suggest } from './geocode.js';
 
 /* A model that is on the Workers Free plan, and a fast one. Cloudflare has
    moved the larger ones behind Workers Paid before now — @cf/moonshotai/kimi-k2.6
@@ -405,8 +430,69 @@ function readWish(raw) {
     cheap: !!wish.cheap,
     fancy: !!wish.fancy,
     open: !!wish.open,
+    /* What they want to be near, as words — a street, a district, a name.
+       Folded like the rest, and short: eighty characters is a long address,
+       and this one goes upstream. */
+    near: typeof wish.near === 'string' ? foldWords(wish.near).trim().slice(0, 80) : '',
     rest: words(wish.rest, 20)
   };
+}
+
+/* ------------------------------------------------------------ the visitor
+ * Where the visitor said they are, as a point — or null, which is "unknown"
+ * and is what most questions are.
+ *
+ * Asked only when the browser read a near phrase and something after it, so
+ * "cheap ramen" never reaches Photon, and once a question when it does. The
+ * first suggestion is the answer: for a street it is the street, for a
+ * district the district, and for a name Photon knows it is the door. Every
+ * way this can fail — no fetch, Photon busy or down, too short to ask,
+ * nothing inside the box — is null, and null is answered honestly by the
+ * brief rather than worked around: a wrong point would put "1.2 km" on
+ * every line in the site's own voice.
+ */
+async function visitorAt(wish) {
+  if (!wish.near) return null;
+  try {
+    const found = await suggest(wish.near);
+    const hit = found.results && found.results[0];
+    return hit ? { lat: hit.lat, lng: hit.lng, label: hit.label, where: hit.where } : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/* Kilometres between two points as the crow flies, which the model is told
+   they are: a rail yard or the bay can double the walk. */
+function km(a, b) {
+  const rad = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * rad;
+  const dLng = (b.lng - a.lng) * rad;
+  const s = Math.sin(dLat / 2) ** 2 +
+    Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.sqrt(s));
+}
+
+/* How far a row is from the visitor, or nothing: nobody said where they
+   are, or the row has no point. The distance is kept once per row and read
+   twice, for the score and for the line. */
+function farFrom(at, entry) {
+  if (!at || typeof entry.lat !== 'number' || typeof entry.lng !== 'number') return null;
+  return km(at, entry);
+}
+
+/* A distance as the model reads it — "650 m", "1.2 km" — or nothing. */
+function distanceLine(far) {
+  if (far == null) return '';
+  return far < 1 ? Math.round(far * 20) * 50 + ' m' : far.toFixed(1) + ' km';
+}
+
+/* Nearness on the scale everything else here scores on: four for within a
+   kilometre, the same as naming a type, and one less for each kilometre
+   after, so "close to Laulupeo" puts the walkable ones ahead and leaves the
+   far side of town to score on whatever else was said. */
+function nearScore(far) {
+  return far == null ? 0 : Math.max(0, 4 - Math.floor(far));
 }
 
 /* The thread as the browser sent it, checked to a shape rather than trusted,
@@ -430,14 +516,15 @@ function readHistory(raw) {
 
 /* The forty Google rows a question is likeliest to be about, best first.
  *
- * The score is rank() in assets/ask.js, number for number — four a type or
- * a cuisine, three each for the price band and open now, one a word — and that is on
- * purpose rather than by accident: the browser ranks my places and these
- * together with that function afterwards, and a row cut here on a different
- * scale would be a row the real ranking never got to see. The two cannot
- * share a file, so change one and look at the other. Ties go to Google's own
- * score and the count behind it, which on Google's rows is the honest
- * tie-break and the only one there is.
+ * The score is shortlist()'s below, number for number — four a type or a
+ * cuisine, four for next door, three each for the price band and open now,
+ * one a word — and that is on purpose rather than by accident: the model
+ * chooses over my places and these together, and a roll cut on a different
+ * scale from the other would be the roll whose best rows the model never
+ * saw. Change one and look at the other. Ties go to the nearer row when
+ * somebody said where they are, then to Google's own score and the count
+ * behind it, which on Google's rows is the honest tie-break and the only
+ * one there is.
  *
  * A row an earlier answer in the thread named comes whatever it scores now,
  * ahead of everything: "is the second one open late" scores nothing in the
@@ -455,33 +542,36 @@ function readHistory(raw) {
  * separately, so the browser's one `open` map holds every place on screen —
  * the closing time of each that is open now.
  */
-function candidates(roll, wish, now, named) {
+function candidates(roll, wish, now, named, at) {
   const scored = [];
   const open = {};
 
   for (const venue of roll) {
     const entry = venue.card;
     const shuts = openUntil(venue.week, now);
+    const far = farFrom(at, entry);
     let score = named.has(entry.id) ? 1000 : 0;
 
     for (const id of wish.types) if (entry.types.includes(id)) score += 4;
     for (const id of wish.kitchens) if (entry.kitchens.includes(id)) score += 4;
+    score += nearScore(far);
     if (wish.cheap && entry.price && entry.price <= 2) score += 3;
     if (wish.fancy && entry.price && entry.price >= 3) score += 3;
     if (wish.open && shuts) score += 3;
     for (const word of wish.rest) if ((' ' + venue.hay).includes(' ' + word)) score += 1;
 
-    scored.push({ venue, score, shuts });
+    scored.push({ venue, score, shuts, far });
   }
 
   scored.sort((a, b) =>
     b.score - a.score ||
+    (a.far || 0) - (b.far || 0) ||
     (b.venue.card.rating || 0) - (a.venue.card.rating || 0) ||
     (b.venue.card.reviews || 0) - (a.venue.card.reviews || 0));
 
-  const out = scored.slice(0, MAX_CANDIDATES).map(({ venue, shuts }) => {
+  const out = scored.slice(0, MAX_CANDIDATES).map(({ venue, shuts, far }) => {
     if (shuts) open[venue.card.id] = shuts;
-    return venue.card;
+    return { ...venue.card, far };
   });
 
   return { venues: out, open };
@@ -489,11 +579,11 @@ function candidates(roll, wish, now, named) {
 
 /* My own places, narrowed to the ones this question could be about.
  *
- * The same scoring as candidates() above and as rank() in assets/ask.js —
- * four a type, three a price band, three for open now, one a word — because
- * a place cut here is a place the answer can never name, and cutting on a
- * different scale from the one that does the real ranking would drop exactly
- * the places the ranking was about to choose.
+ * The same scoring as candidates() above — four a type, four for next door,
+ * three a price band, three for open now, one a word — because a place cut
+ * here is a place the answer can never name, and the model chooses over
+ * both rolls at once: cut one on a different scale and its best rows are
+ * the ones the model never saw.
  *
  * Two things go in whatever they score. A place an earlier answer in this
  * thread named, so "is the second one open late" still has the second one to
@@ -501,7 +591,7 @@ function candidates(roll, wish, now, named) {
  * floor, in catalogue order, so a question that names nothing still has a map
  * to choose from.
  */
-function shortlist(places, wish, open, lang, named) {
+function shortlist(places, wish, open, lang, named, at) {
   const live = places.filter((place) => !place.closed);
   if (live.length <= MIN_CATALOGUE) return live;
 
@@ -510,9 +600,11 @@ function shortlist(places, wish, open, lang, named) {
 
   for (const place of live) {
     const types = place.types || [];
+    const far = farFrom(at, place);
     let score = named.has(place.id) ? 1000 : 0;
 
     for (const id of wish.types) if (types.includes(id)) score += 4;
+    score += nearScore(far);
     if (wish.cheap && place.price && place.price <= 2) score += 3;
     if (wish.fancy && place.price && place.price >= 3) score += 3;
     if (wish.open && open[place.id]) score += 3;
@@ -533,13 +625,14 @@ function shortlist(places, wish, open, lang, named) {
       for (const word of wish.rest) if (hay.includes(' ' + word)) score += 1;
     }
 
-    if (score > 0) scored.push({ place, score });
+    if (score > 0) scored.push({ place: { ...place, far }, score, far });
     else rest.push(place);
   }
 
-  /* Stable, so places that scored the same keep the order the catalogue put
+  /* Nearer first among equals when somebody said where they are; otherwise
+     stable, so places that scored the same keep the order the catalogue put
      them in and the same question twice is the same answer. */
-  scored.sort((a, b) => b.score - a.score);
+  scored.sort((a, b) => b.score - a.score || (a.far || 0) - (b.far || 0));
 
   const out = scored.slice(0, MAX_CATALOGUE).map((hit) => hit.place);
 
@@ -583,9 +676,12 @@ function shortlist(places, wish, open, lang, named) {
    question that say nothing — everything here is in Tallinn. What is kept
    is what places a place: "Suur-Karja 12" is the Old Town, "Ranna tee 5/2,
    Miiduranna, Viimsi" is out past Pirita, and a model that can read either
-   has no business calling the second one central. */
-function whereIs(address) {
-  return String(address || '').replace(/,\s*\d{5}\s+Tallinn\s*$/i, '').trim();
+   has no business calling the second one central. When the visitor said
+   where they are, the distance from there follows — "Telliskivi 35 · 3.1
+   km" — which is the one number on the line the model may repeat. */
+function whereIs(entry) {
+  const street = String(entry.address || '').replace(/,\s*\d{5}\s+Tallinn\s*$/i, '').trim();
+  return [street, distanceLine(entry.far)].filter(Boolean).join(' · ');
 }
 
 function catalogueFor(places, lang) {
@@ -596,7 +692,7 @@ function catalogueFor(places, lang) {
       return [
         place.id,
         place.name,
-        whereIs(place.address),
+        whereIs(place),
         (place.types || []).join(' '),
         place.price ? place.price + '/4' : '',
         (place.mustOrder || []).join(', '),
@@ -626,7 +722,7 @@ function googleFor(rows) {
     .map((row) => [
       row.id,
       row.name,
-      whereIs(row.address),
+      whereIs(row),
       (row.types || []).concat(row.kitchens || []).join(' '),
       row.price ? row.price + '/4' : '',
       row.rating ? row.rating + ' from ' + (row.reviews || 0) + ' reviews' : ''
@@ -638,7 +734,7 @@ function googleFor(rows) {
    lists, and the rules. The lists go here rather than with the question so
    that the thread under them reads as turns of a conversation about them,
    which is what lets a follow-up mean what it says. */
-function briefFor(places, google, wholeCity, lang, open) {
+function briefFor(places, google, wholeCity, lang, open, at) {
   const lines = [
     'You are the voice of Tallinn Tastebuds, a map of places to eat in' +
       ' Tallinn, chatting with a visitor. You help them choose where to eat' +
@@ -710,6 +806,30 @@ function briefFor(places, google, wholeCity, lang, open) {
       ' asked for. If the line gives you no true reason for THIS question,' +
       ' leave the place out; a shorter honest answer beats an invented' +
       ' reason, and the "say" must not claim what the picks do not support.',
+    /* The visitor's whereabouts — see WHERE THE VISITOR IS in the header.
+       Known, the distances on the lines are the only distances there are
+       and the model is told to read them and nothing else. Unknown, the
+       model is told so in as many words, because left to itself it once
+       took a place's street for the visitor's and invented a walk: a
+       street in the question is theirs, no distance may be stated, and the
+       honest answer says it cannot judge and asks which part of town. */
+    at
+      ? 'WHERE THE VISITOR IS: at ' + [at.label, at.where].filter(Boolean).join(', ') +
+        ', the place they said they are near. The "where" of every line ends' +
+        ' with the straight-line distance from there, and "close" means the' +
+        ' smallest. Quote a distance only as its line gives it — never as' +
+        ' minutes, and never for a line that has none.'
+      : 'WHERE THE VISITOR IS: unknown. You know nothing about where they' +
+        ' are, live or are staying beyond what they type, and nothing about' +
+        ' how far anything is from it. A street, address or district in their' +
+        ' message is THEIR location, never a place on the lists: do not read' +
+        ' it back as a place\'s address, and never swap it for one. Never' +
+        ' state or imply a distance or a walking time. A place is near them' +
+        ' only if its "where" names the same street or district they wrote;' +
+        ' then say where it is, not how far. If no "where" does, say plainly' +
+        ' that you cannot judge distance from the street they named, spelled' +
+        ' the way they spelled it, and ask which district or part of town it' +
+        ' is in.',
     'Write "say" as one or two short sentences, the way a person replies in' +
       ' a chat, introducing the picks or answering what was asked.',
     'Write "why" and "say" in this language: ' + lang + '.',
@@ -811,22 +931,19 @@ export async function onRequestPost(context) {
   }
 
   const now = tallinnNow();
-  const open = await openPlaces(env, now);
-
-  /* The city, narrowed to what the question could be about — on both scopes.
-     It used to be asked for only on the city, and a question the map had no
-     answer to cost a second whole request, model and all, to find out. Now
-     the forty travel with every answer: the model sees them under a sentence
-     that says how far it may reach for one, and the browser, with no model,
-     ranks my places first and these only when mine come to nothing. An empty
-     list is a complete answer too: nothing in the export scored. */
   const history = readHistory(body.history);
   const named = new Set(history.flatMap((turn) => turn.picks.map((pick) => pick.id)));
   const wish = readWish(body.wish);
+
+  /* The hours and the visitor's point are two waits on two other services,
+     and neither needs the other, so they run together. */
+  const [open, at] = await Promise.all([openPlaces(env, now), visitorAt(wish)]);
+
   /* The city's rows, on the city only. On the map the model is shown none,
-     so it cannot name one, and the button means what it says. */
+     so it cannot name one, and the button means what it says. An empty list
+     is a complete answer too: nothing in the export scored. */
   const cut = wholeCity
-    ? candidates(await googleVenues(env), wish, now, named)
+    ? candidates(await googleVenues(env), wish, now, named, at)
     : { venues: [], open: {} };
   const google = cut.venues;
   Object.assign(open, cut.open);
@@ -834,7 +951,7 @@ export async function onRequestPost(context) {
   /* Not the whole map any more — the slice of it this question could be
      about. See shortlist(): the catalogue was most of what a question cost
      and none of it was chosen. */
-  const mine = shortlist(places, wish, open, lang, named);
+  const mine = shortlist(places, wish, open, lang, named, at);
 
   /* `note` is not for the page — nothing draws it — it is so that a chat
      answering with the browser's keyword reader can be told apart from a
@@ -845,8 +962,10 @@ export async function onRequestPost(context) {
      arrived as the same empty answer. It names which, never why in
      Cloudflare's own words, so nothing quotes a request back at a
      stranger. */
+  /* The distance rides on each Google row only as far as the prompt; the
+     browser draws nothing with it, so it does not travel. */
   const answer = (source, picks, say, note) =>
-    json({ ok: true, source, picks, say, note, open, venues: google });
+    json({ ok: true, source, picks, say, note, open, venues: google.map(({ far, ...card }) => card) });
 
   /* Exactly what was sent, so an id the model did not see is dropped rather
      than drawn. It is the guard that makes a hallucinated place unreachable
@@ -863,7 +982,7 @@ export async function onRequestPost(context) {
      exchange as the two turns it was — the question, and the answer in the
      exact JSON shape asked for, which is also the shape it will write next
      — and the new question last. */
-  const messages = [{ role: 'system', content: briefFor(mine, google, wholeCity, lang, open) }];
+  const messages = [{ role: 'system', content: briefFor(mine, google, wholeCity, lang, open, at) }];
   for (const turn of history) {
     messages.push({ role: 'user', content: turn.q });
     messages.push({ role: 'assistant', content: JSON.stringify({ say: turn.say, picks: turn.picks }) });

@@ -660,7 +660,8 @@ my map whatever the button said.
 **Eleven hundred rows do not go into a prompt.** That is thirty thousand
 tokens a question against a free allowance that would then last an afternoon.
 So the browser sends what it read the question as — the wish `assets/ask.js`
-produces: types, cheap or fancy, open now, and the words left over — and
+produces: types, cheap or fancy, open now, where to be near, and the words
+left over — and
 `/api/ask` narrows the export with the same scoring that reader uses, hands the
 model the forty likeliest, and hands the browser those same forty so that with
 no model it can rank them itself. The cut is generous on purpose: its one job
@@ -758,15 +759,16 @@ them, in the model's voice. A shrug is honest; that was not.
 
 What `assets/ask.js` still does is read. It turns a sentence into the wish
 the Function narrows on — which of the thirteen types, cheap or fancy, open
-now, and the words left over that might be a dish or a street — in all ten
-languages at once, because its vocabulary is the taxonomy labels this page
-already holds, so *pagariäri*, *bakery* and *пекарня* all reach the bakeries
-without a word of it being written down twice. The three things people ask
-for that have no words in the data — cheap, fancy, open now — live in
-`data/ui.json` under `askWordsCheap`, `askWordsFancy` and `askWordsOpen`, as
-synonyms joined by `|`, the same shape `days` and `months` already use. Which
-means the validator holds them to all ten languages like every other string,
-and adding a language stays one file.
+now, what to be near, and the words left over that might be a dish or a
+street — in all ten languages at once, because its vocabulary is the taxonomy
+labels this page already holds, so *pagariäri*, *bakery* and *пекарня* all
+reach the bakeries without a word of it being written down twice. The four
+things people ask for that have no words in the data — cheap, fancy, open
+now, near — live in `data/ui.json` under `askWordsCheap`, `askWordsFancy`,
+`askWordsOpen` and `askWordsNear`, as synonyms joined by `|`, the same shape
+`days` and `months` already use. Which means the validator holds them to all
+ten languages like every other string, and adding a language stays one
+file.
 
 **Except when it is the allowance, in which case the chat says so.** Workers
 AI answers a spent day with error 3036, which is a 429 like the transient
@@ -842,6 +844,43 @@ haystack the narrowing scores on, so *kopli* reaches Bekker and *viimsi*
 reaches Buxhöwden, and the floor a question falls to when it names nothing is
 one place per type in turn rather than the top of the alphabet — which is how
 *kesklinn* got three bakeries beginning with B.
+
+### Near somewhere
+
+Asked for *something close to my place, Laulupeo street*, the chat once
+answered *I don't have a place on Telliskivi 35 in my map* over Ariran, *2
+minutes from your place* — Telliskivi 35 being Ariran's address, not the
+visitor's. Every place on both rolls has a point, and the model was shown
+none of them; the street the visitor typed was text. It had nothing to
+measure with, so it took a street off one of its own lines for the one it
+had been given and invented a walk between the two.
+
+So *near* is now the fourth thing the reader in `assets/ask.js` looks for,
+beside cheap, fancy and open now, with its words in `data/ui.json` under
+`askWordsNear` in all ten languages — *close to*, *lähedal*, *рядом с*,
+*perto de*. What follows the phrase is what they want to be near, and
+`/api/ask` turns it into a point with the same lookup the add-a-place form
+uses — `/api/geocode`'s Photon call, biased to Tallinn and bounded to it,
+cached upstream for a day — taking the first suggestion: the street for a
+street, the district for a district, the door for a name Photon knows. With a
+point, the *where* on every line the model reads ends with the straight-line
+distance from it — *Telliskivi 35 · 3.1 km* — the nearest score four when the
+places are narrowed, the same as naming a type, one less for each kilometre
+after, and ties go to the nearer; and the prompt says where the visitor is
+and that the distances on the lines are the only distances there are, to be
+quoted as written and never as minutes. One lookup a question, only for a
+question that said *near*, so *khachapuri* never reaches Photon.
+
+Without a point — a spelling Photon cannot place, somewhere outside the box,
+Photon busy, *something nearby* with nothing after it — the prompt says the
+visitor's whereabouts are unknown: a street or district in the question is
+theirs and is never swapped for a place's address, no distance or walking
+time is stated, a place is near them only if its own *where* names the same
+street or district, and when none does the reply names the street as they
+spelled it, says it cannot judge the distance, and asks which part of town it
+is in. *Laulepeo* with an *e* is the case that started this, and whether it
+resolves is Photon's fuzziness to decide; the honest reply is what it gets
+when it does not.
 
 ## Close a place instead of deleting it
 
@@ -4320,8 +4359,9 @@ functions/api/lists.js     somebody else's top ten: make one, fill it, share
                            it, keep somebody else's, add a place nobody has
 functions/api/places.js    the roll the picker searches: the map plus the export
 functions/api/venues.js    the Google Places directory, whole and unmerged
-functions/api/geocode.js   a typed street to a point, for the add-a-place form;
-                           Photon behind it, a session in front of it
+functions/api/geocode.js   a typed street to a point, for the add-a-place form
+                           and for "near Laulupeo" in the chat; Photon behind it,
+                           a session in front of the route
 functions/api/profile.js   one person's public lists, and their standing
 functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
