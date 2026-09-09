@@ -176,6 +176,11 @@
    things. The title beside it gives up the width instead; it is a sentence
    and it can wrap. */
 .lists-fold > summary .lists-count { white-space: nowrap; }
+/* The count already took the free space with its own auto margin; the chevron
+   keeps the one .menu-go carries for a row, and two auto margins on one line
+   split the room between them, which left the count standing in the middle
+   of the title rather than beside the mark it belongs with. */
+.lists-fold > summary .menu-go { margin-left: 0; }
 .lists-fold > summary:hover .menu-go { color: var(--accent); }
 .lists-fold[open] > summary .menu-go { transform: rotate(90deg); }
 
@@ -308,13 +313,11 @@
   margin-bottom: 10px;
 }
 
-/* The box that makes a list. It stands between the two folds on the account
-   page, and the room above and below it is its own: what is over it is a
-   <summary> when the fold is closed and a column of lists when it is open, and
-   neither of those can be given a margin that only means something under this
-   form. */
-.lists-new { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
-.lists-new:last-child { margin-bottom: 0; }
+/* The box that makes a list. It stands under the fold on the account page,
+   and the room above it is its own: what is over it is a <summary> when the
+   fold is closed and a column of lists when it is open, and neither of those
+   can be given a margin that only means something under this form. */
+.lists-new { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
 .lists-new .lists-input { flex: 1 1 200px; min-width: 0; }
 
 /* ---------- the index of your lists ---------- */
@@ -426,10 +429,14 @@
 }
 .lists-index-by:hover { color: var(--accent); }
 
-/* The heading over the second half of the index. Quieter than the card title
-   above it — that one names the page, this one names a group inside it — and
-   given room above so the two sections read as two lists rather than as one
-   long one that changed its mind. */
+/* The heading over a group: the three more lists at the foot of a list, and
+   the two halves of the account page — "Yours" over the cards of your own
+   things, "Everybody else's" over the public lists. Quieter than a card title
+   — that one names the page or the card, this one names a run of things
+   inside or among them — and given room above so two groups read as two
+   rather than as one long one that changed its mind. In the account page's
+   stack the room above adds to the stack's own gap, which is what puts the
+   word nearer the cards it names than the one it follows. */
 .lists-section {
   margin: 26px 0 2px;
   font-family: var(--display);
