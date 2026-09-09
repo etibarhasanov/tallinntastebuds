@@ -2094,10 +2094,6 @@ body.panel-detail .panel {
    under it moved into the list, where each group says its own name. */
 .list-head { margin-bottom: 4px; padding-right: 30px; }
 
-/* The search field. A hairline box rather than a filled one: it is a tool
-   the list offers, not the thing the panel is about. The magnifier and the
-   clear button are laid over the input rather than beside it, so the text
-   starts and ends where the row names do. */
 /* The chat: a title, the thread, and the field under it all.
  *
  * It is laid out as a chat is: the conversation reads down from the top, and
@@ -2262,6 +2258,10 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
    heading. */
 .ask-thread .place-list { margin-top: 0; }
 
+/* The search field. A hairline box rather than a filled one: it is a tool
+   the list offers, not the thing the panel is about. The magnifier and the
+   clear button are laid over the input rather than beside it, so the text
+   starts and ends where the row names do. */
 .search {
   position: sticky;
   top: 0;
@@ -3498,12 +3498,18 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   .panel { --panel-pad: 18px; --panel-pad-t: 48px; --search-field-h: 40px; }
   .panel-scroll { padding-bottom: calc(26px + var(--safe-b)); }
   .list-group { font-size: 19px; }
-  /* Anything under 16px makes iOS zoom the whole page when the field takes
-     focus, and it never zooms back out. */
   .search { margin-top: 12px; }
   /* 16px is the smallest a field can be before iOS zooms the page to reach
-     it; the height moves with it through the token. */
-  .search-input { font-size: 16px; }
+     it, and it never zooms back out: the panel is left a seventh too wide,
+     with the send arrow and the badge on the right of every row off the side
+     of the screen and the whole map pannable sideways. The height moves with
+     it through the token.
+
+     The chat's field is the same field and takes the same floor. It had been
+     missed since the chat was written, which is how a first question came
+     back with an answer nobody could read the right-hand edge of. */
+  .search-input,
+  .ask-input { font-size: 16px; }
   .list-label { margin-top: 20px; padding: 8px var(--panel-pad) 7px; padding-right: calc(var(--panel-pad) + 34px); }
   .list-label:first-of-type { margin-top: 10px; }
   .list-row { padding: 10px 2px; column-gap: 8px; }

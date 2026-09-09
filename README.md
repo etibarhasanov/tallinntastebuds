@@ -530,6 +530,13 @@ map narrows to the newest answer's pins. The thread reads down from the top
 and the field is held to the bottom, so the newest exchange is always by the
 place you ask the next one, and earlier questions scroll up behind it.
 
+On a phone the field is 16px, the same floor the search box takes and for the
+same reason: anything smaller and iOS zooms the whole page the moment the
+field takes focus, and never zooms back out. What that looked like was the
+first answer arriving into a panel a seventh too wide — the send arrow and the
+badge on the right of every row off the side of the screen, and the map
+pannable sideways for the rest of the visit.
+
 It is a conversation, and the model is told the whole of it: every question
 goes to `/api/ask` with the exchanges before it — what was asked and what was
 answered, ids and clauses, the last six — so *somewhere cheaper* or *is the
@@ -5291,9 +5298,10 @@ The label is uppercase mono in `--muted`; the input is `--paper` inside a
 hairline. **16px is not a taste decision**: anything smaller makes iOS zoom
 the page when the field takes focus, and it never zooms back out. A field that
 is smaller on a wide screen has to be bumped at the phone breakpoint, which is
-what the map's search box does and what the lists page's fields had been
-missing. Every field carries the `autocomplete` hint that lets a password
-manager do its job — which is what actually rescues people who forget things.
+what the map's search box does and what the lists page's fields and the
+chat's had been missing. Every field carries the `autocomplete` hint that lets
+a password manager do its job — which is what actually rescues people who
+forget things.
 
 ### 10. Colour is never the only thing saying it
 
