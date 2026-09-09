@@ -1663,8 +1663,9 @@ had just asked for. The git history has the whole of it.
 
 ### Changing the password
 
-On **/account.html**, under the name: **Change password**, which opens the
-map's sheet on that step and comes back here afterwards. The form itself is on
+On **/account.html**, along the foot of the card that carries your name:
+**Change password**, which opens the map's sheet on that step and comes back
+here afterwards. The form itself is on
 the map because there is one password form on this site — see **The account
 page**. It asks for the one in use and the new one on the same card.
 
@@ -1736,10 +1737,11 @@ needs anyway. There is no third variable and no second service.
 
 ## The account page
 
-`/account.html`. Your name, three of everybody else's lists, the places you
-saved, the lists you wrote, the ones you kept, the box that makes another —
-and, at the end, the two things you can do to an account: change its password,
-or leave.
+`/account.html`. Your name, with the door to your public profile and the two
+things you can do to an account — change its password, or leave — on the same
+card; then, under a heading saying **Yours**, the places you saved, the lists
+you wrote, the box that makes another and the ones you kept; then, under
+**Everybody else's**, three of everybody else's lists.
 
 It was a menu in the sheet the map opens, and the menu is what went wrong with
 it. A sheet over the map is for something you do and dismiss — sign in, change
@@ -1754,20 +1756,58 @@ to filter the map by them, and names the lists rather than linking to the page
 that names them:
 
 ```
-etibar                          the name, and one line saying what the page is
-Public lists                    three of everybody else's, named, and
-                                Every public list under them
+etibar                          the name, one line saying what the page is,
+  Your public profile >         the door to how it looks to everybody else,
+  Change password · Sign out    and the two things you can do to the account
+Yours
 Places I saved        8 places  a fold: one row a place, newest first
   See them on the map           outside it, so a long fold cannot bury it
 Your lists             3 lists  a fold: one row a list
-  [ Name a list ] [ Make it ]   outside both folds, one line high
+  [ Name a list ] [ Make it ]   outside the fold, one line high
 Lists you kept          1 list  a fold: one row somebody else's
-Your account                    your public profile, the password, the way out
+Everybody else's
+Public lists                    three of everybody else's, named, and
+                                Every public list under them
 ```
 
-Five cards, and the fourth holds both folds a list can be in — the ones you
-wrote and the ones you kept — with the box that makes the next one standing
-between them.
+Five cards, one thing each, in the order of how much each is yours: who you
+are, what you kept, what you wrote, what you kept of other people's, and what
+is nobody's in particular. The last four are two groups, and a heading says
+so over each — the same quiet heading a list page puts over the three more
+lists at its foot, `.lists-section`, a group's name rather than a card's. The
+order alone had not been enough: five cards in one column read as one column,
+and nothing said where your own things stopped and everybody else's began. The lists you wrote and the lists you kept had one
+card between them for a while, two folds with the box that makes a list
+standing between — and that card was the one on the page nobody could read
+at a glance: two titles, a form, and the second title reading as a footnote
+to the form rather than as the column it was. One card, one column, is what
+every other card here is.
+
+### Two pages open with your name, and this one says which it is
+
+`/u/<you>` and this page start the same way — an eyebrow, the name, a
+sentence — and for a while nothing on either said how they differed. The
+first card here carries the one door that is about *you* rather than about
+any of your things: **Your public profile**, with the line *How your lists
+look to everybody else* under it. That line is what tells this page from
+that one, and the profile's own card carries the matching door back —
+**Your lists, private ones included** — to the half nobody else gets. The
+door was filed under **Your lists** once, which was the wrong drawer twice
+over: it is about you rather than about any one list, and down there it sat
+under the very column it is the outside view of. Then it shared a card at
+the foot of the page with the password and the way out, which were the wrong
+company: those two change the account, and this opens a page.
+
+The password and the way out are on the same card, along its foot, as the
+quiet pair under the row. They have been everywhere else. Under the name as a
+menu of three, which made the page read as a settings screen with your saves
+filed underneath. In a card of their own at the end, headed **Your account**,
+a second heading about the account under a page that had opened with one. As
+a bare row after the last card, which looked lost — two words standing in the
+wash under somebody else's lists. The card that says who you are is the one
+those two belong to, and a door is a row while a thing you do is a word,
+which is what tells the profile from the password at a glance. One row and
+two words under the name are not the menu that made it a settings screen.
 
 ### There is one page about you, and this is it
 
@@ -1793,19 +1833,28 @@ addresses** under **Lists**.
 Deleting a list ends here too, for the same reason: it used to end on the index
 of your own, and that is this page.
 
-### Everybody else's lists come first
+### Everybody else's lists come after your own
 
 **Public lists** was a row at the foot of the lists card — a name, a line
 saying what was behind it, a chevron — under a fold that could be forty rows
 deep. It was the only way from your own things to anybody else's and it read
 like a footnote to your own.
 
-It is a card of its own now, directly under your name, and it names three real
-lists: the title, how many people kept each one, whose it is, and the first
-three places on it. That is the whole difference between an invitation and a
-label. "Public lists" tells somebody who has never opened one nothing they did
-not already know; *The bakeries worth the walk · kept by 5 people · created by
-kringel · Ferment · Kaerajaan · Rataskaevu 16* tells them whether to press it.
+It is a card of its own now, and it names three real lists: the title, how
+many people kept each one, whose it is, and the first three places on it.
+That is the whole difference between an invitation and a label. "Public
+lists" tells somebody who has never opened one nothing they did not already
+know; *The bakeries worth the walk · kept by 5 people · created by kringel ·
+Ferment · Kaerajaan · Rataskaevu 16* tells them whether to press it.
+
+It stood directly under your name for a while, above everything of your own,
+and that made the page open with the one thing on it that is not yours: a
+page called Account, with your name at the top, whose first and tallest block
+was three strangers' top tens. It is the last card now, under its own heading,
+after what you saved, what you wrote and what you kept — and signed out it is
+under the saves on this browser the same way. The folds are what let it move: the reason it went
+to the top was a column forty rows deep burying it, and a card that is one
+line high until it is opened buries nothing.
 
 They are the same three rows the foot of every list already draws, off the same
 request and in the same class — `allRow()` on `/lists/public`, `row()` here.
@@ -1813,14 +1862,14 @@ Two things are deliberately missing. There is no **bookmark** in the corner:
 keeping a list is a gesture for the page built to hand somebody twenty of them,
 and three rows on an account page are an offer of somewhere to go rather than a
 shelf to take things off. And **your own lists are left out**, wherever they
-stand in the order — they are two cards down under **Your lists**, with their
+stand in the order — they are up the page under **Your lists**, with their
 counts and their private ones, and a page that named the same list twice would
 be the fork this page was built to close. The answer holds twenty and three are
 drawn, which is what leaves the room to take yours out of it first.
 
 The card is not drawn at all when there is nothing in it. A "nothing here yet"
-at the top of somebody's own account is the site apologising for itself on the
-one page that is about them.
+on somebody's own account is the site apologising for itself on the one page
+that is about them.
 
 ### The columns fold, and the ways on do not
 
@@ -1832,9 +1881,10 @@ were the way out of.
 So each column is a `<details>` behind its own title, with the count of what is
 inside it on the line you press, and the ways on sit outside the fold. Signed
 in with all three closed, the whole account is one phone screen: your name,
-three lists worth opening, how many places you kept, how many lists you wrote,
-how many you kept of other people's, the field that names the next one, and
-every door out in sight without scrolling.
+the door to your profile and the way out, how many places you kept, how many
+lists you wrote, the field that names the next one, how many you kept of
+other people's, and three lists worth opening — with every door out in sight
+without scrolling.
 
 A closed fold is not the menu this page was made out of. A menu row said the
 name of another page; this one says how many of your things are behind it and
@@ -2520,8 +2570,8 @@ meant to be forwarded does not always survive.
 
 A list has a bookmark on it, and it is the same mark the map draws on a place,
 saying the same thing: keep this, I am coming back to it. Press it and the list
-lands under **Lists you kept** on `/account.html`, its own fold under the box
-that makes one of your own. Press it again to let it go.
+lands under **Lists you kept** on `/account.html`, a card of its own under
+the one that makes your own. Press it again to let it go.
 
 The count beside it says how many other people kept it. It is hidden at zero,
 for the reason a save count is hidden at zero: a "0 kept" under somebody's top
@@ -2619,8 +2669,8 @@ a demotion nobody did anything to deserve.
 is, and that name leads to `/u/<name>` — the rest of what that person has
 published. It is the same door the byline under a list's own title has been
 since profiles were built, and it now stands on every row that draws somebody
-else's list: the directory, the three rows at the foot of a list, the three at
-the top of `/account.html`, and **Lists you kept** under them.
+else's list: the directory, the three rows at the foot of a list, the three
+on `/account.html`, and **Lists you kept** over them.
 
 The card is what makes that possible, and it changed shape for it. Every one
 of these rows was a single `<a>` around the title, the facts and the places; a
@@ -2700,7 +2750,7 @@ everybody else, which is most of the traffic this page gets.
 **How anybody gets there.** Four ways, and the first two matter most:
 
 - **The map**, from the button that wears your name: it opens `/account.html`,
-  where three of these lists are named directly under your own name, with
+  where three of these lists are named after your own things, with
   **Every public list** under them. It was a row at the foot of the lists card
   saying "Public lists", under a fold that could be forty rows deep — a
   footnote to somebody's own things, which is the wrong shape for the one page
@@ -3397,10 +3447,10 @@ made.
   `/lists/public`, the three rows at the foot of a list, and **Lists you kept**.
   See **The row carries the first three places** under [Public
   lists](#public-lists) for the shape that made room for it.
-- **Your own account page**, as a row under your lists, between **Make a
-  list** and the way through to everybody's.
-- **Your own lists page**, as a row under the box that makes a new one, above
-  the way through to everybody's.
+- **Your own account page**, as the one row on the card that carries your
+  name: *Your public profile — how your lists look to everybody else*. See
+  **Two pages open with your name** under [The account
+  page](#the-account-page).
 
 ### Indexed, like a public list
 
@@ -4229,8 +4279,8 @@ lists.html                 the one a stranger reads, everybody's, and whoever
 assets/lists.js            all three of those; no map, no Leaflet
 assets/lists.css           what a list page has and the map does not, and the
                            furniture the account page is built from too
-account.html               your name, everybody else's lists, your saved
-                           places, your lists and the ones you kept
+account.html               your name, your saved places, your lists, the
+                           ones you kept, and everybody else's
 assets/account.js          all three of its states; no stylesheet of its own
 google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex

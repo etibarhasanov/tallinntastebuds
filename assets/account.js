@@ -34,19 +34,28 @@
  * everybody's — three addresses that are each about something that is not you.
  * There is one page about you and this is it.
  *
- * WHAT IS NOT YOURS, AND WHY IT IS AT THE TOP
+ * WHAT IS NOT YOURS, AND WHERE IT SITS
  *
  * Public lists was a row at the foot of the lists card: a name, and a line
  * saying what was behind it, under a fold that could be forty places long. It
  * was the only way from your own things to anybody else's and it read like a
  * footnote.
  *
- * It is a card of its own now, above your saves, and it names three real
- * lists — whose they are and how many people kept them. That is the whole
- * difference between an invitation and a label: "Public lists" tells somebody
- * who has never opened one nothing at all, and *Top ten burgers, kept by 12*
- * tells them whether to press it. The same three rows the foot of every list
- * already draws, from the same request, for the same reason.
+ * It is a card of its own now, and it names three real lists — whose they are
+ * and how many people kept them. That is the whole difference between an
+ * invitation and a label: "Public lists" tells somebody who has never opened
+ * one nothing at all, and *Top ten burgers, kept by 12* tells them whether to
+ * press it. The same three rows the foot of every list already draws, from
+ * the same request, for the same reason.
+ *
+ * For a while that card stood directly under your name, above everything of
+ * your own, and the page opened with the one thing on it that is not yours:
+ * a page called Account, with your name at the top, whose first and tallest
+ * block was three strangers' top tens. It is the last card now, under its
+ * own label, after what you saved, what you wrote and what you kept. The
+ * folds are what let it move: the reason it went to the top was a column
+ * forty rows deep burying it, and a card that is one line high until it is
+ * opened buries nothing.
  *
  * THE COLUMNS FOLD, AND THE WAYS ON DO NOT
  *
@@ -66,13 +75,35 @@
  *
  * WHAT THE ACCOUNT ITSELF IS, AND WHERE IT SITS
  *
- * At the bottom, in a card of its own: your public profile, the password, and
- * the way out. They were under your name at the top, which is where a menu
- * puts them and not where anybody wants them — nobody opens this page to
- * change a password, and three account controls standing between your name and
- * your things made the page read as a settings screen with your saves filed
- * underneath. The name is the top of the page. What you can do to the account
- * is the end of it.
+ * Two pages start with your name, and they looked the same: an eyebrow, the
+ * name, a sentence. /u/<you> is what a stranger sees; this page is the rest.
+ * So the first card here says so, with the one door on it: your public
+ * profile, and a line saying it is how your lists look to everybody else.
+ * That is the card's own subject rather than a control filed under it — the
+ * public face of the name over it — and the profile's own card carries the
+ * matching door back, to the private half.
+ *
+ * The password and the way out are on the same card, along its foot. They
+ * have been everywhere else: under the name as a menu of three, which made
+ * the page read as a settings screen with your saves filed underneath; in a
+ * card of their own at the end, headed "Your account", a second heading about
+ * the account under a page that had opened with one; and as a bare row after
+ * the last card, which looked lost, two words standing in the wash under
+ * somebody else's lists. The card that says who you are is the one card
+ * those two belong to, and as two quiet `.alt`s along its foot they are not
+ * the menu that made it a settings screen. Nobody opens this page to change
+ * a password, and nobody has to look for the way out either.
+ *
+ * TWO HALVES, AND A LABEL ON EACH
+ *
+ * Under that card the page is two things: what is yours — the places you
+ * saved, the lists you wrote, the lists you kept — and what is everybody
+ * else's. That was the order already, and it still read as one column of
+ * five cards, because nothing said where your own things stopped. Now a
+ * heading stands over each half — the quiet one a list page puts over the
+ * three more lists at its foot, a group's name rather than a card's — so the
+ * page says it in two words rather than leaving it to be worked out from
+ * the titles.
  *
  * WHAT IT DOES NOT DO
  *
@@ -99,7 +130,7 @@
  *   /data/places.json   id -> name and address, for the saves
  *   /api/account        who is signed in, and what they have saved
  *   /api/lists          the lists they wrote, and the ones they kept
- *   /api/lists?all=1    everybody's, for the three rows at the top
+ *   /api/lists?all=1    everybody's, for the three rows near the foot
  *
  * All five at once and one paint at the end. Nothing here waits on anything
  * else, and a page that drew twice would draw a card and then move it. The
@@ -117,8 +148,8 @@
   var ACCOUNT_API = '/api/account';
   var LISTS_API = '/api/lists';
 
-  /* Where everybody's lists are read at length, once the three at the top of
-     this page have done their job. */
+  /* Where everybody's lists are read at length, once the three on this page
+     have done their job. */
   var ALL_PATH = '/lists/public';
 
   /* The same two keys the map writes and the lists page reads. Walking from
@@ -127,7 +158,7 @@
   var LANG_KEY = 'ttb.lang';
   var SAVED_KEY = 'ttb.saved';
 
-  /* Which of this page's three columns are unfolded, comma-joined. Nothing
+  /* Which of this page's three folds are open, comma-joined. Nothing
      else on the site reads it, and a browser that refuses storage simply gets
      the folded page every time — which is the page a first visit gets
      anyway. */
@@ -346,10 +377,10 @@
   /* A way on from a card, as a row: the name, the line under it saying what
      is behind it, and the chevron. It is .menu-row out of assets/styles.css,
      the shape the map's account sheet draws its places-to-go in, because that
-     is what this is. It had three callers and has one — the profile at the
-     foot of the page — since the other two became the things they had been
-     promising: a field that makes a list, and a card with three of everybody
-     else's in it. It stays a function because .menu-row is one of the four
+     is what this is. It had three callers and has one — the profile, on the
+     card that carries your name — since the other two became the things they
+     had been promising: a field that makes a list, and a card with three of
+     everybody else's in it. It stays a function because .menu-row is one of the four
      controls the design rules name, and a row of it written out by hand here
      would be the copy that quietly stops matching the sheet's. */
   var ICON_GO = '<path d="M9 5l7 7-7 7"/>';
@@ -562,11 +593,11 @@
    * visitor came to have two pages naming the same lists and a row on each of
    * them pointing at the other.
    *
-   * The box stands outside both folds, one line high, between them. That is
-   * the rule every way on this page follows, said about a form: a fold that is
-   * forty rows long must not be able to push the thing the card is for off the
-   * screen. Closed, this card is its two titles with their counts and the
-   * field that makes the next one.
+   * The box stands outside the fold, one line high, under it. That is the rule
+   * every way on this page follows, said about a form: a fold that is forty
+   * rows long must not be able to push the thing the card is for off the
+   * screen. Closed, this card is its title with its count and the field that
+   * makes the next one.
    */
 
   function listRow(l) {
@@ -659,23 +690,26 @@
     }
 
     kids.push(newListForm());
-
-    /* The other half, and it is drawn only when there is one — an empty
-       "Lists you kept" under an empty "Your lists" is a card explaining two
-       features to somebody who has used neither. The heading arriving with
-       the first keep is how anybody learns the section is there, the same way
-       the map's Saved chip arrives with the first mark.
-
-       Under the box rather than over it. What you kept is somebody else's
-       writing filed on your account, and the thing this card is for is the
-       one line that makes your own. */
-    if (state.kept.length) {
-      var kul = el('ul', { className: 'lists-index' });
-      state.kept.forEach(function (l) { kul.appendChild(listRow(l)); });
-      kids.push(fold('kept', t('listsKept'), listsLabel(state.kept.length), [kul]));
-    }
-
     return card(kids);
+  }
+
+  /* The lists you kept: somebody else's writing, filed on your account. A card
+     of its own, drawn only when there is something in it — an empty "Lists
+     you kept" under an empty "Your lists" is a page explaining two features
+     to somebody who has used neither, and the heading arriving with the first
+     keep is how anybody learns the section is there, the same way the map's
+     Saved chip arrives with the first mark.
+
+     It shared a card with your own lists for a while, as a second fold under
+     the box that makes one, and that card was the confusing one on the page:
+     two titles, a form between them, and the second title reading as a
+     footnote to the form rather than as the column it was. One card, one
+     column, is what every other card here is. */
+  function keptCard() {
+    if (!state.kept.length) return null;
+    var ul = el('ul', { className: 'lists-index' });
+    state.kept.forEach(function (l) { ul.appendChild(listRow(l)); });
+    return card([fold('kept', t('listsKept'), listsLabel(state.kept.length), [ul])]);
   }
 
   /* ---------------------------------------------------------- public lists
@@ -683,11 +717,13 @@
    *
    * This was a row at the foot of the lists card saying "Public lists", under
    * a fold that could be forty rows deep — the only way from your own things
-   * to anybody else's, and it read as a footnote to your own. It is above your
-   * saves now and it names three real lists, because a title somebody chose
-   * and the number of people who kept it is what tells a stranger whether to
-   * press; the words "Public lists" tell them nothing they did not already
-   * know from the page they are standing on.
+   * to anybody else's, and it read as a footnote to your own. It is a card
+   * now, after the ones that are yours, and it names three real lists,
+   * because a title somebody chose and the number of people who kept it is
+   * what tells a stranger whether to press; the words "Public lists" tell
+   * them nothing they did not already know from the page they are standing
+   * on. Last rather than first, because a page about you should not open
+   * with what is not — see the header.
    *
    * The same three rows the foot of a list already draws, off the same
    * request, and drawn with the same class. What is not here is the bookmark
@@ -702,8 +738,8 @@
    * the one page that is about you.
    */
   function publicCard() {
-    /* Your own are left out, whatever their place in the order. They are two
-       cards down under Your lists, where the count and the private ones are,
+    /* Your own are left out, whatever their place in the order. They are up
+       the page under Your lists, where the count and the private ones are,
        and a page that named the same list twice would be the fork this page
        was made to close. It is the same thing the foot of a list does with the
        list being read. */
@@ -732,29 +768,28 @@
 
   /* ------------------------------------------------------------------- you */
 
-  /* Your name, and what this page is. It was your name and three account
-     controls, which put the password between somebody and their own things;
-     those are at the foot of the page now, in a card of their own. */
+  /* Your name, what this page is, and the one door that is about you rather
+     than about any of your things: your public profile.
+
+     The profile is a row rather than a word along the foot, because it is a
+     place to go and it is worth a line saying what — /u/<you> is everything
+     you have published, read the way a stranger reads it, and that line is
+     what tells this page from that one, since both open with your name. It
+     was filed under Your lists once, which was the wrong drawer twice over:
+     it is about you rather than about any one list, and down there it sat
+     under the very column it is the outside view of. Then it was in a card
+     at the foot of the page with the password and the way out.
+
+     Those two are along this card's foot now, as the quiet pair under the
+     row: a door is a row and a thing you do is a word, which is what tells
+     the profile from the password at a glance. One row and two words under
+     the name are not the menu of three controls that once stood here and
+     made the page read as settings — see the header. */
   function youCard() {
     return card([
       el('p', { className: 'eyebrow', textContent: t('accountOpen') }),
       heading(state.user),
-      el('p', { className: 'lists-say', textContent: t('accountWhat') })
-    ]);
-  }
-
-  /* And the end of the page: the account itself.
-   *
-   * Your public profile is a row rather than a word along the foot, because it
-   * is a place to go and the two below it are things to do — /u/<you> is
-   * everything you have published, read the way a stranger reads it, and that
-   * is worth a line saying so. It was filed under Your lists once, which was
-   * the wrong drawer twice over: it is about you rather than about any one
-   * list, and down there it sat under the very column it is the outside view
-   * of. */
-  function accountCard() {
-    return card([
-      heading(t('accountTitle'), 'h2'),
+      el('p', { className: 'lists-say', textContent: t('accountWhat') }),
       el('ul', { className: 'menu' }, [
         door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user))
       ]),
@@ -770,8 +805,7 @@
 
   /* Sign out is a button rather than a link because it changes something. The
      map's sheet is where it used to live; it is here because this is the page
-     that says who you are, and the way out belongs at the end of the card
-     about the account it is a way out of.
+     that says who you are, and the way out belongs on the card that does.
 
      It ends on the map rather than on this page. A signed-out account page is
      an invitation to sign in, which is a fine page and not what somebody who
@@ -844,29 +878,48 @@
    * answer is in. Three states, and each is the whole page rather than a
    * variation on the one before it.
    *
-   * The order is the argument this page makes. Who you are, then the one thing
-   * here that is not yours, then what you kept, then what you wrote — and the
-   * account's own controls last, because nobody opens this page to change a
-   * password.
+   * The order is the argument this page makes. Who you are, with everything
+   * that can be done to the account on the same card; then what is yours —
+   * what you kept, what you wrote, what you kept of other people's — under a
+   * label saying so; then the one card here that is not yours, under its
+   * own. Signed out it is the same two halves with the offer of an account
+   * where the name would be, and the saves on this browser as the whole of
+   * the first.
+   *
+   * The label is the heading a list page puts over the three more lists at
+   * its foot — .lists-section, a group's name rather than a card's — standing
+   * in the stack over a run of cards. It is not drawn when there is nothing
+   * under it: everybody's lists are left out entirely when the site has none
+   * — see publicCard() — and a label over nothing would be the page
+   * apologising in two words.
    */
+  function section(key) {
+    return el('h2', { className: 'lists-section', textContent: t(key) });
+  }
+
   function render() {
     clear(main);
     var wrap = el('div', { className: 'lists-stack' });
     var add = function (node) { if (node) wrap.appendChild(node); };
+    var theirs = publicCard();
 
     if (!state.ready) {
       add(switchedOff());
       add(savedCard());
     } else if (!state.user) {
       add(invitation());
-      add(publicCard());
+      add(section('accountYours'));
       add(savedCard());
+      if (theirs) add(section('accountTheirs'));
+      add(theirs);
     } else {
       add(youCard());
-      add(publicCard());
+      add(section('accountYours'));
       add(savedCard());
       add(listsCard());
-      add(accountCard());
+      add(keptCard());
+      if (theirs) add(section('accountTheirs'));
+      add(theirs);
     }
 
     main.appendChild(wrap);
