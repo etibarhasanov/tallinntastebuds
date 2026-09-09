@@ -140,9 +140,9 @@ complain about them:
    `langName`, `styleRed`, `styleGreen`, `months` (twelve names joined by `|`,
    or `formatMonth()` falls back to `Intl`, which draws April as `M04` in
    Chromium for some locales), `monthYear`, and the chat's synonym lists
-   `askWordsCheap`, `askWordsFancy` and `askWordsOpen`, joined by `|` the
-   same way — that is how *cheap* in the new language reaches the model's
-   brief without a word of code.
+   `askWordsCheap`, `askWordsFancy`, `askWordsOpen`, `askWordsNear` and
+   `askWordsMe`, joined by `|` the same way — that is how *cheap* and *near
+   me* in the new language reach the model's brief without a word of code.
 2. `data/taxonomy.json`: a label on every type. Fails without.
 3. `data/cuisines.json`: a label on every cuisine. Fails without.
 4. `data/restaurants.json`: `blurb` on every place. Warns without, so you can

@@ -45,7 +45,7 @@ leading underscore are modules, not routes.
 | `GET /api/venues` | `venues.js` | none; the whole `google_venues` table | `public, max-age=300` |
 | `GET /api/geocode` | `geocode.js` | none; proxies Photon for the add-a-place form, session required, cached a day; its `suggest()` is also what `/api/ask` measures "near" from | `no-store` |
 | `GET /api/profile` | `profile.js` | none; one person's public lists and their keep total | `no-store` |
-| `POST /api/ask` | `ask.js` | none; narrows the two rolls to what a question could be about and puts it to Workers AI | `no-store` |
+| `POST /api/ask` | `ask.js` | none; narrows the two rolls to what a question could be about and puts it to Workers AI; measures "near" from the place named through `geocode.js`, or from the visitor's own dot sent as `here` | `no-store` |
 | `/list/<id>` | `list/[id].js` | none; `lists.html` with the list unfurled | `no-store` |
 | `/lists/public` | `lists/public.js` | none; `lists.html` with the first page of everybody's lists seeded in, searched when the address carries `?q=` | `no-store` |
 | `/lists/kept` | `lists/kept.js` | none; 301 to `/lists/public`, the address this page had before it was renamed | — |

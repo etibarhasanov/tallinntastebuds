@@ -1,7 +1,7 @@
 /**
  * Tallinn Tastebuds — the chat box on the map, answered.
  *
- * POST /api/ask   { q, lang, scope, wish, history }
+ * POST /api/ask   { q, lang, scope, wish, here, history }
  *                 ->  { ok, source, picks, say, open, venues, at }
  *
  * Somebody types "somewhere cheap and asian, still open" into the map and this
@@ -99,12 +99,28 @@
  * honest answer to that question is then to say so and ask which part of
  * town. One lookup a question, only when asked for, cached upstream a day.
  *
+ * The other point is the visitor's own. "Near me", "close to my hotel",
+ * "siin lähedal" name nowhere Photon could find, and for a while the chat
+ * answered them by asking which part of town — to a visitor who had just
+ * pressed the locate button and was looking at their own dot on the map.
+ * So the browser sends the dot as `here` with a question that asked for
+ * somewhere near, asking the device for one when there is no dot yet, and
+ * a question with nothing to look up is measured from that. A question
+ * that did name somewhere is still measured from the place named — the
+ * dot is only where it falls back to when Photon cannot place the words —
+ * and a question that asked for nothing near carries no point at all, so
+ * that "best khachapuri" is not quietly a question about the nearest one.
+ * The point is checked to be inside the Tallinn box and otherwise dropped:
+ * a visitor asking from Helsinki is told the same as one whose whereabouts
+ * are unknown, rather than shown eighty kilometres on every line.
+ *
  * What was measured from goes back to the browser as `at`, and the chat
  * prints it under the reply — "Distances are from Tallinna bussijaam,
- * Kesklinn". That line is the visitor's check on the whole chain: a street
- * Photon placed in the wrong town, or a name it read as some other name,
- * shows up there as the wrong words, where without it the only symptom is
- * three good places that are somehow not the ones round the corner.
+ * Kesklinn", or "from your location on the map". That line is the visitor's
+ * check on the whole chain: a street Photon placed in the wrong town, or a
+ * name it read as some other name, shows up there as the wrong words,
+ * where without it the only symptom is three good places that are somehow
+ * not the ones round the corner.
  *
  * IT IS FREE, AND WHAT HAPPENS WHEN IT STOPS BEING
  *
@@ -122,7 +138,7 @@
  * under them saying why; the chat brings nothing rather than that now.
  */
 
-import { json, mapPlaces, venueCard, venueHours, wrongDatabase } from './_lib.js';
+import { json, mapPlaces, nearTallinn, venueCard, venueHours, wrongDatabase } from './_lib.js';
 /* What a Google row cooks, in the directory's ids, off the one table that
    decides it — and in the order the directory says them, so a card here reads
    the same as a card there. See the note above KITCHENS for why it is that
@@ -446,27 +462,47 @@ function readWish(raw) {
 }
 
 /* ------------------------------------------------------------ the visitor
- * Where the visitor said they are, as a point — or null, which is "unknown"
- * and is what most questions are.
+ * Where the visitor is, as a point — or null, which is "unknown" and is
+ * what most questions are.
  *
- * Asked only when the browser read a near phrase and something after it, so
- * "cheap ramen" never reaches Photon, and once a question when it does. The
- * first suggestion is the answer: for a street it is the street, for a
- * district the district, and for a name Photon knows it is the door. Every
- * way this can fail — no fetch, Photon busy or down, too short to ask,
- * nothing inside the box — is null, and null is answered honestly by the
- * brief rather than worked around: a wrong point would put "1.2 km" on
- * every line in the site's own voice.
+ * Two places it can come from, and the order is the design. Somewhere the
+ * question named — "next to the bus station", "Laulupeo" — goes to Photon,
+ * once a question and only when the browser read a near phrase with a
+ * place after it, so "cheap ramen" never reaches Photon. The first
+ * suggestion is the answer: for a street it is the street, for a district
+ * the district, and for a name Photon knows it is the door. Failing that,
+ * or when the question named nowhere — "near me" — the point is the one
+ * the browser sent as `here`, the visitor's own dot, marked `here: true`
+ * so the brief and the chat can say which it was. Every way the whole
+ * thing can fail — no fetch, Photon busy or down, too short to ask,
+ * nothing inside the box, no dot — is null, and null is answered honestly
+ * by the brief rather than worked around: a wrong point would put "1.2 km"
+ * on every line in the site's own voice.
  */
-async function visitorAt(wish) {
-  if (!wish.near) return null;
-  try {
-    const found = await suggest(wish.near);
-    const hit = found.results && found.results[0];
-    return hit ? { lat: hit.lat, lng: hit.lng, label: hit.label, where: hit.where } : null;
-  } catch (e) {
-    return null;
+async function visitorAt(wish, here) {
+  if (wish.near) {
+    try {
+      const found = await suggest(wish.near);
+      const hit = found.results && found.results[0];
+      if (hit) return { lat: hit.lat, lng: hit.lng, label: hit.label, where: hit.where };
+    } catch (e) { /* Photon unreachable: the dot, if there is one */ }
   }
+  return here ? { lat: here.lat, lng: here.lng, here: true } : null;
+}
+
+/* The visitor's own dot as the browser sent it — a point, checked rather
+   than trusted. Anything that is not two finite numbers inside the Tallinn
+   box is no point at all: the box is the same one /api/geocode bounds
+   Photon to, so the two sources of a point agree on what "in Tallinn"
+   means, and a visitor asking from another city is told what a visitor
+   with no dot is told rather than shown a column of distances that are all
+   the same eighty kilometres. */
+function readHere(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const lat = Number(raw.lat);
+  const lng = Number(raw.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || !nearTallinn(lat, lng)) return null;
+  return { lat, lng };
 }
 
 /* Kilometres between two points as the crow flies, which the model is told
@@ -834,8 +870,12 @@ function briefFor(places, google, wholeCity, lang, open, at) {
        street in the question is theirs, no distance may be stated, and the
        honest answer says it cannot judge and asks which part of town. */
     at
-      ? 'WHERE THE VISITOR IS: at ' + [at.label, at.where].filter(Boolean).join(', ') +
-        ', the place they said they are near. The "where" of every line ends' +
+      ? 'WHERE THE VISITOR IS: ' + (at.here
+        ? 'where their device places them, which is the point they mean by' +
+          ' "near me" or "here".'
+        : 'at ' + [at.label, at.where].filter(Boolean).join(', ') +
+          ', the place they said they are near.') +
+        ' The "where" of every line ends' +
         ' with the straight-line distance from there, and "close" means the' +
         ' smallest. Quote a distance only as its line gives it — never as' +
         ' minutes, and never for a line that has none.'
@@ -954,10 +994,11 @@ export async function onRequestPost(context) {
   const history = readHistory(body.history);
   const named = new Set(history.flatMap((turn) => turn.picks.map((pick) => pick.id)));
   const wish = readWish(body.wish);
+  const here = readHere(body.here);
 
   /* The hours and the visitor's point are two waits on two other services,
      and neither needs the other, so they run together. */
-  const [open, at] = await Promise.all([openPlaces(env, now), visitorAt(wish)]);
+  const [open, at] = await Promise.all([openPlaces(env, now), visitorAt(wish, here)]);
 
   /* The city's rows, on the city only. On the map the model is shown none,
      so it cannot name one, and the button means what it says. An empty list
@@ -985,14 +1026,19 @@ export async function onRequestPost(context) {
   /* The distance rides on each Google row only as far as the prompt; the
      browser draws nothing with it, so it does not travel. What was measured
      from does, without its point: the chat prints the words under the
-     reply so the visitor can see what "near" was taken to mean. */
+     reply so the visitor can see what "near" was taken to mean — the place
+     Photon found, or `here: true` for their own dot, which the browser has
+     the words for in the visitor's language. */
   const answer = (source, picks, say, note) =>
     json({
       ok: true, source, picks, say, note, open,
       venues: google.map(({ far, ...card }) => card),
-      /* Without the city on the end: everything here is in Tallinn, and
-         whereIs() drops it from every line for the same reason. */
-      at: at ? { label: at.label, where: at.where.replace(/,\s*Tallinn$/, '') } : null
+      at: !at ? null : at.here ? { here: true } : {
+        label: at.label,
+        /* Without the city on the end: everything here is in Tallinn, and
+           whereIs() drops it from every line for the same reason. */
+        where: at.where.replace(/,\s*Tallinn$/, '')
+      }
     });
 
   /* Exactly what was sent, so an id the model did not see is dropped rather
@@ -1074,33 +1120,66 @@ export async function onRequestPost(context) {
 
   let { said, spent } = await askModel(messages);
 
-  /* The city's rule, enforced once rather than only asked for. Every answer
-     with places on the city names at least one from my map and at least one
-     from the rest of Tallinn; the prompt says so, and a small model still
-     sometimes answers off one list — mine, usually, because my lines carry
-     a dish and a write-up and Google's a rating, and a model asked for a
-     reason reaches for the line it can give one from. So when an answer
-     comes back off one list, the model is shown its own answer, told which
-     list it skipped, and asked once more. The second answer stands whatever
-     it is: a corrected mix, or an honest empty picks saying nothing on that
-     list fits. One retry, only on a violation, so a compliant answer costs
-     what it always did. */
-  if (said && said.picks.length && wholeCity && google.length) {
+  /* Two rules the brief states, enforced once rather than only asked for.
+     A small model breaks either the same way — it reaches for the line it
+     can most easily give a reason from — and when it does, it is shown its
+     own answer, told what it broke, and asked once more. The second answer
+     stands whatever it is: a corrected one, or an honest empty picks saying
+     nothing fits. One retry, only on a violation, so a compliant answer
+     costs what it always did.
+
+     The city's rule: every answer with places on the city names at least
+     one from my map and at least one from the rest of Tallinn. Left to
+     itself the model answered off my map, because my lines carry a dish and
+     a write-up and Google's a rating.
+
+     The kind rule: when the question named a kind of place — a café, a
+     bakery, ramen — every pick is of that kind. Left to itself, and shown a
+     column of distances, the model answered "coffee next to the bus
+     station" with the three nearest doors to the station — a Caucasian
+     restaurant, a ramen bar and a pub — with Paper Mill Coffee on the first
+     line of the list. The kind is the reader's: the type ids the question
+     was read as, which are the same ids in every line's types column, so
+     "of that kind" is a word the model can check its picks against. It is
+     held to only when the lists actually hold a place of the kind — when
+     they do not, an empty answer saying so is what the brief asks for, and
+     nothing here can tell it from a wrong one. */
+  if (said && said.picks.length) {
+    const faults = [];
     const mineIds = new Set(mine.map((p) => p.id));
-    const hasMine = said.picks.some((p) => mineIds.has(p.id));
-    const hasCity = said.picks.some((p) => !mineIds.has(p.id));
-    if (!hasMine || !hasCity) {
-      const skipped = hasCity ? 'MY MAP' : 'REST OF TALLINN';
+
+    if (wholeCity && google.length) {
+      const hasMine = said.picks.some((p) => mineIds.has(p.id));
+      const hasCity = said.picks.some((p) => !mineIds.has(p.id));
+      if (!hasMine || !hasCity) {
+        const skipped = hasCity ? 'MY MAP' : 'REST OF TALLINN';
+        faults.push('That answer named no place from ' + skipped + '. The rule is at' +
+          ' least one from MY MAP and at least one from REST OF TALLINN in' +
+          ' every answer. Answer again with both, each with its reason — or,' +
+          ' if truly nothing on ' + skipped + ' fits, say so and return an' +
+          ' empty picks array.');
+      }
+    }
+
+    if (wish.types.length) {
+      const typesOf = new Map([...mine, ...google].map((p) => [p.id, p.types || []]));
+      const ofKind = (id) => (typesOf.get(id) || []).some((t) => wish.types.includes(t));
+      const wrong = said.picks.filter((p) => !ofKind(p.id)).map((p) => p.id);
+      if (wrong.length && [...typesOf.keys()].some(ofKind)) {
+        faults.push('The visitor asked for a kind of place: ' + wish.types.join(' or ') +
+          '. These picks are not of that kind — their types column does not' +
+          ' say so: ' + wrong.join(', ') + '. Nearer, cheaper or better rated' +
+          ' does not make a place of another kind an answer. Answer again with' +
+          ' only places whose types include ' + wish.types.join(' or ') +
+          ', each with its reason — or, if truly none fits, say so and return' +
+          ' an empty picks array.');
+      }
+    }
+
+    if (faults.length) {
       const again = await askModel(messages.concat(
         { role: 'assistant', content: JSON.stringify({ say: said.say, picks: said.picks }) },
-        {
-          role: 'user',
-          content: 'That answer named no place from ' + skipped + '. The rule is at' +
-            ' least one from MY MAP and at least one from REST OF TALLINN in' +
-            ' every answer. Answer again with both, each with its reason — or,' +
-            ' if truly nothing on ' + skipped + ' fits, say so and return an' +
-            ' empty picks array.'
-        }
+        { role: 'user', content: faults.join('\n') }
       ));
       if (again.said) said = again.said;
       if (again.spent) spent = true;

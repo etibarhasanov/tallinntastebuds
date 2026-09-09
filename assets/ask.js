@@ -39,18 +39,18 @@
  *
  * THE VOCABULARY IS IN data/ui.json, NOT IN HERE
  *
- * Four things a person asks for have no words in the data: cheap, fancy,
- * open now, and near somewhere. Everything else they might type — bakery,
- * vegan, date, asian — is already a taxonomy label in all ten languages, and
- * app.js already indexes those, so typing "pagariäri" or "пекарня" finds the
- * bakeries for free.
+ * Five things a person asks for have no words in the data: cheap, fancy,
+ * open now, near somewhere, and themselves — "near me", "around here".
+ * Everything else they might type — bakery, vegan, date, asian — is already
+ * a taxonomy label in all ten languages, and app.js already indexes those,
+ * so typing "pagariäri" or "пекарня" finds the bakeries for free.
  *
- * The four that are missing live in ui.json under askWordsCheap,
- * askWordsFancy, askWordsOpen and askWordsNear, as synonyms joined by "|" —
- * the same shape `days` and `months` already use. That puts them where every
- * other string on this site lives, which means the validator holds them to
- * all ten languages like everything else, and adding a language is one file
- * rather than two.
+ * The five that are missing live in ui.json under askWordsCheap,
+ * askWordsFancy, askWordsOpen, askWordsNear and askWordsMe, as synonyms
+ * joined by "|" — the same shape `days` and `months` already use. That puts
+ * them where every other string on this site lives, which means the
+ * validator holds them to all ten languages like everything else, and adding
+ * a language is one file rather than two.
  */
 window.TTBAsk = (function () {
   'use strict';
@@ -173,14 +173,18 @@ window.TTBAsk = (function () {
      string per place out of the types the place has, this takes a sentence and
      asks which type ids are in it. Which is why the labels are wanted apart
      here, one at a time through ways() above, rather than joined into a line. */
-  function typeSaid(question, types, fold) {
+  function typeSaid(question, types, fold, saidWith) {
     var hit = [];
 
     types.forEach(function (type) {
       Object.keys(type).forEach(function (key) {
         if (key === 'id' || hit.indexOf(type.id) !== -1) return;
         var found = ways(type[key], fold).some(function (word) {
-          return has(question, word);
+          if (!has(question, word)) return false;
+          /* The label as it was typed, kept for the caller: what names a
+             kind of place is not the name of somewhere to be near. */
+          if (saidWith && saidWith.indexOf(word) === -1) saidWith.push(word);
+          return true;
         });
         if (found) hit.push(type.id);
       });
@@ -197,15 +201,18 @@ window.TTBAsk = (function () {
    *   opts.cuisines  data/cuisines.json's cuisines, the same shape — what a
    *                  Google row can be asked for by, since the export files a
    *                  place as Thai or Georgian and my taxonomy does not
-   *   opts.words     { cheap, fancy, open, near } — the ui.json synonym lists
+   *   opts.words     { cheap, fancy, open, near, me } — the ui.json synonym
+   *                  lists
    *
    * Out comes what was asked for, and `rest`: the words left over once the
    * wishes and the noise are taken out. The Function matches those against
    * each place's name, street, types and dishes when it narrows — a dish, a
    * street, a name — and they are the reason "khachapuri" works without
-   * khachapuri being a word anybody wrote down. `near` is what they want to
-   * be close to, when they said so — the words after the near phrase — and
-   * the Function turns that into a point and measures from it.
+   * khachapuri being a word anybody wrote down. `nearby` is whether they
+   * asked to be near anything at all, and `near` is what: the words that
+   * name it, which the Function turns into a point and measures from, or
+   * nothing when the thing to be near is the visitor — "near me", "siin
+   * lähedal" — and the point is the one their device gives.
    */
   function read(question, opts) {
     var fold = opts.fold;
@@ -218,6 +225,7 @@ window.TTBAsk = (function () {
     var fancy = phrases(opts.words.fancy, fold);
     var open = phrases(opts.words.open, fold);
     var near = phrases(opts.words.near, fold);
+    var me = phrases(opts.words.me, fold);
 
     /* Fancy before cheap, and it matters: "cheap" is a word in the English
        label "Cheap eats" and a phrase in the fancy list can contain it too.
@@ -228,12 +236,15 @@ window.TTBAsk = (function () {
     var wantsOpen = said(q, open);
     var wantsNear = said(q, near);
 
-    var types = typeSaid(q, opts.types, fold);
+    /* The labels as typed are kept too — "coffee", "fine dining", "thai" —
+       for one use below: a kind of place is not a landmark. */
+    var kinds = [];
+    var types = typeSaid(q, opts.types, fold, kinds);
     /* The same reading over the directory's vocabulary: "thai", "tai" and
        "тайская" all reach `thai`. Nothing on my map carries one of these ids
        — the export's rows do — so on the map scope this is read and scores
        nothing, which costs nothing. */
-    var kitchens = typeSaid(q, opts.cuisines || [], fold);
+    var kitchens = typeSaid(q, opts.cuisines || [], fold, kinds);
 
     /* What is left is a dish or a name. The wish phrases come out first so
        that "cheap" does not also go looking for a place called Cheap. */
@@ -257,13 +268,32 @@ window.TTBAsk = (function () {
        the other wishes and the noise out — "something close to my place,
        laulupeo street" is asking about laulupeo street, and "cheap ramen
        near laulupeo" about laulupeo, not about ramen. Said the other way
-       round, "laulupeo street, somewhere near", nothing follows the phrase
-       and everything left over is taken instead. The street stays in `rest`
-       too, so a place actually on it still scores as a word. */
+       round, "laulupeo street, somewhere near" — which is also the only way
+       round Estonian, Finnish or Turkish say it, "bussijaama lähedal" —
+       nothing follows the phrase and what is left over is taken instead.
+       The street stays in `rest` too, so a place actually on it still
+       scores as a word.
+
+       Two things never name a place to be near. The visitor — "near me",
+       "close to my hotel", "minu lähedal", "siin lähedal kohvi" — is
+       themselves, wherever in the sentence they say so, and the point for
+       that is the one their device gives: the answer is nothing, and
+       nothing else is looked for. "Ramen near me" used to strip "me" as
+       noise, find nothing after the phrase, and fall through to the
+       leftovers, which handed "ramen" to the geocoder. And a kind of place
+       is not a landmark: "coffee close to me" fell through the same way and
+       handed it "coffee", which found a café called Coffee somewhere in
+       town and measured every distance from it. The labels typeSaid()
+       matched come out, so what is left is a street, a district or a name,
+       or nothing. A dish left over — "ramen nearby" — still gets looked up,
+       because nothing here can tell a dish from a street, and the chat
+       prints what it measured from for exactly that reason. */
     var at = '';
-    if (wantsNear) {
-      var after = (' ' + q + ' ').split(' ' + wantsNear + ' ').slice(1).join(' ');
-      at = (clean(after).length ? clean(after) : rest).join(' ');
+    if (wantsNear && !said(q, me)) {
+      var whole = ' ' + q + ' ';
+      kinds.forEach(function (p) { whole = whole.split(' ' + p + ' ').join(' '); });
+      var after = whole.split(' ' + wantsNear + ' ').slice(1).join(' ');
+      at = (clean(after).length ? clean(after) : clean(whole)).join(' ');
     }
 
     return {
@@ -272,6 +302,7 @@ window.TTBAsk = (function () {
       cheap: !!wantsCheap,
       fancy: !!wantsFancy,
       open: !!wantsOpen,
+      nearby: !!wantsNear,
       near: at,
       rest: rest
     };

@@ -762,13 +762,13 @@ the Function narrows on — which of the thirteen types, cheap or fancy, open
 now, what to be near, and the words left over that might be a dish or a
 street — in all ten languages at once, because its vocabulary is the taxonomy
 labels this page already holds, so *pagariäri*, *bakery* and *пекарня* all
-reach the bakeries without a word of it being written down twice. The four
+reach the bakeries without a word of it being written down twice. The five
 things people ask for that have no words in the data — cheap, fancy, open
-now, near — live in `data/ui.json` under `askWordsCheap`, `askWordsFancy`,
-`askWordsOpen` and `askWordsNear`, as synonyms joined by `|`, the same shape
-`days` and `months` already use. Which means the validator holds them to all
-ten languages like every other string, and adding a language stays one
-file.
+now, near, and themselves — live in `data/ui.json` under `askWordsCheap`,
+`askWordsFancy`, `askWordsOpen`, `askWordsNear` and `askWordsMe`, as
+synonyms joined by `|`, the same shape `days` and `months` already use.
+Which means the validator holds them to all ten languages like every other
+string, and adding a language stays one file.
 
 **Except when it is the allowance, in which case the chat says so.** Workers
 AI answers a spent day with error 3036, which is a 429 like the transient
@@ -885,10 +885,57 @@ once came back as the three nearest doors to the station — a Caucasian
 restaurant, a ramen bar and a pub, each with a "why" claiming coffee — with
 Paper Mill Coffee at 400 m left on the list. A small model shown a column
 of distances sorts by it and nothing else unless told what the order it was
-given already means.
+given already means. Telling it was not always enough, so the kind is now
+held to the way the city's one-of-each rule is: when the question was read
+as a type — the ids `assets/ask.js` found, which are the ids in every line's
+types column — and a pick's line does not carry one of them, the model is
+shown its own answer, told which picks are not of the kind and asked once
+more, and the second answer stands. It is held to only when the lists
+actually hold a place of that kind; when they do not, an empty answer
+saying so is the right one.
+
+### Near me
+
+*Coffee close to me*, asked by somebody who had pressed the locate button a
+minute before and was looking at their own dot on the map, used to be
+answered by asking which part of town they were in — and *ramen near me*
+was worse: the reader took *me* for noise, found nothing after the phrase,
+fell through to the leftover words and handed *ramen* to Photon, which found
+a place called Ramen somewhere and measured every distance from it. Two
+readings were wrong at once: that a kind of place or a dish could be
+somewhere to be near, and that the site did not know where the visitor was
+when it was drawing them.
+
+The reader now knows the visitor as a word. `askWordsMe` in `data/ui.json`
+holds *me*, *my hotel*, *here*, *minu*, *siin*, *здесь* in all ten
+languages, and a near question with any of them in it is about the visitor
+themself: nothing is looked up, and the point is the dot. Type labels the
+reader matched — *coffee*, *fine dining*, *thai* — never name a place to be
+near either, so *coffee nearby* is about the visitor too. What is left over
+after both is a street, a district or a name, and is looked up as before;
+a dish left over, *ramen nearby*, still goes to Photon, because nothing in
+the reader can tell a dish from a street, and the line under the reply says
+what it was taken for.
+
+The dot is the point when there is one. When there is none, the chat asks
+the device once, through the same events the locate button's press goes
+through, so the dot appears and the map frames it exactly as if the button
+had been pressed — *near me* is a request for that, and the browser's own
+permission prompt is the right thing to see. Refused, unavailable or slow,
+and the visitor's whereabouts are unknown, answered as below. The point
+travels beside the wish as `here`, is checked in the Function to be two
+numbers inside the Tallinn box — a visitor asking from Helsinki is told the
+same as one with no dot, rather than shown eighty kilometres on every line —
+and is measured from only when the question named nowhere, or named
+somewhere Photon could not place. A question that asked for nothing near
+sends no point at all: *best khachapuri* is a question about the city, not
+about the nearest one. The line under the reply then reads *Distances are
+from your location on the map, as the crow flies* — `askFromHere` — which
+is checkable against the dot.
 
 Without a point — a spelling Photon cannot place, somewhere outside the box,
-Photon busy, *something nearby* with nothing after it — the prompt says the
+Photon busy, *something nearby* from a device that would not say where it
+is — the prompt says the
 visitor's whereabouts are unknown: a street or district in the question is
 theirs and is never swapped for a place's address, no distance or walking
 time is stated, a place is near them only if its own *where* names the same

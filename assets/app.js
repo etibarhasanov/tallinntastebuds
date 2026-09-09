@@ -3475,8 +3475,62 @@
         cheap: t('askWordsCheap'),
         fancy: t('askWordsFancy'),
         open: t('askWordsOpen'),
-        near: t('askWordsNear')
+        near: t('askWordsNear'),
+        me: t('askWordsMe')
       }
+    });
+  }
+
+  /* Where the visitor is, for a question that asked to be near something —
+     or null, which is most questions and is never a failure.
+
+     The dot on the map is the answer when there is one: the locate button
+     put it there, the visitor can see it, and "distances are from your
+     location on the map" is checkable against it. The chat used to ignore
+     the dot and ask which part of town they were in, which from a phone
+     that had just been asked for its location read as the site not talking
+     to itself. When there is no dot yet, the device is asked once, the same
+     way the button asks it — the dot appears, the map frames it, and the
+     browser puts up its permission prompt if it has not already — because
+     "near me" is a request for exactly that. Refused, unavailable, or too
+     slow, and the answer is null, which the Function answers honestly: it
+     says it cannot judge the distance and asks which part of town.
+
+     A question that asked for nothing near gets null without asking: "best
+     khachapuri" is a question about the city, and a point would bias it
+     towards the nearest one. A question that named somewhere to be near —
+     "next to the bus station" — still sends the dot when there is one, but
+     does not ask the device for it: the Function measures from the place
+     named and keeps the dot for when Photon cannot place it. */
+  function whereabouts(wish) {
+    if (!wish.nearby) return Promise.resolve(null);
+    if (hereMarker) {
+      var here = hereMarker.getLatLng();
+      return Promise.resolve({ lat: here.lat, lng: here.lng });
+    }
+    if (wish.near) return Promise.resolve(null);
+    return locateOnce();
+  }
+
+  /* One reading from the device, as a promise, through the same events the
+     locate button's press goes through — so the dot and the framing in
+     wireLocation() happen exactly as if the button had been pressed. Leaflet
+     fires locationerror on refusal, on no fix, and on its own timeout, so
+     every way out settles. Eight seconds is longer than a phone with a fix
+     needs and shorter than a visitor waits under "Looking…". */
+  function locateOnce() {
+    return new Promise(function (resolve) {
+      if (!map || !navigator.geolocation) { resolve(null); return; }
+      var done = function (point) {
+        map.off('locationfound', found);
+        map.off('locationerror', failed);
+        resolve(point);
+      };
+      var found = function (ev) { done({ lat: ev.latlng.lat, lng: ev.latlng.lng }); };
+      var failed = function () { done(null); };
+      map.on('locationfound', found);
+      map.on('locationerror', failed);
+      map.locate({ setView: false, maxZoom: 15, timeout: 8000 });
     });
   }
 
@@ -3548,12 +3602,18 @@
          be about before the model sees them. */
       var wish = readWish(question, cuisines);
 
-      return fetch(ASK_URL, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json', accept: 'application/json' },
-        body: JSON.stringify({
-          q: question, lang: state.lang, scope: turn.scope, wish: wish, history: history
-        })
+      /* And where the visitor is, when the question asked for somewhere
+         near — the dot on the map, or one reading from the device. It is
+         beside the wish rather than in it because it is not something the
+         sentence said. */
+      return whereabouts(wish).then(function (here) {
+        return fetch(ASK_URL, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', accept: 'application/json' },
+          body: JSON.stringify({
+            q: question, lang: state.lang, scope: turn.scope, wish: wish, here: here, history: history
+          })
+        });
       })
         .then(function (res) { return res.ok ? res.json() : null; })
         .catch(function () { return null; })
@@ -3613,14 +3673,18 @@
       : { say: '', picks: [], source: 'none' };
 
     /* Where the Function measured from, when the question said "near"
-       somewhere and the place was found — the label and the district, no
-       point. Printed under the reply, because it is the one line that lets
-       the visitor see what the site took their street or landmark to be,
-       and a wrong reading is otherwise invisible: the places drawn are all
-       real, only not the ones round the corner. */
-    var at = out && out.at && typeof out.at.label === 'string'
-      ? [out.at.label, out.at.where].filter(Boolean).join(', ')
-      : '';
+       somewhere and there was a point to measure from — the label and the
+       district of the place named, no point; or the visitor's own dot,
+       which the line names as their location on the map. Printed under the
+       reply, because it is the one line that lets the visitor see what the
+       site took their street or landmark to be, and a wrong reading is
+       otherwise invisible: the places drawn are all real, only not the
+       ones round the corner. */
+    var at = '';
+    if (out && out.at && out.at.here) at = t('askFromHere');
+    else if (out && out.at && typeof out.at.label === 'string') {
+      at = t('askFrom', { name: [out.at.label, out.at.where].filter(Boolean).join(', ') });
+    }
 
     /* Which of the picks are Google's: those are the stand-ins that need a
        pin put down and a card drawn without a write-up. On the map scope
@@ -3850,7 +3914,7 @@
         /* What "near" was measured from, when it was. Under the sentence
            and over the rows, in the site's small voice: it is a note on
            the answer, not part of it. */
-        turn.at ? el('p', { className: 'ask-from', textContent: t('askFrom', { name: turn.at }) }) : null,
+        turn.at ? el('p', { className: 'ask-from', textContent: turn.at }) : null,
         turn.picks.length ? rows : null
       ]));
     });
