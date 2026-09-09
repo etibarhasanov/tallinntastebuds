@@ -47,6 +47,20 @@
  * is not a failure here — the visitor did press play, one page ago — so the
  * button stays on, and the stream is started by the first tap or keypress
  * anywhere on the new page. See waitForGesture().
+ *
+ * AND THE BUTTON FOLLOWS THE ELEMENT, NOT ONLY THE OTHER WAY ROUND
+ *
+ * A phone call pauses whatever is playing. So does the pause button on the
+ * lock screen, and so does pulling the headphones out. None of those comes
+ * through this file: the browser pauses the element itself, and for a while
+ * the button went on showing the radio on over a stream that had stopped,
+ * until somebody pressed it twice to get it back. Whether the stream comes
+ * back on its own depends on the phone — Chrome on Android picks it up again
+ * once the call ends, Safari on an iPhone leaves it paused — so nothing here
+ * guesses. The element says when it has been paused and when it is playing
+ * again, and the switch follows it both ways: off on the pause, on again if
+ * the browser or the lock screen brings it back, and otherwise one press,
+ * which rejoins the stream live. See interrupted() and resumed().
  */
 window.TTBRadio = (function () {
   'use strict';
@@ -128,12 +142,13 @@ window.TTBRadio = (function () {
     document.addEventListener('keydown', go, true);
   }
 
-  /* A stream that would not start. Both ways in here can arrive after the
-     visitor has already turned the radio off — the play() that the stop
-     itself interrupted rejects like any other, and detaching the source
-     raises an error event of its own — and a toast about a stream nobody is
-     waiting for any more is a toast about nothing. So a radio that is already
-     off says nothing and stays off. */
+  /* A stream that would not start, or that has stopped: an error, the play()
+     that was refused, or a live stream ending, which is its server hanging
+     up. Every way in here can arrive after the visitor has already turned the
+     radio off — the play() that the stop itself interrupted rejects like any
+     other, and detaching the source raises an error event of its own — and a
+     toast about a stream nobody is waiting for any more is a toast about
+     nothing. So a radio that is already off says nothing and stays off. */
   function fail() {
     if (!wanted) return;
     halt();
@@ -141,6 +156,41 @@ window.TTBRadio = (function () {
     writeWanted();
     paint();
     told('fail');
+  }
+
+  /* Paused by something that is not a press: a phone call, the lock screen,
+     the headphones coming out. The element has stopped and the browser may or
+     may not start it again, so the switch follows the element rather than
+     guessing — off, and the button says so — and resumed() turns it back on
+     if the browser does.
+
+     `paused` is what tells these apart from the pauses this file causes. A
+     press to stop turns the switch off before it pauses anything, so `wanted`
+     is already false when the event comes round. Re-attaching the stream in
+     start() pauses the element for as long as it takes to set the new source,
+     and the play() right after has it going again before the event is
+     delivered, so `paused` is false by then. And a stream that runs out
+     pauses itself on the way to `ended`, with `ended` already true when the
+     pause is delivered; that one is a failure, with a toast, and fail() has
+     it. Only a pause from outside leaves the element paused and not ended.
+
+     The page is not told. Its onchange is for a press and for a stream that
+     failed, and this is neither: nothing to close, nothing to count. */
+  function interrupted() {
+    if (!wanted || !audio.paused || audio.ended) return;
+    wanted = false;
+    writeWanted();
+    paint();
+  }
+
+  /* And back on from outside: the lock screen's play button, or Chrome on
+     Android picking the stream up again once a call has ended. Our own
+     start() raises this too, with the switch already on, and is ignored. */
+  function resumed() {
+    if (wanted) return;
+    wanted = true;
+    writeWanted();
+    paint();
   }
 
   function start() {
@@ -151,6 +201,9 @@ window.TTBRadio = (function () {
       audio = document.createElement('audio');
       audio.preload = 'none';
       audio.addEventListener('error', fail);
+      audio.addEventListener('ended', fail);
+      audio.addEventListener('pause', interrupted);
+      audio.addEventListener('play', resumed);
     }
     /* A live stream has no position to resume from, so it is re-attached
        rather than un-paused: pressing play always joins it where it is now. */
@@ -193,8 +246,8 @@ window.TTBRadio = (function () {
      send the news; this takes over from there, the press included.
 
      `onchange` is for what a page does around the radio rather than to it —
-     the map opens the station's name on the rail and reports the press, both
-     pages toast a stream that would not start. It is not called for the
+     the map opens the station's name on the rail and reports the press, every
+     page toasts a stream that would not start. It is not called for the
      resume across a navigation, because nothing changed: the radio was on
      when the last page was left and it is on now. Only a press, or a stream
      failing, is news. */

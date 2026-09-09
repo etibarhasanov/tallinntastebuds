@@ -4491,9 +4491,10 @@ every browser and that is right: it plays because somebody asked it to — see
 **It keeps playing when you walk to a list** for what that means once there is
 more than one page to ask it on.
 
-If the stream fails, the button resets and says so in a toast. If the URL dies
-for good, it is one line in this file, which is the same maintenance the rest
-of the map asks for.
+If the stream fails — it would not start, or it ended, which for a live
+stream means its server hung up — the button resets and says so in a toast. If
+the URL dies for good, it is one line in this file, which is the same
+maintenance the rest of the map asks for.
 
 Where a station sits behind a load balancer, take the address that resolves to
 a node rather than a node itself. Joy Türk Rock and Itapema FM are both served
@@ -4627,6 +4628,30 @@ Opening a story stops it outright rather than pausing it: two things playing
 at once is one too many. The switch is left off, so it stays off when the
 visitor walks on — turning the radio down for a story is a decision about the
 radio rather than about the page it was made on.
+
+### The button follows the phone
+
+A phone call pauses whatever is playing, and so does the pause button on the
+lock screen, and so does pulling the headphones out. None of that goes through
+the button, and for a while the button did not know: it went on showing the
+radio on over a stream the phone had stopped, and getting it back took two
+presses — one to turn off a radio that was already silent, one to turn it on.
+
+Whether the stream comes back on its own after a call depends on the phone.
+Chrome on Android picks it up again once the call ends; Safari on an iPhone
+leaves it paused. So the button does not guess. The `<audio>` element says
+when it has been paused and when it is playing again, and the switch follows
+it both ways: off on the pause, on again if the browser or the lock screen
+brings the stream back, and otherwise one press, which rejoins the stream
+live rather than un-pausing a buffer from before the call. The switch in
+`sessionStorage` follows too, so a radio a call silenced stays silent on the
+next page, which is what its button was showing.
+
+The pauses `assets/radio.js` causes itself — a press to stop, a story opening,
+the source being swapped under a language switch — are told apart from the
+phone's by the state of the element when the event arrives, not by a flag:
+the switch is already off for the first two, and for the third the element is
+already playing again. Only a pause from outside leaves it paused.
 
 ## Surprise me
 
