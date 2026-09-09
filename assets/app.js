@@ -3534,7 +3534,7 @@
        it saying why is not an answer at all. */
     var turn = {
       q: question, scope: state.askScope, pending: true,
-      say: '', picks: [], city: [], open: {}, source: ''
+      say: '', picks: [], city: [], open: {}, at: '', source: ''
     };
     state.asks.push(turn);
     dom.askInput.value = '';
@@ -3612,6 +3612,16 @@
       ? { say: model.say || '', picks: model.picks || [], source: 'ai' }
       : { say: '', picks: [], source: 'none' };
 
+    /* Where the Function measured from, when the question said "near"
+       somewhere and the place was found — the label and the district, no
+       point. Printed under the reply, because it is the one line that lets
+       the visitor see what the site took their street or landmark to be,
+       and a wrong reading is otherwise invisible: the places drawn are all
+       real, only not the ones round the corner. */
+    var at = out && out.at && typeof out.at.label === 'string'
+      ? [out.at.label, out.at.where].filter(Boolean).join(', ')
+      : '';
+
     /* Which of the picks are Google's: those are the stand-ins that need a
        pin put down and a card drawn without a write-up. On the map scope
        this is always empty, because the Function sends the model no Google
@@ -3627,6 +3637,7 @@
     turn.picks = said.picks;
     turn.city = fromCity;
     turn.open = open;
+    turn.at = at;
     turn.source = said.source;
     turn.pending = false;
     settle(turn);
@@ -3836,6 +3847,10 @@
       }, [
         el('p', { className: 'ask-you', textContent: turn.q }),
         el('p', { className: 'ask-say', textContent: say }),
+        /* What "near" was measured from, when it was. Under the sentence
+           and over the rows, in the site's small voice: it is a note on
+           the answer, not part of it. */
+        turn.at ? el('p', { className: 'ask-from', textContent: t('askFrom', { name: turn.at }) }) : null,
         turn.picks.length ? rows : null
       ]));
     });

@@ -871,6 +871,22 @@ and that the distances on the lines are the only distances there are, to be
 quoted as written and never as minutes. One lookup a question, only for a
 question that said *near*, so *khachapuri* never reaches Photon.
 
+What it measured from is printed under the reply — *Distances are from
+Tallinna bussijaam, Kesklinn, as the crow flies* — in the small type the
+rows use for their own notes. That line is the visitor's check on the whole
+chain. A street Photon placed in the wrong town, or a landmark it read as
+some other landmark, shows up there as the wrong words; without it the only
+symptom is three good places that are somehow not the ones round the corner,
+and nobody can tell whether the street was misread or the model chose badly.
+
+The model is also told that the lines are in order, best first, and that a
+kind of place asked for is not negotiable: *coffee next to the bus station*
+once came back as the three nearest doors to the station — a Caucasian
+restaurant, a ramen bar and a pub, each with a "why" claiming coffee — with
+Paper Mill Coffee at 400 m left on the list. A small model shown a column
+of distances sorts by it and nothing else unless told what the order it was
+given already means.
+
 Without a point — a spelling Photon cannot place, somewhere outside the box,
 Photon busy, *something nearby* with nothing after it — the prompt says the
 visitor's whereabouts are unknown: a street or district in the question is

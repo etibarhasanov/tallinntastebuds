@@ -2,7 +2,7 @@
  * Tallinn Tastebuds — the chat box on the map, answered.
  *
  * POST /api/ask   { q, lang, scope, wish, history }
- *                 ->  { ok, source, picks, say, open, venues }
+ *                 ->  { ok, source, picks, say, open, venues, at }
  *
  * Somebody types "somewhere cheap and asian, still open" into the map and this
  * turns it into one to three places off my own list, each with a line saying
@@ -98,6 +98,13 @@
  * is theirs and never a place's, and that no distance may be stated; the
  * honest answer to that question is then to say so and ask which part of
  * town. One lookup a question, only when asked for, cached upstream a day.
+ *
+ * What was measured from goes back to the browser as `at`, and the chat
+ * prints it under the reply — "Distances are from Tallinna bussijaam,
+ * Kesklinn". That line is the visitor's check on the whole chain: a street
+ * Photon placed in the wrong town, or a name it read as some other name,
+ * shows up there as the wrong words, where without it the only symptom is
+ * three good places that are somehow not the ones round the corner.
  *
  * IT IS FREE, AND WHAT HAPPENS WHEN IT STOPS BEING
  *
@@ -783,6 +790,19 @@ function briefFor(places, google, wholeCity, lang, open, at) {
     'Each message is a question or a reply from the same person, in a' +
       ' conversation; a follow-up refers to what you said before, so read it' +
       ' that way.',
+    /* Said because it is true and because a small model shown a distance
+       column otherwise sorts by it and nothing else: "coffee next to the
+       bus station" came back as the three nearest doors to the station, a
+       Caucasian restaurant, a ramen bar and a pub, with a coffee shop at
+       400 m left on the list. The lists are already in the order the
+       narrowing scored them — the kind asked for and near it first — so the
+       model is told that the order means something, and that the kind of
+       place asked for is not negotiable against a smaller number. */
+    'The lines in each list are in order of how well they fit what was' +
+      ' asked, best first. When the visitor asked for a kind of place — a' +
+      ' café, a bakery, ramen — every pick is of that kind; a nearer, cheaper' +
+      ' or better-rated place of another kind is not an answer to that' +
+      ' question, and if no place of that kind fits, say so.',
     'Answer each with one to ' + MAX_PICKS + ' places from the lists, best' +
       ' first — only as many as genuinely answer it, and one is a complete' +
       ' answer. Use only ids copied exactly from the lists. If nothing fits,' +
@@ -963,9 +983,17 @@ export async function onRequestPost(context) {
      Cloudflare's own words, so nothing quotes a request back at a
      stranger. */
   /* The distance rides on each Google row only as far as the prompt; the
-     browser draws nothing with it, so it does not travel. */
+     browser draws nothing with it, so it does not travel. What was measured
+     from does, without its point: the chat prints the words under the
+     reply so the visitor can see what "near" was taken to mean. */
   const answer = (source, picks, say, note) =>
-    json({ ok: true, source, picks, say, note, open, venues: google.map(({ far, ...card }) => card) });
+    json({
+      ok: true, source, picks, say, note, open,
+      venues: google.map(({ far, ...card }) => card),
+      /* Without the city on the end: everything here is in Tallinn, and
+         whereIs() drops it from every line for the same reason. */
+      at: at ? { label: at.label, where: at.where.replace(/,\s*Tallinn$/, '') } : null
+    });
 
   /* Exactly what was sent, so an id the model did not see is dropped rather
      than drawn. It is the guard that makes a hallucinated place unreachable
