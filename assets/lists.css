@@ -146,8 +146,9 @@
 /* ---------- a card that folds ---------- */
 
 /* A column of things behind its own title: /account.html draws its saved
-   places and its lists this way, so the card is one line high until you ask
-   for the rest of it and the ways on from it are never below a scroll.
+   places, its lists and the three of everybody's this way, so the card is one
+   line high until you ask for the rest of it and the ways on from it are
+   never below a scroll.
 
    It is a <details>, not a button and a list with `hidden` on it. The open
    state, the keyboard, the word a screen reader says before the title and
