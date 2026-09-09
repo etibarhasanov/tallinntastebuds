@@ -26,13 +26,18 @@ but it reaches a measured distance, not an unbounded one:
 | a file over ~600 lines | the functions you touched, plus what they call and what calls them — not the rest |
 
 `wc -l` settles which side of the line a file is on, and it is the only thing
-that should — a list of big files written into this paragraph would be wrong
-within a month, and `functions/api/account.js` has crossed the line twice
-since this rule was written: over it as the account grew, and back under it
-when the email reset came out. As it stands the exempt ones are
-`assets/app.js`, `assets/lists.js`, `tools/validate.mjs` and
-`functions/api/lists.js`; the rest of the repo is a few hundred lines a file
-and is meant to be read in full while you are in it.
+that should — a list of big files written into this paragraph was wrong
+within a week of being written: `functions/api/account.js` crossed the line
+twice, over as the account grew and back under when the email reset came
+out, and `functions/api/ask.js` arrived at nearly a thousand lines in a
+single day. So do not trust a list; run this and read the answer:
+
+```
+wc -l assets/*.js assets/*.css functions/*.js functions/*/*.js tools/*.mjs *.html | sort -n | awk '$1 > 600'
+```
+
+Everything under the line is a few hundred lines a file and is meant to be
+read in full while you are in it.
 
 Do not "skim" a long file and report it as read. Say which functions you read.
 

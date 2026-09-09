@@ -1,9 +1,10 @@
 /**
- * Tallinn Tastebuds — the pieces both API routes need.
+ * Tallinn Tastebuds — the pieces every API route needs.
  *
  * Underscore-prefixed files under functions/ are not routed, so this is a
- * module and never an endpoint. Everything here is shared by /api/saves,
- * /api/account and /api/lists. Three things at the bottom hold a value
+ * module and never an endpoint. Everything here is shared by the routes under
+ * functions/api/ — the answer shape, the session, which database this is, the
+ * two rolls of places. Three things at the bottom hold a value
  * between requests — which database this deployment is holding, the places on
  * the map, and the catalogue a list draws from — and all three are caches of
  * something that only a deploy changes, kept per isolate and re-asked every

@@ -9,9 +9,10 @@ A few places give readers of the map something off the bill. Which ones, and
 whether the offer is on, is `data/deals.json` and nothing else: a place with no
 entry there is exactly the place it was before discounts existed. There is no
 server behind it. The code a guest shows is an hourly HMAC computed in the
-browser from a key that ships in that public file, and `assets/pass.js:22-27`
-says why that trade is the right one: what an hourly code defends against is a
-screenshot going round a group chat, and it does that completely.
+browser from a key that ships in that public file, and **WHAT THIS IS NOT**
+in the header of `assets/pass.js` says why that trade is the right one: what
+an hourly code defends against is a screenshot going round a group chat, and
+it does that completely.
 
 Switching a deal touches one file, `data/deals.json`, and no generator: the
 stamper only rewrites references to `assets/*.js|css`, and `data/*` is served
@@ -40,14 +41,14 @@ stamper only rewrites references to `assets/*.js|css`, and `data/*` is served
 }
 ```
 
-What `tools/validate.mjs` holds each field to (`DEAL_KEYS` at line 502 and
-the checks that follow it):
+What `tools/validate.mjs` holds each field to (the `deals.json` block:
+`DEAL_KEYS` and the checks that follow it):
 
 | Field | Rule | If wrong |
 |---|---|---|
 | `id` | a slug, `^[a-z0-9]+(-[a-z0-9]+)*$`, unique among deals, and **a place in `restaurants.json`** | error |
 | `name` | non-empty, and **exactly that place's `name`** — the pass pages load `deals.json` and `ui.json` only, never the map, so the name is copied here and the validator is what keeps the copy honest | error, with both spellings in the message |
-| `live` | `true` or `false`. "Leave it false until the restaurant has agreed" (line 546) | error |
+| `live` | `true` or `false`. "Leave it false until the restaurant has agreed", in the validator's own message | error |
 | `key` | `^[0-9A-HJKMNP-TV-Z]{16,64}$` — digits and capitals without `I L O U` — and **shared with no other deal**: two places on one key verify each other's codes | error |
 | `offer`, `terms` | objects keyed by language code; only codes `ui.json` knows; no empty strings | error |
 | `from`, `until` | `YYYY-MM-DD`, `from` not after `until`; both optional and inclusive | error |

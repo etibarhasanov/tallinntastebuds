@@ -29,10 +29,10 @@ one fact decides most of what follows.
 
 ## The entry
 
-`tools/validate.mjs` (the `places.forEach` at lines 319–490) knows sixteen
-keys — `id, name, address, lat, lng, price, types, blurb, mustOrder, reel,
-photos, website, phone, added, visited, closed` — and requires the first
-twelve. An unknown key is a warning ("typo?"), which is how `blrub` is caught.
+`tools/validate.mjs` (the `restaurants.json` block, the `places.forEach`
+in it) knows sixteen keys — `id, name, address, lat, lng, price, types,
+blurb, mustOrder, reel, photos, website, phone, added, visited, closed` —
+and requires the first twelve. An unknown key is a warning ("typo?"), which is how `blrub` is caught.
 
 | Field | Rule | If wrong |
 |---|---|---|
@@ -122,10 +122,18 @@ its pin can land on the wrong side of the street. What it does, in order:
    `restaurant` and `laptop` — "29 of the 75", "8 of the 75" — and names the
    closed places by name in **Close a place instead of deleting it**. `grep
    -n 'of the 7' README.md` and move each one. The total is also spelled out
-   as "seventy-four" in some twenty places across the README, `assets/app.js`,
-   `assets/lists.js`, `assets/venues.js`, the Functions and the header of
-   `tools/places.mjs`, on a map of seventy-five: a sweep of its own, so fix
-   the ones in any file you are already in and leave the rest.
+   in words — "seventy-four" in the files written before the last place,
+   "seventy-five" in the ones written since — across the README, the
+   scripts, the Functions and the header of `tools/places.mjs`. This finds
+   every copy:
+
+   ```
+   grep -rn 'seventy-f' --include=*.md --include=*.js --include=*.mjs .
+   ```
+
+   Moving them all is a sweep of its own, so fix the ones in any file you
+   are already in and leave the rest; `node tools/validate.mjs` prints the
+   true total on its last line.
 8. **Open the map** on a local server (`python3 -m http.server 8000`;
    `file://` shows an empty map) and look at the pin, the panel, the photos
    in the lightbox, and the chips the new types light up.

@@ -5,11 +5,14 @@ description: Refresh the Google Places export: a new exports/tallinn_restaurants
 
 # Refresh the Google Places export
 
-751 places in Tallinn out of the Google Places API, mirrored into the
+1,110 places in Tallinn out of the Google Places API, mirrored into the
 `google_venues` table so a list can hold a place that is not on the map and
-`/google` can be a directory of the city. It is somebody else's data about the
-city, kept apart from mine about the food, and the whole design of the refresh
-is that running it again is safe. The pipeline is three files:
+`/google` can be a directory of the city. The number moves with every
+refresh — the first pull found 750 restaurants, the second sweep, over
+seventeen Google types, found the rest — so read it off the first line of
+`db/google-venues.sql` rather than off this page. It is somebody else's data
+about the city, kept apart from mine about the food, and the whole design of
+the refresh is that running it again is safe. The pipeline is three files:
 
 ```
 exports/tallinn_restaurants.csv   the cleaned export, 18 columns, one line per row
@@ -20,36 +23,34 @@ db/google-venues.sql              GENERATED — what actually loads them
 ## Read first
 
 - `README.md` → **Google venues**, all of it, and **The directory**.
-- `exports/README.md` — how the raw export was cleaned, and the one row
-  typed in by hand.
+- `exports/README.md` — how the raw export was cleaned, column by column, and
+  where the upstream sweep lives. `exports/REVIEW.md` is the shortlisting
+  worksheet built from the same file by `build_review_sheet.py`; it is for
+  deciding which places join the map, and nothing reads it.
 - The header of `tools/googlevenues.mjs`.
 
 ## The CSV
 
 The tool reads columns **by name**, so order does not matter and extras are
-tolerated, but a missing one fails loudly "rather than write NULLs over 751
-rows". It needs `place_id` plus `name, category, cuisine, rating, reviews,
-price, status, address, postal_code, city, phone, website, opening_hours,
-tags, latitude, longitude, maps_url`. Every cell is trimmed; a blank
+tolerated, but a missing one fails loudly rather than write NULLs over a
+thousand rows. It needs `place_id` plus `name, category, cuisine, rating,
+reviews, price, status, address, postal_code, city, phone, website,
+opening_hours, tags, latitude, longitude, maps_url`. Every cell is trimmed; a blank
 `place_id` skips the row; an id must match `^[A-Za-z0-9_-]{20,255}$`; a
 duplicate id stops the run rather than let one row silently win. `rating`,
 `reviews`, `latitude`, `longitude` become numbers or `NULL`; everything else
 is quoted text.
 
-The raw export is 44 columns and 4,945 physical lines for 750 records,
-because `opening_hours` embeds newlines. `exports/clean_restaurants_csv.py`
-is what turns it into the file above — drops the empty and constant columns,
-collapses hours to one line in 24-hour form (`Mon 11:00-22:00; Sat closed`),
-derives `cuisine` and `tags`, rounds coordinates to six places, sorts by
-rating. Its default output is `tallinn_restaurants_clean.csv`, **not** the
-file the tool reads, so pass the output name or rename it. It reads the raw
+The raw export is 44 columns and several times the physical lines of the
+records in it, because `opening_hours` embeds newlines.
+`exports/clean_restaurants_csv.py` is what turns it into the file above —
+drops the empty and constant columns, collapses hours to one line in 24-hour
+form (`Mon 11:00-22:00; Sat closed`), derives `cuisine` and `tags`, rounds
+coordinates to six places, sorts by rating. Its default output is
+`tallinn_restaurants_clean.csv`, **not** the file the tool reads, so pass the
+output name as `exports/README.md` shows, or rename it. It reads the raw
 columns by name too, so a renamed upstream column stops it before anything
 else runs.
-
-**RØST Bakery** was typed into the export by hand. A fresh pull from
-upstream does not have it: the refresh marks it `missing_since`, and
-`/api/venues` and `/api/places` stop serving it. Either get it into the
-upstream pull or add the row back to the CSV after cleaning.
 
 ## The steps
 
@@ -62,12 +63,13 @@ upstream pull or add the row back to the CSV after cleaning.
 3. `node tools/validate.mjs`. Beyond the SQL being what the tool would write,
    it holds the directory's vocabulary to the new export:
    - **every `KITCHENS` pattern in `functions/api/venues.js` must still match
-     at least one row.** Eight patterns hang on exactly one venue today —
-     `vietnamese`, `indonesian`, `malaysian`, `filipino`, `taiwanese`,
-     `greek`, `german`, `peruvian` — so one place leaving the export fails CI
-     until its pattern goes from `venues.js` **and** its label from
-     `data/cuisines.json`, together, because every cuisine id must be
-     producible by a pattern and every pattern's id must have ten labels.
+     at least one row.** Seven patterns hang on exactly one venue today —
+     `vietnamese`, `indonesian`, `malaysian`, `filipino`, `greek`, `german`,
+     `peruvian` — so one place leaving the export fails CI until its pattern
+     goes from `venues.js` **and** its label from `data/cuisines.json`,
+     together, because every cuisine id must be producible by a pattern and
+     every pattern's id must have ten labels. The validator's message names
+     the pattern.
    - A malformed CSV surfaces here as "the SQL is stale", because the check
      swallows the parser's error. Run the tool by hand to see the real cause.
 4. **Read the diff of the SQL** before it goes anywhere. Being readable
@@ -85,20 +87,24 @@ upstream pull or add the row back to the CSV after cleaning.
    carries a `WHERE`, so the D1 denials in `.claude/settings.json` let it
    through; a half-applied file leaves the rows after the break marked
    missing until the next complete run.
-6. **The counts.** 751 is written in digits and in words across the README,
-   `exports/README.md`, `db/schema.sql`'s comments (which still say 750 in
-   seven places, from before RØST), `functions/api/venues.js`,
-   `functions/api/_lib.js` and `tools/validate.mjs`, along with the numbers
-   that hang off it: 32 on the map, 45 temporarily closed, 368 with no
-   cuisine, 225 with no kitchen, 740 with at least one kind, 161 ids with an
-   underscore and none all-lowercase — that last one is what `isAdded()`
-   relies on to tell a Google key from a hand-added place, so re-run the
-   count SQL in `db/schema.sql` after a refresh. The validator prints the
-   live total, and this finds the copies:
+6. **The counts.** The total is written in digits ("1,110") and in words
+   ("eleven hundred") across the README, `exports/README.md`,
+   `exports/REVIEW.md`, `functions/api/ask.js`, `functions/api/venues.js`
+   and the comment above the check in `tools/validate.mjs`, along with the
+   numbers that hang off it — how many are matched to the map (the `SET
+   map_id` lines at the end of the SQL, 60 today), how many have no cuisine,
+   how many rows the raw export ran to. This finds the copies:
 
    ```
-   grep -rn '751\|seven hundred and fifty' --include=*.md --include=*.js --include=*.mjs --include=*.sql .
+   grep -rn '1,110\|eleven hundred\|1110' --include=*.md --include=*.js --include=*.mjs --include=*.sql . | grep -v google-venues.sql
    ```
+
+   One of those numbers is load-bearing rather than descriptive:
+   `isAdded()` in `functions/api/_lib.js` tells a hand-added place from a
+   Google one by the key being **all lowercase with an underscore in it**,
+   which no Google `place_id` is — they are mixed case. After a refresh,
+   `grep -o "('Ch[A-Za-z0-9_-]*'" db/google-venues.sql | grep -c '^([a-z0-9_-]*$'`
+   must print `0`, or a Google row will be read as somebody's addition.
 
 ## The rules of the table
 
@@ -135,8 +141,7 @@ categories renamed, patterns dropped — and that both databases were loaded.
 3. Load the SQL into **preview** from the branch —
    `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`
    — then push the branch, which deploys a preview of it, and open that
-   preview's `/google` and the list picker to see the rows arrive, and RØST
-   still there.
+   preview's `/google` and the list picker to see the rows arrive.
 4. One commit for the export and its SQL; a second for any `KITCHENS`
    pattern and cuisine label that had to go with it, and a third for the
    counts, if they moved.
@@ -154,6 +159,9 @@ categories renamed, patterns dropped — and that both databases were loaded.
 - The SQL regenerated and applied to production only.
 - The cleaner's output left under its default name, so the tool reads the
   old file and reports nothing stale.
-- RØST dropped by a fresh pull, and quietly marked missing.
+- A row typed into the CSV by hand — RØST Bakery was, once — and dropped by
+  the next pull, quietly marked missing. The export is upstream's; a place
+  the sweep does not find goes on the map instead.
 - A hand-edit to a Google column, gone at the next refresh.
-- A count that moved in one place and not the others.
+- A count that moved in one place and not the others — this file said 751
+  for a refresh that brought 1,110.

@@ -18,16 +18,22 @@ here. It is the main rule and it applies to every line you touch.
 ## Read first
 
 - The README section for the feature you are standing in. Every one has one —
-  **Saves**, **Lists**, **Stories**, **The directory**, **The radio**,
-  **Surprise me**, **Languages**, **The two styles** — and it carries the
-  reasoning the code only hints at.
+  **Saves**, **Accounts**, **The account page**, **Lists**, **Public lists**,
+  **Profiles**, **Stories**, **The directory**, **Ask for somewhere**,
+  **Restaurant discounts**, **The radio**, **Surprise me**, **Languages**,
+  **The two styles** — and it carries the reasoning the code only hints at.
+  `grep -n '^## ' README.md` is the table of contents with line numbers;
+  read the section, not the file.
 - `README.md` → **The design rules**: twelve rules a new sheet, page or
   button is held to. Two of them the validator enforces; the other ten are
   read by a person, and that person is you.
-- The header block of the file you are about to change. `assets/app.js` and
-  `assets/lists.js` are far over the ~600-line mark, so the reach there is the
-  functions you touch plus what they call and what calls them. Say which
-  ones you read.
+- The header block of the file you are about to change. `assets/app.js`,
+  `assets/lists.js`, `assets/venues.js`, `assets/account.js` and both big
+  stylesheets are over the ~600-line mark (`wc -l assets/*` is the current
+  answer), so the reach there is the functions you touch plus what they call
+  and what calls them. Say which ones you read. Line numbers written into
+  this file rot within a week; find things by name — `grep -n 'function
+  applyStyle' assets/*.js` — never by the number a document remembers.
 
 ## How the browser code is written
 
@@ -47,18 +53,18 @@ thing that fails to change when somebody presses a swatch. There is no
 under `ttb.style`.
 
 **Every page applies the style and the language itself, on boot, first.**
-`applyStyle()` at `assets/lists.js:179-197` is the fullest copy: `?style=`,
-else `ttb.style`, else `red`; set `data-style` on `<html>`; set
-`colorScheme` to `dark` for green, or a native control is "a white box on a
-dark card"; write the computed `--wash` into `<meta name="theme-color">`.
-Then `pickLanguage()` — `?lang=`, else `ttb.lang`, else the browser's
-languages, else `en` — and `applyStaticStrings()` over the `data-i18n`,
+`applyStyle()` in `assets/lists.js` is the fullest copy: `?style=`, else
+`ttb.style`, else `red`; set `data-style` on `<html>`; set `colorScheme` to
+`dark` for green, or a native control is "a white box on a dark card"; write
+the computed `--wash` into `<meta name="theme-color">`. Then
+`pickLanguage()` — `?lang=`, else `ttb.lang`, else the browser's languages,
+else `en` — and `applyStaticStrings()` over the `data-i18n`,
 `data-i18n-aria-label`, `data-i18n-placeholder` and `data-i18n-title`
-attributes. `app.js`, `lists.js` and `venues.js` each carry that block;
-`pass.js` carries it without the `theme-color` line, so the three pass pages
-keep light browser chrome under the dark style. A new page copies the block
-whole, and its head carries `<meta name="color-scheme">` and
-`<meta name="theme-color">` like `lists.html`'s.
+attributes. `app.js`, `lists.js`, `venues.js` and `account.js` each carry
+that block; `pass.js` carries it without the `theme-color` line, so the
+three pass pages keep light browser chrome under the dark style. A new page
+copies the block whole, and its head carries `<meta name="color-scheme">`
+and `<meta name="theme-color">` like `lists.html`'s.
 
 **Every UI string lives in `data/ui.json`, in all ten languages** — az, hy,
 en, et, fi, pt, ru, es, tr, uk. Never print a raw key or an English fallback
@@ -74,7 +80,7 @@ runs: nine payloads, each with the expected version and a SHA-256 of the
 matrix, so a change to what it draws is a bug however much faster it is. A
 deliberate change means `--record`, pasting the new fixtures in, and scanning
 one of the codes with a real camera before it lands. And the story clock in
-`assets/app.js` — `STORY_HOURS` at line 5059, `tallinnOffset`, `tallinnTime`,
+`assets/app.js` — `STORY_HOURS`, `tallinnOffset`, `tallinnTime`,
 `storyStart`/`storyEnd` — is a copy of `tools/clock.mjs`, because the
 browser cannot import from `tools/`; change one, change the other.
 
@@ -94,10 +100,13 @@ browser cannot import from `tools/`; change one, change the other.
   the tokens any block declares. `:root` is not compared.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in `index.html`,
-  `lists.html`, `google.html`, `deal.html`, `verify.html` and `staff.html`
-  must carry `?v=` equal to the first eight hex of the file's SHA-256.
-  `admin.html` is deliberately unstamped; it is served `no-store`.
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the seven pages
+  named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
+  `lists.html`, `account.html`, `google.html`, `deal.html`, `verify.html`,
+  `staff.html` — must carry `?v=` equal to the first eight hex of the file's
+  SHA-256. A new page that loads anything out of `assets/` is added to that
+  list, or it never gets stamped. `admin.html` is deliberately unstamped; it
+  is served `no-store`.
 
 ## The steps
 
@@ -112,8 +121,11 @@ browser cannot import from `tools/`; change one, change the other.
    page that needs a live-looking API, Playwright with `/api/*` stubbed —
    Chromium is at `/opt/pw-browsers/chromium` in this environment — or
    `npx wrangler pages dev .` for the real bindings against the preview
-   database. Look at both styles, and at a 390 px width, which is the phone
-   the README measures its layouts against.
+   database. The chat (`assets/ask.js` and the panel in `app.js`) only
+   answers with the model under `pages dev`, and each question spends from
+   the daily Workers AI allowance the live site shares — a few questions,
+   not an afternoon. Look at both styles, and at a 390 px width, which is
+   the phone the README measures its layouts against.
 5. **Rewrite the README paragraph** the change made wrong, and the comment
    above the function. A paragraph that now describes the version that lost
    the argument is a bug.
@@ -127,7 +139,10 @@ complain about them:
 1. `data/ui.json`: a top-level block with every key the others have, plus
    `langName`, `styleRed`, `styleGreen`, `months` (twelve names joined by `|`,
    or `formatMonth()` falls back to `Intl`, which draws April as `M04` in
-   Chromium for some locales) and `monthYear`.
+   Chromium for some locales), `monthYear`, and the chat's synonym lists
+   `askWordsCheap`, `askWordsFancy` and `askWordsOpen`, joined by `|` the
+   same way — that is how *cheap* in the new language reaches the model's
+   brief without a word of code.
 2. `data/taxonomy.json`: a label on every type. Fails without.
 3. `data/cuisines.json`: a label on every cuisine. Fails without.
 4. `data/restaurants.json`: `blurb` on every place. Warns without, so you can
