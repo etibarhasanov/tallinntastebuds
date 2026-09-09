@@ -5,12 +5,15 @@
  *   → { "results": [ { "lat": 59.4389, "lng": 24.7291,
  *                      "label": "Telliskivi 60a", "where": "Tallinn" }, … ] }
  *
- * The "add a place" form on the lists page is the only thing that asks. It
- * has a map with a draggable pin, and dragging is still the thing that
- * decides where a place is — see the note above addForm() in
+ * Two things ask. The "add a place" form on the lists page asks through the
+ * route: it has a map with a draggable pin, and dragging is still the thing
+ * that decides where a place is — see the note above addForm() in
  * assets/lists.js. This is the shortcut: type the street, pick it off the
  * list, and the pin is already on the right building before anybody drags
- * anything.
+ * anything. And the chat on the map asks through suggest() below, in the
+ * Function rather than over the wire, when a question says "near Laulupeo"
+ * — see WHERE THE VISITOR IS in functions/api/ask.js — and takes the first
+ * suggestion as the point to measure from.
  *
  * WHY PHOTON AND NOT NOMINATIM
  *
@@ -43,7 +46,11 @@
  *
  * Not because a street name is private, but because an open geocoding proxy
  * on somebody else's quota is a thing that gets found and used. Everybody who
- * can see this form is signed in already.
+ * can see this form is signed in already. The chat's use is not behind one —
+ * /api/ask is open to everybody — and is bounded another way: one lookup a
+ * question, only for a question that says it wants to be near somewhere,
+ * over a question capped at two hundred characters, and never the raw
+ * query somebody chose.
  *
  * IF THIS EVER NEEDS TO BE BETTER
  *
@@ -153,29 +160,18 @@ function shape(feature) {
   };
 }
 
-export async function onRequestGet(context) {
-  const { request, env } = context;
+/* The lookup, whole: the query tidied, Photon asked, the answer shaped and
+   the doubles dropped. The route below and /api/ask both call this, so what
+   either sends upstream is the same string for the same words — which is
+   also what makes the day-long cache in ask() land for both. Answers one of
+   { short }, { busy }, { failed } or { results }, and throws only when the
+   fetch itself does. */
+export async function suggest(raw) {
+  const q = String(raw || '').replace(/\s+/g, ' ').trim().slice(0, MAX_Q);
+  if (q.length < MIN_Q) return { short: true };
 
-  const q = String(new URL(request.url).searchParams.get('q') || '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, MAX_Q);
-  if (q.length < MIN_Q) return json({ error: 'short' }, 400);
-
-  if (!env.DB) return json({ error: 'no-database' }, 503);
-  const user = await sessionUser(request, env);
-  if (!user) return json({ error: 'signed-out' }, 401);
-
-  let answer;
-  try {
-    answer = await ask(q);
-  } catch (e) {
-    return json({ error: 'upstream' }, 502);
-  }
-  /* Being told to slow down is not the same as a street that does not exist,
-     and the form says something different for each. */
-  if (answer.busy) return json({ error: 'busy' }, 429);
-  if (answer.failed) return json({ error: 'upstream' }, 502);
+  const answer = await ask(q);
+  if (answer.busy || answer.failed) return answer;
 
   /* Photon will happily return the same street four times over, once per
      building on it, when what was typed was the street. Two suggestions
@@ -192,11 +188,34 @@ export async function onRequestGet(context) {
     results.push(made);
     if (results.length >= LIMIT) break;
   }
+  return { results: results };
+}
+
+export async function onRequestGet(context) {
+  const { request, env } = context;
+
+  const q = new URL(request.url).searchParams.get('q');
+
+  if (!env.DB) return json({ error: 'no-database' }, 503);
+  const user = await sessionUser(request, env);
+  if (!user) return json({ error: 'signed-out' }, 401);
+
+  let answer;
+  try {
+    answer = await suggest(q);
+  } catch (e) {
+    return json({ error: 'upstream' }, 502);
+  }
+  /* Being told to slow down is not the same as a street that does not exist,
+     and the form says something different for each. */
+  if (answer.short) return json({ error: 'short' }, 400);
+  if (answer.busy) return json({ error: 'busy' }, 429);
+  if (answer.failed) return json({ error: 'upstream' }, 502);
 
   /* No cache header on the way out, deliberately. The answer is behind a
      session and json()'s cache directive is a public one — a shared cache
      holding this would hand a signed-in answer to somebody who is not. The
      saving that matters already happened in ask(), in Cloudflare's cache of
      the upstream call, which is keyed on the query and not on who asked. */
-  return json({ results: results });
+  return json({ results: answer.results });
 }

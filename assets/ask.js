@@ -5,8 +5,8 @@
  * functions/api/ask.js). Before it does, the Function narrows the seventy
  * places and the eleven hundred Google rows to the ones the sentence could
  * be about, and this is what tells it what the sentence is about: which
- * types, whether cheap or fancy, whether open now, and the words left over
- * that might be a dish or a street.
+ * types, whether cheap or fancy, whether open now, what it wants to be near,
+ * and the words left over that might be a dish or a street.
  *
  * It used to be a second half of the chat as well — a ranker that drew rows
  * in the panel at once and again whenever the model was away. That is gone.
@@ -39,16 +39,18 @@
  *
  * THE VOCABULARY IS IN data/ui.json, NOT IN HERE
  *
- * Three things a person asks for have no words in the data: cheap, fancy, and
- * open now. Everything else they might type — bakery, vegan, date, asian — is
- * already a taxonomy label in all ten languages, and app.js already indexes
- * those, so typing "pagariäri" or "пекарня" finds the bakeries for free.
+ * Four things a person asks for have no words in the data: cheap, fancy,
+ * open now, and near somewhere. Everything else they might type — bakery,
+ * vegan, date, asian — is already a taxonomy label in all ten languages, and
+ * app.js already indexes those, so typing "pagariäri" or "пекарня" finds the
+ * bakeries for free.
  *
- * The three that are missing live in ui.json under askWordsCheap,
- * askWordsFancy and askWordsOpen, as synonyms joined by "|" — the same shape
- * `days` and `months` already use. That puts them where every other string on
- * this site lives, which means the validator holds them to all ten languages
- * like everything else, and adding a language is one file rather than two.
+ * The four that are missing live in ui.json under askWordsCheap,
+ * askWordsFancy, askWordsOpen and askWordsNear, as synonyms joined by "|" —
+ * the same shape `days` and `months` already use. That puts them where every
+ * other string on this site lives, which means the validator holds them to
+ * all ten languages like everything else, and adding a language is one file
+ * rather than two.
  */
 window.TTBAsk = (function () {
   'use strict';
@@ -195,13 +197,15 @@ window.TTBAsk = (function () {
    *   opts.cuisines  data/cuisines.json's cuisines, the same shape — what a
    *                  Google row can be asked for by, since the export files a
    *                  place as Thai or Georgian and my taxonomy does not
-   *   opts.words     { cheap, fancy, open } — the ui.json synonym lists
+   *   opts.words     { cheap, fancy, open, near } — the ui.json synonym lists
    *
    * Out comes what was asked for, and `rest`: the words left over once the
    * wishes and the noise are taken out. The Function matches those against
    * each place's name, street, types and dishes when it narrows — a dish, a
    * street, a name — and they are the reason "khachapuri" works without
-   * khachapuri being a word anybody wrote down.
+   * khachapuri being a word anybody wrote down. `near` is what they want to
+   * be close to, when they said so — the words after the near phrase — and
+   * the Function turns that into a point and measures from it.
    */
   function read(question, opts) {
     var fold = opts.fold;
@@ -213,6 +217,7 @@ window.TTBAsk = (function () {
     var cheap = phrases(opts.words.cheap, fold);
     var fancy = phrases(opts.words.fancy, fold);
     var open = phrases(opts.words.open, fold);
+    var near = phrases(opts.words.near, fold);
 
     /* Fancy before cheap, and it matters: "cheap" is a word in the English
        label "Cheap eats" and a phrase in the fancy list can contain it too.
@@ -221,6 +226,7 @@ window.TTBAsk = (function () {
     var wantsFancy = said(q, fancy);
     var wantsCheap = wantsFancy ? '' : said(q, cheap);
     var wantsOpen = said(q, open);
+    var wantsNear = said(q, near);
 
     var types = typeSaid(q, opts.types, fold);
     /* The same reading over the directory's vocabulary: "thai", "tai" and
@@ -234,14 +240,31 @@ window.TTBAsk = (function () {
     var spent = [].concat(
       wantsFancy ? [wantsFancy] : [],
       wantsCheap ? [wantsCheap] : [],
-      wantsOpen ? [wantsOpen] : []
+      wantsOpen ? [wantsOpen] : [],
+      wantsNear ? [wantsNear] : []
     );
-    var left = q;
-    spent.forEach(function (p) { left = left.split(p).join(' '); });
+    var clean = function (text) {
+      var left = text;
+      spent.forEach(function (p) { left = left.split(p).join(' '); });
+      return left.split(' ').filter(function (word) {
+        return word && !isNoise(word);
+      });
+    };
 
-    var rest = left.split(' ').filter(function (word) {
-      return word && !isNoise(word);
-    });
+    var rest = clean(q);
+
+    /* What they want to be close to: the words after the near phrase, with
+       the other wishes and the noise out — "something close to my place,
+       laulupeo street" is asking about laulupeo street, and "cheap ramen
+       near laulupeo" about laulupeo, not about ramen. Said the other way
+       round, "laulupeo street, somewhere near", nothing follows the phrase
+       and everything left over is taken instead. The street stays in `rest`
+       too, so a place actually on it still scores as a word. */
+    var at = '';
+    if (wantsNear) {
+      var after = (' ' + q + ' ').split(' ' + wantsNear + ' ').slice(1).join(' ');
+      at = (clean(after).length ? clean(after) : rest).join(' ');
+    }
 
     return {
       types: types,
@@ -249,13 +272,8 @@ window.TTBAsk = (function () {
       cheap: !!wantsCheap,
       fancy: !!wantsFancy,
       open: !!wantsOpen,
-      rest: rest,
-      /* Whether the sentence asked for anything this can act on at all. A
-         question that reads as nothing — "hello", "what is this" — should be
-         answered with a shrug rather than with three places chosen by a
-         scoring pass that had nothing to score. */
-      empty: !types.length && !kitchens.length &&
-        !wantsCheap && !wantsFancy && !wantsOpen && !rest.length
+      near: at,
+      rest: rest
     };
   }
 

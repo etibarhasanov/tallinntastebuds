@@ -3469,12 +3469,13 @@
       fold: fold,
       types: state.types,
       cuisines: cuisines,
-      /* The three wishes with no words in the data. Everything else a question
+      /* The four wishes with no words in the data. Everything else a question
          can name is a taxonomy label, and read() finds those itself. */
       words: {
         cheap: t('askWordsCheap'),
         fancy: t('askWordsFancy'),
-        open: t('askWordsOpen')
+        open: t('askWordsOpen'),
+        near: t('askWordsNear')
       }
     });
   }
@@ -3663,9 +3664,10 @@
       lat: row.lat,
       lng: row.lng,
       types: row.types || [],
-      /* What Google says the place cooks, in data/cuisines.json's ids. Read
-         by rank() in assets/ask.js and drawn by nothing: the row prints the
-         types, which are the map's own words for the same thing. */
+      /* What Google says the place cooks, in data/cuisines.json's ids.
+         Scored by functions/api/ask.js when it narrows the city, and drawn
+         by nothing here: the row prints the types, which are the map's own
+         words for the same thing. */
       kitchens: row.kitchens || [],
       price: typeof row.price === 'number' ? row.price : null,
       rating: typeof row.rating === 'number' ? row.rating : null,
