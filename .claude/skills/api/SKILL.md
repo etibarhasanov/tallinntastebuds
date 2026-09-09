@@ -12,15 +12,17 @@ and the one where a mistake is quiet: the map still draws, and nobody notices
 for weeks.
 
 `.claude/rules/leave-it-better.md` loads itself when you open a file here.
-`functions/api/lists.js` and `functions/api/account.js` are over the
-~600-line mark, so the reach there is the functions you touch plus what they
-call and what calls them.
+`functions/api/lists.js` and `functions/api/ask.js` are over the ~600-line
+mark (`wc -l functions/api/*.js` is the current answer), so the reach there
+is the functions you touch plus what they call and what calls them.
 
 ## Read first
 
-- The README section for the feature: **Saves**, **Accounts**, **Lists**,
-  **Google venues**, **The directory**. Each says what is cached, what is
-  deliberately not, and where a count comes from.
+- The README section for the feature: **Saves**, **Accounts**, **The
+  account page**, **Lists**, **Profiles**, **Google venues**, **The
+  directory**, **Ask for somewhere**. Each says what is cached, what is
+  deliberately not, and where a count comes from. `grep -n '^## ' README.md`
+  is the table of contents with line numbers.
 - **Two databases, and never one** and **Setting it up**, before anything
   that touches a binding, a secret or the schema.
 - The header of the file, and of `functions/api/_lib.js`. The header of
@@ -41,14 +43,20 @@ leading underscore are modules, not routes.
 | `GET/POST /api/lists` | `lists.js` | `lists`, `list_items`, `list_keeps`, `added_places` | `no-store`, on purpose: the owner reads it mid-edit |
 | `GET /api/places` | `places.js` | none; `data/places.json` merged with open `google_venues` | `public, max-age=300` |
 | `GET /api/venues` | `venues.js` | none; the whole `google_venues` table | `public, max-age=300` |
-| `GET /api/geocode` | `geocode.js` | none; proxies Photon, cached upstream a day | `no-store` |
+| `GET /api/geocode` | `geocode.js` | none; proxies Photon for the add-a-place form, session required, cached a day | `no-store` |
+| `GET /api/profile` | `profile.js` | none; one person's public lists and their keep total | `no-store` |
+| `POST /api/ask` | `ask.js` | none; narrows the two rolls to what a question could be about and puts it to Workers AI | `no-store` |
 | `/list/<id>` | `list/[id].js` | none; `lists.html` with the list unfurled | `no-store` |
 | `/lists/public` | `lists/public.js` | none; `lists.html` with the first page of everybody's lists seeded in, searched when the address carries `?q=` | `no-store` |
 | `/lists/kept` | `lists/kept.js` | none; 301 to `/lists/public`, the address this page had before it was renamed | — |
+| `/u/<name>` | `u/[name].js` | none; `lists.html` with the profile seeded in | `no-store` |
 
-Both of those two serve the same `lists.html` with a head of their own, and
-the escaping, head swap and seeding they share are in `functions/_shell.js` —
-a module, so it is not a route either.
+Those three pages serve the same `lists.html` with a head of their own, and
+the escaping, head swap and seeding they share are in `functions/_shell.js`.
+The query each seeds is in a module beside the route that also answers it —
+`_lists.js` for one list, `_mostkept.js` for everybody's, `_profile.js` for
+one person — so the page and the API cannot drift apart. Underscore-prefixed
+files are modules, never routes.
 
 `json(body, status, maxAge)` in `_lib.js` is how every answer is built: with
 `maxAge` it is `public, max-age=N`, without it `no-store`. **Never put a
@@ -79,8 +87,25 @@ production sharing an id or a name.
 | `ENVIRONMENT` mismatch | the same answers as no database, `wrong-database` |
 | `SAVE_SALT` | saves, account and lists POST **fail closed**, `503 no-salt`, rather than store a weaker hash. Changing it later resets every cap and leaves the counts alone |
 | `TURNSTILE_SECRET` | optional; set, a save without a token is 403 |
+| `AI` binding | `/api/ask` answers `source: "none"`, `note: "no-ai"`, and the chat says nothing on the map answers. Everything else is untouched |
 
 Secrets live in the Pages dashboard, per environment, and never in the repo.
+
+**The chat is Workers AI and only that.** `[ai]` in `wrangler.toml` is a
+binding like `DB`, not a key: nothing to create, nothing to buy, the model
+is the one `MODEL` constant at the top of `ask.js`. Three things about it
+bite. The free allowance is **ten thousand Neurons a day per account, shared
+by preview and production**, so an afternoon of driving the chat on a
+preview empties the live site's day; past it every request is a 429 until
+midnight UTC and the chat says it is resting. The model answers as a chat
+completion, words at `choices[0].message.content`, and an older model
+answers `{ response }` — the route reads both, because reading one cost a
+year of the model never being heard. And `/api/ask` says which half
+answered in `note` — `workers-ai`, `workers-ai-none`, `workers-ai-spent`,
+`no-ai` — so when the chat goes quiet, one request tells you why. The
+model never writes about a place: it picks ids out of the slice it was
+given and writes a clause each, and an id it invented is dropped. Keep
+that shape; it is what makes a hallucinated restaurant unreachable.
 
 **Every write is a prepared statement, and every write to a list is
 preceded by a read of `lists.owner`**: `onRequestPost` in `lists.js` loads
@@ -105,10 +130,12 @@ database in this repository; D1 Time Travel's 30 days is the only recovery.
 **Caps live in two places** and the server is the one that binds. `MAX_TITLE
 60`, `MAX_INTRO 200`, `MAX_SAY 280`, `MAX_ITEMS 20` in `lists.js` are restated
 in `assets/lists.js`, and `MAX_TITLE` a third time in `assets/account.js`,
-which carries the box that names a new list; `MAX_NAME 80` and `MAX_ADDRESS 120` as literal
-`maxlength`s at lines 1933 and 1942; the username's 3–24 in `account.js` as a
-`maxlength` in `app.js`. Change one, change the other, and the README's table
-under **The caps**.
+which carries the box that names a new list; `MAX_NAME 80` and
+`MAX_ADDRESS 120` as literal `maxlength: '80'` and `'120'` in the add-a-place
+form in `assets/lists.js`; the username's 3–24 in `account.js` as a
+`maxlength: '24'` in `app.js`. `grep -n maxlength assets/*.js` finds every
+copy. Change one, change the other, and the README's table under **The
+caps**.
 
 ## The schema
 
@@ -139,7 +166,13 @@ live table is a rebuild; do not reach for one.
 3. **Drive it under `npx wrangler pages dev .`**, at `127.0.0.1:8788`, which
    reads the top of `wrangler.toml` and so hits the preview database. Never
    production, and never by pointing a binding at it. `.wrangler/` is the
-   dev server's scratch and is ignored.
+   dev server's scratch and is ignored. The `AI` binding runs remotely even
+   there and spends from the shared daily allowance, so drive the chat a
+   few questions at a time. To look at rows without a dev server, the
+   Cloudflare MCP tool `d1_database_query` is pre-allowed in
+   `.claude/settings.json` against the **preview** database; the hard
+   denials there — no `DROP`, no `DELETE` or `UPDATE` without a `WHERE` —
+   apply to it too.
 4. Rewrite the README paragraph the change made wrong, and the header.
 5. The pass in `leave-it-better.md`.
 
@@ -189,5 +222,8 @@ what it costs per request, and what has to be applied by hand and where.
   environment*: open a PR, or run the workflow from a non-production branch.
 - Comments that fell behind the routes: the README's "the attack surface of
   the database is that one file" was true when `saves.js` was alone, and the
-  header of `_lib.js` still names three routes of seven. Fix the one you are
-  standing in.
+  header of `_lib.js` named three routes of eight for a month. Fix the one
+  you are standing in, and count the routes in this file's table when you
+  add one.
+- The chat driven hard on a preview, and the live site out of model until
+  midnight UTC. Same allowance, one account.

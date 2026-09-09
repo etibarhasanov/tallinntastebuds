@@ -29,9 +29,10 @@ the entry goes through a branch and a PR like everything else.
 
 ## The entry
 
-`tools/validate.mjs` (the story block, lines 604–811) allows exactly these
-keys — `id, live, video, photo, seconds, poster, from, until, caption, spot,
-link, linkLabel` — and holds them to this:
+`tools/validate.mjs` (the `stories.json` block, `STORY_KEYS` and the
+`stories.forEach` under it) allows exactly these keys — `id, live, video,
+photo, seconds, poster, from, until, caption, spot, link, linkLabel` — and
+holds them to this:
 
 | Field | Rule | If wrong |
 |---|---|---|
@@ -51,8 +52,9 @@ link, linkLabel` — and holds them to this:
 
 Nothing weighs a photo or a poster. Leave `until` out and the window is
 `from` + 36 hours, which is `STORY_HOURS` in `tools/clock.mjs` **and** a
-second copy at `assets/app.js:5059`, because the browser cannot import from
-`tools/`; change one, change the other.
+second copy in `assets/app.js` (`grep -n STORY_HOURS assets/app.js`),
+because the browser cannot import from `tools/`; change one, change the
+other.
 
 ## The admin road
 

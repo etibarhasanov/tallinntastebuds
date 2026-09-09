@@ -98,9 +98,10 @@ It needs Node 18 or newer and has no dependencies.
 node tools/stamp.mjs
 ```
 
-It rewrites the `?v=` hash on every script and stylesheet reference in the six
-HTML pages that load something out of `assets/`. The validator fails on a stale one, so CI will catch it if you
-forget — but it is one command and it saves a round trip. See
+It rewrites the `?v=` hash on every script and stylesheet reference in the
+pages that load something out of `assets/` — the seven named in `PAGES` at
+the top of `tools/stamp.mjs`. The validator fails on a stale one, so CI will
+catch it if you forget — but it is one command and it saves a round trip. See
 [Cache stamps](#cache-stamps).
 
 ---
@@ -715,7 +716,10 @@ this map is one I have been to and would send somebody to, so any twenty of
 them is a legitimate pool for a question about a mood; what the scoring has
 to guarantee is only that when a question *does* name something — khinkali,
 ramen, a date — the places that answer it are in the slice, and first. There
-is a test for exactly that.
+is no test in the repository for that; it was checked by hand, question by
+question, and the way to check it again is the same — `/api/ask` answers
+with `picks` in the order the model chose, and a named dish that is not in
+the first three is the scoring having missed.
 
 **For its whole first year, nobody ever saw this model answer.** Not because
 of the allowance: because of the shape of the reply. The older models on
@@ -728,11 +732,12 @@ model gave was thrown away, quietly, and the keyword reader answered in its
 place. Nobody could tell, because the reader is right about most questions
 people type; it took *how does it work* coming back with three restaurants,
 and *All Tallinn* giving the same answer as the map, to notice. Both shapes
-are read now, there is a test that feeds the route the real chat-completion
-shape and checks the model's own words come out, and `/api/ask` reports
-which of the two answered in **`note`** — `workers-ai`, `workers-ai-none`,
-`workers-ai-spent`, `no-ai` — so the next time this goes quiet it is one
-request to find rather than a year.
+are read now, and `/api/ask` reports which of the two answered in **`note`**
+— `workers-ai`, `workers-ai-none`, `workers-ai-spent`, `no-ai` — so the next
+time this goes quiet it is one request to find rather than a year. There is
+no test in the repository that feeds the route the chat-completion shape;
+the `note` is the check, and it is worth reading after any change to the
+model or to `unwrap()`.
 
 Which leaves the other half: what happens when the model is not there. That
 happens — the allowance runs out, a model gets moved behind the paid plan
@@ -4245,6 +4250,16 @@ to read and write first.
   neither a `video` nor a `photo` (or both), a file that is not in `stories/`,
   a `seconds` outside 2–20, a `spot` that is not a place, or both a `spot` and
   a `link`
+- a deal in `data/deals.json` for a place that is not on the map, whose
+  `name` is not what `restaurants.json` calls the place, whose key is shared
+  with another deal or off the code alphabet, or a live one with no
+  `offer.en` — see **Restaurant discounts**
+- `wrangler.toml` pointing the preview deployments and the live site at the
+  same database, or an environment block with no database or no
+  `ENVIRONMENT` of its own — see **Two databases, and never one**
+- a `db/google-venues.sql` that is not what `tools/googlevenues.mjs` would
+  write from `exports/tallinn_restaurants.csv` (run the tool and commit the
+  result)
 - a `?v=` cache stamp in the HTML that no longer matches the file it points at
   (run `node tools/stamp.mjs` and commit the result)
 - a `data/places.json` that is not what `tools/places.mjs` would write from the
@@ -4269,6 +4284,9 @@ to read and write first.
 - a file in `stories/` that no story in `data/stories.json` names
 - a `seconds` on a video or a `poster` on a photo, neither of which does
   anything
+- a live deal with no `offer` in some language, or one whose `until` has
+  passed
+- an unknown key on a deal or a story, the same way as on a place
 
 ---
 
@@ -4277,6 +4295,8 @@ to read and write first.
 ```
 CLAUDE.md                  what a session reads before it starts, and which
                            skill to load next
+.claude/settings.json      what a session may run without asking, and the two
+                           things it may never do to a database
 .claude/skills/            one checklist per kind of change — a place, a story,
                            a discount, a page, a Function, the export — loaded
                            when the task matches, or by /name
@@ -4293,6 +4313,8 @@ functions/api/lists.js     somebody else's top ten: make one, fill it, share
                            it, keep somebody else's, add a place nobody has
 functions/api/places.js    the roll the picker searches: the map plus the export
 functions/api/venues.js    the Google Places directory, whole and unmerged
+functions/api/geocode.js   a typed street to a point, for the add-a-place form;
+                           Photon behind it, a session in front of it
 functions/api/profile.js   one person's public lists, and their standing
 functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
@@ -4340,15 +4362,22 @@ data/places.csv            the Google Maps export a list picks from (yours to dr
 data/places.json           the catalogue: the map plus that CSV — GENERATED
 exports/tallinn_restaurants.csv    1,110 Tallinn venues out of Google Places
 exports/README.md          what was cleaned out of the raw export, and why
+exports/clean_restaurants_csv.py   the cleaning, from the upstream export
+exports/REVIEW.md          the shortlisting worksheet those rows are read
+exports/build_review_sheet.py      through, and the script that builds it
 db/google-venues.sql       GENERATED — loads that export into D1
 data/taxonomy.json         the controlled vocabulary of types
 data/cuisines.json         the 37 cuisines only the directory needs, in ten
                            languages — taxonomy.json holds the other six
 data/ui.json               every interface string, in every language
+data/radio.json            the stations, by language and a default
 data/deals.json            the discounts, and which of them are live
 data/stories.json          the stories, when each goes up and when it goes away
 data/schema.json           JSON Schema, for editor autocomplete
 admin.html                 the admin door, self-contained and unlinked
+_headers                   caching and the noindex on the unlinked pages
+_routes.json               which paths reach the Functions, and which never do
+robots.txt, sitemap.xml    what a crawler is told, and told not to
 photos/<restaurant-id>/    photos, one folder per place
 stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
@@ -4359,9 +4388,10 @@ tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
 tools/storymedia.mjs       makes every story video an H.264 MP4 a browser will play
 tools/qrperf.mjs           checks the QR encoder still draws the same code, and times it
-.github/workflows/validate.yml
+.github/workflows/validate.yml     the validator and the QR check, on every push
 .github/workflows/stories.yml      the hourly tick, and the tidying up after it
 .github/workflows/story-media.yml  converts a video posted from a phone
+.github/workflows/deploy.yml       GitHub Pages, manual only — NOT the live host
 ```
 
 Deep links: `?spot=f-hoone` opens that place directly — that is the link to put

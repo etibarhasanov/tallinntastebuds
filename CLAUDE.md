@@ -1,7 +1,9 @@
 # Working on Tallinn Tastebuds
 
-A full-screen map of places in Tallinn, plus discounts, stories, saves and
-lists. Static files, a handful of Cloudflare Functions, one D1 database.
+A full-screen map of places in Tallinn, plus discounts, stories, saves,
+lists, profiles, a directory of the city and a chat that answers with places.
+Static files, a dozen Cloudflare Functions, two D1 databases (preview and
+production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
 nothing in `node_modules`. The files in this repo are the files that get
@@ -9,11 +11,50 @@ served, and every tool in `tools/` is zero-dependency on purpose so it still
 runs in five years. If a change seems to want a bundler, it is the wrong
 change.
 
-`README.md` is over four thousand lines and is the real documentation — what
+`README.md` is over five thousand lines and is the real documentation — what
 counts as a Restaurant, how discounts work at the table, why Estonian is `et`.
-Read the section you need before touching that area. This file is the part
+Read the section you need before touching that area, and only that section:
+`grep -n '^## ' README.md` is its table of contents with line numbers, and
+every skill names the sections it needs by heading. This file is the part
 every session needs *before* it starts — where things go, what to run, and
 what has bitten people already — and an index to the rest.
+
+## Orient in two minutes, not twenty
+
+What a session tends to spend its first quarter-hour rediscovering, so it
+does not have to:
+
+- **There is no test suite.** `node tools/validate.mjs` and `node
+  tools/qrperf.mjs --check` are the whole of CI. Anything with a visible
+  effect is driven in a browser; the `/site` and `/api` skills say how.
+  Do not go looking for a test runner, and do not write one into a PR that
+  was about something else.
+- **Line numbers in the docs are not to be trusted; names are.** The skills
+  and the README name functions and constants — `applyStyle()`,
+  `STORY_HOURS`, `DEAL_KEYS`, `KITCHENS` — and `grep -n` finds them. A line
+  number that appears anywhere in prose was true on the day it was written.
+- **The big files are found, not remembered.** `.claude/rules/leave-it-better.md`
+  carries the one-line `wc -l` that lists every file over ~600 lines; the
+  answer changes month to month and the rule says how to read a file on
+  either side of that line.
+- **The counts are written into the prose** — seventy-five places, 1,110
+  Google venues, ten languages, thirteen types — in the README, the code
+  comments and the skills, and each skill says where its own copies live and
+  gives the `grep` that finds them. Change a count, move the copies you are
+  standing in, and say which you left.
+- **The chat costs nothing and is easy to exhaust.** `/api/ask` runs on
+  Workers AI's free daily allowance, and preview and production spend from
+  the same pot. Driving the chat on a preview for an afternoon puts the live
+  site out of model until midnight UTC. Ask it a few questions, not fifty.
+- **The preview database is the only one to touch**, and the Cloudflare MCP
+  `d1_database_query` tool is pre-allowed in `.claude/settings.json` for
+  reading it. The two hard denials there — no `DROP`, no `DELETE` or
+  `UPDATE` without a `WHERE` — are the owner's standing instruction and are
+  not to be argued with.
+- **Nothing is missing from the environment.** No `package.json`, no
+  `node_modules`, no Cloudflare token in GitHub's secret store, no test
+  runner, no `main` branch. Each of those is a decision, and the sections
+  below say which.
 
 ## Which process is this?
 
@@ -30,7 +71,7 @@ command does the same by hand, and is the way to be sure.
 | Post a story, schedule one, take one down | `/story` |
 | Switch a discount on or off, or change what it offers | `/discount` |
 | Change what a page does or looks like — anything in `assets/`, an HTML file, `data/ui.json`, a language | `/site` |
-| Change a Function, the schema, `wrangler.toml`, or anything that reads or writes D1 | `/api` |
+| Change a Function, the schema, `wrangler.toml`, the chat's model or prompt, or anything that reads or writes D1 | `/api` |
 | Refresh the Google Places export | `/google-venues` |
 
 Each skill is written from the code, not from memory: which files a change
@@ -59,7 +100,12 @@ to do.
 The files are templates as much as instructions: when a process turns out to
 have a step nobody wrote down, or a way of going wrong that is not in its
 file yet, add it to the file in the same PR. That is how they get richer than
-this one ever was.
+this one ever was. **And they go stale the same way the code comments do**:
+a route added to `functions/api/` without a row in the `/api` skill's table,
+a page added without joining the stamper's list in the `/site` skill, a
+refresh that changed a count the `/google-venues` skill had written down.
+A change to a feature reads the skill for that feature before the PR, the
+way it reads the README section, and fixes what the change made wrong.
 
 ## Branches and deploys
 
@@ -116,7 +162,7 @@ re-running the generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
 |---|---|---|
-| anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in every HTML file |
+| anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in the seven pages named in `PAGES` at the top of the tool |
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlevenues.mjs` | `db/google-venues.sql` |
 
