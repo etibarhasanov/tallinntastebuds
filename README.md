@@ -4610,13 +4610,13 @@ press play, one page ago — so nothing is reset and nothing is said. The button
 stays on and the stream starts on the first tap or keypress anywhere on the
 new page, which in practice is the tap that opens the list they came for.
 
-The lists page wears the same button in its header, next to the username: the
-map's pill, the map's station name, the same press to stop. It is the map's
-control on a page that has no rail rather than a second design for one switch,
-and `/list/<id>` gets it too — somebody reading a list a friend sent them can
-put the radio on from there. On a phone it is the icon alone, which is the
-disc the rail collapses to; this page has no rail and so does not run the
-introduction that opens those labels for a few seconds.
+The lists page and the account page wear the same button in their headers:
+the map's pill, the map's station name, the same press to stop. It is the
+map's control on a page that has no rail rather than a second design for one
+switch, and `/list/<id>` gets it too — somebody reading a list a friend sent
+them can put the radio on from there. On a phone it is the icon alone, which
+is the disc the rail collapses to; these pages have no rail and so do not run
+the introduction that opens those labels for a few seconds.
 
 The three pass pages do not carry it. `deal.html`, `verify.html` and
 `staff.html` are scanned at a table rather than browsed, and a discount that
