@@ -52,10 +52,13 @@
  * your own, and the page opened with the one thing on it that is not yours:
  * a page called Account, with your name at the top, whose first and tallest
  * block was three strangers' top tens. It is the last card now, under its
- * own label, after what you saved, what you wrote and what you kept. The
+ * own label, after what you saved, what you wrote and what you kept, and it
+ * folds like the three cards above it: closed, it is its title and the
+ * count of what is behind it, and open, it is the three most kept. The
  * folds are what let it move: the reason it went to the top was a column
  * forty rows deep burying it, and a card that is one line high until it is
- * opened buries nothing.
+ * opened buries nothing — this one included, which, open, was the tallest
+ * thing on the page.
  *
  * THE COLUMNS FOLD, AND THE WAYS ON DO NOT
  *
@@ -158,7 +161,7 @@
   var LANG_KEY = 'ttb.lang';
   var SAVED_KEY = 'ttb.saved';
 
-  /* Which of this page's three folds are open, comma-joined. Nothing
+  /* Which of this page's four folds are open, comma-joined. Nothing
      else on the site reads it, and a browser that refuses storage simply gets
      the folded page every time — which is the page a first visit gets
      anyway. */
@@ -713,7 +716,7 @@
   }
 
   /* ---------------------------------------------------------- public lists
-   * Everybody else's, three of them, named.
+   * Everybody else's, three of them, named, behind a fold.
    *
    * This was a row at the foot of the lists card saying "Public lists", under
    * a fold that could be forty rows deep — the only way from your own things
@@ -723,7 +726,9 @@
    * what tells a stranger whether to press; the words "Public lists" tell
    * them nothing they did not already know from the page they are standing
    * on. Last rather than first, because a page about you should not open
-   * with what is not — see the header.
+   * with what is not — see the header — and folded like the cards of your
+   * own, because three rows with three names each is the tallest card on the
+   * page, and what it stands in for is one press away under it anyway.
    *
    * The same three rows the foot of a list already draws, off the same
    * request, and drawn with the same class. What is not here is the bookmark
@@ -746,8 +751,9 @@
     var them = state.all.filter(function (l) { return !l.mine; });
     if (!them.length) return null;
 
+    var shown = them.slice(0, TASTE);
     var ul = el('ul', { className: 'lists-index' });
-    them.slice(0, TASTE).forEach(function (l) {
+    shown.forEach(function (l) {
       ul.appendChild(row('/list/' + l.id, l.title, [
         keepCount(l.keeps),
         l.by ? byline(l.by) : null
@@ -755,14 +761,19 @@
     });
 
     return card([
-      heading(t('listsAllTitle'), 'h2'),
-      el('p', { className: 'lists-say', textContent: t('listsAllWhy') }),
-      ul,
-      /* Centred under the rows, the way the foot of a list carries the same
-         door, rather than left against the card's edge with the ways out of
-         the cards below it. It is the end of a column of things and not a
+      /* The count on the line is what is behind it — three, or fewer while
+         the site is young — and not how many public lists there are, which
+         this page never asks. */
+      fold('public', t('listsAllTitle'), listsLabel(shown.length), [
+        el('p', { className: 'lists-say', textContent: t('listsAllWhy') }),
+        ul
+      ]),
+      /* Outside the fold, along the foot, the way the saves keep their map
+         link: it is the way on from this card, and a closed fold must not
+         hide it. It was centred under the rows while the rows were always
+         showing, as the end of a column; a control under a fold is a
          control on a card. */
-      el('p', { className: 'lists-more' }, [link('accountPublicAll', ALL_PATH)])
+      foot([link('accountPublicAll', ALL_PATH)])
     ]);
   }
 

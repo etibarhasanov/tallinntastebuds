@@ -1766,8 +1766,8 @@ Your lists             3 lists  a fold: one row a list
   [ Name a list ] [ Make it ]   outside the fold, one line high
 Lists you kept          1 list  a fold: one row somebody else's
 Everybody else's
-Public lists                    three of everybody else's, named, and
-                                Every public list under them
+Public lists           3 lists  a fold: three of everybody else's, most kept first
+  Every public list             outside it, the way on to all of them
 ```
 
 Five cards, one thing each, in the order of how much each is yours: who you
@@ -1840,9 +1840,10 @@ saying what was behind it, a chevron — under a fold that could be forty rows
 deep. It was the only way from your own things to anybody else's and it read
 like a footnote to your own.
 
-It is a card of its own now, and it names three real lists: the title, how
-many people kept each one, whose it is, and the first three places on it.
-That is the whole difference between an invitation and a label. "Public
+It is a card of its own now, folded like the three above it, and open it
+names three real lists: the title, how many people kept each one, whose it
+is, and the first three places on it. That is the whole difference between
+an invitation and a label. "Public
 lists" tells somebody who has never opened one nothing they did not already
 know; *The bakeries worth the walk · kept by 5 people · created by kringel ·
 Ferment · Kaerajaan · Rataskaevu 16* tells them whether to press it.
@@ -1852,7 +1853,12 @@ and that made the page open with the one thing on it that is not yours: a
 page called Account, with your name at the top, whose first and tallest block
 was three strangers' top tens. It is the last card now, under its own heading,
 after what you saved, what you wrote and what you kept — and signed out it is
-under the saves on this browser the same way. The folds are what let it move: the reason it went
+under the saves on this browser the same way. It folds because, open, three
+rows with three names each was the tallest card on the page, and the count on
+its title is what is behind it — three, or fewer while the site is young —
+rather than how many public lists there are, which this page never asks.
+**Every public list** stands outside the fold along the card's foot, the way
+**See them on the map** stands under the saves. The folds are what let it move: the reason it went
 to the top was a column forty rows deep burying it, and a card that is one
 line high until it is opened buries nothing.
 
@@ -1883,12 +1889,12 @@ inside it on the line you press, and the ways on sit outside the fold. Signed
 in with all three closed, the whole account is one phone screen: your name,
 the door to your profile and the way out, how many places you kept, how many
 lists you wrote, the field that names the next one, how many you kept of
-other people's, and three lists worth opening — with every door out in sight
-without scrolling.
+other people's, and that there are three of everybody's worth opening — with
+every door out in sight without scrolling.
 
 A closed fold is not the menu this page was made out of. A menu row said the
 name of another page; this one says how many of your things are behind it and
-opens them where you are standing. Which folds are open is remembered on the
+opens them where you are standing. Which of the four folds are open is remembered on the
 browser under `ttb.account.open`, so somebody who wants their saves in front of
 them every time opens them once. A card with nothing in it — no saves yet, no
 lists yet — is not a fold at all, because a chevron promises something behind
@@ -2750,8 +2756,8 @@ everybody else, which is most of the traffic this page gets.
 **How anybody gets there.** Four ways, and the first two matter most:
 
 - **The map**, from the button that wears your name: it opens `/account.html`,
-  where three of these lists are named after your own things, with
-  **Every public list** under them. It was a row at the foot of the lists card
+  where three of these lists are named after your own things, behind a fold,
+  with **Every public list** under it. It was a row at the foot of the lists card
   saying "Public lists", under a fold that could be forty rows deep — a
   footnote to somebody's own things, which is the wrong shape for the one page
   on this site that is everybody else's. The sheet had a row of its own for
@@ -5167,8 +5173,8 @@ needed it goes in the same block, with the sentence saying what the other four
 could not do.
 
 One pressable thing on the site is none of the four, and it is not a fifth: a
-card's own title, on the three that fold — the saved places, your lists and
-the ones you kept, all on `/account.html`. It is a `<summary>`, and what it is made of was all here
+card's own title, on the four that fold — the saved places, your lists, the
+ones you kept and three of everybody's, all on `/account.html`. It is a `<summary>`, and what it is made of was all here
 already, the title, the count and the `.menu-go` chevron. A control takes you
 somewhere or changes something; this one opens the card it is the title of. It
 lives with the card in `lists.css` rather than in this block — see **The
