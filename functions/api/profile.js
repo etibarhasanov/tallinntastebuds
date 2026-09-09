@@ -31,7 +31,7 @@ export async function onRequestGet(context) {
 
   const name = new URL(request.url).searchParams.get('name') || '';
   const user = await sessionUser(request, env);
-  const profile = await readProfile(context, name, user);
+  const profile = await readProfile(context, name);
 
   if (!profile) return json({ error: 'not-found' }, 404);
 

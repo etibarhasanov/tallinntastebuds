@@ -560,8 +560,10 @@
    *
    * The page shows the same thing to everybody, and that is deliberate rather
    * than a limitation nobody got round to: the value of a profile you can see
-   * is knowing what other people see on it. Your own private lists are one
-   * link away, on /account.html, where every list you wrote is named.
+   * is knowing what other people see on it. Your own private lists are on
+   * /account.html, where every list you wrote is named, and your name in the
+   * header is the way there from any page — this card carried a second door
+   * to the same place for a while, and it was one link too many.
    */
   function renderProfile() {
     var who = state.profile;
@@ -588,12 +590,7 @@
       el('p', {
         className: 'lists-say',
         textContent: t('profileSince', { when: new Date(who.since).getFullYear() })
-      }),
-      /* Your own profile, with the way back to the half of it nobody else
-         gets: the private lists, and every control this page has none of. */
-      who.mine
-        ? el('a', { className: 'alt', href: '/account.html', textContent: t('profileMine') })
-        : null
+      })
     ]));
 
     if (!who.lists.length) {
