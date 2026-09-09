@@ -44,7 +44,7 @@
  * It is a card of its own now, and it names three real lists — whose they are
  * and how many people kept them. That is the whole difference between an
  * invitation and a label: "Public lists" tells somebody who has never opened
- * one nothing at all, and *Top ten burgers, kept by 12* tells them whether to
+ * one nothing at all, and *Top ten burgers, saved by 12* tells them whether to
  * press it. The same three rows the foot of every list already draws, from
  * the same request, for the same reason.
  *
@@ -121,7 +121,7 @@
  *
  * A save needs no account — the device keeps a random id and the marks are
  * filed under it — so the page has something to show before anybody has signed
- * up, and shows it: the places kept on this browser, out of localStorage, with
+ * up, and shows it: the places saved on this browser, out of localStorage, with
  * the offer of an account above them rather than a wall in front of them. And
  * the public lists under that, which are the one thing here a stranger can
  * open — the invitation the lists page used to make, now made where the lists
@@ -450,7 +450,7 @@
     return box;
   }
 
-  /* Singular and all: "1 place" and "kept by 1 person" are sentences somebody
+  /* Singular and all: "1 place" and "saved by 1 person" are sentences somebody
      reads, and "1 places" is the tell that nobody did. */
   function countLabel(n) {
     return n === 1 ? t('listCountOne') : t('listCount', { n: n });
@@ -696,9 +696,9 @@
     return card(kids);
   }
 
-  /* The lists you kept: somebody else's writing, filed on your account. A card
+  /* The lists you saved: somebody else's writing, filed on your account. A card
      of its own, drawn only when there is something in it — an empty "Lists
-     you kept" under an empty "Your lists" is a page explaining two features
+     you saved" under an empty "Your lists" is a page explaining two features
      to somebody who has used neither, and the heading arriving with the first
      keep is how anybody learns the section is there, the same way the map's
      Saved chip arrives with the first mark.

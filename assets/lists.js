@@ -420,7 +420,7 @@
   }
 
   /* The byline on a row, and the door it is. Every row that draws a list
-     somebody else wrote says who wrote it — Lists you kept, the directory, the
+     somebody else wrote says who wrote it — Lists you saved, the directory, the
      three rows at the foot of a list — and that name led nowhere on any of
      them, while the same phrase under a list's own title has led to the person
      since profiles were built. A profile's own rows carry no byline: they are
@@ -893,7 +893,7 @@
 
        Nothing at all is drawn on your own list. Keeping it is refused by the
        API — it is already under Your lists, and a second copy of it under
-       Lists you kept would be the same list twice on one page — so the honest
+       Lists you saved would be the same list twice on one page — so the honest
        thing is not to offer the gesture, and the card keeps no room for it.
        The class says what is in the corner rather than whose list it is,
        because /account.html borrows this row too and has nothing in the

@@ -504,7 +504,7 @@ async function addPlace(context, body, user) {
  *                         the two apart would make this a way of asking
  *                         which codes are real
  *   your own list         'own'. It is already under Your lists, and a second
- *                         copy of it under Lists you kept would be the same
+ *                         copy of it under Lists you saved would be the same
  *                         list twice on one page
  *   two hundred kept      'too-many', and only when this would be a new row
  *
