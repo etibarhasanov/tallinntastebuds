@@ -2036,18 +2036,28 @@
    *
    * Every step points at something real on the page as it stands, which is
    * why the steps are functions and not co-ordinates: the pin is whichever
-   * pin is nearest the middle of the screen, the filters are the row on a
-   * desktop and the Filters button on a phone, and the three steps about
+   * pin is nearest the middle of the screen, and the three steps about
    * things that may not be there — the radio when data/radio.json has no
    * station, an account when /api/account never answered, the discount
    * chip when nothing is on — are left out rather than pointed at nothing.
+   *
+   * The two steps about the chips press the button first. On a phone the row
+   * is folded behind Filters, and a ring round a shut button under a sentence
+   * about bakeries and bars explained the filters without ever showing one:
+   * the walk named a feature and left it named, which is the one thing a
+   * walk is supposed to be better than a paragraph at. So they carry
+   * drawer: true — the row rolls out under the cursor, the ring leaves the
+   * button and settles on what came out of it, and it rolls shut again on
+   * the way to the next step. Which is why their targets are asked of the
+   * row rather than of the window's width: out, it is the row and the chip
+   * in it; folded away, it is the button that is about to open it.
    */
   var TOUR_STEPS = [
     { key: 'explainPin', at: nearestPin },
     { key: 'explainList', at: function () { return dom.btnList; } },
     { key: 'explainLang', at: function () { return dom.langSwitch; } },
-    { key: 'explainChips',
-      at: function () { return isNarrow() ? dom.btnFilters : dom.filters; } },
+    { key: 'explainChips', drawer: true,
+      at: function () { return chipRow() || dom.btnFilters; } },
     { key: 'explainRandom', at: function () { return dom.btnRandom; },
       pills: function () { return [dom.btnRandom]; } },
     { key: 'explainAsk', at: function () { return dom.btnAsk; },
@@ -2059,14 +2069,18 @@
       when: function () { return !dom.btnAccount.hidden; },
       pills: function () { return [dom.btnAccount]; } },
     /* Second in the row, after All: renderFilters draws the discount chip
-       ahead of the types. On a phone the row is folded behind Filters. */
-    { key: 'explainDiscount', when: anyLiveDeal,
-      at: function () { return isNarrow() ? dom.btnFilters : dom.filters.children[1]; } }
+       ahead of the types. */
+    { key: 'explainDiscount', when: anyLiveDeal, drawer: true,
+      at: function () {
+        var row = chipRow();
+        return row ? row.children[1] : dom.btnFilters;
+      } }
   ];
   /* The steps this open is taking, which of them is up (-1 when the tour is
-     closed), the timer for the cursor's press on arrival, and the pills
-     holding their label open for the step. */
-  var tour = { steps: [], i: -1, press: null, lit: [] };
+     closed), the timer for the cursor's press on arrival, the timer that
+     places the step again once the drawer has finished rolling out, and the
+     pills holding their label open for the step. */
+  var tour = { steps: [], i: -1, press: null, roll: null, lit: [] };
 
   /* The pin nearest the middle of the screen, or null when none is on it —
      zoomed out to the whole of Estonia, say — and the bubble then sits in
@@ -2121,6 +2135,7 @@
     if (tour.i < 0) return;
     tour.i = -1;
     litPills([]);
+    tourDrawer(false);
     clearTimeout(tour.press);
     dom.tourCursor.classList.remove('is-click');
     dom.tour.hidden = true;
@@ -2144,8 +2159,24 @@
     for (var d = 0; d < tour.steps.length; d++) {
       dom.tourDots.appendChild(el('i', { className: d === i ? 'is-on' : '' }));
     }
+    /* Placed first, then the drawer, which is what makes a step about the
+       chips read as a press on a phone: the ring lands on the shut button the
+       cursor is arriving at, and the placing tourDrawer schedules moves it
+       onto the row that came out. */
     placeTourStep();
+    tourDrawer(step.drawer);
     dom.tourNext.focus();
+  }
+
+  /* The drawer a step about the chips asks for, and the placing that follows
+     it. Only a phone has one to roll — showChipRow says so — and only a row
+     the walk rolled out is rolled back, so a visitor who arrived with a
+     filter on keeps it through the step that explains it. */
+  function tourDrawer(want) {
+    window.clearTimeout(tour.roll);
+    if (!want) { hideChipRow(); return; }
+    showChipRow();
+    tour.roll = window.setTimeout(placeTourStep, CHIP_ROLL_MS);
   }
 
   /* On a phone a pill is a disc until it opens its label; the ones a step is
@@ -2170,8 +2201,8 @@
      target, the bubble under it when there is room and over it when there is
      not, and the cursor's tip a little inside its lower right, where it
      covers the least of it. On resize as well as on each step, because the
-     target has moved. A target that has gone — the pin scrolled off, the
-     filters folded away — leaves the bubble in the middle with no ring. */
+     target has moved. A target that has gone — the pin scrolled off the
+     screen — leaves the bubble in the middle with no ring. */
   function placeTourStep() {
     if (tour.i < 0) return;
     var vw = window.innerWidth;
@@ -2638,6 +2669,11 @@
   }
 
   var filterOpenTimer = null;
+  /* How long the drawer's entrance lasts: the slide in the stylesheet, plus
+     the longest chip delay and the chip's own length. The entrance class is
+     held for exactly that, and it is also the moment anything measuring the
+     row can trust what it measures. */
+  var CHIP_ROLL_MS = 640;
 
   /* Under 860px the chip row is a drawer. Shut, the bar is one button; open,
      it is the row it always was. And shut is All: the chips are the only
@@ -2646,8 +2682,10 @@
      a filtered map, so nothing on the button has to warn you that it is one,
      and no visitor has to wonder what the map is not showing them. It costs
      the filter you had picked, which is why the row does not shut on a stray
-     press of the map: the only ways out of it are the button and Escape, and
-     both are deliberate.
+     press of the map: the only ways a visitor gets out of it are the button
+     and Escape, and both are deliberate. The introduction and the walk open
+     and shut it too, but through showChipRow/hideChipRow below, which never
+     roll back a row that has a chip pressed in it.
 
      Above 860px none of this applies. The drawer answers a row that does not
      fit, and on a desktop it does fit: the chips stay flat on the map, the
@@ -2692,10 +2730,43 @@
     filterOpenTimer = window.setTimeout(function () {
       dom.filterBar.classList.remove('is-opening');
       updateFilterFades();
-    }, 640);
+    }, CHIP_ROLL_MS);
   }
 
   function closeFilterMenu() { setFilterMenu(false); }
+
+  /* The chip row when it is out on the page, and null while it is folded
+     away behind Filters. Above 860px there is no drawer, so it is always
+     out. */
+  function chipRow() {
+    return dom.filters.getBoundingClientRect().width ? dom.filters : null;
+  }
+
+  /* Rolling the drawer out to show what is in it, and rolling it back after.
+     The arrival introduction and the walk both do this, for the same reason:
+     on a phone every filter this map has is folded behind one word, and a
+     visitor who never presses that word never learns the map narrows at all.
+     Naming the button does not show them what is behind it; opening it does.
+
+     Two rules, and both are about taking nothing away. Above 860px there is
+     no drawer to roll — the row is already flat on the map, which is the
+     showing. And only a row this rolled out is rolled back, because shutting
+     the drawer on a phone is clearChips(): a visitor who arrived on
+     ?type=bakery with the row already open, or who pressed a chip while it
+     was out, keeps the row and the filter in it. */
+  var chipRowShown = false;
+
+  function showChipRow() {
+    if (!isNarrow() || filterMenuOpen()) return;
+    chipRowShown = true;
+    setFilterMenu(true);
+  }
+
+  function hideChipRow() {
+    if (!chipRowShown) return;
+    chipRowShown = false;
+    if (!state.active.length) setFilterMenu(false);
+  }
 
   /* The one thing a resize can break: a window narrowing onto a filtered map
      would put the drawer's shut button in front of chips that are still
@@ -3172,6 +3243,11 @@
    * The class is inert above 860px, where every pill on the rail wears its
    * label and none of them ever lets it go, so none of this needs to ask how
    * wide the window is.
+   *
+   * The chip row joins them, and is the one piece that has to ask: it is
+   * folded behind Filters on a phone and flat on the map above 860px, so
+   * there is a drawer to roll out only on the narrow side. That is
+   * openChipRowHint(), just above introduceRail().
    */
   var HINT_MS = 4200;
   /* Top to bottom, which is the order they open in. */
@@ -3290,6 +3366,7 @@
 
   function closeHints() {
     closeBrandHint();
+    closeChipRowHint();
     for (var i = 0; i < HINT_KEYS.length; i++) closeHint(HINT_KEYS[i]);
   }
 
@@ -3312,6 +3389,41 @@
         hintTimers[key] = null;
       }, HINT_MS);
     }, delay || 0);
+  }
+
+  /* The chip row is the eighth thing on the page that says what it is on
+     arrival, and the only one that cannot do it by opening a label: on a
+     phone it is a whole row of the map's vocabulary folded behind the word
+     Filters, and a visitor who never presses that word never finds out the
+     map can be narrowed. The rail pills at least draw their own icon. So the
+     row rolls out with them and holds for as long as one of their labels.
+
+     With the first pill rather than after the last, because the row sits
+     above the rail on the screen and the cascade is meant to read down it —
+     and because that leaves the rail's own arithmetic, seven pills 300ms
+     apart against the sentence's 7.6s, exactly where it was. */
+  var chipRowTimer = null;
+
+  function closeChipRowHint() {
+    if (chipRowTimer) { clearTimeout(chipRowTimer); chipRowTimer = null; }
+    hideChipRow();
+  }
+
+  function openChipRowHint() {
+    closeChipRowHint();
+    chipRowTimer = setTimeout(function () {
+      /* Never over an open sheet, for the same reason a pill is not: the bar
+         is not on screen behind one. */
+      if (document.body.classList.contains('panel-open')) {
+        chipRowTimer = null;
+        return;
+      }
+      showChipRow();
+      chipRowTimer = setTimeout(function () {
+        chipRowTimer = null;
+        hideChipRow();
+      }, HINT_MS);
+    }, RAIL_IN);
   }
 
   /* On arrival, and again after a language switch — see setLanguage. */
@@ -3350,6 +3462,7 @@
        enough to read down the rail and quick enough that they are all up
        together for most of the time they are up at all. */
     for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], RAIL_IN + i * 300);
+    openChipRowHint();
   }
 
   /* ---------------------------------------------------------------- radio

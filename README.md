@@ -5292,6 +5292,29 @@ label the moment the button appears, rather than leaving a silent disc above a
 column of pills that have all had their say — and an answer that never comes
 leaves a rail of six that introduced itself on time.
 
+**The chip row says itself too, and it is the one that cannot do it with a
+label.** On a phone every filter this map has is folded behind the single word
+Filters — thirteen types and the discount, a whole feature behind a button
+that names none of it — and a visitor who never presses that button never
+finds out the map narrows at all. The rail pills at least draw their own icon;
+Filters draws three lines and a word. So the drawer rolls out with the
+cascade and holds for `HINT_MS`, the same 4.2 seconds a pill holds its label,
+and rolls back.
+
+It rolls out with the *first* pill rather than after the last. The row sits
+above the rail on the screen, so the introduction still reads top to bottom,
+and the rail's own arithmetic — seven pills 300ms apart against the sentence's
+7.6 seconds — is left exactly where it was. Above 860px there is no drawer to
+roll: the row is already flat on the map, which is the showing.
+
+Rolling it back is the part that needs care, because shutting the drawer on a
+phone is `clearChips()` — that is the rule the drawer rests on, that a shut row
+can never be a filtered map. So `showChipRow()` and `hideChipRow()` roll back
+only a row they rolled out, and only while nothing is pressed in it: a visitor
+who arrived on `?type=bakery` has the row open already with their chip in it,
+and one who presses a chip during the four seconds keeps both the chip and the
+row it is in. The same pair does the same job for the walk, below.
+
 Two of them say something again when pressed: starting the radio opens the
 station's name, so a triangle in a circle is not the only thing saying what is
 playing, and pressing the swatch opens the name of the style it has just
@@ -5393,8 +5416,8 @@ The walk, in order, and what each step is anchored to:
 2. The **Places** button: the whole map as a list, with the search field at
    the top of it.
 3. The language switcher.
-4. The filters: the chip row on a desktop, the **Filters** button on a phone
-   where the row is folded behind it.
+4. The chip row, which on a phone the walk rolls out of the **Filters**
+   button first, so that there is a row to point at.
 5. **Surprise me**, with its label held open on a phone for as long as the
    step is up.
 6. **Ask**, the same way.
@@ -5402,8 +5425,8 @@ The walk, in order, and what each step is anchored to:
    and the button never appeared.
 8. The account button, left out when `/api/account` never said accounts
    work — there is no button to point at.
-9. The discount chip, second in the row after All, or the Filters button on
-   a phone; left out when no deal is on.
+9. The discount chip, second in the row after All — the row rolled out
+   again for it on a phone; left out when no deal is on.
 
 One step is about one thing. Surprise me and Ask used to share a step — the
 ring round the die, both labels held open, one sentence saying what each
@@ -5426,9 +5449,28 @@ the page has already said under the mark, and a first step that points at
 nothing to do and repeats what was just read is a step that gets skipped —
 with the useful ones behind it. It went, and the walk opens on a pin.
 
+**The two steps about the chips press their button first.** On a phone the
+row is folded away, and a ring round a shut button under a sentence about
+bakeries and bars explained the filters without ever showing one: the walk
+named a feature and left it named, which is the one thing a walk ought to
+be better than a paragraph at. So those two steps carry `drawer: true` —
+the row rolls out under the cursor, the ring leaves the button and settles
+on what came out of it, and it rolls shut again on the way to the next
+step. That is also what lets the discount step ring the actual Discount
+chip on a phone, the same target it has always had on a desktop, instead of
+pointing at a button and asking you to imagine the chip behind it. It is
+the same `showChipRow()` / `hideChipRow()` the arrival introduction uses, so
+the same rule holds: a row with a chip pressed in it is never rolled back,
+and a visitor who came in filtered still has their filter at **Got it**.
+
 Every step points at something real on the page as it stands, which is why
 the steps are functions and not co-ordinates, and why the pieces are put
-back on every resize. Nothing under the walk can be pressed while it is up:
+back on every resize — and why the two steps above ask the row how wide it
+is rather than asking the window: out, it is the row and the chip in it;
+still folded, it is the button that is about to open it. Placing the step
+twice is what makes that read as a press — once on the shut button, and
+again once the drawer has finished its `CHIP_ROLL_MS`. Nothing under the
+walk can be pressed while it is up:
 the layer swallows the taps, so the thing being pointed at is not opened
 mid-sentence — and the same layer is why a tap anywhere outside the bubble
 is Next: on a phone, it is there rather than a button the size of a word.
