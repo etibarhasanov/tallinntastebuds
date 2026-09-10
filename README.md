@@ -2374,14 +2374,17 @@ export, in SQL", and a contract with exceptions is one you have to look up.
 nowhere else: the card the map draws for a place off this export, and the rows
 that lead to it, print "According to Google 4.8 from 3,041 reviews" — attributed,
 every time, in the same line as the kinds and the band. Not one of the
-seventy-five places on my map carries a score, nothing anywhere sorts or ranks
-by one, and that is the rule these numbers do not touch — see **On "no scores,
-stars or rankings"** and **A Google row says whose description it is**. They are
-also still what decides which of these places are worth promoting onto the map.
+seventy-five places on my map carries a score, nothing sorts or ranks by one
+except under Google's own name, and that is the rule these numbers do not
+touch — see **On "no scores, stars or rankings"** and **A Google row says
+whose description it is**. They are also still what decides which of these
+places are worth promoting onto the map.
 
-`/google` is the one page where they are sorted by, and it is the one page
-where that is not a ranking of anything this site vouches for: it is a directory
-of Google's rows, in Google's order, and it says so. See **The directory**.
+Two things sort by them, and neither is a ranking of anything this site
+vouches for. `/google` is a directory of Google's rows, in Google's order, and
+it says so — see **The directory**. And five lists, under an account called
+`google`, are Google's top tens, with Google's name in the title and Google's
+numbers under every row — see **The five lists Google wrote**, below.
 
 ### Re-running it is safe
 
@@ -2434,6 +2437,115 @@ difference is ninety kilobytes of numbers no row on that page prints.
 And `/google`, which is the whole table rather than the part either of
 those needs: all 1,110 rows in one answer, so a filter can run over them. See
 **The directory**.
+
+### The five lists Google wrote
+
+```
+tools/googlelists.mjs    reads the export, ranks it, writes the SQL
+db/google-lists.sql      GENERATED — one account, five lists, fifty rows
+```
+
+Five public lists under an account called `google`: **Top ten restaurants,
+by Google**, and the same for bakeries, cafés, bars and pizzerias. They are
+lists in every way the rest of this section means: a row each in `lists` and
+`list_items`, a byline that leads to `/u/google`, a bookmark, a way onto the
+map, three more at the foot and a place on `/lists/public`. What is different
+is who wrote them. The account has a password hash that is not the hash of
+anything, so nobody can sign in as it; `db/google-lists.sql` is the only
+thing that writes under its name, and it is generated from the export the
+way `db/google-venues.sql` is.
+
+**Why a site that does not rank has five rankings on it.** The map carries no
+score and never sorts by one, and that stands. A list is the other kind of
+thing here — somebody else's opinion, under their name, with a sentence under
+each place — and these five are Google's opinion, under Google's name. The
+title says "by Google", the intro says whose numbers they are and that they
+are not this map's verdict, and the line under each place is Google's word
+for it and Google's two numbers: *Bakery · 4.9 from 1,656 reviews on
+Google*. The page already draws both beside a Google row; the line is the
+same fact in the list's own voice, and the one copy that survives if a row
+ever loses its venue, since a list renders from `list_items` alone.
+
+**The order is not the rating.** Sorted by Google's rating alone, a top ten
+is a list of places thirty people rated 5.0, above a restaurant six thousand
+people rated 4.8, and that is reporting a small number as a big one. So the
+order is the Bayesian average the directory's **Best overall** uses — see
+**Best overall is not the rating** — with two settings of its own, both
+constants at the top of `tools/googlelists.mjs`:
+
+- `PRIOR` is 300 against the directory's 100. The directory orders eleven
+  hundred rows and a place slipping from ninth to fourteenth costs nobody
+  anything; a top ten is ten names singled out, and a name that is there on
+  sixty reviews is there on a rumour. At 300, 4.5 from five thousand reviews
+  comes out ahead of 4.7 from sixty, which is the order a person arrives at
+  when they see both numbers side by side.
+- `FLOOR` is 100: under a hundred reviews a place is not weighed at all. The
+  prior pulls a small count towards the middle, and the middle of a top ten
+  is still a top ten.
+
+The mean each place is pulled towards is its own pool's, review-weighted —
+what a bakery you know nothing about is likely to score, which is higher
+than what a burger bar you know nothing about is. Ties go to the bigger
+count, a chain's branches are one row, and a place Google calls temporarily
+closed is on none of them.
+
+**The pools are Google's category, and not its tags.** Google gives every
+place one category — what it *is* — and a list of tags — what it also
+*has* — and the first draft read both, through the directory's `KITCHENS`
+table. The top ten bakeries that came out of it had a wine-and-pastry kiosk
+fourth, a coffee shop sixth and two chocolate shops eighth and tenth: the
+Bakery chip's pattern takes in dessert and confectionery, and a tag is a
+thing a place does on the side. A chip that means "also sells pastry" is a
+fair filter over eleven hundred rows; a top ten that says "this is a bakery"
+is a claim about each name on it, and only the category makes that claim.
+So a bakery is what Google calls a Bakery, and a restaurant any category
+ending in Restaurant bar the fast-food, takeout and delivery ones.
+
+Two pools let a tag add a place, in one direction each, because a place
+can honestly be two of these things. A pizzeria is a Pizza Restaurant, or
+an Italian or plain Restaurant that Google also tags Pizza Restaurant: a
+pizzeria is a restaurant, so a place can be on both lists, and when Google
+reaches for the broader word for one — Como restoran & pizzeria is an
+Italian Restaurant to it — the tag is where the pizza went. Only those two
+categories, because the same tag hangs on a kebab house and an Indian
+restaurant with a pizza on the menu. And a café is a Cafe, Coffee Shop,
+Coffee roastery or Tea House, or a Bakery that Google also tags Coffee
+Shop or Cafe — RØST, with its tables and its espresso machine. Only a
+Bakery, because the same tag hangs on a buffet, a bookshop and seven sushi
+restaurants.
+
+Bars are the one pool where a tag can only take a place off, and it is a
+veto. The
+category alone put a hookah lounge that is also a sushi restaurant first, a
+jazz club ninth and a gastropub with a Belgian kitchen tenth — each "Bar"
+to Google, none of them what somebody asking for a bar means. So a bar is a
+Bar, Cocktail Bar or Wine Bar that Google does not *also* call a
+restaurant, a pub, a hookah place, a venue or a shop: `NOT_A_BAR` in the
+tool is that list, and any one of those takes a place off. The lists are narrower than the chips on purpose, and
+a place on the wrong list is a category to argue with Google about, not a
+pattern to widen.
+
+**Each list's address is fixed.** The six random characters on an id were
+minted once and are written into the tool, so a refresh of the export
+changes what is on a list and never where it is: a link to
+`/list/top-ten-bakeries-by-google-65nfrf` sent today still opens next year.
+The file inserts the account once and never touches it again, upserts each
+list on its id, and replaces its ten rows whole — a place that fell out of a
+top ten has to leave it — so running it twice changes nothing and running it
+after a refresh moves the lists.
+
+**Loading it** is the venues file's process, one file later:
+
+```
+node tools/googlelists.mjs --show     the five lists, with the score, rating and count beside each name
+node tools/googlelists.mjs            rewrite db/google-lists.sql
+wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-lists.sql
+wrangler d1 execute tallinntastebuds         --remote --file=db/google-lists.sql
+```
+
+After `db/google-venues.sql`, always, because the rows point at its keys.
+`tools/validate.mjs` holds the file to the export the same way, so a refresh
+that forgot the lists fails CI.
 
 ---
 
@@ -4949,7 +5061,8 @@ to read and write first.
   `ENVIRONMENT` of its own — see **Two databases, and never one**
 - a `db/google-venues.sql` that is not what `tools/googlevenues.mjs` would
   write from `exports/tallinn_restaurants.csv` (run the tool and commit the
-  result)
+  result), or a `db/google-lists.sql` that is not what `tools/googlelists.mjs`
+  would write from the same export — see **The five lists Google wrote**
 - a `?v=` cache stamp in the HTML that no longer matches the file it points at
   (run `node tools/stamp.mjs` and commit the result)
 - a `data/places.json` that is not what `tools/places.mjs` would write from the
@@ -5070,6 +5183,7 @@ exports/clean_restaurants_csv.py   the cleaning, from the upstream export
 exports/REVIEW.md          the shortlisting worksheet those rows are read
 exports/build_review_sheet.py      through, and the script that builds it
 db/google-venues.sql       GENERATED — loads that export into D1
+db/google-lists.sql        GENERATED — the five top tens under the `google` account
 data/taxonomy.json         the controlled vocabulary of types
 data/cuisines.json         the 37 cuisines only the directory needs, in ten
                            languages — taxonomy.json holds the other six
@@ -5087,6 +5201,7 @@ stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
 tools/places.mjs           builds data/places.json from the CSV and the map
 tools/googlevenues.mjs     turns the Google Places export into db/google-venues.sql
+tools/googlelists.mjs      ranks the same export into db/google-lists.sql
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick

@@ -465,9 +465,11 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- 2.2 to 5.0, and the review count it rests on. Shown only where the place is
   -- Google's and the number is said to be Google's — the card the map draws for
   -- a place off this export, and the rows that lead to it, print both behind
-  -- "According to Google". No place on my map has a score, and nothing anywhere
-  -- sorts by one. They are also what decides which of these are worth promoting
-  -- onto the map.
+  -- "According to Google". No place on my map has a score; the only things that
+  -- sort by one are /google, which says it is Google's order, and the five
+  -- lists under the `google` account, which db/google-lists.sql writes from
+  -- the same export. They are also what decides which of these are worth
+  -- promoting onto the map.
   rating        REAL,
   reviews       INTEGER,
   -- Google's own scale, "$" to "$$$$", kept verbatim rather than converted to
