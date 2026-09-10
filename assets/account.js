@@ -131,9 +131,9 @@
  * filed under it — so the page has something to show before anybody has signed
  * up, and shows it: the places saved on this browser, out of localStorage, with
  * the offer of an account above them rather than a wall in front of them. And
- * the public lists under that, which are the one thing here a stranger can
- * open — the invitation the lists page used to make, now made where the lists
- * page sends them.
+ * the door to everybody's lists under that, which leads to the one thing here
+ * a stranger can open — the invitation the lists page used to make, now made
+ * where the lists page sends them.
  *
  * WHAT IT READS
  *
@@ -141,15 +141,13 @@
  *   /data/places.json   id -> name and address, for the saves
  *   /api/account        who is signed in, and what they have saved
  *   /api/lists          the lists they wrote, and the ones they kept
- *   /api/lists?all=1    everybody's, for the three rows near the foot
  *
- * All five at once and one paint at the end. Nothing here waits on anything
- * else, and a page that drew twice would draw a card and then move it. The
- * last two are one route asked two questions, and they stay two questions:
- * your lists and everybody's are the two halves this site keeps apart all the
- * way down to the modules that answer them — functions/api/_lists.js and
- * functions/api/_mostkept.js — and folding them into one answer here would be
- * the account page's shape deciding the API's.
+ * All four at once and one paint at the end. Nothing here waits on anything
+ * else, and a page that drew twice would draw a card and then move it.
+ *
+ * There was a fifth, /api/lists?all=1, for the three of everybody's lists the
+ * foot of the page used to name. That card is a door now and asks for nothing
+ * — see publicCard() — so the one route this page reads twice is read once.
  */
 (function () {
   'use strict';
@@ -169,7 +167,7 @@
   var LANG_KEY = 'ttb.lang';
   var SAVED_KEY = 'ttb.saved';
 
-  /* Which of this page's four folds are open, comma-joined. Nothing
+  /* Which of this page's three folds are open, comma-joined. Nothing
      else on the site reads it, and a browser that refuses storage simply gets
      the folded page every time — which is the page a first visit gets
      anyway. */
@@ -178,12 +176,6 @@
   var STYLES = ['red', 'green'];
   var DEFAULT_STYLE = 'red';
   var DEFAULT_LANG = 'en';
-
-  /* How many of everybody's lists this page shows. Three, the same as the foot
-     of a list, because it is the same offer made in the same shape: enough to
-     judge the page behind it by, few enough that it is still a way somewhere
-     rather than the directory drawn twice. */
-  var TASTE = 3;
 
   /* The server binds this; the field only stops somebody at the keystroke
      instead of at the round trip. MAX_TITLE in functions/api/lists.js is the
@@ -209,8 +201,7 @@
     saved: [],       // place ids, newest first
     places: {},      // id -> { name, address }
     lists: [],       // the ones you wrote
-    kept: [],        // the ones you kept, which are somebody else's
-    all: []          // everybody's, most kept first
+    kept: []         // the ones you kept, which are somebody else's
   };
 
   /* The one element on the page that is not furniture. Everything below
@@ -376,13 +367,12 @@
     return el(level || 'h1', { className: 'lists-title', textContent: words });
   }
 
-  /* The row of ways on from a card, along its foot — or, on the card of
-     everybody's lists, under the sentence that opens the fold. They are
-     `.alt`s wherever there is more than one of them, and they are `.alt`s
-     where they are alone as well — the accent is spent once on this whole
-     page, and it is spent on the one thing the page is asking for: the box
-     that makes a list when somebody is signed in, and the offer of an account
-     when nobody is. See "The design rules" in README.md. */
+  /* The row of ways on from a card, along its foot. They are `.alt`s wherever
+     there is more than one of them, and they are `.alt`s where they are alone
+     as well — the accent is spent once on this whole page, and it is spent on
+     the one thing the page is asking for: the box that makes a list when
+     somebody is signed in, and the offer of an account when nobody is. See
+     "The design rules" in README.md. */
   function foot(kids) {
     return el('p', { className: 'lists-row lists-foot' }, kids);
   }
@@ -400,12 +390,13 @@
   /* A way on from a card, as a row: the name, the line under it saying what
      is behind it, and the chevron. It is .menu-row out of assets/styles.css,
      the shape the map's account sheet draws its places-to-go in, because that
-     is what this is. It had three callers and has one — the profile, on the
-     card that carries your name — since the other two became the things they
-     had been promising: a field that makes a list, and a card with three of
-     everybody else's in it. It stays a function because .menu-row is one of the four
-     controls the design rules name, and a row of it written out by hand here
-     would be the copy that quietly stops matching the sheet's. */
+     is what this is. It had three callers, then one, and has two: your public
+     profile, on the card that carries your name, and everybody else's lists
+     at the foot of the page. The third became the thing it had been
+     promising — a field that makes a list. It stays a function because
+     .menu-row is one of the four controls the design rules name, and a row of
+     it written out by hand here would be the copy that quietly stops matching
+     the sheet's. */
   var ICON_GO = '<path d="M9 5l7 7-7 7"/>';
 
   function door(nameKey, whyKey, href, event, params) {
@@ -481,20 +472,26 @@
     return n === 1 ? t('accountStatListsOne') : t('accountStatLists', { n: n });
   }
 
-  /* The row on /lists, borrowed whole: a title, one line of quiet facts under
-     it, and — where the row is somebody else's list — the first three places
-     on it. Not the .lists-index-card assets/lists.js draws on a
-     profile, which leaves 54px along its bottom edge for the map pill laid
-     over it. These rows have one destination, and that padding is a hole in a
-     card nothing is standing in; the directory's own rows take that room back with .has-keep
-     when they carry a bookmark, and without the class the row is the bare
-     card, which is what this page wants.
+  /* The row on /lists, borrowed: a title and one line of quiet facts under
+     it. Not the .lists-index-card assets/lists.js draws on a profile, which
+     leaves 54px along its bottom edge for the map pill laid over it. These
+     rows have one destination, and that padding is a hole in a card nothing
+     is standing in; the directory's own rows take that room back with
+     .has-keep when they carry a bookmark, and without the class the row is
+     the bare card, which is what this page wants.
+
+     The first three places on the list came under the line as well, while
+     this page drew three of everybody else's — see publicCard(), which is one
+     row now. The two callers left are your own lists and the ones you kept,
+     and neither has ever wanted them: a column of lists you already know is
+     a column of names, and the names of the places on them are what the
+     list's own page is for.
 
      The card is a box and the title is the link, which .lists-open stretches
      over the whole face of it. That arrangement is here for the same reason it
      is on the directory: the byline in the line of facts is a door to whoever
      wrote the list, and a link inside a link is not a thing HTML has. */
-  function row(href, title, meta, taste, event, params) {
+  function row(href, title, meta, event, params) {
     var parts = meta.filter(Boolean);
     var line = el('p', { className: 'lists-all-meta mono' });
     parts.forEach(function (part, i) {
@@ -504,10 +501,7 @@
     return el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card' }, [
         TTBTrack.click(el('a', { className: 'lists-index-title lists-open', href: href, textContent: title }), event, params),
-        parts.length ? line : null,
-        taste && taste.length
-          ? el('p', { className: 'lists-all-taste', textContent: taste.join(' · ') })
-          : null
+        parts.length ? line : null
       ])
     ]);
   }
@@ -573,7 +567,7 @@
   function placeRow(place) {
     return row('/?spot=' + encodeURIComponent(place.id), place.name, [
       place.address ? el('span', { textContent: place.address }) : null
-    ], null, 'place_link', { place: place.name, map: 'mine' });
+    ], 'place_link', { place: place.name, map: 'mine' });
   }
 
   function savedCard() {
@@ -636,7 +630,7 @@
          The answers that hold other people's lists do not send the column at
          all — every list in them is public by the query that found it. */
       l.public === false ? el('span', { className: 'lists-private', textContent: t('listsPrivate') }) : null
-    ], null, 'list_page', { list_id: l.id });
+    ], 'list_page', { list_id: l.id });
   }
 
   /* Name it and you land in it, because the next thing anybody wants after
@@ -738,71 +732,32 @@
   }
 
   /* ---------------------------------------------------------- public lists
-   * Everybody else's, three of them, named, behind a fold.
+   * Everybody else's, as one row: the name of the page, the sentence saying
+   * what is on it, and the chevron.
    *
-   * This was a row at the foot of the lists card saying "Public lists", under
-   * a fold that could be forty rows deep — the only way from your own things
-   * to anybody else's, and it read as a footnote to your own. It is a card
-   * now, after the ones that are yours, and it names three real lists,
-   * because a title somebody chose and the number of people who kept it is
-   * what tells a stranger whether to press; the words "Public lists" tell
-   * them nothing they did not already know from the page they are standing
-   * on. Last rather than first, because a page about you should not open
-   * with what is not — see the header — and folded like the cards of your
-   * own, because three rows with three names each is the tallest card on the
-   * page, and what it stands in for is one press away, under the sentence
-   * that opens the fold.
+   * It named three real lists for a while, behind a fold, off a third request
+   * this page made on every load. The argument was that a title somebody
+   * chose and the number of people who kept it tells a stranger whether to
+   * press, where the words "Public lists" tell them nothing. What it also
+   * was, was three strangers' lists standing under somebody's own things on
+   * the one page that is about them, and a request whose entire yield was
+   * three rows nobody had asked for. A door is the honest shape for a page
+   * you are being pointed at: it says where it goes, it is one press, and it
+   * costs nothing to draw.
    *
-   * The same three rows the foot of a list already draws, off the same
-   * request, and drawn with the same class. What is not here is the bookmark
-   * in the corner: keeping a list is a gesture for the page built to hand
-   * somebody twenty of them, and three rows on somebody's account page are an
-   * offer of somewhere to go rather than a shelf to take things off. The
-   * answer holds twenty and three are drawn, which is what leaves the room to
-   * take your own out of it first — see below.
+   * The trade is that this page no longer knows whether there is anything
+   * behind the door — the filtering of your own lists out of the three, and
+   * the card that drew nothing at all while the site had no public lists,
+   * were both bought with that request. The directory says the honest thing
+   * itself when it is empty, and saying it here as well was this page
+   * apologising for the site on the page that is about you.
    *
-   * Nothing at all when the site has no public lists yet. A card saying so, at
-   * the top of your own account, would be the site apologising for itself on
-   * the one page that is about you.
+   * Last on the page, and a card of its own, for the reason it has always
+   * been last: it is the one thing here that is not yours.
    */
   function publicCard() {
-    /* Your own are left out, whatever their place in the order. They are up
-       the page under Your lists, where the count and the private ones are,
-       and a page that named the same list twice would be the fork this page
-       was made to close. It is the same thing the foot of a list does with the
-       list being read. */
-    var them = state.all.filter(function (l) { return !l.mine; });
-    if (!them.length) return null;
-
-    var shown = them.slice(0, TASTE);
-    var ul = el('ul', { className: 'lists-index' });
-    shown.forEach(function (l) {
-      ul.appendChild(row('/list/' + l.id, l.title, [
-        keepCount(l.keeps),
-        l.by ? byline(l.by) : null
-      ], l.taste, 'list_page', { list_id: l.id }));
-    });
-
     return card([
-      /* The count on the line is what is behind it — three, or fewer while
-         the site is young — and not how many public lists there are, which
-         this page never asks. */
-      fold('public', t('listsAllTitle'), listsLabel(shown.length), [
-        el('p', { className: 'lists-say', textContent: t('listsAllWhy') }),
-        /* The way on to all of them, directly under the sentence that says
-           what they are and before the three that stand in for them. It has
-           been in both other places: centred under the rows while they were
-           always showing, and along the card's foot outside the fold, the
-           way the saves keep their map link. Both put it under three rows
-           of three names each, a screen below the title it belongs to,
-           where it read as a stray line under strangers' lists rather than
-           as this card's door. Inside the fold a closed card hides it, and
-           that is the trade: the title with its count says there is
-           something behind it, and the first thing anybody sees on opening
-           it is where the rest are. */
-        foot([link('accountPublicAll', ALL_PATH, 'lists_all')]),
-        ul
-      ])
+      el('ul', { className: 'menu' }, [door('listsAllTitle', 'listsAllWhy', ALL_PATH, 'lists_all')])
     ]);
   }
 
@@ -1059,8 +1014,7 @@
       getJSON(UI_URL),
       getJSON(PLACES_URL).catch(function () { return []; }),
       ask(ACCOUNT_API),
-      ask(LISTS_API),
-      ask(LISTS_API + '?all=1')
+      ask(LISTS_API)
     ]).then(function (loaded) {
       state.ui = loaded[0] || {};
       state.lang = pickLanguage(Object.keys(state.ui).sort());
@@ -1086,9 +1040,6 @@
          be a second round trip, and a page that draws itself twice. */
       state.lists = loaded[3].out.lists || [];
       state.kept = loaded[3].out.kept || [];
-      /* Unsearched and unpaged: these three are an offer of somewhere to go,
-         and the page they are on is not the page anybody typed into. */
-      state.all = loaded[4].out.all || [];
 
       mountRadio();
       render();
