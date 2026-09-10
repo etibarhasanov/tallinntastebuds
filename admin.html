@@ -1122,6 +1122,10 @@ a { color: var(--accent); }
    * nobody looked at first: whatever comes back is played or shown here,
    * with its size under it, before the button that commits it lights up.
    */
+  /* The choice in the place list that is not a place. A place id is a slug,
+     so a bare hyphen is a value none of them can ever collide with. */
+  var NO_PLACE = '-';
+
   function storyForm(repo, into) {
     var state = { media: null, places: [], preview: null };
 
@@ -1166,12 +1170,20 @@ a { color: var(--accent); }
     into.appendChild(out);
 
     /* What happens when the 36 hours are up is the sort of thing to know
-       before posting rather than after, and the picture outlives the story
-       either way: a photograph becomes one of the place's pictures, and a
-       video leaves its poster frame behind as one before it is switched
-       off. */
+       before posting rather than after, and with a place the picture outlives
+       the story either way: a photograph becomes one of the place's pictures,
+       and a video leaves its poster frame behind as one before it is switched
+       off. Without a place none of that happens, and saying so here is the
+       point of the choice — a story about nowhere in particular is a story
+       with nothing under it and nothing left behind. */
     function refreshPlaceHint() {
       var video = state.media && state.media.kind === 'video';
+      if (placeIn.value === NO_PLACE) {
+        placeHint.textContent = 'Nothing to press under this one, and the ' +
+          (video ? 'poster frame' : 'photograph') + ' stays in stories/ when the 36 ' +
+          'hours are up rather than joining a place\'s pictures.';
+        return;
+      }
       placeHint.textContent = 'The button under the story opens this place on the map' +
         (video
           ? ', and its poster frame moves into that place\'s photos when the 36 ' +
@@ -1193,16 +1205,26 @@ a { color: var(--accent); }
       state.places = places;
       clear(placeIn);
       placeIn.appendChild(el('option', { value: '', textContent: 'Choose a place…' }));
+      /* Second, above seventy-five names, because it is the choice somebody
+         scrolling for a place they are not going to find wants first. */
+      placeIn.appendChild(el('option', { value: NO_PLACE, textContent: 'Nowhere in particular' }));
       places.forEach(function (pl) {
         placeIn.appendChild(el('option', { value: pl.id, textContent: pl.name }));
       });
     }).catch(function () {
+      /* The list is the only thing that failed, and a story about nowhere in
+         particular never needed it — so that choice survives the failure and
+         the form is still good for one. */
       clear(placeIn);
       placeIn.appendChild(el('option', { value: '', textContent: 'Could not load the places' }));
+      placeIn.appendChild(el('option', { value: NO_PLACE, textContent: 'Nowhere in particular' }));
     });
 
+    /* Nowhere in particular is a choice and an empty select is not: the button
+       waits for one to be made either way, so a story never goes up placeless
+       because the list was scrolled past. */
     function settle() { post.disabled = !(state.media && placeIn.value && whenIn.value); }
-    placeIn.addEventListener('change', settle);
+    placeIn.addEventListener('change', function () { refreshPlaceHint(); settle(); });
     whenIn.addEventListener('change', settle);
 
     function dropPreview() {
@@ -1283,7 +1305,7 @@ a { color: var(--accent); }
         textContent: can ? 'Squeeze it' : 'Upload it as it is' });
       go.addEventListener('click', function () {
         go.disabled = true;
-        var note = el('p', { textContent: can ? 'Reading it…' : 'Reading it…' });
+        var note = el('p', { textContent: 'Reading it…' });
         shot.appendChild(note);
         var work = can
           ? squeeze(file, function (fraction) {
@@ -1322,11 +1344,17 @@ a { color: var(--accent); }
        the repository, not even for one commit. A video's poster frame goes in
        between them for the same reason. */
     post.addEventListener('click', function () {
-      var place = state.places.filter(function (pl) { return pl.id === placeIn.value; })[0];
+      var place = placeIn.value === NO_PLACE ? null
+        : state.places.filter(function (pl) { return pl.id === placeIn.value; })[0];
       var media = state.media;
       var when = whenIn.value.slice(0, 16);
       var caption = capIn.value.trim();
       var word = media.kind === 'photo' ? 'photograph' : 'video';
+      /* What the id, the filename and the three commit subjects are built out
+         of. A place names its own story; a story about nowhere is named after
+         the day it went up, which is the only other thing it is about. */
+      var stem = place ? place.id : 'story';
+      var label = place ? place.name : when.slice(0, 10);
 
       post.disabled = true;
       clear(out);
@@ -1338,9 +1366,9 @@ a { color: var(--accent); }
           var taken = {};
           stories.forEach(function (st) { taken[st.id] = true; });
 
-          var id = place.id + '-' + when.slice(0, 10);
+          var id = stem + '-' + when.slice(0, 10);
           var n = 2;
-          while (taken[id]) id = place.id + '-' + when.slice(0, 10) + '-' + n++;
+          while (taken[id]) id = stem + '-' + when.slice(0, 10) + '-' + n++;
 
           var file = id + '.' + media.ext;
           var entry = { id: id, live: true };
@@ -1352,28 +1380,29 @@ a { color: var(--accent); }
           }
           entry.from = when;
           if (caption) entry.caption = { en: caption };
-          entry.spot = place.id;
+          if (place) entry.spot = place.id;
           stories.push(entry);
 
           step.textContent = 'Uploading the ' + word + '…';
           return blobToB64(media.blob)
             .then(function (b64) {
               return putFile('stories/' + file, b64,
-                'Add the ' + word + ' for the ' + place.name + ' story', repo.branch);
+                'Add the ' + word + ' for the ' + label + ' story', repo.branch);
             })
             .then(function () {
               if (!entry.poster) return null;
               step.textContent = 'Uploading the poster frame…';
               return blobToB64(media.poster.blob).then(function (b64) {
                 return putFile('stories/' + entry.poster, b64,
-                  'Add the poster frame for the ' + place.name + ' story', repo.branch);
+                  'Add the poster frame for the ' + label + ' story', repo.branch);
               });
             })
             .then(function () {
               step.textContent = 'Writing the entry…';
               return putFile('data/stories.json',
                 textToB64(JSON.stringify(stories, null, 2) + '\n'),
-                'Queue a story for ' + place.name + ', up ' + when.replace('T', ' '),
+                (place ? 'Queue a story for ' + place.name : 'Queue a story') +
+                  ', up ' + when.replace('T', ' '),
                 repo.branch, current ? current.sha : null);
             })
             .then(function () { return { id: id, when: when }; });
@@ -1390,8 +1419,9 @@ a { color: var(--accent); }
           ]));
           out.appendChild(el('p', { className: 'hint', textContent:
             'Cloudflare redeploys within the minute. Nothing else has to happen — the ' +
-            'ring appears by itself when the time comes, and the picture moves onto ' +
-            place.name + ' when it is over.' }));
+            'ring appears by itself when the time comes, and ' + (place
+              ? 'the picture moves onto ' + place.name + ' when it is over.'
+              : 'it takes itself down 36 hours later.') }));
           if (media.kind === 'video' && !media.ready) {
             out.appendChild(el('p', { className: 'hint', textContent:
               'The video is not an ordinary MP4 yet. story-media.yml converts it and ' +

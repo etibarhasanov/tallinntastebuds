@@ -73,16 +73,24 @@ branch, and it needs nothing from a laptop.
    speaker, and a poster frame taken 0.3 s in at 540 px. Press **Squeeze it**,
    and wait as long as the clip lasts. A browser with no `MediaRecorder`
    offers **Upload it as it is** instead, up to 25 MB.
-2. **Pick the place** from the list of open places, and **when it goes up**,
-   pre-filled with the current Tallinn time; the hint under it prints Tallinn
-   now and the come-down time. Only the English caption is asked for.
+2. **Pick the place** from the list of open places — or **Nowhere in
+   particular**, the choice above the names, for a story that is not about a
+   place on this map — and **when it goes up**, pre-filled with the current
+   Tallinn time; the hint under it prints Tallinn now and the come-down time.
+   The hint under the list says what the choice costs: no place means no
+   button under the story and no picture left behind. Only the English caption
+   is asked for. An empty list is not a choice: the button waits for one of
+   the two, so nothing goes up placeless by being scrolled past.
 3. **Post it.** The page writes, in this order, so no commit ever names a
-   file that is not there: the media file to `stories/<place>-<date>.<ext>`
+   file that is not there: the media file to `stories/<place-or-story>-<date>.<ext>`
    ("Add the photograph|video for the <Place> story"), the poster if there is
    one ("Add the poster frame for the <Place> story"), then the entry
    appended to `data/stories.json` ("Queue a story for <Place>, up <date
    time>") — `live: true`, `from`, `spot`, `caption.en`, and no `until`. The
-   id is the place and the day, `-2` for a second one that day.
+   id is the place and the day, `-2` for a second one that day. With no place
+   the id is `story-<date>`, the three subjects name the date where they named
+   the place ("Add the photograph for the 2026-09-14 story", "Queue a story, up
+   …"), and the entry has no `spot` — nothing else about the road changes.
 4. **What happens next without you.** The push starts the validate and
    Cloudflare deploys, and `.github/workflows/story-media.yml`, which runs
    `node tools/storymedia.mjs --fix` on every push touching `stories/`: a
@@ -112,13 +120,15 @@ branch, and it needs nothing from a laptop.
 3. **The entry.** With the file already in `stories/`:
 
    ```
-   node tools/stories.mjs --schedule <file> --spot <place-id> --at YYYY-MM-DDTHH:MM \
+   node tools/stories.mjs --schedule <file> [--spot <place-id>] --at YYYY-MM-DDTHH:MM \
         [--until YYYY-MM-DDTHH:MM] [--id <slug>] [--caption "…"]
    ```
 
    It takes a picture or an `.mp4`/`.webm` (not `.mov`), refuses a file that
    is not in `stories/`, a `--spot` that is not a place, and an id that is
-   taken; the id defaults to the filename. It writes `live: true`, `from`,
+   taken; the id defaults to the filename. `--spot` is optional, and left off
+   writes a story about nowhere in particular — no button under it, and the
+   picture stays in `stories/` when it is over. It writes `live: true`, `from`,
    and `caption.en` only, and prints when the story goes up and comes down.
    It does not write a `poster`: add one by hand for a video. Or write the
    entry yourself in the same shape.
