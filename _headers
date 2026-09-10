@@ -47,11 +47,12 @@
 # request path, so both spellings are spelled out, the same reason "/" and
 # "/index.html" both appear at the top of this file.
 #
-# The subdomain's own root is the one address these cannot reach: it matches
-# "/" above, which carries the revalidating rule and no noindex. split.html
-# carries a meta robots tag of its own, which is the half that binds for a
-# crawler that parses the page — and there is nothing on it to crawl in any
-# case, since every word of it is behind a session.
+# Neither rule is the one that usually binds any more. functions/split.js
+# serves this page and sets its own Cache-Control and X-Robots-Tag, the way
+# the three routes that serve lists.html do — see page() in
+# functions/_shell.js. These stay for the case where that route is not
+# reached, and they are what the subdomain's own root would otherwise fall
+# through to: it matches "/" further up, which carries no noindex at all.
 #
 # Same revalidating Cache-Control as the map, for the ?v= stamps, and the same
 # noindex the account page has, for the same reason: everything here is one

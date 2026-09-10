@@ -43,9 +43,9 @@
  *
  * splitwise.tallinntastebuds.ee is one more custom domain on this same Pages
  * project. There is no second project, no second database and no second build;
- * what makes it a different site is the block below, which serves split.html
- * at its root and 301s every other address on it back to tallinntastebuds.ee,
- * so there is one copy of the map and one link to it.
+ * what makes it a different site is the block below, which serves the split
+ * page at its root and 301s every other address on it back to
+ * tallinntastebuds.ee, so there is one copy of the map and one link to it.
  *
  * The subdomain is where a person types the address and not where the page
  * lives. `/split` answers on every host, including every preview under
@@ -59,6 +59,12 @@ const CANONICAL_HOST = 'tallinntastebuds.ee';
 const PAGES_HOST = 'tallinntastebuds.pages.dev';
 
 /* ------------------------------------------------------------- SPLITWISE */
+/* The page at that hostname's root is not the static file: it is the route
+   that writes a group's own name into the head, so a link pasted into a
+   message says what it is. Called rather than rewritten to — see the block
+   inside onRequest(). */
+import { onRequest as splitPage } from './split.js';
+
 const SPLIT_HOST = 'splitwise.' + CANONICAL_HOST;
 
 /* The three paths that mean anything on that hostname. Everything else it is
@@ -86,19 +92,20 @@ export async function onRequest(context) {
 
   /* ----------------------------------------------------------- SPLITWISE */
   if (url.hostname === SPLIT_HOST) {
-    /* The front door. A rewrite rather than a redirect, so the address people
-       were given — the bare subdomain — is the address they keep.
-
-       It rewrites to /split and not to /split.html, which is the spelling the
-       file actually has: Pages serves an extensionless copy of every page and
-       308s the .html address to it, so rewriting to the file would hand back
-       that redirect and put /split in the address bar after all, which is the
-       one thing this line exists to avoid. */
-    if (url.pathname === '/') {
-      const to = new URL(url);
-      to.pathname = SPLIT_PAGE;
-      return context.next(new Request(to.toString(), context.request));
-    }
+    /* The front door, answered where it was asked. Not a redirect, so the
+       short address people were given is the address they keep — and not a
+       rewrite either, which is what this was and what did not work.
+     *
+       `context.next(new Request('/split…'))` hands the rewritten request to
+       the static assets and never to the route that serves /split, so the head
+       arrived unswapped and a group's link pasted into a message unfurled as
+       the site's name. Calling the route is what actually routes.
+     *
+       It is handed this request untouched rather than one pointed at /split,
+       and that is the second half of the fix: functions/split.js reads ?g= and
+       builds og:url out of the address it was asked at, so the card carries
+       the short one somebody would actually send. */
+    if (url.pathname === '/') return splitPage(context);
 
     /* Everything that is not that feature belongs to the site, at the site's
        own address. Same argument as the pages.dev redirect above, and the same

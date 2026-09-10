@@ -16,6 +16,13 @@
  * answers at /split on every host, including the previews under
  * *.tallinntastebuds.pages.dev where a subdomain cannot exist at all.
  *
+ * The document this script runs in is served by functions/split.js, which
+ * writes the group's own name and a line about it into the head before the
+ * page is handed over — so a link pasted into a message arrives as "Split in
+ * Berlin" rather than as the site's name. Nothing here depends on that having
+ * happened: every answer this page draws it fetches for itself, and the route
+ * is an improvement on the load rather than a requirement for it.
+ *
  * THE SIGN-IN SHEET IS HERE, AND IT IS THE SECOND COPY ON THE SITE
  *
  * There is one password form on this site and it is in assets/app.js, inside
@@ -937,6 +944,17 @@
    */
   function render() {
     clear(main);
+
+    /* The tab is part of what a link is: somebody with six tabs open should be
+       able to tell which one is the dinner, and somebody who bookmarks a group
+       should get its name rather than the site's. functions/split.js already
+       wrote this into the head for a link that was pasted, and this is what
+       keeps it true once the script has drawn.
+
+       Only ever set when a group is open, and never unset: every move on this
+       page is a whole page load, so there is no way back to the list of groups
+       that does not go through boot() and the title it sets there. */
+    if (state.group) document.title = state.group.name;
     var wrap = el('div', { className: 'lists-stack' });
     var add = function (node) { if (node) wrap.appendChild(node); };
 

@@ -191,6 +191,38 @@ async function groupFor(env, id, user) {
   return row || null;
 }
 
+/* ------------------------------------------------------------- the invite
+ * What a group is called and how many people are already in it, for somebody
+ * the group has never heard of. Null for a code that is not a code and for one
+ * that is not a group — the caller cannot tell those apart, and should not.
+ *
+ * Two callers, and they are the two halves of one moment. The ?join= answer
+ * below is what the page asks for when somebody opens a link to a group they
+ * are not in; functions/split.js writes the same two facts into the document's
+ * head, so the link says what it is in the message it was pasted into, before
+ * anybody opens it at all.
+ *
+ * It is the only thing in this file that answers about a group the caller is
+ * not a member of, and the only thing that answers with no session at all.
+ * Both are safe for the reason a shared list is: the code is six random
+ * characters on the end of a stem, so holding it is the permission, and
+ * somebody holding it is one press from being handed the whole group anyway.
+ * What it never answers with is an expense, a balance or another member's
+ * name — joining is what buys those.
+ */
+export async function inviteOf(env, id) {
+  if (!GROUP_ID.test(String(id || ''))) return null;
+  const row = await env.DB
+    .prepare(
+      'SELECT g.name AS name, (SELECT COUNT(*) FROM split_members WHERE group_id = g.id) AS people ' +
+      'FROM split_groups g WHERE g.id = ?'
+    )
+    .bind(id)
+    .first();
+  if (!row) return null;
+  return { id: id, name: row.name, people: row.people, full: row.people >= MAX_MEMBERS };
+}
+
 /* A username as the page sent it back, resolved against the people actually
    in this group. Case-folded because that is how the account route matches a
    name on the way in, and refused rather than ignored when it is nobody
@@ -312,39 +344,18 @@ export async function onRequestGet(context) {
   const user = await sessionUser(request, env);
   const who = user ? user.username : null;
 
-  /* The invitation: what a group is called and how many people are already in
-     it, for somebody the group has never heard of — so the page can ask "join
-     Dinner at Rataskaevu?" rather than "join k3fmqw?".
+  /* The invitation — see inviteOf() above for what it answers and why it may.
    *
-     This is the one read here that answers about a group the caller is not a
-     member of, and the one that answers signed out at all. Both are safe for
-     the reason a public list is safe: the code is six random characters on the
-     end of a stem, so holding it is the permission, and somebody holding it is
-     one press from being handed the whole group anyway. What it never answers
-     with is an expense, a balance or another member's name — joining is what
-     buys those.
-   *
-     Signed out matters, and it is why this sits above the check below rather
-     than under it. Somebody handed a link who has no account here sees the
-     sign-up form; with this, the group's name is above that form, so what they
-     are being asked to make an account for is on the screen while they are
-     deciding. */
-  const invite = params.get('join') || '';
-  if (invite) {
-    if (!GROUP_ID.test(invite)) return json({ ready: true, user: who, error: 'not-found' }, 404);
-    const row = await env.DB
-      .prepare(
-        'SELECT g.name AS name, (SELECT COUNT(*) FROM split_members WHERE group_id = g.id) AS people ' +
-        'FROM split_groups g WHERE g.id = ?'
-      )
-      .bind(invite)
-      .first();
-    if (!row) return json({ ready: true, user: who, error: 'not-found' }, 404);
-    return json({
-      ready: true,
-      user: who,
-      invite: { id: invite, name: row.name, people: row.people, full: row.people >= MAX_MEMBERS }
-    }, 200);
+     Signed out matters, and it is why this sits above the session check below
+     rather than under it. Somebody handed a link who has no account here sees
+     the sign-up form; with this, the group's name is above that form, so what
+     they are being asked to make an account for is on the screen while they
+     are deciding. */
+  const wants = params.get('join') || '';
+  if (wants) {
+    const invite = await inviteOf(env, wants);
+    if (!invite) return json({ ready: true, user: who, error: 'not-found' }, 404);
+    return json({ ready: true, user: who, invite: invite }, 200);
   }
 
   if (!user) return json({ ready: true, user: null, groups: [] }, 200);
