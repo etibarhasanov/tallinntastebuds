@@ -4098,7 +4098,10 @@ ring, in the site's own brick and ember, that every profile picture wears when
 there is something new behind it. Press it and the video — or the photograph;
 a story is either — fills the screen: a bar along the top per story, who it is
 from, **how long it has left**, the caption, and a link. The left third of the screen goes back, the rest goes on,
-holding stops it, swiping down leaves. All of it is
+holding stops it, swiping down leaves. The screen it fills is the one you can
+see and not the one the browser says it has: Safari's toolbar stands over the
+foot of an iPhone, and the caption and the link are exactly what ends up under
+it. [Design notes](#design-notes) has the measurement. All of it is
 [`data/stories.json`](data/stories.json) plus a file in
 [`stories/`](stories/README.md), and with nothing live there is no ring, no
 viewer and nothing else on the page changes.
@@ -6264,8 +6267,9 @@ a name nobody chose is a question about where it is before it is anything else.
 [Surprise me](#surprise-me) has the argument.
 
 It is sized against `--vph`, which is `window.innerHeight` written back to CSS
-on every resize, falling back to `dvh` before the script runs and to plain `vh`
-in a browser that has neither. `vh` on iOS means the *large* viewport — the one
+on every resize and every time the visual viewport moves under it, falling back
+to `dvh` before the script runs and to plain `vh` in a browser that has
+neither. `vh` on iOS means the *large* viewport — the one
 with the browser chrome collapsed — so a sheet sized in `vh` and anchored to
 the bottom of the screen could start above the top of what you can actually
 see, taking its close button and its drag grip with it. Open a place, swipe the
@@ -6307,6 +6311,21 @@ the layout viewport to reveal the field and drags the whole sheet off the top.
 sheet lifts by it and loses the same off its height so the top edge does not
 move, and the page scroll is put back. Android resizes the layout viewport
 itself and the measurement comes out at zero, which is the right answer there.
+
+**The browser's own bar** is the same subtraction with the threshold the other
+way round. Safari's toolbar stands over the foot of the screen the whole time
+and `window.innerHeight` counts the strip behind it as room, so anything fixed
+that fills the window and anchors something to its own bottom edge puts that
+thing under the bar, with nothing on the page saying it is there — a fixed
+element is exactly as tall as it asked to be. What it cost was the story
+viewer: on an iPhone the caption and the button to the place a story was shot
+at sat under the toolbar, and a story looked like a picture with nothing to
+press. `visualViewport` is the only thing that knows the bar is there, so the
+difference goes into `--browser-b` — anything over the keyboard's 90px is the
+keyboard and not a bar — and the viewer takes it off the height of its stage
+and pads the scrim by it. The scrim still covers the whole window, because the
+strip behind a translucent bar is part of what you can see. It is 0 on Android,
+0 on a desktop, and 0 on an iPhone the moment the bar slides away.
 
 **Labels.** Past zoom 14 the pins start carrying their names, because at that
 point you are looking at a street rather than a city and the question changes

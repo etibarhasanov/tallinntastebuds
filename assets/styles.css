@@ -2777,16 +2777,23 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
    picture, so the height of the window is what there is to spend, and the
    width follows from it at 9:16. On a phone it fills the screen instead, which
    is the only place a story has ever been watched anyway.
+
+   The height it has to spend is the window less --browser-b, which is what
+   Safari's toolbar is standing over: the scrim still covers the whole window,
+   because the strip behind a translucent bar is part of what you can see, but
+   the stage sits inside what is left, so the caption and the button to the
+   place land above the bar rather than under it. It is 0 everywhere the
+   browser does not overlap the page, which is everywhere but iOS.
    --------------------------------------------------------------------- */
 
 .stories {
-  --story-h: min(calc(var(--vph, 100dvh) - 2 * var(--gap)), 900px);
+  --story-h: min(calc(var(--vph, 100dvh) - var(--browser-b, 0px) - 2 * var(--gap)), 900px);
   position: fixed;
   inset: 0;
   z-index: 2600;
   display: grid;
   place-items: center;
-  padding: var(--gap);
+  padding: var(--gap) var(--gap) calc(var(--gap) + var(--browser-b, 0px));
   background: rgba(14, 9, 10, .95);
 }
 .stories[hidden] { display: none; }
@@ -3043,11 +3050,12 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 .story-bars, .story-head, .story-foot { transition: opacity .2s var(--ease); }
 
 @media (max-width: 860px) {
-  /* Full bleed. A story on a phone is the screen, and the rounded card with a
-     strip of page either side of it is a desktop idea. */
+  /* Full bleed. A story on a phone is the screen — as much of it as the
+     browser has left — and the rounded card with a strip of page either side
+     of it is a desktop idea. */
   .stories {
-    --story-h: var(--vph, 100dvh);
-    padding: 0;
+    --story-h: calc(var(--vph, 100dvh) - var(--browser-b, 0px));
+    padding: 0 0 var(--browser-b, 0px);
   }
   .story-stage {
     width: 100%;
