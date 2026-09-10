@@ -135,7 +135,8 @@ in `assets/lists.js`, and `MAX_TITLE` a third time in `assets/account.js`,
 which carries the box that names a new list; `MAX_NAME 80` and
 `MAX_ADDRESS 120` as literal `maxlength: '80'` and `'120'` in the add-a-place
 form in `assets/lists.js`; the username's 3–24 in `account.js` as a
-`maxlength: '24'` in `app.js`. `grep -n maxlength assets/*.js` finds every
+`maxlength: '24'` in both `app.js` and `split.js`, and in words as
+`accountUsernameHint` and `accountErrUsername` in `data/ui.json`. `grep -n maxlength assets/*.js` finds every
 copy. Change one, change the other, and the README's table under **The
 caps**.
 

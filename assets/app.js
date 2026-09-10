@@ -1955,7 +1955,6 @@
   var accountBusy = false;
   var accountNote = '';
   var accountErr = '';
-  var accountSuggest = '';
 
   /* The note is a parameter and not something a caller sets first, because
      opening a view clears the messages from the one before it — a caller that
@@ -1985,18 +1984,6 @@
       || dom.accountCard.querySelector('.menu-row')
       || dom.accountCard.querySelector('.ac-close');
     if (first) first.focus();
-    /* A suggested name, so the sign-up sheet is not a blank box asking
-       somebody to be creative before they can save a bakery. */
-    if (accountView === 'up' && !accountSuggest) {
-      fetch(ACCOUNT_URL + '?suggest=1')
-        .then(function (r) { return r.json(); })
-        .then(function (out) {
-          accountSuggest = out.suggest || '';
-          var field = dom.accountCard.querySelector('#ac-user');
-          if (field && !field.value) field.value = accountSuggest;
-        })
-        .catch(function () {});
-    }
   }
 
   function closeAccount() {
@@ -2246,9 +2233,13 @@
     bubble.style.transform = 'translate(' + Math.round(bx) + 'px,' + Math.round(by) + 'px)';
   }
 
+  /* A hint goes inside the label rather than beside it, so it is part of what
+     a screen reader reads when the field takes focus — the rule arrives with
+     the question, the way it does for somebody who can see it sitting there,
+     rather than after the button has been pressed and refused. */
   function accountField(id, labelKey, type, opts) {
     opts = opts || {};
-    return el('label', { className: 'ac-field' }, [
+    var kids = [
       el('span', { className: 'ac-label', textContent: t(labelKey) }),
       el('input', {
         id: id,
@@ -2258,10 +2249,11 @@
         autocorrect: 'off',
         spellcheck: 'false',
         inputmode: opts.inputmode || null,
-        maxlength: opts.maxlength || null,
-        value: opts.value || ''
+        maxlength: opts.maxlength || null
       })
-    ]);
+    ];
+    if (opts.hint) kids.push(el('span', { className: 'ac-hint', textContent: opts.hint }));
+    return el('label', { className: 'ac-field' }, kids);
   }
 
   function accountValue(id) {
@@ -2453,10 +2445,16 @@
 
     accountMessages(form);
 
+    /* Empty, and asked for. The sheet used to open with a name already in it
+       — the server picked two words and a number, and the field filled itself
+       in a moment later — which took the one choice this site asks anybody to
+       make away from them and put a stranger's byline on their lists. What
+       the field carries instead is the rule it has to keep, so nobody meets
+       it for the first time as a refusal. */
     form.appendChild(accountField('ac-user', 'accountUsername', 'text', {
       autocomplete: 'username',
       maxlength: '24',
-      value: creating ? accountSuggest : ''
+      hint: creating ? t('accountUsernameHint') : ''
     }));
     form.appendChild(accountField('ac-pass', 'accountPassword', 'password', {
       autocomplete: creating ? 'new-password' : 'current-password'

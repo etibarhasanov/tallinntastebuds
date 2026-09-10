@@ -1619,7 +1619,6 @@ body.panel-detail .panel {
   overflow-wrap: anywhere;
 }
 .ac-why { margin: -4px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
-.ac-why.is-small { font-size: 12px; margin-top: -6px; }
 
 /* Whether a forgotten password could be got back, in one line under the
    name. The dot carries the answer at a glance and the words carry it for
@@ -1701,6 +1700,10 @@ body.panel-detail .panel {
   outline-offset: 1px;
   border-color: transparent;
 }
+/* The rule a username has to keep, under the field that asks for it. Muted
+   and small because it is a thing to glance at rather than to read; the same
+   sentence said louder, after a refusal, is .ac-err above the form. */
+.ac-hint { color: var(--muted); font-size: 12px; line-height: 1.4; }
 
 /* The two things on this sheet that cannot be put right by pressing the same
    button again — a forgotten password with no address on the account, and

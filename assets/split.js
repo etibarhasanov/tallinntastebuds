@@ -73,7 +73,7 @@
  *
  *   /data/ui.json        the strings the whole site shares
  *   /data/split.json     this page's own, in the same ten languages
- *   /api/account         who is signed in, and the name to suggest
+ *   /api/account         posted to, to sign in or create an account
  *   /api/split           the groups they are in
  *   /api/split?group=    one group, whole
  *   /api/split?join=     what a group is called, for somebody invited to it
@@ -115,7 +115,6 @@
     reached: true,   // whether /api/split answered at all
     ready: false,    // whether the database is bound and this is its half
     user: null,
-    suggest: '',     // a free username, for the sign-up sheet
     groups: [],      // the ones you are in, most recently spent in first
     group: null,     // the one that is open, whole
     invite: null,    // a group you are holding the link to and are not in
@@ -387,9 +386,13 @@
     return el('p', { className: 'lists-row lists-foot' }, kids);
   }
 
+  /* A hint sits inside the label, for the reason accountField() in
+     assets/app.js gives: it is then part of what a screen reader reads when
+     the field takes focus, rather than something only a sighted visitor
+     finds. */
   function field(id, labelKey, opts) {
     opts = opts || {};
-    return el('label', { className: opts.className ? 'ac-field ' + opts.className : 'ac-field' }, [
+    var kids = [
       el('span', { className: 'ac-label', textContent: t(labelKey) }),
       el('input', {
         id: id,
@@ -400,10 +403,11 @@
         spellcheck: 'false',
         inputmode: opts.inputmode || null,
         maxlength: opts.maxlength || null,
-        placeholder: opts.placeholder || null,
-        value: opts.value || ''
+        placeholder: opts.placeholder || null
       })
-    ]);
+    ];
+    if (opts.hint) kids.push(el('span', { className: 'ac-hint', textContent: opts.hint }));
+    return el('label', { className: opts.className ? 'ac-field ' + opts.className : 'ac-field' }, kids);
   }
 
   function value(form, id) {
@@ -489,10 +493,12 @@
     }
     form.appendChild(el('p', { className: 'lists-say', textContent: t('splitNeedAccount') }));
 
+    /* Empty, and the rule under it, exactly as the map's sheet asks — see the
+       comment there for why neither sheet hands anybody a name any more. */
     form.appendChild(field('sp-user', 'accountUsername', {
       autocomplete: 'username',
       maxlength: '24',
-      value: creating ? state.suggest : ''
+      hint: creating ? t('accountUsernameHint') : ''
     }));
     form.appendChild(field('sp-pass', 'accountPassword', {
       type: 'password',
@@ -994,9 +1000,11 @@
          would be a raw key, which is worse than the noscript card the catch
          below leaves standing. */
       getJSON(SPLIT_UI_URL),
-      /* Only for the name to put in the sign-up field. The session itself is
-         read by the split route below, which reports it the same way. */
-      ask(ACCOUNT_API + '?suggest=1'),
+      /* Who is signed in, which groups they are in, and — where the address
+         names one — that group whole, in one answer. /api/account is not read
+         on the way in at all: the only thing this page ever wanted from it
+         was a name to put in the sign-up field, and the sheet asks for that
+         now rather than offering one. */
       ask(SPLIT_API + (asked ? '?group=' + encodeURIComponent(asked) : ''))
     ]).then(function (loaded) {
       state.ui = merge(loaded[0] || {}, loaded[1] || {});
@@ -1004,9 +1012,7 @@
       applyStaticStrings();
       document.title = t('splitDocumentTitle');
 
-      state.suggest = loaded[2].out.suggest || '';
-
-      var answer = loaded[3];
+      var answer = loaded[2];
       state.reached = answer.status !== 0;
       state.ready = !!answer.out.ready;
       state.user = answer.out.user || null;

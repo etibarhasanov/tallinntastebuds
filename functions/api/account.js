@@ -3,8 +3,16 @@
  *
  * A username and a password, and nothing else. No email, no phone, no OAuth,
  * no profile, no name. The site collects the least it can while still being
- * able to say "these saves are yours" on a second device, and a username the
- * visitor never chose is as little as that can be.
+ * able to say "these saves are yours" on a second device, and a username
+ * somebody chose for themselves is as little as that can be.
+ *
+ * This route used to hand the sign-up sheet a name — two words and a number,
+ * checked against the table so the one offered was free — rather than open on
+ * an empty box. It read as thoughtful and was not: the name a person is known
+ * by here is the byline on every list they share, and being given
+ * `smoky-walnut-418` for it is the site naming somebody who was perfectly able
+ * to name themselves. So the sheet asks, and the rule it has to keep is
+ * printed under the field rather than only in the refusal after the button.
  *
  * THERE IS NO RESET, AND THAT IS THE TRADE
  *
@@ -53,29 +61,14 @@ import {
 const MAX_FAILS = 10;
 const FAIL_WINDOW = 15 * 60 * 1000;
 
+/* Three to twenty-four, lowercase, and a letter or a digit to open with, so
+   that a name cannot begin with the character that separates words in it. The
+   sheet restates this as a line under the field and as `maxlength`, and
+   `accountUsernameHint` and `accountErrUsername` in data/ui.json are the two
+   sentences that say it in ten languages — change the pattern, change all
+   four. */
 const USERNAME_RE = /^[a-z0-9][a-z0-9-]{2,23}$/;
 const MIN_PASSWORD = 8;
-
-/* Suggested usernames are built from these, so the name somebody is handed
-   reads like the site rather than like a serial number. Two words and a
-   number is enough for millions of combinations, and the check below is what
-   actually guarantees the one offered is free. */
-const ADJECTIVES = [
-  'salty', 'sweet', 'smoky', 'crispy', 'golden', 'quiet', 'hungry', 'happy',
-  'warm', 'bright', 'little', 'wild', 'soft', 'rich', 'fresh', 'bold'
-];
-const NOUNS = [
-  'bakery', 'kitchen', 'pepper', 'coffee', 'noodle', 'pastry', 'tavern',
-  'cherry', 'butter', 'lemon', 'basil', 'ginger', 'walnut', 'honey', 'olive'
-];
-
-function pick(list) {
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-function suggestName() {
-  return pick(ADJECTIVES) + '-' + pick(NOUNS) + '-' + (100 + Math.floor(Math.random() * 900));
-}
 
 async function nameTaken(env, username) {
   const row = await env.DB
@@ -156,9 +149,7 @@ async function savedByUser(env, userId) {
 }
 
 /* ------------------------------------------------------------------- who
- * GET /api/account — who is signed in, and what they have saved. Also the
- * source of a suggested username for the sign-up sheet, which is checked
- * against the table so the one offered is one that will actually be free.
+ * GET /api/account — who is signed in, and what they have saved.
  */
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -177,13 +168,6 @@ export async function onRequestGet(context) {
      nothing at all. */
   const ready = !!(env.DB && env.SAVE_SALT) && !(await wrongDatabase(env));
   if (!ready) return json({ ready: false, user: null }, 200);
-
-  const url = new URL(request.url);
-  if (url.searchParams.get('suggest')) {
-    let name = suggestName();
-    for (let tries = 0; tries < 5 && (await nameTaken(env, name)); tries++) name = suggestName();
-    return json({ suggest: name }, 200);
-  }
 
   const user = await sessionUser(request, env);
   if (!user) return json({ ready: true, user: null }, 200);
