@@ -3782,19 +3782,46 @@ of an alphabet with no vowels and no `0/o/1/l` in it. The link is
 | You are holding | and you are | so the page is |
 |---|---|---|
 | nothing | signed in | your groups, and the box that makes one |
-| a code | in that group | the group |
-| a code | not in it | the offer to join, with the group's name on it |
-| a code | signed out | the sign-up form, with the group's name above it |
+| nothing | signed out | the offer of an account |
+| a code | anybody at all | **the group** — and what changes is only what you may press |
 
 The link people send each other is the same link they use afterwards, which is
 the only shape of share link nobody has to be told twice about.
 
-**Holding the link is the whole of the permission.** There is no request to
-join and nobody to approve one — the same rule a shared list is under, for the
-same reason: the code is unguessable, and a group whose link has got out is a
-group to remake rather than a moderation queue to build. What the code buys
-before joining is deliberately thin: the group's name and how many people are
-in it, and not one expense, balance or other member's name.
+**Holding the link is the whole of the permission to read, and it buys the
+whole group.** Its members, every line anybody put in, where everybody stands
+and who pays whom — with no account, no membership and nothing to press first.
+A stranger sees the group and a sign-in form where the controls would be; a
+signed-in non-member sees the group and a Join.
+
+That is a deliberate widening and it was not always so. For a day the code
+bought the name and the headcount, and everything else was behind an account —
+which put a wall in front of the one thing that would make somebody want to
+climb it. Nobody should be asked to make an account to find out what they are
+being asked to join. It is the rule a shared list has always been under, said
+about a ledger.
+
+**What it costs, said here rather than discovered.** The link *is* the
+permission, so a link that gets away — forwarded past the table, pasted in a
+channel that later gains a member, read off somebody's screen — is the group's
+whole ledger and not just its name. Four things hold that in:
+
+- the code is six characters from an alphabet of twenty-eight on the end of a
+  stem, which is not something anybody guesses or walks;
+- what is in there is usernames, what somebody called a bill and what it came
+  to. No address, no card, no telephone number — this site holds none of those
+  about anybody;
+- **reading is all it buys.** Every write goes through a session *and* a
+  membership, so a stranger with the link can read every row and change none.
+  That is enforced in `functions/api/split.js` and driven as a test each time
+  this changes;
+- and the preview card a link-preview service builds carries the name and the
+  headcount only, because the ledger is fetched by the page's own script and a
+  crawler does not run it.
+
+If a link does get away, the answer is the owner's: delete the group and make
+another. There is no rotating the code, and adding one would be a second
+address for the same thing.
 
 ### What the link looks like in a message
 
@@ -3901,7 +3928,9 @@ set that keeps it honest:
 | remove a payment | either end of it, and whoever wrote it down |
 | rename the group | its owner |
 | delete the group | its owner, and it takes everything in it |
+| see the group | anybody holding the link — see **The invitation** |
 | leave | any member who is not yet in the arithmetic |
+| remove somebody | its owner, on a member who is not yet in the arithmetic |
 
 **Leaving is for the person who opened the wrong link**, and that is all it is
 for. The moment somebody appears as a payer, as a share of somebody else's
@@ -3909,6 +3938,19 @@ bill, or at either end of a payment, leaving would take their name out of a
 column that still counts their cents and the group would stop adding up. So it
 is refused, and the way out of a group you have spent in is for its owner to
 take the whole thing down.
+
+**Removing somebody is the same rule, held by the owner.** A group's code gets
+handed around a table and lands in the wrong chat sometimes, and the only
+answer used to be asking whoever arrived to leave and hoping. The owner can
+take the whole group down; being able to take one name out of it is the smaller
+version of a power they already have. It is refused on anybody the sums
+mention, for the reason leaving is, and it is refused rather than cascaded —
+deleting their expenses would be the owner quietly rewriting what other people
+paid. The page only draws the control where it would work, reading that off
+what the group already answered with rather than asking again.
+
+The owner cannot remove themselves. The group's row names them, and what they
+are reaching for there is **delete the group**.
 
 There is no archive and no undo on that. What it deletes is who owed whom what
 three weeks ago, which is exactly the thing nobody wants kept.

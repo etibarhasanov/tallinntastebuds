@@ -13,10 +13,8 @@
     "splitCreate": "Qrup yarat",
     "splitPeople": "{n} nəfər",
     "splitPeopleOne": "1 nəfər",
-    "splitInvited": "Səni {name} qrupuna dəvət ediblər.",
-    "splitInvitedSignIn": "Daxil ol və ya hesab yarat — və içindəsən.",
     "splitJoin": "Qrupa qoşul",
-    "splitShare": "Bu keçidi olan hər kəs qoşula bilər.",
+    "splitShare": "Bu keçidi olan hər kəs bu qrupu görə və ona qoşula bilər.",
     "splitCopy": "Keçidi kopyala",
     "splitCopied": "Keçid kopyalandı.",
     "splitLeave": "Qrupdan çıx",
@@ -60,7 +58,11 @@
     "splitErrWho": "Ən azı bir nəfər seç.",
     "splitErrNotYours": "Bunu dəyişmək sənə düşmür.",
     "splitErrSpent": "Sən artıq bu qrupun hesabındasan, ona görə çıxa bilməzsən. Qrupu yaradandan onu silməyi xahiş et.",
-    "splitErrGeneric": "Nəsə səhv getdi. Yenidən cəhd et."
+    "splitErrGeneric": "Nəsə səhv getdi. Yenidən cəhd et.",
+    "splitJoinTitle": "Bu qrupa qoşul",
+    "splitJoinWhy": "Onsuz da baxırsan. Nə ödədiyini yazmaq və bölgüyə daxil olmaq üçün qoşul.",
+    "splitDropSure": "{name} qrupdan çıxarılsın?",
+    "splitErrInSums": "O, burada artıq nəyəsə ödəyib və ya bir pay borcludur, ona görə adı qrupdan çıxarıla bilməz."
   },
   "hy": {
     "splitDocumentTitle": "Splitwise | Tallinn Tastebuds",
@@ -76,10 +78,8 @@
     "splitCreate": "Ստեղծել խումբը",
     "splitPeople": "{n} մարդ",
     "splitPeopleOne": "1 մարդ",
-    "splitInvited": "Ձեզ հրավիրել են {name} խումբ։",
-    "splitInvitedSignIn": "Մուտք գործեք կամ ստեղծեք հաշիվ, և ներսում եք։",
     "splitJoin": "Միանալ խմբին",
-    "splitShare": "Այս հղումն ունեցող ցանկացած մեկը կարող է միանալ։",
+    "splitShare": "Այս հղումն ունեցող ցանկացած մեկը տեսնում է այս խումբը և կարող է միանալ։",
     "splitCopy": "Պատճենել հղումը",
     "splitCopied": "Հղումը պատճենվեց։",
     "splitLeave": "Դուրս գալ խմբից",
@@ -123,7 +123,11 @@
     "splitErrWho": "Ընտրեք գոնե մեկ մարդու։",
     "splitErrNotYours": "Սա ձեր փոխելու բանը չէ։",
     "splitErrSpent": "Դուք արդեն այս խմբի հաշվարկում եք, ուստի չեք կարող դուրս գալ։ Խնդրեք ստեղծողին ջնջել այն։",
-    "splitErrGeneric": "Ինչ-որ բան սխալ գնաց։ Փորձեք նորից։"
+    "splitErrGeneric": "Ինչ-որ բան սխալ գնաց։ Փորձեք նորից։",
+    "splitJoinTitle": "Միանալ այս խմբին",
+    "splitJoinWhy": "Դուք արդեն տեսնում եք այն։ Միացեք, որ գրեք, թե ինչ եք վճարել, և մտնեք հաշվարկի մեջ։",
+    "splitDropSure": "Հեռացնե՞լ {name}-ին խմբից։",
+    "splitErrInSums": "Նա արդեն ինչ-որ բանի համար վճարել է այստեղ կամ բաժին է պարտք, ուստի նրա անունը խմբից հանել հնարավոր չէ։"
   },
   "en": {
     "splitDocumentTitle": "Splitwise | Tallinn Tastebuds",
@@ -139,10 +143,8 @@
     "splitCreate": "Make the group",
     "splitPeople": "{n} people",
     "splitPeopleOne": "1 person",
-    "splitInvited": "You have been invited to {name}.",
-    "splitInvitedSignIn": "Sign in or make an account, and you are in.",
     "splitJoin": "Join the group",
-    "splitShare": "Anybody with this link can join.",
+    "splitShare": "Anybody with this link can see this group and join it.",
     "splitCopy": "Copy the link",
     "splitCopied": "Link copied.",
     "splitLeave": "Leave the group",
@@ -186,7 +188,11 @@
     "splitErrWho": "Pick at least one person to split it between.",
     "splitErrNotYours": "That is not yours to change.",
     "splitErrSpent": "You are already in this group’s arithmetic, so you cannot leave it. Ask whoever made it to take it down.",
-    "splitErrGeneric": "Something went wrong. Try again."
+    "splitErrGeneric": "Something went wrong. Try again.",
+    "splitJoinTitle": "Join this group",
+    "splitJoinWhy": "You are looking at it already. Join to add what you paid and be part of the split.",
+    "splitDropSure": "Remove {name} from the group?",
+    "splitErrInSums": "They have already paid for something here, or owe a share of it, so their name cannot come out of the group."
   },
   "et": {
     "splitDocumentTitle": "Splitwise | Tallinn Tastebuds",
@@ -202,10 +208,8 @@
     "splitCreate": "Loo rühm",
     "splitPeople": "{n} inimest",
     "splitPeopleOne": "1 inimene",
-    "splitInvited": "Sind kutsuti rühma {name}.",
-    "splitInvitedSignIn": "Logi sisse või loo konto, ja oledki sees.",
     "splitJoin": "Liitu rühmaga",
-    "splitShare": "Igaüks, kellel on see link, saab liituda.",
+    "splitShare": "Igaüks, kellel on see link, näeb seda rühma ja saab liituda.",
     "splitCopy": "Kopeeri link",
     "splitCopied": "Link kopeeritud.",
     "splitLeave": "Lahku rühmast",
@@ -249,7 +253,11 @@
     "splitErrWho": "Vali vähemalt üks inimene, kelle vahel jagada.",
     "splitErrNotYours": "See ei ole sinu muuta.",
     "splitErrSpent": "Sa oled juba selle rühma arvestuses, seega ei saa sa sealt lahkuda. Palu rühma loojal see kustutada.",
-    "splitErrGeneric": "Midagi läks valesti. Proovi uuesti."
+    "splitErrGeneric": "Midagi läks valesti. Proovi uuesti.",
+    "splitJoinTitle": "Liitu selle rühmaga",
+    "splitJoinWhy": "Sa juba vaatad seda. Liitu, et lisada, mille eest sina maksid, ja olla jagamises sees.",
+    "splitDropSure": "Eemaldada {name} rühmast?",
+    "splitErrInSums": "Ta on siin juba millegi eest maksnud või võlgneb osa sellest, seega tema nime rühmast välja võtta ei saa."
   },
   "fi": {
     "splitDocumentTitle": "Splitwise | Tallinn Tastebuds",
@@ -265,10 +273,8 @@
     "splitCreate": "Luo ryhmä",
     "splitPeople": "{n} henkilöä",
     "splitPeopleOne": "1 henkilö",
-    "splitInvited": "Sinut on kutsuttu ryhmään {name}.",
-    "splitInvitedSignIn": "Kirjaudu sisään tai luo tili, niin olet mukana.",
     "splitJoin": "Liity ryhmään",
-    "splitShare": "Kuka tahansa, jolla on tämä linkki, voi liittyä.",
+    "splitShare": "Kuka tahansa, jolla on tämä linkki, näkee tämän ryhmän ja voi liittyä siihen.",
     "splitCopy": "Kopioi linkki",
     "splitCopied": "Linkki kopioitu.",
     "splitLeave": "Poistu ryhmästä",
@@ -312,7 +318,11 @@
     "splitErrWho": "Valitse ainakin yksi henkilö, joiden kesken jaetaan.",
     "splitErrNotYours": "Tämä ei ole sinun muutettavissasi.",
     "splitErrSpent": "Olet jo mukana tämän ryhmän laskelmissa, joten et voi poistua siitä. Pyydä ryhmän luojaa poistamaan se.",
-    "splitErrGeneric": "Jokin meni pieleen. Yritä uudelleen."
+    "splitErrGeneric": "Jokin meni pieleen. Yritä uudelleen.",
+    "splitJoinTitle": "Liity tähän ryhmään",
+    "splitJoinWhy": "Katselet sitä jo. Liity, niin voit kirjata mitä itse maksoit ja olla mukana jaossa.",
+    "splitDropSure": "Poistetaanko {name} ryhmästä?",
+    "splitErrInSums": "Hän on jo maksanut täällä jostakin tai on velkaa osuuden, joten hänen nimeään ei voi poistaa ryhmästä."
   },
   "pt": {
     "splitDocumentTitle": "Splitwise | Tallinn Tastebuds",
@@ -328,10 +338,8 @@
     "splitCreate": "Criar o grupo",
     "splitPeople": "{n} pessoas",
     "splitPeopleOne": "1 pessoa",
-    "splitInvited": "Foste convidado para {name}.",
-    "splitInvitedSignIn": "Inicia sessão ou cria uma conta e ficas dentro.",
     "splitJoin": "Entrar no grupo",
-    "splitShare": "Qualquer pessoa com esta ligação pode entrar.",
+    "splitShare": "Qualquer pessoa com esta ligação pode ver este grupo e entrar nele.",
     "splitCopy": "Copiar a ligação",
     "splitCopied": "Ligação copiada.",
     "splitLeave": "Sair do grupo",
@@ -375,7 +383,11 @@
     "splitErrWho": "Escolhe pelo menos uma pessoa.",
     "splitErrNotYours": "Isso não é teu para alterares.",
     "splitErrSpent": "Já estás nas contas deste grupo, por isso não podes sair. Pede a quem o criou para o eliminar.",
-    "splitErrGeneric": "Algo correu mal. Tenta outra vez."
+    "splitErrGeneric": "Algo correu mal. Tenta outra vez.",
+    "splitJoinTitle": "Entra neste grupo",
+    "splitJoinWhy": "Já a estás a ver. Entra para escrever o que pagaste e fazer parte da divisão.",
+    "splitDropSure": "Remover {name} do grupo?",
+    "splitErrInSums": "Já pagou alguma coisa aqui, ou deve uma parte, por isso o nome não pode sair do grupo."
   },
   "ru": {
     "splitDocumentTitle": "Splitwise | Tallinn Tastebuds",
@@ -391,10 +403,8 @@
     "splitCreate": "Создать группу",
     "splitPeople": "{n} человек",
     "splitPeopleOne": "1 человек",
-    "splitInvited": "Вас пригласили в группу «{name}».",
-    "splitInvitedSignIn": "Войдите или создайте аккаунт — и вы в группе.",
     "splitJoin": "Вступить в группу",
-    "splitShare": "Вступить может любой, у кого есть эта ссылка.",
+    "splitShare": "Любой, у кого есть эта ссылка, видит эту группу и может вступить.",
     "splitCopy": "Скопировать ссылку",
     "splitCopied": "Ссылка скопирована.",
     "splitLeave": "Выйти из группы",
@@ -438,7 +448,11 @@
     "splitErrWho": "Выберите хотя бы одного человека.",
     "splitErrNotYours": "Это не вам менять.",
     "splitErrSpent": "Вы уже участвуете в расчётах этой группы, поэтому выйти нельзя. Попросите создателя удалить её.",
-    "splitErrGeneric": "Что-то пошло не так. Попробуйте ещё раз."
+    "splitErrGeneric": "Что-то пошло не так. Попробуйте ещё раз.",
+    "splitJoinTitle": "Вступить в эту группу",
+    "splitJoinWhy": "Вы уже её видите. Вступите, чтобы вписать, за что заплатили вы, и попасть в расчёт.",
+    "splitDropSure": "Убрать {name} из группы?",
+    "splitErrInSums": "Он уже за что-то здесь заплатил или должен долю, поэтому его имя из группы убрать нельзя."
   },
   "es": {
     "splitDocumentTitle": "Splitwise | Tallinn Tastebuds",
@@ -454,10 +468,8 @@
     "splitCreate": "Crear el grupo",
     "splitPeople": "{n} personas",
     "splitPeopleOne": "1 persona",
-    "splitInvited": "Te han invitado a {name}.",
-    "splitInvitedSignIn": "Inicia sesión o crea una cuenta y ya estás dentro.",
     "splitJoin": "Unirse al grupo",
-    "splitShare": "Cualquiera con este enlace puede unirse.",
+    "splitShare": "Cualquiera con este enlace puede ver este grupo y unirse.",
     "splitCopy": "Copiar el enlace",
     "splitCopied": "Enlace copiado.",
     "splitLeave": "Salir del grupo",
@@ -501,7 +513,11 @@
     "splitErrWho": "Elige al menos a una persona.",
     "splitErrNotYours": "Eso no es tuyo para cambiarlo.",
     "splitErrSpent": "Ya estás en las cuentas de este grupo, así que no puedes salir. Pide a quien lo creó que lo elimine.",
-    "splitErrGeneric": "Algo salió mal. Inténtalo de nuevo."
+    "splitErrGeneric": "Algo salió mal. Inténtalo de nuevo.",
+    "splitJoinTitle": "Únete a este grupo",
+    "splitJoinWhy": "Ya la estás viendo. Únete para anotar lo que pagaste tú y entrar en el reparto.",
+    "splitDropSure": "¿Quitar a {name} del grupo?",
+    "splitErrInSums": "Ya ha pagado algo aquí, o debe una parte, así que su nombre no puede salir del grupo."
   },
   "tr": {
     "splitDocumentTitle": "Splitwise | Tallinn Tastebuds",
@@ -517,10 +533,8 @@
     "splitCreate": "Grubu oluştur",
     "splitPeople": "{n} kişi",
     "splitPeopleOne": "1 kişi",
-    "splitInvited": "{name} grubuna davet edildin.",
-    "splitInvitedSignIn": "Giriş yap ya da bir hesap aç, içeridesin.",
     "splitJoin": "Gruba katıl",
-    "splitShare": "Bu bağlantıya sahip herkes katılabilir.",
+    "splitShare": "Bu bağlantıya sahip herkes bu grubu görebilir ve katılabilir.",
     "splitCopy": "Bağlantıyı kopyala",
     "splitCopied": "Bağlantı kopyalandı.",
     "splitLeave": "Gruptan ayrıl",
@@ -564,7 +578,11 @@
     "splitErrWho": "En az bir kişi seç.",
     "splitErrNotYours": "Bunu değiştirmek sana düşmez.",
     "splitErrSpent": "Bu grubun hesabında zaten yer alıyorsun, bu yüzden ayrılamazsın. Grubu kuran kişiden silmesini iste.",
-    "splitErrGeneric": "Bir şeyler ters gitti. Tekrar dene."
+    "splitErrGeneric": "Bir şeyler ters gitti. Tekrar dene.",
+    "splitJoinTitle": "Bu gruba katıl",
+    "splitJoinWhy": "Zaten görüyorsun. Ne ödediğini yazmak ve paylaşıma dâhil olmak için katıl.",
+    "splitDropSure": "{name} gruptan çıkarılsın mı?",
+    "splitErrInSums": "Burada bir şey ödemiş ya da bir payı borçlu, bu yüzden adı gruptan çıkarılamaz."
   },
   "uk": {
     "splitDocumentTitle": "Splitwise | Tallinn Tastebuds",
@@ -580,10 +598,8 @@
     "splitCreate": "Створити групу",
     "splitPeople": "{n} осіб",
     "splitPeopleOne": "1 особа",
-    "splitInvited": "Вас запросили до групи «{name}».",
-    "splitInvitedSignIn": "Увійдіть або створіть обліковий запис — і ви в групі.",
     "splitJoin": "Приєднатися до групи",
-    "splitShare": "Приєднатися може будь-хто з цим посиланням.",
+    "splitShare": "Будь-хто з цим посиланням бачить цю групу й може приєднатися.",
     "splitCopy": "Скопіювати посилання",
     "splitCopied": "Посилання скопійовано.",
     "splitLeave": "Вийти з групи",
@@ -627,6 +643,10 @@
     "splitErrWho": "Виберіть щонайменше одну людину.",
     "splitErrNotYours": "Це не вам змінювати.",
     "splitErrSpent": "Ви вже в розрахунках цієї групи, тому вийти не можна. Попросіть того, хто її створив, видалити її.",
-    "splitErrGeneric": "Щось пішло не так. Спробуйте ще раз."
+    "splitErrGeneric": "Щось пішло не так. Спробуйте ще раз.",
+    "splitJoinTitle": "Приєднатися до цієї групи",
+    "splitJoinWhy": "Ви вже її бачите. Приєднайтеся, щоб вписати, за що заплатили ви, і потрапити в розрахунок.",
+    "splitDropSure": "Прибрати {name} з групи?",
+    "splitErrInSums": "Він уже за щось тут заплатив або винен частку, тому його імʼя з групи прибрати не можна."
   }
 }
