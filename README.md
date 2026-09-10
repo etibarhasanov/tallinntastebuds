@@ -4141,7 +4141,7 @@ and the one `ffmpeg` line that gets it there, and add an entry:
 | `from` | one of the two | When it goes up. Leave it out and it is up the moment `live` is `true`. |
 | `until` | one of the two | When it goes. Leave it out and it is **36 hours after `from`**, which is the usual way to write one. |
 | `caption` | optional | A line under the video, per language, exactly like a `blurb`. |
-| `spot` | optional | A place id from `restaurants.json`. The button under the video opens that place on this map. |
+| `spot` | optional | A place id from `restaurants.json`. The button under the video opens that place on this map. Leave it out and the story has no button and leaves no picture behind. |
 | `link` | optional | A full `https://` address instead. Opens in a new tab. |
 | `linkLabel` | optional | What the button says, per language. Without it a `spot` reads "See Kokomo" and a `link` reads "Open the link". |
 
@@ -4408,6 +4408,17 @@ video**. What happens when you press it:
 The id is the place and the day — `kokomo-2026-09-14` — and a second story for
 the same place on the same day gets a `-2`. No `until` is written: the 36 hours
 do it.
+
+**The place is a choice and one of the choices is no place.** Above the
+seventy-five names in the list is *Nowhere in particular*, for a story that is
+not about a place on this map — something in another city, a notice, a picture
+that is only a picture. The entry it writes has no `spot`, so the story has
+nothing to press under it and the id is the day alone, `story-2026-09-14`. The
+picture stays in `stories/` when the 36 hours are over rather than moving onto a
+place, because there is no place to move it onto — the hint under the list says
+so before you post rather than after. Neither the list nor the button will take
+silence for an answer: choosing nothing is not the same as choosing nowhere, and
+the button waits for one of the two.
 
 **The time is Tallinn's**, not the phone's, so the current Tallinn clock is
 printed under the field to check against. Only English is asked for; it is the
