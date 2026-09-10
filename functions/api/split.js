@@ -50,12 +50,16 @@
  *
  *   - Every query is a prepared statement with bound parameters. Nothing from
  *     a request is ever concatenated into SQL.
- *   - Every action but two names a group, and the first thing done with that
- *     name is to read the caller's own membership of it. A caller who is not a
- *     member is told the group does not exist — anything else would make this
- *     a way of asking which invitation codes are taken. The two are `create`,
- *     which names no group, and `join`, whose whole purpose is a group you are
- *     not in yet; both are routed above that check and do their own.
+ *   - **Reading a group takes the code and nothing else.** Holding the link
+ *     is the permission — see groupById() for what that buys, what it costs
+ *     and why it is the same rule a shared list is under.
+ *   - **Writing takes the code, a session and a membership.** Every action but
+ *     two names a group, and the first thing done with that name is to read
+ *     the caller's own membership of it; a caller who is not a member is told
+ *     the group does not exist. The two are `create`, which names no group,
+ *     and `join`, whose whole purpose is a group you are not in yet; both are
+ *     routed above that check and do their own. So a stranger with the link
+ *     can read every row here and change none of them.
  *   - Every person named in a write — a payer, the people a bill is split
  *     between, either end of a payment — is checked against that group's
  *     members before a row is written. A username that is not in the group is
@@ -176,9 +180,43 @@ async function membersOf(env, groupId) {
   return results || [];
 }
 
-/* The group this request is about, or null — where null covers a group that
-   does not exist, a malformed code and a group the caller is not in, on
-   purpose. Every read and every write in this file starts here. */
+/* ------------------------------------------------- reading and writing it
+ * Two lookups, and the difference between them is the whole permission model
+ * of this feature.
+ *
+ * READING takes the code and nothing else. Holding the link is what lets you
+ * see a group — its members, what each of them paid for, and where everybody
+ * stands — with no account and no membership. That is the same rule a shared
+ * list is under and it is a deliberate widening: this is a page four friends
+ * look at together, and asking somebody to make an account before they can
+ * see what they are being asked to join is a wall in front of the one thing
+ * that would make them want to.
+ *
+ * The cost is worth stating rather than discovering. The link IS the
+ * permission, so a link that gets away — forwarded past the table, pasted in
+ * a channel that later gains a member, read off somebody's screen — is the
+ * group's whole ledger, not just its name. What holds that in is the code:
+ * six characters from an alphabet of twenty-eight on the end of a stem, which
+ * is not something anybody guesses. And what limits the damage is what is in
+ * there: usernames, what somebody called a bill and what it came to. No
+ * address, no card, no telephone number; this site does not hold any.
+ *
+ * WRITING takes the code AND a session AND a membership, exactly as before.
+ * Every action in onRequestPost goes through the second one, so a stranger
+ * with the link can read the group and cannot touch a row in it.
+ */
+async function groupById(env, id) {
+  if (!GROUP_ID.test(String(id || ''))) return null;
+  const row = await env.DB
+    .prepare('SELECT id, name, owner FROM split_groups WHERE id = ?')
+    .bind(id)
+    .first();
+  return row || null;
+}
+
+/* The group a write is about, or null — where null covers a group that does
+   not exist, a malformed code and a group the caller is not in, on purpose.
+   Every write in this file starts here. */
 async function groupFor(env, id, user) {
   if (!GROUP_ID.test(String(id || ''))) return null;
   const row = await env.DB
@@ -191,24 +229,45 @@ async function groupFor(env, id, user) {
   return row || null;
 }
 
+/* Whether somebody is in a group's arithmetic at all: named on an expense as
+ * the payer, carrying a share of one, or at either end of a payment.
+ *
+ * Two callers — leaving, and being dropped by the owner — and they are two
+ * spellings of one question, which is why it is a function rather than the
+ * same eight lines twice. The rule they both enforce is that a name can only
+ * come out of the member list while the sums do not mention it: take one out
+ * from under a share it still owes and the column stops adding to zero, and
+ * nothing downstream would ever notice.
+ */
+async function inTheArithmetic(env, groupId, userId) {
+  const row = await env.DB
+    .prepare(
+      'SELECT (SELECT COUNT(*) FROM split_expenses WHERE group_id = ?1 AND payer = ?2) + ' +
+      '(SELECT COUNT(*) FROM split_shares s JOIN split_expenses e ON e.id = s.expense_id ' +
+      ' WHERE e.group_id = ?1 AND s.user_id = ?2) + ' +
+      '(SELECT COUNT(*) FROM split_settlements WHERE group_id = ?1 AND (payer = ?2 OR payee = ?2)) AS n'
+    )
+    .bind(groupId, userId)
+    .first();
+  return !!row && row.n > 0;
+}
+
 /* ------------------------------------------------------------- the invite
  * What a group is called and how many people are already in it, for somebody
  * the group has never heard of. Null for a code that is not a code and for one
  * that is not a group — the caller cannot tell those apart, and should not.
  *
- * Two callers, and they are the two halves of one moment. The ?join= answer
- * below is what the page asks for when somebody opens a link to a group they
- * are not in; functions/split.js writes the same two facts into the document's
- * head, so the link says what it is in the message it was pasted into, before
- * anybody opens it at all.
+ * One caller: functions/split.js, which writes these two facts into the
+ * document's head so a link says what it is in the message it was pasted
+ * into, before anybody opens it at all. It had a second — a ?join= branch on
+ * this route — until reading a whole group stopped needing a membership and
+ * the page could simply ask for the group.
  *
- * It is the only thing in this file that answers about a group the caller is
- * not a member of, and the only thing that answers with no session at all.
- * Both are safe for the reason a shared list is: the code is six random
- * characters on the end of a stem, so holding it is the permission, and
- * somebody holding it is one press from being handed the whole group anyway.
- * What it never answers with is an expense, a balance or another member's
- * name — joining is what buys those.
+ * It stays as its own function rather than folding into that route, because
+ * the two answer different questions: this is the two facts an unfurler may
+ * have, and readGroup() below is everything a reader may. What the card must
+ * never carry is an expense or a balance — a link-preview service fetches a
+ * URL somebody pasted, and the fewer of those facts it holds the better.
  */
 export async function inviteOf(env, id) {
   if (!GROUP_ID.test(String(id || ''))) return null;
@@ -326,10 +385,9 @@ function settlements(balances) {
 /* ------------------------------------------------------------------- read
  * GET /api/split              the groups this person is in
  * GET /api/split?group=<id>   one group, whole: who is in it, what was paid,
- *                             where everybody stands and who pays whom
- * GET /api/split?join=<id>    what a group is called, for somebody who is
- *                             holding the link and is not in it yet — signed
- *                             out included
+ *                             where everybody stands and who pays whom.
+ *                             Holding the code is the whole of the permission
+ *                             — no session needed. See groupById().
  */
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -344,29 +402,22 @@ export async function onRequestGet(context) {
   const user = await sessionUser(request, env);
   const who = user ? user.username : null;
 
-  /* The invitation — see inviteOf() above for what it answers and why it may.
-   *
-     Signed out matters, and it is why this sits above the session check below
-     rather than under it. Somebody handed a link who has no account here sees
-     the sign-up form; with this, the group's name is above that form, so what
-     they are being asked to make an account for is on the screen while they
-     are deciding. */
-  const wants = params.get('join') || '';
-  if (wants) {
-    const invite = await inviteOf(env, wants);
-    if (!invite) return json({ ready: true, user: who, error: 'not-found' }, 404);
-    return json({ ready: true, user: who, invite: invite }, 200);
-  }
+  /* One group, whole, to anybody holding its code — see groupById() above for
+     why reading needs no session and writing still needs everything.
 
-  if (!user) return json({ ready: true, user: null, groups: [] }, 200);
-
+     A code that is not a group and a code that is not a code are the same
+     answer, which is what stops this being a way of asking which invitations
+     are taken. */
   const asked = params.get('group') || '';
   if (asked) {
-    const group = await groupFor(env, asked, user);
-    /* No such group, and one this person is not in, are the same answer. */
+    const group = await groupById(env, asked);
     if (!group) return json({ ready: true, user: who, error: 'not-found' }, 404);
     return json({ ready: true, user: who, group: await readGroup(env, group, user) }, 200);
   }
+
+  /* Everything below is about the reader rather than about a group, so it is
+     the one thing here that needs to know who they are. */
+  if (!user) return json({ ready: true, user: null, groups: [] }, 200);
 
   return json({ ready: true, user: who, groups: await readGroups(env, user) }, 200);
 }
@@ -417,6 +468,10 @@ async function readGroups(env, user) {
 /* One group, and everything the page draws of it, off four reads in one
    round trip. */
 async function readGroup(env, group, user) {
+  /* `user` may be null: somebody holding the link and signed out. Everything
+     below that asks "is this mine" then answers no, which is exactly right —
+     a reader who is not signed in owns nothing here and may press nothing. */
+  const me = user ? user.id : null;
   const [members, spendRows, shareRows, paymentRows] = await env.DB.batch([
     env.DB
       .prepare(
@@ -460,7 +515,7 @@ async function readGroup(env, group, user) {
     at: row.created_at,
     /* Whether this browser may take the row out again. Decided here rather
        than on the page: the same rule the write below enforces, said once. */
-    mine: row.added_by === user.id || row.payer === user.id,
+    mine: row.added_by === me || row.payer === me,
     shares: shares.get(row.id) || []
   }));
 
@@ -470,7 +525,7 @@ async function readGroup(env, group, user) {
     payerId: row.payer,
     payeeId: row.payee,
     at: row.created_at,
-    mine: row.added_by === user.id || row.payer === user.id || row.payee === user.id
+    mine: row.added_by === me || row.payer === me || row.payee === me
   }));
 
   const balances = balancesOf(members, spends, payments);
@@ -478,8 +533,13 @@ async function readGroup(env, group, user) {
   return {
     id: group.id,
     name: group.name,
-    mine: group.owner === user.id,
-    members: members.map((m) => ({ name: m.name, you: m.id === user.id })),
+    /* Whether the reader owns this group, and whether they are in it at all.
+       A stranger holding the link gets false for both and a page with every
+       control off — see render() in assets/split.js. */
+    mine: group.owner === me,
+    member: members.some((m) => m.id === me),
+    full: members.length >= MAX_MEMBERS,
+    members: members.map((m) => ({ name: m.name, you: m.id === me })),
     /* Ids stop here. Everything below names people the way the page draws
        them, and an id that is not in the group's own member list — somebody
        who has since left — draws as no name at all rather than as a UUID. */
@@ -550,6 +610,7 @@ export async function onRequestPost(context) {
   if (action === 'unsettle') return unsettle(context, body, user, group);
   if (action === 'rename')   return rename(context, body, user, group);
   if (action === 'leave')    return leave(context, user, group);
+  if (action === 'drop')     return drop(context, body, user, group);
   if (action === 'remove')   return remove(context, user, group);
 
   return json({ error: 'action' }, 400);
@@ -828,17 +889,7 @@ async function rename(context, body, user, group) {
 async function leave(context, user, group) {
   const { env } = context;
   if (group.owner === user.id) return json({ error: 'owner' }, 403);
-
-  const held = await env.DB
-    .prepare(
-      'SELECT (SELECT COUNT(*) FROM split_expenses WHERE group_id = ?1 AND payer = ?2) + ' +
-      '(SELECT COUNT(*) FROM split_shares s JOIN split_expenses e ON e.id = s.expense_id ' +
-      ' WHERE e.group_id = ?1 AND s.user_id = ?2) + ' +
-      '(SELECT COUNT(*) FROM split_settlements WHERE group_id = ?1 AND (payer = ?2 OR payee = ?2)) AS n'
-    )
-    .bind(group.id, user.id)
-    .first();
-  if (held && held.n > 0) return json({ error: 'spent' }, 409);
+  if (await inTheArithmetic(env, group.id, user.id)) return json({ error: 'spent' }, 409);
 
   await env.DB
     .prepare('DELETE FROM split_members WHERE group_id = ? AND user_id = ?')
@@ -846,6 +897,45 @@ async function leave(context, user, group) {
     .run();
 
   return json({ left: true }, 200);
+}
+
+/* Taking somebody else out, which is the owner's and nobody else's.
+ *
+ * It is for the person who opened the wrong link — a group's code is handed
+ * around a table and lands in the wrong chat sometimes, and until now the only
+ * answer was to ask them to leave and hope. The owner made the group and can
+ * take the whole thing down; being able to take one name out of it is the
+ * smaller version of a power they already have.
+ *
+ * The same rule leaving is under, for the same reason: only a name the sums do
+ * not mention. Somebody who has paid for something or owes a share cannot be
+ * dropped, because their cents would stay in the column with nobody's name on
+ * them. Refused rather than cascaded — deleting their expenses would be the
+ * owner quietly rewriting what other people paid.
+ *
+ * The owner cannot drop themselves. The group's own row names them, and what
+ * they are reaching for there is `remove`.
+ */
+async function drop(context, body, user, group) {
+  const { env } = context;
+  if (group.owner !== user.id) return json({ error: 'not-yours' }, 403);
+
+  const members = await membersOf(env, group.id);
+  const who = memberByName(members, body.name);
+  if (!who) return json({ error: 'who' }, 400);
+  if (who.id === group.owner) return json({ error: 'owner' }, 403);
+
+  /* Its own answer rather than the `spent` that leaving gives, because the
+     sentence the page prints for it is about somebody else and "you are in
+     the arithmetic" would be the wrong person entirely. */
+  if (await inTheArithmetic(env, group.id, who.id)) return json({ error: 'in-sums' }, 409);
+
+  await env.DB
+    .prepare('DELETE FROM split_members WHERE group_id = ? AND user_id = ?')
+    .bind(group.id, who.id)
+    .run();
+
+  return json({ group: await readGroup(env, group, user) }, 200);
 }
 
 /* The whole group, and everything in it. The owner's, and only theirs.

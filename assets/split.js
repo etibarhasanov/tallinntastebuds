@@ -53,13 +53,18 @@
  * arrives here signed in, and somebody who signs up here to split a dinner
  * can go and save places under the same name.
  *
- * ONE ADDRESS, THREE THINGS
+ * ONE ADDRESS, AND HOLDING IT IS THE PERMISSION
  *
- * ?g=<code> is the whole of the routing. Holding it and being in the group is
- * the group; holding it and not being in the group is the invitation to join;
- * not holding it at all is the list of your groups. The link people send each
- * other is therefore the same link they use afterwards, which is the only
- * shape of share link nobody has to be told twice about.
+ * ?g=<code> is the whole of the routing, and it now means one thing rather
+ * than three: the group, drawn for whoever is holding the code. Signed in and
+ * a member, it is yours to add to; signed in and not a member, it is a group
+ * with a Join on it; signed out, it is the same page with the sign-in form
+ * where the controls would be. Nobody is asked for an account before they can
+ * see what they are being asked to join, which is the whole argument — see
+ * groupById() in functions/api/split.js for the trade that buys.
+ *
+ * Without a code at all it is the list of your own groups, and that one does
+ * need an account, because "yours" has no meaning without one.
  *
  * MONEY
  *
@@ -117,7 +122,6 @@
     user: null,
     groups: [],      // the ones you are in, most recently spent in first
     group: null,     // the one that is open, whole
-    invite: null,    // a group you are holding the link to and are not in
     view: 'in'       // which half of the sign-in form: 'in' or 'up'
   };
 
@@ -282,6 +286,7 @@
     amount: 'splitErrAmount',
     'not-yours': 'splitErrNotYours',
     spent: 'splitErrSpent',
+    'in-sums': 'splitErrInSums',
     'signed-out': 'accountErrSignedOut'
   };
 
@@ -470,28 +475,23 @@
     });
   }
 
-  /* ---------------------------------------------------------- signed out
-   * The offer, and the form. Two fields and a switch between making an
-   * account and signing in to one — the same two actions, the same two fields
-   * and the same strings as the map's sheet. See the header for why there is a
-   * second copy of this on the site at all.
+  /* ------------------------------------------------------------- signing in
+   * Two fields and a switch between making an account and signing in to one —
+   * the same two actions, the same two fields and the same strings as the
+   * map's sheet. See the header for why there is a second copy of this on the
+   * site at all.
+   *
+   * It is built here and worn by two cards: the front door, where somebody
+   * arrived with no code and no account, and the join offer under a group
+   * somebody is looking at. One form, two frames — the alternative was the
+   * same eight fields written twice, which is the copy that stops matching
+   * the API first.
    */
-  function authCard() {
+  function authForm(saying) {
     var creating = state.view === 'up';
     var form = el('form', { className: 'ac-form' });
 
-    form.appendChild(el('p', { className: 'eyebrow', textContent: t('splitEyebrow') }));
-    form.appendChild(heading(t('splitTitle')));
-    form.appendChild(el('p', { className: 'lists-say', textContent: t('splitWhat') }));
-    /* Somebody who arrived on an invitation is told what they are joining
-       before they are asked for a password, rather than after. */
-    if (state.invite) {
-      form.appendChild(el('p', {
-        className: 'ac-note',
-        textContent: t('splitInvited', { name: state.invite.name }) + ' ' + t('splitInvitedSignIn')
-      }));
-    }
-    form.appendChild(el('p', { className: 'lists-say', textContent: t('splitNeedAccount') }));
+    saying.forEach(function (node) { form.appendChild(node); });
 
     /* Empty, and the rule under it, exactly as the map's sheet asks — see the
        comment there for why neither sheet hands anybody a name any more. */
@@ -525,7 +525,8 @@
           return;
         }
         /* Straight back through boot() rather than patching state: signing in
-           changes every answer on this page, including which groups exist. */
+           changes every answer on this page, including whether the group on
+           screen is one this browser may write to. */
         window.location.reload();
       });
     }, form));
@@ -541,7 +542,49 @@
     });
     form.appendChild(swap);
 
-    return card([form]);
+    return form;
+  }
+
+  /* The front door with nobody signed in: no code in the address, so there is
+     no group to show and the only thing to offer is the account that would
+     give them one. */
+  function authCard() {
+    return card([authForm([
+      el('p', { className: 'eyebrow', textContent: t('splitEyebrow') }),
+      heading(t('splitTitle')),
+      el('p', { className: 'lists-say', textContent: t('splitWhat') }),
+      el('p', { className: 'lists-say', textContent: t('splitNeedAccount') })
+    ])]);
+  }
+
+  /* Under a group somebody is looking at and is not in. They can already read
+     every word of it — that is what holding the link buys — so this card is
+     only about the one thing they cannot do yet, and it says which of the two
+     reasons it is: no account, or an account that is not in this group.
+
+     A full group loses the offer and keeps the sentence. There is nothing to
+     press and pretending otherwise would be a button that could only fail. */
+  function joinCard() {
+    var full = state.group.full;
+
+    if (!state.user) {
+      return card([authForm([
+        heading(t('splitJoinTitle'), 'h2'),
+        el('p', { className: 'lists-say', textContent: t('splitJoinWhy') }),
+        el('p', { className: 'lists-say', textContent: t('splitNeedAccount') })
+      ])]);
+    }
+
+    return card([
+      heading(t('splitJoinTitle'), 'h2'),
+      el('p', { className: 'lists-say', textContent: t(full ? 'splitErrFull' : 'splitJoinWhy') }),
+      full ? null : foot([actor('splitJoin', 'go', function (done) {
+        post(SPLIT_API, { action: 'join', group: state.group.id }).then(function (a) {
+          if (!a.ok) { done(); toast(say(a.out)); return; }
+          window.location.reload();
+        });
+      })])
+    ]);
   }
 
   /* ------------------------------------------------------------ your groups */
@@ -627,33 +670,6 @@
     return card(kids);
   }
 
-  /* ------------------------------------------------------------ an invitation
-   * You are holding somebody's link and you are not in their group. The name
-   * and the number of people already in it are the whole of what is shown —
-   * enough to know it is the right link, and nothing anybody could learn by
-   * guessing at codes.
-   */
-  function inviteCard() {
-    return card([
-      el('p', { className: 'eyebrow', textContent: t('splitEyebrow') }),
-      heading(state.invite.name),
-      el('p', { className: 'lists-say', textContent: peopleLabel(state.invite.people) }),
-      state.invite.full ? el('p', { className: 'ac-err', textContent: t('splitErrFull') }) : null,
-      /* The join and the way out on one row, the way every card on this site
-         carries its ways on. A full group loses the button and keeps the row,
-         because the way out is the only thing left to press. */
-      foot([
-        state.invite.full ? null : actor('splitJoin', 'go', function (done) {
-          post(SPLIT_API, { action: 'join', group: state.invite.id }).then(function (a) {
-            if (!a.ok) { done(); toast(say(a.out)); return; }
-            window.location.reload();
-          });
-        }),
-        el('a', { className: 'alt', href: at(HOME), textContent: t('splitYours') })
-      ])
-    ]);
-  }
-
   /* ---------------------------------------------------------------- a group */
 
   /* The head of a group: its name, who is in it, and the link that gets the
@@ -667,11 +683,8 @@
     var kids = [
       el('p', { className: 'eyebrow', textContent: t('splitEyebrow') }),
       heading(g.name),
-      el('p', {
-        className: 'lists-say',
-        textContent: peopleLabel(g.members.length) + ' · ' +
-          g.members.map(function (m) { return m.name; }).join(', ')
-      }),
+      el('p', { className: 'lists-say', textContent: peopleLabel(g.members.length) }),
+      memberList(),
       el('p', { className: 'lists-say', textContent: t('splitShare') }),
       el('p', { className: 'split-link', textContent: url })
     ];
@@ -695,10 +708,61 @@
     kids.push(foot([
       copy,
       el('a', { className: 'alt', href: at(HOME), textContent: t('splitYours') }),
-      g.mine ? removeButton() : leaveButton()
+      /* Nothing to leave and nothing to take down for somebody who is only
+         reading. Both of those are writes, and the server refuses them from
+         here anyway — this is the page agreeing rather than offering a button
+         that would come back with an apology. */
+      g.member ? (g.mine ? removeButton() : leaveButton()) : null
     ]));
 
     return card(kids);
+  }
+
+  /* Who is in the group, as rows rather than as a comma-joined line.
+   *
+     It was a line for as long as the only thing anybody did with the names was
+     read them. The owner can now take one out, and a control belongs on the
+     row that names the person it acts on rather than at the end of a sentence
+     they are somewhere inside.
+   *
+     The Remove is drawn only where it would work: the owner, on somebody who
+     is not themselves and whose name the sums do not mention. That last test
+     is done from what is already on the page — every payer, every share and
+     both ends of every payment are in what the group answered with — so it
+     costs no request and it agrees exactly with what the server will say. See
+     drop() in functions/api/split.js, which is the copy that binds. */
+  function inSums(name) {
+    var found = false;
+    state.group.spends.forEach(function (spend) {
+      if (spend.payer === name) found = true;
+      spend.among.forEach(function (a) { if (a.name === name) found = true; });
+    });
+    state.group.payments.forEach(function (p) {
+      if (p.from === name || p.to === name) found = true;
+    });
+    return found;
+  }
+
+  function memberRow(m) {
+    var row = el('li', { className: 'split-row' }, [
+      el('span', {
+        className: 'split-what',
+        textContent: m.you ? m.name + ' (' + t('splitYou') + ')' : m.name
+      })
+    ]);
+    if (state.group.mine && !m.you && !inSums(m.name)) {
+      row.appendChild(actor('splitRemove', 'alt split-act', function (done) {
+        if (!window.confirm(t('splitDropSure', { name: m.name }))) { done(); return; }
+        change({ action: 'drop', group: state.group.id, name: m.name }, done);
+      }));
+    }
+    return row;
+  }
+
+  function memberList() {
+    var ul = el('ul', { className: 'split-rows' });
+    state.group.members.forEach(function (m) { ul.appendChild(memberRow(m)); });
+    return ul;
   }
 
   /* Leaving is for the person who opened the wrong link, and the server says
@@ -750,9 +814,14 @@
       el('span', { className: 'split-what', textContent: t('splitPays', { from: s.from, to: s.to }) }),
       el('span', { className: 'split-money split-down', textContent: money(s.cents) })
     ]);
-    row.appendChild(actor('splitMarkPaid', 'alt split-act', function (done) {
-      change({ action: 'settle', group: state.group.id, from: s.from, to: s.to, cents: s.cents }, done);
-    }));
+    /* A payment is a write, so only somebody in the group is offered one. A
+       reader sees the line and no button, which is the true shape of what
+       they may do about it. */
+    if (state.group.member) {
+      row.appendChild(actor('splitMarkPaid', 'alt split-act', function (done) {
+        change({ action: 'settle', group: state.group.id, from: s.from, to: s.to, cents: s.cents }, done);
+      }));
+    }
     return row;
   }
 
@@ -961,20 +1030,23 @@
        page is a whole page load, so there is no way back to the list of groups
        that does not go through boot() and the title it sets there. */
     if (state.group) document.title = state.group.name;
+
     var wrap = el('div', { className: 'lists-stack' });
     var add = function (node) { if (node) wrap.appendChild(node); };
 
     if (!state.ready) {
       add(switchedOff());
-    } else if (!state.user) {
-      add(authCard());
     } else if (state.group) {
+      /* Holding the code is enough to be here, signed in or not. What being a
+         member adds is the form — everything above and below it is the same
+         page for everybody, which is the point of letting somebody see a
+         group before they are asked to join it. */
       add(groupHead());
       add(standingCard());
-      add(spendForm());
+      add(state.group.member ? spendForm() : joinCard());
       add(spendsCard());
-    } else if (state.invite) {
-      add(inviteCard());
+    } else if (!state.user) {
+      add(authCard());
     } else {
       add(groupsCard());
     }
@@ -1018,17 +1090,6 @@
       state.user = answer.out.user || null;
       state.groups = answer.out.groups || [];
       state.group = answer.out.group || null;
-
-      /* Holding a link to a group you are not in. The group read came back
-         404, so ask what it is called — which is all somebody holding the
-         code is told before they join. Signed out, the same question is what
-         puts the group's name above the sign-up form. */
-      if (asked && !state.group && state.ready) {
-        return ask(SPLIT_API + '?join=' + encodeURIComponent(asked)).then(function (invite) {
-          state.invite = invite.out.invite || null;
-          render();
-        });
-      }
 
       render();
     }).catch(function () {
