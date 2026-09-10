@@ -4306,7 +4306,10 @@
     });
   }
 
-  /* --------------------------------------------------------- soft keyboard
+  /* -------------------------------------------- what covers the bottom edge
+   * Two things stand over the foot of this page and neither of them is in the
+   * layout: the soft keyboard, and the browser's own bar.
+   *
    * iOS shrinks the visual viewport when the keyboard comes up but leaves the
    * layout viewport — and with it anything position:fixed — exactly where it
    * was, so a bottom sheet keeps its full height and the bottom of it, along
@@ -4314,18 +4317,54 @@
    * then scrolls the layout viewport to try to reveal the field, which drags
    * the whole sheet off the top of the screen.
    *
-   * So measure what is covered, hand it to the stylesheet, and put the page
-   * scroll back where it belongs. Android resizes the layout viewport itself
-   * and the measurement comes out at zero, which is the right answer there.
-   * A browser without visualViewport simply keeps the behaviour it had.
+   * The toolbar is the quiet half of the same problem. It is there the whole
+   * time, the layout viewport runs on behind it, and `window.innerHeight`
+   * counts the strip it is standing over as room — so a full-height overlay
+   * with something anchored to its own bottom edge puts that thing under the
+   * bar. Nothing on the page notices, because a fixed element is exactly as
+   * tall as it asked to be.
+   *
+   * Both are one subtraction with a threshold telling them apart. So measure
+   * what is covered, hand each number to the stylesheet under its own name,
+   * and put the page scroll back where it belongs. Android resizes the layout
+   * viewport itself and the measurement comes out at zero, which is the right
+   * answer there. A browser without visualViewport keeps the behaviour it had.
    */
-  /* The height the sheet is measured against, written back to CSS so it does
-     not have to trust a viewport unit. dvh is right where it is supported;
-     this is the same number taken from the horse's mouth, and it is what the
-     drag stops use, so the two can never disagree about how tall the sheet is
-     allowed to be. */
+  /* Anything standing over more of the bottom than this is the keyboard. A
+     browser's bar is tall enough to hide a button and nothing like this tall. */
+  var BROWSER_BAR_MAX = 90;
+
+  /* What is covering the bottom of the layout viewport right now, in pixels,
+     and 0 in a browser that cannot say. */
+  function viewportCovered() {
+    var vv = window.visualViewport;
+    if (!vv) return 0;
+    /* A page the browser has zoomed in on shrinks the visual viewport in
+       exactly the way a keyboard does, and the measurement below cannot
+       tell the two apart: pinched to 2x, half the window reads as covered,
+       so the sheet would fold itself up around a keyboard that is not
+       there and then scroll the page out from under the fingers doing the
+       pinching. A scale that is not 1 is a zoom, not a keyboard — the
+       fields on this page are set at 16px precisely so that focusing one
+       never zooms. */
+    if (vv.scale && Math.abs(vv.scale - 1) > .01) return 0;
+    var covered = window.innerHeight - vv.height - vv.offsetTop;
+    return covered > 0 ? Math.round(covered) : 0;
+  }
+
+  /* The two numbers the stylesheet lays out against, so it does not have to
+     trust a viewport unit. --vph is the window, which is what the sheet is
+     sized against and what its drag stops read, so the two can never disagree
+     about how tall the sheet is allowed to be; --browser-b is the strip of it
+     the browser's bar is standing over, which is what the story viewer keeps
+     its caption and its link out of. Hands back what it measured, so the
+     keyboard below reads the window once and answers both questions from it. */
   function syncViewportHeight() {
-    document.documentElement.style.setProperty('--vph', window.innerHeight + 'px');
+    var css = document.documentElement.style;
+    var covered = viewportCovered();
+    css.setProperty('--vph', window.innerHeight + 'px');
+    css.setProperty('--browser-b', (covered > BROWSER_BAR_MAX ? 0 : covered) + 'px');
+    return covered;
   }
 
   function wireKeyboard() {
@@ -4337,21 +4376,11 @@
     if (!vv) return;
 
     function sync() {
-      /* A page the browser has zoomed in on shrinks the visual viewport in
-         exactly the way a keyboard does, and the measurement below cannot
-         tell the two apart: pinched to 2x, half the window reads as covered,
-         so the sheet would fold itself up around a keyboard that is not
-         there and then scroll the page out from under the fingers doing the
-         pinching. A scale that is not 1 is a zoom, not a keyboard — the
-         fields on this page are set at 16px precisely so that focusing one
-         never zooms. */
-      if (vv.scale && Math.abs(vv.scale - 1) > .01) {
-        document.documentElement.style.setProperty('--kbd', '0px');
-        return;
-      }
-      var covered = window.innerHeight - vv.height - vv.offsetTop;
+      /* The bar can slide away as well as arrive, and neither move is a
+         window resize, so the heights are re-measured here too. */
+      var covered = syncViewportHeight();
       /* Only a keyboard, not a URL bar sliding away. */
-      var kbd = covered > 90 ? Math.round(covered) : 0;
+      var kbd = covered > BROWSER_BAR_MAX ? covered : 0;
       document.documentElement.style.setProperty('--kbd', kbd + 'px');
       if (kbd && window.pageYOffset) window.scrollTo(0, 0);
     }
