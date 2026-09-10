@@ -18,11 +18,21 @@ the refresh is that running it again is safe. The pipeline is three files:
 exports/tallinn_restaurants.csv   the cleaned export, 18 columns, one line per row
 tools/googlevenues.mjs            turns it into SQL
 db/google-venues.sql              GENERATED — what actually loads them
+tools/googlelists.mjs             reads the same export and ranks it
+db/google-lists.sql               GENERATED — the five top tens under the `google` account
 ```
+
+The second pair is the same export read again: five public lists — top ten
+restaurants, bakeries, cafés, bars, pizzerias — under an account called
+`google` that nobody can sign in as, ordered by Google's rating weighed by
+its review count. **The five lists Google wrote** under **Google venues** in
+`README.md` is the argument and the arithmetic. They refresh with the
+export, and the validator holds them to it the same way.
 
 ## Read first
 
-- `README.md` → **Google venues**, all of it, and **The directory**.
+- `README.md` → **Google venues**, all of it — **The five lists Google
+  wrote** included — and **The directory**.
 - `exports/README.md` — how the raw export was cleaned, column by column, and
   where the upstream sweep lives. `exports/REVIEW.md` is the shortlisting
   worksheet built from the same file by `build_review_sheet.py`; it is for
@@ -60,8 +70,12 @@ else runs.
    missing_since IS NULL`, then upserts fifty rows to a statement, then one
    `UPDATE … SET map_id = … WHERE place_id = … AND map_id IS NULL` per row
    matched to the map. The count is in the diff.
-3. `node tools/validate.mjs`. Beyond the SQL being what the tool would write,
-   it holds the directory's vocabulary to the new export:
+   Then `node tools/googlelists.mjs`, which rewrites `db/google-lists.sql`
+   from the new export; `--show` first prints the five top tens with the
+   score, rating and count beside each name, which is the diff worth reading
+   before the SQL's.
+3. `node tools/validate.mjs`. Beyond both SQL files being what their tool
+   would write, it holds the directory's vocabulary to the new export:
    - **every `KITCHENS` pattern in `functions/api/venues.js` must still match
      at least one row.** Seven patterns hang on exactly one venue today —
      `vietnamese`, `indonesian`, `malaysian`, `filipino`, `greek`, `german`,
@@ -80,8 +94,14 @@ else runs.
    ```
    wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
    wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql
+   wrangler d1 execute tallinntastebuds         --remote --file=db/google-lists.sql
+   wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-lists.sql
    ```
 
+   The lists file after the venues file, always: its rows point at
+   `google_venues` keys, and a top ten loaded before the venue it names is a
+   row that draws by its stored name and links nowhere. Its one `DELETE`
+   names the five lists in its `WHERE`, so the denials let it through.
    Nothing in CI applies it. A preview that cannot see these places shows an
    empty picker and looks broken for no reason. The mark-missing `UPDATE`
    carries a `WHERE`, so the D1 denials in `.claude/settings.json` let it
@@ -123,7 +143,9 @@ else runs.
   `missing_since`, because a list may point at it and somebody wrote a
   sentence about it. Every upsert clears the mark again.
 - `rating` and `reviews` are Google's, shown attributed on Google's places
-  and sorted by on `/google` alone. Nothing on the map carries a score.
+  and sorted by in two places only, both under Google's name: `/google`, and
+  the five lists `db/google-lists.sql` writes. Nothing on the map carries a
+  score.
 
 ## The commit
 
@@ -136,12 +158,13 @@ categories renamed, patterns dropped — and that both databases were loaded.
 ## The pull request
 
 1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/googlevenues.mjs`, then `node tools/validate.mjs`, and read
-   the SQL diff before going on.
+2. `node tools/googlevenues.mjs`, `node tools/googlelists.mjs`, then
+   `node tools/validate.mjs`, and read both SQL diffs before going on.
 3. Load the SQL into **preview** from the branch —
-   `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`
-   — then push the branch, which deploys a preview of it, and open that
-   preview's `/google` and the list picker to see the rows arrive.
+   `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`,
+   then the same with `db/google-lists.sql` — then push the branch, which
+   deploys a preview of it, and open that preview's `/google`, the list
+   picker and `/u/google` to see the rows arrive.
 4. One commit for the export and its SQL; a second for any `KITCHENS`
    pattern and cuisine label that had to go with it, and a third for the
    counts, if they moved.
@@ -152,7 +175,8 @@ categories renamed, patterns dropped — and that both databases were loaded.
    landing**.
 7. CI green, then **Rebase and merge**, delete the branch, and
    `wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql`
-   at once, so the live directory and the file say the same thing.
+   then the same with `db/google-lists.sql`, at once, so the live directory,
+   the five lists and the files say the same thing.
 
 ## Where it goes wrong
 
@@ -165,3 +189,6 @@ categories renamed, patterns dropped — and that both databases were loaded.
 - A hand-edit to a Google column, gone at the next refresh.
 - A count that moved in one place and not the others — this file said 751
   for a refresh that brought 1,110.
+- The venues file regenerated and the lists file not, so CI fails on a top
+  ten that names last month's order; or the lists file loaded and the
+  venues file not, so a top ten names a place the table has not got yet.

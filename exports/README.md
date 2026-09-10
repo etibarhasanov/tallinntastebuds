@@ -9,6 +9,7 @@ Google Places export in
 python3 clean_restaurants_csv.py ../../allRestaurants/exports/tallinn_restaurants.csv tallinn_restaurants.csv
 python3 build_review_sheet.py          # from the repo root
 node tools/googlevenues.mjs            # from the repo root
+node tools/googlelists.mjs             # from the repo root, after it
 ```
 
 The upstream sweep keeps everything with 25 reviews or more. Its first pass asked

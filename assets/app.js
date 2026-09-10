@@ -4765,8 +4765,9 @@
    * anywhere on this site. It is allowed here and nowhere else for the same
    * reason the rest of the block is: it is Google's number, on Google's place,
    * with Google's name in front of it. No place on my map carries one, nothing
-   * anywhere sorts by one, and the attribution is not decoration — it is the
-   * whole of what makes the number honest.
+   * sorts by one except under Google's own name — the directory, and the five
+   * lists the `google` account holds — and the attribution is not decoration:
+   * it is the whole of what makes the number honest.
    *
    * It is also the one panel on this site showing text somebody else wrote, so
    * it says whose list it came off. */

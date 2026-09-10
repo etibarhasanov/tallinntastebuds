@@ -173,7 +173,7 @@ const PLACE_ID = /^[A-Za-z0-9_-]{20,255}$/;
    values here are names and addresses, not code, but this is the one function
    in the repository that turns somebody else's data into SQL text, so it is
    written to be right rather than to be short. */
-function q(value) {
+export function q(value) {
   return "'" + String(value == null ? '' : value).replace(/'/g, "''") + "'";
 }
 

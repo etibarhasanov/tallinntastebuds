@@ -16,7 +16,8 @@
  *   - a catalogue in data/places.json that is not what tools/places.mjs would
  *     write, holds a duplicate id, or has lost a place that is on the map
  *   - a db/google-venues.sql that is out of step with the Google Places export
- *     it is generated from
+ *     it is generated from, or a db/google-lists.sql — the five top tens under
+ *     the `google` account — that is out of step with the same export
  *   - a taxonomy type missing a label in any language
  *   - a cuisine in data/cuisines.json missing a label in any language, or one
  *     the directory's KITCHENS table cannot produce
@@ -57,6 +58,7 @@ import { dirname, join, resolve } from 'node:path';
 import { stale as staleStamps } from './stamp.mjs';
 import { stale as staleCatalogue } from './places.mjs';
 import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
+import { stale as staleGoogleLists } from './googlelists.mjs';
 /* The directory's own vocabulary. It is a table in the endpoint rather than a
    file, the way VENUE_TYPES is, and the checks below are what keep it honest:
    every id has a label in ten languages, and every pattern still matches
@@ -919,6 +921,14 @@ if (catalogue !== null) {
 
 if (staleGoogleVenues()) {
   fail('db/google-venues.sql', 'is not what tools/googlevenues.mjs would write from exports/tallinn_restaurants.csv — run `node tools/googlevenues.mjs` and commit the result');
+}
+
+/* And the five lists Google wrote, which are the same export ordered — so a
+   refresh of the export moves them too, and a deploy where the lists say
+   last month's top ten is the same fault as the table above saying last
+   month's Tallinn. */
+if (staleGoogleLists()) {
+  fail('db/google-lists.sql', 'is not what tools/googlelists.mjs would write from exports/tallinn_restaurants.csv — run `node tools/googlelists.mjs` and commit the result');
 }
 
 /* And that it is current. data/places.csv is the file that actually changes,
