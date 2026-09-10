@@ -46,6 +46,9 @@
  *              table is a list of hashes, not a drawer of working keys.
  *   login_fails a hashed network fingerprint and a timestamp, to slow down
  *              guessing, kept for as long as the window and no longer.
+ *   username_holds the name an account used to go by, for thirty days after
+ *              it changed, so a rename cannot hand somebody else's links to
+ *              a stranger. See `username-change` below.
  */
 
 import {
@@ -70,12 +73,31 @@ const FAIL_WINDOW = 15 * 60 * 1000;
 const USERNAME_RE = /^[a-z0-9][a-z0-9-]{2,23}$/;
 const MIN_PASSWORD = 8;
 
-async function nameTaken(env, username) {
+/* How long a name stays with the account that just left it. A username is
+   the byline on somebody's lists and the whole of /u/<name>, so a name put
+   straight back in the pool is every link to that person handed to whoever
+   signs up next. Thirty days is long enough for a rename to be regretted and
+   undone, and short enough that a name somebody has actually finished with
+   comes back. */
+const HOLD_DAYS = 30;
+
+/* Whether a name is somebody else's, which is two questions and not one: who
+   has it now, and who has just given it up. `mine` is the account asking —
+   a users.id when somebody signed in is renaming, and nothing at all on the
+   sign-up sheet, where every hold counts against the name. Your own hold
+   never does, so renaming away and back again is how a rename is undone. */
+async function nameTaken(env, username, mine) {
   const row = await env.DB
     .prepare('SELECT 1 AS x FROM users WHERE username = ? COLLATE NOCASE')
     .bind(username)
     .first();
-  return !!row;
+  if (row) return true;
+
+  const held = await env.DB
+    .prepare('SELECT user_id FROM username_holds WHERE username = ? COLLATE NOCASE AND released_at > ?')
+    .bind(username, Date.now() - HOLD_DAYS * 86400000)
+    .first();
+  return !!held && held.user_id !== mine;
 }
 
 async function tooManyFails(env, hash) {
@@ -180,10 +202,15 @@ export async function onRequestGet(context) {
 }
 
 /* ---------------------------------------------------------------- create,
- * sign in, sign out, change the password. One endpoint, because they share
- * every check: the same username and password rules, the same slow-down on a
- * fingerprint that keeps getting a password wrong, and the same session
- * table on the way in and out.
+ * sign in, sign out, change the password, change the username. One endpoint,
+ * because they share every check: the same username and password rules, the
+ * same slow-down on a fingerprint that keeps getting a password wrong, and
+ * the same session table on the way in and out.
+ *
+ * The two changes each check the password in use, in the same handful of
+ * lines and against the same fingerprint. Two copies rather than a helper —
+ * see .claude/rules/leave-it-better.md, which draws that line at three — and
+ * a third would be the moment to write one.
  */
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -293,6 +320,100 @@ export async function onRequestPost(context) {
     });
   }
 
+  /* ------------------------------------------------- changing a username
+   * The one thing on an account that is a choice, and it has to be made
+   * before somebody has seen a single list — the sign-up sheet asks for it
+   * on the way past a bakery they wanted to save. So it is a choice worth
+   * being able to make again. Nothing else moves — the saves,
+   * the lists, the keeps and every splitwise group are filed under
+   * `users.id`, which no rename touches — so this is one UPDATE and a row
+   * saying what the account used to be called.
+   *
+   * WHY IT ASKS FOR THE PASSWORD
+   *
+   * Because the username is the thing you sign in with. Changing it changes
+   * a credential, and a sheet left open on a shared laptop must not be a way
+   * to take somebody's sign-in off them, or to have their lists published
+   * under a name they would not have chosen. It is the same check
+   * `password-change` makes, counted against the same fingerprint, for the
+   * same reason.
+   *
+   * WHY EVERY OTHER DEVICE STAYS SIGNED IN
+   *
+   * A password is changed because somebody else may have it, so the other
+   * sessions go. A name is changed because a better one came along; the
+   * account and the secret behind it are exactly what they were, and
+   * throwing a person out of their own phone for renaming themselves would
+   * be a punishment for tidying up.
+   *
+   * WHAT IT COSTS THE PERSON DOING IT
+   *
+   * /u/<the old name> stops answering the moment this lands, and so does
+   * every link, screenshot and message pointing at it. The name itself is
+   * held for thirty days — see username_holds in db/schema.sql — so what is
+   * behind those links is nothing rather than a stranger, and a rename
+   * regretted the same afternoon is undone by renaming back. The sheet says
+   * both before the button.
+   */
+  if (action === 'username-change') {
+    const user = await sessionUser(request, env);
+    if (!user) return json({ error: 'signed-out' }, 401);
+
+    const next = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
+    const current = typeof body.current === 'string' ? body.current : '';
+
+    if (!USERNAME_RE.test(next)) return json({ error: 'username' }, 400);
+    /* Its own answer rather than 'taken', which would be the site telling
+       somebody their own name belongs to somebody else. */
+    if (next === user.username.toLowerCase()) return json({ error: 'same-name' }, 400);
+
+    const hash = await fingerprint(env.SAVE_SALT, clientIp(request), request.headers.get('User-Agent') || '');
+    if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
+
+    /* Before the password and not after it. A name that is gone is gone
+       whatever the password is, so checking it first spares a PBKDF2 derive
+       — a real fraction of the 10ms this plan allows a request — and spares
+       the person typing their password to be told the name was never
+       available. It gives nothing away either: the sign-up sheet answers the
+       same question, to anybody, with no session at all. */
+    if (await nameTaken(env, next, user.id)) return json({ error: 'taken' }, 409);
+
+    const row = await env.DB
+      .prepare('SELECT pw_hash, pw_salt, pw_iter FROM users WHERE id = ?')
+      .bind(user.id)
+      .first();
+    const ok = row && sameSecret(await derivePassword(current, row.pw_salt, row.pw_iter), row.pw_hash);
+    if (!ok) {
+      await noteFail(env, hash);
+      return json({ error: 'current' }, 401);
+    }
+
+    const now = Date.now();
+    try {
+      await env.DB.batch([
+        env.DB.prepare('UPDATE users SET username = ? WHERE id = ?').bind(next, user.id),
+        /* OR REPLACE, because the key is the account: what is held is the
+           name you were last known by and never a chain of them. */
+        env.DB
+          .prepare('INSERT OR REPLACE INTO username_holds (user_id, username, released_at) VALUES (?, ?, ?)')
+          .bind(user.id, user.username, now),
+        /* Swept on the way past, the way login_fails is: a hold nobody can
+           still act on is a record of what somebody used to be called, kept
+           for nothing. */
+        env.DB
+          .prepare('DELETE FROM username_holds WHERE released_at < ?')
+          .bind(now - HOLD_DAYS * 86400000)
+      ]);
+    } catch (e) {
+      /* Two people taking the same free name in the same second. The unique
+         index on users.username is what actually decides it, and the loser
+         is told the same thing the check above would have told them. */
+      return json({ error: 'taken' }, 409);
+    }
+
+    return json({ changed: true, user: next }, 200);
+  }
+
   if (action !== 'create' && action !== 'login') return json({ error: 'action' }, 400);
 
   const username = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
@@ -308,6 +429,9 @@ export async function onRequestPost(context) {
   let userId;
 
   if (action === 'create') {
+    /* No account asking, so every hold counts: a name somebody walked away
+       from last week is not a name a stranger may sign up as, or every link
+       to that person would now point at whoever got there first. */
     if (await nameTaken(env, username)) return json({ error: 'taken' }, 409);
 
     userId = crypto.randomUUID();

@@ -1833,6 +1833,77 @@ account's, and re-derived at the *current* `PW_ITERATIONS` with a fresh salt —
 so changing a password on an old account is also the one moment its hash
 catches up with the setting, the same way a sign-in does.
 
+### Changing the username
+
+**The name is chosen, and it can be chosen again.** The section above is why
+the sign-up sheet asks rather than handing one out; this is the other half of
+the same argument. The asking happens at the worst possible moment — somebody
+is three seconds into wanting to save a bakery and has never seen a list, let
+alone a byline on one — so whatever they type is a first guess, and a site
+that lets nobody past a first guess about their own name is a site that
+handed them one after all.
+
+It is on **/account.html**, along the foot of the card that carries your name
+and first among the three words there: **Change username**, which opens the
+map's sheet on that step and comes back here afterwards. It is on the map for
+the same reason the password step is — it asks for a password, and there is
+one form on this site that does. The step draws the same field as the sign-up
+sheet, with the same `maxlength` and the same hint under it, because it is the
+same decision being made with more to go on.
+
+**Nothing moves but the name.** The saves, the lists, the keeps, the places
+somebody added and every splitwise group they are in are filed under
+`users.id`, and no page or table anywhere carries a second copy of the
+username: every byline on the site is a join against `users` at the moment it
+is drawn. So a rename is one `UPDATE` and everybody reading a list of yours
+sees the new name on their next load. `list_items` copies the *place* name
+onto the row and that is a different problem — see the comment above it in
+`db/schema.sql`.
+
+**It asks for the password in use**, the way a password change does. The
+username is what you sign in with, so changing it changes a credential, and a
+sheet left open on a shared laptop must not be a way to take somebody's
+sign-in off them or to republish their lists under a name they would not have
+chosen. A wrong one is counted against the same fingerprint that slows
+guessing down everywhere else.
+
+**It does not sign anything out.** A password is changed because somebody else
+may have it, so every other session goes with it; a name is changed because a
+better one came along, and the account and the secret behind it are exactly
+what they were. Being thrown off your own phone for tidying up your name would
+be a punishment for nothing.
+
+**What it costs is the old address.** `/u/<the old name>` stops answering the
+moment it lands, and so does every link, screenshot and message pointing at
+it. The sheet says so before the button, because that is the half nobody
+thinks of.
+
+#### The old name is held for thirty days
+
+A name put straight back in the pool is every link to the person who left it
+handed to whoever signs up next — and that person can then be them, in the
+one place the site says who somebody is. So a rename writes the old name to
+`username_holds` with the time it was released, and for thirty days after
+that neither a sign-up nor anybody else's rename may take it. What is behind
+those links is nothing rather than a stranger.
+
+Whoever released it may take it back, which is how a rename regretted the same
+afternoon is undone: rename back, and the hold is your own so it does not
+stand in your way.
+
+**One row per account, replaced each time**, and that is the whole of the
+design. A history would let somebody rename their way down a list of names
+they liked the look of and hold every one for a month, which is squatting with
+extra steps. One row means a rename releases exactly as many names as it
+holds, the table can never grow past `users`, and there is no rate limit to
+write: rows outside the window are swept on the way past, the way
+`login_fails` is.
+
+Thirty days is a guess, and it is `HOLD_DAYS` at the top of
+`functions/api/account.js`. Long enough for a rename to be regretted and
+undone, short enough that a name somebody has genuinely finished with comes
+back to the pool.
+
 ### How it is kept safe
 
 - **Passwords** are PBKDF2-HMAC-SHA256 through WebCrypto — there is no bcrypt
@@ -1880,6 +1951,8 @@ catches up with the setting, the same way a sign-in does.
   endpoint cannot be used to find out which usernames exist.
 - **A password change drops every session** on that account, not just the
   current one — see **Changing the password** above.
+- **Changing a username needs the password too**, because the username is
+  half of what signs you in — see **Changing the username** above.
 
 ### Turning it on
 
@@ -1912,7 +1985,8 @@ that names them:
 ```
 etibar                          the name, one line saying what the page is,
   Your public profile >         the door to how it looks to everybody else,
-  Change password · Sign out    and the two things you can do to the account
+  Change username ·             and the three things you can do to the
+  Change password · Sign out    account
 Places I saved        8 places  a fold: one row a place, newest first
   See them on the map           outside it, so a long fold cannot bury it
 Your lists             3 lists  a fold: one row a list
@@ -1957,16 +2031,20 @@ to a page every visitor already has a link to: your name, in the header of
 every page, is the account. A door that duplicates the header is a line on
 the one card that is meant to read the same to everybody, so it went.
 
-The password and the way out are on the same card, along its foot, as the
-quiet pair under the row. They have been everywhere else. Under the name as a
+The name, the password and the way out are on the same card, along its foot,
+as the quiet words under the row. They have been everywhere else. Under the name as a
 menu of three, which made the page read as a settings screen with your saves
 filed underneath. In a card of their own at the end, headed **Your account**,
 a second heading about the account under a page that had opened with one. As
 a bare row after the last card, which looked lost — two words standing in the
 wash under somebody else's lists. The card that says who you are is the one
-those two belong to, and a door is a row while a thing you do is a word,
-which is what tells the profile from the password at a glance. One row and
-two words under the name are not the menu that made it a settings screen.
+they belong to, and a door is a row while a thing you do is a word, which is
+what tells the profile from the password at a glance. One row and three words
+under the name are not the menu that made it a settings screen: that was
+three *rows*, each the width of the card, standing between somebody's name
+and their things. **Change username** came last and stands first, because a
+name is reached for far oftener than a password and the way out belongs at
+the end.
 
 ### There is one page about you, and this is it
 
@@ -2097,17 +2175,19 @@ stranger reads it — and the two beside it are things to do.
 ### What is left on the map
 
 The sheet, and only what a sheet is good at: **signing in**, **creating an
-account**, and the **password** step. All three are a thing you do and dismiss
-with the map still behind you, which is the test. The button on the rail is
+account**, the **password** step and the **username** step. All four are a
+thing you do and dismiss with the map still behind you, which is the test. The button on the rail is
 what tells the two apart — signed out it opens the sheet, signed in it leaves
 for this page — and `?account=me`, the old link to the menu, redirects here.
 
-There is still exactly one password form on this site and it is still the map's.
-This page links into it with `?then=/account.html`, the same road `/lists.html`
-took to the sign-in form for as long as it had an index, and for the same
-reason: a second copy of a password form is a copy that quietly stops matching
-the API. The step comes back here when it is done, because here is where it was
-pressed.
+There is still exactly one password form on this site and it is still the map's
+— and the username step is on the map because it is one of them: renaming an
+account asks for the password in use, for the reason **Changing the username**
+gives. This page links into both with `?then=/account.html`, the same road
+`/lists.html` took to the sign-in form for as long as it had an index, and for
+the same reason: a second copy of a password form is a copy that quietly stops
+matching the API. The step comes back here when it is done, because here is
+where it was pressed.
 
 ### Signed out is a real state on it
 
@@ -3681,6 +3761,20 @@ made.
   name: *Your public profile — how your lists look to everybody else*. See
   **Two pages open with your name** under [The account
   page](#the-account-page).
+
+### The address is a name, and a name can change
+
+`/u/<name>` is the only address on this site made out of something somebody
+can alter: a rename moves a profile to a new address and leaves the old one
+answering 404. That is the honest cost of letting anybody pick a better name,
+and it is said on the sheet that does the renaming rather than discovered from
+a dead link.
+
+What it is not is a way to become somebody else. The name a rename releases is
+held for thirty days before anybody may sign up as it — see **The old name is
+held for thirty days** under [Accounts](#accounts) — so a link to a profile
+somebody has left leads to nothing for a month rather than to a stranger
+standing where they were, and whoever left it can take it back in that time.
 
 ### Indexed, like a public list
 

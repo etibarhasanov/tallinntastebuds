@@ -1866,7 +1866,13 @@
      for, and it is answered by sending them there. */
   var ACCOUNT_PAGE = '/account.html';
 
-  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'password'];
+  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'password', 'username'];
+
+  /* Which of those are a step somebody already signed in is standing in,
+     rather than a way of becoming signed in. A link asking for one of these
+     is answered where it stands; any other view asked for by somebody who
+     already has an account is answered by their account page. */
+  var ACCOUNT_STEPS = ['password', 'username'];
 
   function readAccountLink(params) {
     var view = params.get('account') || '';
@@ -1916,15 +1922,27 @@
     if (!accountAsked || !state.account.ready) return;
     var view = accountAsked;
     accountAsked = '';
-    /* ?account=me is the old name for what is now a page of its own, and the
-       links carrying it are in messages and bookmarks nobody can edit. So it
-       is answered rather than ignored: signed in, by going to the page;
-       signed out, by the sheet that is the way to being signed in. The same
-       goes for a link asking to sign in when somebody already is — the
-       honest answer to that is their account, and their account is a page. */
-    if (view === 'me' || state.account.user) {
-      if (!state.account.user) view = 'in';
-      else if (view !== 'password') { window.location.href = ACCOUNT_PAGE; return; }
+    /* Every link is answered, including the ones that ask for something the
+       person following them cannot have yet.
+
+       Signed out, a step is a step on an account there is no account for —
+       ?account=password, and now ?account=username, are pressed from the
+       account page and land here after a session has quietly run out — so
+       the honest answer is the sign-in that has to come first, and the
+       ?then= carries them back to where they pressed it. Only the sign-up
+       sheet is left alone: somebody with no account is exactly who it is
+       for.
+
+       Signed in, the sheet has nothing to say about signing in, and
+       ?account=me is the old name for what is now a page of its own, its
+       links sitting in messages and bookmarks nobody can edit. All three are
+       answered by the account page. The steps are the exception, because a
+       step is what somebody signed in is standing in. */
+    if (!state.account.user) {
+      if (view !== 'up') view = 'in';
+    } else if (ACCOUNT_STEPS.indexOf(view) === -1) {
+      window.location.href = ACCOUNT_PAGE;
+      return;
     }
     openAccount(view);
   }
@@ -1941,17 +1959,17 @@
   }
 
   /* ------------------------------------------------------------- the sheet
-   * One card, and a view inside it: signed in, signing in, creating, changing
-   * the password. Which one is showing is a variable rather than four hidden
-   * blocks, so there is exactly one place that decides and nothing can be
-   * left over from the state before.
+   * One card, and a view inside it: signing in, creating, changing the
+   * password, changing the username. Which one is showing is a variable
+   * rather than four hidden blocks, so there is exactly one place that
+   * decides and nothing can be left over from the state before.
    *
    * Everything that is not "here is who you are" is a step of its own with a
    * way back to the account, rather than another field stacked on the sheet
    * you started on: one surface asks one thing.
    */
   var accountView = 'in';
-  /* 'in' | 'up' | 'me' | 'password' */
+  /* 'in' | 'up' | 'me' | 'password' | 'username' */
   var accountBusy = false;
   var accountNote = '';
   var accountErr = '';
@@ -2305,6 +2323,7 @@
     'slow-down': 'accountErrSlow',
     current: 'accountErrCurrent',
     same: 'accountErrSame',
+    'same-name': 'accountErrSameName',
     'signed-out': 'accountErrSignedOut'
   };
 
@@ -2340,6 +2359,7 @@
     form.appendChild(el('p', { className: 'eyebrow ac-eyebrow', textContent: t('accountOpen') }));
 
     if (accountView === 'password') return renderAccountPassword(form);
+    if (accountView === 'username') return renderAccountUsername(form);
     return renderAccountAuth(form);
   }
 
@@ -2533,6 +2553,70 @@
              load and cannot carry a note across. */
           closeAccount();
           toast(t('accountChangeDone'));
+          returnAfterAccount();
+        }).catch(function () { accountFail({}); });
+    });
+    form.appendChild(go);
+  }
+
+  /* ------------------------------------------------ changing a username
+   * The sign-up sheet asks for a name before somebody has seen a single
+   * list, and a name chosen in that moment is a name chosen in a hurry. This
+   * is where it gets chosen properly. It is a step on this sheet and not a
+   * form on the account page for the reason the password step is one — there
+   * is one place on this site that asks for a password, and this asks for a
+   * password.
+   *
+   * The new name and the password in use, which is what the server wants:
+   * the username is what somebody signs in with, so changing it is changing
+   * a credential and a sheet left open on a shared laptop must not be a way
+   * to do that. The warning is the part worth reading and the part the
+   * server cannot say afterwards — a link to the old profile stops working
+   * the moment this lands.
+   */
+  function renderAccountUsername(form) {
+    form.appendChild(accountBack());
+    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountName') }));
+    /* Who they are today, so the field below can be empty and still be
+       obvious: a box prefilled with the name somebody came here to be rid of
+       is a box asking to be cleared first. */
+    form.appendChild(el('p', {
+      className: 'ac-why',
+      textContent: t('accountNameWhy', { name: state.account.user || '' })
+    }));
+    accountMessages(form);
+
+    /* Same field, same limit and the same hint as the sign-up sheet's: it is
+       the same decision, and the rule belongs with the question rather than
+       in the refusal after the button — see accountField(). The autocomplete
+       is what has a browser's password manager file the new name against the
+       account rather than leaving it holding the old one. */
+    form.appendChild(accountField('ac-user', 'accountNewUsername', 'text', {
+      autocomplete: 'username',
+      maxlength: '24',
+      hint: t('accountUsernameHint')
+    }));
+    form.appendChild(accountField('ac-current', 'accountCurrentPassword', 'password', {
+      autocomplete: 'current-password'
+    }));
+    form.appendChild(accountWarn(t('accountNameCosts')));
+
+    var go = accountSubmit('accountNameGo');
+    go.addEventListener('click', function () {
+      if (accountBusy) return;
+      var v = accountValues();
+      accountBusy = true; accountErr = ''; renderAccount();
+      accountPost({ action: 'username-change', username: v.username, current: v.current })
+        .then(function (a) {
+          accountBusy = false;
+          if (!a.ok) return accountFail(a.out);
+          /* The rail button and the header both draw the name, and where
+             there is nowhere to go back to this sheet closes onto the map
+             with them still saying the old one. */
+          state.account.user = a.out.user;
+          paintAccountButton();
+          closeAccount();
+          toast(t('accountNameDone', { name: a.out.user }));
           returnAfterAccount();
         }).catch(function () { accountFail({}); });
     });

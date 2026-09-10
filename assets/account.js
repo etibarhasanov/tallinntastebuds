@@ -807,11 +807,17 @@
      under the very column it is the outside view of. Then it was in a card
      at the foot of the page with the password and the way out.
 
-     Those two are along this card's foot now, as the quiet pair under the
-     row: a door is a row and a thing you do is a word, which is what tells
-     the profile from the password at a glance. One row and two words under
-     the name are not the menu of three controls that once stood here and
-     made the page read as settings — see the header. */
+     The things you can do to the account are along this card's foot, as the
+     quiet words under the row: a door is a row and a thing you do is a word,
+     which is what tells the profile from the password at a glance. There are
+     three of them since a name became something you can change, and they
+     are still not the menu that once stood here and made the page read as
+     settings — that was three *rows*, each the width of the card, standing
+     between somebody's name and their things. See the header.
+
+     The two that change the account come first and in the order they are
+     reached for — the name far oftener than the password — and the way out
+     is last, where a way out belongs. */
   function youCard() {
     return card([
       el('p', { className: 'eyebrow', textContent: t('accountOpen') }),
@@ -822,8 +828,10 @@
       ]),
       foot([
         /* Into the map's sheet and back again. The ?then= is what makes the
-           password step land here rather than on the map, which is not where
-           it was pressed. */
+           step land here rather than on the map, which is not where it was
+           pressed. Both steps ask for the password in use, and there is one
+           place on this site that asks for a password. */
+        link('accountName', SHEET + 'username' + BACK),
         link('accountChange', SHEET + 'password' + BACK),
         signOut()
       ])
