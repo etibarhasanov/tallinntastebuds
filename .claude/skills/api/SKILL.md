@@ -129,8 +129,10 @@ database in this repository; D1 Time Travel's 30 days is the only recovery.
 
 **Caps live in two places** and the server is the one that binds. `MAX_TITLE
 60`, `MAX_INTRO 200`, `MAX_SAY 280`, `MAX_ITEMS 20` in `lists.js` are restated
-in `assets/lists.js`, and `MAX_TITLE` a third time in `assets/account.js`,
-which carries the box that names a new list; `MAX_NAME 80` and
+in `assets/lists.js`, `MAX_TITLE` a third time in `assets/account.js`, which
+carries the box that names a new list, and `MAX_TITLE` and `MAX_INTRO` a
+fourth and third time in `tools/toptens.mjs`, which writes lists into the
+table without passing this route at all; `MAX_NAME 80` and
 `MAX_ADDRESS 120` as literal `maxlength: '80'` and `'120'` in the add-a-place
 form in `assets/lists.js`; the username's 3–24 in `account.js` as a
 `maxlength: '24'` in `app.js`. `grep -n maxlength assets/*.js` finds every

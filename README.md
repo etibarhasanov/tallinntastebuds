@@ -9,10 +9,11 @@ Being on the map is the verdict.
 
 A number does appear on Google's places — the ones off the Places export that
 are not on my map — and every time it does it says whose it is: "According to
-Google 4.8 from 3,041 reviews". The one page where those numbers can be sorted
-by is `/google`, which is Google's directory of the city rather than mine,
-which nothing links to. See **On "no scores, stars or rankings"** and **The
-directory**.
+Google 4.8 from 3,041 reviews". Two things sort by those numbers and neither
+of them is mine: `/google`, which is Google's directory of the city rather than
+mine and which nothing links to, and five lists published by an account called
+`google`, which say whose numbers they are in their own first line. See **On
+"no scores, stars or rankings"**, **The directory** and **The five top tens**.
 
 Static files, one small Function, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
@@ -55,6 +56,7 @@ completely with the database switched off.
 - [Lists](#lists)
 - [Public lists](#public-lists)
 - [Profiles](#profiles)
+- [The five top tens](#the-five-top-tens)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -1413,8 +1415,8 @@ that would be a ranking, and the line above is not a slogan.
 
 A list carries a count of its own — how many people kept it — and **one page
 does sort by it**: `/lists/public`, every public list with the most kept first.
-That is a ranking, it is the only one on this site, and it was decided rather
-than inherited. The reasoning is under **Public lists**; the short of it
+That is a ranking, it is the only one this site draws on a number of its own,
+and it was decided rather than inherited. The reasoning is under **Public lists**; the short of it
 is that ranking lists is a different claim from ranking kitchens, because a
 list is a thing somebody made and "the ones most people kept" says nothing
 about any restaurant on them.
@@ -1458,6 +1460,22 @@ is drawn, and sorting a mirror by the number written on it is a way of reading
 Google's opinion rather than a way of stating one. Refusing to sort it would
 not be principled either; it would just make Google's directory harder to use
 without making it any less Google's.
+
+**The five top tens are that same argument carried off that page**, and they
+had one more thing to answer: a list is published under a name, so whose. They
+go out under an account called `google-statistics` — not mine, and named so it
+cannot be read as Google's own — with an intro that says whose numbers put the
+ten in that order before it says anything else. Same floor and same weighting
+the directory uses, so a place stands where `/google` already stands it. The
+nine rows that are also on my map are where the rule actually bites: those
+carry the map's own id rather than Google's key, so they draw as places of
+mine, with a write-up and no score on them. See **The five top tens**.
+
+Opening one on the map — `/?list=<id>`, which any list can do — draws its ten
+pins the same size as every other pin, and the panel beside them is the list in
+its order. That is the closest any of this comes to the line, and it stays the
+right side of it for the reason the directory does: the order is Google's, it
+says so, and the page it is on is somebody's list rather than my map.
 
 So the line is not "no number is ever ordered by". It is this: **nothing on the
 map may ever be ordered by a score, and no place of mine may ever carry one.**
@@ -2301,6 +2319,13 @@ difference is ninety kilobytes of numbers no row on that page prints.
 And `/google`, which is the whole table rather than the part either of
 those needs: all 1,110 rows in one answer, so a filter can run over them. See
 **The directory**.
+
+And five lists that were built from the export rather than from the table —
+`tools/toptens.mjs` reads `exports/tallinn_restaurants.csv` directly, because a
+generator that had to reach a database to run would need a token nothing else
+here needs. What lands in D1 is `list_items` rows holding these `place_id`s, so
+they are read back through `venuesByIds()` like any other list row. See **The
+five top tens**.
 
 ---
 
@@ -3443,9 +3468,14 @@ the drag and the save — is appended rather than left to collide.
 Most of them are about somebody with a script rather than somebody with
 opinions. They are in `functions/api/lists.js`, and the pages restate the
 lengths so a field stops you at the keystroke rather than at the round trip.
-The title's 60 is restated twice, because a list is named in two places now:
-`assets/lists.js` where it is renamed, and `assets/account.js` where it is
-first given a name. Change one, change all three.
+The title's 60 is restated three times, because a list is named in three
+places now: `assets/lists.js` where it is renamed, `assets/account.js` where it
+is first given a name, and `tools/toptens.mjs`, which writes five lists
+straight into the table without going past the route that would have bound
+them — see **The five top tens**. That last one asserts rather than truncates,
+because a generated title over the cap is a title to rewrite. The line's 200 is
+restated there too. `grep -rn 'MAX_TITLE' functions assets tools` finds all
+four; change one, change them all.
 
 The last one is the only floor among them, and it is in
 `functions/api/_mostkept.js` beside the page it governs, restated from the
@@ -3646,6 +3676,266 @@ the Function did not get to seed.
 
 Nothing to do. There is no new table and no new column — a profile is a query
 over `users`, `lists` and `list_keeps`, all of which **Lists** already needs.
+
+---
+
+## The five top tens
+
+Five public lists, ten places each, built out of the Google Places export and
+published by an account called `google-statistics`:
+
+```
+/list/ten-highest-rated-bars-kw37r7             90 bars over the floor
+/list/ten-highest-rated-burger-places-tbjbjk    46 burger places
+/list/ten-highest-rated-kebab-shops-ytt6qf      35 kebab and shawarma shops
+/list/ten-highest-rated-coffee-places-x3tkvk   129 coffee places
+/list/ten-highest-rated-wine-bars-qfcpcf        11 wine bars
+```
+
+They are ordinary lists. Same `lists` and `list_items` tables, same
+`/list/<id>` page, same bookmark, same byline, and they sit on
+`/lists/public` with everybody else's — see **Lists**. Nothing in
+`functions/` knows they exist.
+
+```
+tools/toptens.mjs   turns the export into SQL
+db/top-tens.sql     GENERATED — what actually loads them
+```
+
+### Whose lists these are
+
+Not mine, and the username is the load-bearing part of that sentence.
+
+The top of this file promises there are no scores or rankings on my places,
+and **On "no scores, stars or rankings"** is the argument for why `/google`
+may sort by Google's numbers anyway: a ranking is a claim by whoever publishes
+it, and a mirror of somebody else's opinion publishes no claim. A list cannot
+lean on that quite as it stands, because a list *is* published under a name and
+carries a byline to a profile. So it carries one that says whose opinion it
+is. `/u/google-statistics` has these five on it and nothing else.
+
+It is `google-statistics` and not `google`, and the eleven extra characters
+are the point. A profile at `/u/google` publishing *Ten highest-rated bars*
+reads as Google having published it, and a site this careful about attribution
+everywhere else cannot be careless in the one place a name is the attribution.
+These are statistics out of Google's data, gathered by somebody who is not
+Google.
+
+A username is not an attribution, though — somebody arriving on a shared link
+reads the title first — so each list's own intro says it in words:
+
+> Google's numbers, not mine: the ten it rates highest of the 129 coffee
+> places in its Tallinn export carrying fifty reviews or more, each rating
+> weighted by how many people left one.
+
+The pool count in that sentence is computed rather than typed, so a refreshed
+export moves it without anybody remembering to.
+
+### What decides the ten
+
+A floor, and then an order, and they do different jobs.
+
+**The floor is fifty reviews**, plus Google still calling the place open. It is
+what keeps "5.0 from eleven reviews" out of a top ten altogether rather than
+merely low in one, and it is well under the export's median of 237, so it
+drops the thin rows and not most of the roll.
+
+**The order is the weighting `/google` already uses** — the Bayesian average in
+`weigh()` in `assets/venues.js`, `PRIOR` at 100, the mean taken over all 1,110
+rows rather than over the handful one list draws from. That last detail is what
+makes a place stand here where the directory already stands it: a bar weighed
+against other bars would be scored against a mean of the bars, and the two
+pages would then disagree about the same bar.
+
+Both, because neither alone is enough. Sorted on Google's rating with the floor
+and nothing else, the coffee list opens on Kohvik Mäeke — 5.0 from fifty-seven
+— which the weighting leaves out of the ten entirely; ten of that pool are a
+4.9 or better on under three hundred reviews, so the raw number cannot separate
+them and the tie-break on the count never gets a say. Weighted with no floor, a
+thin row gets in at the bottom instead.
+
+### What a place is, never what it also has
+
+This is the correction that matters most, and it is one line of difference in
+the code.
+
+`kitchensOf()` in `functions/api/venues.js` reads three columns — Google's
+`category`, its `cuisine`, and the tag list — and the directory is right to
+read all three: it has to file eleven hundred places somewhere and say two
+words about each. A top ten is a different question, because **the tags are
+everything a place also happens to have.** Trusting them put a café in the ten
+best bars (Kiosk NO 1, typed *Cafe*, tagged *Wine Bar*), a kebab shop in the
+ten best burgers (Ala Turca, tagged *Hamburger Restaurant*), and a wine bar in
+the ten best coffee places (Veino, typed *Wine Bar*, tagged *Cafeteria*).
+
+So the kitchens are asked of the category and the cuisine only, by handing
+`kitchensOf()` the row with its tags emptied. The table is still that one
+table, imported rather than restated, and not a pattern of it is copied here.
+
+Two lists carry an extra test, and both are asked of those same two columns
+plus **the place's own name**:
+
+| list | and | never |
+|---|---|---|
+| bars | — | `hookah`, because a shisha lounge is not a night out at a bar, whatever Google files it under |
+| kebab shops | `kebab`, `shawarma`, `shaurma`, `döner` | — |
+| wine bars | `wine`, `vein`, `vinoteek` | — |
+
+**The kebab list needs the name and would be wrong without it.** Google types
+almost every shawarma counter in this city as *Turkish Restaurant* or *Fast
+Food Restaurant* and stops: seven of the ten this draws have no kebab word
+anywhere in Google's three columns. The word is in what the shop calls itself
+— Shaurma Kebab Õismäe, Nõmme Kebab, Brööder Kebab — so that is where this
+looks. Asking for the `middle-eastern` and `turkish` kitchens instead, which is
+what it did first, put a Middle Eastern restaurant and a Turkish restaurant in
+a list of kebab shops.
+
+**The wine list needs both halves.** The kitchen keeps it to places that are a
+bar — without it every bakery and sushi counter Google hangs a *Wine Bar* tag
+on arrives — and the word keeps it to the wine ones. Toro veinikohvik is why
+the word is looked for in the name too: Google says only "Bar" about it, twice,
+and the wine is in what it calls itself.
+
+Places do fall on two of these lists, and the wine bars are the honest case:
+every one of them is a bar, so the best of them are on both. A wine bar is a
+bar.
+
+### One row per business
+
+Fifteen names in the export belong to more than one row, because a chain has
+more than one door — and a top ten showing Brööder Kebab eighth and Brööder
+Kebab tenth reads as a bug in the list rather than as two shops. `one_each()`
+keeps the best-placed branch of an identical name and drops the rest, after the
+sort rather than before, so the one that survives is the one that ranked
+highest.
+
+Branches a chain names apart are left alone, which is right: Shaurma Kebab
+Õismäe and Shaurma Kebab Punane are different addresses with different scores,
+and a reader can tell which is which.
+
+### The nine rows that are on my map
+
+The export overlaps `data/restaurants.json` in sixty places, and eight of those
+sixty come out in a top ten — Koht, Vabrik, Burger Box, Shaurma Kebab Linnamäe,
+Morii Tea House, Bekker Pagariäri, Kringel and Paper Mill Coffee. Vabrik is on
+two of the lists, so that is nine rows.
+
+A list row holding Google's key for one of them would render as a Google row:
+the name, a link to the write-up, and "According to Google 4.6 from 960
+reviews" printed under a place of mine. That is the one sentence the rule
+actually forbids. So those rows hold **the map's own slug** instead, and draw
+the way every other place of mine draws — a write-up, no number.
+
+They keep their position. Leaving a place out of a list of the ten Google rates
+highest because I happen to have eaten there would make the list false about
+the one thing it claims; not printing the number on my own row costs nothing
+but the number.
+
+### Nothing is written in the `say` column
+
+Every one of the fifty rows has an empty note, and the generator will never
+write one. A note is the point of a list — a line each is somebody telling you
+where to go — and there is nobody here to tell you: these are places off
+somebody else's directory. A generated sentence about a restaurant nobody has
+eaten at would be the site inventing an opinion in the one place it has been
+careful not to.
+
+They can still have them. `google-statistics` is a real account: sign in as it,
+open a list, and type under any row. A re-run of the generator **never touches
+`say`** — the same exception `map_id` is in `db/google-venues.sql`, and for the
+same reason. Curation a sync can erase is curation you will do twice.
+
+### Loading it
+
+The account has to exist first, and it is made the way anybody makes one — the
+sign-up form on `/account.html`, username `google-statistics`, a password kept
+wherever the rest of this site's passwords are. Once per database, because the
+two share nothing.
+
+Then:
+
+```
+node tools/toptens.mjs --print
+```
+
+which rewrites `db/top-tens.sql` and prints the five lists to read. The file
+goes into each database through the D1 console, preview first and then
+production, exactly as `db/google-venues.sql` does — or, from a terminal with
+wrangler signed in:
+
+```
+wrangler d1 execute tallinntastebuds-preview --remote --file=db/top-tens.sql
+wrangler d1 execute tallinntastebuds         --remote --file=db/top-tens.sql
+```
+
+Every statement reaches its owner as `(SELECT id FROM users WHERE username =
+'google-statistics')` rather than carrying an id, for two reasons. `users.id`
+is a UUID minted at sign-up, so preview and production have different ones for
+the same person and a file with either baked in would be wrong on one of them.
+And seeding a `users` row from SQL would have meant committing that account's
+password hash and salt, which is the one thing that must not be in this
+repository. If the account is missing, `owner` comes out NULL against a NOT
+NULL column and the load stops on the first statement having written nothing —
+loud, at the top, before any list exists.
+
+The file carries no comments, for the reason `db/google-venues.sql` carries
+none: the console folds a paste onto one line and a `--` comment then runs to
+the end of it, taking every statement after it. What the statements are is in
+`tools/toptens.mjs`, where a reader is.
+
+### The export builds it, and `/api/venues` is what checks it
+
+There are two places these ten could be read from and they are not the same
+thing.
+
+`exports/tallinn_restaurants.csv` is the export: a file, in this repository,
+that answers the same way on any machine with no network and no account.
+`/api/venues` is the mirror of it in D1 — what the directory actually draws —
+and it answers with two things the export cannot, because it filters on
+`hidden = 0 AND missing_since IS NULL`. Those are columns of mine that a
+refresh never touches: a duplicate, a car park Google files as a restaurant, a
+row the last sync stopped carrying.
+
+**The file is built from the export**, because `--check` runs in CI and a
+generated file whose contents depend on a live site is a build that fails when
+somebody else's deployment is slow.
+
+**The endpoint answers the question the export cannot ask about itself:**
+
+```
+node tools/toptens.mjs --from https://tallinntastebuds.ee/api/venues
+```
+
+*Is anything these lists name no longer something the site will show?* A place
+struck off by hand or dropped by the last sync is simply not in that answer,
+and a list row pointing at one still renders — quietly, out of the row's own
+stored name — which is exactly the kind of wrong nobody notices. Nothing is
+hidden or missing today, so it passes.
+
+It does not recompute the ten, and cannot: that route sends `kitchens` already
+worked out and leaves the category and the cuisine behind, and every rule above
+is asked of those two columns and the name. Putting them into that answer would
+cost every reader of the directory bytes in order to serve a generator, which
+is the wrong way round. It never writes the file either — a flag that both
+checks and rewrites makes the answer depend on whether there was a network.
+
+The rows holding a map slug are skipped by it: those are places of mine out of
+`data/places.json`, which that endpoint knows nothing about and the validator
+already holds to the catalogue.
+
+### Re-running it is safe
+
+Every list and every row is an upsert. A refreshed export moves the ten: new
+places are inserted, the ones still there have their name and position updated,
+the ones that fell out are deleted from that list by a statement naming the ten
+that replaced them — so what it removes can be read off the file. `say` and
+`created_at` are never written by an update, and neither is a keep: somebody
+who bookmarked one of these lists still has it after a refresh reorders it.
+
+`tools/validate.mjs` runs the same `--check` it runs on the venues file, so CI
+refuses a deploy where the export moved and these lists did not. That is the
+staleness that matters here — not a file that fails to load, but a list still
+naming a place the export has since closed, or missing one that overtook it.
 
 ---
 
@@ -4400,6 +4690,10 @@ to read and write first.
 - a `db/google-venues.sql` that is not what `tools/googlevenues.mjs` would
   write from `exports/tallinn_restaurants.csv` (run the tool and commit the
   result)
+- a `db/top-tens.sql` that is not what `tools/toptens.mjs` would write from
+  that same export (run the tool and commit the result) — which is how a top
+  ten still naming a place the export has since closed gets noticed, and see
+  **The five top tens**
 - a `?v=` cache stamp in the HTML that no longer matches the file it points at
   (run `node tools/stamp.mjs` and commit the result)
 - a `data/places.json` that is not what `tools/places.mjs` would write from the
@@ -4507,6 +4801,8 @@ exports/clean_restaurants_csv.py   the cleaning, from the upstream export
 exports/REVIEW.md          the shortlisting worksheet those rows are read
 exports/build_review_sheet.py      through, and the script that builds it
 db/google-venues.sql       GENERATED — loads that export into D1
+db/top-tens.sql            GENERATED — the five lists that export makes,
+                           published as `google-statistics`
 data/taxonomy.json         the controlled vocabulary of types
 data/cuisines.json         the 37 cuisines only the directory needs, in ten
                            languages — taxonomy.json holds the other six
@@ -4524,6 +4820,7 @@ stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
 tools/places.mjs           builds data/places.json from the CSV and the map
 tools/googlevenues.mjs     turns the Google Places export into db/google-venues.sql
+tools/toptens.mjs          turns it into the five top tens as db/top-tens.sql
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick

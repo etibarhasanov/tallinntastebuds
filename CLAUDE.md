@@ -72,7 +72,7 @@ command does the same by hand, and is the way to be sure.
 | Switch a discount on or off, or change what it offers | `/discount` |
 | Change what a page does or looks like — anything in `assets/`, an HTML file, `data/ui.json`, a language | `/site` |
 | Change a Function, the schema, `wrangler.toml`, the chat's model or prompt, or anything that reads or writes D1 | `/api` |
-| Refresh the Google Places export | `/google-venues` |
+| Refresh the Google Places export, or the five top tens off it | `/google-venues` |
 
 Each skill is written from the code, not from memory: which files a change
 touches, in what order, the exact commands and flags, every check the
@@ -157,7 +157,7 @@ Do it again if a review runs long enough for the branch to fall behind again,
 and re-run everything below afterwards each time: replaying your commits over
 somebody else's `assets/` change is exactly what makes the stamps stale.
 
-Three files in this repo are **generated**. Editing their source without
+Four files in this repo are **generated**. Editing their source without
 re-running the generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
@@ -165,6 +165,12 @@ re-running the generator is the single most common way to fail CI:
 | anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in the seven pages named in `PAGES` at the top of the tool |
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlevenues.mjs` | `db/google-venues.sql` |
+| the same export | `node tools/toptens.mjs` | `db/top-tens.sql` — the five top tens |
+
+The export feeds two of those, and the second is the one that gets forgotten:
+`db/top-tens.sql` is the five lists published as `google-statistics`, and a
+refresh moves
+which ten places are on them. `/google-venues` is the skill for both.
 
 (The catalogue is the map plus an optional `data/places.csv` import. That CSV
 is not in the repo — without one, `places.mjs` builds the catalogue from

@@ -1,6 +1,6 @@
 ---
 name: google-venues
-description: Refresh the Google Places export: a new exports/tallinn_restaurants.csv, the generated db/google-venues.sql, and loading it into both databases.
+description: Refresh the Google Places export: a new exports/tallinn_restaurants.csv, the generated db/google-venues.sql and db/top-tens.sql, and loading them into both databases.
 ---
 
 # Refresh the Google Places export
@@ -12,13 +12,22 @@ refresh — the first pull found 750 restaurants, the second sweep, over
 seventeen Google types, found the rest — so read it off the first line of
 `db/google-venues.sql` rather than off this page. It is somebody else's data
 about the city, kept apart from mine about the food, and the whole design of
-the refresh is that running it again is safe. The pipeline is three files:
+the refresh is that running it again is safe. The pipeline is five files:
 
 ```
 exports/tallinn_restaurants.csv   the cleaned export, 18 columns, one line per row
 tools/googlevenues.mjs            turns it into SQL
 db/google-venues.sql              GENERATED — what actually loads them
+tools/toptens.mjs                 turns the same export into five lists
+db/top-tens.sql                   GENERATED — what loads those
 ```
+
+**Two files hang off this export, not one.** `db/top-tens.sql` is the four
+top tens published as `google-statistics` — README's **The five top tens** —
+and a
+refresh moves them: a place that gained reviews overtakes one that did not, a
+place Google now calls closed drops out. The validator checks both for
+staleness, so forgetting the second one fails CI rather than going quiet.
 
 ## Read first
 
@@ -27,7 +36,7 @@ db/google-venues.sql              GENERATED — what actually loads them
   where the upstream sweep lives. `exports/REVIEW.md` is the shortlisting
   worksheet built from the same file by `build_review_sheet.py`; it is for
   deciding which places join the map, and nothing reads it.
-- The header of `tools/googlevenues.mjs`.
+- The header of `tools/googlevenues.mjs`, and of `tools/toptens.mjs`.
 
 ## The CSV
 
@@ -55,12 +64,26 @@ else runs.
 ## The steps
 
 1. **Replace `exports/tallinn_restaurants.csv`** with the cleaned export.
-2. `node tools/googlevenues.mjs`. It writes `db/google-venues.sql`: a
-   comment line with the count, one `UPDATE … SET missing_since = now WHERE
-   missing_since IS NULL`, then upserts fifty rows to a statement, then one
-   `UPDATE … SET map_id = … WHERE place_id = … AND map_id IS NULL` per row
-   matched to the map. The count is in the diff.
-3. `node tools/validate.mjs`. Beyond the SQL being what the tool would write,
+2. `node tools/googlevenues.mjs`. It writes `db/google-venues.sql`, and the
+   file carries **no comments at all** — the D1 console folds a paste onto one
+   line and a `--` would swallow every statement after it. It is upserts,
+   fifty rows to a statement; then one `UPDATE … SET missing_since = now …
+   WHERE place_id NOT IN (…)`, naming every key it has just written, at the
+   end rather than the beginning, so a file that stops halfway has never
+   flagged a row it did not name; then one `UPDATE … SET map_id = … WHERE
+   place_id = … AND map_id IS NULL` per row matched to the map. The count is
+   in the diff.
+3. `node tools/toptens.mjs --print`. It rewrites `db/top-tens.sql` and prints
+   the five lists, which is the diff worth reading in words: the ten are what
+   somebody will open. It needs no network and no account — the account is
+   only needed to *load* the file.
+
+   After the load, `node tools/toptens.mjs --from <deployment>/api/venues`
+   says whether the table agrees with the file. It differs only when something
+   is `hidden` or `missing_since` in `google_venues` that the export still
+   carries, and re-running the generator will not reconcile that — see
+   README's **The export builds it, and `/api/venues` is what checks it**.
+4. `node tools/validate.mjs`. Beyond the SQL being what the tool would write,
    it holds the directory's vocabulary to the new export:
    - **every `KITCHENS` pattern in `functions/api/venues.js` must still match
      at least one row.** Seven patterns hang on exactly one venue today —
@@ -72,22 +95,30 @@ else runs.
      the pattern.
    - A malformed CSV surfaces here as "the SQL is stale", because the check
      swallows the parser's error. Run the tool by hand to see the real cause.
-4. **Read the diff of the SQL** before it goes anywhere. Being readable
+     It says this of both generated files, so a stale `db/top-tens.sql` and a
+     broken CSV read the same until a tool is run by hand.
+5. **Read the diff of the SQL** before it goes anywhere. Being readable
    before it runs is the reason it is a file rather than a script holding a
    token.
-5. **Apply it to both databases**, schema first if the table is new:
+6. **Apply it to both databases**, schema first if the table is new:
 
    ```
-   wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
    wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql
+   wrangler d1 execute tallinntastebuds-preview --remote --file=db/top-tens.sql
+   wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
+   wrangler d1 execute tallinntastebuds         --remote --file=db/top-tens.sql
    ```
 
-   Nothing in CI applies it. A preview that cannot see these places shows an
-   empty picker and looks broken for no reason. The mark-missing `UPDATE`
-   carries a `WHERE`, so the D1 denials in `.claude/settings.json` let it
-   through; a half-applied file leaves the rows after the break marked
-   missing until the next complete run.
-6. **The counts.** The total is written in digits ("1,110") and in words
+   Venues first, then the lists: `db/top-tens.sql` names places by
+   `place_id`, and a list row pointing at a venue the table has not got yet
+   renders as its stored name and nothing else until it does.
+
+   Nothing in CI applies either. A preview that cannot see these places shows an
+   empty picker and looks broken for no reason. The mark-missing `UPDATE` and
+   the top tens' `DELETE` both carry a `WHERE`, so the D1 denials in
+   `.claude/settings.json` let them through; a half-applied venues file leaves
+   the rows after the break marked missing until the next complete run.
+7. **The counts.** The total is written in digits ("1,110") and in words
    ("eleven hundred") across the README, `exports/README.md`,
    `exports/REVIEW.md`, `functions/api/ask.js`, `functions/api/venues.js`
    and the comment above the check in `tools/validate.mjs`, along with the
@@ -122,8 +153,12 @@ else runs.
 - **Nothing is ever deleted.** A row that left the export gets
   `missing_since`, because a list may point at it and somebody wrote a
   sentence about it. Every upsert clears the mark again.
-- `rating` and `reviews` are Google's, shown attributed on Google's places
-  and sorted by on `/google` alone. Nothing on the map carries a score.
+- `rating` and `reviews` are Google's, shown attributed on Google's places.
+  Two things order by them and both say whose they are: `/google`, and the
+  five lists published as `google-statistics` — README's **The four top
+  tens**. Nothing
+  on the map carries a score, and the five top-ten rows that *are* on the map
+  hold the map's own slug so they draw without one.
 
 ## The commit
 
@@ -136,23 +171,27 @@ categories renamed, patterns dropped — and that both databases were loaded.
 ## The pull request
 
 1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/googlevenues.mjs`, then `node tools/validate.mjs`, and read
-   the SQL diff before going on.
-3. Load the SQL into **preview** from the branch —
+2. `node tools/googlevenues.mjs`, then `node tools/toptens.mjs --print`, then
+   `node tools/validate.mjs`, and read both SQL diffs before going on.
+3. Load both into **preview** from the branch, venues first —
    `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`
-   — then push the branch, which deploys a preview of it, and open that
-   preview's `/google` and the list picker to see the rows arrive.
+   then the same with `db/top-tens.sql` — then push the branch, which deploys
+   a preview of it, and open that preview's `/google`, the list picker, and
+   the five lists on `/u/google-statistics` to see the rows arrive. Then
+   `node tools/toptens.mjs --from <that preview>/api/venues`, which is the one
+   check that the table and the file agree.
 4. One commit for the export and its SQL; a second for any `KITCHENS`
-   pattern and cuisine label that had to go with it, and a third for the
+   pattern and cuisine label that had to go with it; a third for the top tens
+   if the ten moved, saying which places came and went; and a fourth for the
    counts, if they moved.
 5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
 6. Open the PR against the default branch. The body says how many rows came
    and went, which categories renamed, which patterns were dropped, that
    preview was loaded, and that **production needs the same load on
    landing**.
-7. CI green, then **Rebase and merge**, delete the branch, and
-   `wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql`
-   at once, so the live directory and the file say the same thing.
+7. CI green, then **Rebase and merge**, delete the branch, and load both into
+   production at once — `db/google-venues.sql` then `db/top-tens.sql` — so the
+   live directory, the live lists and the files all say the same thing.
 
 ## Where it goes wrong
 
@@ -163,5 +202,12 @@ categories renamed, patterns dropped — and that both databases were loaded.
   the next pull, quietly marked missing. The export is upstream's; a place
   the sweep does not find goes on the map instead.
 - A hand-edit to a Google column, gone at the next refresh.
+- `db/google-venues.sql` regenerated and `db/top-tens.sql` forgotten. CI
+  catches it; loading the first and not the second does not fail anywhere,
+  and leaves five lists ordered by last month's review counts.
+- The top tens loaded into a database with no `google` account in it. The
+  load stops on the first statement having written nothing, which is the
+  intended failure — make the account through the sign-up form, per README's
+  **The five top tens**, and run the file again.
 - A count that moved in one place and not the others — this file said 751
   for a refresh that brought 1,110.

@@ -17,6 +17,8 @@
  *     write, holds a duplicate id, or has lost a place that is on the map
  *   - a db/google-venues.sql that is out of step with the Google Places export
  *     it is generated from
+ *   - a db/top-tens.sql that is out of step with that same export, which is
+ *     what the five lists published as `google-statistics` are built from
  *   - a taxonomy type missing a label in any language
  *   - a cuisine in data/cuisines.json missing a label in any language, or one
  *     the directory's KITCHENS table cannot produce
@@ -57,6 +59,7 @@ import { dirname, join, resolve } from 'node:path';
 import { stale as staleStamps } from './stamp.mjs';
 import { stale as staleCatalogue } from './places.mjs';
 import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
+import { stale as staleTopTens } from './toptens.mjs';
 /* The directory's own vocabulary. It is a table in the endpoint rather than a
    file, the way VENUE_TYPES is, and the checks below are what keep it honest:
    every id has a label in ten languages, and every pattern still matches
@@ -870,6 +873,18 @@ if (catalogue !== null) {
 
 if (staleGoogleVenues()) {
   fail('db/google-venues.sql', 'is not what tools/googlevenues.mjs would write from exports/tallinn_restaurants.csv — run `node tools/googlevenues.mjs` and commit the result');
+}
+
+/* ------------------------------------------------------------ top-tens.sql
+   And db/top-tens.sql, which is generated from the same export: the five lists
+   published as `google`, ten places each, ordered by the rating weighted the
+   way /google weighs it. The staleness that matters here is not the file
+   failing to load — it is a list still naming a place the export has since
+   closed, or missing one that overtook it, which nothing but this check would
+   ever say out loud. */
+
+if (staleTopTens()) {
+  fail('db/top-tens.sql', 'is not what tools/toptens.mjs would write from exports/tallinn_restaurants.csv — run `node tools/toptens.mjs` and commit the result');
 }
 
 /* And that it is current. data/places.csv is the file that actually changes,
