@@ -1724,6 +1724,36 @@ rows written before the wall went up are still in the table, and `claim` can
 reach them again: signing in on the browser that made them still brings them
 onto the account, which it could not do while the wall stood.
 
+### The name is chosen, not handed out
+
+The sign-up sheet opens on an empty box, and for a while it did not.
+`/api/account` had a `?suggest=1` answer that put two words and a number
+together — `smoky-walnut-418` — checked it against the table so the one
+offered would be free, and the field filled itself in a moment after the sheet
+opened. It was meant as a kindness to somebody who did not want to think of a
+name. It was the wrong kindness: a username here is not an internal handle but
+the byline on every list its owner shares and the whole of `/u/<name>`, so the
+one thing this site asks anybody to decide about themselves was being decided
+for them — and a field that fills itself in under the cursor a moment late is
+its own small rudeness on a slow connection.
+
+So the box is empty and the rule is printed under it instead: **3 to 24
+letters, numbers or dashes**, plus the part that is actually worth knowing
+before you choose — that the name goes on any list you share. It is
+`accountUsernameHint` in `data/ui.json`, in all ten languages, and it sits
+inside the field's own `<label>` so a screen reader reads it when the field
+takes focus rather than never. The rule itself is not new; before, the only
+way to meet it was to get it wrong, because the name already in the box had
+been built to satisfy it. `USERNAME_RE` in `functions/api/account.js` is the
+one that binds — lowercase, opening on a letter or a digit so that a name
+cannot begin with the character that separates its words — and the field
+restates it as a `maxlength` of 24 and that sentence.
+
+The splitwise page carries the same sheet and lost the same thing, and with it
+the `/api/account` request it made on every boot: `/api/split` already says who
+is signed in, so a name for the empty field was the only reason that second
+request existed.
+
 ### What signing in actually does to the rows
 
 `saves.owner` holds a `users.id` when the request carries a session and the
