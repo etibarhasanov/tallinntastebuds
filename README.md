@@ -1413,10 +1413,10 @@ size whatever its count. There is deliberately no "Most saved" chip, because
 that would be a ranking, and the line above is not a slogan.
 
 A list carries a count of its own — how many people kept it — and **one page
-does sort by it**: `/lists/public`, every public list with the most kept first.
-That is a ranking, it is the only one on this site, and it was decided rather
-than inherited. The reasoning is under **Public lists**; the short of it
-is that ranking lists is a different claim from ranking kitchens, because a
+does sort by it**: `/lists`, every public list with the most kept first. That
+is a ranking, it is the only one on this site, and it was decided rather than
+inherited. The reasoning is under **Public lists**; the short of it is that
+ranking lists is a different claim from ranking kitchens, because a
 list is a thing somebody made and "the ones most people kept" says nothing
 about any restaurant on them.
 
@@ -2117,8 +2117,8 @@ anybody sees on opening it is where the rest are. It is the one way on here
 that a fold holds — see the next section for the rule the others follow.
 
 They are the same three rows the foot of every list already draws, off the same
-request and in the same class — `allRow()` on `/lists/public`, `row()` here.
-Two things are deliberately missing. There is no **bookmark** in the corner:
+request and in the same class — `allRow()` on `/lists`, `row()` here. Two
+things are deliberately missing. There is no **bookmark** in the corner:
 keeping a list is a gesture for the page built to hand somebody twenty of them,
 and three rows on an account page are an offer of somewhere to go rather than a
 shelf to take things off. And **your own lists are left out**, wherever they
@@ -2222,10 +2222,10 @@ everybody's lists are the database, and there is none.
 `styles.css` for the tokens, the card, the eyebrow, the four controls and the
 error line; `lists.css` for the brand header, the stack, the field, the box
 that makes a list and the row a column of things is built from. The rows are
-`.lists-all-card` — the row `/lists/public` draws — and not `.lists-index-card`,
-which leaves 54px along its bottom edge for the map pill laid over it. These
-rows have one destination, so that padding would be a hole in a card with
-nothing standing in it. Its own comment in `lists.css` says as much, which is
+`.lists-all-card` — the row `/lists` draws — and not `.lists-index-card`, which
+leaves 54px along its bottom edge for the map pill laid over it. These rows
+have one destination, so that padding would be a hole in a card with nothing
+standing in it. Its own comment in `lists.css` says as much, which is
 how this page came to use it.
 
 The card is a box and the title inside it is the link, stretched over the whole
@@ -2822,7 +2822,7 @@ are.
 
 ```
 /list/<id>       one list — the address that gets shared
-/lists/public    everybody's, the most kept first, and a field to search them
+/lists           everybody's, the most kept first, and a field to search them
 /u/<name>        who made it, and everything else they published
 /?list=<id>      the same list on the map, as pins
 ```
@@ -2833,9 +2833,9 @@ the places you saved; the address is still there and replaces itself with that
 page before it draws. See **There is one page about you, and this is it** under
 **The account page** for why the two were one page's worth of thing all along.
 
-One HTML file serves the first three. `/list/<id>`, `/lists/public` and
-`/u/<name>` each go through a Function of their own — `functions/list/[id].js`,
-`functions/lists/public.js`, `functions/u/[name].js` — and each hands back that
+One HTML file serves the first three. `/list/<id>`, `/lists` and `/u/<name>`
+each go through a Function of their own — `functions/list/[id].js`,
+`functions/lists/index.js`, `functions/u/[name].js` — and each hands back that
 same file with the page's own title and social card written into the head and
 its answer seeded into the document. That is what makes a shared link arrive
 looking like something: a static page has one `<title>`, and the crawler that
@@ -2848,9 +2848,16 @@ typed and a title somebody typed being executed.
 The last two of the three have sections of their own: see [Public
 lists](#public-lists) and [Profiles](#profiles).
 
-`/lists/public` was `/lists/kept`, and the old address is a 301 to it —
-`functions/lists/kept.js` is that redirect and nothing else. Why it moved, and
-why the old one stays, is at the end of [Public lists](#public-lists).
+`/lists` was `/lists/public`, and that was `/lists/kept`. Both of the old
+addresses are 301s to it — `functions/lists/public.js` and
+`functions/lists/kept.js` are those redirects and nothing else. Why it moved
+twice, and why the old ones stay, is at the end of [Public
+lists](#public-lists).
+
+That is also why the Function is `functions/lists/index.js` rather than
+anything named after the page: `index.js` in a directory is that directory's
+own path, which leaves `public.js` beside it free to go on answering the
+address it used to be.
 
 The id is the title plus six random characters — `/list/top-ten-burgers-k3fmqw`
 — so the link says what it is before anybody opens it, and cannot be guessed
@@ -2958,7 +2965,7 @@ the link" and "Only me", which fitted badly — two clauses in a segmented
 control that a narrow phone breaks over four lines, for the two states the
 rest of the web already has names for — and which has since stopped being
 accurate besides. **Public** now means public: the list is indexed, and it is
-on `/lists/public` with everybody else's. There is still no third state and no
+on `/lists` with everybody else's. There is still no third state and no
 per-person sharing: a link either opens or it does not. The legend above them
 carries the sentence.
 
@@ -3045,11 +3052,11 @@ better position anywhere.
 
 ### Public lists
 
-`/lists/public` is every public list on this site, the most kept first, with a
-field to search them and a bookmark on every row. It is
-the only page here that puts one person's writing above another's, and it is
-the one thing in this repository that had a standing note against it. That
-note is worth quoting, because it is the argument this section has to answer:
+`/lists` is every public list on this site, the most kept first, with a field
+to search them and a bookmark on every row. It is the only page here that puts
+one person's writing above another's, and it is the one thing in this
+repository that had a standing note against it. That note is worth quoting,
+because it is the argument this section has to answer:
 
 > Note what that would actually be, before building it: a page that ranks.
 > The **Saves** section rules out ranking *places*, and that stands. Ranking
@@ -3145,7 +3152,7 @@ unsearched page costs, and grow with how much people write. A place is found on
 the map, which is the page built for finding places. This field finds a piece
 of writing, by its name or by its author.
 
-A search is in the address — `/lists/public?q=coffee` — written there by
+A search is in the address — `/lists?q=coffee` — written there by
 `replaceState` as the field is typed into, and read back by the Function that
 serves the page, so a search somebody sends draws its answer rather than
 drawing everything and replacing it. Keystrokes are held for a fifth of a
@@ -3216,14 +3223,39 @@ everybody else, which is most of the traffic this page gets.
   thing that links the lists to each other. Public lists have been indexable
   for a while; each one was an island until this.
 
-**It was `/lists/kept`.** The address named the order rather than the page,
-which stopped fitting the moment the page grew a way to look for one list among
-them: somebody searching is asking what is on it, not how it is sorted.
-`functions/lists/kept.js` is now a 301 to `/lists/public` and nothing else,
-because that address is in `sitemap.xml`'s history, in search results, at the
-foot of every list read before the rename, and in whatever anybody pasted into
-a message. An indexed address is not a name you take back, only one you
-forward. `assets/lists.js` still recognises both paths, for the deployment with
+**It was `/lists/kept`, and then `/lists/public`.** The first address named
+the order rather than the page, which stopped fitting the moment the page grew
+a way to look for one list among them: somebody searching is asking what is on
+it, not how it is sorted.
+
+The second lasted longer and went for a quieter reason. **Public** is a word
+this feature needs on a list's own card, where it is one of two answers to who
+can open this; in a path it is the only kind of list there can be. A private
+list is served to the session that owns it and to nobody else, so it could
+never have been in a directory to be ruled out of one — the word was spending a
+path segment saying *not the ones you cannot see anyway*. What is left is the
+plural of the thing. `/lists` is everybody's lists, it is one segment, and it
+is the address that fits in a sentence somebody says out loud.
+
+The cost is that `/lists` was not free. Pages serves `lists.html` at both
+`/lists` and `/lists.html`, the way it serves `google.html` at `/google`, so
+the bare address already answered — with the page that has nothing of its own
+on it any more and replaces itself with `/account.html`. A Function outranks a
+static asset at the same path, which is what makes `functions/lists/index.js`
+the answer at `/lists` now; `/lists.html` is untouched, still `noindex`, still
+disallowed in `robots.txt`, and still the door to the account page. It is the
+one address on this site whose two spellings are two different pages, and the
+line in `robots.txt` says so, because a `Disallow` is a path prefix and losing
+the extension off that line would hide the directory from every crawler.
+
+`functions/lists/public.js` and `functions/lists/kept.js` are both 301s to
+`/lists` now and nothing else, because both of those addresses are in
+`sitemap.xml`'s history, in search results, at the foot of every list read
+before the rename, and in whatever anybody pasted into a message. An indexed
+address is not a name you take back, only one you forward. `kept.js` points at
+`/lists` directly rather than at `public.js`: a chain of 301s is a hop a
+crawler is allowed to stop following, and there is no reason to spend it.
+`assets/lists.js` still recognises all three paths, for the deployment with
 no Functions in it where there is nothing to answer the redirect.
 
 **Where the number comes from.** `list_keeps`, counted, every time it is
@@ -3700,7 +3732,7 @@ the drag and the save — is appended rather than left to collide.
 | the line under it | 200 |
 | the line about yourself | 200 |
 | what you say about a place | 280 |
-| places before a list is listed on `/lists/public` | 3 |
+| places before a list is listed on `/lists` | 3 |
 
 Most of them are about somebody with a script rather than somebody with
 opinions. They are in `functions/api/lists.js`, and the pages restate the
@@ -3792,14 +3824,14 @@ account button simply does not appear.
   that is as far as it goes: no following, no hearts, no comments on somebody
   else's list. A keep is the one thing you can do to a list somebody else made,
   and it is silent: its owner sees a number and never who — including on
-  `/lists/public`, where that number orders the page and still names nobody.
+  `/lists`, where that number orders the page and still names nobody.
 - **Any way to say a list is bad.** Nothing is reported, hidden or taken down
   by anybody but its owner, and the page that now ranks them gives a reader no
   way to push one down. The only lever on that order is keeping a list, which
   is the lever the feature already had.
-- **A ranking of people.** `/lists/public` orders lists; a profile prints one
-  person's total and no position in anything. See the end of **Profiles** for
-  why the number was built and the table of people was not.
+- **A ranking of people.** `/lists` orders lists; a profile prints one person's
+  total and no position in anything. See the end of **Profiles** for why the
+  number was built and the table of people was not.
 
 ---
 
@@ -3815,9 +3847,8 @@ it.
 
 It is the same page `lists.html` has always been, served at another address by
 `functions/u/[name].js` — the head swapped for that person's own tags, the
-profile seeded into the document, exactly the way `/list/<id>` and
-`/lists/public` work. There is no second HTML file, no second stylesheet and no
-second boot.
+profile seeded into the document, exactly the way `/list/<id>` and `/lists`
+work. There is no second HTML file, no second stylesheet and no second boot.
 
 ### What is on one
 
@@ -3928,9 +3959,9 @@ the same counts — and it is the same answer: ten accounts buy ten keeps and
 nobody has found that worth doing.
 
 **A profile is deliberately not a position, and that is what separates it from
-the directory.** `/lists/public` ranks *lists*, one page of them at a time, and
-the argument for doing that is in its own section. Ranking *people* is a
-further claim, and it costs more: "third of everybody" means grouping every
+the directory.** `/lists` ranks *lists*, one page of them at a time, and the
+argument for doing that is in its own section. Ranking *people* is a further
+claim, and it costs more: "third of everybody" means grouping every
 row of `list_keeps` by owner on every profile view, where a profile's own
 total is twenty-four indexed prefixes and the sum of numbers already printed
 under the lists on the page. So a profile says what happened to somebody's
@@ -3943,7 +3974,7 @@ made.
 - **The byline under a shared list**, which is the whole point — the phrase is
   the link, on the list's own page and in the panel the map draws for a list.
 - **The byline on a row**, wherever a list somebody else wrote is drawn as one:
-  `/lists/public`, the three rows at the foot of a list, and **Lists you saved**.
+  `/lists`, the three rows at the foot of a list, and **Lists you saved**.
   See **The row carries the first three places** under [Public
   lists](#public-lists) for the shape that made room for it.
 - **Your own account page**, as the one row on the card that carries your
@@ -5208,9 +5239,11 @@ functions/api/_profile.js  reading one person, shared the same way
 functions/_shell.js        lists.html with a head and an answer written in,
                            shared by the three Functions that serve it
 functions/list/[id].js     /list/<id> — the page a shared link opens
-functions/lists/public.js  /lists/public — everybody's, most kept first
-functions/lists/kept.js    /lists/kept — a 301 to the address above, which
-                           this page had before it was renamed
+functions/lists/index.js   /lists — everybody's, most kept first
+functions/lists/public.js  /lists/public — a 301 to the address above, which
+                           this page had before it was shortened
+functions/lists/kept.js    /lists/kept — a 301 to the same, which it had
+                           before that
 functions/u/[name].js      /u/<name> — the page a byline leads to
 lists.html                 the one a stranger reads, everybody's, and whoever
                            wrote one; the address itself sends you to the page

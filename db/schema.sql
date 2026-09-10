@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS lists (
 );
 -- "My lists, newest first", which is the whole of the index page.
 CREATE INDEX IF NOT EXISTS idx_lists_owner ON lists (owner, updated_at DESC);
--- /lists/public, which reads every public list and puts the most kept first.
+-- /lists, which reads every public list and puts the most kept first.
 -- This index is what narrows that to the public ones. The order itself is a
 -- count over list_keeps, which no index on this table can reach, so the
 -- tie-break between two lists kept by the same number of people is the only
@@ -327,7 +327,7 @@ CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at
 -- asked, and there is deliberately no counts table here of the kind
 -- save_counts is.
 --
--- /lists/public asks it of every public list at once, which is the bulk
+-- /lists asks it of every public list at once, which is the bulk
 -- question an earlier version of this note said would call for one. It was
 -- built with a counts table and the table was taken out again, because the
 -- comparison the note was making does not hold. save_counts exists because the

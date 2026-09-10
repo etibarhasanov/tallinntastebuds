@@ -13,10 +13,13 @@ Disallow: /staff.html
 # Your own lists, which is a page with nothing on it until somebody signs in.
 # It carries a noindex header of its own too.
 #
-# This does not cover /lists/public, and must not: a Disallow is a path prefix
-# and that is a different path. Everybody's lists, most kept first, is the one
+# The extension is the whole of the line, and it must stay: a Disallow is a
+# path prefix, and /lists — everybody's lists, most kept first — is the one
 # page that links every public list to every other, so it is the way a crawler
-# reaches any of them at all. It is in sitemap.xml for the same reason.
+# reaches any of them at all. It is in sitemap.xml for the same reason. This is
+# the one page on the site whose two spellings are two different pages, which
+# is why the Google line below can cover both of its own with one word and this
+# one cannot.
 Disallow: /lists.html
 
 # The account page, for the same reason and more of it: there is nothing on it

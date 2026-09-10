@@ -1,10 +1,14 @@
 /**
  * Tallinn Tastebuds — /lists/kept, forwarded.
  *
- * The directory lives at /lists/public now. The address said what the page was
- * ordered by rather than what was on it, and the page is called Public lists
- * because that is what it holds: everything anybody made public, the most kept
- * first because an order has to be something.
+ * The directory lives at /lists now. This address said what the page was
+ * ordered by rather than what was on it, and the page holds everything anybody
+ * made public, the most kept first because an order has to be something.
+ *
+ * It went to /lists/public first and this line went with it, rather than to
+ * /lists/public and on again from there: a chain of 301s is a hop a crawler is
+ * allowed to stop following, and the address at the end of it is the one worth
+ * arriving at. public.js is the same file for that second address.
  *
  * This stays because the old address was indexed. It is in sitemap.xml's
  * history, in search results, at the foot of every list read before today, and
@@ -17,6 +21,6 @@
 
 export function onRequest(context) {
   const url = new URL(context.request.url);
-  url.pathname = '/lists/public';
+  url.pathname = '/lists';
   return Response.redirect(url.toString(), 301);
 }

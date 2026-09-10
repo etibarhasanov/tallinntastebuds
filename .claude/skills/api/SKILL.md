@@ -49,8 +49,9 @@ leading underscore are modules, not routes.
 | `GET/POST /api/split` | `api/split.js` | **splitwise** — `split_groups`, `split_members`, `split_expenses`, `split_shares`, `split_settlements`. **Reading one group needs only its code**, no session — holding the link is the permission, see `groupById()`. **Every write needs a session and a membership**: each action but `create` and `join` reads the caller's own membership first, and a non-member is told the group does not exist | `no-store`, for the reason `lists.js` is |
 | `POST /api/ask` | `ask.js` | none; narrows the two rolls to what a question could be about and puts it to Workers AI; measures "near" from the place named through `geocode.js`, or from the visitor's own dot sent as `here` | `no-store` |
 | `/list/<id>` | `list/[id].js` | none; `lists.html` with the list unfurled | `no-store` |
-| `/lists/public` | `lists/public.js` | none; `lists.html` with the first page of everybody's lists seeded in, searched when the address carries `?q=` | `no-store` |
-| `/lists/kept` | `lists/kept.js` | none; 301 to `/lists/public`, the address this page had before it was renamed | — |
+| `/lists` | `lists/index.js` | none; `lists.html` with the first page of everybody's lists seeded in, searched when the address carries `?q=` | `no-store` |
+| `/lists/public` | `lists/public.js` | none; 301 to `/lists`, the address this page had before it was shortened | — |
+| `/lists/kept` | `lists/kept.js` | none; 301 to `/lists`, the address it had before that | — |
 | `/u/<name>` | `u/[name].js` | none; `lists.html` with the profile seeded in | `no-store` |
 
 Those three pages serve the same `lists.html` with a head of their own, and

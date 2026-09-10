@@ -23,11 +23,18 @@
 # noindex, because there is nothing on it for anybody who is not signed in and
 # a search result for "your lists" would be a permanently empty page.
 #
-# /list/<id> and /lists/public are not here: they are served by
-# functions/list/[id].js and functions/lists/public.js, which set their own
+# /list/<id> and /lists are not here: they are served by
+# functions/list/[id].js and functions/lists/index.js, which set their own
 # headers. Both are indexable — a public list is a page somebody wrote and
-# /lists/public is what links them together — and neither is disallowed in
+# /lists is what links them together — and neither is disallowed in
 # robots.txt. See the note there, and the head of each Function.
+#
+# This rule is one path and not two, which every other page in this file
+# spells both ways. Pages serves lists.html at /lists as well, the way it
+# serves google.html at /google — but /lists is the directory now, answered by
+# a Function that outranks the static file and sets its own headers, so the
+# static spelling never binds there and a noindex written for it would be a
+# line about a page nobody is served.
 /lists.html
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, follow

@@ -496,7 +496,7 @@
    sees. */
 .lists-all-body { display: flex; flex-direction: column; gap: 18px; }
 
-/* The row on /lists/public, and the same row at the foot of a list's own page.
+/* The row on /lists, and the same row at the foot of a list's own page.
    It is the index row above restacked rather than a second kind of card: the
    title, one line of facts under it, and the first three places under that.
 
