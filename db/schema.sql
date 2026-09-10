@@ -124,6 +124,39 @@ CREATE TABLE IF NOT EXISTS users (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username COLLATE NOCASE);
 
+-- The name an account used to go by, kept for thirty days after it changed.
+--
+-- A username is a public address: it is the byline on every list somebody
+-- wrote and the whole of /u/<name>. So the moment a rename put a name back in
+-- the pool, the next person to sign up could take it and inherit every link,
+-- screenshot and message pointing at the person who left it. That is the one
+-- thing a rename must not be a way to do, and this table is what stops it:
+-- for thirty days the name answers to nobody but whoever released it, who may
+-- take it back.
+--
+-- ONE ROW PER ACCOUNT, AND THAT IS THE WHOLE OF THE DESIGN
+--
+-- The row is replaced on each rename rather than added to, so the name held
+-- is the one you were last known by and never a chain of them. A history
+-- would let somebody rename their way down a list of names they fancied and
+-- hold every one of them for a month, which is squatting with extra steps;
+-- one row means a rename releases as many names as it holds. It also means
+-- this table can never grow past the users table, so nothing has to prune it
+-- by size.
+--
+-- Rows outside the window are deleted on the way past, the way login_fails is
+-- swept: they can never affect an answer, so keeping them would be storing a
+-- record of what somebody used to be called for nothing at all.
+CREATE TABLE IF NOT EXISTS username_holds (
+  -- users.id, and the primary key: one hold per account, replaced each time.
+  user_id     TEXT PRIMARY KEY,
+  -- The name that was released. Lowercase, like every username here.
+  username    TEXT NOT NULL,
+  released_at INTEGER NOT NULL
+);
+-- "Is this name still spoken for", which is the only question asked of it.
+CREATE INDEX IF NOT EXISTS idx_username_holds_name ON username_holds (username COLLATE NOCASE);
+
 -- Only the SHA-256 of a session token is kept. A leaked copy of this table is
 -- a list of hashes rather than a drawer full of working keys.
 CREATE TABLE IF NOT EXISTS sessions (
@@ -579,9 +612,10 @@ CREATE INDEX IF NOT EXISTS idx_split_groups_owner ON split_groups (owner, update
 -- list_items, which does copy the name it was added under. A list item points
 -- at a place in a generated file that a refresh can renumber, so the name is
 -- copied or the sentence somebody wrote ends up attached to nothing. A member
--- points at a users row, and this site has no way to rename an account and no
--- way to delete one — so the join is exact, forever, and a second copy of the
--- name would only be a copy that could drift.
+-- points at a users row, so the join is exact and stays exact: an account can
+-- be renamed — see username_holds above — and everybody in every group it is
+-- in reads the new name on their next load, because there is no second copy
+-- of it to go stale. A username column here would be that copy.
 CREATE TABLE IF NOT EXISTS split_members (
   group_id  TEXT    NOT NULL,
   user_id   TEXT    NOT NULL,
