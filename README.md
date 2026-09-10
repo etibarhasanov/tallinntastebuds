@@ -3766,6 +3766,52 @@ group to remake rather than a moderation queue to build. What the code buys
 before joining is deliberately thin: the group's name and how many people are
 in it, and not one expense, balance or other member's name.
 
+### What the link looks like in a message
+
+A group's link is not an address anybody browses to. It is a thing one person
+pastes into a chat and four other people tap, so **the little preview card is
+most of what the link is**. Pasted as a static page it arrived as *Splitwise |
+Tallinn Tastebuds*, or as a bare blue URL — which tells the four people nothing
+they did not know and reads like a link to the map.
+
+`functions/split.js` serves the page instead of the file: it fetches
+`split.html` out of the deployment and swaps the block between the
+`<!--PAGE-HEAD-->` markers for that group's own tags, so the card carries
+
+> **Split in Berlin**
+> 4 people splitting what they paid for. Open the link to join.
+
+with the site's mark beside it, and the tab says *Split in Berlin* rather than
+the site's name. It is the same move `functions/list/[id].js` makes for a
+shared list and it borrows that route's `esc()`, `rehead()`, `page()` and
+`canonical()` — importing them, changing nothing there.
+
+**The title is the group's name and nothing else.** `head()` in
+`functions/_shell.js` spells one as *"<name> | Tallinn Tastebuds"*, hardcoded
+so no caller can differ, and that is right for a page of the site and wrong for
+this one: a card already carries the domain under it and `og:site_name` beside
+it, so the suffix says the site's name a third time and pushes the only words
+that matter further from the front. So this route writes its twelve tags out
+rather than calling `head()`. `esc()` is the one thing it does **not** copy —
+group names are typed by people and go straight into `content="…"`, and that
+escaping lives in exactly one place on purpose.
+
+**Fetched but never indexed**, which is not a contradiction: the card is built
+by a fetch, and the page has nothing on it for a stranger and no business in a
+search result. Every answer the route gives carries `noindex`.
+
+That is also why **`robots.txt` deliberately does not disallow `/split`** — it
+did for a day. A `Disallow` stops the fetch, and a stopped fetch is a bare blue
+URL. The note beside `/list/<id>` in that file has made the same argument since
+lists became shareable, and it applies harder here: a list at least has its
+title in its address, and `/split?g=dinner-at-rataskaevu-k3fmqw` does not.
+
+**It gives away nothing new.** The card carries the group's name and how many
+people are in it — exactly what `inviteOf()` already answers to anybody holding
+the code, signed in or not. It never carries an expense, a balance or a
+member's name; those need a session and a membership, and a crawler has
+neither.
+
 ### Money is cents, everywhere
 
 Never a float. Money in a float is the bug that takes a year to surface —
@@ -3886,15 +3932,20 @@ same two the saves and the accounts already need.
 ### Taking it out
 
 This feature is meant to be removable, and it was built that way on purpose:
-it is not sure yet whether it stays. So it is **twelve files of its own and
-five small additions to files that already existed** — no shared helper was
-extracted for it, no existing function was rewritten around it, and nothing
-anywhere else on this site reads a row, a string or a line of it.
+it is not sure yet whether it stays. So it is **six files of its own, eight
+small additions to code that already existed and four to the documentation** —
+no shared helper was extracted for it, no existing function was rewritten
+around it, and nothing anywhere else on this site reads a row, a string or a
+line of it. What it borrows, it borrows by importing: `functions/split.js`
+reads four functions out of `functions/_shell.js` and that file is
+byte-identical to what it was before any of this.
 
 Delete these outright:
 
 ```
 split.html                 the page
+functions/split.js         the route that serves it, and the head that makes
+                           a pasted link say the group's name
 assets/split.js            the browser half
 assets/split.css           its eighteen rules
 functions/api/split.js     the route, and the five tables' only writer
@@ -3906,16 +3957,16 @@ and each is fenced or prefixed so it can be found by looking:
 
 | File | What is splitwise's |
 |---|---|
-| `functions/_middleware.js` | the `SPLITWISE` block of constants and the `SPLITWISE` block inside `onRequest()` — both marked, both additions, nothing above them was touched |
+| `functions/_middleware.js` | the `SPLITWISE` block of constants (including the `import` of the route above) and the `SPLITWISE` block inside `onRequest()` — both marked, both additions, nothing above them was touched |
 | `functions/api/_lib.js` | `SESSION_DOMAIN`, the two lines in `sessionCookie()` that read it, and its third parameter. **This is the only thing splitwise changed rather than added**, and taking it out is `sessionCookie(token, days)` again |
 | `functions/api/account.js` | the third argument at the two `sessionCookie(token, SESSION_DAYS, request)` calls, and the second `set-cookie` in the `logout` branch, which exists only to clear the domain-scoped one |
 | `tools/validate.mjs` | the `SPLITWISE` block after the `ui.json` check, and the one line adding `splitKeys` to `known` |
 | `tools/stamp.mjs` | `'split.html'` in `PAGES` |
 | `_headers` | the `/split.html` and `/split` rules |
-| `robots.txt` | the `Disallow: /split` line |
+| `robots.txt` | the paragraph about splitwise. There is no `Disallow` to put back — see **What the link looks like in a message** — so removing it is removing a comment |
 | `README.md` | this section, its line in **Contents**, its four lines in **Files**, the two `split.json` lines under **What the validator checks**, the domain-scoped-cookie bullet under **Accounts**, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
-| `.claude/skills/api/SKILL.md` | the `/api/split` row and the splitwise clause in the `/*` row |
+| `.claude/skills/api/SKILL.md` | the `/split` and `/api/split` rows, and the splitwise clause in the `/*` row |
 | `.claude/skills/site/SKILL.md` | the `split.html` in the stamped-pages list, and the paragraph about `data/split.json` |
 
 And in Cloudflare: remove `splitwise.tallinntastebuds.ee` from the Pages
@@ -3926,7 +3977,10 @@ in `db/schema.sql`.
 
 **What has no removal step, and that is the point.** `data/ui.json` is
 untouched by this feature — not one of its 346 strings moved, which is why the
-610 splitwise ones are in a file of their own. `functions/api/lists.js`,
+610 splitwise ones are in a file of their own. `functions/_shell.js` is
+untouched too, though `functions/split.js` reads four functions out of it: it
+is imported from and never edited, which is what makes deleting the importer
+the whole of the job. `functions/api/lists.js`, `functions/list/[id].js`,
 `assets/app.js`, `assets/lists.js`, `assets/account.js`, `index.html`,
 `account.html`, `lists.html`, every other stylesheet and every file under
 `data/` except the new one are byte-for-byte what they were.

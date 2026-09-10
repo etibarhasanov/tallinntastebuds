@@ -3,18 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Splitwise | Tallinn Tastebuds</title>
-<meta name="description" content="Dinner for five and one card at the table. Put in what everybody paid, and this says who hands what to whom.">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
-<!-- No PAGE-HEAD markers and no social card, for the reason account.html has
-     none: everything on this page is behind a session, and a group's own link
-     is one people send to four friends rather than one anybody unfurls. The
-     invitation carries the group's name in the page once it is opened, and
-     nothing about it in a preview card. _headers carries the noindex to match,
-     and it is not in sitemap.xml. -->
+<!-- Everything between the markers is swapped by functions/split.js for the
+     tags of whichever group ?g= names, so a link pasted into a message arrives
+     as "Split in Berlin" and the mark, rather than as the site's own name or a
+     bare blue URL. What is written here is what the front door gets — no ?g=,
+     nothing to unfurl — and what a group falls back to if that route cannot
+     answer.
+
+     Noindex either way, and that is not a contradiction: being fetched is what
+     builds the card, being indexed is what puts the page in a search result,
+     and this wants the first without the second. robots.txt deliberately does
+     NOT disallow /split, because a Disallow stops the fetch and a stopped
+     fetch is a bare blue URL — the same reasoning /list/<id> has carried since
+     lists became shareable. It is not in sitemap.xml. -->
+<!--PAGE-HEAD-->
+<title>Splitwise | Tallinn Tastebuds</title>
+<meta name="description" content="Dinner for five and one card at the table. Put in what everybody paid, and this says who hands what to whom.">
 <meta name="robots" content="noindex, nofollow">
+<!--/PAGE-HEAD-->
 
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
@@ -70,6 +79,6 @@
   </div>
 </noscript>
 
-<script src="/assets/split.js?v=f6854cc8" defer></script>
+<script src="/assets/split.js?v=a34b5820" defer></script>
 </body>
 </html>
