@@ -4,9 +4,9 @@
  * Underscore-prefixed, so this is a module and never a route. Three Functions
  * hand back that one page with different tags written into it:
  *
- *   functions/list/[id].js   one list, so a shared link unfurls as what it is
- *   functions/lists/public.js  the directory, so a search can find it
- *   functions/u/[name].js    one person, which is where a byline leads
+ *   functions/list/[id].js    one list, so a shared link unfurls as what it is
+ *   functions/lists/index.js  the directory, so a search can find it
+ *   functions/u/[name].js     one person, which is where a byline leads
  *
  * What is in here is the part they cannot each have their own copy of: the two
  * escaping rules, the page out of the deployment, the head, the head swap, the

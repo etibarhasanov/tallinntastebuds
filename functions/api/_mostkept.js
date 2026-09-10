@@ -5,8 +5,8 @@
  * beside it, it holds one query two files both need:
  *
  *   functions/api/lists.js       answers GET /api/lists?all=1 with it
- *   functions/lists/public.js    seeds its first page into /lists/public, so
- *                                the page draws without a second round trip
+ *   functions/lists/index.js     seeds its first page into /lists, so the
+ *                                page draws without a second round trip
  *
  * It is not in _lists.js because that file is the shape of *one* list as the
  * page wants it — a title, its places, their sentences. This is the other
@@ -32,8 +32,8 @@
    of half-filled drafts recommends nothing. */
 const MIN_ITEMS = 3;
 
-/* One page of /lists/public. Long enough to be worth scrolling, short enough
-   that Show more arrives before anybody has stopped reading. */
+/* One page of /lists. Long enough to be worth scrolling, short enough that
+   Show more arrives before anybody has stopped reading. */
 const PAGE = 20;
 
 /* How many places off each list the page prints under its title. A page of
@@ -69,7 +69,7 @@ const MAX_QUERY = 60;
 const CURSOR = /^(\d{1,9})\.(\d{1,15})\.([a-z0-9][a-z0-9-]{2,47})$/;
 
 /* What somebody typed, tidied: whitespace collapsed, ends trimmed, capped.
-   Exported because functions/lists/public.js seeds the search back into the
+   Exported because functions/lists/index.js seeds the search back into the
    page it serves, and what it seeds has to be the question that was actually
    asked — a field showing five hundred characters over rows that answered
    sixty would be the page disagreeing with itself. */

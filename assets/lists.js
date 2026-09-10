@@ -32,13 +32,15 @@
  *                    the page — so a shared link unfurls as what it is, and
  *                    draws without a second round trip.
  *
- *   /lists/public    everybody's, the most kept first, with a field to search
- *                    them. Served the same way by functions/lists/public.js.
+ *   /lists           everybody's, the most kept first, with a field to search
+ *                    them. Served the same way by functions/lists/index.js.
  *                    It is the page that joins the lists to each other rather
  *                    than leaving each one an island reachable only by its own
  *                    link. It was /lists/kept, which said what the page was
- *                    ordered by rather than what was on it; that address is a
- *                    301 to this one.
+ *                    ordered by rather than what was on it, and then
+ *                    /lists/public, which said "public" where there is nothing
+ *                    else a list at a shared address can be; both are 301s to
+ *                    this one now.
  *
  *   /u/<name>        one person: their public lists, and how many times those
  *                    have been kept. Served the same way by
@@ -87,7 +89,7 @@
   /* Where everybody's lists are, and how many of them a list's own page
      carries at the foot. Three, because it is an offer of somewhere to go next
      and not a second page of them under the one somebody came to read. */
-  var ALL_PATH = '/lists/public';
+  var ALL_PATH = '/lists';
   var FOOT = 3;
 
   /* The longest search the field will take, and how long a keystroke is held
@@ -882,10 +884,10 @@
     }
   }
 
-  /* One list on /lists/public, and the same row at the foot of a list's own
-     page. One function because they are the same row and not two rows that
-     happen to look alike — a change to what a stranger needs in order to judge
-     a list is a change to both of them. */
+  /* One list on /lists, and the same row at the foot of a list's own page.
+     One function because they are the same row and not two rows that happen to
+     look alike — a change to what a stranger needs in order to judge a list is
+     a change to both of them. */
   function allRow(l) {
     var line = el('p', { className: 'lists-all-meta mono' });
     allMeta(l, line);
@@ -3003,19 +3005,24 @@
      case draws with no request at all. ?list= is the same thing without the
      pretty path, kept so the page still works if the Function is not
      deployed. */
-  /* Whether this is the directory. /lists/public is the address it is linked
-     and indexed at, served by functions/lists/public.js — which is also what
-     seeds it, so a page carrying the seed is the directory whatever the path
-     says. ?all= is the spelling that works on a deployment with no Functions
-     at all, where lists.html is the only address there is.
+  /* Whether this is the directory. /lists is the address it is linked and
+     indexed at, served by functions/lists/index.js — which is also what seeds
+     it, so a page carrying the seed is the directory whatever the path says.
+     ?all= is the spelling that works on a deployment with no Functions at all,
+     where lists.html is the only address there is.
 
-     /lists/kept was this page's address until it was renamed, and it is a 301
-     to /lists/public now. It is matched here anyway: the redirect is a
-     Function, and on a static deployment — where ?all= is what this clause
-     exists for — there is nothing to answer it. */
+     /lists/kept and /lists/public were this page's addresses before it, and
+     both are 301s to /lists now. They are matched here anyway: the redirects
+     are Functions, and on a static deployment — where ?all= is what this
+     clause exists for — there is nothing to answer them.
+
+     /lists.html is deliberately not one of these. Pages serves lists.html at
+     both spellings, but only the bare one is the directory: the one with the
+     extension is the old index of your own lists and goes to /account.html,
+     which is the branch at the foot of boot(). */
   function wantedAll() {
     if (window.__TTB_ALL) return true;
-    if (/^\/lists\/(public|kept)\/?$/.test(window.location.pathname)) return true;
+    if (/^\/lists(\/(public|kept))?\/?$/.test(window.location.pathname)) return true;
     return new URLSearchParams(window.location.search).has('all');
   }
 
@@ -3105,8 +3112,8 @@
        at all. */
     var types = getJSON('/data/taxonomy.json').catch(function () { return null; });
     /* The answer the Function that served this page wrote into it, when there
-       was one — a list at /list/<id>, the directory at /lists/public, a person
-       at /u/<name> — and otherwise the request that asks for the same thing.
+       was one — a list at /list/<id>, the directory at /lists, a person at
+       /u/<name> — and otherwise the request that asks for the same thing.
        Every address draws from the same shapes either way, so a deployment
        without the Functions is a page that loads a beat later and never a page
        that cannot load. */

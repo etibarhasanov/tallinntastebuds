@@ -61,7 +61,7 @@ import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import { readList, LIST_ID } from '../api/_lists.js';
 /* The page out of the deployment, the head, the head swap and the seeding are
    shared with the two other routes that serve this same document —
-   functions/lists/public.js with everybody's lists in it, functions/u/[name].js
+   functions/lists/index.js with everybody's lists in it, functions/u/[name].js
    with one person's. See functions/_shell.js for why they are not written out
    three times. */
 import { canonical, head, shell, sow, rehead, page } from '../_shell.js';

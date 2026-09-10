@@ -161,7 +161,7 @@
 
   /* Where everybody's lists are read at length, once the three on this page
      have done their job. */
-  var ALL_PATH = '/lists/public';
+  var ALL_PATH = '/lists';
 
   /* The same two keys the map writes and the lists page reads. Walking from
      the map to here should not feel like leaving. */
@@ -481,9 +481,9 @@
     return n === 1 ? t('accountStatListsOne') : t('accountStatLists', { n: n });
   }
 
-  /* The row on /lists/public, borrowed whole: a title, one line of quiet facts
-     under it, and — where the row is somebody else's list — the first three
-     places on it. Not the .lists-index-card assets/lists.js draws on a
+  /* The row on /lists, borrowed whole: a title, one line of quiet facts under
+     it, and — where the row is somebody else's list — the first three places
+     on it. Not the .lists-index-card assets/lists.js draws on a
      profile, which leaves 54px along its bottom edge for the map pill laid
      over it. These rows have one destination, and that padding is a hole in a
      card nothing is standing in; the directory's own rows take that room back with .has-keep

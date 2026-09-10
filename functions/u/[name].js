@@ -7,8 +7,8 @@
  * that person has published, and the one number this site keeps about them.
  *
  * It is the same document lists.html serves, the same way /list/<id> and
- * /lists/public are: this Function fetches the page out of the deployment, swaps
- * the block between the head markers for this person's own tags, and seeds the
+ * /lists are: this Function fetches the page out of the deployment, swaps the
+ * block between the head markers for this person's own tags, and seeds the
  * profile into it. See functions/_shell.js, which all three share.
  *
  * WHAT IS ON IT

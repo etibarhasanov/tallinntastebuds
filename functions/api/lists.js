@@ -67,7 +67,7 @@ import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDa
 /* Reading one list is shared with functions/list/[id].js, which serves the
    page a link opens with the list already in it. */
 import { readList, LIST_ID } from './_lists.js';
-/* Every public list, most kept first — shared with functions/lists/public.js,
+/* Every public list, most kept first — shared with functions/lists/index.js,
    which seeds the first page into the document it serves. */
 import { mostKept } from './_mostkept.js';
 
@@ -196,9 +196,9 @@ export async function onRequestGet(context) {
     return json({ ready: true, user: user ? user.username : null, list: list }, 200);
   }
 
-  /* Everybody's lists, for /lists/public. It sits above the session check the
-     rest of the page is under, because it is read by strangers and most of
-     them are signed out.
+  /* Everybody's lists, for /lists. It sits above the session check the rest
+     of the page is under, because it is read by strangers and most of them
+     are signed out.
 
      It is not quite the one answer here that ignores who is asking, and it was
      until the rows grew a bookmark of their own: the lists and their order are
