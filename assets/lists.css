@@ -148,6 +148,15 @@
    plus a little: a ruled row sits closer to the thing over it than a word
    does, and the hairline wants a breath before it. */
 .lists-card > .menu { margin-top: 18px; }
+
+/* And a card whose whole content is one of them: everybody's lists, at the
+   foot of /account.html. The air is for what stands over the row and the
+   hairlines are for what stands either side of it, and here there is neither
+   — the card's own edge already draws that line, and a rule inside it a few
+   pixels in reads as a mistake rather than as a boundary. What is left is the
+   row across the whole face of the card, which is what the card is. */
+.lists-card > .menu:only-child { margin-top: 0; }
+.lists-card > .menu:only-child .menu-row { border: 0; }
 .lists-count { margin-left: auto; color: var(--muted); font-size: 11.5px; letter-spacing: .04em; }
 
 /* ---------- a card that folds ---------- */
