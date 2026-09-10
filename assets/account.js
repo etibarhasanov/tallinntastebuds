@@ -51,14 +51,19 @@
  * For a while that card stood directly under your name, above everything of
  * your own, and the page opened with the one thing on it that is not yours:
  * a page called Account, with your name at the top, whose first and tallest
- * block was three strangers' top tens. It is the last card now, under its
- * own label, after what you saved, what you wrote and what you kept, and it
- * folds like the three cards above it: closed, it is its title and the
- * count of what is behind it, and open, it is the three most kept. The
- * folds are what let it move: the reason it went to the top was a column
- * forty rows deep burying it, and a card that is one line high until it is
- * opened buries nothing — this one included, which, open, was the tallest
- * thing on the page.
+ * block was three strangers' top tens. It is the last card now, after what
+ * you saved, what you wrote and what you kept, and it folds like the three
+ * cards above it: closed, it is its title and the count of what is behind
+ * it, and open, it is the three most kept. The folds are what let it move:
+ * the reason it went to the top was a column forty rows deep burying it, and
+ * a card that is one line high until it is opened buries nothing — this one
+ * included, which, open, was the tallest thing on the page.
+ *
+ * The way on to every public list is the first thing inside the fold, under
+ * the sentence that says what the card is, rather than the last thing on the
+ * card. Along the foot it stood under three rows of three names each, a
+ * screen below the title it belonged to, and read as a stray line under
+ * somebody else's lists rather than as the door out of this card.
  *
  * THE COLUMNS FOLD, AND THE WAYS ON DO NOT
  *
@@ -68,7 +73,9 @@
  * things they were the way out of. So each column is a <details> behind its
  * own title, with the count of what is inside it on the line you press, and
  * the ways on sit outside the fold, where a card that is one line high keeps
- * them in sight.
+ * them in sight. All but one: the door to every public list is inside its
+ * fold, for the reason above — it is the way on from a card that is not
+ * yours, and under the fold it was a screen away from its own title.
  *
  * A closed fold is not the menu this page was made out of. A menu row said
  * the name of another page; this one says how many of your things are behind
@@ -97,16 +104,17 @@
  * the menu that made it a settings screen. Nobody opens this page to change
  * a password, and nobody has to look for the way out either.
  *
- * TWO HALVES, AND A LABEL ON EACH
+ * TWO HALVES, AND NO LABEL ON EITHER
  *
  * Under that card the page is two things: what is yours — the places you
  * saved, the lists you wrote, the lists you kept — and what is everybody
- * else's. That was the order already, and it still read as one column of
- * five cards, because nothing said where your own things stopped. Now a
- * heading stands over each half — the quiet one a list page puts over the
- * three more lists at its foot, a group's name rather than a card's — so the
- * page says it in two words rather than leaving it to be worked out from
- * the titles.
+ * else's, in that order. For a while a heading stood over each half, "Yours"
+ * and "Everybody else's", the quiet one a list page puts over the three more
+ * lists at its foot. On a phone they were two more lines between your name
+ * and your things, and each said what the card titles under it already say:
+ * "Places I saved", "Your lists" and "Lists you saved" are yours by their
+ * names, and "Public lists" is nobody's by its. The order carries the
+ * argument on its own, and the headings went.
  *
  * WHAT IT DOES NOT DO
  *
@@ -363,12 +371,13 @@
     return el(level || 'h1', { className: 'lists-title', textContent: words });
   }
 
-  /* The row of ways on from a card, along its foot. They are `.alt`s wherever
-     there is more than one of them, and they are `.alt`s where they are alone
-     as well — the accent is spent once on this whole page, and it is spent on
-     the one thing the page is asking for: the box that makes a list when
-     somebody is signed in, and the offer of an account when nobody is. See
-     "The design rules" in README.md. */
+  /* The row of ways on from a card, along its foot — or, on the card of
+     everybody's lists, under the sentence that opens the fold. They are
+     `.alt`s wherever there is more than one of them, and they are `.alt`s
+     where they are alone as well — the accent is spent once on this whole
+     page, and it is spent on the one thing the page is asking for: the box
+     that makes a list when somebody is signed in, and the offer of an account
+     when nobody is. See "The design rules" in README.md. */
   function foot(kids) {
     return el('p', { className: 'lists-row lists-foot' }, kids);
   }
@@ -728,7 +737,8 @@
    * on. Last rather than first, because a page about you should not open
    * with what is not — see the header — and folded like the cards of your
    * own, because three rows with three names each is the tallest card on the
-   * page, and what it stands in for is one press away under it anyway.
+   * page, and what it stands in for is one press away, under the sentence
+   * that opens the fold.
    *
    * The same three rows the foot of a list already draws, off the same
    * request, and drawn with the same class. What is not here is the bookmark
@@ -766,14 +776,20 @@
          this page never asks. */
       fold('public', t('listsAllTitle'), listsLabel(shown.length), [
         el('p', { className: 'lists-say', textContent: t('listsAllWhy') }),
+        /* The way on to all of them, directly under the sentence that says
+           what they are and before the three that stand in for them. It has
+           been in both other places: centred under the rows while they were
+           always showing, and along the card's foot outside the fold, the
+           way the saves keep their map link. Both put it under three rows
+           of three names each, a screen below the title it belongs to,
+           where it read as a stray line under strangers' lists rather than
+           as this card's door. Inside the fold a closed card hides it, and
+           that is the trade: the title with its count says there is
+           something behind it, and the first thing anybody sees on opening
+           it is where the rest are. */
+        foot([link('accountPublicAll', ALL_PATH)]),
         ul
-      ]),
-      /* Outside the fold, along the foot, the way the saves keep their map
-         link: it is the way on from this card, and a closed fold must not
-         hide it. It was centred under the rows while the rows were always
-         showing, as the end of a column; a control under a fold is a
-         control on a card. */
-      foot([link('accountPublicAll', ALL_PATH)])
+      ])
     ]);
   }
 
@@ -891,46 +907,32 @@
    *
    * The order is the argument this page makes. Who you are, with everything
    * that can be done to the account on the same card; then what is yours —
-   * what you kept, what you wrote, what you kept of other people's — under a
-   * label saying so; then the one card here that is not yours, under its
-   * own. Signed out it is the same two halves with the offer of an account
-   * where the name would be, and the saves on this browser as the whole of
-   * the first.
-   *
-   * The label is the heading a list page puts over the three more lists at
-   * its foot — .lists-section, a group's name rather than a card's — standing
-   * in the stack over a run of cards. It is not drawn when there is nothing
-   * under it: everybody's lists are left out entirely when the site has none
-   * — see publicCard() — and a label over nothing would be the page
-   * apologising in two words.
+   * what you kept, what you wrote, what you kept of other people's; then the
+   * one card here that is not yours. Signed out it is the same two halves
+   * with the offer of an account where the name would be, and the saves on
+   * this browser as the whole of the first. Nothing labels the halves — see
+   * the header — and nothing is drawn for a card that is not there:
+   * everybody's lists are left out entirely when the site has none, see
+   * publicCard().
    */
-  function section(key) {
-    return el('h2', { className: 'lists-section', textContent: t(key) });
-  }
-
   function render() {
     clear(main);
     var wrap = el('div', { className: 'lists-stack' });
     var add = function (node) { if (node) wrap.appendChild(node); };
-    var theirs = publicCard();
 
     if (!state.ready) {
       add(switchedOff());
       add(savedCard());
     } else if (!state.user) {
       add(invitation());
-      add(section('accountYours'));
       add(savedCard());
-      if (theirs) add(section('accountTheirs'));
-      add(theirs);
+      add(publicCard());
     } else {
       add(youCard());
-      add(section('accountYours'));
       add(savedCard());
       add(listsCard());
       add(keptCard());
-      if (theirs) add(section('accountTheirs'));
-      add(theirs);
+      add(publicCard());
     }
 
     main.appendChild(wrap);

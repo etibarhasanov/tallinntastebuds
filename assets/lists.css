@@ -135,6 +135,13 @@
 
 .lists-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .lists-foot { margin-top: 6px; }
+/* The same row of ways on, inside a fold rather than along the card's foot:
+   the door to every public list, under the sentence that opens the account
+   page's last card and above the three rows that stand in for them. The
+   sentence already leaves its 12px under itself, so the row gives back half
+   the air a foot takes over a fold and puts it under the link instead, so the
+   link reads as the sentence's last line and not as the first row's caption. */
+.lists-fold > .lists-foot { margin: -6px 0 10px; }
 
 /* The ways on from a card, as rows — .menu out of assets/styles.css, the
    account sheet's own shape. Given the same air above it a foot of links had,
@@ -430,14 +437,12 @@
 }
 .lists-index-by:hover { color: var(--accent); }
 
-/* The heading over a group: the three more lists at the foot of a list, and
-   the two halves of the account page — "Yours" over the cards of your own
-   things, "Everybody else's" over the public lists. Quieter than a card title
-   — that one names the page or the card, this one names a run of things
-   inside or among them — and given room above so two groups read as two
-   rather than as one long one that changed its mind. In the account page's
-   stack the room above adds to the stack's own gap, which is what puts the
-   word nearer the cards it names than the one it follows. */
+/* The heading over a group: the three more lists at the foot of a list.
+   Quieter than a card title — that one names the page or the card, this one
+   names a run of things inside it — and given room above so the group reads
+   as its own thing rather than as the list that changed its mind. The account
+   page wore it too for a while, "Yours" and "Everybody else's" over its two
+   halves, and took it off again: see the header of assets/account.js. */
 .lists-section {
   margin: 26px 0 2px;
   font-family: var(--display);

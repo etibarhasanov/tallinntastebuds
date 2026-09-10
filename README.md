@@ -1863,9 +1863,9 @@ needs anyway. There is no third variable and no second service.
 
 `/account.html`. Your name, with the door to your public profile and the two
 things you can do to an account — change its password, or leave — on the same
-card; then, under a heading saying **Yours**, the places you saved, the lists
-you wrote, the box that makes another and the ones you kept; then, under
-**Everybody else's**, three of everybody else's lists.
+card; then the places you saved, the lists you wrote, the box that makes
+another and the ones you kept; then, last, three of everybody else's lists
+and the way on to all of them.
 
 It was a menu in the sheet the map opens, and the menu is what went wrong with
 it. A sheet over the map is for something you do and dismiss — sign in, change
@@ -1883,24 +1883,25 @@ that names them:
 etibar                          the name, one line saying what the page is,
   Your public profile >         the door to how it looks to everybody else,
   Change password · Sign out    and the two things you can do to the account
-Yours
 Places I saved        8 places  a fold: one row a place, newest first
   See them on the map           outside it, so a long fold cannot bury it
 Your lists             3 lists  a fold: one row a list
   [ Name a list ] [ Make it ]   outside the fold, one line high
 Lists you saved         1 list  a fold: one row somebody else's
-Everybody else's
-Public lists           3 lists  a fold: three of everybody else's, most kept first
-  Every public list             outside it, the way on to all of them
+Public lists           3 lists  a fold: a sentence, the way on to all of them,
+  Every public list             and three of everybody else's, most kept first
 ```
 
 Five cards, one thing each, in the order of how much each is yours: who you
 are, what you kept, what you wrote, what you kept of other people's, and what
-is nobody's in particular. The last four are two groups, and a heading says
-so over each — the same quiet heading a list page puts over the three more
-lists at its foot, `.lists-section`, a group's name rather than a card's. The
-order alone had not been enough: five cards in one column read as one column,
-and nothing said where your own things stopped and everybody else's began. The lists you wrote and the lists you kept had one
+is nobody's in particular. The last four are two groups, and for a while a
+heading said so over each — **Yours** and **Everybody else's**, the quiet
+heading a list page puts over the three more lists at its foot,
+`.lists-section`. They went again: on a phone they were two more lines
+between your name and your things, and each said what the titles under it
+already say — *Places I saved*, *Your lists* and *Lists you saved* are yours
+by their names, and *Public lists* is nobody's by its. The order carries the
+argument on its own. The lists you wrote and the lists you kept had one
 card between them for a while, two folds with the box that makes a list
 standing between — and that card was the one on the page nobody could read
 at a glance: two titles, a form, and the second title reading as a footnote
@@ -1979,16 +1980,27 @@ Ferment · Kaerajaan · Rataskaevu 16* tells them whether to press it.
 It stood directly under your name for a while, above everything of your own,
 and that made the page open with the one thing on it that is not yours: a
 page called Account, with your name at the top, whose first and tallest block
-was three strangers' top tens. It is the last card now, under its own heading,
-after what you saved, what you wrote and what you kept — and signed out it is
-under the saves on this browser the same way. It folds because, open, three
-rows with three names each was the tallest card on the page, and the count on
-its title is what is behind it — three, or fewer while the site is young —
-rather than how many public lists there are, which this page never asks.
-**Every public list** stands outside the fold along the card's foot, the way
-**See them on the map** stands under the saves. The folds are what let it move: the reason it went
-to the top was a column forty rows deep burying it, and a card that is one
-line high until it is opened buries nothing.
+was three strangers' top tens. It is the last card now, after what you saved,
+what you wrote and what you kept — and signed out it is under the saves on
+this browser the same way. It folds because, open, three rows with three
+names each was the tallest card on the page, and the count on its title is
+what is behind it — three, or fewer while the site is young — rather than how
+many public lists there are, which this page never asks. The folds are what
+let it move: the reason it went to the top was a column forty rows deep
+burying it, and a card that is one line high until it is opened buries
+nothing.
+
+**Every public list**, the way on to all of them, is the first thing inside
+the fold, under the sentence that says what the card is and above the three
+rows. It has stood in both other places: centred under the rows while they
+were always showing, and outside the fold along the card's foot, the way
+**See them on the map** stands under the saves. Both put it under three rows
+of three names each, a screen below the title it belongs to, where it read as
+a stray line under strangers' lists rather than as this card's door. Inside
+the fold a closed card hides it, and that is the trade taken: the title with
+its count already says there is something behind it, and the first thing
+anybody sees on opening it is where the rest are. It is the one way on here
+that a fold holds — see the next section for the rule the others follow.
 
 They are the same three rows the foot of every list already draws, off the same
 request and in the same class — `allRow()` on `/lists/public`, `row()` here.
@@ -2018,7 +2030,8 @@ in with all three closed, the whole account is one phone screen: your name,
 the door to your profile and the way out, how many places you kept, how many
 lists you wrote, the field that names the next one, how many you kept of
 other people's, and that there are three of everybody's worth opening — with
-every door out in sight without scrolling.
+every door out in sight without scrolling, bar the one to every public list,
+which the last fold holds for the reason the section above gives.
 
 A closed fold is not the menu this page was made out of. A menu row said the
 name of another page; this one says how many of your things are behind it and
@@ -2610,9 +2623,9 @@ private.
 
 Your lists are named on `/account.html`, one row each, behind a fold with the
 count on it — and under that fold the box that makes another one, and under
-that the ones you kept. Everybody else's are a card above all of it, three of
-them named rather than promised. That is the whole of the way in, and there is
-nothing else in front of it.
+that the ones you kept. Everybody else's are a card under all of it, three of
+them named rather than promised, with the way on to the rest inside it. That
+is the whole of the way in, and there is nothing else in front of it.
 
 There used to be more, and every step of this argument has been the same one
 getting shorter. The map's sheet had three rows for lists once — **Your
