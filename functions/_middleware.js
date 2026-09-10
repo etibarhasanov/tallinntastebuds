@@ -32,10 +32,44 @@
  *
  * `_routes.json` keeps this off the asset paths, so photos and story videos
  * are served straight from the edge and never spend a Function invocation.
+ *
+ * ---------------------------------------------------------------------------
+ * AND ONE MORE HOSTNAME, WHICH IS SPLITWISE'S
+ *
+ * Everything below the SPLITWISE line is that feature's and only that
+ * feature's: one constant, three path names and one block inside onRequest().
+ * Delete the four of them and this file is exactly what it was — see **Taking
+ * it out** under **Splitwise** in README.md.
+ *
+ * splitwise.tallinntastebuds.ee is one more custom domain on this same Pages
+ * project. There is no second project, no second database and no second build;
+ * what makes it a different site is the block below, which serves split.html
+ * at its root and 301s every other address on it back to tallinntastebuds.ee,
+ * so there is one copy of the map and one link to it.
+ *
+ * The subdomain is where a person types the address and not where the page
+ * lives. `/split` answers on every host, including every preview under
+ * *.tallinntastebuds.pages.dev where a subdomain of the live domain cannot
+ * exist at all, so the feature can be looked at on a pull request the way
+ * everything else here is. The rewrite below is convenience over that route,
+ * not the route itself.
  */
 
 const CANONICAL_HOST = 'tallinntastebuds.ee';
 const PAGES_HOST = 'tallinntastebuds.pages.dev';
+
+/* ------------------------------------------------------------- SPLITWISE */
+const SPLIT_HOST = 'splitwise.' + CANONICAL_HOST;
+
+/* The three paths that mean anything on that hostname. Everything else it is
+   asked for is a page of the map's and goes back to the map's own address.
+   /api is one prefix rather than a list because the splitwise page reads the
+   account route as well as its own, and the map's other routes answering there
+   costs nothing — none of them is a page anybody links to. */
+const SPLIT_PAGE = '/split';
+const SPLIT_FILE = '/split.html';
+const API_PREFIX = '/api/';
+/* --------------------------------------------------------- end SPLITWISE */
 
 export async function onRequest(context) {
   const url = new URL(context.request.url);
@@ -49,6 +83,35 @@ export async function onRequest(context) {
     // The path and query ride along, so a shared ?spot= link keeps working.
     return Response.redirect(url.toString(), 301);
   }
+
+  /* ----------------------------------------------------------- SPLITWISE */
+  if (url.hostname === SPLIT_HOST) {
+    /* The front door. A rewrite rather than a redirect, so the address people
+       were given — the bare subdomain — is the address they keep.
+
+       It rewrites to /split and not to /split.html, which is the spelling the
+       file actually has: Pages serves an extensionless copy of every page and
+       308s the .html address to it, so rewriting to the file would hand back
+       that redirect and put /split in the address bar after all, which is the
+       one thing this line exists to avoid. */
+    if (url.pathname === '/') {
+      const to = new URL(url);
+      to.pathname = SPLIT_PAGE;
+      return context.next(new Request(to.toString(), context.request));
+    }
+
+    /* Everything that is not that feature belongs to the site, at the site's
+       own address. Same argument as the pages.dev redirect above, and the same
+       301: one copy of the map, one link to it. */
+    if (url.pathname !== SPLIT_PAGE && url.pathname !== SPLIT_FILE &&
+        !url.pathname.startsWith(API_PREFIX)) {
+      url.protocol = 'https:';
+      url.hostname = CANONICAL_HOST;
+      url.port = '';
+      return Response.redirect(url.toString(), 301);
+    }
+  }
+  /* ------------------------------------------------------- end SPLITWISE */
 
   return context.next();
 }
