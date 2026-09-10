@@ -170,6 +170,55 @@ if (ui !== null) {
 
 if (languages.length === 0) languages = ['en'];
 
+/* --------------------------------------------------------------- SPLITWISE
+   data/split.json — the splitwise page's own strings, in a file of its own so
+   that removing that feature is removing files rather than picking six hundred
+   lines out of the middle of the one every other page reads. See **Taking it
+   out** under **Splitwise** in README.md; this block and the one line in the
+   key check further down are all this file knows about it.
+
+   Held to exactly what ui.json is held to, and to one thing more: the same
+   languages, no more and no fewer. A pack that speaks nine of the ten would
+   print raw keys at whoever chose the tenth, and a language in here that is
+   not a language of the site is a translation nothing will ever read. */
+
+const splitUi = existsSync(join(DATA, 'split.json')) ? readJSON('data/split.json') : null;
+const splitKeys = new Set();
+
+if (splitUi !== null) {
+  if (!isPlainObject(splitUi)) {
+    fail('data/split.json', 'must be an object keyed by language code');
+  } else {
+    const said = Object.keys(splitUi);
+    for (const lang of said) {
+      if (!languages.includes(lang)) {
+        fail('data/split.json', `speaks "${lang}", which is not a language of data/ui.json`);
+      }
+    }
+    for (const lang of languages) {
+      if (!said.includes(lang)) fail('data/split.json', `has no "${lang}" — data/ui.json has one`);
+    }
+
+    const usable = said.filter((l) => isPlainObject(splitUi[l]));
+    const everyKey = new Set();
+    for (const lang of usable) for (const key of Object.keys(splitUi[lang])) everyKey.add(key);
+
+    for (const key of [...everyKey].sort()) {
+      splitKeys.add(key);
+      const missing = usable.filter((lang) => !isNonEmptyString(splitUi[lang][key]));
+      if (missing.length > 0) {
+        fail('data/split.json', `string "${key}" is missing (or empty) in: ${missing.join(', ')}`);
+      }
+      /* One string, one home. A key in both files is a string with two values
+         and no way to tell which one a page drew. */
+      if (ui !== null && isPlainObject(ui) && usable.some((lang) => ui[lang] && key in ui[lang])) {
+        fail('data/split.json', `string "${key}" is also in data/ui.json — it belongs in one of them`);
+      }
+    }
+  }
+}
+/* ----------------------------------------------------------- end SPLITWISE */
+
 /* The filter row carries two chips that are not types: Discount, which reads
    data/deals.json instead of a place's types, and Saved, which reads the
    places this browser has kept. A taxonomy type claiming either id would
@@ -1014,6 +1063,9 @@ if (ui !== null && isPlainObject(ui)) {
   for (const lang of Object.keys(ui)) {
     if (isPlainObject(ui[lang])) for (const key of Object.keys(ui[lang])) known.add(key);
   }
+  /* SPLITWISE: split.html and assets/split.js draw theirs from data/split.json.
+     Delete this line with the block above. */
+  for (const key of splitKeys) known.add(key);
 
   const pages = readdirSync(ROOT).filter((f) => f.endsWith('.html'));
   for (const page of pages) {
@@ -1022,7 +1074,7 @@ if (ui !== null && isPlainObject(ui)) {
       const re = new RegExp(attr + '="([^"]+)"', 'g');
       let hit;
       while ((hit = re.exec(text)) !== null) {
-        if (!known.has(hit[1])) fail(page, `asks for the string "${hit[1]}", which is in no language of data/ui.json`);
+        if (!known.has(hit[1])) fail(page, `asks for the string "${hit[1]}", which is in no language of data/ui.json or data/split.json`);
       }
     }
   }
@@ -1040,7 +1092,7 @@ if (ui !== null && isPlainObject(ui)) {
         /* Only things shaped like a key. A t() call can hold a fallback or a
            separator, and neither is a missing string. */
         if (!KEY_SHAPE.test(key) || known.has(key)) continue;
-        fail(`assets/${script}`, `calls t('${key}'), which is in no language of data/ui.json`);
+        fail(`assets/${script}`, `calls t('${key}'), which is in no language of data/ui.json or data/split.json`);
       }
     }
   }

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Splitwise | Tallinn Tastebuds</title>
+<meta name="description" content="Dinner for five and one card at the table. Put in what everybody paid, and this says who hands what to whom.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+
+<!-- No PAGE-HEAD markers and no social card, for the reason account.html has
+     none: everything on this page is behind a session, and a group's own link
+     is one people send to four friends rather than one anybody unfurls. The
+     invitation carries the group's name in the page once it is opened, and
+     nothing about it in a preview card. _headers carries the noindex to match,
+     and it is not in sitemap.xml. -->
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The tokens, the card, the eyebrow and the controls come from the map's
+     stylesheet; the brand header, the stack, the cards and the fields come
+     from the lists page's, exactly as the account page takes them. The third
+     is this page's own, and it is short: a column of money, the people a bill
+     is split between, and the line that says who owes whom. Nothing else here
+     is new furniture. -->
+<link rel="stylesheet" href="/assets/styles.css?v=587f902a">
+<link rel="stylesheet" href="/assets/lists.css?v=5c85629e">
+<link rel="stylesheet" href="/assets/split.css?v=5cc33ddb">
+</head>
+<body class="lists-body">
+
+<a class="skip-link" href="#main" data-i18n="splitSkip">Skip to your groups</a>
+
+<header class="lists-brand">
+  <!-- Home is the map, and where the map is depends on which hostname this
+       is: at the root of tallinntastebuds.ee and of every preview, and one
+       domain up from splitwise.tallinntastebuds.ee, where the root is this
+       page. The site's own spelling is here so the header is right with no
+       script at all; assets/split.js rewrites it on the subdomain. -->
+  <a class="lists-home" id="brand-home" href="/" data-i18n-aria-label="listsBack" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
+  </a>
+</header>
+
+<!-- Signed in, signed out, invited, and switched off: all four are built by
+     assets/split.js into this one element, decided once when every answer is
+     in. Nothing in the markup depends on which of them it is, so nothing can
+     be left standing from a state the page is no longer in. -->
+<main class="lists-main" id="main" tabindex="-1"></main>
+
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Splitwise</p>
+    <h2>Split the bill</h2>
+    <p>This page is your groups and what everybody in them paid, which takes
+      JavaScript to draw. The map itself works rather better than this page
+      does without it — <a href="/">it is over here</a>.</p>
+  </div>
+</noscript>
+
+<script src="/assets/split.js?v=f6854cc8" defer></script>
+</body>
+</html>

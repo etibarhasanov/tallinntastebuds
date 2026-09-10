@@ -71,6 +71,13 @@ en, et, fi, pt, ru, es, tr, uk. Never print a raw key or an English fallback
 to a visitor. A key nothing prints any more goes, in all ten, in the commit
 that orphaned it.
 
+One exception, and it is a deliberate one: the splitwise page's strings are in
+`data/split.json`, same shape and same ten languages, so that removing that
+feature is removing files — see **Taking it out** under **Splitwise** in
+`README.md`. The validator holds it to everything `ui.json` is held to, plus
+the same ten languages and no key in both files. Nothing else may do this; a
+second exception is two files to keep in step.
+
 **Every touch of `localStorage` is inside `try/catch`.** It throws outright
 in some private-browsing modes, and the site is meant to work with it absent.
 
@@ -100,10 +107,10 @@ browser cannot import from `tools/`; change one, change the other.
   the tokens any block declares. `:root` is not compared.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the seven pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the eight pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `google.html`, `deal.html`, `verify.html`,
-  `staff.html` — must carry `?v=` equal to the first eight hex of the file's
+  `staff.html`, `split.html` — must carry `?v=` equal to the first eight hex of the file's
   SHA-256. A new page that loads anything out of `assets/` is added to that
   list, or it never gets stamped. `admin.html` is deliberately unstamped; it
   is served `no-store`.

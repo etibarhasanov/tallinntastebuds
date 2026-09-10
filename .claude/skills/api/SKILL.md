@@ -36,7 +36,7 @@ leading underscore are modules, not routes.
 
 | Route | File | Writes | Cache |
 |---|---|---|---|
-| `/*` | `_middleware.js` | none; 301s `pages.dev` to `tallinntastebuds.ee` | as `_headers` |
+| `/*` | `_middleware.js` | none; 301s `pages.dev` to `tallinntastebuds.ee`, and — **splitwise**, in a fenced block — serves `split.html` at the root of `splitwise.tallinntastebuds.ee` while 301ing every other path on that host back to the site | as `_headers` |
 | `GET /api/saves` | `saves.js` | none | `public, max-age=60`, weak ETag, plus the edge cache under `countsKey()` |
 | `POST /api/saves` | `saves.js` | `saves`, then `RECOUNT_SQL`, in one `batch()`; purges the counts cache | `no-store` |
 | `GET/POST /api/account` | `account.js` | `users`, `sessions`, `login_fails`; `claim()` moves device saves onto the user and recounts | `no-store`, `Set-Cookie ttb_s` |
@@ -45,6 +45,7 @@ leading underscore are modules, not routes.
 | `GET /api/venues` | `venues.js` | none; the whole `google_venues` table | `public, max-age=300` |
 | `GET /api/geocode` | `geocode.js` | none; proxies Photon for the add-a-place form, session required, cached a day; its `suggest()` is also what `/api/ask` measures "near" from | `no-store` |
 | `GET /api/profile` | `profile.js` | none; one person's public lists and their keep total | `no-store` |
+| `GET/POST /api/split` | `split.js` | **splitwise** — `split_groups`, `split_members`, `split_expenses`, `split_shares`, `split_settlements`. Every action but `create` and `join` reads the caller's own membership of the group it names first; a non-member is told the group does not exist | `no-store`, for the reason `lists.js` is |
 | `POST /api/ask` | `ask.js` | none; narrows the two rolls to what a question could be about and puts it to Workers AI; measures "near" from the place named through `geocode.js`, or from the visitor's own dot sent as `here` | `no-store` |
 | `/list/<id>` | `list/[id].js` | none; `lists.html` with the list unfurled | `no-store` |
 | `/lists/public` | `lists/public.js` | none; `lists.html` with the first page of everybody's lists seeded in, searched when the address carries `?q=` | `no-store` |

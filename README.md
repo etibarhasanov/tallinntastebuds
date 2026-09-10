@@ -55,6 +55,7 @@ completely with the database switched off.
 - [Lists](#lists)
 - [Public lists](#public-lists)
 - [Profiles](#profiles)
+- [Splitwise](#splitwise)
 - [Stories](#stories)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -1833,6 +1834,15 @@ catches up with the setting, the same way a sign-in does.
   seven-day cap on script-written storage does not apply to a cookie the
   server set, which is the difference between a sign-in lasting a week and
   lasting a year on an iPhone.
+- **It is scoped to the domain, not to the host**, so that one account covers
+  `tallinntastebuds.ee` and the splitwise subdomain under it — see
+  **[Splitwise](#splitwise)** for the whole of that argument. Only where the
+  domain is actually ours: a preview at `*.tallinntastebuds.pages.dev` gets the
+  host-only cookie it always had, because a `Set-Cookie` naming another
+  registrable domain is dropped by the browser and the sign-in would silently
+  not take. The cost is that every subdomain of `tallinntastebuds.ee` now
+  receives the cookie, so nothing may be hosted under one that should not hold
+  a session token.
 - **Guessing is the attack**, since there is no reset link to phish and no
   address to intercept. Ten wrong passwords from one network fingerprint in
   fifteen minutes and that fingerprint waits.
@@ -3649,6 +3659,289 @@ over `users`, `lists` and `list_keeps`, all of which **Lists** already needs.
 
 ---
 
+## Splitwise
+
+Five people eat somewhere on this map, one card pays, and the rest of the
+evening is arithmetic done badly in a group chat. **splitwise.tallinntastebuds.ee**
+is that arithmetic done once: a group somebody names, a link they send to the
+other four, a line for each thing anybody paid for, and one sentence at the
+bottom saying who hands what to whom.
+
+It is the only thing on this site that is not about restaurants, and it is
+here because it is what happens immediately after one.
+
+### Why a subdomain
+
+Everything else on this site is a view of the map — a list is places off it, a
+profile is the person who wrote the lists, the account page is your things.
+This is not. Nothing in it points at a restaurant, nothing in it can, and a
+fifth card on the account page reading "Groups" would have been a second
+product filed under somebody's saved places.
+
+So it has an address of its own, and the address is the only thing that is its
+own. There is no second Pages project, no second database, no second build and
+no second account system: `functions/_middleware.js` reads the hostname, serves
+`split.html` at the root of the subdomain, and 301s every other address on it
+back to `tallinntastebuds.ee`, so there is one copy of the map and one link to
+it.
+
+The page also answers at **`/split`** on every host, and that is not a
+fallback — it is where the page actually lives. A preview deployment is
+`<branch>.tallinntastebuds.pages.dev`, and no subdomain of the live domain can
+exist under it, so a feature that only answered on the subdomain could never be
+looked at on a pull request. The rewrite on the subdomain's root is one line of
+convenience over the real route.
+
+### The name
+
+"Splitwise" is the name of an existing company's app, and this is a subdomain
+and a page title using it. Nothing here is passing itself off as theirs —
+there is no borrowed branding and nothing is sold — but the word is somebody
+else's mark, and a site that keeps its reasoning in a file should say so rather
+than leave the next person to discover it. Changing it is two constants and a
+handful of strings: `SPLIT_HOST` in `functions/_middleware.js`, `ON_SUBDOMAIN`
+in `assets/split.js`, and the `split*` keys in `data/ui.json`. Everything else
+— the tables, the routes, the file names — is spelled `split`.
+
+### It is the same account as the map
+
+A member of a group is a `users.id` out of `functions/api/account.js`, made
+from the same two fields the map's sheet asks for. Somebody who has been saving
+places for a year is already somebody who can be owed eleven euros, and
+somebody who signs up here to split a dinner can go and save places under the
+same name.
+
+**One line makes that work across two hostnames.** A cookie set with no
+`Domain` is a cookie for the host that set it, so a session made on
+`tallinntastebuds.ee` would not be sent to `splitwise.tallinntastebuds.ee` at
+all — signing in on the map and arriving here signed out. `sessionCookie()` in
+`functions/api/_lib.js` now scopes it to `tallinntastebuds.ee` when the request
+came in on that domain or a subdomain of it, and leaves it host-only anywhere
+else, because a `Set-Cookie` naming a domain that is not the request's is
+dropped by the browser outright and every preview under `*.pages.dev` would
+have lost its sign-in.
+
+The cost is worth writing down: **every subdomain of `tallinntastebuds.ee` now
+receives the session cookie.** There is one, and `_lib.js` is where to come
+back to before there is a second.
+
+Signing out clears the cookie twice, host-only as well as domain-scoped, so a
+browser still holding the one this site set for years before any of this is not
+left signed in by a Sign out that appeared to work.
+
+### The invitation
+
+A group's id is its invitation: `dinner-at-rataskaevu-k3fmqw`, minted exactly
+the way a list's id is — a readable stem from the name, and six characters out
+of an alphabet with no vowels and no `0/o/1/l` in it. The link is
+`/split?g=<id>`, and that one address is the whole of the routing:
+
+| You are holding | and you are | so the page is |
+|---|---|---|
+| nothing | signed in | your groups, and the box that makes one |
+| a code | in that group | the group |
+| a code | not in it | the offer to join, with the group's name on it |
+| a code | signed out | the sign-up form, with the group's name above it |
+
+The link people send each other is the same link they use afterwards, which is
+the only shape of share link nobody has to be told twice about.
+
+**Holding the link is the whole of the permission.** There is no request to
+join and nobody to approve one — the same rule a shared list is under, for the
+same reason: the code is unguessable, and a group whose link has got out is a
+group to remake rather than a moderation queue to build. What the code buys
+before joining is deliberately thin: the group's name and how many people are
+in it, and not one expense, balance or other member's name.
+
+### Money is cents, everywhere
+
+Never a float. Money in a float is the bug that takes a year to surface —
+three shares of 33.33 against a total of 100.00 that never quite balances, and
+no way to say which cent went missing. The browser's fields take `24.60` and
+`24,60` (one of the ten keyboards this site is read on writes the comma) and
+send `2460`; `split_expenses.cents` is an integer; every sum in
+`functions/api/split.js` is integer arithmetic. Euros only: the city has one
+currency, and a column that could hold another is a column every sum would have
+to start caring about.
+
+### How a bill is divided, and the cent that does not divide
+
+The obvious version divides the total by the number of members when the page is
+read. It is wrong twice over. A group's membership changes — somebody joins on
+Sunday and would retroactively owe a third of Friday's dinner — and an equal
+split of 10.00 between three people is 3.33 three times, which is 9.99.
+
+So the division happens once, when the expense is entered, against the members
+as they stand at that moment, and the answer is written down in
+`split_shares`: 3.34, 3.33, 3.33. The remainder cents go to the first few
+members in join order, so the same bill divides the same way every time it is
+read rather than moving a cent about between refreshes. Somebody has to have
+the extra cent, and it is better that it is written down than that it is lost.
+
+What a group owes is then a sum of integers over rows that cannot change.
+
+### Where everybody stands, and who pays whom
+
+Each member's balance is what they paid for, plus what they have handed over
+since, less what they owe and what has been handed to them. The column sums to
+zero — every cent that leaves one balance arrives in another, which is what the
+remainder above is protecting.
+
+Under it, the shortest list of payments that clears the column: biggest debt
+against biggest credit, repeat. That greedy pairing is not guaranteed to be the
+theoretical minimum number of transfers — that is an NP-hard problem and nobody
+at a dinner table has one — but it always clears the balances, needs at most one
+payment fewer than there are people, and gives the same answer every time it is
+asked, which is what a page five people are reading together needs.
+
+Pressing **Mark as paid** on one of those lines writes a `split_settlements`
+row. A payment is deliberately not an expense with a negative amount: an
+expense buys something and a payment only moves a debt, and folding the two
+together would make every sum in the file have to know which it was looking at.
+
+### Who may do what
+
+A group is a room of friends rather than a wiki, and the rules are the smallest
+set that keeps it honest:
+
+| | who |
+|---|---|
+| add an expense | any member — the payer need not be the person typing, which is how this ever gets filled in at all |
+| remove one | whoever entered it, and whoever paid it |
+| record a payment | any member, since the button sits on a line about two other people |
+| remove a payment | either end of it, and whoever wrote it down |
+| rename the group | its owner |
+| delete the group | its owner, and it takes everything in it |
+| leave | any member who is not yet in the arithmetic |
+
+**Leaving is for the person who opened the wrong link**, and that is all it is
+for. The moment somebody appears as a payer, as a share of somebody else's
+bill, or at either end of a payment, leaving would take their name out of a
+column that still counts their cents and the group would stop adding up. So it
+is refused, and the way out of a group you have spent in is for its owner to
+take the whole thing down.
+
+There is no archive and no undo on that. What it deletes is who owed whom what
+three weeks ago, which is exactly the thing nobody wants kept.
+
+**A username, never a `users.id`, crosses the wire.** The id is the site's
+internal handle — it is the owner column on a save, a list and a place somebody
+added — and there is no reason for four friends to learn each other's. A
+username is already public: it is the byline on every list here.
+
+### The caps
+
+| | | why |
+|---|---|---|
+| `MAX_MEMBERS` | 12 | the table you are sitting at. Past this the suggested payments stop being something anybody reads, and the thing being asked for is a different feature |
+| `MAX_GROUPS` | 20 | per account, counted over membership: a group you were added to costs the same as one you made |
+| `MAX_ENTRIES` | 200 | expenses per group, and payments per group |
+| `MAX_NAME` | 60 | the group's name |
+| `MAX_WHAT` | 60 | what an expense was for |
+| `MAX_CENTS` | 1000000 | €10,000. Nobody splitting a dinner meets it, and a typo of six extra digits is refused at the door rather than left sitting in somebody's balance |
+
+They are in `functions/api/split.js`, which is the copy that binds. The first
+three of the lengths are restated in `assets/split.js` as `MAX_NAME`,
+`MAX_WHAT` and `MAX_CENTS`, so a field stops somebody at the keystroke rather
+than at the round trip — change one, change the other.
+
+### Turning it on
+
+Two things, and neither is automatic:
+
+1. **Apply the schema to both databases.** `db/schema.sql` is re-runnable and
+   nothing in CI applies it:
+
+   ```
+   wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
+   wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
+   ```
+
+   Until it is run, `/api/split` answers `no such table` and the page shows
+   nothing but its own error line. Preview first; production the moment the
+   change lands, because the code is live within the minute of the push.
+
+2. **Add the subdomain to the Pages project.** Cloudflare dashboard → the
+   `tallinntastebuds` project → **Custom domains** → add
+   `splitwise.tallinntastebuds.ee`. The DNS is already Cloudflare's, so this is
+   one form and a certificate that issues itself. Until it is added, everything
+   works at `/split` and the subdomain does not resolve.
+
+There is no third variable and no second service. `DB` and `SAVE_SALT` are the
+same two the saves and the accounts already need.
+
+### Taking it out
+
+This feature is meant to be removable, and it was built that way on purpose:
+it is not sure yet whether it stays. So it is **twelve files of its own and
+five small additions to files that already existed** — no shared helper was
+extracted for it, no existing function was rewritten around it, and nothing
+anywhere else on this site reads a row, a string or a line of it.
+
+Delete these outright:
+
+```
+split.html                 the page
+assets/split.js            the browser half
+assets/split.css           its eighteen rules
+functions/api/split.js     the route, and the five tables' only writer
+data/split.json            its strings, all ten languages
+```
+
+Then take these back out. Each is an addition to a file that stood before it,
+and each is fenced or prefixed so it can be found by looking:
+
+| File | What is splitwise's |
+|---|---|
+| `functions/_middleware.js` | the `SPLITWISE` block of constants and the `SPLITWISE` block inside `onRequest()` — both marked, both additions, nothing above them was touched |
+| `functions/api/_lib.js` | `SESSION_DOMAIN`, the two lines in `sessionCookie()` that read it, and its third parameter. **This is the only thing splitwise changed rather than added**, and taking it out is `sessionCookie(token, days)` again |
+| `functions/api/account.js` | the third argument at the two `sessionCookie(token, SESSION_DAYS, request)` calls, and the second `set-cookie` in the `logout` branch, which exists only to clear the domain-scoped one |
+| `tools/validate.mjs` | the `SPLITWISE` block after the `ui.json` check, and the one line adding `splitKeys` to `known` |
+| `tools/stamp.mjs` | `'split.html'` in `PAGES` |
+| `_headers` | the `/split.html` and `/split` rules |
+| `robots.txt` | the `Disallow: /split` line |
+| `README.md` | this section, its line in **Contents**, its four lines in **Files**, the two `split.json` lines under **What the validator checks**, the domain-scoped-cookie bullet under **Accounts**, and the subdomain paragraph under **The custom domain** |
+| `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
+| `.claude/skills/api/SKILL.md` | the `/api/split` row and the splitwise clause in the `/*` row |
+| `.claude/skills/site/SKILL.md` | the `split.html` in the stamped-pages list, and the paragraph about `data/split.json` |
+
+And in Cloudflare: remove `splitwise.tallinntastebuds.ee` from the Pages
+project's **Custom domains**, and drop the five tables —
+`split_shares` first, then `split_expenses`, `split_settlements`,
+`split_members`, `split_groups` — from both databases, along with their block
+in `db/schema.sql`.
+
+**What has no removal step, and that is the point.** `data/ui.json` is
+untouched by this feature — not one of its 346 strings moved, which is why the
+610 splitwise ones are in a file of their own. `functions/api/lists.js`,
+`assets/app.js`, `assets/lists.js`, `assets/account.js`, `index.html`,
+`account.html`, `lists.html`, every other stylesheet and every file under
+`data/` except the new one are byte-for-byte what they were.
+
+**The one real cost of keeping it separate**, said out loud because this repo
+does not hide trades: `functions/api/split.js` carries its own `shareCode()`,
+`slugOf()` and `words()`, which are a second copy of what
+`functions/api/lists.js` has. They were shared in `_lib.js` for a while, which
+is what this codebase normally does with anything two routes need —
+`nearTallinn()` says so in its own note. That is the right answer for a
+permanent feature and the wrong one for a provisional one: a shared helper is
+the thread that turns a deletion into an unpicking. **If splitwise is kept,
+that is the first thing to revisit**, because two copies of how an unguessable
+invitation is minted is two copies that can drift.
+
+### What it does not do
+
+No receipts, no photographs, no categories, no reminders, no currency but the
+euro, no unequal shares — a bill is split evenly between the people you tick,
+and the way to handle "I only had the soup" is to enter the soup as its own
+line. No notifications of any kind: this site has no address for anybody, which
+is the whole shape of its account, and that has not changed for this.
+
+It is also not on the map, and must not become so. Nothing in `data/` knows
+this feature exists.
+
+---
+
 ## Stories
 
 The one thing on this map that is not permanent. Everything else here is a
@@ -4271,6 +4564,12 @@ Two steps, in this order:
 2. **Custom domains.** Add the domain under the Pages project's **Custom
    domains** tab. Cloudflare issues the certificate automatically.
 
+**`splitwise.tallinntastebuds.ee` is a third entry on that same tab**, on the
+same project, pointing at the same deployment — see
+**[Splitwise](#splitwise)**. `functions/_middleware.js` is what makes it a
+different site rather than a second copy of this one, and until the entry
+exists that feature answers at `/split` and the subdomain does not resolve.
+
 Five lines in the repo name the host — see [Getting found](#getting-found).
 Nothing else needs touching: every path in the site is relative, and the
 scripts build absolute URLs from `window.location.origin`, so the QR codes and
@@ -4375,8 +4674,12 @@ to read and write first.
   languages, or a label no pattern can ever produce — see **The directory**
 - a UI string present in one language but missing in another
 - a string the site asks for — a `data-i18n` key in the markup, a `t('key')`
-  in a script — that is in no language of `data/ui.json` at all, which is how
-  a visitor ends up reading the key itself off the page
+  in a script — that is in no language of `data/ui.json` or `data/split.json`
+  at all, which is how a visitor ends up reading the key itself off the page
+- a `data/split.json` that speaks a language `data/ui.json` does not, or is
+  missing one it does, or is missing a string in one of them, or carries a key
+  `data/ui.json` also carries — one string, one home. See
+  **[Splitwise](#splitwise)**
 - a colour token one style declares and another leaves out, which is a style
   quietly wearing the other one's value out of `:root`. See **The design
   rules**
@@ -4446,7 +4749,9 @@ CLAUDE.md                  what a session reads before it starts, and which
 index.html                 the whole page
 assets/styles.css          design tokens at the top, then everything else
 assets/app.js              map, panel, filters, i18n, lightbox — no framework
-functions/_middleware.js   sends the pages.dev address to the real one
+functions/_middleware.js   which hostname is this: the pages.dev copy goes to
+                           the real one, and the splitwise subdomain serves the
+                           page below and nothing else
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, change a password
 functions/api/lists.js     somebody else's top ten: make one, fill it, share
@@ -4457,6 +4762,8 @@ functions/api/geocode.js   a typed street to a point, for the add-a-place form
                            and for "near Laulupeo" in the chat; Photon behind it,
                            a session in front of the route
 functions/api/profile.js   one person's public lists, and their standing
+functions/api/split.js     splitwise: a group, who is in it, what everybody
+                           paid, and who hands what to whom
 functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
 functions/api/_mostkept.js reading a page of everybody's, most kept first
@@ -4477,6 +4784,15 @@ assets/lists.css           what a list page has and the map does not, and the
 account.html               your name, your saved places, your lists, the
                            ones you kept, and everybody else's
 assets/account.js          all three of its states; no stylesheet of its own
+split.html                 splitwise, at /split and at the root of
+                           splitwise.tallinntastebuds.ee
+assets/split.js            all four of its states, the second sign-in form on
+                           the site, and the reason there is one
+assets/split.css           what a column of money needs and the other pages
+                           do not
+data/split.json            that page's strings, in the same ten languages —
+                           its own file so that deleting the feature is
+                           deleting files
 google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not

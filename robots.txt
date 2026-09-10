@@ -53,6 +53,18 @@ Disallow: /account.html
 # One line for both spellings: Pages serves google.html at /google as well.
 Disallow: /google
 
+# Splitwise: your groups and who owes whom, which is a page with nothing on it
+# until somebody signs in and nothing on it for anybody but the five people in
+# a group after that. One line for both spellings, the way /google is written:
+# Pages serves split.html at /split as well.
+#
+# The invitation to a group is /split?g=<code>, which this covers — a Disallow
+# is a path prefix and the query string is not part of the path. That is the
+# right answer here and the opposite of the one /list/<id> needs: a list is
+# meant to unfurl in a message, and a group is meant to be handed to four
+# people who already know what it is.
+Disallow: /split
+
 # The admin page is not for anybody, crawler or otherwise. Nothing links to
 # it and it carries its own noindex tag.
 Disallow: /admin.html

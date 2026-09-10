@@ -228,13 +228,21 @@ export async function onRequestPost(context) {
         .bind(await sha256Hex(token))
         .run();
     }
-    return new Response(JSON.stringify({ user: null }), {
-      headers: {
-        'content-type': 'application/json; charset=utf-8',
-        'cache-control': 'no-store',
-        'set-cookie': sessionCookie('', 0)
-      }
+    /* Two clears, and the second one is not a mistake. The session cookie is
+       scoped to tallinntastebuds.ee so that the splitwise subdomain is signed
+       in when the map is — see sessionCookie() in ./_lib.js — and a browser
+       that signed in before it was may still be holding the host-only cookie
+       this site set for years. Clearing only the domain-scoped one would
+       leave that one standing and Sign out would appear to do nothing. On a
+       preview host the two are the same string, and clearing a cookie twice
+       costs nothing. */
+    const gone = new Headers({
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'no-store'
     });
+    gone.append('set-cookie', sessionCookie('', 0, request));
+    gone.append('set-cookie', sessionCookie('', 0, null));
+    return new Response(JSON.stringify({ user: null }), { headers: gone });
   }
 
   /* ------------------------------------------------- changing a password
@@ -296,7 +304,7 @@ export async function onRequestPost(context) {
       headers: {
         'content-type': 'application/json; charset=utf-8',
         'cache-control': 'no-store',
-        'set-cookie': sessionCookie(token, SESSION_DAYS)
+        'set-cookie': sessionCookie(token, SESSION_DAYS, request)
       }
     });
   }
@@ -391,7 +399,7 @@ export async function onRequestPost(context) {
       headers: {
         'content-type': 'application/json; charset=utf-8',
         'cache-control': 'no-store',
-        'set-cookie': sessionCookie(token, SESSION_DAYS)
+        'set-cookie': sessionCookie(token, SESSION_DAYS, request)
       }
     }
   );

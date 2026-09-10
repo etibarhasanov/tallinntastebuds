@@ -1,0 +1,126 @@
+/* ==========================================================================
+   Tallinn Tastebuds — splitwise.
+
+   Loaded after assets/styles.css and assets/lists.css and only by split.html,
+   so everything the three pages share is already here and none of it is
+   restated: the tokens, .card, .eyebrow, .mono, .toast, .go, .alt and the
+   stacked form's .ac-form / .ac-field / .ac-label / .ac-err from the map's
+   sheet, and the page frame — .lists-body, .lists-brand, .lists-stack,
+   .lists-card, .lists-title, .lists-say, .lists-none, .lists-foot — from the
+   lists page's.
+
+   What is in this file is only what money has and neither of the other two
+   does: a column of amounts that has to line up, the people a bill was split
+   between, and the one line that says who hands what to whom. Eighteen rules,
+   and not a colour among them — every one of them is a token, so this page
+   turns dark with the rest of the site and no swatch can leave it behind.
+   ========================================================================== */
+
+/* ---------- a column of things with an amount on the end ---------- */
+
+/* Ruled rather than carded. A group's expenses are a receipt — twenty short
+   lines read down the page — and twenty cards with shadows under them is the
+   same information at four times the height, with the amounts too far apart
+   to compare. The rule between them is the site's one border weight. */
+.split-rows { list-style: none; margin: 0; padding: 0; }
+
+.split-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 0;
+  border-top: 1px solid var(--hairline);
+}
+.split-row:first-child { border-top: 0; }
+
+/* The left half: what it was, and a quiet line under it saying who paid and
+   what each person's share came to. It shrinks and the amount does not. */
+.split-what { min-width: 0; flex: 1 1 auto; overflow-wrap: anywhere; }
+.split-meta {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  letter-spacing: .03em;
+  line-height: 1.55;
+}
+
+/* The amounts, and the reason this file exists. Mono with tabular figures, so
+   a column of them lines up on the decimal point instead of drifting with the
+   width of a 1 against a 0 — which is the difference between a receipt you
+   can read down and a list of numbers you have to read across. */
+.split-money {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* What somebody owes, as against what they are owed or have already handed
+   over. The words beside it say the same thing — see splitOwing in
+   data/ui.json — because a balance nobody can act on must not depend on
+   telling two colours apart. */
+.split-down { color: var(--accent); }
+
+/* Taking a line back off, or saying a payment was made: a word at the end of
+   the row it is about. It is .alt out of the map's stylesheet, sized down to
+   sit on one line of a receipt rather than at the foot of a card. */
+.split-act { padding: 2px 6px; font-size: 11px; letter-spacing: .04em; }
+
+/* ---------- who a bill was split between ---------- */
+
+/* A checkbox each, drawn as the thing you press rather than as a box beside a
+   word. Everybody is ticked when the form opens, because splitting a bill
+   between everybody is what splitting a bill means, and the presses are for
+   the evening somebody did not have the wine. */
+.split-who { display: flex; flex-wrap: wrap; gap: 8px; }
+.split-who-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+}
+.split-who-opt:hover { border-color: var(--muted); }
+.split-who-opt.is-on { border-color: var(--accent); color: var(--ink); }
+.split-who-opt input { accent-color: var(--accent); margin: 0; }
+
+/* ---------- the rest of the form ---------- */
+
+/* What it was and how much, side by side where there is room and stacked
+   where there is not. The amount is narrow on purpose: a field the width of
+   the card invites a sentence, and this one takes 24.60. */
+.split-pair { display: flex; flex-wrap: wrap; gap: 12px; }
+.split-pair > .ac-field { flex: 1 1 160px; min-width: 0; }
+.split-pair > .split-sum { flex: 0 1 120px; }
+
+/* The select that says whose card it was. The same box .ac-field input wears,
+   because it is a field in the same stack and a native control with its own
+   idea of a border would be the one thing on the card that does not match. */
+.split-pick {
+  font: inherit;
+  font-size: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* The invitation. It is the whole of the permission to join a group, so it is
+   drawn to be read off a screen and typed if it has to be — mono, and allowed
+   to break wherever it needs to rather than pushing the card wider than the
+   phone. */
+.split-link {
+  margin: 0 0 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+  word-break: break-all;
+}

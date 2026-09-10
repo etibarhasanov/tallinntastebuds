@@ -1,12 +1,13 @@
 -- Tallinn Tastebuds — every table the site has.
 --
--- Seven things live here: the saves and their counts, the accounts a save can
+-- Eight things live here: the saves and their counts, the accounts a save can
 -- follow a person on, the lists somebody builds and shares, the keeps that are
 -- a bookmark on somebody else's list, 1,110 Tallinn venues mirrored out of
 -- Google Places, the places somebody adds by hand when the catalogue does not
--- have them, and one meta row saying which database this is. Everything the
--- map itself draws — the places, the write-ups, the discounts, the stories —
--- is a JSON file in the repository and never a row.
+-- have them, the groups splitting a bill on the splitwise subdomain, and one
+-- meta row saying which database this is. Everything the map itself draws —
+-- the places, the write-ups, the discounts, the stories — is a JSON file in
+-- the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
 -- "tallinntastebuds-preview" behind every preview deployment. They hold the
@@ -518,3 +519,137 @@ CREATE TABLE IF NOT EXISTS meta (
   key   TEXT PRIMARY KEY,
   value TEXT NOT NULL
 );
+
+
+-- -------------------------------------------------------------- splitwise
+-- Five people, one card at the table, and the argument afterwards.
+--
+-- These five tables are the whole of splitwise.tallinntastebuds.ee: a group
+-- somebody named, the people who joined it by the link, what each of them
+-- paid for, how that was divided, and the money handed back afterwards. It is
+-- the only feature on this site that is not about restaurants, and it is here
+-- because it is the thing that happens immediately after one — see
+-- **Splitwise** in README.md, and functions/api/split.js, which is the only
+-- thing that writes any of these.
+--
+-- IT IS THE SAME ACCOUNT AS THE MAP, AND THAT IS THE POINT
+--
+-- There is no second users table and no second sign-in. A member is a
+-- users.id, minted by functions/api/account.js from the same two fields the
+-- map's sheet asks for, and somebody who saves places is already somebody who
+-- can be owed eleven euros. The subdomain is a room in the same house, not a
+-- second house; what makes it work across the two hostnames is one line in
+-- sessionCookie() in functions/api/_lib.js, which scopes the session cookie
+-- to the domain rather than to the host.
+--
+-- EVERY AMOUNT IS AN INTEGER NUMBER OF CENTS
+--
+-- Never a REAL. Money in a float is the bug that takes a year to show up: a
+-- 33.33 that is really 33.329999999999998, three of them summed against a
+-- 100.00 that is exact, and a group that is one cent from even forever with
+-- nobody able to say which cent. SQLite would happily store either; this
+-- stores 3333, and the division below is integer division with the remainder
+-- handed out rather than dropped.
+--
+-- Euros, and only euros. The city has one currency and a column that could
+-- hold another would be a column every sum here would have to start caring
+-- about.
+CREATE TABLE IF NOT EXISTS split_groups (
+  -- The invitation, and the whole of the URL: /split?join=<id>. Minted from
+  -- the name plus six random characters exactly as a list's id is, so a link
+  -- says what it is before anybody opens it and still cannot be guessed at
+  -- from a neighbouring one. Guessing it is the only way in — there is no
+  -- request-to-join and no approval — so it has to be unguessable.
+  id         TEXT    PRIMARY KEY,
+  name       TEXT    NOT NULL,
+  -- users.id. Who made it, and the only person who can rename or delete it.
+  -- They are also a row in split_members: being the owner is a fact about
+  -- the group, being a member is what puts you in the arithmetic.
+  owner      TEXT    NOT NULL,
+  created_at INTEGER NOT NULL,
+  -- Touched by every expense and every settlement, so "your groups, the one
+  -- you were last splitting first" is one indexed read.
+  updated_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_split_groups_owner ON split_groups (owner, updated_at DESC);
+
+-- One row is one person in one group.
+--
+-- There is no username column here, and that is a deliberate difference from
+-- list_items, which does copy the name it was added under. A list item points
+-- at a place in a generated file that a refresh can renumber, so the name is
+-- copied or the sentence somebody wrote ends up attached to nothing. A member
+-- points at a users row, and this site has no way to rename an account and no
+-- way to delete one — so the join is exact, forever, and a second copy of the
+-- name would only be a copy that could drift.
+CREATE TABLE IF NOT EXISTS split_members (
+  group_id  TEXT    NOT NULL,
+  user_id   TEXT    NOT NULL,
+  joined_at INTEGER NOT NULL,
+  -- Opening the link twice is the conflict clause and not a second seat.
+  PRIMARY KEY (group_id, user_id)
+);
+-- "The groups this person is in", which is the whole of the front page.
+CREATE INDEX IF NOT EXISTS idx_split_members_user ON split_members (user_id, joined_at DESC);
+
+-- One row is one thing somebody paid for: the bill, the taxi, the wine.
+CREATE TABLE IF NOT EXISTS split_expenses (
+  id         TEXT    PRIMARY KEY,
+  group_id   TEXT    NOT NULL,
+  -- users.id — whose card it was. Not necessarily whoever typed it in: the
+  -- person holding the phone puts in what the person across the table paid,
+  -- which is most of how this gets filled in at all.
+  payer      TEXT    NOT NULL,
+  -- "Dinner", "the taxi back". Capped at MAX_WHAT in the Function.
+  what       TEXT    NOT NULL,
+  -- Euro cents, always positive. See the note above about floats.
+  cents      INTEGER NOT NULL,
+  -- users.id — who put the row in. Kept because they are the one person
+  -- besides the payer allowed to take it out again.
+  added_by   TEXT    NOT NULL,
+  created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_split_expenses_group ON split_expenses (group_id, created_at DESC);
+
+-- How one expense was divided, one row per person it was divided between.
+--
+-- WHY THE SHARES ARE STORED AND NOT COMPUTED
+--
+-- The obvious version divides the total by the number of members at read
+-- time. It is wrong twice. A group's membership changes — somebody joins on
+-- Sunday and would retroactively owe a third of Friday's dinner — and an
+-- equal division of 10.00 between three people is 3.33 three times, which is
+-- 9.99, so the arithmetic quietly loses a cent every time it runs.
+--
+-- So the division is done once, when the expense is entered, against the
+-- members as they stand at that moment; the remainder cents are handed to
+-- the first few members in id order so the shares always sum to exactly the
+-- total; and the answer is written down. What a group owes is then a sum of
+-- integers over rows that cannot change, rather than an opinion recalculated
+-- against today's membership.
+CREATE TABLE IF NOT EXISTS split_shares (
+  expense_id TEXT    NOT NULL,
+  user_id    TEXT    NOT NULL,
+  cents      INTEGER NOT NULL,
+  PRIMARY KEY (expense_id, user_id)
+);
+
+-- One row is money actually handed over: "I sent you the eleven euros."
+--
+-- Deliberately not an expense with a negative amount, which is how this is
+-- often done and which makes every sum in the file have to know the
+-- difference. A settlement moves a debt and buys nothing, so it is its own
+-- table and its own line in the balance.
+CREATE TABLE IF NOT EXISTS split_settlements (
+  id         TEXT    PRIMARY KEY,
+  group_id   TEXT    NOT NULL,
+  -- users.id, both: who handed it over and who took it.
+  payer      TEXT    NOT NULL,
+  payee      TEXT    NOT NULL,
+  cents      INTEGER NOT NULL,
+  -- users.id — who recorded it. Either end of the payment may, and either
+  -- end may take it back off again.
+  added_by   TEXT    NOT NULL,
+  created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_split_settlements_group ON split_settlements (group_id, created_at DESC);

@@ -131,7 +131,40 @@ export function sameSecret(a, b) {
 export const SESSION_COOKIE = 'ttb_s';
 export const SESSION_DAYS = 365;
 
-export function sessionCookie(token, days) {
+/* The site is two hostnames now — tallinntastebuds.ee and the splitwise
+   subdomain under it — and a cookie set without a Domain is a cookie for the
+   one host that set it. So signing in on the map would have been signing in
+   on the map only, and splitwise would have asked for the password again on a
+   site the same person was already signed in to.
+ *
+   Scoping it to the domain is what makes one account cover both. It is not
+   free: every subdomain of tallinntastebuds.ee now receives this cookie, so
+   nothing may be hosted under one that should not hold a session token. There
+   is one subdomain and this file is where to come back to before there is a
+   second.
+ *
+   Only where the domain is actually ours. A preview deployment answers at
+   <branch>.tallinntastebuds.pages.dev, and a Set-Cookie naming another
+   registrable domain is dropped by the browser outright — the sign-in would
+   appear to work and the next request would arrive signed out. So the host is
+   read from the request rather than assumed, and anything that is not the
+   live domain or a subdomain of it gets the host-only cookie it always had.
+ *
+   THIS BLOCK IS SPLITWISE'S, AND IT IS THE ONLY LINE THAT FEATURE OWNS IN A
+   SHARED FILE. If splitwise ever goes, so do the SESSION_DOMAIN constant, the
+   two lines that read it, the third parameter, and the second Set-Cookie in
+   the logout branch of account.js — and sessionCookie(token, days) is back to
+   what it was. See **Taking it out** under **Splitwise** in README.md, which
+   lists every other place, all of them additions. */
+const SESSION_DOMAIN = 'tallinntastebuds.ee';
+
+/* `request` may be null, which asks for the host-only cookie whatever the
+   host is. Only signing out passes null, to clear the cookie a session made
+   before this was domain-scoped as well as the one it makes now. */
+export function sessionCookie(token, days, request) {
+  const host = request ? new URL(request.url).hostname : '';
+  const ours = host === SESSION_DOMAIN || host.endsWith('.' + SESSION_DOMAIN);
+
   const parts = [
     SESSION_COOKIE + '=' + (token || ''),
     'Path=/',
@@ -140,6 +173,7 @@ export function sessionCookie(token, days) {
     'SameSite=Lax',
     'Max-Age=' + (token ? days * 86400 : 0)
   ];
+  if (ours) parts.push('Domain=' + SESSION_DOMAIN);
   return parts.join('; ');
 }
 
