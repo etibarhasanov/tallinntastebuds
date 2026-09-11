@@ -76,7 +76,32 @@ Rows are sorted best-first: rating descending, then review count, then name.
   a place (`Port Noblessner`, `Balti Jaama Turg`) are kept.
 
 No records were dropped or merged: `place_id` and name+address are already unique,
-and every rating and review count round-trips against the source.
+and every rating and review count round-trips against the source **but one** — see
+below.
+
+## Hand-corrections, and why there is a list of them at all
+
+Google's columns in this file are upstream's, and the rule everywhere else in this
+repository is that they are never edited by hand: the next refresh overwrites them,
+so a correction made here is a correction you will make twice. This list is the
+exception, kept short and kept visible, because the alternative to writing a
+hand-correction down is not having none — it is having one nobody can find.
+
+| Row | Column | Upstream | Here | Why |
+|---|---|---|---|---|
+| Morii Tea House | `reviews` | 148 | 165 | Checked on Google on 11 Sep 2026, after the 3 Sep sweep. The owner asked for it |
+
+**Every one of these is erased by the next refresh, silently and correctly.** The
+sweep rewrites the row from Google and the number goes back to whatever Google says
+that day, which is the right outcome: by then the fresher figure is upstream's job
+to carry, not this file's.
+
+What it costs while it stands is worth stating, because it is the reason the list is
+not longer. `db/google-lists.sql` ranks places against each other, so a row holding
+today's count among eleven hundred rows holding the sweep's tilts every comparison
+it is in towards that row. One correction on the top-rated place in the city is a
+small and deliberate thumb on the scale. A dozen of them would be a different
+export, assembled by hand, wearing Google's name.
 
 ## Findings
 

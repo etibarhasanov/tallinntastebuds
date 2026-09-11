@@ -64,7 +64,12 @@ else runs.
 
 ## The steps
 
-1. **Replace `exports/tallinn_restaurants.csv`** with the cleaned export.
+1. **Replace `exports/tallinn_restaurants.csv`** with the cleaned export. Read
+   **Hand-corrections** in `exports/README.md` first: it lists the rows whose
+   Google columns were edited by hand, and this step is what erases every one
+   of them. That is the correct outcome and not a loss to undo — the fresher
+   figure is upstream's to carry now — but say in the PR which corrections
+   went, because somebody asked for each of them.
 2. `node tools/googlevenues.mjs`. It writes `db/google-venues.sql`: a
    comment line with the count, one `UPDATE … SET missing_since = now WHERE
    missing_since IS NULL`, then upserts fifty rows to a statement, then one
@@ -185,7 +190,10 @@ categories renamed, patterns dropped — and that both databases were loaded.
   old file and reports nothing stale.
 - A row typed into the CSV by hand — RØST Bakery was, once — and dropped by
   the next pull, quietly marked missing. The export is upstream's; a place
-  the sweep does not find goes on the map instead.
+  the sweep does not find goes on the map instead. A *column* edited by hand
+  goes the same way and more quietly still, since the row survives and only
+  the number moves back: **Hand-corrections** in `exports/README.md` is the
+  list of those, and step 1 is where it is read.
 - A hand-edit to a Google column, gone at the next refresh.
 - A count that moved in one place and not the others — this file said 751
   for a refresh that brought 1,110.

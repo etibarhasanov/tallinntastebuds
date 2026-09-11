@@ -56,10 +56,10 @@ VALUES
   ('top-ten-cafes-by-google-jz7c2b', 'ChIJQ6QSwpuVkkYRWh30eI392YU', 'Precious café', 'Coffee Shop · 4.9 from 293 reviews on Google', 3, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-cafes-by-google-jz7c2b', 'ChIJ5SJF0niVkkYRjkBykLAAVwQ', 'Kringel', 'Coffee Shop · 4.8 from 567 reviews on Google', 4, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-cafes-by-google-jz7c2b', 'ChIJe8-Kv9KVkkYRTzFbwfJwU5g', 'Paper Mill Coffee', 'Coffee roastery · 4.8 from 465 reviews on Google', 5, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-cafes-by-google-jz7c2b', 'ChIJpTuWpV-TkkYRQvjAHc6YfFw', 'Nikolay Bar-buffeé', 'Cafe · 4.7 from 1,968 reviews on Google', 6, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-cafes-by-google-jz7c2b', 'ChIJS79JMCeTkkYRPRk5k4Hg1VI', 'Salt''sUp soolakohvik', 'Cafe · 4.9 from 235 reviews on Google', 7, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-cafes-by-google-jz7c2b', 'ChIJ88Bs632TkkYRr6xgYOeC0x4', 'The Brick Coffee Roastery', 'Coffee roastery · 4.8 from 388 reviews on Google', 8, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-cafes-by-google-jz7c2b', 'ChIJ43KuThiTkkYRCgNRAbHM9kA', 'Kofeman Cafe / Wine', 'Cafe · 4.7 from 1,554 reviews on Google', 9, CAST(strftime('%s','now') AS INTEGER) * 1000);
+  ('top-ten-cafes-by-google-jz7c2b', 'ChIJnYxLw5WTkkYRbBZIQ-rVs70', 'Morii Tea House', 'Cafe · 5.0 from 165 reviews on Google', 6, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-cafes-by-google-jz7c2b', 'ChIJpTuWpV-TkkYRQvjAHc6YfFw', 'Nikolay Bar-buffeé', 'Cafe · 4.7 from 1,968 reviews on Google', 7, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-cafes-by-google-jz7c2b', 'ChIJS79JMCeTkkYRPRk5k4Hg1VI', 'Salt''sUp soolakohvik', 'Cafe · 4.9 from 235 reviews on Google', 8, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-cafes-by-google-jz7c2b', 'ChIJ88Bs632TkkYRr6xgYOeC0x4', 'The Brick Coffee Roastery', 'Coffee roastery · 4.8 from 388 reviews on Google', 9, CAST(strftime('%s','now') AS INTEGER) * 1000);
 
 INSERT INTO list_items (list_id, place_id, name, say, pos, created_at)
 VALUES
