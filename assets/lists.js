@@ -104,6 +104,19 @@
   var MAX_QUERY = 60;
   var SEARCH_WAIT = 220;
 
+  /* How far below the window the directory asks for its next page, in pixels.
+     About a phone's screen: far enough that at reading speed the rows are
+     drawn before the reader reaches the foot, and near enough that somebody
+     who stops at row fifteen has not been sent three pages they never saw. */
+  var MORE_AHEAD = 600;
+
+  /* The one account nobody can sign in as: the five top tens that
+     db/google-lists.sql writes out of Google's numbers — see
+     tools/googlelists.mjs, which is the only thing that writes under the
+     name. Its byline says where the lists came from rather than naming an
+     account no reader would recognise; see byline(). */
+  var GOOGLE_BY = 'google-statistics';
+
   var state = {
     ui: {},
     types: [],         // data/taxonomy.json, for the rows that carry Google's words
@@ -132,6 +145,10 @@
      page draws, which is why they are here rather than in state. */
   var searchTimer = null;
   var searchSeq = 0;
+  /* The watch on the directory's Show more button, which presses it as it
+     comes into view. One at a time: the button is rebuilt with every page and
+     every search, and the watch is rebuilt with it — see moreLine(). */
+  var moreWatch = null;
 
   /* --------------------------------------------------------------- helpers */
 
@@ -421,23 +438,42 @@
     return '/u/' + encodeURIComponent(name);
   }
 
-  /* The byline on a row, and the door it is. Every row that draws a list
-     somebody else wrote says who wrote it — Lists you saved, the directory, the
-     three rows at the foot of a list — and that name led nowhere on any of
-     them, while the same phrase under a list's own title has led to the person
-     since profiles were built. A profile's own rows carry no byline: they are
-     all that person's, and the name is the heading over them.
+  /* The byline, and the door it is. Every list somebody else wrote says who
+     wrote it — under its own title, on the directory, on the three rows at the
+     foot of a list, under Lists you saved — and the name leads to the rest of
+     what that person has published. A profile's own rows carry no byline: they
+     are all that person's, and the name is the heading over them.
 
-     The whole phrase is the link and not the name inside it, for the reason
-     listHead() gives below: the name is three or four characters on a phone,
-     and splitting a translated sentence around it to underline only that would
-     be a sentence assembled out of pieces in ten languages. */
+     The name is the link and the words around it are not. The whole phrase was
+     underlined for a while, on the argument that the name is three or four
+     characters on a phone and that splitting a translated sentence around it
+     would mean assembling one out of pieces in ten languages. The first half
+     of that was a small target bought with a misleading one: "created by"
+     underlined reads as a caption about the list, and the thing a byline
+     leads to is the person. The second half is not true of the strings as
+     they are written — every language's phrase carries the name as a
+     placeholder, so the sentence is still one string per language, cut at
+     the placeholder rather than composed. The account page and the map's
+     panel draw the same byline the same way, out of assets/account.js and
+     assets/app.js.
+
+     One name is not printed: the lists Google's numbers wrote are under an
+     account called google-statistics, and "created by google-statistics" is
+     a sentence about how the site is built, not about the list. Those read
+     "generated from Google Maps", and the link is the product's name, still
+     leading to the account's profile, whose line under the name says how the
+     order was decided. */
   function byline(name) {
-    return TTBTrack.click(el('a', {
-      className: 'lists-index-by',
-      href: profileHref(name),
-      textContent: t('listsBy', { name: name })
-    }), 'profile_open', { name: name });
+    var google = name === GOOGLE_BY;
+    var words = t(google ? 'listsByGoogle' : 'listsBy').split('{name}');
+    return el('span', { className: 'lists-index-by' }, [
+      words[0],
+      TTBTrack.click(el('a', {
+        href: profileHref(name),
+        textContent: google ? 'Google Maps' : name
+      }), 'profile_open', { name: name }),
+      words[1]
+    ]);
   }
 
   /* Back to the map, at the foot of a profile, a list, and every card that
@@ -689,9 +725,9 @@
     wrap.appendChild(card([
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
       heading(t('listsAllTitle')),
-      el('p', { className: 'lists-say', textContent: t('listsAllSay') }),
-      searchField()
+      el('p', { className: 'lists-say', textContent: t('listsAllSay') })
     ]));
+    wrap.appendChild(searchField());
 
     dom.allBody = el('div', { className: 'lists-all-body' });
     wrap.appendChild(dom.allBody);
@@ -705,12 +741,16 @@
      classes out of assets/styles.css, because it is the same tool asked about
      a different kind of thing — and a second design for one control is a
      second thing to keep in step. Only the box around them is this page's own:
-     the picker's is sticky inside a panel and this one is the last line of a
-     card.
+     the picker's is sticky inside a panel, and this one is a row of the page
+     under the head card that sticks to the top of the window once the card
+     has scrolled away — see .lists-all-search in assets/lists.css. It was the
+     last line of that card, which was fine while the page was twenty rows and
+     a button; now that the page grows under the reader for as long as they
+     scroll, a field at the top of it is a field a hundred rows away.
 
-     It searches titles, the line under a title, and usernames. Not the places
-     on the lists: see functions/api/_mostkept.js for what that would cost per
-     keystroke, and the map for where a place is found. */
+     It searches titles, the line under a title, usernames, and — since the
+     rows print them — the places on the lists; functions/api/_mostkept.js
+     says what that costs per keystroke and where the line is. */
   function searchField() {
     var input = el('input', {
       type: 'search',
@@ -797,12 +837,14 @@
    * "coffee". A counter and not the text, because a word typed, cleared and
    * typed again is two questions and the second one deserves its answer.
    *
-   * The rows on the screen are left alone until the answer comes. Redrawing
-   * them at the keystroke would have nothing new to draw, and a bookmark
-   * somebody pressed a moment ago would be rebuilt under its own round trip.
-   * Show more is the one thing that must not be pressed in the gap — it would
-   * page the old question under the new one — and more() refuses while a
-   * search is out.
+   * The rows on the screen are left alone until the answer comes, and only
+   * dimmed. Redrawing them at the keystroke would have nothing new to draw,
+   * and a bookmark somebody pressed a moment ago would be rebuilt under its
+   * own round trip; but rows that do not move at all while a word is typed
+   * over them read as a field that is not wired to anything, so the body
+   * wears .is-searching for as long as the question is out. The next page is
+   * the one thing that must not arrive in the gap — it would page the old
+   * question under the new one — and more() refuses while a search is out.
    *
    * And the address follows the field, so the page somebody is looking at is
    * the page they can send. replaceState rather than pushState: a search is
@@ -825,9 +867,11 @@
     } catch (e) { /* a browser that will not have it still searches */ }
 
     state.searching = true;
+    dom.allBody.classList.add('is-searching');
     ask(API + '?all=1' + (q ? '&q=' + encodeURIComponent(q) : '')).then(function (a) {
       if (seq !== searchSeq) return;
       state.searching = false;
+      dom.allBody.classList.remove('is-searching');
       if (a.status === 0 || !a.out || !a.out.all) {
         /* The rows on the screen are still the answer to the question before
            this one, so that is the question the page goes back to holding.
@@ -856,10 +900,15 @@
     });
   }
 
-  /* The rows, and whatever stands in for them. Everything below the head of
-     the page, painted into one element so the field above it is never touched.
-     Nothing here counts the rows: a number over a page that has a Show more
-     under it would be the size of the page and not of the answer. */
+  /* The rows, and whatever stands in for them. Everything below the field,
+     painted into one element so the field itself is never touched.
+
+     A search is named over its rows — "Lists matching “coffee”" — so they
+     read as an answer rather than as the page having quietly changed its
+     mind. Named and not counted: a number over rows that keep arriving as
+     you scroll would be the size of the page and not of the answer. The
+     count goes to the live region instead, where it is the whole answer for
+     somebody who cannot see the rows change; see search(). */
   function paintAll() {
     var rows = state.all || [];
     clear(dom.allBody);
@@ -869,19 +918,46 @@
         className: 'lists-none',
         textContent: t(state.q ? 'listsAllNoMatch' : 'listsAllNone')
       }));
-      return;
+    } else {
+      if (state.q) {
+        dom.allBody.appendChild(el('p', {
+          className: 'lists-all-for mono',
+          textContent: t('listsAllFor', { q: state.q })
+        }));
+      }
+      dom.allList = el('ul', { className: 'lists-index' });
+      rows.forEach(function (l) { dom.allList.appendChild(allRow(l)); });
+      dom.allBody.appendChild(dom.allList);
     }
+    moreLine();
+  }
 
-    var ul = el('ul', { className: 'lists-index' });
-    rows.forEach(function (l) { ul.appendChild(allRow(l)); });
-    dom.allBody.appendChild(ul);
+  /* The foot of the rows, while there is a page after this one: a Show more
+     button, and a watch on it that presses it as it comes into view. The line
+     is the only thing that says how far the page goes, so its absence is the
+     end of it; and it is rebuilt after every page rather than kept, because
+     the watch only reports a change — a button still in view after the rows
+     under it grew, on a tall window over short lists, would never be reported
+     again, and a fresh watch on a fresh button reports where it is.
 
-    /* Only while there is a page after this one. The button is the only thing
-       that says how far the page goes, so its absence is the end of it. */
-    if (state.next) {
-      var go = button(t('listsAllMore'), 'alt', function () { more(go); });
-      dom.allBody.appendChild(el('p', { className: 'lists-more' }, [go]));
-    }
+     The button stays, and stays pressable, under the watch. It is what a
+     browser without IntersectionObserver gets, what a keyboard reaches, and
+     what a page that failed to arrive is retried with — and while the next
+     page is on its way it is the one thing on the screen that says so. The
+     watch reaches most of a screen below the window, so the rows are usually
+     there before the reader is. */
+  function moreLine() {
+    if (moreWatch) { moreWatch.disconnect(); moreWatch = null; }
+    if (!state.next) return;
+    var go = button(t('listsAllMore'), 'alt', function () { more(go, 'press'); });
+    dom.allBody.appendChild(el('p', { className: 'lists-more' }, [go]));
+    if (!window.IntersectionObserver) return;
+    moreWatch = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) return more(go, 'scroll');
+      }
+    }, { rootMargin: '0px 0px ' + MORE_AHEAD + 'px 0px' });
+    moreWatch.observe(go);
   }
 
   /* One list on /lists, and the same row at the foot of a list's own page.
@@ -966,13 +1042,18 @@
     });
   }
 
-  /* The next page, onto the end of the one on screen.
+  /* The next page, onto the end of the one on screen. Pressed, or reached:
+   * `how` is which, and goes out with the event so the console can say how
+   * much of the page is read by scrolling and how much is anybody still
+   * pressing the button.
    *
-   * The rows below the head of the page are repainted rather than appended to,
-   * because the Show more button has to go when the last page arrives and the
-   * new rows have to land in the document in their order. Only the rows: this
-   * page does hold something somebody may be part-way through typing, and it
-   * is the field the search is in. See paintAll().
+   * The new rows are appended to the list on screen and the foot line under
+   * them is rebuilt — see moreLine() for why rebuilt. It was every row
+   * repainted for a while, which was harmless when a page arrived only on a
+   * press and is not now that one arrives under a moving thumb: a hundred rows
+   * replaced with a hundred identical rows is a hundred rows of work for
+   * nothing, and it would take with it the focus of whoever had reached the
+   * button by keyboard.
    *
    * The search goes with the cursor. A page of results is paged the same way a
    * page of everything is, and asking for "everything after this row" without
@@ -982,10 +1063,10 @@
    * page that comes back after a search has replaced the rows is dropped
    * rather than joined onto them.
    */
-  function more(btn) {
+  function more(btn, how) {
     if (state.asking || state.searching || !state.next) return;
     state.asking = true;
-    TTBTrack.event('lists_more', { rows_shown: state.all.length });
+    TTBTrack.event('lists_more', { rows_shown: state.all.length, how: how });
     btn.disabled = true;
     btn.textContent = t('accountWorking');
 
@@ -1001,7 +1082,9 @@
       }
       state.all = state.all.concat(a.out.all);
       state.next = a.out.next || '';
-      paintAll();
+      a.out.all.forEach(function (l) { dom.allList.appendChild(allRow(l)); });
+      dom.allBody.removeChild(btn.parentNode);
+      moreLine();
     });
   }
 
@@ -1116,16 +1199,9 @@
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
       heading(list.title),
       /* The byline, and the door out of this page onto the rest of what its
-         owner has published. The whole phrase is the link rather than the
-         name inside it: the name is three or four characters on a phone, and
-         splitting a translated sentence around it to underline only that
-         would be a sentence assembled out of pieces in ten languages for the
-         sake of a smaller target. */
-      list.by
-        ? el('p', { className: 'lists-by mono' }, [
-            TTBTrack.click(el('a', { href: profileHref(list.by), textContent: t('listsBy', { name: list.by }) }), 'profile_open', { name: list.by })
-          ])
-        : null,
+         owner has published — the same one every row of the directory
+         carries, see byline(). */
+      list.by ? el('p', { className: 'lists-by mono' }, [byline(list.by)]) : null,
       list.intro ? el('p', { className: 'lists-say', textContent: list.intro }) : null,
       el('div', { className: 'lists-row' }, [
         mapLink(list.id, 'go'),
@@ -3063,6 +3139,8 @@
          found by id, because it is built with the view and not in
          lists.html. */
       allBody: null,
+      /* The list of rows inside it, which the next page is appended to. */
+      allList: null,
       who: $('lists-who'),
       btnRadio: $('btn-radio'),
       radioName: $('radio-name'),

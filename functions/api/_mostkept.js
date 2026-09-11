@@ -146,22 +146,29 @@ export async function mostKept(context, opts) {
     ? [Number(at[1]), Number(at[1]), Number(at[2]), Number(at[1]), Number(at[2]), at[3]]
     : [];
 
-  /* The search: the title, the line under it, and whose it is.
+  /* The search: the title, the line under it, whose it is, and the places on
+   * it.
    *
-   * Three columns and not four. What is conspicuously not searched is the
-   * places on the lists, and that is a cost decision rather than an oversight
-   * — matching a place name means reading every item of every public list on
-   * the site for one keystroke, which is the exact join taken out of this file
-   * when the row stopped printing a place count. The three columns here are
-   * all on `lists` and `users`, so a search costs what an unsearched page
-   * costs. A place is found on the map, which is the page built for finding
-   * places; this field finds a piece of writing by its name or its author. */
+   * The places were left out for a while, on cost: matching a name on a list
+   * means looking at the items of every candidate list for one keystroke,
+   * which is the join taken out of this file when the row stopped printing a
+   * place count. What changed the decision is the row: it prints the first
+   * three places under every title, so somebody who types a name they can see
+   * on the screen and is told nothing matches has been told something false
+   * about the page. The cost is bounded rather than avoided — an EXISTS into
+   * each candidate's own items, on idx_list_items_pos, which stops at the
+   * first hit and never reads past one list's twenty rows. Under sixty rows a
+   * search at today's size; it grows with lists times items, and the day it
+   * shows in a query time is the day the search text gets a column of its
+   * own on `lists`, kept by the writes. */
   const needle = like(q);
   const search = needle
     ? " AND (l.title LIKE ? ESCAPE '\\' OR l.intro LIKE ? ESCAPE '\\' " +
-      "OR u.username LIKE ? ESCAPE '\\')"
+      "OR u.username LIKE ? ESCAPE '\\' " +
+      "OR EXISTS (SELECT 1 FROM list_items s WHERE s.list_id = l.id " +
+      "           AND s.name LIKE ? ESCAPE '\\'))"
     : '';
-  const searchBind = needle ? [needle, needle, needle] : [];
+  const searchBind = needle ? [needle, needle, needle, needle] : [];
 
   /* Whether the person reading kept each row, so the bookmark on it can draw
      itself pressed. A LEFT JOIN on the session's own id and nothing else — one

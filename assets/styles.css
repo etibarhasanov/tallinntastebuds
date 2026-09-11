@@ -2490,17 +2490,19 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
    ordinary group heading in this one state, so it carries the same sticky
    band and the same type. */
 .list-credit .list-label.is-credit { margin-top: 10px; }
-/* A link since profiles arrived — it leads to /u/<name>, the rest of what
-   this list's owner has published. It keeps the muted colour of the line it
-   was rather than taking the accent a bare link wears: on a card that is
+/* The byline. The name in it is a link since profiles arrived — it leads to
+   /u/<name>, the rest of what this list's owner has published — and only the
+   name, the way every byline on the lists page is drawn: the words around it
+   are about the list, not the door. The link keeps the muted colour of the
+   line rather than taking the accent a bare link wears: on a card that is
    somebody else's writing, the byline is not the loudest thing on it. */
 .list-credit-by {
   display: inline-block;
   margin: 10px 0 0;
   color: var(--muted);
-  text-underline-offset: 3px;
 }
-.list-credit-by:hover { color: var(--accent); }
+.list-credit-by a { color: inherit; text-underline-offset: 3px; }
+.list-credit-by a:hover { color: var(--accent); }
 .list-credit-intro {
   margin: 8px 0 0;
   font-size: 14px;

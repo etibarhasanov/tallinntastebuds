@@ -5698,9 +5698,20 @@
 
      It takes the focus and labels the panel, the way the first group heading
      normally does, because in this state it is the first group heading. */
+  /* The account Google's numbers write under — see tools/googlelists.mjs and
+     GOOGLE_BY in assets/lists.js, which this restates for the same reason
+     every cap is restated: the two pages share no module. */
+  var GOOGLE_BY = 'google-statistics';
+
   function listCredit(n) {
     var count = n === 1 ? t('listCountOne') : t('listCount', { n: n });
-    var by = state.list.by ? t('listsBy', { name: state.list.by }) : '';
+    /* The byline's phrase and the name in it, with the one swap byline() in
+       assets/lists.js makes: the account Google's numbers write under reads
+       as the product, because nobody knows it by its username. */
+    var google = state.list.by === GOOGLE_BY;
+    var byName = google ? 'Google Maps' : state.list.by;
+    var words = state.list.by ? t(google ? 'listsByGoogle' : 'listsBy').split('{name}') : null;
+    var by = words ? words.join(byName) : '';
 
     return el('div', { className: 'list-credit' }, [
       el('h2', {
@@ -5713,17 +5724,19 @@
         el('span', { className: 'list-label-n eyebrow', textContent: count })
       ]),
       /* The byline, and the way through to the rest of what its owner has
-         published — the same door the list's own page puts under its title.
-         The whole phrase is the link, for the reason listHead() in
-         assets/lists.js gives: splitting a translated sentence to underline
-         the name alone is a sentence assembled out of pieces in ten
-         languages, for a smaller target on a phone. */
-      by
-        ? TTBTrack.click(el('a', {
-            className: 'list-credit-by eyebrow',
-            href: '/u/' + encodeURIComponent(state.list.by),
-            textContent: by
-          }), 'profile_open', { name: state.list.by })
+         published — the same door the list's own page puts under its title,
+         drawn the same way: the name is the link and the words around it are
+         not, and the translated phrase is cut at its placeholder rather than
+         assembled. byline() in assets/lists.js says why. */
+      words
+        ? el('span', { className: 'list-credit-by eyebrow' }, [
+            words[0],
+            TTBTrack.click(el('a', {
+              href: '/u/' + encodeURIComponent(state.list.by),
+              textContent: byName
+            }), 'profile_open', { name: state.list.by }),
+            words[1]
+          ])
         : null,
       state.list.intro
         ? el('p', { className: 'list-credit-intro', textContent: state.list.intro })

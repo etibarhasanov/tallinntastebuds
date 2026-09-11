@@ -2453,7 +2453,14 @@ restaurants, by Google**, and the same for bakeries, cafés, bars and
 pizzerias. They are lists in every way the rest of this section means: a row
 each in `lists` and `list_items`, a byline that leads to
 `/u/google-statistics`, a bookmark, a way onto the map, three more at the
-foot and a place on `/lists/public`. Its profile is the ordinary one every
+foot and a place on `/lists/public`. The byline is the one thing on them
+that is not drawn the way every other list's is: it reads "generated from
+Google Maps" rather than "created by google-statistics", because the account
+name is an implementation detail and the sentence a reader needs is where the
+list came from. `byline()` in `assets/lists.js` — and its copies on the
+account page and in the map's panel — swaps the phrase on that one username,
+`GOOGLE_BY`, and the link still leads to the account's profile, where the
+line under the name says how the order was decided. Its profile is the ordinary one every
 account here has, and the line under its name says where the order came
 from — see **Profiles**. What is different is who wrote them. The account has
 a password hash that is not the hash of anything, so nobody can sign in as
@@ -3088,8 +3095,21 @@ listed yet.
 those three is doing real work: two lists kept by the same number of people
 and edited in the same millisecond still have exactly one order, and without
 it a page boundary falling between them could show one of them twice. Twenty
-rows at a time, and **Show more** appears only while there is a page after
-this one.
+rows at a time, and the next twenty arrive on their own as the reader nears
+the foot of the ones on screen: a **Show more** button stands under the last
+row while there is a page after it, and an `IntersectionObserver` presses it
+when it comes within about a screen of the window. The button stays, and
+stays pressable, because it is three other things besides the thing the watch
+presses — what a browser without the observer gets, what a keyboard reaches,
+and the retry after a page that failed to arrive — and while a page is on its
+way it is the one thing on the screen that says so. Each page is appended to
+the rows rather than the rows repainted, so nothing under a moving thumb is
+rebuilt; and the button and its watch are rebuilt after every page, because
+the observer reports a change and not a state, and a button still in view
+after the rows under it grew — a tall window over short lists — would
+otherwise never be reported again. The `lists_more` event says which of the
+two it was, `scroll` or `press`, which is how the console will tell whether
+anybody still presses the button.
 
 **Lists nobody has kept are not filtered out.** They sort to the bottom and
 they draw no count, because a "saved by 0 people" reads as a verdict rather
@@ -3106,12 +3126,25 @@ fact and the position is its consequence; numbering the rows would make the
 position the identity, and a list slipping from third to fourth would read as
 a demotion nobody did anything to deserve.
 
-**The byline is a door.** The line of facts under a title says whose list it
-is, and that name leads to `/u/<name>` — the rest of what that person has
-published. It is the same door the byline under a list's own title has been
-since profiles were built, and it now stands on every row that draws somebody
-else's list: the directory, the three rows at the foot of a list, and **Lists
-you saved** on `/account.html`.
+**The byline is a door, and the name is the handle.** The line of facts under
+a title says whose list it is, and the name in it leads to `/u/<name>` — the
+rest of what that person has published. It is the same door the byline under
+a list's own title has been since profiles were built, and it stands on every
+row that draws somebody else's list: the directory, the three rows at the foot
+of a list, and **Lists you saved** on `/account.html`.
+
+Only the name is underlined. The whole phrase was the link for a while, on
+the argument that a name is three or four characters on a phone and that
+underlining only the name would mean splitting a translated sentence around
+it — assembling a sentence out of pieces, in ten languages. The first half of
+that bought a bigger target with a misleading one: "created by" underlined
+reads as a caption about the list, when the thing it opens is the person. The
+second half was not true of the strings as written: every language's phrase
+carries the name as a `{name}` placeholder, so `byline()` in
+`assets/lists.js` cuts the one translated string at the placeholder and puts
+the link in the cut. The sentence is still one string per language, and the
+translations did not change. The target is kept thumb-sized by padding the
+link out of its own margins, so the line does not grow to fit it.
 
 The card is what makes that possible, and it changed shape for it. Every one
 of these rows was a single `<a>` around the title, the facts and the places; a
@@ -3136,20 +3169,39 @@ mark at all — the API refuses to keep one, because it is already under **Your
 lists** — and keep no room for one either, so a row without a corner is how
 you pick your own out of the page.
 
-**The search field** is on the card at the top, and it asks the database
-rather than filtering what is on the screen: a page holds twenty rows and the
-list you are looking for is usually not among them. It matches a list's title,
-the line under the title, and the username of whoever wrote it — a substring,
-case-blind for ASCII and no further, which is what SQLite's `LIKE` gives and
-is stated plainly in `functions/api/_mostkept.js` rather than papered over.
+**The search field** is a row of its own under the head card, and it sticks
+to the top of the window once that card has scrolled away. It was the last
+line of the card, which was fine while the page was twenty rows and a button;
+a page that grows under the reader for as long as they scroll puts a field at
+the top of it a hundred rows away by the time somebody thinks of a name to
+look for. It wears the page's own ground rather than the paper the field sits
+on, so the rows passing under it are covered and it still reads as part of
+the page rather than as a bar laid over it, and it holds under the safe inset
+so a notch does not cover the field.
 
-What it deliberately does **not** search is the places on the lists. Matching a
-place name means reading every item of every public list on the site for one
-keystroke, which is the exact join taken out of this file's query when the row
-stopped printing a place count — so a search would cost several times what the
-unsearched page costs, and grow with how much people write. A place is found on
-the map, which is the page built for finding places. This field finds a piece
-of writing, by its name or by its author.
+It asks the database rather than filtering what is on the screen: a page
+holds twenty rows and the list you are looking for is usually not among
+them. It matches a list's title,
+the line under the title, the username of whoever wrote it, and the name of
+any place on it — a substring, case-blind for ASCII and no further, which is
+what SQLite's `LIKE` gives and is stated plainly in
+`functions/api/_mostkept.js` rather than papered over.
+
+The places were deliberately left out for a while, on cost: matching a place
+name means looking at the items of every public list on the site for one
+keystroke, which is the join taken out of the query when the row stopped
+printing a place count. What changed the decision is the row itself. It
+prints the first three places under every title, so a reader who types one
+of the names they can see on the screen and is told nothing matches has been
+told something false about the page — and "a place is found on the map" is
+no answer to somebody looking for the list that mentions it. The cost is
+paid, and it is bounded: the match is an `EXISTS` over each candidate list's
+own items, on the index that reads a list in its order, so it stops at the
+first hit and never reads past one list's twenty rows. Today that is under
+sixty rows a search. It grows with lists times items, and the day it shows
+in a query time is the day the search text gets a column of its own on
+`lists`, kept by the writes — the same note `db/schema.sql` keeps over
+`list_keeps`.
 
 A search is in the address — `/lists?q=coffee` — written there by
 `replaceState` as the field is typed into, and read back by the Function that
@@ -3159,11 +3211,16 @@ second before they become a request, and an answer is drawn only if it is the
 answer to the last thing asked: a one-letter query matches more and so answers
 slower, and without that check the page could settle on the rows for `c` while
 the field says `coffee`. The rows on the screen are left alone until the
-answer comes, and **Show more** carries the search with it — and refuses while
-one is out, because the cursor it holds belongs to the question before. What a
+answer comes, and only dimmed while it is out — rows that do not move at all
+under a word being typed read as a field wired to nothing. The next page
+carries the search with it — and refuses while one is out, whether pressed
+for or scrolled to, because the cursor it holds belongs to the question
+before. What a
 search found is said to a screen reader through the page's live region and
-drawn nowhere: a number over rows with a Show more under them would be the
-size of the page, not of the answer.
+drawn nowhere; what is drawn is the question, in a line over the rows —
+"Lists matching “coffee”" — so the rows read as an answer rather than as the
+page having quietly changed its mind. Not the number: a count over rows that
+keep arriving as you scroll would be the size of the page, not of the answer.
 
 **It does not say how many places are on the list**, and it did. That number
 cannot be known without reading every item of every list on the page: twenty
@@ -3182,8 +3239,9 @@ exist, because ordering by a count means knowing the count for every candidate
 
 Neither of the two things the page grew moves that number much. A search adds
 three `LIKE`s to a `WHERE` that was already visiting every candidate row, over
-columns on `lists` and `users` — which is why it is those columns and not the
-places on the lists. The bookmarks add one `LEFT JOIN` on `list_keeps`, keyed
+columns on `lists` and `users`, and one `EXISTS` into each candidate's own
+items that stops at the first hit — under sixty rows a search today, and
+watched, as above. The bookmarks add one `LEFT JOIN` on `list_keeps`, keyed
 on the reader's own account, over the index that table is already unique on,
 and only for somebody signed in: the statement is written without it for
 everybody else, which is most of the traffic this page gets.
@@ -6148,7 +6206,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists/public`:
 | `place_missing` | `search_term` — the "add the place that is missing" door |
 | `place_add` | `place` — a place typed in by hand, on success |
 | `search` | `search_term`, `scope` (`lists`) |
-| `lists_more` | `rows_shown` |
+| `lists_more` | `rows_shown`, `how` (`scroll` or `press`) |
 | `lists_all` | — |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
 
