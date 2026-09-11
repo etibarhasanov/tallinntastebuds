@@ -1708,7 +1708,13 @@ number regardless — the POST hands the new one straight back.
 ## Accounts
 
 Optional, and deliberately the smallest thing that does the job: **a username
-and a password**. No email, no phone, no OAuth, no profile, no name.
+and a password**. No email, no phone, no OAuth, no real name.
+
+That list used to end "no profile", and it stopped being true when `/u/<name>`
+was built. What an account still holds of its own is a username, a password
+hash and, if somebody writes one, two hundred characters about themselves —
+see **The line about yourself** under **Profiles**. Everything else a profile
+draws is the lists that account published, which were already public.
 
 Saving works with no account at all — the device keeps a random id and the
 save is filed under that. An account is the upgrade that makes a list follow a
@@ -2383,8 +2389,9 @@ places are worth promoting onto the map.
 Two things sort by them, and neither is a ranking of anything this site
 vouches for. `/google` is a directory of Google's rows, in Google's order, and
 it says so — see **The directory**. And five lists, under an account called
-`google`, are Google's top tens, with Google's name in the title and Google's
-numbers under every row — see **The five lists Google wrote**, below.
+`google-statistics`, are Google's top tens, with Google's name in the title
+and Google's numbers under every row — see **The five lists Google wrote**,
+below.
 
 ### Re-running it is safe
 
@@ -2445,15 +2452,24 @@ tools/googlelists.mjs    reads the export, ranks it, writes the SQL
 db/google-lists.sql      GENERATED — one account, five lists, fifty rows
 ```
 
-Five public lists under an account called `google`: **Top ten restaurants,
-by Google**, and the same for bakeries, cafés, bars and pizzerias. They are
-lists in every way the rest of this section means: a row each in `lists` and
-`list_items`, a byline that leads to `/u/google`, a bookmark, a way onto the
-map, three more at the foot and a place on `/lists/public`. What is different
-is who wrote them. The account has a password hash that is not the hash of
-anything, so nobody can sign in as it; `db/google-lists.sql` is the only
-thing that writes under its name, and it is generated from the export the
-way `db/google-venues.sql` is.
+Five public lists under an account called `google-statistics`: **Top ten
+restaurants, by Google**, and the same for bakeries, cafés, bars and
+pizzerias. They are lists in every way the rest of this section means: a row
+each in `lists` and `list_items`, a byline that leads to
+`/u/google-statistics`, a bookmark, a way onto the map, three more at the
+foot and a place on `/lists/public`. Its profile is the ordinary one every
+account here has, and the line under its name says where the order came
+from — see **Profiles**. What is different is who wrote them. The account has
+a password hash that is not the hash of anything, so nobody can sign in as
+it; `db/google-lists.sql` is the only thing that writes under its name, and
+it is generated from the export the way `db/google-venues.sql` is.
+
+The name is hyphenated rather than `google_statistics` because a username
+here is lowercase letters, digits and hyphens — `USERNAME_RE` in
+`functions/api/account.js`, restated in `functions/api/_profile.js` — and an
+underscore is not one of them. Widening that rule for one account would
+change what every sign-up after it may be called, which is a larger change
+than this account is worth; the two names read the same.
 
 **Why a site that does not rank has five rankings on it.** The map carries no
 score and never sorts by one, and that stands. A list is the other kind of
@@ -3682,6 +3698,7 @@ the drag and the save — is appended rather than left to collide.
 | places per list | 20 |
 | title | 60 characters |
 | the line under it | 200 |
+| the line about yourself | 200 |
 | what you say about a place | 280 |
 | places before a list is listed on `/lists/public` | 3 |
 
@@ -3810,6 +3827,9 @@ draws for your own, which is what `listRow()` in `assets/lists.js` is for. The
 year they turned up. And one number over the lot: **how many times, in all,
 other people have kept these lists.**
 
+And the line they wrote about themselves, when they wrote one. That is the
+whole of it.
+
 Nothing else. Not their saves — those are anonymous by design and filed under
 a device as often as under an account, and a page that turned them into a
 public record of where somebody eats would be a different site. Not when they
@@ -3817,8 +3837,48 @@ were last here. Not the lists they *kept*, which are a drawer of other
 people's pages rather than anything they published. There is no email on an
 account to leave off — see **Accounts**.
 
-A profile adds no fact about anybody that a list of theirs was not already
-printing. That is the test it was built to pass.
+A profile discloses no fact about anybody that a list of theirs was not
+already printing. That is the test it was built to pass, and the line below
+is the one thing on the page that is not a consequence of it: it is there
+because somebody typed it and pressed Save, which is the opposite of a page
+revealing something.
+
+### The line about yourself
+
+Two hundred characters under your name on `/u/<name>`, and the only thing
+anybody writes on this site about themselves rather than about a restaurant.
+It is written on `/account.html`, in the box on the card that carries your
+name, directly over the door to the profile it appears on — write the line,
+then go and read it where everybody else does.
+
+It is the same box a list's intro is, at the same length and in the same
+class, because it does the same job one floor up: a line under a title, not
+a page about a person. A profile that opened with six paragraphs of
+autobiography would have stopped being a page about somebody's lists.
+
+**Nothing is drawn for an account that has not written one**, which is nearly
+all of them. That is the rule the standing and every save count on this site
+already follow: a box reading "this person has not written anything yet" is
+a page telling a reader about an empty field rather than about a person.
+Emptying the box and pressing Save is how a line comes down, and the server
+takes empty as an answer rather than as a mistake.
+
+**It does not ask for your password, and the other two changes do.** A
+password change and a rename are each a way to take an account off somebody
+— one locks them out, the other moves every link pointing at them — so both
+are guarded by the password in use. A line on a page is neither. It is
+something its author wrote and can rewrite, the way a list's title and intro
+are, and those ask for a session and nothing more. Asking for a password to
+edit a sentence teaches people to type it into a box that did not need it.
+
+The column is `users.about`, and it arrived on both deployed databases by
+hand, as `ALTER TABLE users ADD COLUMN about TEXT NOT NULL DEFAULT ''`.
+`db/schema.sql` lists it last because that is where SQLite put it, which is
+what keeps that file readable against the real table. It is read on
+`/api/profile` and once more on `GET /api/account`, on the id already in
+hand, so that the box on the account page opens with what is in it —
+`sessionUser()` does not carry it, because every signed-in request on this
+site goes through that function and not one of the others prints this.
 
 ### Private lists are not on it, including for its owner
 
@@ -5183,7 +5243,7 @@ exports/clean_restaurants_csv.py   the cleaning, from the upstream export
 exports/REVIEW.md          the shortlisting worksheet those rows are read
 exports/build_review_sheet.py      through, and the script that builds it
 db/google-venues.sql       GENERATED — loads that export into D1
-db/google-lists.sql        GENERATED — the five top tens under the `google` account
+db/google-lists.sql        GENERATED — the five top tens under `google-statistics`
 data/taxonomy.json         the controlled vocabulary of types
 data/cuisines.json         the 37 cuisines only the directory needs, in ten
                            languages — taxonomy.json holds the other six

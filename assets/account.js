@@ -189,6 +189,10 @@
      instead of at the round trip. MAX_TITLE in functions/api/lists.js is the
      one that counts — change one, change the other. */
   var MAX_TITLE = 60;
+  /* The line about yourself. MAX_ABOUT in functions/api/account.js is the one
+     that binds; this is the copy that stops a keystroke rather than a round
+     trip, the way every cap on this site is written twice. */
+  var MAX_ABOUT = 200;
 
   /* Where the sheet is, and where it should come back to. Written once here
      rather than at each of the three links that use it. */
@@ -201,6 +205,7 @@
     reached: true,   // whether /api/account answered at all
     ready: false,    // whether accounts work on this deployment
     user: null,
+    about: '',       // the line you wrote about yourself, '' for nearly everybody
     saved: [],       // place ids, newest first
     places: {},      // id -> { name, address }
     lists: [],       // the ones you wrote
@@ -823,6 +828,7 @@
       el('p', { className: 'eyebrow', textContent: t('accountOpen') }),
       heading(state.user),
       el('p', { className: 'lists-say', textContent: t('accountWhat') }),
+      aboutForm(),
       el('ul', { className: 'menu' }, [
         door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user))
       ]),
@@ -836,6 +842,74 @@
         signOut()
       ])
     ]);
+  }
+
+  /* The one thing anybody writes here about themselves rather than about a
+     restaurant, and it stands on this card because this is the page that says
+     who you are. It is the same box a list's intro is — one line, two hundred
+     characters, the same class — because it does the same job one floor up: a
+     line under a name, not a page about a person. Sitting directly over the
+     door to /u/<you>, it reads in the order it is used: write the line, then
+     go and see it where everybody else does.
+
+     It saves on its button rather than as you type, which is the small version
+     of the promise the list editor makes: nothing about you reaches a server
+     because you stopped halfway through a sentence. Emptying it and pressing
+     Save is how a line comes down again, and the server treats empty as an
+     answer rather than as a mistake.
+
+     The field is put back from what came back rather than from what went out.
+     A line cut at two hundred characters would otherwise sit on screen in
+     full, looking saved, until the next time the page was opened. */
+  function aboutForm() {
+    var form = el('form', { className: 'lists-new' });
+    var field = el('input', {
+      type: 'text',
+      className: 'lists-input',
+      id: 'about-line',
+      value: state.about,
+      maxlength: String(MAX_ABOUT),
+      autocomplete: 'off',
+      'aria-label': t('accountAbout'),
+      placeholder: t('accountAboutHint')
+    });
+    var go = el('button', { type: 'submit', className: 'go', textContent: t('listsSave') });
+
+    /* The button is the whole of the state: one field, and one thing to say
+       about it. Typing again is what makes there be something to send. */
+    field.addEventListener('input', function () {
+      go.disabled = false;
+      go.textContent = t('listsSave');
+    });
+
+    form.appendChild(field);
+    form.appendChild(go);
+
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      go.disabled = true;
+      go.textContent = t('accountWorking');
+
+      var failed = function () {
+        go.disabled = false;
+        go.textContent = t('listsSave');
+      };
+
+      fetch(ACCOUNT_API, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'about', about: field.value })
+      }).then(function (res) {
+        return res.ok ? res.json() : null;
+      }).then(function (out) {
+        if (!out) { failed(); return; }
+        state.about = out.about || '';
+        field.value = state.about;
+        go.textContent = t('listsSaveDone');
+      }).catch(failed);
+    });
+
+    return form;
   }
 
   /* Sign out is a button rather than a link because it changes something. The
@@ -991,6 +1065,7 @@
       state.reached = account.status !== 0;
       state.ready = !!account.out.ready;
       state.user = account.out.user || null;
+      state.about = account.out.about || '';
       state.saved = Object.prototype.toString.call(account.out.saved) === '[object Array]'
         ? account.out.saved
         : [];

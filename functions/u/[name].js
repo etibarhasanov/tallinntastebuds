@@ -13,10 +13,17 @@
  *
  * WHAT IS ON IT
  *
- * Their public lists, and how many times those have been kept in total. Not
- * their saves, not their private lists, not the lists they kept — see
- * functions/api/_profile.js for why each of those is left off. A profile adds
- * no fact about anybody that a list of theirs was not already printing.
+ * Their public lists, how many times those have been kept in total, and the
+ * line they wrote about themselves if they wrote one. Not their saves, not
+ * their private lists, not the lists they kept — see functions/api/_profile.js
+ * for why each of those is left off. A profile discloses no fact about
+ * anybody that a list of theirs was not already printing; the line is the
+ * exception and it is not one, because somebody typed it and pressed Save.
+ *
+ * The line is not the page's description. describe() below stays the lists,
+ * because a description tells a searcher what is on the page and what is on
+ * this one is places in Tallinn — a bio that reads "i like cats" would be
+ * true about its author and useless as the thing under a search result.
  *
  * INDEXED, AND WHY
  *

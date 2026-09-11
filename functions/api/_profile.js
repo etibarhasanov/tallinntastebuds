@@ -12,8 +12,9 @@
  *
  * WHAT A PROFILE IS
  *
- * The public lists somebody has made, and how many times anybody has kept
- * them. Nothing else. Not their saves — those are anonymous by design and
+ * The public lists somebody has made, how many times anybody has kept them,
+ * and the line they wrote about themselves. Nothing else. Not their saves —
+ * those are anonymous by design and
  * filed under a device as often as under an account — not when they were
  * last seen, and not the lists they have kept, which are a drawer of somebody
  * else's pages rather than anything they published. An account holds no
@@ -70,7 +71,7 @@ export async function readProfile(context, name) {
   if (!USERNAME.test(who)) return null;
 
   const row = await env.DB
-    .prepare('SELECT id, username, created_at FROM users WHERE username = ? COLLATE NOCASE')
+    .prepare('SELECT id, username, created_at, about FROM users WHERE username = ? COLLATE NOCASE')
     .bind(who)
     .first();
   if (!row) return null;
@@ -98,6 +99,10 @@ export async function readProfile(context, name) {
     name: row.username,
     since: row.created_at,
     kept: kept,
+    /* Left out when it is empty rather than sent as '', the way every other
+       answer here drops a field with nothing in it. Nearly every account has
+       no line, and the page draws nothing for one it was not given. */
+    about: row.about || undefined,
     /* The four things a row on this page draws and no more — listRow() in
        assets/lists.js takes a title, a count and a number of keeps, and the
        id is what it links to. The line under a list and the date it was last

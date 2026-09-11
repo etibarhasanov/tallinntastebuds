@@ -1,15 +1,18 @@
-INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at)
-VALUES ('google', 'google', '0000000000000000000000000000000000000000000000000000000000000000', '6f6f676c65206c69737473206e6f2070', 10000, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000)
-ON CONFLICT(id) DO NOTHING;
+INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at, about)
+VALUES ('google-statistics', 'google-statistics', '0000000000000000000000000000000000000000000000000000000000000000', '6f6f676c65206c69737473206e6f2070', 10000, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000, 'Five top tens out of Google’s own ratings for Tallinn, weighed by how many people gave them. Rebuilt whenever the export refreshes. Google’s numbers, not this map’s verdict.')
+ON CONFLICT(id) DO UPDATE SET
+    username = excluded.username,
+    about = excluded.about;
 
 INSERT INTO lists (id, owner, title, intro, public, created_at, updated_at)
 VALUES
-  ('top-ten-restaurants-by-google-pt7mwk', 'google', 'Top ten restaurants, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-bakeries-by-google-65nfrf', 'google', 'Top ten bakeries, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-cafes-by-google-jz7c2b', 'google', 'Top ten cafés, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-bars-by-google-8y6grz', 'google', 'Top ten bars, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-pizzerias-by-google-k83p93', 'google', 'Top ten pizzerias, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000)
+  ('top-ten-restaurants-by-google-pt7mwk', 'google-statistics', 'Top ten restaurants, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-bakeries-by-google-65nfrf', 'google-statistics', 'Top ten bakeries, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-cafes-by-google-jz7c2b', 'google-statistics', 'Top ten cafés, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-bars-by-google-8y6grz', 'google-statistics', 'Top ten bars, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-pizzerias-by-google-k83p93', 'google-statistics', 'Top ten pizzerias, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000)
 ON CONFLICT(id) DO UPDATE SET
+    owner = excluded.owner,
     title = excluded.title,
     intro = excluded.intro,
     updated_at = excluded.updated_at;

@@ -582,6 +582,16 @@
     wrap.appendChild(card([
       el('p', { className: 'eyebrow', textContent: t('profileEyebrow') }),
       heading(who.name),
+      /* Their own line, when they wrote one, above the one number this site
+         keeps about anybody: what somebody says about themselves outranks a
+         count of how often strangers bookmarked them, and it should not be
+         read underneath it.
+
+         Nothing at all when there is none, which is nearly every account —
+         the same rule the standing and every save count on this site follow.
+         A box saying "this person has not written anything" is a page telling
+         a reader about an empty field rather than about a person. */
+      who.about ? el('p', { className: 'lists-say', textContent: who.about }) : null,
       standing(who.kept),
       /* The year and not the day. When somebody made an account is context
          for the number above it rather than a record of them — and a year is
