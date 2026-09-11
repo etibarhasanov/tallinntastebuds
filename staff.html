@@ -7,6 +7,16 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2XNTC15F28"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2XNTC15F28');
+</script>
+
 <!-- Not part of the public map. These pages only mean anything with a place
      in the query string, and a search result for a bare one would be a dead
      end, so they stay out of the index. robots.txt says the same thing. -->
@@ -28,7 +38,7 @@
 <body>
 
 <main class="pass-page">
-  <a class="pass-brand" href="./">
+  <a class="pass-brand" href="./" data-track="home">
     <img class="pass-mark" src="assets/logo/mark.webp" alt="" width="60" height="46">
     <p class="eyebrow">Tallinn</p>
     <p class="pass-wordmark">Tallinn Tastebuds</p>
@@ -38,6 +48,10 @@
 </main>
 
 
+<!-- What every press reports to Google Analytics, shared by every page.
+     Before the page's own script and deferred like it, so document order puts
+     the global in place first. -->
+<script src="assets/track.js?v=93031b0d" defer></script>
 <script src="assets/pass.js?v=9dfcb42e" defer></script>
 <script src="assets/staff.js?v=08ad73c5" defer></script>
 </body>

@@ -545,14 +545,14 @@
      built with this leaves the page, so all of it opens in a new tab; the two
      links that do not — the phone number and the door to the map — are built
      where they are used. */
-  function outLink(key, href, className) {
-    return el('a', {
+  function outLink(venue, key, href, event, className) {
+    return TTBTrack.click(el('a', {
       className: 'venue-link' + (className ? ' ' + className : ''),
       href: href,
       target: '_blank',
       rel: 'noopener',
       textContent: t(key)
-    });
+    }), event, { venue: venue.name });
   }
 
   function card(venue, clock) {
@@ -629,14 +629,14 @@
        map, and this is the door to the write-up. First in the row because it
        is the only thing on this page that carries an opinion. */
     if (venue.mapId) {
-      links.appendChild(el('a', {
+      links.appendChild(TTBTrack.click(el('a', {
         className: 'venue-link venue-mine',
         href: '/?spot=' + encodeURIComponent(venue.mapId),
         textContent: t('venuesOnMap')
-      }));
+      }), 'place_link', { place: venue.name, map: 'mine' }));
     }
     if (venue.phone) {
-      links.appendChild(el('a', {
+      links.appendChild(TTBTrack.click(el('a', {
         className: 'venue-link',
         /* A tel: href is what makes a phone dial rather than navigate, and it
            wants the digits without the spaces the export writes them with.
@@ -644,13 +644,13 @@
            empty tab behind on the way to the dialler. */
         href: 'tel:' + venue.phone.replace(/[^+0-9]/g, ''),
         textContent: t('call')
-      }));
+      }), 'venue_call', { venue: venue.name }));
     }
-    if (venue.website) links.appendChild(outLink('website', venue.website));
+    if (venue.website) links.appendChild(outLink(venue, 'website', venue.website, 'venue_website'));
     if (typeof venue.lat === 'number') {
-      links.appendChild(outLink('directions', directionsUrl(venue)));
+      links.appendChild(outLink(venue, 'directions', directionsUrl(venue), 'venue_directions'));
     }
-    links.appendChild(outLink('venuesMaps', mapsUrl(venue), 'venue-google'));
+    links.appendChild(outLink(venue, 'venuesMaps', mapsUrl(venue), 'venue_google', 'venue-google'));
     node.appendChild(links);
 
     return node;
@@ -742,6 +742,14 @@
      whichever the person is actually looking at. */
   function select(id, fromList) {
     state.selected = state.selected === id ? '' : id;
+    if (state.selected) {
+      for (var n = 0; n < state.shown.length; n++) {
+        if (state.shown[n].id === id) {
+          TTBTrack.event('venue_select', { venue: state.shown[n].name, from: fromList ? 'list' : 'map' });
+          break;
+        }
+      }
+    }
 
     /* A dot can be pressed for a place whose card has not been built yet: the
        list grows a screenful at a time and the map has always shown the whole
@@ -884,10 +892,16 @@
       /* A keystroke rebuilds eleven hundred dots and a screenful of cards, so
          it waits for the typing to stop rather than doing it per letter. */
       if (searchTimer) clearTimeout(searchTimer);
-      searchTimer = setTimeout(refresh, 140);
+      searchTimer = setTimeout(function () {
+        refresh();
+        /* Once the typing has stopped, so a word is one search and not one
+           per letter — the same reason the redraw waits. */
+        if (state.q) TTBTrack.event('search', { search_term: state.q.toLowerCase(), scope: 'google' });
+      }, 140);
     });
 
     dom.searchClear.addEventListener('click', function () {
+      TTBTrack.event('search_clear', { scope: 'google' });
       state.q = '';
       dom.search.value = '';
       dom.searchClear.hidden = true;
@@ -895,33 +909,46 @@
       refresh();
     });
 
+    /* Every control on the bar under one name, told apart by which one moved
+       and what it was moved to, so the report reads as one question: what do
+       people narrow the city by? */
+    function filtered(filter, value) {
+      TTBTrack.event('venues_filter', { filter: filter, value: String(value), places_shown: state.shown.length });
+    }
+
     dom.open.addEventListener('click', function () {
       state.open = !state.open;
       dom.open.setAttribute('aria-pressed', state.open ? 'true' : 'false');
       refresh();
+      filtered('open', state.open ? 'on' : 'off');
     });
 
     dom.cuisine.addEventListener('change', function () {
       state.cuisine = dom.cuisine.value;
       refresh();
+      filtered('cuisine', state.cuisine || 'any');
     });
 
     dom.rating.addEventListener('change', function () {
       state.rating = Number(dom.rating.value) || 0;
       refresh();
+      filtered('rating', state.rating || 'any');
     });
 
     dom.price.addEventListener('change', function () {
       state.price = Number(dom.price.value) || 0;
       refresh();
+      filtered('price', state.price || 'any');
     });
 
     dom.sort.addEventListener('change', function () {
       state.sort = dom.sort.value;
       refresh();
+      filtered('sort', state.sort);
     });
 
     dom.clear.addEventListener('click', function () {
+      TTBTrack.event('venues_clear');
       state.q = '';
       state.open = false;
       state.cuisine = '';
@@ -935,6 +962,7 @@
     dom.more.addEventListener('click', function () {
       state.pages++;
       renderList();
+      TTBTrack.event('venues_more', { page: state.pages });
     });
 
     /* One listener for every card there will ever be, on the container that
@@ -947,8 +975,8 @@
       if (article) select(article.getAttribute('data-id'), true);
     });
 
-    dom.seeMap.addEventListener('click', function () { showMap(true); });
-    dom.seeList.addEventListener('click', function () { showMap(false); });
+    dom.seeMap.addEventListener('click', function () { showMap(true); TTBTrack.event('venues_view', { view: 'map' }); });
+    dom.seeList.addEventListener('click', function () { showMap(false); TTBTrack.event('venues_view', { view: 'list' }); });
   }
 
   /* ----------------------------------------------------------------- boot */

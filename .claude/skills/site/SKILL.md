@@ -81,6 +81,18 @@ second exception is two files to keep in step.
 **Every touch of `localStorage` is inside `try/catch`.** It throws outright
 in some private-browsing modes, and the site is meant to work with it absent.
 
+**Every button reports.** A press that matters is reported to Google
+Analytics through the global `assets/track.js` sets, on every page:
+`TTBTrack.event(name, params)` in a handler, `TTBTrack.click(node, name,
+params)` around a link or button built inline, and `data-track="name"` on
+one written straight into the markup. The name says what the person meant
+(`list_keep`, `place_close`), the parameters are what the handler already
+holds, and the event gets a row in the table under **Analytics** in
+`README.md` in the same commit — that table is the list, and a name that is
+not in it is a name nobody will find in the console. `grep -n TTBTrack
+assets/<file>.js` shows what the page beside yours reports, and the same
+press on two pages reports the same name.
+
 **Two files are held to something stricter than the validator.**
 `assets/qr.js` is fingerprinted by `node tools/qrperf.mjs --check`, which CI
 runs: nine payloads, each with the expected version and a SHA-256 of the

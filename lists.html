@@ -8,6 +8,16 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2XNTC15F28"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2XNTC15F28');
+</script>
+
 <!-- The block between the two PAGE-HEAD markers below is replaced, in place,
      whenever this same file is served at one of its other three addresses:
      functions/list/[id].js at /list/<id>, functions/lists/public.js at
@@ -56,13 +66,13 @@
 <a class="skip-link" href="#main" data-i18n="listsSkip">Skip to the list</a>
 
 <header class="lists-brand">
-  <a class="lists-home" href="/" data-i18n-aria-label="listsBack" aria-label="Back to the map">
+  <a class="lists-home" href="/" data-track="home" data-i18n-aria-label="listsBack" aria-label="Back to the map">
     <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
     <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
   </a>
   <!-- Only ever a link to the map's account sheet: the sign-in form lives in
        exactly one place on this site and it is not here. See assets/lists.js. -->
-  <a class="lists-who" id="lists-who" href="/?account=in" hidden></a>
+  <a class="lists-who" id="lists-who" href="/?account=in" data-track="account_open" hidden></a>
   <!-- The map's radio, wearing the map's pill. It is the same station and the
        same on/off — assets/radio.js keeps both across the walk from the map to
        here — so it is the same button too, rather than a second design for one
@@ -139,6 +149,10 @@
   </div>
 </noscript>
 
+<!-- What every press reports to Google Analytics, shared by every page.
+     Before the page's own script and deferred like it, so document order puts
+     the global in place first. -->
+<script src="/assets/track.js?v=93031b0d" defer></script>
 <!-- The basemap the "add a place" picker draws, shared with the map page.
      Before lists.js and deferred like it, so document order puts the global
      in place first. It is the only part of the map this page loads eagerly —
@@ -147,7 +161,7 @@
 <!-- The radio, shared with the map: the station carries across the walk from
      one page to the other. Before lists.js and deferred like it, the same way
      the basemap is. -->
-<script src="/assets/radio.js?v=495775d6" defer></script>
-<script src="/assets/lists.js?v=be4a034d" defer></script>
+<script src="/assets/radio.js?v=745e0f95" defer></script>
+<script src="/assets/lists.js?v=ff9c9225" defer></script>
 </body>
 </html>

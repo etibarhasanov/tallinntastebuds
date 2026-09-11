@@ -46,6 +46,9 @@
     return P.verify(data, placeId, hour, claimed).then(function (result) {
       var answer = ANSWERS[result.status] || ANSWERS.error;
       var ok = result.status === 'ok';
+      /* The verdict is the whole page, so it is the report: how often a
+         scan says yes, and what the no's were. */
+      TTBTrack.event('pass_verify', { place: result.deal ? result.deal.name : placeId, status: result.status });
 
       P.clear(card);
 

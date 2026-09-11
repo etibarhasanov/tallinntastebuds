@@ -431,11 +431,18 @@
      and splitting a translated sentence around it to underline only that would
      be a sentence assembled out of pieces in ten languages. */
   function byline(name) {
-    return el('a', {
+    return TTBTrack.click(el('a', {
       className: 'lists-index-by',
       href: profileHref(name),
       textContent: t('listsBy', { name: name })
-    });
+    }), 'profile_open', { name: name });
+  }
+
+  /* Back to the map, at the foot of a profile, a list, and every card that
+     stands in for one that could not be read. Reported as `home`, the same
+     as the wordmark. */
+  function backLink() {
+    return TTBTrack.click(el('a', { className: 'alt', href: '/', textContent: t('listsBack') }), 'home');
   }
 
   /* Every caller says how it should look, because the places this link turns
@@ -444,11 +451,11 @@
      everywhere else — on your own list, where Save has the accent, and in the
      corner of each row on a profile. */
   function mapLink(id, className) {
-    return el('a', {
+    return TTBTrack.click(el('a', {
       className: className,
       href: mapHref(id),
       textContent: t('listsOnMap')
-    });
+    }), 'list_map', { list_id: id });
   }
 
   /* How many people have this list bookmarked, drawn only once somebody has.
@@ -497,7 +504,7 @@
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
       heading(t('listsTitle')),
       el('p', { className: 'lists-say', textContent: t('loadError') }),
-      el('a', { className: 'alt', href: '/', textContent: t('listsBack') })
+      backLink()
     ]);
   }
 
@@ -510,7 +517,7 @@
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
       heading(t('listsTitle')),
       el('p', { className: 'lists-say', textContent: t('listsErrOff') }),
-      el('a', { className: 'alt', href: '/', textContent: t('listsBack') })
+      backLink()
     ]);
   }
 
@@ -532,11 +539,11 @@
      title and every number beside it read out in one breath. */
   function listRow(l) {
     var box = el('div', { className: 'lists-index-card' }, [
-      el('a', {
+      TTBTrack.click(el('a', {
         className: 'lists-index-title lists-open',
         href: '/list/' + l.id,
         textContent: l.title
-      }),
+      }), 'list_page', { list_id: l.id }),
       el('span', { className: 'lists-index-meta mono' }, [
         el('span', { textContent: countLabel(l.n) }),
         /* How many people kept it — the one fact about a list its own author
@@ -573,7 +580,7 @@
         el('p', { className: 'eyebrow', textContent: t('profileEyebrow') }),
         heading(t('listsGoneTitle')),
         el('p', { className: 'lists-say', textContent: t('profileErrGone') }),
-        el('a', { className: 'alt', href: '/', textContent: t('listsBack') })
+        backLink()
       ]);
     }
 
@@ -611,7 +618,7 @@
       wrap.appendChild(ul);
     }
 
-    wrap.appendChild(el('a', { className: 'alt', href: '/', textContent: t('listsBack') }));
+    wrap.appendChild(backLink());
     return wrap;
   }
 
@@ -808,6 +815,7 @@
     if (q === state.q) return;
     var was = state.q;
     state.q = q;
+    if (q) TTBTrack.event('search', { search_term: q.toLowerCase(), scope: 'lists' });
 
     var seq = ++searchSeq;
     try {
@@ -907,11 +915,11 @@
        corner either. */
     return el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card' + (l.mine ? '' : ' has-keep') }, [
-        el('a', {
+        TTBTrack.click(el('a', {
           className: 'lists-index-title lists-open',
           href: '/list/' + l.id,
           textContent: l.title
-        }),
+        }), 'list_page', { list_id: l.id }),
         line,
         l.taste && l.taste.length
           ? el('p', { className: 'lists-all-taste', textContent: l.taste.join(' \u00b7 ') })
@@ -975,6 +983,7 @@
   function more(btn) {
     if (state.asking || state.searching || !state.next) return;
     state.asking = true;
+    TTBTrack.event('lists_more', { rows_shown: state.all.length });
     btn.disabled = true;
     btn.textContent = t('accountWorking');
 
@@ -1034,7 +1043,7 @@
     them.forEach(function (l) { ul.appendChild(allRow(l)); });
     foot.appendChild(ul);
     foot.appendChild(el('p', { className: 'lists-more' }, [
-      el('a', { className: 'alt', href: ALL_PATH, textContent: t('listsAllEverything') })
+      TTBTrack.click(el('a', { className: 'alt', href: ALL_PATH, textContent: t('listsAllEverything') }), 'lists_all')
     ]));
     dom.main.appendChild(foot);
   }
@@ -1049,7 +1058,7 @@
         el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
         heading(t('listsGoneTitle')),
         el('p', { className: 'lists-say', textContent: t('listsErrGone') }),
-        el('a', { className: 'alt', href: '/', textContent: t('listsBack') })
+        backLink()
       ]);
     }
 
@@ -1083,7 +1092,7 @@
         button(t('listsDelete'), 'alt is-danger', deleteList)
       ]));
     } else {
-      wrap.appendChild(el('a', { className: 'alt', href: '/', textContent: t('listsBack') }));
+      wrap.appendChild(backLink());
     }
 
     return wrap;
@@ -1112,7 +1121,7 @@
          sake of a smaller target. */
       list.by
         ? el('p', { className: 'lists-by mono' }, [
-            el('a', { href: profileHref(list.by), textContent: t('listsBy', { name: list.by }) })
+            TTBTrack.click(el('a', { href: profileHref(list.by), textContent: t('listsBy', { name: list.by }) }), 'profile_open', { name: list.by })
           ])
         : null,
       list.intro ? el('p', { className: 'lists-say', textContent: list.intro }) : null,
@@ -1167,12 +1176,12 @@
 
     if (!state.me) {
       return el('span', { className: 'lists-keep-wrap' }, [
-        el('a', {
+        TTBTrack.click(el('a', {
           className: 'alt lists-keep',
           href: accountHref('up'),
           html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_KEEP + '</svg>',
           'aria-label': t('listsKeepIn')
-        }, [el('span', { textContent: t('listsKeep') })]),
+        }, [el('span', { textContent: t('listsKeep') })]), 'list_keep', { list_id: list.id, list_state: 'signed_out' }),
         count
       ]);
     }
@@ -1189,6 +1198,7 @@
          waits for a round trip before it looks pressed feels broken on a
          phone, and there is nothing here that a failure cannot put back. */
       var want = !list.kept;
+      TTBTrack.event('list_keep', { list_id: list.id, list_state: want ? 'on' : 'off' });
       list.kept = want;
       list.keeps = Math.max(0, (list.keeps || 0) + (want ? 1 : -1));
       b.classList.toggle('is-kept', want);
@@ -1363,6 +1373,7 @@
       input.addEventListener('change', function () {
         if (!input.checked || list.public === isPublic) return;
         list.public = isPublic;
+        TTBTrack.event('list_visibility', { list_id: list.id, visibility: isPublic ? 'public' : 'private' });
         var opts = label.parentNode.querySelectorAll('.lists-seg-opt');
         for (var i = 0; i < opts.length; i++) opts[i].classList.toggle('is-on', opts[i] === label);
         /* The answer is filled in at once — the radio is the state, and a
@@ -1393,6 +1404,7 @@
        it when the last write has actually landed rather than here, where the
        only true thing yet is that it has been sent. */
     mark.asked = true;
+    TTBTrack.event('list_save', { list_id: state.list.id, writes: pending.length });
     var focused = document.activeElement;
     if (focused && focused.blur && focused !== document.body) focused.blur();
     flushAll();
@@ -1510,13 +1522,13 @@
     }
     var out = { className: 'item-name', href: href };
     if (!item.map) { out.target = '_blank'; out.rel = 'noopener'; }
-    return el('a', out, [
+    return TTBTrack.click(el('a', out, [
       el('span', { textContent: item.name }),
       el('span', {
         className: 'item-where mono',
         html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_PIN + '</svg>'
       })
-    ]);
+    ]), 'place_link', { place: item.name, map: item.map ? 'mine' : 'google' });
   }
 
   /* One of the empty places a new list starts with. It is numbered like a
@@ -1848,6 +1860,7 @@
   function reorder(from, to, focus) {
     if (from === to) return;
     var items = state.list.items;
+    TTBTrack.event('list_reorder', { list_id: state.list.id, from: from + 1, to: to + 1 });
 
     items.splice(to, 0, items.splice(from, 1)[0]);
     render();
@@ -2135,6 +2148,7 @@
      longer on the list, and sending it after the removal would be a write
      about nothing. */
   function drop(place) {
+    TTBTrack.event('list_remove', { list_id: state.list.id, place: place });
     unqueue('say:' + place);
     var items = state.list.items;
     for (var i = 0; i < items.length; i++) {
@@ -2149,6 +2163,7 @@
   function deleteList() {
     var list = state.list;
     if (!window.confirm(t('listsDeleteSure', { title: list.title }))) return;
+    TTBTrack.event('list_delete', { list_id: list.id });
     post({ action: 'delete', id: list.id }).then(function (a) {
       if (!a.ok) return failed(a.out);
       window.location.href = '/account.html';
@@ -2179,9 +2194,11 @@
     var payload = { title: state.list.title, url: url };
 
     if (navigator.share && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+      TTBTrack.event('list_share', { list_id: state.list.id, method: 'sheet' });
       navigator.share(payload).catch(function () { /* dismissed, which is fine */ });
       return;
     }
+    TTBTrack.event('list_share', { list_id: state.list.id, method: 'copy' });
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(url)
         .then(function () { toast(t('listsCopied')); })
@@ -2202,6 +2219,7 @@
    * opened.
    */
   function openPicker() {
+    TTBTrack.event('picker_open', { list_id: state.list.id, places_on: state.list.items.length });
     dom.pickerScrim.hidden = false;
     document.body.classList.add('has-scrim');
     dom.pickerSearch.value = '';
@@ -2250,6 +2268,8 @@
   }
 
   function closePicker() {
+    if (dom.pickerScrim.hidden) return;
+    TTBTrack.event('picker_close', { list_id: state.list.id });
     dom.pickerScrim.hidden = true;
     document.body.classList.remove('has-scrim');
   }
@@ -2408,7 +2428,10 @@
       className: 'picker-add',
       textContent: t('listsAddMissing')
     });
-    b.addEventListener('click', function () { addForm(typed); });
+    b.addEventListener('click', function () {
+      TTBTrack.event('place_missing', { search_term: typed.toLowerCase() });
+      addForm(typed);
+    });
     return b;
   }
 
@@ -2791,6 +2814,7 @@
            anybody filled this in. It also joins the picker's own roll, so a
            second list can have it without it being typed again. */
         var made = a.out.place;
+        TTBTrack.event('place_add', { place: made.name });
         if (state.places) {
           state.places.push(made);
           state.hay[made.id] = fold(made.name + ' ' + (made.address || ''));
@@ -2825,6 +2849,7 @@
     /* The picker already greys these out; this is the second door, for a
        click that got in before the last render caught up. */
     if (list.items.length >= MAX_ITEMS) { toast(t('listsErrFull')); return; }
+    TTBTrack.event('list_add', { list_id: list.id, place: place.name, places_on: list.items.length + 1 });
 
     /* Going on the list is sent now rather than held for Save, and it is one
        of only two writes on this page that are. The server decides whether a

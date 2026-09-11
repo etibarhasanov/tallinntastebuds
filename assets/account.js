@@ -387,8 +387,14 @@
     return el('p', { className: 'lists-row lists-foot' }, kids);
   }
 
-  function link(labelKey, href, className) {
-    return el('a', { className: className || 'alt', href: href, textContent: t(labelKey) });
+  /* Every link is reported under the event it names — a way off this page
+     is the one kind of press it has, and which way people leave is the
+     whole of what there is to learn from it. */
+  function link(labelKey, href, event, params, className) {
+    return TTBTrack.click(
+      el('a', { className: className || 'alt', href: href, textContent: t(labelKey) }),
+      event, params
+    );
   }
 
   /* A way on from a card, as a row: the name, the line under it saying what
@@ -402,15 +408,15 @@
      would be the copy that quietly stops matching the sheet's. */
   var ICON_GO = '<path d="M9 5l7 7-7 7"/>';
 
-  function door(nameKey, whyKey, href) {
+  function door(nameKey, whyKey, href, event, params) {
     return el('li', { className: 'menu-item' }, [
-      el('a', { className: 'menu-row', href: href }, [
+      TTBTrack.click(el('a', { className: 'menu-row', href: href }, [
         el('span', { className: 'menu-say' }, [
           el('span', { className: 'menu-name', textContent: t(nameKey) }),
           el('span', { className: 'menu-why', textContent: t(whyKey) })
         ]),
         chevron()
-      ])
+      ]), event, params)
     ]);
   }
 
@@ -460,6 +466,7 @@
       var open = openFolds().filter(function (n) { return n && n !== name; });
       if (box.open) open.push(name);
       storeSet(OPEN_KEY, open.join(','));
+      TTBTrack.event('fold_toggle', { fold: name, fold_state: box.open ? 'open' : 'closed' });
     });
     return box;
   }
@@ -487,7 +494,7 @@
      over the whole face of it. That arrangement is here for the same reason it
      is on the directory: the byline in the line of facts is a door to whoever
      wrote the list, and a link inside a link is not a thing HTML has. */
-  function row(href, title, meta, taste) {
+  function row(href, title, meta, taste, event, params) {
     var parts = meta.filter(Boolean);
     var line = el('p', { className: 'lists-all-meta mono' });
     parts.forEach(function (part, i) {
@@ -496,7 +503,7 @@
     });
     return el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card' }, [
-        el('a', { className: 'lists-index-title lists-open', href: href, textContent: title }),
+        TTBTrack.click(el('a', { className: 'lists-index-title lists-open', href: href, textContent: title }), event, params),
         parts.length ? line : null,
         taste && taste.length
           ? el('p', { className: 'lists-all-taste', textContent: taste.join(' · ') })
@@ -510,11 +517,11 @@
      this site — see byline() in assets/lists.js for why the whole phrase is
      the link rather than the name inside it. */
   function byline(name) {
-    return el('a', {
+    return TTBTrack.click(el('a', {
       className: 'lists-index-by',
       href: '/u/' + encodeURIComponent(name),
       textContent: t('listsBy', { name: name })
-    });
+    }), 'profile_open', { name: name });
   }
 
   function keepCount(n) {
@@ -566,7 +573,7 @@
   function placeRow(place) {
     return row('/?spot=' + encodeURIComponent(place.id), place.name, [
       place.address ? el('span', { textContent: place.address }) : null
-    ]);
+    ], null, 'place_link', { place: place.name, map: 'mine' });
   }
 
   function savedCard() {
@@ -581,7 +588,7 @@
         heading(t('listSaved'), 'h2'),
         el('p', { className: 'lists-say', textContent: t('accountSavedWhy') }),
         el('p', { className: 'lists-none', textContent: t('accountSavedNone') }),
-        foot([link('listsBack', '/')])
+        foot([link('listsBack', '/', 'home')])
       ]);
     }
 
@@ -600,7 +607,7 @@
          the map to the map, which is what this page cost when it took the
          saves off the sheet. ?saved=1 is a door the map opens once and takes
          back off; see readDoors() in assets/app.js. */
-      foot([link('accountSavedMap', '/?saved=1')])
+      foot([link('accountSavedMap', '/?saved=1', 'saved_map', { places_saved: places.length })])
     ]);
   }
 
@@ -629,7 +636,7 @@
          The answers that hold other people's lists do not send the column at
          all — every list in them is public by the query that found it. */
       l.public === false ? el('span', { className: 'lists-private', textContent: t('listsPrivate') }) : null
-    ]);
+    ], null, 'list_page', { list_id: l.id });
   }
 
   /* Name it and you land in it, because the next thing anybody wants after
@@ -678,6 +685,7 @@
 
       post({ action: 'create', title: title }).then(function (a) {
         if (!a.ok) return refuse(a.out);
+        TTBTrack.event('list_create', { list_id: a.out.id });
         window.location.href = '/list/' + a.out.id;
       }).catch(function () { refuse({}); });
     });
@@ -772,7 +780,7 @@
       ul.appendChild(row('/list/' + l.id, l.title, [
         keepCount(l.keeps),
         l.by ? byline(l.by) : null
-      ], l.taste));
+      ], l.taste, 'list_page', { list_id: l.id }));
     });
 
     return card([
@@ -792,7 +800,7 @@
            that is the trade: the title with its count says there is
            something behind it, and the first thing anybody sees on opening
            it is where the rest are. */
-        foot([link('accountPublicAll', ALL_PATH)]),
+        foot([link('accountPublicAll', ALL_PATH, 'lists_all')]),
         ul
       ])
     ]);
@@ -830,15 +838,15 @@
       el('p', { className: 'lists-say', textContent: t('accountWhat') }),
       aboutForm(),
       el('ul', { className: 'menu' }, [
-        door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user))
+        door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user), 'profile_open', { name: state.user })
       ]),
       foot([
         /* Into the map's sheet and back again. The ?then= is what makes the
            step land here rather than on the map, which is not where it was
            pressed. Both steps ask for the password in use, and there is one
            place on this site that asks for a password. */
-        link('accountName', SHEET + 'username' + BACK),
-        link('accountChange', SHEET + 'password' + BACK),
+        link('accountName', SHEET + 'username' + BACK, 'account_rename_open'),
+        link('accountChange', SHEET + 'password' + BACK, 'account_password_open'),
         signOut()
       ])
     ]);
@@ -904,6 +912,7 @@
       }).then(function (out) {
         if (!out) { failed(); return; }
         state.about = out.about || '';
+        TTBTrack.event('account_about', { about_state: state.about ? 'set' : 'cleared' });
         field.value = state.about;
         go.textContent = t('listsSaveDone');
       }).catch(failed);
@@ -922,6 +931,7 @@
   function signOut() {
     var btn = el('button', { type: 'button', className: 'alt is-danger', textContent: t('accountSignOut') });
     btn.addEventListener('click', function () {
+      TTBTrack.event('account_logout');
       btn.disabled = true;
       btn.textContent = t('accountWorking');
       fetch(ACCOUNT_API, {
@@ -961,8 +971,8 @@
       el('p', { className: 'lists-say', textContent: t('accountWhy') }),
       el('p', { className: 'lists-say', textContent: t('listsNeedAccount') }),
       foot([
-        link('accountCreate', SHEET + 'up' + BACK, 'go'),
-        link('accountSignIn', SHEET + 'in' + BACK)
+        link('accountCreate', SHEET + 'up' + BACK, 'account_open', { view: 'up' }, 'go'),
+        link('accountSignIn', SHEET + 'in' + BACK, 'account_open', { view: 'in' })
       ])
     ]);
   }
@@ -978,7 +988,7 @@
       el('p', { className: 'eyebrow', textContent: t('accountOpen') }),
       heading(t('accountTitle')),
       el('p', { className: 'lists-say', textContent: t(state.reached ? 'accountErrOff' : 'accountErrReach') }),
-      foot([link('listsBack', '/')])
+      foot([link('listsBack', '/', 'home')])
     ]);
   }
 

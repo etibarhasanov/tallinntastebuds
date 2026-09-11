@@ -228,6 +228,9 @@ window.TTBRadio = (function () {
     if (wanted) start(); else halt();
     paint();
     told(wanted ? 'play' : 'stop', station);
+    /* Reported from here rather than by each page's onchange, so every page
+       that mounts the button counts the press the same way. */
+    TTBTrack.event(wanted ? 'radio_play' : 'radio_stop', { station: station.name || 'radio' });
   }
 
   /* Fetched as this file runs rather than when the button is mounted. It is
@@ -246,8 +249,8 @@ window.TTBRadio = (function () {
      send the news; this takes over from there, the press included.
 
      `onchange` is for what a page does around the radio rather than to it —
-     the map opens the station's name on the rail and reports the press, every
-     page toasts a stream that would not start. It is not called for the
+     the map opens the station's name on the rail, every page toasts a stream
+     that would not start. It is not called for the
      resume across a navigation, because nothing changed: the radio was on
      when the last page was left and it is on now. Only a press, or a stream
      failing, is news. */

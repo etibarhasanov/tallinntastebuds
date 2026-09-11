@@ -451,6 +451,7 @@
     now.addEventListener('click', function () {
       var open = dom.langSwitch.classList.toggle('is-open');
       now.setAttribute('aria-expanded', String(open));
+      if (open) TTBTrack.event('language_open');
     });
     dom.langSwitch.appendChild(now);
 
@@ -501,7 +502,7 @@
        somebody switching to Ukrainian is telling you they did not read the
        English one. */
     introduceRail();
-    trackEvent('language_select', { language: code });
+    TTBTrack.event('language_select', { language: code });
   }
 
   /* ---------------------------------------------------------------- styles
@@ -567,7 +568,7 @@
     paintMarkers();
     markStyleSwitch();
     syncUrl();
-    if (!opts || opts.pin !== false) trackEvent('style_select', { style: id });
+    if (!opts || opts.pin !== false) TTBTrack.event('style_select', { style: id });
   }
 
   /* The rail is vertically centred, which collides with the brand card on a
@@ -1630,7 +1631,7 @@
       if (typeof answer.out.n === 'number') state.saves[place.id] = answer.out.n;
       paintSave();
       syncSavedFilter(on);
-      trackEvent(on ? 'save_place' : 'unsave_place', {
+      TTBTrack.event(on ? 'save_place' : 'unsave_place', {
         place_id: place.id,
         place: place.name,
         saves_total: saveCount(place.id)
@@ -2109,7 +2110,7 @@
 
   function openExplain() {
     if (!dom.tour || tour.i >= 0) return;
-    trackEvent('explain_open');
+    TTBTrack.event('explain_open');
     /* Over the map, not over a sheet: the walk points at the pins and the
        rail, and on a phone a sheet covers the one and lays the other along
        its top edge. And not with the rail mid-cascade, which would be two
@@ -2308,7 +2309,10 @@
 
   function accountSwitch(labelKey, view) {
     var link = el('button', { type: 'button', className: 'alt', textContent: t(labelKey) });
-    link.addEventListener('click', function () { openAccount(view); });
+    link.addEventListener('click', function () {
+      TTBTrack.event('account_switch', { view: view });
+      openAccount(view);
+    });
     return link;
   }
 
@@ -2347,7 +2351,10 @@
       'aria-label': t('close'),
       html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>'
     });
-    close.addEventListener('click', closeAccount);
+    close.addEventListener('click', function () {
+      TTBTrack.event('account_close');
+      closeAccount();
+    });
     dom.accountCard.appendChild(close);
 
     var form = el('form', { className: 'ac-form' });
@@ -2375,7 +2382,7 @@
      is where whoever is standing in this step pressed the thing that opened
      it. */
   function accountBack() {
-    var link = el('a', { className: 'alt ac-back', href: ACCOUNT_PAGE, textContent: t('accountBack') });
+    var link = TTBTrack.click(el('a', { className: 'alt ac-back', href: ACCOUNT_PAGE, textContent: t('accountBack') }), 'account_page');
     link.insertBefore(el('span', {
       className: 'ac-back-ico',
       'aria-hidden': 'true',
@@ -2428,6 +2435,7 @@
       el('span', { className: 'menu-go', 'aria-hidden': 'true', html: AC_CHEVRON })
     ]);
     row.addEventListener('click', function () {
+      TTBTrack.event('saved_open');
       closeAccount();
       forgetList();
       state.active = [SAVED_FILTER];
@@ -2502,7 +2510,7 @@
         state.account.user = a.out.user;
         if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
         paintAccountButton();
-        trackEvent(creating ? 'account_create' : 'account_login', {});
+        TTBTrack.event(creating ? 'account_create' : 'account_login', {});
         closeAccount();
         /* Sent here from somewhere that needed an account — the lists page.
            Straight back to it, and no toast: the page they land on is about
@@ -2547,6 +2555,7 @@
         .then(function (a) {
           accountBusy = false;
           if (!a.ok) return accountFail(a.out);
+          TTBTrack.event('account_password_change');
           /* Back where it was pressed, which is the account page: the sheet
              this step is drawn in has nothing behind it any more. The toast
              is what says it worked, because the page it lands on is a fresh
@@ -2610,6 +2619,7 @@
         .then(function (a) {
           accountBusy = false;
           if (!a.ok) return accountFail(a.out);
+          TTBTrack.event('account_rename');
           /* The rail button and the header both draw the name, and where
              there is nowhere to go back to this sheet closes onto the map
              with them still saying the old one. */
@@ -3117,7 +3127,7 @@
     }
 
     function open() {
-      trackEvent('cluster_open', { cluster_size: count });
+      TTBTrack.event('cluster_open', { cluster_size: count });
       var pts = group.map(function (m) { return [m.place.lat, m.place.lng]; });
       var bounds = L.latLngBounds(pts);
       var pad = isNarrow() ? 112 : 220;
@@ -3300,9 +3310,9 @@
     if (change) {
       params.filter_id = change.id;
       params.filter_state = change.on ? 'on' : 'off';
-      trackEvent('filter_select', params);
+      TTBTrack.event('filter_select', params);
     } else {
-      trackEvent('filter_clear', params);
+      TTBTrack.event('filter_clear', params);
     }
   }
 
@@ -3548,11 +3558,11 @@
   }
 
   /* ---------------------------------------------------------------- radio
-   * The audio, the station list, the button and the on/off are all
-   * assets/radio.js, shared with the lists page so that walking from the map
-   * to a list does not stop the music. What is left here is what the rail
-   * does around it: the label that opens with the station's name, and the
-   * report to analytics.
+   * The audio, the station list, the button, the on/off and the report to
+   * analytics are all assets/radio.js, shared with the lists page so that
+   * walking from the map to a list does not stop the music. What is left
+   * here is what the rail does around it: the label that opens with the
+   * station's name.
    */
   function mountRadio() {
     window.TTBRadio.mount({
@@ -3560,14 +3570,13 @@
       name: dom.radioName,
       lang: state.lang,
       t: t,
-      onchange: function (what, station) {
+      onchange: function (what) {
         if (what === 'fail') { closeHint('radio'); toast(t('radioFail')); return; }
-        if (what === 'stop') { closeHint('radio'); trackEvent('radio_stop', { station: station.name || 'radio' }); return; }
+        if (what === 'stop') { closeHint('radio'); return; }
         /* What you just started, by name, for as long as the intro label ran.
            On a phone the pill is a triangle in a circle otherwise, which says
            a stream is playing but never says whose. */
         openHint('radio', 0);
-        trackEvent('radio_play', { station: station.name || 'radio' });
       }
     });
   }
@@ -3598,7 +3607,7 @@
     }
 
     state.lastPick = choice.id;
-    trackEvent('random_pick', { place: choice.name, pool: pool.length });
+    TTBTrack.event('random_pick', { place: choice.name, pool: pool.length });
     selectPlace(choice.id, { fly: true, peek: true });
   }
 
@@ -3753,7 +3762,7 @@
       .slice(0, window.TTBAsk.MAX_QUESTION).trim();
     if (!question) return;
 
-    trackEvent('ask', { search_term: question.toLowerCase(), scope: state.askScope });
+    TTBTrack.event('ask', { search_term: question.toLowerCase(), scope: state.askScope });
 
     /* What the model is reminded of: the last six questions before this
        one and what each was answered with, as it stands on the screen — the
@@ -3852,7 +3861,7 @@
       turn.source = 'resting';
       turn.pending = false;
       settle(turn);
-      trackEvent('ask_resting', { search_term: turn.q.toLowerCase(), scope: turn.scope });
+      TTBTrack.event('ask_resting', { search_term: turn.q.toLowerCase(), scope: turn.scope });
       return;
     }
 
@@ -3901,7 +3910,7 @@
     turn.pending = false;
     settle(turn);
 
-    trackEvent(said.picks.length ? 'ask_answer' : 'ask_none', {
+    TTBTrack.event(said.picks.length ? 'ask_answer' : 'ask_none', {
       search_term: turn.q.toLowerCase(),
       source: said.source,
       scope: turn.scope,
@@ -4520,7 +4529,7 @@
     renderPanel();          /* leave the crawlable list in the markup */
     paintMarkers();
     if (!opts || opts.history !== false) syncUrl();
-    lastTrackedPath = window.location.pathname + window.location.search;
+    TTBTrack.seen();
 
     /* The panel was covering half the map, so the pin it was about was parked
        off to one side. With the panel gone, settle the map on it: closing a
@@ -4584,7 +4593,7 @@
     var heading = dom.detail.querySelector('.place-name');
     if (heading) heading.focus();
 
-    trackView(place.name);
+    TTBTrack.view(place.name);
   }
 
   function showList(focus) {
@@ -4695,7 +4704,7 @@
       el('span', { textContent: t('call') })
     ]);
     link.addEventListener('click', function () {
-      trackEvent('call_place', { place: place.name });
+      TTBTrack.event('call_place', { place: place.name });
     });
     return link;
   }
@@ -4712,7 +4721,7 @@
       textContent: t('passGet')
     });
     open.addEventListener('click', function () {
-      trackEvent('deal_open', { place: place.name });
+      TTBTrack.event('deal_open', { place: place.name });
     });
 
     return el('div', { className: 'deal-block' }, [
@@ -4803,7 +4812,7 @@
         place.phone ? el('dt', { textContent: t('phone') }) : null,
         place.phone
           ? el('dd', {}, [
-              el('a', { href: telHref(place.phone), textContent: place.phone })
+              TTBTrack.click(el('a', { href: telHref(place.phone), textContent: place.phone }), 'call_place', { place: place.name })
             ])
           : null
       ]));
@@ -4823,7 +4832,7 @@
        than no button. */
     var ways = [];
     if (typeof place.lat === 'number' && typeof place.lng === 'number') {
-      ways.push(trackClick(el('a', {
+      ways.push(TTBTrack.click(el('a', {
         className: 'link-btn is-primary',
         href: 'https://www.google.com/maps/dir/?api=1&destination=' + place.lat + ',' + place.lng,
         target: '_blank',
@@ -4833,7 +4842,7 @@
     }
     if (place.phone) ways.push(callButton(place));
     if (place.website) {
-      ways.push(trackClick(el('a', {
+      ways.push(TTBTrack.click(el('a', {
         className: 'link-btn',
         href: place.website,
         target: '_blank',
@@ -4846,7 +4855,7 @@
        this is for the half the export does not carry: the photographs, the
        reviews, and what somebody said about the queue on a Saturday. */
     if (place.mapsUrl) {
-      ways.push(trackClick(el('a', {
+      ways.push(TTBTrack.click(el('a', {
         className: 'link-btn',
         href: place.mapsUrl,
         target: '_blank',
@@ -5095,7 +5104,7 @@
         place.phone ? el('dt', { textContent: t('phone') }) : null,
         place.phone
           ? el('dd', {}, [
-              el('a', { href: telHref(place.phone), textContent: place.phone })
+              TTBTrack.click(el('a', { href: telHref(place.phone), textContent: place.phone }), 'call_place', { place: place.name })
             ])
           : null,
         /* visited is optional — a place with no video has no post to date it */
@@ -5103,7 +5112,7 @@
         place.visited ? el('dd', { textContent: formatMonth(place.visited) }) : null
       ]),
       el('div', { className: 'link-row' }, [
-        trackClick(el('a', {
+        TTBTrack.click(el('a', {
           className: 'link-btn is-primary',
           href: 'https://www.google.com/maps/dir/?api=1&destination=' + place.lat + ',' + place.lng,
           target: '_blank',
@@ -5118,7 +5127,7 @@
            button, and the number itself is still in the facts above. */
         place.phone ? callButton(place) : null,
         place.website
-          ? trackClick(el('a', {
+          ? TTBTrack.click(el('a', {
               className: 'link-btn',
               href: place.website,
               target: '_blank',
@@ -5158,7 +5167,7 @@
        again. That is one visitor and one reel, so it is counted once. */
     if (lastReelKey !== place.id) {
       lastReelKey = place.id;
-      trackEvent('reel_load', { place: place.name, provider: provider || 'unknown' });
+      TTBTrack.event('reel_load', { place: place.name, provider: provider || 'unknown' });
     }
 
     return provider === 'tiktok' ? embedTikTok(place) : embedInstagram(place);
@@ -5185,7 +5194,7 @@
       ]));
     }
 
-    wrap.appendChild(reelFallback(place.reel, 'videoFallback'));
+    wrap.appendChild(reelFallback(place, 'videoFallback'));
     return wrap;
   }
 
@@ -5225,15 +5234,18 @@
 
     return el('div', { className: 'reel-embed' }, [
       frame,
-      reelFallback(place.reel, 'reelFallback')
+      reelFallback(place, 'reelFallback')
     ]);
   }
 
   /* Neither player is ours, and both can come up blank — a deleted post, a
      browser blocking third-party frames. The way out stays under every one. */
-  function reelFallback(url, key) {
+  function reelFallback(place, key) {
     return el('p', { className: 'reel-fallback' }, [
-      el('a', { href: url, target: '_blank', rel: 'noopener', textContent: t(key) })
+      TTBTrack.click(
+        el('a', { href: place.reel, target: '_blank', rel: 'noopener', textContent: t(key) }),
+        'reel_open', { place: place.name }
+      )
     ]);
   }
 
@@ -5286,7 +5298,7 @@
         })
       ]);
       button.addEventListener('click', function () {
-        trackEvent('photo_open', { place: place.name, photo_index: i + 1 });
+        TTBTrack.event('photo_open', { place: place.name, photo_index: i + 1 });
         openLightbox(place, i, button);
       });
       grid.appendChild(button);
@@ -5419,7 +5431,7 @@
     var term = q.trim();
     if (term.length < 2) return;
     searchTimer = setTimeout(function () {
-      trackEvent('search', { search_term: term.toLowerCase() });
+      TTBTrack.event('search', { search_term: term.toLowerCase(), scope: 'map' });
     }, 900);
   }
 
@@ -5707,11 +5719,11 @@
          the name alone is a sentence assembled out of pieces in ten
          languages, for a smaller target on a phone. */
       by
-        ? el('a', {
+        ? TTBTrack.click(el('a', {
             className: 'list-credit-by eyebrow',
             href: '/u/' + encodeURIComponent(state.list.by),
             textContent: by
-          })
+          }), 'profile_open', { name: state.list.by })
         : null,
       state.list.intro
         ? el('p', { className: 'list-credit-intro', textContent: state.list.intro })
@@ -5722,11 +5734,11 @@
          rather than as a door. None of them is filled — see the CSS. */
       el('div', { className: 'list-credit-acts' }, [
         listKeep(),
-        el('a', {
+        TTBTrack.click(el('a', {
           className: 'list-credit-act',
           href: '/list/' + state.list.id,
           textContent: t('listOpenPage')
-        }),
+        }), 'list_page', { list_id: state.list.id }),
         shareButton(state.list)
       ]),
       leaveButton()
@@ -5782,10 +5794,12 @@
          laptop wants. A coarse pointer is a phone, where the sheet is the
          whole point. */
       if (navigator.share && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+        TTBTrack.event('list_share', { list_id: list.id, method: 'sheet' });
         navigator.share({ title: list.title, url: url })
           .catch(function () { /* dismissed, which is fine */ });
         return;
       }
+      TTBTrack.event('list_share', { list_id: list.id, method: 'copy' });
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url)
           .then(function () { toast(t('listsCopied')); })
@@ -5850,7 +5864,11 @@
     }, [el('span', { textContent: t(list.kept ? 'listsKeptThis' : 'listsKeep') })]);
 
     b.addEventListener('click', function () {
-      if (!state.account.user) { openAccount('up'); return; }
+      if (!state.account.user) {
+        TTBTrack.event('list_keep', { list_id: list.id, list_state: 'signed_out' });
+        openAccount('up');
+        return;
+      }
       /* Whichever list this button was drawn for. Read off the closure rather
          than off state.list, so a press that lands after the list has been
          dropped writes the row it was about and not a different one. */
@@ -5895,7 +5913,7 @@
         paint();
       });
 
-      trackEvent('list_keep', { list_id: list.id, list_state: want ? 'on' : 'off' });
+      TTBTrack.event('list_keep', { list_id: list.id, list_state: want ? 'on' : 'off' });
     });
 
     function paint() {
@@ -5938,6 +5956,7 @@
     if (lb.photos.length < 2) return;
     lb.index = (lb.index + delta + lb.photos.length) % lb.photos.length;
     paintLightbox();
+    TTBTrack.event('photo_step', { place: lb.name, photo_index: lb.index + 1 });
   }
 
   function closeLightbox() {
@@ -6242,7 +6261,7 @@
     buildStoryBars();
     paintStory();
     dom.storyClose.focus();
-    trackEvent('story_open', { stories: live.length });
+    TTBTrack.event('story_open', { stories: live.length });
   }
 
   function buildStoryBars() {
@@ -6269,7 +6288,7 @@
   function beginStoryWatch(story) {
     endStoryWatch();
     storyWatch = { story: story, done: 0, finished: false };
-    trackEvent('story_view', {
+    TTBTrack.event('story_view', {
       story_id: story.id,
       spot: story.spot || '',
       format: story.photo ? 'photo' : 'video',
@@ -6287,7 +6306,7 @@
     storyWatch = null;
     var percent = Math.round(Math.max(0, Math.min(1, watch.done)) * 100);
     if (watch.finished) percent = 100;
-    trackEvent('story_watch', {
+    TTBTrack.event('story_watch', {
       story_id: watch.story.id,
       spot: watch.story.spot || '',
       format: watch.story.photo ? 'photo' : 'video',
@@ -6438,7 +6457,7 @@
 
   function setStorySound(muted) {
     var story = state.story.list[state.story.index];
-    trackEvent('story_sound', {
+    TTBTrack.event('story_sound', {
       sound: muted ? 'off' : 'on',
       story_id: (story && story.id) || ''
     });
@@ -6590,7 +6609,7 @@
     dom.storyCta.addEventListener('click', function (ev) {
       var story = state.story.list[state.story.index];
       if (!story) return;
-      trackEvent('story_link', { story_id: story.id, spot: story.spot || '' });
+      TTBTrack.event('story_link', { story_id: story.id, spot: story.spot || '' });
       var place = story.spot ? byId(story.spot) : null;
       if (!place) return;                  /* an outbound link goes where it says */
       ev.preventDefault();
@@ -6942,66 +6961,21 @@
   }
 
   /* ------------------------------------------------------------- analytics
-   * Google Analytics, only if the tag in index.html is still there.
-   *
-   * This is one page, so GA on its own records a single view per visit and
-   * tells you nothing about what anyone did on it. Two things are reported
-   * on top of that.
-   *
-   * A page view per opened place, which lands in GA's standard Pages and
-   * screens report with no setup in the console.
-   *
-   * And an event per deliberate action: which filter chips get pressed,
-   * which language and colour people pick, whether they press Surprise me,
-   * whether they play a reel, and which buttons on an open place get used —
-   * directions, call, website, the deal, the photographs. None of that
-   * changes the address bar on its own, and GA only ever sees a URL, so
-   * without these events the whole of it was invisible. They show up under
-   * Reports, Engagement, Events, and the parameters (place, filter_id,
-   * language, style) need registering once as custom dimensions in Admin if
-   * you want to break the numbers down by them.
-   *
-   * The full list, so it can be read without hunting through the file:
-   *   directions, call_place, website, deal_open  — leaving for the place
-   *   photo_open, reel_load                       — looking at the place
-   *   story_open, story_view, story_watch, story_sound, story_link
-   *                                               — the stories ring
-   *   filter_select, filter_clear, filters_open, search  — narrowing down
-   *   list_open, cluster_open, random_pick, locate       — the map controls
-   *   radio_play, radio_stop, language_select, style_select
-   *
-   * To remove tracking completely: delete the gtag block in index.html and
-   * these two functions. Every call below becomes a harmless no-op.
+   * Google Analytics, through the global assets/track.js sets: this is one
+   * page, so GA on its own records a single view per visit and tells you
+   * nothing about what anyone did on it. So every deliberate press here —
+   * a chip, a language, Surprise me, a reel, the buttons on an open place —
+   * is reported as an event through TTBTrack.event(), and opening a place
+   * is reported as a page view of its own through TTBTrack.view(), titled
+   * with the place. The events the map sends, with their parameters, are
+   * the map's rows of the table under "Analytics" in the README; a new
+   * press that matters gets a row there in the same commit.
    */
 
-  var lastTrackedPath = null;
   /* Which place the reel on screen belongs to. A language switch rebuilds
      the open panel and so builds the player again; that is not a second
      reel. Closing the panel clears it, so opening the same place later is. */
   var lastReelKey = null;
-
-  function trackEvent(name, params) {
-    if (typeof window.gtag !== 'function') return;
-    window.gtag('event', name, params || {});
-  }
-
-  /* Attaches a report to a link or button that is built inline, and hands
-     the same node back so it can stay inside the array it was written in. */
-  function trackClick(node, name, params) {
-    if (node) node.addEventListener('click', function () { trackEvent(name, params); });
-    return node;
-  }
-
-  function trackView(title) {
-    var here = window.location.pathname + window.location.search;
-    if (here === lastTrackedPath) return;   /* don't double-count the landing URL */
-    lastTrackedPath = here;
-    if (typeof window.gtag !== 'function') return;
-    window.gtag('event', 'page_view', {
-      page_location: window.location.href,
-      page_title: title
-    });
-  }
 
   /* -------------------------------------------------------------- controls */
 
@@ -7017,8 +6991,13 @@
     }
 
     dom.btnList.addEventListener('click', function () {
-      if (dom.panel.classList.contains('is-open') && state.view === 'list') closePanel();
-      else { trackEvent('list_open', { places_shown: visiblePlaces().length }); showList(true); }
+      if (dom.panel.classList.contains('is-open') && state.view === 'list') {
+        TTBTrack.event('list_close');
+        closePanel();
+      } else {
+        TTBTrack.event('list_open', { places_shown: visiblePlaces().length });
+        showList(true);
+      }
     });
 
     /* Pressing it answers the question the label was there to answer, and
@@ -7033,6 +7012,7 @@
        other. */
     dom.btnAsk.addEventListener('click', function () {
       closeHint('ask');
+      TTBTrack.event('ask_open');
       openAsk();
     });
 
@@ -7040,7 +7020,9 @@
        press is a turn in the thread. See chooseScope(). */
     dom.askScope.addEventListener('click', function (ev) {
       var btn = ev.target.closest('[data-scope]');
-      if (btn) chooseScope(btn.getAttribute('data-scope'));
+      if (!btn) return;
+      TTBTrack.event('ask_scope', { scope: btn.getAttribute('data-scope') });
+      chooseScope(btn.getAttribute('data-scope'));
     });
 
     dom.askForm.addEventListener('submit', function (ev) {
@@ -7055,7 +7037,14 @@
       if (!dom.langSwitch.contains(ev.target)) closeLangMenu();
     });
 
-    dom.panelClose.addEventListener('click', closePanel);
+    /* The one cross closes three things, and which one it was is the report:
+       a place, the chat, or the list. */
+    dom.panelClose.addEventListener('click', function () {
+      var open = state.view === 'detail' ? byId(state.selected) : null;
+      if (open) TTBTrack.event('place_close', { place: open.name });
+      else TTBTrack.event(state.view === 'ask' ? 'ask_close' : 'list_close');
+      closePanel();
+    });
     dom.panelSave.addEventListener('click', pressSave);
 
     /* Same as Surprise me: pressing it answers the question the label was
@@ -7070,6 +7059,7 @@
        See the header of assets/account.js. */
     dom.btnAccount.addEventListener('click', function () {
       closeHint('account');
+      TTBTrack.event('account_open', { view: state.account.user ? 'page' : 'sheet' });
       if (state.account.user) { window.location.href = ACCOUNT_PAGE; return; }
       openAccount();
     });
@@ -7080,7 +7070,7 @@
          who pressed this does not have an account yet, and the sheet offers
          the way across for the few who do. */
       openAccount('up');
-      trackEvent('account_nudge', { taken: true });
+      TTBTrack.event('account_nudge', { taken: true });
     });
 
     dom.nudgeNo.addEventListener('click', function () {
@@ -7088,35 +7078,49 @@
       /* Turning it down buys the quiet fortnight. Letting it time out does
          not: that is somebody being busy, not somebody saying no. */
       storeSet(NUDGE_KEY, String(Date.now()));
-      trackEvent('account_nudge', { taken: false });
+      TTBTrack.event('account_nudge', { taken: false });
     });
     /* The scrim is the way out, the card is not: a press that lands on the
        card itself must not close the sheet somebody is typing into. */
     dom.accountScrim.addEventListener('click', function (ev) {
-      if (ev.target === dom.accountScrim) closeAccount();
+      if (ev.target !== dom.accountScrim) return;
+      TTBTrack.event('account_close');
+      closeAccount();
     });
     dom.btnExplain.addEventListener('click', openExplain);
-    dom.tourNext.addEventListener('click', function () { showStep(tour.i + 1); });
-    dom.tourSkip.addEventListener('click', closeExplain);
+    /* Reported with the step being left, one-based, so the report reads as
+       how far into the tour people get before Next stops being pressed. */
+    var tourNext = function () {
+      TTBTrack.event('explain_step', { step: tour.i + 1 });
+      showStep(tour.i + 1);
+    };
+    dom.tourNext.addEventListener('click', tourNext);
+    dom.tourSkip.addEventListener('click', function () {
+      TTBTrack.event('explain_close', { step: tour.i + 1 });
+      closeExplain();
+    });
     /* A tap anywhere that is not the bubble is Next. The layer is there so
        the thing being pointed at cannot be pressed mid-sentence, not to make
        somebody find a button the size of a word on a phone. */
     dom.tour.addEventListener('click', function (ev) {
-      if (ev.target === dom.tour) showStep(tour.i + 1);
+      if (ev.target === dom.tour) tourNext();
     });
     wireSheet();
     wireKeyboard();
 
 
     dom.btnLocate.addEventListener('click', function () {
-      trackEvent('locate');
+      TTBTrack.event('locate');
       if (!navigator.geolocation) { toast(t('locateFail')); return; }
       /* setView is off: the framing is done in locationfound, which knows
          where the places are and Leaflet does not. */
       map.locate({ setView: false, maxZoom: 15 });
     });
 
-    dom.lbClose.addEventListener('click', closeLightbox);
+    dom.lbClose.addEventListener('click', function () {
+      TTBTrack.event('photo_close', { place: state.lb.name, photo_index: state.lb.index + 1 });
+      closeLightbox();
+    });
     dom.lbPrev.addEventListener('click', function () { stepLightbox(-1); });
     dom.lbNext.addEventListener('click', function () { stepLightbox(1); });
     dom.lightbox.addEventListener('click', function (ev) {
@@ -7170,6 +7174,7 @@
 
     dom.search.addEventListener('input', function () { setQuery(dom.search.value); });
     dom.searchClear.addEventListener('click', function () {
+      TTBTrack.event('search_clear', { scope: 'map' });
       setQuery('');
       dom.search.focus();
     });
@@ -7183,7 +7188,7 @@
 
     dom.btnFilters.addEventListener('click', function () {
       var opening = !filterMenuOpen();
-      if (opening) trackEvent('filters_open');
+      TTBTrack.event(opening ? 'filters_open' : 'filters_close');
       setFilterMenu(opening);
     });
 
@@ -7590,7 +7595,7 @@
       drawn = true;
 
       /* gtag already reported the landing URL, deep link and all. */
-      lastTrackedPath = window.location.pathname + window.location.search;
+      TTBTrack.seen();
 
       placeRail();
 

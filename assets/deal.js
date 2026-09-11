@@ -26,11 +26,11 @@
 
   function backLink() {
     /* Back to the place on the map, not the top of it. */
-    return el('a', {
+    return TTBTrack.click(el('a', {
       className: 'link-btn',
       href: './' + (placeId ? '?spot=' + encodeURIComponent(placeId) : ''),
       textContent: t('passBack')
-    });
+    }), 'pass_back', { place: placeId });
   }
 
   function message(text) {
@@ -79,6 +79,9 @@
 
     P.code(deal.key, placeId, hour).then(function (value) {
       P.clear(card);
+      /* Not a press, but the one moment this page exists for: a code was
+         put in front of somebody. Once per hour on a page left open. */
+      TTBTrack.event('pass_shown', { place: deal.name, live: deal.live ? 'yes' : 'no' });
 
       if (!deal.live) {
         card.appendChild(el('p', { className: 'pass-flag', textContent: t('passNotLive') }));

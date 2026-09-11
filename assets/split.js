@@ -464,6 +464,9 @@
    * guess at what the other four have done since.
    */
   function change(payload, done) {
+    /* One report per kind of write, named after the action the API knows it
+       by: split_spend, split_settle, split_drop, split_unspend, split_unsettle. */
+    TTBTrack.event('split_' + payload.action, { group_id: payload.group });
     post(SPLIT_API, payload).then(function (a) {
       if (!a.ok || !a.out.group) {
         done();
@@ -524,6 +527,7 @@
           complain(form, say(a.out));
           return;
         }
+        TTBTrack.event(creating ? 'account_create' : 'account_login', { via: 'split' });
         /* Straight back through boot() rather than patching state: signing in
            changes every answer on this page, including whether the group on
            screen is one this browser may write to. */
@@ -538,6 +542,7 @@
     });
     swap.addEventListener('click', function () {
       state.view = creating ? 'in' : 'up';
+      TTBTrack.event('account_switch', { view: state.view, via: 'split' });
       render();
     });
     form.appendChild(swap);
@@ -581,6 +586,7 @@
       full ? null : foot([actor('splitJoin', 'go', function (done) {
         post(SPLIT_API, { action: 'join', group: state.group.id }).then(function (a) {
           if (!a.ok) { done(); toast(say(a.out)); return; }
+          TTBTrack.event('split_join', { group_id: state.group.id });
           window.location.reload();
         });
       })])
@@ -617,11 +623,11 @@
     ]);
     return el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card' }, [
-        el('a', {
+        TTBTrack.click(el('a', {
           className: 'lists-index-title lists-open',
           href: at('?g=' + encodeURIComponent(g.id)),
           textContent: g.name
-        }),
+        }), 'split_open', { group_id: g.id }),
         line
       ])
     ]);
@@ -645,6 +651,7 @@
       if (!name) { done(); box.focus(); return; }
       post(SPLIT_API, { action: 'create', name: name }).then(function (a) {
         if (!a.ok) { done(); complain(form, say(a.out)); return; }
+        TTBTrack.event('split_create', { group_id: a.out.id });
         window.location.href = at('?g=' + encodeURIComponent(a.out.id));
       });
     }, form));
@@ -698,6 +705,7 @@
     if (navigator.clipboard && navigator.clipboard.writeText) {
       copy = el('button', { type: 'button', className: 'alt', textContent: t('splitCopy') });
       copy.addEventListener('click', function () {
+        TTBTrack.event('split_share', { group_id: state.group.id });
         navigator.clipboard.writeText(url).then(
           function () { toast(t('splitCopied')); },
           function () { toast(t('splitErrGeneric')); }
@@ -707,7 +715,7 @@
 
     kids.push(foot([
       copy,
-      el('a', { className: 'alt', href: at(HOME), textContent: t('splitYours') }),
+      TTBTrack.click(el('a', { className: 'alt', href: at(HOME), textContent: t('splitYours') }), 'split_home'),
       /* Nothing to leave and nothing to take down for somebody who is only
          reading. Both of those are writes, and the server refuses them from
          here anyway — this is the page agreeing rather than offering a button
@@ -773,6 +781,7 @@
     return actor('splitLeave', 'alt is-danger', function (done) {
       post(SPLIT_API, { action: 'leave', group: state.group.id }).then(function (a) {
         if (!a.ok) { done(); toast(say(a.out)); return; }
+        TTBTrack.event('split_leave', { group_id: state.group.id });
         window.location.href = at(HOME);
       });
     });
@@ -787,6 +796,7 @@
       if (!window.confirm(t('splitDeleteSure'))) { done(); return; }
       post(SPLIT_API, { action: 'remove', group: state.group.id }).then(function (a) {
         if (!a.ok) { done(); toast(say(a.out)); return; }
+        TTBTrack.event('split_remove', { group_id: state.group.id });
         window.location.href = at(HOME);
       });
     });
@@ -1008,7 +1018,7 @@
         className: 'lists-say',
         textContent: t(state.reached ? 'splitErrOff' : 'splitErrReach')
       }),
-      foot([el('a', { className: 'alt', href: at(MAP), textContent: t('listsBack') })])
+      foot([TTBTrack.click(el('a', { className: 'alt', href: at(MAP), textContent: t('listsBack') }), 'home')])
     ]);
   }
 
