@@ -126,12 +126,18 @@ CREATE TABLE IF NOT EXISTS users (
   -- restaurant. Empty by default and empty on nearly every row: a profile
   -- read the same before this column existed and reads the same without it.
   --
-  -- LAST, BECAUSE THAT IS WHERE ALTER TABLE PUT IT
+  -- LAST, BECAUSE THAT IS WHERE ALTER TABLE PUTS IT
   --
-  -- users predates this column on both deployed databases, so it arrived by
-  -- hand — ALTER TABLE users ADD COLUMN about TEXT NOT NULL DEFAULT '' — and
-  -- SQLite appends. The order here is the order the deployed table has, which
-  -- is what makes this file readable against the real thing.
+  -- users predates this column on both deployed databases, so it reaches them
+  -- by hand — ALTER TABLE users ADD COLUMN about TEXT NOT NULL DEFAULT '' —
+  -- and SQLite appends. The order here is the order the deployed table has,
+  -- which is what makes this file readable against the real thing.
+  --
+  -- Both readers survive its absence rather than assuming the ALTER has been
+  -- run: GET /api/account catches and draws no box, readProfile() falls back
+  -- to the same query without this field. A column applied by a person and
+  -- code shipped by a push are never simultaneous, and the pages that draw
+  -- this one carry somebody's saves, lists and byline besides.
   --
   -- 200 characters, capped in functions/api/account.js where it is written.
   -- The same length as a list's intro and for the same reason: it is a line
