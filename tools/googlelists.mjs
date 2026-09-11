@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 /**
- * Tallinn Tastebuds — the five lists Google wrote.
+ * Tallinn Tastebuds — the six lists Google wrote.
  *
  * Reads exports/tallinn_restaurants.csv — the same 1,110 places
  * tools/googlevenues.mjs loads into google_venues — and writes
- * db/google-lists.sql: one account called `google-statistics`, five public
- * lists under its name, ten places on each, in Google's order. Top ten restaurants,
- * bakeries, cafés, bars and pizzerias, as the numbers Google holds about the
- * city have them, and said to be Google's in the title, the byline and every
- * row.
+ * db/google-lists.sql: one account called `google-statistics`, six public
+ * lists under its name, up to ten places on each, in Google's order. Top ten
+ * restaurants, bakeries, cafés, bars and pizzerias, as the numbers Google
+ * holds about the city have them, and the places this map calls laptop
+ * friendly in the order those same numbers put them — each said to be
+ * Google's in the title, the byline and every row.
  *
  *   node tools/googlelists.mjs           rewrite db/google-lists.sql
  *   node tools/googlelists.mjs --check   report that it is stale, exit 1
- *   node tools/googlelists.mjs --show    print the five lists with the numbers
+ *   node tools/googlelists.mjs --show    print the six lists with the numbers
  *
  * The file loads the way db/google-venues.sql does — pasted into the D1
  * console, or from a signed-in terminal:
@@ -30,7 +31,7 @@
  *
  * The map carries no score and never sorts by one; that rule stands. A list
  * is the other kind of thing this site has — somebody's opinion, under their
- * name, with a sentence under each place — and these five are Google's
+ * name, with a sentence under each place — and these six are Google's
  * opinion, under Google's name. The account is called `google-statistics`,
  * the title of every list ends "by Google", the line under each place is
  * Google's rating and how many people gave it, and the account's own profile
@@ -111,16 +112,41 @@
  * means. So a bar is a Bar, Cocktail Bar or Wine Bar that Google does not
  * also call a restaurant, a pub, a hookah place, a venue or a shop: any one
  * of those takes a place off this list.
+ *
+ * THE ONE POOL GOOGLE DID NOT PICK
+ *
+ * Nothing in the export says whether you can sit for two hours with a laptop
+ * open. Google holds no seating, no sockets, no "one coffee stretching out",
+ * and the categories it does hold — Cafe, Coffee Shop, Tea House — are what
+ * the cafés list already reads. So the laptop-friendly pool is the map's own `laptop`
+ * type out of data/restaurants.json — the verdict README.md draws under
+ * "What counts as Laptop friendly", made in person, never guessed — and
+ * Google's numbers do only what they do on every other list here: put the
+ * pool in order. The intro on that list says so, because it is the one place
+ * the pool is this map's and not Google's. A place gets onto it by the same
+ * coordinate-and-name match that sets map_id in db/google-venues.sql, so a
+ * laptop-friendly place the export has not swept is simply not on it, and a
+ * closed one is off the map before this runs.
+ *
+ * Two of the rules above bend for it. There is no FLOOR: the floor exists
+ * because a top ten singled out of eleven hundred rows on sixty reviews is
+ * there on a rumour, and this pool was singled out by hand before any
+ * number was looked at — a floor would only take a tea room with forty
+ * reviews off a list that exists to name it, and the prior already pulls a
+ * short count towards the middle. And it is a top ten of however many carry
+ * the tag, which is eight today; the title keeps the account's shape and
+ * the list gets longer as the map does.
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
-import { read, fold, q } from './googlevenues.mjs';
+import { read, fold, q, overlaps } from './googlevenues.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'db', 'google-lists.sql');
+const MAP = join(ROOT, 'data', 'restaurants.json');
 
 const PRIOR = 300;
 const FLOOR = 100;
@@ -144,9 +170,9 @@ const USER = {
   pw_salt: '6f6f676c65206c69737473206e6f2070',
   pw_iter: 10000,
   about:
-    'Five top tens out of Google\u2019s own ratings for Tallinn, weighed by how ' +
-    'many people gave them. Rebuilt whenever the export refreshes. Google\u2019s ' +
-    'numbers, not this map\u2019s verdict.'
+    'Six top tens in the order of Google\u2019s own ratings for Tallinn, weighed ' +
+    'by how many people gave them. Rebuilt whenever the export refreshes. ' +
+    'Google\u2019s numbers, not this map\u2019s verdict.'
 };
 
 /* Milliseconds, evaluated by SQLite when the file runs, so the file carries no
@@ -158,6 +184,22 @@ const INTRO =
   'thousand reviews outranks 4.7 from sixty, and under a hundred reviews is ' +
   'not counted. Google’s numbers, not this map’s verdict.';
 
+/* The laptop list is the one whose pool is this map's, so its intro has to
+   say which half is whose. Under MAX_INTRO in functions/api/lists.js. */
+const LAPTOP_INTRO =
+  'This map’s laptop-friendly places — a table to work at, a quiet room, a ' +
+  'coffee let stretch — ordered by Google’s rating weighed by how many ' +
+  'people gave it. The tag is mine; the order is Google’s.';
+
+/* The map's own verdict, read once: every open place carrying the `laptop`
+   type. A closed place keeps its types in the file, so `closed` is checked
+   here rather than trusted to the match. */
+const LAPTOP = new Set(
+  JSON.parse(readFileSync(MAP, 'utf8'))
+    .filter((place) => !place.closed && Array.isArray(place.types) && place.types.includes('laptop'))
+    .map((place) => place.id)
+);
+
 /* A tag that says a "Bar" is really something else: a kitchen, a beer hall,
    a hookah lounge, a stage, a bottle shop, a canteen with a licence. See the
    header on bars. */
@@ -166,7 +208,8 @@ const NOT_A_BAR = /Restaurant|Pub|Hookah|Venue|Concert|Auditorium|Club|Store|Caf
 /* The six random characters on each id were minted once, the way
    functions/api/lists.js mints them, and are fixed here so a refresh of the
    export changes what is on a list and never where it is. The title is what
-   the id was cut from; changing a title does not change its id. */
+   the id was cut from; changing a title does not change its id. A list
+   without an `intro` gets INTRO, and one without a `floor` gets FLOOR. */
 const LISTS = [
   {
     id: 'top-ten-restaurants-by-google-pt7mwk',
@@ -196,14 +239,26 @@ const LISTS = [
     title: 'Top ten pizzerias, by Google',
     pick: (place) => place.category === 'Pizza Restaurant' ||
       (/^(Italian )?Restaurant$/.test(place.category) && /Pizza Restaurant/.test(place.tags))
+  },
+  {
+    id: 'top-ten-laptop-friendly-places-by-google-6v74kr',
+    title: 'Top ten laptop friendly places, by Google',
+    intro: LAPTOP_INTRO,
+    floor: 0,
+    pick: (place) => LAPTOP.has(place.map_id)
   }
 ];
 
-/* The export, as numbers, without the places nobody should be sent to. */
+/* The export, as numbers, without the places nobody should be sent to, each
+   row carrying the map id the venues file would give it — the same match, so
+   a list and the table can never disagree about which row is which place. */
 export function places() {
-  return read()
+  const rows = read();
+  const mapId = new Map(overlaps(rows).map((m) => [m.place_id, m.map_id]));
+  return rows
     .map((place) => ({
       ...place,
+      map_id: mapId.get(place.place_id) || null,
       rating: Number(place.rating),
       reviews: Number(place.reviews)
     }))
@@ -223,9 +278,10 @@ export function rank(list, roll) {
   }
   const mean = votes ? stars / votes : 0;
 
+  const floor = list.floor === undefined ? FLOOR : list.floor;
   const seen = new Set();
   const places = pool
-    .filter((place) => place.reviews >= FLOOR)
+    .filter((place) => place.reviews >= floor)
     .map((place) => ({
       ...place,
       score: (place.reviews * place.rating + PRIOR * mean) / (place.reviews + PRIOR)
@@ -273,13 +329,13 @@ export function build() {
 
   out.push(
     'INSERT INTO lists (id, owner, title, intro, public, created_at, updated_at)\nVALUES\n' +
-    ranked.map((list) => `  (${q(list.id)}, ${q(USER.id)}, ${q(list.title)}, ${q(INTRO)}, 1, ${NOW}, ${NOW})`).join(',\n') + '\n' +
+    ranked.map((list) => `  (${q(list.id)}, ${q(USER.id)}, ${q(list.title)}, ${q(list.intro || INTRO)}, 1, ${NOW}, ${NOW})`).join(',\n') + '\n' +
     'ON CONFLICT(id) DO UPDATE SET\n' +
     /* owner among them, so renaming the account in this file actually moves
        its lists on a database that already holds them. Without it a rename
-       writes a new user row and leaves all five lists filed under the name
+       writes a new user row and leaves all six lists filed under the name
        before it, which is an account with no lists beside an orphan with
-       five and nothing to say which is current. */
+       six and nothing to say which is current. */
     '    owner = excluded.owner,\n' +
     '    title = excluded.title,\n' +
     '    intro = excluded.intro,\n' +

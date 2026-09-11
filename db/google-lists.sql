@@ -1,5 +1,5 @@
 INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at, about)
-VALUES ('google-statistics', 'google-statistics', '0000000000000000000000000000000000000000000000000000000000000000', '6f6f676c65206c69737473206e6f2070', 10000, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000, 'Five top tens out of Google’s own ratings for Tallinn, weighed by how many people gave them. Rebuilt whenever the export refreshes. Google’s numbers, not this map’s verdict.')
+VALUES ('google-statistics', 'google-statistics', '0000000000000000000000000000000000000000000000000000000000000000', '6f6f676c65206c69737473206e6f2070', 10000, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000, 'Six top tens in the order of Google’s own ratings for Tallinn, weighed by how many people gave them. Rebuilt whenever the export refreshes. Google’s numbers, not this map’s verdict.')
 ON CONFLICT(id) DO UPDATE SET
     username = excluded.username,
     about = excluded.about;
@@ -10,7 +10,8 @@ VALUES
   ('top-ten-bakeries-by-google-65nfrf', 'google-statistics', 'Top ten bakeries, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-cafes-by-google-jz7c2b', 'google-statistics', 'Top ten cafés, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-bars-by-google-8y6grz', 'google-statistics', 'Top ten bars, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-pizzerias-by-google-k83p93', 'google-statistics', 'Top ten pizzerias, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000)
+  ('top-ten-pizzerias-by-google-k83p93', 'google-statistics', 'Top ten pizzerias, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-laptop-friendly-places-by-google-6v74kr', 'google-statistics', 'Top ten laptop friendly places, by Google', 'This map’s laptop-friendly places — a table to work at, a quiet room, a coffee let stretch — ordered by Google’s rating weighed by how many people gave it. The tag is mine; the order is Google’s.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000)
 ON CONFLICT(id) DO UPDATE SET
     owner = excluded.owner,
     title = excluded.title,
@@ -22,7 +23,8 @@ DELETE FROM list_items WHERE list_id IN (
   'top-ten-bakeries-by-google-65nfrf',
   'top-ten-cafes-by-google-jz7c2b',
   'top-ten-bars-by-google-8y6grz',
-  'top-ten-pizzerias-by-google-k83p93'
+  'top-ten-pizzerias-by-google-k83p93',
+  'top-ten-laptop-friendly-places-by-google-6v74kr'
 );
 
 INSERT INTO list_items (list_id, place_id, name, say, pos, created_at)
@@ -89,3 +91,14 @@ VALUES
   ('top-ten-pizzerias-by-google-k83p93', 'ChIJoXFqI5WVkkYRlLeg1BIG2jQ', 'Monster Pizza', 'Pizza Restaurant · 4.6 from 399 reviews on Google', 7, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-pizzerias-by-google-k83p93', 'ChIJu183TwWVkkYRIH0mH-LmZ3k', 'Pappa Pizza Nõmme', 'Pizza Restaurant · 4.6 from 312 reviews on Google', 8, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-pizzerias-by-google-k83p93', 'ChIJjwnVJ2KTkkYRJ4cHGMj90Mg', 'Restoran Controvento', 'Italian Restaurant · 4.5 from 2,600 reviews on Google', 9, CAST(strftime('%s','now') AS INTEGER) * 1000);
+
+INSERT INTO list_items (list_id, place_id, name, say, pos, created_at)
+VALUES
+  ('top-ten-laptop-friendly-places-by-google-6v74kr', 'ChIJnYxLw5WTkkYRbBZIQ-rVs70', 'Morii Tea House', 'Cafe · 5.0 from 165 reviews on Google', 0, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-laptop-friendly-places-by-google-6v74kr', 'ChIJe8-Kv9KVkkYRTzFbwfJwU5g', 'Paper Mill Coffee', 'Coffee roastery · 4.8 from 465 reviews on Google', 1, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-laptop-friendly-places-by-google-6v74kr', 'ChIJQyjsKOaTkkYRe5D0bvjH8cs', 'chamber tea', 'Tea House · 5.0 from 34 reviews on Google', 2, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-laptop-friendly-places-by-google-6v74kr', 'ChIJY04fC1mTkkYR9DUx3GvBtD8', 'Faehlmanni cafe', 'Coffee Shop · 4.7 from 915 reviews on Google', 3, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-laptop-friendly-places-by-google-6v74kr', 'ChIJNWENsN2TkkYRAJi1m5tzeTo', 'KALVE Kadriorg', 'Coffee Shop · 4.6 from 60 reviews on Google', 4, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-laptop-friendly-places-by-google-6v74kr', 'ChIJCRAMjrCTkkYR-L9b80kugOQ', 'Paper Mill Coffee Volta', 'Bakery · 4.6 from 94 reviews on Google', 5, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-laptop-friendly-places-by-google-6v74kr', 'ChIJ4-IA81qTkkYRa9bzDnN6RRA', 'Värav Coffee and toast', 'Cafe · 4.6 from 767 reviews on Google', 6, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-laptop-friendly-places-by-google-6v74kr', 'ChIJhQUC_V-TkkYRm3suwD4Q_Ak', 'Fotografiska Tallinn Café & Bakery', 'Cafe · 4.3 from 91 reviews on Google', 7, CAST(strftime('%s','now') AS INTEGER) * 1000);

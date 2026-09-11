@@ -489,7 +489,7 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- Google's and the number is said to be Google's — the card the map draws for
   -- a place off this export, and the rows that lead to it, print both behind
   -- "According to Google". No place on my map has a score; the only things that
-  -- sort by one are /google, which says it is Google's order, and the five
+  -- sort by one are /google, which says it is Google's order, and the six
   -- lists under the `google-statistics` account, which db/google-lists.sql
   -- writes from the same export. They are also what decides which of these
   -- are worth promoting onto the map.
@@ -541,7 +541,7 @@ CREATE TABLE IF NOT EXISTS google_venues (
 -- Best-first, which is the order the export itself is sorted in and the order
 -- worth reviewing them in.
 CREATE INDEX IF NOT EXISTS idx_google_venues_rating ON google_venues (rating DESC, reviews DESC);
--- The 60 that are already on the map, and the ones still to be looked at.
+-- The 61 that are already on the map, and the ones still to be looked at.
 CREATE INDEX IF NOT EXISTS idx_google_venues_map ON google_venues (map_id) WHERE map_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_google_venues_open ON google_venues (hidden, status);
 

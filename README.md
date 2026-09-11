@@ -226,7 +226,10 @@ are split into their own entries. Fotografiska is that split: the fine dining
 upstairs and the bakery on the ground floor are two entries, and only the
 ground floor carries the tag.
 
-8 of the 75 carry it today, and all eight are coffee or tea.
+8 of the 75 carry it today, and all eight are coffee or tea. They are also a
+list — the one under `google-statistics` whose pool is this map's verdict
+rather than Google's category, put in Google's order — see **The six lists
+Google wrote**.
 
 ---
 
@@ -2384,9 +2387,9 @@ places are worth promoting onto the map.
 
 Two things sort by them, and neither is a ranking of anything this site
 vouches for. `/google` is a directory of Google's rows, in Google's order, and
-it says so — see **The directory**. And five lists, under an account called
+it says so — see **The directory**. And six lists, under an account called
 `google-statistics`, are Google's top tens, with Google's name in the title
-and Google's numbers under every row — see **The five lists Google wrote**,
+and Google's numbers under every row — see **The six lists Google wrote**,
 below.
 
 ### Re-running it is safe
@@ -2408,14 +2411,18 @@ twenty-four round trips and eleven hundred and ten.
 `tools/validate.mjs` runs `--check`, so CI refuses a deploy where the export
 moved and the SQL did not.
 
-### The 60 that are already on the map
+### The 61 that are already on the map
 
 Matched on coordinates rather than names — the names disagree ("Põhjala Tap
 Room" against "Põhjala Brewery & Tap Room") while a front door does not move —
 with the name as a sanity check, folded down to letters and digits so an
 apostrophe cannot break it, and one name allowed to be the other with a word
 dropped into it, which is what Google's "Fotografiska Tallinn Café & Bakery"
-is to the map's. `map_id` carries the `data/restaurants.json` id,
+is to the map's. One word is read across the language line — *kohvik* is
+*cafe*, because Google's "Faehlmanni cafe" stands on the map's "Faehlmanni
+kohvik" to the metre and no other test could see it — and it is one word
+rather than a dictionary because it is the only one a match has been found
+to turn on. `map_id` carries the `data/restaurants.json` id,
 and it is only ever set when empty, so a correction made by hand survives every
 future run.
 
@@ -2441,16 +2448,17 @@ And `/google`, which is the whole table rather than the part either of
 those needs: all 1,110 rows in one answer, so a filter can run over them. See
 **The directory**.
 
-### The five lists Google wrote
+### The six lists Google wrote
 
 ```
 tools/googlelists.mjs    reads the export, ranks it, writes the SQL
-db/google-lists.sql      GENERATED — one account, five lists, fifty rows
+db/google-lists.sql      GENERATED — one account, six lists, up to ten rows each
 ```
 
-Five public lists under an account called `google-statistics`: **Top ten
-restaurants, by Google**, and the same for bakeries, cafés, bars and
-pizzerias. They are lists in every way the rest of this section means: a row
+Six public lists under an account called `google-statistics`: **Top ten
+restaurants, by Google**, the same for bakeries, cafés, bars and
+pizzerias, and **Top ten laptop friendly places, by Google**. They are lists
+in every way the rest of this section means: a row
 each in `lists` and `list_items`, a byline that leads to
 `/u/google-statistics`, a bookmark, a way onto the map, three more at the
 foot and a place on `/lists/public`. Its profile is the ordinary one every
@@ -2467,10 +2475,10 @@ underscore is not one of them. Widening that rule for one account would
 change what every sign-up after it may be called, which is a larger change
 than this account is worth; the two names read the same.
 
-**Why a site that does not rank has five rankings on it.** The map carries no
+**Why a site that does not rank has six rankings on it.** The map carries no
 score and never sorts by one, and that stands. A list is the other kind of
 thing here — somebody else's opinion, under their name, with a sentence under
-each place — and these five are Google's opinion, under Google's name. The
+each place — and these six are Google's opinion, under Google's name. The
 title says "by Google", the intro says whose numbers they are and that they
 are not this map's verdict, and the line under each place is Google's word
 for it and Google's two numbers: *Bakery · 4.9 from 1,656 reviews on
@@ -2537,6 +2545,26 @@ tool is that list, and any one of those takes a place off. The lists are narrowe
 a place on the wrong list is a category to argue with Google about, not a
 pattern to widen.
 
+**The laptop list is the one pool Google did not pick.** Nothing in the export
+says whether you can sit for two hours with a laptop open — Google holds no
+seating, no sockets, no "one coffee stretching out", and the categories it
+does hold, Cafe and Coffee Shop and Tea House, are what the cafés list already
+reads. So the pool is the map's own `laptop` type — the verdict **What counts
+as Laptop friendly** draws, made in person and never guessed — and Google's
+numbers do only what they do on every other list: put it in order. Its intro
+says which half is whose, because it is the one list here whose pool is mine.
+A place gets onto it through the same coordinate-and-name match that sets
+`map_id` in `db/google-venues.sql` — see **The 61 that are already on the
+map** — so a laptop-friendly place the sweep has not found is simply not on
+it, and a closed one is off the map before the tool runs. Two of the rules
+above bend for it. There is no floor: the floor exists because a name singled
+out of eleven hundred rows on sixty reviews is there on a rumour, and this
+pool was singled out by hand before any number was looked at, so a floor would
+only take a tea room with forty reviews off a list that exists to name it, and
+the prior already pulls a short count towards the middle. And it is a top ten
+of however many carry the tag — eight today; the title keeps the account's
+shape and the list grows with the map.
+
 **Each list's address is fixed.** The six random characters on an id were
 minted once and are written into the tool, so a refresh of the export
 changes what is on a list and never where it is: a link to
@@ -2549,7 +2577,7 @@ after a refresh moves the lists.
 **Loading it** is the venues file's process, one file later:
 
 ```
-node tools/googlelists.mjs --show     the five lists, with the score, rating and count beside each name
+node tools/googlelists.mjs --show     the six lists, with the score, rating and count beside each name
 node tools/googlelists.mjs            rewrite db/google-lists.sql
 wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-lists.sql
 wrangler d1 execute tallinntastebuds         --remote --file=db/google-lists.sql
@@ -5175,7 +5203,7 @@ to read and write first.
 - a `db/google-venues.sql` that is not what `tools/googlevenues.mjs` would
   write from `exports/tallinn_restaurants.csv` (run the tool and commit the
   result), or a `db/google-lists.sql` that is not what `tools/googlelists.mjs`
-  would write from the same export — see **The five lists Google wrote**
+  would write from the same export — see **The six lists Google wrote**
 - a `?v=` cache stamp in the HTML that no longer matches the file it points at
   (run `node tools/stamp.mjs` and commit the result)
 - a `data/places.json` that is not what `tools/places.mjs` would write from the
@@ -5300,7 +5328,7 @@ exports/clean_restaurants_csv.py   the cleaning, from the upstream export
 exports/REVIEW.md          the shortlisting worksheet those rows are read
 exports/build_review_sheet.py      through, and the script that builds it
 db/google-venues.sql       GENERATED — loads that export into D1
-db/google-lists.sql        GENERATED — the five top tens under `google-statistics`
+db/google-lists.sql        GENERATED — the six top tens under `google-statistics`
 data/taxonomy.json         the controlled vocabulary of types
 data/cuisines.json         the 37 cuisines only the directory needs, in ten
                            languages — taxonomy.json holds the other six

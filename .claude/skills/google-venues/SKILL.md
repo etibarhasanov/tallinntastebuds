@@ -19,19 +19,22 @@ exports/tallinn_restaurants.csv   the cleaned export, 18 columns, one line per r
 tools/googlevenues.mjs            turns it into SQL
 db/google-venues.sql              GENERATED — what actually loads them
 tools/googlelists.mjs             reads the same export and ranks it
-db/google-lists.sql               GENERATED — the five top tens under `google-statistics`
+db/google-lists.sql               GENERATED — the six top tens under `google-statistics`
 ```
 
-The second pair is the same export read again: five public lists — top ten
-restaurants, bakeries, cafés, bars, pizzerias — under an account called
-`google-statistics` that nobody can sign in as, ordered by Google's rating weighed by
-its review count. **The five lists Google wrote** under **Google venues** in
-`README.md` is the argument and the arithmetic. They refresh with the
-export, and the validator holds them to it the same way.
+The second pair is the same export read again: six public lists — top ten
+restaurants, bakeries, cafés, bars, pizzerias, and the map's own
+laptop-friendly places — under an account called `google-statistics` that
+nobody can sign in as, ordered by Google's rating weighed by its review count.
+The laptop pool is the `laptop` type in `data/restaurants.json`, joined to the
+export through the same match that sets `map_id`. **The six lists Google
+wrote** under **Google venues** in `README.md` is the argument and the
+arithmetic. They refresh with the export, and the validator holds them to it
+the same way.
 
 ## Read first
 
-- `README.md` → **Google venues**, all of it — **The five lists Google
+- `README.md` → **Google venues**, all of it — **The six lists Google
   wrote** included — and **The directory**.
 - `exports/README.md` — how the raw export was cleaned, column by column, and
   where the upstream sweep lives. `exports/REVIEW.md` is the shortlisting
@@ -76,7 +79,7 @@ else runs.
    `UPDATE … SET map_id = … WHERE place_id = … AND map_id IS NULL` per row
    matched to the map. The count is in the diff.
    Then `node tools/googlelists.mjs`, which rewrites `db/google-lists.sql`
-   from the new export; `--show` first prints the five top tens with the
+   from the new export; `--show` first prints the six top tens with the
    score, rating and count beside each name, which is the diff worth reading
    before the SQL's.
 3. `node tools/validate.mjs`. Beyond both SQL files being what their tool
@@ -106,7 +109,7 @@ else runs.
    The lists file after the venues file, always: its rows point at
    `google_venues` keys, and a top ten loaded before the venue it names is a
    row that draws by its stored name and links nowhere. Its one `DELETE`
-   names the five lists in its `WHERE`, so the denials let it through.
+   names the six lists in its `WHERE`, so the denials let it through.
    Nothing in CI applies it. A preview that cannot see these places shows an
    empty picker and looks broken for no reason. The mark-missing `UPDATE`
    carries a `WHERE`, so the D1 denials in `.claude/settings.json` let it
@@ -117,7 +120,7 @@ else runs.
    `exports/REVIEW.md`, `functions/api/ask.js`, `functions/api/venues.js`
    and the comment above the check in `tools/validate.mjs`, along with the
    numbers that hang off it — how many are matched to the map (the `SET
-   map_id` lines at the end of the SQL, 60 today), how many have no cuisine,
+   map_id` lines at the end of the SQL, 61 today), how many have no cuisine,
    how many rows the raw export ran to. This finds the copies:
 
    ```
@@ -149,7 +152,7 @@ else runs.
   sentence about it. Every upsert clears the mark again.
 - `rating` and `reviews` are Google's, shown attributed on Google's places
   and sorted by in two places only, both under Google's name: `/google`, and
-  the five lists `db/google-lists.sql` writes. Nothing on the map carries a
+  the six lists `db/google-lists.sql` writes. Nothing on the map carries a
   score.
 
 ## The commit
@@ -181,7 +184,7 @@ categories renamed, patterns dropped — and that both databases were loaded.
 7. CI green, then **Rebase and merge**, delete the branch, and
    `wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql`
    then the same with `db/google-lists.sql`, at once, so the live directory,
-   the five lists and the files say the same thing.
+   the six lists and the files say the same thing.
 
 ## Where it goes wrong
 

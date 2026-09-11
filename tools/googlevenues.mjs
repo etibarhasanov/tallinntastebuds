@@ -230,7 +230,7 @@ export function read() {
   return places;
 }
 
-/* The 60 places that are on my map as well as in the export.
+/* The 61 places that are on my map as well as in the export.
  *
  * Matched on the coordinates rather than the name, because the names disagree
  * — "Põhjala Tap Room" against "Põhjala Brewery & Tap Room" — while a
@@ -262,16 +262,24 @@ function metresApart(a, b) {
    tests are kept separate rather than replaced by the word one alone: split
    into words, "Bite's" is "bite" and "s", and Elmans would stop matching.
 
+   And the one word the two sources write in different languages is read as
+   the same word. Google calls the map's "Faehlmanni kohvik" "Faehlmanni
+   cafe", at the same pin to the metre, and neither test above can see that
+   kohvik is what a café is called in Estonian. It is the only word a match
+   has been found to turn on — Google writes baar, restoran and pagar the
+   way the sign does — so it is one word and not a dictionary.
+
    Safe to be this loose only because the caller has already required the two
    pins to be within sixty metres of each other. */
 function namesAgree(a, b) {
-  const bare = (s) => fold(s).replace(/[^a-z0-9]/g, '');
+  const same = (s) => fold(s).replace(/\bkohvik\b/g, 'cafe');
+  const bare = (s) => same(s).replace(/[^a-z0-9]/g, '');
   const x = bare(a);
   const y = bare(b);
   if (!x || !y) return false;
   if (x.includes(y) || y.includes(x)) return true;
 
-  const words = (s) => fold(s).split(/[^a-z0-9]+/).filter(Boolean);
+  const words = (s) => same(s).split(/[^a-z0-9]+/).filter(Boolean);
   const [shorter, longer] = [words(a), words(b)].sort((p, q) => p.length - q.length);
   return shorter.every((w) => longer.includes(w));
 }

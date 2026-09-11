@@ -30,7 +30,7 @@
  * the week through venueHours() in that file, so there is one parser of that
  * column and not two.
  *
- * Merging would be actively wrong here. The sixty places that are on both
+ * Merging would be actively wrong here. The sixty-one places that are on both
  * rolls are the interesting ones on this page — they are the rows that link
  * through to a write-up — so they carry `mapId` and stay where Google filed
  * them, rather than being replaced by my entry for them.

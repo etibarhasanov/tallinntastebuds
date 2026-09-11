@@ -2807,6 +2807,8 @@ UPDATE google_venues SET map_id = 'koht' WHERE place_id = 'ChIJ-2SoW2KTkkYRwfWb2
 
 UPDATE google_venues SET map_id = 'gotsu-kyuho' WHERE place_id = 'ChIJOxoZNpiUkkYRzjFdO3yqz0M' AND map_id IS NULL;
 
+UPDATE google_venues SET map_id = 'faehlmanni-kohvik' WHERE place_id = 'ChIJY04fC1mTkkYR9DUx3GvBtD8' AND map_id IS NULL;
+
 UPDATE google_venues SET map_id = 'gobi' WHERE place_id = 'ChIJofGOoaCTkkYRN218DMRRQd0' AND map_id IS NULL;
 
 UPDATE google_venues SET map_id = 'karu-talu-sokolaad' WHERE place_id = 'ChIJf-3Fa2KTkkYRaWgHdgO4D2U' AND map_id IS NULL;
