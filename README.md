@@ -5234,6 +5234,8 @@ google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
 assets/basemap.js          the CARTO tiles, said once for every map that draws them
+assets/track.js            what a press reports to Google Analytics, said once
+                           for every page that has a button
 assets/radio.js            the station, and the on/off that survives a navigation
 assets/ask.js              a typed sentence read as a wish, for when the model
                            cannot: no DOM, no state, one global
@@ -6017,38 +6019,157 @@ in front of somebody at a till.
 ### Analytics
 
 Google Analytics 4 is wired up, property `G-2XNTC15F28`. The tag lives in the
-`<head>` of `index.html`, exactly as Google's console emits it.
+`<head>` of every page — the eight in `PAGES` at the top of
+`tools/stamp.mjs` — exactly as Google's console emits it. It used to be on
+the map alone, which made the map the only page GA had heard of; the lists,
+the account page, the directory, the three pass pages and splitwise were
+invisible, and so was every press on any of them.
 
-Because this is a single page, GA on its own would record one view per visit
-and tell you nothing about which places people actually open. So opening a
-place also reports a page view of its own, titled with the place name and
-pointing at its `?spot=` URL — `trackView()` near the bottom of
-`assets/app.js`. Those land in GA's standard **Pages and screens** report with
-no configuration in the console, which means the report doubles as a
-popularity ranking of the map.
+The tag on its own records one view per address, and that is where its
+usefulness ends. The map is one address on which everything happens, and
+even the pages that do change address are mostly buttons that change nothing
+in the address bar. GA only ever sees a URL. So every deliberate press on
+every page is reported as an event, through the one global
+`assets/track.js` sets — `TTBTrack.event(name, params)`, and
+`TTBTrack.click(node, name, params)` for a link or button built inline —
+and opening a place on the map is reported as a page view of its own,
+titled with the place and pointing at its `?spot=` URL, through
+`TTBTrack.view()`. Those views land in GA's standard **Pages and screens**
+report with no configuration in the console, which means the report doubles
+as a popularity ranking of the map. The links written straight into the
+markup — the wordmark, the Instagram link, the mark on a pass — carry the
+event's name as a `data-track` attribute, and `track.js` wires them itself.
 
-Everything else people do on the map happens without the address bar changing,
-and GA only ever sees a URL, so those actions used to be invisible. They are
-reported as events instead, from `trackEvent()` beside `trackView()`:
+**The rule is that a button reports.** A new press that matters gets an
+event in the same commit, named for what the person meant by it (`list_keep`,
+not `button_7`), with the parameters the handler already has to hand, and a
+row in the table below. What every page sends:
+
+The map, `assets/app.js`:
 
 | event | parameters |
 | --- | --- |
+| `page_view` | one per opened place: `page_title` is the place, `page_location` its `?spot=` URL |
 | `filter_select` | `filter_id`, `filter_state` (`on`/`off`), `filters`, `filter_count`, `places_shown` |
 | `filter_clear` | `filters`, `filter_count`, `places_shown` |
+| `filters_open`, `filters_close` | — |
+| `search` | `search_term`, `scope` (`map`) |
+| `search_clear` | `scope` |
+| `list_open` | `places_shown` |
+| `list_close`, `ask_close` | — the cross on the panel, by what it shut |
+| `place_close` | `place` |
+| `cluster_open` | `cluster_size` |
+| `random_pick` | `place`, `pool` |
+| `locate` | — |
+| `language_open` | — |
 | `language_select` | `language` |
 | `style_select` | `style` |
-| `random_pick` | `place`, `pool` |
+| `directions`, `website`, `google_listing` | `place` |
+| `call_place` | `place` — the button and the number in the facts alike |
+| `deal_open` | `place` |
+| `photo_open`, `photo_step`, `photo_close` | `place`, `photo_index` |
 | `reel_load` | `place`, `provider` |
-| `call_place` | `place` |
-| `cluster_open` | `cluster_size` |
-| `list_open` | `places_shown` |
-| `search` | `search_term` |
-| `locate` | — |
+| `reel_open` | `place` — the way out to Instagram or TikTok when the frame is blank |
+| `save_place`, `unsave_place` | `place`, `place_id`, `saves_total` |
+| `list_keep` | `list_id`, `list_state` (`on`/`off`, or `signed_out` when the press opened the sign-up sheet instead) |
+| `list_share` | `list_id`, `method` (`sheet`/`copy`) |
+| `list_page`, `profile_open` | `list_id` / `name` — the links on a list's credit block |
+| `ask_open` | — |
+| `ask_scope` | `scope` |
+| `ask` | `search_term`, `scope` |
+| `ask_answer`, `ask_none`, `ask_resting` | `search_term`, `scope`, `source`, `places_shown` — what came back; see **Ask for somewhere** |
+| `account_open` | `view` (`sheet` signed out, `page` signed in) |
+| `account_switch` | `view` (`in`/`up`) |
+| `account_close`, `account_page` | — |
+| `account_create`, `account_login` | — |
+| `account_password_change`, `account_rename` | — on success |
+| `account_nudge` | `taken` |
+| `saved_open` | — the row in the sheet |
+| `explain_open` | — |
+| `explain_step`, `explain_close` | `step`, one-based, the one being left |
+| `story_open`, `story_view`, `story_watch`, `story_sound`, `story_link` | see **Stories** |
+| `radio_play`, `radio_stop` | `station` — reported from `assets/radio.js`, so every page with the button counts it |
+| `home`, `instagram` | — the wordmark and the Instagram link |
+
+The lists, `assets/lists.js` — a list, a profile, and `/lists/public`:
+
+| event | parameters |
+| --- | --- |
+| `list_page` | `list_id` — any row that opens a list |
+| `list_map` | `list_id` — the "on the map" pill |
+| `profile_open` | `name` — any byline |
+| `place_link` | `place`, `map` (`mine`/`google`) — a place on a list, to the map or to Google |
+| `list_keep` | `list_id`, `list_state` |
+| `list_share` | `list_id`, `method` |
+| `list_save` | `list_id`, `writes` |
+| `list_visibility` | `list_id`, `visibility` |
+| `list_reorder` | `list_id`, `from`, `to` |
+| `list_add`, `list_remove` | `list_id`, `place` |
+| `list_delete` | `list_id` |
+| `picker_open`, `picker_close` | `list_id` |
+| `place_missing` | `search_term` — the "add the place that is missing" door |
+| `place_add` | `place` — a place typed in by hand, on success |
+| `search` | `search_term`, `scope` (`lists`) |
+| `lists_more` | `rows_shown` |
+| `lists_all` | — |
+| `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
+
+The account page, `assets/account.js`:
+
+| event | parameters |
+| --- | --- |
+| `fold_toggle` | `fold`, `fold_state` |
+| `place_link` | `place`, `map` |
+| `saved_map` | `places_saved` |
+| `list_page`, `profile_open`, `lists_all` | as on the lists |
+| `list_create` | `list_id` |
+| `account_open` | `view` — the two doors when signed out |
+| `account_rename_open`, `account_password_open` | — into the map's sheet |
+| `account_about` | `about_state` (`set`/`cleared`) — the line about yourself, on save |
+| `account_logout` | — |
+| `radio_play`, `radio_stop`, `home` | as on the map |
+
+The directory, `assets/venues.js`:
+
+| event | parameters |
+| --- | --- |
+| `search` | `search_term`, `scope` (`google`) |
+| `search_clear` | `scope` |
+| `venues_filter` | `filter` (`open`/`cuisine`/`rating`/`price`/`sort`), `value`, `places_shown` |
+| `venues_clear` | — |
+| `venues_more` | `page` |
+| `venues_view` | `view` (`map`/`list`) |
+| `venue_select` | `venue`, `from` (`list`/`map`) |
+| `venue_call`, `venue_website`, `venue_directions`, `venue_google` | `venue` |
+| `place_link` | `place`, `map` — the door to the write-up for the ones on the map |
+| `home` | — |
+
+Splitwise, `assets/split.js`:
+
+| event | parameters |
+| --- | --- |
+| `account_create`, `account_login`, `account_switch` | `via` (`split`) — its own sign-in form |
+| `split_open` | `group_id` — a row under Your groups |
+| `split_create`, `split_join`, `split_leave`, `split_remove` | `group_id` |
+| `split_share` | `group_id` — the copied invite link |
+| `split_spend`, `split_unspend`, `split_settle`, `split_unsettle`, `split_drop` | `group_id` — one per kind of write, named after the API's action |
+| `split_home`, `home` | — |
+
+The pass pages, `assets/deal.js` and `assets/verify.js` — nothing on them is
+a button except the way back, so what they report is the moment each exists
+for:
+
+| event | parameters |
+| --- | --- |
+| `pass_shown` | `place`, `live` — a code was put in front of somebody; once an hour on a page left open |
+| `pass_back` | `place` |
+| `pass_verify` | `place`, `status` — the verdict a scan got |
+| `home` | — |
 
 They appear under **Reports → Engagement → Events** on their own. To break the
-numbers down by a parameter — which chip, which language — register it once in
-**Admin → Custom definitions** as a custom dimension; GA only collects
-parameters from that point on, so it is worth doing early.
+numbers down by a parameter — which chip, which language, which list — register
+it once in **Admin → Custom definitions** as a custom dimension; GA only
+collects parameters from that point on, so it is worth doing early.
 
 **Back.** Opening a place is a step you can come back from, so it gets a
 history entry of its own; a filter, a language or a colour rewrites the entry
@@ -6097,11 +6218,11 @@ rather than merely missed. Cloudflare Pages serves `x-robots-tag: noindex` on
 preview deployments, which is correct for previews and fatal if the address
 people share turns out to be one.
 
-To remove tracking entirely, delete the gtag block from `index.html` and the
-`trackView` and `trackEvent` functions from `assets/app.js`; their call sites
-then do nothing. Deleting only the gtag block is also safe — both check for
-the tag and return quietly when it is missing, which is also what happens for
-visitors running an ad blocker.
+To remove tracking entirely, delete the gtag block from every page's head,
+or the `assets/track.js` script tag from every page, or both. Everything in
+`track.js` checks for the tag and returns quietly when it is missing, which
+is also what happens for visitors running an ad blocker, so every call site
+becomes a harmless no-op and none of them has to change.
 
 **GA4 sets cookies.** Estonia applies the EU rules, so if you get meaningful
 traffic from the EU you are expected to ask for consent before the tag loads.

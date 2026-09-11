@@ -80,10 +80,10 @@
          it is the stories and nothing else, so the two things in this corner
          are two doors rather than one door and a picture that turns into
          another. -->
-    <h1 class="wordmark"><a class="brand-home" href="/" data-i18n="wordmark">Tallinn Tastebuds</a></h1>
+    <h1 class="wordmark"><a class="brand-home" href="/" data-track="home" data-i18n="wordmark">Tallinn Tastebuds</a></h1>
   </div>
   <p class="tagline" data-i18n="tagline">All the places in this map I have personally been and approved.</p>
-  <a class="ig-link"
+  <a class="ig-link" data-track="instagram"
      href="https://www.instagram.com/tallinntastebuds/"
      target="_blank"
      rel="noopener"
@@ -458,6 +458,10 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""
         defer></script>
+<!-- What every press reports to Google Analytics, shared by every page.
+     Before the page's own script and deferred like it, so document order puts
+     the global in place first. -->
+<script src="assets/track.js?v=93031b0d" defer></script>
 <!-- Shared with deal.html, verify.html and staff.html. The map uses only the
      lookup and date helpers from it, to work out whether a place has a
      discount worth showing; with no deals set up that answer is always no. -->
@@ -469,11 +473,11 @@
 <!-- The radio, shared with the lists page, which is what keeps a station
      playing when somebody walks from the map to a list. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
-<script src="assets/radio.js?v=495775d6" defer></script>
+<script src="assets/radio.js?v=745e0f95" defer></script>
 <!-- Reading a typed sentence as a wish, for when the model behind /api/ask
      cannot: no allowance left, no binding, no network. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
 <script src="assets/ask.js?v=ce4f95da" defer></script>
-<script src="assets/app.js?v=2bfeb03f" defer></script>
+<script src="assets/app.js?v=053594b2" defer></script>
 </body>
 </html>

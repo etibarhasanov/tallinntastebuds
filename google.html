@@ -8,6 +8,16 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2XNTC15F28"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2XNTC15F28');
+</script>
+
 <!-- Not part of the map, and deliberately not linked from it. This is Google's
      description of the city rather than anywhere I have been, so it must never
      turn up in a search for Tallinn Tastebuds beside the pages that are the
@@ -39,7 +49,7 @@
 <a class="skip-link" href="#venues-results" data-i18n="venuesSkip">Skip to the results</a>
 
 <header class="venues-brand">
-  <a class="venues-home" href="/" data-i18n-aria-label="venuesBack" aria-label="Back to the map">
+  <a class="venues-home" href="/" data-track="home" data-i18n-aria-label="venuesBack" aria-label="Back to the map">
     <img class="venues-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
     <span class="venues-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
   </a>
@@ -161,10 +171,14 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""
         defer></script>
+<!-- What every press reports to Google Analytics, shared by every page.
+     Before the page's own script and deferred like it, so document order puts
+     the global in place first. -->
+<script src="/assets/track.js?v=93031b0d" defer></script>
 <!-- The tiles, the key and the attribution, shared with the map and the lists
      picker. Before venues.js and deferred like it, so document order puts the
      global in place first. -->
 <script src="/assets/basemap.js?v=bf2dd374" defer></script>
-<script src="/assets/venues.js?v=f8fd12dc" defer></script>
+<script src="/assets/venues.js?v=893c246e" defer></script>
 </body>
 </html>

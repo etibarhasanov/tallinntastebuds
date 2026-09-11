@@ -6,6 +6,16 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2XNTC15F28"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2XNTC15F28');
+</script>
+
 <!-- Everything between the markers is swapped by functions/split.js for the
      tags of whichever group ?g= names, so a link pasted into a message arrives
      as "Split in Berlin" and the mark, rather than as the site's own name or a
@@ -55,7 +65,7 @@
        domain up from splitwise.tallinntastebuds.ee, where the root is this
        page. The site's own spelling is here so the header is right with no
        script at all; assets/split.js rewrites it on the subdomain. -->
-  <a class="lists-home" id="brand-home" href="/" data-i18n-aria-label="listsBack" aria-label="Back to the map">
+  <a class="lists-home" id="brand-home" href="/" data-track="home" data-i18n-aria-label="listsBack" aria-label="Back to the map">
     <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
     <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
   </a>
@@ -79,6 +89,10 @@
   </div>
 </noscript>
 
-<script src="/assets/split.js?v=c57c03c3" defer></script>
+<!-- What every press reports to Google Analytics, shared by every page.
+     Before the page's own script and deferred like it, so document order puts
+     the global in place first. -->
+<script src="/assets/track.js?v=93031b0d" defer></script>
+<script src="/assets/split.js?v=cca5ac15" defer></script>
 </body>
 </html>
