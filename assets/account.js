@@ -508,14 +508,22 @@
 
   /* Whose list it is, and the door to the rest of what they published. The
      same phrase, the same class and the same target as every other byline on
-     this site — see byline() in assets/lists.js for why the whole phrase is
-     the link rather than the name inside it. */
+     this site — see byline() in assets/lists.js for why the name is the link
+     and the words around it are not, why cutting the translated phrase at its
+     placeholder is not assembling a sentence out of pieces, and why the one
+     account Google's numbers write under reads as the product instead. */
+  var GOOGLE_BY = 'google-statistics';
   function byline(name) {
-    return TTBTrack.click(el('a', {
-      className: 'lists-index-by',
-      href: '/u/' + encodeURIComponent(name),
-      textContent: t('listsBy', { name: name })
-    }), 'profile_open', { name: name });
+    var google = name === GOOGLE_BY;
+    var words = t(google ? 'listsByGoogle' : 'listsBy').split('{name}');
+    return el('span', { className: 'lists-index-by' }, [
+      words[0],
+      TTBTrack.click(el('a', {
+        href: '/u/' + encodeURIComponent(name),
+        textContent: google ? 'Google Maps' : name
+      }), 'profile_open', { name: name }),
+      words[1]
+    ]);
   }
 
   function keepCount(n) {

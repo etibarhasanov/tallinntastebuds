@@ -108,14 +108,10 @@
 .lists-say { margin: 0 0 12px; color: var(--muted); font-size: 14px; line-height: 1.55; }
 .lists-say:last-child { margin-bottom: 0; }
 
+/* The byline under a list's own title. The phrase inside it, and the link in
+   the phrase, are .lists-index-by — the same byline every directory row
+   carries. */
 .lists-by { margin: -4px 0 12px; font-size: 11.5px; letter-spacing: .04em; color: var(--muted); }
-/* The byline is a door: it leads to /u/<name>, the rest of what its owner has
-   published. It keeps the line's own colour rather than taking the accent a
-   bare link wears, because a whole accent-coloured sentence under the title
-   would read as the loudest thing on a card whose title is the point — the
-   underline is enough to say it opens, and the hover says the rest. */
-.lists-by a { color: inherit; text-underline-offset: 3px; }
-.lists-by a:hover { color: var(--accent); }
 
 /* The one number a profile keeps: how many times, in all, other people have
    kept the lists on it. It sits where a list's own byline sits, in the accent,
@@ -430,21 +426,29 @@
   white-space: nowrap;
 }
 .lists-private { color: var(--accent); }
-/* Whose list it is, on every row that draws a list somebody else wrote. First
-   in the line and the only part of it that is not a number: a list you kept or
-   found on the directory is somebody else's, and who they are is the thing
-   that makes it worth opening.
+/* Whose list it is: under a list's own title, and on every row that draws a
+   list somebody else wrote — where it is first in the line and the only part
+   of it that is not a number, because a list you kept or found on the
+   directory is somebody else's, and who they are is the thing that makes it
+   worth opening.
 
-   It is also the door to them. The whole phrase is the link and it keeps the
-   line's own colour, for the two reasons .lists-by gives — and it is
-   positioned, because the title's link covers the card and only a positioned
-   box later in the document is pressed instead of it. */
-.lists-index-by {
+   The name in it is the door to them, and only the name: the words around it
+   are about the list, and underlining them said the wrong thing opened. It
+   keeps the line's own colour rather than the accent a bare link wears — a
+   whole accent-coloured phrase under the title would be the loudest thing on
+   a card whose title is the point; the underline says it opens and the hover
+   says the rest. It is positioned, because on a row the title's link covers
+   the card and only a positioned box later in the document is pressed instead
+   of it. And it is padded out of its own margins, so a four-letter name is a
+   thumb-sized target without the line growing to fit the padding. */
+.lists-index-by a {
   position: relative;
+  padding: 8px 3px;
+  margin: -8px -3px;
   color: inherit;
   text-underline-offset: 3px;
 }
-.lists-index-by:hover { color: var(--accent); }
+.lists-index-by a:hover { color: var(--accent); }
 
 /* The heading over a group: the three more lists at the foot of a list.
    Quieter than a card title — that one names the page or the card, this one
@@ -481,29 +485,61 @@
 
 /* ---------- public lists ---------- */
 
-/* The search field at the foot of the page's own card. It borrows the field,
-   the magnifier and the clear button from the map's panel — same classes, same
-   shapes — and only the box around them is this page's: the panel's is sticky
-   and bleeds to the panel's edges, and this one is the last line of a card.
+/* The search field, a row of the page between the head card and the rows. It
+   borrows the field, the magnifier and the clear button from the map's panel —
+   same classes, same shapes — and only the box around them is this page's.
 
-   Given air above it rather than sitting against the sentence over it, so it
-   reads as the tool the page offers rather than as part of what the page says
-   about itself. */
+   It sticks. The rows under it keep coming for as long as anybody scrolls,
+   and a field that stays at the top of the page is a field a hundred rows
+   away by the time somebody thinks of a name to look for; so once the head
+   card has scrolled off, this row holds at the top of the window and the
+   rows pass under it. It wears the page's own ground rather than the paper
+   the field sits on, so what passes under it is covered and the field still
+   reads as a field on the page rather than as a bar somebody added over it.
+   It was the last line of the head card for a while, which was fine while the
+   page was twenty rows and a button.
+
+   The negative margins take back the stack's gap on either side, so the row's
+   own padding — which is what the ground is painted on when it is stuck — is
+   the spacing, and the row sits where the gap would have put it. Held under
+   the safe inset rather than at the very top, the way every other pinned
+   thing on this site is, so a notch does not cover the field. */
 .lists-all-search {
-  margin: 16px 0 2px;
+  position: sticky;
+  top: var(--safe-t);
+  z-index: 3;
+  margin: -10px 0;
+  padding: 10px 0;
+  background: var(--wash);
   /* The token .search-input reads its height from. It is declared on .panel
      and on .picker, each for the field inside it, and this is the third such
-     field — 40px like the picker's, because both of them sit on a card a
-     thumb reaches rather than in the map's rail. */
+     field — 40px like the picker's, because both of them sit where a thumb
+     reaches rather than in the map's rail. */
   --search-field-h: 40px;
 }
 
-/* Everything under the head of the page: the rows, Show more, and the note
-   where there are none. It exists because it is what a search repaints — the
-   field above it must survive a keystroke — and it carries the stack's own gap
-   so a wrapper that is there for the script's sake changes nothing anybody
-   sees. */
+/* Everything under the search: the rows, the foot line that fetches more,
+   and the note where there are none. It exists because it is what a search
+   repaints — the field above it must survive a keystroke — and it carries the
+   stack's own gap so a wrapper that is there for the script's sake changes
+   nothing anybody sees.
+
+   While a search is out the rows on it are the answer to the question before,
+   and they are dimmed to say so — left in place, because they may still be
+   the answer, but not left looking like it. */
 .lists-all-body { display: flex; flex-direction: column; gap: 18px; }
+
+/* What the rows are the answer to, while the field holds a search: the
+   question, not a count — see paintAll(). Set like the line of facts under a
+   title, and pulled up toward the field it repeats, so it reads as a caption
+   on the rows rather than as a row of its own. */
+.lists-all-for {
+  margin: -6px 0 -8px 2px;
+  color: var(--muted);
+  font-size: 11.5px;
+  letter-spacing: .03em;
+}
+.lists-all-body.is-searching { opacity: .55; transition: opacity .15s var(--ease) .1s; }
 
 /* The row on /lists, and the same row at the foot of a list's own page.
    It is the index row above restacked rather than a second kind of card: the
