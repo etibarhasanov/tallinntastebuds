@@ -50,5 +50,15 @@
       "en": "in germany"
     },
     "spot": "elman-bites"
+  },
+  {
+    "id": "story-2026-09-11",
+    "live": true,
+    "video": "story-2026-09-11.mp4",
+    "poster": "story-2026-09-11.jpg",
+    "from": "2026-09-11T12:56",
+    "caption": {
+      "en": "carrot cake by Companion Tea & Coffee"
+    }
   }
 ]
