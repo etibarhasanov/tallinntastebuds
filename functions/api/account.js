@@ -40,8 +40,9 @@
  *
  * WHAT IS STORED
  *
- *   users      a random id, the username, and a PBKDF2 hash of the password
- *              with its own salt and iteration count. Never the password.
+ *   users      a random id, the username, a PBKDF2 hash of the password with
+ *              its own salt and iteration count, and the line somebody wrote
+ *              about themselves. Never the password.
  *   sessions   the SHA-256 of the session token, never the token. A leaked
  *              table is a list of hashes, not a drawer of working keys.
  *   login_fails a hashed network fingerprint and a timestamp, to slow down
@@ -72,6 +73,12 @@ const FAIL_WINDOW = 15 * 60 * 1000;
    four. */
 const USERNAME_RE = /^[a-z0-9][a-z0-9-]{2,23}$/;
 const MIN_PASSWORD = 8;
+/* The line somebody writes about themselves on /u/<name>. The same length as
+   a list's intro in functions/api/lists.js, and the same reasoning: it is a
+   line under a title rather than a page, and a profile opening with six
+   paragraphs about somebody stops being a page about their lists. Restated as
+   a maxlength in assets/account.js, the way every cap here is. */
+const MAX_ABOUT = 200;
 
 /* How long a name stays with the account that just left it. A username is
    the byline on somebody's lists and the whole of /u/<name>, so a name put
@@ -194,18 +201,28 @@ export async function onRequestGet(context) {
   const user = await sessionUser(request, env);
   if (!user) return json({ ready: true, user: null }, 200);
 
+  /* Read here rather than added to sessionUser(), which every signed-in
+     request on this site goes through — saves, lists and splitwise included,
+     and not one of them prints this. One indexed read on the id already in
+     hand, on the one page that draws the box it fills. */
+  const row = await env.DB
+    .prepare('SELECT about FROM users WHERE id = ?')
+    .bind(user.id)
+    .first();
+
   return json({
     ready: true,
     user: user.username,
+    about: (row && row.about) || undefined,
     saved: await savedByUser(env, user.id)
   }, 200);
 }
 
 /* ---------------------------------------------------------------- create,
- * sign in, sign out, change the password, change the username. One endpoint,
- * because they share every check: the same username and password rules, the
- * same slow-down on a fingerprint that keeps getting a password wrong, and
- * the same session table on the way in and out.
+ * sign in, sign out, change the password, change the username, write the line
+ * about yourself. One endpoint, because they share every check: the same
+ * username and password rules, the same slow-down on a fingerprint that keeps
+ * getting a password wrong, and the same session table on the way in and out.
  *
  * The two changes each check the password in use, in the same handful of
  * lines and against the same fingerprint. Two copies rather than a helper —
@@ -412,6 +429,44 @@ export async function onRequestPost(context) {
     }
 
     return json({ changed: true, user: next }, 200);
+  }
+
+  /* --------------------------------------------- the line about yourself
+   *
+   * Two hundred characters drawn on /u/<name> under the name, and the only
+   * thing anybody writes here about themselves rather than about a
+   * restaurant. Empty is a real answer and the way to take one down.
+   *
+   * NO PASSWORD, UNLIKE THE OTHER TWO CHANGES
+   *
+   * The password and the username are guarded by the password in use because
+   * each is a way to take an account off somebody: one locks them out, the
+   * other moves every link that points at them. A line on a page is neither.
+   * It is something its author wrote and can rewrite, the way a list's title
+   * and its intro are, and those ask for a session and nothing more. Asking
+   * for a password to edit a sentence would teach people to type it into a
+   * box that did not need it, which is the habit the rest of this file is
+   * built not to build.
+   *
+   * The shaping is the same flatten-and-cut lists.js does to a title, said
+   * again in one expression rather than shared: two copies is where
+   * .claude/rules/leave-it-better.md leaves it, and a third is a helper.
+   */
+  if (action === 'about') {
+    const user = await sessionUser(request, env);
+    if (!user) return json({ error: 'signed-out' }, 401);
+
+    const about = String(typeof body.about === 'string' ? body.about : '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, MAX_ABOUT);
+
+    await env.DB
+      .prepare('UPDATE users SET about = ? WHERE id = ?')
+      .bind(about, user.id)
+      .run();
+
+    return json({ about: about }, 200);
   }
 
   if (action !== 'create' && action !== 'login') return json({ error: 'action' }, 400);

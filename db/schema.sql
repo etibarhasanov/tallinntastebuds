@@ -120,7 +120,24 @@ CREATE TABLE IF NOT EXISTS users (
   pw_salt        TEXT NOT NULL,
   pw_iter        INTEGER NOT NULL,
   created_at     INTEGER NOT NULL,
-  last_seen_at   INTEGER NOT NULL
+  last_seen_at   INTEGER NOT NULL,
+  -- A line about yourself, drawn on /u/<name> under your name, and the only
+  -- thing on this site somebody writes about themselves rather than about a
+  -- restaurant. Empty by default and empty on nearly every row: a profile
+  -- read the same before this column existed and reads the same without it.
+  --
+  -- LAST, BECAUSE THAT IS WHERE ALTER TABLE PUT IT
+  --
+  -- users predates this column on both deployed databases, so it arrived by
+  -- hand — ALTER TABLE users ADD COLUMN about TEXT NOT NULL DEFAULT '' — and
+  -- SQLite appends. The order here is the order the deployed table has, which
+  -- is what makes this file readable against the real thing.
+  --
+  -- 200 characters, capped in functions/api/account.js where it is written.
+  -- The same length as a list's intro and for the same reason: it is a line
+  -- under a title, not a page, and a profile that opens with six paragraphs
+  -- about somebody is no longer a page about their lists.
+  about          TEXT    NOT NULL DEFAULT ''
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username COLLATE NOCASE);
 
@@ -467,9 +484,9 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- a place off this export, and the rows that lead to it, print both behind
   -- "According to Google". No place on my map has a score; the only things that
   -- sort by one are /google, which says it is Google's order, and the five
-  -- lists under the `google` account, which db/google-lists.sql writes from
-  -- the same export. They are also what decides which of these are worth
-  -- promoting onto the map.
+  -- lists under the `google-statistics` account, which db/google-lists.sql
+  -- writes from the same export. They are also what decides which of these
+  -- are worth promoting onto the map.
   rating        REAL,
   reviews       INTEGER,
   -- Google's own scale, "$" to "$$$$", kept verbatim rather than converted to

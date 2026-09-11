@@ -19,12 +19,12 @@ exports/tallinn_restaurants.csv   the cleaned export, 18 columns, one line per r
 tools/googlevenues.mjs            turns it into SQL
 db/google-venues.sql              GENERATED — what actually loads them
 tools/googlelists.mjs             reads the same export and ranks it
-db/google-lists.sql               GENERATED — the five top tens under the `google` account
+db/google-lists.sql               GENERATED — the five top tens under `google-statistics`
 ```
 
 The second pair is the same export read again: five public lists — top ten
 restaurants, bakeries, cafés, bars, pizzerias — under an account called
-`google` that nobody can sign in as, ordered by Google's rating weighed by
+`google-statistics` that nobody can sign in as, ordered by Google's rating weighed by
 its review count. **The five lists Google wrote** under **Google venues** in
 `README.md` is the argument and the arithmetic. They refresh with the
 export, and the validator holds them to it the same way.
@@ -169,7 +169,7 @@ categories renamed, patterns dropped — and that both databases were loaded.
    `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`,
    then the same with `db/google-lists.sql` — then push the branch, which
    deploys a preview of it, and open that preview's `/google`, the list
-   picker and `/u/google` to see the rows arrive.
+   picker and `/u/google-statistics` to see the rows arrive.
 4. One commit for the export and its SQL; a second for any `KITCHENS`
    pattern and cuisine label that had to go with it, and a third for the
    counts, if they moved.

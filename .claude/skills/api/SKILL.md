@@ -39,7 +39,7 @@ leading underscore are modules, not routes.
 | `/*` | `_middleware.js` | none; 301s `pages.dev` to `tallinntastebuds.ee`, and — **splitwise**, in a fenced block — serves `split.html` at the root of `splitwise.tallinntastebuds.ee` while 301ing every other path on that host back to the site | as `_headers` |
 | `GET /api/saves` | `saves.js` | none | `public, max-age=60`, weak ETag, plus the edge cache under `countsKey()` |
 | `POST /api/saves` | `saves.js` | `saves`, then `RECOUNT_SQL`, in one `batch()`; purges the counts cache | `no-store` |
-| `GET/POST /api/account` | `account.js` | `users`, `sessions`, `login_fails`, `username_holds`; `claim()` moves device saves onto the user and recounts, and `username-change` releases the old name into a thirty-day hold | `no-store`, `Set-Cookie ttb_s` |
+| `GET/POST /api/account` | `account.js` | `users`, `sessions`, `login_fails`, `username_holds`; `claim()` moves device saves onto the user and recounts, `username-change` releases the old name into a thirty-day hold, and `about` writes the profile line — the one change here that asks for a session and not the password | `no-store`, `Set-Cookie ttb_s` |
 | `GET/POST /api/lists` | `lists.js` | `lists`, `list_items`, `list_keeps`, `added_places` | `no-store`, on purpose: the owner reads it mid-edit |
 | `GET /api/places` | `places.js` | none; `data/places.json` merged with open `google_venues` | `public, max-age=300` |
 | `GET /api/venues` | `venues.js` | none; the whole `google_venues` table | `public, max-age=300` |
@@ -132,7 +132,8 @@ database in this repository; D1 Time Travel's 30 days is the only recovery.
 **Caps live in two places** and the server is the one that binds. `MAX_TITLE
 60`, `MAX_INTRO 200`, `MAX_SAY 280`, `MAX_ITEMS 20` in `lists.js` are restated
 in `assets/lists.js`, and `MAX_TITLE` a third time in `assets/account.js`,
-which carries the box that names a new list; `MAX_NAME 80` and
+which carries the box that names a new list; `MAX_ABOUT 200` in `account.js`
+is restated in `assets/account.js`, which carries the only box that writes it; `MAX_NAME 80` and
 `MAX_ADDRESS 120` as literal `maxlength: '80'` and `'120'` in the add-a-place
 form in `assets/lists.js`; the username's 3–24 in `account.js` as a
 `maxlength: '24'` on both of `app.js`'s username fields — the sign-up sheet's

@@ -4,8 +4,8 @@
  *
  * Reads exports/tallinn_restaurants.csv — the same 1,110 places
  * tools/googlevenues.mjs loads into google_venues — and writes
- * db/google-lists.sql: one account called `google`, five public lists under
- * its name, ten places on each, in Google's order. Top ten restaurants,
+ * db/google-lists.sql: one account called `google-statistics`, five public
+ * lists under its name, ten places on each, in Google's order. Top ten restaurants,
  * bakeries, cafés, bars and pizzerias, as the numbers Google holds about the
  * city have them, and said to be Google's in the title, the byline and every
  * row.
@@ -31,10 +31,16 @@
  * The map carries no score and never sorts by one; that rule stands. A list
  * is the other kind of thing this site has — somebody's opinion, under their
  * name, with a sentence under each place — and these five are Google's
- * opinion, under Google's name. The account is called `google`, the title of
- * every list ends "by Google", and the line under each place is Google's
- * rating and how many people gave it. Nothing on them is the map's verdict,
+ * opinion, under Google's name. The account is called `google-statistics`,
+ * the title of every list ends "by Google", the line under each place is
+ * Google's rating and how many people gave it, and the account's own profile
+ * line says where the order comes from. Nothing on them is the map's verdict,
  * and the intro says so.
+ *
+ * The name is hyphenated because a username here is lowercase letters, digits
+ * and hyphens — USERNAME_RE in functions/api/account.js — so `google_statistics`
+ * is not a name this site can hold. Widening that rule for one account would
+ * change what every future sign-up may be called, and the two read the same.
  *
  * HOW THE ORDER IS DECIDED, AND WHY IT IS NOT THE RATING
  *
@@ -122,16 +128,25 @@ const TOP = 10;
 
 /* The account every list hangs off. A fixed id rather than a UUID, so a row
    in the database says whose it is. The hash is sixty-four zeros, which is
-   not the PBKDF2 of anything: a sign-in as `google` derives a real hash from
+   not the PBKDF2 of anything: a sign-in as this name derives a real hash from
    whatever was typed, compares it against this, and is told "wrong username
    or password" like any other miss. Nobody can sign in as it, and that is
-   the point — the lists are written by this file and by nothing else. */
+   the point — the lists are written by this file and by nothing else.
+
+   `about` is the line its profile draws under the name, and it is the one
+   place a reader standing on /u/google-statistics is told where the order
+   came from. Generated like everything else here, so it tracks PRIOR and
+   FLOOR rather than being a sentence somebody typed once. */
 const USER = {
-  id: 'google',
-  username: 'google',
+  id: 'google-statistics',
+  username: 'google-statistics',
   pw_hash: '0'.repeat(64),
   pw_salt: '6f6f676c65206c69737473206e6f2070',
-  pw_iter: 10000
+  pw_iter: 10000,
+  about:
+    'Five top tens out of Google\u2019s own ratings for Tallinn, weighed by how ' +
+    'many people gave them. Rebuilt whenever the export refreshes. Google\u2019s ' +
+    'numbers, not this map\u2019s verdict.'
 };
 
 /* Milliseconds, evaluated by SQLite when the file runs, so the file carries no
@@ -240,10 +255,18 @@ export function build() {
   const roll = places();
   const out = [];
 
+  /* The name and the line are this file's to keep current; the credentials
+     are written once and never again. A rename here should move the account
+     on a database that already holds it rather than leave it answering to
+     what it used to be called, and the profile line tracks the constants
+     above it. Nothing touches created_at: the account turned up when it
+     turned up. */
   out.push(
-    'INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at)\n' +
-    `VALUES (${q(USER.id)}, ${q(USER.username)}, ${q(USER.pw_hash)}, ${q(USER.pw_salt)}, ${USER.pw_iter}, ${NOW}, ${NOW})\n` +
-    'ON CONFLICT(id) DO NOTHING;'
+    'INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at, about)\n' +
+    `VALUES (${q(USER.id)}, ${q(USER.username)}, ${q(USER.pw_hash)}, ${q(USER.pw_salt)}, ${USER.pw_iter}, ${NOW}, ${NOW}, ${q(USER.about)})\n` +
+    'ON CONFLICT(id) DO UPDATE SET\n' +
+    '    username = excluded.username,\n' +
+    '    about = excluded.about;'
   );
 
   const ranked = LISTS.map((list) => ({ ...list, ...rank(list, roll) }));
@@ -252,6 +275,12 @@ export function build() {
     'INSERT INTO lists (id, owner, title, intro, public, created_at, updated_at)\nVALUES\n' +
     ranked.map((list) => `  (${q(list.id)}, ${q(USER.id)}, ${q(list.title)}, ${q(INTRO)}, 1, ${NOW}, ${NOW})`).join(',\n') + '\n' +
     'ON CONFLICT(id) DO UPDATE SET\n' +
+    /* owner among them, so renaming the account in this file actually moves
+       its lists on a database that already holds them. Without it a rename
+       writes a new user row and leaves all five lists filed under the name
+       before it, which is an account with no lists beside an orphan with
+       five and nothing to say which is current. */
+    '    owner = excluded.owner,\n' +
     '    title = excluded.title,\n' +
     '    intro = excluded.intro,\n' +
     '    updated_at = excluded.updated_at;'
