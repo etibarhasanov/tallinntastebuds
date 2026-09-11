@@ -3871,14 +3871,31 @@ something its author wrote and can rewrite, the way a list's title and intro
 are, and those ask for a session and nothing more. Asking for a password to
 edit a sentence teaches people to type it into a box that did not need it.
 
-The column is `users.about`, and it arrived on both deployed databases by
-hand, as `ALTER TABLE users ADD COLUMN about TEXT NOT NULL DEFAULT ''`.
-`db/schema.sql` lists it last because that is where SQLite put it, which is
-what keeps that file readable against the real table. It is read on
-`/api/profile` and once more on `GET /api/account`, on the id already in
-hand, so that the box on the account page opens with what is in it —
+The column is `users.about`, and it reaches a database by hand like every
+other schema change here:
+
+```
+ALTER TABLE users ADD COLUMN about TEXT NOT NULL DEFAULT '';
+```
+
+`db/schema.sql` lists it last because that is where SQLite puts an added
+column, which is what keeps that file readable against the real table. It is
+read on `/api/profile` and once more on `GET /api/account`, on the id already
+in hand, so the box on the account page opens with what is in it —
 `sessionUser()` does not carry it, because every signed-in request on this
 site goes through that function and not one of the others prints this.
+
+**Both of those reads are guarded, and that is the one thing about this
+feature worth copying.** A schema change applied by a person and code deployed
+by a push cannot be made simultaneous, so there is always a window where the
+site asks for a column that is not there yet. Everywhere else that window is
+survived by the feature simply not being reachable; here it would have been
+survived by nothing, because the account page and every profile would answer
+500 and take somebody's saves, lists and byline down with a line of
+autobiography nearly nobody has written. So the account page catches it and
+draws no box, and `readProfile()` falls back to the same query without the one
+optional field. Run the `ALTER` and the line starts saving; until then the
+pages are exactly what they were before this existed.
 
 ### Private lists are not on it, including for its owner
 

@@ -204,16 +204,29 @@ export async function onRequestGet(context) {
   /* Read here rather than added to sessionUser(), which every signed-in
      request on this site goes through — saves, lists and splitwise included,
      and not one of them prints this. One indexed read on the id already in
-     hand, on the one page that draws the box it fills. */
-  const row = await env.DB
-    .prepare('SELECT about FROM users WHERE id = ?')
-    .bind(user.id)
-    .first();
+     hand, on the one page that draws the box it fills.
+
+     Guarded, because `about` is a column that arrives by hand: db/schema.sql
+     is applied by a person and a deployment can reach the site before they
+     have run it. A line somebody wrote about themselves is the smallest thing
+     on this page and it must not be able to take the page down — without this
+     catch, an account page on a database that predates the column answers 500
+     and somebody's saves and lists go with it. Same bargain _lists.js takes
+     over an unreadable catalogue: the missing piece costs itself and nothing
+     around it. */
+  let about;
+  try {
+    const row = await env.DB
+      .prepare('SELECT about FROM users WHERE id = ?')
+      .bind(user.id)
+      .first();
+    about = (row && row.about) || undefined;
+  } catch (e) { /* no column yet: no line, and the rest of the page stands */ }
 
   return json({
     ready: true,
     user: user.username,
-    about: (row && row.about) || undefined,
+    about: about,
     saved: await savedByUser(env, user.id)
   }, 200);
 }

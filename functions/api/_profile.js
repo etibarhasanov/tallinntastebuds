@@ -70,10 +70,24 @@ export async function readProfile(context, name) {
   const who = String(name || '').trim().toLowerCase();
   if (!USERNAME.test(who)) return null;
 
-  const row = await env.DB
-    .prepare('SELECT id, username, created_at, about FROM users WHERE username = ? COLLATE NOCASE')
-    .bind(who)
-    .first();
+  /* `about` is a column applied by hand — see db/schema.sql — so a deployment
+     can reach the site before somebody has run the ALTER. Asking for it is
+     worth one failed statement and no round trips in the ordinary case, and
+     the fallback is the same read without the one optional field: a profile
+     is a page about somebody's lists, and it must not 404 because the line
+     under their name has nowhere to live yet. */
+  let row;
+  try {
+    row = await env.DB
+      .prepare('SELECT id, username, created_at, about FROM users WHERE username = ? COLLATE NOCASE')
+      .bind(who)
+      .first();
+  } catch (e) {
+    row = await env.DB
+      .prepare('SELECT id, username, created_at FROM users WHERE username = ? COLLATE NOCASE')
+      .bind(who)
+      .first();
+  }
   if (!row) return null;
 
   /* Their public lists, newest edit first — the same row the index draws for
