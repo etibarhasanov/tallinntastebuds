@@ -5704,10 +5704,25 @@ until you turn it off.
 It cannot be the same element on both pages, so it is the same station and the
 same on or off. `assets/radio.js` holds all three — the station list, the
 `<audio>` and the switch — and writes on or off to `sessionStorage` under
-`ttb.radio`. Every page that mounts the button reads that, and one that finds
-the radio on rejoins the stream where it now is. A live stream has no position
-to resume from, so there is nothing else to carry across; the couple of
-hundred milliseconds it takes to reconnect is the whole of the seam.
+`ttb.radio`, and the station that was playing under `ttb.radio.station`. The
+next page rejoins that stream where it now is. A live stream has no position
+to resume from, so there is nothing else to carry across.
+
+It rejoins the moment `radio.js` runs, before the page has fetched anything
+of its own. Every page mounts the button only once its data is in — the
+account page after `ui.json`, the catalogue and two answers from the
+database, the map after the whole catalogue — and for a while the radio
+waited on all of that too, so the silence between two pages was the second
+page's whole boot, a second or more on a phone, rather than the reconnect it
+was meant to be. The station is the only thing the rejoin needs and the last
+page wrote it down. The button catches up when the page mounts it, and if
+the page turns out to be reading in a language with a station of its own —
+somebody who changed language on the way, by `?lang=` — the station changes
+under it then, as a language switch does. What is left of the seam is the
+navigation and the stream connecting, and neither is the script's to
+shorten: a page is a document, and a document that goes takes its `<audio>`
+with it. A radio with no seam at all would mean one document for the whole
+site, which is not the shape this site is.
 
 `sessionStorage` and not `localStorage`, deliberately. The tab that was playing
 keeps playing, and a visit tomorrow opens silent — the same judgement as the
