@@ -27,11 +27,24 @@
  * what a radio is: it plays until you turn it off.
  *
  * It cannot be the same element across the two, so it is the same *station
- * and the same intent*: on or off is written to sessionStorage, every page
- * that mounts the button reads it, and one that finds the radio on joins the
- * stream where it now is. A live stream has no position to resume from, so
- * there is nothing else to carry — the couple of hundred milliseconds it
- * takes to reconnect is the whole of the seam.
+ * and the same intent*: on or off, and the station that was playing, are
+ * written to sessionStorage, and the next page rejoins the stream where it
+ * now is. A live stream has no position to resume from, so there is nothing
+ * else to carry.
+ *
+ * It rejoins the moment this file runs, not when the page gets round to
+ * mounting the button. Every page mounts it after its own data is in — the
+ * account page after ui.json, the catalogue and two answers from the
+ * database, the map after the whole catalogue — and for a while the radio
+ * waited on all of that too, so the silence between two pages was the
+ * second page's whole boot rather than the reconnect. The station is the
+ * only thing the rejoin needs, and the last page wrote it down; the button
+ * catches up when the page mounts it, and if the page turns out to be
+ * reading in a language with a station of its own, the station changes
+ * under it then, the way a language switch changes it. What is left of the
+ * seam is the navigation itself and the stream connecting, and neither is
+ * this file's to shorten: a page is a document, and a document that goes
+ * takes its <audio> with it.
  *
  * sessionStorage and not localStorage, deliberately. The tab that was playing
  * keeps playing; a visit tomorrow opens silent. Autoplay is blocked in every
@@ -70,10 +83,18 @@ window.TTBRadio = (function () {
      "data/radio.json" would ask for /list/data/radio.json and 404. */
   var SOURCE = '/data/radio.json';
   var KEY = 'ttb.radio';
+  var STATION_KEY = 'ttb.radio.station';
 
   var stations = null;      // data/radio.json, once it has arrived
   var audio = null;
   var armed = false;        // whether a gesture is being waited for
+
+  /* The URL attached to the element and meant to be playing, or '' once it
+     has been taken off or the browser has paused it from outside. What
+     tune() reads to leave a stream alone that is already the one asked for:
+     the rejoin that ran as this file loaded, and the page's own start() a
+     second later, are one stream, not two. */
+  var current = '';
 
   /* Is the radio on? Not "is sound coming out" — see the head of this file:
      between arriving on a page and the browser letting the stream start, the
@@ -98,6 +119,20 @@ window.TTBRadio = (function () {
     try { window.sessionStorage.setItem(KEY, wanted ? 'on' : 'off'); } catch (e) { /* private mode */ }
   }
 
+  /* The URL that was playing, for the next page to rejoin before it has read
+     anything. Only the URL: the button takes the name from radio.json when
+     the page mounts it, the same as after a press. */
+  function readStation() {
+    try {
+      var url = window.sessionStorage.getItem(STATION_KEY);
+      return url ? { url: url } : null;
+    } catch (e) { return null; }
+  }
+
+  function writeStation(station) {
+    try { window.sessionStorage.setItem(STATION_KEY, station.url); } catch (e) { /* private mode */ }
+  }
+
   /* One station per language where there is one, and the default everywhere
      else. A visitor reading the map in Russian gets Наше Радио rather than a
      station they cannot follow, and nobody gets silence for want of an entry. */
@@ -108,6 +143,7 @@ window.TTBRadio = (function () {
   }
 
   function paint() {
+    if (!btn) return;
     var station = stationFor(lang);
     if (!station || !station.url) { btn.hidden = true; return; }
     btn.hidden = false;
@@ -119,6 +155,7 @@ window.TTBRadio = (function () {
   }
 
   function halt() {
+    current = '';
     if (audio) { audio.pause(); audio.removeAttribute('src'); audio.load(); }
   }
 
@@ -161,14 +198,18 @@ window.TTBRadio = (function () {
      visitor has already turned the radio off — detaching the source raises
      an error event of its own — and a toast about a stream nobody is waiting
      for any more is a toast about nothing. So a radio that is already off
-     says nothing and stays off. */
+     says nothing and stays off.
+
+     Before the page has mounted the button there is nobody to tell and
+     nothing to paint: the switch goes off, and the page finds it off when it
+     mounts. */
   function fail() {
     if (!wanted) return;
     halt();
     wanted = false;
     writeWanted();
     paint();
-    told('fail');
+    if (told) told('fail');
   }
 
   /* Paused by something that is not a press: a phone call, the lock screen,
@@ -180,7 +221,7 @@ window.TTBRadio = (function () {
      `paused` is what tells these apart from the pauses this file causes. A
      press to stop turns the switch off before it pauses anything, so `wanted`
      is already false when the event comes round. Re-attaching the stream in
-     start() pauses the element for as long as it takes to set the new source,
+     tune() pauses the element for as long as it takes to set the new source,
      and the play() right after has it going again before the event is
      delivered, so `paused` is false by then. And a stream that runs out
      pauses itself on the way to `ended`, with `ended` already true when the
@@ -191,6 +232,7 @@ window.TTBRadio = (function () {
      failed, and this is neither: nothing to close, nothing to count. */
   function interrupted() {
     if (!wanted || !audio.paused || audio.ended) return;
+    current = '';
     wanted = false;
     writeWanted();
     paint();
@@ -206,9 +248,19 @@ window.TTBRadio = (function () {
     paint();
   }
 
+  /* The page's station, once it has said which language it reads in. */
   function start() {
     var station = stationFor(lang);
-    if (!station || !station.url) return;
+    if (station && station.url) tune(station);
+  }
+
+  /* Join a station live. One that is attached and meant to be playing is
+     left alone — see `current` — so a second call for the same station is
+     not a second connection. */
+  function tune(station) {
+    if (station.url === current) return;
+    current = station.url;
+    writeStation(station);
 
     if (!audio) {
       audio = document.createElement('audio');
@@ -240,9 +292,11 @@ window.TTBRadio = (function () {
 
            NotAllowedError is the browser refusing a sound nobody had asked
            for on this page yet, and the only one worth waiting on: somebody
-           asked on the last page. */
+           asked on the last page. The station comes off `current` so that
+           the gesture's start() attaches it again rather than finding it
+           already there and leaving it, refused, where it is. */
         if (err && err.name === 'AbortError') return;
-        if (err && err.name === 'NotAllowedError') waitForGesture();
+        if (err && err.name === 'NotAllowedError') { current = ''; waitForGesture(); }
         else fail();
       });
     }
@@ -273,6 +327,17 @@ window.TTBRadio = (function () {
     .catch(function () { return null; })
     .then(function (loaded) { stations = loaded; });
 
+  /* Where the radio comes back after a navigation: as this file runs, from
+     the station the last page wrote down, before this page has fetched a
+     thing of its own. See the head of this file. A tab from before the
+     station was written down has the switch and no station, and waits for
+     the page to mount the button as it always did. */
+  wanted = readWanted();
+  if (wanted) {
+    var last = readStation();
+    if (last) tune(last);
+  }
+
   /* The page hands over its button, the words to put on it and somewhere to
      send the news; this takes over from there, the press included.
 
@@ -288,14 +353,15 @@ window.TTBRadio = (function () {
     lang = opts.lang;
     say = opts.t;
     told = opts.onchange;
-    wanted = readWanted();
 
     btn.addEventListener('click', toggle);
 
     loading.then(function () {
       paint();
-      /* Where the radio comes back after a navigation. Nothing else happens
-         here: the button was already showing as on, because it is. */
+      /* The button catching up with a radio that is already on. Where the
+         rejoin above found the page's own station this does nothing; where
+         it found none, or the page reads in a language with a station of
+         its own, this is where the right one starts. */
       if (wanted) start();
     });
   }
