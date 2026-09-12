@@ -5569,7 +5569,12 @@ language:
 A language with no entry of its own falls back to `default`, so nobody gets
 silence for want of a line. Switching language while the radio is playing
 switches the station under it rather than leaving the old one running behind a
-button naming the new one.
+button naming the new one. Switching a moment after pressing play, while a
+live stream is still connecting, is the same switch: the `play()` the new
+station interrupts rejects with an `AbortError`, and that rejection is the
+script's own doing rather than the stream's, so it is ignored. For a while it
+was read as the stream failing, and the switch turned the radio off with a
+toast saying it would not start, over a station that had.
 
 Delete the file, or empty it, and the button never appears at all.
 
@@ -5715,6 +5720,16 @@ and Firefox usually have not. A refusal here is not a failure — somebody did
 press play, one page ago — so nothing is reset and nothing is said. The button
 stays on and the stream starts on the first tap or keypress anywhere on the
 new page, which in practice is the tap that opens the list they came for.
+
+It is the end of that tap that does it. A finger going down is not a gesture
+to a browser — the events that count are a key going down, a mouse button
+going down, and a pointer or a touch coming *up* — and for a while the script
+listened for the finger going down. Chrome counts that as well, so the radio
+came back on Android and on every desktop; a browser that holds to the list,
+Safari on an iPhone among them, refused that `play()` as it had refused the
+one on arrival, and the radio stayed silent behind a button that said it was
+on until it was pressed off and on again. It listens for the pointer coming
+up now.
 
 The lists page and the account page wear the same button in their headers:
 the map's pill, the map's station name, the same press to stop. It is the

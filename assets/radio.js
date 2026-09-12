@@ -46,7 +46,8 @@
  * Chrome usually has by then; Safari and Firefox usually have not. A refusal
  * is not a failure here — the visitor did press play, one page ago — so the
  * button stays on, and the stream is started by the first tap or keypress
- * anywhere on the new page. See waitForGesture().
+ * anywhere on the new page. See waitForGesture(), and its note on which
+ * half of a tap the browser counts.
  *
  * AND THE BUTTON FOLLOWS THE ELEMENT, NOT ONLY THE OTHER WAY ROUND
  *
@@ -126,6 +127,18 @@ window.TTBRadio = (function () {
      browser has already been told about, so it starts on that gesture rather
      than on a second press of a button that is already showing as on.
 
+     The end of the tap, not the start of it. A finger going down is not a
+     gesture to the browser: the events that count as one are keydown,
+     mousedown, pointerup and touchend, and pointerdown only when it comes
+     from a mouse. This listened for pointerdown, and a browser that holds to
+     that list — Safari on an iPhone is the one that matters — refused the
+     play() from it exactly as it had refused the one on arrival, which armed
+     this again for the next tap, which failed the same way. So on a phone
+     the radio never came back after a walk to another page, though the
+     button said it was on, and the only way out was to press it off and on.
+     Chrome counts the finger going down as well, which is why it looked
+     fine on Android and on every desktop.
+
      Capture, so a handler that stops the event on its way down does not also
      stop the radio, and one-shot on both listeners together — whichever fires
      first takes the other one with it. */
@@ -133,22 +146,22 @@ window.TTBRadio = (function () {
     if (armed) return;
     armed = true;
     var go = function () {
-      document.removeEventListener('pointerdown', go, true);
+      document.removeEventListener('pointerup', go, true);
       document.removeEventListener('keydown', go, true);
       armed = false;
       if (wanted) start();
     };
-    document.addEventListener('pointerdown', go, true);
+    document.addEventListener('pointerup', go, true);
     document.addEventListener('keydown', go, true);
   }
 
-  /* A stream that would not start, or that has stopped: an error, the play()
-     that was refused, or a live stream ending, which is its server hanging
-     up. Every way in here can arrive after the visitor has already turned the
-     radio off — the play() that the stop itself interrupted rejects like any
-     other, and detaching the source raises an error event of its own — and a
-     toast about a stream nobody is waiting for any more is a toast about
-     nothing. So a radio that is already off says nothing and stays off. */
+  /* A stream that would not start, or that has stopped: an error, a play()
+     that was refused for any reason but the gesture, or a live stream ending,
+     which is its server hanging up. Every way in here can arrive after the
+     visitor has already turned the radio off — detaching the source raises
+     an error event of its own — and a toast about a stream nobody is waiting
+     for any more is a toast about nothing. So a radio that is already off
+     says nothing and stays off. */
   function fail() {
     if (!wanted) return;
     halt();
@@ -211,9 +224,24 @@ window.TTBRadio = (function () {
     var started = audio.play();
     if (started && started.catch) {
       started.catch(function (err) {
-        /* The one rejection that is not the stream's fault, and the only one
-           worth waiting on: the browser refused a sound nobody had asked for
-           on this page yet. Somebody asked on the last one. */
+        /* Two rejections are not the stream's fault.
+
+           AbortError is this file's own doing. A play() that has not settled
+           yet — a live stream takes a second or two to connect — is rejected
+           the moment the element's source is taken away from under it, and
+           the two things that do that are halt() and a second start(). After
+           halt() the switch is already off and fail() would ignore it. After
+           a second start() it is not: switching language a moment after
+           pressing play used to land here with the new station already
+           connecting, and fail() answered by tearing that one down, turning
+           the switch off and toasting that the stream would not start. It
+           had started. Nothing is left to do — whichever start() came last
+           is the one playing, and if it is not, its own promise says so.
+
+           NotAllowedError is the browser refusing a sound nobody had asked
+           for on this page yet, and the only one worth waiting on: somebody
+           asked on the last page. */
+        if (err && err.name === 'AbortError') return;
         if (err && err.name === 'NotAllowedError') waitForGesture();
         else fail();
       });
