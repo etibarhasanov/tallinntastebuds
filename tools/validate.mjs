@@ -32,8 +32,9 @@
  *   - a reel value that is not a real Instagram or TikTok permalink shape
  *   - a phone number that is not in international form, such as +372 661 0180
  *   - a deal in deals.json for a place that does not exist, sharing a key with
- *     another deal, switched live with nothing written in it, or carrying a
- *     name that restaurants.json disagrees with
+ *     another deal, switched live with nothing written in it, carrying a
+ *     name that restaurants.json disagrees with, or rolling a run of rates
+ *     that leaves 1–99 or has nowhere in the offer line to put the one drawn
  *   - a story in stories.json with neither a start nor an end time, an end
  *     before its start, no video or photo (or both), a file that is not in
  *     the repo, a video too big for Cloudflare Pages to serve, or a link to a
@@ -548,10 +549,21 @@ if (places !== null) {
 
    The keys are not secrets. They ship in a public file on a static site and
    anyone can read them; the hourly rotation is what does the work. See the
-   README before treating one as though it were private. */
+   README before treating one as though it were private.
 
-const DEAL_KEYS = new Set(['id', 'name', 'live', 'key', 'offer', 'terms', 'from', 'until']);
+   A deal may carry a roll — { base, spread, step } — instead of one rate,
+   and then its offer line writes {rate} where the number goes: the pass
+   pages fill in the rate that was drawn and the map the run it could be.
+   The three numbers are held to a run that stays inside 1–99 and to a
+   spread that is a whole number of steps, so the code that walks the run
+   never has to think about either; the staff page lists one code per rate,
+   which is why a long run is warned about. */
+
+const DEAL_KEYS = new Set(['id', 'name', 'live', 'key', 'offer', 'terms', 'from', 'until', 'roll']);
 const DEAL_KEY_CHARS = /^[0-9A-HJKMNP-TV-Z]{16,64}$/;
+const ROLL_KEYS = ['base', 'spread', 'step'];
+const ROLL_MAX_RATES = 12;
+const RATE_SLOT = '{rate}';
 const DAY = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
 
 const dealsPath = join(DATA, 'deals.json');
@@ -613,6 +625,42 @@ if (deals !== null && !Array.isArray(deals)) {
       for (const lang of Object.keys(deal[field])) {
         if (!languages.includes(lang)) fail(where, `"${field}" has unknown language "${lang}"`);
         else if (!isNonEmptyString(deal[field][lang])) fail(where, `"${field}.${lang}" is empty`);
+      }
+    }
+
+    const rolled = deal.roll !== undefined;
+    if (rolled) {
+      const roll = deal.roll;
+      if (!isPlainObject(roll)) {
+        fail(where, '"roll" must be an object like { "base": 15, "spread": 10, "step": 5 }');
+      } else {
+        for (const key of Object.keys(roll)) {
+          if (!ROLL_KEYS.includes(key)) warn(where, `unknown key "roll.${key}"`);
+        }
+        const whole = ROLL_KEYS.every((key) => Number.isInteger(roll[key]));
+        if (!whole) {
+          fail(where, '"roll" needs whole numbers for "base", "spread" and "step"');
+        } else if (roll.step < 1 || roll.spread < roll.step || roll.spread % roll.step !== 0) {
+          /* A spread smaller than the step is a fixed rate wearing a roll, and
+             one that is not a whole number of steps would land the top and
+             bottom of the run off the step everything else is on. */
+          fail(where, '"roll.spread" must be a whole number of "roll.step"s, and at least one');
+        } else if (roll.base - roll.spread < 1 || roll.base + roll.spread > 99) {
+          fail(where, `"roll" runs from ${roll.base - roll.spread}% to ${roll.base + roll.spread}% — every rate has to be between 1 and 99`);
+        } else if (roll.spread / roll.step * 2 + 1 > ROLL_MAX_RATES) {
+          warn(where, `"roll" has ${roll.spread / roll.step * 2 + 1} rates, and the counter's screen lists a code for each of them`);
+        }
+      }
+    }
+
+    /* The number in the offer line is the rate, so a rolled deal's line has
+       to leave room for whichever one is drawn, and a fixed deal's must not
+       print a placeholder nothing will fill. */
+    if (isPlainObject(deal.offer)) {
+      for (const lang of Object.keys(deal.offer)) {
+        const has = typeof deal.offer[lang] === 'string' && deal.offer[lang].includes(RATE_SLOT);
+        if (rolled && !has) fail(where, `"offer.${lang}" needs ${RATE_SLOT} where the drawn rate goes, since this deal has a roll`);
+        if (!rolled && has) fail(where, `"offer.${lang}" writes ${RATE_SLOT}, which only a deal with a "roll" fills in`);
       }
     }
 

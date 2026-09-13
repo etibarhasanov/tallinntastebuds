@@ -14,16 +14,45 @@ in the header of `assets/pass.js` says why that trade is the right one: what
 an hourly code defends against is a screenshot going round a group chat, and
 it does that completely.
 
+**Every discount is for members.** `functions/api/pass.js` answers
+`GET /api/pass?r=<id>` with `401` where there is no session, and
+`assets/pass.js` turns that into a sign-in card instead of a code — for a
+fixed deal as much as a drawn one. The map's button reads **Sign in to use
+it** and opens the sheet with `?then=` back to the pass. The offer, the pill
+and the chip stay visible to everybody: it is the code that needs the
+account, not the advertisement. **A DISCOUNT IS FOR MEMBERS** in the header
+of `assets/pass.js`, the header of `functions/api/pass.js`, and **It is for
+members** in the README. A change to the Function is also the **api**
+process.
+
+A deal can also carry a **roll** — `{ "base", "spread", "step" }` — and then
+it has a run of rates rather than one, and each account is dealt one for the
+hour: the same request that opens the door carries the number, an HMAC under
+`SAVE_SALT` over the account, the place and the hour, which `assets/pass.js`
+counts up the run. The rate rides in the code's message and in the QR as
+`p`, the staff page lists a code per rate, and the offer line writes
+`{rate}` where the number goes. **HOW A RATE IS DRAWN** in the header of
+`assets/pass.js` is the mechanism and **A rate that is drawn** in the README
+is the reasoning.
+
+**The admin page sets these too.** The **Discount** tab on `/admin.html`
+switches a deal on or off, sets one rate or a roll, and commits
+`data/deals.json` straight to the publishing branch — **Setting a discount**
+under **The admin page** in the README. It writes the same file this skill
+edits by hand, and checks the same things the validator does; what it cannot
+do is write a new offer line (it borrows ten from an existing deal and
+changes the number), give a deal small print or dates, or remove an entry.
+Those stay this process.
+
 Switching a deal touches one file, `data/deals.json`, and no generator: the
 stamper only rewrites references to `assets/*.js|css`, and `data/*` is served
 `must-revalidate`, so the change is live on the next load after the deploy.
 
 ## Read first
 
-- `README.md` → **Restaurant discounts**, end to end. Two lines in it are
-  behind the code: the button on the panel says **Show QR** (`passGet` in
-  `data/ui.json`), not "Get the discount", and the preview band is drawn on
-  all three pass pages, `staff.html` included.
+- `README.md` → **Restaurant discounts**, end to end. One line in it is
+  behind the code: the preview band is drawn on all three pass pages,
+  `staff.html` included, not two.
 - The header of `assets/pass.js`, which is the whole mechanism in one file.
 
 ## The entry
@@ -41,6 +70,11 @@ stamper only rewrites references to `assets/*.js|css`, and `data/*` is served
 }
 ```
 
+A rolled deal differs in two lines: `"roll": { "base": 15, "spread": 10,
+"step": 5 }` — 5, 10, 15, 20 or 25 percent — and every `offer` line written
+with the placeholder, `"{rate}% off your order"`, `"Siparişinizde %{rate}
+indirim"`.
+
 What `tools/validate.mjs` holds each field to (the `deals.json` block:
 `DEAL_KEYS` and the checks that follow it):
 
@@ -52,6 +86,9 @@ What `tools/validate.mjs` holds each field to (the `deals.json` block:
 | `key` | `^[0-9A-HJKMNP-TV-Z]{16,64}$` — digits and capitals without `I L O U` — and **shared with no other deal**: two places on one key verify each other's codes | error |
 | `offer`, `terms` | objects keyed by language code; only codes `ui.json` knows; no empty strings | error |
 | `from`, `until` | `YYYY-MM-DD`, `from` not after `until`; both optional and inclusive | error |
+| `roll` | optional; `base`, `spread` and `step` whole numbers, `spread` a whole number of `step`s and at least one, the run `base ± spread` inside 1–99 | error |
+| `roll` | more than twelve rates — `staff.html` lists a code for each | warning |
+| `offer` | every language carries `{rate}` when the deal has a `roll`, and none does when it has not | error |
 | a live deal | must carry `offer.en` | error |
 | a live deal | should carry `offer` in all ten languages | warning |
 | a live deal | `until` in the past | warning |
@@ -74,12 +111,20 @@ many are switched on.
    The validator checks the alphabet, the length and uniqueness, and nothing
    about how the key was made, so a key typed by hand passes and is weak.
 3. **Leave `live: false`** and `node tools/validate.mjs`.
-4. **Test it dormant, on a local server.** `python3 -m http.server 8000`, then:
-   - `http://localhost:8000/deal.html?r=<id>` — the offer, the QR, the
+4. **Test it dormant, on a local server.** The guest page needs `/api/pass`
+   to answer before it draws anything, so it is `npx wrangler pages dev .`
+   against the preview database — the **api** skill's steps — or Playwright
+   with that route stubbed: `{ "draw": <number> }` for a member and `401` for
+   somebody signed out. A plain `python3 -m http.server 8000` is enough for
+   `staff.html`, the verify page and the map, and shows the guest page's
+   "not available" card, which is itself worth seeing once. Then:
+   - `.../deal.html?r=<id>` — signed in: the offer, the QR, the
      five-character code, the countdown with its beating dot, and a dashed
-     **Preview — this discount is not published yet** band. On `file://` the
-     page shows `passInsecure` instead, because `crypto.subtle` only exists in
-     a secure context; `localhost` counts.
+     **Preview — this discount is not published yet** band. Signed out: the
+     offer, `passSignIn`, and **Sign in to use it** pointing at
+     `/?account=in&then=…`. On `file://` the page shows `passInsecure`
+     instead, because `crypto.subtle` only exists in a secure context;
+     `localhost` counts.
    - `http://localhost:8000/staff.html?r=<id>` — this hour's code and the
      previous hour's, and "Changes at" the next hour.
    - The verify page by scanning the QR with a phone on the same network, or
@@ -92,6 +137,20 @@ many are switched on.
    Crockford characters, where `hour` is `floor(now / 3600000)` in UTC. The
    verifier accepts the hour before and the hour after (`SKEW = 1`), so a
    screenshot is worth two or three hours, not forever.
+
+   **A rolled deal, in addition:** signed out it says **Sign in to draw**
+   and `passRollSignIn` rather than the fixed deal's pair; signed in it runs
+   the number through the run for a second and lands on this account's rate,
+   and the line under the countdown says a new draw follows the hour. Reload
+   and it lands on the same number; another account draws its own. The QR
+   ends `&p=<rate>` and the code is
+   `HMAC-SHA256(key, "<id>:<hour>:<rate>")`; edit `p` to another rate in the
+   run and the verify page answers **Not valid**, to one outside it and it
+   answers that this is not a discount link. `staff.html` shows a row per
+   rate for this hour and for the previous one, and the guest's code is on
+   the row of their rate. Do all of that at 390 px and in both styles: the
+   rolled offer line is set a size up in the display face and the staff
+   list is the one thing on these pages that can run long.
 5. **`live: true`**, validate again — the live count goes up by one — and
    drive `index.html` on the same server: `liveDealFor()` in `assets/app.js`
    wants `live` **and** today inside `from`..`until` **and** the place not
@@ -99,8 +158,13 @@ many are switched on.
    When it is on, the place's list row and panel head carry a pill with the
    percentage parsed out of the offer text — **−15%**, or the word
    **Discount** for an offer with no number in it — and the **Discount** chip
-   appears first among the filters. `?type=discount` works as a link only
-   while some deal is live.
+   appears first among the filters. A rolled deal's pill is the run,
+   **−5–25%**, its offer line in the panel reads **5–25% off your order**,
+   and under that line signed in is `dealRollHint`, saying the rate is drawn
+   on the way in and holds for the hour, and signed out `dealRollMembers`
+   and a **Sign in to draw** button in place of **Show QR**, which opens the
+   sheet and lands on the pass afterwards. `?type=discount` works as a link
+   only while some deal is live.
 6. **The staff link** is `https://tallinntastebuds.ee/staff.html?r=<id>`. It
    is handed to the restaurant once and they bookmark it; put it in the
    commit body so it is on record. Nothing links to any of the three pages,
@@ -123,9 +187,20 @@ in the **CI runner's** in the validator, so at the edges of a day the two can
 disagree with Tallinn by a day. Give a campaign a day either side rather than
 ending it at midnight.
 
+## Changing a roll
+
+The three numbers are the admin's dial, changed from the **Discount** tab on
+`/admin.html` or in the file. Every draw is counted up the run when a page
+opens, so new numbers take effect on the next load — and change what an
+account drew earlier in the same hour, leaving a guest with a code the staff
+page no longer lists. Land the change between services, not during one.
+Keep `step` at 5 unless the restaurant wants finer: 1 turns five rates into
+twenty-one rows on the counter's screen, and the validator warns past twelve.
+
 ## The commit
 
 > Morii Tea House takes 15% off the order
+> Pudel draws you 5 to 25% off, once an hour
 
 The body says who the place is, what rate it joins and which deals already
 carry that line, that the key is fresh and shared with nothing, what was
@@ -156,3 +231,15 @@ driven in a browser, and the staff link.
   both spellings in the message.
 - Switching `live` on for a place that is closed, or whose `from` has not
   come: valid JSON, nothing on the map, and nobody can see why.
+- A `roll` added and the offer lines left saying "15%": the validator fails
+  on every language until each writes `{rate}` — and the other way round, a
+  `{rate}` left behind when a roll is taken off.
+- Testing a rolled deal from one account and concluding the draw is not
+  random: it is one rate per account per hour by design, and a private
+  window is the same account or none. Sign in as somebody else to be
+  somebody else.
+- Driving any deal on a plain `http.server` and concluding the pass page is
+  broken: there is no Function there to answer `/api/pass`, so every
+  discount shows the "not available" card. `wrangler pages dev`, or a stub.
+- Reading the account in front of a discount as what protects it. It is not
+  — the key is still in a public file. It decides who the offer is *for*.

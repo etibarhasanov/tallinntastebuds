@@ -1088,16 +1088,48 @@ whether the offer is switched on at all, lives in `data/deals.json` — a place
 with nothing in that file is exactly the place it was before any of this
 existed.
 
+### It is for members
+
+**Every discount needs an account now**, the fixed ones as well as the drawn
+ones. It was open to anybody who opened the map, and the offer was worth
+exactly as much to somebody passing through as to somebody who comes back.
+This is the one thing on this site an account is actually for: saving works
+signed out, lists work signed out, a discount does not. What it buys the
+restaurant is a person they can count rather than a browser, and what it buys
+the site is a reason to sign up that is not a wall in front of a bookmark.
+
+The gate is one request. `functions/api/pass.js` answers
+`GET /api/pass?r=<place-id>` with `401` where there is no session, and
+`assets/pass.js` turns that into the sign-in card rather than a code. The map
+does not have to ask — it already knows who is signed in — so the panel's
+button reads **Sign in to use it**, or **Sign in to draw** on a deal with a
+roll, and opens the sheet with the pass page as the place to come back to.
+Signing in lands on the pass, not back on the map.
+
+**The offer itself is not behind anything.** The pill on the row, the number
+in the panel head, the words under the write-up and the **Discount** chip are
+all drawn for everybody, because they are what somebody is deciding on and
+they are the advertisement. What takes an account is the code you hold up.
+
+**And it is a door, not a lock.** The keys still ship in `data/deals.json`,
+which is public, so a person who reads that file can mint a code without ever
+signing in — see [What this is not](#what-this-is-not), which has been true
+all along and is no less true now. The account is what the page asks for, and
+a human at the counter is what the offer has always ultimately rested on.
+
 ### How it works at the table
 
-1. A guest opens a place on the map and presses **Get the discount**.
+1. A guest opens a place on the map and presses **Show QR**, or **Sign in to
+   use it** where they are not signed in yet, which is the same door with a
+   sign-in in front of it.
 2. `deal.html` shows them a QR, the same code in large type, and a countdown.
    The countdown is in the accent colour with a dot beating beside it, twice
    the size of the small print around it — a picture of the page has frozen
    digits and a frozen dot, so a waiter can tell a live pass from a
    screenshot without checking anything.
 3. A waiter points their ordinary camera app at it — no app to install, no
-   account, no training.
+   account, no training. The account is the guest's end of this and only the
+   guest's: nobody behind a counter ever signs in to anything.
 4. `verify.html` opens on the waiter's phone and fills the screen green with
    **VALID**, or red with the reason it is not.
 
@@ -1115,6 +1147,10 @@ waiter takes six minutes to reach a table and neither phone has a perfect
 clock. A screenshot is therefore worth two or three hours, not forever, which
 is the whole point of the rotation.
 
+A deal with a **roll** signs `"<place-id>:<hour>:<rate>"` instead, the rate
+being the one this account drew for the hour — see
+[A rate that is drawn](#a-rate-that-is-drawn).
+
 ### The three addresses
 
 Replace `<place-id>` with the `id` from `restaurants.json` — the same slug
@@ -1122,7 +1158,7 @@ Replace `<place-id>` with the `id` from `restaurants.json` — the same slug
 
 | Who | Address | How they get there |
 | --- | --- | --- |
-| Guest | `/deal.html?r=<place-id>` | The **Get the discount** button on the place's panel |
+| Guest | `/deal.html?r=<place-id>` | The **Show QR** button on the place's panel. Signed in, or it offers the sheet |
 | Waiter | `/verify.html?r=…&h=…&c=…` | Scanning the guest's QR. Never typed by hand |
 | Counter | `/staff.html?r=<place-id>` | **You send this link to the restaurant once.** They bookmark it |
 
@@ -1162,7 +1198,9 @@ A place with a live deal says so in three places, in the order you meet them:
 The number is not written a second time in the data. It is taken from the
 `offer` line the deal already carries in the language being read, which is why
 Turkish shows **−%15** — the whole match travels, sign and all, rather than
-the digits. An offer with no percentage in it, a free coffee or a second
+the digits. A deal with a roll has a run in that line rather than a number,
+**5–25%**, and the run travels the same way: **−5–25%**, and **−%5–25** in
+Turkish. An offer with no percentage in it, a free coffee or a second
 pizza, falls back to the word the filter chip uses: **Discount**.
 
 The badge is drawn, so it is also spelled: the row's own `aria-label` ends
@@ -1190,6 +1228,86 @@ several, none of which are on screen, moves the map too — see
 `?type=discount` works as a link, and combines with the rest: `?type=discount,bakery`
 is either.
 
+### A rate that is drawn
+
+A deal can offer a rate it does not name. Give it a `roll` —
+
+```json
+"roll": { "base": 15, "spread": 10, "step": 5 }
+```
+
+— and instead of one rate it has a run of them, `base − spread` up to
+`base + spread` a `step` at a time: 5, 10, 15, 20 and 25 percent here. Each
+member who opens `deal.html` is dealt one of them for the hour. The guest
+watches the number run through the whole run for a second and land on theirs;
+reloading the page, or closing it and coming back, lands on the same number;
+and when the hour turns, the page draws again in front of them, and the same
+account may do better or worse. That is the whole game — one draw an hour,
+and the next hour is another go — and the line under the countdown says so:
+**Good until 15:00, then a new draw**.
+
+**The draw rides in on the same request as the door.** `/api/pass` hands back
+one number for the account the session names, and nothing else:
+
+```
+draw = HMAC-SHA256(SAVE_SALT, "draw|<user id>|<place-id>|<hour>")   first 32 bits
+rate = the run, counted up from the bottom, at draw modulo its length
+```
+
+`assets/pass.js` does the counting; the Function never learns the run and
+the page never learns the secret. The hour is the Function's own clock, so
+nobody can ask what the next hour holds, and nothing is stored: the same
+three inputs give the same answer all hour, which is the whole of "it holds
+for the hour", and no row was written to make it so.
+
+**Why it is not made in the browser.** A draw made there is either random,
+and re-made by a reload, or a hash of something the browser holds, and
+re-made by a private window — either way the game becomes "try again until
+you like it", which is not what the restaurant is offering. Against an
+account the only way round it is a second account, which costs what
+[How unique a save actually is](#how-unique-a-save-actually-is) says a save
+costs: enough. And where the Function cannot answer at all, the page says the
+discount is not available rather than showing a code — for a fixed deal as
+much as a drawn one, because one that appeared whenever that request was
+blocked would be for whoever worked out that blocking it was enough.
+
+**The rate travels in the code.** A rolled deal's code is
+`HMAC(key, "<place-id>:<hour>:<rate>")`, and the QR carries the rate beside
+it as `p`. So a code drawn for 10% does not verify as 25%: `verify.html`
+rebuilds the code around the rate the link names, treats a rate the run does
+not contain as not a discount link at all, and prints the one it checked.
+`staff.html` lists a code per rate — this hour's set and the previous hour's
+— so the counter reads the guest's five characters down the list and finds
+the rate beside them. The by-eye path knows the rate as surely as the scan
+does, which is the reason the rate is in the code rather than beside it.
+
+**The offer line writes `{rate}` where the number goes** —
+`"{rate}% off your order"`, in every language — and the validator refuses a
+rolled deal without it and a fixed deal with it. The pass pages fill in the
+rate that was drawn. The map, where nothing has been drawn yet, fills in the
+run: the panel reads **5–25% off your order** with a line under it saying the
+rate is drawn when you open it and holds for the hour, and the pill beside
+the price reads **−5–25%**.
+
+**What the admin sets** is the three numbers, and whether the deal is on,
+from the **Discount** tab on `/admin.html` — see
+[Setting a discount](#setting-a-discount) — or in `data/deals.json` by hand,
+which is the same file the tab writes. Either way the change is live within
+the minute, and the next draws are made from the new run. Do it between
+services rather than during one: the draw is counted up the run every time
+a page opens, so new numbers change what an account drew an hour ago, and a
+guest holding a code from the old run holds a code the staff page no longer
+lists. `step` is what keeps the run something a counter can read down: 5
+gives the five rates above, 1 would give twenty-one, and the validator warns
+past twelve.
+
+**What it is not.** The draw is honest and it is the site's; the code is
+still the browser's, made from a key that ships in a public file, and
+[What this is not](#what-this-is-not) applies to it unchanged. Anybody who
+reads the key out of `deals.json` can mint a code for 25% without drawing
+anything or signing in to anything, and a human at the counter is the control
+against that, as it always was.
+
 ### Switching one on
 
 Add an entry to `data/deals.json`:
@@ -1216,6 +1334,7 @@ Add an entry to `data/deals.json`:
 | `offer` | Translations, like `blurb`. A live deal must have `en` at minimum |
 | `terms` | Optional small print |
 | `from`, `until` | Optional, inclusive. Outside them the button disappears |
+| `roll` | Optional. `{ "base", "spread", "step" }`, a run of rates drawn per member per hour instead of one rate, with `{rate}` in every `offer` line — see [A rate that is drawn](#a-rate-that-is-drawn) |
 
 Generate a key with:
 
@@ -1225,8 +1344,9 @@ node -e "const A='0123456789ABCDEFGHJKMNPQRSTVWXYZ';console.log([...require('cry
 
 Then `node tools/validate.mjs`. It refuses a deal pointing at a place that does
 not exist, two deals sharing a key, a name that `restaurants.json` disagrees
-with, and anything switched `live` with no words in it. The summary line ends
-with a live-deal count, so CI tells you what is switched on.
+with, anything switched `live` with no words in it, and a `roll` whose run
+leaves 1–99 or whose `offer` has nowhere to put the rate. The summary line
+ends with a live-deal count, so CI tells you what is switched on.
 
 ### Why the name is written twice
 
@@ -1257,20 +1377,27 @@ counts as secure.
 
 ### What this is not
 
-There is no server here. **The deal keys ship inside `data/deals.json`, which
-is a public file on a public site, and anyone who opens it can mint codes all
-day.** That is a deliberate trade rather than an oversight: the thing an
-hourly code defends against is a screenshot going round a group chat, and it
-does that completely. What it cannot do is stop someone determined, or stop
-the same guest redeeming twice at two tables — a human seeing them is the only
-control there.
+There is no server behind the code. **The deal keys ship inside
+`data/deals.json`, which is a public file on a public site, and anyone who
+opens it can mint codes all day.** That is a deliberate trade rather than an
+oversight: the thing an hourly code defends against is a screenshot going
+round a group chat, and it does that completely. What it cannot do is stop
+someone determined, or stop the same guest redeeming twice at two tables — a
+human seeing them is the only control there.
+
+**The account in front of it does not change that**, and is not claimed to.
+[It is for members](#it-is-for-members) is a decision about who the offer is
+for, enforced on the page that shows it; somebody reading the key out of the
+file skips the page. The two answer different questions and neither is a
+substitute for the other.
 
 If a discount ever starts costing real money, the upgrade is small and this
-repo is already set up for it. Add `functions/api/verify.js`; Cloudflare Pages
-picks up a `functions/` directory on the deploy you already have. The key
-moves server-side, a KV write makes each code single-use, and only
-`assets/verify.js` changes — swap the local HMAC for a `fetch`. Roughly fifty
-lines, and the guest-facing half stays exactly as it is.
+repo is already set up for it: `functions/api/pass.js`, the first Function
+these pages have needed, is already the shape it takes. Add
+`functions/api/verify.js` beside it. The key moves server-side, a KV write
+makes each code single-use, and only `assets/verify.js` changes — swap the
+local HMAC for a `fetch`. Roughly fifty lines, and the guest-facing half
+stays exactly as it is.
 
 ---
 
@@ -4736,7 +4863,7 @@ is everybody: nothing about a story is cached beyond the page it is on.
 terminal. It is not linked from anywhere, carries `noindex` in the markup, in
 `robots.txt` and in `_headers`, and is served `no-store`.
 
-Behind it, two tabs, and they reach the repository by different roads.
+Behind it, four tabs, and they reach the repository by two different roads.
 
 **Post a story** commits straight to the branch the site publishes from. A
 story is a thing happening now, and one that waits for a review has missed the
@@ -4748,6 +4875,9 @@ permanent, it is the file the whole map is drawn from, and it has coordinates
 that can land on the wrong side of the street. So it waits to be read — and
 waits for the validator, which is the difference between seeing the verdict
 before it is live and after.
+
+**Discount** commits straight, the way a story does — see
+[Setting a discount](#setting-a-discount) for why.
 
 ### Setting up a device
 
@@ -4874,6 +5004,54 @@ file from the repository as well, since nothing else points at it. New ones are
 numbered **past the highest that has ever been there**, never into a gap a
 removal just made: `/photos/*` is cached for a week, so a reused filename would
 serve last month's picture to anybody who had already seen the old one.
+
+### Setting a discount
+
+The **Discount** tab is where the three numbers of a drawn rate are chosen,
+and where a discount is switched on, off, or changed. Pick a place — the ones
+with a discount come first, saying whether each is on and what it pays, then
+every other open place — and the form is the whole of what a deal can be
+asked about here:
+
+- **Switched on.** Off keeps the pass pages working by their address, behind
+  the preview band, and takes the pill, the chip and the button off the map.
+  Leave it off until the restaurant has agreed.
+- **One rate**, and the number; or **a rate drawn each hour**, and the base,
+  the spread and the step. The run those make is printed under the fields as
+  you type — *5 rates: 5, 10, 15, 20, 25* — and so is the sentence the map
+  will read. Either kind is for members, which is not a choice on this form
+  and not a property of a deal: see [It is for members](#it-is-for-members).
+
+**Publish** commits `data/deals.json` straight to the publishing branch, the
+road a story takes rather than the one a place takes, because a discount is
+changed at a counter's request on the afternoon it is asked for, and a pull
+request nobody is at a laptop to merge would leave the old rate running
+through the evening. Undoing a change is making the next one; git keeps every
+version, and the commit subject says what the place now does — *Pudel draws
+you 5 to 25% off, once an hour*.
+
+Everything `tools/validate.mjs` would fail the build over is checked before
+the commit exists, in the same words: whole numbers, a spread that is a whole
+number of steps, a run that stays inside 1–99, a rate between 1 and 99.
+
+**What it changes in the offer lines is the number, and nothing else.** Every
+deal says its rate once per language — *15% off your order*, *Siparişinizde
+%15 indirim* — and the form replaces that number, or the `{rate}` a rolled
+deal leaves in its place, in all ten. A new deal borrows its ten lines from a
+deal already in the file, with the number changed, gets a fresh key made the
+way the README's one-liner makes one, and takes its name from the map. What
+the form does not ask about — the key, the small print, the dates — is left
+exactly as it is.
+
+Two things stay a file edit: an offer with no number in it, a free coffee or
+a second pizza, which the form refuses rather than guess where a rate goes in
+Armenian; and removing an entry altogether, which is for a deal that will
+not come back. The first deal in an empty file is a file edit too, since
+there is nothing yet to borrow the lines from.
+
+After publishing, the form prints the guest page's address and the staff
+link. For a new deal the staff link is the one thing that happens by hand:
+send it to the restaurant once, and they bookmark it.
 
 ### What it does to a photograph
 
@@ -5227,6 +5405,10 @@ to read and write first.
   `name` is not what `restaurants.json` calls the place, whose key is shared
   with another deal or off the code alphabet, or a live one with no
   `offer.en` — see **Restaurant discounts**
+- a deal whose `roll` is not three whole numbers, whose run leaves 1–99 or
+  whose `spread` is not a whole number of `step`s, whose `offer` lacks
+  `{rate}` in some language — or a deal with no `roll` whose `offer` writes
+  `{rate}` for nothing to fill in. See **A rate that is drawn**
 - `wrangler.toml` pointing the preview deployments and the live site at the
   same database, or an environment block with no database or no
   `ENVIRONMENT` of its own — see **Two databases, and never one**
@@ -5260,6 +5442,8 @@ to read and write first.
   anything
 - a live deal with no `offer` in some language, or one whose `until` has
   passed
+- a `roll` with more than twelve rates, since the counter's screen lists a
+  code for each of them
 - an unknown key on a deal or a story, the same way as on a place
 
 ---
@@ -5342,7 +5526,9 @@ wrangler.toml              the D1 bindings, one per environment (secrets are NOT
 deal.html                  the guest's discount pass          } all three are
 verify.html                what a waiter sees after scanning  } unlinked and
 staff.html                 the current code, for the counter  } noindex
-assets/pass.js             hourly code, shared by those three and the map
+assets/pass.js             hourly code and the drawn rate, shared by those three and the map
+functions/api/pass.js      who may hold a pass, and what it drew — the one
+                           Function the pass pages need
 assets/pass.css            styles for those three
 assets/qr.js              QR encoder, written out, no dependency
 assets/logo/               the mark, and the painting it came out of
@@ -6193,6 +6379,7 @@ The map, `assets/app.js`:
 | `directions`, `website`, `google_listing` | `place` |
 | `call_place` | `place` — the button and the number in the facts alike |
 | `deal_open` | `place` |
+| `deal_signin` | `place` — the button a discount shows instead, signed out; it opens the sign-in sheet |
 | `photo_open`, `photo_step`, `photo_close` | `place`, `photo_index` |
 | `reel_load` | `place`, `provider` |
 | `reel_open` | `place` — the way out to Instagram or TikTok when the frame is blank |
@@ -6287,8 +6474,9 @@ for:
 
 | event | parameters |
 | --- | --- |
-| `pass_shown` | `place`, `live` — a code was put in front of somebody; once an hour on a page left open |
+| `pass_shown` | `place`, `live`, and `rate` on a deal with a roll — a code was put in front of somebody; once an hour on a page left open |
 | `pass_back` | `place` |
+| `pass_signin` | `place` — the way in, on a pass page opened signed out |
 | `pass_verify` | `place`, `status` — the verdict a scan got |
 | `home` | — |
 

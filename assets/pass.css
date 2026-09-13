@@ -45,6 +45,26 @@ html, body {
 .pass-lede { font-size: 15px; }
 .pass-terms { font-size: 13px; color: var(--muted); }
 
+/* ---------- the drawn rate ---------- */
+
+/* On a deal with a roll the offer line is the one thing on the page the
+   guest did not know before they opened it, so it is set a size up in the
+   display face, and the number itself — which tumbles through the run for a
+   second before it lands — carries the accent. Tabular figures, so a run
+   whose rates share a width does not jostle the words either side of it. */
+.pass-lede.is-rolled {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+
+.pass-rate {
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
 /* ---------- the code itself ---------- */
 
 /* Held up at arm's length across a counter, so it is the largest thing on
@@ -252,3 +272,41 @@ html, body {
   font-size: 22px;
   color: var(--muted);
 }
+
+/* A rolled deal's codes, one row per rate: the rate in a narrow column on
+   the left, right-aligned so the codes line up under each other, and the
+   code beside it a size down from the single one — five rows of 52px would
+   not fit a phone's screen without scrolling, and the counter needs the
+   whole list in view to find the guest's. */
+.staff-rates {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.staff-rate {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 16px;
+}
+
+.staff-rate-pct {
+  flex: none;
+  width: 3.5ch;
+  font-family: var(--mono);
+  font-size: 14px;
+  text-align: right;
+  color: var(--muted);
+}
+
+.staff-rate .pass-code {
+  font-size: 28px;
+  text-align: left;
+  text-indent: 0;
+}
+
+.staff-also .staff-rate .pass-code { font-size: 18px; }

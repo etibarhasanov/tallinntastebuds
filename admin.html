@@ -15,9 +15,10 @@
 <!--
   WHAT THIS PAGE IS
 
-  The door, and the three things behind it: post a story, add a place, change
-  a place. It holds a GitHub token for this one device, encrypted with a
-  passphrase, and proves the token can still reach the repository.
+  The door, and the four things behind it: post a story, add a place, change
+  a place, set a discount. It holds a GitHub token for this one device,
+  encrypted with a passphrase, and proves the token can still reach the
+  repository.
 
   WHERE THE SECRET LIVES
 
@@ -111,7 +112,7 @@ p { margin: 0 0 12px; }
 
 label { display: block; font-family: var(--display); font-size: .82rem; margin: 14px 0 5px; }
 
-input[type="password"], input[type="text"] {
+input[type="password"], input[type="text"], input[type="number"] {
   width: 100%;
   font: inherit;
   font-family: var(--mono);
@@ -194,7 +195,7 @@ hr { border: 0; border-top: 1px solid var(--hairline); margin: 22px 0 4px; }
 
 .tabs { display: flex; gap: 6px; margin-bottom: 4px; }
 .tabs button {
-  flex: 1; margin: 0; min-height: 40px; font-size: .88rem;
+  flex: 1; margin: 0; min-height: 40px; font-size: .88rem; padding: 10px 6px;
   background: transparent; color: var(--muted); border-color: var(--hairline);
 }
 .tabs button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
@@ -1066,7 +1067,7 @@ a { color: var(--accent); }
 
     function draw() {
       clear(tabs);
-      [['story', 'Story'], ['place', 'Add a place'], ['edit', 'Edit a place']].forEach(function (pair) {
+      [['story', 'Story'], ['place', 'Add a place'], ['edit', 'Edit a place'], ['deal', 'Discount']].forEach(function (pair) {
         var b = el('button', { type: 'button',
           className: 'tab' + (which === pair[0] ? ' on' : ''),
           textContent: pair[1] });
@@ -1080,6 +1081,7 @@ a { color: var(--accent); }
       clear(panel);
       if (which === 'story') storyForm(repo, panel);
       else if (which === 'place') placeForm(repo, panel, null);
+      else if (which === 'deal') dealForm(repo, panel);
       else editPicker(repo, panel);
     }
 
@@ -1436,6 +1438,346 @@ a { color: var(--accent); }
           clear(out);
           say(out, err.message, 'bad');
           post.disabled = false;
+        });
+    });
+  }
+
+  /* ---------------------------------------------------------- a discount
+   * What a place takes off the bill, switched on or off, and the thing this
+   * tab was built for: a rate that is drawn rather than named — base, spread
+   * and step, the three numbers README.md calls a roll. It commits straight
+   * to the publishing branch the way a story does. A discount is changed at
+   * a counter's request on the afternoon it is asked for, and a pull request
+   * nobody is at a laptop to merge would leave the old rate running through
+   * the evening; git keeps every version, so a change is undone by making
+   * the next one. Everything tools/validate.mjs would fail the build over is
+   * asked here first, in the same words.
+   *
+   * What it will not do is write ten languages. Every deal in the file says
+   * its rate once per language — "15% off your order", "Siparişinizde %15
+   * indirim" — and that number, or the {rate} a rolled deal leaves in its
+   * place, is the one thing this form ever changes in those lines. A new
+   * deal borrows its ten lines from a deal already in the file; an offer
+   * with no number in it, a free coffee, is a file edit.
+   */
+  var RATE_SLOT = '{rate}';
+  var ROLL_MAX_RATES = 12;             /* tools/validate.mjs warns past it */
+  var KEY_ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+  var NUMBER_RE = /\d+(?:[.,]\d+)?/;
+
+  /* The same alphabet and length the README's one-liner makes a key with,
+     from the same kind of entropy. */
+  function freshKey() {
+    var b = new Uint8Array(32);
+    window.crypto.getRandomValues(b);
+    var out = '';
+    for (var i = 0; i < b.length; i++) out += KEY_ALPHABET.charAt(b[i] % 32);
+    return out;
+  }
+
+  /* The run a roll pays, lowest first: the same arithmetic as rates() in
+     assets/pass.js. Empty for numbers that would never end, which the file
+     cannot carry past the validator but a field can hold for a moment. */
+  function rollRates(roll) {
+    var out = [];
+    if (!(roll.step >= 1) || !(roll.spread >= 0)) return out;
+    for (var r = roll.base - roll.spread; r <= roll.base + roll.spread; r += roll.step) out.push(r);
+    return out;
+  }
+
+  /* Every offer line with its number, or the slot a rolled deal leaves for
+     one, replaced by `to`. A line with neither comes back null, and the form
+     refuses rather than guess where the rate goes in Armenian. */
+  function withRate(lines, to) {
+    var out = {};
+    Object.keys(lines).forEach(function (lang) {
+      var line = String(lines[lang]);
+      out[lang] = line.indexOf(RATE_SLOT) !== -1 ? line.split(RATE_SLOT).join(to)
+        : NUMBER_RE.test(line) ? line.replace(NUMBER_RE, to)
+        : null;
+    });
+    return out;
+  }
+
+  /* What a deal pays, in the words the picker uses. */
+  function describe(deal) {
+    if (deal.roll) {
+      var run = rollRates(deal.roll);
+      return run.length ? run[0] + '–' + run[run.length - 1] + '%, drawn' : 'a roll that adds up to nothing';
+    }
+    var found = NUMBER_RE.exec((deal.offer && deal.offer.en) || '');
+    return found ? found[0] + '%' : 'no number in the offer';
+  }
+
+  function dealForm(repo, into) {
+    var pick = el('select', { id: 'deal' }, [
+      el('option', { value: '', textContent: 'Loading…' })
+    ]);
+    into.appendChild(el('label', { for: 'deal', textContent: 'Which place' }));
+    into.appendChild(pick);
+    into.appendChild(el('p', { className: 'hint', textContent:
+      'The places with a discount first, then every other open place. Everything ' +
+      'the form does not ask about — the key, the small print, the dates — is ' +
+      'left exactly as it is.' }));
+    var host = el('div');
+    into.appendChild(host);
+
+    /* The deals come off the branch rather than the served site, because
+       this form writes the file back and wants the copy it will be writing
+       over; the places can come off the site, where the names are the same. */
+    Promise.all([
+      gh('/contents/data/deals.json?ref=' + encodeURIComponent(repo.branch)),
+      loadPlaces(true)
+    ]).then(function (got) {
+      var deals = got[0] ? JSON.parse(b64ToText(got[0].content)) : [];
+      var places = got[1];
+      var byId = {};
+      deals.forEach(function (d) { byId[d.id] = d; });
+
+      clear(pick);
+      pick.appendChild(el('option', { value: '', textContent: 'Choose a place…' }));
+      var have = el('optgroup', { label: 'With a discount' });
+      var want = el('optgroup', { label: 'Without one yet' });
+      places.forEach(function (pl) {
+        var deal = byId[pl.id];
+        if (deal) {
+          have.appendChild(el('option', { value: pl.id, textContent:
+            pl.name + ' — ' + (deal.live ? 'on' : 'off') + ', ' + describe(deal) +
+            (pl.closed ? ' (closed)' : '') }));
+        } else if (!pl.closed) {
+          want.appendChild(el('option', { value: pl.id, textContent: pl.name }));
+        }
+      });
+      if (have.childNodes.length) pick.appendChild(have);
+      if (want.childNodes.length) pick.appendChild(want);
+
+      pick.addEventListener('change', function () {
+        clear(host);
+        var place = places.filter(function (pl) { return pl.id === pick.value; })[0];
+        if (place) dealFields(repo, host, place, byId[place.id] || null, deals);
+      });
+    }).catch(function (err) {
+      clear(pick);
+      pick.appendChild(el('option', { value: '', textContent: 'Could not load the discounts' }));
+      say(host, err.message, 'bad');
+    });
+  }
+
+  /* One form for a deal that exists and one that does not. `existing` is the
+     entry as the picker loaded it, used to fill the fields; what is written
+     back starts from the entry as the file has it at that moment, so an edit
+     made from another device in between rides along rather than being
+     overwritten. */
+  function dealFields(repo, into, place, existing, deals) {
+    var rolled = !!(existing && existing.roll);
+    var rateNow = existing && !rolled ? (NUMBER_RE.exec(existing.offer.en || '') || [''])[0] : '';
+
+    /* A new deal needs ten offer lines, and the only place to get them
+       without translating is a deal that already carries them with a number
+       in each. */
+    var donor = null;
+    if (!existing) {
+      deals.forEach(function (d) {
+        if (donor || !d.offer) return;
+        var tried = withRate(d.offer, RATE_SLOT);
+        if (Object.keys(tried).every(function (lang) { return tried[lang] !== null; })) donor = d;
+      });
+    }
+    var lines = (existing || donor || {}).offer || {};
+
+    into.appendChild(el('h2', { textContent: place.name }));
+    if (!existing) {
+      into.appendChild(el('p', { className: 'note', textContent: donor
+        ? 'No discount yet. Publishing makes one: a fresh key, the name as the map ' +
+          'has it, and the ten offer lines ' + donor.name + '\u2019s deal carries, ' +
+          'with the number changed.'
+        : 'No discount yet, and no deal in the file to borrow the ten offer lines ' +
+          'from. The first one is written by hand — the discount skill says how.' }));
+    }
+
+    var liveIn = el('input', { type: 'checkbox', id: 'live',
+      checked: (existing && existing.live === true) || null });
+    into.appendChild(el('div', { className: 'types' }, [
+      el('label', {}, [liveIn, 'Switched on'])
+    ]));
+    into.appendChild(el('p', { className: 'hint', textContent:
+      'Off keeps the pass pages working by their address, behind a preview band, ' +
+      'and takes the pill, the chip and the button off the map. Leave it off until ' +
+      'the restaurant has agreed.' }));
+
+    var oneRate = el('input', { type: 'radio', name: 'kind', value: 'fixed', checked: !rolled || null });
+    var drawn = el('input', { type: 'radio', name: 'kind', value: 'rolled', checked: rolled || null });
+    into.appendChild(el('label', { textContent: 'What it pays' }));
+    into.appendChild(el('div', { className: 'types' }, [
+      el('label', {}, [oneRate, 'One rate']),
+      el('label', {}, [drawn, 'A rate drawn each hour'])
+    ]));
+    into.appendChild(el('p', { className: 'hint', textContent:
+      'Every discount is for signed-in members either way. A drawn rate makes a ' +
+      'game of it: each account is dealt one from the run when it opens the pass, ' +
+      'the number holds for the hour, and the next hour is another go. The ' +
+      'counter\u2019s screen lists a code for each rate.' }));
+
+    function num(id, label, value) {
+      var input = el('input', { type: 'number', id: id, step: '1', inputmode: 'numeric', value: value });
+      return { input: input, box: el('div', {}, [el('label', { for: id, textContent: label }), input]) };
+    }
+
+    var rateIn = num('rate', 'Rate, %', rolled ? existing.roll.base : rateNow);
+    var fixedBox = rateIn.box;
+    into.appendChild(fixedBox);
+
+    var roll = rolled ? existing.roll : { base: Number(rateNow) || 15, spread: 10, step: 5 };
+    var baseIn = num('base', 'Base, %', roll.base);
+    var spreadIn = num('spread', 'Spread, ±', roll.spread);
+    var stepIn = num('step', 'Step', roll.step);
+    var runHint = el('p', { className: 'hint' });
+    var rollBox = el('div', {}, [
+      el('div', { className: 'row' }, [baseIn.box, spreadIn.box, stepIn.box]),
+      runHint
+    ]);
+    into.appendChild(rollBox);
+
+    var reads = el('p', { className: 'hint' });
+    into.appendChild(reads);
+
+    var go = el('button', { type: 'button', textContent: 'Publish' });
+    into.appendChild(go);
+    var out = el('div');
+    into.appendChild(out);
+
+    function values() {
+      return drawn.checked
+        ? { roll: { base: Number(baseIn.input.value), spread: Number(spreadIn.input.value), step: Number(stepIn.input.value) } }
+        : { rate: Number(rateIn.input.value) };
+    }
+
+    function wholeRun(r) {
+      return [r.base, r.spread, r.step].every(function (n) { return Number.isInteger(n); })
+        && r.step >= 1 && r.spread >= r.step && r.spread % r.step === 0;
+    }
+
+    /* The same rules tools/validate.mjs applies to a roll, in the same words,
+       so what leaves here is what CI would have passed. */
+    function complaints() {
+      var bad = [];
+      var v = values();
+      if (!existing && !donor) bad.push('There is no deal to borrow the offer lines from.');
+      if (v.roll) {
+        if (![v.roll.base, v.roll.spread, v.roll.step].every(function (n) { return Number.isInteger(n); })) {
+          bad.push('Base, spread and step have to be whole numbers.');
+        } else if (!wholeRun(v.roll)) {
+          bad.push('The spread has to be a whole number of steps, and at least one — a spread of 10 with a step of 5 is 5, 10, 15, 20, 25 around a base of 15.');
+        } else if (v.roll.base - v.roll.spread < 1 || v.roll.base + v.roll.spread > 99) {
+          bad.push('That runs from ' + (v.roll.base - v.roll.spread) + '% to ' + (v.roll.base + v.roll.spread) + '%, and every rate has to be between 1 and 99.');
+        }
+      } else if (!Number.isInteger(v.rate) || v.rate < 1 || v.rate > 99) {
+        bad.push('The rate has to be a whole number between 1 and 99.');
+      }
+      var tried = withRate(lines, 'x');
+      Object.keys(tried).forEach(function (lang) {
+        if (tried[lang] === null) bad.push('The offer line in ' + lang + ' has no number to change. Edit data/deals.json by hand.');
+      });
+      return bad;
+    }
+
+    function refresh() {
+      var v = values();
+      fixedBox.hidden = !!v.roll;
+      rollBox.hidden = !v.roll;
+      var en = lines.en || '';
+      if (v.roll) {
+        var run = wholeRun(v.roll) ? rollRates(v.roll) : [];
+        runHint.textContent = run.length
+          ? run.length + ' rates: ' + run.join(', ') + (run.length > ROLL_MAX_RATES
+              ? ' — more than ' + ROLL_MAX_RATES + ', and the counter\u2019s screen lists a code for each'
+              : '')
+          : 'Base − spread up to base + spread, a step at a time.';
+        reads.textContent = en && run.length
+          ? 'The map reads \u201c' + withRate({ en: en }, run[0] + '\u2013' + run[run.length - 1]).en +
+            '\u201d; the pass reads the number that was drawn.'
+          : '';
+      } else {
+        reads.textContent = en && rateIn.input.value
+          ? 'Reads \u201c' + withRate({ en: en }, rateIn.input.value).en + '\u201d.'
+          : '';
+      }
+    }
+    [oneRate, drawn, rateIn.input, baseIn.input, spreadIn.input, stepIn.input].forEach(function (node) {
+      node.addEventListener('input', refresh);
+      node.addEventListener('change', refresh);
+    });
+    refresh();
+
+    /* The commit subject, in the voice the README asks for: a sentence about
+       what the place now does. */
+    function subject(entry, was) {
+      if (!entry.live && was && was.live) return place.name + '\u2019s discount is switched off';
+      var later = entry.live ? '' : ', not switched on yet';
+      if (entry.roll) {
+        var run = rollRates(entry.roll);
+        return place.name + ' draws you ' + run[0] + ' to ' + run[run.length - 1] + '% off, once an hour' + later;
+      }
+      return place.name + ' takes ' + NUMBER_RE.exec(entry.offer.en)[0] + '% off the order' + later;
+    }
+
+    go.addEventListener('click', function () {
+      var bad = complaints();
+      clear(out);
+      if (bad.length) {
+        bad.forEach(function (line) { say(out, line, 'bad'); });
+        return;
+      }
+      var v = values();
+      go.disabled = true;
+      var step = say(out, 'Reading the file\u2026', 'spin');
+
+      gh('/contents/data/deals.json?ref=' + encodeURIComponent(repo.branch))
+        .then(function (current) {
+          var list = current ? JSON.parse(b64ToText(current.content)) : [];
+          var at = -1;
+          list.forEach(function (d, i) { if (d.id === place.id) at = i; });
+          var entry = at === -1
+            ? { id: place.id, name: place.name, live: false, key: freshKey(), offer: donor.offer }
+            : list[at];
+          var changed = withRate(entry.offer, v.roll ? RATE_SLOT : String(v.rate));
+          Object.keys(changed).forEach(function (lang) {
+            if (changed[lang] === null) throw new Error('The offer line in ' + lang + ' has no number to change. Edit data/deals.json by hand.');
+          });
+          entry.live = liveIn.checked;
+          entry.offer = changed;
+          if (v.roll) entry.roll = v.roll; else delete entry.roll;
+          if (at === -1) list.push(entry);
+
+          step.textContent = 'Writing the entry\u2026';
+          return putFile('data/deals.json', textToB64(JSON.stringify(list, null, 2) + '\n'),
+            subject(entry, at === -1 ? null : existing), repo.branch, current ? current.sha : null)
+            .then(function () { return entry; });
+        })
+        .then(function (entry) {
+          clear(out);
+          say(out, 'Published. Cloudflare redeploys within the minute, and the map and the ' +
+            'pass pages read the file on their next load.', 'good');
+          out.appendChild(el('dl', { className: 'facts' }, [
+            el('div', {}, [el('dt', { textContent: 'Guest page' }), el('dd', { textContent: '/deal.html?r=' + place.id })]),
+            el('div', {}, [el('dt', { textContent: 'Staff link' }), el('dd', { textContent: 'https://tallinntastebuds.ee/staff.html?r=' + place.id })])
+          ]));
+          if (!existing) {
+            out.appendChild(el('p', { className: 'hint', textContent:
+              'Send the staff link to the restaurant once; they bookmark it. That is the one thing that happens by hand.' }));
+          }
+          if (!entry.live) {
+            out.appendChild(el('p', { className: 'hint', textContent:
+              'It is switched off, so nothing on the map has changed. The pass pages work by their address, behind the preview band, for testing it.' }));
+          }
+          var again = el('button', { type: 'button', textContent: 'Change another' });
+          again.addEventListener('click', function () { clear(into); dealForm(repo, into); });
+          out.appendChild(again);
+        })
+        .catch(function (err) {
+          clear(out);
+          say(out, err.message, 'bad');
+          go.disabled = false;
         });
     });
   }

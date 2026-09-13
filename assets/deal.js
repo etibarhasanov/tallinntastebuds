@@ -3,7 +3,16 @@
  * Reached at deal.html?r=<place id>. Draws the offer, a QR pointing at
  * verify.html, and the same code in type big enough to read out loud when a
  * camera will not focus. Redraws itself when the hour turns over, so a page
- * left open on a table is never showing a code that has just gone stale.
+ * left open on a table is never showing a code that has just gone stale —
+ * and, on a deal with a roll, so that the new hour's rate is drawn in front
+ * of whoever is still looking.
+ *
+ * Nothing is shown at all until TTBPass.admit() says the person holding the
+ * page is signed in: a discount is for members. The card it draws instead is
+ * the offer and the way in, because somebody who followed a link here should
+ * still learn what is on offer — and the same goes for the answers further
+ * down, a deal that has not started, one that has finished, a page opened
+ * off the disk, and the gate itself being unreachable.
  */
 (function () {
   'use strict';
@@ -37,6 +46,74 @@
     P.clear(card);
     card.appendChild(el('p', { className: 'pass-lede', textContent: text }));
     card.appendChild(el('div', { className: 'pass-foot' }, [backLink()]));
+  }
+
+  /* Signed out, which every discount now is until somebody signs in — see
+     functions/api/pass.js. The offer is still shown, because it is what the
+     person came to read and it is on the map anyway; what is missing is the
+     code, and the button is the way to it. It opens the map's sign-in sheet
+     with this page as the place to come back to, the road the lists page
+     takes, so signing in lands here with the pass made rather than on the
+     map wondering where they were.
+
+     A rolled deal says it differently: there is a rate to draw rather than
+     one waiting, and the button is the draw. */
+  function signIn(data, deal) {
+    var rolled = !!P.rates(deal);
+    P.clear(card);
+    if (!deal.live) {
+      card.appendChild(el('p', { className: 'pass-flag', textContent: t('passNotLive') }));
+    }
+    card.appendChild(el('div', { className: 'pass-head' }, [
+      el('p', { className: 'eyebrow', textContent: t('passOffer') }),
+      el('h1', { className: 'pass-name', textContent: deal.name })
+    ]));
+    card.appendChild(el('p', { className: 'pass-lede', textContent: P.offerText(deal, data.lang) }));
+    card.appendChild(el('p', { className: 'pass-terms', textContent: t(rolled ? 'passRollSignIn' : 'passSignIn') }));
+    card.appendChild(el('div', { className: 'pass-foot' }, [
+      TTBTrack.click(el('a', {
+        className: 'link-btn is-primary',
+        href: '/?account=in&then=' + encodeURIComponent(window.location.pathname + window.location.search),
+        textContent: t(rolled ? 'dealRollSignIn' : 'dealSignIn')
+      }), 'pass_signin', { place: placeId }),
+      backLink()
+    ]));
+  }
+
+  /* The rate is drawn in front of the guest rather than stated: the number
+     runs through the whole run for a second and lands on theirs, so what
+     they see is a draw and not a price list. It lands on the same number
+     however it runs — the draw was made before the first flip — and for
+     somebody who has asked for less motion it simply appears. */
+  var TUMBLE_FLIPS = 14;
+  var TUMBLE_MS = 70;
+
+  function tumble(node, run, rate) {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      node.textContent = rate;
+      return;
+    }
+    var flips = 0;
+    var spin = setInterval(function () {
+      flips++;
+      if (flips < TUMBLE_FLIPS) { node.textContent = run[flips % run.length]; return; }
+      clearInterval(spin);
+      node.textContent = rate;
+    }, TUMBLE_MS);
+  }
+
+  /* The offer line with the drawn rate set into it where the deal wrote
+     {rate}, in a span of its own so the draw can be watched landing. The
+     sign, and which side of the number it stands on, are the line's own —
+     Turkish writes %15 — so the span holds the number and nothing else. */
+  function rolledLede(offer, run, rate) {
+    var parts = offer.split('{rate}');
+    var number = el('span', { className: 'pass-rate' });
+    var lede = el('p', { className: 'pass-lede is-rolled' }, [
+      parts[0], number, parts.slice(1).join(String(rate))
+    ]);
+    tumble(number, run, rate);
+    return lede;
   }
 
   /* The countdown is the one moving thing on the page, and the only thing
@@ -76,12 +153,23 @@
 
   function draw(data, deal) {
     var hour = P.hourNow();
+    var run = P.rates(deal);
+    var rate;
 
-    P.code(deal.key, placeId, hour).then(function (value) {
+    /* The door first, then the code — and on a rolled deal the same request
+       is the draw, because the code is made around the rate it comes back
+       with. A fixed deal draws nothing and its code is the one it always
+       was; it still has to knock. */
+    P.admit(deal, placeId).then(function (drawn) {
+      rate = drawn;
+      return P.code(deal.key, placeId, hour, rate);
+    }).then(function (value) {
       P.clear(card);
       /* Not a press, but the one moment this page exists for: a code was
          put in front of somebody. Once per hour on a page left open. */
-      TTBTrack.event('pass_shown', { place: deal.name, live: deal.live ? 'yes' : 'no' });
+      var shown = { place: deal.name, live: deal.live ? 'yes' : 'no' };
+      if (run) shown.rate = rate;
+      TTBTrack.event('pass_shown', shown);
 
       if (!deal.live) {
         card.appendChild(el('p', { className: 'pass-flag', textContent: t('passNotLive') }));
@@ -93,13 +181,15 @@
       ]));
 
       var offer = P.textFor(deal.offer, data.lang);
-      if (offer) card.appendChild(el('p', { className: 'pass-lede', textContent: offer }));
+      if (run) card.appendChild(rolledLede(offer, run, rate));
+      else if (offer) card.appendChild(el('p', { className: 'pass-lede', textContent: offer }));
 
-      /* The QR carries the whole answer — which place, which hour, which code
-         — so the waiter's phone needs nothing but a camera. */
+      /* The QR carries the whole answer — which place, which hour, which code,
+         and on a rolled deal which rate — so the waiter's phone needs nothing
+         but a camera. */
       var wrap = el('div', { className: 'qr' });
       try {
-        wrap.appendChild(window.TTBQR.svg(P.verifyUrl(placeId, hour, value)));
+        wrap.appendChild(window.TTBQR.svg(P.verifyUrl(placeId, hour, value, rate)));
         card.appendChild(wrap);
         card.appendChild(el('p', { className: 'pass-clock', textContent: t('passScanMe') }));
       } catch (e) {
@@ -114,9 +204,11 @@
       var dot = el('span', { className: 'live-dot', 'aria-hidden': 'true' });
       card.appendChild(el('p', { className: 'pass-live' }, [dot, tick]));
 
+      /* On a rolled deal the hour turning is also the next draw, and the
+         line says so: it is the one thing about the roll a guest can act on. */
       card.appendChild(el('p', {
         className: 'pass-clock',
-        textContent: t('passUntil', { time: P.clockOf(P.hourStart(hour + 1)) })
+        textContent: t(run ? 'passRollUntil' : 'passUntil', { time: P.clockOf(P.hourStart(hour + 1)) })
       }));
       startClock(tick, dot, hour, function () { draw(data, deal); });
 
@@ -124,10 +216,16 @@
       if (terms) card.appendChild(el('p', { className: 'pass-terms', textContent: terms }));
 
       card.appendChild(el('div', { className: 'pass-foot' }, [backLink()]));
-    }).catch(function () {
+    }).catch(function (err) {
+      var why = err && err.message;
+      if (why === 'sign-in') { signIn(data, deal); return; }
       /* crypto.subtle is absent outside a secure context, which in practice
-         means someone opened the file straight off the disk. */
-      message(t('passInsecure'));
+         means someone opened the file straight off the disk. Anything else
+         is /api/pass not answering — a deploy without its bindings, a
+         connection that dropped — and the page says so rather than showing a
+         code, because a discount that appeared whenever that request failed
+         would not be for members at all. */
+      message(t(why === 'insecure-context' ? 'passInsecure' : 'passUnavailable'));
     });
   }
 
@@ -142,9 +240,9 @@
     var deal = P.find(data.deals, placeId);
     if (!deal) { message(t('passNone')); return; }
 
-    var run = P.windowState(deal);
-    if (run === 'notyet') { message(t('verifyNotYetNote')); return; }
-    if (run === 'ended') { message(t('verifyEndedNote')); return; }
+    var dates = P.windowState(deal);
+    if (dates === 'notyet') { message(t('verifyNotYetNote')); return; }
+    if (dates === 'ended') { message(t('verifyEndedNote')); return; }
 
     draw(data, deal);
   }).catch(function () {
