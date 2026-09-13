@@ -45,6 +45,7 @@ leading underscore are modules, not routes.
 | `GET /api/venues` | `venues.js` | none; the whole `google_venues` table | `public, max-age=300` |
 | `GET /api/geocode` | `geocode.js` | none; proxies Photon for the add-a-place form, session required, cached a day; its `suggest()` is also what `/api/ask` measures "near" from | `no-store` |
 | `GET /api/profile` | `profile.js` | none; one person's public lists and their keep total | `no-store` |
+| `GET /api/pass` | `pass.js` | none; the door in front of every discount — `401` where there is no session, so `deal.html` offers the sign-in sheet instead of a code — carrying one number for the account, the place named by `?r=` and this hour, an HMAC under `SAVE_SALT`, which `assets/pass.js` counts up the run of a deal with a roll | `no-store` |
 | `/split` | `split.js` | **splitwise** — none; `split.html` with the group named by `?g=` written into its head, so a pasted link unfurls as the group. `functions/_middleware.js` calls it for the subdomain's root too | `no-store`, `noindex` |
 | `GET/POST /api/split` | `api/split.js` | **splitwise** — `split_groups`, `split_members`, `split_expenses`, `split_shares`, `split_settlements`. **Reading one group needs only its code**, no session — holding the link is the permission, see `groupById()`. **Every write needs a session and a membership**: each action but `create` and `join` reads the caller's own membership first, and a non-member is told the group does not exist | `no-store`, for the reason `lists.js` is |
 | `POST /api/ask` | `ask.js` | none; narrows the two rolls to what a question could be about and puts it to Workers AI; measures "near" from the place named through `geocode.js`, or from the visitor's own dot sent as `here` | `no-store` |
@@ -88,7 +89,7 @@ production sharing an id or a name.
 |---|---|
 | `DB` binding | counts `{}` 200; account and lists GET report `ready: false`; every POST `503 no-database`; venues 503; places serves the map's roll alone |
 | `ENVIRONMENT` mismatch | the same answers as no database, `wrong-database` |
-| `SAVE_SALT` | saves, account and lists POST **fail closed**, `503 no-salt`, rather than store a weaker hash. Changing it later resets every cap and leaves the counts alone |
+| `SAVE_SALT` | saves, account and lists POST **fail closed**, `503 no-salt`, rather than store a weaker hash, and so does `/api/pass`, whose answer is a hash under it — which takes every discount down with it, deliberately. Changing it later resets every cap, leaves the counts alone, and redraws every rolled discount from that hour on |
 | `TURNSTILE_SECRET` | optional; set, a save without a token is 403 |
 | `AI` binding | `/api/ask` answers `source: "none"`, `note: "no-ai"`, and the chat says nothing on the map answers. Everything else is untouched |
 

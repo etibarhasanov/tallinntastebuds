@@ -17,6 +17,8 @@
   var placeId = params.get('r') || '';
   var hour = params.get('h') || '';
   var claimed = params.get('c') || '';
+  /* The rate a rolled deal's link claims. Absent on a fixed deal's. */
+  var rate = params.get('p') || '';
 
   /* Every answer the check can give: the word, the colour band it sits on,
      and the line underneath explaining what to do about it. */
@@ -43,7 +45,7 @@
     document.documentElement.lang = lang;
     document.title = t('verifyTitle') + ' | Tallinn Tastebuds';
 
-    return P.verify(data, placeId, hour, claimed).then(function (result) {
+    return P.verify(data, placeId, hour, claimed, rate).then(function (result) {
       var answer = ANSWERS[result.status] || ANSWERS.error;
       var ok = result.status === 'ok';
       /* The verdict is the whole page, so it is the report: how often a
@@ -73,10 +75,12 @@
         ]));
       }
 
-      /* What to actually give them. Only worth printing when the answer was
-         yes — under a red banner it reads like an instruction. */
+      /* What to actually give them — on a rolled deal, the rate the code was
+         checked against, not merely the one the link claimed. Only worth
+         printing when the answer was yes: under a red banner it reads like an
+         instruction. */
       if (ok && result.deal) {
-        var offer = P.textFor(result.deal.offer, lang);
+        var offer = P.offerText(result.deal, lang, result.rate);
         if (offer) card.appendChild(el('p', { className: 'pass-lede', textContent: offer }));
 
         var terms = P.textFor(result.deal.terms, lang);

@@ -1785,12 +1785,18 @@
         };
         if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
         paintAccountButton();
-        /* The keep on a list is the one thing in the panel that waits on this
-           answer — it is not drawn at all until the endpoint says accounts
-           work — and the panel was painted before it arrived. Nothing else in
-           there depends on who is signed in, so this is the whole of the
-           catching up, and it is skipped unless a list is actually on screen. */
+        /* The keep on a list waits on this answer — it is not drawn at all
+           until the endpoint says accounts work — and the panel was painted
+           before it arrived, so a list on screen is repainted. The one other
+           thing in there that depends on who is signed in is a discount's
+           button, which offers the sign-in sheet to somebody signed out: a
+           place open on one is repainted too, and only that — a member got
+           the same panel either way. See dealBlock. */
         if (state.list && state.view === 'list') renderList();
+        if (!out.user && state.view === 'detail' && state.selected) {
+          var open = byId(state.selected);
+          if (open && liveDealFor(open)) renderDetail(open);
+        }
         accountSettled();
         /* A link that arrived asking for the sheet has been waiting on this
            answer — see readAccountLink. */
@@ -4712,20 +4718,51 @@
   /* The button leaves the map for deal.html, which is where the code and the
      QR are made. Deliberately a link rather than a panel that opens in place:
      what the guest holds up at the till should be a page of its own, with an
-     address they can reopen, not a state this one happens to be in. */
+     address they can reopen, not a state this one happens to be in.
+
+     A discount is for members — functions/api/pass.js says why — and the map
+     knows who is signed in where the pass page has to ask. So signed out the
+     button opens the sign-in sheet instead, with the pass page's address as
+     the place to go afterwards: signing in lands on the pass rather than back
+     here. The offer above it is shown either way; it is what somebody is
+     deciding on, and it is on the row and the pill already. Until
+     /api/account has answered there is no knowing which button this is, and
+     it is the plain one; the pass page asks again and offers the same sheet,
+     one hop later. */
   function dealBlock(place, deal) {
-    var offer = window.TTBPass.textFor(deal.offer, state.lang);
-    var open = el('a', {
-      className: 'link-btn is-primary',
-      href: 'deal.html?r=' + encodeURIComponent(place.id),
-      textContent: t('passGet')
-    });
-    open.addEventListener('click', function () {
-      TTBTrack.event('deal_open', { place: place.name });
-    });
+    var offer = window.TTBPass.offerText(deal, state.lang);
+    var rolled = !!window.TTBPass.rates(deal);
+    var signIn = state.account.ready && !state.account.user;
+    var passHref = 'deal.html?r=' + encodeURIComponent(place.id);
+    var open;
+    if (signIn) {
+      open = el('button', {
+        type: 'button',
+        className: 'link-btn is-primary',
+        textContent: t(rolled ? 'dealRollSignIn' : 'dealSignIn')
+      });
+      open.addEventListener('click', function () {
+        TTBTrack.event('deal_signin', { place: place.name });
+        accountThen = passHref;
+        openAccount('in');
+      });
+    } else {
+      open = el('a', { className: 'link-btn is-primary', href: passHref, textContent: t('passGet') });
+      open.addEventListener('click', function () {
+        TTBTrack.event('deal_open', { place: place.name });
+      });
+    }
+
+    /* What the line under the offer says, and whether there is one: a rolled
+       deal always explains itself, because a run of rates is not something
+       anybody has met before — the rate is drawn on the way in and holds for
+       the hour. A fixed one has nothing to explain until it is asking for a
+       sign-in, and then it says that much. */
+    var note = rolled ? (signIn ? 'dealRollMembers' : 'dealRollHint') : (signIn ? 'dealMembers' : '');
 
     return el('div', { className: 'deal-block' }, [
       offer ? el('p', { className: 'deal-offer', textContent: offer }) : null,
+      note ? el('p', { className: 'muted-note', textContent: t(note) }) : null,
       open
     ]);
   }
@@ -4734,12 +4771,14 @@
      taken from the line the deal already carries in the reader's language
      rather than written a second time in the data, and the whole match
      travels rather than the digits, because Turkish puts the sign in front:
-     "%15 indirim". An offer with no percentage in it — a free coffee, a
-     second pizza — falls back to the word the filter chip uses, which is the
-     honest thing a badge can say when there is no number to show. */
+     "%15 indirim". A deal with a roll has a run in that line rather than a
+     number, "5–25%", and the run travels the same way. An offer with no
+     percentage in it — a free coffee, a second pizza — falls back to the
+     word the filter chip uses, which is the honest thing a badge can say
+     when there is no number to show. */
   function dealMark(deal) {
-    var offer = window.TTBPass.textFor(deal.offer, state.lang);
-    var found = /%\s*\d+(?:[.,]\d+)?|\d+(?:[.,]\d+)?\s*%/.exec(offer);
+    var offer = window.TTBPass.offerText(deal, state.lang);
+    var found = /%\s*\d+(?:[.,]\d+)?(?:–\d+(?:[.,]\d+)?)?|\d+(?:[.,]\d+)?(?:–\d+(?:[.,]\d+)?)?\s*%/.exec(offer);
     return el('span', {
       className: 'deal-mark',
       textContent: found ? '−' + found[0].replace(/\s+/g, '') : t('filterDiscount')
@@ -5459,7 +5498,7 @@
        happens — and spelled into the label in full, since "−15%" read out
        on its own says a number and not what it comes off. */
     var deal = liveDealFor(place);
-    var offer = deal ? window.TTBPass.textFor(deal.offer, state.lang) : '';
+    var offer = deal ? window.TTBPass.offerText(deal, state.lang) : '';
 
     /* The list says the same thing the map now says: this is the one you
        were just reading. It is where you come back to, so it is worth being

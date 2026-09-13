@@ -4,7 +4,9 @@
  * tells a waiter whether a scanned one is good, and staff.html puts the
  * current code on the restaurant's own screen for when a camera will not
  * cooperate. All three need the same three things — the data, the hour, and
- * the code for that hour — so all three are here.
+ * the code for that hour — so all three are here. The map loads it too, for
+ * the offer line with its number in it and for whether a deal has a run of
+ * rates, which is what its panel and its rows say.
  *
  * HOW A CODE IS MADE
  *
@@ -17,14 +19,41 @@
  * makes the thing usable: a code made at 13:58 is still good when the waiter
  * reaches the table at 14:03, and neither phone has to have a perfect clock.
  *
+ * A DISCOUNT IS FOR MEMBERS
+ *
+ * Every one of them, drawn or fixed. admit() below asks functions/api/pass.js
+ * whether the person holding the page is signed in, and deal.html shows the
+ * sign-in sheet rather than a code when the answer is no. It is the door on
+ * the page and not a lock on the maths — see WHAT THIS IS NOT below — and it
+ * is the one thing on this site an account is actually for.
+ *
+ * HOW A RATE IS DRAWN
+ *
+ * A deal that carries a roll — { base, spread, step } in deals.json — has no
+ * one rate. It has a run of them, base − spread up to base + spread a step at
+ * a time, and each account is dealt one for the hour. The same request that
+ * opens the door carries the number: an HMAC under a secret that never
+ * leaves Cloudflare, which admit() counts up the run. Reload the page, close
+ * it and come back, and the rate is the one you had; wait for the hour to
+ * turn and it is drawn again, and the same account may do better or worse.
+ * A draw the browser could make for itself would be a draw a private window
+ * makes again, which is why it is not made here.
+ *
+ * The rate then travels in the code's own message — "<place>:<hour>:<rate>"
+ * — so a code drawn for 10% does not verify as 25%, and staff.html can list
+ * one code per rate for the counter to read the guest's off. A deal with no
+ * roll signs what it always signed, one code an hour for everybody who is
+ * shown one.
+ *
  * WHAT THIS IS NOT
  *
- * There is no server here, so the deal keys ship inside data/deals.json where
- * anyone can read them. Someone who opens the file can mint codes all day.
- * That is a deliberate trade, not an oversight: the thing this defends
- * against is a screenshot going round a group chat, and an hourly code kills
- * that completely. If a deal ever starts costing real money, the upgrade is
- * a Cloudflare Pages function holding the key server-side — see the README.
+ * There is no server behind the code, so the deal keys ship inside
+ * data/deals.json where anyone can read them. Someone who opens the file can
+ * mint codes all day, account or no account. That is a deliberate trade, not
+ * an oversight: the thing this defends against is a screenshot going round a
+ * group chat, and an hourly code kills that completely. If a deal ever starts
+ * costing real money, the upgrade is the shape functions/api/pass.js already
+ * is — a Function holding the key — see the README.
  */
 window.TTBPass = (function () {
   'use strict';
@@ -106,27 +135,77 @@ window.TTBPass = (function () {
     return out;
   }
 
-  function code(key, placeId, hour) {
+  /* The rate is part of the message when there is one, so a rolled deal's
+     code says what it is for. A fixed deal's message is what it always was,
+     and so is its code. */
+  function code(key, placeId, hour, rate) {
     if (!window.crypto || !window.crypto.subtle) {
       return Promise.reject(new Error('insecure-context'));
     }
+    var message = placeId + ':' + hour + (rate === undefined ? '' : ':' + rate);
     return window.crypto.subtle
       .importKey('raw', utf8(key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
       .then(function (imported) {
-        return window.crypto.subtle.sign('HMAC', imported, utf8(placeId + ':' + hour));
+        return window.crypto.subtle.sign('HMAC', imported, utf8(message));
       })
       .then(function (signature) { return toBase32(new Uint8Array(signature)); });
+  }
+
+  /* ------------------------------------------------------- the door and the roll
+   * A deal with a roll has no one rate but a run of them, and each account
+   * is dealt one for the hour — HOW A RATE IS DRAWN at the top of the file.
+   */
+
+  /* Every rate the deal can pay, lowest first, or null for a fixed deal.
+     tools/validate.mjs holds the three numbers to a run that stays inside
+     1–99 and to a spread that is a whole number of steps, so this is
+     arithmetic and not defence. */
+  function rates(deal) {
+    var r = deal.roll;
+    if (!r) return null;
+    var out = [];
+    for (var rate = r.base - r.spread; rate <= r.base + r.spread; rate += r.step) out.push(rate);
+    return out;
+  }
+
+  /* The one gate, for a fixed deal and a rolled one alike: may this account
+     be shown a pass, and if the deal has a roll, which rate did it draw. It
+     resolves to the rate, or to undefined for a deal that has no run to
+     count up — and rejects with 'sign-in' when nobody is signed in and
+     'unavailable' when the Function cannot answer at all, which are the two
+     cards deal.html draws instead of a code.
+
+     Every deal asks, so every deal fails the same way: a discount that
+     appeared whenever this request was blocked would not be for members at
+     all, it would be for whoever worked out that blocking it was enough. */
+  function admit(deal, placeId) {
+    return fetch('/api/pass?r=' + encodeURIComponent(placeId), {
+      headers: { accept: 'application/json' }
+    }).then(function (res) {
+      if (res.status === 401) throw new Error('sign-in');
+      if (!res.ok) throw new Error('unavailable');
+      return res.json();
+    }, function () {
+      throw new Error('unavailable');
+    }).then(function (out) {
+      var run = rates(deal);
+      if (!run) return undefined;
+      if (typeof out.draw !== 'number') throw new Error('unavailable');
+      return run[out.draw % run.length];
+    });
   }
 
   /* --------------------------------------------------------------- the URL */
 
   /* Built from wherever this page is actually being served, so a preview
      deployment verifies against itself rather than sending a waiter to the
-     live site to check a code the live site has never heard of. */
-  function verifyUrl(placeId, hour, value) {
+     live site to check a code the live site has never heard of. A rolled
+     deal's rate rides along as p, because the verifier needs it to rebuild
+     the code and to tell the waiter what to give. */
+  function verifyUrl(placeId, hour, value, rate) {
     var base = window.location.href.replace(/[^/]*(\?.*)?(#.*)?$/, '');
     return base + 'verify.html?r=' + encodeURIComponent(placeId) +
-           '&h=' + hour + '&c=' + value;
+           '&h=' + hour + '&c=' + value + (rate === undefined ? '' : '&p=' + rate);
   }
 
   /* ------------------------------------------------------------- the data */
@@ -183,7 +262,7 @@ window.TTBPass = (function () {
    * at the top of the file — it is a check that the guest is holding a live
    * page rather than a picture of one.
    */
-  function verify(data, placeId, hour, claimed) {
+  function verify(data, placeId, hour, claimed, rate) {
     var deal = find(data.deals, placeId);
     if (!deal) return Promise.resolve({ status: 'unknown' });
 
@@ -194,14 +273,27 @@ window.TTBPass = (function () {
       return Promise.resolve(out);
     }
 
+    /* A rolled deal's link names the rate, and it has to be one the deal can
+       pay: the code is rebuilt around that number, so a link claiming a rate
+       outside the run is not a discount link at all. A fixed deal's link
+       names none and any it carries is ignored. */
+    var run = rates(deal);
+    if (run) {
+      if (!/^[0-9]{1,2}$/.test(String(rate)) || run.indexOf(Number(rate)) === -1) {
+        out.status = 'malformed';
+        return Promise.resolve(out);
+      }
+      out.rate = Number(rate);
+    }
+
     var age = hourNow() - Number(hour);
     if (age > SKEW) { out.status = 'expired'; return Promise.resolve(out); }
     if (age < -SKEW) { out.status = 'early'; return Promise.resolve(out); }
 
-    var run = windowState(deal);
-    if (run !== 'open') { out.status = run; return Promise.resolve(out); }
+    var dates = windowState(deal);
+    if (dates !== 'open') { out.status = dates; return Promise.resolve(out); }
 
-    return code(deal.key, placeId, Number(hour)).then(function (expected) {
+    return code(deal.key, placeId, Number(hour), out.rate).then(function (expected) {
       out.status = expected === String(claimed) ? 'ok' : 'mismatch';
       return out;
     }).catch(function () {
@@ -268,6 +360,19 @@ window.TTBPass = (function () {
     return field[lang] || field[DEFAULT_LANG] || '';
   }
 
+  /* The offer line, with the number in it. A rolled deal writes {rate} where
+     its number goes — "{rate}% off your order" — and the validator refuses a
+     rolled deal without it. The pass pages fill in the rate that was drawn;
+     the map, where nothing has been drawn yet, fills in the run it could be,
+     "5–25% off your order". A fixed deal's line is printed as written. */
+  function offerText(deal, lang, rate) {
+    var text = textFor(deal.offer, lang);
+    var run = rates(deal);
+    if (!run) return text;
+    var shown = rate === undefined ? run[0] + '–' + run[run.length - 1] : rate;
+    return text.split('{rate}').join(String(shown));
+  }
+
   return {
     el: el,
     clear: clear,
@@ -278,6 +383,8 @@ window.TTBPass = (function () {
     hourStart: hourStart,
     clockOf: clockOf,
     code: code,
+    rates: rates,
+    admit: admit,
     verifyUrl: verifyUrl,
     load: load,
     find: find,
@@ -286,6 +393,7 @@ window.TTBPass = (function () {
     applyStyle: applyStyle,
     pickLanguage: pickLanguage,
     translator: translator,
-    textFor: textFor
+    textFor: textFor,
+    offerText: offerText
   };
 }());
