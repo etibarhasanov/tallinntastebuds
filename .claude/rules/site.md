@@ -3,6 +3,7 @@ paths:
   - "assets/**"
   - "*.html"
   - "data/ui.json"
+  - "data/blog.json"
   - "data/cuisines.json"
   - "data/radio.json"
   - "tools/stamp.mjs"

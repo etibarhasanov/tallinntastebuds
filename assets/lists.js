@@ -528,7 +528,7 @@
      stands in for one that could not be read. Reported as `home`, the same
      as the wordmark. */
   function backLink() {
-    return TTBTrack.click(el('a', { className: 'alt', href: '/', textContent: t('listsBack') }), 'home');
+    return TTBTrack.click(el('a', { className: 'alt', href: '/', textContent: t('backToMap') }), 'home');
   }
 
   /* Every caller says how it should look, because the places this link turns

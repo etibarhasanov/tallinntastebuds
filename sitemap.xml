@@ -14,6 +14,15 @@
   It was /lists/public until today, and /lists/kept before that. Both still
   answer, as 301s, and neither is listed here: a sitemap is for the address a
   page is at, and a forwarded one asks a crawler to find the same page twice.
+
+  /blog is the third, and it is the one entry here that is doing the whole
+  job on its own: nothing on this site links to the blog, on purpose, so this
+  file is how a crawler learns the address exists at all. It is still a page
+  written to be found — a post per thing this site does, in prose — which is
+  why it is indexed at all, and robots.txt says so where the Disallow lines
+  are. Only the index is listed. The posts are ?post=<id> on it and the index
+  links every one of them, which is how a crawler reaches them — the same
+  argument that keeps the individual lists out of this file.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -27,5 +36,11 @@
     <lastmod>2026-09-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/blog</loc>
+    <lastmod>2026-09-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>

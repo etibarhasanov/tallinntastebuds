@@ -1018,7 +1018,7 @@
         className: 'lists-say',
         textContent: t(state.reached ? 'splitErrOff' : 'splitErrReach')
       }),
-      foot([TTBTrack.click(el('a', { className: 'alt', href: at(MAP), textContent: t('listsBack') }), 'home')])
+      foot([TTBTrack.click(el('a', { className: 'alt', href: at(MAP), textContent: t('backToMap') }), 'home')])
     ]);
   }
 

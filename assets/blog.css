@@ -1,0 +1,148 @@
+/* ==========================================================================
+   Tallinn Tastebuds — the blog.
+
+   Loaded after assets/styles.css and assets/lists.css and only by blog.html,
+   so everything three pages already share is in place before this file is
+   read: the tokens, .card, .eyebrow, the four controls, the toast and the
+   row — .menu-row, the shape the account sheet draws a way-on in — from the
+   first, and the page frame the account page is built from, .lists-body,
+   .lists-brand, .lists-main, .lists-stack and .lists-card, from the second.
+
+   What is left, and the whole of what is in here, is what a page of prose
+   needs and neither of those has: a measure, a rhythm between paragraphs,
+   and a date standing over a title. Nothing in this file names a colour —
+   every value below is a token, so both styles arrive here already decided.
+   ========================================================================== */
+
+/* ---------- the two headings ---------- */
+
+/* The index's own title, and a post's. One rule, because they are the same
+   heading: the page is either about all of them or about one, and a reader
+   walking between the two should see the words change rather than the
+   furniture. It is .lists-title's face a size up — the lists page sets 26px
+   for a name somebody typed into a field, and this is the sentence the post
+   is. */
+.blog-title {
+  font-family: var(--display);
+  font-size: 29px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.14;
+  margin: 6px 0 12px;
+  color: var(--ink);
+}
+
+/* The line under a title that says why, on the index and on a post alike:
+   Literata, because it is a sentence rather than a label. .lists-say is the
+   same job in the lists page's card, in the body face at 14px and muted; a
+   standfirst is the first thing read on the page rather than a note under
+   something else, so it takes the ink and a size that stands over the
+   paragraphs under it. */
+.blog-lead {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+/* The head of the index. No card under it: a title, a line and then the
+   posts, in the order the design rules put them in — eyebrow, title, the
+   sentence saying why. The card starts where the posts do. */
+.blog-head { padding: 2px 2px 0; }
+
+/* ---------- the index ---------- */
+
+/* A list of posts is a list of places to go, so it is .menu out of
+   assets/styles.css — rows, hairline-ruled, the target the width of the card
+   — rather than a stack of links, which is what the design rules call a
+   paragraph that has lost its sentences. Only the bullets have to go: the
+   account sheet builds its rows into a <ul> too and .lists-index resets one
+   the same way. */
+.blog-posts { list-style: none; margin: 0; padding: 0; }
+
+/* The date over a title, on a row and on a post alike. It is .eyebrow out of
+   the map's stylesheet and nothing else: a date is a fact rather than a
+   sentence, so it wears the site's one mono label, in the position an eyebrow
+   stands in. All this adds is that a <time> is inline and this one is not. */
+.blog-when { display: block; }
+
+/* The standfirst under a row's title. .menu-why is the same position in the
+   account sheet and is mono at 11px, which is right for "everybody's lists,
+   most kept first" and wrong for a sentence of prose — see the second of the
+   design rules. Same face and rhythm as the body below, two points down. */
+.blog-say {
+  font-family: var(--body);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* A row's title takes the accent on hover from .menu-row in the map's
+   stylesheet; the sentence under it stays where it is, because a whole
+   paragraph changing colour under a cursor is the row shouting. */
+.blog-row .menu-say { gap: 5px; }
+.blog-row .menu-name { line-height: 1.25; }
+
+/* ---------- one post ---------- */
+
+/* The way back, over the card rather than under it: a back belongs at the top
+   of what it leaves, which is the seventh design rule, and under the last
+   paragraph it would read as the thing to do next. */
+.blog-crumb { margin: 0 0 -8px; }
+.blog-crumb .alt { padding-left: 2px; }
+
+/* The measure. 62 characters is about where a line stops being comfortable to
+   come back from, and the column this sits in is 640px wide, which at 17px
+   Literata is nearer 75. The card keeps its width — a narrow card inside a
+   wide column reads as a mistake — and the paragraphs inside it are what stop
+   short. */
+.blog-body {
+  margin: 18px 0 0;
+  max-width: 62ch;
+}
+
+.blog-body p {
+  margin: 0 0 16px;
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.68;
+  color: var(--ink);
+}
+
+.blog-body p:last-child { margin-bottom: 0; }
+
+/* The two things this page has to say for itself, drawn the same way because
+   they are the same kind of sentence: on a post, that it was written in
+   English and the reader asked for another language; on the index, that the
+   post somebody followed a link to is not here. The first is the one place on
+   this site that admits to a fallback, and it admits to it in the reader's own
+   language — see "Every word is in data/ui.json" in the design rules, and the
+   blog's own section in the README for why a post is not held to it. */
+.blog-note {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: .02em;
+  color: var(--muted);
+}
+
+/* The one filled action on the page, and there is never a second: the way to
+   the thing the post is about. */
+.blog-foot { margin: 22px 0 0; }
+
+/* ---------- the phone ---------- */
+
+/* This site measures its layouts at 390px, and the column is the width of the
+   screen long before that. What has to come down is the type: the heading,
+   which at 29px sets three words to a line, and the paragraphs, which at 17px
+   set eight. */
+@media (max-width: 560px) {
+  .blog-title { font-size: 25px; }
+  .blog-lead { font-size: 16.5px; }
+  .blog-body p { font-size: 16px; line-height: 1.62; }
+}

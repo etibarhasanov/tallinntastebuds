@@ -93,6 +93,25 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, nofollow
 
+# The blog. Stored as blog.html and served at /blog as well, so both
+# spellings are spelled out, the same reason "/" and "/index.html" both appear
+# at the top of this file. The address people are given is the short one.
+#
+# Same revalidating Cache-Control as the map, for the ?v= stamps — and no
+# X-Robots-Tag at all, deliberately. Nothing on this site links to the blog,
+# which would ordinarily put it in the same bracket as /google below; it is
+# the opposite case. This is a post per thing the map does, in this site's own
+# words, and being found by somebody searching for one of those questions is
+# most of what it is for. Unlinked and indexed, rather than unlinked and
+# hidden — robots.txt has the argument in full. The posts themselves are
+# ?post=<id> on this same path, so they are covered by this rule and by the
+# canonical assets/blog.js writes for each of them.
+/blog.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/blog
+  Cache-Control: public, max-age=0, must-revalidate
+
 # Scripts and stylesheets are content-addressed by tools/stamp.mjs — the URL
 # in the HTML carries a hash of the file — so a year-long cache would be safe
 # for a stamped request and is deliberately not used anyway. These rules match

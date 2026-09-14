@@ -604,7 +604,7 @@
         heading(t('listSaved'), 'h2'),
         el('p', { className: 'lists-say', textContent: t('accountSavedWhy') }),
         el('p', { className: 'lists-none', textContent: t('accountSavedNone') }),
-        foot([link('listsBack', '/', 'home')])
+        foot([link('backToMap', '/', 'home')])
       ]);
     }
 
@@ -965,7 +965,7 @@
       el('p', { className: 'eyebrow', textContent: t('accountOpen') }),
       heading(t('accountTitle')),
       el('p', { className: 'lists-say', textContent: t(state.reached ? 'accountErrOff' : 'accountErrReach') }),
-      foot([link('listsBack', '/', 'home')])
+      foot([link('backToMap', '/', 'home')])
     ]);
   }
 

@@ -49,6 +49,17 @@ Disallow: /account.html
 # nothing to find and says so itself: functions/u/[name].js sets the header per
 # person, the way the list route does.
 
+# The blog is deliberately NOT disallowed, and nothing on the site links to
+# it either. Those two together are the point: no pill on the rail, no row in
+# a menu — the map's own chrome is for finding dinner — and at the same time a
+# page of this site's writing about itself, which is exactly the kind of page
+# being findable is for. Somebody searching for why a restaurant map has no
+# ratings should land on the post that answers it.
+#
+# That leaves sitemap.xml as the only way in for a crawler, since there is no
+# link into the page anywhere. The posts are ?post=<id> on the same address
+# and the index links every one of them.
+
 # Google's own directory of the city, which is emphatically not the map: the
 # ratings on it are Google's and nothing on it has been visited. Being indexed
 # beside the pages that are the verdict is exactly what it must not be, so

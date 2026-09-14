@@ -919,6 +919,120 @@ if (existsSync(STORIES)) {
   }
 }
 
+/* ----------------------------------------------------------------- blog.json
+   The posts at /blog — one per thing this site does, what it does and why it
+   does it that way. A flat file the page reads whole; there is no endpoint
+   and nothing here reaches a database.
+
+   Two things are worth failing a build over. An id is in the address of a
+   post, so a duplicate one is two posts answering to the same link and a
+   malformed one is a link that cannot be typed. And a post is prose in a
+   language block, so a block in a language data/ui.json does not speak is
+   words nobody on this site can ever be shown — the language switch only
+   offers the ten, and the page has no other way to reach an eleventh.
+
+   What is deliberately NOT checked is the thing ui.json is held to: a post
+   does not need all ten languages. It is several hundred words of somebody's
+   writing, the same as a story's caption or a place's blurb, and those have
+   always been written in the languages they have been written in. English is
+   required because it is what the page falls back to, and a reader whose
+   language a post is not in is told so in their own. See "The blog" in
+   README.md. */
+
+const BLOG_KEYS = new Set(['id', 'date', 'link', 'title', 'standfirst', 'body']);
+const BLOG_SAID = ['title', 'standfirst', 'body'];
+
+const blogPath = join(DATA, 'blog.json');
+const blog = existsSync(blogPath) ? readJSON('data/blog.json') : [];
+const seenPosts = new Set();
+
+if (blog !== null && !Array.isArray(blog)) {
+  fail('data/blog.json', 'the top level must be an array');
+} else if (Array.isArray(blog)) {
+  const today = todayStamp();
+
+  blog.forEach((post, i) => {
+    const where = `data/blog.json[${i}]`;
+    if (!isPlainObject(post)) { fail(where, 'must be an object'); return; }
+
+    for (const key of Object.keys(post)) {
+      if (!BLOG_KEYS.has(key)) warn(where, `unknown key "${key}"`);
+    }
+
+    if (!isNonEmptyString(post.id) || !SLUG.test(post.id)) {
+      fail(where, '"id" must be a lowercase slug — it is what ?post= names');
+    } else if (seenPosts.has(post.id)) {
+      fail(where, `duplicate post id "${post.id}" — two posts cannot share one address`);
+    } else {
+      seenPosts.add(post.id);
+    }
+
+    if (!isNonEmptyString(post.date) || !DAY.test(post.date)) {
+      fail(where, '"date" must be a day, such as "2026-03-07"');
+    } else if (post.date > today) {
+      /* Every post is drawn, so a date after today is a post claiming to have
+         been written tomorrow. Scheduling one is a story's job, not a post's. */
+      fail(where, `"date" is ${post.date}, which is after today — every post on the page is drawn`);
+    }
+
+    /* An address on this site. The button at the foot of a post is "go and
+       try it", and what it is offering to try is here. */
+    if (post.link !== undefined && (!isNonEmptyString(post.link) || post.link[0] !== '/')) {
+      fail(where, '"link" must be a path on this site, such as "/lists"');
+    }
+
+    /* The three things a post says, and they agree on their languages: a
+       title in Estonian over paragraphs in English is a post that looks
+       translated and is not. */
+    const spoken = new Map();
+
+    for (const field of BLOG_SAID) {
+      const said = post[field];
+      if (!isPlainObject(said)) {
+        fail(where, `"${field}" must be an object keyed by language`);
+        continue;
+      }
+
+      const langs = Object.keys(said);
+      if (langs.length === 0) fail(where, `"${field}" says nothing in any language`);
+
+      for (const lang of langs) {
+        if (!languages.includes(lang)) {
+          fail(where, `"${field}" is written in "${lang}", which data/ui.json does not speak`);
+        }
+
+        const value = said[lang];
+        if (field === 'body') {
+          if (!Array.isArray(value) || value.length === 0) {
+            fail(where, `"body" in ${lang} must be an array of paragraphs`);
+          } else if (!value.every(isNonEmptyString)) {
+            fail(where, `"body" in ${lang} has a paragraph that is not text`);
+          }
+        } else if (!isNonEmptyString(value)) {
+          fail(where, `"${field}" in ${lang} must be a sentence`);
+        }
+      }
+
+      spoken.set(field, new Set(langs));
+    }
+
+    if (spoken.size === BLOG_SAID.length) {
+      for (const lang of spoken.get('title')) {
+        const short = BLOG_SAID.filter((field) => !spoken.get(field).has(lang));
+        if (short.length > 0) {
+          fail(where, `is in ${lang} but its ${short.join(' and ')} ${short.length === 1 ? 'is' : 'are'} not`);
+        }
+      }
+
+      for (const field of BLOG_SAID) {
+        if (!spoken.get(field).has('en')) {
+          fail(where, `"${field}" has no English, which is what every language falls back to`);
+        }
+      }
+    }
+  });
+}
+
 /* --------------------------------------------------------------- places.json
    The catalogue a list draws from: the map, plus whatever came out of
    data/places.csv. Generated by tools/places.mjs and never edited by hand, so

@@ -1,8 +1,9 @@
 # Working on Tallinn Tastebuds
 
 A full-screen map of places in Tallinn, plus discounts, stories, saves,
-lists, profiles, a directory of the city, a chat that answers with places, and
-— on a subdomain of its own — a way to split the bill afterwards.
+lists, profiles, a directory of the city, a chat that answers with places, a
+blog about what all of it does, and — on a subdomain of its own — a way to
+split the bill afterwards.
 Static files, thirteen Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
@@ -81,7 +82,7 @@ command does the same by hand, and is the way to be sure.
 | Add a place, change one, add its photos, mark it closed | `/place` |
 | Post a story, schedule one, take one down | `/story` |
 | Switch a discount on or off, or change what it offers | `/discount` |
-| Change what a page does or looks like — anything in `assets/`, an HTML file, `data/ui.json`, a language | `/site` |
+| Change what a page does or looks like — anything in `assets/`, an HTML file, `data/ui.json`, a language, a post on the blog | `/site` |
 | Change a Function, the schema, `wrangler.toml`, the chat's model or prompt, or anything that reads or writes D1 | `/api` |
 | Change splitwise — the group page, what a group can do, or the subdomain itself | `/site` **and** `/api`, and **Splitwise** in `README.md` |
 | Refresh the Google Places export | `/google-venues` |
@@ -224,7 +225,7 @@ re-running the generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
 |---|---|---|
-| anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in the eight pages named in `PAGES` at the top of the tool |
+| anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in the nine pages named in `PAGES` at the top of the tool |
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlevenues.mjs` | `db/google-venues.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlelists.mjs` | `db/google-lists.sql` |
