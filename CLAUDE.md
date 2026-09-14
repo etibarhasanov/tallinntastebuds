@@ -230,7 +230,12 @@ is small — the small ones are the ones that ship broken.
    PR's checks. There is nothing to run by hand. Look at it for anything with
    a visible effect; it is where a reviewer looks.
 6. **Merge with Rebase and merge**, never a merge commit, never a squash of
-   commits that were written to stand alone. Delete the branch after.
+   commits that were written to stand alone. **Leave the branch.** A session
+   cannot delete one — the git proxy takes a push and silently drops a ref
+   deletion — and the owner is not to be asked to do it either: the pull
+   request is the record, a merged branch costs nothing, and "delete the
+   branch after" was a step every session tried, failed at, and then handed
+   to the owner as a chore. Do not try, do not ask, do not mention it.
 7. A push to the default branch is the deploy. A story goes live when its
    `from` comes round; everything else is live within the minute.
 

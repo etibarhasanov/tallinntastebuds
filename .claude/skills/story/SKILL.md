@@ -207,7 +207,8 @@ and the deploy follows each one. By hand:
 5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
 6. Open the PR against the default branch. The body says what the story is,
    when it goes up and comes down, and which caption languages are in.
-7. CI green, then **Rebase and merge**, and delete the branch. Nothing else:
+7. CI green, then **Rebase and merge**; the branch stays, `CLAUDE.md` says
+   why. Nothing else:
    the browser starts the story when `from` comes round, and the hourly tick
    files it away after. If `story-media.yml` converts the video on the push,
    its commit lands on your branch; rebase it in rather than fighting it.

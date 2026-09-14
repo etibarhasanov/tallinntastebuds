@@ -203,9 +203,9 @@ it, and what was driven in a browser to check it.
    what was driven in a browser and how. The push has already deployed a
    preview — Cloudflare's Git connection puts the URL in the PR's checks —
    so open it on a phone and look.
-7. CI green, then **Rebase and merge**, and delete the branch. The stamps
-   mean every visitor gets the new files on their next load, no cache to
-   wait out.
+7. CI green, then **Rebase and merge**; the branch stays, `CLAUDE.md` says
+   why. The stamps mean every visitor gets the new files on their next
+   load, no cache to wait out.
 
 ## Where it goes wrong
 
