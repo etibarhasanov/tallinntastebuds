@@ -93,6 +93,34 @@ not in it is a name nobody will find in the console. `grep -n TTBTrack
 assets/<file>.js` shows what the page beside yours reports, and the same
 press on two pages reports the same name.
 
+**And every page is watched.** That is the other half of analytics and it
+costs nothing per press: Microsoft Clarity records the page itself — heatmaps,
+and a replay of the DOM as it changed — from `assets/clarity.js`, which holds
+the project id in one constant and is loaded by all nine pages, `admin.html`
+included. Nothing calls into it, so a new button needs nothing here. Two
+things do:
+
+- **A new page carries both tags**: the gtag block in its head, and the
+  `clarity.js` script tag under it. Copy them from the page whose asset
+  spelling yours shares — `lists.html` writes `/assets/...` from the root,
+  `index.html` writes `assets/...` relative, and the head of
+  `tools/stamp.mjs` says why they disagree. A page that ships without them is
+  invisible in both, which is the state every page but the map was in until
+  recently.
+- **Anything a replay should not hold gets `data-clarity-mask="true"`.**
+  Clarity masks every input box and dropdown in all three of its masking
+  modes and that one cannot be switched off, so a password or a typed-in
+  name needs nothing from you. Rendered text is the case to think about: the
+  pass card on `deal.html`, `verify.html` and `staff.html` carries the
+  attribute, so the hourly code and its QR stay out of a replay. Masking is
+  inherited, so it goes on the container and never on each child.
+
+The masking **mode** is a dashboard setting rather than a line of code, so it
+is not in this repo and will never be in a diff: **Settings → Masking** at
+clarity.microsoft.com, Balanced by default, which masks numbers and email
+addresses on top of the input boxes. A change that leans on it says so in the
+PR, because nobody reviewing the diff can see it.
+
 **Two files are held to something stricter than the validator.**
 `assets/qr.js` is fingerprinted by `node tools/qrperf.mjs --check`, which CI
 runs: nine payloads, each with the expected version and a SHA-256 of the
@@ -220,5 +248,11 @@ it, and what was driven in a browser to check it.
 - A string added in one language, with a fallback in the code.
 - A new page that renders light for somebody who chose the dark style,
   because the boot block was not copied.
+- A new page shipped without the two analytics tags in its head, so nothing
+  it does reaches either GA or Clarity. It fails nothing and nobody notices
+  for months; that is how the map came to be the only page GA had heard of.
+- A rewritten card that loses its `data-clarity-mask`, putting whatever it
+  draws back into the replays. The comment above the `<section>` on each pass
+  page is there to be read before the line under it is replaced.
 - A `t()` key that the scanner cannot see, so the validator passes and a
   visitor reads the key off the page.
