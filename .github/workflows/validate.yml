@@ -28,3 +28,9 @@ jobs:
       # and skips the timing, which would only be noise on a shared runner.
       - name: Check the QR encoder
         run: node tools/qrperf.mjs --check
+
+      # The gate that makes a write to D1 stop and ask. Its cases are in the
+      # file it guards; this is what notices when a tidied regular expression
+      # quietly stops catching one of them.
+      - name: Check the D1 write gate
+        run: node .claude/hooks/d1-write-gate.mjs --check
