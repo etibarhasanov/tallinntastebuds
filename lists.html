@@ -8,20 +8,11 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2XNTC15F28"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-2XNTC15F28');
-</script>
-
-<!-- Microsoft Clarity: heatmaps and session replay, the half a count cannot
-     do. The snippet lives in the file rather than here, so the project id is
-     in one place instead of nine — the reasoning is in its head. -->
-<script src="/assets/clarity.js?v=a2e5d5f3" defer></script>
+<!-- Analytics: Google and Microsoft Clarity, both behind a consent bar.
+     Nothing loads and nothing is written to this device until somebody
+     presses Allow — assets/consent.js holds the choice, the bar and the two
+     snippets, and says why they stopped being separate things. -->
+<script src="/assets/consent.js?v=0cc4a307" defer></script>
 
 <!-- The block between the two PAGE-HEAD markers below is replaced, in place,
      whenever this same file is served at one of its other three addresses:
@@ -63,7 +54,7 @@
 <!-- The tokens, the card, the eyebrow and the toast all come from the map's
      stylesheet; only what a list page has and the map does not is in the
      second file. -->
-<link rel="stylesheet" href="/assets/styles.css?v=9eec2bde">
+<link rel="stylesheet" href="/assets/styles.css?v=ec020591">
 <link rel="stylesheet" href="/assets/lists.css?v=641973e0">
 </head>
 <body class="lists-body">
