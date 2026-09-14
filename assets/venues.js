@@ -565,13 +565,22 @@
     /* The name is a button and not a heading with a link in it: pressing it
        lights this place on the map beside the list, which is a thing that
        happens on this page rather than somewhere to go. */
+    /* The glyph for what this place is, in front of its name — the same pin
+       its dot is tinted after and the same one the map draws for it when a
+       list puts it on the screen. aria-hidden: the two words under the name
+       already say the kind, in the reader's own language, and a screen
+       reader announcing "cocktail" before every bar on a page of bars is a
+       decoration read aloud. */
+    var kind = TTBPins.forKinds(venue.kitchens);
     node.appendChild(el('h2', { className: 'venue-name' }, [
       el('button', {
         type: 'button',
         className: 'venue-pick',
-        'aria-label': t('openPlace', { name: venue.name }),
-        textContent: venue.name
-      })
+        'aria-label': t('openPlace', { name: venue.name })
+      }, [
+        TTBPins.paint(el('span', { className: 'venue-glyph', 'aria-hidden': 'true' }), kind),
+        el('span', { textContent: venue.name })
+      ])
     ]));
 
     var facts = el('p', { className: 'venue-facts' });
@@ -677,7 +686,17 @@
      own markers is eleven hundred elements and a page that stops scrolling;
      circles on the canvas renderer are one path each and the whole export
      draws in a frame. They are not the map's pins for the same reason the page
-     is not the map: nothing on it has been visited. */
+     is not the map: nothing on it has been visited.
+
+     Which is also why the kind is said in the fill and not in a glyph. Every
+     other place on this site that draws a Google row draws its pin — a cup
+     for a café, a croissant for a bakery, see "The pins" in README.md — and
+     eleven hundred of those would be eleven hundred elements again, which is
+     the one thing this page was written to avoid. The tone carries as much of
+     it as a five-pixel circle can: three colours for the five kinds, so the
+     drinking half of the city is visibly a different colour from the eating
+     half before anything has been read. The card beside it draws the glyph
+     itself, at a size where a glyph works. */
   function paintDots() {
     if (!map || !dots) return;
 
@@ -689,6 +708,14 @@
     var muted = css.getPropertyValue('--muted').trim() || '#7d5754';
     var paper = css.getPropertyValue('--paper').trim() || '#fff0ea';
 
+    /* The three tones, read once for the whole pass rather than once per
+       dot: a computed style is a layout question and there are eleven
+       hundred of these. A style switch repaints, so they are never stale. */
+    var tones = {};
+    TTBPins.TONES.forEach(function (id) {
+      tones[id] = css.getPropertyValue('--pin-' + id).trim() || accent;
+    });
+
     var bounds = [];
     state.shown.forEach(function (venue) {
       if (typeof venue.lat !== 'number' || typeof venue.lng !== 'number') return;
@@ -697,7 +724,7 @@
         radius: lit ? 9 : 5,
         color: paper,
         weight: lit ? 2.5 : 1.5,
-        fillColor: venue.closed ? muted : accent,
+        fillColor: venue.closed ? muted : tones[TTBPins.toneOf(TTBPins.forKinds(venue.kitchens))],
         fillOpacity: venue.closed ? 0.5 : 0.9
       });
       dot.on('click', function () { select(venue.id, false); });

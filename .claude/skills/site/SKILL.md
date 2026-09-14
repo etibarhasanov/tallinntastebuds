@@ -21,7 +21,8 @@ here. It is the main rule and it applies to every line you touch.
   **Saves**, **Accounts**, **The account page**, **Lists**, **Public lists**,
   **Profiles**, **Stories**, **The directory**, **Ask for somewhere**,
   **Restaurant discounts**, **The radio**, **Surprise me**, **Languages**,
-  **The two styles** — and it carries the reasoning the code only hints at.
+  **The mark**, **The pins**, **The two styles** — and it carries the
+  reasoning the code only hints at.
   `grep -n '^## ' README.md` is the table of contents with line numbers;
   read the section, not the file.
 - `README.md` → **The design rules**: twelve rules a new sheet, page or
@@ -44,8 +45,8 @@ is served raw to whatever browser opens it, written for the browser as it is,
 not for a transpiler. A patch in the other dialect is the fastest way to look
 foreign.
 
-**Nothing names a colour.** The tokens are the first block of
-`assets/styles.css` — `:root` holds Red's palette so a cold load never
+**Nothing names a colour**, and a pin's tone is a name for the same reason.
+The tokens are the first block of `assets/styles.css` — `:root` holds Red's palette so a cold load never
 flashes a third one — and `[data-style="red"]` and `[data-style="green"]`
 each restate every one of them. A component that hardcodes a hex is the one
 thing that fails to change when somebody presses a swatch. There is no
@@ -154,6 +155,15 @@ browser cannot import from `tools/`; change one, change the other.
   passed through a variable is not seen.
 - **Colour tokens**: every `[data-style="…"]` block must declare the union of
   the tokens any block declares. `:root` is not compared.
+- **The pins**: `assets/pins.js` and `functions/api/_pins.js` hold the same
+  eight marker ids, written out twice because neither dialect can import the
+  other, and the build fails when they drift. Every tone a kind of place is
+  filed under needs a `--pin-<tone>` token and a `.pin-tone-<tone>` rule;
+  every marker needs a `pinX` label in all ten languages, which the scanner
+  for `t()` calls cannot see because the picker builds those keys out of the
+  ids. `mark` in either table fails outright, and so does a kind of place a
+  list could pick — the mouth goes on a place I have eaten at, and what a
+  Google row IS is not somebody's to choose. **The pins** in `README.md`.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns.
 - **Stamps**: every `src`/`href` to `assets/*.js|css` in the eight pages

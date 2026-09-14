@@ -20,7 +20,7 @@ is the functions you touch plus what they call and what calls them.
 
 - The README section for the feature: **Saves**, **Accounts**, **The
   account page**, **Lists**, **Profiles**, **Google venues**, **The
-  directory**, **Ask for somewhere**. Each says what is cached, what is
+  directory**, **The pins**, **Ask for somewhere**. Each says what is cached, what is
   deliberately not, and where a count comes from. `grep -n '^## ' README.md`
   is the table of contents with line numbers.
 - **Two databases, and never one** and **Setting it up**, before anything
@@ -151,6 +151,15 @@ and the rename step's — and on `split.js`'s, and in words as
 copy. Change one, change the other, and the README's table under **The
 caps**.
 
+**And so does the pin table.** `PIN_GLYPHS` and `PIN_TONES` in
+`functions/api/_pins.js` are the ids a list may store; `GLYPHS` and `TONES` in
+`assets/pins.js` are the same ids plus the emoji each draws. Neither file can
+import the other, so they are written out twice — the same arrangement the
+story clock has. `node tools/validate.mjs` fails the build when they drift, so
+this one is enforced rather than remembered. `mark` is in neither, on purpose:
+the mouth goes on a place I have eaten at and a picker must not be able to
+hand it out. **The pins** in `README.md`.
+
 ## The rules of a write
 
 Reading is free: `d1_database_query` answers a `SELECT` straight away, and
@@ -213,8 +222,12 @@ change that adds a table or an index goes to preview first, is driven there,
 and the PR says in so many words that production needs it applied on
 landing. A change to an existing column has no runner: write the `ALTER`
 out, run it on preview, say what it does to the rows, and list the columns
-in the file in the order the deployed table has them. A foreign key on a
-live table is a rebuild; do not reach for one.
+in the file in the order the deployed table has them. **And make the readers
+survive its absence**, because there is always an afternoon between the deploy
+and somebody running it: `users.about` does that with a try and a second
+statement, and `lists.pin` with `readingPins()` in
+`functions/api/_pins.js`, which asks once per isolate and then knows.
+A foreign key on a live table is a rebuild; do not reach for one.
 
 ## The steps
 

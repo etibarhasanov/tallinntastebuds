@@ -24,6 +24,7 @@
  */
 
 import { catalogue, venuesByIds, addedByIds, isAdded } from './_lib.js';
+import { readingPins, pinSelect, pinsOf } from './_pins.js';
 
 /* The floor a list clears before it is listed here, and the same three places
    assets/lists.js has always wanted before it will offer to share one: two
@@ -290,9 +291,14 @@ export async function mostKept(context, opts) {
      knowing them for every candidate list, so this one is unavoidable — but
      list_keeps is the small table: a keep needs an account and one account
      holds two hundred at the most. */
-  const select =
+  /* A function of whether the two pin columns are there rather than a
+     string, because the answer is not known until the first statement has
+     been tried — see readingPins() in _pins.js, which asks once per isolate
+     and then knows. Both queries below read it, and the second one is free. */
+  const select = (pins) =>
     'SELECT l.id AS id, l.title AS title, l.owner AS owner, ' +
     'l.created_at AS created_at, l.updated_at AS updated_at, ' +
+    pinSelect(pins) +
     'u.username AS by, COALESCE(c.n, 0) AS keeps' + mineSel + ' ' +
     'FROM lists l ' +
     'LEFT JOIN users u ON u.id = l.owner ' +
@@ -302,13 +308,13 @@ export async function mostKept(context, opts) {
     '  AND EXISTS (SELECT 1 FROM list_items i WHERE i.list_id = l.id ' +
     '              LIMIT 1 OFFSET ?)';
 
-  const { results } = await env.DB
+  const { results } = await readingPins(env, (pins) => env.DB
     .prepare(
-      select + search + apart + after + ' ' +
+      select(pins) + search + apart + after + ' ' +
       'ORDER BY ' + order.a + ' DESC, ' + order.b + ' DESC, l.id ASC LIMIT ?'
     )
     .bind(...mineBind, MIN_ITEMS - 1, ...searchBind, ...apartBind, ...afterBind, PAGE + 1)
-    .all();
+    .all());
 
   const more = results.length > PAGE;
   const rows = more ? results.slice(0, PAGE) : results;
@@ -320,13 +326,13 @@ export async function mostKept(context, opts) {
      LIMIT is the page's, because nothing else bounds an account. */
   let starts = [];
   if (strip && !at) {
-    const found = await env.DB
+    const found = await readingPins(env, (pins) => env.DB
       .prepare(
-        select + ' AND l.owner IN (SELECT id FROM users WHERE username = ?) ' +
+        select(pins) + ' AND l.owner IN (SELECT id FROM users WHERE username = ?) ' +
         'ORDER BY l.title ASC LIMIT ?'
       )
       .bind(...mineBind, MIN_ITEMS - 1, GOOGLE_BY, PAGE)
-      .all();
+      .all());
     starts = found.results || [];
   }
 
@@ -369,6 +375,11 @@ export async function mostKept(context, opts) {
        else's account leaves this function. */
     mine: !!user && r.owner === user.id,
     kept: !!r.kept,
+    /* The pin its owner chose, which this page draws twice: once in front of
+       the title, and once as the colour of the row's own scatter of dots —
+       so twenty rows of somebody else's opinions are twenty distinguishable
+       things rather than twenty identical red constellations. */
+    ...pinsOf(r),
     taste: (items[r.id] || []).slice(0, TASTE).map((row) => row.name),
     dots: dots[r.id] || []
   });
