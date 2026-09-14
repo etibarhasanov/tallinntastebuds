@@ -69,7 +69,7 @@ import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDa
 import { readList, LIST_ID } from './_lists.js';
 /* Every public list, most kept first — shared with functions/lists/index.js,
    which seeds the first page into the document it serves. */
-import { mostKept } from './_mostkept.js';
+import { mostKept, sortOf } from './_mostkept.js';
 
 /* Caps. Most of them are about somebody with a script rather than somebody
    with opinions — twenty-four lists is more than anybody keeps, and the
@@ -209,12 +209,17 @@ export async function onRequestGet(context) {
     const page = await mostKept(context, {
       from: params.get('from') || '',
       q: params.get('q') || '',
+      sort: sortOf(params.get('sort')),
       user: user
     });
     return json({
       ready: true,
       user: user ? user.username : null,
       all: page.all,
+      /* The five Google lists, as a strip above the rows, on the first page
+         of an unsearched directory and empty otherwise — see _mostkept.js. */
+      start: page.start,
+      sort: page.sort,
       next: page.next
     }, 200);
   }

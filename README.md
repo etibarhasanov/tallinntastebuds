@@ -2666,7 +2666,9 @@ restaurants, by Google**, and the same for bakeries, cafés, bars and
 pizzerias. They are lists in every way the rest of this section means: a row
 each in `lists` and `list_items`, a byline that leads to
 `/u/google-statistics`, a bookmark, a way onto the map, three more at the
-foot and a place on `/lists/public`. The byline is the one thing on them
+foot and a strip of their own at the top of `/lists` — **Start here**, five
+across on a desk, above everybody else's rows; see **Public lists** for why
+they stand apart there. The byline is the one thing on them
 that is not drawn the way every other list's is: it reads "generated from
 Google Maps" rather than "created by google-statistics", because the account
 name is an implementation detail and the sentence a reader needs is where the
@@ -3329,6 +3331,57 @@ they draw no count, because a "saved by 0 people" reads as a verdict rather
 than as nobody having pressed anything — the same reason a save count is
 hidden at zero on the map. It is also what makes the page work at all on the
 day it ships, before anybody has kept anything.
+
+**The page is laid out for a desk as well as a phone.** It was one 640px
+column on every screen — the phone page in the middle of a monitor, with a
+card per row and eight hundred pixels either side doing nothing. Above 900px
+the rows go two across, above 1180px three, and the main column widens to
+1180px for this view alone (`.lists-main.is-wide`, set by `render()` in
+`assets/lists.js` on the directory and on nothing else): every other view
+keeps the measure a list of sentences reads at. The order chips share the
+sticky row with the search field, so what narrows the page and what orders it
+are in one place and both stay under the thumb while the page grows.
+
+**Every row draws the list as a shape on the city.** A small panel at the top
+of each card carries the map's own places as faint dots and the list's places
+over them in the accent, in one fixed frame — `SKY` in `assets/lists.js`, the
+box the map's places sit in — so a coffee list reads as a cluster in Kalamaja
+and a Caucasus list as a scatter east before anybody has read a name. It is
+the one picture only this site can draw of somebody's list, and the
+coordinates already existed. The list's own dots arrive with the row: the API
+sends up to ten `[lat, lng]` pairs per list (`DOTS` in
+`functions/api/_mostkept.js`), resolved on the server from the three rolls a
+list draws from — the catalogue, `google_venues` in chunks of fifty, and
+`added_places` — in one batched read that also yields the three names under
+the title, so the names cost nothing extra. The city's ghost dots are
+`data/places.json`, twelve kilobytes fetched once after the rows are on the
+screen and painted into every sky already drawn; a page that never gets it
+shows each list's dots on plain paper, which is still the shape of the list.
+The panel is `aria-hidden`: the names under the title are the accessible
+version of the same fact.
+
+**Three orders, and the count is the default.** Beside the search field are
+three chips — Most saved, Newest, Changed lately — pressed the way the map's
+filter chips are. The first is the page's own order; the other two are the
+ways past the top of a ranking somebody has already seen, to what arrived
+lately and to what somebody is still working on. Each is two columns
+descending and then the id — `SORTS` in `functions/api/_mostkept.js` names
+the two — which is what lets the one cursor shape page all three; a cursor is
+only ever handed back under the order it was minted in, because the page
+sends both together. The order rides in the address as `?sort=new` or
+`?sort=changed` (never the default), is seeded by `functions/lists/index.js`
+the way a search is, and reports itself as `lists_sort`.
+
+**The five Google lists stand in a strip of their own.** On the first page of
+an unsearched directory the API sends them as `start`, and the page draws
+them under **Start here** above everybody else's rows: a compact card each,
+sky on the left, five across on a desk. They are the lists a stranger can
+trust without knowing anybody on this site, and left in the ranking they were
+five rows somewhere in the pile, wherever their keep count happened to put
+them. While the strip is drawn they are kept out of the rows — every page of
+them, not only the first, so a list is never on the screen twice — and a
+search puts them back into the rows, because a search is a question and the
+strip is not an answer to it. See **The five lists Google wrote**.
 
 **The row carries the first three places.** A page of titles is a search
 result: "Top ten burgers" tells somebody who has never heard of its author
@@ -6509,6 +6562,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists/public`:
 | `place_missing` | `search_term` — the "add the place that is missing" door |
 | `place_add` | `place` — a place typed in by hand, on success |
 | `search` | `search_term`, `scope` (`lists`) |
+| `lists_sort` | `sort` (`kept`, `new` or `changed`) — a chip beside the search field |
 | `lists_more` | `rows_shown`, `how` (`scroll` or `press`) |
 | `lists_all` | — |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
