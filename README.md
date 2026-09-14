@@ -3043,6 +3043,7 @@ are.
 /lists           everybody's, the most kept first, and a field to search them
 /u/<name>        who made it, and everything else they published
 /?list=<id>      the same list on the map, as pins
+/?by=<name>      everything they published, on the map, their lists as chips
 ```
 
 There were five. `/lists.html` was the first of them — the index of your own
@@ -3670,9 +3671,12 @@ the thing narrowing the map was a filter in `state.active` that no chip on the
 row stood for, so All could be drawn unpressed with nothing else pressed either
 over a map showing four places.
 
-So the filter row is types and nothing else. `state.list` holds a list or it
-does not, and while it does, that is what the map is showing — `visiblePlaces()`
-answers the list before it consults a chip. The list says who it is in the
+So the filter row is types and nothing else — with one exception, and it is
+the same argument rather than a hole in it: opened on somebody's whole profile
+the row is their lists and the types come off it entirely. See **A whole
+profile on the map** below. `state.list` holds a list or it does not, and
+while it does, that is what the map is showing — `visiblePlaces()` answers the
+list before it consults a chip. The list says who it is in the
 panel instead: its title, its owner's name, their sentence, the three things
 you can do about it — keep it, open the list's own page, or send it on — and,
 under those, the way out. The three wear the same pill and none of them is
@@ -3682,7 +3686,9 @@ spending it twice would take that reading away.
 **Pressing any chip forgets it.** All, Bakery, Discount — each is somebody
 asking the map a question their list cannot be part of the answer to, so the
 list goes: pins, panel, keep button, `?list=` and all. There is no control that
-puts it back, because it is not a thing you toggle.
+puts it back, because it is not a thing you toggle. (A list opened as one of
+somebody's five is a different case — there the chips are the lists, and All
+is the other four coming back. Again, **A whole profile on the map**.)
 
 **Back to all places** is that same press, printed where the person reading a
 list can find it. It sits under the three pills as an `.alt`, not as a fourth
@@ -3714,6 +3720,12 @@ It is offered at the one moment it means anything: this list open, these pins,
 this person's name above it. Press a chip and the moment has passed. Nothing
 nags and nothing follows anybody around the map afterwards.
 
+On a profile's row of lists the moment comes round whenever the chip is pressed
+again, which is not a change of mind about nagging: nothing follows anybody
+anywhere, and somebody stepping through five lists is doing it on purpose. It
+is the same button in the same place, because the keep is on the list and never
+on the person.
+
 Signed out it is a door rather than a dead button: it opens the sign-up sheet,
 which is on this page already. A keep needs an account for the reason
 **Why a list needs an account when saving a place does not** gives.
@@ -3727,6 +3739,83 @@ database that is not bound leaves the map exactly as it is. No card and no
 toast: somebody who followed a dead link gets the thing this site is, which is
 better than an error about a list they have never seen. `/list/<id>` is the
 page that is about one list, so that is the page that reports a missing one.
+
+### A whole profile on the map
+
+**Open all of them on the map** sits on `/u/<name>`, on the card that carries
+the person's name, and it goes to `/?by=<name>`: every public list they have,
+opened at once.
+
+```
+/?by=google-statistics                       all five Google top tens
+/?by=google-statistics&list=top-ten-bars-…   the same five, that one picked out
+```
+
+**Their lists become the chip row.** All, then one chip per list, in the order
+their profile draws them, and nothing else on the row — the types come off it
+while a profile is open. Press one and the map is that list: its places, in its
+owner's order, with the sentence they wrote under each, and the same credit
+block a shared list has always drawn. Press it again, or press All, and the
+other four come back.
+
+**All means every place on any of them, once.** Google's five top tens are
+fifty rows and forty-eight places: RØST Bakery is on the bakeries list and on
+the cafés list, and that overlap is half of why the five are worth opening
+together. A place named by two of somebody's lists is one pin, one row and one
+card. The seating is what dedupes — `seatShelf()` in `assets/app.js` seats every
+list into one set of stand-ins — and the union it builds is what All draws.
+
+**A list is a chip here, and that is the same argument, not the exception to
+it.** What read wrong when a single list sat on the filter row was one person's
+top ten standing in a line of categories, announcing a kind of food the map
+does not have. A row that is *nothing but* their five lists says what it is:
+All means all of theirs rather than all of mine, no type chip is on the screen
+to be mistaken for one, and the panel above the places says whose they are.
+
+**All is not the way out, so the panel's heading carries one.** On a profile,
+All is every place on every list of it, and nothing on that row could hand the
+map back. So the block over the places — their name, how many places, how many
+lists, and the door to the profile itself — ends with **Back to the map**,
+where a single list's block says **Back to all places**. The two are different
+sentences because they go to different places.
+
+**A list opened from a profile brings the others with it.** The outlined pill in
+the corner of each row on `/u/<name>` goes to `/?by=<name>&list=<id>`: that
+list, with the person's other lists on the row beside it. Everywhere else a
+list travels alone — `/list/<id>`, `/lists`, your own account page — because
+everywhere else it was *sent* alone, and a link somebody was handed is about
+that list. Putting a stranger's other four on the chip row is answering a
+question nobody asked.
+
+**The order is the profile's order**, and it has to be: the chips and the rows
+on `/u/<name>` are the same lists, and two orders for one set of lists is the
+map disagreeing with the page it was opened from. Newest edit first, then by
+title — the second half of that decides nothing for a person, since no two of
+your own lists were last edited in the same millisecond, and everything for
+lists a tool wrote: the five Google top tens are one `INSERT`, so all five carry
+the same `updated_at` and the order among them was whatever the query plan felt
+like. `readProfile()` and `readShelf()` in `functions/api/_profile.js` now both
+say it out loud.
+
+**What it costs.** One request, `GET /api/lists?by=<name>`, made during boot
+beside the catalogue so the pins are still built once. Five statements whatever
+the profile holds: the lists, their items, the three rolls behind those items
+read once for the lot, the keep counts, and — signed in — which of them this
+reader has kept. The ceiling is the two caps the writer already enforces,
+twenty-four lists an account and twenty places a list, and neither reader puts
+a `LIMIT` on top of them: a number in one of the two and not the other would be
+the map drawing a chip short of the rows on the page it was opened from.
+
+**Public only, including for its owner**, which is not this feature's decision:
+it is the profile's rule, in the same `l.public = 1` the profile page has always
+used, and the two queries sit in one file so that a change to what a stranger
+may read is a change to two lines nobody can miss. Your own private lists are
+on `/account.html`.
+
+**Failing is quiet, the same way.** A name nobody has, an account that has
+published nothing, a database that is not bound — the map is the map, and the
+address bar is tidied on the way past. A list named alongside a profile that is
+not one of theirs is simply the profile entire.
 
 ### Why a list needs an account when saving a place does not
 
@@ -4190,6 +4279,15 @@ other people have kept these lists.**
 And the line they wrote about themselves, when they wrote one. That is the
 whole of it.
 
+One press takes the lot to the map. **Open all of them on the map**, on the
+card under the name, opens `/?by=<name>`: their lists as the chips along the
+top, All being every place on any of them counted once, and each list one press
+away with its owner's sentences under its places. It is drawn only where there
+is more than one list to gather, since with a single list it would be the pill
+in the row below it said twice. Every row's own **Open on the map** goes the
+same way with that list already picked out. The whole of how it behaves is
+**A whole profile on the map** under [Lists](#lists).
+
 Nothing else. Not their saves — those are anonymous by design and filed under
 a device as often as under an account, and a page that turned them into a
 public record of where somebody eats would be a different site. Not when they
@@ -4310,6 +4408,9 @@ made.
   name: *Your public profile — how your lists look to everybody else*. See
   **Two pages open with your name** under [The account
   page](#the-account-page).
+- **The panel on the map**, when the map is open on somebody's lists: the
+  heading over their places is their name, and **Open the profile** under it is
+  the way back to the page the chips were built from.
 
 ### The address is a name, and a name can change
 
@@ -5723,8 +5824,10 @@ tools/qrperf.mjs           checks the QR encoder still draws the same code, and 
 Deep links: `?spot=f-hoone` opens that place directly — that is the link to put
 in a Story. `?lang=ru` opens it in Russian, `?style=green` in the dark
 palette. `?list=top-ten-burgers-k3fmqw` opens the map on somebody's list, as
-pins with the list in the panel. They all combine, and all four stay in the
-address bar, because each of them says what the page currently is.
+pins with the list in the panel, and `?by=kate` opens it on every list that
+person has published, with their titles as the chips along the top. They all
+combine, and all five stay in the address bar, because each of them says what
+the page currently is.
 
 The two that do not stay are doors rather than states, and they take themselves
 back off on the way in. `?story=kokomo-brunch` opens a story rather than a
@@ -6535,7 +6638,8 @@ The map, `assets/app.js`:
 | `save_place`, `unsave_place` | `place`, `place_id`, `saves_total` |
 | `list_keep` | `list_id`, `list_state` (`on`/`off`, or `signed_out` when the press opened the sign-up sheet instead) |
 | `list_share` | `list_id`, `method` (`sheet`/`copy`) |
-| `list_page`, `profile_open` | `list_id` / `name` — the links on a list's credit block |
+| `list_page`, `profile_open` | `list_id` / `name` — the links on a list's credit block, and **Open the profile** on a whole profile's |
+| `list_pick` | `by`, `list_id` (empty for All), `places_shown` — a chip on a profile's row of lists |
 | `ask_open` | — |
 | `ask_scope` | `scope` |
 | `ask` | `search_term`, `scope` |
@@ -6559,6 +6663,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists/public`:
 | --- | --- |
 | `list_page` | `list_id` — any row that opens a list |
 | `list_map` | `list_id` — the "on the map" pill |
+| `profile_map` | `name` — **Open all of them on the map**, on a profile's card |
 | `profile_open` | `name` — any byline |
 | `place_link` | `place`, `map` (`mine`/`google`) — a place on a list, to the map or to Google |
 | `list_keep` | `list_id`, `list_state` |

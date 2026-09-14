@@ -70,6 +70,10 @@ import { readList, LIST_ID } from './_lists.js';
 /* Every public list, most kept first — shared with functions/lists/index.js,
    which seeds the first page into the document it serves. */
 import { mostKept, sortOf } from './_mostkept.js';
+/* Every public list one person has, with their places — shared with nothing
+   yet, and in _profile.js rather than here because the rule it enforces is
+   the profile's: public only, for strangers and for its owner alike. */
+import { readShelf } from './_profile.js';
 
 /* Caps. Most of them are about somebody with a script rather than somebody
    with opinions — twenty-four lists is more than anybody keeps, and the
@@ -194,6 +198,30 @@ export async function onRequestGet(context) {
     const list = await readList(context, id, user);
     if (!list) return json({ error: 'not-found' }, 404);
     return json({ ready: true, user: user ? user.username : null, list: list }, 200);
+  }
+
+  /* One person's published lists, places and all: what the map opens on at
+     /?by=<name>, where they are the chips along the top and All is every
+     place on any of them, once. See readShelf().
+
+     Public only, and that is not this route's decision to make differently —
+     it is the profile's rule, enforced in the query. A signed-in owner asking
+     for their own shelf gets what everybody else gets, which is the same
+     answer /u/<name> has always drawn.
+
+     404 for a name nobody has, as a list does for an id nobody has. An empty
+     shelf — a real account that has published nothing — is a 200 with no
+     lists on it, and the map stays the map. */
+  const by = params.get('by') || '';
+  if (by) {
+    const shelf = await readShelf(context, by, user);
+    if (!shelf) return json({ error: 'not-found' }, 404);
+    return json({
+      ready: true,
+      user: user ? user.username : null,
+      by: shelf.by,
+      lists: shelf.lists
+    }, 200);
   }
 
   /* Everybody's lists, for /lists. It sits above the session check the rest

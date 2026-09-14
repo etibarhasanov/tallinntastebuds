@@ -32,6 +32,12 @@
      validator refuses a taxonomy type that tries to claim it, because two
      chips answering to the same id would filter each other's places. */
   var DEAL_FILTER = 'discount';
+  /* The account Google's numbers write under — see tools/googlelists.mjs and
+     GOOGLE_BY in assets/lists.js, which this restates for the same reason
+     every cap is restated: the two pages share no module. Up here rather than
+     beside the one function that used to read it, because three do now; see
+     whoseName(). */
+  var GOOGLE_BY = 'google-statistics';
   /* A LIST IS NOT A FILTER
      There used to be a third reserved id here, `list`, and somebody's top ten
      narrowed the map by sitting in state.active next to Bakery and Discount.
@@ -44,7 +50,17 @@
      So a list is a mode and not a filter. state.list holds one or it does
      not; while it does, it is what the map is showing and state.active is
      empty. The chips underneath are a different question, and asking one
-     — any chip, All included — ends the mode: see forgetList(). */
+     — any chip, All included — ends the mode: see forgetList().
+
+     A SHELF IS THE ONE PLACE A LIST IS A CHIP, AND IT IS THE SAME ARGUMENT
+     Opened on somebody's whole profile — /?by=<name>, every public list they
+     have — the row becomes their titles and the types come off it. That is
+     not the mistake above coming back. What read wrong was one person's top
+     ten standing in a row of categories, as though the map had a kind of food
+     called "shaurma bros"; a row that is nothing but their five lists says
+     what it is, All means every place on any of them rather than the whole
+     city, and there is no type chip left on the screen for one of them to be
+     mistaken for. See state.shelf and renderFilters(). */
   /* Every pin is the mark — the mouth out of the painting, cropped round.
      The circle is left to the one dot on the map that is not a place: the one
      that says where you are. So the sizes below are diameters of a picture,
@@ -92,11 +108,28 @@
        fixed for that page's life. Which means everything below can treat it
        as data and not as a thing that arrives late. */
     list: null,          // { id, title, by, items: [...] }, or null
-    /* The places on that list which are not on the map. A list draws from
-       data/places.json — the map plus the Google import — so most of a top
-       ten is somewhere I have never filmed. These are the smallest possible
-       stand-ins: a name, an address and a pin, marked `standIn` so nothing
-       that renders a write-up mistakes one for a place that has one.
+    /* Somebody's lists, all of them, when the map was opened on a profile:
+       /?by=<name>. Null on every other visit.
+
+       While one is on, the chip row is their titles and nothing else, and
+       state.list is which of them is pressed — null for All, which is every
+       place on any of them, once. A place on two of somebody's lists is one
+       pin and one row: a shelf is a person's map, not five maps stacked.
+
+       Read once, during boot, like the list beside it: the only door into
+       this is the address bar. `on` is the union it draws, built while the
+       stand-ins are, so All is a lookup rather than a walk through five
+       lists for every pin on the map. */
+    shelf: null,         // { by, lists: [...], on: { placeId: true } }, or null
+    /* The places on that list — or on any list on the shelf below — which are
+       not on the map. A list draws from data/places.json — the map plus the
+       Google import — so most of a top ten is somewhere I have never filmed.
+       These are the smallest possible stand-ins: a name, an address and a
+       pin, marked `standIn` so nothing that renders a write-up mistakes one
+       for a place that has one.
+
+       One per place however many lists hold it: a shelf seats its lists into
+       this one set, so a bakery on two of somebody's top tens is one pin.
 
        They are held apart from state.places rather than mixed into it, and
        that is the whole design. state.places is the map: it feeds the type
@@ -290,9 +323,10 @@
   }
 
   /* Everything that has a pin on the map right now: my seventy-four, plus the
-     stand-ins for a list's places that are not among them, plus the ones an
-     answer on the whole city put there. Never both at once — an answer puts
-     a list away before it draws — but the loops below do not need to know.
+     stand-ins for the places on a list — or on every list of a shelf — that
+     are not among them, plus the ones an answer on the whole city put there.
+     Never both at once — an answer puts a list away before it draws — but the
+     loops below do not need to know.
 
      Deliberately not "everything the map knows about". state.places is the
      map and stays the map — the chips, the search, Surprise me, the just-added
@@ -319,15 +353,30 @@
     return null;
   }
 
+  /* Whose lists these are, as this site prints it. The account Google's
+     numbers write under is read as the product everywhere here, because
+     nobody knows it by its username — byline() in assets/lists.js makes the
+     same swap on the pages that draw a byline.
+
+     Three things ask now: the credit over a list, the credit over a shelf of
+     them, and the note under a place that is on one but not on my map. The
+     third had been printing the username raw. */
+  function whoseName(name) {
+    return name === GOOGLE_BY ? 'Google Maps' : name;
+  }
+
   /* Why a place with no write-up is on this map at all. A stand-in arrives
      one of two ways, and they are never on screen together — an answer puts
      a list away before it draws — so the mode says which, and the place
-     carries no flag for it. */
+     carries no flag for it.
+
+     Whose it is, when there is a name to give: the list's owner, or — with a
+     whole shelf open and no one list of it pressed — the person whose shelf
+     it is, which is the same person every time. */
   function standInNote() {
     if (state.answer) return t('askNotMine');
-    return state.list && state.list.by
-      ? t('listNotMineBy', { name: state.list.by })
-      : t('listNotMine');
+    var by = state.list ? state.list.by : state.shelf ? state.shelf.by : null;
+    return by ? t('listNotMineBy', { name: whoseName(by) }) : t('listNotMine');
   }
 
   /* What the list says about one place — the sentence its owner wrote, which
@@ -346,6 +395,14 @@
       if (state.list.items[i].place === id) return true;
     }
     return false;
+  }
+
+  /* On any of the shelf's lists — the union, which is what All draws while
+     one is open. Built when the lists are seated rather than walked here: a
+     place is asked about once per pin per paint, and a shelf can hold
+     twenty-four lists. */
+  function onShelf(id) {
+    return !!(state.shelf && state.shelf.on[id]);
   }
 
   /* A place only shows a discount when one is set up, switched on, and
@@ -2664,10 +2721,49 @@
   }
 
   function clearChips() {
+    /* All, on a shelf, is all of theirs and not the whole city. The shelf is
+       what the page is — the address bar says so, the panel says whose it is
+       — and only the way out under that heading ends it. See pickList() and
+       leaveShelf(). */
+    if (state.shelf) { pickList(''); return; }
     if (!state.active.length && !state.list && !state.answer) return;
     forgetAnswer({ redraw: false });
     forgetList();
     state.active = [];
+    applyFilters();
+  }
+
+  /* Pressing one of a shelf's chips, and pressing All, which is the shelf
+     entire. The one narrowing on this row: state.list is which of their lists
+     the map is holding, and null is every place on any of them.
+
+     No history entry, unlike arriving on a list and then leaving it. Moving
+     between somebody's five lists is the same gesture as moving between
+     Bakery and Beer/pub — a filter being tried — and a Back button that
+     walked out of it one chip at a time would be a page nobody could leave.
+     The entry is rewritten instead, so the address bar always says which list
+     is on screen and a copied link opens it. */
+  function pickList(id) {
+    if (!state.shelf) return;
+
+    var now = state.list ? state.list.id : '';
+    /* Pressing the chip that is already down is All again, the way pressing a
+       type chip that is on takes it off. */
+    var want = id === now ? '' : id;
+    if (!want && !now) return;
+
+    var next = null;
+    if (want) {
+      for (var i = 0; i < state.shelf.lists.length; i++) {
+        if (state.shelf.lists[i].id === want) { next = state.shelf.lists[i]; break; }
+      }
+      /* A list that is not on this shelf. Only an address bar somebody typed
+         into can ask for one, and the answer is to leave the shelf as it is
+         rather than to empty the map. */
+      if (!next) return;
+    }
+
+    state.list = next;
     applyFilters();
   }
 
@@ -2726,10 +2822,13 @@
 
   /* A list first, because while one is open it is the whole of what the map
      is showing — the mode above, answered before the chips are consulted at
-     all. It is also the only state in which a stand-in is on the map at all:
-     leaving a list empties state.listPlaces, so allPlaces() below the first
-     line is my seventy-four and nothing else. That is what keeps a chip from
-     ever standing over a place I have not eaten at — a stand-in off the Google
+     all. Then the shelf it may have come off: every place on any of that
+     person's lists, once, which is what All means while one is open.
+
+     Those are also the only states in which a stand-in is on the map at all:
+     leaving them empties state.listPlaces, so allPlaces() below those lines
+     is my seventy-four and nothing else. That is what keeps a chip from ever
+     standing over a place I have not eaten at — a stand-in off the Google
      export does carry types now, and would answer one.
 
      Then the chips, over my own places. No chips is the whole map, and the
@@ -2737,6 +2836,7 @@
   function visiblePlaces() {
     if (state.answer) return answerPlaces();
     if (state.list) return allPlaces().filter(function (p) { return isOnList(p.id); });
+    if (state.shelf) return allPlaces().filter(function (p) { return onShelf(p.id); });
     if (!state.active.length) return state.places.slice();
     return allPlaces().filter(matchesFilters);
   }
@@ -2813,8 +2913,14 @@
          letting a list go on the way past — opening the drawer to see what is
          on it and shutting it again used to lose somebody's list, with nothing
          pressed and nothing said. Pressing a chip still ends it; that is a
-         question about the map, and it is asked on purpose. */
-      if (isNarrow() && state.active.length) clearChips();
+         question about the map, and it is asked on purpose.
+
+         On a shelf the lists ARE the chips, so one of them pressed is a
+         narrowed map and the rule applies to it exactly as written: shutting
+         the row goes back to All, which there means every place on any of
+         their lists. The shelf itself is not let go of — the row is its own
+         and nothing on it could end it. */
+      if (isNarrow() && (state.active.length || (state.shelf && state.list))) clearChips();
       return;
     }
     /* The class the chips' entrance is hung on, held for exactly as long as
@@ -2869,22 +2975,62 @@
   /* The one thing a resize can break: a window narrowing onto a filtered map
      would put the drawer's shut button in front of chips that are still
      filtering, which is the one state this design says cannot exist. So it
-     arrives open instead, showing what is doing the filtering. */
+     arrives open instead, showing what is doing the filtering.
+
+     And a shelf arrives open whether or not one of its lists is pressed,
+     which is the one place this opens a row nothing is filtering with. The
+     chips are what the page is for: a phone that opened somebody's profile on
+     the map and hid their five lists behind the word "Filters" would be
+     showing forty pins and no reason for any of them. */
   function syncFilterMenuToWidth() {
-    if (isNarrow() && state.active.length) setFilterMenu(true);
+    if (isNarrow() && (state.active.length || state.shelf)) setFilterMenu(true);
   }
 
   function renderFilters() {
     clear(dom.filters);
 
+    /* What the row is a row of, which is the one thing about it that is not
+       always types. The static markup says "Filter by type" and a shelf makes
+       that untrue — every chip under it is one of somebody's lists. */
+    dom.filters.setAttribute('aria-label', t(state.shelf ? 'filtersLists' : 'filters'));
+
+    /* All. Unpressed the moment anything else is, whichever row this is: no
+       chip on a shelf means every place on any of that person's lists, and no
+       chip on the map means the map. */
     var all = el('button', {
       type: 'button',
       className: 'chip',
-      'aria-pressed': String(state.active.length === 0),
+      'aria-pressed': String(state.shelf ? !state.list : state.active.length === 0),
       textContent: t('filterAll')
     });
     all.addEventListener('click', clearChips);
     dom.filters.appendChild(all);
+
+    /* A shelf's own chips: their lists, in the order their profile draws
+       them, and nothing else on the row. The types are not drawn alongside —
+       a row mixing "Top ten bakeries, by Google" with Bakery would be two
+       different questions in one control, and the second one is one press
+       away through All and then the way out under the panel's heading.
+
+       The title is the chip, at whatever length its owner gave it. It is the
+       one label on this row the site did not write, and cutting somebody's
+       title to fit would be the map deciding what their list is called; the
+       row scrolls, and on a phone it is a drawer that opens on arrival. */
+    if (state.shelf) {
+      state.shelf.lists.forEach(function (l) {
+        var chip = el('button', {
+          type: 'button',
+          className: 'chip',
+          'aria-pressed': String(!!state.list && state.list.id === l.id),
+          textContent: l.title
+        });
+        chip.addEventListener('click', function () { pickList(l.id); });
+        dom.filters.appendChild(chip);
+      });
+      staggerChips();
+      updateFilterFades();
+      return;
+    }
 
     /* THE LIST IS NOT A CHIP
        Somebody's top ten used to sit here as a chip wearing its own title,
@@ -2937,15 +3083,18 @@
       dom.filters.appendChild(chip);
     });
 
-    /* Each chip slides in a beat after the one before it. Capped at eight
-       beats, because a fourteen-word vocabulary would otherwise still be
-       arriving long after the row had stopped moving. */
+    staggerChips();
+    updateFilterFades();
+  }
+
+  /* Each chip slides in a beat after the one before it. Capped at eight
+     beats, because a fourteen-word vocabulary would otherwise still be
+     arriving long after the row had stopped moving. */
+  function staggerChips() {
     var chips = dom.filters.children;
     for (var c = 0; c < chips.length; c++) {
       chips[c].style.setProperty('--i', String(Math.min(c, 7)));
     }
-
-    updateFilterFades();
   }
 
   /* Keep the fade classes in step with how far the chip row is scrolled. */
@@ -3209,6 +3358,12 @@
    * rather than sit underneath as a filter with nothing left to switch it, it
    * goes — pins, panel, keep button and all.
    *
+   * A shelf goes the same way and all at once: its lists ARE the chips, so
+   * nothing on that row can end it, and what does is the way out under the
+   * panel's heading, the account sheet's own saves, or the chat answering.
+   * One list of a shelf is never dropped on its own — pressing All puts the
+   * other four back rather than leaving the map on none of them.
+   *
    * That is a decision about the feature and not about the code. The keep is
    * offered at the one moment it means anything: the list is open, the pins
    * are its pins, and the button sits under its owner's name. Press something
@@ -3230,11 +3385,14 @@
   var dropped = null;
 
   function forgetList() {
-    if (!state.list) return;
+    if (!state.list && !state.shelf) return;
 
     /* Everything needed to put it back, together, so restoreList() cannot
-       reassemble half of one. */
-    dropped = { list: state.list, places: state.listPlaces };
+       reassemble half of one — the shelf included, and the same objects
+       rather than copies of them: the list held here is one of the shelf's
+       own, and a keep pressed on it has to be the keep the chip beside it
+       draws. */
+    dropped = { shelf: state.shelf, list: state.list, places: state.listPlaces };
 
     /* A stand-in is only ever on the map because the list put it there, so
        one being read right now goes out with it. Left alone, the panel would
@@ -3250,6 +3408,7 @@
     if (state.marked && standing[state.marked]) state.marked = null;
 
     dropPins(state.listPlaces);
+    state.shelf = null;
     state.list = null;
     state.listPlaces = [];
 
@@ -3260,12 +3419,31 @@
     syncUrl(true);
   }
 
-  /* Back, or a ?list= that came round again on an entry this page has already
-     seen. Nothing is fetched: either the list is the one that was dropped, in
-     which case it is handed straight back, or it is somebody else's link and
-     boot is the thing that loads it. */
-  function restoreList(id) {
-    if (!dropped || dropped.list.id !== id) return false;
+  /* The way out from under a shelf: the same letting go, from the one control
+     that means it. All cannot do this job — on a shelf that is every place on
+     every list of it — so the panel's heading carries the way back to the
+     whole map, the way a list's heading always has. See shelfCredit(). */
+  function leaveShelf() {
+    if (!state.shelf) return;
+    forgetList();
+    applyFilters();
+  }
+
+  /* Back, or an address this page has already seen coming round again.
+     Nothing is fetched: either it is the view that was dropped, in which case
+     it is handed straight back, or it is somebody's link and boot is the
+     thing that loads it.
+
+     Both halves have to match, which is what makes this refuse an entry it
+     cannot rebuild rather than restore half of one: a shelf with the wrong
+     list pressed is a view nothing on this page could have produced. */
+  function restoreList(params) {
+    if (!dropped) return false;
+    var by = params.get('by') || '';
+    var id = params.get('list') || '';
+    if (by !== (dropped.shelf ? dropped.shelf.by : '')) return false;
+    if (id !== (dropped.list ? dropped.list.id : '')) return false;
+    state.shelf = dropped.shelf;
     state.list = dropped.list;
     state.listPlaces = dropped.places;
     addPins(state.listPlaces);
@@ -3284,6 +3462,7 @@
          the list before this runs. */
       var keeps = !held ? false
         : state.list ? isOnList(held.id)
+        : state.shelf ? onShelf(held.id)
         : !state.active.length || matchesFilters(held);
       if (!keeps) state.marked = null;
     }
@@ -3292,12 +3471,21 @@
     if (state.view === 'list') renderPanel();
     paintMarkers();
 
+    var shown = visiblePlaces();
+
+    /* A shelf's chips always reframe, and that is the difference between them
+       and a type chip. Pressing Bakery asks which of the places in front of
+       me are bakeries; pressing somebody's top ten asks to be shown those ten
+       — the same question arriving on a list asks, and arriving on one has
+       always fitted the map to it. Ten places scattered over a city are not
+       an answer if half of them are off the screen. */
+    if (state.shelf) fitToPins({ animate: true });
+
     /* Narrowing to a single place and leaving the map where it was makes you
        hunt for the one pin that is left, which on a filter like Discount is
        the entire answer. So the map goes to it. The place is not opened: the
        filter said where, not read me. */
-    var shown = visiblePlaces();
-    if (state.active.length && shown.length === 1) refocus(shown[0], true);
+    else if (state.active.length && shown.length === 1) refocus(shown[0], true);
 
     /* And if the chips have left none of themselves on the screen, the map
        goes to them. This is the view you land in after Show my location: a
@@ -3308,10 +3496,22 @@
        whole map if the chips match nothing anywhere. */
     else if (!anyInView(shown)) fitToPins({ animate: true });
 
+    /* A shelf reports which list rather than which types, because that is
+       what its chips are — and which person's, since the list ids alone say
+       nothing about whose row was pressed. */
+    if (state.shelf) {
+      TTBTrack.event('list_pick', {
+        by: state.shelf.by,
+        list_id: state.list ? state.list.id : '',
+        places_shown: shown.length
+      });
+      return;
+    }
+
     var params = {
       filters: state.active.length ? state.active.slice().sort().join(',') : 'all',
       filter_count: state.active.length,
-      places_shown: visiblePlaces().length
+      places_shown: shown.length
     };
     if (change) {
       params.filter_id = change.id;
@@ -5435,7 +5635,17 @@
      switcher happens to say.
      Names, streets and dishes are never translated, so they go in once.
      The index is built once from data that cannot change afterwards; folding
-     sixty-eight of these on every keystroke would be work for nothing. */
+     sixty-eight of these on every keystroke would be work for nothing.
+
+     Over allPlaces() and not state.places, so the stand-ins a list or a shelf
+     brought are in it too. They are seated before this runs — see boot() —
+     and they are the one set of places on this map that cannot arrive later
+     than it. Without them the field went blank on every word: a shelf of
+     Google's five top tens is forty-eight places, none of them mine, and a
+     panel listing forty-eight names over a search box that answers "nothing
+     matches that" to every one of them is the search saying the list is
+     empty. A list opened on its own had the same hole and nobody had hit it,
+     because ten rows are read rather than searched. */
   var hayIndex = null;
 
   function typeWords(id) {
@@ -5452,7 +5662,7 @@
 
   function buildSearchIndex() {
     hayIndex = {};
-    state.places.forEach(function (place) {
+    allPlaces().forEach(function (place) {
       hayIndex[place.id] = fold([
         place.name,
         place.address,
@@ -5663,6 +5873,11 @@
        in the alphabet, without the order or the sentences. */
     var reading = !words.length && !state.active.length && !!state.list;
 
+    /* And once more, one floor up: everything one person has published, with
+       none of their lists picked out of it. Typing in the search leaves it,
+       the same way it leaves a list. */
+    var theirs = !words.length && !state.list && !!state.shelf;
+
     if (reading) {
       /* The order is the whole point of a top ten. Its owner dragged these
          into the order they are in, and the alphabet would throw away the one
@@ -5744,7 +5959,7 @@
     /* Suppressed on your own list for the reason a search suppresses it: a
        handful of places you chose yourself, cut in two by a heading about when
        the site added them, makes you read your own list twice. */
-    var fresh = (words.length || mine || reading) ? []
+    var fresh = (words.length || mine || reading || theirs) ? []
       : recentlyAdded().filter(function (p) { return shown[p.id]; });
 
     if (fresh.length > 1) section('listNew', fresh, 'is-new');
@@ -5752,6 +5967,20 @@
        to it immediately contradicts, so a narrowed list falls back to naming
        its sort order instead. */
     var everything = !words.length && !state.active.length;
+
+    /* Everything one person published, named by them. The places are in the
+       alphabet and carry no sentences, and both of those are the same fact
+       about a union: five orders laid over each other have no order left, and
+       a place on two of somebody's lists has two things said about it with
+       nothing to choose between them. Press one of the chips and it is that
+       list's order, and that list's words about each place. */
+    if (theirs) {
+      dom.listBody.appendChild(shelfCredit(places.length));
+      var theirRows = el('ul', { className: 'place-list is-list' });
+      places.forEach(function (place) { theirRows.appendChild(listRow(place, '')); });
+      dom.listBody.appendChild(theirRows);
+      return;
+    }
 
     /* A list is named as itself, by its owner's title, with their name under
        it. It is the one group in this panel whose heading is not a string out
@@ -5777,18 +6006,13 @@
 
      It takes the focus and labels the panel, the way the first group heading
      normally does, because in this state it is the first group heading. */
-  /* The account Google's numbers write under — see tools/googlelists.mjs and
-     GOOGLE_BY in assets/lists.js, which this restates for the same reason
-     every cap is restated: the two pages share no module. */
-  var GOOGLE_BY = 'google-statistics';
-
   function listCredit(n) {
     var count = n === 1 ? t('listCountOne') : t('listCount', { n: n });
-    /* The byline's phrase and the name in it, with the one swap byline() in
-       assets/lists.js makes: the account Google's numbers write under reads
-       as the product, because nobody knows it by its username. */
+    /* Which phrase the byline uses, and the name to put in it. Google's
+       account gets a sentence of its own — "generated from" rather than
+       "created by" — as well as the name whoseName() swaps in. */
     var google = state.list.by === GOOGLE_BY;
-    var byName = google ? 'Google Maps' : state.list.by;
+    var byName = whoseName(state.list.by);
     var words = state.list.by ? t(google ? 'listsByGoogle' : 'listsBy').split('{name}') : null;
     var by = words ? words.join(byName) : '';
 
@@ -5833,28 +6057,81 @@
         }), 'list_page', { list_id: state.list.id }),
         shareButton(state.list)
       ]),
-      leaveButton()
+      leaveButton('listLeave', clearChips)
     ]);
   }
 
-  /* The way back to the whole map, which is the one thing in this block that
-     is not about the list. So it is not a fourth pill: an .alt is what this
+  /* The heading over a whole shelf: whose lists these are, how many places
+     they come to once the repeats are counted once, the way through to the
+     profile the chips were built from, and the way out.
+
+     No keep button and no share. Both of those are about a list — a thing
+     with a title somebody wrote and an address to send — and a shelf is not
+     one: it is a person, and the door under it leads to their page, where
+     every list on this row can be kept and sent on its own.
+
+     No intro either, and that is the one thing left off that somebody might
+     miss: the line an account writes about itself is on their profile and
+     comes out of /api/profile, which this map never asks. A map that fetched
+     a second answer to print one sentence would be paying for it on every
+     visit that never opens the panel. */
+  function shelfCredit(n) {
+    var count = n === 1 ? t('listCountOne') : t('listCount', { n: n });
+    var lists = state.shelf.lists.length;
+    var name = whoseName(state.shelf.by);
+
+    return el('div', { className: 'list-credit' }, [
+      el('h2', {
+        className: 'list-label is-credit',
+        id: 'panel-list-title',
+        tabIndex: -1,
+        'aria-label': name + ', ' + count
+      }, [
+        el('span', { className: 'list-group', textContent: name }),
+        el('span', { className: 'list-label-n eyebrow', textContent: count })
+      ]),
+      /* How many lists those places came off, in the words the directory
+         counts lists in. It is the sentence the chip row would say if a row
+         of chips could say anything, and on a phone the row is a drawer that
+         somebody may have shut. */
+      el('span', {
+        className: 'list-credit-by eyebrow',
+        textContent: t(lists === 1 ? 'listsAllFoundOne' : 'listsAllFound', { n: lists })
+      }),
+      el('div', { className: 'list-credit-acts' }, [
+        TTBTrack.click(el('a', {
+          className: 'list-credit-act',
+          href: '/u/' + encodeURIComponent(state.shelf.by),
+          textContent: t('listOpenProfile')
+        }), 'profile_open', { name: state.shelf.by })
+      ]),
+      leaveButton('listsBack', leaveShelf)
+    ]);
+  }
+
+  /* The way back out, which is the one thing in either block that is not
+     about what is above it. So it is not another pill: an .alt is what this
      site's fourth control is for — the quiet one beside the things you do, a
      way out — and it is the same shape and nearly the same words the list's
      own page uses at the foot of the same content.
 
-     It is the All chip, printed where somebody reading a list can find it.
-     Pressing All has always done this and still does; what it was not, was
-     visible — the row it lives on says nothing about the list, and on a phone
-     it is behind a button. Somebody sent a link had to know that a chip they
-     had no reason to press was the way out of what they had been sent. */
-  function leaveButton() {
+     Under a list it is the All chip, printed where somebody reading a list
+     can find it. Pressing All has always done this and still does; what it
+     was not, was visible — the row it lives on says nothing about the list,
+     and on a phone it is behind a button. Somebody sent a link had to know
+     that a chip they had no reason to press was the way out of what they had
+     been sent.
+
+     Under a shelf All is not the way out — it is every place on every list of
+     it — so this is the only way out, and it says the map rather than all
+     places, because that is where it goes. */
+  function leaveButton(key, run) {
     var b = el('button', {
       type: 'button',
       className: 'alt list-credit-out',
-      textContent: t('listLeave')
+      textContent: t(key)
     });
-    b.addEventListener('click', clearChips);
+    b.addEventListener('click', run);
     return b;
   }
 
@@ -5909,14 +6186,20 @@
      than only on the list's own page because here is where people actually
      are — a link that was sent to you opens the map.
 
-     IT IS OFFERED ONCE
-     There is no second chance at this and that is deliberate. The list is on
-     screen because ?list= is in the address bar, and the first chip pressed
-     takes both away: see forgetList(). So the button is drawn at the moment
-     it means something — these pins, this person's name above it — and when
-     that moment goes, it goes with it. Nothing follows anybody around the
-     map asking again. Back is the only way to a moment already passed, and
-     it is enough.
+     IT IS OFFERED ONCE, UNLESS THE LISTS ARE THE CHIPS
+     A list opened by link is on screen because ?list= is in the address bar,
+     and the first chip pressed takes both away: see forgetList(). So the
+     button is drawn at the moment it means something — these pins, this
+     person's name above it — and when that moment goes, it goes with it.
+     Nothing follows anybody around the map asking again. Back is the only way
+     to a moment already passed, and it is enough.
+
+     On a shelf the moment comes round as often as somebody presses the chip.
+     That is not a change of mind about nagging: nothing follows anybody
+     anywhere, and a row of five lists is a row somebody is reading through on
+     purpose. The button is where it always was — under the title of whichever
+     of them is open — and it is the same button, because the keep is on the
+     list and not on the shelf.
 
      SIGNED OUT IT IS A DOOR, NOT A DEAD BUTTON
      A keep needs an account, for the reason functions/api/lists.js gives. So
@@ -6788,6 +7071,14 @@
    * a list. /?list=<id> — the door from /lists.html and from a list's own
    * page, and the answer to "show me these places on the map".
    *
+   * Or on a shelf of them: /?by=<name>, every public list one person has, the
+   * door from their profile and the answer to "show me all of these". The two
+   * are the same machinery — a shelf is a set of lists seated together, and
+   * the one of them that is pressed is state.list, exactly as if it had
+   * arrived alone. What a shelf adds is the row of chips, All meaning every
+   * place on any of them, and the arithmetic that keeps a place named by two
+   * of somebody's lists to one pin. See seatShelf().
+   *
    * WHY THE MAP AND NOT A SECOND MAP ON THE LIST PAGE
    *
    * A list is ten restaurants in one city. The thing anybody wants to know
@@ -6840,13 +7131,45 @@
       .catch(function () { return null; });
   }
 
-  /* Split the list into the places the map already knows and the ones it does
-     not. Called once, after restaurants.json has landed, because "already
-     knows" is a question about that file. */
-  function seatList(list) {
-    if (!list) return;
+  /* And the other door, one floor up: /?by=<name>, everything that person has
+     published, opened at once. It is what /u/<name> leads to and what the five
+     Google top tens are read through — five lists whose overlap is the point,
+     since a bakery good enough for the bakeries list is on the cafés one too.
 
-    var stand = [];
+     Same shape of answer as a list, in the plural, out of the same route:
+     GET /api/lists?by=<name>. Same failure, too — a name nobody has, a
+     database that is not bound, an account that has published nothing — and
+     the same quiet ending. The map is the map. */
+  function wantedShelf() {
+    var name = new URLSearchParams(window.location.search).get('by') || '';
+    /* The same shape functions/api/account.js mints a username in, checked
+       here so a junk parameter is not worth a request. */
+    return /^[a-z0-9][a-z0-9-]{2,23}$/.test(name) ? name : '';
+  }
+
+  function loadShelf(name) {
+    if (!name) return Promise.resolve(null);
+    return fetch('/api/lists?by=' + encodeURIComponent(name), { headers: { accept: 'application/json' } })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (out) {
+        return out && out.by && out.lists && out.lists.length ? out : null;
+      })
+      .catch(function () { return null; });
+  }
+
+  /* Split one list into the places the map already knows and the ones it does
+     not, putting a stand-in for each of the second kind into `stand`. Called
+     once per list, after restaurants.json has landed, because "already knows"
+     is a question about that file. Answers with the rows this page can draw,
+     in the list's own order.
+
+     `seen` is what holds a shelf to one stand-in per place. Five of somebody's
+     lists can name the same bakery — the Google top tens do, which is half of
+     why they are worth opening together — and five copies of it would be five
+     rows in the panel under five pins standing on each other. A place that is
+     on my map needs no such guard: it is drawn from state.places, which each
+     of the loops that paint reads exactly once. */
+  function seat(list, stand, seen) {
     var items = [];
 
     list.items.forEach(function (item) {
@@ -6860,6 +7183,9 @@
          and is not on this one. Counting it in the panel would be a row that
          no pin answers to. */
       if (typeof item.lat !== 'number' || typeof item.lng !== 'number') return;
+
+      if (seen[item.place]) { items.push(item); return; }
+      seen[item.place] = true;
 
       stand.push({
         id: item.place,
@@ -6893,17 +7219,18 @@
       items.push(item);
     });
 
-    /* Nothing this page can draw: an empty list, or one whose every place the
-       catalogue has no coordinates for. The map does not become a list view
-       for it — a chip that filters to nothing and a panel saying so is a
-       worse answer than the map, and the list's own page is where a list with
-       nothing on it is reported. */
-    if (!items.length) return;
+    return items;
+  }
 
-    /* The list as this page can actually show it, in its owner's order. A row
-       dropped above is dropped from the count and from the panel too, so the
-       two never disagree about how many places are on screen. */
-    state.list = {
+  /* The list as this page can actually show it, in its owner's order. A row
+     the seating dropped is dropped from the count and from the panel too, so
+     the two never disagree about how many places are on screen.
+
+     Both doors build it here rather than each their own, because everything
+     downstream — the panel's credit, the keep button, the chip on a shelf —
+     reads one shape and must not have to ask which door a list came through. */
+  function listAsShown(list, items) {
+    return {
       id: list.id,
       title: list.title,
       intro: list.intro || '',
@@ -6916,7 +7243,62 @@
       kept: !!list.kept,
       items: items
     };
+  }
+
+  function seatList(list) {
+    if (!list) return;
+
+    var stand = [];
+    var items = seat(list, stand, {});
+
+    /* Nothing this page can draw: an empty list, or one whose every place the
+       catalogue has no coordinates for. The map does not become a list view
+       for it — a chip that filters to nothing and a panel saying so is a
+       worse answer than the map, and the list's own page is where a list with
+       nothing on it is reported. */
+    if (!items.length) return;
+
+    state.list = listAsShown(list, items);
     state.listPlaces = stand;
+  }
+
+  /* And a whole shelf of them, seated into the same two places: one set of
+     stand-ins for the lot, and the lists with only the rows this page can
+     draw left on them.
+
+     `on` is built here rather than walked for later — every place on any of
+     them, once, which is what All draws and what onShelf() answers out of.
+
+     `wanted` is the list the address bar named alongside the shelf, so a link
+     copied with a chip pressed opens with that chip pressed. A name that is
+     not one of these lists is the shelf entire, which is what the address
+     without it means anyway. */
+  function seatShelf(shelf, wanted) {
+    if (!shelf || !shelf.lists) return;
+
+    var stand = [];
+    var seen = {};
+    var on = {};
+    var lists = [];
+
+    shelf.lists.forEach(function (list) {
+      var items = seat(list, stand, seen);
+      /* A list with nothing this page can draw is not a chip. The reasoning
+         is seatList()'s: a chip that filters the map to nothing is a worse
+         answer than not offering it. */
+      if (!items.length) return;
+      items.forEach(function (item) { on[item.place] = true; });
+      lists.push(listAsShown(list, items));
+    });
+
+    if (!lists.length) return;
+
+    state.shelf = { by: shelf.by, lists: lists, on: on };
+    state.listPlaces = stand;
+
+    for (var i = 0; wanted && i < lists.length; i++) {
+      if (lists[i].id === wanted) { state.list = lists[i]; break; }
+    }
   }
 
   /* ------------------------------------------------------------------- URL */
@@ -6959,6 +7341,14 @@
        it is on screen, the way ?spot= does. */
     if (state.list) params.set('list', state.list.id);
     else params.delete('list');
+
+    /* ?by= is whose lists the page is holding, under the same rule and for as
+       long as it holds them. With a chip pressed both are on — ?by=kate&list=…
+       is her shelf with one of her lists picked out of it — and a link copied
+       at that moment opens exactly that, chip and all. The way out under the
+       panel's heading takes both off together, because it lets go of both. */
+    if (state.shelf) params.set('by', state.shelf.by);
+    else params.delete('by');
     if (state.langPinned) params.set('lang', state.lang);
     else params.delete('lang');
     if (state.stylePinned) params.set('style', state.style);
@@ -6995,25 +7385,33 @@
     window.addEventListener('popstate', function () {
       var params = new URLSearchParams(window.location.search);
 
-      /* The list first, because it decides which places exist: byId() below
-         has to be able to find a stand-in before ?spot= is asked about one.
+      /* The list — or the shelf it came off — first, because it decides which
+         places exist: byId() below has to be able to find a stand-in before
+         ?spot= is asked about one.
 
-         Only ever the list this page dropped. A ?list= for anything else is
-         somebody's link, and a link is boot's job — reaching an entry that
+         Only ever what this page dropped. A ?list= or ?by= for anything else
+         is somebody's link, and a link is boot's job — reaching an entry that
          names a list this page never had is not a thing the history can
          produce, and quietly fetching one here would be a second way into a
-         feature that already has one. */
+         feature that already has one.
+
+         Chips pressed inside a shelf never reach here: they rewrite the entry
+         rather than adding one, so the only entries with ?by= on them are the
+         one it arrived on and the one the way out pushed. */
       var wanted = params.get('list') || '';
+      var wantedBy = params.get('by') || '';
+      var here = state.list ? state.list.id : '';
+      var hereBy = state.shelf ? state.shelf.by : '';
       var moved = false;
-      if (wanted && (!state.list || state.list.id !== wanted)) {
-        moved = restoreList(wanted);
-      } else if (!wanted && state.list) {
-        /* Forward, back onto the entry where the list was let go. Not
-           forgetList(): that one pushes, and writing history from inside a
-           popstate is how a Back button starts fighting the person pressing
-           it. */
-        dropped = { list: state.list, places: state.listPlaces };
+      if ((wanted || wantedBy) && (wanted !== here || wantedBy !== hereBy)) {
+        moved = restoreList(params);
+      } else if (!wanted && !wantedBy && (state.list || state.shelf)) {
+        /* Forward, back onto the entry where it was let go. Not forgetList():
+           that one pushes, and writing history from inside a popstate is how
+           a Back button starts fighting the person pressing it. */
+        dropped = { shelf: state.shelf, list: state.list, places: state.listPlaces };
         dropPins(state.listPlaces);
+        state.shelf = null;
         state.list = null;
         state.listPlaces = [];
         moved = true;
@@ -7045,8 +7443,9 @@
         return;
       }
       /* A list coming back opens the panel on it, the way arriving on a link
-         does: the pins say where, and the panel says why these. */
-      if (moved && state.list) { showList(false); return; }
+         does: the pins say where, and the panel says why these. A shelf the
+         same — the panel is what says whose lists these are. */
+      if (moved && (state.list || state.shelf)) { showList(false); return; }
       if (moved) return;
       if (dom.panel.classList.contains('is-open')) closePanel({ history: false });
     });
@@ -7608,8 +8007,16 @@
          already in hand: markers are made at boot and a list arriving later
          would mean building a second set and keeping the two in step. It
          resolves to null on every ordinary visit and on every failure, and
-         the map is the map. */
-      loadList(wantedList())
+         the map is the map.
+
+         Not asked for at all when a shelf is: /?by=kate&list=… is one of the
+         lists the shelf below is about to hand over whole, and fetching it
+         again would be the same list twice. */
+      loadList(wantedShelf() ? '' : wantedList()),
+      /* And everything one person published, when the map was opened on their
+         profile. Same rules: here so the pins are built once, null on every
+         ordinary visit and on every failure. */
+      loadShelf(wantedShelf())
     ]).then(function (loaded) {
       state.places = loaded[0] || [];
       state.types = (loaded[1] && loaded[1].types) || [];
@@ -7646,8 +8053,14 @@
          Nothing else is needed to make the map open on it. A list is a mode
          rather than a filter — see visiblePlaces() — so seating one is all it
          takes for the map to be showing it, and the chips stay unpressed
-         underneath. Any of them dropped on afterwards ends it. */
+         underneath. Any of them dropped on afterwards ends it.
+
+         A shelf the same, and never both: the two are exclusive by the line
+         above that does not fetch a list when a shelf is wanted. It takes the
+         ?list= off the address as well, which is which of its chips to press
+         — the shelf already holds that list. */
       seatList(loaded[5]);
+      seatShelf(loaded[6], arrived.get('list') || '');
 
       /* Style before the map, so the first tile request is already the right
          basemap and the pins are built from the right tokens. */
@@ -7678,7 +8091,10 @@
       /* A ?type= link lands on a filtered map, and on a phone a shut row
          would be the one thing this design promises never to be. So the link
          opens it: the chips it arrived with are on screen, pressed, and one
-         press from being let go of. On a desktop they already are. */
+         press from being let go of. On a desktop they already are. A shelf
+         opens it too, and there the row is the whole feature — five lists
+         folded behind the word "Filters" is a map of somebody's places with
+         no way to see which are whose. */
       syncFilterMenuToWidth();
 
       /* The map is drawn, the chips and the panel are filled in, and every
@@ -7727,7 +8143,7 @@
 
          Not when a place was named as well: that link is about the place, and
          the list is still underneath it — closing the place lands on it. */
-      else if (state.list) {
+      else if (state.list || state.shelf) {
         showList(false);
         /* And framed again now the panel is up. buildMarkers fitted the list
            to the whole window a moment ago, before there was a panel to fit

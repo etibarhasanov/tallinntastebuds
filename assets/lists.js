@@ -448,9 +448,24 @@
 
      ?list= rather than a path of its own. The map is one page and the map's
      doors are query parameters — ?spot=, ?type=, ?story=, ?account= — and
-     this is another door onto the same map rather than a second map. */
-  function mapHref(id) {
-    return '/?list=' + encodeURIComponent(id);
+     this is another door onto the same map rather than a second map.
+
+     `by` is the other half of that door and only a profile passes it: opened
+     from somebody's page, a list arrives on the map with their other lists
+     beside it as chips, and this one pressed. Everywhere else a list travels
+     alone, because everywhere else it was sent alone — a link somebody was
+     handed is about that list, and putting a stranger's other four on the row
+     is answering a question nobody asked. */
+  function mapHref(id, by) {
+    return '/?list=' + encodeURIComponent(id) +
+      (by ? '&by=' + encodeURIComponent(by) : '');
+  }
+
+  /* And the whole of somebody's page as pins: every public list they have, as
+     the chips along the top of the map, All being every place on any of them.
+     The one door with no list in it — see mapHref() above for what ?by= is. */
+  function shelfHref(name) {
+    return '/?by=' + encodeURIComponent(name);
   }
 
   /* Where a byline goes. Every list on this site says who put it together,
@@ -513,10 +528,10 @@
      where it is the one thing that card asks for; and the outlined pill
      everywhere else — on your own list, where Save has the accent, and in the
      corner of each row on a profile. */
-  function mapLink(id, className) {
+  function mapLink(id, className, by) {
     return TTBTrack.click(el('a', {
       className: className,
-      href: mapHref(id),
+      href: mapHref(id, by),
       textContent: t('listsOnMap')
     }), 'list_map', { list_id: id });
   }
@@ -606,7 +621,7 @@
      map button in the corner was already a sibling laid over it for the same
      reason. What it buys is the name of the link: the title, rather than the
      title and every number beside it read out in one breath. */
-  function listRow(l) {
+  function listRow(l, by) {
     var box = el('div', { className: 'lists-index-card' }, [
       TTBTrack.click(el('a', {
         className: 'lists-index-title lists-open',
@@ -621,7 +636,12 @@
         keepCount(l.keeps)
       ])
     ]);
-    return el('li', { className: 'lists-index-row' }, [box, mapLink(l.id, 'alt lists-map lists-index-map')]);
+    return el('li', { className: 'lists-index-row' }, [
+      box,
+      /* Whose page this row is on. A list opened from here opens with the
+         rest of theirs on the chip row — see mapHref(). */
+      mapLink(l.id, 'alt lists-map lists-index-map', by)
+    ]);
   }
 
   /* ------------------------------------------------------------ one person
@@ -676,14 +696,33 @@
       el('p', {
         className: 'lists-say',
         textContent: t('profileSince', { when: new Date(who.since).getFullYear() })
-      })
+      }),
+      /* All of it on the map at once: their lists as the chips along the top,
+         All being every place on any of them, counted once however many of
+         their lists hold it. It is the card's one action, drawn filled for
+         the reason a list's own head draws the same door filled — a set of
+         places asks where, and every row below this offers the same door into
+         one list.
+
+         Only where there is more than one list to gather. With a single list
+         this pill and the one in the corner of the row under it would open
+         the same pins twice, the second of them under a word saying "all". */
+      who.lists.length > 1
+        ? el('div', { className: 'lists-row' }, [
+            TTBTrack.click(el('a', {
+              className: 'go',
+              href: shelfHref(who.name),
+              textContent: t('profileOnMap')
+            }), 'profile_map', { name: who.name })
+          ])
+        : null
     ]));
 
     if (!who.lists.length) {
       wrap.appendChild(el('p', { className: 'lists-none', textContent: t('profileNone') }));
     } else {
       var ul = el('ul', { className: 'lists-index' });
-      who.lists.forEach(function (l) { ul.appendChild(listRow(l)); });
+      who.lists.forEach(function (l) { ul.appendChild(listRow(l, who.name)); });
       wrap.appendChild(ul);
     }
 

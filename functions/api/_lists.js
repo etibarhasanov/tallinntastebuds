@@ -11,6 +11,12 @@
  * It lives here rather than in _lib.js because _lib.js is the plumbing every
  * route needs — hashing, sessions, which database this is — and this is one
  * feature's query.
+ *
+ * fillItems() below is the other half of it, and it is exported for a third
+ * caller: readShelf() in functions/api/_profile.js, which reads every public
+ * list one person has as one answer for the map. What a row on a list looks
+ * like once the rolls have been read is a shape the map draws a card out of,
+ * and two copies of it would drift the day one of them grew a field.
  */
 
 import { catalogue, venuesByIds, addedByIds, isAdded } from './_lib.js';
@@ -57,61 +63,7 @@ export async function readList(context, id, user) {
     .bind(id)
     .all();
 
-  /* Each row filled out from the catalogue: today's name, the address, the
-     pin, and whether the place is also on my map. That last one is what lets
-     a row link to a write-up rather than to a Google search — and a row out
-     of google_venues brings Google's own description of the place with it,
-     since it has no write-up to link to.
-
-     The row's own stored name is the fallback, and the reason a list never
-     renders with a hole in it — see list_items in db/schema.sql. A place the
-     catalogue has lost keeps its name and its sentence and stops linking
-     anywhere, which is the smallest loss available.
-
-     Filled in here rather than looked up in the browser on purpose: a shared
-     list is opened by somebody who has never been to this site, and making
-     them download the whole catalogue to draw ten rows would be a hundred
-     kilobytes to render a few hundred bytes of it. */
-  let roll = null;
-  try {
-    roll = await catalogue(context);
-  } catch (e) { /* unreadable costs the addresses and the links, not the list */ }
-
-  /* Whatever the catalogue did not know is looked for in google_venues, which
-     is where the other eleven hundred places live — a list holds a catalogue
-     slug or a Google key and does not care which. Twenty rows at the most,
-     and only the ids this list actually holds. */
-  let venues = new Map();
-  try {
-    const strangers = results
-      .map((r) => r.place_id)
-      .filter((id) => !roll || !roll.has(id))
-      /* Minus the ones somebody added by hand, which are in neither roll and
-         are looked for in their own table below. Filtered by the shape of the
-         id rather than by asking google_venues and finding nothing: a query
-         that can be skipped is better than a query that comes back empty. */
-      .filter((id) => !isAdded(id));
-    if (strangers.length) venues = await venuesByIds(env, strangers);
-  } catch (e) { /* same cost, same reason */ }
-
-  /* And the third roll: the places somebody added by hand because neither of
-     the other two had them. The same shape as the other two, bar the
-     description only a Google row carries: a name somebody typed is not a
-     description of anything, and the row below draws it as it draws a place
-     of mine.
-
-     Anybody's, not only this reader's. Only its author ever sees one in a
-     picker, but the whole point of the feature is that it goes on a list and
-     the list gets shared — so a stranger opening that list has to see the
-     place and its pin like every other place on it. Without this the row
-     would fall back to its stored name with no point, and the map would
-     silently drop it: seatList() in assets/app.js has nowhere to put a pin
-     for a place that does not know where it is. */
-  let added = new Map();
-  try {
-    const byHand = results.map((r) => r.place_id).filter(isAdded);
-    if (byHand.length) added = await addedByIds(env, byHand);
-  } catch (e) { /* same cost, same reason */ }
+  const items = await fillItems(context, results);
 
   /* How many people have kept this list, and whether the reader is one of
      them. The module comment in functions/api/lists.js has promised both of
@@ -119,8 +71,8 @@ export async function readList(context, id, user) {
      every keep button on the site drew itself empty on a list you kept last
      week and corrected itself only when you pressed it — which un-kept it.
 
-     Not wrapped in a try the way the catalogue lookups above are. Those are
-     enrichment, and a list without addresses is still a list; these come out
+     Not wrapped in a try the way the roll lookups in fillItems() are. Those
+     are enrichment, and a list without addresses is still a list; these come out
      of the same database as the row this function has already read, so a
      failure here is not a missing address, it is the request having failed.
      A keep that reports itself as a nought is the feature lying about
@@ -148,49 +100,129 @@ export async function readList(context, id, user) {
     updated: list.updated_at,
     keeps: keeps ? keeps.n : 0,
     kept: kept,
-    items: results.map((r) => {
-      const known = (roll ? roll.get(r.place_id) : null) ||
-                    venues.get(r.place_id) ||
-                    added.get(r.place_id) ||
-                    null;
-      return {
-        place: r.place_id,
-        name: known ? known.name : r.name,
-        address: known ? known.address : '',
-        lat: known && typeof known.lat === 'number' ? known.lat : null,
-        lng: known && typeof known.lng === 'number' ? known.lng : null,
-        map: !!(known && known.map),
-        /* Set only on a Google row for a place that is also on my map: the
-           write-up is filed under the map's id, not Google's key. */
-        mapId: (known && known.mapId) || null,
-        /* Whether this place was added by hand rather than found on either
-           roll. The page draws the row the same; this is what lets it say so,
-           and what stops a stranger's typed name reading as one of mine. */
-        added: added.has(r.place_id),
-        /* What Google says this place is, in the map's own vocabulary, and
-           what it costs on Google's scale — see venueEntry() in
-           functions/api/_lib.js. Only a row out of google_venues has either,
-           and `google` is what makes the page say whose description it is
-           drawing. A place of mine says it in a write-up instead.
-
-           And the four things a card can act on: the number to ring, the site
-           to read, the week of opening hours as seven days — see venueHours()
-           — and the Google listing the lot came off. They go the same way and
-           for the same reason: the map draws a place off the export as a card
-           of its own, and a card that knows the address but not whether the
-           door is open on a Sunday is thinner than the row it was filled
-           from. */
-        types: (known && known.types) || [],
-        price: (known && typeof known.price === 'number') ? known.price : null,
-        rating: (known && typeof known.rating === 'number') ? known.rating : null,
-        reviews: (known && typeof known.reviews === 'number') ? known.reviews : null,
-        google: !!(known && known.google),
-        phone: (known && known.phone) || '',
-        website: (known && known.website) || '',
-        hours: (known && known.hours) || [],
-        mapsUrl: (known && known.mapsUrl) || '',
-        say: r.say
-      };
-    })
+    items: items
   };
 }
+
+/**
+ * The rows of a list — or of several — filled out from the three rolls.
+ *
+ * Each row gets today's name, the address, the pin, and whether the place is
+ * also on my map. That last one is what lets a row link to a write-up rather
+ * than to a Google search — and a row out of google_venues brings Google's own
+ * description of the place with it, since it has no write-up to link to.
+ *
+ * The row's own stored name is the fallback, and the reason a list never
+ * renders with a hole in it — see list_items in db/schema.sql. A place the
+ * catalogue has lost keeps its name and its sentence and stops linking
+ * anywhere, which is the smallest loss available.
+ *
+ * Filled in here rather than looked up in the browser on purpose: a shared
+ * list is opened by somebody who has never been to this site, and making them
+ * download the whole catalogue to draw ten rows would be a hundred kilobytes
+ * to render a few hundred bytes of it.
+ *
+ * The answer is one item per row, in the order the rows came in, so a caller
+ * holding rows from several lists can hand the lot over at once and split the
+ * answer back up by the `list_id` it still has beside each row. That is what
+ * keeps a shelf of twenty-four lists to one read of each roll rather than
+ * twenty-four of them.
+ */
+export async function fillItems(context, rows) {
+  const { env } = context;
+  if (!rows || !rows.length) return [];
+
+  let roll = null;
+  try {
+    roll = await catalogue(context);
+  } catch (e) { /* unreadable costs the addresses and the links, not the list */ }
+
+  /* Whatever the catalogue did not know is looked for in google_venues, which
+     is where the other eleven hundred places live — a list holds a catalogue
+     slug or a Google key and does not care which. Only the ids these rows
+     actually hold, and in fifties, which is as many keys as venuesByIds()
+     will put in one statement. */
+  let venues = new Map();
+  try {
+    const strangers = rows
+      .map((r) => r.place_id)
+      .filter((id) => !roll || !roll.has(id))
+      /* Minus the ones somebody added by hand, which are in neither roll and
+         are looked for in their own table below. Filtered by the shape of the
+         id rather than by asking google_venues and finding nothing: a query
+         that can be skipped is better than a query that comes back empty. */
+      .filter((id) => !isAdded(id));
+    for (let at = 0; at < strangers.length; at += 50) {
+      const part = await venuesByIds(env, strangers.slice(at, at + 50));
+      for (const [key, value] of part) venues.set(key, value);
+    }
+  } catch (e) { /* same cost, same reason */ }
+
+  /* And the third roll: the places somebody added by hand because neither of
+     the other two had them. The same shape as the other two, bar the
+     description only a Google row carries: a name somebody typed is not a
+     description of anything, and the row below draws it as it draws a place
+     of mine.
+
+     Anybody's, not only this reader's. Only its author ever sees one in a
+     picker, but the whole point of the feature is that it goes on a list and
+     the list gets shared — so a stranger opening that list has to see the
+     place and its pin like every other place on it. Without this the row
+     would fall back to its stored name with no point, and the map would
+     silently drop it: seatList() in assets/app.js has nowhere to put a pin
+     for a place that does not know where it is. */
+  let added = new Map();
+  try {
+    const byHand = rows.map((r) => r.place_id).filter(isAdded);
+    for (let at = 0; at < byHand.length; at += 50) {
+      const part = await addedByIds(env, byHand.slice(at, at + 50));
+      for (const [key, value] of part) added.set(key, value);
+    }
+  } catch (e) { /* same cost, same reason */ }
+
+  return rows.map((r) => {
+    const known = (roll ? roll.get(r.place_id) : null) ||
+                  venues.get(r.place_id) ||
+                  added.get(r.place_id) ||
+                  null;
+    return {
+      place: r.place_id,
+      name: known ? known.name : r.name,
+      address: known ? known.address : '',
+      lat: known && typeof known.lat === 'number' ? known.lat : null,
+      lng: known && typeof known.lng === 'number' ? known.lng : null,
+      map: !!(known && known.map),
+      /* Set only on a Google row for a place that is also on my map: the
+         write-up is filed under the map's id, not Google's key. */
+      mapId: (known && known.mapId) || null,
+      /* Whether this place was added by hand rather than found on either
+         roll. The page draws the row the same; this is what lets it say so,
+         and what stops a stranger's typed name reading as one of mine. */
+      added: added.has(r.place_id),
+      /* What Google says this place is, in the map's own vocabulary, and
+         what it costs on Google's scale — see venueEntry() in
+         functions/api/_lib.js. Only a row out of google_venues has either,
+         and `google` is what makes the page say whose description it is
+         drawing. A place of mine says it in a write-up instead.
+
+         And the four things a card can act on: the number to ring, the site
+         to read, the week of opening hours as seven days — see venueHours()
+         — and the Google listing the lot came off. They go the same way and
+         for the same reason: the map draws a place off the export as a card
+         of its own, and a card that knows the address but not whether the
+         door is open on a Sunday is thinner than the row it was filled
+         from. */
+      types: (known && known.types) || [],
+      price: (known && typeof known.price === 'number') ? known.price : null,
+      rating: (known && typeof known.rating === 'number') ? known.rating : null,
+      reviews: (known && typeof known.reviews === 'number') ? known.reviews : null,
+      google: !!(known && known.google),
+      phone: (known && known.phone) || '',
+      website: (known && known.website) || '',
+      hours: (known && known.hours) || [],
+      mapsUrl: (known && known.mapsUrl) || '',
+      say: r.say
+    };
+  });
+}
+

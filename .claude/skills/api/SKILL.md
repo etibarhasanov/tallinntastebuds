@@ -62,6 +62,18 @@ The query each seeds is in a module beside the route that also answers it —
 one person — so the page and the API cannot drift apart. Underscore-prefixed
 files are modules, never routes.
 
+`GET /api/lists` answers five shapes and the parameter picks: `?id=` one list,
+`?by=<name>` every public list one person has with the places on them — what
+the map opens on at `/?by=` — `?all=1` the directory, `?added=1` the places
+this account typed in, and bare, your own lists and the ones you kept.
+
+`_profile.js` holds two readers of one person and they are one privacy rule:
+`readProfile()` for the rows `/u/<name>` draws, `readShelf()` for the places
+the map draws at `/?by=<name>`. Both are `public = 1` and both order the same
+way; change one and read the other. They fill their rows through
+`fillItems()`, exported from `_lists.js` so the shape of a place on a list
+cannot differ by which door it came through.
+
 `json(body, status, maxAge)` in `_lib.js` is how every answer is built: with
 `maxAge` it is `public, max-age=N`, without it `no-store`. **Never put a
 session-gated answer behind a `maxAge`**; the directive is public.
