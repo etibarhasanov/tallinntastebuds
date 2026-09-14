@@ -244,3 +244,9 @@ driven in a browser, and the staff link.
   discount shows the "not available" card. `wrangler pages dev`, or a stub.
 - Reading the account in front of a discount as what protects it. It is not
   — the key is still in a public file. It decides who the offer is *for*.
+- Rewriting the pass card and dropping `data-clarity-mask="true"` from the
+  `<section>` it lives on. That attribute is what keeps the hourly code and
+  its QR out of a Microsoft Clarity replay, and the comment above it on all
+  three pages says why. It is inherited, so it belongs on that container and
+  nowhere below it. Tidiness rather than a lock — the keys are public either
+  way — but a code has no business travelling to a third party.
