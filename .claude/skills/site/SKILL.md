@@ -175,8 +175,17 @@ browser cannot import from `tools/`; change one, change the other.
   list could pick — the mouth goes on a place I have eaten at, and what a
   Google row IS is not somebody's to choose. **The pins** in `README.md`.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
+<<<<<<< HEAD
   language; a blurb missing a language only warns.
 - **Stamps**: every `src`/`href` to `assets/*.js|css` in the nine pages
+=======
+  language; a blurb missing a language only warns. The **English** label of a
+  type is also the one printed in the intro of that chip's published list, so
+  changing one means `node tools/typelists.mjs` and a stale
+  `db/type-lists.sql` to commit — see **The chips, as lists** in `README.md`.
+  Adding a language costs nothing there; the lists are English.
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the eight pages
+>>>>>>> e32b3d7 (Every filter chip is a list, published under the map's own name)
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `google.html`, `deal.html`,
   `verify.html`, `staff.html`, `split.html` — must carry `?v=` equal to the

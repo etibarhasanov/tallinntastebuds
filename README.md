@@ -279,6 +279,10 @@ dining. Nothing re-sorts itself as you add places, and that is deliberate: a
 row of chips that rearranges between visits is a row nobody learns. Re-check it
 when a type has visibly grown, and move the line in `taxonomy.json`.
 
+Every chip in that table is also published as a list, under the map's own
+account, and a fourteenth row here is a fourteenth list that needs a name.
+See **[The chips, as lists](#the-chips-as-lists)** under **Lists**.
+
 ## A filter never answers with an empty screen
 
 A chip is a question about places, so the map is never allowed to answer it
@@ -3357,7 +3361,7 @@ Sign in and open your account. The box is on it, between your lists and the
 ones you kept: name a list and you land in it, with three empty places in it, numbered, each of them a row you press to
 open the search. Three is where a list starts: two places is a pair of
 opinions rather than a recommendation. Once the three are filled, **Add
-another place** puts more on, up to twenty.
+another place** puts more on, up to fifty.
 
 Each row has a box to say what is good about it, which is the point of the
 whole feature — a list of names is a search result, and a list of names with a
@@ -3864,7 +3868,83 @@ naming the day more precisely: when the `GROUP BY` in
 no third option under **Who can open it**. A keep already existed and was a
 private bookmark that nothing consumed; this is the page that consumes it.
 
+<<<<<<< HEAD
 ### The bar and the foot
+=======
+### The chips, as lists
+
+Thirteen of the public lists are the map's own, one per filter chip:
+**All the bakeries**, **All the hidden gems**, **All the casual and solo
+places**, and ten more. They are published under `tallinntastebuds` — the
+account whose map this is, not a generated name of its own — and each holds
+every open place on the map that carries that type, in the alphabet, with the
+first sentence of its write-up under it.
+
+They are generated. `tools/typelists.mjs` reads `data/restaurants.json` and
+`data/taxonomy.json` and writes `db/type-lists.sql`, which is loaded by hand
+into both databases the way `db/google-lists.sql` is. So they are one file's
+output rather than thirteen pages of typing, they cannot drift into a second
+opinion — the picks are `types` and nothing else, exactly what
+`matchesFilters()` in `assets/app.js` reads — and a place added to the map is
+a place missing from a list until the tool is re-run and the file loaded.
+`tools/validate.mjs` fails on the first half of that and cannot see the
+second.
+
+**Why a chip is worth a list when the chip already answers.** Pressing Bakery
+narrows the map to seventeen pins and the panel to seventeen rows, and that is
+a better way to look at them than any page is. What it is not is a thing you
+can send somebody: a filtered map is `?type=bakery` on the end of a URL that
+opens a map, with one `<title>` for the whole site, no line under any place,
+and nothing to keep. A list is the shape this site already has for *here are
+the ones, and here is what each is* — it unfurls in a chat with its own card,
+it has a bookmark, and it sits on `/lists` with everybody else's. The same
+thirteen questions, asked in the other shape.
+
+**Closed places are left off**, which is the one way these are not what the
+chip shows: a chip still draws a closed place, grey and dashed, because the
+links pointing at it still work. A list is somewhere to go, though — a page
+somebody opens on a phone in town — and **All the date night places** naming
+a restaurant that shut is the list being wrong in the way a reader notices
+first. The Google top tens skip closed places for the same reason. The line
+under each title says so.
+
+**The line under each place is the first sentence of the English write-up.**
+`list_items.say` is one string and there is no per-language version of it, the
+way a blurb in `restaurants.json` has ten, so whatever goes there is English
+on a site read in ten languages and had better earn the asymmetry. The first
+sentence is the one that says what the place is, in the map's own voice, and
+it is already written. The whole write-up is the wrong length — a list of
+forty-five paragraphs is not a list — and the must-order dish, which reads
+best of the three, is missing on twenty-five of the seventy-five places.
+
+**Whose they are is looked up, not written down.** `tallinntastebuds` is a
+real account with a real password and a UUID for an id, and neither belongs in
+a tracked file. So every list in the generated SQL takes its owner from a
+subquery on the username, and the account row above it is an `INSERT OR
+IGNORE`: on a database that already holds the name it does nothing at all, and
+the password, the profile line and the join date are the ones that were there.
+On one that does not — a fresh preview — it mints a stand-in with sixty-four
+zeros for a password hash, which is not the PBKDF2 of anything, so the lists
+have an owner and nobody can sign in as it. The cost is that claiming that
+name on a preview database means deleting the row first.
+
+**They are ordinary rows on `/lists`**, not a strip like Google's. Nothing
+keeps them apart, nothing lifts them, and with nobody having kept them yet
+they sort to the bottom of the first page, where the section above says a list
+with no keeps belongs. `/u/tallinntastebuds` is where all thirteen are
+together.
+
+Adding a fourteenth chip to `data/taxonomy.json` makes `tools/typelists.mjs`
+throw, by name, until it is given a title and an id for it. A title is a name
+somebody chose — "All the Coffee/tea" is not one — so the thirteen are written
+out in the tool rather than built from the chip's label, and so is each id:
+a list's id is its address, and renaming one must not move the link somebody
+sent. Taking a chip away throws too, and says the part no tool can do — the
+list it wrote is still standing on `/lists`, in both databases, and only a
+hand takes it down.
+
+### On the map
+>>>>>>> e32b3d7 (Every filter chip is a list, published under the map's own name)
 
 Somebody else's list is a page with two fixed edges and a scroll between them.
 At the top, a bar saying which list this is and which of its two views you are
@@ -4374,7 +4454,7 @@ the drag and the save — is appended rather than left to collide.
 |---|---|
 | lists per account | 24 |
 | lists you can keep | 200 |
-| places per list | 20 |
+| places per list | 50 |
 | title | 60 characters |
 | the line under it | 200 |
 | the line about yourself | 200 |
@@ -4393,10 +4473,21 @@ The last one is the only floor among them, and it is in
 same three `assets/lists.js` has always wanted before it offers **Share**.
 Nothing is deleted for falling under it.
 
-Twenty places is the exception: a judgement about the feature, not a defence
-of the database. It is twice a top ten — room to overshoot and cut back, and
-short enough that a list still reads as a recommendation somebody stands
-behind rather than everywhere they have ever been.
+Fifty places is the exception: a judgement about the feature, not a defence
+of the database. It was twenty for a long time, and twenty was twice a top
+ten — room to overshoot and cut back, and short enough that a list still reads
+as a recommendation somebody stands behind rather than everywhere they have
+ever been.
+
+What moved it is **The chips, as lists** above. **All the casual and solo
+places** is forty-five and **All the restaurants** twenty-seven, and a chip's
+list that stops at twenty is not that chip: it is the first twenty of it in
+the alphabet, which is a slice nobody chose. So the number is what the longest
+of the thirteen needs with a little room over, and the argument the twenty was
+making — a list nobody finishes reading recommends nothing — is the feature's
+to make rather than the constant's. Casual/Solo is the one to watch: it is on
+three places in five, the cap is five above it, and the validator fails on a
+generated list that has outgrown it.
 
 Two hundred keeps is higher than twenty-four lists because keeping is the cheap
 half of this. A list is published under your name and twenty-four of them is
@@ -6123,6 +6214,11 @@ to read and write first.
   write from `exports/tallinn_restaurants.csv` (run the tool and commit the
   result), or a `db/google-lists.sql` that is not what `tools/googlelists.mjs`
   would write from the same export — see **The five lists Google wrote**
+- a `db/type-lists.sql` that is not what `tools/typelists.mjs` would write from
+  `data/restaurants.json` and `data/taxonomy.json` (run the tool and commit the
+  result), or that holds a list longer than `MAX_ITEMS` in
+  `functions/api/lists.js`, which is imported rather than restated — see
+  **The chips, as lists**
 - a `?v=` cache stamp in the HTML that no longer matches the file it points at
   (run `node tools/stamp.mjs` and commit the result)
 - a `data/places.json` that is not what `tools/places.mjs` would write from the
@@ -6278,6 +6374,8 @@ exports/REVIEW.md          the shortlisting worksheet those rows are read
 exports/build_review_sheet.py      through, and the script that builds it
 db/google-venues.sql       GENERATED — loads that export into D1
 db/google-lists.sql        GENERATED — the five top tens under `google-statistics`
+db/type-lists.sql          GENERATED — the thirteen filter chips as lists, under
+                           `tallinntastebuds`
 data/taxonomy.json         the controlled vocabulary of types
 data/cuisines.json         the 37 cuisines only the directory needs, in ten
                            languages — taxonomy.json holds the other six
@@ -6296,6 +6394,7 @@ tools/validate.mjs         dependency-free data validator
 tools/places.mjs           builds data/places.json from the CSV and the map
 tools/googlevenues.mjs     turns the Google Places export into db/google-venues.sql
 tools/googlelists.mjs      ranks the same export into db/google-lists.sql
+tools/typelists.mjs        turns the map's filter chips into db/type-lists.sql
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
