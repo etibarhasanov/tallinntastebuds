@@ -47,11 +47,13 @@ does not have to:
   Workers AI's free daily allowance, and preview and production spend from
   the same pot. Driving the chat on a preview for an afternoon puts the live
   site out of model until midnight UTC. Ask it a few questions, not fifty.
-- **The preview database is the only one to touch**, and the Cloudflare MCP
-  `d1_database_query` tool is pre-allowed in `.claude/settings.json` for
-  reading it. The two hard denials there — no `DROP`, no `DELETE` or
-  `UPDATE` without a `WHERE` — are the owner's standing instruction and are
-  not to be argued with.
+- **The preview database is the only one to drive against**, and the
+  Cloudflare MCP `d1_database_query` tool reads either database without a
+  prompt. It writes to neither without one: `.claude/hooks/d1-write-gate.mjs`
+  stops every write, refuses one past a hundred rows or one whose size is not
+  in the statement, and never runs `DROP` at all. That and the two hard
+  denials in `.claude/settings.json` are the owner's standing instruction and
+  are not to be argued with — **What needs a yes** below is the whole of it.
 - **Nothing is missing from the environment.** No `package.json`, no
   `node_modules`, no Cloudflare token in GitHub's secret store, no test
   runner, no `main` branch. Each of those is a decision, and the sections
@@ -108,6 +110,56 @@ a page added without joining the stamper's list in the `/site` skill, a
 refresh that changed a count the `/google-venues` skill had written down.
 A change to a feature reads the skill for that feature before the PR, the
 way it reads the README section, and fixes what the change made wrong.
+
+## What needs a yes, and what does not
+
+The repository is yours to work in: branch, edit, generate, validate, drive a
+browser, commit, push, open a pull request. None of that needs asking, and
+asking about it wastes an afternoon.
+
+**Two live things are not yours, and one of them is a database.** The rows in
+D1 — production `tallinntastebuds` and preview `tallinntastebuds-preview` —
+belong to the person whose site this is and to the people who saved a place or
+made a list. Reading them is free and is how everything gets verified. Writing
+to them is a decision, and it is theirs:
+
+- **Every write asks.** `INSERT`, `UPDATE`, `DELETE`, any DDL, and loading
+  `db/google-venues.sql`, `db/google-lists.sql` or `db/schema.sql`.
+  `.claude/hooks/d1-write-gate.mjs` — a `PreToolUse` hook wired in
+  `.claude/settings.json` — classifies the SQL of every `d1_database_query`
+  call and lets reads through, so the prompt is not something to remember.
+  Do not route around it: not with a shell `wrangler` command, not with a
+  Function written to do the write when it is called.
+- **The ask carries the change.** Which database, which table, which columns,
+  how many rows, and the values from and to — worked out by diffing the
+  database against the repository, not assumed. "This loads the export" is
+  not a description; "74 rows, `cuisine` only, 49 of them American → Burgers,
+  Siga la Vaca Korean → Argentinian" is. The `/api` skill's **The rules of a
+  write** is the full procedure.
+- **A write names its rows, and there are at most a hundred of them.** Twenty
+  is the size an ordinary correction should be; a hundred is the ceiling and
+  the gate refuses anything past it outright, along with any write whose size
+  is not in the statement — `WHERE cuisine = 'American'`, a `LIKE`, a
+  subquery. Name the rows by primary key, or split it, or run the file from a
+  terminal with `wrangler d1 execute`, which is where a load of a thousand
+  rows has always belonged.
+- **Approval to land is not approval to load.** "Merge it", "ship it" and
+  "fix it" are about the pull request. The database is a separate sentence,
+  and a merged PR whose `.sql` file is not loaded yet is a perfectly good
+  place to stop — say so, and say which two lines would do it.
+
+This is written down because it went wrong: a session that had been told to
+merge a fix loaded the corrected column into both databases on its own
+reasoning, production included, having asked nobody. The rows were right and
+that was not the point.
+
+The other live thing is **a push to the default branch**, which is a deploy —
+see below. That one the pull request is the yes for.
+
+**And before running any of it, re-read the process file.** The skill for the
+change at hand, top to bottom, at the start of the session and again before
+anything irreversible: they are checklists rather than background reading, and
+the step that gets skipped is always the one nobody re-read.
 
 ## Branches and deploys
 
