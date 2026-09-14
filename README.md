@@ -6945,7 +6945,10 @@ other at full size, so the mark, the name and the handle all come down a step
 has to stay clear of.
 
 **Pins.** Every pin is the mark — see **The mark**. One picture, three collars
-round it, for the three amounts of place behind it:
+round it, for the three amounts of place behind it (on a phone, under 480px,
+each draws at four-fifths of these — `--pin-scale` in `assets/styles.css` —
+because seventy places at city zoom on a hand-wide map were the whole
+screen):
 
 | | pin | today |
 | --- | --- | --- |
@@ -7043,24 +7046,24 @@ more places make bigger dots, bigger dots ask for a longer distance again, and
 the opening view collapses into four huge circles. So two maximal clusters side
 by side may touch. That is rare, and it is the cheaper of the two prices.
 
-The dot is the mark too — the places it stands for are places — at the same
-full strength a pin wears it, with the count written straight onto it in the
-style's own accent. A pin and a cluster are still told apart at a glance, and
-by more than the number: a pin wears the accent as a collar, a cluster is
-ringed in paper instead and wears the accent as the number, and it is bigger
-than any pin at every count.
+**The dot is not the mark.** It was, for a while — the places it stands for
+are places, went the argument, so the picture belonged on the dot too — and
+on a phone at city zoom that was a dozen mouths across the screen, each
+nearly twice the size of a pin, with the numbers cased in a ring of paper so
+they could survive the photograph under them. A cluster is a count, and a
+count reads best as a numeral on a flat disc: the accent, with the numeral in
+paper, which is the contrast every button on the site reads at and needs no
+casing. The pair — two places under one dot — is the quiet one, paper with
+the numeral and the rim in the accent. The mark stays on every pin, where it
+is the whole identity of the map; a cluster is its arithmetic. On a phone the
+disc draws at four-fifths of its box, `--cluster-scale`, the way the pins
+draw at four-fifths.
 
 There was a wash of the accent over the mark for a version, to give the count
-something flat to sit on. It worked and it cost the thing it was there to
-show — a mouth under 80% of a colour is a texture, not a picture. What carries
-the digits instead is a **casing**: a ring of paper around the glyphs, the
-way a map label has always cased itself. It leaves the picture untouched
-everywhere the letters are not, and it holds the number at the same
-accent-against-paper the rest of the site reads at — 6.56 to one on Red, 8.14
-on Green. It is drawn in ems, so it thickens with the number rather than
-thinning out under the big ones. Without it the accent alone drops to about 1.5 to one where the
-digits cross the dark of the gap, which is the middle of the mouth, which is
-where the number sits.
+something flat to sit on, and then the casing, and then the picture went and
+took both with it. What is left is what a map label has always been: a number
+on a ground that holds it — paper on the accent, 6.56 to one on Red and 8.14
+on Green, the same pair every filled button on the site is set in.
 
 **The open place.** The list panel is the neutral card everything else on the
 map is. Opening a place tints that card with six percent of the accent, so it

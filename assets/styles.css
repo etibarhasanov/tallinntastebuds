@@ -353,66 +353,67 @@ a:hover { color: var(--accent-lit); }
 }
 
 /* One dot standing in for the pins too close together to tell apart. It is
-   the same mark every pin is, at the same full strength — the places it
-   stands for are places — with the count written straight onto it in the
-   style's own accent.
+   a count and not a place, so it is a flat disc with a numeral on it and no
+   picture underneath: the mark is what a pin wears, and a cluster wearing it
+   too was a dozen mouths across a phone at city zoom, each nearly twice the
+   size of a pin, with the numbers cased in paper to survive the picture. The
+   places it stands for are still places — pressing it is how you get to
+   them — but the thing on the screen is the arithmetic, and a numeral on a
+   disc is how a count reads.
 
-   It still never reads as a place. A pin wears the accent as a collar; a
-   cluster is ringed in paper instead and wears the accent as the number, and
-   it is bigger than any pin at every count. */
-.cluster-pin { background: none; border: 0; }
+   It still never reads as a place: a pin is the painting in a collar, a
+   cluster is a disc in the accent with the numeral in paper, and it is bigger
+   than any pin at every count.
+
+   --cluster-scale is what a phone draws it at: the box Leaflet sizes is the
+   same, the disc inside it is four-fifths, and the numeral shrinks with it.
+   The dot is centred in its box by the grid on .cluster-pin, which is what
+   lets the box keep its anchor while the disc changes size. */
+.cluster-pin { display: grid; place-items: center; background: none; border: 0; }
 .cluster-dot {
   display: grid;
   place-items: center;
-  width: 100%;
-  height: 100%;
+  width: calc(100% * var(--cluster-scale, 1));
+  height: calc(100% * var(--cluster-scale, 1));
   border-radius: 100px;
-  background: var(--paper) url(logo/mark-round.webp) center / cover no-repeat;
+  background: var(--accent);
   box-shadow: 0 0 0 2.5px var(--paper), 0 1px 3px rgba(20, 26, 31, .3);
-  color: var(--accent);
+  color: var(--paper);
   font-family: var(--mono);
   font-weight: 500;
   line-height: 1;
-  transition: transform .15s var(--ease), box-shadow .15s var(--ease);
+  transition: transform .15s var(--ease), box-shadow .15s var(--ease), background-color .15s var(--ease);
 }
 
 /* Two places under one dot is barely a crowd — it is the pair of doors you
-   could not tell apart at this zoom — and it keeps the quiet paper rim. Past
-   two the rim takes the style's own colour, the same brick or mint the number
-   inside it is written in, so the dots worth pressing are the ones the map
-   says something with. It never reads as a pin even wearing the accent: a pin
-   is 22px and carries no number, and the smallest of these is a third wider
-   than one. */
-.cluster-dot.is-many {
-  box-shadow: 0 0 0 3px var(--accent), 0 1px 3px rgba(20, 26, 31, .3);
+   could not tell apart at this zoom — and it is the quiet one: paper, with
+   the number and the rim in the accent. Past two the disc fills with the
+   style's own colour, the same brick or mint, so the dots worth pressing are
+   the ones the map says something with. It never reads as a pin even wearing
+   the accent: a pin is 22px, carries the painting and no number, and the
+   smallest of these is a third wider than one. */
+.cluster-dot:not(.is-many) {
+  background: var(--paper);
+  color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent), 0 1px 3px rgba(20, 26, 31, .3);
 }
 .cluster-pin:hover .cluster-dot.is-many,
 .cluster-pin:focus-visible .cluster-dot.is-many {
-  box-shadow: 0 0 0 3px var(--accent-lit), 0 1px 3px rgba(20, 26, 31, .3);
+  background: var(--accent-lit);
+}
+.cluster-pin:hover .cluster-dot:not(.is-many),
+.cluster-pin:focus-visible .cluster-dot:not(.is-many) {
+  box-shadow: 0 0 0 2px var(--accent-lit), 0 1px 3px rgba(20, 26, 31, .3);
 }
 
 /* The count grows with the dot it sits in — a third of the width, so ten
    places carry a 14px number where two carry a 12px one. A fixed 12px was
-   the whole reason the digits were hard to find: it read as a caption on a
-   picture rather than as the thing the picture is there to count.
-
-   The casing is the other half. Nothing is laid over the mark, so the digits
-   sit straight on a photograph that runs from near-black in the gap to
-   near-white on the teeth — the accent alone drops to 1.5 to one against the
-   dark half of that and disappears. A ring of paper around the glyphs, the
-   way a map label has always cased itself, carries them across both: it
-   leaves the picture untouched everywhere the letters are not, and it holds
-   the number at the accent-against-paper the rest of the site reads at. It is
-   drawn in ems so it thickens with the number instead of thinning out under
-   the big ones. */
+   the whole reason the digits were hard to find: it read as a caption rather
+   than as the thing the disc is there to count. Nothing is cased any more:
+   paper on the accent is the contrast the rest of the site's buttons read
+   at, and the casing went with the picture it was there to survive. */
 .cluster-count {
-  font-size: calc(var(--cluster-d, 40px) * .36);
-  text-shadow:
-     .09em  .09em 0 var(--paper), -.09em  .09em 0 var(--paper),
-     .09em -.09em 0 var(--paper), -.09em -.09em 0 var(--paper),
-     .12em  0     0 var(--paper), -.12em  0     0 var(--paper),
-     0      .12em 0 var(--paper),  0     -.12em 0 var(--paper),
-     0      0     .25em var(--paper);
+  font-size: calc(var(--cluster-d, 40px) * .36 * var(--cluster-scale, 1));
   transition: color .15s var(--ease);
 }
 .cluster-pin:hover .cluster-dot,
@@ -426,6 +427,17 @@ a:hover { color: var(--accent-lit); }
 @media (prefers-reduced-motion: reduce) {
   .cluster-pin:hover .cluster-dot,
   .cluster-pin:focus-visible .cluster-dot { transform: none; }
+}
+
+/* On a phone the pins draw at four-fifths and the clusters likewise. Seventy
+   places at city zoom on a 390px screen is a dozen clusters and a scatter of
+   pins, and at desk size they were the whole screen: 22px pins and 40px
+   discs on a map a hand wide. The script still hands every pin its size in
+   --pin-d — 22, 17, 34 for the chosen one — and the stylesheet scales what it
+   was handed, so the three readings and the chosen one keep their
+   proportions and nothing in assets/app.js knows the screen is narrow. */
+@media (max-width: 480px) {
+  .leaflet-container { --pin-scale: .82; --cluster-scale: .8; }
 }
 
 /* Where you are, which is not one of the places on the map and should never
@@ -555,8 +567,8 @@ a:hover { color: var(--accent-lit); }
 .pin-mark:focus { outline: none; }
 
 .pin-face {
-  width: var(--pin-d, 22px);
-  height: var(--pin-d, 22px);
+  width: calc(var(--pin-d, 22px) * var(--pin-scale, 1));
+  height: calc(var(--pin-d, 22px) * var(--pin-scale, 1));
   border-radius: 50%;
   background: var(--paper) url(logo/mark-round.webp) center / cover no-repeat;
   pointer-events: auto;
