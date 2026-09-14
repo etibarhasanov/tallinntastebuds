@@ -519,12 +519,10 @@ when the keyboard opens over it.
 ## Ask for somewhere
 
 The speech bubble on the left rail, next to the die, opens the panel on a
-chat, and the site speaks first: *Are you looking for somewhere on the Tallinn
-Tastebuds map, or anywhere in Tallinn?*, with the two as buttons under it.
-Press one and it is your reply in the thread, the site asks *What do you feel
-like?*, and the field at the bottom of the panel wakes up. Type a sentence
-into it — *cheap asian food*, *somewhere for a date*, *khachapuri, still
-open* — and it sits on the right, the way your own words do in any chat, with
+chat, and the site speaks first: *What do you feel like?* Type a sentence into
+the field at the bottom — *cheap asian food*, *somewhere for a date*,
+*khachapuri, still open* — and it sits on the right, the way your own words do
+in any chat, with
 the answer under it: a sentence or two, then one to three places as the
 panel's own rows, best first, each with a line saying why it is there and,
 when the map knows where you are, how far it is. The
@@ -578,7 +576,7 @@ it all goes when the chat is closed, with the thread.
 
 Closing the panel ends the conversation. The thread is emptied, the map goes
 back to the whole city, and the next press of the bubble starts again from
-the site's first question. Nothing is written anywhere: what was asked is a
+the site's opening line. Nothing is written anywhere: what was asked is a
 moment, not a record.
 
 It is Surprise me with the question put back in. The die answers "anywhere,
@@ -614,8 +612,9 @@ hundred tokens before writing three ids, inside an output budget the thinking
 sometimes used up. Thinking is switched off now, the model is a smaller one
 built for latency that reads all ten languages, the blurbs it is shown are a
 clause each, and the output budget is what three picks and a sentence need.
-And a question the map cannot answer no longer costs a second whole request
-to find out — see the next section.
+One question is one call to the model, and the only thing that ever makes it
+two is an answer that broke one of the rules under **Every answer names one of
+each** — see that section.
 
 **An answer is a mode, not a filter**, in exactly the way a list is one — see
 [Lists](#lists) for the argument in full. No chip stands for it, none of them
@@ -642,65 +641,83 @@ about a real restaurant is a bad recommendation; a hallucinated restaurant is
 the site lying in its own voice, and this shape makes the second one
 unreachable.
 
-### My map, or the whole city
+### The whole city, and my map inside it
 
-The site's first question, and the two buttons that answer it:
-**Tallinn Tastebuds map**, or **All Tallinn**. Nothing can be typed until one
-is pressed, and neither is pressed for you: the first is the narrower answer
-and the one this site stands behind — being on the map is the verdict, and a
-chat box suggesting places I have never eaten in would be a different site —
-but which of the two you want is the one thing the site cannot guess. Pressing
-the other button later is the same reply again, in the thread, and the
-questions after it are asked of the new roll.
-
-The second adds Google's eleven hundred — see [Google venues](#google-venues) —
-**on equal terms with mine**. A press of All Tallinn is a request for the
-city, and for a while it did not get one: the prompt told the model to prefer
-a place of mine when it answered as well, and a vague question that scored no
-Google row was sent none at all, so the model had no city to choose from and
-every answer leant on the map whatever button was pressed. Both thumbs are
-off the scale now, and a rule is on it instead: at least one of each list in
-every answer — see below. The Google rows also get the same floor my places
-have had since they were narrowed, so a question that names nothing still
-gets the forty best-rated to choose from. A Google place in an answer is not
-a recommendation, and says so. It is
-the stand-in a list draws for one, in the same row shape as a place of mine —
-the gauge and the types in the same slots, so the two rolls read as one list —
-with a **Google 4.8** mark in the slot where a row of mine says how much there
-is to look at. The score never travels without Google's name in front of it.
+Every question is asked of both rolls at once: my seventy-five, and Google's
+eleven hundred — see [Google venues](#google-venues) — **on equal terms**. For
+a while the city half did not get that: the prompt told the model to prefer a
+place of mine, and a vague question that scored no Google row was sent none at
+all, so the model had no city to choose from and every answer leant on the
+map. Both thumbs are off the scale now, and a rule is on it instead: at least
+one of each list in every answer — see below. The Google rows also get the
+same floor my places have had since they were narrowed, so a question that
+names nothing still gets the forty best-rated to choose from. A Google place
+in an answer is not a recommendation, and says so. It is the stand-in a list
+draws for one, in the same row shape as a place of mine — the gauge and the
+types in the same slots, so the two rolls read as one list — with a
+**Google 4.8** mark in the slot where a row of mine says how much there is to
+look at. The score never travels without Google's name in front of it.
 Opening it gives the card a list's stand-in gets: the full "According to
 Google" line, the hours, the phone, the listing, and a note at the top saying I
 have never been. It wears Google's name and none of my words, because the
-alternative is the site borrowing a verdict it has not earned.
+alternative is the site borrowing a verdict it has not earned. Being on my map
+is still the verdict; what says so is the write-up under the row, not a button
+pressed before the question.
 
-**The map means the map, and the city means both.** On the map the model is
-shown no Google row at all, so it cannot name one: ask for bowling and there
-is no bowling, and the chat says so and suggests the other button. It used to
-do something cleverer — answer off the city anyway and move the pressed
-button to All Tallinn to match — and from a phone that read as the switch
-working the wrong way round, an answer arriving from the roll you had not
-pressed. Now the button never moves on its own. On the city, every answer
-with places in it names **at least one place of mine and at least one from
-the rest of Tallinn**. That is the rule the model is given, in those words,
-because it needs to be a rule: my lines carry a dish and a write-up where
-Google's carry a rating, and a model asked for a reason on every pick reaches
-for the lines it can give one from, so without the rule every answer leant on
-my map whatever the button said.
+**Every answer names one of each.** Every answer with places in it carries
+**at least one place of mine and at least one from the rest of Tallinn**. That
+is the rule the model is given, in those words, because it needs to be a rule:
+my lines carry a dish and a write-up where Google's carry a rating, and a
+model asked for a reason on every pick reaches for the lines it can give one
+from, so without it every answer leant on my map. And it is enforced rather
+than asked for — `/api/ask` reads the picks back, and an answer that broke the
+rule is shown its own reply, told what it broke, and asked once more, which
+costs that question a second call to the model.
+
+The rule is also what a single-place answer now gives up. *One place is a
+whole answer when one is what fits* still holds for a question nothing else
+answers, but a question both rolls can answer gets two, because the rule wants
+one from each. That is the trade for not asking which roll you meant.
+
+**It used to be a question the site asked first.** *Are you looking for
+somewhere on the Tallinn Tastebuds map, or anywhere in Tallinn?*, with the two
+as buttons, and nothing typeable until one was pressed. On the map the model
+was shown no Google row at all, so it could not name one: ask for bowling and
+there was no bowling, and the chat said so and nudged you at the other button.
+Earlier still it did something cleverer — answered off the city anyway and
+moved the pressed button to All Tallinn to match — and from a phone that read
+as the switch working the wrong way round, an answer arriving from the roll
+you had not pressed.
+
+That whole half is gone. It put a question in front of somebody who had not
+yet seen what the chat does, and it was the one thing the site could not guess
+for them, so it could not be defaulted either — only asked, before there was
+anything to go on. The buttons were static at the top of the thread, so three
+exchanges in, changing your mind meant scrolling back up past your own
+conversation to find them.
+
+What it bought is not bought back, and it is worth saying plainly: an answer
+can no longer be all mine. What the rule gives instead is that a place of mine
+can no longer go missing from one — every answer with places in it carries at
+least one, wearing the write-up Google's rows do not have, so the difference
+between the two is on the row rather than in a button pressed beforehand. And
+what it cost is in the next section: every question now carries the city's
+forty, and the day holds about half as many.
 
 **Eleven hundred rows do not go into a prompt.** That is thirty thousand
 tokens a question against a free allowance that would then last an afternoon.
 So the browser sends what it read the question as — the wish `assets/ask.js`
 produces: types, cheap or fancy, open now, where to be near, and the words
 left over — and
-`/api/ask` narrows the export with the same scoring that reader uses, hands the
-model the forty likeliest, and hands the browser those same forty so that with
-no model it can rank them itself. The cut is generous on purpose: its one job
-is "plausibly what was asked for", and the real ranking happens once, in the
-browser, over my places and these together — **my places first** when a tie
-has to be broken, and Google's own score breaking ties among Google's rows,
-which on Google's rows is the only honest tie-break there is. A Google row an
-earlier answer in the thread named rides along whatever the new question
-scored, so that a follow-up about it can still name it.
+`/api/ask` narrows the export with the same scoring that reader uses and hands
+the model the forty likeliest. The cut is generous on purpose: its one job is
+"plausibly what was asked for", and the choosing happens once, in the model,
+over my places and these together. Only the rows the model named come back to
+the browser: it draws a stand-in and puts a pin down for each of those and has
+no use for the rest, and sending all forty to be discarded was forty cards a
+question the moment every question became a question about the city. A Google
+row an earlier answer in the thread named rides along whatever the new
+question scored, so that a follow-up about it can still name it.
 
 What a Google row can answer with is less than one of mine: a category, a
 cuisine, a price band, a rating and the week. No write-up, no must-order dish.
@@ -718,8 +735,8 @@ can score, and the answer is whatever my places make of it. The sixty Google row
 that are already places of mine are left out of the export's half — offering
 the Google copy beside the write-up would be the same door twice.
 
-Google's rows are read on the map scope for exactly one thing — see the hours
-below.
+Google's rows are read a second way, for the opening hours of my own places —
+see the hours below.
 
 ### It is free, and what that buys
 
@@ -731,23 +748,32 @@ paid model was wired in ahead of it for an afternoon and taken out again the
 same day: this site is meant to cost nothing to run, and a key that has to be
 bought, capped and rotated is not nothing.
 
-What that allowance actually buys is the thing worth knowing. A question
-A question used to carry the whole catalogue, about 4,750 tokens, which was
-**something like a hundred and thirty questions a day** — and then every
-request is a 429 until midnight UTC and the keyword reader answers instead.
-Preview and production spend from the same pot.
+What that allowance actually buys is the thing worth knowing. A question used
+to carry the whole catalogue, about 4,750 tokens, which was **something like a
+hundred and thirty questions a day** — and then every request is a 429 until
+midnight UTC and the chat says it is resting. Preview and production spend
+from the same pot, so an afternoon of driving the chat on a preview puts the
+live site out of model until the new day.
 
-Most of that was the catalogue, and none of it was chosen: all seventy places
-went to the model on every question, including the ones that were not about
-food. They are now narrowed the way Google's eleven hundred already were, by
-the same scoring, down to the thirty a question could plausibly be about with
-a floor of twenty so a question that names nothing still has a map to choose
-from — and the blurbs are cut to a clause, and the map scope carries no Google
-rows at all, since there the model may not name one. That is
-**about 1,700 tokens a question, and something like three hundred a day**;
-the street on every line is a few hundred of those, and worth it, because
-where a place is turned out to be the thing the model most needed and least
-had.
+Most of that was the catalogue, and none of it was chosen: every place went to
+the model on every question, including the ones that were not about food. They
+are now narrowed the way Google's eleven hundred already were, by the same
+scoring, down to the thirty a question could plausibly be about with a floor
+of twenty so a question that names nothing still has a map to choose from, and
+the blurbs are cut to a clause. My half of a question is **about 1,700
+tokens**; the street on every line is a few hundred of those, and worth it,
+because where a place is turned out to be the thing the model most needed and
+least had.
+
+Google's forty are the other half, and the larger one: **about 1,300 tokens**,
+five hundred of which are the `place_id`s alone — twenty-seven characters of
+Google's own key on every line. So a question is **about 3,000 tokens, and the
+day holds something like a hundred and seventy of them**, with an answer that
+breaks the one-of-each rule costing its question a second call on top. The day
+held about twice as many while a question could be asked of my map alone, and
+that is what dropping the two buttons cost. The `place_id`s are the obvious
+thing to shorten if it ever matters — a short index in the prompt, mapped back
+to the key on the way out — and it is not written.
 
 The floor is what makes the narrowing safe rather than clever. Every place on
 this map is one I have been to and would send somebody to, so any twenty of
@@ -769,7 +795,8 @@ to `[object Object]`, found no brace and returned null — so every answer the
 model gave was thrown away, quietly, and the keyword reader answered in its
 place. Nobody could tell, because the reader is right about most questions
 people type; it took *how does it work* coming back with three restaurants,
-and *All Tallinn* giving the same answer as the map, to notice. Both shapes
+and — while the two buttons were still there — *All Tallinn* giving the same
+answer as the map, to notice. Both shapes
 are read now, and `/api/ask` reports which of the two answered in **`note`**
 — `workers-ai`, `workers-ai-none`, `workers-ai-spent`, `no-ai` — so the next
 time this goes quiet it is one request to find rather than a year. There is
@@ -1029,8 +1056,8 @@ distance, and as with the kind, telling was not enough. So when a pick of
 the kind is more than a kilometre farther than the nearest place of that
 kind on its roll, the model is shown which picks strayed and how far, which
 places of the kind are within reach and their distances, and asked once
-more, in the one retry the other two rules share. Per roll, because on the
-city the one-of-each rule wants a place from each.
+more, in the one retry the other two rules share. Per roll, because the
+one-of-each rule wants a place from each.
 
 ## Close a place instead of deleting it
 
@@ -6534,9 +6561,9 @@ The map, `assets/app.js`:
 | `list_share` | `list_id`, `method` (`sheet`/`copy`) |
 | `list_page`, `profile_open` | `list_id` / `name` — the links on a list's credit block |
 | `ask_open` | — |
-| `ask_scope` | `scope` |
-| `ask` | `search_term`, `scope` |
-| `ask_answer`, `ask_none`, `ask_resting` | `search_term`, `scope`, `source`, `places_shown` — what came back; see **Ask for somewhere** |
+| `ask` | `search_term` |
+| `ask_answer`, `ask_none` | `search_term`, `source`, `places_shown`, `from_google` — what came back, and how many of the places were Google's; see **Ask for somewhere** |
+| `ask_resting` | `search_term` — the day's Workers AI allowance is spent |
 | `account_open` | `view` (`sheet` signed out, `page` signed in) |
 | `account_switch` | `view` (`in`/`up`) |
 | `account_close`, `account_page` | — |

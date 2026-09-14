@@ -1,7 +1,7 @@
 /**
  * Tallinn Tastebuds — the chat box on the map, answered.
  *
- * POST /api/ask   { q, lang, scope, wish, here, history }
+ * POST /api/ask   { q, lang, wish, here, history }
  *                 ->  { ok, source, picks, say, open, venues, at }
  *
  * Somebody types "somewhere cheap and asian, still open" into the map and this
@@ -31,36 +31,39 @@
  * a real place is a bad recommendation; a hallucinated place is a lie the site
  * told in its own voice, and this shape makes the second one unreachable.
  *
- * TWO ROLLS, AND WHICH ONE IS ASKED
+ * TWO ROLLS, AND BOTH OF THEM, EVERY TIME
  *
  * This site has two lists of places and the difference is the point — see the
  * header of /api/venues. The seventy-five in data/restaurants.json are places
  * I have been to and written up; the eleven hundred in `google_venues` are
- * Google's description of the city. The question arrives with a `scope`:
+ * Google's description of the city. Every question is asked of both, and
+ * every answer with places in it names at least one from each: one of mine,
+ * one from the rest of Tallinn. That is the rule the model is given, in those
+ * words, and enforced under askModel() rather than only asked for, because
+ * without it every answer leant on my map — my lines carry a dish and a
+ * write-up where Google's carry a rating, and a model asked for a reason on
+ * every pick reaches for the line it can give one from.
  *
- *   map   my places and nothing else. The model is shown no Google row, so
- *         it cannot name one; a question the map cannot answer is answered
- *         with a shrug and a nudge towards the other button. It used to be
- *         answered off the city, with the pressed button moved to All
- *         Tallinn behind the reader's back, and that read as the switch
- *         working the wrong way round. Being on the map is the verdict, and
- *         an answer off this roll is a recommendation.
- *   all   the city, and both of it: every answer names at least one place
- *         of mine and at least one from the rest of Tallinn. That is the
- *         rule the model is given, in those words, because without it every
- *         answer leant on my map whatever the button said — my lines carry
- *         a dish and a write-up and Google's carry a rating, and a model
- *         asked for a reason reaches for the line it can give one from.
- *         Every Google row goes out wearing Google's name, Google's score
- *         and none of my words, drawn on the same "According to Google"
- *         card a list draws for a place off that export. It is not a
- *         recommendation and the card says so.
+ * Which is also what keeps the two rolls apart while they sit in one answer.
+ * A Google row goes out wearing Google's name, Google's score and none of my
+ * words, on the same "According to Google" card a list draws for a place off
+ * that export; a place of mine goes out with the write-up that put it on the
+ * map. Being on the map is still the verdict. The answer no longer asks you
+ * to choose it in advance.
  *
- * Google's roll is read on the `map` scope for exactly one thing, opening
- * hours, joined on `google_venues.map_id` — the column that says which Google
- * row is which of my places. Sixty of my seventy-five have one. The other
- * fifteen simply have no hours, and an answer about them says nothing about
- * hours rather than guessing.
+ * It was a choice, once: my map or all of Tallinn, two buttons under the
+ * site's first line, with nothing typeable until one was pressed. The
+ * map-only half is gone: it put a question in front of a visitor who had not
+ * yet seen what the chat does, and its buttons scrolled away up the thread as
+ * soon as the conversation had a few turns in it. What it bought is not
+ * bought back — an answer can no longer be all mine — and what the rule gives
+ * instead is that a place of mine can no longer be missing from one.
+ *
+ * Google's roll is read a second way, for opening hours, joined on
+ * `google_venues.map_id` — the column that says which Google row is which of
+ * my places. Sixty of my seventy-five have one. The other fifteen simply have
+ * no hours, and an answer about them says nothing about hours rather than
+ * guessing.
  *
  * ELEVEN HUNDRED ROWS DO NOT GO INTO A PROMPT
  *
@@ -68,14 +71,16 @@
  * a question against a free allowance that would then last an afternoon. So
  * the browser sends what it read the question as — the wish assets/ask.js
  * produces: types and price and open-now, what to be near, and the words
- * left over — and this narrows the export with the same scoring, hands the
- * model the forty likeliest, and hands the browser those same forty so it
- * can draw and pin whichever the model names. The cut is generous on purpose: its one job is
+ * left over — and this narrows the export with the same scoring and hands the
+ * model the forty likeliest. The cut is generous on purpose: its one job is
  * "plausibly what was asked for", and the choosing happens once, in the
- * model, over my places and these together.
+ * model, over my places and these together. Only the rows the model named
+ * come back to the browser, which is all it draws.
  *
- * The forty go only on the city. On the map the model is shown none, which
- * is what makes the map scope mean what it says.
+ * The forty go with every question, which is what the map-only half used to
+ * save: a question is about 3,000 tokens now where the map alone was 1,700,
+ * and the day's free allowance runs to something like a hundred and seventy
+ * questions rather than three hundred. See IT IS FREE below.
  *
  * WHERE THE VISITOR IS
  *
@@ -143,11 +148,13 @@
  *
  * IT IS FREE, AND WHAT HAPPENS WHEN IT STOPS BEING
  *
- * Workers AI gives every account ten thousand Neurons a day at no charge. This
- * asks for a few hundred tokens a question against a small model, so the
- * allowance is a lot of questions — and on the Workers Free plan going past it
- * fails the request rather than billing for it, which is the rate limit and
- * the budget in one. There is nothing to configure, no key, and no npm.
+ * Workers AI gives every account ten thousand Neurons a day at no charge, and
+ * the count resets at midnight UTC. This asks for about three thousand tokens
+ * a question against a small model — something like a hundred and seventy of
+ * them a day, and preview and production spend from the same pot — and on the
+ * Workers Free plan going past it fails the request rather than billing for
+ * it, which is the rate limit and the budget in one. There is nothing to
+ * configure, no key, and no npm.
  *
  * Every way this can fail — no binding, allowance spent, model overloaded,
  * unparseable answer, every id invented — comes back as `source: "none"` with
@@ -173,7 +180,7 @@ import { suggest } from './geocode.js';
    and @cf/zai-org/glm-5.2 went that way in July 2026 — so the one named here
    is deliberately from the list that stayed free, and changing it is this
    line. A model that has been moved answers 403 and is handled like any
-   other failure below: the browser reads the question itself.
+   other failure below: the chat says it has nothing.
 
    It started life on @cf/google/gemma-4-26b-a4b-it, which was the slow part
    of the whole feature: a reasoning model, thinking through several hundred
@@ -219,16 +226,19 @@ const MAX_HISTORY = 10;
    than on the sentence because the sentence is Cloudflare's to reword. */
 const SPENT = '3036';
 
-/* How many Google rows go to the model, and back to the browser, on the
-   whole city. On the map, none: see the two scopes in the header. */
+/* How many Google rows go to the model, and back to the browser, on every
+   question. Forty is generous on purpose — the cut's one job is "plausibly
+   what was asked for" — and it is the larger half of what a question costs:
+   about 1,300 of its 3,000 tokens, five hundred of them the place_ids alone,
+   which are twenty-seven characters of Google's own key apiece. */
 const MAX_CANDIDATES = 40;
 
 /* How much farther than the nearest place of the kind asked for a pick may
    be, in kilometres, when the question asked for somewhere near — the
    third rule under askModel(). A kilometre: "coffee close to me" is a
    question about the corner, and a café three kilometres past the nearest
-   one is a different corner. Measured per roll, since on the city the
-   one-of-each rule wants a place from each. */
+   one is a different corner. Measured per roll, since the one-of-each rule
+   wants a place from each. */
 const NEAR_SLACK = 1;
 
 /* How many of my own places go to the model.
@@ -407,7 +417,7 @@ async function openPlaces(env, now) {
 }
 
 /* ---------------------------------------------------------------- Google
- * The rest of the city, for a question asked on the `all` scope.
+ * The rest of the city, narrowed for every question.
  *
  * Every open, unhidden, still-present row that is not already one of my
  * places — those sixty are on the map roll with a write-up, and offering the
@@ -852,12 +862,16 @@ function briefFor(places, google, lang, open, at, near) {
   const hours = openLine(open);
   if (hours) lines.push('', hours);
 
-  /* The city's forty, on the city only — on the map `google` is empty and
-     none of this is said. The rule under them is the one the owner set,
-     in so many words: at least one of each list, every answer. A model
-     asked for a reason on every pick reaches for the lines it can give one
-     from, and mine carry a dish and a write-up where Google's carry a
-     rating, so without the rule every answer leant on my map. */
+  /* The city's forty. The rule under them is the one the owner set, in so
+     many words: at least one of each list, every answer. A model asked for a
+     reason on every pick reaches for the lines it can give one from, and mine
+     carry a dish and a write-up where Google's carry a rating, so without the
+     rule every answer leant on my map.
+
+     Guarded because the list can still be empty — no database, an export
+     nothing in the question scored — and a heading over no rows, with a rule
+     about naming one of them, is a brief that asks for the impossible. Then
+     it is my map alone and the model is told so. */
   if (google.length) {
     lines.push(
       '',
@@ -865,18 +879,17 @@ function briefFor(places, google, lang, open, at, near) {
       'id | name | where | types and cuisine | price out of 4 | Google rating',
       googleFor(google),
       '',
-      'The visitor asked for all of Tallinn. EVERY answer with places MUST' +
-        ' name at least one from MY MAP and at least one from REST OF' +
-        ' TALLINN — never all from one list. Choose the best of each for the' +
-        ' question. About a REST OF TALLINN place say only what its line' +
-        ' says. If nothing on either list fits, say so with an empty picks' +
-        ' array.'
+      'EVERY answer with places MUST name at least one from MY MAP and at' +
+        ' least one from REST OF TALLINN — never all from one list. Choose' +
+        ' the best of each for the question. About a REST OF TALLINN place' +
+        ' say only what its line says. If nothing on either list fits, say' +
+        ' so with an empty picks array.'
     );
   } else {
     lines.push(
       '',
-      'The visitor asked for MY MAP only. If nothing on it fits, say so' +
-        ' plainly with an empty picks array and suggest they try All Tallinn.'
+      'MY MAP is the whole of what you may choose from. If nothing on it' +
+        ' fits, say so plainly with an empty picks array.'
     );
   }
 
@@ -1048,9 +1061,6 @@ export async function onRequestPost(context) {
      goes into a prompt. Anything else is read as English rather than refused —
      the question is still answerable. */
   const lang = /^[a-z]{2}$/.test(String((body && body.lang) || '')) ? body.lang : 'en';
-  /* Anything that is not the whole city is the map: the narrower answer is
-     the safe one to give a request that did not say. */
-  const wholeCity = body && body.scope === 'all';
 
   if (!question) return json({ ok: false, error: 'no-question' }, 400);
 
@@ -1067,16 +1077,19 @@ export async function onRequestPost(context) {
   const wish = readWish(body.wish);
   const here = readHere(body.here);
 
-  /* The hours and the visitor's point are two waits on two other services,
-     and neither needs the other, so they run together. */
-  const [open, at] = await Promise.all([openPlaces(env, now), visitorAt(wish, here)]);
+  /* The hours, the visitor's point and the city's rows are three waits on
+     three other services, and none needs the others, so they run together.
+     The city's rows used to be fetched after the other two, because the map
+     scope skipped them altogether and a conditional cannot sit inside a
+     Promise.all. Every question reads them now, so a cold isolate has one
+     round trip fewer to wait through. */
+  const [open, at, city] = await Promise.all([
+    openPlaces(env, now), visitorAt(wish, here), googleVenues(env)
+  ]);
 
-  /* The city's rows, on the city only. On the map the model is shown none,
-     so it cannot name one, and the button means what it says. An empty list
-     is a complete answer too: nothing in the export scored. */
-  const cut = wholeCity
-    ? candidates(await googleVenues(env), wish, now, named, at)
-    : { venues: [], open: {} };
+  /* Narrowed to what this question could be about. An empty list is a
+     complete answer too: no database, or nothing in the export it scored. */
+  const cut = candidates(city, wish, now, named, at);
   const google = cut.venues;
   Object.assign(open, cut.open);
 
@@ -1112,7 +1125,16 @@ export async function onRequestPost(context) {
         const far = farOf.get(pick.id);
         return { ...pick, far: typeof far === 'number' ? Math.round(far * 1000) / 1000 : null };
       }),
-      venues: google.map(({ far, ...card }) => card),
+      /* Only the rows this answer actually named. The browser builds a
+         stand-in and puts a pin down for each of those and drops the rest on
+         the floor — it has done since the keyword ranker that needed the
+         whole slice was taken out — so all forty went over the wire to be
+         thrown away at the other end. That was forty on the city and none on
+         the map; with every question now asked of the city it would be forty
+         every time. */
+      venues: google
+        .filter((row) => picks.some((pick) => pick.id === row.id))
+        .map(({ far, ...card }) => card),
       at: !at ? null : at.here ? { here: true } : {
         label: at.label,
         /* Without the city on the end: everything here is in Tallinn, and
@@ -1208,10 +1230,10 @@ export async function onRequestPost(context) {
      nothing fits. One retry, only on a violation, so a compliant answer
      costs what it always did.
 
-     The city's rule: every answer with places on the city names at least
-     one from my map and at least one from the rest of Tallinn. Left to
-     itself the model answered off my map, because my lines carry a dish and
-     a write-up and Google's a rating.
+     The city's rule: every answer with places names at least one from my
+     map and at least one from the rest of Tallinn. Left to itself the model
+     answered off my map, because my lines carry a dish and a write-up and
+     Google's a rating.
 
      The kind rule: when the question named a kind of place — a café, a
      bakery, ramen — every pick is of that kind. Left to itself, and shown a
@@ -1239,7 +1261,7 @@ export async function onRequestPost(context) {
     const faults = [];
     const mineIds = new Set(mine.map((p) => p.id));
 
-    if (wholeCity && google.length) {
+    if (google.length) {
       const hasMine = said.picks.some((p) => mineIds.has(p.id));
       const hasCity = said.picks.some((p) => !mineIds.has(p.id));
       if (!hasMine || !hasCity) {

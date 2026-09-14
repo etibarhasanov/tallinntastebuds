@@ -131,17 +131,12 @@
 
        Emptied when the chat is closed — closePanel() — the way a chat is:
        what was asked is a moment, not a record, and the next opening starts
-       again from the site's first question. Never written anywhere. */
+       again from the site's opening line. Never written anywhere. */
     asks: [],
-    /* Whether the questions are asked of my map or of the whole city, and
-       empty until one of the two is pressed: the site's opening line asks,
-       and nothing can be typed until it is answered. Held here rather than
-       in localStorage for the same reason the thread is. */
-    askScope: '',        // '' | 'map' | 'all'
-    /* The Google rows an answer on the whole city put on the map: stand-ins
-       in the same shape as listPlaces, drawn by the same code, and gone the
-       moment the answer is. Held apart from listPlaces because the two go
-       away for different reasons — see forgetList() and forgetAnswer(). */
+    /* The Google rows an answer put on the map: stand-ins in the same shape
+       as listPlaces, drawn by the same code, and gone the moment the answer
+       is. Held apart from listPlaces because the two go away for different
+       reasons — see forgetList() and forgetAnswer(). */
     askPlaces: [],
     /* Who is signed in, and whether accounts work here at all. Both come
        from /api/account and both are absent until it answers. */
@@ -3623,12 +3618,12 @@
    *
    * WHERE THE ANSWER COMES FROM, AND WHERE IT DOES NOT
    *
-   * /api/ask puts the question and a slice of my places to a language model
-   * on Cloudflare's free allowance and hands back one to three ids, each with
-   * a clause saying why. That is the only thing that ever draws a row in
-   * this panel. When the model cannot — the allowance is spent, the binding
-   * is missing, the reply was unreadable, the network is gone — the chat
-   * says it has nothing, and draws nothing.
+   * /api/ask puts the question, a slice of my places and a slice of Google's
+   * Tallinn to a language model on Cloudflare's free allowance and hands back
+   * one to three ids, each with a clause saying why. That is the only thing
+   * that ever draws a row in this panel. When the model cannot — the
+   * allowance is spent, the binding is missing, the reply was unreadable, the
+   * network is gone — the chat says it has nothing, and draws nothing.
    *
    * It used to do otherwise. assets/ask.js had a second half, a ranker, and
    * this panel ran it the moment a question was sent and drew its rows at
@@ -3757,11 +3752,6 @@
   }
 
   function askSubmit() {
-    /* Nothing to ask of until a roll is chosen, and the field says so by
-       being disabled; a submit that reaches here anyway — a form submitted
-       by script — is ignored rather than asked of nothing. */
-    if (!state.askScope) return;
-
     /* The cap lives in assets/ask.js, which is also what applies it when it
        reads a question — one number rather than two that can drift. It is
        said twice more, and deliberately: as the field's maxlength in
@@ -3772,17 +3762,15 @@
       .slice(0, window.TTBAsk.MAX_QUESTION).trim();
     if (!question) return;
 
-    TTBTrack.event('ask', { search_term: question.toLowerCase(), scope: state.askScope });
+    TTBTrack.event('ask', { search_term: question.toLowerCase() });
 
-    /* What the model is reminded of: the last six questions before this
-       one and what each was answered with, as it stands on the screen —
-       ids and clauses, since that is what the person is replying to. A
-       choice of roll is not an exchange the model needs, the scope travels
-       with every question; a question still waiting on its answer has
-       nothing to be reminded of yet. Read before the new turn goes in, so
-       the question is not its own history. Ten is a long conversation
-       about an evening, and each one is read again on every question; the
-       Function cuts it there too. */
+    /* What the model is reminded of: the last ten questions before this one
+       and what each was answered with, as it stands on the screen — ids and
+       clauses, since that is what the person is replying to. A question
+       still waiting on its answer has nothing to be reminded of yet. Read
+       before the new turn goes in, so the question is not its own history.
+       Ten is a long conversation about an evening, and each one is read
+       again on every question; the Function cuts it there too. */
     var history = state.asks.filter(function (turn) {
       return turn.q && !turn.pending;
     }).slice(-10).map(function (turn) {
@@ -3801,7 +3789,7 @@
        is worse than a row that takes a moment, and a row with nothing under
        it saying why is not an answer at all. */
     var turn = {
-      q: question, scope: state.askScope, pending: true,
+      q: question, pending: true,
       say: '', picks: [], city: [], open: {}, at: '', source: '', wish: null
     };
     state.asks.push(turn);
@@ -3816,9 +3804,8 @@
          be about before the model sees them. It is this sentence's read
          over the conversation's: "something cheaper" after "coffee near the
          bus station" is still about cafés by the station, see carry() in
-         assets/ask.js. The previous question's wish is the one to carry,
-         whatever the roll pressed in between; the turn just pushed has none
-         yet, and is skipped. */
+         assets/ask.js. The previous question's wish is the one to carry, and
+         the turn just pushed has none yet, so it is skipped. */
       var own = readWish(question, cuisines);
       var earlier = null;
       for (var i = state.asks.length - 1; i >= 0 && !earlier; i--) earlier = state.asks[i].wish;
@@ -3836,7 +3823,7 @@
           method: 'POST',
           headers: { 'content-type': 'application/json', accept: 'application/json' },
           body: JSON.stringify({
-            q: question, lang: state.lang, scope: turn.scope, wish: wish, here: here, history: history
+            q: question, lang: state.lang, wish: wish, here: here, history: history
           })
         });
       })
@@ -3878,7 +3865,7 @@
       turn.source = 'resting';
       turn.pending = false;
       settle(turn);
-      TTBTrack.event('ask_resting', { search_term: turn.q.toLowerCase(), scope: turn.scope });
+      TTBTrack.event('ask_resting', { search_term: turn.q.toLowerCase() });
       return;
     }
 
@@ -3912,12 +3899,9 @@
     }
 
     /* Which of the picks are Google's: those are the stand-ins that need a
-       pin put down and a card drawn without a write-up. On the map scope
-       this is always empty, because the Function sends the model no Google
-       rows there — the button means what it says, and it never used to:
-       a question the map could not answer was answered off the city and
-       the pressed button was moved to All Tallinn behind the reader's
-       back, which read as the switch working the wrong way round. */
+       pin put down and a card drawn without a write-up. Empty only when the
+       answer named none of them, which the Function's rule of at least one
+       from each roll makes rare — see the header of functions/api/ask.js. */
     var named = {};
     said.picks.forEach(function (pick) { named[pick.id] = true; });
     var fromCity = city.filter(function (row) { return named[row.id]; });
@@ -3934,7 +3918,6 @@
     TTBTrack.event(said.picks.length ? 'ask_answer' : 'ask_none', {
       search_term: turn.q.toLowerCase(),
       source: said.source,
-      scope: turn.scope,
       places_shown: said.picks.length,
       from_google: fromCity.length
     });
@@ -4045,70 +4028,25 @@
     paintMarkers();
   }
 
-  /* Which roll is pressed, and whether there is anything to type into yet.
-     Neither button is pressed until one has been, and until then the field
-     and its arrow are disabled: the site asked first, and the buttons are
-     the reply. */
-  function paintAskScope() {
-    var btns = dom.askScope.querySelectorAll('[data-scope]');
-    for (var i = 0; i < btns.length; i++) {
-      btns[i].setAttribute('aria-pressed', String(btns[i].getAttribute('data-scope') === state.askScope));
-    }
-    dom.askInput.disabled = !state.askScope;
-    dom.askGo.disabled = !state.askScope;
-  }
-
-  /* A roll chosen with one of the two buttons: your reply in the thread,
-     the site's next line under it, and the field ready. Changing it later is
-     the same press and reads the same way, and it does not re-ask — the
-     next question is asked of the new roll, and a switch that fired a
-     request would spend the allowance on every flick of it. */
-  function chooseScope(scope) {
-    if (scope === state.askScope) return;
-    state.askScope = scope;
-    state.asks.push({ choice: scope });
-    paintAskScope();
-    renderAsk();
-    scrollThread();
-    /* In the same turn as the press, so iOS raises the keyboard — see
-       openAsk() for why, and for why it must not scroll. */
-    try {
-      dom.askInput.focus({ preventScroll: true });
-    } catch (e) {
-      dom.askInput.focus();
-    }
-  }
-
   /* The newest line into view. The thread reads downwards and the field is
      at the bottom, so the bottom is where the conversation is. */
   function scrollThread() {
     dom.panelScroll.scrollTop = dom.panelScroll.scrollHeight;
   }
 
-  /* The thread: the site's opening line and its two buttons, which are
-     static in index.html and stay, then every exchange this visit under
-     them, oldest first and the newest at the bottom by the field — the way
-     a chat reads, and the way one is read back to the model. A choice of
-     roll is your reply as the button said it, with the site asking what you
-     feel like under it. A question is the question as it was typed and the
-     answer under it: the sentence, then the rows. The rows are the panel's
+  /* The thread: the site's opening line, which is static in index.html and
+     stays, then every exchange this visit under it, oldest first and the
+     newest at the bottom by the field — the way a chat reads, and the way one
+     is read back to the model. A question is the question as it was typed and
+     the answer under it: the sentence, then the rows. The rows are the panel's
      own rows, so a place here is the same place it is in the list — and a
      Google place the same stand-in a list draws for one — with the answer's
      clause under each in the slot a list's owner's sentence uses. */
   function renderAsk() {
-    paintAskScope();
     while (dom.askThread.children.length > 1) dom.askThread.removeChild(dom.askThread.lastChild);
 
     state.asks.forEach(function (turn, i) {
       var newest = i === state.asks.length - 1;
-
-      if (turn.choice) {
-        dom.askThread.appendChild(el('article', { className: 'ask-turn' }, [
-          el('p', { className: 'ask-you', textContent: t(turn.choice === 'all' ? 'askScopeAll' : 'askScopeMap') }),
-          el('p', { className: 'ask-say', textContent: t('askTitle') })
-        ]));
-        return;
-      }
 
       var say = turn.say ||
         (turn.pending ? t('askThinking') : turn.picks.length ? t('askHere') : t('askNothing'));
@@ -4179,10 +4117,6 @@
     releaseSheetHeight();
     paintMarkers();
     scrollThread();
-
-    /* A field that cannot be typed into yet has no keyboard to take: the
-       first thing to press is one of the two buttons above it. */
-    if (!state.askScope) return;
 
     /* iOS will not raise the keyboard for a focus() that is not inside the
        gesture that asked for it, and the panel has just been opened by one.
@@ -4537,15 +4471,13 @@
     if (!dom.panel.classList.contains('is-open')) return;
     var was = state.selected;
     /* Closing the chat is the end of the conversation, not a pause in it:
-       the thread goes, the roll is unchosen, and the map comes back — an
-       answer's pins with nobody reading the answer would be a map narrowed
-       to a question nobody can see. The next press of the speech bubble
-       starts again from the site's first question. A place opened from an
-       answer and closed is not that — the thread is still there behind the
-       bubble. */
+       the thread goes and the map comes back — an answer's pins with nobody
+       reading the answer would be a map narrowed to a question nobody can
+       see. The next press of the speech bubble starts again from the site's
+       opening line. A place opened from an answer and closed is not that —
+       the thread is still there behind the bubble. */
     if (state.view === 'ask') {
       state.asks = [];
-      state.askScope = '';
       forgetAnswer({ redraw: false });
     }
     dom.panel.classList.remove('is-open');
@@ -7108,15 +7040,6 @@
       openAsk();
     });
 
-    /* The reply to the site's first line: one of two buttons, and the
-       press is a turn in the thread. See chooseScope(). */
-    dom.askScope.addEventListener('click', function (ev) {
-      var btn = ev.target.closest('[data-scope]');
-      if (!btn) return;
-      TTBTrack.event('ask_scope', { scope: btn.getAttribute('data-scope') });
-      chooseScope(btn.getAttribute('data-scope'));
-    });
-
     dom.askForm.addEventListener('submit', function (ev) {
       ev.preventDefault();
       /* Blurring puts the phone's keyboard away over the answer that is
@@ -7552,7 +7475,6 @@
       askForm: $('ask-form'),
       askInput: $('ask-input'),
       askGo: $('ask-go'),
-      askScope: $('ask-scope'),
       askThread: $('ask-thread'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
