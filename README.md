@@ -5592,8 +5592,15 @@ to read and write first.
 ```
 CLAUDE.md                  what a session reads before it starts, and which
                            skill to load next
-.claude/settings.json      what a session may run without asking, and the two
-                           things it may never do to a database
+.claude/settings.json      what a session may run without asking, the two
+                           things it may never do to a database, and the hook
+                           below
+.claude/hooks/             d1-write-gate.mjs: reads of D1 run, a write that
+                           names its rows and at most a hundred of them stops
+                           and asks, and anything bigger or vaguer is refused,
+                           because the rows are not the session's to decide
+                           about. `--check` runs its own cases, and CI runs
+                           that
 .claude/skills/            one checklist per kind of change — a place, a story,
                            a discount, a page, a Function, the export — loaded
                            when the task matches, or by /name

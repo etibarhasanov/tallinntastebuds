@@ -127,7 +127,14 @@ the 60-second TTL is the backstop.
 **Every failure is quiet on the page.** Nothing in `assets/` waits on
 `/api/*`, and a new route keeps that promise.
 
-**`.claude/settings.json` carries hard denials**: never `DROP` a table,
+**A write to either database is the owner's decision, and there is a gate
+that enforces it.** `.claude/hooks/d1-write-gate.mjs` runs before every
+`d1_database_query` call: a read runs, and anything that writes — `INSERT`,
+`UPDATE`, `DELETE`, any DDL, a generated `.sql` file pasted in — stops and
+asks. Do not go around it, and do not read "merge it" as covering the load
+that follows. **The rules of a write** below is the procedure.
+
+`.claude/settings.json` also carries two hard denials: never `DROP` a table,
 never `DELETE` or `UPDATE` without a `WHERE`. There is no backup of either
 database in this repository; D1 Time Travel's 30 days is the only recovery.
 
@@ -143,6 +150,51 @@ and the rename step's — and on `split.js`'s, and in words as
 `accountUsernameHint` and `accountErrUsername` in `data/ui.json`. `grep -n maxlength assets/*.js` finds every
 copy. Change one, change the other, and the README's table under **The
 caps**.
+
+## The rules of a write
+
+Reading is free: `d1_database_query` answers a `SELECT` straight away, and
+checking the state of a table is how everything here gets verified. Writing is
+not, and the split is machinery rather than good intentions —
+`.claude/hooks/d1-write-gate.mjs`, wired as a `PreToolUse` hook in
+`.claude/settings.json`, classifies the SQL and hands back `allow` or `ask`.
+Its cases live in the file it guards and CI runs them (`--check`).
+
+The procedure around it, which no hook can enforce and you have to:
+
+1. **Work out the delta first, from the databases themselves.** Compare what
+   is in them against what the repository says should be — row counts, a
+   `GROUP BY`, per-column aggregates — rather than assuming the last load
+   landed. Something else may have been applied since, and a column you are
+   not touching may have moved.
+2. **Say what will change before asking to change it**: which database, which
+   table, which columns, how many rows, and what the values go from and to.
+   A count on its own is not a description. Group them where there are many —
+   "49 rows, American → Burgers" — and name the ones a person would want to
+   check by eye.
+3. **Keep it inside the cap.** A write names its rows — an `INSERT` with its
+   tuples written out, or a `WHERE` that pins every primary-key column with
+   `=` or `IN (…)` — and names at most **a hundred** of them across the whole
+   call, with **twenty** the size an ordinary correction should be. The gate
+   refuses the rest rather than prompting: over a hundred, and anything whose
+   size is not in the statement (`WHERE cuisine = 'American'`, a `LIKE`, a
+   range, a subquery, a table not in `db/schema.sql`). That is not a wall to
+   climb. A load bigger than the cap is a terminal job — the two
+   `wrangler d1 execute` lines in this file and in `/google-venues` — and a
+   sweep whose size nobody can state is a sweep nobody should run.
+4. **Then let the prompt happen**, and take a no for an answer. One ask per
+   write; asking again in the same turn hoping for a different answer is not
+   how consent works.
+5. **Preview first, production after**, verified the same way against each.
+   They are separate databases, and a yes for one is not a yes for the other
+   unless that is what was said.
+6. **Verify after**, as in step 1, and say what the numbers are now.
+
+"Merge it", "land it", "ship it" and "fix it" are about the pull request. The
+database is a second yes and it is worth asking for plainly: the change is in
+the repository either way, and an unloaded `.sql` file is something anybody
+can apply in a minute. A load that happened without being asked for cannot be
+unhappened.
 
 ## The schema
 
@@ -176,10 +228,8 @@ live table is a rebuild; do not reach for one.
    dev server's scratch and is ignored. The `AI` binding runs remotely even
    there and spends from the shared daily allowance, so drive the chat a
    few questions at a time. To look at rows without a dev server, the
-   Cloudflare MCP tool `d1_database_query` is pre-allowed in
-   `.claude/settings.json` against the **preview** database; the hard
-   denials there — no `DROP`, no `DELETE` or `UPDATE` without a `WHERE` —
-   apply to it too.
+   Cloudflare MCP tool `d1_database_query` reads either database without a
+   prompt and writes to neither without one — see **The rules of a write**.
 4. Rewrite the README paragraph the change made wrong, and the header.
 5. The pass in `leave-it-better.md`.
 

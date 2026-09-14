@@ -94,7 +94,26 @@ else runs.
 4. **Read the diff of the SQL** before it goes anywhere. Being readable
    before it runs is the reason it is a file rather than a script holding a
    token.
-5. **Apply it to both databases**, schema first if the table is new:
+5. **Ask before either database is loaded, and say what the load changes.**
+   This is somebody's live directory and the decision is theirs, not a step
+   you work through: `.claude/hooks/d1-write-gate.mjs` stops every write and
+   puts a prompt up, and what makes that prompt answerable is the sentence
+   you write before it. Diff the export against the rows that are actually in
+   the table — a `GROUP BY`, per-column aggregates, the counts — and say
+   which columns move, on how many rows, from what to what, with the handful
+   a person would want to check by eye named outright. Then preview, then
+   production, with a fresh yes for each. Landing the pull request is not
+   that yes; see **The rules of a write** in the `api` skill.
+
+   **And a whole-file load does not go through the MCP tool at all.** The gate
+   refuses a call naming more than a hundred rows, and this file names 1,110 —
+   deliberately, because a load that size is a terminal job with a file behind
+   it, not a paste behind a prompt. The two lines below are how it is done and
+   always have been; what the tool is for here is the reading either side of
+   them, and the occasional handful of rows.
+
+   **Apply it to both databases** once you have the yes, schema first if the
+   table is new:
 
    ```
    wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
@@ -165,11 +184,13 @@ categories renamed, patterns dropped — and that both databases were loaded.
 1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
 2. `node tools/googlevenues.mjs`, `node tools/googlelists.mjs`, then
    `node tools/validate.mjs`, and read both SQL diffs before going on.
-3. Load the SQL into **preview** from the branch —
+3. Ask to load the SQL into **preview** from the branch, with the delta
+   described as in step 5 above —
    `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`,
    then the same with `db/google-lists.sql` — then push the branch, which
    deploys a preview of it, and open that preview's `/google`, the list
-   picker and `/u/google-statistics` to see the rows arrive.
+   picker and `/u/google-statistics` to see the rows arrive. A no here is an
+   answer: push the branch anyway and say in the PR that preview is unloaded.
 4. One commit for the export and its SQL; a second for any `KITCHENS`
    pattern and cuisine label that had to go with it, and a third for the
    counts, if they moved.
@@ -179,13 +200,22 @@ categories renamed, patterns dropped — and that both databases were loaded.
    preview was loaded, and that **production needs the same load on
    landing**.
 7. CI green, then **Rebase and merge** — the branch stays, `CLAUDE.md` says
-   why — and
+   why — and then ask, again and separately, to load production:
    `wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql`
-   then the same with `db/google-lists.sql`, at once, so the live directory,
-   the five lists and the files say the same thing.
+   then the same with `db/google-lists.sql`, so the live directory, the five
+   lists and the files say the same thing. Approval to merge is not approval
+   to load, and a merge that lands while production goes unloaded is a fine
+   place to stop: the PR already says production needs it, the file is in the
+   repository, and anybody can run those two lines in a minute.
 
 ## Where it goes wrong
 
+- **A database loaded without being asked.** In September 2026 a session
+  corrected the `cuisine` column of 74 rows, was told "merge it", and read
+  that as covering the load as well: it wrote both databases, production
+  included, on its own judgement. The rows were right, which is not the
+  point — nobody had said to write them. That is what the gate and step 5
+  are for now.
 - The SQL regenerated and applied to production only.
 - The cleaner's output left under its default name, so the tool reads the
   old file and reports nothing stale.
