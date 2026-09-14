@@ -212,10 +212,10 @@ what it costs per request, and what has to be applied by hand and where.
    pushing the branch is what deploys one — Cloudflare's Git connection puts
    the URL in the PR's checks — so open that preview and say that you
    looked at what it deployed.
-7. CI green, then **Rebase and merge**, delete the branch, and **apply to
-   production** whatever the body said, immediately: the code is live the
-   moment the push lands, and a route that expects a column production does
-   not have fails quietly, which is the worst way.
+7. CI green, then **Rebase and merge** — the branch stays, `CLAUDE.md` says
+   why — and **apply to production** whatever the body said, immediately:
+   the code is live the moment the push lands, and a route that expects a
+   column production does not have fails quietly, which is the worst way.
 
 ## Where it goes wrong
 

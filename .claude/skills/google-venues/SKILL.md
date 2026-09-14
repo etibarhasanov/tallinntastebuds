@@ -178,7 +178,8 @@ categories renamed, patterns dropped — and that both databases were loaded.
    and went, which categories renamed, which patterns were dropped, that
    preview was loaded, and that **production needs the same load on
    landing**.
-7. CI green, then **Rebase and merge**, delete the branch, and
+7. CI green, then **Rebase and merge** — the branch stays, `CLAUDE.md` says
+   why — and
    `wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql`
    then the same with `db/google-lists.sql`, at once, so the live directory,
    the five lists and the files say the same thing.

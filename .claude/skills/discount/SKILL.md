@@ -218,9 +218,10 @@ driven in a browser, and the staff link.
 6. Open the PR against the default branch. The body says the rate, which
    deals share its line, that the key is fresh, what was driven, and the
    staff link in full — `https://tallinntastebuds.ee/staff.html?r=<id>`.
-7. CI green, then **Rebase and merge**, delete the branch, and **send the
-   staff link** to the restaurant. That is the one thing that happens by
-   hand after landing, and the PR body is where it was written down.
+7. CI green, then **Rebase and merge** — the branch stays, `CLAUDE.md` says
+   why — and **send the staff link** to the restaurant. That is the one
+   thing that happens by hand after landing, and the PR body is where it
+   was written down.
 
 ## Where it goes wrong
 

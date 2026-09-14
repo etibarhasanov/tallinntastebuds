@@ -188,8 +188,8 @@ entry land in one commit, so no commit lists a photo that is not there.
    the map, what it was tagged and why, what the counts did, that the
    catalogue was regenerated, and which blurb languages are still to come.
 7. CI green — the validator, the QR check, the preview deploy — then **Rebase
-   and merge**, and delete the branch. The place is on the live map within
-   the minute.
+   and merge**; the branch stays, `CLAUDE.md` says why. The place is on the
+   live map within the minute.
 
 **A PR the admin page opened** (`admin/add-<id>` or `admin/edit-<id>`) is
 red until the catalogue is regenerated, so it is landed like this:
