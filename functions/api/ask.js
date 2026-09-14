@@ -103,16 +103,35 @@
  * "siin lähedal" name nowhere Photon could find, and for a while the chat
  * answered them by asking which part of town — to a visitor who had just
  * pressed the locate button and was looking at their own dot on the map.
- * So the browser sends the dot as `here` with a question that asked for
- * somewhere near, asking the device for one when there is no dot yet, and
- * a question with nothing to look up is measured from that. A question
- * that did name somewhere is still measured from the place named — the
- * dot is only where it falls back to when Photon cannot place the words —
- * and a question that asked for nothing near carries no point at all, so
- * that "best khachapuri" is not quietly a question about the nearest one.
- * The point is checked to be inside the Tallinn box and otherwise dropped:
- * a visitor asking from Helsinki is told the same as one whose whereabouts
- * are unknown, rather than shown eighty kilometres on every line.
+ * So the browser sends the dot as `here`, with every question once there
+ * is one, asking the device for it only for a question that said "near
+ * me" when there is no dot yet. A question that named somewhere is still
+ * measured from the place named — the dot is where it falls back to when
+ * Photon cannot place the words — and everything else is measured from
+ * the dot. The point is checked to be inside the Tallinn box and otherwise
+ * dropped: a visitor asking from Helsinki is told the same as one whose
+ * whereabouts are unknown, rather than shown eighty kilometres on every
+ * line.
+ *
+ * With a point, every line carries its distance and every pick goes back
+ * with it as `far`, in kilometres, for the browser to print under the row.
+ * It used to be the model's to quote off the line, and a small model
+ * quotes a distance the way it quotes anything: sometimes, and sometimes
+ * from nowhere — "1.2 km away" under a place in Lasnamäe and the same
+ * under one on Endla, six kilometres apart, and nothing at all under the
+ * next answer. So the number on the row is now the number this measured,
+ * and the brief tells the model the visitor can see it and not to write
+ * one. What the point changes about the choosing depends on whether the
+ * question asked for it. Said "near", nearness scores when the lists are
+ * narrowed, as a named type does, and a kind of place asked for is held
+ * to its nearest — see the rules under askModel(). Not said, the dot only
+ * breaks ties: "best khachapuri" from somebody with a dot is still a
+ * question about the city, answered with the distances on show, and
+ * "coffee" from them is the nearest cafés first among cafés that fit the
+ * same. It used to carry no point at all unless the question said near,
+ * which from a phone that had just drawn the visitor's dot read as the
+ * site not talking to itself: three cafés across town, and nothing to say
+ * how far any of them was.
  *
  * What was measured from goes back to the browser as `at`, and the chat
  * prints it under the reply — "Distances are from Tallinna bussijaam,
@@ -197,6 +216,14 @@ const SPENT = '3036';
 /* How many Google rows go to the model, and back to the browser, on the
    whole city. On the map, none: see the two scopes in the header. */
 const MAX_CANDIDATES = 40;
+
+/* How much farther than the nearest place of the kind asked for a pick may
+   be, in kilometres, when the question asked for somewhere near — the
+   third rule under askModel(). A kilometre: "coffee close to me" is a
+   question about the corner, and a café three kilometres past the nearest
+   one is a different corner. Measured per roll, since on the city the
+   one-of-each rule wants a place from each. */
+const NEAR_SLACK = 1;
 
 /* How many of my own places go to the model.
  *
@@ -453,6 +480,9 @@ function readWish(raw) {
     cheap: !!wish.cheap,
     fancy: !!wish.fancy,
     open: !!wish.open,
+    /* Whether they asked to be near anything at all, which is what decides
+       whether nearness scores or only breaks ties — see nearScore(). */
+    nearby: !!wish.nearby,
     /* What they want to be near, as words — a street, a district, a name.
        Folded like the rest, and short: eighty characters is a long address,
        and this one goes upstream. */
@@ -471,13 +501,14 @@ function readWish(raw) {
  * place after it, so "cheap ramen" never reaches Photon. The first
  * suggestion is the answer: for a street it is the street, for a district
  * the district, and for a name Photon knows it is the door. Failing that,
- * or when the question named nowhere — "near me" — the point is the one
- * the browser sent as `here`, the visitor's own dot, marked `here: true`
- * so the brief and the chat can say which it was. Every way the whole
- * thing can fail — no fetch, Photon busy or down, too short to ask,
- * nothing inside the box, no dot — is null, and null is answered honestly
- * by the brief rather than worked around: a wrong point would put "1.2 km"
- * on every line in the site's own voice.
+ * or when the question named nowhere — "near me", or nothing about near at
+ * all — the point is the one the browser sent as `here`, the visitor's own
+ * dot, which comes with every question once the map has one, marked
+ * `here: true` so the brief and the chat can say which it was. Every way
+ * the whole thing can fail — no fetch, Photon busy or down, too short to
+ * ask, nothing inside the box, no dot — is null, and null is answered
+ * honestly by the brief rather than worked around: a wrong point would put
+ * "1.2 km" on every line in the site's own voice.
  */
 async function visitorAt(wish, here) {
   if (wish.near) {
@@ -524,18 +555,31 @@ function farFrom(at, entry) {
   return km(at, entry);
 }
 
-/* A distance as the model reads it — "650 m", "1.2 km" — or nothing. */
+/* A distance as the model reads it — "650 m", "1.2 km" — or nothing. To
+   the nearest fifty metres under a kilometre and never "0 m": a door on the
+   visitor's own corner is fifty metres off, not nowhere. The browser rounds
+   the same way for the row (renderAsk() in assets/app.js), and it is a
+   copy rather than a share because a Function cannot import from assets/;
+   change one, look at the other. */
 function distanceLine(far) {
   if (far == null) return '';
-  return far < 1 ? Math.round(far * 20) * 50 + ' m' : far.toFixed(1) + ' km';
+  return far < 1 ? Math.max(50, Math.round(far * 20) * 50) + ' m' : far.toFixed(1) + ' km';
 }
 
 /* Nearness on the scale everything else here scores on: four for within a
    kilometre, the same as naming a type, and one less for each kilometre
    after, so "close to Laulupeo" puts the walkable ones ahead and leaves the
-   far side of town to score on whatever else was said. */
-function nearScore(far) {
-  return far == null ? 0 : Math.max(0, 4 - Math.floor(far));
+   far side of town to score on whatever else was said.
+
+   Only when the question asked for near. The dot comes with every question
+   once the map has one, and scored on every question it would swamp the
+   rest of the scale — a word matched off a dish is one point, and "best
+   khachapuri" would have been answered with whatever is within a kilometre.
+   Not asked for, the distance still goes on every line and breaks ties
+   when the lists are sorted, which is what "coffee" from somebody with a
+   dot should get: cafés, nearest first. */
+function nearScore(wish, far) {
+  return !wish.nearby || far == null ? 0 : Math.max(0, 4 - Math.floor(far));
 }
 
 /* The thread as the browser sent it, checked to a shape rather than trusted,
@@ -597,7 +641,7 @@ function candidates(roll, wish, now, named, at) {
 
     for (const id of wish.types) if (entry.types.includes(id)) score += 4;
     for (const id of wish.kitchens) if (entry.kitchens.includes(id)) score += 4;
-    score += nearScore(far);
+    score += nearScore(wish, far);
     if (wish.cheap && entry.price && entry.price <= 2) score += 3;
     if (wish.fancy && entry.price && entry.price >= 3) score += 3;
     if (wish.open && shuts) score += 3;
@@ -633,9 +677,17 @@ function candidates(roll, wish, now, named, at) {
  * be about; and, once the scorers are in, enough of the rest to reach the
  * floor, in catalogue order, so a question that names nothing still has a map
  * to choose from.
+ *
+ * Every entry that comes out carries `far`, its distance from the visitor
+ * or null — the floor's as much as the scorers' — because the line the
+ * model reads and the number the browser prints under the row are both
+ * read off it, and a place that reached the model through the floor is as
+ * likely to be picked as any other.
  */
 function shortlist(places, wish, open, lang, named, at) {
-  const live = places.filter((place) => !place.closed);
+  const live = places
+    .filter((place) => !place.closed)
+    .map((place) => ({ ...place, far: farFrom(at, place) }));
   if (live.length <= MIN_CATALOGUE) return live;
 
   const scored = [];
@@ -643,11 +695,10 @@ function shortlist(places, wish, open, lang, named, at) {
 
   for (const place of live) {
     const types = place.types || [];
-    const far = farFrom(at, place);
     let score = named.has(place.id) ? 1000 : 0;
 
     for (const id of wish.types) if (types.includes(id)) score += 4;
-    score += nearScore(far);
+    score += nearScore(wish, place.far);
     if (wish.cheap && place.price && place.price <= 2) score += 3;
     if (wish.fancy && place.price && place.price >= 3) score += 3;
     if (wish.open && open[place.id]) score += 3;
@@ -668,14 +719,14 @@ function shortlist(places, wish, open, lang, named, at) {
       for (const word of wish.rest) if (hay.includes(' ' + word)) score += 1;
     }
 
-    if (score > 0) scored.push({ place: { ...place, far }, score, far });
+    if (score > 0) scored.push({ place, score });
     else rest.push(place);
   }
 
   /* Nearer first among equals when somebody said where they are; otherwise
      stable, so places that scored the same keep the order the catalogue put
      them in and the same question twice is the same answer. */
-  scored.sort((a, b) => b.score - a.score || (a.far || 0) - (b.far || 0));
+  scored.sort((a, b) => b.score - a.score || (a.place.far || 0) - (b.place.far || 0));
 
   const out = scored.slice(0, MAX_CATALOGUE).map((hit) => hit.place);
 
@@ -776,8 +827,10 @@ function googleFor(rows) {
 /* What the model is told once, before the conversation: who it is, the
    lists, and the rules. The lists go here rather than with the question so
    that the thread under them reads as turns of a conversation about them,
-   which is what lets a follow-up mean what it says. */
-function briefFor(places, google, wholeCity, lang, open, at) {
+   which is what lets a follow-up mean what it says. `near` is whether the
+   question asked for somewhere near, which with a point known changes what
+   the distances are for — see below. */
+function briefFor(places, google, lang, open, at, near) {
   const lines = [
     'You are the voice of Tallinn Tastebuds, a map of places to eat in' +
       ' Tallinn, chatting with a visitor. You help them choose where to eat' +
@@ -863,22 +916,34 @@ function briefFor(places, google, wholeCity, lang, open, at) {
       ' leave the place out; a shorter honest answer beats an invented' +
       ' reason, and the "say" must not claim what the picks do not support.',
     /* The visitor's whereabouts — see WHERE THE VISITOR IS in the header.
-       Known, the distances on the lines are the only distances there are
-       and the model is told to read them and nothing else. Unknown, the
-       model is told so in as many words, because left to itself it once
-       took a place's street for the visitor's and invented a walk: a
-       street in the question is theirs, no distance may be stated, and the
-       honest answer says it cannot judge and asks which part of town. */
+       Known, the distances on the lines are the only distances there are,
+       the browser prints each pick's under its row, and the model is told
+       both, so that it chooses by them and does not write them: left to
+       quote them it quoted some, skipped others and invented a few. What
+       they are for depends on whether near was asked for — the nearest
+       that fit, or the question first and the nearer among equals.
+       Unknown, the model is told so in as many words, because left to
+       itself it once took a place's street for the visitor's and invented
+       a walk: a street in the question is theirs, no distance may be
+       stated, and the honest answer says it cannot judge and asks which
+       part of town. */
     at
       ? 'WHERE THE VISITOR IS: ' + (at.here
         ? 'where their device places them, which is the point they mean by' +
           ' "near me" or "here".'
         : 'at ' + [at.label, at.where].filter(Boolean).join(', ') +
           ', the place they said they are near.') +
-        ' The "where" of every line ends' +
-        ' with the straight-line distance from there, and "close" means the' +
-        ' smallest. Quote a distance only as its line gives it — never as' +
-        ' minutes, and never for a line that has none.'
+        ' The "where" of every line ends with the straight-line distance' +
+        ' from there. The visitor sees that distance printed under every' +
+        ' place you pick, so never write a distance or a walking time into' +
+        ' "why" — spend its words on the reason.' +
+        (near
+          ? ' They asked for somewhere NEAR: "close" means the smallest' +
+            ' distance, so pick the nearest places that fit what they asked' +
+            ' for.'
+          : ' They did not ask for somewhere near, so what they asked for' +
+            ' comes first; among places that fit it equally well, prefer' +
+            ' the nearer.')
       : 'WHERE THE VISITOR IS: unknown. You know nothing about where they' +
         ' are, live or are staying beyond what they type, and nothing about' +
         ' how far anything is from it. A street, address or district in their' +
@@ -1023,15 +1088,24 @@ export async function onRequestPost(context) {
      arrived as the same empty answer. It names which, never why in
      Cloudflare's own words, so nothing quotes a request back at a
      stranger. */
-  /* The distance rides on each Google row only as far as the prompt; the
-     browser draws nothing with it, so it does not travel. What was measured
-     from does, without its point: the chat prints the words under the
-     reply so the visitor can see what "near" was taken to mean — the place
-     Photon found, or `here: true` for their own dot, which the browser has
-     the words for in the visitor's language. */
+  /* Each pick goes back with its distance from the visitor as `far`, in
+     kilometres or null, read off the same entry the model's line was —
+     the browser prints it under the row, and it is not the model's to
+     quote (see WHERE THE VISITOR IS in the header). The city's rows carry
+     their distance only as far as the prompt: the browser draws a pick,
+     never a row, with one. What was measured from travels too, without its
+     point: the chat prints the words under the reply so the visitor can
+     see what "near" was taken to mean — the place Photon found, or `here:
+     true` for their own dot, which the browser has the words for in the
+     visitor's language. */
+  const farOf = new Map([...mine, ...google].map((p) => [p.id, p.far]));
   const answer = (source, picks, say, note) =>
     json({
-      ok: true, source, picks, say, note, open,
+      ok: true, source, say, note, open,
+      picks: picks.map((pick) => {
+        const far = farOf.get(pick.id);
+        return { ...pick, far: typeof far === 'number' ? Math.round(far * 1000) / 1000 : null };
+      }),
       venues: google.map(({ far, ...card }) => card),
       at: !at ? null : at.here ? { here: true } : {
         label: at.label,
@@ -1056,7 +1130,7 @@ export async function onRequestPost(context) {
      exchange as the two turns it was — the question, and the answer in the
      exact JSON shape asked for, which is also the shape it will write next
      — and the new question last. */
-  const messages = [{ role: 'system', content: briefFor(mine, google, wholeCity, lang, open, at) }];
+  const messages = [{ role: 'system', content: briefFor(mine, google, lang, open, at, wish.nearby) }];
   for (const turn of history) {
     messages.push({ role: 'user', content: turn.q });
     messages.push({ role: 'assistant', content: JSON.stringify({ say: turn.say, picks: turn.picks }) });
@@ -1143,7 +1217,18 @@ export async function onRequestPost(context) {
      "of that kind" is a word the model can check its picks against. It is
      held to only when the lists actually hold a place of the kind — when
      they do not, an empty answer saying so is what the brief asks for, and
-     nothing here can tell it from a wrong one. */
+     nothing here can tell it from a wrong one.
+
+     The near rule: when the question asked for somewhere near, named a
+     kind, and there is a point to measure from, every pick of that kind is
+     within NEAR_SLACK of the nearest place of that kind on its roll. "Coffee
+     close to me" from a dot on Ankru was answered with Kalve Kadriorg, six
+     kilometres off, with Kokomo Coffee Roasters on the same street as the
+     dot and on the first line of the list. The brief says
+     "close" means the smallest distance; the report that a small model
+     read past it says the same thing the kind rule's report did. It is
+     told which picks strayed and how far, and which places of the kind are
+     within reach, with their distances, and asked once more. */
   if (said && said.picks.length) {
     const faults = [];
     const mineIds = new Set(mine.map((p) => p.id));
@@ -1173,6 +1258,26 @@ export async function onRequestPost(context) {
           ' only places whose types include ' + wish.types.join(' or ') +
           ', each with its reason — or, if truly none fits, say so and return' +
           ' an empty picks array.');
+      }
+
+      if (wish.nearby && at) {
+        const reach = [];
+        const beyond = [];
+        for (const roll of [mine, google]) {
+          const kind = roll
+            .filter((p) => ofKind(p.id) && typeof p.far === 'number')
+            .sort((a, b) => a.far - b.far);
+          for (const p of kind) (p.far <= kind[0].far + NEAR_SLACK ? reach : beyond).push(p);
+        }
+        const strayed = beyond.filter((p) => said.picks.some((pick) => pick.id === p.id));
+        if (strayed.length) {
+          faults.push('The visitor asked for somewhere NEAR, and these picks are not' +
+            ' the nearest of the kind they asked for: ' +
+            strayed.map((p) => p.id + ' at ' + distanceLine(p.far)).join(', ') +
+            '. The nearest places whose types include ' + wish.types.join(' or ') +
+            ' are: ' + reach.map((p) => p.id + ' at ' + distanceLine(p.far)).join(', ') +
+            '. Answer again choosing only from those, each with its reason.');
+        }
       }
     }
 

@@ -2425,6 +2425,17 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   color: var(--muted);
   letter-spacing: .02em;
 }
+/* How far a place in an answer is from where the visitor said they are —
+   "450 m", "1,2 km". A measurement, so it keeps the row's mono, and in the
+   ink rather than the row's grey because it is the one fact in the line the
+   visitor asked for. It sits with the badges rather than after the types,
+   which can run to two lines, so it holds the same place on every row. */
+.list-far {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ink);
+}
 .list-row.is-closed .list-name { color: var(--muted); }
 
 /* ---------- somebody else's list, on the map ---------- */

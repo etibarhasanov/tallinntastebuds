@@ -3691,34 +3691,38 @@
     });
   }
 
-  /* Where the visitor is, for a question that asked to be near something —
-     or null, which is most questions and is never a failure.
+  /* Where the visitor is — or null, which is never a failure.
 
-     The dot on the map is the answer when there is one: the locate button
-     put it there, the visitor can see it, and "distances are from your
-     location on the map" is checkable against it. The chat used to ignore
-     the dot and ask which part of town they were in, which from a phone
-     that had just been asked for its location read as the site not talking
-     to itself. When there is no dot yet, the device is asked once, the same
-     way the button asks it — the dot appears, the map frames it, and the
-     browser puts up its permission prompt if it has not already — because
-     "near me" is a request for exactly that. Refused, unavailable, or too
-     slow, and the answer is null, which the Function answers honestly: it
-     says it cannot judge the distance and asks which part of town.
+     The dot on the map is the answer when there is one, with every
+     question: the locate button put it there, the visitor can see it, and
+     "distances are from your location on the map" is checkable against it.
+     It used to go only with a question that said "near", on the argument
+     that "best khachapuri" is a question about the city and a point would
+     bias it towards the nearest one; what that looked like from a phone
+     that had just drawn the dot was "coffee" answered with three cafés
+     across town and nothing to say how far any of them was. The Function
+     now decides what the point is for — nearness counts when near was
+     asked for and only breaks ties otherwise — so the dot travels whenever
+     there is one, and every row of the answer says how far.
 
-     A question that asked for nothing near gets null without asking: "best
-     khachapuri" is a question about the city, and a point would bias it
-     towards the nearest one. A question that named somewhere to be near —
-     "next to the bus station" — still sends the dot when there is one, but
-     does not ask the device for it: the Function measures from the place
-     named and keeps the dot for when Photon cannot place it. */
+     When there is no dot yet, the device is asked once, and only for a
+     question that asked to be near the visitor themself — "near me",
+     "siin lähedal" — the same way the button asks it: the dot appears, the
+     map frames it, and the browser puts up its permission prompt if it has
+     not already, because "near me" is a request for exactly that. Refused,
+     unavailable, or too slow, and the answer is null, which the Function
+     answers honestly: it says it cannot judge the distance and asks which
+     part of town. A question that named somewhere to be near — "next to
+     the bus station" — does not ask the device: the Function measures from
+     the place named. Nor does any other question: the site's own
+     permission prompt over "best khachapuri" would be a question nobody
+     asked. */
   function whereabouts(wish) {
-    if (!wish.nearby) return Promise.resolve(null);
     if (hereMarker) {
       var here = hereMarker.getLatLng();
       return Promise.resolve({ lat: here.lat, lng: here.lng });
     }
-    if (wish.near) return Promise.resolve(null);
+    if (!wish.nearby || wish.near) return Promise.resolve(null);
     return locateOnce();
   }
 
@@ -3771,14 +3775,13 @@
     TTBTrack.event('ask', { search_term: question.toLowerCase(), scope: state.askScope });
 
     /* What the model is reminded of: the last six questions before this
-       one and what each was answered with, as it stands on the screen — the
-       model's answer where it gave one, the local reader's where it did
-       not, since that is what the person is replying to. A choice of roll
-       is not an exchange the model needs, the scope travels with every
-       question; a question still waiting on its answer has nothing to be
-       reminded of yet. Read before the new turn goes in, so the question is
-       not its own history. Six is a conversation; the Function cuts it
-       there too. */
+       one and what each was answered with, as it stands on the screen —
+       ids and clauses, since that is what the person is replying to. A
+       choice of roll is not an exchange the model needs, the scope travels
+       with every question; a question still waiting on its answer has
+       nothing to be reminded of yet. Read before the new turn goes in, so
+       the question is not its own history. Six is a conversation; the
+       Function cuts it there too. */
     var history = state.asks.filter(function (turn) {
       return turn.q && !turn.pending;
     }).slice(-6).map(function (turn) {
@@ -3812,10 +3815,10 @@
          be about before the model sees them. */
       var wish = readWish(question, cuisines);
 
-      /* And where the visitor is, when the question asked for somewhere
-         near — the dot on the map, or one reading from the device. It is
-         beside the wish rather than in it because it is not something the
-         sentence said. */
+      /* And where the visitor is — the dot on the map when there is one,
+         or one reading from the device for a question that asked for
+         somewhere near. It is beside the wish rather than in it because it
+         is not something the sentence said. */
       return whereabouts(wish).then(function (here) {
         return fetch(ASK_URL, {
           method: 'POST',
@@ -3835,17 +3838,13 @@
       .catch(function () { arrive(turn, null, null); });
   }
 
-  /* The Function's answer folded into its exchange. The model's reply wins
-     whenever there is one — places, or only a sentence: asked back which of
-     two it meant, told that "how does it work" is not a question about
-     where to eat. The reply is the conversation, and the local reader's
-     rows replacing it would be the site talking over itself; it had its
-     turn the moment the question was sent, and the model's answer is the
-     better one that was waited for. Only when the model said nothing at
-     all does the reader run again, over my places and the city's rows
-     together, with the hours it now has. The city is reached for only when
-     the map came to nothing — that is the fallback, and it costs nothing
-     now: the rows came with the answer. */
+  /* The Function's answer folded into its exchange. The model's reply is
+     the exchange whenever there is one — places, each with its reason and
+     its distance, or only a sentence: asked back which of two it meant,
+     told that "how does it work" is not a question about where to eat.
+     When there is none the exchange says nothing answers, and draws
+     nothing: the keyword reader that used to fill that gap is gone, see the
+     note above. */
   function arrive(turn, wish, out) {
     var open = (out && out.open) || {};
     var city = ((out && out.venues) || []).filter(function (row) {
@@ -3882,18 +3881,22 @@
       ? { say: model.say || '', picks: model.picks || [], source: 'ai' }
       : { say: '', picks: [], source: 'none' };
 
-    /* Where the Function measured from, when the question said "near"
-       somewhere and there was a point to measure from — the label and the
-       district of the place named, no point; or the visitor's own dot,
-       which the line names as their location on the map. Printed under the
-       reply, because it is the one line that lets the visitor see what the
-       site took their street or landmark to be, and a wrong reading is
-       otherwise invisible: the places drawn are all real, only not the
-       ones round the corner. */
+    /* Where the Function measured from, when there was a point to measure
+       from — the label and the district of the place named, no point; or
+       the visitor's own dot, which the line names as their location on the
+       map. Printed under the reply, because it is the one line that lets
+       the visitor see what the site took their street or landmark to be,
+       and a wrong reading is otherwise invisible: the places drawn are all
+       real, only not the ones round the corner. Only under a reply with
+       distances in it, or one that was asked for somewhere near and has
+       none: the dot goes with every question now, and "distances are from
+       your location" under "hello" would be a note on nothing. */
     var at = '';
-    if (out && out.at && out.at.here) at = t('askFromHere');
-    else if (out && out.at && typeof out.at.label === 'string') {
-      at = t('askFrom', { name: [out.at.label, out.at.where].filter(Boolean).join(', ') });
+    if (out && out.at && (said.picks.length || (wish && wish.nearby))) {
+      if (out.at.here) at = t('askFromHere');
+      else if (typeof out.at.label === 'string') {
+        at = t('askFrom', { name: [out.at.label, out.at.where].filter(Boolean).join(', ') });
+      }
     }
 
     /* Which of the picks are Google's: those are the stand-ins that need a
@@ -3930,10 +3933,10 @@
   function settle(turn) {
     var newest = state.asks[state.asks.length - 1] === turn;
     if (!state.asks.some(function (t2) { return t2.pending; })) setAsking(false);
-    /* Not while a place is being read. The model's answer landing a few
-       seconds after the local one would otherwise pull the panel back off a
-       card somebody had already opened from the first answer. The thread
-       has the better answer the next time it is looked at. */
+    /* Not while a place is being read. An answer landing a few seconds
+       after the question would otherwise pull the panel back off a card
+       somebody had opened from an earlier answer in the meantime. The
+       thread has it the next time it is looked at. */
     if (newest && turn.picks.length && state.view !== 'detail') showAnswer(turn);
     else if (state.view === 'ask') { renderAsk(); if (newest) scrollThread(); }
   }
@@ -4109,7 +4112,23 @@
           }
         }
         if (!place) return;
-        rows.appendChild(place.standIn ? listOnlyRow(place, pick.why || '') : listRow(place, pick.why || ''));
+        /* How far the place is from where the visitor said they are, as the
+           Function measured it — the line under the reply says from where.
+           Printed by the row and never by the model: asked to quote the
+           distance off its line, a small model quoted some, skipped others
+           and made a few up. To the nearest fifty metres under a kilometre
+           and never "0 m", one decimal past it, in the visitor's own
+           decimal mark and unit; the Function rounds the same way for the
+           line the model reads (distanceLine() in functions/api/ask.js),
+           and it is a copy because a Function and a page cannot share a
+           file. Change one, look at the other. */
+        var far = '';
+        if (typeof pick.far === 'number') {
+          far = pick.far < 1
+            ? t('askMetres', { n: Math.max(50, Math.round(pick.far * 20) * 50) })
+            : t('askKm', { n: formatDecimal(pick.far, 1) });
+        }
+        rows.appendChild(place.standIn ? listOnlyRow(place, pick.why || '', far) : listRow(place, pick.why || '', far));
       });
 
       dom.askThread.appendChild(el('article', {
@@ -5477,19 +5496,22 @@
   /* One place as a row in the panel, and `said` the sentence under it when
      there is one: what a list's owner wrote, or why an answer named it. Both
      are the reason the row is worth reading rather than searching for, so
-     they go in the row and not behind a tap.
+     they go in the row and not behind a tap. `far` is how far it is from
+     the visitor, already in words — "450 m", "1,2 km" — which only an
+     answer knows: it sits with the badges, before the types, so it holds
+     the same place on every row and can be read straight down the answer.
 
      Module-level rather than inside renderList(), because the thread the
      chat draws is rows too, and one builder drawn from two places is the
      whole reason a Google place and a place of mine read alike wherever
      they meet. */
-  function listRow(place, said) {
+  function listRow(place, said, far) {
     /* A place that is on the list but not on my map: a name, an address and
        a pin out of the catalogue, and nothing to read. The badges a row
        normally carries are all claims about a write-up that does not exist
        — how much there is to look at, what it costs, which types it is —
        so a stand-in row carries the sentence and the address instead. */
-    if (place.standIn) return listOnlyRow(place, said);
+    if (place.standIn) return listOnlyRow(place, said, far);
 
     /* A discount used to be something you could only find by opening the
        place, which meant opening seventy of them to learn that four save
@@ -5524,7 +5546,8 @@
           ? ', ' + (saveCount(place.id) === 1
               ? t('saveCountOne')
               : t('saveCount', { n: saveCount(place.id) }))
-          : '')
+          : '') +
+        (far ? ', ' + far : '')
     }, [
       el('span', { className: 'list-name', textContent: place.name }),
       el('span', { className: 'list-sub' }, [
@@ -5539,6 +5562,7 @@
            two facts about the place rather than about the food. */
         place.closed ? shutMark() : null,
         saveMark(place),
+        far ? el('span', { className: 'list-far', textContent: far }) : null,
         el('span', {
           className: 'list-types',
           textContent: (place.types || []).map(typeLabel).join(' · ')
@@ -5576,21 +5600,25 @@
      A place off nobody's export — added by hand to a list — has no gauge,
      no types and no score, and keeps the plainer row: the address is the
      whole of what is known about it. */
-  function listOnlyRow(place, said) {
+  function listOnlyRow(place, said, far) {
     var kinds = (place.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
     var described = !!place.google && !!(kinds || place.price || place.rating);
+    var distance = far ? el('span', { className: 'list-far', textContent: far }) : null;
 
     var row = el('button', {
       type: 'button',
       className: 'list-row' + (described ? '' : ' is-from-list'),
       'aria-label': t('openPlace', { name: place.name }) + ', ' + standInNote() +
-        (place.rating ? ', ' + t('googleSays') + ' ' + scoreMark(place).textContent : '')
+        (place.rating ? ', ' + t('googleSays') + ' ' + scoreMark(place).textContent : '') +
+        (far ? ', ' + far : '')
     }, [
       el('span', { className: 'list-name', textContent: place.name }),
       el('span', { className: 'list-sub' }, described ? [
         place.price ? priceGauge(place.price) : null,
+        distance,
         el('span', { className: 'list-types', textContent: kinds })
       ] : [
+        distance,
         el('span', { className: 'list-types', textContent: place.address || '' })
       ]),
       described ? googleMark(place) : null,

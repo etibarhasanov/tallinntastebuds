@@ -68,13 +68,27 @@ window.TTBAsk = (function () {
      This is deliberately not a stopword list per language, which would be
      hundreds of words and stale the day a language is added. It is the short
      list of things that measurably matched the wrong places while this was
-     being written. */
+     being written — and, on the third line of each language, the filler a
+     chat sentence carries once the wish is out of it: "more", "options",
+     "else", "recommend". Those did worse than match a place. "More vegan
+     options nearby" says near and nothing after it, so what is left over
+     from the whole sentence is taken as the place to be near, and "more
+     options" went to Photon, which placed it somewhere and measured every
+     distance from there. With the filler out, nothing is left, and the
+     question is about the visitor, which is what it was. */
   var NOISE = (
     'a an the and or of for in on at to me i im is are want would like some ' +
     'something somewhere place places good nice please can you find show ' +
     'how does do it this that what which why who there here ' +
+    'more other another else any few couple options option spots spot ideas ' +
+    'idea suggestions suggestion recommend recommendation recommendations tell give ' +
+    'best top ' +
     'ja voi vai see on ning kus midagi kohta koht hea palun kuidas mis kas kuhu ' +
-    'и или на в где что нибудь место хорошее пожалуйста хочу как это куда'
+    'veel muud muid teisi moni moned paar valikuid valikud soovita soovitusi ' +
+    'parim parimad parimat ' +
+    'и или на в где что нибудь место хорошее пожалуйста хочу как это куда ' +
+    'еще другие другое другои другую несколько пару варианты вариант вариантов ' +
+    'посоветуи посоветуите подскажи подскажите лучшии лучшие лучшая лучшее самыи самое'
   ).split(' ');
 
   /* Two letters is not a word anybody asks for a place by, in any of the
