@@ -1,16 +1,16 @@
 ---
 name: site
-description: Change what a page does or looks like: anything in assets/, an HTML file, data/ui.json, a style, or adding a language.
+description: Change what a page does or looks like: anything in assets/, an HTML file, data/ui.json, a style, a post on the blog, or adding a language.
 ---
 
 # Change a page
 
 Anything a visitor sees or presses: the scripts and stylesheets in `assets/`,
 the HTML pages, `data/ui.json`, the labels in the taxonomy and the cuisines, a
-language. It is the process with the most rules because a mistake here reaches
-every phone that opens the map, and a browser holding yesterday's script
-against today's data has already taken the site down once — that story is in
-the header of `tools/stamp.mjs`.
+post in `data/blog.json`, a language. It is the process with the most rules
+because a mistake here reaches every phone that opens the map, and a browser
+holding yesterday's script against today's data has already taken the site
+down once — that story is in the header of `tools/stamp.mjs`.
 
 `.claude/rules/leave-it-better.md` loads itself the moment you open a file
 here. It is the main rule and it applies to every line you touch.
@@ -19,10 +19,10 @@ here. It is the main rule and it applies to every line you touch.
 
 - The README section for the feature you are standing in. Every one has one —
   **Saves**, **Accounts**, **The account page**, **Lists**, **Public lists**,
-  **Profiles**, **Stories**, **The directory**, **Ask for somewhere**,
-  **Restaurant discounts**, **The radio**, **Surprise me**, **Languages**,
-  **The mark**, **The pins**, **The two styles** — and it carries the
-  reasoning the code only hints at.
+  **Profiles**, **Stories**, **The blog**, **The directory**, **Ask for
+  somewhere**, **Restaurant discounts**, **The radio**, **Surprise me**,
+  **Languages**, **The mark**, **The pins**, **The two styles** — and it
+  carries the reasoning the code only hints at.
   `grep -n '^## ' README.md` is the table of contents with line numbers;
   read the section, not the file.
 - `README.md` → **The design rules**: twelve rules a new sheet, page or
@@ -131,6 +131,18 @@ browser is to press it, and the honest way to test the other path is
 already produced and the reason none of the call sites had to learn about
 consent. **Consent** in `README.md` is the reasoning.
 
+**A clip on a blog post is a scene, and a scene is a function of time.**
+`clips/scenes/<post-id>.html` is the site's own components arranged into one
+interaction, and `at(t)` puts them where they are at millisecond `t` —
+nothing in a scene may animate itself, because `tools/blogclips.mjs` draws it
+one frame at a time and compares each frame to the last. A CSS animation left
+running, or anything standing still inside an `opacity`, a `filter` or a
+`backdrop-filter`, makes every frame count as changed and the clip comes out
+ten times heavier. `clips/README.md` is the whole of how to write one, and the
+four files a scene draws into are generated: run
+`node tools/blogclips.mjs --only <post-id>` and commit the result, the same
+way the stamps are committed.
+
 **Two files are held to something stricter than the validator.**
 `assets/qr.js` is fingerprinted by `node tools/qrperf.mjs --check`, which CI
 runs: nine payloads, each with the expected version and a SHA-256 of the
@@ -166,13 +178,13 @@ browser cannot import from `tools/`; change one, change the other.
   Google row IS is not somebody's to choose. **The pins** in `README.md`.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the eight pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the nine pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
-  `lists.html`, `account.html`, `google.html`, `deal.html`, `verify.html`,
-  `staff.html`, `split.html` — must carry `?v=` equal to the first eight hex of the file's
-  SHA-256. A new page that loads anything out of `assets/` is added to that
-  list, or it never gets stamped. `admin.html` is deliberately unstamped; it
-  is served `no-store`.
+  `lists.html`, `account.html`, `blog.html`, `google.html`, `deal.html`,
+  `verify.html`, `staff.html`, `split.html` — must carry `?v=` equal to the
+  first eight hex of the file's SHA-256. A new page that loads anything out of
+  `assets/` is added to that list, or it never gets stamped. `admin.html` is
+  deliberately unstamped; it is served `no-store`.
 
 ## The steps
 
@@ -217,6 +229,10 @@ complain about them:
    the validator does not check it, your editor will.
 6. `data/radio.json` `byLanguage`, optionally; `stationFor()` falls back to
    `default`, and `et` has no entry today.
+7. `data/blog.json`, optionally and rarely. A post is somebody's writing
+   rather than an interface string: a new language is owed none of them, and
+   a post it does not have falls back to English with a line in the new
+   language saying so. See **The blog** in `README.md`.
 
 The switcher and the validator read the language list out of `ui.json`, and
 the switcher sorts by the two-letter code, so nothing else changes. Estonian

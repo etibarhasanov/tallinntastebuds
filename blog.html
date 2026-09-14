@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Notes on the map | Tallinn Tastebuds</title>
+<meta name="description" content="One post for each thing this site does — saves, lists, stories, discounts, the chat, the radio — what it does and why it does it that way.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+<meta name="robots" content="index, follow">
+
+<!-- Analytics: Google and Microsoft Clarity, both behind a consent bar.
+     Nothing loads and nothing is written to this device until somebody
+     presses Allow — assets/consent.js holds the choice, the bar and the two
+     snippets, and says why they stopped being separate things. -->
+<script src="/assets/consent.js?v=b66f3a9d" defer></script>
+
+<!-- The index's own address, and the tag is rewritten by assets/blog.js the
+     moment a post is opened, because ?post=<id> is a different page with
+     different words on it and a canonical pointing back here would ask a
+     crawler to treat every post as one page. Every crawler that matters runs
+     the script; one that does not gets the index, which is what this file
+     actually is.
+
+     The head is not swapped per post the way lists.html's is. That takes a
+     Function in front of the page — see functions/_shell.js, which does it
+     for a list, a profile and the directory — and it buys one thing: the
+     preview card in a chat naming the post rather than the blog. Nothing
+     here is written by a stranger and nothing here is private, so the cost
+     of that Function is a whole route to maintain for a nicer unfurl. If a
+     post ever needs to arrive in a message as itself, _shell.js is where to
+     start and this comment is the reason it was left undone. -->
+<link rel="canonical" href="https://tallinntastebuds.ee/blog">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tallinntastebuds.ee/blog">
+<meta property="og:site_name" content="Tallinn Tastebuds">
+<meta property="og:title" content="Notes on the map | Tallinn Tastebuds">
+<meta property="og:description" content="What each part of this site does, and why it does it that way.">
+<meta property="og:image" content="https://tallinntastebuds.ee/assets/logo/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The tokens, the card, the eyebrow, the four controls and the toast come
+     from the map's stylesheet; the brand header, the column, the stack and
+     the rows come from the lists page's, the way the account page takes
+     them. The third file is only what a page of prose needs and neither of
+     those has: a measure, a paragraph rhythm, and a date over a title. -->
+<link rel="stylesheet" href="/assets/styles.css?v=97ac28a1">
+<link rel="stylesheet" href="/assets/lists.css?v=9423b119">
+<link rel="stylesheet" href="/assets/blog.css?v=376275d5">
+</head>
+<body class="lists-body">
+
+<a class="skip-link" href="#main" data-i18n="blogSkip">Skip to the posts</a>
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" data-track="home" data-i18n-aria-label="backToMap" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
+  </a>
+  <!-- The map's radio, wearing the map's pill, as it does on the lists and
+       account pages. This is the page somebody sits and reads on, which is
+       the one place on this site where music behind the words is the whole
+       point. Hidden until data/radio.json is read, and for good if there is
+       no station in it. -->
+  <button type="button" class="rail-btn radio" id="btn-radio" aria-pressed="false" hidden
+          data-i18n-title="radioPlay" data-i18n-aria-label="radioPlay"
+          aria-label="Play the radio" title="Play the radio">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path class="ico-play" d="M8 5.5l11 6.5-11 6.5z"/>
+      <path class="ico-stop" d="M8 6.5h3v11H8zM13 6.5h3v11h-3z"/>
+    </svg>
+    <span class="radio-name rail-label" id="radio-name"></span>
+  </button>
+</header>
+
+<!-- Both states — every post, and one post — are built by assets/blog.js into
+     this one element, decided the moment the data is in. Nothing in the
+     markup depends on which of them it is, so walking from a post back to the
+     index cannot leave a heading standing from the page before. -->
+<main class="lists-main" id="main" tabindex="-1"></main>
+
+<!-- The one thing the radio has to say here: a stream that would not start.
+     Styled by the map's stylesheet and placed by the lists page's. -->
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Tallinn</p>
+    <h2>Notes on the map</h2>
+    <p>The posts are read out of
+      <a href="/data/blog.json">data/blog.json</a> and built with JavaScript.
+      The map itself works rather better without it — <a href="/">it is over
+      here</a>.</p>
+  </div>
+</noscript>
+
+<!-- What every press reports to Google Analytics, shared by every page.
+     Before the page's own script and deferred like it, so document order puts
+     the global in place first. -->
+<script src="/assets/track.js?v=93031b0d" defer></script>
+<!-- The radio, shared with the map, the lists page and the account page: the
+     station carries across the walk between them. Before blog.js and deferred
+     like it, so document order puts the global in place first. -->
+<script src="/assets/radio.js?v=978e96ed" defer></script>
+<script src="/assets/blog.js?v=8c139ae7" defer></script>
+</body>
+</html>

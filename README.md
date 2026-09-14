@@ -57,6 +57,7 @@ completely with the database switched off.
 - [Profiles](#profiles)
 - [Splitwise](#splitwise)
 - [Stories](#stories)
+- [The blog](#the-blog)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
 - [The map tiles need a key](#the-map-tiles-need-a-key)
@@ -5033,6 +5034,172 @@ is everybody: nothing about a story is cached beyond the page it is on.
 
 ---
 
+## The blog
+
+`/blog` — one post per thing this site does. Why there are no scores on the
+map, what a save costs, why a story is gone in a day and a half, what an
+account is and is not, why Google's directory is kept apart from mine. The
+reasoning already existed; it was in this file, which is written for whoever
+maintains the site and is five thousand lines long, and a visitor who wondered
+why the map has no ratings had nowhere to read the answer.
+
+```
+blog.html              the page, served at /blog as well
+assets/blog.js         ES5, one IIFE, like every other file in assets/
+assets/blog.css        only what a page of prose has and the other pages do not
+data/blog.json         the posts
+```
+
+Nothing else. There is no endpoint, no database and no build step: the page
+fetches `data/ui.json` and `data/blog.json` and draws from them, the same way
+the map draws from `data/restaurants.json`.
+
+### The two states
+
+The index is every post, newest first, as rows — the date in mono, the title,
+the line under it saying what it is about, and the chevron. It is `.menu`, the
+same shape the account sheet draws a way-on in, because a list of posts is a
+list of places to go and [the design rules](#the-design-rules) say those are
+rows rather than a column of links.
+
+A post is `?post=<id>` on the same address: the date, the title, the line, the
+paragraphs, and one button at the foot going to whatever the post is about —
+the map, `/lists`, `/split`. The way back is at the top, where a back belongs.
+
+Walking between them is `pushState` rather than a fresh document. The posts
+are already in memory, so re-fetching the page to show four paragraphs would
+be a boot to draw something the browser is holding — and it would cut the
+radio off mid-song for as long as that boot took. The Back button works, the
+address is real, and a row is a real `<a href>`, so a middle click or a long
+press opens a post in a tab of its own.
+
+**The canonical tag moves with it.** `?post=` is a different page with
+different words on it, so `assets/blog.js` rewrites `<link rel="canonical">`
+on every draw — the index's own address on the index, the post's on a post. A
+single canonical pointing at `/blog` would ask a crawler to treat every post
+as the same page, which is the opposite of what a blog is for. Only the index
+is in `sitemap.xml`; the posts are linked from it, which is how a crawler
+reaches them, and it is the same argument that keeps the individual lists out
+of that file.
+
+**The head is not swapped per post**, and that is a decision rather than an
+oversight. `functions/_shell.js` does exactly that for a list, a profile and
+the directory — a Function in front of the page, writing that page's own title
+and social card into the head — and it buys one thing here: a post pasted into
+a chat unfurling as itself rather than as the blog. Nothing on this page is
+written by a stranger and nothing on it is private, so the cost is a whole
+route to maintain for a nicer preview card. If that is ever wanted,
+`_shell.js` is where it starts, and the comment in the head of `blog.html`
+says so.
+
+### A post
+
+```json
+{
+  "id": "a-save-is-free-and-the-number-is-other-people",
+  "date": "2025-12-19",
+  "link": "/",
+  "title": { "en": "A save is free, and the number beside it is other people" },
+  "standfirst": { "en": "The bookmark takes no account at all." },
+  "body": { "en": ["First paragraph.", "Second paragraph."] }
+}
+```
+
+`id` is what `?post=` names, so it is a lowercase slug and it never changes
+once a link to it has gone out. `date` is the day it was written, `YYYY-MM-DD`
+— every post on the page is drawn, so a date after today is a post claiming to
+have been written tomorrow and the validator refuses it. Scheduling something
+is a story's job. `link` is optional and is a path on this site: it is what
+the button at the foot offers to go and try, and a post with nothing to try
+has no button.
+
+### A post is not held to the ten languages
+
+Every string the page draws **around** a post — the title over the index, the
+lead, the way back, the button, the date's fallback — is in `data/ui.json` in
+all ten, like every other word on this site, and the validator holds it to
+that the way it holds everything else. See
+[Languages](#languages) and rule 11 of [the design rules](#the-design-rules).
+
+The posts themselves are not. A post is several hundred words of somebody's
+own writing, which is what a story's caption and a place's blurb are, and
+those have always been written in the languages they have been written in —
+`data/stories.json` has captions that are English alone and nobody has ever
+thought that a bug. Holding a blog to ten languages means either ten
+translations before a post can go up, or nine machine translations of an
+argument about why there are no ratings on a map.
+
+So: **English is required**, because it is what every language falls back to,
+and anything else is welcome. A reader whose language a post has not been
+written in gets the English **and a line above the first paragraph, in their
+own language, saying so** — which is the one place on this site that admits to
+a fallback, and it admits to it in the reader's words rather than in silence.
+
+The three fields have to agree on their languages. A title in Estonian over
+paragraphs in English is a post that looks translated and is not, so the
+validator fails it.
+
+### The date
+
+Written by hand in the file and drawn with `Intl.DateTimeFormat`, which is the
+other way round from `formatMonth()` in `assets/app.js`, and the reason is
+grammar. A date with a day in it puts the month in a case the twelve names in
+`ui.json` are not written in — Russian wants *9 января* where the list says
+*январь*, Finnish wants *9. huhtikuuta* where it says *huhtikuu*. `Intl` knows
+that for all ten and a pattern of our own cannot, short of a second list of
+twelve names per language for this one line. `blogDate` in `ui.json` is the
+fallback underneath, in each language's own order, for an engine with no
+`Intl` at all.
+
+English asks for `en-GB` and not `en`. This site's English is the English the
+write-ups are in, where `2026-08-09` is *9 August 2026*; `en` on its own
+resolves to `en-US` in every engine that has both and draws *August 9, 2026*.
+
+### Nothing on the site links to it
+
+Not the map, not the lists, not the account page. The map is a map: what it
+has to say in its own chrome is where to eat, and a pill on the rail offering
+an essay about the rail would be the site clearing its throat at somebody who
+came here to find dinner. **How this works** is already the short answer, in
+eight sentences, at the moment somebody wants it.
+
+**It is not hidden from search, though, and that is the difference between
+this page and `/google`.** The directory is unlinked *and* `noindex` *and*
+disallowed in `robots.txt`, because it is Google's description of Tallinn and
+must never turn up beside the pages that are the verdict. The blog is this
+site's own writing about itself: being read by somebody who searched for why
+a restaurant map has no ratings is most of what it is for. So it is indexed,
+it is in `sitemap.xml`, and `robots.txt` says out loud that the omission of a
+`Disallow` line is deliberate.
+
+Which makes the sitemap load-bearing here in a way it is nowhere else: with
+no link into the page anywhere on the site, that file is how a crawler learns
+the address exists at all. A post is reachable from the index, and the index
+is reachable from the sitemap, and there is no third road in.
+
+### Writing one
+
+1. Add an object to `data/blog.json`. Anywhere in the array — the page sorts
+   by date, newest first, rather than trusting the order in the file.
+2. `node tools/validate.mjs`.
+3. Open `/blog` and read it. There is nothing else to run: no generator, no
+   database, no deploy step beyond the push.
+
+Counts are deliberately kept out of the posts. This file, the code comments
+and the skills already carry "seventy-five places" and "eleven hundred and
+ten" in enough places that changing one is a `grep` and a careful afternoon,
+and a blog is the last place that should quietly become one more copy of a
+number that drifts. A post says *the map* and *the whole export of the city*
+and stays true.
+
+Opening a post is reported as a page view of its own, titled with the post and
+pointing at its `?post=` URL, the way the map reports an opened place — so the
+standard **Pages and screens** report says which of these anybody read. That
+and the three presses are in the table under [Analytics](#analytics), which is
+where every event on this site is listed.
+
+---
+
 ## The admin page
 
 `/admin.html` — a door, and behind it the tools for posting without opening a
@@ -5585,6 +5752,12 @@ to read and write first.
   neither a `video` nor a `photo` (or both), a file that is not in `stories/`,
   a `seconds` outside 2–20, a `spot` that is not a place, or both a `spot` and
   a `link`
+- a post in `data/blog.json` with an id that is not a slug or that another
+  post already answers to, a `date` that is not a day or is after today, a
+  `link` that is not a path on this site, a language `data/ui.json` does not
+  speak, a `body` that is not paragraphs, no English in any of the three
+  things a post says, or a language one of them has and another does not —
+  see **[The blog](#the-blog)**
 - a deal in `data/deals.json` for a place that is not on the map, whose
   `name` is not what `restaurants.json` calls the place, whose key is shared
   with another deal or off the code alphabet, or a live one with no
@@ -5701,6 +5874,10 @@ assets/split.css           what a column of money needs and the other pages
 data/split.json            that page's strings, in the same ten languages —
                            its own file so that deleting the feature is
                            deleting files
+blog.html                  a post per thing this site does   } unlinked, and
+assets/blog.js             the index, one post, and the walk  } indexed on
+assets/blog.css            only what a page of prose has      } purpose
+data/blog.json             the posts
 google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
@@ -6780,7 +6957,7 @@ in front of somebody at a till.
 ### Analytics
 
 Google Analytics 4 is wired up, property `G-2XNTC15F28`. The tag lives in the
-`<head>` of every page — the eight in `PAGES` at the top of
+`<head>` of every page — the nine in `PAGES` at the top of
 `tools/stamp.mjs` — exactly as Google's console emits it. It used to be on
 the map alone, which made the map the only page GA had heard of; the lists,
 the account page, the directory, the three pass pages and splitwise were
@@ -6908,6 +7085,16 @@ The directory, `assets/venues.js`:
 | `place_link` | `place`, `map` — the door to the write-up for the ones on the map |
 | `home` | — |
 
+The blog, `assets/blog.js`:
+
+| event | parameters |
+| --- | --- |
+| `page_view` | one per post opened in the page: `page_title` is the post, `page_location` its `?post=` URL |
+| `blog_post` | `post` — a row on the index |
+| `blog_all` | — the way back to the index |
+| `blog_visit` | `post` — the button at the foot of a post, to whatever it is about |
+| `radio_play`, `radio_stop`, `home` | as on the map |
+
 Splitwise, `assets/split.js`:
 
 | event | parameters |
@@ -6973,7 +7160,7 @@ panel and the chat, none of which GA can see as anything but events in a list.
 
 It loads from `assets/consent.js`, which is also where the Google tag now
 lives and where the answer that gates both is kept — see [Consent](#consent).
-Eight pages carry it. `admin.html` deliberately carries neither tag: the only
+Nine pages carry it. `admin.html` deliberately carries neither tag: the only
 visits it could record are the owner's own, it is the page holding a GitHub
 token, and it does not load `assets/styles.css`, so the bar would have needed
 styling twice.
