@@ -3,22 +3,42 @@
   "permissions": {
     "allow": [
       "mcp__Cloudflare_Developer_Platform__d1_databases_list",
-      "mcp__Cloudflare_Developer_Platform__d1_database_query",
       "Bash(node tools/validate.mjs)",
       "Bash(node tools/stamp.mjs)",
       "Bash(node tools/stamp.mjs --check)",
       "Bash(node tools/places.mjs)",
       "Bash(node tools/places.mjs --check)",
+      "Bash(node tools/qrperf.mjs --check)",
+      "Bash(node .claude/hooks/d1-write-gate.mjs --check)",
       "Bash(git status *)",
       "Bash(git diff *)",
       "Bash(git log *)"
     ]
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__Cloudflare_Developer_Platform__d1_database_query",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/d1-write-gate.mjs",
+            "timeout": 10,
+            "statusMessage": "Checking whether this D1 query writes"
+          }
+        ]
+      }
+    ]
+  },
   "autoMode": {
     "hard_deny": [
       "$defaults",
-      "Never run DROP TABLE, DROP INDEX, or DROP DATABASE against a Cloudflare D1 database. The owner of this project has said the tables are never to be dropped. That includes added_places, the table for places somebody adds by hand when the catalogue does not have them, which functions/api/lists.js writes and reads \u2014 see the comment on it in db/schema.sql. Dropping a table is not recoverable from here: there is no backup of either database in this repository.",
+      "Never run DROP TABLE, DROP INDEX, or DROP DATABASE against a Cloudflare D1 database. The owner of this project has said the tables are never to be dropped. That includes added_places, the table for places somebody adds by hand when the catalogue does not have them, which functions/api/lists.js writes and reads — see the comment on it in db/schema.sql. Dropping a table is not recoverable from here: there is no backup of either database in this repository.",
       "Never run DELETE or UPDATE against a Cloudflare D1 database without a WHERE clause. The rows in `saves`, `users`, `lists`, `list_items` and `list_keeps` are other people's, and there is no way to put them back."
+    ],
+    "soft_deny": [
+      "$defaults",
+      "Never write to a Cloudflare D1 database — INSERT, UPDATE, DELETE, any DDL, or loading db/google-venues.sql or db/schema.sql — on your own judgement, however obviously right the change looks and however much it is implied by the task. The owner decides what reaches those rows. Reads are free; a write needs the owner to say yes in this session, after being shown which tables, columns and rows it changes and how many. \"Merge it\", \"land it\" or \"ship it\" is approval to merge a pull request and nothing more: the database load is a separate yes. A write also names its rows and names at most a hundred of them, twenty being the size an ordinary correction should be; a bigger load is run from a terminal with wrangler d1 execute by the person whose database it is. .claude/hooks/d1-write-gate.mjs enforces both halves; do not route a write around it (a shell wrangler command, a Function written to do the write on request), and do not ask for the same write twice in a turn hoping for a different answer."
     ]
   }
 }
