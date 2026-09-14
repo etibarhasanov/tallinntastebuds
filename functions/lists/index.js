@@ -60,7 +60,7 @@
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import { canonical, head, shell, sow, rehead, page } from '../_shell.js';
-import { mostKept, query } from '../api/_mostkept.js';
+import { mostKept, query, sortOf } from '../api/_mostkept.js';
 
 const PATH = '/lists';
 
@@ -107,12 +107,16 @@ export async function onRequest(context) {
      in assets/lists.js — tidied the way the query tidies it, so the field and
      the rows under it are about the same question. */
   const q = query(new URL(request.url).searchParams.get('q'));
+  /* And the order, the same way: a link to the newest lists draws the newest
+     lists, with the chip for that order already pressed. An unknown order is
+     the default, as it is for the API. */
+  const sort = sortOf(new URL(request.url).searchParams.get('sort'));
 
   let first;
   let user;
   try {
     user = await sessionUser(request, env);
-    first = await mostKept(context, { q: q, user: user });
+    first = await mostKept(context, { q: q, sort: sort, user: user });
   } catch (e) {
     return page(html, 200, true);
   }
@@ -129,7 +133,9 @@ export async function onRequest(context) {
   html = sow(html, '__TTB_ALL', {
     user: user ? user.username : null,
     q: q,
+    sort: first.sort,
     all: first.all,
+    start: first.start,
     next: first.next
   });
 

@@ -32,8 +32,11 @@
  *                    the page — so a shared link unfurls as what it is, and
  *                    draws without a second round trip.
  *
- *   /lists           everybody's, the most kept first, with a field to search
- *                    them. Served the same way by functions/lists/index.js.
+ *   /lists           everybody's, the most kept first — or newest, or changed
+ *                    lately — with a field to search them, the five lists
+ *                    Google wrote in a strip above the rest, and every row
+ *                    drawn as a shape on the city. Served the same way by
+ *                    functions/lists/index.js.
  *                    It is the page that joins the lists to each other rather
  *                    than leaving each one an island reachable only by its own
  *                    link. It was /lists/kept, which said what the page was
@@ -117,6 +120,25 @@
      account no reader would recognise; see byline(). */
   var GOOGLE_BY = 'google-statistics';
 
+  /* The frame every row's sky is drawn in: the box the map's own places sit
+     in, with a little air, so a dot lands in the same spot on every card and
+     the cards can be read against each other. Fixed rather than fitted to
+     each list, because a list fitted to itself is a shape with no city under
+     it; and fixed rather than measured off the map's places when they
+     arrive, because the rows draw before that fetch has answered and must
+     not move when it does. A place outside the box — Google knows a few in
+     Pirita and past Lasnamäe — is drawn on its edge. Tighter than the BBOX
+     tools/validate.mjs holds a coordinate to, which is the whole
+     municipality: this is the box the places actually sit in, so a dot in
+     the Old Town is not a speck in the middle of nothing. */
+  var SKY = { la0: 59.39, la1: 59.505, lo0: 24.63, lo1: 24.88, w: 120, h: 72, pad: 6 };
+
+  /* The three orders the directory can be read in, in the order the chips
+     stand. Mirrors SORTS in functions/api/_mostkept.js, which is what binds:
+     an order the API does not know is the default there, so a chip here that
+     the API did not know would be a chip that did nothing. */
+  var SORTS = ['kept', 'new', 'changed'];
+
   var state = {
     ui: {},
     types: [],         // data/taxonomy.json, for the rows that carry Google's words
@@ -127,7 +149,10 @@
     me: null,          // the signed-in username, or null
     ready: false,      // whether the API says lists work at all here
     reached: true,     // whether it answered at all
-    all: null,         // the directory: everybody's, most kept first
+    all: null,         // the directory: everybody's, in the order below
+    start: null,       // the five Google lists, drawn as a strip above the rows
+    sort: 'kept',      // 'kept' | 'new' | 'changed' — which order the rows are in
+    city: null,        // the map's own places as [lat, lng], the ghost dots of every sky
     next: '',          // where the directory's next page starts, '' at the end
     q: '',             // what the directory is being searched for, '' for all
     asking: false,     // a page of the directory is in flight
@@ -521,6 +546,12 @@
     mark.btn = null;
     paintWho();
 
+    /* The directory is the one page here that is wider than a column of
+       prose: rows three across on a desk, the strip five across. Every other
+       view keeps the 640px a list reads at. Toggled here rather than set once
+       at boot so a view that is not the directory never inherits it. */
+    dom.main.classList.toggle('is-wide', state.view === 'all');
+
     if (!state.reached) { dom.main.appendChild(renderUnreachable()); return; }
     if (!state.ready) { dom.main.appendChild(renderNotReady()); return; }
     if (state.view === 'all') { dom.main.appendChild(renderAll()); return; }
@@ -720,7 +751,7 @@
    */
 
   function renderAll() {
-    var wrap = el('div', { className: 'lists-stack' });
+    var wrap = el('div', { className: 'lists-stack lists-all' });
 
     wrap.appendChild(card([
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
@@ -732,8 +763,91 @@
     dom.allBody = el('div', { className: 'lists-all-body' });
     wrap.appendChild(dom.allBody);
     paintAll();
+    cityDots();
 
     return wrap;
+  }
+
+  /* The address the directory is asked at, with whatever narrows it: the
+     search, and the order when it is not the default. One builder because
+     the first page, a search, a re-order and Show more all have to ask the
+     same question with one more parameter, and four copies of the string
+     is four ways for one of them to forget the sort. */
+  function allUrl(extra) {
+    return API + '?all=1' +
+      (state.q ? '&q=' + encodeURIComponent(state.q) : '') +
+      (state.sort !== 'kept' ? '&sort=' + state.sort : '') +
+      (extra || '');
+  }
+
+  /* And the page's own address, kept in step the same way — see search() for
+     why replaceState. */
+  function allAddress() {
+    var parts = [];
+    if (state.q) parts.push('q=' + encodeURIComponent(state.q));
+    if (state.sort !== 'kept') parts.push('sort=' + state.sort);
+    return ALL_PATH + (parts.length ? '?' + parts.join('&') : '');
+  }
+
+  /* The order, as a row of chips beside the search field: the same .chip the
+     map's filter row is made of, pressed the same way, because it is the same
+     kind of control — a toggle over what the page shows — asked about a
+     different kind of thing. Three and never a fourth: the count is the
+     page's own order, and the other two are the ways past the top of it. */
+  function orderLabel(key) {
+    return t(key === 'new' ? 'listsOrderNew' : key === 'changed' ? 'listsOrderChanged' : 'listsOrderKept');
+  }
+
+  function orderRow() {
+    var row = el('div', { className: 'lists-order', role: 'group', 'aria-label': t('listsOrder') }, [
+      el('span', { className: 'eyebrow', textContent: t('listsOrder') })
+    ]);
+    SORTS.forEach(function (key) {
+      var chip = el('button', {
+        type: 'button',
+        className: 'chip',
+        'data-sort': key,
+        'aria-pressed': String(key === state.sort),
+        textContent: orderLabel(key)
+      });
+      chip.addEventListener('click', function () { reorderAll(key, row); });
+      row.appendChild(chip);
+    });
+    return row;
+  }
+
+  /* A chip pressed. The rows are asked for again in the new order, from the
+     top — a cursor minted under one order means nothing under another — and
+     the search, if there is one, goes with them. The chips repaint at once
+     and the rows arrive; between the two the body wears .is-searching the
+     way it does for a search, because the rows on it are the answer to the
+     order before. Not reorder(), which is a row being carried up its own
+     list further down this file. */
+  function reorderAll(key, row) {
+    if (key === state.sort || state.searching) return;
+    state.sort = key;
+    TTBTrack.event('lists_sort', { sort: key });
+    var chips = row.querySelectorAll('.chip');
+    for (var i = 0; i < chips.length; i++) {
+      chips[i].setAttribute('aria-pressed', String(chips[i].getAttribute('data-sort') === key));
+    }
+    try {
+      window.history.replaceState(null, '', allAddress());
+    } catch (e) { /* a browser that will not have it still re-orders */ }
+
+    var seq = ++searchSeq;
+    state.searching = true;
+    dom.allBody.classList.add('is-searching');
+    ask(allUrl()).then(function (a) {
+      if (seq !== searchSeq) return;
+      state.searching = false;
+      dom.allBody.classList.remove('is-searching');
+      if (a.status === 0 || !a.out || !a.out.all) return toast(t('loadError'));
+      state.all = a.out.all;
+      state.start = a.out.start || null;
+      state.next = a.out.next || '';
+      paintAll();
+    });
   }
 
   /* The field, with the magnifier and the clear button laid over it. The same
@@ -789,7 +903,7 @@
        Go key on a phone keyboard that reloads the page out from under the
        answer already on it, and role="search" is how the field says what it
        is to anybody not looking at the magnifier. */
-    var form = el('form', { className: 'lists-all-search', role: 'search' }, [field]);
+    var form = el('form', { className: 'lists-all-search', role: 'search' }, [field, orderRow()]);
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
       input.blur();
@@ -863,12 +977,12 @@
 
     var seq = ++searchSeq;
     try {
-      window.history.replaceState(null, '', ALL_PATH + (q ? '?q=' + encodeURIComponent(q) : ''));
+      window.history.replaceState(null, '', allAddress());
     } catch (e) { /* a browser that will not have it still searches */ }
 
     state.searching = true;
     dom.allBody.classList.add('is-searching');
-    ask(API + '?all=1' + (q ? '&q=' + encodeURIComponent(q) : '')).then(function (a) {
+    ask(allUrl()).then(function (a) {
       if (seq !== searchSeq) return;
       state.searching = false;
       dom.allBody.classList.remove('is-searching');
@@ -883,6 +997,7 @@
         return toast(t('loadError'));
       }
       state.all = a.out.all;
+      state.start = a.out.start || null;
       state.next = a.out.next || '';
       paintAll();
 
@@ -925,11 +1040,120 @@
           textContent: t('listsAllFor', { q: state.q })
         }));
       }
+      /* The five Google lists, as a strip of their own, above everybody
+         else's and under a heading that says whose numbers they are. Only
+         while nothing is being searched for: the API sends them with the
+         first page of an unsearched directory and keeps them out of its rows
+         while it does, so they are on the screen once — see _mostkept.js. */
+      if (!state.q && state.start && state.start.length) {
+        dom.allBody.appendChild(startStrip(state.start));
+        dom.allBody.appendChild(el('h2', { className: 'lists-section' }, [
+          document.createTextNode(t('listsEverybody')),
+          el('span', { className: 'lists-section-why', textContent: orderLabel(state.sort) })
+        ]));
+      }
       dom.allList = el('ul', { className: 'lists-index' });
-      rows.forEach(function (l) { dom.allList.appendChild(allRow(l)); });
+      rows.forEach(function (l) { dom.allList.appendChild(allRow(l, true)); });
       dom.allBody.appendChild(dom.allList);
     }
     moreLine();
+  }
+
+  /* The strip: five compact cards, the sky on the left and the title beside
+     it, one row across a desk and a short column on a phone. The byline is
+     left off: the heading over the strip says whose numbers these are and
+     every title ends "by Google", and a third saying of it under each one
+     took the room the title needed. The keep count stays, drawn the way it is
+     drawn on every other row, and hidden at zero the same way. */
+  function startStrip(lists) {
+    var ul = el('ul', { className: 'lists-start-row' });
+    lists.forEach(function (l) {
+      var line = el('p', { className: 'lists-all-meta mono' });
+      allMeta({ keeps: l.keeps, by: null }, line);
+      ul.appendChild(el('li', { className: 'lists-index-row' }, [
+        el('div', { className: 'lists-start-card' }, [
+          sky(l.dots),
+          el('div', { className: 'lists-start-body' }, [
+            line,
+            TTBTrack.click(el('a', {
+              className: 'lists-index-title lists-open',
+              href: '/list/' + l.id,
+              textContent: l.title
+            }), 'list_page', { list_id: l.id })
+          ])
+        ])
+      ]));
+    });
+    return el('section', { className: 'lists-start' }, [
+      el('h2', { className: 'lists-section' }, [
+        document.createTextNode(t('listsStart')),
+        el('span', { className: 'lists-section-why', textContent: t('listsStartWhy') })
+      ]),
+      ul
+    ]);
+  }
+
+  /* A list as a shape on the city: every place on the map as a faint dot,
+     and the list's own places over them in the accent. It is the one picture
+     only this site can draw of somebody's list, and it says before a single
+     name is read whether this is a Kalamaja list or a Pirita one, a scatter
+     or a walk. Decorative in the markup — the names under the title are the
+     accessible version of the same fact.
+
+     The list's own dots are drawn now, out of what the row arrived with. The
+     city's are drawn by cityDots() into the empty group left for them, once
+     the map's places have been fetched — a fetch the rows never wait on. */
+  function sky(dots) {
+    var svg = el('div', {
+      className: 'lists-sky',
+      'aria-hidden': 'true',
+      html: '<svg viewBox="0 0 ' + SKY.w + ' ' + SKY.h + '" focusable="false">' +
+        '<g class="lists-sky-city"></g><g class="lists-sky-own"></g></svg>'
+    });
+    var own = svg.querySelector('.lists-sky-own');
+    (dots || []).forEach(function (d) { own.appendChild(dot(d, 2.2)); });
+    if (state.city) paintCity(svg.querySelector('.lists-sky-city'));
+    return svg;
+  }
+
+  /* One dot, placed in the frame. Clamped to it rather than dropped, so a
+     place past the box is still counted in the shape — on its edge, where a
+     map would put it too. */
+  function dot(d, r) {
+    var x = SKY.pad + (d[1] - SKY.lo0) / (SKY.lo1 - SKY.lo0) * (SKY.w - SKY.pad * 2);
+    var y = SKY.pad + (SKY.la1 - d[0]) / (SKY.la1 - SKY.la0) * (SKY.h - SKY.pad * 2);
+    x = Math.max(SKY.pad, Math.min(SKY.w - SKY.pad, x));
+    y = Math.max(SKY.pad, Math.min(SKY.h - SKY.pad, y));
+    var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', x.toFixed(1));
+    c.setAttribute('cy', y.toFixed(1));
+    c.setAttribute('r', String(r));
+    return c;
+  }
+
+  function paintCity(group) {
+    if (group.firstChild) return;
+    state.city.forEach(function (d) { group.appendChild(dot(d, 1)); });
+  }
+
+  /* The map's own places, once, for the ghost dots of every sky on the page.
+     data/places.json is the catalogue the map is drawn from — twelve
+     kilobytes, cached by the browser like any asset — filtered to the rows
+     that are on the map, because the catalogue may also carry an imported
+     roll and the ghosts are meant to be the city as this site draws it.
+     Fetched after the rows are on the screen and painted into every sky
+     already drawn; a sky drawn later paints its own. A page that never gets
+     it is a page whose lists float on plain paper, which is still the shape
+     of the list. */
+  function cityDots() {
+    if (state.city) return;
+    getJSON('/data/places.json').then(function (places) {
+      state.city = (places || []).filter(function (p) {
+        return p && p.map && typeof p.lat === 'number' && typeof p.lng === 'number';
+      }).map(function (p) { return [p.lat, p.lng]; });
+      var groups = dom.main.querySelectorAll('.lists-sky-city');
+      for (var i = 0; i < groups.length; i++) paintCity(groups[i]);
+    }).catch(function () { /* plain paper, then */ });
   }
 
   /* The foot of the rows, while there is a page after this one: a Show more
@@ -963,8 +1187,13 @@
   /* One list on /lists, and the same row at the foot of a list's own page.
      One function because they are the same row and not two rows that happen to
      look alike — a change to what a stranger needs in order to judge a list is
-     a change to both of them. */
-  function allRow(l) {
+     a change to both of them.
+
+     The sky is the one thing the directory's row has that the foot's does
+     not: it is drawn against the city's own dots, which the directory fetches
+     and a list's page does not, and at the foot's 640px it would be a box the
+     height of the card it stands on. `withSky` is the directory saying so. */
+  function allRow(l, withSky) {
     var line = el('p', { className: 'lists-all-meta mono' });
     allMeta(l, line);
 
@@ -993,6 +1222,8 @@
        corner either. */
     return el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card' + (l.mine ? '' : ' has-keep') }, [
+        /* The sky first, above the title, where a picture goes on a card. */
+        withSky && l.dots && l.dots.length ? sky(l.dots) : null,
         TTBTrack.click(el('a', {
           className: 'lists-index-title lists-open',
           href: '/list/' + l.id,
@@ -1071,8 +1302,7 @@
     btn.textContent = t('accountWorking');
 
     var seq = searchSeq;
-    ask(API + '?all=1' + (state.q ? '&q=' + encodeURIComponent(state.q) : '') +
-        '&from=' + encodeURIComponent(state.next)).then(function (a) {
+    ask(allUrl('&from=' + encodeURIComponent(state.next))).then(function (a) {
       state.asking = false;
       if (seq !== searchSeq) return;
       if (a.status === 0 || !a.out || !a.out.all) {
@@ -1082,7 +1312,7 @@
       }
       state.all = state.all.concat(a.out.all);
       state.next = a.out.next || '';
-      a.out.all.forEach(function (l) { dom.allList.appendChild(allRow(l)); });
+      a.out.all.forEach(function (l) { dom.allList.appendChild(allRow(l, true)); });
       dom.allBody.removeChild(btn.parentNode);
       moreLine();
     });
@@ -3113,6 +3343,17 @@
     return new URLSearchParams(window.location.search).get('q') || '';
   }
 
+  /* And in which order. Seeded the same way, read off the address otherwise,
+     and anything that is not one of the three is the default — the same rule
+     sortOf() applies on the server, so the chips and the rows agree. */
+  function wantedSort() {
+    var seeded = window.__TTB_ALL;
+    var s = seeded && typeof seeded.sort === 'string'
+      ? seeded.sort
+      : new URLSearchParams(window.location.search).get('sort') || '';
+    return SORTS.indexOf(s) === -1 ? 'kept' : s;
+  }
+
   function wantedList() {
     var seeded = window.__TTB_LIST;
     if (seeded && seeded.id) return seeded.id;
@@ -3177,7 +3418,7 @@
     }
     state.id = id;
     state.view = all ? 'all' : who ? 'who' : 'one';
-    if (all) state.q = wantedQuery();
+    if (all) { state.q = wantedQuery(); state.sort = wantedSort(); }
 
     /* The strings and the data at once. The strings are a static file behind a
        revalidating cache and usually free; the data is the one request this
@@ -3206,11 +3447,12 @@
           ready: true,
           user: window.__TTB_ALL.user || null,
           all: seededAll,
+          start: window.__TTB_ALL.start || [],
           next: window.__TTB_ALL.next || ''
         }
       });
     } else if (state.view === 'all') {
-      data = ask(API + '?all=1' + (state.q ? '&q=' + encodeURIComponent(state.q) : ''));
+      data = ask(allUrl());
     } else if (seededWho) {
       data = Promise.resolve({
         status: 200,
@@ -3250,6 +3492,7 @@
          moreLists() reads to tell "there are no other lists" from "the other
          lists have not been fetched yet". */
       state.all = out.all || null;
+      state.start = out.start || null;
       state.next = out.next || '';
       state.profile = out.profile || null;
 

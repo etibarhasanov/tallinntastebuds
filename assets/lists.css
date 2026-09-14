@@ -623,6 +623,105 @@
    as something after the list rather than as part of it. */
 .lists-foot-more { margin-top: 8px; }
 
+/* ---------- the directory, laid out for a desk ---------- */
+
+/* The one view here that is wider than a column of prose. Everything else on
+   this stylesheet reads at the 640px a list of sentences reads at; the
+   directory is rows of cards and a strip of five, and at 640px on a monitor it
+   was the phone page in the middle of a screen. assets/lists.js sets the class
+   on the directory and on nothing else — see render(). */
+.lists-main.is-wide { max-width: 1180px; }
+.lists-all .lists-say { max-width: 62ch; }
+
+/* The sticky row under the head card carries the field and, beside it, the
+   order: one row so what narrows the page and what orders it are found in the
+   same place, and so both stay under the thumb while the page grows. The field
+   takes what is left; the chips wrap under it on a phone. */
+.lists-all-search { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.lists-all-search .search-field { flex: 1 1 260px; min-width: 0; }
+.lists-order { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.lists-order .eyebrow { margin: 0 2px 0 0; }
+
+/* A heading over a run of rows — Start here, Everybody's — with the reason in
+   mono beside it. Set small: it labels a section rather than opening one. */
+.lists-section {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 6px 0 -8px;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  color: var(--ink);
+}
+.lists-section-why {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* The five lists Google's numbers wrote, as a strip: a compact card each, the
+   sky on the left and the title beside it, hairline rather than paper on the
+   wash so the strip reads as a shelf above the rows and not as five more of
+   them. A column on a phone, three across from 900px, five across on a desk. */
+.lists-start { display: flex; flex-direction: column; gap: 12px; }
+.lists-start-row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.lists-start-card {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 74px;
+  padding: 10px 14px 10px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+.lists-start-card:hover { border-color: var(--accent); }
+.lists-start-card:hover .lists-index-title { color: var(--accent); }
+.lists-start-card .lists-index-title { font-size: 14px; line-height: 1.25; }
+.lists-start-card .lists-all-meta { margin: 0 0 3px; font-size: 9.5px; line-height: 1.5; }
+.lists-start-body { min-width: 0; }
+
+/* A list as a shape on the city: the map's places as faint dots, the list's
+   own over them in the accent. Drawn by sky() in assets/lists.js into a box
+   with the frame's own proportions; on a row the box is shallower than the
+   frame and the drawing is lifted a little, so the middle of the city — where
+   nearly every list lives — is what shows. Colour comes out of the tokens like
+   everything else, so a sky changes with the swatch. */
+.lists-sky { background: var(--paper); border-radius: var(--radius); overflow: hidden; }
+.lists-sky svg { display: block; width: 100%; height: auto; }
+.lists-sky-city circle { fill: var(--hairline); }
+.lists-sky-own circle { fill: var(--accent); }
+.lists-all-card > .lists-sky {
+  aspect-ratio: 120 / 52;
+  margin: 0 0 12px;
+  background: var(--wash);
+  border: 1px solid var(--hairline);
+}
+.lists-all-card > .lists-sky svg { transform: translateY(-14%); }
+
+@media (min-width: 900px) {
+  /* Cards two across, and the strip three. The row is made a flex box so the
+     card fills the row's height and a short list stands as tall as the long
+     one beside it; the bookmark is laid against the row, so it keeps its
+     corner. */
+  .lists-all .lists-index { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .lists-all .lists-index-row { display: flex; }
+  .lists-all .lists-all-card { flex: 1 1 auto; }
+  .lists-all .lists-index-title { font-size: 19px; }
+  .lists-start-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1180px) {
+  .lists-all .lists-index { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lists-start-row { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
 /* ---------- keeping somebody else's list ---------- */
 
 /* The bookmark and its count, kept together so the number cannot wrap away
@@ -1038,6 +1137,10 @@ body.has-scrim { overflow: hidden; }
      been missed, and this is the page with the most typing on it. */
   .lists-input,
   .item-input { font-size: 16px; }
+  /* The word "Order" costs the chips a line at this width; the group still
+     says its name to a screen reader, and three pressed-or-not pills under a
+     search field read as what they are. */
+  .lists-order .eyebrow { display: none; }
 }
 
 /* ---------- print: a list, on paper ---------- */
