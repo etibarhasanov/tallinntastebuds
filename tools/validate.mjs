@@ -18,6 +18,10 @@
  *   - a db/google-venues.sql that is out of step with the Google Places export
  *     it is generated from, or a db/google-lists.sql — the five top tens under
  *     the `google` account — that is out of step with the same export
+ *   - a db/type-lists.sql — the thirteen filter chips as lists — that is out
+ *     of step with data/restaurants.json or data/taxonomy.json, that holds a
+ *     list longer than MAX_ITEMS in functions/api/lists.js, or a chip and a
+ *     list that have stopped answering to each other
  *   - a taxonomy type missing a label in any language
  *   - a cuisine in data/cuisines.json missing a label in any language, or one
  *     the directory's KITCHENS table cannot produce
@@ -65,6 +69,7 @@ import { stale as staleStamps } from './stamp.mjs';
 import { stale as staleCatalogue } from './places.mjs';
 import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
 import { stale as staleGoogleLists } from './googlelists.mjs';
+import { stale as staleTypeLists, build as buildTypeLists } from './typelists.mjs';
 /* The directory's own vocabulary. It is a table in the endpoint rather than a
    file, the way VENUE_TYPES is, and the checks below are what keep it honest:
    every id has a label in ten languages, and every pattern still matches
@@ -75,6 +80,10 @@ import { KITCHENS, said } from '../functions/api/venues.js';
    what make "change one, change the other" something other than a promise in
    a comment. */
 import { PIN_GLYPHS, DEFAULT_PIN } from '../functions/api/_pins.js';
+
+/* How many places a list may hold, from the route that enforces it, so the
+   check below is the server's number and not a fourth copy of it. */
+import { MAX_ITEMS } from '../functions/api/lists.js';
 import { STORY_HOURS, HOUR_MS, storyWindow, storyPhase } from './clock.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -1172,6 +1181,33 @@ if (staleGoogleVenues()) {
    month's Tallinn. */
 if (staleGoogleLists()) {
   fail('db/google-lists.sql', 'is not what tools/googlelists.mjs would write from exports/tallinn_restaurants.csv — run `node tools/googlelists.mjs` and commit the result');
+}
+
+/* ---------------------------------------------------------- type-lists.sql
+   And the thirteen the map wrote: one list per filter chip, generated from
+   data/restaurants.json and data/taxonomy.json. A place added to the map is a
+   place missing from a list until this is re-run, the same way it is a place
+   missing from the catalogue. */
+if (staleTypeLists()) {
+  fail('db/type-lists.sql', 'is not what tools/typelists.mjs would write from data/restaurants.json and data/taxonomy.json — run `node tools/typelists.mjs` and commit the result');
+}
+
+/* And that the API would accept what it holds. These lists are loaded by
+   hand, past the route that enforces MAX_ITEMS, so nothing else would notice
+   a chip that has grown past what a list can hold until somebody opened one
+   and could not drag a row. Casual/Solo is the one that gets there first.
+
+   The catch is the other half and the likelier one: build() throws by name
+   when a chip has no list or a list has no chip, and without this that
+   arrives as the staleness line above, which says to run a tool that throws. */
+try {
+  for (const list of buildTypeLists().lists) {
+    if (list.places.length > MAX_ITEMS) {
+      fail('db/type-lists.sql', `"${list.title}" holds ${list.places.length} places and a list holds ${MAX_ITEMS} — raise MAX_ITEMS in functions/api/lists.js, and in assets/lists.js with it`);
+    }
+  }
+} catch (e) {
+  fail('tools/typelists.mjs', `cannot build db/type-lists.sql: ${e.message}`);
 }
 
 /* And that it is current. data/places.csv is the file that actually changes,

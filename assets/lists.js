@@ -80,7 +80,7 @@
   var MAX_TITLE = 60;
   var MAX_INTRO = 200;
   var MAX_SAY = 280;
-  var MAX_ITEMS = 20;
+  var MAX_ITEMS = 50;
 
   /* The other end of the same judgement. Two places is a pair of opinions
      rather than a recommendation, so a list is three at the least: the page
@@ -2787,7 +2787,7 @@
     state.list.items.forEach(function (it) { on[it.place] = true; });
 
     /* Full: every row goes grey and says why, once, at the top. The server
-       refuses the twenty-first place anyway, but finding that out by watching
+       refuses the fifty-first place anyway, but finding that out by watching
        a row appear and then vanish is a worse way to be told. */
     var full = state.list.items.length >= MAX_ITEMS;
     if (full) {

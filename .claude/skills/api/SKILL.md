@@ -152,7 +152,7 @@ never `DELETE` or `UPDATE` without a `WHERE`. There is no backup of either
 database in this repository; D1 Time Travel's 30 days is the only recovery.
 
 **Caps live in two places** and the server is the one that binds. `MAX_TITLE
-60`, `MAX_INTRO 200`, `MAX_SAY 280`, `MAX_ITEMS 20` in `lists.js` are restated
+60`, `MAX_INTRO 200`, `MAX_SAY 280`, `MAX_ITEMS 50` in `lists.js` are restated
 in `assets/lists.js`, and `MAX_TITLE` a third time in `assets/account.js`,
 which carries the box that names a new list; `MAX_ABOUT 200` in `account.js`
 is restated in `assets/account.js`, which carries the only box that writes it; `MAX_NAME 80` and
@@ -165,6 +165,7 @@ sheet's, the rename step's and the one behind Continue with Google — and on
 copy. Change one, change the other, and the README's table under **The
 caps**.
 
+<<<<<<< HEAD
 **And so does the pin table.** `PIN_GLYPHS` and `PIN_TONES` in
 `functions/api/_pins.js` are the ids a list may store; `GLYPHS` and `TONES` in
 `assets/pins.js` are the same ids plus the emoji each draws. Neither file can
@@ -173,6 +174,13 @@ story clock has. `node tools/validate.mjs` fails the build when they drift, so
 this one is enforced rather than remembered. `mark` is in neither, on purpose:
 the mouth goes on a place I have eaten at and a picker must not be able to
 hand it out. **The pins** in `README.md`.
+=======
+`MAX_ITEMS` is the one of them with a third reader: `tools/validate.mjs`
+imports it from `lists.js` — the only thing in `tools/` that imports a route —
+and fails on a generated list in `db/type-lists.sql` longer than it. That is
+not a copy and needs no moving, but it does mean a lowered `MAX_ITEMS` fails
+CI rather than going quiet. Casual/Solo is 45 of the 50.
+>>>>>>> e32b3d7 (Every filter chip is a list, published under the map's own name)
 
 ## The rules of a write
 

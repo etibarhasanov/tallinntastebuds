@@ -80,12 +80,22 @@ import { cleanPin, readingPins, pinSelect, pinsOf } from './_pins.js';
    lengths below are what fits in the space the page draws for them.
 
    The places cap is the one exception, and it is a judgement about the
-   feature rather than a defence of the database. Twenty is twice a top ten:
-   room to overshoot and cut back, and short enough that the list still reads
-   as a recommendation somebody stands behind rather than everywhere they have
-   ever been. A list nobody finishes reading recommends nothing. */
+   feature rather than a defence of the database. It was twenty for a long
+   time, and twenty was twice a top ten: room to overshoot and cut back, and
+   short enough that the list still reads as a recommendation somebody stands
+   behind rather than everywhere they have ever been.
+
+   What moved it is that the map publishes its own filter chips as lists now,
+   under the account whose map it is — db/type-lists.sql, out of
+   tools/typelists.mjs. "All the casual and solo places" is forty-five of
+   them and "All the restaurants" twenty-seven, and a chip's list that stops
+   at twenty is not that chip: it is the first twenty of it in the alphabet,
+   which is a slice nobody chose. So this is what the longest of those needs
+   with a little room over, and the argument the twenty was making is the
+   feature's to make rather than this number's. A list nobody finishes
+   reading still recommends nothing. */
 const MAX_LISTS = 24;
-const MAX_ITEMS = 20;
+export const MAX_ITEMS = 50;
 /* How many of other people's lists one account can keep. Higher than the
    twenty-four you can make, because keeping is the cheap half of this feature
    — it is a bookmark, and a bookmark drawer is allowed to be a drawer — and
@@ -100,9 +110,13 @@ const MAX_KEPT = 200;
 const MAX_ADDED = 100;
 const MAX_NAME = 80;
 const MAX_ADDRESS = 120;
-const MAX_TITLE = 60;
-const MAX_INTRO = 200;
-const MAX_SAY = 280;
+/* The three a generated list has to fit as well as a typed one. Exported for
+   tools/typelists.mjs, which builds db/type-lists.sql and throws rather than
+   write a row this route would refuse — the file is loaded past it, by hand,
+   so nothing else would ever check. */
+export const MAX_TITLE = 60;
+export const MAX_INTRO = 200;
+export const MAX_SAY = 280;
 
 /* The share code's random half. No vowels, so it cannot spell anything; no
    0/o/1/l, so it survives being read off a phone screen and typed. */
@@ -819,8 +833,10 @@ async function drop(context, body, id) {
  * an explicit position from zero, so `pos` cannot drift upwards over a
  * hundred reorders of the same list.
  *
- * A list is capped at a hundred places, so this is one small read and at most
- * a hundred and one statements in one batch.
+ * A list is capped at MAX_ITEMS places, so this is one small read and at most
+ * MAX_ITEMS + 1 statements in one batch. It said "a hundred" for as long as
+ * the cap was twenty, which is the argument for naming the constant rather
+ * than a number that has to be moved twice.
  */
 async function order(context, body, id) {
   const { env } = context;
