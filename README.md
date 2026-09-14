@@ -526,7 +526,8 @@ like?*, and the field at the bottom of the panel wakes up. Type a sentence
 into it — *cheap asian food*, *somewhere for a date*, *khachapuri, still
 open* — and it sits on the right, the way your own words do in any chat, with
 the answer under it: a sentence or two, then one to three places as the
-panel's own rows, best first, each with a line saying why it is there. The
+panel's own rows, best first, each with a line saying why it is there and,
+when the map knows where you are, how far it is. The
 map narrows to the newest answer's pins. The thread reads down from the top
 and the field is held to the bottom, so the newest exchange is always by the
 place you ask the next one, and earlier questions scroll up behind it.
@@ -820,7 +821,8 @@ asked for, what suits the occasion, what makes it the cheap one — and never
 the type or the price read back, because the row above already prints the
 types and draws the gauge, and *Cheap eats · Asian · On the cheaper side*
 directly underneath *Restaurant · Asian · Cheap eats · Hidden gem* is the row
-explaining itself with itself.
+explaining itself with itself. Nor the distance, which the row prints from
+its own measurement — see **The distance is the site's** below.
 
 It is required rather than requested. The prompt asks for a reason on every
 place, and a small model still sometimes leaves one blank, so
@@ -867,10 +869,11 @@ street, the district for a district, the door for a name Photon knows. With a
 point, the *where* on every line the model reads ends with the straight-line
 distance from it — *Telliskivi 35 · 3.1 km* — the nearest score four when the
 places are narrowed, the same as naming a type, one less for each kilometre
-after, and ties go to the nearer; and the prompt says where the visitor is
-and that the distances on the lines are the only distances there are, to be
-quoted as written and never as minutes. One lookup a question, only for a
-question that said *near*, so *khachapuri* never reaches Photon.
+after, and ties go to the nearer; the prompt says where the visitor is and
+that the distances on the lines are the only distances there are; and each
+pick comes back with its distance for the row to print — see **The distance
+is the site's** below. One lookup a question, only for a question that said
+*near*, so *khachapuri* never reaches Photon.
 
 What it measured from is printed under the reply — *Distances are from
 Tallinna bussijaam, Kesklinn, as the crow flies* — in the small type the
@@ -918,21 +921,22 @@ a dish left over, *ramen nearby*, still goes to Photon, because nothing in
 the reader can tell a dish from a street, and the line under the reply says
 what it was taken for.
 
-The dot is the point when there is one. When there is none, the chat asks
-the device once, through the same events the locate button's press goes
-through, so the dot appears and the map frames it exactly as if the button
-had been pressed — *near me* is a request for that, and the browser's own
-permission prompt is the right thing to see. Refused, unavailable or slow,
-and the visitor's whereabouts are unknown, answered as below. The point
-travels beside the wish as `here`, is checked in the Function to be two
-numbers inside the Tallinn box — a visitor asking from Helsinki is told the
-same as one with no dot, rather than shown eighty kilometres on every line —
-and is measured from only when the question named nowhere, or named
-somewhere Photon could not place. A question that asked for nothing near
-sends no point at all: *best khachapuri* is a question about the city, not
-about the nearest one. The line under the reply then reads *Distances are
-from your location on the map, as the crow flies* — `askFromHere` — which
-is checkable against the dot.
+The dot is the point when there is one, and it goes with every question
+once the map has it — the next section says what it is for. When there is
+none, the chat asks the device once, and only for a question about *near
+me*, through the same events the locate button's press goes through, so the
+dot appears and the map frames it exactly as if the button had been pressed
+— *near me* is a request for that, and the browser's own permission prompt
+is the right thing to see, where over *best khachapuri* it would be a
+question nobody asked. Refused, unavailable or slow, and the visitor's
+whereabouts are unknown, answered as below. The point travels beside the
+wish as `here`, is checked in the Function to be two numbers inside the
+Tallinn box — a visitor asking from Helsinki is told the same as one with no
+dot, rather than shown eighty kilometres on every line — and is measured
+from when the question named nowhere, or named somewhere Photon could not
+place. The line under the reply then reads *Distances are from your location
+on the map, as the crow flies* — `askFromHere` — which is checkable against
+the dot.
 
 Without a point — a spelling Photon cannot place, somewhere outside the box,
 Photon busy, *something nearby* from a device that would not say where it
@@ -945,6 +949,60 @@ spelled it, says it cannot judge the distance, and asks which part of town it
 is in. *Laulepeo* with an *e* is the case that started this, and whether it
 resolves is Photon's fuzziness to decide; the honest reply is what it gets
 when it does not.
+
+What is left over from a sentence is looked up as before, and the filler a
+chat sentence carries is now noise the reader drops — *more*, *options*,
+*else*, *recommend*, *veel*, *ещё* — because *more vegan options nearby*
+says *near* with nothing after it, so the whole sentence was taken for the
+place to be near, and *more options* went to Photon, which placed it
+somewhere and measured every distance from there. With the filler out
+nothing is left, and the question is about the visitor, which is what it
+was. A dish left over still goes to Photon, as above; the line under the
+reply is what catches it.
+
+### The distance is the site's, and the dot counts for what was asked
+
+Every row of an answer says how far — *450 m*, *1,2 km* — when there was a
+point to measure from, in the row's own mono, with the badges. For a while
+that number was the model's: the brief told it to quote the distance off its
+line and never to invent one, and a small model quotes a distance the way it
+quotes anything. One answer had *1.2 km away* under a place in Lasnamäe and
+*1.3 km away* under one on Endla, six kilometres apart, and the next answer
+had nothing under any row. So `/api/ask` now sends each pick back with
+`far`, the kilometres it measured for the line the model read; the browser
+prints it — `askMetres` and `askKm` in `data/ui.json`, to the nearest fifty
+metres under a kilometre and to one decimal past it, in the visitor's own
+decimal mark — and the brief tells the model the visitor can see it and not
+to write one. The line under the reply still says what it was measured from,
+and it is drawn only under a reply with distances in it or one that asked
+for somewhere near: the dot goes with every question now, and *distances are
+from your location* under *hello* would be a note on nothing.
+
+Which is what let the dot go with every question. It used to go only with
+one that said *near*, on the argument that *best khachapuri* is a question
+about the city and a point would bias it towards the nearest one; what that
+looked like from a phone that had just drawn the dot was *coffee* answered
+with three cafés across town and nothing to say how far any of them was. The
+bias is a matter of what the point is for, and the Function decides that by
+whether *near* was asked. Asked, the nearest score four when the places are
+narrowed, as above, and the brief says *close* means the smallest distance.
+Not asked, the distance goes on every line and only breaks ties when the
+lists are sorted, and the brief says what was asked for comes first and the
+nearer is preferred among places that fit it equally — so *coffee* from a
+dot on Ankru is Kokomo, Chamber Tea and Nullijook, and *best khachapuri* is
+still Gobi and Pirosmani, with how far each is.
+
+And a *near* question that named a kind of place is held to the nearest of
+that kind, the way it is held to the kind. *Coffee close to me* from a dot
+on Ankru was answered with Kalve Kadriorg, six kilometres off, with Kokomo
+Coffee Roasters on the same street as the dot and on the first line of the
+list — the brief already said *close* means the smallest
+distance, and as with the kind, telling was not enough. So when a pick of
+the kind is more than a kilometre farther than the nearest place of that
+kind on its roll, the model is shown which picks strayed and how far, which
+places of the kind are within reach and their distances, and asked once
+more, in the one retry the other two rules share. Per roll, because on the
+city the one-of-each rule wants a place from each.
 
 ## Close a place instead of deleting it
 
