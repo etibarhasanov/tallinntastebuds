@@ -541,12 +541,40 @@ pannable sideways for the rest of the visit.
 
 It is a conversation, and the model is told the whole of it: every question
 goes to `/api/ask` with the exchanges before it — what was asked and what was
-answered, ids and clauses, the last six — so *somewhere cheaper* or *is the
+answered, ids and clauses, the last ten — so *somewhere cheaper* or *is the
 second one open late* mean what they would to a person, and the reply reads
 like one. One place is a whole answer when one is what fits, and the model is
 told so; a model asked for "at most three" pads to three. A reply with no
 places at all is also a turn — the model asking which of two you meant, or
 saying in its own words that nothing fits — and it is drawn as one.
+
+The reading carries too. `assets/ask.js` reads each sentence into the wish
+the Function narrows on — see **Eleven hundred rows do not go into a
+prompt** below — and a follow-up rarely repeats the question: *coffee near
+the bus station*, then *something cheaper*, where the second sentence names
+no kind and no place. Read on its own it was a wish for nothing, narrowed to
+the floor, with the cafés mostly gone from what the model was shown, the
+station forgotten and the distances back to the visitor's own dot — the
+model had been reminded of the thread, and the narrowing had not. So the
+wish is the conversation's — `carry()` in `assets/ask.js` — a topic and
+three constraints, each the newest sentence that said anything about it.
+The topic is what to eat: the kind of place read off the labels and the
+words left over, where a dish or a name lands. A sentence that names any of
+it is a new question about that — *thai* replaces *coffee*, and so does
+*khachapuri*, because the Function holds picks to the kind asked for and a
+carried *coffee* would hold the khachapuri answer to cafés — and a sentence
+that names nothing to eat keeps it: *something cheaper*, *the second one*,
+*near me instead*. Which is why the glue of a follow-up — *the second one*,
+*instead*, *actually* — is noise to the reader, the same as *more* and
+*options* above: read as a word, *instead* would replace the topic with a
+search for a place called Instead. The constraints are the price, open now
+and near, each kept until restated — *fancy* replaces *cheap*, *near
+Kalamaja* replaces *near me* — and *open* only accumulates, since nothing in
+the reader can hear *not necessarily open*. The price lists know the
+comparatives, *cheaper* and *more expensive* in all ten languages, because
+they are what a follow-up says. The device is asked for a location only by
+a sentence that itself said *near me*, never by one that inherited it. And
+it all goes when the chat is closed, with the thread.
 
 Closing the panel ends the conversation. The thread is emptied, the map goes
 back to the whole city, and the next press of the bubble starts again from

@@ -11,7 +11,7 @@
  *
  * IT IS A CONVERSATION
  *
- * The question arrives with the exchanges before it — up to six, each what
+ * The question arrives with the exchanges before it — up to ten, each what
  * was asked and what was answered, ids and clauses — and they go to the
  * model as the turns they were, so "somewhere cheaper" or "the second one"
  * mean what they would to a person. Nothing is kept here between requests:
@@ -200,10 +200,16 @@ const MAX_QUESTION = 200;
    told "at most three" pads to three. */
 const MAX_PICKS = 3;
 
-/* How many earlier exchanges go back to the model. Six is a conversation
-   about an evening; more is a transcript, and each one is read again on
-   every question. The browser sends the same six. */
-const MAX_HISTORY = 6;
+/* How many earlier exchanges go back to the model. Ten is a long
+   conversation about an evening, and it is a cap rather than a number to
+   reach: each exchange is read again on every question, at up to three
+   hundred tokens apiece, so a chat that runs to ten costs its last question
+   twice what its first did — and the cap is what keeps a pasted transcript
+   from deciding what this costs to run. It was six, and the owner's
+   standing is that an open chat keeps its thread; what was said eight
+   questions ago is still part of the conversation. The browser sends the
+   same ten. */
+const MAX_HISTORY = 10;
 
 /* Workers AI's code for "you have used up your daily free allocation of
    10,000 Neurons". It arrives as a 429 like the other one that matters —
