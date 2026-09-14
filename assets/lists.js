@@ -402,8 +402,12 @@
 
   function card(kids) { return el('section', { className: 'card lists-card' }, kids); }
 
+  /* A string, or the pieces of a line — a list's own pin in front of its
+     title is the only caller that hands over nodes, and el() takes either. */
   function heading(text, small) {
-    return el(small ? 'h2' : 'h1', { className: 'lists-title', textContent: text });
+    var tag = small ? 'h2' : 'h1';
+    if (typeof text === 'string') return el(tag, { className: 'lists-title', textContent: text });
+    return el(tag, { className: 'lists-title' }, text);
   }
 
   function button(label, className, onClick) {
@@ -449,6 +453,25 @@
      ?list= rather than a path of its own. The map is one page and the map's
      doors are query parameters — ?spot=, ?type=, ?story=, ?account= — and
      this is another door onto the same map rather than a second map. */
+  /* A list's own pin, drawn small, in front of its title.
+   *
+   * It is the same glyph in the same tone its places wear on the map, which
+   * is the point: a drawer of twenty lists is twenty titles set in the same
+   * face, and a reader looking for the bakeries one is reading them all. A
+   * croissant in front of it is found without reading anything.
+   *
+   * aria-hidden, and deliberately. The title beside it already says what the
+   * list is, in the list's own words and in the reader's own language, and a
+   * screen reader announcing "croissant, the bakeries worth the walk" is a
+   * decoration read aloud. The picker is where the glyphs have names.
+   */
+  function listPin(l) {
+    return TTBPins.paint(
+      el('span', { className: 'lists-pin', 'aria-hidden': 'true' }),
+      TTBPins.ofList(l)
+    );
+  }
+
   function mapHref(id) {
     return '/?list=' + encodeURIComponent(id);
   }
@@ -610,9 +633,8 @@
     var box = el('div', { className: 'lists-index-card' }, [
       TTBTrack.click(el('a', {
         className: 'lists-index-title lists-open',
-        href: '/list/' + l.id,
-        textContent: l.title
-      }), 'list_page', { list_id: l.id }),
+        href: '/list/' + l.id
+      }, [listPin(l), el('span', { textContent: l.title })]), 'list_page', { list_id: l.id }),
       el('span', { className: 'lists-index-meta mono' }, [
         el('span', { textContent: countLabel(l.n) }),
         /* How many people kept it — the one fact about a list its own author
@@ -1077,9 +1099,8 @@
             line,
             TTBTrack.click(el('a', {
               className: 'lists-index-title lists-open',
-              href: '/list/' + l.id,
-              textContent: l.title
-            }), 'list_page', { list_id: l.id })
+              href: '/list/' + l.id
+            }, [listPin(l), el('span', { textContent: l.title })]), 'list_page', { list_id: l.id })
           ])
         ])
       ]));
@@ -1111,6 +1132,7 @@
         '<g class="lists-sky-city"></g><g class="lists-sky-own"></g></svg>'
     });
     var own = svg.querySelector('.lists-sky-own');
+
     (dots || []).forEach(function (d) { own.appendChild(dot(d, 2.2)); });
     if (state.city) paintCity(svg.querySelector('.lists-sky-city'));
     return svg;
@@ -1226,9 +1248,8 @@
         withSky && l.dots && l.dots.length ? sky(l.dots) : null,
         TTBTrack.click(el('a', {
           className: 'lists-index-title lists-open',
-          href: '/list/' + l.id,
-          textContent: l.title
-        }), 'list_page', { list_id: l.id }),
+          href: '/list/' + l.id
+        }, [listPin(l), el('span', { textContent: l.title })]), 'list_page', { list_id: l.id }),
         line,
         l.taste && l.taste.length
           ? el('p', { className: 'lists-all-taste', textContent: l.taste.join(' \u00b7 ') })
@@ -1427,7 +1448,10 @@
   function listHead(list) {
     return card([
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
-      heading(list.title),
+      /* The pin in front of the title, the same one its places wear on the
+         map — so somebody who opens the map from here recognises the pins as
+         this list's rather than as the map having changed colour. */
+      heading([listPin(list), el('span', { textContent: list.title })]),
       /* The byline, and the door out of this page onto the rest of what its
          owner has published — the same one every row of the directory
          carries, see byline(). */
@@ -1620,6 +1644,10 @@
       el('p', { className: 'eyebrow', textContent: t('listsYours') }),
       title,
       intro,
+      /* A field, so it sits with the fields rather than down among the
+         buttons — see design rule 6. Its own row because the eight draw as
+         two rows of four and nothing should be wrapping beside them. */
+      pinPicker(list),
       el('div', { className: 'lists-row' }, [
         visibility(list),
         el('span', { className: 'lists-count mono', textContent: countLabel(list.items.length) }),
@@ -1640,6 +1668,107 @@
       ]),
       ready ? null : el('p', { className: 'lists-hint mono', textContent: t('listsShareNeeds') })
     ]);
+  }
+
+  /* ---------------------------------------------------------- the pin
+   * What this list's places wear on the map.
+   *
+   * The map's own places are not among them. A place I have eaten at draws
+   * the mark — the mouth, see "The mark" in README.md — whatever list it is
+   * on and whatever that list chose, because the mouth is this site saying
+   * it has been there and a list is somebody else saying they liked it.
+   * Those are two different sentences and only one of them is mine to hand
+   * out. So `mark` is not in TTBPins.GLYPHS, there is no swatch for it here,
+   * and functions/api/_pins.js refuses it on the way in as well — a picker
+   * that can be worked around by a hand-written request is a decoration.
+   *
+   * The line under the legend says so in words rather than leaving somebody
+   * to discover it on the map: a top ten with three of my places in it draws
+   * three mouths among seven croissants, and that should read as the list
+   * being partly approved rather than as the picker being broken.
+   *
+   * Real radios for the reason visibility() below uses them: arrow keys,
+   * screen readers, and the word "selected" all come with them.
+   *
+   * One choice and not two. There were six colour swatches under this grid
+   * for an afternoon, and they were a second decision to make before you
+   * could name a list — for a difference the marker was already making.
+   * Every marker draws in the style's accent now.
+   */
+  function pinPicker(list) {
+    var worn = TTBPins.ofList(list);
+    firstSeen('pin', worn);
+
+    /* One swatch. `group` is the radio name, `on` says whether this is the
+       one currently worn, and `choose` is what pressing it means. */
+    function swatch(group, value, label, kids, on, choose) {
+      var input = el('input', {
+        type: 'radio',
+        name: group + '-' + list.id,
+        value: value,
+        checked: on ? true : null
+      });
+      var box = el('label', {
+        className: 'lists-swatch' + (on ? ' is-on' : ''),
+        title: label,
+        'aria-label': label
+      }, [input].concat(kids));
+
+      input.addEventListener('change', function () {
+        if (!input.checked) return;
+        /* Filled in at once, for the reason the visibility radios are: a
+           control that waited for a round trip to move is a control arguing
+           with the finger. What waits is the write. */
+        var all = box.parentNode.querySelectorAll('.lists-swatch');
+        for (var i = 0; i < all.length; i++) all[i].classList.toggle('is-on', all[i] === box);
+        choose();
+      });
+      return box;
+    }
+
+    /* The eight. Each one draws itself, so the grid is the answer to "what
+       will my list look like" rather than a list of words for it. */
+    var glyphs = el('div', {
+      className: 'lists-pin-grid',
+      role: 'radiogroup',
+      'aria-label': t('listsPin')
+    }, TTBPins.GLYPHS.map(function (id) {
+      var face = TTBPins.paint(el('span', { className: 'lists-swatch-face' }), id);
+      return swatch('pin', id, t(pinKey(id)), [face], id === worn, function () {
+        list.pin = id;
+        TTBTrack.event('list_pin', { list_id: list.id, pin: id });
+        /* Back where it started: there is nothing to send, and the Save
+           button has to be able to say so. Same rule as the fields and the
+           two visibility radios — a list is saved when it matches what the
+           server has, not when nothing has been pressed. */
+        if (id === sent.pin) { unqueue('pin'); return; }
+        queue('pin', function (leaving) {
+          sent.pin = id;
+          return deliver({ action: 'edit', id: list.id, pin: id }, leaving);
+        });
+      });
+    }));
+
+    return el('fieldset', { className: 'lists-vis lists-pins' }, [
+      el('legend', { className: 'lists-vis-legend mono', textContent: t('listsPin') }),
+      glyphs,
+      el('p', { className: 'lists-hint mono', textContent: t('listsPinMark') })
+    ]);
+  }
+
+  /* The ui.json key for one marker: pinKey('flame') is 'pinFlame'. Built
+     rather than written out eight times — which means the validator's
+     scanner for t() calls cannot see a single one of them, because it only
+     reads literals. So tools/validate.mjs walks PIN_GLYPHS itself and asks
+     ui.json for the same eight keys; see the check under "1b. The pin
+     tables" there. A key nobody has translated reaches a visitor as the word
+     "pinFlame" on a swatch, and this is what stops that.
+
+     The five kinds of place have no keys and want none: they are aria-hidden
+     wherever they are drawn, because the words beside them already say the
+     kind. */
+  function pinKey(id) {
+    return 'pin' + id.charAt(0).toUpperCase() + id.slice(1);
   }
 
   /* Who can open it.

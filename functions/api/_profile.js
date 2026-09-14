@@ -47,6 +47,8 @@
  * not the place in a table.
  */
 
+import { readingPins, pinSelect, pinsOf } from './_pins.js';
+
 /* The same shape functions/api/account.js mints a username in, said again
    here so nothing that is not a plausible name goes near a query. */
 export const USERNAME = /^[a-z0-9][a-z0-9-]{2,23}$/;
@@ -95,16 +97,17 @@ export async function readProfile(context, name) {
      subquery rather than a second join for the reason the index gives: two
      aggregates over two tables in one GROUP BY multiply each other, and a
      list of ten places kept by three people would report thirty of each. */
-  const { results } = await env.DB
+  const { results } = await readingPins(env, (pins) => env.DB
     .prepare(
       'SELECT l.id AS id, l.title AS title, ' +
       'COUNT(i.place_id) AS n, ' +
+      pinSelect(pins) +
       '(SELECT COUNT(*) FROM list_keeps k WHERE k.list_id = l.id) AS keeps ' +
       'FROM lists l LEFT JOIN list_items i ON i.list_id = l.id ' +
       'WHERE l.owner = ? AND l.public = 1 GROUP BY l.id ORDER BY l.updated_at DESC'
     )
     .bind(row.id)
-    .all();
+    .all());
 
   let kept = 0;
   for (const r of results) kept += r.keeps;
@@ -125,7 +128,12 @@ export async function readProfile(context, name) {
       id: r.id,
       title: r.title,
       n: r.n,
-      keeps: r.keeps
+      keeps: r.keeps,
+      /* Their pin, in front of their title, the same as on every other page
+         a list is named on. A profile is the page that is most obviously a
+         collection of somebody's, so it is the page where telling one of
+         them from the next by eye is worth the most. */
+      ...pinsOf(r)
     }))
   };
 }

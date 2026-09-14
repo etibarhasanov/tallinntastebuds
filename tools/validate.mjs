@@ -23,6 +23,11 @@
  *     the directory's KITCHENS table cannot produce
  *   - a KITCHENS pattern that no longer matches a single row of the Google
  *     Places export, or one whose id nothing can say in ten languages
+ *   - an assets/pins.js whose eight markers have drifted from the ids
+ *     functions/api/_pins.js will let a list store, a glyph called `mark` in
+ *     either table, a kind of place a list could also pick, a tone with no
+ *     colour token behind it, or a marker nobody has named in ten languages
+ *     — the picker builds its keys, so nothing else would catch it
  *   - a UI string present in one language but missing in another
  *   - a string the site asks for — a data-i18n key in the markup, a t('key')
  *     in a script — that is in no language of data/ui.json at all
@@ -65,6 +70,11 @@ import { stale as staleGoogleLists } from './googlelists.mjs';
    every id has a label in ten languages, and every pattern still matches
    something in the export it was measured against. */
 import { KITCHENS, said } from '../functions/api/venues.js';
+/* The eight markers a list may wear. The server half of a table that is
+   written out twice — assets/pins.js is the other — so the checks below are
+   what make "change one, change the other" something other than a promise in
+   a comment. */
+import { PIN_GLYPHS, DEFAULT_PIN } from '../functions/api/_pins.js';
 import { STORY_HOURS, HOUR_MS, storyWindow, storyPhase } from './clock.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -1151,6 +1161,123 @@ if (ui !== null && isPlainObject(ui)) {
            separator, and neither is a missing string. */
         if (!KEY_SHAPE.test(key) || known.has(key)) continue;
         fail(`assets/${script}`, `calls t('${key}'), which is in no language of data/ui.json or data/split.json`);
+      }
+    }
+  }
+}
+
+/* 1b. The pin tables, which are written out twice.
+
+   functions/api/_pins.js holds the ids because the server is what decides
+   whether the two strings a list wants to store are real; assets/pins.js
+   holds the same ids plus the emoji each one draws, because the browser is
+   what draws them. Neither can import the other — one is ESM on the Workers
+   runtime and the other is ES5 served raw — so this is what keeps them the
+   same table.
+
+   And the labels with them. The picker builds its keys — pinKey('flame') is
+   'pinFlame' — so the scanner above cannot see a single one of the eight, and
+   a marker nobody had translated would reach a visitor as the word "pinFlame"
+   on a swatch. The list is here, so they are checked the way a literal would
+   have been. The five kinds of place are deliberately not checked for labels:
+   nothing prints their names. */
+
+{
+  const pins = join(ROOT, 'assets', 'pins.js');
+  if (!existsSync(pins)) {
+    fail('assets/pins.js', 'is missing — every page that draws a pin loads it');
+  } else {
+    const text = readFileSync(pins, 'utf8');
+
+    /* The two tables as the browser has them: the id out of each row, in the
+       order they are written, which for MARKERS is the order the picker
+       draws. */
+    /* Each table read from its own opening line to its own closing bracket,
+       rather than to whatever comment happens to follow it — a slice that
+       ends at a comment reads the next table too the first time somebody
+       rewrites that comment, and says the two files have drifted when they
+       have not. */
+    const ids = (from) => {
+      const at = text.indexOf(from);
+      if (at < 0) return [];
+      const body = text.slice(at, text.indexOf('];', at));
+      return (body.match(/^\s*\['([a-z-]+)',/gm) || [])
+        .map((line) => line.replace(/^\s*\['/, '').replace(/',$/, ''));
+    };
+    const drawn = ids('var MARKERS = [');
+    const places = ids('var PLACES = [');
+    const tones = (text.match(/var TONES = \[([^\]]*)\]/) || [, ''])[1]
+      .split(',').map((part) => part.trim().replace(/^'|'$/g, '')).filter(Boolean);
+
+    const same = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+    if (!same(drawn, PIN_GLYPHS)) {
+      fail('assets/pins.js', `draws the markers [${drawn.join(', ')}], and functions/api/_pins.js allows [${PIN_GLYPHS.join(', ')}] — one of the two has moved`);
+    }
+    if (!tones.length) {
+      fail('assets/pins.js', 'has no TONES list, so nothing says which colours the stylesheet has to carry');
+    }
+    /* And every colour a kind of place is filed under is one of them.
+       A PLACES row naming a tone TONES has never heard of draws as the
+       fallback accent and says nothing — the quietest way for the
+       directory's map to stop telling the drinking half from the eating
+       half, and the one the checks below would not have caught. */
+    const placeTones = (text.slice(text.indexOf('var PLACES = ['), text.indexOf('];', text.indexOf('var PLACES = ['))
+      ).match(/,\s*'([a-z-]+)'\]/g) || []).map((m) => m.replace(/^,\s*'/, '').replace(/'\]$/, ''));
+    for (const tone of placeTones) {
+      if (tones.indexOf(tone) < 0) {
+        fail('assets/pins.js', `files a kind of place under the tone "${tone}", which is not in TONES — it would draw as the accent and say nothing`);
+      }
+    }
+    if (!places.length) {
+      fail('assets/pins.js', 'has no PLACES table, so no row off the Google export can say what kind of place it is');
+    }
+    /* The mouth is the mark and is never a choice. If it ever turns up in
+       either table, a list could ask for it and the server would store it. */
+    for (const id of [...drawn, ...places, ...PIN_GLYPHS]) {
+      if (id === 'mark') fail('assets/pins.js', 'has "mark" among the glyphs a list may choose — the mouth goes on a place I have eaten at and nothing else');
+    }
+    /* And the two tables stay disjoint. A marker is what somebody chose about
+       their list; a place glyph is what this site says a Google row IS. An id
+       in both would let a list wear a cup, which is the list making a claim
+       about a place rather than about itself — see the header of
+       functions/api/_pins.js. */
+    for (const id of places) {
+      if (PIN_GLYPHS.indexOf(id) >= 0) {
+        fail('assets/pins.js', `has "${id}" in both PLACES and the markers a list may choose — a list would be able to say what a place is`);
+      }
+    }
+    if (PIN_GLYPHS.indexOf(DEFAULT_PIN) < 0) {
+      fail('functions/api/_pins.js', `DEFAULT_PIN is "${DEFAULT_PIN}", which is not one of the glyphs`);
+    }
+
+    /* Every tone a pin can wear is a token the stylesheet declares, and both
+       styles have to restate it — the check below is what proves the second
+       half, and this is the first: a tone with no token at all would draw as
+       the fallback in every style, and the kind it stands for would go quiet
+       on the directory's map. */
+    if (existsSync(join(ROOT, 'assets', 'styles.css'))) {
+      const css = readFileSync(join(ROOT, 'assets', 'styles.css'), 'utf8');
+      for (const tone of tones) {
+        if (!css.includes(`--pin-${tone}:`)) {
+          fail('assets/styles.css', `declares no --pin-${tone}, which assets/pins.js files a kind of place under — it would draw as the accent in both styles`);
+        }
+        if (!css.includes(`.pin-tone-${tone}`)) {
+          fail('assets/styles.css', `has no .pin-tone-${tone} rule, so nothing can wear that tone`);
+        }
+      }
+    }
+
+    /* And the words. Built keys, checked as literals. */
+    if (ui !== null && isPlainObject(ui)) {
+      const known = new Set();
+      for (const lang of Object.keys(ui)) {
+        if (isPlainObject(ui[lang])) for (const key of Object.keys(ui[lang])) known.add(key);
+      }
+      const label = (prefix, id) =>
+        prefix + id.replace(/-/g, '').charAt(0).toUpperCase() + id.replace(/-/g, '').slice(1);
+      for (const id of PIN_GLYPHS) {
+        const key = label('pin', id);
+        if (!known.has(key)) fail('data/ui.json', `has no "${key}", which the pin picker asks for to name the ${id} glyph`);
       }
     }
   }

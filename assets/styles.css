@@ -32,6 +32,21 @@
   --map-tint: rgba(168, 30, 40, .36);
   --swatch-edge: rgba(0, 0, 0, .14);
 
+  /* The three tones a pin can wear, and there are three because that is what
+     a five-pixel dot on the directory's map can carry. See "The pins" in
+     README.md: the mark goes on every place I have eaten at and cannot be
+     asked for, a list's marker draws in --pin-accent, and a row off Google's
+     export draws what kind of door it is — somewhere you sit and eat, or
+     somewhere you drink, or something baked.
+
+     Tokens rather than hexes for the reason every colour here is one: press
+     the swatch and the pins follow. --pin-accent leans on --accent rather
+     than restating it, so the tone called "the style's own" cannot drift
+     from the style's own. */
+  --pin-accent: var(--accent);
+  --pin-sea:    #1a6b73;
+  --pin-amber:  #b4650f;
+
   /* Three tokens for chrome that stands on the map with no card under it.
      --lift is a short shadow for a picture at logo size: --shadow is a card's
      shadow, 28px of blur meant to lift a 288px panel, and under a 40px circle
@@ -570,13 +585,31 @@ a:hover { color: var(--accent-lit); }
   width: calc(var(--pin-d, 22px) * var(--pin-scale, 1));
   height: calc(var(--pin-d, 22px) * var(--pin-scale, 1));
   border-radius: 50%;
-  background: var(--paper) url(logo/mark-round.webp) center / cover no-repeat;
+  background: var(--paper);
   pointer-events: auto;
   cursor: pointer;
   transition: width .15s var(--ease), height .15s var(--ease),
               box-shadow .15s var(--ease), transform .15s var(--ease);
 }
+/* The mouth, which is what a place on my map wears and the only thing that
+   ever wears it. Every other pin is the same disc with a glyph on it, so the
+   photograph is a state of this element rather than its default: a pin that
+   drew the mark because nobody had said otherwise would be the map handing
+   out the verdict to whatever happened to be on screen. is-mark is set by
+   TTBPins.paint(), which is the one place that decides. */
+.is-mark .pin-face {
+  background: var(--paper) url(logo/mark-round.webp) center / cover no-repeat;
+}
 .pin-mark:hover .pin-face { transform: scale(1.12); }
+
+/* The tone, as a class rather than as an inline colour, so the stylesheet
+   still owns every colour on the site (design rule 1). dressPin() sets
+   --pin-tone inline for the three states that outrank a kind — open, kept,
+   shut — and an inline custom property beats a class, which is what makes
+   those three win without either half knowing about the other. */
+.pin-tone-accent { --pin-tone: var(--pin-accent); }
+.pin-tone-sea    { --pin-tone: var(--pin-sea); }
+.pin-tone-amber  { --pin-tone: var(--pin-amber); }
 
 /* One picture, three readings of it, for the three amounts of place behind
    it. The mark cannot change — that is the whole point of putting it on every
@@ -596,6 +629,56 @@ a:hover { color: var(--accent-lit); }
   box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--pin-tone, var(--accent)),
               0 1px 2px rgba(20, 26, 31, .24);
   opacity: .8;
+}
+
+/* ---------- the glyph pins ----------
+
+   A place off Google's export, or one somebody put on a list. There is no
+   photograph of it and no write-up, so the pin says the other true thing:
+   what kind of place it is, or which list it came off. See "The pins" in
+   README.md.
+
+   It is none of the three readings above, and saying so is the point.
+   Filmed, photographed and write-up-only are three amounts of MY writing
+   about a place, and one off the export has none of them — it used to draw
+   as the quietest of the three, at 17px and four-fifths opacity, which was
+   the map calling somebody's whole top ten the thing it had least to say
+   about. So it keeps the full diameter and a plain collar in its own tone,
+   at full strength, and the three go on meaning what they have always meant
+   about the places they are about.
+
+   Written here, below those three, because that is what makes the collar
+   win: same specificity, later in the file. pinDepth() still labels every
+   pin, glyph ones included, because a stand-in becomes a place of mine the
+   day I eat there.
+
+   Emoji rather than thirteen drawings, and the cost is written down where
+   the table is (assets/pins.js): the picture is the reader's own platform's,
+   so a croissant is Apple's on an iPhone and Google's on a Pixel. That trade
+   is wrong for the mark and right for a decoration somebody picks in a grid.
+
+   Sized off --pin-d like everything else, so the phone's four-fifths scale
+   reaches it without a second breakpoint. .62 rather than filling the disc:
+   most emoji carry their own padding and a few (the cocktail, the fish) are
+   drawn wider than they are tall, so a glyph set to the full diameter
+   overflows the circle it is meant to be sitting in. */
+.is-glyph .pin-face {
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 3.6px var(--pin-tone, var(--accent)),
+              0 1px 3px rgba(20, 26, 31, .28);
+  opacity: 1;
+  font-size: calc(var(--pin-d, 22px) * var(--pin-scale, 1) * .62);
+  line-height: 1;
+  /* Apple Color Emoji first on the platforms that have it, then the rest.
+     No var(--display) here: the fallback for a missing emoji is the
+     platform's own box, and a text face in front of the colour one turns
+     the star and the heart into black glyphs on half the phones out there. */
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+               "Android Emoji", "EmojiSymbols", sans-serif;
+  /* The glyph is the picture; nothing selects or drags it. */
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* The one you are looking at keeps whichever of the three it is — it is
@@ -991,6 +1074,12 @@ a:hover { color: var(--accent-lit); }
   --here: #0b62c4;
   --story-ring: conic-gradient(from 210deg, #a81e28, #d84a2f, #f2a63c, #e1615a, #a81e28);
   --story-ring-seen: linear-gradient(#f0cec3, #f0cec3);
+  /* Mid-dark and saturated, because a pin here is a glyph on paper standing
+     on a light map: the collar is the only thing holding it off the street
+     under it. */
+  --pin-accent: var(--accent);
+  --pin-sea:    #1a6b73;
+  --pin-amber:  #b4650f;
 }
 
 /* Forest — the dark one. */
@@ -1012,6 +1101,14 @@ a:hover { color: var(--accent-lit); }
      not follow the swatch you pressed. */
   --story-ring: conic-gradient(from 210deg, #6fd39a, #b7e8a4, #f2a63c, #93e7b7, #6fd39a);
   --story-ring-seen: linear-gradient(#354740, #354740);
+  /* The same three, lifted. Red's sea on Dark Matter is a dark ring on a
+     dark map and reads as a smudge, so each is the light end of its own hue
+     rather than the same value twice. --pin-amber is pulled towards yellow
+     to keep it off --here, which is the one orange out there that is not a
+     place. */
+  --pin-accent: var(--accent);
+  --pin-sea:    #6bd0d6;
+  --pin-amber:  #edc064;
 }
 
 /* Dark Matter is drawn almost black, which reads as a hole in the screen next

@@ -71,6 +71,10 @@ import { readList, LIST_ID } from './_lists.js';
    which seeds the first page into the document it serves. */
 import { mostKept, sortOf } from './_mostkept.js';
 
+/* The eight markers a list may wear, and the reader that survives a database
+   the ALTER has not reached yet. */
+import { cleanPin, readingPins, pinSelect, pinsOf } from './_pins.js';
+
 /* Caps. Most of them are about somebody with a script rather than somebody
    with opinions — twenty-four lists is more than anybody keeps, and the
    lengths below are what fits in the space the page draws for them.
@@ -235,16 +239,17 @@ export async function onRequestGet(context) {
      over two different tables in one GROUP BY multiply each other, and a list
      of ten places kept by three people would report thirty of each. At
      twenty-four lists it is twenty-four counts on an indexed prefix. */
-  const { results } = await env.DB
+  const { results } = await readingPins(env, (pins) => env.DB
     .prepare(
       'SELECT l.id AS id, l.title AS title, l.intro AS intro, l.public AS public, ' +
       'l.updated_at AS updated_at, COUNT(i.place_id) AS n, ' +
+      pinSelect(pins) +
       '(SELECT COUNT(*) FROM list_keeps k WHERE k.list_id = l.id) AS keeps ' +
       'FROM lists l LEFT JOIN list_items i ON i.list_id = l.id ' +
       'WHERE l.owner = ? GROUP BY l.id ORDER BY l.updated_at DESC'
     )
     .bind(user.id)
-    .all();
+    .all());
 
   /* And the other half of the page: the lists this account has kept, which
      are somebody else's. Newest keep first — the order you pressed them in is
@@ -258,11 +263,12 @@ export async function onRequestGet(context) {
      back and a keep is not something to throw away on their behalf. A list
      that was deleted has no row to join to and drops out for good — see
      remove(), which takes the keeps with it. */
-  const kept = await env.DB
+  const kept = await readingPins(env, (pins) => env.DB
     .prepare(
       'SELECT l.id AS id, l.title AS title, l.intro AS intro, ' +
       'l.updated_at AS updated_at, u.username AS by, k.created_at AS kept_at, ' +
       'COUNT(i.place_id) AS n, ' +
+      pinSelect(pins) +
       '(SELECT COUNT(*) FROM list_keeps k2 WHERE k2.list_id = l.id) AS keeps ' +
       'FROM list_keeps k ' +
       'JOIN lists l ON l.id = k.list_id ' +
@@ -272,11 +278,15 @@ export async function onRequestGet(context) {
       'GROUP BY l.id ORDER BY k.created_at DESC'
     )
     .bind(user.id)
-    .all();
+    .all());
 
   return json({
     ready: true,
     user: user.username,
+    /* Both halves carry the pin, because both halves draw one: your lists
+       and the ones you kept are rows on /account.html with the list's own
+       marker in front of the title, which is how a drawer of twenty reads as
+       twenty different things rather than as twenty titles. */
     lists: results.map((r) => ({
       id: r.id,
       title: r.title,
@@ -284,7 +294,8 @@ export async function onRequestGet(context) {
       public: !!r.public,
       updated: r.updated_at,
       n: r.n,
-      keeps: r.keeps
+      keeps: r.keeps,
+      ...pinsOf(r)
     })),
     kept: kept.results.map((r) => ({
       id: r.id,
@@ -294,7 +305,8 @@ export async function onRequestGet(context) {
       updated: r.updated_at,
       keptAt: r.kept_at,
       n: r.n,
-      keeps: r.keeps
+      keeps: r.keeps,
+      ...pinsOf(r)
     }))
   }, 200);
 }
@@ -583,37 +595,61 @@ async function keep(context, id, row, user, on) {
   return json({ id: id, kept: on, keeps: keeps ? keeps.n : 0 }, 200);
 }
 
-/* The title, the line under it, and whether the link works for anybody but
-   its owner. Each is only changed when it was actually sent, so the page can
-   flip one switch without having to resend the other two. */
+/* The title, the line under it, whether the link works for anybody but its
+   owner, and the pin its places wear. Each is only changed when it was
+   actually sent, so the page can flip one switch without having to resend
+   the other three. */
 async function edit(context, body, id) {
   const { env } = context;
 
+  /* One entry per column actually being changed: the assignment, which is
+     always a literal written here, and the value, which is the only half
+     anything out of the request ever reaches. Pairs rather than two arrays
+     because two of these columns may have to be dropped again below, and a
+     filter over pairs cannot put a value against the wrong column. */
   const sets = [];
-  const binds = [];
 
   if (typeof body.title === 'string') {
     const title = words(body.title, MAX_TITLE);
     if (!title) return json({ error: 'title' }, 400);
-    sets.push('title = ?');
-    binds.push(title);
+    sets.push(['title = ?', title]);
   }
   if (typeof body.intro === 'string') {
-    sets.push('intro = ?');
-    binds.push(words(body.intro, MAX_INTRO));
+    sets.push(['intro = ?', words(body.intro, MAX_INTRO)]);
   }
   if (typeof body.public === 'boolean') {
-    sets.push('public = ?');
-    binds.push(body.public ? 1 : 0);
+    sets.push(['public = ?', body.public ? 1 : 0]);
   }
+  /* The one the picker writes. cleanPin() answers '' for anything that is
+     not one of the eight markers, which is also what an undressed list holds
+     — so a hand-written request cannot store a pin this site has no way of
+     drawing, and cannot ask for the mark or for a kind of place: neither is
+     in that set, on purpose. See functions/api/_pins.js.
+
+     Cleaned rather than refused with a 400. The field is a grid of pictures
+     with no way to type into it, so a value that is not on the grid did not
+     come from somebody making a choice, and putting the list back to its
+     default is a truer answer than an error about a control they never used. */
+  if (typeof body.pin === 'string') sets.push(['pin = ?', cleanPin(body.pin)]);
+
   if (!sets.length) return json({ error: 'action' }, 400);
 
-  /* The column names are literals from the three branches above and never a
-     value out of the request; only the bindings carry anything anybody typed. */
-  sets.push('updated_at = ?');
-  binds.push(Date.now(), id);
-
-  await env.DB.prepare('UPDATE lists SET ' + sets.join(', ') + ' WHERE id = ?').bind(...binds).run();
+  /* The pin column can be the one that does not exist yet — it reaches a
+     deployed database by ALTER TABLE, see db/schema.sql — so the write goes
+     through the same reader the reads do, and drops it from the statement
+     where it is not there. Somebody renaming a list on the afternoon between
+     the deploy and the ALTER should not lose the rename over a pin. */
+  await readingPins(env, (pins) => {
+    const use = pins ? sets : sets.filter(([set]) => set !== 'pin = ?');
+    /* The edit was the pin alone and there is nowhere to put it. Stamping
+       updated_at anyway would reorder somebody's index for a change that did
+       not happen. */
+    if (!use.length) return Promise.resolve(null);
+    return env.DB
+      .prepare('UPDATE lists SET ' + use.map(([set]) => set).join(', ') + ', updated_at = ? WHERE id = ?')
+      .bind(...use.map(([, value]) => value), Date.now(), id)
+      .run();
+  });
   return json({ ok: true }, 200);
 }
 

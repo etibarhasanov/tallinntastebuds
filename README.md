@@ -63,6 +63,7 @@ completely with the database switched off.
 - [What the validator checks](#what-the-validator-checks)
 - [Files](#files)
 - [The mark](#the-mark)
+- [The pins](#the-pins)
 - [Third-party pieces and their licences](#third-party-pieces-and-their-licences)
 - [The design rules](#the-design-rules)
 - [Design notes](#design-notes)
@@ -2996,9 +2997,20 @@ and the same link.
 
 Eleven hundred of the map's markers would be eleven hundred elements and a page
 that stops scrolling. These are `L.circleMarker` on the canvas renderer, one
-path each, and the whole export draws in a frame. They read `--accent` out of
+path each, and the whole export draws in a frame. They read their colour out of
 the computed style rather than carrying a hex, so pressing a swatch on the map
 changes this page too.
+
+Which is also why the kind is said in the fill and not in a glyph. Everywhere
+else a Google row is drawn it draws its pin — a cup for a café, a croissant for
+a bakery, see **The pins** — and eleven hundred of those would be eleven
+hundred elements again, which is the one thing this page was written to avoid.
+So the dot takes the tone of the glyph it would have had: `accent` for the
+eating half, `sea` for the drinking half, `amber` for the baked and sweet one,
+`olive` for the green one. Four colours is as much as a five-pixel circle can
+carry, and it is enough to see where the bars are before a word has been read.
+The card beside it draws the glyph itself, at a size where a glyph works, in
+front of the name.
 
 Pressing a card lights its dot and moves the map to it; pressing a dot lights
 its card and scrolls the list to it — growing the list first if the card has
@@ -3171,6 +3183,13 @@ not sending loses the work outright. Somebody who meant to abandon an edit
 closes the tab and finds it kept, and somebody who meant to keep it and forgot
 to press Save finds it kept too, and only one of those is a story anybody
 minds.
+
+**The pin** is above that, and it is the one field on the card that is a grid
+of pictures rather than a box to type in: eight markers in two rows and six
+tones under them, and what you press is what this list's places wear on the
+map. It is a field, so it sits with the fields. The mouth is not on the
+grid and cannot be asked for — a place on the map draws it whatever list it is
+on, and the line under the picker says so. **The pins** is the whole of it.
 
 **Who can open it** is two options and not one pill. A single pill printing
 the state it was in — "Anyone with the link can read it" — is the sentence
@@ -3644,7 +3663,11 @@ differently on purpose:
   entry and keeps everything it has — its pin, its write-up, its reel, its
   price, its types, its save mark. The list's sentence is added under it.
 - A place **not on my map** gets a stand-in: a pin, a name, and what the
-  list's owner said. When it came off the Google export the row takes the
+  list's owner said. The pin is the list's own — the glyph its owner picked
+  out of the eight, so ten of them read as one
+  person's ten. A place of mine on the same list keeps the mouth, because
+  being on the map is the verdict and nobody else hands it out; see **The
+  pins**. When it came off the Google export the row takes the
   same shape as a row of mine — Google's band and kinds in the slots the gauge
   and the types use, and a **Google 4.8** mark where a row of mine says how
   much there is to look at — so a list that mixes the two rolls reads as one
@@ -4028,7 +4051,10 @@ linking anywhere, which is the smallest loss available.
 as everything else there. `list_items` carries `pos` — the order somebody
 dragged their top ten into — and the name snapshot above. `list_keeps` is one
 row per person per list, keyed on the pair, which is what makes the count a
-count of people rather than a count of presses.
+count of people rather than a count of presses. And `lists` carries `pin` and
+`tone`, the two columns that arrived by `ALTER TABLE` and the two every read
+survives the absence of — see **The two columns, and the afternoon they do
+not exist** under **The pins**.
 
 There is deliberately no counts table behind the keeps, the way `save_counts`
 sits behind the saves. That one exists because the map asks for seventy-four
@@ -4143,6 +4169,17 @@ re-running it is how `list_keeps` reaches a database that predates it):
 wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
 wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
 ```
+
+And the pin column, which `CREATE TABLE IF NOT EXISTS` cannot add to a table
+that already exists:
+
+```
+ALTER TABLE lists ADD COLUMN pin TEXT NOT NULL DEFAULT '';
+```
+
+Nothing breaks before it is run — every list draws the default marker and the
+picker's presses are dropped — so this is a thing to do on landing rather than
+a thing to do first. See **The pins**.
 
 Without the binding the page says so and offers the map, the same way the
 account button simply does not appear.
@@ -5530,6 +5567,14 @@ to read and write first.
 - a colour token one style declares and another leaves out, which is a style
   quietly wearing the other one's value out of `:root`. See **The design
   rules**
+- an `assets/pins.js` whose eight markers have drifted from the ids
+  `functions/api/_pins.js` will let a list store, a glyph called `mark` in
+  either table, a kind of place a list could also pick, a kind filed under a
+  tone that does not exist, a tone with no colour token or no `.pin-tone-`
+  rule behind it, or a marker nobody has named in ten languages — the picker
+  builds its keys out of the ids, so the scanner for `t()` calls cannot see
+  one of the eight and nothing else would catch it. See
+  **[The pins](#the-pins)**
 - a photo listed in the data that does not exist in the repo
 - a `reel` value that is not a real Instagram or TikTok permalink shape
 - a `price` outside 1–4 or off the 0.5 step, a malformed `visited` month, a
@@ -5659,6 +5704,11 @@ data/split.json            that page's strings, in the same ten languages —
 google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
+assets/pins.js             the eight markers, the five kinds of place, the six
+                           tones, and which of them a place draws — said once
+                           for every page that draws a pin
+functions/api/_pins.js     the same ids, on the side that decides whether a
+                           list may store them (not a route: leading _)
 assets/basemap.js          the CARTO tiles, said once for every map that draws them
 assets/track.js            what a press reports to Google Analytics, said once
                            for every page that has a button
@@ -5763,12 +5813,17 @@ icon, which Google refuses, so a search for the site came back with the grey
 globe instead of the mouth. Google re-crawls favicons on its own schedule;
 there is no way to make it look sooner.
 
-On the map it *is* the pin. Every place is the mouth, cropped round, drawn at
-22px — 34px for the one whose panel is open, and 17px for the quietest of them.
-It used to go on the chosen pin alone, over a circle, on the reasoning that a
-picture inside a 14px dot is mud. That was true of a 14px dot. At 22px the
-crop reads, and the map stops being seventy anonymous circles with one
-photograph parked among them.
+On the map it *is* the pin — for the seventy-five places on it. Every one of
+them is the mouth, cropped round, drawn at 22px — 34px for the one whose panel
+is open, and 17px for the quietest of them. It used to go on the chosen pin
+alone, over a circle, on the reasoning that a picture inside a 14px dot is mud.
+That was true of a 14px dot. At 22px the crop reads, and the map stops being
+seventy anonymous circles with one photograph parked among them.
+
+Everything else the map can draw — a place off Google's export, a place
+somebody put on a list — wears a glyph instead, and that boundary is the
+point rather than a detail of it. The mouth is this site saying it has eaten
+somewhere; nothing a stranger types can hand it out. See **The pins**.
 
 The circle is not gone, it is *reserved*: the only plain dot left on the map is
 the one that says where you are. Nothing else can be mistaken for it now, which
@@ -5793,6 +5848,249 @@ The icon Leaflet anchors is a fixed 46px square, so a pin resizes without the
 anchor moving under it, and the square takes no pointer at all — only the mark
 inside it does. A tap lands on the picture you can see and never on the empty
 corners around it.
+
+---
+
+## The pins
+
+The mark goes on a place I have eaten at. Everything else on the map wears a
+picture of what it is, or a picture the person whose list it is chose.
+
+Three rules, in this order, and the order is the whole feature:
+
+| The place | The pin |
+| --- | --- |
+| on my map | **the mark** — the mouth, always, whatever list it is on |
+| on a list | that list's chosen **marker**, in the style's accent |
+| anything else off Google's export | the glyph for **what kind of place it is** |
+
+`pinOf()` in `assets/app.js` is those three lines, and `assets/pins.js` holds
+the two tables behind them.
+
+### The mouth is not a choice
+
+The picker has eight markers on it and the mark is not one of them. It is
+not in `TTBPins.GLYPHS`, `cleanPin()` in `functions/api/_pins.js` refuses it
+on the way in, and `node tools/validate.mjs` fails the build if `mark` ever
+turns up in either table — three answers to the same question, because this
+is the one thing on the site that has to survive somebody hand-writing a
+request.
+
+That is not fussiness about a decoration. The map is seventy-five places I
+have been to, and being on it is the verdict; a list is somebody saying they
+liked somewhere, which is a much smaller claim and a claim about themselves.
+If a list could put the mouth on a restaurant, those two sentences would be
+the same sentence. So a top ten with three of my places on it draws three
+mouths among seven of whatever its owner chose, and that reads as what it is:
+partly approved, mostly recommended.
+
+The picker says so in words under it — `listsPinMark`, in ten languages —
+rather than leaving somebody to work it out from a map where two of their
+pins came out wrong.
+
+### Two tables, and they do not overlap
+
+A list wears a **marker**. A Google row wears a **kind of place**. They are
+separate lists in `assets/pins.js` — `MARKERS` and `PLACES` — and no id is in
+both, which `node tools/validate.mjs` enforces.
+
+That split is the second version of this. The first had one table of eighteen
+food glyphs and let a list pick any of them, which meant a list wearing a
+croissant put a croissant on a sushi place. That reads as the map being wrong
+about the sushi place rather than as the list being somebody's, and it is the
+wrong thing for a list to be able to say: a list is a choice of places, not a
+claim about what any one of them cooks.
+
+So the markers say nothing about food at all. They mark a spot — which is the
+one thing that is true of all ten places on a top ten.
+
+| 📍 pin | 🚩 flag | 🔥 flame | ☀️ sun | ❤️ heart | 🌸 blossom | 💎 gem | 🎈 balloon |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+
+Eight, and it was eighteen for an afternoon. A grid of eighteen is a decision
+to make before you can name your list, and the ones that went were the ones
+nobody would miss: a trophy and a crown say the same thing, a butterfly and a
+clover say nothing at all. What is left is one of each — a place, a claim, a
+warning, a brightness, a love, a prettiness, a treasure, a party. 📍 is what
+an undressed list draws.
+
+**And no colour beside them.** There were six tone swatches under the grid,
+also for an afternoon, and they were a second decision to make before you
+could name a list — for a difference the marker was already making. Every
+marker draws in the style's accent now, which is the colour of everything
+else on this site that is a link or a pin, and a list is one column and one
+press.
+
+All eight on one line at every width. The columns are fractions rather than a
+fixed 38px, because eight fixed ones come to 332px — eight more than a 390px
+phone leaves inside that card, and enough to make a 360px one scroll
+sideways. As fractions they are 38px on a desk and about 33px on the
+narrowest phone, which is still a picture and still a finger-sized target.
+
+### The five kinds of place
+
+What a Google row is read as, and never something anybody picks:
+
+| | | of the 1,110 |
+| --- | --- | --- |
+| 🍴 | somewhere you sit and eat | 547 · 49% |
+| ☕ | coffee or tea | 202 · 18% |
+| 🍺 | a bar or a pub | 160 · 14% |
+| 🍔 | a counter you queue at | 135 · 12% |
+| 🥐 | something baked | 66 · 6% |
+
+Five and not thirty-eight, because the question a pin on a map answers is
+*what is this door*, and a Thai restaurant, a pizzeria and a steakhouse are
+three cuisines and one kind of door. The thirty-eight kitchens still exist and
+the directory still filters on every one of them — they are words under a
+card, which is where a word that exact belongs. It is also the split Google
+Maps itself draws, in this site's two palettes rather than in Google's one.
+
+The eighteen ice cream, chocolate and dessert shops land in 🥐, which is where
+a sweet thing you take away belongs. No cuisine id names them, and inventing
+one would mean putting a chip on the directory in order to serve a pin.
+Fifteen rows in the export are not eating places at all — two bookshops, a
+barber, a toy shop, an axe-throwing club — and they draw 🍴 like anything else
+Google has nothing more exact to say about. `hidden` in `google_venues` is the
+lever for those, and it is a curation decision rather than a pin one.
+
+`KINDS` in `assets/pins.js` is the whole mapping, and it is six lines: the
+kitchens that name a kind of door — `coffee`, `bar`, `pub`, `fast-food`,
+`burgers`, `bakery` — and everything else is somewhere you sit and eat.
+
+### Why emoji
+
+They cost nothing — no file, no sprite, no request, no thirteenth thing to
+re-render when a size changes — and everybody already knows what they mean, in
+ten languages, with no legend. The price is real: the picture is the reader's
+own platform's, so a croissant is Apple's on an iPhone and Google's on a Pixel
+and neither of them is ours. That trade is the wrong one for the mark, which
+is why the mark is a photograph and is in neither table. It is the right one
+for a marker somebody picks out of a grid.
+
+The eight markers have names in all ten languages, because a swatch needs a
+label and a tooltip: `pinFlame`, `pinBlossom` and the rest. The picker builds
+those keys out of the id — `pinKey('flame')` — which means the validator's
+scanner for `t()` calls cannot see a single one of them, so it walks the same
+list and checks them itself. See **What the validator checks**. The five kinds
+of place have no names, and want none: they are `aria-hidden` everywhere they
+are drawn, because the card beside them already says the kind in words.
+
+### Two colour worlds, and three tones inside each
+
+The site has two colour worlds, Red and Forest, and pressing the swatch moves
+the whole of one to the other. A pin has to belong to whichever it is standing
+in, so a tone is a **name** and never a value: `--pin-sea` is one thing in
+`[data-style="red"]` and another in `[data-style="green"]`, and a pin gets the
+right one on both without knowing either.
+
+| Tone | What it is for |
+| --- | --- |
+| `accent` | somewhere you sit and eat, and every marker a list wears — the style's own accent, so it leans on `--accent` rather than restating it |
+| `sea` | somewhere you drink |
+| `amber` | something baked |
+
+Three, and three is not a shortage: it is exactly what a five-pixel dot on the
+directory's map can carry, which is the only place a tone is doing work a
+glyph cannot. A Google row takes the tone of the kind it was read into, so the
+drinking half of the city is visibly a different colour from the eating half
+before a word has been read. A list's marker is the accent, always — the
+picture is the difference, and a colour behind it was a second decision for no
+second meaning.
+
+Three states outrank a choice, and all three are about the map rather than
+about the place: **shut for good** is muted, **open** and **the one you last
+had open** are `--accent-lit`. `dressPin()` sets `--pin-tone` inline for those
+and removes it otherwise, and an inline custom property beats a class — which
+is the whole of how they win, without either half knowing about the other.
+
+### What a glyph pin is not
+
+It is not one of the three readings. Filmed, photographed and write-up-only
+are three amounts of *my* writing about a place — see **The mark** — and a
+place off Google's export has none of them. It used to draw as the quietest
+of the three, at 17px and four-fifths opacity, which was the map calling
+somebody's whole top ten the thing it had least to say about. A glyph pin
+keeps the full 22px and a plain collar in its own tone, at full strength, and
+the three readings go on meaning what they have always meant about the places
+they are about.
+
+`pinDepth()` still labels every pin, glyph ones included, because a stand-in
+becomes a place of mine the day I eat there.
+
+### Where a list wears its own
+
+Everywhere a list is named, which is four pages: its own at `/list/<id>`,
+everybody's at `/lists`, its author's at `/u/<name>`, and yours on
+`/account.html`. The glyph sits in front of the title and the row's scatter of
+dots is drawn in the tone — so a page of twenty is twenty constellations
+rather than twenty identical red ones, and the bakeries one is found without
+reading a word.
+
+It is `aria-hidden` in every one of those places. The title beside it already
+says what the list is, in its author's own words; a screen reader announcing
+"croissant, the bakeries worth the walk" is a decoration read aloud. The
+picker is where the eight have names.
+
+On your own list's card there is no emblem, because the picker is on it and a
+picker showing the chosen pin is the emblem.
+
+### The two columns, and the afternoon they do not exist
+
+`lists.pin`, `TEXT NOT NULL DEFAULT ''`, and nothing beside it — a marker is
+the whole of what a list chooses. Empty is a list nobody has dressed and is
+deliberately **not** the same as having chosen the default: the default lives
+in `assets/pins.js` and is applied when the page draws, so changing it one day
+is a change to that file rather than a write to everybody's lists.
+
+Every statement in `db/schema.sql` is `CREATE TABLE IF NOT EXISTS`, which adds
+no column to a table that already exists, so it reaches the deployed databases
+by hand, exactly as `users.about` did:
+
+```
+ALTER TABLE lists ADD COLUMN pin TEXT NOT NULL DEFAULT '';
+```
+
+Which means there is an afternoon — between the deploy and somebody running
+that line — when the code wants a column the database has not got. Five reads
+and one write would 500 through it. `readingPins()` in
+`functions/api/_pins.js` is the answer: the first read of an isolate asks for
+them, "no such column" decides it for every read after, and the statement is
+built without them meanwhile. One failed statement per isolate where they are
+missing, none where they are not. Any other failure is rethrown, because a
+database that is down should look like a database that is down rather than
+like a list with a plain pin.
+
+The write goes through the same reader and drops the same two assignments:
+somebody renaming a list on that afternoon should not lose the rename over a
+pin. Driven under `wrangler pages dev` against a database built without the
+two columns: reading a list, the index, a profile and `/lists` all answered
+200 with an empty pin, a pressed swatch came back `ok` and stored nothing, and
+a rename sent in the same request as a pin still landed.
+
+The one cost is that an isolate which has answered "no" holds that for its
+life, so running the ALTER does not light every pin up at once — isolates that
+had already decided go on drawing plain ones until they are recycled, which a
+deploy does and idling does anyway. Minutes rather than an afternoon, and
+nothing is lost: the swatch is sent again the next time it is pressed. **Run
+the two lines with the deploy rather than after it**, and there is no window
+at all.
+
+### The table is written out twice
+
+`functions/api/_pins.js` holds the ids, because the server is what decides
+whether the two strings a list wants to store are real. `assets/pins.js`
+holds the same ids plus the emoji each draws and the table that reads a
+Google row's kinds into one of them, because the browser is what draws them.
+Neither can import the other — one is ESM on the Workers runtime and the other
+is ES5 served raw — so they are written out separately, the way the story
+clock in `assets/app.js` restates `tools/clock.mjs`.
+
+Change one, change the other. `node tools/validate.mjs` fails the build when
+the two sets of ids drift, when a kind of place is also something a list could
+pick, when a tone has no `--pin-<tone>` token or no `.pin-tone-<tone>` rule
+behind it, or when a marker has no name in ten languages — so the promise is
+kept by something other than a comment asking nicely.
 
 ---
 
@@ -6567,6 +6865,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists/public`:
 | `list_share` | `list_id`, `method` |
 | `list_save` | `list_id`, `writes` |
 | `list_visibility` | `list_id`, `visibility` |
+| `list_pin` | `list_id`, `pin` — a marker pressed in the picker |
 | `list_reorder` | `list_id`, `from`, `to` |
 | `list_add`, `list_remove` | `list_id`, `place` |
 | `list_delete` | `list_id` |

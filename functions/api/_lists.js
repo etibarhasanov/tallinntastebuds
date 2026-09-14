@@ -14,6 +14,7 @@
  */
 
 import { catalogue, venuesByIds, addedByIds, isAdded } from './_lib.js';
+import { readingPins, pinSelect, pinsOf } from './_pins.js';
 
 /* The share code's shape. A slug, a dash and six characters, but written as a
    general slug rather than as that exact pattern: it is the primary key of a
@@ -37,15 +38,20 @@ export async function readList(context, id, user) {
   const { env } = context;
   if (!LIST_ID.test(id || '')) return null;
 
-  const list = await env.DB
+  /* The two pin columns are asked for through readingPins(), which drops
+     them from the statement on a database that has not had the ALTER run —
+     see functions/api/_pins.js. A list without them is a list with a plain
+     pin, which is a page; a list that 500s is not. */
+  const list = await readingPins(env, (pins) => env.DB
     .prepare(
       'SELECT l.id AS id, l.owner AS owner, l.title AS title, l.intro AS intro, ' +
       'l.public AS public, l.created_at AS created_at, l.updated_at AS updated_at, ' +
+      pinSelect(pins) +
       'u.username AS username ' +
       'FROM lists l LEFT JOIN users u ON u.id = l.owner WHERE l.id = ?'
     )
     .bind(id)
-    .first();
+    .first());
 
   if (!list) return null;
 
@@ -146,6 +152,12 @@ export async function readList(context, id, user) {
     public: !!list.public,
     mine: mine,
     updated: list.updated_at,
+    /* The pin its owner chose, and the tone. Both '' on a list nobody has
+       dressed; assets/pins.js is what turns that into the default, so the
+       default is one line on the page rather than a value in every answer.
+       A place on this list that is also on my map ignores both and draws the
+       mark — see ofList() and paint() there. */
+    ...pinsOf(list),
     keeps: keeps ? keeps.n : 0,
     kept: kept,
     items: results.map((r) => {

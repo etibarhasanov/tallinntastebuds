@@ -946,9 +946,13 @@
    * instead of waiting for a hover it will never get on a phone.
    */
 
+  /* Four, and --accent is deliberately not among them any more. A pin's
+     ordinary tone is a class on its node — see TTBPins.dress() — so the only
+     colours read here are the ones that outrank a choice: lit for the open
+     pin and the one you last had open, muted for a place that has shut, and
+     the two the locate dot is drawn from. */
   function markerColours() {
     return {
-      accent: cssVar('--accent') || '#00539c',
       lit: cssVar('--accent-lit') || '#0072ce',
       muted: cssVar('--muted') || '#536879',
       paper: cssVar('--paper') || '#f2f8ff',
@@ -970,7 +974,32 @@
   function pinSize(place) {
     if (isChosen(place)) return PIN_D_SELECTED;
     if (isKept(place)) return PIN_D_KEPT;
+    /* The three readings are three amounts of MY writing about a place, and a
+       stand-in has none of them — so it is not the quietest of the three, it
+       is outside the scale. It used to draw at PIN_D_WORDS, which made
+       somebody's whole top ten the smallest thing on the map; and a glyph at
+       17px is a smudge where the mark at 17px was still a mark. */
+    if (place.standIn) return PIN_D;
     return pinDepth(place) === 'words' ? PIN_D_WORDS : PIN_D;
+  }
+
+  /* Which pin a place draws, and in which tone. The order is the feature —
+     see "The pins" in README.md.
+
+     A place on my map is the mark, always. Not "unless the list said
+     otherwise": the mouth is this site saying it has eaten there, so a list
+     that chose a croissant and holds one of mine gets a croissant and a
+     mouth. There is no glyph id that reaches it — 'mark' is not in
+     TTBPins.GLYPHS and nothing in a request can name it.
+
+     A stand-in that a list put on the screen wears that list's choice, which
+     is what makes ten pins read as one person's ten. A stand-in that arrived
+     any other way — the chat answering on the whole city — wears what it
+     IS, read out of the kinds Google already sent with it. */
+  function pinOf(place) {
+    if (!place.standIn) return 'mark';
+    if (state.list && isOnList(place.id)) return TTBPins.ofList(state.list);
+    return TTBPins.forKinds(place.kitchens, place.types);
   }
 
   /* How much of a place there is to look at, which is what the pin says:
@@ -1185,7 +1214,7 @@
     var node = marker.getElement();
     if (!node) return;              /* swallowed by a cluster, nothing to dress */
 
-    /* Reading five custom properties off the root is a layout question, so
+    /* Reading four custom properties off the root is a layout question, so
        the caller passes them in when it is dressing all seventy at once. */
     var c = colours || markerColours();
     var chosen = isChosen(place);
@@ -1201,8 +1230,24 @@
     node.classList.toggle('is-kept', kept);
     node.classList.toggle('is-shut', !!place.closed);
     node.style.setProperty('--pin-d', d + 'px');
-    node.style.setProperty('--pin-tone',
-      place.closed ? c.muted : ((chosen || kept) ? c.lit : c.accent));
+
+    /* The mouth or a glyph, and the tone that goes with it, as classes on
+       this node — the stylesheet owns the colour. The glyph itself is
+       written into the face rather than here, because Leaflet owns the pair
+       and .pin-face is the half that takes the pointer. */
+    var wears = pinOf(place);
+    TTBPins.dress(node, wears);
+    var face = node.querySelector('.pin-face');
+    if (face) face.textContent = wears === 'mark' ? '' : TTBPins.glyph(wears);
+
+    /* Three states outrank whatever the pin chose, and all three are about
+       this map rather than about the place: shut for good, open, and the one
+       you last had open. An inline custom property beats the tone class, so
+       saying it here is the whole of how it wins — and removing it is the
+       whole of how the choice comes back. */
+    if (place.closed) node.style.setProperty('--pin-tone', c.muted);
+    else if (chosen || kept) node.style.setProperty('--pin-tone', c.lit);
+    else node.style.removeProperty('--pin-tone');
 
     /* No bringToFront on an icon marker; the stacking is the z offset. The
        kept pin sits above the crowd and under the open one. */
@@ -6914,6 +6959,13 @@
          this site that may not be a minute behind. */
       keeps: list.keeps || 0,
       kept: !!list.kept,
+      /* What its owner chose its places should wear, carried across rather
+         than defaulted here: pinOf() reads it off this object for every
+         stand-in, and TTBPins.ofList() is the one place that decides what an
+         undressed list looks like. A place of mine on this list is not
+         covered by either — it draws the mark, and pinOf() answers that
+         before it ever looks here. */
+      pin: list.pin || '',
       items: items
     };
     state.listPlaces = stand;

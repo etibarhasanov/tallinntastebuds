@@ -343,6 +343,33 @@
 /* The type is on the heading and not on the button inside it: assets/
    styles.css gives every button `font: inherit`, so the one below wears this
    without restating a word of it. */
+/* What kind of place this is, as the pin for it — the same glyph the map
+   draws when a list puts this row on the screen, and the same tone its dot
+   is filled with on the map beside this card. See "The pins" in README.md.
+
+   Here rather than only on the map because this page is where somebody is
+   reading down a hundred rows: the two words under the name say the kind
+   too, and the glyph is what makes it findable without reading them. */
+.venue-glyph {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--paper), 0 0 0 2px var(--pin-tone, var(--accent));
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+               "Android Emoji", "EmojiSymbols", sans-serif;
+  font-size: .68em;
+  line-height: 1;
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* The name is a button with two things in it now, so it has to be a row: a
+   long name wrapping to two lines must not carry the glyph down with it. */
+.venue-pick { display: flex; align-items: baseline; gap: .45em; text-align: left; }
+
 .venue-name {
   font-family: var(--display);
   font-size: 16px;

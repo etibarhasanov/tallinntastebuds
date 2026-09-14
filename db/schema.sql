@@ -231,7 +231,38 @@ CREATE TABLE IF NOT EXISTS lists (
   -- sharing: a link either opens or it does not.
   public     INTEGER NOT NULL DEFAULT 1,
   created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL
+  updated_at INTEGER NOT NULL,
+  -- The marker this list's places wear on the map: one of the eight ids in
+  -- functions/api/_pins.js, which is what validates it on the way in.
+  --
+  -- '' is a list nobody has dressed, and it is NOT the same as having chosen
+  -- the default. The default lives in assets/pins.js, applied when the page
+  -- draws; storing it here instead would mean that changing it one day
+  -- rewrote every list that had never been asked.
+  --
+  -- There is no colour column beside it. Every marker draws in the style's
+  -- accent, so a list is one decision rather than two — see MARKERS in
+  -- assets/pins.js.
+  --
+  -- This column cannot put the mark on anything, and cannot say what a place
+  -- is either. A place on my map draws the mouth whatever its list chose (see
+  -- "The mark" in README.md), and the five kinds of place are what this site
+  -- says a Google row IS rather than anything somebody picks.
+  --
+  -- LAST, BECAUSE THAT IS WHERE ALTER TABLE PUTS IT
+  --
+  -- lists predates it on both deployed databases, so it reaches them by hand
+  -- and SQLite appends:
+  --
+  --   ALTER TABLE lists ADD COLUMN pin TEXT NOT NULL DEFAULT '';
+  --
+  -- The order here is the order the deployed table has, which is what makes
+  -- this file readable against the real thing. Every read survives its
+  -- absence rather than assuming the ALTER has been run: readingPins() in
+  -- functions/api/_pins.js asks for it once per isolate and remembers the
+  -- answer, so a deploy that lands before the ALTER draws plain pins instead
+  -- of a 500.
+  pin        TEXT    NOT NULL DEFAULT ''
 );
 -- "My lists, newest first", which is the whole of the index page.
 CREATE INDEX IF NOT EXISTS idx_lists_owner ON lists (owner, updated_at DESC);

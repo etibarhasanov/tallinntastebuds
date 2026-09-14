@@ -491,16 +491,30 @@
      over the whole face of it. That arrangement is here for the same reason it
      is on the directory: the byline in the line of facts is a door to whoever
      wrote the list, and a link inside a link is not a thing HTML has. */
-  function row(href, title, meta, event, params) {
+  function row(href, title, meta, event, params, pin) {
     var parts = meta.filter(Boolean);
     var line = el('p', { className: 'lists-all-meta mono' });
     parts.forEach(function (part, i) {
       if (i) line.appendChild(document.createTextNode(' · '));
       line.appendChild(part);
     });
+    /* The list's own pin in front of its title, drawn exactly as it is on
+       the map and on every other page a list is named on. aria-hidden for
+       the reason listPin() in assets/lists.js gives: the title already says
+       what the list is, and a screen reader announcing "croissant" before it
+       is a decoration read aloud.
+
+       A row with no list behind it — the saved places, the way to everybody
+       else's — passes nothing and gets the title alone. */
+    var name = el('a', { className: 'lists-index-title lists-open', href: href });
+    if (pin) {
+      name.appendChild(TTBPins.paint(
+        el('span', { className: 'lists-pin', 'aria-hidden': 'true' }), pin));
+    }
+    name.appendChild(el('span', { textContent: title }));
     return el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card' }, [
-        TTBTrack.click(el('a', { className: 'lists-index-title lists-open', href: href, textContent: title }), event, params),
+        TTBTrack.click(name, event, params),
         parts.length ? line : null
       ])
     ]);
@@ -638,7 +652,7 @@
          The answers that hold other people's lists do not send the column at
          all — every list in them is public by the query that found it. */
       l.public === false ? el('span', { className: 'lists-private', textContent: t('listsPrivate') }) : null
-    ], 'list_page', { list_id: l.id });
+    ], 'list_page', { list_id: l.id }, TTBPins.ofList(l));
   }
 
   /* Name it and you land in it, because the next thing anybody wants after

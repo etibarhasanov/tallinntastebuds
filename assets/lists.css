@@ -95,6 +95,16 @@
 .lists-card { padding: 22px 22px 20px; }
 
 .lists-title {
+  /* A row, because a title can carry the list's pin in front of it: the pin
+     must sit on the first line's baseline rather than being dragged down by
+     a title that wraps to two. The gap is here rather than a margin on the
+     pin, and that is not a preference — the pin is sized at .62em so that it
+     grows with whatever it stands beside, which means a margin written on it
+     would be .62 of the number it looked like. On the row it is the title's
+     own em, which is the measure the eye reads the gap against. */
+  display: flex;
+  align-items: baseline;
+  gap: .42em;
   font-family: var(--display);
   font-size: 26px;
   font-weight: 600;
@@ -295,6 +305,109 @@
 .lists-seg-opt.is-on.is-private { border-color: var(--accent); color: var(--accent); }
 .lists-seg-opt:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
 
+/* ---------- the pin picker ----------
+
+   What this list's places wear on the map: one of eight markers. See "The
+   pins" in README.md, and assets/pins.js for the table. The mark is not
+   among them and cannot be — a place on the map draws the mouth whatever
+   list it is on. There is no colour beside the grid: every marker draws in
+   the style's accent, so this is one decision rather than two.
+
+   The grid draws the glyphs themselves rather than their names, so it is an
+   answer to "what will my list look like" instead of a column of words.
+   Which also makes it the one control on this page with nothing to
+   translate: the tooltip and the label carry the words, and every visible
+   character in it is the same in all ten languages. */
+.lists-pins { margin-top: 12px; }
+
+.lists-pin-grid {
+  display: grid;
+  /* All eight on one line, at every width. The columns are fractions rather
+     than 38px because eight fixed ones come to 332px — eight more than a
+     390px phone leaves inside this card, and enough to make a 360px one
+     scroll sideways. As fractions they are 38px on a desk and shrink to
+     about 33px on the narrowest phone, which is still a picture and still a
+     finger-sized target, and the row never wraps or overflows. max-width is
+     what stops them spreading to 74px each on a 594px card. */
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 4px;
+  max-width: 332px;
+}
+
+/* One press in either group. The same shape the visibility segment uses —
+   a label around a real radio, the radio kept focusable rather than
+   display:none so the arrow keys still walk the group. */
+.lists-swatch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  /* The column decides the width; the square is what keeps it a swatch. */
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  border-radius: var(--radius-soft);
+  cursor: pointer;
+  transition: border-color .15s var(--ease), background .15s var(--ease);
+}
+.lists-swatch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.lists-swatch:hover { background: var(--wash); }
+.lists-swatch.is-on { background: var(--wash); border-color: var(--pin-tone, var(--accent)); }
+.lists-swatch:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* The glyph on its own disc, drawn as the map draws it: paper, a collar in
+   the tone, the emoji inside. Small enough that a row of them fits on a
+   phone and big enough that the emoji is still a picture. */
+.lists-swatch-face {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: 0 0 0 1.5px var(--paper), 0 0 0 2.6px var(--pin-tone, var(--accent));
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+               "Android Emoji", "EmojiSymbols", sans-serif;
+  font-size: 15px;
+  line-height: 1;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* A list's own pin, in front of its title, wherever a list is named. It is
+   the same glyph in the same tone its places wear on the map — see
+   listPin() in assets/lists.js. */
+.lists-pin {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.15em;
+  height: 1.15em;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--paper), 0 0 0 1.9px var(--pin-tone, var(--accent));
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+               "Android Emoji", "EmojiSymbols", sans-serif;
+  /* Set against the title's own size, so it grows with the heading on a
+     desk and shrinks with it on a phone without a second breakpoint. */
+  font-size: .62em;
+  line-height: 1;
+  vertical-align: baseline;
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* The mouth, for the day a list can wear it. Nothing hands it out today —
+   TTBPins.paint() only draws it for a place on my map — and the rule is here
+   so that the emblem and the map's pin cannot say the mark differently. */
+.lists-pin.is-mark {
+  background: var(--paper) url(logo/mark-round.webp) center / cover no-repeat;
+}
 /* ---------- the fields ---------- */
 
 .lists-input {
@@ -364,6 +477,11 @@
    whole card opens the list and the accessible name of that link is the title
    alone rather than every word on the card read out in one breath. */
 .lists-index-title {
+  /* A row for the same reason .lists-title is one: the list's pin goes in
+     front of the title and has to stay on its first line. */
+  display: flex;
+  align-items: baseline;
+  gap: .42em;
   font-family: var(--display);
   font-size: 17px;
   font-weight: 600;
