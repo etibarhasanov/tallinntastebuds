@@ -6446,15 +6446,18 @@ data; those do not belong in a static site at all.
 | [Instagram embed](https://developers.facebook.com/docs/instagram/oembed/) (iframe player) | — | Meta Platforms terms | The permalink with `/embed/` on the end. Loaded with the panel of a place that has a reel. No script involved. |
 | [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Loaded with the panel of a place that has a video. No script involved. |
 | [Google Analytics 4](https://developers.google.com/analytics) (gtag.js) | — | Google terms | Property `G-2XNTC15F28`. Loads on every page view and sets cookies. |
+| [Microsoft Clarity](https://clarity.microsoft.com/) | — | Microsoft terms | Project `yay3pxtg4w`. Heatmaps and session replay. Loads on every page — `admin.html` included, which the Google tag is not on — and sets cookies. |
 
 **The attribution control in the bottom-right corner is a licence condition of
 both OpenStreetMap and CARTO. Do not remove it.**
 
-No scripts or fonts beyond the table above. Apart from Google Analytics, what
-is stored on a visitor's device is seven `localStorage` keys and one cookie, all
-of them the visitor's own choices played back: `ttb.lang` and `ttb.style`,
-`ttb.stories.seen` and `ttb.stories.sound`, `ttb.cid` (the random id this
-browser saves under, made on the first save and never before it), `ttb.saved`
+No scripts or fonts beyond the table above. Apart from Google Analytics and
+Microsoft Clarity, which set cookies of their own — `_ga` and `_ga_*` for the
+one, `_clck` and `_clsk` for the other — what is stored on a visitor's device
+is seven `localStorage` keys and one cookie, all of them the visitor's own
+choices played back: `ttb.lang` and `ttb.style`, `ttb.stories.seen` and
+`ttb.stories.sound`, `ttb.cid` (the random id this browser saves under, made
+on the first save and never before it), `ttb.saved`
 (which places it has saved), `ttb.nudged` (the date an offer of an account was
 turned down), and the `ttb_s` session cookie, which is set by the server and
 only exists once somebody has signed in.
@@ -6652,6 +6655,52 @@ The chips are also in the URL now, as `?type=bakery,vegan`. A filtered map is
 a link worth sending, and the landing page view GA records for it names the
 filters, so shared filtered links show up in **Pages and screens** too.
 
+#### What Clarity adds
+
+Counting has a floor. GA and the events beside it can say that eleven people
+opened the filters and two pressed a chip. They cannot say that the other nine
+scrolled the row to its end and found nothing they wanted, or that the chip
+they were after was the one cut off at the edge at 390px. A count says a thing
+did not happen and then has nothing further to offer about why.
+
+[Microsoft Clarity](https://clarity.microsoft.com/), project `yay3pxtg4w`,
+records the page rather than counting it: heatmaps of where presses and scrolls
+actually land, and a replay of the DOM as it changed through a visit. On a site
+that is one address with everything happening on it, the replay is the part
+that earns its place — it follows a single visit through the filters, the
+panel and the chat, none of which GA can see as anything but events in a list.
+
+It loads from `assets/clarity.js`, on **every** page: the eight that carry the
+Google tag, and `admin.html`, which does not. That file is Microsoft's snippet
+with the project id lifted into one constant at the top, for the same reason
+`assets/track.js` exists — the alternative was the same snippet pasted into
+nine heads and an id that then has to be changed in nine places. Empty the
+constant and nothing loads at all, the way an empty `turnstile-key` in
+`index.html` turns Turnstile off.
+
+**What it does not record.** Clarity masks the contents of every input box and
+dropdown in all three of its masking modes, and that one cannot be switched
+off. It is what keeps `admin.html`'s GitHub token out of a replay: the token is
+only ever typed into an `<input type="password">` and held in a variable, and
+nothing on the page renders it as text. The mode itself is a dashboard setting
+rather than a line of code — **Settings → Masking** — and its default,
+Balanced, masks numbers and email addresses on top of the input boxes.
+
+Per-element overrides are attributes, and masking is inherited by everything
+below the element that carries it. The pass card on `deal.html`, `verify.html`
+and `staff.html` carries `data-clarity-mask="true"`, so the hourly code and the
+QR drawn under it stay out. That is tidiness rather than a lock — an hourly
+code is already not a secret, since `data/deals.json` ships the keys in public
+and "And it is a door, not a lock" under [It is for
+members](#it-is-for-members) says so outright — but a code has no business
+travelling to a third party to make a heatmap of a page whose only button is
+the way back.
+
+Data takes up to two hours to appear after the tag first goes out, and the
+dashboard will say the project is uninstalled until it does. A Cloudflare
+preview deploy carries the same tag as production and reports into the same
+project, so a branch driven hard enough shows up in the live numbers.
+
 ### Getting found
 
 `robots.txt` and `sitemap.xml` sit at the root, and `index.html` carries a
@@ -6679,15 +6728,22 @@ rather than merely missed. Cloudflare Pages serves `x-robots-tag: noindex` on
 preview deployments, which is correct for previews and fatal if the address
 people share turns out to be one.
 
-To remove tracking entirely, delete the gtag block from every page's head,
-or the `assets/track.js` script tag from every page, or both. Everything in
-`track.js` checks for the tag and returns quietly when it is missing, which
-is also what happens for visitors running an ad blocker, so every call site
-becomes a harmless no-op and none of them has to change.
+To remove tracking entirely, delete the gtag block from every page's head, or
+the `assets/track.js` script tag from every page, or both, and empty `PROJECT`
+at the top of `assets/clarity.js`. Everything in `track.js` checks for the tag
+and returns quietly when it is missing, which is also what happens for visitors
+running an ad blocker, so every call site becomes a harmless no-op and none of
+them has to change. `clarity.js` does the same with an empty id: it returns
+before it has loaded anything, and the nine script tags can stay where they
+are.
 
-**GA4 sets cookies.** Estonia applies the EU rules, so if you get meaningful
-traffic from the EU you are expected to ask for consent before the tag loads.
-There is no consent banner on this site.
+**GA4 and Clarity both set cookies, and Clarity also records the screen.**
+Estonia applies the EU rules, so if you get meaningful traffic from the EU you
+are expected to ask for consent before either tag loads. There is no consent
+banner on this site. Clarity raises what is at stake there rather than changing
+it: a replay is a recording of somebody's visit, and the masking above is the
+whole of what keeps it from being a recording of their data as well. Clarity
+has a consent call to gate the tag on, if a banner is ever written.
 
 CARTO has already made one move here — tiles now want a key, free but
 required, which is what `TILE_KEY` is for. If they ever go further and stop

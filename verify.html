@@ -17,6 +17,11 @@
   gtag('config', 'G-2XNTC15F28');
 </script>
 
+<!-- Microsoft Clarity: heatmaps and session replay, the half a count cannot
+     do. The snippet lives in the file rather than here, so the project id is
+     in one place instead of nine — the reasoning is in its head. -->
+<script src="assets/clarity.js?v=a2e5d5f3" defer></script>
+
 <!-- Not part of the public map. These pages only mean anything with a place
      in the query string, and a search result for a bare one would be a dead
      end, so they stay out of the index. robots.txt says the same thing. -->
@@ -44,7 +49,14 @@
     <p class="pass-wordmark">Tallinn Tastebuds</p>
   </a>
 
-  <section class="card pass-card" id="card" aria-live="polite"></section>
+  <!-- data-clarity-mask keeps the code and its QR out of a Clarity replay,
+       and is inherited by everything drawn under it. Tidiness rather than a
+       lock: the keys ship in data/deals.json, which is public, and the hourly
+       rebuild is what actually defends the code — see "And it is a door, not
+       a lock" under "It is for members" in README.md. But a code has no reason
+       to travel to a third party to heatmap a page whose only button is the
+       way back. -->
+  <section class="card pass-card" id="card" aria-live="polite" data-clarity-mask="true"></section>
 </main>
 
 
