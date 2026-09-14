@@ -25,9 +25,11 @@
  *
  * IT TOUCHES NO DOM AND HOLDS NO STATE
  *
- * One function in and out of it, pure. The panel, the cards and the map are
- * app.js's, and this only ever answers "what is this sentence asking for" —
- * never "which places". That is what keeps it readable in one sitting.
+ * Two functions in and out of it, both pure: read() takes a sentence, and
+ * carry() takes the wish the conversation had and the wish this sentence
+ * adds. The panel, the cards and the map are app.js's, and this only ever
+ * answers "what is this conversation asking for" — never "which places".
+ * That is what keeps it readable in one sitting.
  *
  * IT DOES NOT FOLD ITS OWN TEXT
  *
@@ -75,7 +77,10 @@ window.TTBAsk = (function () {
      from the whole sentence is taken as the place to be near, and "more
      options" went to Photon, which placed it somewhere and measured every
      distance from there. With the filler out, nothing is left, and the
-     question is about the visitor, which is what it was. */
+     question is about the visitor, which is what it was. The fourth line
+     is the glue of a follow-up — "the second one", "instead", "actually"
+     — which carry() below has to read as nothing to eat, so that they
+     keep the conversation's topic rather than replace it. */
   var NOISE = (
     'a an the and or of for in on at to me i im is are want would like some ' +
     'something somewhere place places good nice please can you find show ' +
@@ -83,12 +88,17 @@ window.TTBAsk = (function () {
     'more other another else any few couple options option spots spot ideas ' +
     'idea suggestions suggestion recommend recommendation recommendations tell give ' +
     'best top ' +
+    'one first second third next last latest instead rather actually maybe also ' +
+    'again then just really ' +
     'ja voi vai see on ning kus midagi kohta koht hea palun kuidas mis kas kuhu ' +
     'veel muud muid teisi moni moned paar valikuid valikud soovita soovitusi ' +
     'parim parimad parimat ' +
+    'esimene teine kolmas jargmine viimane hoopis pigem tegelikult vist jalle siis lihtsalt ' +
     'и или на в где что нибудь место хорошее пожалуйста хочу как это куда ' +
     'еще другие другое другои другую несколько пару варианты вариант вариантов ' +
-    'посоветуи посоветуите подскажи подскажите лучшии лучшие лучшая лучшее самыи самое'
+    'посоветуи посоветуите подскажи подскажите лучшии лучшие лучшая лучшее самыи самое ' +
+    'первыи первая второи вторая третии последнии следующии вместо лучше вообще ' +
+    'может тоже опять снова тогда просто'
   ).split(' ');
 
   /* Two letters is not a word anybody asks for a place by, in any of the
@@ -114,7 +124,8 @@ window.TTBAsk = (function () {
      "expensive" are both in the table, on opposite sides, and a question
      containing the first contains the second. Testing the long one before the
      short one is what stops "not expensive" being read as a request for
-     somewhere expensive. */
+     somewhere expensive — which only holds when both sides are in the one
+     list being tested, see the price pass in read(). */
   function phrases(list, fold) {
     var out = [];
     String(list || '').split('|').forEach(function (word) {
@@ -241,12 +252,20 @@ window.TTBAsk = (function () {
     var near = phrases(opts.words.near, fold);
     var me = phrases(opts.words.me, fold);
 
-    /* Fancy before cheap, and it matters: "cheap" is a word in the English
-       label "Cheap eats" and a phrase in the fancy list can contain it too.
-       A question that says both is asking for the dearer thing — nobody
-       writes "cheap fine dining" and means the cheap half. */
-    var wantsFancy = said(q, fancy);
-    var wantsCheap = wantsFancy ? '' : said(q, cheap);
+    /* Both price lists in one pass, longest phrase first, and the list the
+       winning phrase belongs to decides. The two were read one list at a
+       time, fancy first, and that is how "not expensive" and "less
+       expensive" came back as requests for somewhere expensive: "expensive"
+       is in the fancy list, and the longer phrase around it sat unread in
+       the other one. Read together, "not expensive" outranks the
+       "expensive" inside it; "cheap fine dining" is "fine dining" before it
+       is "cheap", which is right — nobody writes that and means the cheap
+       half; and a plain "cheap" against a plain "fancy" goes to fancy,
+       because the fancy phrases are first in the join and the sort keeps
+       the order of equals. */
+    var priced = said(q, phrases(opts.words.fancy + '|' + opts.words.cheap, fold));
+    var wantsFancy = priced && fancy.indexOf(priced) !== -1 ? priced : '';
+    var wantsCheap = priced && !wantsFancy ? priced : '';
     var wantsOpen = said(q, open);
     var wantsNear = said(q, near);
 
@@ -322,5 +341,60 @@ window.TTBAsk = (function () {
     };
   }
 
-  return { read: read, MAX_QUESTION: MAX_QUESTION };
+  /* ----------------------------------------------------------------- carry
+   * The wish as the conversation has it: what this sentence said, over what
+   * the sentences before it said.
+   *
+   * A follow-up rarely repeats the question. "Coffee near the bus station"
+   * and then "something cheaper" — the second sentence names no kind and no
+   * place, and read on its own it is a wish for nothing: narrowed to the
+   * floor, a cross-section of the map with the cafés mostly gone and the
+   * station forgotten, the distances back to the visitor's own dot, handed
+   * to a model that was just asked for a cheaper café by the station. The
+   * model was reminded of the thread; the narrowing was not.
+   *
+   * So the wish has a topic and three constraints, and each is the newest
+   * sentence that said anything about it. The topic is what to eat — the
+   * kind of place read off the labels, and the words left over, which is
+   * where a dish or a name lands — and a sentence that names any of it is
+   * a new question about that: "thai" replaces "coffee", and so does
+   * "khachapuri", because a carried "coffee" would hold that answer to
+   * cafés — the Function holds picks to the kind asked for — and a person
+   * who types a dish after a café has changed the subject, not added to
+   * it. A sentence that names nothing to eat — "something cheaper", "the
+   * second one", "near me instead" — keeps the topic. The constraints are
+   * the price, open now, and near, each carried whole until restated:
+   * "fancy" replaces "cheap", "near Kalamaja" replaces "near me". "Open"
+   * cannot be taken back, since nothing in read() can hear "not
+   * necessarily open"; it is the one thing that only accumulates.
+   *
+   * The seam is the leftover words, so what counts as one matters more
+   * here than it did: "the second one", "instead", "actually" are noise
+   * above precisely so that they read as nothing to eat and keep the topic
+   * rather than replace it with a search for a place called Instead.
+   *
+   *   earlier   the wish the previous question was asked with, or null for
+   *             the first question of a conversation
+   *   now       read() over this sentence
+   *
+   * The thread goes when the chat is closed, and what was carried goes with
+   * it: the next conversation starts from its own first sentence.
+   */
+  function carry(earlier, now) {
+    if (!earlier) return now;
+    var topic = now.types.length || now.kitchens.length || now.rest.length;
+    var price = now.cheap || now.fancy;
+    return {
+      types: topic ? now.types : earlier.types,
+      kitchens: topic ? now.kitchens : earlier.kitchens,
+      rest: topic ? now.rest : earlier.rest,
+      cheap: price ? now.cheap : earlier.cheap,
+      fancy: price ? now.fancy : earlier.fancy,
+      open: now.open || earlier.open,
+      nearby: now.nearby || earlier.nearby,
+      near: now.nearby ? now.near : earlier.near
+    };
+  }
+
+  return { read: read, carry: carry, MAX_QUESTION: MAX_QUESTION };
 })();

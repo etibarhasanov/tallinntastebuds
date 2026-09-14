@@ -124,10 +124,10 @@
        cheaper" means cheaper than what it just said. Two kinds of turn: a
        roll chosen with a button ({ choice }), and a question ({ q, ... }).
        A question is pending from the moment it is typed until the Function
-       has answered, and the rows under it can change twice in that time:
-       the local reader's answer at once, the model's when it arrives. The
-       last one with places in it is what state.answer holds and the map
-       narrows to.
+       has answered, and carries the wish as the conversation had it when it
+       was asked — see carry() in assets/ask.js — which is what the next
+       question is read over. The newest with places in it is what
+       state.answer holds and the map narrows to.
 
        Emptied when the chat is closed — closePanel() — the way a chat is:
        what was asked is a moment, not a record, and the next opening starts
@@ -3780,11 +3780,12 @@
        choice of roll is not an exchange the model needs, the scope travels
        with every question; a question still waiting on its answer has
        nothing to be reminded of yet. Read before the new turn goes in, so
-       the question is not its own history. Six is a conversation; the
+       the question is not its own history. Ten is a long conversation
+       about an evening, and each one is read again on every question; the
        Function cuts it there too. */
     var history = state.asks.filter(function (turn) {
       return turn.q && !turn.pending;
-    }).slice(-6).map(function (turn) {
+    }).slice(-10).map(function (turn) {
       return {
         q: turn.q,
         say: turn.say,
@@ -3801,7 +3802,7 @@
        it saying why is not an answer at all. */
     var turn = {
       q: question, scope: state.askScope, pending: true,
-      say: '', picks: [], city: [], open: {}, at: '', source: ''
+      say: '', picks: [], city: [], open: {}, at: '', source: '', wish: null
     };
     state.asks.push(turn);
     dom.askInput.value = '';
@@ -3812,14 +3813,25 @@
     loadCuisines().then(function (cuisines) {
       /* The wish is not read here to answer with — it goes to the Function,
          which narrows my places and Google's to the ones the question could
-         be about before the model sees them. */
-      var wish = readWish(question, cuisines);
+         be about before the model sees them. It is this sentence's read
+         over the conversation's: "something cheaper" after "coffee near the
+         bus station" is still about cafés by the station, see carry() in
+         assets/ask.js. The previous question's wish is the one to carry,
+         whatever the roll pressed in between; the turn just pushed has none
+         yet, and is skipped. */
+      var own = readWish(question, cuisines);
+      var earlier = null;
+      for (var i = state.asks.length - 1; i >= 0 && !earlier; i--) earlier = state.asks[i].wish;
+      var wish = window.TTBAsk.carry(earlier || null, own);
+      turn.wish = wish;
 
       /* And where the visitor is — the dot on the map when there is one,
-         or one reading from the device for a question that asked for
-         somewhere near. It is beside the wish rather than in it because it
-         is not something the sentence said. */
-      return whereabouts(wish).then(function (here) {
+         or one reading from the device for a sentence that itself asked
+         for somewhere near: a "near me" inherited from three questions ago
+         is not a reason to put the permission prompt up again. It is
+         beside the wish rather than in it because it is not something the
+         sentence said. */
+      return whereabouts(own).then(function (here) {
         return fetch(ASK_URL, {
           method: 'POST',
           headers: { 'content-type': 'application/json', accept: 'application/json' },
