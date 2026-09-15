@@ -1178,14 +1178,17 @@ a:hover { color: var(--accent-lit); }
   background: rgba(176, 226, 197, .18);
 }
 
-/* ------- the left rail: who you are, the two picks, the two settings -------
+/* ---- the left rail: who you are, everybody else, the picks, the settings ---
 
-   Top to bottom: the account, Surprise me, the radio, the colour swatch,
-   where am I. The account leads because it is the only one whose answer
-   outlasts the visit, and because it wears the name of whoever is signed in.
-   Then the two that change your evening, then the two that change the map: a
-   rail that opens with a colour picker reads as a settings strip rather than
-   as the shortcut it is. */
+   Top to bottom: the account, everybody's lists, Surprise me, Ask, the radio,
+   the colour swatch, where am I, and how this works. The account leads
+   because it is the only one whose answer outlasts the visit, and because it
+   wears the name of whoever is signed in; the lists follow it because the two
+   are the same half of the site — who you are, and what everybody else has
+   written — and because they are the only two here that can take you off the
+   map at all. Then the ones that change your
+   evening, then the ones that change the map: a rail that opens with a colour
+   picker reads as a settings strip rather than as the shortcut it is. */
 
 .rail {
   position: fixed;
@@ -1234,6 +1237,11 @@ a:hover { color: var(--accent-lit); }
   letter-spacing: .13em;
   text-transform: uppercase;
   white-space: nowrap;
+  /* One of them is an <a>, because the lists it leads to are an address
+     rather than a step taken over the map. A link is underlined and wears the
+     accent everywhere else on this site; on the rail it is one of the pills
+     and nothing about it says otherwise. */
+  text-decoration: none;
   transition: border-color .15s var(--ease), color .15s var(--ease);
 }
 .rail-btn:hover { border-color: var(--accent); color: var(--accent); }
@@ -1247,6 +1255,25 @@ a:hover { color: var(--accent-lit); }
 }
 .rail-btn svg .pip { fill: var(--accent); stroke: none; }
 .rail-btn:hover svg { transform: rotate(-20deg); }
+
+/* The lists door draws the emblem rather than an icon: a list is the one
+   thing on this site that already has a picture of its own, and the door to
+   all of them wears what an undressed one wears. Sized here because the rule
+   it comes from is set in em, to grow with the title it normally stands in
+   front of — on the rail there is no title, so it takes the icons' own 21.6px
+   and the map's own ratio of glyph to disc, which is what makes it read as a
+   pin rather than as an emoji somebody dropped in a pill.
+
+   It leans in under a pointer instead of turning. The icons rotate; a
+   photograph of a balloon on its side is a mistake, and the swatch beneath
+   has always leant the same way for the same reason. */
+.rail-btn .lists-pin {
+  width: 21.6px;
+  height: 21.6px;
+  font-size: 13.6px;
+  transition: transform .15s var(--ease);
+}
+.rail-btn:hover .lists-pin { transform: scale(1.15); }
 
 /* ---------- the colour swatch ---------- */
 
@@ -3960,8 +3987,9 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
      Collapsed it is a 35.6px disc — 21.6px of icon, 6px each side, the border
      on top of that — so the buttons still read as one column of circles down
-     the edge of the map. One set of numbers for all seven, because every icon
-     on the rail is drawn at the same size, the swatch's dot included. */
+     the edge of the map. One set of numbers for all eight, because every icon
+     on the rail is drawn at the same size: the swatch's dot and the lists
+     emblem are both sized to the 21.6px the drawings are. */
   .rail-btn {
     display: grid;
     grid-auto-flow: column;
