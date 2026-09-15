@@ -80,12 +80,31 @@ const PENDING_MINUTES = 15;
 export const GOOGLE_PATH = '/api/google';
 
 /* Every Google client id ends in this, and has through every format Google
-   has issued. The check below is the suffix and not the whole shape on
+   has issued. It is checked as a suffix and not as a whole shape on
    purpose: the part in front of it has been a bare project number and is now
    a number and a hash, and a rule strict enough to refuse a format nobody
    here has seen would turn a working sign-in off — which is a worse failure
    than the one it prevents, because it looks like a decision. */
 const CLIENT_ID_SUFFIX = '.apps.googleusercontent.com';
+
+/* The characters an id is made of, which is a different question from the
+   shape of it and is safe to be strict about in a way the shape is not. Every
+   format Google has issued draws on this set and no other, so refusing what
+   falls outside it cannot refuse a real id the way a rule about the
+   *arrangement* of those characters could.
+ *
+   What it does refuse is the corruption trim() cannot reach, because trim()
+   reaches the two ends and nothing else: a space in the middle of the id, and
+   — the ones that are invisible from every side, including from whoever
+   pasted them — a zero-width space, a soft hyphen, or any other character a
+   copy out of a rendered page can pick up. All of those still end in the
+   suffix, so the check above waves them through, and they arrive at Google
+   percent-encoded as `%20`, `%E2%80%8B` or `%C2%AD`: the same *the OAuth
+   client was not found* as the trailing newline, with none of its one visible
+   cause. An id whose every character is in this set and which ends in the
+   suffix is one Google will at least look up, which is the line worth drawing
+   — past it the answer is about the console and not about this file. */
+const CLIENT_ID_CHARS = /^[A-Za-z0-9._-]+$/;
 
 /* Both values are typed into the Pages dashboard by hand, as secrets, and a
    secret cannot be read back off that page once it is saved. So a trailing
@@ -101,7 +120,11 @@ const CLIENT_ID_SUFFIX = '.apps.googleusercontent.com';
    part is the load-bearing half: the authorize URL, the code swap and the
    `aud` claim all have to agree on the same string, and trimming for the
    first two alone would leave the third refusing a token they had just
-   earned. */
+   earned.
+ *
+   Trimming is only the ends, though, and the same paste can carry the same
+   damage in the middle where nothing can strip it — CLIENT_ID_CHARS above is
+   the half of this that covers that. */
 function clientId(env) {
   return String(env.GOOGLE_CLIENT_ID || '').trim();
 }
@@ -115,17 +138,25 @@ function clientSecret(env) {
    offering a round trip that ends in an error page on Google's side.
  *
    And the id has to look like an id, which is the other way that round trip
-   ends on Google's error page rather than on ours. The two values are pasted
-   out of adjacent boxes in the Google console into adjacent boxes in the
-   Cloudflare one, and the secret in the id's box is a mistake nothing here
-   could otherwise notice — `GOCSPX-…` is a perfectly truthy string. Refusing
-   it reads to a visitor as Google simply not being switched on, which is a
-   state this site already has and draws properly; the alternative is a button
-   that every visitor can press and nobody can use. **Turning it on** in
-   README.md says how to tell the two apart from outside. */
+   ends on Google's error page rather than on ours. Two tests rather than one,
+   and they catch different mistakes: the suffix catches the secret pasted
+   into the id's box — the two values come out of adjacent boxes in the Google
+   console and go into adjacent boxes in the Cloudflare one, and `GOCSPX-…` is
+   a perfectly truthy string that nothing else here could notice — and the
+   character set catches a paste that brought something invisible along with
+   it. Refusing either reads to a visitor as Google simply not being switched
+   on, which is a state this site already has and draws properly; the
+   alternative is a button that every visitor can press and nobody can use.
+   **Turning it on** in README.md says how to tell the two apart from
+   outside. */
 export function googleReady(env) {
   const id = clientId(env);
-  return !!(id.endsWith(CLIENT_ID_SUFFIX) && clientSecret(env) && env.SAVE_SALT);
+  return !!(
+    CLIENT_ID_CHARS.test(id) &&
+    id.endsWith(CLIENT_ID_SUFFIX) &&
+    clientSecret(env) &&
+    env.SAVE_SALT
+  );
 }
 
 /* ------------------------------------------------------------ the identity
