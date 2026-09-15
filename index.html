@@ -58,7 +58,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=eaa065fe">
+<link rel="stylesheet" href="assets/styles.css?v=cf794728">
 </head>
 <body>
 
@@ -120,16 +120,22 @@
        which is the name the row on /account.html and the bar at the foot of a
        list already report: one door, one name, wherever it is drawn.
 
-       The emblem in it is painted by assets/app.js rather than written here,
-       so what an undressed list wears stays one decision living in
-       assets/pins.js. Hidden until /api/account says the database behind the
-       lists is bound — a door onto "Lists are switched off on this copy of
-       the site" is a button that can only disappoint. -->
+       A clipboard, where the rest of the rail draws a line. It wore the map
+       pin the lists themselves wear for a day, and over a map of pins that
+       said "a pin" rather than "the lists" — see .rail-glyph in
+       assets/styles.css, which is the disc it sits on. Written here like
+       every other icon on this rail rather than painted by a script: it is
+       this door's picture, not a list's own marker, and nothing in
+       assets/pins.js has an opinion about it.
+
+       Hidden until /api/account says the database behind the lists is
+       bound — a door onto "Lists are switched off on this copy of the site"
+       is a button that can only disappoint. -->
   <a class="rail-btn" id="btn-lists" href="/lists" data-track="lists_all"
      data-i18n-title="listsAllWhy" data-i18n-aria-label="listsAllTitle"
      title="The most saved first. Search them, save the ones you like."
      aria-label="Everybody’s lists" hidden>
-    <span class="lists-pin" id="lists-pin" aria-hidden="true"></span>
+    <span class="rail-glyph" aria-hidden="true">📋</span>
     <span class="rail-label" data-i18n="listsAllTitle">Everybody’s lists</span>
   </a>
   <!-- Then what the rail does, before what the rail looks like. Surprise me
@@ -495,7 +501,7 @@
 <!-- The radio, shared with the lists page, which is what keeps a station
      playing when somebody walks from the map to a list. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
-<script src="assets/radio.js?v=978e96ed" defer></script>
+<script src="assets/radio.js?v=402cc8f8" defer></script>
 <!-- Reading a typed sentence as the wish /api/ask narrows on — which kinds
      of place, cheap or fancy, open now, near what — before the model sees a
      line of either list. It names no place itself. Before app.js and
@@ -506,6 +512,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=cea3079c" defer></script>
+<script src="assets/app.js?v=fbcf5dd4" defer></script>
 </body>
 </html>

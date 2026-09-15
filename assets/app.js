@@ -1948,14 +1948,8 @@
   }
 
   /* The door to everybody's lists: the second pill on the rail, and the one
-     pill here that is a link rather than a press. Two things happen in it and
-     both happen once, because `ready` is answered once: the emblem is
-     painted, and the pill is shown.
-
-     TTBPins.ofList(null) rather than the id written out: there is no list
-     here to ask about, and what that call answers for a list nobody has
-     dressed is exactly what a door onto all of them should wear. The default
-     stays one decision, living in assets/pins.js.
+     pill here that is a link rather than a press. Its picture and its words
+     are both in the markup, so all this does is decide whether it is there.
 
      Hidden until the endpoint says the database is bound, for the reason the
      account button above is: the lists are in that same database, and a door
@@ -1970,9 +1964,7 @@
     if (!dom.btnLists) return;
     var wasHidden = dom.btnLists.hidden;
     dom.btnLists.hidden = !state.account.ready;
-    if (dom.btnLists.hidden) return;
-    TTBPins.paint(dom.listsPin, TTBPins.ofList(null));
-    if (wasHidden && railIntroduced) openHint('lists', 0);
+    if (!dom.btnLists.hidden && wasHidden && railIntroduced) openHint('lists', 0);
   }
 
   /* ------------------------------------------------ arriving to sign in
@@ -8357,7 +8349,6 @@
       panelSaveN: $('panel-save-n'),
       btnAccount: $('btn-account'),
       btnLists: $('btn-lists'),
-      listsPin: $('lists-pin'),
       nudge: $('nudge'),
       nudgeSay: $('nudge-say'),
       nudgeGo: $('nudge-go'),

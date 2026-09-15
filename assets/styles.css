@@ -80,6 +80,22 @@
   --body: "Literata", Georgia, "Times New Roman", serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
+  /* The fourth face, and the only one nobody chose: whatever the reader's
+     platform draws emoji with. Apple's first where there is one, then the
+     rest, and a plain sans at the end for a glyph none of them has.
+
+     It is a token because five things now draw an emoji — a pin on the map,
+     a list's own emblem, the swatch in the picker, a card on the directory
+     and the lists door on the rail — and the stack was written out at each
+     of them, which is four chances to fix a font bug in three places.
+
+     And it ends in sans-serif rather than var(--display) on purpose: the
+     fallback for a missing emoji is the platform's own box, and a text face
+     in front of the colour one turns the star and the heart into black
+     glyphs on half the phones out there. */
+  --emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+           "Android Emoji", "EmojiSymbols", sans-serif;
+
   /* Two radii, because the page has two kinds of edge. --radius is the one a
      picture, a tooltip or a sheet gets: nearly square, so a photograph still
      reads as a photograph. --radius-soft is for the chrome floating on the
@@ -679,12 +695,7 @@ a:hover { color: var(--accent-lit); }
   opacity: 1;
   font-size: calc(var(--pin-d, 22px) * var(--pin-scale, 1) * .62);
   line-height: 1;
-  /* Apple Color Emoji first on the platforms that have it, then the rest.
-     No var(--display) here: the fallback for a missing emoji is the
-     platform's own box, and a text face in front of the colour one turns
-     the star and the heart into black glyphs on half the phones out there. */
-  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
-               "Android Emoji", "EmojiSymbols", sans-serif;
+  font-family: var(--emoji);
   /* The glyph is the picture; nothing selects or drags it. */
   -webkit-user-select: none;
   user-select: none;
@@ -735,8 +746,7 @@ a:hover { color: var(--accent-lit); }
   border-radius: 50%;
   background: var(--paper);
   box-shadow: 0 0 0 1px var(--paper), 0 0 0 1.9px var(--pin-tone, var(--accent));
-  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
-               "Android Emoji", "EmojiSymbols", sans-serif;
+  font-family: var(--emoji);
   /* Set against the title's own size, so it grows with the heading on a
      desk and shrinks with it on a phone without a second breakpoint. */
   font-size: .62em;
@@ -1256,24 +1266,38 @@ a:hover { color: var(--accent-lit); }
 .rail-btn svg .pip { fill: var(--accent); stroke: none; }
 .rail-btn:hover svg { transform: rotate(-20deg); }
 
-/* The lists door draws the emblem rather than an icon: a list is the one
-   thing on this site that already has a picture of its own, and the door to
-   all of them wears what an undressed one wears. Sized here because the rule
-   it comes from is set in em, to grow with the title it normally stands in
-   front of — on the rail there is no title, so it takes the icons' own 21.6px
-   and the map's own ratio of glyph to disc, which is what makes it read as a
-   pin rather than as an emoji somebody dropped in a pill.
+/* The lists door draws an emoji where the others draw a line. It wore the
+   map pin for a day — the marker an undressed list carries, on the reasoning
+   that the door should look like the thing behind it — and on a rail standing
+   over a map of pins that said "a pin" and not "the lists". A clipboard says
+   the one thing the pill is for, at the size a pill can carry it.
 
-   It leans in under a pointer instead of turning. The icons rotate; a
-   photograph of a balloon on its side is a mistake, and the swatch beneath
+   The disc is the map's, and it is what keeps the picture from reading as an
+   emoji dropped into a pill: paper, a collar in the accent, and the glyph at
+   the same ratio to the disc that a pin on the map has. The rest of the rail
+   is line art in the accent, so without the collar this would be the one
+   button with no palette in it.
+
+   It leans in under a pointer instead of turning. The drawings rotate; a
+   photograph of a clipboard on its side is a mistake, and the swatch below
    has always leant the same way for the same reason. */
-.rail-btn .lists-pin {
+.rail-glyph {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
   width: 21.6px;
   height: 21.6px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--paper), 0 0 0 1.9px var(--accent);
+  font-family: var(--emoji);
   font-size: 13.6px;
+  line-height: 1;
+  -webkit-user-select: none;
+  user-select: none;
   transition: transform .15s var(--ease);
 }
-.rail-btn:hover .lists-pin { transform: scale(1.15); }
+.rail-btn:hover .rail-glyph { transform: scale(1.15); }
 
 /* ---------- the colour swatch ---------- */
 
