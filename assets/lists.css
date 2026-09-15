@@ -237,36 +237,48 @@
 
 .lists-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .lists-foot { margin-top: 6px; }
-/* The same row of ways on, inside a fold rather than along the card's foot:
-   the door to every public list, under the sentence that opens the account
-   page's last card and above the three rows that stand in for them. The
-   sentence already leaves its 12px under itself, so the row gives back half
-   the air a foot takes over a fold and puts it under the link instead, so the
-   link reads as the sentence's last line and not as the first row's caption. */
-.lists-fold > .lists-foot { margin: -6px 0 10px; }
 
 /* The ways on from a card, as rows — .menu out of assets/styles.css, the
    account sheet's own shape. Given the same air above it a foot of links had,
    plus a little: a ruled row sits closer to the thing over it than a word
    does, and the hairline wants a breath before it. */
 .lists-card > .menu { margin-top: 18px; }
-
-/* And a card whose whole content is one of them: everybody's lists, at the
-   foot of /account.html. The air is for what stands over the row and the
-   hairlines are for what stands either side of it, and here there is neither
-   — the card's own edge already draws that line, and a rule inside it a few
-   pixels in reads as a mistake rather than as a boundary. What is left is the
-   row across the whole face of the card, which is what the card is. */
-.lists-card > .menu:only-child { margin-top: 0; }
-.lists-card > .menu:only-child .menu-row { border: 0; }
 .lists-count { margin-left: auto; color: var(--muted); font-size: 11.5px; letter-spacing: .04em; }
+
+/* ---------- a card that is a door ---------- */
+
+/* Everybody else's lists, the last card on /account.html. It is a whole card
+   and not a row inside one: a .menu-row sets its name at 15.5px, and under a
+   run of cards carrying their titles at the .lists-title above, that read as a
+   footnote in a smaller type rather than as the last card on the page. So it
+   is built like the ones over it — the title, the chevron a fold puts at the
+   end of its own, and the sentence under — and what makes it a door rather
+   than a fold is that the chevron never turns and the title goes somewhere.
+
+   The title is the link and .lists-open stretches it over the face of the
+   card, which is design rule 8: the target is the card, not the width of the
+   word. That is what this rule is for — .lists-open fills the nearest
+   positioned ancestor, and a .card is not one. */
+.lists-door { position: relative; }
+
+/* Laid out like the title of an open fold and not like the title of a card:
+   centred against the chevron, and the same 12px under it that a <summary>
+   leaves over the column it has just opened, so the sentence here starts
+   where those rows do. .lists-title's own 6px above is room for a title
+   sitting under an eyebrow, and there is nothing over this one. */
+.lists-door > .lists-title { align-items: center; gap: 12px; margin: 0 0 12px; }
+.lists-door .lists-open { color: inherit; text-decoration: none; }
+.lists-door:hover .lists-open,
+.lists-door:hover .menu-go { color: var(--accent); }
+.lists-door:hover .menu-go { transform: translateX(2px); }
 
 /* ---------- a card that folds ---------- */
 
 /* A column of things behind its own title: /account.html draws its saved
-   places, its lists and the three of everybody's this way, so the card is one
+   places, its own lists and the ones it kept this way, so the card is one
    line high until you ask for the rest of it and the ways on from it are
-   never below a scroll.
+   never below a scroll. Open, it is six rows and the word that draws the
+   rest — see column() in assets/account.js.
 
    It is a <details>, not a button and a list with `hidden` on it. The open
    state, the keyboard, the word a screen reader says before the title and
@@ -534,6 +546,31 @@
   letter-spacing: -.02em;
   margin-bottom: 10px;
 }
+
+/* The line somebody wrote about themselves, on /account.html, with the quiet
+   word that opens the field under it — and the field itself, in the same
+   place, once that word is pressed.
+
+   The room above belongs to the box rather than to either of the two things
+   it holds, which is what keeps the card from shifting under your hand when
+   the field arrives: .lists-new carries 16px of its own for the box that
+   makes a list, and it gives that up in here.
+
+   The line takes the whole row and the word wraps under it, at every width.
+   Beside it, the word sat against the middle of a line that had wrapped to
+   three and read as a caption on the second of them; and a basis narrow
+   enough to keep a short line company is a number that decides, per phone,
+   which of the two a given sentence gets. Under it, it is the same quiet word
+   under the same line whatever anybody wrote.
+
+   The line drops its own bottom margin — it is standing in a row, not in a
+   column of paragraphs. It is .lists-say, the same class the line is read in
+   on /u/<name>, because seeing it here the way a stranger will is the whole
+   point of writing it where the door to that page is. See aboutBox() in
+   assets/account.js. */
+.lists-about { margin-top: 14px; }
+.lists-about > .lists-new { margin-top: 0; }
+.lists-about .lists-say { flex: 1 1 100%; margin: 0; }
 
 /* The box that makes a list. It stands under the fold on the account page,
    and the room above it is its own: what is over it is a <summary> when the
@@ -832,6 +869,10 @@
 
 /* Show more, under the directory's rows. */
 .lists-more { display: flex; justify-content: center; margin: 4px 0 0; }
+/* The same word under a column inside a fold, on /account.html. The rows it
+   follows are spaced by .lists-index's own 10px, and the word takes that gap
+   rather than the 4px that reads right at the foot of the directory's grid. */
+.lists-fold .lists-more { margin-top: 10px; }
 
 /* ---------- the directory, laid out for a desk ---------- */
 
@@ -1218,6 +1259,7 @@ a.item-name:hover .item-where { color: var(--accent); }
   .list-items.is-sorting .item { transition: none; }
   .item.is-landed { animation: none; }
   .lists-save { transition: none; }
+  .lists-door:hover .menu-go { transform: none; }
 }
 
 /* ---------- the picker ---------- */

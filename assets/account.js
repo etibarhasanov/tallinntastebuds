@@ -41,30 +41,18 @@
  * places long. It was the only way from your own things to anybody else's and
  * it read like a footnote.
  *
- * It is a card of its own now — one door, drawn by publicCard() below, where
- * it named three real lists for a while. The argument for the three was that a
- * label is not an invitation: "Public lists", which is what that page was
- * called then, told somebody who had never opened one nothing at all, where
- * *Top ten burgers, saved by 12* tells them whether to press it. The page is
- * called "Everybody's lists" now, which answers the half of that a name can
- * answer; publicCard() has what the three cost.
+ * It is a card of its own now, and one door on it — drawn by publicCard()
+ * below, where it named three real lists for a while. The argument for the
+ * three was that a label is not an invitation: "Public lists", which is what
+ * that page was called then, told somebody who had never opened one nothing
+ * at all, where *Top ten burgers, saved by 12* tells them whether to press
+ * it. The page is called "Everybody's lists" now, which answers the half of
+ * that a name can answer; publicCard() has what the three cost, and why the
+ * card is built like the ones above it rather than as a .menu-row inside one.
  *
- * For a while that card stood directly under your name, above everything of
- * your own, and the page opened with the one thing on it that is not yours:
- * a page called Account, with your name at the top, whose first and tallest
- * block was three strangers' top tens. It is the last card now, after what
- * you saved, what you wrote and what you kept, and it folds like the three
- * cards above it: closed, it is its title and the count of what is behind
- * it, and open, it is the three most kept. The folds are what let it move:
- * the reason it went to the top was a column forty rows deep burying it, and
- * a card that is one line high until it is opened buries nothing — this one
- * included, which, open, was the tallest thing on the page.
- *
- * The way on to every public list is the first thing inside the fold, under
- * the sentence that says what the card is, rather than the last thing on the
- * card. Along the foot it stood under three rows of three names each, a
- * screen below the title it belonged to, and read as a stray line under
- * somebody else's lists rather than as the door out of this card.
+ * It is the last card either way, after what you saved, what you wrote and
+ * what you kept, for the reason it has always been last: it is the one thing
+ * here that is not yours.
  *
  * THE COLUMNS FOLD, AND THE WAYS ON DO NOT
  *
@@ -74,9 +62,11 @@
  * things they were the way out of. So each column is a <details> behind its
  * own title, with the count of what is inside it on the line you press, and
  * the ways on sit outside the fold, where a card that is one line high keeps
- * them in sight. All but one: the door to every public list is inside its
- * fold, for the reason above — it is the way on from a card that is not
- * yours, and under the fold it was a screen away from its own title.
+ * them in sight.
+ *
+ * And an open one is six rows and a Show more, not the whole column: a fold
+ * that opened onto forty names was the same burial one press further in. See
+ * column().
  *
  * A closed fold is not the menu this page was made out of. A menu row said
  * the name of another page; this one says how many of your things are behind
@@ -192,6 +182,15 @@
      that binds; this is the copy that stops a keystroke rather than a round
      trip, the way every cap on this site is written twice. */
   var MAX_ABOUT = 200;
+
+  /* How many rows an opened fold draws before it offers the rest.
+     A fold used to be all or nothing, and on an account with forty saves that
+     made opening one the very burial the folds were written against: forty
+     rows between the title you pressed and everything under it. Six is what
+     leaves the next card's title on the screen at the 390px the layouts are
+     measured against, so an open column still reads as one card among several.
+     The rest is one more press and no request — the rows are already here. */
+  var SHOW_ROWS = 6;
 
   /* Where the sheet is, and where it should come back to. Written once here
      rather than at each of the three links that use it. */
@@ -369,8 +368,14 @@
 
   /* ----------------------------------------------------------------- pieces */
 
-  function card(kids) {
-    return el('section', { className: 'card lists-card' }, kids);
+  /* Every block on this page is one of these: the map's card, padded by the
+     lists page's. The second argument is for the one card that is itself a
+     press — everybody else's lists — which needs a class of its own to be the
+     box the title's link is stretched over. See publicCard(). */
+  function card(kids, className) {
+    return el('section', {
+      className: 'card lists-card' + (className ? ' ' + className : '')
+    }, kids);
   }
 
   function heading(words, level) {
@@ -400,13 +405,14 @@
   /* A way on from a card, as a row: the name, the line under it saying what
      is behind it, and the chevron. It is .menu-row out of assets/styles.css,
      the shape the map's account sheet draws its places-to-go in, because that
-     is what this is. It had three callers, then one, and has two: your public
-     profile, on the card that carries your name, and everybody else's lists
-     at the foot of the page. The third became the thing it had been
-     promising — a field that makes a list. It stays a function because
-     .menu-row is one of the four controls the design rules name, and a row of
-     it written out by hand here would be the copy that quietly stops matching
-     the sheet's. */
+     is what this is. It has had three callers and has one: your public
+     profile, on the card that carries your name. One of the others became the
+     thing it had been promising — a field that makes a list — and the other,
+     everybody else's lists, became a card in its own right rather than a row
+     inside one; see publicCard(). It stays a function for the one caller
+     because .menu-row is one of the four controls the design rules name, and
+     a row of it written out by hand here would be the copy that quietly stops
+     matching the sheet's. */
   var ICON_GO = '<path d="M9 5l7 7-7 7"/>';
 
   function door(nameKey, whyKey, href, event, params) {
@@ -470,6 +476,50 @@
       TTBTrack.event('fold_toggle', { fold: name, fold_state: box.open ? 'open' : 'closed' });
     });
     return box;
+  }
+
+  /* The rows inside a fold, and the word that draws the rest of them.
+   *
+   * Six, then a Show more — the directory's own control, .lists-more and the
+   * same word, because it is the directory's own job one page along and a
+   * second design for "there are more of these" is a second thing to learn.
+   *
+   * The rows are built as they are asked for rather than all at once and
+   * hidden: an account with a hundred saves pays for six of them until
+   * somebody wants the rest, and nothing is fetched either way — the whole
+   * column arrived with the page. What keeps six from reading as all of them
+   * is the count on the line you pressed, which says how many there are.
+   *
+   * It returns the pieces rather than a box around them, so that the <ul> is
+   * still the fold's own child and the word under it is a sibling: a wrapper
+   * would put a div between a <details> and the column it holds for no reason
+   * a stylesheet could name. */
+  function column(name, items, draw) {
+    var ul = el('ul', { className: 'lists-index' });
+    var at = 0;
+    var fill = function (upto) {
+      for (; at < upto && at < items.length; at++) ul.appendChild(draw(items[at]));
+    };
+
+    fill(SHOW_ROWS);
+    if (items.length <= SHOW_ROWS) return [ul];
+
+    var go = el('button', { type: 'button', className: 'alt', textContent: t('listsAllMore') });
+    var line = el('p', { className: 'lists-more' }, [go]);
+    go.addEventListener('click', function () {
+      TTBTrack.event('fold_more', { fold: name, rows_total: items.length });
+      var seventh = at;
+      fill(items.length);
+      line.parentNode.removeChild(line);
+      /* The word that was under the finger has just gone, so focus goes to
+         the first row it drew rather than back to the top of the document.
+         It is the row the button was standing on, so nothing scrolls; asking
+         for the rest of a column should leave you at the start of the rest. */
+      var row = ul.children[seventh];
+      var first = row && row.querySelector('a');
+      if (first) first.focus();
+    });
+    return [ul, line];
   }
 
   /* Singular and all: "1 place" and "saved by 1 person" are sentences somebody
@@ -618,14 +668,10 @@
       ]);
     }
 
-    var ul = el('ul', { className: 'lists-index' });
-    places.forEach(function (place) { ul.appendChild(placeRow(place)); });
-
     return card([
       fold('saved', t('listSaved'), countLabel(places.length), [
-        el('p', { className: 'lists-say', textContent: t('accountSavedWhy') }),
-        ul
-      ]),
+        el('p', { className: 'lists-say', textContent: t('accountSavedWhy') })
+      ].concat(column('saved', places, placeRow))),
       /* The map narrowed to these, which is what the row in the sheet used to
          do and the one thing a column of names cannot: seeing where they are
          in the city next to each other. Outside the fold, like the box that
@@ -674,7 +720,6 @@
     var field = el('input', {
       type: 'text',
       className: 'lists-input',
-      id: 'new-title',
       maxlength: String(MAX_TITLE),
       autocomplete: 'off',
       'aria-label': t('listsNewName'),
@@ -728,12 +773,9 @@
        sight. A card with nothing in it is not a fold at all — a chevron
        promises something behind it. */
     if (state.lists.length) {
-      var ul = el('ul', { className: 'lists-index' });
-      state.lists.forEach(function (l) { ul.appendChild(listRow(l)); });
       kids.push(fold('lists', t('listsYours'), listsLabel(state.lists.length), [
-        el('p', { className: 'lists-say', textContent: t('listsWhat') }),
-        ul
-      ]));
+        el('p', { className: 'lists-say', textContent: t('listsWhat') })
+      ].concat(column('lists', state.lists, listRow))));
     } else {
       kids.push(heading(t('listsYours'), 'h2'));
       kids.push(el('p', { className: 'lists-say', textContent: t('listsWhat') }));
@@ -758,41 +800,66 @@
      column, is what every other card here is. */
   function keptCard() {
     if (!state.kept.length) return null;
-    var ul = el('ul', { className: 'lists-index' });
-    state.kept.forEach(function (l) { ul.appendChild(listRow(l)); });
-    return card([fold('kept', t('listsKept'), listsLabel(state.kept.length), [ul])]);
+    return card([fold('kept', t('listsKept'), listsLabel(state.kept.length),
+      column('kept', state.kept, listRow))]);
   }
 
-  /* ---------------------------------------------------------- public lists
-   * Everybody else's, as one row: the name of the page, the sentence saying
-   * what is on it, and the chevron.
+  /* -------------------------------------------------- everybody's lists
+   * The last card on the page, and the whole card is the press.
    *
    * It named three real lists for a while, behind a fold, off a third request
    * this page made on every load. The argument was that a title somebody
    * chose and the number of people who kept it tells a stranger whether to
    * press, where the row's name then — "Public lists" — told them nothing.
    * Half of that was answered by renaming the page it opens, which is
-   * "Everybody's lists" in ten languages now. What it also
-   * was, was three strangers' lists standing under somebody's own things on
-   * the one page that is about them, and a request whose entire yield was
-   * three rows nobody had asked for. A door is the honest shape for a page
-   * you are being pointed at: it says where it goes, it is one press, and it
-   * costs nothing to draw.
+   * "Everybody's lists" in ten languages now. What it also was, was three
+   * strangers' lists standing under somebody's own things on the one page
+   * that is about them, and a request whose entire yield was three rows
+   * nobody had asked for. A door is the honest shape for a page you are being
+   * pointed at: it says where it goes, it is one press, and it costs nothing
+   * to draw.
    *
    * The trade is that this page no longer knows whether there is anything
    * behind the door — the filtering of your own lists out of the three, and
-   * the card that drew nothing at all while the site had no public lists,
+   * the card that drew nothing at all while the site had no published lists,
    * were both bought with that request. The directory says the honest thing
    * itself when it is empty, and saying it here as well was this page
    * apologising for the site on the page that is about you.
+   *
+   * THE DOOR IS A CARD AND NOT A ROW IN ONE
+   *
+   * It was a .menu-row for a while — door() below, the shape the map's sheet
+   * draws its ways-on in — and a card whose only content was one row is the
+   * one thing on this page that did not look like this page. A .menu-name is
+   * 15.5px beside the .lists-title every card above it carries, so the last
+   * card read as a footnote in a smaller type; and the stylesheet had already
+   * grown a rule apologising for it, because the hairlines a row draws against
+   * its neighbours had to be taken off again where the card's own edge was
+   * drawing them a few pixels further out.
+   *
+   * So it is built the way the cards above it are: an h2 in the page's own
+   * title size, the chevron at the end of it where a fold puts one, and the
+   * sentence under. The title is the link and .lists-open stretches it
+   * over the whole face of the card, which is design rule 8 — the target is
+   * the card and not the width of the word — and which also keeps the name a
+   * screen reader reads to the title alone rather than every word on the card
+   * in one breath. The chevron does not turn, because this one leaves.
    *
    * Last on the page, and a card of its own, for the reason it has always
    * been last: it is the one thing here that is not yours.
    */
   function publicCard() {
     return card([
-      el('ul', { className: 'menu' }, [door('listsAllTitle', 'listsAllWhy', ALL_PATH, 'lists_all')])
-    ]);
+      el('h2', { className: 'lists-title' }, [
+        TTBTrack.click(el('a', {
+          className: 'lists-open',
+          href: ALL_PATH,
+          textContent: t('listsAllTitle')
+        }), 'lists_all'),
+        chevron()
+      ]),
+      el('p', { className: 'lists-say', textContent: t('listsAllWhy') })
+    ], 'lists-door');
   }
 
   /* ------------------------------------------------------------------- you */
@@ -825,7 +892,7 @@
       el('p', { className: 'eyebrow', textContent: t('accountOpen') }),
       heading(state.user),
       el('p', { className: 'lists-say', textContent: t('accountWhat') }),
-      aboutForm(),
+      aboutBox(),
       el('ul', { className: 'menu' }, [
         door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user), 'profile_open', { name: state.user })
       ]),
@@ -847,73 +914,131 @@
     ]);
   }
 
-  /* The one thing anybody writes here about themselves rather than about a
-     restaurant, and it stands on this card because this is the page that says
-     who you are. It is the same box a list's intro is — one line, two hundred
-     characters, the same class — because it does the same job one floor up: a
-     line under a name, not a page about a person. Sitting directly over the
-     door to /u/<you>, it reads in the order it is used: write the line, then
-     go and see it where everybody else does.
+  /* ------------------------------------------------------- the line about you
+   * The one thing anybody writes here about themselves rather than about a
+   * restaurant, and it stands on this card because this is the page that says
+   * who you are. Sitting directly over the door to /u/<you>, it reads in the
+   * order it is used: write the line, then go and see it where everybody else
+   * does.
+   *
+   * IT IS A LINE UNTIL YOU ASK FOR THE FIELD
+   *
+   * It was a field and a filled Save, standing open on every visit. Two things
+   * were wrong with that and they were the same thing twice. The first is that
+   * a page which had already spent its accent on the box that makes a list was
+   * spending it again here, which is design rule 5 — one filled action per
+   * surface, and never two. The second is what that looked like: the loudest
+   * thing on somebody's account was a two-hundred-character field nearly
+   * nobody has ever written in, and once they had, it stayed open, still loud,
+   * saying "Saved" at a line that was already saved.
+   *
+   * So what stands here is the line itself, quietly, with one word under it
+   * to change it — and nothing but that word when there is no line yet. The
+   * field arrives when the word is pressed and goes again when the line is
+   * saved, which is the shape of a thing somebody does once a year rather than
+   * the shape of a thing the page is asking for. The Save inside it is an .alt
+   * for the same rule: the accent on this page belongs to the box that makes a
+   * list, and it is still spent exactly once while this is open.
+   *
+   * There is no way out of the field that is not Save, and it does not need
+   * one: nothing has gone anywhere until it is pressed, and the field opens
+   * holding the line that is already there — so pressing Save on a field
+   * opened by accident writes back what was written before.
+   *
+   * It saves on the press rather than as you type, which is the small version
+   * of the promise the list editor makes: nothing about you reaches a server
+   * because you stopped halfway through a sentence. Emptying it and pressing
+   * Save is how a line comes down again, and the server treats empty as an
+   * answer rather than as a mistake — the word goes back to offering one.
+   *
+   * What is drawn afterwards is what came back rather than what went out. A
+   * line cut at two hundred characters would otherwise sit on screen in full,
+   * looking saved, until the next time the page was opened.
+   *
+   * The field itself is the one a list's intro is — one line, two hundred
+   * characters, the same class — because it does the same job one floor up: a
+   * line under a name, not a page about a person.
+   */
+  function aboutBox() {
+    var box = el('div', { className: 'lists-about' });
+    var read, write;
 
-     It saves on its button rather than as you type, which is the small version
-     of the promise the list editor makes: nothing about you reaches a server
-     because you stopped halfway through a sentence. Emptying it and pressing
-     Save is how a line comes down again, and the server treats empty as an
-     answer rather than as a mistake.
+    /* The line, and the word that opens the field. The word is the whole of
+       what somebody who has never written one sees, so it invites rather than
+       labels: there is nothing above it to explain what it would be a change
+       to. */
+    read = function (focus) {
+      clear(box);
+      var open = el('button', {
+        type: 'button',
+        className: 'alt',
+        textContent: t(state.about ? 'accountAboutEdit' : 'accountAboutAdd')
+      });
+      open.addEventListener('click', function () {
+        TTBTrack.event('account_about_open', { about_state: state.about ? 'set' : 'empty' });
+        write();
+      });
+      box.appendChild(el('div', { className: 'lists-row' }, [
+        state.about ? el('p', { className: 'lists-say', textContent: state.about }) : null,
+        open
+      ]));
+      /* Only where this word is replacing the field somebody was just typing
+         in. On the page's first draw there is nothing to hand focus back to. */
+      if (focus) open.focus();
+    };
 
-     The field is put back from what came back rather than from what went out.
-     A line cut at two hundred characters would otherwise sit on screen in
-     full, looking saved, until the next time the page was opened. */
-  function aboutForm() {
-    var form = el('form', { className: 'lists-new' });
-    var field = el('input', {
-      type: 'text',
-      className: 'lists-input',
-      id: 'about-line',
-      value: state.about,
-      maxlength: String(MAX_ABOUT),
-      autocomplete: 'off',
-      'aria-label': t('accountAbout'),
-      placeholder: t('accountAboutHint')
-    });
-    var go = el('button', { type: 'submit', className: 'go', textContent: t('listsSave') });
+    write = function () {
+      clear(box);
+      var form = el('form', { className: 'lists-new' });
+      var field = el('input', {
+        type: 'text',
+        className: 'lists-input',
+        value: state.about,
+        maxlength: String(MAX_ABOUT),
+        autocomplete: 'off',
+        'aria-label': t('accountAbout'),
+        placeholder: t('accountAboutHint')
+      });
+      var go = el('button', { type: 'submit', className: 'alt', textContent: t('listsSave') });
 
-    /* The button is the whole of the state: one field, and one thing to say
-       about it. Typing again is what makes there be something to send. */
-    field.addEventListener('input', function () {
-      go.disabled = false;
-      go.textContent = t('listsSave');
-    });
+      form.appendChild(field);
+      form.appendChild(go);
 
-    form.appendChild(field);
-    form.appendChild(go);
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        go.disabled = true;
+        go.textContent = t('accountWorking');
 
-    form.addEventListener('submit', function (ev) {
-      ev.preventDefault();
-      go.disabled = true;
-      go.textContent = t('accountWorking');
+        var failed = function () {
+          go.disabled = false;
+          go.textContent = t('listsSave');
+          toast(t('accountErrGeneric'));
+        };
 
-      var failed = function () {
-        go.disabled = false;
-        go.textContent = t('listsSave');
-      };
+        fetch(ACCOUNT_API, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ action: 'about', about: field.value })
+        }).then(function (res) {
+          return res.ok ? res.json() : null;
+        }).then(function (out) {
+          if (!out) { failed(); return; }
+          state.about = out.about || '';
+          TTBTrack.event('account_about', { about_state: state.about ? 'set' : 'cleared' });
+          /* The field going is most of the confirmation, and a line taken down
+             leaves nothing behind to read as one — so the page says it in a
+             word as well. */
+          read(true);
+          toast(t('listsSaved'));
+        }).catch(failed);
+      });
 
-      fetch(ACCOUNT_API, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ action: 'about', about: field.value })
-      }).then(function (res) {
-        return res.ok ? res.json() : null;
-      }).then(function (out) {
-        if (!out) { failed(); return; }
-        state.about = out.about || '';
-        TTBTrack.event('account_about', { about_state: state.about ? 'set' : 'cleared' });
-        field.value = state.about;
-        go.textContent = t('listsSaveDone');
-      }).catch(failed);
-    });
+      box.appendChild(form);
+      field.focus();
+    };
 
-    return form;
+    read(false);
+    return box;
   }
 
   /* ------------------------------------------------------------- Google
@@ -1084,9 +1209,8 @@
    * one card here that is not yours. Signed out it is the same two halves
    * with the offer of an account where the name would be, and the saves on
    * this browser as the whole of the first. Nothing labels the halves — see
-   * the header — and nothing is drawn for a card that is not there:
-   * everybody's lists are left out entirely when the site has none, see
-   * publicCard().
+   * the header — and a card with nothing in it is not drawn at all: the lists
+   * you kept arrive with the first keep, see keptCard().
    */
   function render() {
     clear(main);
