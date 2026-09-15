@@ -90,6 +90,7 @@ hand-correction down is not having none — it is having one nobody can find.
 | Row | Column | Upstream | Here | Why |
 |---|---|---|---|---|
 | Morii Tea House | `reviews` | 148 | 165 | Checked on Google on 11 Sep 2026, after the 3 Sep sweep. The owner asked for it |
+| Varkizana Kreeka tavern | `status` | `Temporarily closed` | `Open` | The tavern reopened after the 3 Sep sweep and Google had not caught up on 15 Sep 2026. The owner said so |
 
 **Every one of these is erased by the next refresh, silently and correctly.** The
 sweep rewrites the row from Google and the number goes back to whatever Google says
@@ -102,6 +103,14 @@ today's count among eleven hundred rows holding the sweep's tilts every comparis
 it is in towards that row. One correction on the top-rated place in the city is a
 small and deliberate thumb on the scale. A dozen of them would be a different
 export, assembled by hand, wearing Google's name.
+
+`status` is the one that is not a nudge. Nothing weighs it: a place Google calls
+temporarily closed is dropped out of the top tens' pools entirely and is not offered
+by `/api/places` at all, so correcting it does not move a place up a list — it
+decides whether the place can be on one, and whether a list can add it. Varkizana
+costs nothing today, as it happens: it comes nineteenth of the six hundred and six
+restaurants weighed, so reopening it left `db/google-lists.sql` byte for byte where
+it was. Had it come tenth, one sentence would have put a name on a public list.
 
 ## Findings
 
@@ -160,7 +169,7 @@ rates highest of the dense areas at 4.57. Density and quality are not the same
 map: the port strip has the most restaurants and the weakest average.
 
 **Availability.** 13 places are open 24/7 and 264 have at least one shift running
-past midnight. 66 places are flagged temporarily closed — filter on
+past midnight. 65 places are flagged temporarily closed — filter on
 `status` before publishing any of this.
 
 ## Remaining gaps

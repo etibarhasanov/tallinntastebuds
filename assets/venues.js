@@ -490,7 +490,7 @@
   function order(list) {
     var by = ORDERS[state.sort];
     /* Whatever the order, somewhere shut for good goes to the bottom of it. It
-       stays in the list because a directory that quietly dropped sixty-six
+       stays in the list because a directory that quietly dropped sixty-five
        places would have somebody walking to one to find out, but it is never
        the first thing anybody is offered. */
     return list.sort(function (a, b) {
