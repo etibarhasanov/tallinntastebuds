@@ -1867,6 +1867,11 @@
         };
         if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
         paintAccountButton();
+        /* The other pill this answer draws. Here and nowhere else, because
+           this is the one place `ready` is ever set — every other call to
+           paintAccountButton() is about a save or a name changing, and the
+           lists door has an opinion about neither. */
+        paintListsButton();
         /* The keep on a list waits on this answer — it is not drawn at all
            until the endpoint says accounts work — and the panel was painted
            before it arrived, so a list on screen is repainted. The one other
@@ -1940,6 +1945,34 @@
        their say. Nothing happens on a desktop, where the label is never
        hidden in the first place. */
     if (wasHidden && railIntroduced) openHint('account', 0);
+  }
+
+  /* The door to everybody's lists: the second pill on the rail, and the one
+     pill here that is a link rather than a press. Two things happen in it and
+     both happen once, because `ready` is answered once: the emblem is
+     painted, and the pill is shown.
+
+     TTBPins.ofList(null) rather than the id written out: there is no list
+     here to ask about, and what that call answers for a list nobody has
+     dressed is exactly what a door onto all of them should wear. The default
+     stays one decision, living in assets/pins.js.
+
+     Hidden until the endpoint says the database is bound, for the reason the
+     account button above is: the lists are in that same database, and a door
+     onto "Lists are switched off on this copy of the site" is a button that
+     can only disappoint. Unlike the account there is no second reason to draw
+     it anyway — saves are this browser's and work regardless; a list is not.
+
+     And it says its name late if the answer came late, the way the account
+     does, rather than appearing as a silent disc under a column of pills that
+     have all had their say. */
+  function paintListsButton() {
+    if (!dom.btnLists) return;
+    var wasHidden = dom.btnLists.hidden;
+    dom.btnLists.hidden = !state.account.ready;
+    if (dom.btnLists.hidden) return;
+    TTBPins.paint(dom.listsPin, TTBPins.ofList(null));
+    if (wasHidden && railIntroduced) openHint('lists', 0);
   }
 
   /* ------------------------------------------------ arriving to sign in
@@ -2190,10 +2223,11 @@
    *
    * Every step points at something real on the page as it stands, which is
    * why the steps are functions and not co-ordinates: the pin is whichever
-   * pin is nearest the middle of the screen, and the three steps about
+   * pin is nearest the middle of the screen, and the four steps about
    * things that may not be there — the radio when data/radio.json has no
-   * station, an account when /api/account never answered, the discount
-   * chip when nothing is on — are left out rather than pointed at nothing.
+   * station, an account and the lists when /api/account never answered, the
+   * discount chip when nothing is on — are left out rather than pointed at
+   * nothing.
    *
    * The two steps about the chips press the button first. On a phone the row
    * is folded behind Filters, and a ring round a shut button under a sentence
@@ -2222,6 +2256,13 @@
     { key: 'explainSave', at: function () { return dom.btnAccount; },
       when: function () { return !dom.btnAccount.hidden; },
       pills: function () { return [dom.btnAccount]; } },
+    /* Straight after the account, the way the two stand on the rail: what
+       you keep, then what everybody else kept. Guarded like the account and
+       the radio, because this pill is not there either until /api/account
+       says the database behind the lists is bound. */
+    { key: 'explainLists', at: function () { return dom.btnLists; },
+      when: function () { return !dom.btnLists.hidden; },
+      pills: function () { return [dom.btnLists]; } },
     /* Second in the row, after All: renderFilters draws the discount chip
        ahead of the types. */
     { key: 'explainDiscount', when: anyLiveDeal, drawer: true,
@@ -3654,8 +3695,8 @@
    */
   var HINT_MS = 4200;
   /* Top to bottom, which is the order they open in. */
-  var HINT_KEYS = ['account', 'random', 'ask', 'radio', 'style', 'locate',
-                   'explain'];
+  var HINT_KEYS = ['account', 'lists', 'random', 'ask', 'radio', 'style',
+                   'locate', 'explain'];
   var hintTimers = {};
 
   /* Before any of them, the sentence. On a desktop it is printed in the card
@@ -3672,9 +3713,9 @@
   /* The rail follows it rather than racing it. By the time the first pill
      opens the sentence has been up for the best part of a second, and the
      last one collapses just before the sentence does, so the corner empties
-     in the order it filled. Seven pills, 300ms apart and held for 4.2s each,
-     put that last collapse at 7.25s against the sentence's 7.86s: there is
-     room on the rail for two more buttons at these numbers and not a third,
+     in the order it filled. Eight pills, 300ms apart and held for 4.2s each,
+     put that last collapse at 7.45s against the sentence's 7.86s: there is
+     room on the rail for one more button at these numbers and not a second,
      after which the rail is still talking over a sentence that has gone. */
   var RAIL_IN = 1150;
   var brandInTimer = null;
@@ -3684,16 +3725,18 @@
   var introPending = false;
   /* Whether the cascade has already run. */
   var railIntroduced = false;
-  /* The button at the head of the rail is the one that is not in the markup:
-     it waits on /api/account. So the introduction waits on it too, rather
-     than starting without it and letting the account catch up out of turn —
-     a pill that opens after the six below it have opened, and closes before
-     they do, reads as a seventh thing rather than as the first, and on a
-     fast answer it can be up and gone before the eye has got down the rail.
+  /* The two pills at the head of the rail are the ones that are not in the
+     markup until the network says so: both wait on /api/account, one for the
+     account and one for the lists in the same database. So the introduction
+     waits on that answer too, rather than starting without them and letting
+     them catch up out of turn — a pill that opens after the ones below it
+     have opened, and closes before they do, reads as the last thing on the
+     rail rather than the first, and on a fast answer it can be up and gone
+     before the eye has got down the rail.
      The wait is short and it is capped: a slow endpoint, an unbound database
      or no Function at all must not cost the other six their labels, so
-     after RAIL_WAIT_MS the rail goes ahead without it and paintAccountButton
-     catches it up as before. */
+     after RAIL_WAIT_MS the rail goes ahead without them and
+     paintAccountButton and paintListsButton catch them up as before. */
   var RAIL_WAIT_MS = 1400;
   /* Whether the wait has been spent — it is worth having once, on the way in
      — and whether an introduction is still owed at the end of it. */
@@ -3704,6 +3747,7 @@
      it into the group — so it is asked for by class rather than held in dom. */
   function hintPill(key) {
     if (key === 'account') return dom.btnAccount;
+    if (key === 'lists') return dom.btnLists;
     if (key === 'ask') return dom.btnAsk;
     if (key === 'radio') return dom.btnRadio;
     if (key === 'style') return dom.styles && dom.styles.querySelector('.rail-btn');
@@ -3794,7 +3838,7 @@
     }, delay || 0);
   }
 
-  /* The chip row is the eighth thing on the page that says what it is on
+  /* The chip row is the ninth thing on the page that says what it is on
      arrival, and the only one that cannot do it by opening a label: on a
      phone it is a whole row of the map's vocabulary folded behind the word
      Filters, and a visitor who never presses that word never finds out the
@@ -3803,7 +3847,7 @@
 
      With the first pill rather than after the last, because the row sits
      above the rail on the screen and the cascade is meant to read down it —
-     and because that leaves the rail's own arithmetic, seven pills 300ms
+     and because that leaves the rail's own arithmetic, eight pills 300ms
      apart against the sentence's 7.6s, exactly where it was. */
   var chipRowTimer = null;
 
@@ -8277,6 +8321,8 @@
       panelSave: $('panel-save'),
       panelSaveN: $('panel-save-n'),
       btnAccount: $('btn-account'),
+      btnLists: $('btn-lists'),
+      listsPin: $('lists-pin'),
       nudge: $('nudge'),
       nudgeSay: $('nudge-say'),
       nudgeGo: $('nudge-go'),

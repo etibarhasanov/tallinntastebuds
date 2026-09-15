@@ -3629,16 +3629,36 @@ The id is the title plus six random characters — `/list/top-ten-burgers-k3fmqw
 at from a neighbouring one. The random half is what makes a private list
 private.
 
-### One door to the lists
+### Two doors to the lists
 
 Your lists are named on `/account.html`, one row each, behind a fold with the
 count on it — and under that fold the box that makes another one, and under
 that the ones you kept. Everybody else's are one row under all of it, saying
-what is behind it and going there. That is the whole of the way in, and there
-is nothing else in front of it.
+what is behind it and going there.
 
-There used to be more, and every step of this argument has been the same one
-getting shorter. The map's sheet had three rows for lists once — **Your
+And the map carries a door of its own now: the second pill on the left rail,
+under the account, wearing the emblem an undressed list wears and leading
+straight to `/lists`.
+
+**That pill reverses the decision the rest of this section argues for**, and
+it is worth saying why rather than quietly rewriting the argument. What was
+taken off the map's corner was a *menu* of lists — three rows promising one
+page — at a time when the lists were new, mostly empty, and mostly somebody's
+own. Everybody's lists is a page with something on it now, so the promise is
+worth making: one pill, one page, no submenu, and nothing about it is a
+table of contents. The cost of getting it wrong the other way had become the
+larger one — the map is where nearly everybody lands, and a visitor who never
+signs in never learnt from it that lists existed at all.
+
+Which is also the one thing the door does that the account page cannot: it
+works signed out. `/lists` needs no account to read, so a stranger meets the
+lists on the way in rather than behind a sign-in form. It is hidden only where
+`/api/account` says the database behind the lists is not bound, because a door
+onto "Lists are switched off on this copy of the site" is a button that can
+only disappoint — the same rule the account button beside it keeps.
+
+There used to be more, and every step of the argument below has been the same
+one getting shorter. The map's sheet had three rows for lists once — **Your
 lists**, **Your public profile**, **Lists people kept** — and then one, and
 then none, because a row in a menu is a promise about a page and three promises
 about the same page is a table of contents. The account page then carried two
@@ -3651,9 +3671,11 @@ lists for a while and is one row again, for reasons that are not the ones that
 made it a footnote. See **Everybody else's lists come after your own** under
 **The account page**.
 
-The signed-out cost of having moved everybody's lists off the map's corner is
-unchanged, because it was never about which row: a stranger sees the sign-in
-form and no menu at all. What did change is where they land. `/lists.html` sent
+The signed-out cost of having moved everybody's lists off the map's corner was
+never about which row — a stranger saw the sign-in form and no menu at all —
+and the pill above is what finally answers it: a way to every public list from
+the page a stranger actually lands on, with no account in front of it. What
+changed before that was only where the old address lands. `/lists.html` sent
 them to an invitation with a single row on it; it sends them to `/account.html`
 now, where the same invitation stands over the door to every public list,
 which they can open without an account — and which is what [Public
@@ -7707,9 +7729,9 @@ already playing again. Only a pause from outside leaves it paused.
 
 ## Surprise me
 
-The die on the left rail — under the account button, at the top of the six
-that are about tonight rather than about you — picks a place at random and
-opens it.
+The die on the left rail — under the account and the lists, at the top of the
+six that are about tonight rather than about you or about anybody else's
+writing — picks a place at random and opens it.
 
 It picks from **whatever the chips currently allow**, so selecting "Korean" and
 "Cheap eats" and then pressing it answers the question you were actually
@@ -7740,11 +7762,14 @@ a place you tapped.
 
 ### The rail introduces itself on a phone
 
-The rail runs the account, Surprise me, Ask, the radio, the colour swatch,
-the locate button and, last, How this works — who you are, then the ones that
-change your evening, then the two that change the map, then the one that is
-about the rest, because a rail that opens with a colour picker reads as a
-settings strip rather than as the shortcut it is.
+The rail runs the account, everybody's lists, Surprise me, Ask, the radio, the
+colour swatch, the locate button and, last, How this works — who you are and
+what everybody else has written, then the ones that change your evening, then
+the two that change the map, then the one that is about the rest, because a
+rail that opens with a colour picker reads as a settings strip rather than as
+the shortcut it is. The lists pill is the one that is a link rather than a
+press, and the only one wearing an emblem rather than a drawing: see **Two
+doors to the lists** under **Lists**.
 
 On a phone it used to arrive as a column of bare discs: a head and shoulders,
 a die, a speech bubble, a play triangle, a coloured dot, a crosshair and a
@@ -7753,27 +7778,30 @@ that carries the meaning on a desktop is never read out loud, and people did
 not press them.
 
 So they say what they are on arrival and then stop saying it. Each opens
-wearing its label — your username or "Account", Surprise me, Ask, the station,
-the style you are about to switch to, "Show my location", "How this works" —
+wearing its label — your username or "Account", "Everybody's lists", Surprise
+me, Ask, the station, the style you are about to switch to, "Show my
+location", "How this works" —
 300ms apart in the order they are stacked, so the eye tracks down the rail
 rather than being asked to read the whole column at once. Each holds for
 `HINT_MS` (4.2 seconds) and collapses back to its icon, the same disc as
 before.
 
-The account button is the one the rail has to wait for. It leads the cascade
-and it is the one button not in the markup: it is drawn by an answer from
-`/api/account`. So the introduction holds for that answer, up to
+The account button is the one the rail has to wait for, and the lists pill
+under it waits on the same answer. They lead the cascade and they are the two
+buttons not in the markup until the network says so: both are drawn by an
+answer from `/api/account`. So the introduction holds for that answer, up to
 `RAIL_WAIT_MS` (1.4 seconds), and then runs with the account at its head. A
-pill that opens after the six below it and closes before they do reads as a
-seventh thing rather than as the first, and on a fast answer it was up and
-gone again before the eye had got down the rail.
+pill that opens after the ones below it and closes before they do reads as
+the last thing on the rail rather than the first, and on a fast answer it was
+up and gone again before the eye had got down the rail.
 
 The wait is capped because it has to be: a slow endpoint, an unbound database
 or no Function at all must not cost the other six their labels. So an answer
-slower than the hold gets the old behaviour — `paintAccountButton()` opens the
-label the moment the button appears, rather than leaving a silent disc above a
-column of pills that have all had their say — and an answer that never comes
-leaves a rail of six that introduced itself on time.
+slower than the hold gets the old behaviour — `paintAccountButton()` and
+`paintListsButton()` open the label the moment their button appears, rather
+than leaving a silent disc above a column of pills that have all had their
+say — and an answer that never comes leaves a rail of six that introduced
+itself on time.
 
 **The chip row says itself too, and it is the one that cannot do it with a
 label.** On a phone every filter this map has is folded behind the single word
@@ -7786,8 +7814,9 @@ and rolls back.
 
 It rolls out with the *first* pill rather than after the last. The row sits
 above the rail on the screen, so the introduction still reads top to bottom,
-and the rail's own arithmetic — seven pills 300ms apart against the sentence's
-7.6 seconds — is left exactly where it was. Above 860px there is no drawer to
+and the rail's own arithmetic — eight pills 300ms apart against the sentence's
+7.6 seconds, the last of them collapsing at 7.45 — is left exactly where it
+was. Above 860px there is no drawer to
 roll: the row is already flat on the map, which is the showing.
 
 Rolling it back is the part that needs care, because shutting the drawer on a
@@ -7908,8 +7937,11 @@ The walk, in order, and what each step is anchored to:
    and the button never appeared.
 8. The account button, left out when `/api/account` never said accounts
    work — there is no button to point at.
-9. The discount chip, second in the row after All — the row rolled out
-   again for it on a phone; left out when no deal is on.
+9. **Everybody's lists**, straight after it, the way the two stand on the
+   rail: what you keep, then what everybody else kept. Left out on the same
+   answer, for the same reason.
+10. The discount chip, second in the row after All — the row rolled out
+    again for it on a phone; left out when no deal is on.
 
 One step is about one thing. Surprise me and Ask used to share a step — the
 ring round the die, both labels held open, one sentence saying what each
@@ -7970,7 +8002,7 @@ asked, and a second unasked-for overlay on top of that is the kind of thing
 that gets closed unread; a button pressed when it is wanted is the better
 version of the same words.
 
-The strings are `explainOpen` — the button — the nine `explainPin` …
+The strings are `explainOpen` — the button — the ten `explainPin` …
 `explainDiscount` lines, `explainNext`, `explainSkip` and `explainClose`,
 in all ten languages. The pieces are `#tour` in
 `index.html`; the steps are `TOUR_STEPS` in `assets/app.js`, run by
@@ -8128,6 +8160,7 @@ The map, `assets/app.js`:
 | `list_keep` | `list_id`, `list_state` (`on`/`off`, or `signed_out` when the press opened the sign-up sheet instead) |
 | `list_share` | `list_id`, `method` (`sheet`/`copy`) |
 | `list_page`, `profile_open` | `list_id` / `name` — the List half of the switch on the band, and the byline under it |
+| `lists_all` | — the pill on the rail, which is this page's door to the directory; the same name the other two doors report |
 | `ask_open` | — |
 | `ask` | `search_term` |
 | `ask_answer`, `ask_none`, `ask_resting` | `search_term`, and on the first two `source`, `places_shown`, `from_google` — what came back; see **Ask for somewhere** |
@@ -8166,7 +8199,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `search` | `search_term`, `scope` — `lists` for the directory's field, `list` for the one over a single list's places |
 | `lists_sort` | `sort` (`kept`, `new` or `changed`) — a chip beside the search field |
 | `lists_more` | `rows_shown`, `how` (`scroll` or `press`) |
-| `lists_all` | — the way to the directory: the row on `/account.html`, and the bar at the foot of a list |
+| `lists_all` | — the way to the directory: the row on `/account.html`, the bar at the foot of a list, and the pill on the map's rail |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
 
 The account page, `assets/account.js`:
