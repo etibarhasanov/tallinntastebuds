@@ -1212,9 +1212,9 @@ function keep(said, shown) {
   return { picks, say };
 }
 
-/* The words left over from a question that name a dish or a cuisine — what
- * the dish rule under askModel() holds picks to — and whether a place's
- * line carries one of them.
+/* What the dish rule under askModel() holds picks to — the cuisines a
+ * question named outright, or failing those the words left over from it
+ * that name a dish — and whether a place's line carries one of them.
  *
  * A leftover word is a dish or a cuisine when the site's own vocabulary
  * says so: KITCHENS in venues.js, which is the directory's reading of
@@ -1243,9 +1243,19 @@ function dishWords(wish, places) {
     const said = foldWords((place.mustOrder || []).join(' ')).replace(/[^\p{L}\p{N}]+/gu, ' ');
     for (const word of said.split(' ')) if (word.length > 2) dishes.add(word);
   }
-  const words = wish.rest.filter((word) => !near.has(word) &&
-    (dishes.has(word) || KITCHENS.some(([, pattern]) => pattern.test(word))));
-  return [...new Set(words.concat(wish.kitchens))];
+  /* A cuisine named outright is the question, and then it is the whole of
+     it. carries() is a `some` over what comes back, so every extra word
+     here is another way for a pick to pass, and one loose word undoes the
+     rule: "lunch" and "menu" are dishes because four of my places say
+     "lunch" under them and eight say "menu", so "greek lunch" held picks to
+     "greek OR lunch" and answered with F-hoone, "greek menu" with Chakra.
+     Neither is Greek and neither was faulted. The leftovers are what the
+     rule runs on when nothing named a cuisine — "kebab", "khachapuri",
+     "ramen" — which is the case it was written for and is untouched. */
+  if (wish.kitchens.length) return [...new Set(wish.kitchens)];
+
+  return [...new Set(wish.rest.filter((word) => !near.has(word) &&
+    (dishes.has(word) || KITCHENS.some(([, pattern]) => pattern.test(word)))))];
 }
 
 function carries(entry, words) {
