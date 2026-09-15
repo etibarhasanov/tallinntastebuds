@@ -4543,18 +4543,18 @@ toast: somebody who followed a dead link gets the thing this site is, which is
 better than an error about a list they have never seen. `/list/<id>` is the
 page that is about one list, so that is the page that reports a missing one.
 
-### Pressing a name is the third way across
+### Pressing a row is the third way across
 
 The switch sits at the top of a page people read down. Somebody eight places
-into a top ten presses the name of the eighth place, not a chip they scrolled
-past twenty rows ago — which is why the map kept being the half of a list
-nobody had noticed was there.
+into a top ten presses the eighth place, not a chip they scrolled past twenty
+rows ago — which is why the map kept being the half of a list nobody had
+noticed was there.
 
-So a name is a door too, and it goes to `/?list=<id>&at=<place>`: this same
+So a row is a door too, and it goes to `/?list=<id>&at=<place>`: this same
 list on the map, the sheet at its half stop on a phone rather than open full,
 and the place that was pressed lit, named and haloed between the two. The pins
 above, the list's own rows under them scrolled to that row and marking it, and
-both questions a name raises answered at once — where is this, and where is it
+both questions a row raises answered at once — where is this, and where is it
 next to the other nine.
 
 Three details, and each is the opposite of what `?spot=` does, because the
@@ -4574,6 +4574,28 @@ press means something else:
   afterwards is `?list=<id>`, which is what the page is showing — a link copied
   out of it is a link to the list on the map, not to somebody's eighth choice.
 
+**The door is the row and not the name across the top of it.** It was the name
+alone for as long as the door had existed, which made the target the width of
+however that particular place happens to be spelt — four letters on one row and
+three lines on the next — with the street under it, Google's line and the
+sentence that is the reason the list is worth reading all sitting there dead
+beside one live word. Design rule 8 is a target the width of the card rather
+than the width of the word, and the directory's cards have obeyed it since they
+were written; these rows, which are what a shared list is actually made of, had
+not.
+
+It is built the way those cards are, out of the same rule: the row is a plain
+box, the name is still the `<a>`, and `.lists-open` stretches the press over
+the face of it — so the accessible name of that link stays the place's name
+rather than the street and Google's score and somebody's two sentences read out
+in one breath, and the focus ring goes round the row, which is what opens. The
+row's edge takes the accent on hover the way a directory card's does. What it
+costs is dragging over a note to copy it, since a sheet across the row is a
+sheet across the words on it; that is the same trade every row on the directory
+already takes. **Your own list keeps the word-width target.** Those rows are a
+textarea, a grip and a delete button, and a sheet of link over the three of them
+is a row nobody can type in or carry.
+
 **It used to be Google Maps, and a name is what this page is mostly made of.**
 A place on my map went to its write-up and everything else opened a new tab on
 Google Maps, by coordinates when the catalogue had them and by name when it
@@ -4588,12 +4610,13 @@ I have never eaten at**. Nothing on this site opens Google Maps because
 somebody pressed a name.
 
 **A place with nowhere to draw points nowhere at all** and says so in the muted
-colour it always did. `seatList()` in `assets/app.js` drops a place it cannot
-put a pin for, so a link to the map for one would arrive on a map that does not
-have it. The id in the link is the one the list stores and never `mapId`: the
-pin and the row on the map both stand under the id the list was written with,
-and `mapId` names the write-up's own address, which is what `?spot=` wants and
-this does not.
+colour it always did — and its row is not dressed as a door either, because a
+box that looks pressable with nothing behind it is worse than a line of muted
+text. `seatList()` in `assets/app.js` drops a place it cannot put a pin for, so
+a link to the map for one would arrive on a map that does not have it. The id in
+the link is the one the list stores and never `mapId`: the pin and the row on
+the map both stand under the id the list was written with, and `mapId` names the
+write-up's own address, which is what `?spot=` wants and this does not.
 
 ### Both views of a list can be searched
 

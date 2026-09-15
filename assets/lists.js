@@ -2274,7 +2274,7 @@
      from a page whose own switch offers a map with the whole list on it. The
      switch is in the bar at the top and people read downwards. Google Maps is
      still a press away, behind Directions and See on Google on the card the
-     map draws. **Pressing a name is the third way across** in README.md is
+     map draws. **Pressing a row is the third way across** in README.md is
      the argument in full.
 
      The id is the one the list stores, never `mapId` — that is the exception
@@ -2291,7 +2291,18 @@
       '&at=' + encodeURIComponent(item.place);
   }
 
-  function placeName(item) {
+  /* The name, as the link it is — and, when `whole` says so, as the row's link
+     too: .lists-open stretches the press over the box behind everything in it,
+     so the street, Google's line and the sentence its owner wrote all lead
+     where the name does. See .item.is-door in assets/lists.css.
+
+     Off on the editor's rows, and that is the only place it is off. A row
+     there is a textarea, a grip and a delete button, and a sheet of link over
+     the three of them is a row nobody can type in or carry. It has to be a
+     flag rather than a class the stylesheet narrows, because .lists-open fills
+     the nearest positioned ancestor and an editor row is not one: the sheet
+     would go looking outwards and find the page. */
+  function placeName(item, whole) {
     var href = placeHref(item);
     if (!href) {
       return el('span', { className: 'item-name is-lost', textContent: item.name });
@@ -2300,7 +2311,10 @@
        owed, and none of these leave it any more. `map` says which roll the
        place came off, which is all it can say now that every row goes to the
        same place — it used to name one of two destinations. */
-    return TTBTrack.click(el('a', { className: 'item-name', href: href }, [
+    return TTBTrack.click(el('a', {
+      className: 'item-name' + (whole ? ' lists-open' : ''),
+      href: href
+    }, [
       el('span', { textContent: item.name }),
       el('span', {
         className: 'item-where mono',
@@ -2322,11 +2336,21 @@
     ]);
   }
 
+  /* One place on a list somebody is reading, and the whole row is the door
+     onto the map rather than the name across the top of it — design rule 8, a
+     target the width of the card and not the width of however that place
+     happens to be spelt. **Pressing a row is the third way across** in
+     README.md is the argument in full.
+
+     A place the catalogue has lost is not dressed as a door, because it has
+     nowhere to go: placeHref() gives it no address, placeName() draws the
+     muted span it always did, and the row keeps its plain edge. */
   function itemRow(item, i) {
-    return el('li', { className: 'item' }, [
+    var door = !!placeHref(item);
+    return el('li', { className: 'item' + (door ? ' is-door' : '') }, [
       el('span', { className: 'item-n mono', 'aria-hidden': 'true', textContent: String(i + 1) }),
       el('div', { className: 'item-body' }, [
-        placeName(item),
+        placeName(item, door),
         item.address ? el('p', { className: 'item-address mono', textContent: item.address }) : null,
         sourceLine(item),
         item.say ? el('p', { className: 'item-say', textContent: item.say }) : null
