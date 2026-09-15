@@ -3244,7 +3244,7 @@ data/cuisines.json     37 cuisine labels in ten languages
 A card per place: the name, Google's rating and review count, the price band as
 the map's own four-euro gauge, what it cooks, whether it is open right now, the
 street, and a row of links — Call, Website, Directions, Open in Google Maps.
-Thirty-two of them carry one more, **On the map**, which is the door to a
+Sixty of them carry one more, **On the map**, which is the door to a
 write-up: those are the places that are on `data/restaurants.json` as well, and
 on this page that is the rarest and most interesting thing a row can say.
 
