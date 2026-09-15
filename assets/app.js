@@ -6464,7 +6464,24 @@
      The count is not on this line. It sits with the byline, which is the other
      line of facts about the list rather than about a place on it — and it
      counts the rows on screen, which the band has no business claiming while a
-     search is narrowing them. */
+     search is narrowing them.
+
+     THE PIN IN FRONT OF THE TITLE
+
+     The same emblem the list's own page, the directory, its author's profile
+     and your account draw in front of its name — listPin() in assets/lists.js
+     is the same two calls, and this page cannot borrow that one any more than
+     it can borrow GOOGLE_BY above. Here it is doing something the four pages
+     cannot: the pins under this band are already wearing that glyph, so the
+     name and what is drawn under it are one picture rather than two things
+     that happen to be on screen at the same time. A place of mine on the list
+     is the exception and stays the mouth; pinOf() answers that before it ever
+     looks at the list.
+
+     aria-hidden, and the band names itself in its own aria-label anyway. The
+     title beside it already says what the list is, in its author's words; a
+     screen reader announcing "balloon" in front of it is a decoration read
+     aloud. The picker on the list's own page is where the eight have names. */
   function listBand() {
     var by = listBy();
     var said = by.words ? by.words.join(by.name) : '';
@@ -6474,7 +6491,13 @@
       tabIndex: -1,
       'aria-label': state.list.title + (said ? ', ' + said : '')
     }, [
-      el('span', { className: 'list-group', textContent: state.list.title }),
+      el('span', { className: 'list-group' }, [
+        TTBPins.paint(
+          el('span', { className: 'lists-pin', 'aria-hidden': 'true' }),
+          TTBPins.ofList(state.list)
+        ),
+        el('span', { textContent: state.list.title })
+      ]),
       el('span', { className: 'list-views' }, [
         el('span', { className: 'chip', 'aria-current': 'page', textContent: t('listsViewMap') }),
         TTBTrack.click(el('a', {

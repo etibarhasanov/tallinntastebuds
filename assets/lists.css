@@ -488,34 +488,11 @@
   user-select: none;
 }
 
-/* A list's own pin, in front of its title, wherever a list is named. It is
-   the same glyph in the same tone its places wear on the map — see
-   listPin() in assets/lists.js. */
-.lists-pin {
-  display: inline-grid;
-  place-items: center;
-  flex: 0 0 auto;
-  width: 1.15em;
-  height: 1.15em;
-  border-radius: 50%;
-  background: var(--paper);
-  box-shadow: 0 0 0 1px var(--paper), 0 0 0 1.9px var(--pin-tone, var(--accent));
-  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
-               "Android Emoji", "EmojiSymbols", sans-serif;
-  /* Set against the title's own size, so it grows with the heading on a
-     desk and shrinks with it on a phone without a second breakpoint. */
-  font-size: .62em;
-  line-height: 1;
-  vertical-align: baseline;
-  -webkit-user-select: none;
-  user-select: none;
-}
-/* The mouth, for the day a list can wear it. Nothing hands it out today —
-   TTBPins.paint() only draws it for a place on my map — and the rule is here
-   so that the emblem and the map's pin cannot say the mark differently. */
-.lists-pin.is-mark {
-  background: var(--paper) url(logo/mark-round.webp) center / cover no-repeat;
-}
+/* The same glyph on a line of text — .lists-pin, in front of a title — is in
+   assets/styles.css, and not because it is shared by the pages that load
+   this file: the map names a list in its band too and loads only that one.
+   listPin() in assets/lists.js is what draws it here. */
+
 /* ---------- the fields ---------- */
 
 .lists-input {
