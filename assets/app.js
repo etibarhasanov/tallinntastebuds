@@ -4094,7 +4094,7 @@
       var failed = function () { done(null); };
       map.on('locationfound', found);
       map.on('locationerror', failed);
-      map.locate({ setView: false, maxZoom: 15, timeout: 8000 });
+      map.locate({ setView: false, timeout: 8000 });
     });
   }
 
@@ -7975,8 +7975,10 @@
       TTBTrack.event('locate');
       if (!navigator.geolocation) { toast(t('locateFail')); return; }
       /* setView is off: the framing is done in locationfound, which knows
-         where the places are and Leaflet does not. */
-      map.locate({ setView: false, maxZoom: 15 });
+         where the places are and Leaflet does not. Nothing here says how close
+         to go, because Leaflet reads its own maxZoom only when it is the one
+         moving the map — frameHere() is, and HERE_ZOOM is where. */
+      map.locate({ setView: false });
     });
 
     dom.lbClose.addEventListener('click', function () {
@@ -8096,12 +8098,28 @@
     keepFocusIn(ev, [dom.lbClose, dom.lbPrev, dom.lbNext]);
   }
 
+  /* A pane of the dot's own, because the dot goes *over* the marks. Leaflet
+     keeps its markers above the pane plain circles are drawn in, so the dot
+     sat underneath every mark within a few metres of it — and standing outside
+     somewhere is exactly when this button gets pressed, so the answer to
+     "where am I" was a picture of a restaurant.
+
+     Nothing in the pane ever takes a tap: the dot is interactive: false below
+     and pointer-events: none in the stylesheet, so a pin it happens to cover
+     is still what a finger landing on it opens. The accuracy ring stays behind
+     in the overlay pane — it is a wash the size of a city block, and painting
+     that over the marks would tint every one of them. */
+  var HERE_PANE = 'ttbHere';
+
   /* You are not a restaurant. The dot takes the palette's --here, a hue none
      of its pins use, and stands inside the circle the device actually claims
      as its accuracy, which is a thing no pin has. Past a kilometre the
      reading says little beyond "somewhere in town", so the circle is dropped
      rather than drawn as a lie the size of a district. */
   function wireLocation() {
+    /* Leaflet's own are 600 for the marks and 650 for their labels. */
+    map.createPane(HERE_PANE).style.zIndex = 620;
+
     map.on('locationfound', function (ev) {
       var c = markerColours();
 
@@ -8129,9 +8147,9 @@
         fillColor: c.here,
         fillOpacity: 1,
         className: 'pin-here',
+        pane: HERE_PANE,
         interactive: false
       }).addTo(map);
-      hereMarker.bindTooltip(t('locateHere'), { className: 'pin-tip', direction: 'top', offset: [0, -10] });
 
       /* The list is ordered from the dot, so it is redrawn the moment there
          is one rather than waiting for the panel to be opened again — the
@@ -8158,11 +8176,23 @@
      with the city instead, and says why. */
   var HERE_MAX_M = 25000;
 
-  /* Where the map goes once it knows where you are. Dropping you at zoom 15
-     is only an answer if there is something to eat around you: on the edge of
-     town, or in the next country, it is a screen of streets with no pin on
-     it, and no amount of pressing filter chips fills it in. So the view is
-     framed on you *and* the nearest place the chips allow — you always land
+  /* As close as the map goes once it has found you, and in practice the zoom
+     it lands at nearly every time: the pair being framed is usually you and a
+     place across the road, so the cap decides it rather than the fit.
+
+     It used to be 15, which is half of Kalamaja. Press the button standing on
+     Telliskivi and the dot arrived in a thumbnail of the district with forty
+     other things on it, small enough to lose under the nearest mark — not an
+     answer to "where am I". 17 is the street you are standing in, near enough
+     to see which side of it a place is on, and the fit still pulls back on its
+     own as the nearest place gets further away. */
+  var HERE_ZOOM = 17;
+
+  /* Where the map goes once it knows where you are. Dropping you at street
+     level is only an answer if there is something to eat around you: on the
+     edge of town, or in the next country, it is a screen of streets with no
+     pin on it, and no amount of pressing filter chips fills it in. So the view
+     is framed on you *and* the nearest place the chips allow — you always land
      looking at somewhere you could walk to. */
   function frameHere(latlng) {
     /* A closed place is a grey pin kept for the links pointing at it, not
@@ -8171,7 +8201,7 @@
     var pool = visiblePlaces().filter(function (p) { return !p.closed; });
     if (!pool.length) pool = visiblePlaces();
     if (!pool.length) pool = state.places;
-    if (!pool.length) { travelTo(latlng, Math.max(map.getZoom(), 15), true); return; }
+    if (!pool.length) { travelTo(latlng, Math.max(map.getZoom(), HERE_ZOOM), true); return; }
 
     var nearest = null;
     var best = Infinity;
@@ -8187,11 +8217,16 @@
     }
 
     /* No floor here: you and a place 20km apart need the zoom the pair of you
-       actually take, which is further out than the city fit's own floor. */
+       actually take, which is further out than the city fit's own floor.
+
+       clearPanel because this fit is the one that is *about* the dot. Framing
+       you into the middle of the whole map with the sheet open puts you behind
+       it, and a dot nobody can see is the same failure as a dot under a pin. */
     fitLatLngs([[latlng.lat, latlng.lng], [nearest.lat, nearest.lng]], {
       animate: true,
-      maxZoom: 15,
-      floor: 0
+      maxZoom: HERE_ZOOM,
+      floor: 0,
+      clearPanel: true
     });
   }
 
