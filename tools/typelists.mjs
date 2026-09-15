@@ -112,11 +112,14 @@
  *
  * WHY THE ORDER IS THE ALPHABET, AND WHOSE ALPHABET
  *
- * The panel behind a chip is A–Z — with Just added lifted out of it, which is
- * a shortcut on a page somebody is standing on rather than an order, and does
- * not belong in something sent to a stranger. So A–Z, and the same collator
- * the panel sorts with: base sensitivity, so Põhja Konn files under P and
- * Šašlõkk under S.
+ * The panel behind a chip used to be A–Z and this file matched it. The panel
+ * is ordered by distance now — from the reader, or from Raekoja plats when
+ * they have not said where they are — and that is exactly the order a
+ * published list cannot have: it is measured from somebody standing on the
+ * page, and a stranger opening this link is standing somewhere else. There is
+ * no distance that is true for every reader, so the list keeps the alphabet,
+ * which is true for all of them. Same collator the panel used to sort with:
+ * base sensitivity, so Põhja Konn files under P and Šašlõkk under S.
  *
  * The panel sorts in whatever language it is being read in and this file has
  * to pick one, so it picks `en` — the language the lines under the places are

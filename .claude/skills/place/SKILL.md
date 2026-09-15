@@ -56,7 +56,7 @@ and requires the first twelve. An unknown key is a warning ("typo?"), which is h
 | `photos` | array of bare filenames matching `\.(webp\|jpg\|jpeg\|png\|avif)$`, each present at `photos/<id>/` | error |
 | `website` | absent, `""`, or `https?://…` | error |
 | `phone` | absent, `""`, or `^\+[1-9][0-9]{0,3}( [0-9]{2,4}){1,4}$` — `+372 661 0180`. Absent on an open place warns | error / warning |
-| `added` | `YYYY-MM-DD`; absent warns, because the place can never show as **Just added** | error / warning |
+| `added` | `YYYY-MM-DD` when present, and nothing reads it since **Just added** was taken out — absent is fine and warns about nothing. `/admin.html` still stamps one | error |
 | `visited` | `YYYY-MM`; absent warns only when there is a reel to date it from | error / warning |
 | `closed` | boolean | error |
 
@@ -174,8 +174,10 @@ its pin can land on the wrong side of the street. What it does, in order:
 
 Set `"closed": true` and change nothing else. Every `?spot=` link keeps
 working, the pin greys and gains a dashed ring, the row and the panel say so
-in every language, and **Surprise me**, **Just added** and the locate framing
-skip it on their own. Do not write the closure into the blurb. Move the
+in every language, and **Surprise me** and the locate framing skip it on their
+own. It still sorts into the list by distance like everything else, greyed —
+being shut is a fact about the row, not a reason to hide it. Do not write the
+closure into the blurb. Move the
 README's list of closed places, which is written by name.
 
 The published lists do not skip it on their own: `node tools/typelists.mjs`
