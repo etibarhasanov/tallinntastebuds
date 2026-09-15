@@ -1555,6 +1555,33 @@ body.panel-detail .panel {
    display:none also keeps the bar out of the tab order. */
 .sheet-grip { display: none; }
 
+/* The band across the top of the panel, above the scroll rather than in it,
+   carrying whichever list the map is showing. Empty and hidden the rest of
+   the time, which is most of the time.
+
+   It takes the top padding off the scroller and wears it itself, so the space
+   the grip and the close button stand in is the band's and the rows start
+   immediately under the band's own edge. Positioned only so it paints above
+   .panel::before, which is the opaque strip that same padding used to need;
+   the strip still shows through the band's transparent top, which is why this
+   carries no background of its own. */
+.panel-band {
+  position: relative;
+  z-index: 2;
+  /* The panel is a flex column and the scroller below shrinks to whatever is
+     left. Without this the band shrinks in proportion with it, and a sheet
+     sitting on the band squashes the band it is standing on. */
+  flex: none;
+  padding-top: var(--panel-pad-t);
+}
+.panel-band:not([hidden]) + .panel-scroll { padding-top: 0; }
+
+/* And the eyebrow goes with it. It says whose map this is, which the band
+   above now answers more usefully by saying whose list you are in; two labels
+   stacked over one search field is one too many. The chat has one of these
+   too and keeps it: the band is only ever up on the list view. */
+.panel-band:not([hidden]) + .panel-scroll .list-head { display: none; }
+
 .panel-scroll {
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -2686,16 +2713,22 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     "said";
 }
 
-/* The heading over a list: its title and the switch between its two views.
-   It is the ordinary group heading in this one state — a sibling of the block
-   under it and a direct child of the list body, like every other one — so it
-   carries the same sticky band and the same type, and holds the top of the
-   panel for the whole of the scroll. listCredit() in assets/app.js says what
-   went wrong while it was a child of that block instead.
+/* The heading over a list: its title and the switch between its two views. It
+   is the only group heading that does not live in the list body — it is drawn
+   into .panel-band, above the scroll, where it holds the top of the panel
+   without depending on the scroll being anywhere in particular. It keeps the
+   group heading's type and its hairline edge, because that is what it is;
+   what it drops is the part that belongs to a thing inside a scroller.
+   listBand() in assets/app.js says why it moved.
 
    Centred rather than on the baseline the other group headings use: a chip is
    a box and a name is a word, and a box hung off a baseline sits low. */
 .list-label.is-credit { align-items: center; }
+/* Its sticky is a scroller's and there is no scroller over it; its bleed
+   margins are a list body's and the band has no padding to bleed out of. By
+   id, because it has to beat .list-label:first-of-type wherever that sits in
+   this file. */
+#panel-band .list-label { position: static; margin: 0; }
 /* The two chips keep their own width whatever the title does — the switch is
    what the band is for — and the title takes what is left and wraps into it.
    Wraps rather than ends in an ellipsis: the panel is four hundred pixels
@@ -3489,6 +3522,18 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   body { --sheet-h: min(calc(var(--vph, 100dvh) * .5), 470px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
   body.sheet-full { --sheet-h: min(82vh, 720px); }
   body.sheet-full { --sheet-h: min(calc(var(--vph, 100dvh) * .82), 720px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
+
+  /* And a third under both, which only a list has: its band and nothing else.
+     Somebody's list pulled past the half stop settles here instead of leaving,
+     because the sheet is the only thing on screen saying why the map is
+     narrowed to the pins it is showing — sheetHeightAt() in assets/app.js is
+     the other half of that, and it is the one sheet a pull cannot dismiss.
+     --peek-h is peekStop() there: the band as measured, its breath and the
+     home indicator's inset, so the stop a drag settles on and the height it is
+     drawn at are one number. The fallback is a one-line title with the chips
+     beside it, and nothing but a class set before the script has run could
+     ever want it. */
+  body.sheet-peek { --sheet-h: var(--peek-h, 108px); }
 
   /* On a phone there is no room for the tagline, and with the tagline gone
      there is nothing left in the card that needed a card. What stands on the

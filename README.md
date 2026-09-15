@@ -513,7 +513,10 @@ place, and lifting two of the answers into a section of their own only makes
 them read the same names twice.
 
 The field sticks to the top of the panel, and the section headings park below
-it rather than under it, so sixty rows down the search is still there.
+it rather than under it, so sixty rows down the search is still there. With a
+list open it sticks under the band naming that list, which is the one thing on
+this panel that sits above the field rather than below it — see **A list is a
+mode, not a filter** under **Lists**.
 
 Escape empties the field; a second Escape closes the panel, which is what a
 browser's own search boxes do. On a phone the field is 16px, because anything
@@ -4136,11 +4139,11 @@ a journey between two pages rather than a change of view.
 They are one control now — two chips, **Map** and **List**, with the view you
 are in filled the way a pressed chip is filled — and it is drawn in both
 places out of each page's own pieces: `listBar()` in `assets/lists.js` and
-`listCredit()` in `assets/app.js`, which share no module and so restate it,
+`listBand()` in `assets/app.js`, which share no module and so restate it,
 the way everything these two pages both draw is restated. On the map it rides
-the band that already sticks to the top of the panel; on the list's page it is
-the head bar. Reading it takes no learning: it is the map's own filter row
-saying which of two things is on.
+the band across the top of the panel; on the list's page it is the head bar.
+Reading it takes no learning: it is the map's own filter row saying which of
+two things is on.
 
 The chips are links and not buttons, so the other view is an address somebody
 can open in a tab, send, or be sent — and `aria-current` rather than
@@ -4214,14 +4217,34 @@ over a map showing four places.
 So the filter row is types and nothing else. `state.list` holds a list or it
 does not, and while it does, that is what the map is showing — `visiblePlaces()`
 answers the list before it consults a chip. The list says who it is in the
-panel instead: its title and the switch on the band that sticks to the top,
-and under them its owner's name, how many places are on it, their sentence,
-the two things you can do about it — keep it, or send it on — and, under
-those, the way out. The two wear the same pill and neither is filled: on that
-block the accent behind a pill already means "saved", and spending it twice
-would take that reading away. The one filled thing in the panel is the half of
-the switch you are standing on, which says where you are rather than asking
-for a press.
+panel instead, in a band across the top of it: its title, and the switch. Then
+the search, and under that its owner's name, how many places are on it, their
+sentence, the two things you can do about it — keep it, or send it on — and,
+under those, the way out. The two wear the same pill and neither is filled: on
+that block the accent behind a pill already means "saved", and spending it
+twice would take that reading away. The one filled thing in the panel is the
+half of the switch you are standing on, which says where you are rather than
+asking for a press.
+
+**The band is the panel's own header, not the first thing in its scroll.** It
+began as the latter — a group heading like **Just added** or **A–Z**, sticking
+to the top of the panel on the way past — and sticky was close enough while
+reading the list was the only thing you could be doing. It was not the panel's
+header; it was a heading behaving like one, and it stopped behaving like one
+the moment a word was typed into the search, because a list plus a search is a
+slice of the map rather than the list, and the heading went with the state.
+Above the scroll it is true of the panel rather than of anything in it: which
+list this map is showing, which does not stop being the answer while you narrow
+it. The eyebrow that used to sit at the top of the panel — TALLINN, whose map
+this is — steps aside for it, because two labels stacked over one search field
+is one too many, and the band answers the narrower and more useful question.
+The search moved under it, which is the arrangement every phone already knows:
+what you are looking at on top, the field for narrowing it beneath.
+
+That is also what the sheet's third stop is standing on. A band that does not
+depend on the scroll being anywhere in particular is a band the sheet can be
+pulled down onto, which is why a list is the one sheet a drag cannot dismiss —
+see **The sheet** in the design notes.
 
 **Pressing any chip forgets it.** All, Bakery, Discount — each is somebody
 asking the map a question their list cannot be part of the answer to, so the
@@ -8511,6 +8534,24 @@ floor rather than throwing the sheet away, and letting go 60px into that floor
 that is an ordinary dismissing swipe. From the full stop it is half the height
 of a phone, which is a thing you have to mean.
 
+**Somebody else's list has a third stop there, and no exit under it.** That
+dismissing pull is right for a place, for the chat and for the map's own list
+of places: pull any of those away and what is left is the map you asked for.
+It is wrong for a list, because a list is a mode — the map is narrowed to that
+list's pins, and the sheet is the only thing on screen saying so — so the same
+pull lands on the band naming the list and stops dead instead. About a hundred
+pixels of name and the switch to the list's own page, the map with the rest,
+and the drag back up or a tap on the grip brings the list with it. It is the
+one sheet a gesture cannot close, and the close button is still the way out,
+because a press is a decision and a drag is not. **A list is a mode, not a
+filter** under **Lists** has the reasoning.
+
+The stop is the band as measured rather than a number written down, because a
+long title wraps and a wrapped title is a taller band. `peekStop()` in
+`assets/app.js` measures it and hands it to the stylesheet as `--peek-h`, so
+the height a drag settles on and the height it is then drawn at cannot come
+apart — the same bargain `sheetStops()` and the `--sheet-h` block already have.
+
 **A field takes the sheet back up with it.** The keyboard comes off the
 sheet's own height, so at the half stop the search box and the chat's would
 both end up as a strip of paper above the keys with the thing being typed into
@@ -8536,7 +8577,9 @@ Which leaves four ways back from a sheet standing open, all of them on screen:
 **swipe it down**, the close button, a tap on the grip, and **Places** in the
 chrome strip above. The middle two are the ones that only do one thing — a tap
 on the grip swaps the two stops, and the button closes it — and the swipe does
-whichever of them the pull asks for.
+whichever of them the pull asks for. On somebody else's list the swipe and the
+grip only ever move it between its three stops; the button and **Places** are
+what close it.
 
 The swipe arms only at the very top of the sheet's own scroll and only on a
 downward move, so scrolling the list still scrolls the list: the first
