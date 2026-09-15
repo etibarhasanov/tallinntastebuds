@@ -2386,7 +2386,19 @@ authorize URL, the code swap and the `aud` check all have to agree on the
 same string, and trimming for the first two alone would leave the third
 refusing a token they had just earned.
 
-The shape check is the other half. `googleReady()` requires the id to end in
+**Trimming is the two ends, though, and the same paste can carry the same
+damage in the middle.** A space between the project number and the suffix, a
+zero-width space, a soft hyphen, a Cyrillic `а` in a copy out of a rendered
+page: each still ends in `.apps.googleusercontent.com`, so a suffix check
+waves it through, and each arrives at Google as `%20`, `%E2%80%8B`, `%C2%AD`
+or `%D0%B0` — the same *OAuth client was not found* as the newline, with none
+of its one visible cause. So `googleReady()` also requires every character of
+the id to be a letter, a digit, a dot, a hyphen or an underscore. That is a
+rule about the characters and not about their arrangement, which is why it is
+safe to be strict about: every format Google has ever issued draws on that set
+and no other.
+
+The shape check is the rest of it. `googleReady()` requires the id to end in
 `.apps.googleusercontent.com`, which every Google client id does and a client
 *secret* does not — and the secret in the id's box is the mistake the two
 dashboards invite, adjacent field to adjacent field, with nothing able to
@@ -2407,19 +2419,30 @@ curl -s -o /dev/null -D - 'https://tallinntastebuds.ee/api/google' | tr '&' '\n'
 
 `/api/google` asked with nothing is the way out, so its `Location` is the
 authorize URL and the `client_id` in it is the exact bytes Google is being
-given — `%0A`, `%20` or a `+` on the end is the newline; a `GOCSPX-` prefix
-is the secret in the wrong box. A `location:` of the site's own root with no
-`client_id` at all is the guard at the top of `onRequestGet` in
-`functions/api/google.js` sending a hand-typed request home, which is
-`googleReady()` saying no *or* a missing `DB` binding *or* a database
-disagreeing with its `ENVIRONMENT` — the three share one landing, and
-`/api/account` tells them apart (`google: false` with `ready: true` is the
-first of them).
+given. A `location:` of the site's own root with no `client_id` at all is the
+guard at the top of `onRequestGet` in `functions/api/google.js` sending a
+hand-typed request home, which is `googleReady()` saying no *or* a missing
+`DB` binding *or* a database disagreeing with its `ENVIRONMENT` — the three
+share one landing, and `/api/account` tells them apart (`google: false` with
+`ready: true` is the first of them).
 
-Anything else is an id Google will at least look up, and a `redirect_uri` it
-refuses is a different error — `Error 400: redirect_uri_mismatch` — reached
-only once the client itself has been found. So `invalid_client` is never a
-reason to go adding redirect URIs.
+**From a phone, Google's own error page carries the same bytes**, which
+matters because that page is usually where this is first seen and a terminal
+usually is not. The **Request details** line on it expands, and the
+`client_id` among what it then lists is exactly what this site sent. Same
+answer as the curl, on the screen already in front of you.
+
+An id that gets past all three checks is one Google will at least look up, so
+an `invalid_client` past this point is not about the value in the Cloudflare
+dashboard at all: that client is not in the Google console. Deleted,
+recreated with a fresh id at some point after this one was pasted, or sitting
+in a project that has itself been deleted or suspended — Google also removes
+an OAuth client that has gone unused for six months. The fix is in the
+console rather than here: use the id of the client that actually exists, or
+make a new one and register its redirect URIs, then paste that id into both
+environments. And a `redirect_uri` Google refuses is a different error —
+`Error 400: redirect_uri_mismatch` — reached only once the client itself has
+been found. So `invalid_client` is never a reason to go adding redirect URIs.
 
 **Driving it locally needs a `.dev.vars`,** which is the file
 `wrangler pages dev` reads secrets from — the dashboard is for deployments

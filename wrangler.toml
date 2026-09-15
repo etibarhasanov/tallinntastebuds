@@ -63,14 +63,19 @@
 #                      password is still the whole of an account without them.
 #
 #                      Whitespace on either is trimmed, and the id must end in
-#                      .apps.googleusercontent.com or the pair counts as
-#                      absent and no button is drawn. Both are pasted into
-#                      boxes that cannot be read back, so a trailing newline —
-#                      or the secret in the id's box — is otherwise invisible
+#                      .apps.googleusercontent.com and be made only of
+#                      letters, digits, dots, hyphens and underscores, or the
+#                      pair counts as absent and no button is drawn. Both are
+#                      pasted into boxes that cannot be read back, so a
+#                      trailing newline, a zero-width character in the middle,
+#                      or the secret in the id's box is otherwise invisible
 #                      until Google answers "the OAuth client was not found".
 #                      googleReady() in functions/api/_google.js is the check,
 #                      and **Turning it on** in README.md has the one curl
-#                      that says which of the two a silent button is.
+#                      that says which of the two a silent button is — and
+#                      what it means when the id is clean and Google still
+#                      cannot find the client, which is a console problem and
+#                      not a binding one.
 #
 #                      BOTH AS SECRETS, INCLUDING THE ID, AND NOT BY TASTE
 #
