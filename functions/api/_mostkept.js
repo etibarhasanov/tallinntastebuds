@@ -57,11 +57,12 @@ const TASTE = 3;
 
 /* How many places off each list the row draws as dots on the city.
  *
- * A row on the directory carries a small sky: every place on the map as a
- * faint dot, and the list's own places over them in the accent, so a coffee
- * list reads as a cluster in Kalamaja and a Caucasus list as a scatter east
- * before anybody has read a name. It is the one picture only this site can
- * draw of a list, and the coordinates already exist.
+ * A row on the directory carries a small sky: the city as faint ground — the
+ * eleven hundred coordinates of data/city.json, which the browser fetches for
+ * itself — and the list's own places over it, each wearing the mark the list
+ * chose. So a coffee list reads as a cluster in Kalamaja and a Caucasus list
+ * as a scatter east before anybody has read a name. It is the one picture
+ * only this site can draw of a list, and the coordinates already exist.
  *
  * Ten and not all twenty, on the same argument TASTE makes above: the row is a
  * reason to open the list, not a copy of it, and ten dots draw the shape as
@@ -382,9 +383,11 @@ export async function mostKept(context, opts) {
     mine: !!user && r.owner === user.id,
     kept: !!r.kept,
     /* The pin its owner chose, which this page draws twice: once in front of
-       the title, and once as the colour of the row's own scatter of dots —
-       so twenty rows of somebody else's opinions are twenty distinguishable
-       things rather than twenty identical red constellations. */
+       the title, and once as what every dot in the row's own panel is drawn
+       as — so twenty rows of somebody else's opinions are twenty
+       distinguishable things rather than twenty identical red constellations.
+       Which is why it is sent on a row and not only on a list: see sky() in
+       assets/lists.js. */
     ...pinsOf(r),
     taste: (items[r.id] || []).slice(0, TASTE).map((row) => row.name),
     dots: dots[r.id] || []
@@ -404,7 +407,8 @@ export async function mostKept(context, opts) {
 }
 
 /* Where each list's places are, as [lat, lng] pairs, four decimals — a city
- * block, which is all a dot the size of a full stop can show.
+ * block, which is finer than a panel a hundred and twenty units wide can draw
+ * a difference in.
  *
  * The same three rolls readList() in _lists.js draws a list from, asked once
  * for the whole page rather than once per list: the catalogue is a Map held

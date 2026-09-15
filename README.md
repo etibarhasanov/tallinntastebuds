@@ -3981,17 +3981,36 @@ sticky row with the search field, so what narrows the page and what orders it
 are in one place and both stay under the thumb while the page grows.
 
 **Every row draws the list as a shape on the city.** A small panel at the top
-of each card carries the city as pale ground and the list's own places on it
-in the accent, so a coffee list reads as a cluster in Kalamaja and a Caucasus
-list as a scatter east before anybody has read a name. It is the one picture
-only this site can draw of somebody's list, and the coordinates already
-existed. The list's own dots arrive with the row: the API sends up to ten
-`[lat, lng]` pairs per list (`DOTS` in `functions/api/_mostkept.js`), resolved
-on the server from the three rolls a list draws from — the catalogue,
-`google_venues` in chunks of fifty, and `added_places` — in one batched read
-that also yields the three names under the title, so the names cost nothing
-extra. The panel is `aria-hidden`: the names under the title are the
-accessible version of the same fact, and so is the label in its corner.
+of each card carries the city as pale ground and the list's own places on it,
+so a coffee list reads as a cluster in Kalamaja and a Caucasus list as a
+scatter east before anybody has read a name. It is the one picture only this
+site can draw of somebody's list, and the coordinates already existed. The
+list's own dots arrive with the row: the API sends up to ten `[lat, lng]`
+pairs per list (`DOTS` in `functions/api/_mostkept.js`), resolved on the
+server from the three rolls a list draws from — the catalogue, `google_venues`
+in chunks of fifty, and `added_places` — in one batched read that also yields
+the three names under the title, so the names cost nothing extra. The panel is
+`aria-hidden`: the names under the title are the accessible version of the
+same fact, and so is the label in its corner.
+
+**And each place on it wears the list's own mark.** Its ten flames, or its ten
+balloons — the same glyph standing in front of the title under the panel,
+drawn at about the size of a pin on the map. They were plain dots in the accent for as long as
+the panel existed, which is the colour every list's places drew in, so the
+only thing telling two panels apart was the shape of the city under them: two
+lists of the same ten streets drew the same picture twice, and a page of
+twenty was twenty red scatters somebody had to read the titles of. The mark
+makes the picture and the name one thing rather than two things that happen to
+be on the same card, and it costs nothing to send, because the pin was already
+on the row for the title. A list nobody has dressed wears the default pin,
+like its title does — see **The pins**.
+
+The five in the **Start here** strip keep the plain dots, for the same reason
+they carry no label: that panel is sixty-four pixels wide, where ten emoji are
+ten smudges on top of each other rather than ten places, and all five of those
+lists are Google's and wear the same default pin, so the glyph would cost the
+legibility and buy nothing. `paintSky()` in `assets/lists.js` is where the two
+part.
 
 **The ground is the city, and it took two goes to get there.** It was
 `data/places.json` — the seventy-five places on the map — drawn as faint
@@ -4010,8 +4029,8 @@ draws itself, because the bay is the part of the frame with no restaurants
 in it, so the panel gets a coastline without this repository carrying a line
 of coastline data. Nineteen kilobytes, fetched once after the rows are on
 the screen and painted into every sky already drawn; a page that never gets
-it shows each list's dots on plain paper, which is still the shape of the
-list.
+it shows each list's own marks on plain paper, which is still the shape of
+the list.
 
 It is `--hairline` on `--paper` and not on `--wash`, which is the other half
 of why it used to read as empty: hairline against wash is seven values of
@@ -7368,9 +7387,11 @@ Everywhere a list is named, which is four pages and the map: its own at
 `/list/<id>`, everybody's at `/lists`, its author's at `/u/<name>`, yours on
 `/account.html`, and the band across the top of the map's panel for as long as
 `/?list=<id>` is what the map is showing. The glyph sits in front of the title,
-and on a page of rows the scatter of dots beside each one is drawn in the tone
-— so a page of twenty is twenty constellations rather than twenty identical red
-ones, and the bakeries one is found without reading a word.
+and on `/lists` it is also what each of the list's places is drawn as in the
+panel above it — so a page of twenty is twenty constellations rather than
+twenty identical red ones, and the bakeries one is found without reading a
+word. See **Public lists** for where that panel comes from and which of the
+two shapes on that page keeps plain dots.
 
 On the map it says something the four pages cannot: the pins under the band
 are already wearing that glyph, so the name and what is drawn under it are one

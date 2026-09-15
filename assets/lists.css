@@ -915,10 +915,10 @@
 .lists-start-body { min-width: 0; }
 
 /* A list as a shape on the city: the city itself as pale ground, the list's
-   own places on it in the accent. Drawn by sky() in assets/lists.js into a
-   box with the frame's own proportions, so nothing is cropped — the frame is
-   fitted to each list now, and a crop that hid the edges of a fixed box has
-   nothing left to hide.
+   own places on it wearing the mark the list chose. Drawn by sky() in
+   assets/lists.js into a box with the frame's own proportions, so nothing is
+   cropped — the frame is fitted to each list now, and a crop that hid the
+   edges of a fixed box has nothing left to hide.
 
    The ground is the eleven hundred coordinates of data/city.json drawn wide
    enough to touch, so it reads as land rather than as a scatter, and the bay
@@ -935,6 +935,27 @@
 .lists-sky svg { display: block; width: 100%; height: auto; }
 .lists-sky-city circle { fill: var(--hairline); }
 .lists-sky-own circle { fill: var(--accent); }
+
+/* The list's mark, where the panel is wide enough to carry it. Centred on the
+   place by text-anchor, because the width of an emoji is the platform's and
+   not something assets/lists.js can offset by; its height is the .35em the
+   drawing puts into the baseline.
+
+   The fill is the fallback and not the picture: a colour emoji brings its own
+   paint, and fill reaches only a platform that has none of these glyphs in
+   colour, where the accent is what the dots it replaced were drawn in.
+
+   The glyph is the picture; nothing selects or drags it — the same line
+   .pin-face and .lists-pin carry in assets/styles.css, and for the same
+   reason: the panel is aria-hidden decoration, and a selection dragged out of
+   it is a handful of fire emoji. */
+.lists-sky-own text {
+  font-family: var(--emoji);
+  fill: var(--accent);
+  text-anchor: middle;
+  -webkit-user-select: none;
+  user-select: none;
+}
 .lists-all-card > .lists-sky {
   aspect-ratio: 120 / 52;
   margin: 0 0 12px;

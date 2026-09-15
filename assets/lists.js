@@ -1137,10 +1137,11 @@
       allMeta({ keeps: l.keeps, by: null }, line);
       ul.appendChild(el('li', { className: 'lists-index-row' }, [
         el('div', { className: 'lists-start-card' }, [
-          /* No label on a strip card: the sky is sixty-four pixels wide there
-             and a line of mono across it would be the loudest thing on the
-             card. The rows below are where the scale is worth saying. */
-          sky(l.dots, false),
+          /* Not the wide sky: at sixty-four pixels a line of mono across it
+             would be the loudest thing on the card, and ten of the list's
+             mark would be a pile rather than ten places. The rows below are
+             where both are worth drawing — see paintSky(). */
+          sky(l, false),
           el('div', { className: 'lists-start-body' }, [
             line,
             TTBTrack.click(el('a', {
@@ -1204,21 +1205,35 @@
   }
 
   /* A list as a shape on the city: the city itself as pale ground, and the
-     list's own places on it in the accent. It is the one picture only this
-     site can draw of somebody's list, and it says before a single name is
-     read whether this is a Kalamaja list or a Pirita one, a walk or an
-     afternoon of driving. Decorative in the markup — the names under the
-     title are the accessible version of the same fact, and so is the label,
-     which sits inside the same aria-hidden box.
+     list's own places on it wearing the mark the list chose. It is the one
+     picture only this site can draw of somebody's list, and it says before a
+     single name is read whether this is a Kalamaja list or a Pirita one, a
+     walk or an afternoon of driving. Decorative in the markup — the names
+     under the title are the accessible version of the same fact, and so is
+     the label, which sits inside the same aria-hidden box.
+
+     The mark is the whole difference between a page of twenty pictures and a
+     page of twenty red scatters. They were dots in the accent, which is the
+     colour every list's places drew in, so the only thing telling two cards
+     apart was the shape of the city under them — and two lists of the same
+     ten streets drew the same picture twice. The glyph is the one its title
+     is already wearing, so the picture and the name are one thing: a page of
+     flames and a page of balloons, found without reading a word. It costs
+     nothing to send, because the pin was already on the row for the title.
 
      The list's own dots are drawn now, out of what the row arrived with. The
      ground is drawn once data/city.json has answered — a fetch the rows never
      wait on — and a page that never gets it shows each list on plain paper,
      which is still the shape of the list. */
-  function sky(dots, labelled) {
-    if (!dots || !dots.length) return null;
+  function sky(l, wide) {
+    if (!l.dots || !l.dots.length) return null;
     var box = el('div', { className: 'lists-sky', 'aria-hidden': 'true' });
-    box.ttbSky = { dots: dots, frame: frameFor(dots), labelled: labelled };
+    box.ttbSky = {
+      dots: l.dots,
+      frame: frameFor(l.dots),
+      wide: wide,
+      pin: TTBPins.ofList(l)
+    };
     paintSky(box);
     return box;
   }
@@ -1230,16 +1245,28 @@
      translated text and translated text is never written through innerHTML. */
   function paintSky(box) {
     var sk = box.ttbSky;
+    /* Only a row card wears the mark. The strip's sky is sixty-four pixels
+       wide, where ten emoji are ten smudges on top of each other rather than
+       ten places, and the five lists in it are Google's — all five wearing
+       the same default pin, so glyphs would cost the legibility and buy
+       nothing. It keeps the dots, for the same reason it carries no label.
+
+       Eight units across on the cards that do wear it, against the dot's six
+       point eight: an emoji carries its own padding, so a glyph asked for at
+       the dot's size reads smaller than the dot did. Eight is about
+       twenty-two pixels on the phone the layouts are measured against, which
+       is what a pin on the map is. */
+    var mark = sk.wide ? TTBPins.glyph(sk.pin) : '';
     box.innerHTML = '<svg viewBox="0 0 ' + SKY.w + ' ' + SKY.h + '" focusable="false">' +
       '<g class="lists-sky-city">' +
-      (state.city ? circles(state.city, sk.frame, groundRadius(sk.frame), false) : '') +
+      (state.city ? spots(state.city, sk.frame, groundRadius(sk.frame), false, '') : '') +
       '</g><g class="lists-sky-own">' +
-      circles(sk.dots, sk.frame, 3.4, true) +
+      spots(sk.dots, sk.frame, mark ? 4 : 3.4, true, mark) +
       '</g></svg>';
     /* No label on a list with no spread — three places in one building, or a
        list whose dots all rounded to the same block. "0.0 km across" is not a
        fact about it, it is the label failing to have anything to say. */
-    if (sk.labelled && sk.frame.km >= 0.05) {
+    if (sk.wide && sk.frame.km >= 0.05) {
       box.appendChild(el('span', {
         className: 'lists-sky-span mono',
         textContent: t('listsSkyAcross', { n: across(sk.frame.km) })
@@ -1247,14 +1274,26 @@
     }
   }
 
-  /* Dots as SVG source. A place of the list's own outside the frame cannot
-     happen — the frame is built around them — but a ground dot outside it is
-     the usual case, and it is dropped rather than clamped: most of the city
-     is outside a fitted frame, and clamping a thousand of them smears the
-     panel's edges into a solid bar. The list's own are clamped, because the
-     one that would need it is a rounding error on the padding. */
-  function circles(dots, frame, r, clamp) {
-    var out = '', i, x, y;
+  /* Places as SVG source: a plain dot, or `glyph` if one is given, which is
+     how a list's own places come to be wearing its mark. `r` is half of
+     whichever is drawn, so the two are asked for in the same measure and the
+     padding that keeps a dot inside the panel keeps a glyph inside it too.
+
+     A place of the list's own outside the frame cannot happen — the frame is
+     built around them — but a ground dot outside it is the usual case, and it
+     is dropped rather than clamped: most of the city is outside a fitted
+     frame, and clamping a thousand of them smears the panel's edges into a
+     solid bar. The list's own are clamped, because the one that would need it
+     is a rounding error on the padding.
+
+     An emoji hangs off its baseline rather than sitting on a centre, and
+     about a third of its size is below the middle of it, so the baseline goes
+     that far under the point the place is actually at — the same .35em the
+     rest of the web centres a line of SVG text with. The width is the CSS
+     rule's, which sets text-anchor rather than this writing an x offset it
+     would have to guess the glyph's width for. */
+  function spots(dots, frame, r, clamp, glyph) {
+    var out = '', size = r * 2, i, x, y;
     for (i = 0; i < dots.length; i++) {
       x = SKY.pad + (dots[i][1] - frame.lo0) / (frame.lo1 - frame.lo0) * (SKY.w - SKY.pad * 2);
       y = SKY.pad + (frame.la1 - dots[i][0]) / (frame.la1 - frame.la0) * (SKY.h - SKY.pad * 2);
@@ -1263,7 +1302,10 @@
         x = Math.max(SKY.pad, Math.min(SKY.w - SKY.pad, x));
         y = Math.max(SKY.pad, Math.min(SKY.h - SKY.pad, y));
       }
-      out += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + r + '"/>';
+      out += glyph
+        ? '<text x="' + x.toFixed(1) + '" y="' + (y + size * 0.35).toFixed(1) +
+          '" font-size="' + size + '">' + glyph + '</text>'
+        : '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + r + '"/>';
     }
     return out;
   }
@@ -1360,7 +1402,7 @@
     return el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card' + (l.mine ? '' : ' has-keep') }, [
         /* The sky first, above the title, where a picture goes on a card. */
-        sky(l.dots, true),
+        sky(l, true),
         TTBTrack.click(el('a', {
           className: 'lists-index-title lists-open',
           href: '/list/' + l.id
