@@ -1,0 +1,88 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="scene.css">
+<title>Surprise me — clip</title>
+<meta name="clip" content="ms=4000; w=480; h=270">
+<style>
+  /* The rail down the left, the way the map keeps it, and the sheet coming up
+     from the bottom at the low stop — which is the whole argument of the post:
+     the map stays on screen. */
+  .rail { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); }
+  .sheet {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 16px 20px 18px;
+    border-radius: var(--radius-soft) var(--radius-soft) 0 0;
+  }
+  .sheet .place-name { font-size: 22px; margin: 0 0 6px; }
+  .sheet .blurb { font-size: 13px; line-height: 1.55; margin: 8px 0 0; }
+  .lit { position: absolute; display: grid; place-items: center; }
+  .lit .pin-mark { width: 30px; height: 30px; }
+  .lit-name {
+    position: absolute; top: 30px; white-space: nowrap;
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em;
+    color: var(--ink); text-shadow: var(--glow);
+  }
+</style>
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage, clip) {
+    Clip.ground(stage, clip.w, clip.h);
+
+    var rail = document.createElement('div');
+    rail.className = 'rail';
+    rail.innerHTML =
+      '<button type="button" class="rail-btn hint-open">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+          '<rect x="4" y="4" width="16" height="16" rx="4"/>' +
+          '<circle cx="9" cy="9" r="1.35" class="pip"/>' +
+          '<circle cx="12" cy="12" r="1.35" class="pip"/>' +
+          '<circle cx="15" cy="15" r="1.35" class="pip"/>' +
+        '</svg><span class="rail-label">Surprise me</span>' +
+      '</button>';
+    stage.appendChild(rail);
+
+    var lit = document.createElement('div');
+    lit.className = 'lit';
+    lit.style.left = '300px';
+    lit.style.top = '64px';
+    lit.innerHTML = '<span class="pin-mark is-reel"><span class="pin-face"></span></span>' +
+      '<span class="lit-name">Kohvik Must Puudel</span>';
+    stage.appendChild(lit);
+
+    var sheet = document.createElement('div');
+    sheet.className = 'sheet card';
+    sheet.innerHTML =
+      '<h2 class="place-name">Kohvik Must Puudel</h2>' +
+      '<div class="head-meta"><span class="price">' +
+        '<i class="on">€</i><i class="on">€</i><i>€</i><i>€</i>' +
+      '</span></div>' +
+      '<p class="blurb">An old favourite off Freedom Square, and the kind of room ' +
+      'you end up staying in for another hour.</p>';
+    stage.appendChild(sheet);
+
+    return { lit: lit, sheet: sheet, cursor: Clip.cursor(stage) };
+  },
+
+  /* Press the die and a place arrives — at the low stop, with the pin it
+     picked still on screen above it. That is the whole point: the first thing
+     you want back is where it is, not the write-up. */
+  at: function (t, h) {
+    var x = Clip.lerp(t, 150, 1150, 60, 96);
+    var y = Clip.lerp(t, 150, 1150, 252, 135);
+    h.cursor.to(x, y, { t: t, from: 1250, to: 1550 });
+    h.cursor.tap(72, 135, 76, Clip.at(t, 1300, 1950));
+
+    var up = Clip.at(t, 1450, 1720);
+    h.sheet.style.transform = 'translateY(' + (1 - up) * 130 + 'px)';
+
+    var shown = Clip.at(t, 1500, 1760);
+    h.lit.style.opacity = String(shown);
+    h.lit.style.transform = 'scale(' + (0.7 + 0.3 * shown) + ')';
+  }
+});
+</script>

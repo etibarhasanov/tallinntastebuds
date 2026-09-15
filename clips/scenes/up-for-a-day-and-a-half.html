@@ -1,0 +1,90 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Up for a day and a half — clip</title>
+<meta name="clip" content="ms=4600; w=480; h=270">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  /* The mark in the corner the map keeps it in, wearing the ring a story puts
+     on it, and the countdown the story viewer prints along its top. */
+  .corner {
+    position: absolute;
+    left: 50%;
+    top: 92px;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+  }
+  .brand-ring { width: 76px; height: 76px; }
+  .brand-ring .brand-mark { width: 76px; height: 76px; }
+  /* The ring stands still — scene.css turns every animation off, for the
+     reason written there. On the map it turns, and it is welcome to; here it
+     is a conic gradient, which is a few thousand colours, and PNG is not
+     built for redrawing those twelve times a second. */
+  .left {
+    position: absolute;
+    left: 0; right: 0;
+    top: 162px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: .12em;
+    color: var(--ink);
+    text-shadow: var(--glow);
+  }
+  .note {
+    position: absolute;
+    left: 0; right: 0;
+    top: 196px;
+    text-align: center;
+    font-family: var(--body);
+    font-size: 13.5px;
+    color: var(--muted);
+    text-shadow: var(--glow);
+  }
+</style>
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage, clip) {
+    Clip.ground(stage, clip.w, clip.h);
+
+    var corner = document.createElement('div');
+    corner.className = 'corner';
+    corner.innerHTML = '<span class="brand-ring">' +
+      '<img class="brand-mark" src="../../assets/logo/mark-round.webp" alt="" width="76" height="76">' +
+      '</span>';
+    stage.appendChild(corner);
+
+    var left = document.createElement('p');
+    left.className = 'left';
+    stage.appendChild(left);
+
+    var note = document.createElement('p');
+    note.className = 'note';
+    stage.appendChild(note);
+
+    return { ring: corner.querySelector('.brand-ring'), left: left, note: note };
+  },
+
+  /* Thirty-six hours, run through in four seconds: the ring turns while the
+     story stands, the clock on it counts down, and when it runs out the ring
+     goes the grey it wears once there is nothing behind it. */
+  at: function (t, h) {
+    var through = Clip.at(t, 300, 3300);
+    var hours = 36 - Math.round(through * 36);
+
+    h.ring.classList.toggle('is-seen', hours <= 0);
+
+    h.left.textContent = hours > 0 ? hours + 'H LEFT' : 'GONE';
+    h.left.style.color = hours > 0 ? '' : 'var(--muted)';
+
+    h.note.textContent = hours > 0
+      ? 'A story stands for a day and a half.'
+      : 'The picture moves onto the place it was shot at.';
+    h.note.style.opacity = String(Clip.at(t, 600, 1100));
+  }
+});
+</script>

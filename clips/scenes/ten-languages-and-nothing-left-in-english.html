@@ -1,0 +1,92 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ten languages — clip</title>
+<meta name="clip" content="ms=4000; w=480; h=270">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="scene.css">
+
+<style>
+  /* The switch in the corner the map keeps it in, and under it the words it
+     changes. Everything here is a real string out of data/ui.json — the
+     tagline, the two rail labels and the filter chip — in the two languages
+     the clip walks between. */
+  /* The switch inside the map's own top-right chrome, which is where the
+     pane it sits on is defined — .controls .seg, blurred and lifted. Only the
+     placing is this scene's. */
+  .controls { position: absolute; top: 30px; right: 24px; }
+  .words { position: absolute; left: 24px; top: 96px; width: 340px; }
+  .words .tagline { font-family: var(--body); font-size: 15px; line-height: 1.55; margin: 0 0 16px; }
+  /* The pill open, wearing its label: below 860px the rail collapses every
+     button to a disc, and a clip about words has to show the words. It is the
+     same class the rail uses to introduce itself on a phone. */
+  .words .rail-btn { margin: 0 8px 10px 0; }
+  .words .chip { margin-right: 8px; }
+</style>
+
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage, clip) {
+    Clip.ground(stage, clip.w, clip.h);
+
+    var controls = document.createElement('div');
+    controls.className = 'controls';
+    stage.appendChild(controls);
+
+    var seg = document.createElement('div');
+    seg.className = 'seg';
+    seg.innerHTML =
+      '<button type="button" class="btn is-on">EN</button>' +
+      '<button type="button" class="btn">ET</button>' +
+      '<button type="button" class="btn">RU</button>';
+    controls.appendChild(seg);
+
+    var words = document.createElement('div');
+    words.className = 'words';
+    words.innerHTML =
+      '<p class="tagline"></p>' +
+      '<button type="button" class="rail-btn hint-open">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+          '<rect x="4" y="4" width="16" height="16" rx="4"/>' +
+          '<circle cx="9" cy="9" r="1.35" class="pip"/>' +
+          '<circle cx="12" cy="12" r="1.35" class="pip"/>' +
+          '<circle cx="15" cy="15" r="1.35" class="pip"/>' +
+        '</svg><span class="rail-label"></span>' +
+      '</button>' +
+      '<div><span class="chip"></span><span class="chip"></span></div>';
+    stage.appendChild(words);
+
+    return {
+      buttons: seg.querySelectorAll('.btn'),
+      tagline: words.querySelector('.tagline'),
+      die: words.querySelector('.rail-label'),
+      chips: words.querySelectorAll('.chip'),
+      cursor: Clip.cursor(stage)
+    };
+  },
+
+  /* One press on the switch and every word on the page is in the new
+     language — the tagline, the label on the die, the chips. Nothing is left
+     behind in English, which is what the build refuses to ship. */
+  at: function (t, h) {
+    var et = t >= 1620;
+
+    h.buttons[0].classList.toggle('is-on', !et);
+    h.buttons[1].classList.toggle('is-on', et);
+
+    h.tagline.textContent = et
+      ? 'Kõik selle kaardi kohad olen ise läbi käinud ja heaks kiitnud.'
+      : 'All the places in this map I have personally been and approved.';
+    h.die.textContent = et ? 'Üllata mind' : 'Surprise me';
+    h.chips[0].textContent = et ? 'Pagariäri' : 'Bakery';
+    h.chips[1].textContent = et ? 'Kohv/tee' : 'Coffee/tea';
+
+    var x = Clip.lerp(t, 150, 1350, 458, 402);
+    var y = Clip.lerp(t, 150, 1350, 248, 50);
+    h.cursor.to(x, y, { t: t, from: 1450, to: 1750 });
+    h.cursor.tap(407, 49, 56, Clip.at(t, 1520, 2150));
+  }
+});
+</script>

@@ -1,0 +1,85 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>The arithmetic after dinner — clip</title>
+<meta name="clip" content="ms=4800; w=480; h=270">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="../../assets/split.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  /* A group's ledger, in the rows splitwise keeps it in: what somebody paid
+     for, who paid it, and what it came to \u2014 and then the one sentence at
+     the bottom that is the whole point of the page. */
+  .group {
+    position: absolute;
+    left: 34px; top: 16px;
+    width: 412px;
+    padding: 14px 18px 14px;
+  }
+  .group h2 {
+    font-family: var(--display);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -.02em;
+    margin: 4px 0 10px;
+  }
+  .split-row { padding: 7px 0; }
+  .split-row + .split-row { border-top: 1px solid var(--hairline); }
+  .split-what { font-family: var(--display); font-size: 14px; font-weight: 600; }
+  .split-meta { font-size: 10px; }
+  .settle {
+    margin: 12px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--hairline);
+    font-family: var(--body);
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--accent);
+  }
+</style>
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage) {
+    var group = document.createElement('div');
+    group.className = 'group card';
+    group.innerHTML =
+      '<p class="eyebrow">Four in the group</p>' +
+      '<h2>Dinner at Rataskaevu</h2>' +
+      '<ul class="split-rows"></ul>' +
+      '<p class="settle"></p>';
+    stage.appendChild(group);
+
+    return {
+      rows: group.querySelector('.split-rows'),
+      settle: group.querySelector('.settle')
+    };
+  },
+
+  /* The lines go in one at a time, the way four people add them from four
+     phones, and the sentence at the foot works itself out as they land: who
+     hands what to whom, once, instead of an evening of arithmetic in a group
+     chat. */
+  at: function (t, h) {
+    var lines = [
+      ['The table', 'kaisa paid', '\u20ac86.40'],
+      ['Two rounds after', 'mart paid', '\u20ac24.00'],
+      ['The taxi home', 'jaan paid', '\u20ac12.80']
+    ];
+    var shown = Math.round(Clip.at(t, 300, 2400) * lines.length);
+
+    h.rows.innerHTML = lines.slice(0, shown).map(function (line) {
+      return '<li class="split-row">' +
+        '<span class="split-what">' + line[0] +
+          '<span class="split-meta"> \u00b7 ' + line[1] + '</span></span>' +
+        '<span class="split-money">' + line[2] + '</span></li>';
+    }).join('');
+
+    var out = Clip.at(t, 2700, 3400);
+    h.settle.textContent = 'mart hands kaisa \u20ac6.40. jaan hands kaisa \u20ac18.20.';
+    h.settle.style.opacity = String(out);
+    h.settle.style.transform = 'translateY(' + (1 - out) * 8 + 'px)';
+  }
+});
+</script>

@@ -7,7 +7,7 @@ description: Change what a page does or looks like: anything in assets/, an HTML
 
 Anything a visitor sees or presses: the scripts and stylesheets in `assets/`,
 the HTML pages, `data/ui.json`, the labels in the taxonomy and the cuisines, a
-post in `data/blog.json`, a language. It is the process with the most rules
+post in `data/blog.json` and the clip on it, a language. It is the process with the most rules
 because a mistake here reaches every phone that opens the map, and a browser
 holding yesterday's script against today's data has already taken the site
 down once — that story is in the header of `tools/stamp.mjs`.

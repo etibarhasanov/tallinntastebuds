@@ -4,6 +4,7 @@ paths:
   - "*.html"
   - "data/ui.json"
   - "data/blog.json"
+  - "clips/**"
   - "data/cuisines.json"
   - "data/radio.json"
   - "tools/stamp.mjs"

@@ -1,0 +1,91 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>No scores — clip</title>
+<meta name="clip" content="ms=3800; w=480; h=270">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="scene.css">
+
+<style>
+  /* Three pins on the city, which is the whole of what a place on this map
+     says about itself. .pin-mark and .pin-face are the map's own; what a pin
+     is wearing — a solid collar, a paper gap, or the quiet small one — is the
+     three classes the map dresses them with in dressPin(). */
+  .drop { position: absolute; display: grid; place-items: center; }
+  .drop .pin-mark { width: 30px; height: 30px; }
+  .pin-name {
+    position: absolute;
+    top: 30px;
+    white-space: nowrap;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .06em;
+    color: var(--ink);
+    text-shadow: var(--glow);
+  }
+  .says {
+    position: absolute;
+    left: 24px;
+    bottom: 22px;
+    max-width: 300px;
+    margin: 0;
+    font-family: var(--display);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+    color: var(--ink);
+    text-shadow: var(--glow);
+  }
+</style>
+
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage, clip) {
+    Clip.ground(stage, clip.w, clip.h);
+
+    var places = [
+      { name: 'Pulla Bakery', wears: 'is-reel', x: 120, y: 78 },
+      { name: 'F-Hoone', wears: 'is-photos', x: 268, y: 126 },
+      { name: 'Vaat Brewery', wears: 'is-words', x: 386, y: 68 }
+    ];
+
+    var pins = places.map(function (place) {
+      var drop = document.createElement('div');
+      drop.className = 'drop';
+      drop.style.left = place.x + 'px';
+      drop.style.top = place.y + 'px';
+      drop.innerHTML =
+        '<span class="pin-mark ' + place.wears + '"><span class="pin-face"></span></span>' +
+        '<span class="pin-name">' + place.name + '</span>';
+      stage.appendChild(drop);
+      return drop;
+    });
+
+    var says = document.createElement('p');
+    says.className = 'says';
+    says.textContent = 'No stars. Being on the map is the verdict.';
+    stage.appendChild(says);
+
+    return { pins: pins, says: says };
+  },
+
+  /* Each pin settles in turn, wearing the one thing a pin on this map has to
+     say: filmed, photographed, or written up. Nothing carries a number,
+     which is the point the sentence underneath makes out loud. */
+  at: function (t, h) {
+    h.pins.forEach(function (pin, i) {
+      var from = 250 + i * 420;
+      var in_ = Clip.at(t, from, from + 260);
+      pin.style.opacity = String(in_);
+      pin.style.transform = 'translateY(' + (1 - in_) * -14 + 'px) scale(' + (0.7 + 0.3 * in_) + ')';
+    });
+
+    var said = Clip.at(t, 1800, 2080);
+    h.says.style.opacity = String(said);
+    h.says.style.transform = 'translateY(' + (1 - said) * 8 + 'px)';
+  }
+});
+</script>

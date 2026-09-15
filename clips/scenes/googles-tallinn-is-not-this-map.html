@@ -1,0 +1,66 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Google’s Tallinn — clip</title>
+<meta name="clip" content="ms=4200; w=480; h=270">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  /* Two cards, and the only thing that matters is which is which: the map's
+     write-up on the left, Google's row on the right with its rating and the
+     line that says whose rating it is. */
+  .pair { position: absolute; inset: 24px 20px auto 20px; display: flex; gap: 14px; }
+  .pair .card { flex: 1 1 0; padding: 14px 16px 15px; }
+  .pair h3 {
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.02em;
+    margin: 6px 0 8px;
+  }
+  .pair .blurb { font-size: 12.5px; line-height: 1.5; margin: 0; }
+  .score { font-family: var(--mono); font-size: 20px; letter-spacing: -.01em; margin: 0 0 4px; }
+  .whose { font-family: var(--mono); font-size: 10px; line-height: 1.5; letter-spacing: .04em; color: var(--muted); margin: 0; }
+  .verdict { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 10px 0 0; }
+</style>
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage, clip) {
+    Clip.ground(stage, clip.w, clip.h);
+
+    var pair = document.createElement('div');
+    pair.className = 'pair';
+    pair.innerHTML =
+      '<div class="card mine">' +
+        '<p class="eyebrow">On the map</p>' +
+        '<h3>F-Hoone</h3>' +
+        '<p class="blurb">Breakfast, lunch, pizza and sandwiches, all day in one ' +
+        'of the oldest buildings in Telliskivi.</p>' +
+        '<p class="verdict">No score</p>' +
+      '</div>' +
+      '<div class="card theirs">' +
+        '<p class="eyebrow">In the directory</p>' +
+        '<h3>F-Hoone</h3>' +
+        '<p class="score">4.5</p>' +
+        '<p class="whose">According to Google,<br>4.5 from 6,207 reviews</p>' +
+      '</div>';
+    stage.appendChild(pair);
+
+    return { mine: pair.querySelector('.mine'), theirs: pair.querySelector('.theirs') };
+  },
+
+  /* The same restaurant, said twice by two different people, and the second
+     card never stops saying whose number it is carrying. */
+  at: function (t, h) {
+    var one = Clip.at(t, 400, 650);
+    h.mine.style.opacity = String(one);
+    h.mine.style.transform = 'translateY(' + (1 - one) * 10 + 'px)';
+
+    var two = Clip.at(t, 1500, 1780);
+    h.theirs.style.opacity = String(two);
+    h.theirs.style.transform = 'translateY(' + (1 - two) * 10 + 'px)';
+  }
+});
+</script>

@@ -132,6 +132,15 @@
 /data/*
   Cache-Control: public, max-age=0, must-revalidate
 
+# The blog's clips. A week would be wrong here and it is the one picture
+# directory where it would: a clip is drawn from a scene by
+# tools/blogclips.mjs and redrawn under the same name whenever that scene
+# changes, so a cached copy is a copy of a scene nobody can see any more.
+# Revalidating costs one conditional request and cannot strand anybody, which
+# is the same argument /data/* is under.
+/clips/*
+  Cache-Control: public, max-age=0, must-revalidate
+
 # Photos are named per place and are replaced rather than edited, so they can
 # sit in the cache for a week.
 /photos/*

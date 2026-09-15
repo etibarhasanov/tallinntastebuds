@@ -1,0 +1,78 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>A save is free — clip</title>
+<meta name="clip" content="ms=3600; w=480; h=270">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="scene.css">
+
+<style>
+  /* The panel, at the width a 480-point stage has room for. Everything inside
+     it is the map's own: .place-head, .place-name, the price gauge, .blurb,
+     .tag and the bookmark in the corner. */
+  .save-panel {
+    position: absolute;
+    left: 30px;
+    top: 42px;
+    width: 420px;
+    padding: 20px 22px 18px;
+  }
+  .save-panel .place-head { margin-bottom: 12px; padding-right: 96px; }
+  .save-panel .place-name { font-size: 26px; margin: 0 0 8px; }
+  .save-panel .blurb { font-size: 13.5px; line-height: 1.6; margin: 0 0 14px; }
+  .save-panel .panel-save { top: 16px; right: 18px; }
+</style>
+
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage, clip) {
+    Clip.ground(stage, clip.w, clip.h);
+
+    var panel = document.createElement('div');
+    panel.className = 'save-panel card';
+    panel.innerHTML =
+      '<button type="button" class="panel-save has-n" aria-pressed="false">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+          '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>' +
+        '</svg><span class="save-n">23</span>' +
+      '</button>' +
+      '<div class="place-head">' +
+        '<h2 class="place-name">Pudel</h2>' +
+        '<div class="head-meta"><span class="price">' +
+          '<i class="on">€</i><i class="on">€</i><i>€</i><i>€</i>' +
+        '</span></div>' +
+      '</div>' +
+      '<p class="blurb">A good place to bring a group and settle in for the ' +
+      'evening. Really nice Guinness, and it is right there in Telliskivi.</p>' +
+      '<div class="tag-row"><span class="tag">Beer/pub</span>' +
+      '<span class="tag">Casual/Solo</span></div>';
+    stage.appendChild(panel);
+
+    return {
+      save: panel.querySelector('.panel-save'),
+      count: panel.querySelector('.save-n'),
+      cursor: Clip.cursor(stage)
+    };
+  },
+
+  /* The whole beat: the pointer comes in from the corner, presses the
+     bookmark, the outline fills and the number other people made goes up by
+     one. Nothing else on the panel moves, which is the point — a save costs
+     a press and changes one thing. */
+  at: function (t, h) {
+    var x = Clip.lerp(t, 150, 1200, 468, 400);
+    var y = Clip.lerp(t, 150, 1200, 300, 78);
+    var press = { t: t, from: 1300, to: 1600 };
+
+    h.cursor.to(x, y, press);
+    h.cursor.tap(403, 76, 68, Clip.at(t, 1380, 2050));
+
+    var saved = t >= 1420;
+    h.save.setAttribute('aria-pressed', saved ? 'true' : 'false');
+    h.count.textContent = saved ? '24' : '23';
+  }
+});
+</script>

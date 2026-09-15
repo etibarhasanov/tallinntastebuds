@@ -9,6 +9,9 @@
     "standfirst": {
       "en": "Being on it is the verdict. Everything else here follows from that one decision."
     },
+    "clip": {
+      "en": "Three pins settling onto the map — filmed, photographed and written up — with no number on any of them."
+    },
     "body": {
       "en": [
         "The map opens on the places in Tallinn I have eaten at and would send a friend to. There is no rating on any of them, no stars, no mark out of ten, and there never will be. A place is either on the map or it is not, and that is the whole of the judgement this site makes.",
@@ -27,6 +30,9 @@
     },
     "standfirst": {
       "en": "Every word a visitor reads lives in one file. A string that exists in one language and not another fails the build."
+    },
+    "clip": {
+      "en": "The language switch pressed from EN to ET, and the tagline, the Surprise me pill and the filter chips all turning into Estonian."
     },
     "body": {
       "en": [
@@ -47,6 +53,9 @@
     "standfirst": {
       "en": "The die picks from whatever the chips allow. On a phone it opens the place low, because the first thing you want back is not the write-up."
     },
+    "clip": {
+      "en": "The die on the rail pressed, and a place arriving in a sheet along the bottom with the pin it picked still lit above it."
+    },
     "body": {
       "en": [
         "The die on the left rail picks a place at random and opens it. It picks from whatever the filter chips currently allow, so choosing Korean and Cheap eats and then pressing it answers the question you were actually asking rather than a question about the whole city. Closed places are never offered, and the same place never comes back twice in a row.",
@@ -66,6 +75,9 @@
     "standfirst": {
       "en": "The bookmark takes no account at all. One control keeps the place and says how many others kept it too."
     },
+    "clip": {
+      "en": "The bookmark in the corner of Pudel’s panel pressed: the outline fills in and the count beside it goes from 23 to 24."
+    },
     "body": {
       "en": [
         "Press the bookmark in the corner of an open place and the place is kept — on this device, in this browser, with nothing in the way. The number next to it is how many other people have pressed the same one, which is one control doing two jobs. That is only honest because a save here is anonymous: nobody can see whose it was, so the reason every other site keeps a public like apart from a private bookmark does not apply.",
@@ -83,6 +95,9 @@
     },
     "standfirst": {
       "en": "A story is the one thing on this map that is not permanent. The picture in it stays all the same."
+    },
+    "clip": {
+      "en": "The mark wearing a story’s turning ring while the hours left count down from thirty-six to none, and the ring going grey when they do."
     },
     "body": {
       "en": [
@@ -103,6 +118,9 @@
     "standfirst": {
       "en": "A chip is a question about places, so the map is not allowed to answer it with a square of blank tiles."
     },
+    "clip": {
+      "en": "The Bakery chip pressed: the places it drops fade away and the two it leaves come in from the edge until both are on screen."
+    },
     "body": {
       "en": [
         "Press a chip — bakeries, cheap eats, somewhere for a date — and if none of the places it leaves are actually in view, the map pulls back until some of them are: the filtered set framed at city level, or the whole city if the chips match nothing anywhere.",
@@ -122,6 +140,9 @@
     "standfirst": {
       "en": "No email, no phone, no real name, no sign in with anything. The smallest thing that does the job."
     },
+    "clip": {
+      "en": "A username and a password typed into the sign-up sheet, over the line saying a forgotten password cannot be recovered — and nothing else to fill in."
+    },
     "body": {
       "en": [
         "An account here holds a username, a password hash and — if you write one — a couple of hundred characters about yourself. There is no address field and no third party involved. That is not an oversight waiting to be fixed: it is the least of you that will make a list follow you to another phone, and anything past it would be a record of where somebody eats, kept for no reason anybody asked for.",
@@ -139,6 +160,9 @@
     },
     "standfirst": {
       "en": "There is a second page with every place in the city on it. Nothing links to it, and that is the price of it existing at all."
+    },
+    "clip": {
+      "en": "The same restaurant on two cards: the map’s write-up with no score, and the directory’s row carrying 4.5 and saying whose number that is."
     },
     "body": {
       "en": [
@@ -159,6 +183,9 @@
     "standfirst": {
       "en": "A name they chose, places they picked, a sentence about each one, and a link they can send to a friend."
     },
+    "clip": {
+      "en": "The third row of a list pressed, and a place landing in it with the sentence its author wrote about it."
+    },
     "body": {
       "en": [
         "Everything else on this site is one person’s opinion. A list is the other thing: top ten burgers, where to take your parents, the bakeries worth the walk. It carries the username of whoever wrote it, and it has an address they can paste into a message.",
@@ -177,6 +204,9 @@
     },
     "standfirst": {
       "en": "A discount is a QR code that changes every hour, a page for the waiter who scans it, and a link the restaurant bookmarks."
+    },
+    "clip": {
+      "en": "A discount pass drawing itself: what is off the bill, the code for this hour, and the square a waiter scans."
     },
     "body": {
       "en": [
@@ -197,6 +227,9 @@
     "standfirst": {
       "en": "Every list has said who wrote it since the day lists existed. The name was where the sentence stopped."
     },
+    "clip": {
+      "en": "The byline under a list pressed, and the page behind it arriving: everything else that person published, and how often it was kept."
+    },
     "body": {
       "en": [
         "Press a name on a list now and you get that person: the public lists they have made, newest first, how many places are on each and how many people kept it, the year they turned up, one number over the lot saying how often in all their lists have been kept — and the line they wrote about themselves, if they wrote one.",
@@ -215,6 +248,9 @@
     },
     "standfirst": {
       "en": "Cheap asian food. Somewhere for a date. Khachapuri, still open. The panel answers with places, and it remembers what you asked a minute ago."
+    },
+    "clip": {
+      "en": "A sentence typed into the chat — cheap asian food, still open — becoming a turn in the thread, with two places under the answer."
     },
     "body": {
       "en": [
@@ -235,6 +271,9 @@
     "standfirst": {
       "en": "One button, one stream, and it keeps playing while you walk from the map to a list."
     },
+    "clip": {
+      "en": "The radio button pressed: the pill takes the station’s name and the bars beneath it start moving."
+    },
     "body": {
       "en": [
         "There is a radio on the rail. It plays one station for everybody and, where there is one, a station per language — so the site can be read in Ukrainian with Ukrainian rock behind it, and a language with no station of its own falls back to the shared one rather than to silence.",
@@ -252,6 +291,9 @@
     },
     "standfirst": {
       "en": "Brick and forest, day and night. One swatch changes the entire colour world, not an accent."
+    },
+    "clip": {
+      "en": "The swatch pressed, and the card, the pin, the price gauge and the ground all changing to the other style at once."
     },
     "body": {
       "en": [
@@ -271,6 +313,9 @@
     },
     "standfirst": {
       "en": "Five people eat, one card pays, and the rest of the evening is sums done badly in a group chat. This is those sums done once."
+    },
+    "clip": {
+      "en": "Three lines of a group’s bill landing one at a time, and the sentence at the foot working out who hands what to whom."
     },
     "body": {
       "en": [

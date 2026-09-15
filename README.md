@@ -5048,6 +5048,9 @@ blog.html              the page, served at /blog as well
 assets/blog.js         ES5, one IIFE, like every other file in assets/
 assets/blog.css        only what a page of prose has and the other pages do not
 data/blog.json         the posts
+clips/<id>.png         the clip on a post — GENERATED, four files per post
+clips/scenes/<id>.html what it is drawn from
+tools/blogclips.mjs    draws every clip out of every scene
 ```
 
 Nothing else. There is no endpoint, no database and no build step: the page
@@ -5092,6 +5095,50 @@ route to maintain for a nicer preview card. If that is ever wanted,
 `_shell.js` is where it starts, and the comment in the head of `blog.html`
 says so.
 
+### The clip
+
+Every post carries one: three or four seconds of the thing it is about,
+looping under the standfirst. The bookmark being pressed and the count going
+up. The Bakery chip narrowing the map and the two places it left coming in
+from the edge. A sentence typed into the chat and the answer arriving under
+it. The swatch pressed, and a card, a pin, a price gauge and the ground all
+changing at once.
+
+**They are not recordings of the site, and they are not drawings of it
+either.** A clip is rendered from a *scene* — an HTML file under
+`clips/scenes/` that loads `assets/styles.css` and arranges the site's own
+components into the one interaction the post is about. The card is `.card`,
+the pin is `.pin-mark` wearing the collar `dressPin()` gives it, the chip is
+`.chip`, the price is the same four-euro gauge, the pointer is the map's own
+tour cursor, and the QR on the discount clip is drawn by `assets/qr.js` from
+a real address, because a square that could not be scanned would be the one
+dishonest thing in a clip about a code. What a clip cannot have is the map
+itself: there are no tiles in it, and rather than pretend otherwise the scenes
+stand on a few streets' worth of the hairline, which is what
+`Clip.ground()` draws.
+
+**A scene is a pure function of time**, which is the whole reason this works.
+Nothing in one animates itself: `at(t)` puts everything where it is at
+millisecond `t`. `tools/blogclips.mjs` then asks Chromium for one frame at a
+time — twelve a second, a second a frame — diffs each against the one before,
+writes only the rectangle that changed, and gives a beat that holds a single
+frame with a long delay instead of twelve identical ones. Four seconds comes
+out near 200 KB.
+
+**The format is an animated PNG**, which is what people mean when they say a
+GIF and is better at being one — truecolour instead of 256, and played from a
+plain `<img>` with no autoplay policy to satisfy and no poster to ship. Its one
+cost is that nothing can pause it, so `assets/blog.js` draws a `<picture>` that
+hands `-still.png` to anybody whose machine asks for less motion. That is the
+twelfth design rule and it is the only answer the format allows.
+
+**Each scene is drawn twice, once per style.** A light card looping in the
+middle of a dark page is the one thing this site will not do, so there is a
+`-green` pair beside every clip and the page picks by the style it is wearing.
+Four files a post, all named after its id, all generated:
+[`clips/README.md`](clips/README.md) is how a scene is written and what will
+bite you when you write one.
+
 ### A post
 
 ```json
@@ -5101,6 +5148,7 @@ says so.
   "link": "/",
   "title": { "en": "A save is free, and the number beside it is other people" },
   "standfirst": { "en": "The bookmark takes no account at all." },
+  "clip": { "en": "The bookmark pressed: the outline fills and the count goes from 23 to 24." },
   "body": { "en": ["First paragraph.", "Second paragraph."] }
 }
 ```
@@ -5111,7 +5159,10 @@ once a link to it has gone out. `date` is the day it was written, `YYYY-MM-DD`
 have been written tomorrow and the validator refuses it. Scheduling something
 is a story's job. `link` is optional and is a path on this site: it is what
 the button at the foot offers to go and try, and a post with nothing to try
-has no button.
+has no button. `clip` is the sentence saying what the clip shows — it is the
+`alt` on the picture, so it is written for somebody who cannot see it rather
+than as a caption — and a post that carries one has to have the four files in
+`clips/` to go with it, which the validator checks.
 
 ### A post is not held to the ten languages
 
@@ -5181,9 +5232,13 @@ is reachable from the sitemap, and there is no third road in.
 
 1. Add an object to `data/blog.json`. Anywhere in the array — the page sorts
    by date, newest first, rather than trusting the order in the file.
-2. `node tools/validate.mjs`.
-3. Open `/blog` and read it. There is nothing else to run: no generator, no
-   database, no deploy step beyond the push.
+2. Write `clips/scenes/<id>.html` if it is getting a clip, and
+   `node tools/blogclips.mjs --only <id>` to draw it. Open the scene in a
+   browser first: with no query string it plays on a loop, which is the only
+   way to see whether the timing reads.
+3. `node tools/validate.mjs`.
+4. Open `/blog` and read it. There is nothing else to run: no database, no
+   deploy step beyond the push.
 
 Counts are deliberately kept out of the posts. This file, the code comments
 and the skills already carry "seventy-five places" and "eleven hundred and
@@ -5758,6 +5813,10 @@ to read and write first.
   speak, a `body` that is not paragraphs, no English in any of the three
   things a post says, or a language one of them has and another does not —
   see **[The blog](#the-blog)**
+- a post that says it has a `clip` and is missing any of the four files in
+  `clips/` that make one, or whose `clip` sentence — the `alt` on that picture
+  — is missing in English. A file in `clips/` that no post names only warns,
+  and so does a clip heavier than 600 KB
 - a deal in `data/deals.json` for a place that is not on the map, whose
   `name` is not what `restaurants.json` calls the place, whose key is shared
   with another deal or off the code alphabet, or a live one with no
@@ -5878,6 +5937,10 @@ blog.html                  a post per thing this site does   } unlinked, and
 assets/blog.js             the index, one post, and the walk  } indexed on
 assets/blog.css            only what a page of prose has      } purpose
 data/blog.json             the posts
+clips/                     GENERATED — the looping clip on each post, and the
+clips/scenes/              scenes, made of the site's own components, that
+                           tools/blogclips.mjs draws them from
+tools/blogclips.mjs        one frame a launch, diffed, written as one APNG
 google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
