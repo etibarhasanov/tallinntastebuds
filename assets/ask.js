@@ -80,10 +80,23 @@ window.TTBAsk = (function () {
      question is about the visitor, which is what it was. The fourth line
      is the glue of a follow-up — "the second one", "instead", "actually"
      — which carry() below has to read as nothing to eat, so that they
-     keep the conversation's topic rather than replace it. */
+     keep the conversation's topic rather than replace it.
+
+     And the word for food itself, which is the one that reads as a wish
+     and is not one. Everything on this site is food; "food" narrows
+     nothing, and searching by it is not a search. Left in, it landed on
+     every line that carries the word — the fast-food and street-food tags
+     are thick with it — so "greek food" scored four kebab shops for the
+     half of it that meant nothing, and a question that was only "food"
+     came back as a confident forty rows. Out, "greek food" is a question
+     about Greek, and "food" on its own is a question about nothing, which
+     gets the best-rated fifteen and is the honest answer to it. "Fast
+     food" is untouched: a cuisine label is matched on the whole question
+     before any of this runs, and it is two words. */
   var NOISE = (
     'a an the and or of for in on at to me i im is are want would like some ' +
     'something somewhere place places good nice please can you find show ' +
+    'food foods ' +
     'how does do it this that what which why who there here ' +
     'more other another else any few couple options option spots spot ideas ' +
     'idea suggestions suggestion recommend recommendation recommendations tell give ' +
@@ -91,10 +104,12 @@ window.TTBAsk = (function () {
     'one first second third next last latest instead rather actually maybe also ' +
     'again then just really ' +
     'ja voi vai see on ning kus midagi kohta koht hea palun kuidas mis kas kuhu ' +
+    'toit toitu toidu sook suua ' +
     'veel muud muid teisi moni moned paar valikuid valikud soovita soovitusi ' +
     'parim parimad parimat ' +
     'esimene teine kolmas jargmine viimane hoopis pigem tegelikult vist jalle siis lihtsalt ' +
     'и или на в где что нибудь место хорошее пожалуйста хочу как это куда ' +
+    'еда еду еды поесть покушать ' +
     'еще другие другое другои другую несколько пару варианты вариант вариантов ' +
     'посоветуи посоветуите подскажи подскажите лучшии лучшие лучшая лучшее самыи самое ' +
     'первыи первая второи вторая третии последнии следующии вместо лучше вообще ' +
@@ -168,20 +183,40 @@ window.TTBAsk = (function () {
        "Date night"       asked for as "a date", never as "a date night"
        "Vabas vormis/üksi" both halves, and either word of the first
 
-     So the slash splits it, each half stands on its own, and each word of a
-     half does too. A whole half is trusted down to three letters — "tea" is a
-     real thing to ask for — but a single word pulled out of a longer label
-     has to be four, because that is where the useful ones ("date", "eats",
-     "night") sit and the ones that are only ever noise ("gem", "in", "в")
-     fall below. */
-  function ways(label, fold) {
+     So the slash splits it and each half stands on its own, down to three
+     letters — "tea" is a real thing to ask for.
+
+     Whether each *word* of a half stands on its own too is `split`, and it
+     is the caller's to say, because the answer is not the same for the two
+     vocabularies this runs over.
+
+     A type's labels are chip phrases somebody shortens, and the word pulled
+     out is the word they actually type: "a date", never "a date night";
+     "laptop", never "laptop friendly". Those split, and a word out of a
+     longer label has to be four letters, which is where the useful ones
+     ("date", "eats", "night") sit and the ones that are only ever noise
+     ("gem", "in", "в") fall below.
+
+     A cuisine's labels do not split at all. A cuisine label is the name of a
+     kitchen and it means the whole phrase: "Fast food" is fast food, and the
+     "food" in it is not a request for anything. Split, it was — "greek food"
+     read as a wish for Greek *and* for fast food, and four kebab shops came
+     above the one Greek kitchen in the city. The four-letter floor is no
+     defence here, because the words that fall out of these labels are
+     ordinary nouns of their own languages and all of them clear it: "food"
+     and "comida" out of "Fast food" and "Comida rápida", "yeməyi" (meal) out
+     of Azerbaijani breakfast, "стол" (table) out of Russian buffet, "deniz"
+     (sea) out of Turkish seafood, "eastern" out of both "Middle Eastern" and
+     "Eastern European" at once. Whole only, and a question that says "middle
+     eastern" still reaches it. */
+  function ways(label, fold, split) {
     var out = [];
 
     String(label).split('/').forEach(function (half) {
       var whole = fold(half).replace(PUNCTUATION, ' ')
         .replace(/\s+/g, ' ').replace(/^ | $/g, '');
       if (whole.length > 2) out.push(whole);
-      if (whole.indexOf(' ') === -1) return;
+      if (!split || whole.indexOf(' ') === -1) return;
       whole.split(' ').forEach(function (word) {
         if (word.length > 3) out.push(word);
       });
@@ -197,14 +232,18 @@ window.TTBAsk = (function () {
      this is the opposite question rather than the same one: that builds one
      string per place out of the types the place has, this takes a sentence and
      asks which type ids are in it. Which is why the labels are wanted apart
-     here, one at a time through ways() above, rather than joined into a line. */
-  function typeSaid(question, types, fold, saidWith) {
+     here, one at a time through ways() above, rather than joined into a line.
+
+     `split` rides through to ways(), and it is the whole of the difference
+     between the two vocabularies this is called over: a type's labels come
+     apart into their words, a cuisine's never do. See ways(). */
+  function typeSaid(question, types, fold, saidWith, split) {
     var hit = [];
 
     types.forEach(function (type) {
       Object.keys(type).forEach(function (key) {
         if (key === 'id' || hit.indexOf(type.id) !== -1) return;
-        var found = ways(type[key], fold).some(function (word) {
+        var found = ways(type[key], fold, split).some(function (word) {
           if (!has(question, word)) return false;
           /* The label as it was typed, kept for the caller: what names a
              kind of place is not the name of somewhere to be near. */
@@ -272,12 +311,20 @@ window.TTBAsk = (function () {
     /* The labels as typed are kept too — "coffee", "fine dining", "thai" —
        for one use below: a kind of place is not a landmark. */
     var kinds = [];
-    var types = typeSaid(q, opts.types, fold, kinds);
+    /* Split: a type's labels are the chip phrases ways() describes, and the
+       word pulled out of one is the word somebody actually types. */
+    var types = typeSaid(q, opts.types, fold, kinds, true);
     /* The same reading over the directory's vocabulary: "thai", "tai" and
        "тайская" all reach `thai`. The export's rows carry these ids, and so
        do the sixty of my places that have a Google row — the Function lends
-       each its row's cuisine — so the one word scores both rolls. */
-    var kitchens = typeSaid(q, opts.cuisines || [], fold, kinds);
+       each its row's cuisine — so the one word scores both rolls.
+
+       Not split, which is the one thing read differently between the two
+       vocabularies. A cuisine label means the whole phrase: "Fast food" is
+       fast food, and the "food" in it asks for nothing. Taken apart it did —
+       "greek food" read as a wish for Greek and for fast food at once, and
+       four kebab shops came above the one Greek kitchen in the city. */
+    var kitchens = typeSaid(q, opts.cuisines || [], fold, kinds, false);
 
     /* What is left is a dish or a name. The wish phrases come out first so
        that "cheap" does not also go looking for a place called Cheap — and

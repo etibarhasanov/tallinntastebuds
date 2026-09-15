@@ -931,6 +931,39 @@ a substring of Piti and of Vesta: a leftover word now has to be three
 letters and has to start a word, so *khinkal* still finds khinkali and *how
 does it work* finds nothing.
 
+**A type's label comes apart into its words; a cuisine's does not.** Nobody
+types a chip, so a type label is matched whole and also by each word in it —
+*Date night* is asked for as *a date*, *Coffee/tea* as *coffee*, *Laptop
+friendly* as *laptop*. The word pulled out is the word somebody actually
+types, and a four-letter floor on it keeps *gem* and *in* out.
+
+A cuisine label is not a chip phrase, it is the name of a kitchen, and it
+means the whole of itself. *Fast food* is fast food; the *food* in it asks
+for nothing. Taken apart it did ask for something: *greek food* read as a
+wish for Greek **and** for fast food at once, four points each, and the one
+Greek kitchen in the city came fifth behind four kebab shops. The
+four-letter floor is no defence, because every word that falls out of these
+labels is an ordinary noun of its own language and clears it — *food* and
+*comida* out of *Fast food* and *Comida rápida*, *yeməyi* (meal) out of
+Azerbaijani breakfast, *стол* (table) out of Russian buffet, *deniz* (sea)
+out of Turkish seafood, *eastern* out of both *Middle Eastern* and *Eastern
+European* at once. So cuisines are matched whole only. *middle eastern*
+still reaches Middle Eastern; *eastern* on its own now reaches neither,
+which is the right answer to a word that names both.
+
+**And *food* is noise, in the three languages the noise list covers.**
+Everything here is food, so the word narrows nothing and searching by it is
+not a search — it is *place*, *somewhere* and *nice*, which have been on
+that list from the start. Left in it did worse than narrow nothing: it is a
+leftover word, leftover words are matched against the line, and the
+fast-food and street-food tags are thick with it, so the half of *greek
+food* that meant nothing scored four kebab shops, and a question that was
+only *food* came back as a confident forty rows. Out, *greek food* narrows
+exactly as *greek* does, and *food* on its own gets the best-rated fifteen,
+which is the honest answer to a question about nothing. *Fast food* is
+untouched, because a cuisine label is matched against the whole question
+before the noise is taken out of it — and it is two words.
+
 ### Where the opening hours come from
 
 The map's own places carry no hours — there is no such field in
@@ -995,18 +1028,27 @@ place had reached the model through the floor, the rule then in force wanted
 a Google place in every answer, and a model that must give a reason gave the
 question's word. Telling it not to was not enough, so the dish is now held to
 the way the kind is — see **Near somewhere** — in the one retry the rules
-share. When a leftover word names a dish or a cuisine — the directory's own
-vocabulary, `KITCHENS` in `functions/api/venues.js`, which knows kebab,
-ramen, sushi, taco, curry and the cuisines by name; or a word of a dish
-somebody wrote under a place of mine; or a cuisine the reader matched off a
-label — every pick's line has to carry it: the word itself, in the name, the
-street, the dishes, the types or the write-up, or a cuisine the word names,
-so that a row Google files as Middle Eastern carries *kebab* whether or not
-the word is in its name. A pick whose line does not is shown back to the
-model with the lines that do, and the second answer stands. It is
-deliberately not every leftover word: a mood, a street, a name, *food* —
-words that land on lines too, and would hold an answer to them for no reason
-a person would recognise — and never the words that named where to be near.
+share. What the picks are held to is the cuisine the question named outright
+— *thai*, *greek*, *тайская*, read off a whole label — and, when it named
+none, the words left over that name a dish: the directory's own vocabulary,
+`KITCHENS` in `functions/api/venues.js`, which knows kebab, ramen, sushi,
+taco, curry and the cuisines by name, or a word of a dish somebody wrote
+under a place of mine. Every pick's line has to carry it: the word itself,
+in the name, the street, the dishes, the types or the write-up, or a cuisine
+the word names, so that a row Google files as Middle Eastern carries *kebab*
+whether or not the word is in its name. A pick whose line does not is shown
+back to the model with the lines that do, and the second answer stands. It
+is deliberately not every leftover word: a mood, a street, a name — words
+that land on lines too, and would hold an answer to them for no reason a
+person would recognise — and never the words that named where to be near.
+
+The one cuisine outranks the leftovers because the check is an *any*, so
+every extra word it holds is another way for a wrong pick to pass, and one
+loose word undoes the whole rule. *Greek food* is the case: one place's
+must-order is *Pub food*, which makes the bare word *food* a dish for every
+question, so the picks were held to *greek or food* and a kebab shop carried
+the second. Held to *greek* alone, the same answer is faulted and the model
+is handed back the line that is actually Greek.
 
 ### Near somewhere
 
