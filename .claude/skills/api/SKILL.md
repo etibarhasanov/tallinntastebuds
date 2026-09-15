@@ -39,7 +39,8 @@ leading underscore are modules, not routes.
 | `/*` | `_middleware.js` | none; 301s `pages.dev` to `tallinntastebuds.ee`, and — **splitwise**, in a fenced block — serves `split.html` at the root of `splitwise.tallinntastebuds.ee` while 301ing every other path on that host back to the site | as `_headers` |
 | `GET /api/saves` | `saves.js` | none | `public, max-age=60`, weak ETag, plus the edge cache under `countsKey()` |
 | `POST /api/saves` | `saves.js` | `saves`, then `RECOUNT_SQL`, in one `batch()`; purges the counts cache | `no-store` |
-| `GET/POST /api/account` | `account.js` | `users`, `sessions`, `login_fails`, `username_holds`; `claim()` moves device saves onto the user and recounts, `username-change` releases the old name into a thirty-day hold, and `about` writes the profile line — the one change here that asks for a session and not the password | `no-store`, `Set-Cookie ttb_s` |
+| `GET/POST /api/account` | `account.js` | `users`, `sessions`, `login_fails`, `username_holds`, `identities`; `claimDeviceSaves()` moves device saves onto the user and recounts, `username-change` releases the old name into a thirty-day hold, `about` writes the profile line — the one change here that asks for a session and not the password — and `google-name` makes the account a Google sign-in landed on | `no-store`, `Set-Cookie ttb_s` |
+| `GET /api/google` | `google.js` | `users`, `sessions`, `identities`, and the saves `claimDeviceSaves()` moves. **One route asked twice**: with nothing it redirects to Google, with Google's `?code=` it is the way back — so there is one redirect URI to register per hostname rather than a pair to keep in step. Never answers JSON; every ending is a 302 to the `?then=` it was given, carrying one word in `?google=`. Off entirely without `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, and then every sheet draws the username and password alone | `no-store`, `Set-Cookie ttb_s`, `ttb_g`, `ttb_gp` |
 | `GET/POST /api/lists` | `lists.js` | `lists`, `list_items`, `list_keeps`, `added_places` | `no-store`, on purpose: the owner reads it mid-edit |
 | `GET /api/places` | `places.js` | none; `data/places.json` merged with open `google_venues` | `public, max-age=300` |
 | `GET /api/venues` | `venues.js` | none; the whole `google_venues` table | `public, max-age=300` |
@@ -91,6 +92,7 @@ production sharing an id or a name.
 | `ENVIRONMENT` mismatch | the same answers as no database, `wrong-database` |
 | `SAVE_SALT` | saves, account and lists POST **fail closed**, `503 no-salt`, rather than store a weaker hash, and so does `/api/pass`, whose answer is a hash under it — which takes every discount down with it, deliberately. Changing it later resets every cap, leaves the counts alone, and redraws every rolled discount from that hour on |
 | `TURNSTILE_SECRET` | optional; set, a save without a token is 403 |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | optional, and both or neither. Without the pair `/api/account` answers `google: false`, every sheet draws the username and password alone, and `/api/google` sends a hand-typed request home. Nothing else changes |
 | `AI` binding | `/api/ask` answers `source: "none"`, `note: "no-ai"`, and the chat says nothing on the map answers. Everything else is untouched |
 
 Secrets live in the Pages dashboard, per environment, and never in the repo.
@@ -110,6 +112,17 @@ answered in `note` — `workers-ai`, `workers-ai-none`, `workers-ai-spent`,
 model never writes about a place: it picks ids out of the slice it was
 given and writes a clause each, and an id it invented is dropped. Keep
 that shape; it is what makes a hallucinated restaurant unreachable.
+
+**The Google round trip is `functions/api/_google.js` and
+`functions/api/google.js`, and nothing else.** The module holds the two sealed
+cookies, the code swap and the three queries against `identities`; the route
+holds the trip. `account.js` imports from it and never talks to Google itself.
+The scope asked for is `openid` alone — no address, no name, no picture — and
+the only thing stored is Google's `sub`. An account made this way has an
+**empty `pw_hash`**, and `matches()` in `account.js` is the one place that
+knows what that means: it refuses a sign-in against one rather than deriving
+PBKDF2 at nought iterations, which WebCrypto throws on. Read **Signing in with
+Google** in `README.md` before changing any of it.
 
 **Every write is a prepared statement, and every write to a list is
 preceded by a read of `lists.owner`**: `onRequestPost` in `lists.js` loads
@@ -145,8 +158,9 @@ which carries the box that names a new list; `MAX_ABOUT 200` in `account.js`
 is restated in `assets/account.js`, which carries the only box that writes it; `MAX_NAME 80` and
 `MAX_ADDRESS 120` as literal `maxlength: '80'` and `'120'` in the add-a-place
 form in `assets/lists.js`; the username's 3–24 in `account.js` as a
-`maxlength: '24'` on both of `app.js`'s username fields — the sign-up sheet's
-and the rename step's — and on `split.js`'s, and in words as
+`maxlength: '24'` on all three of `app.js`'s username fields — the sign-up
+sheet's, the rename step's and the one behind Continue with Google — and on
+`split.js`'s, which is one field worn by three views, and in words as
 `accountUsernameHint` and `accountErrUsername` in `data/ui.json`. `grep -n maxlength assets/*.js` finds every
 copy. Change one, change the other, and the README's table under **The
 caps**.

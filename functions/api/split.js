@@ -74,6 +74,7 @@
  */
 
 import { json, sessionUser, wrongDatabase, randomHex } from './_lib.js';
+import { googleReady } from './_google.js';
 
 /* Caps. All of them are about somebody with a script rather than somebody
    with a dinner, with one exception.
@@ -398,6 +399,12 @@ export async function onRequestGet(context) {
   const ready = !!(env.DB && env.SAVE_SALT) && !(await wrongDatabase(env));
   if (!ready) return json({ ready: false, user: null, groups: [] }, 200);
 
+  /* Whether this page may draw Continue with Google on its own copy of the
+     sign-in form. It is asked here and not of /api/account because this page
+     does not read that route at all — one answer on the way in is the whole
+     of its boot, and a second request for one boolean would undo that. */
+  const google = googleReady(env);
+
   const params = new URL(request.url).searchParams;
   const user = await sessionUser(request, env);
   const who = user ? user.username : null;
@@ -411,15 +418,15 @@ export async function onRequestGet(context) {
   const asked = params.get('group') || '';
   if (asked) {
     const group = await groupById(env, asked);
-    if (!group) return json({ ready: true, user: who, error: 'not-found' }, 404);
-    return json({ ready: true, user: who, group: await readGroup(env, group, user) }, 200);
+    if (!group) return json({ ready: true, google: google, user: who, error: 'not-found' }, 404);
+    return json({ ready: true, google: google, user: who, group: await readGroup(env, group, user) }, 200);
   }
 
   /* Everything below is about the reader rather than about a group, so it is
      the one thing here that needs to know who they are. */
-  if (!user) return json({ ready: true, user: null, groups: [] }, 200);
+  if (!user) return json({ ready: true, google: google, user: null, groups: [] }, 200);
 
-  return json({ ready: true, user: who, groups: await readGroups(env, user) }, 200);
+  return json({ ready: true, google: google, user: who, groups: await readGroups(env, user) }, 200);
 }
 
 /* The front page: every group this person is in, what it is called, how many

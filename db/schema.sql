@@ -202,6 +202,53 @@ CREATE TABLE IF NOT EXISTS login_fails (
 CREATE INDEX IF NOT EXISTS idx_login_fails ON login_fails (ip_hash, at);
 
 
+-- An account somebody reaches through somebody else, which today means
+-- Google and is written so that it need not stay only Google.
+--
+-- WHY THIS IS A TABLE AND NOT A COLUMN ON users
+--
+-- Two reasons, and the second is the one that decided it. A column would say
+-- an account has at most one of these, which is wrong the moment a second
+-- provider exists; and db/schema.sql is applied with IF NOT EXISTS
+-- throughout, so it can add a table for ever and can only add a column by a
+-- hand-run ALTER against both databases. A new provider is then a row shape
+-- this file already describes rather than a migration somebody has to
+-- remember to run twice.
+--
+-- WHAT IS STORED, AND WHAT IS DELIBERATELY NOT
+--
+-- `subject` is the provider's own permanent id for the person — Google's
+-- `sub` claim — and it is the whole of what is kept. Not the address, not the
+-- name on the Google account, not the picture, none of which this site has
+-- ever had a use for and all of which arrive in the same answer. An account
+-- here is still a username and nothing else; signing in through Google is a
+-- second way to prove one is yours, not a second thing to know about you.
+--
+-- It is the provider's id and not the address on purpose: an address can be
+-- given up and handed to somebody else, and `sub` cannot. Matching on the
+-- address would mean whoever holds it next inherits the account.
+--
+-- An account may have no row here (a username and a password) or one (or, in
+-- time, one per provider). An account with a row here and no password is a
+-- normal account whose users.pw_hash is the empty string — see the guard in
+-- functions/api/account.js, which refuses a sign-in against one rather than
+-- deriving a hash at nought iterations.
+CREATE TABLE IF NOT EXISTS identities (
+  -- 'google' today. The pair below is the primary key, so the same person's
+  -- Google and whatever-comes-next are two rows and never a collision.
+  provider   TEXT NOT NULL,
+  -- The provider's permanent id for them. Opaque, and compared exactly.
+  subject    TEXT NOT NULL,
+  -- users.id. Never a device: this is what proves an account is somebody's.
+  user_id    TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  PRIMARY KEY (provider, subject)
+);
+-- "What is this account signed in through", which is what the account page
+-- asks on every load, and what a disconnect deletes by.
+CREATE INDEX IF NOT EXISTS idx_identities_user ON identities (user_id);
+
+
 -- ------------------------------------------------------------------- lists
 -- Somebody else's top ten.
 --
