@@ -242,11 +242,12 @@ export async function onRequestGet(context) {
      and somebody's saves and lists go with it. Same bargain _lists.js takes
      over an unreadable catalogue: the missing piece costs itself and nothing
      around it. */
-  /* The one read that says which ways in this account has. It is the same
-     row the `about` line comes off, so the two could be one query — they are
-     not, because that one is guarded against a database that predates its
-     column and this one must not be: a failure here would silently report an
-     account as having no password, and the sheet would stop asking for it. */
+  /* Whether there is a password on this account, which is what the two steps
+     on the map's sheet read to decide whether to ask for the one in use.
+     Unguarded, unlike the two reads below it: `users.pw_hash` has been there
+     since the first account, so a failure here is a database that is broken
+     rather than one that is merely behind, and reporting "no password" for an
+     account that has one would quietly stop the sheet asking for it. */
   const pw = await passwordOn(env, user.id);
 
   let about;
@@ -258,12 +259,30 @@ export async function onRequestGet(context) {
     about = (row && row.about) || undefined;
   } catch (e) { /* no column yet: no line, and the rest of the page stands */ }
 
-  /* Which ways into this account exist, which is what the account page draws
-     its Google row and its password row from — Connect or Disconnect, Set a
-     password or Change it — and what the two steps on the map's sheet read to
-     decide whether to ask for the password in use. The server is still the
-     one that binds; these only decide which form is drawn. */
-  const linked = await hasGoogle(env, user.id);
+  /* Whether Google is connected, which is what the account page draws its
+     Google row from — Connect or Disconnect.
+
+     GUARDED, AND THE `about` LINE ABOVE IS WHY THIS IS NOT AN OVERSIGHT
+ *
+     `identities` is a table that arrives by hand: db/schema.sql is applied by
+     a person, and a deployment reaches the site the minute it is pushed. The
+     window between those two is real — it is the ordinary state of the live
+     site for as long as it takes somebody to run two commands — and this read
+     runs on every signed-in request to this route. Unguarded, it takes the
+     whole answer down for the length of that window: no name on the rail, no
+     saves, no lists, an account page that says accounts are switched off.
+ *
+     False is the true answer while there is no table, because there are no
+     identities in a database that has none. The cost of being wrong is a row
+     on the account page reading Connect instead of Disconnect, and it cannot
+     be wrong in the direction that matters: `hasGoogle` is never what decides
+     whether a sign-in is allowed. Same bargain as `about` above, and as
+     _lists.js over an unreadable catalogue — the missing piece costs itself
+     and nothing around it. */
+  let linked = false;
+  try {
+    linked = await hasGoogle(env, user.id);
+  } catch (e) { /* no table yet: nothing is connected, and the page stands */ }
 
   return json({
     ready: true,

@@ -2318,6 +2318,17 @@ URI to add — the one part of this that cannot be made to look after itself.
 
 And `db/schema.sql` applied to both databases, for the `identities` table.
 
+**The deploy is safe before that happens, and it is written that way on
+purpose.** Nothing in this repository applies the schema — a person runs it,
+and a push is live within the minute — so there is always a window where the
+code is deployed and the table is not. The one read that would fall into it is
+`hasGoogle()` on every signed-in request to `/api/account`, and it is wrapped:
+no table means nothing is connected, which is the truth about a database with
+no identities in it. Unguarded it would have taken that whole answer down for
+the length of the window — no name on the rail, no saves, no lists, an account
+page saying accounts are switched off — which is exactly the shape of failure
+the `about` column is guarded against a few lines above it.
+
 ### How it is kept safe
 
 - **Passwords** are PBKDF2-HMAC-SHA256 through WebCrypto — there is no bcrypt
