@@ -2526,6 +2526,18 @@ the part in front has been a bare project number and is now a number and a
 hash, and a rule strict enough to refuse a format nobody here has seen would
 turn a working sign-in off, which looks like a decision rather than a fault.
 
+**And the part in front has to be there at all**, which is a separate check
+because `'.apps.googleusercontent.com'.endsWith('.apps.googleusercontent.com')`
+is true: a value that is the suffix and nothing else passes a suffix test.
+That is what was in the dashboard on the day Continue with Google shipped. The
+id had been truncated to its own tail somewhere between the two consoles, a
+saved secret cannot be read back to notice it, and every check here said yes —
+so the site spent the day sending Google `client_id=.apps.googleusercontent.com`
+and getting *the OAuth client was not found* back, which reads as a deleted
+client rather than as an empty box. `googleReady()` now wants the value longer
+than the suffix as well as ending in it. A body of any length satisfies that,
+so the looseness about what the body may *look* like is untouched.
+
 **Which means a malformed pair now reads from outside exactly like an
 unconfigured one** — `google: false`, and every sheet draws the username and
 password alone. That is the better failure for a visitor, who can no longer
@@ -2551,7 +2563,16 @@ usually is not. The **Request details** line on it expands, and the
 `client_id` among what it then lists is exactly what this site sent. Same
 answer as the curl, on the screen already in front of you.
 
-An id that gets past all three checks is one Google will at least look up, so
+**Read the whole `client_id`, and read what is in front of the suffix.** The
+tell that cost a day was visible in that parameter the entire time and got
+skipped, because `…googleusercontent.com` at the end of it looks like an id at
+a glance and the eye stops there. `client_id=.apps.googleusercontent.com` — a
+dot where the project number belongs — is an empty box in the dashboard, not a
+missing client in the console, and the two have the same error page. It cannot
+reach Google any more, but the habit is the point: read the value, not its
+tail.
+
+An id that gets past all four checks is one Google will at least look up, so
 an `invalid_client` past this point is not about the value in the Cloudflare
 dashboard at all: that client is not in the Google console. Deleted,
 recreated with a fresh id at some point after this one was pasted, or sitting
