@@ -2421,6 +2421,22 @@ refuses is a different error — `Error 400: redirect_uri_mismatch` — reached
 only once the client itself has been found. So `invalid_client` is never a
 reason to go adding redirect URIs.
 
+**Driving it locally needs a `.dev.vars`,** which is the file
+`wrangler pages dev` reads secrets from — the dashboard is for deployments
+and `pages dev` never sees it. `http://127.0.0.1:8788/api/google` is a
+registered redirect URI for exactly this reason:
+
+```
+SAVE_SALT="any long random string"
+GOOGLE_CLIENT_ID="…apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="GOCSPX-…"
+```
+
+It is gitignored, along with `.dev.vars.*`, and it is the one file in this
+repository that must never be committed. It went un-ignored for the first day
+Google sign-in existed, which is the only reason the line is worth writing
+down.
+
 The rest is in the Google Cloud console — an OAuth client, a consent screen,
 and the **redirect URIs, which are per hostname and matched exactly**:
 `https://tallinntastebuds.ee/api/google`,
