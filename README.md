@@ -4308,8 +4308,12 @@ what you are looking at on top, the field for narrowing it beneath.
 
 That is also what the sheet's third stop is standing on. A band that does not
 depend on the scroll being anywhere in particular is a band the sheet can be
-pulled down onto, which is why a list is the one sheet a drag cannot dismiss —
-see **The sheet** in the design notes.
+pulled down onto — and once there is somewhere for it to land, there is no
+reason for it ever to leave. On a phone a list cannot be closed: the pull, the
+cross, Escape and **Places** all put the sheet on the band instead, and the
+cross is not drawn there. What closes a panel is the list no longer being the
+mode, which is the next paragraph and the one under it: pressing a chip, or
+**Back to all places**. See **The sheet** in the design notes.
 
 **Pressing any chip forgets it.** All, Bakery, Discount — each is somebody
 asking the map a question their list cannot be part of the answer to, so the
@@ -7827,7 +7831,7 @@ The map, `assets/app.js`:
 | `search` | `search_term`, `scope` (`map`) |
 | `search_clear` | `scope` |
 | `list_open` | `places_shown` |
-| `list_close`, `ask_close` | — the cross on the panel, by what it shut |
+| `list_close`, `ask_close` | — the cross on the panel, by what it shut; on a list it puts it on the band rather than shutting it, and reports the press all the same |
 | `place_close` | `place` |
 | `cluster_open` | `cluster_size` |
 | `random_pick` | `place`, `pool` |
@@ -8606,10 +8610,24 @@ It is wrong for a list, because a list is a mode — the map is narrowed to that
 list's pins, and the sheet is the only thing on screen saying so — so the same
 pull lands on the band naming the list and stops dead instead. About a hundred
 pixels of name and the switch to the list's own page, the map with the rest,
-and the drag back up or a tap on the grip brings the list with it. It is the
-one sheet a gesture cannot close, and the close button is still the way out,
-because a press is a decision and a drag is not. **A list is a mode, not a
-filter** under **Lists** has the reasoning.
+and the drag back up or a tap on the grip brings the list with it.
+
+**And neither does anything else close it.** The cross, Escape and **Places**
+all land on the band too, and the cross is not drawn there at all, because a
+press that does nothing is worse than no button. It is the one sheet on this
+site that cannot be dismissed, and that is the point: what a drag or a press
+would be dismissing is the only thing on screen saying why the map is showing
+seven pins. Being rid of it is leaving the list rather than closing a sheet —
+**Back to all places** under the byline, any chip, or the name in the corner,
+each of which hands back a map nothing is narrowing and a panel that closes
+like any other. A desktop keeps its cross: the panel there is a column that
+slides off the side, there is no band for it to sit on, and the whole map is
+showing behind it either way. **A list is a mode, not a filter** under
+**Lists** has the reasoning.
+
+The walk is the one thing that closes it outright, through `closePanel({ band:
+false })`: it is about to point at the pins and the rail and it asks for the
+map with nothing over it.
 
 The stop is the band as measured rather than a number written down, because a
 long title wraps and a wrapped title is a taller band. `peekStop()` in
@@ -8642,9 +8660,9 @@ Which leaves four ways back from a sheet standing open, all of them on screen:
 **swipe it down**, the close button, a tap on the grip, and **Places** in the
 chrome strip above. The middle two are the ones that only do one thing — a tap
 on the grip swaps the two stops, and the button closes it — and the swipe does
-whichever of them the pull asks for. On somebody else's list the swipe and the
-grip only ever move it between its three stops; the button and **Places** are
-what close it.
+whichever of them the pull asks for. On somebody else's list all four move it
+between its three stops and none of them closes it, which is why the cross is
+not drawn at the band.
 
 The swipe arms only at the very top of the sheet's own scroll and only on a
 downward move, so scrolling the list still scrolls the list: the first

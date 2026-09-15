@@ -2252,7 +2252,7 @@
        rail, and on a phone a sheet covers the one and lays the other along
        its top edge. And not with the rail mid-cascade, which would be two
        introductions talking at once. */
-    if (dom.panel.classList.contains('is-open')) closePanel();
+    if (dom.panel.classList.contains('is-open')) closePanel({ band: false });
     closeHints();
     tour.steps = [];
     for (var k = 0; k < TOUR_STEPS.length; k++) {
@@ -4963,8 +4963,47 @@
     closeHints();
   }
 
+  /* Back to the list and down onto its band, which is where every way of
+     closing the panel lands while a list is the map's mode. Whatever was open
+     goes with it — a place, or the chat and its thread — because this is a
+     close that has somewhere to land rather than a step back through them. */
+  function restOnBand() {
+    var was = state.selected;
+    /* The same end a closed chat comes to, for the same reason — an answer's
+       pins with nobody reading the answer is a map narrowed to a question
+       nobody can see. showList() below drops the answer itself. */
+    if (state.view === 'ask') { state.asks = []; state.askScope = ''; }
+    /* The place stays marked on the map, exactly as it does when the panel
+       closes: shutting a write-up is not losing interest in the place, it is
+       usually the moment you want to see where it is. */
+    if (was) state.marked = was;
+    showList(false);
+    sheetPeek();
+    /* And the map settles on it. The sheet was over half the screen and the
+       pin was parked to one side of what was left; with the sheet down to the
+       band there is room for it in the middle. */
+    if (was) {
+      var seen = byId(was);
+      if (seen) focusOn(seen, true);
+    }
+  }
+
+  /* A list is a mode, and on a phone the sheet is the only thing on screen
+     that says which one. So while a list is open the panel does not close:
+     the cross, Escape, Places and a pull past the stops all leave it sitting
+     on the band, with the list's name and the switch to its own page on it.
+     Being rid of it is leaving the list — Back to all places, any chip, or the
+     name in the corner — which hands back a map nothing is narrowing and a
+     panel that closes like any other.
+
+     `band: false` is the one way past that, and the walk is the one caller:
+     it is about to point at the pins and the rail, and it asks for the map
+     with nothing over it. A desktop never takes this road at all — the panel
+     there is a column that slides off the side, with no band to sit on and a
+     whole map still showing behind it. */
   function closePanel(opts) {
     if (!dom.panel.classList.contains('is-open')) return;
+    if (state.list && isNarrow() && (!opts || opts.band !== false)) { restOnBand(); return; }
     var was = state.selected;
     /* Closing the chat is the end of the conversation, not a pause in it:
        the thread goes, the roll is unchosen, and the map comes back — an
@@ -7622,7 +7661,12 @@
     }
 
     dom.btnList.addEventListener('click', function () {
-      if (dom.panel.classList.contains('is-open') && state.view === 'list') {
+      /* A list sitting on its band is open without showing anything, so this
+         is the way back up to it rather than a second way of putting it away
+         — which is what it would be, since a list cannot be closed. */
+      var showing = dom.panel.classList.contains('is-open') && state.view === 'list' &&
+                    !document.body.classList.contains('sheet-peek');
+      if (showing) {
         TTBTrack.event('list_close');
         closePanel();
       } else {
