@@ -5,7 +5,8 @@
  * module and never an endpoint. It is everything the Google round trip needs
  * that is not the route itself: what the two sealed cookies carry, the swap
  * of a code for an identity, and the one question the rest of the site asks
- * it — is this configured at all.
+ * it — is this configured at all, which it answers strictly enough to also
+ * mean *configured with something that could work*. See googleReady().
  *
  * WHY THERE IS NO EMAIL ANYWHERE IN HERE
  *
@@ -78,11 +79,53 @@ const PENDING_MINUTES = 15;
    true. */
 export const GOOGLE_PATH = '/api/google';
 
+/* Every Google client id ends in this, and has through every format Google
+   has issued. The check below is the suffix and not the whole shape on
+   purpose: the part in front of it has been a bare project number and is now
+   a number and a hash, and a rule strict enough to refuse a format nobody
+   here has seen would turn a working sign-in off — which is a worse failure
+   than the one it prevents, because it looks like a decision. */
+const CLIENT_ID_SUFFIX = '.apps.googleusercontent.com';
+
+/* Both values are typed into the Pages dashboard by hand, as secrets, and a
+   secret cannot be read back off that page once it is saved. So a trailing
+   newline picked up on the way in is invisible from every side afterwards —
+   and it is not harmless. The id goes into a query parameter, where a newline
+   is percent-encoded rather than ignored, so Google is asked about a client
+   called `…googleusercontent.com%0A`, finds no such thing, and says so: *the
+   OAuth client was not found*, `Error 401: invalid_client`. An error page
+   about an application that does not exist, for a value that is one
+   character wrong.
+ *
+   Trimmed once, here, and nothing reads `env` directly any more. That last
+   part is the load-bearing half: the authorize URL, the code swap and the
+   `aud` claim all have to agree on the same string, and trimming for the
+   first two alone would leave the third refusing a token they had just
+   earned. */
+function clientId(env) {
+  return String(env.GOOGLE_CLIENT_ID || '').trim();
+}
+
+function clientSecret(env) {
+  return String(env.GOOGLE_CLIENT_SECRET || '').trim();
+}
+
 /* Whether the button may be drawn at all. Both halves or neither: a client id
    with no secret cannot complete the swap, so offering the button would be
-   offering a round trip that ends in an error page on Google's side. */
+   offering a round trip that ends in an error page on Google's side.
+ *
+   And the id has to look like an id, which is the other way that round trip
+   ends on Google's error page rather than on ours. The two values are pasted
+   out of adjacent boxes in the Google console into adjacent boxes in the
+   Cloudflare one, and the secret in the id's box is a mistake nothing here
+   could otherwise notice — `GOCSPX-…` is a perfectly truthy string. Refusing
+   it reads to a visitor as Google simply not being switched on, which is a
+   state this site already has and draws properly; the alternative is a button
+   that every visitor can press and nobody can use. **Turning it on** in
+   README.md says how to tell the two apart from outside. */
 export function googleReady(env) {
-  return !!(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.SAVE_SALT);
+  const id = clientId(env);
+  return !!(id.endsWith(CLIENT_ID_SUFFIX) && clientSecret(env) && env.SAVE_SALT);
 }
 
 /* ------------------------------------------------------------ the identity
@@ -243,7 +286,7 @@ export async function pkce() {
 
 export function authorizeUrl(env, { redirectUri, state, nonce, challenge }) {
   const url = new URL(AUTH_URL);
-  url.searchParams.set('client_id', env.GOOGLE_CLIENT_ID);
+  url.searchParams.set('client_id', clientId(env));
   url.searchParams.set('redirect_uri', redirectUri);
   url.searchParams.set('response_type', 'code');
   /* The minimum Google accepts, and the minimum this site has a use for. An
@@ -276,8 +319,8 @@ export async function identify(env, { code, verifier, redirectUri, nonce }) {
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         code,
-        client_id: env.GOOGLE_CLIENT_ID,
-        client_secret: env.GOOGLE_CLIENT_SECRET,
+        client_id: clientId(env),
+        client_secret: clientSecret(env),
         code_verifier: verifier,
         grant_type: 'authorization_code',
         redirect_uri: redirectUri
@@ -322,7 +365,7 @@ function readIdToken(env, idToken, nonce) {
 
   if (!claims || typeof claims.sub !== 'string' || !claims.sub) return null;
   if (ISSUERS.indexOf(claims.iss) === -1) return null;
-  if (claims.aud !== env.GOOGLE_CLIENT_ID) return null;
+  if (claims.aud !== clientId(env)) return null;
   if (typeof claims.exp !== 'number' || claims.exp * 1000 < Date.now()) return null;
   if (claims.nonce !== nonce) return null;
 
