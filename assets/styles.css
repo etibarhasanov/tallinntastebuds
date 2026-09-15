@@ -710,6 +710,48 @@ a:hover { color: var(--accent-lit); }
   .pin-mark:hover .pin-face { transform: none; }
 }
 
+/* ---------- a list's own pin, on a line of text ----------
+
+   The same eight markers, drawn small in front of a list's title wherever a
+   list is named. Not the rules above: those dress a Leaflet marker, which is
+   a fixed square with the glyph in a .pin-face inside it, sized off --pin-d.
+   This is one element that is the whole pin — TTBPins.paint() writes the
+   emoji into it — and it is sized in em, so it grows with whatever title it
+   is standing beside.
+
+   It lived in assets/lists.css while the four pages that named a list were
+   the four that load it: a list's own, the directory, its author's profile
+   and your account. The map's panel names one too, in the band across the
+   top of it, and the map loads this file and not that one. So the rule moved
+   here rather than being written out a second time — two copies of a pin is
+   how two pages come to draw the same list differently, which is the
+   argument .go and .alt settled at the top of this file. */
+.lists-pin {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.15em;
+  height: 1.15em;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--paper), 0 0 0 1.9px var(--pin-tone, var(--accent));
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+               "Android Emoji", "EmojiSymbols", sans-serif;
+  /* Set against the title's own size, so it grows with the heading on a
+     desk and shrinks with it on a phone without a second breakpoint. */
+  font-size: .62em;
+  line-height: 1;
+  vertical-align: baseline;
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* The mouth, for the day a list can wear it. Nothing hands it out today —
+   TTBPins.paint() only draws it for a place on my map — and the rule is here
+   so that the emblem and the map's pin cannot say the mark differently. */
+.lists-pin.is-mark {
+  background: var(--paper) url(logo/mark-round.webp) center / cover no-repeat;
+}
+
 /* ---------- brand ---------- */
 
 /* No card, at either width. There was one here for the tagline's sake — a
@@ -2713,7 +2755,24 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
    ranking it is. A second line is what this band did before it carried a
    switch, and it costs twenty pixels of a panel that is scrolling anyway. */
 .list-views { flex: 0 0 auto; display: flex; gap: 6px; }
-.list-label.is-credit .list-group { min-width: 0; }
+/* And the title is itself a row of two, because it carries the list's pin in
+   front of it: the pin sits on the first line's baseline rather than being
+   dragged to the middle of a title that has wrapped to two, and the gap is
+   the title's own em rather than a margin on the pin — the pin is .62em, so a
+   margin written on it would be .62 of the number it looked like. The same
+   arrangement .lists-title has on the list's own page.
+
+   overflow-wrap so a title that is one long word breaks inside the row
+   instead of pushing the switch off the band, and `anywhere` rather than
+   `break-word` because only `anywhere` shrinks what the row asks for in the
+   first place. */
+.list-label.is-credit .list-group {
+  display: flex;
+  align-items: baseline;
+  gap: .42em;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 /* The byline. The name in it is a link since profiles arrived — it leads to
    /u/<name>, the rest of what this list's owner has published — and only the
    name, the way every byline on the lists page is drawn: the words around it

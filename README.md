@@ -4461,7 +4461,10 @@ over a map showing four places.
 So the filter row is types and nothing else. `state.list` holds a list or it
 does not, and while it does, that is what the map is showing — `visiblePlaces()`
 answers the list before it consults a chip. The list says who it is in the
-panel instead, in a band across the top of it: its title, and the switch. Then
+panel instead, in a band across the top of it: its pin, its title, and the
+switch — the pin being the glyph its places are wearing out on the map, so the
+name and the pins read as one thing. See **Where a list wears its own** under
+**The pins**, which is the other four places that emblem is drawn. Then
 the search, and under that its owner's name, how many places are on it, their
 sentence, the two things you can do about it — keep it, or send it on — and,
 under those, the way out. The two wear the same pill and neither is filled: on
@@ -7294,12 +7297,21 @@ becomes a place of mine the day I eat there.
 
 ### Where a list wears its own
 
-Everywhere a list is named, which is four pages: its own at `/list/<id>`,
-everybody's at `/lists`, its author's at `/u/<name>`, and yours on
-`/account.html`. The glyph sits in front of the title and the row's scatter of
-dots is drawn in the tone — so a page of twenty is twenty constellations
-rather than twenty identical red ones, and the bakeries one is found without
-reading a word.
+Everywhere a list is named, which is four pages and the map: its own at
+`/list/<id>`, everybody's at `/lists`, its author's at `/u/<name>`, yours on
+`/account.html`, and the band across the top of the map's panel for as long as
+`/?list=<id>` is what the map is showing. The glyph sits in front of the title,
+and on a page of rows the scatter of dots beside each one is drawn in the tone
+— so a page of twenty is twenty constellations rather than twenty identical red
+ones, and the bakeries one is found without reading a word.
+
+On the map it says something the four pages cannot: the pins under the band
+are already wearing that glyph, so the name and what is drawn under it are one
+picture rather than two things that happen to be on screen at the same time.
+Which is also why the emblem is a rule in `assets/styles.css` rather than in
+`assets/lists.css`, where it began — the four pages load both files and the
+map loads only the first, and a pin written out twice is how two pages come to
+draw the same list differently.
 
 It is `aria-hidden` in every one of those places. The title beside it already
 says what the list is, in its author's own words; a screen reader announcing
