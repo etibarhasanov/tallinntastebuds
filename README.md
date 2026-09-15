@@ -7280,8 +7280,8 @@ data; those do not belong in a static site at all.
 | [Familjen Grotesk](https://fonts.google.com/specimen/Familjen+Grotesk), [Literata](https://fonts.google.com/specimen/Literata), [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) | — | SIL Open Font License 1.1 | Served by Google Fonts. |
 | [Instagram embed](https://developers.facebook.com/docs/instagram/oembed/) (iframe player) | — | Meta Platforms terms | The permalink with `/embed/` on the end. Loaded with the panel of a place that has a reel. No script involved. |
 | [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Loaded with the panel of a place that has a video. No script involved. |
-| [Google Analytics 4](https://developers.google.com/analytics) (gtag.js) | — | Google terms | Property `G-2XNTC15F28`. Counts, and takes the events `assets/track.js` sends. Loads only after consent. |
-| [Microsoft Clarity](https://clarity.microsoft.com/) | — | Microsoft terms | Project `yay3pxtg4w`. Heatmaps and session replay. Loads only after consent. Sets `MUID` as well as its own two cookies, which is a Microsoft-wide identifier shared with their advertising side. |
+| [Google Analytics 4](https://developers.google.com/analytics) (gtag.js) | — | Google terms | Property `G-2XNTC15F28`. Counts, and takes the events `assets/track.js` sends. Loads on every page but `admin.html`, and sets cookies. |
+| [Microsoft Clarity](https://clarity.microsoft.com/) | — | Microsoft terms | Project `yay3pxtg4w`. Heatmaps and session replay. Loads on every page but `admin.html`, and sets cookies. Not `MUID` — `ad_Storage` is denied, because there is no advertising here for it to do anything for. |
 | [Sign in with Google](https://developers.google.com/identity/branding-guidelines) (the mark) | — | Google brand guidelines | Four `<path>`s inlined in `assets/app.js` and `assets/split.js`, on the Continue with Google button and nowhere else. **No script and no request of Google's runs on any page** — the sign-in is a redirect, and their branding permits the mark on the button that starts it. |
 
 **The attribution control in the bottom-right corner is a licence condition of
@@ -7289,21 +7289,21 @@ both OpenStreetMap and CARTO. Do not remove it.**
 
 No scripts or fonts beyond the table above — the row below the last two is a
 drawing rather than a request, and nothing about it reaches Google until
-somebody presses it — and those two load for nobody who has not said yes — see [Consent](#consent). Once somebody has,
-Google sets `_ga` and `_ga_*` and Clarity sets `_clck`, `_clsk` and `MUID`.
-Before that, and forever for anybody who says no, what is stored on a
-visitor's device is eight `localStorage` keys and one cookie, all of them the
+somebody presses it. Those two set cookies of their own the moment a page
+opens — `_ga` and `_ga_*` for Google, `_clck` and `_clsk` for Clarity — and
+see [No consent banner](#no-consent-banner) for why nothing is asked first.
+Everything else stored on a visitor's device is seven `localStorage` keys and
+one cookie, all of them the
 visitor's own choices played back: `ttb.lang` and `ttb.style`, `ttb.stories.seen` and
 `ttb.stories.sound`, `ttb.cid` (the random id this browser saves under, made
 on the first save and never before it), `ttb.saved`
 (which places it has saved), `ttb.nudged` (the date an offer of an account was
-turned down), `ttb.consent` (yes or no to the two tags above), and the
-`ttb_s` session cookie, which is set by the server and only exists once
-somebody has signed in. A sign-in through Google passes two more cookies
-through the browser — `ttb_g` for the ten minutes of the round trip and
-`ttb_gp` for the fifteen a half-finished sign-up is held — and both are this
-site's own, server-set, and gone the moment the trip ends. See **Signing in
-with Google**.
+turned down), and the `ttb_s` session cookie, which is set by the server and
+only exists once somebody has signed in. A sign-in through Google passes two
+more cookies through the browser — `ttb_g` for the ten minutes of the round
+trip and `ttb_gp` for the fifteen a half-finished sign-up is held — and both
+are this site's own, server-set, and gone the moment the trip ends. See
+**Signing in with Google**.
 
 `assets/qr.js` is deliberately **not** in that table. Every QR library worth
 using is a dependency this repo would otherwise not have, and the discount
@@ -7524,12 +7524,11 @@ that is one address with everything happening on it, the replay is the part
 that earns its place — it follows a single visit through the filters, the
 panel and the chat, none of which GA can see as anything but events in a list.
 
-It loads from `assets/consent.js`, which is also where the Google tag now
-lives and where the answer that gates both is kept — see [Consent](#consent).
-Nine pages carry it. `admin.html` deliberately carries neither tag: the only
-visits it could record are the owner's own, it is the page holding a GitHub
-token, and it does not load `assets/styles.css`, so the bar would have needed
-styling twice.
+It loads from `assets/analytics.js`, which is also where the Google tag lives
+— one file rather than two snippets pasted into every head. The nine pages in
+`PAGES` at the top of `tools/stamp.mjs` carry it. `admin.html` deliberately
+carries neither tag: the only visits it could record are the owner's own, and
+it is the page holding a GitHub token.
 
 **What it does not record.** Clarity masks the contents of every input box and
 dropdown in all three of its masking modes, and that one cannot be switched
@@ -7581,38 +7580,36 @@ rather than merely missed. Cloudflare Pages serves `x-robots-tag: noindex` on
 preview deployments, which is correct for previews and fatal if the address
 people share turns out to be one.
 
-To remove tracking entirely, delete the `assets/consent.js` script tag from
-the eight pages that carry it, or the file. Everything in `track.js` checks for
+To remove tracking entirely, delete the `assets/analytics.js` script tag from
+the nine pages that carry it, or the file. Everything in `track.js` checks for
 `window.gtag` and returns quietly when it is missing — which is what already
-happens for a visitor running an ad blocker, and for one who pressed **No
-thanks** — so every call site becomes a harmless no-op and none of them has to
-change. To remove one tag and keep the other, delete its half of `loadTags()`.
+happens for a visitor running an ad blocker — so every call site becomes a
+harmless no-op and none of them has to change. To remove one tag and keep the
+other, delete its half of the file.
 
-### Consent
+### No consent banner
 
-**Neither tag loads until somebody presses a button.** A bar comes up on the
-first page of a first visit — a sentence and two buttons, **Allow** and **No
-thanks** — and until it is answered there is no gtag, no Clarity, no request to
-either, and nothing of theirs on the device. The answer is kept in
-`localStorage` under `ttb.consent` and is read synchronously on every later
-page, so a visitor who said yes gets the tags as early as they used to load,
-and one who said no never sees the bar again.
+**Both tags load on sight, and nothing is asked first.** There was a banner
+here for a day — first a bar with one sentence and two buttons, then a dialog
+listing what was used regardless and what agreeing added on top — and it was
+taken out on purpose. The reasoning is kept because the decision is easier to
+re-make than to re-derive.
 
-The reason is two reasons. The first is the rule: Estonia applies the EU ones,
-and ePrivacy asks about *writing to somebody's device*, not about whether what
-you write is personal data — which is why "we do not collect anything" was
-never the answer it sounded like. A replay is a recording of somebody's visit,
-and `MUID` is an identifier shared with Microsoft's advertising side.
+The rule it was built for has not changed. Estonia applies the EU ones, and
+ePrivacy asks about *writing to somebody's device*, not about whether what you
+write is personal data — which is why "we do not collect anything" was never
+the answer it sounded like. `_ga`, `_ga_*`, `_clck` and `_clsk` are written
+with nobody asked, and a session replay is a recording of somebody's visit.
+Putting the question back is a revert rather than a project: `git log` has
+both versions of it.
 
-The second is that it stopped being optional in practice. **Since 31 October
-2025 Clarity withholds full recording from visitors in the EEA, the UK and
-Switzerland unless it is handed a consent signal**, falling back to a limited
-mode where every page load is a fresh session and a returning visitor is
-nobody it has seen before. This is a map of Tallinn; practically all its
-traffic is the EEA. Without the bar the replays arrive as a heap of one-page
-fragments, which is the opposite of the thing Clarity was added for. So
-`loadTags()` hands Clarity a consent signal the moment somebody allows it, and
-that one call is the difference between one replay per visit and one per page.
+**Clarity is still handed a consent signal**, with nothing in front of it.
+Since 31 October 2025 Clarity gives a visitor in the EEA, the UK or
+Switzerland full recording only against one, falling back to a limited mode
+where every page load is a fresh session and a returning visitor is nobody it
+has seen before. This is a map of Tallinn; practically all its traffic is the
+EEA, so without the signal the replays arrive as a heap of one-page fragments,
+which is the opposite of the thing Clarity was added for.
 
 It is `clarity('consentv2', …)` rather than the older `clarity('consent')`,
 which is deprecated. The object carries **both spellings** of its two keys —
@@ -7621,20 +7618,14 @@ lowercase pair as Google's consent mode spells the same ideas — because
 getting it wrong fails silently, with empty cookies and a new "user" on every
 page load ([microsoft/clarity#924](https://github.com/microsoft/clarity/issues/924),
 still open). A key Clarity does not read costs nothing; a guess that went the
-wrong way would cost the recordings. `ad_Storage` is granted along with
-`analytics_Storage`: that is what lets Clarity set `MUID`, and denying it
-would keep the recordings but lose Clarity's surest way of telling a returning
-visitor from a new one.
+wrong way would cost the recordings.
 
-`assets/consent.js` holds all of it: the answer, the bar, and both snippets.
-They stopped being separate things the moment a choice stood in front of them.
-The bar's three strings are `consentSay`, `consentYes` and `consentNo` in
-`data/ui.json`, in all ten languages like everything else; it is drawn as a
-near-copy of `.nudge`, since it is the same shape of question.
-
-There is no "change your mind" control, because there is no settings page to
-put one on. Clearing site data clears the answer and the bar comes back, the
-same way every other `ttb.*` key is undone.
+**`ad_Storage` is denied.** It is what lets Clarity set `MUID`, a
+Microsoft-wide identifier shared with their advertising side, and this site
+carries no advertising for it to do anything for. The recordings and the
+heatmaps ride on `analytics_Storage` and arrive either way; what is lost is
+Clarity's surest way of telling a returning visitor from a new one. One word
+changes it.
 
 CARTO has already made one move here — tiles now want a key, free but
 required, which is what `TILE_KEY` is for. If they ever go further and stop

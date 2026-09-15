@@ -48,14 +48,15 @@ does not have to:
   Workers AI's free daily allowance, and preview and production spend from
   the same pot. Driving the chat on a preview for an afternoon puts the live
   site out of model until midnight UTC. Ask it a few questions, not fifty.
-- **A preview deploy reports into the live analytics, if you let it.** Both
-  tags — Google's and Microsoft Clarity's — are written into the pages rather
-  than set per environment, so every `*.pages.dev` branch counts into the same
-  GA property and records into the same Clarity project as tallinntastebuds.ee.
-  What stands in front of them is the consent bar `assets/consent.js` draws:
-  press **No thanks** on a preview and your afternoon stays out of the owner's
-  numbers, press **Allow** and it does not. Neither is wrong — just know which
-  one you pressed, and say so in the PR if you leant on it.
+- **A preview deploy reports into the live analytics.** Both tags — Google's
+  and Microsoft Clarity's — are written into the pages rather than set per
+  environment, so every `*.pages.dev` branch counts into the same GA property
+  and records into the same Clarity project as tallinntastebuds.ee. Nothing
+  stands in front of them: the banner that did for a day was taken out on
+  purpose, so an afternoon spent driving a preview lands in the owner's real
+  heatmaps and there is no button to press to stay out. Not a reason to avoid
+  driving one — it is the whole point of a preview — just a reason to say so in
+  the PR if you leant on it.
 - **The preview database is the only one to drive against**, and the
   Cloudflare MCP `d1_database_query` tool reads either database without a
   prompt. It writes to neither without one: `.claude/hooks/d1-write-gate.mjs`

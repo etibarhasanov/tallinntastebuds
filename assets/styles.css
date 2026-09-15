@@ -1979,65 +1979,6 @@ body.panel-detail .panel {
 }
 .nudge-no:hover { opacity: 1; }
 
-/* The consent bar, which both analytics tags sit behind: until one of these
-   two buttons is pressed nothing loads and nothing is written to the device.
-   assets/consent.js is the whole of the reasoning.
-
-   It is drawn as a near-copy of .nudge above, because it is the same shape of
-   question — a sentence and a choice — and a visitor who has seen one should
-   recognise the other. It is not literally .nudge for two reasons: the nudge
-   belongs to the map and this appears on eight pages, and the two can be on
-   screen at once, at which point sharing a class would mean sharing a
-   position and one would be drawn on top of the other.
-
-   Which is also why the bottom is the nudge's and not smaller. 84px is what
-   clears the map's rail; on the pages with no rail it merely floats a little
-   higher than it needs to, and that costs nothing next to a bar that covers
-   the buttons underneath it. Wider than the nudge, because a sentence about
-   cookies does not compress the way "Not now" does. */
-.consent {
-  position: fixed;
-  z-index: 2700;
-  left: 50%;
-  bottom: calc(84px + var(--safe-b));
-  transform: translateX(-50%);
-  width: min(380px, calc(100vw - 24px));
-  padding: 14px 16px;
-  background: var(--ink);
-  color: var(--paper);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-}
-
-.consent-say {
-  margin: 0 0 11px;
-  font-size: 13px;
-  line-height: 1.4;
-}
-.consent-row { display: flex; gap: 8px; align-items: center; }
-
-.consent-yes, .consent-no {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .06em;
-  border-radius: 100px;
-  padding: 7px 13px;
-  cursor: pointer;
-}
-.consent-yes {
-  background: var(--paper);
-  border: 1px solid var(--paper);
-  color: var(--ink);
-}
-.consent-no {
-  background: none;
-  border: 1px solid transparent;
-  color: var(--paper);
-  opacity: .72;
-}
-.consent-no:hover { opacity: 1; }
-
 /* Turnstile in invisible mode still wants somewhere to render. It draws
    nothing a visitor can see, but left in the flow it is a 300px hole at the
    foot of the page. */

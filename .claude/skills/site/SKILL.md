@@ -99,16 +99,15 @@ half of analytics and it costs nothing per press: Microsoft Clarity records the
 page itself — heatmaps, and a replay of the DOM as it changed. Nothing calls
 into it, so a new button needs nothing here. Two things do:
 
-- **A new page carries `assets/consent.js`**, in its head, deferred, before
-  every other script on the page. That one file is the whole of analytics now:
-  the consent bar, the answer, and both snippets behind it. Copy the tag from
-  the page whose asset spelling yours shares — `lists.html` writes
-  `/assets/...` from the root, `index.html` writes `assets/...` relative, and
-  the head of `tools/stamp.mjs` says why they disagree. A page that ships
-  without it is invisible in both GA and Clarity, and shows no bar while
-  quietly setting nothing — so it fails nothing and nobody notices.
+- **A new page carries `assets/analytics.js`**, in its head, deferred, before
+  every other script on the page. That one file is the whole of analytics: both
+  snippets and the consentv2 signal Clarity needs. Copy the tag from the page
+  whose asset spelling yours shares — `lists.html` writes `/assets/...` from
+  the root, `index.html` writes `assets/...` relative, and the head of
+  `tools/stamp.mjs` says why they disagree. A page that ships without it is
+  invisible in both GA and Clarity, and fails nothing while nobody notices.
   `admin.html` is the one page that deliberately has neither; the head of
-  `consent.js` says why, and it is not an oversight to correct.
+  `analytics.js` says why, and it is not an oversight to correct.
 - **Anything a replay should not hold gets `data-clarity-mask="true"`.**
   Clarity masks every input box and dropdown in all three of its masking
   modes and that one cannot be switched off, so a password or a typed-in
@@ -123,13 +122,12 @@ clarity.microsoft.com, Balanced by default, which masks numbers and email
 addresses on top of the input boxes. A change that leans on it says so in the
 PR, because nobody reviewing the diff can see it.
 
-**And nothing above happens until somebody presses Allow.** Both tags sit
-behind the bar `consent.js` draws, so the honest way to drive analytics in a
-browser is to press it, and the honest way to test the other path is
-`localStorage.setItem('ttb.consent','no')` and a reload — at which point every
-`TTBTrack` call on the page becomes a no-op, which is the state an ad blocker
-already produced and the reason none of the call sites had to learn about
-consent. **Consent** in `README.md` is the reasoning.
+**Nothing asks first.** Both tags load on sight, and the banner that stood in
+front of them for a day was taken out on purpose — **No consent banner** in
+`README.md` is the reasoning, and it is not an oversight to correct. Driving
+any page in a browser therefore reports into the live GA property and the live
+Clarity project, including a preview; there is no longer a button to press to
+stay out of the numbers.
 
 **A clip on a blog post is a scene, and a scene is a function of time.**
 `clips/scenes/<post-id>.html` is the site's own components arranged into one
@@ -283,12 +281,12 @@ it, and what was driven in a browser to check it.
 - A string added in one language, with a fallback in the code.
 - A new page that renders light for somebody who chose the dark style,
   because the boot block was not copied.
-- A new page shipped without `assets/consent.js` in its head, so nothing it
-  does reaches either GA or Clarity and no bar is ever offered on it. It fails
-  nothing and nobody notices for months; that is how the map came to be the
-  only page GA had heard of.
-- Driving analytics in a browser, seeing no events, and concluding the tags
-  are broken. Nothing loads until Allow is pressed. That is the feature.
+- A new page shipped without `assets/analytics.js` in its head, so nothing it
+  does reaches either GA or Clarity. It fails nothing and nobody notices for
+  months; that is how the map came to be the only page GA had heard of, and
+  how `blog.html` arrived carrying a script tag for a file that no longer
+  existed — the validator caught that one, because it checks every `assets/`
+  reference against the repo.
 - A rewritten card that loses its `data-clarity-mask`, putting whatever it
   draws back into the replays. The comment above the `<section>` on each pass
   page is there to be read before the line under it is replaced.
