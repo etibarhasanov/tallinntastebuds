@@ -143,10 +143,22 @@
 .lists-bar.is-past .lists-bar-name { opacity: 1; }
 .lists-bar-views { flex: 0 0 auto; display: flex; gap: 6px; }
 
-/* And the foot: the one way out of a list, fixed to the bottom of the window.
-   A hairline over the page's own ground, so it reads as the edge of the page
-   rather than as something floating on it — there is no shadow under it and
-   nothing about it moves. */
+/* And the foot: the one way out of a list, fixed to the bottom of the window,
+   with the page's one filled action standing in it — see listDock() in
+   assets/lists.js for why the accent is spent here and nowhere else on this
+   page.
+
+   The band wore the page's own ground for a while, on the reasoning that a bar
+   which is the edge of the page should not float on it. What that produced was
+   a band the colour of the thing behind it with a quiet link lying on it, and
+   nothing on the screen that looked pressed. It is paper now, inside the same
+   hairline — a surface holding a button, which is what every other button on
+   this site stands on. Still no shadow, and still nothing about it moves.
+
+   The band carries the padding and the safe insets rather than the button, so
+   the pill keeps its shape and sits above a home indicator instead of running
+   under one, and clears a notch in landscape the way the column above it
+   does. */
 .lists-dock {
   position: fixed;
   left: 0;
@@ -154,24 +166,27 @@
   bottom: 0;
   z-index: 5;
   display: flex;
-  background: var(--wash);
+  background: var(--paper);
   border-top: 1px solid var(--hairline);
+  padding: 12px max(var(--gap), var(--safe-r)) calc(12px + var(--safe-b))
+           max(var(--gap), var(--safe-l));
 }
-/* The bar is the target rather than the length of the word, which is the part
-   of rule 8 that matters on a phone. The safe inset is the link's own padding
-   and not the bar's, so the words sit above a home indicator instead of the
-   ground stopping short of it. */
+/* The button: .go out of assets/styles.css, sized to its words and centred on
+   the column the page reads at. Two pixels of padding over a stock .go on each
+   side, which is what takes it to the 44px a thumb is drawn against — it is
+   the one control on this site that has to be hit while somebody is scrolling
+   past it. */
 .lists-dock-out {
-  flex: 1 1 auto;
-  padding: 14px var(--gap) calc(14px + var(--safe-b));
-  text-align: center;
+  margin: 0 auto;
+  padding: 13px 22px;
+  max-width: 100%;
 }
 /* Room for it under the last card. The class is set by render() in
    assets/lists.js on the one view that draws one, and the room is made on the
    column rather than on the body: a body whose overflow has been propagated
    to the viewport does not count its own bottom padding as scrollable, so the
    last card sat under the bar however much padding the body was given. */
-.lists-body.has-dock .lists-main { padding-bottom: calc(72px + var(--safe-b)); }
+.lists-body.has-dock .lists-main { padding-bottom: calc(92px + var(--safe-b)); }
 
 .lists-card { padding: 22px 22px 20px; }
 

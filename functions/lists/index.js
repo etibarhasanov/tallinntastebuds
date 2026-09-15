@@ -9,7 +9,7 @@
  * It is lists.html again, the way /list/<id> is, and for two of the same
  * reasons and one of its own:
  *
- *   the tab says      "Public lists"        and not "Lists | Tallinn Tastebuds"
+ *   the tab says      "Everybody's lists"   and not "Lists | Tallinn Tastebuds"
  *   the page draws    with the first twenty rows already in it, no round trip
  *   a search finds it at an address that is about the directory
  *
@@ -69,7 +69,7 @@ const PATH = '/lists';
    Accept-Language is whatever its operator set, and the card built from these
    tags is shown to everybody a link is forwarded to rather than to whoever
    fetched it. The page underneath follows the reader's own language. */
-const TITLE = 'Public lists';
+const TITLE = 'Everybody’s lists';
 const DESCRIPTION =
   'Lists of places in Tallinn, written by the people whose names are on them, ' +
   'with the most kept first. Search them by name or by who wrote them.';

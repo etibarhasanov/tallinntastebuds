@@ -36,17 +36,18 @@
  *
  * WHAT IS NOT YOURS, AND WHERE IT SITS
  *
- * Public lists was a row at the foot of the lists card: a name, and a line
- * saying what was behind it, under a fold that could be forty places long. It
- * was the only way from your own things to anybody else's and it read like a
- * footnote.
+ * The way on to everybody's lists was a row at the foot of the lists card: a
+ * name, and a line saying what was behind it, under a fold that could be forty
+ * places long. It was the only way from your own things to anybody else's and
+ * it read like a footnote.
  *
- * It is a card of its own now, and it names three real lists — whose they are
- * and how many people kept them. That is the whole difference between an
- * invitation and a label: "Public lists" tells somebody who has never opened
- * one nothing at all, and *Top ten burgers, saved by 12* tells them whether to
- * press it. The same three rows the foot of every list already draws, from
- * the same request, for the same reason.
+ * It is a card of its own now — one door, drawn by publicCard() below, where
+ * it named three real lists for a while. The argument for the three was that a
+ * label is not an invitation: "Public lists", which is what that page was
+ * called then, told somebody who had never opened one nothing at all, where
+ * *Top ten burgers, saved by 12* tells them whether to press it. The page is
+ * called "Everybody's lists" now, which answers the half of that a name can
+ * answer; publicCard() has what the three cost.
  *
  * For a while that card stood directly under your name, above everything of
  * your own, and the page opened with the one thing on it that is not yours:
@@ -109,12 +110,12 @@
  * Under that card the page is two things: what is yours — the places you
  * saved, the lists you wrote, the lists you kept — and what is everybody
  * else's, in that order. For a while a heading stood over each half, "Yours"
- * and "Everybody else's", the quiet one a list page puts over the three more
- * lists at its foot. On a phone they were two more lines between your name
- * and your things, and each said what the card titles under it already say:
- * "Places I saved", "Your lists" and "Lists you saved" are yours by their
- * names, and "Public lists" is nobody's by its. The order carries the
- * argument on its own, and the headings went.
+ * and "Everybody else's", the quiet one /lists puts over a run of rows. On a
+ * phone they were two more lines between your name and your things, and each
+ * said what the card titles under it already say: "Places I saved", "Your
+ * lists" and "Lists you saved" are yours by their names, and "Everybody's
+ * lists" is nobody's in particular by its. The order carries the argument on
+ * its own, and the headings went.
  *
  * WHAT IT DOES NOT DO
  *
@@ -769,7 +770,9 @@
    * It named three real lists for a while, behind a fold, off a third request
    * this page made on every load. The argument was that a title somebody
    * chose and the number of people who kept it tells a stranger whether to
-   * press, where the words "Public lists" tell them nothing. What it also
+   * press, where the row's name then — "Public lists" — told them nothing.
+   * Half of that was answered by renaming the page it opens, which is
+   * "Everybody's lists" in ten languages now. What it also
    * was, was three strangers' lists standing under somebody's own things on
    * the one page that is about them, and a request whose entire yield was
    * three rows nobody had asked for. A door is the honest shape for a page

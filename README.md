@@ -2433,7 +2433,7 @@ Places I saved        8 places  a fold: one row a place, newest first
 Your lists             3 lists  a fold: one row a list
   [ Name a list ] [ Make it ]   outside the fold, one line high
 Lists you saved         1 list  a fold: one row somebody else's
-Public lists                 >  one row: the door to everybody else's
+Everybody's lists            >  one row: the door to everybody else's
 ```
 
 Five cards, one thing each, in the order of how much each is yours: who you
@@ -2443,8 +2443,8 @@ heading said so over each — **Yours** and **Everybody else's**, the quiet
 heading `/lists` puts over a run of rows, `.lists-section`. They went again:
 on a phone they were two more lines between your name and your things, and
 each said what the titles under it already say — *Places I saved*, *Your
-lists* and *Lists you saved* are yours by their names, and *Public lists* is
-nobody's by its. The order carries the
+lists* and *Lists you saved* are yours by their names, and *Everybody's lists*
+is nobody's in particular by its. The order carries the
 argument on its own. The lists you wrote and the lists you kept had one
 card between them for a while, two folds with the box that makes a list
 standing between — and that card was the one on the page nobody could read
@@ -2512,8 +2512,8 @@ of your own, and that is this page.
 
 ### Everybody else's lists come after your own
 
-**Public lists** is one row at the foot of this page: the name of the page,
-the sentence saying what is on it, and the chevron. Pressing it opens
+**Everybody's lists** is one row at the foot of this page: the name of the
+page, the sentence saying what is on it, and the chevron. Pressing it opens
 [`/lists`](#public-lists), everybody's, the most kept first.
 
 It has been three shapes and this is the third. It was a row at the foot of
@@ -2521,10 +2521,13 @@ the lists card once — under a fold that could be forty rows deep, the only way
 from your own things to anybody else's, reading like a footnote to your own.
 Then it was a card of its own that named three real lists: the title, how many
 people kept each one, whose it is, and the first three places on it. The
-argument for that was a good one — "Public lists" tells somebody who has never
-opened one nothing they did not already know, where *The bakeries worth the
-walk · saved by 5 people · created by kringel · Ferment · Kaerajaan ·
-Rataskaevu 16* tells them whether to press it.
+argument for that was a good one — the row's name, which was "Public lists"
+then, told somebody who had never opened one nothing they did not already
+know, where *The bakeries worth the walk · saved by 5 people · created by
+kringel · Ferment · Kaerajaan · Rataskaevu 16* tells them whether to press it.
+Half of that argument was answered by renaming the page rather than by drawing
+three of it; the other half — that a name is not an invitation — is what the
+line under it is for.
 
 What it also was, was three strangers' top tens standing among somebody's own
 things on the one page that is about them, and a third request on every load
@@ -3550,6 +3553,22 @@ a link its author remembered to send, and by a search result nothing linked
 to. Every list was an island. "No page ranks them" was, in practice, "no page
 shows them", and the honest name for that is not restraint.
 
+**It is called Everybody's lists**, in all ten languages and in the `<title>`
+a crawler reads — `listsAllTitle` and `listsAllDocumentTitle` in
+`data/ui.json`, and `TITLE` in `functions/lists/index.js`, which is English on
+purpose for the reason that file gives. It was called *Public lists* until
+somebody read that on a phone and said the name told them nothing, which is
+what the comments in `assets/account.js` had been saying about it for as long
+as there had been a door to it: public is the setting on somebody's own list,
+not a promise about a page, and a stranger who has never opened one has no
+idea what is behind a word that names a permission. *Everybody's* is whose the
+lists are, which is the one thing about this page worth two words — and it is
+true in a way *everybody else's* would not be, because your own public lists
+are on it too. Only the Google account's five are held apart, in the strip at
+the top, which is why the heading over the rest of the rows is **Everybody
+else's** (`listsEverybody`): down there the thing being excluded is Google,
+and the page and the heading inside it are two different claims.
+
 **What is on it.** Every public list with at least three places — the same
 three `assets/lists.js` has always wanted before it will offer to share one,
 because two places is a pair of opinions rather than a recommendation, and a
@@ -3766,7 +3785,7 @@ everybody else, which is most of the traffic this page gets.
 **How anybody gets there.** Four ways, and the first two matter most:
 
 - **The map**, from the button that wears your name: it opens `/account.html`,
-  whose last card is one row — **Public lists**, what is on them, and the
+  whose last card is one row — **Everybody's lists**, what is on them, and the
   chevron. It was a row at the foot of the lists card once, under a fold that
   could be forty rows deep, which is a footnote to somebody's own things and
   the wrong shape for the one page on this site that is everybody else's; then
@@ -3957,14 +3976,39 @@ distance somebody reading is in the middle of.
 
 **The two bars carry different things, and that is the rule.** The head says
 where you are — the list's name, and the switch. The foot says where you can
-go instead — everybody else's lists. Nothing is on both, because a door drawn
-twice on one screen is a door somebody has to think about twice.
+go instead — everybody's lists. Nothing is on both, because a door drawn twice
+on one screen is a door somebody has to think about twice.
 
-The foot is the whole width of the bar and not the width of the word, which is
-rule 8's point about rows and is worth as much for one row as for six. It is a
-hairline over the page's own ground, with no shadow under it and nothing about
-it that moves: it is the edge of the page rather than something floating on
-it.
+**The foot carries the page's one filled action**, and it took three goes to
+get there. It was an `.alt` — twelve mono pixels in `--muted`, underlined,
+centred on a band the colour of the page behind it — on the reasoning that a
+bar which is the edge of the page should not float on it. Then it was a
+`.menu-row`, the name in the display face with a chevron on the end, which is
+rule 8's shape for a door and the shape the account page offers this same
+destination in. Neither looked like a thing you press, which is what somebody
+reading a list on a phone said about both of them in turn. A row is right for a
+door standing among other rows on a page of cards; it is wrong for the one
+thing in a bar, where there is nothing beside it to be a row of.
+
+So it is `.go`, the filled pill in the accent — what "press this" looks like
+everywhere else on this site. Rule 5 allows one per surface and this page has
+always spent none: the keep is an `.alt` in a hairline pill, **Share** is an
+`.alt`, and the head card spends no accent at all. The one thing you can do
+next from a list you are reading is go and read the others, so that is what
+the accent buys. It is sized to its words and centred, the way every other
+`.go` is, rather than stretched across the bar — a full-width fill is a shape
+nothing else here wears — and it is 44px tall, because it is the one control
+on the site that has to be hit while somebody is scrolling past it. The band
+under it is `--paper` inside the same hairline, a surface holding a button,
+and it carries the safe inset so the pill sits above a home indicator rather
+than under one. Still no shadow, and still nothing about it moves.
+
+**And no line under the name**, which is what it drops from the row it was.
+The card on the account page puts `listsAllWhy` under the title, where it is a
+row among cards and the line is what says which page is behind it. Here it was
+two lines of mono in a bar that never leaves the screen, and it took the dock
+past a tenth of a phone — off a list it is meant to sit under rather than
+compete with. A filled button does not need a footnote.
 
 Your own list has neither. That page is an editor — its title is a field you
 type into rather than a heading, and the accent on it belongs to Save — and
