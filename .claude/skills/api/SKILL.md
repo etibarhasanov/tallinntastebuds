@@ -28,6 +28,37 @@ is the functions you touch plus what they call and what calls them.
 - The header of the file, and of `functions/api/_lib.js`. The header of
   `lists.js` states the ownership rule every write in it follows.
 
+## Is it new?
+
+A route that does not exist yet is not built from the prompt. It is described
+first, the owner answers, and the code comes after —
+**Something new is described before it is built** in `CLAUDE.md` is the rule
+and this is the server-shaped half of it. A new route, a new table, a new
+column somebody can fill in, a new thing a group can do on splitwise: all of
+this. Fixing, tightening or speeding up a route that already answers is not.
+
+What the description has to settle before a Function is worth opening:
+
+- **The route, its method, and what it answers with** — the JSON a page will
+  read, field by field. A shape agreed in a paragraph is a shape that does not
+  get renamed across two files and a stylesheet later.
+- **What it does when it fails**, given that nothing in `assets/` waits on
+  `/api/*` and a new route keeps that promise. Say which part of the page
+  simply does not appear.
+- **Who may call it**: signed out, signed in, the owner of the row only. The
+  ownership rule in the header of `lists.js` is the pattern, and an answer of
+  "anyone" is an answer that has to be said out loud.
+- **Whether it needs the schema.** A new table or column is `db/schema.sql`
+  and a load into two databases that only the owner approves — **The rules of
+  a write** below — so it belongs in the description rather than in the PR
+  that discovers it.
+- **What it caps**, if it takes anything a person typed, and the second home
+  that cap needs under **Caps live in two places** below.
+
+Then post it and stop. A schema written while the answer is outstanding is
+the most expensive kind of guess: it is the one that has already been loaded
+somewhere by the time the shape turns out to be wrong.
+
 ## The routes
 
 `_routes.json` sends everything except `/assets/*`, `/photos/*`,
@@ -250,6 +281,9 @@ statement, and `lists.pin` with `readingPins()` in
 A foreign key on a live table is a rebuild; do not reach for one.
 
 ## The steps
+
+If the change is something new, **Is it new?** above comes first and there is
+no step 1 until the owner has answered it.
 
 1. Make the change with the README section open and the file's header
    re-read against what the code now does.

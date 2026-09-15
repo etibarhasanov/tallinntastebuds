@@ -36,6 +36,38 @@ here. It is the main rule and it applies to every line you touch.
   this file rot within a week; find things by name — `grep -n 'function
   applyStyle' assets/*.js` — never by the number a document remembers.
 
+## Is it new?
+
+If a visitor could not see or press this thing yesterday and could tomorrow,
+it does not get built from the prompt. It gets described first, the owner
+answers, and the code comes after —
+**Something new is described before it is built** in `CLAUDE.md` is the rule
+and this is the page-shaped half of it. A new page, panel, sheet, button,
+field or filter chip is this. Restyling, rewording or fixing one that is
+already there is not, and neither is a place, a story, a discount or a blog
+post.
+
+What the description has to settle before a stylesheet is worth opening:
+
+- **Which page it lives on**, and whether it is a new one. A new page joins
+  `PAGES` at the top of `tools/stamp.mjs` or it never gets stamped, needs its
+  own README section, and is the case that most wants a mockup.
+- **Every state**, drawn in words: empty, loading, error, signed out, and the
+  place with no photo. A panel described only in its happy state is a panel
+  that gets built only in its happy state.
+- **The copy**, in English, and the note that every string needs all ten
+  languages in `data/ui.json` before the validator will pass it. Translating
+  the wrong wording ten times is the expensive way to find out it was wrong.
+- **What it does at 390 px**, which is the phone the README measures its
+  layouts against, and which of **The two styles** it has to work in. Both,
+  always — but say what changes between them.
+- **What it deliberately does not do yet.**
+
+Hold the description to **The design rules** in `README.md` — the twelve are
+cheaper to fail in a paragraph than in `assets/`. Then post it and stop.
+Scaffolding written while the answer is outstanding is scaffolding somebody
+has to argue with later.
+
 ## How the browser code is written
 
 **ES5, and nothing else.** `var`, `function`, no arrow functions, no `const`
@@ -190,6 +222,9 @@ write gate's `--check`:
   deliberately unstamped; it is served `no-store`.
 
 ## The steps
+
+If the change is something new, **Is it new?** above comes first and there is
+no step 1 until the owner has answered it.
 
 1. Make the change, in the dialect above, with the README section open.
 2. `node tools/stamp.mjs`. It rewrites only the pages whose stamps changed,
