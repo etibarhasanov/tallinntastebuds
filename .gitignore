@@ -1,3 +1,11 @@
 # `wrangler pages dev .` writes its local state here. It is a scratch
 # directory for the dev server and never part of a deploy.
 .wrangler/
+
+# The secrets `wrangler pages dev .` hands to the Functions locally —
+# SAVE_SALT, and GOOGLE_CLIENT_SECRET if you are driving the sign-in. The
+# deployed site reads them from the Pages dashboard and this file is only
+# ever the local stand-in, so it is the one file in the repo that must never
+# be committed. It was not ignored for the first day Google sign-in existed.
+.dev.vars
+.dev.vars.*
