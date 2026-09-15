@@ -4005,12 +4005,27 @@ be on the same card, and it costs nothing to send, because the pin was already
 on the row for the title. A list nobody has dressed wears the default pin,
 like its title does — see **The pins**.
 
-The five in the **Start here** strip keep the plain dots, for the same reason
-they carry no label: that panel is sixty-four pixels wide, where ten emoji are
-ten smudges on top of each other rather than ten places, and all five of those
-lists are Google's and wear the same default pin, so the glyph would cost the
-legibility and buy nothing. `paintSky()` in `assets/lists.js` is where the two
-part.
+**The five in the Start here strip wear it too, at twice the size in the
+panel's own units.** That panel is drawn into a fixed sixty-four pixels rather
+than the card's width, so eight units land at four there — a smudge — and
+sixteen lands at about nine pixels, a third of what a row card gets. Sixty-four
+pixels cannot carry ten of anything at twenty-two, and nine is where the mark
+is still a picture and the city is still visible under it; twenty units was
+tried and the balloons ate the panel. `paintSky()` in `assets/lists.js` holds
+both sizes.
+
+It nearly did not get the mark at all, on the reasoning that those five are
+Google's and would all be wearing the same default pin, so the glyph would cost
+the legibility and buy nothing. That was wrong about the data: they wear
+`pin`, `balloon`, `flame`, `pin` and `blossom` — somebody dressed them — and
+the strip was the one place on the page where a reader could see four marks
+side by side. Check `lists.pin` before reasoning about what a list is wearing;
+`db/google-lists.sql` writes no pin column, which is what made the guess
+look safe.
+
+The strip does still keep the scale label off, which is the one thing
+sixty-four pixels really cannot carry: a line of mono across it would be the
+loudest thing on the card.
 
 **The ground is the city, and it took two goes to get there.** It was
 `data/places.json` — the seventy-five places on the map — drawn as faint
@@ -7388,10 +7403,11 @@ Everywhere a list is named, which is four pages and the map: its own at
 `/account.html`, and the band across the top of the map's panel for as long as
 `/?list=<id>` is what the map is showing. The glyph sits in front of the title,
 and on `/lists` it is also what each of the list's places is drawn as in the
-panel above it — so a page of twenty is twenty constellations rather than
-twenty identical red ones, and the bakeries one is found without reading a
-word. See **Public lists** for where that panel comes from and which of the
-two shapes on that page keeps plain dots.
+panel above it, on the rows and in the **Start here** strip alike — so a page
+of twenty is twenty constellations rather than twenty identical red ones, and
+the bakeries one is found without reading a word. See **Public lists** for
+where that panel comes from and why the strip draws the same mark at twice the
+size.
 
 On the map it says something the four pages cannot: the pins under the band
 are already wearing that glyph, so the name and what is drawn under it are one

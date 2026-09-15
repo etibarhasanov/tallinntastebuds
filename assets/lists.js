@@ -1138,9 +1138,9 @@
       ul.appendChild(el('li', { className: 'lists-index-row' }, [
         el('div', { className: 'lists-start-card' }, [
           /* Not the wide sky: at sixty-four pixels a line of mono across it
-             would be the loudest thing on the card, and ten of the list's
-             mark would be a pile rather than ten places. The rows below are
-             where both are worth drawing — see paintSky(). */
+             would be the loudest thing on the card, so the scale is left to
+             the rows below. The mark is drawn here as it is there, at a size
+             that panel can carry — see paintSky(). */
           sky(l, false),
           el('div', { className: 'lists-start-body' }, [
             line,
@@ -1245,23 +1245,24 @@
      translated text and translated text is never written through innerHTML. */
   function paintSky(box) {
     var sk = box.ttbSky;
-    /* Only a row card wears the mark. The strip's sky is sixty-four pixels
-       wide, where ten emoji are ten smudges on top of each other rather than
-       ten places, and the five lists in it are Google's — all five wearing
-       the same default pin, so glyphs would cost the legibility and buy
-       nothing. It keeps the dots, for the same reason it carries no label.
+    /* Eight units across against the dot's six point eight: an emoji carries
+       its own padding, so a glyph asked for at the dot's size reads smaller
+       than the dot did. Eight is about twenty-two pixels on the phone the
+       layouts are measured against, which is what a pin on the map is.
 
-       Eight units across on the cards that do wear it, against the dot's six
-       point eight: an emoji carries its own padding, so a glyph asked for at
-       the dot's size reads smaller than the dot did. Eight is about
-       twenty-two pixels on the phone the layouts are measured against, which
-       is what a pin on the map is. */
-    var mark = sk.wide ? TTBPins.glyph(sk.pin) : '';
+       Sixteen in the strip, because its panel is drawn into sixty-four fixed
+       pixels rather than the card's width, and the same eight units land at
+       four there — a smudge. Sixteen is about nine pixels on the screen, a
+       third of what a row card gets: sixty-four pixels cannot carry ten of
+       anything at twenty-two, and nine is where the mark is still a picture
+       and the city is still visible under it. Twenty was tried and the
+       balloons ate the panel. */
+    var mark = TTBPins.glyph(sk.pin);
     box.innerHTML = '<svg viewBox="0 0 ' + SKY.w + ' ' + SKY.h + '" focusable="false">' +
       '<g class="lists-sky-city">' +
       (state.city ? spots(state.city, sk.frame, groundRadius(sk.frame), false, '') : '') +
       '</g><g class="lists-sky-own">' +
-      spots(sk.dots, sk.frame, mark ? 4 : 3.4, true, mark) +
+      spots(sk.dots, sk.frame, sk.wide ? 4 : 8, true, mark) +
       '</g></svg>';
     /* No label on a list with no spread — three places in one building, or a
        list whose dots all rounded to the same block. "0.0 km across" is not a
@@ -1276,8 +1277,8 @@
 
   /* Places as SVG source: a plain dot, or `glyph` if one is given, which is
      how a list's own places come to be wearing its mark. `r` is half of
-     whichever is drawn, so the two are asked for in the same measure and the
-     padding that keeps a dot inside the panel keeps a glyph inside it too.
+     whichever is drawn, so the two are asked for in one measure and the edge
+     of the panel can be kept off either without knowing which it got.
 
      A place of the list's own outside the frame cannot happen — the frame is
      built around them — but a ground dot outside it is the usual case, and it
@@ -1294,13 +1295,21 @@
      would have to guess the glyph's width for. */
   function spots(dots, frame, r, clamp, glyph) {
     var out = '', size = r * 2, i, x, y;
+    /* Where a thing this size may sit without hanging over the edge: the
+       padding, until the thing is bigger than the padding. A strip glyph is —
+       its half is eight against a pad of seven — and the panel clips what it
+       cannot hold, so the outermost mark on a list came out with its top cut
+       off. Only the bound moves; the projection below is on SKY.pad either
+       way, because the ground and the list's own places have to be laid on
+       one map. A ground dot passes glyph '' and keeps the padding it had. */
+    var inset = Math.max(SKY.pad, glyph ? r : 0);
     for (i = 0; i < dots.length; i++) {
       x = SKY.pad + (dots[i][1] - frame.lo0) / (frame.lo1 - frame.lo0) * (SKY.w - SKY.pad * 2);
       y = SKY.pad + (frame.la1 - dots[i][0]) / (frame.la1 - frame.la0) * (SKY.h - SKY.pad * 2);
-      if (x < SKY.pad || x > SKY.w - SKY.pad || y < SKY.pad || y > SKY.h - SKY.pad) {
+      if (x < inset || x > SKY.w - inset || y < inset || y > SKY.h - inset) {
         if (!clamp) continue;
-        x = Math.max(SKY.pad, Math.min(SKY.w - SKY.pad, x));
-        y = Math.max(SKY.pad, Math.min(SKY.h - SKY.pad, y));
+        x = Math.max(inset, Math.min(SKY.w - inset, x));
+        y = Math.max(inset, Math.min(SKY.h - inset, y));
       }
       out += glyph
         ? '<text x="' + x.toFixed(1) + '" y="' + (y + size * 0.35).toFixed(1) +

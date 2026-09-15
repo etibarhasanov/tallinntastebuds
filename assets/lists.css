@@ -934,12 +934,12 @@
 }
 .lists-sky svg { display: block; width: 100%; height: auto; }
 .lists-sky-city circle { fill: var(--hairline); }
-.lists-sky-own circle { fill: var(--accent); }
 
-/* The list's mark, where the panel is wide enough to carry it. Centred on the
-   place by text-anchor, because the width of an emoji is the platform's and
-   not something assets/lists.js can offset by; its height is the .35em the
-   drawing puts into the baseline.
+/* The list's mark, on every place the panel draws. Centred on the place by
+   text-anchor, because the width of an emoji is the platform's and not
+   something assets/lists.js can offset by; its height is the .35em the
+   drawing puts into the baseline, and its size is paintSky()'s, which asks
+   for twice as much in the strip's sixty-four pixels as on a row card.
 
    The fill is the fallback and not the picture: a colour emoji brings its own
    paint, and fill reaches only a platform that has none of these glyphs in
