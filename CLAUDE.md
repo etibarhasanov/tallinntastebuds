@@ -26,6 +26,11 @@ what has bitten people already — and an index to the rest.
 What a session tends to spend its first quarter-hour rediscovering, so it
 does not have to:
 
+- **Something new is described before it is built.** A new page, panel,
+  button, field, chip or route gets a written shape and the owner's yes
+  before any code is written — **Something new is described before it is
+  built** below is the whole of it. Everything else, which is nearly all the
+  work, goes straight to code the way it always has.
 - **There is no test suite.** `node tools/validate.mjs`, `node
   tools/qrperf.mjs --check` and `node .claude/hooks/d1-write-gate.mjs --check`
   are the whole of CI. Anything with a visible effect is driven in a browser;
@@ -121,11 +126,83 @@ refresh that changed a count the `/google-venues` skill had written down.
 A change to a feature reads the skill for that feature before the PR, the
 way it reads the README section, and fixes what the change made wrong.
 
+## Something new is described before it is built
+
+A change to something that already exists arrives with its own brief: the
+thing is there, it is wrong in a way somebody can point at, make it right.
+Something **new** does not. Nobody has seen it yet, so what gets built is
+whatever the session pictured while it read the sentence — and the first time
+the owner sees that picture is when it is merged and live — there are no
+preview deployments any more — after the code, the stamps, the README
+section, the ten languages and the browser pass have all been spent on it. Changing it then is not an edit. It is the whole change
+again, written by a session that has already talked itself into the first
+version.
+
+So the shape comes first, in words, and it comes from the owner.
+
+**What this catches: anything new a visitor can see or press.** A new page, a
+new panel or sheet, a new button, a new field, a new filter chip, a new route
+under `functions/api/`, a new thing a group can do on splitwise. The test is
+whether a visitor could not do something yesterday and could tomorrow.
+
+**What it does not catch, which is nearly all the work.** Fixing what is
+broken. Restyling or rewording what is already there. A place, a story, a
+discount, a language, a refresh of the export, a README correction, anything
+in `tools/`, a cleanup under `leave-it-better.md`. Those go straight to code
+the way they always have. This gate is about things nobody has seen yet, not
+about being careful in general, and an ordinary afternoon never reaches it.
+
+**What to send.** Prose in the same voice as everything else here, short
+enough to read on a phone, saying:
+
+- what the thing is, in a sentence, and which page it lives on;
+- every state it has — empty, loading, error, signed out, the place with no
+  photo — because the states are where a description and an implementation
+  turn out to have disagreed;
+- the copy, in English, and the note that it needs all ten languages in
+  `data/ui.json` before it ships;
+- what it does at 390 px, which is the phone the README measures against;
+- what it deliberately does not do yet, so the boundary is a decision rather
+  than an oversight;
+- what it costs — a table, a route, a page joining `PAGES` in
+  `tools/stamp.mjs`, a `.sql` file somebody has to load by hand;
+- and the questions the session genuinely cannot answer for itself. Two real
+  ones are worth more than twelve that include the obvious.
+
+Hold it to **The design rules** in `README.md` while writing it. They are
+twelve rules a new sheet, page or button is held to, and it is cheaper to
+fail them in a paragraph than in a stylesheet.
+
+**A mockup when the words will not settle it.** A layout that does not exist
+yet is hard to argue about in prose. When the shape is a new arrangement on
+screen rather than another instance of one the site already has, follow the
+words with something to look at, and say plainly that it is a mockup rather
+than the change. It is drawn and driven the way everything else here is —
+`npx wrangler pages dev .`, or `python3 -m http.server 8000` for something
+static — and what the owner gets is a picture of it rather than a link.
+**There are no preview deployments** below is why: a URL spends one of the
+five hundred builds a month, and making one is the owner's to run rather than
+a session's to spend. A new button on a panel that already exists does not
+need a mockup. A new page does.
+
+**Then stop.** Post the shape, say in the first line that the session is
+waiting on an answer — **Say where it stands** below is how — and write no
+code. Not the schema, not the Function, not the scaffolding that will "be
+needed either way". A session that guesses and builds while it waits has
+spent the afternoon the asking was meant to save, and a guess is much harder
+to throw away once it compiles.
+
+This is the owner's instruction in as many words: first clear functionality,
+later code. The half-hour a description takes is the cheapest half-hour in
+the process, and it is bought against writing the whole change twice.
+
 ## What needs a yes, and what does not
 
 The repository is yours to work in: branch, edit, generate, validate, drive a
 browser, commit, push, open a pull request. None of that needs asking, and
-asking about it wastes an afternoon.
+asking about it wastes an afternoon. What needs asking is *what to build*,
+when the thing is new and nobody has seen it — the section above — and once
+that is answered the building is yours.
 
 **Two live things are not yours, and one of them is a database.** The rows in
 D1 — production `tallinntastebuds` and preview `tallinntastebuds-preview` —
