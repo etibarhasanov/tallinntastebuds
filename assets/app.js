@@ -2066,8 +2066,11 @@
       return;
     }
 
-    /* Connecting is pressed on /account.html and comes back there, so this is
-       the case where a session ran out mid-trip and the map is what is left. */
+    /* Nothing on this site asks to connect Google to an account any more —
+       /account.html carried the one link and no longer offers it, see
+       googleRow() there. The route still answers a signed-in request by
+       linking, because that is what a session on the way out means, so this
+       stays as the one thing that would say so if one ever happened. */
     if (said === 'linked') { toast(t('accountGoogleLinked')); return; }
 
     var err = said === 'taken' ? 'accountErrGoogleTaken' : 'accountErrGoogle';
