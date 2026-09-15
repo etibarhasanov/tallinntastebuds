@@ -2372,6 +2372,55 @@ deployment.** Pages binds them when a deployment is built, so the one already
 serving the site carries on without them. Retry the latest deployment, or push
 a commit.
 
+**Whitespace on either value is trimmed, and the id has to look like an
+id.** Both are pasted by hand into boxes that cannot be read back afterwards,
+which makes a trailing newline invisible from every side — and a newline in a
+client id is not harmless, because the id travels as a query parameter and a
+newline is percent-encoded rather than ignored. Google is then asked about a
+client called `…googleusercontent.com%0A`, finds none, and answers **Access
+blocked: Authorization Error — the OAuth client was not found, Error 401:
+invalid_client**: an error page about an application that does not exist, for
+a value one character wrong. So `clientId()` and `clientSecret()` in
+`functions/api/_google.js` trim once and every reader goes through them — the
+authorize URL, the code swap and the `aud` check all have to agree on the
+same string, and trimming for the first two alone would leave the third
+refusing a token they had just earned.
+
+The shape check is the other half. `googleReady()` requires the id to end in
+`.apps.googleusercontent.com`, which every Google client id does and a client
+*secret* does not — and the secret in the id's box is the mistake the two
+dashboards invite, adjacent field to adjacent field, with nothing able to
+notice it afterwards. It is the suffix and not the whole shape on purpose:
+the part in front has been a bare project number and is now a number and a
+hash, and a rule strict enough to refuse a format nobody here has seen would
+turn a working sign-in off, which looks like a decision rather than a fault.
+
+**Which means a malformed pair now reads from outside exactly like an
+unconfigured one** — `google: false`, and every sheet draws the username and
+password alone. That is the better failure for a visitor, who can no longer
+press a button nobody can use, and the worse one for whoever is setting it
+up, so here is how to tell the two apart from outside:
+
+```bash
+curl -s -o /dev/null -D - 'https://tallinntastebuds.ee/api/google' | tr '&' '\n' | grep -i client_id
+```
+
+`/api/google` asked with nothing is the way out, so its `Location` is the
+authorize URL and the `client_id` in it is the exact bytes Google is being
+given — `%0A`, `%20` or a `+` on the end is the newline; a `GOCSPX-` prefix
+is the secret in the wrong box. A `location:` of the site's own root with no
+`client_id` at all is the guard at the top of `onRequestGet` in
+`functions/api/google.js` sending a hand-typed request home, which is
+`googleReady()` saying no *or* a missing `DB` binding *or* a database
+disagreeing with its `ENVIRONMENT` — the three share one landing, and
+`/api/account` tells them apart (`google: false` with `ready: true` is the
+first of them).
+
+Anything else is an id Google will at least look up, and a `redirect_uri` it
+refuses is a different error — `Error 400: redirect_uri_mismatch` — reached
+only once the client itself has been found. So `invalid_client` is never a
+reason to go adding redirect URIs.
+
 The rest is in the Google Cloud console — an OAuth client, a consent screen,
 and the **redirect URIs, which are per hostname and matched exactly**:
 `https://tallinntastebuds.ee/api/google`,
