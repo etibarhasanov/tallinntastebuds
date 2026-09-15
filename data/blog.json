@@ -254,10 +254,10 @@
     },
     "body": {
       "en": [
-        "The speech bubble opens the panel on a chat, and the site speaks first: are you looking for somewhere on this map, or anywhere in Tallinn? The two are buttons. Press one and it becomes your reply in the thread, and the field at the bottom wakes up. Type a sentence and it sits on the right the way your own words do in any chat, with the answer under it — a line or two, then one to three places as rows, best first, each with a reason it is there and, when the map knows where you are, how far it is.",
+        "The speech bubble opens the panel on a chat, and the site speaks first: what do you feel like? Type a sentence and it sits on the right the way your own words do in any chat, with the answer under it — a line or two, then one to three places as rows, best first, each with a reason it is there and, when the map knows where you are, how far it is.",
         "It is a conversation and the model is told the whole of it. Every question goes with the exchanges before it, so somewhere cheaper, or is the second one open late, mean what they would mean to a person. One place is a whole answer when one is what fits: a model asked for three will always find three.",
-        "Which roll it answers from is chosen before you type and is never quietly changed afterwards. The map means the map — a question this map cannot answer gets a shrug and a nudge towards the other button, not a place off Google’s list wearing my words.",
-        "It runs on a free daily allowance, and some evenings that allowance is gone. When the model cannot answer, something much smaller reads the sentence for the words it knows — cheap, fancy, open, near me — and answers from those. It is not as good and it does not pretend to be, but a question typed into a box should never come back with nothing at all."
+        "It answers off my map first — the places I have eaten at and written up — and reaches for Google’s Tallinn only where the map has nothing that fits: a cuisine I have not got to yet, a part of town I have not eaten in. A place off Google’s list arrives wearing Google’s name and rating and none of my words, and says so. There used to be a choice to make before typing, this map or all of Tallinn; nobody opening a chat wants to be asked which of two maps they mean, so there is one Ask now.",
+        "It runs on a free daily allowance, and some evenings that allowance is gone. When it is, the chat says so and asks you back tomorrow rather than guessing: three places matched on letters under a sentence about your evening would be the site pretending, and a shrug is honest where that is not."
       ]
     }
   },

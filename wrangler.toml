@@ -134,17 +134,19 @@
 #
 # Unlike D1 there is nothing to create first: the binding works the moment a
 # deployment carries it. Without it /api/ask still answers — with the opening
-# hours and no opinion — and assets/ask.js reads the question in the browser
-# instead. So this is the one binding in this file whose absence is a quieter
-# feature rather than a broken route.
+# hours and no opinion — and the chat says nothing answers rather than
+# guessing. So this is the one binding in this file whose absence is a
+# quieter feature rather than a broken route.
 #
 # What the allowance actually buys is worth knowing before relying on it:
-# roughly three hundred questions a day, and past that every request is a 429
-# until midnight UTC and the browser's keyword reader answers instead. Preview
-# and production spend from the same daily pot, so an afternoon of testing
-# against a preview empties the live site's allowance too. /api/ask reports
-# whether the model or the browser's reader answered in `note`, so that is
-# visible from outside rather than guessed at.
+# something like two hundred and fifty questions a day on the model named in
+# functions/api/ask.js, and past that every request is a 429 until midnight
+# UTC and the chat says it is resting. Preview and production spend from the
+# same daily pot, so an afternoon of testing against a preview empties the
+# live site's allowance too. /api/ask reports whether the model answered in
+# `note` and which model in `model`, so both are visible from outside rather
+# than guessed at; the comment above MODEL in that file has the arithmetic
+# and the one curl that reads them.
 name = "tallinntastebuds"
 pages_build_output_dir = "."
 compatibility_date = "2026-09-02"
