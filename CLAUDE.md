@@ -179,11 +179,13 @@ the step that gets skipped is always the one nobody re-read.
 - That branch is also the live site. Cloudflare Pages is connected to this
   repository through its own Git integration, with that branch set as the
   production branch, and every push to it deploys tallinntastebuds.ee within
-  the minute. Every push to any other branch deploys a preview under
-  `*.tallinntastebuds.pages.dev`, against a separate database. **That
-  connection is the only deploy path.** No workflow in this repository
-  publishes, and there is no Cloudflare token or account id in GitHub's
-  secret store — nothing is missing, so do not ask for one to be added.
+  the minute. **No other branch deploys anything** — Pages is set to watch the
+  production branch and nothing else, so pushing the branch you are working on
+  costs no deploy and gets no URL. **That connection is the only deploy
+  path.** No workflow in this
+  repository publishes, and there is no Cloudflare token or account id in
+  GitHub's secret store — nothing is missing, so do not ask for one to be
+  added.
 - `.github/workflows/deploy.yml` (GitHub Pages) is manual-only and is **not**
   the live host. Do not reach for it.
 - Work lands through a PR into the default branch — that is how all 100+ of
@@ -199,19 +201,32 @@ the step that gets skipped is always the one nobody re-read.
   is `git push --force-with-lease`. That is fine on a branch you own — which
   every branch here is — and `--force-with-lease` is what refuses to do it if
   somebody else has pushed to it since.
-- **Every push is a build, and there are five hundred a month.** Cloudflare
-  counts a deployment against the free plan's ceiling whether it rebuilt
-  anything or not — this site has no build command and a push still spends
-  one — and preview and production spend from the same five hundred. The
-  first three weeks ran 773 of them across 191 pull requests: four to a PR,
-  of which one was the merge and three were a branch going up again. That is
-  thirty-four deploys a day: the five hundred is gone by the middle of it.
-  Running out is not a bill, it is a stop: the free plan has no overage to
-  charge for, so Cloudflare stops building, and what stops is the live site
-  as much as the previews. So **push once, when the branch is ready**.
-  Everything under **Before you push** is written to run before the first
-  push rather than around it, and a second push is for something that could
-  only have been learnt after the first.
+- **There are no preview deployments.** Cloudflare counts a deployment against
+  the free plan's five hundred a month whether it rebuilt anything or not —
+  this site has no build command and one still spends a build — and running
+  out is not a bill, it is a stop, which takes the live site down with the
+  previews. The first three weeks ran 773 of them across 191 pull requests and
+  next to none of those URLs was opened, so they were switched off rather than
+  rationed. **Drive everything under `npx wrangler pages dev .`**: same
+  bindings, same preview database, your own machine, no deploy.
+- **Two things `pages dev` cannot show you**, and both are rare: a
+  `wrangler.toml` change to the `[env.preview]` block, which takes effect only
+  once a preview carries it and which `pages dev` cannot reach because it reads
+  the top level instead; and anything whose point is how it behaves on a real
+  phone, which a localhost is not. Everything else it does show, the database
+  included — `pages dev` talks to the same remote `tallinntastebuds-preview`
+  that a preview deployment would, so a `db/` load is visible there without
+  deploying anything. On the two that are left, do not work around it and do
+  not assume: say in the pull request that the change wants a preview and what
+  you would look at on it. One `npx wrangler pages deploy . --branch=<name>`
+  from a terminal makes one, and that is the owner's to run. If it starts
+  coming up often, that is the signal to put previews back on some branches,
+  and **The build budget** in `README.md` says what that would cost.
+- **Push once anyway.** The reason is no longer the budget: a branch that goes
+  up five times runs the validator five times and tells whoever is reading
+  that it was not ready. Everything under **Before you push** is written to
+  run before the first push rather than around it, and a second push is for
+  something that could only have been learnt after the first.
 
 ## Before you push
 
@@ -309,11 +324,11 @@ is small — the small ones are the ones that ship broken.
    to send. There is no template.
 5. **CI** runs `node tools/validate.mjs` and `node tools/qrperf.mjs --check`
    on the push and on the PR. Red CI is yours to fix before anything else
-   happens. The push itself is what gets a preview: Cloudflare's Git
-   connection deploys every branch it sees, and puts the URL, under
-   `*.tallinntastebuds.pages.dev` and against the preview database, in the
-   PR's checks. There is nothing to run by hand. Look at it for anything with
-   a visible effect; it is where a reviewer looks.
+   happens. **There is no preview URL** — pushing the branch deploys nothing,
+   and the PR's checks carry no Cloudflare link. Anything with a visible
+   effect gets driven under `npx wrangler pages dev .`, and the body says what
+   was driven and how, since that is now the only account of it a reviewer
+   gets.
 6. **Merge with Rebase and merge**, never a merge commit, never a squash of
    commits that were written to stand alone. **Leave the branch.** A session
    cannot delete one — the git proxy takes a push and silently drops a ref

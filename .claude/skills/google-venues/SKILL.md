@@ -187,10 +187,11 @@ categories renamed, patterns dropped — and that both databases were loaded.
 3. Ask to load the SQL into **preview** from the branch, with the delta
    described as in step 5 above —
    `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`,
-   then the same with `db/google-lists.sql` — then push the branch, which
-   deploys a preview of it, and open that preview's `/google`, the list
-   picker and `/u/google-statistics` to see the rows arrive. A no here is an
-   answer: push the branch anyway and say in the PR that preview is unloaded.
+   then the same with `db/google-lists.sql` — then check `/google`, the list
+   picker and `/u/google-statistics` under `npx wrangler pages dev .`, which
+   reads that same preview database, to see the rows arrive. Pushing deploys
+   no preview; `CLAUDE.md` says why. A no here is an answer: push the branch
+   anyway and say in the PR that preview is unloaded.
 4. One commit for the export and its SQL; a second for any `KITCHENS`
    pattern and cuisine label that had to go with it, and a third for the
    counts, if they moved.

@@ -265,9 +265,12 @@ it, and what was driven in a browser to check it.
 5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
 6. Open the PR against the default branch. The body says what was wrong,
    what it is now, the trade-off, which README section moved, and exactly
-   what was driven in a browser and how. The push has already deployed a
-   preview — Cloudflare's Git connection puts the URL in the PR's checks —
-   so open it on a phone and look.
+   what was driven in a browser and how — and that account matters more than
+   it used to, because the push deploys no preview and there is no URL for a
+   reviewer to open instead. `npx wrangler pages dev .` is where a visible
+   change gets driven, on the same bindings against the same database.
+   `CLAUDE.md` says why previews are off and what to do on the rare change
+   that truly needs one.
 7. CI green, then **Rebase and merge**; the branch stays, `CLAUDE.md` says
    why. The stamps mean every visitor gets the new files on their next
    load, no cache to wait out.
