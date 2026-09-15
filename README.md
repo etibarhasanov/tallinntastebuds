@@ -2331,6 +2331,29 @@ environment, and the pair or neither: `/api/account` reports Google as
 unavailable without both, and every sheet draws no button. Nothing else
 changes, and a deployment without them is the site exactly as it was.
 
+**Both as secrets, and the id being public is not a reason to make it a
+plain variable here.** It would be on most projects — a client id travels in
+the redirect URL and anybody who presses the button can read it. But a Pages
+project with a wrangler file makes that file the source of truth for
+everything it can declare, and `[vars]` is one of those things, so a plaintext
+variable typed into the dashboard is not editable there and never reaches a
+deployment. Secrets are the exception, because a secret is the one binding
+that must never be in the repository, and the dashboard still owns those. The
+only cost is that the id cannot be read back off the page once saved, so keep
+your own copy of it.
+
+The other arrangement works too, and is a code change rather than a dashboard
+one: put `GOOGLE_CLIENT_ID` in the `[env.production.vars]` and
+`[env.preview.vars]` blocks of `wrangler.toml`, where it would be committed,
+and leave only the secret in the dashboard. Nothing in the Functions can tell
+the difference — both arrive on `env`, and `googleReady()` reads them the same
+way.
+
+**And a variable added in the dashboard does nothing until the next
+deployment.** Pages binds them when a deployment is built, so the one already
+serving the site carries on without them. Retry the latest deployment, or push
+a commit.
+
 The rest is in the Google Cloud console — an OAuth client, a consent screen,
 and the **redirect URIs, which are per hostname and matched exactly**:
 `https://tallinntastebuds.ee/api/google`,
