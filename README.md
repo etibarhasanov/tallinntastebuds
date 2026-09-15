@@ -2405,11 +2405,11 @@ username and password it always did.
 
 ## The account page
 
-`/account.html`. Your name, with the door to your public profile and the two
-things you can do to an account — change its password, or leave — on the same
-card; then the places you saved, the lists you wrote, the box that makes
-another and the ones you kept; then, last, one row: the way on to everybody
-else's.
+`/account.html`. Your name, the line you wrote about yourself and the door to
+your public profile, with everything you can do to an account along the foot
+of the same card; then the places you saved, the lists you wrote, the box that
+makes another and the ones you kept; then, last, one more card: the way on to
+everybody else's.
 
 It was a menu in the sheet the map opens, and the menu is what went wrong with
 it. A sheet over the map is for something you do and dismiss — sign in, change
@@ -2425,15 +2425,18 @@ that names them:
 
 ```
 etibar                          the name, one line saying what the page is,
+  Eating my way through …       the line you wrote about yourself, with the
+  Change your line              word that opens the field again under it,
   Your public profile >         the door to how it looks to everybody else,
-  Change username ·             and the three things you can do to the
-  Change password · Sign out    account
-Places I saved        8 places  a fold: one row a place, newest first
+  Change username ·             and everything you can do to the account
+  Change password · Sign out
+Places I saved        8 places  a fold: six rows a place, newest first
+  Show more                     inside it, once there are more than six
   See them on the map           outside it, so a long fold cannot bury it
-Your lists             3 lists  a fold: one row a list
+Your lists             3 lists  a fold: six rows a list
   [ Name a list ] [ Make it ]   outside the fold, one line high
-Lists you saved         1 list  a fold: one row somebody else's
-Everybody's lists            >  one row: the door to everybody else's
+Lists you saved         1 list  a fold: six rows somebody else's
+Everybody's lists            >  a card: the door to everybody else's
 ```
 
 Five cards, one thing each, in the order of how much each is yours: who you
@@ -2512,11 +2515,12 @@ of your own, and that is this page.
 
 ### Everybody else's lists come after your own
 
-**Everybody's lists** is one row at the foot of this page: the name of the
-page, the sentence saying what is on it, and the chevron. Pressing it opens
-[`/lists`](#public-lists), everybody's, the most kept first.
+**Everybody's lists** is the last card on this page: the name of the page,
+the sentence saying what is on it, and the chevron, with the whole face of the
+card the press. It opens [`/lists`](#public-lists), everybody's, the most kept
+first.
 
-It has been three shapes and this is the third. It was a row at the foot of
+It has been four shapes and this is the fourth. It was a row at the foot of
 the lists card once — under a fold that could be forty rows deep, the only way
 from your own things to anybody else's, reading like a footnote to your own.
 Then it was a card of its own that named three real lists: the title, how many
@@ -2536,12 +2540,33 @@ you are and `/api/lists` for what you wrote and kept; the third asked
 `/api/lists?all=1` for twenty of everybody's so that three could be drawn,
 none of which anybody on this page had asked to see. It is two requests now.
 
-So the row is back, and it is not the footnote it was: it is the last card on
+So the door is back, and it is not the footnote it was: it is the last card on
 the page rather than a line inside somebody else's fold, and what is behind it
-is one press away rather than a fold and a scroll. The card is `door()` out of
-`assets/account.js` — the same `.menu-row` the map's account sheet draws its
-ways-on in, and the same shape **Your public profile** wears at the top of the
-page — because a promise about a page is exactly what this is.
+is one press away rather than a fold and a scroll.
+
+**And it is a card rather than a row in one, which is the fourth shape.** It
+was `door()` out of `assets/account.js` for a while — the same `.menu-row` the
+map's account sheet draws its ways-on in, and the same shape **Your public
+profile** still wears at the top of the page — on the argument that a promise
+about a page is exactly what that shape is for. What it looked like was the
+argument against it: a `.menu-name` is 15.5px, and under four cards carrying
+their titles at 26px the last one read as a footnote set in a smaller type
+rather than as the fifth card on the page. The stylesheet was already
+apologising for it, too — a card whose only content is a row had to have the
+hairlines that separate a row from its neighbours taken off again, because the
+card's own edge was drawing that line a few pixels further out.
+
+It is built like the four above it now: an `<h2>` in the page's own title
+size, the chevron at the end of it where a fold puts one, and the sentence
+under. The title is the link and `.lists-open` stretches it over the whole
+face of the card — **The design rules**, rule 8, the target is the card and
+not the width of the word — which also keeps the name a screen reader says to
+the title alone rather than every word on the card in one breath. What tells
+it from the three folds over it is that its chevron never turns: a fold opens
+where it stands and this one leaves. The row shape is not gone from the page,
+and that is the distinction held rather than dropped: **Your public profile**
+is a row *inside* a card, among the other things that card is about, and this
+is a card.
 
 It stood directly under your name for a while, above everything of your own,
 and that made the page open with the one thing on it that is not yours: a page
@@ -2578,14 +2603,29 @@ lists you wrote, the field that names the next one, how many you kept of
 other people's, and the row that says everybody else's are over there — with
 every door out in sight without scrolling.
 
+**An open one is six rows and a Show more, not the whole column.** A fold that
+opened onto forty names was the same burial one press further in: the box that
+makes a list, the way to the map and every card under the one you opened went
+back below the scroll, which is the thing the folds were written to stop. Six
+is what leaves the next card's title on the screen at the 390px the layouts are
+measured against, so an open column still reads as one card among several. The
+rest is one more press and no request — every row arrived with the page — and
+what keeps six from reading as all of them is the count on the line you
+pressed, which says how many there are. The word is `.lists-more` and
+*Show more*, the same control the directory ends its own rows with, because it
+is the same job one page along.
+
 A closed fold is not the menu this page was made out of. A menu row said the
 name of another page; this one says how many of your things are behind it and
-opens them where you are standing. The last card on the page is a menu row and
-not a fold, and that is the distinction drawn rather than broken: there is
+opens them where you are standing. The last card on the page is a door and not
+a fold, and that is the distinction drawn rather than broken: there is
 nothing of yours behind it, only somewhere to go. Which of the three folds are
 open is remembered on the
 browser under `ttb.account.open`, so somebody who wants their saves in front of
-them every time opens them once. A card with nothing in it — no saves yet, no
+them every time opens them once. Which of them have been opened all the way is
+not: a press that only asked to read to the end of a column is not a setting,
+and a page that opened already scrolled past would be remembering the wrong
+half of the gesture. A card with nothing in it — no saves yet, no
 lists yet — is not a fold at all, because a chevron promises something behind
 it.
 
@@ -2677,12 +2717,18 @@ face by `.lists-open`. That arrangement is here for the same reason it is on
 the directory: a byline in the line of facts is a door to whoever wrote the
 list, and a link inside a link is not a thing HTML has.
 
-The fold is the one thing this page has cost either sheet: a dozen lines of
-`.lists-fold` in `lists.css` that take the browser's own marker off a
-`<summary>`, lay the title, the count and the chevron along one line, and turn
-the chevron a quarter when it opens. The chevron is `.menu-go`, the same mark
-the rows under it wear, so a row that opens another page and a title that opens
-where it stands point the same way at what they do. `.lists-new` grew a margin
+Three things are all this page has cost either sheet, and they are all in
+`lists.css`. The fold: a dozen lines of `.lists-fold` that take the browser's
+own marker off a `<summary>`, lay the title, the count and the chevron along
+one line, and turn the chevron a quarter when it opens. The chevron is
+`.menu-go`, the same mark the rows under it wear, so a row that opens another
+page and a title that opens where it stands point the same way at what they do.
+`.lists-door`, three lines, which is what makes a whole card a press — it is a
+`position: relative`, so that `.lists-open` has the card to fill rather than
+whatever is positioned above it, and the hover and the title's own line height.
+And `.lists-about`, which is the room the line about yourself stands in: the
+same room whether what is in it is the line or the field, so the card does not
+shift under your hand when the field arrives. `.lists-new` grew a margin
 of its own when the box arrived here, for the reason its comment gives: what is
 over it is a `<summary>` when the fold is closed and a column of lists when it
 is open, and neither of those can carry a margin that only means something
@@ -2694,27 +2740,24 @@ here.
 
 ### What it costs to open
 
-Five requests, all at once, and one paint when the last of them lands:
-`data/ui.json` and `data/places.json` off the static side, `/api/account`,
-`/api/lists` and `/api/lists?all=1` off the Functions. The two list answers are
-asked in the same breath as the one that says whether there is anybody to ask
-about — waiting would be a second round trip, and a page that drew twice would
-draw a card and then move it.
+Four requests, all at once, and one paint when the last of them lands:
+`data/ui.json` and `data/places.json` off the static side, `/api/account` and
+`/api/lists` off the Functions. There was a fifth, `/api/lists?all=1`, for the
+three of everybody's lists the foot of the page used to name; that card is a
+door now and asks for nothing. The list answer is asked in the same breath as
+the one that says whether there is anybody to ask about — waiting would be a
+second round trip, and a page that drew twice would draw a card and then move
+it.
 
-They stay two questions rather than one answer with both halves in it. Your
-lists and everybody's are kept apart all the way down — `functions/api/_lists.js`
-and `functions/api/_mostkept.js` are separate modules for exactly this reason —
-and folding them together here would be the account page's shape deciding the
-API's. It costs one more request and no more database work: the same two
-queries run either way.
+One answer carries both halves of what is yours — the lists you wrote and the
+ones you kept — and that is one request rather than two because they are the
+same question asked of the same person. Everybody else's are a question about
+somebody who is not you, and they stay a separate module all the way down;
+`functions/api/_lists.js` and `functions/api/_mostkept.js` have never been one
+for exactly that reason. This page simply no longer asks the second one.
 
-The directory's page is the expensive half, at roughly three hundred rows —
-see **Public lists**, where that number is broken down. It is the same request
-the foot of every list already makes, so this page is not a new cost so much as
-one more surface paying a cost the site had already taken on.
-
-Nothing is cached: all three API answers are `no-store` and all three are about
-a session. `data/places.json` is 13KB and revalidates like everything else.
+Nothing is cached: both API answers are `no-store` and both are about a
+session. `data/places.json` is 13KB and revalidates like everything else.
 
 ### The one thing it costs a visitor
 
@@ -4667,21 +4710,45 @@ revealing something.
 
 Two hundred characters under your name on `/u/<name>`, and the only thing
 anybody writes on this site about themselves rather than about a restaurant.
-It is written on `/account.html`, in the box on the card that carries your
-name, directly over the door to the profile it appears on — write the line,
-then go and read it where everybody else does.
+It is written on `/account.html`, on the card that carries your name, directly
+over the door to the profile it appears on — write the line, then go and read
+it where everybody else does.
 
 It is the same box a list's intro is, at the same length and in the same
 class, because it does the same job one floor up: a line under a title, not
 a page about a person. A profile that opened with six paragraphs of
 autobiography would have stopped being a page about somebody's lists.
 
-**Nothing is drawn for an account that has not written one**, which is nearly
-all of them. That is the rule the standing and every save count on this site
-already follow: a box reading "this person has not written anything yet" is
-a page telling a reader about an empty field rather than about a person.
-Emptying the box and pressing Save is how a line comes down, and the server
-takes empty as an answer rather than as a mistake.
+**On the account page it is a line until you ask for the field.** What stands
+there is what you wrote, drawn as `.lists-say` — the same class it is read in
+on your profile, so the card shows you the thing rather than a box with the
+thing in it — with one quiet word under it to change it, and nothing but that
+word where nobody has written a line yet. The field arrives when the word is
+pressed and goes again when the line is saved.
+
+It was a field and a filled Save standing open on every visit, and two things
+were wrong with that and they were the same thing twice. A page that had
+already spent its accent on the box that makes a list was spending it a second
+time here, which is **The design rules**, rule 5. And that is what it looked
+like: the loudest thing on somebody's account was a two-hundred-character
+field nearly nobody has ever typed in, which, once they had, stayed open and
+stayed loud, saying *Saved* at a line that was already saved. The Save inside
+the field is an `.alt` now for the same rule — the accent on that page belongs
+to the box that makes a list, and it is still spent exactly once while this is
+open.
+
+There is no way out of the field that is not Save, and it needs none: nothing
+has gone anywhere until it is pressed, and the field opens holding the line
+that is already there, so pressing Save on a field opened by accident writes
+back what was written before.
+
+**Nothing is drawn on the profile for an account that has not written one**,
+which is nearly all of them. That is the rule the standing and every save count
+on this site already follow: a line reading "this person has not written
+anything yet" is a page telling a reader about an empty field rather than about
+a person. Emptying the field and pressing Save is how a line comes down, and
+the server takes empty as an answer rather than as a mistake — on the account
+page the word goes back to offering one.
 
 **It does not ask for your password, and the other two changes do.** A
 password change and a rename are each a way to take an account off somebody
@@ -4714,8 +4781,11 @@ survived by nothing, because the account page and every profile would answer
 500 and take somebody's saves, lists and byline down with a line of
 autobiography nearly nobody has written. So the account page catches it and
 draws no box, and `readProfile()` falls back to the same query without the one
-optional field. Run the `ALTER` and the line starts saving; until then the
-pages are exactly what they were before this existed.
+optional field. Run the `ALTER` and the line starts saving; until then
+`/api/account` sends no line and the account page offers to take one, which is
+the one thing in that window that is not quite honest — pressing Save there
+fails and says so. The rest of both pages is exactly what it was before this
+existed, which is the point.
 
 ### Private lists are not on it, including for its owner
 
@@ -7565,12 +7635,14 @@ The account page, `assets/account.js`:
 | event | parameters |
 | --- | --- |
 | `fold_toggle` | `fold`, `fold_state` |
+| `fold_more` | `fold`, `rows_total` — the rest of a column, past the first six |
 | `place_link` | `place`, `map` |
 | `saved_map` | `places_saved` |
 | `list_page`, `profile_open`, `lists_all` | as on the lists |
 | `list_create` | `list_id` |
 | `account_open` | `view` — the two doors when signed out |
 | `account_rename_open`, `account_password_open` | — into the map's sheet |
+| `account_about_open` | `about_state` (`set`/`empty`) — the field for the line about yourself, on opening it |
 | `account_about` | `about_state` (`set`/`cleared`) — the line about yourself, on save |
 | `account_logout` | — |
 | `radio_play`, `radio_stop`, `home` | as on the map |
@@ -7864,6 +7936,14 @@ chevron. A control takes you
 somewhere or changes something; this one opens the card it is the title of. It
 lives with the card in `lists.css` rather than in this block — see **The
 account page**.
+
+The last card on that page is the same thing with the other answer: the title
+is an `<a>`, the chevron does not turn, and `.lists-open` stretches the press
+over the whole card — which is rule 8 obeyed rather than dodged, a target the
+width of the card. It is not a `.menu-row` because a `.menu-row` is a row
+among rows inside a card, and this is the card. The directory has drawn every
+one of its lists that way since it was written; what is new is only that a
+card with one thing on it may do it too.
 
 ### 5. One filled action per surface, and never two
 
