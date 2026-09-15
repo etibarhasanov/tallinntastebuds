@@ -219,6 +219,15 @@ a:hover { color: var(--accent-lit); }
      .chip   a toggle in the filter row — further down, with the row.
      .menu   a list of places to go, drawn as rows rather than as links.
 
+   And a fifth, which is with the account sheet further down because it is
+   only ever on one: .ac-google. It is the one control here that is not this
+   site's — it carries Google's mark and their four colours, and it has to
+   look like their button rather than ours or it stops being recognisable,
+   which is the whole of what it is for. None of the four could do that: .go
+   would spend the accent a second time on a card that has already spent it,
+   and .alt would make the other way in look like a footnote. See "The design
+   rules" in the README, which names it.
+
    The map and the lists page used to keep their own copies of the first two,
    which had drifted a whole typeface apart: one page's primary action was a
    mono pill and the other's was set in the display face. Two pages, one site,
@@ -1867,6 +1876,56 @@ body.panel-detail .panel {
 }
 .ac-err { background: var(--wash); color: var(--accent); }
 .ac-note { background: var(--wash); color: var(--ink); }
+
+/* Continue with Google — the fifth control, and the only one on this site
+   wearing somebody else's design. A pill like .go, the same height and the
+   same mono, on paper inside a hairline instead of filled with the accent:
+   the accent is spent once per surface and the sheet spends it on its own
+   button, so this one is the quiet half of a pair that are nonetheless
+   equals. The mark keeps its four colours in both styles, which is the one
+   place on this site a component names a colour — it is Google's colour and
+   not ours, and it is inside an <svg> rather than in this file. */
+.ac-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 11px 18px;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ac-google:hover { border-color: var(--ink); }
+.ac-google-mark svg { display: block; width: 16px; height: 16px; }
+
+/* The word sitting in the rule rather than above it, which is what says the
+   two sides are alternatives and not steps. */
+.ac-or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: -4px 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.ac-or::before,
+.ac-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--hairline);
+}
 
 /* The rail button wears the name of whoever is signed in, so it can run
    longer than the fixed-width buttons around it. */

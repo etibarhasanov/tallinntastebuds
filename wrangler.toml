@@ -55,6 +55,24 @@
 #                      Unset, the bot check is skipped and the rest works
 #                      unchanged.
 #
+#   GOOGLE_CLIENT_ID   PLAIN, optional. The OAuth client from the Google Cloud
+#   GOOGLE_CLIENT_SECRET  SECRET, optional. console, for Continue with Google.
+#                      Both or neither: /api/account reports Google as
+#                      unavailable unless it has the pair, and the sheets draw
+#                      no button. Nothing else changes — a username and a
+#                      password is still the whole of an account without them.
+#
+#                      Per-environment like the rest, and in the Google console
+#                      the *redirect URI* is per-hostname besides: register
+#                      https://tallinntastebuds.ee/api/google and
+#                      https://splitwise.tallinntastebuds.ee/api/google for
+#                      production, and the preview host you actually open for
+#                      preview. Google matches them exactly and accepts no
+#                      wildcard, so a new preview branch is a new URI — which
+#                      is the one part of this that cannot be made to look
+#                      after itself. See **Signing in with Google** in
+#                      README.md.
+#
 # There were three more — CF_ACCOUNT_ID, CF_EMAIL_TOKEN and MAIL_FROM — for a
 # password reset by email. Nothing reads them any more, so if they are set in
 # either environment they can be deleted from the Pages project.

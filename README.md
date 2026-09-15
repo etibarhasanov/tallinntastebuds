@@ -49,6 +49,7 @@ completely with the database switched off.
 - [Restaurant discounts](#restaurant-discounts)
 - [Saves](#saves)
 - [Accounts](#accounts)
+  - [Signing in with Google](#signing-in-with-google)
 - [The account page](#the-account-page)
 - [Google venues](#google-venues)
 - [The directory](#the-directory)
@@ -1845,7 +1846,13 @@ other:
    dashboard, paste the site key into the `<meta name="turnstile-key">` in
    `index.html`, and add the secret half as `TURNSTILE_SECRET`. Test a save
    after enabling — a misconfigured widget refuses every save.
-3. **Nothing to bind by hand.** The D1 bindings come from `wrangler.toml`, and
+3. **Continue with Google, when you want it.** Create an OAuth client in the
+   Google Cloud console, register the redirect URIs — one per hostname, matched
+   exactly, no wildcards — and set `GOOGLE_CLIENT_ID` and
+   `GOOGLE_CLIENT_SECRET`. Both or neither; without the pair the sheets draw
+   the username and password they always did. **Turning it on** under
+   **Signing in with Google** has the whole of it.
+4. **Nothing to bind by hand.** The D1 bindings come from `wrangler.toml`, and
    the dashboard cannot override them.
 
 Re-applying the schema, or setting up a database from scratch:
@@ -1922,11 +1929,17 @@ number regardless — the POST hands the new one straight back.
 
 ## Accounts
 
-Optional, and deliberately the smallest thing that does the job: **a username
-and a password**. No email, no phone, no OAuth, no real name.
+Optional, and deliberately the smallest thing that does the job: **a username,
+and either a password or a Google account**. No email, no phone, no real name.
 
-That list used to end "no profile", and it stopped being true when `/u/<name>`
-was built. What an account still holds of its own is a username, a password
+That list used to end "no profile, no OAuth". The first stopped being true when
+`/u/<name>` was built and the second when Google was added, and the second is
+worth a word here because it looks like a reversal and is not: what was
+refused was collecting an address and a name and a picture from a third party
+in exchange for a sign-in. **Signing in with Google** below is the version
+that does not — the scope asked for is `openid` alone, the only thing stored
+is Google's own opaque id for that person, and an account is still a username
+and nothing else. What an account still holds of its own is a username, a password
 hash and, if somebody writes one, two hundred characters about themselves —
 see **The line about yourself** under **Profiles**. Everything else a profile
 draws is the lists that account published, which were already public.
@@ -1991,9 +2004,12 @@ drops from two to one.
 
 ### There is no reset, and the sheet says so
 
-Nothing proves an account is yours except knowing its password, so **a
+Nothing proves a password account is yours except knowing its password, so **a
 forgotten password cannot be recovered by anyone, including whoever runs this
-site**. The sign-up sheet says that above the button rather than letting
+site**. An account with Google connected is the exception and the only one:
+Google can prove who you are, and so that account has a way back in that a
+password account has not. It is the one practical argument for connecting it,
+and it is why the button is not buried. The sign-up sheet says that above the button rather than letting
 somebody find out later, and the fields carry the autocomplete hints that make
 a browser's password manager offer to keep the details — which is what
 actually rescues people in practice.
@@ -2125,6 +2141,183 @@ Thirty days is a guess, and it is `HOLD_DAYS` at the top of
 undone, short enough that a name somebody has genuinely finished with comes
 back to the pool.
 
+### Signing in with Google
+
+**Continue with Google**, above the username and password on the map's sheet
+and on the splitwise page, with a rule and the word *or* between the two. It
+is the other way in, and it exists for the reason the password reset does not:
+**a reset has to send an email and this sends nothing.** The browser goes to
+Google, the person signs in there, and what comes back is a statement this
+site checks. There is no address to confirm, no code to deliver, nothing
+queued, and none of it needs Email Sending — which is the Cloudflare feature
+that is not on the free plan and that took the reset out.
+
+`functions/api/google.js` is the whole of the round trip and
+`functions/api/_google.js` everything under it. The account it ends at is an
+ordinary account: a row in `users` with a username, and a row in `identities`
+saying which Google account reaches it.
+
+#### What is asked of Google, and what is kept
+
+**The scope is `openid` and nothing else.** Not `email`, not `profile`. What
+comes back is the `sub` claim — Google's own permanent, opaque id for that
+person — and that is the only thing stored. No address, no display name, no
+picture, none of which this site has ever had a use for.
+
+Asking for them and throwing them away would be worse than not asking: the
+consent screen would name them, and somebody would reasonably conclude this
+site now holds them. The one thing an account here is, is a name its owner
+chose. That does not change because of the door they came in by.
+
+**It is the id and not the address, which matters more than it looks.** An
+address can be given up and reassigned; `sub` cannot. Matching accounts on the
+address would mean whoever holds it next inherits the account.
+
+#### The flow, and why this one
+
+The authorization code flow, with PKCE, redeemed server-side. Google Identity
+Services — the button-and-a-script version — would have been less code and
+was not taken, because it puts a script of Google's on the one surface where
+it matters least that it is convenient and most that it is not there. This
+way **no third-party script runs on any page of this site**, which is the same
+rule the rest of the repo keeps, and the flow is plain `fetch` and WebCrypto
+with nothing to install.
+
+PKCE is not strictly needed here — the code is redeemed by a server holding a
+client secret, which is what PKCE stands in for — and is sent anyway. It costs
+one hash and closes the case where a code leaks out of a redirect and is
+redeemed by somebody who also has the secret.
+
+**The ID token's signature is not verified, and that is deliberate.** The
+token does not come through the browser: it arrives on the TLS connection this
+Worker opened to Google's token endpoint, in the answer to the request
+carrying the code, authenticated with the client secret. OpenID Connect says
+in as many words (Core 3.1.3.7, item 6) that a client receiving the token
+straight from the token endpoint may treat the TLS as the validation. Fetching
+Google's signing keys instead would be a JWKS cache, a key rotation to get
+wrong and two more ways for a sign-in to fail, to learn nothing the connection
+has not already said. What *is* checked is everything TLS does not cover: the
+issuer, that the audience is this client, that it has not expired, and that it
+carries the nonce this browser was sent with.
+
+#### One route, asked twice
+
+`/api/google` is both halves. A browser asks it once with nothing, and is sent
+to Google; Google sends the browser back to the same address with a `code`,
+and that is the second ask. One file, and — the part that actually matters —
+**one redirect URI to register per hostname** rather than a pair that has to
+be kept in step with two route names.
+
+Every ending is a redirect back to where the trip started, carrying one word:
+
+| `?google=` | What happened |
+| --- | --- |
+| `in` | signed in; the page says who, and claims this device's saves |
+| `name` | this Google account has never been here, so the sheet asks for a username |
+| `linked` | connected to the account that was already signed in |
+| `taken` | that Google account already belongs to another account here |
+| `failed` | the swap did not complete |
+
+and **nothing at all** where somebody pressed Cancel on Google's own screen.
+Changing your mind is not an error and should not come back as one.
+
+#### Two sealed cookies, and no table of half-finished sign-ups
+
+`ttb_g` carries the trip — the state to compare, the PKCE verifier, the nonce,
+where to return to, and whether this is a sign-in or a connect — for ten
+minutes. `ttb_gp` carries a Google account that has proved itself and has no
+account here yet, for fifteen.
+
+Both are **sealed rather than stored**: the value carries its own HMAC under
+`SAVE_SALT`, so a forged one is refused with no table to check it against. A
+row per half-finished sign-up would be a table that fills with people who
+changed their mind, and a sweep to write for it.
+
+Both are `SameSite=Lax` and not `Strict`, which is the one attribute here that
+is not simply the safest available. `Strict` withholds a cookie from a
+navigation that started on another site, and the navigation that matters is
+the one Google sends back. `Lax` allows exactly that — a top-level GET — and
+nothing else.
+
+#### The name is still chosen
+
+A Google account arriving for the first time does not become an account. It
+gets the sheet, on a step of its own, asking for a username — and **nothing
+is written until it answers**, so a tab closed on that step leaves no row.
+
+The name Google would have offered is a real person's real name out of a
+profile this site deliberately never read. The sheet used to hand out
+`smoky-walnut-418` and that was taken away for the smaller version of the same
+reason: **the one thing this site asks anybody to decide about themselves is
+what they are called here**, because it is the byline on every list they share
+and the whole of `/u/<name>`. See **The name is chosen, not handed out**.
+
+#### Connecting, and the duplicate nobody wants
+
+Without an address there is nothing to match on, so **pressing Continue with
+Google while signed out always makes a new account** — including for somebody
+who already has one with a password. That is the trap, and the answer to it is
+that connecting is a thing you do **on purpose, while signed in**: *Connect
+Google* along the foot of `/account.html`.
+
+The intent is decided on the way **out**, from whether the request carried a
+session, and sealed into the cookie. Deciding it on the way back — "is there a
+session now?" — would mean a browser that signed in on another tab mid-trip
+silently attaches somebody's Google account to whatever account happened to be
+open.
+
+One Google account is one account here: connecting one that already belongs to
+somebody else answers `taken` and changes nothing.
+
+#### An account with one way in, and the two steps that notice
+
+An account made through Google **has no password**. `users.pw_hash` is the
+empty string, `pw_salt` empty and `pw_iter` nought, because those columns are
+`NOT NULL` and this file cannot take a `NOT NULL` off a live table — see the
+note above `users` in `db/schema.sql`. `matches()` in `functions/api/account.js`
+is the one place that knows what an empty hash means, and it refuses a
+sign-in against one rather than deriving a hash at nought iterations, which
+WebCrypto refuses outright. Without that guard a password sign-in against a
+Google account would answer 500 where every other failure answers *wrong
+username or password* — which would be a way of asking, from outside, which
+accounts were made through Google.
+
+Two steps ask for the password in use, and both change shape:
+
+- **Change password** becomes **Set a password**: one field instead of two,
+  and it does not sign the other devices out. A password is changed because
+  somebody else may have it; a *first* password is a lock nobody has ever had
+  a key to, and turning somebody's phone out for adding one would be a
+  punishment for tidying up.
+- **Change username** stops asking. The session is the only credential such an
+  account has got. **That is a real difference and worth saying out loud**: on
+  a password account a sheet left open on a shared laptop is not enough to
+  rename somebody, and on a Google-only account it is. Setting a password
+  closes it, which is the other half of why that step is there.
+
+**Disconnecting needs a password on the account.** Google taken off an account
+that has no other way in is an account nobody can ever sign into again, and
+there is no reset here to rescue it with. So `google-unlink` refuses, and the
+page says what to do instead — which is the step directly above the button.
+
+#### Turning it on
+
+`GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in the Pages project, per
+environment, and the pair or neither: `/api/account` reports Google as
+unavailable without both, and every sheet draws no button. Nothing else
+changes, and a deployment without them is the site exactly as it was.
+
+The rest is in the Google Cloud console — an OAuth client, a consent screen,
+and the **redirect URIs, which are per hostname and matched exactly**:
+`https://tallinntastebuds.ee/api/google`,
+`https://splitwise.tallinntastebuds.ee/api/google`, and the preview host you
+actually open. Google accepts no wildcard, so a new preview branch is a new
+URI to add — the one part of this that cannot be made to look after itself.
+`http://127.0.0.1:8788/api/google` is allowed too, which is what makes
+`wrangler pages dev` able to run the whole thing.
+
+And `db/schema.sql` applied to both databases, for the `identities` table.
+
 ### How it is kept safe
 
 - **Passwords** are PBKDF2-HMAC-SHA256 through WebCrypto — there is no bcrypt
@@ -2168,18 +2361,30 @@ back to the pool.
 - **Guessing is the attack**, since there is no reset link to phish and no
   address to intercept. Ten wrong passwords from one network fingerprint in
   fifteen minutes and that fingerprint waits.
-- **"No such account" and "wrong password" give the same answer**, so the
-  endpoint cannot be used to find out which usernames exist.
+- **"No such account", "wrong password" and "that account has no password"
+  give the same answer**, so the endpoint cannot be used to find out which
+  usernames exist, nor which of the ones that do are reached through Google.
 - **A password change drops every session** on that account, not just the
-  current one — see **Changing the password** above.
+  current one — see **Changing the password** above. Setting a *first*
+  password does not, and **Signing in with Google** says why.
 - **Changing a username needs the password too**, because the username is
-  half of what signs you in — see **Changing the username** above.
+  half of what signs you in — see **Changing the username** above. An account
+  with no password is the exception, and the trade is written out under
+  **Signing in with Google**.
+- **The Google cookies are sealed, not stored**, under the same `SAVE_SALT`,
+  and neither of them ever holds anything but an opaque id and the mechanics
+  of one round trip.
 
 ### Turning it on
 
 Nothing to do. The account tables are already applied, and accounts work as
 soon as `DB` is bound and `SAVE_SALT` is set — both of which the save feature
 needs anyway. There is no third variable and no second service.
+
+**Continue with Google is the one optional extra**, and it is off until
+`GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are both set — see **Turning it
+on** under **Signing in with Google**. Without them every sheet draws the
+username and password it always did.
 
 ---
 
@@ -2387,13 +2592,23 @@ made the page read as a settings screen with the saves filed underneath. The
 name is the top of the page; what you can do to the account is the end of it.
 The profile is a `.menu-row` down there rather than a word along the foot,
 because it is a place to go — everything you have published, read the way a
-stranger reads it — and the two beside it are things to do.
+stranger reads it — and the ones beside it are things to do.
+
+**Google is a fourth word along that foot**, and it is where it is because it
+is the same kind of thing as the two beside it: a way into this account.
+*Connect Google* is a link, because it is a round trip through Google and
+back; *Disconnect Google* is a button, because it is one row and a redraw —
+the distinction this site draws everywhere. It is drawn only where
+`/api/account` says Google is configured at all, and the password word beside
+it reads **Set a password** rather than *Change password* on an account that
+has never had one. See **Signing in with Google**.
 
 ### What is left on the map
 
 The sheet, and only what a sheet is good at: **signing in**, **creating an
-account**, the **password** step and the **username** step. All four are a
-thing you do and dismiss with the map still behind you, which is the test. The button on the rail is
+account**, **Continue with Google**, the **naming step** behind it, the
+**password** step and the **username** step. Every one of them is a thing you
+do and dismiss with the map still behind you, which is the test. The button on the rail is
 what tells the two apart — signed out it opens the sheet, signed in it leaves
 for this page — and `?account=me`, the old link to the menu, redirects here.
 
@@ -5956,7 +6171,13 @@ functions/_middleware.js   which hostname is this: the pages.dev copy goes to
                            the real one, and the splitwise subdomain serves the
                            page below and nothing else
 functions/api/saves.js     the save count
-functions/api/account.js   sign up, sign in, change a password
+functions/api/account.js   sign up, sign in, change a password, name an
+                           account that arrived through Google
+functions/api/google.js    the round trip to Google and back: one route, asked
+                           once on the way out and once on the way in
+functions/api/_google.js   what that round trip is made of — the two sealed
+                           cookies, the code swap, the identities table (not a
+                           route: leading _)
 functions/api/lists.js     somebody else's top ten: make one, fill it, share
                            it, keep somebody else's, add a place nobody has
 functions/api/places.js    the roll the picker searches: the map plus the export
@@ -7050,12 +7271,14 @@ data; those do not belong in a static site at all.
 | [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Loaded with the panel of a place that has a video. No script involved. |
 | [Google Analytics 4](https://developers.google.com/analytics) (gtag.js) | — | Google terms | Property `G-2XNTC15F28`. Counts, and takes the events `assets/track.js` sends. Loads only after consent. |
 | [Microsoft Clarity](https://clarity.microsoft.com/) | — | Microsoft terms | Project `yay3pxtg4w`. Heatmaps and session replay. Loads only after consent. Sets `MUID` as well as its own two cookies, which is a Microsoft-wide identifier shared with their advertising side. |
+| [Sign in with Google](https://developers.google.com/identity/branding-guidelines) (the mark) | — | Google brand guidelines | Four `<path>`s inlined in `assets/app.js` and `assets/split.js`, on the Continue with Google button and nowhere else. **No script and no request of Google's runs on any page** — the sign-in is a redirect, and their branding permits the mark on the button that starts it. |
 
 **The attribution control in the bottom-right corner is a licence condition of
 both OpenStreetMap and CARTO. Do not remove it.**
 
-No scripts or fonts beyond the table above, and the last two of them load for
-nobody who has not said yes — see [Consent](#consent). Once somebody has,
+No scripts or fonts beyond the table above — the row below the last two is a
+drawing rather than a request, and nothing about it reaches Google until
+somebody presses it — and those two load for nobody who has not said yes — see [Consent](#consent). Once somebody has,
 Google sets `_ga` and `_ga_*` and Clarity sets `_clck`, `_clsk` and `MUID`.
 Before that, and forever for anybody who says no, what is stored on a
 visitor's device is eight `localStorage` keys and one cookie, all of them the
@@ -7065,7 +7288,11 @@ on the first save and never before it), `ttb.saved`
 (which places it has saved), `ttb.nudged` (the date an offer of an account was
 turned down), `ttb.consent` (yes or no to the two tags above), and the
 `ttb_s` session cookie, which is set by the server and only exists once
-somebody has signed in.
+somebody has signed in. A sign-in through Google passes two more cookies
+through the browser — `ttb_g` for the ten minutes of the round trip and
+`ttb_gp` for the fifteen a half-finished sign-up is held — and both are this
+site's own, server-set, and gone the moment the trip ends. See **Signing in
+with Google**.
 
 `assets/qr.js` is deliberately **not** in that table. Every QR library worth
 using is a dependency this repo would otherwise not have, and the discount
@@ -7471,10 +7698,22 @@ Everything pressable is one of four shapes, and all four live in
 | `.alt` | the quiet one beside it: a way out, a switch, a second thought | under a `.go`, or at the top of a step |
 | `.chip` | a toggle that filters | the filter row |
 | `.menu` / `.menu-row` | a list of places to go, hairline-ruled, full width | the account sheet |
+| `.ac-google` | Continue with Google: a pill like `.go`, on paper inside a hairline, carrying Google's mark | the sign-in sheets, and only those |
 
 A page does not get its own copy of one of these. If a fifth is genuinely
 needed it goes in the same block, with the sentence saying what the other four
 could not do.
+
+**There is a fifth, and that sentence is this one.** `.ac-google` is the only
+control on this site wearing somebody else's design, and it has to: a sign-in
+button people do not recognise at a glance is a sign-in button that has
+stopped doing its job. None of the four could be it. `.go` would spend the
+accent a second time on a card that has already spent it — see rule 5 — and
+`.alt` would make the other way in look like a footnote under the form. So it
+is a pill of the same height and the same mono as `.go`, on `--paper` inside a
+`--hairline`, with the mark in Google's four colours inside an `<svg>`. That
+mark is the one exception to rule 1 below, and it is not really an exception:
+the colours are Google's and naming them anywhere else would be wrong.
 
 One pressable thing on the site is none of the four, and it is not a fifth: a
 card's own title, on the three that fold — the saved places, your lists and

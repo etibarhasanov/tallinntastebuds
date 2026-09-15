@@ -3,8 +3,10 @@
  *
  * Underscore-prefixed files under functions/ are not routed, so this is a
  * module and never an endpoint. Everything here is shared by the routes under
- * functions/api/ — the answer shape, the session, which database this is, the
- * two rolls of places. Three things at the bottom hold a value
+ * functions/api/ — the answer shape, the session and how one is opened, which
+ * database this is, the two rolls of places, and the move that carries a
+ * browser's saves onto the account somebody has just signed in to (two routes
+ * do that now: ./account.js and ./google.js). Three things at the bottom hold a value
  * between requests — which database this deployment is holding, the places on
  * the map, and the catalogue a list draws from — and all three are caches of
  * something that only a deploy changes, kept per isolate and re-asked every
@@ -41,15 +43,24 @@ export async function sha256Hex(text) {
   return hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)));
 }
 
-/* One-way and salted with a secret that lives in the Pages environment. The
-   raw address never reaches the database, so a copy of a table tells nobody
-   where anybody was. */
-export async function fingerprint(secret, ip, ua) {
+/* HMAC-SHA256 under a secret out of the Pages environment, as hex. Two things
+   here want exactly this and neither wants it for the same reason: a
+   fingerprint is a value that must not be reversible, and a sealed cookie is
+   a value that must not be forgeable. Both are one key and one message, so
+   the WebCrypto dance is written once. */
+export async function hmacHex(secret, message) {
   const enc = new TextEncoder();
   const key = await crypto.subtle.importKey(
     'raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
   );
-  return hex(await crypto.subtle.sign('HMAC', key, enc.encode(ip + '|' + ua)));
+  return hex(await crypto.subtle.sign('HMAC', key, enc.encode(message)));
+}
+
+/* One-way and salted with a secret that lives in the Pages environment. The
+   raw address never reaches the database, so a copy of a table tells nobody
+   where anybody was. */
+export async function fingerprint(secret, ip, ua) {
+  return hmacHex(secret, ip + '|' + ua);
 }
 
 /* ------------------------------------------------------------- passwords
@@ -175,6 +186,24 @@ export function sessionCookie(token, days, request) {
   ];
   if (ours) parts.push('Domain=' + SESSION_DOMAIN);
   return parts.join('; ');
+}
+
+/* A new session for an account, and the token to put in the cookie. Three
+   places mint one — creating an account, signing in to one, and coming back
+   from Google — and all three do exactly this. The fourth, a password change,
+   deliberately does not use it: there the insert has to be in the same batch
+   as the delete that clears the old sessions, or a change could leave an
+   account with none.
+
+   The token goes to the browser and only its SHA-256 is stored, which is the
+   whole argument for the sessions table looking the way it does. */
+export async function openSession(env, userId) {
+  const token = randomHex(32);
+  await env.DB
+    .prepare('INSERT INTO sessions (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)')
+    .bind(await sha256Hex(token), userId, Date.now(), Date.now() + SESSION_DAYS * 86400000)
+    .run();
+  return token;
 }
 
 export function readCookie(request, name) {
@@ -629,6 +658,53 @@ export const RECOUNT_SQL =
   'INSERT INTO save_counts (place_id, n) ' +
   'VALUES (?, (SELECT COUNT(*) FROM saves WHERE place_id = ?)) ' +
   'ON CONFLICT(place_id) DO UPDATE SET n = excluded.n';
+
+/* ------------------------------------------------------- claiming the saves
+ * Move a device's saves onto an account.
+ *
+ * Two routes do this and both do it at the same moment — the one where
+ * somebody stops being a browser and starts being an account. /api/account
+ * does it on a sign-up and a sign-in; /api/google does it when the round trip
+ * comes back as somebody this site already knows.
+ *
+ * UPDATE OR IGNORE, then DELETE, and the order matters. A row that cannot
+ * move — because the account already has that place, saved on another device
+ * — is left alone by the update rather than failing the whole statement, and
+ * the delete then clears it away. The effect is a merge: the union of what
+ * the device had and what the account had, with nothing counted twice.
+ *
+ * Both places' counts are then recomputed from the rows, so a place that was
+ * saved on two devices by one person who has now signed in on both drops from
+ * two to one, which is the true number.
+ */
+export async function claimDeviceSaves(env, userId, clientId) {
+  if (!clientId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(clientId)) {
+    return [];
+  }
+
+  const { results } = await env.DB
+    .prepare("SELECT place_id FROM saves WHERE owner = ? AND owner_kind = 'device'")
+    .bind(clientId)
+    .all();
+  if (!results.length) return [];
+
+  const touched = results.map((r) => r.place_id);
+
+  const statements = [
+    env.DB
+      .prepare("UPDATE OR IGNORE saves SET owner = ?, owner_kind = 'user' WHERE owner = ? AND owner_kind = 'device'")
+      .bind(userId, clientId),
+    env.DB
+      .prepare("DELETE FROM saves WHERE owner = ? AND owner_kind = 'device'")
+      .bind(clientId)
+  ];
+  for (const place of touched) {
+    statements.push(env.DB.prepare(RECOUNT_SQL).bind(place, place));
+  }
+  await env.DB.batch(statements);
+
+  return touched;
+}
 
 export function countsKey(request) {
   return new Request(new URL('/api/saves', request.url).toString());

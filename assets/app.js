@@ -145,7 +145,7 @@
     askPlaces: [],
     /* Who is signed in, and whether accounts work here at all. Both come
        from /api/account and both are absent until it answers. */
-    account: { ready: false, user: null },
+    account: { ready: false, google: false, user: null, linked: false, password: true },
     selected: null,      // restaurant id, or null
     /* The place you last opened, kept lit on the map after the panel shuts.
        Closing a write-up used to put the pin back in the crowd, so the answer
@@ -1710,7 +1710,8 @@
 
 
   /* --------------------------------------------------------------- account
-   * A username and a password, and nothing else required.
+   * A username, and either a password or Continue with Google. Nothing else
+   * required.
    *
    * Saving works with no account: the device keeps a random id and the save
    * is filed under that. An account is the upgrade that makes the list follow
@@ -1723,7 +1724,16 @@
    * the sign-up sheet rather than left to be discovered: nothing proves an
    * account is yours except knowing its password, so a forgotten one is gone.
    * What rescues people in practice is the browser's password manager, which
-   * is why the fields carry the autocomplete hints they do.
+   * is why the fields carry the autocomplete hints they do — and, for an
+   * account with Google connected, Google itself, which is the one way back
+   * in there has ever been.
+   *
+   * Continue with Google sends nothing, which is why it is here at all and a
+   * password reset by email is not: the browser goes to Google and comes back
+   * with a statement the site checks. The whole of that is
+   * functions/api/google.js; this file draws the button, reads the one word
+   * the trip comes back with, and asks for a username where the trip ended at
+   * somebody the site has never seen.
    *
    * The sheet somebody signed in lands on is their name and a short menu: the
    * places they saved, their lists, the password, and the way out. Each row
@@ -1826,7 +1836,21 @@
              button, because a sign-up sheet that can only fail is worse than
              no sign-up sheet at all. */
           ready: !!out.ready,
-          user: out.user || null
+          /* Whether Continue with Google would lead anywhere on this
+             deployment — its own question, and asked for the same reason
+             `ready` is: a button that can only fail is worse than no button. */
+          google: !!out.google,
+          user: out.user || null,
+          /* Which ways into this account exist. Both are about the account
+             and not about the site, so they are false until somebody is
+             signed in, and the two steps on this sheet read them to decide
+             whether to ask for the password in use. */
+          linked: !!out.linked,
+          /* True for everybody who signed up with a password, and false only
+             for an account made through Google that has not set one. The
+             default before the answer arrives is `true`, which is the one
+             that draws the ordinary form. */
+          password: out.user ? !!out.password : true
         };
         if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
         paintAccountButton();
@@ -1843,9 +1867,16 @@
           if (open && liveDealFor(open)) renderDetail(open);
         }
         accountSettled();
-        /* A link that arrived asking for the sheet has been waiting on this
-           answer — see readAccountLink. */
+        /* Both of these have been waiting on this answer: until it arrives
+           there is no knowing whether a sheet can be offered at all, and no
+           name to put in a toast. See readAccountLink.
+
+           The link first and the round trip second, because where an address
+           carries both — a ?then= that itself named a view, coming back with
+           a word from /api/google on it — the thing that just happened is the
+           one to answer, and whichever runs last is the one on screen. */
         openAskedAccount();
+        answerGoogle();
       })
       .catch(function () { /* signed out is a fine place to be */ accountSettled(); });
   }
@@ -1918,7 +1949,7 @@
      for, and it is answered by sending them there. */
   var ACCOUNT_PAGE = '/account.html';
 
-  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'password', 'username'];
+  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'password', 'username', 'google'];
 
   /* Which of those are a step somebody already signed in is standing in,
      rather than a way of becoming signed in. A link asking for one of these
@@ -1926,7 +1957,18 @@
      already has an account is answered by their account page. */
   var ACCOUNT_STEPS = ['password', 'username'];
 
+  /* What /api/google says happened, read here for the same reason the two
+     above are: syncUrl takes it back off the address bar long before
+     /api/account has answered, and until it has there is neither a sheet to
+     open nor a name to say. See the header of functions/api/google.js for
+     what each of them means. */
+  var googleSaid = '';
+  var GOOGLE_SAID = ['in', 'name', 'linked', 'taken', 'failed'];
+
   function readAccountLink(params) {
+    var said = params.get('google') || '';
+    if (GOOGLE_SAID.indexOf(said) !== -1) googleSaid = said;
+
     var view = params.get('account') || '';
     if (ACCOUNT_VIEWS.indexOf(view) === -1) return;
     accountAsked = view;
@@ -1991,12 +2033,50 @@
        answered by the account page. The steps are the exception, because a
        step is what somebody signed in is standing in. */
     if (!state.account.user) {
-      if (view !== 'up') view = 'in';
+      /* 'google' is the naming step, which is for somebody with no account at
+         all — the same argument that leaves 'up' alone. */
+      if (view !== 'up' && view !== 'google') view = 'in';
     } else if (ACCOUNT_STEPS.indexOf(view) === -1) {
       window.location.href = ACCOUNT_PAGE;
       return;
     }
     openAccount(view);
+  }
+
+  /* The other half of the round trip, once /api/account has answered.
+   *
+   * Nothing here is a question — the work happened on the server and this is
+   * the site saying what came of it. Which is why a failure is a line on the
+   * sheet rather than a toast: it comes with the form that is the way to try
+   * again, and a toast would take the news away while somebody was still
+   * looking for what to do about it.
+   */
+  function answerGoogle() {
+    if (!googleSaid) return;
+    var said = googleSaid;
+    googleSaid = '';
+
+    /* A Google account with nobody here yet. The sheet asks for the one thing
+       the round trip deliberately did not go and find out. */
+    if (said === 'name') { openAccount('google'); return; }
+
+    if (said === 'in') {
+      TTBTrack.event('account_login', { via: 'google' });
+      if (state.account.user) toast(t('accountSignedIn', { name: state.account.user }));
+      return;
+    }
+
+    /* Connecting is pressed on /account.html and comes back there, so this is
+       the case where a session ran out mid-trip and the map is what is left. */
+    if (said === 'linked') { toast(t('accountGoogleLinked')); return; }
+
+    var err = said === 'taken' ? 'accountErrGoogleTaken' : 'accountErrGoogle';
+    /* Already signed in, so the sheet has nothing to offer: there is no
+       second try to put the sentence next to. */
+    if (state.account.user) { toast(t(err)); return; }
+    openAccount('in');
+    accountErr = t(err);
+    renderAccount();
   }
 
   /* Where somebody was sent from, once they are signed in. Nothing to go back
@@ -2011,17 +2091,18 @@
   }
 
   /* ------------------------------------------------------------- the sheet
-   * One card, and a view inside it: signing in, creating, changing the
-   * password, changing the username. Which one is showing is a variable
-   * rather than four hidden blocks, so there is exactly one place that
-   * decides and nothing can be left over from the state before.
+   * One card, and a view inside it: signing in, creating, naming an account
+   * that arrived through Google, changing the password, changing the
+   * username. Which one is showing is a variable rather than five hidden
+   * blocks, so there is exactly one place that decides and nothing can be
+   * left over from the state before.
    *
    * Everything that is not "here is who you are" is a step of its own with a
    * way back to the account, rather than another field stacked on the sheet
    * you started on: one surface asks one thing.
    */
   var accountView = 'in';
-  /* 'in' | 'up' | 'me' | 'password' | 'username' */
+  /* 'in' | 'up' | 'me' | 'password' | 'username' | 'google' */
   var accountBusy = false;
   var accountNote = '';
   var accountErr = '';
@@ -2379,7 +2460,12 @@
     current: 'accountErrCurrent',
     same: 'accountErrSame',
     'same-name': 'accountErrSameName',
-    'signed-out': 'accountErrSignedOut'
+    'signed-out': 'accountErrSignedOut',
+    /* The sealed note saying which Google account proved itself has run out,
+       or was never there. The way out is the button, not this form. */
+    'no-pending': 'accountErrGooglePending',
+    linked: 'accountErrGoogleTaken',
+    'needs-password': 'accountErrNeedsPassword'
   };
 
   function accountFail(out) {
@@ -2418,6 +2504,7 @@
 
     if (accountView === 'password') return renderAccountPassword(form);
     if (accountView === 'username') return renderAccountUsername(form);
+    if (accountView === 'google') return renderAccountGoogle(form);
     return renderAccountAuth(form);
   }
 
@@ -2524,6 +2611,20 @@
 
     accountMessages(form);
 
+    /* Before the fields and not after them, which is the one place this sheet
+       departs from the order in "The design rules": the quick way first, then
+       the rule, then the form for anybody who would rather not. It is not a
+       second action competing with the one below — it is the other answer to
+       the same question, and the rule between them is what says so.
+
+       Only where /api/account said the round trip would lead somewhere. A
+       deployment with no Google client set is a deployment where this button
+       could only end on an error page of Google's. */
+    if (state.account.google) {
+      form.appendChild(googleGo());
+      form.appendChild(googleOr());
+    }
+
     /* Empty, and asked for. The sheet used to open with a name already in it
        — the server picked two words and a number, and the field filled itself
        in a moment later — which took the one choice this site asks anybody to
@@ -2576,6 +2677,120 @@
                                    creating ? 'in' : 'up'));
   }
 
+  /* --------------------------------------------------- continue with Google
+   * The other way in, and the only control on this site that is somebody
+   * else's shape: Google's mark, their four colours, on paper rather than on
+   * the accent. See "The design rules" in the README, which names it as the
+   * fifth control and says why the other four could not do this one.
+   *
+   * It is a link and not a button because it is a navigation — the whole
+   * flow is a redirect to Google and a redirect back, with no script of
+   * Google's running on this page at any point. See functions/api/google.js.
+   *
+   * The mark is drawn here rather than fetched from Google. An <img> would be
+   * a request this site does not control on the one surface where it matters,
+   * and a slow one would leave a blank square over a sheet asking somebody to
+   * sign in. Four paths cost less than that.
+   */
+  var GOOGLE_MARK =
+    '<svg viewBox="0 0 48 48" focusable="false">' +
+    '<path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>' +
+    '<path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>' +
+    '<path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24s.85 6.91 2.34 9.88l7.35-5.7z"/>' +
+    '<path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/>' +
+    '</svg>';
+
+  /* Where the trip comes back to. Wherever the sheet was opened from, less
+     the three parameters that opened it: ?account= and ?then= would put the
+     sheet back up over the answer, and a stale ?google= would say something
+     happened that did not. */
+  function googleThen() {
+    if (accountThen) return accountThen;
+    var params = new URLSearchParams(window.location.search);
+    params.delete('account');
+    params.delete('then');
+    params.delete('google');
+    var query = params.toString();
+    return window.location.pathname + (query ? '?' + query : '');
+  }
+
+  function googleHref() {
+    /* Read and never minted. clientId() makes one the first time it is asked,
+       and a browser that has saved nothing has no id on purpose — see the
+       comment there. Opening a sheet is not saving a place, so the id goes
+       along only where there is already one to go along, and the claim on the
+       way back is then a claim over rows that exist. */
+    var device = storeGet(CID_KEY) || '';
+    return '/api/google?then=' + encodeURIComponent(googleThen()) +
+      (device ? '&client=' + encodeURIComponent(device) : '');
+  }
+
+  function googleGo() {
+    return TTBTrack.click(
+      el('a', { className: 'ac-google', href: googleHref() }, [
+        el('span', { className: 'ac-google-mark', 'aria-hidden': 'true', html: GOOGLE_MARK }),
+        el('span', { textContent: t('accountGoogle') })
+      ]),
+      'account_google', { view: accountView }
+    );
+  }
+
+  /* A rule with the word sitting in it, which is what says the two halves are
+     alternatives rather than steps. */
+  function googleOr() {
+    return el('p', { className: 'ac-or' }, [el('span', { textContent: t('accountOr') })]);
+  }
+
+  /* ------------------------------------------- naming a Google account
+   * Google has said who somebody is, and this site still does not know what
+   * to call them. It is a step of its own rather than a field on the sheet
+   * they came from, because by the time it is drawn they have been to Google
+   * and back and the sheet they came from is not the question any more.
+   *
+   * One field, and the same field the sign-up sheet asks: the same rule under
+   * it, the same limit, and empty. Everything in the comment there about why
+   * nobody is handed a name applies twice over here — the name Google would
+   * have offered is a real person's real name, out of a profile this site
+   * deliberately never asked to read.
+   */
+  function renderAccountGoogle(form) {
+    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountGoogleName') }));
+    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountGoogleNameWhy') }));
+
+    accountMessages(form);
+
+    form.appendChild(accountField('ac-user', 'accountUsername', 'text', {
+      autocomplete: 'username',
+      maxlength: '24',
+      hint: t('accountUsernameHint')
+    }));
+
+    var go = accountSubmit('accountCreate');
+    go.addEventListener('click', function () {
+      if (accountBusy) return;
+      var v = accountValues();
+      accountBusy = true; accountErr = ''; renderAccount();
+      accountPost({ action: 'google-name', username: v.username, client: clientId() })
+        .then(function (a) {
+          accountBusy = false;
+          if (!a.ok) return accountFail(a.out);
+          state.account.user = a.out.user;
+          /* Made through Google, so there is no password on it yet and the
+             two steps behind the account page have to know that before the
+             next load tells them. */
+          state.account.linked = true;
+          state.account.password = false;
+          if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
+          paintAccountButton();
+          TTBTrack.event('account_create', { via: 'google' });
+          closeAccount();
+          if (returnAfterAccount()) return;
+          toast(t('accountSignedIn', { name: a.out.user }));
+        }).catch(function () { accountFail({}); });
+    });
+    form.appendChild(go);
+  }
+
   /* ------------------------------------------------ changing a password
    * The old one and the new one on one sheet, because that is what the
    * server asks for: a sheet somebody left open is not a way to take an
@@ -2584,20 +2799,36 @@
    * password may have got away from you, and a surprise when it has not.
    */
   function renderAccountPassword(form) {
+    /* An account made through Google has no password to change, so this step
+       is the one that gives it one — one field instead of two, and none of
+       the warning. Setting a first password turns nobody out: a password is
+       changed because somebody else may have it, and there is nobody it could
+       have got away from yet. The server decides the same thing off the same
+       fact; this only decides what to draw. */
+    var setting = !state.account.password;
+
     form.appendChild(accountBack());
-    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountChange') }));
-    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountChangeWhy') }));
+    form.appendChild(el('h2', {
+      className: 'ac-title',
+      textContent: t(setting ? 'accountSetPassword' : 'accountChange')
+    }));
+    form.appendChild(el('p', {
+      className: 'ac-why',
+      textContent: t(setting ? 'accountSetPasswordWhy' : 'accountChangeWhy')
+    }));
     accountMessages(form);
 
-    form.appendChild(accountField('ac-current', 'accountCurrentPassword', 'password', {
-      autocomplete: 'current-password'
-    }));
-    form.appendChild(accountField('ac-pass', 'accountNewPassword', 'password', {
+    if (!setting) {
+      form.appendChild(accountField('ac-current', 'accountCurrentPassword', 'password', {
+        autocomplete: 'current-password'
+      }));
+    }
+    form.appendChild(accountField('ac-pass', setting ? 'accountPassword' : 'accountNewPassword', 'password', {
       autocomplete: 'new-password'
     }));
-    form.appendChild(accountWarn(t('accountChangeSignsOut')));
+    if (!setting) form.appendChild(accountWarn(t('accountChangeSignsOut')));
 
-    var go = accountSubmit('accountChangeGo');
+    var go = accountSubmit(setting ? 'accountSetPasswordGo' : 'accountChangeGo');
     go.addEventListener('click', function () {
       if (accountBusy) return;
       var v = accountValues();
@@ -2606,13 +2837,18 @@
         .then(function (a) {
           accountBusy = false;
           if (!a.ok) return accountFail(a.out);
-          TTBTrack.event('account_password_change');
+          TTBTrack.event('account_password_change', { setting: setting });
+          /* There is one now, which the rename step behind this one reads to
+             decide whether to ask for it. The page this returns to reloads
+             and would say so anyway; the sheet may also be closed without
+             going anywhere, and then this is the only thing that knows. */
+          state.account.password = true;
           /* Back where it was pressed, which is the account page: the sheet
              this step is drawn in has nothing behind it any more. The toast
              is what says it worked, because the page it lands on is a fresh
              load and cannot carry a note across. */
           closeAccount();
-          toast(t('accountChangeDone'));
+          toast(t(setting ? 'accountSetPasswordDone' : 'accountChangeDone'));
           returnAfterAccount();
         }).catch(function () { accountFail({}); });
     });
@@ -2656,9 +2892,17 @@
       maxlength: '24',
       hint: t('accountUsernameHint')
     }));
-    form.appendChild(accountField('ac-current', 'accountCurrentPassword', 'password', {
-      autocomplete: 'current-password'
-    }));
+    /* Unless there is no password to ask for. An account made through Google
+       has only its session to prove itself with, so that is what this step
+       runs on — a weaker guard than a password account gets, and the reason
+       Set a password sits beside this one on the account page. The server
+       draws the same line off the same fact; this only decides whether to
+       draw the field. */
+    if (state.account.password) {
+      form.appendChild(accountField('ac-current', 'accountCurrentPassword', 'password', {
+        autocomplete: 'current-password'
+      }));
+    }
     form.appendChild(accountWarn(t('accountNameCosts')));
 
     var go = accountSubmit('accountNameGo');

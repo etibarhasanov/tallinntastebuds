@@ -1,10 +1,12 @@
 /**
  * Tallinn Tastebuds — accounts, so a list of saved places can follow a person.
  *
- * A username and a password, and nothing else. No email, no phone, no OAuth,
- * no profile, no name. The site collects the least it can while still being
- * able to say "these saves are yours" on a second device, and a username
- * somebody chose for themselves is as little as that can be.
+ * A username, and either a password or a Google account. No email, no phone,
+ * no real name. The site collects the least it can while still being able to
+ * say "these saves are yours" on a second device, and a username somebody
+ * chose for themselves is as little as that can be — signing in through
+ * Google does not change that, because the only thing kept of it is an opaque
+ * id. See ./_google.js, which asks Google for `openid` and nothing else.
  *
  * This route used to hand the sign-up sheet a name — two words and a number,
  * checked against the table so the one offered was free — rather than open on
@@ -14,7 +16,23 @@
  * to name themselves. So the sheet asks, and the rule it has to keep is
  * printed under the field rather than only in the refusal after the button.
  *
- * THERE IS NO RESET, AND THAT IS THE TRADE
+ * TWO WAYS IN, AND THE SECOND ONE NEEDS NOTHING SENT
+ *
+ * A username and a password is one. Continue with Google is the other, and it
+ * is here for the reason the password reset below is not: a reset has to
+ * *send* something, and Email Sending is not on the free plan. Google sends
+ * nothing — the browser goes there, the person signs in there, and what comes
+ * back is a statement this site checks. ./google.js and ./_google.js are the
+ * whole of that; by the time anything reaches this file a subject has already
+ * proved itself.
+ *
+ * An account may have either way in, or both, and the guards below are what
+ * make one with a single way in work properly rather than half-work: a
+ * sign-in against an account with no password is refused outright, and the
+ * two steps that ask for the password in use do not ask an account that has
+ * not got one.
+ *
+ * THERE IS NO RESET FOR A PASSWORD, AND THAT IS THE TRADE
  *
  * Nothing proves an account is yours except knowing its password, so a
  * forgotten one is gone for good, for everybody including whoever runs the
@@ -36,13 +54,21 @@
  * save is filed under that. Signing in claims those saves — the rows move
  * from the device to the account — so nobody is asked to sign up before they
  * have any reason to, and nothing anybody saved before signing in is lost.
- * See `claim` below for how the move is made and why it cannot double-count.
+ * See claimDeviceSaves() in ./_lib.js for how the move is made and why it
+ * cannot double-count.
  *
  * WHAT IS STORED
  *
  *   users      a random id, the username, a PBKDF2 hash of the password with
  *              its own salt and iteration count, and the line somebody wrote
- *              about themselves. Never the password.
+ *              about themselves. Never the password. An account made through
+ *              Google has no password at all and carries an empty hash — see
+ *              the guard in `login` below, which refuses one rather than
+ *              deriving a hash at nought iterations.
+ *   identities which Google account, if any, this one is also reached
+ *              through: Google's own permanent id for that person and
+ *              nothing else. No address, no name, no picture. See
+ *              ./_google.js.
  *   sessions   the SHA-256 of the session token, never the token. A leaked
  *              table is a list of hashes, not a drawer of working keys.
  *   login_fails a hashed network fingerprint and a timestamp, to slow down
@@ -54,9 +80,13 @@
 
 import {
   json, clientIp, fingerprint, sha256Hex, randomHex, derivePassword, sameSecret,
-  pwIterations, sessionCookie, sessionUser, SESSION_DAYS, SESSION_COOKIE,
-  readCookie, wrongDatabase, RECOUNT_SQL, countsKey
+  pwIterations, sessionCookie, sessionUser, openSession, claimDeviceSaves,
+  SESSION_DAYS, SESSION_COOKIE, readCookie, wrongDatabase, countsKey
 } from './_lib.js';
+import {
+  googleReady, googleUser, unlinkGoogle, hasGoogle,
+  PENDING_COOKIE, pendingCookie, unseal, PROVIDER
+} from './_google.js';
 
 /* Guessing is the only way in — there is no reset link to phish and no
    address to intercept — so it is the thing to make slow. Ten wrong passwords
@@ -125,50 +155,41 @@ async function noteFail(env, hash) {
   ]);
 }
 
-/* ------------------------------------------------------------------ claim
- * Move a device's saves onto an account.
- *
- * UPDATE OR IGNORE, then DELETE, and the order matters. A row that cannot
- * move — because the account already has that place, saved on another device
- * — is left alone by the update rather than failing the whole statement, and
- * the delete then clears it away. The effect is a merge: the union of what
- * the device had and what the account had, with nothing counted twice.
- *
- * Both places' counts are then recomputed from the rows, so a place that was
- * saved on two devices by one person who has now signed in on both drops from
- * two to one, which is the true number.
- */
-async function claim(env, userId, clientId) {
-  if (!clientId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(clientId)) {
-    return [];
-  }
-
-  const { results } = await env.DB
-    .prepare("SELECT place_id FROM saves WHERE owner = ? AND owner_kind = 'device'")
-    .bind(clientId)
-    .all();
-  if (!results.length) return [];
-
-  const touched = results.map((r) => r.place_id);
-
-  const statements = [
-    env.DB
-      .prepare("UPDATE OR IGNORE saves SET owner = ?, owner_kind = 'user' WHERE owner = ? AND owner_kind = 'device'")
-      .bind(userId, clientId),
-    env.DB
-      .prepare("DELETE FROM saves WHERE owner = ? AND owner_kind = 'device'")
-      .bind(clientId)
-  ];
-  for (const place of touched) {
-    statements.push(env.DB.prepare(RECOUNT_SQL).bind(place, place));
-  }
-  await env.DB.batch(statements);
-
-  return touched;
-}
-
 /* The places this account has saved, so a fresh device can draw its marks
    filled the moment somebody signs in on it. */
+/* The password on an account, or the absence of one, in the shape the two
+   below want. Three places ask — the GET, to say which form to draw, and the
+   two steps that check the password in use — and all three used to spell the
+   same SELECT out.
+
+   An account made through Google has an empty hash, and reading it as
+   `{ hash: '', salt: '', iter: 0 }` is what lets `matches` below be the one
+   place that knows what an empty hash means. */
+async function passwordOn(env, userId) {
+  const row = await env.DB
+    .prepare('SELECT pw_hash, pw_salt, pw_iter FROM users WHERE id = ?')
+    .bind(userId)
+    .first();
+  return {
+    hash: (row && row.pw_hash) || '',
+    salt: (row && row.pw_salt) || '',
+    iter: (row && row.pw_iter) || 0
+  };
+}
+
+/* Whether a password somebody typed is the one on the account.
+ *
+ * The empty hash is refused here and not at the three call sites, and that is
+ * the whole reason this is a function. An account made through Google has no
+ * password, and `derivePassword(anything, '', 0)` is PBKDF2 at nought
+ * iterations — which WebCrypto refuses outright, so the sign-in would answer
+ * 500 instead of "wrong username or password" and would say, to anybody
+ * asking, exactly which accounts were made through Google. */
+async function matches(pw, given) {
+  if (!pw.hash) return false;
+  return sameSecret(await derivePassword(given, pw.salt, pw.iter), pw.hash);
+}
+
 async function savedByUser(env, userId) {
   const { results } = await env.DB
     .prepare('SELECT place_id FROM saves WHERE owner = ? ORDER BY created_at DESC')
@@ -198,8 +219,15 @@ export async function onRequestGet(context) {
   const ready = !!(env.DB && env.SAVE_SALT) && !(await wrongDatabase(env));
   if (!ready) return json({ ready: false, user: null }, 200);
 
+  /* Whether Continue with Google can be offered here at all, which is its own
+     question and not a part of `ready`: accounts work perfectly well on a
+     deployment with no Google client set, and the sheet draws the button only
+     where this says it would lead somewhere. Same argument as `ready` itself,
+     one level in. */
+  const google = googleReady(env);
+
   const user = await sessionUser(request, env);
-  if (!user) return json({ ready: true, user: null }, 200);
+  if (!user) return json({ ready: true, google: google, user: null }, 200);
 
   /* Read here rather than added to sessionUser(), which every signed-in
      request on this site goes through — saves, lists and splitwise included,
@@ -214,6 +242,13 @@ export async function onRequestGet(context) {
      and somebody's saves and lists go with it. Same bargain _lists.js takes
      over an unreadable catalogue: the missing piece costs itself and nothing
      around it. */
+  /* The one read that says which ways in this account has. It is the same
+     row the `about` line comes off, so the two could be one query — they are
+     not, because that one is guarded against a database that predates its
+     column and this one must not be: a failure here would silently report an
+     account as having no password, and the sheet would stop asking for it. */
+  const pw = await passwordOn(env, user.id);
+
   let about;
   try {
     const row = await env.DB
@@ -223,9 +258,21 @@ export async function onRequestGet(context) {
     about = (row && row.about) || undefined;
   } catch (e) { /* no column yet: no line, and the rest of the page stands */ }
 
+  /* Which ways into this account exist, which is what the account page draws
+     its Google row and its password row from — Connect or Disconnect, Set a
+     password or Change it — and what the two steps on the map's sheet read to
+     decide whether to ask for the password in use. The server is still the
+     one that binds; these only decide which form is drawn. */
+  const linked = await hasGoogle(env, user.id);
+
   return json({
     ready: true,
+    google: google,
     user: user.username,
+    linked: linked,
+    /* Whether there is a password on this account at all. An account made
+       through Google has none until somebody sets one. */
+    password: !!pw.hash,
     about: about,
     saved: await savedByUser(env, user.id)
   }, 200);
@@ -237,10 +284,12 @@ export async function onRequestGet(context) {
  * username and password rules, the same slow-down on a fingerprint that keeps
  * getting a password wrong, and the same session table on the way in and out.
  *
- * The two changes each check the password in use, in the same handful of
- * lines and against the same fingerprint. Two copies rather than a helper —
- * see .claude/rules/leave-it-better.md, which draws that line at three — and
- * a third would be the moment to write one.
+ * The two changes each check the password in use, against the same
+ * fingerprint. That was two copies of a SELECT and a compare with a note
+ * saying a third would be the moment to write a helper; signing in through
+ * Google is the third, so `passwordOn` and `matches` above are it — and
+ * `matches` is also the one place that knows an account can have no password
+ * at all.
  */
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -311,43 +360,72 @@ export async function onRequestPost(context) {
     const hash = await fingerprint(env.SAVE_SALT, clientIp(request), request.headers.get('User-Agent') || '');
     if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
 
-    const row = await env.DB
-      .prepare('SELECT pw_hash, pw_salt, pw_iter FROM users WHERE id = ?')
-      .bind(user.id)
-      .first();
-    const ok = row && sameSecret(await derivePassword(current, row.pw_salt, row.pw_iter), row.pw_hash);
-    if (!ok) {
-      await noteFail(env, hash);
-      /* Its own answer, and not the sign-in's "wrong username or password":
-         the username is not in question here — this request came in on a
-         session that already proves it — so saying so would be telling
-         somebody who is signed in that they might have the wrong name. It
-         gives nothing away that the session does not already carry. */
-      return json({ error: 'current' }, 401);
+    const pw = await passwordOn(env, user.id);
+
+    /* AN ACCOUNT WITH NO PASSWORD IS SETTING ITS FIRST ONE
+     *
+     * Somebody who signed up through Google has nothing to type into a
+     * "current password" box, so this step does not ask for one — there is
+     * no secret to prove and the session is the only proof that exists. The
+     * sheet draws one field instead of two and calls it Set a password.
+     *
+     * And it does not turn the other devices out. A change signs every other
+     * session off because a password gets changed when somebody else may
+     * have it; a first password is an account gaining a way in that nobody
+     * has ever had, including whoever it is being taken from. Signing a
+     * phone out for that would be a punishment for adding a lock. */
+    const setting = !pw.hash;
+
+    if (!setting) {
+      if (!(await matches(pw, current))) {
+        await noteFail(env, hash);
+        /* Its own answer, and not the sign-in's "wrong username or password":
+           the username is not in question here — this request came in on a
+           session that already proves it — so saying so would be telling
+           somebody who is signed in that they might have the wrong name. It
+           gives nothing away that the session does not already carry. */
+        return json({ error: 'current' }, 401);
+      }
+      /* Saying so rather than reporting a change that did not happen. */
+      if (next === current) return json({ error: 'same' }, 400);
     }
-    /* Saying so rather than reporting a change that did not happen. */
-    if (next === current) return json({ error: 'same' }, 400);
 
     const salt = randomHex(16);
     const iter = pwIterations(env);
-    const token = randomHex(32);
-    await env.DB.batch([
+    const statements = [
       env.DB
         .prepare('UPDATE users SET pw_hash = ?, pw_salt = ?, pw_iter = ? WHERE id = ?')
-        .bind(await derivePassword(next, salt, iter), salt, iter, user.id),
-      env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(user.id),
-      env.DB
-        .prepare('INSERT INTO sessions (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)')
-        .bind(await sha256Hex(token), user.id, Date.now(), Date.now() + SESSION_DAYS * 86400000)
-    ]);
+        .bind(await derivePassword(next, salt, iter), salt, iter, user.id)
+    ];
 
-    return new Response(JSON.stringify({ changed: true, user: user.username }), {
-      headers: {
-        'content-type': 'application/json; charset=utf-8',
-        'cache-control': 'no-store',
-        'set-cookie': sessionCookie(token, SESSION_DAYS, request)
-      }
+    /* Setting a first password touches no session at all — not the other
+       devices, which stay, and not this one, which is still perfectly good.
+       So there is nothing to re-issue and no cookie on the way back.
+
+       A change is the other case and needs both statements, in this order and
+       in one batch: the delete takes every session on the account including
+       the one that asked, so the insert has to land with it or somebody is
+       signed out of their own browser for changing their password. That is
+       also why this does not go through openSession() — a second round trip
+       between the two is the gap. */
+    let token = '';
+    if (!setting) {
+      token = randomHex(32);
+      statements.push(
+        env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(user.id),
+        env.DB
+          .prepare('INSERT INTO sessions (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)')
+          .bind(await sha256Hex(token), user.id, Date.now(), Date.now() + SESSION_DAYS * 86400000)
+      );
+    }
+    await env.DB.batch(statements);
+
+    const done = new Headers({
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'no-store'
     });
+    if (token) done.append('set-cookie', sessionCookie(token, SESSION_DAYS, request));
+    return new Response(JSON.stringify({ changed: true, user: user.username }), { headers: done });
   }
 
   /* ------------------------------------------------- changing a username
@@ -408,12 +486,14 @@ export async function onRequestPost(context) {
        same question, to anybody, with no session at all. */
     if (await nameTaken(env, next, user.id)) return json({ error: 'taken' }, 409);
 
-    const row = await env.DB
-      .prepare('SELECT pw_hash, pw_salt, pw_iter FROM users WHERE id = ?')
-      .bind(user.id)
-      .first();
-    const ok = row && sameSecret(await derivePassword(current, row.pw_salt, row.pw_iter), row.pw_hash);
-    if (!ok) {
+    /* An account with no password has nothing to ask for here, so this asks
+       for nothing: the session is the only credential it has got. That is a
+       real difference and worth saying out loud — on a password account a
+       sheet left open on a shared laptop is not enough to rename somebody,
+       and on a Google-only one it is. Setting a password is what closes it,
+       which is the other half of why that step exists. */
+    const pw = await passwordOn(env, user.id);
+    if (pw.hash && !(await matches(pw, current))) {
       await noteFail(env, hash);
       return json({ error: 'current' }, 401);
     }
@@ -482,6 +562,118 @@ export async function onRequestPost(context) {
     return json({ about: about }, 200);
   }
 
+  /* ------------------------------------------ naming a Google account
+   * The second half of the round trip in ./google.js, and the only part of
+   * it that is a form.
+   *
+   * A Google account that has never been here arrives holding a sealed note
+   * saying which Google account proved itself, and nothing has been written
+   * yet — no half-made row, nothing to sweep if they close the tab. This is
+   * where it becomes an account, and the one thing it asks for is the thing
+   * this site asks everybody: a name.
+   *
+   * IT IS NOT ASSEMBLED OUT OF THE GOOGLE PROFILE, AND THAT IS ON PURPOSE
+   *
+   * Google would hand over a display name and a picture for the asking.
+   * ./_google.js asks for neither — the scope is `openid` alone — and this is
+   * the reason: the username here is the byline on every list somebody
+   * shares and the whole of /u/<name>, so "Etibar H." out of a Google profile
+   * would be this site naming somebody out of a directory they did not know
+   * it had read. The sheet used to hand out `smoky-walnut-418` for the same
+   * job and it was taken out for the same reason. See the header.
+   *
+   * The account it makes has no password: an empty hash, an empty salt and
+   * nought iterations, which `matches` above reads as "no password on this
+   * account" and refuses a sign-in against. Setting one later is the
+   * password step, which asks for no current password when there is none.
+   */
+  if (action === 'google-name') {
+    const pending = await unseal(env.SAVE_SALT, readCookie(request, PENDING_COOKIE));
+    /* Fifteen minutes gone, a forged cookie, or somebody who arrived at this
+       sheet by typing the address. One answer for all three: there is nothing
+       to name, so start the trip again. */
+    if (!pending || pending.provider !== PROVIDER || !pending.subject) {
+      return json({ error: 'no-pending' }, 401);
+    }
+
+    const name = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
+    const client = typeof body.client === 'string' ? body.client : '';
+    if (!USERNAME_RE.test(name)) return json({ error: 'username' }, 400);
+
+    /* Every hold counts, exactly as on the sign-up sheet: a name somebody
+       walked away from last week is not a name a stranger may take, whichever
+       door they came in by. */
+    if (await nameTaken(env, name)) return json({ error: 'taken' }, 409);
+
+    /* The same Google account naming itself twice — two tabs, or a back
+       button after it worked. The account already exists, so the answer is to
+       go round again and be signed into it rather than to make a second one
+       under a second name. */
+    if (await googleUser(env, pending.subject)) return json({ error: 'linked' }, 409);
+
+    const userId = crypto.randomUUID();
+    try {
+      await env.DB.batch([
+        env.DB
+          .prepare(
+            'INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at) ' +
+            "VALUES (?, ?, '', '', 0, ?, ?)"
+          )
+          .bind(userId, name, Date.now(), Date.now()),
+        env.DB
+          .prepare('INSERT INTO identities (provider, subject, user_id, created_at) VALUES (?, ?, ?, ?)')
+          .bind(PROVIDER, pending.subject, userId, Date.now())
+      ]);
+    } catch (e) {
+      /* Two people taking the same free name in the same second, or the same
+         Google account landing here twice at once. Both unique indexes say
+         the same thing and the loser is told what the checks above would have
+         told them. The batch is one transaction, so neither row is left. */
+      return json({ error: 'taken' }, 409);
+    }
+
+    const token = await openSession(env, userId);
+    const touched = await claimDeviceSaves(env, userId, client);
+    if (touched.length) context.waitUntil(caches.default.delete(countsKey(request)));
+
+    const made = new Headers({
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'no-store'
+    });
+    made.append('set-cookie', sessionCookie(token, SESSION_DAYS, request));
+    /* Spent. It is good for one account and this was it. */
+    made.append('set-cookie', pendingCookie(''));
+    return new Response(
+      JSON.stringify({ user: name, saved: await savedByUser(env, userId) }),
+      { headers: made }
+    );
+  }
+
+  /* ------------------------------------------------- disconnecting Google
+   * Connecting is a link to /api/google, because it is a round trip. Taking
+   * it off again is this, because it is one row.
+   *
+   * ONLY WHERE THERE IS A PASSWORD TO FALL BACK ON
+   *
+   * An account reached only through Google, with Google taken off, is an
+   * account nobody can ever sign into again — and there is no reset here to
+   * rescue it with. So the button is refused rather than offered and
+   * regretted, and the account page says why: set a password first. It is
+   * the same shape as the rule that a password change signs the other
+   * devices out — the site will not quietly leave somebody locked out of
+   * their own things.
+   */
+  if (action === 'google-unlink') {
+    const user = await sessionUser(request, env);
+    if (!user) return json({ error: 'signed-out' }, 401);
+
+    const pw = await passwordOn(env, user.id);
+    if (!pw.hash) return json({ error: 'needs-password' }, 409);
+
+    await unlinkGoogle(env, user.id);
+    return json({ linked: false }, 200);
+  }
+
   if (action !== 'create' && action !== 'login') return json({ error: 'action' }, 400);
 
   const username = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
@@ -526,9 +718,14 @@ export async function onRequestPost(context) {
       .bind(username)
       .first();
 
-    /* One answer for "no such account" and for "wrong password", so the
-       reply cannot be used to find out which usernames exist. */
-    const ok = row && sameSecret(await derivePassword(password, row.pw_salt, row.pw_iter), row.pw_hash);
+    /* One answer for "no such account", for "wrong password", and for "that
+       account has no password because it was made through Google" — so the
+       reply cannot be used to find out which usernames exist, nor which of
+       the ones that do are reached some other way. matches() is where the
+       third of those is decided. */
+    const ok = row && (await matches(
+      { hash: row.pw_hash, salt: row.pw_salt, iter: row.pw_iter }, password
+    ));
     if (!ok) {
       await noteFail(env, hash);
       return json({ error: 'no-match' }, 401);
@@ -556,14 +753,9 @@ export async function onRequestPost(context) {
     }
   }
 
-  /* The token goes to the browser; only its hash is kept here. */
-  const token = randomHex(32);
-  await env.DB
-    .prepare('INSERT INTO sessions (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)')
-    .bind(await sha256Hex(token), userId, Date.now(), Date.now() + SESSION_DAYS * 86400000)
-    .run();
+  const token = await openSession(env, userId);
 
-  const touched = await claim(env, userId, clientId);
+  const touched = await claimDeviceSaves(env, userId, clientId);
   /* Claiming can lower a count — a place one person had saved from two
      devices is one save now, not two — so the copy this colo is handing out
      may be wrong. */
