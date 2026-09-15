@@ -89,11 +89,9 @@
      under it — an unfinished list is simply not sharable yet. */
   var MIN_ITEMS = 3;
 
-  /* Where everybody's lists are, and how many of them a list's own page
-     carries at the foot. Three, because it is an offer of somewhere to go next
-     and not a second page of them under the one somebody came to read. */
+  /* Where everybody's lists are: the directory, and the one way out of a
+     list's own page. */
   var ALL_PATH = '/lists';
-  var FOOT = 3;
 
   /* The longest search the field will take, and how long a keystroke is held
      before it becomes a request. The cap is the server's — see MAX_QUERY in
@@ -145,7 +143,6 @@
     lang: DEFAULT_LANG,
     /* 'one' | 'all' | 'who'. Which of the three addresses this is. */
     view: 'one',
-    id: '',            // the list being shown, which moreLists() leaves out
     me: null,          // the signed-in username, or null
     ready: false,      // whether the API says lists work at all here
     reached: true,     // whether it answered at all
@@ -174,6 +171,11 @@
      comes into view. One at a time: the button is rebuilt with every page and
      every search, and the watch is rebuilt with it — see moreLine(). */
   var moreWatch = null;
+
+  /* And the one that tells the bar over a list when the title it repeats has
+     gone off the top — see nameWhenPast(). Same rule: one at a time, rebuilt
+     with the view. */
+  var barWatch = null;
 
   /* --------------------------------------------------------------- helpers */
 
@@ -487,10 +489,10 @@
   }
 
   /* The byline, and the door it is. Every list somebody else wrote says who
-     wrote it — under its own title, on the directory, on the three rows at the
-     foot of a list, under Lists you saved — and the name leads to the rest of
-     what that person has published. A profile's own rows carry no byline: they
-     are all that person's, and the name is the heading over them.
+     wrote it — under its own title, on the directory, under Lists you saved —
+     and the name leads to the rest of what that person has published. A
+     profile's own rows carry no byline: they are all that person's, and the
+     name is the heading over them.
 
      The name is the link and the words around it are not. The whole phrase was
      underlined for a while, on the argument that the name is three or four
@@ -524,21 +526,23 @@
     ]);
   }
 
-  /* Back to the map, at the foot of a profile, a list, and every card that
-     stands in for one that could not be read. Reported as `home`, the same
-     as the wordmark. */
+  /* Back to the map, at the foot of a profile and of every card that stands
+     in for a list that could not be read. Reported as `home`, the same as the
+     wordmark. A list that could be read has the bar and the foot instead. */
   function backLink() {
     return TTBTrack.click(el('a', { className: 'alt', href: '/', textContent: t('backToMap') }), 'home');
   }
 
-  /* Every caller says how it should look, because the places this link turns
-     up in are two weights of the same door: filled on somebody else's list,
-     where it is the one thing that card asks for; and the outlined pill
-     everywhere else — on your own list, where Save has the accent, and in the
-     corner of each row on a profile. */
-  function mapLink(id, className) {
+  /* The door onto the map, wearing the same outlined pill wherever it turns
+     up: on your own list, where Save has the accent, and in the corner of each
+     row on a profile. Each caller used to name that pill for itself, because
+     there was a third weight — filled, on somebody else's list, where it was
+     the one thing that card asked for. That one is half of the switch in the
+     bar now, so the look is stated once here and `extra` is only where a
+     caller has something to add about where the pill sits. */
+  function mapLink(id, extra) {
     return TTBTrack.click(el('a', {
-      className: className,
+      className: 'alt lists-map' + (extra ? ' ' + extra : ''),
       href: mapHref(id),
       textContent: t('listsOnMap')
     }), 'list_map', { list_id: id });
@@ -575,15 +579,19 @@
        at boot so a view that is not the directory never inherits it. */
     dom.main.classList.toggle('is-wide', state.view === 'all');
 
+    /* Somebody else's list is the one view with a bar fixed to the foot of the
+       window, and the page has to keep its last card out from under it. Set
+       here, beside the width, for the same reason: one place decides, so no
+       view can inherit it from the one before. */
+    document.body.classList.toggle('has-dock',
+      state.view === 'one' && !!state.list && !state.list.mine);
+
     if (!state.reached) { dom.main.appendChild(renderUnreachable()); return; }
     if (!state.ready) { dom.main.appendChild(renderNotReady()); return; }
     if (state.view === 'all') { dom.main.appendChild(renderAll()); return; }
     if (state.view === 'who') { dom.main.appendChild(renderProfile()); return; }
 
     dom.main.appendChild(renderOne());
-    /* And, under it, three more. Appended rather than built into the card
-       because it arrives later than the card does — see moreLists(). */
-    moreLists();
   }
 
   /* The site answered nothing at all: offline, or a Function that is not
@@ -643,7 +651,7 @@
         keepCount(l.keeps)
       ])
     ]);
-    return el('li', { className: 'lists-index-row' }, [box, mapLink(l.id, 'alt lists-map lists-index-map')]);
+    return el('li', { className: 'lists-index-row' }, [box, mapLink(l.id, 'lists-index-map')]);
   }
 
   /* ------------------------------------------------------------ one person
@@ -1075,7 +1083,7 @@
         ]));
       }
       dom.allList = el('ul', { className: 'lists-index' });
-      rows.forEach(function (l) { dom.allList.appendChild(allRow(l, true)); });
+      rows.forEach(function (l) { dom.allList.appendChild(allRow(l)); });
       dom.allBody.appendChild(dom.allList);
     }
     moreLine();
@@ -1206,16 +1214,16 @@
     moreWatch.observe(go);
   }
 
-  /* One list on /lists, and the same row at the foot of a list's own page.
-     One function because they are the same row and not two rows that happen to
-     look alike — a change to what a stranger needs in order to judge a list is
-     a change to both of them.
+  /* One list on /lists: the sky, the title, the line of facts, the first
+     three places, and the bookmark in the corner.
 
-     The sky is the one thing the directory's row has that the foot's does
-     not: it is drawn against the city's own dots, which the directory fetches
-     and a list's page does not, and at the foot's 640px it would be a box the
-     height of the card it stands on. `withSky` is the directory saying so. */
-  function allRow(l, withSky) {
+     It drew the three rows at the foot of a list's own page too, which is
+     what the `withSky` argument was for — the sky is fetched by the directory
+     and was not by a list's page, and at 640px it would have been a box the
+     height of the card it stood on. That foot is gone and this is the
+     directory's row and nothing else, so the sky is simply drawn when the
+     row has dots. */
+  function allRow(l) {
     var line = el('p', { className: 'lists-all-meta mono' });
     allMeta(l, line);
 
@@ -1245,7 +1253,7 @@
     return el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card' + (l.mine ? '' : ' has-keep') }, [
         /* The sky first, above the title, where a picture goes on a card. */
-        withSky && l.dots && l.dots.length ? sky(l.dots) : null,
+        l.dots && l.dots.length ? sky(l.dots) : null,
         TTBTrack.click(el('a', {
           className: 'lists-index-title lists-open',
           href: '/list/' + l.id
@@ -1333,55 +1341,10 @@
       }
       state.all = state.all.concat(a.out.all);
       state.next = a.out.next || '';
-      a.out.all.forEach(function (l) { dom.allList.appendChild(allRow(l, true)); });
+      a.out.all.forEach(function (l) { dom.allList.appendChild(allRow(l)); });
       dom.allBody.removeChild(btn.parentNode);
       moreLine();
     });
-  }
-
-  /* Three more lists, under the one being read.
-   *
-   * This is the surface that actually gets used, and the reason is where it
-   * is: somebody who has just finished reading a top ten is exactly the person
-   * who wants another one, and until now the page ended and that was that.
-   *
-   * It arrives after the list rather than with it. The list is the page and
-   * must not wait on anything; these are a second request that either turns up
-   * or does not, and a list page that never gets them is the page as it was.
-   * Appended to <main> beside the view rather than built into it, so the redraw
-   * that follows an edit does not have to know about it.
-   */
-  function moreLists() {
-    if (state.all === null) {
-      if (state.asking) return;
-      state.asking = true;
-      /* Unsearched, whatever the field on the directory would have said: these
-         three are an offer of somewhere to go next, and the page they are on
-         is not the page anybody typed into. */
-      ask(API + '?all=1').then(function (a) {
-        state.asking = false;
-        state.all = (a.out && a.out.all) || [];
-        state.next = (a.out && a.out.next) || '';
-        /* Only if the page is still the one that asked. An edit that navigated
-           away in the meantime has already drawn something else. */
-        if (state.view === 'one') moreLists();
-      });
-      return;
-    }
-
-    var them = state.all.filter(function (l) { return l.id !== state.id; }).slice(0, FOOT);
-    if (!them.length) return;
-
-    var foot = el('section', { className: 'lists-foot-more' }, [
-      el('h2', { className: 'lists-section', textContent: t('listsAllFoot') })
-    ]);
-    var ul = el('ul', { className: 'lists-index' });
-    them.forEach(function (l) { ul.appendChild(allRow(l)); });
-    foot.appendChild(ul);
-    foot.appendChild(el('p', { className: 'lists-more' }, [
-      TTBTrack.click(el('a', { className: 'alt', href: ALL_PATH, textContent: t('listsAllEverything') }), 'lists_all')
-    ]));
-    dom.main.appendChild(foot);
   }
 
   /* -------------------------------------------------------------- one list */
@@ -1399,7 +1362,13 @@
     }
 
     var wrap = el('div', { className: 'lists-stack' });
+    /* The bar first, and it stays there: a list runs to twenty places and
+       everything saying what you were reading used to scroll away with the
+       head card. Only on somebody else's — see listBar(). */
+    var bar = list.mine ? null : listBar(list);
+    if (bar) wrap.appendChild(bar);
     wrap.appendChild(list.mine ? listHeadMine(list) : listHead(list));
+    if (bar) nameWhenPast(bar, wrap.querySelector('.lists-title'));
 
     var ol = el('ol', { className: 'list-items' });
     list.items.forEach(function (item, i) {
@@ -1427,24 +1396,113 @@
         short > 0 ? null : button(t('listsAddMore'), 'go', openPicker),
         button(t('listsDelete'), 'alt is-danger', deleteList)
       ]));
-    } else {
-      wrap.appendChild(backLink());
     }
+    /* Somebody else's list used to end with a way back to the map and then
+       three more lists and a way to all of them — this site's directory
+       redrawn small at the foot of one page, and reachable only by somebody
+       who had scrolled the whole list to find it. Both of the doors that
+       replace it are fixed to the window instead, so they are there for the
+       whole of the read rather than at the end of it. */
+    if (!list.mine) wrap.appendChild(listDock());
 
     return wrap;
   }
 
-  /* Somebody else's list: their title, their name, their sentences, and
-     nothing that looks like a control — except the three things that are
-     about you rather than about them. Opening it on the map, keeping it, and
-     passing it on.
+  /* The bar over somebody else's list, and the same bar the map's panel draws
+     over the same list — see listCredit() in assets/app.js, which builds it
+     out of the map's own pieces because the two pages share no module.
+     It says two things and sticks to the top of the window saying them: which
+     list this is, and which of its two views you are looking at. Where you
+     can go instead is the other bar, at the foot — see listDock().
 
-     The map is the filled one, and it leads the row. This card had no .go on
-     it at all: three quiet underlined words in a line, of which the one
-     somebody arriving on a shared link came to press read as the smallest.
-     A list is a set of places and the question about a set of places is where
-     they are — so that press is the card's one action, and Keep and Share are
-     the second thoughts beside it. */
+     A LIST IS ONE THING WITH TWO VIEWS, AND THE BAR IS WHAT SAYS SO
+
+     The map and this page had a button each pointing at the other, and each
+     was at the top of a page that scrolls: ten places in, a phone showed
+     neither. So the two of them are one control now, drawn the same in both
+     places, with the view you are in filled the way a pressed chip is filled.
+     Reading it takes no learning — it is the map's own filter row, saying
+     which of two things is on — and it is the whole of the transition
+     between them.
+
+     The chips are links and not buttons, so the other view is an address
+     somebody can open in a tab, send, or be sent; `aria-current` rather than
+     `aria-pressed` for the same reason, because what the filled one is
+     saying is "this page", not "this is switched on". The map half reports
+     `list_map` and the list half `list_page`, which are the names the two
+     buttons it replaces reported.
+
+     Your own list has no bar and no foot. That page is an editor — its title
+     is a field you type in rather than a heading, and the accent on it
+     belongs to Save — and the way onto the map is in its row of controls
+     where the other things you do to a list are. Somebody reading a list they
+     were sent is the journey this is about. */
+  function listBar(list) {
+    return el('div', { className: 'lists-bar' }, [
+      el('span', { className: 'lists-bar-name', textContent: list.title }),
+      el('span', { className: 'lists-bar-views' }, [
+        TTBTrack.click(el('a', {
+          className: 'chip',
+          href: mapHref(list.id),
+          textContent: t('listsViewMap')
+        }), 'list_map', { list_id: list.id }),
+        el('span', { className: 'chip', 'aria-current': 'page', textContent: t('listsViewList') })
+      ])
+    ]);
+  }
+
+  /* The bar's name is the card's title, so at the top of the page the two
+     would be the same words twice, sixty pixels apart. It is drawn with no
+     opacity until the title it repeats has gone off the top — which is the
+     moment it stops being a repeat and starts being the only thing on screen
+     saying what you are reading.
+
+     Opacity and not display, so the switch keeps its place either way instead
+     of stepping sideways as the name arrives. And a browser with no observer
+     gets the name from the start: the same words twice is a smaller loss than
+     a bar that never says which list this is. */
+  function nameWhenPast(bar, title) {
+    if (barWatch) { barWatch.disconnect(); barWatch = null; }
+    if (!title || !window.IntersectionObserver) { bar.classList.add('is-past'); return; }
+    barWatch = new IntersectionObserver(function (entries) {
+      bar.classList.toggle('is-past', !entries[entries.length - 1].isIntersecting);
+    });
+    barWatch.observe(title);
+  }
+
+  /* And the foot, fixed to the bottom of the window: the way out to everybody
+     else's lists.
+
+     It is down here rather than in the bar because the two are not the same
+     kind of thing and a bar holding both said so badly — which list you are
+     reading and which view of it you are looking at is where you are, and
+     /lists is where you go instead. Splitting them also gives the bar its
+     room back: a phone had to choose between the list's name and the door,
+     and dropped the name.
+
+     The whole bar is the target, not the length of the word. That is the
+     part of "a list of choices is rows" that matters on a phone, and it is
+     worth as much for one row as for six. */
+  function listDock() {
+    return el('div', { className: 'lists-dock' }, [
+      TTBTrack.click(el('a', {
+        className: 'alt lists-dock-out',
+        href: ALL_PATH,
+        textContent: t('listsAllTitle')
+      }), 'lists_all')
+    ]);
+  }
+
+  /* Somebody else's list: their title, their name, their sentences, and
+     nothing that looks like a control — except the two things that are about
+     you rather than about them. Keeping it, and passing it on.
+
+     The way onto the map was the third, and the filled one leading the row:
+     a list is a set of places and the question about a set of places is where
+     they are, so it was what the card asked for. It is in the bar above now,
+     where it is also on screen after ten places have gone past — and so this
+     card spends no accent at all, which is the arrangement the map's own
+     credit block has always had. */
   function listHead(list) {
     return card([
       el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
@@ -1458,7 +1516,6 @@
       list.by ? el('p', { className: 'lists-by mono' }, [byline(list.by)]) : null,
       list.intro ? el('p', { className: 'lists-say', textContent: list.intro }) : null,
       el('div', { className: 'lists-row' }, [
-        mapLink(list.id, 'go'),
         keepControl(list),
         button(t('listsShare'), 'alt', shareList),
         el('span', { className: 'lists-count mono', textContent: countLabel(list.items.length) })
@@ -1662,7 +1719,7 @@
            wears the accent. Not a line of underlined mono either — beside two
            pills that reads as a caption on them rather than as the door onto
            the map. */
-        mapLink(list.id, 'alt lists-map'),
+        mapLink(list.id),
         share,
         save
       ]),
@@ -3545,7 +3602,6 @@
       window.location.replace('/account.html' + window.location.search);
       return;
     }
-    state.id = id;
     state.view = all ? 'all' : who ? 'who' : 'one';
     if (all) { state.q = wantedQuery(); state.sort = wantedSort(); }
 
@@ -3617,9 +3673,6 @@
       state.ready = answer.status === 404 ? true : !!out.ready;
       state.me = out.user || null;
       state.list = out.list || null;
-      /* Null and not an empty array while nothing has asked: it is what
-         moreLists() reads to tell "there are no other lists" from "the other
-         lists have not been fetched yet". */
       state.all = out.all || null;
       state.start = out.start || null;
       state.next = out.next || '';

@@ -2220,11 +2220,11 @@ Five cards, one thing each, in the order of how much each is yours: who you
 are, what you kept, what you wrote, what you kept of other people's, and what
 is nobody's in particular. The last four are two groups, and for a while a
 heading said so over each — **Yours** and **Everybody else's**, the quiet
-heading a list page puts over the three more lists at its foot,
-`.lists-section`. They went again: on a phone they were two more lines
-between your name and your things, and each said what the titles under it
-already say — *Places I saved*, *Your lists* and *Lists you saved* are yours
-by their names, and *Public lists* is nobody's by its. The order carries the
+heading `/lists` puts over a run of rows, `.lists-section`. They went again:
+on a phone they were two more lines between your name and your things, and
+each said what the titles under it already say — *Places I saved*, *Your
+lists* and *Lists you saved* are yours by their names, and *Public lists* is
+nobody's by its. The order carries the
 argument on its own. The lists you wrote and the lists you kept had one
 card between them for a while, two folds with the box that makes a list
 standing between — and that card was the one on the page nobody could read
@@ -2667,11 +2667,11 @@ Five public lists under an account called `google-statistics`: **Top ten
 restaurants, by Google**, and the same for bakeries, cafés, bars and
 pizzerias. They are lists in every way the rest of this section means: a row
 each in `lists` and `list_items`, a byline that leads to
-`/u/google-statistics`, a bookmark, a way onto the map, three more at the
-foot and a strip of their own at the top of `/lists` — **Start here**, five
-across on a desk, above everybody else's rows; see **Public lists** for why
-they stand apart there. The byline is the one thing on them
-that is not drawn the way every other list's is: it reads "generated from
+`/u/google-statistics`, a bookmark, a way onto the map and a strip of their
+own at the top of `/lists` — **Start here**, five across on a desk, above
+everybody else's rows; see **Public lists** for why they stand apart there.
+The byline is the one thing on them that is not drawn the way every other
+list's is: it reads "generated from
 Google Maps" rather than "created by google-statistics", because the account
 name is an implementation detail and the sentence a reader needs is where the
 list came from. `byline()` in `assets/lists.js` — and its copies on the
@@ -3220,10 +3220,11 @@ is the one thing somebody sharing from a laptop is trying to do. A coarse
 pointer is a phone, where the sheet is the whole point; everything else
 copies, and says so.
 
-The same button is on the map, in the block that names the list — see **On the
-map** above. A list opened from a link opens the map, and sharing it on from
-there used to mean a hop through its own page first, which is a hop a link
-meant to be forwarded does not always survive.
+The same button is on the map, in the block under the bar that names the list
+— see **Map and List are one switch, drawn twice** above. A list opened from a
+link opens the map, and sharing it on from there used to mean a hop through
+its own page first, which is a hop a link meant to be forwarded does not
+always survive.
 
 ### Saving somebody else's
 
@@ -3556,10 +3557,15 @@ everybody else, which is most of the traffic this page gets.
   three of the four ways below, and the reason the page is indexed. A byline
   is a fourth route to lists, though not to this page: it leads to one
   person's, and [Profiles](#profiles) is where that goes.
-- **The foot of every public list**, which carries three more and a way to all
-  of them. This is the surface that should get the most use, and the reason is
-  where it is: somebody who has just finished reading a top ten is exactly the
-  person who wants another one.
+- **The foot of every public list**, which is a bar fixed to the bottom of the
+  window carrying one thing: the way here. This is the surface that should get
+  the most use, and the reason is where it is: somebody reading a top ten is
+  exactly the person who wants another one. It was three more lists and a link
+  under them, drawn at the end of the page — this site's directory redrawn
+  small at the foot of one list, and reachable only by whoever had scrolled a
+  whole top ten to find it. One door that is always on screen is worth more
+  than three that are at the bottom of twenty places, and the three were the
+  rows of this page anyway. See **The bar and the foot** under **Lists**.
 - **`/account.html` signed out**, which is where `/lists.html` now sends
   anybody who has no account: the door to this page under the offer of one,
   because "make an account" is a poor answer on its own to somebody who has
@@ -3632,20 +3638,76 @@ naming the day more precisely: when the `GROUP BY` in
 no third option under **Who can open it**. A keep already existed and was a
 private bookmark that nothing consumed; this is the page that consumes it.
 
-### On the map
+### The bar and the foot
 
-**Open on the map** sits on every list — yours and the ones you kept, on the
-index and on a list's own page — and it goes to `/?list=<id>`: the map,
-showing that list's places as pins, with the panel open on the list itself.
+Somebody else's list is a page with two fixed edges and a scroll between them.
+At the top, a bar saying which list this is and which of its two views you are
+looking at. At the bottom, a bar carrying the one way out of it. Everything
+else moves.
 
-On somebody else's list it is the card's filled action and the first thing in
-the row, because it is what the link was sent for: a list is a set of places,
-and the question about a set of places is where they are. The bookmark and
-Share are the second thoughts beside it. On your own list it stays quiet —
-there the card's one filled press is Save, meaning save these edits, and the
-accent is spent once. That quiet one is an outlined pill, and it is what each
-index row carries in its bottom corner too, so the door onto the map looks the
-same wherever it turns up.
+Neither is decoration. A top ten is twenty places at its longest, and
+everything that said what you were reading used to sit at the top of that
+scroll: five places in, a phone showed a column of restaurants and nothing
+saying whose list they were, that a map of them existed, or that there were
+other lists. The way to the map was at the top of the head card and the way to
+`/lists` was under the last place, which are the two ends of exactly the
+distance somebody reading is in the middle of.
+
+**The two bars carry different things, and that is the rule.** The head says
+where you are — the list's name, and the switch. The foot says where you can
+go instead — everybody else's lists. Nothing is on both, because a door drawn
+twice on one screen is a door somebody has to think about twice.
+
+The foot is the whole width of the bar and not the width of the word, which is
+rule 8's point about rows and is worth as much for one row as for six. It is a
+hairline over the page's own ground, with no shadow under it and nothing about
+it that moves: it is the edge of the page rather than something floating on
+it.
+
+Your own list has neither. That page is an editor — its title is a field you
+type into rather than a heading, and the accent on it belongs to Save — and
+the way onto the map is in its row of controls, beside the other things you do
+to a list. Somebody reading a list they were sent is the journey these are
+for.
+
+### Map and List are one switch, drawn twice
+
+A list is one thing with two views, and each of them used to hold a button
+pointing at the other: **Open on the map** on the list's own page, **Open the
+list itself** in the map's panel. Both were at the top of something that
+scrolls, so ten places down neither was on screen, and the two names described
+a journey between two pages rather than a change of view.
+
+They are one control now — two chips, **Map** and **List**, with the view you
+are in filled the way a pressed chip is filled — and it is drawn in both
+places out of each page's own pieces: `listBar()` in `assets/lists.js` and
+`listCredit()` in `assets/app.js`, which share no module and so restate it,
+the way everything these two pages both draw is restated. On the map it rides
+the band that already sticks to the top of the panel; on the list's page it is
+the head bar. Reading it takes no learning: it is the map's own filter row
+saying which of two things is on.
+
+The chips are links and not buttons, so the other view is an address somebody
+can open in a tab, send, or be sent — and `aria-current` rather than
+`aria-pressed`, because what the filled half says is "this page", not "this is
+switched on". `.chip[aria-current="page"]` fills alongside
+`.chip[aria-pressed="true"]` in `assets/styles.css`; no fifth control was
+added. They report `list_map` and `list_page`, which are the names the two
+buttons they replace reported.
+
+The accent on the half you are already looking at is the one thing worth
+arguing with, because on this site the accent usually marks the thing a
+surface is asking for, and here it marks the thing you already have. It is the
+chip's own meaning and the map's filter row has taught it on every visit: the
+filled one is the one that is on. The half you can press is the quiet one, and
+it is always on screen, which the filled button it replaces was not.
+
+**Open on the map** still sits on your own list and in the corner of every
+index row, going to `/?list=<id>`: the map, showing that list's places as
+pins, with the panel open on the list itself. It is an outlined pill in both
+places — on your own list the card's one filled press is Save, and the accent
+is spent once — so the door onto the map looks the same wherever it is still
+drawn as a door rather than as half of a switch.
 
 That is the map this site already has, not a second smaller one drawn on the
 lists page. The question anybody has about ten restaurants in one city is where
@@ -3697,11 +3759,14 @@ over a map showing four places.
 So the filter row is types and nothing else. `state.list` holds a list or it
 does not, and while it does, that is what the map is showing — `visiblePlaces()`
 answers the list before it consults a chip. The list says who it is in the
-panel instead: its title, its owner's name, their sentence, the three things
-you can do about it — keep it, open the list's own page, or send it on — and,
-under those, the way out. The three wear the same pill and none of them is
-filled: on that block the accent behind a pill already means "saved", and
-spending it twice would take that reading away.
+panel instead: its title and the switch on the band that sticks to the top,
+and under them its owner's name, how many places are on it, their sentence,
+the two things you can do about it — keep it, or send it on — and, under
+those, the way out. The two wear the same pill and neither is filled: on that
+block the accent behind a pill already means "saved", and spending it twice
+would take that reading away. The one filled thing in the panel is the half of
+the switch you are standing on, which says where you are rather than asking
+for a press.
 
 **Pressing any chip forgets it.** All, Bakery, Discount — each is somebody
 asking the map a question their list cannot be part of the answer to, so the
@@ -7075,7 +7140,7 @@ The map, `assets/app.js`:
 | `save_place`, `unsave_place` | `place`, `place_id`, `saves_total` |
 | `list_keep` | `list_id`, `list_state` (`on`/`off`, or `signed_out` when the press opened the sign-up sheet instead) |
 | `list_share` | `list_id`, `method` (`sheet`/`copy`) |
-| `list_page`, `profile_open` | `list_id` / `name` — the links on a list's credit block |
+| `list_page`, `profile_open` | `list_id` / `name` — the List half of the switch on the band, and the byline under it |
 | `ask_open` | — |
 | `ask_scope` | `scope` |
 | `ask` | `search_term`, `scope` |
@@ -7093,12 +7158,12 @@ The map, `assets/app.js`:
 | `radio_play`, `radio_stop` | `station` — reported from `assets/radio.js`, so every page with the button counts it |
 | `home`, `instagram` | — the wordmark and the Instagram link |
 
-The lists, `assets/lists.js` — a list, a profile, and `/lists/public`:
+The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 
 | event | parameters |
 | --- | --- |
 | `list_page` | `list_id` — any row that opens a list |
-| `list_map` | `list_id` — the "on the map" pill |
+| `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar |
 | `profile_open` | `name` — any byline |
 | `place_link` | `place`, `map` (`mine`/`google`) — a place on a list, to the map or to Google |
 | `list_keep` | `list_id`, `list_state` |
@@ -7115,7 +7180,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists/public`:
 | `search` | `search_term`, `scope` (`lists`) |
 | `lists_sort` | `sort` (`kept`, `new` or `changed`) — a chip beside the search field |
 | `lists_more` | `rows_shown`, `how` (`scroll` or `press`) |
-| `lists_all` | — |
+| `lists_all` | — the way to the directory: the row on `/account.html`, and the bar at the foot of a list |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
 
 The account page, `assets/account.js`:

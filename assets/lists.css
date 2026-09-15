@@ -92,6 +92,87 @@
 
 .lists-stack { display: flex; flex-direction: column; gap: 18px; }
 
+/* ---------- the head and the foot of somebody else's list ---------- */
+
+/* The head says which list this is and which of its two views you are
+   reading, and it sticks, which is the whole point of it. A list runs to
+   twenty places and everything that said what you were looking at used to sit
+   at the top of that scroll: ten places in, a phone showed a column of
+   restaurants and nothing saying whose list they were or that a map of them
+   existed.
+
+   It wears the page's own ground rather than the paper the cards sit on, the
+   way the directory's search row does, so the cards passing under it are
+   covered and it still reads as part of the page rather than as a bar laid
+   over it. Under the safe inset for the same reason that row is: a notch
+   should not take the switch. */
+.lists-bar {
+  position: sticky;
+  top: var(--safe-t);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* The stack's own 18px gap, plus the ten pixels of band under the words,
+     would stand the head card twenty-eight below a bar that is covering it
+     anyway. This takes the pair back to the rhythm of the rest of the page. */
+  margin-bottom: -8px;
+  padding: 10px 0;
+  background: var(--wash);
+}
+/* The name gives way before the switch does: a long title is still the list
+   you are reading, and the switch is what the band is for. It is not drawn at
+   all until the card's own title has scrolled off the top — see
+   nameWhenPast() in assets/lists.js — because until then it is the same words
+   twice. It keeps its box either way, so the switch does not step sideways
+   when the name turns up. */
+.lists-bar-name {
+  opacity: 0;
+  transition: opacity .15s var(--ease);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+.lists-bar.is-past .lists-bar-name { opacity: 1; }
+.lists-bar-views { flex: 0 0 auto; display: flex; gap: 6px; }
+
+/* And the foot: the one way out of a list, fixed to the bottom of the window.
+   A hairline over the page's own ground, so it reads as the edge of the page
+   rather than as something floating on it — there is no shadow under it and
+   nothing about it moves. */
+.lists-dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  background: var(--wash);
+  border-top: 1px solid var(--hairline);
+}
+/* The bar is the target rather than the length of the word, which is the part
+   of rule 8 that matters on a phone. The safe inset is the link's own padding
+   and not the bar's, so the words sit above a home indicator instead of the
+   ground stopping short of it. */
+.lists-dock-out {
+  flex: 1 1 auto;
+  padding: 14px var(--gap) calc(14px + var(--safe-b));
+  text-align: center;
+}
+/* Room for it under the last card. The class is set by render() in
+   assets/lists.js on the one view that draws one, and the room is made on the
+   column rather than on the body: a body whose overflow has been propagated
+   to the viewport does not count its own bottom padding as scrollable, so the
+   last card sat under the bar however much padding the body was given. */
+.lists-body.has-dock .lists-main { padding-bottom: calc(72px + var(--safe-b)); }
+
 .lists-card { padding: 22px 22px 20px; }
 
 .lists-title {
@@ -568,7 +649,7 @@
 }
 .lists-index-by a:hover { color: var(--accent); }
 
-/* The heading over a group: the three more lists at the foot of a list.
+/* The heading over a run of rows on the directory — Start here, Everybody's.
    Quieter than a card title — that one names the page or the card, this one
    names a run of things inside it — and given room above so the group reads
    as its own thing rather than as the list that changed its mind. The account
@@ -659,9 +740,9 @@
 }
 .lists-all-body.is-searching { opacity: .55; transition: opacity .15s var(--ease) .1s; }
 
-/* The row on /lists, and the same row at the foot of a list's own page.
-   It is the index row above restacked rather than a second kind of card: the
-   title, one line of facts under it, and the first three places under that.
+/* The row on /lists. It is the index row above restacked rather than a second
+   kind of card: the title, one line of facts under it, and the first three
+   places under that.
 
    No room is left along the bottom the way .lists-index-card leaves it, unless
    the row says it needs it: .has-keep is the row on the directory with the
@@ -734,12 +815,8 @@
   -webkit-box-orient: vertical;
 }
 
-/* Show more, and the way to the whole directory from the foot of a list. */
+/* Show more, under the directory's rows. */
 .lists-more { display: flex; justify-content: center; margin: 4px 0 0; }
-
-/* Three more lists under the one being read. Given room above it so it reads
-   as something after the list rather than as part of it. */
-.lists-foot-more { margin-top: 8px; }
 
 /* ---------- the directory, laid out for a desk ---------- */
 
