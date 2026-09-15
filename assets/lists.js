@@ -127,24 +127,40 @@
      account no reader would recognise; see byline(). */
   var GOOGLE_BY = 'google-statistics';
 
-  /* The frame every row's sky is drawn in: the box the map's own places sit
-     in, with a little air, so a dot lands in the same spot on every card and
-     the cards can be read against each other. Fixed rather than fitted to
-     each list, because a list fitted to itself is a shape with no city under
-     it; and fixed rather than measured off the map's places when they
-     arrive, because the rows draw before that fetch has answered and must
-     not move when it does. A place outside the box — Google knows a few in
-     Pirita and past Lasnamäe — is drawn on its edge. Tighter than the BBOX
-     tools/validate.mjs holds a coordinate to, which is the whole
-     municipality: this is the box the places actually sit in, so a dot in
-     the Old Town is not a speck in the middle of nothing. */
-  var SKY = { la0: 59.39, la1: 59.505, lo0: 24.63, lo1: 24.88, w: 120, h: 72, pad: 6 };
+  /* The panel a row's sky is drawn into: its own proportions, so nothing is
+     cropped, and a little padding so a dot on the edge of a list is a dot
+     rather than half of one.
 
-  /* The three orders the directory can be read in, in the order the chips
-     stand. Mirrors SORTS in functions/api/_mostkept.js, which is what binds:
-     an order the API does not know is the default there, so a chip here that
-     the API did not know would be a chip that did nothing. */
-  var SORTS = ['kept', 'new', 'changed'];
+     It was one fixed box over the whole city for a while — the same square of
+     Tallinn on every card, on the argument that a shared frame is what lets
+     two cards be read against each other. What that missed is where the lists
+     are. Nearly every one of them is inside the same square kilometre of the
+     middle, so the shared frame drew the same picture twenty times over, with
+     two thirds of each panel empty. A frame fitted to the list is the other
+     trade: the cards stop sharing a scale, and the corner has to say what the
+     scale is — which is what the label under across() is for, and is worth
+     more than the comparison it replaces, because "can I walk this?" is a
+     question somebody actually has. */
+  var SKY = { w: 120, h: 52, pad: 7 };
+
+  /* The floor under a fitted frame, in degrees of latitude — about a kilometre
+     and a half. Without one, a list of three cafés on the same street zooms
+     until the city under it is featureless and the panel is three dots on
+     nothing again, at the other end of the same mistake. */
+  var SKY_FLOOR = 0.014;
+
+  /* The air left around a list's own places inside its frame, so the outermost
+     dot is not against the padding. */
+  var SKY_AIR = 1.35;
+
+  /* Good enough for a label that prints one decimal place. */
+  var KM_PER_DEGREE = 111.32;
+
+  /* The two orders the directory can be read in, in the order the chips stand.
+     Mirrors SORTS in functions/api/_mostkept.js, which is what binds: an order
+     the API does not know is the default there, so a chip here that the API
+     did not know would be a chip that did nothing. */
+  var SORTS = ['kept', 'new'];
 
   var state = {
     ui: {},
@@ -157,8 +173,8 @@
     reached: true,     // whether it answered at all
     all: null,         // the directory: everybody's, in the order below
     start: null,       // the five Google lists, drawn as a strip above the rows
-    sort: 'kept',      // 'kept' | 'new' | 'changed' — which order the rows are in
-    city: null,        // the map's own places as [lat, lng], the ghost dots of every sky
+    sort: 'kept',      // 'kept' | 'new' — which order the rows are in
+    city: null,        // data/city.json as [lat, lng], the ground under every sky
     next: '',          // where the directory's next page starts, '' at the end
     q: '',             // what the directory is being searched for, '' for all
     find: '',          // and what one list is being searched for, '' for all
@@ -835,10 +851,16 @@
   /* The order, as a row of chips beside the search field: the same .chip the
      map's filter row is made of, pressed the same way, because it is the same
      kind of control — a toggle over what the page shows — asked about a
-     different kind of thing. Three and never a fourth: the count is the
-     page's own order, and the other two are the ways past the top of it. */
+     different kind of thing. Two: the count is the page's own order, and
+     Newest is the way past the top of it.
+
+     There was a third, Changed lately, and it went. It ordered on
+     `updated_at`, which is a fact about when somebody was last editing rather
+     than about the list — a title fixed the same afternoon put a list above
+     one finished a week ago and left alone since — and a reader looking for
+     something to open was never asking that question. */
   function orderLabel(key) {
-    return t(key === 'new' ? 'listsOrderNew' : key === 'changed' ? 'listsOrderChanged' : 'listsOrderKept');
+    return t(key === 'new' ? 'listsOrderNew' : 'listsOrderKept');
   }
 
   function orderRow() {
@@ -1115,7 +1137,10 @@
       allMeta({ keeps: l.keeps, by: null }, line);
       ul.appendChild(el('li', { className: 'lists-index-row' }, [
         el('div', { className: 'lists-start-card' }, [
-          sky(l.dots),
+          /* No label on a strip card: the sky is sixty-four pixels wide there
+             and a line of mono across it would be the loudest thing on the
+             card. The rows below are where the scale is worth saying. */
+          sky(l.dots, false),
           el('div', { className: 'lists-start-body' }, [
             line,
             TTBTrack.click(el('a', {
@@ -1135,67 +1160,136 @@
     ]);
   }
 
-  /* A list as a shape on the city: every place on the map as a faint dot,
-     and the list's own places over them in the accent. It is the one picture
-     only this site can draw of somebody's list, and it says before a single
-     name is read whether this is a Kalamaja list or a Pirita one, a scatter
-     or a walk. Decorative in the markup — the names under the title are the
-     accessible version of the same fact.
+  /* The frame a list is drawn in: its own places, squared up to the panel.
+     Padded out by SKY_AIR, floored at SKY_FLOOR so a tight list stays a map,
+     and then stretched on whichever axis is short until it matches the shape
+     of the panel — in metres rather than in degrees, because a degree of
+     longitude up here is only about half a degree of latitude, and fitting
+     the two as though they were equal draws Tallinn half as wide as it is.
+
+     `km` is how far the list itself reaches, not how wide the frame is: the
+     frame carries air and a floor, and neither of those is a fact about the
+     list. It is the longer of the two sides, so a list strung out along one
+     street reports the length of the street. */
+  function frameFor(dots) {
+    var la0 = dots[0][0], la1 = la0, lo0 = dots[0][1], lo1 = lo0, i;
+    for (i = 1; i < dots.length; i++) {
+      la0 = Math.min(la0, dots[i][0]); la1 = Math.max(la1, dots[i][0]);
+      lo0 = Math.min(lo0, dots[i][1]); lo1 = Math.max(lo1, dots[i][1]);
+    }
+    var midLa = (la0 + la1) / 2, midLo = (lo0 + lo1) / 2;
+    /* How much shorter a degree of longitude is at this latitude. */
+    var narrow = Math.cos(midLa * Math.PI / 180);
+    var spanLa = Math.max((la1 - la0) * SKY_AIR, SKY_FLOOR);
+    var spanLo = Math.max((lo1 - lo0) * SKY_AIR, SKY_FLOOR / narrow);
+    var shape = (SKY.w - SKY.pad * 2) / (SKY.h - SKY.pad * 2);
+
+    if (spanLo * narrow / spanLa < shape) spanLo = spanLa * shape / narrow;
+    else spanLa = spanLo * narrow / shape;
+
+    return {
+      la0: midLa - spanLa / 2, la1: midLa + spanLa / 2,
+      lo0: midLo - spanLo / 2, lo1: midLo + spanLo / 2,
+      km: Math.max((la1 - la0), (lo1 - lo0) * narrow) * KM_PER_DEGREE
+    };
+  }
+
+  /* How wide a ground dot is drawn, in the panel's own units. Wide when the
+     frame is the whole city, so eleven hundred restaurants merge into land
+     with a coast around it; tighter when the frame is a few streets, where
+     the same radius would flood the panel with one blob. A map does the same
+     thing: a coastline zoomed out, streets zoomed in. */
+  function groundRadius(frame) {
+    return Math.max(2, Math.min(2.9, 1.5 + (frame.la1 - frame.la0) * KM_PER_DEGREE / 9));
+  }
+
+  /* A list as a shape on the city: the city itself as pale ground, and the
+     list's own places on it in the accent. It is the one picture only this
+     site can draw of somebody's list, and it says before a single name is
+     read whether this is a Kalamaja list or a Pirita one, a walk or an
+     afternoon of driving. Decorative in the markup — the names under the
+     title are the accessible version of the same fact, and so is the label,
+     which sits inside the same aria-hidden box.
 
      The list's own dots are drawn now, out of what the row arrived with. The
-     city's are drawn by cityDots() into the empty group left for them, once
-     the map's places have been fetched — a fetch the rows never wait on. */
-  function sky(dots) {
-    var svg = el('div', {
-      className: 'lists-sky',
-      'aria-hidden': 'true',
-      html: '<svg viewBox="0 0 ' + SKY.w + ' ' + SKY.h + '" focusable="false">' +
-        '<g class="lists-sky-city"></g><g class="lists-sky-own"></g></svg>'
-    });
-    var own = svg.querySelector('.lists-sky-own');
-
-    (dots || []).forEach(function (d) { own.appendChild(dot(d, 2.2)); });
-    if (state.city) paintCity(svg.querySelector('.lists-sky-city'));
-    return svg;
+     ground is drawn once data/city.json has answered — a fetch the rows never
+     wait on — and a page that never gets it shows each list on plain paper,
+     which is still the shape of the list. */
+  function sky(dots, labelled) {
+    if (!dots || !dots.length) return null;
+    var box = el('div', { className: 'lists-sky', 'aria-hidden': 'true' });
+    box.ttbSky = { dots: dots, frame: frameFor(dots), labelled: labelled };
+    paintSky(box);
+    return box;
   }
 
-  /* One dot, placed in the frame. Clamped to it rather than dropped, so a
-     place past the box is still counted in the shape — on its edge, where a
-     map would put it too. */
-  function dot(d, r) {
-    var x = SKY.pad + (d[1] - SKY.lo0) / (SKY.lo1 - SKY.lo0) * (SKY.w - SKY.pad * 2);
-    var y = SKY.pad + (SKY.la1 - d[0]) / (SKY.la1 - SKY.la0) * (SKY.h - SKY.pad * 2);
-    x = Math.max(SKY.pad, Math.min(SKY.w - SKY.pad, x));
-    y = Math.max(SKY.pad, Math.min(SKY.h - SKY.pad, y));
-    var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    c.setAttribute('cx', x.toFixed(1));
-    c.setAttribute('cy', y.toFixed(1));
-    c.setAttribute('r', String(r));
-    return c;
+  /* Built as one string and set once rather than a few hundred appendChild
+     calls: a page of twenty rows draws several thousand ground dots, and the
+     ground is redrawn on every sky already on screen the moment the city
+     arrives. The label is appended as an element afterwards, because it is
+     translated text and translated text is never written through innerHTML. */
+  function paintSky(box) {
+    var sk = box.ttbSky;
+    box.innerHTML = '<svg viewBox="0 0 ' + SKY.w + ' ' + SKY.h + '" focusable="false">' +
+      '<g class="lists-sky-city">' +
+      (state.city ? circles(state.city, sk.frame, groundRadius(sk.frame), false) : '') +
+      '</g><g class="lists-sky-own">' +
+      circles(sk.dots, sk.frame, 3.4, true) +
+      '</g></svg>';
+    /* No label on a list with no spread — three places in one building, or a
+       list whose dots all rounded to the same block. "0.0 km across" is not a
+       fact about it, it is the label failing to have anything to say. */
+    if (sk.labelled && sk.frame.km >= 0.05) {
+      box.appendChild(el('span', {
+        className: 'lists-sky-span mono',
+        textContent: t('listsSkyAcross', { n: across(sk.frame.km) })
+      }));
+    }
   }
 
-  function paintCity(group) {
-    if (group.firstChild) return;
-    state.city.forEach(function (d) { group.appendChild(dot(d, 1)); });
+  /* Dots as SVG source. A place of the list's own outside the frame cannot
+     happen — the frame is built around them — but a ground dot outside it is
+     the usual case, and it is dropped rather than clamped: most of the city
+     is outside a fitted frame, and clamping a thousand of them smears the
+     panel's edges into a solid bar. The list's own are clamped, because the
+     one that would need it is a rounding error on the padding. */
+  function circles(dots, frame, r, clamp) {
+    var out = '', i, x, y;
+    for (i = 0; i < dots.length; i++) {
+      x = SKY.pad + (dots[i][1] - frame.lo0) / (frame.lo1 - frame.lo0) * (SKY.w - SKY.pad * 2);
+      y = SKY.pad + (frame.la1 - dots[i][0]) / (frame.la1 - frame.la0) * (SKY.h - SKY.pad * 2);
+      if (x < SKY.pad || x > SKY.w - SKY.pad || y < SKY.pad || y > SKY.h - SKY.pad) {
+        if (!clamp) continue;
+        x = Math.max(SKY.pad, Math.min(SKY.w - SKY.pad, x));
+        y = Math.max(SKY.pad, Math.min(SKY.h - SKY.pad, y));
+      }
+      out += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + r + '"/>';
+    }
+    return out;
   }
 
-  /* The map's own places, once, for the ghost dots of every sky on the page.
-     data/places.json is the catalogue the map is drawn from — twelve
-     kilobytes, cached by the browser like any asset — filtered to the rows
-     that are on the map, because the catalogue may also carry an imported
-     roll and the ghosts are meant to be the city as this site draws it.
-     Fetched after the rows are on the screen and painted into every sky
-     already drawn; a sky drawn later paints its own. A page that never gets
-     it is a page whose lists float on plain paper, which is still the shape
-     of the list. */
+  /* One decimal under ten kilometres, none over: "0.5" is the difference
+     between one street and four, and "13" against "12.6" is not a difference
+     anybody is making a decision on. */
+  function across(km) {
+    return km < 10 ? km.toFixed(1) : String(Math.round(km));
+  }
+
+  /* The city, once, as the ground under every sky on the page.
+     data/city.json is generated by tools/city.mjs out of the Google export:
+     about eleven hundred coordinates and nothing else, nineteen kilobytes,
+     cached by the browser like any asset. Fetched after the rows are on the
+     screen and painted into every sky already drawn; a sky drawn later — a
+     page of Show more — draws its own, because state.city is set by then. */
   function cityDots() {
     if (state.city) return;
-    getJSON('/data/places.json').then(function (places) {
-      state.city = (places || []).filter(function (p) {
-        return p && p.map && typeof p.lat === 'number' && typeof p.lng === 'number';
-      }).map(function (p) { return [p.lat, p.lng]; });
-      var groups = dom.main.querySelectorAll('.lists-sky-city');
-      for (var i = 0; i < groups.length; i++) paintCity(groups[i]);
+    getJSON('/data/city.json').then(function (dots) {
+      if (!dots || !dots.length) return;
+      state.city = dots;
+      var boxes = dom.main.querySelectorAll('.lists-sky');
+      for (var i = 0; i < boxes.length; i++) {
+        if (boxes[i].ttbSky) paintSky(boxes[i]);
+      }
     }).catch(function () { /* plain paper, then */ });
   }
 
@@ -1266,7 +1360,7 @@
     return el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card' + (l.mine ? '' : ' has-keep') }, [
         /* The sky first, above the title, where a picture goes on a card. */
-        l.dots && l.dots.length ? sky(l.dots) : null,
+        sky(l.dots, true),
         TTBTrack.click(el('a', {
           className: 'lists-index-title lists-open',
           href: '/list/' + l.id

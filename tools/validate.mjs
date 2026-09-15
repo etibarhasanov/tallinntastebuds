@@ -13,6 +13,8 @@
  *   - coordinates outside Tallinn's bounding box (catches swapped lat/lng)
  *   - a type used in restaurants.json that is not in taxonomy.json
  *   - a taxonomy type claiming a reserved id, such as "discount" or "saved"
+ *   - a ground in data/city.json that is not what tools/city.mjs would write
+ *     from the same export
  *   - a catalogue in data/places.json that is not what tools/places.mjs would
  *     write, holds a duplicate id, or has lost a place that is on the map
  *   - a db/google-venues.sql that is out of step with the Google Places export
@@ -69,6 +71,7 @@ import { stale as staleStamps } from './stamp.mjs';
 import { stale as staleCatalogue } from './places.mjs';
 import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
 import { stale as staleGoogleLists } from './googlelists.mjs';
+import { stale as staleCity } from './city.mjs';
 import { stale as staleTypeLists, build as buildTypeLists } from './typelists.mjs';
 /* The directory's own vocabulary. It is a table in the endpoint rather than a
    file, the way VENUE_TYPES is, and the checks below are what keep it honest:
@@ -1181,6 +1184,15 @@ if (staleGoogleVenues()) {
    month's Tallinn. */
 if (staleGoogleLists()) {
   fail('db/google-lists.sql', 'is not what tools/googlelists.mjs would write from exports/tallinn_restaurants.csv — run `node tools/googlelists.mjs` and commit the result');
+}
+
+/* And the ground every list on /lists is drawn on, which is the same export
+   again — about eleven hundred coordinates and nothing else. A refresh that
+   moved the export and not this leaves the directory drawing last month's
+   city under this month's lists: quieter than a stale table, because the
+   panel still looks like a panel, and so worth the same check. */
+if (staleCity()) {
+  fail('data/city.json', 'is not what tools/city.mjs would write from exports/tallinn_restaurants.csv — run `node tools/city.mjs` and commit the result');
 }
 
 /* ---------------------------------------------------------- type-lists.sql

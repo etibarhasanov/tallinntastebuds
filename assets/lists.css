@@ -938,23 +938,48 @@
 .lists-start-card .lists-all-meta { margin: 0 0 3px; font-size: 9.5px; line-height: 1.5; }
 .lists-start-body { min-width: 0; }
 
-/* A list as a shape on the city: the map's places as faint dots, the list's
-   own over them in the accent. Drawn by sky() in assets/lists.js into a box
-   with the frame's own proportions; on a row the box is shallower than the
-   frame and the drawing is lifted a little, so the middle of the city — where
-   nearly every list lives — is what shows. Colour comes out of the tokens like
+/* A list as a shape on the city: the city itself as pale ground, the list's
+   own places on it in the accent. Drawn by sky() in assets/lists.js into a
+   box with the frame's own proportions, so nothing is cropped — the frame is
+   fitted to each list now, and a crop that hid the edges of a fixed box has
+   nothing left to hide.
+
+   The ground is the eleven hundred coordinates of data/city.json drawn wide
+   enough to touch, so it reads as land rather than as a scatter, and the bay
+   is the part of the frame with nothing in it. It is --hairline on --paper
+   and not on --wash: hairline against wash is seven values of difference,
+   which is texture rather than a map. Colour comes out of the tokens like
    everything else, so a sky changes with the swatch. */
-.lists-sky { background: var(--paper); border-radius: var(--radius); overflow: hidden; }
+.lists-sky {
+  position: relative;
+  background: var(--paper);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
 .lists-sky svg { display: block; width: 100%; height: auto; }
 .lists-sky-city circle { fill: var(--hairline); }
 .lists-sky-own circle { fill: var(--accent); }
 .lists-all-card > .lists-sky {
   aspect-ratio: 120 / 52;
   margin: 0 0 12px;
-  background: var(--wash);
   border: 1px solid var(--hairline);
 }
-.lists-all-card > .lists-sky svg { transform: translateY(-14%); }
+
+/* How far the list reaches, in the corner of its own sky. It is what the
+   cards lost when they stopped sharing one frame: without it a walk around
+   Kalamaja and a list strung across the whole city draw the same size of
+   scatter. Inside the sky's aria-hidden box, like the drawing it annotates —
+   the names under the title are what a screen reader gets. */
+.lists-sky-span {
+  position: absolute;
+  left: 8px;
+  bottom: 5px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 
 @media (min-width: 900px) {
   /* Cards two across, and the strip three. The row is made a flex box so the

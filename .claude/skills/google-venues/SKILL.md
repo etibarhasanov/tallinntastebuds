@@ -12,7 +12,7 @@ refresh — the first pull found 750 restaurants, the second sweep, over
 seventeen Google types, found the rest — so read it off the first line of
 `db/google-venues.sql` rather than off this page. It is somebody else's data
 about the city, kept apart from mine about the food, and the whole design of
-the refresh is that running it again is safe. The pipeline is three files:
+the refresh is that running it again is safe. The pipeline is five files:
 
 ```
 exports/tallinn_restaurants.csv   the cleaned export, 18 columns, one line per row
@@ -20,7 +20,15 @@ tools/googlevenues.mjs            turns it into SQL
 db/google-venues.sql              GENERATED — what actually loads them
 tools/googlelists.mjs             reads the same export and ranks it
 db/google-lists.sql               GENERATED — the five top tens under `google-statistics`
+tools/city.mjs                    reads it a third time, for the coordinates alone
+data/city.json                    GENERATED — the ground every list on /lists is drawn on
 ```
+
+The third is the one with no database in it at all, and the easiest to
+forget for that reason: `data/city.json` is a static asset the browser
+fetches, so a refresh that skips it fails CI rather than going quiet, and a
+refresh that runs it needs nothing loaded anywhere. See **Public lists** in
+`README.md` for what it draws.
 
 The second pair is the same export read again: five public lists — top ten
 restaurants, bakeries, cafés, bars, pizzerias — under an account called
@@ -79,6 +87,9 @@ else runs.
    from the new export; `--show` first prints the five top tens with the
    score, rating and count beside each name, which is the diff worth reading
    before the SQL's.
+   Then `node tools/city.mjs`, which rewrites `data/city.json` — coordinates
+   and nothing else, one pair a line, so the diff says which of the city's
+   dots moved. Nothing loads it: it is served as an asset.
 3. `node tools/validate.mjs`. Beyond both SQL files being what their tool
    would write, it holds the directory's vocabulary to the new export:
    - **every `KITCHENS` pattern in `functions/api/venues.js` must still match
@@ -182,8 +193,9 @@ categories renamed, patterns dropped — and that both databases were loaded.
 ## The pull request
 
 1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/googlevenues.mjs`, `node tools/googlelists.mjs`, then
-   `node tools/validate.mjs`, and read both SQL diffs before going on.
+2. `node tools/googlevenues.mjs`, `node tools/googlelists.mjs`,
+   `node tools/city.mjs`, then `node tools/validate.mjs`, and read both SQL
+   diffs before going on.
 3. Ask to load the SQL into **preview** from the branch, with the delta
    described as in step 5 above —
    `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`,

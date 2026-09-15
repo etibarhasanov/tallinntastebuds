@@ -328,7 +328,7 @@ push afterwards is another deploy — and re-run everything below afterwards
 each time: replaying your commits over somebody else's `assets/` change is
 exactly what makes the stamps stale.
 
-Six things in this repo are **generated**. Editing a source without
+Seven things in this repo are **generated**. Editing a source without
 re-running its generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
@@ -336,6 +336,7 @@ re-running its generator is the single most common way to fail CI:
 | anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in the nine pages named in `PAGES` at the top of the tool |
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `data/restaurants.json` or `data/taxonomy.json` | `node tools/typelists.mjs` | `db/type-lists.sql` |
+| `exports/tallinn_restaurants.csv` | `node tools/city.mjs` | `data/city.json` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlevenues.mjs` | `db/google-venues.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlelists.mjs` | `db/google-lists.sql` |
 | a scene in `clips/scenes/` | `node tools/blogclips.mjs` | the four files in `clips/` that scene is drawn into — it needs a Chromium, and `--check` says which are missing |
