@@ -3534,6 +3534,14 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      beside it, and nothing but a class set before the script has run could
      ever want it. */
   body.sheet-peek { --sheet-h: var(--peek-h, 108px); }
+  /* And the cross goes, because there is nothing under the band left for it
+     to close: a list cannot be, and pressing it here would be a press that
+     does nothing. What is left in the grip bar is the grip, which is the one
+     thing this state has to offer — drag or tap it and the list comes back.
+     display:none rather than hidden also takes it out of the tab order, which
+     is the same answer for a keyboard. closePanel() in assets/app.js says why
+     a list does not close. */
+  body.sheet-peek .panel-close { display: none; }
 
   /* On a phone there is no room for the tagline, and with the tagline gone
      there is nothing left in the card that needed a card. What stands on the
