@@ -3655,8 +3655,14 @@ that the ones you kept. Everybody else's are one row under all of it, saying
 what is behind it and going there.
 
 And the map carries a door of its own now: the second pill on the left rail,
-under the account, wearing the emblem an undressed list wears and leading
-straight to `/lists`.
+under the account, wearing a clipboard and leading straight to `/lists`.
+
+It wore the map pin for a day — 📍, the marker an undressed list carries, on
+the reasoning that a door should look like the thing behind it. Over a map of
+pins that reads as "a pin", which is the one thing the rail does not need to
+say, so it is 📋 now: the picture says lists, and the paper disc and accent
+collar under it are the map's, which is what keeps it from looking like an
+emoji dropped into a pill.
 
 **That pill reverses the decision the rest of this section argues for**, and
 it is worth saying why rather than quietly rewriting the argument. What was
@@ -7692,6 +7698,15 @@ press play, one page ago — so nothing is reset and nothing is said. The button
 stays on and the stream starts on the first tap or keypress anywhere on the
 new page, which in practice is the tap that opens the list they came for.
 
+**A scroll is not that tap, and nothing can make it one.** When a finger
+turns out to be scrolling, the browser takes the pointer for itself and the
+sequence ends in `pointercancel`; there is no `pointerup` to listen for, and
+a `play()` hung off the `touchend` it does send is refused too — measured in
+Chromium, which is the browser that grants a walk between pages the most. So
+somebody who lands on a page of lists and only reads it hears nothing. That
+is the browser's rule about sound rather than something to route around, and
+what the radio owes them instead is the paragraph below.
+
 It is the end of that tap that does it. A finger going down is not a gesture
 to a browser — the events that count are a key going down, a mouse button
 going down, and a pointer or a touch coming *up* — and for a while the script
@@ -7701,6 +7716,18 @@ Safari on an iPhone among them, refused that `play()` as it had refused the
 one on arrival, and the radio stayed silent behind a button that said it was
 on until it was pressed off and on again. It listens for the pointer coming
 up now.
+
+**And the one press that listener does not answer is the press on the
+button.** A pointerup is delivered before the click it becomes, so a visitor
+pressing a switch that said on over silence had the stream started by the
+listener and turned straight off again by the click — one press for a frame
+of sound and an off switch, two to actually hear anything. That is the same
+two-press trap one paragraph up, reached by the obvious road rather than an
+iPhone's, and every walk from the map to a list ran into it whenever the
+browser refused the rejoin. So a press that lands on the button is left to
+`toggle()`, which knows the radio is on and silent and starts the stream
+instead of stopping it; the switch does not move, because it was already on
+and nothing about it changed. A second press turns it off, as it always did.
 
 The lists page and the account page wear the same button in their headers:
 the map's pill, the map's station name, the same press to stop. It is the
@@ -7786,7 +7813,7 @@ what everybody else has written, then the ones that change your evening, then
 the two that change the map, then the one that is about the rest, because a
 rail that opens with a colour picker reads as a settings strip rather than as
 the shortcut it is. The lists pill is the one that is a link rather than a
-press, and the only one wearing an emblem rather than a drawing: see **Two
+press, and the only one wearing an emoji rather than a drawing: see **Two
 doors to the lists** under **Lists**.
 
 On a phone it used to arrive as a column of bare discs: a head and shoulders,
@@ -8476,6 +8503,14 @@ are defined.
 
 The mono is the site's tell. It is what says "this is a control or a fact",
 and it is why a button in the display face read as somebody else's button.
+
+There is a fourth and nothing picks it: `--emoji`, the platform's own colour
+emoji face, for the five things on this site that draw one — a pin on the
+map, a list's emblem, the swatch in the picker, a card on the directory and
+the lists door on the rail. It is a token for the reason the three above are,
+and it ends in `sans-serif` rather than in `--display` on purpose: a text
+face in front of the colour one turns the star and the heart into black
+glyphs on half the phones out there.
 
 ### 3. One hairline, and a short list of corners
 

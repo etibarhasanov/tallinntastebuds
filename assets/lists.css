@@ -480,8 +480,7 @@
   border-radius: 50%;
   background: var(--paper);
   box-shadow: 0 0 0 1.5px var(--paper), 0 0 0 2.6px var(--pin-tone, var(--accent));
-  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
-               "Android Emoji", "EmojiSymbols", sans-serif;
+  font-family: var(--emoji);
   font-size: 15px;
   line-height: 1;
   -webkit-user-select: none;

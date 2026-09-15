@@ -59,8 +59,19 @@
  * Chrome usually has by then; Safari and Firefox usually have not. A refusal
  * is not a failure here — the visitor did press play, one page ago — so the
  * button stays on, and the stream is started by the first tap or keypress
- * anywhere on the new page. See waitForGesture(), and its note on which
- * half of a tap the browser counts.
+ * anywhere on the new page, the button included. See waitForGesture(), its
+ * note on which half of a tap the browser counts, and why the one press it
+ * hands to toggle() is a press of the button itself.
+ *
+ * What no listener can answer is a page somebody only reads. A finger that
+ * scrolls is not a tap: the browser takes the pointer for itself and the
+ * sequence ends in pointercancel, so there is no pointerup to hear, and a
+ * play() hung off the touchend it does send was refused too where this was
+ * measured, which was Chromium. So a visitor who lands on a list and only
+ * scrolls hears nothing until they touch something. That is the browser's
+ * rule about sound and not this file's to route around; what this file owes
+ * them is that the first press of the switch they are looking at brings the
+ * music back rather than turning it off.
  *
  * AND THE BUTTON FOLLOWS THE ELEMENT, NOT ONLY THE OTHER WAY ROUND
  *
@@ -176,20 +187,46 @@ window.TTBRadio = (function () {
      Chrome counts the finger going down as well, which is why it looked
      fine on Android and on every desktop.
 
+     EXCEPT A PRESS OF THE BUTTON, WHICH IS TOGGLE'S
+
+     The one press this must not answer is the obvious one. Somebody looking
+     at a switch that says on over silence presses the switch, and a press is
+     a pointerup before it is a click — so this listener started the stream,
+     and the click a moment later turned the radio off, aborting the play()
+     it had just made. One press for a frame of sound and an off switch; two
+     to actually hear anything, which is the same trap the pointerdown
+     version of this left on an iPhone and is what a walk from the map to a
+     list ran into every time the browser refused the rejoin.
+
+     So a press that lands on the button is left alone here and answered in
+     toggle(), where the radio knows it is on and silent and can start the
+     stream instead of stopping it. Every other tap and key on the page is
+     this listener's, exactly as before.
+
      Capture, so a handler that stops the event on its way down does not also
-     stop the radio, and one-shot on both listeners together — whichever fires
-     first takes the other one with it. */
+     stop the radio. */
   function waitForGesture() {
     if (armed) return;
     armed = true;
-    var go = function () {
-      document.removeEventListener('pointerup', go, true);
-      document.removeEventListener('keydown', go, true);
-      armed = false;
-      if (wanted) start();
-    };
-    document.addEventListener('pointerup', go, true);
-    document.addEventListener('keydown', go, true);
+    document.addEventListener('pointerup', gesture, true);
+    document.addEventListener('keydown', gesture, true);
+  }
+
+  /* Any tap or key that is not the button: the wait is over and the stream
+     starts on it. A named function rather than a closure because the wait
+     ends in two places — here and in toggle() — and both have to be able to
+     take these listeners off again. */
+  function gesture(ev) {
+    if (btn && ev.target && btn.contains(ev.target)) return;
+    stopWaiting();
+    if (wanted) start();
+  }
+
+  function stopWaiting() {
+    if (!armed) return;
+    armed = false;
+    document.removeEventListener('pointerup', gesture, true);
+    document.removeEventListener('keydown', gesture, true);
   }
 
   /* A stream that would not start, or that has stopped: an error, a play()
@@ -305,6 +342,22 @@ window.TTBRadio = (function () {
   function toggle() {
     var station = stationFor(lang);
     if (!station || !station.url) return;
+
+    /* On and silent, which is a radio waiting for a gesture on a page it
+       arrived already playing — see waitForGesture(). This press is that
+       gesture, so it is a press for the sound rather than against it: the
+       stream starts and the switch stays where it is. Turning it off here is
+       what the button used to do, and it made "press the radio to get the
+       music back" the thing that stopped it.
+
+       Nothing is reported. The radio was on before this press and it is on
+       after it, and onchange is for a press that changed something. */
+    if (wanted && armed) {
+      stopWaiting();
+      start();
+      return;
+    }
+
     wanted = !wanted;
     writeWanted();
     if (wanted) start(); else halt();
