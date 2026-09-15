@@ -1,0 +1,85 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ask for somewhere — clip</title>
+<meta name="clip" content="ms=5000; w=480; h=270">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  /* The chat, in the panel it happens in: the thread reading down from the
+     top and the field held to the bottom, which is where the next question
+     goes. */
+  .panel-card {
+    position: absolute;
+    inset: 14px 26px 14px 26px;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px 12px;
+  }
+  .ask-thread { flex: 1 1 auto; }
+  .ask-say { font-size: 13px; line-height: 1.5; }
+  .ask-you { font-size: 13px; }
+  .answer { margin: 8px 0 0; }
+  .answer .place-list { list-style: none; margin: 6px 0 0; padding: 0; }
+  .answer li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; }
+  .answer li + li { border-top: 1px solid var(--hairline); }
+  .answer .who { font-family: var(--display); font-size: 13.5px; font-weight: 600; }
+  .answer .why { font-family: var(--mono); font-size: 10px; letter-spacing: .04em; color: var(--muted); }
+  .ask-field { margin-top: 10px; }
+</style>
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage) {
+    var panel = document.createElement('div');
+    panel.className = 'panel-card card';
+    panel.innerHTML =
+      '<div class="ask-thread">' +
+        '<article class="ask-turn"><p class="ask-you"></p></article>' +
+        '<article class="ask-turn answer"><p class="ask-say"></p>' +
+        '<ul class="place-list"></ul></article>' +
+      '</div>' +
+      '<div class="ask-field">' +
+        '<input class="ask-input" type="text" value="" readonly>' +
+      '</div>';
+    stage.appendChild(panel);
+
+    return {
+      you: panel.querySelector('.ask-you'),
+      yourTurn: panel.querySelectorAll('.ask-turn')[1],
+      answer: panel.querySelector('.answer'),
+      said: panel.querySelector('.answer .ask-say'),
+      rows: panel.querySelector('.place-list'),
+      field: panel.querySelector('.ask-input')
+    };
+  },
+
+  /* A sentence typed into the field, the sentence becoming your turn in the
+     thread, and the answer under it: a line or two, then the places, each
+     with the reason it is there. */
+  at: function (t, h) {
+    var asked = 'cheap asian food, still open';
+    var typed = Math.round(Clip.at(t, 300, 1700) * asked.length);
+
+    var sent = t >= 2000;
+    h.field.value = sent ? '' : asked.slice(0, typed);
+
+    h.you.textContent = asked;
+    h.yourTurn.style.opacity = String(Clip.at(t, 2000, 2300));
+
+    h.said.textContent = 'Two that are open now and will not empty your wallet.';
+    h.answer.style.opacity = String(Clip.at(t, 2700, 3100));
+
+    var places = [
+      ['Izakaya Taro', 'Open until 23:00 \u00b7 400m'],
+      ['Klorofull', 'Open until 22:00 \u00b7 900m']
+    ];
+    var shown = Math.round(Clip.at(t, 3100, 3900) * places.length);
+    h.rows.innerHTML = places.slice(0, shown).map(function (place) {
+      return '<li><span class="who">' + place[0] + '</span>' +
+             '<span class="why">' + place[1] + '</span></li>';
+    }).join('');
+  }
+});
+</script>

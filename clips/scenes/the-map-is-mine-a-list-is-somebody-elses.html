@@ -1,0 +1,71 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>A list is somebody else’s — clip</title>
+<meta name="clip" content="ms=4600; w=480; h=270">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="../../assets/lists.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  /* A list being written, in the card the lists page writes one in: the
+     title somebody typed, their byline under it, and the numbered rows. The
+     third is still a slot, which is where every list starts. */
+  .lists-card {
+    position: absolute;
+    left: 40px; top: 20px;
+    width: 400px;
+    padding: 16px 18px 14px;
+  }
+  .lists-card .lists-title { font-size: 20px; margin: 4px 0 4px; }
+  .lists-card .lists-by { margin: 0 0 10px; }
+  .item-name { font-size: 14px; }
+  .item-why { font-size: 12px; line-height: 1.45; color: var(--muted); margin: 2px 0 0; }
+</style>
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage) {
+    var card = document.createElement('div');
+    card.className = 'lists-card card';
+    card.innerHTML =
+      '<p class="eyebrow">A list</p>' +
+      '<h2 class="lists-title">Where to take your parents</h2>' +
+      '<p class="lists-by">by kaisa</p>' +
+      '<ul class="list-items">' +
+        '<li class="item"><span class="item-n">1</span><div class="item-body">' +
+          '<p class="item-name">F-Hoone</p>' +
+          '<p class="item-why">Big room, everybody finds something.</p></div></li>' +
+        '<li class="item"><span class="item-n">2</span><div class="item-body">' +
+          '<p class="item-name">Kohvik Must Puudel</p>' +
+          '<p class="item-why">Cake, and a window to sit at.</p></div></li>' +
+        '<li class="item is-slot"><span class="item-n">3</span><div class="item-body">' +
+          '<button type="button" class="lists-slot">Add a place</button></div></li>' +
+      '</ul>';
+    stage.appendChild(card);
+
+    return {
+      third: card.querySelector('.item.is-slot'),
+      cursor: Clip.cursor(stage)
+    };
+  },
+
+  /* The third row is pressed and a place lands in it, with the sentence its
+     author wrote about it. Three is where a list starts \u2014 two places is a
+     pair of opinions rather than a recommendation. */
+  at: function (t, h) {
+    var filled = t >= 1900;
+
+    h.third.className = 'item' + (filled ? '' : ' is-slot');
+    h.third.querySelector('.item-body').innerHTML = filled
+      ? '<p class="item-name">Pudel</p>' +
+        '<p class="item-why">Where we always end up afterwards.</p>'
+      : '<button type="button" class="lists-slot">Add a place</button>';
+
+    var x = Clip.lerp(t, 150, 1500, 440, 140);
+    var y = Clip.lerp(t, 150, 1500, 250, 208);
+    h.cursor.to(x, y, { t: t, from: 1600, to: 1900 });
+    h.cursor.tap(140, 206, 84, Clip.at(t, 1660, 2300));
+  }
+});
+</script>

@@ -1,0 +1,84 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Two styles — clip</title>
+<meta name="clip" content="ms=4400; w=480; h=270">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  /* Something of everything, so that the press changes all of it: a pin on
+     the ground, a card with a name and a price, a chip, and the swatch that
+     does it. Not one line here names a colour. */
+  .rail { position: absolute; left: 20px; top: 108px; }
+  .sw-dot { background: var(--paper); }
+  .demo {
+    position: absolute;
+    left: 168px; top: 40px;
+    width: 268px;
+    padding: 14px 16px 14px;
+  }
+  .demo .place-name { font-size: 20px; margin: 4px 0 6px; }
+  .demo .tag-row { margin-top: 10px; }
+  .lit { position: absolute; left: 96px; top: 46px; display: grid; place-items: center; }
+  .lit .pin-mark { width: 28px; height: 28px; }
+</style>
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage, clip) {
+    Clip.ground(stage, clip.w, clip.h);
+
+    var began = document.documentElement.getAttribute('data-style') === 'green'
+      ? 'green' : 'red';
+
+    var lit = document.createElement('div');
+    lit.className = 'lit';
+    lit.innerHTML = '<span class="pin-mark is-reel"><span class="pin-face"></span></span>';
+    stage.appendChild(lit);
+
+    var demo = document.createElement('div');
+    demo.className = 'demo card';
+    demo.innerHTML =
+      '<p class="eyebrow">Tallinn</p>' +
+      '<h2 class="place-name">Bekker Pagari\u00e4ri</h2>' +
+      '<div class="head-meta"><span class="price">' +
+        '<i class="on">\u20ac</i><i class="on">\u20ac</i><i>\u20ac</i><i>\u20ac</i>' +
+      '</span></div>' +
+      '<div class="tag-row"><span class="tag">Bakery</span><span class="tag">Coffee/tea</span></div>';
+    stage.appendChild(demo);
+
+    var rail = document.createElement('div');
+    rail.className = 'rail';
+    rail.innerHTML =
+      '<button type="button" class="rail-btn hint-open">' +
+        '<span class="sw-dot"></span><span class="rail-label"></span>' +
+      '</button>';
+    stage.appendChild(rail);
+
+    return {
+      began: began,
+      label: rail.querySelector('.rail-label'),
+      cursor: Clip.cursor(stage)
+    };
+  },
+
+  /* One press, and the card, the ground, the pin, the price and the chips are
+     all in the other world. The swatch shows the side you are about to get
+     rather than the side you are on \u2014 there are two, so one of them is
+     always already under you. */
+  at: function (t, h) {
+    var flipped = t >= 1650;
+    var now = (h.began === 'green') === !flipped ? 'green' : 'red';
+    var other = now === 'green' ? 'red' : 'green';
+
+    document.documentElement.setAttribute('data-style', now);
+    h.label.textContent = other === 'green' ? 'Green (dark)' : 'Red (light)';
+
+    var x = Clip.lerp(t, 150, 1450, 420, 68);
+    var y = Clip.lerp(t, 150, 1450, 240, 126);
+    h.cursor.to(x, y, { t: t, from: 1500, to: 1800 });
+    h.cursor.tap(64, 124, 70, Clip.at(t, 1560, 2200));
+  }
+});
+</script>

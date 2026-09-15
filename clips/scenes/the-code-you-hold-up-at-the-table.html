@@ -1,0 +1,71 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>The code you hold up — clip</title>
+<meta name="clip" content="ms=4400; w=480; h=270">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="../../assets/pass.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  /* The guest's pass, which is the page deal.html draws: the place, what is
+     off, the code for this hour and the square a waiter scans. The QR is a
+     real one \u2014 assets/qr.js draws it from the same kind of address the
+     scanner is sent to, because a drawn-on square that cannot be scanned
+     would be the one dishonest thing in a clip about a code. */
+  .pass-card {
+    position: absolute;
+    left: 26px; top: 26px;
+    right: 26px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    text-align: left;
+    padding: 18px 20px;
+  }
+  .pass-said { min-width: 0; flex: 1 1 auto; }
+  .pass-name { font-size: 21px; }
+  .pass-lede { font-size: 14px; margin: 6px 0 10px; }
+  .qr { flex: 0 0 auto; width: 116px; margin: 0; }
+  .pass-code { font-size: 21px; margin: 4px 0 6px; }
+</style>
+<script src="../../assets/qr.js"></script>
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage) {
+    var card = document.createElement('div');
+    card.className = 'pass-card card';
+    card.innerHTML =
+      '<div class="pass-said">' +
+        '<div class="pass-head"><p class="eyebrow">Members\u2019 discount</p>' +
+        '<h1 class="pass-name">Magussoolane</h1></div>' +
+        '<p class="pass-lede">15% off your order</p>' +
+        '<p class="pass-code"></p>' +
+        '<p class="pass-terms">Good for this hour. Show it at the till.</p>' +
+      '</div>' +
+      '<div class="qr"></div>';
+    stage.appendChild(card);
+
+    var qr = card.querySelector('.qr');
+    qr.appendChild(window.TTBQR.svg(
+      'https://tallinntastebuds.ee/verify.html?r=magussoolane&h=486231&c=K7M2Q'));
+
+    return { qr: qr, code: card.querySelector('.pass-code') };
+  },
+
+  /* The code and its square arrive together, the way the pass draws them, and
+     they are what an account buys \u2014 the offer above them was there for
+     everybody all along. */
+  at: function (t, h) {
+    var drawn = Clip.at(t, 700, 1500);
+    h.qr.style.opacity = String(drawn);
+    h.qr.style.transform = 'scale(' + (0.88 + 0.12 * drawn) + ')';
+
+    var said = Clip.at(t, 1500, 2100);
+    h.code.textContent = said > 0.35 ? 'K7M2Q' : '';
+    h.code.style.opacity = String(said);
+  }
+});
+</script>

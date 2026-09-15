@@ -220,8 +220,8 @@ Do it again if a review runs long enough for the branch to fall behind again,
 and re-run everything below afterwards each time: replaying your commits over
 somebody else's `assets/` change is exactly what makes the stamps stale.
 
-Four files in this repo are **generated**. Editing their source without
-re-running the generator is the single most common way to fail CI:
+Five things in this repo are **generated**. Editing a source without
+re-running its generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
 |---|---|---|
@@ -229,6 +229,7 @@ re-running the generator is the single most common way to fail CI:
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlevenues.mjs` | `db/google-venues.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlelists.mjs` | `db/google-lists.sql` |
+| a scene in `clips/scenes/` | `node tools/blogclips.mjs` | the four files in `clips/` that scene is drawn into — it needs a Chromium, and `--check` says which are missing |
 
 (The catalogue is the map plus an optional `data/places.csv` import. That CSV
 is not in the repo — without one, `places.mjs` builds the catalogue from

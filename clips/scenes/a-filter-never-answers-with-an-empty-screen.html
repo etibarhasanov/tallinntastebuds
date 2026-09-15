@@ -1,0 +1,89 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="scene.css">
+<title>A filter never answers with an empty screen — clip</title>
+<meta name="clip" content="ms=4200; w=480; h=270">
+<style>
+  /* The chip row along the foot, the way a phone wears it, and the pins it is
+     a question about. */
+  .filter-bar { position: absolute; left: 0; right: 0; bottom: 14px; padding: 0 16px; }
+  .filters { display: flex; gap: 8px; }
+  .dot { position: absolute; display: grid; place-items: center; }
+  .dot .pin-mark { width: 26px; height: 26px; }
+</style>
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage, clip) {
+    Clip.ground(stage, clip.w, clip.h);
+
+    /* Six places, two of them bakeries, and the bakeries deliberately out at
+       the edge — which is the state the post is about: the answer is off the
+       screen you are looking at. */
+    var places = [
+      { x: 60, y: 46, keep: false }, { x: 150, y: 120, keep: false },
+      { x: 238, y: 58, keep: false }, { x: 206, y: 156, keep: false },
+      { x: 418, y: 40, keep: true }, { x: 446, y: 128, keep: true }
+    ];
+
+    var dots = places.map(function (place) {
+      var dot = document.createElement('div');
+      dot.className = 'dot';
+      dot.style.left = place.x + 'px';
+      dot.style.top = place.y + 'px';
+      dot.innerHTML = '<span class="pin-mark ' + (place.keep ? 'is-reel' : 'is-words') +
+        '"><span class="pin-face"></span></span>';
+      stage.appendChild(dot);
+      return { el: dot, place: place };
+    });
+
+    var bar = document.createElement('div');
+    bar.className = 'filter-bar';
+    bar.innerHTML =
+      '<div class="filters">' +
+        '<button type="button" class="chip is-on">All</button>' +
+        '<button type="button" class="chip">Bakery</button>' +
+        '<button type="button" class="chip">Coffee/tea</button>' +
+        '<button type="button" class="chip">Beer/pub</button>' +
+      '</div>';
+    stage.appendChild(bar);
+
+    return { dots: dots, chips: bar.querySelectorAll('.chip'), cursor: Clip.cursor(stage) };
+  },
+
+  /* The chip goes on, four places leave, and the two it left are out at the
+     edge — so the map pulls back until they are on screen rather than
+     answering with the empty middle it was already showing. */
+  at: function (t, h) {
+    var on = t >= 1500;
+    h.chips[0].classList.toggle('is-on', !on);
+    h.chips[1].classList.toggle('is-on', on);
+
+    var gone = Clip.at(t, 1550, 1800);
+    var pull = Clip.at(t, 1800, 2450);
+
+    h.dots.forEach(function (dot) {
+      if (!dot.place.keep) {
+        dot.el.style.opacity = String(1 - gone);
+        dot.el.style.transform = 'scale(' + (1 - 0.3 * gone) + ')';
+        return;
+      }
+      /* What the framing does, seen from the pin: the two that matched come
+         in from the edge until they are both in the middle of the screen. */
+      var toX = dot.place.x === 418 ? 248 : 316;
+      var toY = dot.place.y === 40 ? 74 : 122;
+      dot.el.style.left = Clip.lerp(t, 1800, 2450, dot.place.x, toX) + 'px';
+      dot.el.style.top = Clip.lerp(t, 1800, 2450, dot.place.y, toY) + 'px';
+      dot.el.style.transform = 'scale(' + (1 + 0.12 * pull) + ')';
+    });
+
+    var x = Clip.lerp(t, 150, 1400, 420, 106);
+    var y = Clip.lerp(t, 150, 1400, 90, 238);
+    h.cursor.to(x, y, { t: t, from: 1400, to: 1700 });
+    h.cursor.tap(106, 238, 70, Clip.at(t, 1460, 2100));
+  }
+});
+</script>

@@ -21,6 +21,19 @@
  * different page with different words on it, and one canonical pointing at
  * the index would ask a crawler to treat every post as the same page.
  *
+ * THE CLIP
+ *
+ * Most posts carry one: a few seconds of the thing the post is about, drawn
+ * out of the site's own components and left looping. It is an animated PNG
+ * rather than a video, which is the format people mean when they say a GIF
+ * and is the one that needs nothing from this file but an <img> — no
+ * autoplay policy to satisfy, no poster, no controls to hide. Somebody who
+ * has asked their machine for less motion gets the still instead, through the
+ * <picture> below, because nothing can pause an APNG once it is playing. The
+ * clips are drawn in both styles and this picks the one the page is wearing:
+ * a light card in a dark page is the one thing on this site that cannot be
+ * true. tools/blogclips.mjs makes all four files.
+ *
  * A POST IS NOT HELD TO THE TEN LANGUAGES
  *
  * Every string this page draws around a post — the title, the lead, the way
@@ -50,6 +63,11 @@
 
   var UI_URL = '/data/ui.json';
   var POSTS_URL = '/data/blog.json';
+
+  /* Where the clips are, and what the four files for one post are called.
+     The id is the whole of the name: a post and its pictures cannot drift
+     apart if there is nothing to keep in step. */
+  var CLIPS = '/clips/';
 
   /* The address this page is served at. Cloudflare Pages serves blog.html
      here as well, the way it serves google.html at /google, and this is the
@@ -235,6 +253,32 @@
 
   function postHref(post) { return PAGE + '?post=' + encodeURIComponent(post.id); }
 
+  /* The clip for a post, or nothing when it has none: a <picture> holding the
+     looping version and, for anybody who asked for less motion, the first
+     frame of it standing still. The dark style has its own pair — see the
+     head of this file — and the alt is the post's own sentence about what the
+     clip shows, which is the only part of it a reader who cannot see it
+     gets. */
+  function clip(post) {
+    if (!post.clip) return null;
+
+    var dark = document.documentElement.getAttribute('data-style') === 'green';
+    var stem = CLIPS + post.id + (dark ? '-green' : '');
+
+    return el('figure', { className: 'blog-clip' }, [
+      el('picture', {}, [
+        el('source', { media: '(prefers-reduced-motion: reduce)', srcset: stem + '-still.png' }),
+        el('img', {
+          src: stem + '.png',
+          alt: say(post.clip),
+          width: '960',
+          height: '540',
+          decoding: 'async'
+        })
+      ])
+    ]);
+  }
+
   function findPost(id) {
     for (var i = 0; i < state.posts.length; i++) {
       if (state.posts[i].id === id) return state.posts[i];
@@ -323,6 +367,7 @@
         el('p', { className: 'blog-lead', textContent: say(post.standfirst) }),
         translated(post) ? null
           : el('p', { className: 'blog-note', textContent: t('blogEnglishOnly') }),
+        clip(post),
         el('div', { className: 'blog-body' }, body.map(function (para) {
           return el('p', { textContent: para });
         })),

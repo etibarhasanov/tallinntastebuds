@@ -92,6 +92,25 @@
 .blog-crumb { margin: 0 0 -8px; }
 .blog-crumb .alt { padding-left: 2px; }
 
+/* The clip, between the line that says why and the paragraphs that say how.
+   It is drawn at the width of the card and framed with the same hairline
+   every picture on this site is framed with, because its own ground is the
+   site's ground and without an edge it would bleed into the card it is
+   standing on. Its ratio is fixed by the tool that draws it, and the width
+   and height on the element hold the space before it arrives, so nothing
+   below jumps when it does. */
+.blog-clip {
+  margin: 20px 0 0;
+  padding: 0;
+}
+.blog-clip img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+
 /* The measure. 62 characters is about where a line stops being comfortable to
    come back from, and the column this sits in is 640px wide, which at 17px
    Literata is nearer 75. The card keeps its width — a narrow card inside a

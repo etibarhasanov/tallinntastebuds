@@ -1,0 +1,69 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Where a byline leads — clip</title>
+<meta name="clip" content="ms=4600; w=480; h=270">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  /* A list, its byline, and the page the byline goes to: the same row the
+     account page draws for your own lists, under the one number a profile
+     keeps. */
+  .stack { position: absolute; left: 34px; top: 20px; width: 412px; }
+  .stack .card { padding: 14px 18px 14px; }
+  .lists-title { font-size: 18px; margin: 4px 0 4px; }
+  .lists-by { margin: 0; }
+  .lists-by a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
+  .who { margin-top: 12px; }
+  .who .lists-standing { margin: 0 0 8px; }
+  .menu-name { font-size: 14px; }
+</style>
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage) {
+    var stack = document.createElement('div');
+    stack.className = 'stack';
+    stack.innerHTML =
+      '<div class="card one">' +
+        '<p class="eyebrow">A list</p>' +
+        '<h2 class="lists-title">Where to take your parents</h2>' +
+        '<p class="lists-by">by <a href="#">kaisa</a></p>' +
+      '</div>' +
+      '<div class="card who">' +
+        '<p class="eyebrow">kaisa</p>' +
+        '<p class="lists-standing">Kept 34 times, in all</p>' +
+        '<ul class="menu">' +
+          '<li class="menu-item"><span class="menu-row">' +
+            '<span class="menu-say"><span class="menu-name">Where to take your parents</span>' +
+            '<span class="menu-why">7 places \u00b7 kept 21 times</span></span>' +
+            '<span class="menu-go"><svg viewBox="0 0 24 24" focusable="false">' +
+            '<path d="M9 5l7 7-7 7"/></svg></span></span></li>' +
+          '<li class="menu-item"><span class="menu-row">' +
+            '<span class="menu-say"><span class="menu-name">Bakeries worth the walk</span>' +
+            '<span class="menu-why">5 places \u00b7 kept 13 times</span></span>' +
+            '<span class="menu-go"><svg viewBox="0 0 24 24" focusable="false">' +
+            '<path d="M9 5l7 7-7 7"/></svg></span></span></li>' +
+        '</ul>' +
+      '</div>';
+    stage.appendChild(stack);
+
+    return { who: stack.querySelector('.who'), cursor: Clip.cursor(stage) };
+  },
+
+  /* Press the name at the foot of a list and you get the person: everything
+     else they have published, and how often other people kept it. Nothing
+     about where they eat \u2014 a save is nobody's business but the saver's. */
+  at: function (t, h) {
+    var open = Clip.at(t, 1800, 2100);
+    h.who.style.opacity = String(open);
+    h.who.style.transform = 'translateY(' + (1 - open) * 14 + 'px)';
+
+    var x = Clip.lerp(t, 150, 1500, 430, 108);
+    var y = Clip.lerp(t, 150, 1500, 236, 86);
+    h.cursor.to(x, y, { t: t, from: 1550, to: 1850 });
+    h.cursor.tap(104, 84, 64, Clip.at(t, 1600, 2250));
+  }
+});
+</script>

@@ -939,8 +939,22 @@ if (existsSync(STORIES)) {
    language a post is not in is told so in their own. See "The blog" in
    README.md. */
 
-const BLOG_KEYS = new Set(['id', 'date', 'link', 'title', 'standfirst', 'body']);
+const BLOG_KEYS = new Set(['id', 'date', 'link', 'title', 'standfirst', 'clip', 'body']);
 const BLOG_SAID = ['title', 'standfirst', 'body'];
+
+/* The four files one clip is: the looping picture and its first frame, in
+   each of the two styles. tools/blogclips.mjs draws all four from one scene
+   in clips/scenes/, and a post that says it has a clip and does not is a
+   broken image on a page nobody would think to check. */
+const CLIP_FILES = (id) => [`${id}.png`, `${id}-still.png`, `${id}-green.png`, `${id}-green-still.png`];
+/* What a clip should not weigh. They come in near two hundred kilobytes; a
+   megabyte means a scene that moves something enormous on every frame, or the
+   dirty-rectangle arithmetic in the tool quietly failing, and both are worth
+   being told about. */
+const CLIP_BUDGET = 600 * 1024;
+
+const CLIPS_DIR = join(ROOT, 'clips');
+const usedClipFiles = new Set();
 
 const blogPath = join(DATA, 'blog.json');
 const blog = existsSync(blogPath) ? readJSON('data/blog.json') : [];
@@ -979,6 +993,39 @@ if (blog !== null && !Array.isArray(blog)) {
        try it", and what it is offering to try is here. */
     if (post.link !== undefined && (!isNonEmptyString(post.link) || post.link[0] !== '/')) {
       fail(where, '"link" must be a path on this site, such as "/lists"');
+    }
+
+    /* The clip, when there is one: the sentence that says what it shows, and
+       the four files it is. The sentence is what a reader who cannot see the
+       picture is left with, so it is held to the same English-at-minimum rule
+       the rest of the post is. */
+    if (post.clip !== undefined) {
+      if (!isPlainObject(post.clip)) {
+        fail(where, '"clip" must be an object keyed by language, saying what the clip shows');
+      } else {
+        for (const lang of Object.keys(post.clip)) {
+          if (!languages.includes(lang)) {
+            fail(where, `"clip" is written in "${lang}", which data/ui.json does not speak`);
+          } else if (!isNonEmptyString(post.clip[lang])) {
+            fail(where, `"clip" in ${lang} must be a sentence — it is the alt on the picture`);
+          }
+        }
+        if (!isNonEmptyString(post.clip.en)) {
+          fail(where, '"clip" has no English, which is what every language falls back to');
+        }
+      }
+
+      if (isNonEmptyString(post.id)) {
+        for (const file of CLIP_FILES(post.id)) {
+          usedClipFiles.add(file);
+          const path = join(CLIPS_DIR, file);
+          if (!existsSync(path)) {
+            fail(where, `says it has a clip but "clips/${file}" is not in the repo — run \`node tools/blogclips.mjs --only ${post.id}\``);
+          } else if (statSync(path).size > CLIP_BUDGET) {
+            warn(where, `"clips/${file}" is ${mb(statSync(path).size)}, which is heavier than a clip should be`);
+          }
+        }
+      }
     }
 
     /* The three things a post says, and they agree on their languages: a
@@ -1031,6 +1078,30 @@ if (blog !== null && !Array.isArray(blog)) {
       }
     }
   });
+}
+
+/* The other way round: a picture in clips/ that no post names, and a scene
+   that no post is. Neither fails — a scene can be written before the post it
+   illustrates — but both are worth saying, because a clip nobody draws is
+   bytes being served to nobody. */
+if (existsSync(CLIPS_DIR)) {
+  for (const entry of readdirSync(CLIPS_DIR)) {
+    if (entry === 'scenes' || entry === 'README.md') continue;
+    if (!usedClipFiles.has(entry)) {
+      warn('clips/', `"${entry}" is not named by any post in data/blog.json`);
+    }
+  }
+
+  const scenes = join(CLIPS_DIR, 'scenes');
+  if (existsSync(scenes)) {
+    for (const entry of readdirSync(scenes)) {
+      if (!entry.endsWith('.html')) continue;
+      const id = entry.replace(/\.html$/, '');
+      if (!seenPosts.has(id)) {
+        warn('clips/scenes/', `"${entry}" is a scene for no post in data/blog.json`);
+      }
+    }
+  }
 }
 
 /* --------------------------------------------------------------- places.json

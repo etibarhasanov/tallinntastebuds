@@ -5,6 +5,7 @@
     "/assets/*",
     "/photos/*",
     "/stories/*",
+    "/clips/*",
     "/data/*",
     "/favicon.ico"
   ]
