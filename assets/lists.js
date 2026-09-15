@@ -448,13 +448,6 @@
      gesture said about the other kind of object this site has: keep this. A
      kept list fills; an unkept one is the outline. */
   var ICON_KEEP = '<path d="M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z"/>';
-  /* Every list opens on the map, which is where places belong: the whole list
-     as pins, in the order its owner put them in. One href, built in one
-     place, so the two index sections and both list heads cannot drift.
-
-     ?list= rather than a path of its own. The map is one page and the map's
-     doors are query parameters — ?spot=, ?type=, ?story=, ?account= — and
-     this is another door onto the same map rather than a second map. */
   /* A list's own pin, drawn small, in front of its title.
    *
    * It is the same glyph in the same tone its places wear on the map, which
@@ -474,6 +467,13 @@
     );
   }
 
+  /* Every list opens on the map, which is where places belong: the whole list
+     as pins, in the order its owner put them in. One href, built in one
+     place, so the two index sections and both list heads cannot drift.
+
+     ?list= rather than a path of its own. The map is one page and the map's
+     doors are query parameters — ?spot=, ?type=, ?story=, ?account= — and
+     this is another door onto the same map rather than a second map. */
   function mapHref(id) {
     return '/?list=' + encodeURIComponent(id);
   }
@@ -1480,13 +1480,41 @@
      room back: a phone had to choose between the list's name and the door,
      and dropped the name.
 
-     The whole bar is the target, not the length of the word. That is the
-     part of "a list of choices is rows" that matters on a phone, and it is
-     worth as much for one row as for six. */
+     IT IS THE PAGE'S ONE FILLED ACTION
+
+     It was an .alt for a while — twelve mono pixels in --muted, underlined,
+     centred on a band the colour of the page behind it — and then a
+     .menu-row, a name in the display face with a chevron on the end. Neither
+     looked like a thing you press, which is what somebody reading a list on a
+     phone said about both of them in turn. A row is the right shape for a
+     door standing among other rows on a page of cards, which is where
+     /account.html draws this same destination; it is the wrong shape for the
+     one thing in a bar, where there is nothing beside it to be a row of.
+
+     So it is .go: the filled pill in the accent, which is what "press this"
+     looks like everywhere else on this site. Rule 5 allows exactly one of
+     them per surface and somebody else's list has always spent none — the
+     keep is an .alt in a hairline pill, Share is an .alt, and the head card
+     spends no accent at all, see listHead(). The one thing you can do next
+     from a list you are reading is go and read the others, so that is what
+     the accent buys.
+
+     Sized to the words and centred, the way every other .go on the site is,
+     rather than stretched across the bar: a full-width fill is a shape
+     nothing else here wears, and a 44px pill is a target a thumb cannot miss
+     either way. The band under it carries the safe inset, so the pill sits
+     above a home indicator rather than under one.
+
+     Without the line that says why: t('listsAllWhy') is under the name on
+     /account.html, where it is a row among cards and the line is what says
+     which page is behind it. Two lines of mono in a bar that never leaves the
+     screen took the dock past a tenth of a phone, off a list it is meant to
+     sit under rather than compete with, and a filled button does not need a
+     footnote. */
   function listDock() {
     return el('div', { className: 'lists-dock' }, [
       TTBTrack.click(el('a', {
-        className: 'alt lists-dock-out',
+        className: 'go lists-dock-out',
         href: ALL_PATH,
         textContent: t('listsAllTitle')
       }), 'lists_all')

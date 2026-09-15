@@ -17,8 +17,9 @@
  * through: this repository already has a directory, at /google, and it is a
  * directory of restaurants. Two things under one word in one codebase is one
  * of them being read as the other at three in the morning. The page the query
- * feeds is called Public lists — the name is about what is on it, this file is
- * about the order it comes back in, and those are two different sentences.
+ * feeds is called Everybody's lists — the name is about whose they are, this
+ * file is about the order they come back in, and those are two different
+ * sentences.
  * Three orders now, and the keep count is still the one the page opens on;
  * the other two are the ways past the top of it — see SORTS.
  */
