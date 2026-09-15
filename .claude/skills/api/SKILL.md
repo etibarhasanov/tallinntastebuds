@@ -165,7 +165,12 @@ sheet's, the rename step's and the one behind Continue with Google — and on
 copy. Change one, change the other, and the README's table under **The
 caps**.
 
-<<<<<<< HEAD
+`MAX_ITEMS` is the one of them with a third reader: `tools/validate.mjs`
+imports it from `lists.js` — the only thing in `tools/` that imports a route —
+and fails on a generated list in `db/type-lists.sql` longer than it. That is
+not a copy and needs no moving, but it does mean a lowered `MAX_ITEMS` fails
+CI rather than going quiet. Casual/Solo is 45 of the 50.
+
 **And so does the pin table.** `PIN_GLYPHS` and `PIN_TONES` in
 `functions/api/_pins.js` are the ids a list may store; `GLYPHS` and `TONES` in
 `assets/pins.js` are the same ids plus the emoji each draws. Neither file can
@@ -174,13 +179,6 @@ story clock has. `node tools/validate.mjs` fails the build when they drift, so
 this one is enforced rather than remembered. `mark` is in neither, on purpose:
 the mouth goes on a place I have eaten at and a picker must not be able to
 hand it out. **The pins** in `README.md`.
-=======
-`MAX_ITEMS` is the one of them with a third reader: `tools/validate.mjs`
-imports it from `lists.js` — the only thing in `tools/` that imports a route —
-and fails on a generated list in `db/type-lists.sql` longer than it. That is
-not a copy and needs no moving, but it does mean a lowered `MAX_ITEMS` fails
-CI rather than going quiet. Casual/Solo is 45 of the 50.
->>>>>>> e32b3d7 (Every filter chip is a list, published under the map's own name)
 
 ## The rules of a write
 
