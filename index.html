@@ -16,11 +16,11 @@
 <meta name="theme-color" content="#f7ddd4">
 <meta name="robots" content="index, follow">
 
-<!-- Analytics: Google and Microsoft Clarity, both behind a consent bar.
-     Nothing loads and nothing is written to this device until somebody
-     presses Allow — assets/consent.js holds the choice, the bar and the two
-     snippets, and says why they stopped being separate things. -->
-<script src="assets/consent.js?v=b66f3a9d" defer></script>
+<!-- Analytics: Google and Microsoft Clarity, both from one file rather than
+     two snippets pasted into every head. assets/analytics.js holds the ids and
+     the consentv2 signal Clarity needs, and its head carries the reasoning of
+     the consent bar that stood in front of both of them for a day. -->
+<script src="assets/analytics.js?v=4b79262d" defer></script>
 
 <link rel="canonical" href="https://tallinntastebuds.ee/">
 
@@ -58,7 +58,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=c8fef3bb">
+<link rel="stylesheet" href="assets/styles.css?v=c318d253">
 </head>
 <body>
 
