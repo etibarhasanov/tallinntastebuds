@@ -2263,22 +2263,32 @@
 
   /* ------------------------------------------------------------- one place */
 
-  /* Where a row points. A place on my map goes to its write-up; anything else
-     goes to Google Maps, by coordinates when the catalogue has them and by
-     name when it does not. A place the catalogue has lost since it was added
-     points nowhere at all, and says so. */
+  /* Where a row points, and it is the other half of this page: this same list
+     on the map, standing on the place that was pressed — the pins above,
+     these same rows under them, and the one you asked for lit between the
+     two. `?at=` is the door; standOn() in assets/app.js is what it opens.
+
+     It used to leave the site. A place on my map went to its write-up and
+     everything else opened a new tab on Google Maps, which is most of a top
+     ten — so the ordinary press on the ordinary row was the one that left,
+     from a page whose own switch offers a map with the whole list on it. The
+     switch is in the bar at the top and people read downwards. Google Maps is
+     still a press away, behind Directions and See on Google on the card the
+     map draws. **Pressing a name is the third way across** in README.md is
+     the argument in full.
+
+     The id is the one the list stores, never `mapId` — that is the exception
+     ?spot= has to make, because a write-up is filed under the map's own id.
+     The pin and the row on the map both stand under the id the list was
+     written with, which is what isOnList() in assets/app.js reads.
+
+     A place with nowhere to draw points nowhere at all and says so, which is
+     seatList()'s rule restated: it drops a place it cannot put a pin for, so
+     a link to the map for one would arrive on a map that does not have it. */
   function placeHref(item) {
-    /* `mapId` is set when the row's id is a Google key for a place that is
-       also on my map: the write-up is filed under the map's own id, not
-       Google's. Everything else points at itself. */
-    if (item.map) return '/?spot=' + encodeURIComponent(item.mapId || item.place);
-    if (item.lat !== null && item.lng !== null) {
-      return 'https://www.google.com/maps/search/?api=1&query=' +
-        encodeURIComponent(item.lat + ',' + item.lng);
-    }
-    if (!item.address) return '';
-    return 'https://www.google.com/maps/search/?api=1&query=' +
-      encodeURIComponent(item.name + ' ' + item.address);
+    if (!item.map && (typeof item.lat !== 'number' || typeof item.lng !== 'number')) return '';
+    return '/?list=' + encodeURIComponent(state.list.id) +
+      '&at=' + encodeURIComponent(item.place);
   }
 
   function placeName(item) {
@@ -2286,15 +2296,20 @@
     if (!href) {
       return el('span', { className: 'item-name is-lost', textContent: item.name });
     }
-    var out = { className: 'item-name', href: href };
-    if (!item.map) { out.target = '_blank'; out.rel = 'noopener'; }
-    return TTBTrack.click(el('a', out, [
+    /* No target and no rel: a new tab is what a link that leaves the site is
+       owed, and none of these leave it any more. `map` says which roll the
+       place came off, which is all it can say now that every row goes to the
+       same place — it used to name one of two destinations. */
+    return TTBTrack.click(el('a', { className: 'item-name', href: href }, [
       el('span', { textContent: item.name }),
       el('span', {
         className: 'item-where mono',
         html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_PIN + '</svg>'
       })
-    ]), 'place_link', { place: item.name, map: item.map ? 'mine' : 'google' });
+    ]), 'place_link', {
+      place: item.name,
+      map: item.map ? 'mine' : item.google ? 'google' : 'added'
+    });
   }
 
   /* One of the empty places a new list starts with. It is numbered like a
