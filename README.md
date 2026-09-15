@@ -6091,7 +6091,8 @@ on the device. That is the whole of its job.
 
 Cloudflare Pages is the live host. There is nothing to build, so there is no
 build command and no hosting bill — a static site of this size sits inside the
-free tier permanently, HTTPS included.
+free tier permanently, HTTPS included. Deploying it is the part with a ceiling
+on it; see **The build budget** below.
 
 1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** →
    **Connect to Git**, authorise GitHub and pick `tallinntastebuds`.
@@ -6124,6 +6125,40 @@ each other and produced out-of-order deployments, which the workflow's own
 header warned about, so the workflow went rather than the secrets arriving.
 There is no Cloudflare token anywhere in GitHub, and nothing needs one: a
 push is a deploy, whoever makes it, the hourly story cron's included.
+
+### The build budget
+
+Serving this site is free and stays free: static asset requests are unmetered
+on every Cloudflare plan, so deployments pile up at no cost and none of them is
+ever deleted. What is metered is *making* them. The free plan allows **500
+builds a month**, and Cloudflare counts a deployment as a build whether or not
+there was anything to build — an empty build command spends one exactly as a
+bundler would. Preview and production draw on the same five hundred.
+
+That is easy to walk into here, because the deploy path is a push rather than a
+release. The first three weeks of this repository made 773 deployments across
+191 pull requests: four to a PR, of which one was the merge and the other three
+were the same branch going up again after a validator failure, a review note or
+a rebase. That is thirty-four deploys a day, so the five hundred is gone by
+the middle of the month — and what runs out is not previews, it is deploys.
+The live site stops updating too.
+
+Running out should not produce a bill: the free plan has no overage to charge
+for, so Cloudflare stops building until the month turns over. That is the
+documented behaviour rather than an observed one — this repository has not hit
+the ceiling yet, and the dashboard is the place to confirm it. Either way the
+failure is worse than a bill in one specific way: nothing announces it. The
+site simply stops changing when you push, and the reason is on a screen nobody
+was looking at.
+
+So the fix is not a setting, it is the size of a pull request, and `CLAUDE.md`
+carries it — everything runs locally before the first push, and a branch goes
+up once. [Branch build controls][cf-branches] can switch previews off wholesale
+if it ever comes to that, but the preview URL is what a reviewer opens, so that
+trades away the wrong thing. The other direction is Pro, at $20 a month for
+5,000 builds, which buys room for a habit rather than fixing it.
+
+[cf-branches]: https://developers.cloudflare.com/pages/configuration/branch-build-controls/
 
 ### Caching
 
