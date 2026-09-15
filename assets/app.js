@@ -1337,7 +1337,9 @@
      place while another is already open changes nothing about that height,
      and those moves stay immediate. */
   function sheetKey() {
-    return state.view + '|' + (document.body.classList.contains('sheet-full') ? 'full' : 'low');
+    var cls = document.body.classList;
+    return state.view + '|' +
+      (cls.contains('sheet-peek') ? 'peek' : cls.contains('sheet-full') ? 'full' : 'low');
   }
 
   function refocus(place, zoomIn) {
@@ -4516,6 +4518,23 @@
    * SHEET_DISMISS are the pull it now takes — along with the close button, a
    * tap on the grip and Places in the strip above.
    *
+   * A LIST HAS A THIRD STOP, AND NO EXIT UNDER IT
+   *
+   * That pull is right for a place and for the chat, and for the map's own
+   * list of places: pull any of those away and what is left is the map you
+   * asked for. It is wrong for somebody's list, because a list is a mode —
+   * the map is narrowed to that list's pins, and the sheet is the only thing
+   * on screen that says so. A list pulled off left a map cut down by a list
+   * nobody could see, with no way back short of knowing that Places reopens
+   * it.
+   *
+   * So under the low stop a list has one more: the band, which is its name and
+   * the switch to its own page and nothing else. The pull that would dismiss
+   * any other sheet lands there instead and stops, the map has the rest of the
+   * screen, and the drag back up — or a tap on the grip — brings the list with
+   * it. The close button is still the way out, because a press is a decision
+   * and a drag is not.
+   *
    * The live height is written to --sheet-h rather than to the panel, so the
    * rail that sits above the sheet tracks the drag with it for free.
    */
@@ -4534,22 +4553,46 @@
      little far. */
   var SHEET_DISMISS = 60;
 
-  function safeTop() {
-    var raw = getComputedStyle(document.documentElement).getPropertyValue('--safe-t');
+  /* A breath under the band when the sheet is sitting on it, so the switch is
+     not standing on the bottom edge of the screen. */
+  var PEEK_AIR = 10;
+
+  function safeInset(name) {
+    var raw = getComputedStyle(document.documentElement).getPropertyValue(name);
     var n = parseFloat(raw);
     return isFinite(n) ? n : 0;
   }
 
-  /* The two heights, and they are the stylesheet's own numbers — see the
-     --sheet-h block in assets/styles.css, which has to agree with these or a
-     drag would settle somewhere the CSS then moved it away from. The half
-     stop is one number for all three sheets; only the full one differs, and
-     a place's is taller because the reel at the top of it wants a screen. */
+  /* The stop under the low one, and 0 for every sheet that has no band to sit
+     on. The band is measured rather than written down: the title wraps to a
+     second line on a narrow phone, and a language that spells "List" in nine
+     letters puts the chips on one of their own. The last term is the home
+     indicator's inset, because the sheet's own bottom edge is the screen's. */
+  function peekStop() {
+    return bandIsUp()
+      ? dom.panelBand.offsetHeight + PEEK_AIR + safeInset('--safe-b')
+      : 0;
+  }
+
+  /* The same number handed to the stylesheet, so the stop a drag settles on
+     and the height it is then drawn at cannot drift apart. */
+  function measureBand() {
+    var h = peekStop();
+    if (h) document.body.style.setProperty('--peek-h', h + 'px');
+  }
+
+  /* The heights, and they are the stylesheet's own numbers — see the --sheet-h
+     block in assets/styles.css, which has to agree with these or a drag would
+     settle somewhere the CSS then moved it away from. The half stop is one
+     number for all three sheets; only the full one differs, and a place's is
+     taller because the reel at the top of it wants a screen. `peek` is a list's
+     alone and is 0 everywhere else, which is what the two below read it as. */
   function sheetStops() {
     var h = window.innerHeight;
-    var cap = Math.max(h - SHEET_HEADROOM - safeTop(), 160);
+    var cap = Math.max(h - SHEET_HEADROOM - safeInset('--safe-t'), 160);
     var detail = document.body.classList.contains('panel-detail');
     return {
+      peek: peekStop(),
       low: Math.min(h * .50, 470, cap),
       high: detail ? Math.min(h * .88, 780, cap) : Math.min(h * .82, 720, cap)
     };
@@ -4557,24 +4600,48 @@
 
   /* Where the sheet sits while a finger is holding it there. Above the high
      stop it does not move at all; below the low one it gives way slowly, so
-     the gesture has somewhere to travel without the sheet leaving. */
+     the gesture has somewhere to travel without the sheet leaving — and a
+     list stops dead on its band instead, because there is nothing under that
+     for the gesture to be travelling towards. */
   function sheetHeightAt(px, stops) {
     if (px >= stops.low) return Math.min(px, stops.high);
+    if (stops.peek) return Math.max(px, stops.peek);
     return stops.low - Math.min((stops.low - px) / 3, SHEET_PULL);
   }
 
-  /* And what letting go there means. */
+  /* And what letting go there means. A sheet with a band under it is never
+     let go into closing; the pull that would dismiss any other one settles on
+     the band, and the close button is the way out. */
   function sheetClosing(height, stops) {
-    return height < stops.low - SHEET_DISMISS;
+    return !stops.peek && height < stops.low - SHEET_DISMISS;
+  }
+
+  /* Where a gesture leaves the sheet, which is the same decision for the grip
+     and for a swipe — they ask this rather than each reaching their own
+     conclusion about the same drag. */
+  function settleSheet(height, stops) {
+    if (sheetClosing(height, stops)) { closePanel(); return; }
+    if (stops.peek && height < (stops.peek + stops.low) / 2) { sheetPeek(); return; }
+    sheetSnap(height > (stops.low + stops.high) / 2);
   }
 
   function sheetSnap(full) {
+    document.body.classList.remove('sheet-peek');
     document.body.classList.toggle('sheet-full', !!full);
     if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', String(!!full));
     if (state.selected && state.view === 'detail') {
       var place = byId(state.selected);
       if (place) refocus(place, false);
     }
+  }
+
+  /* Sitting on the band, which only a list can do. The other side of
+     sheetSnap(): that puts the sheet at one of the two heights the stylesheet
+     draws, this puts it under both of them. */
+  function sheetPeek() {
+    document.body.classList.remove('sheet-full');
+    document.body.classList.add('sheet-peek');
+    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', 'false');
   }
 
   function setSheetHeight(px) {
@@ -4597,6 +4664,7 @@
      hold the new sheet at whatever height the last gesture left. */
   function openSheetAt(full) {
     full = !!full && isNarrow();
+    document.body.classList.remove('sheet-peek');
     document.body.classList.toggle('sheet-full', full);
     if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', String(full));
     releaseSheetHeight();
@@ -4642,11 +4710,14 @@
       releaseSheetHeight();
 
       if (!moved) { toggle(); return; }
-      if (sheetClosing(height, stops)) { closePanel(); return; }
-      sheetSnap(height > (stops.low + stops.high) / 2);
+      settleSheet(height, stops);
     }
 
+    /* A tap swaps the two heights, and from the band it means the one thing a
+       tap there can mean: give the list back. It goes to the full stop rather
+       than the half one because that is where the list was before the drag. */
     function toggle() {
+      if (document.body.classList.contains('sheet-peek')) { sheetSnap(true); return; }
       sheetSnap(!document.body.classList.contains('sheet-full'));
     }
 
@@ -4743,9 +4814,7 @@
       active = false;
       dom.panel.classList.remove('is-dragging');
       releaseSheetHeight();
-
-      if (sheetClosing(height, stops)) { closePanel(); return; }
-      sheetSnap(height > (stops.low + stops.high) / 2);
+      settleSheet(height, stops);
     }
 
     scroll.addEventListener('touchend', release);
@@ -4911,7 +4980,7 @@
     }
     dom.panel.classList.remove('is-open');
     dom.panel.setAttribute('inert', '');
-    document.body.classList.remove('panel-open', 'sheet-full');
+    document.body.classList.remove('panel-open', 'sheet-full', 'sheet-peek');
     if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', 'false');
     releaseSheetHeight();
     lastSheetKey = null;
@@ -5009,14 +5078,44 @@
     syncUrl();
     dom.panelScroll.scrollTop = 0;
     if (focus) {
-      var heading = dom.list.querySelector('#panel-list-title');
+      /* The band, when a list is the mode; the first group heading in the body
+         when it is not. Whichever of the two is carrying the panel's name. */
+      var heading = dom.panel.querySelector('#panel-list-title');
       if (heading) heading.focus();
     }
+  }
+
+  /* Whether the panel is wearing a list's name above its scroll — which is
+     every time a list is the map's mode and the panel is showing the list
+     rather than one place or the chat. Two things read it that would otherwise
+     each have to work it out again: who carries #panel-list-title, and whether
+     the sheet has a stop under its low one. */
+  function bandIsUp() {
+    return !!state.list && state.view === 'list';
+  }
+
+  function renderBand() {
+    var up = bandIsUp();
+    clear(dom.panelBand);
+    /* The attribute is the state: the stylesheet reads it off the band itself
+       rather than off a class on the body, so there is nothing to keep in
+       step with it. */
+    dom.panelBand.hidden = !up;
+    if (!up) {
+      /* Nothing to sit on, so nothing is sitting on it. The class only: what
+         the grip says about itself belongs to whichever view is opening, and
+         openSheetAt() says it for all four. */
+      document.body.classList.remove('sheet-peek');
+      return;
+    }
+    dom.panelBand.appendChild(listBand());
+    measureBand();
   }
 
   function renderPanel() {
     document.body.classList.toggle('panel-detail', state.view === 'detail' && !!state.selected);
     paintSave();
+    renderBand();
     var detail = state.view === 'detail' && state.selected;
     var asking = state.view === 'ask';
     /* The scroller lays the chat out as a column so the field can hold the
@@ -6045,15 +6144,21 @@
       places.sort(function (a, b) { return collator.compare(a.name, b.name); });
     }
 
+    /* Who carries #panel-list-title, which labels the panel and takes the
+       focus when the list opens. The band above the scroll has it whenever it
+       is up; without one it falls to the first heading in the body, whichever
+       that turns out to be. */
+    var titled = bandIsUp();
+
     if (!places.length) {
-      /* The note is the heading here. Something has to carry the panel's
-         label and take focus when the list opens, and with no groups on
-         screen this line is the only thing left that says what you are
-         looking at. */
+      /* With no band up the note is the heading: something has to carry the
+         panel's label and take focus when the list opens, and with no groups
+         on screen this line is the only thing left that says what you are
+         looking at. Under a band it is a note again, and says so. */
       dom.listBody.appendChild(el('h2', {
         className: 'empty-note',
-        id: 'panel-list-title',
-        tabIndex: -1,
+        id: titled ? null : 'panel-list-title',
+        tabIndex: titled ? null : -1,
         textContent: words.length ? t('searchNone', { q: state.q.trim() }) : t('noResults')
       }));
       return;
@@ -6070,7 +6175,7 @@
        looking at yet. Whichever group you are actually reading now says its
        own name, at the size the panel used to spend on a heading that was
        true of the scroll as a whole and of nothing on screen. */
-    var first = true;
+    var first = !titled;
     function section(labelKey, rows, className) {
       var name = t(labelKey);
       var count = rows.length === 1 ? t('listCountOne') : t('listCount', { n: rows.length });
@@ -6091,7 +6196,9 @@
       }
       dom.listBody.appendChild(head);
       var ul = el('ul', { className: 'place-list' + (className ? ' ' + className : '') });
-      rows.forEach(function (place) { ul.appendChild(listRow(place, reading ? listSay(place.id) : '')); });
+      /* No sentences here: they belong to the list, which is drawn in its own
+         branch below and never through a group of the site's. */
+      rows.forEach(function (place) { ul.appendChild(listRow(place)); });
       dom.listBody.appendChild(ul);
     }
 
@@ -6115,12 +6222,14 @@
     var everything = !words.length && !state.active.length;
 
     /* A list is named as itself, by its owner's title, with their name under
-       it. It is the one group in this panel whose heading is not a string out
-       of data/ui.json, because it is not the site talking. */
+       it. Its name is the band above the scroll rather than a group heading
+       here, so what the body opens with is what the list says about itself:
+       the one block in this panel whose words are not a string out of
+       data/ui.json, because it is not the site talking. */
     if (reading) {
-      listCredit(places.length).forEach(function (node) { dom.listBody.appendChild(node); });
+      dom.listBody.appendChild(listCredit(places.length));
       var ul = el('ul', { className: 'place-list is-list' });
-      places.forEach(function (place) { ul.appendChild(listRow(place, reading ? listSay(place.id) : '')); });
+      places.forEach(function (place) { ul.appendChild(listRow(place, listSay(place.id))); });
       dom.listBody.appendChild(ul);
       return;
     }
@@ -6136,25 +6245,44 @@
      every cap is restated: the two pages share no module. */
   var GOOGLE_BY = 'google-statistics';
 
-  /* The heading over somebody else's list: their title, the switch between
-     this map and the list's own page, their byline and how many places are on
-     it, the two things you can do about it — keep it, send it on — and, under
-     them, the way out.
+  /* The byline's phrase and the name in it, with the one swap byline() in
+     assets/lists.js makes: the account Google's numbers write under reads as
+     the product, because nobody knows it by its username. Read twice — once
+     for the band's label, once for the line printed under it — so it is
+     worked out once. */
+  function listBy() {
+    var google = state.list.by === GOOGLE_BY;
+    var name = google ? 'Google Maps' : state.list.by;
+    return {
+      name: name,
+      words: state.list.by ? t(google ? 'listsByGoogle' : 'listsBy').split('{name}') : null
+    };
+  }
 
+  /* The band across the top of the panel while a list is the map's mode:
+     the list's title, and the switch between this map and the list's own page.
      It takes the focus and labels the panel, the way the first group heading
-     normally does, because in this state it is the first group heading.
+     normally does.
 
-     TWO NODES, BECAUSE THE BAND HAS TO STICK
+     ABOVE THE SCROLL, NOT IN IT
 
-     The band is a sibling of the block under it rather than the first thing
-     inside it, and that is the whole reason this returns a pair. A sticky
-     element only travels as far as its own containing block, so while the
-     heading sat inside .list-credit it stuck to a box a few hundred pixels
-     tall and was gone by the second place on the list — the one group heading
-     on the panel that did not do what the rule says group headings do. As a
-     direct child of the list body it is exactly what every other group
-     heading is, and it holds the top of the panel for the whole scroll,
-     which is what the switch below needs to be worth having.
+     It used to be the first group heading in the list body, sticking to the
+     top of the panel on the way past. Sticky was close enough while the list
+     was the only thing you could be reading: it was not the panel's header, it
+     was a heading that behaved like one, and it stopped behaving like one the
+     moment anything was typed into the search — which drops out of the reading
+     state and takes this heading with it, leaving a panel that no longer said
+     which list it was narrowing.
+
+     So it is a sibling of the scroller now, in the markup in index.html, drawn
+     here into #panel-band. It is true of the panel rather than of anything in
+     it: it says which list the map is showing, and that stays true while you
+     search inside the list, while you press a chip, and — because it does not
+     depend on the scroll being at the top — at the stop under the low one that
+     only a list has, where it is all there is. sheetStops() is that half.
+
+     The search moved under it, which is the arrangement every phone already
+     knows: what you are looking at on top, the field for narrowing it beneath.
 
      THE SWITCH IS THE SAME CONTROL THE LIST'S OWN PAGE DRAWS
 
@@ -6162,34 +6290,27 @@
      button pointing at the other, at the top of something that scrolls: ten
      places down, neither was on screen. The two are one control now — a
      chip each, the view you are in filled the way a pressed chip is filled —
-     and it rides the band that already sticks to the top of the panel, so it
-     is there for the whole of the scroll. listBar() in assets/lists.js is the
-     same control on the other side, built out of that page's own pieces
-     because the two share no module.
+     and it rides a band that never scrolls at all. listBar() in
+     assets/lists.js is the same control on the other side, built out of that
+     page's own pieces because the two share no module.
 
      It is a link and not a button, so the list's page is an address somebody
      can open in a tab or send; `aria-current` and not `aria-pressed`, because
      what the filled half says is "this view", not "this is switched on". It
      reports `list_page`, which is the name the pill it replaces reported.
 
-     The count came off this line to make room and sits with the byline, which
-     is the other line of facts about the list rather than about a place on
-     it. */
-  function listCredit(n) {
-    var count = n === 1 ? t('listCountOne') : t('listCount', { n: n });
-    /* The byline's phrase and the name in it, with the one swap byline() in
-       assets/lists.js makes: the account Google's numbers write under reads
-       as the product, because nobody knows it by its username. */
-    var google = state.list.by === GOOGLE_BY;
-    var byName = google ? 'Google Maps' : state.list.by;
-    var words = state.list.by ? t(google ? 'listsByGoogle' : 'listsBy').split('{name}') : null;
-    var by = words ? words.join(byName) : '';
-
-    var band = el('h2', {
+     The count is not on this line. It sits with the byline, which is the other
+     line of facts about the list rather than about a place on it — and it
+     counts the rows on screen, which the band has no business claiming while a
+     search is narrowing them. */
+  function listBand() {
+    var by = listBy();
+    var said = by.words ? by.words.join(by.name) : '';
+    return el('h2', {
       className: 'list-label is-credit',
       id: 'panel-list-title',
       tabIndex: -1,
-      'aria-label': state.list.title + (by ? ', ' + by : '') + ', ' + count
+      'aria-label': state.list.title + (said ? ', ' + said : '')
     }, [
       el('span', { className: 'list-group', textContent: state.list.title }),
       el('span', { className: 'list-views' }, [
@@ -6201,8 +6322,21 @@
         }), 'list_page', { list_id: state.list.id })
       ])
     ]);
+  }
 
-    return [band, el('div', { className: 'list-credit' }, [
+  /* What the list says about itself, under the search and over its places:
+     the byline and how many places are on it, the two things you can do about
+     it — keep it, send it on — and, under them, the way out.
+
+     Only while the list is what is on screen. A search or a chip makes this a
+     slice of the map that happens to be cut out of a list, and somebody else's
+     name over a handful of rows they did not choose is a claim about the wrong
+     thing; the band above says which list is being sliced. */
+  function listCredit(n) {
+    var count = n === 1 ? t('listCountOne') : t('listCount', { n: n });
+    var by = listBy();
+
+    return el('div', { className: 'list-credit' }, [
       /* The byline and the count, which are the two facts about the list
          itself. The name in the byline is the way through to the rest of what
          its owner has published — the same door the list's own page puts
@@ -6210,14 +6344,14 @@
          words around it are not, and the translated phrase is cut at its
          placeholder rather than assembled. byline() in assets/lists.js says
          why. */
-      el('span', { className: 'list-credit-by eyebrow' }, words
+      el('span', { className: 'list-credit-by eyebrow' }, by.words
         ? [
-            words[0],
+            by.words[0],
             TTBTrack.click(el('a', {
               href: '/u/' + encodeURIComponent(state.list.by),
-              textContent: byName
+              textContent: by.name
             }), 'profile_open', { name: state.list.by }),
-            words[1] + ' \u00b7 ' + count
+            by.words[1] + ' \u00b7 ' + count
           ]
         : [count]),
       state.list.intro
@@ -6232,7 +6366,7 @@
         shareButton(state.list)
       ]),
       leaveButton()
-    ])];
+    ]);
   }
 
   /* The way back to the whole map, which is the one thing in this block that
@@ -7706,6 +7840,10 @@
       if (map) map.invalidateSize({ animate: false });
       syncFilterMenuToWidth();
       updateFilterFades();
+      /* A turned phone is a different width, and a band whose title wrapped at
+         the old one is a different height. The stop under the low one is that
+         height. */
+      measureBand();
     });
   }
 
@@ -7933,6 +8071,7 @@
       btnRandom: $('btn-random'),
       btnAsk: $('btn-ask'),
       panel: $('panel'),
+      panelBand: $('panel-band'),
       panelScroll: $('panel-scroll'),
       panelClose: $('panel-close'),
       panelSave: $('panel-save'),

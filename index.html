@@ -58,7 +58,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=f0da36a7">
+<link rel="stylesheet" href="assets/styles.css?v=cef9f1c9">
 </head>
 <body>
 
@@ -223,6 +223,17 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
     <span class="save-n" id="panel-save-n" aria-hidden="true"></span>
   </button>
+  <!-- Which list the map is showing, and the switch to its own page. Empty and
+       hidden on the map's own list of places; filled by renderBand() in
+       assets/app.js the moment a list becomes the map's mode.
+
+       Above the scroll rather than inside it, which is the whole of why it is
+       here in the markup instead of being built with the rows. It is the one
+       thing on this panel that is true of the panel rather than of anything in
+       it, so it holds the top of the sheet without depending on where the
+       scroll happens to be — and that is what lets a list have a stop under
+       the low one to sit at. -->
+  <div class="panel-band" id="panel-band" hidden></div>
   <div class="panel-scroll" id="panel-scroll">
     <article id="panel-detail" hidden></article>
     <!-- The chat. It reads top to bottom the way a conversation does: the
@@ -479,6 +490,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=ee4dcee9" defer></script>
+<script src="assets/app.js?v=11c3d157" defer></script>
 </body>
 </html>
