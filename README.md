@@ -6772,7 +6772,7 @@ tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
 tools/storymedia.mjs       makes every story video an H.264 MP4 a browser will play
 tools/qrperf.mjs           checks the QR encoder still draws the same code, and times it
-.github/workflows/validate.yml     the validator and the QR check, on every push
+.github/workflows/validate.yml     the validator, the QR check and the write gate, on every push
 .github/workflows/stories.yml      the hourly tick, and the tidying up after it
 .github/workflows/story-media.yml  converts a video posted from a phone
 .github/workflows/deploy.yml       GitHub Pages, manual only — NOT the live host
