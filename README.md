@@ -3311,7 +3311,7 @@ Thirty-two of them carry one more, **On the map**, which is the door to a
 write-up: those are the places that are on `data/restaurants.json` as well, and
 on this page that is the rarest and most interesting thing a row can say.
 
-The sixty-six places Google calls temporarily closed are in the list and
+The sixty-five places Google calls temporarily closed are in the list and
 marked, never dropped and never first. A directory that quietly omitted them
 would have somebody walking to one to find out.
 

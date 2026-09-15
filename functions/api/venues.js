@@ -248,7 +248,7 @@ function entry(row) {
   if (row.map_id) out.mapId = row.map_id;
   /* Kept in the answer rather than filtered out of it, unlike /api/places,
      which is a picker and should not offer somewhere shut. A directory that
-     silently omitted the sixty-six places Google says are temporarily closed
+     silently omitted the sixty-five places Google says are temporarily closed
      would have somebody walking to one to find out. */
   if (row.status === 'Temporarily closed') out.closed = true;
 
