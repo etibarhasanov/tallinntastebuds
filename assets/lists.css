@@ -1103,6 +1103,36 @@
 /* Your own rows carry three buttons in a third column. */
 .item.is-mine { grid-template-columns: 28px 1fr auto; }
 
+/* A row on a list you are reading, which is a door onto the map — and the door
+   is the whole row rather than the name across the top of it. Design rule 8:
+   the target is the card, not the width of the word, which on a phone is the
+   difference between a thumb landing on a place and a thumb landing in the
+   gap under its name.
+
+   Built the way the directory's cards are: the row is a plain box, the name is
+   the link, and .lists-open fills this box behind everything in it. That keeps
+   the name of the link the name of the place, rather than the street and
+   Google's score and whatever its owner said about it read out in one breath —
+   and it is why this needs position: relative, since .lists-open fills the
+   nearest positioned ancestor and a grid row is not one. The focus ring comes
+   with it and goes round the whole row, which is what opens.
+
+   The border tints on hover, the way .lists-index-card's does, so the row says
+   it is one press before anybody presses it. The name and its pin tint with it
+   for nothing: a pseudo-element is part of the element it hangs off, so a
+   pointer anywhere over the sheet is a pointer on the link, and a.item-name's
+   own hover rules below were already waiting for it.
+
+   What it costs is dragging over the note to copy it: a sheet across the row
+   is a sheet across the sentence somebody wrote about the place. That is the
+   trade the directory already takes for .lists-all-taste, and a list is read
+   far more often than it is quoted.
+
+   Not on .item.is-mine and not on .item.is-slot: the editor's rows hold a
+   textarea and two buttons, and a slot is a shape rather than a place. */
+.item.is-door { position: relative; }
+.item.is-door:hover { border-color: var(--accent); }
+
 /* A place this list does not have yet. Dashed rather than solid, because it
    is the shape of a row and not a row, and it carries the number it would
    take so three of them read as the list that is being started. */

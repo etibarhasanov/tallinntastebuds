@@ -5096,14 +5096,16 @@
   }
 
   /* Arriving from a row on a list's own page — `?list=<id>&at=<place>`, which
-     placeHref() in assets/lists.js builds for every name on that page.
+     placeHref() in assets/lists.js builds for every row on that page, and
+     which .lists-open stretches across the whole of the row rather than the
+     name along the top of it.
 
      A list is one thing with two views and this is the step between them. The
      switch in the bar has said so for as long as there has been one, and it
      sits at the top of a page people read down: somebody eight places into a
-     top ten presses the name, not the chip above it. So the name is the step
-     across, and it lands on the arrangement the switch was pointing at — the
-     pins, the same rows under them, and the place that was pressed lit
+     top ten presses the eighth place, not the chip above it. So the row is the
+     step across, and it lands on the arrangement the switch was pointing at —
+     the pins, the same rows under them, and the place that was pressed lit
      between the two.
 
      Two things separate this from every other way the list opens, and both
