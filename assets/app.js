@@ -975,11 +975,13 @@
     };
   }
 
-  /* Chosen is the place whose panel is open; kept is the place whose panel
-     was open until you shut it. Both are lit — bigger, named, haloed, never
-     folded into a cluster — because both answer the same question about where
-     something is. Kept is drawn a step down from chosen, so the map still
-     says which of the two you are in. */
+  /* Chosen is the place whose panel is open; kept is the place the map is
+     still holding lit without one — the one whose panel was open until you
+     shut it, or the one a row on a list's own page sent you here standing on,
+     see standOn(). Both are lit — bigger, named, haloed, never folded into a
+     cluster — because both answer the same question about where something is.
+     Kept is drawn a step down from chosen, so the map still says which of the
+     two you are in. */
   function isChosen(place) { return !!place && place.id === state.selected; }
   function isKept(place) {
     return !!place && !!state.marked && place.id === state.marked && place.id !== state.selected;
@@ -5106,7 +5108,7 @@
     TTBTrack.view(place.name);
   }
 
-  function showList(focus) {
+  function showList(focus, opts) {
     if (!state.lastFocus) state.lastFocus = document.activeElement;
     /* Asking for the list is asking for the map: the same door out of an
        answer that a chip is. The thread keeps what was asked. */
@@ -5117,8 +5119,12 @@
     openPanel();
     /* At the full stop on a phone, the way a place and the chat open: asking
        for the list is asking for the names, and the half stop is what the
-       grip and a swipe are for once you have them. */
-    openSheetAt(true);
+       grip and a swipe are for once you have them.
+
+       `half` is the one arrival that wants the other stop: a row pressed on a
+       list's own page, which asked where that one place is rather than for
+       the names it already had in front of it. See standOn(). */
+    openSheetAt(!(opts && opts.half));
     paintMarkers();
     syncUrl();
     dom.panelScroll.scrollTop = 0;
@@ -5127,6 +5133,67 @@
          when it is not. Whichever of the two is carrying the panel's name. */
       var heading = dom.panel.querySelector('#panel-list-title');
       if (heading) heading.focus();
+    }
+  }
+
+  /* Arriving from a row on a list's own page — `?list=<id>&at=<place>`, which
+     placeHref() in assets/lists.js builds for every name on that page.
+
+     A list is one thing with two views and this is the step between them. The
+     switch in the bar has said so for as long as there has been one, and it
+     sits at the top of a page people read down: somebody eight places into a
+     top ten presses the name, not the chip above it. So the name is the step
+     across, and it lands on the arrangement the switch was pointing at — the
+     pins, the same rows under them, and the place that was pressed lit
+     between the two.
+
+     Two things separate this from every other way the list opens, and both
+     are because of what the press meant. The sheet stops at half: every other
+     arrival was asked for by somebody who wanted the names, and this one by
+     somebody who had them in front of them, so what it hands back is the map.
+     And the frame is the list's rather than the place's — focusOn() is told
+     not to zoom, so the map keeps the fit that holds all of these pins and
+     only centres on this one. Going in to FOCUS_ZOOM would leave a single pin
+     on a street, which is what ?spot= is for and the opposite of what
+     somebody who has not yet noticed the map needs to see. The write-up is
+     one press further, on the row or on the pin, and that press zooms. */
+  function standOn(place) {
+    /* Lit, named and haloed, the way the place you last had open is: nothing
+       is open here, so this is the mark rather than the selection. */
+    state.marked = place.id;
+    showList(false, { half: true });
+    fitToPins({ clearPanel: true });
+    focusOn(place, false);
+    showRow(place.id);
+  }
+
+  /* The breath over a row that was scrolled to, so it arrives sitting in its
+     list rather than jammed against whatever is stuck above it. */
+  var ROW_AIR = 12;
+
+  /* Put one row where it can be seen. A list runs to fifty places and a sheet
+     at half height shows four of them, so the row the map is standing on is
+     scrolled to rather than left to be scrolled for.
+
+     Measured against the scroller rather than left to scrollIntoView(), which
+     also scrolls whatever else it decides is scrollable on the way up — and
+     what is over this one is a sheet fixed to the bottom of the window.
+
+     The search field is stuck to the top of that scroller, so the top of it is
+     not the top of what can be seen: a row scrolled to its own offset lands
+     behind the field. That height is measured rather than written down here,
+     the way the band's is — `--search-h` is the stylesheet's name for the same
+     number, and it is what the group headings stick under. */
+  function showRow(id) {
+    var scroll = dom.panelScroll;
+    var stuck = dom.list.querySelector('.search');
+    var rows = dom.listBody.querySelectorAll('.list-row');
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].getAttribute('data-id') !== id) continue;
+      var top = rows[i].getBoundingClientRect().top -
+                scroll.getBoundingClientRect().top + scroll.scrollTop;
+      scroll.scrollTop = Math.max(top - (stuck ? stuck.offsetHeight : 0) - ROW_AIR, 0);
+      return;
     }
   }
 
@@ -6031,14 +6098,19 @@
     var deal = liveDealFor(place);
     var offer = deal ? window.TTBPass.offerText(deal, state.lang) : '';
 
-    /* The list says the same thing the map now says: this is the one you
-       were just reading. It is where you come back to, so it is worth being
-       findable in a list of seventy. */
+    /* The list says the same thing the map now says: this is the one. The
+       place you were just reading, or the one a list's own page sent you here
+       standing on — see standOn(). Either way it is what the map is lit on
+       and where you come back to, so it is worth being findable in a list of
+       seventy. */
     var kept = isKept(place);
 
     var row = el('button', {
       type: 'button',
       className: 'list-row' + (place.closed ? ' is-closed' : '') + (kept ? ' is-kept' : ''),
+      /* What showRow() finds a row by. Both row shapes carry it, because
+         either of them can be the one a list's page sent somebody to. */
+      'data-id': place.id,
       /* Which is a mark on the list as well as a word in the row's label:
          aria-current is the one announcement for "the one you are on" that
          needs no wording of its own in five languages. */
@@ -6113,10 +6185,17 @@
     var kinds = (place.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
     var described = !!place.google && !!(kinds || place.price || place.rating);
     var distance = far ? el('span', { className: 'list-far', textContent: far }) : null;
+    /* The same mark a row of mine takes, for the same reason and out of the
+       same question — which of these is the one the map is lit on. Most of a
+       list is stand-ins, so without it the lit pin has a row nothing points
+       at on the half of the site where that happens most. */
+    var kept = isKept(place);
 
     var row = el('button', {
       type: 'button',
-      className: 'list-row' + (described ? '' : ' is-from-list'),
+      className: 'list-row' + (described ? '' : ' is-from-list') + (kept ? ' is-kept' : ''),
+      'data-id': place.id,
+      'aria-current': kept ? 'true' : null,
       'aria-label': t('openPlace', { name: place.name }) + ', ' + standInNote() +
         (place.rating ? ', ' + t('googleSays') + ' ' + scoreMark(place).textContent : '') +
         (far ? ', ' + far : '')
@@ -7637,6 +7716,12 @@
     params.delete('story');
     params.delete('account');
     params.delete('then');
+    /* And ?at= with them: it names the place a list's own row was pressed on,
+       which is a thing that happens once on the way in. What the page is
+       showing afterwards is ?list=, the same as arriving on the list any
+       other way — and a link copied out of it should be that rather than one
+       that reopens somebody else's eighth choice. See standOn(). */
+    params.delete('at');
     /* ?saved= is one of those doors too: the account page opens the map on
        your own marks with it, and a link copied afterwards is a link to the
        map, not to a filter nobody else can answer. */
@@ -8400,8 +8485,19 @@
          somewhere to go Back to: the map, standing on that place. */
       var params = new URLSearchParams(window.location.search);
       var spot = params.get('spot');
+      /* And the place a row on the list's own page was pressed on. Asked of
+         the list rather than of the map, because it has to be a place this
+         list actually has a pin for — seatList() drops the ones it cannot
+         draw, and a hand-typed ?at= for anything else would light a pin that
+         is not on the screen. syncUrl() below takes it off the address bar. */
+      var at = params.get('at') || '';
+      var stand = isOnList(at) ? byId(at) : null;
       syncUrl();
       if (spot && byId(spot)) selectPlace(spot, { fly: true });
+
+      /* The list, standing on one of its places: the map above, the list
+         under it, and that place lit between the two. See standOn(). */
+      else if (stand) standOn(stand);
 
       /* Arriving on a list opens the panel on it. The pins answer "where are
          these"; the panel answers "why these" — the sentence its owner wrote

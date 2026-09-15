@@ -4505,6 +4505,58 @@ toast: somebody who followed a dead link gets the thing this site is, which is
 better than an error about a list they have never seen. `/list/<id>` is the
 page that is about one list, so that is the page that reports a missing one.
 
+### Pressing a name is the third way across
+
+The switch sits at the top of a page people read down. Somebody eight places
+into a top ten presses the name of the eighth place, not a chip they scrolled
+past twenty rows ago — which is why the map kept being the half of a list
+nobody had noticed was there.
+
+So a name is a door too, and it goes to `/?list=<id>&at=<place>`: this same
+list on the map, the sheet at its half stop on a phone rather than open full,
+and the place that was pressed lit, named and haloed between the two. The pins
+above, the list's own rows under them scrolled to that row and marking it, and
+both questions a name raises answered at once — where is this, and where is it
+next to the other nine.
+
+Three details, and each is the opposite of what `?spot=` does, because the
+press means something else:
+
+- **The half stop.** Every other way the list opens was asked for by somebody
+  who wanted the names, so it opens full. This one was asked for by somebody
+  who had the names in front of them, so what it hands back is the map.
+- **The list's frame, not the place's.** `?spot=` comes in to `FOCUS_ZOOM`,
+  because opening a place is a street question. This does not zoom at all: it
+  keeps the fit that holds every pin on the list and only centres on this one.
+  A single pin on a street is exactly what somebody who has not yet noticed
+  the map does not need to be shown. The write-up is one more press away, on
+  the row or on the pin, and that press is what zooms.
+- **`?at=` is a door, not a state.** Read once on the way in and taken straight
+  back off, the way `?story=` and `?account=` are. What the address bar says
+  afterwards is `?list=<id>`, which is what the page is showing — a link copied
+  out of it is a link to the list on the map, not to somebody's eighth choice.
+
+**It used to be Google Maps, and a name is what this page is mostly made of.**
+A place on my map went to its write-up and everything else opened a new tab on
+Google Maps, by coordinates when the catalogue had them and by name when it
+did not. Everything else is most of a top ten, because most of a top ten is
+somewhere I have never eaten. So the ordinary press on the ordinary row left
+the site for a map with one place on it and none of the rest of the list — sent
+from a page whose other half is a map that has all of them.
+
+Google Maps is still a press away and now it is an asked-for one: Directions
+and **See on Google** are on the card the map draws, see **The card for a place
+I have never eaten at**. Nothing on this site opens Google Maps because
+somebody pressed a name.
+
+**A place with nowhere to draw points nowhere at all** and says so in the muted
+colour it always did. `seatList()` in `assets/app.js` drops a place it cannot
+put a pin for, so a link to the map for one would arrive on a map that does not
+have it. The id in the link is the one the list stores and never `mapId`: the
+pin and the row on the map both stand under the id the list was written with,
+and `mapId` names the write-up's own address, which is what `?spot=` wants and
+this does not.
+
 ### Both views of a list can be searched
 
 The switch says a list is one thing with two views, and for a while only one
@@ -4679,8 +4731,8 @@ trailing it: whose description this is, and then the description.
 namesakes; rows on a list, in both the editing and the reading view; the rows
 in the map's own panel while somebody's list is open; and the card the map
 draws when one of those rows is pressed — see **The card for a place I have
-never eaten at**. The map's own places carry no such line — they link through
-to a write-up, which is the fuller version of the same thing — and a hand-typed
+never eaten at**. The map's own places carry no such line — they have a
+write-up, which is the fuller version of the same thing — and a hand-typed
 place carries none either, because a name somebody typed is not a description
 of anything.
 
@@ -4792,9 +4844,9 @@ data/places.json        the catalogue. Names and addresses, no opinion at all.
 ```
 
 The catalogue is the map plus an import. Every place on the map is in it — so
-a list can hold one, and that row links to its write-up rather than to a
-Google search — and everything else comes out of `data/places.csv`, which is
-an export from Google Maps and the one file you actually put there.
+a list can hold one, and that row keeps its write-up, a press away on the map
+— and everything else comes out of `data/places.csv`, which is an export from
+Google Maps and the one file you actually put there.
 
 ```
 node tools/places.mjs           rebuild data/places.json
@@ -6934,13 +6986,16 @@ palette. `?list=top-ten-burgers-k3fmqw` opens the map on somebody's list, as
 pins with the list in the panel. They all combine, and all four stay in the
 address bar, because each of them says what the page currently is.
 
-The two that do not stay are doors rather than states, and they take themselves
-back off on the way in. `?story=kokomo-brunch` opens a story rather than a
-place — a link copied later should not reopen a video that has since gone.
-`?account=up&then=/account.html` opens the account sheet on a view and says
-where to put somebody once they are signed in; it is how the account page
+The ones that do not stay are doors rather than states, and they take
+themselves back off on the way in. `?story=kokomo-brunch` opens a story rather
+than a place — a link copied later should not reopen a video that has since
+gone. `?account=up&then=/account.html` opens the account sheet on a view and
+says where to put somebody once they are signed in; it is how the account page
 borrows the map's sign-in form, and leaving it on would reopen the sign-up sheet for
-whoever the link was sent to. See **Lists**.
+whoever the link was sent to. `?at=` rides with `?list=` and names the place a
+row on that list's own page was pressed on: the map arrives standing on it,
+and the address bar is left saying `?list=` — which is what is on the screen.
+See **Lists**.
 
 ---
 
@@ -8024,7 +8079,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `list_page` | `list_id` — any row that opens a list |
 | `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar |
 | `profile_open` | `name` — any byline |
-| `place_link` | `place`, `map` (`mine`/`google`) — a place on a list, to the map or to Google |
+| `place_link` | `place`, `map` (`mine`/`google`/`added`) — a name on a list, which opens that list on the map. The parameter says which roll the place came off, which is all it can say now that every row goes to the same place |
 | `list_keep` | `list_id`, `list_state` |
 | `list_share` | `list_id`, `method` |
 | `list_save` | `list_id`, `writes` |
