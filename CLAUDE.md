@@ -199,6 +199,19 @@ the step that gets skipped is always the one nobody re-read.
   is `git push --force-with-lease`. That is fine on a branch you own — which
   every branch here is — and `--force-with-lease` is what refuses to do it if
   somebody else has pushed to it since.
+- **Every push is a build, and there are five hundred a month.** Cloudflare
+  counts a deployment against the free plan's ceiling whether it rebuilt
+  anything or not — this site has no build command and a push still spends
+  one — and preview and production spend from the same five hundred. The
+  first three weeks ran 773 of them across 191 pull requests: four to a PR,
+  of which one was the merge and three were a branch going up again. That is
+  thirty-four deploys a day: the five hundred is gone by the middle of it.
+  Running out is not a bill, it is a stop: the free plan has no overage to
+  charge for, so Cloudflare stops building, and what stops is the live site
+  as much as the previews. So **push once, when the branch is ready**.
+  Everything under **Before you push** is written to run before the first
+  push rather than around it, and a second push is for something that could
+  only have been learnt after the first.
 
 ## Before you push
 
@@ -217,9 +230,11 @@ and both were looking at a tree the deploy will not be made from. It also puts
 the conflict in front of you while you still hold the reason for every line you
 changed, instead of at the end, when it is somebody else's afternoon.
 
-Do it again if a review runs long enough for the branch to fall behind again,
-and re-run everything below afterwards each time: replaying your commits over
-somebody else's `assets/` change is exactly what makes the stamps stale.
+Do it again if a review runs long enough for the branch to actually fall
+behind — `git fetch` and look, rather than rebasing on a feeling, since the
+push afterwards is another deploy — and re-run everything below afterwards
+each time: replaying your commits over somebody else's `assets/` change is
+exactly what makes the stamps stale.
 
 Six things in this repo are **generated**. Editing a source without
 re-running its generator is the single most common way to fail CI:
@@ -277,8 +292,14 @@ is small — the small ones are the ones that ship broken.
    prose for the body. Each commit stands alone: a branch that grew three
    commits saying "fix" squashes them into the one they were fixing before
    it is pushed.
-3. **Push** the branch: `git push -u origin <branch>` the first time,
-   `git push --force-with-lease` after a rebase.
+3. **Push** the branch, once: `git push -u origin <branch>` the first time,
+   `git push --force-with-lease` after a rebase. Step 1 happens before this,
+   not around it — a push to find out what `node tools/validate.mjs` would
+   have said in a second is a deploy spent on nothing. Push again for a
+   review that asked for a change, a CI failure that only CI could have
+   found, or a rebase a long review made necessary; not for a fix you could
+   have folded into the commit before it went up. Three of those a PR is
+   what spent the budget above.
 4. **Open the pull request** against `claude/tallinn-tastebuds-map-nzoqx0`.
    The title is the commit subject when there is one commit, and a sentence
    about the whole when there are several. The body is prose, the same voice
