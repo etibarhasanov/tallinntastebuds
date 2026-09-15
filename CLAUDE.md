@@ -307,11 +307,44 @@ is small — the small ones are the ones that ship broken.
    to the owner as a chore. Do not try, do not ask, do not mention it.
 7. A push to the default branch is the deploy. A story goes live when its
    `from` comes round; everything else is live within the minute.
+8. **Say where it stands** in the first line of the message that follows, so
+   the owner knows whether the tab can be closed. The next section is the
+   whole of it.
 
 A pull request the admin page opened — a branch named `admin/add-<id>` or
 `admin/edit-<id>` — is landed the same way, with one step in front: check it
 out, `node tools/places.mjs`, commit `data/places.json`, push. The `/place`
 skill says why.
+
+## Say where it stands, in the first line
+
+The last message a session writes is where the owner finds out whether there
+is anything left for them to do, and they should find out in the first line of
+it — not four paragraphs into a summary of what changed. Open with the state,
+then explain at whatever length the change deserves.
+
+Three states, and they are not interchangeable:
+
+- **Landed, nothing left.** Say that, and say the session can be closed:
+  *"#187 is merged — the site is live with it within the minute, and this
+  session can be closed."* Merged is a fact to check rather than an inference
+  from having pushed: look at the pull request and at CI on the commit that
+  landed. Red CI, an open PR, and a review still going are none of them this
+  state.
+- **Landed, but something is waiting on a person.** The same line, and then
+  the thing itself, because this is the one that gets lost — a `.sql` file to
+  load, a schema to apply, a staff pass link to send, a story that goes live
+  when its `from` comes round. Name the command or the two lines that would do
+  it. A merged pull request whose database write has not been asked for yet is
+  this state and not the one above: **What needs a yes** is why.
+- **Not landed.** Say what it is waiting on — red CI, a review, an answer to a
+  question, a write only the owner can approve — and what the next step is,
+  whose it is, and whether the session is worth keeping open for it.
+
+Say it in the same voice as everything else here; it is a sentence about where
+the work is, not a status field. The rest of the message carries on as usual.
+This only settles where the verdict goes, so that closing a tab does not mean
+reading a transcript first.
 
 ## How the code is written
 
