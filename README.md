@@ -6759,8 +6759,20 @@ mode where every page load is a fresh session and a returning visitor is
 nobody it has seen before. This is a map of Tallinn; practically all its
 traffic is the EEA. Without the bar the replays arrive as a heap of one-page
 fragments, which is the opposite of the thing Clarity was added for. So
-`loadTags()` calls `clarity('consent')` the moment somebody allows it, and
-that one line is the difference between one replay per visit and one per page.
+`loadTags()` hands Clarity a consent signal the moment somebody allows it, and
+that one call is the difference between one replay per visit and one per page.
+
+It is `clarity('consentv2', …)` rather than the older `clarity('consent')`,
+which is deprecated. The object carries **both spellings** of its two keys —
+`ad_Storage`/`analytics_Storage` as Microsoft documents them, and the
+lowercase pair as Google's consent mode spells the same ideas — because
+getting it wrong fails silently, with empty cookies and a new "user" on every
+page load ([microsoft/clarity#924](https://github.com/microsoft/clarity/issues/924),
+still open). A key Clarity does not read costs nothing; a guess that went the
+wrong way would cost the recordings. `ad_Storage` is granted along with
+`analytics_Storage`: that is what lets Clarity set `MUID`, and denying it
+would keep the recordings but lose Clarity's surest way of telling a returning
+visitor from a new one.
 
 `assets/consent.js` holds all of it: the answer, the bar, and both snippets.
 They stopped being separate things the moment a choice stood in front of them.

@@ -119,8 +119,36 @@
        Loading the tag only after a yes already means nothing was written
        before one — but Clarity holds back full recording from an EEA visitor
        until it is told consent exists, and being told is the difference
-       between one replay per visit and one per page load. */
-    window.clarity('consent');
+       between one replay per visit and one per page load.
+
+       It is consentv2 and not the older clarity('consent'): that one is
+       deprecated, and since 31 October 2025 an EEA, UK or Swiss visitor only
+       gets full recording against a v2 signal.
+
+       BOTH SPELLINGS OF EACH KEY, ON PURPOSE. Microsoft documents them with a
+       capital S — ad_Storage, analytics_Storage — which is not how Google's
+       consent mode spells the same two ideas, and the muscle memory is
+       Google's. microsoft/clarity#924 is somebody who sent the lowercase pair,
+       got empty cookies and a fresh "user" on every page load, and it is open
+       with no answer. That failure is silent and looks exactly like the
+       fragmentation this file exists to prevent, so both go in: an object key
+       Clarity does not read costs nothing, and a guess that went the wrong way
+       would cost the recordings.
+
+       Queued rather than waited for: the snippet above defines window.clarity
+       as a queue before its script arrives, which is what that queue is for.
+
+       ad_Storage is granted alongside analytics_Storage, which is the owner's
+       call and worth knowing rather than assuming — it is what lets Clarity
+       set MUID, a Microsoft-wide identifier shared with their advertising
+       side. Deny it here and the recordings stay; what goes is Clarity's
+       surest way of telling a returning visitor from a new one. */
+    window.clarity('consentv2', {
+      ad_Storage: 'granted',
+      analytics_Storage: 'granted',
+      ad_storage: 'granted',
+      analytics_storage: 'granted'
+    });
   }
 
   /* The same order every page boots with: ?lang=, then the choice the map
