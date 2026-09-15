@@ -6108,11 +6108,13 @@ on it; see **The build budget** below.
    - **Build output directory**: `/`
 4. **Save and Deploy.** First build takes about a minute.
 
-Every push to the production branch redeploys. Pull requests get their own
-preview URL, and a preview URL talks to its own database — see **Two
-databases, and never one** — so anything pressed while checking a change stays
-out of the live counts. Nothing needs enabling on the GitHub side — unlike
-GitHub Pages, Cloudflare authorises itself through your own GitHub account.
+Every push to the production branch redeploys. No other branch deploys
+anything — see **The build budget**. A deployment made by hand with
+`wrangler pages deploy --branch=<name>` still gets a preview URL, and that URL
+talks to its own database — see **Two databases, and never one** — so anything
+pressed while checking a change stays out of the live counts. Nothing needs
+enabling on the GitHub side — unlike GitHub Pages, Cloudflare authorises
+itself through your own GitHub account.
 
 **This connection is the only deploy path, on purpose.** There used to be a
 second one, a workflow that published from GitHub's runners with a Cloudflare
@@ -6151,12 +6153,36 @@ failure is worse than a bill in one specific way: nothing announces it. The
 site simply stops changing when you push, and the reason is on a screen nobody
 was looking at.
 
-So the fix is not a setting, it is the size of a pull request, and `CLAUDE.md`
-carries it — everything runs locally before the first push, and a branch goes
-up once. [Branch build controls][cf-branches] can switch previews off wholesale
-if it ever comes to that, but the preview URL is what a reviewer opens, so that
-trades away the wrong thing. The other direction is Pro, at $20 a month for
-5,000 builds, which buys room for a habit rather than fixing it.
+So previews were switched off. Under [branch build controls][cf-branches],
+Pages watches the production branch and nothing else, which takes the
+automatic 580-odd a month to nil. What is left against the ceiling is the
+merges — around 250 a month at this rate, and that number was never avoidable,
+since a merge is the deploy.
+
+The reason that is not a loss is that the previews were not being looked at.
+Of 773 deployments, next to none of those URLs was opened: the review they
+were built for happened in the diff instead, and what checking there was ran
+under `npx wrangler pages dev .` — the same bindings against the same preview
+database, on your own machine, for nothing. Switching them off costs the thing
+that was not happening.
+
+Two things `pages dev` genuinely cannot show, and `CLAUDE.md` lists them: a
+`[env.preview]` change in `wrangler.toml`, which takes effect only once a
+preview carries it and which `pages dev` cannot reach because it reads the top
+level instead; and anything whose point is how it feels on a real phone, which
+a localhost is not. The database is not one of them — `pages dev` talks to the
+same remote `tallinntastebuds-preview` a preview deployment would, so a `db/`
+load can be watched arriving without deploying anything. For the two that are
+left there is no automation: one `npx wrangler pages deploy . --branch=<name>`
+from a terminal makes a preview when one is wanted, and a change that wants one
+says so in its pull request rather than working around it.
+
+**This is meant to be revisited.** If that last paragraph starts coming up
+every other week, the answer is to put previews back on some branches rather
+than to keep running the command by hand: branch build controls take an
+include pattern, so `preview/*` would deploy only branches asking for it. The
+other direction is Pro, at $20 a month for 5,000 builds, which buys room for a
+habit rather than fixing it.
 
 [cf-branches]: https://developers.cloudflare.com/pages/configuration/branch-build-controls/
 

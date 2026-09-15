@@ -292,9 +292,12 @@ what it costs per request, and what has to be applied by hand and where.
    to be applied by hand on landing and to which database** — the schema
    statement, the meta stamp, a load. A `wrangler.toml` change to the
    preview block only takes effect once a preview has deployed with it, and
-   pushing the branch is what deploys one — Cloudflare's Git connection puts
-   the URL in the PR's checks — so open that preview and say that you
-   looked at what it deployed.
+   `wrangler pages dev` reads the top level rather than `[env.preview]`, so
+   this is the one case nothing local can check. Pushing the branch deploys
+   nothing — there are no preview deployments, and `CLAUDE.md` says why — so
+   say plainly in the body that the binding wants a preview and what you would
+   look at on it. `npx wrangler pages deploy . --branch=<name>` from a terminal
+   is the one command that makes one.
 7. CI green, then **Rebase and merge** — the branch stays, `CLAUDE.md` says
    why — and **apply to production** whatever the body said, immediately:
    the code is live the moment the push lands, and a route that expects a
