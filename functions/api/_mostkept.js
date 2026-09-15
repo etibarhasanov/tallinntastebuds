@@ -1,6 +1,5 @@
 /**
- * Tallinn Tastebuds — every public list, most kept first, or newest, or
- * changed lately.
+ * Tallinn Tastebuds — every public list, most kept first, or newest.
  *
  * Underscore-prefixed, so this is a module and never a route. Like _lists.js
  * beside it, it holds one query two files both need:
@@ -20,8 +19,8 @@
  * feeds is called Everybody's lists — the name is about whose they are, this
  * file is about the order they come back in, and those are two different
  * sentences.
- * Three orders now, and the keep count is still the one the page opens on;
- * the other two are the ways past the top of it — see SORTS.
+ * Two orders, and the keep count is the one the page opens on; Newest is the
+ * way past the top of it — see SORTS.
  */
 
 import { catalogue, venuesByIds, addedByIds, isAdded } from './_lib.js';
@@ -86,21 +85,27 @@ const DOTS = 10;
    byline. Three copies; grep finds them all. */
 const GOOGLE_BY = 'google-statistics';
 
-/* The three orders the page can be read in, and the two columns each one
- * sorts by before the id breaks the tie. `kept` is the page's own order and
- * the default; the other two are the ways a reader who has seen the top of
- * the ranking gets to the rest of it — what arrived lately, and what somebody
- * is still working on. Each is two numbers descending and then the id
- * ascending, which is what lets one cursor shape page all three.
+/* The two orders the page can be read in, and the two columns each one sorts
+ * by before the id breaks the tie. `kept` is the page's own order and the
+ * default; `new` is the way a reader who has seen the top of the ranking gets
+ * to the rest of it. Each is two numbers descending and then the id ascending,
+ * which is what lets one cursor shape page both.
+ *
+ * There was a third, `changed`, ordering on `updated_at`, and it went. That
+ * column says when somebody was last editing rather than anything about the
+ * list: a title fixed this afternoon outranked a list finished last week and
+ * left alone since, which is a ranking of activity and not of lists. An
+ * address still carrying ?sort=changed lands on the default, because sortOf()
+ * answers `kept` for every key it does not know — so the old links keep
+ * working and simply arrive at the page's own order.
  *
  * The first column is an expression and not a name because `kept` sorts on
  * an aggregate the query joins in; it is a constant in this file, never a
  * value from the request — the request chooses a key, and an unknown key is
  * the default. */
 const SORTS = {
-  kept:    { a: 'COALESCE(c.n, 0)', b: 'l.updated_at', keys: ['keeps', 'updated_at'] },
-  new:     { a: 'l.created_at',     b: 'l.updated_at', keys: ['created_at', 'updated_at'] },
-  changed: { a: 'l.updated_at',     b: 'l.created_at', keys: ['updated_at', 'created_at'] }
+  kept: { a: 'COALESCE(c.n, 0)', b: 'l.updated_at', keys: ['keeps', 'updated_at'] },
+  new:  { a: 'l.created_at',     b: 'l.updated_at', keys: ['created_at', 'updated_at'] }
 };
 
 /* The sort the request asked for, or the default. Exported for the same
@@ -129,10 +134,10 @@ const MAX_QUERY = 60;
  * millisecond still have exactly one order, and without that last clause a
  * page boundary falling between them could show one of them twice.
  *
- * The same shape pages all three orders — see SORTS — because every order
- * here is two numbers descending and then the id; which two is the sort's
- * business, and a cursor minted under one order is only ever handed back
- * under the same one, since the page sends both together. */
+ * The same shape pages both orders — see SORTS — because every order here is
+ * two numbers descending and then the id; which two is the sort's business,
+ * and a cursor minted under one order is only ever handed back under the same
+ * one, since the page sends both together. */
 const CURSOR = /^(\d{1,15})\.(\d{1,15})\.([a-z0-9][a-z0-9-]{2,47})$/;
 
 /* What somebody typed, tidied: whitespace collapsed, ends trimmed, capped.
@@ -184,7 +189,7 @@ function like(q) {
  *
  *   from   the cursor the page before it ended on, or ''
  *   q      what somebody typed into the search field, or ''
- *   sort   'kept' (the default), 'new' or 'changed' — see SORTS
+ *   sort   'kept' (the default) or 'new' — see SORTS
  *   user   the session, or null — only for whether *you* kept each row
  *
  * The order is the whole of this feature and it is the one thing on this site
