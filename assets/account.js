@@ -116,11 +116,12 @@
  * two copies of a password form is one copy that quietly stops matching the
  * API.
  *
- * Google is the one way in this page does own a control for, and it is not a
- * form: Connect is a link to /api/google, which is a round trip through
- * Google rather than a field to fill, and Disconnect is one row deleted. Both
- * sit along the foot of the card with the password word and the way out,
- * because all three are the same kind of thing — see googleRow().
+ * And it does not offer Google either. An account made with a username and a
+ * password is an account somebody chose not to use Google for, and a page
+ * that keeps offering it is a page arguing with them about it. What is left
+ * is the other direction: an account that was made through Google can take
+ * Google off, which is one row deleted and a word along the same foot as the
+ * password and the way out — see googleRow().
  *
  * SIGNED OUT IS A REAL STATE HERE
  *
@@ -202,9 +203,8 @@
     lang: DEFAULT_LANG,
     reached: true,   // whether /api/account answered at all
     ready: false,    // whether accounts work on this deployment
-    google: false,   // whether Continue with Google is configured on it
     user: null,
-    linked: false,   // whether Google is connected to this account
+    linked: false,   // whether this account was reached through Google
     password: true,  // whether there is a password on it at all
     about: '',       // the line you wrote about yourself, '' for nearly everybody
     saved: [],       // place ids, newest first
@@ -1041,23 +1041,42 @@
     return box;
   }
 
-  /* ------------------------------------------------------------- Google
-   * Connecting is a link, because it is a round trip through Google and back;
-   * disconnecting is a button, because it is one row and a redraw. That is
-   * the distinction this site draws everywhere else: a link goes somewhere,
-   * a button changes something.
+  /* --------------------------------------------------------------- Google
+   * One word, and only on an account that actually has Google on it:
+   * Disconnect, which is one row deleted and a redraw. A button rather than a
+   * link, because it changes something — the distinction this site draws
+   * everywhere else.
    *
-   * There is no row at all where /api/account says Google is not configured
-   * here — the same reason the map's sheet draws no button there — and none
-   * on the signed-out half of this page, which sends people to the map's
-   * sheet for every way in and always has.
+   * THERE IS NO CONNECT
+   *
+   * There was, along this same foot: a link to /api/google that came back
+   * having attached your Google account to the one you were signed in to. It
+   * was the answer to a real trap — Continue with Google while signed out
+   * always makes a *new* account, because there is no address to match on, so
+   * somebody who already had a password account could end up with two — and
+   * connecting on purpose while signed in was how the two became one.
+   *
+   * It is gone because of what it was: an offer, on the page belonging to
+   * somebody who made their account with a username and a password, to start
+   * using Google. That is a page arguing with a decision its owner has
+   * already made, every time they open it, on a card that is meant to say who
+   * they are. Nobody had taken it up — the identities table was empty on the
+   * day it went — and the trap it answered is still answered for anybody who
+   * has not signed up yet, which is by Continue with Google being right there
+   * on the sheet the first time.
+   *
+   * What it costs is said plainly in "Signing in with Google" in README.md:
+   * somebody with a password account who presses Continue with Google while
+   * signed out still gets a second account, and there is no longer a step on
+   * this site that joins the two.
+   *
+   * So the foot is a word shorter for nearly everybody, and the one account
+   * that still sees something here is the one Google made. Disconnecting is
+   * one-way now, which is the same rule read the other way round: once it is
+   * off, the account is one made without Google, and Google is not offered.
    */
   function googleRow() {
-    if (!state.google) return null;
-
-    if (!state.linked) {
-      return link('accountGoogleConnect', '/api/google?then=%2Faccount.html', 'account_google_connect');
-    }
+    if (!state.linked) return null;
 
     var btn = el('button', {
       type: 'button',
@@ -1093,38 +1112,6 @@
       });
     });
     return btn;
-  }
-
-  /* What came back from the round trip, said once the page has drawn.
-   *
-   * Every one of these is news rather than a question — the work is done and
-   * this is the site reporting it — so a toast is the whole of it. See the
-   * header of functions/api/google.js for what each word means. Two of the
-   * five are not here: this page never starts a trip that could end in
-   * `name` or `in`, because connecting is the only thing it offers and it
-   * offers it only to somebody already signed in.
-   */
-  var GOOGLE_SAID = {
-    linked: 'accountGoogleLinked',
-    taken: 'accountErrGoogleTaken',
-    failed: 'accountErrGoogle'
-  };
-
-  function sayGoogle() {
-    var said = new URLSearchParams(window.location.search).get('google') || '';
-    if (!GOOGLE_SAID[said]) return;
-    toast(t(GOOGLE_SAID[said]));
-    /* And off the address bar, so a reload does not say it a second time.
-       That one word and nothing else: ?style= and ?lang= are somebody's own
-       link and this page has no business rewriting them. replaceState rather
-       than a navigation, because the page is drawn and correct already and
-       this is only tidying up what it was reached by. */
-    var keep = new URLSearchParams(window.location.search);
-    keep.delete('google');
-    var query = keep.toString();
-    try {
-      window.history.replaceState(null, '', window.location.pathname + (query ? '?' + query : ''));
-    } catch (e) { /* an old browser keeps the parameter, which is harmless */ }
   }
 
   /* Sign out is a button rather than a link because it changes something. The
@@ -1278,12 +1265,13 @@
       var account = loaded[2];
       state.reached = account.status !== 0;
       state.ready = !!account.out.ready;
-      state.google = !!account.out.google;
       state.user = account.out.user || null;
-      /* The two ways into this account, which decide what the foot of the
-         card says: Connect Google or Disconnect it, Set a password or change
-         the one there is. An account made through Google has the second of
-         each. */
+      /* What the foot of the card says: Disconnect Google on the one account
+         that has Google on it and nothing there on every other, and Set a
+         password rather than change the one there is. An account made through
+         Google is the one with both. Whether Google is configured on this
+         deployment at all is not read here — this page has nothing to draw
+         for an account that is not already using it. */
       state.linked = !!account.out.linked;
       state.password = state.user ? !!account.out.password : true;
       state.about = account.out.about || '';
@@ -1300,9 +1288,6 @@
 
       mountRadio();
       render();
-      /* After the page is drawn, because it names whoever is signed in and
-         the answer above is what knows that. */
-      sayGoogle();
     }).catch(function () {
       /* The strings themselves did not arrive, so there is nothing to say in
          any language. The markup's own English is what is left, and the map

@@ -2010,10 +2010,12 @@ drops from two to one.
 
 Nothing proves a password account is yours except knowing its password, so **a
 forgotten password cannot be recovered by anyone, including whoever runs this
-site**. An account with Google connected is the exception and the only one:
+site**. An account made through Google is the exception and the only one:
 Google can prove who you are, and so that account has a way back in that a
-password account has not. It is the one practical argument for connecting it,
-and it is why the button is not buried. The sign-up sheet says that above the button rather than letting
+password account has not. It is the one practical argument for making an
+account that way, and it is why the button is not buried — and it is an
+argument about *signing up*, which is the only moment it is on offer now.
+The sign-up sheet says that above the button rather than letting
 somebody find out later, and the fields carry the autocomplete hints that make
 a browser's password manager offer to keep the details — which is what
 actually rescues people in practice.
@@ -2256,19 +2258,37 @@ reason: **the one thing this site asks anybody to decide about themselves is
 what they are called here**, because it is the byline on every list they share
 and the whole of `/u/<name>`. See **The name is chosen, not handed out**.
 
-#### Connecting, and the duplicate nobody wants
+#### The duplicate nobody wants, and the step that no longer answers it
 
 Without an address there is nothing to match on, so **pressing Continue with
 Google while signed out always makes a new account** — including for somebody
-who already has one with a password. That is the trap, and the answer to it is
-that connecting is a thing you do **on purpose, while signed in**: *Connect
-Google* along the foot of `/account.html`.
+who already has one with a password. That is the trap.
 
-The intent is decided on the way **out**, from whether the request carried a
-session, and sealed into the cookie. Deciding it on the way back — "is there a
-session now?" — would mean a browser that signed in on another tab mid-trip
-silently attaches somebody's Google account to whatever account happened to be
-open.
+There used to be an answer to it: connecting was a thing you did on purpose
+while signed in, *Connect Google* along the foot of `/account.html`, and the
+two accounts became one. **That step is gone**, and the trap is left standing
+— said here rather than left to be discovered. Somebody with a password
+account who presses Continue with Google now gets a second account and there
+is nothing on the site that joins them; the two would have to be merged by
+hand in the database, and the only real protection is that Continue with
+Google is on the sheet the first time, before there is a password account to
+duplicate.
+
+It went because of what it was on the page it stood on: an offer, to somebody
+who had made their account with a username and a password, to start using
+Google — every time they opened the one card that is meant to say who they
+are. Nobody had taken it up; `identities` was empty on the day it went. See
+**The account page**.
+
+**The route still links, and that is not left-over.** The intent is decided on
+the way **out**, from whether the request carried a session, and sealed into
+the cookie: a signed-in request to `/api/google` connects, a signed-out one
+signs in. Deciding it on the way back — "is there a session now?" — would mean
+a browser that signed in on another tab mid-trip silently attaches somebody's
+Google account to whatever account happened to be open. Nothing on the site
+sends a signed-in browser there any more, so `connect()` answers a request
+that no page makes; it is the honest reading of a session on the way out, and
+taking it out would mean the route lying about what it found.
 
 One Google account is one account here: connecting one that already belongs to
 somebody else answers `taken` and changes nothing.
@@ -2652,14 +2672,22 @@ The profile is a `.menu-row` down there rather than a word along the foot,
 because it is a place to go — everything you have published, read the way a
 stranger reads it — and the ones beside it are things to do.
 
-**Google is a fourth word along that foot**, and it is where it is because it
-is the same kind of thing as the two beside it: a way into this account.
-*Connect Google* is a link, because it is a round trip through Google and
-back; *Disconnect Google* is a button, because it is one row and a redraw —
-the distinction this site draws everywhere. It is drawn only where
-`/api/account` says Google is configured at all, and the password word beside
-it reads **Set a password** rather than *Change password* on an account that
-has never had one. See **Signing in with Google**.
+**Google is a fourth word along that foot on exactly one kind of account**:
+the kind that was made through Google. There it reads *Disconnect Google*, a
+button rather than a link because it is one row and a redraw — the
+distinction this site draws everywhere — and the password word beside it
+reads **Set a password** rather than *Change password*, because such an
+account has never had one.
+
+On every other account there is no Google word at all. There was: *Connect
+Google*, a link to the round trip, offered to anybody signed in. An account
+made with a username and a password is an account somebody chose not to use
+Google for, and a page that offers it to them anyway is a page arguing with
+that decision on the one card meant to say who they are. So the foot is a
+word shorter for nearly everybody, and disconnecting is one-way — which is
+the same rule read backwards: once Google is off, the account is one made
+without it, and it is not offered. See **Signing in with Google** for what
+that costs.
 
 ### What is left on the map
 
@@ -7644,6 +7672,7 @@ The account page, `assets/account.js`:
 | `account_rename_open`, `account_password_open` | — into the map's sheet |
 | `account_about_open` | `about_state` (`set`/`empty`) — the field for the line about yourself, on opening it |
 | `account_about` | `about_state` (`set`/`cleared`) — the line about yourself, on save |
+| `account_google_unlink` | — Google taken off the one kind of account that has it |
 | `account_logout` | — |
 | `radio_play`, `radio_stop`, `home` | as on the map |
 
