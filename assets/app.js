@@ -5802,7 +5802,7 @@
        it. It is the one group in this panel whose heading is not a string out
        of data/ui.json, because it is not the site talking. */
     if (reading) {
-      dom.listBody.appendChild(listCredit(places.length));
+      listCredit(places.length).forEach(function (node) { dom.listBody.appendChild(node); });
       var ul = el('ul', { className: 'place-list is-list' });
       places.forEach(function (place) { ul.appendChild(listRow(place, reading ? listSay(place.id) : '')); });
       dom.listBody.appendChild(ul);
@@ -5815,18 +5815,50 @@
     section(everything ? 'listTitle' : mine ? 'listSaved' : 'listAlphabet', places);
   }
 
-  /* The heading over somebody else's list: their title, their byline, the
-     count, the three things you can do about it — keep it, open the list's own
-     page where the owner's sentences sit in full, send it on — and, under
-     them, the way out.
-
-     It takes the focus and labels the panel, the way the first group heading
-     normally does, because in this state it is the first group heading. */
   /* The account Google's numbers write under — see tools/googlelists.mjs and
      GOOGLE_BY in assets/lists.js, which this restates for the same reason
      every cap is restated: the two pages share no module. */
   var GOOGLE_BY = 'google-statistics';
 
+  /* The heading over somebody else's list: their title, the switch between
+     this map and the list's own page, their byline and how many places are on
+     it, the two things you can do about it — keep it, send it on — and, under
+     them, the way out.
+
+     It takes the focus and labels the panel, the way the first group heading
+     normally does, because in this state it is the first group heading.
+
+     TWO NODES, BECAUSE THE BAND HAS TO STICK
+
+     The band is a sibling of the block under it rather than the first thing
+     inside it, and that is the whole reason this returns a pair. A sticky
+     element only travels as far as its own containing block, so while the
+     heading sat inside .list-credit it stuck to a box a few hundred pixels
+     tall and was gone by the second place on the list — the one group heading
+     on the panel that did not do what the rule says group headings do. As a
+     direct child of the list body it is exactly what every other group
+     heading is, and it holds the top of the panel for the whole scroll,
+     which is what the switch below needs to be worth having.
+
+     THE SWITCH IS THE SAME CONTROL THE LIST'S OWN PAGE DRAWS
+
+     A list is one thing with two views, and each of them used to hold a
+     button pointing at the other, at the top of something that scrolls: ten
+     places down, neither was on screen. The two are one control now — a
+     chip each, the view you are in filled the way a pressed chip is filled —
+     and it rides the band that already sticks to the top of the panel, so it
+     is there for the whole of the scroll. listBar() in assets/lists.js is the
+     same control on the other side, built out of that page's own pieces
+     because the two share no module.
+
+     It is a link and not a button, so the list's page is an address somebody
+     can open in a tab or send; `aria-current` and not `aria-pressed`, because
+     what the filled half says is "this view", not "this is switched on". It
+     reports `list_page`, which is the name the pill it replaces reported.
+
+     The count came off this line to make room and sits with the byline, which
+     is the other line of facts about the list rather than about a place on
+     it. */
   function listCredit(n) {
     var count = n === 1 ? t('listCountOne') : t('listCount', { n: n });
     /* The byline's phrase and the name in it, with the one swap byline() in
@@ -5837,49 +5869,54 @@
     var words = state.list.by ? t(google ? 'listsByGoogle' : 'listsBy').split('{name}') : null;
     var by = words ? words.join(byName) : '';
 
-    return el('div', { className: 'list-credit' }, [
-      el('h2', {
-        className: 'list-label is-credit',
-        id: 'panel-list-title',
-        tabIndex: -1,
-        'aria-label': state.list.title + (by ? ', ' + by : '') + ', ' + count
-      }, [
-        el('span', { className: 'list-group', textContent: state.list.title }),
-        el('span', { className: 'list-label-n eyebrow', textContent: count })
-      ]),
-      /* The byline, and the way through to the rest of what its owner has
-         published — the same door the list's own page puts under its title,
-         drawn the same way: the name is the link and the words around it are
-         not, and the translated phrase is cut at its placeholder rather than
-         assembled. byline() in assets/lists.js says why. */
-      words
-        ? el('span', { className: 'list-credit-by eyebrow' }, [
+    var band = el('h2', {
+      className: 'list-label is-credit',
+      id: 'panel-list-title',
+      tabIndex: -1,
+      'aria-label': state.list.title + (by ? ', ' + by : '') + ', ' + count
+    }, [
+      el('span', { className: 'list-group', textContent: state.list.title }),
+      el('span', { className: 'list-views' }, [
+        el('span', { className: 'chip', 'aria-current': 'page', textContent: t('listsViewMap') }),
+        TTBTrack.click(el('a', {
+          className: 'chip',
+          href: '/list/' + state.list.id,
+          textContent: t('listsViewList')
+        }), 'list_page', { list_id: state.list.id })
+      ])
+    ]);
+
+    return [band, el('div', { className: 'list-credit' }, [
+      /* The byline and the count, which are the two facts about the list
+         itself. The name in the byline is the way through to the rest of what
+         its owner has published — the same door the list's own page puts
+         under its title, drawn the same way: the name is the link and the
+         words around it are not, and the translated phrase is cut at its
+         placeholder rather than assembled. byline() in assets/lists.js says
+         why. */
+      el('span', { className: 'list-credit-by eyebrow' }, words
+        ? [
             words[0],
             TTBTrack.click(el('a', {
               href: '/u/' + encodeURIComponent(state.list.by),
               textContent: byName
             }), 'profile_open', { name: state.list.by }),
-            words[1]
-          ])
-        : null,
+            words[1] + ' \u00b7 ' + count
+          ]
+        : [count]),
       state.list.intro
         ? el('p', { className: 'list-credit-intro', textContent: state.list.intro })
         : null,
-      /* One row, and all of them wear the same pill: the way through to the
-         page used to be a line of underlined mono below the keep, which on a
-         block that is otherwise somebody else's writing read as a footnote
-         rather than as a door. None of them is filled — see the CSS. */
+      /* The two things you do with somebody else's list, wearing the same
+         pill: keep it, and send it on. The way through to its own page was a
+         third and is the switch above now, where it is on screen after ten
+         rows have gone past. Neither of these is filled — see the CSS. */
       el('div', { className: 'list-credit-acts' }, [
         listKeep(),
-        TTBTrack.click(el('a', {
-          className: 'list-credit-act',
-          href: '/list/' + state.list.id,
-          textContent: t('listOpenPage')
-        }), 'list_page', { list_id: state.list.id }),
         shareButton(state.list)
       ]),
       leaveButton()
-    ]);
+    ])];
   }
 
   /* The way back to the whole map, which is the one thing in this block that

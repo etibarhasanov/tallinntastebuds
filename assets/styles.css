@@ -1436,14 +1436,28 @@ a:hover { color: var(--accent-lit); }
   letter-spacing: .06em;
   color: var(--muted);
   white-space: nowrap;
+  /* Chips are buttons on the filter row and links in the two places a chip
+     says which view you are in, so the underline a bare link wears is taken
+     off here rather than at each of them. */
+  text-decoration: none;
   transition: color .15s var(--ease), border-color .15s var(--ease), background-color .15s var(--ease);
 }
 .chip:hover { color: var(--ink); border-color: var(--muted); }
-.chip[aria-pressed="true"] {
+/* Pressed, or the view you are on. The second is what the map and a list's
+   own page put over a list: two chips, one for each view of it, and the one
+   you are looking at is filled. `aria-current` rather than `aria-pressed`
+   because it is a link to a page and not a switch — see listBar() in
+   assets/lists.js and listCredit() in assets/app.js. */
+.chip[aria-pressed="true"],
+.chip[aria-current="page"] {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--paper);
 }
+/* The filled half is where you already are, so it is not a hover target and
+   does not pretend to be one. */
+.chip[aria-current="page"] { cursor: default; }
+.chip[aria-current="page"]:hover { border-color: var(--accent); color: var(--paper); }
 
 /* ==========================================================================
    The signature: the price gauge.
@@ -2297,7 +2311,10 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   z-index: 2;
   margin: auto calc(var(--panel-pad) * -1) 0;
   padding: 12px var(--panel-pad) 10px;
-  background: inherit;
+  /* Named rather than inherited, for the reason .search says: the section
+     this sits in sets no background of its own, so `inherit` was transparent
+     and the thread scrolled through the band the field stands in. */
+  background: var(--paper);
 }
 .ask-field { position: relative; }
 .ask-input {
@@ -2449,7 +2466,12 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   z-index: 2;
   margin: 14px calc(var(--panel-pad) * -1) 0;
   padding: 0 var(--panel-pad) 8px;
-  background: inherit;
+  /* The panel's own ground, named the way .list-label names it, rather than
+     inherited: `inherit` takes the parent's computed background, and the
+     section this sits in sets none — so what it was actually inheriting was
+     `transparent`, and a row scrolling past showed through the eight pixels
+     under the field and the gutters either side of it. */
+  background: var(--paper);
 }
 /* The clear button and the magnifier are positioned against this, not the
    sticky box, so the bleed padding does not push them to the panel edge. */
@@ -2664,11 +2686,25 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     "said";
 }
 
-/* The heading over a list: its title, its owner's name, the line they wrote
-   under it, and the way through to the list's own page. It replaces the
-   ordinary group heading in this one state, so it carries the same sticky
-   band and the same type. */
-.list-credit .list-label.is-credit { margin-top: 10px; }
+/* The heading over a list: its title and the switch between its two views.
+   It is the ordinary group heading in this one state — a sibling of the block
+   under it and a direct child of the list body, like every other one — so it
+   carries the same sticky band and the same type, and holds the top of the
+   panel for the whole of the scroll. listCredit() in assets/app.js says what
+   went wrong while it was a child of that block instead.
+
+   Centred rather than on the baseline the other group headings use: a chip is
+   a box and a name is a word, and a box hung off a baseline sits low. */
+.list-label.is-credit { align-items: center; }
+/* The two chips keep their own width whatever the title does — the switch is
+   what the band is for — and the title takes what is left and wraps into it.
+   Wraps rather than ends in an ellipsis: the panel is four hundred pixels
+   wide, "Top ten bakeries, by Google" does not fit beside two chips at 21px,
+   and a title cut to "Top ten bakeries, b…" has lost the half that says whose
+   ranking it is. A second line is what this band did before it carried a
+   switch, and it costs twenty pixels of a panel that is scrolling anyway. */
+.list-views { flex: 0 0 auto; display: flex; gap: 6px; }
+.list-label.is-credit .list-group { min-width: 0; }
 /* The byline. The name in it is a link since profiles arrived — it leads to
    /u/<name>, the rest of what this list's owner has published — and only the
    name, the way every byline on the lists page is drawn: the words around it
@@ -2688,10 +2724,11 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   line-height: 1.5;
   color: var(--ink);
 }
-/* The way through to the list's own page and the way to send it on. Both were
-   or would have been eleven pixels of underlined mono below the keep, which
-   reads as a footnote rather than as the other things you can do here, so
-   they wear the same pill as the keep and stand on the same line as it.
+/* The way to send a list on. It would have been eleven pixels of underlined
+   mono below the keep, which reads as a footnote rather than as one of the
+   things you can do here, so it wears the same pill as the keep and stands on
+   the same line as it. The way through to the list's own page wore it too,
+   until it became half of the switch on the band above.
 
    Not the accent, though: on this block the accent behind a pill already
    means "you have kept this", and another that always wore it would take that
