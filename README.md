@@ -524,6 +524,18 @@ takes the sheet back up to the full one first, because the keyboard comes off
 the sheet's own height and there is not enough of a half stop left to type
 into.
 
+**With a list open, "the list" is the list.** Chips first and then the words
+means a top ten has already cut the pool to seven places, and a word typed over
+them is a question about those seven: `borsch` on a list with no Borsch &
+Varenyk on it answers with nothing rather than reaching back out to the map for
+one.
+
+And the same field is on the list's own page — see **Both views of a list can
+be searched**. Two of the four columns are missing there: it looks at the name
+and the street and not at the type labels or the dishes, because that page is
+sent its rows already filled out and never downloads the catalogue those two
+come from.
+
 ---
 
 ## Ask for somewhere
@@ -4260,6 +4272,49 @@ toast: somebody who followed a dead link gets the thing this site is, which is
 better than an error about a list they have never seen. `/list/<id>` is the
 page that is about one list, so that is the page that reports a missing one.
 
+### Both views of a list can be searched
+
+The switch says a list is one thing with two views, and for a while only one
+of them could be searched. The map's panel has carried a field since long
+before lists existed, and with a list open it narrows the list rather than the
+map — see **Searching the list**. The list's own page had nothing: somebody
+sent a list of forty could type a name on the map and then scroll for the same
+name on the page the link actually goes to.
+
+So `/list/<id>` has the field too, under the head card, built out of the same
+three elements in `assets/styles.css` that the map's panel and the "add a
+place" picker use — `listFind()` in `assets/lists.js`. Same folding, so `sasl`
+still finds Šašlõkk and `pagari` still finds the bakeries, and the same rule
+about several words: `telliskivi kohvik` narrows rather than widening.
+
+**A row keeps its number.** A place that is third on the list is still drawn
+`3` when a word has left four of the seven standing. The order is what a top
+ten is, and renumbering the survivors 1, 2, 3 would be the page quietly
+claiming a different list.
+
+**It looks at the name and the street, and the placeholder says so.** The
+map's copy also reads the type labels in all ten languages and the dishes in
+`mustOrder`; neither is on this page to read. `readList()` in
+`functions/api/_lists.js` fills each row out from the catalogue and sends what
+a row draws — the name, the street, Google's description where there is one —
+rather than the catalogue itself, because a shared list is opened by people
+who have never been to this site and making them download a hundred kilobytes
+to render ten rows is not a trade worth making for one more column to search.
+Types would be worse than absent: only the rows out of `google_venues` carry
+any, so typing `bakery` would find somebody else's places and silently skip
+mine.
+
+**And there is no index behind it.** The map folds its eleven hundred places
+once at load because folding them on every keystroke would be work for
+nothing. Fifty rows is not eleven hundred, and an index of them would be a
+second copy of the list to keep in step with the first.
+
+**Your own list has no field.** That page is an editor: the rows carry a grip
+and a number and are dragged into the order that is the entire point of the
+thing, and there is no sense in rearranging four rows out of fifty when the
+other forty-six are the ones that move. The same reason it has no bar and no
+foot — see **The bar and the foot**.
+
 ### Why a list needs an account when saving a place does not
 
 A save is anonymous on purpose. It has to work in the first ten seconds,
@@ -7739,7 +7794,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `picker_open`, `picker_close` | `list_id` |
 | `place_missing` | `search_term` — the "add the place that is missing" door |
 | `place_add` | `place` — a place typed in by hand, on success |
-| `search` | `search_term`, `scope` (`lists`) |
+| `search` | `search_term`, `scope` — `lists` for the directory's field, `list` for the one over a single list's places |
 | `lists_sort` | `sort` (`kept`, `new` or `changed`) — a chip beside the search field |
 | `lists_more` | `rows_shown`, `how` (`scroll` or `press`) |
 | `lists_all` | — the way to the directory: the row on `/account.html`, and the bar at the foot of a list |

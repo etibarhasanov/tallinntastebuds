@@ -105,6 +105,15 @@
   var MAX_QUERY = 60;
   var SEARCH_WAIT = 220;
 
+  /* And how long a search is held before it is *reported*, which is a longer
+     pause and a different judgement: the report should say what somebody went
+     looking for rather than watch them spell it, so it waits until the typing
+     has stopped rather than until it has paused. The directory pays this out
+     of its round trip — it reports the search it just ran — and one list's own
+     field, which narrows rows already on the page, has no round trip to hide
+     behind. trackSearch() in assets/app.js holds the same number. */
+  var SEARCH_REPORT = 900;
+
   /* How far below the window the directory asks for its next page, in pixels.
      About a phone's screen: far enough that at reading speed the rows are
      drawn before the reader reaches the foot, and near enough that somebody
@@ -152,6 +161,7 @@
     city: null,        // the map's own places as [lat, lng], the ghost dots of every sky
     next: '',          // where the directory's next page starts, '' at the end
     q: '',             // what the directory is being searched for, '' for all
+    find: '',          // and what one list is being searched for, '' for all
     asking: false,     // a page of the directory is in flight
     searching: false,  // a search is in flight, so the rows on screen are the old one's
     list: null,        // the one being shown
@@ -167,6 +177,9 @@
      page draws, which is why they are here rather than in state. */
   var searchTimer = null;
   var searchSeq = 0;
+  /* And the one on one list's own field, which holds the report rather than
+     the search: the rows narrow on the keystroke — see findTyped(). */
+  var findTimer = null;
   /* The watch on the directory's Show more button, which presses it as it
      comes into view. One at a time: the button is rebuilt with every page and
      every search, and the watch is rebuilt with it — see moreLine(). */
@@ -1370,32 +1383,38 @@
     wrap.appendChild(list.mine ? listHeadMine(list) : listHead(list));
     if (bar) nameWhenPast(bar, wrap.querySelector('.lists-title'));
 
-    var ol = el('ol', { className: 'list-items' });
-    list.items.forEach(function (item, i) {
-      ol.appendChild(list.mine ? itemRowMine(item, i) : itemRow(item, i));
-    });
-
-    /* Your own list, and not yet three places long: the rest of the three are
-       drawn as empty rows you can press. An empty list used to be a sentence
-       saying it was empty and a button somewhere below it; three numbered
-       gaps say the same thing and also say how many, which is the part a
-       first list needs to be told. */
-    var short = list.mine ? MIN_ITEMS - list.items.length : 0;
-    for (var slot = 0; slot < short; slot++) {
-      ol.appendChild(slotRow(list.items.length + slot));
-    }
-    wrap.appendChild(ol);
-
-    if (!list.items.length && !list.mine) {
-      wrap.appendChild(el('p', { className: 'lists-none', textContent: t('listsEmpty') }));
-    }
+    /* Three shapes under the head, and they are three different pages: your
+       own list is an editor, somebody else's with nothing on it is one
+       sentence, and somebody else's with places on it is a field over its
+       rows. */
     if (list.mine) {
+      var ol = el('ol', { className: 'list-items' });
+      list.items.forEach(function (item, i) { ol.appendChild(itemRowMine(item, i)); });
+      /* Your own list, and not yet three places long: the rest of the three
+         are drawn as empty rows you can press. An empty list used to be a
+         sentence saying it was empty and a button somewhere below it; three
+         numbered gaps say the same thing and also say how many, which is the
+         part a first list needs to be told. */
+      for (var slot = list.items.length; slot < MIN_ITEMS; slot++) {
+        ol.appendChild(slotRow(slot));
+      }
+      wrap.appendChild(ol);
       wrap.appendChild(el('div', { className: 'lists-row lists-foot' }, [
         /* Under three, the empty rows above are the invitation and a second
            one here would only ask the same question twice. */
-        short > 0 ? null : button(t('listsAddMore'), 'go', openPicker),
+        list.items.length < MIN_ITEMS ? null : button(t('listsAddMore'), 'go', openPicker),
         button(t('listsDelete'), 'alt is-danger', deleteList)
       ]));
+    } else if (!list.items.length) {
+      wrap.appendChild(el('p', { className: 'lists-none', textContent: t('listsEmpty') }));
+    } else {
+      wrap.appendChild(listFind());
+      /* A plain box, with nothing of its own to say or to draw. It is here so
+         that a keystroke repaints the rows without rebuilding the field above
+         them — see paintFound(). */
+      dom.found = el('div');
+      wrap.appendChild(dom.found);
+      paintFound();
     }
     /* Somebody else's list used to end with a way back to the map and then
        three more lists and a way to all of them — this site's directory
@@ -1406,6 +1425,137 @@
     if (!list.mine) wrap.appendChild(listDock());
 
     return wrap;
+  }
+
+  /* ------------------------------------------------------- searching a list
+   * The same field the map's panel puts over the same list — see the search
+   * block in assets/app.js — so both halves of the switch in the bar answer a
+   * word the same way. A list is one thing with two views, and a view you
+   * cannot search is not the same thing as one you can: somebody sent a list
+   * of forty could narrow it on the map and then scroll for the same name
+   * here.
+   *
+   * It looks at the name and the street, which is what the placeholder
+   * promises and what every row here has. The map's copy also reads the type
+   * labels and the dishes, because the map holds the whole catalogue in the
+   * browser; this page is sent its rows already filled out and never sees the
+   * catalogue at all — readList() in functions/api/_lists.js is what an item
+   * carries, and the dishes are not in it. The types are, on the rows out of
+   * google_venues and on no others, which would be worse than absent: typing
+   * "bakery" would find somebody else's places and silently skip mine.
+   *
+   * There is no index, unlike the map's. That one folds eleven hundred places
+   * once because folding them on every keystroke would be work for nothing;
+   * fifty rows is not that, and an index for them would be a second copy of
+   * the list to keep in step with the first.
+   *
+   * Only on somebody else's. Your own list is an editor: its rows are
+   * numbered and carry a grip, and they are dragged into the order that is
+   * the whole point of a top ten — an order there is no sense in rearranging
+   * four rows of.
+   */
+  function listFind() {
+    var input = el('input', {
+      type: 'search',
+      className: 'search-input',
+      autocomplete: 'off',
+      autocorrect: 'off',
+      autocapitalize: 'none',
+      spellcheck: 'false',
+      maxlength: String(MAX_QUERY),
+      'aria-label': t('search'),
+      placeholder: t('listsSearchHint')
+    });
+    /* On the property rather than through el(), for the reason searchField()
+       says: an input's value attribute is its default, not its value. */
+    input.value = state.find;
+
+    var clearBtn = el('button', {
+      type: 'button',
+      className: 'search-clear',
+      'aria-label': t('searchClear'),
+      hidden: !state.find,
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_X + '</svg>'
+    });
+
+    var field = el('div', {
+      className: 'search-field',
+      html: '<svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/></svg>'
+    });
+    field.appendChild(input);
+    field.appendChild(clearBtn);
+
+    /* A form with nothing to submit, for the reason the directory's field has
+       one: a lone input is a Go key on a phone keyboard that reloads the page
+       out from under the rows already on it, and role="search" is how the
+       field says what it is to anybody not looking at the magnifier. */
+    var form = el('form', { className: 'lists-find', role: 'search' }, [field]);
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      input.blur();
+    });
+
+    input.addEventListener('input', function () {
+      clearBtn.hidden = !input.value;
+      findTyped(input.value);
+    });
+
+    clearBtn.addEventListener('click', function () {
+      input.value = '';
+      clearBtn.hidden = true;
+      input.focus();
+      findTyped('');
+    });
+
+    return form;
+  }
+
+  /* Narrowing is instant, because the rows are already here; only the report
+     waits. One event per search rather than one per keystroke — it should say
+     what somebody went looking for, not watch them spell it — and two letters
+     at the least, since one is not a word anybody looked for. */
+  function findTyped(value) {
+    state.find = value;
+    paintFound();
+
+    if (findTimer) window.clearTimeout(findTimer);
+    var term = value.trim();
+    if (term.length < 2) return;
+    findTimer = window.setTimeout(function () {
+      findTimer = null;
+      TTBTrack.event('search', { search_term: term.toLowerCase(), scope: 'list' });
+    }, SEARCH_REPORT);
+  }
+
+  /* The rows, and what a word has left of them. Repainted on its own rather
+     than with the page, because the field above it has to survive a keystroke
+     — the same split the directory makes at .lists-all-body.
+
+     Every word has to land somewhere, so "telliskivi kohvik" narrows rather
+     than widening the way a match on the whole phrase would; the map's
+     matches() splits a query the same way. Nothing typed is no words, and
+     every row matches all nought of them. */
+  function paintFound() {
+    clear(dom.found);
+    var q = fold(state.find).replace(/\s+/g, ' ').replace(/^ | $/g, '');
+    var words = q ? q.split(' ') : [];
+
+    var ol = el('ol', { className: 'list-items' });
+    state.list.items.forEach(function (item, i) {
+      var hay = fold(item.name + ' ' + (item.address || ''));
+      var hit = words.every(function (word) { return hay.indexOf(word) !== -1; });
+      /* Its number on the list rather than its number in the answer: the
+         order is what a top ten is, and a place that is third stays third
+         however few of them a word has left standing. */
+      if (hit) ol.appendChild(itemRow(item, i));
+    });
+
+    if (ol.firstChild) { dom.found.appendChild(ol); return; }
+    dom.found.appendChild(el('p', {
+      className: 'lists-none',
+      textContent: t('searchNone', { q: state.find.trim() })
+    }));
   }
 
   /* The bar over somebody else's list, and the same bar the map's panel draws
@@ -3596,6 +3746,9 @@
       allBody: null,
       /* The list of rows inside it, which the next page is appended to. */
       allList: null,
+      /* And the rows of one list, under its own field. Claimed by renderOne()
+         for the same reason, and null on every other view. */
+      found: null,
       who: $('lists-who'),
       btnRadio: $('btn-radio'),
       radioName: $('radio-name'),

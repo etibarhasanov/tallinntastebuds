@@ -1034,6 +1034,25 @@
 
 /* ---------- the places on a list ---------- */
 
+/* The field over somebody else's list, built out of the same three elements
+   in assets/styles.css that the map's panel and the "add a place" picker use,
+   because it is one tool asked about a different set of rows. Only the box
+   round them is this page's — see listFind() in assets/lists.js for what it
+   looks at and why your own list has none.
+
+   It does not stick, where the directory's row does. That page grows under
+   the reader for as long as they scroll, so a field at the top of it is a
+   field a hundred rows away; a list is fifty at the very most, and the one
+   band worth a permanent place over this page is the bar, which is how you
+   reach the other view of the list. Two of them stacked over a column of
+   names is more chrome than names. */
+.lists-find {
+  /* The token .search-input reads its height from. 40px, like the picker's
+     and the directory's: all three sit where a thumb reaches, rather than in
+     the map's rail. */
+  --search-field-h: 40px;
+}
+
 .list-items {
   list-style: none;
   margin: 0;
@@ -1403,6 +1422,7 @@ body.has-scrim { overflow: hidden; }
   .lists-row,
   .lists-hint,
   .lists-all-search,
+  .lists-find,
   .item.is-slot,
   .lists-foot,
   .item-moves,
