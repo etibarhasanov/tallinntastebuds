@@ -153,7 +153,8 @@ browser cannot import from `tools/`; change one, change the other.
 
 ## What the validator holds a page change to
 
-`tools/validate.mjs`, and CI runs exactly it plus `qrperf --check`:
+`tools/validate.mjs`, and CI runs exactly it plus `qrperf --check` and the
+write gate's `--check`:
 
 - **Parity in `ui.json`**: a key that is a non-empty string in some
   languages and not all fails; every language needs `langName`.

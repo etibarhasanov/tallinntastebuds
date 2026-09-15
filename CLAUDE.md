@@ -26,11 +26,11 @@ what has bitten people already — and an index to the rest.
 What a session tends to spend its first quarter-hour rediscovering, so it
 does not have to:
 
-- **There is no test suite.** `node tools/validate.mjs` and `node
-  tools/qrperf.mjs --check` are the whole of CI. Anything with a visible
-  effect is driven in a browser; the `/site` and `/api` skills say how.
-  Do not go looking for a test runner, and do not write one into a PR that
-  was about something else.
+- **There is no test suite.** `node tools/validate.mjs`, `node
+  tools/qrperf.mjs --check` and `node .claude/hooks/d1-write-gate.mjs --check`
+  are the whole of CI. Anything with a visible effect is driven in a browser;
+  the `/site` and `/api` skills say how. Do not go looking for a test runner,
+  and do not write one into a PR that was about something else.
 - **Line numbers in the docs are not to be trusted; names are.** The skills
   and the README name functions and constants — `applyStyle()`,
   `STORY_HOURS`, `DEAL_KEYS`, `KITCHENS` — and `grep -n` finds them. A line
@@ -280,7 +280,10 @@ place does not exist, `wrangler.toml` pointing preview and production at the
 same database. CI runs exactly this on every push and every PR, with no
 install step in front of it. Warnings never fail the build; errors do. CI runs
 `node tools/qrperf.mjs --check` alongside it, which holds `assets/qr.js` to the
-exact matrix it drew when it was last scanned with a real camera.
+exact matrix it drew when it was last scanned with a real camera, and `node
+.claude/hooks/d1-write-gate.mjs --check`, which runs the gate's own cases so
+that the thing standing between a session and the database cannot be loosened
+without the build saying so.
 
 And before the PR, the pass in `.claude/rules/leave-it-better.md`: read
 every file in the diff end to end and clean up what reading it as a whole
@@ -322,13 +325,13 @@ is small — the small ones are the ones that ship broken.
    run and what was driven in a browser, and anything a person has to do by
    hand after it lands — a schema to apply, a database to load, a staff link
    to send. There is no template.
-5. **CI** runs `node tools/validate.mjs` and `node tools/qrperf.mjs --check`
-   on the push and on the PR. Red CI is yours to fix before anything else
-   happens. **There is no preview URL** — pushing the branch deploys nothing,
-   and the PR's checks carry no Cloudflare link. Anything with a visible
-   effect gets driven under `npx wrangler pages dev .`, and the body says what
-   was driven and how, since that is now the only account of it a reviewer
-   gets.
+5. **CI** runs `node tools/validate.mjs`, `node tools/qrperf.mjs --check` and
+   `node .claude/hooks/d1-write-gate.mjs --check` on the push and on the PR.
+   Red CI is yours to fix before anything else happens. **There is no preview
+   URL** — pushing the branch deploys nothing, and the PR's checks carry no
+   Cloudflare link. Anything with a visible effect gets driven under `npx
+   wrangler pages dev .`, and the body says what was driven and how, since
+   that is now the only account of it a reviewer gets.
 6. **Merge with Rebase and merge**, never a merge commit, never a squash of
    commits that were written to stand alone. **Leave the branch.** A session
    cannot delete one — the git proxy takes a push and silently drops a ref
