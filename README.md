@@ -298,13 +298,31 @@ screen in any sense a visitor would accept. With the sheet dragged to full
 height there is no strip left to judge, and nothing moves — there is no point
 re-framing a map nobody is looking at.
 
-This is mostly felt after **Show my location**. That used to drop you at zoom
-15 wherever you were standing, which on the edge of town is a screen of
+This is mostly felt after **Show my location**. That used to drop you at a
+fixed zoom wherever you were standing, which on the edge of town is a screen of
 streets with no pin on it, and from there every chip you pressed answered with
 the same empty view: the filter had worked, the list behind it had changed,
 and the map said nothing. Now the locate button frames you together with the
 nearest place the chips allow, so you land looking at somewhere you could walk
 to, and the chips keep the map on their own places from then on.
+
+How close that frame goes is `HERE_ZOOM` in `assets/app.js`, and because the
+pair is usually you and a place across the road, the cap is what decides it
+nearly every time rather than the fit. It was 15 until somebody pressed the
+button standing on Telliskivi and got a thumbnail of half of Kalamaja with
+forty other things on it — the dot was on the screen and small enough to lose
+among them. 17 is the street you are standing in, near enough to see which side
+of it a place is on, and the fit still pulls back on its own as the nearest
+place gets further away. The frame allows for the panel as well, so an open
+sheet no longer lands the dot behind itself.
+
+The dot is also drawn in a pane of its own above the marks, which is not where
+Leaflet puts a plain circle: markers sit above the pane circles are drawn in,
+so a dot on the same pixel as a mark went under it — and standing outside
+somewhere is exactly when this button gets pressed. It takes no taps either
+way. A pin the dot covers is still what a finger landing on it opens, and the
+accuracy ring stays behind everything, because a wash the size of a city block
+drawn over the marks would tint every one of them.
 
 Two edges are handled by hand:
 
@@ -7886,7 +7904,7 @@ one shape. The longest pill on the rail is Ukrainian's
 own column above it and a fifth of a 1280px window — the map can spare that.
 
 Next to last on the rail is the locate button, which frames you
-together with the nearest place rather than dropping you at zoom 15 on
+together with the nearest place rather than dropping you at a fixed zoom on
 whatever street you are standing in —
 [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
 has the rest of it. It used to sit in the
