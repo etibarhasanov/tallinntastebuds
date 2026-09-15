@@ -53,7 +53,7 @@ top of the file is the live shortlist and you can work straight down it.
 | *(none)* | 742 | ready to judge |
 | thin review count | 152 | under 60 reviews — rating is not yet reliable |
 | no hours | 77 | missing opening hours upstream |
-| temporarily closed | 66 | `business_status` was `CLOSED_TEMPORARILY` |
+| temporarily closed | 65 | `business_status` was `CLOSED_TEMPORARILY` |
 | already published | 63 | in `data/restaurants.json` already |
 | outside Tallinn | 24 | Haabneeme, Peetri, Viimsi or Miiduranna, not Tallinn — still inside the schema's coordinate bounds |
 | may not be a restaurant | 18 | typed as theatre, grocery, caterer or delivery-only — or, since the sweep was widened to cafés and bars, a barber, a bookshop, a toy shop, a ceramics maker or a sports club that Google also files under coffee |
