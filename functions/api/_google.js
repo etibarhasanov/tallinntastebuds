@@ -84,7 +84,23 @@ export const GOOGLE_PATH = '/api/google';
    purpose: the part in front of it has been a bare project number and is now
    a number and a hash, and a rule strict enough to refuse a format nobody
    here has seen would turn a working sign-in off — which is a worse failure
-   than the one it prevents, because it looks like a decision. */
+   than the one it prevents, because it looks like a decision.
+ *
+   THE PART IN FRONT HAS TO EXIST, THOUGH, AND THAT IS NOT PEDANTRY
+ *
+   `'.apps.googleusercontent.com'.endsWith('.apps.googleusercontent.com')` is
+   true, so a value that is the suffix and nothing else passes a suffix test —
+   and that is not a hypothetical. It is what was in the Pages dashboard on the
+   day Continue with Google shipped: the id had been truncated to its own tail
+   somewhere between the Google console and the Cloudflare one, the secret
+   could not be read back to notice it, and every check here said yes. The
+   site spent the day sending Google `client_id=.apps.googleusercontent.com`
+   and getting *the OAuth client was not found* back, which reads as a deleted
+   client rather than as an empty box.
+ *
+   So googleReady() wants the value to be longer than the suffix as well as to
+   end in it. A body of any length satisfies that, which keeps the deliberate
+   looseness above about what the body may look like. */
 const CLIENT_ID_SUFFIX = '.apps.googleusercontent.com';
 
 /* The characters an id is made of, which is a different question from the
@@ -138,21 +154,23 @@ function clientSecret(env) {
    offering a round trip that ends in an error page on Google's side.
  *
    And the id has to look like an id, which is the other way that round trip
-   ends on Google's error page rather than on ours. Two tests rather than one,
-   and they catch different mistakes: the suffix catches the secret pasted
-   into the id's box — the two values come out of adjacent boxes in the Google
-   console and go into adjacent boxes in the Cloudflare one, and `GOCSPX-…` is
-   a perfectly truthy string that nothing else here could notice — and the
-   character set catches a paste that brought something invisible along with
-   it. Refusing either reads to a visitor as Google simply not being switched
-   on, which is a state this site already has and draws properly; the
-   alternative is a button that every visitor can press and nobody can use.
-   **Turning it on** in README.md says how to tell the two apart from
-   outside. */
+   ends on Google's error page rather than on ours. Three tests rather than
+   one, and each catches a mistake the others do not: the character set
+   catches a paste that brought something invisible along with it; the suffix
+   catches the secret pasted into the id's box, the two values coming out of
+   adjacent boxes in the Google console and going into adjacent boxes in the
+   Cloudflare one, where `GOCSPX-…` is a perfectly truthy string that nothing
+   else here could notice; and the length catches an id truncated to its own
+   suffix, which is the one that actually happened. Refusing any of them reads
+   to a visitor as Google simply not being switched on, which is a state this
+   site already has and draws properly; the alternative is a button that every
+   visitor can press and nobody can use. **Turning it on** in README.md says
+   how to tell these apart from outside. */
 export function googleReady(env) {
   const id = clientId(env);
   return !!(
     CLIENT_ID_CHARS.test(id) &&
+    id.length > CLIENT_ID_SUFFIX.length &&
     id.endsWith(CLIENT_ID_SUFFIX) &&
     clientSecret(env) &&
     env.SAVE_SALT

@@ -62,10 +62,13 @@
 #                      no button. Nothing else changes — a username and a
 #                      password is still the whole of an account without them.
 #
-#                      Whitespace on either is trimmed, and the id must end in
-#                      .apps.googleusercontent.com and be made only of
-#                      letters, digits, dots, hyphens and underscores, or the
-#                      pair counts as absent and no button is drawn. Both are
+#                      Whitespace on either is trimmed, and the id must be
+#                      made only of letters, digits, dots, hyphens and
+#                      underscores, must end in .apps.googleusercontent.com,
+#                      and must be longer than that — a value truncated to
+#                      the bare suffix passes endsWith() and is what broke
+#                      this on the day it shipped. Otherwise the pair counts
+#                      as absent and no button is drawn. Both are
 #                      pasted into boxes that cannot be read back, so a
 #                      trailing newline, a zero-width character in the middle,
 #                      or the secret in the id's box is otherwise invisible
