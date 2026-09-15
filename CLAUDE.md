@@ -221,13 +221,8 @@ Do it again if a review runs long enough for the branch to fall behind again,
 and re-run everything below afterwards each time: replaying your commits over
 somebody else's `assets/` change is exactly what makes the stamps stale.
 
-<<<<<<< HEAD
-Five things in this repo are **generated**. Editing a source without
+Six things in this repo are **generated**. Editing a source without
 re-running its generator is the single most common way to fail CI:
-=======
-Five files in this repo are **generated**. Editing their source without
-re-running the generator is the single most common way to fail CI:
->>>>>>> e32b3d7 (Every filter chip is a list, published under the map's own name)
 
 | After changing | Run | It rewrites |
 |---|---|---|

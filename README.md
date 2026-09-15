@@ -3868,9 +3868,6 @@ naming the day more precisely: when the `GROUP BY` in
 no third option under **Who can open it**. A keep already existed and was a
 private bookmark that nothing consumed; this is the page that consumes it.
 
-<<<<<<< HEAD
-### The bar and the foot
-=======
 ### The chips, as lists
 
 Thirteen of the public lists are the map's own, one per filter chip:
@@ -3943,8 +3940,7 @@ sent. Taking a chip away throws too, and says the part no tool can do — the
 list it wrote is still standing on `/lists`, in both databases, and only a
 hand takes it down.
 
-### On the map
->>>>>>> e32b3d7 (Every filter chip is a list, published under the map's own name)
+### The bar and the foot
 
 Somebody else's list is a page with two fixed edges and a scroll between them.
 At the top, a bar saying which list this is and which of its two views you are
