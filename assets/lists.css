@@ -245,33 +245,6 @@
 .lists-card > .menu { margin-top: 18px; }
 .lists-count { margin-left: auto; color: var(--muted); font-size: 11.5px; letter-spacing: .04em; }
 
-/* ---------- a card that is a door ---------- */
-
-/* Everybody else's lists, the last card on /account.html. It is a whole card
-   and not a row inside one: a .menu-row sets its name at 15.5px, and under a
-   run of cards carrying their titles at the .lists-title above, that read as a
-   footnote in a smaller type rather than as the last card on the page. So it
-   is built like the ones over it — the title, the chevron a fold puts at the
-   end of its own, and the sentence under — and what makes it a door rather
-   than a fold is that the chevron never turns and the title goes somewhere.
-
-   The title is the link and .lists-open stretches it over the face of the
-   card, which is design rule 8: the target is the card, not the width of the
-   word. That is what this rule is for — .lists-open fills the nearest
-   positioned ancestor, and a .card is not one. */
-.lists-door { position: relative; }
-
-/* Laid out like the title of an open fold and not like the title of a card:
-   centred against the chevron, and the same 12px under it that a <summary>
-   leaves over the column it has just opened, so the sentence here starts
-   where those rows do. .lists-title's own 6px above is room for a title
-   sitting under an eyebrow, and there is nothing over this one. */
-.lists-door > .lists-title { align-items: center; gap: 12px; margin: 0 0 12px; }
-.lists-door .lists-open { color: inherit; text-decoration: none; }
-.lists-door:hover .lists-open,
-.lists-door:hover .menu-go { color: var(--accent); }
-.lists-door:hover .menu-go { transform: translateX(2px); }
-
 /* ---------- a card that folds ---------- */
 
 /* A column of things behind its own title: /account.html draws its saved
@@ -1330,7 +1303,6 @@ a.item-name:hover .item-where { color: var(--accent); }
   .list-items.is-sorting .item { transition: none; }
   .item.is-landed { animation: none; }
   .lists-save { transition: none; }
-  .lists-door:hover .menu-go { transform: none; }
 }
 
 /* ---------- the picker ---------- */

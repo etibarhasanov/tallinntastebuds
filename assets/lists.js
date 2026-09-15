@@ -1782,9 +1782,11 @@
      .menu-row, a name in the display face with a chevron on the end. Neither
      looked like a thing you press, which is what somebody reading a list on a
      phone said about both of them in turn. A row is the right shape for a
-     door standing among other rows on a page of cards, which is where
-     /account.html draws this same destination; it is the wrong shape for the
-     one thing in a bar, where there is nothing beside it to be a row of.
+     door standing among other rows on a page of cards, which is what
+     /account.html drew this same destination as for a while; it is the wrong
+     shape for the one thing in a bar, where there is nothing beside it to be
+     a row of. That page has no door to here at all now, which leaves this one
+     and the map's rail.
 
      So it is .go: the filled pill in the accent, which is what "press this"
      looks like everywhere else on this site. Rule 5 allows exactly one of
@@ -1800,12 +1802,13 @@
      either way. The band under it carries the safe inset, so the pill sits
      above a home indicator rather than under one.
 
-     Without the line that says why: t('listsAllWhy') is under the name on
-     /account.html, where it is a row among cards and the line is what says
-     which page is behind it. Two lines of mono in a bar that never leaves the
-     screen took the dock past a tenth of a phone, off a list it is meant to
-     sit under rather than compete with, and a filled button does not need a
-     footnote. */
+     Without the line that says why: t('listsAllWhy') stood under the name on
+     /account.html while that page had a door of its own, where it was a card
+     among cards and the line was what said which page was behind it. Two
+     lines of mono in a bar that never leaves the screen took the dock past a
+     tenth of a phone, off a list it is meant to sit under rather than compete
+     with, and a filled button does not need a footnote. The map's rail says
+     no more than this one does either. */
   function listDock() {
     return el('div', { className: 'lists-dock' }, [
       TTBTrack.click(el('a', {
