@@ -93,13 +93,13 @@ else runs.
 3. `node tools/validate.mjs`. Beyond both SQL files being what their tool
    would write, it holds the directory's vocabulary to the new export:
    - **every `KITCHENS` pattern in `functions/api/venues.js` must still match
-     at least one row.** Seven patterns hang on exactly one venue today —
-     `vietnamese`, `indonesian`, `malaysian`, `filipino`, `greek`, `german`,
-     `peruvian` — so one place leaving the export fails CI until its pattern
-     goes from `venues.js` **and** its label from `data/cuisines.json`,
-     together, because every cuisine id must be producible by a pattern and
-     every pattern's id must have ten labels. The validator's message names
-     the pattern.
+     at least one row.** Eight patterns hang on exactly one venue today —
+     `vietnamese`, `indonesian`, `malaysian`, `filipino`, `taiwanese`,
+     `greek`, `german`, `peruvian` — so one place leaving the export fails CI
+     until its pattern goes from `venues.js` **and** its label from
+     `data/cuisines.json`, together, because every cuisine id must be
+     producible by a pattern and every pattern's id must have ten labels. The
+     validator's message names the pattern.
    - A malformed CSV surfaces here as "the SQL is stale", because the check
      swallows the parser's error. Run the tool by hand to see the real cause.
 4. **Read the diff of the SQL** before it goes anywhere. Being readable

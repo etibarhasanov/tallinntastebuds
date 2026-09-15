@@ -96,8 +96,8 @@ export const KITCHENS = [
   ['filipino',         /filipino/],
   ['taiwanese',        /taiwanese|bubble tea/],
   ['indian',           /indian|curry|tandoor/],
-  /* The pan-Asian rows, and it earns its place beside the eight above: twenty
-     three places say only this and nothing more exact. */
+  /* The pan-Asian rows, and it earns its place beside the eight above:
+     twenty-seven places say only this and nothing more exact. */
   ['asian',            /\basian\b|noodle|dumpling|wok/],
   ['middle-eastern',   /middle eastern|kebab|shawarma|falafel|lebanese|hummus/],
   ['turkish',          /turkish|doner|pide|baklava/],
@@ -242,7 +242,7 @@ function entry(row) {
   const week = venueHours(row.opening_hours);
   if (week.length) out.hours = week;
 
-  /* Thirty-two of these are also places on my map, and on this page that is
+  /* Sixty of these are also places on my map, and on this page that is
      the most interesting thing a row can say: it is what turns "Google rates
      this 4.6" into a link to somewhere I have actually eaten. */
   if (row.map_id) out.mapId = row.map_id;
