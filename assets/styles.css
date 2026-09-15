@@ -3476,9 +3476,19 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      dvh or gets it wrong; the plain vh line stays in front for one that has
      neither. The last term is the floor: whatever else happens the sheet
      leaves the chrome strip and the chip row showing, which is a way back out
-     and the filters besides. */
-  body { --sheet-h: min(82vh, 720px); }
-  body { --sheet-h: min(calc(var(--vph, 100dvh) * .82), 720px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
+     and the filters besides.
+
+     TWO STOPS, AND .sheet-full IS THE TALLER ONE
+
+     Every sheet has both. Bare is the half stop — the one a drag down lands
+     on, with half the map back — and .sheet-full is where a sheet opens and
+     where the grip puts it back; sheetStops() in assets/app.js holds the same
+     two numbers, because a drag settles on a height this then has to agree
+     with. A place's full stop is taller still, further down this block. */
+  body { --sheet-h: min(50vh, 470px); }
+  body { --sheet-h: min(calc(var(--vph, 100dvh) * .5), 470px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
+  body.sheet-full { --sheet-h: min(82vh, 720px); }
+  body.sheet-full { --sheet-h: min(calc(var(--vph, 100dvh) * .82), 720px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
 
   /* On a phone there is no room for the tagline, and with the tagline gone
      there is nothing left in the card that needed a card. What stands on the
@@ -3789,22 +3799,30 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      the fully dragged-up sheet, so it stays where it is and the filters can
      be changed with the list open. */
 
-  /* Two stops. A detail sheet opens at the full one: a place you tapped is a
-     page to read, and at the half stop the reel under the name was sliced
-     across the bottom edge of the screen. Drag the grip down for the half
-     stop, where the map keeps the other half and the chosen pin has somewhere
-     to be. The map is not worth much while you are reading anyway, so the
-     rail steps out of the way at full height.
+  /* A place is the one sheet whose full stop is taller than the rest. It
+     opens at it: a place you tapped is a page to read, and at the half stop
+     the reel under the name was sliced across the bottom edge of the screen.
+     Drag the grip down for the half stop it shares with the others, where the
+     map keeps its half and the chosen pin has somewhere to be.
 
      Surprise me opens at the half stop instead — a place nobody chose is a
      question about where it is — which is also what keeps the rail on screen
      for the press that rolls again. selectPlace() in assets/app.js decides
      which of the two a place arrives at; both stops are these two rules. */
-  body.panel-detail { --sheet-h: min(50vh, 470px); }
-  body.panel-detail { --sheet-h: min(calc(var(--vph, 100dvh) * .5), 470px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
   body.panel-detail.sheet-full { --sheet-h: min(88vh, 780px); }
   body.panel-detail.sheet-full { --sheet-h: min(calc(var(--vph, 100dvh) * .88), 780px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
-  body.sheet-full .rail { opacity: 0; pointer-events: none; }
+
+  /* And the rail steps out of the way behind the two sheets that leave it no
+     strip to stand on: a place at 88% of the screen, and the chat.
+
+     This used to read .sheet-full, which is those two — the only sheets that
+     set the class — and left the list its rail by accident of the list having
+     no full stop to be at. Now that it has one, the rule names them. The
+     list's stop is shorter, its row of buttons clears the chips above it, and
+     what the rail asks are questions about the map, which is exactly what
+     somebody reading a list of names still has one of. */
+  body.panel-detail.sheet-full .rail,
+  body.panel-ask .rail { opacity: 0; pointer-events: none; }
   .rail { transition: opacity .2s var(--ease); }
 
   /* With the sheet up, a vertically centred rail sits behind it and Surprise

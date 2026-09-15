@@ -519,7 +519,10 @@ Escape empties the field; a second Escape closes the panel, which is what a
 browser's own search boxes do. On a phone the field is 16px, because anything
 smaller makes iOS zoom the whole page on focus and never zoom back out — and
 see **The sheet** in the design notes for what happens to a fixed bottom sheet
-when the keyboard opens over it.
+when the keyboard opens over it. Tapping it while the sheet is at its half stop
+takes the sheet back up to the full one first, because the keyboard comes off
+the sheet's own height and there is not enough of a half stop left to type
+into.
 
 ---
 
@@ -8391,19 +8394,47 @@ into a smear at low zoom, and by 18 you are looking at one doorway.
 floor under it: whatever else happens it leaves 110px of the screen showing,
 which is the chrome strip and the chip row. That strip is the way back out.
 
-A place opens the sheet at its full stop — 88% of the screen — because tapping
-a place is a request for the place, not for the map: it is the restaurant's
-page as far as a phone is concerned, and the name, the reel and the write-up
-are on one screen. It used to open at a half stop, on the reasoning that the
-point of opening a place is to see where it is, which put the player half on
-the screen and half under the bottom edge and a scroll between you and the
-thing you had tapped for. The half stop is still there — drag the grip down —
-and the strip above the full sheet still holds the pin, the chips and the way
-out.
+**Every sheet has two stops, and it opens at the taller one.** A half stop at
+50% of the screen, shared by all three, and a full stop above it: 88% for a
+place, 82% for the list and the chat. Drag the grip, swipe the sheet, or tap
+the grip to swap, and `sheetStops()` in `assets/app.js` holds the same numbers
+the `--sheet-h` block in `assets/styles.css` draws, because a drag settles on a
+height the stylesheet then has to agree with.
+
+A place opens at its full stop because tapping a place is a request for the
+place, not for the map: it is the restaurant's page as far as a phone is
+concerned, and the name, the reel and the write-up are on one screen. It used
+to open at the half stop, on the reasoning that the point of opening a place is
+to see where it is, which put the player half on the screen and half under the
+bottom edge and a scroll between you and the thing you had tapped for. The
+strip above the full sheet still holds the pin, the chips and the way out.
 
 The one place that opens at the half stop by itself is **Surprise me**, because
 a name nobody chose is a question about where it is before it is anything else.
 [Surprise me](#surprise-me) has the argument.
+
+**The list used to have one stop, and dragging it down was the only thing that
+gesture could mean.** It meant close, at a quarter of the way down, which is
+how somebody pulling a list they had been sent aside to see where the places
+were lost the list: the sheet followed the finger all the way off the bottom of
+the screen, the map settled back on the whole city, and the whole thing read as
+the page having reloaded. The half stop is what the gesture was asking for and
+is now what it gets — half the map back, with the search field, the list's name
+and the first rows still on screen.
+
+Closing by hand is still the first thing a hand tries, and it is now two
+things. Below the half stop the sheet stops following the finger one for one:
+it gives a third of what it is pulled and no more than 90px, so a drag meets a
+floor rather than throwing the sheet away, and letting go 60px into that floor
+— 180px of real travel past the stop — is what closes it. From the half stop
+that is an ordinary dismissing swipe. From the full stop it is half the height
+of a phone, which is a thing you have to mean.
+
+**A field takes the sheet back up with it.** The keyboard comes off the
+sheet's own height, so at the half stop the search box and the chat's would
+both end up as a strip of paper above the keys with the thing being typed into
+somewhere underneath. Focus is the moment a field says it is about to be typed
+in, so it is the moment the room goes back.
 
 It is sized against `--vph`, which is `window.innerHeight` written back to CSS
 on every resize and every time the visual viewport moves under it, falling back
@@ -8422,7 +8453,9 @@ rather than eating into it.
 
 Which leaves four ways back from a sheet standing open, all of them on screen:
 **swipe it down**, the close button, a tap on the grip, and **Places** in the
-chrome strip above.
+chrome strip above. The middle two are the ones that only do one thing — a tap
+on the grip swaps the two stops, and the button closes it — and the swipe does
+whichever of them the pull asks for.
 
 The swipe arms only at the very top of the sheet's own scroll and only on a
 downward move, so scrolling the list still scrolls the list: the first
