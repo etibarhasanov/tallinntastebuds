@@ -774,12 +774,23 @@ narrows my places with, hands the model the forty likeliest, and hands the
 browser those same forty so it can draw and pin whichever the model names.
 The cut is generous on purpose: its one job is "plausibly what was asked
 for", and the choosing happens once, in the model, over my places and these
-together — with Google's own score breaking ties among Google's rows, which
-on Google's rows is the only honest tie-break there is. A question that
-scores no Google row at all — a mood, a greeting — gets the fifteen
-best-rated instead of forty: that list is on every question now, and thirty
-well-rated lines nothing in the question points at were the part of the
-prompt mostly never chosen from. A Google row an earlier answer in the
+together — with Google's rating breaking ties among Google's rows, weighed
+by the count behind it the same way the five top tens are weighed. That
+weighing is not a refinement. Read raw, a rating is not an order at all:
+five from twenty-six reviews outranks 4.8 from four hundred and
+seventy-five, so "greek food" came back led by a place twenty-six people had
+rated, with Varkizana — the one Greek kitchen in the export — fifth; and the
+fifteen "best-rated" shown to a question that scored nothing were the
+fifteen places fewest people had rated at all. Pulled towards the city's own
+mean by a prior of three hundred reviews, they are Rataskaevu 16 and Vegan
+Restoran V. The prior is the one `tools/googlelists.mjs` uses, deliberately
+— the lists and the chat read one export and should not disagree about what
+a rating is worth — but the lists' hundred-review floor is not, because this
+is a search as much as a ranking and a quarter of the open rows sit under
+it. A question that scores no Google row at all — a mood, a greeting — gets
+the fifteen best-rated instead of forty: that list is on every question now,
+and thirty well-rated lines nothing in the question points at were the part
+of the prompt mostly never chosen from. A Google row an earlier answer in the
 thread named rides along whatever the new question scored, so that a
 follow-up about it can still name it.
 

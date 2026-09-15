@@ -80,7 +80,9 @@
  * model the forty likeliest, and hands the browser those same forty so it
  * can draw and pin whichever the model names. The cut is generous on purpose:
  * its one job is "plausibly what was asked for", and the choosing happens
- * once, in the model, over my places and these together. A question that
+ * once, in the model, over my places and these together, with Google's
+ * rating — weighed by the count behind it, never raw; see PRIOR — putting
+ * Google's rows in order among themselves. A question that
  * scores no Google row at all gets a shorter list of the best-rated instead
  * of the full forty — see MIN_CANDIDATES — because that list is now on every
  * question, and thirty lines of well-rated restaurants that nothing in the
@@ -277,6 +279,48 @@ const SPENT = '3036';
    rated"; my own floor of twenty is what a mood question answers off. */
 const MAX_CANDIDATES = 40;
 const MIN_CANDIDATES = 15;
+
+/* How many reviews a Google row needs before its own rating is worth as much
+ * as the city's, when two rows are being put in order — see weigh() below.
+ *
+ * Google's rating on its own is not an order. Five from twenty-six reviews
+ * outranks 4.8 from four hundred and seventy-five on any comparison that
+ * reads the number alone, and "greek food" came back led by Don Kartashon at
+ * five from twenty-six, with Varkizana — the one Greek kitchen in the whole
+ * export, 4.8 from four hundred and seventy-five — fifth. The list under a
+ * question that scored nothing was worse, because there the rating is the
+ * only thing ordering it: the fifteen "best-rated" were fifteen places with
+ * between twenty-six and a hundred and sixty-five reviews, which is a list
+ * of who has been rated least, not best. Weighed, they are Rataskaevu 16 and
+ * Vegan Restoran V.
+ *
+ * The arithmetic is the site's and is now written out three times, the same
+ * in all three — (n * rating + PRIOR * mean) / (n + PRIOR), with mean the
+ * review-weighted mean of the roll being ordered. weigh() in
+ * assets/venues.js is the directory's "Best overall", tools/googlelists.mjs
+ * is the five top tens, and this is the chat. No one of the three can import
+ * from either other — a browser file in ES5, a Node tool, and the Workers
+ * runtime — so they are copies the way PIN_GLYPHS and the story clock are
+ * copies, and a change to the formula is a change to all three.
+ *
+ * The prior itself is deliberately not the same in all three: a hundred in
+ * the directory, three hundred in the top tens, and three hundred here. The
+ * directory's header argues the split and it holds for the chat — that page
+ * orders eleven hundred rows somebody scrolls, where a place slipping from
+ * ninth to fourteenth costs nobody anything, and this hands somebody three
+ * names. A place the top tens call the best in the city should not come
+ * tenth in the chat because the two disagree about what a rating is worth.
+ *
+ * What does not come with it is FLOOR. The top tens drop anything under a
+ * hundred reviews, because a public top ten with a five-from-three on it is
+ * a top ten nobody believes; but this is a search as much as a ranking, two
+ * hundred and sixty-five of the thousand-odd open rows are under that
+ * hundred, and somebody asking for the one Georgian bakery in Lasnamäe
+ * should reach it whether or not forty people have rated it. The prior alone
+ * is enough to stop a thin row leading a list — it pulls five from
+ * twenty-six to 4.44, below Varkizana's 4.64 — without putting a quarter of
+ * the city out of reach of a question that names it. */
+const PRIOR = 300;
 
 /* How much farther than the nearest place of the kind asked for a pick may
    be, in kilometres, when the question asked for somewhere near — the
@@ -493,10 +537,12 @@ function cooksOf(rows) {
  * fresh because it is a cached GET; this is a POST and has to remember for
  * itself.
  *
- * Each row is carried three ways at once: the card the browser draws (see
- * venueCard() in _lib.js), the week for "open now", and a folded haystack of
- * everything Google says about it, which is what a question's leftover words
- * are matched against.
+ * Each row is carried four ways at once: the card the browser draws (see
+ * venueCard() in _lib.js), the week for "open now", Google's rating weighed
+ * by the count behind it, which is what puts two of these rows in order when
+ * the question scored them the same, and a folded haystack of everything
+ * Google says about it, which is what a question's leftover words are
+ * matched against.
  */
 let venues = null;
 let venuesAt = 0;
@@ -533,16 +579,43 @@ async function googleVenues(env) {
     return [];
   }
 
+  /* What the city rates itself, weighed by how many people did the rating,
+     and the number every row's own rating is pulled towards — see PRIOR. It
+     is the roll's mean rather than a constant because it is the roll's own
+     middle: a refresh that brings in two hundred new rows moves what an
+     average place is, and a prior that did not move with it would be an
+     opinion about the export from the day it was written. Computed once
+     beside the roll, and cached with it. */
+  let stars = 0;
+  let votes = 0;
+  for (const row of rows) {
+    if (typeof row.rating !== 'number' || typeof row.reviews !== 'number') continue;
+    stars += row.rating * row.reviews;
+    votes += row.reviews;
+  }
+  const mean = votes ? stars / votes : 0;
+
   venues = rows.map((row) => ({
     card: {
       ...venueCard(row),
       kitchens: kitchensOf(row)
     },
     week: venueHours(row.opening_hours),
+    weighed: weigh(row.rating, row.reviews, mean),
     hay: foldWords([row.name, row.category, row.cuisine, row.tags, row.address].join(' '))
   }));
   venuesAt = Date.now();
   return venues;
+}
+
+/* Google's rating, worth what the count behind it says it is worth: a row's
+   own rating and the roll's mean, each weighed by how many reviews stand
+   behind them. Under PRIOR reviews the mean carries most of it, over PRIOR
+   the row's own does, and a row Google has no numbers for sits at the mean
+   rather than at nothing — it is unrated, not bad. */
+function weigh(rating, reviews, mean) {
+  if (typeof rating !== 'number' || typeof reviews !== 'number') return mean;
+  return (reviews * rating + PRIOR * mean) / (reviews + PRIOR);
 }
 
 /* The wish as the browser read it, checked to a shape rather than trusted.
@@ -690,22 +763,24 @@ function readHistory(raw) {
  * chooses over my places and these together, and a roll cut on a different
  * scale from the other would be the roll whose best rows the model never
  * saw. Change one and look at the other. Ties go to the nearer row when
- * somebody said where they are, then to Google's own score and the count
- * behind it, which on Google's rows is the honest tie-break and the only
- * one there is.
+ * somebody said where they are, then to Google's rating weighed by the count
+ * behind it — see PRIOR, and note that it is a weighing and not the rating
+ * itself, because the raw number put a place with twenty-six reviews above
+ * one with four hundred and seventy-five.
  *
  * A row an earlier answer in the thread named comes whatever it scores now,
  * ahead of everything: "is the second one open late" scores nothing in the
  * export, and the second one has to be in the lists for the model to say.
  *
- * Rows that score nothing come too, best-rated first, but only up to the
- * smaller floor. A vague question — "somewhere nice", "not sure" — scores
- * no Google row, and it used to get the full forty best-rated so that the
- * city was there to choose from. It still is, fifteen of it: the rest of
- * the forty was lines nothing in the question pointed at, read on every
- * question and nearly never named — see MIN_CANDIDATES. My own places have
- * had a floor since they were narrowed; this is the same idea for the other
- * roll.
+ * Rows that score nothing come too, best-rated first — weighed, so that is
+ * Rataskaevu 16 and Vegan Restoran V rather than the fifteen places fewest
+ * people have got round to rating — but only up to the smaller floor. A
+ * vague question — "somewhere nice", "not sure" — scores no Google row, and
+ * it used to get the full forty best-rated so that the city was there to
+ * choose from. It still is, fifteen of it: the rest of the forty was lines
+ * nothing in the question pointed at, read on every question and nearly
+ * never named — see MIN_CANDIDATES. My own places have had a floor since
+ * they were narrowed; this is the same idea for the other roll.
  *
  * What comes back is the card, with the distance and the folded haystack on
  * it for the rules to read after the model has answered — both stripped
@@ -738,8 +813,7 @@ function candidates(roll, wish, now, named, at) {
   scored.sort((a, b) =>
     b.score - a.score ||
     (a.far || 0) - (b.far || 0) ||
-    (b.venue.card.rating || 0) - (a.venue.card.rating || 0) ||
-    (b.venue.card.reviews || 0) - (a.venue.card.reviews || 0));
+    b.venue.weighed - a.venue.weighed);
 
   const hits = scored.filter((hit) => hit.score > 0).slice(0, MAX_CANDIDATES);
   const fill = scored.filter((hit) => hit.score === 0)
