@@ -1,13 +1,15 @@
 /**
  * Tallinn Tastebuds — the chat box on the map, answered.
  *
- * POST /api/ask   { q, lang, scope, wish, here, history }
- *                 ->  { ok, source, picks, say, open, venues, at }
+ * POST /api/ask   { q, lang, wish, here, history }
+ *                 ->  { ok, source, note, model, picks, say, open, venues, at }
  *
  * Somebody types "somewhere cheap and asian, still open" into the map and this
- * turns it into one to three places off my own list, each with a line saying
- * why. It is the only route here that calls a language model, and the only one
- * that is allowed to answer with nothing and still be working correctly.
+ * turns it into one to three places, each with a line saying why — off my own
+ * list first, and off Google's description of the rest of the city when that
+ * is where the answer is. It is the only route here that calls a language
+ * model, and the only one that is allowed to answer with nothing and still be
+ * working correctly.
  *
  * IT IS A CONVERSATION
  *
@@ -31,35 +33,41 @@
  * a real place is a bad recommendation; a hallucinated place is a lie the site
  * told in its own voice, and this shape makes the second one unreachable.
  *
- * TWO ROLLS, AND WHICH ONE IS ASKED
+ * TWO ROLLS, ONE ASK
  *
  * This site has two lists of places and the difference is the point — see the
  * header of /api/venues. The seventy-five in data/restaurants.json are places
  * I have been to and written up; the eleven hundred in `google_venues` are
- * Google's description of the city. The question arrives with a `scope`:
+ * Google's description of the city. Every question is asked of both at once,
+ * and the model is told how the two stand to each other: mine first, because
+ * I have been there and can vouch for it, and a Google row only when its own
+ * line carries what was asked for and my map has nothing that does as well —
+ * a cuisine or a dish the map does not have, a part of town it does not
+ * reach. Never to fill an answer out. Every Google row goes out wearing
+ * Google's name, Google's score and none of my words, drawn on the same
+ * "According to Google" card a list draws for a place off that export. It is
+ * not a recommendation and the card says so.
  *
- *   map   my places and nothing else. The model is shown no Google row, so
- *         it cannot name one; a question the map cannot answer is answered
- *         with a shrug and a nudge towards the other button. It used to be
- *         answered off the city, with the pressed button moved to All
- *         Tallinn behind the reader's back, and that read as the switch
- *         working the wrong way round. Being on the map is the verdict, and
- *         an answer off this roll is a recommendation.
- *   all   the city, and both of it: every answer names at least one place
- *         of mine and at least one from the rest of Tallinn. That is the
- *         rule the model is given, in those words, because without it every
- *         answer leant on my map whatever the button said — my lines carry
- *         a dish and a write-up and Google's carry a rating, and a model
- *         asked for a reason reaches for the line it can give one from.
- *         Every Google row goes out wearing Google's name, Google's score
- *         and none of my words, drawn on the same "According to Google"
- *         card a list draws for a place off that export. It is not a
- *         recommendation and the card says so.
+ * It used to be a choice, made before anything could be typed: the map, or
+ * all of Tallinn, as two buttons under the site's first line, with a rule on
+ * the second that every answer name at least one place from each roll. The
+ * owner took the choice out — nobody opening a chat wants to be asked which
+ * of two maps they mean before they can say what they want, and the map
+ * without the city is a smaller answer to the same question. The one-of-each
+ * rule went with it, and not only because nothing asks for the city any
+ * more: a rule that demands a Google place in every answer produces one
+ * whether or not any fits, and a small model told to find a reason for it
+ * writes the question's word under whatever row it settled on. That is
+ * where "kebab place" under an Indian kitchen came from. What holds a
+ * pick to the question now is the other way round — see THE RULES below.
  *
- * Google's roll is read on the `map` scope for exactly one thing, opening
- * hours, joined on `google_venues.map_id` — the column that says which Google
- * row is which of my places. Sixty of my seventy-five have one. The other
- * fifteen simply have no hours, and an answer about them says nothing about
+ * Google's roll is read a second way, joined on `google_venues.map_id` — the
+ * column that says which Google row is which of my places. Sixty of my
+ * seventy-five have one, and it lends each of them two things the map does
+ * not record: the opening hours, and what Google files the place as cooking,
+ * in the directory's cuisine ids, so that "thai" scores my Thai place the
+ * way it scores Google's and the line the model reads says so. The other
+ * fifteen simply have neither, and an answer about them says nothing about
  * hours rather than guessing.
  *
  * ELEVEN HUNDRED ROWS DO NOT GO INTO A PROMPT
@@ -70,12 +78,26 @@
  * produces: types and price and open-now, what to be near, and the words
  * left over — and this narrows the export with the same scoring, hands the
  * model the forty likeliest, and hands the browser those same forty so it
- * can draw and pin whichever the model names. The cut is generous on purpose: its one job is
- * "plausibly what was asked for", and the choosing happens once, in the
- * model, over my places and these together.
+ * can draw and pin whichever the model names. The cut is generous on purpose:
+ * its one job is "plausibly what was asked for", and the choosing happens
+ * once, in the model, over my places and these together. A question that
+ * scores no Google row at all gets a shorter list of the best-rated instead
+ * of the full forty — see MIN_CANDIDATES — because that list is now on every
+ * question, and thirty lines of well-rated restaurants that nothing in the
+ * question points at is the one part of the prompt that is mostly never
+ * chosen from.
  *
- * The forty go only on the city. On the map the model is shown none, which
- * is what makes the map scope mean what it says.
+ * THE RULES
+ *
+ * Three things the brief asks for are also checked, once, and a reply that
+ * breaks one is shown its own answer and asked again — see the block under
+ * askModel(). The kind: when the question named a kind of place, every pick
+ * is of that kind. The dish: when it named a dish or a cuisine, every pick's
+ * line carries it. The distance: when it asked for somewhere near, every pick
+ * of the kind asked for is among the nearest of that kind. Each is enforced
+ * only when the lists actually hold a place that satisfies it; when they do
+ * not, an empty answer saying so is the right one and nothing here can tell
+ * it from a wrong one.
  *
  * WHERE THE VISITOR IS
  *
@@ -162,8 +184,9 @@ import { json, mapPlaces, nearTallinn, venueCard, venueHours, wrongDatabase } fr
    decides it — and in the order the directory says them, so a card here reads
    the same as a card there. See the note above KITCHENS for why it is that
    table and not VENUE_TYPES — "thai" is a thing to ask for, and the map's own
-   vocabulary says only "asian". */
-import { kitchensOf } from './venues.js';
+   vocabulary says only "asian". The table itself is read too, by the dish
+   rule, as the one list this site has of words that mean food. */
+import { kitchensOf, KITCHENS } from './venues.js';
 /* The one lookup behind /api/geocode's suggestions, asked here for where a
    visitor said they are. See WHERE THE VISITOR IS above. */
 import { suggest } from './geocode.js';
@@ -171,9 +194,36 @@ import { suggest } from './geocode.js';
 /* A model that is on the Workers Free plan, and a fast one. Cloudflare has
    moved the larger ones behind Workers Paid before now — @cf/moonshotai/kimi-k2.6
    and @cf/zai-org/glm-5.2 went that way in July 2026 — so the one named here
-   is deliberately from the list that stayed free, and changing it is this
-   line. A model that has been moved answers 403 and is handled like any
-   other failure below: the browser reads the question itself.
+   is deliberately from the list Cloudflare said stayed free, and changing it
+   is this line and nothing else: no key, no binding, no dashboard. A model
+   that has been moved answers 403 and is handled like any other failure
+   below: the chat says nothing answers, and `note` says the model did not.
+
+   Which model answered is in every reply as `model`, beside `note`, so a
+   change here is checked from outside with one request —
+
+     curl -s -X POST https://tallinntastebuds.ee/api/ask \
+       -H 'content-type: application/json' -d '{"q":"cheap ramen"}' \
+       | grep -o '"note":"[^"]*","model":"[^"]*"'
+
+   — and `note: "workers-ai"` beside the name is the model being heard, where
+   `workers-ai-none` is a model that did not answer or answered nothing this
+   could read, and `workers-ai-spent` is the day's allowance gone.
+
+   What it costs is the reason it is this one. Workers AI prices every model
+   in Neurons and gives ten thousand a day free; this one is 5,500 Neurons a
+   million tokens in and 36,400 out (Cloudflare's pricing page, September
+   2026), and a question here is around five thousand tokens in — two lists
+   and the rules — and three hundred out, so about forty Neurons a question
+   and something like two hundred and fifty questions a day, a retry under
+   one of the rules counting as a second question. The only cheaper model on
+   the free list that reads more than English, @cf/meta/llama-3.1-8b-instruct-fp8-fast,
+   saves a quarter of that and is weaker in Estonian and Armenian; the rest
+   cost two to eight times as much a token. So the allowance is stretched by
+   sending fewer tokens, not by changing the name: MIN_CATALOGUE and
+   MIN_CANDIDATES are the floors, BLURB_CHARS the clause, MAX_HISTORY the
+   thread, and the Cloudflare dashboard's Workers AI page shows the day's
+   Neurons spent when it is worth knowing where an afternoon went.
 
    It started life on @cf/google/gemma-4-26b-a4b-it, which was the slow part
    of the whole feature: a reasoning model, thinking through several hundred
@@ -181,8 +231,7 @@ import { suggest } from './geocode.js';
    sometimes used up. This one is a quarter of the size, built for latency,
    and reads all ten of this site's languages; and thinking is switched off
    below either way, because picking three lines out of a list is not a
-   thing to deliberate over. @cf/meta/llama-3.1-8b-instruct-fast is the
-   other reasonable choice, and weaker in Estonian and Armenian. */
+   thing to deliberate over. */
 const MODEL = '@cf/zai-org/glm-4.7-flash';
 
 /* Long enough for a real sentence in any of the ten languages, short enough
@@ -219,16 +268,23 @@ const MAX_HISTORY = 10;
    than on the sentence because the sentence is Cloudflare's to reword. */
 const SPENT = '3036';
 
-/* How many Google rows go to the model, and back to the browser, on the
-   whole city. On the map, none: see the two scopes in the header. */
+/* How many Google rows go to the model, and back to the browser: the forty
+   that scored best when the question named anything, and when it named
+   nothing — a mood, a greeting — only the fifteen best-rated, since every
+   question now carries this list and a floor of forty well-rated lines that
+   nothing in the question points at was the part of the prompt mostly never
+   chosen from. Fifteen is still a city to choose from for "somewhere highly
+   rated"; my own floor of twenty is what a mood question answers off. */
 const MAX_CANDIDATES = 40;
+const MIN_CANDIDATES = 15;
 
 /* How much farther than the nearest place of the kind asked for a pick may
    be, in kilometres, when the question asked for somewhere near — the
-   third rule under askModel(). A kilometre: "coffee close to me" is a
+   distance rule under askModel(). A kilometre: "coffee close to me" is a
    question about the corner, and a café three kilometres past the nearest
-   one is a different corner. Measured per roll, since on the city the
-   one-of-each rule wants a place from each. */
+   one is a different corner. Measured per roll, so that the nearest place
+   of mine stays an answer beside a Google row on the corner rather than
+   being ruled out by it. */
 const NEAR_SLACK = 1;
 
 /* How many of my own places go to the model.
@@ -240,6 +296,9 @@ const NEAR_SLACK = 1;
  * of it was chosen. Narrowed, with the blurbs cut to a clause, a question is
  * about 1,500 tokens and the same free allowance runs to roughly three
  * hundred.
+ *
+ * That was the map alone; with the city's rows on every question the whole
+ * of what one costs is the arithmetic above MODEL.
  *
  * So my places are now narrowed the way the export already was, by the same
  * scoring, and the floor is what makes that safe. A question that names a
@@ -357,47 +416,51 @@ function openUntil(week, now) {
   return '';
 }
 
-/* My places that are open right now, as id -> the time it shuts.
+/* The Google rows that are my places — every row linked to one of mine on
+ * `map_id` — read for the two things they lend the map: the week, and what
+ * Google files the place as cooking.
  *
- * One statement with no parameters and sixty rows back: every Google row that
- * has been linked to a place of mine. It is not venuesByIds() in _lib.js,
- * which goes the other way — a handful of Google keys in, their whole entries
- * out — and asking it this question would mean knowing the Google key for each
- * of my places before asking, which is the thing this join exists to answer.
+ * One statement with no parameters and sixty rows back. It is not
+ * venuesByIds() in _lib.js, which goes the other way — a handful of Google
+ * keys in, their whole entries out — and asking it this question would mean
+ * knowing the Google key for each of my places before asking, which is the
+ * thing this join exists to answer.
  *
- * A database that is missing, wrong or simply has nothing linked yet gives an
- * empty answer, and every caller of this reads that as "no hours known" rather
- * than as "nothing is open".
+ * Kept a minute: the join changes when somebody links a row in the database,
+ * which is a monthly thing, and a D1 round trip a question for it was
+ * measurable on the slow path. A minute rather than five so a link made by
+ * hand shows up while the person is still looking. A database that is
+ * missing, wrong or simply has nothing linked yet gives an empty list, and
+ * both readers of it take that as "not known" rather than as "none".
  */
 let linked = null;
 let linkedAt = 0;
 
-async function openPlaces(env, now) {
-  if (!env.DB) return {};
+async function linkedRows(env) {
+  if (linked && Date.now() - linkedAt < 60000) return linked;
+  if (!env.DB) return [];
 
-  /* The sixty linked rows, kept a minute: the join changes when somebody
-     links a row in the database, which is a monthly thing, and a D1 round
-     trip a question for it was measurable on the slow path. A minute rather
-     than five so a link made by hand shows up while the person is still
-     looking. */
-  let rows = linked;
-  if (!rows || Date.now() - linkedAt > 60000) {
-    rows = [];
-    try {
-      const out = await env.DB
-        .prepare(
-          'SELECT map_id, opening_hours FROM google_venues ' +
-          "WHERE map_id IS NOT NULL AND opening_hours != '' AND status = 'Open'"
-        )
-        .all();
-      rows = out.results || [];
-    } catch (e) {
-      return {};
-    }
-    linked = rows;
-    linkedAt = Date.now();
+  let rows = [];
+  try {
+    const out = await env.DB
+      .prepare(
+        'SELECT map_id, opening_hours, category, cuisine, tags FROM google_venues ' +
+        "WHERE map_id IS NOT NULL AND status = 'Open'"
+      )
+      .all();
+    rows = out.results || [];
+  } catch (e) {
+    return [];
   }
+  linked = rows;
+  linkedAt = Date.now();
+  return rows;
+}
 
+/* My places that are open right now, as id -> the time it shuts. Every
+   caller reads an empty answer as "no hours known", never as "nothing is
+   open". */
+function openPlaces(rows, now) {
   const open = {};
   for (const row of rows) {
     const shuts = openUntil(venueHours(row.opening_hours), now);
@@ -406,8 +469,20 @@ async function openPlaces(env, now) {
   return open;
 }
 
+/* What Google files each of my places as cooking, as id -> the directory's
+   cuisine ids: kitchensOf() over the linked row, exactly as a card in the
+   directory gets them. Nothing on my map records a cuisine beyond a place's
+   name and its dishes, so until this "thai" reached my Thai place only when
+   its write-up happened to say the word, while it scored every Thai row of
+   Google's four. */
+function cooksOf(rows) {
+  const cooks = new Map();
+  for (const row of rows) cooks.set(row.map_id, kitchensOf(row));
+  return cooks;
+}
+
 /* ---------------------------------------------------------------- Google
- * The rest of the city, for a question asked on the `all` scope.
+ * The rest of the city, for every question.
  *
  * Every open, unhidden, still-present row that is not already one of my
  * places — those sixty are on the map roll with a write-up, and offering the
@@ -623,17 +698,21 @@ function readHistory(raw) {
  * ahead of everything: "is the second one open late" scores nothing in the
  * export, and the second one has to be in the lists for the model to say.
  *
- * Rows that score nothing come too, best-rated first, up to the cap. Without
- * that a vague question — "somewhere nice", "not sure" — scored no Google
- * row and sent none, so a visitor who pressed All Tallinn and asked for a
- * mood could only ever be answered off my map: the model had no city to
- * choose from. My own places have had that floor since they were narrowed;
- * this is the same floor for the other roll. Only ever called on the city.
+ * Rows that score nothing come too, best-rated first, but only up to the
+ * smaller floor. A vague question — "somewhere nice", "not sure" — scores
+ * no Google row, and it used to get the full forty best-rated so that the
+ * city was there to choose from. It still is, fifteen of it: the rest of
+ * the forty was lines nothing in the question pointed at, read on every
+ * question and nearly never named — see MIN_CANDIDATES. My own places have
+ * had a floor since they were narrowed; this is the same idea for the other
+ * roll.
  *
- * What comes back is the card, so the browser can draw whichever of these
- * the model names as the stand-in a list draws for a Google place, and —
- * separately, so the browser's one `open` map holds every place on screen —
- * the closing time of each that is open now.
+ * What comes back is the card, with the distance and the folded haystack on
+ * it for the rules to read after the model has answered — both stripped
+ * before the card goes to the browser — so the browser can draw whichever of
+ * these the model names as the stand-in a list draws for a Google place,
+ * and — separately, so the browser's one `open` map holds every place on
+ * screen — the closing time of each that is open now.
  */
 function candidates(roll, wish, now, named, at) {
   const scored = [];
@@ -662,9 +741,12 @@ function candidates(roll, wish, now, named, at) {
     (b.venue.card.rating || 0) - (a.venue.card.rating || 0) ||
     (b.venue.card.reviews || 0) - (a.venue.card.reviews || 0));
 
-  const out = scored.slice(0, MAX_CANDIDATES).map(({ venue, shuts, far }) => {
+  const hits = scored.filter((hit) => hit.score > 0).slice(0, MAX_CANDIDATES);
+  const fill = scored.filter((hit) => hit.score === 0)
+    .slice(0, Math.max(0, MIN_CANDIDATES - hits.length));
+  const out = hits.concat(fill).map(({ venue, shuts, far }) => {
     if (shuts) open[venue.card.id] = shuts;
-    return { ...venue.card, far };
+    return { ...venue.card, far, hay: venue.hay };
   });
 
   return { venues: out, open };
@@ -684,16 +766,37 @@ function candidates(roll, wish, now, named, at) {
  * floor, in catalogue order, so a question that names nothing still has a map
  * to choose from.
  *
- * Every entry that comes out carries `far`, its distance from the visitor
- * or null — the floor's as much as the scorers' — because the line the
- * model reads and the number the browser prints under the row are both
- * read off it, and a place that reached the model through the floor is as
- * likely to be picked as any other.
+ * Every entry that comes out carries three things read off it later, the
+ * floor's as much as the scorers': `far`, its distance from the visitor or
+ * null, because the line the model reads and the number the browser prints
+ * under the row are both read off it; `kitchens`, what Google files the
+ * place as cooking (cooksOf() above), which goes into the line's types
+ * column; and `hay`, the folded haystack the words were scored against,
+ * which the dish rule reads again once the model has answered.
  */
-function shortlist(places, wish, open, lang, named, at) {
+function shortlist(places, wish, open, lang, named, at, cooks) {
   const live = places
     .filter((place) => !place.closed)
-    .map((place) => ({ ...place, far: farFrom(at, place) }));
+    .map((place) => {
+      const kitchens = cooks.get(place.id) || [];
+      return {
+        ...place,
+        kitchens,
+        far: farFrom(at, place),
+        /* Name, street, dishes, types and cuisine, and the write-up, so a
+           dish nobody wrote into the taxonomy still finds its place and so
+           does a street: "kopli" reaches Bekker, "viimsi" reaches Buxhöwden.
+           The address was missing from this for a while, and a question
+           naming a place in the city narrowed on nothing. */
+        hay: foldWords([
+          place.name,
+          place.address,
+          (place.mustOrder || []).join(' '),
+          (place.types || []).concat(kitchens).join(' '),
+          (place.blurb && (place.blurb[lang] || place.blurb.en)) || ''
+        ].join(' '))
+      };
+    });
   if (live.length <= MIN_CATALOGUE) return live;
 
   const scored = [];
@@ -704,26 +807,12 @@ function shortlist(places, wish, open, lang, named, at) {
     let score = named.has(place.id) ? 1000 : 0;
 
     for (const id of wish.types) if (types.includes(id)) score += 4;
+    for (const id of wish.kitchens) if (place.kitchens.includes(id)) score += 4;
     score += nearScore(wish, place.far);
     if (wish.cheap && place.price && place.price <= 2) score += 3;
     if (wish.fancy && place.price && place.price >= 3) score += 3;
     if (wish.open && open[place.id]) score += 3;
-
-    if (wish.rest.length) {
-      /* Name, street, dishes, types and the write-up, so a dish nobody
-         wrote into the taxonomy still finds its place and so does a street:
-         "kopli" reaches Bekker, "viimsi" reaches Buxhöwden. The address was
-         missing from this for a while, and a question naming a place in the
-         city narrowed on nothing. */
-      const hay = ' ' + foldWords([
-        place.name,
-        place.address,
-        (place.mustOrder || []).join(' '),
-        types.join(' '),
-        (place.blurb && (place.blurb[lang] || place.blurb.en)) || ''
-      ].join(' '));
-      for (const word of wish.rest) if (hay.includes(' ' + word)) score += 1;
-    }
+    for (const word of wish.rest) if ((' ' + place.hay).includes(' ' + word)) score += 1;
 
     if (score > 0) scored.push({ place, score });
     else rest.push(place);
@@ -789,11 +878,16 @@ function catalogueFor(places, lang) {
     .filter((place) => !place.closed)
     .map((place) => {
       const blurb = (place.blurb && (place.blurb[lang] || place.blurb.en)) || '';
+      const types = place.types || [];
+      /* The cuisine off the linked Google row, after the types: "asian
+         thai". The two vocabularies share a few words — pub, coffee,
+         bakery, vegan — and a pub that is filed as a pub is said once. */
+      const cooks = (place.kitchens || []).filter((id) => !types.includes(id));
       return [
         place.id,
         place.name,
         whereIs(place),
-        (place.types || []).join(' '),
+        types.concat(cooks).join(' '),
         place.price ? place.price + '/4' : '',
         (place.mustOrder || []).join(', '),
         blurb.slice(0, BLURB_CHARS)
@@ -845,19 +939,24 @@ function briefFor(places, google, lang, open, at, near) {
       ' lists say.',
     '',
     'MY MAP — places I have eaten at and written up:',
-    'id | name | where | types | price out of 4 | must order | description',
+    'id | name | where | types and cuisine | price out of 4 | must order | description',
     catalogueFor(places, lang)
   ];
 
   const hours = openLine(open);
   if (hours) lines.push('', hours);
 
-  /* The city's forty, on the city only — on the map `google` is empty and
-     none of this is said. The rule under them is the one the owner set,
-     in so many words: at least one of each list, every answer. A model
-     asked for a reason on every pick reaches for the lines it can give one
-     from, and mine carry a dish and a write-up where Google's carry a
-     rating, so without the rule every answer leant on my map. */
+  /* The city's rows, and how they stand to mine — empty only when there is
+     no database to read them from, and then none of this is said. The rule
+     is a preference and not a quota: it used to be "at least one of each
+     list, every answer", set when the city was a button somebody had
+     pressed, and a quota for a Google place made the model produce one
+     whether or not any fitted, with the question's word written under it
+     for a reason. A model asked for a reason on every pick still reaches
+     for the lines it can give one from, and mine carry a dish and a
+     write-up where Google's carry a rating; that is now the intended
+     lean, with the dish and kind rules holding every pick to the question
+     whichever list it came off. */
   if (google.length) {
     lines.push(
       '',
@@ -865,18 +964,15 @@ function briefFor(places, google, lang, open, at, near) {
       'id | name | where | types and cuisine | price out of 4 | Google rating',
       googleFor(google),
       '',
-      'The visitor asked for all of Tallinn. EVERY answer with places MUST' +
-        ' name at least one from MY MAP and at least one from REST OF' +
-        ' TALLINN — never all from one list. Choose the best of each for the' +
-        ' question. About a REST OF TALLINN place say only what its line' +
-        ' says. If nothing on either list fits, say so with an empty picks' +
-        ' array.'
-    );
-  } else {
-    lines.push(
-      '',
-      'The visitor asked for MY MAP only. If nothing on it fits, say so' +
-        ' plainly with an empty picks array and suggest they try All Tallinn.'
+      'Both lists are one city, and the visitor is asking about the city.' +
+        ' Prefer MY MAP: when a place of mine fits what was asked, it comes' +
+        ' before a REST OF TALLINN place that fits the same, because I have' +
+        ' been there and can vouch for it. A REST OF TALLINN place is an' +
+        ' answer when its line carries what was asked for — a cuisine, a' +
+        ' dish, a part of town — and MY MAP has nothing that does as well.' +
+        ' Never add one to fill an answer out, and about it say only what' +
+        ' its line says. If nothing on either list fits, say so with an' +
+        ' empty picks array.'
     );
   }
 
@@ -921,6 +1017,17 @@ function briefFor(places, google, lang, open, at, near) {
       ' asked for. If the line gives you no true reason for THIS question,' +
       ' leave the place out; a shorter honest answer beats an invented' +
       ' reason, and the "say" must not claim what the picks do not support.',
+    /* The dish rule, said before it is enforced: the case that started it
+       was "kebab" answered with an Indian kitchen and "kebab place" written
+       under it. The line is the only thing the model knows about a place,
+       so a dish the line does not carry is a dish the model cannot know is
+       served there. */
+    'A dish, a cuisine or a kind of food the visitor asked for must be on' +
+      ' the line — in the name, the types and cuisine, the must order or the' +
+      ' description — for the place to be an answer to it. A place whose' +
+      ' line says nothing of it is not that, however good it is: an Indian' +
+      ' kitchen is not a kebab place because kebab was asked for. If no line' +
+      ' carries it, say so and return an empty picks array.',
     /* The visitor's whereabouts — see WHERE THE VISITOR IS in the header.
        Known, the distances on the lines are the only distances there are,
        the browser prints each pick's under its row, and the model is told
@@ -1031,6 +1138,53 @@ function keep(said, shown) {
   return { picks, say };
 }
 
+/* The words left over from a question that name a dish or a cuisine — what
+ * the dish rule under askModel() holds picks to — and whether a place's
+ * line carries one of them.
+ *
+ * A leftover word is a dish or a cuisine when the site's own vocabulary
+ * says so: KITCHENS in venues.js, which is the directory's reading of
+ * Google's categories and knows kebab, ramen, sushi, taco, curry, pelmeni,
+ * steak and the cuisines by name; or a word of a dish somebody wrote under
+ * a place of mine — khachapuri, saagwala, kringel. A cuisine the browser
+ * read off a label — "thai", "тайская" — arrives as an id in wish.kitchens
+ * and counts the same way. What that leaves out is deliberate: a mood, a
+ * street, a name, "food", "nice" — words that land on lines too, and would
+ * hold an answer to them for no reason a person would recognise. Out too
+ * are the words that named where to be near, which ride in `rest` so a
+ * place on that street still scores; "near kopli" is not a wish for the
+ * word.
+ *
+ * A line carries a word when its folded haystack has it — the same string
+ * the narrowing scored, name and street and dishes and types and write-up
+ * for mine, Google's five columns for theirs — or when the place is filed
+ * under a cuisine the word names: "kebab" is Middle Eastern to KITCHENS, so
+ * a row Google files as Middle Eastern carries it whether or not the word is
+ * in its name, and my Thai place carries "thai" off its linked row.
+ */
+function dishWords(wish, places) {
+  const near = new Set(wish.near.split(' '));
+  const dishes = new Set();
+  for (const place of places) {
+    const said = foldWords((place.mustOrder || []).join(' ')).replace(/[^\p{L}\p{N}]+/gu, ' ');
+    for (const word of said.split(' ')) if (word.length > 2) dishes.add(word);
+  }
+  const words = wish.rest.filter((word) => !near.has(word) &&
+    (dishes.has(word) || KITCHENS.some(([, pattern]) => pattern.test(word))));
+  return [...new Set(words.concat(wish.kitchens))];
+}
+
+function carries(entry, words) {
+  /* The types count as kitchens here: the two vocabularies share pub,
+     coffee, bakery and vegan, so "beer" — the pub pattern — is carried by a
+     place filed under pub on my map whether or not its Google row says so. */
+  const kitchens = (entry.kitchens || []).concat(entry.types || []);
+  return words.some((word) =>
+    (' ' + entry.hay).includes(' ' + word) ||
+    kitchens.includes(word) ||
+    KITCHENS.some(([id, pattern]) => pattern.test(word) && kitchens.includes(id)));
+}
+
 export async function onRequestPost(context) {
   const { request, env } = context;
 
@@ -1048,9 +1202,6 @@ export async function onRequestPost(context) {
      goes into a prompt. Anything else is read as English rather than refused —
      the question is still answerable. */
   const lang = /^[a-z]{2}$/.test(String((body && body.lang) || '')) ? body.lang : 'en';
-  /* Anything that is not the whole city is the map: the narrower answer is
-     the safe one to give a request that did not say. */
-  const wholeCity = body && body.scope === 'all';
 
   if (!question) return json({ ok: false, error: 'no-question' }, 400);
 
@@ -1067,33 +1218,34 @@ export async function onRequestPost(context) {
   const wish = readWish(body.wish);
   const here = readHere(body.here);
 
-  /* The hours and the visitor's point are two waits on two other services,
-     and neither needs the other, so they run together. */
-  const [open, at] = await Promise.all([openPlaces(env, now), visitorAt(wish, here)]);
+  /* The linked rows and the visitor's point are two waits on two other
+     services, and neither needs the other, so they run together. */
+  const [rows, at] = await Promise.all([linkedRows(env), visitorAt(wish, here)]);
+  const open = openPlaces(rows, now);
 
-  /* The city's rows, on the city only. On the map the model is shown none,
-     so it cannot name one, and the button means what it says. An empty list
-     is a complete answer too: nothing in the export scored. */
-  const cut = wholeCity
-    ? candidates(await googleVenues(env), wish, now, named, at)
-    : { venues: [], open: {} };
+  /* The city's rows: the forty likeliest, or the fifteen best-rated when
+     the question named nothing. An empty list is a complete answer too —
+     there is no database to read them from — and the model then chooses
+     off my map alone. */
+  const cut = candidates(await googleVenues(env), wish, now, named, at);
   const google = cut.venues;
   Object.assign(open, cut.open);
 
   /* Not the whole map any more — the slice of it this question could be
      about. See shortlist(): the catalogue was most of what a question cost
      and none of it was chosen. */
-  const mine = shortlist(places, wish, open, lang, named, at);
+  const mine = shortlist(places, wish, open, lang, named, at, cooksOf(rows));
 
   /* `note` is not for the page — nothing draws it — it is so that a chat
-     answering with the browser's keyword reader can be told apart from a
-     chat answering with the model, from outside, in one request. This
-     feature answered with the reader for its whole first year and nobody
-     could tell, because every way out looked identical: no binding, spent
-     allowance, overloaded model and a reply read at the wrong key all
-     arrived as the same empty answer. It names which, never why in
-     Cloudflare's own words, so nothing quotes a request back at a
-     stranger. */
+     answering with nothing can be told apart from a chat answering with the
+     model, from outside, in one request. This feature answered with a
+     keyword reader for its whole first year and nobody could tell, because
+     every way out looked identical: no binding, spent allowance, overloaded
+     model and a reply read at the wrong key all arrived as the same empty
+     answer. It names which, never why in Cloudflare's own words, so nothing
+     quotes a request back at a stranger. `model` beside it is the constant
+     at the top, for the same reader: a swap is checked with one request
+     rather than by watching the chat for a week. */
   /* Each pick goes back with its distance from the visitor as `far`, in
      kilometres or null, read off the same entry the model's line was —
      the browser prints it under the row, and it is not the model's to
@@ -1107,12 +1259,12 @@ export async function onRequestPost(context) {
   const farOf = new Map([...mine, ...google].map((p) => [p.id, p.far]));
   const answer = (source, picks, say, note) =>
     json({
-      ok: true, source, say, note, open,
+      ok: true, source, say, note, model: MODEL, open,
       picks: picks.map((pick) => {
         const far = farOf.get(pick.id);
         return { ...pick, far: typeof far === 'number' ? Math.round(far * 1000) / 1000 : null };
       }),
-      venues: google.map(({ far, ...card }) => card),
+      venues: google.map(({ far, hay, ...card }) => card),
       at: !at ? null : at.here ? { here: true } : {
         label: at.label,
         /* Without the city on the end: everything here is in Tallinn, and
@@ -1128,8 +1280,8 @@ export async function onRequestPost(context) {
 
   /* Everything from here on is the model's half, and none of it is allowed
      to take the answer down with it. `source: "none"` is a complete, correct
-     answer that the browser knows what to do with — it reads the question
-     itself with assets/ask.js and draws the same cards. */
+     answer that the browser knows what to do with — it says nothing answers,
+     and draws nothing. */
   if (!env.AI) return answer('none', [], '', 'no-ai');
 
   /* The conversation as the model sees it: the brief, then every earlier
@@ -1145,8 +1297,8 @@ export async function onRequestPost(context) {
 
   /* One call to the model: turns in, what keep() makes of the reply out, and
      whether the call died because the day's Neurons are spent. A function
-     rather than a block because the city can need it twice — see the rule
-     under it. */
+     rather than a block because a broken rule needs it twice — see the
+     rules under it. */
   const askModel = async (turns) => {
     let out;
     try {
@@ -1200,18 +1352,22 @@ export async function onRequestPost(context) {
 
   let { said, spent } = await askModel(messages);
 
-  /* Two rules the brief states, enforced once rather than only asked for.
-     A small model breaks either the same way — it reaches for the line it
+  /* Three rules the brief states, enforced once rather than only asked for.
+     A small model breaks each the same way — it reaches for the line it
      can most easily give a reason from — and when it does, it is shown its
      own answer, told what it broke, and asked once more. The second answer
      stands whatever it is: a corrected one, or an honest empty picks saying
      nothing fits. One retry, only on a violation, so a compliant answer
      costs what it always did.
 
-     The city's rule: every answer with places on the city names at least
-     one from my map and at least one from the rest of Tallinn. Left to
-     itself the model answered off my map, because my lines carry a dish and
-     a write-up and Google's a rating.
+     The dish rule: when the question named a dish or a cuisine — see
+     dishWords() for what counts as one — every pick's line carries it.
+     "Kebab" was once answered with Saffron, an Indian kitchen, and "kebab
+     place" written under it: the shortlist had put the place in front of
+     the model as part of the floor, the rule then in force wanted a place
+     from each roll, and a model that must give a reason gave the question's
+     word. Now it is told which of its picks say nothing of the kind, which
+     lines do, and asked again.
 
      The kind rule: when the question named a kind of place — a café, a
      bakery, ramen — every pick is of that kind. Left to itself, and shown a
@@ -1237,23 +1393,27 @@ export async function onRequestPost(context) {
      within reach, with their distances, and asked once more. */
   if (said && said.picks.length) {
     const faults = [];
-    const mineIds = new Set(mine.map((p) => p.id));
+    const shownAll = [...mine, ...google];
 
-    if (wholeCity && google.length) {
-      const hasMine = said.picks.some((p) => mineIds.has(p.id));
-      const hasCity = said.picks.some((p) => !mineIds.has(p.id));
-      if (!hasMine || !hasCity) {
-        const skipped = hasCity ? 'MY MAP' : 'REST OF TALLINN';
-        faults.push('That answer named no place from ' + skipped + '. The rule is at' +
-          ' least one from MY MAP and at least one from REST OF TALLINN in' +
-          ' every answer. Answer again with both, each with its reason — or,' +
-          ' if truly nothing on ' + skipped + ' fits, say so and return an' +
-          ' empty picks array.');
+    const asked = dishWords(wish, places);
+    if (asked.length) {
+      const carrying = shownAll.filter((p) => carries(p, asked));
+      const missing = said.picks.filter((pick) => !carrying.some((p) => p.id === pick.id));
+      if (missing.length && carrying.length) {
+        faults.push('The visitor asked for ' + asked.join(' or ') + '. These picks are' +
+          ' not that — nothing on their line says so, not the name, the types' +
+          ' and cuisine, the must order or the description: ' +
+          missing.map((p) => p.id).join(', ') + '. A place whose line does not' +
+          ' carry what was asked for is not an answer to it, however good it' +
+          ' is. These lines do carry it: ' +
+          carrying.slice(0, 12).map((p) => p.id).join(', ') + '. Answer again' +
+          ' choosing only from those, each with its reason — or, if truly none' +
+          ' fits, say so and return an empty picks array.');
       }
     }
 
     if (wish.types.length) {
-      const typesOf = new Map([...mine, ...google].map((p) => [p.id, p.types || []]));
+      const typesOf = new Map(shownAll.map((p) => [p.id, p.types || []]));
       const ofKind = (id) => (typesOf.get(id) || []).some((t) => wish.types.includes(t));
       const wrong = said.picks.filter((p) => !ofKind(p.id)).map((p) => p.id);
       if (wrong.length && [...typesOf.keys()].some(ofKind)) {
@@ -1303,10 +1463,10 @@ export async function onRequestPost(context) {
      reply — the model saying "that is not a question about where to eat"
      is an answer in a chat. */
   /* Out of Neurons until midnight UTC. The browser draws this as the chat
-     saying it is resting rather than as an answer, and does not fall through
-     to its own keyword reader: three places matched on letters under a
-     sentence about an evening is exactly the impersonation this whole
-     feature has been trying to stop doing. */
+     saying it is resting rather than as an answer, with nothing under it:
+     the keyword reader that used to fill this gap drew three places matched
+     on letters under a sentence about an evening, which is exactly the
+     impersonation this whole feature has been trying to stop doing. */
   if (spent) return answer('resting', [], '', 'workers-ai-spent');
 
   if (!said) return answer('none', [], '', 'workers-ai-none');

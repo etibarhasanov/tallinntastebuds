@@ -139,10 +139,16 @@ completion, words at `choices[0].message.content`, and an older model
 answers `{ response }` — the route reads both, because reading one cost a
 year of the model never being heard. And `/api/ask` says which half
 answered in `note` — `workers-ai`, `workers-ai-none`, `workers-ai-spent`,
-`no-ai` — so when the chat goes quiet, one request tells you why. The
+`no-ai` — and which model in `model`, so when the chat goes quiet, one
+request tells you why, and a swap of the constant is checked the same way;
+the comment above `MODEL` has the curl and the per-question arithmetic. The
 model never writes about a place: it picks ids out of the slice it was
 given and writes a clause each, and an id it invented is dropped. Keep
-that shape; it is what makes a hallucinated restaurant unreachable.
+that shape; it is what makes a hallucinated restaurant unreachable. Three
+rules are enforced on top with one retry — the kind, the dish and the
+distance, under `askModel()` — and a new rule joins them there rather than
+as a sentence in the brief alone, since a small model reads past a
+sentence.
 
 **The Google round trip is `functions/api/_google.js` and
 `functions/api/google.js`, and nothing else.** The module holds the two sealed

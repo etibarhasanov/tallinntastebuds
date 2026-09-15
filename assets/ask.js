@@ -274,19 +274,25 @@ window.TTBAsk = (function () {
     var kinds = [];
     var types = typeSaid(q, opts.types, fold, kinds);
     /* The same reading over the directory's vocabulary: "thai", "tai" and
-       "тайская" all reach `thai`. Nothing on my map carries one of these ids
-       — the export's rows do — so on the map scope this is read and scores
-       nothing, which costs nothing. */
+       "тайская" all reach `thai`. The export's rows carry these ids, and so
+       do the sixty of my places that have a Google row — the Function lends
+       each its row's cuisine — so the one word scores both rolls. */
     var kitchens = typeSaid(q, opts.cuisines || [], fold, kinds);
 
     /* What is left is a dish or a name. The wish phrases come out first so
-       that "cheap" does not also go looking for a place called Cheap. */
-    var spent = [].concat(
-      wantsFancy ? [wantsFancy] : [],
-      wantsCheap ? [wantsCheap] : [],
-      wantsOpen ? [wantsOpen] : [],
-      wantsNear ? [wantsNear] : []
-    );
+       that "cheap" does not also go looking for a place called Cheap — and
+       every phrase the sentence contains comes out, not only the one that
+       decided each wish. One per wish left "late" behind in "is the second
+       one open late": "open" had settled the wish, "late" read as the
+       subject, and a follow-up about the kebab place became a question
+       about somewhere called Late that replaced the thread's topic. Longest
+       first for the same reason the price lists are read that way: "not
+       expensive" has to go before the "expensive" inside it. */
+    var spent = [];
+    [fancy, cheap, open, near].forEach(function (list) {
+      list.forEach(function (p) { if (has(q, p)) spent.push(p); });
+    });
+    spent.sort(function (a, b) { return b.length - a.length; });
     var clean = function (text) {
       var left = text;
       spent.forEach(function (p) { left = left.split(p).join(' '); });
