@@ -4307,6 +4307,7 @@
     renderFilters();
     renderPanel();
     openPanel();
+    openSheetAt(true);
     paintMarkers();
     fitToPins({ animate: true });
     scrollThread();
@@ -4465,10 +4466,7 @@
     /* At the full stop on a phone, the way a place opens, and not the low
        one: the field is about to take the keyboard, and at the low stop the
        keyboard covers the sheet, field and all. */
-    var full = isNarrow();
-    document.body.classList.toggle('sheet-full', full);
-    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', String(full));
-    releaseSheetHeight();
+    openSheetAt(true);
     paintMarkers();
     scrollThread();
 
@@ -4499,11 +4497,24 @@
 
   /* ------------------------------------------------------------ the sheet
    * On a phone the panel is a bottom sheet with two heights, and the grip
-   * moves between them: drag it, or tap to swap. A place opens at the high
-   * stop — what you tapped for is the place, and the reel at the top of it
-   * wants a screen — and the grip pulls it down to the low one for the map.
-   * Dragging below the low stop closes it, which is the gesture a phone user
-   * reaches for first anyway.
+   * moves between them: drag it, or tap to swap. Every sheet opens at the
+   * high stop — what you tapped for is the place, the chat is about to take
+   * the keyboard, and a list is a list — and dragging down pulls it to the
+   * low one, where half the map is back and the search field and the first
+   * rows are still on screen.
+   *
+   * DRAGGING DOWN IS NOT DISMISSING
+   *
+   * The list used to have one height, so the only thing a downward drag could
+   * mean was close, and it meant it at a quarter of the way down: somebody
+   * pulling a list they had been sent aside to see where the places were lost
+   * the list, the map settled back on the whole city, and the whole thing
+   * read as the page having reloaded under them. The half stop is what that
+   * gesture was asking for, and it is now what it gets.
+   *
+   * Closing by hand is still there and still first — SHEET_PULL and
+   * SHEET_DISMISS are the pull it now takes — along with the close button, a
+   * tap on the grip and Places in the strip above.
    *
    * The live height is written to --sheet-h rather than to the panel, so the
    * rail that sits above the sheet tracks the drag with it for free.
@@ -4512,6 +4523,16 @@
      where the chrome strip and the chip row above it are still showing. That
      strip is the way back out when a sheet is standing open. */
   var SHEET_HEADROOM = 110;
+  /* Below the low stop the sheet stops following the finger one for one: it
+     gives a third of what it is pulled and no more than this. So a drag meets
+     a floor instead of throwing the sheet off the bottom of the screen, which
+     is the half of the old behaviour that looked like the page going away. */
+  var SHEET_PULL = 90;
+  /* And how far into that floor letting go means close. Two thirds of it,
+     which at a third of the pull is 180px of real travel past the low stop —
+     a pull you have to mean, rather than the end of every drag that went a
+     little far. */
+  var SHEET_DISMISS = 60;
 
   function safeTop() {
     var raw = getComputedStyle(document.documentElement).getPropertyValue('--safe-t');
@@ -4519,15 +4540,32 @@
     return isFinite(n) ? n : 0;
   }
 
+  /* The two heights, and they are the stylesheet's own numbers — see the
+     --sheet-h block in assets/styles.css, which has to agree with these or a
+     drag would settle somewhere the CSS then moved it away from. The half
+     stop is one number for all three sheets; only the full one differs, and
+     a place's is taller because the reel at the top of it wants a screen. */
   function sheetStops() {
     var h = window.innerHeight;
     var cap = Math.max(h - SHEET_HEADROOM - safeTop(), 160);
-    if (document.body.classList.contains('panel-detail')) {
-      return { low: Math.min(h * .50, 470, cap), high: Math.min(h * .88, 780, cap) };
-    }
-    /* The list is already as tall as it gets; it can only be dragged shut. */
-    var list = Math.min(h * .82, 720, cap);
-    return { low: list, high: list };
+    var detail = document.body.classList.contains('panel-detail');
+    return {
+      low: Math.min(h * .50, 470, cap),
+      high: detail ? Math.min(h * .88, 780, cap) : Math.min(h * .82, 720, cap)
+    };
+  }
+
+  /* Where the sheet sits while a finger is holding it there. Above the high
+     stop it does not move at all; below the low one it gives way slowly, so
+     the gesture has somewhere to travel without the sheet leaving. */
+  function sheetHeightAt(px, stops) {
+    if (px >= stops.low) return Math.min(px, stops.high);
+    return stops.low - Math.min((stops.low - px) / 3, SHEET_PULL);
+  }
+
+  /* And what letting go there means. */
+  function sheetClosing(height, stops) {
+    return height < stops.low - SHEET_DISMISS;
   }
 
   function sheetSnap(full) {
@@ -4547,6 +4585,23 @@
     document.body.style.removeProperty('--sheet-h');
   }
 
+  /* Which stop a sheet arrives at, said once for the four things that open
+     one: a place, the list, the chat and an answer. All four want the full
+     stop — the half one is where a drag puts the sheet, not where anything
+     arrives — bar the place Surprise me rolled, which is a question about
+     where it is before it is anything else. Off a phone there are no stops
+     and the class only decides whether the rail is covered.
+
+     The height written during a drag goes with it. The stops are the
+     stylesheet's to draw from here on, and a leftover inline --sheet-h would
+     hold the new sheet at whatever height the last gesture left. */
+  function openSheetAt(full) {
+    full = !!full && isNarrow();
+    document.body.classList.toggle('sheet-full', full);
+    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', String(full));
+    releaseSheetHeight();
+  }
+
   function wireSheet() {
     if (!dom.sheetGrip) return;
     var dragging = false;
@@ -4554,6 +4609,10 @@
     var startH = 0;
     var height = 0;
     var moved = false;
+    /* Measured once, when the finger lands. Nothing that decides where the
+       stops are can change while one gesture is running, and reading them
+       per move meant a getComputedStyle on every frame of a drag. */
+    var stops = null;
 
     function begin(ev) {
       if (!isNarrow() || !dom.panel.classList.contains('is-open')) return;
@@ -4562,18 +4621,16 @@
       startY = ev.clientY;
       startH = dom.panel.offsetHeight;
       height = startH;
+      stops = sheetStops();
       dom.panel.classList.add('is-dragging');
       if (dom.sheetGrip.setPointerCapture) dom.sheetGrip.setPointerCapture(ev.pointerId);
     }
 
     function move(ev) {
       if (!dragging) return;
-      var stops = sheetStops();
       var delta = startY - ev.clientY;
       if (Math.abs(delta) > 4) moved = true;
-      /* A little room below the low stop so a closing drag has somewhere to
-         travel, and none above the high one. */
-      height = Math.max(Math.min(startH + delta, stops.high), stops.low * .4);
+      height = sheetHeightAt(startH + delta, stops);
       setSheetHeight(height);
       ev.preventDefault();
     }
@@ -4584,15 +4641,12 @@
       dom.panel.classList.remove('is-dragging');
       releaseSheetHeight();
 
-      var stops = sheetStops();
       if (!moved) { toggle(); return; }
-      if (height < stops.low * .72) { closePanel(); return; }
+      if (sheetClosing(height, stops)) { closePanel(); return; }
       sheetSnap(height > (stops.low + stops.high) / 2);
     }
 
     function toggle() {
-      var stops = sheetStops();
-      if (stops.high === stops.low) return;   /* the list has one height */
       sheetSnap(!document.body.classList.contains('sheet-full'));
     }
 
@@ -4607,12 +4661,26 @@
       }
     });
 
+    /* A field takes the sheet up with it. The keyboard comes off the sheet's
+       own height — see --kbd — so at the half stop the search box and the
+       chat's would both end up as a strip of paper above the keys, with the
+       thing being typed into somewhere under them. Focus is the moment a
+       field says it is about to be typed in, so it is the moment to put the
+       room back. */
+    dom.panel.addEventListener('focusin', function (ev) {
+      if (!isNarrow() || document.body.classList.contains('sheet-full')) return;
+      if (!ev.target.closest || !ev.target.closest('input, textarea')) return;
+      sheetSnap(true);
+    });
+
     wireSheetSwipe();
   }
 
-  /* Swiping the sheet down closes it, from anywhere in it rather than from the
-   * 26px of grip at the top. The grip is a small target on a screen the sheet
-   * is covering, and a swipe down is what a hand tries first.
+  /* Swiping the sheet down pulls it to its low stop, and past that closes it,
+   * from anywhere in it rather than from the 26px of grip at the top. The grip
+   * is a small target on a screen the sheet is covering, and a swipe down is
+   * what a hand tries first. It lands on the same stops the grip does, because
+   * both ask sheetHeightAt() where the sheet goes.
    *
    * It arms only at the very top of the sheet's own scroll and only on a
    * downward move, so scrolling the list still scrolls the list: the first
@@ -4628,6 +4696,7 @@
     var startY = 0;
     var startH = 0;
     var height = 0;
+    var stops = null;
 
     function ignore(node) {
       if (!node || !node.closest) return false;
@@ -4648,6 +4717,7 @@
       startY = ev.touches[0].clientY;
       startH = dom.panel.offsetHeight;
       height = startH;
+      stops = sheetStops();
     }, { passive: true });
 
     scroll.addEventListener('touchmove', function (ev) {
@@ -4661,7 +4731,7 @@
         active = true;
         dom.panel.classList.add('is-dragging');
       }
-      height = Math.max(startH - dy, 80);
+      height = sheetHeightAt(startH - dy, stops);
       setSheetHeight(height);
       if (ev.cancelable) ev.preventDefault();
     }, { passive: false });
@@ -4674,8 +4744,7 @@
       dom.panel.classList.remove('is-dragging');
       releaseSheetHeight();
 
-      var stops = sheetStops();
-      if (height < stops.low * .72) { closePanel(); return; }
+      if (sheetClosing(height, stops)) { closePanel(); return; }
       sheetSnap(height > (stops.low + stops.high) / 2);
     }
 
@@ -4843,6 +4912,7 @@
     dom.panel.classList.remove('is-open');
     dom.panel.setAttribute('inert', '');
     document.body.classList.remove('panel-open', 'sheet-full');
+    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', 'false');
     releaseSheetHeight();
     lastSheetKey = null;
     dom.btnList.setAttribute('aria-expanded', 'false');
@@ -4909,10 +4979,7 @@
        the rail on screen: the rail hides behind a full sheet, and the one
        button a surprise you do not fancy wants is the die that rolls it
        again. */
-    var full = isNarrow() && !opts.peek;
-    document.body.classList.toggle('sheet-full', full);
-    if (dom.sheetGrip) dom.sheetGrip.setAttribute('aria-expanded', String(full));
-    releaseSheetHeight();
+    openSheetAt(!opts.peek);
     if (opts.history !== false) syncUrl(fresh);
 
     paintMarkers();
@@ -4934,8 +5001,10 @@
     state.view = 'list';
     renderPanel();
     openPanel();
-    document.body.classList.remove('sheet-full');
-    releaseSheetHeight();
+    /* At the full stop on a phone, the way a place and the chat open: asking
+       for the list is asking for the names, and the half stop is what the
+       grip and a swipe are for once you have them. */
+    openSheetAt(true);
     paintMarkers();
     syncUrl();
     dom.panelScroll.scrollTop = 0;
