@@ -2642,11 +2642,16 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   color: var(--muted);
   letter-spacing: .02em;
 }
-/* How far a place in an answer is from where the visitor said they are —
-   "450 m", "1,2 km". A measurement, so it keeps the row's mono, and in the
-   ink rather than the row's grey because it is the one fact in the line the
-   visitor asked for. It sits with the badges rather than after the types,
-   which can run to two lines, so it holds the same place on every row. */
+/* How far a place is from the visitor — "450 m", "1,2 km". A measurement, so
+   it keeps the row's mono, and in the ink rather than the row's grey because
+   it is the one fact in the line the visitor asked for. It sits with the
+   badges rather than after the types, which can run to two lines, so it holds
+   the same place on every row.
+
+   Drawn on an answer's rows and on the map's own list, which is ordered by
+   distance — but on that list only once the locate button has been pressed,
+   because a number on a row reads as a number from you. farOf() in
+   assets/app.js is that rule. */
 .list-far {
   flex: 0 0 auto;
   font-variant-numeric: tabular-nums;

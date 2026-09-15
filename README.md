@@ -40,6 +40,7 @@ completely with the database switched off.
 - [Get the coordinates](#get-the-coordinates)
 - [Copy a video permalink](#copy-a-video-permalink)
 - [Add photos](#add-photos)
+- [The list is ordered by distance](#the-list-is-ordered-by-distance)
 - [The Just added section](#the-just-added-section)
 - [Searching the list](#searching-the-list)
 - [Ask for somewhere](#ask-for-somewhere)
@@ -425,10 +426,88 @@ Photos live in Git forever, so resize before committing.
 
 ---
 
+## The list is ordered by distance
+
+The list panel is ordered **nearest first**. It was the alphabet for a long
+time, and the alphabet is an order nobody chose: it opened the panel with 180°
+by Matthias Diether on every visit, out on Staapli and a good walk from most of
+the map, because a digit sorts above a letter. The one thing somebody deciding
+where to eat actually has is where they are standing, and the list starts from
+that now.
+
+It measures from two points, and only two:
+
+- **From you**, once the locate button has been pressed and there is a dot on
+  the map. The heading reads **Nearest you**, and every row carries how far it
+  is — "450 m", "1,2 km", in the same words and the same rounding the chat's
+  answers use.
+- **From Raekoja plats** otherwise. The heading reads **Nearest the Old Town**,
+  and the rows carry no distances at all.
+
+**Nothing asks the device.** Opening the map puts up no permission prompt, and
+neither does opening the panel. The dot is the only claim this site holds about
+where anybody is, and only the locate button puts it there — the rule **Ask for
+somewhere** already follows, where the site's own prompt over a question nobody
+asked would itself be a question nobody asked. So the Old Town order is not a
+degraded version of the feature waiting on a prompt. It is what the list does
+until you press the button that has always been on the map.
+
+**Why the rows go quiet from the square.** "1,4 km" under a place reads as 1,4
+km *from you*, wherever it was actually measured from, and no wording in a row
+three words wide undoes that. The order is still the useful half — the nearest
+thing to the middle of town is a better opening row than the first name in the
+alphabet — but a number about a point nobody chose is a small lie told on
+seventy-five rows at once. So there is no number until there is a dot, which is
+the same moment it starts being true of the person reading it.
+
+**The point is Raekoja plats — `59.4372, 24.7453`**, the middle of the Old
+Town, and deliberately not the point `assets/venues.js`, `assets/lists.js` and
+`functions/api/_lib.js` each call the city. That one is `59.437, 24.7536`, 470
+metres east and nearer the Viru gate: a good place to open a map and a good
+middle for "near Tallinn" on a dragged pin, neither of which is a claim about
+where somebody in town is standing. The difference is not academic — **67 of
+the 75 places change rank between the two points**, and the nearest five are a
+different five. `OLD_TOWN` in `assets/app.js` is the constant, and it is the
+list's alone.
+
+**A dot too far out falls back to the square.** Past `HERE_MAX_M` — 25 km, the
+same number `frameHere()` uses to decide whether framing you against the
+nearest place is worth doing — every row would read twenty-odd kilometres and
+the order would tell you only which edge of town you are nearest. So the list
+goes back to the Old Town, the numbers and the heading with it.
+
+**This has been tried once before and taken out**, and the two shapes are worth
+comparing. The directory offered a nearest-first order and dropped it — see
+**The filters** under **The directory** — for three reasons: the permission
+prompt it needed, the revert it did when that prompt was refused, and the
+distance it wrote under every address. None of the three is here. There is no
+prompt, because only the locate button asks. There is nothing to revert to,
+because the Old Town order is the resting state rather than a fallback after a
+refusal — a visitor who never presses the button never finds out there was a
+question. And the distances appear only once they are the reader's own. That is
+not a coincidence of design; it is the same list of failures, read as a
+specification.
+
+**Two lists keep their own order**, because in both the order is information
+that distance would throw away: a public list is in the order its owner dragged
+it into, and your own saves are in the order you pressed them. Neither carries
+distances. **Just added** is lifted above the list the way it always was and
+stays in date order, and it carries distances whenever the rest of the list
+does.
+
+The headings are `listNearYou` and `listNearOldTown` in `data/ui.json`. They
+replaced `listTitle` ("All places") and `listAlphabet` ("A–Z"): the count
+beside the heading already says how big the group is, and a distance order —
+unlike the alphabet, which you can see by reading down the rows — cannot be
+read off the list at all. So the heading spends itself on what the order is and
+what it is measured from, which is the one thing nothing else on screen says.
+
+---
+
 ## The Just added section
 
 The list panel opens with a short **Just added** section, then the full list
-under **A–Z**:
+under **Nearest you** or **Nearest the Old Town**:
 
 - Always the **five** newest places by `added` date, so the section is the same
   size on every visit whatever you did that week. Change `NEW_COUNT` in
@@ -437,10 +516,10 @@ under **A–Z**:
   six places share a date the five that show are the first five by name.
 - Closed places never appear there.
 
-They are **lifted, not moved**. The list below is still every place, in
-alphabetical order, with those five sitting in their usual spots — open the
-list and you see the whole thing, the way you always did. The section on top
-is a shortcut, not a slice taken out.
+They are **lifted, not moved**. The list below is still every place, nearest
+first, with those five sitting in their usual spots — open the list and you see
+the whole thing, the way you always did. The section on top is a shortcut, not
+a slice taken out.
 
 Each group's heading carries its own count on the right, which is why there is
 no count under the panel title any more: a single "68 places" above two
@@ -508,9 +587,9 @@ than widening the way a match on the whole phrase would.
 
 A search and the filter chips compose: chips first, then the words. While a
 search is running the **Just added** section is suppressed and the results come
-back as one flat A–Z list — somebody who typed a word is after a particular
-place, and lifting two of the answers into a section of their own only makes
-them read the same names twice.
+back as one flat list, nearest first like every other slice — somebody who
+typed a word is after a particular place, and lifting two of the answers into a
+section of their own only makes them read the same names twice.
 
 The field sticks to the top of the panel, and the section headings park below
 it rather than under it, so sixty rows down the search is still there. With a
@@ -1542,9 +1621,10 @@ and the page's **See them on the map** is the same narrowing under a different
 roof — see **The account page**.
 
 Narrowed, the panel names the group **Places I saved** and shows them newest
-first: the order you pressed them in is information, and the alphabet throws it
-away. Pressing **All** on the filter row hands the whole map back, the way it
-does out of somebody's list.
+first: the order you pressed them in is information, and neither the alphabet
+that used to order the list nor the distance that orders it now would keep it.
+Pressing **All** on the filter row hands the whole map back, the way it does
+out of somebody's list.
 
 It used to be a chip on the filter row, second in it, between All and
 Discount, and it was in the wrong place. That row answers one question — what
@@ -1645,9 +1725,9 @@ actually is.
 
 A save count is a count of people, not a verdict on a kitchen. Nobody rates
 anything out of five, and — this is the part that matters — **nothing on this
-site sorts, ranks or orders by saves.** The list is alphabetical; your own
-saves are in the order you pressed them; the map draws every pin the same
-size whatever its count. There is deliberately no "Most saved" chip, because
+site sorts, ranks or orders by saves.** The list is ordered by distance and by
+nothing else; your own saves are in the order you pressed them; the map draws
+every pin the same size whatever its count. There is deliberately no "Most saved" chip, because
 that would be a ranking, and the line above is not a slogan.
 
 A list carries a count of its own — how many people kept it — and **one page
@@ -1659,8 +1739,9 @@ list is a thing somebody made and "the ones most people kept" says nothing
 about any restaurant on them.
 
 The line has not moved anywhere else, and the paragraph above still holds
-whole: no place is scored, the list of places is alphabetical, every pin is
-the same size whatever its count, and there is still no "Most saved" chip.
+whole: no place is scored, the list of places is ordered by distance and by
+nothing else, every pin is the same size whatever its count, and there is still
+no "Most saved" chip.
 Your own lists are in the order you last edited them and the ones you kept
 are in the order you kept them.
 
@@ -1690,7 +1771,8 @@ there are none.
 
 It holds because of what is being ranked. A ranking is a claim by whoever
 publishes it, and the only claim this site makes is the map — seventy-five
-places somebody ate at, in no order but the alphabet. The directory publishes
+places somebody ate at, in no order but how far away they are. The directory
+publishes
 no claim at all: it is a mirror of what Google says about eleven hundred places
 nobody here has been to, it says so in its first paragraph before anything else
 is drawn, and sorting a mirror by the number written on it is a way of reading
@@ -1698,10 +1780,30 @@ Google's opinion rather than a way of stating one. Refusing to sort it would
 not be principled either; it would just make Google's directory harder to use
 without making it any less Google's.
 
+**And on ordering by distance, which the map's own list does.** The list used
+to be alphabetical and is nearest first now — see **The list is ordered by
+distance** — and it belongs in this section, because "ordered by" is the phrase
+the whole section is about.
+
+It holds because of what distance is. A ranking is a claim by whoever publishes
+it: *best*, *highest rated*, *most saved* each say that one place stands above
+another and that I am the one saying so. Distance says where things are. It is
+the same kind of fact as the address already printed on the card; it is
+measured from the reader rather than asserted about the kitchen; and it
+rearranges itself the moment they walk down the street, which is the one thing
+a ranking never does. Nobody reads "Pulla Bakery, 91 m" as praise, and the
+place that happens to be nearest you is not thereby the best of anything.
+
+The order is also useless as a back door to a ranking, which is the test that
+matters: there is no arrangement of where somebody stands that makes the list
+say a kitchen is good. So the list has an order it did not have before, and the
+rule is untouched.
+
 So the line is not "no number is ever ordered by". It is this: **nothing on the
 map may ever be ordered by a score, and no place of mine may ever carry one.**
-The list on the front page stays alphabetical, the pins stay the same size, and
-`data/restaurants.json` has no field for a rating and is not getting one. If a
+The list on the front page is ordered by where you are and never by what
+anybody thinks, the pins stay the same size, and `data/restaurants.json` has no
+field for a rating and is not getting one. If a
 future change wants to rank my own places — by saves, by Google, by anything —
 it is changing the argument of the site, and that is the paragraph above.
 
@@ -4370,8 +4472,9 @@ half of the switch you are standing on, which says where you are rather than
 asking for a press.
 
 **The band is the panel's own header, not the first thing in its scroll.** It
-began as the latter — a group heading like **Just added** or **A–Z**, sticking
-to the top of the panel on the way past — and sticky was close enough while
+began as the latter — a group heading like **Just added** or **Nearest you**,
+sticking to the top of the panel on the way past — and sticky was close enough
+while
 reading the list was the only thing you could be doing. It was not the panel's
 header; it was a heading behaving like one, and it stopped behaving like one
 the moment a word was typed into the search, because a list plus a search is a

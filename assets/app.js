@@ -12,6 +12,21 @@
   var DEFAULT_LANG = 'en';
   var STORE_KEY = 'ttb.lang';
   var FALLBACK_CENTER = [59.437, 24.7536];
+
+  /* Where the list is measured from when nobody has said where they are:
+     Raekoja plats, the middle of the Old Town.
+
+     Deliberately not FALLBACK_CENTER, and not the same point venues.js,
+     lists.js and functions/api/_lib.js each call the city — that one is 470
+     metres east of the square, nearer the Viru gate. It is a good place to
+     open a map and a good middle for "near Tallinn" on a dragged pin, and
+     neither of those is a claim about where somebody in town is standing.
+     The difference is not academic: 67 of the 75 places change rank between
+     the two points, and the nearest five are a different five. So the list
+     gets a constant of its own rather than borrowing one that was chosen to
+     answer a different question. */
+  var OLD_TOWN = [59.4372, 24.7453];
+
   /* The tiles, the key and the attribution are in assets/basemap.js, loaded
      just before this file — three maps on this site draw the same basemap and
      used to hold three copies of it. See the note at the top of that file. */
@@ -4423,18 +4438,9 @@
            Function measured it — the line under the reply says from where.
            Printed by the row and never by the model: asked to quote the
            distance off its line, a small model quoted some, skipped others
-           and made a few up. To the nearest fifty metres under a kilometre
-           and never "0 m", one decimal past it, in the visitor's own
-           decimal mark and unit; the Function rounds the same way for the
-           line the model reads (distanceLine() in functions/api/ask.js),
-           and it is a copy because a Function and a page cannot share a
-           file. Change one, look at the other. */
-        var far = '';
-        if (typeof pick.far === 'number') {
-          far = pick.far < 1
-            ? t('askMetres', { n: Math.max(50, Math.round(pick.far * 20) * 50) })
-            : t('askKm', { n: formatDecimal(pick.far, 1) });
-        }
+           and made a few up. The wording is farWords(), which the map's own
+           list prints too, so a distance reads the same wherever it is met. */
+        var far = farWords(pick.far);
         rows.appendChild(place.standIn ? listOnlyRow(place, pick.why || '', far) : listRow(place, pick.why || '', far));
       });
 
@@ -5880,17 +5886,19 @@
 
   /* ------------------------------------------------------------ what is new
    * A map somebody follows needs to answer "what did you add since I last
-   * looked", and an alphabetical list cannot: Vabrik has sat between Uba ja
-   * Humal and Vana Villem since the day it went in.
+   * looked", and the list underneath cannot: ordered by distance, Vabrik sits
+   * wherever Vabrik is, the same way it sat between Uba ja Humal and Vana
+   * Villem for every year the order was the alphabet. Neither order has
+   * anything to say about when a place went in.
    *
    * So the five newest go in a short section above the list. Always five, so
    * the shape of the panel never depends on how many places happened to go in
    * on one day, and the section is the same size every visit.
    *
    * They are lifted, not moved. The list underneath is still the whole list,
-   * in alphabetical order, with those five in their usual places — open the
-   * list and you see everything, the way you always did. The section on top
-   * is a shortcut to the new ones, not a chunk taken out of the list.
+   * nearest first, with those five in their usual places — open the list and
+   * you see everything, the way you always did. The section on top is a
+   * shortcut to the new ones, not a chunk taken out of the list.
    *
    * The dates come from the repo's own history rather than from memory. Every
    * place carries the day it first appeared in data/restaurants.json.
@@ -6004,13 +6012,36 @@
     }, 900);
   }
 
+  /* A distance as this site prints it — "450 m", "1,2 km" — from kilometres,
+     or an empty string for anything that is not a number.
+
+     To the nearest fifty metres under a kilometre and never "0 m": a door on
+     your own corner is fifty metres off, not nowhere. One decimal past it, in
+     the visitor's own decimal mark and unit. The rounding is coarse on
+     purpose — a phone's fix is worth about that much, and a row reading "447
+     m" claims a precision neither the reading nor the straight line has.
+
+     Two callers, which is why it is a function: the chat's answer rows, and
+     the map's own list. The Function rounds the same way for the line the
+     model reads — distanceLine() in functions/api/ask.js — and that one is a
+     copy, because a Function and a page cannot share a file. Change one, look
+     at the other. */
+  function farWords(km) {
+    if (typeof km !== 'number' || !isFinite(km)) return '';
+    return km < 1
+      ? t('askMetres', { n: Math.max(50, Math.round(km * 20) * 50) })
+      : t('askKm', { n: formatDecimal(km, 1) });
+  }
+
   /* One place as a row in the panel, and `said` the sentence under it when
      there is one: what a list's owner wrote, or why an answer named it. Both
      are the reason the row is worth reading rather than searching for, so
      they go in the row and not behind a tap. `far` is how far it is from
-     the visitor, already in words — "450 m", "1,2 km" — which only an
-     answer knows: it sits with the badges, before the types, so it holds
-     the same place on every row and can be read straight down the answer.
+     the visitor, already in words — "450 m", "1,2 km": it sits with the
+     badges, before the types, so it holds the same place on every row and
+     can be read straight down the list. An answer measures it on the server
+     and the map's own list measures it here, but a row is handed the words
+     either way and never the arithmetic.
 
      Module-level rather than inside renderList(), because the thread the
      chat draws is rows too, and one builder drawn from two places is the
@@ -6139,6 +6170,45 @@
     return el('li', {}, [row]);
   }
 
+  /* How far every place in `places` is from one point, in metres, keyed by id.
+     Leaflet's own measurement rather than a haversine written out here: it is
+     already on the page, and frameHere() has always used it to work out which
+     place to frame you against. */
+  function measureFrom(at, places) {
+    var away = {};
+    places.forEach(function (p) {
+      away[p.id] = at.distanceTo(L.latLng(p.lat, p.lng));
+    });
+    return away;
+  }
+
+  /* Where the list is ordered from, and how far each place is from it.
+
+     NOTHING HERE ASKS THE DEVICE. The dot is the only claim this site holds
+     about where anybody is, and only the locate button puts it there. The
+     reasoning is the one whereabouts() already follows for the chat: the
+     site's own permission prompt over a list nobody asked to have sorted
+     would be a question nobody asked. So the square is not a degraded
+     version of the feature waiting on a prompt — it is what the list does,
+     until you press the button that has always been on the map.
+
+     One case has a dot and falls back to the square anyway: a visitor
+     further from every place than HERE_MAX_M. The reading is real and
+     useless — every row would say twenty-odd kilometres and the order would
+     tell you only which edge of town you are nearest. frameHere() answers
+     that case with the city rather than with you; this answers it with the
+     square, and the heading goes back to saying so. */
+  function measureList(places) {
+    var square = L.latLng(OLD_TOWN[0], OLD_TOWN[1]);
+    if (!hereMarker) return { here: false, away: measureFrom(square, places) };
+
+    var away = measureFrom(hereMarker.getLatLng(), places);
+    var best = Infinity;
+    places.forEach(function (p) { if (away[p.id] < best) best = away[p.id]; });
+    if (best > HERE_MAX_M) return { here: false, away: measureFrom(square, places) };
+    return { here: true, away: away };
+  }
+
   function renderList() {
     clear(dom.listBody);
 
@@ -6159,8 +6229,16 @@
        and nothing else. The moment a second chip or a search joins in, this
        stops being somebody's top ten and becomes a slice of the map that
        happens to be cut out of one — so it is drawn like every other slice,
-       in the alphabet, without the order or the sentences. */
+       nearest first, without the order or the sentences. */
     var reading = !words.length && !state.active.length && !!state.list;
+
+    /* Set only by the branch that orders by distance, and read afterwards by
+       the heading and by every row: `here` says whether the point measured
+       from is the visitor themselves, `away` is metres by id. The other two
+       orders leave it null — a list's order belongs to whoever dragged it
+       into shape, and your saves are in the order you pressed them, so
+       neither has a distance to print or a heading to name one. */
+    var from = null;
 
     if (reading) {
       /* The order is the whole point of a top ten. Its owner dragged these
@@ -6170,17 +6248,47 @@
       state.list.items.forEach(function (item, i) { pos[item.place] = i; });
       places.sort(function (a, b) { return pos[a.id] - pos[b.id]; });
     } else if (mine) {
-      /* The one list here that is not alphabetical. The order you saved them in is information — the newest is what you were doing most
-         recently, and most likely what you came back for — and the alphabet
-         throws it away for a sort nobody asked for. */
+      /* Not by distance either, and it was not by the alphabet before that.
+         The order you saved them in is information — the newest is what you
+         were doing most recently, and most likely what you came back for —
+         and sorting them by where you happen to be standing throws that away
+         for an order nobody asked for. */
       var rank = {};
       state.saved.forEach(function (id, i) { rank[id] = i; });
       places.sort(function (a, b) { return rank[a.id] - rank[b.id]; });
     } else {
+      /* THE MAP'S LIST IS ORDERED BY DISTANCE, NOT BY NAME
+
+         It was the alphabet for a long time, and the alphabet is an order
+         nobody chose: it opened the panel with 180° by Matthias Diether on
+         every visit, out on Staapli and a good walk from most of the map,
+         because a digit sorts above a letter. The one thing somebody
+         deciding where to eat actually has is where they are standing, and
+         the list now starts from that: Pulla Bakery, ninety metres off
+         Raekoja plats, is what the Old Town order opens with.
+
+         Distance is a fact about geography, not a verdict on a kitchen.
+         Nothing here is scored or ranked, and **On "no scores, stars or
+         rankings"** in README.md says why that line is untouched by this
+         one.
+
+         From the dot when there is one, from Raekoja plats when there is
+         not. measureList() is both, and the group's heading says which. */
+      from = measureList(places);
+      /* Two places at the same distance to the metre are rare — the closest
+         pair on the map, Q Pizza Jaam and Telliskivi Šašlõkk, are eleven
+         metres apart — but two counters in one food hall would sit on a
+         single pair of coordinates and nothing in the data forbids it. The
+         alphabet breaks that tie, so a pair like that reads in an order
+         somebody can predict rather than in whatever order
+         data/restaurants.json happens to hold them. */
       var collator;
       try { collator = new Intl.Collator(state.lang, { sensitivity: 'base' }); }
       catch (e) { collator = { compare: function (a, b) { return a < b ? -1 : a > b ? 1 : 0; } }; }
-      places.sort(function (a, b) { return collator.compare(a.name, b.name); });
+      places.sort(function (a, b) {
+        if (from.away[a.id] !== from.away[b.id]) return from.away[a.id] - from.away[b.id];
+        return collator.compare(a.name, b.name);
+      });
     }
 
     /* Who carries #panel-list-title, which labels the panel and takes the
@@ -6237,8 +6345,24 @@
       var ul = el('ul', { className: 'place-list' + (className ? ' ' + className : '') });
       /* No sentences here: they belong to the list, which is drawn in its own
          branch below and never through a group of the site's. */
-      rows.forEach(function (place) { ul.appendChild(listRow(place)); });
+      rows.forEach(function (place) { ul.appendChild(listRow(place, '', farOf(place))); });
       dom.listBody.appendChild(ul);
+    }
+
+    /* A NUMBER ON A ROW ONLY WHEN IT IS THE READER'S OWN
+
+       "1,4 km" under a place reads as 1,4 km from *you*, wherever it was
+       actually measured from — there is no wording that undoes that, because
+       the row is three words wide and the assumption is the natural one. So
+       ordering from Raekoja plats prints no distances at all: the order is
+       still the useful part, the heading says what it is measured from, and
+       nobody is handed a number about a point they never chose.
+
+       Pressing locate is what turns the numbers on, which is also the moment
+       they start being true of the person reading them. */
+    function farOf(place) {
+      if (!from || !from.here) return '';
+      return farWords(from.away[place.id] / 1000);
     }
 
     /* Only the new ones the current filter has left on screen, and only if
@@ -6255,10 +6379,6 @@
       : recentlyAdded().filter(function (p) { return shown[p.id]; });
 
     if (fresh.length > 1) section('listNew', fresh, 'is-new');
-    /* "All places" over a filtered list would be a lie the count sitting next
-       to it immediately contradicts, so a narrowed list falls back to naming
-       its sort order instead. */
-    var everything = !words.length && !state.active.length;
 
     /* A list is named as itself, by its owner's title, with their name under
        it. Its name is the band above the scroll rather than a group heading
@@ -6273,10 +6393,24 @@
       return;
     }
 
-    /* And your own saves are named as themselves. "A–Z" over them would be
-       true and useless: this is the one list on the site whose point is whose
-       it is, not what order it came out in. */
-    section(everything ? 'listTitle' : mine ? 'listSaved' : 'listAlphabet', places);
+    /* THE HEADING NAMES THE ORDER, BECAUSE NOTHING ELSE CAN
+
+       It used to name the set — "All places" over the whole map, falling
+       back to "A–Z" over a narrowed one, on the argument that "All places"
+       above a filtered count would be a lie. The count beside it still
+       carries the size, so naming the set twice was never the heading's best
+       use; and an alphabetical list needs no heading to explain it, because
+       you can see the alphabet by reading down it.
+
+       A list ordered by distance cannot be read that way. From the square it
+       carries no numbers at all, so without the heading there is nothing on
+       screen saying why Pulla Bakery is above Chakra — and "nearest" is a
+       claim that means nothing until you know nearest to what. So the
+       heading answers both at once, and changes the moment the dot does.
+
+       Your own saves keep their own name: this is the one list on the site
+       whose point is whose it is, not what order it came out in. */
+    section(mine ? 'listSaved' : from.here ? 'listNearYou' : 'listNearOldTown', places);
   }
 
   /* The account Google's numbers write under — see tools/googlelists.mjs and
@@ -7945,6 +8079,19 @@
         interactive: false
       }).addTo(map);
       hereMarker.bindTooltip(t('locateHere'), { className: 'pin-tip', direction: 'top', offset: [0, -10] });
+
+      /* The list is ordered from the dot, so it is redrawn the moment there
+         is one rather than waiting for the panel to be opened again — the
+         heading changes to say it is measuring from you, and the rows start
+         carrying their distances.
+
+         renderList() rather than renderPanel(): the chat asks for a reading
+         of its own through whereabouts(), so this fires under a question in
+         flight, and redrawing the whole panel there would rebuild the very
+         thread the question was asked from. renderList() touches nothing but
+         the list body, which is hidden while the chat is up and correct by
+         the time it is not. */
+      renderList();
 
       frameHere(ev.latlng);
     });
