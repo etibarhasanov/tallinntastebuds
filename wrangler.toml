@@ -55,12 +55,36 @@
 #                      Unset, the bot check is skipped and the rest works
 #                      unchanged.
 #
-#   GOOGLE_CLIENT_ID   PLAIN, optional. The OAuth client from the Google Cloud
-#   GOOGLE_CLIENT_SECRET  SECRET, optional. console, for Continue with Google.
-#                      Both or neither: /api/account reports Google as
+#   GOOGLE_CLIENT_ID   SECRET, optional. The OAuth client from the Google
+#   GOOGLE_CLIENT_SECRET  SECRET, optional. Cloud console, for Continue with
+#                      Google. Both or neither: /api/account reports Google as
 #                      unavailable unless it has the pair, and the sheets draw
 #                      no button. Nothing else changes — a username and a
 #                      password is still the whole of an account without them.
+#
+#                      BOTH AS SECRETS, INCLUDING THE ID, AND NOT BY TASTE
+#
+#                      A client id is public — it travels in the redirect URL
+#                      and anyone who presses the button can read it — so on
+#                      most projects it would be an ordinary plaintext
+#                      variable. Not on this one. The moment a Pages project
+#                      has a wrangler file, that file is the source of truth
+#                      for everything it can declare, and [vars] is one of
+#                      those things: a plaintext variable typed into the
+#                      dashboard is not editable there and does not reach a
+#                      deployment. The dashboard still owns secrets, because a
+#                      secret is the one binding that must never be in the
+#                      repository. So secrets is what both of these are, and
+#                      the only cost is that the id cannot be read back off
+#                      the page after it is saved.
+#
+#                      The other way round works too and is a code change
+#                      rather than a dashboard one: put GOOGLE_CLIENT_ID in
+#                      the [env.production.vars] and [env.preview.vars] blocks
+#                      below, where it would be committed, and leave only the
+#                      secret in the dashboard. Nothing in the Functions cares
+#                      — both arrive on `env` and googleReady() in
+#                      functions/api/_google.js reads them the same way.
 #
 #                      Per-environment like the rest, and in the Google console
 #                      the *redirect URI* is per-hostname besides: register
