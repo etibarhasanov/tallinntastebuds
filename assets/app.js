@@ -5884,39 +5884,6 @@
 
   /* ------------------------------------------------------------------ list */
 
-  /* ------------------------------------------------------------ what is new
-   * A map somebody follows needs to answer "what did you add since I last
-   * looked", and the list underneath cannot: ordered by distance, Vabrik sits
-   * wherever Vabrik is, the same way it sat between Uba ja Humal and Vana
-   * Villem for every year the order was the alphabet. Neither order has
-   * anything to say about when a place went in.
-   *
-   * So the five newest go in a short section above the list. Always five, so
-   * the shape of the panel never depends on how many places happened to go in
-   * on one day, and the section is the same size every visit.
-   *
-   * They are lifted, not moved. The list underneath is still the whole list,
-   * nearest first, with those five in their usual places — open the list and
-   * you see everything, the way you always did. The section on top is a
-   * shortcut to the new ones, not a chunk taken out of the list.
-   *
-   * The dates come from the repo's own history rather than from memory. Every
-   * place carries the day it first appeared in data/restaurants.json.
-   */
-  var NEW_COUNT = 5;
-
-  /* Which places are new is a fact about the map, not about the filter in
-     force. Reading it off the filtered list instead would let "Fine dining",
-     whose five places are all old, report all five as just added. */
-  function recentlyAdded() {
-    var dated = state.places.filter(function (p) { return p.added && !p.closed; });
-    dated.sort(function (a, b) {
-      if (a.added !== b.added) return a.added < b.added ? 1 : -1;
-      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
-    });
-    return dated.slice(0, NEW_COUNT);
-  }
-
   /* ---------------------------------------------------------------- search
    * Accents are the whole problem: nobody types Telliskivi Šašlõkk with the
    * carons, and Põhja Konn with the tilde. So both sides of every comparison
@@ -6293,8 +6260,8 @@
 
     /* Who carries #panel-list-title, which labels the panel and takes the
        focus when the list opens. The band above the scroll has it whenever it
-       is up; without one it falls to the first heading in the body, whichever
-       that turns out to be. */
+       is up; without one it falls to whatever the body opens with — the
+       group's heading, or the empty note when there is nothing to head. */
     var titled = bandIsUp();
 
     if (!places.length) {
@@ -6309,44 +6276,6 @@
         textContent: words.length ? t('searchNone', { q: state.q.trim() }) : t('noResults')
       }));
       return;
-    }
-
-    /* Each group carries its own count, so the number always sits next to the
-       list it is counting rather than under a panel title, where it read as a
-       claim about the whole map.
-
-       The group name is the biggest type in the panel, and there is no longer
-       a title above it. There used to be: the panel opened with "All places"
-       at 24px and then, directly underneath, a quiet grey signpost reading
-       JUST ADDED over five rows. The big words named the group you were not
-       looking at yet. Whichever group you are actually reading now says its
-       own name, at the size the panel used to spend on a heading that was
-       true of the scroll as a whole and of nothing on screen. */
-    var first = !titled;
-    function section(labelKey, rows, className) {
-      var name = t(labelKey);
-      var count = rows.length === 1 ? t('listCountOne') : t('listCount', { n: rows.length });
-      /* Spelled out rather than left to the name computation: the two spans
-         are flex items with no whitespace between them, so what a screen
-         reader announces for the heading — and for the panel, which this
-         labels — would come out as "Just added5 places". */
-      var head = el('h2', { className: 'list-label', 'aria-label': name + ', ' + count }, [
-        el('span', { className: 'list-group', textContent: name }),
-        el('span', { className: 'list-label-n eyebrow', textContent: count })
-      ]);
-      /* The first group on screen is what labels the panel and what takes
-         focus when the list opens, whichever group that turns out to be. */
-      if (first) {
-        head.id = 'panel-list-title';
-        head.tabIndex = -1;
-        first = false;
-      }
-      dom.listBody.appendChild(head);
-      var ul = el('ul', { className: 'place-list' + (className ? ' ' + className : '') });
-      /* No sentences here: they belong to the list, which is drawn in its own
-         branch below and never through a group of the site's. */
-      rows.forEach(function (place) { ul.appendChild(listRow(place, '', farOf(place))); });
-      dom.listBody.appendChild(ul);
     }
 
     /* A NUMBER ON A ROW ONLY WHEN IT IS THE READER'S OWN
@@ -6364,21 +6293,6 @@
       if (!from || !from.here) return '';
       return farWords(from.away[place.id] / 1000);
     }
-
-    /* Only the new ones the current filter has left on screen, and only if
-       there are enough of them to be worth a heading of their own. A search
-       suppresses the section outright: somebody who typed a word is looking
-       for a particular place, and lifting two of the answers into a section
-       of their own only makes them read the same names twice. */
-    var shown = {};
-    places.forEach(function (p) { shown[p.id] = true; });
-    /* Suppressed on your own list for the reason a search suppresses it: a
-       handful of places you chose yourself, cut in two by a heading about when
-       the site added them, makes you read your own list twice. */
-    var fresh = (words.length || mine || reading) ? []
-      : recentlyAdded().filter(function (p) { return shown[p.id]; });
-
-    if (fresh.length > 1) section('listNew', fresh, 'is-new');
 
     /* A list is named as itself, by its owner's title, with their name under
        it. Its name is the band above the scroll rather than a group heading
@@ -6409,8 +6323,43 @@
        heading answers both at once, and changes the moment the dot does.
 
        Your own saves keep their own name: this is the one list on the site
-       whose point is whose it is, not what order it came out in. */
-    section(mine ? 'listSaved' : from.here ? 'listNearYou' : 'listNearOldTown', places);
+       whose point is whose it is, not what order it came out in.
+
+       ONE GROUP, DRAWN HERE RATHER THAN THROUGH A HELPER
+
+       This was a section() taking a label, some rows and a class, because
+       the panel drew two groups: Just added above, everything else below.
+       With Just added gone there is one group, its class argument was the
+       only caller's and named a class no stylesheet ever defined, and the
+       flag that worked out which heading came first has one answer. So the
+       heading and its list are built here, the way the branch above builds
+       the list's own. */
+    var name = t(mine ? 'listSaved' : from.here ? 'listNearYou' : 'listNearOldTown');
+    var count = places.length === 1 ? t('listCountOne') : t('listCount', { n: places.length });
+
+    /* The count is spelled into the label rather than left to the name
+       computation: the two spans are flex items with no whitespace between
+       them, so what a screen reader announces for the heading — and for the
+       panel, which this labels — would otherwise come out as "Nearest
+       you75 places".
+
+       It carries the panel's label and takes focus when the list opens,
+       unless a band is up and has taken both already. */
+    dom.listBody.appendChild(el('h2', {
+      className: 'list-label',
+      'aria-label': name + ', ' + count,
+      id: titled ? null : 'panel-list-title',
+      tabIndex: titled ? null : -1
+    }, [
+      el('span', { className: 'list-group', textContent: name }),
+      el('span', { className: 'list-label-n eyebrow', textContent: count })
+    ]));
+
+    /* No sentences here: they belong to a list, which the branch above draws
+       and which never comes through this one. */
+    var group = el('ul', { className: 'place-list' });
+    places.forEach(function (place) { group.appendChild(listRow(place, '', farOf(place))); });
+    dom.listBody.appendChild(group);
   }
 
   /* The account Google's numbers write under — see tools/googlelists.mjs and

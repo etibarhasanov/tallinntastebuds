@@ -41,7 +41,6 @@ completely with the database switched off.
 - [Copy a video permalink](#copy-a-video-permalink)
 - [Add photos](#add-photos)
 - [The list is ordered by distance](#the-list-is-ordered-by-distance)
-- [The Just added section](#the-just-added-section)
 - [Searching the list](#searching-the-list)
 - [Ask for somewhere](#ask-for-somewhere)
 - [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
@@ -157,7 +156,7 @@ Field by field:
 | `photos` | Filenames inside `photos/<id>/`. Just the filenames. Use `[]` if there are none. |
 | `website` | Optional. An empty string and a missing key both mean "no website". |
 | `phone` | Optional. The number you would actually ring, international form with spaces: `+372 661 0180`. It becomes the **Call** button at the foot of the panel, next to **Directions** — a `tel:` link, so a phone hands it straight to the dialler — and a tappable row in the facts list just above it. An empty string and a missing key both mean "no number", and the button and the row both disappear. |
-| `added` | The day you added the place, `YYYY-MM-DD`. Drives the **Just added** section at the top of the list. |
+| `added` | The day you added the place, `YYYY-MM-DD`. Optional, and nothing on the site reads it: it drove a **Just added** section at the top of the list until that section was taken out. It stays as a record of when each place went in, `/admin.html` still stamps one on every place it creates, and the validator still holds it to being a real date when it is there. |
 | `visited` | The month you last ate there, `YYYY-MM`. |
 | `closed` | `true` greys the pin out and draws a dashed ring round it. See below. |
 
@@ -491,9 +490,13 @@ specification.
 **Two lists keep their own order**, because in both the order is information
 that distance would throw away: a public list is in the order its owner dragged
 it into, and your own saves are in the order you pressed them. Neither carries
-distances. **Just added** is lifted above the list the way it always was and
-stays in date order, and it carries distances whenever the rest of the list
-does.
+distances.
+
+**And there is only one group now.** The panel used to open with a short **Just
+added** section — the five newest places by `added` date, lifted above the
+list — and it was taken out. The heading that is left carries its own count on
+the right and sticks to the top of the panel as you scroll, so sixty rows in
+you can still see what you are reading and how much of it there is.
 
 The headings are `listNearYou` and `listNearOldTown` in `data/ui.json`. They
 replaced `listTitle` ("All places") and `listAlphabet` ("A–Z"): the count
@@ -501,44 +504,6 @@ beside the heading already says how big the group is, and a distance order —
 unlike the alphabet, which you can see by reading down the rows — cannot be
 read off the list at all. So the heading spends itself on what the order is and
 what it is measured from, which is the one thing nothing else on screen says.
-
----
-
-## The Just added section
-
-The list panel opens with a short **Just added** section, then the full list
-under **Nearest you** or **Nearest the Old Town**:
-
-- Always the **five** newest places by `added` date, so the section is the same
-  size on every visit whatever you did that week. Change `NEW_COUNT` in
-  `assets/app.js` if five is the wrong number.
-- Ties inside one day break alphabetically. `added` has day resolution, so if
-  six places share a date the five that show are the first five by name.
-- Closed places never appear there.
-
-They are **lifted, not moved**. The list below is still every place, nearest
-first, with those five sitting in their usual spots — open the list and you see
-the whole thing, the way you always did. The section on top is a shortcut, not
-a slice taken out.
-
-Each group's heading carries its own count on the right, which is why there is
-no count under the panel title any more: a single "68 places" above two
-sections read as a claim about both of them. The headings stick to the top of
-the panel as you scroll, so sixty rows in you can still see which group you
-are looking at.
-
-The five are picked from the **whole map**, not from what the filters have left
-on screen — otherwise filtering to a type whose places are all old would
-declare them new. Then anything the filter has hidden drops out of the section,
-and if that leaves one or none, both headings disappear and the list renders
-plain, exactly as it did before any of this existed.
-
-So the field that matters is `added`. Write today's date when you add a place
-and it sits at the top until five newer ones push it out. The validator warns
-if you forget one.
-
-The dates already in the file were read out of this repository's own git
-history — the first commit in which each `id` appears — not guessed.
 
 ---
 
@@ -585,13 +550,10 @@ work as well as `fırın`.
 Several words all have to land somewhere, so `telliskivi kohvik` narrows rather
 than widening the way a match on the whole phrase would.
 
-A search and the filter chips compose: chips first, then the words. While a
-search is running the **Just added** section is suppressed and the results come
-back as one flat list, nearest first like every other slice — somebody who
-typed a word is after a particular place, and lifting two of the answers into a
-section of their own only makes them read the same names twice.
+A search and the filter chips compose: chips first, then the words. The results
+come back as one flat list, nearest first like every other slice.
 
-The field sticks to the top of the panel, and the section headings park below
+The field sticks to the top of the panel, and the group heading parks below
 it rather than under it, so sixty rows down the search is still there. With a
 list open it sticks under the band naming that list, which is the one thing on
 this panel that sits above the field rather than below it — see **A list is a
@@ -1182,10 +1144,9 @@ Closed places are left out of everything that goes looking for somewhere to
 eat. **Surprise me** never picks one — `randomPick()` filters `!p.closed` off
 the visible set before it draws, so a shut place cannot come up however many
 times you press it, and with every place filtered out the toast says so rather
-than sending you to a closed door. The **Just added** section never lists one,
-and the locate framing walks you to the nearest *open* place. They stay on the
-map, and in the list, and at their own `?spot=` link — that is the whole point
-— but nothing ever *suggests* them.
+than sending you to a closed door. And the locate framing walks you to the
+nearest *open* place. They stay on the map, and in the list, and at their own
+`?spot=` link — that is the whole point — but nothing ever *suggests* them.
 
 Five places in `data/restaurants.json` are marked closed today — Bueno Gourmet
 Kadriorg, Cafe Cape Town, Lendav Maaler, Lokaal Tilk and Maison François. All
@@ -3579,8 +3540,8 @@ sentence about each one. *Top ten burgers. Where to take your parents. The
 bakeries worth the walk.* It carries their username and it has a link they can
 send to a friend.
 
-Nothing about it touches the map. The pins, the write-ups, the filters and the
-"just added" section are exactly what they were; lists live on their own pages,
+Nothing about it touches the map. The pins, the write-ups and the filters are
+exactly what they were; lists live on their own pages,
 and the map's door to them is your own account page, filed under whoever you
 are.
 
@@ -4472,9 +4433,8 @@ half of the switch you are standing on, which says where you are rather than
 asking for a press.
 
 **The band is the panel's own header, not the first thing in its scroll.** It
-began as the latter — a group heading like **Just added** or **Nearest you**,
-sticking to the top of the panel on the way past — and sticky was close enough
-while
+began as the latter — a group heading like **Nearest you**, sticking to the top
+of the panel on the way past — and sticky was close enough while
 reading the list was the only thing you could be doing. It was not the panel's
 header; it was a heading behaving like one, and it stopped behaving like one
 the moment a word was typed into the search, because a list plus a search is a

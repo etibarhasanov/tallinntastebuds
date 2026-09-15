@@ -534,15 +534,19 @@ if (places !== null) {
         warn(where, 'has no "phone", so there is nothing to call');
       }
 
-      /* added — the day this place first appeared in this file, which is what
-         puts it in the "Just added" section. Optional, so an older file still
-         validates, but a real date when it is there. */
+      /* added — the day this place first appeared in this file. It used to
+         drive a "Just added" section at the top of the list panel; that
+         section is gone, so nothing on the site reads this any more and a
+         place without one is not missing anything. It stays as a record of
+         when each place went in — the dates were read out of this repo's own
+         git history — and admin.html still stamps one on every place it
+         creates, so it is still held to being a real date when it is there.
+         What went with the section is the warning for a missing one: there is
+         no longer anything for it to nag you towards. */
       if ('added' in place) {
         if (!isNonEmptyString(place.added) || !/^\d{4}-\d{2}-\d{2}$/.test(place.added)) {
           fail(where, `"added" must look like 2026-08-25, got ${JSON.stringify(place.added)}`);
         }
-      } else {
-        warn(where, 'has no "added" date, so it can never show as newly added');
       }
 
       /* visited — optional, but must be a real month when present */
