@@ -7105,6 +7105,7 @@ _headers                   caching and the noindex on the unlinked pages
 _routes.json               which paths reach the Functions, and which never do
 robots.txt, sitemap.xml    what a crawler is told, and told not to
 photos/<restaurant-id>/    photos, one folder per place
+photos/potato/             the one folder that is not a place: Surprise me's stay-in answer
 stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
 tools/places.mjs           builds data/places.json from the CSV and the map
@@ -7898,6 +7899,36 @@ It picks from **whatever the chips currently allow**, so selecting "Korean" and
 asking. Closed places are never suggested, and the same place is never returned
 twice in a row.
 
+**For now, three presses in ten, it tells you to stay in instead.** The sheet
+opens the way it does for a rolled place, at the low stop with the map still
+above it, and what is in it is **Eat potato at home**: the name, the price in
+the place of the €€€€ gauge, a paragraph about potatoes being 69 cents a kilo
+at the shop and the cheapest thing in this city by some distance, and the
+photograph of the tag that says so, in `photos/potato/` — the one folder there
+that is not a place. It has no pin, so the map does not move, and no address,
+phone, types, save mark or discount, because a potato has none of those; the
+sheet leaves those sections out. Nothing writes it into the address bar, so
+there is no link to it — a place's `?spot=` comes off while it is up — and
+Back closes it the way it closes any sheet.
+
+It is a joke the owner asked for and has already said will come out again, so
+it is built to come out: `HOME_ID`, `HOME_ODDS` and `homePlace()` in
+`assets/app.js` are the whole of it, with a line each in `byId()`,
+`randomPick()`, `selectPlace()`, `focusOn()`, `paintMarkers()`, `paintSave()`,
+`syncUrl()` and `renderDetail()` that ask whether the place is home; the
+`home*` strings in
+all ten languages; the folder and the exception for it in `tools/validate.mjs`;
+the `random_home` row under **Analytics**; and these two paragraphs. It never
+says it twice running, for the same reason a place is never returned twice
+running: the die that has just told you to stay in is the one button somebody
+who does not fancy that presses next, so over a run of presses it comes up a
+little under three in ten. It never stands in for the empty answer either — a
+map narrowed to nothing is a fact about the filters, and a joke over it would
+hide the one thing that toast was there to say. The walk's sentence about the
+die does not mention it, because a surprise explained in advance is not one.
+A video in the reel's slot, meal names and sending you off to search for
+something are the versions that were talked about and not built.
+
 It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
 scrolls out of reach is no use.
@@ -8305,6 +8336,7 @@ The map, `assets/app.js`:
 | `place_close` | `place` |
 | `cluster_open` | `cluster_size` |
 | `random_pick` | `place`, `pool` |
+| `random_home` | `pool` — the die opening Eat potato at home instead of a place; it is not a page view. See **Surprise me** |
 | `locate` | — |
 | `language_open` | — |
 | `language_select` | `language` |

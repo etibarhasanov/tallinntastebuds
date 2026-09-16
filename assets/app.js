@@ -314,6 +314,9 @@
   }
 
   function byId(id) {
+    /* Home is in none of the three lists below and answers to its own name
+       — see homePlace, beside randomPick, which is the only door to it. */
+    if (id === HOME_ID) return homePlace();
     for (var i = 0; i < state.places.length; i++) {
       if (state.places[i].id === id) return state.places[i];
     }
@@ -1296,7 +1299,8 @@
     /* The halo follows the lit place, which is the open one while a panel is
        open and the one you last had open once it is shut. */
     var place = byId(state.selected || state.marked);
-    if (place && map) {
+    /* Home has no pin to ring: nothing on the map is lit while it is up. */
+    if (place && map && place.lat != null) {
       var lit = isChosen(place);
       haloMarker = L.circleMarker([place.lat, place.lng], {
         radius: pinSize(place) / 2 + 7,
@@ -1324,7 +1328,9 @@
   var lastSheetKey = null;
 
   function focusOn(place, zoomIn) {
-    if (!map) return;
+    /* Home has no coordinates: the sheet says stay in, and the map stays
+       where it was. */
+    if (!map || place.lat == null) return;
     var size = map.getSize();
     /* Never back out: a place you have gone to the trouble of opening is a
        street question, so the map comes in to FOCUS_ZOOM if it is further out
@@ -1526,6 +1532,9 @@
      than as nobody having pressed it yet. */
   function paintSave() {
     var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
+    /* Nothing to keep about home: the mark is for a place somebody could go
+       back to. */
+    if (place && place.home) place = null;
     dom.panelSave.hidden = !place;
     if (!place) return;
 
@@ -3943,12 +3952,70 @@
    * comment in selectPlace. A name you have never heard of is a question
    * about where it is, and the answer is the map the sheet would otherwise
    * be standing on.
+   *
+   * FOR NOW, IT SOMETIMES SAYS STAY IN
+   *
+   * Three presses in ten it opens no restaurant at all. The same sheet comes
+   * up at the same low stop, and what is in it is Eat potato at home: the
+   * name, the price where the gauge would be, a paragraph about potatoes
+   * being 69 cents a kilo at the shop and the cheapest thing in this city,
+   * and the photograph of the tag that says so. The owner asked for the joke
+   * and has already said it will come out again, so it is built to come out:
+   * the three names below are the whole of it, plus a line each in byId,
+   * selectPlace, focusOn, paintMarkers, paintSave, syncUrl and renderDetail
+   * that ask whether the place is home, the home* strings in ten languages, the
+   * photos/potato folder and the validator's exception for it, the
+   * random_home row under Analytics in the README and the paragraph under
+   * Surprise me there.
+   *
+   * It is a place-shaped object rather than a place, so the sheet, the grid
+   * and the lightbox draw it with the code they already have, and it is
+   * rebuilt on every read because that is when the language can have
+   * changed. It is not in state.places, so the chips, the search, the list,
+   * the counts and the structured data never see it; it has no coordinates,
+   * so nothing flies and the map stays where it was; and nothing writes it
+   * into the address bar, so there is no link to it. It never comes twice
+   * running, for the reason a place never does: the die that has just told
+   * you to stay in is the one button somebody who does not fancy that
+   * presses next — lastPick holds it like any other answer, and the one
+   * place that follows itself across it is the smaller oddity. And it never
+   * stands in for "nothing to pick from": an empty pool is a fact about the
+   * filters, and a joke over it would hide the one thing that toast was
+   * there to say.
    */
+  var HOME_ID = 'potato';
+  var HOME_ODDS = 0.3;
+
+  function homePlace() {
+    /* One language in the blurb, the current one: blurbFor reads it the way
+       it reads a restaurant's, and the object does not outlive the render. */
+    var blurb = {};
+    blurb[state.lang] = t('homeBlurb');
+    return {
+      id: HOME_ID,
+      home: true,
+      name: t('homeName'),
+      cost: t('homePrice'),
+      blurb: blurb,
+      photos: ['01.webp']
+    };
+  }
+
   function randomPick() {
     var pool = visiblePlaces().filter(function (p) { return !p.closed; });
 
     if (!pool.length) {
       toast(t('randomNone'));
+      return;
+    }
+
+    if (state.lastPick !== HOME_ID && Math.random() < HOME_ODDS) {
+      state.lastPick = HOME_ID;
+      TTBTrack.event('random_home', { pool: pool.length });
+      /* Through the ordinary door, address bar included: syncUrl never
+         writes home, but it does take a previous place's ?spot= off, and
+         the entry it leaves is what lets Back close this like any sheet. */
+      selectPlace(HOME_ID, { peek: true });
       return;
     }
 
@@ -5106,7 +5173,9 @@
     var heading = dom.detail.querySelector('.place-name');
     if (heading) heading.focus();
 
-    TTBTrack.view(place.name);
+    /* A page view is for a page. Home is a roll of the die, and randomPick
+       reports it as one. */
+    if (!place.home) TTBTrack.view(place.name);
   }
 
   function showList(focus, opts) {
@@ -5662,7 +5731,12 @@
          it is off, and the way to get it, wait below with everything else
          you would read once you have decided to go. */
       el('div', { className: 'head-meta' }, [
-        priceGauge(place.price),
+        /* Home has a price rather than a band — 69 cents a kilo, off the tag
+           in its photograph — so it wears the gauge's own dress, lit, and
+           says the number. */
+        place.home
+          ? el('span', { className: 'price' }, [el('i', { className: 'on', textContent: place.cost })])
+          : priceGauge(place.price),
         deal ? dealMark(deal) : null
       ])
     ]));
@@ -5740,6 +5814,11 @@
         }))
       ));
     }
+
+    /* The facts and the ways there are about a door in this city. Home has
+       no address, so it has none of them: nothing to call, nowhere to get
+       directions to. */
+    if (!place.address) return;
 
     dom.detail.appendChild(plainSection([
       el('dl', { className: 'facts' }, [
@@ -7694,7 +7773,10 @@
      "close this", never "walk back through everywhere I looked". */
   function syncUrl(push) {
     var params = new URLSearchParams(window.location.search);
-    if (state.selected) params.set('spot', state.selected);
+    /* Home never reaches the address bar: it is a roll of the die rather
+       than a page, and a link to it would outlive the joke. */
+    var spot = state.selected ? byId(state.selected) : null;
+    if (spot && !spot.home) params.set('spot', spot.id);
     else params.delete('spot');
     /* Chips in the address bar: a filtered map becomes a link worth sending,
        and the landing view GA records for it says which filters it was.

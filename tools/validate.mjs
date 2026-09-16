@@ -1244,6 +1244,15 @@ if (existsSync(PHOTOS)) {
   for (const entry of readdirSync(PHOTOS)) {
     const abs = join(PHOTOS, entry);
     if (!statSync(abs).isDirectory()) continue;
+    /* The one folder that is not a place: the photograph Surprise me shows
+       when it says to stay in. No restaurant lists it — homePlace() in
+       assets/app.js names the file — so it is checked here by name, and
+       **Surprise me** in README.md says why it exists and that it is built
+       to come out again. */
+    if (entry === 'potato') {
+      if (!existsSync(join(abs, '01.webp'))) fail('photos/potato/', 'is missing 01.webp, the picture homePlace() in assets/app.js shows');
+      continue;
+    }
     if (!seenIds.has(entry)) {
       warn('photos/', `folder "${entry}/" has no matching restaurant id in restaurants.json`);
     }
