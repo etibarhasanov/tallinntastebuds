@@ -419,17 +419,6 @@
     for (var k = 0; k < titled.length; k++) {
       titled[k].setAttribute('title', t(titled[k].getAttribute('data-i18n-title')));
     }
-
-    /* And the one emoji in the markup, the lists door's clipboard. Under a
-       language that draws every pin as a single picture — LANGUAGES in
-       assets/pins.js — the door is that picture too, and the clipboard again
-       in the rest. The node remembers what the markup gave it, so the
-       clipboard is written once, in index.html, and in no script. */
-    var door = dom.listsGlyph;
-    if (door) {
-      if (door.ttbOwn === undefined) door.ttbOwn = door.textContent;
-      door.textContent = TTBPins.worn() || door.ttbOwn;
-    }
   }
 
   /* Six codes in a row is 232px, and on a 390px phone that runs straight into
@@ -1258,13 +1247,15 @@
     node.style.setProperty('--pin-d', d + 'px');
 
     /* The mouth or a glyph, and the tone that goes with it, as classes on
-       this node — the stylesheet owns the colour. The glyph itself is
-       written into the face rather than here, because Leaflet owns the pair
-       and .pin-face is the half that takes the pointer. */
+       this node — the stylesheet owns the colour. What goes in the face is
+       written here rather than by TTBPins.paint(), because Leaflet owns the
+       pair and .pin-face is the half that takes the pointer; and TTBPins is
+       what says whether the mouth is the mouth today, since under a language
+       that wears a picture it is a glyph like the rest. */
     var wears = pinOf(place);
     TTBPins.dress(node, wears);
     var face = node.querySelector('.pin-face');
-    if (face) face.textContent = wears === 'mark' ? '' : TTBPins.glyph(wears);
+    if (face) face.textContent = TTBPins.faceOf(wears);
 
     /* Three states outrank whatever the pin chose, and all three are about
        this map rather than about the place: shut for good, open, and the one
@@ -8364,7 +8355,6 @@
       panelSaveN: $('panel-save-n'),
       btnAccount: $('btn-account'),
       btnLists: $('btn-lists'),
-      listsGlyph: document.querySelector('#btn-lists .rail-glyph'),
       nudge: $('nudge'),
       nudgeSay: $('nudge-say'),
       nudgeGo: $('nudge-go'),

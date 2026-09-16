@@ -4,11 +4,13 @@
  * order, which is the whole of the feature:
  *
  *   1. A place on my map draws THE MARK — the mouth out of the painting, at
- *      22px, see "The mark" in README.md. Nothing overrides it. A list that
- *      chose a croissant and put Pizza Hut and a place of mine side by side
- *      gets a croissant and a mouth, because the mouth is not decoration: it
- *      is this site saying it has eaten there. It is not in GLYPHS below and
- *      there is no way to ask for it.
+ *      22px, see "The mark" in README.md. Nothing a list can choose
+ *      overrides it: one that chose a croissant and put Pizza Hut and a
+ *      place of mine side by side gets a croissant and a mouth, because the
+ *      mouth is not decoration: it is this site saying it has eaten there.
+ *      It is not in GLYPHS below and there is no way to ask for it. The one
+ *      thing that does draw over it is the reader's own language — LANGUAGES
+ *      below — which is nobody's claim about the place.
  *
  *   2. A place a list put on the screen draws THE LIST'S pin, in the list's
  *      tone. That is the choice its owner made, and it is what makes ten
@@ -170,20 +172,28 @@ window.TTBPins = (function () {
    * The third table, and it answers a different question from the two
    * above: not what a pin is, but what every pin is drawn as while the page
    * reads in that language. A row here is one picture, and under it the
-   * eight markers, the five kinds of place, the picker's grid, the emblem
-   * in front of a list's title and the door on the rail are all that
-   * picture. Estonian is a potato. Russian is an onion. Switch the language
-   * and the whole map changes its mind about what it is made of — which was
-   * asked for, for a video, and stays because the joke works.
+   * eight markers, the five kinds of place, the mouth on my own places, the
+   * picker's grid, the emblem in front of a list's title, the mark in every
+   * header and the door on the rail are all that picture. Estonian is a
+   * potato. Russian is an onion. Switch the language and the whole map
+   * changes its mind about what it is made of — which was asked for, for a
+   * video, and stays because the joke works.
    *
    * English is not in here, and that is what makes it the real map: a code
    * with no row draws the two tables above, which is also what a language
-   * added tomorrow does until somebody writes it one. The mark is not in
-   * here either — it is a photograph and not an emoji, and the mouth goes on
-   * a place I have eaten at in every language. And nothing a list STORES
-   * changes: a list dressed in a balloon is a balloon in the database and on
-   * an English map, and the picker still stores the id under the swatch
-   * however the swatch is drawn.
+   * added tomorrow does until somebody writes it one.
+   *
+   * The mouth goes too. It is a photograph and not an emoji, so it is not a
+   * row in any table, but under a language that wears a picture a place of
+   * mine is dressed as a glyph pin wearing it, in the accent — isMark()
+   * below is where that is decided — and every <img> of the mouth in the
+   * markup, the mark in a header, the one in the story viewer, the face on
+   * the tour, shows the picture instead: see wear() at the foot of this
+   * file. What does not change is anything a list STORES: a list dressed in
+   * a balloon is a balloon in the database and on an English map, the
+   * picker still stores the id under the swatch however the swatch is
+   * drawn, and the mouth is still nothing a stranger can hand out or take
+   * away — the language is the reader's, not the list's.
    *
    * The language is read off <html lang> at the moment a glyph is asked
    * for, rather than told to this file: every page writes it there in its
@@ -256,6 +266,22 @@ window.TTBPins = (function () {
     return known(id) ? byId[id].tone : DEFAULT_TONE;
   }
 
+  /* Whether a pin is the mouth: only 'mark', and only while the language is
+     not drawing everything as one picture. Under one, a place of mine is a
+     glyph pin like the rest, wearing that picture in the accent. The size it
+     draws at is still the map's to decide — pinSize() in assets/app.js — so
+     a write-up-only place is a smaller potato, the way it was a smaller
+     mouth. */
+  function isMark(pin) {
+    return pin === 'mark' && !worn();
+  }
+
+  /* What a pin's face holds: nothing for the mouth, which the stylesheet
+     draws as a background, and the emoji for everything else. */
+  function faceOf(pin) {
+    return isMark(pin) ? '' : glyph(pin);
+  }
+
   /* What kind of door a place off the export is, as one of the five. The
      kitchens are asked first because they are the exact word — "bakery"
      before "restaurant" — and the types after, which is the same order of
@@ -302,7 +328,8 @@ window.TTBPins = (function () {
      'mark' is the mouth and takes no glyph at all. It is not in GLYPHS and
      nothing anybody types can reach it: only a place on my map is dressed
      with it, by the one call in assets/app.js that knows which places those
-     are.
+     are — and under a language that wears a picture, isMark() says it is a
+     glyph after all, and it is dressed as one.
 
      Which element this goes on matters. On the map it is the marker's own
      node and the glyph is written into the .pin-face inside it, because
@@ -311,10 +338,10 @@ window.TTBPins = (function () {
   function dress(node, pin) {
     if (!node) return node;
     for (var k = 0; k < TONES.length; k++) node.classList.remove('pin-tone-' + TONES[k]);
-    var isMark = pin === 'mark';
-    node.classList.toggle('is-mark', isMark);
-    node.classList.toggle('is-glyph', !isMark);
-    if (!isMark) node.classList.add('pin-tone-' + toneOf(pin));
+    var mark = isMark(pin);
+    node.classList.toggle('is-mark', mark);
+    node.classList.toggle('is-glyph', !mark);
+    if (!mark) node.classList.add('pin-tone-' + toneOf(pin));
     return node;
   }
 
@@ -323,9 +350,65 @@ window.TTBPins = (function () {
   function paint(node, pin) {
     if (!node) return node;
     dress(node, pin);
-    node.textContent = pin === 'mark' ? '' : glyph(pin);
+    node.textContent = faceOf(pin);
     return node;
   }
+
+  /* ------------------------------------------- the pictures in the markup
+   *
+   * A pin is asked for and answers. The mouth in a header is an <img> in
+   * the markup, and nobody asks — so anything in the markup that follows
+   * the language carries data-worn, and wear() dresses all of it. An <img>
+   * shows the language's picture, drawn as text into an SVG the image can
+   * show, so the ring, the crop and the size around it stay exactly where
+   * they were; anything else, which today is the clipboard on the lists
+   * door, has the picture written over its text. Each node remembers what
+   * the markup gave it, so the mouth and the clipboard are written once, in
+   * the HTML, and come back the moment the language stops saying otherwise.
+   *
+   * The SVG restates the --emoji font list rather than reading it: an SVG
+   * drawn as an image reads no stylesheet and loads no web font, and the
+   * platform's colour emoji face is a system font on every platform that
+   * has one, which is the only font it needs. Centred the way the sky on
+   * /lists centres its glyphs, with the .35em the rest of the web uses.
+   *
+   * Run once here — the script is deferred, so the markup is parsed — and
+   * again whenever <html lang> changes, which every page's
+   * applyStaticStrings() does before it draws and the map's setLanguage()
+   * does on the switch. Watching the attribute rather than waiting to be
+   * called is what lets a page that loads this file be dressed without a
+   * line of its own; Leaflet's markers, which are built rather than
+   * written, are the one thing left to repaint by hand — paintMarkers() in
+   * assets/app.js. The tab's icon is deliberately not on the list: Safari
+   * ignores a favicon changed after load, and Google reads the tags.
+   */
+  function picture(emoji) {
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' +
+      '<text x="50" y="50" dy=".35em" font-size="76" text-anchor="middle" ' +
+      'font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, Android Emoji, EmojiSymbols, sans-serif">' +
+      emoji + '</text></svg>'
+    );
+  }
+
+  function wear() {
+    var one = worn();
+    var nodes = document.querySelectorAll('[data-worn]');
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      var img = node.tagName === 'IMG';
+      if (node.ttbOwn === undefined) node.ttbOwn = img ? node.getAttribute('src') : node.textContent;
+      var want = img ? (one ? picture(one) : node.ttbOwn) : (one || node.ttbOwn);
+      if (img) { if (node.getAttribute('src') !== want) node.setAttribute('src', want); }
+      else if (node.textContent !== want) node.textContent = want;
+    }
+  }
+
+  wear();
+  new MutationObserver(wear).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['lang']
+  });
 
   /* The two defaults are not on here, and that is the point of ofList() and
      glyph(): they apply them, so nothing outside this file has to know what
@@ -336,9 +419,9 @@ window.TTBPins = (function () {
     GLYPHS: markerIds,
     TONES: TONES,
     glyph: glyph,
-    /* For the one emoji on the site that is not a pin — the lists door on
-       the rail — so it can follow the language the way the pins do. */
-    worn: worn,
+    /* For the map, which writes a pin's face itself because Leaflet owns
+       the pair — see dressPin() in assets/app.js. */
+    faceOf: faceOf,
     toneOf: toneOf,
     forKinds: forKinds,
     ofList: ofList,
