@@ -1239,9 +1239,7 @@ The language is chosen in this order:
 3. the browser's own preference
 4. English
 
-Switching languages re-renders the page in place — no reload — and in some
-languages it changes what every pin is drawn as; see **What a language
-wears** under **The pins**. Every touch of
+Switching languages re-renders the page in place — no reload. Every touch of
 `localStorage` is wrapped in `try/catch`, because it throws outright in some
 private-browsing modes; if it is unavailable the site simply forgets the
 preference between visits.
@@ -6882,11 +6880,10 @@ to read and write first.
   `functions/api/_pins.js` will let a list store, a glyph called `mark` in
   either table, a kind of place a list could also pick, a kind filed under a
   tone that does not exist, a tone with no colour token or no `.pin-tone-`
-  rule behind it, a marker nobody has named in ten languages — the picker
+  rule behind it, or a marker nobody has named in ten languages — the picker
   builds its keys out of the ids, so the scanner for `t()` calls cannot see
-  one of the eight and nothing else would catch it — or a language in
-  `LANGUAGES` that `data/ui.json` does not speak, which would be a row that
-  never draws. See **[The pins](#the-pins)**
+  one of the eight and nothing else would catch it. See
+  **[The pins](#the-pins)**
 - a photo listed in the data that does not exist in the repo
 - a `reel` value that is not a real Instagram or TikTok permalink shape
 - a `price` outside 1–4 or off the 0.5 step, a malformed `visited` month, a
@@ -7050,10 +7047,9 @@ tools/blogclips.mjs        one frame a launch, diffed, written as one APNG
 google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
-assets/pins.js             the eight markers, the five kinds of place, the three
-                           tones, the languages that draw every one of them as a
-                           single picture, and which of them a place draws —
-                           said once for every page that draws a pin
+assets/pins.js             the eight markers, the five kinds of place, the six
+                           tones, and which of them a place draws — said once
+                           for every page that draws a pin
 functions/api/_pins.js     the same ids, on the side that decides whether a
                            list may store them (not a route: leading _)
 assets/basemap.js          the CARTO tiles, said once for every map that draws them
@@ -7177,11 +7173,6 @@ alone, over a circle, on the reasoning that a picture inside a 14px dot is mud.
 That was true of a 14px dot. At 22px the crop reads, and the map stops being
 seventy anonymous circles with one photograph parked among them.
 
-In a language that wears one picture it is that picture instead — on the map
-and in every header — which is the one thing on the site that draws over the
-mouth, and it is the reader's own language rather than anybody's claim about
-a place. See **What a language wears** under **The pins**.
-
 Everything else the map can draw — a place off Google's export, a place
 somebody put on a list — wears a glyph instead, and that boundary is the
 point rather than a detail of it. The mouth is this site saying it has eaten
@@ -7249,11 +7240,6 @@ partly approved, mostly recommended.
 The picker says so in words under it — `listsPinMark`, in ten languages —
 rather than leaving somebody to work it out from a map where two of their
 pins came out wrong.
-
-A language that wears one picture draws the mouth as that picture too — see
-**What a language wears** — and that does not touch any of this: the
-language is the reader's, the list stores what it stored, and the mouth is
-back the moment the page reads in English.
 
 ### Two tables, and they do not overlap
 
@@ -7342,74 +7328,6 @@ scanner for `t()` calls cannot see a single one of them, so it walks the same
 list and checks them itself. See **What the validator checks**. The five kinds
 of place have no names, and want none: they are `aria-hidden` everywhere they
 are drawn, because the card beside them already says the kind in words.
-
-### What a language wears
-
-In some languages every picture on the site is one picture. Read the map in
-Estonian and every pin is a potato, the mouth included — the seventy-five
-places, the eight markers, the five kinds of place, the emblem in front of a
-list's title, the swatches in the picker, the marks on a card on `/lists`,
-the glyph in front of a name on the directory, the lists door on the rail,
-and the mark in every header, in the story viewer and on the tour. Switch to
-Russian and they are all onions. It was asked for, for a video, and it stays
-because the joke works: the language changes and the whole map changes its
-mind about what it is made of.
-
-| az | et | hy | ru | fi | pt | es | tr | uk | en |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 🥔 | 🥔 | 🍾 | 🧅 | 🫐 | 🐟 | 🥘 | 🥙 | 🌻 | the real pins |
-
-`LANGUAGES` in `assets/pins.js` is the whole of it — one row per language,
-one emoji per row — and `glyph()` answers with the row instead of the id
-whenever the page is reading in a language that has one. English has no row,
-and that is what makes it the real map: something has to be, and it is the
-language the site lands in. A language added tomorrow draws the real pins
-until somebody writes it a row, and taking the joke out is deleting the rows.
-
-The mouth goes with it, and it is the one thing here that is not an emoji.
-On the map a place of mine is dressed as a glyph pin wearing the picture, in
-the accent, at whatever size its reading gives it — `isMark()` in `pins.js`
-is where the mouth stops being the mouth. The mark in a header, the one in
-the story viewer and the face on the tour are `<img>`s in the markup, and
-each carries `data-worn`, which is what `wear()` in `pins.js` dresses: the
-picture drawn as text into an SVG the image can show, so the ring, the crop
-and the size around it stay where they were, and the mouth back the moment
-the language stops saying otherwise. The clipboard on the lists door carries
-the same attribute and is written the same way. The tab's icon is the one
-small picture of the mouth left alone: Safari ignores a favicon changed
-after load, and Google reads the tags.
-
-What does not follow is anything a list *stores*: a list dressed in a
-balloon is a balloon in the database and on an English map, and the picker
-still stores the id under the swatch however the swatch is drawn. **The
-mouth is not a choice** holds as it did, because the language is the
-reader's and not the list's — nothing a stranger types can hand the mouth
-out, and nothing a stranger types can take it off.
-
-The language is read off `<html lang>` at the moment a glyph is asked for,
-rather than told to `pins.js`. Every page writes it there in its
-`applyStaticStrings()` before it draws a pin, and `pins.js` watches that
-attribute for the pictures in the markup, so a page that loads it is dressed
-without a line of its own — `blog.html` loads it for exactly that and
-nothing else. The map writes it again on the switch and then repaints its
-markers — `setLanguage()` calls `paintMarkers()` for exactly this, because
-Leaflet's markers are built rather than written and nothing else in the
-switch redraws them. So there is no second setter for a page to forget, and
-a page that never sets it draws the real pins.
-
-The cost is one a video is glad to pay and a visitor may not be: while a
-language has a row, somebody reading in it cannot tell a place of mine from
-one off Google's export, or a café from a bar, by the pin, and the eight
-swatches in the picker are eight potatoes told apart by their tooltips. The
-kind is still in words on every card, a stand-in still says Google beside
-its rating, and the names are still on the swatches, which is why it is a
-joke rather than a broken map — and why the rows are the thing to delete the
-day the video is done with them.
-
-`node tools/validate.mjs` fails the build on a code in `LANGUAGES` that
-`data/ui.json` does not speak. `ee` for Estonian would be a row that never
-fires, and **Estonian is `et`, not `ee`** under **Languages** is why that is
-the one to expect.
 
 ### Two colour worlds, and three tones inside each
 

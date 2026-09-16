@@ -495,10 +495,6 @@
     renderStyleSwitch();
     renderFilters();
     renderPanel();
-    /* Every pin may have changed its picture with the language — LANGUAGES
-       in assets/pins.js — and the panel has just redrawn its band, but
-       Leaflet's markers are nobody else's to redraw. */
-    paintMarkers();
     window.TTBRadio.language(code);
     /* applyStaticStrings has just put "Account" back on the button through
        its data-i18n, which is the right word for a stranger and the wrong one
@@ -1247,15 +1243,13 @@
     node.style.setProperty('--pin-d', d + 'px');
 
     /* The mouth or a glyph, and the tone that goes with it, as classes on
-       this node — the stylesheet owns the colour. What goes in the face is
-       written here rather than by TTBPins.paint(), because Leaflet owns the
-       pair and .pin-face is the half that takes the pointer; and TTBPins is
-       what says whether the mouth is the mouth today, since under a language
-       that wears a picture it is a glyph like the rest. */
+       this node — the stylesheet owns the colour. The glyph itself is
+       written into the face rather than here, because Leaflet owns the pair
+       and .pin-face is the half that takes the pointer. */
     var wears = pinOf(place);
     TTBPins.dress(node, wears);
     var face = node.querySelector('.pin-face');
-    if (face) face.textContent = TTBPins.faceOf(wears);
+    if (face) face.textContent = wears === 'mark' ? '' : TTBPins.glyph(wears);
 
     /* Three states outrank whatever the pin chose, and all three are about
        this map rather than about the place: shut for good, open, and the one
