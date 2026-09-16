@@ -1,0 +1,127 @@
+/* ==========================================================================
+   Tallinn Tastebuds — the feedback page, as a MOCKUP.
+
+   This is a picture of a page that does not exist yet, drawn so the owner can
+   say yes, no or "the other one" before anything is built — see "Something
+   new is described before it is built" in CLAUDE.md. It is not the change.
+   Nothing in this folder is served by the site, stamped, validated or
+   translated; the three HTML files beside it are static, in English, with
+   made-up feedback on them.
+
+   It is loaded after assets/styles.css, assets/lists.css and assets/blog.css,
+   the real files, the way blog.html loads the first two. So the tokens, the
+   card, the eyebrow, the four controls, the field, the chip, the keep button
+   and the sheet are all the site's own and none of them is restated. What is
+   below is only what a feedback page would have and none of those three
+   pages has — and it is small on purpose, because a page that needs a lot of
+   new stylesheet is a page that has stopped looking like the site.
+
+   Two halves. The first is what the real page would carry, most likely as
+   assets/feedback.css the way the blog carries blog.css. The second, under
+   MOCKUP ONLY, is the switch that lets one file show its states for the
+   screenshots, and would not ship.
+   ========================================================================== */
+
+/* ---------- what the page would actually add ---------- */
+
+/* The sentence somebody wrote. Literata, in the ink, a size up from
+   .lists-say — it is the thing the row is, not a line under something
+   else. Somebody may paste one very long word, so it may break anywhere. */
+.fb-text {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+/* The foot of a row: who and when on the left, the like on the right. It
+   wraps as a flex row rather than holding one line, so on a narrow phone the
+   like drops under the byline instead of pushing it off the card. */
+.fb-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+.fb-foot .lists-all-meta { margin: 0; }
+.fb-foot .lists-keep-wrap { margin-left: auto; }
+
+/* One piece of feedback as a card of its own — template A. .lists-all-card
+   is the directory's row and its hover says "this opens"; a card here opens
+   nothing, so it is .card with the directory row's padding and no hover. */
+.fb-card { padding: 15px 18px 14px; }
+
+/* The same rows inside one card, hairline-ruled — template B. The rule is
+   .menu's: a line between rows and one under the last, nothing under the
+   first, because the thing above it is the card's own heading. */
+.fb-rows { list-style: none; margin: 14px 0 0; padding: 0; }
+.fb-row { padding: 14px 0; border-top: 1px solid var(--hairline); }
+.fb-row:last-child { border-bottom: 1px solid var(--hairline); }
+.fb-rows + .lists-more { margin-top: 12px; }
+
+/* The field. .lists-input at the 16px the ninth design rule insists on —
+   anything smaller makes iOS zoom the page when it takes focus — and tall
+   enough for a paragraph without being a page. Vertical resize only. */
+.fb-input {
+  display: block;
+  min-height: 104px;
+  font-size: 16px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+/* The count under the field, right against the field's edge. */
+.fb-count { text-align: right; }
+
+/* The one filled action beside the order chips — template C, where the
+   composer lives behind it in a sheet. The chips ride on the right. */
+.fb-bar { gap: 10px 18px; }
+.fb-bar .lists-order { margin-left: auto; }
+
+/* A like is the keep button with a heart in place of the bookmark: outline
+   for "not yet", filled and in the accent for "liked", the word changing with
+   it so the colour is never the only thing saying so. Nothing to add — the
+   rules are .lists-keep's — except that a heart drawn at the bookmark's
+   stroke reads a touch heavy, so it is a hair lighter. */
+.fb-like svg { stroke-width: 1.6; }
+
+/* ---------- MOCKUP ONLY: the states, switched by ?state= ----------
+   One file per template shows every state it has, so the screenshots come
+   from the same markup rather than from six copies of it. The real page
+   decides its state once, when the data arrives, and builds the one it is
+   in — see assets/lists.js — and none of these rules would exist. */
+
+body[data-state="out"] .fb-when-in { display: none; }
+body:not([data-state="out"]) .fb-when-out { display: none; }
+
+.fb-when-posted { display: none; }
+body[data-state="posted"] .fb-when-posted { display: block; }
+body[data-state="posted"] li.fb-when-posted { display: list-item; }
+
+.fb-when-err { display: none; }
+body[data-state="err"] .fb-when-err { display: block; }
+
+.fb-when-empty, .fb-when-fail { display: none; }
+body[data-state="empty"] .fb-when-empty { display: block; }
+body[data-state="fail"] .fb-when-fail { display: block; }
+body[data-state="empty"] .fb-list,
+body[data-state="empty"] .fb-rows,
+body[data-state="empty"] .fb-order,
+body[data-state="empty"] .lists-more,
+body[data-state="fail"] .fb-list,
+body[data-state="fail"] .fb-rows,
+body[data-state="fail"] .fb-order,
+body[data-state="fail"] .lists-more { display: none; }
+
+/* Your own row carries Remove where the others carry a like; signed out,
+   nothing on the page is yours. */
+.fb-mine .fb-like-wrap { display: none; }
+body[data-state="out"] .fb-mine .fb-like-wrap { display: inline-flex; }
+body[data-state="out"] .fb-mine .fb-remove-wrap { display: none; }
+
+/* The sheet, template C. */
+.fb-sheet { display: none; }
+body[data-state="sheet"] .fb-sheet { display: grid; }

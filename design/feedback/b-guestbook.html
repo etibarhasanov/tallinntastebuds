@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feedback | Tallinn Tastebuds — mockup B</title>
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+<meta name="robots" content="noindex, nofollow">
+
+<!-- A MOCKUP, not the page. See mockup.css and README.md in this folder.
+     ?style=green draws the dark style, ?state= picks a state; the script at
+     the foot of the page reads both. Nothing here talks to /api/. -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The site's own three stylesheets, unstamped because this is not served.
+     The tokens, the card, the eyebrow, the four controls and the sheet from
+     the first; the frame, the field, the chip row, the keep button and the
+     segmented choice from the second; the head without a card under it from
+     the third. -->
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="../../assets/lists.css">
+<link rel="stylesheet" href="../../assets/blog.css">
+<link rel="stylesheet" href="mockup.css">
+</head>
+<body class="lists-body" data-state="in">
+
+<a class="skip-link" href="#main">Skip to the feedback</a>
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" aria-label="Back to the map">
+    <img class="lists-mark" src="../../assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark">Tallinn Tastebuds</span>
+  </a>
+  <!-- The username, when there is one: a link to the map's account sheet, as
+       on the lists page. Hidden signed out. -->
+  <a class="lists-who fb-when-in" href="/?account=in">kadri</a>
+</header>
+
+<main class="lists-main" id="main" tabindex="-1">
+  <div class="lists-stack">
+    <section class="card lists-card">
+      <p class="eyebrow">Tallinn</p>
+      <h1 class="lists-title">Feedback</h1>
+      <p class="lists-say">What would you change about this site? Say it here, and like what others said if you agree.</p>
+      <form class="ac-form" action="#" method="post">
+        <!-- What just happened, above the fields: nobody looks under the
+             button they have already pressed. -->
+        <p class="ac-note fb-when-posted">Posted. It is at the top of the page.</p>
+        <p class="ac-err fb-when-err">That did not go through. Try again.</p>
+
+        <div class="ac-field">
+          <label class="ac-label" for="fb-text">Your feedback</label>
+          <textarea id="fb-text" class="lists-input fb-input" rows="4" maxlength="500"
+                    placeholder="What do you want to see, and what is wrong?"></textarea>
+          <p class="lists-hint mono fb-count">0 / 500</p>
+        </div>
+
+        <!-- Signed in: whose name goes on it. Both answers drawn, the filled
+             one is the answer — the lists page's own public/private choice. -->
+        <fieldset class="lists-vis fb-when-in">
+          <legend class="lists-vis-legend mono">Post as</legend>
+          <div class="lists-seg">
+            <label class="lists-seg-opt is-on"><input type="radio" name="as-fb-text" value="name" checked><span>kadri</span></label>
+            <label class="lists-seg-opt"><input type="radio" name="as-fb-text" value="anon"><span>Anonymous</span></label>
+          </div>
+        </fieldset>
+        <!-- Signed out: there is no name to put on it, and the sentence says
+             so rather than a dead choice. -->
+        <p class="lists-hint fb-when-out">Posted anonymously. <a href="/?account=in">Sign in</a> to put your name on it.</p>
+
+        <div class="lists-row lists-acts">
+          <button type="submit" class="go">Post feedback</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card lists-card" aria-label="What people said">
+      <p class="lists-none fb-when-empty">Nothing here yet. The first thing somebody says turns up on this page.</p>
+      <p class="lists-none fb-when-fail">The feedback could not be loaded. Try again in a moment.</p>
+  
+    <div class="lists-order fb-order" role="group" aria-label="Order">
+      <span class="eyebrow">Order</span>
+      <button type="button" class="chip" aria-pressed="true">Newest</button>
+      <button type="button" class="chip" aria-pressed="false">Most liked</button>
+    </div>
+      <ul class="fb-rows">
+        <li class="fb-row fb-mine fb-when-posted">
+        <p class="fb-text">Add a way to sort the list by price.</p>
+        <div class="fb-foot">
+          <p class="lists-all-meta"><span class="lists-index-by"><a href="/u/kadri">kadri</a></span> · 16 September 2026</p>
+          <span class="lists-keep-wrap fb-remove-wrap">
+            <button type="button" class="alt is-danger">Remove</button>
+            
+          </span>
+          <span class="lists-keep-wrap fb-like-wrap">
+            <button type="button" class="alt lists-keep fb-like" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Like</span></button>
+            
+          </span>
+        </div>
+        </li>
+        <li class="fb-row">
+        <p class="fb-text">The filter chips scroll off the screen on my phone and I did not notice there were more of them. A fade at the edge, or a small arrow, would say so.</p>
+        <div class="fb-foot">
+          <p class="lists-all-meta"><span class="lists-index-by"><a href="/u/kadri">kadri</a></span> · 15 September 2026</p>
+          <span class="lists-keep-wrap fb-like-wrap">
+            <button type="button" class="alt lists-keep fb-like is-kept" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Liked</span></button>
+            <span class="lists-keeps mono">12</span>
+          </span>
+        </div>
+        </li>
+        <li class="fb-row">
+        <p class="fb-text">Would love a chip for places open late. Half the time I am looking after ten.</p>
+        <div class="fb-foot">
+          <p class="lists-all-meta">Anonymous · 14 September 2026</p>
+          <span class="lists-keep-wrap fb-like-wrap">
+            <button type="button" class="alt lists-keep fb-like" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Like</span></button>
+            <span class="lists-keeps mono">8</span>
+          </span>
+        </div>
+        </li>
+        <li class="fb-row fb-mine">
+        <p class="fb-text">Stories are great. Could they stay up two days instead of one? I keep missing them.</p>
+        <div class="fb-foot">
+          <p class="lists-all-meta">Anonymous · 13 September 2026</p>
+          <span class="lists-keep-wrap fb-remove-wrap">
+            <button type="button" class="alt is-danger">Remove</button>
+            <span class="lists-keeps mono">3</span>
+          </span>
+          <span class="lists-keep-wrap fb-like-wrap">
+            <button type="button" class="alt lists-keep fb-like" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Like</span></button>
+            <span class="lists-keeps mono">3</span>
+          </span>
+        </div>
+        </li>
+        <li class="fb-row">
+        <p class="fb-text">Ask answered “cheap, near the harbour” with a place in Kalamaja. Kalamaja is not the harbour.</p>
+        <div class="fb-foot">
+          <p class="lists-all-meta"><span class="lists-index-by"><a href="/u/mart">mart</a></span> · 13 September 2026</p>
+          <span class="lists-keep-wrap fb-like-wrap">
+            <button type="button" class="alt lists-keep fb-like" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Like</span></button>
+            <span class="lists-keeps mono">5</span>
+          </span>
+        </div>
+        </li>
+        <li class="fb-row">
+        <p class="fb-text">The dark style is beautiful, but the price gauge is hard to read on it.</p>
+        <div class="fb-foot">
+          <p class="lists-all-meta"><span class="lists-index-by"><a href="/u/liis">liis</a></span> · 9 September 2026</p>
+          <span class="lists-keep-wrap fb-like-wrap">
+            <button type="button" class="alt lists-keep fb-like" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Like</span></button>
+            
+          </span>
+        </div>
+        </li>
+      </ul>
+      <div class="lists-more"><button type="button" class="alt">Show more</button></div>
+    </section>
+  </div>
+</main>
+
+<script>
+/* MOCKUP ONLY. The real page copies the boot block every page carries —
+   applyStyle(), pickLanguage(), applyStaticStrings() — and this stands in
+   for the first of them. */
+(function () {
+  'use strict';
+  var q = {};
+  location.search.replace(/[?&]([^=&]+)=([^&]*)/g, function (_, k, v) { q[k] = decodeURIComponent(v); });
+  if (q.style === 'green') {
+    document.documentElement.setAttribute('data-style', 'green');
+    document.documentElement.style.colorScheme = 'dark';
+  }
+  var state = q.state || 'in';
+  document.body.setAttribute('data-state', state);
+  if (state === 'err') {
+    var box = document.getElementById('fb-text');
+    if (box) box.value = 'Add a way to sort the list by price.';
+    var n = document.querySelector('.fb-count');
+    if (n) n.textContent = '36 / 500';
+  }
+})();
+</script>
+</body>
+</html>
