@@ -7177,6 +7177,11 @@ alone, over a circle, on the reasoning that a picture inside a 14px dot is mud.
 That was true of a 14px dot. At 22px the crop reads, and the map stops being
 seventy anonymous circles with one photograph parked among them.
 
+In a language that wears one picture it is that picture instead — on the map
+and in every header — which is the one thing on the site that draws over the
+mouth, and it is the reader's own language rather than anybody's claim about
+a place. See **What a language wears** under **The pins**.
+
 Everything else the map can draw — a place off Google's export, a place
 somebody put on a list — wears a glyph instead, and that boundary is the
 point rather than a detail of it. The mouth is this site saying it has eaten
@@ -7244,6 +7249,11 @@ partly approved, mostly recommended.
 The picker says so in words under it — `listsPinMark`, in ten languages —
 rather than leaving somebody to work it out from a map where two of their
 pins came out wrong.
+
+A language that wears one picture draws the mouth as that picture too — see
+**What a language wears** — and that does not touch any of this: the
+language is the reader's, the list stores what it stored, and the mouth is
+back the moment the page reads in English.
 
 ### Two tables, and they do not overlap
 
@@ -7335,14 +7345,15 @@ are drawn, because the card beside them already says the kind in words.
 
 ### What a language wears
 
-In some languages every glyph on the site is one picture. Read the map in
-Estonian and every pin that is not the mouth is a potato — the eight markers,
-the five kinds of place, the emblem in front of a list's title, the swatches
-in the picker, the marks on a card on `/lists`, the glyph in front of a name
-on the directory, and the lists door on the rail. Switch to Russian and they
-are all onions. It was asked for, for a video, and it stays because the joke
-works: the language changes and the whole map changes its mind about what it
-is made of.
+In some languages every picture on the site is one picture. Read the map in
+Estonian and every pin is a potato, the mouth included — the seventy-five
+places, the eight markers, the five kinds of place, the emblem in front of a
+list's title, the swatches in the picker, the marks on a card on `/lists`,
+the glyph in front of a name on the directory, the lists door on the rail,
+and the mark in every header, in the story viewer and on the tour. Switch to
+Russian and they are all onions. It was asked for, for a video, and it stays
+because the joke works: the language changes and the whole map changes its
+mind about what it is made of.
 
 | az | et | hy | ru | fi | pt | es | tr | uk | en |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -7355,30 +7366,45 @@ and that is what makes it the real map: something has to be, and it is the
 language the site lands in. A language added tomorrow draws the real pins
 until somebody writes it a row, and taking the joke out is deleting the rows.
 
-Two things do not follow. The mark is a photograph and not an emoji, and the
-mouth goes on a place I have eaten at in every language — see **The mouth is
-not a choice**. And nothing a list *stores* changes: a list dressed in a
+The mouth goes with it, and it is the one thing here that is not an emoji.
+On the map a place of mine is dressed as a glyph pin wearing the picture, in
+the accent, at whatever size its reading gives it — `isMark()` in `pins.js`
+is where the mouth stops being the mouth. The mark in a header, the one in
+the story viewer and the face on the tour are `<img>`s in the markup, and
+each carries `data-worn`, which is what `wear()` in `pins.js` dresses: the
+picture drawn as text into an SVG the image can show, so the ring, the crop
+and the size around it stay where they were, and the mouth back the moment
+the language stops saying otherwise. The clipboard on the lists door carries
+the same attribute and is written the same way. The tab's icon is the one
+small picture of the mouth left alone: Safari ignores a favicon changed
+after load, and Google reads the tags.
+
+What does not follow is anything a list *stores*: a list dressed in a
 balloon is a balloon in the database and on an English map, and the picker
-still stores the id under the swatch however the swatch is drawn.
+still stores the id under the swatch however the swatch is drawn. **The
+mouth is not a choice** holds as it did, because the language is the
+reader's and not the list's — nothing a stranger types can hand the mouth
+out, and nothing a stranger types can take it off.
 
 The language is read off `<html lang>` at the moment a glyph is asked for,
 rather than told to `pins.js`. Every page writes it there in its
-`applyStaticStrings()` before it draws a pin, and the map writes it again on
-the switch and then repaints its markers — `setLanguage()` calls
-`paintMarkers()` for exactly this, because Leaflet's markers are the one
-thing on the page nothing else in the switch redraws. So there is no second
-setter for a page to forget, and a page that never sets it draws the real
-pins. The clipboard on the lists door is the one emoji written into the
-markup rather than painted from a table, and `applyStaticStrings()` in
-`assets/app.js` writes the language's picture over it, and the clipboard
-back.
+`applyStaticStrings()` before it draws a pin, and `pins.js` watches that
+attribute for the pictures in the markup, so a page that loads it is dressed
+without a line of its own — `blog.html` loads it for exactly that and
+nothing else. The map writes it again on the switch and then repaints its
+markers — `setLanguage()` calls `paintMarkers()` for exactly this, because
+Leaflet's markers are built rather than written and nothing else in the
+switch redraws them. So there is no second setter for a page to forget, and
+a page that never sets it draws the real pins.
 
 The cost is one a video is glad to pay and a visitor may not be: while a
-language has a row, somebody reading in it cannot tell a café from a bar by
-the pin, and the eight swatches in the picker are eight potatoes told apart
-by their tooltips. The kind is still in words on every card and the names are
-still on the swatches, which is why it is a joke rather than a broken map —
-and why the rows are the thing to delete the day the video is done with them.
+language has a row, somebody reading in it cannot tell a place of mine from
+one off Google's export, or a café from a bar, by the pin, and the eight
+swatches in the picker are eight potatoes told apart by their tooltips. The
+kind is still in words on every card, a stand-in still says Google beside
+its rating, and the names are still on the swatches, which is why it is a
+joke rather than a broken map — and why the rows are the thing to delete the
+day the video is done with them.
 
 `node tools/validate.mjs` fails the build on a code in `LANGUAGES` that
 `data/ui.json` does not speak. `ee` for Estonian would be a row that never

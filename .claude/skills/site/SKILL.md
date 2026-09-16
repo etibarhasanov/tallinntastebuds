@@ -207,9 +207,12 @@ write gate's `--check`:
   ids. `mark` in either table fails outright, and so does a kind of place a
   list could pick — the mouth goes on a place I have eaten at, and what a
   Google row IS is not somebody's to choose. And every code in `LANGUAGES`
-  — the table that draws every glyph as one picture while the page reads in
-  that language — has to be a language `ui.json` speaks, or the row would
-  never draw. **The pins** in `README.md`.
+  — the table that draws every glyph, the mouth included, as one picture
+  while the page reads in that language — has to be a language `ui.json`
+  speaks, or the row would never draw. The mouth in a header and the door
+  on the rail carry `data-worn` in the markup, and `pins.js` dresses them
+  itself off `<html lang>`, so a page that loads it needs no line of its
+  own for them. **The pins** in `README.md`.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns. The **English** label of a
   type is also the one printed in the intro of that chip's published list, so
