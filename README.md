@@ -2946,7 +2946,13 @@ that costs.
 The sheet, and only what a sheet is good at: **signing in**, **creating an
 account**, **Continue with Google**, the **naming step** behind it, the
 **password** step and the **username** step. Every one of them is a thing you
-do and dismiss with the map still behind you, which is the test. The button on the rail is
+do and dismiss with the map still behind you, which is the test.
+
+Two of those are no longer the sheet's alone, and neither is on the map: the
+feedback composer makes an account, enters one, and names a Google account
+that arrives without one, because the moment to ask is the moment somebody has
+written something they want their name on — see **Feedback**. What the sheet
+still has by itself is the password step, the username step and signing out. The button on the rail is
 what tells the two apart — signed out it opens the sheet, signed in it leaves
 for this page — and `?account=me`, the old link to the menu, redirects here.
 
@@ -6342,9 +6348,25 @@ looking at.
 **Continue with Google** is the site's ordinary round trip with
 `?then=/feedback`. What was in the field is written to `localStorage` on the
 way out and put back on the way in, so a trip through Google does not cost
-somebody the sentence they had written. A Google account this site has never
-seen is sent to the map's naming step and comes back — there is one place that
-asks somebody to choose a name and it is not this page.
+somebody the sentence they had written. The button is drawn only where
+`googleReady()` says the trip would lead somewhere, which is the same call the
+map's sheet makes — without a Google client set on a deployment it is not a
+button that can do anything but come back saying it failed.
+
+**And the awkward half of it ends here too.** A Google account this site has
+never seen still has to be given a name, and that step used to be the map's
+sheet's: the browser was sent there, named, and returned. It is asked for in
+this composer now, above the sentence still sitting in the field. `/api/feedback`
+sees the sealed note `/api/google` left in a cookie, answers `naming: true`,
+and the composer draws a name and nothing else — no password, because a Google
+account has none, and no second way in to offer to somebody halfway through
+using one. Posting names the account and posts the sentence under it, in the
+one press.
+
+Nothing on this page sends the browser to the map and back, which is the whole
+point of the composer and was not true of this corner of it for a day. The
+sheet keeps its own copy of the step for its own visitors; the step itself is
+`nameGoogleAccount()` in `functions/api/_account.js`, read by both.
 
 ### The heart, and there is no other number
 
@@ -7242,8 +7264,9 @@ functions/api/feedback.js  reading a page of it, saying one, hearting one,
                            taking your own down
 functions/api/_account.js  the account rules that route and account.js both
                            read — the name, the password, the hold, the
-                           slow-down, and the step that makes or enters an
-                           account (not a route: leading _)
+                           slow-down, the step that makes or enters an
+                           account, and the one that names a Google account
+                           arriving without one (not a route: leading _)
 clips/                     GENERATED — the looping clip on each post, and the
 clips/scenes/              scenes, made of the site's own components, that
                            tools/blogclips.mjs draws them from

@@ -80,17 +80,14 @@
 
 import {
   json, sha256Hex, randomHex, derivePassword, pwIterations, sessionCookie,
-  sessionUser, openSession, claimDeviceSaves,
-  SESSION_DAYS, SESSION_COOKIE, readCookie, wrongDatabase, countsKey
+  sessionUser, SESSION_DAYS, SESSION_COOKIE, readCookie, wrongDatabase
 } from './_lib.js';
 import {
   USERNAME_RE, MIN_PASSWORD, HOLD_DAYS,
-  nameTaken, tooManyFails, noteFail, passwordOn, matches, failHash, enterAccount
+  nameTaken, tooManyFails, noteFail, passwordOn, matches, failHash,
+  enterAccount, nameGoogleAccount
 } from './_account.js';
-import {
-  googleReady, googleUser, unlinkGoogle, hasGoogle,
-  PENDING_COOKIE, pendingCookie, unseal, PROVIDER
-} from './_google.js';
+import { googleReady, unlinkGoogle, hasGoogle, pendingCookie } from './_google.js';
 
 /* The line somebody writes about themselves on /u/<name>. The same length as
    a list's intro in functions/api/lists.js, and the same reasoning: it is a
@@ -519,64 +516,26 @@ export async function onRequestPost(context) {
    * account" and refuses a sign-in against. Setting one later is the
    * password step, which asks for no current password when there is none.
    */
+  /* The step itself is `nameGoogleAccount` in ./_account.js, because two
+     forms finish it: this sheet, and the feedback composer, where somebody
+     who pressed Continue with Google under a half-written sentence names
+     themselves without being sent here and back. */
   if (action === 'google-name') {
-    const pending = await unseal(env.SAVE_SALT, readCookie(request, PENDING_COOKIE));
-    /* Fifteen minutes gone, a forged cookie, or somebody who arrived at this
-       sheet by typing the address. One answer for all three: there is nothing
-       to name, so start the trip again. */
-    if (!pending || pending.provider !== PROVIDER || !pending.subject) {
-      return json({ error: 'no-pending' }, 401);
-    }
-
-    const name = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
-    const client = typeof body.client === 'string' ? body.client : '';
-    if (!USERNAME_RE.test(name)) return json({ error: 'username' }, 400);
-
-    /* Every hold counts, exactly as on the sign-up sheet: a name somebody
-       walked away from last week is not a name a stranger may take, whichever
-       door they came in by. */
-    if (await nameTaken(env, name)) return json({ error: 'taken' }, 409);
-
-    /* The same Google account naming itself twice — two tabs, or a back
-       button after it worked. The account already exists, so the answer is to
-       go round again and be signed into it rather than to make a second one
-       under a second name. */
-    if (await googleUser(env, pending.subject)) return json({ error: 'linked' }, 409);
-
-    const userId = crypto.randomUUID();
-    try {
-      await env.DB.batch([
-        env.DB
-          .prepare(
-            'INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at) ' +
-            "VALUES (?, ?, '', '', 0, ?, ?)"
-          )
-          .bind(userId, name, Date.now(), Date.now()),
-        env.DB
-          .prepare('INSERT INTO identities (provider, subject, user_id, created_at) VALUES (?, ?, ?, ?)')
-          .bind(PROVIDER, pending.subject, userId, Date.now())
-      ]);
-    } catch (e) {
-      /* Two people taking the same free name in the same second, or the same
-         Google account landing here twice at once. Both unique indexes say
-         the same thing and the loser is told what the checks above would have
-         told them. The batch is one transaction, so neither row is left. */
-      return json({ error: 'taken' }, 409);
-    }
-
-    const token = await openSession(env, userId);
-    const touched = await claimDeviceSaves(env, userId, client);
-    if (touched.length) context.waitUntil(caches.default.delete(countsKey(request)));
+    const named = await nameGoogleAccount(context, {
+      username: body.username,
+      client: body.client
+    });
+    if (!named.ok) return json({ error: named.error }, named.status);
 
     const made = new Headers({
       'content-type': 'application/json; charset=utf-8',
       'cache-control': 'no-store'
     });
-    made.append('set-cookie', sessionCookie(token, SESSION_DAYS, request));
+    made.append('set-cookie', sessionCookie(named.token, SESSION_DAYS, request));
     /* Spent. It is good for one account and this was it. */
     made.append('set-cookie', pendingCookie(''));
     return new Response(
-      JSON.stringify({ user: name, saved: await savedByUser(env, userId) }),
+      JSON.stringify({ user: named.username, saved: await savedByUser(env, named.userId) }),
       { headers: made }
     );
   }

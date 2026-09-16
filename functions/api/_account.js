@@ -25,8 +25,9 @@
 
 import {
   clientIp, fingerprint, randomHex, derivePassword, sameSecret, pwIterations,
-  openSession, claimDeviceSaves, countsKey
+  openSession, claimDeviceSaves, countsKey, readCookie
 } from './_lib.js';
+import { googleUser, PENDING_COOKIE, unseal, PROVIDER } from './_google.js';
 
 /* Guessing is the only way in — there is no reset link to phish and no
    address to intercept — so it is the thing to make slow. Ten wrong passwords
@@ -264,4 +265,98 @@ export async function enterAccount(context, opts) {
   if (claimed.length) context.waitUntil(caches.default.delete(countsKey(request)));
 
   return { ok: true, userId: userId, username: username, made: made, token: token, claimed: claimed };
+}
+
+/* ------------------------------------------- naming a Google account
+ * The second half of the round trip in ./google.js, and the only part of it
+ * that is a form.
+ *
+ * A Google account that has never been here arrives holding a sealed note
+ * saying which Google account proved itself, and nothing has been written yet
+ * — no half-made row, nothing to sweep if they close the tab. This is where it
+ * becomes an account, and the one thing it asks for is the thing this site
+ * asks everybody: a name.
+ *
+ * IT IS NOT ASSEMBLED OUT OF THE GOOGLE PROFILE, AND THAT IS ON PURPOSE
+ *
+ * Google would hand over a display name and a picture for the asking.
+ * ./_google.js asks for neither — the scope is `openid` alone — and this is
+ * the reason: the username here is the byline on every list somebody shares
+ * and the whole of /u/<name>, so "Etibar H." out of a Google profile would be
+ * this site naming somebody out of a directory they did not know it had read.
+ *
+ * The account it makes has no password: an empty hash, an empty salt and
+ * nought iterations, which `matches` above reads as "no password on this
+ * account" and refuses a sign-in against. Setting one later is the password
+ * step, which asks for no current password when there is none.
+ *
+ * TWO PAGES FINISH THIS STEP, WHICH IS WHY IT IS HERE
+ *
+ * The map's sheet does, and so does the feedback composer — somebody who
+ * pressed Continue with Google under a sentence they were writing comes back
+ * to that sentence and names themselves there, without being sent to the map
+ * and back. Out comes the same shape `enterAccount` hands back, so a caller
+ * can treat the two doors as one.
+ */
+export async function nameGoogleAccount(context, opts) {
+  const { request, env } = context;
+
+  const pending = await unseal(env.SAVE_SALT, readCookie(request, PENDING_COOKIE));
+  /* Fifteen minutes gone, a forged cookie, or somebody who arrived at this
+     form by typing the address. One answer for all three: there is nothing to
+     name, so start the trip again. */
+  if (!pending || pending.provider !== PROVIDER || !pending.subject) {
+    return { ok: false, error: 'no-pending', status: 401 };
+  }
+
+  const name = typeof opts.username === 'string' ? opts.username.trim().toLowerCase() : '';
+  const client = typeof opts.client === 'string' ? opts.client : '';
+  if (!USERNAME_RE.test(name)) return { ok: false, error: 'username', status: 400 };
+
+  /* Every hold counts, exactly as on the sign-up sheet: a name somebody
+     walked away from last week is not a name a stranger may take, whichever
+     door they came in by. */
+  if (await nameTaken(env, name)) return { ok: false, error: 'taken', status: 409 };
+
+  /* The same Google account naming itself twice — two tabs, or a back button
+     after it worked. The account already exists, so the answer is to go round
+     again and be signed into it rather than to make a second one under a
+     second name. */
+  if (await googleUser(env, pending.subject)) return { ok: false, error: 'linked', status: 409 };
+
+  const userId = crypto.randomUUID();
+  try {
+    await env.DB.batch([
+      env.DB
+        .prepare(
+          'INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at) ' +
+          "VALUES (?, ?, '', '', 0, ?, ?)"
+        )
+        .bind(userId, name, Date.now(), Date.now()),
+      env.DB
+        .prepare('INSERT INTO identities (provider, subject, user_id, created_at) VALUES (?, ?, ?, ?)')
+        .bind(PROVIDER, pending.subject, userId, Date.now())
+    ]);
+  } catch (e) {
+    /* Two people taking the same free name in the same second, or the same
+       Google account landing here twice at once. Both unique indexes say the
+       same thing and the loser is told what the checks above would have told
+       them. The batch is one transaction, so neither row is left. */
+    return { ok: false, error: 'taken', status: 409 };
+  }
+
+  const token = await openSession(env, userId);
+  const claimed = await claimDeviceSaves(env, userId, client);
+  if (claimed.length) context.waitUntil(caches.default.delete(countsKey(request)));
+
+  return { ok: true, userId: userId, username: name, made: true, token: token, claimed: claimed };
+}
+
+/* Whether this browser is holding a Google account that has proved itself and
+   has not been named yet. It is what tells the two composers to ask for a name
+   and no password: there is no password to ask for, and the session does not
+   exist yet either. */
+export async function googlePending(request, env) {
+  const pending = await unseal(env.SAVE_SALT, readCookie(request, PENDING_COOKIE));
+  return !!(pending && pending.provider === PROVIDER && pending.subject);
 }
