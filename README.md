@@ -6319,6 +6319,24 @@ account sheet's own two fields inside the same card, with *or* and **Continue
 with Google** under them. Pressing **Post feedback** then does both things in
 one request: makes the account or signs into it, and posts.
 
+**Somebody already signed in is asked for nothing**, and the fields are not
+hidden from them, they are not built. A hidden password box is still a
+password box: a manager can see one, offer to fill it, and put a person in
+front of a prompt for a password on a page they are already signed in to. It
+is also a `<label for>` pointing at a field nobody can reach, and dead markup
+on every draw of the commonest state this page has. Signed out is the
+different case, and there the block is built and hidden while *Anonymous* is
+the choice — the fields are one press away, and keeping them in the document
+is what lets that press cost nothing.
+
+**And being signed in never takes *Anonymous* away.** It is the other half of
+that row whoever you are, and the row is the only thing the choice lives in.
+The account still owns what it posted that way — `named` is its own column, so
+the row is still yours to remove and still counts against your cap — and the
+page simply draws *Anonymous* where the byline goes. Somebody with an account
+has more to say about this site than somebody without one, and some of it is
+the half they would rather not sign.
+
 **There is no separate Sign up and Sign in, and the name is what decides.** A
 name nobody has makes an account; one that exists signs you into it and wants
 its password. The line under the field says so before the button rather than

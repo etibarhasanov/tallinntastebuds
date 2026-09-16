@@ -674,8 +674,22 @@
     });
     paintCount();
 
-    var names = account();
-    names.hidden = !!state.me || state.as !== 'name';
+    /* NOTHING IS ASKED OF SOMEBODY WHO IS ALREADY SIGNED IN.
+     *
+     * Their choice is their own name or Anonymous, and both of those are in
+     * the row above — so there is no account block at all, and it is not built
+     * and hidden, it is not built. A hidden password box is still a password
+     * box: a password manager can see one, offer to fill it, and put somebody
+     * in front of a prompt to enter a password on a page they are already
+     * signed in to. It is also a `<label for>` pointing at a field nobody can
+     * reach, and dead markup on every draw of the commonest state this page
+     * has.
+     *
+     * Signed out it is drawn, and hidden while Anonymous is the choice, which
+     * is different: the fields are one press away and keeping them in the
+     * document is what lets that press cost nothing. */
+    var names = state.me ? null : account();
+    if (names) names.hidden = state.as !== 'name';
 
     var go = el('button', { type: 'submit', className: 'go', textContent: t('feedbackPost') });
 
@@ -688,7 +702,7 @@
       count,
       postAs(function (which) {
         state.as = which;
-        names.hidden = !!state.me || which !== 'name';
+        if (names) names.hidden = which !== 'name';
       }),
       names,
       el('div', { className: 'lists-row lists-acts' }, [go])
