@@ -584,6 +584,14 @@
     "map": true
   },
   {
+    "id": "varkizana",
+    "name": "Varkizana Kreeka tavern",
+    "address": "Virbi 4, 13629 Tallinn",
+    "lat": 59.440814,
+    "lng": 24.842208,
+    "map": true
+  },
+  {
     "id": "vesta",
     "name": "Vesta",
     "address": "Tööstuse 88, 10416 Tallinn",

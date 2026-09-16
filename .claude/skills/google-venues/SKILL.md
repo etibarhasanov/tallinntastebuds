@@ -147,7 +147,7 @@ else runs.
    `exports/REVIEW.md`, `functions/api/ask.js`, `functions/api/venues.js`
    and the comment above the check in `tools/validate.mjs`, along with the
    numbers that hang off it — how many are matched to the map (the `SET
-   map_id` lines at the end of the SQL, 60 today), how many have no cuisine,
+   map_id` lines at the end of the SQL, 61 today), how many have no cuisine,
    how many rows the raw export ran to. This finds the copies:
 
    ```
@@ -173,7 +173,10 @@ else runs.
 - **`map_id`, `hidden`, `note` and `first_seen_at` are never touched.**
   `map_id` is set only when empty, from a match within 60 metres whose folded
   names contain one another, closest wins; a correction made by hand
-  survives every run.
+  survives every run. The match is against `data/restaurants.json`, so a
+  place promoted from the directory onto the map gains its line the next
+  time the tool runs — the `/place` skill runs it for that reason, and the
+  line is loaded the way the rest of the file is.
 - **Nothing is ever deleted.** A row that left the export gets
   `missing_since`, because a list may point at it and somebody wrote a
   sentence about it. Every upsert clears the mark again.
