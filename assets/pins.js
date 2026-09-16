@@ -83,6 +83,11 @@ window.TTBPins = (function () {
    * nothing else, so a list cannot ask for a cup — that word belongs to
    * whatever Google says the place is.
    *
+   * There is a third table below these two, LANGUAGES, and it answers a
+   * different question again: not what a pin is, but what every pin is
+   * drawn as while the page reads in that language. It has its own comment,
+   * and it overrides both of these without touching either.
+   *
    * Each row is id, emoji, and the tone it wears when nothing has chosen one
    * for it, which for a marker is always the accent. The tones are custom
    * properties both styles restate — see the token block at the top of
@@ -160,6 +165,56 @@ window.TTBPins = (function () {
     bakery: 'bakery'
   };
 
+  /* ------------------------------------------------ what a language wears
+   *
+   * The third table, and it answers a different question from the two
+   * above: not what a pin is, but what every pin is drawn as while the page
+   * reads in that language. A row here is one picture, and under it the
+   * eight markers, the five kinds of place, the picker's grid, the emblem
+   * in front of a list's title and the door on the rail are all that
+   * picture. Estonian is a potato. Russian is an onion. Switch the language
+   * and the whole map changes its mind about what it is made of — which was
+   * asked for, for a video, and stays because the joke works.
+   *
+   * English is not in here, and that is what makes it the real map: a code
+   * with no row draws the two tables above, which is also what a language
+   * added tomorrow does until somebody writes it one. The mark is not in
+   * here either — it is a photograph and not an emoji, and the mouth goes on
+   * a place I have eaten at in every language. And nothing a list STORES
+   * changes: a list dressed in a balloon is a balloon in the database and on
+   * an English map, and the picker still stores the id under the swatch
+   * however the swatch is drawn.
+   *
+   * The language is read off <html lang> at the moment a glyph is asked
+   * for, rather than told to this file: every page writes it there in its
+   * applyStaticStrings() before it draws a pin, and the map writes it again
+   * on the switch before it repaints. It is the one fact about the language
+   * all the pages already agree on, so there is no second setter for a page
+   * to forget, and a page that never sets it draws the real pins. The codes
+   * are the ones data/ui.json speaks, and node tools/validate.mjs fails the
+   * build on one it does not — `ee` here would be a row that never fires,
+   * which is what "Estonian is et, not ee" in README.md is about.
+   *
+   * A code names a language and not a picture, so unlike the rows above
+   * these do get a word beside them:
+   *
+   *   az, et   potato                    ru   onion
+   *   hy       a bottle, cork coming out  fi   blueberries
+   *   pt       a fish                     es   a pan of paella
+   *   tr       a stuffed flatbread        uk   a sunflower
+   */
+  var LANGUAGES = {
+    az: '\uD83E\uDD54',
+    et: '\uD83E\uDD54',
+    hy: '\uD83C\uDF7E',
+    ru: '\uD83E\uDDC5',
+    fi: '\uD83E\uDED0',
+    pt: '\uD83D\uDC1F',
+    es: '\uD83E\uDD58',
+    tr: '\uD83E\uDD59',
+    uk: '\uD83C\uDF3B'
+  };
+
   /* Both tables in one lookup, because everything that draws a pin is handed
      an id and does not care which list it came off — only the picker cares,
      and it walks MARKERS itself. An id in neither is drawn as the default
@@ -182,11 +237,19 @@ window.TTBPins = (function () {
     return typeof id === 'string' && Object.prototype.hasOwnProperty.call(byId, id);
   }
 
+  /* The picture the page's language draws every glyph as, or '' for a
+     language that draws the real ones. */
+  function worn() {
+    var code = document.documentElement.lang;
+    return Object.prototype.hasOwnProperty.call(LANGUAGES, code) ? LANGUAGES[code] : '';
+  }
+
   /* The emoji for an id, or the map pin. Never empty: a pin drawing nothing
      at all is a hole in the map, and the default says "a place", which is
-     the one thing true of everything on here. */
+     the one thing true of everything on here. Under a language in LANGUAGES
+     the id is not even looked at. */
   function glyph(id) {
-    return known(id) ? byId[id].glyph : byId[DEFAULT_PIN].glyph;
+    return worn() || (known(id) ? byId[id].glyph : byId[DEFAULT_PIN].glyph);
   }
 
   function toneOf(id) {
@@ -273,6 +336,9 @@ window.TTBPins = (function () {
     GLYPHS: markerIds,
     TONES: TONES,
     glyph: glyph,
+    /* For the one emoji on the site that is not a pin — the lists door on
+       the rail — so it can follow the language the way the pins do. */
+    worn: worn,
     toneOf: toneOf,
     forKinds: forKinds,
     ofList: ofList,

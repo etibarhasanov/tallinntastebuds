@@ -128,7 +128,11 @@
        assets/styles.css, which is the disc it sits on. Written here like
        every other icon on this rail rather than painted by a script: it is
        this door's picture, not a list's own marker, and nothing in
-       assets/pins.js has an opinion about it.
+       assets/pins.js has an opinion about which of the eight it is. The
+       language has one, though: under a language that draws every pin as a
+       single picture — LANGUAGES in that file — applyStaticStrings() in
+       assets/app.js writes that picture over the clipboard, and the
+       clipboard back.
 
        Hidden until /api/account says the database behind the lists is
        bound — a door onto "Lists are switched off on this copy of the site"
@@ -513,7 +517,7 @@
      map's own places wear the mark and nothing else can; a place off Google's
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
-<script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=fbcf5dd4" defer></script>
+<script src="assets/pins.js?v=f62de0b7" defer></script>
+<script src="assets/app.js?v=ab8272b2" defer></script>
 </body>
 </html>
