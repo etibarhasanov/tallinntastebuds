@@ -32,8 +32,9 @@
  *   - an assets/pins.js whose eight markers have drifted from the ids
  *     functions/api/_pins.js will let a list store, a glyph called `mark` in
  *     either table, a kind of place a list could also pick, a tone with no
- *     colour token behind it, or a marker nobody has named in ten languages
- *     — the picker builds its keys, so nothing else would catch it
+ *     colour token behind it, a marker nobody has named in ten languages
+ *     — the picker builds its keys, so nothing else would catch it — or a
+ *     language in LANGUAGES that data/ui.json does not speak
  *   - a UI string present in one language but missing in another
  *   - a string the site asks for — a data-i18n key in the markup, a t('key')
  *     in a script — that is in no language of data/ui.json at all
@@ -1485,6 +1486,23 @@ if (ui !== null && isPlainObject(ui)) {
     }
     if (PIN_GLYPHS.indexOf(DEFAULT_PIN) < 0) {
       fail('functions/api/_pins.js', `DEFAULT_PIN is "${DEFAULT_PIN}", which is not one of the glyphs`);
+    }
+
+    /* And the third table, LANGUAGES: the languages that draw every glyph as
+       one picture. A code data/ui.json does not speak is a row that never
+       fires — `ee` for Estonian, which "Estonian is et, not ee" in README.md
+       exists to head off — so each is held to the list the switch reads. No
+       table at all is fine; that is a site whose every language draws the
+       real pins. */
+    if (ui !== null && isPlainObject(ui)) {
+      const at = text.indexOf('var LANGUAGES = {');
+      const rows = at < 0 ? [] : (text.slice(at, text.indexOf('};', at)).match(/^\s*[a-z]+:\s*'/gm) || []);
+      for (const row of rows) {
+        const code = row.trim().split(':')[0];
+        if (!isPlainObject(ui[code])) {
+          fail('assets/pins.js', `dresses the language "${code}", which data/ui.json does not speak — the row would never draw`);
+        }
+      }
     }
 
     /* Every tone a pin can wear is a token the stylesheet declares, and both
