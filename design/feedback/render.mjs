@@ -64,6 +64,9 @@ const SHOTS = [
   ['c-sheet', 'sheet', 'green', PHONE, false, 'c-sheet-phone-green'],
   ['c-sheet', 'sheet', 'red', DESK, false, 'c-sheet-desk'],
   ['a-directory', 'out', 'red', PHONE, false, 's-out'],
+  ['a-directory', 'name', 'red', PHONE, false, 's-name-fold'],
+  ['a-directory', 'name', 'red', PHONE, true, 's-name'],
+  ['a-directory', 'name', 'green', PHONE, true, 's-name-green'],
   ['a-directory', 'posted', 'red', PHONE, false, 's-posted'],
   ['a-directory', 'err', 'red', PHONE, false, 's-err'],
   ['a-directory', 'empty', 'red', PHONE, false, 's-empty'],
@@ -127,6 +130,7 @@ await compose('folds', [
 
 await compose('states', [
   { label: 'Signed out', shot: 's-out', width: 390 },
+  { label: 'With a name', shot: 's-name-fold', width: 390 },
   { label: 'Just posted', shot: 's-posted', width: 390 },
   { label: 'Did not go through', shot: 's-err', width: 390 },
   { label: 'Nothing yet', shot: 's-empty', width: 390 },

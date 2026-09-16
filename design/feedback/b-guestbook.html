@@ -17,10 +17,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
 
 <!-- The site's own three stylesheets, unstamped because this is not served.
-     The tokens, the card, the eyebrow, the four controls and the sheet from
-     the first; the frame, the field, the chip row, the keep button and the
-     segmented choice from the second; the head without a card under it from
-     the third. -->
+     The tokens, the card, the eyebrow, the four controls, the sheet's fields
+     and the Google button from the first; the frame, the field, the
+     segmented choice and the rows from the second; the head without a card
+     under it from the third. -->
 <link rel="stylesheet" href="../../assets/styles.css">
 <link rel="stylesheet" href="../../assets/lists.css">
 <link rel="stylesheet" href="../../assets/blog.css">
@@ -45,7 +45,7 @@
     <section class="card lists-card">
       <p class="eyebrow">Tallinn</p>
       <h1 class="lists-title">Feedback</h1>
-      <p class="lists-say">What would you change about this site? Say it here, and like what others said if you agree.</p>
+      <p class="lists-say">What would you change about this site? Say it here, and put a heart on what others said if you agree.</p>
       <form class="ac-form" action="#" method="post">
         <!-- What just happened, above the fields: nobody looks under the
              button they have already pressed. -->
@@ -68,9 +68,31 @@
             <label class="lists-seg-opt"><input type="radio" name="as-fb-text" value="anon"><span>Anonymous</span></label>
           </div>
         </fieldset>
-        <!-- Signed out: there is no name to put on it, and the sentence says
-             so rather than a dead choice. -->
-        <p class="lists-hint fb-when-out">Posted anonymously. <a href="/?account=in">Sign in</a> to put your name on it.</p>
+
+        <!-- Signed out: the same choice, and the second answer opens the
+             account under it. -->
+        <fieldset class="lists-vis fb-when-out">
+          <legend class="lists-vis-legend mono">Post as</legend>
+          <div class="lists-seg">
+            <label class="lists-seg-opt is-on" data-seg="anon"><input type="radio" name="as-fb-text" value="anon" checked><span>Anonymous</span></label>
+            <label class="lists-seg-opt" data-seg="name"><input type="radio" name="as-fb-text" value="name"><span>With a name</span></label>
+          </div>
+        </fieldset>
+        <div class="fb-name">
+          <div class="ac-field">
+            <label class="ac-label" for="fb-text-user">Username</label>
+            <input id="fb-text-user" type="text" autocomplete="username" maxlength="24"
+                   autocapitalize="none" autocorrect="off" spellcheck="false">
+            <p class="ac-hint">3 to 24 letters, numbers or dashes. A new name makes an account; one you already have signs you in.</p>
+          </div>
+          <div class="ac-field">
+            <label class="ac-label" for="fb-text-pass">Password</label>
+            <input id="fb-text-pass" type="password" autocomplete="current-password" minlength="8">
+            <p class="ac-hint">If you forget this password it cannot be recovered — not by us either. Let your browser save it, or write it down.</p>
+          </div>
+          <p class="ac-or"><span>or</span></p>
+          <a class="ac-google" href="/api/google?then=/feedback"><span class="ac-google-mark" aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24s.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg></span><span>Continue with Google</span></a>
+        </div>
 
         <div class="lists-row lists-acts">
           <button type="submit" class="go">Post feedback</button>
@@ -79,26 +101,17 @@
     </section>
 
     <section class="card lists-card" aria-label="What people said">
+      <p class="eyebrow">What people said</p>
       <p class="lists-none fb-when-empty">Nothing here yet. The first thing somebody says turns up on this page.</p>
-      <p class="lists-none fb-when-fail">The feedback could not be loaded. Try again in a moment.</p>
-  
-    <div class="lists-order fb-order" role="group" aria-label="Order">
-      <span class="eyebrow">Order</span>
-      <button type="button" class="chip" aria-pressed="true">Newest</button>
-      <button type="button" class="chip" aria-pressed="false">Most liked</button>
-    </div>
+    <p class="lists-none fb-when-fail">The feedback could not be loaded. Try again in a moment.</p>
       <ul class="fb-rows">
         <li class="fb-row fb-mine fb-when-posted">
         <p class="fb-text">Add a way to sort the list by price.</p>
         <div class="fb-foot">
           <p class="lists-all-meta"><span class="lists-index-by"><a href="/u/kadri">kadri</a></span> · 16 September 2026</p>
-          <span class="lists-keep-wrap fb-remove-wrap">
-            <button type="button" class="alt is-danger">Remove</button>
-            
-          </span>
-          <span class="lists-keep-wrap fb-like-wrap">
-            <button type="button" class="alt lists-keep fb-like" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Like</span></button>
-            
+          <span class="fb-acts">
+            <span class="fb-mine-acts"><button type="button" class="alt is-danger">Remove</button><span class="fb-heart is-mine" role="img" aria-label="liked by 0 people"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span class="fb-heart-n"></span></span></span>
+            <button type="button" class="fb-heart fb-heart-press" aria-pressed="false" aria-label="Like this"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span class="fb-heart-n"></span></button>
           </span>
         </div>
         </li>
@@ -106,9 +119,8 @@
         <p class="fb-text">The filter chips scroll off the screen on my phone and I did not notice there were more of them. A fade at the edge, or a small arrow, would say so.</p>
         <div class="fb-foot">
           <p class="lists-all-meta"><span class="lists-index-by"><a href="/u/kadri">kadri</a></span> · 15 September 2026</p>
-          <span class="lists-keep-wrap fb-like-wrap">
-            <button type="button" class="alt lists-keep fb-like is-kept" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Liked</span></button>
-            <span class="lists-keeps mono">12</span>
+          <span class="fb-acts">
+            <button type="button" class="fb-heart fb-heart-press has-n" aria-pressed="true" aria-label="Liked"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span class="fb-heart-n">12</span></button>
           </span>
         </div>
         </li>
@@ -116,23 +128,8 @@
         <p class="fb-text">Would love a chip for places open late. Half the time I am looking after ten.</p>
         <div class="fb-foot">
           <p class="lists-all-meta">Anonymous · 14 September 2026</p>
-          <span class="lists-keep-wrap fb-like-wrap">
-            <button type="button" class="alt lists-keep fb-like" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Like</span></button>
-            <span class="lists-keeps mono">8</span>
-          </span>
-        </div>
-        </li>
-        <li class="fb-row fb-mine">
-        <p class="fb-text">Stories are great. Could they stay up two days instead of one? I keep missing them.</p>
-        <div class="fb-foot">
-          <p class="lists-all-meta">Anonymous · 13 September 2026</p>
-          <span class="lists-keep-wrap fb-remove-wrap">
-            <button type="button" class="alt is-danger">Remove</button>
-            <span class="lists-keeps mono">3</span>
-          </span>
-          <span class="lists-keep-wrap fb-like-wrap">
-            <button type="button" class="alt lists-keep fb-like" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Like</span></button>
-            <span class="lists-keeps mono">3</span>
+          <span class="fb-acts">
+            <button type="button" class="fb-heart fb-heart-press has-n" aria-pressed="false" aria-label="Like this"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span class="fb-heart-n">8</span></button>
           </span>
         </div>
         </li>
@@ -140,9 +137,18 @@
         <p class="fb-text">Ask answered “cheap, near the harbour” with a place in Kalamaja. Kalamaja is not the harbour.</p>
         <div class="fb-foot">
           <p class="lists-all-meta"><span class="lists-index-by"><a href="/u/mart">mart</a></span> · 13 September 2026</p>
-          <span class="lists-keep-wrap fb-like-wrap">
-            <button type="button" class="alt lists-keep fb-like" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Like</span></button>
-            <span class="lists-keeps mono">5</span>
+          <span class="fb-acts">
+            <button type="button" class="fb-heart fb-heart-press has-n" aria-pressed="false" aria-label="Like this"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span class="fb-heart-n">5</span></button>
+          </span>
+        </div>
+        </li>
+        <li class="fb-row fb-mine">
+        <p class="fb-text">Stories are great. Could they stay up two days instead of one? I keep missing them.</p>
+        <div class="fb-foot">
+          <p class="lists-all-meta">Anonymous · 13 September 2026</p>
+          <span class="fb-acts">
+            <span class="fb-mine-acts"><button type="button" class="alt is-danger">Remove</button><span class="fb-heart is-mine has-n" role="img" aria-label="liked by 3 people"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span class="fb-heart-n">3</span></span></span>
+            <button type="button" class="fb-heart fb-heart-press has-n" aria-pressed="false" aria-label="Like this"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span class="fb-heart-n">3</span></button>
           </span>
         </div>
         </li>
@@ -150,9 +156,8 @@
         <p class="fb-text">The dark style is beautiful, but the price gauge is hard to read on it.</p>
         <div class="fb-foot">
           <p class="lists-all-meta"><span class="lists-index-by"><a href="/u/liis">liis</a></span> · 9 September 2026</p>
-          <span class="lists-keep-wrap fb-like-wrap">
-            <button type="button" class="alt lists-keep fb-like" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Like</span></button>
-            
+          <span class="fb-acts">
+            <button type="button" class="fb-heart fb-heart-press" aria-pressed="false" aria-label="Like this"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span class="fb-heart-n"></span></button>
           </span>
         </div>
         </li>
@@ -176,6 +181,14 @@
   }
   var state = q.state || 'in';
   document.body.setAttribute('data-state', state);
+  var i, opts;
+  if (state === 'name') {
+    opts = document.querySelectorAll('.lists-seg-opt[data-seg]');
+    for (i = 0; i < opts.length; i++) {
+      opts[i].classList.toggle('is-on', opts[i].getAttribute('data-seg') === 'name');
+      opts[i].querySelector('input').checked = opts[i].getAttribute('data-seg') === 'name';
+    }
+  }
   if (state === 'err') {
     var box = document.getElementById('fb-text');
     if (box) box.value = 'Add a way to sort the list by price.';
