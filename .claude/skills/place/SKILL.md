@@ -62,7 +62,8 @@ and requires the first twelve. An unknown key is a warning ("typo?"), which is h
 
 The taxonomy is checked too: every type needs a label in all ten languages,
 and no type may claim `discount` or `saved`. A `photos/` folder no place
-points at warns.
+points at warns — bar `potato/`, which is Surprise me's rather than a place's
+and is checked by name; **Surprise me** in `README.md` says why it is there.
 
 `data/schema.json` gives editors autocomplete and is otherwise not enforced;
 it does not know `added`, so an editor will flag a key every entry carries.
