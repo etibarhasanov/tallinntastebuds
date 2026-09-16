@@ -128,7 +128,15 @@ its pin can land on the wrong side of the street. What it does, in order:
 4. **Is it one place?** A room that is a bakery in the morning and a
    restaurant at night is two entries, and the laptop tag goes on the one it
    is true of. Fotografiska is the precedent.
-5. `node tools/places.mjs`, then `node tools/typelists.mjs`.
+5. `node tools/places.mjs`, then `node tools/typelists.mjs`. If the place
+   was a row in the directory already — `grep -i '<name>'
+   exports/tallinn_restaurants.csv` says — then `node tools/googlevenues.mjs`
+   too: `overlaps()` in that tool matches the new entry to its Google row by
+   distance and name and adds one `UPDATE … SET map_id` line to
+   `db/google-venues.sql`, and the validator fails on the file without it,
+   with a message about the export nobody touched. That one line is a D1
+   write of its own, loaded the way the lists are; Varkizana was the first
+   place to arrive this way.
 6. `node tools/validate.mjs`. Read the warnings on the new place; most are
    honest, and `TODO` in a blurb reaches visitors.
 7. **The counts.** The README says in prose how many places carry
@@ -167,8 +175,10 @@ its pin can land on the wrong side of the street. What it does, in order:
 - **`types`, the name, or the English write-up** change the published lists,
   so `node tools/typelists.mjs` again. The English first sentence is what a
   list prints under a place; the other nine languages never reach one.
-- `db/google-venues.sql` never moves for a change to the map: the 32 export
-  rows matched to it carry `map_id`, and that column survives every refresh.
+- `db/google-venues.sql` never moves for a change to a place that is already
+  on the map: the 61 export rows matched to it carry `map_id`, and that
+  column survives every refresh. **Adding** a place the export already lists
+  does move it — step 5 of **The hand road** says how.
 
 ## Closing one
 
@@ -201,7 +211,8 @@ entry land in one commit, so no commit lists a photo that is not there.
 ## The pull request
 
 1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/places.mjs` and `node tools/typelists.mjs`, then
+2. `node tools/places.mjs` and `node tools/typelists.mjs` — and `node
+   tools/googlevenues.mjs` for a place the export already lists — then
    `node tools/validate.mjs`. The catalogue is the check this process fails
    most.
 3. The map on a local server: the pin where the door is, the panel, the
@@ -214,7 +225,8 @@ entry land in one commit, so no commit lists a photo that is not there.
    catalogue was regenerated, which blurb languages are still to come, and
    **which lists in `db/type-lists.sql` moved and that it has still to be
    loaded** — with the two `wrangler d1 execute` lines, so the owner can run
-   them in a minute.
+   them in a minute. A place the export already listed adds a third file to
+   that paragraph: the one `map_id` line in `db/google-venues.sql`.
 7. CI green — the validator, the QR check, the preview deploy — then **Rebase
    and merge**; the branch stays, `CLAUDE.md` says why. The place is on the
    live map within the minute.
@@ -242,6 +254,9 @@ call.
   one; only the PR body saying it is outstanding can.
 - A photo straight off a phone, 6 MB, committed, and in the history forever.
 - `lat` and `lng` the wrong way round.
+- A place the directory already listed, added without `node
+  tools/googlevenues.mjs`, so CI fails on `db/google-venues.sql` and the
+  message blames an export nobody touched.
 - A count or a name list in the README written from memory. "Count the split
   shifts instead of guessing at them" fixed two; the closed-places list has
   been wrong before.

@@ -197,7 +197,7 @@ A place can be a restaurant *and* something else — KoHo is a restaurant and a
 bakery, Gobi is a restaurant and fine dining — but if the tag went on
 everything that serves food it would match the whole map and filter nothing.
 
-29 of the 75 carry it today — nearly two places in five, which is why the
+30 of the 76 carry it today — nearly two places in five, which is why the
 chip sits at the end of the row rather than near the front. If one of them
 looks wrong to you, it is one line in `data/restaurants.json`.
 
@@ -229,7 +229,7 @@ are split into their own entries. Fotografiska is that split: the fine dining
 upstairs and the bakery on the ground floor are two entries, and only the
 ground floor carries the tag.
 
-8 of the 75 carry it today, and all eight are coffee or tea.
+8 of the 76 carry it today, and all eight are coffee or tea.
 
 ---
 
@@ -242,11 +242,11 @@ do not have to scroll for. Today that is:
 
 | # | Type | Places |
 | --- | --- | --- |
-| 1 | Casual/Solo | 45 |
+| 1 | Casual/Solo | 46 |
 | 2 | Bakery | 17 |
 | 3 | Coffee/tea | 17 |
 | 4 | Beer/pub | 13 |
-| 5 | Hidden gem | 13 |
+| 5 | Hidden gem | 14 |
 | 6 | Cheap eats | 11 |
 | 7 | Laptop friendly | 8 |
 | 8 | Date night | 11 |
@@ -254,12 +254,12 @@ do not have to scroll for. Today that is:
 | 10 | Vegan | 7 |
 | 11 | Fine dining | 5 |
 | 12 | Caucasus | 7 |
-| 13 | Restaurant | 29 |
+| 13 | Restaurant | 30 |
 
 Two places in that table are hand-set against the counts, and both are about
 what a chip is *for* rather than how big it is.
 
-**Restaurant is last, on 29 places.** By frequency it would be second, ahead of
+**Restaurant is last, on 30 places.** By frequency it would be second, ahead of
 everything but Casual/Solo, and that is exactly the problem: a chip that keeps
 two places in five has barely answered the question it was pressed to answer.
 It earns its place in the row — the shape of a place is a real thing to ask
@@ -274,10 +274,11 @@ the same reason: bakery before coffee before pub, cheap eats before the two
 occasions.
 
 The rest of the counts have drifted from the order without the chips moving —
-Date night and Asian have both grown past Cheap eats, and Caucasus past Fine
-dining. Nothing re-sorts itself as you add places, and that is deliberate: a
-row of chips that rearranges between visits is a row nobody learns. Re-check it
-when a type has visibly grown, and move the line in `taxonomy.json`.
+Date night and Asian have both grown past Cheap eats, Hidden gem past Beer/pub,
+and Caucasus past Fine dining. Nothing re-sorts itself as you add places, and
+that is deliberate: a row of chips that rearranges between visits is a row
+nobody learns. Re-check it when a type has visibly grown, and move the line in
+`taxonomy.json`.
 
 Every chip in that table is also published as a list, under the map's own
 account, and a fourteenth row here is a fourteenth list that needs a name.
@@ -791,7 +792,7 @@ place cooks beyond its name and its dishes, but the export files a place as
 those ids in ten languages for [the directory](#the-directory) — so the reader
 takes them the way it takes the taxonomy, and *thai*, *tai* and *тайская* all
 score a Thai row as a type would. The file is fetched the first time a
-question is asked, not on load. And the sixty of my places that have a Google
+question is asked, not on load. And the sixty-one of my places that have a Google
 row inherit its cuisine through the same join that gives them their hours —
 see **Where the opening hours come from** — so the one word scores both rolls,
 and the line the model reads for Ramen Taro says *asian japanese* where it
@@ -800,7 +801,7 @@ and mine among them when I have been; "khachapuri" still answers Gobi and
 Pirosmani first, off their dishes, with a Georgian place from the export
 after them; and "somewhere I can hear myself think" finds nothing in the
 export it can score, and the answer is whatever my places make of it. The
-sixty Google rows that are already places of mine are left out of the
+sixty-one Google rows that are already places of mine are left out of the
 export's half — offering the Google copy beside the write-up would be the
 same door twice.
 
@@ -923,7 +924,7 @@ does it work* finds nothing.
 ### Where the opening hours come from
 
 The map's own places carry no hours — there is no such field in
-`data/restaurants.json` — but sixty of the seventy-five are also rows in
+`data/restaurants.json` — but sixty-one of the seventy-six are also rows in
 [Google venues](#google-venues), joined on `google_venues.map_id`, and those
 rows carry the week, and Google's word for what the place cooks. So
 `/api/ask` reads both — the cuisine goes onto the line the model reads and
@@ -3177,7 +3178,7 @@ twenty-four round trips and eleven hundred and ten.
 `tools/validate.mjs` runs `--check`, so CI refuses a deploy where the export
 moved and the SQL did not.
 
-### The 60 that are already on the map
+### The 61 that are already on the map
 
 Matched on coordinates rather than names — the names disagree ("Põhjala Tap
 Room" against "Põhjala Brewery & Tap Room") while a front door does not move —

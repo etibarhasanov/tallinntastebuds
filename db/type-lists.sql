@@ -85,7 +85,8 @@ VALUES
   ('all-the-casual-and-solo-places-5xjdth', 'the-brick-coffee', 'The Brick Coffee Roastery', 'A coffee roastery with genuinely good food and a great feel to the room.', 41, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('all-the-casual-and-solo-places-5xjdth', 'vabrik', 'Vabrik', 'The cheapest wine in town, house pours and a proper list beside them, and it is a bottle shop too, so you can leave with one.', 42, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('all-the-casual-and-solo-places-5xjdth', 'varav-coffee-toast', 'Värav Coffee and toast', 'A little white house with a red roof at the end of a car park, right under the Old Town bastion, with the greenery on the sunny side.', 43, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('all-the-casual-and-solo-places-5xjdth', 'xinhai-1911', 'Xinhai 1911 Restoran & Baar', 'Chinese cooking by Balti jaam, and the hand-pulled biang biang noodles are the reason to come.', 44, CAST(strftime('%s','now') AS INTEGER) * 1000);
+  ('all-the-casual-and-solo-places-5xjdth', 'varkizana', 'Varkizana Kreeka tavern', 'A Greek tavern in Lasnamäe, and everything we tried was really good.', 44, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('all-the-casual-and-solo-places-5xjdth', 'xinhai-1911', 'Xinhai 1911 Restoran & Baar', 'Chinese cooking by Balti jaam, and the hand-pulled biang biang noodles are the reason to come.', 45, CAST(strftime('%s','now') AS INTEGER) * 1000);
 
 INSERT INTO list_items (list_id, place_id, name, say, pos, created_at)
 VALUES
@@ -157,7 +158,8 @@ VALUES
   ('all-the-hidden-gems-htp2gd', 'laboratooriumi-23', 'Laboratooriumi 23', 'Foosball, sandwiches, drinks and a sauna, all in one place.', 9, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('all-the-hidden-gems-htp2gd', 'porgandipomm', 'Porgandipomm', 'A properly hidden bakery in the Manufaktuuri quarter, and the baking is worth the finding.', 10, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('all-the-hidden-gems-htp2gd', 'vaat-brewery', 'Vaat Brewery and Taproom', 'A craft brewery and taproom well out of the centre, and properly hidden at the moment.', 11, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('all-the-hidden-gems-htp2gd', 'varav-coffee-toast', 'Värav Coffee and toast', 'A little white house with a red roof at the end of a car park, right under the Old Town bastion, with the greenery on the sunny side.', 12, CAST(strftime('%s','now') AS INTEGER) * 1000);
+  ('all-the-hidden-gems-htp2gd', 'varav-coffee-toast', 'Värav Coffee and toast', 'A little white house with a red roof at the end of a car park, right under the Old Town bastion, with the greenery on the sunny side.', 12, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('all-the-hidden-gems-htp2gd', 'varkizana', 'Varkizana Kreeka tavern', 'A Greek tavern in Lasnamäe, and everything we tried was really good.', 13, CAST(strftime('%s','now') AS INTEGER) * 1000);
 
 INSERT INTO list_items (list_id, place_id, name, say, pos, created_at)
 VALUES
@@ -264,5 +266,6 @@ VALUES
   ('all-the-restaurants-rxz3tt', 'radio-restoran', 'Radio', 'Sharing is caring is the motto here, and it''s the right way to eat.', 22, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('all-the-restaurants-rxz3tt', 'ramen-taro', 'Ramen Taro', 'My go-to meal has always been soup, and this has been the neighbourhood spot.', 23, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('all-the-restaurants-rxz3tt', 'saffron', 'Saffron', 'An Indian kitchen on Gonsiori.', 24, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('all-the-restaurants-rxz3tt', 'vesta', 'Vesta', 'I didn''t mention the service and the people in the video, but believe me they are the best part of the restaurant.', 25, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('all-the-restaurants-rxz3tt', 'xinhai-1911', 'Xinhai 1911 Restoran & Baar', 'Chinese cooking by Balti jaam, and the hand-pulled biang biang noodles are the reason to come.', 26, CAST(strftime('%s','now') AS INTEGER) * 1000);
+  ('all-the-restaurants-rxz3tt', 'varkizana', 'Varkizana Kreeka tavern', 'A Greek tavern in Lasnamäe, and everything we tried was really good.', 25, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('all-the-restaurants-rxz3tt', 'vesta', 'Vesta', 'I didn''t mention the service and the people in the video, but believe me they are the best part of the restaurant.', 26, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('all-the-restaurants-rxz3tt', 'xinhai-1911', 'Xinhai 1911 Restoran & Baar', 'Chinese cooking by Balti jaam, and the hand-pulled biang biang noodles are the reason to come.', 27, CAST(strftime('%s','now') AS INTEGER) * 1000);

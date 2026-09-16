@@ -337,7 +337,7 @@ re-running its generator is the single most common way to fail CI:
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `data/restaurants.json` or `data/taxonomy.json` | `node tools/typelists.mjs` | `db/type-lists.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/city.mjs` | `data/city.json` |
-| `exports/tallinn_restaurants.csv` | `node tools/googlevenues.mjs` | `db/google-venues.sql` |
+| `exports/tallinn_restaurants.csv`, or a place added to `data/restaurants.json` that the export already lists | `node tools/googlevenues.mjs` | `db/google-venues.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlelists.mjs` | `db/google-lists.sql` |
 | a scene in `clips/scenes/` | `node tools/blogclips.mjs` | the four files in `clips/` that scene is drawn into — it needs a Chromium, and `--check` says which are missing |
 

@@ -2787,6 +2787,8 @@ UPDATE google_venues SET map_id = 'bekker-pagariari' WHERE place_id = 'ChIJG9TEn
 
 UPDATE google_venues SET map_id = 'kringel' WHERE place_id = 'ChIJ5SJF0niVkkYRjkBykLAAVwQ' AND map_id IS NULL;
 
+UPDATE google_venues SET map_id = 'varkizana' WHERE place_id = 'ChIJ8ezFqbjskkYReEnlD4_blyQ' AND map_id IS NULL;
+
 UPDATE google_venues SET map_id = 'paper-mill-coffee' WHERE place_id = 'ChIJe8-Kv9KVkkYRTzFbwfJwU5g' AND map_id IS NULL;
 
 UPDATE google_venues SET map_id = 'the-brick-coffee' WHERE place_id = 'ChIJ88Bs632TkkYRr6xgYOeC0x4' AND map_id IS NULL;
