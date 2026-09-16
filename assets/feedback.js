@@ -34,6 +34,16 @@
  * draws the sheet's, with the sheet's hints and the sheet's errors, rather
  * than a second design for the same form.
  *
+ * NOTHING ON THIS PAGE SENDS THE BROWSER TO THE MAP AND BACK
+ *
+ * Including the awkward half of Continue with Google. A Google account that
+ * has never been here before still has to be given a name, and that step used
+ * to be the map's sheet's — the browser was sent there, named, and returned.
+ * It is asked for in this composer now, above the sentence still sitting in
+ * the field, and `naming` out of /api/feedback is what says to ask. The map's
+ * sheet keeps its own copy of the step for its own visitors; the step itself
+ * is one function that both read.
+ *
  * Plain browser JavaScript, ES5, one IIFE, no modules and no framework, the
  * same as every other file in assets/.
  */
@@ -81,6 +91,8 @@
     lang: DEFAULT_LANG,
     ready: false,   // whether /api/feedback could read its tables at all
     me: null,       // the username signed in on this browser, or null
+    google: false,  // whether Continue with Google leads anywhere here
+    naming: false,  // a Google account that has proved itself and wants a name
     rows: [],       // everything drawn, in the server's order
     page: 0,        // the last page asked for
     more: false,    // whether there is another one
@@ -311,11 +323,15 @@
   function take(answer, append) {
     state.ready = !!answer.ready;
     state.me = answer.me || null;
+    state.google = !!answer.google;
+    state.naming = !!answer.naming;
     state.more = !!answer.more;
     state.rows = append ? state.rows.concat(answer.rows || []) : (answer.rows || []);
     /* Somebody signed in posts under their name unless they say otherwise;
-       signed out, the quiet answer is the one that asks for nothing. */
-    if (state.me && state.as === 'anon' && !append) state.as = 'name';
+       signed out, the quiet answer is the one that asks for nothing. And
+       somebody halfway through naming a Google account came back here to do
+       exactly that, so the choice opens on the half that asks. */
+    if (!append && state.as === 'anon' && (state.me || state.naming)) state.as = 'name';
   }
 
   /* ---------------------------------------------------------- the drawing */
@@ -524,18 +540,31 @@
     ]);
   }
 
-  /* The account, inside the composer. It is the map's sheet's two fields and
-     its Google button, in the card somebody is already typing in, and it is
-     here rather than behind a link for one reason: the moment worth asking at
-     is the moment after somebody has written something they want their name
-     on, and sending them to another page to sign in is asking them to write
-     it twice.
+  /* The account, inside the composer. It is the map's sheet's own fields, in
+     the card somebody is already typing in, and it is here rather than behind
+     a link for one reason: the moment worth asking at is the moment after
+     somebody has written something they want their name on, and sending them
+     to another page to sign in is asking them to write it twice.
    *
-     There is no separate Sign up and Sign in. The name decides — a name
-     nobody has makes an account, one that exists signs you into it — and the
-     line under the field says so before the button rather than after it. See
-     enterAccount() in functions/api/_account.js, where `mode: 'either'` is
-     that decision. */
+     It has two shapes, and which one is drawn is the server's answer rather
+     than this page's guess.
+   *
+     ORDINARILY, a name and a password. There is no separate Sign up and Sign
+     in: the name decides — a name nobody has makes an account, one that
+     exists signs you into it — and the line under the field says so before
+     the button rather than after it. See enterAccount() in
+     functions/api/_account.js, where `mode: 'either'` is that decision. Under
+     them, where this deployment has Google configured at all, the other way
+     in.
+   *
+     COMING BACK FROM GOOGLE having never been here before, a name and
+     nothing else. Google has already proved who this is, so there is no
+     password to ask for and no second way in to offer — the one thing left is
+     the thing this site asks everybody, which is what to call them. That step
+     used to happen on the map's sheet and the browser was sent there and
+     back; it happens here now, with the sentence they were writing still in
+     the field above it. nameGoogleAccount() in functions/api/_account.js is
+     the same step the sheet takes, read by both. */
   function account() {
     var user = el('input', {
       type: 'text',
@@ -546,27 +575,39 @@
       spellcheck: 'false',
       maxlength: String(MAX_NAME)
     });
+    user.value = state.user;
+    user.addEventListener('input', function () { state.user = user.value; });
+
+    if (state.naming) {
+      return el('div', { className: 'fb-name' }, [
+        el('p', { className: 'ac-why', textContent: t('accountGoogleNameWhy') }),
+        field('fb-user', t('accountUsername'), t('accountUsernameHint'), user)
+      ]);
+    }
+
     var pass = el('input', {
       type: 'password',
       id: 'fb-pass',
       autocomplete: 'current-password'
     });
-    user.value = state.user;
     pass.value = state.pass;
-    user.addEventListener('input', function () { state.user = user.value; });
     pass.addEventListener('input', function () { state.pass = pass.value; });
 
     return el('div', { className: 'fb-name' }, [
       field('fb-user', t('accountUsername'), t('feedbackNameHint'), user),
       field('fb-pass', t('accountPassword'), t('accountNoReset'), pass),
-      el('p', { className: 'ac-or' }, [el('span', { textContent: t('accountOr') })]),
-      TTBTrack.click(leaves(el('a', {
+      /* Only where it leads somewhere. Without a Google client set on this
+         deployment the round trip can do nothing but come back saying it
+         failed, so the button is not drawn at all — the same call the map's
+         sheet makes on the same answer. */
+      state.google ? el('p', { className: 'ac-or' }, [el('span', { textContent: t('accountOr') })]) : null,
+      state.google ? TTBTrack.click(leaves(el('a', {
         className: 'ac-google',
         href: '/api/google?then=' + encodeURIComponent(PAGE)
       }, [
         el('span', { className: 'ac-google-mark', 'aria-hidden': 'true', html: GOOGLE_MARK }),
         el('span', { textContent: t('accountGoogle') })
-      ])), 'feedback_google')
+      ])), 'feedback_google') : null
     ]);
   }
 
@@ -591,8 +632,23 @@
     password: 'accountErrPassword',
     'no-match': 'accountErrNoMatch',
     taken: 'accountErrTaken',
-    'slow-down': 'accountErrSlow'
+    'slow-down': 'accountErrSlow',
+    /* The two ways the Google half can end with nothing to name: the sealed
+       note has run out — it is good for fifteen minutes — or that Google
+       account already has an account here, which two tabs or a back button
+       will do. The remedy is the same sentence for both, and it is the map
+       sheet's own: press Continue with Google again. */
+    'no-pending': 'accountErrGooglePending',
+    linked: 'accountErrGooglePending'
   };
+
+  /* Which refusals mean the name-only form has nothing left to name. Without
+     this the page would go on asking for a name it can no longer use, and
+     every press would fail the same way — a dead end with a button in it. The
+     ordinary fields come back instead, Continue with Google among them. */
+  function stillNaming(error) {
+    return error !== 'no-pending' && error !== 'linked';
+  }
 
   function composer() {
     var text = el('textarea', {
@@ -656,7 +712,10 @@
 
     if (state.as === 'name' && !state.me) {
       body.username = state.user;
-      body.password = state.pass;
+      /* Nothing to send when Google has already proved who this is: the
+         account it makes has no password at all, and the route reads the
+         sealed note rather than a field. */
+      if (!state.naming) body.password = state.pass;
     }
 
     /* Against a second press while the first is in flight. Nothing re-enables
@@ -667,8 +726,10 @@
 
     post(body).then(function (a) {
       if (!a.ok) {
-        state.err = t(ERRORS[a.out && a.out.error] || 'listsErrGeneric');
+        var why = a.out && a.out.error;
+        state.err = t(ERRORS[why] || 'listsErrGeneric');
         state.note = '';
+        if (state.naming && !stillNaming(why)) state.naming = false;
         return render();
       }
       storeDrop(DRAFT_KEY);
@@ -676,6 +737,9 @@
          is now the site's answer to who this is. */
       var fresh = !state.me && a.out.me;
       state.me = a.out.me || state.me;
+      /* Named, if that is what this was. The sealed note is spent and the
+         route has cleared it. */
+      if (state.me) state.naming = false;
       state.as = a.out.said.name ? 'name' : 'anon';
       state.note = fresh ? t('feedbackPostedNew', { name: state.me }) : t('feedbackPosted');
       state.err = '';
@@ -768,15 +832,13 @@
     applyStyle();
     main = document.getElementById('main');
 
-    /* Coming back from Google. /api/google redirects here carrying one word,
-       and the only two this page has anything to say about are the ones that
-       did not end in a session — a name still to choose is the map's sheet's
-       step and not this page's, so it is sent there and comes back. */
+    /* Coming back from Google. /api/google redirects here carrying one word
+       saying how it went, and this page handles every one of them itself:
+       `in` and `linked` arrive with a session and need nothing said, `name`
+       is answered by the composer asking for a name — /api/feedback sees the
+       sealed note and says `naming` — and the last two are a sentence above
+       the fields. Nothing is sent to the map and back. */
     var google = new URLSearchParams(window.location.search).get('google');
-    if (google === 'name') {
-      window.location.replace('/?account=google&then=' + encodeURIComponent(PAGE));
-      return;
-    }
 
     /* Whatever was in the field when this browser left for Google. Read once,
        here rather than inside the composer, because the composer is drawn

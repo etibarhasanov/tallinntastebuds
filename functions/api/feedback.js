@@ -31,9 +31,17 @@
  * ./_account.js, which is the step the map's sheet takes too. There is no
  * second form and no round trip: somebody who has just written a sentence
  * about this site should not have to go to another page, sign in there, come
- * back and write it again. The other way in is Continue with Google, which is
- * the ordinary round trip through /api/google with `?then=/feedback`, and
- * reaches this route already carrying a session.
+ * back and write it again.
+ *
+ * The other way in is Continue with Google, and it ends here too. The round
+ * trip through /api/google with `?then=/feedback` comes back either signed in
+ * — nothing left to do — or holding a sealed note saying a Google account has
+ * proved itself and has never been here before. That one still needs a name,
+ * and it is asked for in this same composer rather than on the map's sheet:
+ * `say` takes the name, nameGoogleAccount() makes the account, and the
+ * sentence somebody left the page holding is posted under it. Sending them to
+ * the map to be named and back again would be the round trip this whole
+ * arrangement exists to avoid, one page later.
  *
  * WHAT IS STORED
  *
@@ -57,7 +65,8 @@ import {
   json, sessionUser, wrongDatabase, randomHex, fingerprint, clientIp,
   sessionCookie, SESSION_DAYS
 } from './_lib.js';
-import { enterAccount } from './_account.js';
+import { enterAccount, nameGoogleAccount, googlePending } from './_account.js';
+import { googleReady, pendingCookie } from './_google.js';
 
 /* Five hundred characters. Long enough for a paragraph about what is wrong
    with the filter chips, short enough that the page stays a page of things
@@ -234,6 +243,15 @@ export async function onRequestGet(context) {
     /* Who the page is drawing for, so it can put a name on the composer's
        own choice without a second request to /api/account. */
     me: user ? user.username : null,
+    /* Whether Continue with Google can be offered here at all — the same
+       question `/api/account` answers for the map's sheet, and asked for the
+       same reason: on a deployment with no Google client set the button would
+       lead somewhere that can only send them back saying it failed. */
+    google: googleReady(env),
+    /* A Google account that has proved itself and has not been named yet, so
+       the composer asks for a name and no password. Only worth asking when
+       there is no session — with one, the trip is over. */
+    naming: !user && (await googlePending(request, env)),
     rows: rows,
     more: more
   }, 200);
@@ -265,14 +283,17 @@ export async function onRequestPost(context) {
   }
 
   let user = await sessionUser(request, env);
-  /* The cookie a sign-in taken on the way past this request has to set. It
-     rides on whatever this call answers with — including a refusal, which is
-     the case worth saying out loud: once enterAccount() has returned, the
-     account exists and the session is open in the database, so an answer that
-     dropped the cookie because the insert after it failed would leave
+  /* The cookies a sign-in taken on the way past this request has to set: the
+     session, and — where the trip came through Google — the spent note being
+     cleared, since it is good for one account and that was it.
+
+     They ride on whatever this call answers with, including a refusal, which
+     is the case worth saying out loud: once the account step has returned,
+     the account exists and the session is open in the database, so an answer
+     that dropped the cookie because the insert after it failed would leave
      somebody with an account they were never signed in to and a password they
      would now have to remember typing. */
-  let cookie = '';
+  const cookies = [];
 
   if (action === 'say') {
     const text = shape(body.text);
@@ -285,15 +306,33 @@ export async function onRequestPost(context) {
     const named = body.as === 'name';
 
     if (named && !user) {
-      const entered = await enterAccount(context, {
-        username: body.username,
-        password: body.password,
-        client: body.client,
-        mode: 'either'
-      });
+      /* Two doors, and the browser is already holding the answer to which.
+         A sealed note from /api/google means somebody pressed Continue with
+         Google a moment ago and Google has proved who they are — so there is
+         no password to ask for and none to check, and what is left is the
+         name. Without one it is the ordinary username and password, which
+         makes an account or enters one.
+
+         Asked in this order because the note is the stronger claim: somebody
+         mid-round-trip who also typed something into the name field is still
+         mid-round-trip, and naming the Google account is what they came back
+         to do. */
+      const viaGoogle = await googlePending(request, env);
+      const entered = viaGoogle
+        ? await nameGoogleAccount(context, {
+            username: body.username,
+            client: body.client
+          })
+        : await enterAccount(context, {
+            username: body.username,
+            password: body.password,
+            client: body.client,
+            mode: 'either'
+          });
       if (!entered.ok) return json({ error: entered.error }, entered.status);
       user = { id: entered.userId, username: entered.username };
-      cookie = sessionCookie(entered.token, SESSION_DAYS, request);
+      cookies.push(sessionCookie(entered.token, SESSION_DAYS, request));
+      if (viaGoogle) cookies.push(pendingCookie(''));
     }
 
     const me = actor(user, body);
@@ -310,7 +349,7 @@ export async function onRequestPost(context) {
         .prepare('SELECT COUNT(*) AS n FROM feedback WHERE ip_hash = ? AND created_at > ?')
         .bind(hash, Date.now() - HOUR)
         .first();
-      if (seen && seen.n >= PER_HOUR_CAP) return answer({ error: 'often' }, cookie, 429);
+      if (seen && seen.n >= PER_HOUR_CAP) return answer({ error: 'often' }, cookies, 429);
 
       const id = randomHex(8);
       /* One reading of the clock, written to the row and handed back with it.
@@ -341,13 +380,13 @@ export async function onRequestPost(context) {
            page can say so above the field rather than leaving somebody to
            notice their name in the header. */
         me: user ? user.username : null
-      }, cookie);
+      }, cookies);
     } catch (e) {
       /* The table is not there yet — see the header — or the write failed for
          some other reason, which this deliberately does not try to tell apart:
          either way nothing was stored, the sentence is still in the field, and
          the page says it did not go through. */
-      return answer({ error: 'no-table' }, cookie, 503);
+      return answer({ error: 'no-table' }, cookies, 503);
     }
   }
 
@@ -427,11 +466,11 @@ export async function onRequestPost(context) {
    session has been opened on the way past. Everything before that point, and
    every heart, goes through json(): there is no cookie to carry and building
    one answer two ways would be two things to keep in step. */
-function answer(body, cookie, status) {
+function answer(body, cookies, status) {
   const headers = new Headers({
     'content-type': 'application/json; charset=utf-8',
     'cache-control': 'no-store'
   });
-  if (cookie) headers.append('set-cookie', cookie);
+  (cookies || []).forEach((cookie) => headers.append('set-cookie', cookie));
   return new Response(JSON.stringify(body), { status: status || 200, headers: headers });
 }
