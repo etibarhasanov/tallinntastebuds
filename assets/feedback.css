@@ -1,0 +1,182 @@
+/* ==========================================================================
+   Tallinn Tastebuds — the feedback page.
+
+   Loaded after assets/styles.css and assets/lists.css and only by
+   feedback.html, so everything three pages already share is in place before
+   this file is read: the tokens, .card, .eyebrow, the four controls, the
+   sheet's field and label, the Google button and the rule it sits under from
+   the first; the page frame — .lists-body, .lists-brand, .lists-main,
+   .lists-stack, .lists-card, the field, the segmented choice and the row of
+   facts under a title — from the second. The head with no card under it is
+   .blog-head out of assets/blog.css, which is the third.
+
+   What is left, and the whole of what is in here, is what a page of things
+   other people wrote needs and none of those has: the sentence itself, the
+   line under it that carries the byline and the heart, and the heart.
+   Nothing in this file names a colour — every value below is a token, so
+   both styles arrive here already decided.
+   ========================================================================== */
+
+/* ---------- one piece of feedback ---------- */
+
+/* The card a sentence sits in. .lists-all-card is the directory's row and its
+   hover says "this opens"; a card here opens nothing, so it is .card with
+   that row's padding and none of its hover. */
+.fb-card { padding: 15px 18px 14px; }
+
+/* The sentence somebody wrote. Literata, in the ink, a size up from
+   .lists-say — it is the thing the card is, not a line under something else.
+   Somebody may paste one very long word, so it may break anywhere; and it may
+   be two paragraphs, which is what pre-line is for. The text reaches this
+   element as textContent and never as markup — see assets/feedback.js. */
+.fb-text {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--ink);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* The foot of a card: who and when on the left, the heart on the right. It
+   wraps as a flex row rather than holding one line, so on a narrow phone the
+   heart drops under the byline instead of pushing the date off the card.
+   .lists-all-meta gives up its own top margin here — it is standing in a row,
+   not under a title. */
+.fb-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+.fb-foot .lists-all-meta { margin: 0; }
+
+.fb-acts {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+/* The word that takes your own down, beside the number. .alt's full 12px
+   either side pushed the pair under the byline a whole date-width sooner than
+   it needed to. */
+.fb-acts .alt { padding: 8px 6px; }
+
+/* ---------- the heart ----------
+
+   It is the map panel's own save mark — .panel-save in assets/styles.css —
+   laid in a card's foot instead of a panel's corner, with a heart in place of
+   the bookmark: a disc while it is only a mark, a pill once it carries a
+   number, and the number inside it rather than beside it, which is what keeps
+   it small. There is no word on it at all. The label is for a screen reader,
+   and the tenth design rule is kept the way the bookmark keeps it — the
+   outline filling in is the state, said in shape and not only in colour.
+
+   Never drawn at nought. A "0" under somebody's sentence reads as a verdict
+   on it rather than as nobody having pressed yet, which is the same reason a
+   save count and a keep count are both hidden there. */
+.fb-heart {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  background: var(--wash);
+  color: var(--muted);
+  transition: border-color .15s var(--ease), color .15s var(--ease);
+}
+.fb-heart svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  /* A hair lighter than the bookmark's 1.7: a heart is a denser outline at
+     the same size and reads heavy drawn at the same weight. */
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: fill .18s var(--ease);
+}
+.fb-heart:hover { border-color: var(--muted); color: var(--ink); }
+.fb-heart[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+.fb-heart[aria-pressed="true"] svg { fill: currentColor; }
+.fb-heart[aria-pressed="true"]:hover { color: var(--accent-lit); border-color: var(--accent-lit); }
+
+/* Tabular figures so the pill does not jitter as it goes from 9 to 10, which
+   is the same reason .save-n has them. */
+.fb-heart-n {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+/* No number yet: a disc, not a pill. display on a class beats the UA sheet's
+   [hidden] rule, so the empty slot has to be told to go — the same trap
+   .panel-save and .search-clear fall into. */
+.fb-heart:not(.has-n) { padding: 0; width: 32px; }
+.fb-heart:not(.has-n) .fb-heart-n { display: none; }
+
+/* Your own. Nobody hearts what they wrote, so on those cards this is a fact
+   rather than a press: the mark and the number, with no edge and no ground
+   under them. /api/feedback refuses the request too — the page is not what
+   decides. */
+.fb-heart.is-mine {
+  border-color: transparent;
+  background: none;
+  cursor: default;
+}
+
+/* One beat on the press, the same length and the same curve as the bookmark's
+   on the map, so agreeing with something here feels like saving something
+   there. The global reduced-motion rule at the foot of assets/styles.css does
+   not reach this file, so it is answered here. */
+.fb-heart.is-beating svg { animation: fb-beat .42s var(--ease); }
+@keyframes fb-beat {
+  30%  { transform: scale(1.26); }
+  58%  { transform: scale(.95); }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fb-heart.is-beating svg { animation: none; }
+  .fb-heart, .fb-heart svg { transition: none; }
+}
+
+/* ---------- the composer ---------- */
+
+/* The field. .lists-input at the 16px the ninth design rule insists on —
+   anything smaller makes iOS zoom the page when it takes focus and it never
+   zooms back out — and tall enough for a paragraph without being a page.
+   Vertical resize only: a textarea dragged wider than its card is a card with
+   a hole in it.
+
+   It takes the sheet's softer radius rather than the lists page's 4px,
+   because the username and the password that appear under it are the sheet's
+   own fields and one card does not draw two kinds of box. */
+.fb-input {
+  display: block;
+  min-height: 104px;
+  border-radius: var(--radius-soft);
+  font-size: 16px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+/* How much of the five hundred is left, against the field's own right edge
+   where the last character typed is. */
+.fb-count { text-align: right; }
+
+/* The name and the password, and the other way in under them. They arrive
+   when With a name is chosen and go when it is not, so the card grows under
+   somebody's hand — which is the honest thing here: what the button does has
+   genuinely changed, and a form that hid that until after the press would be
+   signing people up by surprise. */
+.fb-name { display: flex; flex-direction: column; gap: 14px; }
+.fb-name[hidden] { display: none; }

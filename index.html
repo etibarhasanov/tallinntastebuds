@@ -58,7 +58,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=cf794728">
+<link rel="stylesheet" href="assets/styles.css?v=00fe4a1e">
 </head>
 <body>
 
@@ -198,6 +198,39 @@
     </svg>
     <span class="rail-label" data-i18n="explainOpen">How this works</span>
   </button>
+  <!-- And after it, the other half of the same conversation. "How this works"
+       is the site explaining itself; this is the site asking. The two stand
+       together at the foot because neither is about tonight — everything
+       above them answers a question about where to eat, and these two answer
+       a question about the map itself.
+
+       An <a> and not a button, for the reason the lists door is one: /feedback
+       is an address somebody can open in a tab or send to somebody else.
+
+       Never hidden, unlike the two doors at the head of the rail. Those wait
+       on /api/account because a list with no database behind it is a page
+       with nothing on it at all; this page draws its title, its sentence and
+       its field out of data/ui.json alone and says for itself when the
+       feedback could not be read — which is a state it has on a perfectly
+       healthy deployment whenever a request does not come back.
+
+       IT TAKES THE LAST SLOT ON THE RAIL, AND THERE IS NOT ANOTHER ONE.
+       The cascade that introduces these pills on a phone opens them 300ms
+       apart and holds each for 4.2s against a sentence under the mark that is
+       up for 7.86s. At eight pills the last one collapsed at 7.45s; at nine
+       it collapses at 7.75s, which still lands inside the sentence with a
+       tenth of a second to spare. A tenth button would not, and the rail
+       would be talking over a sentence that has gone. See introduceRail() in
+       assets/app.js, where those numbers are. -->
+  <a class="rail-btn" id="btn-feedback" href="/feedback" data-track="feedback_open"
+     data-i18n-title="feedbackWhy" data-i18n-aria-label="feedbackTitle"
+     title="What you would change about this site." aria-label="Feedback">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M20.5 12.4c0 3.9-3.8 7-8.5 7-1 0-2-.15-2.9-.4L4 20.5l1.6-3.7a6.5 6.5 0 0 1-2.1-4.4c0-3.9 3.8-7 8.5-7s8.5 3.1 8.5 7z"/>
+      <path d="M15.1 9.6a2.6 2.6 0 0 0-3.1 0L12 9.7l-.1-.1a2.6 2.6 0 0 0-3.1 0 2.1 2.1 0 0 0 0 3.2L12 15.7l3.1-2.9a2.1 2.1 0 0 0 0-3.2z" class="pip"/>
+    </svg>
+    <span class="rail-label" data-i18n="feedbackTitle">Feedback</span>
+  </a>
 </div>
 
 <div class="controls">
@@ -514,6 +547,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=fbcf5dd4" defer></script>
+<script src="assets/app.js?v=0435a63d" defer></script>
 </body>
 </html>

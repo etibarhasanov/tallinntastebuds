@@ -3688,7 +3688,7 @@
   var HINT_MS = 4200;
   /* Top to bottom, which is the order they open in. */
   var HINT_KEYS = ['account', 'lists', 'random', 'ask', 'radio', 'style',
-                   'locate', 'explain'];
+                   'locate', 'explain', 'feedback'];
   var hintTimers = {};
 
   /* Before any of them, the sentence. On a desktop it is printed in the card
@@ -3705,10 +3705,16 @@
   /* The rail follows it rather than racing it. By the time the first pill
      opens the sentence has been up for the best part of a second, and the
      last one collapses just before the sentence does, so the corner empties
-     in the order it filled. Eight pills, 300ms apart and held for 4.2s each,
-     put that last collapse at 7.45s against the sentence's 7.86s: there is
-     room on the rail for one more button at these numbers and not a second,
-     after which the rail is still talking over a sentence that has gone. */
+     in the order it filled. Nine pills, 300ms apart and held for 4.2s each,
+     put that last collapse at 7.75s against the sentence's 7.86s.
+
+     THE ROOM THAT WAS HERE HAS BEEN SPENT. This said there was space for one
+     more button at these numbers and not a second; the feedback door is that
+     button. A tenth would collapse at 8.05s, which is the rail still talking
+     over a sentence that has gone — so a tenth pill means moving one of these
+     numbers rather than just adding markup, and the thing to move is
+     BRAND_MS, since the sentence is what the rail is being measured
+     against. */
   var RAIL_IN = 1150;
   var brandInTimer = null;
   var brandOutTimer = null;
@@ -3745,6 +3751,7 @@
     if (key === 'style') return dom.styles && dom.styles.querySelector('.rail-btn');
     if (key === 'locate') return dom.btnLocate;
     if (key === 'explain') return dom.btnExplain;
+    if (key === 'feedback') return dom.btnFeedback;
     return dom.btnRandom;
   }
 
@@ -8371,6 +8378,9 @@
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
       btnExplain: $('btn-explain'),
+      /* Held only so the introduction can open its label — the press itself
+         is an <a> going to an address, and nothing in this file wires it. */
+      btnFeedback: $('btn-feedback'),
       tour: $('tour'),
       tourRing: $('tour-ring'),
       tourCursor: $('tour-cursor'),

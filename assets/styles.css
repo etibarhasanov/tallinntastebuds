@@ -3976,6 +3976,26 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     gap: 8px;
   }
 
+  /* And the feedback door steps out of that row, which is arithmetic before
+     it is taste. Collapsed, a pill is a 35.6px disc and the row's gap is 8px,
+     so nine of them measure 384px against the 374px a 390px screen leaves
+     after the rail's own left inset: the last one hangs off the right edge.
+     Eight fit with room to spare, which is what this row was built for.
+
+     It is the right one of the nine to drop. Every other pill here answers a
+     question somebody with a place open still has — another place, where am
+     I, what is playing, which colour — and this one is the way off the map
+     entirely. Nobody reading about a restaurant is looking for the form that
+     asks what they would change about the site, and it is one press of the
+     close away in any case. The same argument the rule above it makes about
+     the whole rail behind a full-height sheet, one button smaller.
+
+     If a tenth pill is ever wanted, this is where the next one comes out —
+     and introduceRail() in assets/app.js carries the other half of the
+     arithmetic, which is the cascade running past the sentence under the
+     mark. */
+  body.panel-open #btn-feedback { display: none; }
+
   /* The rail introduces itself, then gets out of the way.
 
      A phone has no hover and no title tooltip, so the desktop pill lost its

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feedback | Tallinn Tastebuds</title>
+<meta name="description" content="What people would change about this site, and what they would like to see on it.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+
+<!-- Not indexed, and the rule in _headers says it twice. Everything on this
+     page is written about this site rather than about the city, and a search
+     for Tallinn Tastebuds that answered with its own snag list would be the
+     map's worst page standing in front of its best. `follow` rather than
+     `nofollow`, unlike the account page: the bylines here lead to real
+     profiles and there is no reason a crawler should not walk to them. -->
+<meta name="robots" content="noindex, follow">
+
+<!-- Analytics: Google and Microsoft Clarity, both from one file rather than
+     two snippets pasted into every head. assets/analytics.js holds the ids and
+     the consentv2 signal Clarity needs, and its head carries the reasoning of
+     the consent bar that stood in front of both of them for a day. -->
+<script src="/assets/analytics.js?v=4b79262d" defer></script>
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The tokens, the card, the eyebrow, the four controls, the sheet's field
+     and the Google button come from the map's stylesheet; the page frame, the
+     field and the segmented choice from the lists page's; the head with no
+     card under it from the blog's. The fourth file is only what a page of
+     things other people wrote needs and none of those has: the sentence, the
+     line under it, and the heart. -->
+<link rel="stylesheet" href="/assets/styles.css?v=00fe4a1e">
+<link rel="stylesheet" href="/assets/lists.css?v=b478af12">
+<link rel="stylesheet" href="/assets/blog.css?v=61d7d3c9">
+<link rel="stylesheet" href="/assets/feedback.css?v=8f27d1b7">
+</head>
+<body class="lists-body">
+
+<a class="skip-link" href="#main" data-i18n="feedbackSkip">Skip to the feedback</a>
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" data-track="home" data-i18n-aria-label="backToMap" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
+  </a>
+  <!-- Only ever a link to the map's account sheet: this page can sign
+       somebody in, inside the composer and in the same press as the thing
+       they came here to say, but signing out is the sheet's and there is one
+       of those. See assets/feedback.js. -->
+  <a class="lists-who" id="fb-who" href="/?account=in" data-track="account_open" hidden></a>
+  <!-- The map's radio, wearing the map's pill, as it does on the lists,
+       account and blog pages. Hidden until data/radio.json is read, and for
+       good if there is no station in it. -->
+  <button type="button" class="rail-btn radio" id="btn-radio" aria-pressed="false" hidden
+          data-i18n-title="radioPlay" data-i18n-aria-label="radioPlay"
+          aria-label="Play the radio" title="Play the radio">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path class="ico-play" d="M8 5.5l11 6.5-11 6.5z"/>
+      <path class="ico-stop" d="M8 6.5h3v11H8zM13 6.5h3v11h-3z"/>
+    </svg>
+    <span class="radio-name rail-label" id="radio-name"></span>
+  </button>
+</header>
+
+<!-- Every state this page has — signed in, signed out, a name being chosen,
+     just posted, refused, nothing here yet, and the feedback that could not
+     be read at all — is built by assets/feedback.js into this one element,
+     decided the moment both answers are in. Nothing in the markup depends on
+     which of them it is, so nothing can be left standing from the state
+     before. The same arrangement lists.html, account.html and blog.html
+     have. -->
+<main class="lists-main" id="main" tabindex="-1"></main>
+
+<!-- Two things say something here: the radio, when a stream will not start,
+     and a heart that did not reach the database. Styled by the map's
+     stylesheet and placed by the lists page's. -->
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Tallinn</p>
+    <h2>Feedback</h2>
+    <p>This page is written by whoever opens it, which takes JavaScript. The
+      map itself works rather better than this page does without it —
+      <a href="/">it is over here</a>.</p>
+  </div>
+</noscript>
+
+<!-- What every press reports to Google Analytics, shared by every page.
+     Before the page's own script and deferred like it, so document order puts
+     the global in place first. -->
+<script src="/assets/track.js?v=93031b0d" defer></script>
+<!-- The radio, shared with the map, the lists page, the account page and the
+     blog: the station carries across the walk between them. Before
+     feedback.js and deferred like it, so document order puts the global in
+     place first. -->
+<script src="/assets/radio.js?v=402cc8f8" defer></script>
+<script src="/assets/feedback.js?v=9fabc5d7" defer></script>
+</body>
+</html>
