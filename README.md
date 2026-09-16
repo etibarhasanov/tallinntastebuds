@@ -7909,7 +7909,9 @@ that is not a place. It has no pin, so the map does not move, and no address,
 phone, types, save mark or discount, because a potato has none of those; the
 sheet leaves those sections out. Nothing writes it into the address bar, so
 there is no link to it — a place's `?spot=` comes off while it is up — and
-Back closes it the way it closes any sheet.
+Back closes it the way it closes any sheet. The die itself winks: while the
+joke is on it is drawn as a potato in `index.html`, the same three pips on a
+lumpier body, and the rounded square comes back when the joke comes out.
 
 It is a joke the owner asked for and has already said will come out again, so
 it is built to come out: `HOME_ID`, `HOME_ODDS` and `homePlace()` in
