@@ -1,10 +1,11 @@
 -- Tallinn Tastebuds — every table the site has.
 --
--- Eight things live here: the saves and their counts, the accounts a save can
+-- Nine things live here: the saves and their counts, the accounts a save can
 -- follow a person on, the lists somebody builds and shares, the keeps that are
 -- a bookmark on somebody else's list, 1,110 Tallinn venues mirrored out of
 -- Google Places, the places somebody adds by hand when the catalogue does not
--- have them, the groups splitting a bill on the splitwise subdomain, and one
+-- have them, what people would change about this site and who agreed with
+-- them, the groups splitting a bill on the splitwise subdomain, and one
 -- meta row saying which database this is. Everything the map itself draws —
 -- the places, the write-ups, the discounts, the stories — is a JSON file in
 -- the repository and never a row.
@@ -625,6 +626,92 @@ CREATE INDEX IF NOT EXISTS idx_google_venues_open ON google_venues (hidden, stat
 
 
 -- ------------------------------------------------------------------- meta
+-- ---------------------------------------------------------------- feedback
+-- What people would change about this site, and who agreed with them.
+--
+-- /feedback is the page, functions/api/feedback.js is the only thing that
+-- writes either of these, and **Feedback** in README.md is the reasoning.
+--
+-- SAYING SOMETHING NEEDS NO ACCOUNT, THE WAY A SAVE DOES NOT
+--
+-- `owner` holds a users.id when the request carried a session and the
+-- browser's own random UUID when it did not — the arrangement `saves` has and
+-- deliberately not the one `lists` has. A complaint about this site has to be
+-- writable in the first ten seconds, before anybody has decided anything, and
+-- a form that asks for an account first is a form that never hears the thing
+-- worth hearing. A list is the other shape of thing: it is a page somebody
+-- comes back to weeks later on another device, so it needs a name to be
+-- filed under. This is not that.
+--
+-- The name on it is a separate question from who owns it, which is why
+-- `named` is its own column rather than being inferred from `owner_kind`.
+-- Somebody signed in may post anonymously: the row is still theirs — still
+-- theirs to remove, still counted against their cap — and the page simply
+-- does not draw the username. Reading `owner_kind = 'user'` as "show the
+-- name" would have made every anonymous post by a signed-in person a signed
+-- one, which is the one mistake this table must not make.
+CREATE TABLE IF NOT EXISTS feedback (
+  -- Sixteen hex characters out of randomHex(8). Not a slug: there is nothing
+  -- in a sentence somebody wrote to make a readable id out of, and no link
+  -- points at one piece of feedback.
+  id         TEXT    PRIMARY KEY,
+  -- users.id, or the device's own UUID. See above.
+  owner      TEXT    NOT NULL,
+  -- 'user' or 'device', saying which of the two `owner` is.
+  owner_kind TEXT    NOT NULL DEFAULT 'device',
+  -- 1 = draw the author's username under it; 0 = draw Anonymous. A row is
+  -- owned either way.
+  named      INTEGER NOT NULL DEFAULT 0,
+  -- The sentence. Up to MAX_FEEDBACK in functions/api/feedback.js, which is
+  -- five hundred characters, restated as a maxlength on the field.
+  text       TEXT    NOT NULL,
+  -- HMAC(SAVE_SALT, ip + '|' + user agent), for the three-an-hour cap. The
+  -- raw address is never stored and cannot be recovered from this without the
+  -- salt, which lives only in the Pages environment — same as `saves`.
+  ip_hash    TEXT    NOT NULL,
+  created_at INTEGER NOT NULL,
+  -- Taking one down. There is no route and no button that writes this: it is
+  -- an UPDATE run by hand through the write gate, and the column is here from
+  -- the first day so that a Take down for the site's owner can be added later
+  -- without a migration against a live database. See **What needs a yes** in
+  -- CLAUDE.md.
+  hidden     INTEGER NOT NULL DEFAULT 0
+);
+-- The page itself: every row that has not been taken down, newest first. The
+-- order the page actually draws is partly a count over the table below and no
+-- index can reach it, so this serves the WHERE and the tie-break.
+CREATE INDEX IF NOT EXISTS idx_feedback_live ON feedback (hidden, created_at DESC);
+-- The cap's lookup: how many pieces of feedback this network fingerprint has
+-- left in the last hour. The primary key cannot serve it — it is the id, and
+-- this asks about ip_hash.
+CREATE INDEX IF NOT EXISTS idx_feedback_ip ON feedback (ip_hash, created_at);
+
+
+-- One row is one person putting a heart on one piece of feedback: agreement,
+-- and the only number this page keeps.
+--
+-- Deliberately no counts table of the kind save_counts is, and the note over
+-- `list_keeps` above is the argument in full: a counts table is a migration
+-- and a backfill run by hand on a live database with no backup in this
+-- repository, plus a second place for the same number to live and a way for
+-- the two to disagree. Counting is one row read per heart and one page asks.
+-- The day the GROUP BY in functions/api/feedback.js shows up in a query time
+-- is the day to write one, and it should be written the way save_counts is:
+-- recomputed from this table inside the batch that changes it, never nudged.
+CREATE TABLE IF NOT EXISTS feedback_hearts (
+  -- feedback.id. A heart on a row that has been removed goes with it, in the
+  -- same batch — see `remove` in functions/api/feedback.js.
+  feedback_id TEXT    NOT NULL,
+  -- users.id or the device's own UUID, exactly as feedback.owner is. A heart
+  -- has to work signed out for the same reason saying something does.
+  owner       TEXT    NOT NULL,
+  created_at  INTEGER NOT NULL,
+  -- One person hearts one thing once. Pressing twice is the conflict clause
+  -- and not a second row, which is what makes the count a count of people.
+  PRIMARY KEY (feedback_id, owner)
+);
+
+
 -- Which database this is. One row, written once, and the only thing in here
 -- that is not the same in every copy of this schema.
 --

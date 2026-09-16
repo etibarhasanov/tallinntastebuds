@@ -80,6 +80,7 @@ leading underscore are modules, not routes.
 | `GET /api/pass` | `pass.js` | none; the door in front of every discount — `401` where there is no session, so `deal.html` offers the sign-in sheet instead of a code — carrying one number for the account, the place named by `?r=` and this hour, an HMAC under `SAVE_SALT`, which `assets/pass.js` counts up the run of a deal with a roll | `no-store` |
 | `/split` | `split.js` | **splitwise** — none; `split.html` with the group named by `?g=` written into its head, so a pasted link unfurls as the group. `functions/_middleware.js` calls it for the subdomain's root too | `no-store`, `noindex` |
 | `GET/POST /api/split` | `api/split.js` | **splitwise** — `split_groups`, `split_members`, `split_expenses`, `split_shares`, `split_settlements`. **Reading one group needs only its code**, no session — holding the link is the permission, see `groupById()`. **Every write needs a session and a membership**: each action but `create` and `join` reads the caller's own membership first, and a non-member is told the group does not exist | `no-store`, for the reason `lists.js` is |
+| `GET/POST /api/feedback` | `feedback.js` | `feedback`, `feedback_hearts` — and `users`/`sessions` through `enterAccount()` in `_account.js`, which is the one route besides `account.js` and `google.js` that can mint an account: `say` with `as: 'name'` and no session makes one or signs into it in the same request. **Saying something and hearting need no account**, filed under the device id the way a save is; `remove` needs the row's owner. Both tables arrive by hand and every read here survives their absence | `no-store` |
 | `POST /api/ask` | `ask.js` | none; narrows the two rolls to what a question could be about and puts it to Workers AI; measures "near" from the place named through `geocode.js`, or from the visitor's own dot sent as `here` | `no-store` |
 | `/list/<id>` | `list/[id].js` | none; `lists.html` with the list unfurled | `no-store` |
 | `/lists` | `lists/index.js` | none; `lists.html` with the first page of everybody's lists seeded in — with the five Google lists as `start`, and each row's places as `dots` — searched when the address carries `?q=`, ordered by `?sort=` (`kept`, `new`) | `no-store` |
@@ -192,7 +193,11 @@ database in this repository; D1 Time Travel's 30 days is the only recovery.
 60`, `MAX_INTRO 200`, `MAX_SAY 280`, `MAX_ITEMS 50` in `lists.js` are restated
 in `assets/lists.js`, and `MAX_TITLE` a third time in `assets/account.js`,
 which carries the box that names a new list; `MAX_ABOUT 200` in `account.js`
-is restated in `assets/account.js`, which carries the only box that writes it; `MAX_NAME 80` and
+is restated in `assets/account.js`, which carries the only box that writes it;
+`MAX_FEEDBACK 500` in `feedback.js` is restated once, as `MAX_TEXT` in
+`assets/feedback.js`, which carries the only field that writes it — and the
+counter under that field reads `{n} / {max}` out of `data/ui.json` rather than
+spelling the number, so the cap is two edits and not twelve; `MAX_NAME 80` and
 `MAX_ADDRESS 120` as literal `maxlength: '80'` and `'120'` in the add-a-place
 form in `assets/lists.js`; the username's 3–24 in `account.js` as a
 `maxlength: '24'` on all three of `app.js`'s username fields — the sign-up

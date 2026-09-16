@@ -59,6 +59,7 @@ completely with the database switched off.
 - [Splitwise](#splitwise)
 - [Stories](#stories)
 - [The blog](#the-blog)
+- [Feedback](#feedback)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
 - [The map tiles need a key](#the-map-tiles-need-a-key)
@@ -103,7 +104,7 @@ node tools/stamp.mjs
 ```
 
 It rewrites the `?v=` hash on every script and stylesheet reference in the
-pages that load something out of `assets/` — the seven named in `PAGES` at
+pages that load something out of `assets/` — the ten named in `PAGES` at
 the top of `tools/stamp.mjs`. The validator fails on a stale one, so CI will
 catch it if you forget — but it is one command and it saves a round trip. See
 [Cache stamps](#cache-stamps).
@@ -6282,6 +6283,197 @@ where every event on this site is listed.
 
 ---
 
+## Feedback
+
+`/feedback` — what people would change about this site, and who agreed with
+them. The map says where to eat and the blog says why the site around it works
+the way it does; this is the half that listens.
+
+One page, the frame every page that is not the map wears — the brand header,
+the 640px column, the cards — with a field at the top and everything anybody
+has written under it. The door is the last pill on the map's rail, beside
+**How this works**: that button is the site explaining itself and this one is
+the site asking.
+
+### Saying something needs no account, and putting your name on it is one press
+
+Anonymous is the default and costs nothing: no sign-in, no wall, no step in
+front of the one thing the page exists for. The row is filed under the
+browser's own random id, exactly as a save is — `feedback.owner` holds a
+`users.id` when there is a session and the device's UUID when there is not.
+**Saves** carries the reasoning for that arrangement and it applies harder
+here: a complaint about this site has to be writable in the first ten seconds,
+before anybody has decided anything, and a form that asks who you are first is
+a form that never hears the thing worth hearing.
+
+Under the field is **Post as**, the same two-sided control a list uses to
+choose who can open it. Signed in it is your name or *Anonymous*. Signed out
+it is *Anonymous* or **With a name** — and choosing the second opens the
+account sheet's own two fields inside the same card, with *or* and **Continue
+with Google** under them. Pressing **Post feedback** then does both things in
+one request: makes the account or signs into it, and posts.
+
+**There is no separate Sign up and Sign in, and the name is what decides.** A
+name nobody has makes an account; one that exists signs you into it and wants
+its password. The line under the field says so before the button rather than
+after it. That is a door the map's sheet deliberately does not have — there,
+the form exists to ask "have you been here before", so a name that is already
+somebody's has to answer *That username is taken* and never quietly sign
+anybody in. Here there is no sheet and no second step, and the moment worth
+asking at is the moment after somebody has written something they want their
+name on. Sending them to another page to sign in is asking them to write it
+twice.
+
+It gives nothing away that the site does not already tell anybody: the sign-up
+sheet answers "is this name free" to a stranger with no session at all, which
+is the same question asked more politely.
+
+`enterAccount()` in `functions/api/_account.js` is the step itself, and `mode`
+is the one thing the three callers disagree about — `create`, `login`,
+`either`. That module is new and it is a move rather than a rewrite: the
+username rule, the password floor, the thirty-day hold on a released name, the
+slow-down on a fingerprint that keeps guessing, the PBKDF2 compare and the
+quiet upgrade of a hash made at fewer iterations were all in
+`functions/api/account.js` and are now read by both routes. Two copies of a
+sign-in is the kind of duplication that goes wrong quietly: the day one of them
+stops counting a failed attempt, the other is still the door everybody is
+looking at.
+
+**Continue with Google** is the site's ordinary round trip with
+`?then=/feedback`. What was in the field is written to `localStorage` on the
+way out and put back on the way in, so a trip through Google does not cost
+somebody the sentence they had written. A Google account this site has never
+seen is sent to the map's naming step and comes back — there is one place that
+asks somebody to choose a name and it is not this page.
+
+### The heart, and there is no other number
+
+A heart and nothing else: no word on the button, and small. It is the map
+panel's own save mark with a heart in place of the bookmark — a disc while it
+is only a mark, a pill once it carries a number, the number inside it rather
+than beside it. The outline filling in is the state, said in shape as well as
+in colour, which is the tenth design rule.
+
+Anyone can press it, signed in or not, filed the way a save is. One row per
+(feedback, owner), so nobody runs a number up by pressing twice, and the same
+caveat `/api/saves` carries about its own counts applies: anybody willing to
+clear their storage ten times can add ten. Nothing here is ranked against
+anything outside this page, so what that buys is a bigger number and not a
+better position anywhere.
+
+Never drawn at nought — a "0" under somebody's sentence reads as a verdict on
+it rather than as nobody having pressed yet, which is why a save count and a
+keep count are both hidden there.
+
+**Nobody hearts their own.** Your own rows carry **Remove** instead, and the
+heart on them is a number rather than a press. `/api/feedback` refuses the
+request as well as the page not making it: the page is not what decides.
+
+### One order, and the page decides it
+
+The most hearted first, with anything posted in the last ten minutes standing
+above them all, newest of those first.
+
+There are deliberately no chips to choose it with. Two orders on a page like
+this would make the reader responsible for a decision they have no way to have
+an opinion about — and the directory's own **Order** row exists because ranking
+lists by keeps genuinely buries the new ones, which is the problem the ten
+minutes solves here instead.
+
+That window is what stops the loop the heart order would otherwise be: a
+sentence posted this afternoon starts at nought hearts, sits below everything
+that has ever been agreed with, and is therefore never read by anybody who
+might agree with it. Ten minutes at the top is long enough for the people who
+happen to be on the page to see it and short enough that the page is not a
+chronological feed with extra steps. `FRESH_MS` in
+`functions/api/feedback.js` is the whole of it, and on a page few people open
+in any given minute an hour would be the better number.
+
+The person who has just posted sees theirs at the top whatever the order says.
+That is the one time the page puts a row somewhere the order did not.
+
+### Twenty a page, and what it costs to count
+
+Twenty rows and **Show more** under them, `OFFSET` rather than a cursor — a
+cursor has to be a value the order can be resumed from, and this order is
+partly a count that changes while somebody is reading. A row moving between
+pages because somebody hearted it mid-scroll is the truth arriving rather than
+a bug.
+
+The hearts come off a `LEFT JOIN` and a `GROUP BY` and there is deliberately
+no counts table of the kind `save_counts` is. The note over `list_keeps` in
+`db/schema.sql` is the argument in full: a counts table is a migration and a
+backfill run by hand on a live database with no backup in this repository,
+plus a second place for the same number to live and a way for the two to
+disagree. The day the `GROUP BY` shows up in a query time is the day to write
+one, and it should be written the way `save_counts` is — recomputed inside the
+batch that changes it, never nudged by one.
+
+### Taking one down
+
+Your own goes with **Remove**, which asks first because there is no way back:
+the row and its hearts go in the same batch.
+
+Somebody else's is by hand and there is no route and no button for it:
+
+```
+UPDATE feedback SET hidden = 1 WHERE id = '<the id>';
+```
+
+through the write gate, against both databases. The column is there from the
+first day precisely so that a **Take down** for the site's owner can be added
+later without a migration against a live table — see **What needs a yes** in
+`CLAUDE.md`, which is why a write is a separate sentence from a merge.
+
+### Two tables, and every read survives their absence
+
+`feedback` and `feedback_hearts` in `db/schema.sql`, applied by hand like
+every other schema change here. `named` is its own column rather than being
+read off `owner_kind`, and that is the one thing about this table worth
+copying: somebody signed in may post anonymously, the row is still theirs —
+still theirs to remove, still counted against their cap — and the page simply
+does not draw the username. Inferring "show the name" from "an account owns
+it" would have made every anonymous post by a signed-in person a signed one.
+
+Both reads are wrapped, because a schema change applied by a person and code
+deployed by a push cannot be made simultaneous. Inside that window the page
+draws its title, its sentence and its field out of `data/ui.json` and says the
+feedback could not be loaded, which is a state it has on a healthy deployment
+any time a request does not come back. What it must never do is answer 500.
+`users.about` and `lists.pin` take the same bargain.
+
+### The caps
+
+Five hundred characters, and three pieces of feedback an hour from one network
+fingerprint — the same hashed address and user agent the saves are capped by,
+so the address itself never reaches the table. Three is a cap rather than a
+queue: everybody with something to say has said it by the third, and the
+fourth in an hour is somebody leaning on the form. `MAX_FEEDBACK` and
+`PER_HOUR_CAP` are in `functions/api/feedback.js`, and the five hundred is
+restated as a `maxlength` on the field so somebody is stopped at the keystroke
+rather than at the round trip.
+
+### Not indexed, and not disallowed either
+
+`noindex, follow`, in `_headers` and in the page's own markup, and **no
+`Disallow` in `robots.txt`** — the two depend on each other. A crawler
+forbidden to fetch the page can read neither half of the tag, which would
+leave the address itself eligible to be listed on the strength of any link
+pointing at it, with nothing to say otherwise. Not indexed because everything
+here is written about this site rather than about the city, and a search for
+Tallinn Tastebuds answered with its own snag list would put the map's worst
+page in front of its best. Followed because the bylines lead to real profiles.
+
+### What it does not do yet
+
+No reply from the owner under a piece of feedback — the page is one way, and a
+reply is a second kind of row by a second author. No editing: remove it and say
+it again. No categories, which the sentence carries. No moderation queue: a
+post is on the page the moment it is made. No search. No notification; the
+owner reads the page.
+
+---
+
 ## The admin page
 
 `/admin.html` — a door, and behind it the tools for posting without opening a
@@ -7041,6 +7233,17 @@ blog.html                  a post per thing this site does   } unlinked, and
 assets/blog.js             the index, one post, and the walk  } indexed on
 assets/blog.css            only what a page of prose has      } purpose
 data/blog.json             the posts
+feedback.html              what people would change about this site, at
+                           /feedback and behind the last pill on the rail
+assets/feedback.js         every state of it, and the one sign-in form that is
+                           not a sheet
+assets/feedback.css        the sentence, the line under it, and the heart
+functions/api/feedback.js  reading a page of it, saying one, hearting one,
+                           taking your own down
+functions/api/_account.js  the account rules that route and account.js both
+                           read — the name, the password, the hold, the
+                           slow-down, and the step that makes or enters an
+                           account (not a route: leading _)
 clips/                     GENERATED — the looping clip on each post, and the
 clips/scenes/              scenes, made of the site's own components, that
                            tools/blogclips.mjs draws them from
@@ -8324,6 +8527,24 @@ The blog, `assets/blog.js`:
 | `blog_visit` | `post` — the button at the foot of a post, to whatever it is about |
 | `radio_play`, `radio_stop`, `home` | as on the map |
 
+Feedback, `assets/feedback.js`:
+
+| event | parameters |
+| --- | --- |
+| `feedback_post` | `feedback_as` (`anon`/`name`) — every press of the button, before the answer, so a refused one is counted too |
+| `feedback_heart` | `feedback_state` (`on`/`off`) |
+| `feedback_remove` | — your own, taken down |
+| `feedback_more` | `feedback_page` — the page being asked for |
+| `feedback_google` | — Continue with Google, from inside the composer |
+| `feedback_open` | — the door on the map's rail, reported through `data-track` |
+| `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
+
+No id travels with any of these. The page is a handful of sentences and the
+interesting question is how many people say something rather than which
+sentence they agreed with — and unlike a list or a place, a piece of feedback
+has no name in the reports for an id to be looked up against, so sending one
+would put an opaque string in a console that nothing could resolve it from.
+
 Splitwise, `assets/split.js`:
 
 | event | parameters |
@@ -8388,7 +8609,7 @@ that earns its place — it follows a single visit through the filters, the
 panel and the chat, none of which GA can see as anything but events in a list.
 
 It loads from `assets/analytics.js`, which is also where the Google tag lives
-— one file rather than two snippets pasted into every head. The nine pages in
+— one file rather than two snippets pasted into every head. The ten pages in
 `PAGES` at the top of `tools/stamp.mjs` carry it. `admin.html` deliberately
 carries neither tag: the only visits it could record are the owner's own, and
 it is the page holding a GitHub token.
@@ -8444,7 +8665,7 @@ preview deployments, which is correct for previews and fatal if the address
 people share turns out to be one.
 
 To remove tracking entirely, delete the `assets/analytics.js` script tag from
-the nine pages that carry it, or the file. Everything in `track.js` checks for
+the ten pages that carry it, or the file. Everything in `track.js` checks for
 `window.gtag` and returns quietly when it is missing — which is what already
 happens for a visitor running an ad blocker — so every call site becomes a
 harmless no-op and none of them has to change. To remove one tag and keep the

@@ -9,8 +9,3 @@
 # be committed. It was not ignored for the first day Google sign-in existed.
 .dev.vars
 .dev.vars.*
-
-# The pictures design/feedback/render.mjs draws of the mockups beside it. A
-# picture of a page that is not built yet is not something to keep in git —
-# the HTML it is drawn from is, and one command redraws the lot.
-design/feedback/shots/

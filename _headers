@@ -112,6 +112,26 @@
 /blog
   Cache-Control: public, max-age=0, must-revalidate
 
+# Feedback. Stored as feedback.html and served at /feedback as well, so both
+# spellings are spelled out, the same reason "/" and "/index.html" both appear
+# at the top of this file. The address people are given is the short one.
+#
+# Same revalidating Cache-Control as the map, for the ?v= stamps, and a
+# noindex — but `follow` rather than the account page's `nofollow`. Everything
+# on this page is written about this site rather than about the city, and a
+# search for Tallinn Tastebuds answered with its own snag list would put the
+# map's worst page in front of its best; the bylines on it, though, lead to
+# real profiles, and there is no reason a crawler should not walk to them.
+# The page carries the meta robots tag to match; this is the half that binds
+# for anything that does not parse the HTML to find it.
+/feedback.html
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, follow
+
+/feedback
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, follow
+
 # Scripts and stylesheets are content-addressed by tools/stamp.mjs — the URL
 # in the HTML carries a hash of the file — so a year-long cache would be safe
 # for a stamped request and is deliberately not used anyway. These rules match

@@ -333,7 +333,7 @@ re-running its generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
 |---|---|---|
-| anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in the nine pages named in `PAGES` at the top of the tool |
+| anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in the ten pages named in `PAGES` at the top of the tool |
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `data/restaurants.json` or `data/taxonomy.json` | `node tools/typelists.mjs` | `db/type-lists.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/city.mjs` | `data/city.json` |

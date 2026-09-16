@@ -79,30 +79,19 @@
  */
 
 import {
-  json, clientIp, fingerprint, sha256Hex, randomHex, derivePassword, sameSecret,
-  pwIterations, sessionCookie, sessionUser, openSession, claimDeviceSaves,
+  json, sha256Hex, randomHex, derivePassword, pwIterations, sessionCookie,
+  sessionUser, openSession, claimDeviceSaves,
   SESSION_DAYS, SESSION_COOKIE, readCookie, wrongDatabase, countsKey
 } from './_lib.js';
+import {
+  USERNAME_RE, MIN_PASSWORD, HOLD_DAYS,
+  nameTaken, tooManyFails, noteFail, passwordOn, matches, failHash, enterAccount
+} from './_account.js';
 import {
   googleReady, googleUser, unlinkGoogle, hasGoogle,
   PENDING_COOKIE, pendingCookie, unseal, PROVIDER
 } from './_google.js';
 
-/* Guessing is the only way in — there is no reset link to phish and no
-   address to intercept — so it is the thing to make slow. Ten wrong passwords
-   from one network fingerprint in fifteen minutes and that fingerprint
-   waits. */
-const MAX_FAILS = 10;
-const FAIL_WINDOW = 15 * 60 * 1000;
-
-/* Three to twenty-four, lowercase, and a letter or a digit to open with, so
-   that a name cannot begin with the character that separates words in it. The
-   sheet restates this as a line under the field and as `maxlength`, and
-   `accountUsernameHint` and `accountErrUsername` in data/ui.json are the two
-   sentences that say it in ten languages — change the pattern, change all
-   four. */
-const USERNAME_RE = /^[a-z0-9][a-z0-9-]{2,23}$/;
-const MIN_PASSWORD = 8;
 /* The line somebody writes about themselves on /u/<name>. The same length as
    a list's intro in functions/api/lists.js, and the same reasoning: it is a
    line under a title rather than a page, and a profile opening with six
@@ -110,86 +99,10 @@ const MIN_PASSWORD = 8;
    a maxlength in assets/account.js, the way every cap here is. */
 const MAX_ABOUT = 200;
 
-/* How long a name stays with the account that just left it. A username is
-   the byline on somebody's lists and the whole of /u/<name>, so a name put
-   straight back in the pool is every link to that person handed to whoever
-   signs up next. Thirty days is long enough for a rename to be regretted and
-   undone, and short enough that a name somebody has actually finished with
-   comes back. */
-const HOLD_DAYS = 30;
-
-/* Whether a name is somebody else's, which is two questions and not one: who
-   has it now, and who has just given it up. `mine` is the account asking —
-   a users.id when somebody signed in is renaming, and nothing at all on the
-   sign-up sheet, where every hold counts against the name. Your own hold
-   never does, so renaming away and back again is how a rename is undone. */
-async function nameTaken(env, username, mine) {
-  const row = await env.DB
-    .prepare('SELECT 1 AS x FROM users WHERE username = ? COLLATE NOCASE')
-    .bind(username)
-    .first();
-  if (row) return true;
-
-  const held = await env.DB
-    .prepare('SELECT user_id FROM username_holds WHERE username = ? COLLATE NOCASE AND released_at > ?')
-    .bind(username, Date.now() - HOLD_DAYS * 86400000)
-    .first();
-  return !!held && held.user_id !== mine;
-}
-
-async function tooManyFails(env, hash) {
-  const row = await env.DB
-    .prepare('SELECT COUNT(*) AS n FROM login_fails WHERE ip_hash = ? AND at > ?')
-    .bind(hash, Date.now() - FAIL_WINDOW)
-    .first();
-  return !!row && row.n >= MAX_FAILS;
-}
-
-async function noteFail(env, hash) {
-  await env.DB.batch([
-    env.DB.prepare('INSERT INTO login_fails (ip_hash, at) VALUES (?, ?)').bind(hash, Date.now()),
-    /* Swept on the way past rather than by a scheduled job: rows outside the
-       window can never affect an answer, so keeping them would be storing a
-       record of somebody's failures for no reason at all. */
-    env.DB.prepare('DELETE FROM login_fails WHERE at < ?').bind(Date.now() - FAIL_WINDOW)
-  ]);
-}
-
 /* The places this account has saved, so a fresh device can draw its marks
-   filled the moment somebody signs in on it. */
-/* The password on an account, or the absence of one, in the shape the two
-   below want. Three places ask — the GET, to say which form to draw, and the
-   two steps that check the password in use — and all three used to spell the
-   same SELECT out.
-
-   An account made through Google has an empty hash, and reading it as
-   `{ hash: '', salt: '', iter: 0 }` is what lets `matches` below be the one
-   place that knows what an empty hash means. */
-async function passwordOn(env, userId) {
-  const row = await env.DB
-    .prepare('SELECT pw_hash, pw_salt, pw_iter FROM users WHERE id = ?')
-    .bind(userId)
-    .first();
-  return {
-    hash: (row && row.pw_hash) || '',
-    salt: (row && row.pw_salt) || '',
-    iter: (row && row.pw_iter) || 0
-  };
-}
-
-/* Whether a password somebody typed is the one on the account.
- *
- * The empty hash is refused here and not at the three call sites, and that is
- * the whole reason this is a function. An account made through Google has no
- * password, and `derivePassword(anything, '', 0)` is PBKDF2 at nought
- * iterations — which WebCrypto refuses outright, so the sign-in would answer
- * 500 instead of "wrong username or password" and would say, to anybody
- * asking, exactly which accounts were made through Google. */
-async function matches(pw, given) {
-  if (!pw.hash) return false;
-  return sameSecret(await derivePassword(given, pw.salt, pw.iter), pw.hash);
-}
-
+   filled the moment somebody signs in on it. It stays here rather than going
+   into ./_account.js with the rest: this is the one thing in the answer that
+   is about the map, and the feedback page has no use for it. */
 async function savedByUser(env, userId) {
   const { results } = await env.DB
     .prepare('SELECT place_id FROM saves WHERE owner = ? ORDER BY created_at DESC')
@@ -376,7 +289,7 @@ export async function onRequestPost(context) {
     const next = typeof body.password === 'string' ? body.password : '';
     if (next.length < MIN_PASSWORD) return json({ error: 'password' }, 400);
 
-    const hash = await fingerprint(env.SAVE_SALT, clientIp(request), request.headers.get('User-Agent') || '');
+    const hash = await failHash(env, request);
     if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
 
     const pw = await passwordOn(env, user.id);
@@ -494,7 +407,7 @@ export async function onRequestPost(context) {
        somebody their own name belongs to somebody else. */
     if (next === user.username.toLowerCase()) return json({ error: 'same-name' }, 400);
 
-    const hash = await fingerprint(env.SAVE_SALT, clientIp(request), request.headers.get('User-Agent') || '');
+    const hash = await failHash(env, request);
     if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
 
     /* Before the password and not after it. A name that is gone is gone
@@ -693,100 +606,36 @@ export async function onRequestPost(context) {
     return json({ linked: false }, 200);
   }
 
+  /* ---------------------------------------- making one, and entering one
+   * The sheet has two buttons and this route has two actions, because on a
+   * form that exists to ask "have you been here before" the answer to a name
+   * that is already somebody's has to be "that username is taken" and never a
+   * sign-in. `enterAccount` in ./_account.js is the step itself — the name
+   * rule, the password floor, the hold on a released name, the slow-down on a
+   * fingerprint that keeps guessing, the PBKDF2 compare, the quiet upgrade of
+   * a hash made at fewer iterations, the session and the saves this browser
+   * is bringing with it — and `mode` is the one thing the callers disagree
+   * about. The third caller is the feedback composer, where a name nobody has
+   * makes an account and one that exists signs you in, because there is no
+   * sheet there to ask the question twice.
+   */
   if (action !== 'create' && action !== 'login') return json({ error: 'action' }, 400);
 
-  const username = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
-  const password = typeof body.password === 'string' ? body.password : '';
-  const clientId = typeof body.client === 'string' ? body.client : '';
-
-  if (!USERNAME_RE.test(username)) return json({ error: 'username' }, 400);
-  if (password.length < MIN_PASSWORD) return json({ error: 'password' }, 400);
-
-  const hash = await fingerprint(env.SAVE_SALT, clientIp(request), request.headers.get('User-Agent') || '');
-  if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
-
-  let userId;
-
-  if (action === 'create') {
-    /* No account asking, so every hold counts: a name somebody walked away
-       from last week is not a name a stranger may sign up as, or every link
-       to that person would now point at whoever got there first. */
-    if (await nameTaken(env, username)) return json({ error: 'taken' }, 409);
-
-    userId = crypto.randomUUID();
-    const salt = randomHex(16);
-    const iter = pwIterations(env);
-    await env.DB
-      .prepare(
-        'INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at) ' +
-        'VALUES (?, ?, ?, ?, ?, ?, ?)'
-      )
-      .bind(
-        userId,
-        username,
-        await derivePassword(password, salt, iter),
-        salt,
-        iter,
-        Date.now(),
-        Date.now()
-      )
-      .run();
-  } else {
-    const row = await env.DB
-      .prepare('SELECT id, pw_hash, pw_salt, pw_iter FROM users WHERE username = ? COLLATE NOCASE')
-      .bind(username)
-      .first();
-
-    /* One answer for "no such account", for "wrong password", and for "that
-       account has no password because it was made through Google" — so the
-       reply cannot be used to find out which usernames exist, nor which of
-       the ones that do are reached some other way. matches() is where the
-       third of those is decided. */
-    const ok = row && (await matches(
-      { hash: row.pw_hash, salt: row.pw_salt, iter: row.pw_iter }, password
-    ));
-    if (!ok) {
-      await noteFail(env, hash);
-      return json({ error: 'no-match' }, 401);
-    }
-    userId = row.id;
-    await env.DB
-      .prepare('UPDATE users SET last_seen_at = ? WHERE id = ?')
-      .bind(Date.now(), userId)
-      .run();
-
-    /* Raising PW_ITERATIONS should not strand the accounts made before it was
-       raised, and the only moment the plaintext password is in hand to redo
-       the work is this one — a successful sign-in. So a row behind the current
-       setting is quietly brought up to it here, and nowhere else.
-
-       Only upwards, and only when it is actually behind: lowering the setting
-       must never quietly weaken hashes that are already stronger than it. */
-    const want = pwIterations(env);
-    if (row.pw_iter < want) {
-      const fresh = randomHex(16);
-      await env.DB
-        .prepare('UPDATE users SET pw_hash = ?, pw_salt = ?, pw_iter = ? WHERE id = ?')
-        .bind(await derivePassword(password, fresh, want), fresh, want, userId)
-        .run();
-    }
-  }
-
-  const token = await openSession(env, userId);
-
-  const touched = await claimDeviceSaves(env, userId, clientId);
-  /* Claiming can lower a count — a place one person had saved from two
-     devices is one save now, not two — so the copy this colo is handing out
-     may be wrong. */
-  if (touched.length) context.waitUntil(caches.default.delete(countsKey(request)));
+  const entered = await enterAccount(context, {
+    username: body.username,
+    password: body.password,
+    client: body.client,
+    mode: action
+  });
+  if (!entered.ok) return json({ error: entered.error }, entered.status);
 
   return new Response(
-    JSON.stringify({ user: username, saved: await savedByUser(env, userId) }),
+    JSON.stringify({ user: entered.username, saved: await savedByUser(env, entered.userId) }),
     {
       headers: {
         'content-type': 'application/json; charset=utf-8',
         'cache-control': 'no-store',
-        'set-cookie': sessionCookie(token, SESSION_DAYS, request)
+        'set-cookie': sessionCookie(entered.token, SESSION_DAYS, request)
       }
     }
   );

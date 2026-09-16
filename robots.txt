@@ -60,6 +60,21 @@ Disallow: /account.html
 # link into the page anywhere. The posts are ?post=<id> on the same address
 # and the index links every one of them.
 
+# /feedback is deliberately NOT disallowed, and it is not indexed either.
+#
+# Those two are not in tension, they depend on each other: the page carries
+# `noindex, follow` in _headers and in its own markup, and a crawler that is
+# forbidden to fetch it can read neither half of that. A Disallow here would
+# leave the address itself eligible to be listed on the strength of any link
+# pointing at it, with nothing to say otherwise — which is the trap this line
+# exists to stop the next person walking into.
+#
+# Not indexed, because everything on it is written about this site rather than
+# about the city, and a search for Tallinn Tastebuds answered with its own
+# snag list would put the map's worst page in front of its best. Followed,
+# because the bylines on it lead to real profiles and there is no reason a
+# crawler should not walk to them.
+
 # Google's own directory of the city, which is emphatically not the map: the
 # ratings on it are Google's and nothing on it has been visited. Being indexed
 # beside the pages that are the verdict is exactly what it must not be, so
