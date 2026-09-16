@@ -70,11 +70,7 @@
   <!-- No "Tallinn" eyebrow over the top: the name under it already opens with
        the word. The list panel keeps its own, where nothing else says it. -->
   <div class="brand-head">
-    <!-- data-worn: under a language that wears one picture — LANGUAGES in
-         assets/pins.js — the mouth here is that picture, and wear() there is
-         what swaps it and swaps it back. The same attribute is on the mouth
-         in the story viewer and on the tour bubble below. -->
-    <img class="brand-mark" data-worn src="assets/logo/mark-round.webp" alt="" width="66" height="66">
+    <img class="brand-mark" src="assets/logo/mark-round.webp" alt="" width="66" height="66">
     <!-- The name is the way home, here as it is on every other page: back to
          the whole map from a place, a list, a type or a story. The mark beside
          it is the stories and nothing else, so the two things in this corner
@@ -132,11 +128,7 @@
        assets/styles.css, which is the disc it sits on. Written here like
        every other icon on this rail rather than painted by a script: it is
        this door's picture, not a list's own marker, and nothing in
-       assets/pins.js has an opinion about which of the eight it is. The
-       language has one, though: under a language that draws every pin as a
-       single picture — LANGUAGES in that file — this is that picture too.
-       data-worn is what says so, and wear() there does the writing and puts
-       the clipboard back.
+       assets/pins.js has an opinion about it.
 
        Hidden until /api/account says the database behind the lists is
        bound — a door onto "Lists are switched off on this copy of the site"
@@ -145,7 +137,7 @@
      data-i18n-title="listsAllWhy" data-i18n-aria-label="listsAllTitle"
      title="The most saved first. Search them, save the ones you like."
      aria-label="Everybody’s lists" hidden>
-    <span class="rail-glyph" data-worn aria-hidden="true">📋</span>
+    <span class="rail-glyph" aria-hidden="true">📋</span>
     <span class="rail-label" data-i18n="listsAllTitle">Everybody’s lists</span>
   </a>
   <!-- Then what the rail does, before what the rail looks like. Surprise me
@@ -387,7 +379,7 @@
     <div class="story-bars" id="story-bars" aria-hidden="true"></div>
 
     <header class="story-head">
-      <img class="story-mark" data-worn src="assets/logo/mark-round.webp" alt="" width="30" height="30">
+      <img class="story-mark" src="assets/logo/mark-round.webp" alt="" width="30" height="30">
       <p class="story-who">
         <span class="story-name" data-i18n="wordmark">Tallinn Tastebuds</span>
         <span class="story-left mono" id="story-left"></span>
@@ -442,7 +434,7 @@
   </div>
   <div class="tour-bubble card" id="tour-bubble" role="dialog" aria-live="polite"
        data-i18n-aria-label="explainOpen" aria-label="How this works">
-    <img class="tour-face" data-worn src="assets/logo/mark-round.webp" alt="" width="48" height="48">
+    <img class="tour-face" src="assets/logo/mark-round.webp" alt="" width="48" height="48">
     <p class="tour-say" id="tour-say"></p>
     <div class="tour-row">
       <button type="button" class="go" id="tour-next"></button>
@@ -521,7 +513,7 @@
      map's own places wear the mark and nothing else can; a place off Google's
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
-<script src="assets/pins.js?v=3be2ce9b" defer></script>
-<script src="assets/app.js?v=8496a0a2" defer></script>
+<script src="assets/pins.js?v=6030fdcf" defer></script>
+<script src="assets/app.js?v=fbcf5dd4" defer></script>
 </body>
 </html>
