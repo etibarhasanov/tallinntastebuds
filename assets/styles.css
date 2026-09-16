@@ -3549,13 +3549,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   left: 50%;
   bottom: calc(84px + var(--safe-b));
   transform: translateX(-50%);
-  /* Its own width, not the room to its right. A fixed box with a left edge
-     and no width shrinks to fit the space from that edge to the screen's,
-     which from the middle is half the screen — so on a 390px phone every
-     sentence over 195px folded in two and the max-width under it never got a
-     say. max-content is the width of the sentence; the max-width is the
-     gutters. */
-  width: max-content;
   padding: 9px 16px;
   background: var(--ink);
   color: var(--paper);

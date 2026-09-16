@@ -20,13 +20,6 @@ Then list the filenames — just the filenames, no paths — in that place's
 
 The order in the array is the order they appear in the grid and the lightbox.
 
-One folder here is not a place. `potato/` holds the photograph Surprise me
-shows when it tells you to stay in — the shop's own tag, potatoes at 69 cents
-a kilo. Nothing in `restaurants.json` lists it; `homePlace()` in
-`assets/app.js` does, and the validator checks its `01.webp` by name.
-**Surprise me** in the main README says why it exists and that it is built to
-come out again.
-
 Rules of thumb:
 
 - **WebP**, quality around 80. JPEG, PNG and AVIF also work.
