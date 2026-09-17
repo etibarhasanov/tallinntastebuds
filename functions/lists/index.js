@@ -59,7 +59,7 @@
  */
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
-import { canonical, head, shell, sow, rehead, page } from '../_shell.js';
+import { canonical, esc, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
 import { mostKept, query, sortOf } from '../api/_mostkept.js';
 
 const PATH = '/lists';
@@ -74,12 +74,25 @@ const DESCRIPTION =
   'Lists of places in Tallinn, written by the people whose names are on them, ' +
   'with the most kept first. Search them by name or by who wrote them.';
 
+/* The page as text, for the reader that runs no script — see fill() in
+   functions/_shell.js: Google's five and then the first page of everybody's,
+   each a link to the list with whose it is and the first names off it, which
+   is what the row prints too. */
+function prose(first) {
+  const row = (list) => '<li><h3><a href="/list/' + esc(list.id) + '">' + esc(list.title) + '</a></h3>' +
+    (list.by ? '<p>' + esc(list.by) + '</p>' : '') +
+    (list.taste && list.taste.length ? '<p>' + esc(list.taste.join(', ')) + '</p>' : '') +
+    '</li>';
+  return '<h1>' + esc(TITLE) + '</h1><p>' + esc(DESCRIPTION) + '</p>' +
+    '<ol>' + first.start.concat(first.all).map(row).join('') + '</ol>';
+}
+
 export async function onRequest(context) {
   const { request, env } = context;
 
   let html;
   try {
-    html = await shell(context);
+    html = await shell(context, '/lists.html');
   } catch (e) {
     return new Response('Not found', { status: 404 });
   }
@@ -138,6 +151,7 @@ export async function onRequest(context) {
     start: first.start,
     next: first.next
   });
+  html = fill(html, EMPTY['lists.html'], prose(first));
 
   return page(html, 200, true);
 }

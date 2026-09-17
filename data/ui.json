@@ -1,7 +1,8 @@
 {
   "az": {
     "langName": "Azərbaycan",
-    "documentTitle": "Tallinn Tastebuds | Tallinndə harada yemək",
+    "documentTitle": "Tallinndə harada yemək: restoranlar, kafelər, çörəkxanalar və pivə barları | Tallinn Tastebuds",
+    "metaDescription": "Tallinndə özüm olub bəyəndiyim restoranların, kafelərin, çörəkxanaların, pabların və pivə barlarının əl ilə seçilmiş xəritəsi. Qiymət yoxdur: xəritədə olmaq elə qərarın özüdür.",
     "skipToList": "Yerlərin siyahısına keç",
     "eyebrow": "Tallin",
     "wordmark": "Tallinn Tastebuds",
@@ -431,7 +432,8 @@
   },
   "hy": {
     "langName": "Հայերեն",
-    "documentTitle": "Tallinn Tastebuds | Որտեղ ուտել Տալլինում",
+    "documentTitle": "Որտեղ ուտել Տալլինում․ ռեստորաններ, սրճարաններ, հացատներ և գարեջրատներ | Tallinn Tastebuds",
+    "metaDescription": "Տալլինի ռեստորանների, սրճարանների, հացատների, փաբերի և գարեջրատների ձեռքով ընտրված քարտեզ, որտեղ ես ինքս եղել եմ և հավանել եմ։ Գնահատականներ չկան․ քարտեզի վրա լինելն արդեն վճիռ է։",
     "skipToList": "Անցնել վայրերի ցանկին",
     "eyebrow": "Տալլին",
     "wordmark": "Tallinn Tastebuds",
@@ -861,7 +863,8 @@
   },
   "en": {
     "langName": "English",
-    "documentTitle": "Tallinn Tastebuds | Where to eat in Tallinn",
+    "documentTitle": "Where to eat in Tallinn: restaurants, cafés, bakeries and beer bars | Tallinn Tastebuds",
+    "metaDescription": "A hand picked map of restaurants, cafés, bakeries, pubs and beer bars in Tallinn I have been to myself and approved. No scores: being on the map is the verdict.",
     "skipToList": "Skip to the list of places",
     "eyebrow": "Tallinn",
     "wordmark": "Tallinn Tastebuds",
@@ -1291,7 +1294,8 @@
   },
   "et": {
     "langName": "Eesti",
-    "documentTitle": "Tallinn Tastebuds | Kus Tallinnas süüa",
+    "documentTitle": "Kus Tallinnas süüa: restoranid, kohvikud, söögikohad ja õllebaarid | Tallinn Tastebuds",
+    "metaDescription": "Käsitsi valitud Tallinna söögikohad: restoranid, kohvikud, pagariärid, pubid ja õllebaarid, kus olen ise käinud ja heaks kiitnud. Hindeid pole: kaardil olemine ongi hinnang.",
     "skipToList": "Hüppa kohtade nimekirja",
     "eyebrow": "Tallinn",
     "wordmark": "Tallinn Tastebuds",
@@ -1721,7 +1725,8 @@
   },
   "fi": {
     "langName": "Suomi",
-    "documentTitle": "Tallinn Tastebuds | Missä syödä Tallinnassa",
+    "documentTitle": "Missä syödä Tallinnassa: Tallinnan ravintolat, kahvilat ja olutbaarit | Tallinn Tastebuds",
+    "metaDescription": "Tallinnan ravintolat, kahvilat, leipomot, pubit ja olutbaarit käsin valittuna: jokaisessa olen itse käynyt ja hyväksynyt sen. Ei arvosanoja: kartalle pääsy on jo arvio.",
     "skipToList": "Siirry paikkojen listaan",
     "eyebrow": "Tallinna",
     "wordmark": "Tallinn Tastebuds",
@@ -2151,7 +2156,8 @@
   },
   "pt": {
     "langName": "Português",
-    "documentTitle": "Tallinn Tastebuds | Onde comer em Tallinn",
+    "documentTitle": "Onde comer em Tallinn: restaurantes, cafés, padarias e bares de cerveja | Tallinn Tastebuds",
+    "metaDescription": "Um mapa feito à mão de restaurantes, cafés, padarias, pubs e bares de cerveja em Tallinn onde estive pessoalmente e aprovei. Sem pontuações: estar no mapa é o veredicto.",
     "skipToList": "Ir para a lista de lugares",
     "eyebrow": "Tallinn",
     "wordmark": "Tallinn Tastebuds",
@@ -2581,7 +2587,8 @@
   },
   "ru": {
     "langName": "Русский",
-    "documentTitle": "Tallinn Tastebuds | Где поесть в Таллинне",
+    "documentTitle": "Где поесть в Таллинне: рестораны, кафе, пекарни и пивные бары | Tallinn Tastebuds",
+    "metaDescription": "Рестораны, кафе, пекарни, пабы и пивные бары Таллинна на карте, собранной вручную: в каждом я побывал сам и одобрил его. Без оценок — попасть на карту и есть вердикт.",
     "skipToList": "Перейти к списку мест",
     "eyebrow": "Таллинн",
     "wordmark": "Tallinn Tastebuds",
@@ -3011,7 +3018,8 @@
   },
   "es": {
     "langName": "Español",
-    "documentTitle": "Tallinn Tastebuds | Dónde comer en Tallin",
+    "documentTitle": "Dónde comer en Tallin: restaurantes, cafés, panaderías y bares de cerveza | Tallinn Tastebuds",
+    "metaDescription": "Un mapa hecho a mano de restaurantes, cafés, panaderías, pubs y bares de cerveza de Tallin que he visitado en persona y aprobado. Sin puntuaciones: estar en el mapa es el veredicto.",
     "skipToList": "Saltar a la lista de sitios",
     "eyebrow": "Tallin",
     "wordmark": "Tallinn Tastebuds",
@@ -3441,7 +3449,8 @@
   },
   "tr": {
     "langName": "Türkçe",
-    "documentTitle": "Tallinn Tastebuds | Tallinn'de nerede yenir",
+    "documentTitle": "Tallinn'de nerede yenir: restoranlar, kafeler, fırınlar ve bira barları | Tallinn Tastebuds",
+    "metaDescription": "Tallinn'de bizzat gidip onayladığım restoranların, kafelerin, fırınların, pubların ve bira barlarının elle seçilmiş haritası. Puan yok: haritada olmak kararın kendisi.",
     "skipToList": "Mekân listesine geç",
     "eyebrow": "Tallinn",
     "wordmark": "Tallinn Tastebuds",
@@ -3871,7 +3880,8 @@
   },
   "uk": {
     "langName": "Українська",
-    "documentTitle": "Tallinn Tastebuds | Де поїсти в Таллінні",
+    "documentTitle": "Де поїсти в Таллінні: ресторани, кав'ярні, пекарні та пивні бари | Tallinn Tastebuds",
+    "metaDescription": "Карта ресторанів, кав'ярень, пекарень, пабів і пивних барів Таллінна, зібрана вручну: у кожному я побував сам і схвалив його. Без оцінок — потрапити на карту і є вердикт.",
     "skipToList": "Перейти до списку місць",
     "eyebrow": "Таллінн",
     "wordmark": "Tallinn Tastebuds",

@@ -13,14 +13,16 @@
 # everything. These rules match the request path, and the address people
 # actually open is "/", not "/index.html", so both are spelled out.
 #
-# "/" is answered by functions/index.js whenever the address carries a ?spot=
-# that names a place — the map with that place's own social card written into
-# its head, so a shared link unfurls as the restaurant it points at. Unlike the
-# /split and /lists routes below, that one does not write headers of its own:
-# it copies this rule off the response it swaps the head of, so there is one
-# place saying how the map caches and this is it. Without a ?spot= it hands the
-# request straight on and this rule binds directly. No noindex either way — the
-# map is the page everything else on this site is trying to be found for.
+# "/" is answered by functions/index.js on every visit — the map with its head
+# written for the language and the place the address names, and the places
+# written into it as text. Unlike the /split and /lists routes below, that one
+# does not write headers of its own: it takes the asset server's answer, this
+# rule and the two under /* on it, and hands it back with the head and the
+# text swapped, so there is one place saying how the map caches and this is
+# it. Minus the ETag, which described the file and not the answer: what a
+# browser loses is the 304, and the header of that file says why. No noindex
+# — the map is the page everything else on this site is trying to be found
+# for.
 /
   Cache-Control: public, max-age=0, must-revalidate
 

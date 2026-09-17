@@ -9,6 +9,9 @@ paths:
   - "data/radio.json"
   - "tools/stamp.mjs"
   - "tools/qrperf.mjs"
+  - "tools/sitemap.mjs"
+  - "sitemap.xml"
+  - "robots.txt"
   - "_headers"
 ---
 

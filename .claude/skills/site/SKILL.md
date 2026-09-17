@@ -260,6 +260,12 @@ complain about them:
    `askWordsCheap`, `askWordsFancy`, `askWordsOpen`, `askWordsNear` and
    `askWordsMe`, joined by `|` the same way — that is how *cheap* and *near
    me* in the new language reach the model's brief without a word of code.
+   `documentTitle` and `metaDescription` are the two a search engine reads:
+   `functions/index.js` writes them into the head at that language's
+   address, so both are written for a search result — the question people
+   type first, then the kinds of place, then the site's name — rather than
+   for the page. **The words** under **Getting found** in `README.md` says
+   which words, and why "best" is not among them.
 2. `data/taxonomy.json`: a label on every type. Fails without.
 3. `data/cuisines.json`: a label on every cuisine. Fails without.
 4. `data/restaurants.json`: `blurb` on every place. Warns without, so you can
@@ -272,10 +278,14 @@ complain about them:
    rather than an interface string: a new language is owed none of them, and
    a post it does not have falls back to English with a line in the new
    language saying so. See **The blog** in `README.md`.
+8. `node tools/sitemap.mjs`, and commit `sitemap.xml`. The language is a new
+   address for the map — `/?lang=<code>` — and every other language's entry
+   links to it; the validator fails on a sitemap that was not re-run.
 
-The switcher and the validator read the language list out of `ui.json`, and
-the switcher sorts by the two-letter code, so nothing else changes. Estonian
-is `et`, not `ee`, and the README says why.
+The switcher, `functions/index.js`, the sitemap tool and the validator all
+read the language list out of `ui.json`, and the switcher sorts by the
+two-letter code, so nothing else changes. Estonian is `et`, not `ee`, and the
+README says why.
 
 ## The commit
 

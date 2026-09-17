@@ -24,6 +24,15 @@
  *     of step with data/restaurants.json or data/taxonomy.json, that holds a
  *     list longer than MAX_ITEMS in functions/api/lists.js, or a chip and a
  *     list that have stopped answering to each other
+ *   - a sitemap.xml that is not what tools/sitemap.mjs would write from the
+ *     languages in data/ui.json and the thirteen lists
+ *   - a page served through a Function with a head of its own — index.html,
+ *     lists.html, split.html — missing the pair of PAGE-HEAD markers that
+ *     head goes between, which would leave it wearing its static head at
+ *     every address without anything saying so; and an index.html or a
+ *     lists.html whose empty element — #list-body, <main> — is not spelled
+ *     the way fill() in functions/_shell.js matches it, which would leave a
+ *     crawler with an empty page again
  *   - a taxonomy type missing a label in any language
  *   - a cuisine in data/cuisines.json missing a label in any language, or one
  *     the directory's KITCHENS table cannot produce
@@ -73,6 +82,7 @@ import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
 import { stale as staleGoogleLists } from './googlelists.mjs';
 import { stale as staleCity } from './city.mjs';
 import { stale as staleTypeLists, build as buildTypeLists } from './typelists.mjs';
+import { stale as staleSitemap } from './sitemap.mjs';
 /* The directory's own vocabulary. It is a table in the endpoint rather than a
    file, the way VENUE_TYPES is, and the checks below are what keep it honest:
    every id has a label in ten languages, and every pattern still matches
@@ -87,6 +97,9 @@ import { PIN_GLYPHS, DEFAULT_PIN } from '../functions/api/_pins.js';
 /* How many places a list may hold, from the route that enforces it, so the
    check below is the server's number and not a fourth copy of it. */
 import { MAX_ITEMS } from '../functions/api/lists.js';
+/* The elements two pages ship empty for a Function to fill with text, from
+   the module that fills them, so the spelling held here is the one matched. */
+import { EMPTY } from '../functions/_shell.js';
 import { STORY_HOURS, HOUR_MS, storyWindow, storyPhase } from './clock.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -1564,6 +1577,45 @@ for (const ref of staleStamps()) {
   fail(ref.page, ref.want === null
     ? `"${ref.asset}" is referenced but is not in the repo`
     : `"${ref.asset}" is stamped ${ref.got || '(nothing)'} but its contents hash to ${ref.want} — run \`node tools/stamp.mjs\` and commit the result`);
+}
+
+/* --------------------------------------------------------------- the head
+   Three pages are served through a Function that swaps the block between
+   their PAGE-HEAD markers for a head of that address's own — the map in the
+   language ?lang= names, a list, a person, the directory, a group. rehead()
+   in functions/_shell.js leaves a page alone when it cannot find both
+   markers, so a page that lost one would go on answering at every address
+   with its static head and nothing would say so. Exactly one of each, the
+   opening one first. */
+
+for (const page of ['index.html', 'lists.html', 'split.html']) {
+  const html = readFileSync(join(ROOT, page), 'utf8');
+  const open = html.indexOf('<!--PAGE-HEAD-->');
+  const close = html.indexOf('<!--/PAGE-HEAD-->');
+  if (open === -1 || close === -1 || close < open) {
+    fail(page, 'needs one <!--PAGE-HEAD--> marker and then one <!--/PAGE-HEAD--> marker — the Function that serves this page writes its head between them');
+  } else if (html.indexOf('<!--PAGE-HEAD-->', open + 1) !== -1 || html.indexOf('<!--/PAGE-HEAD-->', close + 1) !== -1) {
+    fail(page, 'carries a PAGE-HEAD marker twice — rehead() in functions/_shell.js swaps the first pair and leaves the rest as text');
+  }
+}
+
+/* Two of those pages have a second thing written into them, outside the
+   head: what the page is about, as text, into an element the page ships
+   empty — the map's places into #list-body, a list or the directory or a
+   person into the list page's <main>. fill() in functions/_shell.js matches
+   the element's exact markup and does nothing when it is not there, so the
+   spelling is held here rather than trusted. */
+for (const [page, empty] of Object.entries(EMPTY)) {
+  if (readFileSync(join(ROOT, page), 'utf8').indexOf(empty) === -1) {
+    fail(page, `needs ${empty}, spelled exactly so and empty — the Function serving this page writes its text into it for the readers that run no script`);
+  }
+}
+
+/* And the sitemap, which names the map at each of its ten addresses with a
+   link to all ten on every one: a language added to ui.json without it is a
+   page a search engine is never told about. */
+if (staleSitemap()) {
+  fail('sitemap.xml', 'is not what tools/sitemap.mjs would write from data/ui.json and tools/typelists.mjs — run `node tools/sitemap.mjs` and commit the result');
 }
 
 /* ---------------------------------------------------------------- reporting */

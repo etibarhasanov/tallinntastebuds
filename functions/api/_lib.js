@@ -12,9 +12,10 @@
  * functions/u/[name].js, functions/lists/index.js, functions/index.js and
  * functions/split.js. Four things at the bottom hold a value between
  * requests — which database this deployment is holding, the places on the map,
- * the catalogue a list draws from, and data/ui.json — and all four are caches
- * of something that only a deploy changes, kept per isolate and re-asked every
- * five minutes. Nothing else here remembers anything.
+ * the catalogue a list draws from, and the data files read as they are — and
+ * all four are caches of something that only a deploy changes, kept per
+ * isolate and re-asked every five minutes. Nothing else here remembers
+ * anything.
  */
 
 export function json(body, status, maxAge) {
@@ -369,29 +370,37 @@ export async function catalogue(context) {
   return roll;
 }
 
-/* --------------------------------------------------------------- strings
- * data/ui.json, which is the site's own words in ten languages. The third of
- * these and the smallest reader: functions/index.js wants one key out of it —
- * closedFlag, the line a shut place's share card opens with — in whichever
- * language the shared link carried. Everything else that prints a UI string is
- * a browser, and reads this file for itself.
+/* ------------------------------------------------------------ data files
+ * A JSON file out of the deployment, by path, kept five minutes per isolate
+ * the way the two rolls above are and for the same reason: it changes when a
+ * deploy changes it and not otherwise. The two rolls keep their own readers
+ * because each builds something beside the file — a Set of ids, a Map by id —
+ * and this is for the files that are wanted as they are.
  *
- * Same five-minute cache per isolate as the two rolls above, for the same
- * reason: it changes when a deploy changes it and not otherwise.
+ * functions/index.js reads two through it: data/ui.json, for the title, the
+ * description and the tagline in the language its address names and for the
+ * word a shut place's card opens with, and data/taxonomy.json, for what to
+ * call a kind of place in that language. Everything else that prints a UI
+ * string is a browser, and reads the file for itself.
  */
-let words = null;
-let wordsAt = 0;
+const files = new Map();
 
-export async function uiStrings(context) {
-  if (words && Date.now() - wordsAt < 300000) return words;
-  const url = new URL('/data/ui.json', context.request.url);
+export async function dataFile(context, path) {
+  const kept = files.get(path);
+  if (kept && Date.now() - kept.at < 300000) return kept.value;
+  const url = new URL(path, context.request.url);
   const res = context.env.ASSETS
     ? await context.env.ASSETS.fetch(new Request(url.toString()))
     : await fetch(url.toString());
-  if (!res.ok) throw new Error('ui.json unreadable: ' + res.status);
-  words = await res.json();
-  wordsAt = Date.now();
-  return words;
+  if (!res.ok) throw new Error(path + ' unreadable: ' + res.status);
+  const value = await res.json();
+  files.set(path, { value: value, at: Date.now() });
+  return value;
+}
+
+/* The site's own words in ten languages. */
+export function uiStrings(context) {
+  return dataFile(context, '/data/ui.json');
 }
 
 /* --------------------------------------------------------------- venues

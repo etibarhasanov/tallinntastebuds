@@ -10,7 +10,6 @@
      on — nothing else changes. -->
 <meta name="turnstile-key" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="A hand picked map of restaurants, bakeries, cafes and bars in Tallinn I have been to myself and approved. No scores: being on the map is the verdict.">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 <meta name="robots" content="index, follow">
@@ -21,32 +20,33 @@
      the consent bar that stood in front of both of them for a day. -->
 <script src="assets/analytics.js?v=4b79262d" defer></script>
 
-<link rel="canonical" href="https://tallinntastebuds.ee/">
+<!-- The block between the two PAGE-HEAD markers below is the English head,
+     and it is what a browser gets only when functions/index.js could not do
+     its job. On every ordinary request that route serves this same file with
+     the block replaced by the head for the address: the title and the
+     description in the language ?lang= names, a canonical tag naming that
+     address, an hreflang link to each of the ten, the card, and the JSON-LD
+     block describing every open place with its write-up in that language —
+     or, when ?spot= names a place, that place's own title, its write-up, its
+     photograph for the card and a JSON-LD block for it alone, so a link
+     somebody sends about one restaurant arrives as that restaurant and a
+     search for it lands on its own page. What is outside the markers — the
+     robots tag, the icons, the styles — is the same at every address and
+     stays put.
 
-<!-- The block between the two PAGE-HEAD markers below is replaced, in place,
-     by functions/index.js whenever this page is asked for with a ?spot= that
-     names a place. The title, the card and the picture become that place's
-     own, so a link somebody sends about one restaurant arrives as that
-     restaurant rather than as the site. Asked for without a spot — which is
-     every visit to the front page — the markers are left alone, the response
-     is the static file untouched, and these defaults stand.
-
-     The title is inside the markers, and the description, the canonical and
-     the robots tag are outside. That split is the point. The card is per
-     place; the page a crawler indexes is the map, at one address, which is the
-     decision canonicalBase() in assets/app.js explains. The head of the
-     Function has the rest of it.
-
-     The markers are spelled out only where they actually mark something. HTML
-     comments do not nest, so writing one inside this sentence would end this
-     comment early and drop the rest of it into the head as text — the same
-     warning lists.html carries, for the same reason: it happened. -->
+     Same markers, same mechanism, as lists.html and split.html, and the same
+     warning: the markers are spelled out only on the two lines that mark
+     something, never inside this comment, because HTML comments do not nest
+     and one written in here would end this comment early and drop the rest of
+     it into the page as text. It happened. -->
 <!--PAGE-HEAD-->
-<title>Tallinn Tastebuds | Where to eat in Tallinn</title>
+<title>Where to eat in Tallinn: restaurants, cafés, bakeries and beer bars | Tallinn Tastebuds</title>
+<meta name="description" content="A hand picked map of restaurants, cafés, bakeries, pubs and beer bars in Tallinn I have been to myself and approved. No scores: being on the map is the verdict.">
+<link rel="canonical" href="https://tallinntastebuds.ee/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://tallinntastebuds.ee/">
 <meta property="og:site_name" content="Tallinn Tastebuds">
-<meta property="og:title" content="Tallinn Tastebuds | Where to eat in Tallinn">
+<meta property="og:title" content="Where to eat in Tallinn: restaurants, cafés, bakeries and beer bars | Tallinn Tastebuds">
 <meta property="og:description" content="All the places in this map I have personally been and approved.">
 <meta property="og:image" content="https://tallinntastebuds.ee/assets/logo/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -393,6 +393,17 @@
           </button>
         </div>
       </div>
+      <!-- Empty here, and full as served: functions/index.js writes every open
+           place into it as an ordinary list — name, kinds, address, write-up,
+           the dishes to order, in the language of the address — for the
+           readers that run no script, which is every AI assistant's fetcher
+           and Bing on a bad day; at a ?spot= address the place itself comes
+           first and whole, and the rest by name. renderList() in
+           assets/app.js empties it before drawing the first row, and the
+           panel is closed until the script opens it, so nobody ever sees the
+           plain version. The spelling of this one line is what fill() in
+           functions/_shell.js matches on, and tools/validate.mjs holds it to
+           that. -->
       <div id="list-body"></div>
     </section>
   </div>
@@ -567,6 +578,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=0435a63d" defer></script>
+<script src="assets/app.js?v=d0fa9226" defer></script>
 </body>
 </html>
