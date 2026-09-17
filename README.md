@@ -8354,6 +8354,21 @@ puts the word "Account" back on it through `data-i18n`, which is the right
 word for a stranger and the wrong one for somebody whose name was on it a
 moment ago.
 
+**And it runs once.** The introduction is for a stranger, and the second
+visit is not a stranger's: a map that explains the die every morning to
+somebody who opens it every morning reads as a page that does not remember
+them, and for a while that is what it did, the sentence, the nine pills and
+the chip row on every arrival. So the cascade runs the first time this
+browser opens the map, and `ttb.introduced` in `localStorage` records that
+it did; a return visit gets the discs, the way the desktop always has. The
+flag is written the moment the cascade actually runs rather than when it is
+owed, so a visitor who arrived on a place link and left with the sheet still
+up is introduced the next time, when they are looking at the map. And it is
+read only on the way in: a language switch introduces the rail again
+whatever the flag says, for the reason above. Storage that throws or was
+cleared makes it a first visit again, which is the right failure — one
+introduction too many rather than none.
+
 Nothing opens while the sheet is up: the rail lies along the top of it as a
 row there, and a pill at full width would push the buttons after it off the
 side of the screen, and it is pointless behind the stories, where the rail is

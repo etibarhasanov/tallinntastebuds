@@ -1941,12 +1941,13 @@
 
     /* It is the top button on the rail, and on a phone the rail says what its
        buttons are for on arrival. The introduction holds a moment for this
-       answer — see introduceRail — so on any normal load it opens at the head
-       of the cascade with the rest. This is the other case: an answer slower
-       than the hold, which says its name when it turns up rather than
-       appearing as a silent disc above a column of pills that have all had
-       their say. Nothing happens on a desktop, where the label is never
-       hidden in the first place. */
+       answer — see introduceRail — so on the load that introduces the rail
+       it opens at the head of the cascade with the rest. This is the other
+       case: an answer slower than the hold, which says its name when it turns
+       up rather than appearing as a silent disc above a column of pills that
+       have all had their say. Nothing happens on a return visit, where no
+       pill had its say, or on a desktop, where the label is never hidden in
+       the first place. */
     if (wasHidden && railIntroduced) openHint('account', 0);
   }
 
@@ -3743,6 +3744,18 @@
      — and whether an introduction is still owed at the end of it. */
   var railWaited = false;
   var railWaiting = false;
+  /* Whether this browser has been introduced. The cascade is for a stranger,
+     and the second visit is not a stranger's: a map that explains the die
+     every morning to somebody who opens it every morning reads as a page
+     that does not remember them. Written the moment the cascade actually
+     runs, rather than when it is owed, so a visitor who arrived on a place
+     link and left with the sheet still up is introduced the next time, when
+     they are looking at the map. Read on the way in only — boot() — and
+     never by a language switch, which introduces the rail again whatever
+     this says. Storage that throws or was cleared makes it a first visit
+     again, which is the right failure: one introduction too many rather
+     than none. */
+  var INTRO_KEY = 'ttb.introduced';
 
   /* The swatch is the one that is not in the markup — renderStyleSwitch draws
      it into the group — so it is asked for by class rather than held in dom. */
@@ -3875,7 +3888,8 @@
     }, RAIL_IN);
   }
 
-  /* On arrival, and again after a language switch — see setLanguage. */
+  /* The first time this browser arrives — see boot — and again after every
+     language switch — see setLanguage. */
   function introduceRail() {
     /* Not over an open sheet, and not behind the stories: the rail is a row
        along the top of a sheet, where a pill at full width pushes the buttons
@@ -3907,6 +3921,7 @@
     railWaiting = false;
     introPending = false;
     railIntroduced = true;
+    storeSet(INTRO_KEY, '1');
     /* A cascade rather than the whole column at once: 300ms apart is slow
        enough to read down the rail and quick enough that they are all up
        together for most of the time they are up at all. */
@@ -8642,11 +8657,13 @@
         }
       }
 
-      /* And on a phone, the rail says what it is for. Last, after the deep
-         link has had its say: a link straight to a place opens the sheet, and
-         the introduction is owed to the map behind it rather than spent on a
-         screen the rail is only a row along the top of. */
-      introduceRail();
+      /* And on a phone, the rail says what it is for — the first time this
+         browser opens the map, and not on the visits after; a language
+         switch is the other time it says it, see setLanguage. Last, after
+         the deep link has had its say: a link straight to a place opens the
+         sheet, and the introduction is owed to the map behind it rather than
+         spent on a screen the rail is only a row along the top of. */
+      if (!storeGet(INTRO_KEY)) introduceRail();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
 
