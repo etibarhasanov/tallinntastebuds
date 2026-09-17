@@ -346,6 +346,18 @@ it, and what was driven in a browser to check it.
   page is there to be read before the line under it is replaced.
 - A `t()` key that the scanner cannot see, so the validator passes and a
   visitor reads the key off the page.
+- **A third-party player framed at a URL this repo builds by hand.** The
+  Instagram reel was moved off `embed.js` onto a plain iframe, and the URL it
+  was given kept the kind of post the permalink was written with — `/reel/…`
+  rather than the `/p/…` that `embed.js` normalises everything to. Instagram
+  answers the first with "the link may be broken, or the post may have been
+  removed", so most of the map showed a deleted-post page where its video
+  should have been. Nothing in CI can see this: the validator checks that our
+  links are well formed, never that the other end still serves them. When a
+  provider's own loader is replaced with a URL, copy the URL that loader
+  builds — open one in a browser and read it off the iframe — rather than the
+  one the permalink suggests, and say in the PR that the frame was watched
+  loading a real post.
 - **A `.lists-seg` whose `is-on` class does not move.** The radio inside
   `.lists-seg-opt` is one transparent pixel — deliberately, so the keyboard
   and the screen reader get a real radio — which means the browser checking it

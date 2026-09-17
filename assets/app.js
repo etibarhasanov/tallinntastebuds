@@ -6159,8 +6159,8 @@
   }
 
   /* Instagram publishes the same iframe player that embed.js builds for a
-     blockquote — the permalink with /embed on the end — so the reel goes in
-     directly and no script is involved at all.
+     blockquote — /p/<shortcode>/embed/ — so the reel goes in directly and no
+     script is involved at all.
 
      Going through embed.js meant fetching it, polling for window.instgrm,
      handing it a blockquote and letting it draw whatever box it had measured
@@ -6170,30 +6170,36 @@
      below opens at the shape a reel actually is and then takes Instagram's
      own measurement for the exact one. */
   function embedInstagram(place) {
-    /* A link copied while browsing your own grid carries the profile name in
-       front of the shortcode — a shape Instagram serves the post at but not
-       the embed, so the player is addressed by the shortcode alone. The kind
-       of post is kept as it was written: /p/ is where a photo lives. */
-    var post = /\/(p|reels?|tv)\/([A-Za-z0-9_-]+)/.exec(place.reel);
-    var src = post
-      ? 'https://www.instagram.com/' + (post[1] === 'reels' ? 'reel' : post[1]) +
-        '/' + post[2] + '/embed/'
-      : String(place.reel).replace(/[?#].*$/, '').replace(/\/+$/, '') + '/embed/';
+    /* Every post is framed at /p/<shortcode>/embed/, whatever kind of post the
+       permalink calls itself. Instagram serves a reel at /reel/<shortcode>/ and
+       at /p/<shortcode>/ alike, but only the second has a player behind it that
+       another site may frame: /reel/<shortcode>/embed/ answers with "the link
+       to this photo or video may be broken, or the post may have been removed",
+       which is the page a place opened on a phone showed where its video should
+       have been. embed.js normalised every permalink to /p/ before building the
+       frame; building the frame here instead kept the kind as it was written,
+       and most of the links on this map are written /reel/ because that is what
+       the address bar shows while you are watching one.
 
-    var frame = el('div', { className: 'reel-frame is-instagram' }, [
-      el('iframe', {
-        src: src,
-        title: place.name + ' — ' + t('reel'),
-        allow: 'autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen',
-        allowfullscreen: '',
-        referrerpolicy: 'strict-origin-when-cross-origin',
-        frameborder: '0',
-        scrolling: 'no'
-      })
-    ]);
+       A link copied while browsing your own grid carries the profile name in
+       front of the shortcode — a shape Instagram serves the post at but not the
+       embed — so the player is addressed by the shortcode alone. A permalink
+       with no shortcode in it at all cannot be framed: it gets the way out that
+       sits under every player, rather than a frame nothing can fill. */
+    var post = /\/(?:p|reels?|tv)\/([A-Za-z0-9_-]+)/.exec(place.reel);
 
     return el('div', { className: 'reel-embed' }, [
-      frame,
+      post ? el('div', { className: 'reel-frame is-instagram' }, [
+        el('iframe', {
+          src: 'https://www.instagram.com/p/' + post[1] + '/embed/',
+          title: place.name + ' — ' + t('reel'),
+          allow: 'autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen',
+          allowfullscreen: '',
+          referrerpolicy: 'strict-origin-when-cross-origin',
+          frameborder: '0',
+          scrolling: 'no'
+        })
+      ]) : null,
       reelFallback(place, 'reelFallback')
     ]);
   }
