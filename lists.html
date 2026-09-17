@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lists | Tallinn Tastebuds</title>
 <meta name="description" content="Your own top ten. Pick places, say what is good about each one, and send somebody the link.">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
@@ -17,11 +16,19 @@
 <!-- The block between the two PAGE-HEAD markers below is replaced, in place,
      whenever this same file is served at one of its other three addresses:
      functions/list/[id].js at /list/<id>, functions/lists/index.js at
-     /lists, and functions/u/[name].js at /u/<name>. The description and
-     the social card become that page's own and a second title is written
-     above them, so a link somebody pastes into a message unfurls as what it
-     is rather than as "Lists | Tallinn Tastebuds". Opened directly at
-     /lists.html the markers are left alone and these defaults stand.
+     /lists, and functions/u/[name].js at /u/<name>. The title, the
+     description and the social card become that page's own, so a link
+     somebody pastes into a message unfurls as what it is rather than as
+     "Lists | Tallinn Tastebuds". Opened directly at /lists.html the markers
+     are left alone and these defaults stand.
+
+     The title is inside the markers, and it has to be. A head may hold two
+     title elements, but the one that binds is the first — so for as long as
+     this page's own sat above the markers, the one head() writes was queued
+     behind a title nobody wanted, and a list shared into a chat carried
+     "Lists | Tallinn Tastebuds" to every unfurler that reads the tag rather
+     than og:title. index.html and split.html keep theirs in here for the same
+     reason.
 
      PAGE-HEAD rather than LIST-HEAD, which is what it was called when a list
      was the only thing served through here.
@@ -31,6 +38,7 @@
      would end this comment early, drop the rest of it into the head as text,
      and take the whole document with it. It did once. -->
 <!--PAGE-HEAD-->
+<title>Lists | Tallinn Tastebuds</title>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Tallinn Tastebuds">
 <meta property="og:title" content="Lists | Tallinn Tastebuds">

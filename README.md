@@ -45,6 +45,7 @@ completely with the database switched off.
 - [Ask for somewhere](#ask-for-somewhere)
 - [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
+- [Sharing a place](#sharing-a-place)
 - [Languages](#languages)
 - [Restaurant discounts](#restaurant-discounts)
 - [Saves](#saves)
@@ -1213,6 +1214,81 @@ five have a reel, so all five get `closedReelNote`.
 Do not write the closure into the `blurb` as well. The panel says it in every
 language already, and Laboratooriumi 23 used to end with "Sadly closed now,
 but the video stays up" directly under a note that said the same thing.
+
+---
+
+## Sharing a place
+
+The map is one page, and `?spot=<id>` is a deep link into it rather than a
+document of its own. That is deliberate and it is why the canonical tag points
+every one of them back at the bare address — `canonicalBase()` in
+`assets/app.js` says why, and the comment at the top of `sitemap.xml` says it
+again. But it meant that every link anybody has ever sent about one restaurant
+was index.html with a query on it, and a query is the one part of a URL a
+link-preview crawler does nothing with. Pasted into WhatsApp, Telegram or a
+Slack channel, `?spot=varkizana` arrived as the site:
+
+> **Tallinn Tastebuds | Where to eat in Tallinn**
+> All the places in this map I have personally been and approved.
+> *the watercolour mouth*
+
+The same card for all seventy-six places. Somebody sending a friend a Greek
+tavern in Lasnamäe got a card about a map, and the one thing the message was
+about — which place — was in the part of the link nobody reads.
+
+`functions/index.js` is the fix. Asked for `/` with a `?spot=` that names a
+place, it serves the map with that place's own card written into its head:
+
+> **Varkizana Kreeka tavern**
+> A Greek tavern in Lasnamäe, and everything we tried was really good.
+> Moussaka, tzatziki, souvlaki and dolma, and the moussaka is the one…
+> *the first photograph in `photos/varkizana/`*
+
+It is the same arrangement `/list/<id>` and `/split` already had — a Function
+in front of a static page, swapping the block between the `<!--PAGE-HEAD-->`
+markers — and the head of that file carries the reasoning. Four things about
+it are worth knowing from out here.
+
+**The card speaks the language the link carries.** `?lang=et` makes an
+Estonian card, because the person who shared that link chose Estonian for the
+person they were sending it to. That is the opposite of what a shared list
+does, and the difference is real: a list's card has no reader to ask, so it is
+written in English, while this link says which language it is in. A language
+the place has not been written up in falls back to English, the way the panel
+does. The blurb's own keys are the list of what counts, so nothing in this
+route needs touching on the day an eleventh language arrives.
+
+**The picture is the place's first photograph**, and the mark for a place that
+has none, which today is fifty-three of the seventy-six. They are photographs
+off a phone and not cards drawn at 1200×630, so no `og:image:width` is claimed
+for one: nothing in this repository knows a photo's dimensions without opening
+the file, and a size claimed wrongly is worse than one an unfurler measures
+for itself. Most are portrait. Telegram and Slack show those whole, WhatsApp
+crops them to a band, and both beat a logo. Adding photos to a place is
+therefore also what gives it a card — see **Add photos**.
+
+**A closed place says so first.** The description opens with `closedFlag` —
+"Closed for good", in the card's language — before the write-up, because a
+shut place keeps its pin and its link on purpose and the card would otherwise
+sell a kitchen that is not cooking. This is composed when the page is served
+and is not written into the `blurb`, which the section above forbids for the
+same reason it is fine here: there is exactly one copy of the sentence.
+
+**`og:url` and the canonical tag disagree, and have to.** The canonical stays
+at the bare address, outside the markers, so the search signals still pool at
+one page. `og:url` is the spot's own link, because Facebook treats it as the
+identity of the thing being shared — one canonical `og:url` for all of them
+would mean one cached card for all of them, which is the bug this section is
+about, arriving by the back door.
+
+Nothing else changes. Without a `?spot=` the route hands the request straight
+to the static file with its own ETag intact, so the front page is exactly what
+it was; an id that is not a place gets the same. `?type=` and `?story=` are
+deep links too and still get the site's card — a filter has no name and a
+story is gone within the day. And `robots.txt` must go on allowing `/`, which
+it does and always has: a `Disallow` stops the fetch, and a stopped fetch is a
+bare blue URL. That is the note beside `/list/<id>` in that file, and it
+applies here word for word.
 
 ---
 

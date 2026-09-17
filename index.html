@@ -10,7 +10,6 @@
      on — nothing else changes. -->
 <meta name="turnstile-key" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tallinn Tastebuds | Where to eat in Tallinn</title>
 <meta name="description" content="A hand picked map of restaurants, bakeries, cafes and bars in Tallinn I have been to myself and approved. No scores: being on the map is the verdict.">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
@@ -24,6 +23,26 @@
 
 <link rel="canonical" href="https://tallinntastebuds.ee/">
 
+<!-- The block between the two PAGE-HEAD markers below is replaced, in place,
+     by functions/index.js whenever this page is asked for with a ?spot= that
+     names a place. The title, the card and the picture become that place's
+     own, so a link somebody sends about one restaurant arrives as that
+     restaurant rather than as the site. Asked for without a spot — which is
+     every visit to the front page — the markers are left alone, the response
+     is the static file untouched, and these defaults stand.
+
+     The title is inside the markers, and the description, the canonical and
+     the robots tag are outside. That split is the point. The card is per
+     place; the page a crawler indexes is the map, at one address, which is the
+     decision canonicalBase() in assets/app.js explains. The head of the
+     Function has the rest of it.
+
+     The markers are spelled out only where they actually mark something. HTML
+     comments do not nest, so writing one inside this sentence would end this
+     comment early and drop the rest of it into the head as text — the same
+     warning lists.html carries, for the same reason: it happened. -->
+<!--PAGE-HEAD-->
+<title>Tallinn Tastebuds | Where to eat in Tallinn</title>
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://tallinntastebuds.ee/">
 <meta property="og:site_name" content="Tallinn Tastebuds">
@@ -34,6 +53,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A watercolour painting of an open, grinning mouth beside the words Tallinn Tastebuds and the line: all the places in this map I have personally been and approved.">
 <meta name="twitter:card" content="summary_large_image">
+<!--/PAGE-HEAD-->
 
 <!-- The mouth, cropped square out of the painting in
      assets/logo/source-artwork.jpg. Raster all the way down: the mark is a

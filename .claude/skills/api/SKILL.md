@@ -67,6 +67,7 @@ leading underscore are modules, not routes.
 
 | Route | File | Writes | Cache |
 |---|---|---|---|
+| `/` | `index.js` | none; `index.html` with the place named by `?spot=` written into its head, so a shared link unfurls as that restaurant rather than as the map. Without a `?spot=` that names a place it is `context.next()` and the static file, headers and ETag intact | as `_headers`, copied off the response it swaps |
 | `/*` | `_middleware.js` | none; 301s `pages.dev` to `tallinntastebuds.ee`, and — **splitwise**, in a fenced block — serves `split.html` at the root of `splitwise.tallinntastebuds.ee` while 301ing every other path on that host back to the site | as `_headers` |
 | `GET /api/saves` | `saves.js` | none | `public, max-age=60`, weak ETag, plus the edge cache under `countsKey()` |
 | `POST /api/saves` | `saves.js` | `saves`, then `RECOUNT_SQL`, in one `batch()`; purges the counts cache | `no-store` |
@@ -90,6 +91,10 @@ leading underscore are modules, not routes.
 
 Those three pages serve the same `lists.html` with a head of their own, and
 the escaping, head swap and seeding they share are in `functions/_shell.js`.
+`index.js` and `split.js` do the same for two other documents and take what
+they can from that module — `esc()`, `rehead()` and the live address in
+`SITE` — while writing their own tags, because a place has a photograph for a
+card and a group's name wants no site suffix after it.
 The query each seeds is in a module beside the route that also answers it —
 `_lists.js` for one list, `_mostkept.js` for everybody's, `_profile.js` for
 one person — so the page and the API cannot drift apart. Underscore-prefixed

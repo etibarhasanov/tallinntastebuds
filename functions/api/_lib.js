@@ -4,12 +4,16 @@
  * Underscore-prefixed files under functions/ are not routed, so this is a
  * module and never an endpoint. Everything here is shared by the routes under
  * functions/api/ — the answer shape, the session and how one is opened, which
- * database this is, the two rolls of places, and the move that carries a
- * browser's saves onto the account somebody has just signed in to (two routes
- * do that now: ./account.js and ./google.js). Three things at the bottom hold a value
- * between requests — which database this deployment is holding, the places on
- * the map, and the catalogue a list draws from — and all three are caches of
- * something that only a deploy changes, kept per isolate and re-asked every
+ * database this is, the two rolls of places, the site's own words, and the
+ * move that carries a browser's saves onto the account somebody has just
+ * signed in to (two routes do that now: ./account.js and ./google.js). The
+ * page routes a directory up reach in here too, for a session, for the
+ * database check and for the map's places: functions/list/[id].js,
+ * functions/u/[name].js, functions/lists/index.js, functions/index.js and
+ * functions/split.js. Four things at the bottom hold a value between
+ * requests — which database this deployment is holding, the places on the map,
+ * the catalogue a list draws from, and data/ui.json — and all four are caches
+ * of something that only a deploy changes, kept per isolate and re-asked every
  * five minutes. Nothing else here remembers anything.
  */
 
@@ -363,6 +367,31 @@ export async function catalogue(context) {
   roll = new Map(places.map((p) => [p.id, p]));
   rollAt = Date.now();
   return roll;
+}
+
+/* --------------------------------------------------------------- strings
+ * data/ui.json, which is the site's own words in ten languages. The third of
+ * these and the smallest reader: functions/index.js wants one key out of it —
+ * closedFlag, the line a shut place's share card opens with — in whichever
+ * language the shared link carried. Everything else that prints a UI string is
+ * a browser, and reads this file for itself.
+ *
+ * Same five-minute cache per isolate as the two rolls above, for the same
+ * reason: it changes when a deploy changes it and not otherwise.
+ */
+let words = null;
+let wordsAt = 0;
+
+export async function uiStrings(context) {
+  if (words && Date.now() - wordsAt < 300000) return words;
+  const url = new URL('/data/ui.json', context.request.url);
+  const res = context.env.ASSETS
+    ? await context.env.ASSETS.fetch(new Request(url.toString()))
+    : await fetch(url.toString());
+  if (!res.ok) throw new Error('ui.json unreadable: ' + res.status);
+  words = await res.json();
+  wordsAt = Date.now();
+  return words;
 }
 
 /* --------------------------------------------------------------- venues

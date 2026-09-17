@@ -12,7 +12,7 @@
  * its head, and the crawler that builds the little card in WhatsApp or
  * Instagram does not run the script that would change it. So this Function
  * serves the page instead: it fetches lists.html out of the deployment, swaps
- * the block between the <!--LIST-HEAD--> markers for that list's own tags, and
+ * the block between the <!--PAGE-HEAD--> markers for that list's own tags, and
  * seeds the list into the document.
  *
  * It is still lists.html. There is one page and one stylesheet and one script,
