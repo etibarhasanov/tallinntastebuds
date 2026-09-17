@@ -336,3 +336,13 @@ it, and what was driven in a browser to check it.
   page is there to be read before the line under it is replaced.
 - A `t()` key that the scanner cannot see, so the validator passes and a
   visitor reads the key off the page.
+- **A `.lists-seg` whose `is-on` class does not move.** The radio inside
+  `.lists-seg-opt` is one transparent pixel — deliberately, so the keyboard
+  and the screen reader get a real radio — which means the browser checking it
+  changes nothing anybody can see. `is-on` is the filled half and the handler
+  has to move it: `opts[i].classList.toggle('is-on', opts[i] === label)` over
+  the group, the way the list's visibility segment and the feedback composer's
+  **Post as** both do. Without it the control looks dead. The choice really
+  does change and the write really does go out under it, so nothing fails and
+  nothing is logged; the only clue on screen is the focus ring landing on a
+  pill that stays empty. It shipped that way once.

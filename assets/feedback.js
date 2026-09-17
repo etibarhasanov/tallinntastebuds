@@ -514,7 +514,21 @@
   /* Both answers drawn, the filled one is the answer — the lists page's own
      public/private control, which is the shape this site uses whenever a
      choice has exactly two sides and printing the state alone could not say
-     which of them pressing would give you. */
+     which of them pressing would give you.
+   *
+     THE CLASS HAS TO MOVE, AND IT IS THE WHOLE OF WHAT IS VISIBLE HERE.
+     `.lists-seg-opt` is a label around a radio that is one transparent pixel
+     — see assets/lists.css, where it is written that way so the keyboard and
+     the screen reader get a real radio and everybody else gets the pill. So
+     the browser checking the radio changes nothing anybody can see: `is-on`
+     is the filled half, and if it does not move, the press does nothing at
+     all as far as the person pressing is concerned.
+   *
+     That is exactly how this shipped, and pressing Anonymous looked broken:
+     the choice did change, the post did go out unsigned, and the pill went on
+     showing the name. The only clue was the focus ring landing on a pill that
+     stayed empty. The lists page's visibility segment moves the class in its
+     own handler and always has; this is the same three lines. */
   function postAs(onPick) {
     var options = state.me
       ? [['name', state.me], ['anon', t('feedbackAnon')]]
@@ -530,7 +544,12 @@
       var option = el('label', {
         className: 'lists-seg-opt' + (state.as === pair[0] ? ' is-on' : '')
       }, [input, el('span', { textContent: pair[1] })]);
-      input.addEventListener('change', function () { onPick(pair[0]); });
+      input.addEventListener('change', function () {
+        if (!input.checked) return;
+        var opts = option.parentNode.querySelectorAll('.lists-seg-opt');
+        for (var i = 0; i < opts.length; i++) opts[i].classList.toggle('is-on', opts[i] === option);
+        onPick(pair[0]);
+      });
       return option;
     }));
 
