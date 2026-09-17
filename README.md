@@ -396,9 +396,21 @@ which platform from the URL and follows suit: the section heading reads **The
 reel** or **The video**, and the link under the player names the right app in
 every language.
 
-Both are plain iframes, and both are built with the panel. Instagram's player
-lives at the permalink with `/embed/` on the end — the same frame its
-`embed.js` would have built for you — so neither platform needs a script here.
+Both are plain iframes, and both are built with the panel, so neither platform
+needs a script here.
+
+Instagram's player lives at `/p/<shortcode>/embed/`, and the shortcode is the
+only part of the permalink that reaches it. **The kind of post is not carried
+over.** Instagram serves a reel at `/reel/<shortcode>/` and at
+`/p/<shortcode>/` alike, but only the second one has a player behind it that
+another site may frame; ask for `/reel/<shortcode>/embed/` and the answer is
+"the link to this photo or video may be broken, or the post may have been
+removed", which looks exactly like a reel somebody deleted. `embed.js`
+normalised every permalink to `/p/` before it built its frame; when the frame
+stopped being built by `embed.js`, that normalisation did not come with it,
+and every place whose link was written `/reel/` showed that page instead of
+its video until it did. So paste whichever of the two shapes above the address
+bar gives you; they reach the same player.
 
 **Never invent a shortcode.** A made-up one resolves to a real stranger's post, on either platform.
 Leave `reel` as `""` until you have the actual link; the panel simply says
@@ -8830,7 +8842,7 @@ data; those do not belong in a static site at all.
 | [CARTO Positron](https://carto.com/basemaps/) basemap (`light_all`, `dark_all`) | — | Free with attribution, up to 5M tiles a month, **key required** | The tiles. See [The map tiles need a key](#the-map-tiles-need-a-key). |
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) data | — | ODbL | The map data behind the tiles. |
 | [Familjen Grotesk](https://fonts.google.com/specimen/Familjen+Grotesk), [Literata](https://fonts.google.com/specimen/Literata), [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) | — | SIL Open Font License 1.1 | Served by Google Fonts. |
-| [Instagram embed](https://developers.facebook.com/docs/instagram/oembed/) (iframe player) | — | Meta Platforms terms | The permalink with `/embed/` on the end. Loaded with the panel of a place that has a reel. No script involved. |
+| [Instagram embed](https://developers.facebook.com/docs/instagram/oembed/) (iframe player) | — | Meta Platforms terms | `/p/<shortcode>/embed/`, whatever kind of post the permalink calls itself. Loaded with the panel of a place that has a reel. No script involved. |
 | [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Loaded with the panel of a place that has a video. No script involved. |
 | [Google Analytics 4](https://developers.google.com/analytics) (gtag.js) | — | Google terms | Property `G-2XNTC15F28`. Counts, and takes the events `assets/track.js` sends. Loads on every page but `admin.html`, and sets cookies. |
 | [Microsoft Clarity](https://clarity.microsoft.com/) | — | Microsoft terms | Project `yay3pxtg4w`. Heatmaps and session replay. Loads on every page but `admin.html`, and sets cookies. Not `MUID` — `ad_Storage` is denied, because there is no advertising here for it to do anything for. |
