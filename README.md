@@ -661,12 +661,48 @@ window, and the answer to *where is this* was as often as not behind it.
 
 **Slowly, though.** Leaflet's own pan animation is a quarter of a second, which
 reads as the city being cut to a new position rather than travelling to one —
-and this map moves under somebody who is in the middle of reading it. `PAN_MS`
-in `travelTo()` is .75s, long enough that the eye follows the streets across
-and arrives knowing where it is. A move too far to pan is a `flyTo` at .9s,
-which arcs out and back and so has further to go in the same breath. Under
-`prefers-reduced-motion` there is no animation at all, the way the rest of the
-site answers that question.
+and this map moves under somebody who is in the middle of reading it, and under
+a pointer resting on a row. `PAN_MS` in `travelTo()` is 1.1s, slow enough that
+the eye follows the streets across rather than losing one city and finding
+another. A move too far to pan is a `flyTo` at `FLY_MS`, 1.2s, which arcs out
+and back and so has further to cover and may take a little longer over it.
+Under `prefers-reduced-motion` there is no animation at all, the way the rest
+of the site answers that question.
+
+### And a row you rest on takes the map there before you press it
+
+Reading seventy-six names is asking where they are, and the answer used to be a
+press away for every one of them: press, read, close, press the next. Rest the
+pointer on a row now and the city comes to the name under it. The write-up is
+then for the one you actually want.
+
+**It waits, and that is most of what makes it bearable.** A pointer crossing
+the column on its way somewhere else sweeps a dozen rows in a tenth of a
+second, and a map that set off after each of them would be a map nobody could
+read. `PEEK_MS` is the pause that tells a sweep from somebody looking at a
+name: 260ms, started on the row and thrown away the moment the pointer is on
+another one, so only a row that is rested on is ever asked for. Driven with six
+rows at 45ms each, the map never sets off at all.
+
+**It pans and never zooms** — `focusOn()` with `zoomIn` false — because a hover
+is a question about where, not a decision to go there, and a scale that changed
+under the cursor would be the map arguing with the list. The place already open
+is skipped: it is centred in the strip already, and running back over its own
+row on the way out of the column should not set the map going again. A press
+cancels a waiting peek, since a press is the better answer to the same
+question.
+
+**Nothing is put back when the pointer leaves.** A map that sprang home after
+every name would be twice the movement for none of the answer, and where it has
+come to rest is where the last name you looked at is — which is the one thing
+you might still want to see.
+
+The listener is on `#list-body` rather than on each row, because `renderList()`
+throws every row away and builds seventy-six more whenever a chip or the
+language moves. And it is behind the same `(min-width: 861px) and (hover:
+hover) and (pointer: fine)` query the corner is: a tap synthesises a `mouseover`
+before it synthesises a click, and on a phone the list is a sheet over the map
+in any case.
 
 ### The list keeps its place
 

@@ -866,23 +866,31 @@
      of a second, which reads as the city being put somewhere else rather than
      going there — and this map moves under somebody who is in the middle of
      reading it, every time a place opens beside the list and the pin it is
-     about has to come out from behind the panel. PAN_MS is .75s, long enough
-     that the eye follows the streets across and arrives knowing where it is.
-     The long move was already .9s and stays there: flyTo arcs out and back, so
-     it has further to cover in about the same breath.
+     about has to come out from behind the panel — and it moves under a pointer
+     resting on a row, which is a peek rather than a decision and wants to be
+     quieter still. PAN_MS is 1.1s, slow enough that the eye follows the
+     streets across rather than losing one city and finding another. FLY_MS is
+     1.2s: flyTo arcs out and back, so it has further to cover and may take a
+     little longer over it.
+
+     Only the duration, because only the duration arrives: setView copies
+     `animate` and `duration` into the pan options it hands the animation and
+     leaves everything else behind, so an easeLinearity passed here is a line
+     that reads as a decision and is thrown away. The curve is Leaflet's.
 
      Anyone who asked their machine for less motion gets neither, which is the
      first line of the function and the same answer the rest of the site
      gives. */
-  var PAN_MS = .75;
+  var PAN_MS = 1.1;
+  var FLY_MS = 1.2;
 
   function travelTo(centre, zoom, animate) {
     if (!animate || reduceMotion()) { map.setView(centre, zoom, { animate: false }); return; }
     if (map.getBounds().contains(centre) && Math.abs(zoom - map.getZoom()) <= 2) {
-      map.setView(centre, zoom, { animate: true, duration: PAN_MS, easeLinearity: .28 });
+      map.setView(centre, zoom, { animate: true, duration: PAN_MS });
       return;
     }
-    map.flyTo(centre, zoom, { duration: .9 });
+    map.flyTo(centre, zoom, { duration: FLY_MS });
   }
 
   /* Frame a set of points. The zoom is worked out before the map moves rather
@@ -4053,11 +4061,16 @@
    */
   var RAIL_NEAR = 300;
   var RAIL_FAR = 360;
-  /* Asked once and kept: matchMedia on every pointer move would be a new
-     MediaQueryList a hundred times a second. */
-  var railMQ = window.matchMedia
+  /* A desktop with a mouse on it, which is the one condition both things that
+     answer a pointer share: the corner opening as it is approached, and a row
+     in the places column carrying the map to its place. Asked once and kept —
+     matchMedia on every pointer move would be a new MediaQueryList a hundred
+     times a second. */
+  var hoverMQ = window.matchMedia
     ? window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)')
     : null;
+  function hasHover() { return !!(hoverMQ && hoverMQ.matches); }
+
   var railNear = false;
   var railShown = false;
 
@@ -4084,11 +4097,78 @@
   }
 
   function syncRailReveal() {
-    var on = !!(railMQ && railMQ.matches) &&
-             (railNear || railHovered() || railFocused());
+    var on = hasHover() && (railNear || railHovered() || railFocused());
     if (on === railShown) return;
     railShown = on;
     document.body.classList.toggle('rail-open', on);
+  }
+
+  /* --------------------------------------------------------------- the peek
+   * A row in the places column carries the map to its place while the pointer
+   * is resting on it, before anything is pressed. Reading a list of
+   * seventy-six names is asking where they are, and the answer used to be a
+   * press away for every one of them: press, read, close, press the next. Now
+   * the city comes to the name under the cursor, and the write-up is for the
+   * one you actually want.
+   *
+   * IT WAITS, AND THAT IS MOST OF WHAT MAKES IT BEARABLE. A pointer crossing
+   * the column on its way somewhere else sweeps a dozen rows in a tenth of a
+   * second, and a map that set off after each of them would be a map nobody
+   * could read. PEEK_MS is the pause that tells a sweep from somebody looking
+   * at a name: the timer starts on the row and is thrown away the moment the
+   * pointer is on another one, so only a row that is rested on is ever asked
+   * for.
+   *
+   * It pans and never zooms — focusOn with zoomIn false — because a hover is a
+   * question about where, not a decision to go there, and a scale that changed
+   * under the cursor would be the map arguing with the list. The place already
+   * open is skipped: it is centred in the strip already, and running over its
+   * own row on the way out of the column should not set the map going again.
+   *
+   * Nothing is put back when the pointer leaves. A map that sprang home after
+   * every name would be twice the movement for none of the answer, and where
+   * it has come to rest is where the last name you looked at is — which is the
+   * one thing you might still want to see.
+   */
+  var PEEK_MS = 260;
+  var peekTimer = null;
+  var peekAt = '';
+
+  function cancelPeek() {
+    if (peekTimer) { window.clearTimeout(peekTimer); peekTimer = null; }
+    peekAt = '';
+  }
+
+  function peekRow(id) {
+    if (id === peekAt) return;
+    cancelPeek();
+    if (!id || id === state.selected) return;
+    var place = byId(id);
+    if (!place) return;
+    peekAt = id;
+    peekTimer = window.setTimeout(function () {
+      peekTimer = null;
+      /* The chat is the one view whose pins are an answer rather than the
+         map's own, and a peek would pull the map off it. */
+      if (peekAt !== id || document.body.classList.contains('panel-ask')) return;
+      focusOn(place, false);
+    }, PEEK_MS);
+  }
+
+  function wireRowPeek() {
+    if (!dom.listBody) return;
+    /* On the body rather than on each row, because renderList() throws every
+       row away and builds seventy-six more whenever a chip or the language
+       moves, and a listener per row would go with them. */
+    dom.listBody.addEventListener('mouseover', function (ev) {
+      if (!hasHover()) return;
+      var row = ev.target.closest ? ev.target.closest('.list-row') : null;
+      peekRow(row ? row.getAttribute('data-id') : '');
+    });
+    dom.listBody.addEventListener('mouseleave', cancelPeek);
+    /* A press is its own answer and a better one — it frames the place rather
+       than passing over it — so the waiting peek gets out of its way. */
+    dom.listBody.addEventListener('click', cancelPeek);
   }
 
   function wireRailReveal() {
@@ -6580,6 +6660,11 @@
   }
 
   function renderList() {
+    /* Every row here is about to be thrown away, so a peek waiting on one of
+       them is waiting on a row that will not exist — and a chip pressed while
+       the pointer rests on a name would carry the map to a place the chip has
+       just filtered out. */
+    cancelPeek();
     clear(dom.listBody);
 
     var words = searchWords();
@@ -8522,6 +8607,7 @@
 
     wireTopGuard();
     wireRailReveal();
+    wireRowPeek();
 
     /* Crossing 1200px is the difference between a place standing beside the
        list and a place standing on top of it, and renderPanel is what decides
