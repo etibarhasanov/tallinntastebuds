@@ -4054,11 +4054,12 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
      TWO STOPS, AND .sheet-full IS THE TALLER ONE
 
-     Every sheet has both. Bare is the half stop — the one a drag down lands
-     on, with half the map back — and .sheet-full is where a sheet opens and
-     where the grip puts it back; sheetStops() in assets/app.js holds the same
-     two numbers, because a drag settles on a height this then has to agree
-     with. A place's full stop is taller still, further down this block. */
+     Every sheet has both. Bare is the half stop — half the sheet, half the
+     map — and .sheet-full is the taller one; sheetStops() in assets/app.js
+     holds the same two numbers, because a drag settles on a height this then
+     has to agree with. A sheet made of words opens full and a drag down lands
+     it here; a place opens here and a drag up takes it to a full stop taller
+     than either, further down this block. */
   body { --sheet-h: min(50vh, 470px); }
   body { --sheet-h: min(calc(var(--vph, 100dvh) * .5), 470px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
   body.sheet-full { --sheet-h: min(82vh, 720px); }
@@ -4337,21 +4338,21 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      the fully dragged-up sheet, so it stays where it is and the filters can
      be changed with the list open. */
 
-  /* A place is the one sheet whose full stop is taller than the rest. It
-     opens at it: a place you tapped is a page to read, and at the half stop
-     the reel under the name was sliced across the bottom edge of the screen.
-     Drag the grip down for the half stop it shares with the others, where the
-     map keeps its half and the chosen pin has somewhere to be.
-
-     Surprise me opens at the half stop instead — a place nobody chose is a
-     question about where it is — which is also what keeps the rail on screen
-     for the press that rolls again. selectPlace() in assets/app.js decides
-     which of the two a place arrives at; both stops are these two rules. */
+  /* A place is the one sheet whose full stop is taller than the rest, and the
+     one that does not open at its own full stop. It arrives at the half stop
+     the block above draws — the map keeps its half and the chosen pin has
+     somewhere to be — and this is where the grip drags it: the reel under the
+     write-up is the one thing on a place that wants a screen, and 88% is the
+     screen it wants. selectPlace() in assets/app.js is where the arrival is
+     decided and says why. */
   body.panel-detail.sheet-full { --sheet-h: min(88vh, 780px); }
   body.panel-detail.sheet-full { --sheet-h: min(calc(var(--vph, 100dvh) * .88), 780px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
 
   /* And the rail steps out of the way behind the two sheets that leave it no
-     strip to stand on: a place at 88% of the screen, and the chat.
+     strip to stand on: a place dragged up to 88% of the screen, and the chat.
+     A place arrives under this rule rather than in it — it opens at the half
+     stop, where the rail is on the strip above it and Surprise me can be
+     pressed again without putting anything away.
 
      This used to read .sheet-full, which is those two — the only sheets that
      set the class — and left the list its rail by accident of the list having

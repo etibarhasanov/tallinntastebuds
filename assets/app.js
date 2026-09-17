@@ -4141,10 +4141,11 @@
    * then Surprise me answers the actual question being asked. Closed places
    * are never suggested, and the same place is never returned twice running.
    *
-   * It opens the place at the low stop rather than the full one — see the
-   * comment in selectPlace. A name you have never heard of is a question
-   * about where it is, and the answer is the map the sheet would otherwise
-   * be standing on.
+   * It opens the place like any other. This used to be the one roll that
+   * arrived at the low stop, because a name you have never heard of is a
+   * question about where it is before it is anything else — and that turned
+   * out to be true of a name you tapped as well, so it is what every place
+   * does now. See selectPlace().
    */
   function randomPick() {
     var pool = visiblePlaces().filter(function (p) { return !p.closed; });
@@ -4163,7 +4164,7 @@
 
     state.lastPick = choice.id;
     TTBTrack.event('random_pick', { place: choice.name, pool: pool.length });
-    selectPlace(choice.id, { fly: true, peek: true });
+    selectPlace(choice.id, { fly: true });
   }
 
   /* --------------------------------------------------------------- the ask
@@ -4660,7 +4661,7 @@
     renderPanel();
     openPanel();
 
-    /* At the full stop on a phone, the way a place opens, and not the low
+    /* At the full stop on a phone, the way the list opens, and not the low
        one: the field is about to take the keyboard, and at the low stop the
        keyboard covers the sheet, field and all. */
     openSheetAt(true);
@@ -4785,8 +4786,9 @@
      block in assets/styles.css, which has to agree with these or a drag would
      settle somewhere the CSS then moved it away from. The half stop is one
      number for all three sheets; only the full one differs, and a place's is
-     taller because the reel at the top of it wants a screen. `peek` is a list's
-     alone and is 0 everywhere else, which is what the two below read it as. */
+     taller because the reel wants a screen — it is where a place is dragged
+     to rather than where it opens. `peek` is a list's alone and is 0
+     everywhere else, which is what the two below read it as. */
   function sheetStops() {
     var h = window.innerHeight;
     var cap = Math.max(h - SHEET_HEADROOM - safeInset('--safe-t'), 160);
@@ -4853,11 +4855,11 @@
   }
 
   /* Which stop a sheet arrives at, said once for the four things that open
-     one: a place, the list, the chat and an answer. All four want the full
-     stop — the half one is where a drag puts the sheet, not where anything
-     arrives — bar the place Surprise me rolled, which is a question about
-     where it is before it is anything else. Off a phone there are no stops
-     and the class only decides whether the rail is covered.
+     one: a place, the list, the chat and an answer. The three that are made
+     of words want the full stop, because the words are what was asked for. A
+     place wants the half one, because half of what was asked for is the map
+     — selectPlace() has that argument. Off a phone there are no stops and the
+     class only decides whether the rail is covered.
 
      The height written during a drag goes with it. The stops are the
      stylesheet's to draw from here on, and a leftover inline --sheet-h would
@@ -5307,24 +5309,23 @@
     state.view = 'detail';
     renderPanel({ keepList: true });
     openPanel();
-    /* Tapping a place is a request for the place, not for the map, so on a
-       phone the sheet opens at its full stop: the restaurant's page, as far
-       as a phone is concerned. It used to open at the half stop, on the
-       reasoning that the point of opening a place is to see where it is —
-       which left the reel sliced across the bottom edge of the screen and a
-       scroll between you and the thing you tapped for. The strip of map above
-       it still holds the pin, the chip row and the way back out, and the grip
-       drags the sheet down for anyone who wants the map back.
+    /* Half the screen on a phone, and the map keeps the other half. Opening a
+       place asks two things at once — what is this, and where is it — and a
+       sheet standing over the whole screen answers only the first: the pin it
+       is about gets crushed into the 110px strip along the top, under the
+       brand card, which is not a map anybody can read. It is the strip
+       Surprise me was given the low stop to get out of, and a place you
+       tapped yourself is no better off in it.
 
-       A pick you did not make is the exception. Surprise me answers with a
-       name you never asked for, and the first thing wanted back is not the
-       write-up but where the thing is — so it opens at the low stop instead
-       and the map keeps the half above it, with the pin it has just flown to
-       sitting in the middle of that half. That is also the half that keeps
-       the rail on screen: the rail hides behind a full sheet, and the one
-       button a surprise you do not fancy wants is the die that rolls it
-       again. */
-    openSheetAt(!opts.peek);
+       It opened at its full stop for a version, on the reasoning that a name
+       you tapped is a request for the page belonging to it. It is — and the
+       name, the price and the opening of the write-up are what the half stop
+       already shows. What the full one bought over that was the reel, and it
+       bought it by taking the map away. So the grip is the bargain instead:
+       drag it up for the reel and the rest of the write-up, down to put the
+       place away, and the rail stays on screen the whole time, which a full
+       sheet hides. */
+    openSheetAt(false);
     if (opts.history !== false) syncUrl(fresh);
 
     paintMarkers();
@@ -5362,9 +5363,9 @@
     state.view = 'list';
     renderPanel(opts);
     openPanel();
-    /* At the full stop on a phone, the way a place and the chat open: asking
-       for the list is asking for the names, and the half stop is what the
-       grip and a swipe are for once you have them.
+    /* At the full stop on a phone, the way the chat opens: asking for the
+       list is asking for the names, and the half stop is what the grip and a
+       swipe are for once you have them.
 
        `half` is the one arrival that wants the other stop: a row pressed on a
        list's own page, which asked where that one place is rather than for
