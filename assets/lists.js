@@ -127,34 +127,43 @@
      account no reader would recognise; see byline(). */
   var GOOGLE_BY = 'google-statistics';
 
-  /* The panel a row's sky is drawn into: its own proportions, so nothing is
-     cropped, and a little padding so a dot on the edge of a list is a dot
-     rather than half of one.
+  /* The directory is the map with everybody's lists on it, and these are the
+     numbers that map keeps.
 
-     It was one fixed box over the whole city for a while — the same square of
-     Tallinn on every card, on the argument that a shared frame is what lets
-     two cards be read against each other. What that missed is where the lists
-     are. Nearly every one of them is inside the same square kilometre of the
-     middle, so the shared frame drew the same picture twenty times over, with
-     two thirds of each panel empty. A frame fitted to the list is the other
-     trade: the cards stop sharing a scale, and the corner has to say what the
-     scale is — which is what the label under across() is for, and is worth
-     more than the comparison it replaces, because "can I walk this?" is a
-     question somebody actually has. */
-  var SKY = { w: 120, h: 52, pad: 7 };
+     It used to be a column of cards, each carrying a little panel of the city
+     with that list's places drawn on it — the only picture this site could
+     draw of somebody's list, at a hundred and twenty pixels by fifty-two.
+     There is a real map on the page now, so the panels are gone and so is
+     data/city.json, which was the ground under them and had no other reader.
 
-  /* The floor under a fitted frame, in degrees of latitude — about a kilometre
-     and a half. Without one, a list of three cafés on the same street zooms
-     until the city under it is featureless and the panel is three dots on
-     nothing again, at the other end of the same mistake. */
-  var SKY_FLOOR = 0.014;
+     LIST_ZOOM_BACK is the one judgement in here. Leaflet will hand back the
+     zoom that fits a list exactly; a step back from that leaves it at about
+     half the frame, which is what lets the map centre on any one place with
+     the rest of the list still around it. The two bounds either side stop the
+     extremes: a list of three cafés on one street would otherwise zoom until
+     the city under it is featureless, and a list with one outlier in Nõmme
+     would turn Tallinn into a dot. */
+  var LIST_ZOOM_BACK = 1;
+  var LIST_ZOOM_MIN = 11;
+  var LIST_ZOOM_MAX = 16;
 
-  /* The air left around a list's own places inside its frame, so the outermost
-     dot is not against the padding. */
-  var SKY_AIR = 1.35;
+  /* A fingertip. Pins closer together than this are one counted dot on the
+     resting map — the same number "Clustering" in README.md gives, because it
+     is the same question asked about the same fingers.
 
-  /* Good enough for a label that prints one decimal place. */
-  var KM_PER_DEGREE = 111.32;
+     A LIST is never clustered, and that is deliberate rather than an
+     oversight: counting exists so seventy-five places on one city map stay
+     tappable, and a list is at most fifty, reached by sliding a card rather
+     than by tapping the map. Cluster one and the pin the strip is pointing at
+     ends up hidden inside a numbered dot, which is the map contradicting the
+     card under it. */
+  var CLUSTER_GAP = 44;
+
+  /* The gap between two cards in the strip, in pixels, said here as well as in
+     assets/lists.css because stripScrolled() has to work out which card a
+     finger has settled on and the only way to do that from a scroll offset is
+     to know the pitch. Change one, change the other. */
+  var STRIP_GAP = 10;
 
   /* The two orders the directory can be read in, in the order the chips stand.
      Mirrors SORTS in functions/api/_mostkept.js, which is what binds: an order
@@ -174,7 +183,8 @@
     all: null,         // the directory: everybody's, in the order below
     start: null,       // the five Google lists, drawn as a strip above the rows
     sort: 'kept',      // 'kept' | 'new' — which order the rows are in
-    city: null,        // data/city.json as [lat, lng], the ground under every sky
+    mine: null,        // data/places.json — the map's own places, drawn while nothing is open
+    at: 0,             // which place of the open list is under the thumb
     next: '',          // where the directory's next page starts, '' at the end
     q: '',             // what the directory is being searched for, '' for all
     find: '',          // and what one list is being searched for, '' for all
@@ -602,11 +612,15 @@
     mark.btn = null;
     paintWho();
 
-    /* The directory is the one page here that is wider than a column of
-       prose: rows three across on a desk, the strip five across. Every other
-       view keeps the 640px a list reads at. Toggled here rather than set once
-       at boot so a view that is not the directory never inherits it. */
-    dom.main.classList.toggle('is-wide', state.view === 'all');
+    /* The directory is not a column at all any more. It is three regions that
+       fill the window and do not scroll — the brand across the top, the map
+       under it, the lists along the foot — and <main> is the last of them.
+       Every other view this file draws is still a document in a 640px column,
+       so the whole arrangement hangs off one class on the body, set here
+       rather than at boot so a view that is not the directory can never
+       inherit it. */
+    document.body.classList.toggle('lists-app', state.view === 'all');
+    if (dom.stage) dom.stage.hidden = state.view !== 'all';
 
     /* Somebody else's list is the one view with a bar fixed to the foot of the
        window, and the page has to keep its last card out from under it. Set
@@ -810,19 +824,25 @@
    */
 
   function renderAll() {
-    var wrap = el('div', { className: 'lists-stack lists-all' });
+    var wrap = el('div', { className: 'lists-all' });
 
-    wrap.appendChild(card([
-      el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
-      heading(t('listsAllTitle')),
-      el('p', { className: 'lists-say', textContent: t('listsAllSay') })
-    ]));
+    /* The head card is gone with the column it stood on. What it said — the
+       page's name and the line under it — is said by the header, which is the
+       brand and nothing else, and by the field's own placeholder. A card
+       naming the page, above a field, above the rows, in a panel that holds
+       four rows on a phone, is a third of the screen spent on a title. */
     wrap.appendChild(searchField());
 
     dom.allBody = el('div', { className: 'lists-all-body' });
     wrap.appendChild(dom.allBody);
     paintAll();
-    cityDots();
+
+    /* The map underneath, and the places it draws while nothing is open.
+       After the rows rather than before them: the rows are the page and they
+       are already in hand, and Leaflet is a fetch off a CDN. A page that never
+       gets it is a page of lists with no map, which is what this page was
+       until now. */
+    ensureMap();
 
     return wrap;
   }
@@ -1105,11 +1125,11 @@
           textContent: t('listsAllFor', { q: state.q })
         }));
       }
-      /* The five Google lists, as a strip of their own, above everybody
-         else's and under a heading that says whose numbers they are. Only
-         while nothing is being searched for: the API sends them with the
-         first page of an unsearched directory and keeps them out of its rows
-         while it does, so they are on the screen once — see _mostkept.js. */
+      /* The five Google lists, above everybody else's and under a heading
+         that says whose numbers they are. Only while nothing is being
+         searched for: the API sends them with the first page of an unsearched
+         directory and keeps them out of its rows while it does, so they are
+         on the screen once — see _mostkept.js. */
       if (!state.q && state.start && state.start.length) {
         dom.allBody.appendChild(startStrip(state.start));
         dom.allBody.appendChild(el('h2', { className: 'lists-section' }, [
@@ -1122,36 +1142,34 @@
       dom.allBody.appendChild(dom.allList);
     }
     moreLine();
+
+    /* A search that swept away the list whose places are on the map takes the
+       map back with it: the strip names a row that is no longer on the page,
+       and a strip pointing at nothing is worse than an empty map. */
+    if (state.open && !rowFor(state.open.id)) closeList();
   }
 
-  /* The strip: five compact cards, the sky on the left and the title beside
-     it, one row across a desk and a short column on a phone. The byline is
-     left off: the heading over the strip says whose numbers these are and
-     every title ends "by Google", and a third saying of it under each one
-     took the room the title needed. The keep count stays, drawn the way it is
-     drawn on every other row, and hidden at zero the same way. */
+  /* Whether a list is among the rows on screen. The rows arrive in pages and
+     are replaced wholesale by a search, so this is asked of the data rather
+     than of the document. */
+  function rowFor(id) {
+    var rows = state.all || [], i;
+    for (i = 0; i < rows.length; i++) if (rows[i].id === id) return rows[i];
+    rows = state.start || [];
+    for (i = 0; i < rows.length; i++) if (rows[i].id === id) return rows[i];
+    return null;
+  }
+
+  /* The five Google lists. They were compact cards with a sky panel apiece,
+     laid across the top of a page that was a column; they are ordinary rows
+     now, under a heading that says whose numbers they are, because the page
+     is a panel four rows tall and a second shape of row in it is a second
+     thing to learn. The byline is still left off — every title ends "by
+     Google" and the heading says it again — and pressing one puts its places
+     on the map like any other. */
   function startStrip(lists) {
-    var ul = el('ul', { className: 'lists-start-row' });
-    lists.forEach(function (l) {
-      var line = el('p', { className: 'lists-all-meta mono' });
-      allMeta({ keeps: l.keeps, by: null }, line);
-      ul.appendChild(el('li', { className: 'lists-index-row' }, [
-        el('div', { className: 'lists-start-card' }, [
-          /* Not the wide sky: at sixty-four pixels a line of mono across it
-             would be the loudest thing on the card, so the scale is left to
-             the rows below. The mark is drawn here as it is there, at a size
-             that panel can carry — see paintSky(). */
-          sky(l, false),
-          el('div', { className: 'lists-start-body' }, [
-            line,
-            TTBTrack.click(el('a', {
-              className: 'lists-index-title lists-open',
-              href: '/list/' + l.id
-            }, [listPin(l), el('span', { textContent: l.title })]), 'list_page', { list_id: l.id })
-          ])
-        ])
-      ]));
-    });
+    var ul = el('ul', { className: 'lists-index' });
+    lists.forEach(function (l) { ul.appendChild(allRow(l)); });
     return el('section', { className: 'lists-start' }, [
       el('h2', { className: 'lists-section' }, [
         document.createTextNode(t('listsStart')),
@@ -1159,189 +1177,6 @@
       ]),
       ul
     ]);
-  }
-
-  /* The frame a list is drawn in: its own places, squared up to the panel.
-     Padded out by SKY_AIR, floored at SKY_FLOOR so a tight list stays a map,
-     and then stretched on whichever axis is short until it matches the shape
-     of the panel — in metres rather than in degrees, because a degree of
-     longitude up here is only about half a degree of latitude, and fitting
-     the two as though they were equal draws Tallinn half as wide as it is.
-
-     `km` is how far the list itself reaches, not how wide the frame is: the
-     frame carries air and a floor, and neither of those is a fact about the
-     list. It is the longer of the two sides, so a list strung out along one
-     street reports the length of the street. */
-  function frameFor(dots) {
-    var la0 = dots[0][0], la1 = la0, lo0 = dots[0][1], lo1 = lo0, i;
-    for (i = 1; i < dots.length; i++) {
-      la0 = Math.min(la0, dots[i][0]); la1 = Math.max(la1, dots[i][0]);
-      lo0 = Math.min(lo0, dots[i][1]); lo1 = Math.max(lo1, dots[i][1]);
-    }
-    var midLa = (la0 + la1) / 2, midLo = (lo0 + lo1) / 2;
-    /* How much shorter a degree of longitude is at this latitude. */
-    var narrow = Math.cos(midLa * Math.PI / 180);
-    var spanLa = Math.max((la1 - la0) * SKY_AIR, SKY_FLOOR);
-    var spanLo = Math.max((lo1 - lo0) * SKY_AIR, SKY_FLOOR / narrow);
-    var shape = (SKY.w - SKY.pad * 2) / (SKY.h - SKY.pad * 2);
-
-    if (spanLo * narrow / spanLa < shape) spanLo = spanLa * shape / narrow;
-    else spanLa = spanLo * narrow / shape;
-
-    return {
-      la0: midLa - spanLa / 2, la1: midLa + spanLa / 2,
-      lo0: midLo - spanLo / 2, lo1: midLo + spanLo / 2,
-      km: Math.max((la1 - la0), (lo1 - lo0) * narrow) * KM_PER_DEGREE
-    };
-  }
-
-  /* How wide a ground dot is drawn, in the panel's own units. Wide when the
-     frame is the whole city, so eleven hundred restaurants merge into land
-     with a coast around it; tighter when the frame is a few streets, where
-     the same radius would flood the panel with one blob. A map does the same
-     thing: a coastline zoomed out, streets zoomed in. */
-  function groundRadius(frame) {
-    return Math.max(2, Math.min(2.9, 1.5 + (frame.la1 - frame.la0) * KM_PER_DEGREE / 9));
-  }
-
-  /* A list as a shape on the city: the city itself as pale ground, and the
-     list's own places on it wearing the mark the list chose. It is the one
-     picture only this site can draw of somebody's list, and it says before a
-     single name is read whether this is a Kalamaja list or a Pirita one, a
-     walk or an afternoon of driving. Decorative in the markup — the names
-     under the title are the accessible version of the same fact, and so is
-     the label, which sits inside the same aria-hidden box.
-
-     The mark is the whole difference between a page of twenty pictures and a
-     page of twenty red scatters. They were dots in the accent, which is the
-     colour every list's places drew in, so the only thing telling two cards
-     apart was the shape of the city under them — and two lists of the same
-     ten streets drew the same picture twice. The glyph is the one its title
-     is already wearing, so the picture and the name are one thing: a page of
-     flames and a page of balloons, found without reading a word. It costs
-     nothing to send, because the pin was already on the row for the title.
-
-     The list's own dots are drawn now, out of what the row arrived with. The
-     ground is drawn once data/city.json has answered — a fetch the rows never
-     wait on — and a page that never gets it shows each list on plain paper,
-     which is still the shape of the list. */
-  function sky(l, wide) {
-    if (!l.dots || !l.dots.length) return null;
-    var box = el('div', { className: 'lists-sky', 'aria-hidden': 'true' });
-    box.ttbSky = {
-      dots: l.dots,
-      frame: frameFor(l.dots),
-      wide: wide,
-      pin: TTBPins.ofList(l)
-    };
-    paintSky(box);
-    return box;
-  }
-
-  /* Built as one string and set once rather than a few hundred appendChild
-     calls: a page of twenty rows draws several thousand ground dots, and the
-     ground is redrawn on every sky already on screen the moment the city
-     arrives. The label is appended as an element afterwards, because it is
-     translated text and translated text is never written through innerHTML. */
-  function paintSky(box) {
-    var sk = box.ttbSky;
-    /* Eight units across against the dot's six point eight: an emoji carries
-       its own padding, so a glyph asked for at the dot's size reads smaller
-       than the dot did. Eight is about twenty-two pixels on the phone the
-       layouts are measured against, which is what a pin on the map is.
-
-       Sixteen in the strip, because its panel is drawn into sixty-four fixed
-       pixels rather than the card's width, and the same eight units land at
-       four there — a smudge. Sixteen is about nine pixels on the screen, a
-       third of what a row card gets: sixty-four pixels cannot carry ten of
-       anything at twenty-two, and nine is where the mark is still a picture
-       and the city is still visible under it. Twenty was tried and the
-       balloons ate the panel. */
-    var mark = TTBPins.glyph(sk.pin);
-    box.innerHTML = '<svg viewBox="0 0 ' + SKY.w + ' ' + SKY.h + '" focusable="false">' +
-      '<g class="lists-sky-city">' +
-      (state.city ? spots(state.city, sk.frame, groundRadius(sk.frame), false, '') : '') +
-      '</g><g class="lists-sky-own">' +
-      spots(sk.dots, sk.frame, sk.wide ? 4 : 8, true, mark) +
-      '</g></svg>';
-    /* No label on a list with no spread — three places in one building, or a
-       list whose dots all rounded to the same block. "0.0 km across" is not a
-       fact about it, it is the label failing to have anything to say. */
-    if (sk.wide && sk.frame.km >= 0.05) {
-      box.appendChild(el('span', {
-        className: 'lists-sky-span mono',
-        textContent: t('listsSkyAcross', { n: across(sk.frame.km) })
-      }));
-    }
-  }
-
-  /* Places as SVG source: a plain dot, or `glyph` if one is given, which is
-     how a list's own places come to be wearing its mark. `r` is half of
-     whichever is drawn, so the two are asked for in one measure and the edge
-     of the panel can be kept off either without knowing which it got.
-
-     A place of the list's own outside the frame cannot happen — the frame is
-     built around them — but a ground dot outside it is the usual case, and it
-     is dropped rather than clamped: most of the city is outside a fitted
-     frame, and clamping a thousand of them smears the panel's edges into a
-     solid bar. The list's own are clamped, because the one that would need it
-     is a rounding error on the padding.
-
-     An emoji hangs off its baseline rather than sitting on a centre, and
-     about a third of its size is below the middle of it, so the baseline goes
-     that far under the point the place is actually at — the same .35em the
-     rest of the web centres a line of SVG text with. The width is the CSS
-     rule's, which sets text-anchor rather than this writing an x offset it
-     would have to guess the glyph's width for. */
-  function spots(dots, frame, r, clamp, glyph) {
-    var out = '', size = r * 2, i, x, y;
-    /* Where a thing this size may sit without hanging over the edge: the
-       padding, until the thing is bigger than the padding. A strip glyph is —
-       its half is eight against a pad of seven — and the panel clips what it
-       cannot hold, so the outermost mark on a list came out with its top cut
-       off. Only the bound moves; the projection below is on SKY.pad either
-       way, because the ground and the list's own places have to be laid on
-       one map. A ground dot passes glyph '' and keeps the padding it had. */
-    var inset = Math.max(SKY.pad, glyph ? r : 0);
-    for (i = 0; i < dots.length; i++) {
-      x = SKY.pad + (dots[i][1] - frame.lo0) / (frame.lo1 - frame.lo0) * (SKY.w - SKY.pad * 2);
-      y = SKY.pad + (frame.la1 - dots[i][0]) / (frame.la1 - frame.la0) * (SKY.h - SKY.pad * 2);
-      if (x < inset || x > SKY.w - inset || y < inset || y > SKY.h - inset) {
-        if (!clamp) continue;
-        x = Math.max(inset, Math.min(SKY.w - inset, x));
-        y = Math.max(inset, Math.min(SKY.h - inset, y));
-      }
-      out += glyph
-        ? '<text x="' + x.toFixed(1) + '" y="' + (y + size * 0.35).toFixed(1) +
-          '" font-size="' + size + '">' + glyph + '</text>'
-        : '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + r + '"/>';
-    }
-    return out;
-  }
-
-  /* One decimal under ten kilometres, none over: "0.5" is the difference
-     between one street and four, and "13" against "12.6" is not a difference
-     anybody is making a decision on. */
-  function across(km) {
-    return km < 10 ? km.toFixed(1) : String(Math.round(km));
-  }
-
-  /* The city, once, as the ground under every sky on the page.
-     data/city.json is generated by tools/city.mjs out of the Google export:
-     about eleven hundred coordinates and nothing else, nineteen kilobytes,
-     cached by the browser like any asset. Fetched after the rows are on the
-     screen and painted into every sky already drawn; a sky drawn later — a
-     page of Show more — draws its own, because state.city is set by then. */
-  function cityDots() {
-    if (state.city) return;
-    getJSON('/data/city.json').then(function (dots) {
-      if (!dots || !dots.length) return;
-      state.city = dots;
-      var boxes = dom.main.querySelectorAll('.lists-sky');
-      for (var i = 0; i < boxes.length; i++) {
-        if (boxes[i].ttbSky) paintSky(boxes[i]);
-      }
-    }).catch(function () { /* plain paper, then */ });
   }
 
   /* The foot of the rows, while there is a page after this one: a Show more
@@ -1372,50 +1207,49 @@
     moreWatch.observe(go);
   }
 
-  /* One list on /lists: the sky, the title, the line of facts, the first
+  /* One list on /lists: its mark, its title, the line of facts, the first
      three places, and the bookmark in the corner.
 
-     It drew the three rows at the foot of a list's own page too, which is
-     what the `withSky` argument was for — the sky is fetched by the directory
-     and was not by a list's page, and at 640px it would have been a box the
-     height of the card it stood on. That foot is gone and this is the
-     directory's row and nothing else, so the sky is simply drawn when the
-     row has dots. */
+     PRESSING IT GOES NOWHERE, and that is the change this whole page is. It
+     puts the list's places on the map above and its first place in the strip,
+     and leaves the row exactly where it was — so the next press is the next
+     list rather than a journey back. The title is a button for that reason,
+     where every other row on this site has a link there.
+
+     It is still .lists-open, stretched over the whole row behind the bookmark
+     and the byline, because that is what that class is for: a target the width
+     of the card rather than the width of the word. And it still carries
+     aria-pressed, because the accent on an open row is a colour and colour is
+     never the only thing saying something (design rule 10).
+
+     The way to the list's own page has not gone; it moved to the strip, where
+     its title is a link to /list/<id>. A crawler never needed either — the
+     prose functions/lists/index.js seeds into this page links every list by
+     name, and that is what a reader with no script gets.
+
+     The sky panel that used to sit above the title has gone with the column.
+     It was a picture of the list on the city drawn at a hundred and twenty
+     pixels; there is a real map on the page now. */
   function allRow(l) {
     var line = el('p', { className: 'lists-all-meta mono' });
     allMeta(l, line);
 
-    /* The card is a box and the title is the link that fills it — see
-       listRow() above, and .lists-open in assets/lists.css — so the byline in
-       the line of facts can be a door to the person who wrote the list.
+    var on = !!state.list && state.list.id === l.id;
+    var open = TTBTrack.click(el('button', {
+      type: 'button',
+      className: 'lists-index-title lists-open',
+      'aria-pressed': String(on)
+    }, [listPin(l), el('span', { textContent: l.title })]), 'list_map', { list_id: l.id });
+    open.addEventListener('click', function () { toggleList(l); });
 
-       The bookmark, in the corner of the row rather than at the end of the
-       line, and a sibling of the card rather than something inside it: it sits
-       above the title's reach the way the map pill does on an index row.
-
-       It was on a list's own page and nowhere else, so keeping one meant
-       opening it first — on a page whose whole job is to hand somebody twenty
-       lists, that is nineteen journeys back. What it repaints is the count in
-       the line above it, and nothing else: the order is left alone, because a
-       row that climbed the page under the finger that pressed it would take
-       the rows somebody was reading with it. The page is a ranking again on
-       the next load.
-
-       Nothing at all is drawn on your own list. Keeping it is refused by the
-       API — it is already under Your lists, and a second copy of it under
-       Lists you saved would be the same list twice on one page — so the honest
-       thing is not to offer the gesture, and the card keeps no room for it.
-       The class says what is in the corner rather than whose list it is,
-       because /account.html borrows this row too and has nothing in the
-       corner either. */
-    return el('li', { className: 'lists-index-row' }, [
+    /* The id on the row, so markOpen() can move the mark from one to another
+       without repainting a panel somebody is scrolling. */
+    return el('li', {
+      className: 'lists-index-row' + (on ? ' is-on' : ''),
+      'data-list': l.id
+    }, [
       el('div', { className: 'lists-all-card' + (l.mine ? '' : ' has-keep') }, [
-        /* The sky first, above the title, where a picture goes on a card. */
-        sky(l, true),
-        TTBTrack.click(el('a', {
-          className: 'lists-index-title lists-open',
-          href: '/list/' + l.id
-        }, [listPin(l), el('span', { textContent: l.title })]), 'list_page', { list_id: l.id }),
+        open,
         line,
         l.taste && l.taste.length
           ? el('p', { className: 'lists-all-taste', textContent: l.taste.join(' \u00b7 ') })
@@ -1503,6 +1337,432 @@
       dom.allBody.removeChild(btn.parentNode);
       moreLine();
     });
+  }
+
+  /* --------------------------------------------------- the map, and the strip
+   *
+   * /lists is the map with everybody's lists on it, and this is the half of
+   * that the lists themselves are not. Three things live here: the map under
+   * the whole page, the pins on it, and the strip of places that comes up
+   * along its foot when a list is pressed.
+   *
+   * WHAT IT IS FOR
+   *
+   * The directory used to be a column of cards. To see where a list actually
+   * was you opened it, which was a page load, and to see where the next one
+   * was you came back and opened that, which was two more. Twenty lists was
+   * forty journeys. Now the lists sit along the foot of the screen and never
+   * move, and pressing one draws it on the map above them — so comparing two
+   * is two presses and nothing has been navigated at all.
+   *
+   * THE THREE RULES THIS HALF KEEPS
+   *
+   * The map's box never changes. The strip is laid over it and takes nothing
+   * away from it, so opening a list, sliding a card and pulling the lists up
+   * all leave the frame exactly where it was. A map that reflowed when a panel
+   * opened would throw the city sideways every time somebody pressed a row,
+   * and that is the version of this page that was drawn first and thrown away.
+   *
+   * Pressing a list opens a place. Not a fitted view of eight pins with
+   * nothing chosen — the first place, selected, ringed, in the middle. The
+   * card under it says which.
+   *
+   * Sliding pans and never zooms. The scale is worked out once, from how far
+   * the list reaches, and every card after that is a pan. A map that zoomed
+   * under a thumb moving sideways is a map fighting the gesture.
+   */
+
+  /* Leaflet's map, and the layer every pin on it lives in. Both null until
+     ensureMap() has run, which is only ever on the directory. */
+  var lmap = null;
+  var pinLayer = null;
+  var mapPromise = null;
+  /* Which list request is the current one. A press while another list is
+     still arriving must not be overtaken by it. */
+  var listSeq = 0;
+
+  function reducedMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  /* The map, the places on it, and one promise so a second press cannot start
+     a second map. Leaflet comes off a CDN the way it does for the "add a
+     place" picker — same loader, same integrity hashes — and the seventy-five
+     places come out of data/places.json, which is the map's own catalogue and
+     nineteen kilobytes of it.
+
+     Failing is quiet and is not fatal. The lists are the page and they are
+     already drawn; what a reader without a map loses is the picture, not the
+     lists, and pressing a row still opens that list — see openList(), which
+     falls through to /list/<id>. */
+  function ensureMap() {
+    if (mapPromise) return mapPromise;
+    mapPromise = Promise.all([
+      ensureLeaflet(),
+      getJSON('/data/places.json').catch(function () { return []; })
+    ]).then(function (both) {
+      var L = both[0];
+      state.mine = both[1] || [];
+
+      lmap = L.map(dom.map, {
+        center: CITY,
+        zoom: 12,
+        /* No zoom buttons: the gesture is the pinch, the map is a third of a
+           phone, and two more circles of chrome on it would be two more
+           things standing between the lists and the city. */
+        zoomControl: false,
+        /* Built by hand below, in the one corner the strip never covers. */
+        attributionControl: false
+      });
+      /* OpenStreetMap's and CARTO's credit, which is a condition of the tiles
+         rather than a decoration, so it goes where it cannot be hidden: the
+         strip lies along the foot of this map and would sit straight on top of
+         the corner Leaflet puts it in. Added before the tiles, because a layer
+         registers its attribution with whatever control is there when it is
+         added and with nothing at all when there is none. */
+      L.control.attribution({ position: 'topright' }).addTo(lmap);
+      TTBBasemap.layer(L, {
+        maxZoom: 19,
+        dark: document.documentElement.getAttribute('data-style') === 'green'
+      }).addTo(lmap);
+      pinLayer = L.layerGroup().addTo(lmap);
+
+      /* The resting map counts its pins, and a count is a fact about where the
+         map is standing rather than about the places — so it is redrawn every
+         time the map settles. An open list is not counted and must not be
+         redrawn here: sliding a card pans the map, and a pan that rebuilt
+         fifty markers would be tearing down the pin the slide is moving
+         towards halfway through moving to it. showAt() draws those. */
+      lmap.on('moveend', function () { if (!state.list) paintPins(); });
+      fitCity();
+      paintPins();
+      return lmap;
+    }).catch(function (err) {
+      /* Let the next press try again rather than remembering the failure
+         forever — the same bargain ensureLeaflet() makes, for the same
+         reason: one flaky request on a CDN is not a broken page. */
+      mapPromise = null;
+      if (window.console && console.warn) console.warn(err);
+      return null;
+    });
+    return mapPromise;
+  }
+
+  /* Where the map stands while nothing is open: the whole of my own map,
+     fitted the way index.html fits it on load. */
+  function fitCity() {
+    if (!lmap || !state.mine || !state.mine.length) return;
+    lmap.fitBounds(window.L.latLngBounds(state.mine.map(function (p) {
+      return [p.lat, p.lng];
+    })), { padding: [30, 30], animate: false });
+  }
+
+  /* The places on the open list that can be drawn. A row the catalogue has no
+     coordinates for has nowhere to put a pin, and a card in the strip that no
+     pin answers to is worse than its absence — it is still on the list's own
+     page, with its sentence, which is where it can be read. The same rule
+     seatList() keeps in assets/app.js. */
+  function seated() {
+    var items = (state.list && state.list.items) || [];
+    return items.filter(function (it) {
+      return typeof it.lat === 'number' && typeof it.lng === 'number';
+    });
+  }
+
+  /* Pins closer together than a fingertip, gathered into one. Greedy, over
+     container pixels rather than degrees, because a fingertip is a fact about
+     the screen and not about the city — which is also why it is redone every
+     time the map settles. The dot lands on the running mean of what it holds,
+     so it sits among its places rather than on the first one seen. */
+  function clump(pts, gap) {
+    var out = [], i, j, hit;
+    for (i = 0; i < pts.length; i++) {
+      hit = null;
+      for (j = 0; j < out.length; j++) {
+        if (Math.abs(out[j].x - pts[i].x) < gap && Math.abs(out[j].y - pts[i].y) < gap) {
+          hit = out[j];
+          break;
+        }
+      }
+      if (hit) {
+        hit.n++;
+        hit.x = (hit.x * (hit.n - 1) + pts[i].x) / hit.n;
+        hit.y = (hit.y * (hit.n - 1) + pts[i].y) / hit.n;
+      } else {
+        out.push({ x: pts[i].x, y: pts[i].y, n: 1, p: pts[i].p });
+      }
+    }
+    return out;
+  }
+
+  /* One pin. The icon box is a fingertip square whatever is in it, so the
+     anchor never moves when the face grows; how big the face is inside it is
+     --pin-d, which the stylesheet sets, because the stylesheet owns every
+     measurement that is also a colour decision. See .lists-map in
+     assets/lists.css and .pin-face in assets/styles.css. */
+  function marker(L, lat, lng, pin, now) {
+    var isMark = pin === 'mark';
+    return L.marker([lat, lng], {
+      keyboard: false,
+      /* Over everything, because it is the one the strip is pointing at, and
+         Leaflet would otherwise stack it by latitude like any other. */
+      zIndexOffset: now ? 1000 : 0,
+      icon: L.divIcon({
+        className: 'pin-mark' +
+          (isMark ? ' is-mark is-reel' : ' is-glyph pin-tone-' + TTBPins.toneOf(pin)) +
+          (now ? ' is-now' : ''),
+        html: '<span class="pin-face">' + (isMark ? '' : TTBPins.glyph(pin)) + '</span>',
+        iconSize: [44, 44],
+        iconAnchor: [22, 22]
+      })
+    });
+  }
+
+  /* A counted dot, in the shape the map's own clusters wear. Pressing one goes
+     in rather than opening anything: what it stands for is places, and the way
+     to a place is to see it. */
+  function countDot(L, c) {
+    var at = lmap.containerPointToLatLng([c.x, c.y]);
+    return L.marker(at, {
+      keyboard: false,
+      icon: L.divIcon({
+        className: 'cluster-pin',
+        html: '<span class="cluster-dot' + (c.n > 2 ? ' is-many' : '') +
+          '"><span class="cluster-count">' + c.n + '</span></span>',
+        iconSize: [44, 44],
+        iconAnchor: [22, 22]
+      })
+    }).on('click', function () {
+      lmap.setView(at, Math.min(lmap.getZoom() + 2, 18));
+    });
+  }
+
+  /* Every pin on the map, from scratch. Two states and they are exclusive: a
+     list is open, or it is not.
+
+     A LIST IS NOT CLUSTERED. Counting exists so that seventy-five places on
+     one city map stay tappable; a list is at most fifty and is reached by
+     sliding a card, never by tapping the map. Cluster one and the pin the
+     strip is pointing at ends up inside a numbered dot, which is the map
+     contradicting the card under it. So every place on an open list is its
+     own pin, overlapping a little where two of them are on one street, with
+     the chosen one bigger, ringed and on top.
+
+     And a place on my map keeps the mouth even on somebody's list: being on
+     the map is the verdict and a list is not a way around it. Everything else
+     wears the list's own mark. See "The pins" in README.md. */
+  function paintPins() {
+    if (!lmap || !pinLayer) return;
+    var L = window.L;
+    pinLayer.clearLayers();
+
+    var items = seated();
+    if (state.list && items.length) {
+      var pin = TTBPins.ofList(state.list);
+      items.forEach(function (it, i) {
+        marker(L, it.lat, it.lng, it.map ? 'mark' : pin, i === state.at)
+          .on('click', function () { showAt(i); })
+          .addTo(pinLayer);
+      });
+      return;
+    }
+
+    clump((state.mine || []).map(function (p) {
+      var xy = lmap.latLngToContainerPoint([p.lat, p.lng]);
+      return { x: xy.x, y: xy.y, p: p };
+    }), CLUSTER_GAP).forEach(function (c) {
+      (c.n > 1 ? countDot(L, c) : marker(L, c.p.lat, c.p.lng, 'mark', false)).addTo(pinLayer);
+    });
+  }
+
+  /* How close the map goes when a list opens, worked out once and then left
+     alone for every card on it. Leaflet hands back the zoom that fits the
+     list exactly; a step back from that leaves it at about half the frame,
+     which is what lets the map centre on any one of its places with the rest
+     still around it. The two bounds stop the extremes at either end — see
+     LIST_ZOOM_MIN and LIST_ZOOM_MAX. A list with one place has no spread to
+     fit and simply goes as close as the page allows. */
+  function frameList(items) {
+    if (!lmap || !items.length) return;
+    var L = window.L;
+    var z = LIST_ZOOM_MAX;
+    if (items.length > 1) {
+      z = lmap.getBoundsZoom(L.latLngBounds(items.map(function (it) {
+        return [it.lat, it.lng];
+      })), false, L.point(40, 40)) - LIST_ZOOM_BACK;
+    }
+    z = Math.max(LIST_ZOOM_MIN, Math.min(LIST_ZOOM_MAX, z));
+    lmap.setView(underStrip([items[0].lat, items[0].lng], z), z, { animate: false });
+  }
+
+  /* Which place is under the thumb. Everything that says so is set here and
+     nowhere else: the counter in the pill, the card the strip is scrolled to,
+     the ring on the map and where the map is standing.
+
+     `fromScroll` is the one case where the strip is already where it should
+     be — a finger put it there — and scrolling it again from inside its own
+     scroll handler is how a strip ends up fighting the thumb that is moving
+     it. */
+  function showAt(i, fromScroll) {
+    var items = seated();
+    if (!items.length) return;
+    i = Math.max(0, Math.min(items.length - 1, i));
+    var moved = i !== state.at;
+    state.at = i;
+
+    if (dom.stripN) dom.stripN.textContent = (i + 1) + '/' + items.length;
+    /* Off the pitch rather than off the card's own offset, so the two
+       directions of this cannot disagree: stripScrolled() divides by the same
+       number to work out which card a finger settled on. */
+    if (!fromScroll && dom.stripCards && dom.stripCards.firstChild) {
+      dom.stripCards.scrollLeft = (dom.stripCards.firstChild.offsetWidth + STRIP_GAP) * i;
+    }
+    if (moved || !fromScroll) {
+      paintPins();
+      if (lmap) lmap.panTo(underStrip([items[i].lat, items[i].lng]), { animate: !reducedMotion() });
+    }
+  }
+
+  /* Where the map has to stand for a place to be *seen* at the middle of it.
+     The strip lies over the bottom of the map and takes nothing away from its
+     frame, which is the rule this arrangement keeps — but a place centred in
+     a frame whose lower half is covered is a place under the cards. So the
+     map's own centre goes half the strip's height below the place, and the
+     place comes up into the part of the map there is nothing over.
+
+     Measured rather than written down, because the strip is as tall as the
+     pill plus a card and a long title wraps the pill — the same bargain
+     peekStop() makes for the map's sheet in assets/app.js. */
+  function underStrip(at, zoom) {
+    if (!lmap) return at;
+    var strip = dom.strip && !dom.strip.hidden ? dom.strip.offsetHeight : 0;
+    if (!strip) return at;
+    /* The zoom it is about to be at, not the one it is at: frameList() moves
+       both at once, and projecting against the old scale would put the place
+       the wrong distance from the middle. */
+    var z = typeof zoom === 'number' ? zoom : lmap.getZoom();
+    var p = lmap.project(at, z);
+    p.y += strip / 2;
+    return lmap.unproject(p, z);
+  }
+
+  /* The strip scrolled. Which card it has settled on is arithmetic rather than
+     an observer: the cards are one width and one gap apart, which is what
+     scroll-snap is already holding them to, and an IntersectionObserver per
+     card would be fifty of them to watch a number this cheap to compute. */
+  function stripScrolled() {
+    var cards = dom.stripCards;
+    if (!cards || !cards.firstChild || !state.list) return;
+    var step = cards.firstChild.offsetWidth + STRIP_GAP;
+    showAt(Math.round(cards.scrollLeft / step), true);
+  }
+
+  /* Pressing a row: open that list, or shut the one already open. The row is
+     the only control either way — there is no second button for closing, and
+     the cross in the pill is the same call. */
+  function toggleList(l) {
+    if (state.list && state.list.id === l.id) return closeList();
+    openList(l);
+  }
+
+  /* Which row is showing, moved from one to another without repainting the
+     panel. The rows are what somebody is scrolling; rebuilding them to change
+     a class would take their scroll position with them, which is the one thing
+     this page promises not to do. */
+  function markOpen() {
+    if (!dom.allBody) return;
+    var rows = dom.allBody.querySelectorAll('.lists-index-row[data-list]');
+    var id = state.list ? state.list.id : '';
+    for (var i = 0; i < rows.length; i++) {
+      var on = rows[i].getAttribute('data-list') === id;
+      rows[i].classList.toggle('is-on', on);
+      var btn = rows[i].querySelector('.lists-open');
+      if (btn) btn.setAttribute('aria-pressed', String(on));
+    }
+  }
+
+  /* Open one. The row carries a title, a byline and three names; the places,
+     their sentences and their coordinates are a read of the list itself, which
+     is the same request /list/<id> makes. One at a time, and a press while
+     another is still arriving wins — see listSeq. */
+  function openList(l) {
+    var seq = ++listSeq;
+    ensureMap().then(function (m) {
+      if (seq !== listSeq) return null;
+      /* No map to draw it on. The list is still worth opening, so this falls
+         through to the page that is about one list, which is where somebody
+         with no map was going to end up anyway. */
+      if (!m) { window.location.href = '/list/' + l.id; return null; }
+      return ask(API + '?id=' + encodeURIComponent(l.id));
+    }).then(function (a) {
+      if (!a || seq !== listSeq) return;
+      if (a.status === 0 || !a.out || !a.out.list) return toast(t('loadError'));
+      state.list = a.out.list;
+      state.at = 0;
+      paintStrip();
+      /* The frame first, then the pins and the ring, so the map is where it is
+         going to be before anything is drawn on it. */
+      frameList(seated());
+      showAt(0);
+      markOpen();
+    });
+  }
+
+  function closeList() {
+    listSeq++;
+    state.list = null;
+    state.at = 0;
+    paintStrip();
+    paintPins();
+    fitCity();
+    markOpen();
+  }
+
+  /* The strip: a pill saying which list this is, and its places as cards that
+     slide. Built whole each time a list is opened, which is the one moment it
+     changes — sliding between cards changes the counter and nothing else.
+
+     The pill is the only thing on screen naming the open list, so it carries
+     both doors: its title is a link to /list/<id>, the page that is about one
+     list, and the cross beside the counter shuts the strip. The keep is not
+     here — the row it belongs to is still on the screen, with its bookmark on
+     it, which is the whole point of the lists not moving. */
+  function paintStrip() {
+    clear(dom.strip);
+    dom.strip.hidden = !state.list;
+    document.body.classList.toggle('lists-showing', !!state.list);
+    dom.stripCards = null;
+    dom.stripN = null;
+    if (!state.list) return;
+
+    var l = state.list;
+    var items = seated();
+
+    dom.stripN = el('span', { className: 'strip-n mono' });
+    dom.strip.appendChild(el('div', { className: 'strip-head' }, [
+      listPin(l),
+      TTBTrack.click(el('a', {
+        className: 'strip-title',
+        href: '/list/' + l.id,
+        textContent: l.title
+      }), 'list_page', { list_id: l.id }),
+      dom.stripN,
+      iconButton('close', ICON_X, closeList, 'strip-close')
+    ]));
+
+    /* A place with nowhere to draw is not in here, and neither is the strip at
+       all when none of them can be drawn: a pill over an empty rail would be
+       the page pointing at a map with nothing on it. The row stays open and
+       says so. */
+    if (!items.length) {
+      dom.strip.appendChild(el('p', { className: 'strip-none mono', textContent: t('listsEmpty') }));
+      return;
+    }
+
+    dom.stripCards = el('ul', { className: 'strip-cards' });
+    items.forEach(function (it, i) { dom.stripCards.appendChild(itemRow(it, i)); });
+    dom.stripCards.addEventListener('scroll', stripScrolled);
+    dom.strip.appendChild(dom.stripCards);
   }
 
   /* -------------------------------------------------------------- one list */
@@ -3823,6 +4083,32 @@
 
   function wire() {
     wireKeyboard();
+
+    /* The lists have two heights and the grip swaps them. A tap and not a
+       drag: the map page's sheet is dragged because it is a sheet over a map
+       that fills the window, and this is a region of a page that does not
+       scroll, where the only question a gesture could ask is "more lists or
+       more map". Two answers, one button, and a real one — it says its own
+       name and the keyboard reaches it, which a bar of three pixels never
+       did.
+
+       Leaflet measures its own box once and keeps the number, so it is told
+       the box changed; and the city is re-fitted after, because a frame that
+       grew while nothing was open should show more city rather than the same
+       city with bars down the side. */
+    if (dom.grip) {
+      dom.grip.addEventListener('click', function () {
+        var tall = document.body.classList.toggle('lists-tall');
+        dom.grip.setAttribute('aria-expanded', String(tall));
+        if (!lmap) return;
+        lmap.invalidateSize();
+        /* And the map put back where it should be in the frame it now has:
+           the strip is a different height at the tall stop — its cards go —
+           so where a chosen place has to sit to be seen has moved with it. */
+        if (state.list) showAt(state.at);
+        else fitCity();
+      });
+    }
     dom.pickerClose.addEventListener('click', closePicker);
     dom.pickerScrim.addEventListener('click', function (ev) {
       if (ev.target === dom.pickerScrim) closePicker();
@@ -3936,6 +4222,17 @@
       /* And the rows of one list, under its own field. Claimed by renderOne()
          for the same reason, and null on every other view. */
       found: null,
+      /* The two regions above the lists, on the directory and nowhere else.
+         Found by id rather than built, because the map is a box Leaflet is
+         handed and must not be rebuilt under it. */
+      stage: $('lists-stage'),
+      map: $('lists-map'),
+      strip: $('lists-strip'),
+      /* Claimed by paintStrip() when there is a strip, null when there is
+         not — the same rule allBody and found keep. */
+      stripCards: null,
+      stripN: null,
+      grip: $('lists-grip'),
       who: $('lists-who'),
       btnRadio: $('btn-radio'),
       radioName: $('radio-name'),

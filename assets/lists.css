@@ -823,15 +823,7 @@
    rather than the 4px that reads right at the foot of the directory's grid. */
 .lists-fold .lists-more { margin-top: 10px; }
 
-/* ---------- the directory, laid out for a desk ---------- */
-
-/* The one view here that is wider than a column of prose. Everything else on
-   this stylesheet reads at the 640px a list of sentences reads at; the
-   directory is rows of cards and a strip of five, and at 640px on a monitor it
-   was the phone page in the middle of a screen. assets/lists.js sets the class
-   on the directory and on nothing else — see render(). */
-.lists-main.is-wide { max-width: 1180px; }
-.lists-all .lists-say { max-width: 62ch; }
+/* ---------- the directory ---------- */
 
 /* The sticky row under the head card carries the field and, beside it, the
    order: one row so what narrows the page and what orders it are found in the
@@ -865,107 +857,419 @@
   color: var(--muted);
 }
 
-/* The five lists Google's numbers wrote, as a strip: a compact card each, the
-   sky on the left and the title beside it, hairline rather than paper on the
-   wash so the strip reads as a shelf above the rows and not as five more of
-   them. A column on a phone, three across from 900px, five across on a desk. */
-.lists-start { display: flex; flex-direction: column; gap: 12px; }
-.lists-start-row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
-.lists-start-card {
-  display: grid;
-  grid-template-columns: 64px minmax(0, 1fr);
-  gap: 12px;
-  align-items: center;
-  min-height: 74px;
-  padding: 10px 14px 10px 10px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
-}
-.lists-start-card:hover { border-color: var(--accent); }
-.lists-start-card:hover .lists-index-title { color: var(--accent); }
-.lists-start-card .lists-index-title { font-size: 14px; line-height: 1.25; }
-.lists-start-card .lists-all-meta { margin: 0 0 3px; font-size: 9.5px; line-height: 1.5; }
-.lists-start-body { min-width: 0; }
+/* ==========================================================================
+   /lists: the map with everybody's lists on it
 
-/* A list as a shape on the city: the city itself as pale ground, the list's
-   own places on it wearing the mark the list chose. Drawn by sky() in
-   assets/lists.js into a box with the frame's own proportions, so nothing is
-   cropped — the frame is fitted to each list now, and a crop that hid the
-   edges of a fixed box has nothing left to hide.
+   The other three addresses this file serves — one list, one person, and the
+   page that redirects — are documents in a 640px column and are untouched by
+   any of this. The directory is not a document. It is three regions that fill
+   the window and do not scroll:
 
-   The ground is the eleven hundred coordinates of data/city.json drawn wide
-   enough to touch, so it reads as land rather than as a scatter, and the bay
-   is the part of the frame with nothing in it. It is --hairline on --paper
-   and not on --wash: hairline against wash is seven values of difference,
-   which is texture rather than a map. Colour comes out of the tokens like
-   everything else, so a sky changes with the swatch. */
-.lists-sky {
-  position: relative;
-  background: var(--paper);
-  border-radius: var(--radius);
+     the brand   across the top, and it is the brand and nothing else
+     the map     under it, filling everything the lists leave
+     the lists   along the foot, in the same place in every state
+
+   and one thing laid over the map rather than beside it: the strip of places
+   that comes up when a list is pressed. Laid over, because a map that gave up
+   room when a panel opened would throw the city sideways every time somebody
+   pressed a row — the frame here never changes, and that is the rule the
+   arrangement exists to keep.
+
+   render() in assets/lists.js puts .lists-app on the body for the directory
+   and for nothing else.
+   ========================================================================== */
+
+.lists-app {
+  display: flex;
+  flex-direction: column;
+  /* dvh rather than vh: on a phone the browser's own bar comes and goes, and
+     the three regions have to add up to what is actually on screen rather
+     than to what would be there if it were hidden. */
+  height: 100dvh;
   overflow: hidden;
+  padding: 0;
 }
-.lists-sky svg { display: block; width: 100%; height: auto; }
-.lists-sky-city circle { fill: var(--hairline); }
 
-/* The list's mark, on every place the panel draws. Centred on the place by
-   text-anchor, because the width of an emoji is the platform's and not
-   something assets/lists.js can offset by; its height is the .35em the
-   drawing puts into the baseline, and its size is paintSky()'s, which asks
-   for twice as much in the strip's sixty-four pixels as on a row card.
-
-   The fill is the fallback and not the picture: a colour emoji brings its own
-   paint, and fill reaches only a platform that has none of these glyphs in
-   colour, where the accent is what the dots it replaced were drawn in.
-
-   The glyph is the picture; nothing selects or drags it — the same line
-   .pin-face and .lists-pin carry in assets/styles.css, and for the same
-   reason: the panel is aria-hidden decoration, and a selection dragged out of
-   it is a handful of fire emoji. */
-.lists-sky-own text {
-  font-family: var(--emoji);
-  fill: var(--accent);
-  text-anchor: middle;
-  -webkit-user-select: none;
-  user-select: none;
+/* The header. Full bleed and a bar rather than the centred line the document
+   views carry, because it is the top edge of an arrangement rather than the
+   first thing in a scroll — and because what sits under it is a map, which
+   needs an edge to stop against. */
+.lists-app .lists-brand {
+  flex: 0 0 auto;
+  max-width: none;
+  margin: 0;
+  padding: calc(9px + var(--safe-t)) max(14px, var(--safe-l)) 9px max(14px, var(--safe-r));
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
+  z-index: 4;
 }
-.lists-all-card > .lists-sky {
-  aspect-ratio: 120 / 52;
-  margin: 0 0 12px;
+.lists-app .lists-mark { width: 34px; height: 34px; }
+
+/* ---------- the map ---------- */
+
+.lists-stage { position: relative; flex: 1 1 auto; min-height: 0; background: var(--wash); }
+.lists-stage[hidden] { display: none; }
+/* z-index on the map and not only on the strip, and it has to be: Leaflet
+   gives its own panes z-indexes up to 800, and a positioned element with
+   `z-index: auto` starts no stacking context of its own — so those 800s would
+   be counted against the strip's 3 in the stage's context and win. Naming a
+   z-index here puts the whole map in one context and the strip above all of
+   it. The strip was behind the tiles until somebody looked. */
+.lists-map { position: absolute; inset: 0; z-index: 0; }
+
+/* Leaflet draws its own attribution, its own panes and its own focus rings,
+   and two of the three need saying in the site's own tokens rather than in
+   its defaults. */
+.lists-map .leaflet-container { font-family: var(--mono); font-size: 10px; background: var(--wash); }
+
+/* Leaflet's own stylesheet is fetched at runtime by ensureLeaflet(), so it
+   lands in the head AFTER this file and after assets/styles.css — which means
+   .leaflet-div-icon's white box and grey border outrank .pin-mark's
+   `background: none` on equal specificity and a later line. Every div icon on
+   this page draws inside that box until something outweighs it, which is what
+   this is.
+
+   The map page has never needed it: there, leaflet.css is a <link> in the head
+   above both stylesheets, so the cascade already runs the right way round.
+
+   And it is not only the map below. The pin in the "add a place" picker had
+   been sitting in a white square with a grey edge for as long as that picker
+   has had a map, for exactly this reason and unnoticed because a red dot in a
+   white square still reads as a pin. */
+.leaflet-container .pin-mark,
+.leaflet-container .cluster-pin,
+.leaflet-container .picker-pin {
+  background: none;
+  border: 0;
+}
+/* And the same overturned twice more, because the box is not the only thing
+   Leaflet has an opinion about: .leaflet-marker-icon is display:block, which
+   beats .pin-mark's grid on the same weight and a later line — and a
+   .pin-face that is not a grid item is an inline span, which is a span that
+   ignores the width and the height it was given and draws as whatever the
+   glyph inside it measures. That is the four-pixel square this page's pins
+   were until somebody looked. */
+.leaflet-container .pin-mark,
+.leaflet-container .cluster-pin {
+  display: grid;
+  place-items: center;
+}
+.lists-map .leaflet-control-attribution {
+  background: var(--attrib-bg);
+  color: var(--muted);
+  padding: 2px 6px;
+  border-radius: 0 0 0 var(--radius);
+  max-width: 62vw;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.lists-map .leaflet-control-attribution a { color: var(--muted); }
+
+/* The pin the strip is pointing at: bigger, and inside a ring. Bigger is the
+   same thing the map does for a place you have open — see pinSize() in
+   assets/app.js — and the ring is the second saying of it, because colour and
+   size are one difference and design rule 10 wants two. */
+.lists-map .pin-mark.is-now { --pin-d: 30px; }
+.lists-map .pin-mark.is-now::before {
+  content: "";
+  position: absolute;
+  /* Centred in the icon box by the four zeros and `margin: auto` rather than
+     by the grid it would otherwise be a second item of — two auto-placed
+     children of a grid are two rows, and the ring would sit under the mark
+     instead of round it. */
+  inset: 0;
+  margin: auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: .55;
+  pointer-events: none;
+}
+
+/* ---------- the strip: a list's places, along the foot of the map ---------- */
+
+.lists-strip {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding-bottom: 12px;
+  /* The bar is a full-width strip and the pill and the cards only fill part
+     of it, so the rest of it would be a piece of dead map that swallowed
+     pinches and drags. The same subtraction .filter-bar makes on the map. */
+  pointer-events: none;
+}
+.lists-strip[hidden] { display: none; }
+.lists-strip > * { pointer-events: auto; }
+
+/* Which list these are. A pill floating on the map, the way every other piece
+   of chrome on this site floats on it — no band, no page around it. It is the
+   only thing on screen naming the open list, so it carries both doors: the
+   title goes to /list/<id>, the page that is about one list, and the cross
+   shuts the strip. */
+.strip-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 14px 9px;
+  padding: 5px 5px 5px 11px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  box-shadow: var(--lift);
+}
+.strip-head .lists-pin { flex: 0 0 auto; }
+.strip-title {
+  font-family: var(--display);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.strip-title:hover { color: var(--accent); }
+.strip-n {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-size: 10px;
+  letter-spacing: .04em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.strip-close {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--paper);
   border: 1px solid var(--hairline);
 }
-
-/* How far the list reaches, in the corner of its own sky. It is what the
-   cards lost when they stopped sharing one frame: without it a walk around
-   Kalamaja and a list strung across the whole city draw the same size of
-   scatter. Inside the sky's aria-hidden box, like the drawing it annotates —
-   the names under the title are what a screen reader gets. */
-.lists-sky-span {
-  position: absolute;
-  left: 8px;
-  bottom: 5px;
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+.strip-none {
+  margin: 0 14px;
+  padding: 10px 13px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  font-size: 11px;
   color: var(--muted);
 }
 
-@media (min-width: 900px) {
-  /* Cards two across, and the strip three. The row is made a flex box so the
-     card fills the row's height and a short list stands as tall as the long
-     one beside it; the bookmark is laid against the row, so it keeps its
-     corner. */
-  .lists-all .lists-index { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-  .lists-all .lists-index-row { display: flex; }
-  .lists-all .lists-all-card { flex: 1 1 auto; }
-  .lists-all .lists-index-title { font-size: 19px; }
-  .lists-start-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* The cards. One screenful is one card and a slice of the next, which is the
+   whole of how a strip says it slides without a word — and scroll-snap is
+   what makes it settle on a card rather than between two. The gap is said in
+   assets/lists.js as well, as STRIP_GAP, because stripScrolled() works out
+   which card a finger settled on from the pitch; change one, change the
+   other. */
+.strip-cards {
+  display: flex;
+  gap: 10px;
+  padding: 0 14px;
+  margin: 0;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.strip-cards::-webkit-scrollbar { display: none; }
+.strip-cards .item {
+  flex: 0 0 auto;
+  width: min(264px, 74vw);
+  /* A fixed height, and every card the same one. They are read one at a time
+     under a thumb that is moving sideways, so a rail whose floor moved with
+     the length of somebody's sentence would rock the map under it — and the
+     map is the thing the strip is standing on. What does not fit is clipped,
+     and the card is a door to the place, where all of it is. */
+  height: 116px;
+  align-content: start;
+  overflow: hidden;
+  scroll-snap-align: start;
+  padding: 11px 13px;
+  border-radius: var(--radius-soft);
+}
+.strip-cards .item-name { font-size: 15px; }
+/* The address is the one thing the strip does not need to print: the pin it
+   belongs to is on the map above it, which is a better answer to "where is
+   it" than a street ever was. It is still on the list's own page. */
+.strip-cards .item-address { display: none; }
+/* One line, clipped. Kept as the flex row it is rather than blockified,
+   because the gap between "According to Google", the score and the kinds is
+   that row's `gap` — turn it into a block and the three run together. */
+.strip-cards .place-source {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 9.5px;
+}
+.strip-cards .item-say {
+  font-size: 12px;
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-@media (min-width: 1180px) {
-  .lists-all .lists-index { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .lists-start-row { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+/* Pulled the lists up with a list open and there is not room for both. The
+   cards go and the pill stays, so which list is showing — and the way to shut
+   it — never leaves the screen, and the band of map that is left is a band of
+   map rather than a sliver behind a rail. Drop the lists back down and the
+   cards come back. */
+.lists-app.lists-tall .strip-cards { display: none; }
+.lists-app.lists-tall .strip-head { margin-bottom: 0; }
+
+/* ---------- the lists, which never move ---------- */
+
+/* The grip over them, and the two heights it swaps. It is a button and says
+   so to a keyboard and a screen reader; what it looks like is the bar every
+   sheet on this site is dragged by, because that is the picture people
+   already read as "this edge moves". */
+.lists-grip {
+  display: none;
+  position: relative;
+  flex: 0 0 auto;
+  height: 18px;
+  background: var(--paper);
+  border-top: 1px solid var(--hairline);
+  z-index: 5;
+}
+.lists-app .lists-grip { display: block; }
+.lists-grip::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 3px;
+  border-radius: 100px;
+  background: var(--hairline);
+}
+.lists-grip:hover::before { background: var(--muted); }
+.lists-grip:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: -2px; }
+
+/* The panel itself. Two heights and the grip swaps them: enough for three
+   rows and most of a map, or enough for six rows and a band of one. */
+.lists-app .lists-main {
+  flex: 0 0 auto;
+  max-width: none;
+  height: 44%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  box-shadow: 0 -6px 26px rgba(20, 26, 31, .12);
+  z-index: 5;
+}
+.lists-app.lists-tall .lists-main { height: 62%; }
+
+.lists-app .lists-all { display: contents; }
+/* The field and the two order chips, which do not scroll with the rows. */
+.lists-app .lists-all-search {
+  position: static;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 10px max(14px, var(--safe-l)) 10px max(14px, var(--safe-r));
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
+}
+/* And the rows, which do. Only this scrolls on the whole page. */
+.lists-app .lists-all-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  gap: 0;
+  padding: 0 max(14px, var(--safe-l)) calc(16px + var(--safe-b)) max(14px, var(--safe-r));
+}
+.lists-app .lists-index { gap: 0; }
+.lists-app .lists-index-row + .lists-index-row { border-top: 1px solid var(--hairline); }
+.lists-app .lists-start { display: flex; flex-direction: column; }
+
+/* A row in the panel. Flatter than the card it was — no border, no radius, no
+   shadow — because a panel of cards inside a card is one box too many, and
+   the rule between two rows says everything the edges did. */
+.lists-app .lists-all-card {
+  padding: 11px 0 12px;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.lists-app .lists-all-card.has-keep { padding-bottom: 12px; padding-right: 42px; }
+.lists-app .lists-index-title { font-size: 15.5px; }
+/* The bookmark, in the corner of a row that is now a line rather than a card.
+   The word goes and the mark stays: the count it used to sit beside is in the
+   line of facts two lines above it, and a pill reading "saved by 41 people"
+   beside a title has spent the width the title needed. The word is only
+   hidden from the eye — a button announcing itself as "Save" is the whole of
+   what a screen reader has here, and .lists-live above is the same subtraction
+   written for the same reason. */
+.lists-app .lists-index-row > .lists-keep-wrap { right: 0; top: 10px; bottom: auto; }
+.lists-app .lists-keep {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  justify-content: center;
+}
+.lists-app .lists-keep > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+/* The row whose places are on the map. The wash behind it and the accent on
+   its title are the same two things a pressed chip says, and aria-pressed on
+   the button says it a third way for anybody not looking. */
+.lists-app .lists-index-row.is-on { background: var(--wash); }
+.lists-app .lists-index-row.is-on .lists-index-title { color: var(--accent); }
+
+/* ---------- the same three regions, on a desk ---------- */
+
+/* Side by side rather than stacked: the lists are a column on the left, the
+   map takes everything else, and the strip still runs along its foot. A grid
+   rather than the column reflowed, because the document order here is brand,
+   map, grip, lists — right for a phone, wrong for a desk — and naming areas
+   moves them without asking the markup to be in two orders at once.
+
+   The grip goes: a column that is already the full height of the window
+   cannot be pulled taller, so the control it is would do nothing. */
+@media (min-width: 861px) {
+  .lists-app {
+    display: grid;
+    grid-template-columns: 380px minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+      "head  head"
+      "lists stage";
+  }
+  .lists-app .lists-brand { grid-area: head; }
+  .lists-app .lists-stage { grid-area: stage; }
+  .lists-app .lists-main {
+    grid-area: lists;
+    width: auto;
+    height: auto;
+    border-right: 1px solid var(--hairline);
+    box-shadow: none;
+  }
+  .lists-app.lists-tall .lists-main { height: auto; }
+  .lists-app .lists-grip { display: none; }
+  .strip-cards .item { width: 300px; }
 }
 
 /* ---------- keeping somebody else's list ---------- */
