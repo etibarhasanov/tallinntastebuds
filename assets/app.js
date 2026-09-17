@@ -238,6 +238,20 @@
 
   function isNarrow() { return window.matchMedia('(max-width: 860px)').matches; }
 
+  /* Whether there is room on screen for the places column and a place open
+     beside it, rather than a place on top of it. The number is the
+     stylesheet's — "the places column is always up" in assets/styles.css says
+     why 1200 — and it is read from a query here rather than written down
+     twice, because a layout that disagrees with itself about how wide it is
+     draws one column and reserves room for two. */
+  var pairMQ = window.matchMedia('(min-width: 1200px)');
+  function pairFits() { return pairMQ.matches; }
+
+  /* The places column stands open on a desktop from the moment the map draws
+     and nothing shuts it, so the list is never the thing a close is about —
+     see closePanel, which lands on it instead of closing. */
+  function listIsFixed() { return !isNarrow(); }
+
   /* Interface string lookup: current language, then English, then the key. */
   function t(key, vars) {
     var pack = state.ui[state.lang] || {};
@@ -2238,7 +2252,15 @@
    */
   var TOUR_STEPS = [
     { key: 'explainPin', at: nearestPin },
-    { key: 'explainList', at: function () { return dom.btnList; } },
+    /* The button, where there is one. Above 860px there is not: the places
+       column is open from the moment the map draws and the button that used
+       to open it has gone, so the step points at the column's own search
+       field instead — the top of the thing the button used to be about. */
+    { key: 'explainList', at: function () {
+        return dom.btnList.offsetParent
+          ? dom.btnList
+          : (dom.list.querySelector('.search-field') || dom.panel);
+      } },
     { key: 'explainLang', at: function () { return dom.langSwitch; } },
     { key: 'explainChips', drawer: true,
       at: function () { return chipRow() || dom.btnFilters; } },
@@ -2300,8 +2322,19 @@
     /* Over the map, not over a sheet: the walk points at the pins and the
        rail, and on a phone a sheet covers the one and lays the other along
        its top edge. And not with the rail mid-cascade, which would be two
-       introductions talking at once. */
-    if (dom.panel.classList.contains('is-open')) closePanel({ band: false });
+       introductions talking at once.
+
+       On a desktop there is no sheet to be under and the places column does
+       not close, so what it clears is whatever opened in front of the column —
+       a place, or the chat — and the walk then runs over the page as it
+       actually stands, which is what it is for. That is also what leaves the
+       list step something to point at: it points at the column's search field
+       up here, and a walk that had just shut the column would be ringing
+       nothing. */
+    if (dom.panel.classList.contains('is-open')) {
+      if (isNarrow()) closePanel({ band: false });
+      else if (state.view !== 'list') restOnList();
+    }
     closeHints();
     tour.steps = [];
     for (var k = 0; k < TOUR_STEPS.length; k++) {
@@ -3711,6 +3744,19 @@
    * there is a drawer to roll out only on the narrow side. That is
    * openChipRowHint(), just above introduceRail().
    */
+  /* Whether the panel is standing over the things that introduce themselves,
+     which is a question about the sheet and not about the panel. On a phone an
+     open panel is a sheet over half the screen: the chip row is behind it, the
+     sentence under the mark is behind it, and the rail is laid along its top
+     edge as a row where a pill at full width pushes the buttons after it off
+     the side. Above 860px the panel is a column down the right and the places
+     column is always one, so asking "is the panel open" up there would defer
+     every introduction this browser is ever owed — the corner and the rail are
+     on the other side of the screen and nothing is over them. */
+  function sheetIsOver() {
+    return isNarrow() && document.body.classList.contains('panel-open');
+  }
+
   var HINT_MS = 4200;
   /* Top to bottom, which is the order they open in. */
   var HINT_KEYS = ['account', 'lists', 'random', 'ask', 'radio', 'style',
@@ -3826,7 +3872,7 @@
     if (brandOutTimer) { clearTimeout(brandOutTimer); brandOutTimer = null; }
     var show = function () {
       brandInTimer = null;
-      if (document.body.classList.contains('panel-open')) return;
+      if (sheetIsOver()) return;
       /* Measured collapsed — the line is max-height: 0 with the overflow
          hidden, and scrollHeight reads the content through that — so the chip
          row below knows how far to step down before either of them moves.
@@ -3862,8 +3908,7 @@
       /* Never over an open sheet. With a place open the rail lies along the
          strip above it as a row, and two pills at their full width push the
          colour swatch and the locate button off the side of the screen. */
-      if (btn.hidden || !hintText(btn) ||
-          document.body.classList.contains('panel-open')) {
+      if (btn.hidden || !hintText(btn) || sheetIsOver()) {
         hintTimers[key] = null;
         return;
       }
@@ -3898,7 +3943,7 @@
     chipRowTimer = setTimeout(function () {
       /* Never over an open sheet, for the same reason a pill is not: the bar
          is not on screen behind one. */
-      if (document.body.classList.contains('panel-open')) {
+      if (sheetIsOver()) {
         chipRowTimer = null;
         return;
       }
@@ -3920,8 +3965,7 @@
        a visitor who landed on a place or a story — or who switched language
        while reading one — still gets the rail explained the first time they
        are actually looking at the map. */
-    if (document.body.classList.contains('panel-open') ||
-        (dom.stories && !dom.stories.hidden)) {
+    if (sheetIsOver() || (dom.stories && !dom.stories.hidden)) {
       introPending = true;
       return;
     }
@@ -4104,7 +4148,7 @@
 
     state.lastPick = choice.id;
     TTBTrack.event('random_pick', { place: choice.name, pool: pool.length });
-    selectPlace(choice.id, { fly: true, peek: true });
+    selectPlace(choice.id, { fly: true, peek: true, unasked: true });
   }
 
   /* --------------------------------------------------------------- the ask
@@ -5129,6 +5173,20 @@
     }
   }
 
+  /* Where every close lands on a desktop: back on the places column, with the
+     place still marked on the map. The mirror of restOnBand() on a phone, and
+     shorter than it for one reason — there is no sheet to resize and no strip
+     of map to hand back, because the column keeping its place is the whole
+     point of the arrangement. The map is left exactly where it is for the same
+     reason a place opening does not move it: what the second column was
+     covering is map that was already spare. */
+  function restOnList() {
+    var was = state.selected;
+    if (state.view === 'ask') state.asks = [];
+    if (was) state.marked = was;
+    showList(false, { keepList: true });
+  }
+
   /* A list is a mode, and on a phone the sheet is the only thing on screen
      that says which one. So while a list is open the panel does not close:
      the cross, Escape, Places and a pull past the stops all leave it sitting
@@ -5145,6 +5203,18 @@
   function closePanel(opts) {
     if (!dom.panel.classList.contains('is-open')) return;
     if (state.list && isNarrow() && (!opts || opts.band !== false)) { restOnBand(); return; }
+    /* Above 860px the places column does not close, so a cross is never about
+       the panel — it is about whatever opened in front of the list, and what
+       it hands back is the list. The same end restOnBand() reaches on a phone
+       sitting on a list's name, by the same reasoning: a close wants somewhere
+       to land, and here there always is somewhere.
+
+       `band: false` is still the way past it, and the walk is still the one
+       caller — but only from a phone now. Up here it asks for this road
+       instead: it wants whatever opened in front of the column gone and the
+       column itself left standing, because the step about the places points
+       at that column's search field. See openExplain. */
+    if (listIsFixed() && (!opts || opts.band !== false)) { restOnList(); return; }
     /* A place opened out of an answer closes back into the chat, the way
        one opened under a list lands on the band: the conversation is what
        the visitor is in the middle of, and the map stays narrowed to its
@@ -5220,7 +5290,7 @@
     /* One mark at a time: opening a place takes it from whatever held it. */
     state.marked = id;
     state.view = 'detail';
-    renderPanel();
+    renderPanel({ keepList: true });
     openPanel();
     /* Tapping a place is a request for the place, not for the map, so on a
        phone the sheet opens at its full stop: the restaurant's page, as far
@@ -5243,9 +5313,22 @@
     if (opts.history !== false) syncUrl(fresh);
 
     paintMarkers();
-    refocus(place, !!opts.fly);
+    /* And on a desktop the map holds still. A place opens in a column beside
+       the list rather than on top of it, so what it covers is city that was
+       spare a moment ago — and a map that panned every time a name was pressed
+       would be answering a question nobody asked, while moving the pins the
+       visitor was reading. The one exception is a place they did not choose:
+       Surprise me and a link that arrives on a restaurant both hand you a name
+       with no idea where it is, and there the whole point is the map going to
+       it. A phone still moves for every one of them, because the sheet covers
+       the half of the screen the pin would otherwise be in. */
+    if (isNarrow() || opts.unasked) refocus(place, !!opts.fly);
 
     dom.panelScroll.scrollTop = 0;
+    /* The place's own column on a desktop, where the scroll lives now. The
+       element outlives the write-up inside it, so a second place opened after
+       a long scroll through the first would start halfway down. */
+    dom.detail.scrollTop = 0;
     var heading = dom.detail.querySelector('.place-name');
     if (heading) heading.focus();
 
@@ -5259,7 +5342,7 @@
     forgetAnswer({ redraw: false });
     state.selected = null;
     state.view = 'list';
-    renderPanel();
+    renderPanel(opts);
     openPanel();
     /* At the full stop on a phone, the way a place and the chat open: asking
        for the list is asking for the names, and the half stop is what the
@@ -5343,13 +5426,35 @@
     }
   }
 
+  /* Which row the open place is, marked in a list that is standing beside it.
+     Only a class, on rows that are already drawn: the list is what the visitor
+     was reading and rebuilding it to move one highlight would scroll it back
+     to the top. Cleared by renderList() drawing fresh rows, so nothing has to
+     unmark on the way out.
+
+     With no column beside it there is nothing to mark — a list and a place are
+     never on screen together under 1200px — so the caller asks first. */
+  function markOpenRow() {
+    var rows = dom.listBody.querySelectorAll('.list-row');
+    for (var i = 0; i < rows.length; i++) {
+      rows[i].classList.toggle('is-open', rows[i].getAttribute('data-id') === state.selected);
+    }
+  }
+
   /* Whether the panel is wearing a list's name above its scroll — which is
-     every time a list is the map's mode and the panel is showing the list
-     rather than one place or the chat. Two things read it that would otherwise
-     each have to work it out again: who carries #panel-list-title, and whether
-     the sheet has a stop under its low one. */
+     every time a list is the map's mode and the list is on screen. Two things
+     read it that would otherwise each have to work it out again: who carries
+     #panel-list-title, and whether the sheet has a stop under its low one.
+
+     "On screen" is the part that had to grow, and listOnScreen() is where it
+     went. It used to mean the panel was showing the list rather than one place
+     or the chat, which was the same sentence while there was one column to
+     show them in. Above 1200px the list stands beside whatever opened, so the
+     name of the list the map is narrowed to has to stand over it — the band is
+     the only thing on the page saying which list you are in, and a place
+     opening is not leaving it. */
   function bandIsUp() {
-    return !!state.list && state.view === 'list';
+    return !!state.list && listOnScreen();
   }
 
   function renderBand() {
@@ -5360,6 +5465,7 @@
        step with it. */
     dom.panelBand.hidden = !up;
     if (!up) {
+      document.body.style.setProperty('--band-h', '0px');
       /* Nothing to sit on, so nothing is sitting on it. The class only: what
          the grip says about itself belongs to whichever view is opening, and
          openSheetAt() says it for all four. */
@@ -5368,9 +5474,36 @@
     }
     dom.panelBand.appendChild(listBand());
     measureBand();
+    /* How far down the band pushes everything under it. The band sits above
+       the scroller, so with two columns it pushes the place's card down as
+       well as the list's — and the close and the mark, which are placed
+       against the panel rather than against the card they belong to, would be
+       left floating over the map above it. They are offset by this instead.
+       Measured after it is filled, because a long title wraps. */
+    document.body.style.setProperty('--band-h', dom.panelBand.offsetHeight + 'px');
   }
 
-  function renderPanel() {
+  /* Whether the last render left the list on screen. What it is for is the
+     one thing this arrangement exists to protect: a list that keeps its place.
+     renderList() builds seventy-six rows and puts the scroller back at the
+     top, which is the right answer when the language or a chip has changed and
+     exactly the wrong one when all that happened is that a place opened beside
+     it. So the two transitions that must not disturb it — opening a place and
+     closing one — ask for keepList, and they get it only when the list was
+     already standing. Everything else redraws as it always did. */
+  var lastListUp = false;
+
+  /* Whether the list is on screen as things stand: alone, or standing beside
+     whatever opened in front of it. Asked rather than remembered, because both
+     things that read it — renderPanel below and bandIsUp above it — are asking
+     about the render they are in the middle of, and a flag left over from the
+     last one answers for a layout that has already gone. */
+  function listOnScreen() {
+    var busy = (state.view === 'detail' && state.selected) || state.view === 'ask';
+    return !busy || (pairFits() && !isNarrow());
+  }
+
+  function renderPanel(opts) {
     document.body.classList.toggle('panel-detail', state.view === 'detail' && !!state.selected);
     paintSave();
     renderBand();
@@ -5387,11 +5520,23 @@
     /* The scroller lays the chat out as a column so the field can hold the
        bottom — see .ask in assets/styles.css — and only the chat. */
     document.body.classList.toggle('panel-ask', asking);
+    /* Whether the list is standing beside whatever is open rather than
+       underneath it. Both columns are drawn at once then, and the list is the
+       one that must not be rebuilt: it is what the visitor was reading a
+       moment ago, and a redraw would put it back at the top and lose the row
+       they had their eye on. So it is rendered when it has nothing next to it,
+       or when it has nothing in it yet, and lit rather than rebuilt after
+       that. */
+    var listUp = listOnScreen();
     if (detail) renderDetail(byId(state.selected)); else clear(dom.detail);
-    if (asking) renderAsk(); else if (!detail) renderList();
+    if (asking) renderAsk();
+    var keep = opts && opts.keepList && lastListUp && dom.listBody.firstChild;
+    if (listUp && !keep) renderList();
+    if (listUp) markOpenRow();
+    lastListUp = listUp;
     dom.detail.hidden = !detail;
     dom.ask.hidden = !asking;
-    dom.list.hidden = detail || asking;
+    dom.list.hidden = !listUp;
     dom.panel.setAttribute('aria-labelledby',
       detail ? 'panel-title' : asking ? 'panel-ask-title' : 'panel-list-title');
   }
@@ -8116,7 +8261,7 @@
 
       var spot = params.get('spot');
       if (spot && byId(spot)) {
-        if (state.selected !== spot) selectPlace(spot, { fly: true, history: false });
+        if (state.selected !== spot) selectPlace(spot, { fly: true, history: false, unasked: true });
         return;
       }
       /* A list coming back opens the panel on it, the way arriving on a link
@@ -8352,6 +8497,18 @@
 
     wireTopGuard();
     wireRailReveal();
+
+    /* Crossing 1200px is the difference between a place standing beside the
+       list and a place standing on top of it, and renderPanel is what decides
+       which. Off the query rather than off the resize handler so it fires on
+       the crossing itself and not on every pixel of a drag — and plainly,
+       without keepList, because the column it is redrawing has just changed
+       shape underneath it. */
+    if (pairMQ.addEventListener) {
+      pairMQ.addEventListener('change', function () {
+        if (dom.panel.classList.contains('is-open')) renderPanel();
+      });
+    }
 
     dom.btnFilters.addEventListener('click', function () {
       var opening = !filterMenuOpen();
@@ -8750,7 +8907,7 @@
       var at = params.get('at') || '';
       var stand = isOnList(at) ? byId(at) : null;
       syncUrl();
-      if (spot && byId(spot)) selectPlace(spot, { fly: true });
+      if (spot && byId(spot)) selectPlace(spot, { fly: true, unasked: true });
 
       /* The list, standing on one of its places: the map above, the list
          under it, and that place lit between the two. See standOn(). */
@@ -8771,6 +8928,25 @@
            around, which on a desktop leaves the places furthest east sitting
            behind it — on the one page where seeing all of them at once is the
            entire point. */
+        fitToPins({ clearPanel: true });
+      }
+
+      /* And on a desktop, a plain arrival opens on the places. The map used to
+         arrive bare with the names behind a button, which put the one thing
+         this site is a list of behind a press nobody had been told to make;
+         the column is the site's answer to "where should I eat" and it is now
+         the first thing on screen beside the map itself. Then the same reframe
+         the branch above makes, and for the same reason: the fit a moment ago
+         was made against a window with nothing in it, and the places furthest
+         east would be sitting behind the column. Fitting to the strip the
+         column leaves is also what lets a place open later without the map
+         moving — see selectPlace.
+
+         A phone gets none of this. There the panel is a sheet over half the
+         screen, and a map that greets you with its own list drawn over it is
+         not a map. */
+      else if (listIsFixed()) {
+        showList(false);
         fitToPins({ clearPanel: true });
       }
 

@@ -42,6 +42,7 @@ completely with the database switched off.
 - [Add photos](#add-photos)
 - [The list is ordered by distance](#the-list-is-ordered-by-distance)
 - [Searching the list](#searching-the-list)
+- [The places column, and what opens beside it](#the-places-column-and-what-opens-beside-it)
 - [Ask for somewhere](#ask-for-somewhere)
 - [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
@@ -530,17 +531,21 @@ what it is measured from, which is the one thing nothing else on screen says.
 
 ## Searching the list
 
-The button that opens the panel says **Places** and carries a pin. It used to
-say List and carry a magnifier: List named the shape of the thing — a panel
-with rows in it — rather than what was inside, and people read it as a second
-menu rather than as the seventy-odd restaurants they were already looking at
-pins for. The word is the content now, and the glyph is the same pin the map is
-covered in, so the button and what it opens are drawn with one mark. It still
-does one thing: it opens and closes the panel.
+**On a phone** the button that opens the panel says **Places** and carries a
+pin. It used to say List and carry a magnifier: List named the shape of the
+thing — a panel with rows in it — rather than what was inside, and people read
+it as a second menu rather than as the seventy-odd restaurants they were
+already looking at pins for. The word is the content now, and the glyph is the
+same pin the map is covered in, so the button and what it opens are drawn with
+one mark. It does one thing: it opens and closes the sheet.
 
-The search field lost the advertisement it had on that button, which is the
-price of the rename. It is still the first thing inside the panel, above the
-list, where it can actually be typed into.
+**Above 860px there is no button, because the places are already there.** See
+[The places column, and what opens beside it](#the-places-column-and-what-opens-beside-it)
+below — the column is open from the moment the map draws and it does not shut,
+so a control that opens it would be a control that is always already pressed.
+
+The search field is the first thing inside the panel, above the list, where it
+can actually be typed into.
 
 There is a field at the top of the list panel. It narrows **the list**, not the
 map: the pins are what the filter chips are for, and a search left behind in a
@@ -600,6 +605,109 @@ be searched**. Two of the four columns are missing there: it looks at the name
 and the street and not at the type labels or the dishes, because that page is
 sent its rows already filled out and never downloads the catalogue those two
 come from.
+
+---
+
+## The places column, and what opens beside it
+
+Above 860px the map arrives with the places already on it: a column down the
+right-hand side, open from the moment the map draws, and it does not shut. Press
+a name and that place opens in a second column beside it — to its left, over the
+map — rather than turning the column you were reading into the thing you pressed.
+A phone gets none of this; there the panel is a bottom sheet with stops and the
+**Places** button that raises it, exactly as it was.
+
+Three things follow from the column being permanent, and each of them is a
+control that has gone.
+
+**The Places button.** It opened and closed the panel, and above 860px the panel
+no longer closes, so the button was always already pressed. `#list-seg` is the
+group it stood in and the stylesheet takes the group out. The walk's step about
+it points at the column's own search field instead — the top of the thing the
+button used to be about.
+
+**The cross on the list.** Nothing closes the column, so nothing on it is a
+close. The cross comes back the moment a place or the chat is up, where it means
+*give me the list back*: `closePanel()` lands on `restOnList()` on a desktop, the
+way it lands on `restOnBand()` on a phone sitting on a list's name. A close that
+has somewhere to land is not a dismissal.
+
+**The row of language codes.** Not a consequence of the column so much as the
+same argument about the same edge — see **Languages**.
+
+### The map does not move
+
+Opening a place does not pan or zoom the map. The second column grows leftwards
+into city that the fit had already given up: the map is framed on arrival
+against the strip the places column leaves, so what the place covers was spare
+before it was covered. A map that panned every time a name was pressed would be
+answering a question nobody asked, and moving the pins the visitor was reading
+while it did.
+
+One exception, and it is the one that proves the rule: a place nobody chose.
+**Surprise me** and a `?spot=` link both hand you a name with no idea where it
+is, and there the whole point is the map going to it. `selectPlace()` takes
+`unasked` for those three callers and refocuses only for them. A phone still
+moves for every one of them, because the sheet covers the half of the screen the
+pin would otherwise be in.
+
+### The list keeps its place
+
+The column is not redrawn when something opens beside it. `renderList()` builds
+seventy-six rows and puts the scroller back at the top, which is right when the
+language or a chip has changed and exactly wrong when all that happened is that
+a place opened — you would lose the row you had your eye on and the scroll that
+got you to it. So the two transitions that must not disturb it, opening a place
+and closing one, ask `renderPanel()` for `keepList`, and they get it only when
+the list was already standing. Everything else redraws as it always did.
+
+That is also why the column is its own scroller at **every** desktop width
+rather than only when there are two. The scroll lives on the column, not on the
+panel, so it cannot be lost by the panel changing shape underneath it — and it
+is why `.panel` stops being a card up there and each column is one instead. A
+container that were still a card would paint the gap between the two columns
+paper instead of leaving a strip of Tallinn in it.
+
+And the row you have open is marked in the list: a bar down its inside edge and
+the name in the accent, so the eye can get from the write-up back to where it
+was without reading seventy-six names again. `markOpenRow()` puts the class on
+rows that are already drawn; `renderList()` drawing fresh ones clears it, so
+nothing has to unmark on the way out.
+
+### Why 1200px and not every desktop
+
+The pair is 856px of chrome and the rail wants another 72. On a 1440px window
+that leaves 552px of map, which is a city; on a 1152px laptop it would leave
+264, which is a gutter with pins in it. So the second column is a `min-width:
+1200px` question: under it a place covers the list the way it always did, and
+the cross hands the list straight back. The number is written in the stylesheet
+and `pairFits()` in `assets/app.js` reads it off the same media query, because a
+layout that disagrees with itself about how wide it is draws one column and
+reserves room for two.
+
+What it costs is the top strip. With both columns up the chip row and the corner
+start after 856px rather than after 420, so on a 1440px window the row has
+536px — still every chip, still scrolling sideways, but three or four of them
+showing instead of nine. That is the one thing on the page that moves when a
+place opens, and it moves because a column and a chip row cannot occupy the same
+pixels.
+
+### The band, when a list is the mode
+
+A list's name and the switch to its own page sit above the scroller, so with two
+columns they push both cards down rather than only the one they are about. They
+still do — what moves with them is the close and the mark, which are placed
+against the panel rather than against the card they belong to and would
+otherwise float over the map above it. `renderBand()` measures the band into
+`--band-h` after it is filled, because a long title wraps, and the stylesheet
+offsets the pair by it. The band itself is pushed across to stand over the
+places column, which is what it is about.
+
+`bandIsUp()` grew a clause for the same reason: it used to mean *a list is the
+mode and the panel is showing the list rather than a place*, which was one
+sentence while there was one column. Now the list stands beside whatever opened,
+and the band is the only thing on the page saying which list the map is narrowed
+to — a place opening is not leaving it.
 
 ---
 
@@ -1318,14 +1426,20 @@ two-letter code, so `az` first and `uk` last, whatever order the blocks in
 thing, still English by default, and set by `DEFAULT_LANG` in
 `assets/app.js`.
 
-The switch has two shapes, from the same markup. Wide enough, it is a row of
-codes. On a phone it folds into the current code with a menu under it, listing
-each language's own name for itself: ten codes side by side are around 390px,
-which is the whole of a 390px screen, handle in the opposite corner and all.
-The fold happens in CSS at 860px, and the folded menu grows downwards, so the
-next language costs nothing in layout either. Every interface string is
-in `data/ui.json`, keyed by language and then by string id, so a translator
-never has to open the HTML.
+The switch is the code you are in with a menu under it, listing each
+language's own name for itself. It had two shapes for a while — this menu on a
+phone, and a row of all ten codes wide enough — and the row has gone. Ten codes
+side by side are around 390px, which is the whole of a 390px screen, handle in
+the opposite corner and all; on a desktop they fitted, and what they were was a
+list of things nobody was looking for. A visitor wants their own language or
+none of them, so nine of the ten were permanently wrong for whoever was
+reading, and they spent 360px of the top edge on the answer to a question asked
+once a visit — the same edge the places column now starts from. The markup
+never changed: `renderLanguageSwitch()` has always built the trigger and the
+list both and the stylesheet picked between them, and now there is nothing to
+pick. The menu grows downwards, so the next language costs nothing in layout
+either. Every interface string is in `data/ui.json`, keyed by language and then
+by string id, so a translator never has to open the HTML.
 
 The language is chosen in this order:
 
@@ -8533,8 +8647,9 @@ The walk, in order, and what each step is anchored to:
 
 1. A pin — whichever is nearest the middle of the screen, or the bubble
    sits in the middle with no ring when none is on it.
-2. The **Places** button: the whole map as a list, with the search field at
-   the top of it.
+2. The **Places** button on a phone, and above 860px the places column's own
+   search field, since there is no button up there to point at: the whole map
+   as a list, with the field at the top of it.
 3. The language switcher.
 4. The chip row, which on a phone the walk rolls out of the **Filters**
    button first, so that there is a row to point at.
@@ -9737,10 +9852,12 @@ would be dismissing is the only thing on screen saying why the map is showing
 seven pins. Being rid of it is leaving the list rather than closing a sheet —
 **Back to all places** under the byline, any chip, or the name in the corner,
 each of which hands back a map nothing is narrowing and a panel that closes
-like any other. A desktop keeps its cross: the panel there is a column that
-slides off the side, there is no band for it to sit on, and the whole map is
-showing behind it either way. **A list is a mode, not a filter** under
-**Lists** has the reasoning.
+like any other. A desktop has no cross to keep on the list: the places column
+does not shut at all up there — the cross belongs to whatever opened in front
+of it, and what pressing it hands back is the list. **A list is a mode, not a
+filter** under **Lists** has the reasoning, and
+[The places column, and what opens beside it](#the-places-column-and-what-opens-beside-it)
+has the arrangement.
 
 The walk is the one thing that closes it outright, through `closePanel({ band:
 false })`: it is about to point at the pins and the rail and it asks for the
