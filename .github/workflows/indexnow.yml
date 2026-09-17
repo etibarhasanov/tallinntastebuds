@@ -1,0 +1,29 @@
+# Every push to the production branch is a deploy, and this is the one thing
+# that follows a deploy: tell Bing which addresses to come and read. Google
+# takes no part in IndexNow and is not asked; the sitemap and Search Console
+# are its road. tools/indexnow.mjs has the reasoning, and why the key in
+# indexnow.txt is public on purpose.
+name: indexnow
+
+on:
+  push:
+    branches:
+      - claude/tallinn-tastebuds-map-nzoqx0
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    name: Tell Bing what changed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # No `npm install`, as ever: the tool has no dependencies.
+      - name: Submit every address in sitemap.xml
+        run: node tools/indexnow.mjs

@@ -102,7 +102,15 @@
      The index of your own lists was a sixth, and it is on /account.html now,
      beside the places you saved. Opened at /lists.html with no list, no person
      and no directory to draw, this page replaces itself with that one before
-     it fetches anything — see boot() in assets/lists.js. -->
+     it fetches anything — see boot() in assets/lists.js.
+
+     Empty here, and full as served at the three addresses above: each route
+     writes what the page is about into it as plain text — a list's title,
+     its line and its places; the directory's lists; a person's — for the
+     readers that run no script, which is every AI assistant's fetcher.
+     render() in assets/lists.js empties it before drawing, so nobody sees the
+     plain version. The spelling of this one line is what fill() in
+     functions/_shell.js matches on, and tools/validate.mjs holds it to that. -->
 <main class="lists-main" id="main" tabindex="-1"></main>
 
 <!-- The picker: every place in Tallinn, searched down to the one being added.

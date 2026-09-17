@@ -26,17 +26,15 @@
  * would go stale the first time the other one changed.
  *
  * It is the same argument functions/list/[id].js makes for a shared list, and
- * it borrows what it can from that route's furniture: esc(), rehead(), page()
- * and canonical() out of functions/_shell.js. It imports them and changes
- * nothing there — _shell.js is byte-identical to what it was before splitwise,
- * and taking this feature out is deleting this file rather than unpicking that
- * one.
+ * it borrows what it can from that route's furniture: shell(), esc(),
+ * rehead(), page() and canonical() out of functions/_shell.js. It imports them
+ * and adds nothing there, so taking this feature out is deleting this file
+ * rather than unpicking that one.
  *
- * Two things it does not borrow, for two different reasons. shell() names
- * lists.html, so the six lines below are that for this page. And head() spells
- * the title "<name> | Tallinn Tastebuds" — hardcoded there so that no caller
- * can spell it differently, which is right for a page of the site and wrong
- * for this one. A card in a message already carries the domain under it and
+ * One thing it does not borrow. head() spells the title
+ * "<name> | Tallinn Tastebuds" — hardcoded there so that no caller can spell
+ * it differently, which is right for a page of the site and wrong for this
+ * one. A card in a message already carries the domain under it and
  * og:site_name beside it, so the suffix says the site's name a third time and
  * pushes the only words that matter — the ones the person naming the group
  * chose — further from the front. So the tags are written out below, and the
@@ -81,7 +79,7 @@
 
 import { wrongDatabase } from './api/_lib.js';
 import { inviteOf } from './api/split.js';
-import { canonical, esc, rehead, page } from './_shell.js';
+import { canonical, esc, rehead, page, shell } from './_shell.js';
 
 /* The card's picture, and it has to be absolute — an unfurler is not a browser
    and does not resolve a relative one. The live host even on a preview, which
@@ -89,18 +87,6 @@ import { canonical, esc, rehead, page } from './_shell.js';
    the mark, it is identical on every deployment, and a preview URL in a card
    would be a link that outlives the deployment behind it. */
 const CARD_IMAGE = 'https://tallinntastebuds.ee/assets/logo/og.jpg';
-
-/* split.html out of the deployment. ASSETS is the binding Pages gives a
-   Function for its own static files; the plain fetch is what makes this work
-   under `wrangler pages dev`, where the binding is not always there. */
-async function shell(context) {
-  const url = new URL('/split.html', context.request.url);
-  const res = context.env.ASSETS
-    ? await context.env.ASSETS.fetch(new Request(url.toString()))
-    : await fetch(url.toString());
-  if (!res.ok) throw new Error('split.html unreadable: ' + res.status);
-  return res.text();
-}
 
 /* The line under the name in a preview card.
  *
@@ -125,7 +111,7 @@ export async function onRequest(context) {
 
   let html;
   try {
-    html = await shell(context);
+    html = await shell(context, '/split.html');
   } catch (e) {
     /* The page itself is missing from the deployment, which is a broken build
        rather than a missing group. Nothing here improves on Pages' answer. */

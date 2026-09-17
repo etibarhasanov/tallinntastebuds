@@ -4,7 +4,7 @@ A full-screen map of places in Tallinn, plus discounts, stories, saves,
 lists, profiles, a directory of the city, a chat that answers with places, a
 blog about what all of it does, and — on a subdomain of its own — a way to
 split the bill afterwards.
-Static files, eighteen Cloudflare Functions, two D1 databases (preview and
+Static files, twenty Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
@@ -328,7 +328,7 @@ push afterwards is another deploy — and re-run everything below afterwards
 each time: replaying your commits over somebody else's `assets/` change is
 exactly what makes the stamps stale.
 
-Seven things in this repo are **generated**. Editing a source without
+Eight things in this repo are **generated**. Editing a source without
 re-running its generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
@@ -340,6 +340,7 @@ re-running its generator is the single most common way to fail CI:
 | `exports/tallinn_restaurants.csv`, or a place added to `data/restaurants.json` that the export already lists | `node tools/googlevenues.mjs` | `db/google-venues.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlelists.mjs` | `db/google-lists.sql` |
 | a scene in `clips/scenes/` | `node tools/blogclips.mjs` | the four files in `clips/` that scene is drawn into — it needs a Chromium, and `--check` says which are missing |
+| a language in `data/ui.json`, a place in `data/restaurants.json`, a chip list in `tools/typelists.mjs` or a Google list in `tools/googlelists.mjs` | `node tools/sitemap.mjs` | `sitemap.xml` |
 
 (The catalogue is the map plus an optional `data/places.csv` import. That CSV
 is not in the repo — without one, `places.mjs` builds the catalogue from

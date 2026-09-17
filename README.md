@@ -1219,14 +1219,12 @@ but the video stays up" directly under a note that said the same thing.
 
 ## Sharing a place
 
-The map is one page, and `?spot=<id>` is a deep link into it rather than a
-document of its own. That is deliberate and it is why the canonical tag points
-every one of them back at the bare address — `canonicalBase()` in
-`assets/app.js` says why, and the comment at the top of `sitemap.xml` says it
-again. But it meant that every link anybody has ever sent about one restaurant
-was index.html with a query on it, and a query is the one part of a URL a
-link-preview crawler does nothing with. Pasted into WhatsApp, Telegram or a
-Slack channel, `?spot=varkizana` arrived as the site:
+The map is one page, and `?spot=<id>` was a deep link into it rather than a
+document of its own: the canonical tag pointed every one of them back at the
+bare address. That meant two things. Every link anybody has ever sent about
+one restaurant was index.html with a query on it, and a query is the one part
+of a URL a link-preview crawler does nothing with — pasted into WhatsApp,
+Telegram or a Slack channel, `?spot=varkizana` arrived as the site:
 
 > **Tallinn Tastebuds | Where to eat in Tallinn**
 > All the places in this map I have personally been and approved.
@@ -1234,10 +1232,15 @@ Slack channel, `?spot=varkizana` arrived as the site:
 
 The same card for all seventy-six places. Somebody sending a friend a Greek
 tavern in Lasnamäe got a card about a map, and the one thing the message was
-about — which place — was in the part of the link nobody reads.
+about — which place — was in the part of the link nobody reads. And a search
+for the place by name found the whole map or nothing, since the map was the
+only page there was.
 
-`functions/index.js` is the fix. Asked for `/` with a `?spot=` that names a
-place, it serves the map with that place's own card written into its head:
+`functions/index.js` is the fix for both. Asked for `/` with a `?spot=` that
+names a place, it serves the map with that place's own head: the card an
+unfurler reads, and the title, description, canonical and structured data a
+search engine reads, and the page's text led by that place — see **A place is
+an address** under **Getting found** for the search half. The card:
 
 > **Varkizana Kreeka tavern**
 > A Greek tavern in Lasnamäe, and everything we tried was really good.
@@ -1274,21 +1277,21 @@ sell a kitchen that is not cooking. This is composed when the page is served
 and is not written into the `blurb`, which the section above forbids for the
 same reason it is fine here: there is exactly one copy of the sentence.
 
-**`og:url` and the canonical tag disagree, and have to.** The canonical stays
-at the bare address, outside the markers, so the search signals still pool at
-one page. `og:url` is the spot's own link, because Facebook treats it as the
-identity of the thing being shared — one canonical `og:url` for all of them
-would mean one cached card for all of them, which is the bug this section is
-about, arriving by the back door.
+**`og:url` and the canonical tag agree now, and used not to.** For a day the
+canonical stayed at the bare address so that the search signals pooled at one
+page, while `og:url` was the spot's own link so that Facebook — which treats
+`og:url` as the identity of the thing shared — cached one card per place
+rather than one for all of them. The owner's decision that each place is a
+page of its own for search settled the other half: the canonical is the
+spot's own address too, in the language of the link, and the only thing that
+still pools at the bare address is a closed place, which keeps its card and
+its link and is not a page — see **Getting found**.
 
-Nothing else changes. Without a `?spot=` the route hands the request straight
-to the static file with its own ETag intact, so the front page is exactly what
-it was; an id that is not a place gets the same. `?type=` and `?story=` are
-deep links too and still get the site's card — a filter has no name and a
-story is gone within the day. And `robots.txt` must go on allowing `/`, which
-it does and always has: a `Disallow` stops the fetch, and a stopped fetch is a
-bare blue URL. That is the note beside `/list/<id>` in that file, and it
-applies here word for word.
+Nothing else changes. `?type=` and `?story=` are deep links and still get the
+site's card — a filter has no name and a story is gone within the day. And
+`robots.txt` must go on allowing `/`, which it does and always has: a
+`Disallow` stops the fetch, and a stopped fetch is a bare blue URL. That is
+the note beside `/list/<id>` in that file, and it applies here word for word.
 
 ---
 
@@ -1322,10 +1325,33 @@ Switching languages re-renders the page in place — no reload. Every touch of
 private-browsing modes; if it is unavailable the site simply forgets the
 preference between visits.
 
+### Each language is an address
+
+`/?lang=ru` is the map in Russian, and it is also the address the Russian
+map is indexed at. The file itself is English — one title, one description,
+`<html lang="en">` — and the other nine languages only exist once
+`assets/app.js` has run, which a person's browser always does and a search
+engine's crawler often does not. So `functions/index.js` serves the same
+file with the head written for the language the address names: the title and
+`metaDescription` from `data/ui.json`, `<html lang>`, a canonical tag naming
+that address, an `hreflang` link to each of the ten so a search engine reads
+them as one page in ten languages rather than ten copies of one, and the
+JSON-LD block describing every open place with its write-up in that language.
+The bare address is English and the `x-default`, and `sitemap.xml` lists all
+ten — and every open place at its own address, `?spot=`, which the same
+route serves with the place's own head. **Getting found** under **Deploy to
+Cloudflare Pages** has the whole of it, including what it costs.
+
 ### Adding a language
 
 1. Add a block to `data/ui.json` with the same string ids as the others, plus
-   a `langName`.
+   a `langName`, and a `metaDescription` written for a search result rather
+   than for the page — `documentTitle` and it are what a crawler reads at
+   that language's address. The title's shape is the question first, then
+   the kinds of place, then the site's name: *Where to eat in Tallinn:
+   restaurants, cafés, bakeries and beer bars | Tallinn Tastebuds*, in that
+   language's own words for the question people type. **The words** under
+   **Getting found** says which words and why "best" is not among them.
 2. Add the matching label to every type in `data/taxonomy.json` and every
    cuisine in `data/cuisines.json`.
 3. Add the language to each `blurb` in `data/restaurants.json`.
@@ -1334,13 +1360,17 @@ preference between visits.
 5. Add the code to `translated` in `data/schema.json`. That one is a literal
    list rather than something read out of `ui.json`, so it is the only place
    that has to be told twice.
+6. `node tools/sitemap.mjs`, and commit `sitemap.xml`: the new language is a
+   new address for the map, and every other language's entry has to link to
+   it. The validator fails on a sitemap that has not been re-run.
 
-The language switch and the validator both read the language list from
-`data/ui.json`, so there is nothing else to change. Step 2 is the only one the
-validator fails on: a type with no label in some language is an error, while
-missing blurb translations are warnings, so you can ship as you translate. The
-order of the blocks in `ui.json` does not matter: the switch sorts the
-languages alphabetically by code, so a new one lands in its place on its own.
+The language switch, `functions/index.js`, the sitemap tool and the validator
+all read the language list from `data/ui.json`, so there is nothing else to
+change. Steps 2 and 6 are the ones the validator fails on: a type with no
+label in some language is an error, and so is a stale sitemap, while missing
+blurb translations are warnings, so you can ship as you translate. The order
+of the blocks in `ui.json` does not matter: the switch sorts the languages
+alphabetically by code, so a new one lands in its place on its own.
 
 ### Why month names are in the data
 
@@ -3302,8 +3332,8 @@ db/google-lists.sql      GENERATED — one account, five lists, fifty rows
 ```
 
 Five public lists under an account called `google-statistics`: **Top ten
-restaurants, by Google**, and the same for bakeries, cafés, bars and
-pizzerias. They are lists in every way the rest of this section means: a row
+restaurants in Tallinn, by Google**, and the same for bakeries, cafés, bars
+and pizzerias. They are lists in every way the rest of this section means: a row
 each in `lists` and `list_items`, a byline that leads to
 `/u/google-statistics`, a bookmark, a way onto the map and a strip of their
 own at the top of `/lists` — **Start here**, five across on a desk, above
@@ -4405,8 +4435,10 @@ private bookmark that nothing consumed; this is the page that consumes it.
 ### The chips, as lists
 
 Thirteen of the public lists are the map's own, one per filter chip:
-**All the bakeries**, **All the hidden gems**, **All the casual and solo
-places**, and ten more. They are published under `tallinntastebuds` — the
+**All the bakeries in Tallinn**, **All the hidden gems in Tallinn**, **All
+the casual and solo places in Tallinn**, and ten more — the city on the end
+of each because the title is also the page's `<title>`, and "in Tallinn" is
+how the question ends. They are published under `tallinntastebuds` — the
 account whose map this is, not a generated name of its own — and each holds
 every open place on the map that carries that type, in the alphabet, with the
 first sentence of its write-up under it.
@@ -6192,14 +6224,14 @@ on every draw — the index's own address on the index, the post's on a post. A
 single canonical pointing at `/blog` would ask a crawler to treat every post
 as the same page, which is the opposite of what a blog is for. Only the index
 is in `sitemap.xml`; the posts are linked from it, which is how a crawler
-reaches them, and it is the same argument that keeps the individual lists out
+reaches them, and it is the same argument that keeps people's own lists out
 of that file.
 
 **The head is not swapped per post**, and that is a decision rather than an
-oversight. `functions/_shell.js` does exactly that for a list, a profile and
-the directory — a Function in front of the page, writing that page's own title
-and social card into the head — and it buys one thing here: a post pasted into
-a chat unfurling as itself rather than as the blog. Nothing on this page is
+oversight. `functions/_shell.js` does exactly that for the map, a list, a
+profile, the directory and a group — a Function in front of the page, writing
+that page's own title and social card into the head — and it buys one thing
+here: a post pasted into a chat unfurling as itself rather than as the blog. Nothing on this page is
 written by a stranger and nothing on it is private, so the cost is a whole
 route to maintain for a nicer preview card. If that is ever wanted,
 `_shell.js` is where it starts, and the comment in the head of `blog.html`
@@ -7112,11 +7144,15 @@ spend a Functions invocation against the free plan's daily quota.
 
 Two things worth knowing about this arrangement:
 
-- `_headers` still applies. The [docs' caution][cf-headers] is about responses
-  a Function *generates*; a response handed back by `context.next()` comes
-  from the asset server and keeps its header rules. Verified against
-  `wrangler pages dev`: `/` still revalidates and `deal.html` is still
-  `no-store`, with and without the Function.
+- `_headers` still applies — to what the asset server answers. The [docs'
+  caution][cf-headers] is about responses a Function *generates*; a response
+  handed back by `context.next()` comes from the asset server and keeps its
+  header rules. Verified against `wrangler pages dev`: `deal.html` is still
+  `no-store` with and without the middleware. The map is the one page that
+  no longer comes back that way: `functions/index.js` answers `/` with its
+  own Response, so it restates the revalidating rule `_headers` gives the
+  static file, and `PAGE_HEADERS` in `functions/_shell.js` restates the two
+  security headers every Function-served page would otherwise lose.
 - A 301 is cached hard by browsers, which is the point of using one — it is
   also what makes it awkward to undo. Anyone who has hit the redirect once
   will keep skipping to `tallinntastebuds.ee` without asking. That is the
@@ -7235,6 +7271,14 @@ to read and write first.
   **The chips, as lists**
 - a `?v=` cache stamp in the HTML that no longer matches the file it points at
   (run `node tools/stamp.mjs` and commit the result)
+- a `sitemap.xml` that is not what `tools/sitemap.mjs` would write from the
+  languages in `data/ui.json` and the thirteen lists in `tools/typelists.mjs`
+  (run the tool and commit the result) — a language added without it is a
+  page no search engine is told about
+- `index.html`, `lists.html` or `split.html` without exactly one pair of
+  `PAGE-HEAD` markers, which is where the Function serving that page writes
+  its head; `rehead()` in `functions/_shell.js` leaves a page without them
+  alone, so this is the only thing that would say so
 - a `data/places.json` that is not what `tools/places.mjs` would write from the
   map and the CSV beside it (run `node tools/places.mjs` and commit the
   result), holds an id twice, or has lost a place that is on the map — any of
@@ -7296,6 +7340,9 @@ assets/app.js              map, panel, filters, i18n, lightbox — no framework
 functions/_middleware.js   which hostname is this: the pages.dev copy goes to
                            the real one, and the splitwise subdomain serves the
                            page below and nothing else
+functions/index.js         / — the map, with its head and its JSON-LD written
+                           in the language ?lang= names, so a search engine
+                           can index it ten times
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, change a password, name an
                            account that arrived through Google
@@ -7318,8 +7365,8 @@ functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
 functions/api/_mostkept.js reading a page of everybody's, most kept first
 functions/api/_profile.js  reading one person, shared the same way
-functions/_shell.js        lists.html with a head and an answer written in,
-                           shared by the three Functions that serve it
+functions/_shell.js        a static page with a head and an answer written
+                           in, shared by the five Functions that serve one
 functions/list/[id].js     /list/<id> — the page a shared link opens
 functions/lists/index.js   /lists — everybody's, most kept first
 functions/lists/public.js  /lists/public — a 301 to the address above, which
@@ -7420,7 +7467,12 @@ data/schema.json           JSON Schema, for editor autocomplete
 admin.html                 the admin door, self-contained and unlinked
 _headers                   caching and the noindex on the unlinked pages
 _routes.json               which paths reach the Functions, and which never do
-robots.txt, sitemap.xml    what a crawler is told, and told not to
+robots.txt                 what a crawler is told not to
+sitemap.xml                GENERATED — every address a crawler is told about:
+                           the map in ten languages, every open place, /lists,
+                           /blog, the thirteen chip lists and Google's five
+indexnow.txt               the IndexNow key, public on purpose — see
+                           tools/indexnow.mjs
 photos/<restaurant-id>/    photos, one folder per place
 stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
@@ -7430,19 +7482,26 @@ tools/city.mjs             turns the same export into data/city.json, the city
 tools/googlevenues.mjs     turns the Google Places export into db/google-venues.sql
 tools/googlelists.mjs      ranks the same export into db/google-lists.sql
 tools/typelists.mjs        turns the map's filter chips into db/type-lists.sql
+tools/sitemap.mjs          writes sitemap.xml from the languages, the places
+                           and the eighteen lists the site wrote
+tools/indexnow.mjs         submits every address in it to Bing, on each deploy
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
 tools/storymedia.mjs       makes every story video an H.264 MP4 a browser will play
 tools/qrperf.mjs           checks the QR encoder still draws the same code, and times it
 .github/workflows/validate.yml     the validator, the QR check and the write gate, on every push
+.github/workflows/indexnow.yml     the IndexNow ping, on every push to the production branch
 .github/workflows/stories.yml      the hourly tick, and the tidying up after it
 .github/workflows/story-media.yml  converts a video posted from a phone
 .github/workflows/deploy.yml       GitHub Pages, manual only — NOT the live host
 ```
 
 Deep links: `?spot=f-hoone` opens that place directly — that is the link to put
-in a Story. `?lang=ru` opens it in Russian, `?style=green` in the dark
+in a Story, and it is also that place's own address in a search, served with
+its own head; see **A place is an address** under **Getting found**.
+`?lang=ru` opens it in Russian — and is the address the Russian map is
+indexed at, see **Each language is an address** — `?style=green` in the dark
 palette. `?list=top-ten-burgers-k3fmqw` opens the map on somebody's list, as
 pins with the list in the panel. They all combine, and all four stay in the
 address bar, because each of them says what the page currently is.
@@ -8756,11 +8815,165 @@ project, so a branch driven hard enough shows up in the live numbers.
 
 ### Getting found
 
-`robots.txt` and `sitemap.xml` sit at the root, and `index.html` carries a
-canonical link and the `og:` tags. All three name the host — five lines in
-total, and `functions/_middleware.js` names it once more as the host it
-redirects *to* — so **changing domain means editing those four files** and
-nothing else.
+**What a crawler is given.** The map is one static file with an English
+head, and for a long time that was all any search engine saw of it: a
+crawler that does not run scripts — Bing on many of its visits, Yandex on
+most — read an English page with no places in it, since the rows are drawn
+from `data/restaurants.json` after the fact; and Google, which does run them,
+saw the page in English too, because that is what the script picks for a
+visitor with no history, and was then told by the canonical tag that
+`/?lang=ru` was the same document as `/`. Ten languages, one of them indexed.
+
+`functions/index.js` is what changed that. It serves the same file with the
+head written for the language the address names — `<html lang>`, the
+`documentTitle` and `metaDescription` from `data/ui.json`, a canonical tag
+naming that address, an `hreflang` link to each of the ten and an
+`x-default` pointing at the bare English page, the `og:` tags in that
+language, and the JSON-LD block. That block used to be built by
+`assets/app.js` after the map had drawn, where only a crawler that runs
+scripts could read it; now it is in the page as served: the site, and every
+open place as a `Restaurant`, `Bakery`, `CafeOrCoffeeShop` or `BarOrPub`
+with its address, its coordinates, its phone, its first photo, its price
+band and its write-up in that language. The ten addresses are the ones the
+site already had — `?lang=` is what the switcher writes into the address bar
+— so nothing new was invented for a crawler's sake; see **Each language is
+an address** under **Languages** for the visitor's half.
+
+The same route writes the places into the page as text. A reader that runs
+no script got four hundred characters out of the map and not one place
+name, because the rows are drawn by `assets/app.js` into an empty
+`#list-body`; now that element is served full — every open place in the
+alphabet as an ordinary list, the name linked to its own address, its
+kinds, its street, its write-up and the dishes to order, all in the
+language of the address. Nobody sees it: `renderList()` empties the element
+before it draws the first row and the panel is closed until the script
+opens it. It is there for the readers below.
+
+**A place is an address.** `?spot=badam` always opened the map standing on
+Badam, and it was a deep link the canonical folded back into the bare page,
+so a search for a place by name found the whole map or nothing. It is a
+page now: the same file and the same map, served by the same route with the
+place's name for a title, its write-up for a description, a canonical naming
+`/?spot=badam` itself, the hreflang set for the same place in the other nine
+languages, a JSON-LD block for that one place, and the page's text led by
+the place with the other sixty-nine as links to their own addresses — which
+is what makes seventy addresses seventy pages rather than one page under
+seventy names. The same head is the card a chat app unfurls, and **Sharing a
+place** has that half: the photograph, the language of the link, the closed
+flag. `renderPanel()` in `assets/app.js` writes the same title into the tab
+while a place is open, so a crawler that runs the script finds the title it
+was served. A closed place keeps its card and its link and is not a page: its
+canonical goes back to the map, and it is not in the sitemap. `?type=`,
+`?style=` and `?list=` stay deep links.
+
+**The words.** What each page is written to be found for, in the language of
+its address — the head term first, then the kinds of place people type
+after the city's name, all of it in the title and the description, and the
+list page titles ending "in Tallinn" because that is where the question
+ends:
+
+| Address | Written for |
+|---|---|
+| `/` | where to eat in Tallinn · restaurants, cafés, bakeries, pubs and beer bars in Tallinn · food in Tallinn |
+| `/?lang=et` | kus Tallinnas süüa · Tallinna restoranid, kohvikud, söögikohad, õllebaarid |
+| `/?lang=fi` | missä syödä Tallinnassa · Tallinnan ravintolat, kahvilat, leipomot, olutbaarit |
+| `/?lang=ru` | где поесть в Таллинне · рестораны, кафе, пекарни, пабы и пивные бары Таллинна |
+| `/?spot=<id>` | the place's name · what it is · the street · every dish in its `mustOrder` |
+| `/list/all-the-…-in-tallinn-…` | the thirteen kinds — pubs and beer bars, bakeries, hidden gems, cheap eats, laptop friendly, date night, vegan, Asian, Caucasus, fine dining — "in Tallinn" |
+| `/list/top-ten-…-by-google-…` | top ten restaurants, bakeries, cafés, bars, pizzerias in Tallinn |
+
+Two words are deliberately not there. "Best" — *parimad*, *parhaat*,
+*лучшие* — is the head of every one of those queries, and the map does not
+claim it: no scores, being on the map is the verdict, and a title that said
+otherwise would be the one sentence on the site that lied. Google's five
+lists are the exception, since a Google rating is exactly a claim about
+best, and their titles say so in Google's name. And Tallinn is spelled
+Таллинн, the way the city's own Russian-language press spells it, rather
+than the Таллин a searcher in Russia types; a search engine reads the two
+as one word, and the readers here are the third of the city that speaks
+Russian.
+
+The other six languages carry the same title and description translated,
+the same text, the same addresses. Nobody is searching for Tallinn in
+Armenian in numbers worth a sentence here; they cost nothing because the
+strings were already written.
+
+**The lists, as text.** A list page had the same blind spot the map had: the
+list arrives seeded as JSON in a `<script>`, `assets/lists.js` draws it, and
+a reader that runs no script got the shell. Each of the three routes that
+serve `lists.html` now writes what the page is about into its empty
+`<main>` — a list's title, its line, whose it is and every place with its
+street and its sentence, each linked to its own address on the map; the
+directory's Google strip and first page of lists; a person's name, line and
+lists — and `render()` empties it before drawing, so nobody sees the plain
+version. `fill()` in `functions/_shell.js` is the one mechanism for the map
+and the lists both, and the validator holds both pages to the exact spelling
+of the element it fills.
+
+It costs no extra Functions invocation, since `_routes.json` was already
+sending every request for `/` through `functions/_middleware.js`. It costs
+the JSON-LD and the list on the wire — some eighty-five kilobytes together,
+twenty or so compressed, on a page that was ten — and a page fetched again
+on every visit rather than a 304, since the asset server put an ETag on the
+static file and the route puts none. When the route cannot
+read the page or the data it hands the request back to the asset server,
+and the map is served exactly as it was before the route existed.
+
+**AI assistants.** ChatGPT and Claude do not run scripts either, and they
+find a site two ways. One is an index: OpenAI's `OAI-SearchBot` and
+Anthropic's `Claude-SearchBot` crawl for the search behind each assistant,
+ChatGPT also leans on Bing's index and Claude on Brave's, and Perplexity
+runs `PerplexityBot` over its own. The other is a fetch: `ChatGPT-User` and
+`Claude-User` open a page the moment somebody asks about it, read it as
+text, and cite what they found. Both read the page as served — the head,
+the list above, and nothing the script would have drawn — which is what the
+list is for. `robots.txt` names all of them and allows all of them under
+its one `*` rule, the training crawlers `GPTBot` and `ClaudeBot` included;
+that last is a decision the file says out loud rather than one made by
+omission. What `robots.txt` cannot do is reach a bot that never gets as far
+as reading it: Cloudflare sorts AI bots into **Search**, **Agent** and
+**Training** and applies a policy per category at the edge, under the
+zone's **Security → Settings → AI bot policies** — Search has to stay on
+allow for the two search bots, Agent for the two fetchers, and Training is
+the owner's call. That switch is not in this repository and will never be
+in a diff, so a site that has quietly vanished from an assistant is checked
+there first. There is no submission form at either company; being in
+Bing's and Brave's indexes, and being readable as text, is the whole of it.
+`llms.txt` — a proposed file describing a site to language models — is not
+here, because nobody has shown that any assistant reads one.
+
+**The sitemap is generated.** `tools/sitemap.mjs` writes `sitemap.xml` from
+the languages in `data/ui.json`, the places in `data/restaurants.json`, the
+thirteen chip lists in `tools/typelists.mjs` and Google's five in
+`tools/googlelists.mjs`: the map at each of its ten addresses, each carrying
+the full set of alternates; every open place at its English address, carrying
+the same; then `/lists`, `/blog` and the eighteen lists. The eighteen are
+listed by name because they are the pages that answer what people actually
+type — the pubs and beer bars in Tallinn, the bakeries, the top ten
+restaurants by Google's rating — and their ids never move; people's own
+lists stay out, since the directory is where a crawler finds them. Nothing
+in the file carries a date: Google trusts a `lastmod` only when it is
+consistently right, and nothing in this repository knows when a page last
+changed. The header of the tool has the whole argument, and the validator
+fails on a stale file.
+
+**Bing is told, not waited for.** `.github/workflows/indexnow.yml` runs
+`tools/indexnow.mjs` on every push to the production branch — every deploy —
+which submits every address in `sitemap.xml` to IndexNow, the protocol Bing,
+Yandex, Seznam and Naver share for being told what changed rather than
+finding it weeks later. The key in `indexnow.txt` at the root is public by
+design: the protocol's whole proof is that only somebody who can put a file
+on this host could have written it, so it is committed, and there is nothing
+in the repository's secret store for it. Google takes no part in IndexNow;
+Search Console and the sitemap are its road.
+
+**Where the host is named.** `robots.txt`, `tools/sitemap.mjs`,
+`tools/indexnow.mjs`, `index.html`, `lists.html`, `blog.html`,
+`functions/_shell.js` and `functions/_middleware.js` — the last as the host
+it redirects *to*.
+`grep -rl tallinntastebuds.ee` is the list to walk when the domain changes,
+and it is longer than that, because the comments and the chat's brief name
+the host too.
 
 Google finds a site through links and through Search Console, and a brand new
 host has neither. In order of what actually moves the needle:
@@ -8770,7 +8983,10 @@ host has neither. In order of what actually moves the needle:
 2. **Google Search Console.** Verify the property, submit `sitemap.xml`, then
    use URL Inspection to request indexing. Verification by HTML tag needs a
    `<meta name="google-site-verification">` line in `index.html`.
-3. **Bing Webmaster Tools.** Same job, and it feeds other answer engines.
+3. **Bing Webmaster Tools.** Same job — verify, submit `sitemap.xml` — and it
+   feeds DuckDuckGo, Copilot and ChatGPT's search as well, whose indexes lean
+   on Bing's. Bing is also the one that reads the page as served rather than
+   after the script has run, which is what the Function above is for.
 4. **A custom domain.** Done — `tallinntastebuds.ee`. `pages.dev` indexes
    fine, but it carries no brand and it is not yours: a domain you own is the
    one thing here that survives changing host. Search Console treats it as a
@@ -9496,4 +9712,6 @@ and map animation.
 
 **The List view is also the SEO surface.** It is the only part of the site a
 crawler can read as text, so it stays in the markup even when the panel is
-closed, hidden by transform rather than removed.
+closed, hidden by transform rather than removed — and `functions/index.js`
+serves it already full, every place as plain text in the language of the
+address, for the readers that never run the script. See **Getting found**.

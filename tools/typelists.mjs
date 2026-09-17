@@ -170,29 +170,35 @@ const NOW = "CAST(strftime('%s','now') AS INTEGER) * 1000";
 
    The titles are written out for the same reason: a title is a name somebody
    chose, and deriving one from the chip's label gives "All the Coffee/tea",
-   which is not a name. */
-const LISTS = [
-  { type: 'casual', id: 'all-the-casual-and-solo-places-5xjdth', title: 'All the casual and solo places' },
-  { type: 'bakery', id: 'all-the-bakeries-vncgvm', title: 'All the bakeries' },
-  { type: 'coffee', id: 'all-the-coffee-and-tea-places-gq9nms', title: 'All the coffee and tea places' },
-  { type: 'pub', id: 'all-the-pubs-and-beer-bars-3q29c9', title: 'All the pubs and beer bars' },
-  { type: 'hidden-gem', id: 'all-the-hidden-gems-htp2gd', title: 'All the hidden gems' },
-  { type: 'cheap-eats', id: 'all-the-cheap-eats-t7yn32', title: 'All the cheap eats' },
-  { type: 'laptop', id: 'all-the-laptop-friendly-places-qbf3nf', title: 'All the laptop friendly places' },
-  { type: 'date', id: 'all-the-date-night-places-3n445f', title: 'All the date night places' },
-  { type: 'asian', id: 'all-the-asian-places-jzhqqq', title: 'All the Asian places' },
-  { type: 'vegan', id: 'all-the-vegan-places-svmsrw', title: 'All the vegan places' },
-  { type: 'fine-dining', id: 'all-the-fine-dining-places-nvrz5g', title: 'All the fine dining places' },
-  { type: 'caucasian', id: 'all-the-caucasus-places-r8xn4m', title: 'All the Caucasus places' },
-  { type: 'restaurant', id: 'all-the-restaurants-rxz3tt', title: 'All the restaurants' }
+   which is not a name. Each ends "in Tallinn" because the title is also the
+   <title> and the og:title of the page at /list/<id>, and "pubs and beer bars
+   in Tallinn" is the question somebody types where "pubs and beer bars" is
+   not — see **Getting found** in README.md. The ids were minted before the
+   city was in the names, and stay. */
+export const LISTS = [
+  { type: 'casual', id: 'all-the-casual-and-solo-places-5xjdth', title: 'All the casual and solo places in Tallinn' },
+  { type: 'bakery', id: 'all-the-bakeries-vncgvm', title: 'All the bakeries in Tallinn' },
+  { type: 'coffee', id: 'all-the-coffee-and-tea-places-gq9nms', title: 'All the coffee and tea places in Tallinn' },
+  { type: 'pub', id: 'all-the-pubs-and-beer-bars-3q29c9', title: 'All the pubs and beer bars in Tallinn' },
+  { type: 'hidden-gem', id: 'all-the-hidden-gems-htp2gd', title: 'All the hidden gems in Tallinn' },
+  { type: 'cheap-eats', id: 'all-the-cheap-eats-t7yn32', title: 'All the cheap eats in Tallinn' },
+  { type: 'laptop', id: 'all-the-laptop-friendly-places-qbf3nf', title: 'All the laptop friendly places in Tallinn' },
+  { type: 'date', id: 'all-the-date-night-places-3n445f', title: 'All the date night places in Tallinn' },
+  { type: 'asian', id: 'all-the-asian-places-jzhqqq', title: 'All the Asian places in Tallinn' },
+  { type: 'vegan', id: 'all-the-vegan-places-svmsrw', title: 'All the vegan places in Tallinn' },
+  { type: 'fine-dining', id: 'all-the-fine-dining-places-nvrz5g', title: 'All the fine dining places in Tallinn' },
+  { type: 'caucasian', id: 'all-the-caucasus-places-r8xn4m', title: 'All the Caucasus places in Tallinn' },
+  { type: 'restaurant', id: 'all-the-restaurants-rxz3tt', title: 'All the restaurants in Tallinn' }
 ];
 
 /* The chip's own English label, so the line under the title names the thing
-   the reader pressed rather than a word this file invented for it. */
+   the reader pressed rather than a word this file invented for it. The city
+   is in it because this line is also the page's description in a search
+   result, where "every place on the map" says nothing about which map. */
 function intro(label) {
-  return `The ${label} chip, as a list: every place on the map that carries it, ` +
-    'in the alphabet. Rebuilt whenever the map is, and anywhere that has closed ' +
-    'since is left off.';
+  return `Every place on the map of Tallinn that carries the ${label} chip — ` +
+    'visited and approved, in the alphabet. Rebuilt whenever the map is, and ' +
+    'anywhere that has closed since is left off.';
 }
 
 /* Up to the first full stop, question mark or exclamation with whitespace or

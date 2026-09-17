@@ -42,7 +42,7 @@
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import { readProfile, USERNAME } from '../api/_profile.js';
-import { canonical, head, shell, sow, rehead, page } from '../_shell.js';
+import { canonical, esc, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
 
 /* The line under the name in a preview card.
  *
@@ -65,7 +65,7 @@ export async function onRequest(context) {
 
   let html;
   try {
-    html = await shell(context);
+    html = await shell(context, '/lists.html');
   } catch (e) {
     /* The page itself is missing from the deployment, which is a broken build
        rather than a missing person. Nothing here can improve on Pages' own
@@ -104,6 +104,15 @@ export async function onRequest(context) {
     url: canonical(request, '/u/' + profile.name),
     type: 'profile'
   }));
+
+  /* The page as text, for the reader that runs no script — see fill() in
+     functions/_shell.js: the name, the line they wrote, and their lists,
+     each a link. */
+  html = fill(html, EMPTY['lists.html'],
+    '<h1>' + esc(profile.name) + '</h1>' +
+    (profile.about ? '<p>' + esc(profile.about) + '</p>' : '') +
+    '<ol>' + profile.lists.map((list) =>
+      '<li><a href="/list/' + esc(list.id) + '">' + esc(list.title) + '</a></li>').join('') + '</ol>');
 
   html = sow(html, '__TTB_PROFILE', {
     user: user ? user.username : null,

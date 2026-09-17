@@ -67,7 +67,7 @@ leading underscore are modules, not routes.
 
 | Route | File | Writes | Cache |
 |---|---|---|---|
-| `/` | `index.js` | none; `index.html` with the place named by `?spot=` written into its head, so a shared link unfurls as that restaurant rather than as the map. Without a `?spot=` that names a place it is `context.next()` and the static file, headers and ETag intact | as `_headers`, copied off the response it swaps |
+| `/` | `index.js` | none; `index.html` with its head — `<html lang>`, title, description, canonical, the ten `hreflang` alternates, the card — its JSON-LD, and every open place written into `#list-body` as text, all in the language `?lang=` names, so a search engine indexes the map once per language and an AI assistant's fetcher reads the places without running a script. With `?spot=<id>` naming a place, the head, the card, the JSON-LD and the text are that place's, so a shared link unfurls as the restaurant and each open place is a page of its own. Falls through to the static file when it cannot read the data | as `_headers`, copied off the response it swaps, minus the ETag |
 | `/*` | `_middleware.js` | none; 301s `pages.dev` to `tallinntastebuds.ee`, and — **splitwise**, in a fenced block — serves `split.html` at the root of `splitwise.tallinntastebuds.ee` while 301ing every other path on that host back to the site | as `_headers` |
 | `GET /api/saves` | `saves.js` | none | `public, max-age=60`, weak ETag, plus the edge cache under `countsKey()` |
 | `POST /api/saves` | `saves.js` | `saves`, then `RECOUNT_SQL`, in one `batch()`; purges the counts cache | `no-store` |
@@ -83,22 +83,26 @@ leading underscore are modules, not routes.
 | `GET/POST /api/split` | `api/split.js` | **splitwise** — `split_groups`, `split_members`, `split_expenses`, `split_shares`, `split_settlements`. **Reading one group needs only its code**, no session — holding the link is the permission, see `groupById()`. **Every write needs a session and a membership**: each action but `create` and `join` reads the caller's own membership first, and a non-member is told the group does not exist | `no-store`, for the reason `lists.js` is |
 | `GET/POST /api/feedback` | `feedback.js` | `feedback`, `feedback_hearts` — and `users`/`sessions` through `enterAccount()` in `_account.js`, which is the one route besides `account.js` and `google.js` that can mint an account: `say` with `as: 'name'` and no session makes one or signs into it in the same request, or — where the browser holds `/api/google`'s sealed note — names the Google account that has just proved itself, so nothing on that page sends anybody to the map and back. **Saying something and hearting need no account**, filed under the device id the way a save is; `remove` needs the row's owner. Both tables arrive by hand and every read here survives their absence | `no-store` |
 | `POST /api/ask` | `ask.js` | none; narrows the two rolls to what a question could be about and puts it to Workers AI; measures "near" from the place named through `geocode.js`, or from the visitor's own dot sent as `here` | `no-store` |
-| `/list/<id>` | `list/[id].js` | none; `lists.html` with the list unfurled | `no-store` |
+| `/list/<id>` | `list/[id].js` | none; `lists.html` with the list unfurled, and written into its `<main>` as text | `no-store` |
 | `/lists` | `lists/index.js` | none; `lists.html` with the first page of everybody's lists seeded in — with the five Google lists as `start`, and each row's places as `dots` — searched when the address carries `?q=`, ordered by `?sort=` (`kept`, `new`) | `no-store` |
 | `/lists/public` | `lists/public.js` | none; 301 to `/lists`, the address this page had before it was shortened | — |
 | `/lists/kept` | `lists/kept.js` | none; 301 to `/lists`, the address it had before that | — |
-| `/u/<name>` | `u/[name].js` | none; `lists.html` with the profile seeded in | `no-store` |
+| `/u/<name>` | `u/[name].js` | none; `lists.html` with the profile seeded in, and written into its `<main>` as text | `no-store` |
 
-Those three pages serve the same `lists.html` with a head of their own, and
-the escaping, head swap and seeding they share are in `functions/_shell.js`.
-`index.js` and `split.js` do the same for two other documents and take what
-they can from that module — `esc()`, `rehead()` and the live address in
-`SITE` — while writing their own tags, because a place has a photograph for a
-card and a group's name wants no site suffix after it.
-The query each seeds is in a module beside the route that also answers it —
+Five routes serve a static page with a head of their own — `index.js` the
+map, `split.js` a group, and the three list routes the same `lists.html` —
+and the page out of the deployment, the escaping, the head swap, the seeding
+and the filling of an element the page ships empty are in
+`functions/_shell.js`. `index.js` and `split.js` write their own tags rather
+than taking `head()`, because a place has a photograph and a language for
+its card and a group's name wants no site suffix after it. The query each
+list route seeds is in a module beside the route that also answers it —
 `_lists.js` for one list, `_mostkept.js` for everybody's, `_profile.js` for
 one person — so the page and the API cannot drift apart. Underscore-prefixed
-files are modules, never routes.
+files are modules, never routes. A page served this way carries a pair of
+`PAGE-HEAD` markers for the head to go between, and an element it ships
+empty for `fill()` to write the page's text into — `EMPTY` in `_shell.js`
+names it per page — and the validator fails on a page that has lost either.
 
 `json(body, status, maxAge)` in `_lib.js` is how every answer is built: with
 `maxAge` it is `public, max-age=N`, without it `no-store`. **Never put a

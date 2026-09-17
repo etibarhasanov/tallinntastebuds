@@ -64,7 +64,7 @@ import { readList, LIST_ID } from '../api/_lists.js';
    functions/lists/index.js with everybody's lists in it, functions/u/[name].js
    with one person's. See functions/_shell.js for why they are not written out
    three times. */
-import { canonical, head, shell, sow, rehead, page } from '../_shell.js';
+import { canonical, esc, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
 
 /* The line under the title in a preview card. Their own if they wrote one,
    and otherwise a plain statement of what the link holds.
@@ -83,12 +83,33 @@ function describe(list) {
     : places + ' in Tallinn.';
 }
 
+/* The page as text, for the reader that runs no script — see fill() in
+   functions/_shell.js. The title, the line under it, whose it is, and every
+   place with its street and its sentence. A place that is also on the map
+   links to its own address there, the way the row does; one off Google's
+   roll or added by hand names itself and nothing more. */
+function prose(list) {
+  const rows = list.items.map((item) => {
+    const name = item.map
+      ? '<a href="/?spot=' + esc(encodeURIComponent(item.mapId || item.place)) + '">' + esc(item.name) + '</a>'
+      : esc(item.name);
+    return '<li><h3>' + name + '</h3>' +
+      (item.address ? '<address>' + esc(item.address) + '</address>' : '') +
+      (item.say ? '<p>' + esc(item.say) + '</p>' : '') +
+      '</li>';
+  });
+  return '<h1>' + esc(list.title) + '</h1>' +
+    (list.intro ? '<p>' + esc(list.intro) + '</p>' : '') +
+    (list.by ? '<p><a href="/u/' + esc(encodeURIComponent(list.by)) + '">' + esc(list.by) + '</a></p>' : '') +
+    '<ol>' + rows.join('') + '</ol>';
+}
+
 export async function onRequest(context) {
   const { request, env, params } = context;
 
   let html;
   try {
-    html = await shell(context);
+    html = await shell(context, '/lists.html');
   } catch (e) {
     /* The page itself is missing from the deployment, which is a broken build
        rather than a missing list. Nothing here can improve on Pages' own
@@ -137,6 +158,7 @@ export async function onRequest(context) {
     user: user ? user.username : null,
     list: list
   });
+  html = fill(html, EMPTY['lists.html'], prose(list));
 
   /* Indexable only if it is public. A private list reaches this line only
      when its own owner asked for it, and their session is not a crawler —

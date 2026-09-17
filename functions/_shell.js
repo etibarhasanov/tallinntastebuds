@@ -1,24 +1,33 @@
 /**
  * Tallinn Tastebuds — serving a page of this site with a head of its own.
  *
- * Underscore-prefixed, so this is a module and never a route. Three Functions
- * hand back that one page with different tags written into it:
+ * Underscore-prefixed, so this is a module and never a route. Five Functions
+ * hand back one of three static pages with different tags written into it:
  *
- *   functions/list/[id].js    one list, so a shared link unfurls as what it is
- *   functions/lists/index.js  the directory, so a search can find it
- *   functions/u/[name].js     one person, which is where a byline leads
+ *   functions/index.js        index.html, in the language its address names
+ *                             and standing on the place it names, so a search
+ *                             engine can index the map ten times and every
+ *                             place once, and a shared link unfurls as the place
+ *   functions/list/[id].js    lists.html: one list, so a shared link unfurls
+ *                             as what it is
+ *   functions/lists/index.js  lists.html: the directory, so a search can find
+ *                             it
+ *   functions/u/[name].js     lists.html: one person, which is where a byline
+ *                             leads
+ *   functions/split.js        split.html: one group, so a pasted link says
+ *                             which
  *
- * Two more pages are served the same way and take what they can from here
- * rather than writing it out again: functions/index.js is the map with one
- * place's card in its head, and functions/split.js is a group's. Both take
- * esc(), rehead() and canonical(); the map also takes SITE, because a place's
- * card is a photograph at an address of its own. Neither takes head(), which
- * spells one title for every caller and hands every caller the mark as its
- * picture, and neither of those is right for a restaurant or a group.
+ * The map and the split page write their own tags rather than taking head():
+ * it spells one title for every caller and hands every caller the mark as its
+ * picture, and neither is right for a restaurant, which has a photograph and
+ * a language, or for a group, whose name wants no site suffix after it. Both
+ * take esc(), rehead() and canonical(); the map also takes SITE, because a
+ * place's card is a photograph at an address of its own.
  *
  * What is in here is the part they cannot each have their own copy of: the two
  * escaping rules, the page out of the deployment, the head, the head swap, the
- * seeding and the response. The escaping is the reason this file exists — the
+ * seeding, the filling of an element the page ships empty, and the response.
+ * The escaping is the reason this file exists — the
  * rules below are the difference between a title somebody typed and a title
  * somebody typed being executed, and two copies of one is two places for one
  * of them to fall behind. That is the same argument assets/lists.js makes
@@ -31,8 +40,8 @@
  * the four that differ are the four arguments head() takes.
  *
  * What each route decides for itself: what it calls itself and says about
- * itself, what is seeded, what status it answers with, and whether the page is
- * worth indexing.
+ * itself, what is seeded, what status it answers with, whether the page is
+ * worth indexing, and — for the map alone — how long a browser may keep it.
  */
 
 /* Text on its way into an attribute or an element. The quotes matter most —
@@ -59,15 +68,18 @@ export function seed(value) {
     .replace(/\u2029/g, '\\u2029');
 }
 
-/* The page itself, out of the deployment. ASSETS is the binding Pages gives a
-   Function for its own static files; the plain fetch is what makes this work
-   under `wrangler pages dev`, where the binding is not always there. */
-export async function shell(context) {
-  const url = new URL('/lists.html', context.request.url);
+/* A static file out of the deployment, by its path — "/lists.html",
+   "/split.html". ASSETS is the binding Pages gives a Function for its own
+   static files; the plain fetch is what makes this work under `wrangler pages
+   dev`, where the binding is not always there. The map is the one page not
+   fetched this way: "/" is index.html, and functions/index.js says why it
+   takes context.next() instead. */
+export async function shell(context, file) {
+  const url = new URL(file, context.request.url);
   const res = context.env.ASSETS
     ? await context.env.ASSETS.fetch(new Request(url.toString()))
     : await fetch(url.toString());
-  if (!res.ok) throw new Error('lists.html unreadable: ' + res.status);
+  if (!res.ok) throw new Error(file + ' unreadable: ' + res.status);
   return res.text();
 }
 
@@ -94,17 +106,42 @@ export function sow(html, global, value) {
     '<script>window.' + global + '=' + seed(value) + ';</script>\n' + TAG);
 }
 
+/* Writing text into an element the page ships empty — the map's #list-body,
+   the list pages' <main> — for the reader that never runs the script and
+   would otherwise get a page with nothing on it. `empty` is the element's
+   exact markup, open tag and close tag together, so a page edit that changes
+   its spelling stops this matching and tools/validate.mjs says so rather
+   than a crawler quietly getting the empty page back. The script empties the
+   element again before it draws, so nobody sees what went in here.
+
+   A function for the replacement, for the reason sow() gives: a dollar sign
+   in somebody's write-up must not be read as a substitution. */
+export function fill(html, empty, inner) {
+  const close = empty.lastIndexOf('</');
+  return html.replace(empty, () => empty.slice(0, close) + inner + empty.slice(close));
+}
+
+/* The elements, by page. Said once: the routes fill them and tools/validate.mjs
+   holds each page to the spelling. */
+export const EMPTY = {
+  'index.html': '<div id="list-body"></div>',
+  'lists.html': '<main class="lists-main" id="main" tabindex="-1"></main>'
+};
+
 export const SITE = 'https://tallinntastebuds.ee';
 const HOST = new URL(SITE).hostname;
 
 /* Which address a page should say it is. The same document answers at the live
    domain and at every preview deployment, and a crawler that found two copies
    would have to pick one — so on the live host it names the live URL, and
-   anywhere else it names itself rather than pointing a preview at a page that
-   may not be deployed yet. */
+   anywhere else it names itself at the same path rather than pointing a
+   preview at a page that may not be deployed yet. The path and not the whole
+   request, on either host: the map answers ?type= and ?style= on top of the
+   address it is indexed at, and those are deep links into the page rather
+   than pages of their own. */
 export function canonical(request, path) {
   const url = new URL(request.url);
-  return url.hostname === HOST ? SITE + path : url.toString();
+  return (url.hostname === HOST ? SITE : url.origin) + path;
 }
 
 /* The head of one of these pages: what it is called, what it says about
@@ -146,9 +183,10 @@ export function head(meta) {
   ].join('\n');
 }
 
-/* The block between the two markers in lists.html, swapped for tags of this
-   page's own. Left alone when the markers are not both there, which is a
-   broken build rather than anything this can improve on. */
+/* The block between the two markers in a page, swapped for tags of this
+   answer's own. Left alone when the markers are not both there — which
+   tools/validate.mjs refuses to build, since a page served through here with
+   no markers is a page quietly wearing its static head at every address. */
 const HEAD_OPEN = '<!--PAGE-HEAD-->';
 const HEAD_CLOSE = '<!--/PAGE-HEAD-->';
 
@@ -158,6 +196,18 @@ export function rehead(html, tags) {
   if (open === -1 || close <= open) return html;
   return html.slice(0, open) + tags + html.slice(close + HEAD_CLOSE.length);
 }
+
+/* What every page served through here carries. The two security headers are
+   the ones `_headers` gives every static file under `/*`, said again because
+   that file binds only on an answer the asset server gave: a Function's own
+   Response arrives with exactly the headers it was built with. The map is not
+   under this — functions/index.js copies the static answer's headers instead,
+   which carry the same two. */
+const PAGE_HEADERS = {
+  'content-type': 'text/html; charset=utf-8',
+  'x-content-type-options': 'nosniff',
+  'referrer-policy': 'strict-origin-when-cross-origin'
+};
 
 /* Never cached, whether or not it is indexed. A list is edited by its owner
    while they are looking at it, and — because a private list is served only to
@@ -172,7 +222,7 @@ export function page(html, status, indexable) {
   return new Response(html, {
     status: status || 200,
     headers: {
-      'content-type': 'text/html; charset=utf-8',
+      ...PAGE_HEADERS,
       'cache-control': 'no-store',
       'x-robots-tag': indexable ? 'index, follow' : 'noindex, follow'
     }

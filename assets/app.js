@@ -5234,6 +5234,14 @@
     renderBand();
     var detail = state.view === 'detail' && state.selected;
     var asking = state.view === 'ask';
+    /* The tab says which place is open, the way a list's tab says which list
+       — the same suffix assets/lists.js writes — and goes back to the site's
+       own title when nothing is. It is also what functions/index.js wrote
+       into the head for a ?spot= address, so a crawler that runs the script
+       finds the title it was served rather than a second one. */
+    document.title = detail
+      ? byId(state.selected).name + ' | Tallinn Tastebuds'
+      : t('documentTitle');
     /* The scroller lays the chat out as a column so the field can hold the
        bottom — see .ask in assets/styles.css — and only the chat. */
     document.body.classList.toggle('panel-ask', asking);
@@ -8238,104 +8246,6 @@
     });
   }
 
-  /* ------------------------------------------------------ structured data
-   * One JSON-LD block describing the page and everything on it, built from
-   * the same restaurants.json the map draws from, so it can never drift out
-   * of sync the way a hand-written block would. Google runs this script
-   * before it indexes, and reads what it finds.
-   *
-   * Built once, in whichever language the visitor landed in. Closed places
-   * are left out: marking up a business that no longer serves anyone is a
-   * false statement about the world, not an SEO trick worth playing.
-   */
-  function schemaType(place) {
-    var types = place.types || [];
-    if (types.indexOf('bakery') !== -1) return 'Bakery';
-    if (types.indexOf('pub') !== -1) return 'BarOrPub';
-    if (types.indexOf('coffee') !== -1) return 'CafeOrCoffeeShop';
-    return 'Restaurant';
-  }
-
-  /* "Ankru 8, 11713 Tallinn" -> street, postcode and town as separate fields.
-     Anything that does not match that shape is passed through whole. */
-  function postalAddress(address) {
-    var out = { '@type': 'PostalAddress', addressCountry: 'EE' };
-    var parts = String(address || '').split(',');
-    var tail = (parts.length > 1 ? parts.pop() : '').trim();
-    var code = tail.match(/^(\d{5})\s+(.+)$/);
-
-    if (code) { out.postalCode = code[1]; out.addressLocality = code[2]; }
-    else if (tail) { out.addressLocality = tail; }
-    else { out.addressLocality = 'Tallinn'; }
-
-    var street = parts.join(',').trim();
-    if (street) out.streetAddress = street;
-    return out;
-  }
-
-  function injectStructuredData() {
-    var base = canonicalBase();
-    var items = [];
-
-    state.places.forEach(function (place) {
-      if (place.closed) return;
-      var node = {
-        '@type': schemaType(place),
-        name: place.name,
-        address: postalAddress(place.address),
-        geo: { '@type': 'GeoCoordinates', latitude: place.lat, longitude: place.lng },
-        url: base + '?spot=' + encodeURIComponent(place.id)
-      };
-      var blurb = place.blurb && (place.blurb[state.lang] || place.blurb[DEFAULT_LANG]);
-      if (blurb) node.description = blurb;
-      /* priceRange takes a run of euro signs, and half a sign is not something
-         it can express, so a half step rounds up to the nearer whole band. */
-      if (place.price) node.priceRange = new Array(Math.round(place.price) + 1).join('\u20ac');
-      items.push({ '@type': 'ListItem', position: items.length + 1, item: node });
-    });
-
-    var graph = [
-      {
-        '@type': 'WebSite',
-        '@id': base + '#website',
-        url: base,
-        name: 'Tallinn Tastebuds',
-        inLanguage: state.lang,
-        description: t('tagline'),
-        sameAs: ['https://www.instagram.com/tallinntastebuds/']
-      },
-      {
-        '@type': 'ItemList',
-        name: t('documentTitle'),
-        numberOfItems: items.length,
-        itemListOrder: 'https://schema.org/ItemListUnordered',
-        itemListElement: items
-      }
-    ];
-
-    var tag = document.createElement('script');
-    tag.type = 'application/ld+json';
-    tag.textContent = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
-    document.head.appendChild(tag);
-  }
-
-  /* The map is one page. ?spot, ?lang and ?style are deep links into it, not
-     separate documents, so point every one of them at the bare URL and let
-     the search engine pool the signals there instead of splitting them.
-     index.html carries the real address; this only fills in when the page is
-     opened from somewhere that has none, a preview build or a local file. */
-  function canonicalBase() {
-    var link = document.querySelector('link[rel="canonical"]');
-    if (!link) {
-      link = document.createElement('link');
-      link.setAttribute('rel', 'canonical');
-      link.setAttribute('href', window.location.origin + window.location.pathname);
-      document.head.appendChild(link);
-    }
-    var href = link.getAttribute('href') || '';
-    return href.charAt(href.length - 1) === '/' ? href : href + '/';
-  }
-
   function boot() {
     dom = {
       map: $('map'),
@@ -8524,14 +8434,6 @@
       /* And who is holding them. Same rules: last, unwaited, and the site is
          the site it always was if the answer never comes. */
       loadAccount();
-
-      /* The JSON-LD block is for crawlers only — nobody reading the map ever
-         sees it — so it must never be the reason a visitor gets the fatal
-         card instead of the map. It sits alone in a try for that reason:
-         everything above it has already rendered by this point. */
-      try { injectStructuredData(); } catch (e) {
-        if (window.console && console.error) console.error(e);
-      }
 
       wireHistory();
 

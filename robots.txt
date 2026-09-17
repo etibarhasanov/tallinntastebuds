@@ -2,6 +2,17 @@
 User-agent: *
 Allow: /
 
+# By the AI assistants too, and this is where that is decided. OAI-SearchBot
+# and Claude-SearchBot build the indexes ChatGPT and Claude search from,
+# ChatGPT-User and Claude-User fetch a page the moment somebody asks about
+# it, PerplexityBot does both, and every one of them reads this file and is
+# covered by the * above. So are GPTBot and ClaudeBot, which collect training
+# data: allowed by the same line, on purpose rather than by omission, and if
+# that is ever not wanted it is two groups naming those two and nothing that
+# touches the search bots. Cloudflare sorts the same bots into Search, Agent
+# and Training at the edge, and a bot blocked there never reads this file at
+# all — README.md under **Getting found** says where that switch is.
+
 # The discount pages are not. Each one is meaningless without a place in the
 # query string, and a crawled copy of a code that expires within the hour is
 # worse than meaningless. The pages carry a noindex tag of their own too,

@@ -166,34 +166,38 @@ const NOT_A_BAR = /Restaurant|Pub|Hookah|Venue|Concert|Auditorium|Club|Store|Caf
 /* The six random characters on each id were minted once, the way
    functions/api/lists.js mints them, and are fixed here so a refresh of the
    export changes what is on a list and never where it is. The title is what
-   the id was cut from; changing a title does not change its id. */
-const LISTS = [
+   the id was cut from; changing a title does not change its id — the city
+   went into the titles after the ids were minted, because the title is also
+   the <title> of the page at /list/<id>, and "top ten restaurants in
+   Tallinn" is the question somebody types. Exported for tools/sitemap.mjs,
+   which lists the five by id. */
+export const LISTS = [
   {
     id: 'top-ten-restaurants-by-google-pt7mwk',
-    title: 'Top ten restaurants, by Google',
+    title: 'Top ten restaurants in Tallinn, by Google',
     pick: (place) => /Restaurant$/.test(place.category) &&
       !/^(Fast Food|Takeout|Delivery) Restaurant$/.test(place.category)
   },
   {
     id: 'top-ten-bakeries-by-google-65nfrf',
-    title: 'Top ten bakeries, by Google',
+    title: 'Top ten bakeries in Tallinn, by Google',
     pick: (place) => place.category === 'Bakery'
   },
   {
     id: 'top-ten-cafes-by-google-jz7c2b',
-    title: 'Top ten cafés, by Google',
+    title: 'Top ten cafés in Tallinn, by Google',
     pick: (place) => /^(Cafe|Coffee Shop|Coffee roastery|Tea House)$/.test(place.category) ||
       (place.category === 'Bakery' && /Coffee Shop|\bCafe\b/.test(place.tags))
   },
   {
     id: 'top-ten-bars-by-google-8y6grz',
-    title: 'Top ten bars, by Google',
+    title: 'Top ten bars in Tallinn, by Google',
     pick: (place) => /^(Bar|Cocktail Bar|Wine Bar)$/.test(place.category) &&
       !NOT_A_BAR.test(place.tags)
   },
   {
     id: 'top-ten-pizzerias-by-google-k83p93',
-    title: 'Top ten pizzerias, by Google',
+    title: 'Top ten pizzerias in Tallinn, by Google',
     pick: (place) => place.category === 'Pizza Restaurant' ||
       (/^(Italian )?Restaurant$/.test(place.category) && /Pizza Restaurant/.test(place.tags))
   }
