@@ -164,7 +164,10 @@
     marked: null,        // restaurant id, or null
     view: 'list',        // 'list' | 'detail'
     lastFocus: null,
-    lb: { photos: [], index: 0, base: '', name: '', opener: null },
+    /* The photograph up in the lightbox, and how far into it a pinch has
+       gone: scale is 1 until two fingers say otherwise, x and y are where
+       the zoomed picture's corner has been carried to. */
+    lb: { photos: [], index: 0, base: '', name: '', opener: null, scale: 1, x: 0, y: 0 },
     stories: [],         // data/stories.json, usually empty
     /* The queue being watched right now: which stories are up, which one is
        on screen, whether a finger is holding it still, and what to give the
@@ -6786,7 +6789,22 @@
     return el('div', { className: 'list-credit-keep' }, [b, count]);
   }
 
-  /* -------------------------------------------------------------- lightbox */
+  /* -------------------------------------------------------------- lightbox
+   * One photograph at a time over a dark scrim, with the previous and the
+   * next beside it. A pinch on it zooms the photograph and nothing else:
+   * left to the browser, the pinch zooms the page, which looks the same
+   * while the photograph is up and is still there when it closes — the map
+   * twice its size, the header off the top of the screen, and no obvious
+   * way back; the one somebody found was to open a photograph again and
+   * pinch the other way. So the lightbox takes the gesture itself, the way
+   * the map takes its own.
+   */
+
+  /* How far in a pinch can go. The photographs are 1600px on the long edge
+     (photos/README.md) and a phone shows one about 390px wide, so four times
+     is looking at every pixel there is; past that there is nothing more in
+     the file to see, only bigger blur. */
+  var LB_MAX_ZOOM = 4;
 
   function openLightbox(place, index, opener) {
     state.lb = {
@@ -6794,7 +6812,8 @@
       index: index,
       base: 'photos/' + place.id + '/',
       name: place.name,
-      opener: opener || document.activeElement
+      opener: opener || document.activeElement,
+      scale: 1, x: 0, y: 0
     };
     dom.lightbox.hidden = false;
     paintLightbox();
@@ -6809,6 +6828,142 @@
     dom.lbCaption.textContent = lb.name + ' · ' + t('photoOf', { n: lb.index + 1, total: lb.photos.length });
     dom.lbPrev.hidden = !many;
     dom.lbNext.hidden = !many;
+    /* A photograph arrives at its own size, however far into the last one
+       the fingers had gone. */
+    lb.scale = 1;
+    lb.x = 0;
+    lb.y = 0;
+    paintZoom();
+  }
+
+  /* Where the photograph is drawn. It is scaled about its own top-left
+     corner so the numbers stay plain — a point u px into the picture shows
+     at x + scale * u — and the corner is what x and y carry about. At 1 the
+     transform goes altogether and the picture sits where the layout put it. */
+  function paintZoom() {
+    var lb = state.lb;
+    dom.lbImg.style.transform = lb.scale === 1
+      ? ''
+      : 'translate(' + lb.x + 'px, ' + lb.y + 'px) scale(' + lb.scale + ')';
+  }
+
+  /* The pinch, and the drag that carries a zoomed photograph about. Both are
+   * pointer events on the lightbox itself — the stylesheet's touch-action on
+   * it is what keeps the browser from claiming them first — and both are the
+   * same sum: whichever fingers are down, the point of the photograph that
+   * was under their midpoint when they landed stays under their midpoint as
+   * they move, at a scale that grows with the distance between them. One
+   * finger is that with the distance left out, which is a plain drag; two
+   * fingers spreading is a zoom about the fingers rather than the middle of
+   * the screen, which is what a pinch has meant on every phone since the
+   * first one.
+   *
+   * Every change to which fingers are down starts the sum over from where
+   * the photograph stands now, so a finger lifting mid-pinch turns into a
+   * drag without the picture jumping, and a second one landing mid-drag
+   * turns into a pinch the same way.
+   */
+  function wireLightboxZoom() {
+    var fingers = [];   /* the pointers down on the lightbox, at most two: { id, x, y } */
+    var from = null;    /* where the gesture started, or null while nothing is down */
+
+    function finger(ev) {
+      for (var i = 0; i < fingers.length; i++) {
+        if (fingers[i].id === ev.pointerId) return fingers[i];
+      }
+      return null;
+    }
+
+    function midpoint() {
+      var x = 0;
+      var y = 0;
+      for (var i = 0; i < fingers.length; i++) { x += fingers[i].x; y += fingers[i].y; }
+      return { x: x / fingers.length, y: y / fingers.length };
+    }
+
+    function spread() {
+      if (fingers.length < 2) return 0;
+      var dx = fingers[0].x - fingers[1].x;
+      var dy = fingers[0].y - fingers[1].y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    /* The transform the photograph has, the fingers as they are, the box the
+       photograph was laid out in — read back through its own transform, since
+       the rect the browser reports is the drawn one — and the screen. */
+    function anchor() {
+      var lb = state.lb;
+      var rect = dom.lbImg.getBoundingClientRect();
+      from = {
+        scale: lb.scale, x: lb.x, y: lb.y,
+        mid: midpoint(), spread: spread(),
+        left: rect.left - lb.x, top: rect.top - lb.y,
+        w: rect.width / lb.scale, h: rect.height / lb.scale,
+        screen: dom.lightbox.getBoundingClientRect()
+      };
+    }
+
+    /* One axis of keeping the photograph on the screen. Bigger than the
+       screen along this axis, it goes wherever the fingers took it as long
+       as no screen shows past either edge. Smaller, it is scaled about its
+       own middle rather than carried — and that middle drifts from where
+       the layout put it towards the middle of the screen as it grows, so
+       that the moment it fills the screen it is exactly where the clamp
+       would hold it and nothing jumps at the crossing. The two middles are
+       a caption's height apart. `at` is where the unscaled edge sits and
+       `size` the unscaled length; low..high is the screen. */
+    function within(want, scale, at, size, low, high) {
+      var scaled = size * scale;
+      var room = high - low;
+      if (scaled >= room) return Math.min(low - at, Math.max(high - at - scaled, want));
+      var own = at + size / 2;
+      var mid = own + ((low + high) / 2 - own) * (scaled - size) / (room - size);
+      return mid - scaled / 2 - at;
+    }
+
+    function move() {
+      var lb = state.lb;
+      var scale = from.scale;
+      if (from.spread) scale = Math.min(LB_MAX_ZOOM, Math.max(1, from.scale * spread() / from.spread));
+      var mid = midpoint();
+      var s = from.screen;
+      lb.scale = scale;
+      lb.x = within(mid.x - from.left - (scale / from.scale) * (from.mid.x - from.left - from.x),
+        scale, from.left, from.w, s.left, s.right);
+      lb.y = within(mid.y - from.top - (scale / from.scale) * (from.mid.y - from.top - from.y),
+        scale, from.top, from.h, s.top, s.bottom);
+      paintZoom();
+    }
+
+    dom.lightbox.addEventListener('pointerdown', function (ev) {
+      if (ev.button !== undefined && ev.button !== 0) return;
+      /* The first finger of a gesture: anything still listed from the last
+         one never reported lifting — the lightbox closed under it, or a
+         mouse let go outside the window — and is not on the glass now. */
+      if (ev.isPrimary) fingers.length = 0;
+      if (fingers.length > 1) return;   /* a third finger changes nothing */
+      fingers.push({ id: ev.pointerId, x: ev.clientX, y: ev.clientY });
+      anchor();
+    });
+
+    dom.lightbox.addEventListener('pointermove', function (ev) {
+      var f = finger(ev);
+      if (!f) return;
+      f.x = ev.clientX;
+      f.y = ev.clientY;
+      /* One finger on a photograph at its own size has nothing to carry. */
+      if (fingers.length < 2 && from.scale === 1) return;
+      move();
+    });
+
+    function lift(ev) {
+      var f = finger(ev);
+      if (!f) return;
+      fingers.splice(fingers.indexOf(f), 1);
+      if (fingers.length) anchor(); else from = null;
+    }
+    dom.lightbox.addEventListener('pointerup', lift);
+    dom.lightbox.addEventListener('pointercancel', lift);
   }
 
   function stepLightbox(delta) {
@@ -7997,6 +8152,7 @@
     dom.lightbox.addEventListener('click', function (ev) {
       if (ev.target === dom.lightbox) closeLightbox();
     });
+    wireLightboxZoom();
 
     document.addEventListener('keydown', function (ev) {
       /* The stories cover everything, so while they are up they answer the

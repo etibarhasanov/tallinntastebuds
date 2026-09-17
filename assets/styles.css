@@ -3056,7 +3056,14 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 .list-row:hover .depth-mark.is-reel { background: var(--accent-lit); border-color: var(--accent-lit); }
 .empty-note:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 3px; }
 
-/* ---------- lightbox ---------- */
+/* ---------- lightbox ----------
+   The pinch on a photograph is the lightbox's own, the way the map's is
+   Leaflet's: `none` here keeps the browser from zooming the page with it,
+   which is the same trap the chrome's `none` above closes — the whole
+   interface twice the size and no obvious way back out once the photograph
+   has closed — and wireLightboxZoom() in app.js scales the picture itself
+   instead. A zoomed picture is bigger than the screen and is
+   clipped at its edge rather than scrolled to. */
 
 .lightbox {
   position: fixed;
@@ -3067,7 +3074,9 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   justify-content: center;
   gap: 8px;
   padding: max(var(--gap), var(--safe-t)) var(--gap) max(var(--gap), var(--safe-b));
+  overflow: hidden;
   background: rgba(20, 26, 31, .92);
+  touch-action: none;
 }
 .lightbox[hidden] { display: none; }
 
@@ -3079,16 +3088,24 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   max-width: min(1100px, 100%);
   min-width: 0;
 }
+/* The zoom is scaled about the corner, not the middle, so that the script's
+   sums stay plain; see paintZoom() in app.js. */
 .lb-figure img {
   max-width: 100%;
   max-height: calc(100vh - 110px);
   object-fit: contain;
   border-radius: 2px;
   background: var(--ink);
+  transform-origin: 0 0;
 }
 #lb-caption { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .6); }
 
+/* The buttons stand over a zoomed photograph: a transform paints its element
+   above anything that has no stacking of its own, and the close button and
+   the previous one come before the picture in the markup. */
 .lb-btn {
+  position: relative;
+  z-index: 1;
   flex: 0 0 auto;
   display: grid;
   place-items: center;

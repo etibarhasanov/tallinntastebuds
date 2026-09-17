@@ -9746,6 +9746,17 @@ then the panel. Focus rings are visible everywhere, map pins are keyboard
 reachable with Enter, and `prefers-reduced-motion` turns off every transition
 and map animation.
 
+**A pinch on a photograph zooms the photograph.** Up to four times, about the
+fingers, and a finger then carries it about; the next photograph, or closing,
+puts it back at its own size. It is the lightbox's gesture rather than the
+browser's because the browser's answer to a pinch is to zoom the *page*,
+which looks the same while the photograph is up and is still there once it
+has closed — the map twice its size, the chips off the edge of the screen, and
+no obvious way back, since Leaflet takes the pinches that land on the map.
+Somebody reading a menu found one, which was to open the photograph again and
+pinch the other way; `wireLightboxZoom()` in `assets/app.js` is why nobody
+has to again.
+
 **The List view is also the SEO surface.** It is the only part of the site a
 crawler can read as text, so it stays in the markup even when the panel is
 closed, hidden by transform rather than removed — and `functions/index.js`
