@@ -7653,8 +7653,7 @@ tools/googlelists.mjs      ranks the same export into db/google-lists.sql
 tools/typelists.mjs        turns the map's filter chips into db/type-lists.sql
 tools/sitemap.mjs          writes sitemap.xml from the languages, the places
                            and the eighteen lists the site wrote
-tools/indexnow.mjs         submits every address in it to Bing once each deploy
-                           is live
+tools/indexnow.mjs         submits every address in it to Bing, on each deploy
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
@@ -9276,22 +9275,6 @@ design: the protocol's whole proof is that only somebody who can put a file
 on this host could have written it, so it is committed, and there is nothing
 in the repository's secret store for it. Google takes no part in IndexNow;
 Search Console and the sitemap are its road.
-
-**But the deploy is waited for.** The push fires the workflow before
-Cloudflare has put the commit live, and on the day the key was born that sent
-Bing to fetch a key file that was not on the site yet: IndexNow says 202 to
-any submission, checks the key on its own time, found nothing, and answered
-403 to every run after — three red runs on commits that had touched nothing
-near it. So the tool now asks the live site for `/indexnow.txt` and submits
-only once what comes back is the key the tree holds, up to six minutes. On
-an ordinary push that is one request and no wait; on the push that mints a
-new key it is the wait for the deploy, which is the point. A key Bing has
-already refused stays refused, so minting a fresh one — `node -e` and
-thirty-two hex characters into `indexnow.txt` — is how a run like those three
-is put right, and the workflow can be run by hand from the Actions tab to
-check that it was. A 403 *after* the tool has seen the key served is the one
-thing left that the repository cannot fix: Bing being answered differently
-from a GitHub runner by whatever stands in front of the zone.
 
 **Where the host is named.** `robots.txt`, `tools/sitemap.mjs`,
 `tools/indexnow.mjs`, `index.html`, `lists.html`, `blog.html`,
