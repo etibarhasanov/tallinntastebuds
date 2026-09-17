@@ -2268,10 +2268,11 @@
       } }
   ];
   /* The steps this open is taking, which of them is up (-1 when the tour is
-     closed), the timer for the cursor's press on arrival, the timer that
-     places the step again once the drawer has finished rolling out, and the
-     pills holding their label open for the step. */
-  var tour = { steps: [], i: -1, press: null, roll: null, lit: [] };
+     closed), the timer for the cursor's press on arrival, the two timers that
+     place the step again once the thing it points at has finished opening —
+     the drawer rolling out, a rail pill sliding its label out — and the pills
+     holding their label open for the step. */
+  var tour = { steps: [], i: -1, press: null, roll: null, slide: null, lit: [] };
 
   /* The pin nearest the middle of the screen, or null when none is on it —
      zoomed out to the whole of Estonia, say — and the bubble then sits in
@@ -2370,12 +2371,24 @@
     tour.roll = window.setTimeout(placeTourStep, CHIP_ROLL_MS);
   }
 
-  /* On a phone a pill is a disc until it opens its label; the ones a step is
-     about wear theirs for as long as the step is up. */
+  /* A pill is a disc until it opens its label — on a phone always, and on a
+     desktop whenever the pointer is somewhere else — so the ones a step is
+     about wear theirs for as long as the step is up.
+
+     And the step is placed again when the label has finished sliding, the way
+     tourDrawer places it again after the chip row has rolled. Everything in
+     showStep happens in the same breath, so the ring and the bubble would
+     otherwise be measured against the disc the pill still was at that instant
+     and left sitting round it while the words slid out from underneath —
+     which on a desktop puts the label behind the bubble, and on a phone hangs
+     it out of the side of the ring. Only when something actually opened:
+     a step about a pin or a chip has no slide to wait for. */
   function litPills(pills) {
+    window.clearTimeout(tour.slide);
     for (var i = 0; i < tour.lit.length; i++) tour.lit[i].classList.remove('hint-open');
     tour.lit = pills;
     for (var j = 0; j < pills.length; j++) pills[j].classList.add('hint-open');
+    if (pills.length) tour.slide = window.setTimeout(placeTourStep, PILL_SLIDE_MS);
   }
 
   /* The tip of the cursor goes to x,y. The press on arrival is timed to the
@@ -3114,6 +3127,11 @@
      held for exactly that, and it is also the moment anything measuring the
      row can trust what it measures. */
   var CHIP_ROLL_MS = 640;
+  /* And how long a rail pill takes to open its label: the .34s the stylesheet
+     slides grid-template-columns over, with a little after it for the frame
+     that lands on the end of it. litPills waits this out before placing the
+     step again. */
+  var PILL_SLIDE_MS = 380;
 
   /* Under 860px the chip row is a drawer. Shut, the bar is one button; open,
      it is the row it always was. And shut is All: the chips are the only
@@ -3680,9 +3698,13 @@
    * seconds and collapses back to its icon. Long enough to read twice, gone
    * before it is furniture.
    *
-   * The class is inert above 860px, where every pill on the rail wears its
-   * label and none of them ever lets it go, so none of this needs to ask how
-   * wide the window is.
+   * It used to be inert above 860px, where every pill wore its label for the
+   * whole visit and none of them ever let it go. The corner keeps to itself
+   * on that side of the breakpoint now too — see wireRailReveal() below and
+   * "the corner steps back until you go for it" in assets/styles.css — so
+   * .hint-open finally draws something there, and a stranger on a desktop is
+   * introduced to the rail the same way a stranger on a phone is. None of the
+   * timing had to change for it and none of it asks how wide the window is.
    *
    * The chip row joins them, and is the one piece that has to ask: it is
    * folded behind Filters on a phone and flat on the map above 860px, so
@@ -3927,6 +3949,108 @@
        together for most of the time they are up at all. */
     for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], RAIL_IN + i * 300);
     openChipRowHint();
+  }
+
+  /* --------------------------------------------------- the corner on approach
+   * Above 860px, with a mouse, the corner keeps to itself: the mark and a
+   * column of discs, and the words come back when the pointer comes for them.
+   * The stylesheet draws both states and carries the argument for them — "the
+   * corner steps back until you go for it" in assets/styles.css. All this does
+   * is say which of the two is on, by putting rail-open on the body.
+   *
+   * Two things open it, and they are doing different jobs.
+   *
+   * The strip is the courtesy. A shut pill is 39.6px wide and the widest of
+   * them opens to 267px, so a column that waited to be hovered would slide its
+   * labels out from under the pointer at the moment it arrived and move every
+   * pill below it sideways as it landed. RAIL_NEAR is drawn wider than the
+   * column ever gets, so the words are already there by the time the mouse is
+   * over them and nothing has to move under a pointer that is already aiming
+   * at something. RAIL_FAR is the same line 60px further out, and it is why
+   * there are two numbers: one threshold flickers, because a pointer resting
+   * on it jitters a pixel either way and the whole column opens and shuts
+   * under the hand for as long as it sits there. Two mean it opens on the way
+   * in, shuts on the way out, and does nothing in the sixty pixels between.
+   *
+   * The hover is the guarantee, and it is not the same statement. The strip is
+   * a number that has to stay wider than the labels, and the labels are
+   * translations: today the widest is Ukrainian's at 267px, with 283px from
+   * the edge of the window to the end of that pill against a strip of 300.
+   * Seventeen pixels is not a margin to rest a rule on — a longer word for
+   * "Show my location" in a language nobody has added yet would put a pill out
+   * past RAIL_FAR, and then the column would collapse out from under a pointer
+   * that was on one of its buttons. So being over the column is its own reason
+   * to be open, whatever the arithmetic says, and the rule is the plain one: a
+   * pointer that has reached the rail or the mark opens the whole thing and
+   * keeps it open.
+   *
+   * A keyboard opens it too, because a focus ring around a disc with no name
+   * beside it is exactly the mystery the phone's introduction was written to
+   * clear up. Only a keyboard, though: clicking a pill focuses it as well in
+   * every browser worth naming, and a corner held open by the last thing
+   * pressed would be open for the rest of the visit. :focus-visible is the
+   * browser's own answer to which of the two a focus was, and it is the same
+   * answer the focus rings on this site are already drawn from.
+   */
+  var RAIL_NEAR = 300;
+  var RAIL_FAR = 360;
+  /* Asked once and kept: matchMedia on every pointer move would be a new
+     MediaQueryList a hundred times a second. */
+  var railMQ = window.matchMedia
+    ? window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)')
+    : null;
+  var railNear = false;
+  var railShown = false;
+
+  function railFocused() {
+    var node = document.activeElement;
+    if (!node) return false;
+    if (!((dom.rail && dom.rail.contains(node)) ||
+          (dom.brand && dom.brand.contains(node)))) return false;
+    /* An engine that does not know the selector throws on it rather than
+       answering false, and there the focus counts: a keyboard that cannot be
+       told from a mouse is better served by a column that stays open. */
+    try { return node.matches(':focus-visible'); }
+    catch (err) { return true; }
+  }
+
+  /* .brand hands its pointer events to the map and only the mark, the name and
+     the handle take them back, so this is the mark while the corner is shut
+     and any of the three once it is open — which is the right answer both
+     times: an empty rectangle of transparent corner is not somebody reaching
+     for the column. */
+  function railHovered() {
+    return !!((dom.rail && dom.rail.matches(':hover')) ||
+              (dom.brand && dom.brand.matches(':hover')));
+  }
+
+  function syncRailReveal() {
+    var on = !!(railMQ && railMQ.matches) &&
+             (railNear || railHovered() || railFocused());
+    if (on === railShown) return;
+    railShown = on;
+    document.body.classList.toggle('rail-open', on);
+  }
+
+  function wireRailReveal() {
+    if (!dom.rail || !dom.brand) return;
+    window.addEventListener('pointermove', function (ev) {
+      /* A finger and a stylus are not hovering, they are pressing, and a tap
+         on the left of the map is not somebody asking for the rail. The media
+         query has already said no to both on every device that tells the truth
+         about what it is; this is for the one that does not. */
+      if (ev.pointerType && ev.pointerType !== 'mouse') return;
+      if (ev.clientX <= RAIL_NEAR) railNear = true;
+      else if (ev.clientX > RAIL_FAR) railNear = false;
+      syncRailReveal();
+    }, { passive: true });
+
+    /* focusout fires before the new focus has landed, so what it is asked is
+       "where did the focus end up", a tick later, rather than "where was it". */
+    document.addEventListener('focusin', syncRailReveal);
+    document.addEventListener('focusout', function () {
+      setTimeout(syncRailReveal, 0);
+    });
   }
 
   /* ---------------------------------------------------------------- radio
@@ -8227,6 +8351,7 @@
     });
 
     wireTopGuard();
+    wireRailReveal();
 
     dom.btnFilters.addEventListener('click', function () {
       var opening = !filterMenuOpen();
@@ -8248,6 +8373,10 @@
 
     window.addEventListener('resize', function () {
       placeRail();
+      /* A window dragged under 861px, or a mouse unplugged from a screen that
+         has a touch one beside it, is a corner that has to stop hiding its
+         words — there is no hover left to bring them back. */
+      syncRailReveal();
       if (map) map.invalidateSize({ animate: false });
       syncFilterMenuToWidth();
       updateFilterFades();

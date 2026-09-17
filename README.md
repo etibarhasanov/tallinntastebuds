@@ -7976,8 +7976,10 @@ toast saying it would not start, over a station that had.
 
 Delete the file, or empty it, and the button never appears at all.
 
-The button wears the station's name on a desktop, and on a phone it wears it
-for the first few seconds and again whenever you press play — see
+The button wears the station's name for the first few seconds and again
+whenever you press play — on a phone always, and on a desktop whenever the
+pointer is anywhere but the left of the window, where the rail keeps its words
+out. See
 [The rail introduces itself on a phone](#the-rail-introduces-itself-on-a-phone).
 A station with no `name` gets no label and stays a play triangle.
 
@@ -8403,19 +8405,93 @@ with an icon at the left and the label beside it — a coloured dot standing in
 for the icon on the colour switch, which is what lets the switch wear the pill
 instead of sitting in a case of its own.
 
-**Above 860px none of the timing applies, and all seven keep their words.**
-They did not used to. Three of the pills had a label there and the two under
-them did not: a coloured dot in a round case of its own and a crosshair in a
-second one, both mute, under three buttons that say what they are. The
-argument for that was that a pointer can hover and read a `title`, and that
-two more words down the left edge are two more than the map can spare — but
-what it actually put on the screen was two things that looked unfinished, and
-the eye counts labels before it counts jobs. So the swatch says which style it
-is about to give you and the crosshair says *Show my location*, in the words
+**Every pill carries a label, at every width.** Three of them used to have one
+and the two under them did not: a coloured dot in a round case of its own and a
+crosshair in a second one, both mute, under three buttons that say what they
+are. The argument for that was that a pointer can hover and read a `title`, and
+that two more words down the left edge are two more than the map can spare —
+but what it actually put on the screen was two things that looked unfinished,
+and the eye counts labels before it counts jobs. So the swatch says which style
+it is about to give you and the crosshair says *Show my location*, in the words
 they were already carrying for the phone's sake, and the rail is one column of
 one shape. The longest pill on the rail is Ukrainian's
 `ПОКАЗАТИ МОЄ МІСЦЕЗНАХОДЖЕННЯ` at 267px, which is the width of the brand's
-own column above it and a fifth of a 1280px window — the map can spare that.
+own column above it and a fifth of a 1280px window.
+
+### And on a desktop the corner steps back until you go for it
+
+That 267px is a fifth of the window, and until recently it stood there for as
+long as the tab was open. So did the rest of the corner: the mark, the name,
+the sentence and the handle above the rail, and every label down it — the
+better part of 300px of ink over Tallinn, saying nothing new after the first
+few seconds of being read. The map is what somebody came for and the column is
+how they steer it, and a control wanted now and then should be quiet the rest
+of the time.
+
+So above 860px, **with a mouse**, a pointer gets the same bargain a phone
+does, and hover does the asking. What stands in the corner is the mark and the
+nine discs — the pictures, which are the half that says this is a place and
+that one is a die — and the words come back the moment the mouse comes into
+the left of the window. `wireRailReveal()` in `assets/app.js` draws the line and sets
+`rail-open` on the body; the two states are the stylesheet's, under **the
+corner steps back until you go for it**.
+
+**Two things open it, and they are doing different jobs.**
+
+The strip down the side of the window is the courtesy. A shut pill is 39.6px
+across and the widest opens to 267px, so a column that waited to be hovered
+would slide its labels out from under the pointer at the moment it arrived and
+move every pill below it sideways as it landed. The strip opens at 300px,
+which is drawn wider than the column ever gets — the widest pill reaches 283px
+from the edge of the window and the brand's own measure 266px — so the words
+are already there by the time the mouse is over them. It shuts again past
+360px. Two numbers and not one, because a single line flickers: a pointer
+resting on it jitters a pixel either way and the whole column opens and shuts
+under the hand for as long as it sits there.
+
+Being **over** the column is the guarantee, and it is not the same statement.
+The strip is a number that has to stay wider than the labels, and the labels
+are translations: seventeen pixels between the widest pill and the line is not
+a margin to rest a rule on, and a longer word for *Show my location* in a
+language nobody has added yet would put a pill out past 360px — where the
+column would collapse out from under a pointer that was on one of its own
+buttons. So the rail and the mark answer a hover in their own right, whatever
+the arithmetic says. Reach any of the nine discs, or the mark above them, and
+the whole column opens and stays open for as long as the pointer is on it.
+Measured with a label stretched to 530px, which is a third of the window: the
+pointer holds it open at 400px and at 480px, and it shuts at 560px, where the
+pill actually ends.
+
+**Nothing moves.** The words in the corner go out by opacity alone and their
+boxes stay where they were, so the mark does not walk up the screen, the chip
+row beside it does not shift, and `placeRail()` reads the same number whichever
+state the corner is in and never has to run again. A corner that reflowed every
+time a mouse crossed it would be worse than one that never closed. The pills
+are the one exception and have to be — an empty pill is not a shut one, it is a
+button somebody forgot to write on — so they collapse to the disc the phone
+wears, at this side's size: a 21.6px icon with 8px of air each side is 39.6px
+across, which is exactly the height the pill already stood at. The open pill
+gives that pixel back on the right, so it is the same width it always was and
+the icon holds still through the slide.
+
+**And it does not happen without a mouse.** `(hover: hover) and (pointer:
+fine)` is the whole of the condition, because a tablet in landscape and a
+touchscreen laptop are both above 860px with no way to hover, and a label only
+a hover can reach is a label they could never read. There the column keeps its
+words the way it always has. A keyboard gets it too, from `:focus-visible`:
+tab into the corner and it opens, because a focus ring round a disc with no
+name beside it is the same mystery the introduction above was written to clear
+up. A *mouse* press does not hold it open — clicking a pill focuses it as well,
+and a corner pinned by the last thing pressed would be open for the rest of
+the visit.
+
+**Which is also what finally makes the introduction visible here.** The
+cascade has run at every width since it was written and drawn nothing above
+860px, where every label was already up and `.hint-open` had no rule. It has
+one now, so a stranger on a desktop gets the name, the sentence, the handle
+and the nine labels on arrival and watches the corner empty in the order it
+filled — the same seven and a half seconds, the same timing, none of which had
+to change for it.
 
 Next to last on the rail is the locate button, which frames you
 together with the nearest place rather than dropping you at a fixed zoom on
@@ -8439,8 +8515,8 @@ only for somebody who happened to be looking at the rail when it ran. A
 visitor who landed on a place, or on a story, or who spent the first ten
 seconds looking at the pins, gets a map that never said whose pins they are
 or what the buttons down the side do. The tagline under the mark says the
-first half on a desktop and says it briefly on a phone; nothing on the page
-said the second half twice.
+first half, briefly, and at every width since the corner started stepping
+back; nothing on the page said the second half twice.
 
 So the last pill on the rail is a question mark labelled **How this works**,
 and pressing it walks the page rather than describing it. A cursor the size
@@ -8462,8 +8538,9 @@ The walk, in order, and what each step is anchored to:
 3. The language switcher.
 4. The chip row, which on a phone the walk rolls out of the **Filters**
    button first, so that there is a row to point at.
-5. **Surprise me**, with its label held open on a phone for as long as the
-   step is up.
+5. **Surprise me**, with its label held open for as long as the step is up —
+   which is every width where the pill is a disc: a phone always, and a
+   desktop whenever the pointer is somewhere other than the corner.
 6. **Ask**, the same way.
 7. The radio, left out when `data/radio.json` gave the language no station
    and the button never appeared.
@@ -8516,11 +8593,22 @@ back on every resize — and why the two steps above ask the row how wide it
 is rather than asking the window: out, it is the row and the chip in it;
 still folded, it is the button that is about to open it. Placing the step
 twice is what makes that read as a press — once on the shut button, and
-again once the drawer has finished its `CHIP_ROLL_MS`. Nothing under the
-walk can be pressed while it is up:
-the layer swallows the taps, so the thing being pointed at is not opened
-mid-sentence — and the same layer is why a tap anywhere outside the bubble
-is Next: on a phone, it is there rather than a button the size of a word.
+again once the drawer has finished its `CHIP_ROLL_MS`.
+
+**A step about a rail pill is placed twice for the same reason.** Everything
+in `showStep()` happens in one breath, so a ring drawn the instant the label
+was told to open is a ring the size of the disc the pill still was — and it
+stayed that size while the words slid out from under it, which on a phone hung
+the label out of the side of the ring and on a desktop, where the bubble sits
+beside the rail rather than under it, put the label behind the bubble
+altogether. So `litPills()` waits out `PILL_SLIDE_MS` and places the step
+again, and the ring, the bubble and the cursor land against the pill at the
+width it has actually opened to.
+
+Nothing under the walk can be pressed while it is up: the layer swallows the
+taps, so the thing being pointed at is not opened mid-sentence — and the same
+layer is why a tap anywhere outside the bubble is Next: on a phone, it is
+there rather than a button the size of a word.
 
 On a phone it introduces itself with the rest of the rail, last in the
 cascade, and a question mark is the icon on the rail that says the least on
@@ -9359,6 +9447,10 @@ starts after so the two columns clear each other. And with nothing drawn
 there, nothing there takes a press: the block hands its pointer events to the
 map and the mark, the name and the handle take theirs back one at a time,
 because a transparent rectangle that swallows a drag is a piece of dead map.
+The name and the handle give them up again while the corner is shut — see
+**And on a desktop the corner steps back until you go for it** — since a link
+nobody can see is a link nobody meant to press. The mark never does: it is the
+one thing in the corner that is always drawn.
 
 **The ring is the only thing on the page that moves on its own.** Nothing else
 here animates without being asked: pins settle, panels slide, and that is the
