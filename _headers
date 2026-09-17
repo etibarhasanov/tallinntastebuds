@@ -12,6 +12,15 @@
 # and stylesheets it is allowed to reuse, so a stale page is a stale
 # everything. These rules match the request path, and the address people
 # actually open is "/", not "/index.html", so both are spelled out.
+#
+# "/" is answered by functions/index.js whenever the address carries a ?spot=
+# that names a place — the map with that place's own social card written into
+# its head, so a shared link unfurls as the restaurant it points at. Unlike the
+# /split and /lists routes below, that one does not write headers of its own:
+# it copies this rule off the response it swaps the head of, so there is one
+# place saying how the map caches and this is it. Without a ?spot= it hands the
+# request straight on and this rule binds directly. No noindex either way — the
+# map is the page everything else on this site is trying to be found for.
 /
   Cache-Control: public, max-age=0, must-revalidate
 

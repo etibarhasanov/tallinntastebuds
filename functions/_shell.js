@@ -1,5 +1,5 @@
 /**
- * Tallinn Tastebuds — serving lists.html with a head of its own.
+ * Tallinn Tastebuds — serving a page of this site with a head of its own.
  *
  * Underscore-prefixed, so this is a module and never a route. Three Functions
  * hand back that one page with different tags written into it:
@@ -7,6 +7,14 @@
  *   functions/list/[id].js    one list, so a shared link unfurls as what it is
  *   functions/lists/index.js  the directory, so a search can find it
  *   functions/u/[name].js     one person, which is where a byline leads
+ *
+ * Two more pages are served the same way and take what they can from here
+ * rather than writing it out again: functions/index.js is the map with one
+ * place's card in its head, and functions/split.js is a group's. Both take
+ * esc(), rehead() and canonical(); the map also takes SITE, because a place's
+ * card is a photograph at an address of its own. Neither takes head(), which
+ * spells one title for every caller and hands every caller the mark as its
+ * picture, and neither of those is right for a restaurant or a group.
  *
  * What is in here is the part they cannot each have their own copy of: the two
  * escaping rules, the page out of the deployment, the head, the head swap, the
@@ -86,7 +94,7 @@ export function sow(html, global, value) {
     '<script>window.' + global + '=' + seed(value) + ';</script>\n' + TAG);
 }
 
-const SITE = 'https://tallinntastebuds.ee';
+export const SITE = 'https://tallinntastebuds.ee';
 const HOST = new URL(SITE).hostname;
 
 /* Which address a page should say it is. The same document answers at the live
@@ -113,9 +121,16 @@ export function head(meta) {
   const url = esc(meta.url);
 
   return [
-    /* The <title> in lists.html sits above the marker and is left alone, so
-       this one is second and wins: the last <title> in a head is the one a
-       browser uses, and every unfurler reads og:title anyway. */
+    /* The only <title> the page has. It used to be the second one — lists.html
+       kept its own above the markers and this was written under it, on the
+       belief that the last <title> in a head is the one that binds. It is the
+       first: the HTML spec says the document's title is the child text of the
+       *first* title element, so for as long as that arrangement stood, a list
+       shared into a chat showed "Lists | Tallinn Tastebuds" to every unfurler
+       that falls back to the tag, and every tab opened one flashed it before
+       assets/lists.js caught up. lists.html's own now sits inside the markers,
+       where split.html has always kept its, so this replaces it rather than
+       queueing behind it. */
     '<title>' + title + '</title>',
     '<meta name="description" content="' + description + '">',
     '<link rel="canonical" href="' + url + '">',

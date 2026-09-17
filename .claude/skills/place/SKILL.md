@@ -124,7 +124,10 @@ its pin can land on the wrong side of the street. What it does, in order:
 3. **Photos** into `photos/<id>/`, WebP, about 1600 px on the long edge,
    under about 300 KB, EXIF stripped, `NN.webp`. They sit in git history for
    good, so shrink them before committing, never after. List them in
-   `photos` in the order they should show.
+   `photos` in the order they should show — and note that the **first one is
+   also the place's social card**, the picture that comes up when somebody
+   pastes its `?spot=` link into a chat. A place with no photos gets the mark
+   instead. `functions/index.js` and **Sharing a place** in `README.md`.
 4. **Is it one place?** A room that is a bakery in the morning and a
    restaurant at night is two entries, and the laptop tag goes on the one it
    is true of. Fotografiska is the precedent.
