@@ -4921,12 +4921,14 @@ above, the list's own rows under them scrolled to that row and marking it, and
 both questions a row raises answered at once — where is this, and where is it
 next to the other nine.
 
-Three details, and each is the opposite of what `?spot=` does, because the
-press means something else:
+Three details, and the two that can differ from what `?spot=` does both do,
+because the press means something else:
 
 - **The half stop.** Every other way the list opens was asked for by somebody
   who wanted the names, so it opens full. This one was asked for by somebody
-  who had the names in front of them, so what it hands back is the map.
+  who had the names in front of them, so what it hands back is the map. `?spot=`
+  lands there too, by a different road: a place opens at the half stop however
+  you got to it — see **The sheet** in the design notes.
 - **The list's frame, not the place's.** `?spot=` comes in to `FOCUS_ZOOM`,
   because opening a place is a street question. This does not zoom at all: it
   keeps the fit that holds every pin on the list and only centres on this one.
@@ -8407,23 +8409,25 @@ It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
 scrolls out of reach is no use.
 
-**On a phone it opens the place at the low stop, not the full one.** A place
-you tapped opens the sheet at 88% of the screen, which is the right answer to a
-tap: you picked that name, so the page belonging to it is what you asked for.
-A surprise is the opposite errand. The name means nothing to you yet, and the
-first thing you want back is not the write-up but whether the place is round
-the corner or out in Lasnamäe — and the sheet at its full height was standing
-on the only thing that could tell you, leaving the pin it had just flown to
-crushed into the 110px strip along the top of the screen, under the brand card.
+**On a phone it opens the place at the low stop, and this is the button that
+argued for it.** The name means nothing to you yet, and the first thing you
+want back is not the write-up but whether the place is round the corner or out
+in Lasnamäe — and the sheet at its full height was standing on the only thing
+that could tell you, leaving the pin it had just flown to crushed into the
+110px strip along the top of the screen, under the brand card. The low stop
+keeps the map's half, with the pin in the middle of it wearing its name and its
+halo.
 
-At the low stop the map keeps the half above it and the pin sits in the middle
-of that half, wearing its name and its halo. The half also keeps the rail on
-screen, which matters more here than anywhere else: the rail is hidden behind a
-full sheet, and the one button a surprise you do not fancy wants is the die
-that rolls it again. So it can be pressed repeatedly, and it goes on answering
-in the same place with the map still under it. The grip pulls the sheet up to
-the full stop for the reel and the rest of the write-up, exactly as it does for
-a place you tapped.
+It also keeps the rail on screen, which matters more here than anywhere else:
+the rail is hidden behind a full sheet, and the one button a surprise you do
+not fancy wants is the die that rolls it again. So it can be pressed
+repeatedly, and it goes on answering in the same place with the map still under
+it.
+
+None of that turned out to be special to a roll — *where is it* is half of what
+tapping a pin asks too — so it is where every place opens now, and this button
+picks a name and calls `selectPlace()` like anything else. **The sheet** in the
+design notes has that argument.
 
 ### The rail introduces itself on a phone
 
@@ -9832,24 +9836,29 @@ into a smear at low zoom, and by 18 you are looking at one doorway.
 floor under it: whatever else happens it leaves 110px of the screen showing,
 which is the chrome strip and the chip row. That strip is the way back out.
 
-**Every sheet has two stops, and it opens at the taller one.** A half stop at
-50% of the screen, shared by all three, and a full stop above it: 88% for a
-place, 82% for the list and the chat. Drag the grip, swipe the sheet, or tap
-the grip to swap, and `sheetStops()` in `assets/app.js` holds the same numbers
-the `--sheet-h` block in `assets/styles.css` draws, because a drag settles on a
-height the stylesheet then has to agree with.
+**Every sheet has two stops.** A half stop at 50% of the screen, shared by all
+three, and a full stop above it: 88% for a place, 82% for the list and the
+chat. Drag the grip, swipe the sheet, or tap the grip to swap, and
+`sheetStops()` in `assets/app.js` holds the same numbers the `--sheet-h` block
+in `assets/styles.css` draws, because a drag settles on a height the stylesheet
+then has to agree with.
 
-A place opens at its full stop because tapping a place is a request for the
-place, not for the map: it is the restaurant's page as far as a phone is
-concerned, and the name, the reel and the write-up are on one screen. It used
-to open at the half stop, on the reasoning that the point of opening a place is
-to see where it is, which put the player half on the screen and half under the
-bottom edge and a scroll between you and the thing you had tapped for. The
-strip above the full sheet still holds the pin, the chips and the way out.
+**The sheets made of words open at the taller one, and a place opens at the
+half.** The list and the chat were asked for by somebody who wanted the words,
+so the words are what they arrive showing. Opening a place asks two things at
+once — what is this, and where is it — and a sheet over the whole screen
+answers only the first: the pin it is about ends up crushed into the 110px
+strip along the top, under the brand card, which is not a map anybody can read.
+At the half stop the map keeps its half, the pin sits in the middle of it
+wearing its name and its halo, and the rail lies along the strip above the
+sheet instead of hiding behind it.
 
-The one place that opens at the half stop by itself is **Surprise me**, because
-a name nobody chose is a question about where it is before it is anything else.
-[Surprise me](#surprise-me) has the argument.
+A place did open full for a version, on the reasoning that a name you tapped is
+a request for the page belonging to it. It is, and the name, the price and the
+opening of the write-up are what the half stop already shows; what the full one
+bought over that was the reel, and it bought it by taking the map away. So the
+grip is the bargain instead — drag it up for the reel and the rest of the
+write-up, down to put the place away.
 
 **The list used to have one stop, and dragging it down was the only thing that
 gesture could mean.** It meant close, at a quarter of the way down, which is
