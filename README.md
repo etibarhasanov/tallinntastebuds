@@ -4121,11 +4121,9 @@ better position anywhere.
 
 ### Public lists
 
-`/lists` is the map with everybody's lists on it: the city, a field to search
-the lists, a bookmark on every row, and — once a row is pressed — that list's
-places as pins with a strip of cards along the foot of the map. It is the only
-page here that puts one person's writing above another's, and it is the one
-thing in this
+`/lists` is every public list on this site, the most kept first, with a field
+to search them and a bookmark on every row. It is the only page here that puts
+one person's writing above another's, and it is the one thing in this
 repository that had a standing note against it. That note is worth quoting,
 because it is the argument this section has to answer:
 
@@ -4198,116 +4196,113 @@ than as nobody having pressed anything — the same reason a save count is
 hidden at zero on the map. It is also what makes the page work at all on the
 day it ships, before anybody has kept anything.
 
-**It is three regions and none of them scroll.** The brand across the top,
-which is the brand and nothing else in every state; the map under it; and the
-lists along the foot, in the same place whatever is happening above them. Only
-the rows scroll, inside their own panel. `render()` in `assets/lists.js` puts
-`.lists-app` on the body for this view and for no other — the three addresses
-this file also serves are documents in a 640px column and are untouched by any
-of it.
+**The page is laid out for a desk as well as a phone.** It was one 640px
+column on every screen — the phone page in the middle of a monitor, with a
+card per row and eight hundred pixels either side doing nothing. Above 900px
+the rows go two across, above 1180px three, and the main column widens to
+1180px for this view alone (`.lists-main.is-wide`, set by `render()` in
+`assets/lists.js` on the directory and on nothing else): every other view
+keeps the measure a list of sentences reads at. The order chips share the
+sticky row with the search field, so what narrows the page and what orders it
+are in one place and both stay under the thumb while the page grows.
 
-**Pressing a list goes nowhere.** It draws that list's places on the map and
-opens its first place in the strip, and leaves the row exactly where it was —
-so the next press is the next list rather than a journey back. Twenty lists
-used to be forty page loads to see where any of them were. The title is a
-button for that reason, where every other row on this site has a link there;
-it keeps `.lists-open`, so the press is still the width of the card and not
-the width of the word, and it carries `aria-pressed`, because the accent on an
-open row is a colour and colour is never the only thing saying something. The
-way to `/list/<id>` has not gone — it moved to the strip, where the pill's
-title is that link.
+**Every row draws the list as a shape on the city.** A small panel at the top
+of each card carries the city as pale ground and the list's own places on it,
+so a coffee list reads as a cluster in Kalamaja and a Caucasus list as a
+scatter east before anybody has read a name. It is the one picture only this
+site can draw of somebody's list, and the coordinates already existed. The
+list's own dots arrive with the row: the API sends up to ten `[lat, lng]`
+pairs per list (`DOTS` in `functions/api/_mostkept.js`), resolved on the
+server from the three rolls a list draws from — the catalogue, `google_venues`
+in chunks of fifty, and `added_places` — in one batched read that also yields
+the three names under the title, so the names cost nothing extra. The panel is
+`aria-hidden`: the names under the title are the accessible version of the
+same fact, and so is the label in its corner.
 
-**The map's frame never changes.** The strip is laid over the map, not beside
-it and not instead of it, so opening a list, sliding a card and pulling the
-lists up all leave the map exactly the size it was. A map that gave up room
-when a panel opened would throw the city sideways on every press, which is the
-version of this page that was drawn first and thrown away.
+**And each place on it wears the list's own mark.** Its ten flames, or its ten
+balloons — the same glyph standing in front of the title under the panel,
+drawn at about the size of a pin on the map. They were plain dots in the accent for as long as
+the panel existed, which is the colour every list's places drew in, so the
+only thing telling two panels apart was the shape of the city under them: two
+lists of the same ten streets drew the same picture twice, and a page of
+twenty was twenty red scatters somebody had to read the titles of. The mark
+makes the picture and the name one thing rather than two things that happen to
+be on the same card, and it costs nothing to send, because the pin was already
+on the row for the title. A list nobody has dressed wears the default pin,
+like its title does — see **The pins**.
 
-What the strip does move is where the map stands. A place centred in a frame
-whose lower half is covered is a place under the cards, so `underStrip()` puts
-the map's own centre half the strip's height below the place and the place
-comes up into the part of the map there is nothing over. Measured rather than
-written down, because a long title wraps the pill and a wrapped pill is a
-taller strip — the same bargain `peekStop()` makes for the map's sheet.
+**The five in the Start here strip wear it too, at twice the size in the
+panel's own units.** That panel is drawn into a fixed sixty-four pixels rather
+than the card's width, so eight units land at four there — a smudge — and
+sixteen lands at about nine pixels, a third of what a row card gets. Sixty-four
+pixels cannot carry ten of anything at twenty-two, and nine is where the mark
+is still a picture and the city is still visible under it; twenty units was
+tried and the balloons ate the panel. `paintSky()` in `assets/lists.js` holds
+both sizes.
 
-**Sliding pans and never zooms.** The scale is worked out once, when the list
-opens: Leaflet is asked for the zoom that fits the list exactly, and
-`LIST_ZOOM_BACK` takes one step back from it, which leaves the list at about
-half the frame and lets the map centre on any one of its places with the rest
-still around it. `LIST_ZOOM_MIN` and `LIST_ZOOM_MAX` stop the two extremes —
-one outlier in Nõmme turning Tallinn into a dot, and three cafés on one street
-zooming until the city under them is featureless. Every card after that is a
-pan. A map that zoomed under a thumb moving sideways would be fighting the
-gesture.
+It nearly did not get the mark at all, on the reasoning that those five are
+Google's and would all be wearing the same default pin, so the glyph would cost
+the legibility and buy nothing. That was wrong about the data: they wear
+`pin`, `balloon`, `flame`, `pin` and `blossom` — somebody dressed them — and
+the strip was the one place on the page where a reader could see four marks
+side by side. Check `lists.pin` before reasoning about what a list is wearing;
+`db/google-lists.sql` writes no pin column, which is what made the guess
+look safe.
 
-**A list's places are not clustered.** Counting exists so that seventy-five
-places on one city map stay tappable; a list is at most fifty and is reached
-by sliding a card, never by tapping the map. Cluster one and the pin the strip
-is pointing at ends up inside a numbered dot, which is the map contradicting
-the card under it. So every place on an open list is its own pin, overlapping
-a little where two of them are on one street, with the chosen one bigger,
-ringed and drawn on top. The map's own places, while nothing is open, are
-counted exactly as they are on `/` — `CLUSTER_GAP` is the same 44px.
+The strip does still keep the scale label off, which is the one thing
+sixty-four pixels really cannot carry: a line of mono across it would be the
+loudest thing on the card.
 
-And a place on my map keeps the mouth even on somebody's list: being on the
-map is the verdict and a list is not a way around it. Everything else wears
-the list's own mark. See **The pins**.
+**The ground is the city, and it took two goes to get there.** It was
+`data/places.json` — the seventy-five places on the map — drawn as faint
+dots under each list's own. At panel size seventy-five dots is not a city.
+It is seventy-five specks on blank paper, which is exactly how it read, and
+the complaint that started this was that the panel looked empty rather than
+that it looked wrong.
 
-**A card is a fixed height and the address is not on it.** They are read one
-at a time under a thumb that is moving sideways, so a rail whose floor moved
-with the length of somebody's sentence would rock the map it is standing on.
-What does not fit is clipped, and the card is a door to the place, where all
-of it is. The address goes because the pin it belongs to is on the map above
-it, which is a better answer to *where is it* than a street ever was.
+So the ground is `data/city.json` now: about eleven hundred coordinates
+generated by `tools/city.mjs` from `exports/tallinn_restaurants.csv`, the
+same export `db/google-venues.sql` comes from. Drawn at a radius wide enough
+for neighbours to touch — `groundRadius()` in `assets/lists.js` — a thousand
+eating places stop being dots and become land: the Old Town solid, Kalamaja
+and Kadriorg as arms off it, the harbour and the parks as holes. And the bay
+draws itself, because the bay is the part of the frame with no restaurants
+in it, so the panel gets a coastline without this repository carrying a line
+of coastline data. Nineteen kilobytes, fetched once after the rows are on
+the screen and painted into every sky already drawn; a page that never gets
+it shows each list's own marks on plain paper, which is still the shape of
+the list.
 
-**The lists have two heights and the grip swaps them.** A tap and not a drag:
-the map page's sheet is dragged because it is a sheet over a map that fills
-the window, and this is a region of a page that does not scroll, where the
-only question a gesture could ask is *more lists or more map*. Two answers,
-one button — and a real one, which says its own name and which a keyboard
-reaches. With a list open at the tall stop there is not room for both, so the
-cards tuck away and the pill stays: which list is showing, and the way to shut
-it, never leave the screen.
+It is `--hairline` on `--paper` and not on `--wash`, which is the other half
+of why it used to read as empty: hairline against wash is seven values of
+difference, and seven values is a texture rather than a map.
 
-**On a desk the same three regions stand side by side**: the lists a 380px
-column on the left, the map taking everything else, the strip still along its
-foot, and no grip, because a column that is already the height of the window
-cannot be pulled taller. A grid rather than the column reflowed — the document
-order is brand, map, grip, lists, which is right for a phone and wrong for a
-desk, and naming areas moves them without asking the markup to be in two
-orders at once.
+**And the frame is fitted to the list, not to the city.** It was one fixed
+box — the same square of Tallinn on every card — on the argument that a
+shared frame is what lets two cards be read against each other. What that
+missed is where the lists are: nearly every one of them is inside the same
+square kilometre of the middle, so the shared frame drew the same picture
+twenty times over with two thirds of each panel empty. `frameFor()` in
+`assets/lists.js` squares the list's own bounding box up to the panel, in
+metres rather than degrees — a degree of longitude up here is about half a
+degree of latitude, and fitting the two as equals draws Tallinn half as wide
+as it is — with `SKY_AIR` of air around it and a floor of `SKY_FLOOR`, about
+a kilometre and a half, so a list of three cafés on one street does not zoom
+until the city under it is featureless.
 
-**The little sky panels have gone, and so has `data/city.json`.** Every row
-used to carry a picture of its list on the city — the city as pale ground from
-eleven hundred coordinates, the list's own places on it wearing its mark, a
-hundred and twenty pixels by fifty-two. It was the one picture only this site
-could draw of somebody's list, and it existed because there was no map on this
-page. There is one now, at the size a map wants to be, so the panels are gone
-and with them `sky()`, `paintSky()`, `frameFor()`, `groundRadius()` and the
-label that said how far a list reached. `data/city.json` had no other reader
-in the repository and `tools/city.mjs` is what wrote it; both are still here,
-and taking them out is a change of its own rather than one to fold into this.
+The trade is that the cards no longer share a scale, so the corner says what
+the scale is: **1.6 km across**, `listsSkyAcross` in `data/ui.json`, the
+longer side of the list's own bounding box rather than of the padded frame.
+That is worth more than the comparison it replaced, because *can I walk
+this?* is a question somebody actually has. A list whose places all fall in
+one spot draws no label at all — "0.0 km across" is the label failing to have
+anything to say rather than a fact about the list.
 
-**Leaflet's stylesheet arrives after this page's, and that matters.** It is
-fetched at runtime by `ensureLeaflet()` — there is no `<link>` for it in
-`lists.html`, because the map is only one of this file's four views — so it
-lands in the head *after* `assets/styles.css` and `assets/lists.css`. Two of
-its rules then outrank theirs on equal specificity and a later line:
-`.leaflet-div-icon` draws a white box with a grey border, and
-`.leaflet-marker-icon` is `display: block`, which stops `.pin-face` being a
-grid item and so stops it having a width at all. Every pin on this page was a
-four-pixel square inside a white square until somebody looked, and the pin in
-the "add a place" picker had been sitting in that white square for as long as
-that picker has had a map. `.leaflet-container .pin-mark` in
-`assets/lists.css` is what outweighs both. The map page has never needed it:
-there, `leaflet.css` is a `<link>` above both stylesheets and the cascade
-already runs the right way round.
-
-The same trap one floor up, and the same fix: `.lists-map` is given a
-`z-index` of its own. Leaflet hands its panes z-indexes up to 800, and a
-positioned element with `z-index: auto` starts no stacking context — so those
-800s would be counted against the strip's 3 and win. Naming a z-index on the
-map puts the whole of it in one context and the strip above all of it.
+The frame is built from the ten dots the row arrived with, not from every
+place on the list, so a list of twenty is framed on the ten that are drawn.
+The picture and its frame agree, which is the property that matters; the
+alternative is the API sending every coordinate on every list to make a panel
+the size of a postage stamp slightly more honest.
 
 **Two orders, and the count is the default.** Beside the search field are two
 chips — Most saved, Newest — pressed the way the map's filter chips are. The
@@ -4330,13 +4325,10 @@ error, because `sortOf()` answers `kept` for every key it does not know — so
 the links that are out there keep working and simply arrive at the page's own
 order.
 
-**The five Google lists stand under a heading of their own.** On the first
-page of an unsearched directory the API sends them as `start`, and the page
-draws them under **Start here** above everybody else's rows. They were compact
-cards with a sky panel apiece, laid across the top of a page that was a
-column; they are ordinary rows now, because the page is a panel four rows tall
-and a second shape of row in it is a second thing to learn. They are the lists
-a stranger can
+**The five Google lists stand in a strip of their own.** On the first page of
+an unsearched directory the API sends them as `start`, and the page draws
+them under **Start here** above everybody else's rows: a compact card each,
+sky on the left, five across on a desk. They are the lists a stranger can
 trust without knowing anybody on this site, and left in the ranking they were
 five rows somewhere in the pile, wherever their keep count happened to put
 them. While the strip is drawn they are kept out of the rows — every page of
@@ -7581,9 +7573,8 @@ assets/staff.js            )
 data/restaurants.json      the only file you edit regularly
 data/places.csv            the Google Maps export a list picks from (yours to drop in)
 data/places.json           the catalogue: the map plus that CSV — GENERATED
-data/city.json             the city as coordinates, out of the export below —
-                           GENERATED, and read by nothing since /lists became a
-                           map: see Public lists
+data/city.json             the ground under every list's panel on /lists, out of
+                           the export below — GENERATED
 exports/tallinn_restaurants.csv    1,110 Tallinn venues out of Google Places
 exports/README.md          what was cleaned out of the raw export, and why
 exports/clean_restaurants_csv.py   the cleaning, from the upstream export
@@ -7614,8 +7605,8 @@ photos/<restaurant-id>/    photos, one folder per place
 stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
 tools/places.mjs           builds data/places.json from the CSV and the map
-tools/city.mjs             turns the same export into data/city.json, which
-                           nothing draws any more — see Public lists
+tools/city.mjs             turns the same export into data/city.json, the city
+                           under every list's panel
 tools/googlevenues.mjs     turns the Google Places export into db/google-venues.sql
 tools/googlelists.mjs      ranks the same export into db/google-lists.sql
 tools/typelists.mjs        turns the map's filter chips into db/type-lists.sql

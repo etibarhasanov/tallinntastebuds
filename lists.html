@@ -63,7 +63,7 @@
      stylesheet; only what a list page has and the map does not is in the
      second file. -->
 <link rel="stylesheet" href="/assets/styles.css?v=1d705ee5">
-<link rel="stylesheet" href="/assets/lists.css?v=a8402b33">
+<link rel="stylesheet" href="/assets/lists.css?v=b478af12">
 </head>
 <body class="lists-body">
 
@@ -92,32 +92,6 @@
     <span class="radio-name rail-label" id="radio-name"></span>
   </button>
 </header>
-
-<!-- The map, and the strip of places that comes up along its foot. Only the
-     directory has either — /lists is the map with everybody's lists on it —
-     so the whole block is hidden until assets/lists.js knows which of this
-     file's three addresses it is being served at, and render() is what shows
-     it. Empty here on purpose: Leaflet is handed #lists-map and owns
-     everything inside it from then on, so nothing may be written into it that
-     a redraw would have to put back.
-
-     Above <main> in the document because it is above it on the screen, and
-     because the lists are the thing a reader with no script should meet
-     first — see the block below this one. -->
-<div class="lists-stage" id="lists-stage" hidden>
-  <div class="lists-map" id="lists-map" role="application"
-       data-i18n-aria-label="mapLabel" aria-label="Map of approved places in Tallinn"></div>
-  <div class="lists-strip" id="lists-strip" hidden></div>
-</div>
-
-<!-- The grip over the lists, and the two heights it swaps between. Drawn on
-     the directory alone, by the same class on the body that makes the page
-     three regions; every other view this file serves is a document and has
-     nothing to swap. A button rather than the bar of pixels it looks like,
-     because a tap is not the only way anybody arrives at a control. -->
-<button type="button" class="lists-grip" id="lists-grip" aria-expanded="false"
-        aria-controls="main" data-i18n-aria-label="listsMoreLists"
-        aria-label="Show more lists"></button>
 
 <!-- Every state this page has — one list, one list somebody else made,
      everybody's lists, one person's, and the four ways it can fail — is built
@@ -205,6 +179,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="/assets/pins.js?v=6030fdcf" defer></script>
-<script src="/assets/lists.js?v=998c333b" defer></script>
+<script src="/assets/lists.js?v=97162799" defer></script>
 </body>
 </html>
