@@ -1012,8 +1012,8 @@ had been given and invented a walk between the two.
 
 So *near* is now the fourth thing the reader in `assets/ask.js` looks for,
 beside cheap, fancy and open now, with its words in `data/ui.json` under
-`askWordsNear` in all ten languages — *close to*, *lähedal*, *рядом с*,
-*perto de*. What follows the phrase is what they want to be near, and
+`askWordsNear` in all ten languages — *close to*, *nearest*, *lähedal*,
+*рядом с*, *perto de*. What follows the phrase is what they want to be near, and
 `/api/ask` turns it into a point with the same lookup the add-a-place form
 uses — `/api/geocode`'s Photon call, biased to Tallinn and bounded to it,
 cached upstream for a day — taking the first suggestion: the street for a
@@ -1072,6 +1072,20 @@ after both is a street, a district or a name, and is looked up as before;
 a dish left over, *ramen nearby*, still goes to Photon, because nothing in
 the reader can tell a dish from a street, and the line under the reply says
 what it was taken for.
+
+*Nearest* and *closest* are near words too, with their forms in the other
+nine languages beside them — *lähim*, *lähin*, *ближайший*, *найближчий*,
+*más cercano*, *mais próximo*, *ամենամոտ*; Azerbaijani and Turkish put *ən*
+and *en* in front of the word the list already had, and only the *ən
+yaxını* and *en yakını* that stand on their own needed adding. For a while
+they were not in the list at all, and *nearest pizza* from somebody who had
+just pressed the locate button was read as a question about the city, with
+*nearest* left over as if it were a dish or a name: nothing asked the device
+when there was no dot, and when there was one it only broke ties, so the
+answer was pizza across town from a visitor who had asked for the corner
+they were standing on. A superlative is a request to measure from where
+they are, and it is read as one now — the device is asked the way it is for
+*near me*, and a kind of place asked for is held to its nearest.
 
 The dot is the point when there is one, and it goes with every question
 once the map has it — the next section says what it is for. When there is
