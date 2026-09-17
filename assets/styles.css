@@ -104,10 +104,11 @@
   --radius: 4px;
   --radius-soft: 12px;
   --gap: 16px;
-  /* The measure the brand is set to, and the number the chip row starts
-     after: two rules that have to agree, so they read the same one. It is
-     the width the sentence had inside the card that used to be drawn here —
-     the card is gone, the line breaks are not supposed to move with it. */
+  /* The measure the brand is set to: the width the sentence had inside the
+     card that used to be drawn here, kept when the card went so the line
+     breaks would not move with it. It was also the number the chip row
+     started after, for as long as the two stood side by side — above 860px
+     they no longer do, and the row starts after the mark instead. */
   --brand-w: 250px;
   --panel-w: 420px;
   --ease: cubic-bezier(.22, .61, .36, 1);
@@ -1454,7 +1455,7 @@ a:hover { color: var(--accent-lit); }
   position: fixed;
   z-index: 1000;
   --chrome-h: 40px;
-  left: calc(var(--gap) + var(--safe-l) + var(--brand-w) + 16px);
+  left: calc(var(--gap) + var(--safe-l) + 66px + 16px);
   right: calc(var(--gap) + var(--safe-r));
   top: calc(var(--gap) + var(--safe-t) + var(--chrome-h) + 12px);
   display: flex;
@@ -3683,10 +3684,30 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 /* ---------- desktop: keep the chips clear of the panel ---------- */
 
 @media (min-width: 861px) {
-  body.panel-open .filter-bar,
-  body.panel-open .controls {
-    right: calc(var(--panel-w) + var(--gap) * 2 + var(--safe-r));
-  }
+  /* The columns start under the top strip rather than beside it, which is the
+     whole of why the chip row and the corner no longer move.
+
+     They used to start at the top of the window, so the row of chips had to be
+     cut short to clear them — and with a place open as well it was cut to
+     three: All, Discount, and half of a third. A row of thirteen filters that
+     is three filters wide is not a row of filters, and shifting it by 436px
+     every time somebody pressed a name moved the one control on the page that
+     is a vocabulary rather than a button. So the chip row keeps the width it
+     has always had, from the brand's column to the edge of the window, and it
+     is the columns that give way.
+
+     98px is the strip as it is drawn: 40px of chrome, the 12px under it that
+     .filter-bar's own top adds, the 34px the row measures, and 12px of air
+     under that. */
+  .panel { top: calc(var(--gap) + var(--safe-t) + 98px); }
+
+  /* And 360px rather than 420. Two columns at the old width were 856px of
+     chrome, which on the window this was drawn for left the map a third of
+     itself — the map is the thing somebody came for, and the columns are how
+     they read it. The write-up still gets a 308px measure, which is about
+     forty-five characters and a comfortable column of prose; the list rows
+     wrap their kinds a line sooner and lose nothing else. */
+  :root { --panel-w: 360px; }
 }
 
 /* ---------- desktop: the places column is always up, and a place opens
@@ -3859,14 +3880,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      over the column it is about. */
   body.panel-detail .panel-band,
   body.panel-ask .panel-band { margin-left: calc(var(--panel-w) + var(--gap)); }
-
-  /* And the chip row and the corner buttons start after both of them. */
-  body.panel-detail .filter-bar,
-  body.panel-detail .controls,
-  body.panel-ask .filter-bar,
-  body.panel-ask .controls {
-    right: calc(var(--panel-w) * 2 + var(--gap) * 3 + var(--safe-r));
-  }
 }
 
 /* ---------- desktop: the corner steps back until you go for it ----------
@@ -3920,10 +3933,32 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
    column keeps its words the way it always has. */
 
 @media (min-width: 861px) and (hover: hover) and (pointer: fine) {
-  /* The words in the corner. Ink only — no max-height and no margin, so the
-     sentence fades in where it already is rather than unrolling from under
-     the mark the way it does on a phone. Up here there is nothing below it to
-     make room. */
+  /* THE WORDS OPEN UNDER THE STRIP, NOT BESIDE THE MARK.
+
+     The name used to stand beside the mark, which is where it stands on a
+     phone and where it stood here for as long as the corner was a card. It
+     cannot any more: the chip row starts from the left of the map now — see
+     .filter-bar, which begins after the mark rather than after this whole
+     column — and the band it runs through, 68px to 102px, is exactly where the
+     second line of the name was. Ten pixels of "Tastebuds" under the All chip
+     is the kind of thing nobody decides and everybody sees.
+
+     So the mark keeps the corner and the words unroll beneath it, clear of the
+     row: the name, the sentence and the handle in a block starting below
+     102px. The mark is what the corner is for at a glance, the chips are what
+     the map is steered with, and the words are the thing that is only there
+     while somebody is asking for them.
+
+     The box does not change size between the two states — the words are drawn
+     or not drawn, never laid out differently — so placeRail() still reads one
+     number and nothing under the corner moves. */
+  .brand-head { display: block; margin: 0; }
+  /* 82px is the foot of the mark, 102 the foot of the chip row, and 12 the air
+     the row keeps under itself everywhere else. */
+  .brand .wordmark { margin: 32px 0 8px; }
+
+  /* Ink only — no max-height and no margin — so the words fade in where they
+     already are rather than unrolling the way they do on a phone. */
   .brand .wordmark,
   .brand .tagline,
   .brand .ig-link {
