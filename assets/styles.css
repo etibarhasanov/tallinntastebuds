@@ -1046,12 +1046,85 @@ a:hover { color: var(--accent-lit); }
 .btn:hover { background: var(--wash); color: var(--ink); }
 .btn[aria-pressed="true"], .btn.is-on { color: var(--paper); background: var(--accent); }
 
-/* The language switch has two shapes. Wide enough, it is the row of codes it
-   always was. On a phone it is the current code with a menu under it, because
-   ten codes side by side reach the handle in the opposite corner. */
-.btn-lang-now { display: none; }
-.lang-list { display: flex; }
-.lang-name { display: none; }
+/* The language switch: the code you are in, and a menu under it.
+
+   It used to have two shapes — a row of all ten codes on a desktop, this menu
+   on a phone, because ten codes side by side reach the handle in the opposite
+   corner of a small screen. The row has gone and the menu is the only shape
+   now. Ten codes across the top of the map is a list of things nobody is
+   looking for: a visitor wants their own language or they want none of them,
+   and nine of the ten were permanently wrong for whoever was reading. It also
+   spent 360px of the top edge on the answer to a question asked once a visit,
+   on the same edge the places column now starts from.
+
+   The markup never changed — renderLanguageSwitch() in assets/app.js has
+   always built the trigger and the list both, and it was the stylesheet that
+   picked. Now there is nothing to pick. */
+#lang-switch { position: relative; overflow: visible; }
+/* The code on this button was inheriting the body serif at 15px, which put it
+   a size and a typeface away from the button beside it. It is the mono the
+   row of codes used to be set in.
+   The radius is its own: the pane's overflow is visible so the menu can hang
+   out of it, so nothing clips the button any more, and pressed — which on a
+   phone is the hover a tap leaves behind — it would fill a square on a
+   rounded pane. It takes the pane's own corners instead. */
+.btn-lang-now {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  border-radius: inherit;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .1em;
+}
+.btn-lang-now svg {
+  width: 8px;
+  height: 5px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform .15s var(--ease);
+}
+/* The chevron is its own box, or the svg sits on the text baseline and the
+   button grows a descender's worth of nothing under it. */
+.btn-lang-now .caret { display: flex; }
+#lang-switch.is-open .btn-lang-now svg { transform: rotate(180deg); }
+
+.lang-list {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  top: calc(100% + 6px);
+  right: 0;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+#lang-switch.is-open .lang-list { display: flex; }
+.lang-list .btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  padding: 0 12px;
+  min-width: 0;
+}
+.lang-list .btn + .btn { border-left: 0; border-top: 1px solid var(--hairline); }
+/* The menu has room for the language's own name for itself, which the row of
+   codes never did. */
+.lang-list .lang-name {
+  display: block;
+  font-family: var(--body);
+  font-size: 13px;
+  letter-spacing: 0;
+}
 
 /* The pin on the Places button. It used to carry a magnifier and say List,
    which named the shape of the panel rather than what is in it; the word is
@@ -2688,6 +2761,22 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 .list-row > .depth-mark { grid-area: mark; }
 .list-types { min-width: 0; }
 .list-row:hover .list-name { color: var(--accent); }
+/* The row whose place is open in the column beside this one. Only drawn where
+   there is a column beside this one — under 1200px a place covers the list
+   and there is nothing to tie together — so markOpenRow() in assets/app.js is
+   what puts the class on and the arrangement is what makes it mean anything.
+
+   A bar down the inside edge and the name in the accent, which is the pair of
+   things a hovered row already does half of: the point is that the eye can
+   find its way from the write-up back to where it was in the list without
+   reading seventy-six names again. Drawn with a box-shadow rather than a
+   border so the row does not step sideways as the mark arrives, and the row
+   keeps every other thing it was saying — kept, closed, how deep it goes. */
+.list-row.is-open {
+  box-shadow: inset 2px 0 0 var(--accent);
+  padding-left: 12px;
+}
+.list-row.is-open .list-name { color: var(--accent); }
 .list-name {
   font-family: var(--display);
   font-size: 17px;
@@ -3600,6 +3689,186 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   }
 }
 
+/* ---------- desktop: the places column is always up, and a place opens
+     beside it ----------------------------------------------------------
+
+   Above 860px the map used to arrive bare, with the places behind a button in
+   the corner, and pressing a name turned the panel from the list into that
+   place — so the list you were reading was the price of reading about one of
+   the things in it. Both halves of that are gone.
+
+   The column is open from the moment the map draws and it does not shut. Its
+   button in the corner goes with it: a control that is always already pressed
+   is a control that is only in the way, and #list-seg is the group it stood
+   in. A phone keeps both — there is no room up there for a column that never
+   leaves, so the sheet and the button that raises it are exactly as they were.
+
+   And a place opens in a second column beside it rather than on top of it.
+   The panel keeps its right edge and grows leftwards into the map, which is
+   the whole of why the map does not have to move: the city under the new
+   column was spare before it was covered. The list does not scroll, does not
+   redraw and does not lose its place — see renderPanel() in assets/app.js,
+   which stops hiding it — and the row you pressed lights up in it, so the two
+   columns read as one thing rather than as two panels that happen to be
+   adjacent.
+
+   WHY 1200px AND NOT EVERY DESKTOP. The pair is 856px of chrome, and the rail
+   and its gap want another 72. On a 1440px window that leaves 552px of map,
+   which is a city; on a 1152px laptop it would leave 264, which is a gutter
+   with pins in it. So under 1200px a place covers the list the way it always
+   has, and the cross on it hands the list straight back. One number, and it
+   is here rather than in the script because it is a question about how much
+   room the layout needs — assets/app.js reads the same query through
+   pairFits() so the two cannot drift.
+
+   The container stops being a card when it carries two. .panel is the box the
+   columns sit in and each column is the card, or the gap between them would
+   be paper with a hairline round the pair instead of a strip of Tallinn. */
+
+@media (min-width: 861px) {
+  /* The button in the corner, and nothing else in its group. */
+  #list-seg { display: none; }
+
+  /* Nothing on the list closes it, because nothing can: the cross belongs to
+     whatever opened over it. It comes back the moment a place or the chat is
+     up, where it means "give me the list back". */
+  body:not(.panel-detail):not(.panel-ask) .panel-close { display: none; }
+
+  /* THE COLUMN IS THE CARD, AND THE COLUMN IS THE SCROLLER — at every desktop
+     width, whether one is showing or two. Both halves of that are about the
+     same thing: the list keeping its place.
+
+     .panel used to be the card and .panel-scroll the one thing that scrolled,
+     with the three views stacked inside it and two of them hidden. Under 1200
+     that is still what it looks like, because only one view is ever up — but
+     if the scrolling moved from .panel-scroll to the column at 1200 and back
+     again below it, the list's scroll position would be lost every time a
+     place opened or closed, which is the one thing this arrangement exists to
+     protect. So the column always scrolls itself and .panel is always the box
+     they stand in. */
+  .panel {
+    background: none;
+    /* Not border-color: transparent. .panel is sized border-box, so a border
+       that is only invisible still takes two pixels off the content box the
+       columns are laid out in, and a column asked for exactly --panel-w then
+       overflows the panel and has its own edge and shadow clipped off by the
+       row's overflow. The card's edge is the column's now; the box around it
+       has none. */
+    border: 0;
+    box-shadow: none;
+  }
+  /* The strip that paints under the sticky search belongs to a card, and this
+     is not one any more. Each column draws its own, further down. */
+  .panel::before { display: none; }
+
+  /* A row in document order, which is what puts the list on the right: the
+     three views are written detail, chat, list, and the list is the one that
+     must not move when something opens beside it. Reversing the row moved it
+     436px to the left the moment a place opened, which is the one thing this
+     arrangement is for. */
+  .panel-scroll,
+  body.panel-ask .panel-scroll {
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap);
+    overflow: hidden;
+    padding: 0;
+  }
+  /* body.panel-ask says the scroller is a column and the chat fills it, which
+     is what holds the field at the bottom of a single panel. Up here the
+     scroller is the row the columns stand in and the chat is one of them, so
+     both halves of that have to be said again at a specificity that reaches
+     past it — the chat gets its column back as the card itself, further
+     down. */
+  #panel-detail,
+  body.panel-ask #panel-ask,
+  #panel-list {
+    flex: 0 0 var(--panel-w);
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0 var(--panel-pad) 30px;
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  /* The strip at the top of a column, which is the room the close and the mark
+     stand in and the ground anything scrolling past them needs. It was a
+     pseudo on .panel and it cannot stay one: the column is the scroller now,
+     so anything absolutely placed inside it scrolls away with the rows, and
+     .panel no longer has a background to lend it.
+
+     So it is the column's own first child, sticky at the top, and it is the
+     top padding rather than a thing laid over it — a band with a negative
+     margin takes up no room and hides the first line of the write-up under
+     itself, which is what the place's name spent an afternoon behind. Full
+     bleed through the side padding, the way the search field above the rows
+     already bleeds. `inherit` so it follows the tint on an open place. */
+  #panel-detail::before,
+  #panel-ask::before,
+  #panel-list::before {
+    content: "";
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    flex: none;
+    display: block;
+    height: var(--panel-pad-t);
+    margin: 0 calc(var(--panel-pad) * -1);
+    background: inherit;
+  }
+
+  /* A place gets a card of its own colour, and once there are two columns it
+     is the place's card rather than the pair's. */
+  body.panel-detail .panel { background: none; }
+  body.panel-detail #panel-detail {
+    background: color-mix(in srgb, var(--accent) 6%, var(--paper));
+  }
+  /* And the chat is a column inside its own card, which is what keeps the
+     field on the bottom edge of it rather than under the last answer. */
+  body.panel-ask #panel-ask { display: flex; flex-direction: column; }
+}
+
+@media (min-width: 1200px) {
+  /* Two columns' worth, and it grows to the left: right, top and bottom are
+     the ones .panel already sets, and only the width moves. */
+  body.panel-detail .panel,
+  body.panel-ask .panel {
+    width: calc(var(--panel-w) * 2 + var(--gap));
+  }
+
+  /* The two things you do TO the open column ride in its own top strip, not
+     in the pair's — one column to the left of where they sit with a single
+     panel, and down by whatever the list's band is pushing the pair down by.
+     --band-h is 0 unless a list is the map's mode; renderBand() in
+     assets/app.js measures it, because a long title wraps. */
+  body.panel-detail .panel-close,
+  body.panel-ask .panel-close {
+    top: calc(5px + var(--band-h, 0px));
+    right: calc(var(--panel-w) + var(--gap) + 8px);
+  }
+  body.panel-detail .panel-save,
+  body.panel-ask .panel-save {
+    top: calc(5px + var(--band-h, 0px));
+    right: calc(var(--panel-w) + var(--gap) + 52px);
+  }
+
+  /* The band names whichever list the map is showing, and that is the places
+     column's business. It sits above the row, so it is pushed across to stand
+     over the column it is about. */
+  body.panel-detail .panel-band,
+  body.panel-ask .panel-band { margin-left: calc(var(--panel-w) + var(--gap)); }
+
+  /* And the chip row and the corner buttons start after both of them. */
+  body.panel-detail .filter-bar,
+  body.panel-detail .controls,
+  body.panel-ask .filter-bar,
+  body.panel-ask .controls {
+    right: calc(var(--panel-w) * 2 + var(--gap) * 3 + var(--safe-r));
+  }
+}
+
 /* ---------- desktop: the corner steps back until you go for it ----------
 
    The left of this map is the only part of it that is not the map: the mark
@@ -3916,69 +4185,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   .controls { gap: 6px; }
   .btn { min-width: 34px; height: 34px; }
 
-  #lang-switch { position: relative; overflow: visible; }
-  /* The code on this button was inheriting the body serif at 15px, which put
-     it a size and a typeface away from LIST sitting right under it. It is the
-     same mono the row of codes uses on a desktop.
-     The radius is its own here. On a desktop the pane clips the row of codes
-     to its corners, and a pressed code fills up to them; the pane's overflow
-     is visible on a phone so the menu can hang out of it, and nothing clips
-     the button any more. Pressed — which on a phone is the hover a tap
-     leaves behind — it filled a square on a rounded pane, so it takes the
-     pane's own corners. */
-  .btn-lang-now {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 0 10px;
-    border-radius: inherit;
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .1em;
-  }
-  .btn-lang-now .caret { display: flex; }
-  .btn-lang-now svg {
-    width: 8px;
-    height: 5px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: transform .15s var(--ease);
-  }
-  #lang-switch.is-open .btn-lang-now svg { transform: rotate(180deg); }
-
-  .lang-list {
-    display: none;
-    position: absolute;
-    z-index: 1;
-    top: calc(100% + 6px);
-    right: 0;
-    flex-direction: column;
-    background: var(--paper);
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius-soft);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
-  #lang-switch.is-open .lang-list { display: flex; }
-  .lang-list .btn {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 9px;
-    padding: 0 12px;
-    min-width: 0;
-  }
-  .lang-list .btn + .btn { border-left: 0; border-top: 1px solid var(--hairline); }
-  .lang-list .lang-name {
-    display: block;
-    font-family: var(--body);
-    font-size: 13px;
-    letter-spacing: 0;
-  }
   .btn-wide { padding: 0 11px; gap: 5px; }
 
   .filter-bar { --chrome-h: 36px; left: 10px; right: 10px; }

@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=d3741c89">
+<link rel="stylesheet" href="assets/styles.css?v=1d705ee5">
 </head>
 <body>
 
@@ -255,7 +255,12 @@
 
 <div class="controls">
   <div class="seg" id="lang-switch" role="group" data-i18n-aria-label="language" aria-label="Language"></div>
-  <div class="seg">
+  <!-- The way into the list, and a phone's alone. Above 860px the places
+       column is open from the moment the map draws and never shuts, so a
+       button that opens it is a button that is always already pressed — see
+       "the places column is always up" in assets/styles.css, which is what
+       takes this out of the corner up there. -->
+  <div class="seg" id="list-seg">
     <button type="button" class="btn btn-wide" id="btn-list" aria-expanded="false" aria-controls="panel">
       <!-- A pin, not the magnifier that used to be here. The button says
            Places now, and a magnifier over that word offers to search
@@ -578,6 +583,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=b775fb54" defer></script>
+<script src="assets/app.js?v=5ff029b9" defer></script>
 </body>
 </html>
