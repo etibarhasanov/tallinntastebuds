@@ -3600,6 +3600,140 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   }
 }
 
+/* ---------- desktop: the corner steps back until you go for it ----------
+
+   The left of this map is the only part of it that is not the map: the mark
+   and the name at the top of it, and the rail of pills down the middle. On a
+   phone both say what they are for a few seconds and then collapse, because a
+   phone has no hover and a label wide enough to read is a label wide enough to
+   cover the city. Above 860px neither did — the pills kept their words for the
+   whole visit, and the name, the sentence and the handle sat in the corner
+   under them — and what that adds up to on a wide screen is a column of ink
+   the better part of 300px across, standing over Tallinn for as long as the
+   tab is open and saying nothing new after the first few seconds of reading
+   it. The map is the thing somebody came for; the column is how they steer
+   it, and a control that is only wanted now and then should be quiet the rest
+   of the time.
+
+   So a pointer gets the same bargain a phone does, with hover doing the
+   asking. What is left standing is the mark and the discs — the pictures,
+   which are the half that says this is a place and that one is a die — and
+   the words come back the moment the mouse comes into the left of the window.
+   wireRailReveal() in assets/app.js draws the line and sets body.rail-open;
+   everything either side of it is here.
+
+   AND THE INTRODUCTION FINALLY SHOWS UP HERE. The cascade on a first visit
+   has run at every width since it was written and been invisible above 860px,
+   where there was nothing to open — .hint-open had no rule on this side of
+   the breakpoint. It has one now, which is the second selector in each pair
+   below: a stranger on a desktop gets the name, the sentence, the handle and
+   the nine labels on arrival, exactly as a stranger on a phone does, and the
+   corner empties in the order it filled.
+
+   TWO THINGS THIS DELIBERATELY DOES NOT DO.
+
+   It does not move anything. The words go out by opacity alone and their
+   boxes stay where they were, so the mark does not walk up the screen, the
+   chip row beside it does not shift, and placeRail() — which measures the
+   brand and nudges the rail past it on a short window — reads the same number
+   whichever state the corner is in and so never has to be run again. A corner
+   that reflowed every time a mouse crossed it would be worse than one that
+   never closed. The pills are the one exception and have to be: an empty pill
+   is not a shut one, it is a button somebody forgot to write on. They collapse
+   to the disc they wear on a phone, which changes their width and nothing
+   else — the rail's own height, which is all placeRail() asks of it, is the
+   same either way.
+
+   And it does not happen without a mouse. (hover: hover) and (pointer: fine)
+   is the whole of the condition, because a tablet in landscape and a
+   touchscreen laptop are both above 860px with no way to hover, and a label
+   that only a hover can reach is a label they could never read. There the
+   column keeps its words the way it always has. */
+
+@media (min-width: 861px) and (hover: hover) and (pointer: fine) {
+  /* The words in the corner. Ink only — no max-height and no margin, so the
+     sentence fades in where it already is rather than unrolling from under
+     the mark the way it does on a phone. Up here there is nothing below it to
+     make room. */
+  .brand .wordmark,
+  .brand .tagline,
+  .brand .ig-link {
+    opacity: 0;
+    transition: opacity .28s var(--ease);
+  }
+  /* An invisible link is not a link. These two take their pointer events back
+     from .brand at the top of the file, which is what lets the map be dragged
+     through the rest of the corner; while the words are out they give them up
+     again, or there are two things to click on in an empty corner and no way
+     to know they are there. Tab still reaches both and opening the column is
+     what it does — pointer-events has no say over focus. */
+  .brand .brand-home,
+  .brand .ig-link { pointer-events: none; }
+
+  body.rail-open .brand .wordmark,
+  body.rail-open .brand .tagline,
+  body.rail-open .brand .ig-link,
+  .brand.hint-open .wordmark,
+  .brand.hint-open .tagline,
+  .brand.hint-open .ig-link { opacity: 1; }
+
+  body.rail-open .brand .brand-home,
+  body.rail-open .brand .ig-link,
+  .brand.hint-open .brand-home,
+  .brand.hint-open .ig-link { pointer-events: auto; }
+
+  /* The rail, shut: the same disc the phone collapses to, at the size this
+     side of the breakpoint draws it. The height is the one the pill already
+     stood at — 8px of padding above and below a 21.6px icon, plus the
+     hairline either side, which is 39.6px — and a circle is that number
+     across as well, so the air beside the icon is 8px rather than the 9 the
+     open pill carries. The open one gives that pixel back on the right
+     instead of the left: 8 + 21.6 + 8 + label + 15 is exactly the width
+     9 + 21.6 + 8 + label + 14 was, so nothing on the rail changed size, and
+     the icon holding still at 8px from the edge is what keeps it from
+     stepping sideways every time the column opens.
+
+     The label track grows from 0fr to 1fr, which an auto-width grid resolves
+     against the label's own max-content: every language gets the same slide
+     and none of them is cut. The phone block further down carries the rest of
+     that argument — it is the same three properties on smaller numbers.
+
+     The label's own rule is that block's word for word. One of the two could
+     be hoisted out of both and the other could not, because the rule between
+     them — a wide screen with no hover — has the label up and staying up, so
+     each side has to say it inside its own query. Four lines twice is a
+     smaller price than a third media query holding one of them. */
+  .rail-btn {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: auto 0fr;
+    align-items: center;
+    overflow: hidden;
+    min-width: 39.6px;
+    height: 39.6px;
+    padding: 0 8px;
+    gap: 0;
+    transition: border-color .15s var(--ease), color .15s var(--ease),
+                grid-template-columns .34s var(--ease),
+                padding .34s var(--ease), gap .34s var(--ease);
+  }
+  .rail-label {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity .22s var(--ease);
+  }
+  body.rail-open .rail-btn,
+  .rail-btn.hint-open {
+    grid-template-columns: auto 1fr;
+    padding: 0 15px 0 8px;
+    gap: 8px;
+  }
+  body.rail-open .rail-label,
+  .hint-open > .rail-label { opacity: 1; }
+}
+
 /* ---------- under 860px: bottom sheet ---------- */
 
 @media (max-width: 860px) {
