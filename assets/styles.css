@@ -3785,12 +3785,19 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   #lang-switch { position: relative; overflow: visible; }
   /* The code on this button was inheriting the body serif at 15px, which put
      it a size and a typeface away from LIST sitting right under it. It is the
-     same mono the row of codes uses on a desktop. */
+     same mono the row of codes uses on a desktop.
+     The radius is its own here. On a desktop the pane clips the row of codes
+     to its corners, and a pressed code fills up to them; the pane's overflow
+     is visible on a phone so the menu can hang out of it, and nothing clips
+     the button any more. Pressed — which on a phone is the hover a tap
+     leaves behind — it filled a square on a rounded pane, so it takes the
+     pane's own corners. */
   .btn-lang-now {
     display: flex;
     align-items: center;
     gap: 5px;
     padding: 0 10px;
+    border-radius: inherit;
     font-family: var(--mono);
     font-size: 11px;
     font-weight: 500;
