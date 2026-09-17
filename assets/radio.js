@@ -63,6 +63,16 @@
  * note on which half of a tap the browser counts, and why the one press it
  * hands to toggle() is a press of the button itself.
  *
+ * The first tap, and not the first one that happens to arrive late enough.
+ * For the first moments of a page there is a wait with nothing to end it:
+ * data/radio.json is still in the air, and the page has not yet said which
+ * language it reads in, so asking which station to play gets no answer, or
+ * gets the default station rather than the one that was actually playing.
+ * Both of those are answered from what the last page wrote down — the same
+ * thing the rejoin starts from — and a tap that still has nothing to start
+ * leaves the listeners on for the next one rather than spending the wait.
+ * See gesture() and stationNow().
+ *
  * What no listener can answer is a page somebody only reads. A finger that
  * scrolls is not a tap: the browser takes the pointer for itself and the
  * sequence ends in pointercancel, so there is no pointerup to hear, and a
@@ -215,11 +225,33 @@ window.TTBRadio = (function () {
   /* Any tap or key that is not the button: the wait is over and the stream
      starts on it. A named function rather than a closure because the wait
      ends in two places — here and in toggle() — and both have to be able to
-     take these listeners off again. */
+     take these listeners off again.
+
+     A TAP WITH NOTHING TO START ON DOES NOT END THE WAIT
+
+     This took the listeners off first and asked what to play second, and on
+     a page that has only just arrived the answer is often "nothing yet":
+     stationNow() reads data/radio.json, which is still in the air for the
+     first few hundred milliseconds of every page. A tap that landed in that
+     window started nothing and spent the wait, and the music then waited for
+     the page to mount the button — the map spends its whole catalogue there
+     — which is the silence the early rejoin exists to avoid. It did come
+     back: the spent tap leaves the document with a gesture behind it, so the
+     page's own start() is allowed when it finally runs. It came back late.
+     Measured in Chromium against a station answering in 200ms, touching the
+     page 150ms in with the button mounting at two seconds: 2.06s from the
+     touch to the music, against 0.26s once the tap is the thing that starts
+     it.
+
+     So the station is asked for first, and a tap with no answer yet leaves
+     the listeners where they are for the next one. */
   function gesture(ev) {
     if (btn && ev.target && btn.contains(ev.target)) return;
+    if (!wanted) { stopWaiting(); return; }
+    var station = stationNow();
+    if (!station || !station.url) return;
     stopWaiting();
-    if (wanted) start();
+    tune(station);
   }
 
   function stopWaiting() {
@@ -285,9 +317,28 @@ window.TTBRadio = (function () {
     paint();
   }
 
-  /* The page's station, once it has said which language it reads in. */
+  /* Which station to play, which depends on how far the page has got.
+
+     Once it has said which language it reads in, its own: somebody reading
+     the map in Russian gets Наше Радио. Before it has, there is no language
+     to ask with — and stationFor('') is not "no answer", it is the default
+     station, because that is what the fallback is for. So a tap that came
+     in before the page mounted the button answered a visitor reading in
+     Russian with Raadio Tallinn, and then, a second or two later when
+     mount() finally said 'ru', swapped the station out from under them: a
+     stutter, a strange station, and two connections where one was asked
+     for.
+
+     The last page already wrote down the station that was playing, and the
+     rejoin at the foot of this file starts from it. Until this page has
+     spoken, so does this: the same answer, and one that needs no fetch to
+     have landed. */
+  function stationNow() {
+    return lang ? stationFor(lang) : readStation();
+  }
+
   function start() {
-    var station = stationFor(lang);
+    var station = stationNow();
     if (station && station.url) tune(station);
   }
 
@@ -311,8 +362,20 @@ window.TTBRadio = (function () {
        rather than un-paused: pressing play always joins it where it is now. */
     audio.src = station.url;
     var started = audio.play();
-    if (started && started.catch) {
-      started.catch(function (err) {
+    if (started && started.then) {
+      started.then(function () {
+        /* Playing, so there is nothing left to wait for. Without this the
+           wait outlived the silence it was waiting on: the rejoin is
+           refused and arms it, and then the page's own start() a moment
+           later is allowed — Chrome decides between one play() and the next
+           that this is a site the visitor plays sound on — so the stream
+           came up with the wait still standing. toggle() then read the next
+           press as the gesture that branch exists for, and since the radio
+           was already sounding, the press did nothing at all: two presses to
+           stop a radio, which is the trap that branch was written to close,
+           met coming the other way. */
+        stopWaiting();
+      }, function (err) {
         /* Two rejections are not the stream's fault.
 
            AbortError is this file's own doing. A play() that has not settled
@@ -349,6 +412,10 @@ window.TTBRadio = (function () {
        stream starts and the switch stays where it is. Turning it off here is
        what the button used to do, and it made "press the radio to get the
        music back" the thing that stopped it.
+
+       And it really is silent: a play() that succeeds ends the wait, so this
+       branch cannot be reached over a stream that is already running. It
+       could once, and the press vanished into it — see tune().
 
        Nothing is reported. The radio was on before this press and it is on
        after it, and onchange is for a press that changed something. */
@@ -396,10 +463,9 @@ window.TTBRadio = (function () {
 
      `onchange` is for what a page does around the radio rather than to it —
      the map opens the station's name on the rail, every page toasts a stream
-     that would not start. It is not called for the
-     resume across a navigation, because nothing changed: the radio was on
-     when the last page was left and it is on now. Only a press, or a stream
-     failing, is news. */
+     that would not start. It is not called for the resume across a
+     navigation, because nothing changed: the radio was on when the last page
+     was left and it is on now. Only a press, or a stream failing, is news. */
   function mount(opts) {
     btn = opts.button;
     nameEl = opts.name;

@@ -8111,6 +8111,30 @@ press play, one page ago — so nothing is reset and nothing is said. The button
 stays on and the stream starts on the first tap or keypress anywhere on the
 new page, which in practice is the tap that opens the list they came for.
 
+**The first tap, and not the first one that arrives late enough.** For the
+opening moments of a page there is a wait with nothing to end it:
+`data/radio.json` is still in the air, and the page has not yet said which
+language it reads in. Asking which station to play in that window gets either
+no answer at all, or the wrong one — `stationFor('')` does not mean "no
+station", it falls through to the default, because falling through is what the
+default is for. So a tap that landed there started Raadio Tallinn for somebody
+reading in Russian, and had the station swapped out from under them a second
+later when the page finally said `ru`; and a tap that landed a moment earlier
+still started nothing at all and spent the wait, leaving the music to arrive
+only once the page had finished booting — on the map, its whole catalogue.
+It did arrive: a spent tap still leaves a gesture behind it, so the page's own
+start() is allowed when it finally runs. It arrived late. Measured in Chromium
+against a station answering in 200ms, touching the page 150ms in with the
+button mounting at two seconds: 2.06s from the touch to the music, against
+0.26s now that the touch is what starts it.
+
+Both halves are answered the same way. The station to play is the page's once
+the page has said which language it reads in, and until then it is the one the
+last page wrote down — which is the one that was actually playing, and is what
+the rejoin itself starts from, so neither depends on a fetch having landed. A
+tap that still has nothing to start on leaves the listeners where they are for
+the next one rather than ending a wait it could not have ended.
+
 **A scroll is not that tap, and nothing can make it one.** When a finger
 turns out to be scrolling, the browser takes the pointer for itself and the
 sequence ends in `pointercancel`; there is no `pointerup` to listen for, and
@@ -8141,6 +8165,18 @@ browser refused the rejoin. So a press that lands on the button is left to
 `toggle()`, which knows the radio is on and silent and starts the stream
 instead of stopping it; the switch does not move, because it was already on
 and nothing about it changed. A second press turns it off, as it always did.
+
+**And "on and silent" has to really be silent, which nothing was checking.**
+The wait is armed when a `play()` is refused, and until this change nothing
+took it down again except a tap. So when the refused rejoin was followed a
+second later by a `play()` the browser *did* allow — Chrome makes its mind up
+about a site somewhere between one call and the next — the stream came up with
+the wait still standing, and the next press of the switch went to the branch
+above and was read as the gesture it had been waiting for. The radio was
+already playing, so the press did nothing at all, and it took two to stop a
+radio: the same trap as two presses to start one, met coming the other way.
+Measured on the blog page in Chromium. A `play()` that succeeds now ends the
+wait, so that branch only ever sees a radio that is genuinely silent.
 
 The lists page and the account page wear the same button in their headers:
 the map's pill, the map's station name, the same press to stop. It is the
