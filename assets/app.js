@@ -860,11 +860,26 @@
      exactly where it began — silently. That is the whole bug behind a filter
      chip that appears to do nothing. flyTo crosses the distance properly, and
      the arc it draws is the zoom-out-and-back-in the move actually is, so it
-     takes every jump the current view does not already contain. */
+     takes every jump the current view does not already contain.
+
+     AND IT TRAVELS RATHER THAN CUTS. Leaflet's own pan animation is a quarter
+     of a second, which reads as the city being put somewhere else rather than
+     going there — and this map moves under somebody who is in the middle of
+     reading it, every time a place opens beside the list and the pin it is
+     about has to come out from behind the panel. PAN_MS is .75s, long enough
+     that the eye follows the streets across and arrives knowing where it is.
+     The long move was already .9s and stays there: flyTo arcs out and back, so
+     it has further to cover in about the same breath.
+
+     Anyone who asked their machine for less motion gets neither, which is the
+     first line of the function and the same answer the rest of the site
+     gives. */
+  var PAN_MS = .75;
+
   function travelTo(centre, zoom, animate) {
     if (!animate || reduceMotion()) { map.setView(centre, zoom, { animate: false }); return; }
     if (map.getBounds().contains(centre) && Math.abs(zoom - map.getZoom()) <= 2) {
-      map.setView(centre, zoom, { animate: true });
+      map.setView(centre, zoom, { animate: true, duration: PAN_MS, easeLinearity: .28 });
       return;
     }
     map.flyTo(centre, zoom, { duration: .9 });
@@ -4148,7 +4163,7 @@
 
     state.lastPick = choice.id;
     TTBTrack.event('random_pick', { place: choice.name, pool: pool.length });
-    selectPlace(choice.id, { fly: true, peek: true, unasked: true });
+    selectPlace(choice.id, { fly: true, peek: true });
   }
 
   /* --------------------------------------------------------------- the ask
@@ -5313,16 +5328,19 @@
     if (opts.history !== false) syncUrl(fresh);
 
     paintMarkers();
-    /* And on a desktop the map holds still. A place opens in a column beside
-       the list rather than on top of it, so what it covers is city that was
-       spare a moment ago — and a map that panned every time a name was pressed
-       would be answering a question nobody asked, while moving the pins the
-       visitor was reading. The one exception is a place they did not choose:
-       Surprise me and a link that arrives on a restaurant both hand you a name
-       with no idea where it is, and there the whole point is the map going to
-       it. A phone still moves for every one of them, because the sheet covers
-       the half of the screen the pin would otherwise be in. */
-    if (isNarrow() || opts.unasked) refocus(place, !!opts.fly);
+    /* And the map carries the place into the strip that is still showing.
+       focusOn measures whatever the panel is covering — the bottom of a phone,
+       the right of a desktop, one column or two — and puts the pin in the
+       middle of what is left, so opening a place never leaves the pin it is
+       about underneath the thing that opened.
+
+       It held still up here for a version, on the reasoning that the second
+       column covers city the fit had already given up. It does, but the pin
+       you pressed is not spare city: with a place open the panel is more than
+       half the window, and the answer to "where is this" was as often as not
+       behind it. It glides rather than jumps — travelTo — which is what makes
+       a map that moves under you readable rather than startling. */
+    refocus(place, !!opts.fly);
 
     dom.panelScroll.scrollTop = 0;
     /* The place's own column on a desktop, where the scroll lives now. The
@@ -8261,7 +8279,7 @@
 
       var spot = params.get('spot');
       if (spot && byId(spot)) {
-        if (state.selected !== spot) selectPlace(spot, { fly: true, history: false, unasked: true });
+        if (state.selected !== spot) selectPlace(spot, { fly: true, history: false });
         return;
       }
       /* A list coming back opens the panel on it, the way arriving on a link
@@ -8907,7 +8925,7 @@
       var at = params.get('at') || '';
       var stand = isOnList(at) ? byId(at) : null;
       syncUrl();
-      if (spot && byId(spot)) selectPlace(spot, { fly: true, unasked: true });
+      if (spot && byId(spot)) selectPlace(spot, { fly: true });
 
       /* The list, standing on one of its places: the map above, the list
          under it, and that place lit between the two. See standOn(). */

@@ -635,21 +635,26 @@ has somewhere to land is not a dismissal.
 **The row of language codes.** Not a consequence of the column so much as the
 same argument about the same edge — see **Languages**.
 
-### The map does not move
+### The map travels, and it travels slowly
 
-Opening a place does not pan or zoom the map. The second column grows leftwards
-into city that the fit had already given up: the map is framed on arrival
-against the strip the places column leaves, so what the place covers was spare
-before it was covered. A map that panned every time a name was pressed would be
-answering a question nobody asked, and moving the pins the visitor was reading
-while it did.
+Opening a place carries the map to it. `focusOn()` measures whatever the panel
+is covering — the bottom of a phone, the right of a desktop, one column or two
+— and puts the pin in the middle of what is left, so the place you opened is
+never underneath the thing that opened.
 
-One exception, and it is the one that proves the rule: a place nobody chose.
-**Surprise me** and a `?spot=` link both hand you a name with no idea where it
-is, and there the whole point is the map going to it. `selectPlace()` takes
-`unasked` for those three callers and refocuses only for them. A phone still
-moves for every one of them, because the sheet covers the half of the screen the
-pin would otherwise be in.
+It held still up here for a version, on the reasoning that the second column
+covers city the arrival fit had already given up. It does, and the pin you
+pressed is not part of it: with a place open the panel is more than half the
+window, and the answer to *where is this* was as often as not behind it.
+
+**Slowly, though.** Leaflet's own pan animation is a quarter of a second, which
+reads as the city being cut to a new position rather than travelling to one —
+and this map moves under somebody who is in the middle of reading it. `PAN_MS`
+in `travelTo()` is .75s, long enough that the eye follows the streets across
+and arrives knowing where it is. A move too far to pan is a `flyTo` at .9s,
+which arcs out and back and so has further to go in the same breath. Under
+`prefers-reduced-motion` there is no animation at all, the way the rest of the
+site answers that question.
 
 ### The list keeps its place
 
@@ -674,23 +679,59 @@ was without reading seventy-six names again. `markOpenRow()` puts the class on
 rows that are already drawn; `renderList()` drawing fresh ones clears it, so
 nothing has to unmark on the way out.
 
-### Why 1200px and not every desktop
+### A column is 360px, and the pair wants 1200
 
-The pair is 856px of chrome and the rail wants another 72. On a 1440px window
-that leaves 552px of map, which is a city; on a 1152px laptop it would leave
-264, which is a gutter with pins in it. So the second column is a `min-width:
-1200px` question: under it a place covers the list the way it always did, and
-the cross hands the list straight back. The number is written in the stylesheet
-and `pairFits()` in `assets/app.js` reads it off the same media query, because a
-layout that disagrees with itself about how wide it is draws one column and
-reserves room for two.
+Each column is 360px above 860px rather than the 420 the panel has always been
+on a desktop. Two at the old width were 856px of chrome, which on a 1400px
+window left the map a third of itself — and the map is the thing somebody came
+for. At 360 the pair is 736px, the write-up still gets a 308px measure, which
+is about forty-five characters and a comfortable column of prose, and the list
+rows wrap their kinds a line sooner and lose nothing else.
 
-What it costs is the top strip. With both columns up the chip row and the corner
-start after 856px rather than after 420, so on a 1440px window the row has
-536px — still every chip, still scrolling sideways, but three or four of them
-showing instead of nine. That is the one thing on the page that moves when a
-place opens, and it moves because a column and a chip row cannot occupy the same
-pixels.
+The pair itself is a `min-width: 1200px` question, which leaves 416px of map at
+its own floor and 688 on a 1440px window. Under 1200 a place covers the list
+the way it always did, and the cross hands the list straight back. The number
+is written in the stylesheet and `pairFits()` in `assets/app.js` reads it off
+the same media query, because a layout that disagrees with itself about how
+wide it is draws one column and reserves room for two.
+
+### The chip row starts from the left
+
+The row of filter chips is the map's vocabulary — thirteen types and the
+discount — and above 860px it now runs the whole width of the window, from
+just after the mark to the right edge, and it does not move when anything
+opens. Thirteen of the thirteen are on screen at 1440px.
+
+It took two changes, at the two ends of the row.
+
+**At the right end, the columns give way.** They used to start at the top of
+the window, so the row had to be cut short to clear them — and with a place
+open as well it was cut to three: All, Discount, and half of a third. A row of
+thirteen filters that is three filters wide is not a row of filters; a visitor
+on a wide screen could not see that the map narrows at all. Shifting it by a
+column's width every time somebody pressed a name moved the one control on the
+page that is a vocabulary rather than a button. So the columns start **under**
+the strip instead: 98px down, which is the strip as it is drawn — 40px of
+chrome, the 12px under it that `.filter-bar`'s own top adds, the 34px the row
+measures, and 12px of air under that. The cost is 98px off the top of both
+cards, a screenful of list every eight rows or so, and the two rules that used
+to push the row and the corner sideways under `body.panel-open` are gone.
+
+**At the left end, the brand's words move down.** The row used to start after
+the brand's whole 250px column, which left a strip of empty map between the
+rail and the first chip — empty, because the corner collapsed to the mark and
+the words are only there while somebody is hovering. So the row starts after
+the **mark** now, 98px in, and the words it would have run through go beneath
+it: the mark keeps the corner, and the name, the sentence and the handle unroll
+below 102px when the corner opens. The name standing beside the mark is how a
+phone still draws it and is how this drew it while the corner was a card, and
+it cannot stay up here — the band from 68px to 102px is exactly where the
+second line of the name was, and ten pixels of *Tastebuds* under the All chip
+is the kind of thing nobody decides and everybody sees.
+
+The box does not change size between the two states, so `placeRail()` still
+reads one number and nothing under the corner moves. `--brand-w` is still the
+sentence's measure; it is no longer what the chip row starts after.
 
 ### The band, when a list is the mode
 
@@ -9564,9 +9605,10 @@ under text lying on a map is a stray line, and it comes back on hover and on
 focus where it is answering a question rather than decorating.
 
 What the card leaves behind is its measure. `--brand-w` is the 288px box less
-the padding it used to hold, which is what still breaks the name after
-*Tallinn* and the sentence into two lines, and it is the number the chip row
-starts after so the two columns clear each other. And with nothing drawn
+the padding it used to hold, which is what still sets the sentence into two
+lines. It was the number the chip row started after as well, for as long as
+the two stood side by side; above 860px they no longer do — see
+[The chip row starts from the left](#the-chip-row-starts-from-the-left). And with nothing drawn
 there, nothing there takes a press: the block hands its pointer events to the
 map and the mark, the name and the handle take theirs back one at a time,
 because a transparent rectangle that swallows a drag is a piece of dead map.
