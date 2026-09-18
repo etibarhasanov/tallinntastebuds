@@ -70,9 +70,16 @@
  * every card in them are a file, and a file has nobody to check. What an
  * account buys is that pressing "Knew it" is remembered — on the account, not
  * on the device, so the deck you got half through on a phone is half through
- * on a laptop. Signed out, the page keeps the run in memory and offers an
+ * on a laptop. Signed out, the page keeps the run in the tab and offers an
  * account at the end of it. That is the same shape the map's saves have and
  * the same sentence they are offered with.
+ *
+ * Which is why the two marking actions below arrive in a burst on the load
+ * after somebody signs in: the page holds what it answered signed out and
+ * posts it once there is a session — keep() in assets/flashcard.js. Nothing
+ * here treats them differently, and nothing needs to. They are the same two
+ * actions with the same checks, sent a few dozen at a time instead of one at
+ * a time, and a card that is already in a box simply moves up from it.
  *
  * WHAT THIS FILE IS ALLOWED TO DO
  *

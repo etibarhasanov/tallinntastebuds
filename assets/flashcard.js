@@ -63,7 +63,12 @@
  * it rather than in front of it. That is the shape the map's saves have and
  * very nearly the sentence they are offered with.
  *
- * The one thing this page writes without an account is a card being reported
+ * And making the account keeps the run that argued for it, which took a
+ * mechanism rather than a promise: both ways of signing in leave the page, so
+ * the answers are written down as they are given and posted by the load that
+ * comes back with a session. keep() below is the whole of it.
+ *
+ * The one thing this page sends without an account is a card being reported
  * wrong — wrongLine() below, and the rule it breaks is stated where it is
  * broken, in the header of functions/api/flashcard.js. The Estonian here is
  * mine and no native speaker has read it; the people turning the cards over
@@ -224,6 +229,72 @@
 
   function storeGet(key) {
     try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  /* ------------------------------------------- what this tab is holding for you
+   * Signed out, an answer has nobody to tell: the run is this tab's, and the
+   * account is offered at the end of it rather than in front of it.
+   *
+   * What that cost until this existed was the run itself. The card says
+   * "Remember where you got to", and both ways of taking it up leave the page
+   * — the password form reloads, Continue with Google goes to Google and comes
+   * back — so the twenty cards that were the evidence the offer was worth
+   * taking had gone by the time it was taken. Somebody who signed in at the
+   * end of a deck was put back at the start of it, having been promised the
+   * opposite in the sentence they pressed.
+   *
+   * So an answer given with nobody to tell is written down here, and the next
+   * load that has a session posts it. One mechanism covers both ways in, which
+   * is the reason it is storage rather than something held in this page: the
+   * Google trip leaves the origin, and nothing in memory survives that.
+   *
+   * sessionStorage and not localStorage, because the run is the tab's — that
+   * is the README's own sentence for it — and a tab that is closed on a deck
+   * rather than signed in has said what it wanted. It is keyed by deck and
+   * card, so a word answered wrong and then right in the same run arrives as
+   * the answer it ended on rather than as two writes racing.
+   */
+  var KEPT_KEY = 'ttb.flash.kept';
+
+  /* Past this, the rest are answered again next time — the direction a failed
+     write already errs in, and the harmless one. The longest deck the site
+     ships is thirty cards, so this is the tab that went through six of them
+     before deciding to keep any of it. */
+  var MAX_KEPT = 200;
+
+  function kept() {
+    try {
+      var was = JSON.parse(window.sessionStorage.getItem(KEPT_KEY) || 'null');
+      return was && typeof was === 'object' ? was : {};
+    } catch (e) { return {}; }
+  }
+
+  function keep(deck, card, knew) {
+    var all = kept();
+    var key = deck + '/' + card;
+    if (!all[key] && Object.keys(all).length >= MAX_KEPT) return;
+    all[key] = { deck: deck, card: card, knew: knew };
+    try {
+      window.sessionStorage.setItem(KEPT_KEY, JSON.stringify(all));
+    } catch (e) { /* private browsing, or a full quota. The run is this page's,
+                     which is where it stood before any of this. */ }
+  }
+
+  /* Everything the tab was holding, now that there is somewhere to put it.
+     Cleared before the writes go out rather than after: a load that fails
+     halfway should lose the rest rather than send them all again on the next
+     one, which is the same harmless direction as above. What comes back is
+     what went, because the answer this page booted from was fetched before
+     any of it landed — see boot(). */
+  function sendKept() {
+    var all = kept();
+    var keys = Object.keys(all);
+    if (!keys.length) return all;
+    try { window.sessionStorage.removeItem(KEPT_KEY); } catch (e) { /* nothing was stored */ }
+    keys.forEach(function (k) {
+      post(FLASH_API, { action: all[k].knew ? 'knew' : 'again', deck: all[k].deck, card: all[k].card });
+    });
+    return all;
   }
 
   function t(key, vars) {
@@ -798,6 +869,10 @@
 
     if (state.user && state.ready) {
       post(FLASH_API, { action: knew ? 'knew' : 'again', deck: from(word), card: word.id });
+    } else {
+      /* Nobody to tell yet, so it is written down for whoever signs in from
+         the card at the end of this run — see keep() above. */
+      keep(from(word), word.id, knew);
     }
 
     /* Back on the end of the run, and once only.
@@ -1459,7 +1534,24 @@
       state.decks = answer.out.decks || [];
       state.deck = answer.out.deck || null;
 
-      if (state.deck) startRun(false);
+      /* And whatever this tab answered before there was an account to put it
+         on — see keep() above. The writes go out now; the answer they belong
+         to was fetched before them, so the deck in hand is told as well.
+         Without that second half, signing in at the end of a run would build a
+         run of the whole deck again out of an answer that predates the very
+         writes this load just sent, which is the thing being fixed wearing a
+         different hat. */
+      var sent = (state.user && state.ready) ? sendKept() : {};
+
+      if (state.deck) {
+        state.deck.cards.forEach(function (c) {
+          var was = sent[from(c) + '/' + c.id];
+          if (!was) return;
+          c.known = was.knew;
+          c.due = !was.knew;
+        });
+        startRun(false);
+      }
 
       /* A deck of your own with nothing in it yet opens as the editor rather
          than as a deck. There is nothing to turn over, and anything else would
