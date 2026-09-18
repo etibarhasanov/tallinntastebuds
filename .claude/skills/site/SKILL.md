@@ -111,6 +111,15 @@ feature is removing files — see **Taking it out** under **Splitwise** in
 the same ten languages and no key in both files. Nothing else may do this; a
 second exception is two files to keep in step.
 
+**That rule has been tested once and held.** The flashcards page arrived on a
+subdomain of its own, built to be removable the way splitwise is, and wanted a
+file of its own by exactly the same argument. It did not get one: its
+forty-nine `flash*` keys are in `data/ui.json` with everything else, and taking
+the feature out means `grep -n '"flash' data/ui.json` and forty-nine deletions
+from ten blocks. What it *does* keep to itself is `data/decks.json` — the
+Estonian on the cards, which is content rather than interface and is in no
+language but its own two. See **Flashcards** in `README.md`.
+
 **Every touch of `localStorage` is inside `try/catch`.** It throws outright
 in some private-browsing modes, and the site is meant to work with it absent.
 
@@ -213,10 +222,11 @@ write gate's `--check`:
   changing one means `node tools/typelists.mjs` and a stale
   `db/type-lists.sql` to commit — see **The chips, as lists** in `README.md`.
   Adding a language costs nothing there; the lists are English.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the ten pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the eleven pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`, `google.html`,
-  `deal.html`, `verify.html`, `staff.html`, `split.html` — must carry `?v=`
+  `deal.html`, `verify.html`, `staff.html`, `split.html`,
+  `flashcard.html` — must carry `?v=`
   equal to the
   first eight hex of the file's SHA-256. A new page that loads anything out of
   `assets/` is added to that list, or it never gets stamped. `admin.html` is

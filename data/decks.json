@@ -1,0 +1,1089 @@
+{
+  "decks": [
+    {
+      "id": "greetings",
+      "name": "Hello and goodbye",
+      "why": "The words a day in Tallinn opens and closes with",
+      "cards": [
+        {
+          "id": "tere",
+          "front": "Tere",
+          "back": "Hello"
+        },
+        {
+          "id": "tere-hommikust",
+          "front": "Tere hommikust",
+          "back": "Good morning"
+        },
+        {
+          "id": "tere-ohtust",
+          "front": "Tere õhtust",
+          "back": "Good evening"
+        },
+        {
+          "id": "head-ood",
+          "front": "Head ööd",
+          "back": "Good night"
+        },
+        {
+          "id": "head-aega",
+          "front": "Head aega",
+          "back": "Goodbye"
+        },
+        {
+          "id": "nagemist",
+          "front": "Nägemist",
+          "back": "See you"
+        },
+        {
+          "id": "tere-tulemast",
+          "front": "Tere tulemast",
+          "back": "Welcome"
+        },
+        {
+          "id": "kuidas-laheb",
+          "front": "Kuidas läheb?",
+          "back": "How are you?"
+        },
+        {
+          "id": "hasti-aitah",
+          "front": "Hästi, aitäh",
+          "back": "Well, thank you"
+        },
+        {
+          "id": "meeldiv-tutvuda",
+          "front": "Meeldiv tutvuda",
+          "back": "Nice to meet you"
+        },
+        {
+          "id": "head-paeva",
+          "front": "Head päeva",
+          "back": "Have a good day"
+        },
+        {
+          "id": "head-nadalavahetust",
+          "front": "Head nädalavahetust",
+          "back": "Have a good weekend"
+        },
+        {
+          "id": "tere-hilja",
+          "front": "Tere hilja",
+          "back": "Hello, late in the day"
+        },
+        {
+          "id": "kena-ohtut",
+          "front": "Kena õhtut",
+          "back": "Have a nice evening"
+        },
+        {
+          "id": "head-reisi",
+          "front": "Head reisi",
+          "back": "Have a good trip"
+        }
+      ]
+    },
+    {
+      "id": "basics",
+      "name": "The first twenty words",
+      "why": "Yes, no, please, sorry, and the ones you say before you know any others",
+      "cards": [
+        {
+          "id": "jah",
+          "front": "Jah",
+          "back": "Yes"
+        },
+        {
+          "id": "ei",
+          "front": "Ei",
+          "back": "No"
+        },
+        {
+          "id": "palun",
+          "front": "Palun",
+          "back": "Please"
+        },
+        {
+          "id": "aitah",
+          "front": "Aitäh",
+          "back": "Thank you"
+        },
+        {
+          "id": "tanan",
+          "front": "Tänan",
+          "back": "Thank you"
+        },
+        {
+          "id": "vabandust",
+          "front": "Vabandust",
+          "back": "Excuse me"
+        },
+        {
+          "id": "vabandage",
+          "front": "Vabandage",
+          "back": "Sorry"
+        },
+        {
+          "id": "muidugi",
+          "front": "Muidugi",
+          "back": "Of course"
+        },
+        {
+          "id": "voib-olla",
+          "front": "Võib-olla",
+          "back": "Maybe"
+        },
+        {
+          "id": "ma-ei-tea",
+          "front": "Ma ei tea",
+          "back": "I do not know"
+        },
+        {
+          "id": "ma-ei-saa-aru",
+          "front": "Ma ei saa aru",
+          "back": "I do not understand"
+        },
+        {
+          "id": "kas-sa-raagid-inglise-keelt",
+          "front": "Kas sa räägid inglise keelt?",
+          "back": "Do you speak English?"
+        },
+        {
+          "id": "ma-ei-raagi-eesti-keelt",
+          "front": "Ma ei räägi eesti keelt",
+          "back": "I do not speak Estonian"
+        },
+        {
+          "id": "natuke",
+          "front": "Natuke",
+          "back": "A little"
+        },
+        {
+          "id": "palun-aeglasemalt",
+          "front": "Palun aeglasemalt",
+          "back": "Slower, please"
+        },
+        {
+          "id": "appi",
+          "front": "Appi!",
+          "back": "Help!"
+        },
+        {
+          "id": "hea",
+          "front": "Hea",
+          "back": "Good"
+        },
+        {
+          "id": "halb",
+          "front": "Halb",
+          "back": "Bad"
+        },
+        {
+          "id": "suur",
+          "front": "Suur",
+          "back": "Big"
+        },
+        {
+          "id": "vaike",
+          "front": "Väike",
+          "back": "Small"
+        }
+      ]
+    },
+    {
+      "id": "numbers",
+      "name": "Numbers",
+      "why": "One to a hundred, which is most of what a price is",
+      "cards": [
+        {
+          "id": "uks",
+          "front": "Üks",
+          "back": "One"
+        },
+        {
+          "id": "kaks",
+          "front": "Kaks",
+          "back": "Two"
+        },
+        {
+          "id": "kolm",
+          "front": "Kolm",
+          "back": "Three"
+        },
+        {
+          "id": "neli",
+          "front": "Neli",
+          "back": "Four"
+        },
+        {
+          "id": "viis",
+          "front": "Viis",
+          "back": "Five"
+        },
+        {
+          "id": "kuus",
+          "front": "Kuus",
+          "back": "Six"
+        },
+        {
+          "id": "seitse",
+          "front": "Seitse",
+          "back": "Seven"
+        },
+        {
+          "id": "kaheksa",
+          "front": "Kaheksa",
+          "back": "Eight"
+        },
+        {
+          "id": "uheksa",
+          "front": "Üheksa",
+          "back": "Nine"
+        },
+        {
+          "id": "kumme",
+          "front": "Kümme",
+          "back": "Ten"
+        },
+        {
+          "id": "uksteist",
+          "front": "Üksteist",
+          "back": "Eleven"
+        },
+        {
+          "id": "kaksteist",
+          "front": "Kaksteist",
+          "back": "Twelve"
+        },
+        {
+          "id": "kolmteist",
+          "front": "Kolmteist",
+          "back": "Thirteen"
+        },
+        {
+          "id": "neliteist",
+          "front": "Neliteist",
+          "back": "Fourteen"
+        },
+        {
+          "id": "viisteist",
+          "front": "Viisteist",
+          "back": "Fifteen"
+        },
+        {
+          "id": "kakskummend",
+          "front": "Kakskümmend",
+          "back": "Twenty"
+        },
+        {
+          "id": "kolmkummend",
+          "front": "Kolmkümmend",
+          "back": "Thirty"
+        },
+        {
+          "id": "viiskummend",
+          "front": "Viiskümmend",
+          "back": "Fifty"
+        },
+        {
+          "id": "sada",
+          "front": "Sada",
+          "back": "A hundred"
+        },
+        {
+          "id": "tuhat",
+          "front": "Tuhat",
+          "back": "A thousand"
+        },
+        {
+          "id": "pool",
+          "front": "Pool",
+          "back": "Half"
+        },
+        {
+          "id": "esimene",
+          "front": "Esimene",
+          "back": "First"
+        }
+      ]
+    },
+    {
+      "id": "table",
+      "name": "At the table",
+      "why": "Between the door and the bill",
+      "cards": [
+        {
+          "id": "kas-see-laud-on-vaba",
+          "front": "Kas see laud on vaba?",
+          "back": "Is this table free?"
+        },
+        {
+          "id": "kaks-inimest-palun",
+          "front": "Kaks inimest, palun",
+          "back": "Two people, please"
+        },
+        {
+          "id": "menuu-palun",
+          "front": "Menüü, palun",
+          "back": "The menu, please"
+        },
+        {
+          "id": "ma-sooviksin",
+          "front": "Ma sooviksin...",
+          "back": "I would like..."
+        },
+        {
+          "id": "mis-te-soovitate",
+          "front": "Mis te soovitate?",
+          "back": "What do you recommend?"
+        },
+        {
+          "id": "uks-kohv-palun",
+          "front": "Üks kohv, palun",
+          "back": "One coffee, please"
+        },
+        {
+          "id": "vett-palun",
+          "front": "Vett, palun",
+          "back": "Water, please"
+        },
+        {
+          "id": "ilma-suhkruta",
+          "front": "Ilma suhkruta",
+          "back": "Without sugar"
+        },
+        {
+          "id": "veel-uks-palun",
+          "front": "Veel üks, palun",
+          "back": "One more, please"
+        },
+        {
+          "id": "head-isu",
+          "front": "Head isu!",
+          "back": "Enjoy your meal!"
+        },
+        {
+          "id": "terviseks",
+          "front": "Terviseks!",
+          "back": "Cheers!"
+        },
+        {
+          "id": "vaga-maitsev",
+          "front": "Väga maitsev",
+          "back": "Very tasty"
+        },
+        {
+          "id": "arve-palun",
+          "front": "Arve, palun",
+          "back": "The bill, please"
+        },
+        {
+          "id": "kas-ma-saan-maksta-kaardiga",
+          "front": "Kas ma saan maksta kaardiga?",
+          "back": "Can I pay by card?"
+        },
+        {
+          "id": "kas-teenindustasu-on-sees",
+          "front": "Kas teenindustasu on sees?",
+          "back": "Is service included?"
+        },
+        {
+          "id": "see-on-minu-jaoks",
+          "front": "See on minu jaoks",
+          "back": "This one is mine"
+        },
+        {
+          "id": "kus-on-tualett",
+          "front": "Kus on tualett?",
+          "back": "Where is the toilet?"
+        },
+        {
+          "id": "ma-olen-taimetoitlane",
+          "front": "Ma olen taimetoitlane",
+          "back": "I am a vegetarian"
+        },
+        {
+          "id": "mul-on-allergia",
+          "front": "Mul on allergia",
+          "back": "I have an allergy"
+        },
+        {
+          "id": "kas-te-olete-avatud",
+          "front": "Kas te olete avatud?",
+          "back": "Are you open?"
+        }
+      ]
+    },
+    {
+      "id": "food",
+      "name": "Food and drink",
+      "why": "What is written on the menu before anybody translates it",
+      "cards": [
+        {
+          "id": "leib",
+          "front": "Leib",
+          "back": "Black bread"
+        },
+        {
+          "id": "sai",
+          "front": "Sai",
+          "back": "White bread"
+        },
+        {
+          "id": "voi",
+          "front": "Või",
+          "back": "Butter"
+        },
+        {
+          "id": "juust",
+          "front": "Juust",
+          "back": "Cheese"
+        },
+        {
+          "id": "piim",
+          "front": "Piim",
+          "back": "Milk"
+        },
+        {
+          "id": "vesi",
+          "front": "Vesi",
+          "back": "Water"
+        },
+        {
+          "id": "kohv",
+          "front": "Kohv",
+          "back": "Coffee"
+        },
+        {
+          "id": "tee",
+          "front": "Tee",
+          "back": "Tea"
+        },
+        {
+          "id": "olu",
+          "front": "Õlu",
+          "back": "Beer"
+        },
+        {
+          "id": "vein",
+          "front": "Vein",
+          "back": "Wine"
+        },
+        {
+          "id": "mahl",
+          "front": "Mahl",
+          "back": "Juice"
+        },
+        {
+          "id": "liha",
+          "front": "Liha",
+          "back": "Meat"
+        },
+        {
+          "id": "sealiha",
+          "front": "Sealiha",
+          "back": "Pork"
+        },
+        {
+          "id": "kanaliha",
+          "front": "Kanaliha",
+          "back": "Chicken"
+        },
+        {
+          "id": "kala",
+          "front": "Kala",
+          "back": "Fish"
+        },
+        {
+          "id": "supp",
+          "front": "Supp",
+          "back": "Soup"
+        },
+        {
+          "id": "salat",
+          "front": "Salat",
+          "back": "Salad"
+        },
+        {
+          "id": "kartul",
+          "front": "Kartul",
+          "back": "Potato"
+        },
+        {
+          "id": "riis",
+          "front": "Riis",
+          "back": "Rice"
+        },
+        {
+          "id": "koogivili",
+          "front": "Köögivili",
+          "back": "Vegetable"
+        },
+        {
+          "id": "puuvili",
+          "front": "Puuvili",
+          "back": "Fruit"
+        },
+        {
+          "id": "magustoit",
+          "front": "Magustoit",
+          "back": "Dessert"
+        },
+        {
+          "id": "jaatis",
+          "front": "Jäätis",
+          "back": "Ice cream"
+        },
+        {
+          "id": "sool",
+          "front": "Sool",
+          "back": "Salt"
+        },
+        {
+          "id": "suhkur",
+          "front": "Suhkur",
+          "back": "Sugar"
+        },
+        {
+          "id": "pipar",
+          "front": "Pipar",
+          "back": "Pepper"
+        },
+        {
+          "id": "hommikusook",
+          "front": "Hommikusöök",
+          "back": "Breakfast"
+        },
+        {
+          "id": "lounasook",
+          "front": "Lõunasöök",
+          "back": "Lunch"
+        },
+        {
+          "id": "ohtusook",
+          "front": "Õhtusöök",
+          "back": "Dinner"
+        }
+      ]
+    },
+    {
+      "id": "around",
+      "name": "Getting around Tallinn",
+      "why": "Streets, stops and the way back to the old town",
+      "cards": [
+        {
+          "id": "kus-on",
+          "front": "Kus on...?",
+          "back": "Where is...?"
+        },
+        {
+          "id": "vanalinn",
+          "front": "Vanalinn",
+          "back": "The old town"
+        },
+        {
+          "id": "kesklinn",
+          "front": "Kesklinn",
+          "back": "The city centre"
+        },
+        {
+          "id": "raekoja-plats",
+          "front": "Raekoja plats",
+          "back": "Town Hall Square"
+        },
+        {
+          "id": "sadam",
+          "front": "Sadam",
+          "back": "The harbour"
+        },
+        {
+          "id": "lennujaam",
+          "front": "Lennujaam",
+          "back": "The airport"
+        },
+        {
+          "id": "bussijaam",
+          "front": "Bussijaam",
+          "back": "The bus station"
+        },
+        {
+          "id": "rongijaam",
+          "front": "Rongijaam",
+          "back": "The train station"
+        },
+        {
+          "id": "buss",
+          "front": "Buss",
+          "back": "Bus"
+        },
+        {
+          "id": "tramm",
+          "front": "Tramm",
+          "back": "Tram"
+        },
+        {
+          "id": "rong",
+          "front": "Rong",
+          "back": "Train"
+        },
+        {
+          "id": "takso",
+          "front": "Takso",
+          "back": "Taxi"
+        },
+        {
+          "id": "pilet",
+          "front": "Pilet",
+          "back": "Ticket"
+        },
+        {
+          "id": "peatus",
+          "front": "Peatus",
+          "back": "Stop"
+        },
+        {
+          "id": "tanav",
+          "front": "Tänav",
+          "back": "Street"
+        },
+        {
+          "id": "valjak",
+          "front": "Väljak",
+          "back": "Square"
+        },
+        {
+          "id": "vasakule",
+          "front": "Vasakule",
+          "back": "To the left"
+        },
+        {
+          "id": "paremale",
+          "front": "Paremale",
+          "back": "To the right"
+        },
+        {
+          "id": "otse",
+          "front": "Otse",
+          "back": "Straight on"
+        },
+        {
+          "id": "kaugel",
+          "front": "Kaugel",
+          "back": "Far"
+        },
+        {
+          "id": "lahedal",
+          "front": "Lähedal",
+          "back": "Near"
+        },
+        {
+          "id": "kaart",
+          "front": "Kaart",
+          "back": "Map"
+        }
+      ]
+    },
+    {
+      "id": "shops",
+      "name": "Shops and money",
+      "why": "Asking the price, and understanding the answer",
+      "cards": [
+        {
+          "id": "pood",
+          "front": "Pood",
+          "back": "Shop"
+        },
+        {
+          "id": "turg",
+          "front": "Turg",
+          "back": "Market"
+        },
+        {
+          "id": "apteek",
+          "front": "Apteek",
+          "back": "Pharmacy"
+        },
+        {
+          "id": "raha",
+          "front": "Raha",
+          "back": "Money"
+        },
+        {
+          "id": "hind",
+          "front": "Hind",
+          "back": "Price"
+        },
+        {
+          "id": "kui-palju-see-maksab",
+          "front": "Kui palju see maksab?",
+          "back": "How much does this cost?"
+        },
+        {
+          "id": "odav",
+          "front": "Odav",
+          "back": "Cheap"
+        },
+        {
+          "id": "kallis",
+          "front": "Kallis",
+          "back": "Expensive"
+        },
+        {
+          "id": "sularaha",
+          "front": "Sularaha",
+          "back": "Cash"
+        },
+        {
+          "id": "pangakaart",
+          "front": "Pangakaart",
+          "back": "Bank card"
+        },
+        {
+          "id": "kviitung",
+          "front": "Kviitung",
+          "back": "Receipt"
+        },
+        {
+          "id": "kott",
+          "front": "Kott",
+          "back": "Bag"
+        },
+        {
+          "id": "lahti",
+          "front": "Lahti",
+          "back": "Open"
+        },
+        {
+          "id": "kinni",
+          "front": "Kinni",
+          "back": "Closed"
+        },
+        {
+          "id": "allahindlus",
+          "front": "Allahindlus",
+          "back": "Discount"
+        },
+        {
+          "id": "tasuta",
+          "front": "Tasuta",
+          "back": "Free"
+        },
+        {
+          "id": "kas-teil-on",
+          "front": "Kas teil on...?",
+          "back": "Do you have...?"
+        },
+        {
+          "id": "ma-votan-selle",
+          "front": "Ma võtan selle",
+          "back": "I will take this one"
+        },
+        {
+          "id": "ainult-vaatan",
+          "front": "Ainult vaatan",
+          "back": "Just looking"
+        }
+      ]
+    },
+    {
+      "id": "talk",
+      "name": "Small talk",
+      "why": "The conversation after the second sentence",
+      "cards": [
+        {
+          "id": "mis-su-nimi-on",
+          "front": "Mis su nimi on?",
+          "back": "What is your name?"
+        },
+        {
+          "id": "minu-nimi-on",
+          "front": "Minu nimi on...",
+          "back": "My name is..."
+        },
+        {
+          "id": "kust-sa-parit-oled",
+          "front": "Kust sa pärit oled?",
+          "back": "Where are you from?"
+        },
+        {
+          "id": "ma-olen-eestist",
+          "front": "Ma olen Eestist",
+          "back": "I am from Estonia"
+        },
+        {
+          "id": "ma-elan-tallinnas",
+          "front": "Ma elan Tallinnas",
+          "back": "I live in Tallinn"
+        },
+        {
+          "id": "kui-vana-sa-oled",
+          "front": "Kui vana sa oled?",
+          "back": "How old are you?"
+        },
+        {
+          "id": "mulle-meeldib",
+          "front": "Mulle meeldib",
+          "back": "I like it"
+        },
+        {
+          "id": "mulle-ei-meeldi",
+          "front": "Mulle ei meeldi",
+          "back": "I do not like it"
+        },
+        {
+          "id": "tore",
+          "front": "Tore!",
+          "back": "Great!"
+        },
+        {
+          "id": "koik-on-hasti",
+          "front": "Kõik on hästi",
+          "back": "Everything is fine"
+        },
+        {
+          "id": "palju-onne",
+          "front": "Palju õnne!",
+          "back": "Congratulations!"
+        },
+        {
+          "id": "sober",
+          "front": "Sõber",
+          "back": "Friend"
+        },
+        {
+          "id": "perekond",
+          "front": "Perekond",
+          "back": "Family"
+        },
+        {
+          "id": "naine",
+          "front": "Naine",
+          "back": "Woman"
+        },
+        {
+          "id": "mees",
+          "front": "Mees",
+          "back": "Man"
+        },
+        {
+          "id": "laps",
+          "front": "Laps",
+          "back": "Child"
+        },
+        {
+          "id": "too",
+          "front": "Töö",
+          "back": "Work"
+        },
+        {
+          "id": "keel",
+          "front": "Keel",
+          "back": "Language"
+        },
+        {
+          "id": "ilus",
+          "front": "Ilus",
+          "back": "Beautiful"
+        }
+      ]
+    },
+    {
+      "id": "time",
+      "name": "Days and time",
+      "why": "What day it is, and when the kitchen closes",
+      "cards": [
+        {
+          "id": "tana",
+          "front": "Täna",
+          "back": "Today"
+        },
+        {
+          "id": "homme",
+          "front": "Homme",
+          "back": "Tomorrow"
+        },
+        {
+          "id": "eile",
+          "front": "Eile",
+          "back": "Yesterday"
+        },
+        {
+          "id": "hommik",
+          "front": "Hommik",
+          "back": "Morning"
+        },
+        {
+          "id": "paev",
+          "front": "Päev",
+          "back": "Day"
+        },
+        {
+          "id": "ohtu",
+          "front": "Õhtu",
+          "back": "Evening"
+        },
+        {
+          "id": "oo",
+          "front": "Öö",
+          "back": "Night"
+        },
+        {
+          "id": "nadal",
+          "front": "Nädal",
+          "back": "Week"
+        },
+        {
+          "id": "kuu",
+          "front": "Kuu",
+          "back": "Month"
+        },
+        {
+          "id": "aasta",
+          "front": "Aasta",
+          "back": "Year"
+        },
+        {
+          "id": "esmaspaev",
+          "front": "Esmaspäev",
+          "back": "Monday"
+        },
+        {
+          "id": "teisipaev",
+          "front": "Teisipäev",
+          "back": "Tuesday"
+        },
+        {
+          "id": "kolmapaev",
+          "front": "Kolmapäev",
+          "back": "Wednesday"
+        },
+        {
+          "id": "neljapaev",
+          "front": "Neljapäev",
+          "back": "Thursday"
+        },
+        {
+          "id": "reede",
+          "front": "Reede",
+          "back": "Friday"
+        },
+        {
+          "id": "laupaev",
+          "front": "Laupäev",
+          "back": "Saturday"
+        },
+        {
+          "id": "puhapaev",
+          "front": "Pühapäev",
+          "back": "Sunday"
+        },
+        {
+          "id": "mis-kell-on",
+          "front": "Mis kell on?",
+          "back": "What time is it?"
+        },
+        {
+          "id": "praegu",
+          "front": "Praegu",
+          "back": "Now"
+        },
+        {
+          "id": "hiljem",
+          "front": "Hiljem",
+          "back": "Later"
+        },
+        {
+          "id": "varsti",
+          "front": "Varsti",
+          "back": "Soon"
+        },
+        {
+          "id": "millal",
+          "front": "Millal?",
+          "back": "When?"
+        }
+      ]
+    },
+    {
+      "id": "weather",
+      "name": "Weather and the season",
+      "why": "Six months of it are worth a deck",
+      "cards": [
+        {
+          "id": "ilm",
+          "front": "Ilm",
+          "back": "Weather"
+        },
+        {
+          "id": "kulm",
+          "front": "Külm",
+          "back": "Cold"
+        },
+        {
+          "id": "soe",
+          "front": "Soe",
+          "back": "Warm"
+        },
+        {
+          "id": "kuum",
+          "front": "Kuum",
+          "back": "Hot"
+        },
+        {
+          "id": "vihm",
+          "front": "Vihm",
+          "back": "Rain"
+        },
+        {
+          "id": "lumi",
+          "front": "Lumi",
+          "back": "Snow"
+        },
+        {
+          "id": "paike",
+          "front": "Päike",
+          "back": "Sun"
+        },
+        {
+          "id": "tuul",
+          "front": "Tuul",
+          "back": "Wind"
+        },
+        {
+          "id": "pilves",
+          "front": "Pilves",
+          "back": "Cloudy"
+        },
+        {
+          "id": "kevad",
+          "front": "Kevad",
+          "back": "Spring"
+        },
+        {
+          "id": "suvi",
+          "front": "Suvi",
+          "back": "Summer"
+        },
+        {
+          "id": "sugis",
+          "front": "Sügis",
+          "back": "Autumn"
+        },
+        {
+          "id": "talv",
+          "front": "Talv",
+          "back": "Winter"
+        },
+        {
+          "id": "tana-on-ilus-ilm",
+          "front": "Täna on ilus ilm",
+          "back": "The weather is lovely today"
+        },
+        {
+          "id": "valjas-on-kulm",
+          "front": "Väljas on külm",
+          "back": "It is cold outside"
+        }
+      ]
+    }
+  ]
+}

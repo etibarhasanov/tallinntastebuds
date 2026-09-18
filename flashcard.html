@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+
+<!-- Analytics: Google and Microsoft Clarity, both from one file rather than
+     two snippets pasted into every head. assets/analytics.js holds the ids and
+     the consentv2 signal Clarity needs, and its head carries the reasoning of
+     the consent bar that stood in front of both of them for a day. -->
+<script src="/assets/analytics.js?v=4b79262d" defer></script>
+
+<title>Flashcards | Tallinn Tastebuds</title>
+<meta name="description" content="Estonian, one card at a time. Ten decks of the words a day in Tallinn is made of, and room for the ones you collect yourself.">
+<!-- Noindex, and no head route swapping it. A deck somebody wrote is theirs
+     and nobody else's, there is no share link on this page for a crawler to
+     unfurl, and the ten decks the site ships are a file anybody can read
+     without a search engine's help. Unlike /split there is nothing here whose
+     link is pasted into a message, so this page never needed the Function
+     that writes a name into a head — see **Flashcards** in README.md. The
+     rule in _headers says the same thing for anything that does not parse the
+     markup to find this. -->
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The tokens, the card, the eyebrow and the four controls come from the
+     map's stylesheet; the brand header, the stack, the cards, the rows and the
+     fields from the lists page's, exactly as the account page and the split
+     page take them. The third is this page's own and it is short: the card
+     that turns over, the bar under it, and the rows of a deck being written. -->
+<link rel="stylesheet" href="/assets/styles.css?v=ba92f266">
+<link rel="stylesheet" href="/assets/lists.css?v=b478af12">
+<link rel="stylesheet" href="/assets/flashcard.css?v=bf64035d">
+</head>
+<body class="lists-body">
+
+<a class="skip-link" href="#main" data-i18n="flashSkip">Skip to the decks</a>
+
+<header class="lists-brand">
+  <!-- Home is the map, and where the map is depends on which hostname this
+       is: at the root of tallinntastebuds.ee and of every preview, and one
+       domain up from flashcard.tallinntastebuds.ee, where the root is this
+       page. The site's own spelling is here so the header is right with no
+       script at all; assets/flashcard.js rewrites it on the subdomain. -->
+  <a class="lists-home" id="brand-home" href="/" data-track="home" data-i18n-aria-label="backToMap" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
+  </a>
+</header>
+
+<!-- The decks, a deck being turned over, the end of one, a deck being
+     written, and the offer of an account: all five are built by
+     assets/flashcard.js into this one element, decided once when every answer
+     is in. Nothing in the markup depends on which of them it is, so nothing
+     can be left standing from a state the page is no longer in. -->
+<main class="lists-main" id="main" tabindex="-1"></main>
+
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Flashcards</p>
+    <h2>Estonian, one card at a time</h2>
+    <p>This page is a deck of cards you turn over, which takes JavaScript to
+      turn. The map itself works rather better than this page does without it —
+      <a href="/">it is over here</a>.</p>
+  </div>
+</noscript>
+
+<!-- What every press reports to Google Analytics, shared by every page.
+     Before the page's own script and deferred like it, so document order puts
+     the global in place first. -->
+<script src="/assets/track.js?v=93031b0d" defer></script>
+<script src="/assets/flashcard.js?v=2bf268b8" defer></script>
+</body>
+</html>

@@ -53,6 +53,24 @@
  * exist at all, so the feature can be looked at on a pull request the way
  * everything else here is. The rewrite below is convenience over that route,
  * not the route itself.
+ *
+ * ---------------------------------------------------------------------------
+ * AND ONE MORE AGAIN, WHICH IS THE FLASHCARDS'
+ *
+ * flashcard.tallinntastebuds.ee, on the same terms and for the same reason:
+ * Estonian on cards is not the map either, and a person learning the language
+ * should not have to walk through a restaurant to reach it. Everything below
+ * the FLASHCARDS line is that feature's and only that feature's — see **Taking
+ * it out** under **Flashcards** in README.md.
+ *
+ * The one difference from splitwise is what the root is answered with. That
+ * page is served by a route, because a group's link is pasted into a message
+ * and the head has to carry the group's name. Nothing on the flashcards page
+ * is ever linked to anybody — a deck somebody wrote has exactly one reader —
+ * so there is no head to write and the static file is the whole of it. A
+ * rewrite is then not only enough, it is the right thing: context.next() with
+ * a rewritten request hands it to the asset server, which is exactly where
+ * this page lives.
  */
 
 const CANONICAL_HOST = 'tallinntastebuds.ee';
@@ -76,6 +94,16 @@ const SPLIT_PAGE = '/split';
 const SPLIT_FILE = '/split.html';
 const API_PREFIX = '/api/';
 /* --------------------------------------------------------- end SPLITWISE */
+
+/* ------------------------------------------------------------ FLASHCARDS */
+const FLASH_HOST = 'flashcard.' + CANONICAL_HOST;
+
+/* The two paths that mean anything on that hostname, plus /api, which is one
+   prefix rather than a list because the page reads the account route as well
+   as its own. Same three lines splitwise has above and the same reasoning. */
+const FLASH_PAGE = '/flashcard';
+const FLASH_FILE = '/flashcard.html';
+/* ------------------------------------------------------- end FLASHCARDS */
 
 export async function onRequest(context) {
   const url = new URL(context.request.url);
@@ -119,6 +147,32 @@ export async function onRequest(context) {
     }
   }
   /* ------------------------------------------------------- end SPLITWISE */
+
+  /* ---------------------------------------------------------- FLASHCARDS */
+  if (url.hostname === FLASH_HOST) {
+    /* The front door, answered where it was asked rather than redirected to,
+       so the short address people were given is the address they keep. A
+       rewrite and not a call, unlike splitwise's: this page is a static file
+       and context.next() with a rewritten request is how a static file is
+       asked for. */
+    if (url.pathname === '/') {
+      const page = new URL(context.request.url);
+      page.pathname = FLASH_PAGE;
+      return context.next(new Request(page.toString(), context.request));
+    }
+
+    /* Everything that is not that feature belongs to the site, at the site's
+       own address. Same argument and the same 301 as the two blocks above:
+       one copy of the map, one link to it. */
+    if (url.pathname !== FLASH_PAGE && url.pathname !== FLASH_FILE &&
+        !url.pathname.startsWith(API_PREFIX)) {
+      url.protocol = 'https:';
+      url.hostname = CANONICAL_HOST;
+      url.port = '';
+      return Response.redirect(url.toString(), 301);
+    }
+  }
+  /* ------------------------------------------------------ end FLASHCARDS */
 
   return context.next();
 }
