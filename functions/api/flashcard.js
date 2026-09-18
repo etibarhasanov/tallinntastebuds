@@ -133,9 +133,9 @@ const MAX_SIDE = 60;
  * Leitner's scheme rather than SM-2, deliberately. SM-2 wants a grade out of
  * five and keeps an ease factor per card, and this page asks one question with
  * two answers: a scheduler cannot be cleverer than what it is told. Getting a
- * card wrong does not move it down a box either — it takes the row away
- * altogether, so the card is back in the next run from the beginning, which is
- * the same thing said with one fewer column.
+ * card wrong does not move it down a box either — it goes to box nought, due
+ * now, so the card is back in the next run from the beginning and in the deck
+ * of what you got wrong. MISSED below is that box.
  *
  * Days rather than a time of day, and the clock is the reader's own: a card
  * answered at eleven at night is due at eleven the next night rather than at

@@ -30,8 +30,8 @@
    controls under it between every card — and those are pressed a hundred
    times in a sitting, at a thumb's reach, without looking.
 
-   Once it is turned over it can also be thrown: left for Show me again, right
-   for Knew it. Three lines here are what that needs.
+   It can also be thrown, from either face: left for Show me again, right for
+   Knew it. Three lines here are what that needs.
 
    `touch-action: pan-y` is the load-bearing one. It hands this element's
    horizontal gestures to the script and keeps the vertical ones for the

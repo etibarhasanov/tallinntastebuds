@@ -6406,26 +6406,38 @@ got right come first, so a deck opened after a fortnight away starts with what
 is new rather than with a revision.
 
 Turn a card over and the two words appear. **Knew it** writes the row and moves
-on. **Show me again** deletes the row and puts the card on the end of the run,
-so it comes round once more before the deck ends.
+on. **Show me again** drops the row into box nought — **The deck of what you
+got wrong** below — and puts the card on the end of the run, so it comes round
+once more before the deck ends.
 
-**Or throw the card.** Right for *Knew it*, left for *Show me again* — the same
-two answers, given with the thumb that is already on the card. The card follows
-the finger, tilts as it goes, and says in words which answer it is heading for,
-because a tint on its own says nothing to somebody who cannot see this one
-(design rule 10). A quarter of the card's width is far enough to mean it;
-anything shorter springs back and means nothing.
+**Or throw the card, from either face.** Right for *Knew it*, left for *Show me
+again* — the same two answers, given with the thumb that is already on the
+card. The card follows the finger, tilts as it goes, and says in words which
+answer it is heading for, because a tint on its own says nothing to somebody
+who cannot see this one (design rule 10). A quarter of the card's width is far
+enough to mean it; anything shorter springs back and means nothing.
 
-**The buttons stay.** A gesture nobody discovers would otherwise be the only
-way to use the page, and there is no way to hint at one without a tutorial —
-so the swipe is a second way to say the same thing rather than a replacement,
-and the two words under the card are what a first-time reader presses. Both
-report the same event with one parameter saying which was used, which is how
-anybody will ever find out whether the gesture was worth building.
+**The front answers too, and that is the one way a throw differs from the
+buttons.** A word you know on sight is answered before the card is turned over,
+and one you do not know is a *Show me again* before the back could add
+anything: throw it left, it goes to the end of the run, and it is turned over
+when it comes round. It did not use to. A throw on the front did nothing, on
+the reasoning that the front has nothing to answer, and what that cost was a
+tap on every card before it could be got wrong.
 
-Three rules keep it out of the way of everything else. A swipe only answers a
-card that has been **turned over** — there is nothing to answer on the front,
-which is the rule the two buttons are already under. A gesture that starts
+**The buttons stay, and they stay behind the turn.** A gesture nobody discovers
+would otherwise be the only way to use the page, and there is no way to hint
+at one without a tutorial — so the swipe is a second way to say the same thing
+rather than a replacement, and the two words under the card are what a
+first-time reader presses. They are drawn only once the card is turned, because
+a *Knew it* under a word whose meaning nobody has seen invites a press that
+cannot mean anything; a throw is a decision already made, and it takes a
+quarter of the card to mean it. Both report the same event with one parameter
+saying which was used and another saying which face the card was answered
+from, which is how anybody will ever find out whether either was worth
+building.
+
+Two rules keep it out of the way of everything else. A gesture that starts
 **down the page** belongs to the page, and `touch-action: pan-y` hands the
 browser the vertical half so a phone still scrolls. And **any drag suppresses
 the tap that would otherwise follow it**, so a scroll that began on the card
@@ -6470,9 +6482,9 @@ week, then a fortnight, then five weeks, then eleven.** Six rungs, and a card
 that reaches the last stays there — a little over four months between askings,
 past which the thing being remembered is not the word, it is the site.
 
-A card answered wrong does not go down a box. It loses its row altogether, so
-it is back in the next run from the beginning — the same thing said with one
-fewer column.
+A card answered wrong does not go down a box. It goes to box nought, due now,
+so it is back in the next run from the beginning and in **The deck of what you
+got wrong** above.
 
 **Leitner's scheme rather than SM-2**, and the reason is what this page asks. A
 scheduler cannot be cleverer than what it is told, and it is told one thing:
@@ -9766,7 +9778,7 @@ Flashcards, `assets/flashcard.js`:
 | --- | --- |
 | `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
-| `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`) — one per card answered, and which of the two ways it was answered |
+| `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`), `face` (`front`/`back`) — one per card answered, which of the two ways it was answered, and whether the card had been turned over first: `front` is a throw on a card nobody opened |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_back`, `home` | `deck_id` on the first |
