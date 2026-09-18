@@ -1395,6 +1395,45 @@
           "id": "ma-tulen-tagasi",
           "front": "Ma tulen tagasi",
           "back": "I will be back"
+        },
+        {
+          "id": "ode",
+          "front": "Õde",
+          "back": "Sister",
+          "forms": [
+            "õe",
+            "õde"
+          ],
+          "sentence": {
+            "et": "Mul on üks õde.",
+            "en": "I have one sister."
+          }
+        },
+        {
+          "id": "vend",
+          "front": "Vend",
+          "back": "Brother",
+          "forms": [
+            "venna",
+            "venda"
+          ],
+          "sentence": {
+            "et": "Mu vend elab Tartus.",
+            "en": "My brother lives in Tartu."
+          }
+        },
+        {
+          "id": "pere",
+          "front": "Pere",
+          "back": "Family, the everyday word",
+          "forms": [
+            "pere",
+            "peret"
+          ],
+          "sentence": {
+            "et": "Kogu pere on kodus.",
+            "en": "The whole family is at home."
+          }
         }
       ],
       "level": "more"
@@ -1577,6 +1616,32 @@
           "id": "millal",
           "front": "Millal?",
           "back": "When?"
+        },
+        {
+          "id": "tund",
+          "front": "Tund",
+          "back": "Hour",
+          "forms": [
+            "tunni",
+            "tundi"
+          ],
+          "sentence": {
+            "et": "Ma ootasin ühe tunni.",
+            "en": "I waited for an hour."
+          }
+        },
+        {
+          "id": "nadalavahetus",
+          "front": "Nädalavahetus",
+          "back": "Weekend",
+          "forms": [
+            "nädalavahetuse",
+            "nädalavahetust"
+          ],
+          "sentence": {
+            "et": "Nädalavahetusel ma puhkan.",
+            "en": "At the weekend I rest."
+          }
         }
       ],
       "level": "more"
@@ -4825,6 +4890,59 @@
             "et": "Rannas on palju rahvast.",
             "en": "There are a lot of people at the beach."
           }
+        },
+        {
+          "id": "suusatada",
+          "front": "Suusatada",
+          "back": "To ski",
+          "sentence": {
+            "et": "Talvel käime suusatamas.",
+            "en": "In winter we go skiing."
+          }
+        },
+        {
+          "id": "pildistada",
+          "front": "Pildistada",
+          "back": "To take photographs",
+          "sentence": {
+            "et": "Ta pildistab vanalinna.",
+            "en": "They are photographing the old town."
+          }
+        },
+        {
+          "id": "koeraga-jalutada",
+          "front": "Koeraga jalutada",
+          "back": "To walk the dog",
+          "sentence": {
+            "et": "Ma käin koeraga jalutamas.",
+            "en": "I take the dog out for a walk."
+          }
+        },
+        {
+          "id": "jousaal",
+          "front": "Jõusaal",
+          "back": "Gym",
+          "forms": [
+            "jõusaali",
+            "jõusaali"
+          ],
+          "sentence": {
+            "et": "Jõusaal on kohe kõrval.",
+            "en": "The gym is right next door."
+          }
+        },
+        {
+          "id": "jalgpall",
+          "front": "Jalgpall",
+          "back": "Football",
+          "forms": [
+            "jalgpalli",
+            "jalgpalli"
+          ],
+          "sentence": {
+            "et": "Lähme jalgpalli vaatama.",
+            "en": "Let us go and watch the football."
+          }
         }
       ]
     },
@@ -5132,6 +5250,89 @@
             "et": "Ma ei viitsi täna kuhugi minna.",
             "en": "I do not feel like going anywhere today."
           }
+        },
+        {
+          "id": "kuulama",
+          "front": "Kuulama",
+          "back": "To listen to",
+          "forms": [
+            "kuulata",
+            "kuulan"
+          ],
+          "sentence": {
+            "et": "Ma kuulan muusikat.",
+            "en": "I am listening to music."
+          }
+        },
+        {
+          "id": "lugema",
+          "front": "Lugema",
+          "back": "To read",
+          "forms": [
+            "lugeda",
+            "loen"
+          ],
+          "sentence": {
+            "et": "Ma loen igal õhtul.",
+            "en": "I read every evening."
+          }
+        },
+        {
+          "id": "kirjutama",
+          "front": "Kirjutama",
+          "back": "To write",
+          "forms": [
+            "kirjutada",
+            "kirjutan"
+          ],
+          "sentence": {
+            "et": "Ma kirjutan sõbrale.",
+            "en": "I am writing to a friend."
+          }
+        },
+        {
+          "id": "kaima",
+          "front": "Käima",
+          "back": "To go regularly, to attend",
+          "forms": [
+            "käia",
+            "käin"
+          ],
+          "sentence": {
+            "et": "Ma käin tööl bussiga.",
+            "en": "I go to work by bus."
+          }
+        },
+        {
+          "id": "soitma",
+          "front": "Sõitma",
+          "back": "To ride, to drive",
+          "forms": [
+            "sõita",
+            "sõidan"
+          ],
+          "sentence": {
+            "et": "Me sõidame rongiga.",
+            "en": "We are going by train."
+          }
+        },
+        {
+          "id": "ules-tousma",
+          "front": "Üles tõusma",
+          "back": "To get up",
+          "sentence": {
+            "et": "Ma tõusen üles kell seitse.",
+            "en": "I get up at seven."
+          }
+        },
+        {
+          "id": "loppema",
+          "front": "Lõppema",
+          "back": "To end, to be over",
+          "sentence": {
+            "et": "Film lõpeb kell üheksa.",
+            "en": "The film ends at nine."
+          }
         }
       ]
     },
@@ -5414,6 +5615,149 @@
           "sentence": {
             "et": "Mul ei ole aega.",
             "en": "I have no time."
+          }
+        }
+      ]
+    },
+    {
+      "id": "often",
+      "name": "How often",
+      "why": "Always, sometimes, never — and once a week, which is how a plan is made",
+      "level": "more",
+      "cards": [
+        {
+          "id": "alati",
+          "front": "Alati",
+          "back": "Always",
+          "sentence": {
+            "et": "Ma käin alati jalgsi.",
+            "en": "I always walk."
+          }
+        },
+        {
+          "id": "sageli",
+          "front": "Sageli",
+          "back": "Often",
+          "sentence": {
+            "et": "Ma käin sageli kinos.",
+            "en": "I often go to the cinema."
+          }
+        },
+        {
+          "id": "tihti",
+          "front": "Tihti",
+          "back": "Often, frequently",
+          "sentence": {
+            "et": "Ta helistab tihti.",
+            "en": "They ring often."
+          }
+        },
+        {
+          "id": "vaga-tihti",
+          "front": "Väga tihti",
+          "back": "Very often",
+          "sentence": {
+            "et": "Ma käin siin väga tihti.",
+            "en": "I come here very often."
+          }
+        },
+        {
+          "id": "monikord",
+          "front": "Mõnikord",
+          "back": "Sometimes",
+          "sentence": {
+            "et": "Mõnikord ma unustan.",
+            "en": "Sometimes I forget."
+          }
+        },
+        {
+          "id": "harva",
+          "front": "Harva",
+          "back": "Rarely",
+          "sentence": {
+            "et": "Ma söön harva väljas.",
+            "en": "I rarely eat out."
+          }
+        },
+        {
+          "id": "mitte-kunagi",
+          "front": "Mitte kunagi",
+          "back": "Never",
+          "sentence": {
+            "et": "Ma ei ole seal mitte kunagi käinud.",
+            "en": "I have never been there."
+          }
+        },
+        {
+          "id": "mitte-midagi",
+          "front": "Mitte midagi",
+          "back": "Nothing",
+          "sentence": {
+            "et": "Ma ei tea sellest mitte midagi.",
+            "en": "I know nothing about it."
+          }
+        },
+        {
+          "id": "kord-nadalas",
+          "front": "Kord nädalas",
+          "back": "Once a week",
+          "sentence": {
+            "et": "Ma käin jõusaalis kord nädalas.",
+            "en": "I go to the gym once a week."
+          }
+        },
+        {
+          "id": "kord-kuus",
+          "front": "Kord kuus",
+          "back": "Once a month",
+          "sentence": {
+            "et": "Me kohtume kord kuus.",
+            "en": "We meet once a month."
+          }
+        },
+        {
+          "id": "suvel",
+          "front": "Suvel",
+          "back": "In the summer",
+          "sentence": {
+            "et": "Suvel on väljas soe.",
+            "en": "In the summer it is warm out."
+          }
+        },
+        {
+          "id": "talvel",
+          "front": "Talvel",
+          "back": "In the winter",
+          "sentence": {
+            "et": "Talvel läheb vara pimedaks.",
+            "en": "In winter it gets dark early."
+          }
+        },
+        {
+          "id": "sel-suvel",
+          "front": "Sel suvel",
+          "back": "This summer",
+          "sentence": {
+            "et": "Sel suvel jäime linna.",
+            "en": "This summer we stayed in town."
+          }
+        },
+        {
+          "id": "igal-talvel",
+          "front": "Igal talvel",
+          "back": "Every winter",
+          "sentence": {
+            "et": "Igal talvel käime suusatamas.",
+            "en": "Every winter we go skiing."
+          }
+        },
+        {
+          "id": "alati-jannis",
+          "front": "Alati jännis",
+          "back": "Always in a fix",
+          "sentence": {
+            "et": "Ta on alati jännis.",
+            "en": "They are always in some fix or other."
           }
         }
       ]

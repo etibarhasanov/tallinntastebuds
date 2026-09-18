@@ -258,7 +258,7 @@ if (splitUi !== null) {
 /* ----------------------------------------------------------- end SPLITWISE */
 
 /* -------------------------------------------------------------- FLASHCARDS
-   data/decks.json — the Estonian the flashcards page ships: twenty-seven decks
+   data/decks.json — the Estonian the flashcards page ships: twenty-eight decks
    and five hundred cards, deployed as a file and read as one. It is content
    rather than interface, so it is English and Estonian alone and none of the
    ten languages applies to it — the same footing a blog post is on. See
