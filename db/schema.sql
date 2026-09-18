@@ -883,8 +883,8 @@ CREATE INDEX IF NOT EXISTS idx_split_settlements_group ON split_settlements (gro
 -- Estonian, one word at a time, on flashcard.tallinntastebuds.ee.
 --
 -- Three tables, and only one of them holds anything anybody typed. The words
--- the site ships with are not here at all: data/decks.json is twenty-seven
--- decks and five hundred and twenty-six cards of Estonian, deployed as a file
+-- the site ships with are not here at all: data/decks.json is twenty-eight
+-- decks and five hundred and fifty-eight cards of Estonian, deployed as a file
 -- and read as one, because content that changes when somebody edits the
 -- repository belongs in the repository. What is here is the two things a file
 -- cannot hold — the decks people write for themselves, and how far each person

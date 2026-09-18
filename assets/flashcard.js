@@ -4,8 +4,8 @@
  * WHAT THIS PAGE IS
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: twenty-seven decks of Estonian, five
- * hundred and twenty-six cards, Estonian on the front and English on the back,
+ * menu. This is the other half of that: twenty-eight decks of Estonian, five
+ * hundred and fifty-eight cards, Estonian on the front and English on the back,
  * and one card at a time with two words under it — Knew it, and Show me
  * again.
  *
@@ -612,7 +612,7 @@
     }
 
     /* Grouped by level, with the quiet heading the directory puts over a run
-       of rows. Twenty-seven decks in one column was a list to scroll; three short
+       of rows. Twenty-eight decks in one column was a list to scroll; three short
        under headings is a choice about where you are. A level with nothing in
        it draws no heading — the headings are for the decks, not the other way
        round. */
