@@ -3,12 +3,21 @@
 # takes no part in IndexNow and is not asked; the sitemap and Search Console
 # are its road. tools/indexnow.mjs has the reasoning, and why the key in
 # indexnow.txt is public on purpose.
+#
+# "Follows" is doing real work in that sentence. The push fires this before
+# Cloudflare has finished putting the commit live, so the tool waits until the
+# live site serves this tree's key before it submits anything — the head of
+# tools/indexnow.mjs tells the story of the red runs that taught it to.
 name: indexnow
 
 on:
   push:
     branches:
       - claude/tallinn-tastebuds-map-nzoqx0
+  # By hand, from the Actions tab, for the day a key is minted or a red run is
+  # being looked into. Harmless to run twice: submitting an address that has
+  # not changed costs nothing and changes nothing.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -17,6 +26,9 @@ jobs:
   ping:
     name: Tell Bing what changed
     runs-on: ubuntu-latest
+    # The tool waits up to six minutes for the deploy; this is the ceiling
+    # over that, so a runner cannot sit on a deploy that never comes.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -25,5 +37,5 @@ jobs:
           node-version: '20'
 
       # No `npm install`, as ever: the tool has no dependencies.
-      - name: Submit every address in sitemap.xml
+      - name: Submit every address in sitemap.xml, once the key is live
         run: node tools/indexnow.mjs
