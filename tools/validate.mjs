@@ -258,14 +258,14 @@ if (splitUi !== null) {
 /* ----------------------------------------------------------- end SPLITWISE */
 
 /* -------------------------------------------------------------- FLASHCARDS
-   data/decks.json — the Estonian the flashcards page ships: twenty-eight decks
-   and six hundred and one cards, deployed as a file and read as one. It is
-   content rather than interface, so the ten languages of data/ui.json do not
-   apply to it wholesale the way they do to a button — what it carries instead
-   is the three it has been written in, in the shape a place's blurb is in: an
-   object keyed by language, English required and the rest as they arrive. See
-   **Flashcards** in README.md; this block is all this file knows about that
-   feature.
+   data/decks.json — the Estonian the flashcards page ships: twenty-nine decks
+   and six hundred and forty-seven cards, deployed as a file and read as one.
+   It is content rather than interface, so the ten languages of data/ui.json
+   do not apply to it wholesale the way they do to a button — what it carries
+   instead is the three it has been written in, in the shape a place's blurb
+   is in: an object keyed by language, English required and the rest as they
+   arrive. See **Flashcards** in README.md; this block is all this file knows
+   about that feature.
 
    The one check here that is not about the file being well formed is the last:
    a deck id shaped like a minted one. functions/api/flashcard.js tells a deck
