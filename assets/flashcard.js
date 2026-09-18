@@ -650,9 +650,13 @@
      comes round again next time — the harmless direction — and what a toast
      would cost is an interruption in the middle of the one thing this page is
      for. Signed out there is no write at all, and the run is this tab's. */
-  function mark(word, knew) {
+  function mark(word, knew, how) {
     word.known = knew;
-    TTBTrack.event(knew ? 'flash_knew' : 'flash_again', { deck_id: state.deck.id });
+    /* `how` is the one thing worth knowing about the two ways of answering:
+       whether anybody found the swipe. A press and a swipe are the same
+       answer and report the same event, with one parameter telling them
+       apart. */
+    TTBTrack.event(knew ? 'flash_knew' : 'flash_again', { deck_id: state.deck.id, how: how });
 
     if (state.user && state.ready) {
       post(FLASH_API, {
@@ -683,17 +687,177 @@
           el('p', { className: 'flash-turn', textContent: t('flashTurn') })
         ]);
 
+    /* The word the card is heading for while it is being dragged. Drawn
+       empty and filled by the drag, so nothing is built mid-gesture, and it
+       says the answer in words rather than in a tint alone — design rule 10,
+       and the reason there is no green card and red card here. */
+    var verdict = el('p', { className: 'flash-verdict', 'aria-hidden': 'true' });
+
     var node = el('button', {
       type: 'button',
       className: 'flash-card',
       'aria-live': 'polite'
-    }, [face]);
+    }, [verdict, face]);
+
+    /* Wired on both faces, and it answers on only one. A swipe is an answer
+       and the front of a card has nothing to answer — the same rule the two
+       buttons under it are under, said about a gesture. What the front still
+       needs from this is the other half: knowing that a drag happened, so
+       that a scroll which started on the card does not turn it over on the
+       way past. What comes back is that one question. */
+    var dragged = swipe(node, verdict, word, turned);
 
     node.addEventListener('click', function () {
+      /* A drag ends in a click too, and a card that turned over at the end of
+         every swipe would show the next word's answer before its question.
+         The press is still the only thing wired for turning it, because a
+         keyboard and a screen reader activate a button without ever sending a
+         pointer anywhere near it. */
+      if (dragged()) return;
       state.run.turned = !state.run.turned;
       render();
     });
+
     return node;
+  }
+
+  /* ------------------------------------------------------------- the swipe
+   * Left for Show me again, right for Knew it: the same two answers as the
+   * buttons under the card, given with the thumb that is already on it. The
+   * buttons stay — this is a second way to say the same thing, not a
+   * replacement, and a gesture nobody discovers would otherwise be the only
+   * way to use the page.
+   *
+   * Pointer events rather than touch events, so one set of handlers covers a
+   * thumb, a mouse and a stylus. setPointerCapture is what keeps the card
+   * following a finger that has wandered off the edge of it.
+   *
+   * The card only takes the gesture over once it is clear the gesture is
+   * horizontal. Until then a drag might be somebody scrolling the page, and
+   * a card that grabbed every touch would make the page impossible to scroll
+   * on a phone — which is most of them. `touch-action: pan-y` in
+   * assets/flashcard.css is the other half of that: the browser keeps
+   * vertical scrolling and hands this the horizontal.
+   */
+  var SWIPE_SLOP = 8;
+
+  function swipe(node, verdict, word, turned) {
+    var startX = 0;
+    var startY = 0;
+    var dx = 0;
+    var live = false;   // the gesture is ours: past the slop, and horizontal
+    var moved = false;  // past the slop at all, whichever way it went
+    var down = false;
+
+    /* Measured once, when the finger lands, for the reason wireSheet() in
+       assets/app.js gives about its own stops: nothing that decides where a
+       gesture ends can change while the gesture is running, and reading it per
+       move is a layout on every frame of a drag.
+
+       `far` is how far it has to go to mean anything — a quarter of the card,
+       which is a real movement of the thumb on a phone and a short one on a
+       laptop, with a floor so it cannot become a twitch on a narrow screen. */
+    var width = 0;
+    var far = 0;
+
+    function draw() {
+      var past = Math.min(1, Math.abs(dx) / far);
+      /* Eight degrees at the far end. A card that turns as it goes reads as a
+         thing being moved rather than a thing sliding, which is what tells
+         this gesture from a scroll that got away. */
+      node.style.transform = 'translateX(' + Math.round(dx) + 'px) rotate(' + (dx / width * 8).toFixed(2) + 'deg)';
+      verdict.textContent = dx > 0 ? t('flashKnew') : t('flashAgain');
+      verdict.className = 'flash-verdict ' + (dx > 0 ? 'is-knew' : 'is-again');
+      verdict.style.opacity = String(past);
+    }
+
+    function rest() {
+      node.classList.remove('is-dragging');
+      node.style.transform = '';
+      verdict.style.opacity = '0';
+    }
+
+    node.addEventListener('pointerdown', function (ev) {
+      if (ev.button !== undefined && ev.button !== 0) return;
+      down = true;
+      live = false;
+      moved = false;
+      dx = 0;
+      startX = ev.clientX;
+      startY = ev.clientY;
+      width = node.offsetWidth || 1;
+      far = Math.max(64, width * 0.25);
+    });
+
+    node.addEventListener('pointermove', function (ev) {
+      if (!down) return;
+      var moveX = ev.clientX - startX;
+      var moveY = ev.clientY - startY;
+
+      if (!live) {
+        if (Math.abs(moveX) < SWIPE_SLOP && Math.abs(moveY) < SWIPE_SLOP) return;
+        /* Something moved, whichever way, and that is enough to mean this was
+           not a press — see the note on the returned function below. Only the
+           horizontal half goes on to be an answer. */
+        moved = true;
+        /* Two gestures end here rather than going on to be an answer: one
+           down the page, which belongs to the page, and any at all on the
+           front of a card, which has nothing to answer yet. Both have set
+           `moved`, so neither will turn the card when the finger comes up;
+           what they will not do is move it. */
+        if (!turned || Math.abs(moveY) >= Math.abs(moveX)) { down = false; return; }
+        live = true;
+        node.classList.add('is-dragging');
+        if (node.setPointerCapture) {
+          try { node.setPointerCapture(ev.pointerId); } catch (e) { /* older browser, and it still works */ }
+        }
+      }
+
+      dx = moveX;
+      draw();
+    });
+
+    var release = function () {
+      if (!down) return;
+      down = false;
+      if (!live) return;
+
+      if (Math.abs(dx) >= far) {
+        /* Answered. The card is left where the finger put it and the next one
+           is drawn over it by render() — no fly-out, because the movement
+           under the thumb has already said what happened and this site's one
+           motion idea is things settling into place rather than leaving it. */
+        mark(word, dx > 0, 'swipe');
+        return;
+      }
+      rest();
+    };
+
+    node.addEventListener('pointerup', release);
+    node.addEventListener('pointercancel', function () {
+      down = false;
+      live = false;
+      rest();
+    });
+
+    /* Whether the gesture that just ended was a drag rather than a press —
+       asked by the click handler, which fires after pointerup and has no
+       other way of telling.
+     *
+       It is `moved` and not `live`, so a drag down the page suppresses the
+       turn as surely as a drag across it does. That is the sheet's rule in
+       assets/app.js, where any movement past four pixels stops the release
+       counting as a tap, and it is right for the same reason: somebody who
+       has just scrolled has not asked for anything, and a card that turned
+       over at the end of every scroll would be showing them the answer to a
+       word they had not read.
+
+       It answers once and forgets, so the next press starts from nothing. */
+    return function () {
+      var was = moved;
+      moved = false;
+      return was;
+    };
   }
 
   function runBar() {
@@ -747,11 +911,11 @@
     var acts = el('div', { className: 'flash-acts' });
 
     var again = el('button', { type: 'button', className: 'alt', textContent: t('flashAgain') });
-    again.addEventListener('click', function () { mark(word, false); });
+    again.addEventListener('click', function () { mark(word, false, 'press'); });
     acts.appendChild(again);
 
     var knew = el('button', { type: 'button', className: 'go', textContent: t('flashKnew') });
-    knew.addEventListener('click', function () { mark(word, true); });
+    knew.addEventListener('click', function () { mark(word, true, 'press'); });
     acts.appendChild(knew);
 
     return [runHead(), faceCard(word), runBar(), acts];
