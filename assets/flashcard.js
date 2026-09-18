@@ -737,6 +737,9 @@
    * it comes round once more before the deck is finished — and, on the server,
    * drops it into box nought, due now, so it is in the next run from the
    * beginning too and in the deck of what you got wrong.
+   *
+   * `back` is which cards have had that second turn, because it is one turn
+   * and not an unlimited supply. See mark().
    */
   function startRun(all) {
     var cards = (state.deck && state.deck.cards) || [];
@@ -748,7 +751,16 @@
        card wrongly called resting is a card that silently leaves the deck. */
     cards.forEach(function (c) { if ((all || c.due !== false) && !c.known) queue.push(c); });
     cards.forEach(function (c) { if ((all || c.due !== false) && c.known) queue.push(c); });
-    state.run = { queue: queue, at: 0, turned: false };
+    state.run = { queue: queue, at: 0, turned: false, back: {} };
+  }
+
+  /* Which deck a card is really from, which is only ever different in the
+     missed deck: that one is assembled out of rows belonging to other decks,
+     and everything said about a card there — the write, and the note that it
+     has had its second turn — has to name the deck it came from rather than
+     the one it is being shown in. */
+  function from(word) {
+    return word.deck || state.deck.id;
   }
 
   function current() {
@@ -785,18 +797,29 @@
     });
 
     if (state.user && state.ready) {
-      post(FLASH_API, {
-        action: knew ? 'knew' : 'again',
-        /* The deck the card is really from, which is only ever different in
-           the missed deck — that one is assembled out of rows belonging to
-           other decks, and an answer there has to write to the row it came
-           from rather than mint one under a deck that does not exist. */
-        deck: word.deck || state.deck.id,
-        card: word.id
-      });
+      post(FLASH_API, { action: knew ? 'knew' : 'again', deck: from(word), card: word.id });
     }
 
-    if (!knew) state.run.queue.push(word);
+    /* Back on the end of the run, and once only.
+     *
+       It used to be every time, and a run of a deck somebody was struggling
+       with then had no end: three cards answered wrong put three more on a
+       queue that was already growing, the bar under the card filled towards a
+       total that moved away from it, and the only way to leave was the way
+       back to the decks. A second look is the point — it is the one the
+       README promises — and a third in the same sitting is not learning, it is
+       the page refusing to let go.
+
+       Nothing is lost by stopping there. The card is in box nought on the
+       server, so it is due at the top of the next run of this deck and it is
+       in the deck of what you got wrong, which is where looking again
+       belongs. */
+    var again = from(word) + '/' + word.id;
+    if (!knew && !state.run.back[again]) {
+      state.run.back[again] = true;
+      state.run.queue.push(word);
+    }
+
     state.run.at += 1;
     state.run.turned = false;
     render();

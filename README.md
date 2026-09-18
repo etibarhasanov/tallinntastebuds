@@ -6411,6 +6411,14 @@ on. **Show me again** drops the row into box nought — **The deck of what you
 got wrong** below — and puts the card on the end of the run, so it comes round
 once more before the deck ends.
 
+**Once more, and not again after that.** A card put back every time it was
+missed made a run that could not be finished: each wrong answer lengthened the
+queue the progress bar was measuring against, so the bar crept towards a total
+that kept moving, and a deck somebody was struggling with had no end but the
+way back to the decks. The second look is worth having and a third in the same
+sitting is not — by then the card is in box nought, which means it opens the
+next run of its own deck and is sitting in **Words you missed** meanwhile.
+
 **Or throw the card, from either face.** Right for *Knew it*, left for *Show me
 again* — the same two answers, given with the thumb that is already on the
 card. The card follows the finger, tilts as it goes, and says in words which
