@@ -6182,7 +6182,7 @@ this feature exists.
 
 A site about eating in Tallinn is read mostly by people who cannot read the
 menu. **flashcard.tallinntastebuds.ee** is the other half of that: twenty-eight
-decks of Estonian, five hundred and fifty-eight cards, the Estonian on the front
+decks of Estonian, six hundred and one cards, the Estonian on the front
 and what it means on the back — in English, Azerbaijani or Russian, whichever the
 page is being read in — and one card at a time with two words under it —
 *Knew it*, and *Show me again*.
@@ -6267,8 +6267,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: twenty-eight decks, five
-hundred and fifty-eight cards, deployed as a file and read as one. It is
+`data/decks.json` is the Estonian the site ships: twenty-eight decks, six
+hundred and one cards, deployed as a file and read as one. It is
 **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -6561,7 +6561,7 @@ that is the genitive and the partitive; for a verb it is the *da*-infinitive
 and the first person singular, so **minema, minna, lähen**, which is the same
 three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **334 of the 558 cards
+parts, and a row of three under it would be nonsense. **361 of the 601 cards
 carry them** today; the ones that do not are the phrases, the adverbs, the
 garments that are plural in Estonian — *teksad* has no singular anybody wears —
 and a handful of words left alone rather than guessed at. `tools/validate.mjs`
@@ -6592,7 +6592,7 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **353 of the 558 cards** carry one: every card in the eighteen
+would be a stray clause with no translation. **385 of the 601 cards** carry one: every card in the eighteen
 newer decks bar the ones that are a whole sentence already, and the ones in the
 older decks where an example says something the gloss does not.
 
@@ -6727,7 +6727,7 @@ knew better.
 | | | why |
 |---|---|---|
 | `MAX_DECKS` | 20 | decks of your own, per account |
-| `MAX_CARDS` | 200 | per deck — several times the longest deck the site ships. Past it the thing being asked for is a vocabulary manager |
+| `MAX_CARDS` | 200 | per deck — more than three times the longest deck the site ships, which is the coffee shop at sixty-one. Past it the thing being asked for is a vocabulary manager |
 | `MAX_NAME` | 60 | a deck's name |
 | `MAX_SIDE` | 60 | either side of a card. "Kas ma saan maksta kaardiga?" is thirty-one; a paragraph on a flashcard is a note, and notes want a different feature |
 | `REPORTS_PER_HOUR` | 20 | cards one network fingerprint may report wrong in an hour. Far more than anybody turning cards over finds wrong in a sitting, and far less than a script would want |
@@ -8393,7 +8393,7 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            twenty-eight decks of Estonian, 558 cards at three
+data/decks.json            twenty-eight decks of Estonian, 601 cards at three
                            levels; content rather than interface, and written
                            in three languages rather than the site's ten
 blog.html                  a post per thing this site does   } unlinked, and
