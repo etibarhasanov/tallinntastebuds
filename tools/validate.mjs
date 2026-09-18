@@ -27,7 +27,7 @@
  *   - a sitemap.xml that is not what tools/sitemap.mjs would write from the
  *     languages in data/ui.json and the thirteen lists
  *   - a page served through a Function with a head of its own — index.html,
- *     lists.html, split.html — missing the pair of PAGE-HEAD markers that
+ *     lists.html, split.html, flashcard.html — missing the pair of PAGE-HEAD markers that
  *     head goes between, which would leave it wearing its static head at
  *     every address without anything saying so; and an index.html or a
  *     lists.html whose empty element — #list-body, <main> — is not spelled
@@ -1655,7 +1655,7 @@ for (const ref of staleStamps()) {
    with its static head and nothing would say so. Exactly one of each, the
    opening one first. */
 
-for (const page of ['index.html', 'lists.html', 'split.html']) {
+for (const page of ['index.html', 'lists.html', 'split.html', 'flashcard.html']) {
   const html = readFileSync(join(ROOT, page), 'utf8');
   const open = html.indexOf('<!--PAGE-HEAD-->');
   const close = html.indexOf('<!--/PAGE-HEAD-->');

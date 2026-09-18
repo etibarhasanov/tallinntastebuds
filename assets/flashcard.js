@@ -17,10 +17,26 @@
  * *.tallinntastebuds.pages.dev where a subdomain of the live domain cannot
  * exist at all.
  *
- * Unlike /split there is no Function serving this page: nothing here has a
- * link anybody pastes into a message, so there is no head to write a name
- * into. The static file is the page, and the only route this feature has is
- * the API one.
+ * functions/flashcard.js serves the document, the way functions/split.js
+ * serves that one — and for a different reason. A group's link is pasted into
+ * a chat, so that head carries the group's name. Nothing here is ever sent to
+ * anybody: what that route is for is the ten decks the site ships being
+ * indexed, so it writes the deck's own head and its words into the page as
+ * text. Nothing here depends on that having happened — every answer this page
+ * draws it fetches for itself, the route is an improvement on the load rather
+ * than a requirement for it, and the <main> it writes into is emptied by
+ * render() before anything is drawn.
+ *
+ * HOW ANYBODY FINDS IT, WHICH IS ONE ROW
+ *
+ * Nothing in the map's chrome points here. The only link to this page on the
+ * whole site is a row on /account.html, behind a sign-in, under somebody's own
+ * name — the map's chrome is for finding dinner, and a deck of Estonian is
+ * something you go to rather than something that should interrupt you.
+ *
+ * Unlinked is not hidden, though: the decks are in sitemap.xml and indexed,
+ * which is the blog's arrangement rather than the split page's. See
+ * **Flashcards** in README.md.
  *
  * SIGNED OUT, EVERY DECK STILL WORKS
  *

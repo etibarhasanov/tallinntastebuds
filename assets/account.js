@@ -403,13 +403,15 @@
   /* A way on from a card, as a row: the name, the line under it saying what
      is behind it, and the chevron. It is .menu-row out of assets/styles.css,
      the shape the map's account sheet draws its places-to-go in, because that
-     is what this is. It has had three callers and has one: your public
-     profile, on the card that carries your name. One of the others became the
-     thing it had been promising — a field that makes a list — and the other,
-     everybody else's lists, became a card in its own right and then left the
-     page altogether. It stays a function for the one caller because .menu-row
-     is one of the four controls the design rules name, and a row of it written
-     out by hand here would be the copy that quietly stops matching the
+     is what this is.
+
+     Two callers, both on the card that carries your name: your public profile,
+     and the Estonian flashcards. It has had four in all — one became the thing
+     it had been promising, a field that makes a list, and another, everybody
+     else's lists, became a card in its own right and then left the page
+     altogether. It was written as a function when it had one caller, because
+     .menu-row is one of the four controls the design rules name and a row of it
+     written out by hand here would be the copy that quietly stops matching the
      sheet's. */
   var ICON_GO = '<path d="M9 5l7 7-7 7"/>';
 
@@ -834,7 +836,17 @@
       el('p', { className: 'lists-say', textContent: t('accountWhat') }),
       aboutBox(),
       el('ul', { className: 'menu' }, [
-        door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user), 'profile_open', { name: state.user })
+        door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user), 'profile_open', { name: state.user }),
+        /* The flashcards, and this row is the only link to them anywhere on
+           this site. That is the whole of how they are found: no pill on the
+           rail, no row in the map's sheet, nothing in the footer — the map's
+           own chrome is for finding dinner, and a deck of Estonian is
+           something you go to rather than something that should interrupt
+           you. Here because this is the page of your own things, and the
+           decks you write are one of them. See **Flashcards** in README.md,
+           which says why unlinked is not the same as hidden: the ten the site
+           ships are in sitemap.xml and indexed. */
+        door('flashDoor', 'flashDoorWhy', '/flashcard', 'flash_open_account')
       ]),
       foot([
         /* Into the map's sheet and back again. The ?then= is what makes the

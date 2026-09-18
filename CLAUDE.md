@@ -4,7 +4,7 @@ A full-screen map of places in Tallinn, plus discounts, stories, saves,
 lists, profiles, a directory of the city, a chat that answers with places, a
 blog about what all of it does, and — each on a subdomain of its own — a way
 to split the bill afterwards and a deck of Estonian flashcards.
-Static files, twenty-one Cloudflare Functions, two D1 databases (preview and
+Static files, twenty-two Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
