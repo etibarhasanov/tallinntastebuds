@@ -727,7 +727,8 @@
    *
    * Pressing Show me again still puts the card back on the end of the run, so
    * it comes round once more before the deck is finished — and, on the server,
-   * takes its row away, so it is in the next run from the beginning too.
+   * drops it into box nought, due now, so it is in the next run from the
+   * beginning too and in the deck of what you got wrong.
    */
   function startRun(all) {
     var cards = (state.deck && state.deck.cards) || [];
@@ -766,8 +767,14 @@
     /* `how` is the one thing worth knowing about the two ways of answering:
        whether anybody found the swipe. A press and a swipe are the same
        answer and report the same event, with one parameter telling them
-       apart. */
-    TTBTrack.event(knew ? 'flash_knew' : 'flash_again', { deck_id: state.deck.id, how: how });
+       apart. `face` is the same question about the front: a throw can answer
+       a card nobody turned over, and this is how anybody will find out
+       whether people do that. */
+    TTBTrack.event(knew ? 'flash_knew' : 'flash_again', {
+      deck_id: state.deck.id,
+      how: how,
+      face: state.run.turned ? 'back' : 'front'
+    });
 
     if (state.user && state.ready) {
       post(FLASH_API, {
@@ -835,13 +842,12 @@
       'aria-live': 'polite'
     }, [verdict, face]);
 
-    /* Wired on both faces, and it answers on only one. A swipe is an answer
-       and the front of a card has nothing to answer — the same rule the two
-       buttons under it are under, said about a gesture. What the front still
-       needs from this is the other half: knowing that a drag happened, so
+    /* Wired on both faces, and it answers on both — the header of swipe()
+       says why the front answers a throw and not a button. What comes back is
+       the other thing the front needs from it: whether a drag happened, so
        that a scroll which started on the card does not turn it over on the
-       way past. What comes back is that one question. */
-    var dragged = swipe(node, verdict, word, turned);
+       way past. */
+    var dragged = swipe(node, verdict, word);
 
     node.addEventListener('click', function () {
       /* A drag ends in a click too, and a card that turned over at the end of
@@ -864,6 +870,18 @@
    * replacement, and a gesture nobody discovers would otherwise be the only
    * way to use the page.
    *
+   * It answers on either face, and that is the one way it differs from the
+   * buttons, which are not drawn until the card is turned. A word you know on
+   * sight is answered before the card is turned over, and one you do not know
+   * is a Show me again before the back could add anything: it goes to the end
+   * of the run and is turned over when it comes round. It did not use to — a
+   * throw on the front did nothing, on the reasoning that the front has
+   * nothing to answer — and what that cost was a tap on every card before it
+   * could be got wrong. The buttons stay behind the turn because a Knew it
+   * drawn under a word whose meaning nobody has seen invites a press that
+   * cannot mean anything; a throw is a decision already made, and it takes a
+   * quarter of the card to mean it.
+   *
    * Pointer events rather than touch events, so one set of handlers covers a
    * thumb, a mouse and a stylus. setPointerCapture is what keeps the card
    * following a finger that has wandered off the edge of it.
@@ -877,7 +895,7 @@
    */
   var SWIPE_SLOP = 8;
 
-  function swipe(node, verdict, word, turned) {
+  function swipe(node, verdict, word) {
     var startX = 0;
     var startY = 0;
     var dx = 0;
@@ -936,12 +954,11 @@
            not a press — see the note on the returned function below. Only the
            horizontal half goes on to be an answer. */
         moved = true;
-        /* Two gestures end here rather than going on to be an answer: one
-           down the page, which belongs to the page, and any at all on the
-           front of a card, which has nothing to answer yet. Both have set
-           `moved`, so neither will turn the card when the finger comes up;
-           what they will not do is move it. */
-        if (!turned || Math.abs(moveY) >= Math.abs(moveX)) { down = false; return; }
+        /* A gesture down the page ends here rather than going on to be an
+           answer: it belongs to the page. It has set `moved`, so it will not
+           turn the card when the finger comes up either; what it will not do
+           is move it. */
+        if (Math.abs(moveY) >= Math.abs(moveX)) { down = false; return; }
         live = true;
         node.classList.add('is-dragging');
         if (node.setPointerCapture) {
@@ -1041,7 +1058,9 @@
     /* Nothing under the card until it has been turned. Drawing Knew it against
        a word whose meaning nobody has seen yet would be inviting a press that
        cannot mean anything — and the way out of the deck is in the head above,
-       where it stands whichever face is up. */
+       where it stands whichever face is up. The card itself is the exception:
+       it can be thrown from the front, and the header of swipe() says why a
+       throw is not the invitation a drawn button would be. */
     if (!state.run.turned) return [runHead(), faceCard(word), runBar()];
 
     var acts = el('div', { className: 'flash-acts' });
