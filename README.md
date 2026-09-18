@@ -6470,6 +6470,19 @@ the tap that would otherwise follow it**, so a scroll that began on the card
 does not turn it over on the way past — the rule the map's sheet has had since
 it could be dragged.
 
+**And the keyboard keeps the card.** Every press in a run rebuilds the page's
+one element, so whatever had the focus is gone and the browser drops it on the
+body: turning a card by keyboard meant tabbing in from the top of the document
+again, once per card, for the length of the deck. The focus goes to the new
+card instead, which is a `<button>` and so announces itself and its word to a
+screen reader on the way in. The card carried an `aria-live` for that job and
+it was on a node being replaced wholesale rather than updated, which is the one
+arrangement a live region does not reliably announce — and where it does work
+it says what taking the focus is about to say, twice. At the end of a run there
+is no card and the focus lands on `<main>`, which is where the skip link lands.
+A thumb and a mouse see none of it: focus moved by a script after a pointer
+press draws no ring.
+
 ### The deck of what you got wrong
 
 **Words you missed** sits at the top of the decks page whenever it is not

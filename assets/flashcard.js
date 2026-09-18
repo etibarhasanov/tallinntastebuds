@@ -852,7 +852,12 @@
      A write that fails is deliberately silent. What it costs is that the card
      comes round again next time — the harmless direction — and what a toast
      would cost is an interruption in the middle of the one thing this page is
-     for. Signed out there is no write at all, and the run is this tab's. */
+     for.
+
+     Signed out there is nobody to write to, so the answer is written down in
+     the tab instead and posted by the load that comes back with a session —
+     keep() above. The run is still this tab's; what changed is that making an
+     account at the end of it no longer throws the tab away. */
   function mark(word, knew, how) {
     word.known = knew;
     /* `how` is the one thing worth knowing about the two ways of answering:
@@ -898,6 +903,7 @@
     state.run.at += 1;
     state.run.turned = false;
     render();
+    focusRun();
   }
 
   /* The card itself. A <button>, so the thumb, the keyboard and the screen
@@ -942,11 +948,12 @@
        and the reason there is no green card and red card here. */
     var verdict = el('p', { className: 'flash-verdict', 'aria-hidden': 'true' });
 
-    var node = el('button', {
-      type: 'button',
-      className: 'flash-card',
-      'aria-live': 'polite'
-    }, [verdict, face]);
+    /* No aria-live on it, and that is deliberate rather than an omission. It
+       carried one, on a node render() replaces whole every time anything is
+       pressed — which is the one arrangement a live region does not reliably
+       announce, and where it does work it says the same thing taking the focus
+       is about to say, twice. focusRun() below is what took over the job. */
+    var node = el('button', { type: 'button', className: 'flash-card' }, [verdict, face]);
 
     /* Wired on both faces, and it answers on both — the header of swipe()
        says why the front answers a throw and not a button. What comes back is
@@ -964,9 +971,36 @@
       if (dragged()) return;
       state.run.turned = !state.run.turned;
       render();
+      focusRun();
     });
 
     return node;
+  }
+
+  /* Where the keyboard is after anything that starts or advances a run: the
+     card turned over, a card answered, and the three buttons that build a run
+     of a whole deck.
+   *
+     Every press in a run rebuilds the whole of <main>, so the element that had
+     the focus is gone and the browser drops it on the body. Turning a card
+     with the keyboard therefore meant tabbing in from the top of the page
+     again, once per card, for the length of the deck — and a screen reader was
+     told nothing at all about the word that had just appeared, because nothing
+     had moved and the card's own live region was being replaced rather than
+     updated.
+
+     The new card is the answer to both. It is a <button>, so taking the focus
+     announces it and the words on it, and it is the one thing on the screen a
+     run is about. At the end of a run there is no card and the focus goes to
+     <main>, which carries tabindex="-1" for the skip link and is the same
+     landing the skip link uses.
+
+     A thumb and a mouse are unaffected: focus moved by a script after a
+     pointer press draws no focus ring, which is the whole of what :focus-visible
+     is for. */
+  function focusRun() {
+    var card = main.querySelector('.flash-card');
+    (card || main).focus();
   }
 
   /* ------------------------------------------------------------- the swipe
@@ -1261,6 +1295,7 @@
       TTBTrack.event('flash_anyway', { deck_id: state.deck.id });
       startRun(true);
       render();
+      focusRun();
     });
     acts.appendChild(anyway);
 
@@ -1281,6 +1316,7 @@
       TTBTrack.event('flash_again_deck', { deck_id: state.deck.id });
       startRun(true);
       render();
+      focusRun();
     });
     acts.appendChild(again);
 
@@ -1309,6 +1345,7 @@
           state.deck.cards.forEach(function (c) { c.known = false; });
           startRun(true);
           render();
+          focusRun();
         });
       });
       acts.appendChild(wipe);
@@ -1408,6 +1445,7 @@
       state.editing = false;
       startRun(false);
       render();
+      focusRun();
     });
 
     var drop = el('button', { type: 'button', className: 'alt is-danger', textContent: t('flashDropDeck') });
