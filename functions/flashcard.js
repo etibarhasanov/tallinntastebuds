@@ -60,7 +60,7 @@ const DECKS_FILE = '/data/decks.json';
    and nothing else, so there is no tenth translation of this page to prefer. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
-  'Twenty-two decks of Estonian, from the first twenty words to a jacket with a ' +
+  'Twenty-seven decks of Estonian, from the first twenty words to a jacket with a ' +
   'broken zip — the word, its three forms and a sentence to say it in.';
 
 /* A deck id as data/decks.json spells one. Anything else is either somebody's

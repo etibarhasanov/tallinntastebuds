@@ -385,6 +385,32 @@
             "esimese",
             "esimest"
           ]
+        },
+        {
+          "id": "teine",
+          "front": "Teine",
+          "back": "Second",
+          "forms": [
+            "teise",
+            "teist"
+          ],
+          "sentence": {
+            "et": "Pood on teisel korrusel.",
+            "en": "The shop is on the second floor."
+          }
+        },
+        {
+          "id": "kolmas",
+          "front": "Kolmas",
+          "back": "Third",
+          "forms": [
+            "kolmanda",
+            "kolmandat"
+          ],
+          "sentence": {
+            "et": "Ta on järjekorras kolmas.",
+            "en": "They are third in the queue."
+          }
         }
       ],
       "level": "start"
@@ -1354,6 +1380,21 @@
             "ilusa",
             "ilusat"
           ]
+        },
+        {
+          "id": "kuidas-kaib-teie-kasi",
+          "front": "Kuidas käib teie käsi?",
+          "back": "How are things with you?"
+        },
+        {
+          "id": "tule-mulle-kulla",
+          "front": "Tule mulle külla",
+          "back": "Come and visit me"
+        },
+        {
+          "id": "ma-tulen-tagasi",
+          "front": "Ma tulen tagasi",
+          "back": "I will be back"
         }
       ],
       "level": "more"
@@ -4342,6 +4383,1037 @@
           "sentence": {
             "et": "Ütle see veel kord.",
             "en": "Say that once more."
+          }
+        },
+        {
+          "id": "ara",
+          "front": "Ära",
+          "back": "Do not — to one person",
+          "sentence": {
+            "et": "Ära unusta võtit!",
+            "en": "Do not forget the key!"
+          }
+        },
+        {
+          "id": "arge",
+          "front": "Ärge",
+          "back": "Do not — to more than one",
+          "sentence": {
+            "et": "Ärge muretsege.",
+            "en": "Do not worry."
+          }
+        },
+        {
+          "id": "kogu",
+          "front": "Kogu",
+          "back": "The whole of",
+          "sentence": {
+            "et": "Kogu päev sadas vihma.",
+            "en": "It rained the whole day."
+          }
+        },
+        {
+          "id": "ikka",
+          "front": "Ikka",
+          "back": "Still, all the same",
+          "sentence": {
+            "et": "Ta on ikka kodus.",
+            "en": "They are still at home."
+          }
+        },
+        {
+          "id": "moni",
+          "front": "Mõni",
+          "back": "Some, one or two",
+          "forms": [
+            "mõne",
+            "mõnd"
+          ],
+          "sentence": {
+            "et": "Mõni pood on pühapäeval kinni.",
+            "en": "Some shops are closed on Sunday."
+          }
+        },
+        {
+          "id": "mingi",
+          "front": "Mingi",
+          "back": "Some kind of",
+          "forms": [
+            "mingi",
+            "mingit"
+          ],
+          "sentence": {
+            "et": "See on mingi viga.",
+            "en": "This is some kind of mistake."
+          }
+        },
+        {
+          "id": "ruttu",
+          "front": "Ruttu",
+          "back": "Quickly",
+          "sentence": {
+            "et": "Tule ruttu!",
+            "en": "Come quickly!"
+          }
+        },
+        {
+          "id": "rahulikult",
+          "front": "Rahulikult",
+          "back": "Calmly",
+          "sentence": {
+            "et": "Räägi rahulikult.",
+            "en": "Speak calmly."
+          }
+        },
+        {
+          "id": "julgelt",
+          "front": "Julgelt",
+          "back": "Boldly, go ahead",
+          "sentence": {
+            "et": "Küsi julgelt.",
+            "en": "Go ahead and ask."
+          }
+        },
+        {
+          "id": "ilusasti",
+          "front": "Ilusasti",
+          "back": "Nicely, neatly",
+          "sentence": {
+            "et": "Kirjuta ilusasti.",
+            "en": "Write neatly."
+          }
+        },
+        {
+          "id": "otsas",
+          "front": "Otsas",
+          "back": "On the end of, run out",
+          "sentence": {
+            "et": "Piim on otsas.",
+            "en": "The milk has run out."
+          }
+        },
+        {
+          "id": "issand",
+          "front": "Issand!",
+          "back": "Good grief!",
+          "sentence": {
+            "et": "Issand, kui külm!",
+            "en": "Good grief, it is cold!"
+          }
+        },
+        {
+          "id": "mis-asja",
+          "front": "Mis asja?",
+          "back": "Come again?"
+        },
+        {
+          "id": "miks",
+          "front": "Miks?",
+          "back": "Why?",
+          "sentence": {
+            "et": "Miks sa ei tulnud?",
+            "en": "Why did you not come?"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cafe",
+      "name": "At the coffee shop",
+      "why": "The counter, the order, and what the water is called",
+      "level": "more",
+      "cards": [
+        {
+          "id": "milline-neist",
+          "front": "Milline neist?",
+          "back": "Which of these?"
+        },
+        {
+          "id": "millist-te-tahate",
+          "front": "Millist te tahate?",
+          "back": "Which one would you like?"
+        },
+        {
+          "id": "kas-te-olete-valmis-tellima",
+          "front": "Kas te olete valmis tellima?",
+          "back": "Are you ready to order?"
+        },
+        {
+          "id": "kas-sa-oled-tellinud",
+          "front": "Kas sa oled tellinud?",
+          "back": "Have you ordered?"
+        },
+        {
+          "id": "siit-saab-tellida",
+          "front": "Siit saab tellida",
+          "back": "You order over here"
+        },
+        {
+          "id": "ma-toon-teile",
+          "front": "Ma toon teile",
+          "back": "I will bring it to you",
+          "sentence": {
+            "et": "Ma toon teile kohvi.",
+            "en": "I will bring you a coffee."
+          }
+        },
+        {
+          "id": "ma-toon-lauale",
+          "front": "Ma toon lauale",
+          "back": "I will bring it to the table",
+          "sentence": {
+            "et": "Ma toon selle lauale.",
+            "en": "I will bring it over to the table."
+          }
+        },
+        {
+          "id": "koha-peal",
+          "front": "Koha peal",
+          "back": "Eating in, on the spot",
+          "sentence": {
+            "et": "Kas sööte koha peal?",
+            "en": "Are you eating in?"
+          }
+        },
+        {
+          "id": "gaseerimata-vesi",
+          "front": "Gaseerimata vesi",
+          "back": "Still water",
+          "sentence": {
+            "et": "Palun gaseerimata vett.",
+            "en": "Still water, please."
+          }
+        },
+        {
+          "id": "gaseeritud-vesi",
+          "front": "Gaseeritud vesi",
+          "back": "Sparkling water",
+          "sentence": {
+            "et": "Kas teil on gaseeritud vett?",
+            "en": "Do you have sparkling water?"
+          }
+        },
+        {
+          "id": "siit-saab-vett",
+          "front": "Siit saab vett",
+          "back": "There is water here"
+        },
+        {
+          "id": "taldrik",
+          "front": "Taldrik",
+          "back": "Plate",
+          "forms": [
+            "taldriku",
+            "taldrikut"
+          ],
+          "sentence": {
+            "et": "Taldrik on laual.",
+            "en": "The plate is on the table."
+          }
+        },
+        {
+          "id": "nuga",
+          "front": "Nuga",
+          "back": "Knife",
+          "forms": [
+            "noa",
+            "nuga"
+          ],
+          "sentence": {
+            "et": "Nuga on terav.",
+            "en": "The knife is sharp."
+          }
+        },
+        {
+          "id": "kahvel",
+          "front": "Kahvel",
+          "back": "Fork",
+          "forms": [
+            "kahvli",
+            "kahvlit"
+          ],
+          "sentence": {
+            "et": "Kas ma saaksin kahvli?",
+            "en": "Could I have a fork?"
+          }
+        },
+        {
+          "id": "lusikas",
+          "front": "Lusikas",
+          "back": "Spoon",
+          "forms": [
+            "lusika",
+            "lusikat"
+          ],
+          "sentence": {
+            "et": "Lusikas on väike.",
+            "en": "The spoon is small."
+          }
+        },
+        {
+          "id": "kas-ma-voin-need-votta",
+          "front": "Kas ma võin need võtta?",
+          "back": "May I take these?"
+        },
+        {
+          "id": "oodake",
+          "front": "Oodake!",
+          "back": "Wait a moment!",
+          "sentence": {
+            "et": "Oodake palun üks hetk.",
+            "en": "Wait one moment, please."
+          }
+        },
+        {
+          "id": "mis-veel",
+          "front": "Mis veel?",
+          "back": "What else?"
+        }
+      ]
+    },
+    {
+      "id": "plans",
+      "name": "Making a plan",
+      "why": "Deciding what to do with a free day, in the words the deciding takes",
+      "level": "more",
+      "cards": [
+        {
+          "id": "naiteks",
+          "front": "Näiteks",
+          "back": "For example",
+          "sentence": {
+            "et": "Lähme kuhugi, näiteks randa.",
+            "en": "Let us go somewhere, the beach for example."
+          }
+        },
+        {
+          "id": "hoopis",
+          "front": "Hoopis",
+          "back": "Instead, rather",
+          "sentence": {
+            "et": "Lähme hoopis muuseumisse.",
+            "en": "Let us go to the museum instead."
+          }
+        },
+        {
+          "id": "uldse",
+          "front": "Üldse",
+          "back": "At all",
+          "sentence": {
+            "et": "Ma ei taha üldse süüa.",
+            "en": "I do not want to eat at all."
+          }
+        },
+        {
+          "id": "usna",
+          "front": "Üsna",
+          "back": "Quite",
+          "sentence": {
+            "et": "Täna on üsna soe.",
+            "en": "It is quite warm today."
+          }
+        },
+        {
+          "id": "ukskoik",
+          "front": "Ükskõik",
+          "back": "Either way, whichever",
+          "sentence": {
+            "et": "Mulle on ükskõik.",
+            "en": "It is all the same to me."
+          }
+        },
+        {
+          "id": "niikuinii",
+          "front": "Niikuinii",
+          "back": "Anyway",
+          "sentence": {
+            "et": "Ma lähen niikuinii linna.",
+            "en": "I am going into town anyway."
+          }
+        },
+        {
+          "id": "samal-ajal",
+          "front": "Samal ajal",
+          "back": "Meanwhile",
+          "sentence": {
+            "et": "Samal ajal koristan kööki.",
+            "en": "Meanwhile I will tidy the kitchen."
+          }
+        },
+        {
+          "id": "motleme-siis-veel",
+          "front": "Mõtleme siis veel",
+          "back": "Let us think about it some more"
+        },
+        {
+          "id": "jalgrattaga-soita",
+          "front": "Jalgrattaga sõita",
+          "back": "To go by bicycle",
+          "sentence": {
+            "et": "Kas tahad jalgrattaga sõita?",
+            "en": "Do you want to go cycling?"
+          }
+        },
+        {
+          "id": "muuseumis-kaia",
+          "front": "Muuseumis käia",
+          "back": "To go round a museum",
+          "sentence": {
+            "et": "Võiksime muuseumis käia.",
+            "en": "We could go round a museum."
+          }
+        },
+        {
+          "id": "paevitada",
+          "front": "Päevitada",
+          "back": "To sunbathe",
+          "sentence": {
+            "et": "Rannas saab päevitada.",
+            "en": "You can sunbathe at the beach."
+          }
+        },
+        {
+          "id": "ujuda",
+          "front": "Ujuda",
+          "back": "To swim",
+          "sentence": {
+            "et": "Meres on külm ujuda.",
+            "en": "The sea is cold for swimming."
+          }
+        },
+        {
+          "id": "matkata",
+          "front": "Matkata",
+          "back": "To hike",
+          "sentence": {
+            "et": "Nädalavahetusel lähme matkama.",
+            "en": "We are going hiking at the weekend."
+          }
+        },
+        {
+          "id": "maalida",
+          "front": "Maalida",
+          "back": "To paint",
+          "sentence": {
+            "et": "Ma tahan täna maalida.",
+            "en": "I want to paint today."
+          }
+        },
+        {
+          "id": "puhata",
+          "front": "Puhata",
+          "back": "To rest",
+          "sentence": {
+            "et": "Ma pean natuke puhkama.",
+            "en": "I need to rest a little."
+          }
+        },
+        {
+          "id": "reisida",
+          "front": "Reisida",
+          "back": "To travel",
+          "sentence": {
+            "et": "Me tahame suvel reisida.",
+            "en": "We want to travel in the summer."
+          }
+        },
+        {
+          "id": "rannas",
+          "front": "Rannas",
+          "back": "At the beach",
+          "sentence": {
+            "et": "Rannas on palju rahvast.",
+            "en": "There are a lot of people at the beach."
+          }
+        }
+      ]
+    },
+    {
+      "id": "moreverbs",
+      "name": "The next verbs",
+      "why": "The second handful, after the twenty the language hangs off",
+      "level": "deep",
+      "cards": [
+        {
+          "id": "arvama",
+          "front": "Arvama",
+          "back": "To think",
+          "forms": [
+            "arvata",
+            "arvan"
+          ],
+          "sentence": {
+            "et": "Ma arvan, et see on hea.",
+            "en": "I think it is good."
+          }
+        },
+        {
+          "id": "kartma",
+          "front": "Kartma",
+          "back": "To be afraid",
+          "forms": [
+            "karta",
+            "kardan"
+          ],
+          "sentence": {
+            "et": "Ära karda!",
+            "en": "Do not be afraid!"
+          }
+        },
+        {
+          "id": "voima",
+          "front": "Võima",
+          "back": "To be allowed to",
+          "forms": [
+            "võida",
+            "võin"
+          ],
+          "sentence": {
+            "et": "Kas ma võin sisse tulla?",
+            "en": "May I come in?"
+          }
+        },
+        {
+          "id": "alustama",
+          "front": "Alustama",
+          "back": "To begin",
+          "forms": [
+            "alustada",
+            "alustan"
+          ],
+          "sentence": {
+            "et": "Alustame kohe.",
+            "en": "Let us begin right away."
+          }
+        },
+        {
+          "id": "hingama",
+          "front": "Hingama",
+          "back": "To breathe",
+          "forms": [
+            "hingata",
+            "hingan"
+          ],
+          "sentence": {
+            "et": "Hinga rahulikult.",
+            "en": "Breathe calmly."
+          }
+        },
+        {
+          "id": "hilinema",
+          "front": "Hilinema",
+          "back": "To be late",
+          "forms": [
+            "hilineda",
+            "hilinen"
+          ],
+          "sentence": {
+            "et": "Buss hilineb viis minutit.",
+            "en": "The bus is five minutes late."
+          }
+        },
+        {
+          "id": "unustama",
+          "front": "Unustama",
+          "back": "To forget",
+          "forms": [
+            "unustada",
+            "unustan"
+          ],
+          "sentence": {
+            "et": "Ma unustasin võtme koju.",
+            "en": "I left the key at home."
+          }
+        },
+        {
+          "id": "naeratama",
+          "front": "Naeratama",
+          "back": "To smile",
+          "forms": [
+            "naeratada",
+            "naeratan"
+          ],
+          "sentence": {
+            "et": "Naerata, palun!",
+            "en": "Smile, please!"
+          }
+        },
+        {
+          "id": "praadima",
+          "front": "Praadima",
+          "back": "To fry",
+          "forms": [
+            "praadida",
+            "praen"
+          ],
+          "sentence": {
+            "et": "Ma praen kala.",
+            "en": "I am frying fish."
+          }
+        },
+        {
+          "id": "keetma",
+          "front": "Keetma",
+          "back": "To boil, to brew",
+          "forms": [
+            "keeta",
+            "keedan"
+          ],
+          "sentence": {
+            "et": "Ma keedan kohvi.",
+            "en": "I am making the coffee."
+          }
+        },
+        {
+          "id": "pesema",
+          "front": "Pesema",
+          "back": "To wash",
+          "forms": [
+            "pesta",
+            "pesen"
+          ],
+          "sentence": {
+            "et": "Ma pesen nõusid.",
+            "en": "I am washing the dishes."
+          }
+        },
+        {
+          "id": "suhtlema",
+          "front": "Suhtlema",
+          "back": "To talk with people",
+          "forms": [
+            "suhelda",
+            "suhtlen"
+          ],
+          "sentence": {
+            "et": "Ma suhtlen nendega iga päev.",
+            "en": "I talk to them every day."
+          }
+        },
+        {
+          "id": "seisma",
+          "front": "Seisma",
+          "back": "To stand",
+          "forms": [
+            "seista",
+            "seisan"
+          ],
+          "sentence": {
+            "et": "Ma seisan järjekorras.",
+            "en": "I am standing in the queue."
+          }
+        },
+        {
+          "id": "istuma",
+          "front": "Istuma",
+          "back": "To sit",
+          "forms": [
+            "istuda",
+            "istun"
+          ],
+          "sentence": {
+            "et": "Istu siia.",
+            "en": "Sit here."
+          }
+        },
+        {
+          "id": "keerama",
+          "front": "Keerama",
+          "back": "To turn",
+          "forms": [
+            "keerata",
+            "keeran"
+          ],
+          "sentence": {
+            "et": "Keerake paremale.",
+            "en": "Turn right."
+          }
+        },
+        {
+          "id": "vaatama",
+          "front": "Vaatama",
+          "back": "To look, to watch",
+          "forms": [
+            "vaadata",
+            "vaatan"
+          ],
+          "sentence": {
+            "et": "Vaadake siia.",
+            "en": "Look over here."
+          }
+        },
+        {
+          "id": "koristama",
+          "front": "Koristama",
+          "back": "To tidy up",
+          "forms": [
+            "koristada",
+            "koristan"
+          ],
+          "sentence": {
+            "et": "Ma koristan laupäeval.",
+            "en": "I tidy up on Saturday."
+          }
+        },
+        {
+          "id": "oppima",
+          "front": "Õppima",
+          "back": "To learn, to study",
+          "forms": [
+            "õppida",
+            "õpin"
+          ],
+          "sentence": {
+            "et": "Ma õpin eesti keelt.",
+            "en": "I am learning Estonian."
+          }
+        },
+        {
+          "id": "mangima",
+          "front": "Mängima",
+          "back": "To play",
+          "forms": [
+            "mängida",
+            "mängin"
+          ],
+          "sentence": {
+            "et": "Lapsed mängivad õues.",
+            "en": "The children are playing outside."
+          }
+        },
+        {
+          "id": "ehitama",
+          "front": "Ehitama",
+          "back": "To build",
+          "forms": [
+            "ehitada",
+            "ehitan"
+          ],
+          "sentence": {
+            "et": "Nad ehitavad uut maja.",
+            "en": "They are building a new house."
+          }
+        },
+        {
+          "id": "remontima",
+          "front": "Remontima",
+          "back": "To repair",
+          "forms": [
+            "remontida",
+            "remondin"
+          ],
+          "sentence": {
+            "et": "Ma remondin autot.",
+            "en": "I am repairing the car."
+          }
+        },
+        {
+          "id": "joonistama",
+          "front": "Joonistama",
+          "back": "To draw",
+          "forms": [
+            "joonistada",
+            "joonistan"
+          ],
+          "sentence": {
+            "et": "Tütar joonistab ilusasti.",
+            "en": "My daughter draws beautifully."
+          }
+        },
+        {
+          "id": "viitsima",
+          "front": "Viitsima",
+          "back": "To feel like bothering",
+          "forms": [
+            "viitsida",
+            "viitsin"
+          ],
+          "sentence": {
+            "et": "Ma ei viitsi täna kuhugi minna.",
+            "en": "I do not feel like going anywhere today."
+          }
+        }
+      ]
+    },
+    {
+      "id": "modals",
+      "name": "Must, want, may",
+      "why": "After pean the verb ends in -ma and after tahan in -da, which is the whole lesson",
+      "level": "deep",
+      "cards": [
+        {
+          "id": "ma-pean",
+          "front": "Ma pean",
+          "back": "I must",
+          "sentence": {
+            "et": "Ma pean täna töötama.",
+            "en": "I have to work today."
+          }
+        },
+        {
+          "id": "te-peate",
+          "front": "Te peate",
+          "back": "You must — to more than one",
+          "sentence": {
+            "et": "Te peate siin ootama.",
+            "en": "You have to wait here."
+          }
+        },
+        {
+          "id": "ma-tahan",
+          "front": "Ma tahan",
+          "back": "I want",
+          "sentence": {
+            "et": "Ma tahan kohvi.",
+            "en": "I want a coffee."
+          }
+        },
+        {
+          "id": "ma-saan",
+          "front": "Ma saan",
+          "back": "I can, I am able to",
+          "sentence": {
+            "et": "Ma saan homme tulla.",
+            "en": "I can come tomorrow."
+          }
+        },
+        {
+          "id": "ma-voin",
+          "front": "Ma võin",
+          "back": "I may",
+          "sentence": {
+            "et": "Ma võin sind aidata.",
+            "en": "I can help you."
+          }
+        },
+        {
+          "id": "ma-hakkan",
+          "front": "Ma hakkan",
+          "back": "I am about to",
+          "sentence": {
+            "et": "Ma hakkan sööma.",
+            "en": "I am about to eat."
+          }
+        },
+        {
+          "id": "ma-hakkan-minema",
+          "front": "Ma hakkan minema",
+          "back": "I am off"
+        },
+        {
+          "id": "ma-pean-koristama",
+          "front": "Ma pean koristama",
+          "back": "I must tidy up"
+        },
+        {
+          "id": "ma-tahan-koristada",
+          "front": "Ma tahan koristada",
+          "back": "I want to tidy up"
+        },
+        {
+          "id": "ma-pean-kohvi-keetma",
+          "front": "Ma pean kohvi keetma",
+          "back": "I must make the coffee"
+        },
+        {
+          "id": "ma-tahan-kohvi-keeta",
+          "front": "Ma tahan kohvi keeta",
+          "back": "I want to make coffee"
+        },
+        {
+          "id": "ma-pean-nousid-pesema",
+          "front": "Ma pean nõusid pesema",
+          "back": "I must wash the dishes"
+        },
+        {
+          "id": "ma-tahan-nousid-pesta",
+          "front": "Ma tahan nõusid pesta",
+          "back": "I want to wash the dishes"
+        },
+        {
+          "id": "ma-pean-inimestega-suhtlema",
+          "front": "Ma pean inimestega suhtlema",
+          "back": "I must talk to people"
+        },
+        {
+          "id": "ma-tahan-inimestega-suhelda",
+          "front": "Ma tahan inimestega suhelda",
+          "back": "I want to talk to people"
+        },
+        {
+          "id": "ma-pean-oppima",
+          "front": "Ma pean õppima",
+          "back": "I must study"
+        },
+        {
+          "id": "ma-tahan-oppida",
+          "front": "Ma tahan õppida",
+          "back": "I want to study"
+        },
+        {
+          "id": "ma-pean-autot-remontima",
+          "front": "Ma pean autot remontima",
+          "back": "I must fix the car"
+        },
+        {
+          "id": "ma-tahan-autot-remontida",
+          "front": "Ma tahan autot remontida",
+          "back": "I want to fix the car"
+        },
+        {
+          "id": "ma-tahan-maja-ehitada",
+          "front": "Ma tahan maja ehitada",
+          "back": "I want to build a house"
+        }
+      ]
+    },
+    {
+      "id": "paper",
+      "name": "Reading and writing",
+      "why": "A newspaper, an exercise book, and the word for a mistake",
+      "level": "deep",
+      "cards": [
+        {
+          "id": "ajaleht",
+          "front": "Ajaleht",
+          "back": "Newspaper",
+          "forms": [
+            "ajalehe",
+            "ajalehte"
+          ],
+          "sentence": {
+            "et": "Ma loen ajalehte.",
+            "en": "I am reading the newspaper."
+          }
+        },
+        {
+          "id": "ajakiri",
+          "front": "Ajakiri",
+          "back": "Magazine",
+          "forms": [
+            "ajakirja",
+            "ajakirja"
+          ],
+          "sentence": {
+            "et": "See ajakiri on inglise keeles.",
+            "en": "This magazine is in English."
+          }
+        },
+        {
+          "id": "vihik",
+          "front": "Vihik",
+          "back": "Exercise book",
+          "forms": [
+            "vihiku",
+            "vihikut"
+          ],
+          "sentence": {
+            "et": "Sõnad on vihikus.",
+            "en": "The words are in the exercise book."
+          }
+        },
+        {
+          "id": "sedel",
+          "front": "Sedel",
+          "back": "Note, slip of paper",
+          "forms": [
+            "sedeli",
+            "sedelit"
+          ],
+          "sentence": {
+            "et": "Ma jätsin sulle sedeli.",
+            "en": "I left you a note."
+          }
+        },
+        {
+          "id": "kiri",
+          "front": "Kiri",
+          "back": "Letter",
+          "forms": [
+            "kirja",
+            "kirja"
+          ],
+          "sentence": {
+            "et": "Ma kirjutan kirja.",
+            "en": "I am writing a letter."
+          }
+        },
+        {
+          "id": "taht",
+          "front": "Täht",
+          "back": "Letter, star",
+          "forms": [
+            "tähe",
+            "tähte"
+          ],
+          "sentence": {
+            "et": "See sõna algab tähega A.",
+            "en": "This word begins with the letter A."
+          }
+        },
+        {
+          "id": "harjutus",
+          "front": "Harjutus",
+          "back": "Exercise",
+          "forms": [
+            "harjutuse",
+            "harjutust"
+          ],
+          "sentence": {
+            "et": "Tee see harjutus ära.",
+            "en": "Do this exercise."
+          }
+        },
+        {
+          "id": "haal",
+          "front": "Hääl",
+          "back": "Voice",
+          "forms": [
+            "hääle",
+            "häält"
+          ],
+          "sentence": {
+            "et": "Loe valju häälega.",
+            "en": "Read it out loud."
+          }
+        },
+        {
+          "id": "idee",
+          "front": "Idee",
+          "back": "Idea",
+          "forms": [
+            "idee",
+            "ideed"
+          ],
+          "sentence": {
+            "et": "See on hea idee.",
+            "en": "That is a good idea."
+          }
+        },
+        {
+          "id": "viga",
+          "front": "Viga",
+          "back": "Mistake",
+          "forms": [
+            "vea",
+            "viga"
+          ],
+          "sentence": {
+            "et": "Ma tegin vea.",
+            "en": "I made a mistake."
+          }
+        },
+        {
+          "id": "aeg",
+          "front": "Aeg",
+          "back": "Time",
+          "forms": [
+            "aja",
+            "aega"
+          ],
+          "sentence": {
+            "et": "Mul ei ole aega.",
+            "en": "I have no time."
           }
         }
       ]
