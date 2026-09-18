@@ -90,22 +90,30 @@
  * ONE ADDRESS, AND IT IS A DECK
  *
  * ?d=<id> is the whole of the routing. Without it the page is the decks: the
- * ten the site ships, and yours under them. With it, it is that deck, turning
- * over. A deck somebody wrote has exactly one reader and it is its owner —
+ * twenty-eight the site ships, and yours under them. With it, it is that deck,
+ * turning over. A deck somebody wrote has exactly one reader and it is its owner —
  * there is no share link here and holding an id buys nothing, which is the
  * one place this feature deliberately differs from lists and from splitwise.
  *
- * WHAT IT READS
+ * WHAT IT READS, WHICH IS ONE THING
  *
- *   /data/ui.json              every word on this page, in ten languages
- *   /api/flashcard             the decks, and how far you have got in each
- *   /api/flashcard?deck=       one deck, whole, with its cards
+ *   /api/flashcard             the decks, how far you have got in each, and
+ *                              every word on this page in the one language it
+ *                              is being read in
+ *   /api/flashcard?deck=       one deck, whole, with its cards, and the same
  *   /api/account               posted to, to sign in or create an account
+ *
+ * Every other page fetches data/ui.json whole on the way in — ten languages of
+ * every string the site has, 85 KB gzipped — to print its few dozen keys in
+ * one of them. Here the words ride in the same answer as the decks: the page
+ * sends what it would have picked a language from, in order, and the route
+ * answers with the language it settled on and that language's block, eight to
+ * ten KB. One request before a card can be drawn rather than two, and a tenth
+ * of the bytes. The header of functions/api/flashcard.js has the rest.
  */
 (function () {
   'use strict';
 
-  var UI_URL = '/data/ui.json';
   var ACCOUNT_API = '/api/account';
   var FLASH_API = '/api/flashcard';
 
@@ -126,9 +134,8 @@
   var MAX_SIDE = 60;
 
   var state = {
-    ui: {},
+    ui: {},          // every word on this page, in `lang` and no other
     lang: DEFAULT_LANG,
-    reached: true,   // whether /api/flashcard answered at all
     ready: false,    // whether the database is bound and this is its half
     google: false,   // whether Continue with Google is configured here
     user: null,
@@ -213,9 +220,7 @@
   }
 
   function t(key, vars) {
-    var pack = state.ui[state.lang] || {};
-    var s = pack[key];
-    if (s === undefined) s = (state.ui[DEFAULT_LANG] || {})[key];
+    var s = state.ui[key];
     if (s === undefined) return key;
     if (vars) {
       Object.keys(vars).forEach(function (v) {
@@ -244,13 +249,6 @@
     if (!said) return '';
     var mine = state.lang === 'et' ? '' : said[state.lang];
     return mine || said[DEFAULT_LANG] || '';
-  }
-
-  function getJSON(url) {
-    return fetch(url, { headers: { accept: 'application/json' } }).then(function (res) {
-      if (!res.ok) throw new Error(url + ': ' + res.status);
-      return res.json();
-    });
   }
 
   /* Asked so that "the site did not answer" and "the site answered no" stay
@@ -328,17 +326,22 @@
     }
   }
 
-  function pickLanguage(langs) {
-    var fromUrl = new URLSearchParams(window.location.search).get('lang');
-    if (fromUrl && langs.indexOf(fromUrl) !== -1) return fromUrl;
-    var stored = storeGet(LANG_KEY);
-    if (stored && langs.indexOf(stored) !== -1) return stored;
-    var prefs = navigator.languages || [navigator.language || ''];
-    for (var i = 0; i < prefs.length; i++) {
-      var base = String(prefs[i]).toLowerCase().split('-')[0];
-      if (langs.indexOf(base) !== -1) return base;
-    }
-    return langs.indexOf(DEFAULT_LANG) !== -1 ? DEFAULT_LANG : langs[0];
+  /* What this page would pick a language from, in the order every other page
+     picks: ?lang=, then the choice the map stored, then the browser's own. The
+     picking itself is languageOf() in functions/api/flashcard.js, because the
+     list to pick against is the file that route reads and this page no longer
+     fetches — so this is the candidates, sent as they are, and what comes
+     back is the one the site speaks. Anything past ten is noise the route
+     would not read anyway. */
+  function wanted() {
+    var list = [new URLSearchParams(window.location.search).get('lang'), storeGet(LANG_KEY)]
+      .concat(navigator.languages || [navigator.language || '']);
+    var out = [];
+    list.forEach(function (tag) {
+      tag = String(tag || '').toLowerCase().split('-')[0];
+      if (tag && out.indexOf(tag) === -1) out.push(tag);
+    });
+    return out.slice(0, 10);
   }
 
   function applyStaticStrings() {
@@ -638,7 +641,7 @@
          bound or this deployment is holding the other half's. Every deck below
          still turns over — they are a file — so this is a line rather than the
          page refusing to draw. */
-      state.ready ? null : el('p', { className: 'lists-say', textContent: t(state.reached ? 'flashErrOff' : 'flashErrReach') })
+      state.ready ? null : el('p', { className: 'lists-say', textContent: t('flashErrOff') })
     ];
 
     if (missed.length) kids.push(deckList(missed));
@@ -1239,11 +1242,10 @@
     return card([
       el('p', { className: 'eyebrow', textContent: t('flashEyebrow') }),
       heading(t('flashGoneTitle')),
-      /* Which of the two it was. A deck that is not there and a site that did
-         not answer both leave the page with an address and no deck, and
-         telling somebody their deck has gone when the network dropped is the
-         page being confidently wrong. */
-      el('p', { className: 'lists-say', textContent: t(state.reached ? 'flashErrGone' : 'flashErrReach') }),
+      /* Only ever a deck that is not there: a site that did not answer never
+         reaches render() at all — see boot() — so this card cannot tell
+         somebody their deck has gone when it was the network that dropped. */
+      el('p', { className: 'lists-say', textContent: t('flashErrGone') }),
       foot([el('a', { className: 'alt', href: at(HOME), textContent: t('flashDecks') })])
     ]);
   }
@@ -1321,22 +1323,28 @@
 
     applyStyle();
 
-    Promise.all([
-      getJSON(UI_URL),
-      /* Who is signed in, the decks, and — where the address names one — that
-         deck whole with its cards, in one answer. /api/account is not read on
-         the way in at all: the only thing this page ever wanted from it was a
-         name to put in the sign-up field, and the form asks for that now
-         rather than offering one. */
-      ask(FLASH_API + (asked ? '?deck=' + encodeURIComponent(asked) : ''))
-    ]).then(function (loaded) {
-      state.ui = loaded[0] || {};
-      state.lang = pickLanguage(Object.keys(state.ui).sort());
+    /* Who is signed in, the decks, and — where the address names one — that
+       deck whole with its cards, and every word this page prints, in one
+       answer. /api/account is not read on the way in at all: the only thing
+       this page ever wanted from it was a name to put in the sign-up field,
+       and the form asks for that now rather than offering one. */
+    var query = new URLSearchParams();
+    query.set('lang', wanted().join(','));
+    if (asked) query.set('deck', asked);
+
+    ask(FLASH_API + '?' + query.toString()).then(function (answer) {
+      /* Nothing arrived, not even the words to say so. What is left is the
+         markup's own English and whatever functions/flashcard.js wrote into
+         the page as text — the decks as a list of links, or one deck's words —
+         which is readable and works, and better than the keys this page would
+         print without a language. The map is one press away in the header. */
+      if (answer.status === 0) return;
+
+      state.lang = answer.out.lang || DEFAULT_LANG;
+      state.ui = answer.out.ui || {};
       applyStaticStrings();
       document.title = t('flashDocumentTitle');
 
-      var answer = loaded[1];
-      state.reached = answer.status !== 0;
       state.ready = !!answer.out.ready;
       state.google = !!answer.out.google;
       state.user = answer.out.user || null;
@@ -1357,12 +1365,6 @@
 
       render();
       sayGoogle();
-    }).catch(function () {
-      /* The strings themselves did not arrive, so there is nothing to say in
-         any language. The markup's own English is what is left, and the map is
-         one press away in it. */
-      state.ui = {};
-      render();
     });
   }
 

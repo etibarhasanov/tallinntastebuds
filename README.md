@@ -6321,6 +6321,40 @@ signed in here. **That line now has two readers**, which is worth knowing
 before either feature is removed: taking splitwise out does not take the line
 out any more.
 
+### One request on the way in
+
+Every other page on this site fetches `data/ui.json` whole before it draws:
+ten languages of every string the site has, 307 KB, 85 KB gzipped, to print
+its few dozen keys in one of them. On this page that was the largest thing
+between opening it and seeing a card, and the least of it was used — the map's
+stylesheet is the only heavier file, and that one is at least mostly drawn.
+
+So the flashcards fetch it no more. The words ride in the same answer as the
+decks: `assets/flashcard.js` sends `/api/flashcard` what it would have picked
+a language from, in the order every page picks — `?lang=`, then `ttb.lang`,
+then the browser's own — and `languageOf()` in `functions/api/flashcard.js`
+takes the first the site speaks and answers with that language's block, eight
+to ten KB gzipped, beside the decks. One request before a card can be drawn
+rather than two, a tenth of the bytes, and the same rule `pickLanguage()`
+applies everywhere else, moved to where the list of languages is.
+
+The whole block goes rather than the eighty keys the page uses, on purpose: a
+list of keys in the route would be a second copy of what the page asks for, and
+the validator, which checks every `t('key')` against `ui.json`, could not see
+the two drift.
+
+And when the site does not answer at all, the page draws nothing: it has no
+words to say so in, and what it would print instead are its keys. What is
+left is the markup's own English and whatever `functions/flashcard.js` wrote
+into the page as text — the decks as a list of links, or a deck's words — which
+reads and works, and the map is one press away in the header.
+
+**The other pages still fetch the file.** This is the pattern for them, not a
+change to them: the map, the lists, the account page and splitwise each boot
+the same way this page did, and each would drop 75 KB from its first load the
+same way. That is a change to `assets/app.js` and three others, and it was
+deliberately not made in the change that made this page fast.
+
 ### Signed out, every deck still works
 
 The decks and every card in them are a file, and a file has nobody to

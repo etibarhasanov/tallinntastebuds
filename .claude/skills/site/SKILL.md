@@ -95,7 +95,12 @@ else `en` — and `applyStaticStrings()` over the `data-i18n`,
 `data-i18n-aria-label`, `data-i18n-placeholder` and `data-i18n-title`
 attributes. `app.js`, `lists.js`, `venues.js` and `account.js` each carry
 that block; `pass.js` carries it without the `theme-color` line, so the
-three pass pages keep light browser chrome under the dark style. A new page
+three pass pages keep light browser chrome under the dark style.
+`flashcard.js` carries the style half and not the language half: it does not
+fetch `data/ui.json` at all, but sends its candidates to `/api/flashcard` and
+prints from the one block that comes back — **One request on the way in**
+under **Flashcards** in `README.md` says why, and it is the pattern the other
+pages would follow to shed 75 KB from a first load. A new page
 copies the block whole, and its head carries `<meta name="color-scheme">`
 and `<meta name="theme-color">` like `lists.html`'s.
 

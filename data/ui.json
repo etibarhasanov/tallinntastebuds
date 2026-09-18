@@ -486,8 +486,7 @@
     "flashErrTooMany": "Bir hesab ancaq bu qədər dəstə saxlaya bilər.",
     "flashErrFull": "Bu dəstə doludur.",
     "flashErrGeneric": "Alınmadı. Bir azdan yenidən cəhd et.",
-    "flashErrOff": "Saytın bu nüsxəsində heç nə yadda saxlanmır, ona görə aşağıdakı dəstələr qaldığın yeri saxlamayacaq.",
-    "flashErrReach": "Sayt cavab vermədi, ona görə heç nə yadda saxlanmır. Aşağıdakı dəstələr yenə işləyir."
+    "flashErrOff": "Saytın bu nüsxəsində heç nə yadda saxlanmır, ona görə aşağıdakı dəstələr qaldığın yeri saxlamayacaq."
   },
   "hy": {
     "langName": "Հայերեն",
@@ -976,8 +975,7 @@
     "flashErrTooMany": "Մեկ հաշիվը կարող է պահել միայն այսքան տրցակ։",
     "flashErrFull": "Այս տրցակը լիքն է։",
     "flashErrGeneric": "Չստացվեց։ Փորձի՛ր մի պահից հետո։",
-    "flashErrOff": "Կայքի այս պատճենում ոչինչ չի հիշվում, ուստի ներքևի տրցակները քո տեղը չեն պահի։",
-    "flashErrReach": "Կայքը չպատասխանեց, ուստի ոչինչ չի հիշվում։ Ներքևի տրցակները դեռ աշխատում են։"
+    "flashErrOff": "Կայքի այս պատճենում ոչինչ չի հիշվում, ուստի ներքևի տրցակները քո տեղը չեն պահի։"
   },
   "en": {
     "langName": "English",
@@ -1466,8 +1464,7 @@
     "flashErrTooMany": "An account can hold only so many decks.",
     "flashErrFull": "This deck is full.",
     "flashErrGeneric": "That did not work. Try again in a moment.",
-    "flashErrOff": "Nothing is being remembered on this copy of the site, so the decks below will not keep your place.",
-    "flashErrReach": "The site did not answer, so nothing is being remembered. The decks below still work."
+    "flashErrOff": "Nothing is being remembered on this copy of the site, so the decks below will not keep your place."
   },
   "et": {
     "langName": "Eesti",
@@ -1956,8 +1953,7 @@
     "flashErrTooMany": "Üks konto saab hoida ainult teatud arvu pakke.",
     "flashErrFull": "See pakk on täis.",
     "flashErrGeneric": "See ei õnnestunud. Proovi hetke pärast uuesti.",
-    "flashErrOff": "Selles saidi koopias ei jäeta midagi meelde, nii et allolevad pakid ei hoia sinu kohta.",
-    "flashErrReach": "Sait ei vastanud, nii et midagi ei jäeta meelde. Allolevad pakid töötavad ikka."
+    "flashErrOff": "Selles saidi koopias ei jäeta midagi meelde, nii et allolevad pakid ei hoia sinu kohta."
   },
   "fi": {
     "langName": "Suomi",
@@ -2446,8 +2442,7 @@
     "flashErrTooMany": "Yksi tili voi pitää vain tietyn määrän pakkoja.",
     "flashErrFull": "Tämä pakka on täynnä.",
     "flashErrGeneric": "Tämä ei onnistunut. Yritä hetken päästä uudelleen.",
-    "flashErrOff": "Tässä sivuston kopiossa ei muisteta mitään, joten alla olevat pakat eivät säilytä kohtaasi.",
-    "flashErrReach": "Sivusto ei vastannut, joten mitään ei muisteta. Alla olevat pakat toimivat silti."
+    "flashErrOff": "Tässä sivuston kopiossa ei muisteta mitään, joten alla olevat pakat eivät säilytä kohtaasi."
   },
   "pt": {
     "langName": "Português",
@@ -2936,8 +2931,7 @@
     "flashErrTooMany": "Uma conta só pode ter um certo número de baralhos.",
     "flashErrFull": "Este baralho está cheio.",
     "flashErrGeneric": "Não resultou. Tenta daqui a pouco.",
-    "flashErrOff": "Nesta cópia do site nada é guardado, por isso os baralhos abaixo não guardam onde ias.",
-    "flashErrReach": "O site não respondeu, por isso nada é guardado. Os baralhos abaixo continuam a funcionar."
+    "flashErrOff": "Nesta cópia do site nada é guardado, por isso os baralhos abaixo não guardam onde ias."
   },
   "ru": {
     "langName": "Русский",
@@ -3426,8 +3420,7 @@
     "flashErrTooMany": "В одном аккаунте может быть только определённое число наборов.",
     "flashErrFull": "Этот набор заполнен.",
     "flashErrGeneric": "Не получилось. Попробуйте через минуту.",
-    "flashErrOff": "В этой копии сайта ничего не запоминается, поэтому наборы ниже не сохранят ваше место.",
-    "flashErrReach": "Сайт не ответил, поэтому ничего не запоминается. Наборы ниже всё равно работают."
+    "flashErrOff": "В этой копии сайта ничего не запоминается, поэтому наборы ниже не сохранят ваше место."
   },
   "es": {
     "langName": "Español",
@@ -3916,8 +3909,7 @@
     "flashErrTooMany": "Una cuenta solo puede tener un número limitado de mazos.",
     "flashErrFull": "Este mazo está lleno.",
     "flashErrGeneric": "No ha funcionado. Inténtalo dentro de un momento.",
-    "flashErrOff": "En esta copia del sitio no se guarda nada, así que los mazos de abajo no recordarán por dónde ibas.",
-    "flashErrReach": "El sitio no ha respondido, así que no se guarda nada. Los mazos de abajo siguen funcionando."
+    "flashErrOff": "En esta copia del sitio no se guarda nada, así que los mazos de abajo no recordarán por dónde ibas."
   },
   "tr": {
     "langName": "Türkçe",
@@ -4406,8 +4398,7 @@
     "flashErrTooMany": "Bir hesap ancak bu kadar deste tutabilir.",
     "flashErrFull": "Bu deste dolu.",
     "flashErrGeneric": "Bu olmadı. Birazdan yeniden dene.",
-    "flashErrOff": "Sitenin bu kopyasında hiçbir şey hatırlanmıyor, bu yüzden aşağıdaki desteler kaldığın yeri tutmaz.",
-    "flashErrReach": "Site yanıt vermedi, bu yüzden hiçbir şey hatırlanmıyor. Aşağıdaki desteler yine de çalışır."
+    "flashErrOff": "Sitenin bu kopyasında hiçbir şey hatırlanmıyor, bu yüzden aşağıdaki desteler kaldığın yeri tutmaz."
   },
   "uk": {
     "langName": "Українська",
@@ -4896,7 +4887,6 @@
     "flashErrTooMany": "Один обліковий запис може мати лише певну кількість наборів.",
     "flashErrFull": "Цей набір заповнений.",
     "flashErrGeneric": "Не вийшло. Спробуйте за хвилину.",
-    "flashErrOff": "У цій копії сайту нічого не запам’ятовується, тож набори нижче не збережуть ваше місце.",
-    "flashErrReach": "Сайт не відповів, тож нічого не запам’ятовується. Набори нижче все одно працюють."
+    "flashErrOff": "У цій копії сайту нічого не запам’ятовується, тож набори нижче не збережуть ваше місце."
   }
 }

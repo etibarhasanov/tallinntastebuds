@@ -24,13 +24,34 @@
  * write for themselves, and how far each person has got. See
  * **Flashcards** in README.md and the block at the end of db/schema.sql.
  *
- * **Nothing here chooses a language.** A deck the site ships carries its name,
- * the line under it and the back of every card as an object keyed by language —
- * English, Azerbaijani and Russian — and this file hands that object on whole.
- * Which one a reader sees is means() in assets/flashcard.js, decided there
- * because the page already knows the language and this route would have to be
- * told. A deck somebody wrote carries one string per side, in whatever language
- * they typed, and there is nothing to choose between.
+ * **Nothing here chooses which language a card is turned over into.** A deck
+ * the site ships carries its name, the line under it and the back of every
+ * card as an object keyed by language — English, Azerbaijani and Russian — and
+ * this file hands that object on whole. Which one a reader sees is means() in
+ * assets/flashcard.js, per card, against the language the page is being read
+ * in — and that language is the one thing this file does settle, in the
+ * section below, because the list it is settled against lives on this side. A
+ * deck somebody wrote carries one string per side, in whatever language they
+ * typed, and there is nothing to choose between.
+ *
+ * THE WORDS ON THE PAGE COME WITH THE DECKS
+ *
+ * Every other page on this site fetches data/ui.json whole on the way in: ten
+ * languages of every string the site has, 85 KB gzipped, to print eighty of
+ * them in one language. That was the biggest thing between opening this page
+ * and seeing a card, and the least of it was used. So the GET below carries
+ * the page's words in its answer — the one language block the page will print
+ * from, eight to ten KB gzipped, in the same request that brings the decks —
+ * and the page fetches nothing else.
+ *
+ * Which language is decided here rather than on the page, because the list
+ * of languages the site has is in the file this side reads: the page sends
+ * what it would have picked from, in order (?lang=, then the choice stored on
+ * the map, then the browser's own languages), and languageOf() takes the
+ * first the file speaks. It is the same rule pickLanguage() applies on every
+ * other page, moved to where the list is. The whole block goes rather than
+ * the eighty keys, because a list of keys here would be a second copy of what
+ * assets/flashcard.js asks for, and the validator could not see them drift.
  *
  * IT IS THE SAME ACCOUNT AS THE MAP
  *
@@ -80,7 +101,7 @@
  * a public max-age is the one mistake ./_lib.js names in its own header.
  */
 
-import { json, sessionUser, wrongDatabase, randomHex, dataFile } from './_lib.js';
+import { json, sessionUser, wrongDatabase, randomHex, dataFile, uiStrings } from './_lib.js';
 import { googleReady } from './_google.js';
 
 /* The decks the site ships, as deployed. */
@@ -168,6 +189,49 @@ function words(value, max) {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, max);
+}
+
+/* ------------------------------------------------------------- the words
+ * The page's strings in one language, and which language that is. See THE
+ * WORDS ON THE PAGE COME WITH THE DECKS in the header.
+ *
+ * `asked` is what the page sends: a comma-separated list of what it would have
+ * picked from, most wanted first, straight out of the address bar, the store
+ * and the browser — so it is untrusted and shaped here before anything looks
+ * it up. A tag is lowercased and cut at its hyphen (en-GB is en), anything
+ * that is not two or three letters after that is dropped, and only the first
+ * ten are read at all.
+ *
+ * The first the file speaks wins; English if none does; the file's first
+ * language if it somehow has no English. The strings themselves are a file
+ * read through the same five-minute cache the decks are, so a missing or
+ * malformed one is an empty block rather than a throw — the page then prints
+ * its keys, which is the same thing it did when the file failed to fetch.
+ */
+const DEFAULT_LANG = 'en';
+const LANG_TAG = /^[a-z]{2,3}$/;
+
+function languageOf(asked, langs) {
+  const wanted = String(asked || '')
+    .split(',')
+    .slice(0, 10)
+    .map((tag) => tag.trim().toLowerCase().split('-')[0])
+    .filter((tag) => LANG_TAG.test(tag));
+  return wanted.find((tag) => langs.includes(tag)) ||
+    (langs.includes(DEFAULT_LANG) ? DEFAULT_LANG : langs[0] || DEFAULT_LANG);
+}
+
+async function wordsFor(context, asked) {
+  let ui = null;
+  try {
+    ui = await uiStrings(context);
+  } catch (e) {
+    ui = null;
+  }
+  const langs = ui && typeof ui === 'object' ? Object.keys(ui) : [];
+  const lang = languageOf(asked, langs);
+  const block = ui && ui[lang] && typeof ui[lang] === 'object' ? ui[lang] : {};
+  return { lang: lang, ui: block };
 }
 
 /* ------------------------------------------------------------ the shipped
@@ -397,6 +461,11 @@ export async function onRequestGet(context) {
   const params = new URL(request.url).searchParams;
   const asked = params.get('deck') || '';
 
+  /* What every answer below carries, whichever deck it is about: the three
+     facts about this deployment and this session, and the words the page will
+     print them with. */
+  const base = { ready: ready, google: google, user: who, ...(await wordsFor(context, params.get('lang'))) };
+
   if (asked) {
     const known = await knownOf(env, user);
 
@@ -404,34 +473,24 @@ export async function onRequestGet(context) {
        nothing here to own and nothing to check beyond having a session. */
     if (asked === MISSED_DECK) {
       const missed = user ? await missedDeck(context, user, decks, known) : null;
-      if (!missed) return json({ ready: ready, google: google, user: who, error: 'not-found' }, 404);
+      if (!missed) return json({ ...base, error: 'not-found' }, 404);
       const answer = deckAnswer(missed, missed.cards, false, known);
       answer.missed = true;
-      return json({ ready: ready, google: google, user: who, deck: answer }, 200);
+      return json({ ...base, deck: answer }, 200);
     }
 
     const mine = await deckOf(env, asked, user);
     if (mine) {
       const cards = await cardsOf(env, mine.id);
-      return json({
-        ready: ready,
-        google: google,
-        user: who,
-        deck: deckAnswer(mine, cards, true, known)
-      }, 200);
+      return json({ ...base, deck: deckAnswer(mine, cards, true, known) }, 200);
     }
 
     const deck = shippedDeck(decks, asked);
     /* A deck id that is somebody else's, one that was deleted, and one that
        was never anything are the same answer. */
-    if (!deck) return json({ ready: ready, google: google, user: who, error: 'not-found' }, 404);
+    if (!deck) return json({ ...base, error: 'not-found' }, 404);
 
-    return json({
-      ready: ready,
-      google: google,
-      user: who,
-      deck: deckAnswer(deck, deck.cards, false, known)
-    }, 200);
+    return json({ ...base, deck: deckAnswer(deck, deck.cards, false, known) }, 200);
   }
 
   const known = await knownOf(env, user);
@@ -521,7 +580,7 @@ export async function onRequestGet(context) {
     });
   }
 
-  return json({ ready: ready, google: google, user: who, decks: list }, 200);
+  return json({ ...base, decks: list }, 200);
 }
 
 /* ---------------------------------------------------------------- writing */
