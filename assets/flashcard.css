@@ -148,6 +148,36 @@
 }
 .flash-form.is-first { color: var(--ink); }
 
+/* The word in a sentence, at the foot of the card. Two lines: the Estonian in
+   the body face, because it is a sentence and this site sets sentences in
+   Literata, and what it means under it in the muted tone. A word on its own is
+   a thing to recognise and a word in a sentence is a thing to say — and the
+   case it is standing in there is half of what the three forms above it are
+   for.
+
+   It is the last thing on the card and the quietest, because somebody who has
+   already remembered the word is done before they reach it. */
+.flash-sentence {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  /* Air under it as well as over: the line asking whether you knew it comes
+     next, and it is a different kind of thing from the two lines above. */
+  margin: 10px 0 4px;
+  max-width: 34ch;
+}
+.flash-said {
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.flash-means {
+  font-family: var(--body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
 /* "Tap to turn it over", and what the card says once it has been turned. A
    label rather than a sentence, so it is mono. */
 .flash-turn {

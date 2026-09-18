@@ -2,9 +2,9 @@
  * Tallinn Tastebuds — flashcards, and the Estonian on them.
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: ten decks of Estonian, two hundred
- * and three cards, Estonian on the front and English on the back, and a person
- * turning them over one at a time. It lives on its own subdomain —
+ * menu. This is the other half of that: sixteen decks of Estonian, three
+ * hundred and five cards, Estonian on the front and English on the back, and a
+ * person turning them over one at a time. It lives on its own subdomain —
  * flashcard.tallinntastebuds.ee, routed by functions/_middleware.js — for the
  * reason splitwise does: it is not the map, and a sixth card on the account
  * page reading "Flashcards" would have been a second product filed under
@@ -14,8 +14,8 @@
  *
  * The decks this site ships are data/decks.json, deployed as a file and read
  * as one through dataFile() below. They are content: somebody edits the
- * repository, the deploy carries them, and every reader gets the same two
- * hundred and three cards. Nothing about them is in the database and nothing needs to
+ * repository, the deploy carries them, and every reader gets the same three
+ * hundred and five cards. Nothing about them is in the database and nothing needs to
  * be — a row per card per deployment would be a copy of a file that only a
  * deploy changes, and the first thing anybody would have to write is the tool
  * that keeps the two in step.
@@ -36,8 +36,8 @@
  *
  * SIGNED OUT, THE DECKS STILL WORK
  *
- * Everything the site ships is readable with no account at all: the ten decks
- * and every card in them are a file, and a file has nobody to check. What an
+ * Everything the site ships is readable with no account at all: the sixteen
+ * decks and every card in them are a file, and a file has nobody to check. What an
  * account buys is that pressing "Knew it" is remembered — on the account, not
  * on the device, so the deck you got half through on a phone is half through
  * on a laptop. Signed out, the page keeps the run in memory and offers an
@@ -117,6 +117,25 @@ const DAY = 86400000;
 const BOXES = [1 * DAY, 3 * DAY, 7 * DAY, 14 * DAY, 35 * DAY, 77 * DAY];
 const MAX_BOX = BOXES.length;
 
+/* And box nought, which is not a rung: it is the card you pressed Show me
+ * again on. The row stays rather than being deleted, so that the one thing
+ * somebody wants after a run — "show me the ones I got wrong" — is a fact in
+ * the table rather than something they have to remember.
+ *
+ * It is a box and not a column of its own because every read of this table
+ * already reads the box, and a second column would be a second thing every
+ * query had to say something about. Nought is below the first rung and above
+ * nothing at all, which is exactly what a missed card is.
+ */
+const MISSED = 0;
+
+/* The deck that is not a deck: every card, from every deck, that is sitting
+   in box nought. It is assembled per request out of rows this person owns —
+   there is no row in flashcard_decks for it and there never will be — and its
+   id is reserved, so tools/validate.mjs refuses a shipped deck that claims
+   the name. */
+const MISSED_DECK = 'missed';
+
 /* Sixteen hex characters: a deck's id, and a card's. Minted rather than
    slugged, because neither ever appears in a link anybody sends — see
    flashcard_decks in db/schema.sql. */
@@ -150,6 +169,14 @@ function words(value, max) {
  * own decks are and says nothing is shipped, which is a worse site but not a
  * broken one.
  */
+/* An example, where a card has one: the Estonian and what it means, as a pair.
+   Held to the shape here rather than trusted, because it is drawn as two lines
+   and a half-written one would be a card with a stray sentence on it. */
+function isSentence(value) {
+  return !!value && typeof value.et === 'string' && value.et !== '' &&
+    typeof value.en === 'string' && value.en !== '';
+}
+
 async function shipped(context) {
   try {
     const file = await dataFile(context, DECKS_FILE);
@@ -222,13 +249,30 @@ async function knownOf(env, user) {
   const { results } = await readingBoxes(env, (boxes) =>
     env.DB
       .prepare(boxes
-        ? 'SELECT deck_id, card_id, due_at FROM flashcard_known WHERE user_id = ?'
-        : 'SELECT deck_id, card_id, 0 AS due_at FROM flashcard_known WHERE user_id = ?')
+        ? 'SELECT deck_id, card_id, box, due_at FROM flashcard_known WHERE user_id = ?'
+        : 'SELECT deck_id, card_id, 1 AS box, 0 AS due_at FROM flashcard_known WHERE user_id = ?')
       .bind(user.id)
       .all());
   const out = new Map();
-  for (const row of results || []) out.set(row.deck_id + '/' + row.card_id, row.due_at <= now);
+  for (const row of results || []) {
+    out.set(row.deck_id + '/' + row.card_id, {
+      /* Known is a rung, not a row: a card in box nought is one somebody has
+         seen and got wrong, which is the opposite of knowing it. */
+      known: row.box > MISSED,
+      missed: row.box === MISSED,
+      due: row.due_at <= now
+    });
+  }
   return out;
+}
+
+/* What one card's row says, for callers that do not want to think about a
+   card that has no row at all. Never answered is not known, not missed, and
+   due — which is how an unseen card has always behaved. */
+const NEW_CARD = { known: false, missed: false, due: true };
+
+function stateOf(known, deckId, cardId) {
+  return known.get(deckId + '/' + cardId) || NEW_CARD;
 }
 
 /* One deck as the page reads it, whichever kind of deck it is: one of the
@@ -251,15 +295,75 @@ function deckAnswer(deck, cards, own, known) {
     name: deck.name,
     why: own ? null : (deck.why || null),
     own: own,
-    cards: cards.map((c) => ({
-      id: c.id,
-      front: c.front,
-      back: c.back,
-      forms: Array.isArray(c.forms) && c.forms.length ? c.forms : null,
-      known: known.has(deck.id + '/' + c.id),
-      due: known.get(deck.id + '/' + c.id) !== false
-    }))
+    cards: cards.map((c) => {
+      const was = stateOf(known, c.deck || deck.id, c.id);
+      return {
+        /* A card in the missed deck says which deck it is really from, so
+           that answering it there writes to the row it came from rather than
+           minting a second one under a deck that does not exist. */
+        deck: c.deck || deck.id,
+        id: c.id,
+        front: c.front,
+        back: c.back,
+        forms: Array.isArray(c.forms) && c.forms.length ? c.forms : null,
+        sentence: isSentence(c.sentence) ? c.sentence : null,
+        known: was.known,
+        due: was.due
+      };
+    })
   };
+}
+
+/* --------------------------------------------------------- the missed deck
+ * Every card in box nought, whichever deck it came from, as one deck. This is
+ * the thing people actually want after a run — show me the ones I got wrong —
+ * and it is a query rather than a table: the rows are already there, and a
+ * second table holding the same cards under a different name is two places
+ * for a card to be.
+ *
+ * The cards come back from two places, because the rows do. A shipped deck's
+ * card is in data/decks.json, already in hand. One of somebody's own is a row
+ * in flashcard_cards, and is fetched by id — capped, like everything here, so
+ * an account that has pressed Show me again five hundred times gets the first
+ * two hundred rather than a query that grows without a ceiling.
+ *
+ * Each card keeps the id of the deck it is really from, so that answering it
+ * here writes to that row. Nothing is ever written under the id "missed".
+ */
+async function missedDeck(context, user, decks, known) {
+  const { env } = context;
+
+  const want = [];
+  known.forEach((was, key) => {
+    if (!was.missed || want.length >= MAX_CARDS) return;
+    const cut = key.indexOf('/');
+    want.push({ deck: key.slice(0, cut), card: key.slice(cut + 1) });
+  });
+  if (!want.length) return null;
+
+  const cards = [];
+  const mine = [];
+  for (const one of want) {
+    const deck = shippedDeck(decks, one.deck);
+    const card = deck && deck.cards.find((c) => c.id === one.card);
+    if (card) cards.push({ ...card, deck: one.deck });
+    else if (MINTED.test(one.deck) && MINTED.test(one.card)) mine.push(one);
+  }
+
+  /* One read for all of them, and only over decks this person owns — the join
+     is what keeps a card id somebody guessed from answering. */
+  if (mine.length) {
+    const ids = mine.map((one) => one.card);
+    const { results } = await env.DB
+      .prepare('SELECT c.id AS id, c.deck_id AS deck, c.front AS front, c.back AS back ' +
+               'FROM flashcard_cards c JOIN flashcard_decks d ON d.id = c.deck_id ' +
+               'WHERE d.owner = ? AND c.id IN (' + ids.map(() => '?').join(',') + ')')
+      .bind(user.id, ...ids)
+      .all();
+    for (const row of results || []) cards.push(row);
+  }
+
+  return { id: MISSED_DECK, name: null, why: null, cards: cards };
 }
 
 /* ---------------------------------------------------------------- reading */
@@ -284,6 +388,17 @@ export async function onRequestGet(context) {
 
   if (asked) {
     const known = await knownOf(env, user);
+
+    /* The deck that is not one. Only ever this person's own rows, so there is
+       nothing here to own and nothing to check beyond having a session. */
+    if (asked === MISSED_DECK) {
+      const missed = user ? await missedDeck(context, user, decks, known) : null;
+      if (!missed) return json({ ready: ready, google: google, user: who, error: 'not-found' }, 404);
+      const answer = deckAnswer(missed, missed.cards, false, known);
+      answer.missed = true;
+      return json({ ready: ready, google: google, user: who, deck: answer }, 200);
+    }
+
     const mine = await deckOf(env, asked, user);
     if (mine) {
       const cards = await cardsOf(env, mine.id);
@@ -312,24 +427,50 @@ export async function onRequestGet(context) {
 
   /* How many of a deck this person knows, and how many of it are waiting for
      them now. The second is the one the row prints when it is not nought —
-     "6 due" is a reason to open a deck and "9 / 22" is a fact about one. */
+     "6 due" is a reason to open a deck and "9 / 22" is a fact about one.
+     A card in box nought counts towards neither: it is not known, and it is
+     waiting in the missed deck rather than in the one it came from. */
   const counts = {};
-  known.forEach((_due, key) => {
+  known.forEach((was, key) => {
+    if (!was.known) return;
     const deck = key.slice(0, key.indexOf('/'));
     counts[deck] = (counts[deck] || 0) + 1;
   });
   const dueIn = (deck, cards) =>
-    cards.filter((c) => known.get(deck + '/' + c.id) !== false).length;
+    cards.filter((c) => {
+      const was = stateOf(known, deck, c.id);
+      return was.due && !was.missed;
+    }).length;
 
   const list = decks.map((d) => ({
     id: d.id,
     name: d.name,
     why: d.why || null,
+    level: d.level || null,
     cards: d.cards.length,
     known: Math.min(counts[d.id] || 0, d.cards.length),
     due: dueIn(d.id, d.cards),
     own: false
   }));
+
+  /* And the one that is assembled rather than stored, at the top where it
+     belongs: what somebody got wrong is the most useful thing on this page and
+     the only part of it they did not choose. Left out entirely when it is
+     empty — a row reading "0" would be a standing reminder of nothing. */
+  const missed = [...known.values()].filter((was) => was.missed).length;
+  if (missed > 0) {
+    list.unshift({
+      id: MISSED_DECK,
+      name: null,
+      why: null,
+      level: null,
+      cards: missed,
+      known: 0,
+      due: missed,
+      own: false,
+      missed: true
+    });
+  }
 
   if (user) {
     const { results } = await env.DB
@@ -361,6 +502,7 @@ export async function onRequestGet(context) {
         name: row.name,
         why: null,
         cards: row.cards,
+        level: null,
         known: Math.min(counts[row.id] || 0, row.cards),
         due: dueIn(row.id, byDeck[row.id] || []),
         own: true
@@ -590,10 +732,21 @@ async function mark(context, body, user, knew) {
         .run();
     });
   } else {
-    await env.DB
-      .prepare('DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ? AND card_id = ?')
-      .bind(user.id, deckId, cardId)
-      .run();
+    /* Into box nought, where the missed deck finds it — rather than deleted,
+       which is what this did before there was a missed deck and which threw
+       away the one thing somebody wanted to look at afterwards. Due now, so
+       it is in the next run of its own deck as well: getting a card wrong
+       should not take it out of the deck it belongs to. */
+    await readingBoxes(env, (boxes) =>
+      env.DB
+        .prepare(boxes
+          ? 'INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at, box, due_at) ' +
+            'VALUES (?, ?, ?, ?, ?, ?)'
+          : 'DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ? AND card_id = ?')
+        .bind(...(boxes
+          ? [user.id, deckId, cardId, Date.now(), MISSED, Date.now()]
+          : [user.id, deckId, cardId]))
+        .run());
   }
 
   return json({ ok: true }, 200);
@@ -608,6 +761,20 @@ async function reset(context, user, deckId) {
 
   const id = String(deckId || '');
   if (!MINTED.test(id) && !WRITTEN.test(id)) return json({ error: 'not-found' }, 404);
+
+  /* Emptying the missed deck is not deleting a deck's rows — it is taking the
+     nought off every card that is in it, wherever it came from. Those cards go
+     back to being unseen, which is what "forget what I know" means there. */
+  if (id === MISSED_DECK) {
+    await readingBoxes(env, (boxes) =>
+      env.DB
+        .prepare(boxes
+          ? 'DELETE FROM flashcard_known WHERE user_id = ? AND box = ?'
+          : 'DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ?')
+        .bind(...(boxes ? [user.id, MISSED] : [user.id, id]))
+        .run());
+    return json({ reset: id }, 200);
+  }
 
   await env.DB
     .prepare('DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ?')

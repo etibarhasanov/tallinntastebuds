@@ -3072,7 +3072,7 @@ the column it was. One card, one column, is what every other card here is.
 
 ### The second door on that card
 
-**Estonian flashcards**, under the profile: ten decks of Estonian and the ones
+**Estonian flashcards**, under the profile: sixteen decks of Estonian and the ones
 you write yourself — see **[Flashcards](#flashcards)**. It is a row rather than
 a word along the foot for the reason the profile is: a door is a place to go
 and a word is a thing you do to the account.
@@ -6153,8 +6153,8 @@ this feature exists.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: ten decks of
-Estonian, two hundred and three cards, the Estonian on the front and the
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: sixteen
+decks of Estonian, three hundred and five cards, the Estonian on the front and the
 English on the back, and one card at a time with two words under it — *Knew
 it*, and *Show me again*.
 
@@ -6207,7 +6207,7 @@ changed its mind after it was built. It shipped `noindex` for a day, on the
 reasoning that a deck somebody wrote is theirs alone. That reasoning is right
 and it is about the wrong half: what a deck of your own needs is your session,
 which no crawler has, and the route answers that address `noindex` on its own
-account. The **ten decks the site ships are a file anybody may read**, and
+account. The **decks the site ships are a file anybody may read**, and
 somebody searching for what *Arve, palun* means should find this site
 answering.
 
@@ -6235,8 +6235,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: ten decks, two hundred and
-three cards, deployed as a file and read as one. It is **content** — somebody
+`data/decks.json` is the Estonian the site ships: sixteen decks, three hundred
+and five cards, deployed as a file and read as one. It is **content** — somebody
 edits the repository, the deploy carries it, every reader gets the same cards —
 and content that changes when the repository changes belongs in the repository.
 A row per card would be a copy of a file that only a deploy changes, and the
@@ -6271,7 +6271,7 @@ out any more.
 
 ### Signed out, every deck still works
 
-The ten decks and every card in them are a file, and a file has nobody to
+The decks and every card in them are a file, and a file has nobody to
 check. Turn them over signed out, all of them, as many times as you like.
 
 What an account buys is that **Knew it is remembered** — on the account rather
@@ -6318,6 +6318,37 @@ the tap that would otherwise follow it**, so a scroll that began on the card
 does not turn it over on the way past — the rule the map's sheet has had since
 it could be dragged.
 
+### The deck of what you got wrong
+
+**Words you missed** sits at the top of the decks page whenever it is not
+empty: every card you have pressed *Show me again* on, from every deck, in one
+place. It is the thing people actually want after a run, and until it existed
+the answer to "show me the ones I got wrong" was to go back through the deck
+they came from and hope.
+
+**It is a query, not a table.** There is no row in `flashcard_decks` for it and
+there never will be. A card you get wrong goes into **box nought** — a rung
+below the first, which is exactly what a missed card is — and the deck is every
+row of yours sitting there. A second table holding the same cards under another
+name would be two places for one card to be, and two places to keep in step.
+
+That is also why *Show me again* no longer deletes the row. It used to, back
+when a row existing was the whole of what the table said; deleting threw away
+the one fact somebody wanted afterwards.
+
+**A card in it knows which deck it is really from**, and answering it writes to
+that row. Nothing is ever stored under the id `missed` — `tools/validate.mjs`
+refuses a shipped deck that claims the name, so the two namespaces cannot meet.
+
+Getting it right takes it out, because it is in box one now. **Forget what I
+know** on that deck takes the nought off every card in it at once, which is the
+only write on this site that reaches rows across several decks — it is bounded
+by being one person's own, and it is the same sentence *Forget what I know*
+means everywhere else.
+
+A missed card is also still due in the deck it came from. Getting a word wrong
+should not quietly take it out of the deck it belongs to.
+
 ### The spacing
 
 A card answered right goes up a box and waits: **a day, then three, then a
@@ -6361,6 +6392,26 @@ costs is that the card comes round again next time, which is the harmless
 direction, and what a toast would cost is an interruption in the middle of the
 one thing the page is for.
 
+### Three levels
+
+Sixteen decks is too many for one column, and they are not all for the same
+person on the same day. So the decks page groups them under three quiet
+headings — **First words**, **Getting by**, **Going deeper** — and a deck
+carries which one it is in as `level` in `data/decks.json`: `start`, `more` or
+`deep`.
+
+*First words* is the twenty words, the numbers, the table and the food: what
+somebody needs in their first week. *Getting by* is the street, the shop, the
+small talk, the weather, and the verbs the rest of the language hangs off.
+*Going deeper* is the three that are not about a good day out — the doctor, the
+paperwork, and the country past the old town.
+
+The headings are `.lists-section`, the same quiet heading `/lists` puts over a
+run of rows, and a level with nothing in it draws no heading: the headings are
+for the decks rather than the other way round. `tools/validate.mjs` fails a
+deck whose level is not one of the three, because a deck under no heading is a
+deck nobody scrolls to.
+
 ### Three forms, where a word has three
 
 A dictionary gives an Estonian noun as three: *leib, leiva, leiba* — the
@@ -6373,10 +6424,13 @@ The front stays one word. What is being asked is still what it means, and a
 card that opened with three forms would be asking somebody to read a paradigm
 before they had read a word.
 
-`forms` is an optional pair on a card in `data/decks.json` — the genitive and
-the partitive, in that order, with the nominative being `front`. It is optional
+`forms` is an optional pair on a card in `data/decks.json` — the two forms a
+dictionary prints after the first, with `front` being the first. For a noun
+that is the genitive and the partitive; for a verb it is the *da*-infinitive
+and the first person singular, so **minema, minna, lähen**, which is the same
+three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **108 of the 203 cards
+parts, and a row of three under it would be nonsense. **210 of the 305 cards
 carry them** today; the ones that do not are the phrases, and a handful of
 words left alone rather than guessed at. `tools/validate.mjs` fails on a
 `forms` that is not exactly two non-empty strings, because a row of two drawn
@@ -6390,6 +6444,27 @@ got.
 **These are mine and not a native speaker's**, like the rest of the Estonian
 here. They are the forms of common words and I am confident in them; they have
 not been checked by anybody who grew up with the language.
+
+### And the word in a sentence
+
+Under the forms, where a card has one: the Estonian and what it means, as two
+lines. A word on its own is a thing to recognise and a word in a sentence is a
+thing to say — and the case it is standing in there is half of what the three
+forms above it are for. *Leib, leiva, leiba* is a paradigm; **Ma tahan musta
+leiba** is why the third one matters.
+
+It is the last thing on the card and the quietest, because somebody who has
+already remembered the word is done before they reach it.
+
+`sentence` is an optional `{ et, en }` on a card, and the validator wants both
+halves or neither — half of one drawn on a card would be a stray clause with no
+translation. **130 of the 305 cards** carry one: every card in the six newer
+decks, and the ones in the older decks where an example says something the
+gloss does not.
+
+They are in the indexed text too, and they are the most searchable thing on the
+page: a whole Estonian sentence with its English under it is what somebody is
+actually holding when they look a word up.
 
 ### The decks people write
 
@@ -6493,7 +6568,7 @@ functions/flashcard.js         the route that serves it, with the deck's head
 assets/flashcard.js            the browser half, and the third sign-in form
 assets/flashcard.css           its rules
 functions/api/flashcard.js     the API route, and the three tables' only writer
-data/decks.json                the ten decks the site ships
+data/decks.json                the sixteen decks the site ships
 ```
 
 Then take these back out. Each is an addition to a file that stood before it,
@@ -8068,8 +8143,9 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            ten decks of Estonian, 203 cards; content rather
-                           than interface, so English and Estonian alone
+data/decks.json            sixteen decks of Estonian, 305 cards at three
+                           levels; content rather than interface, so English
+                           and Estonian alone
 blog.html                  a post per thing this site does   } unlinked, and
 assets/blog.js             the index, one post, and the walk  } indexed on
 assets/blog.css            only what a page of prose has      } purpose
@@ -9561,7 +9637,7 @@ Flashcards, `assets/flashcard.js`:
 | `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`) — one per card answered, and which of the two ways it was answered |
-| `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one |
+| `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_back`, `home` | `deck_id` on the first |
 

@@ -17,7 +17,7 @@
  * unlinked and indexed, not unlinked and hidden. The page shipped with a
  * noindex for a day, on the reasoning that a deck somebody wrote is theirs
  * alone. That is still true and this does not touch it: what is indexed is the
- * ten decks in data/decks.json, which are a file anybody may read, and a deck
+ * sixteen decks in data/decks.json, which are a file anybody may read, and a
  * out of the database needs a session that no crawler has and is served with a
  * noindex — see indexable below.
  *
@@ -60,8 +60,8 @@ const DECKS_FILE = '/data/decks.json';
    and nothing else, so there is no tenth translation of this page to prefer. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
-  'Ten decks of everyday Estonian — greetings, numbers, the words at the table, ' +
-  'getting around Tallinn — with the Estonian on one side and the English on the other.';
+  'Sixteen decks of Estonian, from the first twenty words to a doctor\'s waiting ' +
+  'room — the word, its three forms and a sentence to say it in.';
 
 /* A deck id as data/decks.json spells one. Anything else is either somebody's
    own deck, whose sixteen hex characters mean nothing without their session,
@@ -122,8 +122,14 @@ function deckWords(deck) {
   const forms = (card) => Array.isArray(card.forms) && card.forms.length === 2
     ? ' (' + esc(card.forms[0]) + ', ' + esc(card.forms[1]) + ')'
     : '';
+  /* And the example, where there is one. It is the most searchable thing on
+     the page: a whole Estonian sentence with its English under it is what
+     somebody is actually holding when they look one up. */
+  const said = (card) => card.sentence && card.sentence.et && card.sentence.en
+    ? '<p>' + esc(card.sentence.et) + ' — ' + esc(card.sentence.en) + '</p>'
+    : '';
   const pair = (card) =>
-    '<dt>' + esc(card.front) + forms(card) + '</dt><dd>' + esc(card.back) + '</dd>';
+    '<dt>' + esc(card.front) + forms(card) + '</dt><dd>' + esc(card.back) + said(card) + '</dd>';
   return '<h1>' + esc(deck.name) + '</h1>' +
     (deck.why ? '<p>' + esc(deck.why) + '</p>' : '') +
     '<dl>' + deck.cards.map(pair).join('') + '</dl>' +
