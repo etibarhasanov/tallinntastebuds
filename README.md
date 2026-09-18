@@ -6275,9 +6275,10 @@ changes belongs in the repository. A row per card would be a copy of a file
 that only a deploy changes, and the first thing anybody would then have to
 write is the tool that keeps the two in step.
 
-The three tables hold the two things a file cannot: the decks people write for
-themselves, and how far each person has got. `functions/api/flashcard.js` is
-the only thing that writes any of them.
+The four tables hold the three things a file cannot: the decks people write for
+themselves, how far each person has got, and which of the shipped cards a
+reader has said is wrong. `functions/api/flashcard.js` is the only thing that
+writes any of them.
 
 ### The back of the card is in three languages
 
@@ -6335,8 +6336,8 @@ thing that has always decided the interface there.
 the old argument stands: it is deliberately *not* the arrangement splitwise has,
 where the strings live in a file of their own. The `/site` skill says in so many
 words that there is one such exception and a second would be two files to keep
-in step. So the forty-nine `flash*` keys are in `ui.json`, and taking this
-feature out means taking forty-nine keys out of ten blocks rather than deleting
+in step. So the sixty-one `flash*` keys are in `ui.json`, and taking this
+feature out means taking sixty-one keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
 
@@ -6602,6 +6603,93 @@ the English one — what a word is looked up *with* is the word, and the Estonia
 of the sentence is already on the page beside it, so writing all three would put
 the same sentence into the page three times.
 
+### This card is wrong
+
+Under the two answers, on a turned-over card in a deck the site ships, one
+quiet press: **Something is wrong here**. It reports the card and says
+*Reported. Thank you* where it stood. Nothing else happens, the run carries on,
+and the next card is up.
+
+It is here because of the two paragraphs above it. The Estonian on this site is
+mine: the forms are the forms of common words and I am confident in them, the
+sentences are sentences I would say, and none of it has been read by anybody
+who grew up with the language. Five hundred and fifty-eight cards written that
+way have mistakes in them, and the people turning them over are the only
+proofreaders this deck has ever had.
+
+**One press, and nothing to type.** No box for a reason, no three buttons
+asking whether it is the meaning, the forms or the sentence. What a reader can
+tell me reliably is that something on this card is wrong; which part of it is
+wrong is mine to look at, and the row already carries the thing that halves the
+search — **which language the back was being read in**, since a card's back is
+written in three and a wrong Russian one is a different fix from a wrong
+English one.
+
+**It needs no account**, which makes it the one write on this page that does
+not — every other one, the two that only say a card was known included, takes a
+session. The decks turn over signed out and most of the people reading them
+are; a mistake you have to make an account to report is a mistake nobody
+reports. It is filed under the same hashed network fingerprint the saves and
+the feedback are capped by, in the primary key rather than beside it, so one
+person pressing one card twice is one row and the count is how many *people*
+said so. Two readers behind one network with the same phone count as one, which
+is the safe direction to be wrong in.
+
+**And it is never a number on the card.** No route answers with the count, no
+page draws it, and there will not be a "reported by 4" under a word: that would
+tell somebody learning Estonian to distrust a card that is very often perfectly
+right. The only reader of the table is me, and the query is one:
+
+```sql
+SELECT deck_id, card_id, lang, COUNT(*) AS n FROM flashcard_reports
+GROUP BY deck_id, card_id, lang ORDER BY n DESC;
+```
+
+More than a couple against one card is a card to go and look at. One is usually
+somebody who pressed the wrong thing, which is exactly why there is nothing to
+take back: a misclick costs me a glance, and an undo would be a second control
+under the two answers for the sake of it.
+
+**A card that has been fixed has its rows cleared**, in the deploy that fixes
+it or soon after — otherwise the next look sees a card that has already been
+dealt with, and the people who reported it cannot report it again, since the
+fingerprint is in the primary key and a second press is a no-op whether the
+card has changed or not. Clearing them is part of fixing the card rather than
+tidying up after it.
+
+It is a **terminal** line and not a session's, and that is the write gate
+working rather than an inconvenience: the rows are picked out by two thirds of
+a primary key, which is a `WHERE` whose size is not in the statement, and
+`.claude/hooks/d1-write-gate.mjs` refuses those outright rather than prompting.
+So it goes where every write whose count nobody can state goes:
+
+```
+wrangler d1 execute tallinntastebuds-preview --remote \
+  --command "DELETE FROM flashcard_reports WHERE deck_id = 'table' AND card_id = 'arve'"
+wrangler d1 execute tallinntastebuds         --remote \
+  --command "DELETE FROM flashcard_reports WHERE deck_id = 'table' AND card_id = 'arve'"
+```
+
+**Only the decks the site ships.** A deck you wrote has an editor with a
+**Remove** on every row, so reporting your own words to me would be a loop, and
+the route refuses a minted deck id outright. The missed deck draws no line
+either — its cards are all reportable in the decks they came from.
+
+Three states and that is all of them: the press, *Reported. Thank you*, and —
+where the write did not land, because the table is not there yet or because
+twenty cards have been reported from this network in the last hour — the line
+comes back and a toast says why. It is the one press on this page that waits
+for its write: *Knew it* and *Show me again* are pressed a hundred times in a
+sitting and are silent when they fail, and this is pressed once, deliberately,
+by somebody who should not be told it landed when it did not.
+
+**Nothing on the page remembers across a reload.** *Reported. Thank you* lasts
+as long as the tab does, and the next visit offers the line again. Keeping it
+in `localStorage` was the obvious other answer and it is the wrong one twice
+over: it would go on saying *Reported* about a card long after the card had
+been fixed, and it would be a third thing this page stores to say something the
+table already knows. The second press is a no-op, which costs nobody anything.
+
 ### The decks people write
 
 Signed in, **Words you collected**: name a deck, and it opens on the form that
@@ -6628,6 +6716,7 @@ knew better.
 | | who |
 |---|---|
 | turn over a deck the site ships | anybody at all, signed in or not |
+| say one of its cards is wrong | anybody at all, signed in or not — once per card per network |
 | have that remembered | any account, and it is the only thing an account is for here |
 | write a deck | any account |
 | read one, add to it, rename it, delete it | its owner, and nobody else |
@@ -6641,6 +6730,7 @@ knew better.
 | `MAX_CARDS` | 200 | per deck — several times the longest deck the site ships. Past it the thing being asked for is a vocabulary manager |
 | `MAX_NAME` | 60 | a deck's name |
 | `MAX_SIDE` | 60 | either side of a card. "Kas ma saan maksta kaardiga?" is thirty-one; a paragraph on a flashcard is a note, and notes want a different feature |
+| `REPORTS_PER_HOUR` | 20 | cards one network fingerprint may report wrong in an hour. Far more than anybody turning cards over finds wrong in a sitting, and far less than a script would want |
 
 They are in `functions/api/flashcard.js`, which is the copy that binds.
 `MAX_NAME` and `MAX_SIDE` are restated in `assets/flashcard.js` so a field
@@ -6689,9 +6779,20 @@ Two things, and neither is automatic:
    one form and a certificate that issues itself. Until it is added, everything
    works at `/flashcard` and the subdomain does not resolve.
 
-There is no third variable and no second service. `DB` is the binding, and this
-is the one feature here that does not need `SAVE_SALT` at all: nothing it
-stores is hashed or fingerprinted.
+There is no third variable and no second service. `DB` is the binding, and
+`SAVE_SALT` is wanted by exactly one press: **Something is wrong here**, which
+is filed under a hashed network fingerprint because it is filed under nobody
+else. Without the salt that one press answers 503 and says so, the way a save
+does, rather than writing a row anybody could add to for ever; everything else
+here — the decks, the runs, the spacing, the decks you write — never touches
+it. This section used to say the feature needed it not at all, and that was
+true until there was something here to count.
+
+**A database that already had the other three tables needs the fourth
+added.** `IF NOT EXISTS` means re-running the file above is the whole of it,
+and until it is run the button is there and every press answers *That did not
+work* — the route catches the missing table rather than throwing a 500, which
+is the same bargain `readingBoxes()` takes above.
 
 ### Taking it out
 
@@ -6723,16 +6824,16 @@ and each is fenced or prefixed so it can be found by looking:
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
-| `data/ui.json` | the forty-nine `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list |
+| `data/ui.json` | the sixty-one `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
 | `README.md` | this section, its line in **Contents**, its five lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
 | `.claude/skills/api/SKILL.md` | the `/api/flashcard` row, and the flashcards clause in the `/*` row |
 | `.claude/skills/site/SKILL.md` | the `flashcard.html` in the stamped-pages list |
 
 And in Cloudflare: remove `flashcard.tallinntastebuds.ee` from the Pages
-project's **Custom domains**, and drop the three tables — `flashcard_known`
-first, then `flashcard_cards`, `flashcard_decks` — from both databases, along
-with their block in `db/schema.sql`.
+project's **Custom domains**, and drop the four tables — `flashcard_reports`
+and `flashcard_known` first, then `flashcard_cards`, `flashcard_decks` — from
+both databases, along with their block in `db/schema.sql`.
 
 **What it borrows and does not touch.** `functions/api/_lib.js` is imported
 from and not edited — `json()`, `sessionUser()`, `wrongDatabase()`,
@@ -6766,6 +6867,13 @@ a decision rather than a first version.
 field in `data/decks.json`, which is content the repository carries; a deck
 somebody types is two sides, because a third box asking for a genitive is a
 grammar lesson in a form that was meant to take a word and its meaning.
+
+**Nothing comes back from a report**, either. No reply under it, no page
+listing what has been reported, no row on `/admin.html` — that page reaches
+GitHub rather than the database, and a tab for this would be an authenticated
+route for a query that is one line. No undo, no reason to pick from, and no
+count anywhere a reader can see: **This card is wrong** above says why each of
+those is a decision rather than a first pass.
 
 It is also not on the map, and must not become so. Nothing in `data/` knows
 this feature exists except the file of words it reads.
@@ -8242,8 +8350,9 @@ functions/api/geocode.js   a typed street to a point, for the add-a-place form
 functions/api/profile.js   one person's public lists, and their standing
 functions/api/split.js     splitwise: a group, who is in it, what everybody
                            paid, and who hands what to whom
-functions/api/flashcard.js flashcards: the decks somebody wrote, and which
-                           cards each account knows
+functions/api/flashcard.js flashcards: the decks somebody wrote, which cards
+                           each account knows, and which of the shipped ones
+                           a reader has said is wrong
 functions/flashcard.js     the page, with a deck's head and a deck's words
                            written into it so a search finds the Estonian
 functions/api/_lib.js      what those routes share (not a route: leading _)
@@ -9781,6 +9890,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`), `face` (`front`/`back`) — one per card answered, which of the two ways it was answered, and whether the card had been turned over first: `front` is a throw on a card nobody opened |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
+| `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |
 | `flash_back`, `home` | `deck_id` on the first |
 
 The pass pages, `assets/deal.js` and `assets/verify.js` — nothing on them is
