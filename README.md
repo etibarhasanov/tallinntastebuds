@@ -6399,6 +6399,23 @@ Signed out the run is kept in the tab and nowhere else, and the account is
 offered **at the end of the deck** rather than in front of it. Nobody should be
 asked to make an account to find out whether a thing is worth one.
 
+**And making one keeps the run that argued for it.** That took a mechanism
+rather than good intentions: the card says "Remember where you got to", and
+both ways of taking it up leave the page — the password form reloads, Continue
+with Google goes to Google and comes back — so the twenty cards that were the
+whole of the evidence had gone by the time somebody acted on them. Signing in
+at the end of a deck put you back at the start of it, which is the opposite of
+what the sentence you pressed had said.
+
+So an answer given with nobody to tell is written into the tab's own storage as
+it is given, and the first load that arrives with a session posts the lot and
+clears it. `sessionStorage` rather than `localStorage`, because the run is the
+tab's — closing the tab on a deck rather than signing in is an answer too — and
+keyed by card, so a word got wrong and then right in one run arrives as the
+answer it ended on rather than as two writes racing. Past two hundred cards it
+stops keeping them, and those are asked again next time, which is the same
+harmless direction a failed write already errs in.
+
 ### How a run works, and when a card comes back
 
 Opening a deck builds a run of what is **due**: everything you have never got
