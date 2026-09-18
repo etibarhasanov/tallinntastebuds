@@ -258,11 +258,12 @@ if (splitUi !== null) {
 /* ----------------------------------------------------------- end SPLITWISE */
 
 /* -------------------------------------------------------------- FLASHCARDS
-   data/decks.json — the Estonian the flashcards page ships: ten decks and two
-   hundred cards, deployed as a file and read as one. It is content rather than
-   interface, so it is English and Estonian alone and none of the ten languages
-   applies to it — the same footing a blog post is on. See **Flashcards** in
-   README.md; this block is all this file knows about that feature.
+   data/decks.json — the Estonian the flashcards page ships: twenty-seven decks
+   and five hundred cards, deployed as a file and read as one. It is content
+   rather than interface, so it is English and Estonian alone and none of the
+   ten languages applies to it — the same footing a blog post is on. See
+   **Flashcards** in README.md; this block is all this file knows about that
+   feature.
 
    The one check here that is not about the file being well formed is the last:
    a deck id shaped like a minted one. functions/api/flashcard.js tells a deck

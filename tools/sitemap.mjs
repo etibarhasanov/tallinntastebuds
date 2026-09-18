@@ -55,7 +55,7 @@
  * was not, and /lists/kept before that; both still answer, as 301s, and
  * neither is here, since a sitemap is for the address a page is at.
  *
- * /flashcard and the ten decks under it are here for the reason /blog is:
+ * /flashcard and the decks under it are here for the reason /blog is:
  * nothing on this site links to them except one row on /account.html, behind
  * a sign-in, so this file is very nearly the only way a crawler arrives. What
  * is at those addresses is Estonian — functions/flashcard.js writes each

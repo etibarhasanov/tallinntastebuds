@@ -3072,8 +3072,8 @@ the column it was. One card, one column, is what every other card here is.
 
 ### The second door on that card
 
-**Estonian flashcards**, under the profile: twenty-two decks of Estonian and the ones
-you write yourself — see **[Flashcards](#flashcards)**. It is a row rather than
+**Estonian flashcards**, under the profile: twenty-seven decks of Estonian and
+the ones you write yourself — see **[Flashcards](#flashcards)**. It is a row rather than
 a word along the foot for the reason the profile is: a door is a place to go
 and a word is a thing you do to the account.
 
@@ -6153,8 +6153,8 @@ this feature exists.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: twenty-two
-decks of Estonian, four hundred and eighteen cards, the Estonian on the front
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: twenty-seven
+decks of Estonian, five hundred and twenty-six cards, the Estonian on the front
 and the English on the back, and one card at a time with two words under it —
 *Knew it*, and *Show me again*.
 
@@ -6235,8 +6235,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: twenty-two decks, four
-hundred and eighteen cards, deployed as a file and read as one. It is
+`data/decks.json` is the Estonian the site ships: twenty-seven decks, five
+hundred and twenty-six cards, deployed as a file and read as one. It is
 **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -6394,19 +6394,21 @@ one thing the page is for.
 
 ### Three levels
 
-Twenty-two decks is far too many for one column, and they are not all for the same
-person on the same day. So the decks page groups them under three quiet
+Twenty-seven decks is far too many for one column, and they are not all for the
+same person on the same day. So the decks page groups them under three quiet
 headings — **First words**, **Getting by**, **Going deeper** — and a deck
 carries which one it is in as `level` in `data/decks.json`: `start`, `more` or
 `deep`.
 
 *First words* is the twenty words, the numbers, the table and the food: what
 somebody needs in their first week. *Getting by* is the street, the shop, the
-small talk, the weather, what you wear, the word over a shop door, and the
-verbs the rest of the language hangs off. *Going deeper* is the five that are
-not about a good day out — the doctor, the paperwork, the country past the old
-town, the cleaner's with your jacket in it, and the adverbs that belong to no
-lesson and turn up in every second sentence.
+coffee shop, the small talk, the weather, what you wear, the word over a shop
+door, deciding what to do with a free day, and the verbs the rest of the
+language hangs off. *Going deeper* is the eight that are not about a good day
+out — the doctor, the paperwork, the country past the old town, the cleaner's
+with your jacket in it, the adverbs that belong to no lesson, the second
+handful of verbs, what *pean* and *tahan* do to the verb after them, and the
+words on a page of writing.
 
 The headings are `.lists-section`, the same quiet heading `/lists` puts over a
 run of rows, and a level with nothing in it draws no heading: the headings are
@@ -6432,7 +6434,7 @@ that is the genitive and the partitive; for a verb it is the *da*-infinitive
 and the first person singular, so **minema, minna, lähen**, which is the same
 three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **280 of the 418 cards
+parts, and a row of three under it would be nonsense. **322 of the 526 cards
 carry them** today; the ones that do not are the phrases, the adverbs, the
 garments that are plural in Estonian — *teksad* has no singular anybody wears —
 and a handful of words left alone rather than guessed at. `tools/validate.mjs` fails on a
@@ -6461,9 +6463,9 @@ already remembered the word is done before they reach it.
 
 `sentence` is an optional `{ et, en }` on a card, and the validator wants both
 halves or neither — half of one drawn on a card would be a stray clause with no
-translation. **240 of the 418 cards** carry one: every card in the twelve newer
-decks bar the four that are a whole sentence already, and the ones in the older
-decks where an example says something the gloss does not.
+translation. **321 of the 526 cards** carry one: every card in the seventeen
+newer decks bar the ones that are a whole sentence already, and the ones in the
+older decks where an example says something the gloss does not.
 
 They are in the indexed text too, and they are the most searchable thing on the
 page: a whole Estonian sentence with its English under it is what somebody is
@@ -8146,7 +8148,7 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            twenty-two decks of Estonian, 418 cards at three
+data/decks.json            twenty-seven decks of Estonian, 526 cards at three
                            levels; content rather than interface, so English
                            and Estonian alone
 blog.html                  a post per thing this site does   } unlinked, and

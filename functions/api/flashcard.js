@@ -2,23 +2,23 @@
  * Tallinn Tastebuds — flashcards, and the Estonian on them.
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: twenty-two decks of Estonian, four
- * hundred and eighteen cards, Estonian on the front and English on the back,
- * and a person turning them over one at a time. It lives on its own subdomain —
- * flashcard.tallinntastebuds.ee, routed by functions/_middleware.js — for the
- * reason splitwise does: it is not the map, and a sixth card on the account
- * page reading "Flashcards" would have been a second product filed under
- * somebody's saved places.
+ * menu. This is the other half of that: twenty-seven decks of Estonian, five
+ * hundred and twenty-six cards, Estonian on the front and English on the back,
+ * and a person turning them over one at a time. It lives on its own
+ * subdomain — flashcard.tallinntastebuds.ee, routed by
+ * functions/_middleware.js — for the reason splitwise does: it is not the map,
+ * and a sixth card on the account page reading "Flashcards" would have been a
+ * second product filed under somebody's saved places.
  *
  * WHERE THE WORDS ACTUALLY ARE, WHICH IS MOSTLY NOT HERE
  *
  * The decks this site ships are data/decks.json, deployed as a file and read
  * as one through dataFile() below. They are content: somebody edits the
- * repository, the deploy carries them, and every reader gets the same four
- * hundred and eighteen cards. Nothing about them is in the database and nothing
- * needs to be — a row per card per deployment would be a copy of a file that
- * only a deploy changes, and the first thing anybody would have to write is the
- * tool that keeps the two in step.
+ * repository, the deploy carries them, and every reader gets the same five
+ * hundred and twenty-six cards. Nothing about them is in the database and
+ * nothing needs to be — a row per card per deployment would be a copy of a file
+ * that only a deploy changes, and the first thing anybody would have to write
+ * is the tool that keeps the two in step.
  *
  * What the tables hold is the two things a file cannot: the decks people
  * write for themselves, and how far each person has got. See
@@ -36,8 +36,8 @@
  *
  * SIGNED OUT, THE DECKS STILL WORK
  *
- * Everything the site ships is readable with no account at all: the sixteen
- * decks and every card in them are a file, and a file has nobody to check. What an
+ * Everything the site ships is readable with no account at all: the decks and
+ * every card in them are a file, and a file has nobody to check. What an
  * account buys is that pressing "Knew it" is remembered — on the account, not
  * on the device, so the deck you got half through on a phone is half through
  * on a laptop. Signed out, the page keeps the run in memory and offers an
@@ -241,7 +241,7 @@ async function readingBoxes(env, make) {
 /* Every card this person has said they know, and whether it is due to be
    asked again: a Map of "<deck>/<card>" to true for due, false for resting.
    One indexed read over their own rows, rather than a query per deck — an
-   account that has been through everything this site ships holds four hundred
+   account that has been through everything this site ships holds five hundred
    rows, which is smaller than the answer the page is about to draw anyway. */
 async function knownOf(env, user) {
   if (!user) return new Map();
