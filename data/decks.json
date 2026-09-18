@@ -16,6 +16,11 @@
           "back": "Good morning"
         },
         {
+          "id": "tere-paevast",
+          "front": "Tere päevast",
+          "back": "Good afternoon"
+        },
+        {
           "id": "tere-ohtust",
           "front": "Tere õhtust",
           "back": "Good evening"
@@ -64,11 +69,6 @@
           "id": "head-nadalavahetust",
           "front": "Head nädalavahetust",
           "back": "Have a good weekend"
-        },
-        {
-          "id": "tere-hilja",
-          "front": "Tere hilja",
-          "back": "Hello, late in the day"
         },
         {
           "id": "kena-ohtut",
