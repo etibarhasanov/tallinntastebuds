@@ -521,8 +521,19 @@ export async function onRequestGet(context) {
   /* How many of a deck this person knows, and how many of it are waiting for
      them now. The second is the one the row prints when it is not nought —
      "6 due" is a reason to open a deck and "9 / 22" is a fact about one.
-     A card in box nought counts towards neither: it is not known, and it is
-     waiting in the missed deck rather than in the one it came from. */
+
+     A card in box nought counts towards the second and not the first, and
+     that is the whole of what box nought means: it is not known, and it is
+     due. It used to be left out of both, which made the row disagree with the
+     deck behind it — nine of twenty-two known and nothing said to be waiting,
+     and then opening it ran the three cards that had been got wrong. The run
+     was right. Getting a word wrong does not take it out of the deck it
+     belongs to — see mark() below, and **The deck of what you got wrong** in
+     README.md — so the row says so.
+
+     It is waiting in the missed deck as well, and those are the same cards
+     counted in two places on purpose. One place is the deck they came from
+     and the other is every deck at once. */
   const counts = {};
   known.forEach((was, key) => {
     if (!was.known) return;
@@ -530,10 +541,7 @@ export async function onRequestGet(context) {
     counts[deck] = (counts[deck] || 0) + 1;
   });
   const dueIn = (deck, cards) =>
-    cards.filter((c) => {
-      const was = stateOf(known, deck, c.id);
-      return was.due && !was.missed;
-    }).length;
+    cards.filter((c) => stateOf(known, deck, c.id).due).length;
 
   const list = decks.map((d) => ({
     id: d.id,

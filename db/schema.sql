@@ -943,20 +943,25 @@ CREATE INDEX IF NOT EXISTS idx_flashcard_cards_deck ON flashcard_cards (deck_id,
 -- One row is one card one person has said they know, and when they should be
 -- asked it again.
 --
--- A row existing IS the fact that it is known, which is why there is no
--- `known` column to be 0 or 1. Pressing "Knew it" writes the row, pressing
--- "Show me again" deletes it, and a card nobody has ever pressed has no row at
--- all — so the table holds what people have learnt rather than a line per card
--- per person, and the deck somebody opened once and closed costs nothing.
+-- A card nobody has ever pressed has no row at all, so the table holds what
+-- people have answered rather than a line per card per person, and the deck
+-- somebody opened once and closed costs nothing.
+--
+-- A row existing WAS the whole fact, back when "Knew it" wrote one and "Show
+-- me again" deleted it. It is the `box` column now, and a row can say either
+-- thing: deleting threw away the one fact somebody wants after a run, which is
+-- which words they got wrong. See **The deck of what you got wrong** in
+-- README.md.
 --
 -- THE TWO COLUMNS AT THE BOTTOM ARE THE SPACING
 --
 -- A card answered right goes up a box and comes back later: one day, then
 -- three, then a week, then a fortnight, then five weeks, then eleven. A card
--- answered wrong loses its row and is back in the next run from the beginning.
--- That is Leitner's scheme and not SM-2: there is no ease factor and no grade
--- out of five, because this page asks one question with two answers and a
--- scheduler cannot be cleverer than what it is told.
+-- answered wrong goes to box nought, due now — not down a rung — so it opens
+-- the next run of its own deck and is in the deck of what you got wrong until
+-- it is got right. That is Leitner's scheme and not SM-2: there is no ease
+-- factor and no grade out of five, because this page asks one question with
+-- two answers and a scheduler cannot be cleverer than what it is told.
 --
 -- The intervals themselves are BOXES in functions/api/flashcard.js, which is
 -- the copy that binds; nothing here knows what a box is worth. See

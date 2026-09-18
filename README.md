@@ -6499,7 +6499,12 @@ by being one person's own, and it is the same sentence *Forget what I know*
 means everywhere else.
 
 A missed card is also still due in the deck it came from. Getting a word wrong
-should not quietly take it out of the deck it belongs to.
+should not quietly take it out of the deck it belongs to — **and the deck's own
+row says so**, which it did not for a while. A card in box nought was being
+left out of both numbers on that row, so a deck with three cards you had got
+wrong read "9 / 22" and claimed nothing was waiting, and then opening it ran
+those three. The run was the half that was right. Box nought is exactly "not
+known, and due", and the row prints both halves of that now.
 
 ### The spacing
 

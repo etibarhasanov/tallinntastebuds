@@ -1288,13 +1288,24 @@
        two of them on one screen would be the page offering the same door
        twice. Only where there is something to forget, and only where it is kept
        anywhere — signed out the run was this tab's and closing it is the
-       whole of forgetting. */
-    if (state.user && state.ready && mine > 0) {
+       whole of forgetting.
+     *
+       The missed deck is the second sort of something, and it is not a count
+       of what is known: every card in it is in box nought, so `mine` is nought
+       there by construction and the button never appeared at all — on the one
+       deck README.md names it for. What it forgets there is the nought on
+       every card in it at once, wherever the card came from. */
+    if (state.user && state.ready && (mine > 0 || state.deck.missed)) {
       var wipe = el('button', { type: 'button', className: 'alt is-danger', textContent: t('flashForget') });
       wipe.addEventListener('click', function () {
         post(FLASH_API, { action: 'reset', deck: state.deck.id }).then(function (a) {
           if (!a.ok) { toast(say(a.out)); return; }
           TTBTrack.event('flash_reset', { deck_id: state.deck.id });
+          /* The missed deck is those rows and nothing else, so forgetting it
+             is the deck itself going: there is nothing left here to go
+             through again, and the decks page is where it was. Every other
+             deck is a file or a table and stays where it is. */
+          if (state.deck.missed) { window.location.href = at(HOME); return; }
           state.deck.cards.forEach(function (c) { c.known = false; });
           startRun(true);
           render();
