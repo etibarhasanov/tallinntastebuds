@@ -6284,11 +6284,12 @@ Signed out the run is kept in the tab and nowhere else, and the account is
 offered **at the end of the deck** rather than in front of it. Nobody should be
 asked to make an account to find out whether a thing is worth one.
 
-### How a run works, and the whole of the scheduling
+### How a run works, and when a card comes back
 
-Opening a deck builds a run: the cards you have not learnt yet first, then the
-ones you have. So opening a deck picks up where you left off, and nothing is
-hidden from somebody who wants to see it again.
+Opening a deck builds a run of what is **due**: everything you have never got
+right, and everything whose wait has come round again. The ones you have never
+got right come first, so a deck opened after a fortnight away starts with what
+is new rather than with a revision.
 
 Turn a card over and the two words appear. **Knew it** writes the row and moves
 on. **Show me again** deletes the row and puts the card on the end of the run,
@@ -6317,10 +6318,41 @@ the tap that would otherwise follow it**, so a scroll that began on the card
 does not turn it over on the way past — the rule the map's sheet has had since
 it could be dragged.
 
-That is all of it, deliberately. A card that is due in three days is a
-different feature, with a table of its own and an argument about what a day is
-in a city the reader may not be in. What is here is a deck of cards and
-somebody going through it.
+### The spacing
+
+A card answered right goes up a box and waits: **a day, then three, then a
+week, then a fortnight, then five weeks, then eleven.** Six rungs, and a card
+that reaches the last stays there — a little over four months between askings,
+past which the thing being remembered is not the word, it is the site.
+
+A card answered wrong does not go down a box. It loses its row altogether, so
+it is back in the next run from the beginning — the same thing said with one
+fewer column.
+
+**Leitner's scheme rather than SM-2**, and the reason is what this page asks. A
+scheduler cannot be cleverer than what it is told, and it is told one thing:
+did you know it. SM-2 wants a grade out of five to move an ease factor, and
+five grades from a page with two buttons would be four of them invented.
+
+The intervals are `BOXES` in `functions/api/flashcard.js`, which is the copy
+that binds, and the columns are `box` and `due_at` on `flashcard_known`.
+Nothing on the page computes a date: it is told per card whether that card is
+due, which is one boolean rather than a clock in a browser that may be in
+another country.
+
+**Days rather than a time of day**, measured from when you answered. A card
+learnt at eleven at night comes back at eleven the next night, not at midnight
+in Tallinn — nobody revising in the evening should find the deck empty because
+the day turned over in a city they are not in.
+
+**And the spacing is what the page does when you do not ask.** A deck with
+nothing due says so and offers *Go through it anyway*; the end of a run offers
+*Go through it again*. Both build a run of the whole deck. Somebody who wants
+to sit and read a deck they wrote is not to be told to come back on Thursday.
+
+On the decks page, a deck with anything waiting says **"6 due"** where it would
+otherwise say "9 / 22" — one is a reason to open a deck and the other is a fact
+about one.
 
 **Both presses change the card before the write goes out, and neither waits for
 it.** This is pressed a hundred times in a sitting and a card that hung on the
@@ -6328,6 +6360,36 @@ network each time would be unusable. A write that fails is silent: what it
 costs is that the card comes round again next time, which is the harmless
 direction, and what a toast would cost is an interruption in the middle of the
 one thing the page is for.
+
+### Three forms, where a word has three
+
+A dictionary gives an Estonian noun as three: *leib, leiva, leiba* — the
+nominative, the genitive and the partitive. The last two are where the stem
+actually shows itself, and somebody who has learnt only the first cannot say
+*two coffees* or *without bread*. So the back of a card carries all three,
+quietly, in mono under the English.
+
+The front stays one word. What is being asked is still what it means, and a
+card that opened with three forms would be asking somebody to read a paradigm
+before they had read a word.
+
+`forms` is an optional pair on a card in `data/decks.json` — the genitive and
+the partitive, in that order, with the nominative being `front`. It is optional
+because most of two decks are phrases: *Kas see laud on vaba?* has no principal
+parts, and a row of three under it would be nonsense. **108 of the 203 cards
+carry them** today; the ones that do not are the phrases, and a handful of
+words left alone rather than guessed at. `tools/validate.mjs` fails on a
+`forms` that is not exactly two non-empty strings, because a row of two drawn
+where three belong would be silently wrong rather than visibly missing.
+
+They are in the indexed text too, and worth more there than on the card:
+somebody typing *leiba* into a search engine is looking at a menu, and the
+nominative they would need to find this page is the one thing they have not
+got.
+
+**These are mine and not a native speaker's**, like the rest of the Estonian
+here. They are the forms of common words and I am confident in them; they have
+not been checked by anybody who grew up with the language.
 
 ### The decks people write
 
@@ -6390,6 +6452,24 @@ Two things, and neither is automatic:
    the title saying nothing is being remembered. That is a better failure than
    splitwise's, which has nothing at all to show without its tables, and it is
    still a failure: preview first, production the moment the change lands.
+
+   **A database that already had `flashcard_known` needs the two spacing
+   columns put on by hand.** `IF NOT EXISTS` cannot add a column to a table
+   that already exists, so re-running the file above does not do it:
+
+   ```
+   ALTER TABLE flashcard_known ADD COLUMN box    INTEGER NOT NULL DEFAULT 1;
+   ALTER TABLE flashcard_known ADD COLUMN due_at INTEGER NOT NULL DEFAULT 0;
+   CREATE INDEX IF NOT EXISTS idx_flashcard_known_due
+     ON flashcard_known (user_id, deck_id, due_at);
+   ```
+
+   Every row already in it becomes a card in box one that is due, which is
+   exactly right: it was known, and it has waited long enough to be asked
+   again. The route survives their absence — `readingBoxes()` asks once per
+   isolate and falls back to answering everything as due — so the gap between a
+   deploy and the `ALTER` is a page without spacing rather than a page that
+   does not work.
 
 2. **Add the subdomain to the Pages project.** Cloudflare dashboard → the
    `tallinntastebuds` project → **Custom domains** → add
@@ -6465,9 +6545,15 @@ deliberately not made in the change that brought this page.
 ### What it does not do
 
 No audio, no pronunciation, no typing the answer in, no matching game, no test
-mode, no spaced repetition beyond the card that comes round again, no streaks,
-no decks anybody can share, and no notifications — this site has no address for
-anybody, and that has not changed for this.
+mode, no streaks, no decks anybody can share, and no notifications — this site
+has no address for anybody, and that has not changed for this. The spacing has
+six fixed rungs and no per-card ease: see **The spacing** above for why that is
+a decision rather than a first version.
+
+**And no forms on a deck you wrote.** The three principal parts below are a
+field in `data/decks.json`, which is content the repository carries; a deck
+somebody types is two sides, because a third box asking for a genitive is a
+grammar lesson in a form that was meant to take a word and its meaning.
 
 It is also not on the map, and must not become so. Nothing in `data/` knows
 this feature exists except the file of words it reads.
@@ -9475,7 +9561,7 @@ Flashcards, `assets/flashcard.js`:
 | `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`) — one per card answered, and which of the two ways it was answered |
-| `flash_again_deck`, `flash_reset` | `deck_id` — going through it again, and forgetting it |
+| `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one |
 | `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_back`, `home` | `deck_id` on the first |
 

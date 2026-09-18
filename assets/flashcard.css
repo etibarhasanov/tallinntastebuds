@@ -116,6 +116,38 @@
   overflow-wrap: anywhere;
 }
 
+/* The three forms a dictionary gives an Estonian noun, on the side that
+   answers: the word itself, then the genitive and the partitive. Mono,
+   because they are facts about the word rather than a sentence — the same
+   reason a price gauge and a field label are — and ruled apart by a middot
+   drawn here rather than typed into the data, so the separator is a
+   decision about the page and not part of anybody's word.
+
+   The first is the one already in display face at the top of the card, said
+   again quietly so that the three read as a set. It is the only one that
+   needs the emphasis of being what was asked. */
+.flash-forms {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 10px;
+  /* Air above and below: the three sit between the English and the line
+     asking whether you knew it, and without it the card is three rows of
+     text in a stack rather than an answer with its forms under it. The face
+     is not a flex row, so nothing else supplies this. */
+  margin: 8px 0 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .02em;
+  color: var(--muted);
+}
+.flash-form + .flash-form::before {
+  content: "·";
+  margin-right: 10px;
+  color: var(--hairline);
+}
+.flash-form.is-first { color: var(--ink); }
+
 /* "Tap to turn it over", and what the card says once it has been turned. A
    label rather than a sentence, so it is mono. */
 .flash-turn {

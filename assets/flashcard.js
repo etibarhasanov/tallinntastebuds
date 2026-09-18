@@ -531,9 +531,13 @@
   /* ------------------------------------------------------------- the decks */
 
   function deckRow(deck) {
-    var said = state.user && state.ready
-      ? t('flashKnownOf', { known: deck.known, n: deck.cards })
-      : t('flashCards', { n: deck.cards });
+    /* One number on the end of a row, and which one depends on whether there
+       is anything to do: "6 due" is a reason to open a deck, and "9 / 22" is a
+       fact about one. Signed out neither applies and it is the size of the
+       deck, which is the only thing true for everybody. */
+    var said = !(state.user && state.ready) ? t('flashCards', { n: deck.cards })
+             : deck.due ? t('flashDue', { n: deck.due })
+             : t('flashKnownOf', { known: deck.known, n: deck.cards });
 
     return el('li', { className: 'menu-item' }, [
       TTBTrack.click(
@@ -613,21 +617,35 @@
 
   /* ------------------------------------------------------- turning them over
    * A run is the cards of one deck in the order they will be shown, and where
-   * in that order we are. The ones this person has not learnt yet come first
-   * and the ones they have come after, so opening a deck picks up where they
-   * left off without hiding anything they might want to see again.
+   * in that order we are.
    *
-   * Pressing Show me again puts the card back on the end of the run, so it
-   * comes round once more before the deck is finished. That is the whole of
-   * the scheduling, deliberately: a card that is due in three days is a
-   * different feature, with a table of its own and an argument about what a
-   * day is in a city the reader may not be in.
+   * What goes in it is what is **due**: everything never answered, plus
+   * everything whose box has come round again. The boxes are the server's —
+   * BOXES in functions/api/flashcard.js — and this page never computes a date;
+   * it is told per card whether that card is due and puts the due ones in.
+   * The ones you have never got right come first, so a deck opened after a
+   * fortnight away starts with what is new rather than with a revision.
+   *
+   * `all` is the way past it: Go through it again at the end of a run, and Go
+   * through it anyway on a deck with nothing waiting, both build a run of the
+   * whole deck. The spacing is what the page does when you do not ask;
+   * somebody who wants to sit and read their own deck is not to be told to
+   * come back on Thursday.
+   *
+   * Pressing Show me again still puts the card back on the end of the run, so
+   * it comes round once more before the deck is finished — and, on the server,
+   * takes its row away, so it is in the next run from the beginning too.
    */
   function startRun(all) {
     var cards = (state.deck && state.deck.cards) || [];
     var queue = [];
-    cards.forEach(function (c) { if (all || !c.known) queue.push(c); });
-    if (!all) cards.forEach(function (c) { if (c.known) queue.push(c); });
+    /* `c.due !== false` and not `c.due`: a card that arrives without the field
+       at all is due. That is the same direction the route errs in when the two
+       spacing columns are missing — see readingBoxes() there — and it is the
+       safe one, because a card wrongly called due is a card asked twice, and a
+       card wrongly called resting is a card that silently leaves the deck. */
+    cards.forEach(function (c) { if ((all || c.due !== false) && !c.known) queue.push(c); });
+    cards.forEach(function (c) { if ((all || c.due !== false) && c.known) queue.push(c); });
     state.run = { queue: queue, at: 0, turned: false };
   }
 
@@ -680,6 +698,17 @@
     var face = el('div', { className: 'flash-face' }, turned
       ? [
           el('p', { className: 'flash-back', textContent: word.back }),
+          /* The three forms, on the side that answers. A dictionary gives an
+             Estonian noun as three — the nominative, the genitive and the
+             partitive — because the last two are where the stem actually
+             shows itself, and somebody who has learnt only the first cannot
+             say "two coffees" or "without bread". The front stays one word:
+             what is being asked is still "what does this mean". */
+          word.forms ? el('p', { className: 'flash-forms' }, [
+            el('span', { className: 'flash-form is-first', textContent: word.front }),
+            el('span', { className: 'flash-form', textContent: word.forms[0] }),
+            el('span', { className: 'flash-form', textContent: word.forms[1] })
+          ]) : null,
           el('p', { className: 'flash-turn', textContent: t('flashTurned') })
         ]
       : [
@@ -930,6 +959,28 @@
 
   /* ------------------------------------------------------------ the end of it */
 
+  /* A deck with nothing waiting: everything in it has been answered right and
+     none of it has come round again yet. It is not the end-of-run card — there
+     was no run — and it is not an error, it is the spacing working. The way
+     past it is the same words the end of a run offers. */
+  function restedCard() {
+    var acts = el('div', { className: 'flash-doneacts' });
+
+    var anyway = el('button', { type: 'button', className: 'go', textContent: t('flashAnyway') });
+    anyway.addEventListener('click', function () {
+      TTBTrack.event('flash_anyway', { deck_id: state.deck.id });
+      startRun(true);
+      render();
+    });
+    acts.appendChild(anyway);
+
+    return el('section', { className: 'card flash-done' }, [
+      el('p', { className: 'flash-score', textContent: knownCount() + ' / ' + (state.deck.cards || []).length }),
+      el('p', { className: 'lists-say', textContent: t('flashNothingDue') }),
+      acts
+    ]);
+  }
+
   function doneCard() {
     var all = (state.deck.cards || []).length;
     var mine = knownCount();
@@ -1116,7 +1167,11 @@
       if (now) studyView(now).forEach(add);
       else {
         add(runHead());
-        add(doneCard());
+        /* Two different empties. A run that was never built because nothing
+           was due is the spacing doing its job; a run that has been gone
+           through is the end of a sitting. They say different things and
+           offer different ways on. */
+        add(state.run && state.run.queue.length === 0 ? restedCard() : doneCard());
         if (!state.user && state.ready) add(authCard());
       }
     } else {
