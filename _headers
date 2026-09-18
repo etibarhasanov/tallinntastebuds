@@ -84,6 +84,33 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, nofollow
 
+# Flashcards. Stored as flashcard.html and served at /flashcard as well — and,
+# on flashcard.tallinntastebuds.ee, at the bare root, which
+# functions/_middleware.js rewrites to this path. These rules match the request
+# path, so both spellings are spelled out, the same reason "/" and
+# "/index.html" both appear at the top of this file.
+#
+# Unlike /split above there is no Function serving this page, so these are the
+# rules that bind rather than a fallback: nothing here has a link anybody
+# pastes into a message, so there was no head to write and no route to write
+# it. The subdomain's own root is covered because the rewrite is to /flashcard,
+# which is this rule.
+#
+# Same revalidating Cache-Control as the map, for the ?v= stamps. And a
+# noindex, which is a weaker claim than the account page's and a stronger one
+# than it looks: the ten decks the site ships are a file anybody may read, but
+# a deck somebody wrote is theirs alone and there is nothing on this page for
+# a crawler that a crawler could reach. nofollow with it, because every link
+# on this page leads either to a deck of somebody's or back to the map, which
+# is indexed from its own address.
+/flashcard.html
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
+/flashcard
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
 # Google's directory of the city. It is stored as google.html and Pages serves
 # it at /google as well, and these rules match the request path rather than the
 # file, so both spellings are spelled out — the same reason "/" and

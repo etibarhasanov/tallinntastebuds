@@ -257,6 +257,73 @@ if (splitUi !== null) {
 }
 /* ----------------------------------------------------------- end SPLITWISE */
 
+/* -------------------------------------------------------------- FLASHCARDS
+   data/decks.json — the Estonian the flashcards page ships: ten decks and two
+   hundred cards, deployed as a file and read as one. It is content rather than
+   interface, so it is English and Estonian alone and none of the ten languages
+   applies to it — the same footing a blog post is on. See **Flashcards** in
+   README.md; this block is all this file knows about that feature.
+
+   The one check here that is not about the file being well formed is the last:
+   a deck id shaped like a minted one. functions/api/flashcard.js tells a deck
+   somebody wrote from a deck the site ships by exactly that — sixteen hex
+   characters against a word — and two namespaces that can meet is a deck of
+   yours that shadows one of ours, in a table keyed on the id of both. */
+
+const decksFile = existsSync(join(DATA, 'decks.json')) ? readJSON('data/decks.json') : null;
+
+if (decksFile !== null) {
+  if (!isPlainObject(decksFile) || !Array.isArray(decksFile.decks)) {
+    fail('data/decks.json', 'must be an object with a "decks" array');
+  } else {
+    /* The cap both sides of a card are held to in the Function. A shipped
+       card longer than a typed one would be a card the page draws and nobody
+       could have written. */
+    const MAX_SIDE = 60;
+    const MINTED = /^[0-9a-f]{16}$/;
+    const deckIds = new Set();
+
+    decksFile.decks.forEach((deck, i) => {
+      const where = `data/decks.json → decks[${i}]`;
+      if (!isPlainObject(deck)) { fail(where, 'must be an object'); return; }
+      if (!isNonEmptyString(deck.id)) { fail(where, 'has no "id"'); return; }
+      if (!SLUG.test(deck.id)) fail(where, `id "${deck.id}" is not a lowercase slug`);
+      if (MINTED.test(deck.id)) {
+        fail(where, `id "${deck.id}" is shaped like a deck somebody wrote — see functions/api/flashcard.js`);
+      }
+      if (deckIds.has(deck.id)) fail(where, `id "${deck.id}" is used twice`);
+      deckIds.add(deck.id);
+
+      if (!isNonEmptyString(deck.name)) fail(where, `deck "${deck.id}" has no "name"`);
+      if (!isNonEmptyString(deck.why)) fail(where, `deck "${deck.id}" has no "why"`);
+
+      if (!Array.isArray(deck.cards) || deck.cards.length === 0) {
+        fail(where, `deck "${deck.id}" has no cards`);
+        return;
+      }
+
+      const cardIds = new Set();
+      deck.cards.forEach((card, j) => {
+        const at = `${where} → cards[${j}]`;
+        if (!isPlainObject(card)) { fail(at, 'must be an object'); return; }
+        if (!isNonEmptyString(card.id)) { fail(at, 'has no "id"'); return; }
+        if (!SLUG.test(card.id)) fail(at, `id "${card.id}" is not a lowercase slug`);
+        if (cardIds.has(card.id)) fail(at, `id "${card.id}" is used twice in "${deck.id}"`);
+        cardIds.add(card.id);
+
+        ['front', 'back'].forEach((side) => {
+          if (!isNonEmptyString(card[side])) {
+            fail(at, `card "${card.id}" has no "${side}"`);
+          } else if (card[side].length > MAX_SIDE) {
+            fail(at, `card "${card.id}" has a "${side}" of ${card[side].length} characters, past the ${MAX_SIDE} the page draws`);
+          }
+        });
+      });
+    });
+  }
+}
+/* ---------------------------------------------------------- end FLASHCARDS */
+
 /* The filter row carries two chips that are not types: Discount, which reads
    data/deals.json instead of a place's types, and Saved, which reads the
    places this browser has kept. A taxonomy type claiming either id would

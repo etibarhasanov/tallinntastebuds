@@ -1,0 +1,241 @@
+/* ==========================================================================
+   Tallinn Tastebuds — flashcards.
+
+   Loaded after assets/styles.css and assets/lists.css and only by
+   flashcard.html, so everything the pages share is already here and none of
+   it is restated: the tokens, .card, .eyebrow, .mono, .toast, .go, .alt, .menu
+   and the stacked form's .ac-form / .ac-field / .ac-label / .ac-err from the
+   map's sheet, and the page frame — .lists-body, .lists-brand, .lists-stack,
+   .lists-card, .lists-title, .lists-say, .lists-none, .lists-row, .lists-foot
+   — from the lists page's.
+
+   What is in this file is the one thing no other page on this site has: a
+   card the size of the screen with a word on it, and the two words under it.
+   Twenty-odd rules, and not a colour among them — every one is a token, so
+   this page turns dark with the rest of the site and no swatch can leave it
+   behind.
+   ========================================================================== */
+
+/* ---------- the card ---------- */
+
+/* The whole card is the target and not a button on it. A flashcard is
+   something you turn over, and the gesture everybody already has for that is
+   tapping the card itself — which is also design rule 8 said about one card
+   rather than a list: a target the width of the thing rather than the width
+   of a word. It is a <button> in the markup, so the keyboard and the screen
+   reader get what the thumb gets.
+
+   The height is fixed rather than fitted to the word, because a card that
+   grew and shrank with the length of what was on it would move the two
+   controls under it between every card — and those are pressed a hundred
+   times in a sitting, at a thumb's reach, without looking. */
+.flash-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 260px;
+  padding: 28px 22px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  color: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+.flash-card:hover { border-color: var(--muted); }
+
+/* Estonian, in the face this site puts names and titles in — a word on a card
+   is a name for a thing. Big enough to read at arm's length across a table,
+   which is where this page is actually read. */
+.flash-front {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+/* And the English, in the body face, because it is a sentence about the word
+   rather than the word. Deliberately the quieter of the two: the one being
+   learnt is the one that should be loudest, even on the side that answers. */
+.flash-back {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 19px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+/* "Tap to turn it over", and what the card says once it has been turned. A
+   label rather than a sentence, so it is mono. */
+.flash-turn {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* The turn itself, and the only thing on this page that moves. A fade rather
+   than a 3-D flip: the site has one motion idea — things settle into place —
+   and a card spinning on its Y axis is somebody else's. Under
+   prefers-reduced-motion the words simply change, which is the whole of what
+   the animation was saying anyway. */
+.flash-face { animation: flash-in .16s var(--ease); }
+
+@keyframes flash-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-face { animation: none; }
+}
+
+/* ---------- where you are in the deck ---------- */
+
+/* A count and a rule. The number is the one that matters — "4 / 12" is what
+   somebody reads — and the bar is there for the glance that does not read it.
+   Tabular figures so the count does not jog sideways as it climbs. */
+.flash-bar { display: flex; align-items: center; gap: 12px; }
+
+.flash-count {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+  letter-spacing: .06em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.flash-track {
+  flex: 1 1 auto;
+  height: 3px;
+  background: var(--hairline);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.flash-fill { display: block; height: 100%; background: var(--accent); }
+
+/* The two answers under the card, drawn only once it has been turned over:
+   Show me again on the left, and on the right, where a thumb is, the one
+   filled action. Design rule 5 — the accent is spent once on this surface and
+   Knew it is what it is spent on. The way out of the deck is not here; it is
+   in .flash-deck above, so that it stands whichever face is up. */
+.flash-acts {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Which deck this is, over the card. An eyebrow rather than a heading: the
+   card under it is the page, and a title over it would be the second loudest
+   thing on a screen that wants one. */
+.flash-deck {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  min-height: 20px;
+}
+/* The ways out, over on the right where the deck's name is not. The first of
+   them takes the space, so one control or two sit in the same place. */
+.flash-deck .alt { padding-top: 0; padding-bottom: 0; }
+.flash-deck .alt:first-of-type { margin-left: auto; }
+
+/* How much of a deck is known, on the end of its row. Never wrapped: it is
+   four characters and a slash, and a count that folds onto a second line
+   pushes the row taller than the two lines of words beside it. What gives way
+   instead is the line saying what the deck is, which has somewhere to go. */
+.menu .lists-count { white-space: nowrap; }
+
+/* A form under a list of things, rather than against it. Three cards on this
+   page end in one — the decks you wrote, the words in a deck, and the empty
+   state of either — and without this the label of the first field sits on the
+   hairline of the last row. */
+.menu + .ac-form,
+.lists-none + .ac-form,
+.flash-rows + .ac-form { margin-top: 20px; }
+
+/* ---------- the end of a deck ---------- */
+
+.flash-done { text-align: center; padding: 30px 22px; }
+
+.flash-score {
+  margin: 0;
+  font-family: var(--display);
+  font-variant-numeric: tabular-nums;
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: -.03em;
+}
+
+/* Stacked rather than side by side, so the filled one is under the thumb and
+   the quiet ones are below it — the sheet's own order, which is design rule 6:
+   the one action, then the ways out. */
+.flash-doneacts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 20px;
+}
+
+/* ---------- a deck somebody is writing ---------- */
+
+/* Ruled rather than carded, the same argument assets/split.css makes about a
+   receipt: twenty short lines read down the page, where twenty cards with
+   shadows under them would be the same words at four times the height. */
+.flash-rows { list-style: none; margin: 0; padding: 0; }
+
+.flash-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 0;
+  border-top: 1px solid var(--hairline);
+}
+.flash-row:first-child { border-top: 0; }
+/* And a rule under the last of them, so the column of words is closed before
+   the form that adds to it — the same thing .menu-item:last-child does for a
+   list of rows in assets/styles.css. */
+.flash-row:last-child { border-bottom: 1px solid var(--hairline); }
+
+.flash-pair { min-width: 0; flex: 1 1 auto; overflow-wrap: anywhere; }
+
+/* The Estonian, in the display face it wears on the card itself, so a row in
+   the editor reads as the same thing as the card it will become. */
+.flash-side {
+  font-family: var(--display);
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+.flash-gloss {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.flash-row .alt { margin-left: auto; flex: 0 0 auto; }
+
+/* The two fields of the add-a-card form, side by side where there is room and
+   stacked on a phone — the Estonian and the English are a pair and reading
+   them as one line is most of what makes a deck quick to type. */
+.flash-pairfields { display: flex; gap: 12px; }
+.flash-pairfields > * { flex: 1 1 0; min-width: 0; }
+
+@media (max-width: 520px) {
+  .flash-pairfields { flex-direction: column; gap: 0; }
+}

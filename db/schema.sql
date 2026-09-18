@@ -877,3 +877,92 @@ CREATE TABLE IF NOT EXISTS split_settlements (
   created_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_split_settlements_group ON split_settlements (group_id, created_at DESC);
+
+
+-- ------------------------------------------------------------- flashcards
+-- Estonian, one word at a time, on flashcard.tallinntastebuds.ee.
+--
+-- Three tables, and only one of them holds anything anybody typed. The words
+-- the site ships with are not here at all: data/decks.json is ten decks and
+-- two hundred and three cards of Estonian, deployed as a file and read as one,
+-- because content that changes when somebody edits the repository belongs in
+-- the repository. What is here is the two things a file cannot hold — the decks
+-- people write for themselves, and how far each person has got.
+--
+-- See **Flashcards** in README.md, and functions/api/flashcard.js, which is
+-- the only thing that writes any of these.
+--
+-- IT IS THE SAME ACCOUNT AS THE MAP
+--
+-- Same argument splitwise makes above: no second users table, no second
+-- sign-in. An owner is a users.id out of functions/api/account.js, and the
+-- session cookie is already scoped to the domain rather than the host — see
+-- sessionCookie() in functions/api/_lib.js — so signing in on the map is
+-- being signed in here. That line was splitwise's and this feature is its
+-- second reader, which is worth knowing before either of them is removed.
+
+-- One row is one deck somebody wrote. The decks in data/decks.json have no
+-- row here and never will: they belong to the deployment, not to a person.
+CREATE TABLE IF NOT EXISTS flashcard_decks (
+  -- Sixteen random hex characters, minted the way a splitwise expense's id
+  -- is. Deliberately not the readable stem-plus-code a list or a group gets:
+  -- those ids are in links people send each other and have to say what they
+  -- are before they are opened, and a deck is never sent to anybody. Nothing
+  -- reads this but its owner, so it only has to be unique.
+  id         TEXT    PRIMARY KEY,
+  -- users.id. The only person who can read it, add to it, rename it or take
+  -- it down — there is no sharing here and no second reader.
+  owner      TEXT    NOT NULL,
+  name       TEXT    NOT NULL,
+  created_at INTEGER NOT NULL,
+  -- Touched by every card added or removed, so "your decks, the one you were
+  -- last writing first" is one indexed read.
+  updated_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_flashcard_decks_owner ON flashcard_decks (owner, updated_at DESC);
+
+-- One row is one card in one of those decks: the Estonian and the English.
+--
+-- Two columns of text and nothing else. No picture, no sound file, no
+-- pronunciation, no language column — the site ships one direction, Estonian
+-- to English, and a column that could hold another is a column every reader
+-- would have to start asking about.
+CREATE TABLE IF NOT EXISTS flashcard_cards (
+  id         TEXT    PRIMARY KEY,
+  deck_id    TEXT    NOT NULL,
+  -- What is shown first. Estonian, capped at MAX_SIDE in the Function.
+  front      TEXT    NOT NULL,
+  -- What is shown after it is turned over. English.
+  back       TEXT    NOT NULL,
+  created_at INTEGER NOT NULL
+);
+-- One deck's cards, in the order they were written.
+CREATE INDEX IF NOT EXISTS idx_flashcard_cards_deck ON flashcard_cards (deck_id, created_at);
+
+-- One row is one card one person has said they know.
+--
+-- A row existing IS the fact, which is why there is no `known` column to be
+-- 0 or 1. Pressing "Knew it" writes the row, pressing "Show me again" deletes
+-- it, and a card nobody has ever pressed has no row at all — so the table
+-- holds what people have learnt rather than a line per card per person, and
+-- the deck somebody opened once and closed costs nothing.
+--
+-- The deck id is stored beside the card id rather than being looked up,
+-- because the question this table is asked is "how much of each deck does
+-- this person know", and the answer wanted to be one GROUP BY rather than a
+-- join against a file the database cannot see. The built-in decks are in
+-- data/decks.json and have no row in flashcard_decks to join to at all.
+--
+-- Nothing cleans up after a deleted deck but the Function that deletes it,
+-- which takes the deck's rows here with it in the same batch.
+CREATE TABLE IF NOT EXISTS flashcard_known (
+  user_id TEXT    NOT NULL,
+  -- Either a deck id out of data/decks.json — "table", "numbers" — or one of
+  -- flashcard_decks.id above. They cannot collide: the built-in ones are
+  -- written by hand as words and tools/validate.mjs refuses one shaped like a
+  -- minted id.
+  deck_id TEXT    NOT NULL,
+  card_id TEXT    NOT NULL,
+  seen_at INTEGER NOT NULL,
+  PRIMARY KEY (user_id, deck_id, card_id)
+);

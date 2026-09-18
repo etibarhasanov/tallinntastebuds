@@ -42,7 +42,8 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 /* Every page that loads something out of assets/. */
 export const PAGES = [
   'index.html', 'lists.html', 'account.html', 'blog.html', 'feedback.html',
-  'google.html', 'deal.html', 'verify.html', 'staff.html', 'split.html'
+  'google.html', 'deal.html', 'verify.html', 'staff.html', 'split.html',
+  'flashcard.html'
 ];
 
 /* Scripts and stylesheets only. Images are addressed by name and replaced

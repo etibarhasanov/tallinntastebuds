@@ -59,6 +59,7 @@ completely with the database switched off.
 - [Public lists](#public-lists)
 - [Profiles](#profiles)
 - [Splitwise](#splitwise)
+- [Flashcards](#flashcards)
 - [Stories](#stories)
 - [The blog](#the-blog)
 - [Feedback](#feedback)
@@ -5807,8 +5808,9 @@ dropped by the browser outright and every preview under `*.pages.dev` would
 have lost its sign-in.
 
 The cost is worth writing down: **every subdomain of `tallinntastebuds.ee` now
-receives the session cookie.** There is one, and `_lib.js` is where to come
-back to before there is a second.
+receives the session cookie.** There are two of them — this and
+**[Flashcards](#flashcards)**, which signs people in by the same line — and
+`_lib.js` is where to come back to before there is a third.
 
 Signing out clears the cookie twice, host-only as well as domain-scoped, so a
 browser still holding the one this site set for years before any of this is not
@@ -6072,7 +6074,7 @@ and each is fenced or prefixed so it can be found by looking:
 | File | What is splitwise's |
 |---|---|
 | `functions/_middleware.js` | the `SPLITWISE` block of constants (including the `import` of the route above) and the `SPLITWISE` block inside `onRequest()` — both marked, both additions, nothing above them was touched |
-| `functions/api/_lib.js` | `SESSION_DOMAIN`, the two lines in `sessionCookie()` that read it, and its third parameter. **This is the only thing splitwise changed rather than added**, and taking it out is `sessionCookie(token, days)` again |
+| `functions/api/_lib.js` | **Nothing, any more.** `SESSION_DOMAIN`, the two lines in `sessionCookie()` that read it and its third parameter were the only thing splitwise changed rather than added, and taking splitwise out used to mean putting them back. It does not now: **[Flashcards](#flashcards)** is on a subdomain too and signs people in by the same cookie. Leave this alone until the last subdomain goes |
 | `functions/api/account.js` | the third argument at the two `sessionCookie(token, SESSION_DAYS, request)` calls, and the second `set-cookie` in the `logout` branch, which exists only to clear the domain-scoped one |
 | `tools/validate.mjs` | the `SPLITWISE` block after the `ui.json` check, and the one line adding `splitKeys` to `known` |
 | `tools/stamp.mjs` | `'split.html'` in `PAGES` |
@@ -6120,6 +6122,253 @@ is the whole shape of its account, and that has not changed for this.
 
 It is also not on the map, and must not become so. Nothing in `data/` knows
 this feature exists.
+
+---
+
+## Flashcards
+
+A site about eating in Tallinn is read mostly by people who cannot read the
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: ten decks of
+Estonian, two hundred and three cards, the Estonian on the front and the
+English on the back, and one card at a time with two words under it — *Knew
+it*, and *Show me again*.
+
+It is the second thing on this site that is not about restaurants, and it is
+here for the same reason the first one is: it is what the people this map is
+written for are short of.
+
+### Why a subdomain, again
+
+The argument is **Splitwise**'s, word for word, and it is worth not repeating
+at length: everything else here is a view of the map, this is not, and a sixth
+card on the account page reading "Flashcards" would be a second product filed
+under somebody's saved places.
+
+So it has an address of its own and nothing else of its own. No second Pages
+project, no second database, no second build, no second account system:
+`functions/_middleware.js` reads the hostname, serves `flashcard.html` at the
+root of the subdomain, and 301s every other address on it back to
+`tallinntastebuds.ee`.
+
+The page also answers at **`/flashcard`** on every host, and that is where it
+actually lives. A preview deployment is `<branch>.tallinntastebuds.pages.dev`
+and no subdomain of the live domain can exist under one, so a feature that
+answered only on the subdomain could never be looked at on a pull request.
+
+**One difference from splitwise, and it is a whole file.** That page is served
+by `functions/split.js`, which writes a group's name into the head, because a
+group's link is pasted into a chat and the little preview card is most of what
+the link is. Nothing here is ever sent to anybody — a deck somebody wrote has
+exactly one reader — so there is no head to write and no route to write it. The
+static file is the page, and the only route this feature has is the API one.
+
+### Where the words are, and it is mostly not the database
+
+`data/decks.json` is the Estonian the site ships: ten decks, two hundred and
+three cards, deployed as a file and read as one. It is **content** — somebody
+edits the repository, the deploy carries it, every reader gets the same cards —
+and content that changes when the repository changes belongs in the repository.
+A row per card would be a copy of a file that only a deploy changes, and the
+first thing anybody would then have to write is the tool that keeps the two in
+step.
+
+The three tables hold the two things a file cannot: the decks people write for
+themselves, and how far each person has got. `functions/api/flashcard.js` is
+the only thing that writes any of them.
+
+**The decks and the cards are in English and Estonian and in no other
+language.** That is the same footing a post on the blog is on: it is somebody's
+writing rather than an interface string, and the ten languages are for the
+words around it — every button, label and sentence on the page is a key in
+`data/ui.json` like every other page's. It is deliberately *not* the
+arrangement splitwise has, where the strings live in a file of their own: the
+`/site` skill says in so many words that there is one such exception and a
+second would be two files to keep in step. So the forty-nine `flash*` keys are
+in `ui.json` with everything else, and taking this feature out means taking
+forty-nine keys out of ten blocks rather than deleting a file. That is the
+price of the rule, and it is the right way round — a stale string is worse than
+a tedious deletion.
+
+### It is the same account as the map
+
+An owner is a `users.id` out of `functions/api/account.js`, and the session
+cookie has been scoped to the domain rather than the host since splitwise — see
+`sessionCookie()` in `functions/api/_lib.js`. Signing in on the map is being
+signed in here. **That line now has two readers**, which is worth knowing
+before either feature is removed: taking splitwise out does not take the line
+out any more.
+
+### Signed out, every deck still works
+
+The ten decks and every card in them are a file, and a file has nobody to
+check. Turn them over signed out, all of them, as many times as you like.
+
+What an account buys is that **Knew it is remembered** — on the account rather
+than on the device, so a deck you got half through on a phone is half through
+on a laptop. That is the one deliberate difference from **Saves**, where a
+bookmark with no account is kept in the browser: a save is about a place and
+survives being a device's, and a card you know is about you.
+
+Signed out the run is kept in the tab and nowhere else, and the account is
+offered **at the end of the deck** rather than in front of it. Nobody should be
+asked to make an account to find out whether a thing is worth one.
+
+### How a run works, and the whole of the scheduling
+
+Opening a deck builds a run: the cards you have not learnt yet first, then the
+ones you have. So opening a deck picks up where you left off, and nothing is
+hidden from somebody who wants to see it again.
+
+Turn a card over and the two words appear. **Knew it** writes the row and moves
+on. **Show me again** deletes the row and puts the card on the end of the run,
+so it comes round once more before the deck ends.
+
+That is all of it, deliberately. A card that is due in three days is a
+different feature, with a table of its own and an argument about what a day is
+in a city the reader may not be in. What is here is a deck of cards and
+somebody going through it.
+
+**Both presses change the card before the write goes out, and neither waits for
+it.** This is pressed a hundred times in a sitting and a card that hung on the
+network each time would be unusable. A write that fails is silent: what it
+costs is that the card comes round again next time, which is the harmless
+direction, and what a toast would cost is an interruption in the middle of the
+one thing the page is for.
+
+### The decks people write
+
+Signed in, **Words you collected**: name a deck, and it opens on the form that
+adds the first card, because a deck with nothing in it has nothing to turn
+over. Estonian on the front, English on the back, and a row per card with a
+**Remove** beside it.
+
+**A deck somebody wrote has exactly one reader, and it is its owner.** There is
+no sharing here, no public deck, and no link that buys anything — which is the
+one place this feature deliberately differs from lists and from splitwise,
+where holding the code *is* the permission. Every read of a deck out of the
+database goes through `deckOf()`, which takes the session's own id, and a deck
+belonging to somebody else answers exactly the way a deck that does not exist
+answers.
+
+Deleting a deck takes its cards and everything anybody had learnt off it. There
+is no archive and no undo: what it deletes is a list of words somebody typed,
+and keeping a copy of it against their wishes would be the site deciding it
+knew better.
+
+### Who may do what
+
+| | who |
+|---|---|
+| turn over a deck the site ships | anybody at all, signed in or not |
+| have that remembered | any account, and it is the only thing an account is for here |
+| write a deck | any account |
+| read one, add to it, rename it, delete it | its owner, and nobody else |
+| start a deck again | any account, on any deck — its own rows and nobody else's |
+
+### The caps
+
+| | | why |
+|---|---|---|
+| `MAX_DECKS` | 20 | decks of your own, per account |
+| `MAX_CARDS` | 200 | per deck — roughly the whole of what this site ships, in one deck. Past it the thing being asked for is a vocabulary manager |
+| `MAX_NAME` | 60 | a deck's name |
+| `MAX_SIDE` | 60 | either side of a card. "Kas ma saan maksta kaardiga?" is thirty-one; a paragraph on a flashcard is a note, and notes want a different feature |
+
+They are in `functions/api/flashcard.js`, which is the copy that binds.
+`MAX_NAME` and `MAX_SIDE` are restated in `assets/flashcard.js` so a field
+stops somebody at the keystroke rather than at the round trip — change one,
+change the other.
+
+### Turning it on
+
+Two things, and neither is automatic:
+
+1. **Apply the schema to both databases.** `db/schema.sql` is re-runnable and
+   nothing in CI applies it:
+
+   ```
+   wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
+   wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
+   ```
+
+   Until it is run, the decks still turn over — they are a file — and every
+   write answers `no such table`, which the page shows as the quiet line under
+   the title saying nothing is being remembered. That is a better failure than
+   splitwise's, which has nothing at all to show without its tables, and it is
+   still a failure: preview first, production the moment the change lands.
+
+2. **Add the subdomain to the Pages project.** Cloudflare dashboard → the
+   `tallinntastebuds` project → **Custom domains** → add
+   `flashcard.tallinntastebuds.ee`. The DNS is already Cloudflare's, so this is
+   one form and a certificate that issues itself. Until it is added, everything
+   works at `/flashcard` and the subdomain does not resolve.
+
+There is no third variable and no second service. `DB` is the binding, and this
+is the one feature here that does not need `SAVE_SALT` at all: nothing it
+stores is hashed or fingerprinted.
+
+### Taking it out
+
+Built to be removable, the way splitwise was, because it is not yet known
+whether it stays. Delete these outright:
+
+```
+flashcard.html                 the page
+assets/flashcard.js            the browser half, and the third sign-in form
+assets/flashcard.css           its rules
+functions/api/flashcard.js     the route, and the three tables' only writer
+data/decks.json                the ten decks the site ships
+```
+
+Then take these back out. Each is an addition to a file that stood before it,
+and each is fenced or prefixed so it can be found by looking:
+
+| File | What is the flashcards' |
+|---|---|
+| `functions/_middleware.js` | the `FLASHCARDS` block of constants and the `FLASHCARDS` block inside `onRequest()` — both marked, both additions |
+| `tools/validate.mjs` | the `FLASHCARDS` block after the splitwise one |
+| `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
+| `_headers` | the `/flashcard.html` and `/flashcard` rules |
+| `data/ui.json` | the forty-nine `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list |
+| `README.md` | this section, its line in **Contents**, its five lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
+| `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
+| `.claude/skills/api/SKILL.md` | the `/api/flashcard` row, and the flashcards clause in the `/*` row |
+| `.claude/skills/site/SKILL.md` | the `flashcard.html` in the stamped-pages list |
+
+And in Cloudflare: remove `flashcard.tallinntastebuds.ee` from the Pages
+project's **Custom domains**, and drop the three tables — `flashcard_known`
+first, then `flashcard_cards`, `flashcard_decks` — from both databases, along
+with their block in `db/schema.sql`.
+
+**What it borrows and does not touch.** `functions/api/_lib.js` is imported
+from and not edited — `json()`, `sessionUser()`, `wrongDatabase()`,
+`randomHex()` and `dataFile()`, all of them things that were already there.
+`assets/styles.css` and `assets/lists.css` are read by the page and unchanged.
+`data/ui.json` is the one file this feature is genuinely mixed into, and the
+paragraph above says why that was the right trade.
+
+**The cost of keeping it separate, said out loud.** `assets/flashcard.js`
+carries the **third** copy of the sign-in form on this site: the map's sheet,
+the split page's, and this. The reason is the hostname and it is
+`assets/split.js`'s reason — `?then=` is deliberately same-host, so sending
+somebody from a subdomain to the map to sign in and back is either an open
+redirect or a dead end. It is a copy of the *form* and not of the *API*: same
+fields, same actions, same errors, same strings. But three is where that
+argument stops being free, and **if a fourth ever wants one the answer is not a
+fourth copy** — it is a shared global beside `assets/track.js`, `TTBAuth`,
+owning the form and the three actions, with all three existing copies moved
+onto it. That is a change to the sign-in on every page of this site and it was
+deliberately not made in the change that brought this page.
+
+### What it does not do
+
+No audio, no pronunciation, no typing the answer in, no matching game, no test
+mode, no spaced repetition beyond the card that comes round again, no streaks,
+no decks anybody can share, and no notifications — this site has no address for
+anybody, and that has not changed for this.
+
+It is also not on the map, and must not become so. Nothing in `data/` knows
+this feature exists except the file of words it reads.
 
 ---
 
@@ -7323,6 +7572,11 @@ same project, pointing at the same deployment — see
 different site rather than a second copy of this one, and until the entry
 exists that feature answers at `/split` and the subdomain does not resolve.
 
+**`flashcard.tallinntastebuds.ee` is a fourth entry on it**, on the same terms
+— see **[Flashcards](#flashcards)**. Same file makes it a different site, and
+until the entry exists that feature answers at `/flashcard` and the subdomain
+does not resolve.
+
 Five lines in the repo name the host — see [Getting found](#getting-found).
 Nothing else needs touching: every path in the site is relative, and the
 scripts build absolute URLs from `window.location.origin`, so the QR codes and
@@ -7437,6 +7691,10 @@ to read and write first.
   missing one it does, or is missing a string in one of them, or carries a key
   `data/ui.json` also carries — one string, one home. See
   **[Splitwise](#splitwise)**
+- a `data/decks.json` whose decks or cards are malformed: a duplicate id, a
+  missing side, a side longer than the sixty characters the card draws, or a
+  deck id shaped like one somebody wrote — the two namespaces must not meet.
+  See **[Flashcards](#flashcards)**
 - a colour token one style declares and another leaves out, which is a style
   quietly wearing the other one's value out of `:root`. See **The design
   rules**
@@ -7580,6 +7838,8 @@ functions/api/geocode.js   a typed street to a point, for the add-a-place form
 functions/api/profile.js   one person's public lists, and their standing
 functions/api/split.js     splitwise: a group, who is in it, what everybody
                            paid, and who hands what to whom
+functions/api/flashcard.js flashcards: the decks somebody wrote, and which
+                           cards each account knows
 functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
 functions/api/_mostkept.js reading a page of everybody's, most kept first
@@ -7611,6 +7871,14 @@ assets/split.css           what a column of money needs and the other pages
 data/split.json            that page's strings, in the same ten languages —
                            its own file so that deleting the feature is
                            deleting files
+flashcard.html             flashcards, at /flashcard and at the root of
+                           flashcard.tallinntastebuds.ee
+assets/flashcard.js        its five states, and the third sign-in form on the
+                           site — the header says what would end that
+assets/flashcard.css       the card that turns over, and nothing else the
+                           other pages already have
+data/decks.json            ten decks of Estonian, 203 cards; content rather
+                           than interface, so English and Estonian alone
 blog.html                  a post per thing this site does   } unlinked, and
 assets/blog.js             the index, one post, and the walk  } indexed on
 assets/blog.css            only what a page of prose has      } purpose
@@ -9094,6 +9362,17 @@ Splitwise, `assets/split.js`:
 | `split_spend`, `split_unspend`, `split_settle`, `split_unsettle`, `split_drop` | `group_id` — one per kind of write, named after the API's action |
 | `split_home`, `home` | — |
 
+Flashcards, `assets/flashcard.js`:
+
+| event | parameters |
+| --- | --- |
+| `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
+| `flash_open` | `deck_id`, `own` — a row on the decks page |
+| `flash_knew`, `flash_again` | `deck_id` — one per card turned over and answered |
+| `flash_again_deck`, `flash_reset` | `deck_id` — going through it again, and forgetting it |
+| `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
+| `flash_back`, `home` | `deck_id` on the first |
+
 The pass pages, `assets/deal.js` and `assets/verify.js` — nothing on them is
 a button except the way back, so what they report is the moment each exists
 for:
@@ -9147,8 +9426,8 @@ that earns its place — it follows a single visit through the filters, the
 panel and the chat, none of which GA can see as anything but events in a list.
 
 It loads from `assets/analytics.js`, which is also where the Google tag lives
-— one file rather than two snippets pasted into every head. The ten pages in
-`PAGES` at the top of `tools/stamp.mjs` carry it. `admin.html` deliberately
+— one file rather than two snippets pasted into every head. The eleven pages
+in `PAGES` at the top of `tools/stamp.mjs` carry it. `admin.html` deliberately
 carries neither tag: the only visits it could record are the owner's own, and
 it is the page holding a GitHub token.
 
@@ -9388,7 +9667,7 @@ preview deployments, which is correct for previews and fatal if the address
 people share turns out to be one.
 
 To remove tracking entirely, delete the `assets/analytics.js` script tag from
-the ten pages that carry it, or the file. Everything in `track.js` checks for
+the eleven pages that carry it, or the file. Everything in `track.js` checks for
 `window.gtag` and returns quietly when it is missing — which is what already
 happens for a visitor running an ad blocker — so every call site becomes a
 harmless no-op and none of them has to change. To remove one tag and keep the

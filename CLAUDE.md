@@ -2,9 +2,9 @@
 
 A full-screen map of places in Tallinn, plus discounts, stories, saves,
 lists, profiles, a directory of the city, a chat that answers with places, a
-blog about what all of it does, and — on a subdomain of its own — a way to
-split the bill afterwards.
-Static files, twenty Cloudflare Functions, two D1 databases (preview and
+blog about what all of it does, and — each on a subdomain of its own — a way
+to split the bill afterwards and a deck of Estonian flashcards.
+Static files, twenty-one Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
@@ -91,6 +91,7 @@ command does the same by hand, and is the way to be sure.
 | Change what a page does or looks like — anything in `assets/`, an HTML file, `data/ui.json`, a language, a post on the blog | `/site` |
 | Change a Function, the schema, `wrangler.toml`, the chat's model or prompt, or anything that reads or writes D1 | `/api` |
 | Change splitwise — the group page, what a group can do, or the subdomain itself | `/site` **and** `/api`, and **Splitwise** in `README.md` |
+| Change the flashcards — the page, the decks in `data/decks.json`, what a deck can do, or the subdomain itself | `/site` **and** `/api`, and **Flashcards** in `README.md` |
 | Refresh the Google Places export | `/google-venues` |
 
 Each skill is written from the code, not from memory: which files a change
@@ -333,7 +334,7 @@ re-running its generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
 |---|---|---|
-| anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in the ten pages named in `PAGES` at the top of the tool |
+| anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in the eleven pages named in `PAGES` at the top of the tool |
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `data/restaurants.json` or `data/taxonomy.json` | `node tools/typelists.mjs` | `db/type-lists.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/city.mjs` | `data/city.json` |
