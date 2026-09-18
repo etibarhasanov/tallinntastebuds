@@ -9610,6 +9610,702 @@
           }
         }
       ]
+    },
+    {
+      "id": "service",
+      "name": {
+        "en": "Behind the counter",
+        "az": "Piştaxtanın arxasında",
+        "ru": "За стойкой"
+      },
+      "why": {
+        "en": "What the person serving says — in a café, a restaurant, a bar or a shop",
+        "az": "Xidmət edən adamın dedikləri — kafedə, restoranda, barda və ya mağazada",
+        "ru": "Что говорит тот, кто обслуживает, — в кафе, ресторане, баре или магазине"
+      },
+      "level": "deep",
+      "cards": [
+        {
+          "id": "kas-ma-saan-aidata",
+          "front": "Kas ma saan aidata?",
+          "back": {
+            "en": "Can I help you?",
+            "az": "Kömək edə bilərəm?",
+            "ru": "Могу я вам помочь?"
+          }
+        },
+        {
+          "id": "teenindama",
+          "front": "Teenindama",
+          "back": {
+            "en": "To serve",
+            "az": "Xidmət etmək",
+            "ru": "Обслуживать"
+          },
+          "forms": [
+            "teenindada",
+            "teenindan"
+          ],
+          "sentence": {
+            "et": "Kes teid teenindab?",
+            "en": "Who is serving you?",
+            "az": "Sizə kim xidmət edir?",
+            "ru": "Кто вас обслуживает?"
+          }
+        },
+        {
+          "id": "broneering",
+          "front": "Broneering",
+          "back": {
+            "en": "Reservation",
+            "az": "Rezervasiya",
+            "ru": "Бронь"
+          },
+          "forms": [
+            "broneeringu",
+            "broneeringut"
+          ],
+          "sentence": {
+            "et": "Kas teil on broneering?",
+            "en": "Do you have a reservation?",
+            "az": "Rezervasiyanız var?",
+            "ru": "У вас есть бронь?"
+          }
+        },
+        {
+          "id": "mitmekesi-te-olete",
+          "front": "Mitmekesi te olete?",
+          "back": {
+            "en": "How many of you are there?",
+            "az": "Neçə nəfərsiniz?",
+            "ru": "Сколько вас?"
+          }
+        },
+        {
+          "id": "siiapoole-palun",
+          "front": "Siiapoole, palun",
+          "back": {
+            "en": "This way, please",
+            "az": "Bu tərəfə, zəhmət olmasa",
+            "ru": "Сюда, пожалуйста"
+          }
+        },
+        {
+          "id": "menuu",
+          "front": "Menüü",
+          "back": {
+            "en": "Menu",
+            "az": "Menyu",
+            "ru": "Меню"
+          },
+          "forms": [
+            "menüü",
+            "menüüd"
+          ],
+          "sentence": {
+            "et": "Siin on menüü, palun.",
+            "en": "Here is the menu.",
+            "az": "Buyurun, menyu.",
+            "ru": "Вот меню, пожалуйста."
+          }
+        },
+        {
+          "id": "paevapraad",
+          "front": "Päevapraad",
+          "back": {
+            "en": "Dish of the day",
+            "az": "Günün yeməyi",
+            "ru": "Блюдо дня"
+          },
+          "forms": [
+            "päevaprae",
+            "päevapraadi"
+          ],
+          "sentence": {
+            "et": "Tänane päevapraad on seljanka.",
+            "en": "Today the dish of the day is solyanka.",
+            "az": "Bugünkü günün yeməyi solyankadır.",
+            "ru": "Сегодня блюдо дня — солянка."
+          }
+        },
+        {
+          "id": "soovitama",
+          "front": "Soovitama",
+          "back": {
+            "en": "To recommend",
+            "az": "Məsləhət görmək",
+            "ru": "Рекомендовать"
+          },
+          "forms": [
+            "soovitada",
+            "soovitan"
+          ],
+          "sentence": {
+            "et": "Ma soovitan päevapraadi.",
+            "en": "I recommend the dish of the day.",
+            "az": "Mən günün yeməyini məsləhət görürəm.",
+            "ru": "Я рекомендую блюдо дня."
+          }
+        },
+        {
+          "id": "tellima",
+          "front": "Tellima",
+          "back": {
+            "en": "To order",
+            "az": "Sifariş vermək",
+            "ru": "Заказывать"
+          },
+          "forms": [
+            "tellida",
+            "tellin"
+          ],
+          "sentence": {
+            "et": "Mida te soovite tellida?",
+            "en": "What would you like to order?",
+            "az": "Nə sifariş etmək istəyirsiniz?",
+            "ru": "Что вы хотите заказать?"
+          }
+        },
+        {
+          "id": "mida-te-soovite",
+          "front": "Mida te soovite?",
+          "back": {
+            "en": "What would you like?",
+            "az": "Nə istəyirsiniz?",
+            "ru": "Что вы желаете?"
+          }
+        },
+        {
+          "id": "pakkuma",
+          "front": "Pakkuma",
+          "back": {
+            "en": "To offer",
+            "az": "Təklif etmək",
+            "ru": "Предлагать"
+          },
+          "forms": [
+            "pakkuda",
+            "pakun"
+          ],
+          "sentence": {
+            "et": "Mida ma võin teile pakkuda?",
+            "en": "What can I get you?",
+            "az": "Sizə nə təklif edə bilərəm?",
+            "ru": "Что я могу вам предложить?"
+          }
+        },
+        {
+          "id": "kas-soovite-midagi-juua",
+          "front": "Kas soovite midagi juua?",
+          "back": {
+            "en": "Would you like something to drink?",
+            "az": "İçməyə bir şey istəyirsiniz?",
+            "ru": "Хотите что-нибудь выпить?"
+          }
+        },
+        {
+          "id": "kraanivesi",
+          "front": "Kraanivesi",
+          "back": {
+            "en": "Tap water",
+            "az": "Kran suyu",
+            "ru": "Вода из-под крана"
+          },
+          "forms": [
+            "kraanivee",
+            "kraanivett"
+          ],
+          "sentence": {
+            "et": "Kas kraanivesi sobib?",
+            "en": "Is tap water all right?",
+            "az": "Kran suyu olar?",
+            "ru": "Вода из-под крана подойдёт?"
+          }
+        },
+        {
+          "id": "kas-teil-on-allergiaid",
+          "front": "Kas teil on allergiaid?",
+          "back": {
+            "en": "Do you have any allergies?",
+            "az": "Allergiyanız var?",
+            "ru": "У вас есть аллергия?"
+          }
+        },
+        {
+          "id": "kaste",
+          "front": "Kaste",
+          "back": {
+            "en": "Sauce",
+            "az": "Sous",
+            "ru": "Соус"
+          },
+          "forms": [
+            "kastme",
+            "kastet"
+          ],
+          "sentence": {
+            "et": "Kas soovite kastet juurde?",
+            "en": "Would you like sauce with it?",
+            "az": "Yanında sous istəyirsiniz?",
+            "ru": "Хотите к нему соус?"
+          }
+        },
+        {
+          "id": "kas-soovite-veel-midagi",
+          "front": "Kas soovite veel midagi?",
+          "back": {
+            "en": "Would you like anything else?",
+            "az": "Başqa bir şey istəyirsiniz?",
+            "ru": "Хотите что-нибудь ещё?"
+          }
+        },
+        {
+          "id": "kohe",
+          "front": "Kohe",
+          "back": {
+            "en": "Right away",
+            "az": "Dərhal",
+            "ru": "Сейчас же"
+          },
+          "sentence": {
+            "et": "Kohe tuleb!",
+            "en": "Coming right up!",
+            "az": "İndi gəlir!",
+            "ru": "Сейчас будет!"
+          }
+        },
+        {
+          "id": "umbes",
+          "front": "Umbes",
+          "back": {
+            "en": "About, roughly",
+            "az": "Təxminən",
+            "ru": "Примерно"
+          },
+          "sentence": {
+            "et": "See võtab umbes kümme minutit.",
+            "en": "It takes about ten minutes.",
+            "az": "Bu, təxminən on dəqiqə çəkir.",
+            "ru": "Это займёт примерно десять минут."
+          }
+        },
+        {
+          "id": "kahjuks",
+          "front": "Kahjuks",
+          "back": {
+            "en": "Unfortunately",
+            "az": "Təəssüf ki",
+            "ru": "К сожалению"
+          },
+          "sentence": {
+            "et": "Kahjuks on see otsas.",
+            "en": "Unfortunately that has run out.",
+            "az": "Təəssüf ki, o qurtarıb.",
+            "ru": "К сожалению, это закончилось."
+          }
+        },
+        {
+          "id": "vabandust-ootamise-parast",
+          "front": "Vabandust ootamise pärast",
+          "back": {
+            "en": "Sorry for the wait",
+            "az": "Gözlətdiyim üçün üzr istəyirəm",
+            "ru": "Извините за ожидание"
+          }
+        },
+        {
+          "id": "ettevaatust",
+          "front": "Ettevaatust!",
+          "back": {
+            "en": "Careful!",
+            "az": "Ehtiyatlı olun!",
+            "ru": "Осторожно!"
+          },
+          "sentence": {
+            "et": "Ettevaatust, taldrik on kuum!",
+            "en": "Careful, the plate is hot!",
+            "az": "Ehtiyatlı olun, boşqab istidir!",
+            "ru": "Осторожно, тарелка горячая!"
+          }
+        },
+        {
+          "id": "kas-koik-on-korras",
+          "front": "Kas kõik on korras?",
+          "back": {
+            "en": "Is everything all right?",
+            "az": "Hər şey qaydasındadır?",
+            "ru": "Всё в порядке?"
+          }
+        },
+        {
+          "id": "kas-maitses",
+          "front": "Kas maitses?",
+          "back": {
+            "en": "Did you enjoy it?",
+            "az": "Xoşunuza gəldi?",
+            "ru": "Вам понравилось?"
+          }
+        },
+        {
+          "id": "kas-soovite-magustoitu",
+          "front": "Kas soovite magustoitu?",
+          "back": {
+            "en": "Would you like dessert?",
+            "az": "Şirniyyat istəyirsiniz?",
+            "ru": "Хотите десерт?"
+          }
+        },
+        {
+          "id": "kokk",
+          "front": "Kokk",
+          "back": {
+            "en": "Cook, chef",
+            "az": "Aşpaz",
+            "ru": "Повар"
+          },
+          "forms": [
+            "koka",
+            "kokka"
+          ],
+          "sentence": {
+            "et": "Ma küsin kokalt.",
+            "en": "I will ask the cook.",
+            "az": "Aşpazdan soruşaram.",
+            "ru": "Я спрошу у повара."
+          }
+        },
+        {
+          "id": "sulgema",
+          "front": "Sulgema",
+          "back": {
+            "en": "To close",
+            "az": "Bağlamaq",
+            "ru": "Закрывать"
+          },
+          "forms": [
+            "sulgeda",
+            "sulgen"
+          ],
+          "sentence": {
+            "et": "Köök sulgeb kell kümme.",
+            "en": "The kitchen closes at ten.",
+            "az": "Mətbəx saat onda bağlanır.",
+            "ru": "Кухня закрывается в десять."
+          }
+        },
+        {
+          "id": "arve",
+          "front": "Arve",
+          "back": {
+            "en": "Bill",
+            "az": "Hesab",
+            "ru": "Счёт"
+          },
+          "forms": [
+            "arve",
+            "arvet"
+          ],
+          "sentence": {
+            "et": "Kas ma toon arve?",
+            "en": "Shall I bring the bill?",
+            "az": "Hesabı gətirim?",
+            "ru": "Принести счёт?"
+          }
+        },
+        {
+          "id": "koos",
+          "front": "Koos",
+          "back": {
+            "en": "Together",
+            "az": "Birlikdə",
+            "ru": "Вместе"
+          },
+          "sentence": {
+            "et": "Kas maksate koos või eraldi?",
+            "en": "Are you paying together or separately?",
+            "az": "Birlikdə, yoxsa ayrı ödəyirsiniz?",
+            "ru": "Вы платите вместе или отдельно?"
+          }
+        },
+        {
+          "id": "eraldi",
+          "front": "Eraldi",
+          "back": {
+            "en": "Separately",
+            "az": "Ayrı",
+            "ru": "Отдельно"
+          },
+          "sentence": {
+            "et": "Kas pakin need eraldi?",
+            "en": "Shall I pack these separately?",
+            "az": "Bunları ayrı qablaşdırım?",
+            "ru": "Упаковать это отдельно?"
+          }
+        },
+        {
+          "id": "kassa",
+          "front": "Kassa",
+          "back": {
+            "en": "Till, checkout",
+            "az": "Kassa",
+            "ru": "Касса"
+          },
+          "forms": [
+            "kassa",
+            "kassat"
+          ],
+          "sentence": {
+            "et": "Palun makske kassas.",
+            "en": "Please pay at the till.",
+            "az": "Zəhmət olmasa, kassada ödəyin.",
+            "ru": "Пожалуйста, оплатите на кассе."
+          }
+        },
+        {
+          "id": "vahetusraha",
+          "front": "Vahetusraha",
+          "back": {
+            "en": "Change",
+            "az": "Qalıq pul",
+            "ru": "Сдача"
+          },
+          "forms": [
+            "vahetusraha",
+            "vahetusraha"
+          ],
+          "sentence": {
+            "et": "Siin on teie vahetusraha.",
+            "en": "Here is your change.",
+            "az": "Buyurun, qalığınız.",
+            "ru": "Вот ваша сдача."
+          }
+        },
+        {
+          "id": "kliendikaart",
+          "front": "Kliendikaart",
+          "back": {
+            "en": "Loyalty card",
+            "az": "Müştəri kartı",
+            "ru": "Карта клиента"
+          },
+          "forms": [
+            "kliendikaardi",
+            "kliendikaarti"
+          ],
+          "sentence": {
+            "et": "Kas teil on kliendikaart?",
+            "en": "Do you have a loyalty card?",
+            "az": "Müştəri kartınız var?",
+            "ru": "У вас есть карта клиента?"
+          }
+        },
+        {
+          "id": "kas-soovite-kotti",
+          "front": "Kas soovite kotti?",
+          "back": {
+            "en": "Would you like a bag?",
+            "az": "Torba istəyirsiniz?",
+            "ru": "Вам нужен пакет?"
+          }
+        },
+        {
+          "id": "tulge-jalle",
+          "front": "Tulge jälle!",
+          "back": {
+            "en": "Come again!",
+            "az": "Yenə gəlin!",
+            "ru": "Приходите ещё!"
+          }
+        },
+        {
+          "id": "kena-paeva-jatku",
+          "front": "Kena päeva jätku!",
+          "back": {
+            "en": "Enjoy the rest of your day!",
+            "az": "Gününüz xoş keçsin!",
+            "ru": "Приятного продолжения дня!"
+          }
+        },
+        {
+          "id": "kas-te-otsite-midagi-kindlat",
+          "front": "Kas te otsite midagi kindlat?",
+          "back": {
+            "en": "Are you looking for something in particular?",
+            "az": "Müəyyən bir şey axtarırsınız?",
+            "ru": "Вы ищете что-то конкретное?"
+          }
+        },
+        {
+          "id": "kas-soovite-proovida",
+          "front": "Kas soovite proovida?",
+          "back": {
+            "en": "Would you like to try it?",
+            "az": "Yoxlamaq istəyirsiniz?",
+            "ru": "Хотите попробовать?"
+          }
+        },
+        {
+          "id": "proovikabiin",
+          "front": "Proovikabiin",
+          "back": {
+            "en": "Fitting room",
+            "az": "Geyinmə kabinəsi",
+            "ru": "Примерочная"
+          },
+          "forms": [
+            "proovikabiini",
+            "proovikabiini"
+          ],
+          "sentence": {
+            "et": "Proovikabiin on seal.",
+            "en": "The fitting room is over there.",
+            "az": "Geyinmə kabinəsi oradadır.",
+            "ru": "Примерочная там."
+          }
+        },
+        {
+          "id": "suurus",
+          "front": "Suurus",
+          "back": {
+            "en": "Size",
+            "az": "Ölçü",
+            "ru": "Размер"
+          },
+          "forms": [
+            "suuruse",
+            "suurust"
+          ],
+          "sentence": {
+            "et": "Mis suurust te kannate?",
+            "en": "What size do you wear?",
+            "az": "Hansı ölçü geyinirsiniz?",
+            "ru": "Какой размер вы носите?"
+          }
+        },
+        {
+          "id": "kas-sobib",
+          "front": "Kas sobib?",
+          "back": {
+            "en": "Is that all right?",
+            "az": "Uyğundur?",
+            "ru": "Подходит?"
+          }
+        },
+        {
+          "id": "teenindaja",
+          "front": "Teenindaja",
+          "back": {
+            "en": "Member of staff, the one serving",
+            "az": "Xidmətçi",
+            "ru": "Сотрудник обслуживания"
+          },
+          "forms": [
+            "teenindaja",
+            "teenindajat"
+          ],
+          "sentence": {
+            "et": "Ma töötan teenindajana.",
+            "en": "I work in service.",
+            "az": "Mən xidmətçi işləyirəm.",
+            "ru": "Я работаю в сфере обслуживания."
+          }
+        },
+        {
+          "id": "kelner",
+          "front": "Kelner",
+          "back": {
+            "en": "Waiter",
+            "az": "Ofisiant",
+            "ru": "Официант"
+          },
+          "forms": [
+            "kelneri",
+            "kelnerit"
+          ],
+          "sentence": {
+            "et": "Kelner tuleb kohe.",
+            "en": "The waiter is coming right away.",
+            "az": "Ofisiant indi gəlir.",
+            "ru": "Официант сейчас подойдёт."
+          }
+        },
+        {
+          "id": "baarmen",
+          "front": "Baarmen",
+          "back": {
+            "en": "Bartender",
+            "az": "Barmen",
+            "ru": "Бармен"
+          },
+          "forms": [
+            "baarmeni",
+            "baarmenit"
+          ],
+          "sentence": {
+            "et": "Baarmen teeb kokteili.",
+            "en": "The bartender is making a cocktail.",
+            "az": "Barmen kokteyl hazırlayır.",
+            "ru": "Бармен готовит коктейль."
+          }
+        },
+        {
+          "id": "klient",
+          "front": "Klient",
+          "back": {
+            "en": "Customer",
+            "az": "Müştəri",
+            "ru": "Клиент"
+          },
+          "forms": [
+            "kliendi",
+            "klienti"
+          ],
+          "sentence": {
+            "et": "Kliendil on alati õigus.",
+            "en": "The customer is always right.",
+            "az": "Müştəri həmişə haqlıdır.",
+            "ru": "Клиент всегда прав."
+          }
+        },
+        {
+          "id": "vahetus",
+          "front": "Vahetus",
+          "back": {
+            "en": "Shift",
+            "az": "Növbə",
+            "ru": "Смена"
+          },
+          "forms": [
+            "vahetuse",
+            "vahetust"
+          ],
+          "sentence": {
+            "et": "Minu vahetus algab kell kaheksa.",
+            "en": "My shift starts at eight.",
+            "az": "Mənim növbəm saat səkkizdə başlayır.",
+            "ru": "Моя смена начинается в восемь."
+          }
+        },
+        {
+          "id": "baar",
+          "front": "Baar",
+          "back": {
+            "en": "Bar",
+            "az": "Bar",
+            "ru": "Бар"
+          },
+          "forms": [
+            "baari",
+            "baari"
+          ],
+          "sentence": {
+            "et": "Baar on avatud südaööni.",
+            "en": "The bar is open until midnight.",
+            "az": "Bar gecə yarısına qədər açıqdır.",
+            "ru": "Бар открыт до полуночи."
+          }
+        }
+      ]
     }
   ]
 }
