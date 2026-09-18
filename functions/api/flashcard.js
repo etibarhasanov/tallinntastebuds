@@ -3,8 +3,8 @@
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
  * menu. This is the other half of that: twenty-eight decks of Estonian, five
- * hundred and fifty-eight cards, Estonian on the front and English on the back,
- * and a person turning them over one at a time. It lives on its own
+ * hundred and fifty-eight cards, Estonian on the front and what it means on the
+ * back, and a person turning them over one at a time. It lives on its own
  * subdomain — flashcard.tallinntastebuds.ee, routed by
  * functions/_middleware.js — for the reason splitwise does: it is not the map,
  * and a sixth card on the account page reading "Flashcards" would have been a
@@ -23,6 +23,14 @@
  * What the tables hold is the two things a file cannot: the decks people
  * write for themselves, and how far each person has got. See
  * **Flashcards** in README.md and the block at the end of db/schema.sql.
+ *
+ * **Nothing here chooses a language.** A deck the site ships carries its name,
+ * the line under it and the back of every card as an object keyed by language —
+ * English, Azerbaijani and Russian — and this file hands that object on whole.
+ * Which one a reader sees is means() in assets/flashcard.js, decided there
+ * because the page already knows the language and this route would have to be
+ * told. A deck somebody wrote carries one string per side, in whatever language
+ * they typed, and there is nothing to choose between.
  *
  * IT IS THE SAME ACCOUNT AS THE MAP
  *
@@ -169,9 +177,12 @@ function words(value, max) {
  * own decks are and says nothing is shipped, which is a worse site but not a
  * broken one.
  */
-/* An example, where a card has one: the Estonian and what it means, as a pair.
-   Held to the shape here rather than trusted, because it is drawn as two lines
-   and a half-written one would be a card with a stray sentence on it. */
+/* An example, where a card has one: the Estonian, and what it means in each
+   language the deck is written in. Held to the shape here rather than trusted,
+   because it is drawn as two lines and a half-written one would be a card with a
+   stray sentence on it. The two asked for are the two the page cannot do
+   without — the Estonian, and the English every other language falls back to;
+   the rest ride along beside them. */
 function isSentence(value) {
   return !!value && typeof value.et === 'string' && value.et !== '' &&
     typeof value.en === 'string' && value.en !== '';

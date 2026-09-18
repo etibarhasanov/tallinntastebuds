@@ -17,7 +17,7 @@
  * unlinked and indexed, not unlinked and hidden. The page shipped with a
  * noindex for a day, on the reasoning that a deck somebody wrote is theirs
  * alone. That is still true and this does not touch it: what is indexed is the
- * decks in data/decks.json, which are a file anybody may read, and a
+ * decks in data/decks.json, which are a file anybody may read, and a deck
  * out of the database needs a session that no crawler has and is served with a
  * noindex — see indexable below.
  *
@@ -33,7 +33,8 @@
  * wants exactly what head() spells: "At the table | Tallinn Tastebuds", the
  * mark as its picture, and the site's name beside it.
  *
- * The text: the deck as a list of pairs, into the <main> the page ships empty
+ * The text: the deck as the word and what it means in each of the three
+ * languages the cards are written in, into the <main> the page ships empty
  * — fill() in ../_shell.js and EMPTY there, which holds the spelling. The
  * script empties it again before it draws, so nobody sees what went in.
  *
@@ -52,12 +53,27 @@ const PATH = '/flashcard';
 const FILE = '/flashcard.html';
 const DECKS_FILE = '/data/decks.json';
 
+/* The languages the decks are written in, in the order the <main> lists them
+   and English first. Add a language to data/decks.json and add it here;
+   nothing else in this file cares which they are. */
+const DECK_LANGS = ['en', 'az', 'ru'];
+
+/* The English out of a deck's name, the line under it or a card's back — each
+   of them an object keyed by language in data/decks.json. English and nothing
+   else, because it is the one tools/validate.mjs insists every card has and
+   because it is what this page's tags are written in; the other two go into
+   the <main> a language at a time, each saying which it is. */
+function inEnglish(pack) {
+  return (pack && pack.en) || '';
+}
+
 /* English, on a site read in ten languages, for the reason spelled out at
    length in functions/list/[id].js: a crawler's Accept-Language is whatever
    its operator set, and the card built from these tags is shown to everybody
-   a link is forwarded to rather than to whoever fetched it. It is a shorter
-   argument here than there — the cards themselves are English and Estonian
-   and nothing else, so there is no tenth translation of this page to prefer. */
+   a link is forwarded to rather than to whoever fetched it. The Azerbaijani and
+   Russian on the cards is written into the <main> below rather than into the
+   head for exactly that reason — what is indexed is all three, and what an
+   unfurled link says is the one language every card has. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
   'Twenty-eight decks of Estonian, from the first twenty words to a jacket with a ' +
@@ -98,21 +114,31 @@ async function decksOf(context) {
 }
 
 /* The decks, as text: what each one is called and the line saying what is in
-   it. A list of links, so a crawler that landed on this page walks to the ten
-   under it rather than treating it as a leaf. */
+   it. A list of links, so a crawler that landed on this page walks to the
+   twenty-eight under it rather than treating it as a leaf. */
 function deckList(decks) {
   const row = (deck) =>
-    '<li><h2><a href="' + PATH + '?d=' + esc(deck.id) + '">' + esc(deck.name) + '</a></h2>' +
-    (deck.why ? '<p>' + esc(deck.why) + '</p>' : '') +
+    '<li><h2><a href="' + PATH + '?d=' + esc(deck.id) + '">' + esc(inEnglish(deck.name)) + '</a></h2>' +
+    (deck.why ? '<p>' + esc(inEnglish(deck.why)) + '</p>' : '') +
     '</li>';
   return '<h1>' + esc(TITLE) + '</h1><p>' + esc(DESCRIPTION) + '</p>' +
     '<ol>' + decks.map(row).join('') + '</ol>';
 }
 
-/* And one deck, as the pairs it is: a description list, which is the element
-   for exactly this and says the relationship between the two sides without a
-   word of explanation. The Estonian is the term and the English is what it
-   means, which is the direction the cards are turned in.
+/* And one deck, as the words and their meanings it is: a description list,
+   which is the element for exactly this and says the relationship between the
+   two sides without a word of explanation. The Estonian is the term and what it
+   means is the definition, which is the direction the cards are turned in.
+
+   One <dt> and up to three <dd>s, because that is what a card now is: the same
+   word, what it means in English, in Azerbaijani and in Russian, each saying
+   which language it is in. Somebody typing "что значит leib" is asking the
+   thing this page answers, and until the decks had a Russian side the answer
+   here was in a language they may not read either.
+
+   The sentence goes once, under the English, rather than three times: what
+   anybody looks a word up with is the word, and the Estonian of the sentence is
+   already on the page beside it.
 
    A word that has its three forms carries all three in the term, and that is
    worth more here than it is on the card: somebody typing "leiba" into a
@@ -128,11 +154,15 @@ function deckWords(deck) {
   const said = (card) => card.sentence && card.sentence.et && card.sentence.en
     ? '<p>' + esc(card.sentence.et) + ' — ' + esc(card.sentence.en) + '</p>'
     : '';
-  const pair = (card) =>
-    '<dt>' + esc(card.front) + forms(card) + '</dt><dd>' + esc(card.back) + said(card) + '</dd>';
-  return '<h1>' + esc(deck.name) + '</h1>' +
-    (deck.why ? '<p>' + esc(deck.why) + '</p>' : '') +
-    '<dl>' + deck.cards.map(pair).join('') + '</dl>' +
+  const gloss = (card, lang) => card.back && card.back[lang]
+    ? '<dd lang="' + lang + '">' + esc(card.back[lang]) + (lang === 'en' ? said(card) : '') + '</dd>'
+    : '';
+  const term = (card) =>
+    '<dt>' + esc(card.front) + forms(card) + '</dt>' +
+    DECK_LANGS.map((lang) => gloss(card, lang)).join('');
+  return '<h1>' + esc(inEnglish(deck.name)) + '</h1>' +
+    (deck.why ? '<p>' + esc(inEnglish(deck.why)) + '</p>' : '') +
+    '<dl>' + deck.cards.map(term).join('') + '</dl>' +
     '<p><a href="' + PATH + '">' + esc(TITLE) + '</a></p>';
 }
 
@@ -163,9 +193,10 @@ export async function onRequest(context) {
 
   const tags = deck
     ? head({
-        title: deck.name,
-        description: (deck.why ? deck.why + '. ' : '') +
-          deck.cards.length + ' Estonian words and phrases, with what each one means in English.',
+        title: inEnglish(deck.name),
+        description: (deck.why ? inEnglish(deck.why) + '. ' : '') +
+          deck.cards.length +
+          ' Estonian words and phrases, with what each one means in English, Azerbaijani and Russian.',
         /* The deck's own address rather than the page's, because a deck is a
            page of its own — the same call the map makes for ?spot=, and the
            same set of addresses tools/sitemap.mjs writes out. */
