@@ -884,8 +884,8 @@ CREATE INDEX IF NOT EXISTS idx_split_settlements_group ON split_settlements (gro
 --
 -- Four tables, and only one of them holds anything anybody typed. The words
 -- the site ships with are not here at all: data/decks.json is twenty-eight
--- decks and five hundred and fifty-eight cards of Estonian, deployed as a file
--- and read as one, because content that changes when somebody edits the
+-- decks and six hundred and one cards of Estonian, deployed as a file and
+-- read as one, because content that changes when somebody edits the
 -- repository belongs in the repository. What is here is the three things a file
 -- cannot hold — the decks people write for themselves, how far each person has
 -- got, and which of the shipped cards readers say is wrong.
