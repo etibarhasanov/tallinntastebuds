@@ -1236,8 +1236,10 @@
 
     /* role="status" because the press destroys the thing that was pressed:
        the button is gone by the time this is drawn, so a screen reader that
-       was on it has nothing left to read and no reason to look here. It is
-       the same job the card's own aria-live does for the word. */
+       was on it has nothing left to read and no reason to look here. The card
+       answers the same problem the other way, by taking the focus — see
+       focusRun() — which this line cannot, being a sentence rather than
+       something to press. */
     if (word.reported) {
       return el('p', {
         className: 'flash-wrong flash-turn',
@@ -1257,8 +1259,7 @@
       btn.disabled = true;
       post(FLASH_API, {
         action: 'report',
-        /* The deck the card is really from, the way mark() sends it. */
-        deck: word.deck || state.deck.id,
+        deck: from(word),
         card: word.id,
         /* Which of the three backs was on screen, which is the most useful
            thing this press can carry: the route stores it. */
