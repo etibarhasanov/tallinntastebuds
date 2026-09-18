@@ -884,9 +884,9 @@ CREATE INDEX IF NOT EXISTS idx_split_settlements_group ON split_settlements (gro
 --
 -- Three tables, and only one of them holds anything anybody typed. The words
 -- the site ships with are not here at all: data/decks.json is twenty-two decks
--- and four hundred and twenty-one cards of Estonian, deployed as a file and read as one,
--- because content that changes when somebody edits the repository belongs in
--- the repository. What is here is the two things a file cannot hold — the decks
+-- and four hundred and eighteen cards of Estonian, deployed as a file and read
+-- as one, because content that changes when somebody edits the repository
+-- belongs in the repository. What is here is the two things a file cannot hold — the decks
 -- people write for themselves, and how far each person has got.
 --
 -- See **Flashcards** in README.md, and functions/api/flashcard.js, which is

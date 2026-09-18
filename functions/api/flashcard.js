@@ -3,7 +3,7 @@
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
  * menu. This is the other half of that: twenty-two decks of Estonian, four
- * hundred and twenty-one cards, Estonian on the front and English on the back,
+ * hundred and eighteen cards, Estonian on the front and English on the back,
  * and a person turning them over one at a time. It lives on its own subdomain —
  * flashcard.tallinntastebuds.ee, routed by functions/_middleware.js — for the
  * reason splitwise does: it is not the map, and a sixth card on the account
@@ -15,10 +15,10 @@
  * The decks this site ships are data/decks.json, deployed as a file and read
  * as one through dataFile() below. They are content: somebody edits the
  * repository, the deploy carries them, and every reader gets the same four
- * hundred and twenty-one cards. Nothing about them is in the database and nothing needs to
- * be — a row per card per deployment would be a copy of a file that only a
- * deploy changes, and the first thing anybody would have to write is the tool
- * that keeps the two in step.
+ * hundred and eighteen cards. Nothing about them is in the database and nothing
+ * needs to be — a row per card per deployment would be a copy of a file that
+ * only a deploy changes, and the first thing anybody would have to write is the
+ * tool that keeps the two in step.
  *
  * What the tables hold is the two things a file cannot: the decks people
  * write for themselves, and how far each person has got. See
@@ -81,10 +81,10 @@ const DECKS_FILE = '/data/decks.json';
 /* Caps, and all of them are about somebody with a script rather than somebody
    learning a language.
  *
- * MAX_CARDS is the one worth arguing about. Two hundred is roughly the whole
- * of what this site ships, in one deck, and well past what anybody turns over
- * in a sitting; past it the thing being asked for is a vocabulary manager and
- * not a deck of cards. */
+ * MAX_CARDS is the one worth arguing about. Two hundred is several times the
+ * longest deck this site ships, and well past what anybody turns over in a
+ * sitting; past it the thing being asked for is a vocabulary manager and not a
+ * deck of cards. */
 const MAX_DECKS = 20;
 const MAX_CARDS = 200;
 const MAX_NAME = 60;
@@ -241,7 +241,7 @@ async function readingBoxes(env, make) {
 /* Every card this person has said they know, and whether it is due to be
    asked again: a Map of "<deck>/<card>" to true for due, false for resting.
    One indexed read over their own rows, rather than a query per deck — an
-   account that has been through everything this site ships holds two hundred
+   account that has been through everything this site ships holds four hundred
    rows, which is smaller than the answer the page is about to draw anyway. */
 async function knownOf(env, user) {
   if (!user) return new Map();

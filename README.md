@@ -6154,9 +6154,9 @@ this feature exists.
 
 A site about eating in Tallinn is read mostly by people who cannot read the
 menu. **flashcard.tallinntastebuds.ee** is the other half of that: twenty-two
-decks of Estonian, four hundred and twenty-one cards, the Estonian on the front and the
-English on the back, and one card at a time with two words under it — *Knew
-it*, and *Show me again*.
+decks of Estonian, four hundred and eighteen cards, the Estonian on the front
+and the English on the back, and one card at a time with two words under it —
+*Knew it*, and *Show me again*.
 
 It is the second thing on this site that is not about restaurants, and it is
 here for the same reason the first one is: it is what the people this map is
@@ -6236,12 +6236,12 @@ the one people are given; this only settles which of them a crawler keeps.
 ### Where the words are, and it is mostly not the database
 
 `data/decks.json` is the Estonian the site ships: twenty-two decks, four
-hundred and twenty-one cards, deployed as a file and read as one. It is **content** — somebody
-edits the repository, the deploy carries it, every reader gets the same cards —
-and content that changes when the repository changes belongs in the repository.
-A row per card would be a copy of a file that only a deploy changes, and the
-first thing anybody would then have to write is the tool that keeps the two in
-step.
+hundred and eighteen cards, deployed as a file and read as one. It is
+**content** — somebody edits the repository, the deploy carries it, every
+reader gets the same cards — and content that changes when the repository
+changes belongs in the repository. A row per card would be a copy of a file
+that only a deploy changes, and the first thing anybody would then have to
+write is the tool that keeps the two in step.
 
 The three tables hold the two things a file cannot: the decks people write for
 themselves, and how far each person has got. `functions/api/flashcard.js` is
@@ -6432,9 +6432,10 @@ that is the genitive and the partitive; for a verb it is the *da*-infinitive
 and the first person singular, so **minema, minna, lähen**, which is the same
 three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **278 of the 421 cards
-carry them** today; the ones that do not are the phrases, and a handful of
-words left alone rather than guessed at. `tools/validate.mjs` fails on a
+parts, and a row of three under it would be nonsense. **280 of the 418 cards
+carry them** today; the ones that do not are the phrases, the adverbs, the
+garments that are plural in Estonian — *teksad* has no singular anybody wears —
+and a handful of words left alone rather than guessed at. `tools/validate.mjs` fails on a
 `forms` that is not exactly two non-empty strings, because a row of two drawn
 where three belong would be silently wrong rather than visibly missing.
 
@@ -6460,9 +6461,9 @@ already remembered the word is done before they reach it.
 
 `sentence` is an optional `{ et, en }` on a card, and the validator wants both
 halves or neither — half of one drawn on a card would be a stray clause with no
-translation. **130 of the 421 cards** carry one: every card in the six newer
-decks, and the ones in the older decks where an example says something the
-gloss does not.
+translation. **240 of the 418 cards** carry one: every card in the twelve newer
+decks bar the four that are a whole sentence already, and the ones in the older
+decks where an example says something the gloss does not.
 
 They are in the indexed text too, and they are the most searchable thing on the
 page: a whole Estonian sentence with its English under it is what somebody is
@@ -6503,7 +6504,7 @@ knew better.
 | | | why |
 |---|---|---|
 | `MAX_DECKS` | 20 | decks of your own, per account |
-| `MAX_CARDS` | 200 | per deck — roughly the whole of what this site ships, in one deck. Past it the thing being asked for is a vocabulary manager |
+| `MAX_CARDS` | 200 | per deck — several times the longest deck the site ships. Past it the thing being asked for is a vocabulary manager |
 | `MAX_NAME` | 60 | a deck's name |
 | `MAX_SIDE` | 60 | either side of a card. "Kas ma saan maksta kaardiga?" is thirty-one; a paragraph on a flashcard is a note, and notes want a different feature |
 
@@ -8145,7 +8146,7 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            twenty-two decks of Estonian, 421 cards at three
+data/decks.json            twenty-two decks of Estonian, 418 cards at three
                            levels; content rather than interface, so English
                            and Estonian alone
 blog.html                  a post per thing this site does   } unlinked, and

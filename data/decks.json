@@ -1012,12 +1012,20 @@
         {
           "id": "korval",
           "front": "Kõrval",
-          "back": "Next to"
+          "back": "Next to",
+          "sentence": {
+            "et": "Pood on jaama kõrval.",
+            "en": "The shop is next to the station."
+          }
         },
         {
           "id": "juures",
           "front": "Juures",
-          "back": "By, near"
+          "back": "By, near",
+          "sentence": {
+            "et": "Ma ootan ukse juures.",
+            "en": "I am waiting by the door."
+          }
         },
         {
           "id": "sissepaas",
@@ -1026,7 +1034,11 @@
           "forms": [
             "sissepääsu",
             "sissepääsu"
-          ]
+          ],
+          "sentence": {
+            "et": "Sissepääs on teisel pool.",
+            "en": "The entrance is on the other side."
+          }
         },
         {
           "id": "valjapaas",
@@ -1035,7 +1047,11 @@
           "forms": [
             "väljapääsu",
             "väljapääsu"
-          ]
+          ],
+          "sentence": {
+            "et": "Väljapääs on paremal.",
+            "en": "The exit is on the right."
+          }
         }
       ],
       "level": "more"
@@ -3050,7 +3066,11 @@
         {
           "id": "riided",
           "front": "Riided",
-          "back": "Clothes"
+          "back": "Clothes",
+          "sentence": {
+            "et": "Riided on kotis.",
+            "en": "The clothes are in the bag."
+          }
         },
         {
           "id": "kleit",
@@ -3059,7 +3079,11 @@
           "forms": [
             "kleidi",
             "kleiti"
-          ]
+          ],
+          "sentence": {
+            "et": "See kleit on liiga pikk.",
+            "en": "This dress is too long."
+          }
         },
         {
           "id": "seelik",
@@ -3068,7 +3092,11 @@
           "forms": [
             "seeliku",
             "seelikut"
-          ]
+          ],
+          "sentence": {
+            "et": "Ma otsin musta seelikut.",
+            "en": "I am looking for a black skirt."
+          }
         },
         {
           "id": "pluus",
@@ -3077,7 +3105,11 @@
           "forms": [
             "pluusi",
             "pluusi"
-          ]
+          ],
+          "sentence": {
+            "et": "Pluus on valge.",
+            "en": "The blouse is white."
+          }
         },
         {
           "id": "sark",
@@ -3086,7 +3118,11 @@
           "forms": [
             "särgi",
             "särki"
-          ]
+          ],
+          "sentence": {
+            "et": "Särk on liiga kitsas.",
+            "en": "The shirt is too narrow."
+          }
         },
         {
           "id": "t-sark",
@@ -3095,7 +3131,11 @@
           "forms": [
             "t-särgi",
             "t-särki"
-          ]
+          ],
+          "sentence": {
+            "et": "Ma kannan T-särki.",
+            "en": "I am wearing a T-shirt."
+          }
         },
         {
           "id": "kampsun",
@@ -3104,7 +3144,11 @@
           "forms": [
             "kampsuni",
             "kampsunit"
-          ]
+          ],
+          "sentence": {
+            "et": "Võta kampsun kaasa.",
+            "en": "Take a jumper with you."
+          }
         },
         {
           "id": "jakk",
@@ -3113,7 +3157,11 @@
           "forms": [
             "jaki",
             "jakki"
-          ]
+          ],
+          "sentence": {
+            "et": "Jakk on toolil.",
+            "en": "The jacket is on the chair."
+          }
         },
         {
           "id": "pintsak",
@@ -3122,7 +3170,11 @@
           "forms": [
             "pintsaku",
             "pintsakut"
-          ]
+          ],
+          "sentence": {
+            "et": "Ta kannab pintsakut.",
+            "en": "They are wearing a suit jacket."
+          }
         },
         {
           "id": "ulikond",
@@ -3131,7 +3183,11 @@
           "forms": [
             "ülikonna",
             "ülikonda"
-          ]
+          ],
+          "sentence": {
+            "et": "Ülikond on liiga kallis.",
+            "en": "The suit is too expensive."
+          }
         },
         {
           "id": "kostuum",
@@ -3140,12 +3196,20 @@
           "forms": [
             "kostüümi",
             "kostüümi"
-          ]
+          ],
+          "sentence": {
+            "et": "See kostüüm sobib hästi.",
+            "en": "This suit fits well."
+          }
         },
         {
           "id": "dressid",
           "front": "Dressid",
-          "back": "Tracksuit"
+          "back": "Tracksuit",
+          "sentence": {
+            "et": "Dressid on mugavad.",
+            "en": "A tracksuit is comfortable."
+          }
         },
         {
           "id": "jope",
@@ -3154,7 +3218,11 @@
           "forms": [
             "jope",
             "jopet"
-          ]
+          ],
+          "sentence": {
+            "et": "Jope on soe.",
+            "en": "The jacket is warm."
+          }
         },
         {
           "id": "kevadjope",
@@ -3163,7 +3231,11 @@
           "forms": [
             "kevadjope",
             "kevadjopet"
-          ]
+          ],
+          "sentence": {
+            "et": "Kevadjope on õhuke.",
+            "en": "A spring jacket is thin."
+          }
         },
         {
           "id": "talvejope",
@@ -3172,7 +3244,11 @@
           "forms": [
             "talvejope",
             "talvejopet"
-          ]
+          ],
+          "sentence": {
+            "et": "Talvejope on paks ja soe.",
+            "en": "A winter jacket is thick and warm."
+          }
         },
         {
           "id": "kasukas",
@@ -3181,7 +3257,11 @@
           "forms": [
             "kasuka",
             "kasukat"
-          ]
+          ],
+          "sentence": {
+            "et": "Kasukas on kallis.",
+            "en": "A fur coat is expensive."
+          }
         },
         {
           "id": "mantel",
@@ -3190,22 +3270,38 @@
           "forms": [
             "mantli",
             "mantlit"
-          ]
+          ],
+          "sentence": {
+            "et": "Mantel on nagis.",
+            "en": "The coat is on the hook."
+          }
         },
         {
           "id": "puksid",
           "front": "Püksid",
-          "back": "Trousers"
+          "back": "Trousers",
+          "sentence": {
+            "et": "Need püksid on liiga laiad.",
+            "en": "These trousers are too wide."
+          }
         },
         {
           "id": "teksad",
           "front": "Teksad",
-          "back": "Jeans"
+          "back": "Jeans",
+          "sentence": {
+            "et": "Ma ostsin uued teksad.",
+            "en": "I bought new jeans."
+          }
         },
         {
           "id": "ujumisriided",
           "front": "Ujumisriided",
-          "back": "Swimwear"
+          "back": "Swimwear",
+          "sentence": {
+            "et": "Võta ujumisriided kaasa.",
+            "en": "Take your swimwear with you."
+          }
         }
       ]
     },
@@ -3218,42 +3314,74 @@
         {
           "id": "tossud",
           "front": "Tossud",
-          "back": "Trainers"
+          "back": "Trainers",
+          "sentence": {
+            "et": "Tossud on mugavad.",
+            "en": "Trainers are comfortable."
+          }
         },
         {
           "id": "kingad",
           "front": "Kingad",
-          "back": "Shoes"
+          "back": "Shoes",
+          "sentence": {
+            "et": "Need kingad on liiga kitsad.",
+            "en": "These shoes are too narrow."
+          }
         },
         {
           "id": "saapad",
           "front": "Saapad",
-          "back": "Boots"
+          "back": "Boots",
+          "sentence": {
+            "et": "Talvel kannan saapaid.",
+            "en": "In winter I wear boots."
+          }
         },
         {
           "id": "kummikud",
           "front": "Kummikud",
-          "back": "Wellington boots"
+          "back": "Wellington boots",
+          "sentence": {
+            "et": "Kummikud on vihma jaoks.",
+            "en": "Wellingtons are for the rain."
+          }
         },
         {
           "id": "sussid",
           "front": "Sussid",
-          "back": "Slippers"
+          "back": "Slippers",
+          "sentence": {
+            "et": "Sussid on ukse juures.",
+            "en": "The slippers are by the door."
+          }
         },
         {
           "id": "sokid",
           "front": "Sokid",
-          "back": "Socks"
+          "back": "Socks",
+          "sentence": {
+            "et": "Puhtad sokid on kapis.",
+            "en": "The clean socks are in the cupboard."
+          }
         },
         {
           "id": "sukkpuksid",
           "front": "Sukkpüksid",
-          "back": "Tights"
+          "back": "Tights",
+          "sentence": {
+            "et": "Ma ostan mustad sukkpüksid.",
+            "en": "I am buying black tights."
+          }
         },
         {
           "id": "kindad",
           "front": "Kindad",
-          "back": "Gloves"
+          "back": "Gloves",
+          "sentence": {
+            "et": "Väljas on külm, võta kindad.",
+            "en": "It is cold outside, take gloves."
+          }
         },
         {
           "id": "muts",
@@ -3262,7 +3390,11 @@
           "forms": [
             "mütsi",
             "mütsi"
-          ]
+          ],
+          "sentence": {
+            "et": "Pane müts pähe.",
+            "en": "Put your hat on."
+          }
         },
         {
           "id": "ratik",
@@ -3271,7 +3403,11 @@
           "forms": [
             "rätiku",
             "rätikut"
-          ]
+          ],
+          "sentence": {
+            "et": "Ta kannab rätikut.",
+            "en": "They are wearing a headscarf."
+          }
         },
         {
           "id": "sall",
@@ -3280,7 +3416,11 @@
           "forms": [
             "salli",
             "salli"
-          ]
+          ],
+          "sentence": {
+            "et": "Sall on villane.",
+            "en": "The scarf is woollen."
+          }
         },
         {
           "id": "lips",
@@ -3289,7 +3429,11 @@
           "forms": [
             "lipsu",
             "lipsu"
-          ]
+          ],
+          "sentence": {
+            "et": "Lips on sinine.",
+            "en": "The tie is blue."
+          }
         },
         {
           "id": "voo",
@@ -3298,12 +3442,20 @@
           "forms": [
             "vöö",
             "vööd"
-          ]
+          ],
+          "sentence": {
+            "et": "Vöö on liiga pikk.",
+            "en": "The belt is too long."
+          }
         },
         {
           "id": "korvarongad",
           "front": "Kõrvarõngad",
-          "back": "Earrings"
+          "back": "Earrings",
+          "sentence": {
+            "et": "Kõrvarõngad on hõbedast.",
+            "en": "The earrings are silver."
+          }
         },
         {
           "id": "sormus",
@@ -3312,7 +3464,11 @@
           "forms": [
             "sõrmuse",
             "sõrmust"
-          ]
+          ],
+          "sentence": {
+            "et": "Sõrmus on väike.",
+            "en": "The ring is small."
+          }
         },
         {
           "id": "kaelakee",
@@ -3321,7 +3477,11 @@
           "forms": [
             "kaelakee",
             "kaelakeed"
-          ]
+          ],
+          "sentence": {
+            "et": "Kaelakee on kingitus.",
+            "en": "The necklace is a present."
+          }
         },
         {
           "id": "triibuline",
@@ -3330,7 +3490,11 @@
           "forms": [
             "triibulise",
             "triibulist"
-          ]
+          ],
+          "sentence": {
+            "et": "Ma tahan triibulist särki.",
+            "en": "I want a striped shirt."
+          }
         },
         {
           "id": "tapiline",
@@ -3339,7 +3503,11 @@
           "forms": [
             "täpilise",
             "täpilist"
-          ]
+          ],
+          "sentence": {
+            "et": "See kleit on täpiline.",
+            "en": "This dress is spotted."
+          }
         },
         {
           "id": "ruuduline",
@@ -3348,22 +3516,38 @@
           "forms": [
             "ruudulise",
             "ruudulist"
-          ]
+          ],
+          "sentence": {
+            "et": "Ruuduline särk on moes.",
+            "en": "A checked shirt is in fashion."
+          }
         },
         {
           "id": "selga-panna",
           "front": "Selga panna",
-          "back": "To put on"
+          "back": "To put on",
+          "sentence": {
+            "et": "Pane jope selga.",
+            "en": "Put your jacket on."
+          }
         },
         {
           "id": "seljas-olema",
           "front": "Seljas olema",
-          "back": "To be wearing"
+          "back": "To be wearing",
+          "sentence": {
+            "et": "Tal on punane kleit seljas.",
+            "en": "They have a red dress on."
+          }
         },
         {
           "id": "seljast-ara-votma",
           "front": "Seljast ära võtma",
-          "back": "To take off"
+          "back": "To take off",
+          "sentence": {
+            "et": "Võta mantel seljast ära.",
+            "en": "Take your coat off."
+          }
         }
       ]
     },
@@ -3380,7 +3564,11 @@
           "forms": [
             "kaupluse",
             "kauplust"
-          ]
+          ],
+          "sentence": {
+            "et": "Kauplus on kell kümme lahti.",
+            "en": "The store is open at ten."
+          }
         },
         {
           "id": "toidupood",
@@ -3389,7 +3577,11 @@
           "forms": [
             "toidupoe",
             "toidupoodi"
-          ]
+          ],
+          "sentence": {
+            "et": "Toidupood on nurga taga.",
+            "en": "The grocery shop is round the corner."
+          }
         },
         {
           "id": "raamatupood",
@@ -3398,7 +3590,11 @@
           "forms": [
             "raamatupoe",
             "raamatupoodi"
-          ]
+          ],
+          "sentence": {
+            "et": "Raamatupood on kesklinnas.",
+            "en": "The bookshop is in the city centre."
+          }
         },
         {
           "id": "roivapood",
@@ -3407,22 +3603,38 @@
           "forms": [
             "rõivapoe",
             "rõivapoodi"
-          ]
+          ],
+          "sentence": {
+            "et": "Rõivapood on teisel korrusel.",
+            "en": "The clothes shop is on the second floor."
+          }
         },
         {
           "id": "naisteriiete-pood",
           "front": "Naisteriiete pood",
-          "back": "Women's clothes shop"
+          "back": "Women's clothes shop",
+          "sentence": {
+            "et": "Naisteriiete pood on siin kõrval.",
+            "en": "The women's clothes shop is right next door."
+          }
         },
         {
           "id": "meesteriiete-pood",
           "front": "Meesteriiete pood",
-          "back": "Men's clothes shop"
+          "back": "Men's clothes shop",
+          "sentence": {
+            "et": "Meesteriiete pood on all.",
+            "en": "The men's clothes shop is downstairs."
+          }
         },
         {
           "id": "lasteriiete-pood",
           "front": "Lasteriiete pood",
-          "back": "Children's clothes shop"
+          "back": "Children's clothes shop",
+          "sentence": {
+            "et": "Lasteriiete pood on sissepääsu juures.",
+            "en": "The children's clothes shop is by the entrance."
+          }
         },
         {
           "id": "kingapood",
@@ -3431,7 +3643,11 @@
           "forms": [
             "kingapoe",
             "kingapoodi"
-          ]
+          ],
+          "sentence": {
+            "et": "Kingapood on väljapääsu kõrval.",
+            "en": "The shoe shop is next to the exit."
+          }
         },
         {
           "id": "lillepood",
@@ -3440,7 +3656,11 @@
           "forms": [
             "lillepoe",
             "lillepoodi"
-          ]
+          ],
+          "sentence": {
+            "et": "Ma ostan lilled lillepoest.",
+            "en": "I buy the flowers at the flower shop."
+          }
         },
         {
           "id": "manguasjapood",
@@ -3449,7 +3669,11 @@
           "forms": [
             "mänguasjapoe",
             "mänguasjapoodi"
-          ]
+          ],
+          "sentence": {
+            "et": "Lapsed tahavad mänguasjapoodi minna.",
+            "en": "The children want to go to the toy shop."
+          }
         },
         {
           "id": "kosmeetikakauplus",
@@ -3458,7 +3682,11 @@
           "forms": [
             "kosmeetikakaupluse",
             "kosmeetikakauplust"
-          ]
+          ],
+          "sentence": {
+            "et": "Kosmeetikakauplus on keskuses.",
+            "en": "The cosmetics shop is in the centre."
+          }
         },
         {
           "id": "juveelikauplus",
@@ -3467,7 +3695,11 @@
           "forms": [
             "juveelikaupluse",
             "juveelikauplust"
-          ]
+          ],
+          "sentence": {
+            "et": "Sõrmus on juveelikauplusest.",
+            "en": "The ring is from the jeweller's."
+          }
         },
         {
           "id": "prillipood",
@@ -3476,7 +3708,11 @@
           "forms": [
             "prillipoe",
             "prillipoodi"
-          ]
+          ],
+          "sentence": {
+            "et": "Prillipood on siin lähedal.",
+            "en": "The optician's is near here."
+          }
         },
         {
           "id": "elektroonikakauplus",
@@ -3485,12 +3721,20 @@
           "forms": [
             "elektroonikakaupluse",
             "elektroonikakauplust"
-          ]
+          ],
+          "sentence": {
+            "et": "Elektroonikakauplus müüb arvuteid.",
+            "en": "The electronics shop sells computers."
+          }
         },
         {
           "id": "burootarvete-pood",
           "front": "Bürootarvete pood",
-          "back": "Stationery shop"
+          "back": "Stationery shop",
+          "sentence": {
+            "et": "Bürootarvete pood müüb paberit.",
+            "en": "The stationery shop sells paper."
+          }
         },
         {
           "id": "fotopood",
@@ -3499,7 +3743,11 @@
           "forms": [
             "fotopoe",
             "fotopoodi"
-          ]
+          ],
+          "sentence": {
+            "et": "Fotopood on kinni.",
+            "en": "The camera shop is closed."
+          }
         },
         {
           "id": "mooblipood",
@@ -3508,12 +3756,20 @@
           "forms": [
             "mööblipoe",
             "mööblipoodi"
-          ]
+          ],
+          "sentence": {
+            "et": "Mööblipood on linnast väljas.",
+            "en": "The furniture shop is out of town."
+          }
         },
         {
           "id": "majapidamistarvete-kauplus",
           "front": "Majapidamistarvete kauplus",
-          "back": "Household goods shop"
+          "back": "Household goods shop",
+          "sentence": {
+            "et": "Majapidamistarvete kauplus on suur.",
+            "en": "The household goods shop is big."
+          }
         },
         {
           "id": "muuja",
@@ -3522,7 +3778,11 @@
           "forms": [
             "müüja",
             "müüjat"
-          ]
+          ],
+          "sentence": {
+            "et": "Müüja aitas mind.",
+            "en": "The shop assistant helped me."
+          }
         }
       ]
     },
@@ -3539,7 +3799,11 @@
           "forms": [
             "parema",
             "paremat"
-          ]
+          ],
+          "sentence": {
+            "et": "See on parem kui eile.",
+            "en": "This is better than yesterday."
+          }
         },
         {
           "id": "luhike",
@@ -3548,7 +3812,11 @@
           "forms": [
             "lühikese",
             "lühikest"
-          ]
+          ],
+          "sentence": {
+            "et": "Kleit on lühike.",
+            "en": "The dress is short."
+          }
         },
         {
           "id": "luhem",
@@ -3557,7 +3825,11 @@
           "forms": [
             "lühema",
             "lühemat"
-          ]
+          ],
+          "sentence": {
+            "et": "See seelik on lühem.",
+            "en": "This skirt is shorter."
+          }
         },
         {
           "id": "pikk",
@@ -3566,12 +3838,20 @@
           "forms": [
             "pika",
             "pikka"
-          ]
+          ],
+          "sentence": {
+            "et": "Mantel on liiga pikk.",
+            "en": "The coat is too long."
+          }
         },
         {
           "id": "liiga-pikk",
           "front": "Liiga pikk",
-          "back": "Too long"
+          "back": "Too long",
+          "sentence": {
+            "et": "Need püksid on liiga pikad.",
+            "en": "These trousers are too long."
+          }
         },
         {
           "id": "pisike",
@@ -3580,7 +3860,11 @@
           "forms": [
             "pisikese",
             "pisikest"
-          ]
+          ],
+          "sentence": {
+            "et": "Tal on pisike tuba.",
+            "en": "They have a tiny room."
+          }
         },
         {
           "id": "pisem",
@@ -3589,7 +3873,11 @@
           "forms": [
             "pisema",
             "pisemat"
-          ]
+          ],
+          "sentence": {
+            "et": "See number on pisem.",
+            "en": "This size is smaller."
+          }
         },
         {
           "id": "ohuke",
@@ -3598,7 +3886,11 @@
           "forms": [
             "õhukese",
             "õhukest"
-          ]
+          ],
+          "sentence": {
+            "et": "Jope on õhuke.",
+            "en": "The jacket is thin."
+          }
         },
         {
           "id": "paks",
@@ -3607,7 +3899,11 @@
           "forms": [
             "paksu",
             "paksu"
-          ]
+          ],
+          "sentence": {
+            "et": "Talvel on vaja paksu jopet.",
+            "en": "In winter you need a thick jacket."
+          }
         },
         {
           "id": "kitsas",
@@ -3616,7 +3912,11 @@
           "forms": [
             "kitsa",
             "kitsast"
-          ]
+          ],
+          "sentence": {
+            "et": "Kingad on kitsad.",
+            "en": "The shoes are narrow."
+          }
         },
         {
           "id": "lai",
@@ -3625,7 +3925,11 @@
           "forms": [
             "laia",
             "laia"
-          ]
+          ],
+          "sentence": {
+            "et": "Tänav on lai.",
+            "en": "The street is wide."
+          }
         },
         {
           "id": "laiem",
@@ -3634,7 +3938,11 @@
           "forms": [
             "laiema",
             "laiemat"
-          ]
+          ],
+          "sentence": {
+            "et": "Kas teil on laiemat?",
+            "en": "Do you have a wider one?"
+          }
         },
         {
           "id": "kiirem",
@@ -3643,7 +3951,11 @@
           "forms": [
             "kiirema",
             "kiiremat"
-          ]
+          ],
+          "sentence": {
+            "et": "Buss on kiirem kui tramm.",
+            "en": "The bus is faster than the tram."
+          }
         },
         {
           "id": "tume",
@@ -3652,7 +3964,11 @@
           "forms": [
             "tumeda",
             "tumedat"
-          ]
+          ],
+          "sentence": {
+            "et": "Ma tahan tumedat värvi.",
+            "en": "I want a dark colour."
+          }
         },
         {
           "id": "hele",
@@ -3661,7 +3977,11 @@
           "forms": [
             "heleda",
             "heledat"
-          ]
+          ],
+          "sentence": {
+            "et": "Hele särk sobib paremini.",
+            "en": "A light shirt suits better."
+          }
         },
         {
           "id": "vana",
@@ -3670,7 +3990,11 @@
           "forms": [
             "vana",
             "vana"
-          ]
+          ],
+          "sentence": {
+            "et": "Mantel on vana.",
+            "en": "The coat is old."
+          }
         },
         {
           "id": "uus",
@@ -3679,7 +4003,11 @@
           "forms": [
             "uue",
             "uut"
-          ]
+          ],
+          "sentence": {
+            "et": "Mul on uued kingad.",
+            "en": "I have new shoes."
+          }
         },
         {
           "id": "varviline",
@@ -3688,7 +4016,11 @@
           "forms": [
             "värvilise",
             "värvilist"
-          ]
+          ],
+          "sentence": {
+            "et": "Suvel kannan värvilisi riideid.",
+            "en": "In summer I wear colourful clothes."
+          }
         },
         {
           "id": "tagasihoidlik",
@@ -3697,7 +4029,11 @@
           "forms": [
             "tagasihoidliku",
             "tagasihoidlikku"
-          ]
+          ],
+          "sentence": {
+            "et": "Ma eelistan tagasihoidlikku värvi.",
+            "en": "I prefer an understated colour."
+          }
         },
         {
           "id": "inetu",
@@ -3706,7 +4042,11 @@
           "forms": [
             "inetu",
             "inetut"
-          ]
+          ],
+          "sentence": {
+            "et": "See muster on inetu.",
+            "en": "This pattern is ugly."
+          }
         },
         {
           "id": "kole",
@@ -3715,7 +4055,11 @@
           "forms": [
             "koleda",
             "koledat"
-          ]
+          ],
+          "sentence": {
+            "et": "Ilm on täna kole.",
+            "en": "The weather is hideous today."
+          }
         },
         {
           "id": "kas-teil-on-luhemat",
@@ -3733,12 +4077,20 @@
         {
           "id": "roivaste-parandus",
           "front": "Rõivaste parandus",
-          "back": "Clothing repairs"
+          "back": "Clothing repairs",
+          "sentence": {
+            "et": "Rõivaste parandus on esimesel korrusel.",
+            "en": "Clothing repairs are on the first floor."
+          }
         },
         {
           "id": "keemiline-puhastus",
           "front": "Keemiline puhastus",
-          "back": "Dry cleaning"
+          "back": "Dry cleaning",
+          "sentence": {
+            "et": "Ma viisin mantli keemilisse puhastusse.",
+            "en": "I took the coat to the dry cleaner's."
+          }
         },
         {
           "id": "lukk",
@@ -3747,27 +4099,42 @@
           "forms": [
             "luku",
             "lukku"
-          ]
+          ],
+          "sentence": {
+            "et": "Lukk on katki.",
+            "en": "The zip is broken."
+          }
         },
         {
           "id": "katki",
           "front": "Katki",
-          "back": "Broken"
+          "back": "Broken",
+          "sentence": {
+            "et": "Mu jope on katki.",
+            "en": "My jacket is broken."
+          }
         },
         {
-          "id": "panna",
-          "front": "Panna",
-          "back": "To put in, to fit"
-        },
-        {
-          "id": "saama",
-          "front": "Saama",
-          "back": "To get"
+          "id": "panema",
+          "front": "Panema",
+          "back": "To put in, to fit",
+          "forms": [
+            "panna",
+            "panen"
+          ],
+          "sentence": {
+            "et": "Kas te saate uue luku panna?",
+            "en": "Can you fit a new zip?"
+          }
         },
         {
           "id": "saab",
           "front": "Saab",
-          "back": "It will be ready"
+          "back": "It will be ready",
+          "sentence": {
+            "et": "Millal see valmis saab?",
+            "en": "When will it be ready?"
+          }
         },
         {
           "id": "hinnakiri",
@@ -3776,12 +4143,20 @@
           "forms": [
             "hinnakirja",
             "hinnakirja"
-          ]
+          ],
+          "sentence": {
+            "et": "Hinnakiri on seinal.",
+            "en": "The price list is on the wall."
+          }
         },
         {
           "id": "puhastusse",
           "front": "Puhastusse",
-          "back": "In for cleaning"
+          "back": "In for cleaning",
+          "sentence": {
+            "et": "Ma andsin ülikonna puhastusse.",
+            "en": "I put the suit in for cleaning."
+          }
         },
         {
           "id": "puhas",
@@ -3790,17 +4165,29 @@
           "forms": [
             "puhta",
             "puhast"
-          ]
+          ],
+          "sentence": {
+            "et": "Särk on nüüd puhas.",
+            "en": "The shirt is clean now."
+          }
         },
         {
           "id": "eelmisel-nadalal",
           "front": "Eelmisel nädalal",
-          "back": "Last week"
+          "back": "Last week",
+          "sentence": {
+            "et": "Ma tõin selle eelmisel nädalal.",
+            "en": "I brought it in last week."
+          }
         },
         {
           "id": "kindlasti",
           "front": "Kindlasti",
-          "back": "Certainly"
+          "back": "Certainly",
+          "sentence": {
+            "et": "Kindlasti, homme on valmis.",
+            "en": "Certainly, it will be ready tomorrow."
+          }
         }
       ]
     },
@@ -3813,32 +4200,56 @@
         {
           "id": "parast",
           "front": "Pärast",
-          "back": "After"
+          "back": "After",
+          "sentence": {
+            "et": "Ma tulen pärast tööd.",
+            "en": "I will come after work."
+          }
         },
         {
           "id": "ule",
           "front": "Üle",
-          "back": "Over, past"
+          "back": "Over, across",
+          "sentence": {
+            "et": "Pood on üle tee.",
+            "en": "The shop is across the road."
+          }
         },
         {
           "id": "labi",
           "front": "Läbi",
-          "back": "Through"
+          "back": "Through",
+          "sentence": {
+            "et": "Me läksime läbi pargi.",
+            "en": "We went through the park."
+          }
         },
         {
           "id": "tegelikult",
           "front": "Tegelikult",
-          "back": "Actually"
+          "back": "Actually",
+          "sentence": {
+            "et": "Tegelikult ma ei tea.",
+            "en": "Actually, I do not know."
+          }
         },
         {
           "id": "juba",
           "front": "Juba",
-          "back": "Already"
+          "back": "Already",
+          "sentence": {
+            "et": "Ma olen juba söönud.",
+            "en": "I have already eaten."
+          }
         },
         {
           "id": "vist",
           "front": "Vist",
-          "back": "Probably"
+          "back": "Probably",
+          "sentence": {
+            "et": "Ta on vist kodus.",
+            "en": "They are probably at home."
+          }
         },
         {
           "id": "niisugune",
@@ -3847,12 +4258,20 @@
           "forms": [
             "niisuguse",
             "niisugust"
-          ]
+          ],
+          "sentence": {
+            "et": "Ma tahan niisugust mütsi.",
+            "en": "I want a hat like that."
+          }
         },
         {
           "id": "liiga",
           "front": "Liiga",
-          "back": "Too"
+          "back": "Too",
+          "sentence": {
+            "et": "See on liiga kallis.",
+            "en": "This is too expensive."
+          }
         },
         {
           "id": "vahet-ei-ole",
@@ -3867,16 +4286,11 @@
         {
           "id": "mul-pole",
           "front": "Mul pole",
-          "back": "I do not have"
-        },
-        {
-          "id": "tuba",
-          "front": "Tuba",
-          "back": "Room",
-          "forms": [
-            "toa",
-            "tuba"
-          ]
+          "back": "I do not have",
+          "sentence": {
+            "et": "Mul pole sularaha.",
+            "en": "I do not have any cash."
+          }
         },
         {
           "id": "veri",
@@ -3885,7 +4299,11 @@
           "forms": [
             "vere",
             "verd"
-          ]
+          ],
+          "sentence": {
+            "et": "Sõrmel on veri.",
+            "en": "There is blood on my finger."
+          }
         },
         {
           "id": "pulm",
@@ -3894,22 +4312,37 @@
           "forms": [
             "pulma",
             "pulma"
-          ]
+          ],
+          "sentence": {
+            "et": "Meil on laupäeval pulm.",
+            "en": "We have a wedding on Saturday."
+          }
         },
         {
           "id": "kutsuma",
           "front": "Kutsuma",
-          "back": "To invite"
+          "back": "To invite",
+          "forms": [
+            "kutsuda",
+            "kutsun"
+          ],
+          "sentence": {
+            "et": "Ma kutsun sind pulma.",
+            "en": "I am inviting you to the wedding."
+          }
         },
         {
-          "id": "utlema-oelda-utleb",
-          "front": "Ütlema, öelda, ütleb",
-          "back": "To say, in its three forms"
-        },
-        {
-          "id": "nagema-naha-naeb",
-          "front": "Nägema, näha, näeb",
-          "back": "To see, in its three forms"
+          "id": "utlema",
+          "front": "Ütlema",
+          "back": "To say",
+          "forms": [
+            "öelda",
+            "ütlen"
+          ],
+          "sentence": {
+            "et": "Ütle see veel kord.",
+            "en": "Say that once more."
+          }
         }
       ]
     }

@@ -5,7 +5,7 @@
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
  * menu. This is the other half of that: twenty-two decks of Estonian, four
- * hundred and twenty-one cards, Estonian on the front and English on the back,
+ * hundred and eighteen cards, Estonian on the front and English on the back,
  * and one card at a time with two words under it — Knew it, and Show me
  * again.
  *
