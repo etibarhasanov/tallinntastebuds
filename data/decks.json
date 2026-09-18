@@ -80,7 +80,8 @@
           "front": "Head reisi",
           "back": "Have a good trip"
         }
-      ]
+      ],
+      "level": "start"
     },
     {
       "id": "basics",
@@ -203,7 +204,8 @@
             "väikest"
           ]
         }
-      ]
+      ],
+      "level": "start"
     },
     {
       "id": "numbers",
@@ -217,7 +219,11 @@
           "forms": [
             "ühe",
             "ühte"
-          ]
+          ],
+          "sentence": {
+            "et": "Üks kohv, palun.",
+            "en": "One coffee, please."
+          }
         },
         {
           "id": "kaks",
@@ -226,7 +232,11 @@
           "forms": [
             "kahe",
             "kahte"
-          ]
+          ],
+          "sentence": {
+            "et": "Meid on kaks.",
+            "en": "There are two of us."
+          }
         },
         {
           "id": "kolm",
@@ -376,7 +386,8 @@
             "esimest"
           ]
         }
-      ]
+      ],
+      "level": "start"
     },
     {
       "id": "table",
@@ -386,7 +397,11 @@
         {
           "id": "kas-see-laud-on-vaba",
           "front": "Kas see laud on vaba?",
-          "back": "Is this table free?"
+          "back": "Is this table free?",
+          "sentence": {
+            "et": "Kas see laud on vaba?",
+            "en": "Is this table free?"
+          }
         },
         {
           "id": "kaks-inimest-palun",
@@ -411,7 +426,11 @@
         {
           "id": "uks-kohv-palun",
           "front": "Üks kohv, palun",
-          "back": "One coffee, please"
+          "back": "One coffee, please",
+          "sentence": {
+            "et": "Üks kohv, palun.",
+            "en": "One coffee, please."
+          }
         },
         {
           "id": "vett-palun",
@@ -431,7 +450,11 @@
         {
           "id": "head-isu",
           "front": "Head isu!",
-          "back": "Enjoy your meal!"
+          "back": "Enjoy your meal!",
+          "sentence": {
+            "et": "Head isu!",
+            "en": "Enjoy your meal!"
+          }
         },
         {
           "id": "terviseks",
@@ -441,12 +464,20 @@
         {
           "id": "vaga-maitsev",
           "front": "Väga maitsev",
-          "back": "Very tasty"
+          "back": "Very tasty",
+          "sentence": {
+            "et": "See supp on väga maitsev.",
+            "en": "This soup is very tasty."
+          }
         },
         {
           "id": "arve-palun",
           "front": "Arve, palun",
-          "back": "The bill, please"
+          "back": "The bill, please",
+          "sentence": {
+            "et": "Arve, palun.",
+            "en": "The bill, please."
+          }
         },
         {
           "id": "kas-ma-saan-maksta-kaardiga",
@@ -483,7 +514,8 @@
           "front": "Kas te olete avatud?",
           "back": "Are you open?"
         }
-      ]
+      ],
+      "level": "start"
     },
     {
       "id": "food",
@@ -497,7 +529,11 @@
           "forms": [
             "leiva",
             "leiba"
-          ]
+          ],
+          "sentence": {
+            "et": "Ma tahan musta leiba.",
+            "en": "I want some black bread."
+          }
         },
         {
           "id": "sai",
@@ -542,7 +578,11 @@
           "forms": [
             "vee",
             "vett"
-          ]
+          ],
+          "sentence": {
+            "et": "Klaas vett, palun.",
+            "en": "A glass of water, please."
+          }
         },
         {
           "id": "kohv",
@@ -551,7 +591,11 @@
           "forms": [
             "kohvi",
             "kohvi"
-          ]
+          ],
+          "sentence": {
+            "et": "Kaks kohvi, palun.",
+            "en": "Two coffees, please."
+          }
         },
         {
           "id": "tee",
@@ -569,7 +613,11 @@
           "forms": [
             "õlle",
             "õlut"
-          ]
+          ],
+          "sentence": {
+            "et": "Üks õlu, palun.",
+            "en": "One beer, please."
+          }
         },
         {
           "id": "vein",
@@ -623,7 +671,11 @@
           "forms": [
             "kala",
             "kala"
-          ]
+          ],
+          "sentence": {
+            "et": "Ma ei söö kala.",
+            "en": "I do not eat fish."
+          }
         },
         {
           "id": "supp",
@@ -632,7 +684,11 @@
           "forms": [
             "supi",
             "suppi"
-          ]
+          ],
+          "sentence": {
+            "et": "Supp on soe.",
+            "en": "The soup is warm."
+          }
         },
         {
           "id": "salat",
@@ -713,7 +769,11 @@
           "forms": [
             "suhkru",
             "suhkrut"
-          ]
+          ],
+          "sentence": {
+            "et": "Ilma suhkruta, palun.",
+            "en": "Without sugar, please."
+          }
         },
         {
           "id": "pipar",
@@ -731,7 +791,11 @@
           "forms": [
             "hommikusöögi",
             "hommikusööki"
-          ]
+          ],
+          "sentence": {
+            "et": "Hommikusöök on kell kaheksa.",
+            "en": "Breakfast is at eight."
+          }
         },
         {
           "id": "lounasook",
@@ -751,7 +815,8 @@
             "õhtusööki"
           ]
         }
-      ]
+      ],
+      "level": "start"
     },
     {
       "id": "around",
@@ -770,7 +835,11 @@
           "forms": [
             "vanalinna",
             "vanalinna"
-          ]
+          ],
+          "sentence": {
+            "et": "Vanalinn on siin lähedal.",
+            "en": "The old town is near here."
+          }
         },
         {
           "id": "kesklinn",
@@ -829,7 +898,11 @@
           "forms": [
             "bussi",
             "bussi"
-          ]
+          ],
+          "sentence": {
+            "et": "Buss sõidab kesklinna.",
+            "en": "The bus goes to the city centre."
+          }
         },
         {
           "id": "tramm",
@@ -865,7 +938,11 @@
           "forms": [
             "pileti",
             "piletit"
-          ]
+          ],
+          "sentence": {
+            "et": "Üks pilet, palun.",
+            "en": "One ticket, please."
+          }
         },
         {
           "id": "peatus",
@@ -883,7 +960,11 @@
           "forms": [
             "tänava",
             "tänavat"
-          ]
+          ],
+          "sentence": {
+            "et": "Mis tänav see on?",
+            "en": "What street is this?"
+          }
         },
         {
           "id": "valjak",
@@ -928,7 +1009,8 @@
             "kaarti"
           ]
         }
-      ]
+      ],
+      "level": "more"
     },
     {
       "id": "shops",
@@ -942,7 +1024,11 @@
           "forms": [
             "poe",
             "poodi"
-          ]
+          ],
+          "sentence": {
+            "et": "Pood on nurga peal.",
+            "en": "The shop is round the corner."
+          }
         },
         {
           "id": "turg",
@@ -951,7 +1037,11 @@
           "forms": [
             "turu",
             "turgu"
-          ]
+          ],
+          "sentence": {
+            "et": "Ma käin turul.",
+            "en": "I go to the market."
+          }
         },
         {
           "id": "apteek",
@@ -960,7 +1050,11 @@
           "forms": [
             "apteegi",
             "apteeki"
-          ]
+          ],
+          "sentence": {
+            "et": "Kus on lähim apteek?",
+            "en": "Where is the nearest pharmacy?"
+          }
         },
         {
           "id": "raha",
@@ -978,7 +1072,11 @@
           "forms": [
             "hinna",
             "hinda"
-          ]
+          ],
+          "sentence": {
+            "et": "Hind on liiga kõrge.",
+            "en": "The price is too high."
+          }
         },
         {
           "id": "kui-palju-see-maksab",
@@ -1078,7 +1176,8 @@
           "front": "Ainult vaatan",
           "back": "Just looking"
         }
-      ]
+      ],
+      "level": "more"
     },
     {
       "id": "talk",
@@ -1212,7 +1311,8 @@
             "ilusat"
           ]
         }
-      ]
+      ],
+      "level": "more"
     },
     {
       "id": "time",
@@ -1227,7 +1327,11 @@
         {
           "id": "homme",
           "front": "Homme",
-          "back": "Tomorrow"
+          "back": "Tomorrow",
+          "sentence": {
+            "et": "Homme on pühapäev.",
+            "en": "Tomorrow is Sunday."
+          }
         },
         {
           "id": "eile",
@@ -1340,7 +1444,11 @@
           "forms": [
             "reede",
             "reedet"
-          ]
+          ],
+          "sentence": {
+            "et": "Reedel on kinni.",
+            "en": "It is closed on Friday."
+          }
         },
         {
           "id": "laupaev",
@@ -1385,7 +1493,8 @@
           "front": "Millal?",
           "back": "When?"
         }
-      ]
+      ],
+      "level": "more"
     },
     {
       "id": "weather",
@@ -1435,7 +1544,11 @@
           "forms": [
             "vihma",
             "vihma"
-          ]
+          ],
+          "sentence": {
+            "et": "Täna sajab vihma.",
+            "en": "It is raining today."
+          }
         },
         {
           "id": "lumi",
@@ -1444,7 +1557,11 @@
           "forms": [
             "lume",
             "lund"
-          ]
+          ],
+          "sentence": {
+            "et": "Väljas on palju lund.",
+            "en": "There is a lot of snow outside."
+          }
         },
         {
           "id": "paike",
@@ -1503,7 +1620,11 @@
           "forms": [
             "talve",
             "talve"
-          ]
+          ],
+          "sentence": {
+            "et": "Talv on pikk.",
+            "en": "Winter is long."
+          }
         },
         {
           "id": "tana-on-ilus-ilm",
@@ -1514,6 +1635,1381 @@
           "id": "valjas-on-kulm",
           "front": "Väljas on külm",
           "back": "It is cold outside"
+        }
+      ],
+      "level": "more"
+    },
+    {
+      "id": "verbs",
+      "name": "Verbs you will need",
+      "why": "The twenty-odd verbs the rest of the language hangs off",
+      "level": "more",
+      "cards": [
+        {
+          "id": "olema",
+          "front": "Olema",
+          "back": "To be",
+          "forms": [
+            "olla",
+            "olen"
+          ],
+          "sentence": {
+            "et": "Ma olen eestlane.",
+            "en": "I am Estonian."
+          }
+        },
+        {
+          "id": "minema",
+          "front": "Minema",
+          "back": "To go",
+          "forms": [
+            "minna",
+            "lähen"
+          ],
+          "sentence": {
+            "et": "Ma lähen koju.",
+            "en": "I am going home."
+          }
+        },
+        {
+          "id": "tulema",
+          "front": "Tulema",
+          "back": "To come",
+          "forms": [
+            "tulla",
+            "tulen"
+          ],
+          "sentence": {
+            "et": "Kas sa tuled ka?",
+            "en": "Are you coming too?"
+          }
+        },
+        {
+          "id": "tegema",
+          "front": "Tegema",
+          "back": "To do, to make",
+          "forms": [
+            "teha",
+            "teen"
+          ],
+          "sentence": {
+            "et": "Mida sa teed?",
+            "en": "What are you doing?"
+          }
+        },
+        {
+          "id": "sooma",
+          "front": "Sööma",
+          "back": "To eat",
+          "forms": [
+            "süüa",
+            "söön"
+          ],
+          "sentence": {
+            "et": "Me sööme kell kaheksa.",
+            "en": "We eat at eight."
+          }
+        },
+        {
+          "id": "jooma",
+          "front": "Jooma",
+          "back": "To drink",
+          "forms": [
+            "juua",
+            "joon"
+          ],
+          "sentence": {
+            "et": "Ma joon ainult vett.",
+            "en": "I only drink water."
+          }
+        },
+        {
+          "id": "raakima",
+          "front": "Rääkima",
+          "back": "To speak",
+          "forms": [
+            "rääkida",
+            "räägin"
+          ],
+          "sentence": {
+            "et": "Ma räägin natuke eesti keelt.",
+            "en": "I speak a little Estonian."
+          }
+        },
+        {
+          "id": "ostma",
+          "front": "Ostma",
+          "back": "To buy",
+          "forms": [
+            "osta",
+            "ostan"
+          ],
+          "sentence": {
+            "et": "Ma ostan leiba.",
+            "en": "I am buying bread."
+          }
+        },
+        {
+          "id": "maksma",
+          "front": "Maksma",
+          "back": "To pay, to cost",
+          "forms": [
+            "maksta",
+            "maksan"
+          ],
+          "sentence": {
+            "et": "Kui palju see maksab?",
+            "en": "How much does this cost?"
+          }
+        },
+        {
+          "id": "teadma",
+          "front": "Teadma",
+          "back": "To know",
+          "forms": [
+            "teada",
+            "tean"
+          ],
+          "sentence": {
+            "et": "Ma ei tea.",
+            "en": "I do not know."
+          }
+        },
+        {
+          "id": "tahtma",
+          "front": "Tahtma",
+          "back": "To want",
+          "forms": [
+            "tahta",
+            "tahan"
+          ],
+          "sentence": {
+            "et": "Ma tahan kohvi.",
+            "en": "I want coffee."
+          }
+        },
+        {
+          "id": "saama",
+          "front": "Saama",
+          "back": "To get, to be able",
+          "forms": [
+            "saada",
+            "saan"
+          ],
+          "sentence": {
+            "et": "Kas ma saan arve?",
+            "en": "Can I have the bill?"
+          }
+        },
+        {
+          "id": "andma",
+          "front": "Andma",
+          "back": "To give",
+          "forms": [
+            "anda",
+            "annan"
+          ],
+          "sentence": {
+            "et": "Anna mulle üks minut.",
+            "en": "Give me a minute."
+          }
+        },
+        {
+          "id": "votma",
+          "front": "Võtma",
+          "back": "To take",
+          "forms": [
+            "võtta",
+            "võtan"
+          ],
+          "sentence": {
+            "et": "Ma võtan selle.",
+            "en": "I will take this one."
+          }
+        },
+        {
+          "id": "nagema",
+          "front": "Nägema",
+          "back": "To see",
+          "forms": [
+            "näha",
+            "näen"
+          ],
+          "sentence": {
+            "et": "Ma ei näe midagi.",
+            "en": "I cannot see anything."
+          }
+        },
+        {
+          "id": "kuulma",
+          "front": "Kuulma",
+          "back": "To hear",
+          "forms": [
+            "kuulda",
+            "kuulen"
+          ],
+          "sentence": {
+            "et": "Ma ei kuule sind.",
+            "en": "I cannot hear you."
+          }
+        },
+        {
+          "id": "ootama",
+          "front": "Ootama",
+          "back": "To wait",
+          "forms": [
+            "oodata",
+            "ootan"
+          ],
+          "sentence": {
+            "et": "Palun oota siin.",
+            "en": "Please wait here."
+          }
+        },
+        {
+          "id": "kusima",
+          "front": "Küsima",
+          "back": "To ask",
+          "forms": [
+            "küsida",
+            "küsin"
+          ],
+          "sentence": {
+            "et": "Ma küsin ühe asja.",
+            "en": "Let me ask one thing."
+          }
+        },
+        {
+          "id": "aitama",
+          "front": "Aitama",
+          "back": "To help",
+          "forms": [
+            "aidata",
+            "aitan"
+          ],
+          "sentence": {
+            "et": "Kas sa saad aidata?",
+            "en": "Can you help?"
+          }
+        },
+        {
+          "id": "elama",
+          "front": "Elama",
+          "back": "To live",
+          "forms": [
+            "elada",
+            "elan"
+          ],
+          "sentence": {
+            "et": "Ma elan Tallinnas.",
+            "en": "I live in Tallinn."
+          }
+        },
+        {
+          "id": "tootama",
+          "front": "Töötama",
+          "back": "To work",
+          "forms": [
+            "töötada",
+            "töötan"
+          ],
+          "sentence": {
+            "et": "Ma töötan kodus.",
+            "en": "I work from home."
+          }
+        },
+        {
+          "id": "magama",
+          "front": "Magama",
+          "back": "To sleep",
+          "forms": [
+            "magada",
+            "magan"
+          ],
+          "sentence": {
+            "et": "Ma magasin hästi.",
+            "en": "I slept well."
+          }
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "name": "A flat and a street",
+      "why": "The words on a rental advert and inside the door",
+      "level": "more",
+      "cards": [
+        {
+          "id": "korter",
+          "front": "Korter",
+          "back": "Flat",
+          "forms": [
+            "korteri",
+            "korterit"
+          ],
+          "sentence": {
+            "et": "Ma otsin korterit.",
+            "en": "I am looking for a flat."
+          }
+        },
+        {
+          "id": "maja",
+          "front": "Maja",
+          "back": "House",
+          "forms": [
+            "maja",
+            "maja"
+          ],
+          "sentence": {
+            "et": "See maja on vana.",
+            "en": "This house is old."
+          }
+        },
+        {
+          "id": "uks",
+          "front": "Uks",
+          "back": "Door",
+          "forms": [
+            "ukse",
+            "ust"
+          ],
+          "sentence": {
+            "et": "Uks on lahti.",
+            "en": "The door is open."
+          }
+        },
+        {
+          "id": "aken",
+          "front": "Aken",
+          "back": "Window",
+          "forms": [
+            "akna",
+            "akent"
+          ],
+          "sentence": {
+            "et": "Palun tee aken kinni.",
+            "en": "Please close the window."
+          }
+        },
+        {
+          "id": "tuba",
+          "front": "Tuba",
+          "back": "Room",
+          "forms": [
+            "toa",
+            "tuba"
+          ],
+          "sentence": {
+            "et": "Korteris on kaks tuba.",
+            "en": "The flat has two rooms."
+          }
+        },
+        {
+          "id": "kook",
+          "front": "Köök",
+          "back": "Kitchen",
+          "forms": [
+            "köögi",
+            "kööki"
+          ],
+          "sentence": {
+            "et": "Köök on väike.",
+            "en": "The kitchen is small."
+          }
+        },
+        {
+          "id": "vannituba",
+          "front": "Vannituba",
+          "back": "Bathroom",
+          "forms": [
+            "vannitoa",
+            "vannituba"
+          ],
+          "sentence": {
+            "et": "Kus on vannituba?",
+            "en": "Where is the bathroom?"
+          }
+        },
+        {
+          "id": "voodi",
+          "front": "Voodi",
+          "back": "Bed",
+          "forms": [
+            "voodi",
+            "voodit"
+          ],
+          "sentence": {
+            "et": "Voodi on pehme.",
+            "en": "The bed is soft."
+          }
+        },
+        {
+          "id": "laud",
+          "front": "Laud",
+          "back": "Table",
+          "forms": [
+            "laua",
+            "lauda"
+          ],
+          "sentence": {
+            "et": "Pane see lauale.",
+            "en": "Put it on the table."
+          }
+        },
+        {
+          "id": "tool",
+          "front": "Tool",
+          "back": "Chair",
+          "forms": [
+            "tooli",
+            "tooli"
+          ],
+          "sentence": {
+            "et": "Võta tool.",
+            "en": "Take a chair."
+          }
+        },
+        {
+          "id": "voti",
+          "front": "Võti",
+          "back": "Key",
+          "forms": [
+            "võtme",
+            "võtit"
+          ],
+          "sentence": {
+            "et": "Ma kaotasin võtme.",
+            "en": "I lost the key."
+          }
+        },
+        {
+          "id": "uur",
+          "front": "Üür",
+          "back": "Rent",
+          "forms": [
+            "üüri",
+            "üüri"
+          ],
+          "sentence": {
+            "et": "Üür on liiga kallis.",
+            "en": "The rent is too expensive."
+          }
+        },
+        {
+          "id": "naaber",
+          "front": "Naaber",
+          "back": "Neighbour",
+          "forms": [
+            "naabri",
+            "naabrit"
+          ],
+          "sentence": {
+            "et": "Mu naaber on tore.",
+            "en": "My neighbour is nice."
+          }
+        },
+        {
+          "id": "trepp",
+          "front": "Trepp",
+          "back": "Stairs",
+          "forms": [
+            "trepi",
+            "treppi"
+          ],
+          "sentence": {
+            "et": "Trepp on kolmandal korrusel.",
+            "en": "The stairs are on the third floor."
+          }
+        },
+        {
+          "id": "katus",
+          "front": "Katus",
+          "back": "Roof",
+          "forms": [
+            "katuse",
+            "katust"
+          ],
+          "sentence": {
+            "et": "Katusel on lund.",
+            "en": "There is snow on the roof."
+          }
+        },
+        {
+          "id": "porand",
+          "front": "Põrand",
+          "back": "Floor",
+          "forms": [
+            "põranda",
+            "põrandat"
+          ],
+          "sentence": {
+            "et": "Põrand on külm.",
+            "en": "The floor is cold."
+          }
+        },
+        {
+          "id": "sein",
+          "front": "Sein",
+          "back": "Wall",
+          "forms": [
+            "seina",
+            "seina"
+          ],
+          "sentence": {
+            "et": "Pilt on seinal.",
+            "en": "The picture is on the wall."
+          }
+        },
+        {
+          "id": "valgus",
+          "front": "Valgus",
+          "back": "Light",
+          "forms": [
+            "valguse",
+            "valgust"
+          ],
+          "sentence": {
+            "et": "Siin ei ole palju valgust.",
+            "en": "There is not much light here."
+          }
+        }
+      ]
+    },
+    {
+      "id": "feelings",
+      "name": "How it is going",
+      "why": "Answering \"kuidas läheb?\" with something other than \"hästi\"",
+      "level": "more",
+      "cards": [
+        {
+          "id": "vasinud",
+          "front": "Väsinud",
+          "back": "Tired",
+          "forms": [
+            "väsinud",
+            "väsinut"
+          ],
+          "sentence": {
+            "et": "Ma olen väga väsinud.",
+            "en": "I am very tired."
+          }
+        },
+        {
+          "id": "onnelik",
+          "front": "Õnnelik",
+          "back": "Happy",
+          "forms": [
+            "õnneliku",
+            "õnnelikku"
+          ],
+          "sentence": {
+            "et": "Ta on õnnelik.",
+            "en": "They are happy."
+          }
+        },
+        {
+          "id": "kurb",
+          "front": "Kurb",
+          "back": "Sad",
+          "forms": [
+            "kurva",
+            "kurba"
+          ],
+          "sentence": {
+            "et": "See on kurb lugu.",
+            "en": "That is a sad story."
+          }
+        },
+        {
+          "id": "vihane",
+          "front": "Vihane",
+          "back": "Angry",
+          "forms": [
+            "vihase",
+            "vihast"
+          ],
+          "sentence": {
+            "et": "Ära ole vihane.",
+            "en": "Do not be angry."
+          }
+        },
+        {
+          "id": "igav",
+          "front": "Igav",
+          "back": "Boring",
+          "forms": [
+            "igava",
+            "igavat"
+          ],
+          "sentence": {
+            "et": "Film oli igav.",
+            "en": "The film was boring."
+          }
+        },
+        {
+          "id": "huvitav",
+          "front": "Huvitav",
+          "back": "Interesting",
+          "forms": [
+            "huvitava",
+            "huvitavat"
+          ],
+          "sentence": {
+            "et": "See on huvitav.",
+            "en": "That is interesting."
+          }
+        },
+        {
+          "id": "raske",
+          "front": "Raske",
+          "back": "Hard, heavy",
+          "forms": [
+            "raske",
+            "rasket"
+          ],
+          "sentence": {
+            "et": "Eesti keel on raske.",
+            "en": "Estonian is hard."
+          }
+        },
+        {
+          "id": "lihtne",
+          "front": "Lihtne",
+          "back": "Easy, simple",
+          "forms": [
+            "lihtsa",
+            "lihtsat"
+          ],
+          "sentence": {
+            "et": "See on lihtne.",
+            "en": "That is easy."
+          }
+        },
+        {
+          "id": "kiire",
+          "front": "Kiire",
+          "back": "Fast, in a hurry",
+          "forms": [
+            "kiire",
+            "kiiret"
+          ],
+          "sentence": {
+            "et": "Mul on kiire.",
+            "en": "I am in a hurry."
+          }
+        },
+        {
+          "id": "aeglane",
+          "front": "Aeglane",
+          "back": "Slow",
+          "forms": [
+            "aeglase",
+            "aeglast"
+          ],
+          "sentence": {
+            "et": "Buss on aeglane.",
+            "en": "The bus is slow."
+          }
+        },
+        {
+          "id": "rahulik",
+          "front": "Rahulik",
+          "back": "Calm",
+          "forms": [
+            "rahuliku",
+            "rahulikku"
+          ],
+          "sentence": {
+            "et": "Siin on rahulik.",
+            "en": "It is calm here."
+          }
+        },
+        {
+          "id": "naljane",
+          "front": "Näljane",
+          "back": "Hungry",
+          "forms": [
+            "näljase",
+            "näljast"
+          ],
+          "sentence": {
+            "et": "Ma olen näljane.",
+            "en": "I am hungry."
+          }
+        },
+        {
+          "id": "janune",
+          "front": "Janune",
+          "back": "Thirsty",
+          "forms": [
+            "januse",
+            "janust"
+          ],
+          "sentence": {
+            "et": "Kas sa oled janune?",
+            "en": "Are you thirsty?"
+          }
+        },
+        {
+          "id": "mures",
+          "front": "Mures",
+          "back": "Worried",
+          "forms": [
+            "mure",
+            "muret"
+          ],
+          "sentence": {
+            "et": "Ära ole mures.",
+            "en": "Do not worry."
+          }
+        }
+      ]
+    },
+    {
+      "id": "health",
+      "name": "When something is wrong",
+      "why": "The pharmacy, the doctor, and the part of you that hurts",
+      "level": "deep",
+      "cards": [
+        {
+          "id": "arst",
+          "front": "Arst",
+          "back": "Doctor",
+          "forms": [
+            "arsti",
+            "arsti"
+          ],
+          "sentence": {
+            "et": "Ma pean arsti juurde minema.",
+            "en": "I have to go to the doctor."
+          }
+        },
+        {
+          "id": "hambaarst",
+          "front": "Hambaarst",
+          "back": "Dentist",
+          "forms": [
+            "hambaarsti",
+            "hambaarsti"
+          ],
+          "sentence": {
+            "et": "Hambaarst on kallis.",
+            "en": "The dentist is expensive."
+          }
+        },
+        {
+          "id": "haigla",
+          "front": "Haigla",
+          "back": "Hospital",
+          "forms": [
+            "haigla",
+            "haiglat"
+          ],
+          "sentence": {
+            "et": "Haigla on kesklinnas.",
+            "en": "The hospital is in the city centre."
+          }
+        },
+        {
+          "id": "kiirabi",
+          "front": "Kiirabi",
+          "back": "Ambulance",
+          "forms": [
+            "kiirabi",
+            "kiirabi"
+          ],
+          "sentence": {
+            "et": "Kutsuge kiirabi!",
+            "en": "Call an ambulance!"
+          }
+        },
+        {
+          "id": "valu",
+          "front": "Valu",
+          "back": "Pain",
+          "forms": [
+            "valu",
+            "valu"
+          ],
+          "sentence": {
+            "et": "Mul on valu.",
+            "en": "I am in pain."
+          }
+        },
+        {
+          "id": "palavik",
+          "front": "Palavik",
+          "back": "Fever",
+          "forms": [
+            "palaviku",
+            "palavikku"
+          ],
+          "sentence": {
+            "et": "Mul on palavik.",
+            "en": "I have a fever."
+          }
+        },
+        {
+          "id": "ravim",
+          "front": "Ravim",
+          "back": "Medicine",
+          "forms": [
+            "ravimi",
+            "ravimit"
+          ],
+          "sentence": {
+            "et": "Kas see ravim on retseptiga?",
+            "en": "Is this medicine on prescription?"
+          }
+        },
+        {
+          "id": "haige",
+          "front": "Haige",
+          "back": "Ill",
+          "forms": [
+            "haige",
+            "haiget"
+          ],
+          "sentence": {
+            "et": "Ma olen haige.",
+            "en": "I am ill."
+          }
+        },
+        {
+          "id": "terve",
+          "front": "Terve",
+          "back": "Healthy, whole",
+          "forms": [
+            "terve",
+            "tervet"
+          ],
+          "sentence": {
+            "et": "Ma olen jälle terve.",
+            "en": "I am well again."
+          }
+        },
+        {
+          "id": "kulmetus",
+          "front": "Külmetus",
+          "back": "A cold",
+          "forms": [
+            "külmetuse",
+            "külmetust"
+          ],
+          "sentence": {
+            "et": "Mul on külmetus.",
+            "en": "I have a cold."
+          }
+        },
+        {
+          "id": "koha",
+          "front": "Köha",
+          "back": "Cough",
+          "forms": [
+            "köha",
+            "köha"
+          ],
+          "sentence": {
+            "et": "Mul on köha.",
+            "en": "I have a cough."
+          }
+        },
+        {
+          "id": "pea",
+          "front": "Pea",
+          "back": "Head",
+          "forms": [
+            "pea",
+            "pead"
+          ],
+          "sentence": {
+            "et": "Mul on peavalu.",
+            "en": "I have a headache."
+          }
+        },
+        {
+          "id": "koht",
+          "front": "Kõht",
+          "back": "Stomach",
+          "forms": [
+            "kõhu",
+            "kõhtu"
+          ],
+          "sentence": {
+            "et": "Mul on kõht valus.",
+            "en": "My stomach hurts."
+          }
+        },
+        {
+          "id": "selg",
+          "front": "Selg",
+          "back": "Back",
+          "forms": [
+            "selja",
+            "selga"
+          ],
+          "sentence": {
+            "et": "Selg on valus.",
+            "en": "My back hurts."
+          }
+        },
+        {
+          "id": "kasi",
+          "front": "Käsi",
+          "back": "Hand, arm",
+          "forms": [
+            "käe",
+            "kätt"
+          ],
+          "sentence": {
+            "et": "Mul on käsi katki.",
+            "en": "My hand is hurt."
+          }
+        },
+        {
+          "id": "jalg",
+          "front": "Jalg",
+          "back": "Leg, foot",
+          "forms": [
+            "jala",
+            "jalga"
+          ],
+          "sentence": {
+            "et": "Jalg valutab.",
+            "en": "My leg hurts."
+          }
+        },
+        {
+          "id": "silm",
+          "front": "Silm",
+          "back": "Eye",
+          "forms": [
+            "silma",
+            "silma"
+          ],
+          "sentence": {
+            "et": "Mul on midagi silmas.",
+            "en": "I have something in my eye."
+          }
+        },
+        {
+          "id": "hammas",
+          "front": "Hammas",
+          "back": "Tooth",
+          "forms": [
+            "hamba",
+            "hammast"
+          ],
+          "sentence": {
+            "et": "Hammas valutab.",
+            "en": "My tooth hurts."
+          }
+        }
+      ]
+    },
+    {
+      "id": "work",
+      "name": "Work and paperwork",
+      "why": "The words on a contract, at a counter, and in an email",
+      "level": "deep",
+      "cards": [
+        {
+          "id": "palk",
+          "front": "Palk",
+          "back": "Salary",
+          "forms": [
+            "palga",
+            "palka"
+          ],
+          "sentence": {
+            "et": "Palk on iga kuu.",
+            "en": "The salary comes every month."
+          }
+        },
+        {
+          "id": "leping",
+          "front": "Leping",
+          "back": "Contract",
+          "forms": [
+            "lepingu",
+            "lepingut"
+          ],
+          "sentence": {
+            "et": "Ma allkirjastasin lepingu.",
+            "en": "I signed the contract."
+          }
+        },
+        {
+          "id": "dokument",
+          "front": "Dokument",
+          "back": "Document",
+          "forms": [
+            "dokumendi",
+            "dokumenti"
+          ],
+          "sentence": {
+            "et": "Võtke dokument kaasa.",
+            "en": "Bring the document with you."
+          }
+        },
+        {
+          "id": "allkiri",
+          "front": "Allkiri",
+          "back": "Signature",
+          "forms": [
+            "allkirja",
+            "allkirja"
+          ],
+          "sentence": {
+            "et": "Siia on vaja allkirja.",
+            "en": "A signature is needed here."
+          }
+        },
+        {
+          "id": "koosolek",
+          "front": "Koosolek",
+          "back": "Meeting",
+          "forms": [
+            "koosoleku",
+            "koosolekut"
+          ],
+          "sentence": {
+            "et": "Koosolek algab kell üks.",
+            "en": "The meeting starts at one."
+          }
+        },
+        {
+          "id": "tahtaeg",
+          "front": "Tähtaeg",
+          "back": "Deadline",
+          "forms": [
+            "tähtaja",
+            "tähtaega"
+          ],
+          "sentence": {
+            "et": "Tähtaeg on homme.",
+            "en": "The deadline is tomorrow."
+          }
+        },
+        {
+          "id": "maks",
+          "front": "Maks",
+          "back": "Tax",
+          "forms": [
+            "maksu",
+            "maksu"
+          ],
+          "sentence": {
+            "et": "Maksud on juba makstud.",
+            "en": "The taxes are already paid."
+          }
+        },
+        {
+          "id": "pank",
+          "front": "Pank",
+          "back": "Bank",
+          "forms": [
+            "panga",
+            "panka"
+          ],
+          "sentence": {
+            "et": "Pank on suletud.",
+            "en": "The bank is closed."
+          }
+        },
+        {
+          "id": "konto",
+          "front": "Konto",
+          "back": "Account",
+          "forms": [
+            "konto",
+            "kontot"
+          ],
+          "sentence": {
+            "et": "Mul on Eesti pangakonto.",
+            "en": "I have an Estonian bank account."
+          }
+        },
+        {
+          "id": "elamisluba",
+          "front": "Elamisluba",
+          "back": "Residence permit",
+          "forms": [
+            "elamisloa",
+            "elamisluba"
+          ],
+          "sentence": {
+            "et": "Ma ootan elamisluba.",
+            "en": "I am waiting for a residence permit."
+          }
+        },
+        {
+          "id": "ulekanne",
+          "front": "Ülekanne",
+          "back": "Bank transfer",
+          "forms": [
+            "ülekande",
+            "ülekannet"
+          ],
+          "sentence": {
+            "et": "Ülekanne jõuab homme.",
+            "en": "The transfer arrives tomorrow."
+          }
+        },
+        {
+          "id": "tooandja",
+          "front": "Tööandja",
+          "back": "Employer",
+          "forms": [
+            "tööandja",
+            "tööandjat"
+          ],
+          "sentence": {
+            "et": "Minu tööandja on väike firma.",
+            "en": "My employer is a small company."
+          }
+        },
+        {
+          "id": "ametnik",
+          "front": "Ametnik",
+          "back": "Official, clerk",
+          "forms": [
+            "ametniku",
+            "ametnikku"
+          ],
+          "sentence": {
+            "et": "Ametnik küsis passi.",
+            "en": "The clerk asked for a passport."
+          }
+        },
+        {
+          "id": "avaldus",
+          "front": "Avaldus",
+          "back": "Application",
+          "forms": [
+            "avalduse",
+            "avaldust"
+          ],
+          "sentence": {
+            "et": "Ma esitasin avalduse.",
+            "en": "I submitted the application."
+          }
+        },
+        {
+          "id": "toend",
+          "front": "Tõend",
+          "back": "Certificate",
+          "forms": [
+            "tõendi",
+            "tõendit"
+          ],
+          "sentence": {
+            "et": "Mul on vaja tõendit.",
+            "en": "I need a certificate."
+          }
+        },
+        {
+          "id": "number",
+          "front": "Number",
+          "back": "Number",
+          "forms": [
+            "numbri",
+            "numbrit"
+          ],
+          "sentence": {
+            "et": "Mis on sinu number?",
+            "en": "What is your number?"
+          }
+        }
+      ]
+    },
+    {
+      "id": "country",
+      "name": "Out of the city",
+      "why": "Estonia past the old town: the sea, the forest and the road there",
+      "level": "deep",
+      "cards": [
+        {
+          "id": "riik",
+          "front": "Riik",
+          "back": "Country, state",
+          "forms": [
+            "riigi",
+            "riiki"
+          ],
+          "sentence": {
+            "et": "Eesti on väike riik.",
+            "en": "Estonia is a small country."
+          }
+        },
+        {
+          "id": "pealinn",
+          "front": "Pealinn",
+          "back": "Capital",
+          "forms": [
+            "pealinna",
+            "pealinna"
+          ],
+          "sentence": {
+            "et": "Tallinn on Eesti pealinn.",
+            "en": "Tallinn is the capital of Estonia."
+          }
+        },
+        {
+          "id": "saar",
+          "front": "Saar",
+          "back": "Island",
+          "forms": [
+            "saare",
+            "saart"
+          ],
+          "sentence": {
+            "et": "Saaremaa on suur saar.",
+            "en": "Saaremaa is a big island."
+          }
+        },
+        {
+          "id": "meri",
+          "front": "Meri",
+          "back": "Sea",
+          "forms": [
+            "mere",
+            "merd"
+          ],
+          "sentence": {
+            "et": "Meri on külm.",
+            "en": "The sea is cold."
+          }
+        },
+        {
+          "id": "jarv",
+          "front": "Järv",
+          "back": "Lake",
+          "forms": [
+            "järve",
+            "järve"
+          ],
+          "sentence": {
+            "et": "Järv on jäätunud.",
+            "en": "The lake is frozen."
+          }
+        },
+        {
+          "id": "mets",
+          "front": "Mets",
+          "back": "Forest",
+          "forms": [
+            "metsa",
+            "metsa"
+          ],
+          "sentence": {
+            "et": "Me käisime metsas.",
+            "en": "We went to the forest."
+          }
+        },
+        {
+          "id": "rand",
+          "front": "Rand",
+          "back": "Beach",
+          "forms": [
+            "ranna",
+            "randa"
+          ],
+          "sentence": {
+            "et": "Rand on tühi.",
+            "en": "The beach is empty."
+          }
+        },
+        {
+          "id": "piir",
+          "front": "Piir",
+          "back": "Border",
+          "forms": [
+            "piiri",
+            "piiri"
+          ],
+          "sentence": {
+            "et": "Piir on lähedal.",
+            "en": "The border is near."
+          }
+        },
+        {
+          "id": "sild",
+          "front": "Sild",
+          "back": "Bridge",
+          "forms": [
+            "silla",
+            "silda"
+          ],
+          "sentence": {
+            "et": "Sild on kitsas.",
+            "en": "The bridge is narrow."
+          }
+        },
+        {
+          "id": "kula",
+          "front": "Küla",
+          "back": "Village",
+          "forms": [
+            "küla",
+            "küla"
+          ],
+          "sentence": {
+            "et": "Ta elab väikeses külas.",
+            "en": "They live in a small village."
+          }
+        },
+        {
+          "id": "pold",
+          "front": "Põld",
+          "back": "Field",
+          "forms": [
+            "põllu",
+            "põldu"
+          ],
+          "sentence": {
+            "et": "Põld on lumine.",
+            "en": "The field is snowy."
+          }
+        },
+        {
+          "id": "jogi",
+          "front": "Jõgi",
+          "back": "River",
+          "forms": [
+            "jõe",
+            "jõge"
+          ],
+          "sentence": {
+            "et": "Jõgi voolab läbi linna.",
+            "en": "The river runs through the town."
+          }
+        },
+        {
+          "id": "taevas",
+          "front": "Taevas",
+          "back": "Sky",
+          "forms": [
+            "taeva",
+            "taevast"
+          ],
+          "sentence": {
+            "et": "Taevas on pilves.",
+            "en": "The sky is cloudy."
+          }
+        },
+        {
+          "id": "loodus",
+          "front": "Loodus",
+          "back": "Nature",
+          "forms": [
+            "looduse",
+            "loodust"
+          ],
+          "sentence": {
+            "et": "Eesti loodus on ilus.",
+            "en": "Estonian nature is beautiful."
+          }
         }
       ]
     }

@@ -281,6 +281,13 @@ if (decksFile !== null) {
        could have written. */
     const MAX_SIDE = 60;
     const MINTED = /^[0-9a-f]{16}$/;
+    /* The three the page draws headings for. A deck with any other level would
+       fall to the bottom under no heading, which is a deck nobody finds. */
+    const LEVELS = new Set(['start', 'more', 'deep']);
+    /* The one id a shipped deck may not have: functions/api/flashcard.js
+       assembles a deck of that name out of the cards somebody got wrong, and
+       two decks answering to one id is a run that reads the wrong rows. */
+    const RESERVED = new Set(['missed']);
     const deckIds = new Set();
 
     decksFile.decks.forEach((deck, i) => {
@@ -292,10 +299,16 @@ if (decksFile !== null) {
         fail(where, `id "${deck.id}" is shaped like a deck somebody wrote — see functions/api/flashcard.js`);
       }
       if (deckIds.has(deck.id)) fail(where, `id "${deck.id}" is used twice`);
+      if (RESERVED.has(deck.id)) {
+        fail(where, `id "${deck.id}" is reserved for the deck of cards somebody got wrong — see functions/api/flashcard.js`);
+      }
       deckIds.add(deck.id);
 
       if (!isNonEmptyString(deck.name)) fail(where, `deck "${deck.id}" has no "name"`);
       if (!isNonEmptyString(deck.why)) fail(where, `deck "${deck.id}" has no "why"`);
+      if (!LEVELS.has(deck.level)) {
+        fail(where, `deck "${deck.id}" has a level of "${deck.level}", which is not one of: ${[...LEVELS].join(', ')}`);
+      }
 
       if (!Array.isArray(deck.cards) || deck.cards.length === 0) {
         fail(where, `deck "${deck.id}" has no cards`);
@@ -325,6 +338,17 @@ if (decksFile !== null) {
            that order, because the page draws them in a row of three with the
            nominative and a row of two would be silently wrong rather than
            visibly missing. */
+        /* The word in a sentence, where a card has one: both halves or
+           neither, because the page draws the Estonian and what it means as
+           two lines and half of it would be a card with a stray clause on
+           it. */
+        if (card.sentence !== undefined) {
+          const said = card.sentence;
+          if (!isPlainObject(said) || !isNonEmptyString(said.et) || !isNonEmptyString(said.en)) {
+            fail(at, `card "${card.id}" has a "sentence" that is not an object with a non-empty "et" and "en"`);
+          }
+        }
+
         if (card.forms !== undefined) {
           if (!Array.isArray(card.forms) || card.forms.length !== 2) {
             fail(at, `card "${card.id}" has "forms" that are not exactly two — the genitive and the partitive, in that order`);

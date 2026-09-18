@@ -4,9 +4,9 @@
  * WHAT THIS PAGE IS
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: ten decks of Estonian, two hundred
- * and three cards, Estonian on the front and English on the back, and one card
- * at a time with two words under it — Knew it, and Show me again.
+ * menu. This is the other half of that: sixteen decks of Estonian, three
+ * hundred and five cards, Estonian on the front and English on the back, and
+ * one card at a time with two words under it — Knew it, and Show me again.
  *
  * It is on its own hostname for the reason splitwise is: it is not the map,
  * and a sixth card on the account page reading "Flashcards" would have been a
@@ -20,7 +20,7 @@
  * functions/flashcard.js serves the document, the way functions/split.js
  * serves that one — and for a different reason. A group's link is pasted into
  * a chat, so that head carries the group's name. Nothing here is ever sent to
- * anybody: what that route is for is the ten decks the site ships being
+ * anybody: what that route is for is the decks the site ships being
  * indexed, so it writes the deck's own head and its words into the page as
  * text. Nothing here depends on that having happened — every answer this page
  * draws it fetches for itself, the route is an improvement on the load rather
@@ -40,7 +40,7 @@
  *
  * SIGNED OUT, EVERY DECK STILL WORKS
  *
- * The ten decks the site ships are data/decks.json, and a file has nobody to
+ * The decks the site ships are data/decks.json, and a file has nobody to
  * check. What an account buys is that pressing Knew it is remembered — on the
  * account rather than on the device, so the deck you got half through on a
  * phone is half through on a laptop. Signed out, the run still runs, it is
@@ -530,6 +530,18 @@
 
   /* ------------------------------------------------------------- the decks */
 
+  /* Every deck has a name and a line under it, and one of them has neither in
+     the data: the missed deck is assembled per request and its words belong to
+     the interface rather than to the content — so they are in data/ui.json in
+     ten languages, where every other word on this page is. */
+  function deckName(deck) {
+    return deck.missed ? t('flashMissedName') : deck.name;
+  }
+
+  function deckWhy(deck) {
+    return deck.missed ? t('flashMissedWhy') : (deck.why || null);
+  }
+
   function deckRow(deck) {
     /* One number on the end of a row, and which one depends on whether there
        is anything to do: "6 due" is a reason to open a deck, and "9 / 22" is a
@@ -539,14 +551,16 @@
              : deck.due ? t('flashDue', { n: deck.due })
              : t('flashKnownOf', { known: deck.known, n: deck.cards });
 
+    var why = deckWhy(deck);
+
     return el('li', { className: 'menu-item' }, [
       TTBTrack.click(
         el('a', { className: 'menu-row', href: deckHref(deck.id) }, [
           el('span', { className: 'menu-say' }, [
-            el('span', { className: 'menu-name', textContent: deck.name }),
-            el('span', { className: 'menu-why', textContent: deck.why || said })
+            el('span', { className: 'menu-name', textContent: deckName(deck) }),
+            el('span', { className: 'menu-why', textContent: why || said })
           ]),
-          deck.why ? el('span', { className: 'lists-count', textContent: said }) : null,
+          why ? el('span', { className: 'lists-count', textContent: said }) : null,
           el('span', { className: 'menu-go', 'aria-hidden': 'true',
                        html: '<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>' })
         ]),
@@ -561,11 +575,24 @@
     return ul;
   }
 
-  /* The ten the site ships, and the sentence saying what this page is for. */
-  function shippedCard() {
-    var ours = state.decks.filter(function (d) { return !d.own; });
+  /* The levels, in the order somebody meets them, and the string that names
+     each. A deck with no level falls to the end under no heading at all, which
+     is where the missed deck would go if it were not lifted out above. */
+  var LEVELS = [
+    { id: 'start', key: 'flashLevelStart' },
+    { id: 'more', key: 'flashLevelMore' },
+    { id: 'deep', key: 'flashLevelDeep' }
+  ];
 
-    return card([
+  /* The decks the site ships, and the sentence saying what this page is for.
+     The one somebody got wrong goes at the top, above the headings: it is the
+     most useful thing on the page and the only part of it they did not
+     choose. */
+  function shippedCard() {
+    var ours = state.decks.filter(function (d) { return !d.own && !d.missed; });
+    var missed = state.decks.filter(function (d) { return d.missed; });
+
+    var kids = [
       el('p', { className: 'eyebrow', textContent: t('flashEyebrow') }),
       heading(t('flashTitle')),
       el('p', { className: 'lists-say', textContent: t('flashWhat') }),
@@ -573,9 +600,34 @@
          bound or this deployment is holding the other half's. Every deck below
          still turns over — they are a file — so this is a line rather than the
          page refusing to draw. */
-      state.ready ? null : el('p', { className: 'lists-say', textContent: t(state.reached ? 'flashErrOff' : 'flashErrReach') }),
-      ours.length ? deckList(ours) : el('p', { className: 'lists-none', textContent: t('flashNoneShipped') })
-    ]);
+      state.ready ? null : el('p', { className: 'lists-say', textContent: t(state.reached ? 'flashErrOff' : 'flashErrReach') })
+    ];
+
+    if (missed.length) kids.push(deckList(missed));
+
+    if (!ours.length) {
+      kids.push(el('p', { className: 'lists-none', textContent: t('flashNoneShipped') }));
+      return card(kids);
+    }
+
+    /* Grouped by level, with the quiet heading the directory puts over a run
+       of rows. Sixteen decks in one column was a list to scroll; three short
+       under headings is a choice about where you are. A level with nothing in
+       it draws no heading — the headings are for the decks, not the other way
+       round. */
+    LEVELS.forEach(function (level) {
+      var these = ours.filter(function (d) { return d.level === level.id; });
+      if (!these.length) return;
+      kids.push(el('h2', { className: 'lists-section', textContent: t(level.key) }));
+      kids.push(deckList(these));
+    });
+
+    var loose = ours.filter(function (d) {
+      return !LEVELS.some(function (l) { return l.id === d.level; });
+    });
+    if (loose.length) kids.push(deckList(loose));
+
+    return card(kids);
   }
 
   /* And the ones somebody wrote. Signed out this card is not drawn at all —
@@ -679,7 +731,11 @@
     if (state.user && state.ready) {
       post(FLASH_API, {
         action: knew ? 'knew' : 'again',
-        deck: state.deck.id,
+        /* The deck the card is really from, which is only ever different in
+           the missed deck — that one is assembled out of rows belonging to
+           other decks, and an answer there has to write to the row it came
+           from rather than mint one under a deck that does not exist. */
+        deck: word.deck || state.deck.id,
         card: word.id
       });
     }
@@ -708,6 +764,16 @@
             el('span', { className: 'flash-form is-first', textContent: word.front }),
             el('span', { className: 'flash-form', textContent: word.forms[0] }),
             el('span', { className: 'flash-form', textContent: word.forms[1] })
+          ]) : null,
+          /* And the word in a sentence, at the foot of the card. A word on its
+             own is a thing to recognise; a word in a sentence is a thing to
+             say, and the case it is standing in there is half of what the
+             three forms above are for. The Estonian leads and the English is
+             under it in the quieter tone, which is the order the card itself
+             is in. */
+          word.sentence ? el('p', { className: 'flash-sentence' }, [
+            el('span', { className: 'flash-said', textContent: word.sentence.et }),
+            el('span', { className: 'flash-means', textContent: word.sentence.en })
           ]) : null,
           el('p', { className: 'flash-turn', textContent: t('flashTurned') })
         ]
@@ -914,7 +980,7 @@
      saying only the two things that answer the card. */
   function runHead() {
     var kids = [
-      el('span', { className: 'eyebrow', textContent: state.deck.name }),
+      el('span', { className: 'eyebrow', textContent: deckName(state.deck) }),
       backOut()
     ];
 
@@ -1153,7 +1219,7 @@
 
     /* The tab is part of what a link is: somebody with six tabs open should be
        able to tell which one is the Estonian. */
-    if (state.deck) document.title = state.deck.name;
+    if (state.deck) document.title = deckName(state.deck);
 
     var wrap = el('div', { className: 'lists-stack' });
     var add = function (node) { if (node) wrap.appendChild(node); };
