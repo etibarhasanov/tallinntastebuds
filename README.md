@@ -3072,7 +3072,7 @@ the column it was. One card, one column, is what every other card here is.
 
 ### The second door on that card
 
-**Estonian flashcards**, under the profile: sixteen decks of Estonian and the ones
+**Estonian flashcards**, under the profile: twenty-two decks of Estonian and the ones
 you write yourself — see **[Flashcards](#flashcards)**. It is a row rather than
 a word along the foot for the reason the profile is: a door is a place to go
 and a word is a thing you do to the account.
@@ -6153,8 +6153,8 @@ this feature exists.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: sixteen
-decks of Estonian, three hundred and five cards, the Estonian on the front and the
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: twenty-two
+decks of Estonian, four hundred and twenty-one cards, the Estonian on the front and the
 English on the back, and one card at a time with two words under it — *Knew
 it*, and *Show me again*.
 
@@ -6235,8 +6235,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: sixteen decks, three hundred
-and five cards, deployed as a file and read as one. It is **content** — somebody
+`data/decks.json` is the Estonian the site ships: twenty-two decks, four
+hundred and twenty-one cards, deployed as a file and read as one. It is **content** — somebody
 edits the repository, the deploy carries it, every reader gets the same cards —
 and content that changes when the repository changes belongs in the repository.
 A row per card would be a copy of a file that only a deploy changes, and the
@@ -6394,7 +6394,7 @@ one thing the page is for.
 
 ### Three levels
 
-Sixteen decks is too many for one column, and they are not all for the same
+Twenty-two decks is far too many for one column, and they are not all for the same
 person on the same day. So the decks page groups them under three quiet
 headings — **First words**, **Getting by**, **Going deeper** — and a deck
 carries which one it is in as `level` in `data/decks.json`: `start`, `more` or
@@ -6402,9 +6402,11 @@ carries which one it is in as `level` in `data/decks.json`: `start`, `more` or
 
 *First words* is the twenty words, the numbers, the table and the food: what
 somebody needs in their first week. *Getting by* is the street, the shop, the
-small talk, the weather, and the verbs the rest of the language hangs off.
-*Going deeper* is the three that are not about a good day out — the doctor, the
-paperwork, and the country past the old town.
+small talk, the weather, what you wear, the word over a shop door, and the
+verbs the rest of the language hangs off. *Going deeper* is the five that are
+not about a good day out — the doctor, the paperwork, the country past the old
+town, the cleaner's with your jacket in it, and the adverbs that belong to no
+lesson and turn up in every second sentence.
 
 The headings are `.lists-section`, the same quiet heading `/lists` puts over a
 run of rows, and a level with nothing in it draws no heading: the headings are
@@ -6430,7 +6432,7 @@ that is the genitive and the partitive; for a verb it is the *da*-infinitive
 and the first person singular, so **minema, minna, lähen**, which is the same
 three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **210 of the 305 cards
+parts, and a row of three under it would be nonsense. **278 of the 421 cards
 carry them** today; the ones that do not are the phrases, and a handful of
 words left alone rather than guessed at. `tools/validate.mjs` fails on a
 `forms` that is not exactly two non-empty strings, because a row of two drawn
@@ -6458,7 +6460,7 @@ already remembered the word is done before they reach it.
 
 `sentence` is an optional `{ et, en }` on a card, and the validator wants both
 halves or neither — half of one drawn on a card would be a stray clause with no
-translation. **130 of the 305 cards** carry one: every card in the six newer
+translation. **130 of the 421 cards** carry one: every card in the six newer
 decks, and the ones in the older decks where an example says something the
 gloss does not.
 
@@ -6568,7 +6570,7 @@ functions/flashcard.js         the route that serves it, with the deck's head
 assets/flashcard.js            the browser half, and the third sign-in form
 assets/flashcard.css           its rules
 functions/api/flashcard.js     the API route, and the three tables' only writer
-data/decks.json                the sixteen decks the site ships
+data/decks.json                the decks the site ships
 ```
 
 Then take these back out. Each is an addition to a file that stood before it,
@@ -8143,7 +8145,7 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            sixteen decks of Estonian, 305 cards at three
+data/decks.json            twenty-two decks of Estonian, 421 cards at three
                            levels; content rather than interface, so English
                            and Estonian alone
 blog.html                  a post per thing this site does   } unlinked, and

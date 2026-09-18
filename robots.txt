@@ -74,7 +74,7 @@ Disallow: /account.html
 # /flashcard is deliberately NOT disallowed, and the only link to it anywhere
 # on this site is one row on /account.html, behind a sign-in. That is the
 # blog's arrangement above rather than a contradiction of it: nothing in the
-# map's own chrome points at sixteen decks of Estonian, because the map's chrome is
+# map's own chrome points at the decks of Estonian, because the map's chrome is
 # for finding dinner — and somebody searching for what "Arve, palun" means
 # should land on the deck that answers it.
 #

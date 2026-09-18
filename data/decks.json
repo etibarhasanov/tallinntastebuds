@@ -1008,6 +1008,34 @@
             "kaardi",
             "kaarti"
           ]
+        },
+        {
+          "id": "korval",
+          "front": "Kõrval",
+          "back": "Next to"
+        },
+        {
+          "id": "juures",
+          "front": "Juures",
+          "back": "By, near"
+        },
+        {
+          "id": "sissepaas",
+          "front": "Sissepääs",
+          "back": "The entrance",
+          "forms": [
+            "sissepääsu",
+            "sissepääsu"
+          ]
+        },
+        {
+          "id": "valjapaas",
+          "front": "Väljapääs",
+          "back": "The exit",
+          "forms": [
+            "väljapääsu",
+            "väljapääsu"
+          ]
         }
       ],
       "level": "more"
@@ -3010,6 +3038,878 @@
             "et": "Eesti loodus on ilus.",
             "en": "Estonian nature is beautiful."
           }
+        }
+      ]
+    },
+    {
+      "id": "clothes",
+      "name": "What you wear",
+      "why": "The rail in a Tallinn shop, from the coat down",
+      "level": "more",
+      "cards": [
+        {
+          "id": "riided",
+          "front": "Riided",
+          "back": "Clothes"
+        },
+        {
+          "id": "kleit",
+          "front": "Kleit",
+          "back": "Dress",
+          "forms": [
+            "kleidi",
+            "kleiti"
+          ]
+        },
+        {
+          "id": "seelik",
+          "front": "Seelik",
+          "back": "Skirt",
+          "forms": [
+            "seeliku",
+            "seelikut"
+          ]
+        },
+        {
+          "id": "pluus",
+          "front": "Pluus",
+          "back": "Blouse",
+          "forms": [
+            "pluusi",
+            "pluusi"
+          ]
+        },
+        {
+          "id": "sark",
+          "front": "Särk",
+          "back": "Shirt",
+          "forms": [
+            "särgi",
+            "särki"
+          ]
+        },
+        {
+          "id": "t-sark",
+          "front": "T-särk",
+          "back": "T-shirt",
+          "forms": [
+            "t-särgi",
+            "t-särki"
+          ]
+        },
+        {
+          "id": "kampsun",
+          "front": "Kampsun",
+          "back": "Jumper",
+          "forms": [
+            "kampsuni",
+            "kampsunit"
+          ]
+        },
+        {
+          "id": "jakk",
+          "front": "Jakk",
+          "back": "Jacket",
+          "forms": [
+            "jaki",
+            "jakki"
+          ]
+        },
+        {
+          "id": "pintsak",
+          "front": "Pintsak",
+          "back": "Suit jacket",
+          "forms": [
+            "pintsaku",
+            "pintsakut"
+          ]
+        },
+        {
+          "id": "ulikond",
+          "front": "Ülikond",
+          "back": "Suit",
+          "forms": [
+            "ülikonna",
+            "ülikonda"
+          ]
+        },
+        {
+          "id": "kostuum",
+          "front": "Kostüüm",
+          "back": "A woman's suit",
+          "forms": [
+            "kostüümi",
+            "kostüümi"
+          ]
+        },
+        {
+          "id": "dressid",
+          "front": "Dressid",
+          "back": "Tracksuit"
+        },
+        {
+          "id": "jope",
+          "front": "Jope",
+          "back": "Padded jacket",
+          "forms": [
+            "jope",
+            "jopet"
+          ]
+        },
+        {
+          "id": "kevadjope",
+          "front": "Kevadjope",
+          "back": "Spring jacket",
+          "forms": [
+            "kevadjope",
+            "kevadjopet"
+          ]
+        },
+        {
+          "id": "talvejope",
+          "front": "Talvejope",
+          "back": "Winter jacket",
+          "forms": [
+            "talvejope",
+            "talvejopet"
+          ]
+        },
+        {
+          "id": "kasukas",
+          "front": "Kasukas",
+          "back": "Fur coat",
+          "forms": [
+            "kasuka",
+            "kasukat"
+          ]
+        },
+        {
+          "id": "mantel",
+          "front": "Mantel",
+          "back": "Coat",
+          "forms": [
+            "mantli",
+            "mantlit"
+          ]
+        },
+        {
+          "id": "puksid",
+          "front": "Püksid",
+          "back": "Trousers"
+        },
+        {
+          "id": "teksad",
+          "front": "Teksad",
+          "back": "Jeans"
+        },
+        {
+          "id": "ujumisriided",
+          "front": "Ujumisriided",
+          "back": "Swimwear"
+        }
+      ]
+    },
+    {
+      "id": "shoes",
+      "name": "Shoes, socks and rings",
+      "why": "Everything on the rail that is not a garment, and how to say you have it on",
+      "level": "more",
+      "cards": [
+        {
+          "id": "tossud",
+          "front": "Tossud",
+          "back": "Trainers"
+        },
+        {
+          "id": "kingad",
+          "front": "Kingad",
+          "back": "Shoes"
+        },
+        {
+          "id": "saapad",
+          "front": "Saapad",
+          "back": "Boots"
+        },
+        {
+          "id": "kummikud",
+          "front": "Kummikud",
+          "back": "Wellington boots"
+        },
+        {
+          "id": "sussid",
+          "front": "Sussid",
+          "back": "Slippers"
+        },
+        {
+          "id": "sokid",
+          "front": "Sokid",
+          "back": "Socks"
+        },
+        {
+          "id": "sukkpuksid",
+          "front": "Sukkpüksid",
+          "back": "Tights"
+        },
+        {
+          "id": "kindad",
+          "front": "Kindad",
+          "back": "Gloves"
+        },
+        {
+          "id": "muts",
+          "front": "Müts",
+          "back": "Hat",
+          "forms": [
+            "mütsi",
+            "mütsi"
+          ]
+        },
+        {
+          "id": "ratik",
+          "front": "Rätik",
+          "back": "Headscarf",
+          "forms": [
+            "rätiku",
+            "rätikut"
+          ]
+        },
+        {
+          "id": "sall",
+          "front": "Sall",
+          "back": "Scarf",
+          "forms": [
+            "salli",
+            "salli"
+          ]
+        },
+        {
+          "id": "lips",
+          "front": "Lips",
+          "back": "Tie",
+          "forms": [
+            "lipsu",
+            "lipsu"
+          ]
+        },
+        {
+          "id": "voo",
+          "front": "Vöö",
+          "back": "Belt",
+          "forms": [
+            "vöö",
+            "vööd"
+          ]
+        },
+        {
+          "id": "korvarongad",
+          "front": "Kõrvarõngad",
+          "back": "Earrings"
+        },
+        {
+          "id": "sormus",
+          "front": "Sõrmus",
+          "back": "Ring",
+          "forms": [
+            "sõrmuse",
+            "sõrmust"
+          ]
+        },
+        {
+          "id": "kaelakee",
+          "front": "Kaelakee",
+          "back": "Necklace",
+          "forms": [
+            "kaelakee",
+            "kaelakeed"
+          ]
+        },
+        {
+          "id": "triibuline",
+          "front": "Triibuline",
+          "back": "Striped",
+          "forms": [
+            "triibulise",
+            "triibulist"
+          ]
+        },
+        {
+          "id": "tapiline",
+          "front": "Täpiline",
+          "back": "Spotted",
+          "forms": [
+            "täpilise",
+            "täpilist"
+          ]
+        },
+        {
+          "id": "ruuduline",
+          "front": "Ruuduline",
+          "back": "Checked",
+          "forms": [
+            "ruudulise",
+            "ruudulist"
+          ]
+        },
+        {
+          "id": "selga-panna",
+          "front": "Selga panna",
+          "back": "To put on"
+        },
+        {
+          "id": "seljas-olema",
+          "front": "Seljas olema",
+          "back": "To be wearing"
+        },
+        {
+          "id": "seljast-ara-votma",
+          "front": "Seljast ära võtma",
+          "back": "To take off"
+        }
+      ]
+    },
+    {
+      "id": "shopsigns",
+      "name": "Which shop is which",
+      "why": "The word over the door, and what is sold behind it",
+      "level": "more",
+      "cards": [
+        {
+          "id": "kauplus",
+          "front": "Kauplus",
+          "back": "Store",
+          "forms": [
+            "kaupluse",
+            "kauplust"
+          ]
+        },
+        {
+          "id": "toidupood",
+          "front": "Toidupood",
+          "back": "Grocery shop",
+          "forms": [
+            "toidupoe",
+            "toidupoodi"
+          ]
+        },
+        {
+          "id": "raamatupood",
+          "front": "Raamatupood",
+          "back": "Bookshop",
+          "forms": [
+            "raamatupoe",
+            "raamatupoodi"
+          ]
+        },
+        {
+          "id": "roivapood",
+          "front": "Rõivapood",
+          "back": "Clothes shop",
+          "forms": [
+            "rõivapoe",
+            "rõivapoodi"
+          ]
+        },
+        {
+          "id": "naisteriiete-pood",
+          "front": "Naisteriiete pood",
+          "back": "Women's clothes shop"
+        },
+        {
+          "id": "meesteriiete-pood",
+          "front": "Meesteriiete pood",
+          "back": "Men's clothes shop"
+        },
+        {
+          "id": "lasteriiete-pood",
+          "front": "Lasteriiete pood",
+          "back": "Children's clothes shop"
+        },
+        {
+          "id": "kingapood",
+          "front": "Kingapood",
+          "back": "Shoe shop",
+          "forms": [
+            "kingapoe",
+            "kingapoodi"
+          ]
+        },
+        {
+          "id": "lillepood",
+          "front": "Lillepood",
+          "back": "Flower shop",
+          "forms": [
+            "lillepoe",
+            "lillepoodi"
+          ]
+        },
+        {
+          "id": "manguasjapood",
+          "front": "Mänguasjapood",
+          "back": "Toy shop",
+          "forms": [
+            "mänguasjapoe",
+            "mänguasjapoodi"
+          ]
+        },
+        {
+          "id": "kosmeetikakauplus",
+          "front": "Kosmeetikakauplus",
+          "back": "Cosmetics shop",
+          "forms": [
+            "kosmeetikakaupluse",
+            "kosmeetikakauplust"
+          ]
+        },
+        {
+          "id": "juveelikauplus",
+          "front": "Juveelikauplus",
+          "back": "Jeweller's",
+          "forms": [
+            "juveelikaupluse",
+            "juveelikauplust"
+          ]
+        },
+        {
+          "id": "prillipood",
+          "front": "Prillipood",
+          "back": "Optician's",
+          "forms": [
+            "prillipoe",
+            "prillipoodi"
+          ]
+        },
+        {
+          "id": "elektroonikakauplus",
+          "front": "Elektroonikakauplus",
+          "back": "Electronics shop",
+          "forms": [
+            "elektroonikakaupluse",
+            "elektroonikakauplust"
+          ]
+        },
+        {
+          "id": "burootarvete-pood",
+          "front": "Bürootarvete pood",
+          "back": "Stationery shop"
+        },
+        {
+          "id": "fotopood",
+          "front": "Fotopood",
+          "back": "Camera shop",
+          "forms": [
+            "fotopoe",
+            "fotopoodi"
+          ]
+        },
+        {
+          "id": "mooblipood",
+          "front": "Mööblipood",
+          "back": "Furniture shop",
+          "forms": [
+            "mööblipoe",
+            "mööblipoodi"
+          ]
+        },
+        {
+          "id": "majapidamistarvete-kauplus",
+          "front": "Majapidamistarvete kauplus",
+          "back": "Household goods shop"
+        },
+        {
+          "id": "muuja",
+          "front": "Müüja",
+          "back": "Shop assistant",
+          "forms": [
+            "müüja",
+            "müüjat"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "describing",
+      "name": "Describing a thing",
+      "why": "Long, short, and the word that asks for one a size down",
+      "level": "more",
+      "cards": [
+        {
+          "id": "parem",
+          "front": "Parem",
+          "back": "Better",
+          "forms": [
+            "parema",
+            "paremat"
+          ]
+        },
+        {
+          "id": "luhike",
+          "front": "Lühike",
+          "back": "Short",
+          "forms": [
+            "lühikese",
+            "lühikest"
+          ]
+        },
+        {
+          "id": "luhem",
+          "front": "Lühem",
+          "back": "Shorter",
+          "forms": [
+            "lühema",
+            "lühemat"
+          ]
+        },
+        {
+          "id": "pikk",
+          "front": "Pikk",
+          "back": "Long",
+          "forms": [
+            "pika",
+            "pikka"
+          ]
+        },
+        {
+          "id": "liiga-pikk",
+          "front": "Liiga pikk",
+          "back": "Too long"
+        },
+        {
+          "id": "pisike",
+          "front": "Pisike",
+          "back": "Tiny",
+          "forms": [
+            "pisikese",
+            "pisikest"
+          ]
+        },
+        {
+          "id": "pisem",
+          "front": "Pisem",
+          "back": "Tinier",
+          "forms": [
+            "pisema",
+            "pisemat"
+          ]
+        },
+        {
+          "id": "ohuke",
+          "front": "Õhuke",
+          "back": "Thin",
+          "forms": [
+            "õhukese",
+            "õhukest"
+          ]
+        },
+        {
+          "id": "paks",
+          "front": "Paks",
+          "back": "Thick",
+          "forms": [
+            "paksu",
+            "paksu"
+          ]
+        },
+        {
+          "id": "kitsas",
+          "front": "Kitsas",
+          "back": "Narrow",
+          "forms": [
+            "kitsa",
+            "kitsast"
+          ]
+        },
+        {
+          "id": "lai",
+          "front": "Lai",
+          "back": "Wide",
+          "forms": [
+            "laia",
+            "laia"
+          ]
+        },
+        {
+          "id": "laiem",
+          "front": "Laiem",
+          "back": "Wider",
+          "forms": [
+            "laiema",
+            "laiemat"
+          ]
+        },
+        {
+          "id": "kiirem",
+          "front": "Kiirem",
+          "back": "Faster",
+          "forms": [
+            "kiirema",
+            "kiiremat"
+          ]
+        },
+        {
+          "id": "tume",
+          "front": "Tume",
+          "back": "Dark",
+          "forms": [
+            "tumeda",
+            "tumedat"
+          ]
+        },
+        {
+          "id": "hele",
+          "front": "Hele",
+          "back": "Light, bright",
+          "forms": [
+            "heleda",
+            "heledat"
+          ]
+        },
+        {
+          "id": "vana",
+          "front": "Vana",
+          "back": "Old",
+          "forms": [
+            "vana",
+            "vana"
+          ]
+        },
+        {
+          "id": "uus",
+          "front": "Uus",
+          "back": "New",
+          "forms": [
+            "uue",
+            "uut"
+          ]
+        },
+        {
+          "id": "varviline",
+          "front": "Värviline",
+          "back": "Colourful",
+          "forms": [
+            "värvilise",
+            "värvilist"
+          ]
+        },
+        {
+          "id": "tagasihoidlik",
+          "front": "Tagasihoidlik",
+          "back": "Understated",
+          "forms": [
+            "tagasihoidliku",
+            "tagasihoidlikku"
+          ]
+        },
+        {
+          "id": "inetu",
+          "front": "Inetu",
+          "back": "Ugly, plain",
+          "forms": [
+            "inetu",
+            "inetut"
+          ]
+        },
+        {
+          "id": "kole",
+          "front": "Kole",
+          "back": "Hideous",
+          "forms": [
+            "koleda",
+            "koledat"
+          ]
+        },
+        {
+          "id": "kas-teil-on-luhemat",
+          "front": "Kas teil on lühemat?",
+          "back": "Do you have a shorter one?"
+        }
+      ]
+    },
+    {
+      "id": "repairs",
+      "name": "At the cleaner's",
+      "why": "A jacket with a broken zip, and the words that get it back",
+      "level": "deep",
+      "cards": [
+        {
+          "id": "roivaste-parandus",
+          "front": "Rõivaste parandus",
+          "back": "Clothing repairs"
+        },
+        {
+          "id": "keemiline-puhastus",
+          "front": "Keemiline puhastus",
+          "back": "Dry cleaning"
+        },
+        {
+          "id": "lukk",
+          "front": "Lukk",
+          "back": "Zip, lock",
+          "forms": [
+            "luku",
+            "lukku"
+          ]
+        },
+        {
+          "id": "katki",
+          "front": "Katki",
+          "back": "Broken"
+        },
+        {
+          "id": "panna",
+          "front": "Panna",
+          "back": "To put in, to fit"
+        },
+        {
+          "id": "saama",
+          "front": "Saama",
+          "back": "To get"
+        },
+        {
+          "id": "saab",
+          "front": "Saab",
+          "back": "It will be ready"
+        },
+        {
+          "id": "hinnakiri",
+          "front": "Hinnakiri",
+          "back": "Price list",
+          "forms": [
+            "hinnakirja",
+            "hinnakirja"
+          ]
+        },
+        {
+          "id": "puhastusse",
+          "front": "Puhastusse",
+          "back": "In for cleaning"
+        },
+        {
+          "id": "puhas",
+          "front": "Puhas",
+          "back": "Clean",
+          "forms": [
+            "puhta",
+            "puhast"
+          ]
+        },
+        {
+          "id": "eelmisel-nadalal",
+          "front": "Eelmisel nädalal",
+          "back": "Last week"
+        },
+        {
+          "id": "kindlasti",
+          "front": "Kindlasti",
+          "back": "Certainly"
+        }
+      ]
+    },
+    {
+      "id": "everyday",
+      "name": "The words in between",
+      "why": "The ones in every second sentence that belong to no lesson",
+      "level": "deep",
+      "cards": [
+        {
+          "id": "parast",
+          "front": "Pärast",
+          "back": "After"
+        },
+        {
+          "id": "ule",
+          "front": "Üle",
+          "back": "Over, past"
+        },
+        {
+          "id": "labi",
+          "front": "Läbi",
+          "back": "Through"
+        },
+        {
+          "id": "tegelikult",
+          "front": "Tegelikult",
+          "back": "Actually"
+        },
+        {
+          "id": "juba",
+          "front": "Juba",
+          "back": "Already"
+        },
+        {
+          "id": "vist",
+          "front": "Vist",
+          "back": "Probably"
+        },
+        {
+          "id": "niisugune",
+          "front": "Niisugune",
+          "back": "Such a, like that",
+          "forms": [
+            "niisuguse",
+            "niisugust"
+          ]
+        },
+        {
+          "id": "liiga",
+          "front": "Liiga",
+          "back": "Too"
+        },
+        {
+          "id": "vahet-ei-ole",
+          "front": "Vahet ei ole",
+          "back": "It makes no difference"
+        },
+        {
+          "id": "pole-oluline",
+          "front": "Pole oluline",
+          "back": "It does not matter"
+        },
+        {
+          "id": "mul-pole",
+          "front": "Mul pole",
+          "back": "I do not have"
+        },
+        {
+          "id": "tuba",
+          "front": "Tuba",
+          "back": "Room",
+          "forms": [
+            "toa",
+            "tuba"
+          ]
+        },
+        {
+          "id": "veri",
+          "front": "Veri",
+          "back": "Blood",
+          "forms": [
+            "vere",
+            "verd"
+          ]
+        },
+        {
+          "id": "pulm",
+          "front": "Pulm",
+          "back": "Wedding",
+          "forms": [
+            "pulma",
+            "pulma"
+          ]
+        },
+        {
+          "id": "kutsuma",
+          "front": "Kutsuma",
+          "back": "To invite"
+        },
+        {
+          "id": "utlema-oelda-utleb",
+          "front": "Ütlema, öelda, ütleb",
+          "back": "To say, in its three forms"
+        },
+        {
+          "id": "nagema-naha-naeb",
+          "front": "Nägema, näha, näeb",
+          "back": "To see, in its three forms"
         }
       ]
     }
