@@ -71,6 +71,19 @@ Disallow: /account.html
 # link into the page anywhere. The posts are ?post=<id> on the same address
 # and the index links every one of them.
 
+# /flashcard is deliberately NOT disallowed, and the only link to it anywhere
+# on this site is one row on /account.html, behind a sign-in. That is the
+# blog's arrangement above rather than a contradiction of it: nothing in the
+# map's own chrome points at ten decks of Estonian, because the map's chrome is
+# for finding dinner — and somebody searching for what "Arve, palun" means
+# should land on the deck that answers it.
+#
+# functions/flashcard.js writes each deck's words into the page as text, so
+# there is something there for a crawler that runs no script, and the decks are
+# in sitemap.xml one address each. What is NOT indexed is a deck somebody wrote
+# for themselves: those need their owner's session, so a crawler gets a page
+# with nothing on it, and the route answers that one address `noindex`.
+
 # /feedback is deliberately NOT disallowed, and it is not indexed either.
 #
 # Those two are not in tension, they depend on each other: the page carries

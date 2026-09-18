@@ -12,17 +12,24 @@
      the consent bar that stood in front of both of them for a day. -->
 <script src="/assets/analytics.js?v=4b79262d" defer></script>
 
+<!-- Everything between the markers is swapped by functions/flashcard.js for
+     the tags of whichever deck ?d= names, so a search for what an Estonian
+     word means finds the deck it is on rather than a page called "Flashcards".
+     What is written here is what the front door gets, and what a deck falls
+     back to if that route cannot answer.
+
+     No robots tag either way, and that is the change this page was built
+     without: it shipped noindex, on the reasoning that a deck somebody wrote
+     is theirs alone. That is still true and the route still says noindex for
+     one — what is indexed is the ten decks in data/decks.json, which are a
+     file anybody may read. Nothing on this site links here but one row on
+     /account.html, which makes this the blog's arrangement rather than the
+     split page's: unlinked and indexed, not unlinked and hidden. robots.txt
+     has the argument in full. -->
+<!--PAGE-HEAD-->
 <title>Flashcards | Tallinn Tastebuds</title>
-<meta name="description" content="Estonian, one card at a time. Ten decks of the words a day in Tallinn is made of, and room for the ones you collect yourself.">
-<!-- Noindex, and no head route swapping it. A deck somebody wrote is theirs
-     and nobody else's, there is no share link on this page for a crawler to
-     unfurl, and the ten decks the site ships are a file anybody can read
-     without a search engine's help. Unlike /split there is nothing here whose
-     link is pasted into a message, so this page never needed the Function
-     that writes a name into a head — see **Flashcards** in README.md. The
-     rule in _headers says the same thing for anything that does not parse the
-     markup to find this. -->
-<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Ten decks of everyday Estonian — greetings, numbers, the words at the table, getting around Tallinn — with the Estonian on one side and the English on the other.">
+<!--/PAGE-HEAD-->
 
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
@@ -82,6 +89,6 @@
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
 <script src="/assets/track.js?v=93031b0d" defer></script>
-<script src="/assets/flashcard.js?v=2bf268b8" defer></script>
+<script src="/assets/flashcard.js?v=0cd02c59" defer></script>
 </body>
 </html>

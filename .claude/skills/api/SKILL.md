@@ -80,6 +80,7 @@ leading underscore are modules, not routes.
 | `GET /api/profile` | `profile.js` | none; one person's public lists and their keep total | `no-store` |
 | `GET /api/pass` | `pass.js` | none; the door in front of every discount — `401` where there is no session, so `deal.html` offers the sign-in sheet instead of a code — carrying one number for the account, the place named by `?r=` and this hour, an HMAC under `SAVE_SALT`, which `assets/pass.js` counts up the run of a deal with a roll | `no-store` |
 | `/split` | `split.js` | **splitwise** — none; `split.html` with the group named by `?g=` written into its head, so a pasted link unfurls as the group. `functions/_middleware.js` calls it for the subdomain's root too | `no-store`, `noindex` |
+| `/flashcard` | `flashcard.js` | **flashcards** — none; `flashcard.html` with the deck named by `?d=` written into its head **and into its `<main>` as text**, so a search for what an Estonian word means finds the deck. `_middleware.js` calls it for that subdomain's root too. Indexable for a deck out of `data/decks.json`, `noindex` for one out of the database, which needs a session no crawler has | `no-store` |
 | `GET/POST /api/split` | `api/split.js` | **splitwise** — `split_groups`, `split_members`, `split_expenses`, `split_shares`, `split_settlements`. **Reading one group needs only its code**, no session — holding the link is the permission, see `groupById()`. **Every write needs a session and a membership**: each action but `create` and `join` reads the caller's own membership first, and a non-member is told the group does not exist | `no-store`, for the reason `lists.js` is |
 | `GET/POST /api/feedback` | `feedback.js` | `feedback`, `feedback_hearts` — and `users`/`sessions` through `enterAccount()` in `_account.js`, which is the one route besides `account.js` and `google.js` that can mint an account: `say` with `as: 'name'` and no session makes one or signs into it in the same request, or — where the browser holds `/api/google`'s sealed note — names the Google account that has just proved itself, so nothing on that page sends anybody to the map and back. **Saying something and hearting need no account**, filed under the device id the way a save is; `remove` needs the row's owner. Both tables arrive by hand and every read here survives their absence | `no-store` |
 | `GET/POST /api/flashcard` | `api/flashcard.js` | **flashcards** — `flashcard_decks`, `flashcard_cards`, `flashcard_known`. The ten decks the site ships are `data/decks.json` read through `dataFile()`, and they are answered to anybody, signed in or not. **Everything in the database needs a session**, the two actions that only say a card was known included, and **a deck somebody wrote has one reader**: every read of one goes through `deckOf()`, which takes the session's own id, and somebody else's answers as not found | `no-store`, for the reason `lists.js` is |
@@ -90,8 +91,9 @@ leading underscore are modules, not routes.
 | `/lists/kept` | `lists/kept.js` | none; 301 to `/lists`, the address it had before that | — |
 | `/u/<name>` | `u/[name].js` | none; `lists.html` with the profile seeded in, and written into its `<main>` as text | `no-store` |
 
-Five routes serve a static page with a head of their own — `index.js` the
-map, `split.js` a group, and the three list routes the same `lists.html` —
+Six routes serve a static page with a head of their own — `index.js` the
+map, `split.js` a group, `flashcard.js` a deck, and the three list routes the
+same `lists.html` —
 and the page out of the deployment, the escaping, the head swap, the seeding
 and the filling of an element the page ships empty are in
 `functions/_shell.js`. `index.js` and `split.js` write their own tags rather

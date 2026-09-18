@@ -3043,6 +3043,7 @@ etibar                          the name, one line saying what the page is,
   Eating my way through …       the line you wrote about yourself, with the
   Change your line              word that opens the field again under it,
   Your public profile >         the door to how it looks to everybody else,
+  Estonian flashcards >         the only link to them on this site,
   Change username ·             and everything you can do to the account
   Change password · Sign out
 Places I saved        8 places  a fold: six rows a place, newest first
@@ -3068,6 +3069,24 @@ while, two folds with the box that makes a list standing between — and that
 card was the one on the page nobody could read at a glance: two titles, a
 form, and the second title reading as a footnote to the form rather than as
 the column it was. One card, one column, is what every other card here is.
+
+### The second door on that card
+
+**Estonian flashcards**, under the profile: ten decks of Estonian and the ones
+you write yourself — see **[Flashcards](#flashcards)**. It is a row rather than
+a word along the foot for the reason the profile is: a door is a place to go
+and a word is a thing you do to the account.
+
+**It is the only link to that feature anywhere on this site**, and that is the
+whole of how it is found from inside. It is here rather than in the map's
+chrome because the map's chrome is for finding dinner, and here rather than
+under one of the three folds because the decks you write are your own things
+in the way a saved place is, not a kind of list.
+
+That makes this card two doors and three words, which is one more door than it
+had. The ceiling is the design rule about a list of choices being rows rather
+than a stack of links — two rows are a list, four would be the menu this page
+was built to stop being. A third door wants an argument, not a line.
 
 ### Two pages open with your name, and this one says which it is
 
@@ -6092,14 +6111,20 @@ project's **Custom domains**, and drop the five tables —
 in `db/schema.sql`.
 
 **What has no removal step, and that is the point.** `data/ui.json` is
-untouched by this feature — not one of its 346 strings moved, which is why the
-610 splitwise ones are in a file of their own. `functions/_shell.js` is
-untouched too, though `functions/split.js` reads four functions out of it: it
-is imported from and never edited, which is what makes deleting the importer
-the whole of the job. `functions/api/lists.js`, `functions/list/[id].js`,
+untouched by this feature — not one of its strings moved, which is why the
+splitwise ones are in a file of their own. `functions/_shell.js` is not edited
+by it either, though `functions/split.js` reads four functions out of it: it is
+imported from and never changed, which is what makes deleting the importer the
+whole of the job. `functions/api/lists.js`, `functions/list/[id].js`,
 `assets/app.js`, `assets/lists.js`, `assets/account.js`, `index.html`,
 `account.html`, `lists.html`, every other stylesheet and every file under
-`data/` except the new one are byte-for-byte what they were.
+`data/` except the new one carry no line of splitwise's.
+
+Three of those files have since been edited by something else —
+**[Flashcards](#flashcards)** put a line in `EMPTY` in `functions/_shell.js`, a
+row in `youCard()` in `assets/account.js`, and its own keys in `data/ui.json`.
+None of it is splitwise's and none of it moves when splitwise goes. The claim
+above is about this feature's reach, not about the files standing still.
 
 **The one real cost of keeping it separate**, said out loud because this repo
 does not hide trades: `functions/api/split.js` carries its own `shareCode()`,
@@ -6155,12 +6180,58 @@ actually lives. A preview deployment is `<branch>.tallinntastebuds.pages.dev`
 and no subdomain of the live domain can exist under one, so a feature that
 answered only on the subdomain could never be looked at on a pull request.
 
-**One difference from splitwise, and it is a whole file.** That page is served
-by `functions/split.js`, which writes a group's name into the head, because a
+**The page has a route of its own, and it is not for the reason splitwise's
+is.** `functions/split.js` writes a group's name into the head because a
 group's link is pasted into a chat and the little preview card is most of what
-the link is. Nothing here is ever sent to anybody — a deck somebody wrote has
-exactly one reader — so there is no head to write and no route to write it. The
-static file is the page, and the only route this feature has is the API one.
+the link is. Nothing here is ever sent to anybody. `functions/flashcard.js`
+exists for the other half of a head: it writes the deck's own title and
+description, **and the deck's words into the page as text**, so that somebody
+searching for what an Estonian word means finds the deck that answers it. See
+**How it is found** below.
+
+### How it is found, which is one row
+
+**Nothing in the map's chrome points here.** No pill on the rail, no row in the
+map's sheet, nothing in a footer. The only link to the flashcards anywhere on
+this site is **one row on `/account.html`**, behind a sign-in, on the card that
+carries somebody's own name — beside their public profile, because the decks
+you write are one of your own things and that page is where those live.
+
+That is the whole of the discovery route inside the site, and it is deliberate:
+the map's own chrome is for finding dinner, and a deck of Estonian is something
+you go to rather than something that should interrupt somebody looking for
+lunch.
+
+**Unlinked is not the same as hidden**, and this is the one place the feature
+changed its mind after it was built. It shipped `noindex` for a day, on the
+reasoning that a deck somebody wrote is theirs alone. That reasoning is right
+and it is about the wrong half: what a deck of your own needs is your session,
+which no crawler has, and the route answers that address `noindex` on its own
+account. The **ten decks the site ships are a file anybody may read**, and
+somebody searching for what *Arve, palun* means should find this site
+answering.
+
+**`/flashcard.html` is the exception and keeps its noindex**, in `_headers`.
+It is the same page at the address nobody is given, the route never answers
+there, and two indexable addresses for one page is a search engine picking one
+and half the links pointing at the other. That is the same split `/lists.html`
+and `/lists` have been under since the directory was written.
+
+So the arrangement is **the blog's** — see **[The blog](#the-blog)** — rather
+than the split page's: unlinked and indexed. `robots.txt` deliberately does not
+disallow `/flashcard`, `sitemap.xml` carries one address for the decks page and
+one per deck, and `functions/flashcard.js` writes each deck into the `<main>`
+the page ships empty, so a crawler that runs no script still gets the Estonian.
+Nothing links in, `sitemap.xml` is very nearly the only way a crawler arrives,
+and that is the same position `/blog` has been in since it was written.
+
+**One address per deck, and the subdomain is not it.** The page answers at
+`/flashcard` on the live domain, at the root of the subdomain, and at
+`/flashcard` on every preview — three addresses for one page, which is exactly
+the split the `pages.dev` redirect exists to stop. So `where()` in
+`functions/flashcard.js` makes the subdomain name the live domain's spelling as
+its canonical, and a preview goes on naming itself. The short address is still
+the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
@@ -6314,9 +6385,11 @@ whether it stays. Delete these outright:
 
 ```
 flashcard.html                 the page
+functions/flashcard.js         the route that serves it, with the deck's head
+                               and its words written in
 assets/flashcard.js            the browser half, and the third sign-in form
 assets/flashcard.css           its rules
-functions/api/flashcard.js     the route, and the three tables' only writer
+functions/api/flashcard.js     the API route, and the three tables' only writer
 data/decks.json                the ten decks the site ships
 ```
 
@@ -6326,9 +6399,15 @@ and each is fenced or prefixed so it can be found by looking:
 | File | What is the flashcards' |
 |---|---|
 | `functions/_middleware.js` | the `FLASHCARDS` block of constants and the `FLASHCARDS` block inside `onRequest()` — both marked, both additions |
-| `tools/validate.mjs` | the `FLASHCARDS` block after the splitwise one |
+| `tools/validate.mjs` | the `FLASHCARDS` block after the splitwise one, and `'flashcard.html'` in the PAGE-HEAD marker list |
+| `functions/_shell.js` | the `flashcard.html` line in `EMPTY`, and the route's line in the header's list. **This is the only file the flashcards changed rather than added to**, and it is one key |
+| `tools/sitemap.mjs` | `DECKS`, `deckIds()`, the two `entries.push` lines and the third argument the three callers pass |
+| `robots.txt` | the paragraph about the flashcards. There is no `Disallow` to put back — see **How it is found** — so removing it is removing a comment |
+| `assets/account.js` | the second `door()` in `youCard()`, which is the only link to the feature on this site |
+| `data/ui.json` | `flashDoor` and `flashDoorWhy` with the rest |
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
+| `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
 | `data/ui.json` | the forty-nine `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list |
 | `README.md` | this section, its line in **Contents**, its five lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
@@ -7752,10 +7831,10 @@ to read and write first.
   languages in `data/ui.json` and the thirteen lists in `tools/typelists.mjs`
   (run the tool and commit the result) — a language added without it is a
   page no search engine is told about
-- `index.html`, `lists.html` or `split.html` without exactly one pair of
-  `PAGE-HEAD` markers, which is where the Function serving that page writes
-  its head; `rehead()` in `functions/_shell.js` leaves a page without them
-  alone, so this is the only thing that would say so
+- `index.html`, `lists.html`, `split.html` or `flashcard.html` without exactly
+  one pair of `PAGE-HEAD` markers, which is where the Function serving that
+  page writes its head; `rehead()` in `functions/_shell.js` leaves a page
+  without them alone, so this is the only thing that would say so
 - a `data/places.json` that is not what `tools/places.mjs` would write from the
   map and the CSV beside it (run `node tools/places.mjs` and commit the
   result), holds an id twice, or has lost a place that is on the map — any of
@@ -7840,6 +7919,8 @@ functions/api/split.js     splitwise: a group, who is in it, what everybody
                            paid, and who hands what to whom
 functions/api/flashcard.js flashcards: the decks somebody wrote, and which
                            cards each account knows
+functions/flashcard.js     the page, with a deck's head and a deck's words
+                           written into it so a search finds the Estonian
 functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
 functions/api/_mostkept.js reading a page of everybody's, most kept first
@@ -7872,7 +7953,8 @@ data/split.json            that page's strings, in the same ten languages —
                            its own file so that deleting the feature is
                            deleting files
 flashcard.html             flashcards, at /flashcard and at the root of
-                           flashcard.tallinntastebuds.ee
+                           flashcard.tallinntastebuds.ee; served by the route
+                           above, which writes a deck's words into it
 assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
@@ -9299,6 +9381,7 @@ The account page, `assets/account.js`:
 | `place_link` | `place`, `map` |
 | `saved_map` | `places_saved` |
 | `list_page`, `profile_open` | as on the lists |
+| `flash_open_account` | — the flashcards door, and the only link to them on this site |
 | `list_create` | `list_id` |
 | `account_open` | `view` — the two doors when signed out |
 | `account_rename_open`, `account_password_open` | — into the map's sheet |

@@ -3,10 +3,11 @@
  * Tallinn Tastebuds — the sitemap.
  *
  * Reads the languages out of data/ui.json, the places out of
- * data/restaurants.json, the thirteen chip lists out of tools/typelists.mjs
- * and Google's five out of tools/googlelists.mjs, and writes sitemap.xml:
- * the map at each of its ten addresses, every open place at its own, the
- * directory, the blog, and the eighteen lists.
+ * data/restaurants.json, the decks out of data/decks.json, the thirteen chip
+ * lists out of tools/typelists.mjs and Google's five out of
+ * tools/googlelists.mjs, and writes sitemap.xml: the map at each of its ten
+ * addresses, every open place at its own, the directory, the blog, the
+ * flashcards and every deck of them, and the eighteen lists.
  *
  *   node tools/sitemap.mjs           rewrite sitemap.xml
  *   node tools/sitemap.mjs --check   report that it is out of date, exit 1
@@ -54,6 +55,14 @@
  * was not, and /lists/kept before that; both still answer, as 301s, and
  * neither is here, since a sitemap is for the address a page is at.
  *
+ * /flashcard and the ten decks under it are here for the reason /blog is:
+ * nothing on this site links to them except one row on /account.html, behind
+ * a sign-in, so this file is very nearly the only way a crawler arrives. What
+ * is at those addresses is Estonian — functions/flashcard.js writes each
+ * deck's words into the page as text — and somebody searching for what one of
+ * them means should find it. The decks people write for themselves are not
+ * here and could not be: they need their owner's session to read at all.
+ *
  * The eighteen lists the site itself wrote are the exception to that, and
  * are listed by name: the thirteen chip lists, one per filter on the map,
  * and Google's five top tens, all generated on ids that never move, and all
@@ -95,6 +104,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'sitemap.xml');
 const UI = join(ROOT, 'data', 'ui.json');
 const PLACES = join(ROOT, 'data', 'restaurants.json');
+const DECKS = join(ROOT, 'data', 'decks.json');
 
 /* The host, spelled out. robots.txt, the pages' own og: tags,
    tools/indexnow.mjs and functions/_shell.js each name it too — README.md
@@ -128,7 +138,7 @@ function entry(loc, alternates) {
   return lines.join('\n');
 }
 
-export function render(langs, placeIds) {
+export function render(langs, placeIds, deckIds) {
   /* Sorted by code, the way the switcher lists them and functions/index.js
      writes them into the head. */
   const codes = langs.slice().sort();
@@ -141,6 +151,14 @@ export function render(langs, placeIds) {
   for (const code of codes) entries.push(entry(mapAt(code), alternates()));
   entries.push(entry(SITE + '/lists'));
   entries.push(entry(SITE + '/blog'));
+  /* The flashcards, which nothing on this site links to but one row behind a
+     sign-in — so this file is very nearly the only way in for a crawler, the
+     same position /blog is in above. One address for the decks and one per
+     deck, which is where the Estonian actually is. No alternates: the cards
+     are English and Estonian and there is no tenth translation of them to
+     point at. */
+  entries.push(entry(SITE + '/flashcard'));
+  for (const id of deckIds) entries.push(entry(SITE + '/flashcard?d=' + id));
   for (const list of CHIP_LISTS) entries.push(entry(SITE + '/list/' + list.id));
   for (const list of GOOGLE_LISTS) entries.push(entry(SITE + '/list/' + list.id));
   for (const id of placeIds) entries.push(entry(mapAt(DEFAULT_LANG, id), alternates(id)));
@@ -163,6 +181,15 @@ function languages() {
   return Object.keys(JSON.parse(readFileSync(UI, 'utf8')));
 }
 
+/* Every deck the site ships, by id, in the order of the file — which is the
+   order they are drawn in. The decks people write for themselves are not here
+   and never will be: they need their owner's session to read at all. */
+function deckIds() {
+  if (!existsSync(DECKS)) return [];
+  const file = JSON.parse(readFileSync(DECKS, 'utf8'));
+  return (Array.isArray(file.decks) ? file.decks : []).map((deck) => deck.id);
+}
+
 /* Every open place, by id, in the order of the file — which is the order a
    place was added in and never moves, so the file only changes when the map
    does. */
@@ -174,7 +201,7 @@ function placeIds() {
 
 export function stale() {
   try {
-    const want = render(languages(), placeIds());
+    const want = render(languages(), placeIds(), deckIds());
     const got = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
     return want !== got;
   } catch (e) {
@@ -186,9 +213,10 @@ function main() {
   const check = process.argv.includes('--check');
   const langs = languages();
   const ids = placeIds();
-  const next = render(langs, ids);
+  const decks = deckIds();
+  const next = render(langs, ids, decks);
   const now = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
-  const count = langs.length + 2 + CHIP_LISTS.length + GOOGLE_LISTS.length + ids.length;
+  const count = langs.length + 3 + CHIP_LISTS.length + GOOGLE_LISTS.length + ids.length + decks.length;
 
   if (check) {
     if (now === next) {
@@ -202,7 +230,8 @@ function main() {
   writeFileSync(OUT, next);
   console.log(
     `${OUT} — ${count} addresses: the map in ${langs.length} languages, ${ids.length} places, ` +
-    `/lists, /blog, ${CHIP_LISTS.length} chip lists and ${GOOGLE_LISTS.length} Google lists.`
+    `/lists, /blog, /flashcard and ${decks.length} decks, ${CHIP_LISTS.length} chip lists and ` +
+    `${GOOGLE_LISTS.length} Google lists.`
   );
 }
 

@@ -90,26 +90,32 @@
 # path, so both spellings are spelled out, the same reason "/" and
 # "/index.html" both appear at the top of this file.
 #
-# Unlike /split above there is no Function serving this page, so these are the
-# rules that bind rather than a fallback: nothing here has a link anybody
-# pastes into a message, so there was no head to write and no route to write
-# it. The subdomain's own root is covered because the rewrite is to /flashcard,
-# which is this rule.
+# Same revalidating Cache-Control as the map on both, for the ?v= stamps. What
+# differs between the two spellings is the robots tag, and it is the same split
+# /lists.html and /lists are under further up.
 #
-# Same revalidating Cache-Control as the map, for the ?v= stamps. And a
-# noindex, which is a weaker claim than the account page's and a stronger one
-# than it looks: the ten decks the site ships are a file anybody may read, but
-# a deck somebody wrote is theirs alone and there is nothing on this page for
-# a crawler that a crawler could reach. nofollow with it, because every link
-# on this page leads either to a deck of somebody's or back to the map, which
-# is indexed from its own address.
+# /flashcard is answered by functions/flashcard.js, which sets its own
+# Cache-Control and X-Robots-Tag through page() in functions/_shell.js — index
+# for a deck the site ships, noindex for one somebody wrote, which is a thing
+# only the route can tell apart. The rule here is what is left for the case
+# where that route is not reached, and it carries no robots tag so that it
+# cannot contradict the route's.
+#
+# /flashcard.html is the same page at the address nobody is given, and it gets
+# the noindex, because two indexable addresses for one page is a search engine
+# picking one and half the links pointing at the other. It is the only spelling
+# that can be indexed by accident: the route never answers here, so nothing
+# writes a canonical into the head, and what a crawler would file is the static
+# fallback with the page's own tags on it.
+#
+# This page carried noindex on both spellings for a day. **Flashcards** in
+# README.md says what changed and why unlinked is not the same as hidden.
 /flashcard.html
   Cache-Control: public, max-age=0, must-revalidate
-  X-Robots-Tag: noindex, nofollow
+  X-Robots-Tag: noindex, follow
 
 /flashcard
   Cache-Control: public, max-age=0, must-revalidate
-  X-Robots-Tag: noindex, nofollow
 
 # Google's directory of the city. It is stored as google.html and Pages serves
 # it at /google as well, and these rules match the request path rather than the
