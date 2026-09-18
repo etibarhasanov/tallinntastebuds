@@ -112,10 +112,18 @@ function deckList(decks) {
 /* And one deck, as the pairs it is: a description list, which is the element
    for exactly this and says the relationship between the two sides without a
    word of explanation. The Estonian is the term and the English is what it
-   means, which is the direction the cards are turned in. */
+   means, which is the direction the cards are turned in.
+
+   A word that has its three forms carries all three in the term, and that is
+   worth more here than it is on the card: somebody typing "leiba" into a
+   search engine is looking at a menu, and the nominative they would have to
+   know to find this page is the one thing they have not got. */
 function deckWords(deck) {
+  const forms = (card) => Array.isArray(card.forms) && card.forms.length === 2
+    ? ' (' + esc(card.forms[0]) + ', ' + esc(card.forms[1]) + ')'
+    : '';
   const pair = (card) =>
-    '<dt>' + esc(card.front) + '</dt><dd>' + esc(card.back) + '</dd>';
+    '<dt>' + esc(card.front) + forms(card) + '</dt><dd>' + esc(card.back) + '</dd>';
   return '<h1>' + esc(deck.name) + '</h1>' +
     (deck.why ? '<p>' + esc(deck.why) + '</p>' : '') +
     '<dl>' + deck.cards.map(pair).join('') + '</dl>' +

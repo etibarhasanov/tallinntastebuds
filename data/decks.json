@@ -170,22 +170,38 @@
         {
           "id": "hea",
           "front": "Hea",
-          "back": "Good"
+          "back": "Good",
+          "forms": [
+            "hea",
+            "head"
+          ]
         },
         {
           "id": "halb",
           "front": "Halb",
-          "back": "Bad"
+          "back": "Bad",
+          "forms": [
+            "halva",
+            "halba"
+          ]
         },
         {
           "id": "suur",
           "front": "Suur",
-          "back": "Big"
+          "back": "Big",
+          "forms": [
+            "suure",
+            "suurt"
+          ]
         },
         {
           "id": "vaike",
           "front": "Väike",
-          "back": "Small"
+          "back": "Small",
+          "forms": [
+            "väikese",
+            "väikest"
+          ]
         }
       ]
     },
@@ -197,52 +213,92 @@
         {
           "id": "uks",
           "front": "Üks",
-          "back": "One"
+          "back": "One",
+          "forms": [
+            "ühe",
+            "ühte"
+          ]
         },
         {
           "id": "kaks",
           "front": "Kaks",
-          "back": "Two"
+          "back": "Two",
+          "forms": [
+            "kahe",
+            "kahte"
+          ]
         },
         {
           "id": "kolm",
           "front": "Kolm",
-          "back": "Three"
+          "back": "Three",
+          "forms": [
+            "kolme",
+            "kolme"
+          ]
         },
         {
           "id": "neli",
           "front": "Neli",
-          "back": "Four"
+          "back": "Four",
+          "forms": [
+            "nelja",
+            "nelja"
+          ]
         },
         {
           "id": "viis",
           "front": "Viis",
-          "back": "Five"
+          "back": "Five",
+          "forms": [
+            "viie",
+            "viit"
+          ]
         },
         {
           "id": "kuus",
           "front": "Kuus",
-          "back": "Six"
+          "back": "Six",
+          "forms": [
+            "kuue",
+            "kuut"
+          ]
         },
         {
           "id": "seitse",
           "front": "Seitse",
-          "back": "Seven"
+          "back": "Seven",
+          "forms": [
+            "seitsme",
+            "seitset"
+          ]
         },
         {
           "id": "kaheksa",
           "front": "Kaheksa",
-          "back": "Eight"
+          "back": "Eight",
+          "forms": [
+            "kaheksa",
+            "kaheksat"
+          ]
         },
         {
           "id": "uheksa",
           "front": "Üheksa",
-          "back": "Nine"
+          "back": "Nine",
+          "forms": [
+            "üheksa",
+            "üheksat"
+          ]
         },
         {
           "id": "kumme",
           "front": "Kümme",
-          "back": "Ten"
+          "back": "Ten",
+          "forms": [
+            "kümne",
+            "kümmet"
+          ]
         },
         {
           "id": "uksteist",
@@ -287,22 +343,38 @@
         {
           "id": "sada",
           "front": "Sada",
-          "back": "A hundred"
+          "back": "A hundred",
+          "forms": [
+            "saja",
+            "sada"
+          ]
         },
         {
           "id": "tuhat",
           "front": "Tuhat",
-          "back": "A thousand"
+          "back": "A thousand",
+          "forms": [
+            "tuhande",
+            "tuhandet"
+          ]
         },
         {
           "id": "pool",
           "front": "Pool",
-          "back": "Half"
+          "back": "Half",
+          "forms": [
+            "poole",
+            "poolt"
+          ]
         },
         {
           "id": "esimene",
           "front": "Esimene",
-          "back": "First"
+          "back": "First",
+          "forms": [
+            "esimese",
+            "esimest"
+          ]
         }
       ]
     },
@@ -421,147 +493,263 @@
         {
           "id": "leib",
           "front": "Leib",
-          "back": "Black bread"
+          "back": "Black bread",
+          "forms": [
+            "leiva",
+            "leiba"
+          ]
         },
         {
           "id": "sai",
           "front": "Sai",
-          "back": "White bread"
+          "back": "White bread",
+          "forms": [
+            "saia",
+            "saia"
+          ]
         },
         {
           "id": "voi",
           "front": "Või",
-          "back": "Butter"
+          "back": "Butter",
+          "forms": [
+            "või",
+            "võid"
+          ]
         },
         {
           "id": "juust",
           "front": "Juust",
-          "back": "Cheese"
+          "back": "Cheese",
+          "forms": [
+            "juustu",
+            "juustu"
+          ]
         },
         {
           "id": "piim",
           "front": "Piim",
-          "back": "Milk"
+          "back": "Milk",
+          "forms": [
+            "piima",
+            "piima"
+          ]
         },
         {
           "id": "vesi",
           "front": "Vesi",
-          "back": "Water"
+          "back": "Water",
+          "forms": [
+            "vee",
+            "vett"
+          ]
         },
         {
           "id": "kohv",
           "front": "Kohv",
-          "back": "Coffee"
+          "back": "Coffee",
+          "forms": [
+            "kohvi",
+            "kohvi"
+          ]
         },
         {
           "id": "tee",
           "front": "Tee",
-          "back": "Tea"
+          "back": "Tea",
+          "forms": [
+            "tee",
+            "teed"
+          ]
         },
         {
           "id": "olu",
           "front": "Õlu",
-          "back": "Beer"
+          "back": "Beer",
+          "forms": [
+            "õlle",
+            "õlut"
+          ]
         },
         {
           "id": "vein",
           "front": "Vein",
-          "back": "Wine"
+          "back": "Wine",
+          "forms": [
+            "veini",
+            "veini"
+          ]
         },
         {
           "id": "mahl",
           "front": "Mahl",
-          "back": "Juice"
+          "back": "Juice",
+          "forms": [
+            "mahla",
+            "mahla"
+          ]
         },
         {
           "id": "liha",
           "front": "Liha",
-          "back": "Meat"
+          "back": "Meat",
+          "forms": [
+            "liha",
+            "liha"
+          ]
         },
         {
           "id": "sealiha",
           "front": "Sealiha",
-          "back": "Pork"
+          "back": "Pork",
+          "forms": [
+            "sealiha",
+            "sealiha"
+          ]
         },
         {
           "id": "kanaliha",
           "front": "Kanaliha",
-          "back": "Chicken"
+          "back": "Chicken",
+          "forms": [
+            "kanaliha",
+            "kanaliha"
+          ]
         },
         {
           "id": "kala",
           "front": "Kala",
-          "back": "Fish"
+          "back": "Fish",
+          "forms": [
+            "kala",
+            "kala"
+          ]
         },
         {
           "id": "supp",
           "front": "Supp",
-          "back": "Soup"
+          "back": "Soup",
+          "forms": [
+            "supi",
+            "suppi"
+          ]
         },
         {
           "id": "salat",
           "front": "Salat",
-          "back": "Salad"
+          "back": "Salad",
+          "forms": [
+            "salati",
+            "salatit"
+          ]
         },
         {
           "id": "kartul",
           "front": "Kartul",
-          "back": "Potato"
+          "back": "Potato",
+          "forms": [
+            "kartuli",
+            "kartulit"
+          ]
         },
         {
           "id": "riis",
           "front": "Riis",
-          "back": "Rice"
+          "back": "Rice",
+          "forms": [
+            "riisi",
+            "riisi"
+          ]
         },
         {
           "id": "koogivili",
           "front": "Köögivili",
-          "back": "Vegetable"
+          "back": "Vegetable",
+          "forms": [
+            "köögivilja",
+            "köögivilja"
+          ]
         },
         {
           "id": "puuvili",
           "front": "Puuvili",
-          "back": "Fruit"
+          "back": "Fruit",
+          "forms": [
+            "puuvilja",
+            "puuvilja"
+          ]
         },
         {
           "id": "magustoit",
           "front": "Magustoit",
-          "back": "Dessert"
+          "back": "Dessert",
+          "forms": [
+            "magustoidu",
+            "magustoitu"
+          ]
         },
         {
           "id": "jaatis",
           "front": "Jäätis",
-          "back": "Ice cream"
+          "back": "Ice cream",
+          "forms": [
+            "jäätise",
+            "jäätist"
+          ]
         },
         {
           "id": "sool",
           "front": "Sool",
-          "back": "Salt"
+          "back": "Salt",
+          "forms": [
+            "soola",
+            "soola"
+          ]
         },
         {
           "id": "suhkur",
           "front": "Suhkur",
-          "back": "Sugar"
+          "back": "Sugar",
+          "forms": [
+            "suhkru",
+            "suhkrut"
+          ]
         },
         {
           "id": "pipar",
           "front": "Pipar",
-          "back": "Pepper"
+          "back": "Pepper",
+          "forms": [
+            "pipra",
+            "pipart"
+          ]
         },
         {
           "id": "hommikusook",
           "front": "Hommikusöök",
-          "back": "Breakfast"
+          "back": "Breakfast",
+          "forms": [
+            "hommikusöögi",
+            "hommikusööki"
+          ]
         },
         {
           "id": "lounasook",
           "front": "Lõunasöök",
-          "back": "Lunch"
+          "back": "Lunch",
+          "forms": [
+            "lõunasöögi",
+            "lõunasööki"
+          ]
         },
         {
           "id": "ohtusook",
           "front": "Õhtusöök",
-          "back": "Dinner"
+          "back": "Dinner",
+          "forms": [
+            "õhtusöögi",
+            "õhtusööki"
+          ]
         }
       ]
     },
@@ -578,12 +766,20 @@
         {
           "id": "vanalinn",
           "front": "Vanalinn",
-          "back": "The old town"
+          "back": "The old town",
+          "forms": [
+            "vanalinna",
+            "vanalinna"
+          ]
         },
         {
           "id": "kesklinn",
           "front": "Kesklinn",
-          "back": "The city centre"
+          "back": "The city centre",
+          "forms": [
+            "kesklinna",
+            "kesklinna"
+          ]
         },
         {
           "id": "raekoja-plats",
@@ -593,62 +789,110 @@
         {
           "id": "sadam",
           "front": "Sadam",
-          "back": "The harbour"
+          "back": "The harbour",
+          "forms": [
+            "sadama",
+            "sadamat"
+          ]
         },
         {
           "id": "lennujaam",
           "front": "Lennujaam",
-          "back": "The airport"
+          "back": "The airport",
+          "forms": [
+            "lennujaama",
+            "lennujaama"
+          ]
         },
         {
           "id": "bussijaam",
           "front": "Bussijaam",
-          "back": "The bus station"
+          "back": "The bus station",
+          "forms": [
+            "bussijaama",
+            "bussijaama"
+          ]
         },
         {
           "id": "rongijaam",
           "front": "Rongijaam",
-          "back": "The train station"
+          "back": "The train station",
+          "forms": [
+            "rongijaama",
+            "rongijaama"
+          ]
         },
         {
           "id": "buss",
           "front": "Buss",
-          "back": "Bus"
+          "back": "Bus",
+          "forms": [
+            "bussi",
+            "bussi"
+          ]
         },
         {
           "id": "tramm",
           "front": "Tramm",
-          "back": "Tram"
+          "back": "Tram",
+          "forms": [
+            "trammi",
+            "trammi"
+          ]
         },
         {
           "id": "rong",
           "front": "Rong",
-          "back": "Train"
+          "back": "Train",
+          "forms": [
+            "rongi",
+            "rongi"
+          ]
         },
         {
           "id": "takso",
           "front": "Takso",
-          "back": "Taxi"
+          "back": "Taxi",
+          "forms": [
+            "takso",
+            "taksot"
+          ]
         },
         {
           "id": "pilet",
           "front": "Pilet",
-          "back": "Ticket"
+          "back": "Ticket",
+          "forms": [
+            "pileti",
+            "piletit"
+          ]
         },
         {
           "id": "peatus",
           "front": "Peatus",
-          "back": "Stop"
+          "back": "Stop",
+          "forms": [
+            "peatuse",
+            "peatust"
+          ]
         },
         {
           "id": "tanav",
           "front": "Tänav",
-          "back": "Street"
+          "back": "Street",
+          "forms": [
+            "tänava",
+            "tänavat"
+          ]
         },
         {
           "id": "valjak",
           "front": "Väljak",
-          "back": "Square"
+          "back": "Square",
+          "forms": [
+            "väljaku",
+            "väljakut"
+          ]
         },
         {
           "id": "vasakule",
@@ -678,7 +922,11 @@
         {
           "id": "kaart",
           "front": "Kaart",
-          "back": "Map"
+          "back": "Map",
+          "forms": [
+            "kaardi",
+            "kaarti"
+          ]
         }
       ]
     },
@@ -690,27 +938,47 @@
         {
           "id": "pood",
           "front": "Pood",
-          "back": "Shop"
+          "back": "Shop",
+          "forms": [
+            "poe",
+            "poodi"
+          ]
         },
         {
           "id": "turg",
           "front": "Turg",
-          "back": "Market"
+          "back": "Market",
+          "forms": [
+            "turu",
+            "turgu"
+          ]
         },
         {
           "id": "apteek",
           "front": "Apteek",
-          "back": "Pharmacy"
+          "back": "Pharmacy",
+          "forms": [
+            "apteegi",
+            "apteeki"
+          ]
         },
         {
           "id": "raha",
           "front": "Raha",
-          "back": "Money"
+          "back": "Money",
+          "forms": [
+            "raha",
+            "raha"
+          ]
         },
         {
           "id": "hind",
           "front": "Hind",
-          "back": "Price"
+          "back": "Price",
+          "forms": [
+            "hinna",
+            "hinda"
+          ]
         },
         {
           "id": "kui-palju-see-maksab",
@@ -720,32 +988,56 @@
         {
           "id": "odav",
           "front": "Odav",
-          "back": "Cheap"
+          "back": "Cheap",
+          "forms": [
+            "odava",
+            "odavat"
+          ]
         },
         {
           "id": "kallis",
           "front": "Kallis",
-          "back": "Expensive"
+          "back": "Expensive",
+          "forms": [
+            "kalli",
+            "kallist"
+          ]
         },
         {
           "id": "sularaha",
           "front": "Sularaha",
-          "back": "Cash"
+          "back": "Cash",
+          "forms": [
+            "sularaha",
+            "sularaha"
+          ]
         },
         {
           "id": "pangakaart",
           "front": "Pangakaart",
-          "back": "Bank card"
+          "back": "Bank card",
+          "forms": [
+            "pangakaardi",
+            "pangakaarti"
+          ]
         },
         {
           "id": "kviitung",
           "front": "Kviitung",
-          "back": "Receipt"
+          "back": "Receipt",
+          "forms": [
+            "kviitungi",
+            "kviitungit"
+          ]
         },
         {
           "id": "kott",
           "front": "Kott",
-          "back": "Bag"
+          "back": "Bag",
+          "forms": [
+            "koti",
+            "kotti"
+          ]
         },
         {
           "id": "lahti",
@@ -760,7 +1052,11 @@
         {
           "id": "allahindlus",
           "front": "Allahindlus",
-          "back": "Discount"
+          "back": "Discount",
+          "forms": [
+            "allahindluse",
+            "allahindlust"
+          ]
         },
         {
           "id": "tasuta",
@@ -847,42 +1143,74 @@
         {
           "id": "sober",
           "front": "Sõber",
-          "back": "Friend"
+          "back": "Friend",
+          "forms": [
+            "sõbra",
+            "sõpra"
+          ]
         },
         {
           "id": "perekond",
           "front": "Perekond",
-          "back": "Family"
+          "back": "Family",
+          "forms": [
+            "perekonna",
+            "perekonda"
+          ]
         },
         {
           "id": "naine",
           "front": "Naine",
-          "back": "Woman"
+          "back": "Woman",
+          "forms": [
+            "naise",
+            "naist"
+          ]
         },
         {
           "id": "mees",
           "front": "Mees",
-          "back": "Man"
+          "back": "Man",
+          "forms": [
+            "mehe",
+            "meest"
+          ]
         },
         {
           "id": "laps",
           "front": "Laps",
-          "back": "Child"
+          "back": "Child",
+          "forms": [
+            "lapse",
+            "last"
+          ]
         },
         {
           "id": "too",
           "front": "Töö",
-          "back": "Work"
+          "back": "Work",
+          "forms": [
+            "töö",
+            "tööd"
+          ]
         },
         {
           "id": "keel",
           "front": "Keel",
-          "back": "Language"
+          "back": "Language",
+          "forms": [
+            "keele",
+            "keelt"
+          ]
         },
         {
           "id": "ilus",
           "front": "Ilus",
-          "back": "Beautiful"
+          "back": "Beautiful",
+          "forms": [
+            "ilusa",
+            "ilusat"
+          ]
         }
       ]
     },
@@ -909,72 +1237,128 @@
         {
           "id": "hommik",
           "front": "Hommik",
-          "back": "Morning"
+          "back": "Morning",
+          "forms": [
+            "hommiku",
+            "hommikut"
+          ]
         },
         {
           "id": "paev",
           "front": "Päev",
-          "back": "Day"
+          "back": "Day",
+          "forms": [
+            "päeva",
+            "päeva"
+          ]
         },
         {
           "id": "ohtu",
           "front": "Õhtu",
-          "back": "Evening"
+          "back": "Evening",
+          "forms": [
+            "õhtu",
+            "õhtut"
+          ]
         },
         {
           "id": "oo",
           "front": "Öö",
-          "back": "Night"
+          "back": "Night",
+          "forms": [
+            "öö",
+            "ööd"
+          ]
         },
         {
           "id": "nadal",
           "front": "Nädal",
-          "back": "Week"
+          "back": "Week",
+          "forms": [
+            "nädala",
+            "nädalat"
+          ]
         },
         {
           "id": "kuu",
           "front": "Kuu",
-          "back": "Month"
+          "back": "Month",
+          "forms": [
+            "kuu",
+            "kuud"
+          ]
         },
         {
           "id": "aasta",
           "front": "Aasta",
-          "back": "Year"
+          "back": "Year",
+          "forms": [
+            "aasta",
+            "aastat"
+          ]
         },
         {
           "id": "esmaspaev",
           "front": "Esmaspäev",
-          "back": "Monday"
+          "back": "Monday",
+          "forms": [
+            "esmaspäeva",
+            "esmaspäeva"
+          ]
         },
         {
           "id": "teisipaev",
           "front": "Teisipäev",
-          "back": "Tuesday"
+          "back": "Tuesday",
+          "forms": [
+            "teisipäeva",
+            "teisipäeva"
+          ]
         },
         {
           "id": "kolmapaev",
           "front": "Kolmapäev",
-          "back": "Wednesday"
+          "back": "Wednesday",
+          "forms": [
+            "kolmapäeva",
+            "kolmapäeva"
+          ]
         },
         {
           "id": "neljapaev",
           "front": "Neljapäev",
-          "back": "Thursday"
+          "back": "Thursday",
+          "forms": [
+            "neljapäeva",
+            "neljapäeva"
+          ]
         },
         {
           "id": "reede",
           "front": "Reede",
-          "back": "Friday"
+          "back": "Friday",
+          "forms": [
+            "reede",
+            "reedet"
+          ]
         },
         {
           "id": "laupaev",
           "front": "Laupäev",
-          "back": "Saturday"
+          "back": "Saturday",
+          "forms": [
+            "laupäeva",
+            "laupäeva"
+          ]
         },
         {
           "id": "puhapaev",
           "front": "Pühapäev",
-          "back": "Sunday"
+          "back": "Sunday",
+          "forms": [
+            "pühapäeva",
+            "pühapäeva"
+          ]
         },
         {
           "id": "mis-kell-on",
@@ -1011,42 +1395,74 @@
         {
           "id": "ilm",
           "front": "Ilm",
-          "back": "Weather"
+          "back": "Weather",
+          "forms": [
+            "ilma",
+            "ilma"
+          ]
         },
         {
           "id": "kulm",
           "front": "Külm",
-          "back": "Cold"
+          "back": "Cold",
+          "forms": [
+            "külma",
+            "külma"
+          ]
         },
         {
           "id": "soe",
           "front": "Soe",
-          "back": "Warm"
+          "back": "Warm",
+          "forms": [
+            "sooja",
+            "sooja"
+          ]
         },
         {
           "id": "kuum",
           "front": "Kuum",
-          "back": "Hot"
+          "back": "Hot",
+          "forms": [
+            "kuuma",
+            "kuuma"
+          ]
         },
         {
           "id": "vihm",
           "front": "Vihm",
-          "back": "Rain"
+          "back": "Rain",
+          "forms": [
+            "vihma",
+            "vihma"
+          ]
         },
         {
           "id": "lumi",
           "front": "Lumi",
-          "back": "Snow"
+          "back": "Snow",
+          "forms": [
+            "lume",
+            "lund"
+          ]
         },
         {
           "id": "paike",
           "front": "Päike",
-          "back": "Sun"
+          "back": "Sun",
+          "forms": [
+            "päikese",
+            "päikest"
+          ]
         },
         {
           "id": "tuul",
           "front": "Tuul",
-          "back": "Wind"
+          "back": "Wind",
+          "forms": [
+            "tuule",
+            "tuult"
+          ]
         },
         {
           "id": "pilves",
@@ -1056,22 +1472,38 @@
         {
           "id": "kevad",
           "front": "Kevad",
-          "back": "Spring"
+          "back": "Spring",
+          "forms": [
+            "kevade",
+            "kevadet"
+          ]
         },
         {
           "id": "suvi",
           "front": "Suvi",
-          "back": "Summer"
+          "back": "Summer",
+          "forms": [
+            "suve",
+            "suve"
+          ]
         },
         {
           "id": "sugis",
           "front": "Sügis",
-          "back": "Autumn"
+          "back": "Autumn",
+          "forms": [
+            "sügise",
+            "sügist"
+          ]
         },
         {
           "id": "talv",
           "front": "Talv",
-          "back": "Winter"
+          "back": "Winter",
+          "forms": [
+            "talve",
+            "talve"
+          ]
         },
         {
           "id": "tana-on-ilus-ilm",

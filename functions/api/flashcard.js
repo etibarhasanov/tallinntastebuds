@@ -94,6 +94,29 @@ const MAX_NAME = 60;
    a different feature. */
 const MAX_SIDE = 60;
 
+/* ------------------------------------------------------------- the spacing
+ * How long a card waits before it is asked again, by the box it is in: one
+ * day, three, a week, a fortnight, five weeks, eleven. Six rungs, and a card
+ * that reaches the last one stays there, which is a little over four months
+ * between askings — past that the thing being remembered is not the word, it
+ * is the site.
+ *
+ * Leitner's scheme rather than SM-2, deliberately. SM-2 wants a grade out of
+ * five and keeps an ease factor per card, and this page asks one question with
+ * two answers: a scheduler cannot be cleverer than what it is told. Getting a
+ * card wrong does not move it down a box either — it takes the row away
+ * altogether, so the card is back in the next run from the beginning, which is
+ * the same thing said with one fewer column.
+ *
+ * Days rather than a time of day, and the clock is the reader's own: a card
+ * answered at eleven at night is due at eleven the next night rather than at
+ * midnight in Tallinn. Nobody doing this in the evening should find their
+ * deck empty because the day turned over in a city they are not in.
+ */
+const DAY = 86400000;
+const BOXES = [1 * DAY, 3 * DAY, 7 * DAY, 14 * DAY, 35 * DAY, 77 * DAY];
+const MAX_BOX = BOXES.length;
+
 /* Sixteen hex characters: a deck's id, and a card's. Minted rather than
    slugged, because neither ever appears in a link anybody sends — see
    flashcard_decks in db/schema.sql. */
@@ -162,17 +185,50 @@ async function cardsOf(env, deckId) {
   return results || [];
 }
 
-/* Every card this person has said they know, as a Set of "<deck>/<card>".
-   One indexed read over their own rows, rather than a query per deck: an
+/* --------------------------------------------- the two columns, or without
+ * `box` and `due_at` were added to flashcard_known after it had been deployed
+ * and filled, and nothing in CI applies a schema — so there is always an
+ * afternoon where the code knows about them and the database does not.
+ *
+ * This is readingPins() in ./_pins.js, which solves the same problem for the
+ * column a list's marker lives in: try the query that wants them, and on the
+ * one error that means they are missing, remember that for the life of the
+ * isolate and run the other one instead. Without them every known card reads
+ * as due, which is what this page did before there was any spacing at all.
+ */
+let spaced = null;
+
+async function readingBoxes(env, make) {
+  if (spaced === false) return make(false);
+  try {
+    const out = await make(true);
+    spaced = true;
+    return out;
+  } catch (e) {
+    if (!/no such column/i.test(String((e && e.message) || e))) throw e;
+    spaced = false;
+    return make(false);
+  }
+}
+
+/* Every card this person has said they know, and whether it is due to be
+   asked again: a Map of "<deck>/<card>" to true for due, false for resting.
+   One indexed read over their own rows, rather than a query per deck — an
    account that has been through everything this site ships holds two hundred
    rows, which is smaller than the answer the page is about to draw anyway. */
 async function knownOf(env, user) {
-  if (!user) return new Set();
-  const { results } = await env.DB
-    .prepare('SELECT deck_id, card_id FROM flashcard_known WHERE user_id = ?')
-    .bind(user.id)
-    .all();
-  return new Set((results || []).map((r) => r.deck_id + '/' + r.card_id));
+  if (!user) return new Map();
+  const now = Date.now();
+  const { results } = await readingBoxes(env, (boxes) =>
+    env.DB
+      .prepare(boxes
+        ? 'SELECT deck_id, card_id, due_at FROM flashcard_known WHERE user_id = ?'
+        : 'SELECT deck_id, card_id, 0 AS due_at FROM flashcard_known WHERE user_id = ?')
+      .bind(user.id)
+      .all());
+  const out = new Map();
+  for (const row of results || []) out.set(row.deck_id + '/' + row.card_id, row.due_at <= now);
+  return out;
 }
 
 /* One deck as the page reads it, whichever kind of deck it is: one of the
@@ -181,8 +237,14 @@ async function knownOf(env, user) {
    begun to differ over `why`, which only a shipped deck has — so it is built
    in one place and the differences are the arguments.
 
-   `known` is the Set out of knownOf(), keyed "<deck>/<card>", which is the
-   same key the table is keyed on. */
+   `known` is the Map out of knownOf(), keyed "<deck>/<card>", which is the
+   same key the table is keyed on, and answering whether that card is due.
+
+   Two booleans per card and they are not the same question. `known` is
+   whether this person has ever got it right, which is what the count on the
+   deck's row is made of. `due` is whether it is in today's run: a card nobody
+   has ever answered is due because it has never been asked, and a card
+   answered right is not due again until its box says so. */
 function deckAnswer(deck, cards, own, known) {
   return {
     id: deck.id,
@@ -193,7 +255,9 @@ function deckAnswer(deck, cards, own, known) {
       id: c.id,
       front: c.front,
       back: c.back,
-      known: known.has(deck.id + '/' + c.id)
+      forms: Array.isArray(c.forms) && c.forms.length ? c.forms : null,
+      known: known.has(deck.id + '/' + c.id),
+      due: known.get(deck.id + '/' + c.id) !== false
     }))
   };
 }
@@ -245,11 +309,17 @@ export async function onRequestGet(context) {
   }
 
   const known = await knownOf(env, user);
+
+  /* How many of a deck this person knows, and how many of it are waiting for
+     them now. The second is the one the row prints when it is not nought —
+     "6 due" is a reason to open a deck and "9 / 22" is a fact about one. */
   const counts = {};
-  known.forEach((key) => {
+  known.forEach((_due, key) => {
     const deck = key.slice(0, key.indexOf('/'));
     counts[deck] = (counts[deck] || 0) + 1;
   });
+  const dueIn = (deck, cards) =>
+    cards.filter((c) => known.get(deck + '/' + c.id) !== false).length;
 
   const list = decks.map((d) => ({
     id: d.id,
@@ -257,6 +327,7 @@ export async function onRequestGet(context) {
     why: d.why || null,
     cards: d.cards.length,
     known: Math.min(counts[d.id] || 0, d.cards.length),
+    due: dueIn(d.id, d.cards),
     own: false
   }));
 
@@ -269,6 +340,21 @@ export async function onRequestGet(context) {
       )
       .bind(user.id, MAX_DECKS)
       .all();
+    /* A deck of your own needs its cards counted for the same two numbers,
+       and they are not in the row above — the count there is a subquery. One
+       read of this person's own cards, which is capped at MAX_DECKS ×
+       MAX_CARDS and is the only query on this page that grows with what
+       somebody has written. */
+    const { results: ownCards } = await env.DB
+      .prepare('SELECT c.id AS id, c.deck_id AS deck_id FROM flashcard_cards c ' +
+               'JOIN flashcard_decks d ON d.id = c.deck_id WHERE d.owner = ?')
+      .bind(user.id)
+      .all();
+    const byDeck = {};
+    for (const row of ownCards || []) {
+      (byDeck[row.deck_id] = byDeck[row.deck_id] || []).push({ id: row.id });
+    }
+
     (results || []).forEach((row) => {
       list.push({
         id: row.id,
@@ -276,6 +362,7 @@ export async function onRequestGet(context) {
         why: null,
         cards: row.cards,
         known: Math.min(counts[row.id] || 0, row.cards),
+        due: dueIn(row.id, byDeck[row.id] || []),
         own: true
       });
     });
@@ -334,12 +421,10 @@ export async function onRequestPost(context) {
    just changed. */
 async function ownDeckAnswer(env, deck, user) {
   const cards = await cardsOf(env, deck.id);
-  const { results } = await env.DB
-    .prepare('SELECT card_id FROM flashcard_known WHERE user_id = ? AND deck_id = ?')
-    .bind(user.id, deck.id)
-    .all();
-  const known = new Set((results || []).map((r) => deck.id + '/' + r.card_id));
-  return deckAnswer(deck, cards, true, known);
+  /* The same read the page's own load does, rather than a second query shaped
+     almost like it: one place in this file knows how that table is read, and
+     it is knownOf(). */
+  return deckAnswer(deck, cards, true, await knownOf(env, user));
 }
 
 async function heldDecks(env, user) {
@@ -480,10 +565,30 @@ async function mark(context, body, user, knew) {
   if (!real) return json({ error: 'not-found' }, 404);
 
   if (knew) {
-    await env.DB
-      .prepare('INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at) VALUES (?, ?, ?, ?)')
-      .bind(user.id, deckId, cardId, Date.now())
-      .run();
+    /* Up a box, and away for as long as that box is worth. The box it goes to
+       is read first rather than nudged in SQL, because "the next one after
+       whatever it is now, and not past the last" is an arithmetic nobody
+       should have to read out of an UPDATE — and the row usually does not
+       exist yet, which is a card arriving in box one. */
+    const now = Date.now();
+    await readingBoxes(env, async (boxes) => {
+      if (!boxes) {
+        return env.DB
+          .prepare('INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at) VALUES (?, ?, ?, ?)')
+          .bind(user.id, deckId, cardId, now)
+          .run();
+      }
+      const had = await env.DB
+        .prepare('SELECT box FROM flashcard_known WHERE user_id = ? AND deck_id = ? AND card_id = ?')
+        .bind(user.id, deckId, cardId)
+        .first();
+      const box = Math.min((had && had.box ? had.box : 0) + 1, MAX_BOX);
+      return env.DB
+        .prepare('INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at, box, due_at) ' +
+                 'VALUES (?, ?, ?, ?, ?, ?)')
+        .bind(user.id, deckId, cardId, now, box, now + BOXES[box - 1])
+        .run();
+    });
   } else {
     await env.DB
       .prepare('DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ? AND card_id = ?')

@@ -939,13 +939,40 @@ CREATE TABLE IF NOT EXISTS flashcard_cards (
 -- One deck's cards, in the order they were written.
 CREATE INDEX IF NOT EXISTS idx_flashcard_cards_deck ON flashcard_cards (deck_id, created_at);
 
--- One row is one card one person has said they know.
+-- One row is one card one person has said they know, and when they should be
+-- asked it again.
 --
--- A row existing IS the fact, which is why there is no `known` column to be
--- 0 or 1. Pressing "Knew it" writes the row, pressing "Show me again" deletes
--- it, and a card nobody has ever pressed has no row at all — so the table
--- holds what people have learnt rather than a line per card per person, and
--- the deck somebody opened once and closed costs nothing.
+-- A row existing IS the fact that it is known, which is why there is no
+-- `known` column to be 0 or 1. Pressing "Knew it" writes the row, pressing
+-- "Show me again" deletes it, and a card nobody has ever pressed has no row at
+-- all — so the table holds what people have learnt rather than a line per card
+-- per person, and the deck somebody opened once and closed costs nothing.
+--
+-- THE TWO COLUMNS AT THE BOTTOM ARE THE SPACING
+--
+-- A card answered right goes up a box and comes back later: one day, then
+-- three, then a week, then a fortnight, then five weeks, then eleven. A card
+-- answered wrong loses its row and is back in the next run from the beginning.
+-- That is Leitner's scheme and not SM-2: there is no ease factor and no grade
+-- out of five, because this page asks one question with two answers and a
+-- scheduler cannot be cleverer than what it is told.
+--
+-- The intervals themselves are BOXES in functions/api/flashcard.js, which is
+-- the copy that binds; nothing here knows what a box is worth. See
+-- **Flashcards** in README.md.
+--
+-- **These two columns were added after the table was.** A database that
+-- already had it needs them put on by hand:
+--
+--   ALTER TABLE flashcard_known ADD COLUMN box    INTEGER NOT NULL DEFAULT 1;
+--   ALTER TABLE flashcard_known ADD COLUMN due_at INTEGER NOT NULL DEFAULT 0;
+--
+-- and every row already in it becomes a card in box one that is due, which is
+-- exactly right: it was known, and it has been waiting long enough to be
+-- asked again. The route survives their absence — readingBoxes() there asks
+-- once per isolate and falls back to answering everything as due — so the
+-- afternoon between a deploy and the ALTER is a page that works without
+-- spacing rather than a page that does not work.
 --
 -- The deck id is stored beside the card id rather than being looked up,
 -- because the question this table is asked is "how much of each deck does
@@ -964,5 +991,18 @@ CREATE TABLE IF NOT EXISTS flashcard_known (
   deck_id TEXT    NOT NULL,
   card_id TEXT    NOT NULL,
   seen_at INTEGER NOT NULL,
+  -- Which box it is in: 1 is the first rung and MAX_BOX in the route is the
+  -- last, where a card stays. Defaulted to 1 so a row written by code that
+  -- has never heard of boxes is a card at the beginning rather than a card
+  -- nowhere.
+  box     INTEGER NOT NULL DEFAULT 1,
+  -- When it should be asked again, in milliseconds. Defaulted to 0, which is
+  -- the beginning of 1970 and therefore always in the past: a row with no
+  -- date is a card that is due, which is the safe direction to be wrong in.
+  due_at  INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (user_id, deck_id, card_id)
 );
+-- "What is due in this deck for this person", which is every read this table
+-- has. The primary key covers the user and the deck; this carries the date so
+-- the count does not have to touch the rows it is about to leave out.
+CREATE INDEX IF NOT EXISTS idx_flashcard_known_due ON flashcard_known (user_id, deck_id, due_at);

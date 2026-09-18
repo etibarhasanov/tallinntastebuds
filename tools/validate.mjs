@@ -318,6 +318,26 @@ if (decksFile !== null) {
             fail(at, `card "${card.id}" has a "${side}" of ${card[side].length} characters, past the ${MAX_SIDE} the page draws`);
           }
         });
+
+        /* The genitive and the partitive, where a word has them. Optional —
+           a card that is a phrase has no principal parts and most of two
+           decks are phrases — but exactly two where it is there at all, in
+           that order, because the page draws them in a row of three with the
+           nominative and a row of two would be silently wrong rather than
+           visibly missing. */
+        if (card.forms !== undefined) {
+          if (!Array.isArray(card.forms) || card.forms.length !== 2) {
+            fail(at, `card "${card.id}" has "forms" that are not exactly two — the genitive and the partitive, in that order`);
+          } else {
+            card.forms.forEach((form, k) => {
+              if (!isNonEmptyString(form)) {
+                fail(at, `card "${card.id}" has an empty form at ${k}`);
+              } else if (form.length > MAX_SIDE) {
+                fail(at, `card "${card.id}" has a form of ${form.length} characters, past the ${MAX_SIDE} the page draws`);
+              }
+            });
+          }
+        }
       });
     });
   }
