@@ -1578,6 +1578,70 @@
     dom.panelSave.setAttribute('title', label);
   }
 
+  /* Whether there is a link worth handing over, which is nearly always and
+     not quite.
+
+     A STAND-IN HAS NO ADDRESS OF ITS OWN
+     ?spot= resolves one only while the ?list= it arrived on is still in the
+     URL — byId() looks down the list's own places after the map's — so a link
+     copied off a stand-in would open a bare map for whoever it was sent to.
+     Same rule the account button follows: a control that could only
+     disappoint is not drawn at all.
+
+     A closed place keeps its button. It keeps its pin and its link on
+     purpose, and functions/index.js opens its card with "Closed for good"
+     before the write-up, so nothing about that link is a claim that the
+     kitchen is cooking. */
+  function paintShare() {
+    var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
+    dom.panelShare.hidden = !place || !!place.standIn;
+    if (dom.panelShare.hidden) return;
+    /* The same word the lists page's own share button says, in the same ten
+       languages. The button carries no count and nothing else to spell out,
+       so unlike the mark beside it the label is the label. */
+    dom.panelShare.setAttribute('aria-label', t('listsShare'));
+    dom.panelShare.setAttribute('title', t('listsShare'));
+  }
+
+  /* The place's own address, built rather than read off the window.
+
+     NOTHING BUT ?spot=
+     The address bar at this moment may also carry the chips somebody has
+     pressed, the list they are browsing, the language they pinned and the
+     colour they chose — and none of that is about the restaurant. A link to a
+     place is a link to that place, arriving in the reader's own language and
+     the reader's own style, the way it would if they had found it themselves.
+     The owner's decision; the list's Share button builds its URL the same
+     way, out of the list's id and nothing else.
+
+     The three steps are shareButton() in this file and shareList() in
+     assets/lists.js, and this is the third copy of them: the sheet on a
+     phone, the clipboard on a laptop, a prompt for anything with neither.
+     Asked by pointer rather than by feature, because every desktop browser
+     has navigator.share now and there it opens an OS sheet with no "copy
+     link" in it — which is the one thing somebody sharing from a laptop
+     wants. */
+  function pressShare() {
+    var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
+    if (!place) return;
+    var url = window.location.origin + '/?spot=' + encodeURIComponent(place.id);
+
+    if (navigator.share && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+      TTBTrack.event('place_share', { place: place.name, method: 'sheet' });
+      navigator.share({ title: place.name, url: url })
+        .catch(function () { /* dismissed, which is fine */ });
+      return;
+    }
+    TTBTrack.event('place_share', { place: place.name, method: 'copy' });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url)
+        .then(function () { toast(t('listsCopied')); })
+        .catch(function () { window.prompt(t('listsShare'), url); });
+      return;
+    }
+    window.prompt(t('listsShare'), url);
+  }
+
   /* ------------------------------------------------------------- Turnstile
    * The one layer that stops a script rather than a person. Optional in every
    * sense: with no key in the <meta> the script is never fetched, no token is
@@ -5605,6 +5669,9 @@
   function renderPanel(opts) {
     document.body.classList.toggle('panel-detail', state.view === 'detail' && !!state.selected);
     paintSave();
+    /* Beside the mark, and painted with it: both turn on which place is open,
+       and the label is a string that moves with the language. */
+    paintShare();
     renderBand();
     var detail = state.view === 'detail' && state.selected;
     var asking = state.view === 'ask';
@@ -8464,6 +8531,7 @@
       closePanel();
     });
     dom.panelSave.addEventListener('click', pressSave);
+    dom.panelShare.addEventListener('click', pressShare);
 
     /* Same as Surprise me: pressing it answers the question the label was
        there to ask, and the sheet it opens wants the room. */
@@ -8832,6 +8900,7 @@
       panelClose: $('panel-close'),
       panelSave: $('panel-save'),
       panelSaveN: $('panel-save-n'),
+      panelShare: $('panel-share'),
       btnAccount: $('btn-account'),
       btnLists: $('btn-lists'),
       nudge: $('nudge'),

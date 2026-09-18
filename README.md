@@ -1499,6 +1499,34 @@ spot's own address too, in the language of the link, and the only thing that
 still pools at the bare address is a closed place, which keeps its card and
 its link and is not a page — see **Getting found**.
 
+### And there is a button that hands you the link
+
+All of the above was true for months while the only way to *get* one of these
+links was to read it out of the address bar — which on a laptop is a select
+and a copy, and on a phone, inside the browser Facebook or Instagram opens a
+link in, is not a thing anybody does. So an open place has a share button in
+the panel's chrome, between the close and the save mark: the sheet on a phone,
+the clipboard on a laptop with *Link copied.* under it, and a `window.prompt`
+holding the link for anything with neither. Three steps, the same three
+`shareList()` in `assets/lists.js` has always used and the same three the
+list's own button on this page uses; `pressShare()` in `assets/app.js` is the
+third copy and they are kept in step by hand.
+
+**The link is built, not copied.** It is `/?spot=<id>` and nothing else — no
+`?type=` for the chips that happen to be pressed, no `?list=`, no `?lang=`,
+no `?style=`. Those are all true of the person sharing rather than of the
+restaurant, and a link to a place should arrive in the reader's own language
+and the reader's own colours, the way it would if they had found it
+themselves. The card an unfurler draws for it is then in whatever language the
+link is opened in, which is the same answer the section above gives for a link
+that carries no `?lang=`.
+
+**A stand-in gets no button.** A place that arrived on somebody's list and is
+not on this map resolves under `?spot=` only while that list's `?list=` is
+still in the address — `byId()` looks down the list's own places after the
+map's — so the link would open a bare map for whoever it was sent to. A closed
+place keeps its button, for the same reason it keeps its pin and its link.
+
 Nothing else changes. `?type=` and `?story=` are deep links and still get the
 site's card — a filter has no name and a story is gone within the day. And
 `robots.txt` must go on allowing `/`, which it does and always has: a
@@ -9613,6 +9641,7 @@ The map, `assets/app.js`:
 | `reel_load` | `place`, `provider` |
 | `reel_open` | `place` — the way out to Instagram or TikTok when the frame is blank |
 | `save_place`, `unsave_place` | `place`, `place_id`, `saves_total` |
+| `place_share` | `place`, `method` (`sheet`/`copy`) — the link out of the panel's chrome; `sheet` is the phone's own share sheet, `copy` the clipboard or the prompt behind it |
 | `list_keep` | `list_id`, `list_state` (`on`/`off`, or `signed_out` when the press opened the sign-up sheet instead) |
 | `list_share` | `list_id`, `method` (`sheet`/`copy`) |
 | `list_page`, `profile_open` | `list_id` / `name` — the List half of the switch on the band, and the byline under it |
