@@ -146,6 +146,12 @@ const MAX_SIDE = 60;
 const REPORTS_PER_HOUR = 20;
 const HOUR = 3600000;
 
+/* Not a cap on anybody, but on a statement: D1 binds at most a hundred
+   parameters to one, so a read that names its rows names ninety-nine of them
+   and keeps the hundredth for the owner. Only missedDeck() below needs it, and
+   only because MAX_CARDS is twice this. */
+const PER_READ = 99;
+
 /* ------------------------------------------------------------- the spacing
  * How long a card waits before it is asked again, by the box it is in: one
  * day, three, a week, a fortnight, five weeks, eleven. Six rungs, and a card
@@ -448,10 +454,18 @@ async function missedDeck(context, user, decks, known) {
     else if (MINTED.test(one.deck) && MINTED.test(one.card)) mine.push(one);
   }
 
-  /* One read for all of them, and only over decks this person owns — the join
-     is what keeps a card id somebody guessed from answering. */
-  if (mine.length) {
-    const ids = mine.map((one) => one.card);
+  /* Only over decks this person owns — the join is what keeps a card id
+     somebody guessed from answering.
+   *
+     In runs of PER_READ, because this was one read for all of them and D1
+     refuses a statement with more than a hundred parameters bound to it. The
+     ceiling here is MAX_CARDS, which is two hundred, so somebody who had
+     pressed Show me again on a hundred cards of their own decks got an error
+     where the deck should have been — and the deck it broke is the one that
+     fills up when things are going badly, which is exactly when nobody wants
+     to be told to come back later. */
+  for (let at = 0; at < mine.length; at += PER_READ) {
+    const ids = mine.slice(at, at + PER_READ).map((one) => one.card);
     const { results } = await env.DB
       .prepare('SELECT c.id AS id, c.deck_id AS deck, c.front AS front, c.back AS back ' +
                'FROM flashcard_cards c JOIN flashcard_decks d ON d.id = c.deck_id ' +
