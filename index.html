@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=ba92f266">
+<link rel="stylesheet" href="assets/styles.css?v=e653c196">
 </head>
 <body>
 
@@ -314,6 +314,29 @@
           aria-label="Save this place" title="Save this place" hidden>
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
     <span class="save-n" id="panel-save-n" aria-hidden="true"></span>
+  </button>
+  <!-- The link to this place, handed over. functions/index.js has served every
+       ?spot= address its own unfurl card and its own title for a while now —
+       the place's name, its write-up and its first photograph, rather than the
+       map's card repeated seventy-six times — and the only way to get one of
+       those links was to read it out of the address bar. On a phone, inside
+       the browser Facebook or Instagram opens a link in, that is not a thing
+       anybody does.
+
+       Between the close and the mark, and that order is not arbitrary: this
+       button is always exactly its own width, while the mark grows leftwards
+       as the count it carries gets longer. The fixed one takes the anchor
+       nearer the edge so the growing one never has to be measured.
+
+       Drawn on a place and on nothing else, like the mark beside it, and not
+       on a stand-in — assets/app.js says why in paintShare(). -->
+  <button type="button" class="panel-share" id="panel-share"
+          aria-label="Share" title="Share" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 15V4"/>
+      <path d="M8 8l4-4 4 4"/>
+      <path d="M5 13v5a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-5"/>
+    </svg>
   </button>
   <!-- Which list the map is showing, and the switch to its own page. Empty and
        hidden on the map's own list of places; filled by renderBand() in
@@ -583,6 +606,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=0853795f" defer></script>
+<script src="assets/app.js?v=c58ef617" defer></script>
 </body>
 </html>

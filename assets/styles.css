@@ -1798,21 +1798,22 @@ body.panel-detail .panel {
 .panel-close:hover { background: var(--wash); color: var(--ink); }
 .panel-close svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
 
-/* The mark, one step to the left of the close. Same paper, same height, same
-   line of the panel's chrome — two things you do TO the panel rather than
-   read inside it, so they are drawn as a pair. Both sit in the scroller's top
-   padding band, above where the write-up begins, which is why a second
-   control up here costs the name underneath no width.
+/* The mark, two steps to the left of the close. Same paper, same height, same
+   line of the panel's chrome — three things you do TO the panel rather than
+   read inside it, so they are drawn as a row. All three sit in the scroller's
+   top padding band, above where the write-up begins, which is why the
+   controls up here cost the name underneath no width.
 
    A disc while it is only a mark, a pill once it carries a number: the width
    is left to the content so a count of 3 and a count of 148 both sit properly
-   inside it, and `right` is measured from the close rather than from the edge
-   so growing leftwards never walks into it. */
+   inside it. It is the only one of the three that changes width, which is why
+   it is the outermost: `right` is measured from the share, which is measured
+   from the close, so growing leftwards never walks into anything. */
 .panel-save {
   position: absolute;
   z-index: 3;
   top: 5px;
-  right: 52px;             /* the close, its 36px, and the same 8px again */
+  right: 96px;             /* the close and the share, 36px each, 8px apart */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1868,6 +1869,42 @@ body.panel-detail .panel {
   30%  { transform: scale(1.26); }
   58%  { transform: scale(.95); }
   100% { transform: scale(1); }
+}
+
+/* The link out, between the close and the mark. A disc and always a disc —
+   there is no count on it and no pressed state, since a share is a thing you
+   do once and it is over — so it takes the anchor next to the close and lets
+   the mark grow leftwards past it.
+
+   It answers in the accent on hover the way the mark does, and never fills:
+   an outline that fills in is this panel's word for "kept", and nothing is
+   kept by sending a link. */
+.panel-share {
+  position: absolute;
+  z-index: 3;
+  top: 5px;
+  right: 52px;             /* the close, its 36px, and the same 8px again */
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: 100px;
+  background: var(--paper);
+  color: var(--muted);
+}
+/* display on a class beats the UA sheet's [hidden] rule, the same trap the
+   mark above falls into. */
+.panel-share[hidden] { display: none; }
+.panel-share:hover { background: var(--wash); color: var(--accent); }
+.panel-share svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 /* The count on a list row. Quieter than the discount badge beside it — a
@@ -3872,6 +3909,11 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   body.panel-detail .panel-save,
   body.panel-ask .panel-save {
     top: calc(5px + var(--band-h, 0px));
+    right: calc(var(--panel-w) + var(--gap) + 96px);
+  }
+  body.panel-detail .panel-share,
+  body.panel-ask .panel-share {
+    top: calc(5px + var(--band-h, 0px));
     right: calc(var(--panel-w) + var(--gap) + 52px);
   }
 
@@ -4321,11 +4363,22 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   }
   .panel-close svg { width: 19px; height: 19px; stroke-width: 1.8; }
 
-  /* The mark follows it: a target on a phone rather than a mark, kept the
-     same distance to its left as the close is from the edge. */
-  .panel-save {
+  /* The share and the mark follow it: targets on a phone rather than marks,
+     each kept the same distance to its left as the close is from the edge.
+     This is the screen the whole button is for — a link read off the address
+     bar of the browser Facebook opens inside itself is the thing nobody
+     does — so it gets the full 40px. */
+  .panel-share {
     top: 4px;
     right: 56px;
+    width: 40px;
+    height: 40px;
+    color: var(--ink);
+  }
+  .panel-share svg { width: 20px; height: 20px; stroke-width: 1.8; }
+  .panel-save {
+    top: 4px;
+    right: 104px;
     min-width: 40px;
     height: 40px;
   }
@@ -4482,7 +4535,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 /* ---------- print: the list, on paper ---------- */
 
 @media print {
-  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .panel-save, .toast, .lightbox, .stories { display: none !important; }
+  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .panel-save, .panel-share, .toast, .lightbox, .stories { display: none !important; }
   body { overflow: visible; background: #fff; }
   .panel {
     position: static;
