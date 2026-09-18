@@ -10,7 +10,8 @@
    — from the lists page's.
 
    What is in this file is the one thing no other page on this site has: a
-   card the size of the screen with a word on it, and the two words under it.
+   card the size of the screen with a word on it, the two words under it, and
+   under those the quiet third line for when the card itself is wrong.
    Twenty-odd rules, and not a colour among them — every one is a token, so
    this page turns dark with the rest of the site and no swatch can leave it
    behind.
@@ -244,6 +245,20 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+/* And under them, centred and on its own, the one that is about the card
+   rather than about the word: something on this one is wrong. It is an .alt
+   like every other quiet press on this site — a fourth shape for a button
+   pressed once a fortnight would be a shape to remember for nothing — and it
+   is on its own line so that the row above goes on asking one question.
+   Centred because it belongs to the card above rather than to either answer.
+   Once it has been said it is not a control any more, so it wears .flash-turn
+   with this: the same mono whisper the line on the card itself is in. */
+.flash-wrong {
+  display: flex;
+  justify-content: center;
+  margin: 0;
 }
 
 /* Which deck this is, over the card. An eyebrow rather than a heading: the

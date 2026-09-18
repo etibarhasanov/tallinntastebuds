@@ -20,9 +20,10 @@
  * that only a deploy changes, and the first thing anybody would have to write
  * is the tool that keeps the two in step.
  *
- * What the tables hold is the two things a file cannot: the decks people
- * write for themselves, and how far each person has got. See
- * **Flashcards** in README.md and the block at the end of db/schema.sql.
+ * What the tables hold is the three things a file cannot: the decks people
+ * write for themselves, how far each person has got, and which of the shipped
+ * cards readers say is wrong. See **Flashcards** in README.md and the block at
+ * the end of db/schema.sql.
  *
  * **Nothing here chooses which language a card is turned over into.** A deck
  * the site ships carries its name, the line under it and the back of every
@@ -87,8 +88,13 @@
  *     read of a deck out of the database goes through deckOf(), which takes
  *     the session's own id, and a deck belonging to somebody else answers the
  *     way a deck that does not exist answers.
- *   - **Every write takes a session**, including the two that only say a card
- *     was known. There is no device-filed anything here.
+ *   - **Every write takes a session but one**, including the two that only say
+ *     a card was known. The exception is `report`, which says a shipped card
+ *     is wrong: the decks turn over signed out and most of the people reading
+ *     them are, so an account in front of that is a mistake that never gets
+ *     reported. It is filed under a hashed network fingerprint rather than
+ *     under a person — see flashcard_reports in db/schema.sql — which is what
+ *     makes it the one write here that needs SAVE_SALT.
  *   - A card marked known is checked against the deck it claims to be in —
  *     the file for a built-in deck, the table for somebody's own — so the
  *     progress table cannot be filled with rows about cards that do not
@@ -101,7 +107,9 @@
  * a public max-age is the one mistake ./_lib.js names in its own header.
  */
 
-import { json, sessionUser, wrongDatabase, randomHex, dataFile, uiStrings } from './_lib.js';
+import {
+  json, sessionUser, wrongDatabase, randomHex, dataFile, uiStrings, fingerprint, clientIp
+} from './_lib.js';
 import { googleReady } from './_google.js';
 
 /* The decks the site ships, as deployed. */
@@ -122,6 +130,14 @@ const MAX_NAME = 60;
    reads across a table. A paragraph on a flashcard is a note, and notes want
    a different feature. */
 const MAX_SIDE = 60;
+
+/* How many cards one network fingerprint may report in an hour. Twenty is far
+   more than anybody turning cards over finds wrong in a sitting and far less
+   than a script would want: the point is that a table nobody reads but me
+   cannot be filled faster than I can read it. The same fingerprint the saves
+   and the feedback are capped by, and the same shape of cap. */
+const REPORTS_PER_HOUR = 20;
+const HOUR = 3600000;
 
 /* ------------------------------------------------------------- the spacing
  * How long a card waits before it is asked again, by the box it is in: one
@@ -600,12 +616,20 @@ export async function onRequestPost(context) {
     return json({ error: 'malformed' }, 400);
   }
 
-  /* Every write here, the two that only say a card was known included. There
-     is nothing on this page filed under a device. */
+  const action = body.action;
+
+  /* The one write here that asks for nobody, and it is above the session for
+     that reason. Everything else on this page is about you — your decks, your
+     progress — and this one is about the card: the decks turn over signed out,
+     most of the people reading them are, and a mistake nobody can report
+     without making an account is a mistake nobody reports. */
+  if (action === 'report') return report(context, body);
+
+  /* Every other write, the two that only say a card was known included. There
+     is nothing else on this page filed under anything but an account. */
   const user = await sessionUser(request, env);
   if (!user) return json({ error: 'signed-out' }, 401);
 
-  const action = body.action;
   if (action === 'deck')   return newDeck(context, body, user);
   if (action === 'knew')   return mark(context, body, user, true);
   if (action === 'again')  return mark(context, body, user, false);
@@ -852,4 +876,74 @@ async function reset(context, user, deckId) {
     .run();
 
   return json({ reset: id }, 200);
+}
+
+/* ------------------------------------------------------- this card is wrong
+ * The Estonian on this site is mine. The forms are the forms of common words
+ * and I am confident in them; none of it has been read by anybody who grew up
+ * with the language. The people turning the cards over are the only
+ * proofreaders this deck has, and until now they had nowhere to say so.
+ *
+ * One press, no box to type in, no reason to choose from: what a reader can
+ * tell me reliably is *that* something on this card is wrong, and the language
+ * they were reading it in — which is two thirds of finding it, because a card's
+ * back is written in three. Everything else is mine to look at.
+ *
+ * Nothing comes back but ok. There is no count on the card and there will not
+ * be one: a number under a word would tell somebody learning it to distrust a
+ * card that is very often perfectly right.
+ */
+async function report(context, body) {
+  const { request, env } = context;
+
+  /* The fingerprint is the whole of who this row belongs to, so without the
+     salt there is nothing to file it under. Fail closed rather than write a
+     row every press adds to — see /api/saves, which takes the same bargain for
+     the same reason. */
+  if (!env.SAVE_SALT) return json({ error: 'no-salt' }, 503);
+
+  const deckId = String(typeof body.deck === 'string' ? body.deck : '');
+  const cardId = String(typeof body.card === 'string' ? body.card : '');
+
+  /* Only a card the site ships, and only one that is really in the deck it
+     claims to be in. A deck somebody wrote has an editor with a Remove on
+     every row, so a report about one would be a loop; a pair of strings that
+     is in no deck at all is what this check exists to keep out of the table. */
+  if (!WRITTEN.test(deckId) || !WRITTEN.test(cardId)) return json({ error: 'not-found' }, 404);
+  const deck = shippedDeck(await shipped(context), deckId);
+  if (!deck || !deck.cards.some((c) => c.id === cardId)) return json({ error: 'not-found' }, 404);
+
+  /* Settled the same way the page's words are, against the same list, so what
+     is stored is a language this site speaks rather than whatever was sent. */
+  const { lang } = await wordsFor(context, body.lang);
+
+  const hash = await fingerprint(
+    env.SAVE_SALT, clientIp(request), request.headers.get('user-agent') || ''
+  );
+  const now = Date.now();
+
+  /* The table arrives by hand and a deploy does not wait for it, so there is
+     always an afternoon where this code knows about it and the database does
+     not. That afternoon is a press that says it did not work — which is true —
+     rather than a 500, which is the one thing a route here must never answer. */
+  try {
+    const seen = await env.DB
+      .prepare('SELECT COUNT(*) AS n FROM flashcard_reports WHERE ip_hash = ? AND created_at > ?')
+      .bind(hash, now - HOUR)
+      .first();
+    if (seen && seen.n >= REPORTS_PER_HOUR) return json({ error: 'often' }, 429);
+
+    /* OR IGNORE, because the fingerprint is in the primary key: pressing the
+       same card again from the same network is the same person saying the same
+       thing, and the answer is still yes. */
+    await env.DB
+      .prepare('INSERT OR IGNORE INTO flashcard_reports (deck_id, card_id, lang, ip_hash, created_at) ' +
+               'VALUES (?, ?, ?, ?, ?)')
+      .bind(deckId, cardId, lang, hash, now)
+      .run();
+  } catch (e) {
+    return json({ error: 'no-table' }, 503);
+  }
+
+  return json({ ok: true }, 200);
 }

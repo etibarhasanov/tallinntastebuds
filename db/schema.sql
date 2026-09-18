@@ -882,13 +882,13 @@ CREATE INDEX IF NOT EXISTS idx_split_settlements_group ON split_settlements (gro
 -- ------------------------------------------------------------- flashcards
 -- Estonian, one word at a time, on flashcard.tallinntastebuds.ee.
 --
--- Three tables, and only one of them holds anything anybody typed. The words
+-- Four tables, and only one of them holds anything anybody typed. The words
 -- the site ships with are not here at all: data/decks.json is twenty-eight
 -- decks and five hundred and fifty-eight cards of Estonian, deployed as a file
 -- and read as one, because content that changes when somebody edits the
--- repository belongs in the repository. What is here is the two things a file
--- cannot hold — the decks people write for themselves, and how far each person
--- has got.
+-- repository belongs in the repository. What is here is the three things a file
+-- cannot hold — the decks people write for themselves, how far each person has
+-- got, and which of the shipped cards readers say is wrong.
 --
 -- See **Flashcards** in README.md, and functions/api/flashcard.js, which is
 -- the only thing that writes any of these.
@@ -1007,3 +1007,49 @@ CREATE TABLE IF NOT EXISTS flashcard_known (
 -- has. The primary key covers the user and the deck; this carries the date so
 -- the count does not have to touch the rows it is about to leave out.
 CREATE INDEX IF NOT EXISTS idx_flashcard_known_due ON flashcard_known (user_id, deck_id, due_at);
+
+-- One row is one reader saying a shipped card is wrong: a word that does not
+-- mean that, a genitive that is not the genitive, a sentence no Estonian would
+-- say. The Estonian on this site is mine and has never been checked by anybody
+-- who grew up with the language — see **Three forms** under **Flashcards** in
+-- README.md — so the people turning the cards over are the only proofreaders
+-- it has, and this is where they answer.
+--
+-- **Nothing reads this table but a person.** No route answers with it, no page
+-- draws a count off it, and the number never reaches the card: a "reported by
+-- 4" under a word would tell somebody learning it to distrust a card that is
+-- very often perfectly right. The query is in **Flashcards** in README.md and
+-- it is run by hand, the same way a piece of feedback is taken down.
+--
+-- ONLY THE DECKS THE SITE SHIPS
+--
+-- A deck somebody wrote has one reader and it is its owner, who has an editor
+-- with a Remove on every row: reporting your own words to me would be a loop.
+-- So deck_id here is always one out of data/decks.json, and the route refuses
+-- a minted one.
+CREATE TABLE IF NOT EXISTS flashcard_reports (
+  -- A deck id and a card id out of data/decks.json — "table", "numbers" —
+  -- checked against the file before the row is written, so this cannot be
+  -- filled with reports about cards that do not exist.
+  deck_id    TEXT    NOT NULL,
+  card_id    TEXT    NOT NULL,
+  -- Which language the back was being read in when it was reported. The single
+  -- most useful column here: a card's back is written in three, and a wrong
+  -- Russian one is a different fix from a wrong English one. Without it the
+  -- answer to "what is wrong with this card" would start by guessing which
+  -- third of it to look at.
+  lang       TEXT    NOT NULL,
+  -- The same hashed network fingerprint the saves and the feedback are capped
+  -- by — an HMAC of the address and the user agent under SAVE_SALT, so the
+  -- address itself never reaches the table. It is in the primary key rather
+  -- than beside it, which is what makes one reader pressing one card twice one
+  -- row: the count is how many *people* said so, which is the only question
+  -- this table is ever asked. Two readers behind one network with the same
+  -- phone count as one, and that is the safe direction to be wrong in.
+  ip_hash    TEXT    NOT NULL,
+  created_at INTEGER NOT NULL,
+  PRIMARY KEY (deck_id, card_id, ip_hash)
+);
+-- The cap's lookup: how many cards this fingerprint has reported in the last
+-- hour. The primary key starts with the deck, so it cannot answer this one.
+CREATE INDEX IF NOT EXISTS idx_flashcard_reports_ip ON flashcard_reports (ip_hash, created_at);

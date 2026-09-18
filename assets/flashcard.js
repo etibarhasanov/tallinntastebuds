@@ -63,6 +63,13 @@
  * it rather than in front of it. That is the shape the map's saves have and
  * very nearly the sentence they are offered with.
  *
+ * The one thing this page writes without an account is a card being reported
+ * wrong — wrongLine() below, and the rule it breaks is stated where it is
+ * broken, in the header of functions/api/flashcard.js. The Estonian here is
+ * mine and no native speaker has read it; the people turning the cards over
+ * are the only proofreaders it has, and an account in front of that is a
+ * mistake nobody reports.
+ *
  * THE SIGN-IN FORM IS HERE, AND IT IS THE THIRD COPY ON THE SITE
  *
  * Worth being plain about. There is one password form on this site, in
@@ -293,6 +300,7 @@
     /* this one */
     'not-found': 'flashErrGone',
     'too-many': 'flashErrTooMany',
+    often: 'flashErrOften',
     full: 'flashErrFull',
     name: 'flashErrName',
     front: 'flashErrFront',
@@ -1073,7 +1081,65 @@
     knew.addEventListener('click', function () { mark(word, true, 'press'); });
     acts.appendChild(knew);
 
-    return [runHead(), faceCard(word), runBar(), acts];
+    return [runHead(), faceCard(word), runBar(), acts, wrongLine(word)];
+  }
+
+  /* --------------------------------------------------- this card is wrong
+   * Under the two answers rather than beside them. The row above says what to
+   * do with the word and this says what to do about the card, which is a
+   * different question and a much rarer one — and a third control in that row
+   * would make the page look like it was asking three things at once.
+   *
+   * Only on a deck the site ships. A deck you wrote has an editor with a
+   * Remove on every row, so reporting your own words to me would be a loop,
+   * and the missed deck is somebody's own rows about cards that are all
+   * reportable in the deck they came from.
+   *
+   * The Estonian here is mine and has not been read by anybody who grew up
+   * with the language. The people turning these over are the only proofreaders
+   * it has. See **This card is wrong** under **Flashcards** in README.md.
+   */
+  function wrongLine(word) {
+    if (state.deck.own || state.deck.missed) return null;
+
+    /* role="status" because the press destroys the thing that was pressed:
+       the button is gone by the time this is drawn, so a screen reader that
+       was on it has nothing left to read and no reason to look here. It is
+       the same job the card's own aria-live does for the word. */
+    if (word.reported) {
+      return el('p', {
+        className: 'flash-wrong flash-turn',
+        role: 'status',
+        textContent: t('flashWrongDone')
+      });
+    }
+
+    /* This one does wait for the write, unlike the two above it. They are
+       pressed a hundred times in a sitting and are silent when they fail
+       because the cost of failing is that the card comes round again;
+       this is pressed once, deliberately, and somebody who has just told me
+       something is wrong should not be told it landed when it did not. */
+    var btn = el('button', { type: 'button', className: 'alt', textContent: t('flashWrong') });
+    btn.addEventListener('click', function () {
+      if (btn.disabled) return;
+      btn.disabled = true;
+      post(FLASH_API, {
+        action: 'report',
+        /* The deck the card is really from, the way mark() sends it. */
+        deck: word.deck || state.deck.id,
+        card: word.id,
+        /* Which of the three backs was on screen, which is the most useful
+           thing this press can carry: the route stores it. */
+        lang: state.lang
+      }).then(function (a) {
+        if (!a.ok) { btn.disabled = false; toast(say(a.out)); return; }
+        TTBTrack.event('flash_wrong', { deck_id: state.deck.id, lang: state.lang });
+        word.reported = true;
+        render();
+      });
+    });
+
+    return el('p', { className: 'flash-wrong' }, [btn]);
   }
 
   function backOut() {
