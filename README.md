@@ -6294,6 +6294,29 @@ Turn a card over and the two words appear. **Knew it** writes the row and moves
 on. **Show me again** deletes the row and puts the card on the end of the run,
 so it comes round once more before the deck ends.
 
+**Or throw the card.** Right for *Knew it*, left for *Show me again* — the same
+two answers, given with the thumb that is already on the card. The card follows
+the finger, tilts as it goes, and says in words which answer it is heading for,
+because a tint on its own says nothing to somebody who cannot see this one
+(design rule 10). A quarter of the card's width is far enough to mean it;
+anything shorter springs back and means nothing.
+
+**The buttons stay.** A gesture nobody discovers would otherwise be the only
+way to use the page, and there is no way to hint at one without a tutorial —
+so the swipe is a second way to say the same thing rather than a replacement,
+and the two words under the card are what a first-time reader presses. Both
+report the same event with one parameter saying which was used, which is how
+anybody will ever find out whether the gesture was worth building.
+
+Three rules keep it out of the way of everything else. A swipe only answers a
+card that has been **turned over** — there is nothing to answer on the front,
+which is the rule the two buttons are already under. A gesture that starts
+**down the page** belongs to the page, and `touch-action: pan-y` hands the
+browser the vertical half so a phone still scrolls. And **any drag suppresses
+the tap that would otherwise follow it**, so a scroll that began on the card
+does not turn it over on the way past — the rule the map's sheet has had since
+it could be dragged.
+
 That is all of it, deliberately. A card that is due in three days is a
 different feature, with a table of its own and an argument about what a day is
 in a city the reader may not be in. What is here is a deck of cards and
@@ -9451,7 +9474,7 @@ Flashcards, `assets/flashcard.js`:
 | --- | --- |
 | `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
-| `flash_knew`, `flash_again` | `deck_id` — one per card turned over and answered |
+| `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`) — one per card answered, and which of the two ways it was answered |
 | `flash_again_deck`, `flash_reset` | `deck_id` — going through it again, and forgetting it |
 | `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_back`, `home` | `deck_id` on the first |

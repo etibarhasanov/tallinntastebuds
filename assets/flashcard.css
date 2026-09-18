@@ -28,8 +28,22 @@
    The height is fixed rather than fitted to the word, because a card that
    grew and shrank with the length of what was on it would move the two
    controls under it between every card — and those are pressed a hundred
-   times in a sitting, at a thumb's reach, without looking. */
+   times in a sitting, at a thumb's reach, without looking.
+
+   Once it is turned over it can also be thrown: left for Show me again, right
+   for Knew it. Three lines here are what that needs.
+
+   `touch-action: pan-y` is the load-bearing one. It hands this element's
+   horizontal gestures to the script and keeps the vertical ones for the
+   browser, so the page still scrolls under a thumb that started on the card
+   — which is most of the page on a phone. Without it the browser claims the
+   whole gesture and the card never moves at all.
+
+   The transition is for the spring back from a throw that did not go far
+   enough, and is taken off while a finger is down: a card that eased towards
+   the finger instead of following it feels broken rather than smooth. */
 .flash-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,8 +59,38 @@
   color: inherit;
   text-align: center;
   cursor: pointer;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: transform .18s var(--ease);
 }
 .flash-card:hover { border-color: var(--muted); }
+.flash-card.is-dragging { transition: none; cursor: grabbing; }
+
+/* Which answer a throw is heading for, in words, appearing as the card moves
+   and fading out with it if it is brought back. It is words and not a tint
+   for design rule 10's reason — a colour on its own says nothing to somebody
+   who cannot see this one — and the two it draws are the same two the buttons
+   under the card carry, out of the same strings.
+
+   Absolutely placed so it costs the card no layout: it appears between two
+   frames of a drag, and a card that changed height at that moment would drag
+   the controls under it about. */
+.flash-verdict {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  opacity: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.flash-verdict.is-knew { color: var(--accent); }
+.flash-verdict.is-again { color: var(--muted); }
 
 /* Estonian, in the face this site puts names and titles in — a word on a card
    is a name for a thing. Big enough to read at arm's length across a table,
@@ -98,6 +142,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .flash-face { animation: none; }
+  /* The card still follows the finger — that is the gesture itself and not an
+     animation — but it stops easing back into place on its own. */
+  .flash-card { transition: none; }
 }
 
 /* ---------- where you are in the deck ---------- */
