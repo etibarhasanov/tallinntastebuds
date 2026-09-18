@@ -17,7 +17,7 @@
  * unlinked and indexed, not unlinked and hidden. The page shipped with a
  * noindex for a day, on the reasoning that a deck somebody wrote is theirs
  * alone. That is still true and this does not touch it: what is indexed is the
- * sixteen decks in data/decks.json, which are a file anybody may read, and a
+ * decks in data/decks.json, which are a file anybody may read, and a
  * out of the database needs a session that no crawler has and is served with a
  * noindex — see indexable below.
  *
@@ -60,8 +60,8 @@ const DECKS_FILE = '/data/decks.json';
    and nothing else, so there is no tenth translation of this page to prefer. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
-  'Sixteen decks of Estonian, from the first twenty words to a doctor\'s waiting ' +
-  'room — the word, its three forms and a sentence to say it in.';
+  'Twenty-two decks of Estonian, from the first twenty words to a jacket with a ' +
+  'broken zip — the word, its three forms and a sentence to say it in.';
 
 /* A deck id as data/decks.json spells one. Anything else is either somebody's
    own deck, whose sixteen hex characters mean nothing without their session,
