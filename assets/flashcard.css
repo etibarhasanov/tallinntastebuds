@@ -272,9 +272,16 @@
   min-height: 20px;
 }
 /* The ways out, over on the right where the deck's name is not. The first of
-   them takes the space, so one control or two sit in the same place. */
+   them takes the space, so one control or two sit in the same place.
+
+   It is the one after the eyebrow rather than :first-of-type, which counts per
+   element type and not per class. On a deck of your own there are two of them
+   and they are different elements — the way out is an <a> and the editor's is
+   a <button> — so each was the first of its own type, both took the free space,
+   and the pair that should have stood together was pushed apart with the
+   deck's name stranded between them. */
 .flash-deck .alt { padding-top: 0; padding-bottom: 0; }
-.flash-deck .alt:first-of-type { margin-left: auto; }
+.flash-deck .eyebrow + .alt { margin-left: auto; }
 
 /* How much of a deck is known, on the end of its row. Never wrapped: it is
    four characters and a slash, and a count that folds onto a second line
