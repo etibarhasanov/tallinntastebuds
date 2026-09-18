@@ -259,9 +259,11 @@ if (splitUi !== null) {
 
 /* -------------------------------------------------------------- FLASHCARDS
    data/decks.json — the Estonian the flashcards page ships: twenty-eight decks
-   and five hundred cards, deployed as a file and read as one. It is content
-   rather than interface, so it is English and Estonian alone and none of the
-   ten languages applies to it — the same footing a blog post is on. See
+   and five hundred and fifty-eight cards, deployed as a file and read as one. It is content
+   rather than interface, so the ten languages of data/ui.json do not apply to
+   it wholesale the way they do to a button — what it carries instead is the
+   three it has been written in, in the shape a place's blurb is in: an object
+   keyed by language, English required and the rest as they arrive. See
    **Flashcards** in README.md; this block is all this file knows about that
    feature.
 
@@ -281,6 +283,15 @@ if (decksFile !== null) {
        card longer than a typed one would be a card the page draws and nobody
        could have written. */
     const MAX_SIDE = 60;
+    /* The languages the decks are written in, and the one that binds. English
+       is not a preference: it is what assets/flashcard.js falls back to for the
+       seven languages the decks are not in, so a card without it is a card that
+       draws nothing for most of the site's readers. The other two only warn,
+       which is the footing a place's blurb is on — a card added today and
+       translated on Thursday is still a card, and a build that failed over it
+       would mean nothing could be added without all three at once. Translating
+       the decks into a fourth means adding it here. */
+    const DECK_LANGS = ['en', 'az', 'ru'];
     const MINTED = /^[0-9a-f]{16}$/;
     /* The three the page draws headings for. A deck with any other level would
        fall to the bottom under no heading, which is a deck nobody finds. */
@@ -290,6 +301,40 @@ if (decksFile !== null) {
        two decks answering to one id is a run that reads the wrong rows. */
     const RESERVED = new Set(['missed']);
     const deckIds = new Set();
+
+    /* A deck's name, the line under it, the back of a card, or what a card's
+       sentence means: one object keyed by language, held to the same four rules
+       wherever it stands.
+
+       An "et" fails outright and is the only one of the four worth explaining:
+       Estonian is what the front of the card asks, so an Estonian answer on the
+       back is a card answering itself, and the page deliberately never reads
+       one — means() in assets/flashcard.js says why at more length. The
+       sentence is the exception and is checked apart, because its "et" is the
+       Estonian sentence rather than a translation of anything. */
+    const said = (pack, at, what, cap) => {
+      if (!isPlainObject(pack)) {
+        fail(at, `${what} must be an object keyed by language, not a bare string`);
+        return;
+      }
+      if (!isNonEmptyString(pack.en)) {
+        fail(at, `${what} has no "en", which is what every other language falls back to`);
+      }
+      for (const [lang, one] of Object.entries(pack)) {
+        if (lang === 'et') {
+          fail(at, `${what} has an "et" — Estonian is what the card asks, never what it answers`);
+        } else if (!languages.includes(lang)) {
+          fail(at, `${what} speaks "${lang}", which is not a language of data/ui.json`);
+        } else if (!isNonEmptyString(one)) {
+          fail(at, `${what} has an empty "${lang}"`);
+        } else if (cap && one.length > cap) {
+          fail(at, `${what} has a "${lang}" of ${one.length} characters, past the ${cap} the page draws`);
+        }
+      }
+      for (const lang of DECK_LANGS) {
+        if (!(lang in pack)) warn(at, `${what} has no "${lang}" yet`);
+      }
+    };
 
     decksFile.decks.forEach((deck, i) => {
       const where = `data/decks.json → decks[${i}]`;
@@ -305,8 +350,8 @@ if (decksFile !== null) {
       }
       deckIds.add(deck.id);
 
-      if (!isNonEmptyString(deck.name)) fail(where, `deck "${deck.id}" has no "name"`);
-      if (!isNonEmptyString(deck.why)) fail(where, `deck "${deck.id}" has no "why"`);
+      said(deck.name, where, `deck "${deck.id}" name`);
+      said(deck.why, where, `deck "${deck.id}" why`);
       if (!LEVELS.has(deck.level)) {
         fail(where, `deck "${deck.id}" has a level of "${deck.level}", which is not one of: ${[...LEVELS].join(', ')}`);
       }
@@ -325,13 +370,28 @@ if (decksFile !== null) {
         if (cardIds.has(card.id)) fail(at, `id "${card.id}" is used twice in "${deck.id}"`);
         cardIds.add(card.id);
 
-        ['front', 'back'].forEach((side) => {
-          if (!isNonEmptyString(card[side])) {
-            fail(at, `card "${card.id}" has no "${side}"`);
-          } else if (card[side].length > MAX_SIDE) {
-            fail(at, `card "${card.id}" has a "${side}" of ${card[side].length} characters, past the ${MAX_SIDE} the page draws`);
+        /* The front is one string and is the Estonian; the back is what it
+           means, in each language the deck has been written in. */
+        if (!isNonEmptyString(card.front)) {
+          fail(at, `card "${card.id}" has no "front"`);
+        } else if (card.front.length > MAX_SIDE) {
+          fail(at, `card "${card.id}" has a "front" of ${card.front.length} characters, past the ${MAX_SIDE} the page draws`);
+        }
+        said(card.back, at, `card "${card.id}" back`, MAX_SIDE);
+
+        /* The word in a sentence, where a card has one: the Estonian, and what
+           it means in the same languages the back is in. Both halves or
+           neither, because the page draws the Estonian and what it means as
+           two lines and half of it would be a card with a stray clause on
+           it. */
+        if (card.sentence !== undefined) {
+          if (!isPlainObject(card.sentence) || !isNonEmptyString(card.sentence.et)) {
+            fail(at, `card "${card.id}" has a "sentence" with no Estonian in it`);
+          } else {
+            const { et, ...means } = card.sentence;
+            said(means, at, `card "${card.id}" sentence`);
           }
-        });
+        }
 
         /* The genitive and the partitive, where a word has them. Optional —
            a card that is a phrase has no principal parts and most of two
@@ -339,17 +399,6 @@ if (decksFile !== null) {
            that order, because the page draws them in a row of three with the
            nominative and a row of two would be silently wrong rather than
            visibly missing. */
-        /* The word in a sentence, where a card has one: both halves or
-           neither, because the page draws the Estonian and what it means as
-           two lines and half of it would be a card with a stray clause on
-           it. */
-        if (card.sentence !== undefined) {
-          const said = card.sentence;
-          if (!isPlainObject(said) || !isNonEmptyString(said.et) || !isNonEmptyString(said.en)) {
-            fail(at, `card "${card.id}" has a "sentence" that is not an object with a non-empty "et" and "en"`);
-          }
-        }
-
         if (card.forms !== undefined) {
           if (!Array.isArray(card.forms) || card.forms.length !== 2) {
             fail(at, `card "${card.id}" has "forms" that are not exactly two — the genitive and the partitive, in that order`);

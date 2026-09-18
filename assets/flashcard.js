@@ -5,9 +5,23 @@
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
  * menu. This is the other half of that: twenty-eight decks of Estonian, five
- * hundred and fifty-eight cards, Estonian on the front and English on the back,
- * and one card at a time with two words under it — Knew it, and Show me
+ * hundred and fifty-eight cards, Estonian on the front and what it means on the
+ * back, and one card at a time with two words under it — Knew it, and Show me
  * again.
+ *
+ * THE BACK IS IN THE LANGUAGE THE PAGE IS BEING READ IN
+ *
+ * The decks the site ships say what a card means in three: English,
+ * Azerbaijani and Russian. Which one a card is turned over into is not a choice
+ * anybody makes here — it is whichever of the ten this page is already being
+ * read in, out of ?lang=, ttb.lang or the browser's own languages, and English
+ * for the seven the decks have not been written in. means() below is the whole
+ * of it, and the reason it is one function is that a deck somebody wrote has
+ * one side in one language and nothing to pick.
+ *
+ * Learning Estonian through an English you are shaky in is two languages'
+ * work, and the people this site is written for are the ones it was hardest
+ * on. See **Flashcards** in README.md.
  *
  * It is on its own hostname for the reason splitwise is: it is not the map,
  * and a sixth card on the account page reading "Flashcards" would have been a
@@ -209,6 +223,27 @@
       });
     }
     return s;
+  }
+
+  /* What a deck is called, what the line under it says, what a card means and
+     what its sentence means — in the language this page is being read in.
+   *
+     Two shapes arrive here and only one of them has anything to pick. A deck
+     the site ships carries each of those as an object keyed by language:
+     English, Azerbaijani and Russian today, and whichever of the ten somebody
+     translates next, with no code to change when they do. A deck somebody wrote
+     carries a string per side, in whatever language they typed it in.
+
+     `et` is never read out of one, even from a sentence that has one, and that
+     is the one rule here worth stating: on this page Estonian is the thing
+     being learnt rather than a language to learn it in, and sentence.et is the
+     Estonian sentence itself. Reading the site in Estonian therefore gets the
+     English back, which is what the other six get too. */
+  function means(said) {
+    if (typeof said === 'string') return said;
+    if (!said) return '';
+    var mine = state.lang === 'et' ? '' : said[state.lang];
+    return mine || said[DEFAULT_LANG] || '';
   }
 
   function getJSON(url) {
@@ -534,13 +569,15 @@
   /* Every deck has a name and a line under it, and one of them has neither in
      the data: the missed deck is assembled per request and its words belong to
      the interface rather than to the content — so they are in data/ui.json in
-     ten languages, where every other word on this page is. */
+     ten languages, where every other word on this page is. The rest come out of
+     data/decks.json in the three the decks are written in, which is what
+     means() picks between. */
   function deckName(deck) {
-    return deck.missed ? t('flashMissedName') : deck.name;
+    return deck.missed ? t('flashMissedName') : means(deck.name);
   }
 
   function deckWhy(deck) {
-    return deck.missed ? t('flashMissedWhy') : (deck.why || null);
+    return deck.missed ? t('flashMissedWhy') : (means(deck.why) || null);
   }
 
   function deckRow(deck) {
@@ -754,7 +791,7 @@
     var turned = state.run.turned;
     var face = el('div', { className: 'flash-face' }, turned
       ? [
-          el('p', { className: 'flash-back', textContent: word.back }),
+          el('p', { className: 'flash-back', textContent: means(word.back) }),
           /* The three forms, on the side that answers. A dictionary gives an
              Estonian noun as three — the nominative, the genitive and the
              partitive — because the last two are where the stem actually
@@ -769,12 +806,12 @@
           /* And the word in a sentence, at the foot of the card. A word on its
              own is a thing to recognise; a word in a sentence is a thing to
              say, and the case it is standing in there is half of what the
-             three forms above are for. The Estonian leads and the English is
+             three forms above are for. The Estonian leads and what it means is
              under it in the quieter tone, which is the order the card itself
              is in. */
           word.sentence ? el('p', { className: 'flash-sentence' }, [
             el('span', { className: 'flash-said', textContent: word.sentence.et }),
-            el('span', { className: 'flash-means', textContent: word.sentence.en })
+            el('span', { className: 'flash-means', textContent: means(word.sentence) })
           ]) : null,
           el('p', { className: 'flash-turn', textContent: t('flashTurned') })
         ]
@@ -1112,7 +1149,7 @@
     return el('li', { className: 'flash-row' }, [
       el('span', { className: 'flash-pair' }, [
         el('span', { className: 'flash-side', textContent: word.front }),
-        el('p', { className: 'flash-gloss', textContent: word.back })
+        el('p', { className: 'flash-gloss', textContent: means(word.back) })
       ]),
       drop
     ]);
@@ -1152,7 +1189,7 @@
     var deck = state.deck;
     var kids = [
       el('p', { className: 'eyebrow', textContent: t('flashYoursEyebrow') }),
-      heading(deck.name),
+      heading(deckName(deck)),
       el('p', { className: 'lists-say', textContent: t('flashEditWhy') })
     ];
 

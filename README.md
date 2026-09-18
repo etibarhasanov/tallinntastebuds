@@ -6155,7 +6155,8 @@ this feature exists.
 A site about eating in Tallinn is read mostly by people who cannot read the
 menu. **flashcard.tallinntastebuds.ee** is the other half of that: twenty-eight
 decks of Estonian, five hundred and fifty-eight cards, the Estonian on the front
-and the English on the back, and one card at a time with two words under it —
+and what it means on the back — in English, Azerbaijani or Russian, whichever the
+page is being read in — and one card at a time with two words under it —
 *Knew it*, and *Show me again*.
 
 It is the second thing on this site that is not about restaurants, and it is
@@ -6186,8 +6187,11 @@ group's link is pasted into a chat and the little preview card is most of what
 the link is. Nothing here is ever sent to anybody. `functions/flashcard.js`
 exists for the other half of a head: it writes the deck's own title and
 description, **and the deck's words into the page as text**, so that somebody
-searching for what an Estonian word means finds the deck that answers it. See
-**How it is found** below.
+searching for what an Estonian word means finds the deck that answers it — in
+all three languages the cards are written in, one `<dt>` and up to three
+`<dd>`s, because *что значит leib* is the same question as *what does leib mean*
+and until the decks had a Russian side the answer here was in a language that
+asker may not read either. See **How it is found** below.
 
 ### How it is found, which is one row
 
@@ -6247,18 +6251,66 @@ The three tables hold the two things a file cannot: the decks people write for
 themselves, and how far each person has got. `functions/api/flashcard.js` is
 the only thing that writes any of them.
 
-**The decks and the cards are in English and Estonian and in no other
-language.** That is the same footing a post on the blog is on: it is somebody's
-writing rather than an interface string, and the ten languages are for the
-words around it — every button, label and sentence on the page is a key in
-`data/ui.json` like every other page's. It is deliberately *not* the
-arrangement splitwise has, where the strings live in a file of their own: the
-`/site` skill says in so many words that there is one such exception and a
-second would be two files to keep in step. So the forty-nine `flash*` keys are
-in `ui.json` with everything else, and taking this feature out means taking
-forty-nine keys out of ten blocks rather than deleting a file. That is the
-price of the rule, and it is the right way round — a stale string is worse than
-a tedious deletion.
+### The back of the card is in three languages
+
+The front is Estonian, because that is the thing being learnt and it is never
+translated. The back is what the word means, and it carries three — an object
+keyed by language, which is the shape a place's `blurb` has had since the map
+was written:
+
+```json
+"back": { "en": "Black bread", "az": "Qara çörək", "ru": "Чёрный хлеб" }
+```
+
+A deck's `name`, the line under it in `why`, and the translated half of a
+card's `sentence` are the same shape. `forms` is not: those are Estonian.
+
+**This section used to say the opposite, and the argument it made was a good
+one.** A deck is somebody's writing rather than an interface string — the same
+footing a post on **[the blog](#the-blog)** is on — and the ten languages are
+for the words *around* it. What that missed is what a flashcard is. A blog post
+in English is a paragraph somebody skips; the back of a flashcard in English
+*is* the lesson, and an Azerbaijani or Russian speaker learning Estonian off one
+was being asked to do two languages' work to do one — and to do the second of
+them in the language they were least sure of, on the card that was meant to be
+the help. The people this site is written for are exactly the ones that fell
+hardest on.
+
+**Three rather than ten**, and that is a decision rather than a first pass at
+all of them. Azerbaijani and Russian were asked for and are written; the other
+seven fall back to the English. `means()` in `assets/flashcard.js` is the whole
+of the picking and the only thing it does. Adding an eighth is a key per card in
+`data/decks.json` and a code in `DECK_LANGS` — `tools/validate.mjs` and
+`functions/flashcard.js` each hold that list — with no page code to change, and
+until somebody finishes writing it the cards go on working in English.
+`tools/validate.mjs` fails a card with no `en`, because that is what everything
+else falls back to, and only *warns* about a card missing one of the other two:
+that is the footing a blurb is on, and a card added today and translated on
+Thursday is still a card.
+
+**Estonian is never an answer.** `means()` refuses to read an `et` even where
+there is one, and the validator fails a `back` that has one. On this page
+Estonian is what the front asks, so an Estonian back would be a card answering
+itself; the `et` inside a `sentence` is the Estonian sentence rather than a
+translation of it, which is why that one field is checked apart. Somebody
+reading the site in Estonian gets the English back.
+
+**Nothing here is a language anybody chooses on this page.** There is no picker
+on the flashcards and this did not add one: the back follows `?lang=`, then
+`ttb.lang`, then the browser's own languages, which is exactly what every word
+around it has always followed. At `/flashcard` on the live domain the language
+chosen on the map comes along with it; on the subdomain `localStorage` belongs
+to another origin, so it is the browser's languages or `?lang=` — the same
+thing that has always decided the interface there.
+
+**And the interface is still in `ui.json` with everything else.** That half of
+the old argument stands: it is deliberately *not* the arrangement splitwise has,
+where the strings live in a file of their own. The `/site` skill says in so many
+words that there is one such exception and a second would be two files to keep
+in step. So the forty-nine `flash*` keys are in `ui.json`, and taking this
+feature out means taking forty-nine keys out of ten blocks rather than deleting
+a file. That is the price of the rule, and it is the right way round — a stale
+string is worse than a tedious deletion.
 
 ### It is the same account as the map
 
@@ -6422,7 +6474,7 @@ A dictionary gives an Estonian noun as three: *leib, leiva, leiba* — the
 nominative, the genitive and the partitive. The last two are where the stem
 actually shows itself, and somebody who has learnt only the first cannot say
 *two coffees* or *without bread*. So the back of a card carries all three,
-quietly, in mono under the English.
+quietly, in mono under what the word means.
 
 The front stays one word. What is being asked is still what it means, and a
 card that opened with three forms would be asking somebody to read a paradigm
@@ -6462,22 +6514,27 @@ leiba** is why the third one matters.
 It is the last thing on the card and the quietest, because somebody who has
 already remembered the word is done before they reach it.
 
-`sentence` is an optional `{ et, en }` on a card, and the validator wants both
-halves or neither — half of one drawn on a card would be a stray clause with no
-translation. **353 of the 558 cards** carry one: every card in the eighteen
+`sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
+what it means in each of the three the decks are written in — and the validator
+wants the Estonian and the English or neither, since half of one drawn on a card
+would be a stray clause with no translation. **353 of the 558 cards** carry one: every card in the eighteen
 newer decks bar the ones that are a whole sentence already, and the ones in the
 older decks where an example says something the gloss does not.
 
 They are in the indexed text too, and they are the most searchable thing on the
 page: a whole Estonian sentence with its English under it is what somebody is
-actually holding when they look a word up.
+actually holding when they look a word up. That copy is the English one and only
+the English one — what a word is looked up *with* is the word, and the Estonian
+of the sentence is already on the page beside it, so writing all three would put
+the same sentence into the page three times.
 
 ### The decks people write
 
 Signed in, **Words you collected**: name a deck, and it opens on the form that
 adds the first card, because a deck with nothing in it has nothing to turn
-over. Estonian on the front, English on the back, and a row per card with a
-**Remove** beside it.
+over. Estonian on the front, what it means on the back — in whatever language
+that is; a deck you write has one side in one language and nothing to pick — and
+a row per card with a **Remove** beside it.
 
 **A deck somebody wrote has exactly one reader, and it is its owner.** There is
 no sharing here, no public deck, and no link that buys anything — which is the
@@ -7961,8 +8018,12 @@ to read and write first.
   `data/ui.json` also carries — one string, one home. See
   **[Splitwise](#splitwise)**
 - a `data/decks.json` whose decks or cards are malformed: a duplicate id, a
-  missing side, a side longer than the sixty characters the card draws, or a
-  deck id shaped like one somebody wrote — the two namespaces must not meet.
+  missing side, a side longer than the sixty characters the card draws, a name,
+  a line or a back that is a bare string rather than an object keyed by
+  language, one of those with no `en` for everything else to fall back to or
+  with an `et` — Estonian is what the front asks, never what the back answers —
+  or a deck id shaped like one somebody wrote, since the two namespaces must not
+  meet. A back missing its Azerbaijani or its Russian only warns.
   See **[Flashcards](#flashcards)**
 - a colour token one style declares and another leaves out, which is a style
   quietly wearing the other one's value out of `:root`. See **The design
@@ -8150,8 +8211,8 @@ assets/flashcard.js        its five states, and the third sign-in form on the
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
 data/decks.json            twenty-eight decks of Estonian, 558 cards at three
-                           levels; content rather than interface, so English
-                           and Estonian alone
+                           levels; content rather than interface, and written
+                           in three languages rather than the site's ten
 blog.html                  a post per thing this site does   } unlinked, and
 assets/blog.js             the index, one post, and the walk  } indexed on
 assets/blog.css            only what a page of prose has      } purpose
