@@ -59,20 +59,16 @@
  */
 
 import { canonical, esc, head, shell, rehead, fill, EMPTY, page, SITE } from './_shell.js';
-import { dataFile, uiStrings } from './api/_lib.js';
+import { dataFile, uiStrings, DECK_LANGS } from './api/_lib.js';
 
 const PATH = '/flashcard';
 const FILE = '/flashcard.html';
 const DECKS_FILE = '/data/decks.json';
 
-/* The languages the decks are written in, in the order the <main> lists them
-   and English first. Add a language to data/decks.json and add it here;
-   nothing else in this file cares which they are. */
-const DECK_LANGS = ['en', 'az', 'ru'];
-
-/* The first of those and the site's own, which makes it what everything here
-   falls back to: a language nobody asked for, a language the site does not
-   speak, and a deck that was never written in the one that was asked for. */
+/* The first of the three DECK_LANGS names and the site's own, which makes it
+   what everything here falls back to: a language nobody asked for, a language
+   this page does not speak, and a deck that was never written in the one that
+   was asked for. */
 const DEFAULT_LANG = 'en';
 
 /* A deck's name, the line under it or a card's back — each of them an object
@@ -116,7 +112,7 @@ const DESCRIPTION =
  *
  * The picture is in English whatever language the words beside it are in, the
  * same way og.jpg is on a map shared with ?lang=et: it is a rendered file and
- * not a template, tools/ogcard.mjs draws it, and ten of them would be ten
+ * not a template, tools/ogcard.mjs draws it, and three of them would be three
  * pictures to redraw every time a token moves. */
 const CARD = '/assets/logo/og-flashcard.png';
 
@@ -223,7 +219,8 @@ function deckSays(deck, languages, lang) {
   return (why ? why + ' — ' : '') + many + '.';
 }
 
-/* The language the head is written in, which is the one the link carried.
+/* The language the head is written in, which is the one the link carried —
+ * out of the three this feature speaks rather than the ten the site does.
  *
  * A link to this page is sent to somebody, the way a place's is and unlike a
  * list's: ?lang=az on it is the sender having chosen Azerbaijani for whoever
@@ -232,17 +229,27 @@ function deckSays(deck, languages, lang) {
  * place** in README.md describes, applied here — and it is not the argument
  * the <main> is under, which has no reader to ask.
  *
+ * It asks DECK_LANGS rather than data/ui.json's own keys, so the card a link
+ * unfurls as is in a language the page behind it will actually be read in.
+ * ?lang=fi used to buy a Finnish preview card over an English deck name and
+ * an English page; now it buys English throughout, which is the same answer
+ * said once instead of twice.
+ *
  * ?lang= does not reach the canonical or og:url, and so this page has one
- * address in ten languages rather than ten addresses. What it costs is
+ * address in three languages rather than three addresses. What it costs is
  * Facebook, which treats og:url as the identity of the thing shared and will
- * therefore keep one card for all ten; WhatsApp, Telegram, Slack, Signal and X
- * all read the tags of the address they were handed and show the language the
- * link was sent in. The other way round is ten entries in tools/sitemap.mjs, an
- * hreflang set and ten pages for a page nothing links to, and that is the
- * bargain the map struck for a reason this page does not have. */
+ * therefore keep one card for all three; WhatsApp, Telegram, Slack, Signal and
+ * X all read the tags of the address they were handed and show the language
+ * the link was sent in. The other way round is three entries in
+ * tools/sitemap.mjs, an hreflang set and three pages for a page nothing links
+ * to, and that is the bargain the map struck for a reason this page does
+ * not have. */
 function languageOf(request, languages) {
   const asked = new URL(request.url).searchParams.get('lang');
-  return asked && Object.prototype.hasOwnProperty.call(languages, asked) ? asked : DEFAULT_LANG;
+  const speaks = asked &&
+    DECK_LANGS.includes(asked) &&
+    Object.prototype.hasOwnProperty.call(languages, asked);
+  return speaks ? asked : DEFAULT_LANG;
 }
 
 export async function onRequest(context) {
@@ -272,12 +279,6 @@ export async function onRequest(context) {
   }
   const lang = languageOf(request, languages);
   const ui = languages[lang] || {};
-  /* A deck is written in three languages and the interface in ten, so a deck's
-     own words follow the link only as far as they go: ?lang=fi gets a Finnish
-     page and an English deck name, because there is no Finnish one to get, and
-     the count beside it is in the same language as the name rather than in the
-     one the rest of the head is in. */
-  const deckLang = DECK_LANGS.indexOf(lang) === -1 ? DEFAULT_LANG : lang;
 
   /* An id that answers with nothing is somebody's own deck — sixteen hex
      characters that mean anything only to their session — or an id that was
@@ -290,8 +291,8 @@ export async function onRequest(context) {
 
   const tags = deck
     ? head({
-        title: inLanguage(deck.name, deckLang),
-        description: deckSays(deck, languages, deckLang),
+        title: inLanguage(deck.name, lang),
+        description: deckSays(deck, languages, lang),
         /* The deck's own address rather than the page's, because a deck is a
            page of its own — the same call the map makes for ?spot=, and the
            same set of addresses tools/sitemap.mjs writes out. */
@@ -304,7 +305,7 @@ export async function onRequest(context) {
         /* The line the page itself opens with, rather than a second sentence
            written for the head alone: what somebody forwarded this link wants
            to know is what the thing is and what they are meant to do with it,
-           and flashWhat is already that, in all ten. */
+           and flashWhat is already that, in all three. */
         description: ui.flashWhat || DESCRIPTION,
         url: where(request, PATH),
         type: 'website',

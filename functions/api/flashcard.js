@@ -46,23 +46,34 @@
  * and the page fetches nothing else.
  *
  * Which language is decided here rather than on the page, because the list
- * of languages the site has is in the file this side reads: the page sends
- * what it would have picked from, in order (?lang=, then the choice stored on
- * the map, then the browser's own languages), and wordsFor() in ./_lib.js
- * takes the first the file speaks. It is the same rule pickLanguage() applies
- * on every other page, moved to where the list is, and it lives in _lib.js
- * rather than here because /api/stats answers the same way for the same
- * reason. The whole block goes rather than the eighty keys, because a list of
- * keys here would be a second copy of what assets/flashcard.js asks for, and
- * the validator could not see them drift.
+ * of languages this feature has is on this side: the page sends what it would
+ * have picked from, in order (?lang=, then the choice stored on the map, then
+ * the browser's own languages), and wordsFor() in ./_lib.js takes the first
+ * that list speaks. It is the same rule pickLanguage() applies on every other
+ * page, moved to where the list is, and it lives in _lib.js rather than here
+ * because /api/stats answers the same way for the same reason. The whole block
+ * goes rather than the eighty keys, because a list of keys here would be a
+ * second copy of what assets/flashcard.js asks for, and the validator could
+ * not see them drift.
  *
- * And the ten codes go with it, because the page has a switch on it now and
- * the switch has to be able to name them: `langs` is every language the file
- * speaks, sorted by code the way the map sorts its own menu, each with the
- * name that language has for itself. Ten short pairs, a couple of hundred
- * bytes against the eight to ten KB already in the answer — and the page can
- * draw the menu out of the same one request it draws the cards from. Picking
- * one then asks this route again for that block alone.
+ * AND THE LIST IS THREE LANGUAGES LONG, NOT TEN
+ *
+ * Every call to wordsFor() from this file passes DECK_LANGS — English,
+ * Azerbaijani and Russian, the three data/decks.json writes the back of a card
+ * in. The site speaks ten and this feature speaks three, and the header of
+ * DECK_LANGS in ./_lib.js is the argument: the back of a flashcard is the
+ * lesson rather than the chrome around it, so a Finnish door over an English
+ * answer is a promise the cards cannot keep. ?lang=fi is therefore English
+ * here and Finnish everywhere else on the site, which is the one place this
+ * page deliberately disagrees with the rest of it.
+ *
+ * And the three codes go in the answer, because the page has a switch on it
+ * and the switch has to be able to name them: `langs` is those three, sorted
+ * by code the way the map sorts its own menu, each with the name that language
+ * has for itself. Three short pairs, well under a hundred bytes against the
+ * eight to ten KB already in the answer — and the page can draw the menu out
+ * of the same one request it draws the cards from. Picking one then asks this
+ * route again for that block alone.
  *
  * IT IS THE SAME ACCOUNT AS THE MAP
  *
@@ -125,7 +136,8 @@
  */
 
 import {
-  json, sessionUser, wrongDatabase, randomHex, dataFile, wordsFor, fingerprint, clientIp
+  json, sessionUser, wrongDatabase, randomHex, dataFile, wordsFor, fingerprint, clientIp,
+  DECK_LANGS
 } from './_lib.js';
 import { googleReady } from './_google.js';
 
@@ -468,7 +480,10 @@ export async function onRequestGet(context) {
   /* What every answer below carries, whichever deck it is about: the three
      facts about this deployment and this session, and the words the page will
      print them with. */
-  const base = { ready: ready, google: google, user: who, ...(await wordsFor(context, params.get('lang'))) };
+  const base = {
+    ready: ready, google: google, user: who,
+    ...(await wordsFor(context, params.get('lang'), DECK_LANGS))
+  };
 
   if (asked) {
     const known = await knownOf(env, user);
@@ -909,9 +924,11 @@ async function report(context, body) {
   const deck = shippedDeck(await shipped(context), deckId);
   if (!deck || !deck.cards.some((c) => c.id === cardId)) return json({ error: 'not-found' }, 404);
 
-  /* Settled the same way the page's words are, against the same list, so what
-     is stored is a language this site speaks rather than whatever was sent. */
-  const { lang } = await wordsFor(context, body.lang);
+  /* Settled the same way the page's words are, against the same three, so
+     what is stored is a language a card actually has a back in rather than
+     whatever was sent. A report says which of the backs was on screen, and
+     there are three of those. */
+  const { lang } = await wordsFor(context, body.lang, DECK_LANGS);
 
   const hash = await fingerprint(
     env.SAVE_SALT, clientIp(request), request.headers.get('user-agent') || ''

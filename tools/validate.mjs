@@ -97,6 +97,11 @@ import { PIN_GLYPHS, DEFAULT_PIN } from '../functions/api/_pins.js';
 /* How many places a list may hold, from the route that enforces it, so the
    check below is the server's number and not a fourth copy of it. */
 import { MAX_ITEMS } from '../functions/api/lists.js';
+/* The languages the flashcards are in, from the file both Functions that
+   serve that page read it out of — so the warning below about a card nobody
+   has translated is about the same three the page will actually offer, rather
+   than a third copy of the list drifting quietly away from them. */
+import { DECK_LANGS } from '../functions/api/_lib.js';
 /* The elements two pages ship empty for a Function to fill with text, from
    the module that fills them, so the spelling held here is the one matched. */
 import { EMPTY } from '../functions/_shell.js';
@@ -283,15 +288,14 @@ if (decksFile !== null) {
        card longer than a typed one would be a card the page draws and nobody
        could have written. */
     const MAX_SIDE = 60;
-    /* The languages the decks are written in, and the one that binds. English
-       is not a preference: it is what assets/flashcard.js falls back to for the
-       seven languages the decks are not in, so a card without it is a card that
-       draws nothing for most of the site's readers. The other two only warn,
-       which is the footing a place's blurb is on — a card added today and
-       translated on Thursday is still a card, and a build that failed over it
-       would mean nothing could be added without all three at once. Translating
-       the decks into a fourth means adding it here. */
-    const DECK_LANGS = ['en', 'az', 'ru'];
+    /* DECK_LANGS is imported above, and English is the one of the three that
+       binds. It is not a preference: it is what assets/flashcard.js falls back
+       to for anybody who asked for one of the site's other seven, so a card
+       without it is a card that draws nothing for most of the site's readers.
+       The other two only warn, which is the footing a place's blurb is on — a
+       card added today and translated on Thursday is still a card, and a build
+       that failed over it would mean nothing could be added without all three
+       at once. */
     const MINTED = /^[0-9a-f]{16}$/;
     /* The three the page draws headings for. A deck with any other level would
        fall to the bottom under no heading, which is a deck nobody finds. */

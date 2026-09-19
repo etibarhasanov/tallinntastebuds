@@ -6293,28 +6293,28 @@ are the ones the page is actually wearing rather than a second set drawn to
 match. Change a token or a rule in `flashcard.css` and the card is redrawn in
 the same commit, the same way a scene in `clips/` is.
 
-**The words follow the link's `?lang=`.** `?lang=az` unfurls in Azerbaijani,
-because whoever sent that link chose Azerbaijani for the person they were
-sending it to — the same argument **[Sharing a place](#sharing-a-place)** makes
-for `?spot=`, and the opposite of the one a shared list is under, which has no
-reader to ask. The door's two strings are `flashDoor` and `flashWhat` out of
-`data/ui.json`, so it speaks all ten; a deck's name and the line under it come
-from `data/decks.json`, which is written in three, so `?lang=fi` gets a Finnish
-door and an English deck name with an English count beside it rather than a
-Finnish count on an English name.
+**The words follow the link's `?lang=`, out of the three.** `?lang=az` unfurls
+in Azerbaijani, because whoever sent that link chose Azerbaijani for the person
+they were sending it to — the same argument
+**[Sharing a place](#sharing-a-place)** makes for `?spot=`, and the opposite of
+the one a shared list is under, which has no reader to ask. The door's two
+strings are `flashDoor` and `flashWhat` out of `data/ui.json`, which speaks all
+ten; this page reads three of them, so `?lang=fi` gets an English card in front
+of an English page rather than a Finnish door over an English deck name.
+**Three languages, not ten** below is why.
 
 Two things it deliberately does not do. **The picture stays in English**,
 whatever language the words beside it are in: it is a rendered file rather than
-a template, and ten of them would be ten pictures to redraw every time a token
-moves — which is exactly what `og.jpg` does on a map shared with `?lang=et`.
-And **`?lang=` reaches neither the canonical nor `og:url`**, so this is one
-page in ten languages rather than ten pages. What that costs is Facebook, which
-treats `og:url` as the identity of the thing shared and will therefore keep one
-card for all ten; WhatsApp, Telegram, Slack, Signal and X read the tags of the
-address they were handed and show the language the link was sent in. The other
-way round is ten entries in `tools/sitemap.mjs`, an `hreflang` set and ten
-pages for a page nothing links to — the bargain the map struck for a reason
-this page has not got.
+a template, and three of them would be three pictures to redraw every time a
+token moves — which is exactly what `og.jpg` does on a map shared with
+`?lang=et`. And **`?lang=` reaches neither the canonical nor `og:url`**, so
+this is one page in three languages rather than three pages. What that costs is
+Facebook, which treats `og:url` as the identity of the thing shared and will
+therefore keep one card for all three; WhatsApp, Telegram, Slack, Signal and X
+read the tags of the address they were handed and show the language the link
+was sent in. The other way round is three entries in `tools/sitemap.mjs`, an
+`hreflang` set and three pages for a page nothing links to — the bargain the
+map struck for a reason this page has not got.
 
 ### How it is found, which is one row
 
@@ -6402,10 +6402,12 @@ hardest on.
 
 **Three rather than ten**, and that is a decision rather than a first pass at
 all of them. Azerbaijani and Russian were asked for and are written; the other
-seven fall back to the English. `means()` in `assets/flashcard.js` is the whole
-of the picking and the only thing it does. Adding an eighth is a key per card in
-`data/decks.json` and a code in `DECK_LANGS` — `tools/validate.mjs` and
-`functions/flashcard.js` each hold that list — with no page code to change, and
+seven fall back to the English, and the page around the cards is in three for
+the same reason — **[Three languages, not ten](#three-languages-not-ten)**
+below. `means()` in `assets/flashcard.js` is the whole of the picking and the
+only thing it does. Adding a fourth is a key per card in `data/decks.json` and
+a code in `DECK_LANGS`, which is one list in `functions/api/_lib.js` that both
+Functions and `tools/validate.mjs` import, with no page code to change — and
 until somebody finishes writing it the cards go on working in English.
 `tools/validate.mjs` fails a card with no `en`, because that is what everything
 else falls back to, and only *warns* about a card missing one of the other two:
@@ -6443,19 +6445,50 @@ string is worse than a tedious deletion.
 ### A language of your own to learn it in
 
 The map's switch, in this page's header: the code you are reading in, a menu
-of the ten under it, each with the name that language has for itself. It is
+of three under it, each with the name that language has for itself. It is
 the same control, drawn with the same rules out of `assets/styles.css` — there
 was nothing to invent, only a surface to put under it, because the map's comes
 from `.controls` and this page has no `.controls`.
 
 **The codes ride in with the words.** The route already sends the one language
-block this page prints from; it sends `langs` beside it now — every language
-`data/ui.json` speaks, sorted by code the way the map sorts its own menu, each
-with its `langName`. Ten short pairs, a couple of hundred bytes against the
-eight to ten KB already in the answer, and the page draws the menu out of the
-same one request it draws the cards from. A file that could not be read is an
-empty list and no switch at all, which is right: a page that cannot name the
-languages should not offer them.
+block this page prints from; it sends `langs` beside it now — sorted by code
+the way the map sorts its own menu, each with its `langName`. Three short
+pairs, well under a hundred bytes against the eight to ten KB already in the
+answer, and the page draws the menu out of the same one request it draws the
+cards from. A file that could not be read is an empty list and no switch at
+all, which is right: a page that cannot name the languages should not offer
+them.
+
+#### Three languages, not ten
+
+This is the one page on the site that speaks fewer languages than the site
+does. The map, the lists, the directory and the blog are all in ten; the
+flashcards are in **English, Azerbaijani and Russian**, which is the three
+`data/decks.json` writes the back of a card in.
+
+The reason is what a flashcard is, and it is the argument
+**[The back of the card is in three languages](#the-back-of-the-card-is-in-three-languages)**
+makes about the card, carried out to the page around it. A blog post in
+English is a paragraph somebody skips. The back of a flashcard *is* the
+lesson — so a Finnish switch, a Finnish door and a Finnish count wrapped
+around eight hundred and thirty-four English answers is the page promising
+something the cards cannot deliver, and it was the Finnish reader who found
+that out one card in. Better to say three and mean them: `?lang=fi` here is
+English throughout, and Finnish everywhere else on the site.
+
+`DECK_LANGS` in `functions/api/_lib.js` is the list, and it is one list rather
+than two on purpose: `functions/flashcard.js` writes the head and the words a
+crawler reads, `functions/api/flashcard.js` answers the page's one request,
+and a second copy is how the card a link unfurls as comes to be in a language
+the page behind it is not. Both the language this is read in and the `langs`
+the switch is drawn from are narrowed by it, because a page that offered three
+and then honoured a fourth in `?lang=` would be reading in a language it does
+not admit to having.
+
+Adding a fourth is therefore two steps and no code: write that language into
+every card's `back`, every deck's `name` and `why` in `data/decks.json`, and
+add its code to `DECK_LANGS`. `data/ui.json` already speaks all ten, so the
+words around the cards are waiting.
 
 **Picking one does not reload the page.** That is the whole reason this is
 thirty lines rather than one. A reload would throw away the run, which signed
@@ -6532,10 +6565,12 @@ list of keys in the route would be a second copy of what the page asks for, and
 the validator, which checks every `t('key')` against `ui.json`, could not see
 the two drift.
 
-The ten codes come with it — `langs`, each with that language's own name for
+The three codes come with it — `langs`, each with that language's own name for
 itself — because the page has a switch on it now and the switch has to be able
-to name them. A couple of hundred bytes, and still one request before a card
-can be drawn. **A language of your own to learn it in** above is the switch.
+to name them. Well under a hundred bytes, and still one request before a card
+can be drawn. **A language of your own to learn it in** above is the switch,
+and **Three languages, not ten** under it is why there are three of them and
+not ten.
 
 And when the site does not answer at all, the page draws nothing: it has no
 words to say so in, and what it would print instead are its keys. What is
