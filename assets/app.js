@@ -3915,8 +3915,8 @@
 
   var HINT_MS = 4200;
   /* Top to bottom, which is the order they open in. */
-  var HINT_KEYS = ['account', 'lists', 'random', 'ask', 'radio', 'style',
-                   'locate', 'explain', 'feedback'];
+  var HINT_KEYS = ['account', 'lists', 'flash', 'random', 'ask', 'radio',
+                   'style', 'locate', 'explain', 'feedback'];
   var hintTimers = {};
 
   /* Before any of them, the sentence. On a desktop it is printed in the card
@@ -3928,20 +3928,21 @@
      an unhurried pace, and clears. Longer than a rail label because it is a
      sentence rather than two words, and it opens ahead of them so the claim
      lands before the buttons start introducing themselves under it. */
-  var BRAND_MS = 7600;
+  var BRAND_MS = 7900;
   var BRAND_IN = 260;
   /* The rail follows it rather than racing it. By the time the first pill
      opens the sentence has been up for the best part of a second, and the
      last one collapses just before the sentence does, so the corner empties
-     in the order it filled. Nine pills, 300ms apart and held for 4.2s each,
-     put that last collapse at 7.75s against the sentence's 7.86s.
+     in the order it filled. Ten pills, 300ms apart and held for 4.2s each,
+     put that last collapse at 8.05s against the sentence's 8.16s.
 
-     THE ROOM THAT WAS HERE HAS BEEN SPENT. This said there was space for one
-     more button at these numbers and not a second; the feedback door is that
-     button. A tenth would collapse at 8.05s, which is the rail still talking
-     over a sentence that has gone — so a tenth pill means moving one of these
-     numbers rather than just adding markup, and the thing to move is
-     BRAND_MS, since the sentence is what the rail is being measured
+     THE ROOM THAT WAS HERE HAS BEEN SPENT, AGAIN. The paragraph this used to
+     say — nine pills, BRAND_MS at 7600 — is what the flashcards door spent
+     when it joined the rail: a tenth pill at the old numbers collapsed at
+     8.05s, over a sentence that had gone at 7.86s, so BRAND_MS moved to keep
+     the same margin rather than the markup going in silently ahead of it.
+     An eleventh pill costs the same move again, and the thing to move is
+     still BRAND_MS, since the sentence is what the rail is being measured
      against. */
   var RAIL_IN = 1150;
   var brandInTimer = null;
@@ -3986,6 +3987,7 @@
   function hintPill(key) {
     if (key === 'account') return dom.btnAccount;
     if (key === 'lists') return dom.btnLists;
+    if (key === 'flash') return dom.btnFlash;
     if (key === 'ask') return dom.btnAsk;
     if (key === 'radio') return dom.btnRadio;
     if (key === 'style') return dom.styles && dom.styles.querySelector('.rail-btn');
@@ -8981,6 +8983,7 @@
       panelShare: $('panel-share'),
       btnAccount: $('btn-account'),
       btnLists: $('btn-lists'),
+      btnFlash: $('btn-flash'),
       nudge: $('nudge'),
       nudgeSay: $('nudge-say'),
       nudgeGo: $('nudge-go'),

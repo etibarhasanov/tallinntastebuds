@@ -160,6 +160,51 @@
     <span class="rail-glyph" aria-hidden="true">📋</span>
     <span class="rail-label" data-i18n="listsAllTitle">Everybody’s lists</span>
   </a>
+  <!-- The other thing on this site that is not about tonight's dinner: a
+       door onto flashcard.tallinntastebuds.ee, which used to have exactly
+       one door anywhere — a row on /account.html, behind a sign-in. That
+       was deliberate once — see "How it is found, which is one row" under
+       Flashcards in README.md — but it meant a stranger on the map never
+       learnt the decks existed at all, which is a stronger silence than the
+       feature meant to keep. This is the map's own chrome pointing at it,
+       for the first time.
+
+       Same door, same words: flashDoor and flashDoorWhy are the account
+       row's own strings, already in all ten languages, so nothing new goes
+       into ui.json for the label. The analytics name is its own, though —
+       flash_open_rail rather than flash_open_account — because the question
+       this pill exists to answer is whether the rail door gets pressed at
+       all, and one name for both would erase that.
+
+       An <a> and not a button, for the reason the lists door above is one:
+       /flashcard is an address somebody can open in a tab or send. It
+       carries no ?d=, so it lands on the list of decks rather than
+       presuming which one somebody came for, and it points at the path
+       rather than the subdomain, which is what lets the language and the
+       station follow along — see "It is the same account as the map" and
+       "And a radio while you learn it" under Flashcards.
+
+       Never hidden, unlike the account and lists doors above it: those wait
+       on /api/account because a list or an account with no database behind
+       it is a door onto nothing, and this page works with no database bound
+       at all — functions/flashcard.js draws the shipped decks straight out
+       of data/decks.json.
+
+       Two overlapping cards, not the clipboard the lists door wears or an
+       emoji: there is no glyph on this map for "a deck of Estonian" the way
+       📋 already meant "a pin" before it meant "the lists", so this one is
+       drawn in the rail's own line style instead, like every icon above and
+       below it. -->
+  <a class="rail-btn" id="btn-flash" href="/flashcard" data-track="flash_open_rail"
+     data-i18n-title="flashDoorWhy" data-i18n-aria-label="flashDoor"
+     title="Decks of the words, and the ones you collect yourself."
+     aria-label="Estonian flashcards">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="3.5" y="6.5" width="13" height="11" rx="2"/>
+      <path d="M8 3.6l11.5 3-3 11"/>
+    </svg>
+    <span class="rail-label" data-i18n="flashDoor">Estonian flashcards</span>
+  </a>
   <!-- Then what the rail does, before what the rail looks like. Surprise me
        and the radio are the two buttons here that *do* something to the
        evening; the colour swatch and "where am I" are settings, and settings
@@ -606,6 +651,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=4429f5e0" defer></script>
+<script src="assets/app.js?v=5b6a9d35" defer></script>
 </body>
 </html>

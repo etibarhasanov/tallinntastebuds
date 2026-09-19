@@ -6316,18 +6316,29 @@ was sent in. The other way round is three entries in `tools/sitemap.mjs`, an
 `hreflang` set and three pages for a page nothing links to — the bargain the
 map struck for a reason this page has not got.
 
-### How it is found, which is one row
+### How it is found, which is two doors now
 
-**Nothing in the map's chrome points here.** No pill on the rail, no row in the
-map's sheet, nothing in a footer. The only link to the flashcards anywhere on
-this site is **one row on `/account.html`**, behind a sign-in, on the card that
-carries somebody's own name — beside their public profile, because the decks
-you write are one of your own things and that page is where those live.
+**The map's own chrome points here, since the door count went from one to
+two.** A pill on the rail — `#btn-flash` in `index.html`, third down, under
+Everybody's lists — links to `/flashcard` in plain markup, no script needed
+to find it. The other door is older and stays: **one row on
+`/account.html`**, behind a sign-in, on the card that carries somebody's own
+name, beside their public profile, because the decks you write are one of
+your own things and that page is where those live. Both wear the same words
+— `flashDoor` and `flashDoorWhy`, already in all ten languages — so a deck of
+Estonian reads the same wherever the door was pressed; they report apart,
+`flash_open_rail` against `flash_open_account`, which is the one place they
+differ, because the question the rail door exists to answer is whether it
+gets pressed at all.
 
-That is the whole of the discovery route inside the site, and it is deliberate:
-the map's own chrome is for finding dinner, and a deck of Estonian is something
-you go to rather than something that should interrupt somebody looking for
-lunch.
+This reverses "no pill on the rail" as a decision rather than dropping it by
+accident: a stranger on the map used to have no way to learn the decks
+existed short of signing in first, and that is a stronger silence than
+"the map's own chrome is for finding dinner" was arguing for. The map's own
+chrome is still for finding dinner — nothing else about it changed, no row
+in the sheet, nothing in a footer — but a deck of Estonian is something you
+go to, and now there is a way to go to it from the thing everybody opens
+first.
 
 **Unlinked is not the same as hidden**, and this is the one place the feature
 changed its mind after it was built. It shipped `noindex` for a day, on the
@@ -6345,12 +6356,15 @@ and half the links pointing at the other. That is the same split `/lists.html`
 and `/lists` have been under since the directory was written.
 
 So the arrangement is **the blog's** — see **[The blog](#the-blog)** — rather
-than the split page's: unlinked and indexed. `robots.txt` deliberately does not
-disallow `/flashcard`, `sitemap.xml` carries one address for the decks page and
-one per deck, and `functions/flashcard.js` writes each deck into the `<main>`
-the page ships empty, so a crawler that runs no script still gets the Estonian.
-Nothing links in, `sitemap.xml` is very nearly the only way a crawler arrives,
-and that is the same position `/blog` has been in since it was written.
+than the split page's: unlinked-to-a-deck and indexed. `robots.txt`
+deliberately does not disallow `/flashcard`, `sitemap.xml` carries one address
+for the decks page and one per deck, and `functions/flashcard.js` writes each
+deck into the `<main>` the page ships empty, so a crawler that runs no script
+still gets the Estonian. The rail pill is a real link to `/flashcard` now, so
+that page is found the way any page with a link on the homepage is; what
+`sitemap.xml` is still very nearly the only way in for is **a deck**, since
+the rail and the account row both stop at the list of decks rather than
+naming one.
 
 **One address per deck, and the subdomain is not it.** The page answers at
 `/flashcard` on the live domain, at the root of the subdomain, and at
@@ -10474,6 +10488,7 @@ The map, `assets/app.js`:
 | `list_share` | `list_id`, `method` (`sheet`/`copy`) |
 | `list_page`, `profile_open` | `list_id` / `name` — the List half of the switch on the band, and the byline under it |
 | `lists_all` | — the pill on the rail, which is this page's door to the directory; the same name the other two doors report |
+| `flash_open_rail` | — the flashcards door on the rail; apart from `flash_open_account` on purpose, so the two report which one gets pressed |
 | `ask_open` | — |
 | `ask` | `search_term` |
 | `ask_answer`, `ask_none`, `ask_resting` | `search_term`, and on the first two `source`, `places_shown`, `from_google` — what came back; see **Ask for somewhere** |

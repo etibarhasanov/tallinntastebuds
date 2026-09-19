@@ -837,15 +837,15 @@
       aboutBox(),
       el('ul', { className: 'menu' }, [
         door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user), 'profile_open', { name: state.user }),
-        /* The flashcards, and this row is the only link to them anywhere on
-           this site. That is the whole of how they are found: no pill on the
-           rail, no row in the map's sheet, nothing in the footer — the map's
-           own chrome is for finding dinner, and a deck of Estonian is
-           something you go to rather than something that should interrupt
-           you. Here because this is the page of your own things, and the
-           decks you write are one of them. See **Flashcards** in README.md,
-           which says why unlinked is not the same as hidden: the ten the site
-           ships are in sitemap.xml and indexed. */
+        /* The flashcards, and this row used to be the only link to them
+           anywhere on this site; a rail pill on the map (#btn-flash in
+           index.html) is the other one now, for a stranger who has not
+           signed in. This row stays because this is the page of your own
+           things, and the decks you write are one of them — same words,
+           same address, a different data-track name so the two report
+           apart. See **Flashcards** in README.md, which says why unlinked is
+           not the same as hidden: the thirty-four the site ships are in
+           sitemap.xml and indexed. */
         door('flashDoor', 'flashDoorWhy', '/flashcard', 'flash_open_account')
       ]),
       foot([
