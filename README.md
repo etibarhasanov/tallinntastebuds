@@ -6528,6 +6528,45 @@ The menu shuts on Escape, with the focus handed back to the button it dropped
 from, and on a press anywhere outside it — the map's own two rules, and the
 only listeners this page puts on the document.
 
+### Opening a deck does not load the page
+
+Both of this page's addresses — the decks, and `?d=<id>` — draw out of the same
+`<main>`. The decks, a deck being turned over, the editor, the end of a run and
+the gate are five things `render()` decides between rather than five pages, and
+for a long time the only reason opening a deck was a page load at all was that
+`asked` was read off the address once, on the way in.
+
+It cost the radio. A document that goes takes its `<audio>` with it, and the
+button on this page is pressed by somebody settling in to learn Estonian for
+twenty minutes: open a deck, back to the decks, open the next one. The music
+stopped on every one of those, and the tap that would have started it again —
+see **The radio** — was itself the next navigation, so six decks in the radio
+had spent the whole sitting reconnecting, or been refused outright and left
+waiting behind a button that said it was on.
+
+So the two addresses are taken in the page, which is what `assets/blog.js`
+already does between its index and a post, for the same reason. `go()` asks
+`/api/flashcard` for the decks or for one deck, puts the answer exactly where
+the first load puts it, and pushes the address the link was carrying; the back
+button arrives as `popstate` and takes the same road without pushing anything.
+
+The links keep their real `href`s, so a middle click and **Open in new tab**
+still open a deck in a new tab, and the page a crawler or a chat window is
+served is untouched — `functions/flashcard.js` writes the deck into the markup
+and that is always a fresh load. The four things a page load used to do for
+free are done by hand and are worth naming, because each of them was a bug
+first: the tab's title goes back to the page's own name when a deck is closed;
+the scroll goes to the top of a deck and back to where the decks were left,
+since thirty-four of them is several screens on a phone; the focus lands on the
+card in hand or on `<main>` under it; and the page view is reported through
+`TTBTrack.view()`, because the tag counted every one of those documents and now
+counts only the first.
+
+What does **not** change is the gate. One word signed out is one word, and the
+tab's own store is read back on every one of these walks exactly as it was read
+on every reload — see **Signed out, one word of a deck**. Walking out of a deck
+and into another one was never a way past it and is not one now.
+
 ### And a radio while you learn it
 
 The map's button, in the same header, to the left of the language: a station
@@ -6535,20 +6574,23 @@ plays while the cards are turned over. It is the control the map, the lists,
 the account page, the blog and the feedback page all wear, mounted on this page
 the way they mount it, and **The radio** is the whole of how it works.
 
-Two things are this page's own. The station follows the switch beside it — pick
-Russian half way through a deck and Наше Радио comes on under it, the way it
-does on the map, rather than the page changing language behind a button still
-naming the last station. And the button waits for the words: what it says is
+Three things are this page's own. The station follows the switch beside it —
+pick Russian half way through a deck and Наше Радио comes on under it, the way
+it does on the map, rather than the page changing language behind a button still
+naming the last station. The button waits for the words: what it says is
 `radioPlay` or `radioStop`, and those arrive in the same answer as the cards,
 so mounting it any earlier would hand a screen reader a key instead of a
 sentence. A load the route cannot answer at all leaves it hidden along with
-everything else here.
+everything else here. And it plays across a whole sitting rather than across one
+deck, which is **Opening a deck does not load the page** above and is the one
+place on this site where the radio has no seam in it at all.
 
 What it does not do is arrive playing. The radio walks from the map to a list
 because both are one origin, and on flashcard.tallinntastebuds.ee it is not —
 the same line that empties `ttb.lang` and gives this page a language switch at
 all. At `/flashcard` on the map's own hostname it carries across as it does
-everywhere else.
+everywhere else. So there is one press to make here, at the start, and after
+that the decks go by underneath it.
 
 ### It is the same account as the map
 
@@ -6695,15 +6737,25 @@ nobody should rediscover it from scratch.
 
 **And making one keeps the run that argued for it.** That took a mechanism
 rather than good intentions: the card says "Remember where you got to", and
-both ways of taking it up leave the page — the password form reloads, Continue
-with Google goes to Google and comes back — so the twenty cards that were the
-whole of the evidence had gone by the time somebody acted on them. Signing in
-at the end of a deck put you back at the start of it, which is the opposite of
-what the sentence you pressed had said.
+the way of taking it up used to leave the page — the password form reloaded,
+Continue with Google goes to Google and comes back — so the twenty cards that
+were the whole of the evidence had gone by the time somebody acted on them.
+Signing in at the end of a deck put you back at the start of it, which is the
+opposite of what the sentence you pressed had said.
+
+The password form no longer reloads: it asks the route the same question the
+way in asks and becomes the answer, which is **Opening a deck does not load
+the page** again, and takes the radio with it — on a phone that reload was the
+deck-switching bug wearing a different hat, and somebody who signed in at the
+gate spent the rest of the sitting in silence behind a button that said the
+radio was on. The Google trip still leaves the origin, because that is what
+signing in with Google is, and it is the reason the mechanism below is storage
+rather than anything held in the page.
 
 So an answer given with nobody to tell is written into the tab's own storage as
-it is given, and the first load that arrives with a session posts the lot and
-clears it. `sessionStorage` rather than `localStorage`, because the run is the
+it is given, and the first answer from the route that arrives with a session
+posts the lot and clears it — the load on the way back from Google, or the one
+the password form asks for itself. `sessionStorage` rather than `localStorage`, because the run is the
 tab's — closing the tab on a deck rather than signing in is an answer too — and
 keyed by card, so a word got wrong and then right in one run arrives as the
 answer it ended on rather than as two writes racing. Past two hundred cards it
@@ -6716,12 +6768,14 @@ account, so signed out it was a drawer nothing was ever taken out of. The run
 was rebuilt from what the route answered, and the route knows nothing about
 somebody who has no account, so every card came back due: turn ten of them,
 reload, and there were fifteen again with the ten sitting in storage. A reload
-is not the rare event that makes that sound survivable, either — every deck is
-an `<a href>` and *All the decks* is another, so walking out of a deck and back
-into it was enough to lose the lot, and what a visitor saw was a page that
-plainly was not keeping anything. It reads the store on the way in now,
-the same line that posts it when there is a session, so the answers stand for
-as long as the tab does.
+is not the rare event that makes that sound survivable, either — every deck was
+an `<a href>` the browser followed and *All the decks* was another, so walking
+out of a deck and back into it was enough to lose the lot, and what a visitor
+saw was a page that plainly was not keeping anything. It reads the store on the
+way in now, the same line that posts it when there is a session, so the answers
+stand for as long as the tab does — and those two walks no longer load the page
+at all, which is **Opening a deck does not load the page** above, and which
+makes the reading back a rule about reloads rather than about every press.
 
 **Closing the tab is still the end of it**, and that is the decision rather
 than the next bug. `localStorage` would make a run survive a browser restart
@@ -9906,6 +9960,19 @@ see **A language of your own to learn it in** under **Flashcards**. Nothing is
 done about it, because a subdomain is a different site to a browser and the
 alternative is a page asking the map what it was playing.
 
+**And once that press is made, that page has no seam at all.** It is the one
+place on the site where the paragraph above does not apply, because opening a
+deck and coming back out of it stopped being a page load: both of its addresses
+draw out of the same `<main>`, and the script pushes the address rather than
+following the link — see **Opening a deck does not load the page** under
+**Flashcards**. That matters more there than anywhere else, because a sitting
+with the flashcards is a dozen of those walks in twenty minutes, each of them
+the reconnect this section spends its length trying to shorten, and the tap
+that would have answered a refusal was itself the next walk. The blog does the
+same between its index and a post, and for the same reason. The map and the
+lists do not and will not: a page is a document, and those two are genuinely
+different documents.
+
 The three pass pages do not carry it. `deal.html`, `verify.html` and
 `staff.html` are scanned at a table rather than browsed, and a discount that
 started playing music would be a surprise nobody asked for. The radio goes
@@ -10643,6 +10710,7 @@ Flashcards, `assets/flashcard.js`:
 | event | parameters |
 | --- | --- |
 | `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
+| `page_view` | one per deck opened or closed in the page: `page_title` is the deck, `page_location` its `?d=` URL. The tag counts the load and `TTBTrack.view()` counts the walks, because opening a deck stopped being a load — see **Opening a deck does not load the page** |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`) — one per card answered, which of the three ways it was answered, and whether the card had been turned over first: `front` is a throw or an arrow on a card nobody opened |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |

@@ -145,6 +145,30 @@
  * there is no share link here and holding an id buys nothing, which is the
  * one place this feature deliberately differs from lists and from splitwise.
  *
+ * AND THE ADDRESS CHANGES WITHOUT THE DOCUMENT CHANGING
+ *
+ * Both of those addresses draw out of the same <main> — the decks, a deck, the
+ * editor, the end of a run and the gate are five things render() decides
+ * between, not five pages — so for a long time the only reason opening a deck
+ * was a page load was that `asked` was read off the address once, at boot.
+ * It cost the radio. A document that goes takes its <audio> with it, and the
+ * one on this page is pressed by somebody settling in to learn Estonian for
+ * twenty minutes: open a deck, back to the decks, open the next one, and the
+ * music stopped on every one of those, since the tap that would have started
+ * it again was itself the next navigation. Six decks in, the radio had spent
+ * the sitting reconnecting, or been refused outright and waited behind a
+ * button that said it was on.
+ *
+ * So the two addresses are taken in the page, which is what assets/blog.js
+ * does between its index and a post, for the same reason and in the same
+ * words. go() asks the route for the decks, or for one deck, puts the answer
+ * where boot() puts it and pushes the address the link carried; the browser's
+ * back button comes through popstate and takes the same road. The links keep their real hrefs, so a middle click
+ * still opens a deck in a new tab and the page a search engine is served is
+ * unchanged — see functions/flashcard.js, which writes the deck into the
+ * markup. What is gained is that the <audio> element never goes, so the radio
+ * plays across a whole sitting rather than across one deck.
+ *
  * WHAT IT READS, WHICH IS ONE THING
  *
  *   /api/flashcard             the decks, how far you have got in each, and
@@ -199,7 +223,9 @@
     view: 'in'       // which half of the sign-in form: 'in', 'up' or 'google'
   };
 
-  /* Which deck the address is asking for, read once. */
+  /* Which deck the address is asking for. Read off the address on the way in
+     and written by go() after that, because the address moves under this page
+     now rather than taking the page with it. */
   var asked = new URLSearchParams(window.location.search).get('d') || '';
 
   /* And what /api/google says came of a round trip, read the same way. The
@@ -234,6 +260,183 @@
 
   function deckHref(id) {
     return at(HOME + '?d=' + encodeURIComponent(id));
+  }
+
+  /* ------------------------------------------------- the two addresses, here
+   * Opening a deck and coming back out of it, without the document going with
+   * them. The head of this file says what that is for; this is the whole of
+   * how it works, and it is go(), settle() and the links go() is reached from.
+   * Nothing else on this page navigates any more — the one thing that still
+   * did was the password form, and authForm() says what that cost.
+   */
+
+  /* Which trip is the current one. A deck row is a link and a link is easy to
+     press twice, and the back button can arrive while an answer is still in
+     the air; the last address asked for is the one that wins, and an answer
+     that is no longer about it is dropped where it lands. A lock would have
+     been the other way round — it would have dropped the back button and left
+     the address saying one thing and the page showing another. */
+  var trip = 0;
+
+  /* How far down the decks were scrolled when one of them was opened. Thirty-
+     four decks is several screens on a phone, and the way back to them used to
+     be a page load, where the browser put somebody back where they had been.
+     A deck is one screen and gets no such treatment: opening one always starts
+     at the top of it. */
+  var deckScroll = 0;
+
+  /* Ask the route for an address and become it. The same request boot() makes
+     and the same handling afterwards — settle() is that handling, shared — so
+     a deck opened from a link is a deck opened the way a deck is opened.
+
+     `push` is false for the back button, which has already moved the address,
+     and true for every press that means to. The scroll and the focus are what
+     a document navigation would have done and no longer does: the top of the
+     page, and the card in hand or <main> under it. */
+  function go(id, push) {
+    var mine = ++trip;
+    if (!asked) deckScroll = window.pageYOffset || 0;
+
+    /* The scroll the browser would put back on the back button is put back
+       before the answer has landed, over a page that is still the deck, so it
+       is turned off rather than raced with — and turned off here rather than
+       as this file loads, so that a plain reload of the decks still lands
+       where it was left. Nothing can go back until go() has pushed, so the
+       first press is early enough. */
+    try { window.history.scrollRestoration = 'manual'; } catch (e) { /* old browser */ }
+
+    var query = new URLSearchParams();
+    query.set('lang', state.lang);
+    if (id) query.set('deck', id);
+
+    ask(FLASH_API + '?' + query.toString()).then(function (answer) {
+      if (mine !== trip) return;
+
+      /* The site did not answer. The page stays where it is and says so in
+         the language it is already reading in — which is the one thing a
+         page load could not have done here: it would have left somebody on
+         the browser's own error page, out of the deck and out of the tab's
+         run with it. */
+      if (answer.status === 0) { toast(t('flashErrGeneric')); return; }
+
+      asked = id;
+      if (push) {
+        try {
+          window.history.pushState(null, '', id ? deckHref(id) : at(HOME));
+        } catch (e) { /* an old browser keeps the address; the page is right */ }
+      }
+
+      settle(answer.out);
+      render();
+      /* The focus first and the scroll after it: focusing an element scrolls
+         it into view, and <main> is the whole page, so the other order threw
+         the decks back to the top the moment they had been put back. */
+      focusRun();
+      window.scrollTo(0, id ? 0 : deckScroll);
+
+      /* And the page view, which the tag used to count for us: every deck was
+         a document and the tag counted every one. Nothing loads now, so it is
+         reported the way assets/blog.js reports a walk between the index and
+         a post, and titled the same way — render() has just put the deck's
+         name in the tab. What stays as the server wrote it is the canonical
+         and the og: tags, because the address a crawler or a chat window is
+         served is always a fresh load of it, never this walk. */
+      TTBTrack.view(document.title);
+    });
+  }
+
+  /* An answer from /api/flashcard, become the page. Everything here happens on
+     the way in as well, which is why it is a function: boot() calls it with
+     the first answer once it has set the language and the words up, and go()
+     calls it with every answer after that.
+
+     Everything a deck was holding is dropped first. A run, a card open in the
+     editor and a gate all belong to the deck that was open, and carrying any
+     of them into the next one is how a page that never reloads goes wrong. */
+  function settle(out) {
+    state.ready = !!out.ready;
+    state.google = !!out.google;
+    state.user = out.user || null;
+    state.decks = out.decks || [];
+    state.deck = out.deck || null;
+    state.run = null;
+    state.gated = false;
+    state.editing = false;
+    state.editingCard = null;
+
+    /* And whatever this tab answered before there was an account to put it
+       on — see keep() above.
+     *
+       Signed in, the writes go out now, and the answer they belong to was
+       fetched before them, so the deck in hand is told as well. Without that
+       second half, signing in at the end of a run would build a run of the
+       whole deck again out of an answer that predates the very writes this
+       load just sent, which is the thing being fixed wearing a different hat.
+     *
+       Signed out there is nowhere to send them and this tab is the whole of
+       the record, so they are read rather than sent — and the same second
+       half applies, for a longer-standing version of the same bug. Every
+       answer was already being written down here and none of it was ever
+       read back: the run rebuilt itself from the server's answer, which knows
+       nothing about somebody with no account, so a reload started the deck at
+       the top with fifteen answers sitting in storage. Now it does not, and
+       walking out of a deck and into it again keeps them too. */
+    var sent = (state.user && state.ready) ? sendKept() : kept();
+
+    if (state.deck) {
+      state.deck.cards.forEach(function (c) {
+        var was = sent[from(c) + '/' + c.id];
+        if (!was) return;
+        c.known = was.knew;
+        c.due = !was.knew;
+      });
+      startRun(false);
+    }
+
+    /* A deck of your own with nothing in it yet opens as the editor rather
+       than as a deck. There is nothing to turn over, and anything else would
+       be an empty card with a word on it telling somebody to go and find the
+       way to fill it. */
+    if (state.deck && state.deck.own && !state.deck.cards.length) state.editing = true;
+
+    /* And whether the gate is already up. Two cases, and mark() has the
+       ordinary third.
+     *
+       The tab has answered a word signed out already — `sent` is what it is
+       holding, read above rather than posted — so the free word is spent, on
+       this deck and on every other. Without this line the reload button, or
+       the way back to the decks and in again, would be the way past the gate:
+       the run rebuilds from the route's answer, which has no idea who this is,
+       and the next card would be handed over for nothing. One word is one
+       word, not one a deck opened.
+     *
+       And Google has come back wanting a name. That round trip returns to the
+       address it left from, so it lands on the deck, and the form that asks a
+       new Google account for a name lives on this card and nowhere else here.
+       Without this the page would draw a card and the name would never be
+       asked for, which is a dead end rather than a gate.
+     *
+       Both only where an account would work: with the database off there is
+       nothing behind the form but a 503, nothing to sign in to, and nothing
+       being kept from anybody — so the deck runs as it always did, which is
+       the same rule authCard() is drawn under. */
+    if (state.deck && !state.user && state.ready &&
+        (state.view === 'google' || Object.keys(sent).length)) standGate();
+  }
+
+  /* A link to one of this page's two addresses, answered here rather than by
+     the browser. The href stays exactly what it was, so a middle click, a
+     ⌘-click and Open in new tab all still do what they say, and so does the
+     page with no script behind it; what is taken is the plain left click,
+     which is the one that would otherwise have taken the radio with it. */
+  function inPage(node, id) {
+    node.addEventListener('click', function (ev) {
+      if (ev.defaultPrevented || ev.button || ev.metaKey ||
+          ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      ev.preventDefault();
+      go(id, true);
+    });
+    return node;
   }
 
   /* --------------------------------------------------------------- helpers */
@@ -848,11 +1051,29 @@
         }
         TTBTrack.event(naming || creating ? 'account_create' : 'account_login',
                        { via: naming ? 'google' : 'flashcard' });
-        /* Straight back through boot() rather than patching state: signing in
+        /* Straight back to the route rather than patching state: signing in
            changes every answer on this page, including how much of the deck on
-           screen this browser is allowed to remember. */
-        if (naming) window.location.href = hereWithoutGoogle();
-        else window.location.reload();
+           screen this browser is allowed to remember. go() asks it the same
+           question the way in asks, so this is the whole answer again and not
+           a patch — and the tab's kept answers go out with it, which is what
+           this card was offered for.
+
+           It used to be a reload, and on a phone that was the deck-switching
+           bug wearing a different hat: the document went, the radio went with
+           it, and Safari refused the rejoin, so somebody who signed in at the
+           gate spent the rest of the sitting in silence behind a button that
+           said the radio was on. Nothing loads now.
+
+           The address drops ?google= on the way — a stale word from the last
+           trip carried into the next one would report something that did not
+           just happen — and keeps the deck, so this lands back on the card
+           the gate went up in front of. */
+        if (naming) {
+          try {
+            window.history.replaceState(null, '', hereWithoutGoogle());
+          } catch (e) { /* an old browser keeps the parameter, which is harmless */ }
+        }
+        go(asked, false);
       });
     }, form));
 
@@ -956,7 +1177,7 @@
 
     return el('li', { className: 'menu-item' }, [
       TTBTrack.click(
-        el('a', { className: 'menu-row', href: deckHref(deck.id) }, [
+        inPage(el('a', { className: 'menu-row', href: deckHref(deck.id) }, [
           el('span', { className: 'menu-say' }, [
             el('span', { className: 'menu-name', textContent: deckName(deck) }),
             /* What the deck is, in the body face, because it is a sentence of
@@ -973,7 +1194,7 @@
           why ? el('span', { className: 'lists-count mono', textContent: said }) : null,
           el('span', { className: 'menu-go', 'aria-hidden': 'true',
                        html: '<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>' })
-        ]),
+        ]), deck.id),
         'flash_open', { deck_id: deck.id, own: deck.own ? 1 : 0 }
       )
     ]);
@@ -1118,7 +1339,7 @@
         /* Straight into it, and into the half that writes rather than the half
            that turns cards over: a deck with nothing in it has nothing to turn
            and the next thing anybody wants is the first word. */
-        window.location.href = deckHref(a.out.deck.id);
+        go(a.out.deck.id, true);
       });
     }, form));
     return form;
@@ -1705,7 +1926,7 @@
 
   function backOut() {
     return TTBTrack.click(
-      el('a', { className: 'alt', href: at(HOME), textContent: t('flashDecks') }),
+      inPage(el('a', { className: 'alt', href: at(HOME), textContent: t('flashDecks') }), ''),
       'flash_back', { deck_id: state.deck.id }
     );
   }
@@ -1770,7 +1991,7 @@
              is the deck itself going: there is nothing left here to go
              through again, and the decks page is where it was. Every other
              deck is a file or a table and stays where it is. */
-          if (state.deck.missed) { window.location.href = at(HOME); return; }
+          if (state.deck.missed) { go('', true); return; }
           state.deck.cards.forEach(function (c) { c.known = false; });
           startRun(true);
           render();
@@ -1938,7 +2159,7 @@
       post(FLASH_API, { action: 'drop', deck: state.deck.id }).then(function (a) {
         if (!a.ok) { drop.disabled = false; toast(say(a.out)); return; }
         TTBTrack.event('flash_drop', { deck_id: state.deck.id });
-        window.location.href = at(HOME);
+        go('', true);
       });
     });
 
@@ -1960,7 +2181,7 @@
          reaches render() at all — see boot() — so this card cannot tell
          somebody their deck has gone when it was the network that dropped. */
       el('p', { className: 'lists-say', textContent: t('flashErrGone') }),
-      foot([el('a', { className: 'alt', href: at(HOME), textContent: t('flashDecks') })])
+      foot([inPage(el('a', { className: 'alt', href: at(HOME), textContent: t('flashDecks') }), '')])
     ]);
   }
 
@@ -1972,8 +2193,11 @@
     clear(main);
 
     /* The tab is part of what a link is: somebody with six tabs open should be
-       able to tell which one is the Estonian. */
+       able to tell which one is the Estonian. And back to the page's own name
+       when the deck is closed, because closing one is no longer a page load
+       and nothing else would ever put it back. */
     if (state.deck) document.title = deckName(state.deck);
+    else document.title = t('flashDocumentTitle');
 
     var wrap = el('div', { className: 'lists-stack' });
     var add = function (node) { if (node) wrap.appendChild(node); };
@@ -2091,78 +2315,28 @@
       mountRadio();
       document.title = t('flashDocumentTitle');
 
-      state.ready = !!answer.out.ready;
-      state.google = !!answer.out.google;
-      state.user = answer.out.user || null;
-      state.decks = answer.out.decks || [];
-      state.deck = answer.out.deck || null;
-
-      /* And whatever this tab answered before there was an account to put it
-         on — see keep() above.
-       *
-         Signed in, the writes go out now, and the answer they belong to was
-         fetched before them, so the deck in hand is told as well. Without that
-         second half, signing in at the end of a run would build a run of the
-         whole deck again out of an answer that predates the very writes this
-         load just sent, which is the thing being fixed wearing a different hat.
-       *
-         Signed out there is nowhere to send them and this tab is the whole of
-         the record, so they are read rather than sent — and the same second
-         half applies, for a longer-standing version of the same bug. Every
-         answer was already being written down here and none of it was ever
-         read back: the run rebuilt itself from the server's answer, which knows
-         nothing about somebody with no account, so a reload started the deck at
-         the top with fifteen answers sitting in storage. And a reload is not a
-         rare thing on this page — every deck is an <a href> and the way back to
-         the decks is another, so walking out of a deck and into it again was
-         enough to lose the lot. Now it is not: turn ten cards, come back, and
-         the ten are behind you for as long as the tab is open. */
-      var sent = (state.user && state.ready) ? sendKept() : kept();
-
-      if (state.deck) {
-        state.deck.cards.forEach(function (c) {
-          var was = sent[from(c) + '/' + c.id];
-          if (!was) return;
-          c.known = was.knew;
-          c.due = !was.knew;
-        });
-        startRun(false);
-      }
-
-      /* A deck of your own with nothing in it yet opens as the editor rather
-         than as a deck. There is nothing to turn over, and anything else would
-         be an empty card with a word on it telling somebody to go and find the
-         way to fill it. */
-      if (state.deck && state.deck.own && !state.deck.cards.length) state.editing = true;
-
       /* A Google account with no account here yet: the form this page draws
-         for somebody signed out becomes the one that asks for a name. */
+         for somebody signed out becomes the one that asks for a name. Before
+         settle(), which reads state.view to decide whether the gate stands. */
       if (googleSaid === 'name' && !state.user) state.view = 'google';
 
-      /* And whether the gate is already up when this load draws. Two cases, and
-         mark() has the ordinary third.
-       *
-         The tab has answered a word signed out already — `sent` is what it is
-         holding, read above rather than posted — so the free word is spent, on
-         this deck and on every other. Without this line the reload button would
-         be the way past the gate: the run rebuilds from the route's answer,
-         which has no idea who this is, and the next card would be handed over
-         for nothing. One word is one word, not one a page load.
-       *
-         And Google has come back wanting a name. That round trip returns to the
-         address it left from, so it lands on the deck, and the form that asks a
-         new Google account for a name lives on this card and nowhere else here.
-         Without this the page would draw a card and the name would never be
-         asked for, which is a dead end rather than a gate.
-       *
-         Both only where an account would work: with the database off there is
-         nothing behind the form but a 503, nothing to sign in to, and nothing
-         being kept from anybody — so the deck runs as it always did, which is
-         the same rule authCard() is drawn under. */
-      if (state.deck && !state.user && state.ready &&
-          (state.view === 'google' || Object.keys(sent).length)) standGate();
+      /* The decks, the deck and the tab's own answers, put where they go. The
+         same call go() makes for every address after this one — settle() is
+         where the whole of that lives now. */
+      settle(answer.out);
+
+      /* And the back button, which is the other half of go(): the address has
+         already moved by the time this arrives, so nothing is pushed. It is
+         wired once the first answer is in, because there is nothing for it to
+         draw until the words and the language are. */
+      window.addEventListener('popstate', function () {
+        go(new URLSearchParams(window.location.search).get('d') || '', false);
+      });
 
       render();
+      /* The tag counted this address as the document loaded, deck and all, so
+         only the walks from here are go()'s to report. */
+      TTBTrack.seen();
       sayGoogle();
     });
   }
