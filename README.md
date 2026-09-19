@@ -6336,8 +6336,8 @@ thing that has always decided the interface there.
 the old argument stands: it is deliberately *not* the arrangement splitwise has,
 where the strings live in a file of their own. The `/site` skill says in so many
 words that there is one such exception and a second would be two files to keep
-in step. So the sixty-one `flash*` keys are in `ui.json`, and taking this
-feature out means taking sixty-one keys out of ten blocks rather than deleting
+in step. So the sixty-four `flash*` keys are in `ui.json`, and taking this
+feature out means taking sixty-four keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
 
@@ -6396,8 +6396,46 @@ bookmark with no account is kept in the browser: a save is about a place and
 survives being a device's, and a card you know is about you.
 
 Signed out the run is kept in the tab and nowhere else, and the account is
-offered **at the end of the deck** rather than in front of it. Nobody should be
-asked to make an account to find out whether a thing is worth one.
+asked for **in front of the first deck a tab opens**: one card, before the
+cards, saying that nothing is being kept, with the two ways to fix that and
+*Go through it without saving* underneath.
+
+**It used to be offered only at the end of a run**, and that card is still
+there — this is a second moment rather than a move. The reasoning for the one
+moment was that nobody should be asked to make an account to find out whether
+a thing is worth one. That is a good sentence and it was answering a question
+nobody was asking. What somebody wants to know before they start is not
+whether the deck is any good — it is whether the half-hour they are about to
+spend on it counts for anything, and the old arrangement told them that after
+they had spent it.
+A sentence in front costs a press. Thirty cards that nothing was keeping costs
+the half-hour, and it is the people this page is written for who have least of
+it to lose.
+
+**It is an offer and not a gate**, and three things keep it one. The way past
+is directly under the two ways in, so the deck is visibly not behind the card.
+Pressing past loses nothing — the answers are written into the tab as they are
+given and posted by the first load that arrives with a session, which is the
+mechanism below, so the card can say that what you answer before you make an
+account comes with you and be telling the truth. And it is asked **once a
+tab**: `ttb.flash.asked` in `sessionStorage`, beside the run it belongs to, so
+somebody going through three decks in a sitting is asked once and a tab opened
+tomorrow is somebody arriving again. Where that storage throws — private
+browsing, a full quota — the card is drawn each time, which is the direction to
+err in.
+
+**And it is the one surface on this site that opens on Create account rather
+than on Sign in.** Everywhere else the form is reached by somebody who went
+looking for their account. This one is put in front of somebody turning cards
+signed out, which is very nearly the definition of not having one: the only
+link to this page inside the site is a row on `/account.html`, behind a
+sign-in, so anybody who arrives here without an account arrived from a search
+engine. *Already have an account?* is one press under the button, which is the
+same press the decks page asks of somebody making one.
+
+It is drawn only where an account would work. With the database off there is
+nothing behind the form but a 503, which is the rule the card at the foot of
+the decks is drawn under too.
 
 **And making one keeps the run that argued for it.** That took a mechanism
 rather than good intentions: the card says "Remember where you got to", and
@@ -6870,7 +6908,7 @@ and each is fenced or prefixed so it can be found by looking:
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
-| `data/ui.json` | the sixty-one `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
+| `data/ui.json` | the sixty-four `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
 | `README.md` | this section, its line in **Contents**, its five lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
 | `.claude/skills/api/SKILL.md` | the `/api/flashcard` row, and the flashcards clause in the `/*` row |
@@ -9937,6 +9975,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |
+| `flash_keep_ask`, `flash_keep_past` | `deck_id` — the offer of an account standing in front of a deck signed out, and the press that goes past it. The two together are the whole of whether asking first was worth asking |
 | `flash_back`, `home` | `deck_id` on the first |
 
 The pass pages, `assets/deal.js` and `assets/verify.js` — nothing on them is
