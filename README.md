@@ -4041,14 +4041,8 @@ are.
 /list/<id>       one list — the address that gets shared
 /lists           everybody's, the most kept first, and a field to search them
 /u/<name>        who made it, and everything else they published
-/?list=<id>      the same list on the map's own page, as pins
+/?list=<id>      the same list on the map, as pins
 ```
-
-**Above 860px the first three of those are one map**, with the lists in a
-column down its right-hand side and nothing between them navigating anywhere —
-see **Everybody's lists is a map on a desk** below. On a phone they are the
-documents they have always been. The fourth address is untouched and still
-answers; it is simply not where this page sends anybody any more.
 
 There were five. `/lists.html` was the first of them — the index of your own
 lists, with the box that made a new one — and it is `/account.html` now, beside
@@ -4402,16 +4396,10 @@ keeps the measure a list of sentences reads at. The order chips share the
 sticky row with the search field, so what narrows the page and what orders it
 are in one place and both stay under the thumb while the page grows.
 
-**Every row draws the list as a shape on the city — under 860px.** A small
-panel at the top of each card carries the city as pale ground and the list's
-own places on it, so a coffee list reads as a cluster in Kalamaja and a
-Caucasus list as a scatter east before anybody has read a name. Above the
-breakpoint the same picture is the page itself, at the size a map draws it,
-and a postage stamp of it on the card would be the answer given twice with
-the smaller one first: `sky()` draws nothing there and `data/city.json` is
-not fetched at all. Everything in this subsection is about the phone — and it
-is still what the panel is for, which is why the reasoning stays here rather
-than going with the wide layout. It is the one picture only this
+**Every row draws the list as a shape on the city.** A small panel at the top
+of each card carries the city as pale ground and the list's own places on it,
+so a coffee list reads as a cluster in Kalamaja and a Caucasus list as a
+scatter east before anybody has read a name. It is the one picture only this
 site can draw of somebody's list, and the coordinates already existed. The
 list's own dots arrive with the row: the API sends up to ten `[lat, lng]`
 pairs per list (`DOTS` in `functions/api/_mostkept.js`), resolved on the
@@ -4894,131 +4882,6 @@ the way onto the map is in its row of controls, beside the other things you do
 to a list. Somebody reading a list they were sent is the journey these are
 for.
 
-### Everybody's lists is a map on a desk
-
-Above 860px `/lists`, `/u/<name>` and `/list/<id>` stop being a column of
-cards and become one map: the city under the whole window, the lists on it as
-pins, and a 360px column down the right-hand side saying which. Pressing a row
-narrows the map to that list. Pressing a place opens a card beside it. Nothing
-in any of that is a page load, and **the only press on the page that leaves it
-is the wordmark in the corner.**
-
-Under 860px none of this exists and the page is exactly what it was. That is a
-decision rather than an omission, and the next-but-one heading is why.
-
-**The three depths, and they are three addresses.**
-
-- **`/lists`** — everybody's lists. Every list on the page has its first ten
-  places on the city at once, quiet and small; pointing at a row lifts that
-  one out of the scatter and nothing moves. The picture answers the question
-  the little sky panel on each card was standing in for — where is this one —
-  at the size a map actually answers it.
-- **`/u/<name>`** — one person, which is the filter the whole layout makes
-  possible. Every list they wrote, each wearing the mark its owner chose, on
-  one map of everywhere they send people. It is the same page with the same
-  furniture; only the column's contents and the fit change.
-- **`/list/<id>`** — one list, fitted, its places numbered in the column. A
-  place on my map keeps the mouth; everything else wears the list's own mark,
-  so ten pins read as one person's ten. See **The pins**.
-
-**The way back always has a name on it.** At the top of the column, where a
-back is looked for — design rule 7 — and never a bare arrow: out of a list is
-its author's other lists, out of a person is everybody's. Google's five go
-straight to the directory, because the account behind them is a generator and
-its page says so.
-
-**Pressing a place opens a second column** to the left of the list and over
-the map, which is where the map's own panel puts a place beside its list. The
-list keeps its scroll and the row it was on, because nothing about it has
-changed; the row is marked down its inside edge and named in the accent, the
-way the map marks the row it has open. The map centres the pin in the city
-that is actually showing rather than behind the card, and does not zoom —
-opening the eighth row is a question about where it is next to the other nine,
-not about one door. `?spot=` on the map zooms for the opposite reason.
-
-Two cards, and being on my map is the only thing that decides which:
-
-- **A place off Google's export carries Google's whole half** — the score and
-  the band, the address and the number, the week with today in ink, and
-  Directions, Website and See on Google. It is the card `renderListOnly()`
-  draws in the map's panel, in the same order and out of the same fields,
-  because somebody looking at a name on a list is deciding whether to walk
-  there. No write-up, no reel and no photograph: being on the map is the
-  verdict and a list is not a way around it. A place somebody typed in by hand
-  keeps the short version — a name typed into a form is not a description.
-- **A place on my map is a door to the write-up and not a copy of it.** The
-  write-up is a blurb, a reel, a lightbox and a story clock, and all of it is
-  the map's card; a second one drawn here would be the worse copy the section
-  below warned about for as long as the lists had no map at all. So this card
-  says what it is, whose list it came off and what they said about it, and
-  hands the rest over with one press — **Read the write-up**, out to
-  `/?spot=<id>`. That is the second and last thing on this page that leaves
-  it, and it is asked for rather than sprung.
-
-**The cross gives the list back and does not move the city.** A close that
-flew the map to where it started would be undoing a journey somebody made on
-purpose. Escape does the same, and so does Back: the open place is in the
-address — `/list/<id>?at=<place>` — it earns one history entry, and the three
-gestures are one thing with three faces. That is the one difference from the
-map's own `?at=`, which is a door read once on the way in and taken straight
-back off: there what the page is showing is the list, and here the open place
-is a column somebody can point somebody else at.
-
-**A row the catalogue has no coordinates for has no pin and no card.** It
-stays in the column with its sentence, drawn muted and not dressed as a door,
-which is `seatList()`'s rule restated — a box that looks pressable with
-nothing behind it is worse than a line of muted text.
-
-**Your own list is the one wide view that is not a map.** It is an editor: the
-rows carry a grip and a number and are dragged into the order that is the
-entire point of a top ten, each has a textarea in it, and under all of it are
-the pin picker, the two visibility radios and Save. Six hundred and forty
-pixels of document is what that needs, and a column beside a map is the one
-shape it cannot have. `mapped()` in `assets/lists.js` is where that exception
-is written down, beside the breakpoint it shares with everything else.
-
-#### The phone is deliberately where it was
-
-This is a desktop layout and nothing else, and the reason is written down
-because the same feature has been built the other way round once already. A
-map of the lists went live as a phone layout — three regions, the lists along
-the foot, a strip of cards over the city — and its owner, having seen it on
-the live site, asked for the page as it was. What is here is the opposite
-arrangement for the opposite screen, and the phone keeps the cards, the sky
-panels, the Map/List switch and the bar at the foot, every one of them
-untouched.
-
-What the phone should be instead is a decision that has not been made yet. A
-360px column over a 390px map is a map nobody can see beside a list nobody can
-read, and guessing at the answer is how the first version happened.
-
-#### What it costs, and what it did not
-
-No new page, no new route, no new table and nothing to load into a database.
-`lists.html` already served all three addresses and already carried
-`assets/basemap.js` and `assets/pins.js`; `readList()` in
-`functions/api/_lists.js` already sent every field the card and the pins need
-— the coordinates, whose roll the place came off, Google's score, phone,
-website and week. Three things were actually spent:
-
-- **`assets/listmap.js`**, a file of its own rather than a sixth thousand
-  lines in `assets/lists.js`: the Leaflet map, the pins on it, and the fit.
-  It is also now the one loader for Leaflet on that page — the "add a place"
-  picker asks it for the same copy, so the CDN, the version and the two
-  integrity hashes are written down once instead of twice.
-- **`dots` on a profile's rows.** `/api/profile` sent a title, a count and a
-  number of keeps; it had nothing for the map to draw. It sends the first ten
-  places of each list as points now, out of `listDots()` in
-  `functions/api/_mostkept.js` — which the directory has always used and which
-  is exported rather than copied.
-- **Leaflet on a page that had been proud of not loading it.** It is still
-  fetched at runtime and still never on a phone: `TTBListMap.wide()` is asked
-  before a byte of it is requested. What that costs is one rule of Leaflet's
-  own stylesheet having to be beaten, because on this page it lands after the
-  site's own — `.leaflet-marker-icon` is `display: block`, which leaves
-  `.pin-face` with no width at all. `index.html` loads leaflet.css above its
-  own and so has never needed the answer.
-
 ### Map and List are one switch, drawn twice
 
 A list is one thing with two views, and each of them used to hold a button
@@ -5027,14 +4890,7 @@ list itself** in the map's panel. Both were at the top of something that
 scrolls, so ten places down neither was on screen, and the two names described
 a journey between two pages rather than a change of view.
 
-**All of this is the phone's arrangement now**, and the rest of this section
-describes it there. Above 860px a list's own page *is* the map — see
-**Everybody's lists is a map on a desk** above — so there are no longer two
-views to switch between, and `listBar()`, the dock at the foot and the "on the
-map" pill are all drawn only under the breakpoint. Everything below is still
-exactly true of a phone, and still the reasoning behind the pair.
-
-They are one control — two chips, **Map** and **List**, with the view you
+They are one control now — two chips, **Map** and **List**, with the view you
 are in filled the way a pressed chip is filled — and it is drawn in both
 places out of each page's own pieces: `listBar()` in `assets/lists.js` and
 `listBand()` in `assets/app.js`, which share no module and so restate it,
@@ -5063,8 +4919,7 @@ index row, going to `/?list=<id>`: the map, showing that list's places as
 pins, with the panel open on the list itself. It is an outlined pill in both
 places — on your own list the card's one filled press is Save, and the accent
 is spent once — so the door onto the map looks the same wherever it is still
-drawn as a door rather than as half of a switch. `mapLink()` draws nothing
-above 860px, where the page it promises to open is the page it is drawn on.
+drawn as a door rather than as half of a switch.
 
 That is the map this site already has, not a second smaller one drawn on the
 lists page. The question anybody has about ten restaurants in one city is where
@@ -5073,20 +4928,6 @@ answers it with the pins, the clustering, the names, the locate button and the
 write-ups for the places that have them. A copy of all that on another page
 would be a worse copy, and a place on it that is also on my map would lose its
 write-up on the way across.
-
-**That argument lost on a desk, and it is worth saying what beat it rather
-than quietly deleting it.** Both halves stayed true — a second map is a worse
-map, and a place of mine drawn on one would lose its write-up — and neither
-was the cost being paid. What was being paid was the journey: reading a list
-meant leaving the lists, and coming back to compare it with the next one meant
-leaving the map, so twenty lists was forty page loads. The lists' own map does
-not try to be the map. It has no filter row, no chat, no stories, no locate
-button and no write-ups; a place of mine on it is a name, a price and a door
-to the write-up, which is the paragraph above conceded rather than answered.
-What it has is the one thing the journey was buying: every list on the city at
-once, and the next one a press away. On a phone there is no room for that
-trade and none of it applies, which is why the switch is still the whole
-answer down there.
 
 **What is drawn, and what is invented.** A list draws from `data/places.json`,
 which is my map plus the Google import, so most of a top ten is somewhere I
@@ -5222,14 +5063,9 @@ into a top ten presses the eighth place, not a chip they scrolled past twenty
 rows ago — which is why the map kept being the half of a list nobody had
 noticed was there.
 
-So a row is a door too, and on a phone it goes to `/?list=<id>&at=<place>`:
-this same list on the map, the sheet at its half stop rather than open full,
-and the place that was pressed lit, named and haloed between the two. Above
-860px the row is a door onto the same thing without the journey — the place
-opens in a column beside the list it is on, and `placeHref()` gives it
-`/list/<id>?at=<place>`, which is the page it is already standing on. The
-paragraphs below are about the phone's version; what the two have in common is
-that a row is a door at all. The pins
+So a row is a door too, and it goes to `/?list=<id>&at=<place>`: this same
+list on the map, the sheet at its half stop on a phone rather than open full,
+and the place that was pressed lit, named and haloed between the two. The pins
 above, the list's own rows under them scrolled to that row and marking it, and
 both questions a row raises answered at once — where is this, and where is it
 next to the other nine.
@@ -5820,12 +5656,7 @@ work. There is no second HTML file, no second stylesheet and no second boot.
 
 The public lists somebody has made, newest edit first, each with how many
 places are on it and how many people kept it — the same row `/account.html`
-draws for your own, which is what `listRow()` in `assets/lists.js` is for. And,
-on a desk, where each of them is: the first ten places of every list as points,
-which is what draws the map behind the column — see **Everybody's lists is a
-map on a desk** under **Lists**. It is `dots` on each row, out of `listDots()`
-in `functions/api/_mostkept.js`, which the directory has sent on its own rows
-since the cards had little skies on them. The
+draws for your own, which is what `listRow()` in `assets/lists.js` is for. The
 year they turned up. And one number over the lot: **how many times, in all,
 other people have kept these lists.**
 
@@ -9286,10 +9117,7 @@ functions/u/[name].js      /u/<name> — the page a byline leads to
 lists.html                 the one a stranger reads, everybody's, and whoever
                            wrote one; the address itself sends you to the page
                            below
-assets/lists.js            all three of those, and the column they are drawn
-                           in when the page is a map
-assets/listmap.js          the map those three addresses become above 860px,
-                           and the one loader for Leaflet on that page
+assets/lists.js            all three of those; no map, no Leaflet
 assets/lists.css           what a list page has and the map does not, and the
                            furniture the account page is built from too
 account.html               your name, your saved places, your lists, the
@@ -10777,11 +10605,9 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | event | parameters |
 | --- | --- |
 | `list_page` | `list_id` — any row that opens a list |
-| `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar. Neither is drawn above 860px, where the page is the map |
-| `profile_open` | `name` — any byline, and the named back at the top of a list's column |
-| `place_link` | `place`, `map` (`mine`/`google`/`added`) — a row on a list. It opens that list on the map under 860px and the column beside it above, which is the same press either way. The parameter says which roll the place came off |
-| `place_close` | `place` — the cross on that column, Escape, or Back. The same name the map reports for the same gesture |
-| `place_writeup` | `place` — **Read the write-up** on a place of mine, which is one of the two presses on that page that leave it |
+| `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar |
+| `profile_open` | `name` — any byline |
+| `place_link` | `place`, `map` (`mine`/`google`/`added`) — a name on a list, which opens that list on the map. The parameter says which roll the place came off, which is all it can say now that every row goes to the same place |
 | `list_keep` | `list_id`, `list_state` |
 | `list_share` | `list_id`, `method` |
 | `list_save` | `list_id`, `writes` |
@@ -10796,8 +10622,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `search` | `search_term`, `scope` — `lists` for the directory's field, `list` for the one over a single list's places |
 | `lists_sort` | `sort` (`kept`, `new` or `changed`) — a chip beside the search field |
 | `lists_more` | `rows_shown`, `how` (`scroll` or `press`) |
-| `lists_all` | — the way to the directory: the bar at the foot of a list on a phone, the named back at the top of the column on a desk, and the pill on the map's rail. `/account.html` reported it too, until the card that did went |
-| `directions`, `website`, `google_listing`, `call_place` | `place` — the buttons on the card that opens beside a list above 860px. The same four names the map reports for the same four buttons, because it is the same card |
+| `lists_all` | — the way to the directory: the bar at the foot of a list, and the pill on the map's rail. `/account.html` reported it too, until the card that did went |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
 
 The account page, `assets/account.js`:

@@ -3847,17 +3847,8 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
   /* Nothing on the list closes it, because nothing can: the cross belongs to
      whatever opened over it. It comes back the moment a place or the chat is
-     up, where it means "give me the list back".
-
-     :not(.lists-body) because this is a sentence about the map's panel and
-     this file is shared by six pages. Without it the rule reached every cross
-     on every other page above 861px, since none of them ever sets
-     .panel-detail — the "add a place" picker on lists.html had been opening
-     with no way to shut it on a desk for as long as this rule has existed,
-     and the card the lists map opens beside a place would have been the
-     second. The map is the one page here whose body carries no class of its
-     own. */
-  body:not(.lists-body):not(.panel-detail):not(.panel-ask) .panel-close { display: none; }
+     up, where it means "give me the list back". */
+  body:not(.panel-detail):not(.panel-ask) .panel-close { display: none; }
 
   /* THE COLUMN IS THE CARD, AND THE COLUMN IS THE SCROLLER — at every desktop
      width, whether one is showing or two. Both halves of that are about the
