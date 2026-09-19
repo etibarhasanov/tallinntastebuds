@@ -63,12 +63,18 @@
  *
  * The offer used to stand only at the end of a run, on the reasoning that
  * nobody should have to make an account to find out whether a thing is worth
- * one. It stands in front of the first deck a tab opens as well now —
- * firstCard() below — because what somebody wants to know before they start is
- * not whether the deck is any good: it is whether the half-hour they are about
- * to spend on it counts for anything, and the old arrangement told them that
- * after they had spent it. Once a tab, with the way past directly under the
- * offer, because the deck is not behind it.
+ * one. It stands one word into the first deck a tab opens as well now —
+ * firstWordCard() below — because what somebody wants to know before they
+ * spend the evening on a deck is whether the evening counts for anything, and
+ * the card at the end of the run told them that after they had spent it.
+ *
+ * One word in rather than in front of the deck, and that is the second
+ * arrangement rather than the first. In front of the deck the card is a form
+ * standing between somebody and a thing they have not seen yet, which is dull
+ * and which the sensible reader goes round. One word later it has something to
+ * point at: the answer just given is the thing that is not being kept, and it
+ * is on the screen behind the card. Once a tab, with the way past directly
+ * under the offer, because the deck is not behind it.
  *
  * And making the account keeps the run that argued for it, which took a
  * mechanism rather than a promise: both ways of signing in leave the page, so
@@ -163,7 +169,7 @@
     decks: [],       // every deck: the shipped ones, then yours
     deck: null,      // the one that is open, whole, with its cards
     run: null,       // the cards left to turn over, and where in them we are
-    asking: false,   // whether the offer stands in front of the deck, unanswered
+    asking: false,   // whether the offer stands in place of the next card
     editing: false,  // a deck of your own, being written rather than turned
     view: 'in'       // which half of the sign-in form: 'in', 'up' or 'google'
   };
@@ -251,9 +257,9 @@
   }
 
   /* ------------------------------------------- what this tab is holding for you
-   * Signed out, an answer has nobody to tell: the run is this tab's, and the
-   * account is offered in front of the first deck this tab opens and again at
-   * the end of a run.
+   * Signed out, an answer has nobody to tell: the run is this tab's, it is
+   * read back out of here on the next load, and the account is offered one word
+   * into the first deck this tab opens and again at the end of a run.
    *
    * What that cost until this existed was the run itself. The card says
    * "Remember where you got to", and both ways of taking it up leave the page
@@ -289,10 +295,10 @@
     } catch (e) { return {}; }
   }
 
-  /* And whether this tab has been asked yet. The offer stands in front of the
-     first deck somebody opens signed out — firstCard() below — and in front of
-     that one only: three decks in a sitting is one question, and a page that
-     asks again each time is a wall rather than an offer. sessionStorage for the
+  /* And whether this tab has been asked yet. The offer stands one word into the
+     first deck somebody opens signed out — firstWordCard() below — and in that
+     one only: three decks in a sitting is one question, and a page that asks
+     again in each of them is a wall rather than an offer. sessionStorage for the
      same reason the answers above are kept there — the asking belongs to the
      tab, and a tab opened tomorrow is somebody arriving again.
 
@@ -816,21 +822,28 @@
     ])]);
   }
 
-  /* The same offer, standing in front of a deck instead — the first one a tab
-     opens signed out, and that one only. See the header: what somebody wants to
-     know before they start is whether the half-hour counts for anything, and
-     the card at the end of the run told them after they had spent it.
+  /* The same offer, standing inside a run instead: one word into the first
+     deck a tab opens signed out, in the place the second card would have been.
+     See the header for why it is there at all, and mark() below for why it is
+     one word in rather than none.
+   *
+     One word is what makes the sentence land. In front of the deck the card is
+     a form standing between somebody and a thing they have not seen, and the
+     honest answer to it is to go round it. After a word has been turned over
+     and answered, the thing it is talking about is on the screen behind it:
+     that answer, the one just given, is the thing that is not being kept.
    *
      It is an offer and not a gate, and the card has to read as one. The deck is
      not behind it: Go through it without saving is directly under the two ways
      in, the words say that what you answer before you make an account comes
-     with you, and keep() above is what makes that true rather than kind.
-     Pressing past costs the tab's asking rather than the tab's run.
+     with you, and keep() above is what makes that true rather than kind — the
+     word just answered is already written into the tab. Pressing past costs the
+     tab's asking rather than the tab's run.
    *
      The way past is an .alt because of design rule 5 — the accent is spent on
      the one action, and a second filled button would be a card that could not
      say which of the two it wanted. */
-  function firstCard() {
+  function firstWordCard() {
     var past = el('button', {
       type: 'button',
       className: 'alt',
@@ -848,6 +861,18 @@
       heading(t('flashFirstTitle')),
       el('p', { className: 'lists-say', textContent: t('flashFirstWhy') })
     ], past)]);
+  }
+
+  /* Putting it on screen: the tab is marked asked so it is not put there a
+     second time, the press is reported, and the form opens on Create account
+     rather than on Sign in — the header of firstWordCard() and boot() below
+     each say why. Both places that raise the offer come through here, so the
+     three things that go with raising it cannot drift apart. */
+  function standOffer() {
+    state.asking = true;
+    markAsked();
+    TTBTrack.event('flash_keep_ask', { deck_id: state.deck.id });
+    if (state.view === 'in') state.view = 'up';
   }
 
   /* ------------------------------------------------------------- the decks */
@@ -1106,6 +1131,24 @@
 
     state.run.at += 1;
     state.run.turned = false;
+
+    /* And this is where the offer of an account stands, signed out: one word
+       in, in the place the next card would have been.
+     *
+       It stood in front of the deck for a day, and what that got wrong is what
+       a form in front of an unseen thing is. Somebody who has not turned a card
+       has nothing on the screen to weigh the asking against, so the card is an
+       obstacle rather than an offer and the sensible thing to do with it is to
+       go round it. One word later the sentence has something to point at: the
+       answer just given is the thing that is not being kept, and it is sitting
+       behind the card.
+     *
+       After the answer rather than after the turn. The two words under a turned
+       card are the question the page asked, and taking them away before they
+       are pressed is asking something and then not listening. See
+       firstWordCard(). */
+    if (!state.user && state.ready && current() && !askedAlready()) standOffer();
+
     render();
     focusRun();
   }
@@ -1711,7 +1754,7 @@
            the screen and the way out of it stands where it stands on every
            other view of a deck. */
         add(runHead());
-        add(firstCard());
+        add(firstWordCard());
       } else {
         var now = current();
         if (now) studyView(now).forEach(add);
@@ -1816,13 +1859,26 @@
       state.deck = answer.out.deck || null;
 
       /* And whatever this tab answered before there was an account to put it
-         on — see keep() above. The writes go out now; the answer they belong
-         to was fetched before them, so the deck in hand is told as well.
-         Without that second half, signing in at the end of a run would build a
-         run of the whole deck again out of an answer that predates the very
-         writes this load just sent, which is the thing being fixed wearing a
-         different hat. */
-      var sent = (state.user && state.ready) ? sendKept() : {};
+         on — see keep() above.
+       *
+         Signed in, the writes go out now, and the answer they belong to was
+         fetched before them, so the deck in hand is told as well. Without that
+         second half, signing in at the end of a run would build a run of the
+         whole deck again out of an answer that predates the very writes this
+         load just sent, which is the thing being fixed wearing a different hat.
+       *
+         Signed out there is nowhere to send them and this tab is the whole of
+         the record, so they are read rather than sent — and the same second
+         half applies, for a longer-standing version of the same bug. Every
+         answer was already being written down here and none of it was ever
+         read back: the run rebuilt itself from the server's answer, which knows
+         nothing about somebody with no account, so a reload started the deck at
+         the top with fifteen answers sitting in storage. And a reload is not a
+         rare thing on this page — every deck is an <a href> and the way back to
+         the decks is another, so walking out of a deck and into it again was
+         enough to lose the lot. Now it is not: turn ten cards, come back, and
+         the ten are behind you for as long as the tab is open. */
+      var sent = (state.user && state.ready) ? sendKept() : kept();
 
       if (state.deck) {
         state.deck.cards.forEach(function (c) {
@@ -1844,34 +1900,20 @@
          for somebody signed out becomes the one that asks for a name. */
       if (googleSaid === 'name' && !state.user) state.view = 'google';
 
-      /* And whether the offer stands in front of this deck: signed out, on a
-         deck with something to turn, the first time this tab opens one. Decided
-         here, once, rather than inside render(), which runs on every press and
-         would have to keep arriving at the same answer. The way past is the
-         one thing that changes it: it sets this false and draws again.
+      /* The one case where the offer stands on a deck before a word has been
+         answered: Google has come back wanting a name. That round trip returns
+         to the address it left from, so it lands on the deck, and the form that
+         asks for the name lives on this card and nowhere else here — without
+         this the page would draw cards and the name would never be asked for.
+         It is raised whatever this tab has already been asked, because the
+         alternative is a dead end.
        *
-         Only where an account would work: with the database off there is
-         nothing behind the form but a 503, which is the same rule authCard()
-         is drawn under. And always where Google has come back wanting a name,
-         whatever this tab has already been asked — that round trip returns to
-         the deck it left from, and the form asking for the name is on this card
-         and nowhere else on a deck. */
-      state.asking = !!(state.deck && !state.user && state.ready && current() &&
-                        (state.view === 'google' || !askedAlready()));
-      if (state.asking) {
-        markAsked();
-        TTBTrack.event('flash_keep_ask', { deck_id: state.deck.id });
-        /* And this is the one surface that opens on Create account rather than
-           on Sign in. Everywhere else the form is reached by somebody who went
-           looking for their account; this card is put in front of somebody who
-           is turning cards signed out, which is very nearly the definition of
-           not having one — the only link to this page inside the site is on
-           /account.html, behind a sign-in, so anybody arriving here without an
-           account arrived from a search engine. Already have an account? is
-           one press under the button, which is the same press the other way
-           round that the decks page asks of somebody making one. */
-        if (state.view === 'in') state.view = 'up';
-      }
+         Every other time, mark() raises it, one word into the run. And in
+         either case only where an account would work: with the database off
+         there is nothing behind the form but a 503, which is the same rule
+         authCard() is drawn under. */
+      if (state.deck && !state.user && state.ready && current() &&
+          state.view === 'google') standOffer();
 
       render();
       sayGoogle();

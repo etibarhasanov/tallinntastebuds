@@ -6477,22 +6477,36 @@ on a laptop. That is the one deliberate difference from **Saves**, where a
 bookmark with no account is kept in the browser: a save is about a place and
 survives being a device's, and a card you know is about you.
 
-Signed out the run is kept in the tab and nowhere else, and the account is
-asked for **in front of the first deck a tab opens**: one card, before the
-cards, saying that nothing is being kept, with the two ways to fix that and
-*Go through it without saving* underneath.
+Signed out the run is kept in the tab, read back out of it on the next load,
+and sent nowhere. The account is asked for **one word into the first deck a
+tab opens**: the first card is turned over and answered as usual, and where
+the second card would have been there is one card saying that nothing is being
+kept, with the two ways to fix that and *Go through it without saving*
+underneath.
 
 **It used to be offered only at the end of a run**, and that card is still
 there — this is a second moment rather than a move. The reasoning for the one
 moment was that nobody should be asked to make an account to find out whether
 a thing is worth one. That is a good sentence and it was answering a question
-nobody was asking. What somebody wants to know before they start is not
-whether the deck is any good — it is whether the half-hour they are about to
-spend on it counts for anything, and the old arrangement told them that after
-they had spent it.
-A sentence in front costs a press. Thirty cards that nothing was keeping costs
-the half-hour, and it is the people this page is written for who have least of
-it to lose.
+nobody was asking. What somebody wants to know before they spend an evening on
+a deck is not whether the deck is any good — it is whether the evening counts
+for anything, and the old arrangement told them that after they had spent it.
+A sentence costs a press. Thirty cards that nothing was keeping costs the
+evening, and it is the people this page is written for who have least of it to
+lose.
+
+**One word in rather than in front of the deck**, and that is the second
+arrangement rather than the first. It shipped in front for a day, and what
+that got wrong is what a form in front of an unseen thing is: somebody who has
+not turned a card has nothing on the screen to weigh the asking against, so
+the card reads as an obstacle and the sensible thing to do with it is to go
+round it — and being asked to fill in a form before you have been shown
+anything is simply dull. One word later the sentence has something to point
+at. The answer just given is the thing that is not being kept, and it is
+sitting on the screen behind the card. After the answer rather than after the
+turn, too: the two words under a turned card are the question the page asked,
+and taking them away before they are pressed is asking something and then not
+listening.
 
 **It is an offer and not a gate**, and three things keep it one. The way past
 is directly under the two ways in, so the deck is visibly not behind the card.
@@ -6535,6 +6549,28 @@ keyed by card, so a word got wrong and then right in one run arrives as the
 answer it ended on rather than as two writes racing. Past two hundred cards it
 stops keeping them, and those are asked again next time, which is the same
 harmless direction a failed write already errs in.
+
+**And every load reads it back, which for a while no load did.** The store was
+written to from the first day it existed and only ever read on the way into an
+account, so signed out it was a drawer nothing was ever taken out of. The run
+was rebuilt from what the route answered, and the route knows nothing about
+somebody who has no account, so every card came back due: turn ten of them,
+reload, and there were fifteen again with the ten sitting in storage. A reload
+is not the rare event that makes that sound survivable, either — every deck is
+an `<a href>` and *All the decks* is another, so walking out of a deck and back
+into it was enough to lose the lot, and what a visitor saw was a page that
+plainly was not keeping anything. It reads the store on the way in now,
+the same line that posts it when there is a session, so the answers stand for
+as long as the tab does.
+
+**Closing the tab is still the end of it**, and that is the decision rather
+than the next bug. `localStorage` would make a run survive a browser restart
+and a row on a device id would make it survive the browser, and both are the
+thing the account is for — the whole of what an account buys on this page is
+that Knew it is remembered, and remembering it for people who have not made one
+would leave the card above with nothing true to say. The tab is the compromise:
+long enough that an evening's work is not thrown away by a stray navigation,
+short enough that it is still the account that keeps things.
 
 ### How a run works, and when a card comes back
 
@@ -10091,7 +10127,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |
-| `flash_keep_ask`, `flash_keep_past` | `deck_id` — the offer of an account standing in front of a deck signed out, and the press that goes past it. The two together are the whole of whether asking first was worth asking |
+| `flash_keep_ask`, `flash_keep_past` | `deck_id` — the offer of an account standing one word into a deck signed out, and the press that goes past it. The two together are the whole of whether asking early was worth asking |
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, reported under the names the map's switch reports under, because it is the same press |
 | `flash_back`, `home` | `deck_id` on the first |
 
