@@ -3122,7 +3122,7 @@ etibar                          the name, one line saying what the page is,
   Eating my way through …       the line you wrote about yourself, with the
   Change your line              word that opens the field again under it,
   Your public profile >         the door to how it looks to everybody else,
-  Estonian flashcards >         the only link to them on this site,
+  Learn Estonian >              the account page's own door to the decks,
   Change username ·             and everything you can do to the account
   Change password · Sign out
 Places I saved        8 places  a fold: six rows a place, newest first
@@ -3151,16 +3151,18 @@ the column it was. One card, one column, is what every other card here is.
 
 ### The second door on that card
 
-**Estonian flashcards**, under the profile: thirty-four decks of Estonian and
+**Learn Estonian**, under the profile: thirty-four decks of Estonian and
 the ones you write yourself — see **[Flashcards](#flashcards)**. It is a row rather than
 a word along the foot for the reason the profile is: a door is a place to go
 and a word is a thing you do to the account.
 
-**It is the only link to that feature anywhere on this site**, and that is the
-whole of how it is found from inside. It is here rather than in the map's
-chrome because the map's chrome is for finding dinner, and here rather than
-under one of the three folds because the decks you write are your own things
-in the way a saved place is, not a kind of list.
+**It used to be the only link to that feature anywhere on this site**, and a
+pill on the map's own rail has since joined it — **How it is found, which is
+two doors now** under **[Flashcards](#flashcards)** is that half of the
+story. What has not changed is why this one is here rather than in the map's
+chrome: here because the decks you write are your own things in the way a
+saved place is, not a kind of list, and — unlike the rail's — because the
+account page is where your own things already live.
 
 That makes this card two doors and three words, which is one more door than it
 had. The ceiling is the design rule about a list of choices being rows rather
