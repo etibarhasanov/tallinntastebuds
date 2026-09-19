@@ -6735,6 +6735,26 @@ the tap that would otherwise follow it**, so a scroll that began on the card
 does not turn it over on the way past — the rule the map's sheet has had since
 it could be dragged.
 
+**Or the arrow keys, which are the throw on a machine with no thumb on it.**
+Right for *Knew it*, left for *Show me again* — the same two answers in the
+same two directions the card would have gone under a finger, so somebody who
+has turned these over on a phone already knows which way is which on a laptop.
+They answer on either face, because the swipe does. Turning the card over
+needs nothing of its own: the focus is already on the card after every answer
+— the paragraph below is why — and a `<button>` with the focus on it is turned
+over by Enter or by the space bar without a line of script.
+
+The listener is on the document rather than on the card, so a run answers
+wherever the focus is actually sitting: on *All the decks*, on *Show me
+again*, or on nothing at all after a press somewhere idle. An arrow carrying
+Alt, Control, Command or Shift is left alone — Alt and the left arrow is the
+browser's Back, and Command and the left arrow is Back on a Mac — and so is
+one pressed in a field, where it is the caret moving rather than an answer,
+and one pressed behind an open language menu. And it answers only where a card
+is really on screen: the run outlives the editor and the gate, so a word is
+still in hand on both, and answering it from a page that is showing a form
+would spend a card of a deck on a view that is not the deck.
+
 **And the keyboard keeps the card.** Every press in a run rebuilds the page's
 one element, so whatever had the focus is gone and the browser drops it on the
 body: turning a card by keyboard meant tabbing in from the top of the document
@@ -10491,7 +10511,7 @@ Flashcards, `assets/flashcard.js`:
 | --- | --- |
 | `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
-| `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`), `face` (`front`/`back`) — one per card answered, which of the two ways it was answered, and whether the card had been turned over first: `front` is a throw on a card nobody opened |
+| `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`) — one per card answered, which of the three ways it was answered, and whether the card had been turned over first: `front` is a throw or an arrow on a card nobody opened |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |
