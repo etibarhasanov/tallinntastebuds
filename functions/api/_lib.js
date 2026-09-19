@@ -401,6 +401,27 @@ export async function dataFile(context, path) {
   return value;
 }
 
+/* The site's own words, whole, in all ten languages.
+ *
+ * wordsFor() below is what a route wants when it is answering a page: one
+ * language's block, picked against what the reader asked for. This is the
+ * other shape of the same file, and functions/flashcard.js is its one reader —
+ * it writes a deck's head in the language the link carried, which means asking
+ * whether the file speaks that one at all, and that is a question about the
+ * whole file rather than about a block of it.
+ *
+ * It went out with the commit that wrote wordsFor(), which read the same file
+ * for the other shape and looked like the whole of what anybody wanted from
+ * it. Nothing failed: nothing in CI builds the Functions, and the import left
+ * standing over there took the entire deployment down rather than that one
+ * route. It is here rather than inlined over there because the path is: one
+ * spelling of '/data/ui.json' on this side, read through the same five-minute
+ * cache every other data file is. It throws the way dataFile() throws, and its
+ * caller catches. */
+export function uiStrings(context) {
+  return dataFile(context, '/data/ui.json');
+}
+
 /* ------------------------------------------------------------- the words
  * The page's strings in one language, and which language that is.
  *
@@ -450,7 +471,7 @@ function languageOf(asked, langs) {
 export async function wordsFor(context, asked) {
   let ui = null;
   try {
-    ui = await dataFile(context, '/data/ui.json');
+    ui = await uiStrings(context);
   } catch (e) {
     ui = null;
   }
