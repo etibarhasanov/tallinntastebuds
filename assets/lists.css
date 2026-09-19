@@ -243,7 +243,19 @@
    plus a little: a ruled row sits closer to the thing over it than a word
    does, and the hairline wants a breath before it. */
 .lists-card > .menu { margin-top: 18px; }
-.lists-count { margin-left: auto; color: var(--muted); font-size: 11.5px; letter-spacing: .04em; }
+/* How many are inside, on the end of a title or a row. Tabular figures
+   because these are read down a card as a column, and proportional ones make
+   "13 due" and "18 due" two different widths — .flash-count in
+   assets/flashcard.css says the same thing about the count over a deck. The
+   face comes from .mono at the call site, the way every other label on this
+   site is asked for. */
+.lists-count {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 11.5px;
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
 
 /* ---------- a card that folds ---------- */
 
@@ -650,21 +662,6 @@
 }
 .lists-index-by a:hover { color: var(--accent); }
 
-/* The heading over a run of rows on the directory — Start here, Everybody's.
-   Quieter than a card title — that one names the page or the card, this one
-   names a run of things inside it — and given room above so the group reads
-   as its own thing rather than as the list that changed its mind. The account
-   page wore it too for a while, "Yours" and "Everybody else's" over its two
-   halves, and took it off again: see the header of assets/account.js. */
-.lists-section {
-  margin: 26px 0 2px;
-  font-family: var(--display);
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: .01em;
-  color: var(--muted);
-}
-
 /* The way onto the map from an index row: the card's second destination.
    The card itself opens the list; this opens the same places as pins.
 
@@ -843,7 +840,15 @@
 .lists-order .eyebrow { margin: 0 2px 0 0; }
 
 /* A heading over a run of rows — Start here, Everybody's — with the reason in
-   mono beside it. Set small: it labels a section rather than opening one. */
+   mono beside it. Set small: it labels a section rather than opening one.
+
+   Quieter than a card title, because that one names the page or the card and
+   this one names a run of things inside it. The account page wore it too for a
+   while, "Yours" and "Everybody else's" over its two halves, and took it off
+   again: see the header of assets/account.js. The flashcards page wears it over
+   each of its three levels, where what stands under it is hairline-ruled rows
+   rather than a strip of cards, and it is spaced for that where it is used:
+   `.lists-card > .lists-section` in assets/flashcard.css. */
 .lists-section {
   display: flex;
   align-items: baseline;

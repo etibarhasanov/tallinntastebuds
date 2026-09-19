@@ -958,9 +958,18 @@
         el('a', { className: 'menu-row', href: deckHref(deck.id) }, [
           el('span', { className: 'menu-say' }, [
             el('span', { className: 'menu-name', textContent: deckName(deck) }),
-            el('span', { className: 'menu-why', textContent: why || said })
+            /* What the deck is, in the body face, because it is a sentence of
+               prose — .flash-why in assets/flashcard.css carries the argument
+               and the design rule behind it. The count standing in its place
+               on a deck nobody wrote a line for is a label rather than a
+               sentence, so that one keeps .menu-why's mono. */
+            el('span', { className: why ? 'flash-why' : 'menu-why',
+                         textContent: why || said })
           ]),
-          why ? el('span', { className: 'lists-count', textContent: said }) : null,
+          /* .mono, like every other count on this site: the lists page's and
+             the account page's both ask for it at the call site, and this row
+             was the one that had been drawing its number in the body face. */
+          why ? el('span', { className: 'lists-count mono', textContent: said }) : null,
           el('span', { className: 'menu-go', 'aria-hidden': 'true',
                        html: '<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>' })
         ]),
