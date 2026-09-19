@@ -57,12 +57,15 @@ const TASTE = 3;
 
 /* How many places off each list the row draws as dots on the city.
  *
- * A row on the directory carries a small sky: the city as faint ground — the
- * eleven hundred coordinates of data/city.json, which the browser fetches for
- * itself — and the list's own places over it, each wearing the mark the list
- * chose. So a coffee list reads as a cluster in Kalamaja and a Caucasus list
- * as a scatter east before anybody has read a name. It is the one picture
- * only this site can draw of a list, and the coordinates already exist.
+ * Three things draw them and all three are the same picture at different
+ * sizes. On a phone a row on the directory carries a small sky: the city as
+ * faint ground — the eleven hundred coordinates of data/city.json, which the
+ * browser fetches for itself — and the list's own places over it, each wearing
+ * the mark the list chose. Above 860px the same places are on the real map
+ * behind the column, on the directory and on a profile alike. So a coffee list
+ * reads as a cluster in Kalamaja and a Caucasus list as a scatter east before
+ * anybody has read a name. It is the one picture only this site can draw of a
+ * list, and the coordinates already exist.
  *
  * Ten and not all twenty, on the same argument TASTE makes above: the row is a
  * reason to open the list, not a copy of it, and ten dots draw the shape as
@@ -343,33 +346,10 @@ export async function mostKept(context, opts) {
     starts = found.results || [];
   }
 
-  /* The first ten places off each list on the page, in the list's own order:
-     one small indexed read per list, sent as a single batch. The first three
-     names are what the row prints under its title; all ten are what it draws
-     as dots.
-
-     One statement per list rather than one IN() over all twenty, because the
-     shapes cost wildly different amounts. An IN() has to read every item of
-     every list on the page and it grows with how much people write. Each of
-     these stops after ten, on the index list_items already has for reading a
-     list in its own order, so the page costs two hundred rows however long
-     the lists are. batch() sends them in one round trip.
-
-     ORDER BY pos rather than a filter on it, because pos is not contiguous:
-     drop() takes a row out and leaves the numbering alone — only order()
-     renumbers — so a list of three can sit at 0, 5 and 9. "The first ten"
-     is the first ten of the list's own order, never the rows numbered under
-     ten. */
-  const every = rows.concat(starts);
-  const items = {};
-  if (every.length) {
-    const read = env.DB.prepare(
-      'SELECT place_id, name FROM list_items WHERE list_id = ? ORDER BY pos LIMIT ' + DOTS
-    );
-    const pages = await env.DB.batch(every.map((r) => read.bind(r.id)));
-    every.forEach((r, i) => { items[r.id] = pages[i].results || []; });
-  }
-  const dots = await pins(context, items);
+  /* The first ten places off every list on the page and on the strip, in one
+     batch. The three names under each title and the dots on the city both
+     come out of it — see listDots() below. */
+  const { items, dots } = await listDots(context, rows.concat(starts));
 
   const shape = (r) => ({
     id: r.id,
@@ -387,7 +367,8 @@ export async function mostKept(context, opts) {
        as — so twenty rows of somebody else's opinions are twenty
        distinguishable things rather than twenty identical red constellations.
        Which is why it is sent on a row and not only on a list: see sky() in
-       assets/lists.js. */
+       assets/lists.js for the panel, and clouds() in assets/listmap.js for the
+       map that replaces it on a desk. */
     ...pinsOf(r),
     taste: (items[r.id] || []).slice(0, TASTE).map((row) => row.name),
     dots: dots[r.id] || []
@@ -406,9 +387,52 @@ export async function mostKept(context, opts) {
   };
 }
 
-/* Where each list's places are, as [lat, lng] pairs, four decimals — a city
- * block, which is finer than a panel a hundred and twenty units wide can draw
- * a difference in.
+/**
+ * The first ten places off each of these lists, as names and as points.
+ *
+ * Exported because two pages draw lists as shapes on the city and both need
+ * this: the directory, which is the rest of this file, and a profile, which
+ * is functions/api/_profile.js. It was private here for as long as the
+ * directory was the only page with a picture on it; above 860px a profile is
+ * a map of everywhere one person sends people, and the alternative to
+ * exporting it was a second copy of the three-roll lookup below.
+ *
+ * `items` is what the row prints — the first three names go under its title —
+ * and `dots` is where they are. A caller that wants only one of the two
+ * ignores the other; the read is the same either way.
+ *
+ * One statement per list rather than one IN() over all twenty, because the
+ * shapes cost wildly different amounts. An IN() has to read every item of
+ * every list on the page and it grows with how much people write. Each of
+ * these stops after ten, on the index list_items already has for reading a
+ * list in its own order, so a page costs two hundred rows however long the
+ * lists are. batch() sends them in one round trip.
+ *
+ * ORDER BY pos rather than a filter on it, because pos is not contiguous:
+ * drop() takes a row out and leaves the numbering alone — only order()
+ * renumbers — so a list of three can sit at 0, 5 and 9. "The first ten" is
+ * the first ten of the list's own order, never the rows numbered under ten.
+ */
+export async function listDots(context, rows) {
+  const { env } = context;
+  const items = {};
+  if (rows.length) {
+    const read = env.DB.prepare(
+      'SELECT place_id, name FROM list_items WHERE list_id = ? ORDER BY pos LIMIT ' + DOTS
+    );
+    const pages = await env.DB.batch(rows.map((r) => read.bind(r.id)));
+    rows.forEach((r, i) => { items[r.id] = pages[i].results || []; });
+  }
+  return { items, dots: await pins(context, items) };
+}
+
+/* Where each list's places are, as [lat, lng] pairs, four decimals — about
+ * eleven metres, a city block. That was chosen for a panel a hundred and
+ * twenty units wide, where nothing finer could be drawn at all; on the real
+ * map above 860px a block is visible at the closest zoom a fitted list
+ * reaches, so two doors on one corner can land on the same pin. That is the
+ * honest cost of one precision for three pictures, and it is a smaller cost
+ * than a second field for the same places.
  *
  * The same three rolls readList() in _lists.js draws a list from, asked once
  * for the whole page rather than once per list: the catalogue is a Map held

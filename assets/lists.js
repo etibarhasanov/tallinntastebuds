@@ -4,16 +4,26 @@
  * making one, filling it, saying something about each place, and the page a
  * stranger lands on when the link is sent to them.
  *
- * Plain browser JavaScript, no modules, no build step, and — for everybody who
- * is reading a list rather than writing one — no Leaflet either. A list is
- * text and this page does not draw a map.
+ * Plain browser JavaScript, no modules, no build step. It shares the tokens,
+ * the card, the eyebrow and the toast with assets/styles.css and adds its own
+ * in assets/lists.css.
  *
- * The one exception is the square of map inside the "add a place" form, which
- * needs somewhere to drag a pin. Leaflet is fetched the moment that form is
- * opened and never before, so somebody who opened a link to read a top ten
- * downloads none of it. See ensureLeaflet(). It shares the tokens, the card, the
- * eyebrow and the toast with assets/styles.css and adds its own in
- * assets/lists.css.
+ * ON A PHONE THIS PAGE IS TEXT; ON A DESK IT IS A MAP
+ *
+ * Under 860px a list is a document and nothing here draws a map — which is
+ * what this file said about itself for as long as it existed, and is still
+ * true of every phone that opens a shared link. Above 860px the three
+ * addresses below are one map with a column down its right-hand side, and
+ * this file is the column: it decides what is on screen and says what the map
+ * behind it should be showing. The map itself is assets/listmap.js.
+ * mapped() is the whole of that fork, and every function that behaves
+ * differently on the two sides of it asks that one question. See
+ * **Everybody's lists is a map on a desk** in README.md.
+ *
+ * Leaflet is still never fetched on a phone. The square of map inside the
+ * "add a place" form asks for it the moment that form is opened and never
+ * before, through TTBListMap.leaflet(), which is the one loader — so somebody
+ * who opened a link to read a top ten downloads none of it.
  *
  * THREE ADDRESSES, ONE FILE, AND NONE OF THEM IS YOU
  *
@@ -181,6 +191,9 @@
     asking: false,     // a page of the directory is in flight
     searching: false,  // a search is in flight, so the rows on screen are the old one's
     list: null,        // the one being shown
+    /* The place open beside an open list, above 860px where there is room for
+       a second column. '' for none, and always '' on a phone — see mapped(). */
+    at: '',
     profile: null,     // the person being shown
     places: null,      // /api/places, loaded the first time the picker opens
     hay: null          // id -> folded searchable text
@@ -570,6 +583,10 @@
      bar now, so the look is stated once here and `extra` is only where a
      caller has something to add about where the pill sits. */
   function mapLink(id, extra) {
+    /* Above 860px this page is the map, and a pill promising to open the list
+       on one is a pill pointing at the window it is drawn in. Pressing the row
+       is what opens it, and the map behind is already showing where it is. */
+    if (mapped()) return null;
     return TTBTrack.click(el('a', {
       className: 'alt lists-map' + (extra ? ' ' + extra : ''),
       href: mapHref(id),
@@ -602,25 +619,264 @@
     mark.btn = null;
     paintWho();
 
+    var wide = mapped();
+    /* Which of the two layouts this is, said once on the body so the
+       stylesheet can answer it everywhere at once. Above 860px the page is a
+       map with a column down its right-hand side; under it, the column of
+       cards it has always been. */
+    document.body.classList.toggle('is-mapped', wide);
+
     /* The directory is the one page here that is wider than a column of
        prose: rows three across on a desk, the strip five across. Every other
-       view keeps the 640px a list reads at. Toggled here rather than set once
-       at boot so a view that is not the directory never inherits it. */
-    dom.main.classList.toggle('is-wide', state.view === 'all');
+       view keeps the 640px a list reads at. Neither is true once the page is
+       a map, where every view is the same 360px column. Toggled here rather
+       than set once at boot so a view that is not the directory never
+       inherits it. */
+    dom.main.classList.toggle('is-wide', !wide && state.view === 'all');
 
     /* Somebody else's list is the one view with a bar fixed to the foot of the
-       window, and the page has to keep its last card out from under it. Set
-       here, beside the width, for the same reason: one place decides, so no
-       view can inherit it from the one before. */
+       window, and the page has to keep its last card out from under it. It is
+       a phone's arrangement: on a map the way out is a named row at the top of
+       the column, where a back is looked for. Set here, beside the width, for
+       the same reason: one place decides, so no view can inherit it from the
+       one before. */
     document.body.classList.toggle('has-dock',
-      state.view === 'one' && !!state.list && !state.list.mine);
+      !wide && state.view === 'one' && !!state.list && !state.list.mine);
 
-    if (!state.reached) { dom.main.appendChild(renderUnreachable()); return; }
-    if (!state.ready) { dom.main.appendChild(renderNotReady()); return; }
-    if (state.view === 'all') { dom.main.appendChild(renderAll()); return; }
-    if (state.view === 'who') { dom.main.appendChild(renderProfile()); return; }
+    /* The second column belongs to the view that is leaving. The place it was
+       about may not be: a redraw of the same list — the language changed, the
+       window crossed the breakpoint — is still standing on it, and the address
+       still names it. So the column is emptied here and paintMap() opens it
+       again if it is still true. Anything that is not an open list on a map
+       has no place to be standing on at all. */
+    if (!wide || state.view !== 'one' || !state.list) state.at = '';
+    if (dom.aside) { clear(dom.aside); dom.aside.hidden = true; }
 
-    dom.main.appendChild(renderOne());
+    dom.main.appendChild(view());
+    paintMap();
+  }
+
+  /* Which of the six states is on screen. Split out of render() so that the
+     map underneath is painted on every one of them rather than on whichever
+     branches somebody remembered — it was five early returns, and a sixth
+     would have been five chances to forget. */
+  function view() {
+    if (!state.reached) return renderUnreachable();
+    if (!state.ready) return renderNotReady();
+    if (state.view === 'all') return renderAll();
+    if (state.view === 'who') return renderProfile();
+    return renderOne();
+  }
+
+  /* ------------------------------------------------------------- the map
+   * Above 860px these three addresses are one map with three depths on it:
+   * everybody's lists, one person's, and one list with its places on the
+   * city. The column down the right-hand side is <main>, the map behind it is
+   * assets/listmap.js, and this is what tells one about the other.
+   *
+   * WHY IT IS ONE PAGE AND NOT A DOOR ONTO THE OTHER ONE
+   *
+   * A list used to be shown on the map at /?list=<id>: the site's one map,
+   * narrowed, with the list in the panel. It worked, and it cost a page load
+   * in each direction — so reading a list meant leaving the lists, and coming
+   * back to compare it with the next one meant leaving the map. Twenty lists
+   * was forty journeys, and the argument that a second map would be "a worse
+   * copy" had quietly become an argument for making people travel.
+   *
+   * So the lists have their own map and it never navigates: pressing a list
+   * narrows it, pressing a place opens a card beside it, and the only press
+   * that leaves this page is the wordmark in the corner. /?list= is untouched
+   * and still answers — every link ever shared goes on working — it is simply
+   * not where this page sends anybody any more.
+   *
+   * A PHONE GETS NONE OF IT
+   *
+   * mapped() is the whole of that decision, and every function below asks it
+   * first. Under 860px this page is exactly the page it was: a column of
+   * cards, each with its little sky of the city, and a list that opens as a
+   * document. A 360px column over a 390px map is a map nobody can see beside
+   * a list nobody can read, and what the phone should be instead is a
+   * decision that has not been made yet. See **Everybody's lists is a map on
+   * a desk** in README.md.
+   */
+
+  function mapped() {
+    if (!TTBListMap.wide()) return false;
+    /* Your own list is the one view here that is not a map and must not
+       become one. It is an editor: the rows carry a grip and a number and are
+       dragged into the order that is the entire point of a top ten, each has
+       a textarea in it, and under all of it are the pin picker, the two
+       visibility radios and Save. Six hundred and forty pixels of document is
+       what that needs, and a 360px column beside a map is the one shape it
+       cannot have. The same reason it has no bar, no foot and no search
+       field — see listFind(). */
+    if (state.view === 'one' && state.list && state.list.mine) return false;
+    return true;
+  }
+
+  /* The way one depth back up, at the top of the column, where a back is
+     looked for — design rule 7, and the same place the map's panel puts one.
+     It always carries a name: a list belongs to whoever wrote it, so the way
+     out of a list is that person's other lists, and the way out of a person is
+     everybody's. A bare arrow would be a control that says where it is not
+     rather than where it goes.
+
+     Google's five have no profile worth landing on — the account is a
+     generator and its page says so — so those go straight to the directory. */
+  function upLink() {
+    var by = state.view === 'one' && state.list && state.list.by;
+    var toWho = !!by && by !== GOOGLE_BY;
+    return TTBTrack.click(el('a', {
+      className: 'lists-up mono',
+      href: toWho ? profileHref(by) : ALL_PATH
+    }, [
+      el('span', { 'aria-hidden': 'true', textContent: '\u2190 ' }),
+      el('span', {
+        textContent: toWho ? t('listsBackWho', { name: by }) : t('listsAllTitle')
+      })
+    ]), toWho ? 'profile_open' : 'lists_all', toWho ? { name: by } : {});
+  }
+
+  /* How much of the map's right-hand side the columns are standing on, so a
+     fitted list lands in the city that is actually showing rather than behind
+     the card naming it. The numbers are .lists-main's and .lists-aside's in
+     assets/lists.css; there is no way to read a fixed element's reserved
+     width off the page without measuring something that is not drawn yet. */
+  var COLUMN = 376;
+
+  function reserved() {
+    if (!mapped()) return 0;
+    return state.at ? COLUMN * 2 : COLUMN;
+  }
+
+  /* What the map is showing, decided from the same state the column is drawn
+     from so the two cannot disagree. Called at the end of every render(), and
+     again by paintAll() when a search or a Show more has changed the rows
+     without redrawing the page around them. */
+  function paintMap() {
+    if (!mapped() || !dom.map) return;
+    TTBListMap.mount(dom.map).then(function (m) {
+      /* The window may have been narrowed, or the view changed, while Leaflet
+         was on its way. Whatever is on screen now is what decides. */
+      if (!m || !mapped()) return;
+      TTBListMap.reserve(reserved());
+      if (state.view === 'one' && state.list) {
+        TTBListMap.places(state.list.items, TTBPins.ofList(state.list), function (item) {
+          openPlace(item.place, true);
+        });
+        if (state.at) openPlace(state.at, false);
+        return;
+      }
+      TTBListMap.clouds(shown(), function (l) { window.location.href = '/list/' + l.id; });
+    });
+  }
+
+  /* Every list the column is showing, in the order it shows them. The five
+     Google lists are part of the picture: they are rows on the page and their
+     places are on the city like everybody else's. */
+  function shown() {
+    if (state.view === 'who') return (state.profile && state.profile.lists) || [];
+    return (state.start || []).concat(state.all || []);
+  }
+
+  /* Pointing at a row lifts that list out of the scatter, and nothing moves.
+     The keyboard gets the same thing off focus, which is the one way somebody
+     tabbing the column can tell the map is answering at all.
+
+     Three rows draw a list — the directory's, the Google strip's and a
+     profile's — so it is said once here rather than three times over. */
+  function lights(node, id) {
+    if (!mapped()) return node;
+    node.addEventListener('pointerenter', function () { TTBListMap.light(id); });
+    node.addEventListener('pointerleave', function () { TTBListMap.light(''); });
+    node.addEventListener('focusin', function () { TTBListMap.light(id); });
+    node.addEventListener('focusout', function () { TTBListMap.light(''); });
+    return node;
+  }
+
+  /* ------------------------------------------------------- a place beside it
+   *
+   * Pressing a row on an open list opens that place in a second column, to the
+   * left of the list and over the map, which is where the map's own panel puts
+   * a place beside its list. The list keeps its scroll and the row it was on,
+   * because nothing about it has changed.
+   *
+   * THE ADDRESS IS A STATE HERE, NOT A DOOR
+   *
+   * ?at= on the map is read once on the way in and taken straight back off —
+   * see **Pressing a row is the third way across** in README.md — because
+   * what the map is showing is the list. Here the open place is a column
+   * somebody can point somebody else at, so it stays in the address, it earns
+   * a history entry, and Back closes it. The cross does the same thing by the
+   * same road.
+   */
+
+  function itemById(id) {
+    var items = (state.list && state.list.items) || [];
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].place === id) return items[i];
+    }
+    return null;
+  }
+
+  function listAddress(at) {
+    return '/list/' + encodeURIComponent(state.list.id) +
+      (at ? '?at=' + encodeURIComponent(at) : '');
+  }
+
+  function openPlace(id, push) {
+    if (!mapped() || !dom.aside) return;
+    var item = itemById(id);
+    /* A row the catalogue has lost has no pin and no card: there is nothing to
+       show beside a map that does not have it. The row stays in the column
+       with its sentence, which is where it can be read. */
+    if (!item || typeof item.lat !== 'number' || typeof item.lng !== 'number') return;
+
+    state.at = id;
+    clear(dom.aside);
+    dom.aside.hidden = false;
+    dom.aside.appendChild(placeCard(item));
+    dom.aside.scrollTop = 0;
+    markOpenRow();
+
+    TTBListMap.reserve(reserved());
+    TTBListMap.open(id, [item.lat, item.lng]);
+    if (push) history.pushState({ at: id }, '', listAddress(id));
+  }
+
+  /* The cross, Escape and Back all land here. `asked` is the first two of
+     those: a press somebody made, which is worth an entry in the history and
+     a line in the console. Back has already moved the address and is only
+     telling the page to catch up. */
+  function shutPlace(asked) {
+    if (!dom.aside || !state.at) return;
+    var was = state.at;
+    state.at = '';
+    clear(dom.aside);
+    dom.aside.hidden = true;
+    markOpenRow();
+
+    TTBListMap.reserve(reserved());
+    /* The halo comes off and the city stays exactly where it was. A close that
+       flew the map back to where it started would be undoing a journey
+       somebody made on purpose; handing the list back is the whole of what was
+       asked for, and it is the rule closePanel() keeps on the map. */
+    TTBListMap.open('');
+    if (!asked) return;
+    TTBTrack.event('place_close', { place: was });
+    history.pushState({ at: '' }, '', listAddress(''));
+  }
+
+  /* Which row the second column is about, marked down its inside edge the way
+     the map marks the row it has open. Set on rows that are already drawn
+     rather than by redrawing them: the column is what somebody is reading, and
+     rebuilding it would take their scroll with it. */
+  function markOpenRow() {
+    if (!dom.found) return;
+    var rows = dom.found.querySelectorAll('.item');
+    for (var i = 0; i < rows.length; i++) {
+      rows[i].classList.toggle('is-open', rows[i].getAttribute('data-place') === state.at);
+    }
   }
 
   /* The site answered nothing at all: offline, or a Function that is not
@@ -680,7 +936,7 @@
         keepCount(l.keeps)
       ])
     ]);
-    return el('li', { className: 'lists-index-row' }, [box, mapLink(l.id, 'lists-index-map')]);
+    return lights(el('li', { className: 'lists-index-row' }, [box, mapLink(l.id, 'lists-index-map')]), l.id);
   }
 
   /* ------------------------------------------------------------ one person
@@ -713,6 +969,11 @@
     }
 
     var wrap = el('div', { className: 'lists-stack' });
+    /* Everybody's lists is the depth above a person's, and on a map that is
+       where the back at the top of the column goes. Under 860px the foot of
+       the page carries the way back to the map instead, which is what it has
+       always carried. */
+    if (mapped()) wrap.appendChild(upLink());
 
     wrap.appendChild(card([
       el('p', { className: 'eyebrow', textContent: t('profileEyebrow') }),
@@ -746,7 +1007,7 @@
       wrap.appendChild(ul);
     }
 
-    wrap.appendChild(backLink());
+    if (!mapped()) wrap.appendChild(backLink());
     return wrap;
   }
 
@@ -1122,6 +1383,9 @@
       dom.allBody.appendChild(dom.allList);
     }
     moreLine();
+    /* The rows changed without the page around them being redrawn — a search,
+       or another twenty appended — so the city under them has to be told. */
+    paintMap();
   }
 
   /* The strip: five compact cards, the sky on the left and the title beside
@@ -1135,7 +1399,7 @@
     lists.forEach(function (l) {
       var line = el('p', { className: 'lists-all-meta mono' });
       allMeta({ keeps: l.keeps, by: null }, line);
-      ul.appendChild(el('li', { className: 'lists-index-row' }, [
+      ul.appendChild(lights(el('li', { className: 'lists-index-row' }, [
         el('div', { className: 'lists-start-card' }, [
           /* Not the wide sky: at sixty-four pixels a line of mono across it
              would be the loudest thing on the card, so the scale is left to
@@ -1150,7 +1414,7 @@
             }, [listPin(l), el('span', { textContent: l.title })]), 'list_page', { list_id: l.id })
           ])
         ])
-      ]));
+      ]), l.id));
     });
     return el('section', { className: 'lists-start' }, [
       el('h2', { className: 'lists-section' }, [
@@ -1226,6 +1490,11 @@
      wait on — and a page that never gets it shows each list on plain paper,
      which is still the shape of the list. */
   function sky(l, wide) {
+    /* Above 860px the city is behind the rows at full size, with this list's
+       own places on it the moment a pointer lands on the row. A postage stamp
+       of the same picture on the card would be the answer drawn twice, the
+       smaller one first. */
+    if (mapped()) return null;
     if (!l.dots || !l.dots.length) return null;
     var box = el('div', { className: 'lists-sky', 'aria-hidden': 'true' });
     box.ttbSky = {
@@ -1333,7 +1602,7 @@
      screen and painted into every sky already drawn; a sky drawn later — a
      page of Show more — draws its own, because state.city is set by then. */
   function cityDots() {
-    if (state.city) return;
+    if (state.city || mapped()) return;
     getJSON('/data/city.json').then(function (dots) {
       if (!dots || !dots.length) return;
       state.city = dots;
@@ -1408,7 +1677,7 @@
        The class says what is in the corner rather than whose list it is,
        because /account.html borrows this row too and has nothing in the
        corner either. */
-    return el('li', { className: 'lists-index-row' }, [
+    return lights(el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card' + (l.mine ? '' : ' has-keep') }, [
         /* The sky first, above the title, where a picture goes on a card. */
         sky(l, true),
@@ -1425,7 +1694,7 @@
         l.keeps = n;
         allMeta(l, line);
       })
-    ]);
+    ]), l.id);
   }
 
   /* The one line of facts under a title: how many people kept it, and whose it
@@ -1520,10 +1789,16 @@
     }
 
     var wrap = el('div', { className: 'lists-stack' });
+    /* On a map the column is the whole page and the way out is a named row at
+       the top of it: this list belongs to somebody, and their other lists are
+       where it goes. The bar and the dock below are the phone's arrangement of
+       the same two facts — which list you are reading, and where to go next —
+       and drawing both would say each of them twice. */
+    if (mapped()) wrap.appendChild(upLink());
     /* The bar first, and it stays there: a list runs to twenty places and
        everything saying what you were reading used to scroll away with the
        head card. Only on somebody else's — see listBar(). */
-    var bar = list.mine ? null : listBar(list);
+    var bar = list.mine || mapped() ? null : listBar(list);
     if (bar) wrap.appendChild(bar);
     wrap.appendChild(list.mine ? listHeadMine(list) : listHead(list));
     if (bar) nameWhenPast(bar, wrap.querySelector('.lists-title'));
@@ -1567,7 +1842,7 @@
        who had scrolled the whole list to find it. Both of the doors that
        replace it are fixed to the window instead, so they are there for the
        whole of the read rather than at the end of it. */
-    if (!list.mine) wrap.appendChild(listDock());
+    if (!list.mine && !mapped()) wrap.appendChild(listDock());
 
     return wrap;
   }
@@ -2315,6 +2590,203 @@
     }
   }
 
+  /* Google's week, Monday first: seven rows, each either the hours it opens or
+     the word for shut. The times arrive as digits — "11:00-22:00" — and
+     nothing in them belongs to a language, so the only translated things are
+     the day names and "Closed". The map's hoursBlock() draws the same table
+     from the same field; restated here for the same reason fold(), typeLabel()
+     and sourceLine() are, which is that these two pages share no module.
+
+     A place with no hours in the export gets no table, and so does a reader
+     whose language has not filled the day names in: seven rows labelled by
+     nothing are worse than no rows at all. */
+  function hoursBlock(item) {
+    var week = item.hours || [];
+    if (week.length !== 7) return null;
+    var names = (t('days') || '').split('|');
+    if (names.length !== 7) return null;
+
+    var today = tallinnWeekday();
+    var dl = el('dl', { className: 'facts is-hours' });
+    for (var i = 0; i < 7; i++) {
+      var when = i === today ? 'is-today' : null;
+      dl.appendChild(el('dt', { className: when, textContent: names[i] }));
+      dl.appendChild(el('dd', {
+        className: when,
+        /* An en dash between the two times, which is what a range is set with
+           everywhere else on this site. Google writes a hyphen. */
+        textContent: week[i] ? week[i].split('-').join('–') : t('closed')
+      }));
+    }
+    return dl;
+  }
+
+  /* Which day it is where the food is, 0 for Monday. Tallinn rather than the
+     reader's own clock: the hours are a fact about a door in this city, and
+     somebody reading a list from Lisbon on a Sunday evening should see Monday
+     marked exactly when the city they are flying to has got there. */
+  function tallinnWeekday() {
+    var order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    try {
+      var name = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Tallinn', weekday: 'short'
+      }).format(new Date());
+      var found = order.indexOf(name);
+      if (found !== -1) return found;
+    } catch (e) { /* no Intl, or no zone data: the reader's own day will do */ }
+    return (new Date().getDay() + 6) % 7;
+  }
+
+  /* --------------------------------------------- the card beside the list
+   *
+   * One place off an open list, in the second column. Two cards, and which one
+   * is drawn is the only thing on this page that being on my map decides.
+   *
+   * A PLACE OFF THE EXPORT CARRIES GOOGLE'S WHOLE HALF
+   *
+   * The score and the band, the address and the number, the week, and the four
+   * things you can act on — because somebody looking at a name on a list is
+   * deciding whether to walk there, and a card that knows the address but not
+   * whether the door opens on a Sunday is thinner than the row it was filled
+   * from. What it does not carry is a write-up, a reel or a photograph: being
+   * on my map is the verdict and a list is not a way around it. It is the same
+   * card renderListOnly() draws in the map's panel, in the same order and out
+   * of the same fields.
+   *
+   * A place a stranger typed in by hand keeps the short version — a name typed
+   * into a form is not a description, a phone number or a week.
+   *
+   * A PLACE OF MINE IS A DOOR TO THE WRITE-UP AND NOT A COPY OF IT
+   *
+   * The write-up is a blurb, a reel, a lightbox of photographs and a story
+   * clock, and all of it is the map's card. Drawing a second one here would be
+   * the worse copy the README warned about for as long as the lists had no map
+   * at all — so this card says what it is, who put it on the list and what
+   * they said about it, and hands the rest over with one press. That press is
+   * the only thing on this page besides the wordmark that leaves it, and it is
+   * asked for rather than sprung.
+   */
+  function placeCard(item) {
+    var box = el('section', { className: 'card lists-place' + (item.map ? ' is-mine' : '') });
+
+    var x = el('button', {
+      type: 'button',
+      className: 'panel-close',
+      'aria-label': t('close'),
+      title: t('close'),
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_X + '</svg>'
+    });
+    x.addEventListener('click', function () { shutPlace(true); });
+    box.appendChild(x);
+    box.appendChild(el('h2', { className: 'lists-place-name', tabindex: '-1', textContent: item.name }));
+
+    /* Whose place this is, before anything else about it. On my map, or on
+       somebody's list and nowhere else — and the second of those two names the
+       person, because "not on my map" without whose list it came off reads as
+       the site apologising rather than as an attribution. */
+    box.appendChild(el('p', {
+      className: 'muted-note',
+      textContent: item.map
+        ? t('listsPlaceMine')
+        : state.list.by ? t('listNotMineBy', { name: state.list.by }) : t('listNotMine')
+    }));
+
+    /* The sentence its owner wrote, above everything either Google or I have
+       to say: it is the reason this place is on a list at all, and the only
+       part of the card written by a person. */
+    if (item.say) box.appendChild(el('p', { className: 'lists-place-say', textContent: item.say }));
+
+    /* What kind of place it is and what it charges. Off the export it is
+       Google's line, led by the attribution, exactly as a row of this list
+       already draws it. On my map the gauge and the types are the map's own
+       and say so by carrying no attribution at all. */
+    var source = item.map ? mineLine(item) : sourceLine(item);
+    if (source) box.appendChild(el('p', { className: 'lists-place-source' }, [source]));
+
+    if (item.address || item.phone) {
+      box.appendChild(el('dl', { className: 'facts' }, [
+        item.address ? el('dt', { textContent: t('address') }) : null,
+        item.address ? el('dd', { textContent: item.address }) : null,
+        item.phone ? el('dt', { textContent: t('phone') }) : null,
+        item.phone ? el('dd', {}, [
+          TTBTrack.click(el('a', { href: 'tel:' + item.phone.replace(/[^+\d]/g, ''), textContent: item.phone }),
+            'call_place', { place: item.name })
+        ]) : null
+      ]));
+    }
+
+    var week = hoursBlock(item);
+    if (week) {
+      box.appendChild(el('h3', { className: 'eyebrow', textContent: t('hours') }));
+      box.appendChild(week);
+    }
+
+    box.appendChild(el('div', { className: 'link-row' }, ways(item)));
+    return box;
+  }
+
+  /* The gauge and the types for a place on my map, with nobody's name in
+     front of them. sourceLine() is the same line about a place off the export
+     and leads with "According to Google", which is the whole reason that one
+     is allowed to exist; this one is mine, and an attribution on it would be
+     the site crediting somebody else for its own verdict. */
+  function mineLine(item) {
+    var kinds = (item.types || []).map(typeLabel).filter(Boolean).join(' · ');
+    if (!kinds && !item.price) return null;
+    return el('span', { className: 'place-source mono' }, [
+      item.price ? priceGauge(item.price) : null,
+      kinds ? el('span', { textContent: kinds }) : null
+    ]);
+  }
+
+  /* What the card can do, in the order it does it. The one filled press is
+     first and is the point of the card: the write-up for a place of mine,
+     directions for one I have never been to. Everything after it is an .alt,
+     which is design rule 5 — the accent is spent once per surface. */
+  function ways(item) {
+    var out = [];
+    if (item.map) {
+      /* The write-up is filed under the map's own id, which is the one
+         exception ?spot= makes: a Google row that is also on my map carries
+         mapId, and everything else is already the id the list stores. */
+      out.push(TTBTrack.click(el('a', {
+        className: 'link-btn is-primary',
+        href: '/?spot=' + encodeURIComponent(item.mapId || item.place),
+        textContent: t('listsReadUp')
+      }), 'place_writeup', { place: item.name }));
+    }
+    out.push(TTBTrack.click(el('a', {
+      className: 'link-btn' + (item.map ? '' : ' is-primary'),
+      href: 'https://www.google.com/maps/dir/?api=1&destination=' + item.lat + ',' + item.lng,
+      target: '_blank',
+      rel: 'noopener',
+      textContent: t('directions')
+    }), 'directions', { place: item.name }));
+    if (item.website) {
+      out.push(TTBTrack.click(el('a', {
+        className: 'link-btn',
+        href: item.website,
+        target: '_blank',
+        rel: 'noopener',
+        textContent: t('website')
+      }), 'website', { place: item.name }));
+    }
+    /* And the listing everything above it came off. Last on purpose: the
+       address, the number and the week are already here, so this is for the
+       half the export does not carry — the photographs, the reviews, and what
+       somebody said about the queue on a Saturday. */
+    if (item.mapsUrl) {
+      out.push(TTBTrack.click(el('a', {
+        className: 'link-btn',
+        href: item.mapsUrl,
+        target: '_blank',
+        rel: 'noopener',
+        textContent: t('googleSee')
+      }), 'google_listing', { place: item.name }));
+    }
+    return out;
+  }
+
   /* ------------------------------------------------------------- one place */
 
   /* Where a row points, and it is the other half of this page: this same list
@@ -2341,6 +2813,12 @@
      a link to the map for one would arrive on a map that does not have it. */
   function placeHref(item) {
     if (!item.map && (typeof item.lat !== 'number' || typeof item.lng !== 'number')) return '';
+    /* Above 860px the place opens in the column beside this one and the page
+       does not move, so the address is this page with the place named on it —
+       which is also what a link copied out of the bar then says. Under it the
+       row goes where it always went: the map, on this list, standing on the
+       place that was pressed. */
+    if (mapped()) return listAddress(item.place);
     return '/?list=' + encodeURIComponent(state.list.id) +
       '&at=' + encodeURIComponent(item.place);
   }
@@ -2365,7 +2843,7 @@
        owed, and none of these leave it any more. `map` says which roll the
        place came off, which is all it can say now that every row goes to the
        same place — it used to name one of two destinations. */
-    return TTBTrack.click(el('a', {
+    var link = el('a', {
       className: 'item-name' + (whole ? ' lists-open' : ''),
       href: href
     }, [
@@ -2374,7 +2852,21 @@
         className: 'item-where mono',
         html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_PIN + '</svg>'
       })
-    ]), 'place_link', {
+    ]);
+    /* On a map the press opens the column beside this one instead of making
+       the journey the href describes — but the href stays a real address, so a
+       middle-click or a ctrl-click still opens the place in a tab of its own,
+       and a browser that never runs this line still goes somewhere true. The
+       modifiers are checked for exactly that reason: swallowing one is how a
+       page takes a tab away from somebody who asked for it. */
+    if (mapped()) {
+      link.addEventListener('click', function (ev) {
+        if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || ev.button) return;
+        ev.preventDefault();
+        openPlace(item.place, true);
+      });
+    }
+    return TTBTrack.click(link, 'place_link', {
       place: item.name,
       map: item.map ? 'mine' : item.google ? 'google' : 'added'
     });
@@ -2401,7 +2893,12 @@
      muted span it always did, and the row keeps its plain edge. */
   function itemRow(item, i) {
     var door = !!placeHref(item);
-    return el('li', { className: 'item' + (door ? ' is-door' : '') }, [
+    return el('li', {
+      className: 'item' + (door ? ' is-door' : '') + (state.at === item.place ? ' is-open' : ''),
+      /* Which place this row is about, so the mark on the open one can be
+         moved without redrawing the column somebody is reading. */
+      'data-place': item.place
+    }, [
       el('span', { className: 'item-n mono', 'aria-hidden': 'true', textContent: String(i + 1) }),
       el('div', { className: 'item-body' }, [
         placeName(item, door),
@@ -3223,53 +3720,14 @@
    * way to say where somewhere is that needs no address to exist, no
    * geocoder, and no second service to be up.
    *
-   * Leaflet is fetched here and nowhere else on this page. Somebody who opened
-   * a link to read a top ten never asks for it.
+   * Leaflet comes from TTBListMap.leaflet() in assets/listmap.js, which owns
+   * the CDN, the version and the two integrity hashes. They were written out
+   * here as well for as long as this picker was the only map on the page;
+   * above 860px the page is a map now, and two copies of one version number
+   * is exactly the drift assets/basemap.js exists to stop. On a phone nothing
+   * asks for it until this form is opened, which is still the whole of what
+   * somebody reading a top ten downloads.
    */
-
-  var LEAFLET_JS = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-  var LEAFLET_CSS = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-  var LEAFLET_JS_HASH = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
-  var LEAFLET_CSS_HASH = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
-
-  /* The same version, the same integrity hashes and the same CDN index.html
-     uses, so a browser that has been to the map already has both files and
-     this costs nothing. Kept in step by hand: two files naming one version is
-     the price of the map page not loading a second copy of its own script. */
-  var leafletPromise = null;
-
-  function ensureLeaflet() {
-    if (window.L) return Promise.resolve(window.L);
-    if (leafletPromise) return leafletPromise;
-
-    leafletPromise = new Promise(function (resolve, reject) {
-      var css = el('link', {
-        rel: 'stylesheet',
-        href: LEAFLET_CSS,
-        integrity: LEAFLET_CSS_HASH,
-        crossorigin: ''
-      });
-      document.head.appendChild(css);
-
-      var js = el('script', {
-        src: LEAFLET_JS,
-        integrity: LEAFLET_JS_HASH,
-        crossorigin: ''
-      });
-      js.addEventListener('load', function () {
-        window.L ? resolve(window.L) : reject(new Error('leaflet loaded without L'));
-      });
-      js.addEventListener('error', function () { reject(new Error('leaflet unreachable')); });
-      document.head.appendChild(js);
-    }).catch(function (err) {
-      /* Let the next press try again rather than remembering the failure
-         forever: this is one flaky request on a CDN, not a broken page. */
-      leafletPromise = null;
-      throw err;
-    });
-
-    return leafletPromise;
-  }
 
   /* Where the pin starts, and what the form means by "near Tallinn". The
      server checks this again and is the one that binds — see TALLINN in
@@ -3386,7 +3844,7 @@
        lookup still moves `at`, it just has no pin to move with it. */
     var movePin = null;
 
-    ensureLeaflet().then(function (L) {
+    TTBListMap.leaflet().then(function (L) {
       var map = L.map(canvas, {
         center: CITY,
         zoom: 13,
@@ -3838,8 +4296,29 @@
       paintPicker();
     });
     document.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Escape' && !dom.pickerScrim.hidden) closePicker();
+      if (ev.key !== 'Escape') return;
+      /* The picker is a modal over everything, so it answers first. */
+      if (!dom.pickerScrim.hidden) return closePicker();
+      if (state.at) shutPlace(true);
     });
+
+    /* Back, and the cross, and Escape are one gesture with three faces: the
+       open place is in the address, so the browser's own button closes it.
+       Anything further back than that is a real journey and is left alone. */
+    window.addEventListener('popstate', function () {
+      if (state.view !== 'one' || !state.list) return;
+      var at = new URLSearchParams(window.location.search).get('at') || '';
+      if (at === state.at) return;
+      if (at) openPlace(at, false); else shutPlace(false);
+    });
+
+    /* The window crossed 860px. Every row on the page is a different thing on
+       either side of it — where it points, whether it carries a stamp of the
+       city, whether the way out is at the top or fixed to the foot — so the
+       page is drawn again rather than patched. It is a rare thing to do and a
+       cheap one; what it costs is a search half typed into the field, which is
+       a fair price for not having two layouts half applied at once. */
+    TTBListMap.onWidth(render);
 
     /* The last moment a script is promised on a phone: the tab is switched
        away, the screen is locked, the browser is put in the background.
@@ -3936,6 +4415,12 @@
       /* And the rows of one list, under its own field. Claimed by renderOne()
          for the same reason, and null on every other view. */
       found: null,
+      /* The map under the whole page above 860px, and the second column that
+         opens over it when a place is pressed. Both in lists.html: the map so
+         Leaflet has somewhere to mount before anything is drawn, the column so
+         that opening a place does not rebuild the list beside it. */
+      map: $('lists-city'),
+      aside: $('lists-aside'),
       who: $('lists-who'),
       btnRadio: $('btn-radio'),
       radioName: $('radio-name'),
@@ -3972,6 +4457,13 @@
     }
     state.view = all ? 'all' : who ? 'who' : 'one';
     if (all) { state.q = wantedQuery(); state.sort = wantedSort(); }
+    /* And the place named beside it, which is a state of this page rather
+       than a door onto it — see **a place beside it** above. Held until
+       paintMap() has the list to find it on; dropped by render() on any view
+       that cannot be standing on one. */
+    if (state.view === 'one') {
+      state.at = new URLSearchParams(window.location.search).get('at') || '';
+    }
 
     /* The strings and the data at once. The strings are a static file behind a
        revalidating cache and usually free; the data is the one request this
