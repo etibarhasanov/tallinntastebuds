@@ -2086,8 +2086,8 @@ map for everybody else.
 
 ### Where the account lives, and when it is offered
 
-The account button is the **top button on the left rail** — above Surprise me,
-the radio, the colour swatch and the locate button, because it is the only one
+The account button is the **top button on the left rail** — above Surprise
+me, the colour swatch and the locate button, because it is the only one
 whose answer outlasts the visit, and because once somebody is signed in it
 wears their name and so tells them whose list the map is holding. It is
 **hidden until `/api/account` says the database behind it is bound**, so on a
@@ -9956,13 +9956,16 @@ design notes has that argument.
 
 ### The rail introduces itself on a phone
 
-The rail runs the account, everybody's lists, Surprise me, Ask, the radio, the
-colour swatch, the locate button and, last, How this works — who you are and
-what everybody else has written, then the ones that change your evening, then
-the two that change the map, then the one that is about the rest, because a
+The rail runs the account, everybody's lists, Surprise me, Ask, the colour
+swatch, the locate button and, last, How this works — who you are and what
+everybody else has written, then the ones that change your evening, then the
+one that changes the map, then the one that is about the rest, because a
 rail that opens with a colour picker reads as a settings strip rather than as
-the shortcut it is. The lists pill is the one that is a link rather than a
-press, and the only one wearing an emoji rather than a drawing: see **Two
+the shortcut it is. The radio left it for the corner beside the language
+switch, in the same pill the lists, account, blog and feedback pages already
+stand it in — see **The radio** below. The lists pill is the one that is a
+link rather than a press, and the only one wearing an emoji rather than a
+drawing: see **Two
 doors to the lists** under **Lists**.
 
 On a phone it used to arrive as a column of bare discs: a head and shoulders,
@@ -9973,8 +9976,8 @@ not press them.
 
 So they say what they are on arrival and then stop saying it. Each opens
 wearing its label — your username or "Account", "Everybody's lists", Surprise
-me, Ask, the station, the style you are about to switch to, "Show my
-location", "How this works" —
+me, Ask, the style you are about to switch to, "Show my location", "How this
+works" —
 300ms apart in the order they are stacked, so the eye tracks down the rail
 rather than being asked to read the whole column at once. Each holds for
 `HINT_MS` (4.2 seconds) and collapses back to its icon, the same disc as
@@ -10029,15 +10032,18 @@ who arrived on `?type=bakery` has the row open already with their chip in it,
 and one who presses a chip during the four seconds keeps both the chip and the
 row it is in. The same pair does the same job for the walk, below.
 
-Two of them say something again when pressed: starting the radio opens the
-station's name, so a triangle in a circle is not the only thing saying what is
-playing, and pressing the swatch opens the name of the style it has just
-become the way back to. Surprise me and Ask do the opposite and shut their own
-label early — the question each of them answers is the question its label was
-there to ask, and each shuts its own: pressing one of the two is not an answer
-to the other. How this works shuts all of them, the arrival sentence included,
-because the walk it starts opens the labels it wants itself and two
-introductions talking at once is neither.
+One of them says something again when pressed: pressing the swatch opens the
+name of the style it has just become the way back to. Surprise me and Ask do
+the opposite and shut their own label early — the question each of them
+answers is the question its label was there to ask, and each shuts its own:
+pressing one of the two is not an answer to the other. How this works shuts
+all of them, the arrival sentence included, because the walk it starts opens
+the labels it wants itself and two introductions talking at once is neither.
+The radio does the same trick from outside this cascade now — starting it
+still opens the station's name, so a triangle in a circle is not the only
+thing saying what is playing — because `openHint()` and `closeHint()` answer
+to the button by its key whichever corner it stands in. See **The radio**
+below.
 
 **It repeats in the new language when you switch languages.** Every other
 label on the page changes in front of you; the ones on the rail are the only
@@ -10242,14 +10248,14 @@ The walk, in order, and what each step is anchored to:
    search field, since there is no button up there to point at: the whole map
    as a list, with the field at the top of it.
 3. The language switcher.
-4. The chip row, which on a phone the walk rolls out of the **Filters**
+4. The radio, next to it — left out when `data/radio.json` gave the
+   language no station and the button never appeared.
+5. The chip row, which on a phone the walk rolls out of the **Filters**
    button first, so that there is a row to point at.
-5. **Surprise me**, with its label held open for as long as the step is up —
+6. **Surprise me**, with its label held open for as long as the step is up —
    which is every width where the pill is a disc: a phone always, and a
    desktop whenever the pointer is somewhere other than the corner.
-6. **Ask**, the same way.
-7. The radio, left out when `data/radio.json` gave the language no station
-   and the button never appeared.
+7. **Ask**, the same way.
 8. The account button, left out when `/api/account` never said accounts
    work — there is no button to point at.
 9. **Everybody's lists**, straight after it, the way the two stand on the
@@ -10266,10 +10272,10 @@ button, the language switcher and the radio had no step at all, and a
 visitor who had just been told what some of the buttons do was left to
 guess at the rest; the walk now takes in everything on the page that a
 first visitor might press, in the order it sits on the page: the pin, the
-two buttons top right, the filters, the rail from the top down, and last
-the chip. The colour swatch and the locate button are the two it still
-passes over: both are settings, both are plain on sight, and a walk that
-stops to explain a crosshair is a walk that gets skipped.
+buttons top right, the filters, the rail from the top down, and last the
+chip. The colour swatch and the locate button are the two it still passes
+over: both are settings, both are plain on sight, and a walk that stops to
+explain a crosshair is a walk that gets skipped.
 
 Every step is about something that can be pressed. The walk used to open
 on the mark, with the one sentence the site rests on set large in the
@@ -11171,14 +11177,15 @@ change those values and the whole site follows.
 
 **The chrome.** Everything floats on the map: nothing has a page around it,
 and the brand does not even have that. One strip across the top — the mark,
-the name and the one sentence on the left, **Places** and the language switch
-on the right — and the filter chips on the line directly beneath it. The two
-things in that corner are two doors: the name goes home, which from a place,
-a list, a type or a story is the way back to the whole map, and the mark opens
-the stories when there are any. Neither does the other's job. The
-controls that are questions about the *map* rather than about the page stand
-on the map instead, in the left rail: the account at its head, then Surprise
-me, Ask and the radio, then the colour switch, with locate at its foot. There
+the name and the one sentence on the left, the radio, **Places** and the
+language switch on the right — and the filter chips on the line directly
+beneath it. The two things in that corner are two doors: the name goes home,
+which from a place, a list, a type or a story is the way back to the whole
+map, and the mark opens the stories when there are any. Neither does the
+other's job. The controls that are questions about the *map* rather than
+about the page stand on the map instead, in the left rail: the account at
+its head, then Surprise me and Ask, then the colour switch, with locate at
+its foot. There
 are no zoom buttons; the wheel, a double-click, a pinch and the `+`/`-` keys
 all still zoom, and two more buttons standing on the map were paying for a job
 the map already does. The chips used to sit at the bottom,

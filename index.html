@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=6661cbcb">
+<link rel="stylesheet" href="assets/styles.css?v=ab47d1ba">
 </head>
 <body>
 
@@ -206,11 +206,10 @@
     <span class="rail-label" data-i18n="flashDoor">Estonian flashcards</span>
   </a>
   <!-- Then what the rail does, before what the rail looks like. Surprise me
-       and the radio are the two buttons here that *do* something to the
-       evening; the colour swatch and "where am I" are settings, and settings
-       belong under the things they settle. On a phone that order is the whole
-       point: the buttons at the top are the ones that introduce themselves
-       first. -->
+       is the one button here that *does* something to the evening; the
+       colour swatch and "where am I" are settings, and settings belong under
+       the things they settle. On a phone that order is the whole point: the
+       buttons at the top are the ones that introduce themselves first. -->
   <button type="button" class="rail-btn" id="btn-random" data-i18n-title="randomPick" data-i18n-aria-label="randomPick" aria-label="Surprise me" title="Surprise me">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <rect x="4" y="4" width="16" height="16" rx="4"/>
@@ -232,15 +231,6 @@
       <circle cx="15.4" cy="12.4" r="1.15" class="pip"/>
     </svg>
     <span class="rail-label" data-i18n="askOpen">Ask</span>
-  </button>
-  <button type="button" class="rail-btn radio" id="btn-radio" aria-pressed="false" hidden
-          data-i18n-title="radioPlay" data-i18n-aria-label="radioPlay"
-          aria-label="Play the radio" title="Play the radio">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path class="ico-play" d="M8 5.5l11 6.5-11 6.5z"/>
-      <path class="ico-stop" d="M8 6.5h3v11H8zM13 6.5h3v11h-3z"/>
-    </svg>
-    <span class="radio-name rail-label" id="radio-name"></span>
   </button>
   <div class="styles" id="styles" role="group" data-i18n-aria-label="styleLabel" aria-label="Colour"></div>
   <button type="button" class="rail-btn" id="btn-locate" data-i18n-aria-label="locate" aria-label="Show my location">
@@ -300,6 +290,28 @@
 
 <div class="controls">
   <div class="seg" id="lang-switch" role="group" data-i18n-aria-label="language" aria-label="Language"></div>
+  <!-- Next to the language rather than down the rail with the buttons that
+       change the evening: it wears the map's own pill, the same one the
+       lists, account, blog, feedback and flashcards pages already stand it
+       beside their own language switch — one design for the button rather
+       than a second one for the corner it used to keep. It left the rail's
+       arrival cascade with it: HINT_KEYS in assets/app.js no longer opens
+       its label on the way in, because a pill flashing open up here while
+       the rail explains itself down the left reads as two introductions
+       rather than one. Pressing play still opens the station's name for a
+       few seconds — see the radio's own onchange in assets/app.js — so
+       nothing about starting it changed, only where it stands while off.
+       Hidden until data/radio.json is read, and for good if there is no
+       station in it. -->
+  <button type="button" class="rail-btn radio" id="btn-radio" aria-pressed="false" hidden
+          data-i18n-title="radioPlay" data-i18n-aria-label="radioPlay"
+          aria-label="Play the radio" title="Play the radio">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path class="ico-play" d="M8 5.5l11 6.5-11 6.5z"/>
+      <path class="ico-stop" d="M8 6.5h3v11H8zM13 6.5h3v11h-3z"/>
+    </svg>
+    <span class="radio-name rail-label" id="radio-name"></span>
+  </button>
   <!-- The way into the list, and a phone's alone. Above 860px the places
        column is open from the moment the map draws and never shuts, so a
        button that opens it is a button that is always already pressed — see
@@ -651,6 +663,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=5b6a9d35" defer></script>
+<script src="assets/app.js?v=429dfdf8" defer></script>
 </body>
 </html>

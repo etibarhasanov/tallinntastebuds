@@ -4111,13 +4111,18 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     opacity: 0;
     transition: opacity .22s var(--ease);
   }
-  body.rail-open .rail-btn,
+  /* Scoped to .rail and not to every .rail-btn: the radio wears this pill
+     too, outside the rail now, next to the language switch, and a hand
+     approaching the rail on the left must not pop a button open in the
+     top-right corner. Its own hint-open still reaches it — that one is
+     pressed for, not walked past. */
+  body.rail-open .rail .rail-btn,
   .rail-btn.hint-open {
     grid-template-columns: auto 1fr;
     padding: 0 15px 0 8px;
     gap: 8px;
   }
-  body.rail-open .rail-label,
+  body.rail-open .rail .rail-label,
   .hint-open > .rail-label { opacity: 1; }
 }
 

@@ -2373,15 +2373,18 @@
           : (dom.list.querySelector('.search-field') || dom.panel);
       } },
     { key: 'explainLang', at: function () { return dom.langSwitch; } },
+    /* Right after the language switch now, the way the two stand in the
+       corner — see The radio in README.md for why it left the rail for
+       here. */
+    { key: 'explainRadio', at: function () { return dom.btnRadio; },
+      when: function () { return !dom.btnRadio.hidden; },
+      pills: function () { return [dom.btnRadio]; } },
     { key: 'explainChips', drawer: true,
       at: function () { return chipRow() || dom.btnFilters; } },
     { key: 'explainRandom', at: function () { return dom.btnRandom; },
       pills: function () { return [dom.btnRandom]; } },
     { key: 'explainAsk', at: function () { return dom.btnAsk; },
       pills: function () { return [dom.btnAsk]; } },
-    { key: 'explainRadio', at: function () { return dom.btnRadio; },
-      when: function () { return !dom.btnRadio.hidden; },
-      pills: function () { return [dom.btnRadio]; } },
     { key: 'explainSave', at: function () { return dom.btnAccount; },
       when: function () { return !dom.btnAccount.hidden; },
       pills: function () { return [dom.btnAccount]; } },
@@ -3914,8 +3917,14 @@
   }
 
   var HINT_MS = 4200;
-  /* Top to bottom, which is the order they open in. */
-  var HINT_KEYS = ['account', 'lists', 'flash', 'random', 'ask', 'radio',
+  /* Top to bottom, which is the order they open in. The radio left this
+     array when the button left the rail for the corner beside the language
+     switch: opening its label as the ninth thing in a column cascading down
+     the left edge made no sense for a pill that no longer stands in that
+     column. It still opens on its own, the moment it is pressed — see
+     mountRadio()'s onchange, below — which is a different piece of code
+     from this cascade and did not move with it. */
+  var HINT_KEYS = ['account', 'lists', 'flash', 'random', 'ask',
                    'style', 'locate', 'explain', 'feedback'];
   var hintTimers = {};
 
@@ -3928,21 +3937,23 @@
      an unhurried pace, and clears. Longer than a rail label because it is a
      sentence rather than two words, and it opens ahead of them so the claim
      lands before the buttons start introducing themselves under it. */
-  var BRAND_MS = 7900;
+  var BRAND_MS = 7600;
   var BRAND_IN = 260;
   /* The rail follows it rather than racing it. By the time the first pill
      opens the sentence has been up for the best part of a second, and the
      last one collapses just before the sentence does, so the corner empties
-     in the order it filled. Ten pills, 300ms apart and held for 4.2s each,
-     put that last collapse at 8.05s against the sentence's 8.16s.
+     in the order it filled. Nine pills, 300ms apart and held for 4.2s each,
+     put that last collapse at 7.75s against the sentence's 7.86s.
 
-     THE ROOM THAT WAS HERE HAS BEEN SPENT, AGAIN. The paragraph this used to
-     say — nine pills, BRAND_MS at 7600 — is what the flashcards door spent
-     when it joined the rail: a tenth pill at the old numbers collapsed at
-     8.05s, over a sentence that had gone at 7.86s, so BRAND_MS moved to keep
-     the same margin rather than the markup going in silently ahead of it.
-     An eleventh pill costs the same move again, and the thing to move is
-     still BRAND_MS, since the sentence is what the rail is being measured
+     THE ROOM THIS COSTS IS BORROWED, NOT FREE. It was spent once already —
+     nine pills at these same numbers is what the flashcards door found when
+     it joined the rail as a tenth, and BRAND_MS moved to 7900 to keep the
+     last collapse ahead of the sentence with the same margin. The radio's
+     move to the corner beside the language switch handed that pill back,
+     which is the only reason these numbers could come back with it — a pill
+     taken out for some other reason would not by itself make room for one
+     added later. Whichever of the two happens first, the thing to move is
+     BRAND_MS, since the sentence is what the rail is being measured
      against. */
   var RAIL_IN = 1150;
   var brandInTimer = null;
@@ -4339,8 +4350,8 @@
    * The audio, the station list, the button, the on/off and the report to
    * analytics are all assets/radio.js, shared with the lists page so that
    * walking from the map to a list does not stop the music. What is left
-   * here is what the rail does around it: the label that opens with the
-   * station's name.
+   * here is what the map does around it: the label that opens with the
+   * station's name, whichever corner the button itself stands in.
    */
   function mountRadio() {
     window.TTBRadio.mount({
