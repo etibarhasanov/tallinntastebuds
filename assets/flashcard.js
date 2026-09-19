@@ -195,6 +195,7 @@
     run: null,       // the cards left to turn over, and where in them we are
     gated: false,    // whether the gate stands in place of the next card
     editing: false,  // a deck of your own, being written rather than turned
+    editingCard: null, // the one row in the editor showing its fields open, or none
     view: 'in'       // which half of the sign-in form: 'in', 'up' or 'google'
   };
 
@@ -1150,6 +1151,21 @@
    */
   function startRun(all) {
     var cards = (state.deck && state.deck.cards) || [];
+    /* A deck of your own arrives in the order you typed it — cardsOf() in
+       functions/api/flashcard.js orders by created_at, because that is the
+       order the editor below is supposed to show. A run is not the editor:
+       the newest word always landing last would mean the word you just
+       added is always the one you are least tested on, forever. So a run of
+       your own deck sorts by id instead — minted at random and never
+       changed by anything, including editing a card's words — which shuffles
+       the deck exactly once, the moment the first two cards exist, and never
+       again: the same id sorts the same way every time this runs. A deck the
+       site ships keeps the file's own order, because that order is a
+       progression somebody wrote on purpose and shuffling it would undo the
+       one thing about it worth keeping. */
+    if (state.deck && state.deck.own) {
+      cards = cards.slice().sort(function (a, b) { return a.id < b.id ? -1 : a.id > b.id ? 1 : 0; });
+    }
     var queue = [];
     /* `c.due !== false` and not `c.due`: a card that arrives without the field
        at all is due. That is the same direction the route errs in when the two
@@ -1780,6 +1796,58 @@
    * get wrong in a link.
    */
   function cardRow(word) {
+    /* Open, this row is the same two fields addCardForm below adds a card
+       with, pre-filled and posting to a card that already exists rather than
+       a new one — one form either way, so a typo is fixed the way it was
+       made rather than by removing the card and typing it again at the back
+       of the editor's list. Only one row opens at a time: state.editingCard
+       is the id of it, or none. */
+    if (state.editingCard === word.id) {
+      var form = el('form', { className: 'ac-form' });
+      form.appendChild(el('div', { className: 'flash-pairfields' }, [
+        field('fc-efront', 'flashFront', { maxlength: String(MAX_SIDE) }),
+        field('fc-eback', 'flashBack', { maxlength: String(MAX_SIDE) })
+      ]));
+      form.querySelector('#fc-efront').value = word.front;
+      form.querySelector('#fc-eback').value = word.back;
+
+      var cancel = el('button', { type: 'button', className: 'alt', textContent: t('flashCancelEdit') });
+      cancel.addEventListener('click', function () {
+        state.editingCard = null;
+        render();
+      });
+
+      var acts = el('div', { className: 'flash-doneacts' }, [
+        actor('flashSaveCard', 'go', function (done) {
+          var front = value(form, 'fc-efront');
+          var back = value(form, 'fc-eback');
+          if (!front) { done(); complain(form, t('flashErrFront')); return; }
+          if (!back) { done(); complain(form, t('flashErrBack')); return; }
+
+          post(FLASH_API, { action: 'editcard', deck: state.deck.id, card: word.id, front: front, back: back })
+            .then(function (a) {
+              if (!a.ok || !a.out.deck) { done(); complain(form, say(a.out)); return; }
+              TTBTrack.event('flash_editcard', { deck_id: state.deck.id });
+              state.deck = a.out.deck;
+              state.editingCard = null;
+              startRun(true);
+              done();
+              render();
+            });
+        }, form),
+        cancel
+      ]);
+      form.appendChild(acts);
+
+      return el('li', { className: 'flash-row' }, [form]);
+    }
+
+    var edit = el('button', { type: 'button', className: 'alt', textContent: t('flashEditCard') });
+    edit.addEventListener('click', function () {
+      state.editingCard = word.id;
+      render();
+    });
+
     var drop = el('button', { type: 'button', className: 'alt is-danger', textContent: t('flashRemove') });
     drop.addEventListener('click', function () {
       if (drop.disabled) return;
@@ -1798,7 +1866,7 @@
         el('span', { className: 'flash-side', textContent: word.front }),
         el('p', { className: 'flash-gloss', textContent: means(word.back) })
       ]),
-      drop
+      el('span', { className: 'flash-rowacts' }, [edit, drop])
     ]);
   }
 
@@ -1856,6 +1924,7 @@
     var back = el('button', { type: 'button', className: 'alt', textContent: t('flashDone') });
     back.addEventListener('click', function () {
       state.editing = false;
+      state.editingCard = null;
       startRun(false);
       render();
       focusRun();

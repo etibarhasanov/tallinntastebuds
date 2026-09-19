@@ -7209,7 +7209,27 @@ Signed in, **Words you collected**: name a deck, and it opens on the form that
 adds the first card, because a deck with nothing in it has nothing to turn
 over. Estonian on the front, what it means on the back — in whatever language
 that is; a deck you write has one side in one language and nothing to pick — and
-a row per card with a **Remove** beside it.
+a row per card with **Edit** and **Remove** beside it. Edit opens the same two
+fields the form at the foot adds a card with, filled in, so a typo is fixed the
+way it was made rather than by removing the card and typing it again at the
+bottom of the list — the card keeps its place in the editor and whatever has
+already been learnt off it, because only the two fields change, not
+`created_at` and not a box in `flashcard_known`.
+
+**A run of your own deck is shuffled once, not typed-in order.** The editor
+above always lists a deck's cards in the order they were added — that is
+`cardsOf()`'s own `ORDER BY created_at` in `functions/api/flashcard.js`, and it
+is what makes the list something you can find your way around a minute after
+writing it. Turning the cards over is a different question: the newest word
+always landing last would mean the word you had just added was always the one
+tested least, for as long as the deck lasted. So `startRun()` in
+`assets/flashcard.js` sorts a deck of your own by card id before building the
+run — ids are minted at random and never change, editing a card's words
+included, so this shuffles the order exactly once, the first time there is
+more than one card to shuffle, and the same order comes back on every run
+after. A deck the site ships keeps the order the file gives it instead: that
+order is a progression somebody wrote on purpose, easy words before hard
+ones, and shuffling it would undo the one thing about it worth keeping.
 
 **A deck somebody wrote has exactly one reader, and it is its owner.** There is
 no sharing here, no public deck, and no link that buys anything — which is the
@@ -7234,7 +7254,7 @@ knew better.
 | say one of its cards is wrong | anybody at all, signed in or not — once per card per network, and the one word is enough to reach the line that does it |
 | have any of it remembered | any account, and it is the only thing an account is for here |
 | write a deck | any account |
-| read one, add to it, rename it, delete it | its owner, and nobody else |
+| read one, add to it, edit a card in it, rename it, delete it | its owner, and nobody else |
 | start a deck again | any account, on any deck — its own rows and nobody else's |
 
 ### The caps
@@ -10624,7 +10644,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`) — one per card answered, which of the three ways it was answered, and whether the card had been turned over first: `front` is a throw or an arrow on a card nobody opened |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
-| `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
+| `flash_deck`, `flash_card`, `flash_editcard`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |
 | `flash_keep_ask` | `deck_id` — the gate going up, one word into a deck signed out. Against `account_create` with `via: flashcard` it is how many of the people who meet it make an account, which is the only number that says whether the gate was right |
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, reported under the names the map's switch reports under, because it is the same press |

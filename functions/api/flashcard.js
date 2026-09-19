@@ -655,10 +655,11 @@ export async function onRequestPost(context) {
   const deck = await deckOf(env, body.deck, user);
   if (!deck) return json({ error: 'not-found' }, 404);
 
-  if (action === 'rename') return rename(context, body, user, deck);
-  if (action === 'drop')   return dropDeck(context, user, deck);
-  if (action === 'card')   return addCard(context, body, user, deck);
-  if (action === 'uncard') return dropCard(context, body, user, deck);
+  if (action === 'rename')   return rename(context, body, user, deck);
+  if (action === 'drop')     return dropDeck(context, user, deck);
+  if (action === 'card')     return addCard(context, body, user, deck);
+  if (action === 'uncard')   return dropCard(context, body, user, deck);
+  if (action === 'editcard') return editCard(context, body, user, deck);
 
   return json({ error: 'action' }, 400);
 }
@@ -772,6 +773,35 @@ async function dropCard(context, body, user, deck) {
   await env.DB.batch([
     env.DB.prepare('DELETE FROM flashcard_known WHERE deck_id = ? AND card_id = ?').bind(deck.id, id),
     env.DB.prepare('DELETE FROM flashcard_cards WHERE id = ? AND deck_id = ?').bind(id, deck.id),
+    env.DB.prepare('UPDATE flashcard_decks SET updated_at = ? WHERE id = ?').bind(now, deck.id)
+  ]);
+
+  return json({ deck: await ownDeckAnswer(env, deck, user) }, 200);
+}
+
+/* Both sides, changed in place. `created_at` is left alone on purpose: it is
+   what cardsOf() orders by, and a typo fixed a week later must not jump that
+   word to the back of the editor or to the front of the next run — see
+   startRun() in assets/flashcard.js for what "the front" means there. A card
+   that has been learnt keeps what it has been learnt as, wrong side and all;
+   editing the words is not a way to reset the spacing, and dropping the card
+   and adding it again already does that for anybody who wants it. */
+async function editCard(context, body, user, deck) {
+  const { env } = context;
+
+  const id = String(typeof body.card === 'string' ? body.card : '');
+  if (!MINTED.test(id)) return json({ error: 'not-found' }, 404);
+
+  const front = words(body.front, MAX_SIDE);
+  const back = words(body.back, MAX_SIDE);
+  if (!front) return json({ error: 'front' }, 400);
+  if (!back) return json({ error: 'back' }, 400);
+
+  const now = Date.now();
+  await env.DB.batch([
+    env.DB
+      .prepare('UPDATE flashcard_cards SET front = ?, back = ? WHERE id = ? AND deck_id = ?')
+      .bind(front, back, id, deck.id),
     env.DB.prepare('UPDATE flashcard_decks SET updated_at = ? WHERE id = ?').bind(now, deck.id)
   ]);
 
