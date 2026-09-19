@@ -1,12 +1,12 @@
 -- Tallinn Tastebuds — every table the site has.
 --
--- Nine things live here: the saves and their counts, the accounts a save can
--- follow a person on, the lists somebody builds and shares, the keeps that are
--- a bookmark on somebody else's list, 1,110 Tallinn venues mirrored out of
--- Google Places, the places somebody adds by hand when the catalogue does not
--- have them, what people would change about this site and who agreed with
--- them, the groups splitting a bill on the splitwise subdomain, and one
--- meta row saying which database this is. Everything the map itself draws —
+-- Ten things live here: the saves and their counts, how often each place and
+-- each filter has been pressed, the accounts a save can follow a person on, the lists somebody
+-- builds and shares, the keeps that are a bookmark on somebody else's list,
+-- 1,110 Tallinn venues mirrored out of Google Places, the places somebody adds
+-- by hand when the catalogue does not have them, what people would change
+-- about this site and who agreed with them, the groups splitting a bill on the
+-- splitwise subdomain, and one meta row saying which database this is. Everything the map itself draws —
 -- the places, the write-ups, the discounts, the stories — is a JSON file in
 -- the repository and never a row.
 --
@@ -88,6 +88,76 @@ CREATE TABLE IF NOT EXISTS save_counts (
 --   INSERT INTO save_counts (place_id, n)
 --     SELECT place_id, COUNT(*) FROM saves GROUP BY place_id
 --     ON CONFLICT(place_id) DO UPDATE SET n = excluded.n;
+
+
+-- --------------------------------------------------------- what gets pressed
+-- One row per thing somebody has pressed on this site, and how many times.
+--
+-- This is what /stats ranks and what functions/api/stats.js writes. Two kinds
+-- of thing are counted and `kind` is which:
+--
+--   'place'    a place opened — a write-up read on the map, or a card pressed
+--              on the directory at /google. The id is a slug out of
+--              data/restaurants.json or a Google key out of google_venues
+--              below, in one column and with no prefix, the same way
+--              list_items.place_id and saves.place_id hold either — a slug is
+--              lowercase letters, digits and hyphens and a Google key always
+--              carries capitals, so the two can never be confused.
+--   'filter'   a chip on the map turned on. The id is a type out of
+--              data/taxonomy.json, or 'discount', which is the one chip that
+--              is not a type. All is not a filter and is not counted: it is
+--              the way out of the chips rather than a choice of what to eat.
+--
+-- ONE TABLE AND NOT TWO
+--
+-- A place and a filter are different things, and a counts table apiece would
+-- say so in the schema. They are one table because everything around them is
+-- one thing: one route, one upsert, one read that draws the whole page, and
+-- one place to look when a number is wrong. Two tables of (id, n) would be the
+-- same statement written twice with a different noun in it, and the third kind
+-- of thing anybody wants counted would make it three. `kind` is what the page
+-- splits on, and it is in the primary key so a filter called `bakery` and a
+-- place called `bakery` could never collide.
+--
+-- A COUNT AND NOT A LOG, WHICH IS THE WHOLE DESIGN
+--
+-- The obvious table is one row per press, with a timestamp on it, and it is
+-- the wrong one for the same reason save_counts exists above: ranking the map
+-- would mean reading every row ever written, forever, and the page that ranks
+-- them is read by anybody who opens it. This way a ranking costs one row per
+-- thing that has ever been pressed and never more — the places on the map,
+-- however many of the 1,110 Google venues anybody has looked at, and fourteen
+-- chips. A table bounded by the number of things there are rather than by the
+-- traffic is also why there is no index on `n`: at that size an ORDER BY reads
+-- the whole thing and an index would be a second copy of it to keep.
+--
+-- WHAT IT CANNOT ANSWER, AND WHAT THAT WOULD COST
+--
+-- There is no time in this table, so "most opened this month" is not a
+-- question it can be asked — a place that was busy in March outranks one that
+-- is busy now until the arithmetic changes. That is the price of one row per
+-- thing, and it was taken knowingly. The change, if it is ever wanted, is a
+-- `day` column in the primary key and one row per thing per day, which is
+-- still bounded and still an upsert; it is a new table rather than an ALTER,
+-- and it is not worth writing before somebody asks the question.
+--
+-- AND IT COUNTS PRESSES, NOT PEOPLE
+--
+-- Nothing here is filed under a person: the number is how many times a thing
+-- was pressed, by anybody, and one visitor opening the same place on five
+-- evenings is five. Each page counts each thing once per load — the same rule
+-- TTBTrack.view() in assets/track.js applies to what it reports — so
+-- comparing three places is three and pressing back and forth is not thirty.
+-- Nothing stops somebody posting to the route in a loop, and nothing here
+-- pretends otherwise; the day that matters, the answer is the hashed network
+-- fingerprint the saves table is capped by, in a table beside this one, and a
+-- count of people instead of presses.
+CREATE TABLE IF NOT EXISTS press_counts (
+  kind TEXT    NOT NULL,
+  id   TEXT    NOT NULL,
+  n    INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (kind, id)
+);
 
 
 -- ---------------------------------------------------------------- accounts

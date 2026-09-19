@@ -48,11 +48,13 @@
  * Which language is decided here rather than on the page, because the list
  * of languages the site has is in the file this side reads: the page sends
  * what it would have picked from, in order (?lang=, then the choice stored on
- * the map, then the browser's own languages), and languageOf() takes the
- * first the file speaks. It is the same rule pickLanguage() applies on every
- * other page, moved to where the list is. The whole block goes rather than
- * the eighty keys, because a list of keys here would be a second copy of what
- * assets/flashcard.js asks for, and the validator could not see them drift.
+ * the map, then the browser's own languages), and wordsFor() in ./_lib.js
+ * takes the first the file speaks. It is the same rule pickLanguage() applies
+ * on every other page, moved to where the list is, and it lives in _lib.js
+ * rather than here because /api/stats answers the same way for the same
+ * reason. The whole block goes rather than the eighty keys, because a list of
+ * keys here would be a second copy of what assets/flashcard.js asks for, and
+ * the validator could not see them drift.
  *
  * And the ten codes go with it, because the page has a switch on it now and
  * the switch has to be able to name them: `langs` is every language the file
@@ -123,7 +125,7 @@
  */
 
 import {
-  json, sessionUser, wrongDatabase, randomHex, dataFile, uiStrings, fingerprint, clientIp
+  json, sessionUser, wrongDatabase, randomHex, dataFile, wordsFor, fingerprint, clientIp
 } from './_lib.js';
 import { googleReady } from './_google.js';
 
@@ -226,61 +228,6 @@ function words(value, max) {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, max);
-}
-
-/* ------------------------------------------------------------- the words
- * The page's strings in one language, and which language that is. See THE
- * WORDS ON THE PAGE COME WITH THE DECKS in the header.
- *
- * `asked` is what the page sends: a comma-separated list of what it would have
- * picked from, most wanted first, straight out of the address bar, the store
- * and the browser — so it is untrusted and shaped here before anything looks
- * it up. A tag is lowercased and cut at its hyphen (en-GB is en), anything
- * that is not two or three letters after that is dropped, and only the first
- * ten are read at all.
- *
- * The first the file speaks wins; English if none does; the file's first
- * language if it somehow has no English. The strings themselves are a file
- * read through the same five-minute cache the decks are, so a missing or
- * malformed one is an empty block rather than a throw — the page then prints
- * its keys, which is the same thing it did when the file failed to fetch.
- */
-const DEFAULT_LANG = 'en';
-const LANG_TAG = /^[a-z]{2,3}$/;
-
-function languageOf(asked, langs) {
-  const wanted = String(asked || '')
-    .split(',')
-    .slice(0, 10)
-    .map((tag) => tag.trim().toLowerCase().split('-')[0])
-    .filter((tag) => LANG_TAG.test(tag));
-  return wanted.find((tag) => langs.includes(tag)) ||
-    (langs.includes(DEFAULT_LANG) ? DEFAULT_LANG : langs[0] || DEFAULT_LANG);
-}
-
-async function wordsFor(context, asked) {
-  let ui = null;
-  try {
-    ui = await uiStrings(context);
-  } catch (e) {
-    ui = null;
-  }
-  const langs = ui && typeof ui === 'object' ? Object.keys(ui) : [];
-  const lang = languageOf(asked, langs);
-  const block = ui && ui[lang] && typeof ui[lang] === 'object' ? ui[lang] : {};
-  /* The menu's own rows: the code, and the name that language has for itself.
-     Sorted by code rather than by name, which is what the map's switch does
-     and for its reason — the codes are Latin whatever the language writes
-     itself in, so Հայերեն keeps the place `hy` gives it instead of trailing
-     the Latin names a collator would put it after. A language with no
-     langName falls back to its code, the way the map's switch does; a file
-     that could not be read is an empty list, and the page then draws no
-     switch at all rather than one with nothing in it. */
-  const names = langs.slice().sort().map((code) => ({
-    code: code,
-    name: (ui[code] && typeof ui[code].langName === 'string' && ui[code].langName) || code
-  }));
-  return { lang: lang, langs: names, ui: block };
 }
 
 /* ------------------------------------------------------------ the shipped

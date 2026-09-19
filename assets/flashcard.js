@@ -457,7 +457,7 @@
 
   /* What this page would pick a language from, in the order every other page
      picks: ?lang=, then the choice the map stored, then the browser's own. The
-     picking itself is languageOf() in functions/api/flashcard.js, because the
+     picking itself is wordsFor() in functions/api/_lib.js, because the
      list to pick against is the file that route reads and this page no longer
      fetches — so this is the candidates, sent as they are, and what comes
      back is the one the site speaks. Anything past ten is noise the route

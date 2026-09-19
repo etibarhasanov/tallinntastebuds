@@ -121,6 +121,23 @@ Disallow: /google
 # itself, so the card gets built and the search result never does. There is
 # nothing on the page for anybody who is not in the group in any case.
 
+# /stats is deliberately NOT disallowed, and it is not indexed either — the
+# same pair /feedback is under, and they depend on each other: the page carries
+# `noindex, follow` in _headers and in its own markup, and a crawler that is
+# forbidden to fetch it can read neither half of that. A Disallow here would
+# leave the address eligible to be listed on the strength of any link pointing
+# at it, with nothing to say otherwise.
+#
+# Not indexed, because it is a page about how this site is used rather than
+# about the city: it ranks real restaurants by how often somebody pressed
+# them, which is a fact about this site's traffic and not a verdict on anybody
+# — and a search for a restaurant's name answered with its position in that
+# ranking would read as exactly the verdict it is not. Followed, because every
+# name on it links to a place on the map, which is indexed and meant to be.
+#
+# One line would cover both spellings the way the Google line above does. There
+# is no line at all, which is the point.
+
 # The admin page is not for anybody, crawler or otherwise. Nothing links to
 # it and it carries its own noindex tag.
 Disallow: /admin.html

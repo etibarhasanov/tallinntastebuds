@@ -3138,6 +3138,43 @@
     form.appendChild(go);
   }
 
+  /* --------------------------------------------------- what gets pressed
+   * A place opened and a chip turned on are both one row on /stats, and this
+   * is the only thing on this page that puts them there.
+   *
+   * Once per thing per load, which is what `counted` holds. That is the rule
+   * TTBTrack.view() already applies to the page view it reports beside an
+   * opened place — a place opened, closed and opened again is one — and the
+   * two want to agree: two numbers about the same gesture that count it
+   * differently are two numbers somebody will one day put side by side. So
+   * comparing three places is three, walking back through history is not
+   * thirty, and a chip flicked on and off while somebody makes their mind up
+   * is one press of it rather than four.
+   *
+   * In memory and not in storage, on purpose. A reload counts again, exactly
+   * as a reload is a fresh page view in Google Analytics, and this page keeps
+   * nothing about what anybody looked at: the count is filed under the thing
+   * and under nobody.
+   *
+   * Nothing waits on it and nothing is drawn from it. The route answers 200
+   * whatever happens and the failure anybody will actually hit — the table not
+   * applied to the database yet — is silent by design; a place that opens is
+   * the feature, and a number that did not go up is not worth a word on
+   * somebody's evening. See functions/api/stats.js.
+   */
+  var counted = {};
+
+  function countPress(kind, id) {
+    var key = kind + '/' + id;
+    if (counted[key]) return;
+    counted[key] = true;
+    fetch('/api/stats', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ kind: kind, id: id })
+    }).catch(function () { /* the ranking misses one, the map is unaffected */ });
+  }
+
   /* --------------------------------------------------------------- filters */
 
   /* PRESSING A CHIP
@@ -3821,6 +3858,11 @@
       params.filter_id = change.id;
       params.filter_state = change.on ? 'on' : 'off';
       TTBTrack.event('filter_select', params);
+      /* Turned on and not turned off: the ranking on /stats is of chips
+         people chose, and a chip put away again was still chosen. Counting
+         both ends would make every filter worth exactly twice itself and say
+         nothing new. */
+      if (change.on) countPress('filter', change.id);
     } else {
       TTBTrack.event('filter_clear', params);
     }
@@ -5531,6 +5573,7 @@
     if (heading) heading.focus();
 
     TTBTrack.view(place.name);
+    countPress('place', place.id);
   }
 
   function showList(focus, opts) {

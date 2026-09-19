@@ -1,0 +1,370 @@
+/**
+ * Tallinn Tastebuds — /api/stats, what gets pressed and how often.
+ *
+ * One route asked two ways, the way /api/saves is: the POST says a thing was
+ * pressed and the GET is the ranking that comes out of it. They are one file
+ * because they are one number seen from either end, and splitting them would
+ * be two places to change when what counts as a press changes.
+ *
+ *   POST { kind, id }   adds one. Answers {ok} and nothing else; the page
+ *                       never waits on it and never draws anything from it.
+ *   GET  ?lang=         the whole ranking, the page's words beside it, and
+ *                       five minutes of edge cache on the pair.
+ *
+ * WHAT IS COUNTED, AND WHAT IS NOT
+ *
+ * Two kinds, which is the whole of `kind` in db/schema.sql:
+ *
+ *   place    a place opened. selectPlace() in assets/app.js, which is the
+ *            same moment TTBTrack.view() reports one to Google Analytics, and
+ *            select() in assets/venues.js, which is a card pressed on the
+ *            directory. Those are the two gestures on this site that mean
+ *            "show me this place".
+ *   filter   a chip on the map turned on — applyFilters() in assets/app.js,
+ *            which is every chip on the row and nothing else. Turning one off
+ *            is not a press of it, and All is not a filter: it is the way out
+ *            of the chips, so pressing it counts nothing.
+ *
+ * Nothing else does. A row on somebody's list, a search that narrows to one
+ * name, a pin hovered on the way past: none of them is somebody asking for a
+ * restaurant, and counting them would make the number mean less rather than
+ * more. A place added by hand to a list — see isAdded() in ./_lib.js — is not
+ * counted either: it is one person's row on one list, not on the map or in
+ * Google's export, so there is nothing for a ranking to compare it against.
+ *
+ * THE MAP IS THE RANKING AND THE OTHER TWO ARE FOOTNOTES
+ *
+ * The answer carries the map's own places in full, zeros included, because
+ * those are the places this site is about and the bottom of that list is as
+ * much of an answer as the top: a ranking that printed only what has been
+ * opened would quietly drop the places nobody has, which is the half the page
+ * was asked for. The 1,110 Google venues are an array of their own and only
+ * the ones somebody has actually pressed, capped at VENUES — a thousand rows
+ * tied at nought is not a ranking, and the directory is not the map. The
+ * filters are the third array, in full, because there are fourteen of them.
+ *
+ * WHAT A FAILURE LOOKS LIKE
+ *
+ * `ready: false` and empty arrays, 200, with the words still in the answer —
+ * no database, the other environment's database, or db/schema.sql not applied
+ * yet, which is the one that will actually happen: the table arrives by hand
+ * and there is always an afternoon between the deploy and somebody running it.
+ * The page then says the numbers are not in yet and draws the rest of itself.
+ * The POST is quieter still: every ending is 200 with {ok:false} unless the
+ * request itself was malformed, because a press that did not get counted is
+ * not something a visitor should ever be told about.
+ */
+
+import {
+  json, wrongDatabase, knownPlaces, mapPlaces, venuesByIds, dataFile, wordsFor
+} from './_lib.js';
+
+/* Five minutes in the colo, which is what the page is allowed to be stale by.
+ *
+ * Nothing purges this. A save purges the counts cache because the number it
+ * changed is on the screen that changed it — press the mark, see the count go
+ * up — and nothing here is like that: the ranking is read on a page of its
+ * own, by somebody who is not the person whose press moved it. Five minutes is
+ * also what /api/places and /api/venues hold, and this reads the same shape of
+ * table they do.
+ *
+ * It is the only thing between this route and the database, so it is also the
+ * cost control: however many people open /stats, each colo asks D1 twelve
+ * times an hour per language and no more. */
+const TTL = 300;
+
+/* How many Google venues the second table prints. Twenty-five is a screen of
+   them on a phone and about as far down a list of places nobody has been to as
+   anybody reads. The cap is here rather than in the page because it also
+   bounds the lookup below — venuesByIds() takes fifty ids at a time, so this
+   is one query however many venues have been pressed. */
+const VENUES = 25;
+
+/* The two kinds of thing a press can be about. In one place because the POST
+   checks what it was given against it and the GET splits the rows on it. */
+const PLACE = 'place';
+const FILTER = 'filter';
+
+/* The one chip on the map that is not a type out of data/taxonomy.json.
+   DEAL_FILTER in assets/app.js is the same string, and it is written out twice
+   because neither dialect can import the other — the arrangement the pins have
+   in ./_pins.js. The taxonomy is read rather than restated: it is a file this
+   side can open, and thirteen ids copied here would be thirteen ids to keep in
+   step. Change one, change the other; there is no validator rule for this pair
+   the way there is for the pins, so it is worth knowing that a chip added to
+   the map with an id of its own has to be named here before it is counted. */
+const DEAL_FILTER = 'discount';
+
+/* A Google place id, as google_venues.place_id holds one: Google's own key,
+   "ChIJUdUjCV2TkkYRcg8TxVp1XUI". Shape only — whether the place exists is a
+   question for the table, and the POST asks it. It is here so that a request
+   carrying something that could not be a place id is refused before it costs
+   a query. */
+const GOOGLE_KEY = /^[A-Za-z0-9_-]{16,128}$/;
+
+/* ------------------------------------------------------------ the ranking */
+
+export async function onRequestGet(context) {
+  const { request, env } = context;
+
+  /* The words first, and before anything that can fail, because every answer
+     this route gives carries them — including the ones that carry no numbers.
+     A page that cannot say "nothing has been opened yet" in the language it is
+     being read in is a page printing its own keys at somebody.
+
+     Two of the three things wordsFor() answers with. The third is `langs`, the
+     ten codes with each language's own name, and it is dropped here: the
+     flashcards page has a switch to draw out of it and this one does not, so
+     sending it would be ten pairs in every answer that nothing reads. */
+  const { lang, ui } = await wordsFor(context, new URL(request.url).searchParams.get('lang'));
+  const words = { lang: lang, ui: ui };
+
+  const cache = caches.default;
+  const key = statsKey(request, words.lang);
+  const hit = await cache.match(key);
+  if (hit) return hit;
+
+  const empty = { ready: false, opens: 0, map: [], venues: [], filters: [], ...words };
+  if (!env.DB) return json(empty, 200, TTL);
+  /* A deployment holding the other environment's database answers as though it
+     had no database at all — the same rule /api/saves follows, and for the
+     same reason: a preview showing the live numbers is the same mistake as
+     writing to them. */
+  if (await wrongDatabase(env)) return json(empty, 200, TTL);
+
+  let rows;
+  try {
+    const answer = await env.DB
+      .prepare('SELECT kind, id, n FROM press_counts WHERE n > 0')
+      .all();
+    rows = answer.results || [];
+  } catch (e) {
+    /* No table yet — see the header. */
+    return json(empty, 200, TTL);
+  }
+
+  const counted = new Map();
+  for (const row of rows) counted.set(row.kind + '\u0000' + row.id, row.n);
+  const countOf = (kind, id) => counted.get(kind + '\u0000' + id) || 0;
+
+  let places;
+  try {
+    places = await mapPlaces(context);
+  } catch (e) {
+    /* The roll of places is unreadable, which is a broken deployment rather
+       than an empty ranking. Say the same thing as no database: the page draws
+       and has nothing to print. */
+    return json(empty, 200, TTL);
+  }
+
+  /* The map, every one of them, most opened first.
+
+     The tie-break is the name, and it has to be something: without it two
+     places on nought come back in whatever order the roll happens to be in,
+     which changes when a place is added and makes a stable-looking table
+     shuffle for no reason anybody could explain. localeCompare rather than <,
+     so Õ sorts where a reader expects rather than after Z. */
+  const map = places
+    .map((p) => ({
+      id: p.id,
+      name: p.name,
+      n: countOf(PLACE, p.id),
+      /* A shut place is still on the map, still has a card and can still be
+         opened, so it is still in the ranking — but a row at the bottom of one
+         needs to say why it is there, or the table reads as a verdict on a
+         restaurant that closed in March. See **Close a place instead of
+         deleting it** in README.md. */
+      closed: !!p.closed
+    }))
+    .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
+
+  /* Everything counted as a place that is not on the map is one of Google's,
+     most pressed first, capped. Sorted before the lookup, so the cap is what
+     bounds the query. */
+  const onMap = new Set(places.map((p) => p.id));
+  const strangers = rows
+    .filter((row) => row.kind === PLACE && !onMap.has(row.id))
+    .sort((a, b) => b.n - a.n)
+    .slice(0, VENUES);
+
+  let venues = [];
+  if (strangers.length) {
+    try {
+      const found = await venuesByIds(env, strangers.map((row) => row.id));
+      /* A venue the export no longer carries is dropped rather than printed
+         with its key for a name: a refresh takes rows out, and a row nobody
+         can put a name to says nothing to anybody reading a ranking. Its count
+         stays in the table and in `opens` below, because it happened. */
+      venues = strangers
+        .filter((row) => found.has(row.id))
+        .map((row) => ({ id: row.id, name: found.get(row.id).name, n: row.n }));
+    } catch (e) {
+      /* The names did not come back. The map's own ranking is the page, and
+         this half of it is not worth failing the other half for. */
+      venues = [];
+    }
+  }
+
+  /* Every open this site has counted — the venues past the cap and the ones
+     with no name left included, and the filters not, because a chip pressed is
+     not a place looked at and adding the two would be a number about nothing.
+     It is the one figure on the page that is about the site rather than about
+     a restaurant. */
+  let opens = 0;
+  for (const row of rows) if (row.kind === PLACE) opens += row.n;
+
+  const filters = await ranked(context, words, countOf);
+
+  const res = json(
+    { ready: true, opens: opens, map: map, venues: venues, filters: filters, ...words },
+    200, TTL
+  );
+  context.waitUntil(cache.put(key, res.clone()));
+  return res;
+}
+
+/* Every chip on the map, most pressed first, named in the reading language.
+ *
+ * In full rather than only the pressed ones, for the reason the map's own
+ * places are in full: a chip nobody has pressed is the answer to the question
+ * this table is for. **The order of the filter chips** in README.md is what
+ * that question is — the row is in a hand-written order today, and this is the
+ * measurement that would argue for a different one.
+ *
+ * The labels come from the same two files the chips themselves are drawn from:
+ * the types out of data/taxonomy.json in the language the answer is in, and
+ * the one chip that is not a type out of the ui block already in hand. A type
+ * with no label in that language is dropped rather than printed as its id,
+ * which is the rule everywhere else on this site — though the validator fails
+ * the build on a missing one, so it should not be reachable.
+ */
+async function ranked(context, words, countOf) {
+  let types;
+  try {
+    const taxonomy = await dataFile(context, '/data/taxonomy.json');
+    types = (taxonomy && taxonomy.types) || [];
+  } catch (e) {
+    /* No taxonomy, no filter table. The page draws the places, which is what
+       it is mostly for. */
+    return [];
+  }
+
+  const rows = types
+    .filter((type) => type && typeof type[words.lang] === 'string' && type[words.lang])
+    .map((type) => ({ id: type.id, name: type[words.lang], n: countOf(FILTER, type.id) }));
+
+  if (words.ui.filterDiscount) {
+    rows.push({
+      id: DEAL_FILTER,
+      name: words.ui.filterDiscount,
+      n: countOf(FILTER, DEAL_FILTER)
+    });
+  }
+
+  return rows.sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
+}
+
+/* What the colo files the answer under: the route and the language, and never
+   the rest of the address. The page sends its whole list of candidate
+   languages — "et,en,ru" — and the answer only depends on which one of them
+   won, so keying on the raw query would file the same ten answers under
+   however many orders browsers happen to send. Ten keys per colo, one per
+   language the site speaks. */
+function statsKey(request, lang) {
+  const url = new URL('/api/stats', request.url);
+  url.searchParams.set('lang', lang);
+  return new Request(url.toString());
+}
+
+/* --------------------------------------------------------------- one press */
+
+export async function onRequestPost(context) {
+  const { request, env } = context;
+
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return json({ error: 'body' }, 400);
+  }
+
+  const kind = body.kind === FILTER ? FILTER : body.kind === PLACE ? PLACE : '';
+  const id = typeof body.id === 'string' ? body.id.trim() : '';
+  if (!kind || !id || id.length > 128) return json({ error: 'press' }, 400);
+
+  /* Everything below this line answers 200 whatever happens. A count that did
+     not land is nothing the person who pressed the thing should hear about,
+     and the page is not listening anyway. */
+  if (!env.DB) return json({ ok: false }, 200);
+  if (await wrongDatabase(env)) return json({ ok: false }, 200);
+
+  const real = kind === PLACE ? await realPlace(context, id) : await realFilter(context, id);
+  if (!real) return json({ ok: false }, 200);
+
+  /* One statement, and the row is made by the same one that increments it. The
+     count is a running total rather than something recomputed from a log —
+     db/schema.sql says why there is no log to recompute from — so this is the
+     one place on this site where a number is nudged rather than rebuilt, and
+     it is safe here for the reason save_counts is not: there is no second
+     table that could disagree with it. */
+  try {
+    await env.DB
+      .prepare(
+        'INSERT INTO press_counts (kind, id, n) VALUES (?, ?, 1) ' +
+        'ON CONFLICT(kind, id) DO UPDATE SET n = press_counts.n + 1'
+      )
+      .bind(kind, id)
+      .run();
+  } catch (e) {
+    /* No table yet, or the write failed. Either way nothing was counted and
+       nobody is waiting to hear it. */
+    return json({ ok: false }, 200);
+  }
+
+  return json({ ok: true }, 200);
+}
+
+/* Whether that id is a place this site knows, which is what keeps the table to
+   real rows: without it, it fills with whatever anybody posts and the ranking
+   has to start explaining rows it cannot name. A slug is checked against the
+   map for nothing — the roll is already in memory — and a Google key costs one
+   lookup on the primary key of google_venues, which is the price of the
+   directory's half being counted at all.
+
+   `hidden` is honoured: a row kept out of the picker is a duplicate or a car
+   park Google thinks is a restaurant, and it has no business in a ranking.
+   Nothing can reach one on the directory in any case, so this is belt and
+   braces on a hand-written request. */
+async function realPlace(context, id) {
+  const { env } = context;
+  let known;
+  try {
+    known = await knownPlaces(context);
+  } catch (e) {
+    return false;
+  }
+  if (known.has(id)) return true;
+  if (!GOOGLE_KEY.test(id)) return false;
+
+  try {
+    const row = await env.DB
+      .prepare('SELECT 1 AS ok FROM google_venues WHERE place_id = ? AND hidden = 0')
+      .bind(id)
+      .first();
+    return !!row;
+  } catch (e) {
+    return false;
+  }
+}
+
+/* And whether that id is a chip the map actually draws: a type out of the
+   taxonomy, or the discount chip. Nothing else is a filter, All included. */
+async function realFilter(context, id) {
+  if (id === DEAL_FILTER) return true;
+  try {
+    const taxonomy = await dataFile(context, '/data/taxonomy.json');
+    return ((taxonomy && taxonomy.types) || []).some((type) => type && type.id === id);
+  } catch (e) {
+    return false;
+  }
+}
