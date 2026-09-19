@@ -176,6 +176,32 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, follow
 
+# The statistics. Stored as stats.html and served at /stats as well, so both
+# spellings are spelled out, the same reason "/" and "/index.html" both appear
+# at the top of this file. The address people are given is the short one.
+#
+# Same revalidating Cache-Control as the map, for the ?v= stamps, and the
+# feedback page's robots tag rather than the directory's: noindex, because
+# everything here is about how this site is used rather than about the city and
+# a search for a restaurant should never be answered with a row saying how far
+# down a ranking it sits — and `follow`, because every name on it links to a
+# place on the map, which is indexed. It is not disallowed in robots.txt for
+# the reason /feedback is not: a crawler forbidden to fetch it cannot read
+# either half of that. The page carries the meta robots tag to match; this is
+# the half that binds for anything that does not parse the HTML to find it.
+#
+# The numbers themselves are not cached here. /api/stats holds its own answer
+# in the colo for five minutes — see the TTL at the top of
+# functions/api/stats.js — so this rule is about the page and never about what
+# is on it.
+/stats.html
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, follow
+
+/stats
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, follow
+
 # Scripts and stylesheets are content-addressed by tools/stamp.mjs — the URL
 # in the HTML carries a hash of the file — so a year-long cache would be safe
 # for a stamped request and is deliberately not used anyway. These rules match

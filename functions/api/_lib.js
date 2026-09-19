@@ -401,9 +401,75 @@ export async function dataFile(context, path) {
   return value;
 }
 
-/* The site's own words in ten languages. */
-export function uiStrings(context) {
-  return dataFile(context, '/data/ui.json');
+/* ------------------------------------------------------------- the words
+ * The page's strings in one language, and which language that is.
+ *
+ * Two routes answer with the words the page will print rather than leaving it
+ * to fetch data/ui.json for itself: /api/flashcard, where the decks and the
+ * strings arrive together — see THE WORDS ON THE PAGE COME WITH THE DECKS in
+ * its header — and /api/stats, which is one request on the way in for the same
+ * reason. The whole block goes rather than a list of keys, because a list here
+ * would be a second copy of what the page asks for and the validator could not
+ * see the two drift.
+ *
+ * `asked` is what the page sends: a comma-separated list of what it would have
+ * picked from, most wanted first, straight out of the address bar, the store
+ * and the browser — so it is untrusted and shaped here before anything looks
+ * it up. A tag is lowercased and cut at its hyphen (en-GB is en), anything
+ * that is not two or three letters after that is dropped, and only the first
+ * ten are read at all. It is the same rule pickLanguage() applies on every
+ * other page, moved to where the list of languages is.
+ *
+ * The first the file speaks wins; English if none does; the file's first
+ * language if it somehow has no English. The strings themselves are a file
+ * read through the same five-minute cache every other data file is, so a
+ * missing or malformed one is an empty block rather than a throw — the page
+ * then prints its keys, which is the same thing it did when the file failed
+ * to fetch.
+ *
+ * `langs` comes back beside them: every language the file speaks, each with
+ * the name it has for itself, for a page that draws a switch. The flashcards
+ * page does and reads it; /stats does not and drops it on the way past. Ten
+ * short pairs either way, which is a couple of hundred bytes against the eight
+ * to ten KB of strings already in the answer, so it is not worth a second
+ * shape of this function to leave out.
+ */
+const DEFAULT_LANG = 'en';
+const LANG_TAG = /^[a-z]{2,3}$/;
+
+function languageOf(asked, langs) {
+  const wanted = String(asked || '')
+    .split(',')
+    .slice(0, 10)
+    .map((tag) => tag.trim().toLowerCase().split('-')[0])
+    .filter((tag) => LANG_TAG.test(tag));
+  return wanted.find((tag) => langs.includes(tag)) ||
+    (langs.includes(DEFAULT_LANG) ? DEFAULT_LANG : langs[0] || DEFAULT_LANG);
+}
+
+export async function wordsFor(context, asked) {
+  let ui = null;
+  try {
+    ui = await dataFile(context, '/data/ui.json');
+  } catch (e) {
+    ui = null;
+  }
+  const langs = ui && typeof ui === 'object' ? Object.keys(ui) : [];
+  const lang = languageOf(asked, langs);
+  const block = ui && ui[lang] && typeof ui[lang] === 'object' ? ui[lang] : {};
+  /* The menu's own rows: the code, and the name that language has for itself.
+     Sorted by code rather than by name, which is what the map's switch does
+     and for its reason — the codes are Latin whatever the language writes
+     itself in, so Հայերեն keeps the place `hy` gives it instead of trailing
+     the Latin names a collator would put it after. A language with no
+     langName falls back to its code, the way the map's switch does; a file
+     that could not be read is an empty list, and the page then draws no
+     switch at all rather than one with nothing in it. */
+  const names = langs.slice().sort().map((code) => ({
+    code: code,
+    name: (ui[code] && typeof ui[code].langName === 'string' && ui[code].langName) || code
+  }));
+  return { lang: lang, langs: names, ui: block };
 }
 
 /* --------------------------------------------------------------- venues

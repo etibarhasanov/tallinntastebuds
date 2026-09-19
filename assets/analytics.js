@@ -3,12 +3,12 @@
  * Google Analytics counts, and takes the events assets/track.js sends beside
  * it. Microsoft Clarity records the page instead of counting it: heatmaps of
  * where presses and scrolls land, and a replay of the DOM as it changed
- * through a visit. Both load on every page but admin.html — nine of them, the
- * list at the top of tools/stamp.mjs — and both load from here rather than
+ * through a visit. Both load on every page but admin.html — twelve of them,
+ * the list at the top of tools/stamp.mjs — and both load from here rather than
  * from a snippet pasted into each head, which would have been Google's block
- * in nine of them and Microsoft's in nine more, and two ids to change in
- * eighteen places. Same reason assets/track.js exists rather than seven copies
- * of three functions.
+ * in twelve of them and Microsoft's in twelve more, and two ids to change in
+ * twenty-four places. Same reason assets/track.js exists rather than seven
+ * copies of three functions.
  *
  * THERE WAS A CONSENT BAR HERE, AND IT WAS TAKEN OUT ON PURPOSE
  *

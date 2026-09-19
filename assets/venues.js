@@ -761,6 +761,29 @@
     dots = window.L.layerGroup().addTo(map);
   }
 
+  /* ------------------------------------------------- how often it is opened
+   * A venue pressed is one row on /stats, the way a place opened on the map
+   * is: same route, same rule, and the same silence around it. Once per venue
+   * per load — `counted` — because pressing a card lights it and pressing it
+   * again puts it out, and a ranking of how often somebody toggled a card is
+   * a ranking of nothing.
+   *
+   * Google's places are the second table on that page rather than the first,
+   * and functions/api/stats.js says why: the map is seventy-odd places this
+   * site has been to and this is eleven hundred it has not. Nothing waits on
+   * the answer and the page draws the same either way. */
+  var counted = {};
+
+  function countOpen(id) {
+    if (counted[id]) return;
+    counted[id] = true;
+    fetch('/api/stats', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ kind: 'place', id: id })
+    }).catch(function () { /* the ranking misses one, the card still opened */ });
+  }
+
   /* ------------------------------------------------------------ selecting */
 
   /* One place lit in both halves at once. `fromList` says which half was
@@ -776,6 +799,7 @@
           break;
         }
       }
+      countOpen(id);
     }
 
     /* A dot can be pressed for a place whose card has not been built yet: the

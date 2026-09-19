@@ -1,0 +1,156 @@
+/* Tallinn Tastebuds — /stats, and only what a ranking needs.
+ *
+ * The tokens, the card and the eyebrow come from assets/styles.css; the brand
+ * header, the page's column, the stack and the card's title come from
+ * assets/lists.css, exactly as the flashcards page and the account page take
+ * them. What is left is in here and it is one thing: rows that are a rank, a
+ * name and a number, on a grid so that seventy of them line up down the page
+ * rather than each row deciding for itself where its number goes.
+ *
+ * No colour is named anywhere below — rule 1 of **The design rules** in
+ * README.md — so pressing the swatch on the map and coming back here brings
+ * the ranking with it. The numbers are in the mono, because a count is a fact
+ * rather than a sentence, which is rule 2.
+ */
+
+/* ---------------------------------------------------------------- the lead */
+
+/* The sentence under a card's title, saying what the table below it counts.
+   Literata rather than the mono: it is prose, and the two tables each need a
+   line of it before the numbers mean anything. */
+.stats-lead {
+  margin: 8px 0 18px;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ------------------------------------------------------- the two headlines */
+
+/* Most opened and least opened, side by side above the ranking. A <dl>,
+   because that is what these are: two labels and the answers under them.
+
+   Two columns at every width that can hold them and one below 420px, where
+   two would give each name about eighteen characters and hyphenate
+   "Restoran Tuljak" down the middle of a card. */
+.stats-heads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 0;
+}
+
+.stats-head dd { margin: 0; }
+
+.stats-head-name {
+  margin-top: 6px;
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  line-height: 1.25;
+}
+
+.stats-head-n {
+  margin-top: 4px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+
+@media (max-width: 419px) {
+  .stats-heads { grid-template-columns: 1fr; gap: 14px; }
+}
+
+/* ------------------------------------------------------------- the ranking */
+
+.stats-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* One row: the rank, the name, the count.
+ *
+ * A grid and not a flex row, because the whole point of a ranking is that the
+ * eye runs down one column: the rank column is as wide as three digits
+ * whatever the row holds, and every count sits on the same right edge however
+ * long the name beside it is. minmax(0, 1fr) on the middle column rather than
+ * 1fr, or a long unbroken name pushes the number off the card instead of
+ * wrapping — which is what happens at 390px with "Põhjala Tap Room".
+ *
+ * The rule is under each row rather than between them, and the last one has
+ * none: a table that ends on a hairline reads as a table that was cut off. */
+.stats-row {
+  display: grid;
+  grid-template-columns: 2.2em minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.stats-row:last-child { border-bottom: none; padding-bottom: 0; }
+.stats-row:first-child { padding-top: 0; }
+
+.stats-rank {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The name and, where there is one, the word that says the place has shut.
+   Wrapping rather than an ellipsis: the name is the row, and half of one with
+   a fullstop after it is no use to anybody trying to recognise a restaurant. */
+.stats-who { min-width: 0; }
+
+.stats-name {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: inherit;
+  text-decoration: none;
+}
+
+a.stats-name:hover { color: var(--accent); }
+
+.stats-shut {
+  margin-left: 8px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Tabular figures, so the column of counts is a column rather than a ragged
+   edge: without it a row of 1s is visibly narrower than a row of 8s in most
+   of the faces a phone will actually fall back to. */
+.stats-n {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------- the total */
+
+/* What the tables are counted out of, under the last of them. Centred and in
+   the mono at the size the "nothing here" lines on the lists page use, so it
+   reads as the page's footnote about itself rather than as another fact about
+   a restaurant. */
+.stats-total {
+  margin: 0;
+  padding: 4px 4px 0;
+  text-align: center;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .02em;
+}

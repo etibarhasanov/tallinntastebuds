@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What people open | Tallinn Tastebuds</title>
+<meta name="description" content="Which places on the map get opened most, and which get opened least. Counted on this site, by opens rather than by opinions.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+
+<!-- Analytics: Google and Microsoft Clarity, both from one file rather than
+     two snippets pasted into every head. assets/analytics.js holds the ids and
+     the consentv2 signal Clarity needs, and its head carries the reasoning of
+     the consent bar that stood in front of both of them for a day. -->
+<script src="/assets/analytics.js?v=b106a66c" defer></script>
+
+<!-- Not indexed, and deliberately not disallowed in robots.txt either — the
+     same arrangement /feedback has, and for the same reason. Everything on
+     this page is about how this site is used rather than about the city, and a
+     search for a restaurant's name answered with a row saying how far down a
+     ranking it sits would be this site saying something about a real business
+     that it has no business saying to a stranger. A Disallow line would leave
+     the address eligible to be listed on the strength of any link to it, with
+     nothing to say otherwise: a crawler forbidden to fetch the page cannot
+     read the tag below. So it is fetchable and not indexed, and `follow`
+     because every name here links to a place on the map, which is indexed. -->
+<meta name="robots" content="noindex, follow">
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The tokens, the card and the eyebrow come from the map's stylesheet; the
+     brand header, the column and the stack from the lists page's, exactly as
+     the flashcards page and the account page take them. The third is this
+     page's own and it is short: the rows of a ranking. -->
+<link rel="stylesheet" href="/assets/styles.css?v=fc403dd4">
+<link rel="stylesheet" href="/assets/lists.css?v=b478af12">
+<link rel="stylesheet" href="/assets/stats.css?v=8833ac3a">
+</head>
+<body class="lists-body">
+
+<a class="skip-link" href="#main" data-i18n="statsSkip">Skip to the ranking</a>
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" data-track="home" data-i18n-aria-label="backToMap" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
+  </a>
+</header>
+
+<!-- The title and the sentence under it are in the markup rather than built by
+     the script, so the page says what it is before the numbers arrive and
+     still says it if they never do. Everything below them is one element that
+     assets/stats.js fills once: the two headlines, the map's ranking, Google's
+     where there is one, and the total. Nothing in the markup depends on which
+     of those there turned out to be, so nothing can be left standing from a
+     state the page is no longer in. -->
+<div class="lists-main">
+  <p class="eyebrow" data-i18n="eyebrow">Tallinn</p>
+  <h1 class="lists-title" data-i18n="statsTitle">What people open</h1>
+  <p class="stats-lead" data-i18n="statsLead">Every time somebody opens a place on this site it is counted here. It says which places get read about, not which are best — nothing on this map is ranked by anything else.</p>
+</div>
+
+<main class="lists-main" id="main" tabindex="-1"></main>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Tallinn</p>
+    <h2>What people open</h2>
+    <p>This page is a ranking fetched and drawn with JavaScript. The map itself
+      works rather better without it — <a href="/">it is over here</a>.</p>
+  </div>
+</noscript>
+
+<!-- What every press reports to Google Analytics, shared by every page.
+     Before the page's own script and deferred like it, so document order puts
+     the global in place first. -->
+<script src="/assets/track.js?v=93031b0d" defer></script>
+<script src="/assets/stats.js?v=60fda31f" defer></script>
+</body>
+</html>

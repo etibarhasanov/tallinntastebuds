@@ -63,6 +63,7 @@ completely with the database switched off.
 - [Stories](#stories)
 - [The blog](#the-blog)
 - [Feedback](#feedback)
+- [Statistics](#statistics)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
 - [The map tiles need a key](#the-map-tiles-need-a-key)
@@ -287,6 +288,14 @@ nobody learns. Re-check it when a type has visibly grown, and move the line in
 Every chip in that table is also published as a list, under the map's own
 account, and a fourteenth row here is a fourteenth list that needs a name.
 See **[The chips, as lists](#the-chips-as-lists)** under **Lists**.
+
+The counts above are how many places carry each type, which is a fact about
+the map rather than about anybody reading it. `/stats` is the other half and
+the one this order is really trying to guess: how often each chip is actually
+pressed. It is not wired to anything and the row is still ordered by hand, on
+purpose — a chip row that rearranged itself under people's thumbs would move
+the thing they were reaching for — but it is the measurement to read before
+moving a line in `taxonomy.json`. See **[Statistics](#statistics)**.
 
 ## A filter never answers with an empty screen
 
@@ -6490,7 +6499,7 @@ stylesheet is the only heavier file, and that one is at least mostly drawn.
 So the flashcards fetch it no more. The words ride in the same answer as the
 decks: `assets/flashcard.js` sends `/api/flashcard` what it would have picked
 a language from, in the order every page picks — `?lang=`, then `ttb.lang`,
-then the browser's own — and `languageOf()` in `functions/api/flashcard.js`
+then the browser's own — and `wordsFor()` in `functions/api/_lib.js`
 takes the first the site speaks and answers with that language's block, eight
 to ten KB gzipped, beside the decks. One request before a card can be drawn
 rather than two, a tenth of the bytes, and the same rule `pickLanguage()`
@@ -7896,6 +7905,161 @@ owner reads the page.
 
 ---
 
+## Statistics
+
+`/stats` — which places get opened, and which chips get pressed. The map says
+where to eat, the blog says why the site works the way it does, the feedback
+page listens; this is the one that counts.
+
+One page, the frame every page that is not the map wears — the brand header,
+the 640px column, the cards — and three tables. Two facts at the top, **Most
+opened** and **Least opened**, then every place on the map ranked with the
+zeros in it, then the Google venues somebody has pressed, then all fourteen
+filter chips. Nothing on the site links to it. That is the blog's arrangement
+rather than the directory's, with one difference: the blog is indexed and this
+is not, and **Not indexed, and not disallowed either** below says why.
+
+### It counts opens, and an open is a gesture
+
+Three gestures, and no others:
+
+| What | Where | Counted as |
+| --- | --- | --- |
+| a place opened on the map | `selectPlace()` in `assets/app.js` | `place`, the slug |
+| a card pressed on the directory | `select()` in `assets/venues.js` | `place`, the Google key |
+| a chip turned on | `applyFilters()` in `assets/app.js` | `filter`, the type id or `discount` |
+
+A row on somebody's list, a search that narrows to one name, a pin passed
+over: none of those is somebody asking for a restaurant, and counting them
+would make the number mean less rather than more. A chip turned **off** is not
+counted either — it was already counted when it went on, and counting both
+ends would make every filter worth exactly twice itself. **All** is not a
+filter and counts nothing: it is the way out of the chips.
+
+Each page counts each thing **once per load**, held in memory and never in
+storage. That is the rule `TTBTrack.view()` already applies to the page view
+it reports to Google Analytics beside an opened place, and the two agree on
+purpose: two numbers about the same gesture that counted it differently would
+be two numbers somebody eventually puts side by side. So comparing three
+places is three, walking back through history is not thirty, and a chip
+flicked on and off while somebody makes their mind up is one press.
+
+A reload counts again, exactly as a reload is a fresh page view in GA.
+
+### Presses, not people
+
+Nothing in `press_counts` is filed under a person — there is no owner column,
+no device id, no fingerprint, and the route stores nothing about who pressed
+anything. The number is how many times a thing was pressed, by anybody, and
+one visitor opening the same place on five evenings is five.
+
+Which also means nothing stops somebody posting to `/api/stats` in a loop, and
+this does not pretend otherwise. The counts are not money and nobody is paid
+for a position in them. The day it matters, the answer is the one `saves`
+already uses: a hashed network fingerprint in a table beside this one, and a
+count of people rather than of presses.
+
+### A count and not a log
+
+`press_counts` is one row per thing, `(kind, id, n)`, and the write is an
+upsert that adds one. There is no row per press and no timestamp anywhere,
+for the reason `save_counts` exists under **Saves**: ranking the map out of a
+log would mean reading every row ever written, forever, on a page anybody can
+open. This way a ranking costs one row per thing that has ever been pressed —
+the places on the map, however many Google venues anybody has looked at, and
+fourteen chips — and never more, however popular the site gets. A table
+bounded by the number of things there are rather than by the traffic is also
+why it carries no index on `n`: at that size an `ORDER BY` reads the whole
+thing, and an index would be a second copy to keep.
+
+What that costs is time. There is no "this month": a place that was busy in
+March outranks one that is busy now until the arithmetic changes. It was taken
+knowingly, and the change if it is ever wanted is a `day` column in the
+primary key and one row per thing per day — still bounded, still an upsert,
+and a new table rather than an `ALTER`. It is not worth writing before
+somebody asks the question.
+
+One table and not two, for places and for filters both. They are different
+things and a table apiece would say so — but everything around them is one
+thing: one route, one upsert, one read that draws the whole page, and one
+place to look when a number is wrong. `kind` is in the primary key, so a
+filter called `bakery` and a place called `bakery` can never collide.
+
+### One request on the way in, and five minutes of cache
+
+`GET /api/stats?lang=` answers with the ranking **and** the page's words in one
+block, so `assets/stats.js` never fetches `data/ui.json` at all — the
+arrangement the flashcards page introduced, and `wordsFor()` in
+`functions/api/_lib.js` is now shared by both.
+
+The answer is held in the colo for five minutes. Nothing purges it: a save
+purges the counts cache because the number it changed is on the screen that
+changed it, and this is the opposite — the ranking is read on a page of its
+own by somebody who is not the person whose press moved it. So the page is at
+most five minutes stale, which is the honest reading of "lately", and each
+colo asks D1 twelve times an hour per language however many people open it.
+The cache is keyed on the route and the chosen language alone, so the ten
+candidate lists a browser might send collapse to at most ten keys.
+
+### The bottom of the ranking is not a verdict
+
+The map's table prints every place, including the ones on nought, because the
+bottom is as much of an answer as the top — and that is exactly where it could
+start saying something it has no business saying. Three things keep it honest.
+
+Most of the map sits on nought for a while and a handful sit on one, so both
+ends of the ranking are usually a tie. Naming whichever of them the sort
+happened to put last would be the page making something up, so a tie says how
+many places it is and what they are all on: *Least opened — 65 places, 0
+opens*. That is the more useful fact anyway.
+
+A **shut** place is still on the map, still has a card and can still be
+opened, so it is still ranked — with the word `CLOSED` beside its name, in
+both tables and in the headline, or a restaurant that closed in March reads as
+one nobody wants.
+
+And the page says in its own first sentence what the number is: which places
+get read about, not which are best. Nothing on this map is ranked by anything
+else, and this is not the exception — see **The mark**, and the rating column
+on `google_venues` that exists only because it is Google's and says so.
+
+### What it argues about
+
+The filter table is the one with something to change. **The order of the
+filter chips** is a hand-written order with a paragraph of reasoning behind
+it; this is the measurement that would argue for a different one. It is not
+wired to anything — the row is still ordered by hand — and that is deliberate:
+a chip row that reordered itself under people's thumbs would move the thing
+they were reaching for.
+
+### Not indexed, and not disallowed either
+
+`noindex, follow`, in `_headers` and in the markup, and **no** `Disallow` line
+in `robots.txt`. The two depend on each other, which is the trap `/feedback`
+documents and this page is under the same one: a crawler forbidden to fetch
+the page can read neither half of the tag, and the address would stay eligible
+to be listed on the strength of any link pointing at it.
+
+Not indexed because it ranks real restaurants by how often somebody pressed
+them — a fact about this site's traffic and not a verdict on anybody — and a
+search for a restaurant's name answered with its position in that ranking
+would read as exactly the verdict it is not. Followed, because every name on
+the map's table links to a place on the map, which is indexed and meant to be.
+
+### What it does not do yet
+
+No time window, which **A count and not a log** above is the whole of. No
+chart: a ranking is a list and a bar chart of seventy-six rows is a list with
+decoration on it. No languages, no referrers, no countries — Google Analytics
+has all of that and this page is the half GA cannot do, which is the site
+owning its own numbers. No per-place badge anywhere else on the site: the
+count is on this page or it is nowhere, because a number under a name on the
+map is a score, and there are none of those here. Nothing links to it, and if
+that ever changes it is a decision about whether a visitor should see it at
+all rather than a missing link.
+
+---
+
 ## The admin page
 
 `/admin.html` — a door, and behind it the tools for posting without opening a
@@ -8717,6 +8881,11 @@ tools/blogclips.mjs        one frame a launch, diffed, written as one APNG
 google.html                Google's directory of the city   } unlinked and
 assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
+stats.html                 which places get opened and which  } unlinked and
+assets/stats.js            chips get pressed: three rankings  } noindex
+assets/stats.css           the rows of a ranking, and nothing else
+functions/api/stats.js     /api/stats — one press in, the whole ranking out,
+                           with the page's words and five minutes of cache
 assets/pins.js             the eight markers, the five kinds of place, the six
                            tones, and which of them a place draws — said once
                            for every page that draws a pin
@@ -10041,7 +10210,7 @@ in front of somebody at a till.
 ### Analytics
 
 Google Analytics 4 is wired up, property `G-2XNTC15F28`. The tag lives in the
-`<head>` of every page — the nine in `PAGES` at the top of
+`<head>` of every page — the twelve in `PAGES` at the top of
 `tools/stamp.mjs` — exactly as Google's console emits it. It used to be on
 the map alone, which made the map the only page GA had heard of; the lists,
 the account page, the directory, the three pass pages and splitwise were
@@ -10174,6 +10343,13 @@ The directory, `assets/venues.js`:
 | `place_link` | `place`, `map` — the door to the write-up for the ones on the map |
 | `home` | — |
 
+The statistics, `assets/stats.js`: nothing but `home`, the wordmark, which
+`track.js` wires from its `data-track`. There is nothing else on the page to
+press — it is three tables of numbers and a link per place — and the presses
+it is *about* are reported by the pages they happen on, not by this one. Its
+own counts do not go to GA at all and are not meant to: **Statistics** is what
+they are for, and that is the site keeping a number GA cannot be asked for.
+
 The blog, `assets/blog.js`:
 
 | event | parameters |
@@ -10280,7 +10456,7 @@ that earns its place — it follows a single visit through the filters, the
 panel and the chat, none of which GA can see as anything but events in a list.
 
 It loads from `assets/analytics.js`, which is also where the Google tag lives
-— one file rather than two snippets pasted into every head. The eleven pages
+— one file rather than two snippets pasted into every head. The twelve pages
 in `PAGES` at the top of `tools/stamp.mjs` carry it. `admin.html` deliberately
 carries neither tag: the only visits it could record are the owner's own, and
 it is the page holding a GitHub token.
@@ -10521,7 +10697,7 @@ preview deployments, which is correct for previews and fatal if the address
 people share turns out to be one.
 
 To remove tracking entirely, delete the `assets/analytics.js` script tag from
-the eleven pages that carry it, or the file. Everything in `track.js` checks for
+the twelve pages that carry it, or the file. Everything in `track.js` checks for
 `window.gtag` and returns quietly when it is missing — which is what already
 happens for a visitor running an ad blocker — so every call site becomes a
 harmless no-op and none of them has to change. To remove one tag and keep the

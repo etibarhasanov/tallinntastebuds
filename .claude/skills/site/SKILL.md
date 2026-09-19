@@ -19,9 +19,9 @@ here. It is the main rule and it applies to every line you touch.
 
 - The README section for the feature you are standing in. Every one has one —
   **Saves**, **Accounts**, **The account page**, **Lists**, **Public lists**,
-  **Profiles**, **Stories**, **The blog**, **The directory**, **Ask for
-  somewhere**, **Restaurant discounts**, **The radio**, **Surprise me**,
-  **Languages**, **The mark**, **The pins**, **The two styles** — and it
+  **Profiles**, **Stories**, **The blog**, **The directory**, **Statistics**,
+  **Ask for somewhere**, **Restaurant discounts**, **The radio**, **Surprise
+  me**, **Languages**, **The mark**, **The pins**, **The two styles** — and it
   carries the reasoning the code only hints at.
   `grep -n '^## ' README.md` is the table of contents with line numbers;
   read the section, not the file.
@@ -137,6 +137,14 @@ and the parity rule does not reach it. See **Flashcards** in `README.md`.
 **Every touch of `localStorage` is inside `try/catch`.** It throws outright
 in some private-browsing modes, and the site is meant to work with it absent.
 
+**A press on a place or a chip is also counted on this site.** `/stats` ranks
+what gets opened, out of `press_counts`, and three call sites feed it:
+`selectPlace()` and `applyFilters()` in `assets/app.js` and `select()` in
+`assets/venues.js`, each once per thing per page load. A new way to open a
+place is a fourth, and it belongs there in the same commit — see
+**Statistics** in `README.md`, which is also where the reasoning for what is
+deliberately *not* counted lives.
+
 **Every button reports.** A press that matters is reported to Google
 Analytics through the global `assets/track.js` sets, on every page:
 `TTBTrack.event(name, params)` in a handler, `TTBTrack.click(node, name,
@@ -236,11 +244,11 @@ write gate's `--check`:
   changing one means `node tools/typelists.mjs` and a stale
   `db/type-lists.sql` to commit — see **The chips, as lists** in `README.md`.
   Adding a language costs nothing there; the lists are English.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the eleven pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the twelve pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`, `google.html`,
   `deal.html`, `verify.html`, `staff.html`, `split.html`,
-  `flashcard.html` — must carry `?v=`
+  `flashcard.html`, `stats.html` — must carry `?v=`
   equal to the
   first eight hex of the file's SHA-256. A new page that loads anything out of
   `assets/` is added to that list, or it never gets stamped. `admin.html` is
