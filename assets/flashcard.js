@@ -61,20 +61,34 @@
  * phone is half through on a laptop. Signed out the run still runs, and it is
  * kept in this tab and nowhere else.
  *
- * The offer used to stand only at the end of a run, on the reasoning that
- * nobody should have to make an account to find out whether a thing is worth
- * one. It stands one word into the first deck a tab opens as well now —
- * firstWordCard() below — because what somebody wants to know before they
- * spend the evening on a deck is whether the evening counts for anything, and
- * the card at the end of the run told them that after they had spent it.
+ * SO ONE WORD IS FREE AND THE REST OF A DECK IS NOT
  *
- * One word in rather than in front of the deck, and that is the second
- * arrangement rather than the first. In front of the deck the card is a form
- * standing between somebody and a thing they have not seen yet, which is dull
- * and which the sensible reader goes round. One word later it has something to
- * point at: the answer just given is the thing that is not being kept, and it
- * is on the screen behind the card. Once a tab, with the way past directly
- * under the offer, because the deck is not behind it.
+ * Signed out, a deck is opened, its first card is turned over and answered the
+ * way every card is, and then gateCard() below stands where the second card
+ * would have been, until there is an account. It has no way past.
+ *
+ * That took three goes to arrive at and the two it replaced are worth knowing,
+ * because each was a reasonable answer to a different question. The offer
+ * stood only at the end of a run, on the reasoning that nobody should have to
+ * make an account to find out whether a thing is worth one. Then it stood in
+ * front of the deck, which put a form between somebody and a thing they had
+ * not seen — dull, and the sensible thing to do with it is to go round it.
+ * Then it stood one word in with a way past, which read well and left the page
+ * doing the thing it cannot do: handing out card after card with nowhere to
+ * put the answers.
+ *
+ * Because that is what the gate is actually about, and it is not the account.
+ * A deck of flashcards is not a list of words to read. It is the asking again
+ * tomorrow and again next week — BOXES in functions/api/flashcard.js is the
+ * whole feature — and that needs a row per card per person. A run with nobody
+ * to tell is the page pretending, and the person doing it finds out at the end
+ * of the deck rather than at the start of it.
+ *
+ * One word rather than none, because somebody shown nothing is being asked to
+ * sign up for a description, and one word rather than one a deck, because a
+ * free word per deck across twenty-nine decks is the product. It is the tab's
+ * word: the run below is sessionStorage, so tomorrow is somebody arriving
+ * again, and nothing here follows anybody who has not signed in.
  *
  * And making the account keeps the run that argued for it, which took a
  * mechanism rather than a promise: both ways of signing in leave the page, so
@@ -169,7 +183,7 @@
     decks: [],       // every deck: the shipped ones, then yours
     deck: null,      // the one that is open, whole, with its cards
     run: null,       // the cards left to turn over, and where in them we are
-    asking: false,   // whether the offer stands in place of the next card
+    gated: false,    // whether the gate stands in place of the next card
     editing: false,  // a deck of your own, being written rather than turned
     view: 'in'       // which half of the sign-in form: 'in', 'up' or 'google'
   };
@@ -283,9 +297,19 @@
   var KEPT_KEY = 'ttb.flash.kept';
 
   /* Past this, the rest are answered again next time — the direction a failed
-     write already errs in, and the harmless one. The longest deck the site
-     ships is thirty cards, so this is the tab that went through six of them
-     before deciding to keep any of it. */
+     write already errs in, and the harmless one.
+
+     It is a cap on one case now, and it is worth saying which. Signed out with
+     the database bound, the gate stops a run at one word, so this holds one
+     answer and never comes near the number. What fills it is the database
+     being off: nothing is gated then, because there is nothing to sign in to,
+     and nothing is sent either, so a tab can go through deck after deck. Two
+     hundred is a little over three of the longest deck the site ships, which is
+     the coffee shop at sixty-one.
+
+     That number read thirty until this was rewritten, from back when the
+     longest deck was thirty, which is what a count written into a comment does
+     if nothing sends anybody back to it. */
   var MAX_KEPT = 200;
 
   function kept() {
@@ -293,26 +317,6 @@
       var was = JSON.parse(window.sessionStorage.getItem(KEPT_KEY) || 'null');
       return was && typeof was === 'object' ? was : {};
     } catch (e) { return {}; }
-  }
-
-  /* And whether this tab has been asked yet. The offer stands one word into the
-     first deck somebody opens signed out — firstWordCard() below — and in that
-     one only: three decks in a sitting is one question, and a page that asks
-     again in each of them is a wall rather than an offer. sessionStorage for the
-     same reason the answers above are kept there — the asking belongs to the
-     tab, and a tab opened tomorrow is somebody arriving again.
-
-     Where it throws, the card is drawn each time, which is the direction to err
-     in: asking twice is a press, and not asking is somebody turning thirty
-     cards that nothing was keeping. */
-  var ASKED_KEY = 'ttb.flash.asked';
-
-  function askedAlready() {
-    try { return window.sessionStorage.getItem(ASKED_KEY) === '1'; } catch (e) { return false; }
-  }
-
-  function markAsked() {
-    try { window.sessionStorage.setItem(ASKED_KEY, '1'); } catch (e) { /* as above */ }
   }
 
   function keep(deck, card, knew) {
@@ -719,7 +723,7 @@
    * same strings as the map's sheet. See the header for why there is a third
    * copy of this form on the site, and what would end that.
    */
-  function authForm(saying, after) {
+  function authForm(saying) {
     var creating = state.view === 'up';
     /* The third view, and the one nobody chooses: a Google account that has
        just proved itself and has no account here yet. Same form with the
@@ -800,13 +804,6 @@
       form.appendChild(swap);
     }
 
-    /* The way past the offer, on the one card that has one. Inside the form
-       rather than in a foot under it, because two quiet words in a column want
-       the negative margin and the tighter gap that `.ac-form .alt + .alt`
-       already draws; and after the switch, because a way out is the last thing
-       on a surface — design rule 6. */
-    if (after) form.appendChild(after);
-
     return form;
   }
 
@@ -822,55 +819,43 @@
     ])]);
   }
 
-  /* The same offer, standing inside a run instead: one word into the first
-     deck a tab opens signed out, in the place the second card would have been.
-     See the header for why it is there at all, and mark() below for why it is
-     one word in rather than none.
+  /* The gate. One word of a deck is turned over and answered signed out, and
+     then this stands where the second card would have been, until there is an
+     account. See the header for the argument; this is the shape of it.
    *
-     One word is what makes the sentence land. In front of the deck the card is
-     a form standing between somebody and a thing they have not seen, and the
-     honest answer to it is to go round it. After a word has been turned over
-     and answered, the thing it is talking about is on the screen behind it:
-     that answer, the one just given, is the thing that is not being kept.
+     There is no way past, and that is the whole change from the card it grew
+     out of, which had one. A deck of flashcards is not a list of words to read
+     — it is the asking again tomorrow, and again next week, and a page that
+     cannot remember which ones you knew cannot do the only thing it is for. So
+     turning card after card with nowhere to put the answers is not a lighter
+     version of this page. It is the page pretending, and the person doing it
+     finds out at the end of the deck rather than at the start.
    *
-     It is an offer and not a gate, and the card has to read as one. The deck is
-     not behind it: Go through it without saving is directly under the two ways
-     in, the words say that what you answer before you make an account comes
-     with you, and keep() above is what makes that true rather than kind — the
-     word just answered is already written into the tab. Pressing past costs the
-     tab's asking rather than the tab's run.
+     One word rather than none, and that is deliberate: somebody who has been
+     shown nothing is being asked to sign up for a description. The word is the
+     sample, it is a real card answered in the real way, and keep() above has
+     written that answer into the tab, so the one thing already done comes with
+     them when they make the account. That last part is why the copy can promise
+     it.
    *
-     The way past is an .alt because of design rule 5 — the accent is spent on
-     the one action, and a second filled button would be a card that could not
-     say which of the two it wanted. */
-  function firstWordCard() {
-    var past = el('button', {
-      type: 'button',
-      className: 'alt',
-      textContent: t('flashFirstPast')
-    });
-    past.addEventListener('click', function () {
-      TTBTrack.event('flash_keep_past', { deck_id: state.deck.id });
-      state.asking = false;
-      render();
-      focusRun();
-    });
-
+     The way out of a deck is not on this card and does not need to be: All the
+     decks stands in the head above, where it stands on every view of a deck,
+     and the whole of the decks page is still open signed out. What is behind
+     the gate is the second word of a deck, not the site. */
+  function gateCard() {
     return card([authForm([
       el('p', { className: 'eyebrow', textContent: t('flashKeepEyebrow') }),
       heading(t('flashFirstTitle')),
       el('p', { className: 'lists-say', textContent: t('flashFirstWhy') })
-    ], past)]);
+    ])]);
   }
 
-  /* Putting it on screen: the tab is marked asked so it is not put there a
-     second time, the press is reported, and the form opens on Create account
-     rather than on Sign in — the header of firstWordCard() and boot() below
-     each say why. Both places that raise the offer come through here, so the
-     three things that go with raising it cannot drift apart. */
-  function standOffer() {
-    state.asking = true;
-    markAsked();
+  /* Putting it on screen: the press is reported, and the form opens on Create
+     account rather than on Sign in — the header of gateCard() and boot() below
+     each say why. Both places that raise the gate come through here, so the two
+     things that go with raising it cannot drift apart. */
+  function standGate() {
+    state.gated = true;
     TTBTrack.event('flash_keep_ask', { deck_id: state.deck.id });
     if (state.view === 'in') state.view = 'up';
   }
@@ -1132,22 +1117,17 @@
     state.run.at += 1;
     state.run.turned = false;
 
-    /* And this is where the offer of an account stands, signed out: one word
-       in, in the place the next card would have been.
+    /* And this is where the gate goes up, signed out: on the answer, in the
+       place the next card would have been.
      *
-       It stood in front of the deck for a day, and what that got wrong is what
-       a form in front of an unseen thing is. Somebody who has not turned a card
-       has nothing on the screen to weigh the asking against, so the card is an
-       obstacle rather than an offer and the sensible thing to do with it is to
-       go round it. One word later the sentence has something to point at: the
-       answer just given is the thing that is not being kept, and it is sitting
-       behind the card.
+       On the answer rather than on the turn, because the two words under a
+       turned card are the question the page asked, and taking them away before
+       they are pressed is asking something and then not listening. The word is
+       finished, properly, and then the deck stops. See gateCard().
      *
-       After the answer rather than after the turn. The two words under a turned
-       card are the question the page asked, and taking them away before they
-       are pressed is asking something and then not listening. See
-       firstWordCard(). */
-    if (!state.user && state.ready && current() && !askedAlready()) standOffer();
+       `current()` because a deck with nothing left has nothing to gate: the end
+       of a run says its own thing and carries the same offer already. */
+    if (!state.user && state.ready && current()) standGate();
 
     render();
     focusRun();
@@ -1749,12 +1729,12 @@
     } else if (state.deck && state.editing) {
       add(editView());
     } else if (state.deck) {
-      if (state.asking) {
-        /* The head as well as the card, so the deck this is about is named on
-           the screen and the way out of it stands where it stands on every
-           other view of a deck. */
+      if (state.gated) {
+        /* The head as well as the card. It names the deck this is about, and it
+           carries All the decks — which is the whole of what a gate owes
+           somebody: the deck stops, the site does not. */
         add(runHead());
-        add(firstWordCard());
+        add(gateCard());
       } else {
         var now = current();
         if (now) studyView(now).forEach(add);
@@ -1900,20 +1880,28 @@
          for somebody signed out becomes the one that asks for a name. */
       if (googleSaid === 'name' && !state.user) state.view = 'google';
 
-      /* The one case where the offer stands on a deck before a word has been
-         answered: Google has come back wanting a name. That round trip returns
-         to the address it left from, so it lands on the deck, and the form that
-         asks for the name lives on this card and nowhere else here — without
-         this the page would draw cards and the name would never be asked for.
-         It is raised whatever this tab has already been asked, because the
-         alternative is a dead end.
+      /* And whether the gate is already up when this load draws. Two cases, and
+         mark() has the ordinary third.
        *
-         Every other time, mark() raises it, one word into the run. And in
-         either case only where an account would work: with the database off
-         there is nothing behind the form but a 503, which is the same rule
-         authCard() is drawn under. */
-      if (state.deck && !state.user && state.ready && current() &&
-          state.view === 'google') standOffer();
+         The tab has answered a word signed out already — `sent` is what it is
+         holding, read above rather than posted — so the free word is spent, on
+         this deck and on every other. Without this line the reload button would
+         be the way past the gate: the run rebuilds from the route's answer,
+         which has no idea who this is, and the next card would be handed over
+         for nothing. One word is one word, not one a page load.
+       *
+         And Google has come back wanting a name. That round trip returns to the
+         address it left from, so it lands on the deck, and the form that asks a
+         new Google account for a name lives on this card and nowhere else here.
+         Without this the page would draw a card and the name would never be
+         asked for, which is a dead end rather than a gate.
+       *
+         Both only where an account would work: with the database off there is
+         nothing behind the form but a 503, nothing to sign in to, and nothing
+         being kept from anybody — so the deck runs as it always did, which is
+         the same rule authCard() is drawn under. */
+      if (state.deck && !state.user && state.ready &&
+          (state.view === 'google' || Object.keys(sent).length)) standGate();
 
       render();
       sayGoogle();

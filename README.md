@@ -6374,8 +6374,8 @@ for Russian. So there is a switch, and the next section is it.
 the old argument stands: it is deliberately *not* the arrangement splitwise has,
 where the strings live in a file of their own. The `/site` skill says in so many
 words that there is one such exception and a second would be two files to keep
-in step. So the sixty-four `flash*` keys are in `ui.json`, and taking this
-feature out means taking sixty-four keys out of ten blocks rather than deleting
+in step. So the sixty-three `flash*` keys are in `ui.json`, and taking this
+feature out means taking sixty-three keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
 
@@ -6466,72 +6466,98 @@ the same way this page did, and each would drop 75 KB from its first load the
 same way. That is a change to `assets/app.js` and three others, and it was
 deliberately not made in the change that made this page fast.
 
-### Signed out, every deck still works
+### Signed out, one word of a deck
 
-The decks and every card in them are a file, and a file has nobody to
-check. Turn them over signed out, all of them, as many times as you like.
+Open any deck signed out and the first card comes up, turns over and is
+answered the way every card is. Then, where the second card would have been,
+one card stands and says the rest of the deck needs an account. There is no way
+past it.
 
-What an account buys is that **Knew it is remembered** — on the account rather
-than on the device, so a deck you got half through on a phone is half through
-on a laptop. That is the one deliberate difference from **Saves**, where a
-bookmark with no account is kept in the browser: a save is about a place and
-survives being a device's, and a card you know is about you.
+**The gate is not about the account, it is about what a flashcard is.** A deck
+here is not a list of words to read — it is the asking again tomorrow, then in
+three days, then in a week, and **The spacing** below is most of the feature.
+That takes a row per card per person, and there is nowhere to put one for
+somebody the site has never met. A page that went on handing out cards with
+nothing recording the answers would not be a lighter version of this; it would
+be this page pretending, and the person doing it would find that out at the end
+of the deck rather than at the start of it. Better to say so at the second
+card.
 
-Signed out the run is kept in the tab, read back out of it on the next load,
-and sent nowhere. The account is asked for **one word into the first deck a
-tab opens**: the first card is turned over and answered as usual, and where
-the second card would have been there is one card saying that nothing is being
-kept, with the two ways to fix that and *Go through it without saving*
-underneath.
+**One word rather than none.** Somebody who has been shown nothing is being
+asked to sign up for a description, which is both rude and dull, and the only
+route into this page from outside is a search result — see **How it is found**
+— so the first thing a visitor sees has to be the thing they came for. So the
+word is a real card, answered the real way, and `keep()` writes that answer
+into the tab as it is given, which is what lets the card say that the one
+already done comes with them.
 
-**It used to be offered only at the end of a run**, and that card is still
-there — this is a second moment rather than a move. The reasoning for the one
-moment was that nobody should be asked to make an account to find out whether
-a thing is worth one. That is a good sentence and it was answering a question
-nobody was asking. What somebody wants to know before they spend an evening on
-a deck is not whether the deck is any good — it is whether the evening counts
-for anything, and the old arrangement told them that after they had spent it.
-A sentence costs a press. Thirty cards that nothing was keeping costs the
-evening, and it is the people this page is written for who have least of it to
-lose.
+**And one word rather than one a deck.** A free word in each of thirty-three
+decks is thirty-three words, which is a product rather than a sample: the tab
+holding any answer at all is what raises the gate, on that deck and on every
+other. That is also what stops the reload button being the way past — the run
+rebuilds itself from what the route answered, and the route has no idea who is
+asking, so without this line a refresh would hand over the next card for
+nothing.
 
-**One word in rather than in front of the deck**, and that is the second
-arrangement rather than the first. It shipped in front for a day, and what
-that got wrong is what a form in front of an unseen thing is: somebody who has
-not turned a card has nothing on the screen to weigh the asking against, so
-the card reads as an obstacle and the sensible thing to do with it is to go
-round it — and being asked to fill in a form before you have been shown
-anything is simply dull. One word later the sentence has something to point
-at. The answer just given is the thing that is not being kept, and it is
-sitting on the screen behind the card. After the answer rather than after the
-turn, too: the two words under a turned card are the question the page asked,
-and taking them away before they are pressed is asking something and then not
-listening.
+It is **the tab's** word, in `sessionStorage`, so somebody who comes back
+tomorrow gets another one. That is not a hole to close. Closing it means
+following people who have not signed in, which this site does not do anywhere
+else and is not going to start doing here; and the person it would catch — the
+one who opens a new tab each day to read one Estonian word — is not the person
+the gate is for.
 
-**It is an offer and not a gate**, and three things keep it one. The way past
-is directly under the two ways in, so the deck is visibly not behind the card.
-Pressing past loses nothing — the answers are written into the tab as they are
-given and posted by the first load that arrives with a session, which is the
-mechanism below, so the card can say that what you answer before you make an
-account comes with you and be telling the truth. And it is asked **once a
-tab**: `ttb.flash.asked` in `sessionStorage`, beside the run it belongs to, so
-somebody going through three decks in a sitting is asked once and a tab opened
-tomorrow is somebody arriving again. Where that storage throws — private
-browsing, a full quota — the card is drawn each time, which is the direction to
-err in.
+**What is not behind it.** The decks page, whole: thirty-three decks, their
+names, what each is for and how many cards it holds, all readable signed out
+and for as long as anybody likes. The way out of a gated deck is *All the
+decks* in the head above it, where it stands on every view of a deck. The deck
+stops; the site does not.
 
-**And it is the one surface on this site that opens on Create account rather
-than on Sign in.** Everywhere else the form is reached by somebody who went
-looking for their account. This one is put in front of somebody turning cards
-signed out, which is very nearly the definition of not having one: the only
-link to this page inside the site is a row on `/account.html`, behind a
-sign-in, so anybody who arrives here without an account arrived from a search
-engine. *Already have an account?* is one press under the button, which is the
-same press the decks page asks of somebody making one.
+**What an account buys**, then, is the page: **Knew it is remembered** — on the
+account rather than on the device, so a deck you got half through on a phone is
+half through on a laptop. That is the deliberate difference from **Saves**,
+where a bookmark with no account is kept in the browser and works perfectly
+well as a device's. A save is a fact about a place. A card you know is a fact
+about you, and it is also the whole of the machinery.
 
-It is drawn only where an account would work. With the database off there is
-nothing behind the form but a 503, which is the rule the card at the foot of
-the decks is drawn under too.
+**This is the fourth arrangement and the three before it are worth keeping.**
+The offer stood only at the end of a run, on the reasoning that nobody should
+be asked to make an account to find out whether a thing is worth one — a good
+sentence, answering a question nobody was asking. Then it stood in front of the
+deck, which put a form between somebody and a thing they had not seen: dull,
+and the sensible thing to do with a form like that is to go round it. Then it
+stood one word in with *Go through it without saving* under it, which read well
+and left the page doing the one thing it cannot do. Each of those was a
+reasonable answer and each was answering the wrong question; the question is
+what a deck of flashcards is for.
+
+**It is drawn only where an account would work.** With the database off there
+is nothing behind the form but a 503, nothing to sign in to and nothing being
+kept from anybody, so the deck runs the way it always did — the same rule the
+card at the foot of the decks is drawn under.
+
+**What this costs the search route, measured rather than assumed.** The worry
+was the obvious one: `functions/flashcard.js` writes each deck's words into the
+page as text, `sitemap.xml` points at thirty-three of them, and a gate that a
+crawler never meets is the soft-paywall shape Google is entitled to take a dim
+view of — on the one route into this page from outside.
+
+It turns out the gate does not change what a crawler sees at all, and the two
+halves are worth keeping apart. Loaded with scripts off, `<main>` holds every
+word of the deck and its meanings. Loaded with scripts on, `<main>` holds
+`Tere`, *tap to turn it over*, and `1 / 15` — because `render()` empties what
+the route wrote before it draws, which the header of `functions/flashcard.js`
+has said since the day it was written. Googlebot runs scripts, and it does not
+answer a card, so what it indexed before the gate and what it indexes after are
+the same thing: one Estonian word, no meanings. The gate stands where no
+crawler ever reaches.
+
+So there is no new mismatch here. There is an **old** one, and it is worth
+somebody's afternoon on its own: the words the route writes for search are
+words the rendered page throws away, so whether a deck is indexed for *what
+does leib mean* depends entirely on which crawler arrived. That was true before
+any of this and is not a thing to fix inside a change about accounts — but it
+is why a deck page ranks less well than its `<main>` suggests it should, and
+nobody should rediscover it from scratch.
 
 **And making one keeps the run that argued for it.** That took a mechanism
 rather than good intentions: the card says "Remember where you got to", and
@@ -6842,9 +6868,12 @@ English one.
 
 **It needs no account**, which makes it the one write on this page that does
 not — every other one, the two that only say a card was known included, takes a
-session. The decks turn over signed out and most of the people reading them
-are; a mistake you have to make an account to report is a mistake nobody
-reports. It is filed under the same hashed network fingerprint the saves and
+session. A mistake you have to make an account to report is a mistake nobody
+reports, and the line sits under the two answers on a turned card, so the one
+word somebody gets signed out is enough to reach it. That is deliberate rather
+than incidental: the Estonian here is mine and the people turning the cards
+over are the only proofreaders it has, so the report is on the free side of the
+gate and always will be. It is filed under the same hashed network fingerprint the saves and
 the feedback are capped by, in the primary key rather than beside it, so one
 person pressing one card twice is one row and the count is how many *people*
 said so. Two readers behind one network with the same phone count as one, which
@@ -6930,9 +6959,11 @@ knew better.
 
 | | who |
 |---|---|
-| turn over a deck the site ships | anybody at all, signed in or not |
-| say one of its cards is wrong | anybody at all, signed in or not — once per card per network |
-| have that remembered | any account, and it is the only thing an account is for here |
+| read the decks page, whole | anybody at all, signed in or not |
+| turn over the first card of a deck the site ships | anybody at all, signed in or not — one word to a tab, and then **Signed out, one word of a deck** above |
+| turn over the rest of it | any account |
+| say one of its cards is wrong | anybody at all, signed in or not — once per card per network, and the one word is enough to reach the line that does it |
+| have any of it remembered | any account, and it is the only thing an account is for here |
 | write a deck | any account |
 | read one, add to it, rename it, delete it | its owner, and nobody else |
 | start a deck again | any account, on any deck — its own rows and nobody else's |
@@ -7039,7 +7070,7 @@ and each is fenced or prefixed so it can be found by looking:
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
-| `data/ui.json` | the sixty-four `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
+| `data/ui.json` | the sixty-three `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
 | `README.md` | this section, its line in **Contents**, its five lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
 | `.claude/skills/api/SKILL.md` | the `/api/flashcard` row, and the flashcards clause in the `/*` row |
@@ -10127,7 +10158,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |
-| `flash_keep_ask`, `flash_keep_past` | `deck_id` — the offer of an account standing one word into a deck signed out, and the press that goes past it. The two together are the whole of whether asking early was worth asking |
+| `flash_keep_ask` | `deck_id` — the gate going up, one word into a deck signed out. Against `account_create` with `via: flashcard` it is how many of the people who meet it make an account, which is the only number that says whether the gate was right |
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, reported under the names the map's switch reports under, because it is the same press |
 | `flash_back`, `home` | `deck_id` on the first |
 
