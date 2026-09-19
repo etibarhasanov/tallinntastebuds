@@ -96,11 +96,16 @@ else `en` — and `applyStaticStrings()` over the `data-i18n`,
 attributes. `app.js`, `lists.js`, `venues.js` and `account.js` each carry
 that block; `pass.js` carries it without the `theme-color` line, so the
 three pass pages keep light browser chrome under the dark style.
-`flashcard.js` carries the style half and not the language half: it does not
-fetch `data/ui.json` at all, but sends its candidates to `/api/flashcard` and
-prints from the one block that comes back — **One request on the way in**
-under **Flashcards** in `README.md` says why, and it is the pattern the other
-pages would follow to shed 75 KB from a first load. A new page
+`flashcard.js` carries the style half and a language half of its own shape: it
+does not fetch `data/ui.json` at all, but sends its candidates to
+`/api/flashcard` and prints from the one block that comes back — **One request
+on the way in** under **Flashcards** in `README.md` says why, and it is the
+pattern the other pages would follow to shed 75 KB from a first load. It is
+also the one page besides the map with a **language switch** on it, because on
+its own subdomain `ttb.lang` belongs to another origin: it is drawn from the
+`langs` that same answer carries, and picking one asks the route again for the
+one block rather than reloading — **A language of your own to learn it in**
+under **Flashcards**. A new page
 copies the block whole, and its head carries `<meta name="color-scheme">`
 and `<meta name="theme-color">` like `lists.html`'s.
 
