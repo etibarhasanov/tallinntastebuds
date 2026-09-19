@@ -2,9 +2,11 @@
  * Tallinn Tastebuds — /flashcard, and the root of flashcard.tallinntastebuds.ee.
  *
  * flashcard.html again, with a head of its own and the deck written into it as
- * text. Three things that buys, and the third is the reason this file exists:
+ * text. Four things that buys, and the last is the reason this file exists:
  *
  *   the tab says      "At the table"   and not "Flashcards | Tallinn Tastebuds"
+ *   a link unfurls    as a card with a card on it, in the language it was sent
+ *                     in — and not as the mouth over a line about restaurants
  *   the page draws    the same as it always did — this is an improvement on
  *                     the load and never a requirement for it
  *   a search finds    the Estonian
@@ -27,11 +29,19 @@
  *
  * WHAT GOES IN, AND WHERE
  *
- * The head: head() out of ../_shell.js, unchanged and uncopied — unlike the map
- * and the split page, which write their twelve tags out because a restaurant
- * has a photograph and a group's name wants no site suffix after it. A deck
- * wants exactly what head() spells: "At the table | Tallinn Tastebuds", the
- * mark as its picture, and the site's name beside it.
+ * The head: head() out of ../_shell.js, uncopied — unlike the map and the split
+ * page, which write their twelve tags out because a restaurant has a photograph
+ * and a group's name wants no site suffix after it. A deck wants what head()
+ * spells — "At the table | Tallinn Tastebuds", and the site's name beside it —
+ * with one thing of its own, which is the picture. The mouth over "All the
+ * places in this map I have personally been and approved" is the site's card
+ * and the wrong card for a page about Estonian, so this route names one of its
+ * own: CARD below. head() takes it as an argument, rather than this file
+ * writing all twelve tags out to change one of them.
+ *
+ * And the words in those tags are in the language the link carried, which is
+ * the one thing here that is not also true of the <main> under them:
+ * languageOf() below is the whole of that argument.
  *
  * The text: the deck as the word and what it means in each of the three
  * languages the cards are written in, into the <main> the page ships empty
@@ -42,12 +52,14 @@
  *
  * The untouched page, and assets/flashcard.js asks /api/flashcard as it would
  * have anyway. A missing data file, a malformed one, a deck id that is nobody's
- * — all of them are the plain shell with the page's own head. Nothing here is
- * load-bearing for a reader who runs scripts, which is nearly all of them.
+ * — all of them are the plain shell with the page's own head, and a
+ * data/ui.json that cannot be read is the head in English rather than no head
+ * at all. Nothing here is load-bearing for a reader who runs scripts, which is
+ * nearly all of them.
  */
 
 import { canonical, esc, head, shell, rehead, fill, EMPTY, page, SITE } from './_shell.js';
-import { dataFile } from './api/_lib.js';
+import { dataFile, uiStrings } from './api/_lib.js';
 
 const PATH = '/flashcard';
 const FILE = '/flashcard.html';
@@ -58,26 +70,55 @@ const DECKS_FILE = '/data/decks.json';
    nothing else in this file cares which they are. */
 const DECK_LANGS = ['en', 'az', 'ru'];
 
-/* The English out of a deck's name, the line under it or a card's back — each
-   of them an object keyed by language in data/decks.json. English and nothing
-   else, because it is the one tools/validate.mjs insists every card has and
-   because it is what this page's tags are written in; the other two go into
-   the <main> a language at a time, each saying which it is. */
-function inEnglish(pack) {
-  return (pack && pack.en) || '';
+/* The first of those and the site's own, which makes it what everything here
+   falls back to: a language nobody asked for, a language the site does not
+   speak, and a deck that was never written in the one that was asked for. */
+const DEFAULT_LANG = 'en';
+
+/* A deck's name, the line under it or a card's back — each of them an object
+   keyed by language in data/decks.json — in the language asked for, and in
+   English when it was not written in that one. English is the fallback rather
+   than the empty string because it is the one tools/validate.mjs insists every
+   card has. */
+function inLanguage(pack, lang) {
+  return (pack && (pack[lang] || pack[DEFAULT_LANG])) || '';
 }
 
-/* English, on a site read in ten languages, for the reason spelled out at
-   length in functions/list/[id].js: a crawler's Accept-Language is whatever
-   its operator set, and the card built from these tags is shown to everybody
-   a link is forwarded to rather than to whoever fetched it. The Azerbaijani and
-   Russian on the cards is written into the <main> below rather than into the
-   head for exactly that reason — what is indexed is all three, and what an
-   unfurled link says is the one language every card has. */
+/* And the English on its own, which is what goes into the <main> whatever
+   language the link was carrying. The block above TITLE says why. */
+function inEnglish(pack) {
+  return inLanguage(pack, DEFAULT_LANG);
+}
+
+/* What the page calls itself and says about itself in English, which is two
+   things at once: the heading and the paragraph the <main> below is led by,
+   and what the head falls back to when data/ui.json cannot be read.
+ *
+ * The <main> stays English whatever the link asked for, and that is the
+ * argument functions/list/[id].js makes at length: a crawler's Accept-Language
+ * is whatever its operator set, and what is written into the page as text is
+ * for the reader that runs no script — which is a crawler, and which is asking
+ * for the page rather than for a language. The words in the head are the other
+ * case entirely and follow the link; the block above onRequest() says why. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
   'Thirty-three decks of Estonian, from the first twenty words to a jacket with a ' +
   'broken zip — the word, its three forms and a sentence to say it in.';
+
+/* The card an unfurler draws, which is this page's own and not the site's.
+ *
+ * Every other route here hands head() the default — the watercolour mouth over
+ * "All the places in this map I have personally been and approved" — and every
+ * other route is right to: they are all views of the map. This one is not, and
+ * a link to the flashcards pasted into a chat arrived as a picture of a mouth
+ * under a sentence about restaurants, which is a card for the wrong site. The
+ * head of assets/logo/og-flashcard.html says what is on this one instead.
+ *
+ * The picture is in English whatever language the words beside it are in, the
+ * same way og.jpg is on a map shared with ?lang=et: it is a rendered file and
+ * not a template, tools/ogcard.mjs draws it, and ten of them would be ten
+ * pictures to redraw every time a token moves. */
+const CARD = '/assets/logo/og-flashcard.png';
 
 /* A deck id as data/decks.json spells one. Anything else is either somebody's
    own deck, whose sixteen hex characters mean nothing without their session,
@@ -166,6 +207,44 @@ function deckWords(deck) {
     '<p><a href="' + PATH + '">' + esc(TITLE) + '</a></p>';
 }
 
+/* What a deck says about itself: the line under its name, and how many cards
+ * are in it.
+ *
+ * The sentence this used to carry — that every card means something in
+ * English, Azerbaijani and Russian — has gone to where it was always worth
+ * more, which is the <dl> deckWords() builds: a crawler reads the three
+ * glosses themselves there, each with a lang= on it, rather than a claim about
+ * them in one language. What is left is what somebody forwarded the link is
+ * actually asking, which is what this deck is and how long it takes. */
+function deckSays(deck, languages, lang) {
+  const ui = languages[lang] || {};
+  const why = inLanguage(deck.why, lang);
+  const many = (ui.flashCards || '{n} cards').replace('{n}', deck.cards.length);
+  return (why ? why + ' — ' : '') + many + '.';
+}
+
+/* The language the head is written in, which is the one the link carried.
+ *
+ * A link to this page is sent to somebody, the way a place's is and unlike a
+ * list's: ?lang=az on it is the sender having chosen Azerbaijani for whoever
+ * they are sending it to, and a card that came back in English would be the
+ * site answering a question nobody asked. That is the arrangement **Sharing a
+ * place** in README.md describes, applied here — and it is not the argument
+ * the <main> is under, which has no reader to ask.
+ *
+ * ?lang= does not reach the canonical or og:url, and so this page has one
+ * address in ten languages rather than ten addresses. What it costs is
+ * Facebook, which treats og:url as the identity of the thing shared and will
+ * therefore keep one card for all ten; WhatsApp, Telegram, Slack, Signal and X
+ * all read the tags of the address they were handed and show the language the
+ * link was sent in. The other way round is ten entries in tools/sitemap.mjs, an
+ * hreflang set and ten pages for a page nothing links to, and that is the
+ * bargain the map struck for a reason this page does not have. */
+function languageOf(request, languages) {
+  const asked = new URL(request.url).searchParams.get('lang');
+  return asked && Object.prototype.hasOwnProperty.call(languages, asked) ? asked : DEFAULT_LANG;
+}
+
 export async function onRequest(context) {
   const { request } = context;
 
@@ -182,6 +261,24 @@ export async function onRequest(context) {
     ? decks.find((d) => d && d.id === asked && Array.isArray(d.cards)) || null
     : null;
 
+  /* The site's own words, for the head. A missing or malformed file is the
+     English constants above rather than a page without a head — this route
+     improves a load and is never a requirement for one. */
+  let languages;
+  try {
+    languages = await uiStrings(context);
+  } catch (e) {
+    languages = {};
+  }
+  const lang = languageOf(request, languages);
+  const ui = languages[lang] || {};
+  /* A deck is written in three languages and the interface in ten, so a deck's
+     own words follow the link only as far as they go: ?lang=fi gets a Finnish
+     page and an English deck name, because there is no Finnish one to get, and
+     the count beside it is in the same language as the name rather than in the
+     one the rest of the head is in. */
+  const deckLang = DECK_LANGS.indexOf(lang) === -1 ? DEFAULT_LANG : lang;
+
   /* An id that answers with nothing is somebody's own deck — sixteen hex
      characters that mean anything only to their session — or an id that was
      never anything. Both get the page's own head, nothing written into the
@@ -193,21 +290,25 @@ export async function onRequest(context) {
 
   const tags = deck
     ? head({
-        title: inEnglish(deck.name),
-        description: (deck.why ? inEnglish(deck.why) + '. ' : '') +
-          deck.cards.length +
-          ' Estonian words and phrases, with what each one means in English, Azerbaijani and Russian.',
+        title: inLanguage(deck.name, deckLang),
+        description: deckSays(deck, languages, deckLang),
         /* The deck's own address rather than the page's, because a deck is a
            page of its own — the same call the map makes for ?spot=, and the
            same set of addresses tools/sitemap.mjs writes out. */
         url: where(request, PATH + '?d=' + deck.id),
-        type: 'article'
+        type: 'article',
+        image: CARD
       })
     : head({
-        title: TITLE,
-        description: DESCRIPTION,
+        title: ui.flashDoor || TITLE,
+        /* The line the page itself opens with, rather than a second sentence
+           written for the head alone: what somebody forwarded this link wants
+           to know is what the thing is and what they are meant to do with it,
+           and flashWhat is already that, in all ten. */
+        description: ui.flashWhat || DESCRIPTION,
         url: where(request, PATH),
-        type: 'website'
+        type: 'website',
+        image: CARD
       });
 
   const words = deck ? deckWords(deck) : own ? '' : deckList(decks);

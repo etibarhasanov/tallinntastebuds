@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en" data-style="red">
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<title>Estonian flashcards — the share card</title>
+
+<!--
+  Tallinn Tastebuds — the picture an unfurler draws for /flashcard.
+
+  og.jpg is the mouth, the site's name and the line about the map, and it is
+  the right card for every page that is about the map. It is the wrong one for
+  this page: a link to the flashcards arrived in a chat showing a watercolour
+  mouth over "All the places in this map I have personally been and approved",
+  which is a card about somewhere to eat under a title about Estonian.
+
+  So this is the same composition with the flashcards in it — a picture on the
+  left, an eyebrow, a title, the line that says why and the handle on the
+  right — and the picture is a card with an Estonian word on it, because that
+  is what the page is.
+
+  IT IS DRAWN FROM THE SITE'S OWN STYLESHEETS, NOT REDRAWN TO MATCH THEM
+
+  ../styles.css and ../flashcard.css are linked here and .flash-card,
+  .flash-front, .flash-turn and .eyebrow are the page's own rules, so the
+  paper, the hairline, the shadow, the corner and all three faces are the ones
+  the page is actually wearing. Nothing in here names a colour — design rule 1
+  — and what this file adds is the arrangement at 1200x630 and nothing else.
+  That is the arrangement clips/scenes/ is under and for the same reason: a
+  picture of the site drawn a second time by hand is a picture that is wrong
+  within the month.
+
+  The words are typed in rather than read out of data/ui.json, which is the
+  one copy in here. A scene does the same, and the reason is the same: this is
+  a picture, and a picture cannot be re-rendered on a phone when somebody
+  edits a string. tools/ogcard.mjs draws it, and the page's own words are
+  flashEyebrow, flashTitle, flashWhat and flashTurn — change one of those and
+  the card is redrawn in the same commit.
+
+  Red rather than green, and the style is written into the tag rather than
+  left to a script: this file loads none, and :root carries Red's palette for
+  exactly the instant before a script would have set it. The map's card is
+  Red too, and a share card is not a place anybody chose a style.
+-->
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="../flashcard.css">
+
+<style>
+  /* The canvas. Exactly the 1200x630 Facebook, WhatsApp, Telegram, Slack and
+     X all crop from, so nothing has to guess a safe area. */
+  html, body { margin: 0; }
+  body {
+    width: 1200px;
+    height: 630px;
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    align-items: center;
+    gap: 60px;
+    padding: 0 78px;
+    box-sizing: border-box;
+    background: var(--wash);
+    color: var(--ink);
+  }
+
+  /* The card, at the size the picture of a mouth occupies on og.jpg. Its
+     rules come from flashcard.css; the two here are what a 400px column
+     needs that a phone's screen does not — the height it is given on the
+     page is a proportion of the viewport, and there is no viewport here. */
+  .flash-card { min-height: 288px; }
+  .flash-front { font-size: 54px; }
+  .flash-turn { font-size: 14px; }
+
+  /* The column beside it: the same four things in the same order og.jpg puts
+     them in, which is also the order rule 6 builds a sheet in. */
+  .say > * { margin: 0; }
+  .eyebrow { font-size: 19px; letter-spacing: .22em; }
+  .say h1 {
+    margin: 22px 0 28px;
+    font-family: var(--display);
+    font-size: 68px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.04;
+  }
+  .say .what {
+    font-family: var(--body);
+    font-size: 23px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .say .handle {
+    margin-top: 30px;
+    font-family: var(--mono);
+    font-size: 21px;
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>
+
+<body>
+
+<!-- The front of a card, which is the side you are looking at when the page
+     opens: the word, and the line saying what to do with it. The back would
+     have carried more — the English, the three forms, a sentence — and would
+     have been a worse picture, because the whole idea is the turn and the
+     back is what happens after it. "Leib" is a real card out of the food
+     deck in data/decks.json. -->
+<div class="flash-card">
+  <div class="flash-face">
+    <p class="flash-front">Leib</p>
+    <p class="flash-turn">Tap to turn it over</p>
+  </div>
+</div>
+
+<div class="say">
+  <p class="eyebrow">Flashcards</p>
+  <h1>Estonian, one card at a time</h1>
+  <p class="what">Decks of the words a day in Tallinn is made of. Turn a card
+    over, say whether you knew it, and the ones you did not come round again.</p>
+  <p class="handle">@tallinntastebuds</p>
+</div>

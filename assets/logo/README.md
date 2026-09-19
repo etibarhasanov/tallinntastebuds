@@ -20,14 +20,27 @@ og.jpg             1200x630 share card — mouth, name, tagline, handle
 source-artwork.jpg the photograph everything above is cut from
 ```
 
+Two files in here are not crops of that photograph at all:
+
+```
+og-flashcard.html  the 1200x630 share card for /flashcard, laid out in the
+og-flashcard.png   page's own stylesheets and class names — a card with an
+                   Estonian word on it where og.jpg has the mouth. The .png is
+                   drawn from the .html by `node tools/ogcard.mjs`, which is
+                   where the reasoning is; **When somebody sends the link**
+                   under **Flashcards** in README.md says why the site's own
+                   card was the wrong one for that page.
+```
+
 `/favicon.ico`, at the root of the repo rather than in here, is the square crop
 too — one file holding 16, 32 and 48px copies, uncompressed, the boring kind of
 ICO that every reader takes.
 
-Two crops, eight files. The wide one keeps the mouth in its setting, which is
-how it reads at any size a page shows it. The square one is for the frames
-that are square or round, where the wide crop would have to be padded or
-cut again by the browser.
+Two crops, eight files — and the pair above, which is drawn rather than cut
+and is the only thing in this folder that is. The wide one keeps the mouth in
+its setting, which is how it reads at any size a page shows it. The square one
+is for the frames that are square or round, where the wide crop would have to
+be padded or cut again by the browser.
 
     wide     (1365, 1275) to (2268, 1975)      903 x 700
     square   (1480, 1370) to (2140, 2030)      660 x 660

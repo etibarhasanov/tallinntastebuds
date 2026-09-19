@@ -254,8 +254,16 @@ no step 1 until the owner has answered it.
 1. Make the change, in the dialect above, with the README section open.
 2. `node tools/stamp.mjs`. It rewrites only the pages whose stamps changed,
    and CI refuses a stale one. Never type a hash by hand.
-3. `node tools/validate.mjs`.
-4. **Drive it in a browser.** There is no test suite and no Playwright
+3. `node tools/ogcard.mjs`, **if the change moved a colour token or anything
+   in `assets/flashcard.css`**, and commit the redrawn
+   `assets/logo/og-flashcard.png`. That card is the flashcards' share picture
+   and it is drawn from those two stylesheets — `assets/logo/og-flashcard.html`
+   links them and wears the page's own class names — so a token that moved
+   leaves a picture of last month's site on every link anybody sends. It needs
+   a Chromium, it takes a second, and nothing in CI can see that it went
+   stale. **When somebody sends the link** under **Flashcards** in `README.md`.
+4. `node tools/validate.mjs`.
+5. **Drive it in a browser.** There is no test suite and no Playwright
    harness in the repo; reading the diff is not the same as watching it.
    `python3 -m http.server 8000` over the repo root is enough for the map,
    because `fetch()` refuses `file://` and the page comes up empty. For a
@@ -267,10 +275,10 @@ no step 1 until the owner has answered it.
    the daily Workers AI allowance the live site shares — a few questions,
    not an afternoon. Look at both styles, and at a 390 px width, which is
    the phone the README measures its layouts against.
-5. **Rewrite the README paragraph** the change made wrong, and the comment
+6. **Rewrite the README paragraph** the change made wrong, and the comment
    above the function. A paragraph that now describes the version that lost
    the argument is a bug.
-6. The pass in `leave-it-better.md`, over every file in the diff, whole.
+7. The pass in `leave-it-better.md`, over every file in the diff, whole.
 
 ## Adding a language
 
