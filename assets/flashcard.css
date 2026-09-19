@@ -101,7 +101,7 @@
 .flash-front {
   margin: 0;
   font-family: var(--display);
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 600;
   letter-spacing: -.02em;
   line-height: 1.2;
@@ -114,7 +114,7 @@
 .flash-back {
   margin: 0;
   font-family: var(--body);
-  font-size: 19px;
+  font-size: 20px;
   line-height: 1.45;
   overflow-wrap: anywhere;
 }
@@ -140,7 +140,7 @@
      is not a flex row, so nothing else supplies this. */
   margin: 8px 0 4px;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: .02em;
   color: var(--muted);
 }
@@ -171,22 +171,24 @@
 }
 .flash-said {
   font-family: var(--body);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.45;
 }
 .flash-means {
   font-family: var(--body);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.45;
   color: var(--muted);
 }
 
 /* "Tap to turn it over", and what the card says once it has been turned. A
-   label rather than a sentence, so it is mono. */
+   label rather than a sentence, so it is mono. Set apart from the word and
+   its answer above it with air of its own, so it reads as the card's own
+   quiet footnote and not another line of the same paragraph. */
 .flash-turn {
-  margin: 0;
+  margin: 14px 0 0;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: .16em;
   text-transform: uppercase;
