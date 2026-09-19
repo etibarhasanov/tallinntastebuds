@@ -6796,7 +6796,8 @@ to sit and read a deck they wrote is not to be told to come back on Thursday.
 
 On the decks page, a deck with anything waiting says **"6 due"** where it would
 otherwise say "9 / 22" — one is a reason to open a deck and the other is a fact
-about one.
+about one. It is also what decides where that row sits: see **And a finished
+deck sinks** below.
 
 **Both presses change the card before the write goes out, and neither waits for
 it.** This is pressed a hundred times in a sitting and a card that hung on the
@@ -6833,6 +6834,67 @@ run of rows, and a level with nothing in it draws no heading: the headings are
 for the decks rather than the other way round. `tools/validate.mjs` fails a
 deck whose level is not one of the three, because a deck under no heading is a
 deck nobody scrolls to.
+
+### And a finished deck sinks
+
+Under each of those three headings the rows used to go in the file's order, and
+the file's order is the order somebody meets the decks in rather than the order
+they are any use in. Thirty-three of them is a great many to leave fixed for
+ever: a deck you had been all the way through sat exactly where it always had,
+above every deck still waiting, for as long as the account lasted. What the
+page is for is picking up where you left off, and the top of the list was the
+last place to look for it.
+
+So the rows go in the order of what each deck is asking for. Three rungs, and
+`standing()` in `assets/flashcard.js` is the whole of it:
+
+| | |
+|---|---|
+| **waiting, and started** | cards are due and some have been got right — this is picking up where you left off |
+| **not started** | nothing answered in it yet, so it is the new thing rather than the unfinished one |
+| **resting** | everything known, and none of it come round again yet |
+
+**Nothing is pressed and nothing is stored.** The two numbers this turns on are
+already on every row the route answers — `due` and `known`, which are what draw
+"6 due" against "22 / 22" on the end of it — so this is a sort over what the
+page is already holding, and it costs no column, no write, no string in ten
+languages and nothing to run by hand against either database.
+
+**And a press would have been the wrong thing anyway**, which is worth saying
+because it is what was asked for first. A deck is never finished here, only
+resting: **The spacing** above brings its cards back after a day, then three,
+then a week, then a fortnight, then five weeks, then eleven. A deck put at the
+bottom by hand would still be at the bottom on the morning it came round again
+— which is the one morning this page exists for. Sinking by what is due rises
+again on its own, on the day it should.
+
+**Sorted and not filtered.** Nothing is hidden, nothing is collapsed, and no
+row goes away: a resting deck is still a row, still opens, and still offers *Go
+through it anyway*, because somebody who wants to sit and read a deck is not to
+be told the spacing has nothing for them today. There is no fourth heading
+either — the three say where you are, and a *Finished* group at the foot would
+put a beginner's deck next to an advanced one.
+
+The sort is **stable**, so inside a rung the order is the one it arrived in:
+the file's for the decks the site ships, most-recently-edited-first for the
+ones somebody wrote — which is `ORDER BY updated_at DESC` in
+`functions/api/flashcard.js` and is still what decides between two decks of
+yours in the same state.
+
+**An empty deck of your own is *not started* rather than *resting*.** It has
+nothing to rest, and it is the deck somebody made a minute ago and has not put
+a word in yet; reading it as finished would file the one deck they are about to
+open under everything else.
+
+**Signed out, and with the database off, nothing moves.** The sort is skipped
+outright, under the same condition `deckRow()` draws its count under: with
+nobody to have progress, every row says how many cards it holds rather than
+what is waiting, and a list reordered by a number the rows are not printing is
+a list somebody would read as shuffled. It would be a no-op in any case —
+`knownOf()` answers an empty map for a visitor, so every card comes back due
+and every deck is *not started* — which is exactly what the first visit of a
+new account looks like too. Nothing has rearranged itself before anybody has
+answered a card.
 
 ### Three forms, where a word has three
 

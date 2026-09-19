@@ -903,9 +903,56 @@
     ]);
   }
 
+  /* Where a deck stands, which is what the rows are put in the order of.
+     Three rungs, and they are the three things a deck can be asking for:
+
+       1  waiting, and started  cards are due and some have been got right —
+                                this is picking up where you left off
+       2  not started           nothing answered in it yet, so it is the new
+                                thing rather than the unfinished one
+       3  resting               everything known, and none of it come round
+                                again yet
+
+     An empty deck of your own is the middle rung rather than the bottom one.
+     It has nothing to rest; it is a deck somebody made a minute ago and has
+     not put a word in yet, and reading it as finished would file the one deck
+     they are about to open under everything else. */
+  function standing(deck) {
+    if (!deck.cards) return 2;
+    if (!deck.due) return 3;
+    return deck.known ? 1 : 2;
+  }
+
+  /* Thirty-three decks is a great many to leave in one order for ever, and the
+     file's order is the order somebody meets them in rather than the order
+     they are any use in: a deck you had been all the way through sat exactly
+     where it always had, above every deck still waiting, for as long as the
+     account lasted. So the rows go in the order of what each deck is asking
+     for, and a finished one sinks.
+
+     Nothing is pressed and nothing is stored. The two numbers this turns on —
+     `due` and `known` — are already on every row the route answers, because
+     they are what draws "6 due" against "22 / 22" on the end of it. A press
+     would have wanted somewhere to keep the answer, and it would have fought
+     the spacing besides: a deck is never finished here, only resting, and one
+     put at the bottom by hand would still be at the bottom on the morning its
+     cards came round again. Sinking by what is due rises again on its own.
+
+     Sorted and not filtered. Every deck is still a row, still opens, and still
+     offers Go through it anyway — a deck somebody wants to sit and read is not
+     to be hidden because the spacing has nothing to say today. And stable, so
+     inside a rung the order is the one it arrived in: the file's for the decks
+     the site ships, most-recently-edited-first for the ones somebody wrote.
+
+     Signed out, and with the database off, there is nothing to sort by. Every
+     row says how many cards it holds, none of them says what is due, and the
+     order stays the file's — the same line deckRow() draws its count under. */
   function deckList(decks) {
     var ul = el('ul', { className: 'menu' });
-    decks.forEach(function (deck) { ul.appendChild(deckRow(deck)); });
+    var order = (state.user && state.ready)
+      ? decks.slice().sort(function (a, b) { return standing(a) - standing(b); })
+      : decks;
+    order.forEach(function (deck) { ul.appendChild(deckRow(deck)); });
     return ul;
   }
 
