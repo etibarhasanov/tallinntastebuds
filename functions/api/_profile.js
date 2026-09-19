@@ -48,7 +48,6 @@
  */
 
 import { readingPins, pinSelect, pinsOf } from './_pins.js';
-import { listDots } from './_mostkept.js';
 
 /* The same shape functions/api/account.js mints a username in, said again
    here so nothing that is not a plausible name goes near a query. */
@@ -113,21 +112,6 @@ export async function readProfile(context, name) {
   let kept = 0;
   for (const r of results) kept += r.keeps;
 
-  /* Where each of those lists actually is: the first ten places off it, as
-     points. Above 860px /u/<name> is a map of everywhere one person sends
-     people — each list wearing the mark its owner chose, all of them at once
-     — and this is what draws it. The directory has sent the same field on
-     every row since the cards had little skies on them; a profile did not,
-     which is why a profile's rows had nothing to put on the city.
-
-     It is one indexed read per list, at most twenty-four of them, in a single
-     batch. A profile that cannot read them is a profile with no picture and
-     all of its lists, which is what the page did before this. */
-  let dots = {};
-  try {
-    dots = (await listDots(context, results)).dots;
-  } catch (e) { /* the shapes go, the lists stay */ }
-
   return {
     name: row.username,
     since: row.created_at,
@@ -136,17 +120,15 @@ export async function readProfile(context, name) {
        answer here drops a field with nothing in it. Nearly every account has
        no line, and the page draws nothing for one it was not given. */
     about: row.about || undefined,
-    /* What a row on this page draws and no more — listRow() in
-       assets/lists.js takes a title, a count, a number of keeps and, on a
-       desk, the shape the list makes on the city; the id is what it links to.
-       The line under a list and the date it was last edited are on the list's
-       own page, one press away. */
+    /* The four things a row on this page draws and no more — listRow() in
+       assets/lists.js takes a title, a count and a number of keeps, and the
+       id is what it links to. The line under a list and the date it was last
+       edited are on the list's own page, one press away. */
     lists: results.map((r) => ({
       id: r.id,
       title: r.title,
       n: r.n,
       keeps: r.keeps,
-      dots: dots[r.id] || [],
       /* Their pin, in front of their title, the same as on every other page
          a list is named on. A profile is the page that is most obviously a
          collection of somebody's, so it is the page where telling one of
