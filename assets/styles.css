@@ -104,11 +104,10 @@
   --radius: 4px;
   --radius-soft: 12px;
   --gap: 16px;
-  /* The measure the brand is set to: the width the sentence had inside the
-     card that used to be drawn here, kept when the card went so the line
-     breaks would not move with it. It was also the number the chip row
-     started after, for as long as the two stood side by side — above 860px
-     they no longer do, and the row starts after the mark instead. */
+  /* The measure the brand is set to, and the number the chip row starts
+     after: two rules that have to agree, so they read the same one. It is the
+     width the sentence had inside the card that used to be drawn here — the
+     card is gone, the line breaks are not supposed to move with it. */
   --brand-w: 250px;
   --panel-w: 420px;
   --ease: cubic-bezier(.22, .61, .36, 1);
@@ -1005,7 +1004,7 @@ a:hover { color: var(--accent-lit); }
 }
 
 /* And over the places column while the menu is down. Above 860px that column
-   stands open from the moment the map draws, starting 140px down the right of
+   stands open from the moment the map draws, starting 98px down the right of
    the window — which is under these buttons and straight through the ten
    languages that drop from them. The panel is 1200 in the stack and this was
    1001, so the menu opened behind the list: the language you wanted was drawn,
@@ -1472,7 +1471,7 @@ body.lang-open .controls { z-index: 1250; }
   position: fixed;
   z-index: 1000;
   --chrome-h: 40px;
-  left: calc(var(--gap) + var(--safe-l) + 66px + 16px);
+  left: calc(var(--gap) + var(--safe-l) + var(--brand-w) + 16px);
   right: calc(var(--gap) + var(--safe-r));
   top: calc(var(--gap) + var(--safe-t) + var(--chrome-h) + 12px);
   display: flex;
@@ -3735,55 +3734,56 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 }
 .noscript h2 { font-family: var(--display); font-size: 24px; font-weight: 600; letter-spacing: -.02em; margin: 5px 0 10px; }
 
-/* ---------- desktop: the strip is two rows, and the name is in the first ----
+/* ---------- desktop: the corner is one block, and the row starts after it ---
 
-   The chip row runs the whole width of the map up here, from just after the
-   mark to the right edge, which is what puts all thirteen filters on screen at
-   once. It costs the top strip a row: the row cannot start at the top of the
-   window, because the top left of the window is the site's name.
+   THE CORNER IS NOT CUT IN HALF BY THE FILTERS. That is the whole of this
+   section and it took three goes to get right, so the two that failed are
+   written down.
 
-   It had the other arrangement for an afternoon — the row through the band at
-   68px and the name pushed underneath it, on the reasoning that the mark alone
-   is enough to say whose map this is — and what that draws is a page whose
-   title is the fourth thing down the left edge, under a row of filters. A
-   wordmark goes at the top. So the mark and the name keep the first row of the
-   strip, 16px to 82px, and the chips have the second, 94px to 128px.
+   The first drew the corner as a column and started the chip row after all
+   250px of it. The complaint against that was a strip of empty map between the
+   rail and the first chip — empty because the corner collapsed to the mark and
+   every word in it waited on a hover.
 
-   The sentence and the handle are the other half of the corner and they are
-   below the row, where they were: they are prose rather than a name, they only
-   come out on a hover, and there is no room for them in a band 34px tall. */
+   The second started the row 98px in, just after the mark, and pushed the name
+   under it. That put the site's title fourth down the left edge, underneath a
+   row of filters, where nobody reads it as a title.
+
+   The third gave the name the top row and the chips the one under it, and left
+   the sentence and the handle below the chips. Which is this same mistake one
+   line further down: the corner then reads as a name, an interruption, and two
+   lines of orphaned prose running into the top of the rail.
+
+   So: the corner is one block — mark and name, the sentence, the handle — in
+   the top left where it has always been, and the row of chips starts after the
+   column at 282px and runs to the edge of the window. The strip of empty map
+   the first arrangement was blamed for is not empty any more, because the name
+   beside the mark is drawn the whole visit now rather than waiting on a hover:
+   what stands in that 184px is the thing the site is called.
+
+   WHAT IT COSTS is the right-hand end of the chip row: 184px of it, which is
+   one chip. Measured, twelve of the fourteen show on a 1440px window against
+   thirteen before, and ten of fourteen at 1280 against twelve. The row has
+   always been a scroller and is one on every window narrower than these; a
+   vocabulary whose tail runs off the edge is a smaller wrong than a title in
+   the middle of the left-hand column. */
 
 @media (min-width: 861px) {
-  /* What the row starts under is the mark and the name beside it rather than
-     the two buttons in the other corner, so the strip above it is 66px rather
-     than 40. .filter-bar's own top adds the 12px of air under that. */
-  .filter-bar { --chrome-h: 66px; }
-
-  /* The columns start under the whole strip rather than beside it, which is the
-     whole of why the chip row and the corner no longer move.
+  /* The columns start under the top strip rather than beside it, which is why
+     neither the chip row nor the corner moves when a place opens.
 
      They used to start at the top of the window, so the row of chips had to be
      cut short to clear them — and with a place open as well it was cut to
      three: All, Discount, and half of a third. A row of thirteen filters that
      is three filters wide is not a row of filters, and shifting it by 436px
      every time somebody pressed a name moved the one control on the page that
-     is a vocabulary rather than a button. So the chip row keeps the width it
-     has always had, from the mark to the edge of the window, and it is the
-     columns that give way.
+     is a vocabulary rather than a button. So the row keeps its width and it is
+     the columns that give way.
 
-     124px is the strip as it is drawn: the 66px the mark and the name stand
-     in, the 12px under it that .filter-bar's own top adds, the 34px the row
-     measures, and 12px of air under that. */
-  .panel { top: calc(var(--gap) + var(--safe-t) + 124px); }
-
-  /* And the sentence clears the row the name no longer has to. 82px is the
-     foot of the mark, 128 the foot of the chip row, and 12 the air the row
-     keeps under itself everywhere else, so the sentence starts at 140.
-
-     One margin rather than a sum: it collapses with the 10px .brand-head
-     carries under it, so this number is the whole of the gap and not an
-     addition to it. */
-  .brand .tagline { margin-top: 58px; }
+     98px is the strip as it is drawn: 40px of chrome, the 12px under it that
+     .filter-bar's own top adds, the 34px the row measures, and 12px of air
+     under that. */
+  .panel { top: calc(var(--gap) + var(--safe-t) + 98px); }
 
   /* And 360px rather than 420. Two columns at the old width were 856px of
      chrome, which on the window this was drawn for left the map a third of
@@ -4033,9 +4033,9 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
      What steps back is the prose: the sentence under the name and the handle
      under that, three lines across a 250px measure that say nothing new after
-     the first few seconds of being read. They are below the chip row — see
-     "the strip is two rows" above — and they fade in when the pointer comes
-     into the left of the window.
+     the first few seconds of being read. They sit directly under the name,
+     inside the corner's own column — see "the corner is one block" above —
+     and they fade in when the pointer comes into the left of the window.
 
      Ink only, no max-height and no margin, so the two of them fade in where
      they already are rather than unrolling the way they do on a phone. The box

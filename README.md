@@ -744,15 +744,11 @@ is written in the stylesheet and `pairFits()` in `assets/app.js` reads it off
 the same media query, because a layout that disagrees with itself about how
 wide it is draws one column and reserves room for two.
 
-### The chip row starts from the left, under the name
+### The chip row starts after the corner, and the corner is one block
 
 The row of filter chips is the map's vocabulary — thirteen types and the
-discount — and above 860px it runs the whole width of the window, from just
-after the mark to the right edge, and it does not move when anything opens.
-Thirteen of the thirteen are on screen at 1440px. It costs the top strip a
-second row, and what stands in the first one is the site's name.
-
-It took three changes: one at each end of the row, and one underneath it.
+discount — and above 860px it starts at 282px, where the corner's column ends,
+and runs to the right edge. It does not move when anything opens.
 
 **At the right end, the columns give way.** They used to start at the top of
 the window, so the row had to be cut short to clear them — and with a place
@@ -761,36 +757,48 @@ thirteen filters that is three filters wide is not a row of filters; a visitor
 on a wide screen could not see that the map narrows at all. Shifting it by a
 column's width every time somebody pressed a name moved the one control on the
 page that is a vocabulary rather than a button. So the columns start **under**
-the strip instead: 140px down, which is the strip as it is drawn — the 66px
-the mark and the name stand in, the 12px under it that `.filter-bar`'s own top
-adds, the 34px the row measures, and 12px of air under that. The cost is 140px
-off the top of both cards, a screenful of list every six rows or so, and the
-two rules that used to push the row and the corner sideways under
-`body.panel-open` are gone.
+the strip instead: 98px down, which is the strip as it is drawn — 40px of
+chrome, the 12px under it that `.filter-bar`'s own top adds, the 34px the row
+measures, and 12px of air under that. The cost is 98px off the top of both
+cards, and the two rules that used to push the row and the corner sideways
+under `body.panel-open` are gone.
 
-**At the left end, the row starts after the mark.** It used to start after the
-brand's whole 250px column, which left a strip of empty map between the rail
-and the first chip — empty, because the corner collapses to the mark and the
-sentence is only there while somebody is hovering. So it starts 98px in, which
-is the mark and the air beside it.
+**At the left end, it took three goes, and the two that failed are worth
+keeping.**
 
-**And it runs below the name rather than through it.** That is the third
-change and it is the one that was wrong for a few days. The row starting from
-the left put its band, 68px to 102px, exactly where the second line of
-*Tallinn Tastebuds* was, and the answer taken at the time was to move the name:
-the mark kept the corner and the name, the sentence and the handle unrolled
-under the row. What that draws is a page whose title is the fourth thing down
-the left edge, underneath a row of filters, which is not where a wordmark goes
-— and nobody reads it as the site's name there, they read it as another line
-of chrome. So the strip is two rows now. The mark and the name have the first,
-16px to 82px, the way they do on a phone and the way they did while the corner
-was a card; the chips have the second, 94px to 128px; and the sentence and the
-handle, which are prose rather than a name and are only up while somebody is
-hovering, start at 140px, under the row. `--brand-w` is still the sentence's
-measure, and it is no longer what the chip row starts after.
+The row used to start after the corner's whole 250px column, which is where it
+starts again. The complaint against that was a strip of empty map between the
+rail and the first chip — empty, because the corner collapsed to the mark and
+every word in it waited on a hover.
 
-The corner's box does not change size between its two states, so `placeRail()`
-still reads one number and nothing under it moves.
+So it moved to 98px, just after the **mark**, and the name was pushed under the
+row with the sentence and the handle. That puts the site's title fourth down
+the left edge, underneath a row of filters, where nobody reads it as a title;
+they read it as another line of chrome.
+
+Then the strip became two rows — the mark and the name in the first, the chips
+in the second, the sentence and the handle under the chips. Which is the same
+mistake one line further down: the corner reads as a name, an interruption, and
+two lines of orphaned prose running into the top of the rail.
+
+**So the corner is one block.** The mark and the name, the sentence under them
+and the handle under that, contiguous in the top left where they have always
+been, and the row of chips beside the column rather than through it. The strip
+of empty map the first arrangement was blamed for is not empty any more,
+because the name beside the mark is drawn the whole visit now rather than
+waiting on a hover: what stands in that 184px is the thing the site is called.
+
+**What it costs is the right-hand end of the row**, 184px of it, which is one
+chip. Measured: twelve of the fourteen show on a 1440px window against thirteen
+before, and ten against twelve at 1280. The row has always been a scroller and
+is one on every window narrower than these — a vocabulary whose tail runs off
+the edge is a smaller wrong than a title in the middle of the left-hand
+column.
+
+`--brand-w` is the sentence's measure and the number the row starts after, and
+those two have to agree, so they read the same custom property. The corner's
+box does not change size between its two states, so `placeRail()` still reads
+one number and nothing under it moves.
 
 ### The band, when a list is the mode
 
@@ -1569,7 +1577,7 @@ pick. The menu grows downwards, so the next language costs nothing in layout
 either.
 
 **And it grows downwards over the places column**, which took a rule to say.
-Above 860px that column is open from the moment the map draws and starts 140px
+Above 860px that column is open from the moment the map draws and starts 98px
 down the right of the window — under the button the menu drops from, and
 straight through the ten languages under it. The panel is 1200 in the stack
 and the corner these buttons stand in is 1001, so what a press on the switch
@@ -9759,6 +9767,15 @@ down on short windows so it can never ride up under the brand — never so far
 down that its own foot leaves the screen, which is the floor the locate button
 used to provide by standing in the corner.
 
+**It is asked again when a pill arrives.** The account and the lists door are
+the only two that come and go, and `/api/account` draws them after the map has
+settled — so the rail was being placed while it was seven pills tall and then
+growing to nine under the answer, which re-centred it over the corner it had
+just been measured clear of. On a window with room to spare nobody saw it; on
+one without, the first pill landed on the handle. `paintAccountButton()` and
+`paintListsButton()` now call `placeRail()` when the pill actually moved, which
+is the only thing either of them does that changes the rail's height.
+
 ### How this works, for the asking
 
 Everything above is an introduction that runs once, for a few seconds, and
@@ -10738,10 +10755,10 @@ focus where it is answering a question rather than decorating.
 
 What the card leaves behind is its measure. `--brand-w` is the 288px box less
 the padding it used to hold, which is what still sets the sentence into two
-lines. It was the number the chip row started after as well, for as long as
-the two stood side by side; above 860px they no longer do — see
-[The chip row starts from the left, under the name](#the-chip-row-starts-from-the-left-under-the-name).
-And with nothing drawn
+lines — and it is the number the chip row starts after, so the column and the
+row cannot disagree about where one ends and the other begins. See
+[The chip row starts after the corner, and the corner is one block](#the-chip-row-starts-after-the-corner-and-the-corner-is-one-block),
+which is where that went wrong twice. And with nothing drawn
 there, nothing there takes a press: the block hands its pointer events to the
 map and the mark, the name and the handle take theirs back one at a time,
 because a transparent rectangle that swallows a drag is a piece of dead map.
