@@ -4,8 +4,8 @@
  * WHAT THIS PAGE IS
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: twenty-nine decks of Estonian, six
- * hundred and forty-seven cards, Estonian on the front and what it means on
+ * menu. This is the other half of that: thirty-three decks of Estonian, eight
+ * hundred and thirty-four cards, Estonian on the front and what it means on
  * the back, and one card at a time with two words under it — Knew it, and
  * Show me again.
  *
@@ -110,7 +110,7 @@
  * ONE ADDRESS, AND IT IS A DECK
  *
  * ?d=<id> is the whole of the routing. Without it the page is the decks: the
- * twenty-nine the site ships, and yours under them. With it, it is that deck,
+ * thirty-three the site ships, and yours under them. With it, it is that deck,
  * turning over. A deck somebody wrote has exactly one reader and it is its owner —
  * there is no share link here and holding an id buys nothing, which is the
  * one place this feature deliberately differs from lists and from splitwise.
@@ -935,7 +935,7 @@
     }
 
     /* Grouped by level, with the quiet heading the directory puts over a run
-       of rows. Twenty-nine decks in one column was a list to scroll; three short
+       of rows. Thirty-three decks in one column was a list to scroll; three short
        under headings is a choice about where you are. A level with nothing in
        it draws no heading — the headings are for the decks, not the other way
        round. */

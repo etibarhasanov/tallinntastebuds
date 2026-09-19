@@ -147,6 +147,51 @@
             "az": "Yaxşı yol",
             "ru": "Хорошей поездки"
           }
+        },
+        {
+          "id": "tervist",
+          "front": "Tervist",
+          "back": {
+            "en": "Hello, hi",
+            "az": "Salam",
+            "ru": "Привет, здравствуйте"
+          }
+        },
+        {
+          "id": "head-ohtut",
+          "front": "Head õhtut",
+          "back": {
+            "en": "Have a good evening",
+            "az": "Axşamınız xeyirli olsun",
+            "ru": "Доброго вечера"
+          }
+        },
+        {
+          "id": "nagemiseni",
+          "front": "Nägemiseni",
+          "back": {
+            "en": "Until we meet again",
+            "az": "Yenidən görüşənədək",
+            "ru": "До скорой встречи"
+          }
+        },
+        {
+          "id": "homseni",
+          "front": "Homseni",
+          "back": {
+            "en": "Till tomorrow",
+            "az": "Sabaha qədər",
+            "ru": "До завтра"
+          }
+        },
+        {
+          "id": "vaga-meeldiv",
+          "front": "Väga meeldiv",
+          "back": {
+            "en": "Very nice to meet you",
+            "az": "Çox məmnunam",
+            "ru": "Очень приятно"
+          }
         }
       ],
       "level": "start"
@@ -362,6 +407,462 @@
         }
       ],
       "level": "start"
+    },
+    {
+      "id": "pronouns",
+      "name": {
+        "en": "I am, you are, they are",
+        "az": "Mən, sən, o",
+        "ru": "Я, ты, он"
+      },
+      "why": {
+        "en": "The pronouns and the verb to be, which is most of a first sentence",
+        "az": "Əvəzliklər və olmaq feli — ilk cümlənin çox hissəsi",
+        "ru": "Местоимения и глагол «быть» — почти всё первое предложение"
+      },
+      "level": "start",
+      "cards": [
+        {
+          "id": "mina-olen",
+          "front": "Mina (ma) olen",
+          "back": {
+            "en": "I am",
+            "az": "Mən ...-am",
+            "ru": "Я (есть)"
+          },
+          "sentence": {
+            "et": "Mina olen Anna.",
+            "en": "I am Anna.",
+            "az": "Mən Annayam.",
+            "ru": "Я Анна."
+          }
+        },
+        {
+          "id": "sina-oled",
+          "front": "Sina (sa) oled",
+          "back": {
+            "en": "You are — to one person",
+            "az": "Sən ...-san",
+            "ru": "Ты (есть)"
+          },
+          "sentence": {
+            "et": "Sina oled eestlane.",
+            "en": "You are Estonian.",
+            "az": "Sən estonsan.",
+            "ru": "Ты эстонец."
+          }
+        },
+        {
+          "id": "tema-on",
+          "front": "Tema (ta) on",
+          "back": {
+            "en": "He is, she is",
+            "az": "O ...-dır",
+            "ru": "Он, она (есть)"
+          },
+          "sentence": {
+            "et": "Tema on minu sõber.",
+            "en": "They are my friend.",
+            "az": "O mənim dostumdur.",
+            "ru": "Он мой друг."
+          }
+        },
+        {
+          "id": "meie-oleme",
+          "front": "Meie (me) oleme",
+          "back": {
+            "en": "We are",
+            "az": "Biz ...-ıq",
+            "ru": "Мы (есть)"
+          },
+          "sentence": {
+            "et": "Meie oleme kahekesi.",
+            "en": "There are two of us.",
+            "az": "Biz iki nəfərik.",
+            "ru": "Нас двое."
+          }
+        },
+        {
+          "id": "teie-olete",
+          "front": "Teie (te) olete",
+          "back": {
+            "en": "You are — to several, or politely",
+            "az": "Siz ...-sınız",
+            "ru": "Вы (есть)"
+          },
+          "sentence": {
+            "et": "Teie olete meie külalised.",
+            "en": "You are our guests.",
+            "az": "Siz bizim qonaqlarımızsınız.",
+            "ru": "Вы наши гости."
+          }
+        },
+        {
+          "id": "nemad-on",
+          "front": "Nemad (nad) on",
+          "back": {
+            "en": "They are",
+            "az": "Onlar ...-dırlar",
+            "ru": "Они (есть)"
+          },
+          "sentence": {
+            "et": "Nemad on juba kohvikus.",
+            "en": "They are already at the café.",
+            "az": "Onlar artıq kafededirlər.",
+            "ru": "Они уже в кафе."
+          }
+        },
+        {
+          "id": "minu-nimi-ei-ole",
+          "front": "Minu nimi ei ole",
+          "back": {
+            "en": "My name is not",
+            "az": "Mənim adım ... deyil",
+            "ru": "Меня зовут не"
+          },
+          "sentence": {
+            "et": "Minu nimi ei ole Mari, vaid Anna.",
+            "en": "My name is not Mari, it is Anna.",
+            "az": "Mənim adım Mari deyil, Annadır.",
+            "ru": "Меня зовут не Мари, а Анна."
+          }
+        },
+        {
+          "id": "sinu-nimi",
+          "front": "Sinu (su) nimi",
+          "back": {
+            "en": "Your name — to one person",
+            "az": "Sənin adın",
+            "ru": "Твоё имя"
+          },
+          "sentence": {
+            "et": "Sinu nimi on ilus.",
+            "en": "Your name is beautiful.",
+            "az": "Sənin adın gözəldir.",
+            "ru": "У тебя красивое имя."
+          }
+        },
+        {
+          "id": "tema-nimi",
+          "front": "Tema (ta) nimi",
+          "back": {
+            "en": "His name, her name",
+            "az": "Onun adı",
+            "ru": "Его, её имя"
+          },
+          "sentence": {
+            "et": "Tema nimi on Mari.",
+            "en": "Her name is Mari.",
+            "az": "Onun adı Maridir.",
+            "ru": "Её зовут Мари."
+          }
+        },
+        {
+          "id": "nende-nimi",
+          "front": "Nende nimi",
+          "back": {
+            "en": "Their name",
+            "az": "Onların adı",
+            "ru": "Их имя"
+          },
+          "sentence": {
+            "et": "Nende nimi on uksel kirjas.",
+            "en": "Their name is written on the door.",
+            "az": "Onların adı qapıda yazılıb.",
+            "ru": "Их имя написано на двери."
+          }
+        },
+        {
+          "id": "mul-on",
+          "front": "Mul on",
+          "back": {
+            "en": "I have",
+            "az": "Məndə var",
+            "ru": "У меня есть"
+          },
+          "sentence": {
+            "et": "Mul on kaks piletit.",
+            "en": "I have two tickets.",
+            "az": "Məndə iki bilet var.",
+            "ru": "У меня два билета."
+          }
+        },
+        {
+          "id": "tal-on",
+          "front": "Tal on",
+          "back": {
+            "en": "He has, she has",
+            "az": "Onda var",
+            "ru": "У него, у неё есть"
+          },
+          "sentence": {
+            "et": "Tal on uus töö.",
+            "en": "They have a new job.",
+            "az": "Onun yeni işi var.",
+            "ru": "У него новая работа."
+          }
+        },
+        {
+          "id": "mulle",
+          "front": "Mulle",
+          "back": {
+            "en": "To me, for me",
+            "az": "Mənə",
+            "ru": "Мне"
+          },
+          "sentence": {
+            "et": "Mulle üks kohv, palun.",
+            "en": "A coffee for me, please.",
+            "az": "Mənə bir qəhvə, zəhmət olmasa.",
+            "ru": "Мне один кофе, пожалуйста."
+          }
+        },
+        {
+          "id": "talle",
+          "front": "Talle",
+          "back": {
+            "en": "To him, to her",
+            "az": "Ona",
+            "ru": "Ему, ей"
+          },
+          "sentence": {
+            "et": "Anna see talle.",
+            "en": "Give it to them.",
+            "az": "Bunu ona ver.",
+            "ru": "Отдай это ему."
+          }
+        },
+        {
+          "id": "see",
+          "front": "See",
+          "back": {
+            "en": "This, it",
+            "az": "Bu",
+            "ru": "Этот, это"
+          },
+          "forms": [
+            "selle",
+            "seda"
+          ],
+          "sentence": {
+            "et": "Mis see on?",
+            "en": "What is this?",
+            "az": "Bu nədir?",
+            "ru": "Что это?"
+          }
+        },
+        {
+          "id": "oma",
+          "front": "Oma",
+          "back": {
+            "en": "One's own",
+            "az": "öz",
+            "ru": "свой, своя"
+          },
+          "sentence": {
+            "et": "Ma võtan oma koti.",
+            "en": "I will take my own bag.",
+            "az": "Öz çantamı götürürəm.",
+            "ru": "Я возьму свою сумку."
+          }
+        }
+      ]
+    },
+    {
+      "id": "asking",
+      "name": {
+        "en": "The question words",
+        "az": "Sual sözləri",
+        "ru": "Вопросительные слова"
+      },
+      "why": {
+        "en": "Who, what, where — and the little word that makes a yes-or-no question",
+        "az": "Kim, nə, harada — və bəli-xeyr sualını düzəldən söz",
+        "ru": "Кто, что, где — и словечко, которое делает вопрос «да или нет»"
+      },
+      "level": "start",
+      "cards": [
+        {
+          "id": "kas",
+          "front": "Kas?",
+          "back": {
+            "en": "The word that opens a yes-or-no question",
+            "az": "Bəli-xeyr sualının sözü",
+            "ru": "Ли, разве — слово вопроса «да или нет»"
+          },
+          "sentence": {
+            "et": "Kas siin on vaba?",
+            "en": "Is this seat free?",
+            "az": "Burada boşdur?",
+            "ru": "Здесь свободно?"
+          }
+        },
+        {
+          "id": "kes",
+          "front": "Kes?",
+          "back": {
+            "en": "Who?",
+            "az": "Kim?",
+            "ru": "Кто?"
+          },
+          "sentence": {
+            "et": "Kes seal on?",
+            "en": "Who is there?",
+            "az": "Orada kimdir?",
+            "ru": "Кто там?"
+          }
+        },
+        {
+          "id": "mis",
+          "front": "Mis?",
+          "back": {
+            "en": "What?",
+            "az": "Nə?",
+            "ru": "Что?"
+          },
+          "sentence": {
+            "et": "Mis see on?",
+            "en": "What is that?",
+            "az": "Bu nədir?",
+            "ru": "Что это?"
+          }
+        },
+        {
+          "id": "mida",
+          "front": "Mida?",
+          "back": {
+            "en": "What? — as the object of a verb",
+            "az": "Nəyi?",
+            "ru": "Что? (кого, чего)"
+          },
+          "sentence": {
+            "et": "Mida sa jood?",
+            "en": "What are you drinking?",
+            "az": "Nə içirsən?",
+            "ru": "Что ты пьёшь?"
+          }
+        },
+        {
+          "id": "keda",
+          "front": "Keda?",
+          "back": {
+            "en": "Whom?",
+            "az": "Kimi?",
+            "ru": "Кого?"
+          },
+          "sentence": {
+            "et": "Keda sa ootad?",
+            "en": "Who are you waiting for?",
+            "az": "Kimi gözləyirsən?",
+            "ru": "Кого ты ждёшь?"
+          }
+        },
+        {
+          "id": "kelle",
+          "front": "Kelle?",
+          "back": {
+            "en": "Whose?",
+            "az": "Kimin?",
+            "ru": "Чей?"
+          },
+          "sentence": {
+            "et": "Kelle kott see on?",
+            "en": "Whose bag is this?",
+            "az": "Bu kimin çantasıdır?",
+            "ru": "Чья это сумка?"
+          }
+        },
+        {
+          "id": "kellel-on",
+          "front": "Kellel on?",
+          "back": {
+            "en": "Who has?",
+            "az": "Kimdə var?",
+            "ru": "У кого есть?"
+          },
+          "sentence": {
+            "et": "Kellel on võti?",
+            "en": "Who has the key?",
+            "az": "Açar kimdədir?",
+            "ru": "У кого ключ?"
+          }
+        },
+        {
+          "id": "kellele-meeldib",
+          "front": "Kellele meeldib?",
+          "back": {
+            "en": "Who likes it?",
+            "az": "Kimin xoşuna gəlir?",
+            "ru": "Кому нравится?"
+          },
+          "sentence": {
+            "et": "Kellele meeldib kohv?",
+            "en": "Who likes coffee?",
+            "az": "Qəhvə kimin xoşuna gəlir?",
+            "ru": "Кому нравится кофе?"
+          }
+        },
+        {
+          "id": "mille",
+          "front": "Mille?",
+          "back": {
+            "en": "Of what?",
+            "az": "Nəyin?",
+            "ru": "Чего?"
+          },
+          "sentence": {
+            "et": "Mille hind see on?",
+            "en": "This is the price of what?",
+            "az": "Bu nəyin qiymətidir?",
+            "ru": "Это цена чего?"
+          }
+        },
+        {
+          "id": "kus",
+          "front": "Kus?",
+          "back": {
+            "en": "Where?",
+            "az": "Harada?",
+            "ru": "Где?"
+          },
+          "sentence": {
+            "et": "Kus on peatus?",
+            "en": "Where is the stop?",
+            "az": "Dayanacaq haradadır?",
+            "ru": "Где остановка?"
+          }
+        },
+        {
+          "id": "kust",
+          "front": "Kust?",
+          "back": {
+            "en": "From where?",
+            "az": "Haradan?",
+            "ru": "Откуда?"
+          },
+          "sentence": {
+            "et": "Kust sa tuled?",
+            "en": "Where are you coming from?",
+            "az": "Haradan gəlirsən?",
+            "ru": "Откуда ты идёшь?"
+          }
+        },
+        {
+          "id": "mitu",
+          "front": "Mitu?",
+          "back": {
+            "en": "How many?",
+            "az": "Neçə?",
+            "ru": "Сколько?"
+          },
+          "sentence": {
+            "et": "Mitu inimest te olete?",
+            "en": "How many of you are there?",
+            "az": "Neçə nəfərsiniz?",
+            "ru": "Сколько вас человек?"
+          }
+        }
+      ]
     },
     {
       "id": "numbers",
@@ -679,6 +1180,32 @@
             "az": "O, növbədə üçüncüdür.",
             "ru": "Он третий в очереди."
           }
+        },
+        {
+          "id": "null",
+          "front": "Null",
+          "back": {
+            "en": "Zero",
+            "az": "Sıfır",
+            "ru": "Ноль"
+          },
+          "forms": [
+            "nulli",
+            "nulli"
+          ]
+        },
+        {
+          "id": "miljon",
+          "front": "Miljon",
+          "back": {
+            "en": "Million",
+            "az": "Milyon",
+            "ru": "Миллион"
+          },
+          "forms": [
+            "miljoni",
+            "miljonit"
+          ]
         }
       ],
       "level": "start"
@@ -1712,6 +2239,196 @@
             "az": "Çıxış sağdadır.",
             "ru": "Выход справа."
           }
+        },
+        {
+          "id": "linn",
+          "front": "Linn",
+          "back": {
+            "en": "Town, city",
+            "az": "Şəhər",
+            "ru": "Город"
+          },
+          "forms": [
+            "linna",
+            "linna"
+          ],
+          "sentence": {
+            "et": "Tallinn on ilus linn.",
+            "en": "Tallinn is a beautiful city.",
+            "az": "Tallinn gözəl şəhərdir.",
+            "ru": "Таллинн — красивый город."
+          }
+        },
+        {
+          "id": "linnaosa",
+          "front": "Linnaosa",
+          "back": {
+            "en": "District, part of town",
+            "az": "Şəhər rayonu",
+            "ru": "Район города"
+          },
+          "forms": [
+            "linnaosa",
+            "linnaosa"
+          ],
+          "sentence": {
+            "et": "Kalamaja on ilus linnaosa.",
+            "en": "Kalamaja is a lovely district.",
+            "az": "Kalamaja gözəl rayondur.",
+            "ru": "Каламая — красивый район."
+          }
+        },
+        {
+          "id": "aadress",
+          "front": "Aadress",
+          "back": {
+            "en": "Address",
+            "az": "Ünvan",
+            "ru": "Адрес"
+          },
+          "forms": [
+            "aadressi",
+            "aadressi"
+          ],
+          "sentence": {
+            "et": "Mis on kohviku aadress?",
+            "en": "What is the café's address?",
+            "az": "Kafenin ünvanı nədir?",
+            "ru": "Какой адрес у кафе?"
+          }
+        },
+        {
+          "id": "tee",
+          "front": "Tee",
+          "back": {
+            "en": "Road, way — and also tea",
+            "az": "Yol — həm də çay",
+            "ru": "Дорога, путь — и чай"
+          },
+          "forms": [
+            "tee",
+            "teed"
+          ],
+          "sentence": {
+            "et": "Tee vanalinna on lühike.",
+            "en": "The way to the old town is short.",
+            "az": "Köhnə şəhərə yol qısadır.",
+            "ru": "Дорога в старый город короткая."
+          }
+        },
+        {
+          "id": "maantee",
+          "front": "Maantee",
+          "back": {
+            "en": "Main road, highway",
+            "az": "Şose yolu",
+            "ru": "Шоссе"
+          },
+          "forms": [
+            "maantee",
+            "maanteed"
+          ],
+          "sentence": {
+            "et": "Maantee viib Tartusse.",
+            "en": "The highway goes to Tartu.",
+            "az": "Şose Tartuya aparır.",
+            "ru": "Шоссе ведёт в Тарту."
+          }
+        },
+        {
+          "id": "puiestee",
+          "front": "Puiestee",
+          "back": {
+            "en": "Avenue, boulevard",
+            "az": "Prospekt",
+            "ru": "Бульвар"
+          },
+          "forms": [
+            "puiestee",
+            "puiesteed"
+          ],
+          "sentence": {
+            "et": "Kohvik on puiestee ääres.",
+            "en": "The café is on the avenue.",
+            "az": "Kafe prospektin kənarındadır.",
+            "ru": "Кафе на бульваре."
+          }
+        },
+        {
+          "id": "auto",
+          "front": "Auto",
+          "back": {
+            "en": "Car",
+            "az": "Maşın",
+            "ru": "Машина"
+          },
+          "forms": [
+            "auto",
+            "autot"
+          ],
+          "sentence": {
+            "et": "Ma tulin autoga.",
+            "en": "I came by car.",
+            "az": "Maşınla gəldim.",
+            "ru": "Я приехал на машине."
+          }
+        },
+        {
+          "id": "jalgratas",
+          "front": "Jalgratas",
+          "back": {
+            "en": "Bicycle",
+            "az": "Velosiped",
+            "ru": "Велосипед"
+          },
+          "forms": [
+            "jalgratta",
+            "jalgratast"
+          ],
+          "sentence": {
+            "et": "Ma sõidan jalgrattaga tööle.",
+            "en": "I ride my bicycle to work.",
+            "az": "İşə velosipedlə gedirəm.",
+            "ru": "Я езжу на работу на велосипеде."
+          }
+        },
+        {
+          "id": "vasak",
+          "front": "Vasak",
+          "back": {
+            "en": "Left, the left one",
+            "az": "Sol",
+            "ru": "Левый"
+          },
+          "forms": [
+            "vasaku",
+            "vasakut"
+          ],
+          "sentence": {
+            "et": "Pood jääb vasakut kätt.",
+            "en": "The shop is on your left.",
+            "az": "Mağaza sol tərəfdə qalır.",
+            "ru": "Магазин останется слева."
+          }
+        },
+        {
+          "id": "parem",
+          "front": "Parem",
+          "back": {
+            "en": "Right — the right-hand side",
+            "az": "Sağ tərəf",
+            "ru": "Правый — правая сторона"
+          },
+          "forms": [
+            "parema",
+            "paremat"
+          ],
+          "sentence": {
+            "et": "Kohvik jääb paremat kätt.",
+            "en": "The café is on your right.",
+            "az": "Kafe sağ tərəfdə qalır.",
+            "ru": "Кафе останется справа."
+          }
         }
       ],
       "level": "more"
@@ -2274,9 +2991,1260 @@
             "az": "Bütün ailə evdədir.",
             "ru": "Вся семья дома."
           }
+        },
+        {
+          "id": "nimi",
+          "front": "Nimi",
+          "back": {
+            "en": "Name",
+            "az": "Ad",
+            "ru": "Имя"
+          },
+          "forms": [
+            "nime",
+            "nime"
+          ],
+          "sentence": {
+            "et": "Mis on selle koha nimi?",
+            "en": "What is this place called?",
+            "az": "Bu yerin adı nədir?",
+            "ru": "Как называется это место?"
+          }
+        },
+        {
+          "id": "inimene",
+          "front": "Inimene",
+          "back": {
+            "en": "Person, human being",
+            "az": "İnsan",
+            "ru": "Человек"
+          },
+          "forms": [
+            "inimese",
+            "inimest"
+          ],
+          "sentence": {
+            "et": "Ta on hea inimene.",
+            "en": "They are a good person.",
+            "az": "O yaxşı insandır.",
+            "ru": "Он хороший человек."
+          }
+        },
+        {
+          "id": "ema",
+          "front": "Ema",
+          "back": {
+            "en": "Mother",
+            "az": "Ana",
+            "ru": "Мама, мать"
+          },
+          "forms": [
+            "ema",
+            "ema"
+          ],
+          "sentence": {
+            "et": "Minu ema elab Tartus.",
+            "en": "My mother lives in Tartu.",
+            "az": "Anam Tartuda yaşayır.",
+            "ru": "Моя мама живёт в Тарту."
+          }
+        },
+        {
+          "id": "isa",
+          "front": "Isa",
+          "back": {
+            "en": "Father",
+            "az": "Ata",
+            "ru": "Папа, отец"
+          },
+          "forms": [
+            "isa",
+            "isa"
+          ],
+          "sentence": {
+            "et": "Isa tuleb homme külla.",
+            "en": "Father is coming to visit tomorrow.",
+            "az": "Atam sabah qonaq gəlir.",
+            "ru": "Папа приедет в гости завтра."
+          }
+        },
+        {
+          "id": "vanaema",
+          "front": "Vanaema",
+          "back": {
+            "en": "Grandmother",
+            "az": "Nənə",
+            "ru": "Бабушка"
+          },
+          "forms": [
+            "vanaema",
+            "vanaema"
+          ],
+          "sentence": {
+            "et": "Vanaema teeb head sööki.",
+            "en": "Grandmother cooks well.",
+            "az": "Nənə yaxşı yemək bişirir.",
+            "ru": "Бабушка вкусно готовит."
+          }
+        },
+        {
+          "id": "poiss",
+          "front": "Poiss",
+          "back": {
+            "en": "Boy",
+            "az": "Oğlan",
+            "ru": "Мальчик"
+          },
+          "forms": [
+            "poisi",
+            "poissi"
+          ],
+          "sentence": {
+            "et": "Poiss mängib õues.",
+            "en": "The boy is playing outside.",
+            "az": "Oğlan bayırda oynayır.",
+            "ru": "Мальчик играет на улице."
+          }
+        },
+        {
+          "id": "tudruk",
+          "front": "Tüdruk",
+          "back": {
+            "en": "Girl",
+            "az": "Qız",
+            "ru": "Девочка"
+          },
+          "forms": [
+            "tüdruku",
+            "tüdrukut"
+          ],
+          "sentence": {
+            "et": "Tüdruk loeb raamatut.",
+            "en": "The girl is reading a book.",
+            "az": "Qız kitab oxuyur.",
+            "ru": "Девочка читает книгу."
+          }
+        },
+        {
+          "id": "harra",
+          "front": "Härra",
+          "back": {
+            "en": "Mr., sir",
+            "az": "Cənab",
+            "ru": "Господин"
+          },
+          "forms": [
+            "härra",
+            "härrat"
+          ],
+          "sentence": {
+            "et": "Härra Tamm ootab teid.",
+            "en": "Mr Tamm is waiting for you.",
+            "az": "Cənab Tamm sizi gözləyir.",
+            "ru": "Господин Тамм вас ждёт."
+          }
+        },
+        {
+          "id": "proua",
+          "front": "Proua",
+          "back": {
+            "en": "Mrs., madam",
+            "az": "Xanım",
+            "ru": "Госпожа"
+          },
+          "forms": [
+            "proua",
+            "prouat"
+          ],
+          "sentence": {
+            "et": "Proua Mets on kodus.",
+            "en": "Mrs Mets is at home.",
+            "az": "Xanım Mets evdədir.",
+            "ru": "Госпожа Метс дома."
+          }
+        },
+        {
+          "id": "kass",
+          "front": "Kass",
+          "back": {
+            "en": "Cat",
+            "az": "Pişik",
+            "ru": "Кот, кошка"
+          },
+          "forms": [
+            "kassi",
+            "kassi"
+          ],
+          "sentence": {
+            "et": "Kass magab toolil.",
+            "en": "The cat is asleep on the chair.",
+            "az": "Pişik stulda yatır.",
+            "ru": "Кот спит на стуле."
+          }
+        },
+        {
+          "id": "koer",
+          "front": "Koer",
+          "back": {
+            "en": "Dog",
+            "az": "İt",
+            "ru": "Собака"
+          },
+          "forms": [
+            "koera",
+            "koera"
+          ],
+          "sentence": {
+            "et": "Kas koeraga võib sisse tulla?",
+            "en": "May I come in with a dog?",
+            "az": "İtlə içəri girmək olar?",
+            "ru": "С собакой можно войти?"
+          }
+        },
+        {
+          "id": "abielus",
+          "front": "Abielus",
+          "back": {
+            "en": "Married",
+            "az": "Evli",
+            "ru": "Женат, замужем"
+          },
+          "sentence": {
+            "et": "Ma olen abielus.",
+            "en": "I am married.",
+            "az": "Mən evliyəm.",
+            "ru": "Я женат."
+          }
+        },
+        {
+          "id": "armastus",
+          "front": "Armastus",
+          "back": {
+            "en": "Love",
+            "az": "Sevgi",
+            "ru": "Любовь"
+          },
+          "forms": [
+            "armastuse",
+            "armastust"
+          ],
+          "sentence": {
+            "et": "See oli armastus esimesest silmapilgust.",
+            "en": "It was love at first sight.",
+            "az": "Bu, ilk baxışdan sevgi idi.",
+            "ru": "Это была любовь с первого взгляда."
+          }
+        },
+        {
+          "id": "tark",
+          "front": "Tark",
+          "back": {
+            "en": "Smart, clever",
+            "az": "Ağıllı",
+            "ru": "Умный"
+          },
+          "forms": [
+            "targa",
+            "tarka"
+          ],
+          "sentence": {
+            "et": "Ta on väga tark.",
+            "en": "They are very clever.",
+            "az": "O çox ağıllıdır.",
+            "ru": "Он очень умный."
+          }
+        },
+        {
+          "id": "tubli",
+          "front": "Tubli",
+          "back": {
+            "en": "Good at it, well done",
+            "az": "Bacarıqlı, afərin",
+            "ru": "Молодец, хороший"
+          },
+          "forms": [
+            "tubli",
+            "tublit"
+          ],
+          "sentence": {
+            "et": "Sa oled tubli!",
+            "en": "Well done!",
+            "az": "Afərin!",
+            "ru": "Молодец!"
+          }
+        },
+        {
+          "id": "tuttavaks-saama",
+          "front": "Tuttavaks saama",
+          "back": {
+            "en": "To get acquainted",
+            "az": "tanış olmaq",
+            "ru": "познакомиться"
+          },
+          "forms": [
+            "tuttavaks saada",
+            "saan tuttavaks"
+          ],
+          "sentence": {
+            "et": "Meeldiv tuttavaks saada!",
+            "en": "Pleased to make your acquaintance!",
+            "az": "Tanış olmağımıza şadam!",
+            "ru": "Приятно познакомиться!"
+          }
+        },
+        {
+          "id": "parit-olema",
+          "front": "Pärit olema",
+          "back": {
+            "en": "To be from",
+            "az": "əsli olmaq",
+            "ru": "быть родом"
+          },
+          "forms": [
+            "pärit olla",
+            "olen pärit"
+          ],
+          "sentence": {
+            "et": "Ma olen pärit Bakuust.",
+            "en": "I am from Baku.",
+            "az": "Mən Bakıdanam.",
+            "ru": "Я родом из Баку."
+          }
         }
       ],
       "level": "more"
+    },
+    {
+      "id": "countries",
+      "name": {
+        "en": "Countries and nationalities",
+        "az": "Ölkələr və millətlər",
+        "ru": "Страны и национальности"
+      },
+      "why": {
+        "en": "Where you are from, and what that makes you in Estonian",
+        "az": "Haradan olduğun və bunun estonca necə səsləndiyi",
+        "ru": "Откуда вы — и как это звучит по-эстонски"
+      },
+      "level": "more",
+      "cards": [
+        {
+          "id": "eesti",
+          "front": "Eesti",
+          "back": {
+            "en": "Estonia",
+            "az": "Estoniya",
+            "ru": "Эстония"
+          },
+          "forms": [
+            "Eesti",
+            "Eestit"
+          ],
+          "sentence": {
+            "et": "Ma elan Eestis.",
+            "en": "I live in Estonia.",
+            "az": "Estoniyada yaşayıram.",
+            "ru": "Я живу в Эстонии."
+          }
+        },
+        {
+          "id": "eestlane",
+          "front": "Eestlane",
+          "back": {
+            "en": "An Estonian",
+            "az": "Eston",
+            "ru": "Эстонец, эстонка"
+          },
+          "forms": [
+            "eestlase",
+            "eestlast"
+          ],
+          "sentence": {
+            "et": "Ta on eestlane.",
+            "en": "They are Estonian.",
+            "az": "O estondur.",
+            "ru": "Он эстонец."
+          }
+        },
+        {
+          "id": "rahvus",
+          "front": "Rahvus",
+          "back": {
+            "en": "Nationality",
+            "az": "Milliyyət",
+            "ru": "Национальность"
+          },
+          "forms": [
+            "rahvuse",
+            "rahvust"
+          ],
+          "sentence": {
+            "et": "Mis rahvusest te olete?",
+            "en": "What nationality are you?",
+            "az": "Milliyyətiniz nədir?",
+            "ru": "Какой вы национальности?"
+          }
+        },
+        {
+          "id": "emakeel",
+          "front": "Emakeel",
+          "back": {
+            "en": "Mother tongue",
+            "az": "Ana dili",
+            "ru": "Родной язык"
+          },
+          "forms": [
+            "emakeele",
+            "emakeelt"
+          ],
+          "sentence": {
+            "et": "Minu emakeel ei ole eesti keel.",
+            "en": "My mother tongue is not Estonian.",
+            "az": "Mənim ana dilim eston dili deyil.",
+            "ru": "Мой родной язык не эстонский."
+          }
+        },
+        {
+          "id": "venemaa",
+          "front": "Venemaa",
+          "back": {
+            "en": "Russia",
+            "az": "Rusiya",
+            "ru": "Россия"
+          },
+          "forms": [
+            "Venemaa",
+            "Venemaad"
+          ],
+          "sentence": {
+            "et": "Venemaa on suur maa.",
+            "en": "Russia is a big country.",
+            "az": "Rusiya böyük ölkədir.",
+            "ru": "Россия — большая страна."
+          }
+        },
+        {
+          "id": "venelane",
+          "front": "Venelane",
+          "back": {
+            "en": "A Russian",
+            "az": "Rus",
+            "ru": "Русский, русская"
+          },
+          "forms": [
+            "venelase",
+            "venelast"
+          ],
+          "sentence": {
+            "et": "Ta on venelane Narvast.",
+            "en": "They are a Russian from Narva.",
+            "az": "O, Narvadan olan rusdur.",
+            "ru": "Он русский из Нарвы."
+          }
+        },
+        {
+          "id": "soome",
+          "front": "Soome",
+          "back": {
+            "en": "Finland",
+            "az": "Finlandiya",
+            "ru": "Финляндия"
+          },
+          "forms": [
+            "Soome",
+            "Soomet"
+          ],
+          "sentence": {
+            "et": "Soome on üle lahe.",
+            "en": "Finland is across the gulf.",
+            "az": "Finlandiya körfəzin o tayındadır.",
+            "ru": "Финляндия за заливом."
+          }
+        },
+        {
+          "id": "soomlane",
+          "front": "Soomlane",
+          "back": {
+            "en": "A Finn",
+            "az": "Fin",
+            "ru": "Финн, финка"
+          },
+          "forms": [
+            "soomlase",
+            "soomlast"
+          ],
+          "sentence": {
+            "et": "Kohvikus on palju soomlasi.",
+            "en": "There are many Finns in the café.",
+            "az": "Kafedə çox fin var.",
+            "ru": "В кафе много финнов."
+          }
+        },
+        {
+          "id": "lati",
+          "front": "Läti",
+          "back": {
+            "en": "Latvia",
+            "az": "Latviya",
+            "ru": "Латвия"
+          },
+          "forms": [
+            "Läti",
+            "Lätit"
+          ],
+          "sentence": {
+            "et": "Läti jääb lõuna poole.",
+            "en": "Latvia is to the south.",
+            "az": "Latviya cənubda qalır.",
+            "ru": "Латвия южнее."
+          }
+        },
+        {
+          "id": "latlane",
+          "front": "Lätlane",
+          "back": {
+            "en": "A Latvian",
+            "az": "Latviyalı",
+            "ru": "Латыш, латышка"
+          },
+          "forms": [
+            "lätlase",
+            "lätlast"
+          ],
+          "sentence": {
+            "et": "Lätlane räägib läti keelt.",
+            "en": "A Latvian speaks Latvian.",
+            "az": "Latviyalı latış dilində danışır.",
+            "ru": "Латыш говорит по-латышски."
+          }
+        },
+        {
+          "id": "leedu",
+          "front": "Leedu",
+          "back": {
+            "en": "Lithuania",
+            "az": "Litva",
+            "ru": "Литва"
+          },
+          "forms": [
+            "Leedu",
+            "Leedut"
+          ],
+          "sentence": {
+            "et": "Leedu on Lätist lõuna pool.",
+            "en": "Lithuania is south of Latvia.",
+            "az": "Litva Latviyanın cənubundadır.",
+            "ru": "Литва южнее Латвии."
+          }
+        },
+        {
+          "id": "leedulane",
+          "front": "Leedulane",
+          "back": {
+            "en": "A Lithuanian",
+            "az": "Litvalı",
+            "ru": "Литовец, литовка"
+          },
+          "forms": [
+            "leedulase",
+            "leedulast"
+          ],
+          "sentence": {
+            "et": "Meie naaber on leedulane.",
+            "en": "Our neighbour is Lithuanian.",
+            "az": "Qonşumuz litvalıdır.",
+            "ru": "Наш сосед литовец."
+          }
+        },
+        {
+          "id": "rootsi",
+          "front": "Rootsi",
+          "back": {
+            "en": "Sweden",
+            "az": "İsveç",
+            "ru": "Швеция"
+          },
+          "forms": [
+            "Rootsi",
+            "Rootsit"
+          ],
+          "sentence": {
+            "et": "Rootsi on üle mere.",
+            "en": "Sweden is across the sea.",
+            "az": "İsveç dənizin o tayındadır.",
+            "ru": "Швеция за морем."
+          }
+        },
+        {
+          "id": "rootslane",
+          "front": "Rootslane",
+          "back": {
+            "en": "A Swede",
+            "az": "İsveçli",
+            "ru": "Швед, шведка"
+          },
+          "forms": [
+            "rootslase",
+            "rootslast"
+          ],
+          "sentence": {
+            "et": "Rootslane tuli laevaga.",
+            "en": "The Swede came by ship.",
+            "az": "İsveçli gəmi ilə gəldi.",
+            "ru": "Швед приехал на корабле."
+          }
+        },
+        {
+          "id": "norra",
+          "front": "Norra",
+          "back": {
+            "en": "Norway",
+            "az": "Norveç",
+            "ru": "Норвегия"
+          },
+          "forms": [
+            "Norra",
+            "Norrat"
+          ],
+          "sentence": {
+            "et": "Norra on kaugel põhjas.",
+            "en": "Norway is far to the north.",
+            "az": "Norveç uzaq şimaldadır.",
+            "ru": "Норвегия далеко на севере."
+          }
+        },
+        {
+          "id": "norralane",
+          "front": "Norralane",
+          "back": {
+            "en": "A Norwegian",
+            "az": "Norveçli",
+            "ru": "Норвежец, норвежка"
+          },
+          "forms": [
+            "norralase",
+            "norralast"
+          ],
+          "sentence": {
+            "et": "Norralane õpib eesti keelt.",
+            "en": "The Norwegian is learning Estonian.",
+            "az": "Norveçli eston dili öyrənir.",
+            "ru": "Норвежец учит эстонский."
+          }
+        },
+        {
+          "id": "taani",
+          "front": "Taani",
+          "back": {
+            "en": "Denmark",
+            "az": "Danimarka",
+            "ru": "Дания"
+          },
+          "forms": [
+            "Taani",
+            "Taanit"
+          ],
+          "sentence": {
+            "et": "Taani kuningas rajas Tallinna.",
+            "en": "The Danish king founded Tallinn.",
+            "az": "Danimarka kralı Tallinni saldı.",
+            "ru": "Датский король основал Таллинн."
+          }
+        },
+        {
+          "id": "taanlane",
+          "front": "Taanlane",
+          "back": {
+            "en": "A Dane",
+            "az": "Danimarkalı",
+            "ru": "Датчанин, датчанка"
+          },
+          "forms": [
+            "taanlase",
+            "taanlast"
+          ],
+          "sentence": {
+            "et": "Taanlane tellis kohvi.",
+            "en": "The Dane ordered a coffee.",
+            "az": "Danimarkalı qəhvə sifariş etdi.",
+            "ru": "Датчанин заказал кофе."
+          }
+        },
+        {
+          "id": "saksamaa",
+          "front": "Saksamaa",
+          "back": {
+            "en": "Germany",
+            "az": "Almaniya",
+            "ru": "Германия"
+          },
+          "forms": [
+            "Saksamaa",
+            "Saksamaad"
+          ],
+          "sentence": {
+            "et": "Ta töötab Saksamaal.",
+            "en": "They work in Germany.",
+            "az": "O Almaniyada işləyir.",
+            "ru": "Он работает в Германии."
+          }
+        },
+        {
+          "id": "sakslane",
+          "front": "Sakslane",
+          "back": {
+            "en": "A German",
+            "az": "Alman",
+            "ru": "Немец, немка"
+          },
+          "forms": [
+            "sakslase",
+            "sakslast"
+          ],
+          "sentence": {
+            "et": "Sakslane küsis arvet.",
+            "en": "The German asked for the bill.",
+            "az": "Alman hesabı istədi.",
+            "ru": "Немец попросил счёт."
+          }
+        },
+        {
+          "id": "inglismaa",
+          "front": "Inglismaa",
+          "back": {
+            "en": "England",
+            "az": "İngiltərə",
+            "ru": "Англия"
+          },
+          "forms": [
+            "Inglismaa",
+            "Inglismaad"
+          ],
+          "sentence": {
+            "et": "Ta sõitis Inglismaale.",
+            "en": "They went to England.",
+            "az": "O İngiltərəyə getdi.",
+            "ru": "Он уехал в Англию."
+          }
+        },
+        {
+          "id": "inglane",
+          "front": "Inglane",
+          "back": {
+            "en": "An Englishman, an Englishwoman",
+            "az": "İngilis",
+            "ru": "Англичанин, англичанка"
+          },
+          "forms": [
+            "inglase",
+            "inglast"
+          ],
+          "sentence": {
+            "et": "Inglane räägib ainult inglise keelt.",
+            "en": "The Englishman speaks only English.",
+            "az": "İngilis yalnız ingiliscə danışır.",
+            "ru": "Англичанин говорит только по-английски."
+          }
+        },
+        {
+          "id": "prantsusmaa",
+          "front": "Prantsusmaa",
+          "back": {
+            "en": "France",
+            "az": "Fransa",
+            "ru": "Франция"
+          },
+          "forms": [
+            "Prantsusmaa",
+            "Prantsusmaad"
+          ],
+          "sentence": {
+            "et": "Prantsusmaal on hea leib.",
+            "en": "There is good bread in France.",
+            "az": "Fransada yaxşı çörək var.",
+            "ru": "Во Франции хороший хлеб."
+          }
+        },
+        {
+          "id": "prantslane",
+          "front": "Prantslane",
+          "back": {
+            "en": "A Frenchman, a Frenchwoman",
+            "az": "Fransız",
+            "ru": "Француз, француженка"
+          },
+          "forms": [
+            "prantslase",
+            "prantslast"
+          ],
+          "sentence": {
+            "et": "Prantslane joob veini.",
+            "en": "The Frenchman is drinking wine.",
+            "az": "Fransız şərab içir.",
+            "ru": "Француз пьёт вино."
+          }
+        },
+        {
+          "id": "hispaania",
+          "front": "Hispaania",
+          "back": {
+            "en": "Spain",
+            "az": "İspaniya",
+            "ru": "Испания"
+          },
+          "forms": [
+            "Hispaania",
+            "Hispaaniat"
+          ],
+          "sentence": {
+            "et": "Hispaanias on soe.",
+            "en": "It is warm in Spain.",
+            "az": "İspaniyada istidir.",
+            "ru": "В Испании тепло."
+          }
+        },
+        {
+          "id": "hispaanlane",
+          "front": "Hispaanlane",
+          "back": {
+            "en": "A Spaniard",
+            "az": "İspan",
+            "ru": "Испанец, испанка"
+          },
+          "forms": [
+            "hispaanlase",
+            "hispaanlast"
+          ],
+          "sentence": {
+            "et": "Hispaanlane sööb hilja õhtul.",
+            "en": "The Spaniard eats late in the evening.",
+            "az": "İspan axşam gec yemək yeyir.",
+            "ru": "Испанец ужинает поздно вечером."
+          }
+        },
+        {
+          "id": "itaalia",
+          "front": "Itaalia",
+          "back": {
+            "en": "Italy",
+            "az": "İtaliya",
+            "ru": "Италия"
+          },
+          "forms": [
+            "Itaalia",
+            "Itaaliat"
+          ],
+          "sentence": {
+            "et": "Itaalia pitsa on kuulus.",
+            "en": "Italian pizza is famous.",
+            "az": "İtalyan pizzası məşhurdur.",
+            "ru": "Итальянская пицца знаменита."
+          }
+        },
+        {
+          "id": "itaallane",
+          "front": "Itaallane",
+          "back": {
+            "en": "An Italian",
+            "az": "İtalyan",
+            "ru": "Итальянец, итальянка"
+          },
+          "forms": [
+            "itaallase",
+            "itaallast"
+          ],
+          "sentence": {
+            "et": "Itaallane teeb head kohvi.",
+            "en": "The Italian makes good coffee.",
+            "az": "İtalyan yaxşı qəhvə bişirir.",
+            "ru": "Итальянец варит хороший кофе."
+          }
+        },
+        {
+          "id": "poola",
+          "front": "Poola",
+          "back": {
+            "en": "Poland",
+            "az": "Polşa",
+            "ru": "Польша"
+          },
+          "forms": [
+            "Poola",
+            "Poolat"
+          ],
+          "sentence": {
+            "et": "Poola on Leedust lõunas.",
+            "en": "Poland is south of Lithuania.",
+            "az": "Polşa Litvanın cənubundadır.",
+            "ru": "Польша южнее Литвы."
+          }
+        },
+        {
+          "id": "poolakas",
+          "front": "Poolakas",
+          "back": {
+            "en": "A Pole",
+            "az": "Polyak",
+            "ru": "Поляк, полька"
+          },
+          "forms": [
+            "poolaka",
+            "poolakat"
+          ],
+          "sentence": {
+            "et": "Poolakas töötab kohvikus.",
+            "en": "The Pole works in a café.",
+            "az": "Polyak kafedə işləyir.",
+            "ru": "Поляк работает в кафе."
+          }
+        },
+        {
+          "id": "ungari",
+          "front": "Ungari",
+          "back": {
+            "en": "Hungary",
+            "az": "Macarıstan",
+            "ru": "Венгрия"
+          },
+          "forms": [
+            "Ungari",
+            "Ungarit"
+          ],
+          "sentence": {
+            "et": "Ungari on kaugel lõunas.",
+            "en": "Hungary is far to the south.",
+            "az": "Macarıstan uzaq cənubdadır.",
+            "ru": "Венгрия далеко на юге."
+          }
+        },
+        {
+          "id": "ungarlane",
+          "front": "Ungarlane",
+          "back": {
+            "en": "A Hungarian",
+            "az": "Macar",
+            "ru": "Венгр, венгерка"
+          },
+          "forms": [
+            "ungarlase",
+            "ungarlast"
+          ],
+          "sentence": {
+            "et": "Ungarlane räägib ungari keelt.",
+            "en": "The Hungarian speaks Hungarian.",
+            "az": "Macar macar dilində danışır.",
+            "ru": "Венгр говорит по-венгерски."
+          }
+        },
+        {
+          "id": "hiina",
+          "front": "Hiina",
+          "back": {
+            "en": "China",
+            "az": "Çin",
+            "ru": "Китай"
+          },
+          "forms": [
+            "Hiina",
+            "Hiinat"
+          ],
+          "sentence": {
+            "et": "Hiina restoran on siinsamas.",
+            "en": "The Chinese restaurant is right here.",
+            "az": "Çin restoranı elə buradadır.",
+            "ru": "Китайский ресторан прямо здесь."
+          }
+        },
+        {
+          "id": "hiinlane",
+          "front": "Hiinlane",
+          "back": {
+            "en": "A Chinese person",
+            "az": "Çinli",
+            "ru": "Китаец, китаянка"
+          },
+          "forms": [
+            "hiinlase",
+            "hiinlast"
+          ],
+          "sentence": {
+            "et": "Hiinlane räägib hiina keelt.",
+            "en": "The Chinese person speaks Chinese.",
+            "az": "Çinli çin dilində danışır.",
+            "ru": "Китаец говорит по-китайски."
+          }
+        }
+      ]
+    },
+    {
+      "id": "school",
+      "name": {
+        "en": "School and the course",
+        "az": "Məktəb və kurs",
+        "ru": "Школа и курсы"
+      },
+      "why": {
+        "en": "The words a language course is run in, from the textbook to the dictation",
+        "az": "Dil kursunun sözləri — dərslikdən diktəyə qədər",
+        "ru": "Слова языковых курсов — от учебника до диктанта"
+      },
+      "level": "more",
+      "cards": [
+        {
+          "id": "kool",
+          "front": "Kool",
+          "back": {
+            "en": "School",
+            "az": "Məktəb",
+            "ru": "Школа"
+          },
+          "forms": [
+            "kooli",
+            "kooli"
+          ],
+          "sentence": {
+            "et": "Lapsed on koolis.",
+            "en": "The children are at school.",
+            "az": "Uşaqlar məktəbdədir.",
+            "ru": "Дети в школе."
+          }
+        },
+        {
+          "id": "koolis",
+          "front": "Koolis",
+          "back": {
+            "en": "At school, in school",
+            "az": "Məktəbdə",
+            "ru": "В школе"
+          },
+          "sentence": {
+            "et": "Ma õpin koolis eesti keelt.",
+            "en": "I study Estonian at school.",
+            "az": "Məktəbdə eston dili öyrənirəm.",
+            "ru": "Я учу эстонский в школе."
+          }
+        },
+        {
+          "id": "keeltekool",
+          "front": "Keeltekool",
+          "back": {
+            "en": "Language school",
+            "az": "Dil məktəbi",
+            "ru": "Языковая школа"
+          },
+          "forms": [
+            "keeltekooli",
+            "keeltekooli"
+          ],
+          "sentence": {
+            "et": "Keeltekool on kesklinnas.",
+            "en": "The language school is in the centre.",
+            "az": "Dil məktəbi mərkəzdədir.",
+            "ru": "Языковая школа в центре."
+          }
+        },
+        {
+          "id": "kursusel",
+          "front": "Kursusel",
+          "back": {
+            "en": "On the course",
+            "az": "Kursda",
+            "ru": "На курсах"
+          },
+          "sentence": {
+            "et": "Ma käin eesti keele kursusel.",
+            "en": "I go to an Estonian course.",
+            "az": "Eston dili kursuna gedirəm.",
+            "ru": "Я хожу на курсы эстонского."
+          }
+        },
+        {
+          "id": "ulikool",
+          "front": "Ülikool",
+          "back": {
+            "en": "University",
+            "az": "Universitet",
+            "ru": "Университет"
+          },
+          "forms": [
+            "ülikooli",
+            "ülikooli"
+          ],
+          "sentence": {
+            "et": "Tartu ülikool on vana.",
+            "en": "The University of Tartu is old.",
+            "az": "Tartu universiteti qədimdir.",
+            "ru": "Тартуский университет старый."
+          }
+        },
+        {
+          "id": "opetaja",
+          "front": "Õpetaja",
+          "back": {
+            "en": "Teacher",
+            "az": "Müəllim",
+            "ru": "Учитель, учительница"
+          },
+          "forms": [
+            "õpetaja",
+            "õpetajat"
+          ],
+          "sentence": {
+            "et": "Õpetaja räägib aeglaselt.",
+            "en": "The teacher speaks slowly.",
+            "az": "Müəllim yavaş danışır.",
+            "ru": "Учитель говорит медленно."
+          }
+        },
+        {
+          "id": "opetama",
+          "front": "Õpetama",
+          "back": {
+            "en": "To teach",
+            "az": "öyrətmək",
+            "ru": "преподавать, обучать"
+          },
+          "forms": [
+            "õpetada",
+            "õpetan"
+          ],
+          "sentence": {
+            "et": "Ta õpetab eesti keelt.",
+            "en": "They teach Estonian.",
+            "az": "O eston dili öyrədir.",
+            "ru": "Он преподаёт эстонский."
+          }
+        },
+        {
+          "id": "opik",
+          "front": "Õpik",
+          "back": {
+            "en": "Textbook",
+            "az": "Dərslik",
+            "ru": "Учебник"
+          },
+          "forms": [
+            "õpiku",
+            "õpikut"
+          ],
+          "sentence": {
+            "et": "Õpik on kotis.",
+            "en": "The textbook is in my bag.",
+            "az": "Dərslik çantadadır.",
+            "ru": "Учебник в сумке."
+          }
+        },
+        {
+          "id": "opilane",
+          "front": "Õpilane",
+          "back": {
+            "en": "A pupil",
+            "az": "Şagird",
+            "ru": "Ученик, ученица"
+          },
+          "forms": [
+            "õpilase",
+            "õpilast"
+          ],
+          "sentence": {
+            "et": "Õpilane loeb valjusti.",
+            "en": "The pupil reads aloud.",
+            "az": "Şagird ucadan oxuyur.",
+            "ru": "Ученик читает вслух."
+          }
+        },
+        {
+          "id": "uliopilane",
+          "front": "Üliõpilane",
+          "back": {
+            "en": "A university student",
+            "az": "Tələbə",
+            "ru": "Студент, студентка"
+          },
+          "forms": [
+            "üliõpilase",
+            "üliõpilast"
+          ],
+          "sentence": {
+            "et": "Üliõpilastele on soodustus.",
+            "en": "There is a discount for students.",
+            "az": "Tələbələr üçün endirim var.",
+            "ru": "Для студентов есть скидка."
+          }
+        },
+        {
+          "id": "etteutlus",
+          "front": "Etteütlus",
+          "back": {
+            "en": "Dictation",
+            "az": "Diktə",
+            "ru": "Диктант"
+          },
+          "forms": [
+            "etteütluse",
+            "etteütlust"
+          ],
+          "sentence": {
+            "et": "Homme on etteütlus.",
+            "en": "There is a dictation tomorrow.",
+            "az": "Sabah diktə var.",
+            "ru": "Завтра диктант."
+          }
+        },
+        {
+          "id": "olen-oppinud",
+          "front": "Olen õppinud",
+          "back": {
+            "en": "I have studied",
+            "az": "Mən oxumuşam",
+            "ru": "Я учился"
+          },
+          "sentence": {
+            "et": "Ma olen õppinud kaks aastat.",
+            "en": "I have studied for two years.",
+            "az": "İki ildir oxuyuram.",
+            "ru": "Я учился два года."
+          }
+        },
+        {
+          "id": "ainsus",
+          "front": "Ainsus",
+          "back": {
+            "en": "Singular",
+            "az": "Tək",
+            "ru": "Единственное число"
+          },
+          "forms": [
+            "ainsuse",
+            "ainsust"
+          ],
+          "sentence": {
+            "et": "Ainsuses on üks, mitmuses mitu.",
+            "en": "Singular is one, plural is several.",
+            "az": "Təkdə bir, cəmdə bir neçə olur.",
+            "ru": "В единственном числе один, во множественном — несколько."
+          }
+        },
+        {
+          "id": "mitmus",
+          "front": "Mitmus",
+          "back": {
+            "en": "Plural",
+            "az": "Cəm",
+            "ru": "Множественное число"
+          },
+          "forms": [
+            "mitmuse",
+            "mitmust"
+          ],
+          "sentence": {
+            "et": "Selle sõna mitmus on raske.",
+            "en": "The plural of this word is hard.",
+            "az": "Bu sözün cəmi çətindir.",
+            "ru": "Множественное число этого слова трудное."
+          }
+        }
+      ]
     },
     {
       "id": "time",
@@ -2593,6 +4561,21 @@
             "en": "At the weekend I rest.",
             "az": "Həftəsonu dincəlirəm.",
             "ru": "На выходных я отдыхаю."
+          }
+        },
+        {
+          "id": "nuud",
+          "front": "Nüüd",
+          "back": {
+            "en": "Now, by now",
+            "az": "İndi",
+            "ru": "Теперь, сейчас"
+          },
+          "sentence": {
+            "et": "Nüüd on juba hilja.",
+            "en": "It is late by now.",
+            "az": "İndi artıq gecdir.",
+            "ru": "Сейчас уже поздно."
           }
         }
       ],
@@ -3246,6 +5229,101 @@
             "az": "Yaxşı yatdım.",
             "ru": "Я хорошо поспал."
           }
+        },
+        {
+          "id": "aru-saama",
+          "front": "Aru saama",
+          "back": {
+            "en": "To understand",
+            "az": "başa düşmək",
+            "ru": "понимать"
+          },
+          "forms": [
+            "aru saada",
+            "saan aru"
+          ],
+          "sentence": {
+            "et": "Kas sa saad aru?",
+            "en": "Do you understand?",
+            "az": "Başa düşürsən?",
+            "ru": "Ты понимаешь?"
+          }
+        },
+        {
+          "id": "oskama",
+          "front": "Oskama",
+          "back": {
+            "en": "To know how, to be able to",
+            "az": "bacarmaq",
+            "ru": "уметь, владеть"
+          },
+          "forms": [
+            "osata",
+            "oskan"
+          ],
+          "sentence": {
+            "et": "Ma oskan natuke eesti keelt.",
+            "en": "I know a little Estonian.",
+            "az": "Bir az eston dili bilirəm.",
+            "ru": "Я немного знаю эстонский."
+          }
+        },
+        {
+          "id": "meeldima",
+          "front": "Meeldima",
+          "back": {
+            "en": "To like, to please",
+            "az": "xoşa gəlmək",
+            "ru": "нравиться"
+          },
+          "forms": [
+            "meeldida",
+            "meeldib"
+          ],
+          "sentence": {
+            "et": "Mulle meeldib see koht.",
+            "en": "I like this place.",
+            "az": "Bu yer xoşuma gəlir.",
+            "ru": "Мне нравится это место."
+          }
+        },
+        {
+          "id": "armastama",
+          "front": "Armastama",
+          "back": {
+            "en": "To love",
+            "az": "sevmək",
+            "ru": "любить"
+          },
+          "forms": [
+            "armastada",
+            "armastan"
+          ],
+          "sentence": {
+            "et": "Ma armastan seda linna.",
+            "en": "I love this city.",
+            "az": "Bu şəhəri sevirəm.",
+            "ru": "Я люблю этот город."
+          }
+        },
+        {
+          "id": "asuma",
+          "front": "Asuma",
+          "back": {
+            "en": "To be situated",
+            "az": "yerləşmək",
+            "ru": "находиться"
+          },
+          "forms": [
+            "asuda",
+            "asub"
+          ],
+          "sentence": {
+            "et": "Kohvik asub vanalinnas.",
+            "en": "The café is in the old town.",
+            "az": "Kafe köhnə şəhərdə yerləşir.",
+            "ru": "Кафе находится в старом городе."
+          }
         }
       ]
     },
@@ -3604,6 +5682,44 @@
             "az": "Burada çox işıq yoxdur.",
             "ru": "Здесь мало света."
           }
+        },
+        {
+          "id": "kodu",
+          "front": "Kodu",
+          "back": {
+            "en": "Home",
+            "az": "Ev, yurd",
+            "ru": "Дом, родной дом"
+          },
+          "forms": [
+            "kodu",
+            "kodu"
+          ],
+          "sentence": {
+            "et": "Minu kodu on Kalamajas.",
+            "en": "My home is in Kalamaja.",
+            "az": "Mənim evim Kalamajadadır.",
+            "ru": "Мой дом в Каламая."
+          }
+        },
+        {
+          "id": "lill",
+          "front": "Lill",
+          "back": {
+            "en": "Flower",
+            "az": "Gül",
+            "ru": "Цветок"
+          },
+          "forms": [
+            "lille",
+            "lille"
+          ],
+          "sentence": {
+            "et": "Lilled on laual.",
+            "en": "The flowers are on the table.",
+            "az": "Güllər masanın üstündədir.",
+            "ru": "Цветы на столе."
+          }
         }
       ]
     },
@@ -3885,6 +6001,21 @@
             "en": "Do not worry.",
             "az": "Narahat olma.",
             "ru": "Не волнуйся."
+          }
+        },
+        {
+          "id": "pole-viga",
+          "front": "Pole viga",
+          "back": {
+            "en": "Not bad",
+            "az": "Pis deyil",
+            "ru": "Неплохо"
+          },
+          "sentence": {
+            "et": "Kuidas läheb? Pole viga.",
+            "en": "How is it going? Not bad.",
+            "az": "Necəsən? Pis deyil.",
+            "ru": "Как дела? Неплохо."
           }
         }
       ]
@@ -4244,6 +6375,82 @@
             "az": "Dişim ağrıyır.",
             "ru": "Зуб болит."
           }
+        },
+        {
+          "id": "nagu",
+          "front": "Nägu",
+          "back": {
+            "en": "Face",
+            "az": "Üz",
+            "ru": "Лицо"
+          },
+          "forms": [
+            "näo",
+            "nägu"
+          ],
+          "sentence": {
+            "et": "Tal on sõbralik nägu.",
+            "en": "They have a friendly face.",
+            "az": "Onun mehriban üzü var.",
+            "ru": "У него доброе лицо."
+          }
+        },
+        {
+          "id": "suu",
+          "front": "Suu",
+          "back": {
+            "en": "Mouth",
+            "az": "Ağız",
+            "ru": "Рот"
+          },
+          "forms": [
+            "suu",
+            "suud"
+          ],
+          "sentence": {
+            "et": "Tee on kuum, ära põleta suud.",
+            "en": "The tea is hot, do not burn your mouth.",
+            "az": "Çay istidir, ağzını yandırma.",
+            "ru": "Чай горячий, не обожги рот."
+          }
+        },
+        {
+          "id": "nina",
+          "front": "Nina",
+          "back": {
+            "en": "Nose",
+            "az": "Burun",
+            "ru": "Нос"
+          },
+          "forms": [
+            "nina",
+            "nina"
+          ],
+          "sentence": {
+            "et": "Mul on nina kinni.",
+            "en": "My nose is blocked.",
+            "az": "Burnum tutulub.",
+            "ru": "У меня заложен нос."
+          }
+        },
+        {
+          "id": "korv",
+          "front": "Kõrv",
+          "back": {
+            "en": "Ear",
+            "az": "Qulaq",
+            "ru": "Ухо"
+          },
+          "forms": [
+            "kõrva",
+            "kõrva"
+          ],
+          "sentence": {
+            "et": "Kõrv valutab.",
+            "en": "My ear hurts.",
+            "az": "Qulağım ağrıyır.",
+            "ru": "Болит ухо."
+          }
         }
       ]
     },
@@ -4564,6 +6771,25 @@
             "az": "Nömrən nədir?",
             "ru": "Какой у тебя номер?"
           }
+        },
+        {
+          "id": "telefon",
+          "front": "Telefon",
+          "back": {
+            "en": "Telephone",
+            "az": "Telefon",
+            "ru": "Телефон"
+          },
+          "forms": [
+            "telefoni",
+            "telefoni"
+          ],
+          "sentence": {
+            "et": "Mis on teie telefoni number?",
+            "en": "What is your telephone number?",
+            "az": "Telefon nömrəniz nədir?",
+            "ru": "Какой у вас номер телефона?"
+          }
         }
       ]
     },
@@ -4845,6 +7071,234 @@
             "en": "Estonian nature is beautiful.",
             "az": "Estoniya təbiəti gözəldir.",
             "ru": "Природа Эстонии красивая."
+          }
+        },
+        {
+          "id": "maa",
+          "front": "Maa",
+          "back": {
+            "en": "Country, land",
+            "az": "Ölkə, torpaq",
+            "ru": "Страна, земля"
+          },
+          "forms": [
+            "maa",
+            "maad"
+          ],
+          "sentence": {
+            "et": "Eesti on väike maa.",
+            "en": "Estonia is a small country.",
+            "az": "Estoniya kiçik ölkədir.",
+            "ru": "Эстония — маленькая страна."
+          }
+        },
+        {
+          "id": "maakond",
+          "front": "Maakond",
+          "back": {
+            "en": "County",
+            "az": "Mahal",
+            "ru": "Уезд"
+          },
+          "forms": [
+            "maakonna",
+            "maakonda"
+          ],
+          "sentence": {
+            "et": "Harju maakond on kõige suurem.",
+            "en": "Harju county is the largest.",
+            "az": "Haryu mahalı ən böyüyüdür.",
+            "ru": "Уезд Харьюмаа самый большой."
+          }
+        },
+        {
+          "id": "vald",
+          "front": "Vald",
+          "back": {
+            "en": "Rural municipality",
+            "az": "Kənd bələdiyyəsi",
+            "ru": "Волость"
+          },
+          "forms": [
+            "valla",
+            "valda"
+          ],
+          "sentence": {
+            "et": "Küla on Viimsi vallas.",
+            "en": "The village is in Viimsi municipality.",
+            "az": "Kənd Viimsi bələdiyyəsindədir.",
+            "ru": "Деревня в волости Виймси."
+          }
+        },
+        {
+          "id": "magi",
+          "front": "Mägi",
+          "back": {
+            "en": "Mountain, hill",
+            "az": "Dağ",
+            "ru": "Гора"
+          },
+          "forms": [
+            "mäe",
+            "mäge"
+          ],
+          "sentence": {
+            "et": "Toompea on väike mägi.",
+            "en": "Toompea is a small hill.",
+            "az": "Toompea kiçik təpədir.",
+            "ru": "Тоомпеа — небольшая гора."
+          }
+        },
+        {
+          "id": "kivi",
+          "front": "Kivi",
+          "back": {
+            "en": "Stone, rock",
+            "az": "Daş",
+            "ru": "Камень"
+          },
+          "forms": [
+            "kivi",
+            "kivi"
+          ],
+          "sentence": {
+            "et": "Vanalinn on kivist ehitatud.",
+            "en": "The old town is built of stone.",
+            "az": "Köhnə şəhər daşdan tikilib.",
+            "ru": "Старый город построен из камня."
+          }
+        },
+        {
+          "id": "loom",
+          "front": "Loom",
+          "back": {
+            "en": "Animal",
+            "az": "Heyvan",
+            "ru": "Животное, зверь"
+          },
+          "forms": [
+            "looma",
+            "looma"
+          ],
+          "sentence": {
+            "et": "Metsas elavad loomad.",
+            "en": "Animals live in the forest.",
+            "az": "Meşədə heyvanlar yaşayır.",
+            "ru": "В лесу живут звери."
+          }
+        },
+        {
+          "id": "konn",
+          "front": "Konn",
+          "back": {
+            "en": "Frog",
+            "az": "Qurbağa",
+            "ru": "Лягушка"
+          },
+          "forms": [
+            "konna",
+            "konna"
+          ],
+          "sentence": {
+            "et": "Järve ääres laulavad konnad.",
+            "en": "Frogs are singing by the lake.",
+            "az": "Gölün kənarında qurbağalar oxuyur.",
+            "ru": "У озера поют лягушки."
+          }
+        },
+        {
+          "id": "laanemeri",
+          "front": "Läänemeri",
+          "back": {
+            "en": "The Baltic Sea",
+            "az": "Baltik dənizi",
+            "ru": "Балтийское море"
+          },
+          "forms": [
+            "Läänemere",
+            "Läänemerd"
+          ],
+          "sentence": {
+            "et": "Tallinn on Läänemere ääres.",
+            "en": "Tallinn is on the Baltic Sea.",
+            "az": "Tallinn Baltik dənizinin sahilindədir.",
+            "ru": "Таллинн стоит на Балтийском море."
+          }
+        },
+        {
+          "id": "pohja-eesti",
+          "front": "Põhja-Eesti",
+          "back": {
+            "en": "Northern Estonia",
+            "az": "Şimali Estoniya",
+            "ru": "Северная Эстония"
+          },
+          "forms": [
+            "Põhja-Eesti",
+            "Põhja-Eestit"
+          ],
+          "sentence": {
+            "et": "Tallinn on Põhja-Eestis.",
+            "en": "Tallinn is in Northern Estonia.",
+            "az": "Tallinn Şimali Estoniyadadır.",
+            "ru": "Таллинн в Северной Эстонии."
+          }
+        },
+        {
+          "id": "louna-eesti",
+          "front": "Lõuna-Eesti",
+          "back": {
+            "en": "Southern Estonia",
+            "az": "Cənubi Estoniya",
+            "ru": "Южная Эстония"
+          },
+          "forms": [
+            "Lõuna-Eesti",
+            "Lõuna-Eestit"
+          ],
+          "sentence": {
+            "et": "Tartu on Lõuna-Eestis.",
+            "en": "Tartu is in Southern Estonia.",
+            "az": "Tartu Cənubi Estoniyadadır.",
+            "ru": "Тарту в Южной Эстонии."
+          }
+        },
+        {
+          "id": "ida-eesti",
+          "front": "Ida-Eesti",
+          "back": {
+            "en": "Eastern Estonia",
+            "az": "Şərqi Estoniya",
+            "ru": "Восточная Эстония"
+          },
+          "forms": [
+            "Ida-Eesti",
+            "Ida-Eestit"
+          ],
+          "sentence": {
+            "et": "Narva on Ida-Eestis.",
+            "en": "Narva is in Eastern Estonia.",
+            "az": "Narva Şərqi Estoniyadadır.",
+            "ru": "Нарва в Восточной Эстонии."
+          }
+        },
+        {
+          "id": "laane-eesti",
+          "front": "Lääne-Eesti",
+          "back": {
+            "en": "Western Estonia",
+            "az": "Qərbi Estoniya",
+            "ru": "Западная Эстония"
+          },
+          "forms": [
+            "Lääne-Eesti",
+            "Lääne-Eestit"
+          ],
+          "sentence": {
+            "et": "Haapsalu on Lääne-Eestis.",
+            "en": "Haapsalu is in Western Estonia.",
+            "az": "Haapsalu Qərbi Estoniyadadır.",
+            "ru": "Хаапсалу в Западной Эстонии."
           }
         }
       ]
@@ -6385,6 +8839,120 @@
             "az": "Daha qısası var?",
             "ru": "У вас есть покороче?"
           }
+        },
+        {
+          "id": "umar",
+          "front": "Ümar",
+          "back": {
+            "en": "Round",
+            "az": "Dairəvi",
+            "ru": "Круглый"
+          },
+          "forms": [
+            "ümara",
+            "ümarat"
+          ],
+          "sentence": {
+            "et": "Laud on ümar.",
+            "en": "The table is round.",
+            "az": "Masa dairəvidir.",
+            "ru": "Стол круглый."
+          }
+        },
+        {
+          "id": "kerge",
+          "front": "Kerge",
+          "back": {
+            "en": "Easy, light",
+            "az": "Asan, yüngül",
+            "ru": "Лёгкий"
+          },
+          "forms": [
+            "kerge",
+            "kerget"
+          ],
+          "sentence": {
+            "et": "Kott on kerge.",
+            "en": "The bag is light.",
+            "az": "Çanta yüngüldür.",
+            "ru": "Сумка лёгкая."
+          }
+        },
+        {
+          "id": "tavaline",
+          "front": "Tavaline",
+          "back": {
+            "en": "Ordinary, usual",
+            "az": "Adi",
+            "ru": "Обычный"
+          },
+          "forms": [
+            "tavalise",
+            "tavalist"
+          ],
+          "sentence": {
+            "et": "Üks tavaline kohv, palun.",
+            "en": "One ordinary coffee, please.",
+            "az": "Bir adi qəhvə, zəhmət olmasa.",
+            "ru": "Один обычный кофе, пожалуйста."
+          }
+        },
+        {
+          "id": "hall",
+          "front": "Hall",
+          "back": {
+            "en": "Grey",
+            "az": "Boz",
+            "ru": "Серый"
+          },
+          "forms": [
+            "halli",
+            "halli"
+          ],
+          "sentence": {
+            "et": "Taevas on hall.",
+            "en": "The sky is grey.",
+            "az": "Göy bozdur.",
+            "ru": "Небо серое."
+          }
+        },
+        {
+          "id": "kollane",
+          "front": "Kollane",
+          "back": {
+            "en": "Yellow",
+            "az": "Sarı",
+            "ru": "Жёлтый"
+          },
+          "forms": [
+            "kollase",
+            "kollast"
+          ],
+          "sentence": {
+            "et": "Kollane maja on nurga peal.",
+            "en": "The yellow house is on the corner.",
+            "az": "Sarı ev küncdədir.",
+            "ru": "Жёлтый дом на углу."
+          }
+        },
+        {
+          "id": "must",
+          "front": "Must",
+          "back": {
+            "en": "Black, dirty",
+            "az": "Qara, çirkli",
+            "ru": "Чёрный, грязный"
+          },
+          "forms": [
+            "musta",
+            "musta"
+          ],
+          "sentence": {
+            "et": "Ma otsin musta mantlit.",
+            "en": "I am looking for a black coat.",
+            "az": "Qara palto axtarıram.",
+            "ru": "Я ищу чёрное пальто."
+          }
         }
       ]
     },
@@ -7042,6 +9610,423 @@
             "en": "Why did you not come?",
             "az": "Niyə gəlmədin?",
             "ru": "Почему ты не пришёл?"
+          }
+        },
+        {
+          "id": "ja",
+          "front": "Ja",
+          "back": {
+            "en": "And",
+            "az": "və",
+            "ru": "и"
+          },
+          "sentence": {
+            "et": "Kohv ja sai.",
+            "en": "A coffee and a bun.",
+            "az": "Qəhvə və çörək.",
+            "ru": "Кофе и булочка."
+          }
+        },
+        {
+          "id": "aga",
+          "front": "Aga",
+          "back": {
+            "en": "But",
+            "az": "amma",
+            "ru": "но, а"
+          },
+          "sentence": {
+            "et": "Ma tahan, aga ei saa.",
+            "en": "I want to, but I cannot.",
+            "az": "İstəyirəm, amma bacarmıram.",
+            "ru": "Я хочу, но не могу."
+          }
+        },
+        {
+          "id": "ka",
+          "front": "Ka",
+          "back": {
+            "en": "Also, too",
+            "az": "də, həm də",
+            "ru": "тоже, также"
+          },
+          "sentence": {
+            "et": "Mina ka.",
+            "en": "Me too.",
+            "az": "Mən də.",
+            "ru": "Я тоже."
+          }
+        },
+        {
+          "id": "et",
+          "front": "Et",
+          "back": {
+            "en": "That — the word that joins two halves",
+            "az": "ki",
+            "ru": "что, чтобы"
+          },
+          "sentence": {
+            "et": "Ta ütles, et kohvik on kinni.",
+            "en": "They said that the café is closed.",
+            "az": "O dedi ki, kafe bağlıdır.",
+            "ru": "Он сказал, что кафе закрыто."
+          }
+        },
+        {
+          "id": "nagu",
+          "front": "Nagu",
+          "back": {
+            "en": "Like, as",
+            "az": "kimi",
+            "ru": "как, будто"
+          },
+          "sentence": {
+            "et": "See maitseb nagu kodus.",
+            "en": "It tastes like it does at home.",
+            "az": "Dadı ev yeməyi kimidir.",
+            "ru": "На вкус как дома."
+          }
+        },
+        {
+          "id": "toesti",
+          "front": "Tõesti",
+          "back": {
+            "en": "Really, indeed",
+            "az": "doğrudan",
+            "ru": "действительно"
+          },
+          "sentence": {
+            "et": "See on tõesti hea.",
+            "en": "That is really good.",
+            "az": "Bu doğrudan yaxşıdır.",
+            "ru": "Это действительно хорошо."
+          }
+        },
+        {
+          "id": "kas-toesti",
+          "front": "Kas tõesti?",
+          "back": {
+            "en": "Really?",
+            "az": "Doğrudan?",
+            "ru": "Неужели?"
+          },
+          "sentence": {
+            "et": "Kas tõesti? Ma ei teadnud.",
+            "en": "Really? I did not know.",
+            "az": "Doğrudan? Bilmirdim.",
+            "ru": "Неужели? Я не знал."
+          }
+        },
+        {
+          "id": "siin",
+          "front": "Siin",
+          "back": {
+            "en": "Here",
+            "az": "burada",
+            "ru": "здесь, тут"
+          },
+          "sentence": {
+            "et": "Siin on vaba laud.",
+            "en": "There is a free table here.",
+            "az": "Burada boş masa var.",
+            "ru": "Здесь есть свободный стол."
+          }
+        },
+        {
+          "id": "siis",
+          "front": "Siis",
+          "back": {
+            "en": "Then, at that time",
+            "az": "onda, o zaman",
+            "ru": "тогда, потом"
+          },
+          "sentence": {
+            "et": "Siis lähme homme.",
+            "en": "Then let us go tomorrow.",
+            "az": "Onda sabah gedək.",
+            "ru": "Тогда пойдём завтра."
+          }
+        },
+        {
+          "id": "veel",
+          "front": "Veel",
+          "back": {
+            "en": "More, still, yet",
+            "az": "hələ, daha",
+            "ru": "ещё"
+          },
+          "sentence": {
+            "et": "Kas sa tahad veel kohvi?",
+            "en": "Would you like more coffee?",
+            "az": "Daha qəhvə istəyirsən?",
+            "ru": "Хочешь ещё кофе?"
+          }
+        },
+        {
+          "id": "ainult",
+          "front": "Ainult",
+          "back": {
+            "en": "Only",
+            "az": "yalnız, ancaq",
+            "ru": "только, лишь"
+          },
+          "sentence": {
+            "et": "Ainult sularaha.",
+            "en": "Cash only.",
+            "az": "Yalnız nağd.",
+            "ru": "Только наличные."
+          }
+        },
+        {
+          "id": "nii",
+          "front": "Nii",
+          "back": {
+            "en": "So, like this",
+            "az": "belə, elə",
+            "ru": "так"
+          },
+          "sentence": {
+            "et": "Nii on parem.",
+            "en": "It is better this way.",
+            "az": "Belə daha yaxşıdır.",
+            "ru": "Так лучше."
+          }
+        },
+        {
+          "id": "paris",
+          "front": "Päris",
+          "back": {
+            "en": "Quite, rather",
+            "az": "kifayət qədər",
+            "ru": "довольно"
+          },
+          "sentence": {
+            "et": "Siin on päris kallis.",
+            "en": "It is quite expensive here.",
+            "az": "Burada kifayət qədər bahadır.",
+            "ru": "Здесь довольно дорого."
+          }
+        },
+        {
+          "id": "vaga",
+          "front": "Väga",
+          "back": {
+            "en": "Very",
+            "az": "çox",
+            "ru": "очень"
+          },
+          "sentence": {
+            "et": "See on väga maitsev.",
+            "en": "This is very tasty.",
+            "az": "Bu çox dadlıdır.",
+            "ru": "Это очень вкусно."
+          }
+        },
+        {
+          "id": "hasti",
+          "front": "Hästi",
+          "back": {
+            "en": "Well, fine",
+            "az": "yaxşı",
+            "ru": "хорошо"
+          },
+          "sentence": {
+            "et": "Kõik läheb hästi.",
+            "en": "Everything is going well.",
+            "az": "Hər şey yaxşı gedir.",
+            "ru": "Всё идёт хорошо."
+          }
+        },
+        {
+          "id": "eriti",
+          "front": "Eriti",
+          "back": {
+            "en": "Especially",
+            "az": "xüsusilə",
+            "ru": "особенно"
+          },
+          "sentence": {
+            "et": "Eriti hea on siin kohv.",
+            "en": "The coffee here is especially good.",
+            "az": "Xüsusilə burada qəhvə yaxşıdır.",
+            "ru": "Особенно хорош здесь кофе."
+          }
+        },
+        {
+          "id": "mitte-eriti",
+          "front": "Mitte eriti",
+          "back": {
+            "en": "Not especially",
+            "az": "elə də yox",
+            "ru": "не особенно"
+          },
+          "sentence": {
+            "et": "Kas meeldib? Mitte eriti.",
+            "en": "Do you like it? Not especially.",
+            "az": "Xoşuna gəlir? Elə də yox.",
+            "ru": "Нравится? Не особенно."
+          }
+        },
+        {
+          "id": "jalle",
+          "front": "Jälle",
+          "back": {
+            "en": "Again",
+            "az": "yenə",
+            "ru": "опять, снова"
+          },
+          "sentence": {
+            "et": "Ta jäi jälle hiljaks.",
+            "en": "They were late again.",
+            "az": "O yenə gecikdi.",
+            "ru": "Он снова опоздал."
+          }
+        },
+        {
+          "id": "kull",
+          "front": "Küll",
+          "back": {
+            "en": "Indeed — the word that insists",
+            "az": "axı, hökmən",
+            "ru": "ведь, же"
+          },
+          "sentence": {
+            "et": "Küll ma tulen.",
+            "en": "I will come, do not worry.",
+            "az": "Gələcəyəm axı.",
+            "ru": "Я же приду."
+          }
+        },
+        {
+          "id": "olgu",
+          "front": "Olgu",
+          "back": {
+            "en": "All right, okay",
+            "az": "yaxşı, olsun",
+            "ru": "ладно"
+          },
+          "sentence": {
+            "et": "Olgu, teeme nii.",
+            "en": "All right, let us do it that way.",
+            "az": "Yaxşı, belə edək.",
+            "ru": "Ладно, так и сделаем."
+          }
+        },
+        {
+          "id": "sama",
+          "front": "Sama",
+          "back": {
+            "en": "The same",
+            "az": "eyni",
+            "ru": "тот же самый"
+          },
+          "sentence": {
+            "et": "Mulle sama, palun.",
+            "en": "The same for me, please.",
+            "az": "Mənə də eynisi, zəhmət olmasa.",
+            "ru": "Мне то же самое, пожалуйста."
+          }
+        },
+        {
+          "id": "selge",
+          "front": "Selge",
+          "back": {
+            "en": "Clear, plain",
+            "az": "aydın",
+            "ru": "ясный, понятный"
+          },
+          "forms": [
+            "selge",
+            "selget"
+          ],
+          "sentence": {
+            "et": "Kõik on selge.",
+            "en": "Everything is clear.",
+            "az": "Hər şey aydındır.",
+            "ru": "Всё ясно."
+          }
+        },
+        {
+          "id": "oige",
+          "front": "Õige",
+          "back": {
+            "en": "Right, correct",
+            "az": "düzgün",
+            "ru": "правильный, верный"
+          },
+          "forms": [
+            "õige",
+            "õiget"
+          ],
+          "sentence": {
+            "et": "See on õige vastus.",
+            "en": "That is the right answer.",
+            "az": "Bu düzgün cavabdır.",
+            "ru": "Это правильный ответ."
+          }
+        },
+        {
+          "id": "vale",
+          "front": "Vale",
+          "back": {
+            "en": "Wrong, untrue",
+            "az": "səhv, yalan",
+            "ru": "неправильный, ложь"
+          },
+          "forms": [
+            "vale",
+            "valet"
+          ],
+          "sentence": {
+            "et": "Ma läksin vale tänavale.",
+            "en": "I went down the wrong street.",
+            "az": "Səhv küçəyə getdim.",
+            "ru": "Я пошёл не на ту улицу."
+          }
+        },
+        {
+          "id": "iga",
+          "front": "Iga",
+          "back": {
+            "en": "Every, each",
+            "az": "hər",
+            "ru": "каждый"
+          },
+          "sentence": {
+            "et": "Kohvik on avatud iga päev.",
+            "en": "The café is open every day.",
+            "az": "Kafe hər gün açıqdır.",
+            "ru": "Кафе открыто каждый день."
+          }
+        },
+        {
+          "id": "oelge",
+          "front": "Öelge",
+          "back": {
+            "en": "Tell me, say — politely",
+            "az": "deyin",
+            "ru": "скажите"
+          },
+          "sentence": {
+            "et": "Öelge, kus on tualett?",
+            "en": "Tell me, where is the toilet?",
+            "az": "Deyin, tualet haradadır?",
+            "ru": "Скажите, где туалет?"
+          }
+        },
+        {
+          "id": "jalgade-peal",
+          "front": "Jalgade peal",
+          "back": {
+            "en": "On one's feet",
+            "az": "ayaq üstə",
+            "ru": "на ногах"
+          },
+          "sentence": {
+            "et": "Olen terve päeva jalgade peal.",
+            "en": "I have been on my feet all day.",
+            "az": "Bütün günü ayaq üstəyəm.",
+            "ru": "Я весь день на ногах."
           }
         }
       ]
@@ -8910,6 +11895,139 @@
             "az": "Film saat doqquzda bitir.",
             "ru": "Фильм заканчивается в девять."
           }
+        },
+        {
+          "id": "helistama",
+          "front": "Helistama",
+          "back": {
+            "en": "To call, to phone",
+            "az": "zəng etmək",
+            "ru": "звонить"
+          },
+          "forms": [
+            "helistada",
+            "helistan"
+          ],
+          "sentence": {
+            "et": "Ma helistan homme.",
+            "en": "I will call tomorrow.",
+            "az": "Sabah zəng edəcəyəm.",
+            "ru": "Я позвоню завтра."
+          }
+        },
+        {
+          "id": "saatma",
+          "front": "Saatma",
+          "back": {
+            "en": "To send",
+            "az": "göndərmək",
+            "ru": "посылать, отправлять"
+          },
+          "forms": [
+            "saata",
+            "saadan"
+          ],
+          "sentence": {
+            "et": "Ma saadan sulle kirja.",
+            "en": "I will send you a letter.",
+            "az": "Sənə məktub göndərəcəyəm.",
+            "ru": "Я пошлю тебе письмо."
+          }
+        },
+        {
+          "id": "vastama",
+          "front": "Vastama",
+          "back": {
+            "en": "To answer",
+            "az": "cavab vermək",
+            "ru": "отвечать"
+          },
+          "forms": [
+            "vastata",
+            "vastan"
+          ],
+          "sentence": {
+            "et": "Ta ei vasta telefonile.",
+            "en": "They are not answering the phone.",
+            "az": "O telefona cavab vermir.",
+            "ru": "Он не отвечает на телефон."
+          }
+        },
+        {
+          "id": "kondima",
+          "front": "Kõndima",
+          "back": {
+            "en": "To walk",
+            "az": "piyada getmək",
+            "ru": "ходить, шагать"
+          },
+          "forms": [
+            "kõndida",
+            "kõnnin"
+          ],
+          "sentence": {
+            "et": "Ma kõnnin iga päev tööle.",
+            "en": "I walk to work every day.",
+            "az": "Hər gün işə piyada gedirəm.",
+            "ru": "Я каждый день хожу на работу пешком."
+          }
+        },
+        {
+          "id": "sundima",
+          "front": "Sündima",
+          "back": {
+            "en": "To be born",
+            "az": "doğulmaq",
+            "ru": "родиться"
+          },
+          "forms": [
+            "sündida",
+            "sünnin"
+          ],
+          "sentence": {
+            "et": "Ma sündisin Bakuus.",
+            "en": "I was born in Baku.",
+            "az": "Mən Bakıda doğulmuşam.",
+            "ru": "Я родился в Баку."
+          }
+        },
+        {
+          "id": "muretsema",
+          "front": "Muretsema",
+          "back": {
+            "en": "To worry",
+            "az": "narahat olmaq",
+            "ru": "волноваться"
+          },
+          "forms": [
+            "muretseda",
+            "muretsen"
+          ],
+          "sentence": {
+            "et": "Ära muretse!",
+            "en": "Do not worry!",
+            "az": "Narahat olma!",
+            "ru": "Не волнуйся!"
+          }
+        },
+        {
+          "id": "vabandama",
+          "front": "Vabandama",
+          "back": {
+            "en": "To apologise, to excuse",
+            "az": "üzr istəmək",
+            "ru": "извиняться"
+          },
+          "forms": [
+            "vabandada",
+            "vabandan"
+          ],
+          "sentence": {
+            "et": "Ma vabandan hilinemise pärast.",
+            "en": "I apologise for being late.",
+            "az": "Gecikdiyim üçün üzr istəyirəm.",
+            "ru": "Извиняюсь за опоздание."
+          }
         }
       ]
     },
@@ -9367,6 +12485,192 @@
             "az": "Vaxtım yoxdur.",
             "ru": "У меня нет времени."
           }
+        },
+        {
+          "id": "raamat",
+          "front": "Raamat",
+          "back": {
+            "en": "Book",
+            "az": "Kitab",
+            "ru": "Книга"
+          },
+          "forms": [
+            "raamatu",
+            "raamatut"
+          ],
+          "sentence": {
+            "et": "Ma loen head raamatut.",
+            "en": "I am reading a good book.",
+            "az": "Yaxşı kitab oxuyuram.",
+            "ru": "Я читаю хорошую книгу."
+          }
+        },
+        {
+          "id": "sona",
+          "front": "Sõna",
+          "back": {
+            "en": "Word",
+            "az": "Söz",
+            "ru": "Слово"
+          },
+          "forms": [
+            "sõna",
+            "sõna"
+          ],
+          "sentence": {
+            "et": "Ma tean ainult mõnda sõna.",
+            "en": "I only know a few words.",
+            "az": "Yalnız bir neçə söz bilirəm.",
+            "ru": "Я знаю только несколько слов."
+          }
+        },
+        {
+          "id": "lause",
+          "front": "Lause",
+          "back": {
+            "en": "Sentence",
+            "az": "Cümlə",
+            "ru": "Предложение"
+          },
+          "forms": [
+            "lause",
+            "lauset"
+          ],
+          "sentence": {
+            "et": "Kirjuta üks lause eesti keeles.",
+            "en": "Write one sentence in Estonian.",
+            "az": "Eston dilində bir cümlə yaz.",
+            "ru": "Напиши одно предложение по-эстонски."
+          }
+        },
+        {
+          "id": "lehekulg",
+          "front": "Lehekülg",
+          "back": {
+            "en": "Page",
+            "az": "Səhifə",
+            "ru": "Страница"
+          },
+          "forms": [
+            "lehekülje",
+            "lehekülge"
+          ],
+          "sentence": {
+            "et": "Harjutus on kümnendal leheküljel.",
+            "en": "The exercise is on page ten.",
+            "az": "Məşq onuncu səhifədədir.",
+            "ru": "Упражнение на десятой странице."
+          }
+        },
+        {
+          "id": "luuletus",
+          "front": "Luuletus",
+          "back": {
+            "en": "Poem",
+            "az": "Şeir",
+            "ru": "Стихотворение"
+          },
+          "forms": [
+            "luuletuse",
+            "luuletust"
+          ],
+          "sentence": {
+            "et": "See luuletus on lühike.",
+            "en": "This poem is short.",
+            "az": "Bu şeir qısadır.",
+            "ru": "Это стихотворение короткое."
+          }
+        },
+        {
+          "id": "vastus",
+          "front": "Vastus",
+          "back": {
+            "en": "Answer",
+            "az": "Cavab",
+            "ru": "Ответ"
+          },
+          "forms": [
+            "vastuse",
+            "vastust"
+          ],
+          "sentence": {
+            "et": "Vastus on õige.",
+            "en": "The answer is right.",
+            "az": "Cavab düzgündür.",
+            "ru": "Ответ правильный."
+          }
+        },
+        {
+          "id": "umbrik",
+          "front": "Ümbrik",
+          "back": {
+            "en": "Envelope",
+            "az": "Zərf",
+            "ru": "Конверт"
+          },
+          "forms": [
+            "ümbriku",
+            "ümbrikut"
+          ],
+          "sentence": {
+            "et": "Kiri on ümbrikus.",
+            "en": "The letter is in the envelope.",
+            "az": "Məktub zərfdədir.",
+            "ru": "Письмо в конверте."
+          }
+        },
+        {
+          "id": "mark",
+          "front": "Mark",
+          "back": {
+            "en": "Stamp",
+            "az": "Marka",
+            "ru": "Марка"
+          },
+          "forms": [
+            "margi",
+            "marki"
+          ],
+          "sentence": {
+            "et": "Ümbrikul on mark.",
+            "en": "There is a stamp on the envelope.",
+            "az": "Zərfin üstündə marka var.",
+            "ru": "На конверте марка."
+          }
+        },
+        {
+          "id": "meil",
+          "front": "Meil",
+          "back": {
+            "en": "E-mail",
+            "az": "E-poçt",
+            "ru": "Электронная почта"
+          },
+          "forms": [
+            "meili",
+            "meili"
+          ],
+          "sentence": {
+            "et": "Ma saadan sulle meili.",
+            "en": "I will send you an e-mail.",
+            "az": "Sənə e-poçt göndərəcəyəm.",
+            "ru": "Я пошлю тебе письмо по почте."
+          }
+        },
+        {
+          "id": "lugupeetud",
+          "front": "Lugupeetud",
+          "back": {
+            "en": "Dear — at the top of a letter",
+            "az": "Hörmətli",
+            "ru": "Уважаемый"
+          },
+          "sentence": {
+            "et": "Lugupeetud härra Tamm!",
+            "en": "Dear Mr Tamm,",
+            "az": "Hörmətli cənab Tamm!",
+            "ru": "Уважаемый господин Тамм!"
+          }
         }
       ]
     },
@@ -9607,6 +12911,25 @@
             "en": "They are always in some fix or other.",
             "az": "O həmişə çətinlikdədir.",
             "ru": "Он вечно в какой-нибудь переделке."
+          }
+        },
+        {
+          "id": "kord",
+          "front": "Kord",
+          "back": {
+            "en": "A time, an occasion",
+            "az": "Dəfə",
+            "ru": "Раз"
+          },
+          "forms": [
+            "korra",
+            "korda"
+          ],
+          "sentence": {
+            "et": "Ma käin seal üks kord nädalas.",
+            "en": "I go there once a week.",
+            "az": "Ora həftədə bir dəfə gedirəm.",
+            "ru": "Я хожу туда раз в неделю."
           }
         }
       ]

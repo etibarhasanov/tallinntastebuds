@@ -161,6 +161,12 @@
     <loc>https://tallinntastebuds.ee/flashcard?d=basics</loc>
   </url>
   <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=pronouns</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=asking</loc>
+  </url>
+  <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=numbers</loc>
   </url>
   <url>
@@ -177,6 +183,12 @@
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=talk</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=countries</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=school</loc>
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=time</loc>
