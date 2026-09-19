@@ -62,12 +62,24 @@
 <!-- The tokens, the card, the eyebrow and the toast all come from the map's
      stylesheet; only what a list page has and the map does not is in the
      second file. -->
-<link rel="stylesheet" href="/assets/styles.css?v=ab47d1ba">
-<link rel="stylesheet" href="/assets/lists.css?v=aca31ce8">
+<link rel="stylesheet" href="/assets/styles.css?v=33c62894">
+<link rel="stylesheet" href="/assets/lists.css?v=4f7bd246">
 </head>
 <body class="lists-body">
 
 <a class="skip-link" href="#main" data-i18n="listsSkip">Skip to the list</a>
+
+<!-- The city, above 860px and nowhere else. Empty in the markup and mounted by
+     assets/listmap.js the first time a wide window draws a view; on a phone
+     nothing ever touches it and Leaflet is never fetched.
+
+     aria-hidden, and deliberately: every list and every place drawn on it is
+     also a row in the column beside it, with its name, its street and what
+     somebody said about it. That column is the readable copy — it is what is
+     announced, tabbed to and searched — and the map is a second way to reach
+     the same rows for somebody with a pointer. See the head of
+     assets/listmap.js. -->
+<div class="lists-city" id="lists-city" aria-hidden="true"></div>
 
 <header class="lists-brand">
   <a class="lists-home" href="/" data-track="home" data-i18n-aria-label="backToMap" aria-label="Back to the map">
@@ -112,6 +124,15 @@
      plain version. The spelling of this one line is what fill() in
      functions/_shell.js matches on, and tools/validate.mjs holds it to that. -->
 <main class="lists-main" id="main" tabindex="-1"></main>
+
+<!-- One place off an open list, in a column to the left of it and over the
+     map. Here rather than built inside <main> so that opening a place leaves
+     the list beside it exactly as it was — the same scroll, the same row under
+     the reader's eye — which is the whole reason for a second column. Empty
+     and hidden until placeCard() fills it, and never drawn at all under 860px:
+     there is only room for one column on a phone, and a place opens as the
+     map's own panel does, at /?list=<id>&at=<place>. -->
+<aside class="lists-aside" id="lists-aside" hidden></aside>
 
 <!-- The picker: every place in Tallinn, searched down to the one being added.
      Static markup because it is the same sheet whichever list is open, and
@@ -179,6 +200,11 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="/assets/pins.js?v=6030fdcf" defer></script>
-<script src="/assets/lists.js?v=97162799" defer></script>
+<!-- The map these three addresses become on a desk, and the one loader for
+     Leaflet on this page — the picker's map asks it for the same copy. Before
+     lists.js and deferred like it, so document order puts the global in place
+     first. -->
+<script src="/assets/listmap.js?v=e4774d21" defer></script>
+<script src="/assets/lists.js?v=5896c3d4" defer></script>
 </body>
 </html>
