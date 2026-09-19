@@ -445,7 +445,7 @@
      column for as long as the menu is down.
 
      That last one is not decoration. Above 860px the column stands open from
-     the moment the map draws, 140px down the right of the window, and the ten
+     the moment the map draws, 98px down the right of the window, and the ten
      languages drop from a button above it straight into that card — and the
      menu cannot climb over it on its own, because it hangs inside .controls
      and .controls has a z-index of its own. So the corner is raised rather
@@ -2047,6 +2047,15 @@
        no form: see renderAccountAuth. */
     var wasHidden = dom.btnAccount.hidden;
     dom.btnAccount.hidden = !state.account.ready && !savedCount();
+    /* A pill arriving or going changes how tall the rail is, and the rail is
+       placed against the corner above it — so that measurement is owed again.
+       This and the lists door below are the only two pills that come and go,
+       and /api/account draws both of them after the map has settled: without
+       this the rail is placed while it is seven pills tall and then grows to
+       nine under the answer, which on a window with no room to spare lands the
+       first pill on the handle. Nothing else in either function changes the
+       height, so neither asks unless the pill actually moved. */
+    if (dom.btnAccount.hidden !== wasHidden) placeRail();
     if (dom.btnAccount.hidden) return;
     var name = state.account.user;
     dom.accountLabel.textContent = name || t('accountOpen');
@@ -2083,6 +2092,7 @@
     if (!dom.btnLists) return;
     var wasHidden = dom.btnLists.hidden;
     dom.btnLists.hidden = !state.account.ready;
+    if (dom.btnLists.hidden !== wasHidden) placeRail();
     if (!dom.btnLists.hidden && wasHidden && railIntroduced) openHint('lists', 0);
   }
 
