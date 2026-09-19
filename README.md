@@ -744,14 +744,15 @@ is written in the stylesheet and `pairFits()` in `assets/app.js` reads it off
 the same media query, because a layout that disagrees with itself about how
 wide it is draws one column and reserves room for two.
 
-### The chip row starts from the left
+### The chip row starts from the left, under the name
 
 The row of filter chips is the map's vocabulary — thirteen types and the
-discount — and above 860px it now runs the whole width of the window, from
-just after the mark to the right edge, and it does not move when anything
-opens. Thirteen of the thirteen are on screen at 1440px.
+discount — and above 860px it runs the whole width of the window, from just
+after the mark to the right edge, and it does not move when anything opens.
+Thirteen of the thirteen are on screen at 1440px. It costs the top strip a
+second row, and what stands in the first one is the site's name.
 
-It took two changes, at the two ends of the row.
+It took three changes: one at each end of the row, and one underneath it.
 
 **At the right end, the columns give way.** They used to start at the top of
 the window, so the row had to be cut short to clear them — and with a place
@@ -760,27 +761,36 @@ thirteen filters that is three filters wide is not a row of filters; a visitor
 on a wide screen could not see that the map narrows at all. Shifting it by a
 column's width every time somebody pressed a name moved the one control on the
 page that is a vocabulary rather than a button. So the columns start **under**
-the strip instead: 98px down, which is the strip as it is drawn — 40px of
-chrome, the 12px under it that `.filter-bar`'s own top adds, the 34px the row
-measures, and 12px of air under that. The cost is 98px off the top of both
-cards, a screenful of list every eight rows or so, and the two rules that used
-to push the row and the corner sideways under `body.panel-open` are gone.
+the strip instead: 140px down, which is the strip as it is drawn — the 66px
+the mark and the name stand in, the 12px under it that `.filter-bar`'s own top
+adds, the 34px the row measures, and 12px of air under that. The cost is 140px
+off the top of both cards, a screenful of list every six rows or so, and the
+two rules that used to push the row and the corner sideways under
+`body.panel-open` are gone.
 
-**At the left end, the brand's words move down.** The row used to start after
-the brand's whole 250px column, which left a strip of empty map between the
-rail and the first chip — empty, because the corner collapsed to the mark and
-the words are only there while somebody is hovering. So the row starts after
-the **mark** now, 98px in, and the words it would have run through go beneath
-it: the mark keeps the corner, and the name, the sentence and the handle unroll
-below 102px when the corner opens. The name standing beside the mark is how a
-phone still draws it and is how this drew it while the corner was a card, and
-it cannot stay up here — the band from 68px to 102px is exactly where the
-second line of the name was, and ten pixels of *Tastebuds* under the All chip
-is the kind of thing nobody decides and everybody sees.
+**At the left end, the row starts after the mark.** It used to start after the
+brand's whole 250px column, which left a strip of empty map between the rail
+and the first chip — empty, because the corner collapses to the mark and the
+sentence is only there while somebody is hovering. So it starts 98px in, which
+is the mark and the air beside it.
 
-The box does not change size between the two states, so `placeRail()` still
-reads one number and nothing under the corner moves. `--brand-w` is still the
-sentence's measure; it is no longer what the chip row starts after.
+**And it runs below the name rather than through it.** That is the third
+change and it is the one that was wrong for a few days. The row starting from
+the left put its band, 68px to 102px, exactly where the second line of
+*Tallinn Tastebuds* was, and the answer taken at the time was to move the name:
+the mark kept the corner and the name, the sentence and the handle unrolled
+under the row. What that draws is a page whose title is the fourth thing down
+the left edge, underneath a row of filters, which is not where a wordmark goes
+— and nobody reads it as the site's name there, they read it as another line
+of chrome. So the strip is two rows now. The mark and the name have the first,
+16px to 82px, the way they do on a phone and the way they did while the corner
+was a card; the chips have the second, 94px to 128px; and the sentence and the
+handle, which are prose rather than a name and are only up while somebody is
+hovering, start at 140px, under the row. `--brand-w` is still the sentence's
+measure, and it is no longer what the chip row starts after.
+
+The corner's box does not change size between its two states, so `placeRail()`
+still reads one number and nothing under it moves.
 
 ### The band, when a list is the mode
 
@@ -1556,7 +1566,22 @@ once a visit — the same edge the places column now starts from. The markup
 never changed: `renderLanguageSwitch()` has always built the trigger and the
 list both and the stylesheet picked between them, and now there is nothing to
 pick. The menu grows downwards, so the next language costs nothing in layout
-either. Every interface string is in `data/ui.json`, keyed by language and then
+either.
+
+**And it grows downwards over the places column**, which took a rule to say.
+Above 860px that column is open from the moment the map draws and starts 140px
+down the right of the window — under the button the menu drops from, and
+straight through the ten languages under it. The panel is 1200 in the stack
+and the corner these buttons stand in is 1001, so what a press on the switch
+drew for a few days was the menu *behind* the list: the language somebody was
+reaching for, painted over by seventy-six restaurants. The menu cannot climb
+over it on its own, either, because it hangs inside `.controls` and that has a
+`z-index` of its own; so the corner is raised instead, to 1250, and only while
+there is a menu to raise it for — `body.lang-open`, put on by
+`markLangMenu()` and taken off by the same. 1250 is over the panel and under
+the lightbox, the walk, the toast and the stories, and under the account
+sheet's scrim at 1200, which is a modal over a dimmed map and must not have a
+language button floating on top of it. Every interface string is in `data/ui.json`, keyed by language and then
 by string id, so a translator never has to open the HTML.
 
 The language is chosen in this order:
@@ -1570,6 +1595,15 @@ Switching languages re-renders the page in place — no reload. Every touch of
 `localStorage` is wrapped in `try/catch`, because it throws outright in some
 private-browsing modes; if it is unavailable the site simply forgets the
 preference between visits.
+
+**The map is not the only page with a switch on it any more.** It was, for as
+long as every other page was a view of the map and read `ttb.lang` off it.
+The flashcards are on a hostname of their own, where that store belongs to
+another origin and is always empty, so that page carries the same switch in
+its own header — see **A language of your own to learn it in** under
+**Flashcards**. The lists, the account page and splitwise still read the map's
+choice and have none of their own; on `splitwise.` the same gap is open and
+the same switch would close it, and nobody has asked for it yet.
 
 ### Each language is an address
 
@@ -6324,13 +6358,17 @@ itself; the `et` inside a `sentence` is the Estonian sentence rather than a
 translation of it, which is why that one field is checked apart. Somebody
 reading the site in Estonian gets the English back.
 
-**Nothing here is a language anybody chooses on this page.** There is no picker
-on the flashcards and this did not add one: the back follows `?lang=`, then
-`ttb.lang`, then the browser's own languages, which is exactly what every word
-around it has always followed. At `/flashcard` on the live domain the language
-chosen on the map comes along with it; on the subdomain `localStorage` belongs
-to another origin, so it is the browser's languages or `?lang=` — the same
-thing that has always decided the interface there.
+**Which language that is, this page now asks.** It did not for a while, and
+the paragraph here said so: the back followed `?lang=`, then `ttb.lang`, then
+the browser's own languages, the same order every word around it follows, and
+there was nothing on the page to say otherwise. At `/flashcard` on the live
+domain that works — the language chosen on the map comes along with it. On
+**flashcard.**tallinntastebuds.ee it does not: `localStorage` there belongs to
+another origin and is always empty, so the middle of the three is missing and
+what is left is the browser's languages or an address somebody would have to
+type. Which left the reader this page exists for — somebody learning Estonian
+through an English they are shaky in — as the one person with no way to ask
+for Russian. So there is a switch, and the next section is it.
 
 **And the interface is still in `ui.json` with everything else.** That half of
 the old argument stands: it is deliberately *not* the arrangement splitwise has,
@@ -6340,6 +6378,45 @@ in step. So the sixty-four `flash*` keys are in `ui.json`, and taking this
 feature out means taking sixty-four keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
+
+### A language of your own to learn it in
+
+The map's switch, in this page's header: the code you are reading in, a menu
+of the ten under it, each with the name that language has for itself. It is
+the same control, drawn with the same rules out of `assets/styles.css` — there
+was nothing to invent, only a surface to put under it, because the map's comes
+from `.controls` and this page has no `.controls`.
+
+**The codes ride in with the words.** The route already sends the one language
+block this page prints from; it sends `langs` beside it now — every language
+`data/ui.json` speaks, sorted by code the way the map sorts its own menu, each
+with its `langName`. Ten short pairs, a couple of hundred bytes against the
+eight to ten KB already in the answer, and the page draws the menu out of the
+same one request it draws the cards from. A file that could not be read is an
+empty list and no switch at all, which is right: a page that cannot name the
+languages should not offer them.
+
+**Picking one does not reload the page.** That is the whole reason this is
+thirty lines rather than one. A reload would throw away the run, which signed
+out is kept in this tab and nowhere else — press Russian halfway through a
+deck and the deck would start again. The cards, the deck names and the
+sentences are objects keyed by language and are already in the browser, so the
+only thing missing is the block of words around them: `pickLanguage()` asks
+the route for that one block, and the page redraws in place the way the map
+does. The card you had turned over stays turned over, in the new language.
+
+Three things hear the choice and only one of them is this tab. `ttb.lang` on
+this origin is what the next visit reads — the first thing the subdomain has
+ever had to put there. `?lang=` goes into the address, so `at()` carries it on
+to every link the page draws and a deck opened from here opens in the language
+it was opened from. And the route is where the words are. If it does not
+answer, nothing changes and the page says so in the language it is still in:
+the one thing it must not do is start printing its own keys because somebody
+pressed a language.
+
+The menu shuts on Escape, with the focus handed back to the button it dropped
+from, and on a press anywhere outside it — the map's own two rules, and the
+only listeners this page puts on the document.
 
 ### It is the same account as the map
 
@@ -6371,6 +6448,11 @@ The whole block goes rather than the eighty keys the page uses, on purpose: a
 list of keys in the route would be a second copy of what the page asks for, and
 the validator, which checks every `t('key')` against `ui.json`, could not see
 the two drift.
+
+The ten codes come with it — `langs`, each with that language's own name for
+itself — because the page has a switch on it now and the switch has to be able
+to name them. A couple of hundred bytes, and still one request before a card
+can be drawn. **A language of your own to learn it in** above is the switch.
 
 And when the site does not answer at all, the page draws nothing: it has no
 words to say so in, and what it would print instead are its keys. What is
@@ -9403,8 +9485,16 @@ It rolls out with the *first* pill rather than after the last. The row sits
 above the rail on the screen, so the introduction still reads top to bottom,
 and the rail's own arithmetic — eight pills 300ms apart against the sentence's
 7.6 seconds, the last of them collapsing at 7.45 — is left exactly where it
-was. Above 860px there is no drawer to
-roll: the row is already flat on the map, which is the showing.
+was.
+
+**And the whole of it is a phone's.** `introduceRail()` asks `isNarrow()`
+before anything else and returns above 860px. Up there the chip row is already
+flat on the map, so there is no drawer to roll; the labels are either up all
+visit, on a desktop with no hover, or a hand's width of mouse away on one with
+— and a corner that opens itself on arrival and shuts again seven seconds
+later is then twice the movement for an answer that was already there. It ran
+at every width for a few days and this is the correction. See
+**And on a desktop the corner steps back until you go for it** below.
 
 Rolling it back is the part that needs care, because shutting the drawer on a
 phone is `clearChips()` — that is the rule the drawer rests on, that a shut row
@@ -9497,10 +9587,18 @@ how they steer it, and a control wanted now and then should be quiet the rest
 of the time.
 
 So above 860px, **with a mouse**, a pointer gets the same bargain a phone
-does, and hover does the asking. What stands in the corner is the mark and the
-nine discs — the pictures, which are the half that says this is a place and
-that one is a die — and the words come back the moment the mouse comes into
-the left of the window. `wireRailReveal()` in `assets/app.js` draws the line and sets
+does, and hover does the asking. What stands in the corner is the mark, the
+name beside it and the nine discs — the wordmark, and the pictures that say
+this is a place and that one is a die — and the prose comes back the moment
+the mouse comes into the left of the window.
+
+**The name is not one of the things that go away.** It stood in the corner the
+whole visit while the corner was a card, it stands there on a phone, and it
+stands there now: a painting of a mouth in the top left says whose map this is
+to somebody who has been here before and nothing at all to anybody else, and a
+page whose title only appears when you wave at it does not have a title. What
+steps back is the sentence under the name and the handle under that, which are
+prose — read once, and then furniture. `wireRailReveal()` in `assets/app.js` draws the line and sets
 `rail-open` on the body; the two states are the stylesheet's, under **the
 corner steps back until you go for it**.
 
@@ -9553,13 +9651,18 @@ up. A *mouse* press does not hold it open — clicking a pill focuses it as well
 and a corner pinned by the last thing pressed would be open for the rest of
 the visit.
 
-**Which is also what finally makes the introduction visible here.** The
-cascade has run at every width since it was written and drawn nothing above
-860px, where every label was already up and `.hint-open` had no rule. It has
-one now, so a stranger on a desktop gets the name, the sentence, the handle
-and the nine labels on arrival and watches the corner empty in the order it
-filled — the same seven and a half seconds, the same timing, none of which had
-to change for it.
+**And the arrival cascade does not run up here at all.** It drew nothing above
+860px for as long as every label was already up; for a few days after the
+corner learnt to keep to itself it drew the whole introduction, the corner
+opening on arrival and emptying seven and a half seconds later; and it is off
+again on purpose. On a machine where moving the mouse an inch to the left
+opens the corner and holds it open, a corner that opens and shuts by itself is
+twice the movement for a question nobody asked — and on a desktop with no
+hover the labels never left, so there was nothing to introduce there either.
+`introduceRail()` asks `isNarrow()` and returns, which puts the section above
+back to being exactly what its title says: the rail introduces itself **on a
+phone**. Nothing above 860px is ever `.hint-open` now except a pill the walk
+is pointing at.
 
 Next to last on the rail is the locate button, which frames you
 together with the nearest place rather than dropping you at a fixed zoom on
@@ -9976,6 +10079,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_deck`, `flash_card`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |
 | `flash_keep_ask`, `flash_keep_past` | `deck_id` — the offer of an account standing in front of a deck signed out, and the press that goes past it. The two together are the whole of whether asking first was worth asking |
+| `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, reported under the names the map's switch reports under, because it is the same press |
 | `flash_back`, `home` | `deck_id` on the first |
 
 The pass pages, `assets/deal.js` and `assets/verify.js` — nothing on them is
@@ -10556,14 +10660,15 @@ What the card leaves behind is its measure. `--brand-w` is the 288px box less
 the padding it used to hold, which is what still sets the sentence into two
 lines. It was the number the chip row started after as well, for as long as
 the two stood side by side; above 860px they no longer do — see
-[The chip row starts from the left](#the-chip-row-starts-from-the-left). And with nothing drawn
+[The chip row starts from the left, under the name](#the-chip-row-starts-from-the-left-under-the-name).
+And with nothing drawn
 there, nothing there takes a press: the block hands its pointer events to the
 map and the mark, the name and the handle take theirs back one at a time,
 because a transparent rectangle that swallows a drag is a piece of dead map.
-The name and the handle give them up again while the corner is shut — see
+The handle gives them up again while the corner is shut — see
 **And on a desktop the corner steps back until you go for it** — since a link
-nobody can see is a link nobody meant to press. The mark never does: it is the
-one thing in the corner that is always drawn.
+nobody can see is a link nobody meant to press. The mark and the name never
+do: they are what is always drawn up there.
 
 **The ring is the only thing on the page that moves on its own.** Nothing else
 here animates without being asked: pins settle, panels slide, and that is the

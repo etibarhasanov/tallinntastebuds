@@ -54,6 +54,14 @@
  * the eighty keys, because a list of keys here would be a second copy of what
  * assets/flashcard.js asks for, and the validator could not see them drift.
  *
+ * And the ten codes go with it, because the page has a switch on it now and
+ * the switch has to be able to name them: `langs` is every language the file
+ * speaks, sorted by code the way the map sorts its own menu, each with the
+ * name that language has for itself. Ten short pairs, a couple of hundred
+ * bytes against the eight to ten KB already in the answer — and the page can
+ * draw the menu out of the same one request it draws the cards from. Picking
+ * one then asks this route again for that block alone.
+ *
  * IT IS THE SAME ACCOUNT AS THE MAP
  *
  * No second users table, no second password, no second sign-in route — the
@@ -260,7 +268,19 @@ async function wordsFor(context, asked) {
   const langs = ui && typeof ui === 'object' ? Object.keys(ui) : [];
   const lang = languageOf(asked, langs);
   const block = ui && ui[lang] && typeof ui[lang] === 'object' ? ui[lang] : {};
-  return { lang: lang, ui: block };
+  /* The menu's own rows: the code, and the name that language has for itself.
+     Sorted by code rather than by name, which is what the map's switch does
+     and for its reason — the codes are Latin whatever the language writes
+     itself in, so Հայերեն keeps the place `hy` gives it instead of trailing
+     the Latin names a collator would put it after. A language with no
+     langName falls back to its code, the way the map's switch does; a file
+     that could not be read is an empty list, and the page then draws no
+     switch at all rather than one with nothing in it. */
+  const names = langs.slice().sort().map((code) => ({
+    code: code,
+    name: (ui[code] && typeof ui[code].langName === 'string' && ui[code].langName) || code
+  }));
+  return { lang: lang, langs: names, ui: block };
 }
 
 /* ------------------------------------------------------------ the shipped

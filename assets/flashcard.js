@@ -156,6 +156,7 @@
   var state = {
     ui: {},          // every word on this page, in `lang` and no other
     lang: DEFAULT_LANG,
+    langs: [],       // { code, name } for each language the site speaks
     ready: false,    // whether the database is bound and this is its half
     google: false,   // whether Continue with Google is configured here
     user: null,
@@ -238,6 +239,15 @@
 
   function storeGet(key) {
     try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  /* Wrapped for the reason every touch of localStorage on this site is: it
+     throws outright in some private-browsing modes, and the page is meant to
+     work with it absent. A language that cannot be remembered is a language
+     that has to be picked again next visit, which is a worse page and not a
+     broken one. */
+  function storeSet(key, value) {
+    try { window.localStorage.setItem(key, value); } catch (e) { /* no store */ }
   }
 
   /* ------------------------------------------- what this tab is holding for you
@@ -463,6 +473,128 @@
     each('data-i18n', function (n, k) { n.textContent = t(k); });
     each('data-i18n-aria-label', function (n, k) { n.setAttribute('aria-label', t(k)); });
     each('data-i18n-title', function (n, k) { n.setAttribute('title', t(k)); });
+  }
+
+  /* -------------------------------------------------------- the language bar
+   * Every other page on this site reads its language off the map's own switch
+   * and has none of its own. This one could not: on
+   * flashcard.tallinntastebuds.ee the ttb.lang the map writes belongs to
+   * another origin and is always empty here, so the back of a card was the
+   * browser's languages or English, with nothing on the page to say otherwise.
+   * Somebody reading Estonian through an English they are shaky in is the
+   * person this page was written for, and they were the one with no way to ask
+   * for Russian.
+   *
+   * So it is the map's switch, in this page's header: the code you are in, a
+   * menu of the ten under it, each with the name that language has for itself.
+   * Every rule it is drawn with is already in assets/styles.css — #lang-switch,
+   * .btn-lang-now, .lang-list — and the codes come down with the words, from
+   * wordsFor() in functions/api/flashcard.js, so the page still fetches one
+   * thing on the way in.
+   *
+   * PICKING ONE DOES NOT RELOAD THE PAGE, and that is the whole of why this
+   * is thirty lines rather than one. A reload would throw away the run, which
+   * signed out is kept in this tab and nowhere else — press Russian halfway
+   * through a deck and the deck would start again. The cards, the deck names
+   * and the sentences are objects keyed by language and are already here; the
+   * only thing that is not is the block of words around them, so that is the
+   * only thing fetched, and the page redraws in place the way the map does.
+   */
+  var langBar = null;
+
+  function markLangMenu(open) {
+    if (!langBar) return;
+    langBar.classList.toggle('is-open', open);
+    var now = langBar.querySelector('.btn-lang-now');
+    if (now) now.setAttribute('aria-expanded', String(open));
+  }
+
+  function closeLangMenu() { markLangMenu(false); }
+
+  function renderLanguageSwitch() {
+    if (!langBar) return;
+    clear(langBar);
+    /* Nothing to choose between. Either the route could not read
+       data/ui.json — in which case this page has no words either and is
+       drawing the markup's own English — or the site speaks one language, and
+       a switch with one row in it is a button that does nothing. */
+    if (!state.langs || state.langs.length < 2) return;
+
+    var now = el('button', {
+      type: 'button',
+      className: 'btn btn-lang-now',
+      'aria-expanded': 'false',
+      'aria-label': t('language')
+    }, [
+      el('span', { textContent: state.lang.toUpperCase() }),
+      el('span', {
+        className: 'caret',
+        html: '<svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4"/></svg>'
+      })
+    ]);
+    now.addEventListener('click', function () {
+      var open = !langBar.classList.contains('is-open');
+      markLangMenu(open);
+      if (open) TTBTrack.event('language_open');
+    });
+    langBar.appendChild(now);
+
+    var list = el('div', { className: 'lang-list' });
+    state.langs.forEach(function (lang) {
+      var btn = el('button', {
+        type: 'button',
+        className: 'btn btn-lang',
+        lang: lang.code,
+        'aria-label': lang.name,
+        'aria-pressed': String(lang.code === state.lang)
+      }, [
+        el('span', { className: 'lang-code', textContent: lang.code.toUpperCase() }),
+        el('span', { className: 'lang-name', textContent: lang.name })
+      ]);
+      btn.addEventListener('click', function () { pickLanguage(lang.code); });
+      list.appendChild(btn);
+    });
+    langBar.appendChild(list);
+  }
+
+  function pickLanguage(code) {
+    closeLangMenu();
+    if (code === state.lang) return;
+    TTBTrack.event('language_select', { language: code });
+
+    /* Three things have to hear it and only one of them is this tab. The store
+       is what the next visit reads, and on the subdomain it is the first thing
+       this page has ever had to put there; the address is what at() carries on
+       to every link the page draws, so a deck opened from here opens in the
+       language it was opened from; and the route is where the words are. */
+    storeSet(LANG_KEY, code);
+    var params = new URLSearchParams(window.location.search);
+    params.set('lang', code);
+    try {
+      window.history.replaceState(null, '', window.location.pathname + '?' + params.toString());
+    } catch (e) { /* an old browser keeps the address, and the links their old lang */ }
+
+    ask(FLASH_API + '?lang=' + encodeURIComponent(code)).then(function (answer) {
+      /* The site did not answer, or answered with an empty block — which is
+         what the route sends when it cannot read data/ui.json. Either way the
+         page stays in the language it is in and says so in that language: the
+         one thing it must not do is start printing its own keys because
+         somebody pressed a language. The choice is still stored and still in
+         the address, so the next load is in it. */
+      var words = answer.out.ui;
+      if (!words || !Object.keys(words).length) {
+        toast(t('flashErrGeneric'));
+        return;
+      }
+      state.lang = answer.out.lang || code;
+      state.ui = words;
+      if (answer.out.langs && answer.out.langs.length) state.langs = answer.out.langs;
+      applyStaticStrings();
+      /* render() writes the deck's own name over this where one is open. */
+      document.title = t('flashDocumentTitle');
+      renderLanguageSwitch();
+      render();
+    });
   }
 
   /* ----------------------------------------------------------------- pieces */
@@ -1628,11 +1760,28 @@
 
   function boot() {
     main = document.getElementById('main');
+    langBar = document.getElementById('lang-switch');
 
     /* The mark in the header goes to the map, and where the map is depends on
        which hostname this is. The markup carries the site's own spelling, so
        the page is right when the script never runs; this is the subdomain's. */
     if (ON_SUBDOMAIN) document.getElementById('brand-home').href = MAP;
+
+    /* The menu shuts on a press anywhere else, which is the map's own rule and
+       the only thing on this page listening on the document. A press on the
+       switch itself is inside it and leaves it alone. */
+    document.addEventListener('click', function (ev) {
+      if (langBar && !langBar.contains(ev.target)) closeLangMenu();
+    });
+    /* And on Escape, with the focus handed back to the button it dropped from
+       — a keyboard that closes a menu and is left standing in nothing has been
+       put somewhere it cannot see. */
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Escape' || !langBar || !langBar.classList.contains('is-open')) return;
+      var now = langBar.querySelector('.btn-lang-now');
+      if (langBar.contains(document.activeElement) && now) now.focus();
+      closeLangMenu();
+    });
 
     applyStyle();
 
@@ -1655,7 +1804,9 @@
 
       state.lang = answer.out.lang || DEFAULT_LANG;
       state.ui = answer.out.ui || {};
+      state.langs = answer.out.langs || [];
       applyStaticStrings();
+      renderLanguageSwitch();
       document.title = t('flashDocumentTitle');
 
       state.ready = !!answer.out.ready;

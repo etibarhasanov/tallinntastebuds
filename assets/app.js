@@ -438,23 +438,35 @@
     }
   }
 
-  /* Six codes in a row is 232px, and on a 390px phone that runs straight into
-     the handle in the top left corner. So the row keeps its shape on a
-     desktop and folds into the current code plus a menu on a phone, which is
-     the same markup either way: CSS decides which half is showing. */
-  function closeLangMenu() {
-    dom.langSwitch.classList.remove('is-open');
+  /* Open or shut, said in three places at once because three things need to
+     know. The switch wears the state, which is what draws the menu and turns
+     the chevron over; the trigger says it to a screen reader; and the body
+     carries it so the stylesheet can lift the whole corner over the places
+     column for as long as the menu is down.
+
+     That last one is not decoration. Above 860px the column stands open from
+     the moment the map draws, 140px down the right of the window, and the ten
+     languages drop from a button above it straight into that card — and the
+     menu cannot climb over it on its own, because it hangs inside .controls
+     and .controls has a z-index of its own. So the corner is raised rather
+     than the menu, and only while there is a menu to raise it for:
+     body.lang-open in assets/styles.css is the rule and the arithmetic. */
+  function markLangMenu(open) {
+    dom.langSwitch.classList.toggle('is-open', open);
+    document.body.classList.toggle('lang-open', open);
     var now = dom.langSwitch.querySelector('.btn-lang-now');
-    if (now) now.setAttribute('aria-expanded', 'false');
+    if (now) now.setAttribute('aria-expanded', String(open));
   }
+
+  function closeLangMenu() { markLangMenu(false); }
 
   /* The switch reads in alphabetical order rather than in whatever order the
      blocks happen to sit in ui.json. It sorts on the code, not on the name:
-     the codes are the row the desktop shows, they are Latin whatever the
-     language writes itself in, and sorting on them keeps Հայերեն in the
-     middle of the list where its code puts it instead of trailing the Latin
-     names the way a collator would push it. Two lowercase ASCII letters, so
-     a plain sort is the alphabet. */
+     the codes are what the trigger and every row in the menu lead with, they
+     are Latin whatever the language writes itself in, and sorting on them
+     keeps Հայերեն in the middle of the list where its code puts it instead
+     of trailing the Latin names the way a collator would push it. Two
+     lowercase ASCII letters, so a plain sort is the alphabet. */
   function sortLanguages(codes) {
     return codes.slice().sort();
   }
@@ -475,8 +487,8 @@
       })
     ]);
     now.addEventListener('click', function () {
-      var open = dom.langSwitch.classList.toggle('is-open');
-      now.setAttribute('aria-expanded', String(open));
+      var open = !dom.langSwitch.classList.contains('is-open');
+      markLangMenu(open);
       if (open) TTBTrack.event('language_open');
     });
     dom.langSwitch.appendChild(now);
@@ -484,8 +496,10 @@
     var list = el('div', { className: 'lang-list' });
     state.langs.forEach(function (code) {
       var name = (state.ui[code] && state.ui[code].langName) || code;
-      /* The code is what the desktop row shows; the phone menu has room for
-         the language's own name for it, so it carries both. */
+      /* The code the trigger wears, so the row and the button it came from
+         read as the same thing, and the language's own name for itself beside
+         it — which is the whole reason the row of bare codes this replaced was
+         a list of things nobody was looking for. */
       var btn = el('button', {
         type: 'button',
         className: 'btn btn-lang',
@@ -3818,17 +3832,20 @@
    * seconds and collapses back to its icon. Long enough to read twice, gone
    * before it is furniture.
    *
-   * It used to be inert above 860px, where every pill wore its label for the
-   * whole visit and none of them ever let it go. The corner keeps to itself
-   * on that side of the breakpoint now too — see wireRailReveal() below and
-   * "the corner steps back until you go for it" in assets/styles.css — so
-   * .hint-open finally draws something there, and a stranger on a desktop is
-   * introduced to the rail the same way a stranger on a phone is. None of the
-   * timing had to change for it and none of it asks how wide the window is.
+   * ON A PHONE AND NOWHERE ELSE, WHICH IS WHAT THE TITLE SAYS. It was inert
+   * above 860px for as long as every pill wore its label all visit, it drew
+   * for a few days once the corner learnt to keep to itself — see
+   * wireRailReveal() below — and it is inert there again on purpose.
+   * Introducing a corner by opening it and shutting it seven seconds later, on
+   * a machine where moving the mouse an inch to the left opens it and keeps it
+   * open, is twice the movement for an answer that was already a hand's width
+   * away; and on the desktop without a hover the labels never left, so there
+   * was nothing to introduce there either. introduceRail() asks isNarrow()
+   * and that is the whole of it — the timing below is a phone's.
    *
-   * The chip row joins them, and is the one piece that has to ask: it is
-   * folded behind Filters on a phone and flat on the map above 860px, so
-   * there is a drawer to roll out only on the narrow side. That is
+   * The chip row joins them, and down here it is the one that most needs to:
+   * every filter this map has is folded behind the single word Filters, where
+   * above 860px the row is flat on the map and says itself. That is
    * openChipRowHint(), just above introduceRail().
    */
   /* Whether the panel is standing over the things that introduce themselves,
@@ -4045,6 +4062,14 @@
   /* The first time this browser arrives — see boot — and again after every
      language switch — see setLanguage. */
   function introduceRail() {
+    /* A phone's, and only a phone's. Above 860px the labels are either up
+       already — a tablet, a touchscreen laptop, anything with no hover — or a
+       hand's width of mouse away, and a corner that opens itself on arrival and
+       shuts again is then a thing that moved for no question anybody asked. The
+       chip row is flat up there too, so there is no drawer to roll either.
+       Asked live rather than at boot because a window can be dragged narrow,
+       and the introduction is owed to whatever the map is when it runs. */
+    if (!isNarrow()) return;
     /* Not over an open sheet, and not behind the stories: the rail is a row
        along the top of a sheet, where a pill at full width pushes the buttons
        after it off the side of the screen, and it is not on screen at all

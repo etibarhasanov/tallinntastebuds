@@ -1004,6 +1004,23 @@ a:hover { color: var(--accent-lit); }
   transition: right .34s var(--ease);
 }
 
+/* And over the places column while the menu is down. Above 860px that column
+   stands open from the moment the map draws, starting 140px down the right of
+   the window — which is under these buttons and straight through the ten
+   languages that drop from them. The panel is 1200 in the stack and this was
+   1001, so the menu opened behind the list: the language you wanted was drawn,
+   and a card with seventy-six restaurants on it was painted over it.
+
+   The class rather than the z-index outright, because the raise has to end
+   where the menu does. 1250 stands over the panel and under the lightbox, the
+   nudge, the walk, the toast and the stories — and, the one that matters, under
+   the 1200 scrim of the account sheet, which is a modal over a dimmed map and
+   must not have a language button floating on top of it. Nothing can be open
+   at once in any case: a press anywhere outside the switch shuts the menu
+   first — see the document listener in assets/app.js — so the class is only
+   ever on while the menu is the thing being read. */
+body.lang-open .controls { z-index: 1250; }
+
 .seg {
   display: flex;
   overflow: hidden;
@@ -3718,10 +3735,31 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 }
 .noscript h2 { font-family: var(--display); font-size: 24px; font-weight: 600; letter-spacing: -.02em; margin: 5px 0 10px; }
 
-/* ---------- desktop: keep the chips clear of the panel ---------- */
+/* ---------- desktop: the strip is two rows, and the name is in the first ----
+
+   The chip row runs the whole width of the map up here, from just after the
+   mark to the right edge, which is what puts all thirteen filters on screen at
+   once. It costs the top strip a row: the row cannot start at the top of the
+   window, because the top left of the window is the site's name.
+
+   It had the other arrangement for an afternoon — the row through the band at
+   68px and the name pushed underneath it, on the reasoning that the mark alone
+   is enough to say whose map this is — and what that draws is a page whose
+   title is the fourth thing down the left edge, under a row of filters. A
+   wordmark goes at the top. So the mark and the name keep the first row of the
+   strip, 16px to 82px, and the chips have the second, 94px to 128px.
+
+   The sentence and the handle are the other half of the corner and they are
+   below the row, where they were: they are prose rather than a name, they only
+   come out on a hover, and there is no room for them in a band 34px tall. */
 
 @media (min-width: 861px) {
-  /* The columns start under the top strip rather than beside it, which is the
+  /* What the row starts under is the mark and the name beside it rather than
+     the two buttons in the other corner, so the strip above it is 66px rather
+     than 40. .filter-bar's own top adds the 12px of air under that. */
+  .filter-bar { --chrome-h: 66px; }
+
+  /* The columns start under the whole strip rather than beside it, which is the
      whole of why the chip row and the corner no longer move.
 
      They used to start at the top of the window, so the row of chips had to be
@@ -3730,13 +3768,22 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      is three filters wide is not a row of filters, and shifting it by 436px
      every time somebody pressed a name moved the one control on the page that
      is a vocabulary rather than a button. So the chip row keeps the width it
-     has always had, from the brand's column to the edge of the window, and it
-     is the columns that give way.
+     has always had, from the mark to the edge of the window, and it is the
+     columns that give way.
 
-     98px is the strip as it is drawn: 40px of chrome, the 12px under it that
-     .filter-bar's own top adds, the 34px the row measures, and 12px of air
-     under that. */
-  .panel { top: calc(var(--gap) + var(--safe-t) + 98px); }
+     124px is the strip as it is drawn: the 66px the mark and the name stand
+     in, the 12px under it that .filter-bar's own top adds, the 34px the row
+     measures, and 12px of air under that. */
+  .panel { top: calc(var(--gap) + var(--safe-t) + 124px); }
+
+  /* And the sentence clears the row the name no longer has to. 82px is the
+     foot of the mark, 128 the foot of the chip row, and 12 the air the row
+     keeps under itself everywhere else, so the sentence starts at 140.
+
+     One margin rather than a sum: it collapses with the 10px .brand-head
+     carries under it, so this number is the whole of the gap and not an
+     addition to it. */
+  .brand .tagline { margin-top: 58px; }
 
   /* And 360px rather than 420. Two columns at the old width were 856px of
      chrome, which on the window this was drawn for left the map a third of
@@ -3927,32 +3974,33 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 /* ---------- desktop: the corner steps back until you go for it ----------
 
    The left of this map is the only part of it that is not the map: the mark
-   and the name at the top of it, and the rail of pills down the middle. On a
-   phone both say what they are for a few seconds and then collapse, because a
-   phone has no hover and a label wide enough to read is a label wide enough to
-   cover the city. Above 860px neither did — the pills kept their words for the
-   whole visit, and the name, the sentence and the handle sat in the corner
-   under them — and what that adds up to on a wide screen is a column of ink
-   the better part of 300px across, standing over Tallinn for as long as the
-   tab is open and saying nothing new after the first few seconds of reading
-   it. The map is the thing somebody came for; the column is how they steer
-   it, and a control that is only wanted now and then should be quiet the rest
-   of the time.
+   and the name at the top of it, the sentence and the handle under those, and
+   the rail of pills down the middle. On a phone all of it says what it is for
+   a few seconds and then collapses, because a phone has no hover and a label
+   wide enough to read is a label wide enough to cover the city. Above 860px
+   none of it did — the pills kept their words for the whole visit and the
+   prose sat in the corner under them — and what that adds up to on a wide
+   screen is a column of ink the better part of 300px across, standing over
+   Tallinn for as long as the tab is open and saying nothing new after the
+   first few seconds of reading it. The map is the thing somebody came for; the
+   column is how they steer it, and a control that is only wanted now and then
+   should be quiet the rest of the time.
 
    So a pointer gets the same bargain a phone does, with hover doing the
-   asking. What is left standing is the mark and the discs — the pictures,
-   which are the half that says this is a place and that one is a die — and
-   the words come back the moment the mouse comes into the left of the window.
-   wireRailReveal() in assets/app.js draws the line and sets body.rail-open;
-   everything either side of it is here.
+   asking. What is left standing is the mark, the name beside it and the discs
+   — the wordmark, and the pictures that say this is a place and that one is a
+   die — and the prose comes back the moment the mouse comes into the left of
+   the window. wireRailReveal() in assets/app.js draws the line and sets
+   body.rail-open; everything either side of it is here.
 
-   AND THE INTRODUCTION FINALLY SHOWS UP HERE. The cascade on a first visit
-   has run at every width since it was written and been invisible above 860px,
-   where there was nothing to open — .hint-open had no rule on this side of
-   the breakpoint. It has one now, which is the second selector in each pair
-   below: a stranger on a desktop gets the name, the sentence, the handle and
-   the nine labels on arrival, exactly as a stranger on a phone does, and the
-   corner empties in the order it filled.
+   AND THE ARRIVAL INTRODUCTION DOES NOT RUN HERE. It did for a few days, and
+   what it was is a corner that opened itself on a first visit and shut itself
+   seven seconds later on a machine where moving the mouse opens it anyway —
+   twice the movement for an answer already a hand's width away. introduceRail()
+   in assets/app.js asks isNarrow() and returns above 860px, so nothing on this
+   side of the breakpoint is ever .hint-open except a pill the walk is pointing
+   at, which is why .rail-btn.hint-open is still written below and .brand.hint-open
+   is not.
 
    TWO THINGS THIS DELIBERATELY DOES NOT DO.
 
@@ -3975,58 +4023,40 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
    column keeps its words the way it always has. */
 
 @media (min-width: 861px) and (hover: hover) and (pointer: fine) {
-  /* THE WORDS OPEN UNDER THE STRIP, NOT BESIDE THE MARK.
+  /* THE NAME IS NOT ONE OF THE WORDS THAT GO AWAY.
 
-     The name used to stand beside the mark, which is where it stands on a
-     phone and where it stood here for as long as the corner was a card. It
-     cannot any more: the chip row starts from the left of the map now — see
-     .filter-bar, which begins after the mark rather than after this whole
-     column — and the band it runs through, 68px to 102px, is exactly where the
-     second line of the name was. Ten pixels of "Tastebuds" under the All chip
-     is the kind of thing nobody decides and everybody sees.
+     The mark and the name beside it are the corner at a glance — a painting of
+     a mouth in the top left says whose map this is to somebody who has been
+     here before and nothing at all to anybody else — so they stand in the top
+     row of the strip the whole visit, at every width, the way they do on a
+     phone and the way they did while the corner was a card.
 
-     So the mark keeps the corner and the words unroll beneath it, clear of the
-     row: the name, the sentence and the handle in a block starting below
-     102px. The mark is what the corner is for at a glance, the chips are what
-     the map is steered with, and the words are the thing that is only there
-     while somebody is asking for them.
+     What steps back is the prose: the sentence under the name and the handle
+     under that, three lines across a 250px measure that say nothing new after
+     the first few seconds of being read. They are below the chip row — see
+     "the strip is two rows" above — and they fade in when the pointer comes
+     into the left of the window.
 
-     The box does not change size between the two states — the words are drawn
-     or not drawn, never laid out differently — so placeRail() still reads one
-     number and nothing under the corner moves. */
-  .brand-head { display: block; margin: 0; }
-  /* 82px is the foot of the mark, 102 the foot of the chip row, and 12 the air
-     the row keeps under itself everywhere else. */
-  .brand .wordmark { margin: 32px 0 8px; }
-
-  /* Ink only — no max-height and no margin — so the words fade in where they
-     already are rather than unrolling the way they do on a phone. */
-  .brand .wordmark,
+     Ink only, no max-height and no margin, so the two of them fade in where
+     they already are rather than unrolling the way they do on a phone. The box
+     does not change size between the two states, so placeRail() still reads
+     one number and nothing under the corner moves. */
   .brand .tagline,
   .brand .ig-link {
     opacity: 0;
     transition: opacity .28s var(--ease);
   }
-  /* An invisible link is not a link. These two take their pointer events back
+  /* An invisible link is not a link. The handle takes its pointer events back
      from .brand at the top of the file, which is what lets the map be dragged
-     through the rest of the corner; while the words are out they give them up
-     again, or there are two things to click on in an empty corner and no way
-     to know they are there. Tab still reaches both and opening the column is
-     what it does — pointer-events has no say over focus. */
-  .brand .brand-home,
+     through the rest of the corner; while the words are out it gives them up
+     again, or there is something to click on in an empty corner and no way to
+     know it is there. Tab still reaches it and opening the column is what that
+     does — pointer-events has no say over focus. The name keeps its own
+     throughout, because the name is always drawn. */
   .brand .ig-link { pointer-events: none; }
 
-  body.rail-open .brand .wordmark,
-  body.rail-open .brand .tagline,
-  body.rail-open .brand .ig-link,
-  .brand.hint-open .wordmark,
-  .brand.hint-open .tagline,
-  .brand.hint-open .ig-link { opacity: 1; }
-
-  body.rail-open .brand .brand-home,
-  body.rail-open .brand .ig-link,
-  .brand.hint-open .brand-home,
-  .brand.hint-open .ig-link { pointer-events: auto; }
+  body.rail-open .brand .tagline { opacity: 1; }
+  body.rail-open .brand .ig-link { opacity: 1; pointer-events: auto; }
 
   /* The rail, shut: the same disc the phone collapses to, at the size this
      side of the breakpoint draws it. The height is the one the pill already
