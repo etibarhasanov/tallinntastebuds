@@ -58,15 +58,23 @@
  * The decks the site ships are data/decks.json, and a file has nobody to
  * check. What an account buys is that pressing Knew it is remembered — on the
  * account rather than on the device, so the deck you got half through on a
- * phone is half through on a laptop. Signed out, the run still runs, it is
- * kept in this tab and nowhere else, and the account is offered at the end of
- * it rather than in front of it. That is the shape the map's saves have and
- * very nearly the sentence they are offered with.
+ * phone is half through on a laptop. Signed out the run still runs, and it is
+ * kept in this tab and nowhere else.
+ *
+ * The offer used to stand only at the end of a run, on the reasoning that
+ * nobody should have to make an account to find out whether a thing is worth
+ * one. It stands in front of the first deck a tab opens as well now —
+ * firstCard() below — because what somebody wants to know before they start is
+ * not whether the deck is any good: it is whether the half-hour they are about
+ * to spend on it counts for anything, and the old arrangement told them that
+ * after they had spent it. Once a tab, with the way past directly under the
+ * offer, because the deck is not behind it.
  *
  * And making the account keeps the run that argued for it, which took a
  * mechanism rather than a promise: both ways of signing in leave the page, so
  * the answers are written down as they are given and posted by the load that
- * comes back with a session. keep() below is the whole of it.
+ * comes back with a session. keep() below is the whole of it, and it is what
+ * lets the card in front say honestly that pressing past costs nothing.
  *
  * The one thing this page sends without an account is a card being reported
  * wrong — wrongLine() below, and the rule it breaks is stated where it is
@@ -154,6 +162,7 @@
     decks: [],       // every deck: the shipped ones, then yours
     deck: null,      // the one that is open, whole, with its cards
     run: null,       // the cards left to turn over, and where in them we are
+    asking: false,   // whether the offer stands in front of the deck, unanswered
     editing: false,  // a deck of your own, being written rather than turned
     view: 'in'       // which half of the sign-in form: 'in', 'up' or 'google'
   };
@@ -233,7 +242,8 @@
 
   /* ------------------------------------------- what this tab is holding for you
    * Signed out, an answer has nobody to tell: the run is this tab's, and the
-   * account is offered at the end of it rather than in front of it.
+   * account is offered in front of the first deck this tab opens and again at
+   * the end of a run.
    *
    * What that cost until this existed was the run itself. The card says
    * "Remember where you got to", and both ways of taking it up leave the page
@@ -267,6 +277,26 @@
       var was = JSON.parse(window.sessionStorage.getItem(KEPT_KEY) || 'null');
       return was && typeof was === 'object' ? was : {};
     } catch (e) { return {}; }
+  }
+
+  /* And whether this tab has been asked yet. The offer stands in front of the
+     first deck somebody opens signed out — firstCard() below — and in front of
+     that one only: three decks in a sitting is one question, and a page that
+     asks again each time is a wall rather than an offer. sessionStorage for the
+     same reason the answers above are kept there — the asking belongs to the
+     tab, and a tab opened tomorrow is somebody arriving again.
+
+     Where it throws, the card is drawn each time, which is the direction to err
+     in: asking twice is a press, and not asking is somebody turning thirty
+     cards that nothing was keeping. */
+  var ASKED_KEY = 'ttb.flash.asked';
+
+  function askedAlready() {
+    try { return window.sessionStorage.getItem(ASKED_KEY) === '1'; } catch (e) { return false; }
+  }
+
+  function markAsked() {
+    try { window.sessionStorage.setItem(ASKED_KEY, '1'); } catch (e) { /* as above */ }
   }
 
   function keep(deck, card, knew) {
@@ -551,7 +581,7 @@
    * same strings as the map's sheet. See the header for why there is a third
    * copy of this form on the site, and what would end that.
    */
-  function authForm(saying) {
+  function authForm(saying, after) {
     var creating = state.view === 'up';
     /* The third view, and the one nobody chooses: a Google account that has
        just proved itself and has no account here yet. Same form with the
@@ -632,18 +662,60 @@
       form.appendChild(swap);
     }
 
+    /* The way past the offer, on the one card that has one. Inside the form
+       rather than in a foot under it, because two quiet words in a column want
+       the negative margin and the tighter gap that `.ac-form .alt + .alt`
+       already draws; and after the switch, because a way out is the last thing
+       on a surface — design rule 6. */
+    if (after) form.appendChild(after);
+
     return form;
   }
 
-  /* The offer, which is never the first thing on this page and never in front
-     of anything. Signed out, the decks above it all work; what this card is
-     about is the one thing that does not, which is being remembered. */
+  /* The offer, at the foot of the decks and at the end of a run. Never the
+     first thing on the page and never in front of anything: the decks above it
+     all work, and what this card is about is the one thing that does not, which
+     is being remembered. */
   function authCard() {
     return card([authForm([
       el('p', { className: 'eyebrow', textContent: t('flashKeepEyebrow') }),
       heading(t('flashKeepTitle'), 'h2'),
       el('p', { className: 'lists-say', textContent: t('flashKeepWhy') })
     ])]);
+  }
+
+  /* The same offer, standing in front of a deck instead — the first one a tab
+     opens signed out, and that one only. See the header: what somebody wants to
+     know before they start is whether the half-hour counts for anything, and
+     the card at the end of the run told them after they had spent it.
+   *
+     It is an offer and not a gate, and the card has to read as one. The deck is
+     not behind it: Go through it without saving is directly under the two ways
+     in, the words say that what you answer before you make an account comes
+     with you, and keep() above is what makes that true rather than kind.
+     Pressing past costs the tab's asking rather than the tab's run.
+   *
+     The way past is an .alt because of design rule 5 — the accent is spent on
+     the one action, and a second filled button would be a card that could not
+     say which of the two it wanted. */
+  function firstCard() {
+    var past = el('button', {
+      type: 'button',
+      className: 'alt',
+      textContent: t('flashFirstPast')
+    });
+    past.addEventListener('click', function () {
+      TTBTrack.event('flash_keep_past', { deck_id: state.deck.id });
+      state.asking = false;
+      render();
+      focusRun();
+    });
+
+    return card([authForm([
+      el('p', { className: 'eyebrow', textContent: t('flashKeepEyebrow') }),
+      heading(t('flashFirstTitle')),
+      el('p', { className: 'lists-say', textContent: t('flashFirstWhy') })
+    ], past)]);
   }
 
   /* ------------------------------------------------------------- the decks */
@@ -1502,16 +1574,24 @@
     } else if (state.deck && state.editing) {
       add(editView());
     } else if (state.deck) {
-      var now = current();
-      if (now) studyView(now).forEach(add);
-      else {
+      if (state.asking) {
+        /* The head as well as the card, so the deck this is about is named on
+           the screen and the way out of it stands where it stands on every
+           other view of a deck. */
         add(runHead());
-        /* Two different empties. A run that was never built because nothing
-           was due is the spacing doing its job; a run that has been gone
-           through is the end of a sitting. They say different things and
-           offer different ways on. */
-        add(state.run && state.run.queue.length === 0 ? restedCard() : doneCard());
-        if (!state.user && state.ready) add(authCard());
+        add(firstCard());
+      } else {
+        var now = current();
+        if (now) studyView(now).forEach(add);
+        else {
+          add(runHead());
+          /* Two different empties. A run that was never built because nothing
+             was due is the spacing doing its job; a run that has been gone
+             through is the end of a sitting. They say different things and
+             offer different ways on. */
+          add(state.run && state.run.queue.length === 0 ? restedCard() : doneCard());
+          if (!state.user && state.ready) add(authCard());
+        }
       }
     } else {
       add(shippedCard());
@@ -1612,6 +1692,35 @@
       /* A Google account with no account here yet: the form this page draws
          for somebody signed out becomes the one that asks for a name. */
       if (googleSaid === 'name' && !state.user) state.view = 'google';
+
+      /* And whether the offer stands in front of this deck: signed out, on a
+         deck with something to turn, the first time this tab opens one. Decided
+         here, once, rather than inside render(), which runs on every press and
+         would have to keep arriving at the same answer. The way past is the
+         one thing that changes it: it sets this false and draws again.
+       *
+         Only where an account would work: with the database off there is
+         nothing behind the form but a 503, which is the same rule authCard()
+         is drawn under. And always where Google has come back wanting a name,
+         whatever this tab has already been asked — that round trip returns to
+         the deck it left from, and the form asking for the name is on this card
+         and nowhere else on a deck. */
+      state.asking = !!(state.deck && !state.user && state.ready && current() &&
+                        (state.view === 'google' || !askedAlready()));
+      if (state.asking) {
+        markAsked();
+        TTBTrack.event('flash_keep_ask', { deck_id: state.deck.id });
+        /* And this is the one surface that opens on Create account rather than
+           on Sign in. Everywhere else the form is reached by somebody who went
+           looking for their account; this card is put in front of somebody who
+           is turning cards signed out, which is very nearly the definition of
+           not having one — the only link to this page inside the site is on
+           /account.html, behind a sign-in, so anybody arriving here without an
+           account arrived from a search engine. Already have an account? is
+           one press under the button, which is the same press the other way
+           round that the decks page asks of somebody making one. */
+        if (state.view === 'in') state.view = 'up';
+      }
 
       render();
       sayGoogle();
