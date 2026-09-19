@@ -386,6 +386,11 @@
 
 .flash-pair { min-width: 0; flex: 1 1 auto; overflow-wrap: anywhere; }
 
+/* A row open for editing is a form rather than a pair-and-buttons, and it is
+   the only child of its .flash-row, so it needs the same "take what is
+   left" .flash-pair asks the flexbox for. */
+.flash-row > .ac-form { flex: 1 1 auto; min-width: 0; }
+
 /* The Estonian, in the display face it wears on the card itself, so a row in
    the editor reads as the same thing as the card it will become. */
 .flash-side {
@@ -402,7 +407,11 @@
   line-height: 1.5;
 }
 
-.flash-row .alt { margin-left: auto; flex: 0 0 auto; }
+/* Edit and Remove, kept together and pushed to the same place the one
+   button used to sit — .flash-rowacts is the flex item, so the pair moves as
+   one and the gap between the two is the row's own rather than each
+   button's margin. */
+.flash-rowacts { display: flex; gap: 8px; margin-left: auto; flex: 0 0 auto; }
 
 /* The two fields of the add-a-card form, side by side where there is room and
    stacked on a phone — the Estonian and the English are a pair and reading
