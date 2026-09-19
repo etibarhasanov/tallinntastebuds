@@ -1167,10 +1167,11 @@
      account at the end of it no longer throws the tab away. */
   function mark(word, knew, how) {
     word.known = knew;
-    /* `how` is the one thing worth knowing about the two ways of answering:
-       whether anybody found the swipe. A press and a swipe are the same
-       answer and report the same event, with one parameter telling them
-       apart. `face` is the same question about the front: a throw can answer
+    /* `how` is the one thing worth knowing about the three ways of answering:
+       whether anybody found the swipe, and whether anybody on a laptop found
+       the arrows. A press, a swipe and an arrow key are the same answer and
+       report the same event, with one parameter telling them apart. `face` is
+       the same question about the front: a throw and an arrow can both answer
        a card nobody turned over, and this is how anybody will find out
        whether people do that. */
     TTBTrack.event(knew ? 'flash_knew' : 'flash_again', {
@@ -1328,7 +1329,8 @@
    * buttons under the card, given with the thumb that is already on it. The
    * buttons stay — this is a second way to say the same thing, not a
    * replacement, and a gesture nobody discovers would otherwise be the only
-   * way to use the page.
+   * way to use the page. The arrow keys are the third and are the same two
+   * directions on a machine with no thumb on it — see wireKeys() below.
    *
    * It answers on either face, and that is the one way it differs from the
    * buttons, which are not drawn until the card is turned. A word you know on
@@ -1471,6 +1473,67 @@
       moved = false;
       return was;
     };
+  }
+
+  /* --------------------------------------------------------- and the arrows
+   * The throw, for a machine with nothing to throw with. The right arrow is
+   * Knew it and the left arrow is Show me again — the same two answers the
+   * buttons give and the same two the swipe gives, in the same direction the
+   * card would have gone under a thumb, so somebody who has turned these over
+   * on a phone already knows which way is which on a laptop.
+   *
+   * It answers on either face, because the swipe does and this is the swipe:
+   * a word known on sight is answered before the card is turned over, and the
+   * buttons stay behind the turn for the reason the header above gives.
+   * Turning the card over needs nothing here — focusRun() leaves the focus on
+   * the card after every answer, and a <button> with the focus on it is
+   * turned over by Enter or by the space bar without a line of script.
+   *
+   * On the document rather than on the card, so a run answers the keyboard
+   * wherever the focus is actually sitting: on All the decks, on Show me
+   * again, on a card that has just been reported wrong, or on nothing at all
+   * after a press somewhere idle. The alternative is an arrow that works only
+   * while the one element nobody deliberately focused still has the focus,
+   * which is a keyboard shortcut that mostly does not work.
+   */
+  function wireKeys() {
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
+
+      /* An arrow with a modifier on it belongs to the browser or to a
+         selection and never to the card: Alt and the left arrow is Back on
+         Windows, and Command and the left arrow is Back on a Mac. Answering a
+         card on the way out of the page would be the worst of both. */
+      if (ev.altKey || ev.ctrlKey || ev.metaKey || ev.shiftKey) return;
+      if (ev.defaultPrevented) return;
+
+      /* Nothing while anybody is typing. The editor is rows of fields of
+         Estonian and the form under the gate is a name and a password; an
+         arrow in one of those is the caret moving, and a card answered out
+         from under somebody mid-word is a word spent on a keystroke that was
+         about something else. */
+      var on = ev.target;
+      if (on && (on.isContentEditable || /^(?:INPUT|TEXTAREA|SELECT)$/.test(on.tagName))) return;
+
+      /* And nothing behind an open language menu, which stands over the card
+         and is the thing the keyboard is in while it is open — the same rule
+         the press anywhere else is under, a few lines down in boot(). */
+      if (langBar && langBar.classList.contains('is-open')) return;
+
+      /* Only where a card is really on screen, which is the condition
+         render() draws one under. The run outlives the two views that are not
+         it — the editor, and the gate — so current() still has a word in hand
+         on both, and answering it there would spend a card of a deck from a
+         page that is showing a form. */
+      if (!state.deck || state.editing || state.gated) return;
+      var word = current();
+      if (!word) return;
+
+      /* Left to itself an arrow scrolls the page sideways, which on a phone-
+         width window is the card leaving. */
+      ev.preventDefault();
+      mark(word, ev.key === 'ArrowRight', 'key');
+    });
   }
 
   function runBar() {
@@ -1898,6 +1961,10 @@
       if (langBar.contains(document.activeElement) && now) now.focus();
       closeLangMenu();
     });
+
+    /* And the arrows, which answer the card in hand from wherever the focus
+       is. See wireKeys(). */
+    wireKeys();
 
     applyStyle();
 
