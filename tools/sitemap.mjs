@@ -151,12 +151,13 @@ export function render(langs, placeIds, deckIds) {
   for (const code of codes) entries.push(entry(mapAt(code), alternates()));
   entries.push(entry(SITE + '/lists'));
   entries.push(entry(SITE + '/blog'));
-  /* The flashcards, which nothing on this site links to but one row behind a
-     sign-in — so this file is very nearly the only way in for a crawler, the
-     same position /blog is in above. One address for the decks and one per
-     deck, which is where the Estonian actually is. No alternates: the cards
-     are English and Estonian and there is no tenth translation of them to
-     point at. */
+  /* The flashcards. A rail pill on the map links to /flashcard now, so that
+     one address is found the way any linked page is; this file is still very
+     nearly the only way in for a crawler to a particular deck, since neither
+     the rail nor the row behind a sign-in on /account.html names one. One
+     address for the decks and one per deck, which is where the Estonian
+     actually is. No alternates: the cards are English and Estonian and there
+     is no tenth translation of them to point at. */
   entries.push(entry(SITE + '/flashcard'));
   for (const id of deckIds) entries.push(entry(SITE + '/flashcard?d=' + id));
   for (const list of CHIP_LISTS) entries.push(entry(SITE + '/list/' + list.id));
