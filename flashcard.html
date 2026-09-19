@@ -64,6 +64,26 @@
     <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
     <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
   </a>
+  <!-- The map's radio, wearing the map's pill, as it does on the lists, the
+       account, the blog and the feedback page. Beside the language rather than
+       at the end of the row: the switch is the corner control this header was
+       built around, and a button that moved it to make room would be the radio
+       arriving and rearranging the furniture. Hidden until data/radio.json is
+       read, and for good if there is no station in it.
+
+       It starts from silence here and that is the hostname rather than a
+       decision — sessionStorage belongs to the origin, so a radio playing on
+       the map does not walk on to flashcard.tallinntastebuds.ee the way it
+       walks to a list. See **The radio** in README.md. -->
+  <button type="button" class="rail-btn radio" id="btn-radio" aria-pressed="false" hidden
+          data-i18n-title="radioPlay" data-i18n-aria-label="radioPlay"
+          aria-label="Play the radio" title="Play the radio">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path class="ico-play" d="M8 5.5l11 6.5-11 6.5z"/>
+      <path class="ico-stop" d="M8 6.5h3v11H8zM13 6.5h3v11h-3z"/>
+    </svg>
+    <span class="radio-name rail-label" id="radio-name"></span>
+  </button>
   <!-- The language, which every other page reads off the map and this one
        could not: on flashcard.tallinntastebuds.ee the store the map writes
        belongs to another origin, so the back of a card was the browser's own
@@ -98,6 +118,11 @@
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
 <script src="/assets/track.js?v=93031b0d" defer></script>
-<script src="/assets/flashcard.js?v=4c7b3d73" defer></script>
+<!-- The radio, shared with the map and with every other page that wears its
+     button: one station, one on or off, and the <audio> itself. Before the
+     page's own script and deferred like it, so document order puts the global
+     in place before assets/flashcard.js mounts the button on it. -->
+<script src="/assets/radio.js?v=f0656dd3" defer></script>
+<script src="/assets/flashcard.js?v=6c77cd96" defer></script>
 </body>
 </html>
