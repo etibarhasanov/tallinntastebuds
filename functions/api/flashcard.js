@@ -2,8 +2,8 @@
  * Tallinn Tastebuds — flashcards, and the Estonian on them.
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: thirty-three decks of Estonian, eight
- * hundred and thirty-four cards, Estonian on the front and what it means on
+ * menu. This is the other half of that: thirty-four decks of Estonian, one
+ * thousand and fourteen cards, Estonian on the front and what it means on
  * the back, and a person turning them over one at a time. It lives on its own
  * subdomain — flashcard.tallinntastebuds.ee, routed by
  * functions/_middleware.js — for the reason splitwise does: it is not the map,
@@ -14,8 +14,8 @@
  *
  * The decks this site ships are data/decks.json, deployed as a file and read
  * as one through dataFile() below. They are content: somebody edits the
- * repository, the deploy carries them, and every reader gets the same eight
- * hundred and thirty-four cards. Nothing about them is in the database and
+ * repository, the deploy carries them, and every reader gets the same one
+ * thousand and fourteen cards. Nothing about them is in the database and
  * nothing needs to be — a row per card per deployment would be a copy of a file
  * that only a deploy changes, and the first thing anybody would have to write
  * is the tool that keeps the two in step.

@@ -467,7 +467,7 @@ const LANG_TAG = /^[a-z]{2,3}$/;
  * what a flashcard is. The back of a card is the lesson rather than the
  * chrome around it, and data/decks.json writes it in English, Azerbaijani and
  * Russian — so a page offering Finnish would put a Finnish door, a Finnish
- * switch and a Finnish count around eight hundred and thirty-four English
+ * switch and a Finnish count around one thousand and fourteen English
  * answers, which is a promise the words on the cards cannot keep. Better to
  * say three and mean them.
  *

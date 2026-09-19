@@ -98,7 +98,7 @@ function inEnglish(pack) {
  * case entirely and follow the link; the block above onRequest() says why. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
-  'Thirty-three decks of Estonian, from the first twenty words to a jacket with a ' +
+  'Thirty-four decks of Estonian, from the first twenty words to a jacket with a ' +
   'broken zip — the word, its three forms and a sentence to say it in.';
 
 /* The card an unfurler draws, which is this page's own and not the site's.
@@ -152,7 +152,7 @@ async function decksOf(context) {
 
 /* The decks, as text: what each one is called and the line saying what is in
    it. A list of links, so a crawler that landed on this page walks to the
-   thirty-three under it rather than treating it as a leaf. */
+   thirty-four under it rather than treating it as a leaf. */
 function deckList(decks) {
   const row = (deck) =>
     '<li><h2><a href="' + PATH + '?d=' + esc(deck.id) + '">' + esc(inEnglish(deck.name)) + '</a></h2>' +
