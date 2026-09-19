@@ -2,8 +2,8 @@
  * Tallinn Tastebuds — flashcards, and the Estonian on them.
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: twenty-nine decks of Estonian, six
- * hundred and forty-seven cards, Estonian on the front and what it means on
+ * menu. This is the other half of that: thirty-three decks of Estonian, eight
+ * hundred and thirty-four cards, Estonian on the front and what it means on
  * the back, and a person turning them over one at a time. It lives on its own
  * subdomain — flashcard.tallinntastebuds.ee, routed by
  * functions/_middleware.js — for the reason splitwise does: it is not the map,
@@ -14,8 +14,8 @@
  *
  * The decks this site ships are data/decks.json, deployed as a file and read
  * as one through dataFile() below. They are content: somebody edits the
- * repository, the deploy carries them, and every reader gets the same six
- * hundred and forty-seven cards. Nothing about them is in the database and
+ * repository, the deploy carries them, and every reader gets the same eight
+ * hundred and thirty-four cards. Nothing about them is in the database and
  * nothing needs to be — a row per card per deployment would be a copy of a file
  * that only a deploy changes, and the first thing anybody would have to write
  * is the tool that keeps the two in step.
@@ -365,7 +365,7 @@ async function readingBoxes(env, make) {
 /* Every card this person has said they know, and whether it is due to be
    asked again: a Map of "<deck>/<card>" to true for due, false for resting.
    One indexed read over their own rows, rather than a query per deck — an
-   account that has been through everything this site ships holds five hundred
+   account that has been through everything this site ships holds eight hundred
    rows, which is smaller than the answer the page is about to draw anyway. */
 async function knownOf(env, user) {
   if (!user) return new Map();

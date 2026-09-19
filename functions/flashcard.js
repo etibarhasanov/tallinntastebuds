@@ -76,7 +76,7 @@ function inEnglish(pack) {
    unfurled link says is the one language every card has. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
-  'Twenty-nine decks of Estonian, from the first twenty words to a jacket with a ' +
+  'Thirty-three decks of Estonian, from the first twenty words to a jacket with a ' +
   'broken zip — the word, its three forms and a sentence to say it in.';
 
 /* A deck id as data/decks.json spells one. Anything else is either somebody's
@@ -115,7 +115,7 @@ async function decksOf(context) {
 
 /* The decks, as text: what each one is called and the line saying what is in
    it. A list of links, so a crawler that landed on this page walks to the
-   twenty-nine under it rather than treating it as a leaf. */
+   thirty-three under it rather than treating it as a leaf. */
 function deckList(decks) {
   const row = (deck) =>
     '<li><h2><a href="' + PATH + '?d=' + esc(deck.id) + '">' + esc(inEnglish(deck.name)) + '</a></h2>' +

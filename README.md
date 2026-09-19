@@ -3134,7 +3134,7 @@ the column it was. One card, one column, is what every other card here is.
 
 ### The second door on that card
 
-**Estonian flashcards**, under the profile: twenty-nine decks of Estonian and
+**Estonian flashcards**, under the profile: thirty-three decks of Estonian and
 the ones you write yourself — see **[Flashcards](#flashcards)**. It is a row rather than
 a word along the foot for the reason the profile is: a door is a place to go
 and a word is a thing you do to the account.
@@ -6215,8 +6215,8 @@ this feature exists.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: twenty-nine
-decks of Estonian, six hundred and forty-seven cards, the Estonian on the front
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: thirty-three
+decks of Estonian, eight hundred and thirty-four cards, the Estonian on the front
 and what it means on the back — in English, Azerbaijani or Russian, whichever the
 page is being read in — and one card at a time with two words under it —
 *Knew it*, and *Show me again*.
@@ -6301,8 +6301,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: twenty-nine decks, six
-hundred and forty-seven cards, deployed as a file and read as one. It is
+`data/decks.json` is the Estonian the site ships: thirty-three decks, eight
+hundred and thirty-four cards, deployed as a file and read as one. It is
 **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -6684,24 +6684,26 @@ one thing the page is for.
 
 ### Three levels
 
-Twenty-nine decks is far too many for one column, and they are not all for the
+Thirty-three decks is far too many for one column, and they are not all for the
 same person on the same day. So the decks page groups them under three quiet
 headings — **First words**, **Getting by**, **Going deeper** — and a deck
 carries which one it is in as `level` in `data/decks.json`: `start`, `more` or
 `deep`.
 
-*First words* is the twenty words, the numbers, the table and the food: what
-somebody needs in their first week. *Getting by* is the street, the shop, the
-coffee shop, the small talk, the weather, what you wear, the word over a shop
-door, deciding what to do with a free day, how often you do it, and the verbs
-the rest of the language hangs off. *Going deeper* is the nine that are not
-about a good day out — the doctor, the paperwork, the country past the old
-town, the cleaner's with your jacket in it, the adverbs that belong to no
-lesson, the second handful of verbs, what *pean* and *tahan* do to the verb
-after them, the words on a page of writing, and the other side of the counter,
-for somebody whose shift it is: the customer's half of a café and a restaurant
-is in the two decks above, and this is what the person serving them says, in a
-café, a restaurant, a bar or a shop, so that one deck covers a job.
+*First words* is the twenty words, the pronouns with *olema*, the question
+words, the numbers, the table and the food: what somebody needs in their first
+week. *Getting by* is the street, the shop, the coffee shop, the small talk,
+where somebody is from, the language course they are sitting in, the weather,
+what you wear, the word over a shop door, deciding what to do with a free day,
+how often you do it, and the verbs the rest of the language hangs off. *Going
+deeper* is the nine that are not about a good day out — the doctor, the
+paperwork, the country past the old town, the cleaner's with your jacket in it,
+the adverbs that belong to no lesson, the second handful of verbs, what *pean*
+and *tahan* do to the verb after them, the words on a page of writing, and the
+other side of the counter, for somebody whose shift it is: the customer's half
+of a café and a restaurant is in the two decks above, and this is what the
+person serving them says, in a café, a restaurant, a bar or a shop, so that one
+deck covers a job.
 
 The headings are `.lists-section`, the same quiet heading `/lists` puts over a
 run of rows, and a level with nothing in it draws no heading: the headings are
@@ -6727,7 +6729,7 @@ that is the genitive and the partitive; for a verb it is the *da*-infinitive
 and the first person singular, so **minema, minna, lähen**, which is the same
 three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **384 of the 647 cards
+parts, and a row of three under it would be nonsense. **508 of the 834 cards
 carry them** today; the ones that do not are the phrases, the adverbs, the
 garments that are plural in Estonian — *teksad* has no singular anybody wears —
 and a handful of words left alone rather than guessed at. `tools/validate.mjs`
@@ -6744,6 +6746,16 @@ got.
 here. They are the forms of common words and I am confident in them; they have
 not been checked by anybody who grew up with the language.
 
+**One batch of words is a course book's, and that is worth saying.** A hundred
+and eighty-seven of the cards — the pronouns and *olema*, the question words,
+the countries and what you call somebody from one, the language course, and the
+everyday adverbs and nouns the first four lessons of a beginner's course teach
+alongside them — came off the word lists printed at the back of one, headword,
+principal parts and gloss together. So for those the Estonian and the Russian
+are a published book's rather than mine, which is the one part of this deck
+that has been through an editor. The sentences under them and the Azerbaijani
+beside them are still mine, and those are where the mistakes will be.
+
 ### And the word in a sentence
 
 Under the forms, where a card has one: the Estonian and what it means, as two
@@ -6758,7 +6770,7 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **414 of the 647 cards** carry one: every card in the nineteen
+would be a stray clause with no translation. **594 of the 834 cards** carry one: every card in the twenty-three
 newer decks bar the ones that are a whole sentence already, and the ones in the
 older decks where an example says something the gloss does not.
 
@@ -6777,9 +6789,10 @@ quiet press: **Something is wrong here**. It reports the card and says
 and the next card is up.
 
 It is here because of the two paragraphs above it. The Estonian on this site is
-mine: the forms are the forms of common words and I am confident in them, the
-sentences are sentences I would say, and none of it has been read by anybody
-who grew up with the language. Six hundred and forty-seven cards written that
+mine, the hundred and eighty-seven headwords out of a course book aside: the
+forms are the forms of common words and I am confident in them, the sentences
+are sentences I would say, and none of it has been read by anybody who grew up
+with the language. Eight hundred and thirty-four cards written that
 way have mistakes in them, and the people turning them over are the only
 proofreaders this deck has ever had.
 
@@ -8559,7 +8572,7 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            twenty-nine decks of Estonian, 647 cards at three
+data/decks.json            thirty-three decks of Estonian, 834 cards at three
                            levels; content rather than interface, and written
                            in three languages rather than the site's ten
 blog.html                  a post per thing this site does   } unlinked, and
