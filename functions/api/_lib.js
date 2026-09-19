@@ -450,13 +450,35 @@ export function uiStrings(context) {
  *
  * `langs` comes back beside them: every language the file speaks, each with
  * the name it has for itself, for a page that draws a switch. The flashcards
- * page does and reads it; /stats does not and drops it on the way past. Ten
- * short pairs either way, which is a couple of hundred bytes against the eight
- * to ten KB of strings already in the answer, so it is not worth a second
- * shape of this function to leave out.
+ * page does and reads it; /stats does not and drops it on the way past. A
+ * handful of short pairs either way, which is a couple of hundred bytes
+ * against the eight to ten KB of strings already in the answer, so it is not
+ * worth a second shape of this function to leave out.
+ *
+ * `only` is for a caller that speaks fewer languages than the site does, and
+ * there is one: the flashcards. See DECK_LANGS below.
  */
 const DEFAULT_LANG = 'en';
 const LANG_TAG = /^[a-z]{2,3}$/;
+
+/* The three languages the flashcards are in, English first.
+ *
+ * The site speaks ten and this one feature speaks three, and the reason is
+ * what a flashcard is. The back of a card is the lesson rather than the
+ * chrome around it, and data/decks.json writes it in English, Azerbaijani and
+ * Russian — so a page offering Finnish would put a Finnish door, a Finnish
+ * switch and a Finnish count around eight hundred and thirty-four English
+ * answers, which is a promise the words on the cards cannot keep. Better to
+ * say three and mean them.
+ *
+ * It lives here rather than in either file that reads it because both do:
+ * functions/flashcard.js writes the head and the words into the page, and
+ * ./flashcard.js answers the page's one request, and a second copy of this
+ * list is how the head and the switch come to disagree. Write a fourth
+ * language into every card's `back` in data/decks.json and add its code here;
+ * data/ui.json already speaks it, and nothing else has to change.
+ */
+export const DECK_LANGS = ['en', 'az', 'ru'];
 
 function languageOf(asked, langs) {
   const wanted = String(asked || '')
@@ -468,14 +490,20 @@ function languageOf(asked, langs) {
     (langs.includes(DEFAULT_LANG) ? DEFAULT_LANG : langs[0] || DEFAULT_LANG);
 }
 
-export async function wordsFor(context, asked) {
+export async function wordsFor(context, asked, only) {
   let ui = null;
   try {
     ui = await uiStrings(context);
   } catch (e) {
     ui = null;
   }
-  const langs = ui && typeof ui === 'object' ? Object.keys(ui) : [];
+  const spoken = ui && typeof ui === 'object' ? Object.keys(ui) : [];
+  /* `only` narrows both halves of the answer at once, and it has to be both:
+     a caller that offered three languages in its switch and then honoured a
+     fourth in ?lang= would be a page reading in a language it does not admit
+     to having. Anything in `only` the file does not speak is not a language
+     either, so the file stays the authority and this only ever subtracts. */
+  const langs = only ? spoken.filter((code) => only.includes(code)) : spoken;
   const lang = languageOf(asked, langs);
   const block = ui && ui[lang] && typeof ui[lang] === 'object' ? ui[lang] : {};
   /* The menu's own rows: the code, and the name that language has for itself.

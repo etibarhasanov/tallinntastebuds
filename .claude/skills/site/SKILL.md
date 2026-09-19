@@ -105,7 +105,12 @@ also the one page besides the map with a **language switch** on it, because on
 its own subdomain `ttb.lang` belongs to another origin: it is drawn from the
 `langs` that same answer carries, and picking one asks the route again for the
 one block rather than reloading — **A language of your own to learn it in**
-under **Flashcards**. A new page
+under **Flashcards**. That switch has **three** rows and not ten: the
+flashcards are the one page on the site that speaks fewer languages than the
+site does, because the back of a card is written in three — `DECK_LANGS` in
+`functions/api/_lib.js` is the list, it narrows the switch and the language
+the page is read in together, and **Three languages, not ten** under
+**Flashcards** is the argument. A new page
 copies the block whole, and its head carries `<meta name="color-scheme">`
 and `<meta name="theme-color">` like `lists.html`'s.
 

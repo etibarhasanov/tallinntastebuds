@@ -13,11 +13,21 @@
  *
  * The decks the site ships say what a card means in three: English,
  * Azerbaijani and Russian. Which one a card is turned over into is not a choice
- * anybody makes here — it is whichever of the ten this page is already being
- * read in, out of ?lang=, ttb.lang or the browser's own languages, and English
- * for the seven the decks have not been written in. means() below is the whole
- * of it, and the reason it is one function is that a deck somebody wrote has
- * one side in one language and nothing to pick.
+ * anybody makes here — it is whichever of those three this page is being read
+ * in, out of ?lang=, ttb.lang or the browser's own languages, and English for
+ * anybody who asked for one of the site's other seven. means() below is the
+ * whole of it, and the reason it is one function is that a deck somebody wrote
+ * has one side in one language and nothing to pick.
+ *
+ * THREE, WHERE EVERY OTHER PAGE HAS TEN
+ *
+ * This is the one page on the site that speaks fewer languages than the site
+ * does, switch and all, and the header of DECK_LANGS in
+ * functions/api/_lib.js is the whole of why: the back of a flashcard is the
+ * lesson rather than the chrome around it, and a Finnish door around eight
+ * hundred and thirty-four English answers is a promise the cards cannot keep.
+ * Nothing on this side knows the list — the route narrows it and sends what is
+ * left, the same way it settles which of them this is being read in.
  *
  * Learning Estonian through an English you are shaky in is two languages'
  * work, and the people this site is written for are the ones it was hardest
@@ -363,15 +373,22 @@
    *
      Two shapes arrive here and only one of them has anything to pick. A deck
      the site ships carries each of those as an object keyed by language:
-     English, Azerbaijani and Russian today, and whichever of the ten somebody
-     translates next, with no code to change when they do. A deck somebody wrote
-     carries a string per side, in whatever language they typed it in.
+     English, Azerbaijani and Russian today, and whichever the decks are
+     written in next, with no code to change when they are — one line in
+     DECK_LANGS in functions/api/_lib.js is the whole of adding a fourth. A
+     deck somebody wrote carries a string per side, in whatever language they
+     typed it in.
 
      `et` is never read out of one, even from a sentence that has one, and that
      is the one rule here worth stating: on this page Estonian is the thing
      being learnt rather than a language to learn it in, and sentence.et is the
-     Estonian sentence itself. Reading the site in Estonian therefore gets the
-     English back, which is what the other six get too. */
+     Estonian sentence itself. Somebody reading the map in Estonian gets the
+     English back here, the way the other six the decks are not written in do.
+
+     The route settles state.lang against DECK_LANGS now, so `et` cannot reach
+     this line at all any more. It stays as the rail rather than the path: what
+     it is guarding against is a card answering itself, and that is not a thing
+     to leave to a list in another file. */
   function means(said) {
     if (typeof said === 'string') return said;
     if (!said) return '';
@@ -458,10 +475,10 @@
   /* What this page would pick a language from, in the order every other page
      picks: ?lang=, then the choice the map stored, then the browser's own. The
      picking itself is wordsFor() in functions/api/_lib.js, because the
-     list to pick against is the file that route reads and this page no longer
-     fetches — so this is the candidates, sent as they are, and what comes
-     back is the one the site speaks. Anything past ten is noise the route
-     would not read anyway. */
+     list to pick against is DECK_LANGS over there rather than anything on this
+     side — so this is the candidates, sent as they are, and what comes back is
+     whichever of the three the cards are written in it found first, or English.
+     Anything past ten is noise the route would not read anyway. */
   function wanted() {
     var list = [new URLSearchParams(window.location.search).get('lang'), storeGet(LANG_KEY)]
       .concat(navigator.languages || [navigator.language || '']);
@@ -496,7 +513,9 @@
    * for Russian.
    *
    * So it is the map's switch, in this page's header: the code you are in, a
-   * menu of the ten under it, each with the name that language has for itself.
+   * menu of the three under it, each with the name that language has for
+   * itself — three rather than the map's ten, because the cards are written in
+   * three and a switch is a promise about what pressing it does.
    * Every rule it is drawn with is already in assets/styles.css — #lang-switch,
    * .btn-lang-now, .lang-list — and the codes come down with the words, from
    * wordsFor() in functions/api/flashcard.js, so the page still fetches one
@@ -910,8 +929,9 @@
 
   /* Every deck has a name and a line under it, and one of them has neither in
      the data: the missed deck is assembled per request and its words belong to
-     the interface rather than to the content — so they are in data/ui.json in
-     ten languages, where every other word on this page is. The rest come out of
+     the interface rather than to the content — so they are in data/ui.json,
+     where every other word on this page is, in all ten that file speaks even
+     though this page only ever prints three of them. The rest come out of
      data/decks.json in the three the decks are written in, which is what
      means() picks between. */
   function deckName(deck) {
