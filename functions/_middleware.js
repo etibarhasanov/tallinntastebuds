@@ -63,13 +63,15 @@
  * the FLASHCARDS line is that feature's and only that feature's — see **Taking
  * it out** under **Flashcards** in README.md.
  *
- * It is answered the same way splitwise's is, and for a second reason rather
- * than the same one. A group's link is pasted into a message, so that head
- * carries the group's name; nothing here is ever sent to anybody, but the ten
- * decks the site ships are indexed, and a deck's head and its words are what a
- * search finds. Both are a route, so both are called rather than rewritten to
- * — see the block inside onRequest(), and the note beside splitwise's for
- * what a rewrite does instead.
+ * It is answered the same way splitwise's is, and for both of the reasons
+ * rather than one. A group's link is pasted into a message, so that head
+ * carries the group's name; a link to this page is sent to somebody too, and
+ * carries the picture of a card and the language it was sent in rather than the
+ * map's — and, unlike splitwise, the thirty-three decks the site ships are also
+ * indexed, so a deck's head and its words are what a search finds. Both are a
+ * route, so both are called rather than rewritten to — see the block inside
+ * onRequest(), and the note beside splitwise's for what a rewrite does
+ * instead.
  *
  * This was a rewrite for a day, when the page carried a noindex and had no
  * route to call.

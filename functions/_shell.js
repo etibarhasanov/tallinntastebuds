@@ -38,9 +38,12 @@
  * here.
  *
  * The head came here when the third route arrived, and was written out per
- * route before that. Eight of a page's twelve tags are the same eight on all
- * three — the site name, the card image and its size, the twitter card — and
- * the four that differ are the four arguments head() takes.
+ * route before that. Seven of a page's twelve tags are the same seven on all
+ * of them — the site name, the size of the card image, the twitter card — and
+ * the five that differ are the five arguments head() takes. The picture is the
+ * one that only became an argument later: it was the mark for everybody until
+ * the flashcards turned out to need a card of their own, so it is the one with
+ * a default rather than a value.
  *
  * What each route decides for itself: what it calls itself and says about
  * itself, what is seeded, what status it answers with, whether the page is
@@ -159,11 +162,27 @@ export function canonical(request, path) {
  * it differently — and `type` is the og:type: "article" for a list somebody
  * wrote, "profile" for the person who wrote it, "website" for the directory.
  * Everything is escaped on the way in, including the values that are constants
- * today, because the next caller's may not be. */
+ * today, because the next caller's may not be.
+ *
+ * `image` is the one with a default, and the default is what nearly every
+ * caller wants: the mouth, over the site's name and the line about the map,
+ * which is the right card for anything that is a view of the map. A page that
+ * is about something else says so by naming its own — the flashcards are the
+ * one that does, and functions/flashcard.js says why. Either way it is a path
+ * under the site and either way the picture is drawn at 1200x630, which is
+ * what lets the two tags under it be written once.
+ *
+ * The name is the site's rather than the page's because functions/index.js and
+ * functions/split.js each hold a copy of this path — they write their twelve
+ * tags out rather than calling this, so there is nowhere yet for the three to
+ * agree. Two of the four are one edit apart from being one. */
+const SITE_CARD = '/assets/logo/og.jpg';
+
 export function head(meta) {
   const title = esc(meta.title) + ' | Tallinn Tastebuds';
   const description = esc(meta.description);
   const url = esc(meta.url);
+  const image = esc(SITE + (meta.image || SITE_CARD));
 
   return [
     /* The only <title> the page has. It used to be the second one — lists.html
@@ -184,7 +203,7 @@ export function head(meta) {
     '<meta property="og:url" content="' + url + '">',
     '<meta property="og:title" content="' + title + '">',
     '<meta property="og:description" content="' + description + '">',
-    '<meta property="og:image" content="' + SITE + '/assets/logo/og.jpg">',
+    '<meta property="og:image" content="' + image + '">',
     '<meta property="og:image:width" content="1200">',
     '<meta property="og:image:height" content="630">',
     '<meta name="twitter:card" content="summary_large_image">'

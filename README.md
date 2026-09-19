@@ -6251,17 +6251,61 @@ actually lives. A preview deployment is `<branch>.tallinntastebuds.pages.dev`
 and no subdomain of the live domain can exist under one, so a feature that
 answered only on the subdomain could never be looked at on a pull request.
 
-**The page has a route of its own, and it is not for the reason splitwise's
-is.** `functions/split.js` writes a group's name into the head because a
-group's link is pasted into a chat and the little preview card is most of what
-the link is. Nothing here is ever sent to anybody. `functions/flashcard.js`
-exists for the other half of a head: it writes the deck's own title and
-description, **and the deck's words into the page as text**, so that somebody
-searching for what an Estonian word means finds the deck that answers it — in
-all three languages the cards are written in, one `<dt>` and up to three
-`<dd>`s, because *что значит leib* is the same question as *what does leib mean*
-and until the decks had a Russian side the answer here was in a language that
-asker may not read either. See **How it is found** below.
+**The page has a route of its own, and it is for both of the reasons
+splitwise's is one.** `functions/split.js` writes a group's name into the head
+because a group's link is pasted into a chat and the little preview card is
+most of what the link is — and a link to this page is sent to somebody too,
+which is the half of it written up under **When somebody sends the link**
+below. What splitwise has no version of is the other half:
+`functions/flashcard.js` writes the deck's own title and description **and the
+deck's words into the page as text**, so that somebody searching for what an
+Estonian word means finds the deck that answers it — in all three languages the
+cards are written in, one `<dt>` and up to three `<dd>`s, because *что значит
+leib* is the same question as *what does leib mean* and until the decks had a
+Russian side the answer here was in a language that asker may not read either.
+See **How it is found** below.
+
+### When somebody sends the link
+
+For months a link to the flashcards pasted into a chat arrived as the site's
+own card: the watercolour mouth over **All the places in this map I have
+personally been and approved**. The title beside it said *Estonian flashcards*
+and nobody read it, because the picture is nine tenths of what a preview card
+is and that picture was about somewhere to eat.
+
+So this page has a card of its own — `assets/logo/og-flashcard.png`, the only
+one on the site besides `og.jpg` — and it is a picture of what the page is: a
+flashcard with **Leib** on it and *tap to turn it over* under that, beside the
+page's own eyebrow, title and the line that says how it works. It is drawn by
+`node tools/ogcard.mjs` out of `assets/logo/og-flashcard.html`, which links
+`assets/styles.css` and `assets/flashcard.css` and uses the page's own class
+names, so the paper, the hairline, the shadow, the corner and all three faces
+are the ones the page is actually wearing rather than a second set drawn to
+match. Change a token or a rule in `flashcard.css` and the card is redrawn in
+the same commit, the same way a scene in `clips/` is.
+
+**The words follow the link's `?lang=`.** `?lang=az` unfurls in Azerbaijani,
+because whoever sent that link chose Azerbaijani for the person they were
+sending it to — the same argument **[Sharing a place](#sharing-a-place)** makes
+for `?spot=`, and the opposite of the one a shared list is under, which has no
+reader to ask. The door's two strings are `flashDoor` and `flashWhat` out of
+`data/ui.json`, so it speaks all ten; a deck's name and the line under it come
+from `data/decks.json`, which is written in three, so `?lang=fi` gets a Finnish
+door and an English deck name with an English count beside it rather than a
+Finnish count on an English name.
+
+Two things it deliberately does not do. **The picture stays in English**,
+whatever language the words beside it are in: it is a rendered file rather than
+a template, and ten of them would be ten pictures to redraw every time a token
+moves — which is exactly what `og.jpg` does on a map shared with `?lang=et`.
+And **`?lang=` reaches neither the canonical nor `og:url`**, so this is one
+page in ten languages rather than ten pages. What that costs is Facebook, which
+treats `og:url` as the identity of the thing shared and will therefore keep one
+card for all ten; WhatsApp, Telegram, Slack, Signal and X read the tags of the
+address they were handed and show the language the link was sent in. The other
+way round is ten entries in `tools/sitemap.mjs`, an `hreflang` set and ten
+pages for a page nothing links to — the bargain the map struck for a reason
+this page has not got.
 
 ### How it is found, which is one row
 
@@ -8696,7 +8740,9 @@ functions/api/pass.js      who may hold a pass, and what it drew — the one
                            Function the pass pages need
 assets/pass.css            styles for those three
 assets/qr.js              QR encoder, written out, no dependency
-assets/logo/               the mark, and the painting it came out of
+assets/logo/               the mark, the painting it came out of, and the two
+                           share cards — og.jpg for the site, og-flashcard.png
+                           for the page that is not about the map
 assets/deal.js             ) one small script
 assets/verify.js           ) per page
 assets/staff.js            )
@@ -8749,6 +8795,8 @@ tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
 tools/storymedia.mjs       makes every story video an H.264 MP4 a browser will play
 tools/qrperf.mjs           checks the QR encoder still draws the same code, and times it
+tools/ogcard.mjs           draws assets/logo/og-flashcard.png, the card a link to
+                           the flashcards unfurls as, out of the page's own CSS
 .github/workflows/validate.yml     the validator, the QR check and the write gate, on every push
 .github/workflows/indexnow.yml     the IndexNow ping, on every push to the production branch
 .github/workflows/stories.yml      the hourly tick, and the tidying up after it
