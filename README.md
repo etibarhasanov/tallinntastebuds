@@ -6883,6 +6883,38 @@ costs is that the card comes round again next time, which is the harmless
 direction, and what a toast would cost is an interruption in the middle of the
 one thing the page is for.
 
+### A deck's row
+
+Thirty-three decks and the one that is not a deck, as rows, is most of what
+this page is. A row is four things: the deck's name in the display face, the
+line under it saying what is in the deck, what is waiting in it, and the
+chevron that says it opens.
+
+**The line under the name is a sentence, so it is set like one.** *The words a
+day in Tallinn opens and closes with.* That is prose, and prose on this site is
+Literata — the second of the design rules. It arrived mono at eleven points,
+because the row was copied from the account page's doors, where the same line
+reads *everybody's lists, most kept first* and is a label rather than a
+sentence. Thirty-three of them in a column, a clause each, is where the
+difference tells: mono says *this is a fact or a control*, and a page that says
+that thirty-three times reads as a table of settings rather than as a shelf of
+decks. `assets/blog.css` had already made this argument for a post's standfirst
+and given it a class of its own, so this is that class again — `.flash-why` —
+and a deck nobody wrote a line for still prints its size in the mono, because a
+size is a label.
+
+**The count stands in a column against the chevron**, in the mono every other
+count on this site is in, with tabular figures. It had been standing wherever
+the row left it: nothing in the row took the free space, so the count and the
+chevron shared it between their two auto margins, and the number landed further
+left the longer the line under the name happened to be — a different place on
+every row. It is the one thing here anybody scans, *which deck has something
+waiting for me*, and thirty-three numbers that do not line up cannot be scanned
+at all. What fixed it is one line in `assets/styles.css`: `.menu-say` takes the
+room, so everything after it stands at the end of the row. The account page's
+folds had already hit the same bug and answered it where they stand, and this
+is the same answer one level up, where the row is defined.
+
 ### Three levels
 
 Thirty-three decks is far too many for one column, and they are not all for the
@@ -6911,6 +6943,15 @@ run of rows, and a level with nothing in it draws no heading: the headings are
 for the decks rather than the other way round. `tools/validate.mjs` fails a
 deck whose level is not one of the three, because a deck under no heading is a
 deck nobody scrolls to.
+
+The room around them is `assets/flashcard.css`'s rather than that heading's
+own, and what decides it is what stands under it. On `/lists` a heading of this
+kind sits over a strip of cards, which brings its own air; here it sits over
+hairline-ruled rows, and with the six pixels the directory gives it the heading
+had the rule closing the run above and the rule opening the run below the same
+short distance away on either side. A title with equal air above and below two
+hairlines does not read as a title. It reads as an empty row. So the room goes
+above it, which is what says which side of the rule the heading is on.
 
 ### And a finished deck sinks
 

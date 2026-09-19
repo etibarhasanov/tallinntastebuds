@@ -11,10 +11,12 @@
 
    What is in this file is the one thing no other page on this site has: a
    card the size of the screen with a word on it, the two words under it, and
-   under those the quiet third line for when the card itself is wrong.
-   Twenty-odd rules, and not a colour among them — every one is a token, so
-   this page turns dark with the rest of the site and no swatch can leave it
-   behind.
+   under those the quiet third line for when the card itself is wrong. The
+   rest of it is what the two shared sheets could not say for this page in
+   particular — how a deck's row reads, and how much room a level's heading
+   gets over a run of them. Forty-odd rules, and not a colour among them —
+   every one is a token, so this page turns dark with the rest of the site
+   and no swatch can leave it behind.
    ========================================================================== */
 
 /* ---------- the card ---------- */
@@ -283,11 +285,52 @@
 .flash-deck .alt { padding-top: 0; padding-bottom: 0; }
 .flash-deck .eyebrow + .alt { margin-left: auto; }
 
+/* ---------- the decks, as rows ---------- */
+
 /* How much of a deck is known, on the end of its row. Never wrapped: it is
    four characters and a slash, and a count that folds onto a second line
    pushes the row taller than the two lines of words beside it. What gives way
-   instead is the line saying what the deck is, which has somewhere to go. */
+   instead is the line saying what the deck is, which has somewhere to go.
+
+   Where it sits is not this file's doing and is worth knowing: it stands
+   against the chevron because .menu-say takes the free space of the row,
+   which is a line in assets/styles.css. Before that line it drifted, further
+   left the longer the line under the name happened to be, so no two rows
+   agreed. It is the thing anybody scans this page for — which deck has
+   something waiting — and a column of numbers that does not line up cannot be
+   scanned at all. */
 .menu .lists-count { white-space: nowrap; }
+
+/* The line under a deck's name, which on this page is a sentence of prose:
+   "The words a day in Tallinn opens and closes with". .menu-why holds the same
+   position in the account sheet and is mono at 11px, which is right for
+   "everybody's lists, most kept first" and wrong for a sentence — the second
+   of the design rules, and the argument assets/blog.css already makes for
+   .blog-say under a post's title. The same face and rhythm as that one, so the
+   site's two lists of things to open read alike.
+
+   A deck nobody wrote a line for prints its size there instead, and a size is
+   a label rather than a sentence: deckRow() in assets/flashcard.js keeps
+   .menu-why for that one. */
+.flash-why {
+  font-family: var(--body);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* The level's name over the run of decks under it. .lists-section comes from
+   the directory, where it stands over a strip of cards and is spaced for one.
+   Here what follows is hairline-ruled rows, and the heading was landing with
+   six pixels above it and the rule that closes the run before it right on top
+   of those — a heading between two hairlines with the same air either side
+   reads as an empty row rather than as the name of what is under it.
+
+   So the room goes above, which is what says which side of the rule the
+   heading is on, and the run below it is pulled in closer than .lists-card >
+   .menu leaves it. */
+.lists-card > .lists-section { margin: 34px 0 0; }
+.lists-section + .menu { margin-top: 10px; }
 
 /* A form under a list of things, rather than against it. Three cards on this
    page end in one — the decks you wrote, the words in a deck, and the empty

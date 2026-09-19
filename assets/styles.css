@@ -306,7 +306,18 @@ a:hover { color: var(--accent-lit); }
 }
 .menu-item:last-child .menu-row { border-bottom: 1px solid var(--hairline); }
 
-.menu-say { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+/* The name and the line under it, and the part of the row that gives and
+   takes the room: it grows, so anything after it — a count, the chevron —
+   stands at the end of the row rather than somewhere in the middle of one.
+
+   Without the grow nothing absorbs the free space and the two things at the
+   end split it between their auto margins, which puts the count adrift at a
+   different place on every row, since where it lands depends on how long the
+   line under the name happens to be. The account page's folds hit exactly
+   that and answered it where they stand — see `.lists-fold > summary
+   .menu-go` in assets/lists.css — and the decks page was the second place it
+   happened. This is the same answer one level up, where the row is defined. */
+.menu-say { flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .menu-name {
   font-family: var(--display);
   font-size: 15.5px;
