@@ -6479,6 +6479,28 @@ The menu shuts on Escape, with the focus handed back to the button it dropped
 from, and on a press anywhere outside it — the map's own two rules, and the
 only listeners this page puts on the document.
 
+### And a radio while you learn it
+
+The map's button, in the same header, to the left of the language: a station
+plays while the cards are turned over. It is the control the map, the lists,
+the account page, the blog and the feedback page all wear, mounted on this page
+the way they mount it, and **The radio** is the whole of how it works.
+
+Two things are this page's own. The station follows the switch beside it — pick
+Russian half way through a deck and Наше Радио comes on under it, the way it
+does on the map, rather than the page changing language behind a button still
+naming the last station. And the button waits for the words: what it says is
+`radioPlay` or `radioStop`, and those arrive in the same answer as the cards,
+so mounting it any earlier would hand a screen reader a key instead of a
+sentence. A load the route cannot answer at all leaves it hidden along with
+everything else here.
+
+What it does not do is arrive playing. The radio walks from the map to a list
+because both are one origin, and on flashcard.tallinntastebuds.ee it is not —
+the same line that empties `ttb.lang` and gives this page a language switch at
+all. At `/flashcard` on the map's own hostname it carries across as it does
+everywhere else.
+
 ### It is the same account as the map
 
 An owner is a `users.id` out of `functions/api/account.js`, and the session
@@ -9718,13 +9740,25 @@ radio: the same trap as two presses to start one, met coming the other way.
 Measured on the blog page in Chromium. A `play()` that succeeds now ends the
 wait, so that branch only ever sees a radio that is genuinely silent.
 
-The lists page and the account page wear the same button in their headers:
-the map's pill, the map's station name, the same press to stop. It is the
-map's control on a page that has no rail rather than a second design for one
-switch, and `/list/<id>` gets it too — somebody reading a list a friend sent
-them can put the radio on from there. On a phone it is the icon alone, which
-is the disc the rail collapses to; these pages have no rail and so do not run
-the introduction that opens those labels for a few seconds.
+Five other pages wear the same button in their headers: the lists, the account
+page, the blog, the feedback page and the flashcards. The map's pill and the
+same press to stop — the map's control on a page that has no rail, rather than
+a second design for one switch — and `/list/<id>` gets it too, so somebody
+reading a list a friend sent them can put the radio on from there. What is on
+screen there is the icon alone: the station's name is in the button, but the
+label it sits in is opened by the rail, and a page with no rail never opens it.
+That is the disc the rail collapses to on a phone, and the same disc on a
+desktop with a mouse.
+
+The flashcards are the first of them on a hostname of its own, and what that
+costs is the walk. `sessionStorage` belongs to an origin, so a radio playing on
+the map is still playing at `/flashcard` and does not arrive at
+flashcard.tallinntastebuds.ee at all: the switch there opens off, and the press
+that starts a station is made on the page. It is the same line that leaves
+`ttb.lang` empty there and is why that page has a language switch of its own —
+see **A language of your own to learn it in** under **Flashcards**. Nothing is
+done about it, because a subdomain is a different site to a browser and the
+alternative is a page asking the map what it was playing.
 
 The three pass pages do not carry it. `deal.html`, `verify.html` and
 `staff.html` are scanned at a table rather than browsed, and a discount that
@@ -10464,6 +10498,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_keep_ask` | `deck_id` — the gate going up, one word into a deck signed out. Against `account_create` with `via: flashcard` it is how many of the people who meet it make an account, which is the only number that says whether the gate was right |
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, reported under the names the map's switch reports under, because it is the same press |
 | `flash_back`, `home` | `deck_id` on the first |
+| `radio_play`, `radio_stop` | as on the map |
 
 The pass pages, `assets/deal.js` and `assets/verify.js` — nothing on them is
 a button except the way back, so what they report is the moment each exists

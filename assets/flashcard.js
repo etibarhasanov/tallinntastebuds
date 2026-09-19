@@ -599,11 +599,57 @@
       state.lang = answer.out.lang || code;
       state.ui = words;
       if (answer.out.langs && answer.out.langs.length) state.langs = answer.out.langs;
+      /* And the station changes under it, the way it does on the map:
+         somebody who has just asked for Russian is reading in Russian and
+         listening to Наше Радио, rather than to whatever the language before
+         it was playing. After the words and before the redraw, so the station's
+         name and the sentence on the button change in the same frame as the
+         rest of the page. */
+      window.TTBRadio.language(state.lang);
       applyStaticStrings();
       /* render() writes the deck's own name over this where one is open. */
       document.title = t('flashDocumentTitle');
       renderLanguageSwitch();
       render();
+    });
+  }
+
+  /* ------------------------------------------------------------------ radio
+   * The map's button, playing the map's station, on a page that has no rail
+   * to hang it from: assets/radio.js holds the station list, the <audio> and
+   * the switch, and draws nothing — the page hands over the button in its
+   * header, the words to put on it and somewhere to send the news, and owns
+   * only the one thing that file cannot say, which is a stream that would not
+   * start in the language this page is being read in.
+   *
+   * Mounted once the words are in and not before. What the button carries is
+   * radioPlay and radioStop, and a page mounting it with an empty block would
+   * hand a screen reader the key instead of a sentence — the one thing this
+   * page must never do. Those words ride in with the cards, so the wait is
+   * that one request rather than a second, and a load the route cannot answer
+   * at all leaves the button hidden along with everything else here.
+   *
+   * IT STARTS FROM SILENCE HERE, AND THAT IS THE HOSTNAME
+   *
+   * The radio walks from the map to a list because both are one origin and
+   * sessionStorage is where it writes down what was playing. This page is that
+   * origin at /flashcard and is a site of its own on
+   * flashcard.tallinntastebuds.ee — the same line that leaves ttb.lang empty
+   * there and is why this header has a language switch on it at all. So on the
+   * subdomain a radio playing on the map does not arrive with the visitor, and
+   * the press that starts one is made here. Nothing is done about that: a
+   * subdomain is a different site to a browser, and the alternative is this
+   * page asking the map what it was playing.
+   */
+  function mountRadio() {
+    window.TTBRadio.mount({
+      button: document.getElementById('btn-radio'),
+      name: document.getElementById('radio-name'),
+      lang: state.lang,
+      t: t,
+      onchange: function (what) {
+        if (what === 'fail') toast(t('radioFail'));
+      }
     });
   }
 
@@ -1877,6 +1923,7 @@
       state.langs = answer.out.langs || [];
       applyStaticStrings();
       renderLanguageSwitch();
+      mountRadio();
       document.title = t('flashDocumentTitle');
 
       state.ready = !!answer.out.ready;
