@@ -3151,7 +3151,7 @@ the column it was. One card, one column, is what every other card here is.
 
 ### The second door on that card
 
-**Estonian flashcards**, under the profile: thirty-three decks of Estonian and
+**Estonian flashcards**, under the profile: thirty-four decks of Estonian and
 the ones you write yourself — see **[Flashcards](#flashcards)**. It is a row rather than
 a word along the foot for the reason the profile is: a door is a place to go
 and a word is a thing you do to the account.
@@ -6232,8 +6232,8 @@ this feature exists.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: thirty-three
-decks of Estonian, eight hundred and thirty-four cards, the Estonian on the front
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: thirty-four
+decks of Estonian, one thousand and fourteen cards, the Estonian on the front
 and what it means on the back — in English, Azerbaijani or Russian, whichever the
 page is being read in — and one card at a time with two words under it —
 *Knew it*, and *Show me again*.
@@ -6362,8 +6362,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: thirty-three decks, eight
-hundred and thirty-four cards, deployed as a file and read as one. It is
+`data/decks.json` is the Estonian the site ships: thirty-four decks, one
+thousand and fourteen cards, deployed as a file and read as one. It is
 **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -6471,7 +6471,7 @@ The reason is what a flashcard is, and it is the argument
 makes about the card, carried out to the page around it. A blog post in
 English is a paragraph somebody skips. The back of a flashcard *is* the
 lesson — so a Finnish switch, a Finnish door and a Finnish count wrapped
-around eight hundred and thirty-four English answers is the page promising
+around one thousand and fourteen English answers is the page promising
 something the cards cannot deliver, and it was the Finnish reader who found
 that out one card in. Better to say three and mean them: `?lang=fi` here is
 English throughout, and Finnish everywhere else on the site.
@@ -6609,8 +6609,8 @@ word is a real card, answered the real way, and `keep()` writes that answer
 into the tab as it is given, which is what lets the card say that the one
 already done comes with them.
 
-**And one word rather than one a deck.** A free word in each of thirty-three
-decks is thirty-three words, which is a product rather than a sample: the tab
+**And one word rather than one a deck.** A free word in each of thirty-four
+decks is thirty-four words, which is a product rather than a sample: the tab
 holding any answer at all is what raises the gate, on that deck and on every
 other. That is also what stops the reload button being the way past — the run
 rebuilds itself from what the route answered, and the route has no idea who is
@@ -6624,7 +6624,7 @@ else and is not going to start doing here; and the person it would catch — the
 one who opens a new tab each day to read one Estonian word — is not the person
 the gate is for.
 
-**What is not behind it.** The decks page, whole: thirty-three decks, their
+**What is not behind it.** The decks page, whole: thirty-four decks, their
 names, what each is for and how many cards it holds, all readable signed out
 and for as long as anybody likes. The way out of a gated deck is *All the
 decks* in the head above it, where it stands on every view of a deck. The deck
@@ -6655,7 +6655,7 @@ card at the foot of the decks is drawn under.
 
 **What this costs the search route, measured rather than assumed.** The worry
 was the obvious one: `functions/flashcard.js` writes each deck's words into the
-page as text, `sitemap.xml` points at thirty-three of them, and a gate that a
+page as text, `sitemap.xml` points at thirty-four of them, and a gate that a
 crawler never meets is the soft-paywall shape Google is entitled to take a dim
 view of — on the one route into this page from outside.
 
@@ -6885,7 +6885,7 @@ one thing the page is for.
 
 ### A deck's row
 
-Thirty-three decks and the one that is not a deck, as rows, is most of what
+Thirty-four decks and the one that is not a deck, as rows, is most of what
 this page is. A row is four things: the deck's name in the display face, the
 line under it saying what is in the deck, what is waiting in it, and the
 chevron that says it opens.
@@ -6895,9 +6895,9 @@ day in Tallinn opens and closes with.* That is prose, and prose on this site is
 Literata — the second of the design rules. It arrived mono at eleven points,
 because the row was copied from the account page's doors, where the same line
 reads *everybody's lists, most kept first* and is a label rather than a
-sentence. Thirty-three of them in a column, a clause each, is where the
+sentence. Thirty-four of them in a column, a clause each, is where the
 difference tells: mono says *this is a fact or a control*, and a page that says
-that thirty-three times reads as a table of settings rather than as a shelf of
+that thirty-four times reads as a table of settings rather than as a shelf of
 decks. `assets/blog.css` had already made this argument for a post's standfirst
 and given it a class of its own, so this is that class again — `.flash-why` —
 and a deck nobody wrote a line for still prints its size in the mono, because a
@@ -6909,7 +6909,7 @@ the row left it: nothing in the row took the free space, so the count and the
 chevron shared it between their two auto margins, and the number landed further
 left the longer the line under the name happened to be — a different place on
 every row. It is the one thing here anybody scans, *which deck has something
-waiting for me*, and thirty-three numbers that do not line up cannot be scanned
+waiting for me*, and thirty-four numbers that do not line up cannot be scanned
 at all. What fixed it is one line in `assets/styles.css`: `.menu-say` takes the
 room, so everything after it stands at the end of the row. The account page's
 folds had already hit the same bug and answered it where they stand, and this
@@ -6917,7 +6917,7 @@ is the same answer one level up, where the row is defined.
 
 ### Three levels
 
-Thirty-three decks is far too many for one column, and they are not all for the
+Thirty-four decks is far too many for one column, and they are not all for the
 same person on the same day. So the decks page groups them under three quiet
 headings — **First words**, **Getting by**, **Going deeper** — and a deck
 carries which one it is in as `level` in `data/decks.json`: `start`, `more` or
@@ -6926,9 +6926,10 @@ carries which one it is in as `level` in `data/decks.json`: `start`, `more` or
 *First words* is the twenty words, the pronouns with *olema*, the question
 words, the numbers, the table and the food: what somebody needs in their first
 week. *Getting by* is the street, the shop, the coffee shop, the small talk,
-where somebody is from, the language course they are sitting in, the weather,
-what you wear, the word over a shop door, deciding what to do with a free day,
-how often you do it, and the verbs the rest of the language hangs off. *Going
+who is who in a family, where somebody is from, the language course they are
+sitting in, the weather, what you wear, the word over a shop door, deciding
+what to do with a free day, how often you do it, and the verbs the rest of the
+language hangs off. *Going
 deeper* is the nine that are not about a good day out — the doctor, the
 paperwork, the country past the old town, the cleaner's with your jacket in it,
 the adverbs that belong to no lesson, the second handful of verbs, what *pean*
@@ -6957,7 +6958,7 @@ above it, which is what says which side of the rule the heading is on.
 
 Under each of those three headings the rows used to go in the file's order, and
 the file's order is the order somebody meets the decks in rather than the order
-they are any use in. Thirty-three of them is a great many to leave fixed for
+they are any use in. Thirty-four of them is a great many to leave fixed for
 ever: a deck you had been all the way through sat exactly where it always had,
 above every deck still waiting, for as long as the account lasted. What the
 page is for is picking up where you left off, and the top of the list was the
@@ -7032,7 +7033,7 @@ that is the genitive and the partitive; for a verb it is the *da*-infinitive
 and the first person singular, so **minema, minna, lähen**, which is the same
 three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **508 of the 834 cards
+parts, and a row of three under it would be nonsense. **639 of the 1,014 cards
 carry them** today; the ones that do not are the phrases, the adverbs, the
 garments that are plural in Estonian — *teksad* has no singular anybody wears —
 and a handful of words left alone rather than guessed at. `tools/validate.mjs`
@@ -7049,15 +7050,27 @@ got.
 here. They are the forms of common words and I am confident in them; they have
 not been checked by anybody who grew up with the language.
 
-**One batch of words is a course book's, and that is worth saying.** A hundred
-and eighty-seven of the cards — the pronouns and *olema*, the question words,
-the countries and what you call somebody from one, the language course, and the
-everyday adverbs and nouns the first four lessons of a beginner's course teach
-alongside them — came off the word lists printed at the back of one, headword,
-principal parts and gloss together. So for those the Estonian and the Russian
-are a published book's rather than mine, which is the one part of this deck
-that has been through an editor. The sentences under them and the Azerbaijani
-beside them are still mine, and those are where the mistakes will be.
+**One batch of words is a course book's, and that is worth saying.** Three
+hundred and sixty-seven of the cards — the pronouns and *olema*, the question
+words, the countries and what you call somebody from one, the language course,
+and the everyday adverbs and nouns the first lessons of a beginner's course
+teach alongside them, and then the next four lessons' worth: the clock and the
+timetable, the seasons and the garden, the colours, a family down to its
+in-laws, and forty more verbs — came off the word lists printed at the back of
+one, headword, principal parts and gloss together. So for those the Estonian
+and the Russian are a published book's rather than mine, which is the one part
+of this deck that has been through an editor. The sentences under them and the
+Azerbaijani beside them are still mine, and those are where the mistakes will
+be.
+
+**The verbs are written the way this deck already wrote them**, though, and not
+the way that book prints them. Its list gives every verb as *seisma, seista,
+seisab* — the third person — and the twenty-two in **Verbs you will need** were
+written as *olema, olla, olen* long before it arrived. A learner meeting
+*seisan* on one card and *seisab* on the next is reading two patterns where
+there is one, so the book's third person became a first. The five that no
+person does — *algama*, *lõppema*, *paistma*, *sadama*, *sulama* — keep it,
+because *ma sajan* is not a thing anybody says.
 
 ### And the word in a sentence
 
@@ -7073,9 +7086,10 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **594 of the 834 cards** carry one: every card in the twenty-three
-newer decks bar the ones that are a whole sentence already, and the ones in the
-older decks where an example says something the gloss does not.
+would be a stray clause with no translation. **772 of the 1,014 cards** carry
+one: every card in the twenty-three newer decks and in **Family and relatives**
+bar the ones that are a whole sentence already, and the ones in the older decks
+where an example says something the gloss does not.
 
 They are in the indexed text too, and they are the most searchable thing on the
 page: a whole Estonian sentence with its English under it is what somebody is
@@ -7092,11 +7106,11 @@ quiet press: **Something is wrong here**. It reports the card and says
 and the next card is up.
 
 It is here because of the two paragraphs above it. The Estonian on this site is
-mine, the hundred and eighty-seven headwords out of a course book aside: the
-forms are the forms of common words and I am confident in them, the sentences
-are sentences I would say, and none of it has been read by anybody who grew up
-with the language. Eight hundred and thirty-four cards written that
-way have mistakes in them, and the people turning them over are the only
+mine, the three hundred and sixty-seven headwords out of a course book aside:
+the forms are the forms of common words and I am confident in them, the
+sentences are sentences I would say, and none of it has been read by anybody
+who grew up with the language. One thousand and fourteen cards written that way
+have mistakes in them, and the people turning them over are the only
 proofreaders this deck has ever had.
 
 **One press, and nothing to type.** No box for a reason, no three buttons
@@ -9035,7 +9049,7 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            thirty-three decks of Estonian, 834 cards at three
+data/decks.json            thirty-four decks of Estonian, 1,014 cards at three
                            levels; content rather than interface, and written
                            in three languages rather than the site's ten
 blog.html                  a post per thing this site does   } unlinked, and
