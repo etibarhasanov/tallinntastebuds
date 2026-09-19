@@ -124,8 +124,8 @@ second exception is two files to keep in step.
 **That rule has been tested once and held.** The flashcards page arrived on a
 subdomain of its own, built to be removable the way splitwise is, and wanted a
 file of its own by exactly the same argument. It did not get one: its
-sixty-four `flash*` keys are in `data/ui.json` with everything else, and taking
-the feature out means `grep -n '"flash' data/ui.json` and sixty-four deletions
+sixty-three `flash*` keys are in `data/ui.json` with everything else, and taking
+the feature out means `grep -n '"flash' data/ui.json` and sixty-three deletions
 from ten blocks. What it *does* keep to itself is `data/decks.json` — the words
 on the cards, which are content rather than interface and are written in three
 languages rather than the site's ten. A card's `back`, a deck's `name` and its
