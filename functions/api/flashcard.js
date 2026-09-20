@@ -170,7 +170,7 @@ const HOUR = 3600000;
 
 /* Not a cap on anybody, but on a statement: D1 binds at most a hundred
    parameters to one, so a read that names its rows names ninety-nine of them
-   and keeps the hundredth for the owner. Only missedDeck() below needs it, and
+   and keeps the hundredth for the owner. Only gathered() below needs it, and
    only because MAX_CARDS is twice this. */
 const PER_READ = 99;
 
@@ -238,6 +238,13 @@ const MISSED_DECK = 'missed';
  * and four hundred.
  */
 const GATES = { more: 100, deep: 400 };
+
+/* And the other one: every card, from every deck, that this person has got
+   right at least once — box one and up — with the ones whose wait has come
+   round put first. It is the spacing's own queue, "what to look at again
+   today", gathered out of the same rows in the same way, and its id is
+   reserved for the same reason. */
+const REVIEW_DECK = 'review';
 
 /* Sixteen hex characters: a deck's id, and a card's. Minted rather than
    slugged, because neither ever appears in a link anybody sends — see
@@ -366,7 +373,10 @@ async function knownOf(env, user) {
          seen and got wrong, which is the opposite of knowing it. */
       known: row.box > MISSED,
       missed: row.box === MISSED,
-      due: row.due_at <= now
+      due: row.due_at <= now,
+      /* When it came due, kept so the review deck can put the card that has
+         waited longest first. Nothing else reads it. */
+      at: row.due_at
     });
   }
   return out;
@@ -414,7 +424,7 @@ function deckAnswer(deck, cards, own, known) {
     why: own ? null : (deck.why || null),
     /* Which stage a shipped deck is in, so that a deck opened by its address
        can be held to that stage's gate the way its row is. A deck of your own
-       and the missed deck are in none and are never held. */
+       and the two gathered decks are in none and are never held. */
     level: own ? null : (deck.level || null),
     own: own,
     cards: cards.map((c) => {
@@ -436,36 +446,34 @@ function deckAnswer(deck, cards, own, known) {
   };
 }
 
-/* --------------------------------------------------------- the missed deck
- * Every card in box nought, whichever deck it came from, as one deck. This is
- * the thing people actually want after a run — show me the ones I got wrong —
- * and it is a query rather than a table: the rows are already there, and a
- * second table holding the same cards under a different name is two places
- * for a card to be.
+/* ------------------------------------------------ the two gathered decks
+ * Every card, from every deck, that is sitting in box nought, as one deck —
+ * and every card that has been got right at least once, as another. Each is
+ * the thing people actually want after a run: show me the ones I got wrong,
+ * and show me what I have learnt, when it is time. They are queries rather
+ * than tables: the rows are already there, and a second table holding the
+ * same cards under a different name is two places for a card to be.
  *
  * The cards come back from two places, because the rows do. A shipped deck's
  * card is in data/decks.json, already in hand. One of somebody's own is a row
  * in flashcard_cards, and is fetched by id — capped, like everything here, so
  * an account that has pressed Show me again five hundred times gets the first
- * two hundred rather than a query that grows without a ceiling.
+ * two hundred rather than a query that grows without a ceiling. The review
+ * deck is the one where the cap can bite for an ordinary reader — eight
+ * hundred known cards is somebody who has been through everything the site
+ * ships — which is why the due ones are put in front of the rest before the
+ * cut: what is waiting is never the part that gets left out.
  *
  * Each card keeps the id of the deck it is really from, so that answering it
- * here writes to that row. Nothing is ever written under the id "missed".
+ * here writes to that row. Nothing is ever written under either id.
  */
-async function missedDeck(context, user, decks, known) {
+async function gathered(context, user, decks, id, want) {
   const { env } = context;
-
-  const want = [];
-  known.forEach((was, key) => {
-    if (!was.missed || want.length >= MAX_CARDS) return;
-    const cut = key.indexOf('/');
-    want.push({ deck: key.slice(0, cut), card: key.slice(cut + 1) });
-  });
   if (!want.length) return null;
 
   const cards = [];
   const mine = [];
-  for (const one of want) {
+  for (const one of want.slice(0, MAX_CARDS)) {
     const deck = shippedDeck(decks, one.deck);
     const card = deck && deck.cards.find((c) => c.id === one.card);
     if (card) cards.push({ ...card, deck: one.deck });
@@ -493,7 +501,37 @@ async function missedDeck(context, user, decks, known) {
     for (const row of results || []) cards.push(row);
   }
 
-  return { id: MISSED_DECK, name: null, why: null, cards: cards };
+  return { id: id, name: null, why: null, cards: cards };
+}
+
+/* The rows of a person's, as the "<deck>/<card>" keys knownOf() files them
+   under, split back into the two ids. */
+function keyed(key) {
+  const cut = key.indexOf('/');
+  return { deck: key.slice(0, cut), card: key.slice(cut + 1) };
+}
+
+function missedDeck(context, user, decks, known) {
+  const want = [];
+  known.forEach((was, key) => { if (was.missed) want.push(keyed(key)); });
+  return gathered(context, user, decks, MISSED_DECK, want);
+}
+
+/* Due first, and among the due the one that has waited longest first — a card
+   a fortnight overdue is nearer to being forgotten than one due this morning,
+   and it is the spacing's whole point that it is asked before it goes. The
+   rest follow in the order the rows came, and the page leaves them out of a
+   run until they come round: they are there so that Go through it anyway has
+   the whole of what somebody knows to go through. */
+function reviewDeck(context, user, decks, known) {
+  const due = [];
+  const rest = [];
+  known.forEach((was, key) => {
+    if (!was.known) return;
+    (was.due ? due : rest).push({ ...keyed(key), at: was.at });
+  });
+  due.sort((a, b) => a.at - b.at);
+  return gathered(context, user, decks, REVIEW_DECK, due.concat(rest));
 }
 
 /* ---------------------------------------------------------------- reading */
@@ -532,13 +570,15 @@ export async function onRequestGet(context) {
   };
 
   if (asked) {
-    /* The deck that is not one. Only ever this person's own rows, so there is
-       nothing here to own and nothing to check beyond having a session. */
-    if (asked === MISSED_DECK) {
-      const missed = user ? await missedDeck(context, user, decks, known) : null;
-      if (!missed) return json({ ...base, error: 'not-found' }, 404);
-      const answer = deckAnswer(missed, missed.cards, false, known);
-      answer.missed = true;
+    /* The two decks that are not decks. Only ever this person's own rows, so
+       there is nothing here to own and nothing to check beyond having a
+       session — and nothing to answer without one. */
+    if (asked === MISSED_DECK || asked === REVIEW_DECK) {
+      const which = asked === MISSED_DECK ? missedDeck : reviewDeck;
+      const got = user ? await which(context, user, decks, known) : null;
+      if (!got) return json({ ...base, error: 'not-found' }, 404);
+      const answer = deckAnswer(got, got.cards, false, known);
+      answer[asked] = true;
       return json({ ...base, deck: answer }, 200);
     }
 
@@ -592,11 +632,32 @@ export async function onRequestGet(context) {
     own: false
   }));
 
-  /* And the one that is assembled rather than stored, at the top where it
-     belongs: what somebody got wrong is the most useful thing on this page and
-     the only part of it they did not choose. Left out entirely when it is
-     empty — a row reading "0" would be a standing reminder of nothing. */
-  const missed = [...known.values()].filter((was) => was.missed).length;
+  /* And the two that are assembled rather than stored, at the top where they
+     belong: what somebody got wrong is the most useful thing on this page and
+     the only part of it they did not choose, and what they have learnt is the
+     thing the spacing exists to bring back. Each is left out entirely when it
+     is empty — a row reading "0" would be a standing reminder of nothing.
+
+     The review row counts every known card as its size and the ones whose
+     wait has come round as due, so it reads "6 due" while there is something
+     to do and "40 / 40" when there is not — the same two sentences every
+     other row says, meaning the same things. */
+  const rows = [...known.values()];
+  const learnt = rows.filter((was) => was.known);
+  if (learnt.length > 0) {
+    list.unshift({
+      id: REVIEW_DECK,
+      name: null,
+      why: null,
+      level: null,
+      cards: learnt.length,
+      known: learnt.length,
+      due: learnt.filter((was) => was.due).length,
+      own: false,
+      review: true
+    });
+  }
+  const missed = rows.filter((was) => was.missed).length;
   if (missed > 0) {
     list.unshift({
       id: MISSED_DECK,
@@ -938,6 +999,12 @@ async function reset(context, user, deckId) {
 
   const id = String(deckId || '');
   if (!MINTED.test(id) && !WRITTEN.test(id)) return json({ error: 'not-found' }, 404);
+
+  /* The review deck has nothing of its own to forget: it is every known row
+     there is, and "forget everything I know" is not a button this site
+     offers, so the page never sends this and the route refuses it rather
+     than deleting nothing under a name and reporting that it did. */
+  if (id === REVIEW_DECK) return json({ error: 'not-found' }, 404);
 
   /* Emptying the missed deck is not deleting a deck's rows — it is taking the
      nought off every card that is in it, wherever it came from. Those cards go

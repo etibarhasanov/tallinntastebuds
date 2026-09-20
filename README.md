@@ -7003,7 +7003,8 @@ evidence rather than on a guess.
 empty: every card you have pressed *Show me again* on, from every deck, in one
 place. It is the thing people actually want after a run, and until it existed
 the answer to "show me the ones I got wrong" was to go back through the deck
-they came from and hope.
+they came from and hope. **The deck of what you know**, below, is its
+opposite number and stands under it.
 
 **It is a query, not a table.** There is no row in `flashcard_decks` for it and
 there never will be. A card you get wrong goes into **box nought** — a rung
@@ -7032,6 +7033,62 @@ left out of both numbers on that row, so a deck with three cards you had got
 wrong read "9 / 22" and claimed nothing was waiting, and then opening it ran
 those three. The run was the half that was right. Box nought is exactly "not
 known, and due", and the row prints both halves of that now.
+
+### The deck of what you know
+
+**Words you know** stands under *Words you missed*, whenever there is
+anything in it: every card you have got right at least once, from every deck,
+in one place — with the ones whose wait has come round in front. It is the
+spacing's own queue. A deck's row says "6 due" and opening the deck runs those
+six; this row says how many are due across *all* of them, and opening it runs
+the lot in one sitting, the card that has waited longest first. That is what
+a spaced repetition system is for, and until this deck existed the only way to
+do a day's revision was to open forty-two decks one after another and read
+the number on each.
+
+**It is the same query as the missed deck with the other half of the rows.**
+Box nought is what you got wrong; box one and up is what you know; both decks
+are assembled per request out of `flashcard_known` by `gathered()` in
+`functions/api/flashcard.js`, and neither has a row in `flashcard_decks` or
+ever will. Nothing is stored under the id `review` — `tools/validate.mjs`
+reserves it beside `missed` — and every card in it carries the deck it is
+really from, so answering it here writes to that row, moves that card up a
+box or down to nought, and takes it out of this run and back into its own
+deck's exactly as if it had been answered there.
+
+**The run is what is due, and the deck is everything.** Opening it builds a
+run of the cards whose wait has come round, which is the same rule every deck
+is opened under; the rest are in the deck so that *Go through it anyway* has
+the whole of what you know to go through. That is the on-demand half of what
+was asked for — sit and check every word you have learnt — and it is
+deliberately the same *anyway* every other deck offers rather than a mode of
+its own. **The spacing** below says what the page does when you do not ask,
+and this deck is that sentence applied across the decks rather than a way
+round it: nothing is bumped up a box a day after it was learnt unless you
+asked for the whole deck and pressed *Knew it* on it, and that has been true of
+every deck since the boxes existed.
+
+**The row reads the way every other row reads.** Its size is every card you
+know, its due count is the ones waiting, so it says "6 due" while there is
+something to do and "40 / 40" when there is not — and it is left out entirely
+until you know a card at all, for the reason the missed row is left out at
+nought. The two lifted rows keep the route's order, missed first, rather than
+going through `standing()`: a list of two that swapped itself over on any
+morning something was due would not be worth reading.
+
+**No *Forget what I know* on it.** The button forgets a deck's rows, and this
+deck's rows are every row you have. Forgetting the whole of a language's
+progress from under the run you just finished is not a thing to offer, so the
+page does not draw it here and the route answers the id with a 404 rather
+than deleting nothing under a name and reporting that it did. A card is
+forgotten in the deck it came from. The missed deck's *Forget* is still the
+only write that reaches rows across several decks.
+
+**Capped at two hundred, and the due ones are never the part cut off.**
+`MAX_CARDS` bounds this the way it bounds the missed deck, and eight hundred
+known cards is a reader who has been through everything the site ships. The
+due ones are put in front before the cut, so what the cap costs a reader that
+far along is the tail of their *anyway*, never their morning's revision.
 
 ### The spacing
 
@@ -7118,7 +7175,7 @@ line above it has already said so.
 
 ### A deck's row
 
-Forty-two decks and the one that is not a deck, as rows, is most of what
+Forty-two decks and the two that are not decks, as rows, is most of what
 this page is. A row is four things: the deck's name in the display face, the
 line under it saying what is in the deck, what is waiting in it, and the
 chevron that says it opens.

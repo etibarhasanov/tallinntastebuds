@@ -1182,9 +1182,10 @@
    * Signed out nothing is held: there is no count for somebody the site has
    * never met, and the one-word gate under mark() already stands in front of
    * every deck. With the database off, likewise — the same condition the row
-   * draws its count under. A deck of your own and the deck of what you got
-   * wrong are in no stage, which the route says by giving them no level, so
-   * there is nothing here to look up for them. And a deck with a card already
+   * draws its count under. A deck of your own and the two gathered decks —
+   * what you got wrong, and what you know — are in no stage, which the route
+   * says by giving them no level, so there is nothing here to look up for
+   * them. And a deck with a card already
    * known in it stays open whatever its stage says, because the stages
    * arrived after the decks did and somebody halfway through Going deeper is
    * not to find it shut.
@@ -1226,19 +1227,32 @@
 
   /* ------------------------------------------------------------- the decks */
 
-  /* Every deck has a name and a line under it, and one of them has neither in
-     the data: the missed deck is assembled per request and its words belong to
-     the interface rather than to the content — so they are in data/ui.json,
-     where every other word on this page is, in all ten that file speaks even
-     though this page only ever prints three of them. The rest come out of
-     data/decks.json in the three the decks are written in, which is what
-     means() picks between. */
+  /* Two decks are gathered rather than stored — the words you missed, and the
+     words you know — and everything the page says about a card in one of them
+     names the deck the card is really from. gathered() is the one test for
+     both, so the places that treat them alike cannot come to differ over
+     which of the two they had in mind. */
+  function gathered(deck) {
+    return !!(deck && (deck.missed || deck.review));
+  }
+
+  /* Every deck has a name and a line under it, and two of them have neither
+     in the data: the gathered decks are assembled per request and their
+     words belong to the interface rather than to the content — so they are
+     in data/ui.json, where every other word on this page is, in all ten that
+     file speaks even though this page only ever prints three of them. The
+     rest come out of data/decks.json in the three the decks are written in,
+     which is what means() picks between. */
   function deckName(deck) {
-    return deck.missed ? t('flashMissedName') : means(deck.name);
+    return deck.missed ? t('flashMissedName')
+         : deck.review ? t('flashReviewName')
+         : means(deck.name);
   }
 
   function deckWhy(deck) {
-    return deck.missed ? t('flashMissedWhy') : (means(deck.why) || null);
+    return deck.missed ? t('flashMissedWhy')
+         : deck.review ? t('flashReviewWhy')
+         : (means(deck.why) || null);
   }
 
   function deckRow(deck) {
@@ -1339,9 +1353,9 @@
      Signed out, and with the database off, there is nothing to sort by. Every
      row says how many cards it holds, none of them says what is due, and the
      order stays the file's — the same line deckRow() draws its count under. */
-  function deckList(decks) {
+  function deckList(decks, asIs) {
     var ul = el('ul', { className: 'menu' });
-    var order = (state.user && state.ready)
+    var order = (state.user && state.ready && !asIs)
       ? decks.slice().sort(function (a, b) { return standing(a) - standing(b); })
       : decks;
     order.forEach(function (deck) { ul.appendChild(deckRow(deck)); });
@@ -1375,7 +1389,7 @@
 
   /* The levels, in the order somebody meets them, and the string that names
      each. A deck with no level falls to the end under no heading at all, which
-     is where the missed deck would go if it were not lifted out above. */
+     is where the gathered decks would go if they were not lifted out above. */
   var LEVELS = [
     { id: 'start', key: 'flashLevelStart' },
     { id: 'more', key: 'flashLevelMore' },
@@ -1383,12 +1397,16 @@
   ];
 
   /* The decks the site ships, and the sentence saying what this page is for.
-     The one somebody got wrong goes at the top, above the headings: it is the
-     most useful thing on the page and the only part of it they did not
-     choose. */
+     The two gathered ones go at the top, above the headings, in the order the
+     route sends them and not the order standing() would put them in: what
+     somebody got wrong first, because it is the most useful thing on the page
+     and the only part of it they did not choose, and under it what they know,
+     which is the spacing's own queue and the reason to come back. Sorting
+     them would put the second above the first on any day something is due,
+     and a list of two that swaps itself is not worth reading. */
   function shippedCard() {
-    var ours = state.decks.filter(function (d) { return !d.own && !d.missed; });
-    var missed = state.decks.filter(function (d) { return d.missed; });
+    var ours = state.decks.filter(function (d) { return !d.own && !gathered(d); });
+    var lifted = state.decks.filter(gathered);
 
     var kids = [
       el('p', { className: 'eyebrow', textContent: t('flashEyebrow') }),
@@ -1419,7 +1437,7 @@
       state.ready ? null : el('p', { className: 'lists-say', textContent: t('flashErrOff') })
     ];
 
-    if (missed.length) kids.push(deckList(missed));
+    if (lifted.length) kids.push(deckList(lifted, true));
 
     if (!ours.length) {
       kids.push(el('p', { className: 'lists-none', textContent: t('flashNoneShipped') }));
@@ -1557,10 +1575,10 @@
   }
 
   /* Which deck a card is really from, which is only ever different in the
-     missed deck: that one is assembled out of rows belonging to other decks,
-     and everything said about a card there — the write, and the note that it
-     has had its second turn — has to name the deck it came from rather than
-     the one it is being shown in. */
+     two gathered decks: those are assembled out of rows belonging to other
+     decks, and everything said about a card there — the write, and the note
+     that it has had its second turn — has to name the deck it came from
+     rather than the one it is being shown in. */
   function from(word) {
     return word.deck || state.deck.id;
   }
@@ -2184,7 +2202,7 @@
    *
    * Only on a deck the site ships. A deck you wrote has an editor with a
    * Remove on every row, so reporting your own words to me would be a loop,
-   * and the missed deck is somebody's own rows about cards that are all
+   * and the gathered decks are somebody's own rows about cards that are all
    * reportable in the deck they came from.
    *
    * The Estonian here is mine and has not been read by anybody who grew up
@@ -2192,7 +2210,7 @@
    * it has. See **This card is wrong** under **Flashcards** in README.md.
    */
   function wrongLine(word) {
-    if (state.deck.own || state.deck.missed) return null;
+    if (state.deck.own || gathered(state.deck)) return null;
 
     /* role="status" because the press destroys the thing that was pressed:
        the button is gone by the time this is drawn, so a screen reader that
@@ -2291,8 +2309,15 @@
        of what is known: every card in it is in box nought, so `mine` is nought
        there by construction and the button never appeared at all — on the one
        deck README.md names it for. What it forgets there is the nought on
-       every card in it at once, wherever the card came from. */
-    if (state.user && state.ready && (mine > 0 || state.deck.missed)) {
+       every card in it at once, wherever the card came from.
+
+       The review deck is the opposite case and gets no button: `mine` is the
+       whole of it by construction, and what the button would forget there is
+       every row this person has, from every deck. That is not a thing to
+       offer under a run somebody has just finished, so the deck it came from
+       is where a card is forgotten — and the route refuses the id in any
+       case. */
+    if (state.user && state.ready && !state.deck.review && (mine > 0 || state.deck.missed)) {
       var wipe = el('button', { type: 'button', className: 'alt is-danger', textContent: t('flashForget') });
       wipe.addEventListener('click', function () {
         post(FLASH_API, { action: 'reset', deck: state.deck.id }).then(function (a) {

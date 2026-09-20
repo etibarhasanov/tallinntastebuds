@@ -301,10 +301,11 @@ if (decksFile !== null) {
     /* The three the page draws headings for. A deck with any other level would
        fall to the bottom under no heading, which is a deck nobody finds. */
     const LEVELS = new Set(['start', 'more', 'deep']);
-    /* The one id a shipped deck may not have: functions/api/flashcard.js
-       assembles a deck of that name out of the cards somebody got wrong, and
-       two decks answering to one id is a run that reads the wrong rows. */
-    const RESERVED = new Set(['missed']);
+    /* The two ids a shipped deck may not have: functions/api/flashcard.js
+       assembles a deck of each name out of somebody's own rows — the cards
+       they got wrong, and the cards they know — and two decks answering to
+       one id is a run that reads the wrong rows. */
+    const RESERVED = new Set(['missed', 'review']);
     const deckIds = new Set();
 
     /* A deck's name, the line under it, the back of a card, or what a card's
