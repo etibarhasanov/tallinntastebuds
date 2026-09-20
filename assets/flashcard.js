@@ -7,7 +7,9 @@
  * menu. This is the other half of that: forty-two decks of Estonian, one
  * thousand nine hundred and sixty cards, Estonian on the front and what it
  * means on the back, and one card at a time with two words under it — Knew
- * it, and Show me again.
+ * it, and Show me again. Over the card, how the sitting is going; under it,
+ * on the face that asks, the first letters of the answer for anybody who
+ * wants them.
  *
  * THE BACK IS IN THE LANGUAGE THE PAGE IS BEING READ IN
  *
@@ -53,12 +55,16 @@
  * than a requirement for it, and the <main> it writes into is emptied by
  * render() before anything is drawn.
  *
- * HOW ANYBODY FINDS IT, WHICH IS ONE ROW
+ * HOW ANYBODY FINDS IT, WHICH IS TWO DOORS
  *
- * Nothing in the map's chrome points here. The only link to this page on the
- * whole site is a row on /account.html, behind a sign-in, under somebody's own
- * name — the map's chrome is for finding dinner, and a deck of Estonian is
- * something you go to rather than something that should interrupt you.
+ * A pill on the map's rail, third down, and a row on /account.html behind a
+ * sign-in under somebody's own name. The rail one is the newer of the two and
+ * it reverses a decision rather than dropping it: the map's chrome is still
+ * for finding dinner, but a stranger on the map used to have no way to learn
+ * the decks existed short of signing in first, and that is a stronger silence
+ * than the rule was arguing for. Both wear the same words and report apart —
+ * flash_open_rail against flash_open_account. See **How it is found** under
+ * **Flashcards** in README.md.
  *
  * Unlinked is not hidden, though: the decks are in sitemap.xml and indexed,
  * which is the blog's arrangement rather than the split page's. See
@@ -1342,6 +1348,31 @@
     return ul;
   }
 
+  /* The count itself, with the number set apart from the words around it: it
+     is the thing the eye is meant to land on, and a figure in the middle of a
+     sentence at the sentence's own size is a figure nobody sees.
+   *
+     `state.words` is the number, which is the one the stages are held against
+     — wordsKnown() in functions/api/flashcard.js, shipped decks only, kept in
+     step by mark() as a run goes. There is no second count of the same thing
+     on this page and there should not be: this line says out loud what the
+     stages are already deciding on quietly, which is most of why it belongs
+     here.
+   *
+     Split on the placeholder rather than printed through t()'s substitution,
+     which is how listsBy on the lists page and the rate on a deal card both
+     put something of their own inside a translated sentence. The sentence
+     stays one string in data/ui.json, in all ten languages, so a language that
+     puts the number somewhere else in the line gets it there. */
+  function learnedLine() {
+    var said = t('flashLearned').split('{n}');
+    return el('p', { className: 'flash-learned' }, [
+      said[0] || '',
+      el('b', { textContent: String(state.words) }),
+      said[1] || ''
+    ]);
+  }
+
   /* The levels, in the order somebody meets them, and the string that names
      each. A deck with no level falls to the end under no heading at all, which
      is where the missed deck would go if it were not lifted out above. */
@@ -1363,6 +1394,24 @@
       el('p', { className: 'eyebrow', textContent: t('flashEyebrow') }),
       heading(t('flashTitle')),
       el('p', { className: 'lists-say', textContent: t('flashWhat') }),
+      /* And the one number that is about the person rather than about the
+         decks: how many of the shipped words they know, over every deck.
+         Forty-two rows each saying "9 / 22" is forty-two facts and no score,
+         and this is the one that grows over a month — which is the thing that
+         brings somebody back on a Tuesday.
+       *
+         It is `state.words`, which is to say the stages' own number said out
+         loud rather than a second count of the same thing — the page was
+         already deciding what opens on it and saying nothing about it. See
+         gateFor() above and **How many words you know** in README.md.
+       *
+         Only signed in, only where there is a database to have counted it,
+         and only past nought. A nought here would be the page telling a
+         stranger they have failed at something they have not started, and a
+         count of what is remembered is a promise on a deployment that is
+         remembering nothing. It appears on the load after the first card is
+         known and rises from there. */
+      state.user && state.ready && state.words > 0 ? learnedLine() : null,
       /* Said once, quietly, and only where it is true: the database is not
          bound or this deployment is holding the other half's. Every deck below
          still turns over — they are a file — so this is a line rather than the
@@ -1465,6 +1514,18 @@
    *
    * `back` is which cards have had that second turn, because it is one turn
    * and not an unlimited supply. See mark().
+   *
+   * `said`, `knew` and `again` are the two tallies over the card: how the run
+   * is going, where the bar under it says how far through it is. They count
+   * **cards** rather than answers, which is the whole of what `said` is for —
+   * a card got wrong and then known on its second turn moves from one tally
+   * to the other rather than standing in both, and the two of them always add
+   * up to the cards answered. See mark().
+   *
+   * `hint` is whether the card in hand has been given away a little. It
+   * belongs to the run rather than to the card, because it is about the turn
+   * somebody is taking rather than about the word: answering clears it, and a
+   * card that comes round again at the end of a run arrives unhinted.
    */
   function startRun(all) {
     var cards = (state.deck && state.deck.cards) || [];
@@ -1491,7 +1552,8 @@
        card wrongly called resting is a card that silently leaves the deck. */
     cards.forEach(function (c) { if ((all || c.due !== false) && !c.known) queue.push(c); });
     cards.forEach(function (c) { if ((all || c.due !== false) && c.known) queue.push(c); });
-    state.run = { queue: queue, at: 0, turned: false, back: {} };
+    state.run = { queue: queue, at: 0, turned: false, back: {}, said: {},
+                  knew: 0, again: 0, hint: false };
   }
 
   /* Which deck a card is really from, which is only ever different in the
@@ -1545,7 +1607,14 @@
     TTBTrack.event(knew ? 'flash_knew' : 'flash_again', {
       deck_id: state.deck.id,
       how: how,
-      face: state.run.turned ? 'back' : 'front'
+      face: state.run.turned ? 'back' : 'front',
+      /* And whether the first letters had been asked for before this answer
+         was given, which is the one question a hint raises: a Knew it after a
+         hint is not quite a Knew it, and nothing else here can tell. The
+         spacing is not touched by it — hintLine() says why the answer stays
+         both people's to give — so this parameter is how anybody finds out
+         whether that was the right call. */
+      hint: state.run.hint ? 1 : 0
     });
 
     if (state.user && state.ready) {
@@ -1576,8 +1645,20 @@
       state.run.queue.push(word);
     }
 
+    /* The two tallies over the card, by card rather than by answer. A card
+       answered a second time was already counted once — it is the one this
+       run put back — so it moves across rather than adding to the pair, and
+       Still learning falls by one as Know rises by one. */
+    var said = state.run.said[again];
+    if (said === 'knew') state.run.knew -= 1;
+    else if (said === 'again') state.run.again -= 1;
+    state.run.said[again] = knew ? 'knew' : 'again';
+    if (knew) state.run.knew += 1;
+    else state.run.again += 1;
+
     state.run.at += 1;
     state.run.turned = false;
+    state.run.hint = false;
 
     /* And this is where the gate goes up, signed out: on the answer, in the
        place the next card would have been.
@@ -1628,6 +1709,13 @@
         ]
       : [
           el('p', { className: 'flash-front', textContent: word.front }),
+          /* The first letters of the answer, where they have been asked for.
+             On the card rather than under it, in the quieter of the two faces
+             the back uses, because it is part of the word being asked rather
+             than a control: what changed when the button was pressed is the
+             card, and a hint standing under it would leave the card looking
+             untouched. See hintLine(). */
+          state.run.hint ? el('p', { className: 'flash-hint', textContent: hintOf(word) }) : null,
           el('p', { className: 'flash-turn', textContent: t('flashTurn') })
         ]);
 
@@ -1904,6 +1992,120 @@
     });
   }
 
+  /* The two tallies, over the card: what is still being learnt on the left and
+     what is known on the right, of the cards this run has answered so far.
+   *
+     They are not the bar under the card wearing different words. That one says
+     how far through the deck this sitting is — a fact about the queue — and
+     these say how the sitting is going, which is the thing somebody actually
+     wants to know halfway down a deck and the thing that makes them finish it.
+     Both start at nought and they always add up to the cards answered.
+   *
+     A row of their own above the card rather than either end of the bar under
+     it. Three numbers on one line is two too many at 390 px, which is the
+     phone this page is measured against, and the bar's own count is the one
+     that would have had to go.
+   *
+     The label is the mono every label on this site is in and the number is
+     against it in the display face, which is the arrangement the end of a run
+     already uses for the score it prints. Nothing here is pressable: they are
+     facts about the run, and a count that looks like a button is a count
+     somebody presses. */
+  function tallyRow() {
+    var run = state.run;
+
+    var side = function (key, n, cls) {
+      return el('span', { className: 'flash-tally-side ' + cls }, [
+        el('span', { className: 'flash-tally-n', textContent: String(n) }),
+        el('span', { className: 'flash-tally-say', textContent: t(key) })
+      ]);
+    };
+
+    return el('div', { className: 'flash-tally' }, [
+      side('flashLearning', run.again, 'is-again'),
+      side('flashKnow', run.knew, 'is-knew')
+    ]);
+  }
+
+  /* The first letters of what the word means, for somebody who has it on the
+     tip of their tongue and would otherwise have to turn the card over and
+     lose it.
+   *
+     Two letters, or three where the word is long enough that two say nothing.
+     The meaning is taken in whichever of the three languages this page is
+     being read in, so a hint is in the alphabet the answer is in rather than
+     always in English — Здр… for Здравствуйте.
+   *
+     Two rules past that, and both are about the meanings that are a phrase
+     rather than a word, which is a good third of the decks.
+   *
+     **Half of a word, and no more**, so that a short one is not given away by
+     the thing that was meant to help it: Ice hints I…, and a meaning of one
+     letter — there are two of them, both Russian prepositions — hints nothing
+     at all and draws no button. It applies to a word standing on its own and
+     not to a phrase, because the rest of a phrase is still hidden: How are
+     you? hints Ho…, where halving the first word would have hinted H… and
+     said nothing anybody could use.
+   *
+     **And a phrase that opens with a very short word carries it along whole**
+     — to bring hints to br…, not to…. The little word is not the lesson and
+     spending the hint on it is the same as not offering one.
+   *
+     An empty string means there is nothing here worth hinting, and hintLine()
+     below draws no button rather than one that hands over an ellipsis. */
+  function hintOf(word) {
+    var said = means(word.back).replace(/\s+/g, ' ').trim();
+    if (!said) return '';
+
+    var words = said.split(' ');
+    var lead = '';
+    while (words.length > 1 && words[0].length <= 2) {
+      lead += words.shift() + ' ';
+    }
+
+    var first = words[0];
+    var take = first.length >= 6 ? 3 : 2;
+    if (words.length === 1 && !lead) take = Math.min(take, Math.floor(first.length / 2));
+    if (take < 1) return '';
+
+    return lead + first.slice(0, take) + '…';
+  }
+
+  /* And the press that asks for it, under the card and on the front of it
+     only — the back is the answer, and a hint there would be a button offering
+     what is already on the screen.
+   *
+     Under rather than on the card, which is where the apps that have one of
+     these put it: the card is itself a <button>, so that the thumb, the
+     keyboard and the screen reader all get one target, and nothing pressable
+     can stand inside one. It is an .alt, alone on the row the two answers
+     take over the moment the card is turned.
+   *
+     Pressed, it is gone and the letters are on the card. One hint and not a
+     slow reveal: a second press would be a way of turning the card over
+     without saying so.
+   *
+     The answer afterwards is still both answers. A Knew it that needed a hint
+     is not quite a Knew it, and the honest-looking thing would be to take that
+     press away — but the spacing here is built on one boolean, did you know
+     it, and a page that decides that on somebody's behalf is a page arguing
+     with them about their own memory. So the card is answered the way every
+     card is and the event carries `hint`, which is what will say in a month
+     whether people hint and then know. See **The hint** in README.md. */
+  function hintLine(word) {
+    if (state.run.hint || !hintOf(word)) return null;
+
+    var ask = el('button', { type: 'button', className: 'alt', textContent: t('flashHint') });
+    ask.addEventListener('click', function () {
+      state.run.hint = true;
+      TTBTrack.event('flash_hint', { deck_id: state.deck.id });
+      render();
+      focusRun();
+    });
+
+    return el('div', { className: 'flash-hintline' }, [ask]);
+  }
+
   function runBar() {
     var run = state.run;
     var done = run.at;
@@ -1946,13 +2148,20 @@
   }
 
   function studyView(word) {
-    /* Nothing under the card until it has been turned. Drawing Knew it against
-       a word whose meaning nobody has seen yet would be inviting a press that
-       cannot mean anything — and the way out of the deck is in the head above,
-       where it stands whichever face is up. The card itself is the exception:
-       it can be thrown from the front, and the header of swipe() says why a
-       throw is not the invitation a drawn button would be. */
-    if (!state.run.turned) return [runHead(), faceCard(word), runBar()];
+    /* Neither answer under the card until it has been turned. Drawing Knew it
+       against a word whose meaning nobody has seen yet would be inviting a
+       press that cannot mean anything — and the way out of the deck is in the
+       head above, where it stands whichever face is up. The card itself is
+       the exception: it can be thrown from the front, and the header of
+       swipe() says why a throw is not the invitation a drawn button would be.
+
+       What does stand there on the front is the hint, which is the one press
+       that belongs to a card nobody has seen the meaning of yet — and it is
+       gone by the time the two answers arrive, so the row under the card asks
+       one thing at a time either way. See hintLine(). */
+    if (!state.run.turned) {
+      return [runHead(), tallyRow(), faceCard(word), runBar(), hintLine(word)];
+    }
 
     var acts = el('div', { className: 'flash-acts' });
 
@@ -1964,7 +2173,7 @@
     knew.addEventListener('click', function () { mark(word, true, 'press'); });
     acts.appendChild(knew);
 
-    return [runHead(), faceCard(word), runBar(), acts, wrongLine(word)];
+    return [runHead(), tallyRow(), faceCard(word), runBar(), acts, wrongLine(word)];
   }
 
   /* --------------------------------------------------- this card is wrong
