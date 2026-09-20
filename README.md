@@ -6984,7 +6984,7 @@ one thing the page is for.
 
 ### A deck's row
 
-Thirty-four decks and the one that is not a deck, as rows, is most of what
+Forty-two decks and the one that is not a deck, as rows, is most of what
 this page is. A row is four things: the deck's name in the display face, the
 line under it saying what is in the deck, what is waiting in it, and the
 chevron that says it opens.
@@ -7024,22 +7024,33 @@ carries which one it is in as `level` in `data/decks.json`: `start`, `more` or
 
 *First words* is the first words, the pronouns with *olema*, the question
 words, the numbers, the table and the food: what somebody needs in their first
-week. *Getting by* is the street, the shop, the coffee shop, the small talk,
-who is who in a family, where somebody is from, the language course they are
-sitting in, the weather, what you wear, the word over a shop door, deciding
-what to do with a free day, how often you do it, the colours a shop word is
-half made of, the parts of you the doctor asks about, what is in a kitchen, who
-does what for a living, and the verbs the rest of the language hangs off.
-*Going deeper* is the thirteen that are not about a good day out — the doctor,
-the paperwork, the country past the old town, the cleaner's with your jacket in
-it, the adverbs that belong to no lesson, the second handful of verbs, what
-*pean* and *tahan* do to the verb after them, the words on a page of writing, a
-recipe, what somebody looks like and what they are like, the holidays a year in
-Estonia is cut into, and the other side of the counter, for somebody whose
-shift it is: the customer's half of a café and a restaurant is in the two
-decks above, and this is what the
+week. *Getting by* is the colours a shop word is half made of, the parts of you
+the doctor asks about, the word over a shop door, the shop and its prices, what
+you wear, what is in a kitchen, who is who in a family, the weather, the verbs
+the rest of the language hangs off, where somebody is from, the language course
+they are sitting in, the flat, what day it is, who does what for a living, the
+street, how you are feeling, long and short and a size down, the coffee shop,
+the small talk, how often you do a thing, and deciding what to do with a free
+day. *Going deeper* is the thirteen that are not about a good day out — what
+somebody looks like and what they are like, the holidays a year in Estonia is
+cut into, a recipe, the words on a page of writing, the country past the old
+town, the doctor, the paperwork, the cleaner's with your jacket in it, the
+other side of the counter, for somebody whose shift it is — the customer's
+half of a café and a restaurant is in the two decks above, and this is what the
 person serving them says, in a café, a restaurant, a bar or a shop, so that one
-deck covers a job.
+deck covers a job — what *pean* and *tahan* do to the verb after them, the
+second handful of verbs, and the adverbs that belong to no lesson.
+
+**Inside a stage the file's order is easy to hard**, and that order is a
+judgement about Estonian rather than about code: a deck of eighteen colours
+before a deck of sixty sentences of small talk, concrete nouns before the
+function words that hold a sentence together, one word a card before a phrase
+a card, and the two big decks of verbs and adverbs — a hundred and forty cards
+that belong to no lesson — last of all. It is the order a signed-out visitor
+meets the decks in and the order a signed-in one meets the ones they have not
+started in, so it is worth getting roughly right and not worth arguing about
+to the last row. Somebody who knows the language better than the person who
+sorted them is welcome to move a deck; nothing but the file's order changes.
 
 The headings are `.lists-section`, the same quiet heading `/lists` puts over a
 run of rows, and a level with nothing in it draws no heading: the headings are
@@ -7060,7 +7071,7 @@ above it, which is what says which side of the rule the heading is on.
 
 Under each of those three headings the rows used to go in the file's order, and
 the file's order is the order somebody meets the decks in rather than the order
-they are any use in. Thirty-four of them is a great many to leave fixed for
+they are any use in. Forty-two of them is a great many to leave fixed for
 ever: a deck you had been all the way through sat exactly where it always had,
 above every deck still waiting, for as long as the account lasted. What the
 page is for is picking up where you left off, and the top of the list was the
@@ -7094,7 +7105,9 @@ row goes away: a resting deck is still a row, still opens, and still offers *Go
 through it anyway*, because somebody who wants to sit and read a deck is not to
 be told the spacing has nothing for them today. There is no fourth heading
 either — the three say where you are, and a *Finished* group at the foot would
-put a beginner's deck next to an advanced one.
+put a beginner's deck next to an advanced one. The one row that does not open
+is a deck in a stage not reached yet — **Which decks are open** below — and it
+is still a row, with its name, its line and its size on it.
 
 The sort is **stable**, so inside a rung the order is the one it arrived in:
 the file's for the decks the site ships, most-recently-edited-first for the
@@ -7116,6 +7129,90 @@ a list somebody would read as shuffled. It would be a no-op in any case —
 and every deck is *not started* — which is exactly what the first visit of a
 new account looks like too. Nothing has rearranged itself before anybody has
 answered a card.
+
+### Which decks are open
+
+Forty-two decks is too many to be handed at once, and they are not all for the
+same person on the same day: the section above groups them so that a
+beginner can find the seven that are theirs, and this one holds the other
+thirty-five back until they are. The three levels are **stages** now. *First
+words* is always open. *Getting by* opens when you know **a hundred words**,
+and *Going deeper* when you know **four hundred**, and what is counted is the
+number the rows already print — every shipped card you have said *Knew it* to
+and not since got wrong, added up across every deck.
+
+**What the others do, and which of it this takes.** The flashcard systems
+that pace somebody do it one of three ways. Duolingo's is a path: each unit
+is locked until the one before it is finished, and a test lets you jump. Drops
+is the same shape per topic. Memrise's is levels: a course is cut into them
+and every level is open, so the path is a suggestion. WaniKani's is the one
+this page borrows — the next level opens when enough of the last one has
+reached a stage of the spacing, its *Guru*, which is a count of what you
+**know** rather than of what you have seen — and it borrows Memrise's shape
+around it: a stage, once open, is a shelf you pick from rather than a line
+you walk. Anki, Quizlet, Clozemaster and LingQ lock nothing, and that was the
+arrangement here until now; what it cost was a page of forty-two rows with
+nothing on it to say where to start.
+
+A stage rather than a deck, because a deck is already paced from inside — the
+spacing brings it back, the sort under **And a finished deck sinks** puts the
+one you are in the middle of at the top — and a lock on each deck would have
+been Duolingo's path laid over that, with the two fighting over which deck is
+next. Three numbers rather than forty-two, and the level a deck already
+carries in `data/decks.json` is which of the three it is held to.
+
+**A hundred and four hundred**, and why. A hundred is a third of *First
+words*, reachable in three or four sittings, so the second stage opens the
+same week rather than as a promise about next month; it is also more than the
+first two decks hold, so it cannot be had off greetings alone. Four hundred is
+all of *First words* and a hundred and twenty of *Getting by* — a third of
+what stands below *Going deeper* — which is where somebody has stopped being a
+visitor to the language. Both are lenient beside WaniKani's ninety per cent
+and Duolingo's every unit, on purpose: this is a hobby site and not a course,
+and a gate that is felt as a wall is a gate people leave by. `GATES` in
+`functions/api/flashcard.js` is the pair, and it is the only copy — the route
+answers `words` and `gates` with every request and the page prints them,
+so there is nothing to keep in step.
+
+**What it looks like.** A stage not reached keeps its heading and its rows:
+every deck's name, the line under it and how many cards it holds, readable and
+in their order, so that what is ahead is visible and the count has something
+to be counted towards. Under the heading, once and in the mono, *Opens at 100
+words — 62 to go.* What a row loses is the link and the chevron, since nothing
+about it opens. A deck in that stage reached by its address — a link somebody
+sent, a search result, the back button — draws its head, with *All the decks*
+on it as every deck's head has, and a card in place of the first word saying
+what the stage opens at and how far off it is. And the end of a run that
+crossed a gate says so in one line under the score, *Getting by is open now*,
+because the run is where it happened; the decks page is the way in, as it
+always was, and there is no button.
+
+**What is never held.** Signed out, nothing: there is no count for somebody
+the site has never met, and the one-word gate under **Signed out, one word of
+a deck** already stands in front of every deck, so a visitor's first sight of
+the page is what it was. With the database off, nothing, under the same
+condition the rows draw their counts under. A deck you wrote, and the deck of
+what you got wrong, which are in no stage. And **a deck with a card already
+known in it**, whatever its stage says: the stages arrived after the decks
+did, and somebody halfway through *Going deeper* on the day this landed is not
+to find it shut behind them. That last rule is also what makes the lock a
+door rather than a wall — anybody who was in before stays in — and it is the
+reason a stage can be told apart from a deck at all, since a stage is held
+and a started deck in it is not.
+
+**And a deck of your own does not count**, whichever box its cards are in.
+Twenty decks of ten typed words each, every one pressed *Knew it*, would be
+two hundred words and *Getting by* open; the count is of the Estonian the
+site ships, which is the thing the stages are about. `wordsKnown()` in the
+route sums over `data/decks.json` rather than over the table for exactly this.
+
+**What it does not do.** No test to jump a stage, which is the half of
+Duolingo's arrangement deliberately left out: four hundred words known is the
+test. No lock on the route — a request for a deck in a stage not reached is
+answered, since the page has to draw the card that says so, and the words are
+written into the markup for a crawler in any case; the lock is a page rule
+about what opens, not a rule about who may read a file anybody may read. And
+no per-deck numbers, for the reason two paragraphs up.
 
 ### Three forms, where a word has three
 
@@ -7486,8 +7583,9 @@ deliberately not made in the change that brought this page.
 ### What it does not do
 
 No audio, no pronunciation, no typing the answer in, no matching game, no test
-mode, no streaks, no decks anybody can share, and no notifications — this site
-has no address for anybody, and that has not changed for this. The spacing has
+mode — not even one to jump a stage with — no streaks, no decks anybody can
+share, and no notifications — this site has no address for anybody, and that
+has not changed for this. The spacing has
 six fixed rungs and no per-card ease: see **The spacing** above for why that is
 a decision rather than a first version.
 

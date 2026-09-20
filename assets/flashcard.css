@@ -334,6 +334,25 @@
 .lists-card > .lists-section { margin: 34px 0 0; }
 .lists-section + .menu { margin-top: 10px; }
 
+/* A stage this person has not reached. The line under its heading says what
+   opens it and how far off that is — in the mono, because it is a count and
+   is scanned the way the counts on the rows are — and the rows under it are
+   the same rows, readable, minus the link: deckRow() in assets/flashcard.js
+   draws them without the chevron, so nothing says "this opens" and no hover
+   promises it either. The name loses some of its ink and keeps its face,
+   which is what says these are decks that are there and not yet yours,
+   rather than rows that are broken. See **Which decks are open** under
+   **Flashcards** in README.md. */
+.flash-opens {
+  margin: 8px 0 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.flash-opens + .menu { margin-top: 10px; }
+.menu-row.is-locked { cursor: default; }
+.menu-row.is-locked .menu-name { color: var(--muted); }
+
 /* A form under a list of things, rather than against it. Three cards on this
    page end in one — the decks you wrote, the words in a deck, and the empty
    state of either — and without this the label of the first field sits on the
@@ -345,6 +364,11 @@
 /* ---------- the end of a deck ---------- */
 
 .flash-done { text-align: center; padding: 30px 22px; }
+
+/* The line saying a stage has opened, on the end of the run that opened it:
+   the one sentence on this card that is news rather than a count, so it
+   carries the weight the count around it does not. */
+.flash-opened { font-weight: 600; }
 
 .flash-score {
   margin: 0;

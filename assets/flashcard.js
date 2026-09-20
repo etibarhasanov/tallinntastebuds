@@ -219,6 +219,10 @@
     deck: null,      // the one that is open, whole, with its cards
     run: null,       // the cards left to turn over, and where in them we are
     gated: false,    // whether the gate stands in place of the next card
+    words: 0,        // how many shipped cards this person knows, all decks
+    wordsIn: 0,      // the same number as the route last answered it
+    gates: {},       // what each stage opens at, by level id, off the route
+    locked: false,   // whether the open deck is in a stage not yet reached
     editing: false,  // a deck of your own, being written rather than turned
     editingCard: null, // the one row in the editor showing its fields open, or none
     view: 'in'       // which half of the sign-in form: 'in', 'up' or 'google'
@@ -360,8 +364,11 @@
     state.user = out.user || null;
     state.decks = out.decks || [];
     state.deck = out.deck || null;
+    state.words = state.wordsIn = out.words || 0;
+    state.gates = out.gates || {};
     state.run = null;
     state.gated = false;
+    state.locked = false;
     state.editing = false;
     state.editingCard = null;
 
@@ -392,6 +399,13 @@
         c.due = !was.knew;
       });
       startRun(false);
+      /* And whether this deck is in a stage this person has not reached —
+         opened by its address, or by a link somebody sent, since its row on
+         the decks page is not a link while it is. Held to the same rule as
+         the row: a deck with a card already known in it is one they were in
+         before the stage closed behind them, and it stays open. See
+         gateFor(). */
+      state.locked = !!gateFor(state.deck.level) && !state.deck.cards.some(function (c) { return c.known; });
     }
 
     /* A deck of your own with nothing in it yet opens as the editor rather
@@ -1148,6 +1162,62 @@
     if (state.view === 'in') state.view = 'up';
   }
 
+  /* ---------------------------------------------------------- the stages
+   * The three levels are stages, and the second and third open on how many
+   * words this person knows: `gates` off the route says at what, `words` says
+   * how many, and both are the route's to compute — the page prints them and
+   * never decides them, so there is one copy of the numbers.
+   *
+   * What a stage that has not opened looks like is the same rows, readable,
+   * with a line under the heading saying what opens it; nothing is hidden and
+   * nothing is collapsed, which keeps the promise the sort under standing()
+   * makes. What changes is that a row in it is not a link.
+   *
+   * Signed out nothing is held: there is no count for somebody the site has
+   * never met, and the one-word gate under mark() already stands in front of
+   * every deck. With the database off, likewise — the same condition the row
+   * draws its count under. A deck of your own and the deck of what you got
+   * wrong are in no stage, which the route says by giving them no level, so
+   * there is nothing here to look up for them. And a deck with a card already
+   * known in it stays open whatever its stage says, because the stages
+   * arrived after the decks did and somebody halfway through Going deeper is
+   * not to find it shut.
+   */
+  function gateFor(level) {
+    if (!(state.user && state.ready)) return 0;
+    var gate = state.gates[level] || 0;
+    return gate > state.words ? gate : 0;
+  }
+
+  /* A row on the decks page, where `known` is a count rather than the cards. */
+  function locked(deck) {
+    return !deck.known && gateFor(deck.level) > 0;
+  }
+
+  /* The stages the last run opened, if any: the ones whose gate the count
+     passed since the route answered. The line on the end of a run. */
+  function opened() {
+    return LEVELS.filter(function (level) {
+      var gate = state.gates[level.id] || 0;
+      return gate > state.wordsIn && gate <= state.words;
+    });
+  }
+
+  /* Where the next card would have been, for a deck opened in a stage this
+     person has not reached: the number, how far off it is, and the head above
+     it with All the decks on it — which is the whole of what this owes
+     somebody, the same as the sign-in gate does. */
+  function lockedCard() {
+    var gate = gateFor(state.deck.level);
+    /* Always found: a gate is only ever answered for a level in LEVELS. */
+    var level = LEVELS.filter(function (l) { return l.id === state.deck.level; })[0];
+    return card([
+      el('p', { className: 'eyebrow', textContent: t(level.key) }),
+      heading(t('flashLockedTitle', { n: gate })),
+      el('p', { className: 'lists-say', textContent: t('flashLockedWhy', { known: state.words, left: gate - state.words }) })
+    ]);
+  }
+
   /* ------------------------------------------------------------- the decks */
 
   /* Every deck has a name and a line under it, and one of them has neither in
@@ -1175,6 +1245,24 @@
              : t('flashKnownOf', { known: deck.known, n: deck.cards });
 
     var why = deckWhy(deck);
+
+    /* A row in a stage this person has not reached is the same row, minus the
+       link and the chevron that says it opens, and its count is the deck's
+       size — the one number about it that is true whatever the stage says.
+       The line under the stage's heading says what opens it, once, rather than
+       every row repeating the same number. */
+    if (locked(deck)) {
+      return el('li', { className: 'menu-item' }, [
+        el('div', { className: 'menu-row is-locked' }, [
+          el('span', { className: 'menu-say' }, [
+            el('span', { className: 'menu-name', textContent: deckName(deck) }),
+            el('span', { className: why ? 'flash-why' : 'menu-why',
+                         textContent: why || t('flashCards', { n: deck.cards }) })
+          ]),
+          why ? el('span', { className: 'lists-count mono', textContent: t('flashCards', { n: deck.cards }) }) : null
+        ])
+      ]);
+    }
 
     return el('li', { className: 'menu-item' }, [
       TTBTrack.click(
@@ -1221,7 +1309,7 @@
     return deck.known ? 1 : 2;
   }
 
-  /* Thirty-four decks is a great many to leave in one order for ever, and the
+  /* Forty-two decks is a great many to leave in one order for ever, and the
      file's order is the order somebody meets them in rather than the order
      they are any use in: a deck you had been all the way through sat exactly
      where it always had, above every deck still waiting, for as long as the
@@ -1290,7 +1378,7 @@
     }
 
     /* Grouped by level, with the quiet heading the directory puts over a run
-       of rows. Thirty-four decks in one column was a list to scroll; three short
+       of rows. Forty-two decks in one column was a list to scroll; three short
        under headings is a choice about where you are. A level with nothing in
        it draws no heading — the headings are for the decks, not the other way
        round. */
@@ -1298,6 +1386,13 @@
       var these = ours.filter(function (d) { return d.level === level.id; });
       if (!these.length) return;
       kids.push(el('h2', { className: 'lists-section', textContent: t(level.key) }));
+      /* What this stage opens at and how far off that is, under the heading
+         and once, where the stage is still shut. */
+      var gate = gateFor(level.id);
+      if (gate) {
+        kids.push(el('p', { className: 'flash-opens mono',
+                            textContent: t('flashOpens', { n: gate, left: gate - state.words }) }));
+      }
       kids.push(deckList(these));
     });
 
@@ -1433,6 +1528,12 @@
      keep() above. The run is still this tab's; what changed is that making an
      account at the end of it no longer throws the tab away. */
   function mark(word, knew, how) {
+    /* The count the stages open on, kept in step with the answer so that the
+       end of this run can say a stage has opened without asking the route
+       again — see opened(). A shipped card newly known is one more, a known
+       one got wrong is one fewer, and a deck of your own counts for nothing,
+       the same as wordsKnown() in functions/api/flashcard.js. */
+    if (!state.deck.own && knew !== !!word.known) state.words += knew ? 1 : -1;
     word.known = knew;
     /* `how` is the one thing worth knowing about the three ways of answering:
        whether anybody found the swipe, and whether anybody on a laptop found
@@ -2004,9 +2105,17 @@
 
     var kids = [
       el('p', { className: 'flash-score', textContent: mine + ' / ' + all }),
-      el('p', { className: 'lists-say', textContent: mine >= all ? t('flashAllKnown') : t('flashSomeLeft', { n: all - mine }) }),
-      acts
+      el('p', { className: 'lists-say', textContent: mine >= all ? t('flashAllKnown') : t('flashSomeLeft', { n: all - mine }) })
     ];
+
+    /* And a stage this run opened, said here because here is where it
+       happened: one line, no button, the decks page is the way in as always.
+       Rarely two, and then two lines. */
+    opened().forEach(function (level) {
+      kids.push(el('p', { className: 'lists-say flash-opened', textContent: t('flashOpened', { stage: t(level.key) }) }));
+    });
+
+    kids.push(acts);
 
     return el('section', { className: 'card flash-done' }, kids);
   }
@@ -2208,7 +2317,10 @@
     } else if (state.deck && state.editing) {
       add(editView());
     } else if (state.deck) {
-      if (state.gated) {
+      if (state.locked) {
+        add(runHead());
+        add(lockedCard());
+      } else if (state.gated) {
         /* The head as well as the card. It names the deck this is about, and it
            carries All the decks — which is the whole of what a gate owes
            somebody: the deck stops, the site does not. */

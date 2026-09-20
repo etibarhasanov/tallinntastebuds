@@ -98,7 +98,7 @@ function inEnglish(pack) {
  * case entirely and follow the link; the block above onRequest() says why. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
-  'Thirty-four decks of Estonian, from the first twenty words to a jacket with a ' +
+  'Forty-two decks of Estonian, from the first twenty words to a jacket with a ' +
   'broken zip — the word, its three forms and a sentence to say it in.';
 
 /* The card an unfurler draws, which is this page's own and not the site's.

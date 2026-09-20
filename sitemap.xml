@@ -176,25 +176,28 @@
     <loc>https://tallinntastebuds.ee/flashcard?d=food</loc>
   </url>
   <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=around</loc>
+    <loc>https://tallinntastebuds.ee/flashcard?d=colours</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=body</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=shopsigns</loc>
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=shops</loc>
   </url>
   <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=talk</loc>
+    <loc>https://tallinntastebuds.ee/flashcard?d=shoes</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=clothes</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=kitchen</loc>
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=family</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=countries</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=school</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=time</loc>
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=weather</loc>
@@ -203,73 +206,40 @@
     <loc>https://tallinntastebuds.ee/flashcard?d=verbs</loc>
   </url>
   <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=countries</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=school</loc>
+  </url>
+  <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=home</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=time</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=jobs</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=around</loc>
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=feelings</loc>
   </url>
   <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=health</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=work</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=country</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=clothes</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=shoes</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=shopsigns</loc>
-  </url>
-  <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=describing</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=repairs</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=everyday</loc>
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=cafe</loc>
   </url>
   <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=plans</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=moreverbs</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=modals</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=paper</loc>
+    <loc>https://tallinntastebuds.ee/flashcard?d=talk</loc>
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=often</loc>
   </url>
   <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=service</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=colours</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=body</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=kitchen</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=cooking</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=jobs</loc>
+    <loc>https://tallinntastebuds.ee/flashcard?d=plans</loc>
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=looks</loc>
@@ -279,6 +249,36 @@
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=feasts</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=cooking</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=paper</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=country</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=health</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=work</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=repairs</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=service</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=modals</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=moreverbs</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=everyday</loc>
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/list/all-the-casual-and-solo-places-5xjdth</loc>
