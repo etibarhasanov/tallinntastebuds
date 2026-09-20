@@ -216,6 +216,29 @@ const MISSED = 0;
    the name. */
 const MISSED_DECK = 'missed';
 
+/* ---------------------------------------------------------- the stages
+ * The three levels the decks page groups its rows under are stages now, and
+ * the second and third open on how many words this person knows: a hundred
+ * for Getting by, four hundred for Going deeper. First words is always open.
+ *
+ * What is counted is what is *known* — every shipped card in a box above
+ * nought, which is the same count the row's "9 / 22" is drawn from — rather
+ * than what has been seen. That is WaniKani's rule and not Duolingo's: the
+ * next level there opens when enough of the last one has reached a stage of
+ * the spacing, and here that stage is the first rung, because this page
+ * asks one question and has one answer to count. A deck somebody wrote does
+ * not count, whichever box its cards are in — a hundred words typed and
+ * pressed Knew it on would open every stage — and neither does the deck of
+ * what you got wrong, since box nought is by definition not known.
+ *
+ * The numbers are here rather than in data/decks.json or on the page because
+ * a threshold is a rule about the count and the count is computed here; the
+ * page prints whatever this answer carries, so there is one copy to move.
+ * README.md, **Which decks are open** under **Flashcards**, is why a hundred
+ * and four hundred.
+ */
+const GATES = { more: 100, deep: 400 };
+
 /* Sixteen hex characters: a deck's id, and a card's. Minted rather than
    slugged, because neither ever appears in a link anybody sends — see
    flashcard_decks in db/schema.sql. */
@@ -349,6 +372,18 @@ async function knownOf(env, user) {
   return out;
 }
 
+/* How many of the shipped cards this person knows, across every deck: the
+   number the stages open on. Summed over the decks in the file rather than
+   over the Map, so that a card in a deck somebody wrote — which has its own
+   minted id and is in the same table — is never in it. */
+function wordsKnown(decks, known) {
+  let words = 0;
+  for (const deck of decks) {
+    for (const card of deck.cards) if (stateOf(known, deck.id, card.id).known) words += 1;
+  }
+  return words;
+}
+
 /* What one card's row says, for callers that do not want to think about a
    card that has no row at all. Never answered is not known, not missed, and
    due — which is how an unseen card has always behaved. */
@@ -377,6 +412,10 @@ function deckAnswer(deck, cards, own, known) {
     id: deck.id,
     name: deck.name,
     why: own ? null : (deck.why || null),
+    /* Which stage a shipped deck is in, so that a deck opened by its address
+       can be held to that stage's gate the way its row is. A deck of your own
+       and the missed deck are in none and are never held. */
+    level: own ? null : (deck.level || null),
     own: own,
     cards: cards.map((c) => {
       const was = stateOf(known, c.deck || deck.id, c.id);
@@ -477,17 +516,22 @@ export async function onRequestGet(context) {
   const params = new URL(request.url).searchParams;
   const asked = params.get('deck') || '';
 
+  const known = await knownOf(env, user);
+
   /* What every answer below carries, whichever deck it is about: the three
-     facts about this deployment and this session, and the words the page will
-     print them with. */
+     facts about this deployment and this session, the words the page will
+     print them with, and what the stages open on — how many words this person
+     knows, and the two numbers that count is held against. Those go with
+     every answer and not only the list, because a link to a deck in a stage
+     that has not opened yet lands on that deck and the page has to be able to
+     say so there. */
   const base = {
     ready: ready, google: google, user: who,
+    words: wordsKnown(decks, known), gates: GATES,
     ...(await wordsFor(context, params.get('lang'), DECK_LANGS))
   };
 
   if (asked) {
-    const known = await knownOf(env, user);
-
     /* The deck that is not one. Only ever this person's own rows, so there is
        nothing here to own and nothing to check beyond having a session. */
     if (asked === MISSED_DECK) {
@@ -511,8 +555,6 @@ export async function onRequestGet(context) {
 
     return json({ ...base, deck: deckAnswer(deck, deck.cards, false, known) }, 200);
   }
-
-  const known = await knownOf(env, user);
 
   /* How many of a deck this person knows, and how many of it are waiting for
      them now. The second is the one the row prints when it is not nought —
