@@ -67,7 +67,7 @@
  * rather than one. A group's link is pasted into a message, so that head
  * carries the group's name; a link to this page is sent to somebody too, and
  * carries the picture of a card and the language it was sent in rather than the
- * map's — and, unlike splitwise, the thirty-four decks the site ships are also
+ * map's — and, unlike splitwise, the forty-two decks the site ships are also
  * indexed, so a deck's head and its words are what a search finds. Both are a
  * route, so both are called rather than rewritten to — see the block inside
  * onRequest(), and the note beside splitwise's for what a rewrite does

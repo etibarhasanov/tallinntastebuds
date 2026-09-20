@@ -844,7 +844,7 @@
            things, and the decks you write are one of them — same words,
            same address, a different data-track name so the two report
            apart. See **Flashcards** in README.md, which says why unlinked is
-           not the same as hidden: the thirty-four the site ships are in
+           not the same as hidden: the forty-two the site ships are in
            sitemap.xml and indexed. */
         door('flashDoor', 'flashDoorWhy', '/flashcard', 'flash_open_account')
       ]),

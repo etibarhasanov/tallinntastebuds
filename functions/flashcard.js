@@ -152,7 +152,7 @@ async function decksOf(context) {
 
 /* The decks, as text: what each one is called and the line saying what is in
    it. A list of links, so a crawler that landed on this page walks to the
-   thirty-four under it rather than treating it as a leaf. */
+   forty-two under it rather than treating it as a leaf. */
 function deckList(decks) {
   const row = (deck) =>
     '<li><h2><a href="' + PATH + '?d=' + esc(deck.id) + '">' + esc(inEnglish(deck.name)) + '</a></h2>' +
