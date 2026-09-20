@@ -6238,7 +6238,10 @@ menu. **flashcard.tallinntastebuds.ee** is the other half of that: forty-two
 decks of Estonian, one thousand nine hundred and sixty cards, the
 Estonian on the front and what it means on the back — in English, Azerbaijani
 or Russian, whichever the page is being read in — and one card at a time with
-two words under it — *Knew it*, and *Show me again*.
+two words under it — *Knew it*, and *Show me again*. Over the card, how the
+sitting is going; under it, while the front is up, the first letters of the
+answer for anybody who wants them; and on the decks page, how many words you
+know in all.
 
 It is the second thing on this site that is not about restaurants, and it is
 here for the same reason the first one is: it is what the people this map is
@@ -6482,8 +6485,8 @@ for Russian. So there is a switch, and the next section is it.
 the old argument stands: it is deliberately *not* the arrangement splitwise has,
 where the strings live in a file of their own. The `/site` skill says in so many
 words that there is one such exception and a second would be two files to keep
-in step. So the sixty-three `flash*` keys are in `ui.json`, and taking this
-feature out means taking sixty-three keys out of ten blocks rather than deleting
+in step. So the seventy-four `flash*` keys are in `ui.json`, and taking this
+feature out means taking seventy-four keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
 
@@ -6902,6 +6905,98 @@ is no card and the focus lands on `<main>`, which is where the skip link lands.
 A thumb and a mouse see none of it: focus moved by a script after a pointer
 press draws no ring.
 
+### How the run is going, which is not how far through it is
+
+Over the card, two tallies: **Still learning** on the left and **Know** on the
+right, of the cards this run has answered. Under the card, unchanged, the bar
+and **4 / 18**.
+
+They are two different questions and the page had only ever answered one of
+them. *How far through am I* is a fact about the queue, and it is the one the
+bar was already drawing; *how is this going* is the one somebody is actually
+keeping score of halfway down a deck, and it is the one that makes them finish
+it. A deck of twenty words with seventeen in the right-hand tally is a reason
+to turn the eighteenth over. The same deck saying "18 / 20" is a chore with two
+left in it.
+
+**They count cards, not answers.** A card got wrong goes into the left tally,
+comes round once more at the end of the run — **How a run works** above — and
+on a *Knew it* the second time it moves across rather than standing in both.
+`said` on the run is what remembers which side each card is on; the two of them
+always add up to the cards answered, which is what makes them worth putting at
+the two ends of one row.
+
+Both start at nought and neither is written down anywhere. A run is a sitting,
+the tallies are about that sitting, and what is kept afterwards is the box each
+card moved to — **The spacing** above, and the count in the next section, which
+is the number that survives the tab being closed.
+
+**Their own row, above the card.** The bar's own row was the obvious place and
+it does not fit: three numbers on one line at 390 px is two too many, and the
+one that would have had to go is the one saying how much is left. Neither side
+is pressable and neither is drawn to look it — no pill, no border, no fill:
+the figure is in the display face the score at the end of a run is in, and the
+word beside it is the mono every label on this site wears. Which side is which
+is said in words rather than in colour, the way the throw's own verdict is —
+design rule 10 — and the two differ by weight: what is known is in the ink and
+what is still being learnt is in the muted tone, which is the direction the
+count is meant to travel in.
+
+### The hint
+
+**Give me a hint** stands under the card while the front is up, and pressing it
+puts the first letters of the meaning on the card, under the Estonian. It is
+for the word on the tip of your tongue: without it the only way to find out is
+to turn the card over, and turning it over is the thing you were trying not to
+do.
+
+**Two letters, or three where the word is long enough that two say nothing** —
+*Goodbye* hints `Goo…`, *Hello* hints `He…`. In whichever of the three
+languages the page is being read in, so the hint is in the alphabet the answer
+is in: *Здравствуйте* hints `Здр…`.
+
+Two rules past that, and both are about the backs that are a phrase rather
+than a word, which is a good third of the cards:
+
+- **Half of a word and no more**, so a short one is not given away by the thing
+  that was meant to help it — *Ice* hints `I…`, and the two one-letter backs in
+  the decks (both Russian prepositions) hint nothing and draw no button at all.
+  It applies to a word standing on its own and not to a phrase, because the
+  rest of a phrase is still covered: *How are you?* hints `Ho…`, where halving
+  the first word would have hinted `H…` and said nothing anybody could use.
+- **A phrase that opens with a very short word carries it along whole**: *to
+  bring* hints `to br…` rather than `to…`. The little word is not the lesson,
+  and spending the hint on it is the same as not offering one.
+
+`hintOf()` in `assets/flashcard.js` is the whole of it, and it reads the card
+that is already in the browser — a hint costs no request and there is nothing
+about it on the server.
+
+**One hint, and then the button is gone.** A second press would be a way of
+turning the card over without admitting to it. It belongs to the turn rather
+than to the card: answering clears it, and a card that comes round again at the
+end of a run arrives unhinted.
+
+**Under the card and not on it**, which is where the picture this came from put
+it. The card is itself a `<button>` — that is how the thumb, the keyboard and
+the screen reader all get one target, and it is why the whole card turns over
+rather than a word on it — so nothing pressable can stand inside it. It goes in
+the row that the two answers take over the moment the card is turned, which
+leaves that row asking one thing at a time whichever face is up. The letters
+themselves go on the card, in the muted body face the sentence under an answer
+is in, because what changed when the button was pressed is the card: a hint
+standing under it would leave the card looking untouched.
+
+**And the answer afterwards is still both answers.** A *Knew it* that needed a
+hint is not quite a *Knew it*, and the strict-looking thing would be to take
+that press away. The spacing here is built on one boolean — did you know it —
+and a page that decides that on somebody's behalf is a page arguing with them
+about their own memory, so nothing about the boxes changes. What does happen is
+that the event carries `hint`, beside the `how` and `face` it already carried,
+which is how anybody will find out in a month whether people hint and then
+know. If they do not, greying the *Knew it* is a two-line change made on
+evidence rather than on a guess.
+
 ### The deck of what you got wrong
 
 **Words you missed** sits at the top of the decks page whenever it is not
@@ -6981,6 +7076,45 @@ network each time would be unusable. A write that fails is silent: what it
 costs is that the card comes round again next time, which is the harmless
 direction, and what a toast would cost is an interruption in the middle of the
 one thing the page is for.
+
+### How many words you know, over the whole shelf
+
+One line on the decks page, under the sentence saying what the page is for:
+**You know 134 Estonian words.** Every deck the site ships, one number, with
+the figure set apart from the words around it because the figure is the thing
+the eye is meant to land on.
+
+It is the only thing on that page that is about the person rather than about
+the decks. Forty-two rows each saying "9 / 22" is forty-two facts and no
+score, and a score is what somebody who came back on a Tuesday wants: the
+number that was 128 last week. It is deliberately not a badge, a streak or a
+level — there is nothing to be out of, and a box drawn round it would make it a
+mark rather than a count.
+
+**It is the stages' own number, said out loud.** `wordsKnown()` in
+`functions/api/flashcard.js` is the one that counts it and `words` on every
+answer is how it arrives — see **Which decks are open** below, which is what
+the count was written for and what holds it against a hundred and four
+hundred. There is no second count of the same thing on this page and there
+must not be: the line and the gates would disagree the first time one of them
+was changed, and the disagreement would be about the sentence that says what
+somebody has done. So the same rules apply to it without being restated —
+shipped decks only, a card in box nought is not known, and `mark()` keeps it
+in step as a run goes, so the line is right the moment you walk back out of a
+deck rather than a load later.
+
+What that leaves is a decks page that was already deciding something quietly
+on this number and saying nothing about it. Somebody one word off **Getting
+by** was told how far off they were; somebody who had passed it long ago was
+told nothing at all, on a page whose whole promise is that answering these
+cards adds up to something.
+
+**Signed out there is no line at all**, and none while the count is nought: a
+nought there would be the page telling a stranger they have failed at something
+they have not started. It appears on the load after the first card is known.
+With the database off it is not drawn either — a count of what is remembered is
+a promise a deployment that is remembering nothing should not make, and the
+line above it has already said so.
 
 ### A deck's row
 
@@ -7544,12 +7678,13 @@ and each is fenced or prefixed so it can be found by looking:
 | `functions/_shell.js` | the `flashcard.html` line in `EMPTY`, and the route's line in the header's list. **This is the only file the flashcards changed rather than added to**, and it is one key |
 | `tools/sitemap.mjs` | `DECKS`, `deckIds()`, the two `entries.push` lines and the third argument the three callers pass |
 | `robots.txt` | the paragraph about the flashcards. There is no `Disallow` to put back — see **How it is found** — so removing it is removing a comment |
-| `assets/account.js` | the second `door()` in `youCard()`, which is the only link to the feature on this site |
+| `assets/account.js` | the second `door()` in `youCard()`, one of the two links to the feature on this site |
+| `index.html` | `#btn-flash` on the rail, the other of the two — plain markup, so nothing in `assets/` goes with it |
 | `data/ui.json` | `flashDoor` and `flashDoorWhy` with the rest |
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
-| `data/ui.json` | the sixty-three `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
+| `data/ui.json` | the seventy-four `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
 | `README.md` | this section, its line in **Contents**, its five lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
 | `.claude/skills/api/SKILL.md` | the `/api/flashcard` row, and the flashcards clause in the `/*` row |
@@ -7588,6 +7723,17 @@ share, and no notifications — this site has no address for anybody, and that
 has not changed for this. The spacing has
 six fixed rungs and no per-card ease: see **The spacing** above for why that is
 a decision rather than a first version.
+
+**And no shuffle, and no undo**, both of which were asked for in the same
+sentence the tallies and the hint arrived in. A shuffle undoes the two orders a
+run is built in — what you have never got right first, and, inside that, the
+progression somebody wrote the deck in — so what it would fix is a deck whose
+order has been memorised, which is a rarer complaint than it sounds and one the
+spacing already answers by changing what is due. An undo is the expensive one:
+the answer has already gone to the database by the time anybody wants it back,
+so undoing means a second write and a fourth action on `/api/flashcard`, and
+the card is in box nought meanwhile, which is the harmless direction. Both are
+a description away from being built if they are wanted.
 
 **And no forms on a deck you wrote.** The three principal parts below are a
 field in `data/decks.json`, which is content the repository carries; a deck
@@ -10847,7 +10993,8 @@ Flashcards, `assets/flashcard.js`:
 | `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
 | `page_view` | one per deck opened or closed in the page: `page_title` is the deck, `page_location` its `?d=` URL. The tag counts the load and `TTBTrack.view()` counts the walks, because opening a deck stopped being a load — see **Opening a deck does not load the page** |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
-| `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`) — one per card answered, which of the three ways it was answered, and whether the card had been turned over first: `front` is a throw or an arrow on a card nobody opened |
+| `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`), `hint` (`1`/`0`) — one per card answered, which of the three ways it was answered, whether the card had been turned over first (`front` is a throw or an arrow on a card nobody opened), and whether the first letters had been asked for before the answer was given |
+| `flash_hint` | `deck_id` — the first letters of a meaning asked for, once per card at most. Against `flash_knew` with `hint: 1`, this is what says whether a hint leads to knowing the word — see **The hint** under **Flashcards** |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_editcard`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |

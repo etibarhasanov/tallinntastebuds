@@ -119,6 +119,22 @@
   overflow-wrap: anywhere;
 }
 
+/* The first letters of the answer, on the card, where they have been asked
+   for. In the body face and the muted tone the sentence under an answer is
+   in: it is part of the meaning rather than a control, and it is deliberately
+   quieter than the Estonian above it — the word being learnt stays the loudest
+   thing on the card even when it has been helped. Tracked out a little,
+   because two letters and an ellipsis set tight read as a truncation rather
+   than as something offered. */
+.flash-hint {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 18px;
+  letter-spacing: .04em;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
 /* The three forms a dictionary gives an Estonian noun, on the side that
    answers: the word itself, then the genitive and the partitive. Mono,
    because they are facts about the word rather than a sentence — the same
@@ -239,6 +255,77 @@
 }
 .flash-fill { display: block; height: 100%; background: var(--accent); }
 
+/* ---------- how the run is going ---------- */
+
+/* The two tallies over the card: what is still being learnt on the left, what
+   is known on the right, counted over the cards this run has answered.
+
+   A different question from the bar under the card, which is how far through
+   the deck this sitting is. This is how the sitting is going, and it is the
+   half somebody is actually keeping score of — the number on the right is the
+   one that is supposed to make them finish the deck.
+
+   Above the card rather than at either end of that bar, which is where the
+   room ran out: three numbers on one line at 390 px is two too many, and the
+   one that would have had to go is the one that says how much is left.
+
+   Not pressable, and drawn so that it could not be mistaken for something
+   that is: no pill, no border, no fill. The number is in the display face
+   like the score at the end of a run, and the label beside it is the mono
+   every label on this site is in. Colour says nothing here that the words do
+   not — design rule 10 — so the two sides differ by weight: what is known is
+   in the ink and what is still being learnt is in the muted tone, which is the
+   direction the count is meant to travel in. */
+.flash-tally {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.flash-tally-side {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.flash-tally-n {
+  font-family: var(--display);
+  font-variant-numeric: tabular-nums;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+}
+
+.flash-tally-say {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.flash-tally-side.is-again .flash-tally-n { color: var(--muted); }
+.flash-tally-side.is-knew .flash-tally-n { color: var(--ink); }
+
+/* And the one on the right reads the other way round, so that both numbers
+   stand at the outer edges of the row rather than one of them in the middle
+   of it. Two figures at the two ends is a pair to compare at a glance, which
+   is the whole job of this row; the same two with one tucked inside its label
+   is a line to read. */
+.flash-tally-side.is-knew { flex-direction: row-reverse; }
+
+/* And the press that asks for it, under the card and on its front only.
+   Centred and alone, in the row the two answers take over the moment the card
+   is turned — so that row asks one thing at a time whichever face is up. It is
+   an .alt like every other quiet press on this site; the accent on this
+   surface is spent on Knew it, which is design rule 5. */
+.flash-hintline {
+  display: flex;
+  justify-content: center;
+}
+
 /* The two answers under the card, drawn only once it has been turned over:
    Show me again on the left, and on the right, where a thumb is, the one
    filled action. Design rule 5 — the accent is spent once on this surface and
@@ -319,6 +406,37 @@
   font-size: 13.5px;
   line-height: 1.5;
   color: var(--muted);
+}
+
+/* How many of the shipped words this person knows, over every deck, under the
+   line saying what the page is for. The only thing on the decks page that is
+   about the person rather than about the decks — forty-two rows each saying
+   "9 / 22" is forty-two facts and no score — so it is set apart from the
+   sentence above it and is the one number here in the display face. It is the
+   number the stages open on, printed rather than counted again.
+
+   Not a badge, not a pill, and nothing around it. It is a sentence with a
+   figure in it, and the figure is what the eye lands on: the count is in the
+   ink at the size a name is set in and the words either side of it stay the
+   quiet tone the line above them is in. A box drawn round it would make it a
+   score out of something, and there is nothing to be out of. Close under the
+   sentence it belongs with — the two of them are what the page opens with —
+   and nothing under it, because the room below is the first stage heading's
+   own thirty-four and is settled further down this file. */
+.flash-learned {
+  margin: 14px 0 0;
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.flash-learned b {
+  font-family: var(--display);
+  font-variant-numeric: tabular-nums;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  color: var(--ink);
 }
 
 /* The level's name over the run of decks under it. .lists-section comes from
