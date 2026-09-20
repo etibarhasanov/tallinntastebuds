@@ -4,10 +4,10 @@
  * WHAT THIS PAGE IS
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: thirty-four decks of Estonian, one
- * thousand and fourteen cards, Estonian on the front and what it means on
- * the back, and one card at a time with two words under it — Knew it, and
- * Show me again.
+ * menu. This is the other half of that: forty-two decks of Estonian, one
+ * thousand nine hundred and sixty cards, Estonian on the front and what it
+ * means on the back, and one card at a time with two words under it — Knew
+ * it, and Show me again.
  *
  * THE BACK IS IN THE LANGUAGE THE PAGE IS BEING READ IN
  *
@@ -25,7 +25,8 @@
  * does, switch and all, and the header of DECK_LANGS in
  * functions/api/_lib.js is the whole of why: the back of a flashcard is the
  * lesson rather than the chrome around it, and a Finnish door around one
- * thousand and fourteen English answers is a promise the cards cannot keep.
+ * thousand nine hundred and sixty English answers is a promise the cards
+ * cannot keep.
  * Nothing on this side knows the list — the route narrows it and sends what is
  * left, the same way it settles which of them this is being read in.
  *
@@ -96,7 +97,7 @@
  *
  * One word rather than none, because somebody shown nothing is being asked to
  * sign up for a description, and one word rather than one a deck, because a
- * free word per deck across thirty-four decks is the product. It is the tab's
+ * free word per deck across forty-two decks is the product. It is the tab's
  * word: the run below is sessionStorage, so tomorrow is somebody arriving
  * again, and nothing here follows anybody who has not signed in.
  *
@@ -140,7 +141,7 @@
  * ONE ADDRESS, AND IT IS A DECK
  *
  * ?d=<id> is the whole of the routing. Without it the page is the decks: the
- * thirty-four the site ships, and yours under them. With it, it is that deck,
+ * forty-two the site ships, and yours under them. With it, it is that deck,
  * turning over. A deck somebody wrote has exactly one reader and it is its owner —
  * there is no share link here and holding an id buys nothing, which is the
  * one place this feature deliberately differs from lists and from splitwise.
