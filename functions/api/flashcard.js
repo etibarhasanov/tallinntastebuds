@@ -239,6 +239,36 @@ const MISSED_DECK = 'missed';
  */
 const GATES = { more: 100, deep: 400 };
 
+/* What a stage is shut at for somebody who knows this many words, and nought
+ * where it is open. One test, used by the list and by a deck asked for by its
+ * address, so the two cannot come to disagree about which stage somebody is
+ * in.
+ *
+ * A stage that is shut does not send its decks at all. It used to send every
+ * one of them and leave the page to draw the rows without their links, which
+ * meant the answer carried thirty-five decks nobody could open and the page
+ * had a second copy of the rule to draw them under. Now the shelf the answer
+ * describes is the shelf this person has: the page knows the three stages and
+ * has `gates` and `words`, so it draws the heading and the line saying what
+ * opens it out of what it already holds, and there is nothing to hide.
+ *
+ * Signed out is nought words, so a stranger gets First words and the two
+ * headings above it. That is the point of the stages — a page of forty-two
+ * rows has nothing on it to say where to start — and it is the one thing
+ * about them that changed after they shipped.
+ *
+ * With no database there is no count to hold anybody to: `ready` false means
+ * nothing was read, so nothing is shut and the whole shelf is drawn out of
+ * the file, the way it was before any of this. A deck in no stage — one
+ * somebody wrote, and the two gathered ones — is never held, which is what
+ * `GATES[level]` being undefined says.
+ */
+function shutAt(level, words, ready) {
+  if (!ready) return 0;
+  const gate = GATES[level] || 0;
+  return gate > words ? gate : 0;
+}
+
 /* And the other one: every card, from every deck, that this person has got
    right at least once — box one and up — with the ones whose wait has come
    round put first. It is the spacing's own queue, "what to look at again
@@ -563,9 +593,10 @@ export async function onRequestGet(context) {
      every answer and not only the list, because a link to a deck in a stage
      that has not opened yet lands on that deck and the page has to be able to
      say so there. */
+  const words = wordsKnown(decks, known);
   const base = {
     ready: ready, google: google, user: who,
-    words: wordsKnown(decks, known), gates: GATES,
+    words: words, gates: GATES,
     ...(await wordsFor(context, params.get('lang'), DECK_LANGS))
   };
 
@@ -621,7 +652,14 @@ export async function onRequestGet(context) {
   const dueIn = (deck, cards) =>
     cards.filter((c) => stateOf(known, deck, c.id).due).length;
 
-  const list = decks.map((d) => ({
+  /* And only the decks on the shelf this person has. A stage that has not
+     opened sends none of its rows — shutAt() above says why, and the page
+     draws its heading and the line saying what opens it out of `gates` and
+     `words`, which every answer carries. A deck asked for by its address is
+     not filtered, here or above: an arrival from a search result is not the
+     list, and **Which decks are open** in README.md says why each of the two
+     is held differently. */
+  const list = decks.filter((d) => !shutAt(d.level, words, ready)).map((d) => ({
     id: d.id,
     name: d.name,
     why: d.why || null,

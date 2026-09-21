@@ -147,7 +147,8 @@
  * ONE ADDRESS, AND IT IS A DECK
  *
  * ?d=<id> is the whole of the routing. Without it the page is the decks: the
- * forty-two the site ships, and yours under them. With it, it is that deck,
+ * ones the site ships that this person's stage has opened — seven of the
+ * forty-two before anybody has answered a card — and yours under them. With it, it is that deck,
  * turning over. A deck somebody wrote has exactly one reader and it is its owner —
  * there is no share link here and holding an id buys nothing, which is the
  * one place this feature deliberately differs from lists and from splitwise.
@@ -405,13 +406,19 @@
         c.due = !was.knew;
       });
       startRun(false);
-      /* And whether this deck is in a stage this person has not reached —
-         opened by its address, or by a link somebody sent, since its row on
-         the decks page is not a link while it is. Held to the same rule as
-         the row: a deck with a card already known in it is one they were in
-         before the stage closed behind them, and it stays open. See
-         gateFor(). */
-      state.locked = !!gateFor(state.deck.level) && !state.deck.cards.some(function (c) { return c.known; });
+      /* And whether this deck is in a stage this person has not reached,
+         since it has no row on the decks page while it is and the only way
+         here is its address: a link somebody sent, a search result, the back
+         button, a bookmark from before the stage shut.
+       *
+         Only signed in. Somebody with an account is being paced, and this is
+         the deck their own page is not offering them yet. A stranger is not:
+         they have no count, the stages hold their list rather than their
+         links — gateFor() says why — and the one route into this page from
+         outside is a search result, so the first thing they are shown has to
+         be the thing they came for. What stands in front of them is the
+         one-word gate under mark(), which always did. */
+      state.locked = !!(state.user && gateFor(state.deck.level));
     }
 
     /* A deck of your own with nothing in it yet opens as the editor rather
@@ -1174,31 +1181,35 @@
    * how many, and both are the route's to compute — the page prints them and
    * never decides them, so there is one copy of the numbers.
    *
-   * What a stage that has not opened looks like is the same rows, readable,
-   * with a line under the heading saying what opens it; nothing is hidden and
-   * nothing is collapsed, which keeps the promise the sort under standing()
-   * makes. What changes is that a row in it is not a link.
+   * What a stage that has not opened looks like is its heading and one line
+   * under it saying what opens it, and no rows: the route sends the decks of
+   * an open stage and none of the others, so there is nothing here to draw
+   * without a link and nothing to hide. It used to send all forty-two and
+   * leave the page to draw the rest as rows that did not open, which read as
+   * a page half greyed out and put a second copy of the rule on this side.
    *
-   * Signed out nothing is held: there is no count for somebody the site has
-   * never met, and the one-word gate under mark() already stands in front of
-   * every deck. With the database off, likewise — the same condition the row
-   * draws its count under. A deck of your own and the two gathered decks —
-   * what you got wrong, and what you know — are in no stage, which the route
-   * says by giving them no level, so there is nothing here to look up for
-   * them. And a deck with a card already
-   * known in it stays open whatever its stage says, because the stages
-   * arrived after the decks did and somebody halfway through Going deeper is
-   * not to find it shut.
+   * This is the one question the page still asks of the numbers, and it asks
+   * it twice: once per heading in shippedCard(), so that a shut stage says
+   * what opens it, and once in settle(), for a deck reached by its address.
+   *
+   * With the database off nothing is held — there is no count to hold anybody
+   * to, so the whole shelf is drawn out of the file the way it was before any
+   * of this, which is the same condition a row draws its count under. And a
+   * deck of your own and the two gathered decks — what you got wrong, and
+   * what you know — are in no stage, which the route says by giving them no
+   * level, so there is nothing here to look up for them.
+   *
+   * Signed out is nought words and so the two stages above the first are
+   * shut, headings and all, which is the one thing about the stages that
+   * changed after they shipped: a stranger handed forty-two rows has nothing
+   * on the page telling them where to start, and seven is where to start.
+   * What signed out is not held to is a deck reached by its address — see
+   * settle() — because an arrival from a search result is not the list.
    */
   function gateFor(level) {
-    if (!(state.user && state.ready)) return 0;
+    if (!state.ready) return 0;
     var gate = state.gates[level] || 0;
     return gate > state.words ? gate : 0;
-  }
-
-  /* A row on the decks page, where `known` is a count rather than the cards. */
-  function locked(deck) {
-    return !deck.known && gateFor(deck.level) > 0;
   }
 
   /* The stages the last run opened, if any: the ones whose gate the count
@@ -1265,24 +1276,6 @@
              : t('flashKnownOf', { known: deck.known, n: deck.cards });
 
     var why = deckWhy(deck);
-
-    /* A row in a stage this person has not reached is the same row, minus the
-       link and the chevron that says it opens, and its count is the deck's
-       size — the one number about it that is true whatever the stage says.
-       The line under the stage's heading says what opens it, once, rather than
-       every row repeating the same number. */
-    if (locked(deck)) {
-      return el('li', { className: 'menu-item' }, [
-        el('div', { className: 'menu-row is-locked' }, [
-          el('span', { className: 'menu-say' }, [
-            el('span', { className: 'menu-name', textContent: deckName(deck) }),
-            el('span', { className: why ? 'flash-why' : 'menu-why',
-                         textContent: why || t('flashCards', { n: deck.cards }) })
-          ]),
-          why ? el('span', { className: 'lists-count mono', textContent: t('flashCards', { n: deck.cards }) }) : null
-        ])
-      ]);
-    }
 
     return el('li', { className: 'menu-item' }, [
       TTBTrack.click(
@@ -1446,21 +1439,29 @@
 
     /* Grouped by level, with the quiet heading the directory puts over a run
        of rows. Forty-two decks in one column was a list to scroll; three short
-       under headings is a choice about where you are. A level with nothing in
-       it draws no heading — the headings are for the decks, not the other way
-       round. */
+       under headings is a choice about where you are — and only the stages
+       that have opened have rows under them at all. */
     LEVELS.forEach(function (level) {
       var these = ours.filter(function (d) { return d.level === level.id; });
-      if (!these.length) return;
-      kids.push(el('h2', { className: 'lists-section', textContent: t(level.key) }));
-      /* What this stage opens at and how far off that is, under the heading
-         and once, where the stage is still shut. */
+      /* A stage that has not opened has no rows — the route sends none — and
+         is drawn as its heading and one line saying what opens it and how far
+         off that is. The heading stays because what is ahead has to be
+         visible for the count to have something to be counted towards, and a
+         stage that vanished until it opened would be a page that grew rows
+         nobody asked for.
+       *
+         An open stage with nothing in it draws nothing at all, heading
+         included. That is the older rule and it is about the file rather than
+         about a person: the headings are for the decks, not the other way
+         round. */
       var gate = gateFor(level.id);
+      if (!these.length && !gate) return;
+      kids.push(el('h2', { className: 'lists-section', textContent: t(level.key) }));
       if (gate) {
         kids.push(el('p', { className: 'flash-opens mono',
                             textContent: t('flashOpens', { n: gate, left: gate - state.words }) }));
       }
-      kids.push(deckList(these));
+      if (these.length) kids.push(deckList(these));
     });
 
     var loose = ours.filter(function (d) {
