@@ -8357,6 +8357,18 @@ twelve names per language for this one line. `blogDate` in `ui.json` is the
 fallback underneath, in each language's own order, for an engine with no
 `Intl` at all.
 
+**And for an engine that has `Intl` and has no data for the language**, which
+is the case the fallback was written as theoretical and is not. Chromium draws
+*21 September 2026* in Azerbaijani as **`2026 M09 21`** — the same artefact
+`formatMonth()` in `assets/app.js` exists to dodge — and nothing said so for as
+long as every post was written in English alone, because nobody ever asked this
+page for an Azerbaijani date. `NOT_A_MONTH` in `assets/blog.js` is the guard:
+an `M` and two digits is not a month in any of the ten, so an answer carrying
+one is thrown away and `ui.json`'s names are printed instead. What it cannot
+catch is the other half of the same gap — `Intl` answering *September 21, 2026*
+in **Armenian**, a well-formed date in the wrong language, which there is
+nothing in the string to tell from a right one.
+
 English asks for `en-GB` and not `en`. This site's English is the English the
 write-ups are in, where `2026-08-09` is *9 August 2026*; `en` on its own
 resolves to `en-US` in every engine that has both and draws *August 9, 2026*.
