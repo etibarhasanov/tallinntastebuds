@@ -6624,7 +6624,7 @@ for Russian. So there is a switch, and the next section is it.
 the old argument stands: it is deliberately *not* the arrangement splitwise has,
 where the strings live in a file of their own. The `/site` skill says in so many
 words that there is one such exception and a second would be two files to keep
-in step. So the seventy-four `flash*` keys are in `ui.json`, and taking this
+in step. So the seventy-seven `flash*` keys are in `ui.json`, and taking this
 feature out means taking seventy-four keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
@@ -6854,10 +6854,11 @@ one who opens a new tab each day to read one Estonian word — is not the person
 the gate is for.
 
 **What is not behind it.** The decks this page offers a stranger — *First
-words*, its seven decks, their names, what each is for and how many cards each
-holds, readable signed out and for as long as anybody likes — and every deck
-anybody sends a link to, whichever stage it is in. What a visitor is not
-handed is the other two stages' rows, which is the stages' doing rather than
+words* and *At a restaurant*, their nine decks, their names, what each is for
+and how many cards each holds, readable signed out and for as long as anybody
+likes — and every deck anybody sends a link to, whichever stage it is in. What
+a visitor is not handed is the two gated stages' rows, which is the stages'
+doing rather than
 the account's: **Which decks are open** above is the argument, and the count
 they open on is one an account is what there is to keep. The way out of a
 gated deck is *All the decks* in the head above it, where it stands on every
@@ -7348,32 +7349,44 @@ room, so everything after it stands at the end of the row. The account page's
 folds had already hit the same bug and answered it where they stand, and this
 is the same answer one level up, where the row is defined.
 
-### Three levels
+### Four headings
 
 Forty-two decks is far too many for one column, and they are not all for the
-same person on the same day. So the decks page groups them under three quiet
-headings — **First words**, **Getting by**, **Going deeper** — and a deck
-carries which one it is in as `level` in `data/decks.json`: `start`, `more` or
-`deep`.
+same person on the same day. So the decks page groups them under four quiet
+headings — **First words**, **At a restaurant**, **Getting by**, **Going
+deeper** — and a deck carries which one it is in as `level` in
+`data/decks.json`: `start`, `eat`, `more` or `deep`.
 
 *First words* is the first words, the pronouns with *olema*, the question
-words, the numbers, the table and the food: what somebody needs in their first
-week. *Getting by* is the colours a shop word is half made of, the parts of you
-the doctor asks about, the word over a shop door, the shop and its prices, what
-you wear, what is in a kitchen, who is who in a family, the weather, the verbs
-the rest of the language hangs off, where somebody is from, the language course
-they are sitting in, the flat, what day it is, who does what for a living, the
-street, how you are feeling, long and short and a size down, the coffee shop,
-the small talk, how often you do a thing, and deciding what to do with a free
-day. *Going deeper* is the thirteen that are not about a good day out — what
-somebody looks like and what they are like, the holidays a year in Estonia is
-cut into, a recipe, the words on a page of writing, the country past the old
-town, the doctor, the paperwork, the cleaner's with your jacket in it, the
-other side of the counter, for somebody whose shift it is — the customer's
-half of a café and a restaurant is in the two decks above, and this is what the
-person serving them says, in a café, a restaurant, a bar or a shop, so that one
-deck covers a job — what *pean* and *tahan* do to the verb after them, the
-second handful of verbs, and the adverbs that belong to no lesson.
+words and the numbers: what somebody needs before they need anything else.
+*At a restaurant* is the four decks this site is actually about — the table
+from the door to the bill, what is written on the menu, the coffee shop with
+its order and its milk, and the other side of the counter, what the person
+serving says in a café, a restaurant, a bar or a shop. *Getting by* is the
+colours a shop word is half made of, the parts of you the doctor asks about,
+the word over a shop door, the shop and its prices, what you wear, what is in
+a kitchen, who is who in a family, the weather, the verbs the rest of the
+language hangs off, where somebody is from, the language course they are
+sitting in, the flat, what day it is, who does what for a living, the street,
+how you are feeling, long and short and a size down, the small talk, how often
+you do a thing, and deciding what to do with a free day. *Going deeper* is the
+twelve that are not about a good day out — what somebody looks like and what
+they are like, the holidays a year in Estonia is cut into, a recipe, the words
+on a page of writing, the country past the old town, the doctor, the
+paperwork, the cleaner's with your jacket in it, what *pean* and *tahan* do to
+the verb after them, the second handful of verbs, and the adverbs that belong
+to no lesson.
+
+**Why the restaurant decks are a heading of their own.** They were spread
+across all three of the others — the table and the food in *First words*, the
+coffee shop in *Getting by*, the person serving in *Going deeper*, four
+hundred words away — and this is a site about eating in Tallinn with
+flashcards attached rather than a language course with a restaurant in it. The
+one subject somebody came here for is now one run of four decks, 245 cards, in
+the order an evening happens in: sit down, read the menu, order the coffee,
+understand what is said back. The staff deck is in it for that last reason and
+not because it is for a beginner — it is what you hear rather than what you
+say, and it belongs beside the three decks it answers.
 
 **Inside a stage the file's order is easy to hard**, and that order is a
 judgement about Estonian rather than about code: a deck of eighteen colours
@@ -7381,7 +7394,7 @@ before a deck of sixty sentences of small talk, concrete nouns before the
 function words that hold a sentence together, one word a card before a phrase
 a card, and the two big decks of verbs and adverbs — a hundred and forty cards
 that belong to no lesson — last of all. It is the order anybody meets the
-decks of a stage in — the seven a signed-out visitor is shown, and the ones a
+decks of a stage in — the nine a signed-out visitor is shown, and the ones a
 signed-in one has not started in — so it is worth getting roughly right and
 not worth arguing about to the last row. Somebody who knows the language better than the person who
 sorted them is welcome to move a deck; nothing but the file's order changes.
@@ -7389,7 +7402,7 @@ sorted them is welcome to move a deck; nothing but the file's order changes.
 The headings are `.lists-section`, the same quiet heading `/lists` puts over a
 run of rows, and a level with nothing in it draws no heading: the headings are
 for the decks rather than the other way round. `tools/validate.mjs` fails a
-deck whose level is not one of the three, because a deck under no heading is a
+deck whose level is not one of the four, because a deck under no heading is a
 deck nobody scrolls to.
 
 The room around them is `assets/flashcard.css`'s rather than that heading's
@@ -7469,12 +7482,14 @@ answered a card.
 
 Forty-two decks is too many to be handed at once, and they are not all for the
 same person on the same day: the section above groups them so that a
-beginner can find the seven that are theirs, and this one holds the other
-thirty-five back until they are. The three levels are **stages** now. *First
-words* is always open. *Getting by* opens when you know **a hundred words**,
-and *Going deeper* when you know **four hundred**, and what is counted is the
-number the rows already print — every shipped card you have said *Knew it* to
-and not since got wrong, added up across every deck.
+beginner can find the nine that are theirs, and this one holds the other
+thirty-three back until they are. Two of the four headings are **stages**.
+*First words* is always open, and so is *At a restaurant* — the four decks the
+rest of this site is about are not something to earn, and a stranger at nought
+words gets them with the first words. *Getting by* opens when you know **a
+hundred words**, and *Going deeper* when you know **four hundred**, and what
+is counted is the number the rows already print — every shipped card you have
+said *Knew it* to and not since got wrong, added up across every deck.
 
 **What the others do, and which of it this takes.** The flashcard systems
 that pace somebody do it one of three ways. Duolingo's is a path: each unit
@@ -7493,17 +7508,20 @@ A stage rather than a deck, because a deck is already paced from inside — the
 spacing brings it back, the sort under **And a finished deck sinks** puts the
 one you are in the middle of at the top — and a lock on each deck would have
 been Duolingo's path laid over that, with the two fighting over which deck is
-next. Three numbers rather than forty-two, and the level a deck already
-carries in `data/decks.json` is which of the three it is held to.
+next. Two numbers rather than forty-two, and the level a deck already carries
+in `data/decks.json` is which of them it is held to, or neither.
 
-**A hundred and four hundred**, and why. A hundred is a third of *First
-words*, reachable in three or four sittings, so the second stage opens the
-same week rather than as a promise about next month; it is also more than the
-first two decks hold, so it cannot be had off greetings alone. Four hundred is
-all of *First words* and a hundred and twenty of *Getting by* — a third of
-what stands below *Going deeper* — which is where somebody has stopped being a
-visitor to the language. Both are lenient beside WaniKani's ninety per cent
-and Duolingo's every unit, on purpose: this is a hobby site and not a course,
+**A hundred and four hundred**, and why. A hundred is a quarter of the 397
+cards that stand open to everybody, reachable in three or four sittings, so
+the first gated stage opens the same week rather than as a promise about next
+month; it is also more than the first two decks hold, so it cannot be had off
+greetings alone. Four hundred is those 397 and three cards more — all of
+*First words* and all of *At a restaurant*, which is a tidier line than the
+arithmetic it replaced and the same number it always was: somebody who knows
+the whole of what this site handed them without asking is where *Going deeper*
+opens, and that is where somebody has stopped being a visitor to the
+language. Both are lenient beside WaniKani's ninety per cent and Duolingo's
+every unit, on purpose: this is a hobby site and not a course,
 and a gate that is felt as a wall is a gate people leave by. `GATES` in
 `functions/api/flashcard.js` is the pair, and it is the only copy — the route
 answers `words` and `gates` with every request and the page prints them,
@@ -7534,12 +7552,12 @@ by everything under it. The rows went, the grandfather clause went with them,
 and what is left is the heading, the line, and the decks you can actually
 open.
 
-**Signed out is nought words**, so a stranger gets *First words* and the two
-headings above it with their lines. That is the one thing about the stages
-that changed after they shipped, and it is the whole point of them said at the
-one person who most needs it: forty-two rows handed to somebody who has never
-seen an Estonian word has nothing on it saying where to start, and seven is
-where to start. The one-word gate under **Signed out, one word of a deck**
+**Signed out is nought words**, so a stranger gets *First words* and *At a
+restaurant*, and the two shut headings under them with their lines. That is
+the one thing about the stages that changed after they shipped, and it is the
+whole point of them said at the one person who most needs it: forty-two rows
+handed to somebody who has never seen an Estonian word has nothing on it
+saying where to start, and nine is where to start. The one-word gate under **Signed out, one word of a deck**
 still stands where it always did, in front of every deck this page does offer.
 
 **What is never held.** With the database off, nothing: there is no count to
@@ -7914,7 +7932,7 @@ and each is fenced or prefixed so it can be found by looking:
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
-| `data/ui.json` | the seventy-four `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
+| `data/ui.json` | the seventy-seven `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
 | `README.md` | this section, its line in **Contents**, its five lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
 | `.claude/skills/api/SKILL.md` | the `/api/flashcard` row, and the flashcards clause in the `/*` row |

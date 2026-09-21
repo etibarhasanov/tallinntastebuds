@@ -176,6 +176,12 @@
     <loc>https://tallinntastebuds.ee/flashcard?d=food</loc>
   </url>
   <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=cafe</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=service</loc>
+  </url>
+  <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=colours</loc>
   </url>
   <url>
@@ -230,9 +236,6 @@
     <loc>https://tallinntastebuds.ee/flashcard?d=describing</loc>
   </url>
   <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=cafe</loc>
-  </url>
-  <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=talk</loc>
   </url>
   <url>
@@ -267,9 +270,6 @@
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=repairs</loc>
-  </url>
-  <url>
-    <loc>https://tallinntastebuds.ee/flashcard?d=service</loc>
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=modals</loc>
