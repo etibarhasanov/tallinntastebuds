@@ -13,7 +13,7 @@
  *
  * WHAT IS COUNTED, AND WHAT IS NOT
  *
- * Three kinds, which is the whole of `kind` in db/schema.sql:
+ * Four kinds, which is the whole of `kind` in db/schema.sql:
  *
  *   place    a place opened. selectPlace() in assets/app.js, which is the
  *            same moment TTBTrack.view() reports one to Google Analytics, and
@@ -32,6 +32,11 @@
  *            is what orders /lists, and the number is never drawn on a row.
  *            **Public lists** in README.md says why a ranking without a
  *            scoreboard is the point rather than an omission.
+ *   rail     a pill on the rail down the left of the map pressed — the nine
+ *            in RAIL_PILLS below, which is every button inside #rail and
+ *            nothing else. The radio is not one of them: it left the rail for
+ *            the corner beside the language switch, and a table about the rail
+ *            that carried it would be a table about something else.
  *
  * Nothing else does. A row on somebody's list, a search that narrows to one
  * name, a pin hovered on the way past: none of them is somebody asking for a
@@ -40,7 +45,17 @@
  * counted either: it is one person's row on one list, not on the map or in
  * Google's export, so there is nothing for a ranking to compare it against.
  *
- * THE MAP IS THE RANKING AND THE OTHER TWO ARE FOOTNOTES
+ * Every kind but the rail is counted once per page load, and the rail every
+ * press, which is not an oversight. A place or a chip is a question about
+ * where to eat, asked once however many times the card is reopened while
+ * somebody makes their mind up — and it has to agree with the one page view
+ * TTBTrack.view() reports beside it. A pill is a press, GA is sent an event
+ * per press of one, and the question this table answers is the plain one:
+ * which of the nine buttons do people actually push, and how often. Counting
+ * that once a load would answer "how many visits pressed it at all", which is
+ * a quieter question nobody asked.
+ *
+ * THE MAP IS THE RANKING AND THE OTHER THREE ARE FOOTNOTES
  *
  * The answer carries the map's own places in full, zeros included, because
  * those are the places this site is about and the bottom of that list is as
@@ -49,7 +64,8 @@
  * was asked for. The 1,110 Google venues are an array of their own and only
  * the ones somebody has actually pressed, capped at VENUES — a thousand rows
  * tied at nought is not a ranking, and the directory is not the map. The
- * filters are the third array, in full, because there are fourteen of them.
+ * filters are the third array, in full, because there are fourteen of them,
+ * and the rail is the fourth, in full, because there are nine.
  *
  * WHAT A FAILURE LOOKS LIKE
  *
@@ -62,7 +78,7 @@
  * request itself was malformed, because a press that did not get counted is
  * not something a visitor should ever be told about.
  *
- * A FOURTH NUMBER, ABOUT THE SITE RATHER THAN ABOUT A PRESS
+ * ONE NUMBER ABOUT THE SITE RATHER THAN ABOUT A PRESS
  *
  * `users` is how many accounts exist, `SELECT COUNT(*) FROM users` read fresh
  * on every cache miss — the table is small enough that a running counter
@@ -102,11 +118,37 @@ const TTL = 300;
    is one query however many venues have been pressed. */
 const VENUES = 25;
 
-/* The three kinds of thing a press can be about. In one place because the POST
+/* The four kinds of thing a press can be about. In one place because the POST
    checks what it was given against it and the GET splits the rows on it. */
 const PLACE = 'place';
 const FILTER = 'filter';
 const LIST = 'list';
+const RAIL = 'rail';
+
+/* The pills on the rail, top to bottom as index.html stands them, each with
+   the string data/ui.json already names it by — the same string the button
+   wears as its own label on the map, so the table reads as the rail does and
+   nothing new was written into ten languages to name a button that is already
+   named. The ids are the keys hintPill() in assets/app.js uses for the same
+   nine buttons, which is where they came from.
+
+   Written out here because a pill is not a row in any file this side can
+   open: the chips come out of data/taxonomy.json and this is markup. So it is
+   the arrangement DEAL_FILTER above has — a button added to the rail is
+   counted once it is named here and not before, and RAIL_PRESS in
+   assets/app.js is the other half of the pair. The radio is deliberately
+   absent: it is not in #rail. */
+const RAIL_PILLS = [
+  { id: 'account', label: 'accountOpen' },
+  { id: 'lists', label: 'listsAllTitle' },
+  { id: 'flash', label: 'flashDoor' },
+  { id: 'random', label: 'randomPick' },
+  { id: 'ask', label: 'askOpen' },
+  { id: 'style', label: 'styleLabel' },
+  { id: 'locate', label: 'locate' },
+  { id: 'explain', label: 'explainOpen' },
+  { id: 'feedback', label: 'feedbackTitle' }
+];
 
 /* The one chip on the map that is not a type out of data/taxonomy.json.
    DEAL_FILTER in assets/app.js is the same string, and it is written out twice
@@ -147,7 +189,9 @@ export async function onRequestGet(context) {
   const hit = await cache.match(key);
   if (hit) return hit;
 
-  const empty = { ready: false, opens: 0, users: 0, map: [], venues: [], filters: [], ...words };
+  const empty = {
+    ready: false, opens: 0, users: 0, map: [], venues: [], filters: [], rail: [], ...words
+  };
   if (!env.DB) return json(empty, 200, TTL);
   /* A deployment holding the other environment's database answers as though it
      had no database at all — the same rule /api/saves follows, and for the
@@ -239,9 +283,10 @@ export async function onRequestGet(context) {
   for (const row of rows) if (row.kind === PLACE) opens += row.n;
 
   const filters = await ranked(context, words, countOf);
+  const rail = railed(words, countOf);
 
   /* How many accounts exist, about the site rather than about a press — see
-     A FOURTH NUMBER above. Failing this never fails the ranking: a table not
+     ONE NUMBER ABOUT THE SITE above. Failing this never fails the ranking: a table not
      yet applied answers 0, the same way press_counts answers empty. */
   let users = 0;
   try {
@@ -252,7 +297,11 @@ export async function onRequestGet(context) {
   }
 
   const res = json(
-    { ready: true, opens: opens, users: users, map: map, venues: venues, filters: filters, ...words },
+    {
+      ready: true, opens: opens, users: users,
+      map: map, venues: venues, filters: filters, rail: rail,
+      ...words
+    },
     200, TTL
   );
   context.waitUntil(cache.put(key, res.clone()));
@@ -300,6 +349,35 @@ async function ranked(context, words, countOf) {
   return rows.sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
 }
 
+/* Every pill on the rail, most pressed first, named in the reading language.
+ *
+ * In full rather than only the pressed ones, for the reason the chips above
+ * are in full: a button nobody presses is the answer to the question this
+ * table is for. The rail is nine pills deep on a phone and the cascade that
+ * introduces them is timed to the sentence under the mark — see
+ * introduceRail() in assets/app.js — so which of them earns its slot is a
+ * question with a real cost behind it.
+ *
+ * The tie-break is the rail's own order and not the name: nine buttons on
+ * nought sorted alphabetically is a list nobody can read against the thing it
+ * describes, and top-to-bottom is how they are stood. A pill whose label is
+ * missing from the block is dropped rather than printed as its id, which is
+ * the rule the chips follow — the validator fails the build on a missing
+ * string, so it should not be reachable.
+ */
+function railed(words, countOf) {
+  return RAIL_PILLS
+    .map((pill, at) => ({
+      id: pill.id,
+      name: words.ui[pill.label],
+      n: countOf(RAIL, pill.id),
+      at: at
+    }))
+    .filter((row) => typeof row.name === 'string' && row.name)
+    .sort((a, b) => b.n - a.n || a.at - b.at)
+    .map((row) => ({ id: row.id, name: row.name, n: row.n }));
+}
+
 /* What the colo files the answer under: the route and the language, and never
    the rest of the address. The page sends its whole list of candidate
    languages — "et,en,ru" — and the answer only depends on which one of them
@@ -324,9 +402,7 @@ export async function onRequestPost(context) {
     return json({ error: 'body' }, 400);
   }
 
-  const kind = body.kind === FILTER || body.kind === PLACE || body.kind === LIST
-    ? body.kind
-    : '';
+  const kind = [PLACE, FILTER, LIST, RAIL].indexOf(body.kind) !== -1 ? body.kind : '';
   const id = typeof body.id === 'string' ? body.id.trim() : '';
   if (!kind || !id || id.length > 128) return json({ error: 'press' }, 400);
 
@@ -336,11 +412,10 @@ export async function onRequestPost(context) {
   if (!env.DB) return json({ ok: false }, 200);
   if (await wrongDatabase(env)) return json({ ok: false }, 200);
 
-  const real = kind === PLACE
-    ? await realPlace(context, id)
-    : kind === LIST
-      ? await realList(context, id)
-      : await realFilter(context, id);
+  const real = kind === PLACE ? await realPlace(context, id)
+             : kind === LIST ? await realList(context, id)
+             : kind === RAIL ? realPill(id)
+             : await realFilter(context, id);
   if (!real) return json({ ok: false }, 200);
 
   /* One statement, and the row is made by the same one that increments it. The
@@ -423,6 +498,14 @@ async function realList(context, id) {
   } catch (e) {
     return false;
   }
+}
+
+/* And whether that id is a pill the rail actually draws. RAIL_PILLS is the
+   whole of it: nine ids written into this file, checked against so that the
+   table cannot fill with names of buttons that do not exist. The radio is not
+   one of them and neither is anything in the header. */
+function realPill(id) {
+  return RAIL_PILLS.some((pill) => pill.id === id);
 }
 
 /* And whether that id is a chip the map actually draws: a type out of the
