@@ -10906,7 +10906,11 @@ the length of the page to travel. It wears the rail's own pill, so it reads as
 one of its buttons rather than as a stray card parked beneath them.
 
 **On a phone it stands in the bottom-right corner instead**, above the
-attribution strip. Not the corner it came from: the other one, which is where
+attribution strip and a little above the bottom edge of the glass, where the
+phone's own swipe-up gesture lives. Everything else centred at the foot of a
+phone — the toast, the offer of an account — stands on a shelf above it, so
+nothing is ever drawn across the corner; `--above-locate` in the stylesheet
+is that shelf and is written once so the two cannot drift apart. Not the corner it came from: the other one, which is where
 every map anybody has used on a phone keeps it, and which is under the thumb
 that is already panning the city rather than across the screen under the hand
 holding the phone. It is the only pill on the rail that gets pressed in the
@@ -10916,6 +10920,17 @@ first and found second. With a place open it rides the strip above the sheet,
 at the right end of the row the rail becomes there; with the chat or a
 full-height sheet up it goes with the rail. Above 860px nothing moves: a
 pointer has no reach worth saving and the column reads as one list.
+
+**It is also the one pill on the rail that is not drawn in the accent.** The
+map is the style's own red from the pins up, so a red crosshair on red paper
+in the corner was one more red thing to find rather than the one control that
+is about you. It wears `--here` instead — the hue the dot it drops is painted
+in, chosen in the palette to be one neither accent uses: blue against brick,
+warm amber against green. Press it and the colour you pressed is the colour
+that appears on the map. It is the glyph, the centre dot, and the border and
+label under a pointer; the pill itself stays paper, so it is still one of the
+rail's shapes. This part is not narrowed to a phone — a crosshair is not a
+place at any width.
 
 It stays one of the rail's children in the markup, so `RAIL_PRESS`, the
 introduction cascade and the walk all still find it where they left it; the
