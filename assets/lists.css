@@ -171,22 +171,55 @@
   padding: 12px max(var(--gap), var(--safe-r)) calc(12px + var(--safe-b))
            max(var(--gap), var(--safe-l));
 }
-/* The button: .go out of assets/styles.css, sized to its words and centred on
-   the column the page reads at. Two pixels of padding over a stock .go on each
-   side, which is what takes it to the 44px a thumb is drawn against — it is
-   the one control on this site that has to be hit while somebody is scrolling
-   past it. */
-.lists-dock-out {
-  margin: 0 auto;
+/* The pill in either band: .go out of assets/styles.css, sized to its words.
+   Two pixels of padding over a stock .go on each side, which is what takes it
+   to the 44px a thumb is drawn against — these are the only controls on this
+   site that have to be hit while somebody is scrolling past them. Written on
+   the band rather than on each of the two, because it is the band that makes
+   it true. */
+.lists-dock .go {
   padding: 13px 22px;
   max-width: 100%;
 }
-/* Room for it under the last card. The class is set by render() in
-   assets/lists.js on the one view that draws one, and the room is made on the
+/* Somebody else's band holds only the way out, so the margin is what centres
+   it on the column the page reads at. */
+.lists-dock-out { margin: 0 auto; }
+/* Your own holds two — see listDockMine() in assets/lists.js. Centred as a
+   pair rather than pushed to the two ends, and allowed to become two rows
+   rather than shrink: a pill squeezed until its label wraps inside it is worse
+   than a band two rows tall. At 390px, the width the README measures against,
+   the pair fits on one row in all ten languages; at 320px it fits in none of
+   them. Which is why the room under it is measured rather than written down —
+   see below. */
+.lists-dock-mine {
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px 16px;
+}
+/* Room for it under the last card. The class is set by paintView() in
+   assets/lists.js on the views that draw one, and the room is made on the
    column rather than on the body: a body whose overflow has been propagated
    to the viewport does not count its own bottom padding as scrollable, so the
-   last card sat under the bar however much padding the body was given. */
-.lists-body.has-dock .lists-main { padding-bottom: calc(92px + var(--safe-b)); }
+   last card sat under the bar however much padding the body was given.
+
+   THE ROOM IS MEASURED, NOT WRITTEN DOWN
+   It was 92px for as long as the band held one pill and nothing else. Your own
+   list's holds two — see listDockMine() in assets/lists.js — and two controls
+   in a row is a row that wraps: one row at 390px in all ten languages, two at
+   320px in every one of them. A number here that was right for one row puts the
+   last place on the list under the band, which is the exact thing the band was
+   added to stop, and the height it has to be is a function of two translated
+   labels rather than of the width — so it would go stale on a reworded string
+   as easily as on a narrow phone.
+
+   So dockRoom() in assets/lists.js watches the band and writes its height into
+   --dock-room, and this adds the air above it. The fallback is the one-row
+   band, for the frame between the page drawing and the observer's first call
+   and for a browser with no ResizeObserver. */
+.lists-body.has-dock .lists-main {
+  padding-bottom: calc(var(--dock-room, 72px) + 24px);
+}
 
 .lists-card { padding: 22px 22px 20px; }
 
@@ -1469,6 +1502,9 @@ body.has-scrim { overflow: hidden; }
   .lists-find,
   .item.is-slot,
   .lists-foot,
+  /* A band fixed to the bottom of the window prints as a band across the
+     bottom of the first sheet of paper, over whatever rows were there. */
+  .lists-dock,
   .item-moves,
   .item-input,
   .toast,

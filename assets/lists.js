@@ -641,9 +641,67 @@
 
   /* ----------------------------------------------------------------- render
    * One function decides which of the page's states is on screen, so nothing
-   * can be left over from the one before it.
+   * can be left over from the one before it. paintView() below is that
+   * function; render() is it plus the one thing that can only be done once it
+   * has finished.
    */
   function render() {
+    paintView();
+    /* After, and not inside: the band's height is not knowable until it is in
+       the document, and every one of paintView()'s five ways out either draws
+       one or leaves the page without one. */
+    dockRoom();
+  }
+
+  /* How much air the last card needs under it so the band at the foot of the
+     window is not standing on it.
+
+     It was a number in the stylesheet while the band held one pill: 92px, which
+     was that pill plus its padding plus a breath. Your own list's band holds
+     two controls — see listDockMine() — and a row of two controls wraps. At
+     390px, the width this site is measured against, the pair fits on one row in
+     all ten languages; at 320px it fits in none of them and the band is two
+     rows tall. A number written for one row is then wrong by the height of the
+     other, and it is wrong in the direction that hides the last place on the
+     list, which is the thing the band exists to stop happening to the buttons.
+
+     A breakpoint would cover the width. What it would not cover is the reason
+     the width is not the whole question: the band is as tall as its two labels
+     wrap, and those are ten translations of two strings that anybody may reword
+     and that an eleventh language will arrive beside. A number here would go
+     stale on that day, silently, and in the same direction. A measurement
+     cannot.
+
+     An observer rather than a resize listener for the same reason — the band
+     changes height without the window changing size, when a font finishes
+     loading or the strings arrive a beat after the markup. Where there is no
+     ResizeObserver the one measurement taken here still holds, and the fallback
+     in the stylesheet holds before that. */
+  var roomWatch = null;
+
+  function dockRoom() {
+    if (roomWatch) { roomWatch.disconnect(); roomWatch = null; }
+
+    var dock = dom.main.querySelector('.lists-dock');
+    if (!dock) {
+      document.body.style.removeProperty('--dock-room');
+      return;
+    }
+
+    function write() {
+      document.body.style.setProperty('--dock-room', dock.offsetHeight + 'px');
+    }
+    write();
+
+    if (window.ResizeObserver) {
+      roomWatch = new ResizeObserver(write);
+      roomWatch.observe(dock);
+    }
+  }
+
+  /* The states themselves. Every way out of this leaves <main> holding exactly
+     one of them. */
+  function paintView() {
     clear(dom.main);
     /* The Save button is about to be rebuilt, or not drawn at all on a view
        that has none. A mark still pointing at the old node would be painting
@@ -658,12 +716,15 @@
        at boot so a view that is not the directory never inherits it. */
     dom.main.classList.toggle('is-wide', state.view === 'all');
 
-    /* Somebody else's list is the one view with a bar fixed to the foot of the
-       window, and the page has to keep its last card out from under it. Set
-       here, beside the width, for the same reason: one place decides, so no
-       view can inherit it from the one before. */
+    /* A list read on its own page is the one view with a bar fixed to the foot
+       of the window, and the page has to keep its last card out from under it.
+       hasDock() is the same question renderOne() asks before drawing one, and
+       it is asked in both places rather than remembered in a flag — the room
+       and the bar have to agree, and two states cannot disagree if there is
+       only one of them. Set here, beside the width, for the same reason: one
+       place decides, so no view can inherit it from the one before. */
     document.body.classList.toggle('has-dock',
-      state.view === 'one' && !!state.list && !state.list.mine);
+      state.view === 'one' && !!state.list && hasDock(state.list));
 
     if (!state.reached) { dom.main.appendChild(renderUnreachable()); return; }
     if (!state.ready) { dom.main.appendChild(renderNotReady()); return; }
@@ -1596,12 +1657,16 @@
         ol.appendChild(slotRow(slot));
       }
       wrap.appendChild(ol);
-      wrap.appendChild(el('div', { className: 'lists-row lists-foot' }, [
-        /* Under three, the empty rows above are the invitation and a second
-           one here would only ask the same question twice. */
-        list.items.length < MIN_ITEMS ? null : button(t('listsAddMore'), 'go', openPicker),
-        button(t('listsDelete'), 'alt is-danger', deleteList)
-      ]));
+      /* Under three, the empty rows above are the invitation and a second one
+         here would only ask the same question twice — so the two controls are
+         a row at the end of a page that is three rows long, which is a page
+         you can see the end of. Past three they move into the dock: see
+         hasDock(). */
+      if (!hasDock(list)) {
+        wrap.appendChild(el('div', { className: 'lists-row lists-foot' }, [
+          button(t('listsDelete'), 'alt is-danger', deleteList)
+        ]));
+      }
     } else if (!list.items.length) {
       wrap.appendChild(el('p', { className: 'lists-none', textContent: t('listsEmpty') }));
     } else {
@@ -1613,13 +1678,18 @@
       wrap.appendChild(dom.found);
       paintFound();
     }
-    /* Somebody else's list used to end with a way back to the map and then
-       three more lists and a way to all of them — this site's directory
-       redrawn small at the foot of one page, and reachable only by somebody
-       who had scrolled the whole list to find it. Both of the doors that
-       replace it are fixed to the window instead, so they are there for the
-       whole of the read rather than at the end of it. */
-    if (!list.mine) wrap.appendChild(listDock());
+    /* And the band at the foot of the window, which both kinds of list end
+       with and which carries a different thing on each — see listDock() and
+       listDockMine().
+
+       Somebody else's used to end with a way back to the map and then three
+       more lists and a way to all of them, this site's directory redrawn small
+       at the foot of one page and reachable only by somebody who had scrolled
+       the whole list to find it. Your own ended with the two controls that are
+       in the band now. Both were the same mistake: a thing you want partway
+       through a list, put where you arrive after the list is finished with
+       you. */
+    if (hasDock(list)) wrap.appendChild(list.mine ? listDockMine() : listDock());
 
     return wrap;
   }
@@ -1868,6 +1938,60 @@
         href: ALL_PATH,
         textContent: t('listsAllTitle')
       }), 'lists_all')
+    ]);
+  }
+
+  /* WHICH LISTS GET A BAND AT THE FOOT OF THE WINDOW
+   *
+   * Both kinds, and for the same reason, which is that a list is as long as
+   * somebody made it: twenty rows each carrying an address and a note is four
+   * or five screens on a phone and two on a desk, and anything drawn after the
+   * last of them is a thing you only meet by scrolling to the end of a page
+   * you had no other reason to reach the end of.
+   *
+   * Somebody else's has had one since it was written — the way out onto the
+   * rest of the directory, see listDock() above. Your own did not, and the two
+   * controls that end it were exactly the case the argument was made about:
+   * "Add another place" is the one thing you do next on a list you are
+   * building, and it sat below the twentieth row, off the bottom of every
+   * screen the list was long enough to need.
+   *
+   * THE THRESHOLD IS THE SAME THREE THE SLOT ROWS ARE
+   * A list under three places is drawn with the rest of the three as empty
+   * rows you can press, which is a page of four or five rows — you can see the
+   * end of it without moving, so a band fixed over it would be furniture
+   * covering the thing it is meant to reach. It would also be a band whose one
+   * filled action is not drawn yet (the slot rows are the invitation at that
+   * length, see renderOne()), leaving "Delete the list" alone in a bar that
+   * never leaves the screen, which is the opposite of what either control
+   * wants. So under three the two stay a row at the foot of the page, and past
+   * three they move into the band.
+   */
+  function hasDock(list) {
+    return !list.mine || list.items.length >= MIN_ITEMS;
+  }
+
+  /* Your own list's band: the same paper, the same hairline, the same safe
+     insets — and two things on it rather than one, because the pair is what
+     was at the foot of the page and splitting them would leave the quiet half
+     exactly where it was hard to find.
+
+     Centred as a pair rather than pushed to the two ends. A bar with something
+     in each corner reads as a toolbar the page is held inside; these are the
+     end of a list that happens to be pinned, and keeping them together under
+     the column the page reads at says that.
+
+     The accent goes on adding, which is the press this page exists for, and
+     "Delete the list" stays the .alt is-danger it has always been: mono,
+     underlined, --muted until it is hovered. It is the one control here that
+     cannot be undone and it is now permanently on screen, which is a fair
+     thing to worry about and is why deleteList() asks first — it has always
+     asked, and a confirm naming the list is what stands between a thumb and a
+     list of twenty places, not the button being far away. */
+  function listDockMine() {
+    return el('div', { className: 'lists-dock lists-dock-mine' }, [
+      button(t('listsAddMore'), 'go', openPicker),
+      button(t('listsDelete'), 'alt is-danger', deleteList)
     ]);
   }
 

@@ -3281,8 +3281,9 @@ its chevron never turned: a fold opens where it stands and that one left.
 same question — how does somebody get from their own things to everybody
 else's — and the answer this page kept giving was one more card under the four
 that are about them. Two other surfaces answer it already and neither is on
-this page: the pill on the map's rail, and the dock at the foot of every
-list, both of which report `lists_all` the same way this card did. A page
+this page: the pill on the map's rail, and the dock at the foot of a list
+somebody sent you, both of which report `lists_all` the same way this card
+did. A page
 named for somebody's account does not also have to be the way to a stranger's,
 and four rebuilds of one card is the page saying so itself.
 
@@ -4944,11 +4945,50 @@ and it took the dock past a tenth of a phone — off a list it is meant to sit
 under rather than compete with. A filled button does not need a footnote, and
 the pill on the map's rail carries none either.
 
-Your own list has neither. That page is an editor — its title is a field you
-type into rather than a heading, and the accent on it belongs to Save — and
-the way onto the map is in its row of controls, beside the other things you do
-to a list. Somebody reading a list they were sent is the journey these are
-for.
+**Your own list has a foot but no head.** That page is an editor — its title
+is a field you type into rather than a heading, so there is nothing for a bar
+to repeat once it scrolls off, and the way onto the map is in its row of
+controls beside the other things you do to a list. What it does have at the
+bottom is the same band, carrying the two controls that used to sit under the
+last place on the list: **Add another place** and **Delete the list**.
+
+They were there for the same reason the way out of somebody else's list was,
+and it took as long to notice because a list you are building is short on the
+day you build it. At twenty places it is four or five screens on a phone and
+two on a desk, and the one thing you do next to a list you are still filling
+was below the last of them — reachable only by scrolling past everything you
+had already added, which is a journey with no other purpose. The band is the
+same answer: it is on screen for the whole of the read rather than at the end
+of it.
+
+The accent stays on adding, which is the press the page exists for. **Delete
+the list** stays the `.alt is-danger` it has always been — mono, underlined,
+`--muted` until it is hovered — and it is now permanently on screen, which is
+the fair objection to putting it there. `deleteList()` in `assets/lists.js` has
+always asked first, and a confirm naming the list is what stands between a
+thumb and twenty places; the button having been hard to reach never was.
+
+**Under three places there is no band.** A list that short is drawn with the
+rest of the three as empty rows you can press — the invitation, so **Add
+another place** is not drawn at all at that length — and the page is four or
+five rows you can see the end of without moving. A band fixed over it would be
+furniture covering the thing it is meant to reach, and it would be a band whose
+one filled action is missing, leaving the delete alone in a bar that never
+leaves the screen. So under three the two stay a row at the foot of the page,
+and past three they move into the band. `hasDock()` in `assets/lists.js` is
+that question, asked once and read by both the bar and the room under it.
+
+**The room under the last card is measured, not written down.** It was 92px
+while the band held one pill. Two controls in a row is a row that wraps: one
+row at 390px in all ten languages, two at 320px in every one of them. A
+breakpoint would cover the width, and the width is not the whole question — the
+band is as tall as its two labels wrap, and those are ten translations of two
+strings that anybody may reword and that an eleventh language will arrive
+beside. A number would go stale on that day, silently, and in the direction
+that hides the last place on the list. So `dockRoom()` in `assets/lists.js`
+watches the band with a `ResizeObserver` and writes its height into
+`--dock-room`, and the stylesheet adds the air above it: the last card clears
+the band by the same 24px at every width and in every language.
 
 ### Map and List are one switch, drawn twice
 
