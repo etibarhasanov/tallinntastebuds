@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- --------------------------------------------------------- what gets pressed
 -- One row per thing somebody has pressed on this site, and how many times.
 --
--- This is what /stats ranks and what functions/api/stats.js writes. Three
+-- This is what /stats ranks and what functions/api/stats.js writes. Four
 -- kinds of thing are counted and `kind` is which:
 --
 --   'place'    a place opened — a write-up read on the map, or a card pressed
@@ -114,21 +114,29 @@ CREATE TABLE IF NOT EXISTS save_counts (
 --              /lists, and no row on that page draws the number. A list its
 --              owner has since made private keeps the count it had and stops
 --              growing; nothing here deletes one.
+--   'rail'     a pill on the rail down the left of the map pressed, every
+--              press rather than once a load. The id is one of the nine in
+--              RAIL_PILLS in functions/api/stats.js — account, lists, flash,
+--              random, ask, style, locate, explain, feedback — and the radio
+--              is not among them, because it stands beside the language
+--              switch rather than in the rail.
 --
--- ONE TABLE AND NOT TWO
+-- ONE TABLE AND NOT FOUR
 --
--- A place, a filter and a list are different things, and a counts table apiece
--- would say so in the schema. They are one table because everything around
--- them is one thing: one route, one upsert, and one place to look when a
--- number is wrong. Three tables of (id, n) would be the same statement written
--- three times with a different noun in it. `kind` is what a reader splits on,
--- and it is in the primary key so a filter called `bakery` and a place called
--- `bakery` could never collide.
+-- A place, a filter, a list and a button on the rail are different things, and
+-- a counts table apiece would say so in the schema. They are one table because
+-- everything around them is one thing: one route, one upsert, and one place to
+-- look when a number is wrong. Four tables of (id, n) would be the same
+-- statement written four times with a different noun in it. `kind` is what a
+-- reader splits on, and it is in the primary key so a filter called `bakery`
+-- and a place called `bakery` could never collide.
 --
--- The third kind is the argument having been made and then taken: `list` was
--- added when /lists stopped being ordered by how many signed-in people had
--- bookmarked a list and started being ordered by how many people had opened
--- it. It cost one string in two files and nothing at all here.
+-- The third and fourth kinds are the argument having been made and then taken
+-- twice. `list` was added when /lists stopped being ordered by how many
+-- signed-in people had bookmarked a list and started being ordered by how many
+-- people had opened it; `rail` was added to rank the nine pills down the left
+-- of the map. Each cost one string in two files and nothing at all here — no
+-- ALTER, no load, nothing to apply to either database.
 --
 -- A COUNT AND NOT A LOG, WHICH IS THE WHOLE DESIGN
 --
@@ -137,9 +145,10 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- would mean reading every row ever written, forever, and the page that ranks
 -- them is read by anybody who opens it. This way a ranking costs one row per
 -- thing that has ever been pressed and never more — the places on the map,
--- however many of the 1,110 Google venues anybody has looked at, and fourteen
--- chips. A table bounded by the number of things there are rather than by the
--- traffic is also why there is no index on `n`: at that size an ORDER BY reads
+-- however many of the 1,110 Google venues anybody has looked at, fourteen
+-- chips, nine pills and however many lists have been written. A table bounded
+-- by the number of things there are rather than by the traffic is also why
+-- there is no index on `n`: at that size an ORDER BY reads
 -- the whole thing and an index would be a second copy of it to keep.
 --
 -- WHAT IT CANNOT ANSWER, AND WHAT THAT WOULD COST
@@ -156,9 +165,12 @@ CREATE TABLE IF NOT EXISTS save_counts (
 --
 -- Nothing here is filed under a person: the number is how many times a thing
 -- was pressed, by anybody, and one visitor opening the same place on five
--- evenings is five. Each page counts each thing once per load — the same rule
--- TTBTrack.view() in assets/track.js applies to what it reports — so
--- comparing three places is three and pressing back and forth is not thirty.
+-- evenings is five. Each page counts each place, each chip and each list once
+-- per load — the same rule TTBTrack.view() in assets/track.js applies to what
+-- it reports — so comparing three places is three and pressing back and forth
+-- is not thirty. A pill on the rail is counted every press instead, because that is
+-- what the events GA is sent beside it count and because "how often is this
+-- button pushed" is the whole of the question it is in this table to answer.
 -- Nothing stops somebody posting to the route in a loop, and nothing here
 -- pretends otherwise; the day that matters, the answer is the hashed network
 -- fingerprint the saves table is capped by, in a table beside this one, and a

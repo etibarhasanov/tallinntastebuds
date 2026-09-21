@@ -3142,8 +3142,11 @@
   }
 
   /* --------------------------------------------------- what gets pressed
-   * A place opened and a chip turned on are both one row on /stats, and this
-   * is the only thing on this page that puts them there.
+   * A place opened, a chip turned on and a pill on the rail pressed are all a
+   * row on /stats, and this is the only thing on this page that puts them
+   * there. The first two go through countPress() and the third through
+   * countRailPress() below, which is the one that counts every press rather
+   * than one a load.
    *
    * Once per thing per load, which is what `counted` holds. That is the rule
    * TTBTrack.view() already applies to the page view it reports beside an
@@ -3167,15 +3170,67 @@
    */
   var counted = {};
 
-  function countPress(kind, id) {
-    var key = kind + '/' + id;
-    if (counted[key]) return;
-    counted[key] = true;
+  function postPress(kind, id) {
     fetch('/api/stats', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ kind: kind, id: id })
     }).catch(function () { /* the ranking misses one, the map is unaffected */ });
+  }
+
+  function countPress(kind, id) {
+    var key = kind + '/' + id;
+    if (counted[key]) return;
+    counted[key] = true;
+    postPress(kind, id);
+  }
+
+  /* THE RAIL IS COUNTED EVERY PRESS, AND THAT IS THE DIFFERENCE
+   * A place and a chip are one question asked once — see above. A pill is a
+   * press: the question /stats answers about the rail is which of the nine
+   * buttons people actually push and how often, and pressing the die four
+   * times is somebody asking for four restaurants. It is also what this page
+   * already tells Google Analytics, which gets an event per press of these
+   * buttons rather than one per load, so the two numbers agree here the same
+   * way they agree up there — by counting the same gesture the same way.
+   *
+   * One listener on the rail rather than nine on the buttons, because two of
+   * them are links that leave the page and the colour swatch is not in the
+   * markup at all: renderStyleSwitch() draws it, and a listener bound at boot
+   * would be bound to a button that did not exist yet. Delegation takes all
+   * nine, whenever they arrive, and takes the next one for free.
+   *
+   * The ids are the ones RAIL_PILLS in functions/api/stats.js names, which is
+   * the list this half has to be kept in step with: a pill counted here and
+   * not named there is a press the route answers {ok:false} to. Nothing in
+   * #rail but these nine is counted, and the radio is outside it — it stands
+   * next to the language switch now — so it is not in this table.
+   */
+  var RAIL_PRESS = {
+    'btn-account': 'account',
+    'btn-lists': 'lists',
+    'btn-flash': 'flash',
+    'btn-random': 'random',
+    'btn-ask': 'ask',
+    'btn-locate': 'locate',
+    'btn-explain': 'explain',
+    'btn-feedback': 'feedback'
+  };
+
+  function countRailPress(ev) {
+    var node = ev.target;
+    var btn = null;
+    while (node && node !== dom.rail) {
+      if (node.classList && node.classList.contains('rail-btn')) { btn = node; break; }
+      node = node.parentNode;
+    }
+    if (!btn) return;
+    /* The swatch has no id of its own — it is the one pill drawn by a script
+       rather than written into index.html — so it is known by where it
+       stands, which is the same way hintPill() finds it. */
+    var id = RAIL_PRESS[btn.id]
+      || (dom.styles && dom.styles.contains(btn) ? 'style' : '');
+    if (id) postPress('rail', id);
   }
 
   /* --------------------------------------------------------------- filters */
@@ -8584,6 +8639,10 @@
         showList(true);
       }
     });
+
+    /* One listener over the whole rail, before the nine buttons get theirs:
+       which pill was pressed, counted on /stats. See countRailPress(). */
+    if (dom.rail) dom.rail.addEventListener('click', countRailPress);
 
     /* Pressing it answers the question the label was there to answer, and
        the sheet it opens wants the room. */

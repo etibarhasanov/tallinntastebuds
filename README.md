@@ -8585,23 +8585,23 @@ owner reads the page.
 
 ## Statistics
 
-`/stats` — which places get opened, and which chips get pressed. The map says
-where to eat, the blog says why the site works the way it does, the feedback
-page listens; this is the one that counts.
+`/stats` — which places get opened, and which chips and buttons get pressed.
+The map says where to eat, the blog says why the site works the way it does,
+the feedback page listens; this is the one that counts.
 
 One page, the frame every page that is not the map wears — the brand header,
-the 640px column, the cards — and three tables. Two facts at the top, **Most
+the 640px column, the cards — and four tables. Two facts at the top, **Most
 opened** and **Least opened**, then every place on the map ranked with the
 zeros in it, then the Google venues somebody has pressed, then all fourteen
-filter chips, then two footnotes under all three: every open counted, and how
-many accounts exist — see **How many accounts exist** below for the second.
-Nothing on the site links to it. That is the blog's arrangement rather than
+filter chips, then the nine pills down the rail, then two footnotes under all
+four: every open counted, and how many accounts exist — see **How many
+accounts exist** below for the second. Nothing on the site links to it. That is the blog's arrangement rather than
 the directory's, with one difference: the blog is indexed and this is not,
 and **Not indexed, and not disallowed either** below says why.
 
 ### It counts opens, and an open is a gesture
 
-Four gestures, and no others:
+Five gestures, and no others:
 
 | What | Where | Counted as |
 | --- | --- | --- |
@@ -8609,8 +8609,9 @@ Four gestures, and no others:
 | a card pressed on the directory | `select()` in `assets/venues.js` | `place`, the Google key |
 | a chip turned on | `applyFilters()` in `assets/app.js` | `filter`, the type id or `discount` |
 | a public list's page drawn | `boot()` in `assets/lists.js` | `list`, the list id |
+| a pill on the rail pressed | `countRailPress()` in `assets/app.js` | `rail`, one of the nine ids |
 
-**The fourth is not on this page**, and it is the only one of the four that is
+**The list is not on this page**, and it is the only one of the five that is
 not. A list opened is counted into the same table under `kind = 'list'`, and
 what reads it is `/lists`, which puts the most opened list at the top — see
 **Public lists**. It is not in the ranking here because this page is about
@@ -8626,11 +8627,12 @@ counted either — it was already counted when it went on, and counting both
 ends would make every filter worth exactly twice itself. **All** is not a
 filter and counts nothing: it is the way out of the chips.
 
-Each page counts each thing **once per load**, held in memory and never in
-storage — and a list's page counts the one list it is, which needs nothing
-held at all: the only way to open the same list twice is to load the page
-twice, and that is two opens. A list its own owner opens is not counted, so
-an author reloading their draft cannot climb a ranking of strangers. That is the rule `TTBTrack.view()` already applies to the page view
+Each page counts each place, each chip and each list **once per load**, held
+in memory and never in storage — and a list's page counts the one list it is,
+which needs nothing held at all: the only way to open the same list twice is
+to load the page twice, and that is two opens. A list its own owner opens is
+not counted, so an author reloading their draft cannot climb a ranking of
+strangers. That is the rule `TTBTrack.view()` already applies to the page view
 it reports to Google Analytics beside an opened place, and the two agree on
 purpose: two numbers about the same gesture that counted it differently would
 be two numbers somebody eventually puts side by side. So comparing three
@@ -8638,6 +8640,41 @@ places is three, walking back through history is not thirty, and a chip
 flicked on and off while somebody makes their mind up is one press.
 
 A reload counts again, exactly as a reload is a fresh page view in GA.
+
+### The rail is the one that counts every press
+
+The other four gestures are one question asked once. A pill is not: the
+question **Buttons on the map** exists to answer is the plain one — which of
+the nine buttons down the left of the map do people actually push, and how
+often — and counting a press once a load would answer "how many visits pressed
+it at all", which is a different question and a quieter one. So the die
+pressed four times is four, and the colour swatch flicked back and forth is
+every flick.
+
+It agrees with Google Analytics here for the same reason the others do:
+`TTBTrack` is sent an event per press of these buttons rather than one per
+load, so both numbers count the same gesture the same way. That is the rule —
+agree with the report beside it — and once per load is how it comes out for a
+place, every press for a pill.
+
+The nine are the nine inside `#rail`, named in `RAIL_PILLS` in
+`functions/api/stats.js` and again in `RAIL_PRESS` in `assets/app.js`, which
+is the pair that has to be kept in step: a button counted on the map and not
+named in the route is a press answered `{ok:false}`. Neither file can import
+the other — the arrangement **The pins** has — so a pill added to the rail is
+counted once it is written into both. The colour swatch is one of them and has
+no id in the markup, because `renderStyleSwitch()` draws it; it is known by
+standing inside `#styles`, the same way `hintPill()` finds it. One listener on
+the rail rather than nine on the buttons, since two of them are links that
+leave the page and a third does not exist at boot.
+
+**The radio is not on this table.** It wears the rail's pill and reports to GA
+like everything else, but it stands next to the language switch in the corner
+rather than in the rail — see **The radio** — and the question this table asks
+is about the column down the left. The name in `data/ui.json` each row is
+printed by is the button's own label — `accountOpen`, `randomPick`,
+`styleLabel` and the rest — so the table reads as the rail does and nothing
+was translated twice.
 
 ### Presses, not people
 
@@ -8672,11 +8709,14 @@ primary key and one row per thing per day — still bounded, still an upsert,
 and a new table rather than an `ALTER`. It is not worth writing before
 somebody asks the question.
 
-One table and not two, for places and for filters both. They are different
-things and a table apiece would say so — but everything around them is one
-thing: one route, one upsert, one read that draws the whole page, and one
+One table and not four, for places, filters, lists and pills alike. They are
+different things and a table apiece would say so — but everything around them
+is one thing: one route, one upsert, one read that draws the page, and one
 place to look when a number is wrong. `kind` is in the primary key, so a
-filter called `bakery` and a place called `bakery` can never collide.
+filter called `bakery` and a place called `bakery` can never collide — which
+is also why the rail cost no schema change at all, exactly as `list` did not:
+a fourth kind is four letters in a column that was always going to hold more
+than two.
 
 ### One request on the way in, and five minutes of cache
 
@@ -8718,7 +8758,15 @@ on `google_venues` that exists only because it is Google's and says so.
 
 ### What it argues about
 
-The filter table is the one with something to change. **The order of the
+Two tables have something to change, and the rail's is the newer of them. It
+is nine pills deep on a phone and the cascade that introduces them is timed
+against the sentence under the mark — nine collapse at 7.75s against 7.86s of
+sentence, and a tenth would talk over it, which is written out at the foot of
+the rail in `index.html`. So "what earns a slot" is a question with a real
+cost behind it, and this is the measurement of it. Nothing is wired to it: the
+rail is in a hand-written order and stays that way.
+
+The filter table is the other one. **The order of the
 filter chips** is a hand-written order with a paragraph of reasoning behind
 it; this is the measurement that would argue for a different one. It is not
 wired to anything — the row is still ordered by hand — and that is deliberate:
@@ -8768,7 +8816,8 @@ decoration on it. No languages, no referrers, no countries — Google Analytics
 has all of that and this page is the half GA cannot do, which is the site
 owning its own numbers. No per-place badge anywhere else on the site: the
 count is on this page or it is nowhere, because a number under a name on the
-map is a score, and there are none of those here. No returning-users figure
+map is a score, and there are none of those here — and no number on a pill
+either, for that reason and because there is no room on one. No returning-users figure
 either, for the reason **How many accounts exist** above gives — the data
 this site keeps cannot honestly answer "who came back today" without a
 schema change that writes on every request from a signed-in visitor, which is

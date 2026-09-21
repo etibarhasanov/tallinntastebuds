@@ -1,24 +1,28 @@
 /* Tallinn Tastebuds — /stats, what gets pressed on this site.
  *
- * Three tables, and the first one is the page. The map's own places, every one
+ * Four tables, and the first one is the page. The map's own places, every one
  * of them, most opened at the top and least opened at the bottom — both ends
  * are the answer, which is why it is the whole ranking rather than a top ten.
  * Then Google's directory, only the venues somebody has actually pressed. Then
  * the filter chips, in full, which is the table that argues about the order of
- * the chip row: see **The order of the filter chips** in README.md. Under all
- * three, two footnotes about the site rather than about a press: how many
- * opens have been counted, and how many accounts exist.
+ * the chip row: see **The order of the filter chips** in README.md. Then the
+ * nine pills down the rail on the map, in full, which is the table that argues
+ * about what earns a slot on it. Under all four, two footnotes about the site
+ * rather than about a press: how many opens have been counted, and how many
+ * accounts exist.
  *
  * WHERE THE NUMBERS COME FROM
  *
- * Pressing something posts to /api/stats, from three places: selectPlace() in
+ * Pressing something posts to /api/stats, from four places: selectPlace() in
  * assets/app.js opens a place on the map, applyFilters() in the same file
- * turns a chip on, and select() in assets/venues.js presses a card on the
- * directory. Each page counts each thing once per load, the way TTBTrack.view()
- * reports one page view per opened place and no more, so comparing three
- * places is three and pressing back and forth is not thirty. This page only
- * reads. See **Statistics** in README.md for what the numbers do and do not
- * mean.
+ * turns a chip on, countRailPress() in the same file again presses a pill on
+ * the rail, and select() in assets/venues.js presses a card on the directory.
+ * The first, second and fourth are counted once per page load, the way
+ * TTBTrack.view() reports one page view per opened place and no more, so
+ * comparing three places is three and pressing back and forth is not thirty.
+ * A pill is counted every press, because "how often is this button pushed" is
+ * the whole of the question it is there to answer. This page only reads. See
+ * **Statistics** in README.md for what the numbers do and do not mean.
  *
  * ONE REQUEST ON THE WAY IN
  *
@@ -58,7 +62,8 @@
     users: 0,
     map: [],
     venues: [],
-    filters: []
+    filters: [],
+    rail: []
   };
 
   var main = null;
@@ -300,6 +305,15 @@
       stack.appendChild(table('statsFiltersHead', 'statsFiltersLead', state.filters));
     }
 
+    /* And the rail, under the chips: both are about the map's own chrome
+       rather than about a restaurant, and of the two the chips are the older
+       argument. Same table as every other one here — a pill's name leads
+       nowhere, because the button is on the map and the map is one press away
+       in the header. */
+    if (state.rail.length) {
+      stack.appendChild(table('statsRailHead', 'statsRailLead', state.rail));
+    }
+
     /* The page's two footnotes about itself, under the tables rather than over
        them, because nobody opens a ranking to read a total first: every open
        counted, and how many accounts exist. Places only in the first — the
@@ -348,6 +362,7 @@
         state.map = out.map || [];
         state.venues = out.venues || [];
         state.filters = out.filters || [];
+        state.rail = out.rail || [];
 
         applyStaticStrings();
         render();
