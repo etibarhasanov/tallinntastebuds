@@ -298,9 +298,10 @@ if (decksFile !== null) {
        that failed over it would mean nothing could be added without all three
        at once. */
     const MINTED = /^[0-9a-f]{16}$/;
-    /* The three the page draws headings for. A deck with any other level would
-       fall to the bottom under no heading, which is a deck nobody finds. */
-    const LEVELS = new Set(['start', 'more', 'deep']);
+    /* The four the page draws headings for, in the order LEVELS in
+       assets/flashcard.js draws them. A deck with any other level would fall
+       to the bottom under no heading, which is a deck nobody finds. */
+    const LEVELS = new Set(['start', 'eat', 'more', 'deep']);
     /* The two ids a shipped deck may not have: functions/api/flashcard.js
        assembles a deck of each name out of somebody's own rows — the cards
        they got wrong, and the cards they know — and two decks answering to

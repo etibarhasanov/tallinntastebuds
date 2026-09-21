@@ -217,9 +217,13 @@ const MISSED = 0;
 const MISSED_DECK = 'missed';
 
 /* ---------------------------------------------------------- the stages
- * The three levels the decks page groups its rows under are stages now, and
- * the second and third open on how many words this person knows: a hundred
- * for Getting by, four hundred for Going deeper. First words is always open.
+ * The four levels the decks page groups its rows under are stages now, and
+ * two of them open on how many words this person knows: a hundred for Getting
+ * by, four hundred for Going deeper. First words is always open, and so is At
+ * a restaurant, which is named in no GATES entry on purpose — the four decks
+ * between the door and the bill are what this site is about, and a stranger
+ * at nought words gets them beside the first words rather than behind a
+ * count. Adding `eat` here is the whole of gating it later.
  *
  * What is counted is what is *known* — every shipped card in a box above
  * nought, which is the same count the row's "9 / 22" is drawn from — rather
@@ -248,20 +252,22 @@ const GATES = { more: 100, deep: 400 };
  * one of them and leave the page to draw the rows without their links, which
  * meant the answer carried thirty-five decks nobody could open and the page
  * had a second copy of the rule to draw them under. Now the shelf the answer
- * describes is the shelf this person has: the page knows the three stages and
- * has `gates` and `words`, so it draws the heading and the line saying what
- * opens it out of what it already holds, and there is nothing to hide.
+ * describes is the shelf this person has: the page knows the four headings
+ * and has `gates` and `words`, so it draws the heading and the line saying
+ * what opens it out of what it already holds, and there is nothing to hide.
  *
- * Signed out is nought words, so a stranger gets First words and the two
- * headings above it. That is the point of the stages — a page of forty-two
- * rows has nothing on it to say where to start — and it is the one thing
- * about them that changed after they shipped.
+ * Signed out is nought words, so a stranger gets First words and At a
+ * restaurant, which has no gate, and the two shut headings under them. That
+ * is the point of the stages — a page of forty-two rows has nothing on it to
+ * say where to start — and it is the one thing about them that changed after
+ * they shipped.
  *
  * With no database there is no count to hold anybody to: `ready` false means
  * nothing was read, so nothing is shut and the whole shelf is drawn out of
  * the file, the way it was before any of this. A deck in no stage — one
  * somebody wrote, and the two gathered ones — is never held, which is what
- * `GATES[level]` being undefined says.
+ * `GATES[level]` being undefined says, and it is what holds the restaurant
+ * stage open too.
  */
 function shutAt(level, words, ready) {
   if (!ready) return 0;

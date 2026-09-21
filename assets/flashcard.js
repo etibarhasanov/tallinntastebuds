@@ -147,7 +147,7 @@
  * ONE ADDRESS, AND IT IS A DECK
  *
  * ?d=<id> is the whole of the routing. Without it the page is the decks: the
- * ones the site ships that this person's stage has opened — seven of the
+ * ones the site ships that this person's stages have opened — nine of the
  * forty-two before anybody has answered a card — and yours under them. With it, it is that deck,
  * turning over. A deck somebody wrote has exactly one reader and it is its owner —
  * there is no share link here and holding an id buys nothing, which is the
@@ -1176,10 +1176,12 @@
   }
 
   /* ---------------------------------------------------------- the stages
-   * The three levels are stages, and the second and third open on how many
-   * words this person knows: `gates` off the route says at what, `words` says
-   * how many, and both are the route's to compute — the page prints them and
-   * never decides them, so there is one copy of the numbers.
+   * Two of the four levels are stages, and they open on how many words this
+   * person knows: `gates` off the route says at what, `words` says how many,
+   * and both are the route's to compute — the page prints them and never
+   * decides them, so there is one copy of the numbers. A level `gates` does
+   * not name is open to everybody, which is how First words and At a
+   * restaurant are drawn with their rows at nought words.
    *
    * What a stage that has not opened looks like is its heading and one line
    * under it saying what opens it, and no rows: the route sends the decks of
@@ -1199,10 +1201,11 @@
    * what you know — are in no stage, which the route says by giving them no
    * level, so there is nothing here to look up for them.
    *
-   * Signed out is nought words and so the two stages above the first are
-   * shut, headings and all, which is the one thing about the stages that
-   * changed after they shipped: a stranger handed forty-two rows has nothing
-   * on the page telling them where to start, and seven is where to start.
+   * Signed out is nought words and so the two gated stages are shut, headings
+   * and all, which is the one thing about the stages that changed after they
+   * shipped: a stranger handed forty-two rows has nothing on the page telling
+   * them where to start, and nine is where to start — the five of First words
+   * and the four of At a restaurant, which has no gate.
    * What signed out is not held to is a deck reached by its address — see
    * settle() — because an arrival from a search result is not the list.
    */
@@ -1382,9 +1385,17 @@
 
   /* The levels, in the order somebody meets them, and the string that names
      each. A deck with no level falls to the end under no heading at all, which
-     is where the gathered decks would go if they were not lifted out above. */
+     is where the gathered decks would go if they were not lifted out above.
+
+     Four headings and three stages: At a restaurant is second in the order
+     and has no gate, because it is what this site is about and the four decks
+     under it are the reason somebody who came for the map is on this page at
+     all. The route says so by having no GATES entry for it, so gateFor()
+     answers nought and it is drawn with its rows for a stranger at nought
+     words, the same as First words. */
   var LEVELS = [
     { id: 'start', key: 'flashLevelStart' },
+    { id: 'eat', key: 'flashLevelEat' },
     { id: 'more', key: 'flashLevelMore' },
     { id: 'deep', key: 'flashLevelDeep' }
   ];
@@ -1438,7 +1449,7 @@
     }
 
     /* Grouped by level, with the quiet heading the directory puts over a run
-       of rows. Forty-two decks in one column was a list to scroll; three short
+       of rows. Forty-two decks in one column was a list to scroll; four short
        under headings is a choice about where you are — and only the stages
        that have opened have rows under them at all. */
     LEVELS.forEach(function (level) {
