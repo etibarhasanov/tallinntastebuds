@@ -84,6 +84,17 @@ time, which is how you write one. `?t=1500` freezes it at a millisecond, and
   something small, or reveal it in one step. The same arithmetic is why the
   story clip's ring stands still: a conic gradient is a few thousand colours,
   and PNG is not built for those.
+- **A full Chrome may not give you the window you asked for.** `--window-size`
+  is a request, and a headless environment can clamp the viewport's height to
+  something taller than the stage is — one machine here rendered every 270-point
+  stage 183 points tall, which is not an error and is not reported: the shot
+  comes back the right size with the bottom of the scene simply missing, the
+  frames that would have differed down there collapse into holds, and the clip
+  lands lighter than it should be with nothing to say it went wrong. Playwright's
+  `headless_shell` honours the size, so `CHROME=/opt/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell`
+  is the way out of it. The tell is a scene you can see whole in a browser and
+  cannot see whole in its clip; redraw one of the clips already in the repo and
+  compare, since those were drawn on a browser that behaved.
 - **The stage is 480 points wide, which is a phone.** Everything on this site
   below 860px is in its phone layout — the rail collapses its pills to discs,
   the language switch folds. `hint-open` is the class the rail itself uses to

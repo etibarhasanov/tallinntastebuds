@@ -1,0 +1,142 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>The menu is in Estonian — clip</title>
+<meta name="clip" content="ms=5200; w=480; h=270">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=block">
+<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="../../assets/flashcard.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  /* One card being turned over and answered, in the page's own rules: the
+     Estonian on the front, what it means and its three forms on the back, and
+     the two words that say what to do about it. flashcard.css is linked above
+     and .flash-card, .flash-front, .flash-back, .flash-forms, .flash-sentence,
+     .flash-turn, .flash-bar and .flash-acts are all the page's — what is here
+     is the arrangement on a 480x270 stage and nothing else.
+
+     The card on the page is a proportion of a phone's screen and its type is
+     sized for reading at arm's length across a table, so it would fill this
+     stage twice over. Everything below is that one difference: the stage's
+     own layout, and the card and its lines at the size 480x270 has room for.
+     Not one of them is a colour — design rule 1 — so both styles come out of
+     the tokens the way every other scene's do. */
+  .run {
+    position: absolute;
+    left: 90px; top: 20px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .flash-card { min-height: 148px; padding: 16px 16px; gap: 8px; }
+  .flash-front { font-size: 26px; }
+  .flash-back { font-size: 16px; }
+  .flash-forms { margin: 5px 0 2px; font-size: 11px; }
+  .flash-sentence { margin: 6px 0 2px; }
+  .flash-said { font-size: 12.5px; }
+  .flash-means { font-size: 11px; }
+  .flash-turn { margin: 8px 0 0; }
+  .flash-bar { font-size: 11px; }
+  .flash-acts { display: flex; gap: 10px; }
+  .flash-acts button { flex: 1 1 0; font-size: 12px; padding: 7px 10px; }
+</style>
+<script src="scene.js"></script>
+<script>
+Clip.scene({
+  build: function (stage) {
+    var run = document.createElement('div');
+    run.className = 'run';
+    run.innerHTML =
+      '<div class="flash-bar">' +
+        '<span class="flash-count"></span>' +
+        '<span class="flash-track"><span class="flash-fill"></span></span>' +
+      '</div>' +
+      '<div class="flash-card"><div class="face"></div></div>' +
+      '<div class="flash-acts">' +
+        '<button type="button" class="alt">Show me again</button>' +
+        '<button type="button" class="go">Knew it</button>' +
+      '</div>';
+    stage.appendChild(run);
+
+    return {
+      count: run.querySelector('.flash-count'),
+      fill: run.querySelector('.flash-fill'),
+      face: run.querySelector('.face'),
+      acts: run.querySelector('.flash-acts'),
+      cursor: Clip.cursor(stage)
+    };
+  },
+
+  /* Three beats and the start of a fourth: the card standing there in
+     Estonian, the tap that turns it over, the answer with the word's three
+     forms and a sentence to say it in, and then Knew it pressed and the next
+     word already up. "Leib" and "Vesi" are real cards out of the food deck in
+     data/decks.json, forms and sentence and all.
+
+     The two buttons appear in one step at the turn rather than fading in,
+     which is what the page does — the acts are drawn when the card is turned
+     and not before — and is also the cheap way round: a fade the width of the
+     card costs a rectangle of changed pixels per frame, and this one has
+     nothing to say that the step does not. */
+  at: function (t, h) {
+    var turned = t >= 1150;
+    var answered = t >= 3050;
+
+    var FRONT =
+      '<p class="flash-front">Leib</p>' +
+      '<p class="flash-turn">Tap to turn it over</p>';
+    var BACK =
+      '<p class="flash-back">Black bread</p>' +
+      '<p class="flash-forms">' +
+        '<span class="flash-form is-first">Leib</span>' +
+        '<span class="flash-form">leiva</span>' +
+        '<span class="flash-form">leiba</span>' +
+      '</p>' +
+      '<p class="flash-sentence">' +
+        '<span class="flash-said">Ma tahan musta leiba.</span>' +
+        '<span class="flash-means">I want some black bread.</span>' +
+      '</p>' +
+      '<p class="flash-turn">Did you know it?</p>';
+    var NEXT =
+      '<p class="flash-front">Vesi</p>' +
+      '<p class="flash-turn">Tap to turn it over</p>';
+
+    var want = answered ? NEXT : turned ? BACK : FRONT;
+    if (h.face.innerHTML !== want) h.face.innerHTML = want;
+
+    /* The count and the rule under it, which only move once the word has been
+       answered — where you are in a deck is a fact about cards you are done
+       with, not about the one in front of you. */
+    var at = answered ? 2 : 1;
+    var said = at + ' / 12';
+    if (h.count.textContent !== said) h.count.textContent = said;
+    /* The rule is how much of the run is behind you, so it stands at nothing
+       while the first card is still up — the same arithmetic runBar() does. */
+    h.fill.style.width = (Clip.lerp(t, 3050, 3500, 0, 100 / 12)) + '%';
+
+    /* The two answers are on the page only while there is something to answer,
+       which is the turned card and nothing else. */
+    h.acts.style.visibility = turned && !answered ? '' : 'hidden';
+
+    /* The pointer: down to the card, a press that turns it, then across to
+       Knew it and a press that files the word. Both rings are thrown at the
+       moment of contact, which is the middle of each press window. */
+    var CARD = { x: 240, y: 92 };
+    var KNEW = { x: 316, y: 224 };
+    var second = t >= 1800;
+    var x = second ? Clip.lerp(t, 1800, 2900, CARD.x, KNEW.x) : Clip.lerp(t, 260, 1050, 434, CARD.x);
+    var y = second ? Clip.lerp(t, 1800, 2900, CARD.y, KNEW.y) : Clip.lerp(t, 260, 1050, 252, CARD.y);
+    var press = second ? { from: 2900, to: 3250 } : { from: 1000, to: 1350 };
+
+    h.cursor.to(x, y, { t: t, from: press.from, to: press.to });
+
+    /* The ring is thrown once and is gone: outside its half-second it is not
+       drawn at all, rather than left standing at the end of its own growth
+       where it would sit on the stage for the rest of the clip. */
+    var ring = second ? { at: KNEW, from: 2950, to: 3450 } : { at: CARD, from: 1050, to: 1550 };
+    var thrown = t >= ring.from && t < ring.to ? Clip.at(t, ring.from, ring.to) : 0;
+    h.cursor.tap(ring.at.x, ring.at.y, 74, thrown);
+  }
+});
+</script>
