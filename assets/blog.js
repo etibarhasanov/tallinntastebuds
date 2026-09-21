@@ -229,26 +229,44 @@
    *
    * The fallback underneath is for an engine with no Intl at all, and it is
    * the ui.json names in each language's own order — day first, "{day}." in
-   * Estonian and Finnish, "de" either side in Portuguese and Spanish. An
-   * engine that has Intl but was built without a locale's data answers in
-   * English instead of falling through to here, which is worse and is not
-   * something any browser this site is opened in does today.
+   * Estonian and Finnish, "de" either side in Portuguese and Spanish.
+   *
+   * It is also for an engine that HAS Intl and has no data for the locale,
+   * which is not the theoretical case it was written as: Chromium answers
+   * "2026 M09 21" in Azerbaijani, which is the same artefact the README warns
+   * formatMonth() in assets/app.js about, and it was invisible here for as
+   * long as every post was in English alone. An M and two digits is not a
+   * month in any of the ten, so NOT_A_MONTH is the one wrong answer this can
+   * catch by looking at it, and "21 sentyabr 2026" out of ui.json is better
+   * than a machine's month number.
+   *
+   * What it cannot catch is the other way the same gap shows: Intl answering
+   * in English for a locale it half knows, which is what Armenian gets here.
+   * That comes back as a well-formed date in the wrong language and there is
+   * nothing in the string to tell it from a right one.
    */
+  var NOT_A_MONTH = /M\d\d/;
+
   function formatDate(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
     if (!m) return iso || '';
     var year = Number(m[1]);
     var index = Number(m[2]) - 1;
     var day = Number(m[3]);
+    var said = '';
 
     try {
-      return new Intl.DateTimeFormat(LOCALES[state.lang] || state.lang, {
+      said = new Intl.DateTimeFormat(LOCALES[state.lang] || state.lang, {
         day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
       }).format(new Date(Date.UTC(year, index, day)));
     } catch (e) {
-      var names = (t('months') || '').split('|');
-      return t('blogDate', { day: day, month: names[index] || m[2], year: year });
+      said = '';
     }
+
+    if (said && !NOT_A_MONTH.test(said)) return said;
+
+    var names = (t('months') || '').split('|');
+    return t('blogDate', { day: day, month: names[index] || m[2], year: year });
   }
 
   function postHref(post) { return PAGE + '?post=' + encodeURIComponent(post.id); }
@@ -307,11 +325,6 @@
       [formatDate(post.date)]);
   }
 
-  /* One post as a row: the date, the title, the line saying what it is about,
-     and the chevron. It is .menu-row out of assets/styles.css — the shape the
-     account sheet draws a way-on in — because that is what this is, and
-     because the eighth design rule says a list of places to go is rows with a
-     target the width of the card rather than a column of links. */
   /* The two links that stay on this page: a row on the index, and the way
      back from a post. Both are real <a href>s — the address they would go to
      is the address this page is about to become — and this is what happens
@@ -326,6 +339,11 @@
     return link;
   }
 
+  /* One post as a row: the date, the title, the line saying what it is about,
+     and the chevron. It is .menu-row out of assets/styles.css — the shape the
+     account sheet draws a way-on in — because that is what this is, and
+     because the eighth design rule says a list of places to go is rows with a
+     target the width of the card rather than a column of links. */
   function row(post) {
     return el('li', { className: 'menu-item' }, [
       walks(el('a', { className: 'menu-row blog-row', href: postHref(post) }, [
