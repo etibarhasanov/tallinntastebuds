@@ -53,6 +53,15 @@
  * The POST is quieter still: every ending is 200 with {ok:false} unless the
  * request itself was malformed, because a press that did not get counted is
  * not something a visitor should ever be told about.
+ *
+ * A FOURTH NUMBER, ABOUT THE SITE RATHER THAN ABOUT A PRESS
+ *
+ * `users` is how many accounts exist, `SELECT COUNT(*) FROM users` read fresh
+ * on every cache miss — the table is small enough that a running counter
+ * would be one more thing to keep in step for no reason. It answers 0 rather
+ * than failing the rest of the page when `users` is not there yet, the same
+ * way the ranking above answers empty rather than failing when `press_counts`
+ * is not.
  */
 
 import {
@@ -124,7 +133,7 @@ export async function onRequestGet(context) {
   const hit = await cache.match(key);
   if (hit) return hit;
 
-  const empty = { ready: false, opens: 0, map: [], venues: [], filters: [], ...words };
+  const empty = { ready: false, opens: 0, users: 0, map: [], venues: [], filters: [], ...words };
   if (!env.DB) return json(empty, 200, TTL);
   /* A deployment holding the other environment's database answers as though it
      had no database at all — the same rule /api/saves follows, and for the
@@ -215,8 +224,19 @@ export async function onRequestGet(context) {
 
   const filters = await ranked(context, words, countOf);
 
+  /* How many accounts exist, about the site rather than about a press — see
+     A FOURTH NUMBER above. Failing this never fails the ranking: a table not
+     yet applied answers 0, the same way press_counts answers empty. */
+  let users = 0;
+  try {
+    const row = await env.DB.prepare('SELECT COUNT(*) AS n FROM users').first();
+    users = (row && row.n) || 0;
+  } catch (e) {
+    users = 0;
+  }
+
   const res = json(
-    { ready: true, opens: opens, map: map, venues: venues, filters: filters, ...words },
+    { ready: true, opens: opens, users: users, map: map, venues: venues, filters: filters, ...words },
     200, TTL
   );
   context.waitUntil(cache.put(key, res.clone()));

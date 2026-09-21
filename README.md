@@ -8537,9 +8537,11 @@ One page, the frame every page that is not the map wears — the brand header,
 the 640px column, the cards — and three tables. Two facts at the top, **Most
 opened** and **Least opened**, then every place on the map ranked with the
 zeros in it, then the Google venues somebody has pressed, then all fourteen
-filter chips. Nothing on the site links to it. That is the blog's arrangement
-rather than the directory's, with one difference: the blog is indexed and this
-is not, and **Not indexed, and not disallowed either** below says why.
+filter chips, then two footnotes under all three: every open counted, and how
+many accounts exist — see **How many accounts exist** below for the second.
+Nothing on the site links to it. That is the blog's arrangement rather than
+the directory's, with one difference: the blog is indexed and this is not,
+and **Not indexed, and not disallowed either** below says why.
 
 ### It counts opens, and an open is a gesture
 
@@ -8668,6 +8670,27 @@ search for a restaurant's name answered with its position in that ranking
 would read as exactly the verdict it is not. Followed, because every name on
 the map's table links to a place on the map, which is indexed and meant to be.
 
+### How many accounts exist
+
+One more number, under the total of opens and in the same style: `SELECT
+COUNT(*) FROM users`, read fresh on every cache miss rather than kept as a
+running total — the table this counts is small enough, unlike `press_counts`,
+that there is nothing to save by not asking it directly. `users` in the
+answer `/api/stats` gives, `statsUsersTotal` in `data/ui.json` the sentence
+around it, drawn in `assets/stats.js` right under **A count and not a log**'s
+own footnote.
+
+It is a count of accounts, not of people who visited: `users.last_seen_at`
+only moves on a sign-in (`enterAccount()` in `functions/api/_account.js`, and
+the Google round trip in `functions/api/google.js`), never on an ordinary page
+load with an already-valid session, so a figure about who came back *today*
+would answer "signed in today" and not "visited today" — a gap worth knowing
+about before building one. This number sidesteps it entirely by asking
+something that does not depend on when anybody was last seen: how many rows
+the table holds, full stop. It draws whenever the ranking above it is in at
+all, `opened` or not — an account is not a press, so it is not gated behind
+one.
+
 ### What it does not do yet
 
 No time window, which **A count and not a log** above is the whole of. No
@@ -8676,7 +8699,11 @@ decoration on it. No languages, no referrers, no countries — Google Analytics
 has all of that and this page is the half GA cannot do, which is the site
 owning its own numbers. No per-place badge anywhere else on the site: the
 count is on this page or it is nowhere, because a number under a name on the
-map is a score, and there are none of those here. Nothing links to it, and if
+map is a score, and there are none of those here. No returning-users figure
+either, for the reason **How many accounts exist** above gives — the data
+this site keeps cannot honestly answer "who came back today" without a
+schema change that writes on every request from a signed-in visitor, which is
+a cost this page has not asked anybody to pay. Nothing links to it, and if
 that ever changes it is a decision about whether a visitor should see it at
 all rather than a missing link.
 

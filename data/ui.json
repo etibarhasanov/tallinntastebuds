@@ -519,7 +519,8 @@
     "statsFiltersLead": "Xəritədəki hər filtrin nə qədər tez-tez açıldığı. «Hamısı» sayılmır: bu, filtrlərdən çıxış yoludur, seçim deyil.",
     "statsNone": "Hələ heç nə açılmayıb.",
     "statsOff": "Rəqəmlər hələ yoxdur.",
-    "statsTotal": "indiyədək {n} açılış sayılıb."
+    "statsTotal": "indiyədək {n} açılış sayılıb.",
+    "statsUsersTotal": "indiyədək {n} hesab qeydiyyatdan keçib."
   },
   "hy": {
     "langName": "Հայերեն",
@@ -1041,7 +1042,8 @@
     "statsFiltersLead": "Որքան հաճախ է միացվում քարտեզի յուրաքանչյուր զտիչը։ «Բոլորը» չի հաշվվում. դա զտիչներից դուրս գալու ճանապարհն է, ոչ թե ընտրություն։",
     "statsNone": "Դեռ ոչինչ չի բացվել։",
     "statsOff": "Թվերը դեռ չկան։",
-    "statsTotal": "մինչ այժմ հաշվվել է {n} բացում։"
+    "statsTotal": "մինչ այժմ հաշվվել է {n} բացում։",
+    "statsUsersTotal": "մինչ այժմ գրանցվել է {n} հաշիվ։"
   },
   "en": {
     "langName": "English",
@@ -1563,7 +1565,8 @@
     "statsFiltersLead": "How often each chip on the map is turned on. All is not counted: it is the way out of the chips rather than a choice.",
     "statsNone": "Nothing has been opened yet.",
     "statsOff": "The numbers are not in yet.",
-    "statsTotal": "{n} opens counted so far."
+    "statsTotal": "{n} opens counted so far.",
+    "statsUsersTotal": "{n} registered accounts."
   },
   "et": {
     "langName": "Eesti",
@@ -2085,7 +2088,8 @@
     "statsFiltersLead": "Kui tihti iga nuppu kaardil sisse lülitatakse. „Kõik“ ei ole loetud: see on nuppudest välja, mitte valik.",
     "statsNone": "Veel ei ole midagi avatud.",
     "statsOff": "Numbreid ei ole veel.",
-    "statsTotal": "kokku avamisi: {n}"
+    "statsTotal": "kokku avamisi: {n}",
+    "statsUsersTotal": "registreeritud kontosid kokku: {n}"
   },
   "fi": {
     "langName": "Suomi",
@@ -2607,7 +2611,8 @@
     "statsFiltersLead": "Kuinka usein kukin kartan nappi kytketään päälle. ”Kaikki” ei lasketa: se on tie ulos napeista, ei valinta.",
     "statsNone": "Mitään ei ole vielä avattu.",
     "statsOff": "Lukuja ei ole vielä.",
-    "statsTotal": "avauksia yhteensä: {n}"
+    "statsTotal": "avauksia yhteensä: {n}",
+    "statsUsersTotal": "rekisteröityjä tilejä yhteensä: {n}"
   },
   "pt": {
     "langName": "Português",
@@ -3129,7 +3134,8 @@
     "statsFiltersLead": "Com que frequência cada filtro do mapa é ligado. «Todos» não conta: é a saída dos filtros, não uma escolha.",
     "statsNone": "Ainda não se abriu nada.",
     "statsOff": "Os números ainda não estão disponíveis.",
-    "statsTotal": "{n} aberturas contadas até agora."
+    "statsTotal": "{n} aberturas contadas até agora.",
+    "statsUsersTotal": "{n} contas registadas até agora."
   },
   "ru": {
     "langName": "Русский",
@@ -3651,7 +3657,8 @@
     "statsFiltersLead": "Как часто включают каждый фильтр на карте. «Все» не считается: это выход из фильтров, а не выбор.",
     "statsNone": "Пока ничего не открывали.",
     "statsOff": "Данных пока нет.",
-    "statsTotal": "всего открытий: {n}"
+    "statsTotal": "всего открытий: {n}",
+    "statsUsersTotal": "всего зарегистрировано аккаунтов: {n}"
   },
   "es": {
     "langName": "Español",
@@ -4173,7 +4180,8 @@
     "statsFiltersLead": "Con qué frecuencia se activa cada filtro del mapa. «Todos» no se cuenta: es la salida de los filtros, no una elección.",
     "statsNone": "Todavía no se ha abierto nada.",
     "statsOff": "Los números aún no están.",
-    "statsTotal": "{n} aperturas contadas hasta ahora."
+    "statsTotal": "{n} aperturas contadas hasta ahora.",
+    "statsUsersTotal": "{n} cuentas registradas hasta ahora."
   },
   "tr": {
     "langName": "Türkçe",
@@ -4695,7 +4703,8 @@
     "statsFiltersLead": "Haritadaki her filtrenin ne sıklıkla açıldığı. «Hepsi» sayılmaz: bu, filtrelerden çıkış yolu, bir seçim değil.",
     "statsNone": "Henüz hiçbir şey açılmadı.",
     "statsOff": "Sayılar henüz yok.",
-    "statsTotal": "şimdiye kadar {n} açılma sayıldı."
+    "statsTotal": "şimdiye kadar {n} açılma sayıldı.",
+    "statsUsersTotal": "şimdiye kadar {n} hesap kaydoldu."
   },
   "uk": {
     "langName": "Українська",
@@ -5217,6 +5226,7 @@
     "statsFiltersLead": "Як часто вмикають кожен фільтр на карті. «Усі» не рахується: це вихід із фільтрів, а не вибір.",
     "statsNone": "Поки нічого не відкривали.",
     "statsOff": "Даних поки немає.",
-    "statsTotal": "усього відкриттів: {n}"
+    "statsTotal": "усього відкриттів: {n}",
+    "statsUsersTotal": "усього зареєстровано акаунтів: {n}"
   }
 }

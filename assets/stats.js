@@ -5,7 +5,9 @@
  * are the answer, which is why it is the whole ranking rather than a top ten.
  * Then Google's directory, only the venues somebody has actually pressed. Then
  * the filter chips, in full, which is the table that argues about the order of
- * the chip row: see **The order of the filter chips** in README.md.
+ * the chip row: see **The order of the filter chips** in README.md. Under all
+ * three, two footnotes about the site rather than about a press: how many
+ * opens have been counted, and how many accounts exist.
  *
  * WHERE THE NUMBERS COME FROM
  *
@@ -53,6 +55,7 @@
     ui: {},
     ready: false,   // whether the numbers came back at all
     opens: 0,
+    users: 0,
     map: [],
     venues: [],
     filters: []
@@ -306,6 +309,16 @@
       textContent: t('statsTotal', { n: state.opens })
     }));
 
+    /* How many accounts exist — a fact about the site rather than about a
+       press, so it is not part of the ranking above it and draws whenever the
+       numbers are in at all, opened or not. Same footnote style as the total
+       above it, and it is the page's second line rather than a table of its
+       own: one number needs no headline, no lead sentence and no rows. */
+    stack.appendChild(el('p', {
+      className: 'stats-total',
+      textContent: t('statsUsersTotal', { n: state.users })
+    }));
+
     main.appendChild(stack);
   }
 
@@ -334,6 +347,7 @@
         state.ui = out.ui;
         state.ready = !!out.ready;
         state.opens = out.opens || 0;
+        state.users = out.users || 0;
         state.map = out.map || [];
         state.venues = out.venues || [];
         state.filters = out.filters || [];
