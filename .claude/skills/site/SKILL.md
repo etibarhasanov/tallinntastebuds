@@ -243,6 +243,11 @@ write gate's `--check`:
   ids. `mark` in either table fails outright, and so does a kind of place a
   list could pick — the mouth goes on a place I have eaten at, and what a
   Google row IS is not somebody's to choose. **The pins** in `README.md`.
+- **The links a profile carries**: `assets/links.js` and `functions/api/_profile.js`
+  hold the same three networks, written out twice for the same reason the
+  pins are, and the build fails when their ids, the addresses they build or
+  the handle lengths they cap drift. **Where else you are** under
+  **Profiles** in `README.md`.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns. The **English** label of a
   type is also the one printed in the intro of that chip's published list, so

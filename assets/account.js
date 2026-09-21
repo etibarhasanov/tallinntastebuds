@@ -206,6 +206,7 @@
     linked: false,   // whether this account was reached through Google
     password: true,  // whether there is a password on it at all
     about: '',       // the line you wrote about yourself, '' for nearly everybody
+    links: {},       // network id -> handle, {} for nearly everybody
     saved: [],       // place ids, newest first
     places: {},      // id -> { name, address }
     lists: [],       // the ones you wrote
@@ -836,6 +837,7 @@
       heading(state.user),
       el('p', { className: 'lists-say', textContent: t('accountWhat') }),
       aboutBox(),
+      linksBox(),
       el('ul', { className: 'menu' }, [
         door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user), 'profile_open', { name: state.user })
       ]),
@@ -978,6 +980,199 @@
 
       box.appendChild(form);
       field.focus();
+    };
+
+    read(false);
+    return box;
+  }
+
+  /* ------------------------------------------------ where else you are
+   * Instagram, TikTok and Facebook, under the line on /u/<you> and under the
+   * line on this card, because the two are the same kind of thing: something
+   * somebody typed about themselves rather than anything this site worked out
+   * about them.
+   *
+   * IT OPENS THE WAY THE LINE ABOVE IT DOES
+   *
+   * What stands here is the links themselves, drawn as the profile draws
+   * them, with one quiet word under them to change them — and nothing but
+   * that word for the account that has none, which is nearly all of them.
+   * The three fields arrive when the word is pressed and go again when they
+   * are saved. Anything else would put a second filled Save on a page whose
+   * accent is already spent on the box that makes a list, which is design
+   * rule 5, and it would spend it on three boxes almost nobody types in.
+   *
+   * ONE SAVE FOR ALL THREE, AND AN EMPTY FIELD IS A LINK TAKEN DOWN
+   *
+   * The form is the three links rather than three settings: what is in the
+   * boxes when Save is pressed is what is on the profile afterwards, so
+   * clearing one is how it comes down. There is no way out that is not Save
+   * and none is needed — the fields open holding what is already stored, so
+   * pressing Save on a form opened by accident writes back what was there.
+   *
+   * WHAT IS DRAWN AFTERWARDS IS WHAT CAME BACK
+   *
+   * Same as the line: the server is what decides what a handle is, and a
+   * pasted address comes back as the handle it contained. A field somebody
+   * filled in that is not a handle stops the whole write and is said in a
+   * word naming the site it was for — never dropped quietly, which would
+   * leave somebody looking at a profile with a link missing and nothing
+   * anywhere saying why.
+   *
+   * The table of three is assets/links.js, which the profile draws from too,
+   * and functions/api/_profile.js is what binds.
+   */
+  function linksBox() {
+    var box = el('div', { className: 'lists-about' });
+    var read, write;
+    var nets = TTBLinks.NETWORKS;
+
+    read = function (focus) {
+      clear(box);
+      var rows = TTBLinks.of(state.links);
+      var open = el('button', {
+        type: 'button',
+        className: 'alt',
+        textContent: t(rows.length ? 'accountLinksEdit' : 'accountLinksAdd')
+      });
+      open.addEventListener('click', function () {
+        TTBTrack.event('account_links_open', { links_state: rows.length ? 'set' : 'empty' });
+        write();
+      });
+
+      var shown = null;
+      if (rows.length) {
+        shown = el('ul', { className: 'lists-links' });
+        rows.forEach(function (row) {
+          shown.appendChild(el('li', null, [
+            el('a', {
+              className: 'lists-link',
+              href: row.href,
+              target: '_blank',
+              rel: 'me nofollow noopener'
+            }, [
+              el('span', { className: 'lists-link-net mono', textContent: row.label }),
+              el('span', { className: 'lists-link-who', textContent: row.shown })
+            ])
+          ]));
+        });
+      }
+
+      box.appendChild(el('div', { className: 'lists-row' }, [shown, open]));
+      if (focus) open.focus();
+    };
+
+    write = function () {
+      clear(box);
+      var form = el('form', { className: 'lists-new lists-links-form' });
+      var fields = {};
+
+      nets.forEach(function (net) {
+        var field = el('input', {
+          type: 'text',
+          className: 'lists-input',
+          value: state.links[net.id] || '',
+          autocomplete: 'off',
+          autocapitalize: 'none',
+          spellcheck: 'false',
+          /* Named by the <label> below rather than by a placeholder. A
+             placeholder is the label right up until somebody types, and these
+             three boxes are unlabelled exactly when they are full — which is
+             every visit after the first, and the moment it matters most that
+             the handle in the second box is the TikTok one. */
+          id: 'link-' + net.id
+        });
+
+        /* NO MAXLENGTH, AND IT IS THE ONE FIELD ON THIS SITE WITHOUT ONE
+           The box takes a pasted address as well as a handle, and an
+           Instagram profile URL is fifty characters before the handle starts.
+           A maxlength cut one to `https://www.instagram.com/tall`, which
+           parses, points at a stranger, and looks like it worked — see the
+           header of assets/links.js. The length is in the pattern instead.
+
+           So the handle is shown as soon as the field is left: what was
+           pasted becomes what will be stored, in the box, before anybody
+           presses Save. A value that is not a handle is left exactly as
+           typed, because it is about to be named in a word and somebody has
+           to be able to see what they wrote. */
+        field.addEventListener('blur', function () {
+          var handle = TTBLinks.clean(net.id, field.value);
+          if (handle) field.value = handle;
+        });
+
+        fields[net.id] = field;
+        /* The site's name, in the mono it wears on the profile — it is a
+           label and it is the one string on this page that is not in
+           data/ui.json, because Instagram is Instagram in all ten of them. */
+        form.appendChild(el('label', { className: 'lists-link-field', for: 'link-' + net.id }, [
+          el('span', { className: 'lists-link-net mono', textContent: net.label }),
+          field
+        ]));
+      });
+
+      var go = el('button', { type: 'submit', className: 'alt', textContent: t('listsSave') });
+      form.appendChild(go);
+
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+
+        /* The same check the server runs, run here first so that a mistyped
+           handle costs a keystroke rather than a round trip — the way every
+           cap on this site is written twice. The server is still what
+           decides; this only saves the trip. */
+        var bad = null;
+        var body = { action: 'links' };
+        nets.forEach(function (net) {
+          var typed = fields[net.id].value.replace(/^\s+|\s+$/g, '');
+          body[net.id] = typed;
+          if (typed && !bad && !TTBLinks.clean(net.id, typed)) bad = net;
+        });
+        if (bad) {
+          toast(t('accountErrLink', { name: bad.label }));
+          fields[bad.id].focus();
+          return;
+        }
+
+        go.disabled = true;
+        go.textContent = t('accountWorking');
+
+        var failed = function (which) {
+          go.disabled = false;
+          go.textContent = t('listsSave');
+          toast(which ? t('accountErrLink', { name: which }) : t('accountErrGeneric'));
+        };
+
+        fetch(ACCOUNT_API, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body)
+        }).then(function (res) {
+          return res.json().then(function (out) {
+            return { ok: res.ok, out: out };
+          });
+        }).then(function (answer) {
+          if (!answer.ok) {
+            /* The one failure this form can explain: the server named the
+               network it could not read. Anything else is the generic word,
+               because a person cannot act on it. */
+            var named = null;
+            nets.forEach(function (net) {
+              if (answer.out && answer.out.network === net.id) named = net.label;
+            });
+            failed(named);
+            return;
+          }
+          state.links = answer.out.links || {};
+          TTBTrack.event('account_links', {
+            links_state: Object.keys(state.links).length ? 'set' : 'cleared'
+          });
+          read(true);
+          toast(t('listsSaved'));
+        }).catch(function () { failed(null); });
+      });
+
+      box.appendChild(form);
+      if (nets.length) fields[nets[0].id].focus();
     };
 
     read(false);
@@ -1215,6 +1410,7 @@
       state.linked = !!account.out.linked;
       state.password = state.user ? !!account.out.password : true;
       state.about = account.out.about || '';
+      state.links = account.out.links || {};
       state.saved = Object.prototype.toString.call(account.out.saved) === '[object Array]'
         ? account.out.saved
         : [];

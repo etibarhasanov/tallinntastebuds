@@ -93,6 +93,7 @@ import { KITCHENS, said } from '../functions/api/venues.js';
    what make "change one, change the other" something other than a promise in
    a comment. */
 import { PIN_GLYPHS, DEFAULT_PIN } from '../functions/api/_pins.js';
+import { NETWORKS } from '../functions/api/_profile.js';
 
 /* How many places a list may hold, from the route that enforces it, so the
    check below is the server's number and not a fourth copy of it. */
@@ -1696,6 +1697,51 @@ if (ui !== null && isPlainObject(ui)) {
       for (const id of PIN_GLYPHS) {
         const key = label('pin', id);
         if (!known.has(key)) fail('data/ui.json', `has no "${key}", which the pin picker asks for to name the ${id} glyph`);
+      }
+    }
+  }
+}
+
+/* 1c. The three networks a profile can link to, which are written out twice.
+
+   functions/api/_profile.js holds them because the server decides whether a
+   handle is one before it stores it; assets/links.js holds the same three
+   because the browser is what draws them and builds the address. Neither can
+   import the other, so this is what keeps the two tables the same table —
+   and the address in particular: a base that moved on one side only would
+   send every link on every profile somewhere the other half never agreed to.
+   Same arrangement as the pins above. */
+
+{
+  const links = join(ROOT, 'assets', 'links.js');
+  if (!existsSync(links)) {
+    fail('assets/links.js', 'is missing — /u/<name> and the account page both load it');
+  } else {
+    const text = readFileSync(links, 'utf8');
+    /* Each row on its own line in that file, which is what makes this
+       readable: the id, the address it builds, and the pattern that says
+       what a handle on that site looks like. */
+    const rows = (text.match(/^\s*\{ id: '[a-z]+',.*$/gm) || []).map((line) => ({
+      id: (line.match(/id: '([a-z]+)'/) || [, ''])[1],
+      base: (line.match(/base: '([^']+)'/) || [, ''])[1],
+      re: (line.match(/re: (\/[^/]+\/)/) || [, ''])[1]
+    }));
+
+    const ids = (list) => list.map((n) => n.id).join(', ');
+    if (ids(rows) !== ids(NETWORKS)) {
+      fail('assets/links.js', `draws the networks [${ids(rows)}], and functions/api/_profile.js allows [${ids(NETWORKS)}] — one of the two has moved`);
+    } else {
+      for (const net of NETWORKS) {
+        const drawn = rows.find((r) => r.id === net.id);
+        if (drawn.base !== net.base) {
+          fail('assets/links.js', `points ${net.id} at ${drawn.base}, and functions/api/_profile.js builds ${net.base} — a link would go somewhere the server never agreed to`);
+        }
+        /* The pattern is the cap — see the header of assets/links.js for why
+           these three fields carry no maxlength — so this is what keeps the
+           length in one place as well as the shape. */
+        if (drawn.re !== String(net.re)) {
+          fail('assets/links.js', `reads a ${net.id} handle as ${drawn.re} and functions/api/_profile.js as ${String(net.re)} — the page would accept a handle the server refuses, or refuse one it takes`);
+        }
       }
     }
   }

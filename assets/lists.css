@@ -565,6 +565,67 @@
 .lists-about { margin-top: 14px; }
 .lists-about > .lists-new { margin-top: 0; }
 .lists-about .lists-say { flex: 1 1 100%; margin: 0; }
+.lists-about .lists-links { flex: 1 1 100%; }
+
+/* The three places somebody said they are: on /u/<name> under their line, and
+   on /account.html in the box above, drawn the same both times so that what
+   you edit is what a stranger reads.
+
+   A wrapping row rather than a column. Three of them are shorter than one
+   line of the sentence above, and stacking them would make the quietest thing
+   on the page the tallest; at 390px they wrap to two and then to three, which
+   is the width doing it rather than a breakpoint deciding it.
+
+   The site's name is the mono and the handle is the body face — design rule
+   2, a label and a name — and that is what keeps three links from reading as
+   three buttons. Nothing here names a colour: the name takes the muted, the
+   handle the text, and the accent is left to the things on this page that
+   are actions. See profileLinks() in assets/lists.js. */
+.lists-links {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.lists-links:last-child { margin-bottom: 0; }
+.lists-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  /* The row is the tap target, so it is as tall as a thumb expects even
+     though the words in it are small. */
+  padding: 3px 0;
+  text-decoration: none;
+  color: var(--ink);
+}
+.lists-link:hover .lists-link-who,
+.lists-link:focus-visible .lists-link-who { text-decoration: underline; }
+.lists-link-net { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.lists-link-who { font-family: var(--body); font-size: 14px; }
+
+/* Three fields where the box that makes a list has one, each under the name
+   of the site it is for — in the mono it wears on the profile, so the form
+   reads as the three links rather than as three boxes.
+
+   The name is a <label> and not a placeholder, because a placeholder is a
+   label only until somebody types: these three are full on every visit after
+   the first, and that is exactly when it matters which of them the TikTok one
+   is.
+
+   A basis narrow enough for two to share a phone and wide enough that a
+   handle is not read through a slot. The input is taken out of the form's
+   flex here — inside its label it is a column, where .lists-new's basis would
+   be read as a height. */
+.lists-links-form .lists-link-field {
+  flex: 1 1 140px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lists-links-form .lists-link-field .lists-input { flex: 0 0 auto; width: 100%; }
 
 /* The box that makes a list. It stands under the fold on the account page,
    and the room above it is its own: what is over it is a <summary> when the
