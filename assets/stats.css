@@ -139,15 +139,25 @@ a.stats-name:hover { color: var(--accent); }
   font-variant-numeric: tabular-nums;
 }
 
-/* --------------------------------------------------------------- the total */
+/* ------------------------------------------------------------- the totals */
 
-/* What the tables are counted out of, under the last of them. Centred and in
-   the mono at the size the "nothing here" lines on the lists page use, so it
-   reads as the page's footnote about itself rather than as another fact about
-   a restaurant. */
+/* What the tables are counted out of, and how many accounts exist, under the
+   last of them. Centred and in the mono at the size the "nothing here" lines
+   on the lists page use, so the pair reads as the page's footnote about
+   itself rather than as two more facts about a restaurant.
+
+   The block is what holds them together. Left to the stack they would sit
+   18px apart — the distance it puts between cards — and two sentences that
+   far apart are not a footnote, they are one line and then another line. */
+.stats-totals {
+  padding: 4px 4px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .stats-total {
   margin: 0;
-  padding: 4px 4px 0;
   text-align: center;
   color: var(--muted);
   font-family: var(--mono);
