@@ -616,6 +616,7 @@
   function placeRail() {
     if (!dom.rail || !dom.brand) return;
     dom.rail.style.top = '';
+    dom.rail.style.bottom = '';
     dom.rail.style.transform = '';
     /* With the sheet up the rail is anchored to its top edge by the
        stylesheet. Pinning a top as well would stretch it between the two. */
@@ -639,15 +640,24 @@
     }
     var need = edge + 14;
     /* And never so far down that the foot of the rail leaves the screen. The
-       locate button used to be the thing it must not land on; now that the
-       button is the foot of the rail, the floor is the bottom of the window,
-       less the attribution strip and the same gap the rail keeps everywhere
-       else. On a window too short for both, the rail stays centred and takes
-       its chances with the card, which is where it was before the nudge. */
+       locate button used to be the thing it must not land on; the floor is
+       the bottom of the window now, less the attribution strip and the same
+       gap the rail keeps everywhere else. On a window too short for both, the
+       rail stays centred and takes its chances with the card, which is where
+       it was before the nudge. On a phone the crosshair has gone back to
+       standing in that corner — see the media query in assets/styles.css —
+       but it is fixed to the window rather than to the rail, so it is not
+       what the rail's foot is any more and it moves for nothing. */
     var floor = window.innerHeight - 46 - dom.rail.offsetHeight;
     if (need > floor) need = floor;
     if (dom.rail.getBoundingClientRect().top < need) {
       dom.rail.style.top = need + 'px';
+      /* Below 860px the rail is centred by an auto margin between top: 0 and
+         bottom: 0 rather than by a transform, so that the crosshair fixed in
+         the corner measures from the window and not from the rail's box. A
+         top pinned against that bottom would only re-centre the rail in what
+         is left under the brand instead of putting it where it is wanted. */
+      dom.rail.style.bottom = 'auto';
       dom.rail.style.transform = 'none';
     }
   }
@@ -3978,7 +3988,17 @@
      the left edge made no sense for a pill that no longer stands in that
      column. It still opens on its own, the moment it is pressed — see
      mountRadio()'s onchange, below — which is a different piece of code
-     from this cascade and did not move with it. */
+     from this cascade and did not move with it.
+
+     The crosshair has left the column too, for the bottom-right corner, and
+     it stays in this list where the radio did not. The radio was leaving for
+     a corner it shares with the language switch, which says what it is
+     without being told; this one is leaving for an empty corner nobody has
+     seen it in before, and the one reading of the cascade that matters is the
+     stranger's first. Seventh of nine, so it opens after the pills above it
+     have named themselves and the eye has somewhere to be sent. The label
+     grows leftwards out of the corner, because the pill is anchored by its
+     right edge down here. */
   var HINT_KEYS = ['account', 'lists', 'flash', 'random', 'ask',
                    'style', 'locate', 'explain', 'feedback'];
   var hintTimers = {};

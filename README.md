@@ -10828,10 +10828,33 @@ control as the screen allows, so a thumb that had just pressed Surprise me had
 the length of the page to travel. It wears the rail's own pill, so it reads as
 one of its buttons rather than as a stray card parked beneath them.
 
+**On a phone it stands in the bottom-right corner instead**, above the
+attribution strip. Not the corner it came from: the other one, which is where
+every map anybody has used on a phone keeps it, and which is under the thumb
+that is already panning the city rather than across the screen under the hand
+holding the phone. It is the only pill on the rail that gets pressed in the
+middle of a gesture — the rest are read, chosen and then pressed — and a
+crosshair that is not where the hand already is gets looked for in that corner
+first and found second. With a place open it rides the strip above the sheet,
+at the right end of the row the rail becomes there; with the chat or a
+full-height sheet up it goes with the rail. Above 860px nothing moves: a
+pointer has no reach worth saving and the column reads as one list.
+
+It stays one of the rail's children in the markup, so `RAIL_PRESS`, the
+introduction cascade and the walk all still find it where they left it; the
+stylesheet is the only thing that knows it has moved. That costs the rail its
+`transform` below 860px — a transformed ancestor is the containing block for a
+fixed child, so the corner it measured from would have been the rail's own box
+— and it is centred by an auto margin between `top: 0` and `bottom: 0` there
+instead, at `height: max-content`, which is the same column in the same place
+and still measurable.
+
 The rail is vertically centred, and `placeRail()` in `assets/app.js` nudges it
 down on short windows so it can never ride up under the brand — never so far
 down that its own foot leaves the screen, which is the floor the locate button
-used to provide by standing in the corner.
+used to provide by standing in the corner. It releases the `bottom` when it
+pins a `top`, or the auto margin would re-centre the rail in whatever was left
+under the brand rather than putting it where the nudge asked for.
 
 **It is asked again when a pill arrives.** The account and the lists door are
 the only two that come and go, and `/api/account` draws them after the map has
