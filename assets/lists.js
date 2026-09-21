@@ -838,6 +838,10 @@
          A box saying "this person has not written anything" is a page telling
          a reader about an empty field rather than about a person. */
       who.about ? el('p', { className: 'lists-say', textContent: who.about }) : null,
+      /* And the three places they said they are, under the line and above the
+         number for the same reason the line is: what somebody chose to say
+         about themselves comes before what strangers did with their lists. */
+      profileLinks(who.links),
       standing(who.kept),
       /* The year and not the day. When somebody made an account is context
          for the number above it rather than a record of them — and a year is
@@ -859,6 +863,51 @@
 
     wrap.appendChild(backLink());
     return wrap;
+  }
+
+  /* Where else they are: the handles they wrote on /account.html, as links.
+   *
+   * ASSETS/LINKS.JS BUILDS THE ADDRESS, AND NOTHING HERE DOES
+   *
+   * What comes back from the server is a handle per network and never a URL —
+   * see functions/api/_profile.js for why a profile, which is the one page
+   * here that links off this site, must not be able to point anywhere
+   * somebody typed. of() reads the answer against the same table the server
+   * validated it with, so a network this site has stopped drawing, or a
+   * handle that would no longer be accepted, is one that quietly stops being
+   * printed rather than one that outlives the rule.
+   *
+   * Nothing at all where nobody wrote any, which is nearly every account —
+   * the same rule the line, the standing and every count on this site follow.
+   *
+   * `nofollow` because a profile is indexed and these are links anybody can
+   * add to a page under their own name; `me` because that is what a link from
+   * a person's page to their account on another site is, and a reader's
+   * browser and a search engine both have a use for knowing it.
+   */
+  function profileLinks(links) {
+    var rows = TTBLinks.of(links);
+    if (!rows.length) return null;
+
+    var ul = el('ul', { className: 'lists-links' });
+    rows.forEach(function (row) {
+      ul.appendChild(el('li', null, [
+        TTBTrack.click(el('a', {
+          className: 'lists-link',
+          href: row.href,
+          target: '_blank',
+          rel: 'me nofollow noopener'
+        }, [
+          /* The site's name in the mono, because it is a label; the handle in
+             the body face beside it, because it is what somebody is called.
+             Design rule 2, and it is what keeps three links from reading as
+             three buttons. */
+          el('span', { className: 'lists-link-net mono', textContent: row.label }),
+          el('span', { className: 'lists-link-who', textContent: row.shown })
+        ]), 'profile_link_open', { network: row.id })
+      ]));
+    });
+    return ul;
   }
 
   /* The standing: how many times, in all, other people have kept the lists on

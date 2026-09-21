@@ -237,7 +237,36 @@ CREATE TABLE IF NOT EXISTS users (
   -- The same length as a list's intro and for the same reason: it is a line
   -- under a title, not a page, and a profile that opens with six paragraphs
   -- about somebody is no longer a page about their lists.
-  about          TEXT    NOT NULL DEFAULT ''
+  about          TEXT    NOT NULL DEFAULT '',
+  -- Where else somebody said they are: Instagram, TikTok and Facebook, drawn
+  -- on /u/<name> under the line above. Empty by default and empty on nearly
+  -- every row, and read by the same two pages the line is.
+  --
+  -- LAST, AND FOR THE SAME REASON `about` IS
+  --
+  -- It reaches a deployed database by hand too —
+  -- ALTER TABLE users ADD COLUMN links TEXT NOT NULL DEFAULT '' — and SQLite
+  -- appends, so the order here stays the order the real table has. Both
+  -- readers survive its absence: readingExtras() in functions/api/_profile.js
+  -- asks for both optional columns, then for `about` alone, then for neither,
+  -- and remembers which answered, so a database that is one ALTER behind
+  -- serves a profile and an account page rather than a 500.
+  --
+  -- ONE COLUMN OF JSON RATHER THAN THREE COLUMNS
+  --
+  -- {"instagram":"kate","tiktok":"kate"} — only the networks somebody filled
+  -- in, and only ever handles, never addresses: the URL is built in
+  -- functions/api/_profile.js out of a base nobody typed, which is what keeps
+  -- a profile from being a way to point anywhere from under a trusted name.
+  -- A fourth site is then a row in a table rather than another hand-run ALTER
+  -- against a live table. The cost is that this cannot be queried, and
+  -- nothing queries it: it is read on one page, about one person, by primary
+  -- key. Anything that does not parse reads as none, so a hand-written value
+  -- costs its own row and nothing else.
+  --
+  -- The handles are capped per site where they are written, in
+  -- functions/api/_profile.js: Instagram 30, TikTok 24, Facebook 50.
+  links          TEXT    NOT NULL DEFAULT ''
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username COLLATE NOCASE);
 

@@ -13,8 +13,10 @@
  *
  * WHAT IS ON IT
  *
- * Their public lists, how many times those have been kept in total, and the
- * line they wrote about themselves if they wrote one. Not their saves, not
+ * Their public lists, how many times those have been kept in total, the line
+ * they wrote about themselves if they wrote one, and the handles they gave
+ * for the three sites in NETWORKS — see functions/api/_profile.js, which is
+ * also why those are handles here and addresses only where one is built. Not their saves, not
  * their private lists, not the lists they kept — see functions/api/_profile.js
  * for why each of those is left off. A profile discloses no fact about
  * anybody that a list of theirs was not already printing; the line is the
@@ -41,7 +43,7 @@
  */
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
-import { readProfile, USERNAME } from '../api/_profile.js';
+import { readProfile, USERNAME, NETWORKS, linkUrl } from '../api/_profile.js';
 import { canonical, esc, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
 
 /* The line under the name in a preview card.
@@ -105,12 +107,24 @@ export async function onRequest(context) {
     type: 'profile'
   }));
 
+  /* Where else they said they are, for the same reader. The same `nofollow`
+     the script writes, because this page is indexed and these are links
+     somebody added to a page under their own name. */
+  const links = profile.links || {};
+  const elsewhere = NETWORKS
+    .filter((net) => links[net.id])
+    .map((net) =>
+      '<li><a rel="me nofollow noopener" href="' + esc(linkUrl(net.id, links[net.id])) + '">' +
+      esc(net.label) + '</a></li>')
+    .join('');
+
   /* The page as text, for the reader that runs no script — see fill() in
-     functions/_shell.js: the name, the line they wrote, and their lists,
-     each a link. */
+     functions/_shell.js: the name, the line they wrote, where else they are,
+     and their lists, each a link. */
   html = fill(html, EMPTY['lists.html'],
     '<h1>' + esc(profile.name) + '</h1>' +
     (profile.about ? '<p>' + esc(profile.about) + '</p>' : '') +
+    (elsewhere ? '<ul>' + elsewhere + '</ul>' : '') +
     '<ol>' + profile.lists.map((list) =>
       '<li><a href="/list/' + esc(list.id) + '">' + esc(list.title) + '</a></li>').join('') + '</ol>');
 

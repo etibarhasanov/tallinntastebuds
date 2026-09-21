@@ -88,6 +88,7 @@ import {
   enterAccount, nameGoogleAccount
 } from './_account.js';
 import { googleReady, unlinkGoogle, hasGoogle, pendingCookie } from './_google.js';
+import { NETWORKS, cleanHandle, readLinks, readingExtras } from './_profile.js';
 
 /* The line somebody writes about themselves on /u/<name>. The same length as
    a list's intro in functions/api/lists.js, and the same reasoning: it is a
@@ -139,19 +140,6 @@ export async function onRequestGet(context) {
   const user = await sessionUser(request, env);
   if (!user) return json({ ready: true, google: google, user: null }, 200);
 
-  /* Read here rather than added to sessionUser(), which every signed-in
-     request on this site goes through — saves, lists and splitwise included,
-     and not one of them prints this. One indexed read on the id already in
-     hand, on the one page that draws the box it fills.
-
-     Guarded, because `about` is a column that arrives by hand: db/schema.sql
-     is applied by a person and a deployment can reach the site before they
-     have run it. A line somebody wrote about themselves is the smallest thing
-     on this page and it must not be able to take the page down — without this
-     catch, an account page on a database that predates the column answers 500
-     and somebody's saves and lists go with it. Same bargain _lists.js takes
-     over an unreadable catalogue: the missing piece costs itself and nothing
-     around it. */
   /* Whether there is a password on this account, which is what the two steps
      on the map's sheet read to decide whether to ask for the one in use.
      Unguarded, unlike the two reads below it: `users.pw_hash` has been there
@@ -160,14 +148,36 @@ export async function onRequestGet(context) {
      account that has one would quietly stop the sheet asking for it. */
   const pw = await passwordOn(env, user.id);
 
+  /* Read here rather than added to sessionUser(), which every signed-in
+     request on this site goes through — saves, lists and splitwise included,
+     and not one of them prints this. One indexed read on the id already in
+     hand, on the one page that draws the box it fills.
+
+     Guarded, because `about` and `links` are columns that arrive by hand:
+     db/schema.sql is applied by a person and a deployment can reach the site
+     before they have run it. A line somebody wrote about themselves and the
+     three handles beside it are the smallest things on this page and they
+     must not be able to take it down — without the guard, an account page on
+     a database that predates either column answers 500 and somebody's saves
+     and lists go with it. readingExtras() in ./_profile.js is that guard and
+     is shared with the profile, so the two pages cannot disagree about which
+     columns this database has. Same bargain _lists.js takes over an
+     unreadable catalogue: the missing piece costs itself and nothing around
+     it. */
   let about;
-  try {
-    const row = await env.DB
-      .prepare('SELECT about FROM users WHERE id = ?')
-      .bind(user.id)
-      .first();
-    about = (row && row.about) || undefined;
-  } catch (e) { /* no column yet: no line, and the rest of the page stands */ }
+  let links;
+  const extra = await readingExtras(env, (extras) => extras
+    ? env.DB.prepare('SELECT ' + extras + ' FROM users WHERE id = ?').bind(user.id).first()
+    : null);
+  if (extra) {
+    about = extra.about || undefined;
+    /* Only where the column is actually there. readingExtras() may have
+       settled on `about` alone, in which case this row has no links field and
+       an empty object is the true answer — there are no handles in a database
+       that has nowhere to keep them. */
+    const some = readLinks(extra.links);
+    links = Object.keys(some).length ? some : undefined;
+  }
 
   /* Whether Google is connected, which is what the account page draws its
      Google row from — Connect or Disconnect.
@@ -203,13 +213,17 @@ export async function onRequestGet(context) {
        through Google has none until somebody sets one. */
     password: !!pw.hash,
     about: about,
+    /* Handles, not addresses — the page builds the URL out of the same table
+       the server validates against. Left out entirely where there are none,
+       which is nearly every account. */
+    links: links,
     saved: await savedByUser(env, user.id)
   }, 200);
 }
 
 /* ---------------------------------------------------------------- create,
  * sign in, sign out, change the password, change the username, write the line
- * about yourself. One endpoint, because they share every check: the same
+ * about yourself, say where else you are. One endpoint, because they share every check: the same
  * username and password rules, the same slow-down on a fingerprint that keeps
  * getting a password wrong, and the same session table on the way in and out.
  *
@@ -489,6 +503,57 @@ export async function onRequestPost(context) {
       .run();
 
     return json({ about: about }, 200);
+  }
+
+  /* ------------------------------------------- where else you are
+   *
+   * Up to three handles — Instagram, TikTok, Facebook — drawn under the line
+   * on /u/<name>. The second thing anybody writes here about themselves
+   * rather than about a restaurant, and it asks for a session and no password
+   * for the reason the line above it does: it is something its author wrote
+   * and can rewrite, not a way to take an account off somebody.
+   *
+   * ALL THREE AT ONCE, AND EMPTY IS AN ANSWER
+   *
+   * One form, one Save, one write. A field left empty is a handle taken down
+   * rather than a handle left alone, which is what makes the form read as the
+   * three links themselves rather than as three separate settings: what you
+   * see in the boxes when you press Save is what is on your profile.
+   *
+   * A FILLED FIELD THAT IS NOT A HANDLE IS REFUSED, NOT DROPPED
+   *
+   * cleanHandle() answers '' for both "empty" and "not a handle", and the two
+   * must not end the same way here. Silently dropping what somebody typed
+   * leaves them looking at a profile with no link on it and nothing anywhere
+   * saying why. So a field that was filled in and did not clean stops the
+   * whole write and names the network it was, and nothing changes until it is
+   * a handle or it is empty. See ./_profile.js for what counts as one, and
+   * why this takes a handle rather than a URL at all.
+   */
+  if (action === 'links') {
+    const user = await sessionUser(request, env);
+    if (!user) return json({ error: 'signed-out' }, 401);
+
+    const next = {};
+    for (const net of NETWORKS) {
+      const given = String(typeof body[net.id] === 'string' ? body[net.id] : '').trim();
+      if (!given) continue;
+      const handle = cleanHandle(net.id, given);
+      if (!handle) return json({ error: 'bad-link', network: net.id }, 400);
+      next[net.id] = handle;
+    }
+
+    /* '' rather than '{}' for somebody who has taken all three down, so that
+       "never wrote one" and "wrote three and removed them" are the same row —
+       the same reasoning DEFAULT_PIN is stored as '' for. */
+    const stored = Object.keys(next).length ? JSON.stringify(next) : '';
+
+    await env.DB
+      .prepare('UPDATE users SET links = ? WHERE id = ?')
+      .bind(stored, user.id)
+      .run();
+
+    return json({ links: next }, 200);
   }
 
   /* ------------------------------------------ naming a Google account

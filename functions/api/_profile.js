@@ -13,12 +13,17 @@
  * WHAT A PROFILE IS
  *
  * The public lists somebody has made, how many times anybody has kept them,
- * and the line they wrote about themselves. Nothing else. Not their saves —
- * those are anonymous by design and
- * filed under a device as often as under an account — not when they were
- * last seen, and not the lists they have kept, which are a drawer of somebody
- * else's pages rather than anything they published. An account holds no
- * address to leave off in the first place; see functions/api/account.js.
+ * the line they wrote about themselves, and the three places they said they
+ * are — Instagram, TikTok, Facebook. Nothing else. Not their saves, which are
+ * anonymous by design and filed under a device as often as under an account;
+ * not when they were last seen; and not the lists they have kept, which are a
+ * drawer of somebody else's pages rather than anything they published. An
+ * account holds no address to leave off in the first place; see
+ * functions/api/account.js.
+ *
+ * The last two of those are the ones this site was told rather than worked
+ * out, and that is what makes them allowed: everything else here is a
+ * consequence of somebody having published a list.
  *
  * A private list is not on it. That is the whole of the privacy rule here and
  * it is the same one /list/<id> already enforces: a list is public or it is
@@ -49,6 +54,203 @@
 
 import { readingPins, pinSelect, pinsOf } from './_pins.js';
 
+/* ------------------------------------------------------------ the links
+ *
+ * Three places somebody can say they are, under their line on /u/<name>.
+ * They are the second thing on this site anybody writes about themselves
+ * rather than about a restaurant, and they pass the same test the line does:
+ * nothing here is a fact this site knew and they did not publish — it is
+ * three handles they typed and pressed Save on.
+ *
+ * WHY A HANDLE AND NOT AN ADDRESS
+ *
+ * A profile is the one page here that links off-site, and a field that takes
+ * a URL is a field for pasting any URL at all — a page of somebody else's, a
+ * redirector, something worse — under a name a reader has come to trust
+ * because of the lists under it. So the field takes a handle, this file
+ * decides whether it is one, and the address is built here and in
+ * assets/links.js out of a base nobody typed. The worst thing anybody can
+ * store is a handle on one of these three sites that is not theirs, which is
+ * the same thing they could already do by writing it in their line.
+ *
+ * A pasted address still works, because it is what people reach for: an
+ * instagram.com/... URL is read for its first path segment and the rest is
+ * dropped, and a URL pointing anywhere else is not a handle and is refused.
+ *
+ * THE TABLE IS WRITTEN OUT TWICE
+ *
+ * assets/links.js holds the same three rows, because the browser is what
+ * draws them and cannot import this — ESM on the Workers runtime, ES5 served
+ * raw. Same arrangement as the pins, for the same reason, and node
+ * tools/validate.mjs fails the build when the two drift, so the promise is
+ * kept by something other than memory.
+ *
+ * The cap is in the pattern rather than beside it, and each is that site's
+ * own: Instagram 30, TikTok 24, Facebook 50 with a floor of 5, which is the
+ * shortest username it will mint. It is the one cap on this site that is not
+ * also a maxlength on the field that writes it — assets/links.js says what a
+ * pasted address did to a field that had one.
+ */
+export const NETWORKS = [
+  {
+    id: 'instagram',
+    label: 'Instagram',
+    base: 'https://www.instagram.com/',
+    hosts: ['instagram.com'],
+    re: /^[A-Za-z0-9._]{1,30}$/
+  },
+  {
+    id: 'tiktok',
+    label: 'TikTok',
+    /* The @ is part of the address rather than part of the handle, which is
+       why it is on this side of the join: what gets stored is the same shape
+       for all three, and only one of the three wears it. */
+    base: 'https://www.tiktok.com/@',
+    hosts: ['tiktok.com'],
+    re: /^[A-Za-z0-9._]{1,24}$/
+  },
+  {
+    id: 'facebook',
+    label: 'Facebook',
+    base: 'https://www.facebook.com/',
+    hosts: ['facebook.com', 'fb.com'],
+    /* No underscore: Facebook's usernames are letters, digits and dots, and
+       five characters at the shortest. `profile.php` fits that shape and is
+       not a username — it is the numeric-id address with the id left behind,
+       and it answers with a page that is nobody's. */
+    re: /^[A-Za-z0-9.]{5,50}$/,
+    deny: /^profile\.php$/i
+  }
+];
+
+/* One handle, or '' — which is both "they left it empty" and "that is not a
+   handle". The caller tells the two apart by what it was given: POST
+   /api/account refuses a field somebody filled in that comes back empty, and
+   reading a stored row drops it silently, because a value this site would no
+   longer accept is a value it should stop printing.
+
+   Never throws. A hand-written request, a handle on a site that is not one of
+   the three, a URL with a path this file cannot read: all of them are ''. */
+export function cleanHandle(id, value) {
+  const net = NETWORKS.find((n) => n.id === id);
+  if (!net) return '';
+
+  let raw = String(typeof value === 'string' ? value : '').trim();
+  if (!raw) return '';
+
+  /* A pasted address. The host has to be the one this field is for — the
+     point of the field is that a reader knows where the link goes before
+     they press it — and what is taken is the first path segment and nothing
+     else: no query, no second segment, so a link to one post on somebody's
+     account becomes a link to the account. */
+  if (raw.indexOf('/') >= 0) {
+    let url;
+    try {
+      url = new URL(/^https?:\/\//i.test(raw) ? raw : 'https://' + raw);
+    } catch (e) {
+      return '';
+    }
+    const host = url.hostname.toLowerCase().replace(/^(?:www|m|web)\./, '');
+    if (!net.hosts.includes(host)) return '';
+    const first = url.pathname.split('/').filter(Boolean)[0] || '';
+    try {
+      raw = decodeURIComponent(first);
+    } catch (e) {
+      raw = first;
+    }
+  }
+
+  /* Typed the way people say it out loud. Instagram and TikTok both print
+     the @ and neither stores it. */
+  raw = raw.replace(/^@+/, '');
+
+  if (!net.re.test(raw)) return '';
+  /* A handle of nothing but dots passes every pattern above and is not a
+     handle; it is what a stray paste of a domain leaves behind. */
+  if (!/[A-Za-z0-9]/.test(raw)) return '';
+  if (net.deny && net.deny.test(raw)) return '';
+  return raw;
+}
+
+/* The column as the page wants it: an object of id → handle, holding only
+   the networks that are in the table and only the handles that still clean.
+   '' , null, a row written before this column existed and a JSON blob
+   somebody hand-wrote all come back as {}.
+
+   Stored as JSON in one column rather than as three, so that adding a fourth
+   network is a line in the table above and not another ALTER against a live
+   table nobody can lock. The cost is that it cannot be queried, and nothing
+   ever queries it: it is read on one page, about one person, by primary key. */
+export function readLinks(raw) {
+  let parsed;
+  try {
+    parsed = JSON.parse(String(raw || '') || '{}');
+  } catch (e) {
+    return {};
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+
+  const out = {};
+  for (const net of NETWORKS) {
+    const handle = cleanHandle(net.id, parsed[net.id]);
+    if (handle) out[net.id] = handle;
+  }
+  return out;
+}
+
+/* Where a handle points. Built here and never stored, so a base that changes
+   changes every link on the site at once, and a row in the database is never
+   a URL somebody chose. */
+export function linkUrl(id, handle) {
+  const net = NETWORKS.find((n) => n.id === id);
+  return net && handle ? net.base + encodeURIComponent(handle) : '';
+}
+
+/* ------------------------------------------------- the optional columns
+ *
+ * `users.about` and `users.links` both reach a deployed database by hand —
+ * every statement in db/schema.sql is CREATE TABLE IF NOT EXISTS, which adds
+ * no column to a table that already exists — so there are three states a
+ * live database can be in and every read of a person has to survive all
+ * three. A line under somebody's name and three handles beside it are not
+ * worth the page: without this, an account page or a profile on a database
+ * that is one ALTER behind answers 500 and takes somebody's saves, lists and
+ * byline down with it.
+ *
+ * So the same bargain readingPins() strikes, one tier wider: the first read
+ * of an isolate asks for everything, and what happens decides for every read
+ * after it. At most two failed statements per isolate on the oldest database,
+ * none on a current one, and no round trip of its own either way. Only "no
+ * such column" is an answer; anything else is the request having failed and
+ * is rethrown, because a database that is down should look like one.
+ *
+ * The answer outlives the ALTER, exactly as the pins' does: an isolate that
+ * has decided "about only" holds that until it is recycled, which a deploy
+ * does and idling does anyway. Run the ALTER with the deploy rather than
+ * after it.
+ */
+const TIERS = ['about, links', 'about', ''];
+let tier = null;
+
+export async function readingExtras(env, make) {
+  const from = tier === null ? 0 : TIERS.indexOf(tier);
+  for (let at = from; at < TIERS.length - 1; at++) {
+    try {
+      const out = await make(TIERS[at]);
+      tier = TIERS[at];
+      return out;
+    } catch (e) {
+      if (!/no such column/i.test(String((e && e.message) || e))) throw e;
+    }
+  }
+
+  /* The last tier is outside the loop because it is what makes this total: it
+     asks for no optional column at all, so it cannot fail for the want of
+     one, and there is nothing below it to fall through to. */
+  tier = '';
+  return make('');
+}
+
 /* The same shape functions/api/account.js mints a username in, said again
    here so nothing that is not a plausible name goes near a query. */
 export const USERNAME = /^[a-z0-9][a-z0-9-]{2,23}$/;
@@ -72,25 +274,25 @@ export async function readProfile(context, name) {
   const who = String(name || '').trim().toLowerCase();
   if (!USERNAME.test(who)) return null;
 
-  /* `about` is a column applied by hand — see db/schema.sql — so a deployment
-     can reach the site before somebody has run the ALTER. Asking for it is
-     worth one failed statement and no round trips in the ordinary case, and
-     the fallback is the same read without the one optional field: a profile
-     is a page about somebody's lists, and it must not 404 because the line
-     under their name has nowhere to live yet. */
-  let row;
-  try {
-    row = await env.DB
-      .prepare('SELECT id, username, created_at, about FROM users WHERE username = ? COLLATE NOCASE')
-      .bind(who)
-      .first();
-  } catch (e) {
-    row = await env.DB
-      .prepare('SELECT id, username, created_at FROM users WHERE username = ? COLLATE NOCASE')
-      .bind(who)
-      .first();
-  }
+  /* `about` and `links` are columns applied by hand — see db/schema.sql — so
+     a deployment can reach the site before somebody has run either ALTER.
+     readingExtras() above is what makes that survivable: it asks for both,
+     then for the one, then for neither, and remembers. A profile is a page
+     about somebody's lists, and it must not 404 because the line under their
+     name has nowhere to live yet. */
+  const row = await readingExtras(env, (extras) => env.DB
+    .prepare(
+      'SELECT id, username, created_at' + (extras ? ', ' + extras : '') +
+      ' FROM users WHERE username = ? COLLATE NOCASE'
+    )
+    .bind(who)
+    .first());
   if (!row) return null;
+
+  /* Read against the table above rather than trusted as stored: a network
+     this site has stopped drawing, or a handle that would no longer be
+     accepted, stops being printed rather than outliving the rule. */
+  const links = readLinks(row.links);
 
   /* Their public lists, newest edit first — the same row the index draws for
      your own, minus the ones nobody else may read. The keeps are a scalar
@@ -120,6 +322,11 @@ export async function readProfile(context, name) {
        answer here drops a field with nothing in it. Nearly every account has
        no line, and the page draws nothing for one it was not given. */
     about: row.about || undefined,
+    /* The same, for the same reason, and handles rather than addresses: the
+       page builds the URL out of the table above, so a link on a profile is
+       never a string somebody typed in full. Left out when there are none,
+       which is nearly every account. */
+    links: Object.keys(links).length ? links : undefined,
     /* The four things a row on this page draws and no more — listRow() in
        assets/lists.js takes a title, a count and a number of keeps, and the
        id is what it links to. The line under a list and the date it was last

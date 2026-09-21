@@ -2496,8 +2496,9 @@ in exchange for a sign-in. **Signing in with Google** below is the version
 that does not — the scope asked for is `openid` alone, the only thing stored
 is Google's own opaque id for that person, and an account is still a username
 and nothing else. What an account still holds of its own is a username, a password
-hash and, if somebody writes one, two hundred characters about themselves —
-see **The line about yourself** under **Profiles**. Everything else a profile
+hash and, if somebody writes them, two hundred characters about themselves and
+up to three handles on other sites — see **The line about yourself** and
+**Where else you are** under **Profiles**. Everything else a profile
 draws is the lists that account published, which were already public.
 
 Saving works with no account at all — the device keeps a random id and the
@@ -3450,9 +3451,12 @@ one line, and turn the chevron a quarter when it opens. The chevron is
 page and a title that opens where it stands point the same way at what they do.
 There was a third, `.lists-door` — a `position: relative` and a hover, which is
 what made a whole card a press — and it went with the card it was written for.
-And `.lists-about`, which is the room the line about yourself stands in: the
-same room whether what is in it is the line or the field, so the card does not
-shift under your hand when the field arrives. `.lists-new` grew a margin
+And `.lists-about`, which is the room the line about yourself stands in, and
+the room the three handles under it stand in too: the same room whether what
+is in it is what somebody wrote or the field they write it in, so the card
+does not shift under your hand when a field arrives. `.lists-links` is the
+wrapping row those handles are drawn as, on this page and on the profile, so
+that what you edit here is what a stranger reads there. `.lists-new` grew a margin
 of its own when the box arrived here, for the reason its comment gives: what is
 over it is a `<summary>` when the fold is closed and a column of lists when it
 is open, and neither of those can carry a margin that only means something
@@ -5626,12 +5630,23 @@ the drag and the save — is appended rather than left to collide.
 | title | 60 characters |
 | the line under it | 200 |
 | the line about yourself | 200 |
+| an Instagram handle | 30 characters |
+| a TikTok handle | 24 |
+| a Facebook username | 50 |
 | what you say about a place | 280 |
 | places before a list is listed on `/lists` | 3 |
 
 Most of them are about somebody with a script rather than somebody with
 opinions. They are in `functions/api/lists.js`, and the pages restate the
 lengths so a field stops you at the keystroke rather than at the round trip.
+
+The three handles are the exception and are in `functions/api/_profile.js`,
+inside the pattern that says what a handle on each site looks like rather than
+beside it. Their fields carry no `maxlength` at all, because they take a
+pasted profile address as well as a handle and a cap of 30 turns an Instagram
+URL into `https://www.instagram.com/tall` — which parses, points at somebody
+else, and looks like it worked. The field shows you the handle when you leave
+it instead.
 The title's 60 is restated twice, because a list is named in two places now:
 `assets/lists.js` where it is renamed, and `assets/account.js` where it is
 first given a name. Change one, change all three.
@@ -5775,8 +5790,8 @@ draws for your own, which is what `listRow()` in `assets/lists.js` is for. The
 year they turned up. And one number over the lot: **how many times, in all,
 other people have kept these lists.**
 
-And the line they wrote about themselves, when they wrote one. That is the
-whole of it.
+And the line they wrote about themselves, when they wrote one, with the three
+places they said they are under it. That is the whole of it.
 
 Nothing else. Not their saves — those are anonymous by design and filed under
 a device as often as under an account, and a page that turned them into a
@@ -5786,10 +5801,10 @@ people's pages rather than anything they published. There is no email on an
 account to leave off — see **Accounts**.
 
 A profile discloses no fact about anybody that a list of theirs was not
-already printing. That is the test it was built to pass, and the line below
-is the one thing on the page that is not a consequence of it: it is there
-because somebody typed it and pressed Save, which is the opposite of a page
-revealing something.
+already printing. That is the test it was built to pass, and the two things
+below are the only things on the page that are not a consequence of it: the
+line, and the handles under it. Both are there because somebody typed them
+and pressed Save, which is the opposite of a page revealing something.
 
 ### The line about yourself
 
@@ -5871,6 +5886,100 @@ optional field. Run the `ALTER` and the line starts saving; until then
 the one thing in that window that is not quite honest — pressing Save there
 fails and says so. The rest of both pages is exactly what it was before this
 existed, which is the point.
+
+### Where else you are
+
+Three handles under the line — **Instagram, TikTok, Facebook** — written on
+`/account.html` on the same card the line is, and read by everybody who opens
+`/u/<name>`. Nothing at all for an account that gave none, which is every
+account that existed before this did.
+
+They pass the same test the line does and for the same reason: a handle on a
+profile is not something this site worked out about somebody, it is something
+they typed. What it adds to a profile is the one thing the page was missing
+for the person whose page it is — a profile that named you and led nowhere was
+a page somebody could read and not be able to follow.
+
+**Three, and these three.** Not a website, not an email, not X. Every one of
+them is a further decision about how much of somebody's life a page about
+their restaurant lists is for, and three is where it stopped: the two sites
+this city's food is photographed on, and the one a place-of-your-own is still
+most often a page on. A fourth is a row in `NETWORKS` in
+`functions/api/_profile.js` and the same row in `assets/links.js` — it is
+cheap on purpose, so that adding one is a decision rather than a project.
+
+**What is stored is a handle, and the address is built.** This is the whole of
+why the field is not a URL box. A profile is the only page on this site that
+links off it, under a name a reader has come to trust because of the lists
+beneath it, and a field taking an address is a field for pointing anywhere at
+all from under that trust. So `cleanHandle()` decides whether what somebody
+typed is a handle on the site the field is for, and `linkUrl()` puts it after
+a base nobody typed. The worst thing anybody can store is a handle on one of
+those three sites that is not theirs — which is exactly what they could
+already do by writing it in their line, and it is why the rule is about the
+address rather than about the name.
+
+A pasted address still works, because that is what people reach for: an
+`instagram.com/kate/` URL is read for its first path segment and the rest
+dropped, so a link to one post becomes a link to the account it is on. The
+field shows you what it made of it the moment you leave the box, so what is
+about to be stored is on screen before Save is pressed — and it is why those
+three fields carry no `maxlength`, which is the one place on this site a cap
+is not also one. A `maxlength` of 30 cut a pasted Instagram URL to
+`https://www.instagram.com/tall`: a handle, a real account, somebody else's.
+That was found by driving the form rather than by reading it. A URL
+pointing anywhere else is not a handle and is refused, by name — a filled
+field that does not clean stops the whole save and says which site it was
+for, rather than being quietly dropped and leaving somebody looking at a
+profile with a link missing and nothing saying why.
+
+**One form, one Save, and an empty field is a link taken down.** The box on
+the account page is the line's twin: what stands there is the links
+themselves, drawn exactly as the profile draws them, with one quiet word under
+them to change them — and nothing but that word for the account that has none.
+The three fields arrive when the word is pressed and go when they are saved.
+Anything else would put a second filled Save on a page whose accent is already
+spent on the box that makes a list, which is **The design rules**, rule 5, and
+spend it on three boxes almost nobody types in. It asks for a session and not
+the password, for the reason the line does.
+
+**The links are `rel="me nofollow noopener"`.** `me` because that is what a
+link from somebody's page to their account elsewhere is, and both a browser
+and a search engine have a use for knowing it. `nofollow` because a profile is
+indexed and these are links anybody can put on a page under their own name;
+this site does not lend its standing to them. `noopener` and a new tab because
+they leave the site.
+
+The column is `users.links`, one column of JSON rather than three columns:
+
+```
+ALTER TABLE users ADD COLUMN links TEXT NOT NULL DEFAULT '';
+```
+
+`{"instagram":"kate","tiktok":"kate"}` — only what somebody filled in, and
+only ever handles. A fourth site is then a row in a table rather than another
+hand-run `ALTER` against a live table nobody can lock. The cost is that it
+cannot be queried, and nothing queries it: it is read on one page, about one
+person, by primary key.
+
+**Both readers survive its absence, and now they do it once.** `about` had a
+`try` and a second statement; two optional columns would have been a `try`
+inside a `try`, and the second failure would have taken the line down along
+with the handles. So `readingExtras()` in `functions/api/_profile.js` asks for
+both, then for `about` alone, then for neither, and remembers which answered —
+`readingPins()`'s bargain, one tier wider, shared by `/api/profile` and `GET
+/api/account` so the two pages cannot disagree about which columns this
+database has. Until the `ALTER` is run the fields are simply not offered;
+after it they are. An isolate that has already decided holds that until it is
+recycled, so run the line with the deploy rather than after it.
+
+**The table is written out twice** — `functions/api/_profile.js` for the
+server, which decides whether a handle is one, and `assets/links.js` for the
+browser, which draws them and builds the address. Neither can import the
+other, the same as the pins, so `node tools/validate.mjs` fails the build when
+the ids, the bases or the caps drift. A base that moved on one side only would
+send every link on every profile somewhere the other half never agreed to,
+which is the one kind of drift here that would be worth a real apology.
 
 ### Private lists are not on it, including for its owner
 
@@ -5955,8 +6064,19 @@ the Function did not get to seed.
 
 ### Turning it on
 
-Nothing to do. There is no new table and no new column — a profile is a query
-over `users`, `lists` and `list_keeps`, all of which **Lists** already needs.
+There is no new table: a profile is a query over `users`, `lists` and
+`list_keeps`, all of which **Lists** already needs. There are two columns on
+`users`, both applied by hand and neither of them required for the page to
+work:
+
+```
+ALTER TABLE users ADD COLUMN about TEXT NOT NULL DEFAULT '';
+ALTER TABLE users ADD COLUMN links TEXT NOT NULL DEFAULT '';
+```
+
+Without them a profile is the lists and the number, which is what it was the
+day it shipped. With them it is that plus whatever somebody wrote about
+themselves. Nothing else is switched on or off.
 
 ---
 
@@ -9586,6 +9706,9 @@ to read and write first.
 - a colour token one style declares and another leaves out, which is a style
   quietly wearing the other one's value out of `:root`. See **The design
   rules**
+- an `assets/links.js` whose three networks, their addresses or their caps
+  have drifted from `functions/api/_profile.js`, which is what decides
+  whether a handle may be stored at all
 - an `assets/pins.js` whose eight markers have drifted from the ids
   `functions/api/_pins.js` will let a list store, a glyph called `mark` in
   either table, a kind of place a list could also pick, a kind filed under a
@@ -9800,6 +9923,9 @@ assets/stats.js            chips get pressed: three rankings  } noindex
 assets/stats.css           the rows of a ranking, and nothing else
 functions/api/stats.js     /api/stats — one press in, the whole ranking out,
                            with the page's words and five minutes of cache
+assets/links.js            the three sites a profile can link to, the handles
+                           they take and the addresses they build — said once
+                           for the profile and the account page
 assets/pins.js             the eight markers, the five kinds of place, the six
                            tones, and which of them a place draws — said once
                            for every page that draws a pin
@@ -11306,6 +11432,9 @@ The account page, `assets/account.js`:
 | `account_rename_open`, `account_password_open` | — into the map's sheet |
 | `account_about_open` | `about_state` (`set`/`empty`) — the field for the line about yourself, on opening it |
 | `account_about` | `about_state` (`set`/`cleared`) — the line about yourself, on save |
+| `account_links_open` | `links_state` (`set`/`empty`) — the three handles, on opening the fields |
+| `account_links` | `links_state` (`set`/`cleared`) — the three handles, on save |
+| `profile_link_open` | `network` (`instagram`/`tiktok`/`facebook`) — a handle pressed on somebody's profile |
 | `account_google_unlink` | — Google taken off the one kind of account that has it |
 | `account_logout` | — |
 | `radio_play`, `radio_stop`, `home` | as on the map |
