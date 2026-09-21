@@ -66,6 +66,7 @@ completely with the database switched off.
 - [Statistics](#statistics)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
+- [The map zooms by the pixel](#the-map-zooms-by-the-pixel)
 - [The map tiles need a key](#the-map-tiles-need-a-key)
 - [What the validator checks](#what-the-validator-checks)
 - [Files](#files)
@@ -11223,6 +11224,138 @@ in all ten languages. The pieces are `#tour` in
 `openExplain()`, `showStep()` and `placeTourStep()`; and under
 `prefers-reduced-motion` nothing slides, breathes or rocks.
 
+## The map zooms by the pixel
+
+The zoom used to arrive in steps. Leaflet's own wheel handler gathers forty
+milliseconds of wheel, works out a whole number of levels, and animates to it
+over a quarter of a second. On a mouse that is right — a notch is a step, and
+there is nothing in between for the map to report. On a trackpad it is the
+wrong shape entirely: a gesture that means *a little closer* arrives as a
+stream of two-pixel nudges, and the map answers every forty milliseconds with
+a jump of a whole level. One gesture in and back out and the map has jumped
+four times, blurred four times and landed somewhere nobody asked for. The
+complaint that started this said it plainly: not smooth at all compared to
+Google Maps, on a trackpad.
+
+So there are no steps any more. The gesture is followed continuously, and
+where the fingers stop is where the map stops, whether that is a whole level
+or 14.37.
+
+**Three parts, all of them in `assets/app.js` under ZOOMING BY THE PIXEL.**
+
+**The zoom is a number rather than a level.** `zoomSnap: 0` on the map is what
+allows 14.37 to be a zoom at all; with Leaflet's default of 1 every zoom is
+rounded back to a whole level and there is nothing to be smooth between. Tiles
+are still cut at whole levels, so between two of them they are drawn scaled —
+slightly soft on the way through, and slightly soft if a gesture stops halfway.
+That is the trade and it is taken deliberately: every smooth map makes it,
+this one included on a phone, where a pinch has worked this way since the day
+Leaflet was added. This is the trackpad finally getting what the phone had.
+
+**A target and a chase.** Every wheel event moves a target; a frame loop walks
+the zoom towards it, closing a third of what is left each frame. That is what
+makes a mouse notch glide rather than cut, and what keeps a trackpad from
+being one animation restarted a hundred times — the target is where the
+gesture is going and the map is always on its way there. `WHEEL_PX` is how
+many trackpad pixels make a level (140, about a level and a half to a
+comfortable two-finger swipe) and `WHEEL_NOTCH` is what one notch of a mouse
+wheel is worth (0.9 of a level, which the tidy below lands exactly on the next
+one). What counts as a notch is deliberately narrow: an event in lines or
+pages, which only a mouse sends, or a hundred pixels or more in the first
+event of a gesture, and nothing else. A Safari mouse writes a notch as forty
+pixels and so is read like a trackpad — three notches to a level rather than
+one, slower than it could be and never a jump, which is the right way round.
+A pinch on a trackpad arrives as ctrl+wheel — the browser's own
+page-zoom gesture — and the map takes it rather than let the whole page scale
+out from under it.
+
+**It moves the map the way a pinch does.** `map._move()` with `pinch: true` is
+the inside of Leaflet's own two-finger zoom, and the reason to borrow it
+rather than call `setView()` sixty times a second is that `setView` rebuilds
+the tile grid on every call: it would throw away and re-request every tile on
+screen, every frame. A pinch move only transforms what is already drawn. The
+grid is rebuilt where Leaflet would change tile level anyway — on crossing a
+whole level — and once more when the gesture lands. These are private methods,
+and they are pinned: `index.html` loads Leaflet 1.9.4 by version, with a
+hash, and `TouchZoom` in that same file does exactly this a few lines further
+down. **A Leaflet upgrade reads that comment first.**
+
+### It lands where the fingers left it, nearly
+
+Snapping to a whole level at the end would put the jump back at the one moment
+the gesture is over and cannot answer for it. But a landing a hair off a level
+is nobody's intention either, and it costs a permanently scaled tile for
+nothing — so a gesture that ends within `WHEEL_TIDY` (0.12) of a whole level
+eases the last of the way on to it rather than stopping short. Nothing jumps:
+the tidy is a target the same chase walks to. A mouse notch is 0.9 of a level
+precisely so that it tidies to exactly one, which is how the mouse keeps its
+steps while the trackpad loses them.
+
+Under `prefers-reduced-motion` there is no chase: the map goes to the target
+at once. On a trackpad that is still smooth, because the gesture itself is the
+animation; on a mouse it is the jump that setting is asking for.
+
+### The pins and the names wait for the end
+
+`syncMarkers()` walks every place against every other to decide what shares a
+dot, and `paintLabels()` walks every place to decide which names fit. Both are
+fine once at the end of a move and ruinous sixty times a second — and sixty
+times a second is what a smooth zoom would ask for, because every frame of it
+is a Leaflet move that begins and ends. So while the wheel is still turning
+they are put off to a timer the next frame pushes along, and they run once, on
+the gesture that actually finished. `settled()` is the whole of that.
+
+A cluster re-forming mid-gesture would be wrong anyway: the dots would be torn
+down and rebuilt under a pointer that is still asking its question.
+
+### The tiles, which is the other half of smooth
+
+A zoom that is smooth and then waits on the network is not smooth. Three
+things in `assets/basemap.js`:
+
+**`detectRetina` is off, and that is the fix rather than the oversight.** It
+was on for a year and it was doing the `{r}` in the tile URL a second time.
+`{r}` is Leaflet's own retina switch and becomes `@2x`, which is CARTO's name
+for the same tile drawn 512px square; `detectRetina` separately halves the
+tile box to 128px and asks for the zoom level below. Together they fetched
+four times as many tiles as the screen had room for, each at four times the
+pixels it could show — sixteen 512px images where four were wanted. That is a
+lot of network and a lot of decoding to do in the middle of a zoom, and it is
+why zooming felt heaviest on exactly the retina laptops it was meant to
+flatter. `{r}` on its own is one device pixel per pixel on a 2x screen and a
+plain 256px tile on a 1x one.
+
+**`keepBuffer` is 3**, two rows of tiles further out than Leaflet's default.
+Tiles are the one thing on this map that never goes stale — the streets of
+Tallinn are the same on the way back as they were on the way out — so holding
+a wider ring costs a little memory and saves the whole round trip when
+somebody pans back, which on a map of one city is most of the panning there
+is.
+
+**And the levels either side are warmed.** Nobody opens this map to go
+somewhere else: they zoom in on a street, back out, and in again two streets
+over, over the same square kilometre of tiles. So after the map settles,
+`TTBBasemap.warm()` asks for the level above and the level below the one on
+screen, over the view that is on screen, with plain `Image` objects at low
+priority. The browser's HTTP cache takes them — CARTO serves tiles with a year
+on them — and Leaflet's own request a moment later is a cache hit that draws
+in the same frame. Nothing is warmed on a connection that says it is metered
+or slow, a URL already asked for is never asked for twice, and one pass is
+capped at 120 tiles.
+
+The warmed address has to be the one Leaflet will ask for, down to the
+character — the same subdomain letter, the same `@2x`, the same key — or it is
+not a head start, it is a second download. That is why `tileUrl()` and the
+layer options sit in the same file and share the list of subdomains.
+
+**Not a service worker.** The cache that matters here already exists and is
+the browser's. A worker would be a second thing standing between this site and
+its own files, on a site whose scripts are cache-busted by hand with `?v=`
+stamps — which is exactly the machinery that has taken the map down before.
+The header of `tools/stamp.mjs` is that story.
+
+---
+
 ## The map tiles need a key
 
 The basemap comes from CARTO. It used to be free to anyone who attributed it,
@@ -11235,10 +11368,11 @@ No CARTO account, no approval queue, and no need to say in advance whether the
 project is commercial. Free up to **5 million tile requests a calendar month**,
 which a map of seventy restaurants will never come close to.
 
-Then put it in one place, `TILE_KEY` at the top of `assets/app.js`:
+Then put it in one place, `KEY` at the top of `assets/basemap.js`, which is
+where every map on the site gets its tiles from:
 
 ```js
-var TILE_KEY = 'your_key_here';
+var KEY = 'your_key_here';
 ```
 
 That is the whole change. Both styles read it, and the light and dark tiles
@@ -11246,7 +11380,7 @@ are the same key.
 
 ### Leaving it empty
 
-An empty `TILE_KEY` is a working state, not a broken one: the tiles are
+An empty `KEY` is a working state, not a broken one: the tiles are
 requested exactly the way they are today, watermark and all. Nothing throws,
 nothing is blocked, and a fork of this repo with no key still gets a map.
 
@@ -11863,9 +11997,11 @@ Clarity's surest way of telling a returning visitor from a new one. One word
 changes it.
 
 CARTO has already made one move here — tiles now want a key, free but
-required, which is what `TILE_KEY` is for. If they ever go further and stop
-serving free tiles altogether, the lines to change are `TILE_URL`,
-`TILE_URL_DARK` and `TILE_ATTRIBUTION` near the top of `assets/app.js`.
+required, which is what `KEY` is for. If they ever go further and stop serving
+free tiles altogether, the lines to change are `KEY`, `LIGHT`, `DARK` and
+`ATTRIBUTION` at the top of `assets/basemap.js`, and they are at the top of
+that file rather than spread over four because every map on the site reads
+them from there.
 There is no CSP to update alongside them — see above for why.
 
 ---
