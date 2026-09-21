@@ -32,11 +32,14 @@
  *                    the page — so a shared link unfurls as what it is, and
  *                    draws without a second round trip.
  *
- *   /lists           everybody's, the most kept first — or newest, or changed
- *                    lately — with a field to search them, the five lists
- *                    Google wrote in a strip above the rest, and every row
- *                    drawn as a shape on the city. Served the same way by
- *                    functions/lists/index.js.
+ *   /lists           everybody's, the most opened first — or most saved, or
+ *                    newest — with a field to search them: one column of
+ *                    lists, nothing above it and nothing set apart, each row
+ *                    a title and the first places on it. On a desk the row
+ *                    also carries the list drawn as a shape on the city and
+ *                    whose it is; a phone gets neither, because a phone gets
+ *                    as many titles on the screen as will fit. Served the same
+ *                    way by functions/lists/index.js.
  *                    It is the page that joins the lists to each other rather
  *                    than leaving each one an island reachable only by its own
  *                    link. It was /lists/kept, which said what the page was
@@ -156,11 +159,29 @@
   /* Good enough for a label that prints one decimal place. */
   var KM_PER_DEGREE = 111.32;
 
-  /* The two orders the directory can be read in, in the order the chips stand.
-     Mirrors SORTS in functions/api/_mostkept.js, which is what binds: an order
-     the API does not know is the default there, so a chip here that the API
-     did not know would be a chip that did nothing. */
-  var SORTS = ['kept', 'new'];
+  /* The three orders the directory can be read in, in the order the chips
+     stand, the first being the default. Mirrors SORTS in
+     functions/api/_mostkept.js, which is what binds: an order the API does not
+     know is the default there, so a chip here that the API did not know would
+     be a chip that did nothing. */
+  var SORTS = ['views', 'kept', 'new'];
+
+  /* Where a row stops being a phone's row and becomes a desk's: the same 900px
+     assets/lists.css lays the rows out two across at.
+
+     It is asked in the script as well as in the stylesheet because two of the
+     things a wide row carries cost more than a `display: none` would save. The
+     sky is a few hundred SVG circles a row — twenty rows of them — and the
+     city they are drawn on is a nineteen-kilobyte fetch that exists only to
+     fill them. A phone that draws neither has not hidden them; it has not
+     built them. The byline is the cheap one and goes with them so that what a
+     narrow row carries is decided in one place: the title, the count, and the
+     names. */
+  var WIDE = '(min-width: 900px)';
+
+  function wide() {
+    return !!(window.matchMedia && window.matchMedia(WIDE).matches);
+  }
 
   var state = {
     ui: {},
@@ -172,8 +193,7 @@
     ready: false,      // whether the API says lists work at all here
     reached: true,     // whether it answered at all
     all: null,         // the directory: everybody's, in the order below
-    start: null,       // the five Google lists, drawn as a strip above the rows
-    sort: 'kept',      // 'kept' | 'new' — which order the rows are in
+    sort: 'views',     // 'views' | 'kept' | 'new' — which order the rows are in
     city: null,        // data/city.json as [lat, lng], the ground under every sky
     next: '',          // where the directory's next page starts, '' at the end
     q: '',             // what the directory is being searched for, '' for all
@@ -376,6 +396,36 @@
       landed();
       throw err;
     });
+  }
+
+  /* ----------------------------------------------- how often it is opened
+   * A list opened is one row in press_counts, the way a place opened on the
+   * map is and a card pressed on /google is: same route, same rule, same
+   * silence around it — see functions/api/stats.js, which holds all three
+   * kinds, and countPress() in assets/app.js, which is the same six lines.
+   *
+   * It is what orders /lists, and that is the whole of what the number does.
+   * Nothing draws it, nothing is told about it, and the answer is not read:
+   * the route replies 200 whatever happened, because a list that opened is
+   * the feature and a count that did not go up is not worth a word.
+   *
+   * Once per load of a list's own page, whoever the reader came from — the
+   * directory, a link somebody sent, a byline, a search result — because that
+   * is the gesture the number is about. Not when the owner opens their own —
+   * the check for that is in boot(), beside the call: a list its author
+   * reloads while editing it would otherwise climb a page ranked on strangers.
+   *
+   * There is no `counted` map beside this one, unlike the two files named
+   * above.
+   * Those pages open a place, close it and open it again without reloading;
+   * this one is a page per list, and the only way to open the same list twice
+   * is to load the page twice — which is two opens, and is meant to be. */
+  function countOpen(id) {
+    fetch('/api/stats', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ kind: 'list', id: id })
+    }).catch(function () { /* the order misses one, the list still opened */ });
   }
 
   /* One sentence per refusal the server can send, and the general one for
@@ -768,7 +818,7 @@
   }
 
   /* ---------------------------------------------------------- public lists
-   * Every public list on this site, the most kept first, and a field to find
+   * Every public list on this site, the most opened first, and a field to find
    * one among them.
    *
    * It is the one page here that puts one person's writing above another's.
@@ -823,6 +873,7 @@
     wrap.appendChild(dom.allBody);
     paintAll();
     cityDots();
+    watchWidth();
 
     return wrap;
   }
@@ -835,7 +886,7 @@
   function allUrl(extra) {
     return API + '?all=1' +
       (state.q ? '&q=' + encodeURIComponent(state.q) : '') +
-      (state.sort !== 'kept' ? '&sort=' + state.sort : '') +
+      (state.sort !== 'views' ? '&sort=' + state.sort : '') +
       (extra || '');
   }
 
@@ -844,23 +895,30 @@
   function allAddress() {
     var parts = [];
     if (state.q) parts.push('q=' + encodeURIComponent(state.q));
-    if (state.sort !== 'kept') parts.push('sort=' + state.sort);
+    if (state.sort !== 'views') parts.push('sort=' + state.sort);
     return ALL_PATH + (parts.length ? '?' + parts.join('&') : '');
   }
 
   /* The order, as a row of chips beside the search field: the same .chip the
      map's filter row is made of, pressed the same way, because it is the same
      kind of control — a toggle over what the page shows — asked about a
-     different kind of thing. Two: the count is the page's own order, and
-     Newest is the way past the top of it.
+     different kind of thing. Three: how often a list has been opened is the
+     page's own order, and the keeps and Newest are the two ways past the top
+     of it.
 
-     There was a third, Changed lately, and it went. It ordered on
+     Most opened is a chip that names a number the rows do not print, which is
+     deliberate and is the only one of the three like that. The name of the
+     order is what a reader needs — it says what they are looking at — and a
+     figure on every row would turn twenty pieces of writing into a scoreboard
+     with the author's name under each score. See allMeta().
+
+     There was a fourth once, Changed lately, and it went. It ordered on
      `updated_at`, which is a fact about when somebody was last editing rather
      than about the list — a title fixed the same afternoon put a list above
      one finished a week ago and left alone since — and a reader looking for
      something to open was never asking that question. */
   function orderLabel(key) {
-    return t(key === 'new' ? 'listsOrderNew' : 'listsOrderKept');
+    return t(key === 'new' ? 'listsOrderNew' : key === 'kept' ? 'listsOrderKept' : 'listsOrderViews');
   }
 
   function orderRow() {
@@ -909,7 +967,6 @@
       dom.allBody.classList.remove('is-searching');
       if (a.status === 0 || !a.out || !a.out.all) return toast(t('loadError'));
       state.all = a.out.all;
-      state.start = a.out.start || null;
       state.next = a.out.next || '';
       paintAll();
     });
@@ -1062,7 +1119,6 @@
         return toast(t('loadError'));
       }
       state.all = a.out.all;
-      state.start = a.out.start || null;
       state.next = a.out.next || '';
       paintAll();
 
@@ -1105,60 +1161,11 @@
           textContent: t('listsAllFor', { q: state.q })
         }));
       }
-      /* The five Google lists, as a strip of their own, above everybody
-         else's and under a heading that says whose numbers they are. Only
-         while nothing is being searched for: the API sends them with the
-         first page of an unsearched directory and keeps them out of its rows
-         while it does, so they are on the screen once — see _mostkept.js. */
-      if (!state.q && state.start && state.start.length) {
-        dom.allBody.appendChild(startStrip(state.start));
-        dom.allBody.appendChild(el('h2', { className: 'lists-section' }, [
-          document.createTextNode(t('listsEverybody')),
-          el('span', { className: 'lists-section-why', textContent: orderLabel(state.sort) })
-        ]));
-      }
       dom.allList = el('ul', { className: 'lists-index' });
       rows.forEach(function (l) { dom.allList.appendChild(allRow(l)); });
       dom.allBody.appendChild(dom.allList);
     }
     moreLine();
-  }
-
-  /* The strip: five compact cards, the sky on the left and the title beside
-     it, one row across a desk and a short column on a phone. The byline is
-     left off: the heading over the strip says whose numbers these are and
-     every title ends "by Google", and a third saying of it under each one
-     took the room the title needed. The keep count stays, drawn the way it is
-     drawn on every other row, and hidden at zero the same way. */
-  function startStrip(lists) {
-    var ul = el('ul', { className: 'lists-start-row' });
-    lists.forEach(function (l) {
-      var line = el('p', { className: 'lists-all-meta mono' });
-      allMeta({ keeps: l.keeps, by: null }, line);
-      ul.appendChild(el('li', { className: 'lists-index-row' }, [
-        el('div', { className: 'lists-start-card' }, [
-          /* Not the wide sky: at sixty-four pixels a line of mono across it
-             would be the loudest thing on the card, so the scale is left to
-             the rows below. The mark is drawn here as it is there, at a size
-             that panel can carry — see paintSky(). */
-          sky(l, false),
-          el('div', { className: 'lists-start-body' }, [
-            line,
-            TTBTrack.click(el('a', {
-              className: 'lists-index-title lists-open',
-              href: '/list/' + l.id
-            }, [listPin(l), el('span', { textContent: l.title })]), 'list_page', { list_id: l.id })
-          ])
-        ])
-      ]));
-    });
-    return el('section', { className: 'lists-start' }, [
-      el('h2', { className: 'lists-section' }, [
-        document.createTextNode(t('listsStart')),
-        el('span', { className: 'lists-section-why', textContent: t('listsStartWhy') })
-      ]),
-      ul
-    ]);
   }
 
   /* The frame a list is drawn in: its own places, squared up to the panel.
@@ -1225,13 +1232,12 @@
      ground is drawn once data/city.json has answered — a fetch the rows never
      wait on — and a page that never gets it shows each list on plain paper,
      which is still the shape of the list. */
-  function sky(l, wide) {
+  function sky(l) {
     if (!l.dots || !l.dots.length) return null;
     var box = el('div', { className: 'lists-sky', 'aria-hidden': 'true' });
     box.ttbSky = {
       dots: l.dots,
       frame: frameFor(l.dots),
-      wide: wide,
       pin: TTBPins.ofList(l)
     };
     paintSky(box);
@@ -1250,24 +1256,21 @@
        than the dot did. Eight is about twenty-two pixels on the phone the
        layouts are measured against, which is what a pin on the map is.
 
-       Sixteen in the strip, because its panel is drawn into sixty-four fixed
-       pixels rather than the card's width, and the same eight units land at
-       four there — a smudge. Sixteen is about nine pixels on the screen, a
-       third of what a row card gets: sixty-four pixels cannot carry ten of
-       anything at twenty-two, and nine is where the mark is still a picture
-       and the city is still visible under it. Twenty was tried and the
-       balloons ate the panel. */
+       There was a second size, sixteen, for the strip of Google's five: that
+       panel was drawn into sixty-four fixed pixels rather than the card's
+       width, where eight units land at four — a smudge. The strip has gone
+       and the sky is drawn at one size again, on one kind of row. */
     var mark = TTBPins.glyph(sk.pin);
     box.innerHTML = '<svg viewBox="0 0 ' + SKY.w + ' ' + SKY.h + '" focusable="false">' +
       '<g class="lists-sky-city">' +
       (state.city ? spots(state.city, sk.frame, groundRadius(sk.frame), false, '') : '') +
       '</g><g class="lists-sky-own">' +
-      spots(sk.dots, sk.frame, sk.wide ? 4 : 8, true, mark) +
+      spots(sk.dots, sk.frame, 4, true, mark) +
       '</g></svg>';
     /* No label on a list with no spread — three places in one building, or a
        list whose dots all rounded to the same block. "0.0 km across" is not a
        fact about it, it is the label failing to have anything to say. */
-    if (sk.wide && sk.frame.km >= 0.05) {
+    if (sk.frame.km >= 0.05) {
       box.appendChild(el('span', {
         className: 'lists-sky-span mono',
         textContent: t('listsSkyAcross', { n: across(sk.frame.km) })
@@ -1296,12 +1299,16 @@
   function spots(dots, frame, r, clamp, glyph) {
     var out = '', size = r * 2, i, x, y;
     /* Where a thing this size may sit without hanging over the edge: the
-       padding, until the thing is bigger than the padding. A strip glyph is —
-       its half is eight against a pad of seven — and the panel clips what it
-       cannot hold, so the outermost mark on a list came out with its top cut
-       off. Only the bound moves; the projection below is on SKY.pad either
-       way, because the ground and the list's own places have to be laid on
-       one map. A ground dot passes glyph '' and keeps the padding it had. */
+       padding, until the thing is bigger than the padding. A row's glyph is
+       not — its half is four against a pad of seven — but the strip's was,
+       at eight, and the panel clips what it cannot hold, so the outermost
+       mark on one of those came out with its top cut off. The strip has gone
+       and the bound is kept, because it is the rule rather than the case: a
+       mark asked for at a size the padding cannot hold is a mark that gets
+       cropped. Only the bound moves; the projection below is on SKY.pad
+       either way, because the ground and the list's own places have to be
+       laid on one map. A ground dot passes glyph '' and keeps the padding it
+       had. */
     var inset = Math.max(SKY.pad, glyph ? r : 0);
     for (i = 0; i < dots.length; i++) {
       x = SKY.pad + (dots[i][1] - frame.lo0) / (frame.lo1 - frame.lo0) * (SKY.w - SKY.pad * 2);
@@ -1333,7 +1340,11 @@
      screen and painted into every sky already drawn; a sky drawn later — a
      page of Show more — draws its own, because state.city is set by then. */
   function cityDots() {
-    if (state.city) return;
+    /* Nothing narrow draws a sky, so nothing narrow fetches the city: this is
+       the larger half of what a phone saves by not building one — nineteen
+       kilobytes it would have had no use for. A window widened afterwards
+       asks for it then; see watchWidth(). */
+    if (state.city || !wide()) return;
     getJSON('/data/city.json').then(function (dots) {
       if (!dots || !dots.length) return;
       state.city = dots;
@@ -1342,6 +1353,30 @@
         if (boxes[i].ttbSky) paintSky(boxes[i]);
       }
     }).catch(function () { /* plain paper, then */ });
+  }
+
+  /* A window can cross the line the rows are built either side of: a browser
+     dragged narrower, a tablet turned over. What has to change is the rows
+     and only the rows, and state.all already holds everything they are drawn
+     from, so this paints them again rather than asking for them again — no
+     request, no cursor, and the page stays where the reader left it.
+
+     One watch, set the first time the directory is drawn and never removed:
+     the other two views do not read it, and it costs a boolean either way.
+     addListener is what Safari before 14 has instead of addEventListener, and
+     this file is served raw to whatever opens it. */
+  var widthWatch = null;
+
+  function watchWidth() {
+    if (widthWatch || !window.matchMedia) return;
+    widthWatch = window.matchMedia(WIDE);
+    var again = function () {
+      if (state.view !== 'all' || !dom.allBody) return;
+      paintAll();
+      cityDots();
+    };
+    if (widthWatch.addEventListener) widthWatch.addEventListener('change', again);
+    else if (widthWatch.addListener) widthWatch.addListener(again);
   }
 
   /* The foot of the rows, while there is a page after this one: a Show more
@@ -1372,15 +1407,21 @@
     moreWatch.observe(go);
   }
 
-  /* One list on /lists: the sky, the title, the line of facts, the first
-     three places, and the bookmark in the corner.
+  /* One list on /lists: the title, the keep count, the first three places,
+     the bookmark in the corner — and, on a desk, the sky above the title and
+     whose list it is beside the count.
 
-     It drew the three rows at the foot of a list's own page too, which is
-     what the `withSky` argument was for — the sky is fetched by the directory
-     and was not by a list's page, and at 640px it would have been a box the
-     height of the card it stood on. That foot is gone and this is the
-     directory's row and nothing else, so the sky is simply drawn when the
-     row has dots. */
+     WHY A PHONE GETS LESS AND NOT A SMALLER VERSION OF THE SAME
+
+     The page is a page of lists, and on a phone it had stopped looking like
+     one: a panel of city, a title, a line of facts, three names and a
+     bookmark is most of a screen per row, so three rows was a whole scroll
+     and the shape of the page — twenty of them — was something a reader had
+     to take on trust. What the row is for is picking one list out of twenty,
+     and the title and the three places are what does that. So the narrow row
+     carries those and the keep count between them, and the sky and the byline
+     are what a desk has the width to add — see WIDE above, which is also why
+     neither is built at all rather than drawn and hidden. */
   function allRow(l) {
     var line = el('p', { className: 'lists-all-meta mono' });
     allMeta(l, line);
@@ -1411,7 +1452,7 @@
     return el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card' + (l.mine ? '' : ' has-keep') }, [
         /* The sky first, above the title, where a picture goes on a card. */
-        sky(l, true),
+        wide() ? sky(l) : null,
         TTBTrack.click(el('a', {
           className: 'lists-index-title lists-open',
           href: '/list/' + l.id
@@ -1428,17 +1469,24 @@
     ]);
   }
 
-  /* The one line of facts under a title: how many people kept it, and whose it
-     is. Painted into a line that already exists rather than returned, because
-     the bookmark on the row rewrites it every time it is pressed and a fresh
-     node would have to be swapped into a list somebody is looking at. */
+  /* The one line of facts under a title: how many people kept it, and — on a
+     desk — whose it is. Painted into a line that already exists rather than
+     returned, because the bookmark on the row rewrites it every time it is
+     pressed and a fresh node would have to be swapped into a list somebody is
+     looking at.
+
+     How often the list has been opened is not on this line, and it is what the
+     page is ordered by. The number is the server's business: printing it would
+     put a score under every title and a name under every score, and this page
+     is twenty people's writing rather than a league table. The chip says which
+     order the rows are in, which is the part a reader needs. See SORTS in
+     functions/api/_mostkept.js, which is why the count is not even sent. */
   function allMeta(l, line) {
     clear(line);
     var meta = [
       /* Hidden at zero, the way every other count on this site is. A "0 kept"
          under somebody's top ten reads as a verdict on the list rather than as
-         nobody having pressed it yet — and on this page, where the number is
-         also the position, it would read as last place. */
+         nobody having pressed it yet. */
       l.keeps
         ? el('span', { className: 'lists-all-keeps' }, [
             el('span', {
@@ -1451,7 +1499,11 @@
             )
           ])
         : null,
-      l.by ? byline(l.by) : null
+      /* The byline is a door to the person, and on a phone it is a door this
+         row has no room for: the title and the three places are what pick a
+         list out of twenty, and the name is one line further from them. It is
+         on the list's own page either way, one press from here. */
+      l.by && wide() ? byline(l.by) : null
     ].filter(Boolean);
 
     meta.forEach(function (part, i) {
@@ -3902,7 +3954,7 @@
     var s = seeded && typeof seeded.sort === 'string'
       ? seeded.sort
       : new URLSearchParams(window.location.search).get('sort') || '';
-    return SORTS.indexOf(s) === -1 ? 'kept' : s;
+    return SORTS.indexOf(s) === -1 ? 'views' : s;
   }
 
   function wantedList() {
@@ -4000,7 +4052,6 @@
           ready: true,
           user: window.__TTB_ALL.user || null,
           all: seededAll,
-          start: window.__TTB_ALL.start || [],
           next: window.__TTB_ALL.next || ''
         }
       });
@@ -4042,7 +4093,6 @@
       state.me = out.user || null;
       state.list = out.list || null;
       state.all = out.all || null;
-      state.start = out.start || null;
       state.next = out.next || '';
       state.profile = out.profile || null;
 
@@ -4055,6 +4105,11 @@
       wire();
       mountRadio();
       render();
+
+      /* And the open is counted, once the page is on the screen and out of the
+         way of anything it could slow down. Somebody else's list only: see
+         countOpen(). */
+      if (state.view === 'one' && state.list && !state.list.mine) countOpen(state.list.id);
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
       dom.main.appendChild(el('div', { className: 'noscript card' }, [

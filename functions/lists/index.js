@@ -1,8 +1,8 @@
 /**
  * Tallinn Tastebuds — /lists, the directory.
  *
- * Every public list on this site, the most kept first, with a field to search
- * them. It is the one page here that puts one person's writing above
+ * Every public list on this site, the most opened first, with a field to
+ * search them. It is the one page here that puts one person's writing above
  * another's, and the argument for it — and the cost of it — is set out in
  * README.md under **Public lists**. This file is only how the page is served.
  *
@@ -72,19 +72,19 @@ const PATH = '/lists';
 const TITLE = 'Everybody’s lists';
 const DESCRIPTION =
   'Lists of places in Tallinn, written by the people whose names are on them, ' +
-  'with the most kept first. Search them by name or by who wrote them.';
+  'with the most opened first. Search them by name or by who wrote them.';
 
 /* The page as text, for the reader that runs no script — see fill() in
-   functions/_shell.js: Google's five and then the first page of everybody's,
-   each a link to the list with whose it is and the first names off it, which
-   is what the row prints too. */
+   functions/_shell.js: the first page of everybody's lists, each a link to the
+   list with whose it is and the first names off it, which is what the row
+   prints too. */
 function prose(first) {
   const row = (list) => '<li><h3><a href="/list/' + esc(list.id) + '">' + esc(list.title) + '</a></h3>' +
     (list.by ? '<p>' + esc(list.by) + '</p>' : '') +
     (list.taste && list.taste.length ? '<p>' + esc(list.taste.join(', ')) + '</p>' : '') +
     '</li>';
   return '<h1>' + esc(TITLE) + '</h1><p>' + esc(DESCRIPTION) + '</p>' +
-    '<ol>' + first.start.concat(first.all).map(row).join('') + '</ol>';
+    '<ol>' + first.all.map(row).join('') + '</ol>';
 }
 
 export async function onRequest(context) {
@@ -148,7 +148,6 @@ export async function onRequest(context) {
     q: q,
     sort: first.sort,
     all: first.all,
-    start: first.start,
     next: first.next
   });
   html = fill(html, EMPTY['lists.html'], prose(first));

@@ -785,9 +785,16 @@
   letter-spacing: .03em;
   line-height: 1.65;
 }
+/* A list nobody has kept, on a phone, has nothing on this line at all — the
+   byline that used to keep it company is the desk's now. An empty paragraph
+   is still a paragraph with margins, and the gap it leaves under a title reads
+   as a line that failed to load. */
+.lists-all-meta:empty { display: none; }
 
-/* The count the page is ordered on, so it carries the ink the rest of the line
-   does not, and holds together with its mark when the line wraps. */
+/* The keep count carries the ink the rest of the line does not, and holds
+   together with its mark when the line wraps. It is not what the page is
+   ordered by — that is how often the list has been opened, and no row prints
+   that number; see allMeta() in assets/lists.js. */
 .lists-all-keeps { color: var(--ink); white-space: nowrap; }
 .lists-all-mark svg {
   width: 12px;
@@ -820,6 +827,43 @@
    rather than the 4px that reads right at the foot of the directory's grid. */
 .lists-fold .lists-more { margin-top: 10px; }
 
+/* ---------- the directory, on a phone ---------- */
+
+/* What a narrow row is: a title, the keep count if there is one, and the first
+   three places. The sky above it and the byline in its line of facts are not
+   hidden here — assets/lists.js does not build them under this width, which is
+   also nineteen kilobytes of city the page never fetches — so what is left to
+   do here is the bookmark, and the bookmark is what decides how tall the row
+   is.
+
+   It keeps its corner and loses its word: 54px of reserved space along the
+   bottom of every card, to carry "Save" beside a mark that says the same
+   thing, is a third of a row spent on it. As a mark alone it sits in the top
+   corner the way the map pill does, the title is padded out of its way, and
+   the word stays in the accessible name — the button is still "Save", and the
+   filled mark is still the pressed state.
+
+   Narrower than the 900px the rows go two across at, which is the same line
+   the script builds either side of. */
+@media (max-width: 899px) {
+  .lists-all .lists-all-card.has-keep { padding-bottom: 16px; }
+  .lists-all .lists-all-card.has-keep .lists-index-title { padding-right: 42px; }
+  .lists-all .lists-index-row > .lists-keep-wrap { top: 12px; right: 14px; bottom: auto; }
+  .lists-all .lists-keep { padding: 8px; gap: 0; }
+  /* The word, drawn nowhere and still said — the same treatment .lists-live
+     gets below, for the same reason. */
+  .lists-all .lists-keep > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+}
+
 /* ---------- the directory, laid out for a desk ---------- */
 
 /* The one view here that is wider than a column of prose. Everything else on
@@ -839,16 +883,19 @@
 .lists-order { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .lists-order .eyebrow { margin: 0 2px 0 0; }
 
-/* A heading over a run of rows — Start here, Everybody's — with the reason in
-   mono beside it. Set small: it labels a section rather than opening one.
+/* A heading over a run of rows. Set small: it labels a section rather than
+   opening one.
 
    Quieter than a card title, because that one names the page or the card and
-   this one names a run of things inside it. The account page wore it too for a
-   while, "Yours" and "Everybody else's" over its two halves, and took it off
-   again: see the header of assets/account.js. The flashcards page wears it over
-   each of its three levels, where what stands under it is hairline-ruled rows
-   rather than a strip of cards, and it is spaced for that where it is used:
-   `.lists-card > .lists-section` in assets/flashcard.css. */
+   this one names a run of things inside it. Two pages wore it and took it off
+   again — the account page, "Yours" and "Everybody else's" over its two
+   halves, see the header of assets/account.js; and the directory, over the
+   strip of Google's five and the rows under it, until the strip went and the
+   page became one column of lists with nothing to divide. The one reader left
+   is the flashcards page, over each of its three levels, and it is spaced for
+   that where it is used: `.lists-card > .lists-section` in
+   assets/flashcard.css. This rule stays here because that page's stylesheet
+   is written as an extension of this one. */
 .lists-section {
   display: flex;
   align-items: baseline;
@@ -861,36 +908,6 @@
   letter-spacing: .01em;
   color: var(--ink);
 }
-.lists-section-why {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* The five lists Google's numbers wrote, as a strip: a compact card each, the
-   sky on the left and the title beside it, hairline rather than paper on the
-   wash so the strip reads as a shelf above the rows and not as five more of
-   them. A column on a phone, three across from 900px, five across on a desk. */
-.lists-start { display: flex; flex-direction: column; gap: 12px; }
-.lists-start-row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
-.lists-start-card {
-  display: grid;
-  grid-template-columns: 64px minmax(0, 1fr);
-  gap: 12px;
-  align-items: center;
-  min-height: 74px;
-  padding: 10px 14px 10px 10px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
-}
-.lists-start-card:hover { border-color: var(--accent); }
-.lists-start-card:hover .lists-index-title { color: var(--accent); }
-.lists-start-card .lists-index-title { font-size: 14px; line-height: 1.25; }
-.lists-start-card .lists-all-meta { margin: 0 0 3px; font-size: 9.5px; line-height: 1.5; }
-.lists-start-body { min-width: 0; }
 
 /* A list as a shape on the city: the city itself as pale ground, the list's
    own places on it wearing the mark the list chose. Drawn by sky() in
@@ -965,12 +982,10 @@
   .lists-all .lists-index-row { display: flex; }
   .lists-all .lists-all-card { flex: 1 1 auto; }
   .lists-all .lists-index-title { font-size: 19px; }
-  .lists-start-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (min-width: 1180px) {
   .lists-all .lists-index { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .lists-start-row { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
 
 /* ---------- keeping somebody else's list ---------- */

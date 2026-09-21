@@ -13,7 +13,7 @@
  *
  * WHAT IS COUNTED, AND WHAT IS NOT
  *
- * Two kinds, which is the whole of `kind` in db/schema.sql:
+ * Three kinds, which is the whole of `kind` in db/schema.sql:
  *
  *   place    a place opened. selectPlace() in assets/app.js, which is the
  *            same moment TTBTrack.view() reports one to Google Analytics, and
@@ -24,6 +24,14 @@
  *            which is every chip on the row and nothing else. Turning one off
  *            is not a press of it, and All is not a filter: it is the way out
  *            of the chips, so pressing it counts nothing.
+ *   list     a public list opened, once per load of its page — countOpen() in
+ *            assets/lists.js, called from boot() however the reader arrived:
+ *            the directory, a link somebody sent, a byline, a search result.
+ *            Not when its own owner opens it. This is the one
+ *            kind nothing on /stats prints: it is read by _mostkept.js, which
+ *            is what orders /lists, and the number is never drawn on a row.
+ *            **Public lists** in README.md says why a ranking without a
+ *            scoreboard is the point rather than an omission.
  *
  * Nothing else does. A row on somebody's list, a search that narrows to one
  * name, a pin hovered on the way past: none of them is somebody asking for a
@@ -67,6 +75,11 @@
 import {
   json, wrongDatabase, knownPlaces, mapPlaces, venuesByIds, dataFile, wordsFor
 } from './_lib.js';
+/* The shape of a list id, so a request carrying something that could not be
+   one is refused before it costs a query — the same way GOOGLE_KEY below
+   guards the venue lookup. Imported rather than restated: _lists.js is a
+   module and this is the fourth reader of that expression. */
+import { LIST_ID } from './_lists.js';
 
 /* Five minutes in the colo, which is what the page is allowed to be stale by.
  *
@@ -89,10 +102,11 @@ const TTL = 300;
    is one query however many venues have been pressed. */
 const VENUES = 25;
 
-/* The two kinds of thing a press can be about. In one place because the POST
+/* The three kinds of thing a press can be about. In one place because the POST
    checks what it was given against it and the GET splits the rows on it. */
 const PLACE = 'place';
 const FILTER = 'filter';
+const LIST = 'list';
 
 /* The one chip on the map that is not a type out of data/taxonomy.json.
    DEAL_FILTER in assets/app.js is the same string, and it is written out twice
@@ -215,8 +229,10 @@ export async function onRequestGet(context) {
   }
 
   /* Every open this site has counted — the venues past the cap and the ones
-     with no name left included, and the filters not, because a chip pressed is
-     not a place looked at and adding the two would be a number about nothing.
+     with no name left included, and the filters and the lists not, because a
+     chip pressed is not a place looked at, a list opened is somebody's page
+     rather than a restaurant, and adding any of the three to the others would
+     be a number about nothing.
      It is the one figure on the page that is about the site rather than about
      a restaurant. */
   let opens = 0;
@@ -308,7 +324,9 @@ export async function onRequestPost(context) {
     return json({ error: 'body' }, 400);
   }
 
-  const kind = body.kind === FILTER ? FILTER : body.kind === PLACE ? PLACE : '';
+  const kind = body.kind === FILTER || body.kind === PLACE || body.kind === LIST
+    ? body.kind
+    : '';
   const id = typeof body.id === 'string' ? body.id.trim() : '';
   if (!kind || !id || id.length > 128) return json({ error: 'press' }, 400);
 
@@ -318,7 +336,11 @@ export async function onRequestPost(context) {
   if (!env.DB) return json({ ok: false }, 200);
   if (await wrongDatabase(env)) return json({ ok: false }, 200);
 
-  const real = kind === PLACE ? await realPlace(context, id) : await realFilter(context, id);
+  const real = kind === PLACE
+    ? await realPlace(context, id)
+    : kind === LIST
+      ? await realList(context, id)
+      : await realFilter(context, id);
   if (!real) return json({ ok: false }, 200);
 
   /* One statement, and the row is made by the same one that increments it. The
@@ -369,6 +391,32 @@ async function realPlace(context, id) {
   try {
     const row = await env.DB
       .prepare('SELECT 1 AS ok FROM google_venues WHERE place_id = ? AND hidden = 0')
+      .bind(id)
+      .first();
+    return !!row;
+  } catch (e) {
+    return false;
+  }
+}
+
+/* And whether that id is a public list, which is what a row on /lists is
+   ordered by — see SORTS in functions/api/_mostkept.js, which reads these rows
+   and never writes one. One lookup on the primary key of `lists`.
+
+   Public, and not merely present: a private list is one person's page and
+   counting opens of it would rank it on a directory it can never appear on.
+   A list the owner later makes private keeps the number it had and stops
+   growing, which is the honest thing — nothing here deletes a count, and the
+   row costs one key in a table already bounded by the things there are.
+
+   The table not being there yet answers false, the way every other read on
+   this route does: nothing was counted and nobody is waiting to hear it. */
+async function realList(context, id) {
+  const { env } = context;
+  if (!LIST_ID.test(id)) return false;
+  try {
+    const row = await env.DB
+      .prepare('SELECT 1 AS ok FROM lists WHERE id = ? AND public = 1')
       .bind(id)
       .first();
     return !!row;
