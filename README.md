@@ -1446,9 +1446,9 @@ than sending you to a closed door. And the locate framing walks you to the
 nearest *open* place. They stay on the map, and in the list, and at their own
 `?spot=` link — that is the whole point — but nothing ever *suggests* them.
 
-Five places in `data/restaurants.json` are marked closed today — Bueno Gourmet
-Kadriorg, Cafe Cape Town, Lendav Maaler, Lokaal Tilk and Maison François. All
-five have a reel, so all five get `closedReelNote`.
+Six places in `data/restaurants.json` are marked closed today — Bueno Gourmet
+Kadriorg, Cafe Cape Town, Ferment, Lendav Maaler, Lokaal Tilk and Maison
+François. All six have a reel, so all six get `closedReelNote`.
 
 Do not write the closure into the `blurb` as well. The panel says it in every
 language already, and Laboratooriumi 23 used to end with "Sadly closed now,
