@@ -452,14 +452,17 @@
 .lists-card > .lists-section { margin: 34px 0 0; }
 .lists-section + .menu { margin-top: 10px; }
 
-/* A stage this person has not reached. The line under its heading says what
-   opens it and how far off that is — in the mono, because it is a count and
-   is scanned the way the counts on the rows are — and the rows under it are
-   the same rows, readable, minus the link: deckRow() in assets/flashcard.js
-   draws them without the chevron, so nothing says "this opens" and no hover
-   promises it either. The name loses some of its ink and keeps its face,
-   which is what says these are decks that are there and not yet yours,
-   rather than rows that are broken. See **Which decks are open** under
+/* A stage this person has not reached, which is a heading and this line and
+   nothing else: the route sends no rows for one, so there is no run of decks
+   under it to grey out. The line says what opens it and how far off that is,
+   in the mono, because it is a count and is scanned the way the counts on
+   the rows are.
+
+   It had rows for a while — the same rows minus their links, with the name's
+   ink turned down — and the two rules that drew them went with them. What
+   they made was a page half greyed out, and a heading saying the stage was
+   shut over thirteen rows that mostly still opened, since a deck with a card
+   already known in it was let through. See **Which decks are open** under
    **Flashcards** in README.md. */
 .flash-opens {
   margin: 8px 0 0;
@@ -467,9 +470,6 @@
   line-height: 1.4;
   color: var(--muted);
 }
-.flash-opens + .menu { margin-top: 10px; }
-.menu-row.is-locked { cursor: default; }
-.menu-row.is-locked .menu-name { color: var(--muted); }
 
 /* A form under a list of things, rather than against it. Three cards on this
    page end in one — the decks you wrote, the words in a deck, and the empty
@@ -571,7 +571,9 @@
 
 /* The map's switch, on this page's header row. Everything it is drawn with is
    already in assets/styles.css — #lang-switch holds the menu, .btn-lang-now is
-   the code and the chevron, .lang-list is the ten rows — and all this adds is
+   the code and the chevron, .lang-list is the rows, which on this page are
+   three where the map's are ten, because the back of a card is written in
+   three languages — and all this adds is
    the surface under the trigger, because the map's comes from `.controls .seg`
    and there is no .controls here.
 

@@ -6785,11 +6785,15 @@ else and is not going to start doing here; and the person it would catch — the
 one who opens a new tab each day to read one Estonian word — is not the person
 the gate is for.
 
-**What is not behind it.** The decks page, whole: forty-two decks, their
-names, what each is for and how many cards it holds, all readable signed out
-and for as long as anybody likes. The way out of a gated deck is *All the
-decks* in the head above it, where it stands on every view of a deck. The deck
-stops; the site does not.
+**What is not behind it.** The decks this page offers a stranger — *First
+words*, its seven decks, their names, what each is for and how many cards each
+holds, readable signed out and for as long as anybody likes — and every deck
+anybody sends a link to, whichever stage it is in. What a visitor is not
+handed is the other two stages' rows, which is the stages' doing rather than
+the account's: **Which decks are open** above is the argument, and the count
+they open on is one an account is what there is to keep. The way out of a
+gated deck is *All the decks* in the head above it, where it stands on every
+view of a deck. The deck stops; the site does not.
 
 **What an account buys**, then, is the page: **Knew it is remembered** — on the
 account rather than on the device, so a deck you got half through on a phone is
@@ -7308,10 +7312,10 @@ judgement about Estonian rather than about code: a deck of eighteen colours
 before a deck of sixty sentences of small talk, concrete nouns before the
 function words that hold a sentence together, one word a card before a phrase
 a card, and the two big decks of verbs and adverbs — a hundred and forty cards
-that belong to no lesson — last of all. It is the order a signed-out visitor
-meets the decks in and the order a signed-in one meets the ones they have not
-started in, so it is worth getting roughly right and not worth arguing about
-to the last row. Somebody who knows the language better than the person who
+that belong to no lesson — last of all. It is the order anybody meets the
+decks of a stage in — the seven a signed-out visitor is shown, and the ones a
+signed-in one has not started in — so it is worth getting roughly right and
+not worth arguing about to the last row. Somebody who knows the language better than the person who
 sorted them is welcome to move a deck; nothing but the file's order changes.
 
 The headings are `.lists-section`, the same quiet heading `/lists` puts over a
@@ -7362,14 +7366,15 @@ bottom by hand would still be at the bottom on the morning it came round again
 — which is the one morning this page exists for. Sinking by what is due rises
 again on its own, on the day it should.
 
-**Sorted and not filtered.** Nothing is hidden, nothing is collapsed, and no
-row goes away: a resting deck is still a row, still opens, and still offers *Go
-through it anyway*, because somebody who wants to sit and read a deck is not to
-be told the spacing has nothing for them today. There is no fourth heading
-either — the three say where you are, and a *Finished* group at the foot would
-put a beginner's deck next to an advanced one. The one row that does not open
-is a deck in a stage not reached yet — **Which decks are open** below — and it
-is still a row, with its name, its line and its size on it.
+**Sorted and not filtered**, within the stage you are in. Nothing is hidden by
+the sort, nothing is collapsed, and no row goes away: a resting deck is still a
+row, still opens, and still offers *Go through it anyway*, because somebody who
+wants to sit and read a deck is not to be told the spacing has nothing for them
+today. There is no fourth heading either — the three say where you are, and a
+*Finished* group at the foot would put a beginner's deck next to an advanced
+one. What the sort never sees is a stage that has not opened: its decks are not
+in the answer at all — **Which decks are open** below — so there is nothing
+there to order.
 
 The sort is **stable**, so inside a rung the order is the one it arrived in:
 the file's for the decks the site ships, most-recently-edited-first for the
@@ -7436,31 +7441,57 @@ and a gate that is felt as a wall is a gate people leave by. `GATES` in
 answers `words` and `gates` with every request and the page prints them,
 so there is nothing to keep in step.
 
-**What it looks like.** A stage not reached keeps its heading and its rows:
-every deck's name, the line under it and how many cards it holds, readable and
-in their order, so that what is ahead is visible and the count has something
-to be counted towards. Under the heading, once and in the mono, *Opens at 100
-words — 62 to go.* What a row loses is the link and the chevron, since nothing
-about it opens. A deck in that stage reached by its address — a link somebody
-sent, a search result, the back button — draws its head, with *All the decks*
-on it as every deck's head has, and a card in place of the first word saying
-what the stage opens at and how far off it is. And the end of a run that
-crossed a gate says so in one line under the score, *Getting by is open now*,
-because the run is where it happened; the decks page is the way in, as it
-always was, and there is no button.
+**What it looks like.** A stage not reached is its heading and one line under
+it, once and in the mono — *Opens at 100 words — 62 to go* — and no rows at
+all. The heading stays so that what is ahead is visible and the count has
+something to be counted towards; the decks behind it are not drawn, not
+greyed, and not in the answer the page was given. A deck in that stage reached
+by its address — a link somebody sent, a search result, the back button —
+draws its head, with *All the decks* on it as every deck's head has, and a
+card in place of the first word saying what the stage opens at and how far off
+it is. And the end of a run that crossed a gate says so in one line under the
+score, *Getting by is open now*, because the run is where it happened; the
+decks page is the way in, as it always was, and there is no button.
 
-**What is never held.** Signed out, nothing: there is no count for somebody
-the site has never met, and the one-word gate under **Signed out, one word of
-a deck** already stands in front of every deck, so a visitor's first sight of
-the page is what it was. With the database off, nothing, under the same
-condition the rows draw their counts under. A deck you wrote, and the deck of
-what you got wrong, which are in no stage. And **a deck with a card already
-known in it**, whatever its stage says: the stages arrived after the decks
-did, and somebody halfway through *Going deeper* on the day this landed is not
-to find it shut behind them. That last rule is also what makes the lock a
-door rather than a wall — anybody who was in before stays in — and it is the
-reason a stage can be told apart from a deck at all, since a stage is held
-and a started deck in it is not.
+**It kept the rows for a while, and they were the wrong half of the idea.** A
+stage that had not opened drew every deck in it as a row minus its link, with
+the name's ink turned down — nothing hidden, the whole shelf readable, which
+is the arrangement Memrise has. Two things were wrong with it on the page
+rather than on paper. Thirteen greyed rows under a heading saying the stage is
+shut is a page that reads as broken rather than as paced, and it is most of
+the list on the day somebody arrives. And a deck with a card already known in
+it was let through, so what stood under *Opens at 400 words — 130 to go* was
+eleven rows that opened and two that did not, which is a heading contradicted
+by everything under it. The rows went, the grandfather clause went with them,
+and what is left is the heading, the line, and the decks you can actually
+open.
+
+**Signed out is nought words**, so a stranger gets *First words* and the two
+headings above it with their lines. That is the one thing about the stages
+that changed after they shipped, and it is the whole point of them said at the
+one person who most needs it: forty-two rows handed to somebody who has never
+seen an Estonian word has nothing on it saying where to start, and seven is
+where to start. The one-word gate under **Signed out, one word of a deck**
+still stands where it always did, in front of every deck this page does offer.
+
+**What is never held.** With the database off, nothing: there is no count to
+hold anybody to, so the whole shelf is drawn out of the file the way it was
+before any of this — the same condition the rows draw their counts under. A
+deck you wrote, and the two gathered decks, which are in no stage. And **a
+deck reached by its address**, signed out: a link somebody sent and a search
+result are the one way into this page from outside, so what a stranger asked
+for is what they are shown, and the free word is what stands in front of it.
+Signed in, an address is held like the list — the deck it names is one this
+page is not offering yet, and it draws the card that says so.
+
+**A deck with a card already known in it used to be held open**, whatever its
+stage said, on the reasoning that the stages arrived after the decks did and
+somebody halfway through *Going deeper* was not to find it shut behind them.
+That rule is gone. What it bought was a grandfathered shelf nobody else could
+see and a heading that disagreed with the rows under it; what it costs to drop
+is that a few known cards in a stage above yours go quiet until the count
+catches up — and they are still counted, still in **Words you know**, and
+still what brings the gate nearer.
 
 **And a deck of your own does not count**, whichever box its cards are in.
 Twenty decks of ten typed words each, every one pressed *Knew it*, would be
@@ -7470,11 +7501,15 @@ route sums over `data/decks.json` rather than over the table for exactly this.
 
 **What it does not do.** No test to jump a stage, which is the half of
 Duolingo's arrangement deliberately left out: four hundred words known is the
-test. No lock on the route — a request for a deck in a stage not reached is
-answered, since the page has to draw the card that says so, and the words are
-written into the markup for a crawler in any case; the lock is a page rule
-about what opens, not a rule about who may read a file anybody may read. And
-no per-deck numbers, for the reason two paragraphs up.
+test. No lock on a deck asked for by its address — `/api/flashcard?deck=` goes
+on answering one whatever stage it is in, since the page has to draw the card
+that says so, and `functions/flashcard.js` writes the same deck's words into
+the `<main>` a crawler is served out of the same file. What the route does hold
+back is **the list**: `shutAt()` in `functions/api/flashcard.js` filters a shut
+stage's decks out of the answer entirely, so the page is given the shelf this
+person has rather than all forty-two and a rule for drawing the rest. That is
+where the grandfather clause used to have to live as well, on both sides at
+once. And no per-deck numbers, for the reason two paragraphs up.
 
 ### Three forms, where a word has three
 
