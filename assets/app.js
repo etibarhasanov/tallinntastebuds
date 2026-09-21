@@ -781,9 +781,18 @@
    * the tile grid on every call — it would throw away and re-request every
    * tile on screen, every frame. A pinch move only transforms what is already
    * drawn, which is why a phone has always zoomed smoothly here and a
-   * trackpad has not. The grid is refreshed where Leaflet would change tile
-   * level anyway, on crossing a whole level, and again when the gesture
-   * lands.
+   * trackpad has not. The tile grid looks after itself: a pinch move fires
+   * Leaflet's zoom event, the tile layer answers every one of them, and on
+   * the frame where the rounded zoom crosses into the next whole level it
+   * builds that level's grid on top of the tiles it already has. Nothing
+   * here has to notice the crossing, and nothing may: the first version of
+   * this called map._resetView() at each one and again when the gesture
+   * landed, and _resetView says viewprereset first, which the tile layer
+   * answers by throwing away every tile on the screen. The blank quarter of
+   * a second before the same tiles faded back in was a blink at every level
+   * — and a gesture in and out crosses four or five of them. The landing is
+   * instead the end of Leaflet's own animated zoom, in the same three calls
+   * _onZoomTransitionEnd makes.
    *
    * These are private methods and they are pinned: index.html loads Leaflet
    * 1.9.4 by version, and TouchZoom in that same file does exactly this a few
@@ -813,7 +822,6 @@
     to: null,       /* the zoom being travelled to; null when at rest */
     at: null,       /* the place under the pointer, which stays under it */
     pt: null,       /* where the pointer is, in container pixels */
-    level: 0,       /* the whole level the tile grid was last built for */
     chase: 0,       /* how much of the gap a frame closes; 1 is no chase */
     frame: 0,
     last: 0,        /* when the last wheel event arrived */
@@ -879,31 +887,24 @@
   function wheelPlace(zoom) {
     var off = wheel.pt.subtract(map.getSize().divideBy(2));
     var centre = map.unproject(map.project(wheel.at, zoom).subtract(off), zoom);
-
-    var level = Math.round(zoom);
-    if (level !== wheel.level) {
-      /* Crossing into the half of the gesture where Leaflet would draw the
-         next level of tiles. Build the grid for it — one full update, where
-         the old handler did one per step — and carry on gesturing. */
-      wheel.level = level;
-      map._resetView(centre, zoom);
-      map._moveStart(true, false);
-      return;
-    }
     map._move(centre, zoom, { pinch: true, round: false });
   }
 
+  /* The gesture is over and the map is where it is going. This is the end of
+     Leaflet's own animated zoom, _onZoomTransitionEnd, call for call: a zoom
+     event with nothing pinch-shaped on it, which the tile layer answers with
+     one full update at the level it landed on — the tiles it holds stay where
+     they are, the ones it is short of are asked for, and the other levels
+     kept for the ride are let go once these have drawn — then move, then the
+     pair that ends every move. Still mid-gesture while those fire, so that
+     settled() puts them off with the rest and the pins are counted once, on
+     the call below, rather than once for zoomend and again for moveend. */
   function wheelLand() {
-    /* Still mid-gesture while this runs, so that the moveend it fires is put
-       off with the rest of them and the pins are counted once rather than
-       twice. */
-    map._resetView(map.getCenter(), map.getZoom());
+    map.fire('zoom');
+    map.fire('move');
+    map._moveEnd(true);
     wheel.to = null;
-    /* _resetView compares the zoom it is handed against the zoom the map is
-       already on, finds them equal — the frames got it there — and so fires
-       moveend without zoomend. The zoom did end, and the pins and the names
-       are waiting on that word. */
-    map.fire('zoomend');
+    settled(true);
   }
 
   function wheelFrame() {
@@ -954,7 +955,6 @@
         /* A flyTo still in the air loses to the hand on the trackpad. */
         map._stop();
         map._moveStart(true, false);
-        wheel.level = Math.round(map.getZoom());
         wheel.to = map.getZoom();
         wheel.tick = now;
         /* Asked once a gesture: nobody changes their mind about motion
@@ -976,13 +976,13 @@
    *
    * syncMarkers() walks every place against every other to decide what shares
    * a dot, and paintLabels() walks every place to decide which names fit.
-   * Both are fine once at the end of a move and ruinous sixty times a second
-   * — and sixty times a second is what a smooth zoom would ask for, because
-   * every frame of it is a Leaflet move that begins and ends. So while the
-   * wheel is still turning they are put off to a timer that the next frame
-   * pushes along, and they run once, on the gesture that has actually
-   * finished. A cluster re-forming mid-gesture would be wrong anyway: the
-   * dots would be rebuilt under a pointer that is still asking a question.
+   * Both are fine once at the end of a move and ruinous sixty times a second,
+   * and a smooth zoom is sixty Leaflet moves a second. So nothing runs them
+   * while the wheel is still turning: a zoomend or moveend that arrives
+   * mid-gesture — the landing fires both, one after the other — is put off
+   * to a timer, and wheelLand() runs them once itself, after the gesture is
+   * over. A cluster re-forming mid-gesture would be wrong anyway: the dots
+   * would be rebuilt under a pointer that is still asking a question.
    */
   var SETTLE_MS = 160;
   var WARM_MS = 400;
