@@ -55,16 +55,16 @@
  * than a requirement for it, and the <main> it writes into is emptied by
  * render() before anything is drawn.
  *
- * HOW ANYBODY FINDS IT, WHICH IS TWO DOORS
+ * HOW ANYBODY FINDS IT, WHICH IS ONE PILL
  *
- * A pill on the map's rail, third down, and a row on /account.html behind a
- * sign-in under somebody's own name. The rail one is the newer of the two and
- * it reverses a decision rather than dropping it: the map's chrome is still
- * for finding dinner, but a stranger on the map used to have no way to learn
- * the decks existed short of signing in first, and that is a stronger silence
- * than the rule was arguing for. Both wear the same words and report apart —
- * flash_open_rail against flash_open_account. See **How it is found** under
- * **Flashcards** in README.md.
+ * A pill on the map's rail, third down, open to anybody who loads the map.
+ * There was a row on /account.html too, behind a sign-in, and it was the
+ * older of the two — the only door for a while, which meant a stranger on
+ * the map never learnt the decks existed at all. The pill fixed that and the
+ * row went after it: one door on the thing everybody opens first beats a
+ * second one you have to sign in to reach, and the account page is shorter
+ * for it. flash_open_rail is what the pill reports. See **How it is found**
+ * under **Flashcards** in README.md.
  *
  * Unlinked is not hidden, though: the decks are in sitemap.xml and indexed,
  * which is the blog's arrangement rather than the split page's. See

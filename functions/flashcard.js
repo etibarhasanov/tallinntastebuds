@@ -13,8 +13,8 @@
  *
  * THE PAGE IS HIDDEN AND THE WORDS ARE NOT, WHICH IS NOT A CONTRADICTION
  *
- * Nothing on this site links to the flashcards except one row on
- * /account.html, behind a sign-in. That is deliberate — see **Flashcards** in
+ * Nothing on this site links to the flashcards except one pill on the map's
+ * rail. That is deliberate — see **How it is found** under **Flashcards** in
  * README.md — and it is the blog's arrangement rather than the split page's:
  * unlinked and indexed, not unlinked and hidden. The page shipped with a
  * noindex for a day, on the reasoning that a deck somebody wrote is theirs
