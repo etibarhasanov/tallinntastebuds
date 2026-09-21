@@ -67,7 +67,7 @@ import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDa
 /* Reading one list is shared with functions/list/[id].js, which serves the
    page a link opens with the list already in it. */
 import { readList, LIST_ID } from './_lists.js';
-/* Every public list, most kept first — shared with functions/lists/index.js,
+/* Every public list, most opened first — shared with functions/lists/index.js,
    which seeds the first page into the document it serves. */
 import { mostKept, sortOf } from './_mostkept.js';
 
@@ -234,9 +234,6 @@ export async function onRequestGet(context) {
       ready: true,
       user: user ? user.username : null,
       all: page.all,
-      /* The five Google lists, as a strip above the rows, on the first page
-         of an unsearched directory and empty otherwise — see _mostkept.js. */
-      start: page.start,
       sort: page.sort,
       next: page.next
     }, 200);

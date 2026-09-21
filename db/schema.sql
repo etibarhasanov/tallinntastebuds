@@ -93,8 +93,8 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- --------------------------------------------------------- what gets pressed
 -- One row per thing somebody has pressed on this site, and how many times.
 --
--- This is what /stats ranks and what functions/api/stats.js writes. Two kinds
--- of thing are counted and `kind` is which:
+-- This is what /stats ranks and what functions/api/stats.js writes. Three
+-- kinds of thing are counted and `kind` is which:
 --
 --   'place'    a place opened — a write-up read on the map, or a card pressed
 --              on the directory at /google. The id is a slug out of
@@ -107,17 +107,28 @@ CREATE TABLE IF NOT EXISTS save_counts (
 --              data/taxonomy.json, or 'discount', which is the one chip that
 --              is not a type. All is not a filter and is not counted: it is
 --              the way out of the chips rather than a choice of what to eat.
+--   'list'     a public list opened, once per load of its page, however the
+--              reader got there. The id is a lists.id. It is the one kind
+--              /stats does not print: it is read by functions/api/_mostkept.js
+--              instead, which is what puts the most opened list at the top of
+--              /lists, and no row on that page draws the number. A list its
+--              owner has since made private keeps the count it had and stops
+--              growing; nothing here deletes one.
 --
 -- ONE TABLE AND NOT TWO
 --
--- A place and a filter are different things, and a counts table apiece would
--- say so in the schema. They are one table because everything around them is
--- one thing: one route, one upsert, one read that draws the whole page, and
--- one place to look when a number is wrong. Two tables of (id, n) would be the
--- same statement written twice with a different noun in it, and the third kind
--- of thing anybody wants counted would make it three. `kind` is what the page
--- splits on, and it is in the primary key so a filter called `bakery` and a
--- place called `bakery` could never collide.
+-- A place, a filter and a list are different things, and a counts table apiece
+-- would say so in the schema. They are one table because everything around
+-- them is one thing: one route, one upsert, and one place to look when a
+-- number is wrong. Three tables of (id, n) would be the same statement written
+-- three times with a different noun in it. `kind` is what a reader splits on,
+-- and it is in the primary key so a filter called `bakery` and a place called
+-- `bakery` could never collide.
+--
+-- The third kind is the argument having been made and then taken: `list` was
+-- added when /lists stopped being ordered by how many signed-in people had
+-- bookmarked a list and started being ordered by how many people had opened
+-- it. It cost one string in two files and nothing at all here.
 --
 -- A COUNT AND NOT A LOG, WHICH IS THE WHOLE DESIGN
 --
@@ -477,7 +488,9 @@ CREATE INDEX IF NOT EXISTS idx_list_keeps_owner ON list_keeps (owner, created_at
 -- save_counts is.
 --
 -- /lists asks it of every public list at once, which is the bulk
--- question an earlier version of this note said would call for one. It was
+-- question an earlier version of this note said would call for one — under
+-- Most saved it also orders on it, though the page's own order is the opens
+-- in press_counts above and the keeps are a chip beside it. It was
 -- built with a counts table and the table was taken out again, because the
 -- comparison the note was making does not hold. save_counts exists because the
 -- map asks for seventy-five numbers on every load, over a table that grows

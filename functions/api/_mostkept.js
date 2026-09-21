@@ -1,5 +1,6 @@
 /**
- * Tallinn Tastebuds — every public list, most kept first, or newest.
+ * Tallinn Tastebuds — every public list, most opened first, most kept, or
+ * newest.
  *
  * Underscore-prefixed, so this is a module and never a route. Like _lists.js
  * beside it, it holds one query two files both need:
@@ -19,8 +20,19 @@
  * feeds is called Everybody's lists — the name is about whose they are, this
  * file is about the order they come back in, and those are two different
  * sentences.
- * Two orders, and the keep count is the one the page opens on; Newest is the
- * way past the top of it — see SORTS.
+ * Three orders, and how often a list has been opened is the one the page opens
+ * on; the keep count and Newest are the two ways past the top of it — see
+ * SORTS.
+ *
+ * WHICH MAKES THE NAME HISTORICAL, AND IT IS STILL THE NAME
+ *
+ * `_mostkept.js` and `mostKept()` were named for the order the page opened on
+ * when it was written, and the page opens on the opens now. The rename is
+ * three imports, a filename and about twenty mentions in README.md, all of it
+ * churn in a diff about something else, and the argument the name makes — that
+ * this file is the *order* the lists come back in, as against _lists.js, which
+ * is the shape of one — is the argument it still needs to make. Renaming it is
+ * a job of its own, and this is the note saying so rather than nobody knowing.
  */
 
 import { catalogue, venuesByIds, addedByIds, isAdded } from './_lib.js';
@@ -80,41 +92,79 @@ const TASTE = 3;
  * constant filed under it. */
 const DOTS = 10;
 
-/* The account the five Google top tens are filed under. It is minted by
-   tools/googlelists.mjs, which is the only thing that writes under the name,
-   and assets/lists.js carries the same string as GOOGLE_BY to swap its
-   byline. Three copies; grep finds them all. */
-const GOOGLE_BY = 'google-statistics';
-
-/* The two orders the page can be read in, and the two columns each one sorts
- * by before the id breaks the tie. `kept` is the page's own order and the
- * default; `new` is the way a reader who has seen the top of the ranking gets
- * to the rest of it. Each is two numbers descending and then the id ascending,
- * which is what lets one cursor shape page both.
+/* The three orders the page can be read in, and the two columns each one
+ * sorts by before the id breaks the tie. `views` is the page's own order and
+ * the default: how many times the list has been opened, out of press_counts,
+ * which is the same table the map's places are ranked from. `kept` and `new`
+ * are the two ways past the top of it. Each is two numbers descending and then
+ * the id ascending, which is what lets one cursor shape page all three.
  *
- * There was a third, `changed`, ordering on `updated_at`, and it went. That
- * column says when somebody was last editing rather than anything about the
- * list: a title fixed this afternoon outranked a list finished last week and
- * left alone since, which is a ranking of activity and not of lists. An
- * address still carrying ?sort=changed lands on the default, because sortOf()
- * answers `kept` for every key it does not know — so the old links keep
- * working and simply arrive at the page's own order.
+ * WHY OPENS AND NOT KEEPS
  *
- * The first column is an expression and not a name because `kept` sorts on
- * an aggregate the query joins in; it is a constant in this file, never a
+ * A keep needs an account, and most of the people who read this page do not
+ * have one — so the ranking it opened on was decided by the few hundred
+ * visitors who had signed in, about lists the other thousands had been reading
+ * without being able to vote on. An open is the gesture everybody makes: the
+ * number is what a stranger did with the row, which is the question the page
+ * is asking. The count is never printed — see allMeta() in assets/lists.js —
+ * because a number under a title turns a page of writing into a scoreboard,
+ * and the ranking already says everything the number would.
+ *
+ * There was a third once, `changed`, ordering on `updated_at`, and it went.
+ * That column says when somebody was last editing rather than anything about
+ * the list: a title fixed this afternoon outranked a list finished last week
+ * and left alone since, which is a ranking of activity and not of lists. An
+ * address still carrying ?sort=changed — or ?sort=kept from the days that was
+ * the default — lands on the page's own order, because sortOf() answers
+ * `views` for every key it does not know.
+ *
+ * The first column is an expression and not a name because two of the three
+ * sort on something the query joins in; it is a constant in this file, never a
  * value from the request — the request chooses a key, and an unknown key is
  * the default. */
 const SORTS = {
-  kept: { a: 'COALESCE(c.n, 0)', b: 'l.updated_at', keys: ['keeps', 'updated_at'] },
-  new:  { a: 'l.created_at',     b: 'l.updated_at', keys: ['created_at', 'updated_at'] }
+  views: { a: 'COALESCE(v.n, 0)', b: 'l.updated_at', keys: ['views', 'updated_at'], opens: true },
+  kept:  { a: 'COALESCE(c.n, 0)', b: 'l.updated_at', keys: ['keeps', 'updated_at'] },
+  new:   { a: 'l.created_at',     b: 'l.updated_at', keys: ['created_at', 'updated_at'] }
 };
+
+/* What press_counts files a list's opens under. `place` and `filter` are the
+   other two and are in functions/api/stats.js, which is the only thing that
+   writes any of them; this file only reads. The string is in both places
+   because neither imports the other, and db/schema.sql names all three. */
+const OPENS = 'list';
+
+/* Whether press_counts is on this database, asked once per isolate and then
+ * remembered — null until the first statement has answered.
+ *
+ * It is readingPins()'s pattern in _pins.js, one table up: db/schema.sql is
+ * applied by hand and there is always an afternoon between a deploy and
+ * somebody running it, so every reader here survives what it is waiting for.
+ * The difference is which error says so — a missing table rather than a
+ * missing column — and that the fallback is a page in a slightly wrong order
+ * rather than a page with plainer pins. Anything else thrown is somebody
+ * else's problem and goes up. */
+let hasOpens = null;
+
+async function readingOpens(env, make) {
+  if (hasOpens === false) return make(false);
+  try {
+    const out = await make(true);
+    hasOpens = true;
+    return out;
+  } catch (e) {
+    if (!/no such table/i.test(String((e && e.message) || e))) throw e;
+    hasOpens = false;
+    return make(false);
+  }
+}
 
 /* The sort the request asked for, or the default. Exported for the same
    reason query() is: functions/lists/index.js seeds the order back into the
    page it serves, and the chips have to be drawn pressed on the one the rows
    are actually in. */
 export function sortOf(s) {
-  return Object.prototype.hasOwnProperty.call(SORTS, s) ? s : 'kept';
+  return Object.prototype.hasOwnProperty.call(SORTS, s) ? s : 'views';
 }
 
 /* The longest search anybody types. The same cap a title has, because the
@@ -190,43 +240,60 @@ function like(q) {
  *
  *   from   the cursor the page before it ended on, or ''
  *   q      what somebody typed into the search field, or ''
- *   sort   'kept' (the default) or 'new' — see SORTS
+ *   sort   'views' (the default), 'kept' or 'new' — see SORTS
  *   user   the session, or null — only for whether *you* kept each row
  *
  * The order is the whole of this feature and it is the one thing on this site
  * that ranks. See **Public lists** in README.md, which sets out what that
  * costs and why it was chosen anyway.
  *
- * Lists nobody has kept are not filtered out. They sort to the bottom, where
- * they read as the rest of the page rather than as a verdict — and the
- * count stays hidden at zero for the same reason it is hidden everywhere else
- * on this site. It is also what makes the page work on the day it ships,
- * before anybody has kept anything.
+ * Lists nobody has opened are not filtered out. They sort to the bottom, where
+ * they read as the rest of the page rather than as a verdict — and no count of
+ * any kind is drawn on a row, so the bottom of the page looks exactly like the
+ * top of it. It is also what makes the page work on the day it ships, before
+ * anybody has opened anything.
  *
- * The answer carries two sets of rows. `all` is the page; `start` is the five
- * lists Google's numbers wrote, sent with the first page of an unsearched
- * directory and drawn as a strip of their own above it. They are the lists a
- * stranger can trust without knowing anybody on this site, and left in the
- * ranking they were five rows somewhere in the pile, wherever their keep
- * count happened to put them. While they are drawn as the strip they are
- * kept out of `all`, on every page of it, so a list is never on the screen
- * twice; a search puts them back into the rows, because a search is a
- * question and the strip is not an answer to it.
+ * The answer carries one set of rows, and it carried two. The five lists
+ * Google's numbers wrote came back as `start` and were drawn as a strip above
+ * everybody else's, on the argument that they are the lists a stranger can
+ * trust without knowing anybody here. What that cost is what the strip was:
+ * a second kind of row, a second heading, a second layout to keep in step,
+ * and — on a phone, where most of this page is read — a screen and a half of
+ * Google before the first thing a person wrote. They are five public lists
+ * like any other now, ranked by how often they are opened like any other,
+ * which is the ranking answering the question the strip was asserting.
  */
 export async function mostKept(context, opts) {
   const { env } = context;
   const { from = '', q = '', user = null } = opts || {};
   const order = SORTS[sortOf(opts && opts.sort)];
 
-  const at = CURSOR.exec(from || '');
   /* A cursor that is not one is the first page rather than an error. It can
      only have come from a hand-edited URL, and the top of the page is the
      honest answer to that. */
-  const after = at
-    ? ' AND (' + order.a + ' < ? ' +
-      'OR (' + order.a + ' = ? AND ' + order.b + ' < ?) ' +
-      'OR (' + order.a + ' = ? AND ' + order.b + ' = ? AND l.id > ?))'
-    : '';
+  const at = CURSOR.exec(from || '');
+
+  /* The first column of the sort, as this statement can spell it: the opens
+     are a table that arrives by hand like every other, so on a database it
+     has not reached yet this is a constant nought and the join below is not in
+     the statement at all. Every list then ties on it and the page falls
+     through to the edit time, which is a page rather than a 500 — the same
+     promise readingPins() keeps for the pin column.
+
+     COALESCE(NULL, 0) and not `0`, which is the whole of why this line is
+     worth a paragraph: a bare integer in an ORDER BY is an SQLite *ordinal*,
+     an alias for that numbered column, so `ORDER BY 0 DESC` is not a constant
+     at all — it is a reference to a column before the first one, and SQLite
+     answers "1st ORDER BY term out of range". The same `0` in the WHERE the
+     cursor builds means what it looks like, which is what makes the mistake
+     survive a reading. Anything that is not a plain integer literal is read as
+     the expression it is. */
+  const first = (opens) => (order.opens && !opens ? 'COALESCE(NULL, 0)' : order.a);
+  const after = (opens) => (at
+    ? ' AND (' + first(opens) + ' < ? ' +
+      'OR (' + first(opens) + ' = ? AND ' + order.b + ' < ?) ' +
+      'OR (' + first(opens) + ' = ? AND ' + order.b + ' = ? AND l.id > ?))'
+    : '');
   const afterBind = at
     ? [Number(at[1]), Number(at[1]), Number(at[2]), Number(at[1]), Number(at[2]), at[3]]
     : [];
@@ -254,16 +321,6 @@ export async function mostKept(context, opts) {
       "           AND s.name LIKE ? ESCAPE '\\'))"
     : '';
   const searchBind = needle ? [needle, needle, needle, needle] : [];
-
-  /* The five Google lists are a strip of their own on an unsearched
-     directory, so they are kept out of its rows — every page of them, not
-     only the first, or page two would hand back what the strip already
-     shows. NOT IN over a subquery rather than a join against the id, because
-     the account may not exist on a fresh database and `!=` against a NULL
-     would empty the page; NOT IN over an empty set is true. */
-  const strip = !needle;
-  const apart = strip ? ' AND l.owner NOT IN (SELECT id FROM users WHERE username = ?)' : '';
-  const apartBind = strip ? [GOOGLE_BY] : [];
 
   /* Whether the person reading kept each row, so the bookmark on it can draw
      itself pressed. A LEFT JOIN on the session's own id and nothing else — one
@@ -297,51 +354,47 @@ export async function mostKept(context, opts) {
      The keeps are grouped in a subquery and joined. Ordering by them means
      knowing them for every candidate list, so this one is unavoidable — but
      list_keeps is the small table: a keep needs an account and one account
-     holds two hundred at the most. */
-  /* A function of whether the two pin columns are there rather than a
-     string, because the answer is not known until the first statement has
-     been tried — see readingPins() in _pins.js, which asks once per isolate
-     and then knows. Both queries below read it, and the second one is free. */
-  const select = (pins) =>
+     holds two hundred at the most.
+
+     And the opens are joined the way the keeps are, on the primary key of
+     press_counts — one indexed seek per candidate row, and no row can be
+     multiplied by it because (kind, id) is that key. The kind is written into
+     the statement rather than bound, which is the same licence DOTS takes
+     above and for the same reason: it is a constant in this file and no
+     request can reach it.
+
+     Both of these are functions of what the database turns out to have rather
+     than strings, because neither answer is known until the first statement
+     has been tried — see readingPins() in _pins.js and readingOpens() below,
+     each of which asks once per isolate and then knows. */
+  const select = (pins, opens) =>
     'SELECT l.id AS id, l.title AS title, l.owner AS owner, ' +
     'l.created_at AS created_at, l.updated_at AS updated_at, ' +
     pinSelect(pins) +
-    'u.username AS by, COALESCE(c.n, 0) AS keeps' + mineSel + ' ' +
+    'u.username AS by, COALESCE(c.n, 0) AS keeps' +
+    (order.opens ? ', ' + first(opens) + ' AS views' : '') + mineSel + ' ' +
     'FROM lists l ' +
     'LEFT JOIN users u ON u.id = l.owner ' +
     'LEFT JOIN (SELECT list_id, COUNT(*) AS n FROM list_keeps GROUP BY list_id) c ' +
-    '  ON c.list_id = l.id' + mine + ' ' +
+    '  ON c.list_id = l.id' +
+    (order.opens && opens
+      ? " LEFT JOIN press_counts v ON v.kind = '" + OPENS + "' AND v.id = l.id"
+      : '') +
+    mine + ' ' +
     'WHERE l.public = 1 ' +
     '  AND EXISTS (SELECT 1 FROM list_items i WHERE i.list_id = l.id ' +
     '              LIMIT 1 OFFSET ?)';
 
-  const { results } = await readingPins(env, (pins) => env.DB
+  const { results } = await readingOpens(env, (opens) => readingPins(env, (pins) => env.DB
     .prepare(
-      select(pins) + search + apart + after + ' ' +
-      'ORDER BY ' + order.a + ' DESC, ' + order.b + ' DESC, l.id ASC LIMIT ?'
+      select(pins, opens) + search + after(opens) + ' ' +
+      'ORDER BY ' + first(opens) + ' DESC, ' + order.b + ' DESC, l.id ASC LIMIT ?'
     )
-    .bind(...mineBind, MIN_ITEMS - 1, ...searchBind, ...apartBind, ...afterBind, PAGE + 1)
-    .all());
+    .bind(...mineBind, MIN_ITEMS - 1, ...searchBind, ...afterBind, PAGE + 1)
+    .all()));
 
   const more = results.length > PAGE;
   const rows = more ? results.slice(0, PAGE) : results;
-
-  /* The strip: the Google account's lists, by title, with the first page of
-     an unsearched directory and never otherwise. The same statement as the
-     rows, narrowed to one owner, so a Google list carries exactly what any
-     other row carries — including whether you kept it. Five rows today; the
-     LIMIT is the page's, because nothing else bounds an account. */
-  let starts = [];
-  if (strip && !at) {
-    const found = await readingPins(env, (pins) => env.DB
-      .prepare(
-        select(pins) + ' AND l.owner IN (SELECT id FROM users WHERE username = ?) ' +
-        'ORDER BY l.title ASC LIMIT ?'
-      )
-      .bind(...mineBind, MIN_ITEMS - 1, GOOGLE_BY, PAGE)
-      .all());
-    starts = found.results || [];
-  }
 
   /* The first ten places off each list on the page, in the list's own order:
      one small indexed read per list, sent as a single batch. The first three
@@ -360,14 +413,13 @@ export async function mostKept(context, opts) {
      renumbers — so a list of three can sit at 0, 5 and 9. "The first ten"
      is the first ten of the list's own order, never the rows numbered under
      ten. */
-  const every = rows.concat(starts);
   const items = {};
-  if (every.length) {
+  if (rows.length) {
     const read = env.DB.prepare(
       'SELECT place_id, name FROM list_items WHERE list_id = ? ORDER BY pos LIMIT ' + DOTS
     );
-    const pages = await env.DB.batch(every.map((r) => read.bind(r.id)));
-    every.forEach((r, i) => { items[r.id] = pages[i].results || []; });
+    const pages = await env.DB.batch(rows.map((r) => read.bind(r.id)));
+    rows.forEach((r, i) => { items[r.id] = pages[i].results || []; });
   }
   const dots = await pins(context, items);
 
@@ -397,7 +449,6 @@ export async function mostKept(context, opts) {
 
   return {
     all: rows.map(shape),
-    start: starts.map(shape),
     sort: sortOf(opts && opts.sort),
     /* Empty rather than absent when this is the last page, so the page has
        one thing to test rather than two. Minted under the order the page is

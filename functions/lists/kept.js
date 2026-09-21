@@ -2,8 +2,8 @@
  * Tallinn Tastebuds — /lists/kept, forwarded.
  *
  * The directory lives at /lists now. This address said what the page was
- * ordered by rather than what was on it, and the page holds everything anybody
- * made public, the most kept first because an order has to be something.
+ * ordered by rather than what was on it — and it no longer even names the
+ * order, which is the opens now, with the keeps as one chip of three.
  *
  * It went to /lists/public first and this line went with it, rather than to
  * /lists/public and on again from there: a chain of 301s is a hop a crawler is

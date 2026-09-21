@@ -2152,10 +2152,11 @@ nothing else; your own saves are in the order you pressed them; the map draws
 every pin the same size whatever its count. There is deliberately no "Most saved" chip, because
 that would be a ranking, and the line above is not a slogan.
 
-A list carries a count of its own — how many people kept it — and **one page
-does sort by it**: `/lists`, every public list with the most kept first. That
-is a ranking, it is the only one on this site, and it was decided rather than
-inherited. The reasoning is under **Public lists**; the short of it is that
+A list carries two counts of its own — how many people kept it, and how many
+times it has been opened — and **one page does sort by them**: `/lists`, every
+public list with the most opened first, and the keeps as a chip beside that.
+That is a ranking, it is the only one on this site, and it was decided rather
+than inherited. The reasoning is under **Public lists**; the short of it is that
 ranking lists is a different claim from ranking kitchens, because a
 list is a thing somebody made and "the ones most people kept" says nothing
 about any restaurant on them.
@@ -2163,7 +2164,8 @@ about any restaurant on them.
 The line has not moved anywhere else, and the paragraph above still holds
 whole: no place is scored, the list of places is ordered by distance and by
 nothing else, every pin is the same size whatever its count, and there is still
-no "Most saved" chip.
+no "Most saved" chip on the map. The one on `/lists` orders lists, which is
+the distinction this whole section turns on.
 Your own lists are in the order you last edited them and the ones you kept
 are in the order you kept them.
 
@@ -3653,9 +3655,11 @@ Five public lists under an account called `google-statistics`: **Top ten
 restaurants in Tallinn, by Google**, and the same for bakeries, cafés, bars
 and pizzerias. They are lists in every way the rest of this section means: a row
 each in `lists` and `list_items`, a byline that leads to
-`/u/google-statistics`, a bookmark, a way onto the map and a strip of their
-own at the top of `/lists` — **Start here**, five across on a desk, above
-everybody else's rows; see **Public lists** for why they stand apart there.
+`/u/google-statistics`, a bookmark, a way onto the map, and a row on `/lists`
+ranked by how often it is opened like everybody else's. They had a strip of
+their own above those rows for a while — **Start here**, five across on a desk
+— and see **One column, and nothing above it** under **Public lists** for what
+that cost and why they are ordinary rows again.
 The byline is the one thing on them that is not drawn the way every other
 list's is: it reads "generated from
 Google Maps" rather than "created by google-statistics", because the account
@@ -4039,7 +4043,7 @@ are.
 
 ```
 /list/<id>       one list — the address that gets shared
-/lists           everybody's, the most kept first, and a field to search them
+/lists           everybody's, the most opened first, and a field to search
 /u/<name>        who made it, and everything else they published
 /?list=<id>      the same list on the map, as pins
 ```
@@ -4311,8 +4315,8 @@ better position anywhere.
 
 ### Public lists
 
-`/lists` is every public list on this site, the most kept first, with a field
-to search them and a bookmark on every row. It is the only page here that puts
+`/lists` is every public list on this site, the most opened first, with a
+field to search them and a bookmark on every row. It is the only page here that puts
 one person's writing above another's, and it is the one thing in this
 repository that had a standing note against it. That note is worth quoting,
 because it is the argument this section has to answer:
@@ -4327,7 +4331,8 @@ because it is the argument this section has to answer:
 It was decided on its own terms, and the decision was yes. Both halves of the
 note are true and they do not weigh the same. A list is authorship, not a
 kitchen: putting one above another says nothing about anybody's cooking, and
-the count under it counts people who bookmarked a piece of writing. Against
+the number that decides the order counts people who opened a piece of
+writing. Against
 that, a leaderboard does change what people write for, and this page will
 have made somebody's list worth gaming to somebody. That cost is real and it
 is accepted rather than argued away.
@@ -4348,10 +4353,9 @@ not a promise about a page, and a stranger who has never opened one has no
 idea what is behind a word that names a permission. *Everybody's* is whose the
 lists are, which is the one thing about this page worth two words — and it is
 true in a way *everybody else's* would not be, because your own public lists
-are on it too. Only the Google account's five are held apart, in the strip at
-the top, which is why the heading over the rest of the rows is **Everybody
-else's** (`listsEverybody`): down there the thing being excluded is Google,
-and the page and the heading inside it are two different claims.
+are on it too — and now that the five Google wrote are ranked with everything
+else rather than set above it, there is nothing on the page the name has to
+make an exception for. See **One column, and nothing above it** below.
 
 **What is on it.** Every public list with at least three places — the same
 three `assets/lists.js` has always wanted before it will offer to share one,
@@ -4360,10 +4364,11 @@ page whose first impression is somebody's half-filled draft recommends
 nothing. Nothing is deleted for falling under it; a short list simply is not
 listed yet.
 
-**The order** is the keep count, then the last edit, then the id. The last of
-those three is doing real work: two lists kept by the same number of people
-and edited in the same millisecond still have exactly one order, and without
-it a page boundary falling between them could show one of them twice. Twenty
+**The order** is how many times the list has been opened, then the last edit,
+then the id. The last of those three is doing real work: two lists opened the
+same number of times and edited in the same millisecond still have exactly one
+order, and without it a page boundary falling between them could show one of
+them twice. Twenty
 rows at a time, and the next twenty arrive on their own as the reader nears
 the foot of the ones on screen: a **Show more** button stands under the last
 row while there is a page after it, and an `IntersectionObserver` presses it
@@ -4380,21 +4385,41 @@ otherwise never be reported again. The `lists_more` event says which of the
 two it was, `scroll` or `press`, which is how the console will tell whether
 anybody still presses the button.
 
-**Lists nobody has kept are not filtered out.** They sort to the bottom and
-they draw no count, because a "saved by 0 people" reads as a verdict rather
-than as nobody having pressed anything — the same reason a save count is
-hidden at zero on the map. It is also what makes the page work at all on the
-day it ships, before anybody has kept anything.
+**Lists nobody has opened are not filtered out.** They sort to the bottom,
+where they look exactly like the top of the page, because no row draws a count
+of anything the order is decided by. A keep count is drawn when there is one
+and hidden at zero, the same reason a save count is hidden at zero on the map:
+"saved by 0 people" reads as a verdict rather than as nobody having pressed
+anything. It is also what makes the page work at all on the day it ships,
+before anybody has opened anything.
 
-**The page is laid out for a desk as well as a phone.** It was one 640px
-column on every screen — the phone page in the middle of a monitor, with a
-card per row and eight hundred pixels either side doing nothing. Above 900px
-the rows go two across, above 1180px three, and the main column widens to
-1180px for this view alone (`.lists-main.is-wide`, set by `render()` in
-`assets/lists.js` on the directory and on nothing else): every other view
-keeps the measure a list of sentences reads at. The order chips share the
-sticky row with the search field, so what narrows the page and what orders it
-are in one place and both stay under the thumb while the page grows.
+**The page is laid out for a desk as well as a phone, and they are not the
+same row.** It was one 640px column on every screen — the phone page in the
+middle of a monitor, with a card per row and eight hundred pixels either side
+doing nothing. Above 900px the rows go two across, above 1180px three, and the
+main column widens to 1180px for this view alone (`.lists-main.is-wide`, set
+by `render()` in `assets/lists.js` on the directory and on nothing else):
+every other view keeps the measure a list of sentences reads at. The order
+chips share the sticky row with the search field, so what narrows the page and
+what orders it are in one place and both stay under the thumb while the page
+grows.
+
+**A phone gets the title, the keep count and the three places, and that is
+all.** Under that same 900px the row carries no panel of city and no byline,
+and the bookmark loses its word and moves to the top corner as a mark — so a
+row is a title and two short lines rather than most of a screen, and a reader
+scrolling a ranking sees five or six lists at a time instead of one and a
+half. What the row is for is picking one list out of twenty; the title and the
+three names are what does that, and the rest is what a desk has the width to
+add.
+
+It is not a `display: none`. `wide()` in `assets/lists.js` is the same 900px
+asked in the script, and a narrow page never builds the panel — twenty rows of
+a few hundred SVG circles each — nor fetches the nineteen kilobytes of
+`data/city.json` that exist only to fill it. A window dragged across the line
+repaints the rows it already has, out of `state.all`, with no request and no
+cursor: `watchWidth()`, one `matchMedia` listener set the first time the
+directory draws.
 
 **Every row draws the list as a shape on the city.** A small panel at the top
 of each card carries the city as pale ground and the list's own places on it,
@@ -4421,27 +4446,16 @@ be on the same card, and it costs nothing to send, because the pin was already
 on the row for the title. A list nobody has dressed wears the default pin,
 like its title does — see **The pins**.
 
-**The five in the Start here strip wear it too, at twice the size in the
-panel's own units.** That panel is drawn into a fixed sixty-four pixels rather
-than the card's width, so eight units land at four there — a smudge — and
-sixteen lands at about nine pixels, a third of what a row card gets. Sixty-four
-pixels cannot carry ten of anything at twenty-two, and nine is where the mark
-is still a picture and the city is still visible under it; twenty units was
-tried and the balloons ate the panel. `paintSky()` in `assets/lists.js` holds
-both sizes.
-
-It nearly did not get the mark at all, on the reasoning that those five are
-Google's and would all be wearing the same default pin, so the glyph would cost
-the legibility and buy nothing. That was wrong about the data: they wear
-`pin`, `balloon`, `flame`, `pin` and `blossom` — somebody dressed them — and
-the strip was the one place on the page where a reader could see four marks
-side by side. Check `lists.pin` before reasoning about what a list is wearing;
-`db/google-lists.sql` writes no pin column, which is what made the guess
-look safe.
-
-The strip does still keep the scale label off, which is the one thing
-sixty-four pixels really cannot carry: a line of mono across it would be the
-loudest thing on the card.
+There was a second size of it, sixteen units, for the five Google lists in
+the strip that used to stand above the rows: that panel was drawn into a fixed
+sixty-four pixels rather than the card's width, where the row's eight units
+land at four — a smudge. The strip has gone and `paintSky()` holds one size
+again. One thing it taught is worth keeping: those five were nearly left with
+no mark at all, on the reasoning that Google's lists would all be wearing the
+same default pin — and they are not. They wear `pin`, `balloon`, `flame`,
+`pin` and `blossom`; somebody dressed them. Check `lists.pin` before reasoning
+about what a list is wearing, because `db/google-lists.sql` writes no pin
+column, which is what made the guess look safe.
 
 **The ground is the city, and it took two goes to get there.** It was
 `data/places.json` — the seventy-five places on the map — drawn as faint
@@ -4494,46 +4508,79 @@ The picture and its frame agree, which is the property that matters; the
 alternative is the API sending every coordinate on every list to make a panel
 the size of a postage stamp slightly more honest.
 
-**Two orders, and the count is the default.** Beside the search field are two
-chips — Most saved, Newest — pressed the way the map's filter chips are. The
-first is the page's own order; the second is the way past the top of a ranking
-somebody has already seen, to what arrived lately. Each is two columns
+**Three orders, and how often a list is opened is the default.** Beside the
+search field are three chips — Most opened, Most saved, Newest — pressed the
+way the map's filter chips are. The first is the page's own order; the other
+two are the ways past the top of a ranking somebody has already seen, to what
+other people bookmarked and to what arrived lately. Each is two columns
 descending and then the id — `SORTS` in `functions/api/_mostkept.js` names
-the two — which is what lets the one cursor shape page both; a cursor is only
-ever handed back under the order it was minted in, because the page sends both
-together. The order rides in the address as `?sort=new` (never the default),
-is seeded by `functions/lists/index.js` the way a search is, and reports
-itself as `lists_sort`.
+the three — which is what lets the one cursor shape page all of them; a cursor
+is only ever handed back under the order it was minted in, because the page
+sends both together. The order rides in the address as `?sort=kept` or
+`?sort=new` (never the default), is seeded by `functions/lists/index.js` the
+way a search is, and reports itself as `lists_sort`.
 
-**There was a third, Changed lately, and it went.** It ordered on
+**Why the opens and not the keeps.** Keeping a list needs an account; opening
+one needs nothing. The page opened on the keep count for as long as that was
+the only number there was, which meant the order every stranger read was
+decided by the few people signed in — about lists the rest had been reading
+without any way to vote on them. An open is the gesture everybody makes, and
+it is the one the row is asking about: *did people who saw this title go and
+read it.* The keeps are still a chip, because who bookmarked a list is a
+different and narrower question and it is worth being able to ask it.
+
+**And the number is never printed.** No row says how many times it has been
+opened. The chip says which order the rows are in, which is what a reader
+needs; a figure under every title would make twenty pieces of writing into a
+scoreboard with somebody's name under each score, and the ranking already
+says everything the number would. It is not even sent to the browser — see
+`shape()` in `functions/api/_mostkept.js`, which leaves it out of the row.
+
+**There was a fourth, Changed lately, and it went.** It ordered on
 `updated_at`, which is a fact about when somebody was last editing and not
 about the list: a title fixed this afternoon outranked a list finished last
 week and left alone since, so it ranked activity rather than lists, and a
 reader looking for something to open was never asking that question. An
 address still carrying `?sort=changed` lands on the default rather than on an
-error, because `sortOf()` answers `kept` for every key it does not know — so
+error, because `sortOf()` answers `views` for every key it does not know — so
 the links that are out there keep working and simply arrive at the page's own
-order.
+order. The same is true of `?sort=kept` links from the days that was the
+default, except that one is still a real order and arrives at itself.
 
-**The five Google lists stand in a strip of their own.** On the first page of
-an unsearched directory the API sends them as `start`, and the page draws
-them under **Start here** above everybody else's rows: a compact card each,
-sky on the left, five across on a desk. They are the lists a stranger can
-trust without knowing anybody on this site, and left in the ranking they were
-five rows somewhere in the pile, wherever their keep count happened to put
-them. While the strip is drawn they are kept out of the rows — every page of
-them, not only the first, so a list is never on the screen twice — and a
-search puts them back into the rows, because a search is a question and the
-strip is not an answer to it. See **The five lists Google wrote**.
+**Where the number comes from.** `press_counts`, the same table the map's
+places are ranked out of on `/stats`, under a third `kind` of its own:
+`list`, with the list's id. `countOpen()` in `assets/lists.js` posts one to
+`/api/stats` when a list's own page has drawn, once per load, however the
+reader got there — the directory, a link somebody sent, a byline, a search
+result. Not when the owner opens their own, which is checked in `boot()`: a
+list its author reloads while editing it would otherwise climb a page ranked
+on strangers. The row is one upsert bounded by the number of lists there are
+rather than by the traffic, and the directory reads it as one indexed seek per
+candidate row. `db/schema.sql` over `press_counts` is the whole of the table's
+reasoning, and it needed no change to the schema to grow this third kind.
+
+**One column, and nothing above it.** The five lists Google's numbers wrote
+were a strip of their own at the top — **Start here**, a compact card each,
+five across on a desk — on the argument that they are the lists a stranger
+can trust without knowing anybody on this site. They are ordinary rows now,
+ranked by how often they are opened like everything else. What the strip cost
+was what it was: a second kind of row and a second heading, a second layout to
+keep in step, and on a phone — where most of this page is read — a screen and
+a half of Google before the first thing a person had written. The ranking
+answers the question the strip was asserting, and if those five really are
+what a stranger opens, they are at the top on their own account. It also took
+`start` out of the answer, the `listsStart`, `listsStartWhy` and
+`listsEverybody` strings out of all ten languages, and one query out of
+`_mostkept.js`. See **The five lists Google wrote**.
 
 **The row carries the first three places.** A page of titles is a search
 result: "Top ten burgers" tells somebody who has never heard of its author
 nothing whatever. `Ferment · Kaerajaan · Rataskaevu 16` under it tells them
 whether to open it, and that is the whole difference between this page and a
-list of links. There are no rank numerals down the side. The count is the
-fact and the position is its consequence; numbering the rows would make the
-position the identity, and a list slipping from third to fourth would read as
-a demotion nobody did anything to deserve.
+list of links. There are no rank numerals down the side, and no count either:
+the position is the whole of what the ranking says out loud, and numbering the
+rows would make it the identity — a list slipping from third to fourth would
+read as a demotion nobody did anything to deserve.
 
 **The byline is a door, and the name is the handle.** The line of facts under
 a title says whose list it is, and the name in it leads to `/u/<name>` — the
@@ -4646,14 +4693,23 @@ for their names. The first of those two grows with how many public lists
 exist, because ordering by a count means knowing the count for every candidate
 — which is what the note over `list_keeps` in `db/schema.sql` is about.
 
-Neither of the two things the page grew moves that number much. A search adds
-three `LIKE`s to a `WHERE` that was already visiting every candidate row, over
-columns on `lists` and `users`, and one `EXISTS` into each candidate's own
-items that stops at the first hit — under sixty rows a search today, and
+None of the three things the page has grown moves that number much. A search
+adds three `LIKE`s to a `WHERE` that was already visiting every candidate row,
+over columns on `lists` and `users`, and one `EXISTS` into each candidate's
+own items that stops at the first hit — under sixty rows a search today, and
 watched, as above. The bookmarks add one `LEFT JOIN` on `list_keeps`, keyed
 on the reader's own account, over the index that table is already unique on,
 and only for somebody signed in: the statement is written without it for
-everybody else, which is most of the traffic this page gets.
+everybody else, which is most of the traffic this page gets. The opens add
+one `LEFT JOIN` on `press_counts`, on that table's own primary key — one
+indexed seek per candidate row, and only under the order that reads it; the
+other two chips are the statement without it. What the page *stopped* paying
+is a whole second query: the Google strip was its own statement and its own
+twenty item reads, and it has gone.
+
+And the phone pays less than any of it on the way back down: no panel means
+no `data/city.json`, which is nineteen kilobytes of the page's weight that
+only a desk fetches now.
 
 **How anybody gets there.** Three ways, and the first two matter most:
 
@@ -4809,10 +4865,10 @@ zeros for a password hash, which is not the PBKDF2 of anything, so the lists
 have an owner and nobody can sign in as it. The cost is that claiming that
 name on a preview database means deleting the row first.
 
-**They are ordinary rows on `/lists`**, not a strip like Google's. Nothing
-keeps them apart, nothing lifts them, and with nobody having kept them yet
-they sort to the bottom of the first page, where the section above says a list
-with no keeps belongs. `/u/tallinntastebuds` is where all thirteen are
+**They are ordinary rows on `/lists`**, the way every list is now — Google's
+five included, since the strip that lifted those came off. Nothing keeps them
+apart and nothing lifts them, and with nobody having opened them yet they sort
+to the bottom, where the section above says a list nobody has opened belongs. `/u/tallinntastebuds` is where all thirteen are
 together.
 
 Adding a fourteenth chip to `data/taxonomy.json` makes `tools/typelists.mjs`
@@ -7184,7 +7240,7 @@ chevron that says it opens.
 day in Tallinn opens and closes with.* That is prose, and prose on this site is
 Literata — the second of the design rules. It arrived mono at eleven points,
 because the row was copied from the account page's doors, where the same line
-reads *everybody's lists, most kept first* and is a label rather than a
+reads *everybody's lists, most opened first* and is a label rather than a
 sentence. Forty-two of them in a column, a clause each, is where the
 difference tells: mono says *this is a fact or a control*, and a page that says
 that forty-two times reads as a table of settings rather than as a shelf of
@@ -8545,13 +8601,23 @@ and **Not indexed, and not disallowed either** below says why.
 
 ### It counts opens, and an open is a gesture
 
-Three gestures, and no others:
+Four gestures, and no others:
 
 | What | Where | Counted as |
 | --- | --- | --- |
 | a place opened on the map | `selectPlace()` in `assets/app.js` | `place`, the slug |
 | a card pressed on the directory | `select()` in `assets/venues.js` | `place`, the Google key |
 | a chip turned on | `applyFilters()` in `assets/app.js` | `filter`, the type id or `discount` |
+| a public list's page drawn | `boot()` in `assets/lists.js` | `list`, the list id |
+
+**The fourth is not on this page**, and it is the only one of the four that is
+not. A list opened is counted into the same table under `kind = 'list'`, and
+what reads it is `/lists`, which puts the most opened list at the top — see
+**Public lists**. It is not in the ranking here because this page is about
+restaurants: a table of lists under a table of places would be two different
+questions sharing a heading, and the number is deliberately not drawn on the
+directory's rows either. It is also left out of the total at the foot of this
+page, the way the filters are.
 
 A row on somebody's list, a search that narrows to one name, a pin passed
 over: none of those is somebody asking for a restaurant, and counting them
@@ -8561,7 +8627,10 @@ ends would make every filter worth exactly twice itself. **All** is not a
 filter and counts nothing: it is the way out of the chips.
 
 Each page counts each thing **once per load**, held in memory and never in
-storage. That is the rule `TTBTrack.view()` already applies to the page view
+storage — and a list's page counts the one list it is, which needs nothing
+held at all: the only way to open the same list twice is to load the page
+twice, and that is two opens. A list its own owner opens is not counted, so
+an author reloading their draft cannot climb a ranking of strangers. That is the rule `TTBTrack.view()` already applies to the page view
 it reports to Google Analytics beside an opened place, and the two agree on
 purpose: two numbers about the same gesture that counted it differently would
 be two numbers somebody eventually puts side by side. So comparing three
@@ -9468,12 +9537,12 @@ functions/flashcard.js     the page, with a deck's head and a deck's words
                            written into it so a search finds the Estonian
 functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
-functions/api/_mostkept.js reading a page of everybody's, most kept first
+functions/api/_mostkept.js reading a page of everybody's, most opened first
 functions/api/_profile.js  reading one person, shared the same way
 functions/_shell.js        a static page with a head and an answer written
                            in, shared by the five Functions that serve one
 functions/list/[id].js     /list/<id> — the page a shared link opens
-functions/lists/index.js   /lists — everybody's, most kept first
+functions/lists/index.js   /lists — everybody's, most opened first
 functions/lists/public.js  /lists/public — a 301 to the address above, which
                            this page had before it was shortened
 functions/lists/kept.js    /lists/kept — a 301 to the same, which it had
@@ -9882,12 +9951,11 @@ Everywhere a list is named, which is four pages and the map: its own at
 `/list/<id>`, everybody's at `/lists`, its author's at `/u/<name>`, yours on
 `/account.html`, and the band across the top of the map's panel for as long as
 `/?list=<id>` is what the map is showing. The glyph sits in front of the title,
-and on `/lists` it is also what each of the list's places is drawn as in the
-panel above it, on the rows and in the **Start here** strip alike — so a page
-of twenty is twenty constellations rather than twenty identical red ones, and
-the bakeries one is found without reading a word. See **Public lists** for
-where that panel comes from and why the strip draws the same mark at twice the
-size.
+and on `/lists` — on a desk, where there is room for the panel — it is also
+what each of the list's places is drawn as in the panel above it, so a page of
+twenty is twenty constellations rather than twenty identical red ones, and the
+bakeries one is found without reading a word. See **Public lists** for where
+that panel comes from and why a phone draws none.
 
 On the map it says something the four pages cannot: the pins under the band
 are already wearing that glyph, so the name and what is drawn under it are one
@@ -11259,7 +11327,7 @@ a reader that runs no script got the shell. Each of the three routes that
 serve `lists.html` now writes what the page is about into its empty
 `<main>` — a list's title, its line, whose it is and every place with its
 street and its sentence, each linked to its own address on the map; the
-directory's Google strip and first page of lists; a person's name, line and
+directory's first page of lists; a person's name, line and
 lists — and `render()` empties it before drawing, so nobody sees the plain
 version. `fill()` in `functions/_shell.js` is the one mechanism for the map
 and the lists both, and the validator holds both pages to the exact spelling
