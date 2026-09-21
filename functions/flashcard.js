@@ -9,7 +9,9 @@
  *                     in — and not as the mouth over a line about restaurants
  *   the page draws    the same as it always did — this is an improvement on
  *                     the load and never a requirement for it
- *   a search finds    the Estonian
+ *   a search finds    the Estonian — as words on the page, and as a glossary
+ *                     in JSON-LD beside them, which is the half an assistant's
+ *                     crawler would rather read
  *
  * THE PAGE IS HIDDEN AND THE WORDS ARE NOT, WHICH IS NOT A CONTRADICTION
  *
@@ -48,6 +50,12 @@
  * — fill() in ../_shell.js and EMPTY there, which holds the spelling. The
  * script empties it again before it draws, so nobody sees what went in.
  *
+ * The data: the same deck again as schema.org's glossary — a DefinedTermSet of
+ * DefinedTerms, the Estonian as the term and the three glosses each tagged
+ * with its language — so that a reader which would rather be told than parse
+ * is told. structuredData() below is the whole of it, and is on every address
+ * that is indexed and no address that is not.
+ *
  * WHAT HAPPENS WHEN IT CANNOT
  *
  * The untouched page, and assets/flashcard.js asks /api/flashcard as it would
@@ -58,7 +66,7 @@
  * nearly all of them.
  */
 
-import { canonical, esc, head, shell, rehead, fill, EMPTY, page, SITE } from './_shell.js';
+import { canonical, esc, head, seed, shell, rehead, fill, EMPTY, page, SITE } from './_shell.js';
 import { dataFile, uiStrings, DECK_LANGS } from './api/_lib.js';
 
 const PATH = '/flashcard';
@@ -219,6 +227,155 @@ function deckSays(deck, languages, lang) {
   return (why ? why + ' — ' : '') + many + '.';
 }
 
+/* ------------------------------------------------------- what it is, in JSON
+ *
+ * The <dl> above is the deck as prose, for a reader that runs no script. This
+ * is the same deck as data, for a reader that would rather be told than parse:
+ * Google and Bing read it to work out what kind of page this is without
+ * guessing from the markup, and the assistants' crawlers lean on it harder
+ * still, because a description list is a shape and "this is a set of defined
+ * terms in Estonian, and here are their glosses in three languages" is a
+ * sentence.
+ *
+ * DefinedTermSet and DefinedTerm are schema.org's glossary, which is what a
+ * deck of flashcards is once you take the turning-over away — the term is the
+ * Estonian, the definition is what it means, and the set is the deck it was
+ * filed in. Nothing here claims a rich result: there is no card-shaped snippet
+ * to win, and a Course or a Quiz would each be a claim about this page that is
+ * not quite true. What it buys is a crawler that knows the language of every
+ * string on the page without sniffing it, and that is exactly the question
+ * "что значит leib" turns on.
+ *
+ * It costs thirteen kilobytes on the shelf, which is forty-two names and their
+ * lines, and between ten and thirty-four on a deck, which is one line per card
+ * — a third of what the same block costs the map at its worst and a good deal
+ * less on an ordinary deck, because a card is four short strings and a
+ * restaurant is an address, a coordinate, a photograph and a write-up. See
+ * **Getting found** in README.md for the map's half of that arithmetic.
+ *
+ * The English is what goes in the names and the descriptions of the page
+ * itself, for the reason the <main> is English: this block is read by the
+ * reader that runs no script, which is asking for the page rather than for a
+ * language. The glosses are the exception and carry all three, each tagged
+ * with the language it is in — the JSON-LD spelling of the lang= on a <dd>.
+ */
+const LANGUAGE = { '@type': 'Language', name: 'Estonian', alternateName: 'et' };
+
+/* What the page is, said the same way whether it is the shelf or one deck: a
+   page, and a thing to learn from. `teaches` is the one property here that a
+   reader could not have worked out from the words on the page. */
+function learningPage(self, name, description) {
+  return {
+    '@type': ['WebPage', 'LearningResource'],
+    '@id': self + '#page',
+    url: self,
+    name,
+    description,
+    inLanguage: DEFAULT_LANG,
+    isPartOf: { '@id': SITE + '#website' },
+    isAccessibleForFree: true,
+    learningResourceType: 'Flashcards',
+    educationalLevel: 'Beginner',
+    teaches: 'Estonian vocabulary',
+    about: LANGUAGE
+  };
+}
+
+/* One card. The three glosses are an array of language-tagged values, which is
+   plain JSON-LD and is the only way to say that these three strings are the
+   same description in three languages rather than three descriptions.
+
+   `alternateName` is the principal parts, and it is doing real work: the form
+   printed on a menu is the partitive far more often than it is the nominative,
+   so "leiba" is what somebody types and "Leib" is what this deck files it
+   under. The <dt> above puts the same three in the term for the same reason. */
+function definedTerm(card, set) {
+  const glosses = DECK_LANGS
+    .filter((lang) => card.back && card.back[lang])
+    .map((lang) => ({ '@value': card.back[lang], '@language': lang }));
+
+  return {
+    '@type': 'DefinedTerm',
+    name: card.front,
+    inLanguage: 'et',
+    termCode: card.id,
+    ...(Array.isArray(card.forms) && card.forms.length === 2
+      ? { alternateName: card.forms }
+      : {}),
+    ...(glosses.length ? { description: glosses } : {}),
+    inDefinedTermSet: { '@id': set }
+  };
+}
+
+/* The graph: the site, the page, and then either the deck with its words in it
+   or the shelf as a list of the decks on it. One deck is named in the shelf's
+   list by its name and its line and never by its cards — a crawler that wants
+   those follows the link, which is the same bargain the <ol> above strikes. */
+function structuredData(request, decks, deck) {
+  const site = { '@type': 'WebSite', '@id': SITE + '#website', url: SITE, name: 'Tallinn Tastebuds' };
+
+  if (deck) {
+    const self = where(request, PATH + '?d=' + deck.id);
+    const set = self + '#deck';
+    const name = inEnglish(deck.name);
+
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        site,
+        { ...learningPage(self, name, inEnglish(deck.why) || DESCRIPTION), mainEntity: { '@id': set } },
+        {
+          '@type': 'DefinedTermSet',
+          '@id': set,
+          url: self,
+          name,
+          ...(deck.why ? { description: inEnglish(deck.why) } : {}),
+          inLanguage: 'et',
+          hasDefinedTerm: deck.cards.map((card) => definedTerm(card, set))
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: TITLE, item: where(request, PATH) },
+            { '@type': 'ListItem', position: 2, name }
+          ]
+        }
+      ]
+    };
+  }
+
+  const self = where(request, PATH);
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      site,
+      learningPage(self, TITLE, DESCRIPTION),
+      {
+        '@type': 'ItemList',
+        name: TITLE,
+        numberOfItems: decks.length,
+        itemListOrder: 'https://schema.org/ItemListUnordered',
+        itemListElement: decks.map((one, i) => {
+          const at = where(request, PATH + '?d=' + one.id);
+          return {
+            '@type': 'ListItem',
+            position: i + 1,
+            item: {
+              '@type': 'DefinedTermSet',
+              '@id': at + '#deck',
+              url: at,
+              name: inEnglish(one.name),
+              ...(one.why ? { description: inEnglish(one.why) } : {}),
+              inLanguage: 'et'
+            }
+          };
+        })
+      }
+    ]
+  };
+}
+
 /* The language the head is written in, which is the one the link carried —
  * out of the three this feature speaks rather than the ten the site does.
  *
@@ -314,5 +471,13 @@ export async function onRequest(context) {
 
   const words = deck ? deckWords(deck) : own ? '' : deckList(decks);
 
-  return page(fill(rehead(html, tags), EMPTY[FILE.slice(1)], words), 200, !own);
+  /* And the same thing as data, on everything that is indexed. A deck out of
+     the database gets none: its words are behind a session, so what this would
+     describe is the empty page the noindex above is for. */
+  const said = own || (!deck && decks.length === 0)
+    ? tags
+    : tags + '\n<script type="application/ld+json">' +
+      seed(structuredData(request, decks, deck)) + '</script>';
+
+  return page(fill(rehead(html, said), EMPTY[FILE.slice(1)], words), 200, !own);
 }

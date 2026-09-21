@@ -6434,6 +6434,31 @@ there, and two indexable addresses for one page is a search engine picking one
 and half the links pointing at the other. That is the same split `/lists.html`
 and `/lists` have been under since the directory was written.
 
+**And the deck is written twice: once as prose and once as data.** The `<dl>`
+is the deck for a reader that runs no script; beside it the same route writes a
+**JSON-LD block** for a reader that would rather be told than parse. A deck is
+a `DefinedTermSet` — schema.org's glossary, which is what a deck of flashcards
+is once the turning-over is taken away — the Estonian is the `DefinedTerm`, the
+principal parts are its `alternateName`, and what it means is a `description`
+carrying all three glosses, each tagged with the language it is in, which is
+the JSON-LD spelling of the `lang=` on a `<dd>`. The shelf gets an `ItemList`
+of the forty-two instead, named and linked and without their cards, which is
+the bargain the `<ol>` above it already strikes. Both sit under a
+`WebPage`/`LearningResource` that says what the page teaches and that it is
+free, and a deck carries a `BreadcrumbList` back to the shelf.
+
+Nothing here is chasing a rich result: there is no flashcard-shaped snippet to
+win, and a `Course` or a `Quiz` would each be a claim about this page that is
+not quite true. What it buys is a crawler — Google's, Bing's, and the
+assistants' fetchers most of all, since **AI assistants** under
+[Getting found](#getting-found) is a list of readers that run no script — that
+knows the language of every string on the page without sniffing it, which is
+exactly the question *что значит leib* turns on. It costs thirteen kilobytes on
+the shelf and between ten and thirty-four on a deck, against the map's eighty-five
+at its worst, because a card is four short strings and a restaurant is an
+address, a coordinate, a photograph and a write-up. A deck out of the database
+gets none of it, for the reason it gets a `noindex`.
+
 So the arrangement is **the blog's** — see **[The blog](#the-blog)** — rather
 than the split page's: unlinked-to-a-deck and indexed. `robots.txt`
 deliberately does not disallow `/flashcard`, `sitemap.xml` carries one address
@@ -11485,7 +11510,12 @@ runs `PerplexityBot` over its own. The other is a fetch: `ChatGPT-User` and
 `Claude-User` open a page the moment somebody asks about it, read it as
 text, and cite what they found. Both read the page as served — the head,
 the list above, and nothing the script would have drawn — which is what the
-list is for. `robots.txt` names all of them and allows all of them under
+list is for. The map and the flashcards each put a JSON-LD block in front of that text
+as well — the places as `Restaurant`s, a deck as a glossary of
+`DefinedTerm`s, which is **How it is found** under
+[Flashcards](#flashcards) — because a fetcher that has been told what a page
+is spends none of its reading working it out.
+`robots.txt` names all of them and allows all of them under
 its one `*` rule, the training crawlers `GPTBot` and `ClaudeBot` included;
 that last is a decision the file says out loud rather than one made by
 omission. What `robots.txt` cannot do is reach a bot that never gets as far
