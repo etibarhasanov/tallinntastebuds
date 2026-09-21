@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=355f3b8e">
+<link rel="stylesheet" href="assets/styles.css?v=7170182e">
 </head>
 <body>
 
@@ -234,7 +234,13 @@
   <button type="button" class="rail-btn" id="btn-locate" data-i18n-aria-label="locate" aria-label="Show my location">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.2" fill="none"/><path d="M12 1.6v3M12 19.4v3M1.6 12h3M19.4 12h3"/></svg>
     <!-- The button keeps its own aria-label, so the words are decoration to a
-         reader rather than a second name for the same control. -->
+         reader rather than a second name for the same control.
+
+         It stands here in the markup and in the rail's own order, and below
+         860px the stylesheet draws it in the bottom-right corner of the map
+         instead — where a phone expects it and where the thumb panning the
+         city already is. It stays a child of the rail so that the press
+         counter, the introduction cascade and the walk all still find it. -->
     <span class="rail-label" data-i18n="locate" aria-hidden="true">Show my location</span>
   </button>
   <!-- Last, and the one that is about the rest: what this map is and what
@@ -658,6 +664,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=c8796305" defer></script>
+<script src="assets/app.js?v=8d77d50c" defer></script>
 </body>
 </html>

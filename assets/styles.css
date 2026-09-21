@@ -1454,7 +1454,7 @@ body.lang-open .controls { z-index: 1250; }
    the button inside the rail; the ellipsis stays for anything longer. */
 .radio-name { max-width: 18ch; overflow: hidden; text-overflow: ellipsis; }
 
-/* ---------- the locate button: the foot of the rail ---------- */
+/* ---------- the locate button: the foot of the rail, the corner on a phone ---------- */
 
 /* Where you are is a question about the map, not about the chrome, so the
    button answers it from inside the map rather than from the strip of
@@ -1466,7 +1466,18 @@ body.lang-open .controls { z-index: 1250; }
    turns the crosshair from the muted grey of the chrome at the top into the
    accent the rest of the rail's icons are drawn in. The dot in the middle of
    it is filled with the accent for the same reason, rather than with the ink
-   the label beside it is set in. */
+   the label beside it is set in.
+
+   On a phone it is not the foot of anything. It leaves the column for the
+   bottom-right corner, which is where every map a visitor has used on a phone
+   keeps it and therefore the first place a thumb looks — and the only pill on
+   the rail that is pressed in the middle of a gesture, with the other hand
+   still panning the city, is the one that should be under the thumb already
+   doing the panning rather than across the screen under the one holding the
+   phone. It keeps the rail's pill, its accent and its label; all that moves is
+   where it is drawn, and it is still one of the rail's own children in the
+   markup, so the press counter, the cascade and the walk all find it exactly
+   where they left it. The media query below is the whole of it. */
 #btn-locate svg circle:first-child { fill: var(--accent); stroke: none; }
 
 /* ---------- filters ---------- */
@@ -4470,14 +4481,17 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
   /* And the feedback door steps out of that row, which is arithmetic before
      it is taste. Collapsed, a pill is a 35.6px disc and the row's gap is 8px,
-     so nine of them measure 384px against the 374px a 390px screen leaves
-     after the rail's own left inset: the last one hangs off the right edge.
-     Eight fit with room to spare, which is what this row was built for.
+     and a 390px screen leaves 374px after the rail's own left inset — less
+     the crosshair, which stands at the right end of this same strip in its
+     corner and takes 35.6px of it plus a gap to be told apart from the row.
+     That leaves 330px. The eight pills still in the row measure 341px, so the
+     last one hangs off the edge; seven measure 297px, which is the room this
+     row was built with.
 
-     It is the right one of the nine to drop. Every other pill here answers a
-     question somebody with a place open still has — another place, where am
-     I, what is playing, which colour — and this one is the way off the map
-     entirely. Nobody reading about a restaurant is looking for the form that
+     It is the right one of the eight to drop. Every other pill here answers a
+     question somebody with a place open still has — another place, what is
+     playing, which colour — and this one is the way off the map entirely.
+     Nobody reading about a restaurant is looking for the form that
      asks what they would change about the site, and it is one press of the
      close away in any case. The same argument the rule above it makes about
      the whole rail behind a full-height sheet, one button smaller.
@@ -4549,6 +4563,45 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   }
 
   .rail { gap: 8px; }
+
+  /* ---- where you are, in the corner the thumb is already in ----
+
+     The crosshair leaves the column for the bottom-right corner — the
+     argument is up beside the rule that draws its dot — and the two rules
+     below are all it takes, plus one the rail has to give up for them.
+
+     The rail is centred by an auto margin between top: 0 and bottom: 0 rather
+     than by the translate it uses above 860px, because a transformed ancestor
+     is the containing block for a fixed child: left as it was, the corner the
+     button measured from would have been the rail's own box and not the
+     window's. height: max-content is what keeps the rail the height of its
+     pills under the two insets, so it is still the same column in the same
+     place, offsetHeight still reads the pills, and placeRail() in
+     assets/app.js still measures it — that function releases the bottom when
+     it pins a top, or the auto margin would re-centre the rail in whatever
+     was left below the nudge.
+
+     The crosshair stands clear of the attribution strip in that corner, the
+     way .panel does above: 30px is the allowance for it, and the rail's own
+     gap sits the pill on top of that. With a sheet up it rides the strip
+     above it, alongside the row the rail becomes — and the two sheets that
+     take the rail away take it with them, because a fixed child of a
+     transparent parent is transparent too. */
+  #btn-locate {
+    position: fixed;
+    right: calc(var(--gap) + var(--safe-r));
+    bottom: calc(30px + var(--gap) + var(--safe-b));
+  }
+  body.panel-open #btn-locate {
+    bottom: calc(var(--sheet-h) + 10px + var(--safe-b));
+  }
+  .rail {
+    top: 0;
+    bottom: 0;
+    height: max-content;
+    margin-block: auto;
+    transform: none;
+  }
 
   .place-name { font-size: 26px; }
   .photo-grid { grid-template-columns: repeat(3, 1fr); }
