@@ -3132,7 +3132,6 @@ etibar                          the name, one line saying what the page is,
   Eating my way through …       the line you wrote about yourself, with the
   Change your line              word that opens the field again under it,
   Your public profile >         the door to how it looks to everybody else,
-  Learn Estonian >              the account page's own door to the decks,
   Change username ·             and everything you can do to the account
   Change password · Sign out
 Places I saved        8 places  a fold: six rows a place, newest first
@@ -3159,25 +3158,30 @@ card was the one on the page nobody could read at a glance: two titles, a
 form, and the second title reading as a footnote to the form rather than as
 the column it was. One card, one column, is what every other card here is.
 
-### The second door on that card
+### The door that was under the profile, and is not any more
 
-**Learn Estonian**, under the profile: forty-two decks of Estonian and
-the ones you write yourself — see **[Flashcards](#flashcards)**. It is a row rather than
-a word along the foot for the reason the profile is: a door is a place to go
-and a word is a thing you do to the account.
+**Learn Estonian** sat under the profile for a while: forty-two decks of
+Estonian and the ones you write yourself — see
+**[Flashcards](#flashcards)**. It was the only link to that feature anywhere
+on this site, which is why it was on this page at all, and the argument for
+it here was that the decks you write are your own things in the way a saved
+place is.
 
-**It used to be the only link to that feature anywhere on this site**, and a
-pill on the map's own rail has since joined it — **How it is found, which is
-two doors now** under **[Flashcards](#flashcards)** is that half of the
-story. What has not changed is why this one is here rather than in the map's
-chrome: here because the decks you write are your own things in the way a
-saved place is, not a kind of list, and — unlike the rail's — because the
-account page is where your own things already live.
+Then a pill joined the map's own rail, and the argument stopped paying. A
+door on the thing everybody opens first reaches a stranger; a second one
+behind a sign-in reaches somebody who has already found the site twice, and
+it was carrying the cost of a row on the one card that is about *you* rather
+than about any of your things. **How it is found, which is one pill** under
+**[Flashcards](#flashcards)** is the other half of the story. Your own decks
+are still your own things — they are simply reached the way everybody else
+reaches them.
 
-That makes this card two doors and three words, which is one more door than it
-had. The ceiling is the design rule about a list of choices being rows rather
-than a stack of links — two rows are a list, four would be the menu this page
-was built to stop being. A third door wants an argument, not a line.
+So the card is one door and three words again, which is what it was built to
+be. The ceiling is the design rule about a list of choices being rows rather
+than a stack of links: two rows were still a list and four would have been
+the menu this page exists to stop being, but the page reads best when the
+only row on it is the one that is about you. A second door wants an argument,
+not a line.
 
 ### Two pages open with your name, and this one says which it is
 
@@ -6392,28 +6396,27 @@ was sent in. The other way round is three entries in `tools/sitemap.mjs`, an
 `hreflang` set and three pages for a page nothing links to — the bargain the
 map struck for a reason this page has not got.
 
-### How it is found, which is two doors now
+### How it is found, which is one pill
 
-**The map's own chrome points here, since the door count went from one to
-two.** A pill on the rail — `#btn-flash` in `index.html`, third down, under
+**The map's own chrome points here, and it is the whole of the way in.** A
+pill on the rail — `#btn-flash` in `index.html`, third down, under
 Everybody's lists — links to `/flashcard` in plain markup, no script needed
-to find it. The other door is older and stays: **one row on
-`/account.html`**, behind a sign-in, on the card that carries somebody's own
-name, beside their public profile, because the decks you write are one of
-your own things and that page is where those live. Both wear the same words
-— `flashDoor` and `flashDoorWhy`, already in all ten languages — so a deck of
-Estonian reads the same wherever the door was pressed; they report apart,
-`flash_open_rail` against `flash_open_account`, which is the one place they
-differ, because the question the rail door exists to answer is whether it
-gets pressed at all.
+to find it. It wears `flashDoor` and `flashDoorWhy` out of `data/ui.json`,
+already in all ten languages, and reports `flash_open_rail`.
 
-This reverses "no pill on the rail" as a decision rather than dropping it by
-accident: a stranger on the map used to have no way to learn the decks
-existed short of signing in first, and that is a stronger silence than
-"the map's own chrome is for finding dinner" was arguing for. The map's own
-chrome is still for finding dinner — nothing else about it changed, no row
-in the sheet, nothing in a footer — but a deck of Estonian is something you
-go to, and now there is a way to go to it from the thing everybody opens
+The door count has been one, then two, then one again. It began as **a row
+on `/account.html`** and nothing else, behind a sign-in, on the card that
+carries somebody's own name — the argument being that the decks you write are
+one of your own things and that page is where those live. That reading was
+right about the decks and wrong about the door: a stranger on the map had no
+way to learn the feature existed short of signing in first, which is a
+stronger silence than "the map's own chrome is for finding dinner" was ever
+arguing for. So the pill went on the rail. Once it was there the account row
+was a second door onto the same page for the smaller audience, on the one
+card that is about *you* rather than about any of your things, so it went and
+took `flash_open_account` with it. The map's own chrome is still for finding
+dinner — no row in the sheet, nothing in a footer — but a deck of Estonian is
+something you go to, and the way to go to it is on the thing everybody opens
 first.
 
 **Unlinked is not the same as hidden**, and this is the one place the feature
@@ -7841,8 +7844,7 @@ and each is fenced or prefixed so it can be found by looking:
 | `functions/_shell.js` | the `flashcard.html` line in `EMPTY`, and the route's line in the header's list. **This is the only file the flashcards changed rather than added to**, and it is one key |
 | `tools/sitemap.mjs` | `DECKS`, `deckIds()`, the two `entries.push` lines and the third argument the three callers pass |
 | `robots.txt` | the paragraph about the flashcards. There is no `Disallow` to put back — see **How it is found** — so removing it is removing a comment |
-| `assets/account.js` | the second `door()` in `youCard()`, one of the two links to the feature on this site |
-| `index.html` | `#btn-flash` on the rail, the other of the two — plain markup, so nothing in `assets/` goes with it |
+| `index.html` | `#btn-flash` on the rail, the only link to the feature on this site — plain markup, so nothing in `assets/` goes with it |
 | `data/ui.json` | `flashDoor` and `flashDoorWhy` with the rest |
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
@@ -11115,7 +11117,7 @@ The map, `assets/app.js`:
 | `list_share` | `list_id`, `method` (`sheet`/`copy`) |
 | `list_page`, `profile_open` | `list_id` / `name` — the List half of the switch on the band, and the byline under it |
 | `lists_all` | — the pill on the rail, which is this page's door to the directory; the same name the other two doors report |
-| `flash_open_rail` | — the flashcards door on the rail; apart from `flash_open_account` on purpose, so the two report which one gets pressed |
+| `flash_open_rail` | — the flashcards door on the rail, and the only link to them on this site |
 | `ask_open` | — |
 | `ask` | `search_term` |
 | `ask_answer`, `ask_none`, `ask_resting` | `search_term`, and on the first two `source`, `places_shown`, `from_google` — what came back; see **Ask for somewhere** |
@@ -11166,7 +11168,6 @@ The account page, `assets/account.js`:
 | `place_link` | `place`, `map` |
 | `saved_map` | `places_saved` |
 | `list_page`, `profile_open` | as on the lists |
-| `flash_open_account` | — the flashcards door, and the only link to them on this site |
 | `list_create` | `list_id` |
 | `account_open` | `view` — the two doors when signed out |
 | `account_rename_open`, `account_password_open` | — into the map's sheet |

@@ -405,14 +405,15 @@
      the shape the map's account sheet draws its places-to-go in, because that
      is what this is.
 
-     Two callers, both on the card that carries your name: your public profile,
-     and the Estonian flashcards. It has had four in all — one became the thing
-     it had been promising, a field that makes a list, and another, everybody
-     else's lists, became a card in its own right and then left the page
-     altogether. It was written as a function when it had one caller, because
-     .menu-row is one of the four controls the design rules name and a row of it
-     written out by hand here would be the copy that quietly stops matching the
-     sheet's. */
+     One caller now, on the card that carries your name: your public profile.
+     It has had five in all — one became the thing it had been promising, a
+     field that makes a list, another, everybody else's lists, became a card in
+     its own right and then left the page altogether, and the Estonian
+     flashcards went back to being found from the map's rail alone. It was
+     written as a function when it had one caller and it is a function with one
+     again, because .menu-row is one of the four controls the design rules name
+     and a row of it written out by hand here would be the copy that quietly
+     stops matching the sheet's. */
   var ICON_GO = '<path d="M9 5l7 7-7 7"/>';
 
   function door(nameKey, whyKey, href, event, params) {
@@ -836,17 +837,7 @@
       el('p', { className: 'lists-say', textContent: t('accountWhat') }),
       aboutBox(),
       el('ul', { className: 'menu' }, [
-        door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user), 'profile_open', { name: state.user }),
-        /* The flashcards, and this row used to be the only link to them
-           anywhere on this site; a rail pill on the map (#btn-flash in
-           index.html) is the other one now, for a stranger who has not
-           signed in. This row stays because this is the page of your own
-           things, and the decks you write are one of them — same words,
-           same address, a different data-track name so the two report
-           apart. See **Flashcards** in README.md, which says why unlinked is
-           not the same as hidden: the forty-two the site ships are in
-           sitemap.xml and indexed. */
-        door('flashDoor', 'flashDoorWhy', '/flashcard', 'flash_open_account')
+        door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user), 'profile_open', { name: state.user })
       ]),
       foot([
         /* Into the map's sheet and back again. The ?then= is what makes the
