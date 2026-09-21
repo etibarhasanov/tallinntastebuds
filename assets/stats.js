@@ -300,24 +300,21 @@
       stack.appendChild(table('statsFiltersHead', 'statsFiltersLead', state.filters));
     }
 
-    /* Every open counted, under the tables rather than over them: it is the
-       page's footnote about itself, and nobody opens a ranking to read a total
-       first. Places only — the chips are presses of a different thing, and
-       adding the two would be a number about nothing. */
-    stack.appendChild(el('p', {
-      className: 'stats-total',
-      textContent: t('statsTotal', { n: state.opens })
-    }));
+    /* The page's two footnotes about itself, under the tables rather than over
+       them, because nobody opens a ranking to read a total first: every open
+       counted, and how many accounts exist. Places only in the first — the
+       chips are presses of a different thing, and adding the two would be a
+       number about nothing — and the second is not about a press at all, which
+       is why it draws whether anything has been opened or not.
 
-    /* How many accounts exist — a fact about the site rather than about a
-       press, so it is not part of the ranking above it and draws whenever the
-       numbers are in at all, opened or not. Same footnote style as the total
-       above it, and it is the page's second line rather than a table of its
-       own: one number needs no headline, no lead sentence and no rows. */
-    stack.appendChild(el('p', {
-      className: 'stats-total',
-      textContent: t('statsUsersTotal', { n: state.users })
-    }));
+       One block holding both, rather than two lines appended to the stack: the
+       stack sets 18px between whatever it is given, which is right between
+       cards and far too much between two lines of the same footnote — it read
+       as one stray sentence that had come off something. */
+    stack.appendChild(el('div', { className: 'stats-totals' }, [
+      el('p', { className: 'stats-total', textContent: t('statsTotal', { n: state.opens }) }),
+      el('p', { className: 'stats-total', textContent: t('statsUsersTotal', { n: state.users }) })
+    ]));
 
     main.appendChild(stack);
   }
