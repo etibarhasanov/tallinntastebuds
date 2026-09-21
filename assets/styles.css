@@ -1770,12 +1770,6 @@ body.panel-detail .panel {
 }
 .panel-band:not([hidden]) + .panel-scroll { padding-top: 0; }
 
-/* And the eyebrow goes with it. It says whose map this is, which the band
-   above now answers more usefully by saying whose list you are in; two labels
-   stacked over one search field is one too many. The chat has one of these
-   too and keeps it: the band is only ever up on the list view. */
-.panel-band:not([hidden]) + .panel-scroll .list-head { display: none; }
-
 .panel-scroll {
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -2533,10 +2527,6 @@ body.panel-detail .panel {
 
 /* list */
 
-/* Just the eyebrow now — whose map this is. The heading that used to sit
-   under it moved into the list, where each group says its own name. */
-.list-head { margin-bottom: 4px; padding-right: 30px; }
-
 /* The chat: a title, the thread, and the field under it all.
  *
  * It is laid out as a chat is: the conversation reads down from the top, and
@@ -2554,6 +2544,15 @@ body.panel-detail .panel {
 body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: column; }
 #panel-ask { display: flex; flex-direction: column; flex: 1 0 auto; }
 #panel-ask[hidden] { display: none; }
+
+/* The eyebrow over the chat's title — whose map you are asking about. The
+   list had one of these too, above its search field, and does not any more:
+   the band says whose list you are in on a phone, and on the column there was
+   nothing for a second label to add over a field that says what it takes. The
+   chat has neither a band nor a field at the top, so here it still answers
+   something — which is also why the class is no longer called .list-head. */
+.ask-head { margin-bottom: 4px; padding-right: 30px; }
+
 .ask-title {
   margin: 10px 0 12px;
   font-family: var(--display);
