@@ -603,6 +603,9 @@
       tileLayer = makeTiles(isDarkStyle(id));
       tileLayer.addTo(map);
       if (tileLayer.getContainer) tileLayer.getContainer().style.opacity = '';
+      /* The other palette is a different set of tiles and none of them are
+         warm. Ask for the neighbouring levels again, in the colour now up. */
+      warmTiles();
     }
 
     paintMarkers();
@@ -725,7 +728,13 @@
       minZoom: 10,
       maxZoom: 19,
       zoomAnimation: !reduceMotion(),
-      fadeAnimation: !reduceMotion()
+      fadeAnimation: !reduceMotion(),
+      /* 14.37 is a zoom. Leaflet rounds every zoom it is handed to a whole
+         level unless this is off, and a map that can only be on a whole level
+         has nothing to be smooth between — see ZOOMING BY THE PIXEL below,
+         which is also where the wheel this switches off is rewritten. */
+      zoomSnap: 0,
+      scrollWheelZoom: false
     });
 
     tileLayer = makeTiles(isDarkStyle(state.style));
@@ -735,13 +744,274 @@
        attribution control stays on the page, always. */
     map.attributionControl.setPrefix('<a href="https://leafletjs.com/">Leaflet</a>');
 
-    /* Which pins are close enough to share a dot depends on the zoom, and on
-       nothing else, so panning does not have to recompute anything. */
-    map.on('zoomend', syncMarkers);
+    takeWheel();
 
-    /* Which names fit depends on what is on the screen, so unlike the
-       clustering this one has to follow the pan too. */
-    map.on('zoomend moveend', paintLabels);
+    /* Which pins share a dot depends on the zoom and on nothing else; which
+       names fit depends on the whole view, so that one follows the pan too.
+       Both go through settled(), which is the one thing that knows a move may
+       still be happening. */
+    map.on('zoomend', function () { settled(true); });
+    map.on('moveend', function () { settled(false); });
+  }
+
+  /* --------------------------------------------------- zooming by the pixel
+   *
+   * Leaflet's own wheel handler gathers forty milliseconds of wheel and then
+   * zooms a whole level, animated, to the nearest step. On a mouse that is
+   * right: a notch is a step and there is nothing in between to report. On a
+   * trackpad it is the wrong shape entirely. A gesture that means "a little
+   * closer" arrives as a stream of two-pixel nudges, and the map answers
+   * every forty milliseconds with a jump of a whole level and a quarter of a
+   * second of animation over it. One gesture in and back out and the map has
+   * jumped four times, blurred four times and landed somewhere nobody asked
+   * for. That is the complaint, in the words it came in: not smooth at all
+   * compared to Google Maps, on a trackpad.
+   *
+   * So the wheel is ours, and it is three things.
+   *
+   * A TARGET AND A CHASE. Every wheel event moves a target; a frame loop
+   * walks the zoom towards it, closing a third of what is left each frame.
+   * That is what makes a mouse notch glide rather than cut, and what keeps a
+   * trackpad from being one animation restarted a hundred times: the target
+   * is where the gesture is going, and the map is always on its way there.
+   *
+   * IT MOVES THE MAP THE WAY A PINCH DOES. map._move() with pinch: true is
+   * the inside of Leaflet's own two-finger zoom. The reason to borrow it
+   * rather than call setView() sixty times a second is that setView rebuilds
+   * the tile grid on every call — it would throw away and re-request every
+   * tile on screen, every frame. A pinch move only transforms what is already
+   * drawn, which is why a phone has always zoomed smoothly here and a
+   * trackpad has not. The grid is refreshed where Leaflet would change tile
+   * level anyway, on crossing a whole level, and again when the gesture
+   * lands.
+   *
+   * These are private methods and they are pinned: index.html loads Leaflet
+   * 1.9.4 by version, and TouchZoom in that same file does exactly this a few
+   * lines further down. A Leaflet upgrade reads this comment first.
+   *
+   * IT LANDS WHERE THE FINGERS LEFT IT, nearly. Snapping to a whole level at
+   * the end would put the jump back at the one moment the gesture is over and
+   * cannot answer for it. But a landing a hair off a level is nobody's
+   * intention either, and it costs a permanently scaled tile for nothing, so
+   * anything within WHEEL_TIDY of a whole level eases the last of the way on
+   * to it. A mouse notch is 0.9 of a level precisely so that it lands, tidied,
+   * exactly one level from where it started: the mouse keeps its steps.
+   *
+   * Anyone who asked their machine for less motion gets the target at once
+   * and no chase, which on a trackpad is still smooth — the gesture itself is
+   * the animation — and on a mouse is the jump that setting asks for.
+   */
+
+  var WHEEL_PX = 140;      /* trackpad pixels to a zoom level */
+  var WHEEL_PINCH = 40;    /* ctrl+wheel units to a zoom level */
+  var WHEEL_NOTCH = 0.9;   /* one notch of a mouse wheel, in levels */
+  var WHEEL_EASE = 0.32;   /* of the gap left, per frame at 60Hz */
+  var WHEEL_GAP = 120;     /* ms of quiet that ends a gesture */
+  var WHEEL_TIDY = 0.12;   /* land on a whole level from this close in */
+
+  var wheel = {
+    to: null,       /* the zoom being travelled to; null when at rest */
+    at: null,       /* the place under the pointer, which stays under it */
+    pt: null,       /* where the pointer is, in container pixels */
+    level: 0,       /* the whole level the tile grid was last built for */
+    chase: 0,       /* how much of the gap a frame closes; 1 is no chase */
+    frame: 0,
+    last: 0,        /* when the last wheel event arrived */
+    tick: 0,        /* when the last frame ran */
+    tidied: false
+  };
+
+  function holdZoom(zoom) {
+    return Math.max(map.getMinZoom(), Math.min(map.getMaxZoom(), zoom));
+  }
+
+  function zooming() { return wheel.to !== null; }
+
+  /* However many notches arrived at once, in zoom levels, and never more than
+     three: a flick of a wheel with momentum behind it is still a request to
+     go one way, not a request to cross the whole scale. */
+  function wheelStep(count) {
+    var many = Math.min(Math.abs(count), 3);
+    return (count < 0 ? -WHEEL_NOTCH : WHEEL_NOTCH) * many;
+  }
+
+  /* How far this event means, in zoom levels.
+   *
+   * A trackpad sends a stream of small pixel deltas, dozens a second, and is
+   * read continuously — WHEEL_PX of them is a level, which is about a level
+   * and a half to a comfortable two-finger swipe. A mouse sends one large
+   * event per notch and can have a notch be a step, because a notch is one:
+   * there is nothing between two of them to report. Two tests say so, and
+   * both are conservative. Lines and pages are a mouse outright, nothing else
+   * sends them. A hundred pixels or more in one event is the notch Chrome,
+   * Edge and Firefox write in pixels.
+   *
+   * Everything else is read continuously, including a Safari mouse, which
+   * writes a notch as forty pixels and is indistinguishable from a brisk
+   * trackpad. Three notches to a level there rather than one: slower than it
+   * could be, and never a jump. That is the right way round. A test that
+   * guessed from the legacy wheelDelta would catch Safari's mouse and would
+   * also catch any trackpad whose first pixel happened to land on a multiple
+   * of forty — and one jump of a whole level in the middle of a smooth
+   * gesture is the thing this file exists to remove.
+   *
+   * Only the first event of a gesture may be read as a notch at all. Inside a
+   * stream, a flick that happens to cross a hundred pixels is a trackpad with
+   * momentum behind it, and it is read like the rest of the stream.
+   *
+   * A pinch on a trackpad arrives as ctrl+wheel, in much smaller numbers —
+   * the browser's own page-zoom gesture, which the map takes over rather than
+   * let the whole page scale out from under it. */
+  function wheelLevels(e, fresh) {
+    var up = -e.deltaY;
+    if (!up) return 0;
+    if (e.ctrlKey) return Math.max(-1, Math.min(1, up / WHEEL_PINCH));
+    if (e.deltaMode === 1) return wheelStep(up / 3);        /* lines */
+    if (e.deltaMode === 2) return wheelStep(up);            /* pages */
+    if (fresh && Math.abs(up) >= 100) return wheelStep(up / 100);
+    return up / WHEEL_PX;
+  }
+
+  /* One frame of the chase: put the map at `zoom` with the place under the
+     pointer still under the pointer. That is the sum setZoomAround does,
+     worked in projected pixels at the zoom being moved to, because how many
+     pixels a metre is worth changes with every frame of this. */
+  function wheelPlace(zoom) {
+    var off = wheel.pt.subtract(map.getSize().divideBy(2));
+    var centre = map.unproject(map.project(wheel.at, zoom).subtract(off), zoom);
+
+    var level = Math.round(zoom);
+    if (level !== wheel.level) {
+      /* Crossing into the half of the gesture where Leaflet would draw the
+         next level of tiles. Build the grid for it — one full update, where
+         the old handler did one per step — and carry on gesturing. */
+      wheel.level = level;
+      map._resetView(centre, zoom);
+      map._moveStart(true, false);
+      return;
+    }
+    map._move(centre, zoom, { pinch: true, round: false });
+  }
+
+  function wheelLand() {
+    /* Still mid-gesture while this runs, so that the moveend it fires is put
+       off with the rest of them and the pins are counted once rather than
+       twice. */
+    map._resetView(map.getCenter(), map.getZoom());
+    wheel.to = null;
+    /* _resetView compares the zoom it is handed against the zoom the map is
+       already on, finds them equal — the frames got it there — and so fires
+       moveend without zoomend. The zoom did end, and the pins and the names
+       are waiting on that word. */
+    map.fire('zoomend');
+  }
+
+  function wheelFrame() {
+    wheel.frame = 0;
+    if (!zooming()) return;
+
+    var now = Date.now();
+    var quiet = now - wheel.last > WHEEL_GAP;
+    if (quiet && !wheel.tidied) {
+      wheel.tidied = true;
+      var whole = Math.round(wheel.to);
+      if (Math.abs(wheel.to - whole) < WHEEL_TIDY) wheel.to = holdZoom(whole);
+    }
+
+    var zoom = map.getZoom();
+    var gap = wheel.to - zoom;
+    /* Of the gap, by the frame rather than by the second, so that a 120Hz
+       screen does not arrive twice as fast as a 60Hz one. */
+    var part = 1 - Math.pow(1 - wheel.chase, Math.min(now - wheel.tick, 64) / 16.7);
+    wheel.tick = now;
+
+    var next = Math.abs(gap) < 0.002 ? wheel.to : zoom + gap * part;
+
+    /* The last frame is placed on the target itself rather than within a
+       thousandth of it, so that a gesture tidied on to a whole level lands on
+       the level and its tiles are drawn at the size they were cut. */
+    var done = quiet && Math.abs(wheel.to - next) < 0.002;
+    if (done) next = wheel.to;
+
+    wheelPlace(next);
+
+    if (done) { wheelLand(); return; }
+    wheel.frame = window.requestAnimationFrame(wheelFrame);
+  }
+
+  function takeWheel() {
+    map.getContainer().addEventListener('wheel', function (ev) {
+      /* The page does not scroll under the map, and neither does the browser
+         zoom out from under it on a ctrl+wheel pinch. */
+      ev.preventDefault();
+
+      var now = Date.now();
+      var fresh = !zooming() || now - wheel.last > WHEEL_GAP;
+      var levels = wheelLevels(ev, fresh);
+      if (!levels) return;
+
+      if (!zooming()) {
+        /* A flyTo still in the air loses to the hand on the trackpad. */
+        map._stop();
+        map._moveStart(true, false);
+        wheel.level = Math.round(map.getZoom());
+        wheel.to = map.getZoom();
+        wheel.tick = now;
+        /* Asked once a gesture: nobody changes their mind about motion
+           halfway through one, and matchMedia is not a per-frame question. */
+        wheel.chase = reduceMotion() ? 1 : WHEEL_EASE;
+      }
+
+      wheel.last = now;
+      wheel.tidied = false;
+      wheel.pt = map.mouseEventToContainerPoint(ev);
+      wheel.at = map.containerPointToLatLng(wheel.pt);
+      wheel.to = holdZoom(wheel.to + levels);
+
+      if (!wheel.frame) wheel.frame = window.requestAnimationFrame(wheelFrame);
+    }, { passive: false });
+  }
+
+  /* ------------------------------------------------------- when it has moved
+   *
+   * syncMarkers() walks every place against every other to decide what shares
+   * a dot, and paintLabels() walks every place to decide which names fit.
+   * Both are fine once at the end of a move and ruinous sixty times a second
+   * — and sixty times a second is what a smooth zoom would ask for, because
+   * every frame of it is a Leaflet move that begins and ends. So while the
+   * wheel is still turning they are put off to a timer that the next frame
+   * pushes along, and they run once, on the gesture that has actually
+   * finished. A cluster re-forming mid-gesture would be wrong anyway: the
+   * dots would be rebuilt under a pointer that is still asking a question.
+   */
+  var SETTLE_MS = 160;
+  var WARM_MS = 400;
+
+  var settleTimer = 0;
+  var warmTimer = 0;
+
+  function settled(zoomed) {
+    if (zooming()) {
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(function () { settled(true); }, SETTLE_MS);
+      return;
+    }
+    window.clearTimeout(settleTimer);
+    if (zoomed) syncMarkers();
+    paintLabels();
+    warmTiles();
+  }
+
+  /* The tiles either side of the one on screen, fetched into the browser's
+     cache while nobody is asking for them, so that the next zoom draws out of
+     the cache instead of the network. TTBBasemap.warm() is the whole of it
+     and says why; this only names the palette that is up and keeps the work
+     off the frame the move ended on. */
+  function warmTiles() {
+    window.clearTimeout(warmTimer);
+    warmTimer = window.setTimeout(function () {
+      if (map) TTBBasemap.warm(map, { dark: isDarkStyle(state.style) });
+    }, WARM_MS);
   }
 
   /* The icon every pin is built from. One box, one span: the box is the
@@ -957,9 +1227,13 @@
         : L.point(pad.x + behind / 2, pad.y);
     }
 
+    /* Down to the whole level below. getBoundsZoom used to do the rounding
+       itself; it rounds to zoomSnap, which is now off so that the wheel can
+       land between levels, and a fit is not a gesture — nothing is holding it
+       between two levels, so it goes to the one it can show whole. */
     var floor = o.floor == null ? FIT_FLOOR : o.floor;
     var zoom = Math.max(
-      Math.min(map.getBoundsZoom(bounds, false, pad), o.maxZoom == null ? 16 : o.maxZoom),
+      Math.min(Math.floor(map.getBoundsZoom(bounds, false, pad)), o.maxZoom == null ? 16 : o.maxZoom),
       floor
     );
 
@@ -3747,9 +4021,12 @@
       var bounds = L.latLngBounds(pts);
       var pad = isNarrow() ? 112 : 220;
       var fit = map.getBoundsZoom(bounds, false, L.point(pad, pad));
-      /* Never less than one level in: pressing it always does something. */
+      /* Never less than one level in: pressing it always does something. And
+         on to a whole level, upwards: the map may be sitting between two of
+         them after a wheel gesture, and rounding down could land short of the
+         zoom that was worked out to break the group up. */
       var target = Math.min(
-        Math.max(fit, breakZoom(), map.getZoom() + 1),
+        Math.ceil(Math.max(fit, breakZoom(), map.getZoom() + 1)),
         CLUSTER_ZOOM_MAX + 1
       );
       map.setView(bounds.getCenter(), target, { animate: !reduceMotion() });
