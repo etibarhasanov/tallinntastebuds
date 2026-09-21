@@ -11273,12 +11273,21 @@ out from under it.
 the inside of Leaflet's own two-finger zoom, and the reason to borrow it
 rather than call `setView()` sixty times a second is that `setView` rebuilds
 the tile grid on every call: it would throw away and re-request every tile on
-screen, every frame. A pinch move only transforms what is already drawn. The
-grid is rebuilt where Leaflet would change tile level anyway — on crossing a
-whole level — and once more when the gesture lands. These are private methods,
-and they are pinned: `index.html` loads Leaflet 1.9.4 by version, with a
-hash, and `TouchZoom` in that same file does exactly this a few lines further
-down. **A Leaflet upgrade reads that comment first.**
+screen, every frame. A pinch move only transforms what is already drawn, and
+the tile grid looks after itself: every pinch move fires Leaflet's `zoom`
+event, the tile layer answers each one, and on the frame where the rounded
+zoom crosses into the next whole level it builds that level's grid on top of
+the tiles it already has. Nothing in `app.js` has to notice the crossing, and
+nothing may. The first version of this called `map._resetView()` at each one
+and again when the gesture landed, and `_resetView` fires `viewprereset`
+first, which the tile layer answers by throwing away every tile on the screen
+— a blank quarter of a second before the same tiles faded back in, at every
+level, and a gesture in and out crosses four or five. That was the blink, and
+the landing is now the end of Leaflet's own animated zoom instead, the same
+three calls `_onZoomTransitionEnd` makes. These are private methods, and they
+are pinned: `index.html` loads Leaflet 1.9.4 by version, with a hash, and
+`TouchZoom` in that same file does exactly this a few lines further down.
+**A Leaflet upgrade reads that comment first.**
 
 ### It lands where the fingers left it, nearly
 
@@ -11299,11 +11308,11 @@ animation; on a mouse it is the jump that setting is asking for.
 
 `syncMarkers()` walks every place against every other to decide what shares a
 dot, and `paintLabels()` walks every place to decide which names fit. Both are
-fine once at the end of a move and ruinous sixty times a second — and sixty
-times a second is what a smooth zoom would ask for, because every frame of it
-is a Leaflet move that begins and ends. So while the wheel is still turning
-they are put off to a timer the next frame pushes along, and they run once, on
-the gesture that actually finished. `settled()` is the whole of that.
+fine once at the end of a move and ruinous sixty times a second, and a smooth
+zoom is sixty Leaflet moves a second. So nothing runs them while the wheel is
+still turning: a `zoomend` or `moveend` that arrives mid-gesture — the landing
+fires both, one after the other — is put off to a timer, and the landing runs
+them once itself, after the gesture is over. `settled()` is the whole of that.
 
 A cluster re-forming mid-gesture would be wrong anyway: the dots would be torn
 down and rebuilt under a pointer that is still asking its question.
