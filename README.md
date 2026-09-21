@@ -578,6 +578,14 @@ the **name**, the **street**, the **type labels**, and the **dishes** in
 `mustOrder`. Not the write-ups — a word like "good" would match half the map
 and give no clue why.
 
+The placeholder names two of the four — *Name or street* — and that is
+deliberate. It used to name three, *Name, street or dish*, and three things
+separated by a comma and an *or* is a sentence being read rather than a hint
+being glanced at, in ten languages and in the width a phone leaves for it.
+The two it keeps are the two somebody is most likely to arrive holding; the
+type labels and the dishes still match, they are just found rather than
+advertised.
+
 The type labels go in **in all ten languages at once**, not the one the
 switcher happens to be showing. Somebody reading the map in Turkish still types
 "bakery" half the time, and somebody reading it in English may well know the
@@ -5048,10 +5056,17 @@ slice of the map rather than the list, and the heading went with the state.
 Above the scroll it is true of the panel rather than of anything in it: which
 list this map is showing, which does not stop being the answer while you narrow
 it. The eyebrow that used to sit at the top of the panel — TALLINN, whose map
-this is — steps aside for it, because two labels stacked over one search field
-is one too many, and the band answers the narrower and more useful question.
-The search moved under it, which is the arrangement every phone already knows:
-what you are looking at on top, the field for narrowing it beneath.
+this is — stepped aside for it, because two labels stacked over one search
+field is one too many, and the band answers the narrower and more useful
+question. The search moved under it, which is the arrangement every phone
+already knows: what you are looking at on top, the field for narrowing it
+beneath.
+
+The eyebrow has since gone altogether rather than only while the band is up.
+Above 860px there is no band, so it was still the first line of the column,
+repeating what the mark and the name in the top left say already — over a
+field that says what it takes. The chat panel keeps its copy, where there is
+neither a band nor a search field for it to crowd.
 
 That is also what the sheet's third stop is standing on. A band that does not
 depend on the scroll being anywhere in particular is a band the sheet can be
