@@ -1216,9 +1216,12 @@ body.lang-open .controls { z-index: 1250; }
      either way, but the bay is not, and in a coastal city the bay is a
      third of the screen.
    - Both accents clear 4.5:1 on their own paper and their own wash.
-   - --here paints the "you are here" dot, and is deliberately a hue neither
-     accent uses: a blue dot next to brick pins, a warm one against green.
-     Otherwise you cannot tell yourself from a restaurant.
+   - --here paints the "you are here" dot and the button that drops it, and is
+     deliberately a hue neither accent uses: a blue dot next to brick pins, a
+     warm one against green. Otherwise you cannot tell yourself from a
+     restaurant — and in the corner the button stands in, a red crosshair on
+     red paper was one more red thing rather than the one control that is
+     about you.
    - Green is the dark one and swaps to CARTO Dark Matter.
    ========================================================================== */
 
@@ -1474,11 +1477,25 @@ body.lang-open .controls { z-index: 1250; }
    the rail that is pressed in the middle of a gesture, with the other hand
    still panning the city, is the one that should be under the thumb already
    doing the panning rather than across the screen under the one holding the
-   phone. It keeps the rail's pill, its accent and its label; all that moves is
+   phone. It keeps the rail's pill and its label; all that moves is
    where it is drawn, and it is still one of the rail's own children in the
    markup, so the press counter, the cascade and the walk all find it exactly
-   where they left it. The media query below is the whole of it. */
-#btn-locate svg circle:first-child { fill: var(--accent); stroke: none; }
+   where they left it. The media query below is the whole of it.
+
+   And it is the one pill on the rail drawn in something other than the
+   accent. Everything on this map is the style's own red — the pins, the
+   chips, the other seven crosshair-sized drawings down the left — so a red
+   crosshair on red paper in the corner was one more red thing to find rather
+   than the one control that is about you. It takes --here instead, which is
+   the hue the dot it drops is painted in and is chosen in the palette block
+   above to be a hue neither accent uses: blue against brick, warm against
+   green. Press the button and the colour you pressed is the colour that
+   appears on the map, which is the argument for using that token rather than
+   inventing a second blue. The border and the label follow it under a
+   pointer, so the whole pill agrees with itself. */
+#btn-locate svg { stroke: var(--here); }
+#btn-locate svg circle:first-child { fill: var(--here); stroke: none; }
+#btn-locate:hover { border-color: var(--here); color: var(--here); }
 
 /* ---------- filters ---------- */
 
@@ -4582,15 +4599,29 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      was left below the nudge.
 
      The crosshair stands clear of the attribution strip in that corner, the
-     way .panel does above: 30px is the allowance for it, and the rail's own
-     gap sits the pill on top of that. With a sheet up it rides the strip
-     above it, alongside the row the rail becomes — and the two sheets that
-     take the rail away take it with them, because a fixed child of a
+     way .panel does above, and clear of the bottom edge of the glass besides
+     — --locate-b below is that sum written out. With a sheet up it rides the
+     strip above it, alongside the row the rail becomes — and the two sheets
+     that take the rail away take it with them, because a fixed child of a
      transparent parent is transparent too. */
+  body {
+    /* 30px of attribution strip, the gap the rest of the chrome keeps, and
+       24px more on top of that. The last of those is not clearance from
+       anything drawn: it is clearance from the bottom edge of the glass,
+       where a phone's own swipe-up gesture lives and where a pill sitting
+       flush reads as something that fell out of the layout. */
+    --locate-b: calc(54px + var(--gap) + var(--safe-b));
+    /* And the floor for anything else that stands centred at the foot of a
+       phone, so the toast and the account offer clear the corner instead of
+       being drawn across it: the pill is 35.6px, plus 10px of air. Written
+       once, because two numbers that have to agree and are typed twice are
+       two numbers that stop agreeing. */
+    --above-locate: calc(var(--locate-b) + 45.6px);
+  }
   #btn-locate {
     position: fixed;
     right: calc(var(--gap) + var(--safe-r));
-    bottom: calc(30px + var(--gap) + var(--safe-b));
+    bottom: var(--locate-b);
   }
   body.panel-open #btn-locate {
     bottom: calc(var(--sheet-h) + 10px + var(--safe-b));
@@ -4605,7 +4636,8 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
   .place-name { font-size: 26px; }
   .photo-grid { grid-template-columns: repeat(3, 1fr); }
-  .toast { bottom: calc(74px + var(--safe-b)); }
+  .toast,
+  .nudge { bottom: var(--above-locate); }
 }
 
 @media (max-width: 420px) {
