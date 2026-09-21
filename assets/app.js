@@ -5497,9 +5497,9 @@
      that says which one. So while a list is open the panel does not close:
      the cross, Escape, Places and a pull past the stops all leave it sitting
      on the band, with the list's name and the switch to its own page on it.
-     Being rid of it is leaving the list — Back to all places, any chip, or the
-     name in the corner — which hands back a map nothing is narrowing and a
-     panel that closes like any other.
+     Being rid of it is leaving the list — any chip, or the name in the
+     corner — which hands back a map nothing is narrowing and a panel that
+     closes like any other.
 
      `band: false` is the one way past that, and the walk is the one caller:
      it is about to point at the pins and the rail, and it asks for the map
@@ -7171,8 +7171,8 @@
   }
 
   /* What the list says about itself, under the search and over its places:
-     the byline and how many places are on it, the two things you can do about
-     it — keep it, send it on — and, under them, the way out.
+     the byline and how many places are on it, and the two things you can do
+     about it — keep it, send it on.
 
      Only while the list is what is on screen. A search or a chip makes this a
      slice of the map that happens to be cut out of a list, and somebody else's
@@ -7210,30 +7210,8 @@
       el('div', { className: 'list-credit-acts' }, [
         listKeep(),
         shareButton(state.list)
-      ]),
-      leaveButton()
+      ])
     ]);
-  }
-
-  /* The way back to the whole map, which is the one thing in this block that
-     is not about the list. So it is not a fourth pill: an .alt is what this
-     site's fourth control is for — the quiet one beside the things you do, a
-     way out — and it is the same shape and nearly the same words the list's
-     own page uses at the foot of the same content.
-
-     It is the All chip, printed where somebody reading a list can find it.
-     Pressing All has always done this and still does; what it was not, was
-     visible — the row it lives on says nothing about the list, and on a phone
-     it is behind a button. Somebody sent a link had to know that a chip they
-     had no reason to press was the way out of what they had been sent. */
-  function leaveButton() {
-    var b = el('button', {
-      type: 'button',
-      className: 'alt list-credit-out',
-      textContent: t('listLeave')
-    });
-    b.addEventListener('click', clearChips);
-    return b;
   }
 
   /* Sending the list on, from the page somebody was actually sent to. A list

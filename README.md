@@ -5032,12 +5032,11 @@ switch — the pin being the glyph its places are wearing out on the map, so the
 name and the pins read as one thing. See **Where a list wears its own** under
 **The pins**, which is the other four places that emblem is drawn. Then
 the search, and under that its owner's name, how many places are on it, their
-sentence, the two things you can do about it — keep it, or send it on — and,
-under those, the way out. The two wear the same pill and neither is filled: on
-that block the accent behind a pill already means "saved", and spending it
-twice would take that reading away. The one filled thing in the panel is the
-half of the switch you are standing on, which says where you are rather than
-asking for a press.
+sentence, and the two things you can do about it — keep it, or send it on. The
+two wear the same pill and neither is filled: on that block the accent behind a
+pill already means "saved", and spending it twice would take that reading away.
+The one filled thing in the panel is the half of the switch you are standing
+on, which says where you are rather than asking for a press.
 
 **The band is the panel's own header, not the first thing in its scroll.** It
 began as the latter — a group heading like **Nearest you**, sticking to the top
@@ -5060,22 +5059,23 @@ pulled down onto — and once there is somewhere for it to land, there is no
 reason for it ever to leave. On a phone a list cannot be closed: the pull, the
 cross, Escape and **Places** all put the sheet on the band instead, and the
 cross is not drawn there. What closes a panel is the list no longer being the
-mode, which is the next paragraph and the one under it: pressing a chip, or
-**Back to all places**. See **The sheet** in the design notes.
+mode, which is the next paragraph: pressing a chip. See **The sheet** in the
+design notes.
 
 **Pressing any chip forgets it.** All, Bakery, Discount — each is somebody
 asking the map a question their list cannot be part of the answer to, so the
 list goes: pins, panel, keep button, `?list=` and all. There is no control that
 puts it back, because it is not a thing you toggle.
 
-**Back to all places** is that same press, printed where the person reading a
-list can find it. It sits under the three pills as an `.alt`, not as a fourth
-one, because it is the one thing in that block that is not about the list —
-and because it is the same shape and nearly the same words the list's own page
-uses for its way out. Pressing All had always been the exit and always will
-be; what it was not, was visible. The chip row says nothing about the list, on
-a phone it is behind a button, and somebody who arrived on a link had to
-already know that a chip they had no reason to press was the way back.
+**And nothing in the panel offers to leave.** There was a **Back to all
+places** under the byline for a while — an `.alt` beneath the two pills, doing
+exactly what pressing All does — put there on the argument that the exit was
+invisible to somebody who had arrived on a link. On screen it read as a stray.
+Everything else in that block is about the list somebody chose to open, and a
+control offering to leave it is a different subject in the middle of the
+sentence; it is also the only thing on the site that asks you whether you want
+to be where you are. The chips, the name in the corner and the browser's own
+back are still the way out, and none of them needs announcing.
 
 **Opening and shutting the Filters drawer is not pressing one.** Under 860px
 the chip row lives behind a button, and shutting it is the same answer as All
@@ -12081,9 +12081,9 @@ press that does nothing is worse than no button. It is the one sheet on this
 site that cannot be dismissed, and that is the point: what a drag or a press
 would be dismissing is the only thing on screen saying why the map is showing
 seven pins. Being rid of it is leaving the list rather than closing a sheet —
-**Back to all places** under the byline, any chip, or the name in the corner,
-each of which hands back a map nothing is narrowing and a panel that closes
-like any other. A desktop has no cross to keep on the list: the places column
+any chip, or the name in the corner, either of which hands back a map nothing
+is narrowing and a panel that closes like any other. A desktop has no cross to
+keep on the list: the places column
 does not shut at all up there — the cross belongs to whatever opened in front
 of it, and what pressing it hands back is the list. **A list is a mode, not a
 filter** under **Lists** has the reasoning, and
