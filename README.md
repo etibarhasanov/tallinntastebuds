@@ -404,10 +404,18 @@ https://www.tiktok.com/@tallinntastebuds/video/7568039651458436374
 ```
 
 The field is still called `reel` whichever platform it points at — renaming it
-would mean touching every place in the data for no gain. The site works out
-which platform from the URL and follows suit: the section heading reads **The
-reel** or **The video**, and the link under the player names the right app in
-every language.
+would mean touching every place in the data for no gain.
+
+**The heading over it says whose video it is, not which app it is on.** Both
+platforms get **Tallinn Tastebuds video** — the `video` key in `data/ui.json`,
+written in each language's own grammar around the name, which is never
+translated. It used to read **The reel** or **The video** depending on the
+permalink, and that was naming somebody else's product for a video that is this
+site's own. The app is still named in the one place it is useful: the button or
+link under the player, which says **Watch on Instagram** or **Open it on
+TikTok** in every language. `markReel` and `markVideo`, the badges on the map,
+keep their own words — there the point really is which kind of thing is
+waiting.
 
 Both are plain iframes, and both are built with the panel, so neither platform
 needs a script here.

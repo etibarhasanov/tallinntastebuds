@@ -6662,11 +6662,17 @@
        so in that same slot under its own heading rather than leaving you to
        reach the bottom and work it out.
 
-       No video means no section at all — an empty "The reel" heading over a
-       placeholder made six real places look half-finished. A quiet line says
-       what is actually true instead: been, not filmed. */
+       No video means no section at all — an empty heading over a placeholder
+       made six real places look half-finished. A quiet line says what is
+       actually true instead: been, not filmed.
+
+       The heading names whose video it is rather than which app it is on:
+       Instagram and TikTok both say "Tallinn Tastebuds video". The app is
+       still named where it is useful — on the button that opens it — and a
+       heading that said "The reel" was naming somebody else's product for a
+       video that is this site's own. */
     if (place.reel) {
-      dom.detail.appendChild(section(reelWord(reelProvider(place.reel)), reelBlock(place)));
+      dom.detail.appendChild(section('video', reelBlock(place)));
     }
 
     if ((place.photos || []).length) {
@@ -6758,11 +6764,6 @@
     if (/^https:\/\/www\.instagram\.com\//.test(url || '')) return 'instagram';
     return null;
   }
-
-  /* TikTok says "video", Instagram says "reel". Use each one's own word — in
-     the heading over the player, in the frame's own name, and in the link out
-     to the post underneath it. */
-  function reelWord(provider) { return provider === 'tiktok' ? 'video' : 'reel'; }
 
   /* The player used to sit behind a "Load the reel" button, so that a visitor
      who only wanted the address never fetched anything from Instagram. It
@@ -6896,7 +6897,7 @@
       post ? el('div', { className: 'reel-frame is-instagram' }, [
         el('iframe', {
           src: 'https://www.instagram.com/' + kind + '/' + post[2] + '/embed/',
-          title: place.name + ' — ' + t('reel'),
+          title: place.name + ' — ' + t('video'),
           allow: 'autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen',
           allowfullscreen: '',
           referrerpolicy: 'strict-origin-when-cross-origin',
