@@ -6810,9 +6810,8 @@
     return wrap;
   }
 
-  /* Instagram publishes the same iframe player that embed.js builds for a
-     blockquote — /p/<shortcode>/embed/, with the query below on it — so the
-     reel goes in directly and no script is involved at all.
+  /* Instagram publishes an iframe player at the permalink with /embed/ on the
+     end, so the reel goes in directly and no script is involved at all.
 
      Going through embed.js meant fetching it, polling for window.instgrm,
      handing it a blockquote and letting it draw whatever box it had measured
@@ -6822,48 +6821,39 @@
      below opens at the shape a reel actually is and then takes Instagram's
      own measurement for the exact one. */
   function embedInstagram(place) {
-    /* Every post is framed at /p/<shortcode>/embed/, whatever kind of post the
-       permalink calls itself. Instagram serves a reel at /reel/<shortcode>/ and
-       at /p/<shortcode>/ alike, but only the second has a player behind it that
-       another site may frame: /reel/<shortcode>/embed/ answers with "the link
-       to this photo or video may be broken, or the post may have been removed",
-       which is the page a place opened on a phone showed where its video should
-       have been. embed.js normalised every permalink to /p/ before building the
-       frame; building the frame here instead kept the kind as it was written,
-       and most of the links on this map are written /reel/ because that is what
-       the address bar shows while you are watching one.
+    /* The kind of post is kept exactly as the permalink was written — a link
+       written /reel/ is framed at /reel/<shortcode>/embed/, one written /p/ at
+       /p/<shortcode>/embed/ — and that is a correction, not an oversight.
+
+       For two weeks every place was framed at /p/ instead, on the reasoning
+       that /p/ is the one kind Instagram keeps a player behind and that
+       embed.js normalised everything to it. The reasoning was never checked
+       against a phone, because the sandbox it was written in had no route to
+       instagram.com, and it was wrong: /p/<shortcode>/embed/ answers a reel
+       with its cover frame and a play button that is a link out rather than a
+       player. Press it and Instagram opens instead of the video starting.
+       Keeping the kind is what played, for five weeks, on the site.
+
+       So this is a decision about evidence rather than about Instagram's
+       routing table, and the evidence is a phone: framed as written, a reel
+       plays. If a place ever comes up with "the link to this photo or video
+       may be broken", the answer is to write that one permalink the other way
+       round in data/restaurants.json — the shortcode is the same post either
+       way — and not to rewrite everybody's link in here. That is what the one
+       place this happened to should have had.
 
        A link copied while browsing your own grid carries the profile name in
        front of the shortcode — a shape Instagram serves the post at but not the
-       embed — so the player is addressed by the shortcode alone. A permalink
-       with no shortcode in it at all cannot be framed: it gets the way out that
-       sits under every player, rather than a frame nothing can fill. */
-    var post = /\/(?:p|reels?|tv)\/([A-Za-z0-9_-]+)/.exec(place.reel);
-
-    /* And the query is not decoration. /p/<shortcode>/embed/ on its own
-       answers with the cover frame and a play button that is a link out to
-       the post rather than a player — press it and you get Instagram, which
-       is what this map did from the day the reel came off embed.js. The five
-       parameters below are the ones embed.js puts on the frame it builds, and
-       with them the same address answers with the video: cr and v are the
-       embed's own revision and version, wp is the width it is being drawn at,
-       and rd/rp are the page doing the framing. Leaving them off was not
-       reading the URL off a working embed, which is exactly what the /site
-       skill says to do when a provider's loader is replaced by a URL.
-
-       rp is the path and never the query, so what Instagram is told is "/" —
-       the map is one address and the place is a ?spot= on it. That is the
-       same amount the Referrer-Policy header already hands them, and the
-       reason this does not quietly widen it. */
-    var frameWidth = Math.min(540, document.documentElement.clientWidth || 540);
-    var query = '?cr=1&v=14&wp=' + frameWidth +
-      '&rd=' + encodeURIComponent(location.protocol + '//' + location.host) +
-      '&rp=' + encodeURIComponent(location.pathname);
+       embed — so the player is addressed by the kind and the shortcode alone. A
+       permalink with no shortcode in it at all cannot be framed: it gets the way
+       out that sits under every player, rather than a frame nothing can fill. */
+    var post = /\/(p|reels?|tv)\/([A-Za-z0-9_-]+)/.exec(place.reel);
+    var kind = post && (post[1] === 'reels' ? 'reel' : post[1]);
 
     return el('div', { className: 'reel-embed' }, [
       post ? el('div', { className: 'reel-frame is-instagram' }, [
         el('iframe', {
-          src: 'https://www.instagram.com/p/' + post[1] + '/embed/' + query,
+          src: 'https://www.instagram.com/' + kind + '/' + post[2] + '/embed/',
           title: place.name + ' — ' + t('reel'),
           allow: 'autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen',
           allowfullscreen: '',

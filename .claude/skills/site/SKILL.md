@@ -396,27 +396,31 @@ it, and what was driven in a browser to check it.
   page is there to be read before the line under it is replaced.
 - A `t()` key that the scanner cannot see, so the validator passes and a
   visitor reads the key off the page.
-- **A third-party player framed at a URL this repo builds by hand.** The
-  Instagram reel was moved off `embed.js` onto a plain iframe, and the URL it
-  was given kept the kind of post the permalink was written with — `/reel/…`
-  rather than the `/p/…` that `embed.js` normalises everything to. Instagram
-  answers the first with "the link may be broken, or the post may have been
-  removed", so most of the map showed a deleted-post page where its video
-  should have been. Nothing in CI can see this: the validator checks that our
-  links are well formed, never that the other end still serves them. When a
-  provider's own loader is replaced with a URL, copy the URL that loader
-  builds — open one in a browser and read it off the iframe — rather than the
-  one the permalink suggests, and say in the PR that the frame was watched
-  loading a real post.
+- **A third-party player framed at a URL this repo builds by hand, and then
+  reasoned about instead of watched.** The Instagram reel is the worked example
+  and it went wrong twice, in opposite directions, over five weeks.
 
-  **It then went wrong a second time, the same way.** Fixing the path left the
-  query off — `embed.js` frames a post at `/p/<shortcode>/embed/?cr=1&v=14&wp=…&rd=…&rp=…`
-  — and without it Instagram answers with the cover frame and a play button
-  that is a link out rather than a player. That reads as working: there is a
-  picture of the reel and a play triangle on it, so nothing looks broken until
-  somebody presses it. Five weeks passed. **Copy the whole URL, query
-  included**, and treat "it renders" as no evidence at all that it plays —
-  a third-party embed has a logged-out shape that looks like the real one.
+  One place came up with Instagram's "the link may be broken, or the post may
+  have been removed". From that, two things were inferred: that `/reel/…/embed/`
+  has no player behind it, and that `/p/…` — what `embed.js` normalises to — is
+  the only framable kind. Every place on the map was rewritten to `/p/`. The one
+  broken place stayed broken and every working one stopped playing, because
+  `/p/<shortcode>/embed/` answers a reel with its cover frame and a play button
+  that is a link out. Then the query `embed.js` sends was added on top, on the
+  same kind of reasoning, and changed nothing, because the path underneath was
+  the fault. Only the owner's phone settled it: framed at the kind the permalink
+  was written with, a reel plays.
+
+  Three things to take from it. **"It renders" is no evidence that it plays** —
+  an embed's logged-out shape is a picture of the working one, complete with a
+  play triangle, and it will sit there for weeks. **One broken place is a data
+  problem, not a code problem**: fix that permalink in `data/restaurants.json`
+  rather than rewriting everybody's URL to suit the exception. And **nothing in
+  this repo can check any of it** — the validator sees that our links are well
+  formed, never that the other end still serves them, and no session working
+  here has ever had a network route to `instagram.com`. So a change to that URL
+  is worth nothing until somebody has pressed play on a phone: say in the PR
+  that it could not be driven, and ask.
 - **A `.lists-seg` whose `is-on` class does not move.** The radio inside
   `.lists-seg-opt` is one transparent pixel — deliberately, so the keyboard
   and the screen reader get a real radio — which means the browser checking it
