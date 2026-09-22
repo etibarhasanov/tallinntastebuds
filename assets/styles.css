@@ -104,6 +104,18 @@
   --radius: 4px;
   --radius-soft: 12px;
   --gap: 16px;
+  /* The height of the find bar at the top of the map. A token because three
+     rules need the same number and they are in three different places: the
+     field itself, the chip row it pushes down on a phone, and the floor the
+     bottom sheet may not grow past. */
+  --find-h: 40px;
+  /* That floor. A sheet never grows past the point where the chrome strip,
+     the find bar and the chip row above it are all still showing, because
+     that strip is the way back out when a sheet is standing open. It was a
+     bare 110px until the find bar took a row on a phone. SHEET_HEADROOM in
+     assets/app.js is the same number again — a drag settles on a height this
+     then has to agree with — so the two move together or neither does. */
+  --sheet-headroom: calc(110px + var(--find-h) + 8px);
   /* The measure the brand is set to, and the number the chip row starts
      after: two rules that have to agree, so they read the same one. It is the
      width the sentence had inside the card that used to be drawn here — the
@@ -1496,6 +1508,202 @@ body.lang-open .controls { z-index: 1250; }
 #btn-locate svg { stroke: var(--here); }
 #btn-locate svg circle:first-child { fill: var(--here); stroke: none; }
 #btn-locate:hover { border-color: var(--here); color: var(--here); }
+
+/* ---------- the find bar ---------- */
+
+/* Everywhere in Tallinn, from the top of the map. The places column has a
+   search of its own and this is not it: #list-search narrows the seventy-five
+   places on the map, this one reaches the eleven hundred Google venues behind
+   them as well. index.html says why that is two fields and not one.
+
+   It stands in the strip of chrome across the top — the row --chrome-h on
+   .filter-bar has always been the height of, and which held nothing until now
+   — between the brand's column and the language switch. So nothing moves on a
+   desktop: the chips are where they were, and the bar fills a gap rather than
+   pushing anything into one.
+
+   Above .panel (1200) rather than under it, because on a phone the sheet and
+   this are both on screen and a dropdown that slid behind the sheet would be
+   a list you can see the top row of. Under body.lang-open .controls (1250),
+   which is a menu that is only open while this one is not. */
+.find {
+  position: fixed;
+  z-index: 1210;
+  top: calc(var(--gap) + var(--safe-t));
+  left: calc(var(--gap) + var(--safe-l) + var(--brand-w) + 16px);
+  width: clamp(220px, 32vw, 380px);
+}
+
+.find-field { position: relative; }
+
+/* The same field as the column's, deliberately: one search field on this site
+   and not two that nearly match. What differs is the shadow — this one stands
+   on the map and has to hold itself off the street under it, where the
+   column's sits on the panel's own paper. */
+.find-input {
+  width: 100%;
+  height: var(--find-h);
+  padding: 0 34px 0 34px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  box-shadow: var(--lift);
+  font-family: var(--body);
+  font-size: 14px;
+  color: var(--ink);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color .15s var(--ease);
+}
+.find-input:focus { outline: none; border-color: var(--accent); }
+.find-input::placeholder { color: var(--muted); opacity: 1; }
+/* WebKit draws its own cross inside a type=search and it lands on top of the
+   one this markup carries, which is the one that also clears the map. */
+.find-input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+
+.find-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.find-clear {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  transform: translateY(-50%);
+  border-radius: 100px;
+  color: var(--muted);
+}
+.find-clear[hidden] { display: none; }
+.find-clear:hover { color: var(--ink); background: var(--wash); }
+.find-clear svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+
+/* What was found. A card floating on the map, so it takes --radius-soft and
+   the map chrome's shadow rather than the panel's. It scrolls at a height
+   that leaves the map visible underneath: a dropdown that filled the screen
+   would be a page, and this is a way of getting to one place. */
+.find-out {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  /* Half the screen and no more. A row is two lines now, so the old 56vh put
+     eight of them over the map and the map stopped being the thing behind the
+     dropdown and started being the thing under it. */
+  max-height: min(50vh, 420px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 4px 0 6px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  box-shadow: var(--shadow);
+}
+.find-out[hidden] { display: none; }
+
+/* What the search is doing or has failed to do, in one line: looking, or
+   nothing matched. It is also the live region, so a screen reader is told the
+   count once rather than read every row again on each keystroke. Empty and
+   gone the rest of the time — :empty rather than a hidden attribute, because
+   the text is what decides whether there is anything to say. */
+.find-note {
+  padding: 6px 14px 8px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.find-note:empty { display: none; }
+
+/* Which roll the rows under it came off: the map's own, or the rest of the
+   city. The site's eyebrow, so the heading reads as a label and not as a
+   place with a very short name. */
+.find-group {
+  padding: 10px 14px 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.find-row {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 10px;
+  width: 100%;
+  padding: 9px 14px;
+  text-align: left;
+  transition: background-color .12s var(--ease);
+}
+.find-row:hover,
+.find-row:focus-visible { background: var(--wash); }
+.find-row:hover .find-name,
+.find-row:focus-visible .find-name { color: var(--accent); }
+
+/* The pin down the left, in the muted ink for a Google venue and the accent
+   for one of mine — which is the whole of what the two groups look like from
+   a distance, and the reason a row does not need to repeat its heading. */
+.find-pin {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.find-row.is-mine .find-pin { stroke: var(--accent); }
+
+/* The text column beside the pin. A block in a grid track is still allowed to
+   push its track wider than the track's own maximum unless it is told it may
+   shrink, which is what min-width: 0 is for: without it a long address stopped
+   being ellipsised and ran off the right edge of the card instead. */
+.find-text {
+  min-width: 0;
+}
+
+.find-name {
+  display: block;
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -.015em;
+  line-height: 1.25;
+  transition: color .15s var(--ease);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The street, and Google's score where there is one. Mono, because both are
+   facts rather than sentences — rule 2 of the design rules. */
+.find-where {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* ---------- filters ---------- */
 
@@ -4170,9 +4378,9 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      it here; a place opens here and a drag up takes it to a full stop taller
      than either, further down this block. */
   body { --sheet-h: min(50vh, 470px); }
-  body { --sheet-h: min(calc(var(--vph, 100dvh) * .5), 470px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
+  body { --sheet-h: min(calc(var(--vph, 100dvh) * .5), 470px, calc(var(--vph, 100dvh) - var(--sheet-headroom) - var(--safe-t))); }
   body.sheet-full { --sheet-h: min(82vh, 720px); }
-  body.sheet-full { --sheet-h: min(calc(var(--vph, 100dvh) * .82), 720px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
+  body.sheet-full { --sheet-h: min(calc(var(--vph, 100dvh) * .82), 720px, calc(var(--vph, 100dvh) - var(--sheet-headroom) - var(--safe-t))); }
 
   /* And a third under both, which only a list has: its band and nothing else.
      Somebody's list pulled past the half stop settles here instead of leaving,
@@ -4332,7 +4540,29 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
   .btn-wide { padding: 0 11px; gap: 5px; }
 
-  .filter-bar { --chrome-h: 36px; left: 10px; right: 10px; }
+  /* The strip across the top is full on a phone — the mark and the handle in
+     one corner, the language and the radio in the other — so the find bar
+     takes a row of its own underneath them and the chips move down by it.
+     Full width, because at 390px a bar inset from both edges to make room for
+     nothing is a bar that has given up half its letters. */
+  .find {
+    top: calc(var(--gap) + var(--safe-t) + 36px + 12px);
+    left: 10px;
+    right: 10px;
+    width: auto;
+    transition: transform .38s var(--ease);
+  }
+  /* The tagline unrolls under the mark and pushes what is below it down — see
+     .brand .tagline above. That used to be the chip row alone; now it is this
+     and then the chips, moving together and by the same measured line. */
+  body.brand-telling .find { transform: translateY(var(--tell-h, 46px)); }
+
+  .filter-bar {
+    --chrome-h: 36px;
+    left: 10px;
+    right: 10px;
+    top: calc(var(--gap) + var(--safe-t) + var(--chrome-h) + 12px + var(--find-h) + 8px);
+  }
 
   /* --kbd is what the on-screen keyboard covers. Lifting the sheet by it and
      taking the same off the height keeps the top edge exactly where it was,
@@ -4466,7 +4696,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      screen it wants. selectPlace() in assets/app.js is where the arrival is
      decided and says why. */
   body.panel-detail.sheet-full { --sheet-h: min(88vh, 780px); }
-  body.panel-detail.sheet-full { --sheet-h: min(calc(var(--vph, 100dvh) * .88), 780px, calc(var(--vph, 100dvh) - 110px - var(--safe-t))); }
+  body.panel-detail.sheet-full { --sheet-h: min(calc(var(--vph, 100dvh) * .88), 780px, calc(var(--vph, 100dvh) - var(--sheet-headroom) - var(--safe-t))); }
 
   /* And the rail steps out of the way behind the two sheets that leave it no
      strip to stand on: a place dragged up to 88% of the screen, and the chat.

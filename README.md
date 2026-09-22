@@ -43,6 +43,7 @@ completely with the database switched off.
 - [Add photos](#add-photos)
 - [The list is ordered by distance](#the-list-is-ordered-by-distance)
 - [Searching the list](#searching-the-list)
+- [Finding anywhere in Tallinn](#finding-anywhere-in-tallinn)
 - [The places column, and what opens beside it](#the-places-column-and-what-opens-beside-it)
 - [Ask for somewhere](#ask-for-somewhere)
 - [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
@@ -637,6 +638,125 @@ be searched**. Two of the four columns are missing there: it looks at the name
 and the street and not at the type labels or the dishes, because that page is
 sent its rows already filled out and never downloads the catalogue those two
 come from.
+
+**This field never leaves the seventy-six.** It is the list's own search and it
+narrows the list. The question it cannot answer is "is this place on here at
+all", asked about somewhere that is not — and that one has a field of its own
+across the top of the map. See
+[Finding anywhere in Tallinn](#finding-anywhere-in-tallinn) below, which is
+also where the argument for two fields rather than one is written out.
+
+---
+
+## Finding anywhere in Tallinn
+
+A bar across the top of the map, and the one thing on this page that can answer
+for somewhere I have never been. Type into it and two groups come back: **On
+the map**, which is my own places, and **Everywhere in Tallinn**, which is the
+Google export behind them — eleven hundred venues, the whole city. Press a row
+and the place opens. Empty the field and the map is exactly as it was.
+
+### Why it is not the field in the places column
+
+They are two questions and they want two fields.
+
+The column's field narrows what the map is already showing: seventy-six places,
+every one of them written up, and it tells you which of them was the ramen one.
+This bar asks whether somewhere is on here at all, over eleven hundred venues,
+and nearly everything it finds has no write-up behind it.
+
+Folding them into one field would have cost the column its search. A field
+inside the list panel that answers with a thousand places nobody has visited
+has stopped being the list's search — and a city search that lives inside a
+panel you have to open first is a city search nobody finds. So there are two,
+each saying what it is: *Name or street* in the column, *Find anywhere in
+Tallinn* on the map.
+
+### Where the roll comes from, and why not from the database
+
+`/api/places`, once, on the first keystroke — the map's own places merged over
+`google_venues`, deduplicated and cached five minutes, which is the same answer
+the lists page's picker has been searching all along. It is not asked for on
+the way in: somebody who opens the map and never types has no use for two
+hundred kilobytes of it.
+
+**A `?q=` route querying D1 per keystroke was the obvious other shape and it
+cannot be written here.** SQLite has no accent folding. Nobody types *Põhjala*
+with the tilde or *Šašlõkk* with the caron, the fold both this bar and the
+column's field apply drops the marks from both sides of every comparison before
+anything is matched, and no `LIKE` can do the same. Searching in the browser is
+not the lazy option in this city — it is the only one that finds Põhjala when
+you type `pohjala`.
+
+### What is searched on each side, which is not the same thing
+
+My own places go through the map's own index: the name, the street, the type
+labels **in all ten languages**, and the dishes in `mustOrder` — the four
+columns **Searching the list** describes, reused rather than rebuilt. A Google
+venue has none of that. What the roll carries for one is a name and an address,
+so that is what it is matched on.
+
+Better matching on my own places than on Google's is an asymmetry and it is the
+honest one: I know more about them.
+
+A word has to land somewhere in the haystack for the row to match, so
+`telliskivi kohvik` narrows rather than widening. The city's half is ordered
+the way a dropdown is read — a name that *starts* with what was typed before
+one that merely contains it, then by how many people Google says have reviewed
+it, which is the only thing the export knows about how well known somewhere is.
+
+### No score on a row
+
+Google's number may only be printed where it is said to be Google's — see the
+`rating` column in `db/schema.sql` — and *According to Google* does not fit on
+the second line of a row beside an address. It shipped for an afternoon
+truncated to *According to Goo…*, which is the attribution failing while the
+number survived, and that is the wrong half to lose. A row is a name and a
+street. The card that opens carries the score with its attribution whole, and
+[The directory](#the-directory) is the page that sorts by one.
+
+### What picking one does
+
+One of mine opens exactly as pressing its pin does.
+
+A Google one becomes a **stand-in** on the map — the same shape a list's places
+and the chat's answers arrive as, drawn by the same loops, wearing the note
+that says whose description this is. Then the card opens on it. The phone, the
+website and the week are not in the roll, so they are fetched for that one
+venue from `/api/venues?ids=` and folded into the card when they land; the card
+is drawn before they arrive and stands without them, because nothing in
+`assets/` waits on `/api/*`.
+
+**One at a time.** Finding somewhere is looking one place up, not narrowing the
+map to a set of them, so a second search replaces the first rather than leaving
+a trail of pins nobody asked to keep.
+
+### It is not a mode, and that is the difference from a list
+
+A list and an answer from the chat are **modes**: they narrow the map, and a
+filter chip puts them away because a chip and a narrowing that ignores it
+cannot both be true. This bar narrows nothing. It drops one pin and opens one
+card, so a chip, a list and a found venue can all be true at once, and the pin
+goes away when the field is emptied and at no other time.
+
+That is the whole of *clearing it puts the map back*: `forgetFound()` takes the
+pin off, the panel drops back to the list the way it does for the other two,
+and nothing else on the page has been touched.
+
+### Where it stands
+
+In the strip of chrome across the top — the row `--chrome-h` in
+`assets/styles.css` has always been the height of, and which held nothing until
+now — between the brand's column and the language switch. So on a desktop
+nothing moved: the chips are where they were and the bar fills a gap rather
+than making one.
+
+On a phone that strip is full, so the bar takes a row of its own underneath it
+and the chip row moves down by `--find-h`. The bottom sheet's floor moved with
+it: `--sheet-headroom` in the stylesheet and `SHEET_HEADROOM` in
+`assets/app.js` are the same number written twice — a drag settles on a height
+the stylesheet then draws — and it went from 110 to 158 so that the chrome
+strip, the bar and the chip row are all still showing under an open sheet.
 
 ---
 
@@ -11602,8 +11722,10 @@ The map, `assets/app.js`:
 | `filter_select` | `filter_id`, `filter_state` (`on`/`off`), `filters`, `filter_count`, `places_shown` |
 | `filter_clear` | `filters`, `filter_count`, `places_shown` |
 | `filters_open`, `filters_close` | — |
-| `search` | `search_term`, `scope` (`map`) |
+| `search` | `search_term`, `scope` — `map` for the field in the places column, `find` for the bar across the top of the map |
 | `search_clear` | `scope` |
+| `find_pick` | `search_term`, `scope` (`map`/`city`) — a row pressed in the find bar, and which of the two groups it came from |
+| `find_clear` | — the cross on the find bar |
 | `list_open` | `places_shown` |
 | `list_close`, `ask_close` | — the cross on the panel, by what it shut; on a list it puts it on the band rather than shutting it, and reports the press all the same |
 | `place_close` | `place` |
