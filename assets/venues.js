@@ -584,6 +584,28 @@
     ]));
 
     var facts = el('p', { className: 'venue-facts' });
+    /* Where Google's two numbers put this place among all of them. Not worked
+       out here: ranked() in tools/googlevenues.mjs writes it into a column and
+       /api/venues sends it, on the same arithmetic and the same PRIOR as
+       weigh() above — so under "Best overall" the cards count 1, 2, 3 down the
+       screen, and under "Highest rated" they deliberately do not.
+
+       First on the row, because it is the only number on a card that is about
+       the whole city rather than about this place. The total is the roll that
+       actually arrived rather than a constant somebody would have to edit
+       after every refresh, and the sentence saying whose numbers these are
+       goes in the title, the way .venue-score beside it hands over Google's
+       rating. */
+    if (typeof venue.rank === 'number') {
+      facts.appendChild(el('span', {
+        className: 'venue-rank',
+        title: t('venuesRankTitle', {
+          n: number(venue.rank),
+          total: number(state.all.length)
+        }),
+        textContent: t('venuesRank', { n: number(venue.rank) })
+      }));
+    }
     if (typeof venue.rating === 'number') {
       facts.appendChild(el('span', {
         className: 'venue-score',

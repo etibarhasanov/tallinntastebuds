@@ -738,7 +738,35 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- Set when a refresh no longer carries this place — it closed for good, or
   -- Google stopped returning it. Never deleted, because a list may be pointing
   -- at it and somebody wrote a sentence about it.
-  missing_since INTEGER
+  missing_since INTEGER,
+
+  -- ------------------------------------------------- derived, and overwritten
+  -- Where this place stands among all 1,110 once Google's rating is weighed by
+  -- Google's review count: 1 is PullaBakery at 4.9 from 1,656, 1,110 is the
+  -- worst-scoring of the sixty-five Google calls temporarily closed, which are
+  -- ranked below every open place however well they score. Not in the export —
+  -- ranked() in tools/googlevenues.mjs works it out from `rating` and
+  -- `reviews`, and db/google-venues.sql carries the answer per row.
+  --
+  -- It sits with `missing_since` rather than up with `rating` because it
+  -- arrived after the table was deployed, and ALTER TABLE ADD COLUMN appends:
+  -- this file lists the columns in the order the live table actually has them.
+  -- It belongs to Google's half all the same, and every refresh overwrites it,
+  -- because a position worked out from last month's numbers is worse than no
+  -- position at all.
+  --
+  -- The same arithmetic and the same prior as "Best overall" in
+  -- assets/venues.js, so the number printed on a card and the order the cards
+  -- are in cannot disagree. NULL where a row carries no rating or no review
+  -- count, and /api/venues then sends no rank and the card prints none.
+  --
+  -- On a database created before this column existed:
+  --   ALTER TABLE google_venues ADD COLUMN rank INTEGER;
+  -- CREATE TABLE IF NOT EXISTS will not add it, and nothing in CI applies
+  -- either. /api/venues reads the column once per isolate and drops it from
+  -- its SELECT if it is not there, so the directory keeps working in the
+  -- afternoon between the deploy and somebody running that line.
+  rank INTEGER
 );
 
 -- Best-first, which is the order the export itself is sorted in and the order
