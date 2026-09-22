@@ -476,6 +476,28 @@ CREATE TABLE IF NOT EXISTS list_items (
   -- the order.
   pos        INTEGER NOT NULL,
   created_at INTEGER NOT NULL,
+  -- The one dish its owner says is worth ordering there. Optional, and one
+  -- string rather than a second table: this is a personal recommendation,
+  -- not a menu, and a list already carries the sentence beside it in `say`.
+  -- '' is nobody having said, and the page draws nothing rather than a label
+  -- with nothing under it — the same shape `say` itself uses.
+  --
+  -- LAST, BECAUSE THAT IS WHERE ALTER TABLE PUTS IT
+  --
+  -- list_items predates this column on both deployed databases, so it
+  -- reaches them by hand and SQLite appends:
+  --
+  --   ALTER TABLE list_items ADD COLUMN must_order TEXT NOT NULL DEFAULT '';
+  --
+  -- The order here is the order the deployed table has. Every read and write
+  -- survives its absence rather than assuming the ALTER has been run:
+  -- readingMustOrder() in functions/api/_lists.js asks for it once per
+  -- isolate and remembers the answer, the same shape readingPins() in
+  -- functions/api/_pins.js uses for lists.pin — so a deploy that lands
+  -- before the ALTER draws a list with no must-order lines instead of a 500,
+  -- and a note typed in that window is silently not stored rather than
+  -- toasted as an error.
+  must_order TEXT    NOT NULL DEFAULT '',
   -- One place appears on one list once. Pressing add twice is the conflict
   -- clause and not a second row, the same way a save is.
   PRIMARY KEY (list_id, place_id)

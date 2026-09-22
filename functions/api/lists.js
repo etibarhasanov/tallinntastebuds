@@ -66,7 +66,7 @@
 import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDatabase, nearTallinn } from './_lib.js';
 /* Reading one list is shared with functions/list/[id].js, which serves the
    page a link opens with the list already in it. */
-import { readList, LIST_ID } from './_lists.js';
+import { readList, LIST_ID, readingMustOrder } from './_lists.js';
 /* Every public list, most opened first — shared with functions/lists/index.js,
    which seeds the first page into the document it serves. */
 import { mostKept, sortOf } from './_mostkept.js';
@@ -117,6 +117,11 @@ const MAX_ADDRESS = 120;
 export const MAX_TITLE = 60;
 export const MAX_INTRO = 200;
 export const MAX_SAY = 280;
+/* Held to the same length as MAX_SAY, on purpose: it is a line about one
+   dish rather than a paragraph, but nothing here enforces "short" beyond
+   what the page's own box does, and there is no argument for a second
+   number when the reasoning behind this one already fits. */
+export const MAX_MUST_ORDER = 280;
 
 /* The share code's random half. No vowels, so it cannot spell anything; no
    0/o/1/l, so it survives being read off a phone screen and typed. */
@@ -379,6 +384,7 @@ export async function onRequestPost(context) {
   if (action === 'delete') return remove(context, id);
   if (action === 'add')    return add(context, body, id);
   if (action === 'say')    return say(context, body, id);
+  if (action === 'mustOrder') return mustOrder(context, body, id);
   if (action === 'drop')   return drop(context, body, id);
   if (action === 'order')  return order(context, body, id);
 
@@ -797,6 +803,34 @@ async function say(context, body, id) {
       .bind(words(body.say, MAX_SAY), id, place),
     env.DB.prepare('UPDATE lists SET updated_at = ? WHERE id = ?').bind(now, id)
   ]);
+  return json({ place: place }, 200);
+}
+
+/* The one dish they say is worth ordering. Its own action rather than a
+   second field on say(), because it is edited in its own box on the page and
+   queued under its own key — see mustOrderField() in assets/lists.js — and
+   folding the two into one call would mean every keystroke in either box
+   sent the other's value along with it, stale until that box was also
+   touched.
+
+   Goes through readingMustOrder() the way the read does: on a database the
+   ALTER has not reached yet this is a no-op rather than a 503, the same
+   choice edit() makes for a pin typed in that same window. */
+async function mustOrder(context, body, id) {
+  const { env } = context;
+  const place = typeof body.place === 'string' ? body.place : '';
+  if (!place) return json({ error: 'place' }, 400);
+
+  const now = Date.now();
+  await readingMustOrder(env, (has) => {
+    if (!has) return Promise.resolve(null);
+    return env.DB.batch([
+      env.DB
+        .prepare('UPDATE list_items SET must_order = ? WHERE list_id = ? AND place_id = ?')
+        .bind(words(body.mustOrder, MAX_MUST_ORDER), id, place),
+      env.DB.prepare('UPDATE lists SET updated_at = ? WHERE id = ?').bind(now, id)
+    ]);
+  });
   return json({ place: place }, 200);
 }
 

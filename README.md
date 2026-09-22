@@ -4269,6 +4269,20 @@ Each row has a box to say what is good about it, which is the point of the
 whole feature — a list of names is a search result, and a list of names with a
 line each is somebody telling you where to go.
 
+Under that box is a second one, optional and shorter: what to order there —
+one dish, in the owner's own words. It is `list_items.must_order` in the
+database, saved the same way the note is — typed, held until Save, sent as
+its own write (`action: 'mustOrder'` against `/api/lists`, in
+`functions/api/lists.js`) so a keystroke in one box never carries the other
+box's value along with it. A list reads it under the note, labelled, and only
+when there is one — no line printed for a place nobody named a dish for. It
+reaches a deployed database by hand, the way `lists.pin` does:
+`readingMustOrder()` in `functions/api/_lists.js` asks for the column once
+per isolate and remembers whether it is there, so a deploy that lands before
+the `ALTER TABLE` draws a list with no must-order lines rather than a 500, and
+a dish typed in that window is quietly not stored rather than answered as a
+failure.
+
 The order is the point of a top ten, so a row is carried to where it belongs.
 Press the grip — or anywhere on the row that is not the note box or a link —
 and drag it with a mouse; on a phone, hold a row for a moment and then carry it

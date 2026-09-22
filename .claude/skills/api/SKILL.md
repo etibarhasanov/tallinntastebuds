@@ -204,8 +204,9 @@ never `DELETE` or `UPDATE` without a `WHERE`. There is no backup of either
 database in this repository; D1 Time Travel's 30 days is the only recovery.
 
 **Caps live in two places** and the server is the one that binds. `MAX_TITLE
-60`, `MAX_INTRO 200`, `MAX_SAY 280`, `MAX_ITEMS 50` in `lists.js` are restated
-in `assets/lists.js`, and `MAX_TITLE` a third time in `assets/account.js`,
+60`, `MAX_INTRO 200`, `MAX_SAY 280`, `MAX_MUST_ORDER 280`, `MAX_ITEMS 50` in
+`lists.js` are restated in `assets/lists.js`, and `MAX_TITLE` a third time in
+`assets/account.js`,
 which carries the box that names a new list; `MAX_ABOUT 200` in `account.js`
 is restated in `assets/account.js`, which carries the only box that writes it;
 the three handle patterns in `NETWORKS` in `_profile.js` are restated in the

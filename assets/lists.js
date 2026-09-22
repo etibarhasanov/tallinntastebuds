@@ -83,6 +83,7 @@
   var MAX_TITLE = 60;
   var MAX_INTRO = 200;
   var MAX_SAY = 280;
+  var MAX_MUST_ORDER = 280;
   var MAX_ITEMS = 50;
 
   /* The other end of the same judgement. Two places is a pair of opinions
@@ -2632,8 +2633,23 @@
         placeName(item, door),
         item.address ? el('p', { className: 'item-address mono', textContent: item.address }) : null,
         sourceLine(item),
-        item.say ? el('p', { className: 'item-say', textContent: item.say }) : null
+        item.say ? el('p', { className: 'item-say', textContent: item.say }) : null,
+        mustOrderLine(item)
       ])
+    ]);
+  }
+
+  /* What its owner says is worth ordering, drawn under the note and only
+     when there is one — no label over an empty line, the same rule item-say
+     follows. Its own element rather than folded into item-say's paragraph,
+     because a list read by a stranger should be able to style "the one
+     dish" differently from "what is good about it" without the two being
+     glued into one string on the server. */
+  function mustOrderLine(item) {
+    if (!item.mustOrder) return null;
+    return el('p', { className: 'item-must-order' }, [
+      el('span', { className: 'item-must-order-label', textContent: t('listsMustOrder') }),
+      el('span', { textContent: item.mustOrder })
     ]);
   }
 
@@ -2647,6 +2663,16 @@
     });
     say.value = item.say || '';
     sayField(say, item);
+
+    var mustOrder = el('input', {
+      type: 'text',
+      className: 'item-input',
+      maxlength: String(MAX_MUST_ORDER),
+      'aria-label': t('listsMustOrder'),
+      placeholder: t('listsMustOrderHint')
+    });
+    mustOrder.value = item.mustOrder || '';
+    mustOrderField(mustOrder, item);
 
     /* Two controls where there used to be three: the row is carried to where
        it belongs rather than clicked up to it one place at a time. The grip is
@@ -2665,7 +2691,8 @@
         placeName(item),
         item.address ? el('p', { className: 'item-address mono', textContent: item.address }) : null,
         sourceLine(item),
-        say
+        say,
+        mustOrder
       ]),
       moves
     ]);
@@ -2856,6 +2883,23 @@
       return function (leaving) {
         sent[key] = next;
         return deliver({ action: 'say', id: state.list.id, place: item.place, say: next }, leaving);
+      };
+    });
+  }
+
+  /* The one dish worth ordering, on your own list: the same shape sayField()
+     is, its own queue key so typing in one box never sends the other box's
+     stale value along with it. */
+  function mustOrderField(node, item) {
+    var key = 'mustOrder:' + item.place;
+    firstSeen(key, item.mustOrder || '');
+    typedField(key, node, function (value) {
+      var next = value.trim().slice(0, MAX_MUST_ORDER);
+      item.mustOrder = next;
+      if (next === sent[key]) return null;
+      return function (leaving) {
+        sent[key] = next;
+        return deliver({ action: 'mustOrder', id: state.list.id, place: item.place, mustOrder: next }, leaving);
       };
     });
   }
