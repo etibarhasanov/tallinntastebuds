@@ -396,31 +396,37 @@ it, and what was driven in a browser to check it.
   page is there to be read before the line under it is replaced.
 - A `t()` key that the scanner cannot see, so the validator passes and a
   visitor reads the key off the page.
-- **A third-party player framed at a URL this repo builds by hand, and then
-  reasoned about instead of watched.** The Instagram reel is the worked example
-  and it went wrong twice, in opposite directions, over five weeks.
+- **A third-party player framed at a URL this repo builds by hand.** The
+  Instagram reel is the worked example, and it is here because the same mistake
+  was made three times over five weeks, each time by a session that could see
+  the code and not the result.
 
-  One place came up with Instagram's "the link may be broken, or the post may
-  have been removed". From that, two things were inferred: that `/reel/…/embed/`
-  has no player behind it, and that `/p/…` — what `embed.js` normalises to — is
-  the only framable kind. Every place on the map was rewritten to `/p/`. The one
-  broken place stayed broken and every working one stopped playing, because
-  `/p/<shortcode>/embed/` answers a reel with its cover frame and a play button
-  that is a link out. Then the query `embed.js` sends was added on top, on the
-  same kind of reasoning, and changed nothing, because the path underneath was
-  the fault. Only the owner's phone settled it: framed at the kind the permalink
-  was written with, a reel plays.
+  The player had been built by Instagram's `embed.js`. It was replaced with a
+  plain iframe at `/p/<shortcode>/embed/`, on the reasoning that this is the
+  frame embed.js would have built and the script was therefore dead weight. It
+  is not the same frame: Instagram answers an embed either with an inline
+  player or with a card offering **View profile** and **View on Instagram**,
+  and which one you get does not follow from the address. Three passes tried to
+  reason out the right URL — the kind the permalink was written with, forcing
+  `/p/`, adding the query embed.js sends — and all three shipped and all three
+  failed. What fixed it was giving the URL back to embed.js, which is the only
+  party involved that can see what it is asking for.
 
-  Three things to take from it. **"It renders" is no evidence that it plays** —
-  an embed's logged-out shape is a picture of the working one, complete with a
-  play triangle, and it will sit there for weeks. **One broken place is a data
-  problem, not a code problem**: fix that permalink in `data/restaurants.json`
-  rather than rewriting everybody's URL to suit the exception. And **nothing in
-  this repo can check any of it** — the validator sees that our links are well
-  formed, never that the other end still serves them, and no session working
-  here has ever had a network route to `instagram.com`. So a change to that URL
-  is worth nothing until somebody has pressed play on a phone: say in the PR
-  that it could not be driven, and ask.
+  What to take from it:
+
+  - **"It renders" is not evidence that it plays.** The broken state was a
+    cover frame with a play triangle on it — a picture of a working player.
+    Nothing looked wrong for five weeks.
+  - **A provider's loader is not dead weight.** It encodes what the provider
+    will serve, which is not documented and not guessable. Replacing one with
+    a URL means reading that URL off a working embed in a browser, and there
+    is no session here that can do that.
+  - **Nothing in this repo can check it.** The validator sees that our links
+    are well formed, never that the other end still serves them, and no
+    session working here has ever had a network route to `instagram.com`. So
+    say in the PR that it could not be driven, say exactly what somebody has
+    to press to find out, and ask — rather than describing the reasoning as
+    though it were a result.
 - **A `.lists-seg` whose `is-on` class does not move.** The radio inside
   `.lists-seg-opt` is one transparent pixel — deliberately, so the keyboard
   and the screen reader get a real radio — which means the browser checking it

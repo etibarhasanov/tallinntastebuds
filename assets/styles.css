@@ -2659,21 +2659,25 @@ body.panel-detail .panel {
 
 /* reel */
 
-/* The player is the reason a profile gets opened, so it is given every pixel
-   the panel has: the frame bleeds out through the panel's padding to the card
-   edges, the way the search box and the group headings do. That is 52px more
-   picture on a desktop and the full width of the screen on a phone, and since
-   the frame keeps its ratio, a wider frame is a taller one too — the reel
-   gains in both directions rather than sitting in a letterbox.
+/* TikTok's player is a plain iframe of ours, so the frame it sits in is ours
+   to shape: it bleeds out through the panel's padding to the card edges, the
+   way the search box and the group headings do — 52px more picture on a
+   desktop, the full width of the screen on a phone — and since it keeps its
+   ratio, a wider frame is a taller one too.
 
    Height comes from the ratio, never from the iframe: a cross-origin frame
-   cannot be asked how tall it is, and a frame left to size itself collapses
-   to 150px. Instagram opens at the shape of a reel and is then corrected to
-   the exact one by the measurement it posts out (see wireReelMeasure); TikTok
-   publishes at a fixed shape and needs no correcting. */
+   cannot be asked how tall it is, and one left to size itself collapses to
+   150px. TikTok publishes at a fixed shape, so the ratio is exact.
+
+   Instagram has no rule here any more. embed.js builds and sizes its own
+   player from the blockquote below, which is the only way anybody here has
+   got a reel to play — see embedInstagram() in app.js. What it does not do is
+   bleed to the card edges, and it measures itself when it runs, which in a
+   panel still sliding in comes out short and clips the bottom of a tall reel.
+   Both are worth fixing and neither is worth losing the player over. */
 .reel-frame {
   margin-inline: calc(var(--panel-pad) * -1);
-  aspect-ratio: var(--reel-ratio, 9 / 19);
+  aspect-ratio: var(--reel-ratio, 325 / 739);
   border-block: 1px solid var(--hairline);
   overflow: hidden;
   background: var(--wash);
@@ -2682,11 +2686,9 @@ body.panel-detail .panel {
 
 /* 325x739 is the ratio TikTok's own embed code uses. */
 .reel-frame.is-tiktok { --reel-ratio: 325 / 739; }
-/* 9:16 of video, and about 120px of Instagram's own chrome above and below it
-   at the width the panel gives — the shape a reel embed lands on. It stands
-   until Instagram posts the real number, and a frame slightly too tall shows
-   a band of card at the bottom, where slightly too short would cut the video. */
-.reel-frame.is-instagram { --reel-ratio: 9 / 19; }
+
+/* embed.js writes its own margins onto the blockquote it takes over. */
+.reel-embed blockquote.instagram-media { margin: 0 !important; min-width: 0 !important; }
 
 .reel-fallback { margin-top: 10px; font-size: 12.5px; color: var(--muted); }
 
@@ -4918,7 +4920,8 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   .list-label { position: static; margin-inline: 0; padding-inline: 0; }
   /* A player prints as a blank box the height of a reel, and on paper the
      panel has no padding for it to bleed through either. The link to the
-     post underneath it is the part worth printing. */
-  .reel-frame { display: none; }
+     post underneath it is the part worth printing. Both players go: TikTok's
+     frame, and whatever embed.js has turned the blockquote into. */
+  .reel-frame, .reel-embed blockquote.instagram-media, .reel-embed iframe { display: none; }
   .search { display: none; }
 }
