@@ -69,5 +69,15 @@
       "en": "guilty pleasure"
     },
     "spot": "kotkot"
+  },
+  {
+    "id": "dvin-2026-09-22",
+    "live": true,
+    "photo": "dvin-2026-09-22.jpg",
+    "from": "2026-09-22T20:45",
+    "caption": {
+      "en": "dvin menu"
+    },
+    "spot": "dvin"
   }
 ]
