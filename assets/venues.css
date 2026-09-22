@@ -397,6 +397,16 @@
   font-family: var(--mono);
   font-size: 13px;
 }
+/* The first thing on the row and the only number on a card that is about the
+   whole city rather than about this place, so it is the one that carries the
+   accent. Tabular figures because these sit in a column down the page and #7
+   and #1,043 have to start at the same x; the row is already --mono, which
+   has them, and the declaration is for the fallback stacks that do not. */
+.venue-rank {
+  font-weight: 600;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
 .venue-score { font-weight: 500; }
 .venue-star { color: var(--accent); }
 .venue-reviews { color: var(--muted); }

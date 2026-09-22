@@ -52,11 +52,19 @@
  *
  *   overwritten   name, category, cuisine, rating, reviews, price, status,
  *                 address, postal_code, city, phone, website, opening_hours,
- *                 tags, latitude, longitude, maps_url
+ *                 tags, latitude, longitude, maps_url, rank
  *   never touched map_id, hidden, note, first_seen_at
  *
  * That split is the point. Hand-curation that a sync can erase is curation
  * you will do twice.
+ *
+ * THE ONE COLUMN GOOGLE DID NOT SEND
+ *
+ * `rank` is not in the export. It is this file's arithmetic on two columns
+ * that are — the rating weighed by the review count — and it is overwritten
+ * by every refresh for exactly that reason: it is a reading of Google's two
+ * numbers and never a judgement of anybody's. ranked() below is the whole of
+ * it, and the comment there is the argument.
  *
  * HOW A PLACE THAT LEFT THE EXPORT IS NOTICED
  *
@@ -160,6 +168,13 @@ const GOOGLE_COLUMNS = [
   'address', 'postal_code', 'city', 'phone', 'website', 'opening_hours',
   'tags', 'latitude', 'longitude', 'maps_url'
 ];
+
+/* Not in the export, worked out here from two columns that are: where this
+   place stands among all of them once Google's rating is weighed by Google's
+   review count. See ranked(). It travels with Google's columns rather than
+   with mine because a refresh must overwrite it — a rank left over from last
+   month's numbers is worse than no rank at all. */
+const DERIVED = ['rank'];
 
 /* The two that are numbers in SQL and text in a CSV. Everything else is text,
    including price ("$$") and postal_code, which has leading zeroes to lose. */
@@ -297,14 +312,109 @@ export function overlaps(places) {
   return found;
 }
 
+/* ------------------------------------------------------------------- rank */
+
+/* How many reviews a place needs before its own rating counts for half. The
+   same hundred assets/venues.js weighs "Best overall" with, and deliberately
+   not the three hundred tools/googlelists.mjs uses: the top tens single out
+   ten names for the whole city and want a heavy thumb on a small count, while
+   this is a position on every row of a directory somebody is already reading
+   Google's numbers off. It has to be the page's constant, because the page
+   sorts by its own arithmetic and prints this column beside it — two priors
+   would put the ranks out of order on the order they are shown in. */
+const RANK_PRIOR = 100;
+
+/* Where each place stands in the whole export, written onto the rows.
+ *
+ * WHY THE ORDER IS NOT THE RATING
+ *
+ * Nineteen rows in the export are a flat 5.0 and none of them has more than a
+ * hundred and fifty reviews. Ranked on the rating alone, "the best place in
+ * Tallinn" is a tea shop thirty-four people liked, sitting above a restaurant
+ * six and a half thousand people rated 4.8 — and the tie-break on the count
+ * never gets a say, because the ratings are not tied.
+ *
+ * So this is the Bayesian average, the arithmetic IMDb's top list has used for
+ * years and the one already on this site in two places — weigh() in
+ * assets/venues.js and tools/googlelists.mjs:
+ *
+ *     (n / (n + PRIOR)) * rating  +  (PRIOR / (n + PRIOR)) * mean
+ *
+ * `mean` is the export's own review-weighted mean — 4.39 as it stands — so it
+ * tracks the next refresh rather than being a number that was true the year
+ * somebody typed it. Every rating is pulled towards it by a weight that fades
+ * as the count grows: thirty reviews at 5.0 comes out around 4.53, the top
+ * half rather than the top, and 4.8 from six thousand stays 4.79.
+ *
+ * IT IS THE SAME ORDER /google ALREADY OPENS ON
+ *
+ * That page weighs the whole roll in the browser and sorts by it, so the rank
+ * this column carries and the order the cards are in have to agree or the
+ * first screen counts 1, 2, 4, 3. Three things therefore match assets/venues.js
+ * exactly and are not free to drift: the constant above, the mean taken over
+ * every rated row including the closed ones, and closed places sorted below
+ * every open one however well they score — a directory that put somewhere shut
+ * for good at the top of the city would have somebody walking to it to find
+ * out. Ties go to the bigger review count, and then to the key, which the page
+ * has no need of and this file does: a generated file has to come out the same
+ * every run or --check reports a change nobody made.
+ *
+ * A row Google gave no rating or no review count for is not ranked at all and
+ * its column stays NULL — there is no honest place to put it among the rows it
+ * did give numbers for, and both the route and the card already draw nothing
+ * where the rank is absent. All 1,110 carry both today, so the ranks run 1 to
+ * 1,110 with no gaps and the page's "of 1,110" is exact.
+ */
+function ranked(places) {
+  /* read() hands every cell over as a trimmed string and Number('') is 0
+     rather than NaN, so the empty test has to come before the finite one.
+     Without it a place Google rated nothing would arrive as 0.0 from 0
+     reviews, score exactly the mean, and sit in the middle of the city. */
+  const rated = places.filter((place) =>
+    place.rating !== '' && place.reviews !== '' &&
+    Number.isFinite(Number(place.rating)) && Number.isFinite(Number(place.reviews))
+  );
+
+  let stars = 0;
+  let votes = 0;
+  for (const place of rated) {
+    stars += Number(place.rating) * Number(place.reviews);
+    votes += Number(place.reviews);
+  }
+  const mean = votes ? stars / votes : 0;
+
+  const scores = new Map();
+
+  rated
+    .map((place) => {
+      const n = Number(place.reviews);
+      return {
+        place_id: place.place_id,
+        reviews: n,
+        closed: place.status === 'Temporarily closed',
+        score: (n * Number(place.rating) + RANK_PRIOR * mean) / (n + RANK_PRIOR)
+      };
+    })
+    .sort((a, b) => {
+      if (a.closed !== b.closed) return a.closed ? 1 : -1;
+      return b.score - a.score || b.reviews - a.reviews ||
+        (a.place_id < b.place_id ? -1 : a.place_id > b.place_id ? 1 : 0);
+    })
+    .forEach((place, i) => { scores.set(place.place_id, i + 1); });
+
+  return scores;
+}
+
 /* -------------------------------------------------------------------- write */
 
 export function build() {
   const places = read();
   const matched = overlaps(places);
+  const ranks = ranked(places);
 
-  const cols = ['place_id', ...GOOGLE_COLUMNS];
-  const setters = GOOGLE_COLUMNS.map((c) => `    ${c} = excluded.${c}`).join(',\n');
+  const cols = ['place_id', ...GOOGLE_COLUMNS, ...DERIVED];
+  const setters = [...GOOGLE_COLUMNS, ...DERIVED]
+    .map((c) => `    ${c} = excluded.${c}`).join(',\n');
 
   /* One entry per statement, and no comments between them — see the header
      for why. The file is these joined with a blank line. */
@@ -321,9 +431,18 @@ export function build() {
   for (let i = 0; i < places.length; i += BATCH) {
     const chunk = places.slice(i, i + BATCH);
     const rows = chunk.map((place) => {
-      const values = cols.map((c) =>
-        c === 'place_id' ? q(place[c]) : (NUMERIC.has(c) ? num(place[c]) : q(place[c]))
-      );
+      const values = cols.map((c) => {
+        if (c === 'place_id') return q(place[c]);
+        /* The one column that is not a cell of the CSV, so it does not go
+           through num(): that one reads a string out of the export and an
+           empty cell comes back 0 rather than NULL, which is right for a
+           coordinate nobody sent and wrong for a position nobody holds. */
+        if (c === 'rank') {
+          const at = ranks.get(place.place_id);
+          return Number.isFinite(at) ? String(at) : 'NULL';
+        }
+        return NUMERIC.has(c) ? num(place[c]) : q(place[c]);
+      });
       return `  (${values.join(', ')}, ${NOW}, ${NOW})`;
     });
 
@@ -355,7 +474,13 @@ export function build() {
     );
   }
 
-  return { sql: out.join('\n\n') + '\n', statements: out, places: places, matched: matched };
+  return {
+    sql: out.join('\n\n') + '\n',
+    statements: out,
+    places: places,
+    matched: matched,
+    ranks: ranks
+  };
 }
 
 /* The file, cut at statement boundaries into pieces the console will take in

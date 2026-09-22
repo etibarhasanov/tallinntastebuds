@@ -10,8 +10,9 @@ Being on the map is the verdict.
 A number does appear on Google's places — the ones off the Places export that
 are not on my map — and every time it does it says whose it is: "According to
 Google 4.8 from 3,041 reviews". The one page where those numbers can be sorted
-by is `/google`, which is Google's directory of the city rather than mine,
-which nothing links to. See **On "no scores, stars or rankings"** and **The
+by, and where each row also says where the two of them together put it among
+all eleven hundred, is `/google`, which is Google's directory of the city
+rather than mine, which nothing links to. See **On "no scores, stars or rankings"** and **The
 directory**.
 
 Static files, one small Function, no build step and no npm install. Adding a
@@ -2179,7 +2180,9 @@ Your own lists are in the order you last edited them and the ones you kept
 are in the order you kept them.
 
 A place off the Google export is the one thing on this site with a number out
-of five next to it, and it is the exception that says what the rule is. It is
+of five next to it — and, since the directory started printing where the
+weighing puts each row, a position as well. It is the exception that says what
+the rule is. It is
 not on my map; it has no write-up, because nobody here has eaten there; and the
 number is printed with "According to Google" in front of it, in the same line
 and the same breath. The rule is that **this site does not rate anything** —
@@ -2212,6 +2215,33 @@ is drawn, and sorting a mirror by the number written on it is a way of reading
 Google's opinion rather than a way of stating one. Refusing to sort it would
 not be principled either; it would just make Google's directory harder to use
 without making it any less Google's.
+
+**And on printing the position, which `/google` now does.** Every card there
+opens with **#1**, **#15**, **#1,110** — see **Where a place stands** under
+**The directory** — and that is a further step than sorting, so it is worth
+saying where it lands rather than letting it ride on the paragraph above.
+
+Sorting leaves the reader to notice that this place came before that one.
+Printing the number says it out loud, and a sentence said out loud is easier to
+mistake for mine. Three things keep it Google's. It appears on `/google` and
+**nowhere else** — not on the map, not on a list row, not in the picker, not on
+the card the map draws for a place off this export — so it never travels to a
+page that carries my opinion. It is arithmetic on two numbers the same card is
+already printing under Google's name, in a directory whose first paragraph says
+whose numbers those are before anything is drawn, and hovering it says "by
+Google's rating and review count" in so many words. And the sixty-odd rows here
+that are also on my map get the same treatment as the other thousand — a rank
+off Google's numbers, beside a door to a write-up that still carries no score of
+any kind. The rank is a fact about Google's directory; the write-up on the other
+side of that link is mine, and it has nothing but sentences in it.
+
+The line that has not moved: **no place of mine is scored or ranked**. The map
+draws seventy-five pins the same size in no order but distance, and the day one
+of them carries a position is the day this section needs writing again rather
+than extending. What changed here is that a mirror is now legible as well as
+sortable, which is a smaller thing than it looks and a bigger one than nothing,
+and it is written down for the next person who reads line 7 of this file and
+finds a **#1** on a card.
 
 **And on ordering by distance, which the map's own list does.** The list used
 to be alphabetical and is nearest first now — see **The list is ordered by
@@ -3582,7 +3612,17 @@ The columns split in two, and the split is the point:
 | | |
 |---|---|
 | **Google's** — `name`, `category`, `cuisine`, `rating`, `reviews`, `price`, `status`, `address`, `postal_code`, `city`, `phone`, `website`, `opening_hours`, `tags`, `latitude`, `longitude`, `maps_url` | overwritten by every refresh, without asking |
+| **Derived from Google's** — `rank` | the same, and for the same reason |
 | **Mine** — `map_id`, `hidden`, `note` | never touched by a refresh |
+
+`rank` is the one column Google did not send. It is where a place stands among
+all 1,110 once Google's rating is weighed by Google's review count — `ranked()`
+in `tools/googlevenues.mjs`, the same arithmetic and the same prior as the
+directory's **Best overall** — and it is in the first group rather than the
+third because it is a reading of two of Google's numbers and nothing of mine.
+A refresh overwrites it for the same reason it overwrites them: a position
+worked out from last month's counts is worse than no position at all. See
+**Where a place stands** under **The directory**.
 
 So do not hand-edit Google's columns: the correction would survive exactly
 until the next sync and then vanish, which is the worst way to lose an
@@ -3605,10 +3645,11 @@ places are worth promoting onto the map.
 
 Two things sort by them, and neither is a ranking of anything this site
 vouches for. `/google` is a directory of Google's rows, in Google's order, and
-it says so — see **The directory**. And five lists, under an account called
-`google-statistics`, are Google's top tens, with Google's name in the title
-and Google's numbers under every row — see **The five lists Google wrote**,
-below.
+it says so — see **The directory**; it also prints where that order puts each
+row, which `rank` carries and **Where a place stands** argues for. And five
+lists, under an account called `google-statistics`, are Google's top tens, with
+Google's name in the title and Google's numbers under every row — see **The
+five lists Google wrote**, below.
 
 ### Re-running it is safe
 
@@ -3816,9 +3857,11 @@ data/cuisines.json     37 cuisine labels in ten languages
 
 ### What it shows
 
-A card per place: the name, Google's rating and review count, the price band as
-the map's own four-euro gauge, what it cooks, whether it is open right now, the
-street, and a row of links — Call, Website, Directions, Open in Google Maps.
+A card per place: the name, where Google's two numbers put it among all 1,110
+— see **Where a place stands** — Google's rating and review count, the price
+band as the map's own four-euro gauge, what it cooks, whether it is open right
+now, the street, and a row of links — Call, Website, Directions, Open in Google
+Maps.
 Sixty of them carry one more, **On the map**, which is the door to a
 write-up: those are the places that are on `data/restaurants.json` as well, and
 on this page that is the rarest and most interesting thing a row can say.
@@ -3869,11 +3912,61 @@ Both orders are offered because they answer different questions. Highest
 rated is Google's number, plainly, and somebody who wants exactly that should
 get exactly that. Best overall is that number read with the count beside it,
 which is what a person does in their head when they see "5.0 from 34
-reviews" — and the score itself is never printed. Every card still shows
-Google's rating and Google's count; the weighting only decides who stands
-above whom, so the page publishes nothing Google did not say. The
-**Rating** filter is on the raw rating, not the weighted one, because "4.5 and
-up" is a statement about the number on the card.
+reviews". The **Rating** filter is on the raw rating, not the weighted one,
+because "4.5 and up" is a statement about the number on the card.
+
+The *score* is still never printed — 4.871 is an artefact of the arithmetic and
+means nothing to anybody. The **position** it puts a place in is, and that is
+the next section.
+
+### Where a place stands
+
+Every card opens with a rank: **#1** on PullaBakery, **#1,110** on the
+worst-scoring of the sixty-five places Google says are shut for good. It is the
+position the Bayesian average above puts the place in across the whole export,
+and hovering it gives the sentence in full — *#1 of 1,110 in Tallinn, by
+Google's rating and review count* — in the reader's own language, the way
+`.venue-score` beside it already hands over "Google rates this 4.9 out of 5".
+
+**It is a column, not a sum done in the browser.** `rank` lives on
+`google_venues`, `ranked()` in `tools/googlevenues.mjs` writes it, and
+`/api/venues` sends it. The page could have worked it out — it already weighs
+the whole roll to sort it — but then the number would be a property of whatever
+the page happened to have loaded, and the map's card for a place off somebody's
+list, which fetches one row, could never carry it. A position in a directory is
+a fact about the directory, so it is stored where the directory is.
+
+**Which means one constant is load-bearing in two files.** `RANK_PRIOR` in the
+tool is 100, exactly the `PRIOR` in `weigh()` in `assets/venues.js`, and not
+the 300 `tools/googlelists.mjs` uses for the top tens. The page sorts by its
+own arithmetic and prints this column beside it: two priors would have the
+first screen counting 1, 2, 4, 3, which reads as a bug and is one. The mean
+over every rated row including the closed ones, and closed places ranked below
+every open one however well they score, match `assets/venues.js` for the same
+reason. Under **Highest rated** the numbers are deliberately out of order —
+Morii Tea House is 5.0 from 165 reviews and stands #15 — and that disagreement
+is the whole argument for having both orders, made visible on the card.
+
+**The total is the roll the reader is looking at**, not a constant: the page
+counts what `/api/venues` handed it, so a row switched off with `hidden` or
+dropped by a refresh takes itself out of the "of 1,110" without anybody editing
+a sentence.
+
+**And it needs an `ALTER`.** `db/schema.sql` is `CREATE TABLE IF NOT EXISTS`,
+so a database that already has this table does not get the column from re-running
+it. `/api/venues` asks for `rank` once per isolate and drops it from the SELECT
+on "no such column", which is `readingPins()`'s arrangement in
+`functions/api/_pins.js`: without that, the afternoon between the deploy and
+somebody running the `ALTER` is a directory that 503s and reads as a city with
+no restaurants in it.
+
+```sql
+ALTER TABLE google_venues ADD COLUMN rank INTEGER;
+```
+
+**Why this does not break the rule the site is built on.** See **On "no scores,
+stars or rankings"**, which is where the argument belongs and where it is
+made.
 
 All of it is in the address bar, so a narrowed directory is a link somebody
 can send.

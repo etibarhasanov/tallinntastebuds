@@ -19,10 +19,11 @@
  *                 picker row needs — name, address, pin.
  *
  *   /api/venues   Google's description of Tallinn, whole and unmerged. The
- *                 rating, the review count, the price band, the phone, the
- *                 website and the week's opening hours, for all 1,110 rows at
- *                 once — which is what a directory filters and sorts on, and
- *                 what the picker deliberately leaves behind.
+ *                 rating, the review count, where the two of them together put
+ *                 the place among all eleven hundred, the price band, the
+ *                 phone, the website and the week's opening hours, for all
+ *                 1,110 rows at once — which is what a directory filters and
+ *                 sorts on, and what the picker deliberately leaves behind.
  *
  * venuesByIds() in _lib.js hands the map that same contact half for a place on
  * somebody's list, a handful of rows at a time. This is the other shape of the
@@ -223,6 +224,12 @@ function entry(row) {
   if (where) out.address = where;
   if (typeof row.rating === 'number') out.rating = row.rating;
   if (typeof row.reviews === 'number') out.reviews = row.reviews;
+  /* Where this place stands in the whole export once Google's rating is
+     weighed by Google's review count — db/schema.sql has the arithmetic and
+     ranked() in tools/googlevenues.mjs computes it. Absent on a database the
+     ALTER has not reached yet, and absent on a row Google gave no numbers
+     for; the page prints nothing either way. */
+  if (typeof row.rank === 'number') out.rank = row.rank;
   /* Google's "$" to "$$$$" as the map's band of four, which is the one place
      this conversion is needed — db/schema.sql keeps the string verbatim so the
      mirror does not store an opinion. */
@@ -255,6 +262,50 @@ function entry(row) {
   return out;
 }
 
+/* Whether google_venues has the `rank` column, remembered for the life of the
+   isolate. `undefined` until the first answer has been asked for.
+
+   db/schema.sql is CREATE TABLE IF NOT EXISTS and nothing in CI applies it, so
+   the column arrives by a hand-run ALTER on each database — and the code is
+   live the moment the branch lands, which is some minutes or some hours
+   before anybody runs it. A SELECT naming a column that is not there throws,
+   and this route has nothing to fall back on: the whole directory would be a
+   503 saying the city has no restaurants in it, over a number on a card.
+
+   So it is asked once and then known, which is readingPins()' arrangement in
+   _pins.js for the same reason. Only "no such column" is caught; a database
+   that is down is still a database that is down. */
+let ranks;
+
+function roll(env, withRank) {
+  return env.DB
+    .prepare(
+      'SELECT place_id, name, category, cuisine, tags, rating, reviews, price, status, ' +
+      'address, postal_code, city, phone, website, opening_hours, latitude, longitude, map_id' +
+      (withRank ? ', rank' : '') + ' ' +
+      'FROM google_venues ' +
+      /* hidden is the curation switch — a duplicate, or a car park Google
+         thinks is a restaurant. missing_since is a row the last sync no
+         longer carried, kept because a list may point at it but not
+         something to put in front of anybody as somewhere to go. */
+      'WHERE hidden = 0 AND missing_since IS NULL'
+    )
+    .all();
+}
+
+async function readingRanks(env) {
+  if (ranks === false) return roll(env, false);
+  try {
+    const out = await roll(env, true);
+    ranks = true;
+    return out;
+  } catch (e) {
+    if (!/no such column/i.test(String((e && e.message) || e))) throw e;
+    ranks = false;
+    return roll(env, false);
+  }
+}
+
 export async function onRequestGet(context) {
   const { env } = context;
 
@@ -267,18 +318,7 @@ export async function onRequestGet(context) {
 
   let results;
   try {
-    ({ results } = await env.DB
-      .prepare(
-        'SELECT place_id, name, category, cuisine, tags, rating, reviews, price, status, ' +
-        'address, postal_code, city, phone, website, opening_hours, latitude, longitude, map_id ' +
-        'FROM google_venues ' +
-        /* hidden is the curation switch — a duplicate, or a car park Google
-           thinks is a restaurant. missing_since is a row the last sync no
-           longer carried, kept because a list may point at it but not
-           something to put in front of anybody as somewhere to go. */
-        'WHERE hidden = 0 AND missing_since IS NULL'
-      )
-      .all());
+    ({ results } = await readingRanks(env));
   } catch (e) {
     return json({ error: 'venues' }, 503);
   }

@@ -16,7 +16,7 @@ the refresh is that running it again is safe. The pipeline is five files:
 
 ```
 exports/tallinn_restaurants.csv   the cleaned export, 18 columns, one line per row
-tools/googlevenues.mjs            turns it into SQL
+tools/googlevenues.mjs            turns it into SQL, and ranks the roll
 db/google-venues.sql              GENERATED — what actually loads them
 tools/googlelists.mjs             reads the same export and ranks it
 db/google-lists.sql               GENERATED — the five top tens under `google-statistics`
@@ -170,6 +170,18 @@ else runs.
   asking.** Do not hand-edit them: "hand-curation that a sync can erase is
   curation you will do twice". If a name is wrong and it matters, promote the
   place onto the map, where `data/restaurants.json` is hand-written.
+- **`rank` is the eighteenth, and it goes the same way.** Not in the CSV —
+  `ranked()` in `tools/googlevenues.mjs` works out where each place stands
+  among all of them once Google's rating is weighed by its review count, and
+  the SQL carries the answer per row. A refresh overwrites it, because a
+  position off last month's counts is worse than none. Its `RANK_PRIOR` is
+  **100, and must stay equal to `PRIOR` in `weigh()` in `assets/venues.js`**:
+  `/google` sorts by its own copy of that arithmetic and prints this column
+  beside it, so two priors make the first screen count 1, 2, 4, 3. It is
+  deliberately not the 300 `tools/googlelists.mjs` uses — that one singles out
+  ten names for the city and wants a heavier thumb on a small count.
+  **Where a place stands** under **The directory** in `README.md` is the
+  argument.
 - **`map_id`, `hidden`, `note` and `first_seen_at` are never touched.**
   `map_id` is set only when empty, from a match within 60 metres whose folded
   names contain one another, closest wins; a correction made by hand
@@ -182,8 +194,10 @@ else runs.
   sentence about it. Every upsert clears the mark again.
 - `rating` and `reviews` are Google's, shown attributed on Google's places
   and sorted by in two places only, both under Google's name: `/google`, and
-  the five lists `db/google-lists.sql` writes. Nothing on the map carries a
-  score.
+  the five lists `db/google-lists.sql` writes. `/google` also prints the
+  position that first sort puts a row in, out of `rank`, and it is the only
+  page that does — not the map, not a list row, not the picker. Nothing on
+  the map carries a score or a position.
 
 ## The commit
 
