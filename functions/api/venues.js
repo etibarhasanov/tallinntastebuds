@@ -5,8 +5,9 @@
  *
  * Every place in this city you can eat or drink in, out of `google_venues` —
  * the Google Places export mirrored into D1, eleven hundred and ten rows,
- * see db/schema.sql. It is what /google draws and the only thing that
- * asks for it.
+ * see db/schema.sql. It is what /google draws, and — a handful of rows at a
+ * time through `?ids=` below — where the map's find bar gets the contact half
+ * of a venue somebody has just looked up.
  *
  * WHY THIS IS NOT /api/places
  *
@@ -38,13 +39,32 @@
  *
  * ONE ANSWER, CACHED, AND THE PAGE DOES THE FILTERING
  *
- * No query parameters. The whole roll goes out in one response with five
- * minutes on it, exactly as /api/places does, and the page narrows it in the
- * browser. That is not laziness about SQL: the page draws a map of every match
- * beside the list, so it needs every matching pin whatever the filter says, and
- * "open now" is a question about a week of opening hours rather than something
- * a WHERE clause can answer. A filtered endpoint would mean a round trip per
- * keystroke to hand back most of the same rows.
+ * The whole roll goes out in one response with five minutes on it, exactly as
+ * /api/places does, and the page narrows it in the browser. That is not
+ * laziness about SQL: the page draws a map of every match beside the list, so
+ * it needs every matching pin whatever the filter says, and "open now" is a
+ * question about a week of opening hours rather than something a WHERE clause
+ * can answer. A filtered endpoint would mean a round trip per keystroke to
+ * hand back most of the same rows.
+ *
+ * ONE EXCEPTION, AND IT IS A HANDFUL OF ROWS AND NOT A FILTER
+ *
+ * `?ids=` names venues by their Google key, comma separated, and answers only
+ * those. It is not the filtered endpoint the paragraph above argues against:
+ * nothing searches with it, because a search that has to reach the database
+ * cannot fold Põhjala down to pohjala on the way — see the find bar in
+ * assets/app.js, which folds the roll behind /api/places in the browser for
+ * exactly that reason. This is the step after the search, when one venue has
+ * been picked and the map wants the half /api/places leaves behind: the phone,
+ * the website and the week.
+ *
+ * It answers rows in the shape above and not a second one — the same roll(),
+ * the same entry(), the same absent-means-absent rule, and the same `rank`
+ * probe — because a route that answers two shapes is a route every reader has
+ * to ask which it is holding. Fifty ids at most, which is venuesByIds()' cap
+ * in _lib.js written again here rather than borrowed: that helper builds the
+ * card the lists and the chat draw, and this route builds a directory row, so
+ * they share the ceiling and nothing else.
  *
  * EMPTY FIELDS ARE NOT SENT
  *
@@ -157,8 +177,6 @@ export const KITCHENS = [
   ['fine-dining',      /fine dining/]
 ];
 
-/* One row as the page draws it. See the note at the top about empty fields:
-   everything here is added only when there is something to add. */
 /* The three columns a kitchen is decided from, lowercased and kept apart.
  *
  * The pipe is load-bearing for exactly one pattern — `bar`, which has to know
@@ -209,6 +227,8 @@ export function kitchensOf(row) {
   return first.concat(rest);
 }
 
+/* One row as the page draws it. See the note at the top about empty fields:
+   everything here is added only when there is something to add. */
 function entry(row) {
   const where = [row.address, [row.postal_code, row.city].filter(Boolean).join(' ')]
     .map((part) => String(part || '').trim())
@@ -277,37 +297,66 @@ function entry(row) {
    that is down is still a database that is down. */
 let ranks;
 
-function roll(env, withRank) {
-  return env.DB
-    .prepare(
-      'SELECT place_id, name, category, cuisine, tags, rating, reviews, price, status, ' +
-      'address, postal_code, city, phone, website, opening_hours, latitude, longitude, map_id' +
-      (withRank ? ', rank' : '') + ' ' +
-      'FROM google_venues ' +
+/* One query builder for both answers this route gives, so the whole roll and
+   `?ids=` cannot drift into selecting different halves of the same row — and
+   so the rank probe above covers both rather than only the roll it was
+   written for. `ids` picks which rows: null is the directory, a list of
+   Google keys is the find bar asking after the one venue it has been used to
+   look up. */
+function roll(env, withRank, ids) {
+  const sql =
+    'SELECT place_id, name, category, cuisine, tags, rating, reviews, price, status, ' +
+    'address, postal_code, city, phone, website, opening_hours, latitude, longitude, map_id' +
+    (withRank ? ', rank' : '') + ' ' +
+    'FROM google_venues ' +
+    (ids
+      /* No hidden/missing clause on this half, and that is deliberate. It
+         answers a venue somebody has already been shown and has pressed;
+         dropping it here would be the map offering a row in the morning and
+         failing to dress it in the afternoon. The other half is what decides
+         which venues are offered at all. */
+      ? 'WHERE place_id IN (' + ids.map(() => '?').join(', ') + ')'
       /* hidden is the curation switch — a duplicate, or a car park Google
          thinks is a restaurant. missing_since is a row the last sync no
          longer carried, kept because a list may point at it but not
          something to put in front of anybody as somewhere to go. */
-      'WHERE hidden = 0 AND missing_since IS NULL'
-    )
-    .all();
+      : 'WHERE hidden = 0 AND missing_since IS NULL');
+
+  const statement = env.DB.prepare(sql);
+  return (ids ? statement.bind(...ids) : statement).all();
 }
 
-async function readingRanks(env) {
-  if (ranks === false) return roll(env, false);
+async function readingRanks(env, ids) {
+  if (ranks === false) return roll(env, false, ids);
   try {
-    const out = await roll(env, true);
+    const out = await roll(env, true, ids);
     ranks = true;
     return out;
   } catch (e) {
     if (!/no such column/i.test(String((e && e.message) || e))) throw e;
     ranks = false;
-    return roll(env, false);
+    return roll(env, false, ids);
   }
 }
 
+/* What `?ids=` is allowed to ask for. A Google key is letters, digits, hyphens
+   and underscores — 215 of the 1,110 carry one — so anything else in the list
+   is dropped rather than bound, and the whole parameter is worth at most fifty
+   rows. Deduplicated, because a page that asks for the same venue twice should
+   not be able to make the database say it twice. */
+function wantedIds(raw) {
+  const seen = new Set();
+  for (const part of String(raw || '').split(',')) {
+    const id = part.trim();
+    if (!id || id.length > 128 || !/^[A-Za-z0-9_-]+$/.test(id)) continue;
+    seen.add(id);
+    if (seen.size >= 50) break;
+  }
+  return [...seen];
+}
+
 export async function onRequestGet(context) {
-  const { env } = context;
+  const { env, request } = context;
 
   /* Nothing to fall back on here. The map's own places are a roll of
      seventy-five and this page is a directory of everywhere else, so a
@@ -316,9 +365,17 @@ export async function onRequestGet(context) {
      restaurants in it. */
   if (!env.DB || (await wrongDatabase(env))) return json({ error: 'venues' }, 503);
 
+  /* Named venues, when the address asks for them. `?ids=` with nothing usable
+     in it is an empty answer and not the whole roll: somebody asking for two
+     venues and getting eleven hundred is a worse surprise than an empty list,
+     and the map's find bar reads it as a venue it could not dress. */
+  const asked = new URL(request.url).searchParams;
+  const ids = asked.has('ids') ? wantedIds(asked.get('ids')) : null;
+  if (ids && !ids.length) return json([], 200, 300);
+
   let results;
   try {
-    ({ results } = await readingRanks(env));
+    ({ results } = await readingRanks(env, ids));
   } catch (e) {
     return json({ error: 'venues' }, 503);
   }

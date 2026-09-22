@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=107526e4">
+<link rel="stylesheet" href="assets/styles.css?v=1c746e2f">
 </head>
 <body>
 
@@ -334,6 +334,60 @@
       </svg>
       <span data-i18n="listOpen">Places</span>
     </button>
+  </div>
+</div>
+
+<!-- The find bar: everywhere in Tallinn, not just the places on this map.
+     THIS IS NOT THE SEARCH IN THE PLACES COLUMN, AND THE TWO ARE DIFFERENT
+     QUESTIONS. #list-search down in #panel-list narrows what the map is
+     already showing — seventy-six places somebody has been to and written up
+     — and it is the right field for "which of these was the ramen one". This
+     one answers "is Riva on here at all", over the eleven hundred Google
+     venues behind /api/places as well as the map's own, and what it finds is
+     mostly somewhere with no write-up. One field could not be both without
+     lying about one of them: a column search that quietly returned a thousand
+     places nobody has visited would stop being the list's search, and a city
+     search stuck inside the list panel is a city search you have to open a
+     panel to reach.
+     So: two fields, each saying what it is, and this is the one on the map.
+     Emptying it puts the map back exactly as it was — see forgetFound() in
+     assets/app.js, which is the third door into the same stand-in machinery
+     a list and the chat already use.
+     It sits in the strip of chrome across the top, between the brand's column
+     and the language switch, which is the row --chrome-h in assets/styles.css
+     has always been the height of and which had nothing in it until now. On a
+     phone that strip is full, so the bar takes a row of its own under it and
+     the chips move down by --find-h. -->
+<div class="find" id="find">
+  <div class="find-field">
+    <svg class="find-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/>
+    </svg>
+    <input type="search" class="find-input" id="find-input" autocomplete="off"
+           autocorrect="off" autocapitalize="none" spellcheck="false"
+           data-i18n-aria-label="findLabel" data-i18n-placeholder="findPlaceholder"
+           aria-label="Find a place anywhere in Tallinn" placeholder="Find anywhere in Tallinn">
+    <!-- searchClear and not a findClear of its own: the words are the same
+         words, and a second key saying "Clear the search" in ten languages is
+         a second key to keep in step with the first. -->
+    <button type="button" class="find-clear" id="find-clear"
+            data-i18n-aria-label="searchClear" aria-label="Clear the search" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <!-- What was found, drawn by renderFound() in assets/app.js: the map's own
+       places first under one heading, everywhere else under another. Empty
+       and hidden until somebody types.
+       The note is under the rows and not over them. All three things it can
+       say are about what is below or beyond the last row — still looking,
+       nothing matched, four more than fit — and none of them is a heading for
+       what follows. It read as one when it was on top: "4 more in Tallinn."
+       sitting above the first result is a line about a list the eye has not
+       got to yet. It is also the live region, so a screen reader hears the
+       outcome once rather than every row again on each keystroke. -->
+  <div class="find-out" id="find-out" hidden>
+    <div id="find-body"></div>
+    <p class="find-note" id="find-note" role="status" aria-live="polite"></p>
   </div>
 </div>
 
@@ -664,6 +718,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=9cfade71" defer></script>
+<script src="assets/app.js?v=e8624c4f" defer></script>
 </body>
 </html>
