@@ -89,5 +89,15 @@
       "en": "chicken snitzel and beer"
     },
     "spot": "mikkeller-old-town"
+  },
+  {
+    "id": "mikkeller-old-town-2026-09-22-2",
+    "live": true,
+    "photo": "mikkeller-old-town-2026-09-22-2.jpg",
+    "from": "2026-09-22T21:08",
+    "caption": {
+      "en": "chicken snitzel and beer.\nMikkeller is staying as my favourite"
+    },
+    "spot": "mikkeller-old-town"
   }
 ]
