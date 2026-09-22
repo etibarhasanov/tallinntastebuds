@@ -396,37 +396,39 @@ it, and what was driven in a browser to check it.
   page is there to be read before the line under it is replaced.
 - A `t()` key that the scanner cannot see, so the validator passes and a
   visitor reads the key off the page.
-- **A third-party player framed at a URL this repo builds by hand.** The
-  Instagram reel is the worked example, and it is here because the same mistake
-  was made three times over five weeks, each time by a session that could see
-  the code and not the result.
+- **A third-party player that behaves differently on a phone, debugged from
+  the code.** The Instagram reel is the worked example, and the lesson is not
+  the one it looked like for five weeks.
 
-  The player had been built by Instagram's `embed.js`. It was replaced with a
-  plain iframe at `/p/<shortcode>/embed/`, on the reasoning that this is the
-  frame embed.js would have built and the script was therefore dead weight. It
-  is not the same frame: Instagram answers an embed either with an inline
-  player or with a card offering **View profile** and **View on Instagram**,
-  and which one you get does not follow from the address. Three passes tried to
-  reason out the right URL — the kind the permalink was written with, forcing
-  `/p/`, adding the query embed.js sends — and all three shipped and all three
-  failed. What fixed it was giving the URL back to embed.js, which is the only
-  party involved that can see what it is asking for.
+  A reel plays in the panel on a desktop and does not play on a phone: there
+  Instagram serves a card offering **View profile** and **View on Instagram**
+  instead of a player. Because the code was the only thing visible from here,
+  four arrangements were tried — `embed.js`, a plain iframe keeping the kind
+  the permalink was written with, the same iframe with every link forced to
+  `/p/`, and the same iframe with the query `embed.js` sends. Three of them
+  shipped in one afternoon. All four behave identically. The address was never
+  what decided it: Instagram's embed needs its own cookies to hand over an
+  inline player and iOS blocks them for a frame on somebody else's site, so
+  what reaches the phone is a card no URL of ours can change.
 
   What to take from it:
 
+  - **Ask which device before touching the code.** "It is broken" and "it is
+    broken on my phone but not my laptop" are different bugs, and the second
+    one is usually not in the repository. One question would have saved three
+    deploys.
   - **"It renders" is not evidence that it plays.** The broken state was a
-    cover frame with a play triangle on it — a picture of a working player.
-    Nothing looked wrong for five weeks.
-  - **A provider's loader is not dead weight.** It encodes what the provider
-    will serve, which is not documented and not guessable. Replacing one with
-    a URL means reading that URL off a working embed in a browser, and there
-    is no session here that can do that.
-  - **Nothing in this repo can check it.** The validator sees that our links
-    are well formed, never that the other end still serves them, and no
-    session working here has ever had a network route to `instagram.com`. So
-    say in the PR that it could not be driven, say exactly what somebody has
-    to press to find out, and ask — rather than describing the reasoning as
-    though it were a result.
+    cover frame with a play triangle on it — a picture of a working player —
+    and it sat there for five weeks looking fine.
+  - **One broken place is a data problem.** A single permalink that will not
+    frame gets rewritten in `data/restaurants.json`; rewriting everybody's URL
+    in the code to suit the exception is what took thirty-three working reels
+    down.
+  - **Nothing here can check any of it.** The validator sees that our links are
+    well formed, never what the other end serves, and no session working here
+    has ever had a network route to `instagram.com`. So say in the PR that it
+    could not be driven, say exactly what somebody has to press and on what, and
+    ask — rather than writing the reasoning up as though it were a result.
 - **A `.lists-seg` whose `is-on` class does not move.** The radio inside
   `.lists-seg-opt` is one transparent pixel — deliberately, so the keyboard
   and the screen reader get a real radio — which means the browser checking it
