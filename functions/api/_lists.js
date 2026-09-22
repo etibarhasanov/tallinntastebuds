@@ -22,6 +22,34 @@ import { readingPins, pinSelect, pinsOf } from './_pins.js';
    anything but a plausible id before it goes near a query. */
 export const LIST_ID = /^[a-z0-9][a-z0-9-]{2,47}$/;
 
+/* --------------------------------------------------- the optional column
+ *
+ * list_items.must_order reaches a deployed database by hand — ALTER TABLE,
+ * see db/schema.sql — the same way lists.pin does, and for the same reason
+ * a read that wants it must not 500 in the meantime. So the first read of an
+ * isolate asks for it and every read after remembers the answer: the exact
+ * shape readingPins() in functions/api/_pins.js uses, restated here rather
+ * than shared with it because that module is about the eight markers a list
+ * may wear and this is about one column on a different table.
+ *
+ * lists.js's write to it goes through the same reader, so a note typed in
+ * the window between the deploy and the ALTER is silently not stored rather
+ * than answered as a failure. */
+let mustOrderColumn = null;
+
+export async function readingMustOrder(env, make) {
+  if (mustOrderColumn === false) return make(false);
+  try {
+    const out = await make(true);
+    mustOrderColumn = true;
+    return out;
+  } catch (e) {
+    if (!/no such column/i.test(String((e && e.message) || e))) throw e;
+    mustOrderColumn = false;
+    return make(false);
+  }
+}
+
 /**
  * One list, or null.
  *
@@ -58,10 +86,13 @@ export async function readList(context, id, user) {
   const mine = !!user && user.id === list.owner;
   if (!list.public && !mine) return null;
 
-  const { results } = await env.DB
-    .prepare('SELECT place_id, name, say, pos FROM list_items WHERE list_id = ? ORDER BY pos')
+  const { results } = await readingMustOrder(env, (mustOrder) => env.DB
+    .prepare(
+      'SELECT place_id, name, say, pos' + (mustOrder ? ', must_order' : '') +
+      ' FROM list_items WHERE list_id = ? ORDER BY pos'
+    )
     .bind(id)
-    .all();
+    .all());
 
   /* Each row filled out from the catalogue: today's name, the address, the
      pin, and whether the place is also on my map. That last one is what lets
@@ -201,7 +232,10 @@ export async function readList(context, id, user) {
         website: (known && known.website) || '',
         hours: (known && known.hours) || [],
         mapsUrl: (known && known.mapsUrl) || '',
-        say: r.say
+        say: r.say,
+        /* '' where nobody has said, or where the column has not reached this
+           database yet — the two read the same on the page, on purpose. */
+        mustOrder: r.must_order || ''
       };
     })
   };

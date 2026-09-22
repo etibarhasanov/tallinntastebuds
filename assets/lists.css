@@ -1295,6 +1295,17 @@ a.item-name:hover .item-where { color: var(--accent); }
    in the body face at reading size and not as a caption. */
 .item-say { margin: 8px 0 0; font-size: 14.5px; line-height: 1.55; overflow-wrap: anywhere; }
 
+/* The one dish, set apart from the sentence above it rather than folded into
+   it: the label carries the accent so it reads as a second, smaller kind of
+   line rather than as more of the same paragraph. */
+.item-must-order { margin: 6px 0 0; font-size: 13.5px; line-height: 1.5; overflow-wrap: anywhere; }
+.item-must-order-label {
+  color: var(--accent);
+  font-weight: 600;
+  margin-right: .35em;
+}
+.item-must-order-label::after { content: ':'; }
+
 /* The same thing, on your own list, as the box you type it into. It grows
    with what is in it rather than scrolling inside two fixed lines. */
 .item-input {
