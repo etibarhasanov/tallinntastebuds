@@ -6852,6 +6852,45 @@
        out that sits under every player, rather than a frame nothing can fill. */
     var post = /\/(p|reels?|tv)\/([A-Za-z0-9_-]+)/.exec(place.reel);
     var kind = post && (post[1] === 'reels' ? 'reel' : post[1]);
+    /* On a phone the frame is not drawn at all, and this is the reason.
+
+       Instagram serves the card there rather than a player, so the frame is
+       already not a player — and the card's own "View on Instagram" carries
+       target="_blank". An instagram.com address is a universal link, so the
+       phone hands it to the app; but the browser has opened the tab by then,
+       and that tab never loads anything and never closes. Watch a reel and
+       come back to the browser and a blank page is sitting where the map was.
+       That link is inside a cross-origin frame, so it cannot be reached from
+       here: no attribute of ours changes it, and sandboxing the frame hard
+       enough to stop the tab also kills the button that opens the video.
+
+       So on a phone the frame goes and the link stands in its place — one
+       press, the same tab, straight to the post, nothing left behind, and Back
+       returns to the map with the place still open. That is the route the reel
+       is for on a phone anyway: this site does not host the videos.
+
+       What it costs: a phone that would have been given a real player loses
+       it. Instagram hands one over only to a browser holding its cookies, and
+       iOS blocks those for a frame on somebody else's site, so this should be
+       nobody — but it cannot be measured from here, and a phone signed in to
+       instagram.com may be the exception. isNarrow() is the width the rest of
+       this file already calls a phone; the real line is whose cookies the
+       browser will carry, and there is no way to ask. */
+    if (isNarrow()) {
+      return el('div', { className: 'reel-embed' }, [
+        el('div', { className: 'reel-watch' }, [
+          TTBTrack.click(
+            el('a', {
+              className: 'link-btn is-primary',
+              href: place.reel,
+              textContent: t('reelWatch')
+            }),
+            'reel_open', { place: place.name }
+          )
+        ])
+      ]);
+    }
+
 
     return el('div', { className: 'reel-embed' }, [
       post ? el('div', { className: 'reel-frame is-instagram' }, [

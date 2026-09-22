@@ -2690,6 +2690,15 @@ body.panel-detail .panel {
 
 .reel-fallback { margin-top: 10px; font-size: 12.5px; color: var(--muted); }
 
+/* What stands where the Instagram frame would be on a phone. There the frame
+   is not drawn at all — embedInstagram() in app.js says why, and the short of
+   it is that Instagram serves a card rather than a player and the card's own
+   way out leaves a blank tab behind in the browser. So this is the way out
+   instead, and it is the primary button rather than the footnote the fallback
+   is: on a phone it is not a fallback from anything, it is how you watch.
+   A flex row so the button is the width of its own words. */
+.reel-watch { display: flex; }
+
 .muted-note { font-size: 13.5px; color: var(--muted); }
 
 /* What Google says a place is, on everything that has no write-up to link to:

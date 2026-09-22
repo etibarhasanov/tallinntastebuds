@@ -443,11 +443,36 @@ reaches the phone, and the three attempts that tried -- forcing `/p/`, adding
 `?cr=1&v=14&wp=...&rd=...&rp=...`, going back to `embed.js` -- each shipped,
 each looked plausible from the code, and each changed nothing.
 
-**And on a phone that is the intended route anyway.** The point of a reel here
-is to take somebody to Instagram; the site does not host the videos and is not
-going to. So the card is not a failure state, it is the handoff, and the link
-under every player is the good half of it: one press, straight to the exact
-post.
+**So on a phone the frame is not drawn at all.** Under **The reel** a phone gets
+one button -- **Watch on Instagram**, `reelWatch` in `data/ui.json` -- and that
+is the whole section. It goes straight to the exact post in one press.
+
+That is not only because the frame is a card there rather than a player. It is
+because the card's own **View on Instagram** carries `target="_blank"`, and an
+`instagram.com` address is a universal link: the phone hands it to the app, but
+the browser has opened a tab by then, and that tab never loads anything and
+never closes. Watch a reel and come back to the browser and a blank page is
+sitting where the map was. That link lives inside a cross-origin frame, so
+nothing here can reach it -- and sandboxing the frame hard enough to stop the
+tab also kills the button that opens the video. Removing the frame removes the
+link, which is the only thing that actually works.
+
+**What it costs.** A phone that would have been handed a real player loses it.
+Instagram gives one only to a browser carrying its cookies and iOS blocks those
+for a frame on somebody else's site, so this should be nobody -- but it cannot
+be measured from here, and a phone signed in to instagram.com may be the
+exception. `isNarrow()` is the width the rest of `assets/app.js` already calls a
+phone; the real line is whose cookies the browser will carry, and there is no
+way to ask.
+
+TikTok keeps its frame on a phone. Its player is a different product with
+different rules, nobody has reported it broken, and one report is not a reason
+to change two things.
+
+**On a desktop nothing changes**: the iframe is drawn, it plays, and the link
+under it stays the grey footnote it has always been, because there it really is
+a fallback. The point of a reel is to take somebody to Instagram; the site does
+not host the videos and is not going to.
 
 That link is **the one link on a place that does not open in a new tab**, and it
 is deliberate. An `instagram.com` or `tiktok.com` address is a universal link,
