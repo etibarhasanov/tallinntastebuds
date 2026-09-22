@@ -409,50 +409,60 @@ which platform from the URL and follows suit: the section heading reads **The
 reel** or **The video**, and the link under the player names the right app in
 every language.
 
-Both players are built with the panel rather than behind a button. They are not
-built the same way, though, and the difference is the whole of the section
-below: TikTok publishes a plain iframe at a fixed shape, so that one is ours to
-frame; Instagram's is built by Instagram's own script.
+Both are plain iframes, and both are built with the panel, so neither platform
+needs a script here.
 
-**Instagram's player is built by Instagram's own `embed.js`, and that is the
-whole of it.** The page hands it a `<blockquote class="instagram-media">`
-carrying the permalink exactly as you pasted it, calls
-`window.instgrm.Embeds.process()`, and embed.js replaces the blockquote with a
-player it has addressed, sized and filled itself. Nothing in this repository
-builds that URL, and nothing in this repository should.
+Instagram's player lives at the permalink with `/embed/` on the end, and
+**the kind of post is carried over exactly as you wrote it**: a link written
+`/reel/<shortcode>/` is framed at `/reel/<shortcode>/embed/`, one written
+`/p/<shortcode>/` at `/p/<shortcode>/embed/`. Paste whichever of the two shapes
+above the address bar gives you and leave it alone.
 
-That line cost five weeks and three deploys, so it is worth writing down why.
+### A reel plays on a desktop and not on a phone
 
-For a month the player was a plain iframe built here, on the reasoning that
-`/p/<shortcode>/embed/` is the same frame embed.js would have made and a script
-was therefore dead weight. It is not the same frame. Instagram answers an embed
-either with an inline player or with a card offering **View profile** and **View
-on Instagram** and no way to watch anything, and which of the two you get does
-not follow from the address in any way anybody here could work out. Three
-attempts were made: keeping the kind the permalink was written with, forcing
-every link to `/p/`, and adding the query embed.js sends
-(`?cr=1&v=14&wp=...&rd=...&rp=...`). Each was reasoned rather than watched,
-because no session working on this repository has ever had a network route to
-`instagram.com`. Each shipped. Each left a cover frame with a play button that
-opens Instagram instead of playing the video -- which looks like a working
-player until somebody presses it, which is why it survived so long.
+This is the thing to know before touching any of it, because it was rewritten
+three times in one day on the belief that it was fixable from here.
 
-embed.js is the one party to this that can see what it is asking for. Letting it
-ask is not a fallback; it is the only arrangement that has ever played a reel on
-this site.
+A reel plays in the panel on a desktop. On a phone the same panel shows a card
+offering **View profile** and **View on Instagram**, and getting to the video
+means pressing through to Instagram. That has been true of every arrangement
+this site has ever had:
 
-**What that costs.** A script fetched from `instagram.com` the first time a place
-with a reel is opened, once per visit -- `loadEmbedScript()` polls for
-`window.instgrm` and gives up after about five seconds, leaving the link under
-the player as the way through. And embed.js sizes the player when it runs, so in
-a panel that is still sliding in it comes out short and clips the bottom of a
-tall reel, and it does not bleed to the card edges the way the TikTok frame
-does. Both are worth fixing. Neither is worth losing the player over.
+| what built the player | desktop | phone |
+|---|---|---|
+| `embed.js`, until 1 September | plays | card |
+| iframe, kind kept, 1-17 September | plays | card |
+| iframe, every link forced to `/p/` | plays | card |
+| iframe, with the query `embed.js` sends | plays | card |
+| `embed.js` again | plays | card |
 
-**So paste the permalink and leave it alone**, in whichever of the two shapes
-above the address bar gives you. embed.js normalises it. And if that URL is ever
-taken back in hand, know that nothing here -- not the validator, not CI, not the
-session's own network -- can tell a player from a card. Only a phone can.
+**The address is not what decides it; the device is.** Instagram's embed needs
+its own cookies to hand over an inline player, and iOS blocks them for a frame
+sitting on somebody else's site. Desktop keeps them. So no URL and no script
+reaches the phone, and the three attempts that tried -- forcing `/p/`, adding
+`?cr=1&v=14&wp=...&rd=...&rp=...`, going back to `embed.js` -- each shipped,
+each looked plausible from the code, and each changed nothing.
+
+**And on a phone that is the intended route anyway.** The point of a reel here
+is to take somebody to Instagram; the site does not host the videos and is not
+going to. So the card is not a failure state, it is the handoff. What is worth
+improving is the handoff itself -- the link under every player already goes to
+the exact post in one press, and it is currently a grey footnote under something
+that looks like a broken player.
+
+**So the rule is: leave the URL alone.** If a single place comes up with "the
+link to this photo or video may be broken", write **that one permalink** the
+other way round in `data/restaurants.json` -- the shortcode is the same post
+either way -- rather than rewriting everybody's link in the code to suit it.
+That is all Koht ever needed, and rewriting everybody's link to suit Koht is
+exactly what took the other thirty-three down for five weeks.
+
+A third-party frame is also the one thing in this repo that can be wrong in a
+way nothing here can see: the validator checks that our links are well formed,
+never what the other end serves, and no session working on this has ever had a
+network route to `instagram.com`. A change to that URL is worth nothing until
+somebody has pressed play -- on a phone **and** on a desktop, because they do
+not answer the same.
 
 **Never invent a shortcode.** A made-up one resolves to a real stranger's post, on either platform.
 Leave `reel` as `""` until you have the actual link; the panel simply says
@@ -468,21 +478,21 @@ nothing. Opening a profile is a deliberate act and the video is the reason for
 it, so the player is now built with the panel: by the time the write-up has
 been read the reel is loaded and often buffered, and pressing play plays.
 
-The frame each sits in is not the same, because only one of them is ours.
+The frame it sits in is sized by CSS, never by the iframe. A cross-origin frame
+cannot be asked how tall it is and collapses to 150px if left to itself, which
+is how a reel used to open as a strip with the video cut off at the bottom.
+Instead the frame opens at `9 / 19` — 9:16 of video plus Instagram's own chrome
+above and below it — and Instagram's embed page then posts its real height out
+to the page that framed it (`wireReelMeasure` in `app.js` listens for the same
+message `embed.js` does). That number is stored as the frame's ratio rather
+than as pixels, so a phone turned on its side still holds a whole reel. If the
+message never arrives the opening shape stands, and a frame slightly too tall
+shows a band of card under the video where slightly too short would cut it off.
 
-TikTok's is a plain iframe of ours, so it is sized by CSS at the fixed 325x739
-its own embed uses, and it bleeds out through the panel's padding to the card
-edges the way the search box and the group headings do: 52px more picture on a
-desktop, the full width of the screen on a phone, and since the ratio is fixed,
-a wider frame is a taller one too.
-
-Instagram's is embed.js's, and embed.js sizes it. That has two costs worth
-knowing about, both of which the iframe built here had solved and neither of
-which was worth what it cost to solve them. It measures when it runs, so in a
-panel that is still sliding in it comes out short and the bottom of a tall reel
-is clipped. And it does not bleed: the player sits inside the panel's padding
-rather than running to the card edges. Both are fixable from here without
-taking the URL back off embed.js -- which is the thing not to do.
+The frame also bleeds out through the panel's padding to the card edges, the
+way the search box and the group headings do: 52px more picture on a desktop,
+the full width of the screen on a phone, and since the ratio is fixed, a wider
+frame is a taller one too.
 
 ---
 

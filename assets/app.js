@@ -6771,12 +6771,7 @@
      a player start from nothing. Opening a profile is already a deliberate
      act and the video is the reason for it, so the player is built with the
      panel now and is loaded — often buffered — by the time the write-up has
-     been read.
-
-     What the button really bought was the request, and only for Instagram:
-     embed.js is fetched once, the first time a place with a reel is opened,
-     and a visit that never opens one still fetches nothing. TikTok's frame is
-     ours and costs no script at all. */
+     been read. Pressing play plays. */
   function reelBlock(place) {
     var provider = reelProvider(place.reel);
 
@@ -6815,83 +6810,63 @@
     return wrap;
   }
 
-  /* Instagram's own embed.js builds the player, and that is the point of it.
+  /* Instagram publishes an iframe player at the permalink with /embed/ on the
+     end, so the reel goes in directly and no script is involved at all.
 
-     For a month this file built the iframe itself, at the permalink with
-     /embed/ on the end, on the reasoning that this is the same frame embed.js
-     would have made and that a script was therefore dead weight. It is not the
-     same frame. Instagram hands an embed an inline player or a card that says
-     "View profile" and "View on Instagram" and nothing else, and which one you
-     get does not follow from the address in any way this repository was ever
-     able to work out. Three attempts were made from the outside — keeping the
-     kind the permalink was written with, forcing every link to /p/, adding the
-     query embed.js sends — and every one of them was reasoned rather than
-     watched, because no session working here has a network route to
-     instagram.com. All three shipped, and all three left a cover frame with a
-     play button that opens Instagram instead of playing.
-
-     So the guessing is over: embed.js works out its own URL, and it is the one
-     party to this that can see what it is asking for. The cost is a script
-     fetched from Instagram when a place with a reel is opened, and the sizing
-     it does for itself, which is measured when it runs — in a panel still
-     sliding in, that used to come out short and clip the bottom of a tall
-     reel. A clipped reel that plays beats a whole one that does not, and the
-     clipping is a thing to fix from here rather than a reason to go back.
-
-     A link copied while browsing your own grid carries the profile name in
-     front of the shortcode. embed.js takes the permalink as written and
-     normalises it itself; nothing here rewrites one any more. */
+     Going through embed.js meant fetching it, polling for window.instgrm,
+     handing it a blockquote and letting it draw whatever box it had measured
+     at the moment it ran. In a panel that is still sliding in, that moment is
+     a bad one: the box came out short, and a reel taller than its box was cut
+     off at the bottom — the player half in view that this replaces. The frame
+     below opens at the shape a reel actually is and then takes Instagram's
+     own measurement for the exact one. */
   function embedInstagram(place) {
-    var permalink = place.reel.indexOf('?') === -1
-      ? place.reel + '?utm_source=ig_embed'
-      : place.reel;
+    /* The kind of post is kept exactly as the permalink was written — a link
+       written /reel/ is framed at /reel/<shortcode>/embed/, one written /p/ at
+       /p/<shortcode>/embed/. Nothing here rewrites one.
 
-    var wrap = el('div', { className: 'reel-embed' }, [
-      el('blockquote', {
-        className: 'instagram-media',
-        'data-instgrm-permalink': permalink,
-        'data-instgrm-version': '14',
-        style: 'background:#FFF;border:0;margin:0;max-width:540px;min-width:0;padding:0;width:100%'
-      }, [
-        el('a', { href: permalink, target: '_blank', rel: 'noopener', textContent: place.name })
-      ]),
+       Read the next paragraph before changing that, because it was changed
+       three times in one day and every change was wrong.
+
+       A reel plays on a desktop and does not play on a phone, and that has been
+       true of every arrangement this file has ever had: this iframe with the
+       kind kept, the same iframe with every link forced to /p/, the same iframe
+       with the query embed.js sends on it, and embed.js building the player
+       itself. Four versions, one behaviour. What decides it is not the address
+       but the device — Instagram's embed needs its own cookies to hand over an
+       inline player, iOS blocks them for a frame on somebody else's site, and
+       what comes back there instead is a card offering "View profile" and "View
+       on Instagram". So a URL cannot fix the phone, and three attempts to fix
+       the phone by changing this URL each shipped, each looked plausible, and
+       each changed nothing. The fourth was this one.
+
+       On a phone the card is the route out, and that is the intended one: the
+       point of a reel here is to take somebody to Instagram. The link under
+       every player goes to the exact post in one press and is the better half
+       of that route.
+
+       A link copied while browsing your own grid carries the profile name in
+       front of the shortcode — a shape Instagram serves the post at but not the
+       embed — so the player is addressed by the kind and the shortcode alone. A
+       permalink with no shortcode in it at all cannot be framed: it gets the way
+       out that sits under every player, rather than a frame nothing can fill. */
+    var post = /\/(p|reels?|tv)\/([A-Za-z0-9_-]+)/.exec(place.reel);
+    var kind = post && (post[1] === 'reels' ? 'reel' : post[1]);
+
+    return el('div', { className: 'reel-embed' }, [
+      post ? el('div', { className: 'reel-frame is-instagram' }, [
+        el('iframe', {
+          src: 'https://www.instagram.com/' + kind + '/' + post[2] + '/embed/',
+          title: place.name + ' — ' + t('reel'),
+          allow: 'autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen',
+          allowfullscreen: '',
+          referrerpolicy: 'strict-origin-when-cross-origin',
+          frameborder: '0',
+          scrolling: 'no'
+        })
+      ]) : null,
       reelFallback(place, 'reelFallback')
     ]);
-
-    loadEmbedScript(function () {
-      try { window.instgrm.Embeds.process(); } catch (e) { /* the fallback link stays */ }
-    });
-
-    return wrap;
-  }
-
-  /* Fetched the first time a place with a reel is opened and never again, so a
-     visit that only ever looks at addresses costs nothing. embed.js may already
-     be in flight from a panel opened a moment ago, and it takes a moment more to
-     define window.instgrm after it lands, so this polls rather than trusting the
-     load event — and gives up after about five seconds, leaving the link out
-     under the player as the way to the video. */
-  function loadEmbedScript(done) {
-    if (window.instgrm && window.instgrm.Embeds) { done(); return; }
-
-    if (!document.getElementById('ig-embed-js')) {
-      var script = document.createElement('script');
-      script.id = 'ig-embed-js';
-      script.async = true;
-      script.src = 'https://www.instagram.com/embed.js';
-      document.body.appendChild(script);
-    }
-
-    var tries = 0;
-    var timer = setInterval(function () {
-      tries += 1;
-      if (window.instgrm && window.instgrm.Embeds) {
-        clearInterval(timer);
-        done();
-      } else if (tries > 50) {
-        clearInterval(timer);
-      }
-    }, 100);
   }
 
   /* Neither player is ours, and both can come up blank — a deleted post, a
@@ -6903,6 +6878,38 @@
         'reel_open', { place: place.name }
       )
     ]);
+  }
+
+  /* Instagram's embed page posts the height it came out at to whoever framed
+     it — the message embed.js listens for, taken here instead. It arrives
+     once the post has drawn and again whenever the post changes shape, and it
+     is stored as the ratio of the frame rather than as a height in pixels, so
+     a phone turned on its side keeps a whole reel rather than a wrong number.
+     If it never arrives the frame keeps the shape it opened at, which is the
+     shape of a reel; nothing here can leave a player with no room. */
+  function wireReelMeasure() {
+    window.addEventListener('message', function (ev) {
+      if (!/^https:\/\/(www\.)?instagram\.com$/.test(ev.origin)) return;
+
+      var frames = dom.detail.querySelectorAll('.reel-frame.is-instagram iframe');
+      var frame = null;
+      for (var i = 0; i < frames.length; i++) {
+        if (frames[i].contentWindow === ev.source) { frame = frames[i]; break; }
+      }
+      if (!frame) return;
+
+      var data = ev.data;
+      if (typeof data === 'string') {
+        try { data = JSON.parse(data); } catch (e) { return; }
+      }
+
+      var details = (data && data.details) || data;
+      var height = Number(details && details.height);
+      var width = frame.offsetWidth;
+      if (!height || !width || height < 100) return;
+
+      frame.parentNode.style.aspectRatio = width + ' / ' + height;
+    });
   }
 
   function photoGrid(place) {
@@ -10028,6 +10035,7 @@
       wireControls();
       wireStories();
       startStoryClock();
+      wireReelMeasure();
 
       /* A ?type= link lands on a filtered map, and on a phone a shut row
          would be the one thing this design promises never to be. So the link
