@@ -1731,12 +1731,28 @@
       (cls.contains('sheet-peek') ? 'peek' : cls.contains('sheet-full') ? 'full' : 'low');
   }
 
+  /* The 300ms wait below outlives plenty on a phone — a find pick cleared
+     before its own sheet has settled, say — and an uncancelled one goes on
+     to fly the map back in on a place nobody is looking at any more. This is
+     the one place that fires it, so it is also the one place that can take
+     it back: refocus() replaces its own wait rather than stacking a second
+     one, and cancelRefocus() lets somebody who is about to move the map for
+     an unrelated reason — the find bar flying back to where it stood before
+     a search, so far the only caller — make sure this does not undo it a
+     moment later. */
+  var refocusTimer = null;
+
+  function cancelRefocus() {
+    if (refocusTimer) { window.clearTimeout(refocusTimer); refocusTimer = null; }
+  }
+
   function refocus(place, zoomIn) {
     var key = sheetKey();
     var resizing = isNarrow() && key !== lastSheetKey;
     lastSheetKey = key;
+    cancelRefocus();
     if (!resizing || reduceMotion()) { focusOn(place, zoomIn); return; }
-    window.setTimeout(function () { focusOn(place, zoomIn); }, 300);
+    refocusTimer = window.setTimeout(function () { refocusTimer = null; focusOn(place, zoomIn); }, 300);
   }
 
   /* ----------------------------------------------------------------- saves
@@ -7075,6 +7091,14 @@
   var findRows = [];
   var findTrackTimer = null;
 
+  /* Where the map stood the moment this bar first flew it somewhere, so that
+     emptying the field can put it back — see "clearing it puts it back"
+     under setFind() below. Set on the first pick of a search and read once,
+     on the way out; a second pick in the same search does not overwrite it,
+     so three places looked up in a row still land back on the view the
+     visitor had before any of them. */
+  var findReturn = null;
+
   /* The roll, once. A second call while the first is in the air joins it
      rather than asking again, and a failure is remembered as an empty roll:
      the map's own places still answer, the city half simply does not appear,
@@ -7305,6 +7329,11 @@
     findRows = [];
     dom.findInput.blur();
 
+    /* Before the fly below moves anything: the first pick of a search is the
+       last place the map stood on its own, and that is what emptying the
+       field is going to fly back to. */
+    if (!findReturn) findReturn = { centre: map.getCenter(), zoom: map.getZoom() };
+
     if (mine) {
       forgetFound();
       selectPlace(id, { fly: true });
@@ -7358,6 +7387,19 @@
 
     if (!next) {
       forgetFound();
+      /* The zoom and pan a pick flew to are the other half of "nothing else
+         has been touched" — a visitor who searched from the whole city and
+         picked one result should not be left stuck at FOCUS_ZOOM on it once
+         the word that asked for it is gone. cancelRefocus() first: on a
+         phone the pick's own fly-in can still be waiting out the 300ms in
+         refocus() when the field is cleared straight after picking, and
+         left running it would fire after this travelTo and fly the map
+         right back in on the place the search just let go of. */
+      if (findReturn) {
+        cancelRefocus();
+        travelTo(findReturn.centre, findReturn.zoom, true);
+        findReturn = null;
+      }
       renderFound();
       return;
     }
