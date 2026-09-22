@@ -656,6 +656,19 @@ the map**, which is my own places, and **Everywhere in Tallinn**, which is the
 Google export behind them — eleven hundred venues, the whole city. Press a row
 and the place opens. Empty the field and the map is exactly as it was.
 
+On a phone the field is 16px, the same floor the column's search box and the
+chat's field take and for the same reason: anything smaller and iOS zooms the
+whole page the moment the field takes focus, and never zooms back out. This
+bar shipped at 14px and is the worst field on the site to get wrong, because
+it sits across the top of the map and tapping it is the first thing anybody
+does — so the page went a seventh too wide before the visitor had read
+anything, with the language switch and the radio off the right-hand edge, and
+every later tap zoomed it again. It takes the keyboard with it: a scale that
+is not 1 reads as a pinch rather than a keyboard in `viewportCovered()`, which
+then stops measuring, and the sheet stops lifting clear of the keyboard for as
+long as the page stays zoomed. See **9. A field is a mono label over a 16px
+input** in the design rules.
+
 ### Why it is not the field in the places column
 
 They are two questions and they want two fields.
@@ -12387,10 +12400,15 @@ The label is uppercase mono in `--muted`; the input is `--paper` inside a
 hairline. **16px is not a taste decision**: anything smaller makes iOS zoom
 the page when the field takes focus, and it never zooms back out. A field that
 is smaller on a wide screen has to be bumped at the phone breakpoint, which is
-what the map's search box does and what the lists page's fields and the
-chat's had been missing. Every field carries the `autocomplete` hint that lets
-a password manager do its job — which is what actually rescues people who
-forget things.
+what the map's search box does and what the lists page's fields, the chat's
+and the find bar had each been missing in turn. Every field carries the
+`autocomplete` hint that lets a password manager do its job — which is what
+actually rescues people who forget things.
+
+Each was found the same way — somebody on a phone reporting that the site
+itself zoomed in and stayed there — which is worth knowing because the rule is
+invisible until then: nothing fails, the validator has nothing to say, and a
+desktop browser never reproduces it.
 
 ### 10. Colour is never the only thing saying it
 

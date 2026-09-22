@@ -4634,9 +4634,22 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
      The chat's field is the same field and takes the same floor. It had been
      missed since the chat was written, which is how a first question came
-     back with an answer nobody could read the right-hand edge of. */
+     back with an answer nobody could read the right-hand edge of.
+
+     So was the find bar, from the day it was written — and it is the worst
+     place on the site to miss, because it is the first thing a phone sees
+     and tapping it is the first thing a phone does. The page came up a
+     seventh too wide with the language switch and the radio off the right
+     edge, every later tap on the field zoomed it again, and it never went
+     back: what the report called the whole website zooming in, which is
+     exactly what it was. The map's own zoom had nothing to do with it.
+     It takes the keyboard with it too — viewportCovered() in assets/app.js
+     reads a scale that is not 1 as a pinch rather than a keyboard and gives
+     up measuring, so the sheet stops lifting off the keyboard for as long
+     as the page stays zoomed. */
   .search-input,
-  .ask-input { font-size: 16px; }
+  .ask-input,
+  .find-input { font-size: 16px; }
   .list-label { margin-top: 20px; padding: 8px var(--panel-pad) 7px; padding-right: calc(var(--panel-pad) + 34px); }
   .list-label:first-of-type { margin-top: 10px; }
   .list-row { padding: 10px 2px; column-gap: 8px; }
