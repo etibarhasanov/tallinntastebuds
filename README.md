@@ -412,39 +412,42 @@ every language.
 Both are plain iframes, and both are built with the panel, so neither platform
 needs a script here.
 
-Instagram's player lives at `/p/<shortcode>/embed/`, and the shortcode is the
-only part of the permalink that reaches it. **The kind of post is not carried
-over.** Instagram serves a reel at `/reel/<shortcode>/` and at
-`/p/<shortcode>/` alike, but only the second one has a player behind it that
-another site may frame; ask for `/reel/<shortcode>/embed/` and the answer is
-"the link to this photo or video may be broken, or the post may have been
-removed", which looks exactly like a reel somebody deleted. `embed.js`
-normalised every permalink to `/p/` before it built its frame; when the frame
-stopped being built by `embed.js`, that normalisation did not come with it,
-and every place whose link was written `/reel/` showed that page instead of
-its video until it did. So paste whichever of the two shapes above the address
-bar gives you; they reach the same player.
+Instagram's player lives at the permalink with `/embed/` on the end, and
+**the kind of post is carried over exactly as you wrote it**: a link written
+`/reel/<shortcode>/` is framed at `/reel/<shortcode>/embed/`, one written
+`/p/<shortcode>/` at `/p/<shortcode>/embed/`. Paste whichever of the two shapes
+above the address bar gives you and leave it alone.
 
-**And the address is not the whole of it.** `/p/<shortcode>/embed/` on its own
-answers with the reel's cover frame and a play button that is a link out to the
-post rather than a player: press it and Instagram opens, which on a phone means
-the app, which lands wherever the app feels like landing. That is not a video
-Instagram is withholding — it is the embed's logged-out shape, and `embed.js`
-never asked for it. The frame it builds carries a query as well as a path, and
-all five parts of it matter: `cr=1` and `v=14` are the embed's revision and
-version, `wp=` is the width it is being drawn at, and `rd=` and `rp=` are the
-origin and path of the page doing the framing. With them, the same address
-answers with the video. `embedInstagram()` in `assets/app.js` builds it, and
-`rp` is deliberately the path alone — the map is one address with the place as
-a `?spot=` on it, so Instagram is told `/`, which is exactly what the
-`Referrer-Policy` header already gives them.
+That line is a correction, and it is worth knowing why, because the repository
+argued itself out of it twice and took the reels down with it both times.
 
-This is the same mistake as the paragraph above it, made in the same commit and
-found five weeks later: a URL reasoned out from what the permalink looks like
-rather than read off a player that was working. A third-party frame is the one
-thing in this repo that can be wrong in a way nothing here can see — the
-validator checks that our links are well formed, never that the other end still
-serves them — so the address goes in a browser's network tab first.
+One place — Koht — came up with "the link to this photo or video may be broken,
+or the post may have been removed" where its video should have been. The
+conclusion drawn was that `/reel/…/embed/` is not a thing Instagram keeps a
+player behind, that `/p/` is the only framable kind, and that `embed.js`
+normalising everything to `/p/` proved it. So every place on the map was
+rewritten to `/p/`. The one broken place stayed broken and the thirty-odd
+working ones stopped playing: `/p/<shortcode>/embed/` answers a reel with its
+cover frame and a play button that is a link out rather than a player, so
+pressing play opens Instagram instead of starting the video. It looks like a
+loaded player, which is why five weeks passed before anybody said so.
+
+Adding the query `embed.js` sends — `?cr=1&v=14&wp=…&rd=…&rp=…` — did not
+rescue it either, because the path underneath was the problem.
+
+**So the rule is the evidence, not the reasoning.** A reel framed at the kind
+it was written with plays; that was true for five weeks of this site and it is
+what `embedInstagram()` in `assets/app.js` does again. If a single place comes
+up with the broken-post page, write **that one permalink** the other way round
+in `data/restaurants.json` — the shortcode is the same post either way — rather
+than rewriting everybody's link in the code to suit it. That is all Koht ever
+needed.
+
+A third-party frame is the one thing in this repo that can be wrong in a way
+nothing here can see: the validator checks that our links are well formed,
+never that the other end still serves them, and no session working on this has
+ever had a network route to `instagram.com`. A change to that URL is worth
+nothing until somebody has pressed play on a phone.
 
 **Never invent a shortcode.** A made-up one resolves to a real stranger's post, on either platform.
 Leave `reel` as `""` until you have the actual link; the panel simply says
