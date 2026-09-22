@@ -6870,11 +6870,25 @@
   }
 
   /* Neither player is ours, and both can come up blank — a deleted post, a
-     browser blocking third-party frames. The way out stays under every one. */
+     browser blocking third-party frames, or a phone, where Instagram serves a
+     card instead of a player and this link is the route to the video rather
+     than a fallback from it. The way out stays under every one.
+
+     It is the one link on this page that does not open in a new tab, and that
+     is the whole point of it. An instagram.com or tiktok.com address is a
+     universal link: the phone hands it to the app instead of loading it. Given
+     target="_blank" the browser has already opened the tab by then, so the app
+     comes to the front and a blank tab is left behind in the browser — which is
+     what somebody finds when they come back. Navigating the tab they are in
+     leaves nothing behind, and Back returns to the map with the place still
+     open, because the panel is an address of its own.
+
+     The other links on a place — the website, the phone number — keep their new
+     tab. Those are somewhere else to go. This one is where the video is. */
   function reelFallback(place, key) {
     return el('p', { className: 'reel-fallback' }, [
       TTBTrack.click(
-        el('a', { href: place.reel, target: '_blank', rel: 'noopener', textContent: t(key) }),
+        el('a', { href: place.reel, textContent: t(key) }),
         'reel_open', { place: place.name }
       )
     ]);

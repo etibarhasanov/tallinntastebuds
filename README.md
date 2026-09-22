@@ -445,10 +445,22 @@ each looked plausible from the code, and each changed nothing.
 
 **And on a phone that is the intended route anyway.** The point of a reel here
 is to take somebody to Instagram; the site does not host the videos and is not
-going to. So the card is not a failure state, it is the handoff. What is worth
-improving is the handoff itself -- the link under every player already goes to
-the exact post in one press, and it is currently a grey footnote under something
-that looks like a broken player.
+going to. So the card is not a failure state, it is the handoff, and the link
+under every player is the good half of it: one press, straight to the exact
+post.
+
+That link is **the one link on a place that does not open in a new tab**, and it
+is deliberate. An `instagram.com` or `tiktok.com` address is a universal link,
+so a phone hands it to the app rather than loading it. With `target="_blank"`
+the browser has already opened the tab by the time that happens, the app comes
+to the front, and a blank tab is left sitting in the browser for whoever goes
+back to it. Navigating the tab the visitor is already in leaves nothing behind,
+and Back returns to the map with the place still open, because a place is an
+address of its own. The website and phone links keep their new tab: those are
+somewhere else to go, and this one is where the video is.
+
+What is still worth improving is how that link looks -- it is a grey footnote
+under something that, on a phone, resembles a broken player.
 
 **So the rule is: leave the URL alone.** If a single place comes up with "the
 link to this photo or video may be broken", write **that one permalink** the
