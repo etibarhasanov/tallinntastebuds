@@ -6811,8 +6811,8 @@
   }
 
   /* Instagram publishes the same iframe player that embed.js builds for a
-     blockquote — /p/<shortcode>/embed/ — so the reel goes in directly and no
-     script is involved at all.
+     blockquote — /p/<shortcode>/embed/, with the query below on it — so the
+     reel goes in directly and no script is involved at all.
 
      Going through embed.js meant fetching it, polling for window.instgrm,
      handing it a blockquote and letting it draw whatever box it had measured
@@ -6840,10 +6840,30 @@
        sits under every player, rather than a frame nothing can fill. */
     var post = /\/(?:p|reels?|tv)\/([A-Za-z0-9_-]+)/.exec(place.reel);
 
+    /* And the query is not decoration. /p/<shortcode>/embed/ on its own
+       answers with the cover frame and a play button that is a link out to
+       the post rather than a player — press it and you get Instagram, which
+       is what this map did from the day the reel came off embed.js. The five
+       parameters below are the ones embed.js puts on the frame it builds, and
+       with them the same address answers with the video: cr and v are the
+       embed's own revision and version, wp is the width it is being drawn at,
+       and rd/rp are the page doing the framing. Leaving them off was not
+       reading the URL off a working embed, which is exactly what the /site
+       skill says to do when a provider's loader is replaced by a URL.
+
+       rp is the path and never the query, so what Instagram is told is "/" —
+       the map is one address and the place is a ?spot= on it. That is the
+       same amount the Referrer-Policy header already hands them, and the
+       reason this does not quietly widen it. */
+    var frameWidth = Math.min(540, document.documentElement.clientWidth || 540);
+    var query = '?cr=1&v=14&wp=' + frameWidth +
+      '&rd=' + encodeURIComponent(location.protocol + '//' + location.host) +
+      '&rp=' + encodeURIComponent(location.pathname);
+
     return el('div', { className: 'reel-embed' }, [
       post ? el('div', { className: 'reel-frame is-instagram' }, [
         el('iframe', {
-          src: 'https://www.instagram.com/p/' + post[1] + '/embed/',
+          src: 'https://www.instagram.com/p/' + post[1] + '/embed/' + query,
           title: place.name + ' — ' + t('reel'),
           allow: 'autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen',
           allowfullscreen: '',

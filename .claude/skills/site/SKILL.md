@@ -408,6 +408,15 @@ it, and what was driven in a browser to check it.
   builds — open one in a browser and read it off the iframe — rather than the
   one the permalink suggests, and say in the PR that the frame was watched
   loading a real post.
+
+  **It then went wrong a second time, the same way.** Fixing the path left the
+  query off — `embed.js` frames a post at `/p/<shortcode>/embed/?cr=1&v=14&wp=…&rd=…&rp=…`
+  — and without it Instagram answers with the cover frame and a play button
+  that is a link out rather than a player. That reads as working: there is a
+  picture of the reel and a play triangle on it, so nothing looks broken until
+  somebody presses it. Five weeks passed. **Copy the whole URL, query
+  included**, and treat "it renders" as no evidence at all that it plays —
+  a third-party embed has a logged-out shape that looks like the real one.
 - **A `.lists-seg` whose `is-on` class does not move.** The radio inside
   `.lists-seg-opt` is one transparent pixel — deliberately, so the keyboard
   and the screen reader get a real radio — which means the browser checking it

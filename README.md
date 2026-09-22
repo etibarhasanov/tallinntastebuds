@@ -425,6 +425,27 @@ and every place whose link was written `/reel/` showed that page instead of
 its video until it did. So paste whichever of the two shapes above the address
 bar gives you; they reach the same player.
 
+**And the address is not the whole of it.** `/p/<shortcode>/embed/` on its own
+answers with the reel's cover frame and a play button that is a link out to the
+post rather than a player: press it and Instagram opens, which on a phone means
+the app, which lands wherever the app feels like landing. That is not a video
+Instagram is withholding — it is the embed's logged-out shape, and `embed.js`
+never asked for it. The frame it builds carries a query as well as a path, and
+all five parts of it matter: `cr=1` and `v=14` are the embed's revision and
+version, `wp=` is the width it is being drawn at, and `rd=` and `rp=` are the
+origin and path of the page doing the framing. With them, the same address
+answers with the video. `embedInstagram()` in `assets/app.js` builds it, and
+`rp` is deliberately the path alone — the map is one address with the place as
+a `?spot=` on it, so Instagram is told `/`, which is exactly what the
+`Referrer-Policy` header already gives them.
+
+This is the same mistake as the paragraph above it, made in the same commit and
+found five weeks later: a URL reasoned out from what the permalink looks like
+rather than read off a player that was working. A third-party frame is the one
+thing in this repo that can be wrong in a way nothing here can see — the
+validator checks that our links are well formed, never that the other end still
+serves them — so the address goes in a browser's network tab first.
+
 **Never invent a shortcode.** A made-up one resolves to a real stranger's post, on either platform.
 Leave `reel` as `""` until you have the actual link; the panel simply says
 there is no reel yet.
