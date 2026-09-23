@@ -435,16 +435,16 @@
     "price": 1,
     "types": [],
     "blurb": {
-      "az": "Paulun bazar binasının içindəki yeri. Ən rahat adam, ən yaxşı mühit və şəhərdə mütləq görülməli məkan. Əl işi Cənubi Afrika piroqları.",
-      "hy": "Պոլի վայրը շուկայի սրահի ներսում։ Ամենահանգիստ տղան, ամենալավ մթնոլորտը և քաղաքում պարտադիր տեսնելու վայր։ Ձեռագործ հարավաֆրիկյան կարկանդակներ։",
-      "en": "Paul's place inside the market hall. Chillest dude, coolest vibes, and a must-see spot in town. Handmade South African pies.",
-      "et": "Pauli koht turuhoone sees. Kõige rahulikum mees, kõige lahedam õhkkond ja üks kohustuslik peatus linnas. Käsitsi tehtud Lõuna-Aafrika pirukad.",
-      "fi": "Paulin paikka kauppahallin sisällä. Rennoin tyyppi, siisteimmät fiilikset ja pakko nähdä kaupungissa. Käsintehtyjä eteläafrikkalaisia piirakoita.",
-      "pt": "O lugar do Paul dentro do mercado. O tipo mais tranquilo, a melhor vibe e uma paragem obrigatória na cidade. Empadas sul-africanas feitas à mão.",
-      "ru": "Место Пола внутри рыночного зала. Самый спокойный человек, самая приятная атмосфера и одна из обязательных точек в городе. Домашние южноафриканские пироги.",
-      "es": "El local de Paul dentro del mercado. El tío más tranquilo, el mejor rollo y una parada obligatoria en la ciudad. Empanadas sudafricanas hechas a mano.",
-      "tr": "Hal binasının içinde Paul'ün mekânı. En rahat adam, en iyi hava; şehirde mutlaka görülmesi gereken yerlerden. El yapımı Güney Afrika turtaları.",
-      "uk": "Заклад Пола всередині ринкової зали. Найспокійніший чувак, найкращі вайби і місце, яке треба побачити в місті. Південноафриканські пироги ручної роботи."
+      "az": "Bazar zalının içində Paulun yeri. Ən rahat adam, ən gözəl ab-hava və şəhərdə mütləq görülməli məkan. Əl işi Cənubi Afrika piroqları. İndi Kadriorqda yeni yer açır, əsl Cənubi Afrika məkanı. Gözləyirik.",
+      "hy": "Փոլի տեղը՝ շուկայի սրահի ներսում։ Ամենահանգիստ տղան, ամենալավ մթնոլորտը և քաղաքում պարտադիր տեսնելու վայր։ Ձեռագործ հարավաֆրիկյան կարկանդակներ։ Հիմա նոր տեղ է բացում Կադրիորգում՝ իսկական հարավաֆրիկյան։ Սպասում ենք։",
+      "en": "Paul's place inside the market hall. Chillest dude, coolest vibes, and a must-see spot in town. Handmade South African pies. Now he is opening new place in Kadriorg, proper South African place. We are waiting.",
+      "et": "Pauli koht turuhoone sees. Kõige rahulikum mees, kõige lahedam õhkkond ja linnas kindlasti nägemist väärt paik. Käsitsi tehtud Lõuna-Aafrika pirukad. Nüüd avab ta Kadriorus uue koha, päris Lõuna-Aafrika oma. Ootame.",
+      "fi": "Paulin paikka kauppahallin sisällä. Rennoin tyyppi, parhaat fiilikset ja ehdoton nähtävyys kaupungissa. Käsin tehtyjä eteläafrikkalaisia piirakoita. Nyt hän avaa uuden paikan Kadriorgiin, kunnon eteläafrikkalaisen. Odotetaan.",
+      "pt": "O sítio do Paul dentro do mercado. O tipo mais descontraído, o melhor ambiente e uma paragem obrigatória na cidade. Empadas sul-africanas feitas à mão. Agora está a abrir um espaço novo em Kadriorg, sul-africano a sério. Estamos à espera.",
+      "ru": "Место Пола внутри рыночного зала. Самый спокойный человек, лучшая атмосфера и обязательная точка в городе. Южноафриканские пироги ручной работы. Сейчас он открывает новое место в Кадриорге, настоящее южноафриканское. Ждём.",
+      "es": "El sitio de Paul dentro del mercado. El tío más tranquilo, el mejor ambiente y una parada obligatoria en la ciudad. Empanadas sudafricanas hechas a mano. Ahora está abriendo un local nuevo en Kadriorg, sudafricano de verdad. Lo esperamos.",
+      "tr": "Paul'ün hal binasının içindeki yeri. En sakin adam, en güzel hava ve şehirde mutlaka görülmesi gereken bir mekân. El yapımı Güney Afrika turtaları. Şimdi Kadriorg'da yeni bir yer açıyor, tam anlamıyla Güney Afrika mekânı. Bekliyoruz.",
+      "uk": "Місце Пола всередині ринкової зали. Найспокійніший чоловік, найкраща атмосфера і обов’язкова точка в місті. Південноафриканські пироги ручної роботи. Зараз він відкриває нове місце в Кадріорзі, справжнє південноафриканське. Чекаємо."
     },
     "mustOrder": [
       "Bobotie pie",
@@ -472,16 +472,16 @@
       "casual"
     ],
     "blurb": {
-      "az": "Porsiyalar çaşdırıcıdır. Çörək yaxşıdır, ət üzərində işləmək lazımdır. Mühit yaxşı, xidmət yaxşı, interyer gözəl, qiymətlər normaldır. Bu birindən əmin deyiləm.",
-      "hy": "Չափաբաժինները շփոթեցնում են։ Հացը լավն է, միսը դեռ աշխատանք է պահանջում։ Մթնոլորտը լավն է, սպասարկումը՝ լավը, ինտերիերը՝ հիանալի, գները՝ նորմալ։ Այս վայրի հարցում վստահ չեմ։",
-      "en": "Portions are confusing. The bread is good, the meat needs work. Vibes are good, service is good, interior is cool, prices are fine. Not sure about this one.",
-      "et": "Portsjonid ajavad segadusse. Leib on hea, liha vajab tööd. Õhkkond on hea, teenindus on hea, interjöör on lahe, hinnad on korras. Selles kohas ma päris kindel ei ole.",
-      "fi": "Annoskoot hämmentävät. Leipä on hyvää, liha kaipaa työtä. Fiilis on hyvä, palvelu on hyvä, sisustus on siisti, hinnat ovat kohdallaan. En ole varma tästä.",
-      "pt": "As doses confundem. O pão é bom, a carne precisa de trabalho. O ambiente é bom, o serviço é bom, o interior é bonito, os preços estão certos. Não tenho a certeza sobre este.",
-      "ru": "Порции сбивают с толку. Хлеб хороший, мясо требует доработки. Атмосфера приятная, сервис хороший, интерьер классный, цены нормальные. В этом месте я до конца не уверен.",
-      "es": "Las raciones despistan. El pan está bueno, la carne hay que trabajarla. Buen ambiente, buen servicio, interior con estilo, precios correctos. Este no lo tengo claro.",
-      "tr": "Porsiyonlar kafa karıştırıcı. Ekmek iyi, etin üzerinde çalışılmalı. Hava iyi, servis iyi, iç mekân havalı, fiyatlar makul. Bu konuda kararsızım.",
-      "uk": "Порції спантеличують. Хліб добрий, м’ясо потребує роботи. Вайби гарні, сервіс гарний, інтер’єр класний, ціни нормальні. Щодо цього місця я не впевнений."
+      "az": "Yer özü çox gözəl nöqtədədir və çoxlu günəş alır. Menyunun böyük hissəsi dadlıdır, ət istisna olmaqla (sonuncu dəfə 2026-cı ilin mayında hələ də üzərində işləmək lazım idi). Amma ab-hava əladır, xidmət mükəmməldir. Negroni dadlıdır.",
+      "hy": "Տեղը շատ լավ կետում է և շատ արև է ստանում։ Մենյուի մեծ մասը համեղ է, բացի մսից (վերջին անգամ 2026-ի մայիսին այն դեռ աշխատանքի կարիք ուներ)։ Բայց մթնոլորտը հիանալի է, սպասարկումը՝ գերազանց։ Նեգրոնին համեղ է։",
+      "en": "The place is in a cool spot, and it gets lots of sun. Most of menu is delicious, except the meat (last time 2026 may, still it needed work). But the vibes are great, service is excellent. Negroni is delicious.",
+      "et": "Koht ise on ägedas paigas ja saab palju päikest. Suurem osa menüüst on maitsev, välja arvatud liha (viimati 2026. aasta mais vajas see ikka veel tööd). Aga õhkkond on väga hea ja teenindus suurepärane. Negroni on maitsev.",
+      "fi": "Paikka on hienolla paikalla ja saa paljon aurinkoa. Suurin osa menusta on herkullista, lihaa lukuun ottamatta (viimeksi toukokuussa 2026 se kaipasi yhä työtä). Mutta fiilis on mahtava ja palvelu erinomaista. Negroni on herkullinen.",
+      "pt": "O sítio fica num ponto ótimo e apanha muito sol. Quase tudo no menu é delicioso, exceto a carne (da última vez, em maio de 2026, ainda precisava de trabalho). Mas o ambiente é ótimo e o serviço é excelente. O negroni é delicioso.",
+      "ru": "Само место стоит в отличной точке и ловит много солнца. Почти всё меню вкусное, кроме мяса (в последний раз, в мае 2026-го, оно всё ещё требовало работы). Но атмосфера отличная, сервис превосходный. Негрони вкусный.",
+      "es": "El sitio está en un punto estupendo y le da mucho el sol. Casi toda la carta está buenísima, salvo la carne (la última vez, en mayo de 2026, todavía necesitaba trabajo). Pero el ambiente es genial y el servicio excelente. El negroni está buenísimo.",
+      "tr": "Mekân çok güzel bir noktada ve bol güneş alıyor. Menünün çoğu lezzetli, et hariç (en son 2026 mayısında hâlâ üzerinde çalışmak gerekiyordu). Ama havası harika, servis mükemmel. Negroni çok lezzetli.",
+      "uk": "Саме місце стоїть у чудовій точці й ловить багато сонця. Майже все меню смачне, крім м'яса (востаннє, у травні 2026-го, воно ще потребувало роботи). Але атмосфера чудова, сервіс відмінний. Негроні смачний."
     },
     "mustOrder": [
       "Bread"
@@ -510,16 +510,16 @@
       "vegan"
     ],
     "blurb": {
-      "az": "Çoxunuz bu hind mətbəxini Bolt Food-dan sınamısınız, amma Köhnə şəhərdəki zal xüsusidir: çox köhnə bina və 1992-ci ildə Estoniyaya köçüb nəhayət 2009-cu ildə öz yerini açan aşpaz.",
-      "hy": "Ձեզնից շատերը փորձել են այս հնդկական խոհանոցը Bolt Food-ի միջոցով, բայց Հին քաղաքի սրահը յուրահատուկ է. շատ հին շենք և խոհարար, ով 1992 թվականին տեղափոխվել է Էստոնիա և վերջապես 2009-ին բացել իր սեփական տեղը։",
-      "en": "Most of you have tried this Indian kitchen from Bolt Food, but the Old Town room is special: a very old building, and a chef who moved to Estonia in 1992 and finally opened his own place in 2009.",
-      "et": "Enamik teist on seda India kööki Bolt Foodist tellinud, aga vanalinna saal on eriline: väga vana maja ja kokk, kes kolis Eestisse 1992. aastal ning avas lõpuks 2009. aastal oma koha.",
-      "fi": "Useimmat teistä ovat kokeilleet tätä intialaista keittiötä Bolt Foodin kautta, mutta vanhankaupungin sali on erityinen: hyvin vanha rakennus ja keittiömestari, joka muutti Viroon vuonna 1992 ja avasi vihdoin oman paikkansa vuonna 2009.",
-      "pt": "A maioria de vocês já provou esta cozinha indiana pelo Bolt Food, mas a sala na Cidade Velha é especial: um prédio muito antigo e um chef que se mudou para a Estónia em 1992 e finalmente abriu a própria casa em 2009.",
-      "ru": "Большинство из вас пробовали эту индийскую кухню из Bolt Food, но зал в Старом городе особенный: очень старое здание и повар, который переехал в Эстонию в 1992 году и наконец открыл своё место в 2009.",
-      "es": "La mayoría habréis probado esta cocina india por Bolt Food, pero el local de la Ciudad Vieja es especial: un edificio muy antiguo y un chef que se mudó a Estonia en 1992 y por fin abrió su propio sitio en 2009.",
-      "tr": "Çoğunuz bu Hint mutfağını Bolt Food'dan denemiştir ama Eski Şehir'deki salon başka: çok eski bir bina ve 1992'de Estonya'ya taşınıp nihayet 2009'da kendi yerini açan bir şef.",
-      "uk": "Більшість із вас пробувала цю індійську кухню через Bolt Food, але зал у Старому місті особливий: дуже стара будівля і шеф, який переїхав до Естонії в 1992 році та нарешті відкрив власний заклад у 2009-му."
+      "az": "Çoxunuz bu hind mətbəxini Bolt Food-dan sınamısınız, amma köhnə şəhərdəki zal xüsusidir: çox qədim bina və 1992-ci ildə Estoniyaya köçüb nəhayət 2009-cu ildə öz yerini açan aşpaz. Aşpaz Ventakın dediyi kimi, hind mətbəxinin əsas tərkib hissələri soğan, zəncəfil, pomidor və sarımsaqdır. Soğan bajisini və ofisiantların məsləhət gördüyü hər şeyi tövsiyə edirəm. Onlar həm işlərinin, həm də qonaqpərvərliyin öhdəsindən yaxşı gəlirlər.",
+      "hy": "Ձեզնից շատերը փորձել են այս հնդկական խոհանոցը Bolt Food-ից, բայց Հին քաղաքի սրահը առանձնահատուկ է՝ շատ հին շենք և խոհարար, ով 1992-ին տեղափոխվել է Էստոնիա և վերջապես 2009-ին բացել իր սեփական տեղը։ Ինչպես ասում է խոհարար Վենտակը, հնդկական խոհանոցի հիմնական բաղադրիչներն են սոխը, կոճապղպեղը, լոլիկը և սխտորը։ Խորհուրդ եմ տալիս սոխի բաջին և այն, ինչ մատուցողուհիները կառաջարկեն։ Նրանք լավ են և իրենց գործում, և հյուրընկալության մեջ։",
+      "en": "Most of you have tried this Indian kitchen from Bolt Food, but the Old Town room is special: a very old building, and a chef who moved to Estonia in 1992 and finally opened his own place in 2009. As chef Ventak said main ingredients in indian cuisine are onion, ginger, tomato and garlic. I recommend onion baji and whatever the waitresses recommends. They are good at their job and hospitality.",
+      "et": "Enamik teist on seda India kööki Bolt Foodist proovinud, aga vanalinna saal on eriline: väga vana maja ja kokk, kes kolis 1992. aastal Eestisse ja avas lõpuks 2009. aastal oma koha. Nagu kokk Ventak ütles, on India köögi põhikoostisosad sibul, ingver, tomat ja küüslauk. Soovitan sibula bhajit ja seda, mida ettekandjad parasjagu soovitavad. Nad on head nii oma töös kui ka külalislahkuses.",
+      "fi": "Useimmat teistä ovat kokeilleet tätä intialaista keittiötä Bolt Foodista, mutta vanhankaupungin sali on erityinen: hyvin vanha rakennus ja kokki, joka muutti Viroon 1992 ja avasi vihdoin oman paikkansa 2009. Kuten kokki Ventak sanoi, intialaisen keittiön pääraaka-aineet ovat sipuli, inkivääri, tomaatti ja valkosipuli. Suosittelen sipuli-bhajia ja sitä, mitä tarjoilijat kulloinkin suosittelevat. He ovat hyviä sekä työssään että vieraanvaraisuudessa.",
+      "pt": "A maioria de vós já provou esta cozinha indiana pelo Bolt Food, mas a sala da Cidade Velha é especial: um edifício muito antigo e um chef que se mudou para a Estónia em 1992 e finalmente abriu a própria casa em 2009. Como disse o chef Ventak, os ingredientes principais da cozinha indiana são cebola, gengibre, tomate e alho. Recomendo o onion bhaji e o que as empregadas de mesa sugerirem. São boas no que fazem e a receber quem chega.",
+      "ru": "Большинство из вас пробовало эту индийскую кухню через Bolt Food, но зал в Старом городе особенный: очень старое здание и шеф, который переехал в Эстонию в 1992 году и наконец открыл своё место в 2009-м. Как говорит шеф Вентак, главные ингредиенты индийской кухни это лук, имбирь, помидор и чеснок. Советую луковое баджи и то, что порекомендуют официантки. Они хороши и в работе, и в гостеприимстве.",
+      "es": "La mayoría habéis probado esta cocina india por Bolt Food, pero el comedor de la Ciudad Vieja es especial: un edificio muy antiguo y un chef que se mudó a Estonia en 1992 y por fin abrió su propio sitio en 2009. Como dice el chef Ventak, los ingredientes principales de la cocina india son cebolla, jengibre, tomate y ajo. Recomiendo el onion bhaji y lo que sugieran las camareras. Son buenas en su trabajo y en el trato.",
+      "tr": "Çoğunuz bu Hint mutfağını Bolt Food'dan denemiştir, ama Eski Şehir'deki salon özel: çok eski bir bina ve 1992'de Estonya'ya taşınıp nihayet 2009'da kendi yerini açan bir şef. Şef Ventak'ın dediği gibi, Hint mutfağının ana malzemeleri soğan, zencefil, domates ve sarımsak. Onion bhaji'yi ve garsonların önerdiği her şeyi tavsiye ederim. Hem işlerinde hem de misafirperverlikte iyiler.",
+      "uk": "Більшість із вас куштувала цю індійську кухню через Bolt Food, але зала у Старому місті особлива: дуже стара будівля і шеф, який переїхав до Естонії 1992 року і нарешті відкрив власне місце 2009-го. Як каже шеф Вентак, головні інгредієнти індійської кухні це цибуля, імбир, помідор і часник. Раджу цибулеве баджі й те, що порадять офіціантки. Вони добре знають свою справу і вміють приймати гостей."
     },
     "mustOrder": [
       "Onion bhaji (ask nicely, it's off menu)"
@@ -576,16 +576,16 @@
       "casual"
     ],
     "blurb": {
-      "az": "Elə burada hazırlanan mükafatlı şokoladlar və Suur-Karja küçəsində kiçik şokolad muzeyi. Köhnə şəhərdəki dolu olsa, Telliskividə ikinci yer var. Hər halda çox gözəl məkandır.",
-      "hy": "Մրցանակակիր շոկոլադներ, որոնք պատրաստվում են հենց այստեղ, և փոքրիկ շոկոլադի թանգարան Սուր-Կարյայում։ Կա երկրորդ կետ Թելլիսկիվիում, եթե Հին քաղաքինը մարդաշատ է։ Երկու դեպքում էլ հիանալի վայր է։",
-      "en": "Award-winning chocolates made right here, with a small chocolate museum on Suur-Karja. There is a second spot in Telliskivi if the Old Town one is packed. A really cool place either way.",
-      "et": "Auhinnatud šokolaad, mis valmib kohapeal, ja väike šokolaadimuuseum Suur-Karja tänaval. Telliskivil on teine koht, kui vanalinna oma on rahvast täis. Igal juhul väga lahe paik.",
-      "fi": "Palkittuja suklaita, jotka tehdään täällä paikan päällä, ja pieni suklaamuseo Suur-Karjalla. Telliskivessä on toinen piste, jos vanhankaupungin paikka on täynnä. Todella siisti paikka kummassakin tapauksessa.",
-      "pt": "Chocolates premiados feitos aqui mesmo, com um pequeno museu do chocolate na Suur-Karja. Há um segundo ponto em Telliskivi se o da Cidade Velha estiver cheio. Um lugar muito bacana de qualquer forma.",
-      "ru": "Отмеченный наградами шоколад, который делают прямо здесь, и маленький музей шоколада на улице Суур-Карья. Есть вторая точка в Теллискиви, если в Старом городе многолюдно. В любом случае очень крутое место.",
-      "es": "Bombones premiados hechos aquí mismo, con un pequeño museo del chocolate en Suur-Karja. Hay un segundo local en Telliskivi si el de la Ciudad Vieja está a tope. Un sitio genial en cualquier caso.",
-      "tr": "Ödüllü çikolatalar tam burada üretiliyor, Suur-Karja'da küçük bir çikolata müzesiyle birlikte. Eski Şehir'deki kalabalıksa Telliskivi'de ikinci bir şubesi var. İki türlü de gerçekten havalı bir yer.",
-      "uk": "Відзначені нагородами шоколадні цукерки, зроблені просто тут, і невеликий музей шоколаду на Суур-Карья. Є друга точка в Теллісківі, якщо у Старому місті людно. Класне місце в обох випадках."
+      "az": "Burada, yerində hazırlanan mükafatlı şokoladlar və Suur-Karja küçəsində kiçik şokolad muzeyi. Telliskividə də ikinci məkanları var. Hansına getsən, çox gözəl yerdir. İsti bir şey axtarırsansa, isti şokoladları da kifayət qədər yaxşıdır.",
+      "hy": "Մրցանակակիր շոկոլադներ, որ պատրաստվում են հենց այստեղ, և փոքրիկ շոկոլադի թանգարան Սուուր-Կարյայում։ Երկրորդ տեղը կա Թելլիսկիվիում։ Երկուսն էլ իսկապես հիանալի են։ Իսկ եթե տաք բան ես փնտրում, նրանց տաք շոկոլադը նույնպես շատ լավն է։",
+      "en": "Award-winning chocolates made right here, with a small chocolate museum on Suur-Karja. There is a second spot in Telliskivi. A really cool place either way. Their hot chocolate is quite nice too if you are looking for something warm.",
+      "et": "Auhinnatud šokolaad, mis valmib kohapeal, ja väike šokolaadimuuseum Suur-Karja tänaval. Teine koht on Telliskivil. Kumbki neist on tõeliselt vahva. Kui otsid midagi sooja, on ka nende kuum šokolaad päris hea.",
+      "fi": "Palkittuja suklaita, jotka tehdään tässä samassa paikassa, ja pieni suklaamuseo Suur-Karjalla. Toinen paikka on Telliskivillä. Kumpi tahansa on todella hieno. Jos kaipaat jotain lämmintä, heidän kuuma suklaansa on sekin oikein hyvää.",
+      "pt": "Chocolates premiados feitos ali mesmo, com um pequeno museu do chocolate na Suur-Karja. Há um segundo espaço em Telliskivi. Qualquer um deles é um sítio muito bom. O chocolate quente também é bastante bom, se procurar algo quente.",
+      "ru": "Отмеченный наградами шоколад, который делают прямо здесь, и маленький музей шоколада на Суур-Карья. Есть и второе место в Теллискиви. Любое из них по-настоящему классное. А если хочется чего-то тёплого, горячий шоколад у них тоже очень неплохой.",
+      "es": "Chocolates premiados hechos ahí mismo, con un pequeño museo del chocolate en Suur-Karja. Hay un segundo local en Telliskivi. Cualquiera de los dos es un sitio estupendo. Y si buscas algo caliente, su chocolate a la taza también está muy bueno.",
+      "tr": "Tam burada yapılan ödüllü çikolatalar ve Suur-Karja'da küçük bir çikolata müzesi. Telliskivi'de ikinci bir şubeleri var. Hangisine gidersen git, gerçekten güzel bir yer. Sıcak bir şey arıyorsan sıcak çikolataları da bir hayli iyi.",
+      "uk": "Відзначений нагородами шоколад, який роблять просто тут, і маленький музей шоколаду на Суур-Кар'я. Є й друге місце в Теллісківі. Будь-яке з них по-справжньому класне. А якщо хочеться чогось теплого, гарячий шоколад у них теж дуже непоганий."
     },
     "mustOrder": [
       "Bean-to-bar chocolate"
@@ -681,16 +681,16 @@
       "casual"
     ],
     "blurb": {
-      "az": "Telliskividə mangal piştaxtası, fəlafeli həqiqətən yaxşıdır. Həm də mal ciyəri və mangal menyusunda adətən görmədiyin başqa ətlərlə təcrübələr aparırlar, ona görə nəyin yeni olduğunu soruş.",
-      "hy": "Խորովածի վաճառակետ Թելլիսկիվիում՝ իսկապես լավ ֆալաֆելով։ Այստեղ նաև փորձարկումներ են անում տավարի լյարդի և այլ կտորների հետ, որոնք սովորաբար չես տեսնի գրիլի մենյուում, այնպես որ հարցրեք, թե ինչ նոր բան կա։",
-      "en": "A BBQ counter in Telliskivi with really nice falafel. They also run experiments with beef liver and other cuts you don't usually see on a grill menu, so ask what's new.",
-      "et": "Grillilett Telliskivil, kus on väga hea falafel. Nad katsetavad ka veise maksa ja muude tükkidega, mida grillimenüüs tavaliselt ei näe, nii et küsi, mis uut on.",
-      "fi": "Grillitiski Telliskivessä ja todella hyvä falafel. He kokeilevat myös naudan maksaa ja muita paloja, joita ei yleensä näe grillimenussa, joten kysy mitä uutta on.",
-      "pt": "Um balcão de churrasco em Telliskivi com um falafel muito bom. Também fazem experiências com fígado de vaca e outros cortes que raramente aparecem num menu de grelhados, por isso pergunte o que há de novo.",
-      "ru": "Гриль-стойка в Теллискиви с очень хорошим фалафелем. Здесь также экспериментируют с говяжьей печенью и другими отрубами, которые редко встретишь в меню гриля, так что спрашивайте, что нового.",
-      "es": "Una parrilla en Telliskivi con un falafel muy bueno. También hacen experimentos con hígado de ternera y otros cortes que no sueles ver en una carta de brasa, así que pregunta qué hay nuevo.",
-      "tr": "Telliskivi'de bir mangal tezgâhı; falafeli gerçekten güzel. Dana ciğeri ve ızgara menülerinde pek görmediğiniz başka parçalarla da deneyler yapıyorlar, yeni ne var diye sorun.",
-      "uk": "Мангал у Теллісківі з дуже добрим фалафелем. Тут також експериментують із яловичою печінкою та іншими відрубами, яких зазвичай не побачиш у меню гриля, тож питайте, що нового."
+      "az": "Telliskividə çox gözəl fəlafel verən köşk. Həm də mal ciyəri və qril menyusunda adətən görmədiyin başqa ət hissələri ilə eksperimentlər aparırlar, ona görə nə yenilik olduğunu soruş. Sahibi mehribandır, özünü doğma hiss edəcəksən.",
+      "hy": "Թելլիսկիվիում կրպակ՝ իսկապես համեղ ֆալաֆելով։ Նաև փորձարկումներ են անում տավարի լյարդով և այլ կտորներով, որոնք սովորաբար չես տեսնի գրիլի մենյուում, այնպես որ հարցրու՝ ինչ նոր բան կա։ Տերը բարեհամբույր է, և դու քեզ ցանկալի հյուր կզգաս։",
+      "en": "A kiosk in Telliskivi with really nice falafel. They also run experiments with beef liver and other cuts you don't usually see on a grill menu, so ask what's new. The owner is friendly and you would feel welcome.",
+      "et": "Kiosk Telliskivil, kus on tõesti hea falafel. Nad katsetavad ka veisemaksa ja muude jaotustükkidega, mida grillimenüüs tavaliselt ei näe, nii et küsi, mis uut on. Omanik on sõbralik ja sa tunned end oodatuna.",
+      "fi": "Kioski Telliskivillä, jossa on todella hyvää falafelia. He kokeilevat myös naudanmaksaa ja muita paloja, joita grillilistalla ei yleensä näe, joten kysy mitä uutta on. Omistaja on ystävällinen ja olosi on tervetullut.",
+      "pt": "Um quiosque em Telliskivi com falafel muito bom. Também fazem experiências com fígado de vaca e outras peças que normalmente não se veem num menu de grelhados, por isso pergunte o que há de novo. O dono é simpático e sente-se bem-vindo.",
+      "ru": "Киоск в Теллискиви с действительно хорошим фалафелем. Ещё они экспериментируют с говяжьей печенью и другими отрубами, которые обычно не попадают в гриль-меню, так что спроси, что новенького. Хозяин приветливый, и тебе будут рады.",
+      "es": "Un quiosco en Telliskivi con un falafel buenísimo. También experimentan con hígado de ternera y otros cortes que no suelen aparecer en una carta de parrilla, así que pregunta qué hay de nuevo. El dueño es majo y te hace sentir bienvenido.",
+      "tr": "Telliskivi'de gerçekten güzel falafel yapan bir büfe. Ayrıca dana ciğeri ve ızgara menüsünde pek görmediğin başka parçalarla denemeler yapıyorlar, o yüzden yeni ne var diye sor. Sahibi cana yakın, kendini evinde hissediyorsun.",
+      "uk": "Кіоск у Теллісківі зі справді смачним фалафелем. Ще вони експериментують із яловичою печінкою та іншими відрубами, яких зазвичай не побачиш у гриль-меню, тож спитай, що новенького. Власник привітний, і ти почуватимешся бажаним гостем."
     },
     "mustOrder": [
       "Falafel",
@@ -717,16 +717,16 @@
       "date"
     ],
     "blurb": {
-      "az": "Səhər yeməyi, nahar, pizza və sendviçlər, bütün gün Telliskivinin ən köhnə binalarından birində. Adı elə binanın özüdür: F korpusu. Zal yemək qədər gözəldir, terras isə zal qədər. Çox tövsiyə edirəm.",
-      "hy": "Նախաճաշ, ճաշ, պիցցա և սենդվիչներ, ամբողջ օրը Թելլիսկիվիի ամենահին շենքերից մեկում։ Անունն ինքը շենքն է. F կորպուս։ Սրահը ուտելիքից պակաս լավը չէ, իսկ պատշգամբը՝ սրահից։ Խիստ խորհուրդ եմ տալիս։",
-      "en": "Breakfast, lunch, pizza and sandwiches, all day in one of the oldest buildings in Telliskivi. The name is the building: block F. The room is as good as the food and the terrace is as good as the room. Highly recommended.",
-      "et": "Hommikusöök, lõuna, pitsa ja võileivad, terve päev ühes Telliskivi vanimas hoones. Nimi ongi hoone: F-korpus. Ruum on sama hea kui toit ja terrass sama hea kui ruum. Väga soovitan.",
-      "fi": "Aamiaista, lounasta, pizzaa ja voileipiä koko päivän, yhdessä Telliskiven vanhimmista rakennuksista. Nimi on rakennus: kortteli F. Sali on yhtä hyvä kuin ruoka ja terassi yhtä hyvä kuin sali. Suosittelen lämpimästi.",
-      "pt": "Pequeno-almoço, almoço, pizza e sanduíches, o dia todo num dos edifícios mais antigos de Telliskivi. O nome é o próprio edifício: bloco F. A sala é tão boa quanto a comida e a esplanada tão boa quanto a sala. Recomendo muito.",
-      "ru": "Завтрак, обед, пицца и сэндвичи, весь день в одном из самых старых зданий Теллискиви. Название и есть здание: корпус F. Зал не хуже еды, а терраса не хуже зала. Очень рекомендую.",
-      "es": "Desayuno, comida, pizza y bocadillos, todo el día en uno de los edificios más antiguos de Telliskivi. El nombre es el edificio: bloque F. La sala está a la altura de la comida y la terraza está a la altura de la sala. Muy recomendable.",
-      "tr": "Telliskivi'nin en eski binalarından birinde, gün boyu kahvaltı, öğle yemeği, pizza ve sandviç. İsim binadan geliyor: F blok. Salon yemek kadar iyi, terası da salon kadar iyi. Kesinlikle tavsiye ederim.",
-      "uk": "Сніданок, обід, піца і сендвічі, цілий день в одній із найстаріших будівель Теллісківі. Назва це сама будівля: корпус F. Зал не гірший за їжу, а тераса не гірша за зал. Дуже рекомендую."
+      "az": "Səhər yeməyi, nahar, pizza və sendviçlər, bütün gün Telliskivinin ən köhnə binalarından birində. Bu yerdə hər şey yaxşıdır, pelmeni isə hamının bir dəfə sifariş etməli olduğu yeməkdir. Adı elə binanın özüdür: F korpusu. Zal yemək qədər gözəldir, terras isə zal qədər. Çox tövsiyə edirəm.",
+      "hy": "Նախաճաշ, ճաշ, պիցցա և սենդվիչներ, ամբողջ օրը Թելլիսկիվիի ամենահին շենքերից մեկում։ Այս տեղում ամեն ինչ լավն է, իսկ պելմենին այն է, ինչ բոլորը պետք է գոնե մեկ անգամ պատվիրեն։ Անունն ինքը շենքն է. F կորպուս։ Սրահը ուտելիքից պակաս լավը չէ, իսկ պատշգամբը՝ սրահից։ Խիստ խորհուրդ եմ տալիս։",
+      "en": "Breakfast, lunch, pizza and sandwiches, all day in one of the oldest buildings in Telliskivi. Everything is good in this place, pelmeni is the one everyone should order once. The name is the building: block F. The room is as good as the food and the terrace is as good as the room. Highly recommended.",
+      "et": "Hommikusöök, lõuna, pitsa ja võileivad, terve päev ühes Telliskivi vanimas hoones. Selles kohas on kõik hea, pelmeenid on need, mida igaüks peaks korra tellima. Nimi ongi hoone: F-korpus. Ruum on sama hea kui toit ja terrass sama hea kui ruum. Väga soovitan.",
+      "fi": "Aamiaista, lounasta, pizzaa ja voileipiä koko päivän, yhdessä Telliskiven vanhimmista rakennuksista. Tässä paikassa kaikki on hyvää, ja pelmenit ovat ne, jotka jokaisen kannattaa tilata kerran. Nimi on rakennus: kortteli F. Sali on yhtä hyvä kuin ruoka ja terassi yhtä hyvä kuin sali. Suosittelen lämpimästi.",
+      "pt": "Pequeno-almoço, almoço, pizza e sanduíches, o dia todo num dos edifícios mais antigos de Telliskivi. Neste sítio tudo é bom, e os pelmeni são o que toda a gente devia pedir pelo menos uma vez. O nome é o próprio edifício: bloco F. A sala é tão boa quanto a comida e a esplanada tão boa quanto a sala. Recomendo muito.",
+      "ru": "Завтрак, обед, пицца и сэндвичи, весь день в одном из самых старых зданий Теллискиви. В этом месте хорошо всё, а пельмени стоит заказать хотя бы раз каждому. Название и есть здание: корпус F. Зал не хуже еды, а терраса не хуже зала. Очень рекомендую.",
+      "es": "Desayuno, comida, pizza y bocadillos, todo el día en uno de los edificios más antiguos de Telliskivi. Aquí todo está bueno, y los pelmeni son lo que todo el mundo debería pedir al menos una vez. El nombre es el edificio: bloque F. La sala está a la altura de la comida y la terraza está a la altura de la sala. Muy recomendable.",
+      "tr": "Telliskivi'nin en eski binalarından birinde, gün boyu kahvaltı, öğle yemeği, pizza ve sandviç. Burada her şey güzel, pelmeni ise herkesin bir kez sipariş etmesi gereken yemek. İsim binadan geliyor: F blok. Salon yemek kadar iyi, terası da salon kadar iyi. Kesinlikle tavsiye ederim.",
+      "uk": "Сніданок, обід, піца і сендвічі, цілий день в одній із найстаріших будівель Теллісківі. У цьому місці добре все, а пельмені варто замовити хоча б раз кожному. Назва це сама будівля: корпус F. Зал не гірший за їжу, а тераса не гірша за зал. Дуже рекомендую."
     },
     "mustOrder": [],
     "reel": "",
@@ -860,16 +860,16 @@
       "date"
     ],
     "blurb": {
-      "az": "Hər şeyin yerli istehsalçılardan gəldiyi yüksək mətbəx. Öz pətəkləri və öz fermentasiyaları var. Yaşıl Michelin ulduzu zarafat deyil, yuxarıdan görünən mənzərə isə tək başına gəlməyə dəyər.",
-      "hy": "Բարձր խոհանոց, որտեղ ամեն ինչ տեղական արտադրողներից է, սեփական մեղվափեթակներով և սեփական խմորումով։ Միշլենի կանաչ աստղը կատակ չէ, իսկ վերևից բացվող տեսարանն ինքնին արժե ճամփորդությունը։",
-      "en": "Fine dining where everything comes from local producers, with their own beehives and their own fermentation. The green Michelin star is no joke, and the view from the top is worth the trip on its own.",
-      "et": "Kõrgköök, kus kõik tuleb kohalikelt tootjatelt, oma mesitarude ja oma fermentatsiooniga. Roheline Michelini täht ei ole nali ja vaade ülevalt on juba omaette põhjus tulla.",
-      "fi": "Fine diningia, jossa kaikki tulee paikallisilta tuottajilta, omat mehiläispesät ja oma fermentointi mukaan lukien. Vihreä Michelin-tähti ei ole vitsi, ja näkymä ylhäältä on jo itsessään matkan arvoinen.",
-      "pt": "Alta gastronomia em que tudo vem de produtores locais, com colmeias próprias e fermentação própria. A estrela verde Michelin não é brincadeira, e a vista lá de cima já justifica a subida.",
-      "ru": "Высокая кухня, где всё от местных производителей, со своими ульями и собственной ферментацией. Зелёная звезда Michelin получена заслуженно, а вид сверху сам по себе стоит поездки.",
-      "es": "Alta cocina donde todo viene de productores locales, con sus propias colmenas y su propia fermentación. La estrella verde Michelin no es ninguna broma, y las vistas desde arriba ya justifican la visita por sí solas.",
-      "tr": "Her şeyin yerel üreticiden geldiği bir fine dining; kendi arı kovanları, kendi fermantasyonları var. Yeşil Michelin yıldızı şaka değil ve en üstteki manzara tek başına yolu değer kılıyor.",
-      "uk": "Висока кухня, де все від місцевих виробників, із власними вуликами і власною ферментацією. Зелена зірка Мішлен це не жарт, а вид згори вартий поїздки сам по собі."
+      "az": "Hər şeyin yerli istehsalçılardan gəldiyi yüksək mətbəx. Öz pətəkləri və öz fermentasiyaları var. Yaşıl Michelin ulduzu zarafat deyil, yuxarıdan görünən mənzərə isə tək başına gəlməyə dəyər. Baş aşpaz həm də Michelin-in gənc aşpaz mükafatını alıb.",
+      "hy": "Բարձր խոհանոց, որտեղ ամեն ինչ տեղական արտադրողներից է, սեփական մեղվափեթակներով և սեփական խմորումով։ Միշլենի կանաչ աստղը կատակ չէ, իսկ վերևից բացվող տեսարանն ինքնին արժե ճամփորդությունը։ Գլխավոր խոհարարը նաև ստացել է Միշլենի երիտասարդ խոհարարի մրցանակը։",
+      "en": "Fine dining where everything comes from local producers, with their own beehives and their own fermentation. The green Michelin star is no joke, and the view from the top is worth the trip on its own. Also head chef also got young chef Michelin award.",
+      "et": "Kõrgköök, kus kõik tuleb kohalikelt tootjatelt, oma mesitarude ja oma fermentatsiooniga. Roheline Michelini täht ei ole nali ja vaade ülevalt on juba omaette põhjus tulla. Peakokk on saanud ka Michelini noore koka auhinna.",
+      "fi": "Fine diningia, jossa kaikki tulee paikallisilta tuottajilta, omat mehiläispesät ja oma fermentointi mukaan lukien. Vihreä Michelin-tähti ei ole vitsi, ja näkymä ylhäältä on jo itsessään matkan arvoinen. Keittiömestari on saanut myös Michelinin nuoren kokin palkinnon.",
+      "pt": "Alta gastronomia em que tudo vem de produtores locais, com colmeias próprias e fermentação própria. A estrela verde Michelin não é brincadeira, e a vista lá de cima já justifica a subida. O chefe de cozinha recebeu também o prémio de jovem chef da Michelin.",
+      "ru": "Высокая кухня, где всё от местных производителей, со своими ульями и собственной ферментацией. Зелёная звезда Michelin получена заслуженно, а вид сверху сам по себе стоит поездки. Шеф-повар также получил награду Michelin для молодых поваров.",
+      "es": "Alta cocina donde todo viene de productores locales, con sus propias colmenas y su propia fermentación. La estrella verde Michelin no es ninguna broma, y las vistas desde arriba ya justifican la visita por sí solas. El jefe de cocina también se llevó el premio Michelin al joven chef.",
+      "tr": "Her şeyin yerel üreticiden geldiği bir fine dining; kendi arı kovanları, kendi fermantasyonları var. Yeşil Michelin yıldızı şaka değil ve en üstteki manzara tek başına yolu değer kılıyor. Şef ayrıca Michelin genç şef ödülünü de aldı.",
+      "uk": "Висока кухня, де все від місцевих виробників, із власними вуликами і власною ферментацією. Зелена зірка Мішлен це не жарт, а вид згори вартий поїздки сам по собі. Шеф-кухар також отримав нагороду Michelin для молодих кухарів."
     },
     "mustOrder": [],
     "reel": "",
@@ -973,16 +973,16 @@
       "fine-dining"
     ],
     "blurb": {
-      "az": "Rotermannidə müasir gürcü mətbəxi.",
-      "hy": "Ժամանակակից վրացական խոհանոց Ռոտերմաննիում։",
-      "en": "Modern Georgian cuisine in Rotermanni.",
-      "et": "Kaasaegne gruusia köök Rotermannis.",
-      "fi": "Modernia georgialaista keittiötä Rotermannissa.",
-      "pt": "Cozinha georgiana moderna em Rotermanni.",
-      "ru": "Современная грузинская кухня в Ротерманни.",
-      "es": "Cocina georgiana moderna en Rotermanni.",
-      "tr": "Rotermanni'de modern Gürcü mutfağı.",
-      "uk": "Сучасна грузинська кухня в Ротерманні."
+      "az": "Rotermannidə müasir gürcü mətbəxi. Acaruli və xinkali bura yenidən qayıtmağın səbəbidir.",
+      "hy": "Ժամանակակից վրացական խոհանոց Ռոտերմանիում։ Աջարուլին և խինկալին պատճառ են նորից վերադառնալու։",
+      "en": "Modern Georgian cuisine in Rotermanni. Adjaruli and khinkali are the reasons to revisit the place again.",
+      "et": "Moodne Gruusia köök Rotermannis. Adžaruli ja hinkalid on põhjus, miks siia uuesti tulla.",
+      "fi": "Modernia georgialaista ruokaa Rotermannissa. Adžaruli ja hinkalit ovat syy palata paikkaan uudestaan.",
+      "pt": "Cozinha georgiana moderna no Rotermann. O adjaruli e os khinkali são a razão para voltar ao sítio.",
+      "ru": "Современная грузинская кухня в Ротерманни. Аджарули и хинкали это повод вернуться сюда снова.",
+      "es": "Cocina georgiana moderna en Rotermann. El adjaruli y los khinkali son el motivo para volver al sitio.",
+      "tr": "Rotermanni'de modern Gürcü mutfağı. Acaruli ve hinkali, buraya tekrar gelmenin sebebi.",
+      "uk": "Сучасна грузинська кухня в Ротерманні. Аджарулі та хінкалі це причина повернутися сюди знову."
     },
     "mustOrder": [
       "Khinkali",
@@ -1047,16 +1047,16 @@
       "casual"
     ],
     "blurb": {
-      "az": "Hans mənim təvazökar evim deməkdir. Bu birindən əmin deyiləm.",
-      "hy": "Hans-ը նշանակում է իմ համեստ տուն։ Այս վայրի հարցում վստահ չեմ։",
-      "en": "Hans means my humble home. Not sure about this one.",
-      "et": "Hans tähendab minu tagasihoidlikku kodu. Selles kohas ma päris kindel ei ole.",
-      "fi": "Hans tarkoittaa vaatimatonta kotiani. En ole varma tästä.",
-      "pt": "Hans quer dizer a minha humilde casa. Não tenho a certeza sobre este.",
-      "ru": "Hans означает мой скромный дом. В этом месте я до конца не уверен.",
-      "es": "Hans significa mi humilde casa. Este no lo tengo claro.",
-      "tr": "Hans, mütevazı evim demek. Bu konuda kararsızım.",
-      "uk": "Hans означає мій скромний дім. Щодо цього місця я не впевнений."
+      "az": "Hans mənim təvazökar evim deməkdir. Bu birindən əmin deyiləm. Bəzən çox yaxşı olur, bəzən isə məyus edir. Başqalarından da eşitmişəm: kimisi çox dadlı olduğunu deyir, kimisi isə məyus qaldığını. Yenə də bir dəfə sınayın, mən onların mal ətini bəyəndim.",
+      "hy": "Hans-ը նշանակում է իմ համեստ տուն։ Այս վայրի հարցում վստահ չեմ։ Երբեմն շատ լավն է, երբեմն՝ հիասթափեցնում է։ Ուրիշներից էլ եմ լսել. ոմանք ասում են՝ շատ համեղ է, ոմանք էլ՝ որ հիասթափվել են։ Այնուամենայնիվ արժե փորձել. ինձ դուր եկավ նրանց տավարի միսը։",
+      "en": "Hans means my humble home. Not sure about this one. Sometimes it is super good, sometimes it disappointed. I heard from other people too, it is super delicious, but some said that they were disappointed too. Still give a try, I liked their beef.",
+      "et": "Hans tähendab minu tagasihoidlikku kodu. Selles kohas ma päris kindel ei ole. Vahel on see väga hea, vahel valmistab pettumuse. Olen kuulnud ka teistelt: mõni ütleb, et väga maitsev, mõni jälle, et pettus. Ikkagi tasub proovida, mulle nende veiseliha meeldis.",
+      "fi": "Hans tarkoittaa vaatimatonta kotiani. En ole varma tästä. Välillä se on tosi hyvää, välillä pettymys. Olen kuullut muiltakin: osa sanoo sitä todella herkulliseksi, osa taas pettyi. Kokeile silti, minä pidin heidän naudanlihastaan.",
+      "pt": "Hans quer dizer a minha humilde casa. Não tenho a certeza sobre este. Às vezes está muito bom, às vezes desilude. Também ouvi de outras pessoas: uns dizem que é delicioso, outros que ficaram desiludidos. Ainda assim vale a pena experimentar, gostei da carne de vaca deles.",
+      "ru": "Hans означает мой скромный дом. В этом месте я до конца не уверен. Иногда здесь очень хорошо, иногда разочаровывает. Слышал и от других: кто-то говорит, что очень вкусно, кто-то остался разочарован. Всё равно попробуйте, мне понравилась их говядина.",
+      "es": "Hans significa mi humilde casa. Este no lo tengo claro. A veces está buenísimo, a veces decepciona. También se lo he oído a otros: unos dicen que está riquísimo, otros que se quedaron decepcionados. Aun así, dale una oportunidad; a mí me gustó su ternera.",
+      "tr": "Hans, mütevazı evim demek. Bu konuda kararsızım. Bazen çok iyi oluyor, bazen hayal kırıklığı. Başkalarından da duydum: kimi çok lezzetli diyor, kimi hayal kırıklığına uğradığını söylüyor. Yine de bir deneyin, ben etlerini beğendim.",
+      "uk": "Hans означає мій скромний дім. Щодо цього місця я не впевнений. Іноді тут дуже добре, іноді розчаровує. Чув і від інших: хтось каже, що дуже смачно, хтось лишився розчарованим. Усе одно спробуйте, мені сподобалася їхня яловичина."
     },
     "mustOrder": [
       "Dumplings"
@@ -1116,16 +1116,16 @@
       "casual"
     ],
     "blurb": {
-      "az": "Köhnə şəhərdə, Müürivahe küçəsində yapon üsulu kiçik boşqablar. Qızılbalıq çox gözəldir və masaya gələn bütün digər dadlar da eyni dərəcədə yaxşıdır.",
-      "hy": "Ճապոնական փոքր ափսեներ Մյուրիվահեում, Հին քաղաքում։ Սաղմոնը հրաշալի է, և սեղանին եկած մնացած բոլոր համերը նույնքան լավն էին։",
-      "en": "Japanese small plates on Müürivahe, in the Old Town. The salmon is lovely, and every other taste that came to the table was just as good.",
-      "et": "Jaapani väikesed road Müürivahel vanalinnas. Lõhe on maitsev ja kõik ülejäänud maitsed, mis lauda jõudsid, olid sama head.",
-      "fi": "Japanilaisia pieniä annoksia Müürivahella vanhassakaupungissa. Lohi on herkullista, ja kaikki muutkin maut, jotka pöytään tulivat, olivat yhtä hyviä.",
-      "pt": "Pratinhos japoneses na Müürivahe, na cidade velha. O salmão é ótimo, e todos os outros sabores que chegaram à mesa estavam tão bons quanto.",
-      "ru": "Японские маленькие тарелки на Мюйривахе, в Старом городе. Лосось хорош, и все остальные вкусы, что приходили на стол, ничуть не хуже.",
-      "es": "Platos pequeños japoneses en Müürivahe, en el casco antiguo. El salmón está buenísimo, y todos los demás sabores que llegaron a la mesa estaban igual de bien.",
-      "tr": "Eski şehirde, Müürivahe'de Japon usulü küçük tabaklar. Somon çok güzel ve masaya gelen diğer bütün tatlar da en az onun kadar iyi.",
-      "uk": "Японські маленькі тарілки на Мюйривахе, у Старому місті. Лосось смачний, і всі інші смаки, що приходили на стіл, були такі самі добрі."
+      "az": "Köhnə şəhərdə, Müürivahe küçəsində yapon kiçik boşqabları. Qızılbalıq çox gözəldir, masaya gələn hər dad da eyni dərəcədə yaxşı idi. Beş nəfərlə get, hər şeydən sifariş ver və dadına bax.",
+      "hy": "Ճապոնական փոքր ուտեստներ Մյուրիվահեում, Հին քաղաքում։ Սաղմոնը հիասքանչ է, իսկ սեղանին եկած մյուս բոլոր համերը նույնքան լավն էին։ Գնա հինգ հոգով, պատվիրիր ամեն ինչ և փորձիր։",
+      "en": "Japanese small plates on Müürivahe, in the Old Town. The salmon is lovely, and every other taste that came to the table was just as good. Go with 5 people, and order everything and try.",
+      "et": "Jaapani väikesed road Müürivahe tänaval, vanalinnas. Lõhe on imeline ja iga teine maitse, mis lauale jõudis, oli sama hea. Mine viiekesi, telli kõik ja proovi läbi.",
+      "fi": "Japanilaisia pieniä annoksia Müürivahella, vanhassakaupungissa. Lohi on ihana, ja jokainen muukin pöytään tullut maku oli yhtä hyvä. Mene viiden hengen porukalla, tilaa kaikki ja maistele.",
+      "pt": "Pequenos pratos japoneses na Müürivahe, na Cidade Velha. O salmão é ótimo e todos os outros sabores que chegaram à mesa estavam igualmente bons. Vá com cinco pessoas, peça tudo e prove.",
+      "ru": "Японские маленькие тарелки на Мюйривахе, в Старом городе. Лосось прекрасен, и всё остальное, что доехало до стола, было не хуже. Идите впятером, закажите всё и попробуйте.",
+      "es": "Platos pequeños japoneses en Müürivahe, en la Ciudad Vieja. El salmón es una delicia, y todo lo demás que llegó a la mesa estaba igual de bueno. Id cinco personas, pedid de todo y probadlo.",
+      "tr": "Eski Şehir'de, Müürivahe'de Japon usulü küçük tabaklar. Somon çok güzel ve masaya gelen diğer bütün tatlar da en az onun kadar iyiydi. Beş kişi gidin, her şeyden söyleyip deneyin.",
+      "uk": "Японські маленькі тарілки на Мюйрівахе, у Старому місті. Лосось чудовий, і все інше, що доїхало до столу, було не гіршим. Ідіть уп'ятьох, замовте все й спробуйте."
     },
     "mustOrder": [
       "Salmon Ponzu",
@@ -1229,16 +1229,16 @@
       "casual"
     ],
     "blurb": {
-      "az": "Köhnə şəhərdə ailəlik ölçüdə peçenye. Hər iş günü cəmi 300 ədəd hazırlayırlar.",
-      "hy": "Ամբողջ ընտանիքի չափ թխվածքաբլիթ Հին քաղաքում։ Աշխատանքային օրերին պատրաստում են ընդամենը 300 հատ։",
-      "en": "A family-size cookie in the Old Town. They only prepare 300 every working day.",
-      "et": "Peresuuruses küpsis vanalinnas. Neid valmib igal tööpäeval ainult 300.",
-      "fi": "Perheenkokoinen keksi vanhassakaupungissa. Niitä tehdään vain 300 jokaisena työpäivänä.",
-      "pt": "Um cookie do tamanho de uma família na Cidade Velha. Fazem apenas 300 por dia útil.",
-      "ru": "Печенье размером на всю семью в Старом городе. Их готовят всего 300 штук в рабочий день.",
-      "es": "Una galleta de tamaño familiar en la Ciudad Vieja. Solo preparan 300 cada día laborable.",
-      "tr": "Eski Şehir'de aile boyu kurabiye. Her iş gününde sadece 300 tane hazırlıyorlar.",
-      "uk": "Печиво розміром на всю сім’ю у Старому місті. Роблять лише 300 штук щоденно в робочі дні."
+      "az": "Köhnə şəhərdə ailəlik ölçüdə peçenye. Açıq olduqları gün cəmi 300 ədəd hazırlayırlar. Yeri açıq görsən, adi peçenyedən götür və hamıya payla. Bir dənə hamıya bəs edir.",
+      "hy": "Ամբողջ ընտանիքի չափ թխվածքաբլիթ Հին քաղաքում։ Երբ բաց են, պատրաստում են ընդամենը 300 հատ։ Եթե տեղը բաց տեսնես, վերցրու սովորական թխվածքաբլիթը և կիսվիր մյուսների հետ։ Մեկը բավական է բոլորի համար։",
+      "en": "A family-size cookie in the Old Town. They only prepare 300 if they are open. If you see the place open, grab usual cookie, and share with the people. One is enough for everybody.",
+      "et": "Peresuuruses küpsis vanalinnas. Avatud päeval valmib neid ainult 300. Kui näed, et koht on lahti, võta tavaline küpsis ja jaga see teistega. Ühest jätkub kõigile.",
+      "fi": "Perheenkokoinen keksi vanhassakaupungissa. Auki ollessaan he tekevät niitä vain 300. Jos näet paikan auki, ota tavallinen keksi ja jaa se muiden kanssa. Yksi riittää kaikille.",
+      "pt": "Um biscoito do tamanho de uma família na Cidade Velha. Quando estão abertos, fazem apenas 300. Se vir o sítio aberto, leve o biscoito do costume e reparta pelo pessoal. Um chega para todos.",
+      "ru": "Печенье размером на всю семью в Старом городе. Когда они открыты, готовят всего 300 штук. Увидишь, что место открыто, бери обычное печенье и дели на всех. Одного хватает всем.",
+      "es": "Una galleta de tamaño familiar en la Ciudad Vieja. Cuando abren, solo preparan 300. Si ves el sitio abierto, pide la galleta normal y compártela con la gente. Con una hay para todos.",
+      "tr": "Eski Şehir'de aile boyu kurabiye. Açık olduklarında sadece 300 tane hazırlıyorlar. Mekânı açık görürsen normal kurabiyeden al ve herkesle paylaş. Bir tanesi hepinize yeter.",
+      "uk": "Печиво розміром на всю сім’ю у Старому місті. Коли відчинено, роблять лише 300 штук. Побачиш місце відчиненим, бери звичайне печиво і ділися з усіма. Одного вистачає на всіх."
     },
     "mustOrder": [
       "Family size cookie"
@@ -1296,16 +1296,16 @@
       "bakery"
     ],
     "blurb": {
-      "az": "Telliskivi küncündə restoran, çörəkxana və bar: döşəmədən tavana şüşə, hər yerdə bitkilər və səkidə masalar. Yüngül Asiya toxunuşu olan Aralıq dənizi mətbəxi, hər yeməyin yanında isə çörək və özlərinin hazırladığı hummus. Mən bura nahara gəlirəm: qısa çap olunmuş siyahı və heç biri on avrodan baha deyil.",
-      "hy": "Ռեստորան, հացատուն և բար Թելլիսկիվիի անկյունում. հատակից մինչև առաստաղ ապակի, բույսեր ամենուր և սեղաններ մայթին։ Միջերկրածովյան խոհանոց թեթև ասիական երանգով, և ամեն ուտեստի հետ հաց ու սեփական հումուս։ Ես այստեղ գալիս եմ ճաշի համար։ Կարճ տպագիր ցանկ, և դրանում ոչինչ տասը եվրոյից թանկ չէ։",
-      "en": "Restaurant, bakery and bar on the Telliskivi corner: floor to ceiling glass, plants everywhere and tables out on the pavement. Mediterranean cooking with a light Asian touch, and bread and their own hummus with every meal. Lunch is what I come for. A short printed list, and nothing on it over ten euros.",
-      "et": "Restoran, pagariäri ja baar Telliskivi nurgal: põrandast laeni klaas, taimed igal pool ja lauad kõnniteel. Vahemere köök kerge Aasia puudutusega ning iga toidu juurde leib ja nende oma hummus. Mina käin siin lõunal. Lühike trükitud nimekiri, millest miski ei lähe üle kümne euro.",
-      "fi": "Ravintola, leipomo ja baari Telliskivin kulmassa: lattiasta kattoon ulottuvat lasit, kasveja joka puolella ja pöytiä jalkakäytävällä. Välimeren keittiötä kevyellä aasialaisella otteella, ja jokaisen annoksen kanssa leipää ja heidän omaa hummustaan. Minä tulen tänne lounaalle. Lyhyt painettu lista, jossa mikään ei ylitä kymmentä euroa.",
-      "pt": "Restaurante, padaria e bar na esquina de Telliskivi: vidro do chão ao tecto, plantas por todo o lado e mesas no passeio. Cozinha mediterrânica com um toque asiático leve, e pão e o hummus da casa com cada prato. Venho cá almoçar. Uma lista curta impressa, e nada acima de dez euros.",
-      "ru": "Ресторан, пекарня и бар на углу Теллискиви: стекло от пола до потолка, растения повсюду и столики прямо на тротуаре. Средиземноморская кухня с лёгким азиатским акцентом, к каждому блюду хлеб и их собственный хумус. Я хожу сюда на обед: короткий распечатанный список, и ничего дороже десяти евро.",
-      "es": "Restaurante, panadería y bar en la esquina de Telliskivi: cristal del suelo al techo, plantas por todas partes y mesas en la acera. Cocina mediterránea con un toque asiático suave, y pan y su propio hummus con cada comida. El menú del mediodía es a lo que vengo. Una lista corta impresa, y nada que pase de diez euros.",
-      "tr": "Telliskivi köşesinde restoran, fırın ve bar: tavandan yere cam, her yerde bitkiler ve kaldırıma çıkan masalar. Hafif Asya dokunuşlu Akdeniz mutfağı, her yemeğin yanında ekmek ve kendi humusları. Ben buraya öğle yemeğine geliyorum. Kısa, basılı bir liste ve hiçbiri on avroyu geçmiyor.",
-      "uk": "Ресторан, пекарня і бар на куті Теллісківі: скло від підлоги до стелі, рослини всюди і столики на тротуарі. Середземноморська кухня з легким азійським відтінком, а до кожної страви хліб і власний хумус. Я приходжу сюди заради обіду. Короткий друкований список, і нічого в ньому дорожче за десять євро."
+      "az": "Telliskivi küncündə restoran, çörəkxana və bar: döşəmədən tavana şüşə, hər yerdə bitkilər və səkidə masalar. Yüngül Asiya toxunuşu olan Aralıq dənizi mətbəxi, hər yeməyin yanında isə çörək və özlərinin hazırladığı hummus. Mən bura nahara gəlirəm.",
+      "hy": "Ռեստորան, հացատուն և բար Թելլիսկիվիի անկյունում. հատակից մինչև առաստաղ ապակի, բույսեր ամենուր և սեղաններ մայթին։ Միջերկրածովյան խոհանոց թեթև ասիական երանգով, և ամեն ուտեստի հետ հաց ու սեփական հումուս։ Ես այստեղ գալիս եմ ճաշի համար։",
+      "en": "Restaurant, bakery and bar on the Telliskivi corner: floor to ceiling glass, plants everywhere and tables out on the pavement. Mediterranean cooking with a light Asian touch, and bread and their own hummus with every meal. Lunch is what I come for.",
+      "et": "Restoran, pagariäri ja baar Telliskivi nurgal: põrandast laeni klaas, taimed igal pool ja lauad kõnniteel. Vahemere köök kerge Aasia puudutusega ning iga toidu juurde leib ja nende oma hummus. Mina käin siin lõunal.",
+      "fi": "Ravintola, leipomo ja baari Telliskivin kulmassa: lattiasta kattoon ulottuvat lasit, kasveja joka puolella ja pöytiä jalkakäytävällä. Välimeren keittiötä kevyellä aasialaisella otteella, ja jokaisen annoksen kanssa leipää ja heidän omaa hummustaan. Minä tulen tänne lounaalle.",
+      "pt": "Restaurante, padaria e bar na esquina de Telliskivi: vidro do chão ao tecto, plantas por todo o lado e mesas no passeio. Cozinha mediterrânica com um toque asiático leve, e pão e o hummus da casa com cada prato. Venho cá almoçar.",
+      "ru": "Ресторан, пекарня и бар на углу Теллискиви: стекло от пола до потолка, растения повсюду и столики прямо на тротуаре. Средиземноморская кухня с лёгким азиатским акцентом, к каждому блюду хлеб и их собственный хумус. Я хожу сюда на обед.",
+      "es": "Restaurante, panadería y bar en la esquina de Telliskivi: cristal del suelo al techo, plantas por todas partes y mesas en la acera. Cocina mediterránea con un toque asiático suave, y pan y su propio hummus con cada comida. El menú del mediodía es a lo que vengo.",
+      "tr": "Telliskivi köşesinde restoran, fırın ve bar: tavandan yere cam, her yerde bitkiler ve kaldırıma çıkan masalar. Hafif Asya dokunuşlu Akdeniz mutfağı, her yemeğin yanında ekmek ve kendi humusları. Ben buraya öğle yemeğine geliyorum.",
+      "uk": "Ресторан, пекарня і бар на куті Теллісківі: скло від підлоги до стелі, рослини всюди і столики на тротуарі. Середземноморська кухня з легким азійським відтінком, а до кожної страви хліб і власний хумус. Я приходжу сюди заради обіду."
     },
     "mustOrder": [],
     "reel": "",
@@ -1475,16 +1475,16 @@
       "casual"
     ],
     "blurb": {
-      "az": "Limanın yaxınlığında fransız çörəkxanası.",
-      "hy": "Ֆրանսիական հացատուն նավահանգստի մոտ։",
-      "en": "French bakery near the port.",
-      "et": "Prantsuse pagariäri sadama lähedal.",
-      "fi": "Ranskalainen leipomo sataman lähellä.",
-      "pt": "Padaria francesa perto do porto.",
-      "ru": "Французская пекарня рядом с портом.",
-      "es": "Panadería francesa cerca del puerto.",
-      "tr": "Limanın yakınında Fransız fırını.",
-      "uk": "Французька пекарня біля порту."
+      "az": "Naməlum bir səbəbdən interyeri sevməsəm də, xəmir işləri çox dadlıdır. Xüsusən də şəkildə gördüyün püstə içlikli xəmir. Yaxşı iş görürlər, ona görə bir dəfə sınayın.",
+      "hy": "Թեև ինչ-ինչ անհայտ պատճառով ինտերիերն ինձ դուր չի գալիս, նրանց թխվածքները համեղ են։ Հատկապես լուսանկարում երևացող պիստակով լցոնված թխվածքը։ Լավ գործ են անում, այնպես որ արժե փորձել։",
+      "en": "Even if I don’t like interior for some unknown reason, their pastries are delicious. Specially pistachio filled pastry you see in the photo. They are doing good stuff, so give a try.",
+      "et": "Kuigi mulle mingil teadmata põhjusel sisekujundus ei meeldi, on nende saiakesed maitsvad. Eriti pistaatsiatäidisega sai, mida fotol näed. Nad teevad head tööd, nii et proovi julgelt.",
+      "fi": "Vaikka en jostain tuntemattomasta syystä pidä sisustuksesta, heidän leivonnaisensa ovat herkullisia. Erityisesti kuvassa näkyvä pistaasitäytteinen leivonnainen. He tekevät hyvää jälkeä, joten kokeile ihmeessä.",
+      "pt": "Mesmo que, por alguma razão que não sei explicar, não goste do interior, os folhados deles são deliciosos. Sobretudo o folhado recheado de pistácio que se vê na foto. Fazem coisa boa, por isso vale a pena experimentar.",
+      "ru": "Пусть мне по какой-то непонятной причине и не нравится интерьер, выпечка у них вкусная. Особенно фисташковая, та самая с фотографии. Делают они хорошо, так что стоит попробовать.",
+      "es": "Aunque por alguna razón que no sé explicar no me gusta el interior, su bollería está buenísima. Sobre todo el hojaldre relleno de pistacho que se ve en la foto. Hacen cosas buenas, así que dale una oportunidad.",
+      "tr": "Nedenini bilmediğim bir sebeple iç mekânı sevmesem de, hamur işleri çok lezzetli. Özellikle fotoğraftaki antep fıstıklı olanı. İyi iş çıkarıyorlar, bir deneyin.",
+      "uk": "Хай мені з якоїсь незрозумілої причини й не подобається інтер'єр, випічка в них смачна. Особливо фісташкова, та сама з фотографії. Роблять вони добре, тож варто спробувати."
     },
     "mustOrder": [
       "Pistachio roll"
@@ -1644,16 +1644,16 @@
     "price": 2,
     "types": [],
     "blurb": {
-      "az": "Köhnə şəhərdə mütləq gedilməli çörəkxana, ən yaxşısı səhər tezdən, hər şey təzə olanda. Yüksək keyfiyyətli kruassan və desertləri ilə tanınır. Keyfiyyətə görə qiymətlər münasibdir, amma kran suyu təklif olunmur və sakit saatlarda həddən artıq sakit hiss oluna bilər.",
-      "hy": "Հին քաղաքում պարտադիր այցելելու հացատուն, ամենալավը առավոտյան, երբ ամեն ինչ ամենաթարմն է։ Հայտնի է բարձրորակ կրուասաններով և աղանդերներով։ Գները ողջամիտ են որակի համար, թեև ծորակի ջուր չեն առաջարկում, և ոչ ժամերին կարող է չափազանց լուռ թվալ։",
-      "en": "A must-go bakery in the Old Town, best in the morning when everything is freshest. Known for high-quality croissants and desserts. Prices are reasonable for the quality, though tap water isn't offered and it can feel too quiet during off-hours.",
-      "et": "Kohustuslik pagariäri vanalinnas, kõige parem hommikul, kui kõik on kõige värskem. Tuntud kvaliteetsete sarvesaiade ja magustoitude poolest. Hinnad on kvaliteedi kohta mõistlikud, kuigi kraanivett ei pakuta ja vaiksematel tundidel võib seal liiga vaikne olla.",
-      "fi": "Pakko käydä -leipomo vanhassakaupungissa, parhaimmillaan aamulla kun kaikki on tuoreinta. Tunnettu laadukkaista croissanteista ja jälkiruoista. Hinnat ovat laatuun nähden kohtuulliset, joskaan hanavettä ei tarjota ja hiljaisina hetkinä voi tuntua liiankin autiolta.",
-      "pt": "Padaria obrigatória na Cidade Velha, melhor de manhã quando está tudo mais fresco. Conhecida pelos croissants e sobremesas de alta qualidade. Os preços são razoáveis para a qualidade, embora não sirvam água da torneira e possa parecer demasiado silenciosa fora das horas de ponta.",
-      "ru": "Обязательная пекарня в Старом городе, лучше всего утром, когда всё самое свежее. Известна качественными круассанами и десертами. Цены разумные для такого уровня, хотя воду из-под крана не предлагают, а в тихие часы там бывает слишком пусто.",
-      "es": "Una panadería obligatoria en la Ciudad Vieja, mejor por la mañana, cuando todo está más fresco. Conocida por sus cruasanes y sus postres de mucha calidad. Los precios son razonables para lo que dan, aunque no ofrecen agua del grifo y a según qué horas puede resultar demasiado silenciosa.",
-      "tr": "Eski Şehir'de mutlaka gidilmesi gereken bir fırın, en iyisi de sabah, her şey en tazeyken. Kaliteli kruvasan ve tatlılarıyla biliniyor. Kalitesine göre fiyatlar makul, ancak musluk suyu verilmiyor ve sakin saatlerde fazla sessiz gelebiliyor.",
-      "uk": "Пекарня у Старому місті, до якої треба зайти, найкраще зранку, коли все найсвіжіше. Відома якісними круасанами й десертами. Ціни розумні як на таку якість, хоча воду з крана не пропонують, а в непікові години тут буває надто тихо."
+      "az": "Köhnə şəhərdə mütləq gedilməli çörəkxana, ən yaxşısı səhər tezdən, hər şey təzə olanda. Yüksək keyfiyyətli kruassan və desertləri ilə tanınır. Keyfiyyətə görə qiymətlər münasibdir, amma bura bağlıdırsa, François Boulangerie məsləhət görürəm. Onlar isə yalnız şənbə günləri işləyir, ona görə uzun növbəyə hazır ol.",
+      "hy": "Հին քաղաքում պարտադիր այցելելու հացատուն, ամենալավը առավոտյան, երբ ամեն ինչ ամենաթարմն է։ Հայտնի է բարձրորակ կրուասաններով և աղանդերներով։ Գները ողջամիտ են որակի համար, բայց եթե այս տեղը փակ է, խորհուրդ կտայի François Boulangerie։ Նրանք բաց են միայն շաբաթ օրերին, այնպես որ պատրաստ եղիր երկար հերթի։",
+      "en": "A must-go bakery in the Old Town, best in the morning when everything is freshest. Known for high-quality croissants and desserts. Prices are reasonable for the quality, but this the place is closed, I would recommend François Boulangerie. But they are open only saturdays, so be ready for a long queue.",
+      "et": "Vanalinna kohustuslik pagariäri, kõige parem hommikul, kui kõik on kõige värskem. Tuntud kvaliteetsete sarvesaiade ja magustoitude poolest. Hinnad on kvaliteedi kohta mõistlikud, aga kui see koht on kinni, soovitaksin François Boulangerie'd. Nemad on lahti ainult laupäeviti, nii et ole valmis pikaks järjekorraks.",
+      "fi": "Vanhankaupungin pakollinen leipomo, parhaimmillaan aamulla, kun kaikki on tuoreinta. Tunnetaan laadukkaista croissanteista ja jälkiruoista. Hinnat ovat laatuun nähden kohtuulliset, mutta jos tämä paikka on kiinni, suosittelisin François Boulangerieta. He ovat auki vain lauantaisin, joten varaudu pitkään jonoon.",
+      "pt": "Uma padaria obrigatória na Cidade Velha, melhor de manhã, quando está tudo mais fresco. Conhecida pelos croissants e sobremesas de grande qualidade. Os preços são razoáveis para a qualidade, mas se este sítio estiver fechado, recomendo a François Boulangerie. Só que só abrem aos sábados, por isso prepare-se para uma fila longa.",
+      "ru": "Обязательная пекарня в Старом городе, лучше всего утром, когда всё самое свежее. Известна качественными круассанами и десертами. Цены разумные для такого качества, но если это место закрыто, я бы посоветовал François Boulangerie. Правда, они открыты только по субботам, так что готовься к длинной очереди.",
+      "es": "Una panadería obligatoria en la Ciudad Vieja, mejor por la mañana, cuando todo está más fresco. Conocida por sus croissants y postres de mucha calidad. Los precios son razonables para lo que ofrece, pero si este sitio está cerrado, yo recomendaría François Boulangerie. Eso sí, solo abren los sábados, así que prepárate para una cola larga.",
+      "tr": "Eski Şehir'de mutlaka gidilmesi gereken bir fırın, en iyisi her şeyin taze olduğu sabah saatlerinde. Kaliteli kruvasan ve tatlılarıyla biliniyor. Fiyatlar kaliteye göre makul, ama burası kapalıysa François Boulangerie'yi öneririm. Onlar da sadece cumartesileri açık, o yüzden uzun bir kuyruğa hazır ol.",
+      "uk": "Обов’язкова пекарня у Старому місті, найкраще вранці, коли все найсвіжіше. Відома якісними круасанами й десертами. Ціни розумні як на таку якість, але якщо це місце зачинене, я б порадив François Boulangerie. Щоправда, вони відчинені лише по суботах, тож готуйся до довгої черги."
     },
     "mustOrder": [
       "Croissant",
@@ -1715,16 +1715,16 @@
       "cheap-eats"
     ],
     "blurb": {
-      "az": "Köhnə şəhərdə nahar qiymətinə yüksək mətbəx təcrübəsi. Üç yeməklik nahar menyusunu götür.",
-      "hy": "Բարձր խոհանոցի փորձառություն Հին քաղաքում՝ ճաշի գներով։ Գնացեք երեք ուտեստից բաղկացած ճաշի մենյուի համար։",
-      "en": "A fine dining experience in the Old Town at lunch prices. Go for the three-course lunch menu.",
-      "et": "Fine dining kogemus vanalinnas lõunahinnaga. Võta kolmekäiguline lõunamenüü.",
-      "fi": "Fine dining -kokemus vanhassakaupungissa lounashintaan. Ota kolmen ruokalajin lounasmenu.",
-      "pt": "Uma experiência de alta gastronomia na Cidade Velha a preço de almoço. Vá pelo menu de almoço de três pratos.",
-      "ru": "Опыт высокой кухни в Старом городе по обеденным ценам. Берите обед из трёх блюд.",
-      "es": "Una experiencia de alta cocina en la Ciudad Vieja a precio de menú del día. Ve a por el menú de tres platos del mediodía.",
-      "tr": "Eski Şehir'de öğle yemeği fiyatına fine dining deneyimi. Üç kap öğle menüsünü tercih edin.",
-      "uk": "Досвід високої кухні у Старому місті за обідніми цінами. Беріть обідній сет із трьох страв."
+      "az": "Köhnə şəhərdə fine dining təcrübəsi, üstəlik nahar qiymətinə. Üç yeməkli nahar menyusunu götür. Qiyməti 20 avrodur. Menyu mövsümdən mövsümə dəyişir.",
+      "hy": "Բարձր խոհանոցի փորձառություն Հին քաղաքում՝ ճաշի գներով։ Վերցրու երեք ուտեստից բաղկացած ճաշի մենյուն։ Այն 20 եվրո է։ Մենյուն փոխվում է ըստ եղանակների։",
+      "en": "A fine dining experience in the Old Town at lunch prices. Go for the three-course lunch menu. It is 20 euro. Menu is changing seasonly.",
+      "et": "Kõrgköök vanalinnas, lõunahinnaga. Võta kolmekäiguline lõunamenüü. See maksab 20 eurot. Menüü vahetub hooaja kaupa.",
+      "fi": "Fine dining -kokemus vanhassakaupungissa lounashintaan. Ota kolmen ruokalajin lounasmenu. Se maksaa 20 euroa. Menu vaihtuu vuodenaikojen mukaan.",
+      "pt": "Uma experiência de alta cozinha na Cidade Velha a preço de almoço. Peça o menu de almoço de três pratos. Custa 20 euros. O menu muda com as estações.",
+      "ru": "Высокая кухня в Старом городе по обеденным ценам. Бери ланч-меню из трёх блюд. Оно стоит 20 евро. Меню меняется по сезонам.",
+      "es": "Alta cocina en la Ciudad Vieja a precio de menú del día. Pide el menú de almuerzo de tres platos. Cuesta 20 euros. La carta cambia con las estaciones.",
+      "tr": "Eski Şehir'de öğle yemeği fiyatına fine dining deneyimi. Üç kap öğle menüsünü al. Fiyatı 20 avro. Menü mevsimine göre değişiyor.",
+      "uk": "Висока кухня у Старому місті за обідніми цінами. Бери ланч-меню з трьох страв. Воно коштує 20 євро. Меню змінюється за сезонами."
     },
     "mustOrder": [
       "Three-course lunch menu"
@@ -1750,16 +1750,16 @@
       "laptop"
     ],
     "blurb": {
-      "az": "Telliskividə yeni açılıb və artıq Helsinki çay və qəhvə festivalında çay üzrə ikinci yeri tutub. Matça və hocça üçün gəlin.",
-      "hy": "Նոր է Թելլիսկիվիում և արդեն երկրորդ տեղում է թեյի համար Հելսինկիի թեյի և սուրճի փառատոնում։ Եկեք մատչայի և հոջիչայի համար։",
-      "en": "New in Telliskivi and already second place for tea at the Helsinki tea and coffee festival. Come for the matcha and the hojicha.",
-      "et": "Uus tulija Telliskivil ja juba teine koht tee kategoorias Helsingi tee- ja kohvifestivalil. Tule matcha ja hojicha pärast.",
-      "fi": "Uusi tulokas Telliskivessä ja jo toinen sija teessä Helsingin tee- ja kahvifestivaaleilla. Tule matchan ja hojichan takia.",
-      "pt": "Novo em Telliskivi e já com o segundo lugar em chá no festival de chá e café de Helsínquia. Venha pelo matcha e pelo hojicha.",
-      "ru": "Новичок в Теллискиви, уже взявший второе место по чаю на хельсинкском чайно-кофейном фестивале. Приходите за матчей и ходзитей.",
-      "es": "Nuevo en Telliskivi y ya segundo puesto en té en el festival del té y el café de Helsinki. Ven por el matcha y el hojicha.",
-      "tr": "Telliskivi'de yeni ve şimdiden Helsinki çay ve kahve festivalinde çayda ikinci. Matcha ve hojicha için gelin.",
-      "uk": "Новачок у Теллісківі, який уже посів друге місце за чай на гельсінському фестивалі чаю та кави. Приходьте по матчу і ходзічу."
+      "az": "Telliskividə yeni açılıb və artıq Helsinki çay və qəhvə festivalında çay üzrə ikinci yeri tutub. Hojicha və genmacha üçün gəlin.",
+      "hy": "Նոր է Թելլիսկիվիում և արդեն երկրորդ տեղում է թեյի համար Հելսինկիի թեյի և սուրճի փառատոնում։ Եկեք հոջիչայի և գենմաչայի համար։",
+      "en": "New in Telliskivi and already second place for tea at the Helsinki tea and coffee festival. Come for the hojicha and genmacha.",
+      "et": "Uus tulija Telliskivil ja juba teine koht tee kategoorias Helsingi tee- ja kohvifestivalil. Tule hojicha ja genmacha pärast.",
+      "fi": "Uusi tulokas Telliskivessä ja jo toinen sija teessä Helsingin tee- ja kahvifestivaaleilla. Tule hojichan ja genmachan takia.",
+      "pt": "Novo em Telliskivi e já com o segundo lugar em chá no festival de chá e café de Helsínquia. Venha pelo hojicha e pelo genmacha.",
+      "ru": "Новичок в Теллискиви, уже взявший второе место по чаю на хельсинкском чайно-кофейном фестивале. Приходите за ходзитей и гэнматей.",
+      "es": "Nuevo en Telliskivi y ya segundo puesto en té en el festival del té y el café de Helsinki. Ven por el hojicha y el genmacha.",
+      "tr": "Telliskivi'de yeni ve şimdiden Helsinki çay ve kahve festivalinde çayda ikinci. Hojicha ve genmacha için gelin.",
+      "uk": "Новачок у Теллісківі, який уже посів друге місце за чай на гельсінському фестивалі чаю та кави. Приходьте по ходзічу і генмачу."
     },
     "mustOrder": [
       "Matcha",
@@ -2000,16 +2000,16 @@
       "casual"
     ],
     "blurb": {
-      "az": "Dost qrupu ilə gəlib axşamı keçirmək üçün yaxşı yer. Guinness həqiqətən gözəldir, özü də elə Telliskividədir.",
-      "hy": "Լավ վայր՝ խումբ բերելու և երեկոն այնտեղ անցկացնելու համար։ Իսկապես լավ Guinness, և դա հենց Թելլիսկիվիում է։",
-      "en": "A good place to bring a group and settle in for the evening. Really nice Guinness, and it is right there in Telliskivi.",
-      "et": "Hea koht, kuhu seltskonnaga tulla ja õhtuks pidama jääda. Väga hea Guinness ja asub otse Telliskivil.",
-      "fi": "Hyvä paikka tuoda porukka ja asettua illaksi. Todella hyvää Guinnessia, ja se on siinä Telliskivessä.",
-      "pt": "Um bom sítio para levar um grupo e ficar pela noite. Guinness muito boa, e está ali mesmo em Telliskivi.",
-      "ru": "Хорошее место, чтобы прийти компанией и остаться на вечер. Очень хороший Guinness, и всё это прямо в Telliskivi.",
-      "es": "Un buen sitio para ir en grupo y quedarse toda la tarde. Guinness muy buena, y está ahí mismo, en Telliskivi.",
-      "tr": "Kalabalık gelip akşama kurulmak için iyi bir yer. Gerçekten güzel Guinness ve tam Telliskivi'nin içinde.",
-      "uk": "Гарне місце, щоб привести компанію і осісти на вечір. Дуже добрий Guinness, і це просто в Теллісківі."
+      "az": "Dostları yığıb axşamı keçirmək üçün yaxşı yer. Guinness həqiqətən gözəldir və özü də elə Telliskividədir. tallinntastebuds endirimini vermələri çox xoş oldu, amma düzünü desəm, endirimsiz də məkan gözəldir. Əvvəllər Põhja Konnun olduğu yerdə idilər, indiki yerləri isə çox gözəldir.",
+      "hy": "Լավ տեղ է ընկերներով գալու և ամբողջ երեկոն անցկացնելու համար։ Գինեսը իսկապես լավն է, և ամեն ինչ հենց Թելլիսկիվիում է։ Շատ սիրալիր էին, որ tallinntastebuds-ի զեղչը տվեցին, բայց ազնիվ լինեմ՝ առանց զեղչի էլ տեղը հաճելի է։ Նախկինում այնտեղ էին, որտեղ հիմա Põhja Konn-ն է, բայց իրենց ներկայիս տեղը գեղեցիկ է։",
+      "en": "A good place to bring a group and settle in for the evening. Really nice Guinness, and it is right there in Telliskivi. They were very nice to give tallinntastebuds discount, to be honest, without discount or anything the spot is nice. They used to be where Põhja Konn is, but their current spot is beautiful.",
+      "et": "Hea koht, kuhu tuua seltskond ja jääda terveks õhtuks. Guinness on tõesti hea ja kõik see on siinsamas Telliskivil. Oli väga kena, et nad tallinntastebudsi soodustuse andsid, aga ausalt öeldes on koht ka ilma soodustuseta tore. Varem olid nad seal, kus praegu on Põhja Konn, aga nende praegune koht on ilus.",
+      "fi": "Hyvä paikka tuoda porukka ja asettua koko illaksi. Guinness on todella hyvää, ja kaikki tämä on aivan Telliskivillä. Oli kiva, että he antoivat tallinntastebuds-alennuksen, mutta rehellisesti sanottuna paikka on hyvä ilman alennustakin. Ennen he olivat siinä, missä Põhja Konn on nyt, mutta nykyinen paikka on kaunis.",
+      "pt": "Um bom sítio para levar um grupo e ficar pela noite. A Guinness é muito boa e é ali mesmo, em Telliskivi. Foi muito simpático darem o desconto do tallinntastebuds, mas, para ser honesto, sem desconto nenhum o espaço já é bom. Antes ficavam onde hoje está o Põhja Konn, mas o espaço atual é lindo.",
+      "ru": "Хорошее место, чтобы прийти компанией и остаться на весь вечер. Guinness действительно отличный, и всё это прямо в Теллискиви. Было очень приятно, что они дали скидку tallinntastebuds, но, честно говоря, и без всякой скидки место хорошее. Раньше они были там, где сейчас Põhja Konn, но нынешнее место красивое.",
+      "es": "Un buen sitio para venir en grupo y quedarte toda la noche. La Guinness está muy buena, y está ahí mismo, en Telliskivi. Fue un detalle que dieran el descuento de tallinntastebuds, pero, si soy sincero, sin descuento ni nada el local ya es estupendo. Antes estaban donde ahora está Põhja Konn, pero su sitio actual es precioso.",
+      "tr": "Kalabalık gelip akşamı geçirmek için iyi bir yer. Guinness gerçekten güzel ve hepsi tam Telliskivi'nin içinde. tallinntastebuds indirimini vermeleri çok hoştu ama dürüst olmak gerekirse indirimsiz de mekân güzel. Eskiden Põhja Konn'un olduğu yerdeydiler, şimdiki yerleri ise çok güzel.",
+      "uk": "Гарне місце, щоб прийти компанією і лишитися на цілий вечір. Guinness справді чудовий, і все це просто в Теллісківі. Було дуже приємно, що вони дали знижку tallinntastebuds, але, чесно кажучи, і без жодної знижки місце гарне. Раніше вони були там, де тепер Põhja Konn, але нинішнє їхнє місце красиве."
     },
     "mustOrder": [],
     "reel": "",
@@ -2069,16 +2069,16 @@
       "casual"
     ],
     "blurb": {
-      "az": "Põhjala-nın Telliskivideki öz barı. Öz pivələri ilə yanaşı çoxlu başqa kraft pivə də var. Balkon boşdursa, orada otur.",
-      "hy": "Põhjala-ի սեփական բարը Թելլիսկիվիում, որտեղ լցնում են իրենց գարեջուրները՝ շատ այլ կրաֆտի կողքին։ Վերցրեք պատշգամբը, եթե ազատ է։",
-      "en": "Põhjala's own bar in Telliskivi, pouring their beers next to plenty of other craft. Take the balcony if it is free.",
-      "et": "Põhjala oma baar Telliskivil, kus nende õllede kõrval on ka palju muud käsitööõlut. Kui rõdu on vaba, istu sinna.",
-      "fi": "Põhjalan oma baari Telliskivessä, jossa heidän oluitaan kaadetaan monen muun pienpanimotuotteen rinnalla. Ota parveke jos se on vapaa.",
-      "pt": "O bar da própria Põhjala em Telliskivi, a tirar as cervejas deles ao lado de muita outra artesanal. Fique na varanda se estiver livre.",
-      "ru": "Собственный бар Põhjala в Telliskivi: их пиво плюс много другого крафта. Если балкон свободен, садитесь там.",
-      "es": "El bar propio de Põhjala en Telliskivi, donde tiran sus cervezas junto a bastante artesana más. Coge el balcón si está libre.",
-      "tr": "Telliskivi'de Põhjala'nın kendi barı; kendi biralarını bir sürü başka craft'ın yanında dolduruyor. Balkon boşsa balkonu kapın.",
-      "uk": "Власний бар Põhjala в Теллісківі, де наливають їхнє пиво поруч із купою іншого крафту. Беріть балкон, якщо він вільний."
+      "az": "Põhjala-nın Telliskivideki öz barı. Öz pivələri ilə yanaşı çoxlu başqa kraft pivə də var. Balkon boşdursa, orada otur. Etiraf etməliyəm ki, bu, Tallinndəki ən sevdiyim barlardan biridir.",
+      "hy": "Põhjala-ի սեփական բարը Թելլիսկիվիում, որտեղ լցնում են իրենց գարեջուրները՝ շատ այլ կրաֆտի կողքին։ Վերցրեք պատշգամբը, եթե ազատ է։ Պետք է խոստովանեմ, որ սա Տալլինում իմ ամենասիրած բարերից մեկն է։",
+      "en": "Põhjala's own bar in Telliskivi, pouring their beers next to plenty of other craft. Take the balcony if it is free. I have to confess it is one of my favourite bar in Tallinn.",
+      "et": "Põhjala oma baar Telliskivil, kus nende õllede kõrval on ka palju muud käsitööõlut. Kui rõdu on vaba, istu sinna. Pean tunnistama, et see on üks mu lemmikbaare Tallinnas.",
+      "fi": "Põhjalan oma baari Telliskivessä, jossa heidän oluitaan kaadetaan monen muun pienpanimotuotteen rinnalla. Ota parveke jos se on vapaa. Täytyy tunnustaa, että tämä on yksi lempibaareistani Tallinnassa.",
+      "pt": "O bar da própria Põhjala em Telliskivi, a tirar as cervejas deles ao lado de muita outra artesanal. Fique na varanda se estiver livre. Tenho de confessar que é um dos meus bares preferidos em Taline.",
+      "ru": "Собственный бар Põhjala в Telliskivi: их пиво плюс много другого крафта. Если балкон свободен, садитесь там. Должен признаться, это один из моих любимых баров в Таллинне.",
+      "es": "El bar propio de Põhjala en Telliskivi, donde tiran sus cervezas junto a bastante artesana más. Coge el balcón si está libre. Tengo que confesar que es uno de mis bares favoritos de Tallin.",
+      "tr": "Telliskivi'de Põhjala'nın kendi barı; kendi biralarını bir sürü başka craft'ın yanında dolduruyor. Balkon boşsa balkonu kapın. İtiraf etmeliyim ki burası Tallinn'deki en sevdiğim barlardan biri.",
+      "uk": "Власний бар Põhjala в Теллісківі, де наливають їхнє пиво поруч із купою іншого крафту. Беріть балкон, якщо він вільний. Мушу зізнатися, що це один із моїх улюблених барів у Таллінні."
     },
     "mustOrder": [],
     "reel": "",
@@ -2309,16 +2309,16 @@
       "caucasian"
     ],
     "blurb": {
-      "az": "Telliskivi küncündə Türk mətbəxi, çörəyi də özləri bişirirlər. Sifariş verməli olduğunuz şey lahmacundur.",
-      "hy": "Թուրքական խոհանոց Թելլիսկիվիի անկյունում, և հացն իրենք են թխում։ Լահմաջունն է պետք պատվիրել։",
-      "en": "Turkish cooking on the Telliskivi corner, and they bake their own bread. The lahmajun is the one to order.",
-      "et": "Türgi köök Telliskivi nurgal, ja leiva küpsetavad nad ise. Lahmadžuun on see, mida tellida.",
-      "fi": "Turkkilaista keittiötä Telliskiven kulmassa, ja leivän he leipovat itse. Lahmacun on se, joka kannattaa tilata.",
-      "pt": "Cozinha turca na esquina de Telliskivi, e o pão é feito por eles. O lahmajun é o que se pede.",
-      "ru": "Турецкая кухня на углу Теллискиви, и хлеб они пекут сами. Заказывать надо лахмаджун.",
-      "es": "Cocina turca en la esquina de Telliskivi, y hornean su propio pan. El lahmajun es el que hay que pedir.",
-      "tr": "Telliskivi köşesinde Türk mutfağı ve ekmeklerini kendileri yapıyorlar. Sipariş edilecek olan da lahmacun.",
-      "uk": "Турецька кухня на куті Теллісківі, і хліб вони печуть самі. Ламаджун це те, що варто замовити."
+      "az": "Telliskivi küncündə Türk mətbəxi, çörəyi də özləri bişirirlər. Sifariş verməli olduğunuz şey lahmacundur. Yeri Shaurma Kebab-ın adamları açıb.",
+      "hy": "Թուրքական խոհանոց Թելլիսկիվիի անկյունում, և հացն իրենք են թխում։ Լահմաջունն է պետք պատվիրել։ Վայրը հիմնել են Shaurma Kebab-ի մարդիկ։",
+      "en": "Turkish cooking on the Telliskivi corner, and they bake their own bread. The lahmajun is the one to order. The place is found by Shaurma Kebab.",
+      "et": "Türgi köök Telliskivi nurgal, ja leiva küpsetavad nad ise. Lahmadžuun on see, mida tellida. Koha on asutanud Shaurma Kebabi tegijad.",
+      "fi": "Turkkilaista keittiötä Telliskiven kulmassa, ja leivän he leipovat itse. Lahmacun on se, joka kannattaa tilata. Paikan ovat perustaneet Shaurma Kebabin tekijät.",
+      "pt": "Cozinha turca na esquina de Telliskivi, e o pão é feito por eles. O lahmajun é o que se pede. O sítio foi fundado pelo pessoal do Shaurma Kebab.",
+      "ru": "Турецкая кухня на углу Теллискиви, и хлеб они пекут сами. Заказывать надо лахмаджун. Место открыли те же люди, что и Shaurma Kebab.",
+      "es": "Cocina turca en la esquina de Telliskivi, y hornean su propio pan. El lahmajun es el que hay que pedir. El sitio lo fundó la gente de Shaurma Kebab.",
+      "tr": "Telliskivi köşesinde Türk mutfağı ve ekmeklerini kendileri yapıyorlar. Sipariş edilecek olan da lahmacun. Mekânı Shaurma Kebab'ın ekibi kurdu.",
+      "uk": "Турецька кухня на куті Теллісківі, і хліб вони печуть самі. Ламаджун це те, що варто замовити. Місце заснували ті самі люди, що й Shaurma Kebab."
     },
     "mustOrder": [
       "Lahmajun"
@@ -2346,16 +2346,16 @@
       "casual"
     ],
     "blurb": {
-      "az": "Həqiqətən yaxşı yeməyi və gözəl havası olan qəhvə qovurma evi. Şəhərdə görüşə getmək üçün ən yaxşı yerlərdən biridir.",
-      "hy": "Սուրճի բովարան՝ իսկապես լավ ուտելիքով և սենյակի հրաշալի զգացողությամբ։ Քաղաքի լավագույն վայրերից մեկը ժամադրության համար։",
-      "en": "A coffee roastery with genuinely good food and a great feel to the room. One of the better places in town to take a date.",
-      "et": "Kohviröstikoda, kus on tõeliselt hea toit ja ruumil mõnus tunnetus. Üks paremaid kohti linnas, kuhu kohtingule minna.",
-      "fi": "Kahvipaahtimo, jossa on aidosti hyvää ruokaa ja hieno tunnelma. Yksi kaupungin parhaista paikoista viedä treffit.",
-      "pt": "Uma torrefação de café com comida genuinamente boa e uma sala com uma ótima atmosfera. Um dos melhores sítios da cidade para levar um encontro.",
-      "ru": "Обжарочная кофейня с по-настоящему хорошей едой и приятной атмосферой. Одно из лучших мест в городе для свидания.",
-      "es": "Un tostadero de café con comida realmente buena y una sala con muy buena sensación. Uno de los mejores sitios de la ciudad para llevar a una cita.",
-      "tr": "Yemeği gerçekten iyi olan ve salonunun havası çok hoş bir kahve kavurma evi. Şehirde bir buluşma için gidebileceğiniz daha iyi yerlerden biri.",
-      "uk": "Кавова обсмажувальня зі справді доброю їжею і чудовим відчуттям залу. Одне з кращих місць у місті, щоб піти на побачення."
+      "az": "Həqiqətən yaxşı yeməyi və zalın gözəl ovqatı olan qəhvə qovurma evi. Şəhərdə görüşə getmək üçün ən yaxşı yerlərdən biri. Vaxtımın çoxunu orada keçirmişəm, bir səbəbə görə: orada həmişə isti hiss olunur.",
+      "hy": "Սուրճի բովարան՝ իսկապես լավ ուտելիքով և սրահի հիանալի մթնոլորտով։ Քաղաքում ժամադրության գնալու լավագույն վայրերից մեկը։ Ես ժամանակիս մեծ մասն այնտեղ եմ անցկացրել՝ մեկ պատճառով. այնտեղ միշտ տաք է զգացվում։",
+      "en": "A coffee roastery with genuinely good food and a great feel to the room. One of the better places in town to take a date. I spent most of my time there, for one reason. It always feel warm.",
+      "et": "Kohviröstikoda, kus on tõesti hea söök ja saalil mõnus tunne. Üks paremaid kohti linnas, kuhu kohtingule minna. Olen suure osa oma ajast just seal veetnud, ühel põhjusel: seal on alati soe tunne.",
+      "fi": "Kahvipaahtimo, jossa on aidosti hyvää ruokaa ja salissa mahtava tunnelma. Yksi kaupungin parhaista paikoista viedä treffeille. Olen viettänyt siellä suurimman osan ajastani, yhdestä syystä: siellä tuntuu aina lämpimältä.",
+      "pt": "Uma torrefação de café com comida genuinamente boa e um ambiente ótimo na sala. Um dos melhores sítios da cidade para levar alguém a um encontro. Passei ali a maior parte do meu tempo, por uma razão: sente-se sempre calor.",
+      "ru": "Кофейная обжарочная с по-настоящему хорошей едой и отличной атмосферой в зале. Одно из лучших мест в городе, куда позвать на свидание. Я провёл там большую часть своего времени, и по одной причине: там всегда тепло.",
+      "es": "Un tostadero de café con comida de verdad buena y muy buen ambiente en la sala. Uno de los mejores sitios de la ciudad para una cita. He pasado ahí la mayor parte de mi tiempo, por un motivo: siempre se siente cálido.",
+      "tr": "Gerçekten güzel yemekleri ve salonunda hoş bir havası olan bir kahve kavurma evi. Şehirde buluşmaya gitmek için en iyi yerlerden biri. Zamanımın çoğunu orada geçirdim, tek bir sebepten: orası hep sıcak hissettiriyor.",
+      "uk": "Кавова обсмажувальня зі справді доброю їжею і чудовою атмосферою в залі. Одне з найкращих місць у місті, щоб піти на побачення. Я провів там більшість свого часу, і з однієї причини: там завжди тепло."
     },
     "mustOrder": [],
     "reel": "",
@@ -2666,16 +2666,16 @@
       "casual"
     ],
     "blurb": {
-      "az": "Balti jaamın yanında Çin mətbəxi, gəlməyə dəyər səbəb isə əllə çəkilmiş biang biang əriştəsidir. Bir dənə əriştə, metrlərlə uzun, acı yağ və göy soğanla, yanında da bulyon. Xırtıldayan donuz döşü isə hamının sifariş etdiyi digər yeməkdir.",
-      "hy": "Չինական խոհանոց Բալթի կայարանի մոտ, և ձեռքով ձգված biang biang լապշան գալու պատճառն է։ Մեկ լապշա, մետրերով երկար, չիլիի յուղի և կանաչ սոխի մեջ, կողքին՝ արգանակ։ Խրթխրթան խոզի փորոտն է մյուսը, որ բոլորը պատվիրում են։",
-      "en": "Chinese cooking by Balti jaam, and the hand-pulled biang biang noodles are the reason to come. One noodle, metres long, in chili oil and spring onion, with a broth on the side. The crispy pork belly is the other one everybody orders.",
-      "et": "Hiina köök Balti jaama kõrval ja käsitsi tõmmatud biang biang nuudlid on põhjus, miks siia tulla. Üks nuudel, meetreid pikk, tšillioli ja rohelise sibulaga ning puljong kõrvale. Krõbe seakõht on teine asi, mida kõik tellivad.",
-      "fi": "Kiinalaista ruokaa Balti jaamin kupeessa, ja käsin vedetyt biang biang -nuudelit ovat syy tulla. Yksi nuudeli, metrien mittainen, chiliöljyssä ja kevätsipulissa, liemi erikseen. Rapea porsaankylki on se toinen, jonka kaikki tilaavat.",
-      "pt": "Cozinha chinesa junto à Balti jaam, e os noodles biang biang puxados à mão são a razão para vir. Um único noodle, com metros de comprimento, em óleo de chili e cebolinho, com um caldo à parte. A barriga de porco estaladiça é o outro que toda a gente pede.",
-      "ru": "Китайская кухня рядом с Балтийским вокзалом, и ручной работы лапша бянбян это причина сюда прийти. Одна лапшина длиной в несколько метров, в чили-масле с зелёным луком и бульоном отдельно. Хрустящая свиная грудинка это второе, что заказывают все.",
-      "es": "Cocina china junto a Balti jaam, y los noodles biang biang estirados a mano son el motivo para venir. Un solo fideo, de metros de largo, en aceite de chile y cebolleta, con un caldo aparte. La panceta crujiente es el otro que pide todo el mundo.",
-      "tr": "Balti jaam'ın yanında Çin mutfağı; elde çekilen biang biang erişteleri gelmenin sebebi. Metrelerce uzunlukta tek bir erişte, acı yağ ve taze soğanla, yanında da et suyu. Herkesin söylediği diğeri de çıtır domuz göbeği.",
-      "uk": "Китайська кухня біля Балтійського вокзалу, і локшина бян-бян ручного витягування це причина прийти. Одна локшина, метри завдовжки, у чилійній олії із зеленою цибулею, і бульйон окремо. Хрустка свиняча грудинка це друга страва, яку замовляють усі."
+      "az": "Balti jaam yaxınlığında Çin mətbəxi və əllə çəkilən biang biang əriştəsi bura gəlməyin səbəbidir. Bir dənə əriştə, metrlərlə uzun, çili yağı və yaşıl soğanla, yanında da bulyon. Menyu uzundur, amma mən ora yalnız o əriştəyə görə gedirəm; əriştəni bitirəndən sonra bulyonu götür və şorbanı da sona qədər iç. Videoya bax, nə demək istədiyimi anlayarsan.",
+      "hy": "Չինական խոհանոց Բալթի յաամի մոտ, և ձեռքով ձգված biang biang լապշան է գալու պատճառը։ Մեկ լապշա, մետրերով երկար, չիլիի յուղի և կանաչ սոխի մեջ, կողքին էլ արգանակ։ Մենյուն երկար է, բայց ես այնտեղ գնում եմ միայն այդ լապշայի համար. երբ լապշան վերջացնես, վերցրու արգանակը և ապուրն էլ խմիր մինչև վերջ։ Նայիր տեսանյութը, կհասկանաս ինչ նկատի ունեմ։",
+      "en": "Chinese cooking by Balti jaam, and the hand-pulled biang biang noodles are the reason to come. One noodle, metres long, in chili oil and spring onion, with a broth on the side. Menu is long, but I am going there only for those noodles, after you finish noodles and the broth and finish the soup too. Watch the video, you would understand what I mean.",
+      "et": "Hiina köök Balti jaama juures ja käsitsi venitatud biang biang nuudlid on põhjus, miks siia tulla. Üks nuudel, meetreid pikk, tšilliõlis ja rohelise sibulaga, kõrvale puljong. Menüü on pikk, aga mina käin seal ainult nende nuudlite pärast; kui nuudlid otsas, võta puljong ja joo ka supp lõpuni. Vaata videot, siis saad aru, mida ma mõtlen.",
+      "fi": "Kiinalaista ruokaa Balti jaaman kupeessa, ja käsin vedetyt biang biang -nuudelit ovat syy tulla tänne. Yksi nuudeli, metrejä pitkä, chiliöljyssä ja kevätsipulilla, liemi vieressä erikseen. Menu on pitkä, mutta minä käyn siellä vain noiden nuudelien takia; kun nuudelit on syöty, ota liemi ja juo keittokin loppuun. Katso video, niin ymmärrät mitä tarkoitan.",
+      "pt": "Cozinha chinesa ao lado da Balti jaam, e os noodles biang biang puxados à mão são a razão para vir. Um único noodle, com metros de comprimento, em óleo de malagueta e cebolinho, com um caldo à parte. O menu é longo, mas eu vou lá só por aqueles noodles; quando acabar os noodles, pegue no caldo e termine também a sopa. Veja o vídeo e perceberá o que quero dizer.",
+      "ru": "Китайская кухня у Балтийского вокзала, и ручная лапша бян бян это причина сюда прийти. Одна лапшина длиной в несколько метров, в чили-масле и с зелёным луком, бульон подают отдельно. Меню длинное, но я хожу туда только ради этой лапши; доел лапшу, бери бульон и допей суп до конца. Посмотри видео, и поймёшь, о чём я.",
+      "es": "Cocina china junto a Balti jaam, y los noodles biang biang estirados a mano son la razón para venir. Un solo fideo, de metros de largo, en aceite de chile y cebolleta, con un caldo aparte. La carta es larga, pero yo voy solo por esos fideos; cuando acabes los fideos, coge el caldo y termina también la sopa. Mira el vídeo y entenderás a qué me refiero.",
+      "tr": "Balti jaam yanında Çin mutfağı ve elde çekilen biang biang erişteleri buraya gelmenin sebebi. Metrelerce uzunlukta tek bir erişte, biber yağı ve taze soğanla, yanında da et suyu. Menü uzun ama ben oraya sadece o erişte için gidiyorum; erişteyi bitirince et suyunu al ve çorbayı da sonuna kadar iç. Videoyu izle, ne demek istediğimi anlarsın.",
+      "uk": "Китайська кухня біля Балтійського вокзалу, і ручна локшина бян бян це причина сюди прийти. Одна локшина завдовжки кілька метрів, у чилі-олії та зеленій цибулі, бульйон подають окремо. Меню довге, але я ходжу туди лише заради цієї локшини; доїв локшину, бери бульйон і допий суп до кінця. Подивися відео, і зрозумієш, про що я."
     },
     "mustOrder": [
       "Biang biang noodles",
