@@ -660,7 +660,11 @@
       "Shashlik"
     ],
     "reel": "https://www.instagram.com/reel/DXMsafDjGxE/",
-    "photos": ["01.webp", "02.webp", "03.webp"],
+    "photos": [
+      "01.webp",
+      "02.webp",
+      "03.webp"
+    ],
     "phone": "+372 5814 6100",
     "added": "2026-08-23",
     "visited": "2026-04",
@@ -1417,7 +1421,9 @@
       "Fried chicken"
     ],
     "reel": "https://www.instagram.com/p/DDXKDgctiP9/",
-    "photos": [],
+    "photos": [
+      "01.webp"
+    ],
     "website": "",
     "phone": "+372 5630 3977",
     "added": "2026-08-24",
@@ -1687,7 +1693,9 @@
     },
     "mustOrder": [],
     "reel": "",
-    "photos": ["01.webp"],
+    "photos": [
+      "01.webp"
+    ],
     "website": "",
     "phone": "+372 5445 0150",
     "added": "2026-08-24",

@@ -61,9 +61,8 @@
   },
   {
     "id": "kotkot-2026-09-21",
-    "live": true,
+    "live": false,
     "video": "kotkot-2026-09-21.mp4",
-    "poster": "kotkot-2026-09-21.webp",
     "from": "2026-09-21T20:49",
     "caption": {
       "en": "guilty pleasure"
