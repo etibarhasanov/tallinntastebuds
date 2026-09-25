@@ -2,9 +2,9 @@
 
 A full-screen map of places in Tallinn, plus discounts, stories, saves,
 lists, profiles, a directory of the city, a chat that answers with places, a
-blog about what all of it does, a page of which places get opened, and — each
-on a subdomain of its own — a way to split the bill afterwards and a deck of
-Estonian flashcards.
+blog about what all of it does, a page of which places get opened, a page of
+links about the person who made it, and — each on a subdomain of its own — a
+way to split the bill afterwards and a deck of Estonian flashcards.
 Static files, twenty-three Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
@@ -335,7 +335,7 @@ re-running its generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
 |---|---|---|
-| anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in the twelve pages named in `PAGES` at the top of the tool |
+| anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in every page named in `PAGES` at the top of the tool |
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `data/restaurants.json` or `data/taxonomy.json` | `node tools/typelists.mjs` | `db/type-lists.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/city.mjs` | `data/city.json` |

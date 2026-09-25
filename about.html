@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Etibar Ädalät, actor | Tallinn Tastebuds</title>
+<meta name="description" content="Etibar Ädalät — actor and talent in Tallinn, Estonia. Showreel, acting CV, commercials for Bolt and Swappie, a part in The Agency, and comedy sketches.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+<meta name="robots" content="index, follow">
+
+<!-- Analytics: Google and Microsoft Clarity, both from one file rather than
+     two snippets pasted into every head. assets/analytics.js holds the ids and
+     the consentv2 signal Clarity needs, and its head carries the reasoning of
+     the consent bar that stood in front of both of them for a day. -->
+<script src="/assets/analytics.js?v=a44b6b90" defer></script>
+
+<!-- The person behind the map, as a page of links: the showreel, the CV, the
+     agency, the work. Nothing on this site links here, on purpose — it is
+     handed out, the way a Linktree address is — and it is indexed anyway,
+     because somebody searching for this name is looking for exactly this.
+     **About** in README.md has the rest, including why every word on it is
+     English. -->
+<link rel="canonical" href="https://tallinntastebuds.ee/about">
+
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://tallinntastebuds.ee/about">
+<meta property="og:site_name" content="Tallinn Tastebuds">
+<meta property="og:title" content="Etibar Ädalät — actor, Tallinn">
+<meta property="og:description" content="Showreel, acting CV, commercials and comedy sketches.">
+<meta property="og:image" content="https://tallinntastebuds.ee/assets/about/etibar.jpg">
+<meta property="og:image:width" content="168">
+<meta property="og:image:height" content="168">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The tokens, the card, the row's name and the line under it, the two
+     controls, the close button, the scrim and the toast come from the map's
+     stylesheet; the brand header and the column from the lists page's, the way
+     every page off the map takes them. The third is this page's own: the face
+     at the top, a row the width of the card, and the player that opens in it. -->
+<link rel="stylesheet" href="/assets/styles.css?v=eeb02929">
+<link rel="stylesheet" href="/assets/lists.css?v=0a2818f7">
+<link rel="stylesheet" href="/assets/about.css?v=ff67e429">
+</head>
+<body class="lists-body">
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" data-track="home" aria-label="Tallinn Tastebuds — the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark">Tallinn Tastebuds</span>
+  </a>
+  <button type="button" class="rail-btn" id="about-share" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 15V4M8 8l4-4 4 4M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/>
+    </svg>
+    <span>Share</span>
+  </button>
+</header>
+
+<main class="lists-main">
+  <section class="about-head">
+    <img class="about-face" src="/assets/about/etibar.jpg" alt="Etibar Ädalät" width="96" height="96">
+    <h1 class="about-name">Etibar Ädalät</h1>
+    <p class="about-line">🎬 Actor/Talent | Estonia Europe 🇪🇪🇪🇺</p>
+    <a class="about-social" href="https://www.instagram.com/a_tea_bar/" data-track="about_instagram" aria-label="Etibar Ädalät on Instagram">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <rect x="3" y="3" width="18" height="18" rx="5"/>
+        <circle cx="12" cy="12" r="4.2"/>
+        <circle class="about-dot" cx="17.4" cy="6.6" r="1.1"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- Every row is a link in the markup, to the thing itself, so the page
+       works as a list of addresses before the script arrives and after it
+       fails. A row carrying data-play is one the script turns into a button
+       that opens that address's player inside the card instead — and on a
+       phone an Instagram row stays a link, for the reason embedInstagram() in
+       assets/app.js gives at length. data-host names whose player it is, for
+       the way out printed under it. -->
+  <ul class="about-links">
+    <li class="card">
+      <a class="about-row" href="https://www.youtube.com/watch?v=X7PRH2MNjUM" data-item="showreel"
+         data-play="https://www.youtube-nocookie.com/embed/X7PRH2MNjUM?rel=0&amp;playsinline=1" data-host="YouTube" data-open>
+        <img class="about-thumb" src="https://i.ytimg.com/vi/X7PRH2MNjUM/mqdefault.jpg" alt="" width="44" height="44">
+        <span class="menu-say">
+          <span class="menu-name">🎬 Watch Showreel</span>
+          <span class="menu-why">YouTube · Etibar Hasanov</span>
+        </span>
+        <span class="menu-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="ico-play" d="M9 6.5l9 5.5-9 5.5z"/><path class="ico-shut" d="M7 7l10 10M17 7L7 17"/></svg></span>
+      </a>
+    </li>
+    <li class="card">
+      <a class="about-row" href="https://agencyicon.com/model-talent/talent/real-people/etibar" data-item="agency_profile">
+        <span class="menu-say">
+          <span class="menu-name">📑 Agency Profile with Headshots</span>
+          <span class="menu-why">Agency Icon</span>
+        </span>
+        <span class="menu-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+      </a>
+    </li>
+    <li class="card">
+      <a class="about-row" href="#cv" data-item="cv">
+        <span class="menu-say">
+          <span class="menu-name">📑 Acting CV</span>
+          <span class="menu-why">Film, TV, commercials, skills</span>
+        </span>
+        <span class="menu-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+      </a>
+    </li>
+    <li class="card">
+      <a class="about-row" href="mailto:hasanovetibar@gmail.com" data-item="contact">
+        <span class="menu-say">
+          <span class="menu-name">Contact!</span>
+          <span class="menu-why">hasanovetibar@gmail.com</span>
+        </span>
+        <span class="menu-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+      </a>
+    </li>
+  </ul>
+
+  <h2 class="about-group">⭐ Selected Credits</h2>
+  <ul class="about-links">
+    <li class="card">
+      <a class="about-row" href="https://www.janararonija.com/projects/tube-man-disco-bubble-wrap" data-item="swappie">
+        <span class="menu-say">
+          <span class="menu-name">Swappie Commercial</span>
+          <span class="menu-why">Main role · 2025</span>
+        </span>
+        <span class="menu-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+      </a>
+    </li>
+    <li class="card">
+      <a class="about-row" href="https://vimeo.com/1105385418" data-item="bolt"
+         data-play="https://player.vimeo.com/video/1105385418?dnt=1" data-host="Vimeo">
+        <span class="menu-say">
+          <span class="menu-name">Bolt Commercial</span>
+          <span class="menu-why">Hotel concierge · 2025</span>
+        </span>
+        <span class="menu-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="ico-play" d="M9 6.5l9 5.5-9 5.5z"/><path class="ico-shut" d="M7 7l10 10M17 7L7 17"/></svg></span>
+      </a>
+    </li>
+    <li class="card">
+      <a class="about-row" href="https://drive.google.com/file/d/1SmTb4eDFz-sxN7BCw4B2R82g4jYcxGFE/view?usp=sharing" data-item="the_agency"
+         data-play="https://drive.google.com/file/d/1SmTb4eDFz-sxN7BCw4B2R82g4jYcxGFE/preview" data-host="Google Drive">
+        <span class="menu-say">
+          <span class="menu-name">Seller at The Agency by Paramount S01E05</span>
+          <span class="menu-why">Paramount+ · 2024</span>
+        </span>
+        <span class="menu-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="ico-play" d="M9 6.5l9 5.5-9 5.5z"/><path class="ico-shut" d="M7 7l10 10M17 7L7 17"/></svg></span>
+      </a>
+    </li>
+  </ul>
+
+  <h2 class="about-group">🎭 Viral/self-made comedy sketches</h2>
+  <ul class="about-links">
+    <li class="card">
+      <a class="about-row" href="https://www.instagram.com/reel/DOTXFA1jPhj/" data-item="human_connection"
+         data-play="https://www.instagram.com/reel/DOTXFA1jPhj/embed/" data-host="Instagram">
+        <span class="menu-say">
+          <span class="menu-name">Human connection?</span>
+          <span class="menu-why">Instagram reel</span>
+        </span>
+        <span class="menu-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="ico-play" d="M9 6.5l9 5.5-9 5.5z"/><path class="ico-shut" d="M7 7l10 10M17 7L7 17"/></svg></span>
+      </a>
+    </li>
+    <li class="card">
+      <a class="about-row" href="https://www.instagram.com/reel/DQro3MIDA2k/" data-item="november_in_estonia"
+         data-play="https://www.instagram.com/reel/DQro3MIDA2k/embed/" data-host="Instagram">
+        <span class="menu-say">
+          <span class="menu-name">November in Estonia</span>
+          <span class="menu-why">Instagram reel</span>
+        </span>
+        <span class="menu-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="ico-play" d="M9 6.5l9 5.5-9 5.5z"/><path class="ico-shut" d="M7 7l10 10M17 7L7 17"/></svg></span>
+      </a>
+    </li>
+    <li class="card">
+      <a class="about-row" href="https://www.instagram.com/p/DTphR4xjMDY/" data-item="one_day_in_estonia"
+         data-play="https://www.instagram.com/p/DTphR4xjMDY/embed/" data-host="Instagram">
+        <span class="menu-say">
+          <span class="menu-name">One day in Estonia</span>
+          <span class="menu-why">Instagram</span>
+        </span>
+        <span class="menu-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="ico-play" d="M9 6.5l9 5.5-9 5.5z"/><path class="ico-shut" d="M7 7l10 10M17 7L7 17"/></svg></span>
+      </a>
+    </li>
+    <li class="card">
+      <a class="about-row" href="https://www.instagram.com/reel/DRmqZP3DHd0/" data-item="secret_language"
+         data-play="https://www.instagram.com/reel/DRmqZP3DHd0/embed/" data-host="Instagram">
+        <span class="menu-say">
+          <span class="menu-name">Secret Language</span>
+          <span class="menu-why">Instagram reel</span>
+        </span>
+        <span class="menu-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="ico-play" d="M9 6.5l9 5.5-9 5.5z"/><path class="ico-shut" d="M7 7l10 10M17 7L7 17"/></svg></span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Not the site's fixed .noscript card: that one stands over a page that
+       is empty without the script, and this one is not. Every row above still
+       goes where it says; only the players and the CV sheet need the script. -->
+  <noscript>
+    <p class="about-note">The players and the CV open with JavaScript. The
+      rows still go to each video, and the CV is one email away.</p>
+  </noscript>
+</main>
+
+<!-- The CV, as the sheet the row above opens. A <dialog> wearing the map's
+     .scrim, so the ground behind it, the Escape key and the focus that stays
+     inside it all come from the browser and the colours from the site. The
+     press outside the card lands on the dialog itself, which is how it closes.
+     /about#cv opens the page with this already up — that is the address its
+     own Share hands out. Clarity masks the address in it under the Balanced
+     mode, which is the dashboard's default. -->
+<dialog class="scrim about-cv-scrim" id="cv" aria-labelledby="cv-title">
+  <article class="card about-cv">
+    <button type="button" class="panel-close about-cv-close" data-cv-close aria-label="Close">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <p class="eyebrow about-cv-eyebrow">📑 Acting CV</p>
+    <h2 class="about-cv-name" id="cv-title">Etibar Adalat</h2>
+    <p class="about-cv-where">Tallinn, Estonia · <a href="mailto:hasanovetibar@gmail.com">hasanovetibar@gmail.com</a></p>
+
+    <dl class="about-cv-facts">
+      <div><dt>Height</dt><dd>183 cm</dd></div>
+      <div><dt>Hair</dt><dd>Dark Brown</dd></div>
+      <div><dt>Eyes</dt><dd>Brown</dd></div>
+      <div><dt>Playing age</dt><dd>25–40</dd></div>
+      <div><dt>Languages</dt><dd>English, Estonian, Russian, Azerbaijani, Turkish</dd></div>
+    </dl>
+
+    <h3 class="eyebrow about-cv-head">Film &amp; TV</h3>
+    <ul class="about-cv-list">
+      <li><span class="about-cv-year">2026</span> The Truth (TV series Denmark) — Featured Extra</li>
+      <li><span class="about-cv-year">2024</span> The Agency (Paramount+ TV Series) — Kebab Seller (Featured Extra)</li>
+    </ul>
+
+    <h3 class="eyebrow about-cv-head">Commercials</h3>
+    <ul class="about-cv-list">
+      <li><span class="about-cv-year">2026</span> Battery (Norway) — Artist (Painter) Main Role</li>
+      <li><span class="about-cv-year">2026</span> Rajala Pro Shop (Finland) — Birdwatcher Main Role</li>
+      <li><span class="about-cv-year">2025</span> Volkswagen (Germany) — Featured Extra</li>
+      <li><span class="about-cv-year">2025</span> Swappie (International / Finland) — Main Role (Fun Couple)</li>
+      <li><span class="about-cv-year">2025</span> Lieferando (Germany) — Featured Extra</li>
+      <li><span class="about-cv-year">2025</span> Bolt (Global) — Hotel Concierge (second to main role)</li>
+      <li><span class="about-cv-year">2025</span> DPD (Germany) — Coffee Shop Owner (main role)</li>
+      <li><span class="about-cv-year">2025</span> Bosch (Germany) — Featured Extra</li>
+    </ul>
+
+    <h3 class="eyebrow about-cv-head">Skills</h3>
+    <dl class="about-cv-facts">
+      <div><dt>Sports</dt><dd>Wing Chun, Running, Climbing, Qigong, Yoga, Slacklining</dd></div>
+      <div><dt>Other</dt><dd>Improvisation, Camera awareness, Content creation, Master degree in Computer Science</dd></div>
+    </dl>
+
+    <div class="about-cv-foot">
+      <button type="button" class="go" id="cv-share">Share the CV</button>
+      <button type="button" class="alt" data-cv-close>Close</button>
+    </div>
+  </article>
+</dialog>
+
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+<!-- What every press reports to Google Analytics, shared by every page.
+     Before the page's own script and deferred like it, so document order puts
+     the global in place first. -->
+<script src="/assets/track.js?v=93031b0d" defer></script>
+<script src="/assets/about.js?v=93780276" defer></script>
+</body>
+</html>

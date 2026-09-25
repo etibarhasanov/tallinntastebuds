@@ -3,12 +3,12 @@
  * Google Analytics counts, and takes the events assets/track.js sends beside
  * it. Microsoft Clarity records the page instead of counting it: heatmaps of
  * where presses and scrolls land, and a replay of the DOM as it changed
- * through a visit. Both load on every page but admin.html — twelve of them,
- * the list at the top of tools/stamp.mjs — and both load from here rather than
- * from a snippet pasted into each head, which would have been Google's block
- * in twelve of them and Microsoft's in twelve more, and two ids to change in
- * twenty-four places. Same reason assets/track.js exists rather than seven
- * copies of three functions.
+ * through a visit. Both load on every page but admin.html — the list at the
+ * top of tools/stamp.mjs — and both load from here rather than from a snippet
+ * pasted into each head, which would have been Google's block in every one of
+ * them and Microsoft's in every one again, and two ids to change in twice as
+ * many places as there are pages. Same reason assets/track.js exists rather
+ * than seven copies of three functions.
  *
  * THERE WAS A CONSENT BAR HERE, AND IT WAS TAKEN OUT ON PURPOSE
  *
@@ -38,7 +38,7 @@
  *
  * TO REMOVE TRACKING
  *
- * Delete this file's script tag from the nine pages that carry it, or the
+ * Delete this file's script tag from every page that carries it, or the
  * file. Everything in assets/track.js checks for window.gtag and returns
  * quietly when it is missing — written for visitors running an ad blocker,
  * and it covers this too — so every call site becomes a harmless no-op and

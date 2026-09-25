@@ -66,6 +66,7 @@ completely with the database switched off.
 - [The blog](#the-blog)
 - [Feedback](#feedback)
 - [Statistics](#statistics)
+- [About](#about)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
 - [The map zooms by the pixel](#the-map-zooms-by-the-pixel)
@@ -111,8 +112,8 @@ node tools/stamp.mjs
 ```
 
 It rewrites the `?v=` hash on every script and stylesheet reference in the
-pages that load something out of `assets/` — the ten named in `PAGES` at
-the top of `tools/stamp.mjs`. The validator fails on a stale one, so CI will
+pages that load something out of `assets/` — every one named in `PAGES`
+at the top of `tools/stamp.mjs`. The validator fails on a stale one, so CI will
 catch it if you forget — but it is one command and it saves a round trip. See
 [Cache stamps](#cache-stamps).
 
@@ -9431,6 +9432,129 @@ all rather than a missing link.
 
 ---
 
+## About
+
+`/about` — the person behind the map, as a page of links: the face, the name,
+the showreel, the acting CV, the agency, the commercials and the sketches. It
+stands in for a Linktree, in the same order the Linktree had them, and it is
+handed out the way a Linktree address is.
+
+```
+about.html               the page, served at /about as well, and every word on it
+assets/about.js          the players, the CV sheet and Share — ES5, one IIFE
+assets/about.css         the face, a row the width of a card, a player in one
+assets/about/etibar.jpg  the face
+```
+
+No endpoint, no database, no data file. Everything on the page is written into
+`about.html`, and every row there is a link to the thing itself — so the page
+is a working list of addresses before the script arrives, and still one if it
+never does.
+
+### A row that plays opens inside its card
+
+A row carrying `data-play` — the showreel, Bolt, The Agency, and the four
+sketches — is turned by the script into a button that opens that address's
+player under the row, inside the same card, and takes it out again on the
+second press. Taking the frame out rather than hiding it is what stops the
+sound: none of these players can be paused from outside without its own
+script. `data-host` names whose player it is, for the way out printed under
+every one: *Trouble loading? Open it on Vimeo.* It goes in the same tab, for
+the reason the map's does — a YouTube or Instagram address is a universal
+link, and the tab a new-tab link leaves behind when the app opens is the blank
+page somebody comes back to.
+
+The showreel is standing open when the page arrives, because it is what most
+people came for. Nothing else loads a player until it is pressed.
+
+A reel is a phone's shape, so its frame is held to 380px and centred rather
+than stretched across the column, where it would be a thousand pixels tall on
+a laptop; it opens at 9 / 19 and takes Instagram's own measurement when that
+arrives, the way the map's panel does. **On a phone an Instagram row stays a
+link**, and it is decided once, on load. Instagram shows a phone a card rather
+than a player, and the card's own way out leaves a blank tab behind —
+`embedInstagram()` in `assets/app.js` has the whole of it, and the five weeks
+it took to learn.
+
+**None of the four players could be watched from the session that built this
+page.** YouTube, Vimeo, Google Drive and Instagram were all unreachable from
+it, so what was driven is the page — rows opening and closing, the frames
+sized, the way out under each — and not whether anything plays in them. Each
+host has its own way of refusing a frame on somebody else's site: a Vimeo
+owner can restrict embedding to named domains, a Drive file plays in a frame
+only when it is shared with anyone who has the link, and Instagram is above.
+If one comes up blank, the fix is at that host, and the way out under it works
+either way.
+
+**Swappie is a link and not a player**, because what it links to is the
+production company's page for the film and not a video. Whatever player that
+page carries could not be seen from here either. If it turns out to be a
+Vimeo, its id in a `data-play` of `https://player.vimeo.com/video/<id>` with
+`data-host="Vimeo"` makes the row a player like Bolt's.
+
+### The CV is a sheet
+
+The **Acting CV** row opens the CV over the page, in a `<dialog>` wearing the
+map's `.scrim`: the ground behind it and the colours come from the site, and
+Escape, the focus kept inside it and the page behind it going inert come from
+the browser. A press on the ground round the card closes it. The address says
+whether it is open — `/about#cv` arrives with the CV already up, which is the
+link **Share the CV** hands out — and closing it takes the `#cv` back off
+without adding a step to Back.
+
+The CV is the owner's own text, laid out rather than rewritten: a label in
+mono and what it says beside it for the facts and the skills, the year in mono
+and the credit beside it for the rest. Its name is spelled the way the CV
+spells it, which is not the way the page's heading does.
+
+### Why every word on it is English
+
+Every other page prints its words out of `data/ui.json` in ten languages
+([Languages](#languages), and rule 11 under
+[The design rules](#the-design-rules)). This one deliberately does not. What
+it says is somebody's CV and the names of their work, which is content the way
+a blog post is, written in the one language the people it is for read it in.
+What is left over is interface, and it is four words — *Share*, *Close*, *Link
+copied* and the way out under a player. `ui.json` is 344 KB, and fetching all
+of it to translate four words round an English CV would make it the heaviest
+thing on the page.
+
+If it is ever translated, it is the flashcards' pattern rather than the map's:
+a route that answers with the one language block the page is read in —
+**One request on the way in** under [Flashcards](#flashcards) — and not the
+whole file. Until then there is no `data-i18n` and no `t()` on it, so the
+validator has nothing to hold it to.
+
+### Unlinked, and found anyway
+
+Nothing on the map or anywhere else on this site links here, on purpose: it is
+somebody's page on this domain rather than a part of the site. It is indexed
+all the same, and it is in `sitemap.xml`, because somebody searching for the
+name on it is looking for exactly this page — the blog's arrangement, and
+`_headers` gives it the blog's rules.
+
+It carries `assets/analytics.js`, so it is counted and recorded like every
+other page, and its presses are in the table under [Analytics](#analytics).
+The email address on it is rendered text; Clarity's Balanced mode — the
+dashboard's default — masks it in a replay.
+
+### Changing it
+
+- **A row** is an `<li class="card">` in `about.html`, in the order it
+  should appear. A link needs only `href` and `data-item`, which is the name
+  the analytics report it under; a player adds `data-play` with the host's
+  embed address and `data-host` with the host's name, and the triangle mark in
+  place of the chevron.
+- **The face** is `assets/about/etibar.jpg`, cut out of a screenshot of the
+  Linktree at 168px because nothing better could be fetched. A real headshot
+  saved over it under the same name replaces it on the next load — `/assets/*`
+  revalidates, and pictures are not stamped.
+- **The Instagram link** under the name goes to `instagram.com/a_tea_bar`, the
+  Linktree's own name, which is a guess nobody could check from here. If the
+  handle is another one, it is one `href`.
+
+---
+
 ## The admin page
 
 `/admin.html` — a door, and behind it the tools for posting without opening a
@@ -10258,6 +10382,10 @@ assets/venues.css          only what a directory has and the map does not
 stats.html                 which places get opened and which  } unlinked and
 assets/stats.js            chips get pressed: three rankings  } noindex
 assets/stats.css           the rows of a ranking, and nothing else
+about.html                 the person behind the map, as a  } unlinked, and
+assets/about.js            page of links: players that open } indexed on
+assets/about.css           in their card, and the CV        } purpose
+assets/about/              the face on it
 functions/api/stats.js     /api/stats — one press in, the whole ranking out,
                            with the page's words and five minutes of cache
 assets/links.js            the three sites a profile can link to, the handles
@@ -11798,7 +11926,7 @@ in front of somebody at a till.
 ### Analytics
 
 Google Analytics 4 is wired up, property `G-2XNTC15F28`. The tag lives in the
-`<head>` of every page — the twelve in `PAGES` at the top of
+`<head>` of every page — every one in `PAGES` at the top of
 `tools/stamp.mjs` — exactly as Google's console emits it. It used to be on
 the map alone, which made the map the only page GA had heard of; the lists,
 the account page, the directory, the three pass pages and splitwise were
@@ -11999,6 +12127,20 @@ Flashcards, `assets/flashcard.js`:
 | `flash_back`, `home` | `deck_id` on the first |
 | `radio_play`, `radio_stop` | as on the map |
 
+About, `assets/about.js`:
+
+| event | parameters |
+| --- | --- |
+| `about_play` | `item` — a player opened by a press. The showreel standing open on arrival is not one: nobody pressed anything |
+| `about_link` | `item`, `from` — leaving for the thing itself: `row` for a row that goes somewhere else (the agency, the email, Swappie, and a reel on a phone), `player` for the way out under a player |
+| `about_cv` | — the CV opened from its row. Arriving at `/about#cv` is the landing page view |
+| `about_share` | `where` (`page`/`cv`), `method` (`sheet`/`copy`) |
+| `about_instagram`, `home` | — the glyph under the name and the wordmark, through `data-track` |
+
+`item` is the row's `data-item` — `showreel`, `agency_profile`, `contact`,
+`swappie`, `bolt`, `the_agency` and the four sketches by name — so the events
+read as the words on the page.
+
 The pass pages, `assets/deal.js` and `assets/verify.js` — nothing on them is
 a button except the way back, so what they report is the moment each exists
 for:
@@ -12052,8 +12194,8 @@ that earns its place — it follows a single visit through the filters, the
 panel and the chat, none of which GA can see as anything but events in a list.
 
 It loads from `assets/analytics.js`, which is also where the Google tag lives
-— one file rather than two snippets pasted into every head. The twelve pages
-in `PAGES` at the top of `tools/stamp.mjs` carry it. `admin.html` deliberately
+— one file rather than two snippets pasted into every head. Every page in
+`PAGES` at the top of `tools/stamp.mjs` carries it. `admin.html` deliberately
 carries neither tag: the only visits it could record are the owner's own, and
 it is the page holding a GitHub token.
 
@@ -12298,7 +12440,7 @@ preview deployments, which is correct for previews and fatal if the address
 people share turns out to be one.
 
 To remove tracking entirely, delete the `assets/analytics.js` script tag from
-the twelve pages that carry it, or the file. Everything in `track.js` checks for
+every page that carries it, or the file. Everything in `track.js` checks for
 `window.gtag` and returns quietly when it is missing — which is what already
 happens for a visitor running an ad blocker — so every call site becomes a
 harmless no-op and none of them has to change. To remove one tag and keep the
@@ -12522,6 +12664,11 @@ the markup are only the English the page is served with — every one of them
 sits under a `data-i18n` key that replaces it as soon as the strings load.
 Both the keys in the markup and the `t('key')` calls in the scripts are
 checked against the file. See **Languages**.
+
+One page stands outside this rather than breaking it: `/about` is one
+person's CV in English, with four words of interface round it, and it prints
+those four in English too — [About](#about) says why, and what translating it
+would take.
 
 ### 12. Nothing animates unless it was asked to
 

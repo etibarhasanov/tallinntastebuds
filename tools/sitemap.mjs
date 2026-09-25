@@ -4,10 +4,10 @@
  *
  * Reads the languages out of data/ui.json, the places out of
  * data/restaurants.json, the decks out of data/decks.json, the thirteen chip
- * lists out of tools/typelists.mjs and Google's five out of
+ * lists out of tools/typelists.mjs and Google's six out of
  * tools/googlelists.mjs, and writes sitemap.xml: the map at each of its ten
- * addresses, every open place at its own, the directory, the blog, the
- * flashcards and every deck of them, and the eighteen lists.
+ * addresses, every open place at its own, the directory, the blog, the about
+ * page, the flashcards and every deck of them, and the nineteen lists.
  *
  *   node tools/sitemap.mjs           rewrite sitemap.xml
  *   node tools/sitemap.mjs --check   report that it is out of date, exit 1
@@ -55,9 +55,9 @@
  * was not, and /lists/kept before that; both still answer, as 301s, and
  * neither is here, since a sitemap is for the address a page is at.
  *
- * /flashcard and the decks under it are here for the reason /blog is:
- * nothing on this site links to them except one row on /account.html, behind
- * a sign-in, so this file is very nearly the only way a crawler arrives. What
+ * The decks under /flashcard are here for the reason /blog is: the map's rail
+ * links to /flashcard itself, but nothing on this site names a particular
+ * deck, so this file is very nearly the only way a crawler arrives at one. What
  * is at those addresses is Estonian — functions/flashcard.js writes each
  * deck's words into the page as text — and somebody searching for what one of
  * them means should find it. The decks people write for themselves are not
@@ -71,12 +71,16 @@
  * Google's own rating. They are as fixed as the map itself, and there is no
  * reason for a crawler to wait to meet them through the directory.
  *
- * /blog is the one entry doing the whole job on its own: nothing on this
- * site links to the blog, on purpose, so this file is how a crawler learns the
- * address exists at all. It is still a page written to be found — a post per
- * thing this site does, in prose — which is why it is indexed at all, and
+ * /blog is one of two entries doing the whole job on their own: nothing on
+ * this site links to the blog, on purpose, so this file is how a crawler learns
+ * the address exists at all. It is still a page written to be found — a post
+ * per thing this site does, in prose — which is why it is indexed at all, and
  * robots.txt says so where the Disallow lines are. Only the index is listed;
  * the posts are ?post=<id> on it and the index links every one of them.
+ *
+ * /about is the other, for the same reason: unlinked because it is handed out
+ * rather than walked to, and indexed because somebody searching for the name
+ * on it is looking for exactly that page.
  *
  * NO DATES, NO FREQUENCIES, NO PRIORITIES
  *
@@ -151,6 +155,7 @@ export function render(langs, placeIds, deckIds) {
   for (const code of codes) entries.push(entry(mapAt(code), alternates()));
   entries.push(entry(SITE + '/lists'));
   entries.push(entry(SITE + '/blog'));
+  entries.push(entry(SITE + '/about'));
   /* The flashcards. A rail pill on the map links to /flashcard now, so that
      one address is found the way any linked page is; this file is still very
      nearly the only way in for a crawler to a particular deck, since neither
@@ -217,7 +222,7 @@ function main() {
   const decks = deckIds();
   const next = render(langs, ids, decks);
   const now = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
-  const count = langs.length + 3 + CHIP_LISTS.length + GOOGLE_LISTS.length + ids.length + decks.length;
+  const count = langs.length + 4 + CHIP_LISTS.length + GOOGLE_LISTS.length + ids.length + decks.length;
 
   if (check) {
     if (now === next) {
@@ -231,7 +236,7 @@ function main() {
   writeFileSync(OUT, next);
   console.log(
     `${OUT} — ${count} addresses: the map in ${langs.length} languages, ${ids.length} places, ` +
-    `/lists, /blog, /flashcard and ${decks.length} decks, ${CHIP_LISTS.length} chip lists and ` +
+    `/lists, /blog, /about, /flashcard and ${decks.length} decks, ${CHIP_LISTS.length} chip lists and ` +
     `${GOOGLE_LISTS.length} Google lists.`
   );
 }
