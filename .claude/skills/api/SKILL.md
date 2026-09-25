@@ -91,7 +91,7 @@ leading underscore are modules, not routes.
 | `/lists` | `lists/index.js` | none; `lists.html` with the first page of everybody's lists seeded in — with the five Google lists as `start`, and each row's places as `dots` — searched when the address carries `?q=`, ordered by `?sort=` (`kept`, `new`) | `no-store` |
 | `/lists/public` | `lists/public.js` | none; 301 to `/lists`, the address this page had before it was shortened | — |
 | `/lists/kept` | `lists/kept.js` | none; 301 to `/lists`, the address it had before that | — |
-| `/u/<name>` | `u/[name].js` | none; `lists.html` with the profile seeded in, and written into its `<main>` as text | `no-store` |
+| `/u/<name>` | `u/[name].js` | none; `lists.html` with the profile seeded in, written into its `<main>` as text, its head built from the line under the name — the title, the description and a `ProfilePage` in JSON-LD — so a search for the person finds it | `no-store` |
 
 Six routes serve a static page with a head of their own — `index.js` the
 map, `split.js` a group, `flashcard.js` a deck, and the three list routes the

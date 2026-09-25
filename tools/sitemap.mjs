@@ -4,10 +4,11 @@
  *
  * Reads the languages out of data/ui.json, the places out of
  * data/restaurants.json, the decks out of data/decks.json, the thirteen chip
- * lists out of tools/typelists.mjs and Google's six out of
- * tools/googlelists.mjs, and writes sitemap.xml: the map at each of its ten
- * addresses, every open place at its own, the directory, the blog, the
- * flashcards and every deck of them, and the nineteen lists.
+ * lists out of tools/typelists.mjs, Google's six out of tools/googlelists.mjs
+ * and the faces out of assets/faces/, and writes sitemap.xml: the map at each
+ * of its ten addresses, every open place at its own, the directory, the blog,
+ * the flashcards and every deck of them, the nineteen lists, and a profile
+ * for every face.
  *
  *   node tools/sitemap.mjs           rewrite sitemap.xml
  *   node tools/sitemap.mjs --check   report that it is out of date, exit 1
@@ -71,6 +72,14 @@
  * Google's own rating. They are as fixed as the map itself, and there is no
  * reason for a crawler to wait to meet them through the directory.
  *
+ * A profile is in the database and this file cannot list what it does not
+ * know, so the profiles here are the ones the repository knows exist: one
+ * /u/<name> per assets/faces/<name>.jpg. A profile is otherwise found through
+ * the bylines on its lists, and a profile that is a page of links and no
+ * lists — see **Your page** under **Profiles** in README.md — has no byline
+ * anywhere, so without this a search could not reach it. A face in the
+ * repository is the one signal that a profile is meant to be found by name.
+ *
  * /blog is the one entry doing the whole job on its own: nothing on this
  * site links to the blog, on purpose, so this file is how a crawler learns the
  * address exists at all. It is still a page written to be found — a post per
@@ -93,7 +102,7 @@
  * years with no `npm install`.
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
@@ -105,6 +114,7 @@ const OUT = join(ROOT, 'sitemap.xml');
 const UI = join(ROOT, 'data', 'ui.json');
 const PLACES = join(ROOT, 'data', 'restaurants.json');
 const DECKS = join(ROOT, 'data', 'decks.json');
+const FACES = join(ROOT, 'assets', 'faces');
 
 /* The host, spelled out. robots.txt, the pages' own og: tags,
    tools/indexnow.mjs and functions/_shell.js each name it too — README.md
@@ -138,7 +148,19 @@ function entry(loc, alternates) {
   return lines.join('\n');
 }
 
-export function render(langs, placeIds, deckIds) {
+/* The profiles the repository knows exist: one per photograph in
+   assets/faces/, named for the username, and only names shaped the way
+   functions/api/account.js mints one, so a stray file cannot become an
+   address. Sorted, so the file is the same whatever order the disk answers. */
+function faceNames() {
+  if (!existsSync(FACES)) return [];
+  return readdirSync(FACES)
+    .filter((f) => /^[a-z0-9][a-z0-9-]{2,23}\.jpg$/.test(f))
+    .map((f) => f.slice(0, -4))
+    .sort();
+}
+
+export function render(langs, placeIds, deckIds, faces) {
   /* Sorted by code, the way the switcher lists them and functions/index.js
      writes them into the head. */
   const codes = langs.slice().sort();
@@ -151,6 +173,7 @@ export function render(langs, placeIds, deckIds) {
   for (const code of codes) entries.push(entry(mapAt(code), alternates()));
   entries.push(entry(SITE + '/lists'));
   entries.push(entry(SITE + '/blog'));
+  for (const name of faces) entries.push(entry(SITE + '/u/' + name));
   /* The flashcards. A rail pill on the map links to /flashcard now, so that
      one address is found the way any linked page is; this file is still very
      nearly the only way in for a crawler to a particular deck, since neither
@@ -202,7 +225,7 @@ function placeIds() {
 
 export function stale() {
   try {
-    const want = render(languages(), placeIds(), deckIds());
+    const want = render(languages(), placeIds(), deckIds(), faceNames());
     const got = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
     return want !== got;
   } catch (e) {
@@ -215,9 +238,10 @@ function main() {
   const langs = languages();
   const ids = placeIds();
   const decks = deckIds();
-  const next = render(langs, ids, decks);
+  const faces = faceNames();
+  const next = render(langs, ids, decks, faces);
   const now = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
-  const count = langs.length + 3 + CHIP_LISTS.length + GOOGLE_LISTS.length + ids.length + decks.length;
+  const count = langs.length + 3 + CHIP_LISTS.length + GOOGLE_LISTS.length + ids.length + decks.length + faces.length;
 
   if (check) {
     if (now === next) {
@@ -232,7 +256,7 @@ function main() {
   console.log(
     `${OUT} — ${count} addresses: the map in ${langs.length} languages, ${ids.length} places, ` +
     `/lists, /blog, /flashcard and ${decks.length} decks, ${CHIP_LISTS.length} chip lists and ` +
-    `${GOOGLE_LISTS.length} Google lists.`
+    `${GOOGLE_LISTS.length} Google lists, and ${faces.length} ${faces.length === 1 ? 'profile' : 'profiles'} with a face.`
   );
 }
 

@@ -4341,7 +4341,13 @@
       /* A seeded page already carries its own title in the head; only a page
          that fetched what it is showing has to set one. */
       if (state.list) document.title = state.list.title + ' | Tallinn Tastebuds';
-      if (state.profile) document.title = state.profile.name + ' | Tallinn Tastebuds';
+      /* The username and the line under it, which is where a person's own
+         name and what they do are — the same title functions/u/[name].js
+         serves, so a crawler that renders sees the one it was served. */
+      if (state.profile) {
+        document.title = (state.profile.about ? state.profile.name + ' · ' + state.profile.about : state.profile.name) +
+          ' | Tallinn Tastebuds';
+      }
       if (state.view === 'all') document.title = t('listsAllDocumentTitle');
 
       wire();

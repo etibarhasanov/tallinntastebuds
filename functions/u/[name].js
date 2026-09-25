@@ -24,10 +24,20 @@
  * printing; the line, the handles and the rows are the exceptions and they
  * are not ones, because somebody typed each and pressed Save.
  *
- * The line is not the page's description. describe() below is the rows where
- * there are any and the lists otherwise, because a description tells a
- * searcher what is on the page — a bio that reads "i like cats" would be
- * true about its author and useless as the thing under a search result.
+ * FOUND BY THE NAME SOMEBODY GOES BY, WHICH IS IN THE LINE
+ *
+ * A username is lowercase letters and a search is for a person: "etibar
+ * adalat", "etibar actor". The one place on a profile the person writes
+ * their own name and what they do is the line under it, so the line goes
+ * into the head — the title is the username and the line, the description is
+ * the line and then the first three rows, and the JSON-LD below is a
+ * ProfilePage whose Person carries the line as its description and every
+ * address on the page as sameAs. The line used to be kept out of the
+ * description on the argument that "i like cats" is useless under a search
+ * result; a page of links made a profile a page about a person, and the
+ * person's own sentence is what a search for them matches. assets/lists.js
+ * writes the same title once the script runs, so a crawler that renders
+ * sees the one it was served.
  *
  * INDEXED, AND WHY
  *
@@ -35,7 +45,9 @@
  * somebody's writing, under the name they chose, and a page nobody can arrive
  * at is most of the way to not being published at all. A profile with no
  * public lists and no rows on it is a page with nothing to find, so that one
- * is served and not indexed.
+ * is served and not indexed. A profile with a face in the repository is also
+ * in sitemap.xml — tools/sitemap.mjs says why that is the one kind of profile
+ * the repository can know about.
  *
  * WHAT HAPPENS WHEN IT CANNOT
  *
@@ -46,26 +58,71 @@
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import { readProfile, USERNAME, NETWORKS, linkUrl } from '../api/_profile.js';
-import { canonical, esc, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
+import { canonical, esc, seed, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
 
-/* The line under the name in a preview card.
+/* What the tab and the search result call the page: the username, and the
+   line the person wrote under it where there is one, which is where their
+   own name and what they do are. assets/lists.js writes the same. */
+function title(profile) {
+  return profile.about ? profile.name + ' · ' + profile.about : profile.name;
+}
+
+/* The line under the name in a preview card, and under a search result.
  *
  * English, on a site that is read in ten languages, for the reason
  * functions/list/[id].js gives: a crawler's Accept-Language is whatever its
  * operator set, and the card it builds is shown to everybody the link is
  * forwarded to rather than to the person who fetched it. The page underneath
- * follows the reader's own language as usual. */
+ * follows the reader's own language as usual.
+ *
+ * Their own line first, then the first three things on their page, then the
+ * lists as the footnote — in the order the page draws them, and each only
+ * where there is one. */
 function describe(profile) {
-  const n = profile.lists.length;
-  const lists = n === 1 ? '1 list' : n + ' lists';
-  /* The first three things on their page, where there is one: that is what
-     the page is about to whoever made it, and the lists are the footnote. */
+  const parts = [];
+  if (profile.about) parts.push(/[.!?…]$/.test(profile.about) ? profile.about : profile.about + '.');
+
   const heads = profile.rows.slice(0, 3).map((row) => row.title).join(' · ');
-  if (heads) return heads + (n ? ' — and ' + lists + ' of places in Tallinn.' : '.');
-  if (!n) return profile.name + ' has not published a list yet.';
-  const kept = profile.kept === 1 ? 'kept once' : 'kept ' + profile.kept + ' times';
-  return lists + ' of places in Tallinn, created by ' + profile.name +
-    (profile.kept ? ', ' + kept + '.' : '.');
+  if (heads) parts.push(heads + '.');
+
+  const n = profile.lists.length;
+  if (n) {
+    const lists = n === 1 ? '1 list' : n + ' lists';
+    const kept = profile.kept === 1 ? ', kept once' : profile.kept ? ', kept ' + profile.kept + ' times' : '';
+    parts.push(lists + ' of places in Tallinn' + (parts.length ? '' : ', created by ' + profile.name) + kept + '.');
+  }
+
+  return parts.length ? parts.join(' ') : profile.name + ' has not published a list yet.';
+}
+
+/* The page as a search engine reads it: a ProfilePage whose main entity is
+   the Person, with the line as their description, the face as their picture
+   where there is one, and every address on the page — the three handles and
+   the rows that are links — as sameAs, which is the property a search engine
+   uses to tie a person's pages together. Written only where the page is
+   indexed at all. */
+function structuredData(request, profile) {
+  const self = canonical(request, '/u/' + profile.name);
+  const links = profile.links || {};
+  const sameAs = NETWORKS
+    .filter((net) => links[net.id])
+    .map((net) => linkUrl(net.id, links[net.id]))
+    .concat(profile.rows.filter((row) => row.url).map((row) => row.url));
+
+  const person = { '@type': 'Person', '@id': self + '#person', name: profile.name, url: self };
+  if (profile.about) person.description = profile.about;
+  if (profile.face) person.image = canonical(request, profile.face);
+  if (sameAs.length) person.sameAs = sameAs;
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    url: self,
+    name: title(profile),
+    description: describe(profile),
+    dateCreated: new Date(profile.since).toISOString(),
+    mainEntity: person
+  };
 }
 
 /* Their page, as text: a link is a link, a heading is bold, a note is its
@@ -114,15 +171,20 @@ export async function onRequest(context) {
      goes nowhere should land somewhere that says so and offers the map. */
   if (!profile) return page(html, 404);
 
-  html = rehead(html, head({
-    title: profile.name,
+  const indexable = profile.lists.length > 0 || profile.rows.length > 0;
+
+  const tags = head({
+    title: title(profile),
     description: describe(profile),
     /* The stored spelling, not the one in the URL. Usernames are minted
        lowercase and matched without case, so /u/KATE and /u/kate are one page
        and only one of them is the address it should be indexed at. */
     url: canonical(request, '/u/' + profile.name),
     type: 'profile'
-  }));
+  });
+  html = rehead(html, indexable
+    ? tags + '\n<script type="application/ld+json">' + seed(structuredData(request, profile)) + '</script>'
+    : tags);
 
   /* Where else they said they are, for the same reader. The same `nofollow`
      the script writes, because this page is indexed and these are links
@@ -151,5 +213,5 @@ export async function onRequest(context) {
     profile: profile
   });
 
-  return page(html, 200, profile.lists.length > 0 || profile.rows.length > 0);
+  return page(html, 200, indexable);
 }

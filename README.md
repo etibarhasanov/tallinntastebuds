@@ -6407,11 +6407,21 @@ in by the road every photograph on this site takes, a commit, which today
 means the owner's. Uploads are a bucket, a route and a moderation question,
 and are **What is not built yet**.
 
-**Indexed when there is something to find.** A profile with rows and no
-lists is indexed, as one with lists is. `describe()` in
-`functions/u/[name].js` names the first three rows in the page's description
-where there are any, and `rowsAsText()` writes the rows into the page as
-text for the reader that runs no script.
+**Indexed when there is something to find, and found by the line.** A
+profile with rows and no lists is indexed, as one with lists is. A search is
+for a person — *etibar actor*, *etibar adalat* — and a username is neither
+of those, so the line under the name is what the head is built from:
+`functions/u/[name].js` writes the username and the line as the title, the
+line and then the first three rows as the description, and a `ProfilePage`
+in JSON-LD whose `Person` carries the line as its description, the face as
+its picture and every address on the page as `sameAs`. `rowsAsText()` writes
+the rows into the page as text for the reader that runs no script, and
+`assets/lists.js` writes the same title once the script runs. So the line is
+where a person puts the name they go by and what they do: *Etibar Ädalät,
+actor and talent in Tallinn* is what makes the page answer to either search.
+A profile with a face in the repository is also in `sitemap.xml` —
+`tools/sitemap.mjs` lists `/u/<name>` for every `assets/faces/<name>.jpg`,
+because that is the one kind of profile the repository can know exists.
 
 **The caps**, in `functions/api/_profile.js` and restated as maxlengths in
 `assets/account.js`: twenty rows, a title of 60, an address of 2,048, a note
@@ -6501,11 +6511,13 @@ standing where they were, and whoever left it can take it back in that time.
 
 ### Indexed, like a public list
 
-Same reasoning: it is a page of somebody's writing about restaurants in this
-city, under the name they chose, and a page nobody can arrive at is most of
-the way to not being published. A profile with no public lists on it is a page
-with nothing to find, so that one is served and not indexed; so is a name
-nobody has, which answers 404 with the page on it and a line saying so.
+Same reasoning: it is a page of somebody's writing, under the name they
+chose, and a page nobody can arrive at is most of the way to not being
+published. A profile with no public lists and no rows on it is a page with
+nothing to find, so that one is served and not indexed; so is a name nobody
+has, which answers 404 with the page on it and a line saying so. What the
+head says, and why the line under the name is in it, is under **Your page**
+above.
 
 Nothing is cached, for the reason a list is not: the number changes when
 somebody presses Save, and a profile is most often opened by the person who

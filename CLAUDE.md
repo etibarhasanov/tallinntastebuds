@@ -343,7 +343,7 @@ re-running its generator is the single most common way to fail CI:
 | `exports/tallinn_restaurants.csv` | `node tools/googlelists.mjs` | `db/google-lists.sql` |
 | a scene in `clips/scenes/` | `node tools/blogclips.mjs` | the four files in `clips/` that scene is drawn into — it needs a Chromium, and `--check` says which are missing |
 | `assets/logo/og-flashcard.html`, or a token or rule it draws itself with | `node tools/ogcard.mjs` | `assets/logo/og-flashcard.png`, the card a link to the flashcards unfurls as — it needs a Chromium, and nothing in CI can see that it went stale |
-| a language in `data/ui.json`, a place in `data/restaurants.json`, a chip list in `tools/typelists.mjs` or a Google list in `tools/googlelists.mjs` | `node tools/sitemap.mjs` | `sitemap.xml` |
+| a language in `data/ui.json`, a place in `data/restaurants.json`, a chip list in `tools/typelists.mjs`, a Google list in `tools/googlelists.mjs` or a face in `assets/faces/` | `node tools/sitemap.mjs` | `sitemap.xml` |
 
 (The catalogue is the map plus an optional `data/places.csv` import. That CSV
 is not in the repo — without one, `places.mjs` builds the catalogue from
