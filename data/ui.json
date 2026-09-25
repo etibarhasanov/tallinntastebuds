@@ -555,7 +555,11 @@
     "rowsErrMany": "Ən çox iyirmi sətir.",
     "rowsErrOff": "Səhifələr burada hələ açılmayıb.",
     "rowsOpen": "{host}-da aç",
-    "rowsTrouble": "Yüklənmir?"
+    "rowsTrouble": "Yüklənmir?",
+    "accountDisplay": "Tanındığın ad",
+    "accountDisplayHint": "Profilində sətrinin üstündə göstərilir",
+    "accountDisplayAdd": "Tanındığın adı əlavə et",
+    "accountDisplayEdit": "Tanındığın adı dəyiş"
   },
   "hy": {
     "langName": "Հայերեն",
@@ -1113,7 +1117,11 @@
     "rowsErrMany": "Առավելագույնը քսան տող։",
     "rowsErrOff": "Էջերն այստեղ դեռ միացված չեն։",
     "rowsOpen": "Բացել {host}-ում",
-    "rowsTrouble": "Չի բեռնվում։"
+    "rowsTrouble": "Չի բեռնվում։",
+    "accountDisplay": "Անունը, որով քեզ ճանաչում են",
+    "accountDisplayHint": "Ցուցադրվում է քո պրոֆիլում՝ տողիդ վերևում",
+    "accountDisplayAdd": "Ավելացնել անունդ",
+    "accountDisplayEdit": "Փոխել անունդ"
   },
   "en": {
     "langName": "English",
@@ -1671,7 +1679,11 @@
     "rowsErrMany": "Twenty rows is the limit.",
     "rowsErrOff": "Pages are not switched on here yet.",
     "rowsOpen": "Open it on {host}",
-    "rowsTrouble": "Trouble loading?"
+    "rowsTrouble": "Trouble loading?",
+    "accountDisplay": "The name you go by",
+    "accountDisplayHint": "Shown over your line on your profile",
+    "accountDisplayAdd": "Add the name you go by",
+    "accountDisplayEdit": "Change the name you go by"
   },
   "et": {
     "langName": "Eesti",
@@ -2229,7 +2241,11 @@
     "rowsErrMany": "Kakskümmend rida on piir.",
     "rowsErrOff": "Lehed pole siin veel sisse lülitatud.",
     "rowsOpen": "Ava {host}-s",
-    "rowsTrouble": "Ei lae?"
+    "rowsTrouble": "Ei lae?",
+    "accountDisplay": "Nimi, mille all sind teatakse",
+    "accountDisplayHint": "Kuvatakse su profiilil rea kohal",
+    "accountDisplayAdd": "Lisa nimi, mille all sind teatakse",
+    "accountDisplayEdit": "Muuda nime, mille all sind teatakse"
   },
   "fi": {
     "langName": "Suomi",
@@ -2787,7 +2803,11 @@
     "rowsErrMany": "Kaksikymmentä riviä on raja.",
     "rowsErrOff": "Sivuja ei ole vielä otettu käyttöön täällä.",
     "rowsOpen": "Avaa {host}-palvelussa",
-    "rowsTrouble": "Eikö lataudu?"
+    "rowsTrouble": "Eikö lataudu?",
+    "accountDisplay": "Nimi, jolla sinut tunnetaan",
+    "accountDisplayHint": "Näkyy profiilissasi rivisi yläpuolella",
+    "accountDisplayAdd": "Lisää nimi, jolla sinut tunnetaan",
+    "accountDisplayEdit": "Muuta nimeä, jolla sinut tunnetaan"
   },
   "pt": {
     "langName": "Português",
@@ -3345,7 +3365,11 @@
     "rowsErrMany": "Vinte linhas é o limite.",
     "rowsErrOff": "As páginas ainda não estão ligadas aqui.",
     "rowsOpen": "Abrir no {host}",
-    "rowsTrouble": "Não carrega?"
+    "rowsTrouble": "Não carrega?",
+    "accountDisplay": "O nome por que és conhecido",
+    "accountDisplayHint": "Aparece no teu perfil, por cima da tua linha",
+    "accountDisplayAdd": "Adicionar o nome por que és conhecido",
+    "accountDisplayEdit": "Mudar o nome por que és conhecido"
   },
   "ru": {
     "langName": "Русский",
@@ -3903,7 +3927,11 @@
     "rowsErrMany": "Не больше двадцати строк.",
     "rowsErrOff": "Страницы здесь пока не включены.",
     "rowsOpen": "Открыть на {host}",
-    "rowsTrouble": "Не загружается?"
+    "rowsTrouble": "Не загружается?",
+    "accountDisplay": "Имя, под которым тебя знают",
+    "accountDisplayHint": "Показывается в профиле над твоей строкой",
+    "accountDisplayAdd": "Добавить имя, под которым тебя знают",
+    "accountDisplayEdit": "Изменить имя, под которым тебя знают"
   },
   "es": {
     "langName": "Español",
@@ -4461,7 +4489,11 @@
     "rowsErrMany": "Veinte filas es el límite.",
     "rowsErrOff": "Las páginas aún no están activadas aquí.",
     "rowsOpen": "Abrir en {host}",
-    "rowsTrouble": "¿No carga?"
+    "rowsTrouble": "¿No carga?",
+    "accountDisplay": "El nombre por el que te conocen",
+    "accountDisplayHint": "Se muestra en tu perfil, sobre tu línea",
+    "accountDisplayAdd": "Añadir el nombre por el que te conocen",
+    "accountDisplayEdit": "Cambiar el nombre por el que te conocen"
   },
   "tr": {
     "langName": "Türkçe",
@@ -5019,7 +5051,11 @@
     "rowsErrMany": "En fazla yirmi satır.",
     "rowsErrOff": "Sayfalar burada henüz açık değil.",
     "rowsOpen": "{host}'ta aç",
-    "rowsTrouble": "Yüklenmiyor mu?"
+    "rowsTrouble": "Yüklenmiyor mu?",
+    "accountDisplay": "Bilindiğin ad",
+    "accountDisplayHint": "Profilinde satırının üstünde görünür",
+    "accountDisplayAdd": "Bilindiğin adı ekle",
+    "accountDisplayEdit": "Bilindiğin adı değiştir"
   },
   "uk": {
     "langName": "Українська",
@@ -5577,6 +5613,10 @@
     "rowsErrMany": "Не більше двадцяти рядків.",
     "rowsErrOff": "Сторінки тут ще не ввімкнено.",
     "rowsOpen": "Відкрити на {host}",
-    "rowsTrouble": "Не завантажується?"
+    "rowsTrouble": "Не завантажується?",
+    "accountDisplay": "Ім'я, під яким тебе знають",
+    "accountDisplayHint": "Показується в профілі над твоїм рядком",
+    "accountDisplayAdd": "Додати ім'я, під яким тебе знають",
+    "accountDisplayEdit": "Змінити ім'я, під яким тебе знають"
   }
 }

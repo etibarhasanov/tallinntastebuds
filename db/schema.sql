@@ -267,7 +267,20 @@ CREATE TABLE IF NOT EXISTS users (
   --
   -- The handles are capped per site where they are written, in
   -- functions/api/_profile.js: Instagram 30, TikTok 24, Facebook 50.
-  links          TEXT    NOT NULL DEFAULT ''
+  links          TEXT    NOT NULL DEFAULT '',
+  -- The name somebody goes by — "Etibar Ädalät" over a username that can
+  -- only be "etibar" — drawn as the heading of a profile that is a page,
+  -- and written on /account.html the way the line is. Empty for nearly
+  -- everybody, and the username stands where it is empty.
+  --
+  -- LAST, AND FOR THE SAME REASON THE TWO ABOVE ARE
+  --
+  -- ALTER TABLE users ADD COLUMN display_name TEXT NOT NULL DEFAULT '' — and
+  -- readingExtras() has one tier more, so a database that is one ALTER
+  -- behind serves the page under the username. Sixty characters, capped in
+  -- functions/api/account.js where it is written: the same cap as a list's
+  -- title, because it is a heading.
+  display_name   TEXT    NOT NULL DEFAULT ''
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username COLLATE NOCASE);
 

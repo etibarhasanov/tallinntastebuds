@@ -182,6 +182,8 @@
      that binds; this is the copy that stops a keystroke rather than a round
      trip, the way every cap on this site is written twice. */
   var MAX_ABOUT = 200;
+  /* The name you go by. MAX_DISPLAY in functions/api/account.js binds. */
+  var MAX_DISPLAY = 60;
   /* The page of links. cleanRows() in functions/api/_profile.js binds; these
      stop a keystroke rather than a round trip, the same arrangement. The
      address's cap is a maxlength like the rest, because unlike a handle's
@@ -214,6 +216,7 @@
     linked: false,   // whether this account was reached through Google
     password: true,  // whether there is a password on it at all
     about: '',       // the line you wrote about yourself, '' for nearly everybody
+    display: '',     // the name you go by, '' for nearly everybody
     links: {},       // network id -> handle, {} for nearly everybody
     rows: [],        // the page of links under them, [] for nearly everybody
     saved: [],       // place ids, newest first
@@ -845,7 +848,8 @@
       el('p', { className: 'eyebrow', textContent: t('accountOpen') }),
       heading(state.user),
       el('p', { className: 'lists-say', textContent: t('accountWhat') }),
-      aboutBox(),
+      lineBox(DISPLAY),
+      lineBox(ABOUT),
       linksBox(),
       rowsBox(),
       el('ul', { className: 'menu' }, [
@@ -914,7 +918,20 @@
    * characters, the same class — because it does the same job one floor up: a
    * line under a name, not a page about a person.
    */
-  function aboutBox() {
+  /* The line and the name you go by are one box drawn twice — the same
+     word, the same field, the same Save, one action each — so `spec` is
+     which of the two it is: the field on the account, the action the server
+     takes, the cap, and the four strings. */
+  var ABOUT = {
+    field: 'about', max: MAX_ABOUT, label: 'accountAbout', hint: 'accountAboutHint',
+    add: 'accountAboutAdd', edit: 'accountAboutEdit', open: 'account_about_open', save: 'account_about', state: 'about_state'
+  };
+  var DISPLAY = {
+    field: 'display', max: MAX_DISPLAY, label: 'accountDisplay', hint: 'accountDisplayHint',
+    add: 'accountDisplayAdd', edit: 'accountDisplayEdit', open: 'account_display_open', save: 'account_display', state: 'display_state'
+  };
+
+  function lineBox(spec) {
     var box = el('div', { className: 'lists-about' });
     var read, write;
 
@@ -924,17 +941,20 @@
        to. */
     read = function (focus) {
       clear(box);
+      var has = !!state[spec.field];
       var open = el('button', {
         type: 'button',
         className: 'alt',
-        textContent: t(state.about ? 'accountAboutEdit' : 'accountAboutAdd')
+        textContent: t(has ? spec.edit : spec.add)
       });
       open.addEventListener('click', function () {
-        TTBTrack.event('account_about_open', { about_state: state.about ? 'set' : 'empty' });
+        var report = {};
+        report[spec.state] = has ? 'set' : 'empty';
+        TTBTrack.event(spec.open, report);
         write();
       });
       box.appendChild(el('div', { className: 'lists-row' }, [
-        state.about ? el('p', { className: 'lists-say', textContent: state.about }) : null,
+        has ? el('p', { className: spec === DISPLAY ? 'lists-shown-as' : 'lists-say', textContent: state[spec.field] }) : null,
         open
       ]));
       /* Only where this word is replacing the field somebody was just typing
@@ -948,11 +968,11 @@
       var field = el('input', {
         type: 'text',
         className: 'lists-input',
-        value: state.about,
-        maxlength: String(MAX_ABOUT),
+        value: state[spec.field],
+        maxlength: String(spec.max),
         autocomplete: 'off',
-        'aria-label': t('accountAbout'),
-        placeholder: t('accountAboutHint')
+        'aria-label': t(spec.label),
+        placeholder: t(spec.hint)
       });
       var go = el('button', { type: 'submit', className: 'alt', textContent: t('listsSave') });
 
@@ -970,16 +990,20 @@
           toast(t('accountErrGeneric'));
         };
 
+        var body = { action: spec.field };
+        body[spec.field] = field.value;
         fetch(ACCOUNT_API, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ action: 'about', about: field.value })
+          body: JSON.stringify(body)
         }).then(function (res) {
           return res.ok ? res.json() : null;
         }).then(function (out) {
           if (!out) { failed(); return; }
-          state.about = out.about || '';
-          TTBTrack.event('account_about', { about_state: state.about ? 'set' : 'cleared' });
+          state[spec.field] = out[spec.field] || '';
+          var report = {};
+          report[spec.state] = state[spec.field] ? 'set' : 'cleared';
+          TTBTrack.event(spec.save, report);
           /* The field going is most of the confirmation, and a line taken down
              leaves nothing behind to read as one — so the page says it in a
              word as well. */
@@ -1658,6 +1682,7 @@
       state.linked = !!account.out.linked;
       state.password = state.user ? !!account.out.password : true;
       state.about = account.out.about || '';
+      state.display = account.out.display || '';
       state.links = account.out.links || {};
       state.rows = Object.prototype.toString.call(account.out.rows) === '[object Array]'
         ? account.out.rows

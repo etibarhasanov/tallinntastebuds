@@ -60,11 +60,13 @@ import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import { readProfile, USERNAME, NETWORKS, linkUrl } from '../api/_profile.js';
 import { canonical, esc, seed, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
 
-/* What the tab and the search result call the page: the username, and the
-   line the person wrote under it where there is one, which is where their
-   own name and what they do are. assets/lists.js writes the same. */
+/* What the tab and the search result call the page: the name they go by,
+   or the username where they gave none, and the line under it where there
+   is one — which is where what they do is. assets/lists.js writes the
+   same. */
 function title(profile) {
-  return profile.about ? profile.name + ' · ' + profile.about : profile.name;
+  const who = profile.display || profile.name;
+  return profile.about ? who + ' · ' + profile.about : who;
 }
 
 /* The line under the name in a preview card, and under a search result.
@@ -109,7 +111,8 @@ function structuredData(request, profile) {
     .map((net) => linkUrl(net.id, links[net.id]))
     .concat(profile.rows.filter((row) => row.url).map((row) => row.url));
 
-  const person = { '@type': 'Person', '@id': self + '#person', name: profile.name, url: self };
+  const person = { '@type': 'Person', '@id': self + '#person', name: profile.display || profile.name, url: self };
+  if (profile.display) person.alternateName = profile.name;
   if (profile.about) person.description = profile.about;
   if (profile.face) person.image = canonical(request, profile.face);
   if (sameAs.length) person.sameAs = sameAs;
@@ -201,7 +204,7 @@ export async function onRequest(context) {
      functions/_shell.js: the name, the line they wrote, where else they are,
      their page of links, and their lists, each a link. */
   html = fill(html, EMPTY['lists.html'],
-    '<h1>' + esc(profile.name) + '</h1>' +
+    '<h1>' + esc(profile.display || profile.name) + '</h1>' +
     (profile.about ? '<p>' + esc(profile.about) + '</p>' : '') +
     (elsewhere ? '<ul>' + elsewhere + '</ul>' : '') +
     rowsAsText(profile.rows) +

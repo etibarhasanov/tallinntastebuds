@@ -13,16 +13,16 @@
  * WHAT A PROFILE IS
  *
  * The public lists somebody has made, how many times anybody has kept them,
- * the line they wrote about themselves, the three places they said they
- * are — Instagram, TikTok, Facebook — and the page of links they put under
- * all of that: a showreel, an agency, a note, in the order they chose. Nothing
+ * the name they go by, the line they wrote about themselves, the three places
+ * they said they are — Instagram, TikTok, Facebook — and the page of links
+ * they put under all of that: a showreel, an agency, a note, in the order they chose. Nothing
  * else. Not their saves, which are anonymous by design and filed under a
  * device as often as under an account; not when they were last seen; and not
  * the lists they have kept, which are a drawer of somebody else's pages rather
  * than anything they published. An account holds no address to leave off in
  * the first place; see functions/api/account.js.
  *
- * The last three of those are the ones this site was told rather than worked
+ * The last four of those are the ones this site was told rather than worked
  * out, and that is what makes them allowed: everything else here is a
  * consequence of somebody having published a list.
  *
@@ -347,18 +347,18 @@ export async function faceOf(context, name) {
 
 /* ------------------------------------------------- the optional columns
  *
- * `users.about` and `users.links` both reach a deployed database by hand —
- * every statement in db/schema.sql is CREATE TABLE IF NOT EXISTS, which adds
- * no column to a table that already exists — so there are three states a
- * live database can be in and every read of a person has to survive all
- * three. A line under somebody's name and three handles beside it are not
+ * `users.about`, `users.links` and `users.display_name` all reach a deployed
+ * database by hand — every statement in db/schema.sql is CREATE TABLE IF NOT
+ * EXISTS, which adds no column to a table that already exists — so there are
+ * four states a live database can be in and every read of a person has to
+ * survive all four. A line under somebody's name and three handles beside it are not
  * worth the page: without this, an account page or a profile on a database
  * that is one ALTER behind answers 500 and takes somebody's saves, lists and
  * byline down with it.
  *
- * So the same bargain readingPins() strikes, one tier wider: the first read
+ * So the same bargain readingPins() strikes, two tiers wider: the first read
  * of an isolate asks for everything, and what happens decides for every read
- * after it. At most two failed statements per isolate on the oldest database,
+ * after it. At most three failed statements per isolate on the oldest database,
  * none on a current one, and no round trip of its own either way. Only "no
  * such column" is an answer; anything else is the request having failed and
  * is rethrown, because a database that is down should look like one.
@@ -368,7 +368,7 @@ export async function faceOf(context, name) {
  * does and idling does anyway. Run the ALTER with the deploy rather than
  * after it.
  */
-const TIERS = ['about, links', 'about', ''];
+const TIERS = ['about, links, display_name', 'about, links', 'about', ''];
 let tier = null;
 
 export async function readingExtras(env, make) {
@@ -455,6 +455,10 @@ export async function readProfile(context, name) {
 
   return {
     name: row.username,
+    /* The name they go by, over a username that is lowercase letters. Left
+       out when it is empty, and the page puts the username where it would
+       have gone. */
+    display: row.display_name || undefined,
     since: row.created_at,
     kept: kept,
     /* The photograph, for the few who have one in the repository. Left out

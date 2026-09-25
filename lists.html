@@ -66,7 +66,7 @@
      stylesheet; only what a list page has and the map does not is in the
      second file. -->
 <link rel="stylesheet" href="/assets/styles.css?v=eeb02929">
-<link rel="stylesheet" href="/assets/lists.css?v=eda1d4c0">
+<link rel="stylesheet" href="/assets/lists.css?v=fe73a455">
 </head>
 <body class="lists-body">
 
@@ -93,6 +93,17 @@
       <path class="ico-stop" d="M8 6.5h3v11H8zM13 6.5h3v11h-3z"/>
     </svg>
     <span class="radio-name rail-label" id="radio-name"></span>
+  </button>
+  <!-- Share, on a profile that is a page — the one kind of page here that is
+       handed out as somebody's own rather than walked to. renderPage() in
+       assets/lists.js shows it, and hides the three above. -->
+  <button type="button" class="rail-btn" id="page-share" hidden
+          data-i18n-title="listsShare" data-i18n-aria-label="listsShare"
+          aria-label="Share" title="Share">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 15V4M8 8l4-4 4 4M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/>
+    </svg>
+    <span class="rail-label" data-i18n="listsShare">Share</span>
   </button>
 </header>
 
@@ -167,7 +178,7 @@
 <!-- What every press reports to Google Analytics, shared by every page.
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
-<script src="/assets/track.js?v=93031b0d" defer></script>
+<script src="/assets/track.js?v=1783fa58" defer></script>
 <!-- The basemap the "add a place" picker draws, shared with the map page.
      Before lists.js and deferred like it, so document order puts the global
      in place first. It is the only part of the map this page loads eagerly —
@@ -191,6 +202,6 @@
      player. Shared by the profile that draws them and the account page that
      writes them, for the same reason as the three sites above. -->
 <script src="/assets/rows.js?v=320a70c3" defer></script>
-<script src="/assets/lists.js?v=3426bd9d" defer></script>
+<script src="/assets/lists.js?v=01366e16" defer></script>
 </body>
 </html>

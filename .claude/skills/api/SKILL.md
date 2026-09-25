@@ -71,7 +71,7 @@ leading underscore are modules, not routes.
 | `/*` | `_middleware.js` | none; 301s `pages.dev` to `tallinntastebuds.ee`, and — **splitwise** and **flashcards**, each in a fenced block — serves `split.html` at the root of `splitwise.tallinntastebuds.ee` and `flashcard.html` at the root of `flashcard.tallinntastebuds.ee`, while 301ing every other path on either host back to the site. Both roots *call* their route rather than rewriting to the static file: splitwise's because that page's head is written per group, the flashcards' because a deck's head and its words are what a search finds. The flashcards' root was a rewrite for a day, when the page carried a `noindex` and had no route to call | as `_headers` |
 | `GET /api/saves` | `saves.js` | none | `public, max-age=60`, weak ETag, plus the edge cache under `countsKey()` |
 | `POST /api/saves` | `saves.js` | `saves`, then `RECOUNT_SQL`, in one `batch()`; purges the counts cache | `no-store` |
-| `GET/POST /api/account` | `account.js` | `users`, `sessions`, `login_fails`, `username_holds`, `identities`; `claimDeviceSaves()` moves device saves onto the user and recounts, `username-change` releases the old name into a thirty-day hold, `about` writes the profile line, `links` the three handles under it and `rows` the page of links under those, replacing `profile_rows` for the owner whole — the three changes here that ask for a session and not the password — and `google-name` makes the account a Google sign-in landed on — the last two are `enterAccount()` and `nameGoogleAccount()` in `_account.js`, which `feedback.js` reads too | `no-store`, `Set-Cookie ttb_s` |
+| `GET/POST /api/account` | `account.js` | `users`, `sessions`, `login_fails`, `username_holds`, `identities`; `claimDeviceSaves()` moves device saves onto the user and recounts, `username-change` releases the old name into a thirty-day hold, `about` writes the profile line, `display` the name you go by over it, `links` the three handles under it and `rows` the page of links under those, replacing `profile_rows` for the owner whole — the three changes here that ask for a session and not the password — and `google-name` makes the account a Google sign-in landed on — the last two are `enterAccount()` and `nameGoogleAccount()` in `_account.js`, which `feedback.js` reads too | `no-store`, `Set-Cookie ttb_s` |
 | `GET /api/google` | `google.js` | `users`, `sessions`, `identities`, and the saves `claimDeviceSaves()` moves. **One route asked twice**: with nothing it redirects to Google, with Google's `?code=` it is the way back — so there is one redirect URI to register per hostname rather than a pair to keep in step. Never answers JSON; every ending is a 302 to the `?then=` it was given, carrying one word in `?google=`. Off entirely without a usable `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` — see `googleReady()` — and then every sheet draws the username and password alone | `no-store`, `Set-Cookie ttb_s`, `ttb_g`, `ttb_gp` |
 | `GET/POST /api/lists` | `lists.js` | `lists`, `list_items`, `list_keeps`, `added_places` | `no-store`, on purpose: the owner reads it mid-edit |
 | `GET /api/places` | `places.js` | none; `data/places.json` merged with open `google_venues` | `public, max-age=300` |
@@ -207,8 +207,9 @@ database in this repository; D1 Time Travel's 30 days is the only recovery.
 60`, `MAX_INTRO 200`, `MAX_SAY 280`, `MAX_MUST_ORDER 280`, `MAX_ITEMS 50` in
 `lists.js` are restated in `assets/lists.js`, and `MAX_TITLE` a third time in
 `assets/account.js`,
-which carries the box that names a new list; `MAX_ABOUT 200` in `account.js`
-is restated in `assets/account.js`, which carries the only box that writes it;
+which carries the box that names a new list; `MAX_ABOUT 200` and `MAX_DISPLAY 60` in `account.js`
+are restated in `assets/account.js`, which carries the only boxes that write
+them;
 the three handle patterns in `NETWORKS` in `_profile.js` are restated in the
 same table in `assets/links.js` and `node tools/validate.mjs` holds the two to
 each other — those three fields are the one place here where the cap is *not*

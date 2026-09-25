@@ -5967,6 +5967,7 @@ the drag and the save — is appended rather than left to collide.
 | title | 60 characters |
 | the line under it | 200 |
 | the line about yourself | 200 |
+| the name you go by | 60 |
 | an Instagram handle | 30 characters |
 | a TikTok handle | 24 |
 | a Facebook username | 50 |
@@ -6330,14 +6331,35 @@ which is the one kind of drift here that would be worth a real apology.
 
 ### Your page
 
-Under the line and the handles, and above the lists: a page of links, the
-way a Linktree is one. A showreel, an agency's page, a CV, a heading over a
-group of them — whatever somebody wants seen first under their name, in the
-order they put it. It is the one part of a profile that is not about
-restaurants, and it is allowed for the reason the line and the handles are:
-every row is something its owner typed and pressed Save on. It began as one
-person's page at `/about`, built for a day for the owner, and the address
+A page of links, the way a Linktree is one. A showreel, an agency's page, a
+CV, a heading over a group of them — whatever somebody wants seen under their
+name, in the order they put it. It is the one part of a profile that is not
+about restaurants, and it is allowed for the reason the line and the handles
+are: every row is something its owner typed and pressed Save on. It began as
+one person's page at `/about`, built for a day for the owner, and the address
 still answers — `functions/_middleware.js` sends it to `/u/etibar`.
+
+**A profile with rows is the page, and nothing else.** The moment somebody
+puts rows on their profile it stops being a card about their lists and is
+drawn as the page they made — `renderPage()` in `assets/lists.js`: the face,
+the name they go by, their line, their handles as glyphs, all centred, and
+the rows under them, with the mark as the way home on the left of the header
+and Share on the right. No eyebrow, no standing, no year, no lists, and
+nothing else of this site's: a page handed out as somebody's own carries
+nothing that is about the site it is on. Their lists are still theirs, on
+`/lists` and under every byline; they are not on this page because this page
+is not about them. The header is `lists.html`'s own with three things hidden
+and one shown (`.lists-body.is-page`), not a second header. A profile
+without rows is the card it has always been.
+
+**The name you go by.** A username is lowercase letters and a page needs a
+heading — *Etibar Ädalät* over `etibar`. `users.display_name`, sixty
+characters, written on `/account.html` above the line in the same box the
+line uses (`lineBox()` in `assets/account.js`, one function drawn twice),
+and drawn as the page's heading and in its title; the username stands
+wherever it is empty, which is nearly everywhere. The other way — a display
+name for everybody, everywhere — would have put a second name on every
+byline, and a byline is the one place a name has to be the address.
 
 **A row is a title and one other thing, and that decides what it is.** A
 title with an address is a link. A title with a note is a note, and it opens
@@ -6411,8 +6433,8 @@ and are **What is not built yet**.
 profile with rows and no lists is indexed, as one with lists is. A search is
 for a person — *etibar actor*, *etibar adalat* — and a username is neither
 of those, so the line under the name is what the head is built from:
-`functions/u/[name].js` writes the username and the line as the title, the
-line and then the first three rows as the description, and a `ProfilePage`
+`functions/u/[name].js` writes the name they go by and the line as the title,
+the line and then the first three rows as the description, and a `ProfilePage`
 in JSON-LD whose `Person` carries the line as its description, the face as
 its picture and every address on the page as `sameAs`. `rowsAsText()` writes
 the rows into the page as text for the reader that runs no script, and
@@ -6429,12 +6451,13 @@ of 3,000. The title and the note are cut, the way every line here is; an
 address over the cap is refused, because a cut address points somewhere
 else.
 
-**Turning it on** is one table, applied by hand to both databases the way
-every table is:
+**Turning it on** is one table and one column, applied by hand to both
+databases the way every table and every column is:
 
 ```
 wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
 wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
+ALTER TABLE users ADD COLUMN display_name TEXT NOT NULL DEFAULT '';
 ```
 
 Until it is, a profile and an account page draw no rows rather than a 500 —
@@ -6528,13 +6551,14 @@ the Function did not get to seed.
 
 A profile is a query over `users`, `lists` and `list_keeps`, all of which
 **Lists** already needs, plus `profile_rows` for the page of links — **Your
-page** above has the two lines that make it. There are two columns on
-`users`, both applied by hand and neither of them required for the page to
+page** above has the two lines that make it. There are three columns on
+`users`, all applied by hand and none of them required for the page to
 work:
 
 ```
 ALTER TABLE users ADD COLUMN about TEXT NOT NULL DEFAULT '';
 ALTER TABLE users ADD COLUMN links TEXT NOT NULL DEFAULT '';
+ALTER TABLE users ADD COLUMN display_name TEXT NOT NULL DEFAULT '';
 ```
 
 Without them a profile is the lists and the number, which is what it was the
@@ -12049,6 +12073,9 @@ The account page, `assets/account.js`:
 | `account_links` | `links_state` (`set`/`cleared`) — the three handles, on save |
 | `profile_link_open` | `network` (`instagram`/`tiktok`/`facebook`) — a handle pressed on somebody's profile |
 | `profile_row`, `profile_play`, `profile_note` | `row`, one-based, and `host` on the first two — a row on somebody's page: left through, opened as a player, opened as a note. Reported from `assets/rows.js`, which the profile hands its reporter |
+| `profile_share` | `name`, `method` (`sheet`/`copy`) — the Share pill on a profile that is a page |
+| `account_display_open` | `display_state` (`set`/`empty`) — the name you go by, on opening the field |
+| `account_display` | `display_state` (`set`/`cleared`) — the name you go by, on save |
 | `account_rows_open` | `rows_state` (`set`/`empty`) — the page of links, on opening the form |
 | `account_rows` | `rows_state` (`set`/`cleared`), `rows_count` — the page of links, on save |
 | `account_google_unlink` | — Google taken off the one kind of account that has it |
@@ -12190,6 +12217,17 @@ It loads from `assets/analytics.js`, which is also where the Google tag lives
 `PAGES` at the top of `tools/stamp.mjs` carries it. `admin.html` deliberately
 carries neither tag: the only visits it could record are the owner's own, and
 it is the page holding a GitHub token.
+
+**Every press is a Clarity event too.** A heatmap says where on the screen
+clicks landed and a replay says what one visit did; neither can say which
+button was pressed across a week, and a button drawn by a script under the
+same class as five others is a smudge on a heatmap. So `event()` in
+`assets/track.js` sends every name it sends to Google to Clarity as well, as
+a custom event — `clarity('event', name)` — with no parameters, because
+Clarity takes none. In the dashboard those are the **Smart events** filter
+under *Custom*: pick `list_keep` and the recordings and heatmaps narrow to
+the visits that pressed it. Nothing to set up on the dashboard side; the
+events appear once the first press arrives.
 
 **What it does not record.** Clarity masks the contents of every input box and
 dropdown in all three of its masking modes, and that one cannot be switched
