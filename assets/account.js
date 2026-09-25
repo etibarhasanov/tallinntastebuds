@@ -182,6 +182,14 @@
      that binds; this is the copy that stops a keystroke rather than a round
      trip, the way every cap on this site is written twice. */
   var MAX_ABOUT = 200;
+  /* The page of links. cleanRows() in functions/api/_profile.js binds; these
+     stop a keystroke rather than a round trip, the same arrangement. The
+     address's cap is a maxlength like the rest, because unlike a handle's
+     field this one takes the address itself and a cut one is refused. */
+  var MAX_ROWS = 20;
+  var MAX_ROW_TITLE = 60;
+  var MAX_ROW_URL = 2048;
+  var MAX_ROW_NOTE = 3000;
 
   /* How many rows an opened fold draws before it offers the rest.
      A fold used to be all or nothing, and on an account with forty saves that
@@ -207,6 +215,7 @@
     password: true,  // whether there is a password on it at all
     about: '',       // the line you wrote about yourself, '' for nearly everybody
     links: {},       // network id -> handle, {} for nearly everybody
+    rows: [],        // the page of links under them, [] for nearly everybody
     saved: [],       // place ids, newest first
     places: {},      // id -> { name, address }
     lists: [],       // the ones you wrote
@@ -838,6 +847,7 @@
       el('p', { className: 'lists-say', textContent: t('accountWhat') }),
       aboutBox(),
       linksBox(),
+      rowsBox(),
       el('ul', { className: 'menu' }, [
         door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user), 'profile_open', { name: state.user })
       ]),
@@ -1179,6 +1189,244 @@
     return box;
   }
 
+  /* ------------------------------------------------ the page of links
+   * The rows under the handles on /u/<you> — a showreel, an agency page, a
+   * note, a heading over a group of them — and the form that writes them.
+   * assets/rows.js says what a row is and draws them; db/schema.sql says why
+   * this one, unlike the handles, stores addresses.
+   *
+   * IT OPENS THE WAY THE LINE AND THE LINKS DO
+   *
+   * What stands here is the rows themselves, drawn as the profile draws them
+   * minus the players — a picture of the page rather than the page — with
+   * one quiet word under them to change them, and nothing but that word for
+   * the account that has none. The form arrives when the word is pressed and
+   * goes again when the rows are saved, for design rule 5, the same as the
+   * two boxes above it.
+   *
+   * ONE FORM, ONE SAVE, AND THE FORM IS THE PAGE
+   *
+   * A box per row: the title over the address, or over the note when the row
+   * is one, and the quiet words along its foot — write a note instead, move
+   * it, remove it. What is in the boxes when Save is pressed is what is on
+   * the profile afterwards, in that order, and an empty form takes the page
+   * down. The rows are held in `draft`, and the form is redrawn from it
+   * whenever a row is added, moved, swapped or removed — after the boxes are
+   * read back into it, so nothing typed is lost to a redraw. Arrows rather
+   * than dragging, because a thumb cannot drag inside a scrolling card.
+   *
+   * THE SAME CHECKS THE SERVER RUNS, RUN HERE FIRST
+   *
+   * A row without a title and an address that is not https stop the save at
+   * the keystroke rather than at the round trip, naming the row. The server
+   * still decides and names the row the same way, so the cursor lands in the
+   * box either way. cleanRows() in functions/api/_profile.js binds.
+   */
+  function rowsBox() {
+    var box = el('div', { className: 'lists-about' });
+    var read, write;
+
+    read = function (focus) {
+      clear(box);
+      var open = el('button', {
+        type: 'button',
+        className: 'alt',
+        textContent: t(state.rows.length ? 'accountRowsEdit' : 'accountRowsAdd')
+      });
+      open.addEventListener('click', function () {
+        TTBTrack.event('account_rows_open', { rows_state: state.rows.length ? 'set' : 'empty' });
+        write();
+      });
+
+      var shown = null;
+      if (state.rows.length) {
+        var sheet = TTBRows.sheet(t, false);
+        shown = el('div', { className: 'lists-page-shown' }, [
+          TTBRows.draw(state.rows, { t: t, play: false, onNote: sheet.open }),
+          sheet.node
+        ]);
+      }
+
+      box.appendChild(el('div', { className: 'lists-row' }, [shown, open]));
+      if (focus) open.focus();
+    };
+
+    write = function () {
+      clear(box);
+      var draft = state.rows.map(function (row) {
+        return { title: row.title, url: row.url || '', note: row.note || '', asNote: !!row.note };
+      });
+      /* Somewhere to type, for the account that has nothing yet. */
+      if (!draft.length) draft.push({ title: '', url: '', note: '', asNote: false });
+
+      var form = el('form', { className: 'lists-new lists-page-form' });
+      var go = el('button', { type: 'submit', className: 'alt', textContent: t('listsSave') });
+      var boxes = [];
+
+      function word(label, onPress) {
+        var b = el('button', { type: 'button', className: 'alt', textContent: label });
+        b.addEventListener('click', onPress);
+        return b;
+      }
+
+      function sync() {
+        boxes.forEach(function (b, i) {
+          draft[i].title = b.title.value;
+          if (draft[i].asNote) draft[i].note = b.body.value;
+          else draft[i].url = b.body.value;
+        });
+      }
+
+      function redraw(focusAt) {
+        clear(form);
+        boxes = [];
+        form.appendChild(el('p', { className: 'lists-page-help', textContent: t('rowsHelp') }));
+
+        draft.forEach(function (row, i) {
+          var title = el('input', {
+            type: 'text',
+            className: 'lists-input',
+            value: row.title,
+            maxlength: String(MAX_ROW_TITLE),
+            autocomplete: 'off',
+            'aria-label': t('rowsTitle'),
+            placeholder: t('rowsTitleHint')
+          });
+          var body = row.asNote
+            ? el('textarea', {
+              className: 'lists-input',
+              maxlength: String(MAX_ROW_NOTE),
+              rows: '4',
+              'aria-label': t('rowsNote'),
+              placeholder: t('rowsNoteHint')
+            })
+            : el('input', {
+              type: 'url',
+              className: 'lists-input',
+              value: row.url,
+              maxlength: String(MAX_ROW_URL),
+              autocomplete: 'off',
+              autocapitalize: 'none',
+              spellcheck: 'false',
+              inputmode: 'url',
+              'aria-label': t('rowsAddress'),
+              placeholder: t('rowsAddressHint')
+            });
+          if (row.asNote) body.value = row.note;
+
+          var swap = word(t(row.asNote ? 'rowsAsLink' : 'rowsAsNote'), function () {
+            sync();
+            row.asNote = !row.asNote;
+            redraw(i);
+          });
+          var up = word(t('rowsUp'), function () {
+            sync();
+            draft.splice(i - 1, 0, draft.splice(i, 1)[0]);
+            redraw(i - 1);
+          });
+          var down = word(t('rowsDown'), function () {
+            sync();
+            draft.splice(i + 1, 0, draft.splice(i, 1)[0]);
+            redraw(i + 1);
+          });
+          var drop = word(t('rowsRemove'), function () {
+            sync();
+            draft.splice(i, 1);
+            redraw(Math.min(i, draft.length - 1));
+          });
+          up.disabled = i === 0;
+          down.disabled = i === draft.length - 1;
+
+          boxes.push({ title: title, body: body });
+          form.appendChild(el('fieldset', { className: 'lists-page-edit' }, [
+            title,
+            body,
+            el('div', { className: 'lists-page-edit-foot' }, [swap, up, down, drop])
+          ]));
+        });
+
+        var add = word(t('rowsAdd'), function () {
+          sync();
+          if (draft.length >= MAX_ROWS) { toast(t('rowsErrMany')); return; }
+          draft.push({ title: '', url: '', note: '', asNote: false });
+          redraw(draft.length - 1);
+        });
+        form.appendChild(el('div', { className: 'lists-page-form-foot' }, [add, go]));
+        if (focusAt >= 0 && boxes[focusAt]) boxes[focusAt].title.focus();
+      }
+
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        sync();
+
+        var rows = draft.map(function (row) {
+          return {
+            title: row.title.replace(/\s+/g, ' ').trim(),
+            url: row.asNote ? '' : row.url.trim(),
+            note: row.asNote ? row.note : ''
+          };
+        });
+        for (var i = 0; i < rows.length; i++) {
+          if (!rows[i].title) {
+            toast(t('rowsErrTitle', { n: i + 1 }));
+            boxes[i].title.focus();
+            return;
+          }
+          if (rows[i].url && !/^https:\/\/[^/]/.test(rows[i].url)) {
+            toast(t('rowsErrUrl', { n: i + 1 }));
+            boxes[i].body.focus();
+            return;
+          }
+        }
+
+        go.disabled = true;
+        go.textContent = t('accountWorking');
+
+        var failed = function (message) {
+          go.disabled = false;
+          go.textContent = t('listsSave');
+          toast(message || t('accountErrGeneric'));
+        };
+
+        fetch(ACCOUNT_API, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ action: 'rows', rows: rows })
+        }).then(function (res) {
+          return res.json().then(function (out) {
+            return { ok: res.ok, out: out };
+          });
+        }).then(function (answer) {
+          if (!answer.ok) {
+            /* The server names the row it stopped at, the way this form
+               does, so the cursor lands in the same box either way. The
+               table not being there yet is the one failure a person cannot
+               fix by trying again, and it is said in its own word. */
+            var err = answer.out && answer.out.error;
+            var at = answer.out && typeof answer.out.row === 'number' ? answer.out.row : -1;
+            if (err === 'row-title' && boxes[at]) { failed(t('rowsErrTitle', { n: at + 1 })); boxes[at].title.focus(); return; }
+            if (err === 'row-url' && boxes[at]) { failed(t('rowsErrUrl', { n: at + 1 })); boxes[at].body.focus(); return; }
+            failed(err === 'rows-many' ? t('rowsErrMany') : err === 'no-rows-table' ? t('rowsErrOff') : null);
+            return;
+          }
+          state.rows = answer.out.rows || [];
+          TTBTrack.event('account_rows', {
+            rows_state: state.rows.length ? 'set' : 'cleared',
+            rows_count: state.rows.length
+          });
+          read(true);
+          toast(t('listsSaved'));
+        }).catch(function () { failed(null); });
+      });
+
+      redraw(0);
+      box.appendChild(form);
+    };
+
+    read(false);
+    return box;
+  }
+
   /* --------------------------------------------------------------- Google
    * One word, and only on an account that actually has Google on it:
    * Disconnect, which is one row deleted and a redraw. A button rather than a
@@ -1411,6 +1659,9 @@
       state.password = state.user ? !!account.out.password : true;
       state.about = account.out.about || '';
       state.links = account.out.links || {};
+      state.rows = Object.prototype.toString.call(account.out.rows) === '[object Array]'
+        ? account.out.rows
+        : [];
       state.saved = Object.prototype.toString.call(account.out.saved) === '[object Array]'
         ? account.out.saved
         : [];

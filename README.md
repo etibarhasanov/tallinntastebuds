@@ -66,7 +66,6 @@ completely with the database switched off.
 - [The blog](#the-blog)
 - [Feedback](#feedback)
 - [Statistics](#statistics)
-- [About](#about)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
 - [The map zooms by the pixel](#the-map-zooms-by-the-pixel)
@@ -5973,14 +5972,20 @@ the drag and the save — is appended rather than left to collide.
 | a Facebook username | 50 |
 | what you say about a place | 280 |
 | places before a list is listed on `/lists` | 3 |
+| rows on your page | 20 |
+| a row's title | 60 characters |
+| a row's address | 2,048 |
+| a note on your page | 3,000 |
 
 Most of them are about somebody with a script rather than somebody with
 opinions. They are in `functions/api/lists.js`, and the pages restate the
 lengths so a field stops you at the keystroke rather than at the round trip.
 
-The three handles are the exception and are in `functions/api/_profile.js`,
-inside the pattern that says what a handle on each site looks like rather than
-beside it. Their fields carry no `maxlength` at all, because they take a
+The three handles and the four for the page of links are in
+`functions/api/_profile.js` — the handles inside the pattern that says what a
+handle on each site looks like rather than beside it, the page's beside
+`cleanRows()`, which is also where an address over its cap is refused rather
+than cut, because a cut address points somewhere else. Their fields carry no `maxlength` at all, because they take a
 pasted profile address as well as a handle and a cap of 30 turns an Instagram
 URL into `https://www.instagram.com/tall` — which parses, points at somebody
 else, and looks like it worked. The field shows you the handle when you leave
@@ -6129,7 +6134,8 @@ year they turned up. And one number over the lot: **how many times, in all,
 other people have kept these lists.**
 
 And the line they wrote about themselves, when they wrote one, with the three
-places they said they are under it. That is the whole of it.
+places they said they are under it, and the page of links they put together
+under those — **Your page** below. That is the whole of it.
 
 Nothing else. Not their saves — those are anonymous by design and filed under
 a device as often as under an account, and a page that turned them into a
@@ -6139,10 +6145,11 @@ people's pages rather than anything they published. There is no email on an
 account to leave off — see **Accounts**.
 
 A profile discloses no fact about anybody that a list of theirs was not
-already printing. That is the test it was built to pass, and the two things
+already printing. That is the test it was built to pass, and the three things
 below are the only things on the page that are not a consequence of it: the
-line, and the handles under it. Both are there because somebody typed them
-and pressed Save, which is the opposite of a page revealing something.
+line, the handles under it, and the page of links under those. All three are
+there because somebody typed them and pressed Save, which is the opposite of
+a page revealing something.
 
 ### The line about yourself
 
@@ -6238,9 +6245,11 @@ they typed. What it adds to a profile is the one thing the page was missing
 for the person whose page it is — a profile that named you and led nowhere was
 a page somebody could read and not be able to follow.
 
-**Three, and these three.** Not a website, not an email, not X. Every one of
-them is a further decision about how much of somebody's life a page about
-their restaurant lists is for, and three is where it stopped: the two sites
+**Three, and these three.** Not a website, not an email, not X — those go
+on the page of links under them, **Your page** below, which is addresses on
+purpose. Every one of these is a further decision about how much of
+somebody's life a page about their restaurant lists is for, and three is
+where it stopped: the two sites
 this city's food is photographed on, and the one a place-of-your-own is still
 most often a page on. A fourth is a row in `NETWORKS` in
 `functions/api/_profile.js` and the same row in `assets/links.js` — it is
@@ -6318,6 +6327,109 @@ other, the same as the pins, so `node tools/validate.mjs` fails the build when
 the ids, the bases or the caps drift. A base that moved on one side only would
 send every link on every profile somewhere the other half never agreed to,
 which is the one kind of drift here that would be worth a real apology.
+
+### Your page
+
+Under the line and the handles, and above the lists: a page of links, the
+way a Linktree is one. A showreel, an agency's page, a CV, a heading over a
+group of them — whatever somebody wants seen first under their name, in the
+order they put it. It is the one part of a profile that is not about
+restaurants, and it is allowed for the reason the line and the handles are:
+every row is something its owner typed and pressed Save on. It began as one
+person's page at `/about`, built for a day for the owner, and the address
+still answers — `functions/_middleware.js` sends it to `/u/etibar`.
+
+**A row is a title and one other thing, and that decides what it is.** A
+title with an address is a link. A title with a note is a note, and it opens
+as a sheet over the page. A title on its own is a heading. Nothing stores the
+kind: `profile_rows` in `db/schema.sql` has `title`, `url` and `note`, and
+`assets/rows.js` reads the kind off which of the two is filled.
+
+**A link to a video is a player.** An address on YouTube, Vimeo, Instagram,
+TikTok or Google Drive opens its player inside the row's own card on a press,
+and comes out again on the second press — taken out rather than hidden,
+because none of those players can be paused from outside its own script and
+a frame that is not in the page is not playing. `PLAYERS` in
+`assets/rows.js` is the list: the id is read off the address somebody
+pasted and the frame's address is built from it, so nothing anybody typed
+reaches an iframe. Every player has *Trouble loading? Open it on Vimeo.*
+under it, in the same tab, for the reason the map's reels do — a youtube.com
+or instagram.com address is a universal link, and the tab a new-tab link
+leaves behind when the app opens is the blank page somebody comes back to. A
+reel is a phone's shape, so its frame is held to 380px and centred, and takes
+Instagram's own measurement when it arrives. **On a phone an Instagram row
+stays a link**, decided once on load: Instagram serves a phone a card rather
+than a player and the card's own way out leaves a blank tab behind —
+`embedInstagram()` in `assets/app.js` has the whole of it.
+
+None of the players is this site's. A Vimeo owner can restrict embedding to
+named domains, a Drive file plays in a frame only when it is shared with
+anyone who has the link, and a YouTube owner can switch embedding off. If one
+comes up blank, the fix is at that host, and the way out under it works
+either way.
+
+**A note is a sheet with an address.** `/u/kate#acting-cv` — the slug of its
+title — opens the page with the note already up, so a note can be sent on its
+own, and closing it takes the hash off again. Paragraphs are blank lines;
+there is no other formatting.
+
+**Addresses, where the handles are deliberately not.** **Where else you are**
+above stores handles and builds the address, because a field taking a URL is
+a field for pointing anywhere from under a trusted name. This is exactly that
+field, decided on purpose: a page of links is a page of addresses or it is
+nothing. What holds it: `https` and nothing else — not a list of allowed
+sites, which would be this site deciding what a person may put on their own
+page, and not less, because `javascript:` and `data:` are addresses too; the
+host printed under every plain link, so a reader knows where it goes before
+pressing; every link out `nofollow noopener`; and the caps below. The three
+handle fields stay as they were.
+
+**It is written on `/account.html`**, on the card that carries your name,
+the way the line and the handles are: what stands there is the rows
+themselves, drawn as the profile draws them minus the players, with one
+quiet word under them — *Change your page* — and just that word for the
+account that has none. Press it and each row is a box: the title over the
+address, or over the note, with *Write a note instead*, *Move up*, *Move
+down* and *Remove* along its foot; under them *Add a row* and an `.alt`
+Save, for rule 5. Arrows rather than dragging, because a thumb cannot drag
+inside a scrolling card. One form, one Save, one write: the rows are deleted
+for the owner and written again in one batch, in the form's order, so a save
+that fails halfway leaves the page as it was. A row without a title, or with
+an address that is not `https`, stops the save and names the row, here and
+on the server alike. It asks for a session and not the password, for the
+reason the line does.
+
+**The face.** For the few who have one, `assets/faces/<name>.jpg` in the
+repository is drawn over the profile's card, and nothing is drawn for the
+rest. `faceOf()` in `functions/api/_profile.js` asks the deployment for it
+with one HEAD. Nothing is uploaded and nothing is stored: a photograph comes
+in by the road every photograph on this site takes, a commit, which today
+means the owner's. Uploads are a bucket, a route and a moderation question,
+and are **What is not built yet**.
+
+**Indexed when there is something to find.** A profile with rows and no
+lists is indexed, as one with lists is. `describe()` in
+`functions/u/[name].js` names the first three rows in the page's description
+where there are any, and `rowsAsText()` writes the rows into the page as
+text for the reader that runs no script.
+
+**The caps**, in `functions/api/_profile.js` and restated as maxlengths in
+`assets/account.js`: twenty rows, a title of 60, an address of 2,048, a note
+of 3,000. The title and the note are cut, the way every line here is; an
+address over the cap is refused, because a cut address points somewhere
+else.
+
+**Turning it on** is one table, applied by hand to both databases the way
+every table is:
+
+```
+wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
+wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
+```
+
+Until it is, a profile and an account page draw no rows rather than a 500 —
+`readRows()` takes "no such table" as an answer, at the cost of one failed
+statement per read — and a save says *Pages are not switched on here yet.*
 
 ### Private lists are not on it, including for its owner
 
@@ -6402,8 +6514,9 @@ the Function did not get to seed.
 
 ### Turning it on
 
-There is no new table: a profile is a query over `users`, `lists` and
-`list_keeps`, all of which **Lists** already needs. There are two columns on
+A profile is a query over `users`, `lists` and `list_keeps`, all of which
+**Lists** already needs, plus `profile_rows` for the page of links — **Your
+page** above has the two lines that make it. There are two columns on
 `users`, both applied by hand and neither of them required for the page to
 work:
 
@@ -6414,7 +6527,8 @@ ALTER TABLE users ADD COLUMN links TEXT NOT NULL DEFAULT '';
 
 Without them a profile is the lists and the number, which is what it was the
 day it shipped. With them it is that plus whatever somebody wrote about
-themselves. Nothing else is switched on or off.
+themselves; with the table as well, plus the page they put together. Nothing
+else is switched on or off.
 
 ---
 
@@ -9432,129 +9546,6 @@ all rather than a missing link.
 
 ---
 
-## About
-
-`/about` — the person behind the map, as a page of links: the face, the name,
-the showreel, the acting CV, the agency, the commercials and the sketches. It
-stands in for a Linktree, in the same order the Linktree had them, and it is
-handed out the way a Linktree address is.
-
-```
-about.html               the page, served at /about as well, and every word on it
-assets/about.js          the players, the CV sheet and Share — ES5, one IIFE
-assets/about.css         the face, a row the width of a card, a player in one
-assets/about/etibar.jpg  the face
-```
-
-No endpoint, no database, no data file. Everything on the page is written into
-`about.html`, and every row there is a link to the thing itself — so the page
-is a working list of addresses before the script arrives, and still one if it
-never does.
-
-### A row that plays opens inside its card
-
-A row carrying `data-play` — the showreel, Bolt, The Agency, and the four
-sketches — is turned by the script into a button that opens that address's
-player under the row, inside the same card, and takes it out again on the
-second press. Taking the frame out rather than hiding it is what stops the
-sound: none of these players can be paused from outside without its own
-script. `data-host` names whose player it is, for the way out printed under
-every one: *Trouble loading? Open it on Vimeo.* It goes in the same tab, for
-the reason the map's does — a YouTube or Instagram address is a universal
-link, and the tab a new-tab link leaves behind when the app opens is the blank
-page somebody comes back to.
-
-The showreel is standing open when the page arrives, because it is what most
-people came for. Nothing else loads a player until it is pressed.
-
-A reel is a phone's shape, so its frame is held to 380px and centred rather
-than stretched across the column, where it would be a thousand pixels tall on
-a laptop; it opens at 9 / 19 and takes Instagram's own measurement when that
-arrives, the way the map's panel does. **On a phone an Instagram row stays a
-link**, and it is decided once, on load. Instagram shows a phone a card rather
-than a player, and the card's own way out leaves a blank tab behind —
-`embedInstagram()` in `assets/app.js` has the whole of it, and the five weeks
-it took to learn.
-
-**None of the four players could be watched from the session that built this
-page.** YouTube, Vimeo, Google Drive and Instagram were all unreachable from
-it, so what was driven is the page — rows opening and closing, the frames
-sized, the way out under each — and not whether anything plays in them. Each
-host has its own way of refusing a frame on somebody else's site: a Vimeo
-owner can restrict embedding to named domains, a Drive file plays in a frame
-only when it is shared with anyone who has the link, and Instagram is above.
-If one comes up blank, the fix is at that host, and the way out under it works
-either way.
-
-**Swappie is a link and not a player**, because what it links to is the
-production company's page for the film and not a video. Whatever player that
-page carries could not be seen from here either. If it turns out to be a
-Vimeo, its id in a `data-play` of `https://player.vimeo.com/video/<id>` with
-`data-host="Vimeo"` makes the row a player like Bolt's.
-
-### The CV is a sheet
-
-The **Acting CV** row opens the CV over the page, in a `<dialog>` wearing the
-map's `.scrim`: the ground behind it and the colours come from the site, and
-Escape, the focus kept inside it and the page behind it going inert come from
-the browser. A press on the ground round the card closes it. The address says
-whether it is open — `/about#cv` arrives with the CV already up, which is the
-link **Share the CV** hands out — and closing it takes the `#cv` back off
-without adding a step to Back.
-
-The CV is the owner's own text, laid out rather than rewritten: a label in
-mono and what it says beside it for the facts and the skills, the year in mono
-and the credit beside it for the rest. Its name is spelled the way the CV
-spells it, which is not the way the page's heading does.
-
-### Why every word on it is English
-
-Every other page prints its words out of `data/ui.json` in ten languages
-([Languages](#languages), and rule 11 under
-[The design rules](#the-design-rules)). This one deliberately does not. What
-it says is somebody's CV and the names of their work, which is content the way
-a blog post is, written in the one language the people it is for read it in.
-What is left over is interface, and it is four words — *Share*, *Close*, *Link
-copied* and the way out under a player. `ui.json` is 344 KB, and fetching all
-of it to translate four words round an English CV would make it the heaviest
-thing on the page.
-
-If it is ever translated, it is the flashcards' pattern rather than the map's:
-a route that answers with the one language block the page is read in —
-**One request on the way in** under [Flashcards](#flashcards) — and not the
-whole file. Until then there is no `data-i18n` and no `t()` on it, so the
-validator has nothing to hold it to.
-
-### Unlinked, and found anyway
-
-Nothing on the map or anywhere else on this site links here, on purpose: it is
-somebody's page on this domain rather than a part of the site. It is indexed
-all the same, and it is in `sitemap.xml`, because somebody searching for the
-name on it is looking for exactly this page — the blog's arrangement, and
-`_headers` gives it the blog's rules.
-
-It carries `assets/analytics.js`, so it is counted and recorded like every
-other page, and its presses are in the table under [Analytics](#analytics).
-The email address on it is rendered text; Clarity's Balanced mode — the
-dashboard's default — masks it in a replay.
-
-### Changing it
-
-- **A row** is an `<li class="card">` in `about.html`, in the order it
-  should appear. A link needs only `href` and `data-item`, which is the name
-  the analytics report it under; a player adds `data-play` with the host's
-  embed address and `data-host` with the host's name, and the triangle mark in
-  place of the chevron.
-- **The face** is `assets/about/etibar.jpg`, cut out of a screenshot of the
-  Linktree at 168px because nothing better could be fetched. A real headshot
-  saved over it under the same name replaces it on the next load — `/assets/*`
-  revalidates, and pictures are not stamped.
-- **The Instagram link** under the name goes to `instagram.com/a_tea_bar`, the
-  Linktree's own name, which is a guess nobody could check from here. If the
-  handle is another one, it is one `href`.
-
----
-
 ## The admin page
 
 `/admin.html` — a door, and behind it the tools for posting without opening a
@@ -10382,10 +10373,10 @@ assets/venues.css          only what a directory has and the map does not
 stats.html                 which places get opened and which  } unlinked and
 assets/stats.js            chips get pressed: three rankings  } noindex
 assets/stats.css           the rows of a ranking, and nothing else
-about.html                 the person behind the map, as a  } unlinked, and
-assets/about.js            page of links: players that open } indexed on
-assets/about.css           in their card, and the CV        } purpose
-assets/about/              the face on it
+assets/rows.js             the page of links on a profile: what a row is,
+                           which addresses get a player, and the note sheet —
+                           said once for the profile and the account page
+assets/faces/              a photograph per username, for the few who have one
 functions/api/stats.js     /api/stats — one press in, the whole ranking out,
                            with the page's words and five minutes of cache
 assets/links.js            the three sites a profile can link to, the handles
@@ -12045,6 +12036,9 @@ The account page, `assets/account.js`:
 | `account_links_open` | `links_state` (`set`/`empty`) — the three handles, on opening the fields |
 | `account_links` | `links_state` (`set`/`cleared`) — the three handles, on save |
 | `profile_link_open` | `network` (`instagram`/`tiktok`/`facebook`) — a handle pressed on somebody's profile |
+| `profile_row`, `profile_play`, `profile_note` | `row`, one-based, and `host` on the first two — a row on somebody's page: left through, opened as a player, opened as a note. Reported from `assets/rows.js`, which the profile hands its reporter |
+| `account_rows_open` | `rows_state` (`set`/`empty`) — the page of links, on opening the form |
+| `account_rows` | `rows_state` (`set`/`cleared`), `rows_count` — the page of links, on save |
 | `account_google_unlink` | — Google taken off the one kind of account that has it |
 | `account_logout` | — |
 | `radio_play`, `radio_stop`, `home` | as on the map |
@@ -12126,20 +12120,6 @@ Flashcards, `assets/flashcard.js`:
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, reported under the names the map's switch reports under, because it is the same press |
 | `flash_back`, `home` | `deck_id` on the first |
 | `radio_play`, `radio_stop` | as on the map |
-
-About, `assets/about.js`:
-
-| event | parameters |
-| --- | --- |
-| `about_play` | `item` — a player opened by a press. The showreel standing open on arrival is not one: nobody pressed anything |
-| `about_link` | `item`, `from` — leaving for the thing itself: `row` for a row that goes somewhere else (the agency, the email, Swappie, and a reel on a phone), `player` for the way out under a player |
-| `about_cv` | — the CV opened from its row. Arriving at `/about#cv` is the landing page view |
-| `about_share` | `where` (`page`/`cv`), `method` (`sheet`/`copy`) |
-| `about_instagram`, `home` | — the glyph under the name and the wordmark, through `data-track` |
-
-`item` is the row's `data-item` — `showreel`, `agency_profile`, `contact`,
-`swappie`, `bolt`, `the_agency` and the four sketches by name — so the events
-read as the words on the page.
 
 The pass pages, `assets/deal.js` and `assets/verify.js` — nothing on them is
 a button except the way back, so what they report is the moment each exists
@@ -12664,11 +12644,6 @@ the markup are only the English the page is served with — every one of them
 sits under a `data-i18n` key that replaces it as soon as the strings load.
 Both the keys in the markup and the `t('key')` calls in the scripts are
 checked against the file. See **Languages**.
-
-One page stands outside this rather than breaking it: `/about` is one
-person's CV in English, with four words of interface round it, and it prints
-those four in English too — [About](#about) says why, and what translating it
-would take.
 
 ### 12. Nothing animates unless it was asked to
 

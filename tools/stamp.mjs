@@ -43,7 +43,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const PAGES = [
   'index.html', 'lists.html', 'account.html', 'blog.html', 'feedback.html',
   'google.html', 'deal.html', 'verify.html', 'staff.html', 'split.html',
-  'flashcard.html', 'stats.html', 'about.html'
+  'flashcard.html', 'stats.html'
 ];
 
 /* Scripts and stylesheets only. Images are addressed by name and replaced

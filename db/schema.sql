@@ -257,7 +257,8 @@ CREATE TABLE IF NOT EXISTS users (
   -- {"instagram":"kate","tiktok":"kate"} — only the networks somebody filled
   -- in, and only ever handles, never addresses: the URL is built in
   -- functions/api/_profile.js out of a base nobody typed, which is what keeps
-  -- a profile from being a way to point anywhere from under a trusted name.
+  -- these three from being a way to point anywhere from under a trusted name.
+  -- profile_rows below is the one place on a profile that may, on purpose.
   -- A fourth site is then a row in a table rather than another hand-run ALTER
   -- against a live table. The cost is that this cannot be queried, and
   -- nothing queries it: it is read on one page, about one person, by primary
@@ -302,6 +303,56 @@ CREATE TABLE IF NOT EXISTS username_holds (
 );
 -- "Is this name still spoken for", which is the only question asked of it.
 CREATE INDEX IF NOT EXISTS idx_username_holds_name ON username_holds (username COLLATE NOCASE);
+
+-- The page of links on /u/<name>: what somebody wants shown under their name
+-- and above their lists, in the order they put it. A showreel, an agency
+-- page, a note that opens over the page, a heading over a group of them. It
+-- is the one part of a profile that is not about restaurants at all, and it
+-- is allowed for the reason the line and the handles are: every row is
+-- something its owner typed and pressed Save on.
+--
+-- ONE ROW IS ONE ROW ON THE PAGE, AND WHAT IT IS IS DECIDED BY WHAT IS FILLED
+--
+-- A title with an address is a link — and a player, where the address is a
+-- video on one of the sites assets/rows.js knows how to frame; a title with a
+-- note is a note; a title alone is a heading. The kind is read off the row
+-- and never stored, so there is no column for it to disagree with.
+--
+-- ADDRESSES, WHICH THE HANDLES ABOVE DELIBERATELY ARE NOT
+--
+-- users.links stores handles and builds the address out of a base nobody
+-- typed, because a field taking a URL is a field for pointing anywhere from
+-- under a trusted name. This table is exactly that field, decided on purpose:
+-- a page of links is a page of addresses or it is nothing. What limits it is
+-- said where the rows are written, in functions/api/_profile.js — https only,
+-- twenty rows, sixty characters of title, a note of three thousand — and every
+-- link goes out nofollow, under the address it goes to, printed.
+--
+-- REPLACED WHOLE ON EVERY SAVE
+--
+-- One form, one Save, one write: the rows are deleted for the owner and
+-- written again in the order the form had them, in one batch. No ids, no
+-- reorder bookkeeping, and (owner, position) is the key. Twenty rows at the
+-- most, so the write is never large.
+--
+-- APPLIED BY HAND, LIKE EVERY TABLE HERE, AND EVERY READER SURVIVES ITS ABSENCE
+--
+-- readingRows() in functions/api/_profile.js is readingPins()'s bargain once
+-- more: a profile and an account page on a database that has no such table
+-- yet draw no rows rather than a 500, and the write says plainly that the
+-- table is not there.
+CREATE TABLE IF NOT EXISTS profile_rows (
+  -- users.id.
+  owner     TEXT    NOT NULL,
+  -- Where on the page, from 0.
+  position  INTEGER NOT NULL,
+  title     TEXT    NOT NULL,
+  -- The address, or '' for a note and for a heading.
+  url       TEXT    NOT NULL DEFAULT '',
+  -- The note, or '' for a link and for a heading. Never both filled.
+  note      TEXT    NOT NULL DEFAULT '',
+  PRIMARY KEY (owner, position)
+);
 
 -- Only the SHA-256 of a session token is kept. A leaked copy of this table is
 -- a list of hashes rather than a drawer full of working keys.

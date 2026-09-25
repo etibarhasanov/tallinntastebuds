@@ -13,17 +13,22 @@
  * WHAT A PROFILE IS
  *
  * The public lists somebody has made, how many times anybody has kept them,
- * the line they wrote about themselves, and the three places they said they
- * are — Instagram, TikTok, Facebook. Nothing else. Not their saves, which are
- * anonymous by design and filed under a device as often as under an account;
- * not when they were last seen; and not the lists they have kept, which are a
- * drawer of somebody else's pages rather than anything they published. An
- * account holds no address to leave off in the first place; see
- * functions/api/account.js.
+ * the line they wrote about themselves, the three places they said they
+ * are — Instagram, TikTok, Facebook — and the page of links they put under
+ * all of that: a showreel, an agency, a note, in the order they chose. Nothing
+ * else. Not their saves, which are anonymous by design and filed under a
+ * device as often as under an account; not when they were last seen; and not
+ * the lists they have kept, which are a drawer of somebody else's pages rather
+ * than anything they published. An account holds no address to leave off in
+ * the first place; see functions/api/account.js.
  *
- * The last two of those are the ones this site was told rather than worked
+ * The last three of those are the ones this site was told rather than worked
  * out, and that is what makes them allowed: everything else here is a
  * consequence of somebody having published a list.
+ *
+ * And a face, for the few who have one: a photograph in the repository at
+ * assets/faces/<name>.jpg, which is the road every photograph on this site
+ * takes, and nothing is drawn for the rest. See faceOf() below.
  *
  * A private list is not on it. That is the whole of the privacy rule here and
  * it is the same one /list/<id> already enforces: a list is public or it is
@@ -76,6 +81,8 @@ import { readingPins, pinSelect, pinsOf } from './_pins.js';
  * A pasted address still works, because it is what people reach for: an
  * instagram.com/... URL is read for its first path segment and the rest is
  * dropped, and a URL pointing anywhere else is not a handle and is refused.
+ * The page of links further down this file is the deliberate other side of
+ * that rule: addresses, held to https and printed under their host.
  *
  * THE TABLE IS WRITTEN OUT TWICE
  *
@@ -206,6 +213,138 @@ export function linkUrl(id, handle) {
   return net && handle ? net.base + encodeURIComponent(handle) : '';
 }
 
+/* ----------------------------------------------------- the page of links
+ *
+ * The rows under somebody's name on /u/<name>, written on /account.html and
+ * kept in profile_rows — see db/schema.sql for what a row is and why this
+ * table stores addresses where users.links deliberately stores handles.
+ *
+ * WHAT A ROW IS IS DECIDED BY WHAT IS FILLED
+ *
+ * A title and an address is a link; a title and a note is a note, which the
+ * page opens as a sheet; a title on its own is a heading. Nothing stores the
+ * kind. An address wins over a note where both were sent, so a row is never
+ * two things at once.
+ *
+ * THE CAPS
+ *
+ * Twenty rows, sixty characters of title — the same as a list's — an address
+ * of two thousand and a note of three thousand. The title and the note are
+ * cut, the way every line here is; an address is refused rather than cut,
+ * because a cut address points somewhere else. Restated as maxlengths in
+ * assets/account.js, which carries the only form that writes them.
+ *
+ * https AND NOTHING ELSE
+ *
+ * A row's address is the one thing on this site somebody types that a
+ * stranger's browser will then be sent to, so it is held to a scheme and a
+ * host and nothing more: not a list of sites, which would be this site
+ * deciding what a person may put on their own page, and not less than that,
+ * because javascript: and data: are addresses too. The page prints the host
+ * under every link and sends every one out nofollow.
+ */
+export const MAX_ROWS = 20;
+export const MAX_ROW_TITLE = 60;
+export const MAX_ROW_URL = 2048;
+export const MAX_ROW_NOTE = 3000;
+
+function httpsOnly(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:' && !!parsed.hostname;
+  } catch (e) {
+    return false;
+  }
+}
+
+/* One row as the page wants it, or null for one that has stopped being one:
+   no title, or an address the rule above no longer takes. A field with
+   nothing in it is left out rather than sent as '', the way `about` is. */
+function rowOut(title, url, note) {
+  if (!title) return null;
+  if (url && !httpsOnly(url)) return null;
+  const out = { title: title };
+  if (url) out.url = url;
+  else if (note) out.note = note;
+  return out;
+}
+
+/* The rows as they should be stored, or a refusal naming the row it stopped
+   at — never both. Refused rather than dropped, for the reason a handle is:
+   a row somebody wrote that quietly went missing is a page with a gap in it
+   and nothing anywhere saying why. */
+export function cleanRows(raw) {
+  if (!Array.isArray(raw)) return { error: 'rows' };
+  if (raw.length > MAX_ROWS) return { error: 'rows-many' };
+
+  const rows = [];
+  for (let i = 0; i < raw.length; i++) {
+    const given = raw[i] && typeof raw[i] === 'object' ? raw[i] : {};
+    const title = String(typeof given.title === 'string' ? given.title : '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, MAX_ROW_TITLE);
+    if (!title) return { error: 'row-title', row: i };
+
+    const url = String(typeof given.url === 'string' ? given.url : '').trim();
+    if (url && (url.length > MAX_ROW_URL || !httpsOnly(url))) return { error: 'row-url', row: i };
+
+    /* Paragraphs are blank lines and nothing else: line ends made one kind,
+       trailing spaces off each line, and never more than one blank line in
+       a row, so what is stored is what the sheet will show. */
+    const note = url ? '' : String(typeof given.note === 'string' ? given.note : '')
+      .replace(/\r\n?/g, '\n')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim()
+      .slice(0, MAX_ROW_NOTE);
+
+    rows.push({ title: title, url: url, note: note });
+  }
+  return { rows: rows };
+}
+
+/* profile_rows arrives by hand, like every table here, and the two pages
+   that read it must stand without it. Not memoised the way the columns above
+   are: an isolate that remembered "no table" would go on drawing no rows
+   after the table was applied — and would hand the form an empty page back
+   from a save that had just succeeded. So the cost on a database without the
+   table is one failed statement per read, for the afternoon between the
+   deploy and the two commands. Only "no such table" is an answer; anything
+   else is the request having failed and is rethrown. */
+export async function readRows(env, ownerId) {
+  let results;
+  try {
+    results = (await env.DB
+      .prepare('SELECT title, url, note FROM profile_rows WHERE owner = ? ORDER BY position')
+      .bind(ownerId)
+      .all()).results;
+  } catch (e) {
+    if (!/no such table/i.test(String((e && e.message) || e))) throw e;
+    return [];
+  }
+  /* Read against the rule rather than trusted as stored, the way the handles
+     are: a row this site would no longer accept stops being printed. */
+  return results.map((r) => rowOut(r.title, r.url, r.note)).filter(Boolean);
+}
+
+/* The face, where there is one: assets/faces/<name>.jpg in the deployment,
+   asked for with a HEAD through the same binding _shell.js reads a page
+   with. A username is [a-z0-9-], so the path is never anything but a file
+   under that folder. Nothing is stored — the picture is in the repository or
+   it is not — and nothing is drawn for the many who have none. */
+export async function faceOf(context, name) {
+  const url = new URL('/assets/faces/' + name + '.jpg', context.request.url);
+  try {
+    const res = context.env.ASSETS
+      ? await context.env.ASSETS.fetch(new Request(url.toString(), { method: 'HEAD' }))
+      : await fetch(url.toString(), { method: 'HEAD' });
+    return res.ok ? url.pathname : undefined;
+  } catch (e) {
+    return undefined;
+  }
+}
+
 /* ------------------------------------------------- the optional columns
  *
  * `users.about` and `users.links` both reach a deployed database by hand —
@@ -318,6 +457,13 @@ export async function readProfile(context, name) {
     name: row.username,
     since: row.created_at,
     kept: kept,
+    /* The photograph, for the few who have one in the repository. Left out
+       for everybody else, and the page draws nothing in its place. */
+    face: await faceOf(context, row.username),
+    /* Their page of links, in their order. Always an array, the way `lists`
+       is: the page counts it, and the route decides whether the profile is
+       worth indexing by it. */
+    rows: await readRows(env, row.id),
     /* Left out when it is empty rather than sent as '', the way every other
        answer here drops a field with nothing in it. Nearly every account has
        no line, and the page draws nothing for one it was not given. */

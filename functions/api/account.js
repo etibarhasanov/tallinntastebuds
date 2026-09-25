@@ -88,7 +88,7 @@ import {
   enterAccount, nameGoogleAccount
 } from './_account.js';
 import { googleReady, unlinkGoogle, hasGoogle, pendingCookie } from './_google.js';
-import { NETWORKS, cleanHandle, readLinks, readingExtras } from './_profile.js';
+import { NETWORKS, cleanHandle, readLinks, readingExtras, cleanRows, readRows } from './_profile.js';
 
 /* The line somebody writes about themselves on /u/<name>. The same length as
    a list's intro in functions/api/lists.js, and the same reasoning: it is a
@@ -217,13 +217,19 @@ export async function onRequestGet(context) {
        the server validates against. Left out entirely where there are none,
        which is nearly every account. */
     links: links,
+    /* The page of links under the profile, in its order, for the form that
+       rewrites it. Guarded inside readRows() for the reason the two above
+       are: the table arrives by hand, and until it has, an account has no
+       rows rather than no account page. */
+    rows: await readRows(env, user.id),
     saved: await savedByUser(env, user.id)
   }, 200);
 }
 
 /* ---------------------------------------------------------------- create,
  * sign in, sign out, change the password, change the username, write the line
- * about yourself, say where else you are. One endpoint, because they share every check: the same
+ * about yourself, say where else you are, put together your page of links.
+ * One endpoint, because they share every check: the same
  * username and password rules, the same slow-down on a fingerprint that keeps
  * getting a password wrong, and the same session table on the way in and out.
  *
@@ -554,6 +560,62 @@ export async function onRequestPost(context) {
       .run();
 
     return json({ links: next }, 200);
+  }
+
+  /* ------------------------------------------------ the page of links
+   *
+   * The rows drawn on /u/<name> under the handles and above the lists — see
+   * db/schema.sql for what one is. The third thing anybody writes here about
+   * themselves rather than about a restaurant, and it asks for a session and
+   * no password for the reason the two above do.
+   *
+   * ALL OF THEM AT ONCE, IN THEIR ORDER, AND NOTHING IS AN ANSWER
+   *
+   * One form, one Save, one write: what is in the form when Save is pressed
+   * is what is on the page afterwards, so removing a row is how it comes
+   * down and an empty form takes the whole page down. The rows are deleted
+   * and written again in one batch, so a save that fails halfway leaves the
+   * page as it was rather than half of each.
+   *
+   * A ROW THAT IS NOT ONE IS REFUSED, NOT DROPPED
+   *
+   * cleanRows() stops at the first row it cannot take and says which, and
+   * nothing is written until every row is a row — the same reasoning the
+   * handles follow, and the page has the index to put the cursor in the box.
+   *
+   * NO TABLE YET IS ITS OWN ANSWER
+   *
+   * profile_rows arrives by hand. A save against a database that has not
+   * had it says so, in a word the page can show, rather than the generic
+   * one — because this is the one failure a person cannot fix by trying
+   * again, and the one the owner can fix in a minute.
+   */
+  if (action === 'rows') {
+    const user = await sessionUser(request, env);
+    if (!user) return json({ error: 'signed-out' }, 401);
+
+    const cleaned = cleanRows(body.rows);
+    if (cleaned.error) return json({ error: cleaned.error, row: cleaned.row }, 400);
+
+    const writes = [
+      env.DB.prepare('DELETE FROM profile_rows WHERE owner = ?').bind(user.id)
+    ];
+    cleaned.rows.forEach((row, i) => {
+      writes.push(env.DB
+        .prepare('INSERT INTO profile_rows (owner, position, title, url, note) VALUES (?, ?, ?, ?, ?)')
+        .bind(user.id, i, row.title, row.url, row.note));
+    });
+
+    try {
+      await env.DB.batch(writes);
+    } catch (e) {
+      if (/no such table/i.test(String((e && e.message) || e))) return json({ error: 'no-rows-table' }, 503);
+      throw e;
+    }
+
+    /* What was stored, read the way the profile will read it, so the form
+       redraws exactly what the page now shows. */
+    return json({ rows: await readRows(env, user.id) }, 200);
   }
 
   /* ------------------------------------------ naming a Google account
