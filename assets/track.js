@@ -47,8 +47,16 @@ window.TTBTrack = (function () {
     return typeof window.gtag === 'function';
   }
 
+  /* Every press goes to both tags. Google gets the name and the parameters;
+     Clarity gets the name alone, as a custom event, which is what lets its
+     dashboard filter recordings and heatmaps by the button that was pressed
+     rather than by where on the page a click landed. Without this a heatmap
+     says a spot on the screen was pressed and a replay says what one visit
+     did, and neither can answer "who pressed Keep" across a week. Clarity's
+     queue takes the call before its script lands, the same as gtag's. */
   function event(name, params) {
     if (live()) window.gtag('event', name, params || {});
+    if (typeof window.clarity === 'function') window.clarity('event', name);
   }
 
   /* Attaches a report to a link or button that is built inline, and hands

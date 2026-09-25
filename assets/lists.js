@@ -824,6 +824,8 @@
       ]);
     }
 
+    if (who.rows.length) return renderPage(who);
+
     var wrap = el('div', { className: 'lists-stack' });
 
     wrap.appendChild(card([
@@ -858,24 +860,6 @@
       })
     ]));
 
-    /* Their page of links, between who they are and what they have written
-       about restaurants: the one part of a profile that is not about the map,
-       and the part its owner put there to be seen first. assets/rows.js draws
-       it; the note sheet is this page's, below. */
-    if (who.rows.length) {
-      var sheet = TTBRows.sheet(t, true);
-      wrap.appendChild(TTBRows.draw(who.rows, {
-        t: t,
-        play: true,
-        report: TTBTrack.event,
-        onNote: sheet.open
-      }));
-      wrap.appendChild(sheet.node);
-      /* After render() has put this in the document: a dialog opens only
-         from inside one, and a link to a note arrives wanting it open. */
-      setTimeout(function () { sheet.arrive(who.rows); }, 0);
-    }
-
     if (!who.lists.length) {
       wrap.appendChild(el('p', { className: 'lists-none', textContent: t('profileNone') }));
     } else {
@@ -888,6 +872,91 @@
     return wrap;
   }
 
+
+  /* A profile that is a page: the page its owner made, and nothing else.
+   *
+   * The moment somebody puts rows on their profile it stops being a card
+   * about their lists and becomes the page they made — the shape a Linktree
+   * has, which is what it stands in for: the face, the name they go by, their
+   * line, their handles as glyphs, and the rows, centred, with the mark as
+   * the way home on the left and Share on the right. No eyebrow, no standing,
+   * no year, no lists and no way back to the map but the mark: a page handed
+   * out as somebody's own carries nothing that is about this site. Their
+   * lists are still theirs and still on /lists and under every byline; they
+   * are not on this page, because this page is not about them.
+   *
+   * The header is the static one lists.html has, with three things hidden
+   * and one shown — see .lists-body.is-page in assets/lists.css — rather than
+   * a second header, because a header is one thing on this site.
+   */
+  function renderPage(who) {
+    document.body.classList.add('is-page');
+    dom.pageShare.hidden = false;
+
+    var sheet = TTBRows.sheet(t, true);
+    var wrap = el('div', { className: 'lists-stack' }, [
+      el('header', { className: 'lists-page-top' }, [
+        /* The photograph, for the few who have one in the repository —
+           faceOf() in functions/api/_profile.js. Decorative: the name under
+           it is the name. */
+        who.face ? el('img', { className: 'lists-page-face', src: who.face, alt: '', width: 96, height: 96 }) : null,
+        el('h1', { className: 'lists-page-name', textContent: who.display || who.name }),
+        who.about ? el('p', { className: 'lists-page-line', textContent: who.about }) : null,
+        pageSocial(who.links)
+      ]),
+      TTBRows.draw(who.rows, {
+        t: t,
+        play: true,
+        report: TTBTrack.event,
+        onNote: sheet.open
+      }),
+      sheet.node
+    ]);
+    /* After render() has put this in the document: a dialog opens only from
+       inside one, and a link to a note arrives wanting it open. */
+    setTimeout(function () { sheet.arrive(who.rows); }, 0);
+    return wrap;
+  }
+
+  /* The three handles as glyphs, on the page. The same rows profileLinks()
+     draws as words on the card — the same table, the same address, the same
+     rel — with the site's name as the label a reader who cannot see the
+     glyph gets. The glyphs are drawn here rather than fetched: three small
+     outlines in the site's own stroke, which is what keeps three brands from
+     turning the page three colours. */
+  var GLYPHS = {
+    instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle class="is-fill" cx="17.4" cy="6.6" r="1.1"/>',
+    tiktok: '<path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.6 2 4.2 4.6 4.5"/>',
+    facebook: '<path class="is-fill" d="M15.5 4h-2.2A3.8 3.8 0 0 0 9.5 7.8V10H7.5v3h2v7h3v-7h2.3l.5-3h-2.8V8.2c0-.7.4-1.2 1.2-1.2h1.8z"/>'
+  };
+
+  function pageSocial(links) {
+    var rows = TTBLinks.of(links);
+    if (!rows.length) return null;
+
+    var ul = el('ul', { className: 'lists-page-social' });
+    rows.forEach(function (row) {
+      ul.appendChild(el('li', null, [
+        TTBTrack.click(el('a', {
+          href: row.href,
+          target: '_blank',
+          rel: 'me nofollow noopener',
+          'aria-label': row.label,
+          title: row.label,
+          html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + GLYPHS[row.id] + '</svg>'
+        }), 'profile_link_open', { network: row.id })
+      ]));
+    });
+    return ul;
+  }
+
+  /* The page's own address, handed on. The share sheet on a phone and the
+     clipboard on a laptop, decided by the pointer — shareUrl() below has the
+     argument. */
+  function sharePage() {
+    shareUrl(document.title, window.location.origin + '/u/' + state.profile.name,
+      'profile_share', { name: state.profile.name });
+  }
 
   /* Where else they are: the handles they wrote on /account.html, as links.
    *
@@ -3340,16 +3409,21 @@
       toast(t('listsShareNeeds'));
       return;
     }
+    shareUrl(state.list.title, window.location.origin + '/list/' + state.list.id,
+      'list_share', { list_id: state.list.id });
+  }
 
-    var url = window.location.origin + '/list/' + state.list.id;
-    var payload = { title: state.list.title, url: url };
-
+  /* One address, handed on: a list's, or a profile that is a page's. The
+     event is the caller's, with `method` added — `sheet` or `copy`. */
+  function shareUrl(title, url, event, params) {
     if (navigator.share && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
-      TTBTrack.event('list_share', { list_id: state.list.id, method: 'sheet' });
-      navigator.share(payload).catch(function () { /* dismissed, which is fine */ });
+      params.method = 'sheet';
+      TTBTrack.event(event, params);
+      navigator.share({ title: title, url: url }).catch(function () { /* dismissed, which is fine */ });
       return;
     }
-    TTBTrack.event('list_share', { list_id: state.list.id, method: 'copy' });
+    params.method = 'copy';
+    TTBTrack.event(event, params);
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(url)
         .then(function () { toast(t('listsCopied')); })
@@ -4117,6 +4191,7 @@
     wireKeyboard();
     /* The reel frames on a profile take Instagram's own measurement. */
     TTBRows.measure();
+    dom.pageShare.addEventListener('click', sharePage);
     dom.pickerClose.addEventListener('click', closePicker);
     dom.pickerScrim.addEventListener('click', function (ev) {
       if (ev.target === dom.pickerScrim) closePicker();
@@ -4232,6 +4307,7 @@
       found: null,
       who: $('lists-who'),
       btnRadio: $('btn-radio'),
+      pageShare: $('page-share'),
       radioName: $('radio-name'),
       toast: $('toast'),
       live: $('lists-live'),
@@ -4345,8 +4421,8 @@
          name and what they do are — the same title functions/u/[name].js
          serves, so a crawler that renders sees the one it was served. */
       if (state.profile) {
-        document.title = (state.profile.about ? state.profile.name + ' · ' + state.profile.about : state.profile.name) +
-          ' | Tallinn Tastebuds';
+        var who = state.profile.display || state.profile.name;
+        document.title = (state.profile.about ? who + ' · ' + state.profile.about : who) + ' | Tallinn Tastebuds';
       }
       if (state.view === 'all') document.title = t('listsAllDocumentTitle');
 

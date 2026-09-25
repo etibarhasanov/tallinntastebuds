@@ -648,6 +648,67 @@
 
 .lists-page { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
 
+/* A profile that is a page is drawn as the page its owner made rather than
+   as a card about their lists — renderPage() in assets/lists.js: the face,
+   the name they go by, their line and their handles as glyphs, centred, and
+   the rows under them, and nothing else. The header keeps the mark as the
+   way home and gains Share; the wordmark, the account pill and the radio go,
+   because a page handed out as somebody's own carries nothing that is about
+   this site. */
+.lists-body.is-page .lists-wordmark,
+.lists-body.is-page .lists-who,
+.lists-body.is-page #btn-radio { display: none; }
+.lists-page-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 0 22px;
+  text-align: center;
+}
+.lists-page-face {
+  display: block;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--wash);
+  box-shadow: var(--lift);
+}
+.lists-page-name {
+  margin: 14px 0 0;
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.lists-page-line { margin: 6px 0 0; font-family: var(--body); font-size: 16px; }
+/* The handles as glyphs, each in a 44px target — the only things on the
+   page smaller than a row, so they get the room a thumb needs rather than
+   the room the picture takes. The name of the site is the label, for the
+   reader who cannot see the glyph. */
+.lists-page-social { list-style: none; margin: 8px 0 0; padding: 0; display: flex; gap: 4px; }
+.lists-page-social a {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--ink);
+}
+.lists-page-social a:hover { color: var(--accent); }
+.lists-page-social svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lists-page-social .is-fill { fill: currentColor; stroke: none; }
+
 /* A heading over a group of rows. Room above it, none below: it belongs to
    the rows under it and not to the one before. */
 .lists-page-heading { margin: 8px 0 -2px; }

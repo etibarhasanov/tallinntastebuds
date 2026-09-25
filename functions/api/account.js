@@ -96,6 +96,10 @@ import { NETWORKS, cleanHandle, readLinks, readingExtras, cleanRows, readRows } 
    paragraphs about somebody stops being a page about their lists. Restated as
    a maxlength in assets/account.js, the way every cap here is. */
 const MAX_ABOUT = 200;
+/* The name somebody goes by, over the username: the heading of a profile
+   that is a page. A list's title's cap, because it is a heading, and restated
+   as a maxlength in assets/account.js the same way. */
+const MAX_DISPLAY = 60;
 
 /* The places this account has saved, so a fresh device can draw its marks
    filled the moment somebody signs in on it. It stays here rather than going
@@ -166,6 +170,7 @@ export async function onRequestGet(context) {
      it. */
   let about;
   let links;
+  let display;
   const extra = await readingExtras(env, (extras) => extras
     ? env.DB.prepare('SELECT ' + extras + ' FROM users WHERE id = ?').bind(user.id).first()
     : null);
@@ -177,6 +182,8 @@ export async function onRequestGet(context) {
        that has nowhere to keep them. */
     const some = readLinks(extra.links);
     links = Object.keys(some).length ? some : undefined;
+    /* Only where that column is there too, for the same reason. */
+    display = extra.display_name || undefined;
   }
 
   /* Whether Google is connected, which is what the account page draws its
@@ -213,6 +220,8 @@ export async function onRequestGet(context) {
        through Google has none until somebody sets one. */
     password: !!pw.hash,
     about: about,
+    /* The name they go by, for the box that writes it. */
+    display: display,
     /* Handles, not addresses — the page builds the URL out of the same table
        the server validates against. Left out entirely where there are none,
        which is nearly every account. */
@@ -228,7 +237,8 @@ export async function onRequestGet(context) {
 
 /* ---------------------------------------------------------------- create,
  * sign in, sign out, change the password, change the username, write the line
- * about yourself, say where else you are, put together your page of links.
+ * about yourself, the name you go by, say where else you are, put together
+ * your page of links.
  * One endpoint, because they share every check: the same
  * username and password rules, the same slow-down on a fingerprint that keeps
  * getting a password wrong, and the same session table on the way in and out.
@@ -509,6 +519,31 @@ export async function onRequestPost(context) {
       .run();
 
     return json({ about: about }, 200);
+  }
+
+  /* ------------------------------------------------ the name you go by
+   *
+   * Sixty characters over the line, and the heading of a profile that is a
+   * page — "Etibar Ädalät" where the username can only be "etibar". The same
+   * shaping and the same terms as the line: a session and no password,
+   * empty as the way to take it down, the flatten-and-cut said again rather
+   * than shared.
+   */
+  if (action === 'display') {
+    const user = await sessionUser(request, env);
+    if (!user) return json({ error: 'signed-out' }, 401);
+
+    const display = String(typeof body.display === 'string' ? body.display : '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, MAX_DISPLAY);
+
+    await env.DB
+      .prepare('UPDATE users SET display_name = ? WHERE id = ?')
+      .bind(display, user.id)
+      .run();
+
+    return json({ display: display }, 200);
   }
 
   /* ------------------------------------------- where else you are
