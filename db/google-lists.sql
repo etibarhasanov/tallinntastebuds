@@ -1,5 +1,5 @@
 INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at, about)
-VALUES ('google-statistics', 'google-statistics', '0000000000000000000000000000000000000000000000000000000000000000', '6f6f676c65206c69737473206e6f2070', 10000, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000, 'Five top tens out of Google’s own ratings for Tallinn, weighed by how many people gave them. Rebuilt whenever the export refreshes. Google’s numbers, not this map’s verdict.')
+VALUES ('google-statistics', 'google-statistics', '0000000000000000000000000000000000000000000000000000000000000000', '6f6f676c65206c69737473206e6f2070', 10000, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000, 'Five top tens and a top twenty out of Google’s own ratings for Tallinn, weighed by how many people gave them. Rebuilt whenever the export refreshes. Google’s numbers, not this map’s verdict.')
 ON CONFLICT(id) DO UPDATE SET
     username = excluded.username,
     about = excluded.about;
@@ -10,7 +10,8 @@ VALUES
   ('top-ten-bakeries-by-google-65nfrf', 'google-statistics', 'Top ten bakeries in Tallinn, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-cafes-by-google-jz7c2b', 'google-statistics', 'Top ten cafés in Tallinn, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-bars-by-google-8y6grz', 'google-statistics', 'Top ten bars in Tallinn, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-pizzerias-by-google-k83p93', 'google-statistics', 'Top ten pizzerias in Tallinn, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000)
+  ('top-ten-pizzerias-by-google-k83p93', 'google-statistics', 'Top ten pizzerias in Tallinn, by Google', 'Google’s rating, weighed by how many people gave it: 4.5 from five thousand reviews outranks 4.7 from sixty, and under a hundred reviews is not counted. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'google-statistics', 'Top twenty places in Tallinn, by Google', 'Google’s rating, weighed by how many people gave it, over every place in the export rather than one kind of it — the same order /google ranks the whole city by. Google’s numbers, not this map’s verdict.', 1, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000)
 ON CONFLICT(id) DO UPDATE SET
     owner = excluded.owner,
     title = excluded.title,
@@ -22,7 +23,8 @@ DELETE FROM list_items WHERE list_id IN (
   'top-ten-bakeries-by-google-65nfrf',
   'top-ten-cafes-by-google-jz7c2b',
   'top-ten-bars-by-google-8y6grz',
-  'top-ten-pizzerias-by-google-k83p93'
+  'top-ten-pizzerias-by-google-k83p93',
+  'top-twenty-places-by-google-kwb7l5'
 );
 
 INSERT INTO list_items (list_id, place_id, name, say, pos, created_at)
@@ -89,3 +91,26 @@ VALUES
   ('top-ten-pizzerias-by-google-k83p93', 'ChIJoXFqI5WVkkYRlLeg1BIG2jQ', 'Monster Pizza', 'Pizza Restaurant · 4.6 from 399 reviews on Google', 7, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-pizzerias-by-google-k83p93', 'ChIJu183TwWVkkYRIH0mH-LmZ3k', 'Pappa Pizza Nõmme', 'Pizza Restaurant · 4.6 from 312 reviews on Google', 8, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-pizzerias-by-google-k83p93', 'ChIJjwnVJ2KTkkYRJ4cHGMj90Mg', 'Restoran Controvento', 'Italian Restaurant · 4.5 from 2,600 reviews on Google', 9, CAST(strftime('%s','now') AS INTEGER) * 1000);
+
+INSERT INTO list_items (list_id, place_id, name, say, pos, created_at)
+VALUES
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJWW3O-o-TkkYRBHFb2Ufl3S8', 'PullaBakery', 'Bakery · 4.9 from 1,656 reviews on Google', 0, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJQerzCduTkkYRJwI7m8ZsDQU', 'Saffron Restoran', 'Asian Restaurant · 4.9 from 733 reviews on Google', 1, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJAYRP8LuTkkYR4xMB2r8R1f8', 'Ramen Taro Laulupeo', 'Ramen Restaurant · 4.9 from 530 reviews on Google', 2, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJsxeIB7OVkkYRSshyGvfj00U', 'Crustum Bakery', 'Bakery · 4.9 from 477 reviews on Google', 3, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJ5_Tggu6VkkYRrWpu0VHypSQ', 'Pizzeria Santa Lucia', 'Pizza Restaurant · 4.9 from 455 reviews on Google', 4, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJRZlX09WTkkYR4jNT2TBAqx4', 'Toro veinikohvik', 'Bar · 4.9 from 435 reviews on Google', 5, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJa-HQBOOVkkYRJCJqORbpFaU', 'Osteria Moderna Itaalia Restoran', 'Restaurant · 4.9 from 415 reviews on Google', 6, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJ79iYK4iTkkYRzx9l_5WUUUg', 'KebabRA', 'Fast Food Restaurant · 4.9 from 400 reviews on Google', 7, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJhVJXTR2VkkYR2Xxwqpfnyto', 'Kiosk NO 1', 'Cafe · 4.9 from 384 reviews on Google', 8, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJAcfoe2KTkkYR1m02V1YbrAo', 'Restaurant Rataskaevu 16', 'Restaurant · 4.8 from 6,587 reviews on Google', 9, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJofpVY2KTkkYRGqX6iRi16jE', 'Vegan Restoran V', 'Vegan Restaurant · 4.8 from 3,245 reviews on Google', 10, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJP73vtWCTkkYRAAmn7hNt9aM', 'RØST Bakery', 'Bakery · 4.8 from 3,040 reviews on Google', 11, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJIXcwdmKTkkYR-HGY5aqV4Ew', 'Väike-rataskaevu​', 'Restaurant · 4.8 from 1,546 reviews on Google', 12, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJ0dFwitiUkkYRQ3JPMkZYyCg', 'Restoran Mimosa', 'Restaurant · 4.8 from 1,426 reviews on Google', 13, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJnYxLw5WTkkYRbBZIQ-rVs70', 'Morii Tea House', 'Cafe · 5.0 from 165 reviews on Google', 14, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJQ6QSwpuVkkYRWh30eI392YU', 'Precious café', 'Coffee Shop · 4.9 from 293 reviews on Google', 15, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJfcbci8STkkYRpzL7c-BKCPA', 'The Kurze', 'Restaurant · 4.8 from 1,221 reviews on Google', 16, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJsROid2OTkkYRYoRVSMnM_aI', 'Botaanik', 'Bar · 4.9 from 283 reviews on Google', 17, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJi_xRHmGTkkYRPznLON0xqRE', 'MyShisha Estonia - Mere resto', 'Hookah Bar · 4.8 from 1,062 reviews on Google', 18, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-twenty-places-by-google-kwb7l5', 'ChIJwRoMF56UkkYRMzy7XcbCCS8', 'Whisper Sister', 'Cocktail Bar · 4.8 from 993 reviews on Google', 19, CAST(strftime('%s','now') AS INTEGER) * 1000);

@@ -18,8 +18,9 @@
  *   - a catalogue in data/places.json that is not what tools/places.mjs would
  *     write, holds a duplicate id, or has lost a place that is on the map
  *   - a db/google-venues.sql that is out of step with the Google Places export
- *     it is generated from, or a db/google-lists.sql — the five top tens under
- *     the `google` account — that is out of step with the same export
+ *     it is generated from, or a db/google-lists.sql — the five top tens and
+ *     a top twenty under the `google-statistics` account — that is out of
+ *     step with the same export
  *   - a db/type-lists.sql — the thirteen filter chips as lists — that is out
  *     of step with data/restaurants.json or data/taxonomy.json, that holds a
  *     list longer than MAX_ITEMS in functions/api/lists.js, or a chip and a
@@ -1364,7 +1365,7 @@ if (staleGoogleVenues()) {
   fail('db/google-venues.sql', 'is not what tools/googlevenues.mjs would write from exports/tallinn_restaurants.csv — run `node tools/googlevenues.mjs` and commit the result');
 }
 
-/* And the five lists Google wrote, which are the same export ordered — so a
+/* And the six lists Google wrote, which are the same export ordered — so a
    refresh of the export moves them too, and a deploy where the lists say
    last month's top ten is the same fault as the table above saying last
    month's Tallinn. */

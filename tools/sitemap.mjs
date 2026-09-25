@@ -63,13 +63,13 @@
  * them means should find it. The decks people write for themselves are not
  * here and could not be: they need their owner's session to read at all.
  *
- * The eighteen lists the site itself wrote are the exception to that, and
+ * The nineteen lists the site itself wrote are the exception to that, and
  * are listed by name: the thirteen chip lists, one per filter on the map,
- * and Google's five top tens, all generated on ids that never move, and all
- * pages that answer the questions people actually type — the pubs and beer
- * bars in Tallinn, the bakeries, the top ten restaurants by Google's own
- * rating. They are as fixed as the map itself, and there is no reason for a
- * crawler to wait to meet them through the directory.
+ * and Google's five top tens and a top twenty, all generated on ids that
+ * never move, and all pages that answer the questions people actually type —
+ * the pubs and beer bars in Tallinn, the bakeries, the top ten restaurants by
+ * Google's own rating. They are as fixed as the map itself, and there is no
+ * reason for a crawler to wait to meet them through the directory.
  *
  * /blog is the one entry doing the whole job on its own: nothing on this
  * site links to the blog, on purpose, so this file is how a crawler learns the

@@ -124,8 +124,8 @@
      who stops at row fifteen has not been sent three pages they never saw. */
   var MORE_AHEAD = 600;
 
-  /* The one account nobody can sign in as: the five top tens that
-     db/google-lists.sql writes out of Google's numbers — see
+  /* The one account nobody can sign in as: the five top tens and a top
+     twenty that db/google-lists.sql writes out of Google's numbers — see
      tools/googlelists.mjs, which is the only thing that writes under the
      name. Its byline says where the lists came from rather than naming an
      account no reader would recognise; see byline(). */

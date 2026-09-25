@@ -19,7 +19,8 @@ exports/tallinn_restaurants.csv   the cleaned export, 18 columns, one line per r
 tools/googlevenues.mjs            turns it into SQL, and ranks the roll
 db/google-venues.sql              GENERATED — what actually loads them
 tools/googlelists.mjs             reads the same export and ranks it
-db/google-lists.sql               GENERATED — the five top tens under `google-statistics`
+db/google-lists.sql               GENERATED — the five top tens and a top
+                                   twenty under `google-statistics`
 tools/city.mjs                    reads it a third time, for the coordinates alone
 data/city.json                    GENERATED — the ground every list on /lists is drawn on
 ```
@@ -30,16 +31,20 @@ fetches, so a refresh that skips it fails CI rather than going quiet, and a
 refresh that runs it needs nothing loaded anywhere. See **Public lists** in
 `README.md` for what it draws.
 
-The second pair is the same export read again: five public lists — top ten
-restaurants, bakeries, cafés, bars, pizzerias — under an account called
-`google-statistics` that nobody can sign in as, ordered by Google's rating weighed by
-its review count. **The five lists Google wrote** under **Google venues** in
-`README.md` is the argument and the arithmetic. They refresh with the
-export, and the validator holds them to it the same way.
+The second pair is the same export read again: six public lists — top ten
+restaurants, bakeries, cafés, bars, pizzerias, and a top twenty across all of
+them — under an account called `google-statistics` that nobody can sign in
+as, ordered by Google's rating weighed by its review count. The top twenty is
+not a pool of its own: it is the same arithmetic `/google` ranks the whole
+city by, `overallOrder()` in `tools/googlevenues.mjs`, so it can never
+disagree with the rank that page already prints. **The six lists Google
+wrote** under **Google venues** in `README.md` is the argument and the
+arithmetic. They refresh with the export, and the validator holds them to it
+the same way.
 
 ## Read first
 
-- `README.md` → **Google venues**, all of it — **The five lists Google
+- `README.md` → **Google venues**, all of it — **The six lists Google
   wrote** included — and **The directory**.
 - `exports/README.md` — how the raw export was cleaned, column by column, and
   where the upstream sweep lives. `exports/REVIEW.md` is the shortlisting
@@ -84,8 +89,8 @@ else runs.
    `UPDATE … SET map_id = … WHERE place_id = … AND map_id IS NULL` per row
    matched to the map. The count is in the diff.
    Then `node tools/googlelists.mjs`, which rewrites `db/google-lists.sql`
-   from the new export; `--show` first prints the five top tens with the
-   score, rating and count beside each name, which is the diff worth reading
+   from the new export; `--show` first prints the six lists with the score,
+   rating and count beside each name, which is the diff worth reading
    before the SQL's.
    Then `node tools/city.mjs`, which rewrites `data/city.json` — coordinates
    and nothing else, one pair a line, so the diff says which of the city's
@@ -136,7 +141,7 @@ else runs.
    The lists file after the venues file, always: its rows point at
    `google_venues` keys, and a top ten loaded before the venue it names is a
    row that draws by its stored name and links nowhere. Its one `DELETE`
-   names the five lists in its `WHERE`, so the denials let it through.
+   names the six lists in its `WHERE`, so the denials let it through.
    Nothing in CI applies it. A preview that cannot see these places shows an
    empty picker and looks broken for no reason. The mark-missing `UPDATE`
    carries a `WHERE`, so the D1 denials in `.claude/settings.json` let it
@@ -194,7 +199,7 @@ else runs.
   sentence about it. Every upsert clears the mark again.
 - `rating` and `reviews` are Google's, shown attributed on Google's places
   and sorted by in two places only, both under Google's name: `/google`, and
-  the five lists `db/google-lists.sql` writes. `/google` also prints the
+  the six lists `db/google-lists.sql` writes. `/google` also prints the
   position that first sort puts a row in, out of `rank`, and it is the only
   page that does — not the map, not a list row, not the picker. Nothing on
   the map carries a score or a position.
@@ -232,7 +237,7 @@ categories renamed, patterns dropped — and that both databases were loaded.
 7. CI green, then **Rebase and merge** — the branch stays, `CLAUDE.md` says
    why — and then ask, again and separately, to load production:
    `wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql`
-   then the same with `db/google-lists.sql`, so the live directory, the five
+   then the same with `db/google-lists.sql`, so the live directory, the six
    lists and the files say the same thing. Approval to merge is not approval
    to load, and a merge that lands while production goes unloaded is a fine
    place to stop: the PR already says production needs it, the file is in the

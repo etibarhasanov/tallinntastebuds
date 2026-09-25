@@ -3863,10 +3863,10 @@ places are worth promoting onto the map.
 Two things sort by them, and neither is a ranking of anything this site
 vouches for. `/google` is a directory of Google's rows, in Google's order, and
 it says so — see **The directory**; it also prints where that order puts each
-row, which `rank` carries and **Where a place stands** argues for. And five
-lists, under an account called `google-statistics`, are Google's top tens, with
-Google's name in the title and Google's numbers under every row — see **The
-five lists Google wrote**, below.
+row, which `rank` carries and **Where a place stands** argues for. And six
+lists, under an account called `google-statistics`, are Google's top tens and
+a top twenty, with Google's name in the title and Google's numbers under every
+row — see **The six lists Google wrote**, below.
 
 ### Re-running it is safe
 
@@ -3920,16 +3920,17 @@ And `/google`, which is the whole table rather than the part either of
 those needs: all 1,110 rows in one answer, so a filter can run over them. See
 **The directory**.
 
-### The five lists Google wrote
+### The six lists Google wrote
 
 ```
 tools/googlelists.mjs    reads the export, ranks it, writes the SQL
-db/google-lists.sql      GENERATED — one account, five lists, fifty rows
+db/google-lists.sql      GENERATED — one account, six lists, seventy rows
 ```
 
-Five public lists under an account called `google-statistics`: **Top ten
+Six public lists under an account called `google-statistics`: **Top ten
 restaurants in Tallinn, by Google**, and the same for bakeries, cafés, bars
-and pizzerias. They are lists in every way the rest of this section means: a row
+and pizzerias, and a sixth — **Top twenty places in Tallinn, by Google** —
+across all of them at once. They are lists in every way the rest of this section means: a row
 each in `lists` and `list_items`, a byline that leads to
 `/u/google-statistics`, a bookmark, a way onto the map, and a row on `/lists`
 ranked by how often it is opened like everybody else's. They had a strip of
@@ -3957,10 +3958,10 @@ underscore is not one of them. Widening that rule for one account would
 change what every sign-up after it may be called, which is a larger change
 than this account is worth; the two names read the same.
 
-**Why a site that does not rank has five rankings on it.** The map carries no
+**Why a site that does not rank has six rankings on it.** The map carries no
 score and never sorts by one, and that stands. A list is the other kind of
 thing here — somebody else's opinion, under their name, with a sentence under
-each place — and these five are Google's opinion, under Google's name. The
+each place — and these six are Google's opinion, under Google's name. The
 title says "by Google", the intro says whose numbers they are and that they
 are not this map's verdict, and the line under each place is Google's word
 for it and Google's two numbers: *Bakery · 4.9 from 1,656 reviews on
@@ -3990,6 +3991,17 @@ what a bakery you know nothing about is likely to score, which is higher
 than what a burger bar you know nothing about is. Ties go to the bigger
 count, a chain's branches are one row, and a place Google calls temporarily
 closed is on none of them.
+
+The sixth list, **Top twenty places in Tallinn, by Google**, is not weighed
+by these two settings at all. It has no pool of its own to single out and no
+`FLOOR` to hold small counts below — it is the export's own `rank` column,
+`overallOrder()` in `tools/googlevenues.mjs`, at the directory's `PRIOR` of
+100 rather than this file's 300, read straight and cut to its first twenty
+open places. That column already answers "where does this place stand in the
+whole city", which is the question a top twenty asks, so the list reuses it
+rather than weighing the same rows a second way and risking a different
+answer — see **Where a place stands** under **The directory** for the
+arithmetic itself.
 
 **The pools are Google's category, and not its tags.** Google gives every
 place one category — what it *is* — and a list of tags — what it also
@@ -4032,14 +4044,14 @@ minted once and are written into the tool, so a refresh of the export
 changes what is on a list and never where it is: a link to
 `/list/top-ten-bakeries-by-google-65nfrf` sent today still opens next year.
 The file inserts the account once and never touches it again, upserts each
-list on its id, and replaces its ten rows whole — a place that fell out of a
-top ten has to leave it — so running it twice changes nothing and running it
-after a refresh moves the lists.
+list on its id, and replaces its rows whole — a place that fell out of a
+top ten or the top twenty has to leave it — so running it twice changes
+nothing and running it after a refresh moves the lists.
 
 **Loading it** is the venues file's process, one file later:
 
 ```
-node tools/googlelists.mjs --show     the five lists, with the score, rating and count beside each name
+node tools/googlelists.mjs --show     the six lists, with the score, rating and count beside each name
 node tools/googlelists.mjs            rewrite db/google-lists.sql
 wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-lists.sql
 wrangler d1 execute tallinntastebuds         --remote --file=db/google-lists.sql
@@ -4695,7 +4707,7 @@ not a promise about a page, and a stranger who has never opened one has no
 idea what is behind a word that names a permission. *Everybody's* is whose the
 lists are, which is the one thing about this page worth two words — and it is
 true in a way *everybody else's* would not be, because your own public lists
-are on it too — and now that the five Google wrote are ranked with everything
+are on it too — and now that the six Google wrote are ranked with everything
 else rather than set above it, there is nothing on the page the name has to
 make an exception for. See **One column, and nothing above it** below.
 
@@ -4913,7 +4925,7 @@ answers the question the strip was asserting, and if those five really are
 what a stranger opens, they are at the top on their own account. It also took
 `start` out of the answer, the `listsStart`, `listsStartWhy` and
 `listsEverybody` strings out of all ten languages, and one query out of
-`_mostkept.js`. See **The five lists Google wrote**.
+`_mostkept.js`. See **The six lists Google wrote**.
 
 **The row carries the first three places.** A page of titles is a search
 result: "Top ten burgers" tells somebody who has never heard of its author
@@ -10076,7 +10088,7 @@ to read and write first.
 - a `db/google-venues.sql` that is not what `tools/googlevenues.mjs` would
   write from `exports/tallinn_restaurants.csv` (run the tool and commit the
   result), or a `db/google-lists.sql` that is not what `tools/googlelists.mjs`
-  would write from the same export — see **The five lists Google wrote**
+  would write from the same export — see **The six lists Google wrote**
 - a `db/type-lists.sql` that is not what `tools/typelists.mjs` would write from
   `data/restaurants.json` and `data/taxonomy.json` (run the tool and commit the
   result), or that holds a list longer than `MAX_ITEMS` in
@@ -10291,7 +10303,8 @@ exports/clean_restaurants_csv.py   the cleaning, from the upstream export
 exports/REVIEW.md          the shortlisting worksheet those rows are read
 exports/build_review_sheet.py      through, and the script that builds it
 db/google-venues.sql       GENERATED — loads that export into D1
-db/google-lists.sql        GENERATED — the five top tens under `google-statistics`
+db/google-lists.sql        GENERATED — the five top tens and a top twenty
+                           under `google-statistics`
 db/type-lists.sql          GENERATED — the thirteen filter chips as lists, under
                            `tallinntastebuds`
 data/taxonomy.json         the controlled vocabulary of types

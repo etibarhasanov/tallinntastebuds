@@ -259,7 +259,7 @@ function like(q) {
  * trust without knowing anybody here. What that cost is what the strip was:
  * a second kind of row, a second heading, a second layout to keep in step,
  * and — on a phone, where most of this page is read — a screen and a half of
- * Google before the first thing a person wrote. They are five public lists
+ * Google before the first thing a person wrote. They are six public lists
  * like any other now, ranked by how often they are opened like any other,
  * which is the ranking answering the question the strip was asserting.
  */
