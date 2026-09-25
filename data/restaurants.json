@@ -248,7 +248,9 @@
       "Salted caramel kringel"
     ],
     "reel": "",
-    "photos": [],
+    "photos": [
+      "01.jpg"
+    ],
     "website": "",
     "phone": "+372 5854 2224",
     "added": "2026-08-24",
@@ -917,7 +919,8 @@
       "02.webp",
       "03.webp",
       "04.webp",
-      "05.webp"
+      "05.webp",
+      "06.jpg"
     ],
     "website": "",
     "phone": "",
