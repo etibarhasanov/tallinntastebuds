@@ -11,7 +11,9 @@
  * Nothing here ever holds a URL somebody typed. A profile is the one page on
  * this site that links off it, and a field that took an address would be a
  * field for pointing anywhere at all from under a name a reader has come to
- * trust because of the lists beneath it. So the field takes a handle, the
+ * trust because of the lists beneath it. The page of links under these three
+ * is exactly that field, decided on purpose and held to https and a printed
+ * host instead — assets/rows.js — and these three stay handles. So the field takes a handle, the
  * base comes out of the table below, and url() is the only thing that puts
  * the two together. What somebody pastes is read for its handle — people
  * paste addresses, and refusing one they copied off their own profile would

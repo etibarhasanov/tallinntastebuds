@@ -565,7 +565,8 @@
 .lists-about { margin-top: 14px; }
 .lists-about > .lists-new { margin-top: 0; }
 .lists-about .lists-say { flex: 1 1 100%; margin: 0; }
-.lists-about .lists-links { flex: 1 1 100%; }
+.lists-about .lists-links,
+.lists-about .lists-page-shown { flex: 1 1 100%; }
 
 /* The three places somebody said they are: on /u/<name> under their line, and
    on /account.html in the box above, drawn the same both times so that what
@@ -626,6 +627,167 @@
   gap: 4px;
 }
 .lists-links-form .lists-link-field .lists-input { flex: 0 0 auto; width: 100%; }
+
+/* ---------- the page of links ----------
+   The rows under somebody's name on a profile, between the handles and the
+   lists — assets/rows.js draws them, and the account page draws the same
+   rows as a picture of the profile over the form that rewrites them. */
+
+/* The face, over the eyebrow on the profile's card, for the few who have one
+   in the repository — see faceOf() in functions/api/_profile.js. */
+.lists-face {
+  display: block;
+  width: 72px;
+  height: 72px;
+  margin: 0 0 14px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--wash);
+  box-shadow: var(--lift);
+}
+
+.lists-page { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+
+/* A heading over a group of rows. Room above it, none below: it belongs to
+   the rows under it and not to the one before. */
+.lists-page-heading { margin: 8px 0 -2px; }
+.lists-page-head {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  text-align: center;
+}
+
+/* The name in the middle with a column of the same width either side, so it
+   is centred on the card rather than on what the mark on the right leaves of
+   it. The mark says what a press does: a chevron for somewhere else or a
+   sheet, a triangle for a player that opens here, a cross once it has. One
+   rule for an <a> and a <button>, which is why it takes the button's own
+   furniture back off. */
+.lists-page-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 66px;
+  padding: 10px 12px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.lists-page-row .menu-say { grid-column: 2; }
+.lists-page-row .menu-name { font-size: 16.5px; }
+.lists-page-row .menu-go { grid-column: 3; justify-self: end; }
+.lists-page-row:hover .menu-name,
+.lists-page-row:hover .menu-go { color: var(--accent); }
+.lists-page-row .ico-play { fill: currentColor; stroke: none; }
+.lists-page-row .ico-shut,
+.lists-page-row[aria-expanded="true"] .ico-play { display: none; }
+.lists-page-row[aria-expanded="true"] .ico-shut { display: inline; }
+
+/* A player, inside its card. Height comes from the ratio and never from the
+   frame: a cross-origin frame cannot be asked how tall it is, and one left to
+   size itself collapses to 150px — the reasoning .reel-frame in
+   assets/styles.css gives, for a card's frame rather than the panel's. */
+.lists-page-frame {
+  aspect-ratio: 16 / 9;
+  border-top: 1px solid var(--hairline);
+  background: var(--wash);
+}
+.lists-page-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+/* A reel is a phone's shape, and at the column's full width it would be a
+   thousand pixels tall on a laptop: held to about what a phone would give it
+   and centred. 9 / 19 is the shape a reel embed lands on with Instagram's
+   own chrome round it, until the frame posts the real one — measure() in
+   assets/rows.js. */
+.lists-page-frame.is-tall {
+  aspect-ratio: 9 / 19;
+  width: min(100%, 380px);
+  margin: 0 auto;
+  border-inline: 1px solid var(--hairline);
+}
+.lists-page-out {
+  margin: 0;
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--hairline);
+  color: var(--muted);
+  font-size: 12.5px;
+  text-align: center;
+}
+.lists-page-out a { color: var(--accent); }
+
+/* A note, as the sheet it opens into: a <dialog> wearing the map's .scrim.
+   The browser's own dialog is a box in the middle with a border and a white
+   ground; the scrim is the whole window, so the browser's measurements are
+   taken back off it and its own backdrop left clear — the scrim's colour is
+   the backdrop. .scrim sets display, which outranks the rule that hides a
+   dialog nobody opened, so that rule is said again here. */
+.lists-page-scrim {
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  color: var(--ink);
+}
+.lists-page-scrim:not([open]) { display: none; }
+.lists-page-scrim::backdrop { background: transparent; }
+.lists-page-note {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 22px 22px 18px;
+}
+.lists-page-note-close { top: 8px; right: 8px; }
+.lists-page-note .eyebrow { margin: 0 34px 0 0; }
+.lists-page-note-title {
+  margin: 6px 0 0;
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  overflow-wrap: anywhere;
+}
+.lists-page-note-text { margin: 14px 0 0; font-family: var(--body); font-size: 15px; line-height: 1.55; overflow-wrap: anywhere; }
+.lists-page-note-text p { margin: 0 0 12px; }
+.lists-page-note-text p:last-child { margin-bottom: 0; }
+.lists-page-note-foot { margin-top: 18px; }
+
+/* The form that writes the rows, on the account page: one box per row, the
+   title over the address or the note, and the quiet words along its foot.
+   The fields are the page's own .lists-input; the note is the same box let
+   grow. */
+.lists-page-help { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.lists-page-form { display: flex; flex-direction: column; gap: 12px; margin-top: 0; }
+.lists-page-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  /* A fieldset's own minimum is its widest child, which on a phone is the
+     address box, which is the card's width plus the padding: taken off. */
+  min-width: 0;
+  padding: 12px 12px 6px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+/* Taken out of .lists-new's flex, the way the handle fields are: in a column
+   its 200px basis would be read as a height. Three classes deep because
+   .lists-new's own rule is further down this file and would otherwise win. */
+.lists-new .lists-page-edit .lists-input { flex: 0 0 auto; width: 100%; }
+.lists-page-edit textarea.lists-input { min-height: 96px; resize: vertical; font-family: var(--body); line-height: 1.45; }
+.lists-page-edit-foot,
+.lists-page-form-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; }
+.lists-page-edit-foot { margin: 0 -8px; }
 
 /* The box that makes a list. It stands under the fold on the account page,
    and the room above it is its own: what is over it is a <summary> when the

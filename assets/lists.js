@@ -827,6 +827,10 @@
     var wrap = el('div', { className: 'lists-stack' });
 
     wrap.appendChild(card([
+      /* The photograph, for the few who have one in the repository, and
+         nothing where there is none — faceOf() in functions/api/_profile.js.
+         Decorative: the name under it is the name. */
+      who.face ? el('img', { className: 'lists-face', src: who.face, alt: '', width: 72, height: 72 }) : null,
       el('p', { className: 'eyebrow', textContent: t('profileEyebrow') }),
       heading(who.name),
       /* Their own line, when they wrote one, above the one number this site
@@ -854,6 +858,24 @@
       })
     ]));
 
+    /* Their page of links, between who they are and what they have written
+       about restaurants: the one part of a profile that is not about the map,
+       and the part its owner put there to be seen first. assets/rows.js draws
+       it; the note sheet is this page's, below. */
+    if (who.rows.length) {
+      var sheet = TTBRows.sheet(t, true);
+      wrap.appendChild(TTBRows.draw(who.rows, {
+        t: t,
+        play: true,
+        report: TTBTrack.event,
+        onNote: sheet.open
+      }));
+      wrap.appendChild(sheet.node);
+      /* After render() has put this in the document: a dialog opens only
+         from inside one, and a link to a note arrives wanting it open. */
+      setTimeout(function () { sheet.arrive(who.rows); }, 0);
+    }
+
     if (!who.lists.length) {
       wrap.appendChild(el('p', { className: 'lists-none', textContent: t('profileNone') }));
     } else {
@@ -865,6 +887,7 @@
     wrap.appendChild(backLink());
     return wrap;
   }
+
 
   /* Where else they are: the handles they wrote on /account.html, as links.
    *
@@ -4092,6 +4115,8 @@
 
   function wire() {
     wireKeyboard();
+    /* The reel frames on a profile take Instagram's own measurement. */
+    TTBRows.measure();
     dom.pickerClose.addEventListener('click', closePicker);
     dom.pickerScrim.addEventListener('click', function (ev) {
       if (ev.target === dom.pickerScrim) closePicker();

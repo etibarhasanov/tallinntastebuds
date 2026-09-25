@@ -126,6 +126,15 @@ export async function onRequest(context) {
     return Response.redirect(url.toString(), 301);
   }
 
+  /* /about was one person's page of links for a day, before every profile
+     could carry one — the owner's, and it was handed out as an address — so
+     it goes where that page went. 301, because the address was given to
+     people; the path is the one thing here that names a username, and it
+     names the one account the old page was. */
+  if (url.pathname === '/about' || url.pathname === '/about.html') {
+    return Response.redirect(new URL('/u/etibar', url).toString(), 301);
+  }
+
   /* ----------------------------------------------------------- SPLITWISE */
   if (url.hostname === SPLIT_HOST) {
     /* The front door, answered where it was asked. Not a redirect, so the

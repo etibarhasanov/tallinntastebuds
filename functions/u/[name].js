@@ -14,26 +14,28 @@
  * WHAT IS ON IT
  *
  * Their public lists, how many times those have been kept in total, the line
- * they wrote about themselves if they wrote one, and the handles they gave
- * for the three sites in NETWORKS — see functions/api/_profile.js, which is
- * also why those are handles here and addresses only where one is built. Not their saves, not
- * their private lists, not the lists they kept — see functions/api/_profile.js
- * for why each of those is left off. A profile discloses no fact about
- * anybody that a list of theirs was not already printing; the line is the
- * exception and it is not one, because somebody typed it and pressed Save.
+ * they wrote about themselves if they wrote one, the handles they gave for
+ * the three sites in NETWORKS — see functions/api/_profile.js, which is also
+ * why those are handles here and addresses only where one is built — and the
+ * page of links they put together, which is addresses and is meant to be.
+ * Not their saves, not their private lists, not the lists they kept — see
+ * functions/api/_profile.js for why each of those is left off. A profile
+ * discloses no fact about anybody that a list of theirs was not already
+ * printing; the line, the handles and the rows are the exceptions and they
+ * are not ones, because somebody typed each and pressed Save.
  *
- * The line is not the page's description. describe() below stays the lists,
- * because a description tells a searcher what is on the page and what is on
- * this one is places in Tallinn — a bio that reads "i like cats" would be
+ * The line is not the page's description. describe() below is the rows where
+ * there are any and the lists otherwise, because a description tells a
+ * searcher what is on the page — a bio that reads "i like cats" would be
  * true about its author and useless as the thing under a search result.
  *
  * INDEXED, AND WHY
  *
  * The same reasoning that made a public list indexable. It is a page of
- * somebody's writing about restaurants in this city, under the name they
- * chose, and a page nobody can arrive at is most of the way to not being
- * published at all. A profile with no public lists on it is a page with
- * nothing to find, so that one is served and not indexed.
+ * somebody's writing, under the name they chose, and a page nobody can arrive
+ * at is most of the way to not being published at all. A profile with no
+ * public lists and no rows on it is a page with nothing to find, so that one
+ * is served and not indexed.
  *
  * WHAT HAPPENS WHEN IT CANNOT
  *
@@ -55,11 +57,26 @@ import { canonical, esc, head, shell, sow, rehead, fill, EMPTY, page } from '../
  * follows the reader's own language as usual. */
 function describe(profile) {
   const n = profile.lists.length;
-  if (!n) return profile.name + ' has not published a list yet.';
   const lists = n === 1 ? '1 list' : n + ' lists';
+  /* The first three things on their page, where there is one: that is what
+     the page is about to whoever made it, and the lists are the footnote. */
+  const heads = profile.rows.slice(0, 3).map((row) => row.title).join(' · ');
+  if (heads) return heads + (n ? ' — and ' + lists + ' of places in Tallinn.' : '.');
+  if (!n) return profile.name + ' has not published a list yet.';
   const kept = profile.kept === 1 ? 'kept once' : 'kept ' + profile.kept + ' times';
   return lists + ' of places in Tallinn, created by ' + profile.name +
     (profile.kept ? ', ' + kept + '.' : '.');
+}
+
+/* Their page, as text: a link is a link, a heading is bold, a note is its
+   title over its text. Every link out is nofollow, as the script writes it. */
+function rowsAsText(rows) {
+  if (!rows.length) return '';
+  return '<ul>' + rows.map((row) => {
+    if (row.url) return '<li><a rel="nofollow noopener" href="' + esc(row.url) + '">' + esc(row.title) + '</a></li>';
+    if (row.note) return '<li>' + esc(row.title) + '<p>' + esc(row.note) + '</p></li>';
+    return '<li><strong>' + esc(row.title) + '</strong></li>';
+  }).join('') + '</ul>';
 }
 
 export async function onRequest(context) {
@@ -120,11 +137,12 @@ export async function onRequest(context) {
 
   /* The page as text, for the reader that runs no script — see fill() in
      functions/_shell.js: the name, the line they wrote, where else they are,
-     and their lists, each a link. */
+     their page of links, and their lists, each a link. */
   html = fill(html, EMPTY['lists.html'],
     '<h1>' + esc(profile.name) + '</h1>' +
     (profile.about ? '<p>' + esc(profile.about) + '</p>' : '') +
     (elsewhere ? '<ul>' + elsewhere + '</ul>' : '') +
+    rowsAsText(profile.rows) +
     '<ol>' + profile.lists.map((list) =>
       '<li><a href="/list/' + esc(list.id) + '">' + esc(list.title) + '</a></li>').join('') + '</ol>');
 
@@ -133,5 +151,5 @@ export async function onRequest(context) {
     profile: profile
   });
 
-  return page(html, 200, profile.lists.length > 0);
+  return page(html, 200, profile.lists.length > 0 || profile.rows.length > 0);
 }

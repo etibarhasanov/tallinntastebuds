@@ -202,19 +202,6 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, follow
 
-# The about page. Stored as about.html and served at /about as well, so both
-# spellings are spelled out, the same reason "/" and "/index.html" both appear
-# at the top of this file. The address people are given is the short one.
-#
-# The blog's arrangement exactly: the revalidating Cache-Control for the ?v=
-# stamps, and no X-Robots-Tag, because it is unlinked and meant to be found
-# anyway — somebody searching for the name on it is looking for this page.
-/about.html
-  Cache-Control: public, max-age=0, must-revalidate
-
-/about
-  Cache-Control: public, max-age=0, must-revalidate
-
 # Scripts and stylesheets are content-addressed by tools/stamp.mjs — the URL
 # in the HTML carries a hash of the file — so a year-long cache would be safe
 # for a stamped request and is deliberately not used anyway. These rules match

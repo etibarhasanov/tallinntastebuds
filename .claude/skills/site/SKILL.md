@@ -139,15 +139,6 @@ Russian written; `means()` in `assets/flashcard.js` picks the one the page is
 being read in and falls back to the English. A key there is not a `ui.json` key
 and the parity rule does not reach it. See **Flashcards** in `README.md`.
 
-**One page is in English and nothing else, and that is not a third file.**
-`/about` is one person's CV and the names of their work — content, the way a
-blog post is — and the interface round it is four words. It prints them in
-English and never fetches `ui.json`, which at 344 KB would be the heaviest
-thing on the page. It carries no `data-i18n` and no `t()`, so the validator has
-nothing to hold it to. **About** in `README.md` says what translating it would
-take. It is not a licence for any other page: everything that is the site's
-own interface stays in `ui.json`, in all ten.
-
 **Every touch of `localStorage` is inside `try/catch`.** It throws outright
 in some private-browsing modes, and the site is meant to work with it absent.
 
@@ -256,19 +247,22 @@ write gate's `--check`:
   hold the same three networks, written out twice for the same reason the
   pins are, and the build fails when their ids, the addresses they build or
   the handle lengths they cap drift. **Where else you are** under
-  **Profiles** in `README.md`.
+  **Profiles** in `README.md`. The page of links under them is the other
+  way round on purpose — addresses, not handles — and `assets/rows.js` is
+  the one place that turns one into a player: **Your page** under
+  **Profiles**.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns. The **English** label of a
   type is also the one printed in the intro of that chip's published list, so
   changing one means `node tools/typelists.mjs` and a stale
   `db/type-lists.sql` to commit — see **The chips, as lists** in `README.md`.
   Adding a language costs nothing there; the lists are English.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the thirteen pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the twelve pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`, `google.html`,
   `deal.html`, `verify.html`, `staff.html`, `split.html`,
-  `flashcard.html`, `stats.html`, `about.html` — must carry `?v=` equal to
-  the first eight hex of the file's SHA-256. A new page that loads anything out of
+  `flashcard.html`, `stats.html` — must carry `?v=` equal to the first
+  eight hex of the file's SHA-256. A new page that loads anything out of
   `assets/` is added to that list, or it never gets stamped. `admin.html` is
   deliberately unstamped; it is served `no-store`.
 
