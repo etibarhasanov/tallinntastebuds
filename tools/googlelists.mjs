@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 /**
- * Tallinn Tastebuds — the five lists Google wrote.
+ * Tallinn Tastebuds — the six lists Google wrote.
  *
  * Reads exports/tallinn_restaurants.csv — the same 1,110 places
  * tools/googlevenues.mjs loads into google_venues — and writes
- * db/google-lists.sql: one account called `google-statistics`, five public
- * lists under its name, ten places on each, in Google's order. Top ten restaurants,
- * bakeries, cafés, bars and pizzerias, as the numbers Google holds about the
- * city have them, and said to be Google's in the title, the byline and every
- * row.
+ * db/google-lists.sql: one account called `google-statistics`, six public
+ * lists under its name, in Google's order. Top ten restaurants, bakeries,
+ * cafés, bars and pizzerias, and a top twenty across all of them, as the
+ * numbers Google holds about the city have them, and said to be Google's in
+ * the title, the byline and every row.
  *
  *   node tools/googlelists.mjs           rewrite db/google-lists.sql
  *   node tools/googlelists.mjs --check   report that it is stale, exit 1
- *   node tools/googlelists.mjs --show    print the five lists with the numbers
+ *   node tools/googlelists.mjs --show    print the six lists with the numbers
  *
  * The file loads the way db/google-venues.sql does — pasted into the D1
  * console, or from a signed-in terminal:
@@ -22,7 +22,7 @@
  *
  * Preview first, and both, always. It is re-runnable: the account is inserted
  * once and never touched again, each list is upserted on its fixed id, and
- * the ten rows under it are replaced whole, so a refresh of the export moves
+ * the rows under it are replaced whole, so a refresh of the export moves
  * a list without moving its address. Statements and no comments, for the
  * reason googlevenues.mjs gives — the console folds a paste onto one line.
  *
@@ -30,7 +30,7 @@
  *
  * The map carries no score and never sorts by one; that rule stands. A list
  * is the other kind of thing this site has — somebody's opinion, under their
- * name, with a sentence under each place — and these five are Google's
+ * name, with a sentence under each place — and these six are Google's
  * opinion, under Google's name. The account is called `google-statistics`,
  * the title of every list ends "by Google", the line under each place is
  * Google's rating and how many people gave it, and the account's own profile
@@ -111,13 +111,27 @@
  * means. So a bar is a Bar, Cocktail Bar or Wine Bar that Google does not
  * also call a restaurant, a pub, a hookah place, a venue or a shop: any one
  * of those takes a place off this list.
+ *
+ * THE SIXTH LIST IS NOT ONE OF THESE POOLS
+ *
+ * "Top twenty places in Tallinn, by Google" is not a category singled out and
+ * weighed at PRIOR 300 the way the five above are. It is the export's own
+ * rank column — overallOrder() in tools/googlevenues.mjs, RANK_PRIOR 100,
+ * mean taken over all 1,110 rather than one pool — with its first twenty open
+ * places taken in order. That column already answers "where does this place
+ * stand in the whole city", which is the question a top twenty asks; running
+ * a second, differently-weighed pass over the same rows would answer it a
+ * second way and the two would disagree over which twenty names belong.
+ * Reusing it instead means this list is read straight off /google's own
+ * order — its title says "in Tallinn" rather than naming a kind of place for
+ * that reason, and rankOverall() below is the whole of how it is built.
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
-import { read, fold, q } from './googlevenues.mjs';
+import { read, fold, q, overallOrder } from './googlevenues.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'db', 'google-lists.sql');
@@ -125,6 +139,7 @@ const OUT = join(ROOT, 'db', 'google-lists.sql');
 const PRIOR = 300;
 const FLOOR = 100;
 const TOP = 10;
+const TOP_OVERALL = 20;
 
 /* The account every list hangs off. A fixed id rather than a UUID, so a row
    in the database says whose it is. The hash is sixty-four zeros, which is
@@ -144,9 +159,9 @@ const USER = {
   pw_salt: '6f6f676c65206c69737473206e6f2070',
   pw_iter: 10000,
   about:
-    'Five top tens out of Google\u2019s own ratings for Tallinn, weighed by how ' +
-    'many people gave them. Rebuilt whenever the export refreshes. Google\u2019s ' +
-    'numbers, not this map\u2019s verdict.'
+    'Five top tens and a top twenty out of Google\u2019s own ratings for ' +
+    'Tallinn, weighed by how many people gave them. Rebuilt whenever the ' +
+    'export refreshes. Google\u2019s numbers, not this map\u2019s verdict.'
 };
 
 /* Milliseconds, evaluated by SQLite when the file runs, so the file carries no
@@ -157,6 +172,11 @@ const INTRO =
   'Google’s rating, weighed by how many people gave it: 4.5 from five ' +
   'thousand reviews outranks 4.7 from sixty, and under a hundred reviews is ' +
   'not counted. Google’s numbers, not this map’s verdict.';
+
+const INTRO_OVERALL =
+  'Google’s rating, weighed by how many people gave it, over every place in ' +
+  'the export rather than one kind of it — the same order /google ranks the ' +
+  'whole city by. Google’s numbers, not this map’s verdict.';
 
 /* A tag that says a "Bar" is really something else: a kitchen, a beer hall,
    a hookah lounge, a stage, a bottle shop, a canteen with a licence. See the
@@ -170,7 +190,12 @@ const NOT_A_BAR = /Restaurant|Pub|Hookah|Venue|Concert|Auditorium|Club|Store|Caf
    went into the titles after the ids were minted, because the title is also
    the <title> of the page at /list/<id>, and "top ten restaurants in
    Tallinn" is the question somebody types. Exported for tools/sitemap.mjs,
-   which lists the five by id. */
+   which lists the six by id.
+
+   The sixth carries `overall: true` instead of a `pick`: it is not one of
+   the five category pools above, so build() below routes it to
+   rankOverall() rather than rank() — see THE SIXTH LIST IS NOT ONE OF THESE
+   POOLS. */
 export const LISTS = [
   {
     id: 'top-ten-restaurants-by-google-pt7mwk',
@@ -200,6 +225,11 @@ export const LISTS = [
     title: 'Top ten pizzerias in Tallinn, by Google',
     pick: (place) => place.category === 'Pizza Restaurant' ||
       (/^(Italian )?Restaurant$/.test(place.category) && /Pizza Restaurant/.test(place.tags))
+  },
+  {
+    id: 'top-twenty-places-by-google-kwb7l5',
+    title: 'Top twenty places in Tallinn, by Google',
+    overall: true
   }
 ];
 
@@ -246,6 +276,31 @@ export function rank(list, roll) {
   return { mean: mean, places: places };
 }
 
+/* The sixth list's twenty: overallOrder() already ranked every place in the
+   export against every other, so there is no pool to filter and no PRIOR of
+   this file's own to weigh by — taking its first twenty, closed places and
+   repeat names dropped the way the five above drop them, is the whole of it.
+   `raw` is read(), not places() above: overallOrder() does its own number
+   conversion and its mean has to run over every rated row, including the
+   closed ones, to match the rank column exactly — see THE SIXTH LIST IS NOT
+   ONE OF THESE POOLS. */
+export function rankOverall(raw) {
+  const { mean, order } = overallOrder(raw);
+
+  const seen = new Set();
+  const places = order
+    .filter((place) => !place.closed)
+    .filter((place) => {
+      const name = fold(place.name);
+      if (seen.has(name)) return false;
+      seen.add(name);
+      return true;
+    })
+    .slice(0, TOP_OVERALL)
+    .map((place, i) => ({ ...place, pos: i }));
+  return { mean: mean, places: places };
+}
+
 /* The line under each place: Google's word for it and Google's two numbers.
    The page already draws both beside a Google row, so this is the same fact
    said in the list's own voice — and the one copy that survives if the row
@@ -256,6 +311,7 @@ function say(place) {
 }
 
 export function build() {
+  const raw = read();
   const roll = places();
   const out = [];
 
@@ -273,17 +329,19 @@ export function build() {
     '    about = excluded.about;'
   );
 
-  const ranked = LISTS.map((list) => ({ ...list, ...rank(list, roll) }));
+  const ranked = LISTS.map((list) =>
+    ({ ...list, ...(list.overall ? rankOverall(raw) : rank(list, roll)) })
+  );
 
   out.push(
     'INSERT INTO lists (id, owner, title, intro, public, created_at, updated_at)\nVALUES\n' +
-    ranked.map((list) => `  (${q(list.id)}, ${q(USER.id)}, ${q(list.title)}, ${q(INTRO)}, 1, ${NOW}, ${NOW})`).join(',\n') + '\n' +
+    ranked.map((list) => `  (${q(list.id)}, ${q(USER.id)}, ${q(list.title)}, ${q(list.overall ? INTRO_OVERALL : INTRO)}, 1, ${NOW}, ${NOW})`).join(',\n') + '\n' +
     'ON CONFLICT(id) DO UPDATE SET\n' +
     /* owner among them, so renaming the account in this file actually moves
        its lists on a database that already holds them. Without it a rename
-       writes a new user row and leaves all five lists filed under the name
+       writes a new user row and leaves all six lists filed under the name
        before it, which is an account with no lists beside an orphan with
-       five and nothing to say which is current. */
+       six and nothing to say which is current. */
     '    owner = excluded.owner,\n' +
     '    title = excluded.title,\n' +
     '    intro = excluded.intro,\n' +
@@ -291,8 +349,8 @@ export function build() {
   );
 
   /* Replaced whole rather than upserted row by row: a place that fell out of
-     a top ten has to leave it, and a delete that names its lists is the one
-     statement that can say so. */
+     a top ten or the top twenty has to leave it, and a delete that names its
+     lists is the one statement that can say so. */
   out.push(
     'DELETE FROM list_items WHERE list_id IN (\n' +
     ranked.map((list) => '  ' + q(list.id)).join(',\n') + '\n);'

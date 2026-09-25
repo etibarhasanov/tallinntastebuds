@@ -63,8 +63,8 @@
  * `rank` is not in the export. It is this file's arithmetic on two columns
  * that are — the rating weighed by the review count — and it is overwritten
  * by every refresh for exactly that reason: it is a reading of Google's two
- * numbers and never a judgement of anybody's. ranked() below is the whole of
- * it, and the comment there is the argument.
+ * numbers and never a judgement of anybody's. overallOrder() below is the
+ * whole of it, and the comment there is the argument.
  *
  * HOW A PLACE THAT LEFT THE EXPORT IS NOTICED
  *
@@ -364,8 +364,16 @@ const RANK_PRIOR = 100;
  * did give numbers for, and both the route and the card already draw nothing
  * where the rank is absent. All 1,110 carry both today, so the ranks run 1 to
  * 1,110 with no gaps and the page's "of 1,110" is exact.
+ *
+ * overallOrder() below is the arithmetic itself, exported: tools/googlelists.mjs
+ * takes its first twenty, open only, for "Top twenty places in Tallinn, by
+ * Google" — the sixth list under google-statistics, and the whole point of
+ * exporting this rather than a second copy of it is that a list built from a
+ * fresh weighing could rank a place fourth that this column calls ninth. One
+ * arithmetic, read twice, ranked() below keeps its own shape — a place_id to
+ * a position — because that is the whole of what the rank column needs.
  */
-function ranked(places) {
+export function overallOrder(places) {
   /* read() hands every cell over as a trimmed string and Number('') is 0
      rather than NaN, so the empty test has to come before the finite one.
      Without it a place Google rated nothing would arrive as 0.0 from 0
@@ -383,25 +391,26 @@ function ranked(places) {
   }
   const mean = votes ? stars / votes : 0;
 
-  const scores = new Map();
-
-  rated
-    .map((place) => {
-      const n = Number(place.reviews);
-      return {
-        place_id: place.place_id,
-        reviews: n,
-        closed: place.status === 'Temporarily closed',
-        score: (n * Number(place.rating) + RANK_PRIOR * mean) / (n + RANK_PRIOR)
-      };
-    })
+  const order = rated
+    .map((place) => ({
+      ...place,
+      rating: Number(place.rating),
+      reviews: Number(place.reviews),
+      closed: place.status === 'Temporarily closed',
+      score: (Number(place.reviews) * Number(place.rating) + RANK_PRIOR * mean) / (Number(place.reviews) + RANK_PRIOR)
+    }))
     .sort((a, b) => {
       if (a.closed !== b.closed) return a.closed ? 1 : -1;
       return b.score - a.score || b.reviews - a.reviews ||
         (a.place_id < b.place_id ? -1 : a.place_id > b.place_id ? 1 : 0);
-    })
-    .forEach((place, i) => { scores.set(place.place_id, i + 1); });
+    });
 
+  return { mean, order };
+}
+
+function ranked(places) {
+  const scores = new Map();
+  overallOrder(places).order.forEach((place, i) => { scores.set(place.place_id, i + 1); });
   return scores;
 }
 
