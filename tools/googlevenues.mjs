@@ -58,6 +58,19 @@
  * That split is the point. Hand-curation that a sync can erase is curation
  * you will do twice.
  *
+ * NEVER OVER A ROW GOOGLE HAS ANSWERED FOR SINCE
+ *
+ * functions/api/_refresh.js asks Google about a place again when somebody
+ * opens it, and stamps `refreshed_at` when it does. A row with that stamp
+ * holds numbers newer than any export this file could be reading, so both
+ * the upsert and the missing mark skip it: a reload of an old CSV cannot put
+ * last month's review count back over this morning's, and a place the export
+ * no longer carries is not marked missing on the export's word while Google's
+ * own more recent answer says it is there. Loading this file therefore needs
+ * that column on the table — `ALTER TABLE google_venues ADD COLUMN
+ * refreshed_at INTEGER`, in db/schema.sql — or it stops at the first
+ * statement saying the column does not exist.
+ *
  * THE ONE COLUMN GOOGLE DID NOT SEND
  *
  * `rank` is not in the export. It is this file's arithmetic on two columns
@@ -460,16 +473,18 @@ export function build() {
       rows.join(',\n') + '\n' +
       `ON CONFLICT(place_id) DO UPDATE SET\n${setters},\n` +
       `    synced_at = ${NOW},\n` +
-      `    missing_since = NULL;`
+      `    missing_since = NULL\n` +
+      'WHERE google_venues.refreshed_at IS NULL;'
     );
   }
 
   /* Whatever is in the table and not in the list above has left the export.
      Marked rather than deleted: a list may be pointing at it. A place that
-     comes back is cleared by its own upsert. */
+     comes back is cleared by its own upsert. Not a row a refresh has touched,
+     for the reason under NEVER OVER A ROW GOOGLE HAS ANSWERED FOR SINCE. */
   out.push(
     `UPDATE google_venues SET missing_since = ${NOW}\n` +
-    'WHERE missing_since IS NULL AND place_id NOT IN (\n' +
+    'WHERE missing_since IS NULL AND refreshed_at IS NULL AND place_id NOT IN (\n' +
     places.map((place) => '  ' + q(place.place_id)).join(',\n') + '\n);'
   );
 

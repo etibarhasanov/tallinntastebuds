@@ -780,8 +780,9 @@ CREATE INDEX IF NOT EXISTS idx_added_places_owner ON added_places (owner, create
 -- the place onto the map — data/restaurants.json is hand-written and mine —
 -- rather than to correct a mirror that is not.
 --
--- Loaded and refreshed by tools/googlevenues.mjs, which writes
--- db/google-venues.sql out of exports/tallinn_restaurants.csv:
+-- Loaded by tools/googlevenues.mjs, which writes db/google-venues.sql out of
+-- exports/tallinn_restaurants.csv, and kept current one opened place at a time
+-- by functions/api/_refresh.js — see refreshed_at below:
 --
 --   node tools/googlevenues.mjs
 --   wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
@@ -886,7 +887,22 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- either. /api/venues reads the column once per isolate and drops it from
   -- its SELECT if it is not there, so the directory keeps working in the
   -- afternoon between the deploy and somebody running that line.
-  rank INTEGER
+  rank INTEGER,
+
+  -- When the seven columns that move — rating, reviews, status, price, phone,
+  -- website, opening_hours — were last asked of Google for this one place,
+  -- in ms. NULL on a row nothing has refreshed since the export loaded it.
+  -- Written by refreshOnOpen() in functions/api/_refresh.js, which asks again
+  -- when somebody opens the place and this is more than thirty days old; see
+  -- **Keeping it current** under **Google venues** in README.md.
+  --
+  -- It is also what keeps the export from undoing a refresh:
+  -- db/google-venues.sql only overwrites a row where this is NULL, so a
+  -- reload of September's file cannot put September's counts back over
+  -- today's. Appended for the same reason `rank` is:
+  --   ALTER TABLE google_venues ADD COLUMN refreshed_at INTEGER;
+  -- Until that runs, the refresh finds no column and does nothing.
+  refreshed_at INTEGER
 );
 
 -- Best-first, which is the order the export itself is sorted in and the order
@@ -895,6 +911,48 @@ CREATE INDEX IF NOT EXISTS idx_google_venues_rating ON google_venues (rating DES
 -- The 60 that are already on the map, and the ones still to be looked at.
 CREATE INDEX IF NOT EXISTS idx_google_venues_map ON google_venues (map_id) WHERE map_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_google_venues_open ON google_venues (hidden, status);
+
+-- ------------------------------------------------------- what Google is paid
+-- One row per UTC day and kind of call to Google's Places API, counting up.
+-- The spending limit for the whole site lives here rather than in the Google
+-- Cloud console, which will not lower a quota on every kind of account:
+-- spend() in functions/api/_refresh.js claims one call in a single statement
+-- before any request leaves, and only while the day's count and the month's
+-- total are both under BUDGET in that file. `kind` is 'details' today — Place
+-- Details, one place per call, a thousand free a month.
+--
+-- Only the database the key is set against ever fills this. The key goes in
+-- Production alone, so preview's table stays empty; see README.md.
+CREATE TABLE IF NOT EXISTS google_calls (
+  day  TEXT    NOT NULL,              -- '2026-09-26', UTC
+  kind TEXT    NOT NULL,
+  n    INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (day, kind)
+);
+
+-- ----------------------------------------------------- what came back, and when
+-- One row per call that reached Google, newest read first. It is what the
+-- Google tab on /admin.html shows through /api/refreshes: which place, what
+-- happened, and what moved. Kept ninety days — the refresh prunes behind
+-- itself — so it is a few thousand rows at most.
+--
+--   outcome   'changed'  a column moved; `changes` says which
+--             'same'     Google said what the row already said
+--             'closed'   Google says it has closed for good; missing_since set
+--             'gone'     Google does not know the id any more; missing_since set
+--             'failed'   no answer, or a refusal; `note` says which
+--   source    'open'     somebody opened the place. The only one there is.
+--   changes   {"reviews":[148,170],"rating":[4.9,5]} — from, to — or ''
+CREATE TABLE IF NOT EXISTS google_refreshes (
+  id       INTEGER PRIMARY KEY AUTOINCREMENT,
+  at       INTEGER NOT NULL,
+  place_id TEXT    NOT NULL,
+  source   TEXT    NOT NULL,
+  outcome  TEXT    NOT NULL,
+  changes  TEXT    NOT NULL DEFAULT '',
+  note     TEXT    NOT NULL DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS idx_google_refreshes_at ON google_refreshes (at DESC);
 
 
 -- ------------------------------------------------------------------- meta

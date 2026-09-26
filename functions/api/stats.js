@@ -9,6 +9,9 @@
  *   POST { kind, id }   adds one — or, for a profile, hands it to
  *                       ./_visits.js with `from` or `what` beside it. Answers {ok} and nothing else; the page
  *                       never waits on it and never draws anything from it.
+ *                       For one of Google's places it may also, after that
+ *                       answer, refresh the place's numbers from Google —
+ *                       functions/api/_refresh.js.
  *   GET  ?lang=         the whole ranking, the page's words beside it, and
  *                       five minutes of edge cache on the pair.
  *
@@ -106,6 +109,8 @@ import {
    module and this is the fourth reader of that expression. */
 import { LIST_ID } from './_lists.js';
 import { countView, countPress } from './_visits.js';
+/* A Google place opened is also the moment its numbers are worth checking. */
+import { refreshOnOpen } from './_refresh.js';
 
 /* Five minutes in the colo, which is what the page is allowed to be stale by.
  *
@@ -457,6 +462,15 @@ export async function onRequestPost(context) {
        nobody is waiting to hear it. */
     return json({ ok: false }, 200);
   }
+
+  /* One of Google's places, opened: ask Google whether its numbers still
+     hold, if they are old enough to be worth asking about. After the answer
+     has gone, so nobody waits on Google; and only for a Google key — a map
+     slug is lowercase and a Google key always carries a capital, so the
+     capital is the whole test once realPlace() has said the id is real.
+     functions/api/_refresh.js is the rest, the budget included; without
+     GOOGLE_MAPS_API_KEY it returns at once. */
+  if (kind === PLACE && /[A-Z]/.test(id)) context.waitUntil(refreshOnOpen(env, id));
 
   return json({ ok: true }, 200);
 }

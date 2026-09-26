@@ -70,7 +70,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -144,7 +145,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -218,7 +220,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -292,7 +295,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -366,7 +370,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -440,7 +445,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -514,7 +520,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -588,7 +595,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -662,7 +670,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -736,7 +745,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -810,7 +820,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -884,7 +895,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -958,7 +970,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1032,7 +1045,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1106,7 +1120,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1180,7 +1195,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1254,7 +1270,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1328,7 +1345,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1402,7 +1420,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1476,7 +1495,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1550,7 +1570,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1624,7 +1645,8 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1658,10 +1680,11 @@ ON CONFLICT(place_id) DO UPDATE SET
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL;
+    missing_since = NULL
+WHERE google_venues.refreshed_at IS NULL;
 
 UPDATE google_venues SET missing_since = CAST(strftime('%s','now') AS INTEGER) * 1000
-WHERE missing_since IS NULL AND place_id NOT IN (
+WHERE missing_since IS NULL AND refreshed_at IS NULL AND place_id NOT IN (
   'ChIJnYxLw5WTkkYRbBZIQ-rVs70',
   'ChIJUdUjCV2TkkYRcg8TxVp1XUI',
   'ChIJS2PX_Y6TkkYRyCr1I1IKuV0',

@@ -2650,13 +2650,17 @@ other:
    dashboard, paste the site key into the `<meta name="turnstile-key">` in
    `index.html`, and add the secret half as `TURNSTILE_SECRET`. Test a save
    after enabling — a misconfigured widget refuses every save.
-3. **Continue with Google, when you want it.** Create an OAuth client in the
+3. **The Google refresh, when you want it.** `GOOGLE_MAPS_API_KEY`, a Places
+   API (New) key, set for **Production only** — **Keeping it current** under
+   **Google venues** says why only there, and the column and tables it needs.
+   Without it the directory's numbers stay as the last export left them.
+4. **Continue with Google, when you want it.** Create an OAuth client in the
    Google Cloud console, register the redirect URIs — one per hostname, matched
    exactly, no wildcards — and set `GOOGLE_CLIENT_ID` and
    `GOOGLE_CLIENT_SECRET`. Both or neither; without the pair the sheets draw
    the username and password they always did. **Turning it on** under
    **Signing in with Google** has the whole of it.
-4. **Nothing to bind by hand.** The D1 bindings come from `wrangler.toml`, and
+5. **Nothing to bind by hand.** The D1 bindings come from `wrangler.toml`, and
    the dashboard cannot override them.
 
 Re-applying the schema, or setting up a database from scratch:
@@ -3895,6 +3899,98 @@ twenty-four round trips and eleven hundred and ten.
 
 `tools/validate.mjs` runs `--check`, so CI refuses a deploy where the export
 moved and the SQL did not.
+
+One kind of row the file leaves alone entirely: a row with `refreshed_at` set,
+which a refresh from Google has answered for since the export was taken — see
+**Keeping it current** below. Both the upserts and the missing mark skip it, so
+loading September's file in October cannot put September's review counts back
+over October's. That makes the column a prerequisite of loading the file at all:
+on a database without it, the first statement stops saying so.
+
+### Keeping it current
+
+The export is one sweep of Google on one day, and a review count a month old is
+already wrong. So the table keeps itself current, one place at a time, from the
+one signal this site already has about which places matter: somebody opening
+one.
+
+When a Google place is opened — a card on `/google`, or the place on the map —
+the page tells `/api/stats` so the open is counted. If that place's
+`refreshed_at` is empty or more than thirty days old, the same request, after
+its answer has gone, asks Google's Place Details about that one place and writes
+back the seven columns that move: `rating`, `reviews`, `status`, `price`,
+`phone`, `website` and `opening_hours`. Nobody waits on Google; whoever opened
+it sees the row as it was, and the next visitor sees it fresh. A place nobody
+opens is never asked about and costs nothing. `functions/api/_refresh.js` is the
+whole of it, and its header is the argument.
+
+What it leaves alone, and why:
+
+- **The name, the address, the category, the tags and the coordinates.** They
+  change rarely, and `cuisine` is derived from them by the export's cleaner, so
+  asking for them would make this a second description of the place rather
+  than a mirror of its numbers.
+- **A field Google leaves out.** It keeps the value the row had. Google omits a
+  field both when a place no longer has one and when an answer simply did not
+  carry it, and this writes with nobody watching, so it takes the side that
+  cannot wipe a good phone number.
+- **`rank`.** It is every row's position among all of them, so one row's new
+  count cannot place it. `/google` sorts by its own copy of the arithmetic in
+  the browser, so the order follows the new numbers at once; only the printed
+  position waits for the next export load.
+- **The six lists under `google-statistics`.** They are still written from the
+  export by `tools/googlelists.mjs`, and move only when that is loaded.
+
+A place Google says has closed for good gets `missing_since`, the same mark a
+place that left the export gets, and leaves the directory and the picker while
+staying readable for any list that points at it. So does a place whose id
+Google no longer recognises. A missing place that answers as open again is
+cleared.
+
+**What it costs.** `rating` and `userRatingCount` are Enterprise fields, so
+every call bills as Place Details Enterprise, of which Google gives a thousand a
+month free per billing account. The limit is enforced here rather than in the
+Google Cloud console, which will not lower a quota on every kind of account:
+`google_calls` counts calls per UTC day, and `spend()` claims one in a single
+statement before any request leaves, only while the day is under thirty-two and
+the month under nine hundred and fifty. A thirty-one-day month at thirty-two a
+day is 992; the monthly cap sits lower still because Google's month turns over
+on Pacific time. When the day is spent, an open serves the stored row and tries
+again tomorrow. Two visitors opening one place in the same second make one call:
+the row is stamped first, and only one stamp finds it still due.
+
+**Where it says what it did.** `google_refreshes` logs every call — which place,
+whether it moved, what from and to, or why it failed — and keeps ninety days.
+The **Google** tab on `/admin.html` reads it through `/api/refreshes`, with the
+day's and the month's calls against their limits, how much of the directory has
+been refreshed, and how much is due. That route answers anybody: the numbers in
+it are Google's public ones, which `/api/venues` already hands out, and `key`
+says whether the secret is set without saying a character of it.
+
+**Turning it on.** Three things, once:
+
+1. In the Google Cloud console, a key restricted to **Places API (New)**, on a
+   project with billing attached — Google requires billing even inside the free
+   thousand.
+2. In the Pages dashboard, Settings → Variables and Secrets, **Production
+   only**, a secret named `GOOGLE_MAPS_API_KEY`. Not Preview: the counter lives
+   in whichever database the site is bound to, so a key in both would be two
+   counters spending from one free thousand. For `wrangler pages dev`, a line in
+   `.dev.vars`, which is ignored.
+3. The column and the two tables, on production:
+
+   ```
+   wrangler d1 execute tallinntastebuds --remote --command \
+     "ALTER TABLE google_venues ADD COLUMN refreshed_at INTEGER"
+   wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
+   ```
+
+   Preview wants the same two lines before `db/google-venues.sql` can be
+   loaded into it again, for the reason under **Re-running it is safe**.
+
+Without the key nothing here runs and the site is exactly what it was. Without
+the column the refresh finds nothing to stamp and stops; without the tables it
+gives its claim back and stops. The Google tab says which.
 
 ### The 61 that are already on the map
 
@@ -10495,6 +10591,8 @@ functions/api/lists.js     somebody else's top ten: make one, fill it, share
                            it, keep somebody else's, add a place nobody has
 functions/api/places.js    the roll the picker searches: the map plus the export
 functions/api/venues.js    the Google Places directory, whole and unmerged
+functions/api/refreshes.js what the Google refresh has done lately, for the
+                           Google tab on /admin.html
 functions/api/geocode.js   a typed street to a point, for the add-a-place form
                            and for "near Laulupeo" in the chat; Photon behind it,
                            a session in front of the route
@@ -10516,6 +10614,8 @@ functions/api/insights.js  /api/insights — a range of it, by the session
 insights.html              those numbers, drawn: a range, three figures, a
 assets/insights.js         line and the tables; noindex, one door off the
                            account page
+functions/api/_refresh.js  asking Google about one opened place again, inside
+                           a daily and monthly budget (not a route: leading _)
 functions/_shell.js        a static page with a head and an answer written
                            in, shared by the five Functions that serve one
 functions/list/[id].js     /list/<id> — the page a shared link opens
@@ -10585,7 +10685,8 @@ assets/rows.js             the page of links on a profile: what a row is,
                            said once for the profile and the account page
 assets/faces/              a photograph per username, for the few who have one
 functions/api/stats.js     /api/stats — one press in, the whole ranking out,
-                           with the page's words and five minutes of cache
+                           with the page's words and five minutes of cache;
+                           a Google place pressed may also refresh it
 assets/links.js            the three sites a profile can link to, the handles
                            they take and the addresses they build — said once
                            for the profile and the account page
