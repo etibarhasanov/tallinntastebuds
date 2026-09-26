@@ -1466,6 +1466,10 @@
      printed next to it. */
   var SHUT_GLYPH = '<svg viewBox="0 0 10 10" focusable="false"><circle cx="5" cy="5" r="3.9" stroke-dasharray="1.7 1.7"/></svg>';
 
+  /* The play mark on the button that stands in for the player on a phone —
+     watchButton(). A triangle, the one shape everybody reads as "a video". */
+  var PLAY_GLYPH = '<svg viewBox="0 0 10 10" focusable="false"><path d="M3 1.8v6.4L8.4 5z"/></svg>';
+
   function shutMark() {
     return el('span', { className: 'shut-mark' }, [
       el('span', { className: 'shut-glyph', 'aria-hidden': 'true', html: SHUT_GLYPH }),
@@ -6793,6 +6797,7 @@
        already says. The head keeps what only it can carry: the name, and
        whether the door still opens. */
     var deal = liveDealFor(place);
+    var watchUp = watchesOnInstagram(place);
 
     dom.detail.appendChild(el('div', { className: 'place-head' }, [
       /* The flag says it in full — a whole line to itself, and "Closed" alone
@@ -6820,7 +6825,8 @@
       el('div', { className: 'head-meta' }, [
         priceGauge(place.price),
         deal ? dealMark(deal) : null
-      ])
+      ]),
+      watchUp ? watchButton(place) : null
     ]));
 
     if (place.closed) {
@@ -6859,8 +6865,11 @@
        Instagram and TikTok both say "Tallinn Tastebuds video". The app is
        still named where it is useful — on the button that opens it — and a
        heading that said "The reel" was naming somebody else's product for a
-       video that is this site's own. */
-    if (place.reel) {
+       video that is this site's own.
+
+       On a phone an Instagram reel has no section here at all: the button
+       under the name is the whole of it — see watchButton(). */
+    if (place.reel && !watchUp) {
       dom.detail.appendChild(section('video', reelBlock(place)));
     }
 
@@ -6969,16 +6978,52 @@
      panel now and is loaded — often buffered — by the time the write-up has
      been read. Pressing play plays. */
   function reelBlock(place) {
-    var provider = reelProvider(place.reel);
+    countReel(place);
+    return reelProvider(place.reel) === 'tiktok' ? embedTikTok(place) : embedInstagram(place);
+  }
 
-    /* A language switch re-renders the open panel, which builds this block
-       again. That is one visitor and one reel, so it is counted once. */
-    if (lastReelKey !== place.id) {
-      lastReelKey = place.id;
-      TTBTrack.event('reel_load', { place: place.name, provider: provider || 'unknown' });
-    }
+  /* A language switch re-renders the open panel, which builds the reel again.
+     That is one visitor and one reel, so it is counted once — and counted the
+     same whether it came as a player or as the button under the name. */
+  function countReel(place) {
+    if (lastReelKey === place.id) return;
+    lastReelKey = place.id;
+    TTBTrack.event('reel_load', { place: place.name, provider: reelProvider(place.reel) || 'unknown' });
+  }
 
-    return provider === 'tiktok' ? embedTikTok(place) : embedInstagram(place);
+  /* Whether this place's video is a button under its name rather than a
+     player further down. Only an Instagram reel, and only on a phone —
+     embedInstagram() is the long story of why the frame is not drawn there.
+     TikTok keeps its frame on a phone; nobody has reported it broken. */
+  function watchesOnInstagram(place) {
+    return !!place.reel && reelProvider(place.reel) === 'instagram' && isNarrow();
+  }
+
+  /* On a phone the frame is not drawn, so the one thing standing in for it is
+     the way to Instagram, and it used to stand where the frame would have: a
+     heading and a single button, below the write-up, below the fold on most
+     phones. It read as the leftovers of a player rather than as an invitation,
+     and the video is the reason most people open a place at all.
+
+     So it moved up to the name: a filled pill with a play mark, the first
+     thing under the heading, where it is seen before anything is scrolled.
+     The words are the same as they were — "Watch on Instagram" says where the
+     press goes, which a bare "Watch" would not, and leaving the site for
+     another app is worth saying before it happens. The desktop is untouched:
+     there the player plays in the panel and needs no button to find it.
+
+     Same tab, like every link to the video — reelFallback() says why. */
+  function watchButton(place) {
+    countReel(place);
+    return el('div', { className: 'head-watch' }, [
+      TTBTrack.click(
+        el('a', { className: 'watch-btn', href: place.reel }, [
+          el('span', { className: 'watch-icon', 'aria-hidden': 'true', html: PLAY_GLYPH }),
+          el('span', { textContent: t('reelWatch') })
+        ]),
+        'reel_open', { place: place.name }
+      )
+    ]);
   }
 
   /* TikTok publishes a plain iframe player at a fixed shape — 325x739 is the
@@ -7060,10 +7105,12 @@
        here: no attribute of ours changes it, and sandboxing the frame hard
        enough to stop the tab also kills the button that opens the video.
 
-       So on a phone the frame goes and the link stands in its place — one
-       press, the same tab, straight to the post, nothing left behind, and Back
+       So on a phone the frame goes and a link stands in for it — one press,
+       the same tab, straight to the post, nothing left behind, and Back
        returns to the map with the place still open. That is the route the reel
-       is for on a phone anyway: this site does not host the videos.
+       is for on a phone anyway: this site does not host the videos. The link
+       stands under the name rather than here, and renderDetail() never asks
+       for this block on a phone — watchesOnInstagram() and watchButton().
 
        What it costs: a phone that would have been given a real player loses
        it. Instagram hands one over only to a browser holding its cookies, and
@@ -7072,21 +7119,6 @@
        instagram.com may be the exception. isNarrow() is the width the rest of
        this file already calls a phone; the real line is whose cookies the
        browser will carry, and there is no way to ask. */
-    if (isNarrow()) {
-      return el('div', { className: 'reel-embed' }, [
-        el('div', { className: 'reel-watch' }, [
-          TTBTrack.click(
-            el('a', {
-              className: 'link-btn is-primary',
-              href: place.reel,
-              textContent: t('reelWatch')
-            }),
-            'reel_open', { place: place.name }
-          )
-        ])
-      ]);
-    }
-
 
     return el('div', { className: 'reel-embed' }, [
       post ? el('div', { className: 'reel-frame is-instagram' }, [

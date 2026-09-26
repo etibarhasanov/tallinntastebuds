@@ -2694,14 +2694,49 @@ body.panel-detail .panel {
 
 .reel-fallback { margin-top: 10px; font-size: 12.5px; color: var(--muted); }
 
-/* What stands where the Instagram frame would be on a phone. There the frame
-   is not drawn at all — embedInstagram() in app.js says why, and the short of
-   it is that Instagram serves a card rather than a player and the card's own
-   way out leaves a blank tab behind in the browser. So this is the way out
-   instead, and it is the primary button rather than the footnote the fallback
-   is: on a phone it is not a fallback from anything, it is how you watch.
-   A flex row so the button is the width of its own words. */
-.reel-watch { display: flex; }
+/* What stands in for the Instagram frame on a phone, straight under the
+   place's name. There the frame is not drawn at all — embedInstagram() in
+   app.js says why, and the short of it is that Instagram serves a card rather
+   than a player and the card's own way out leaves a blank tab behind. So this
+   is the way out instead, and it is dressed as the invitation it is rather
+   than as the footnote the desktop's fallback is: a filled pill with a play
+   mark in a disc of its own, the width of its words, and tall enough to be a
+   thumb's target. Accent and paper, so it follows the swatch like everything
+   else; the disc is paper on accent turned round, so the triangle reads as a
+   play button and not as one more letter. */
+.head-watch { display: flex; margin-top: 14px; }
+.watch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 18px 6px 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background .15s var(--ease);
+}
+.watch-btn:hover,
+.watch-btn:active { background: var(--accent-lit); }
+.watch-btn:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 3px; }
+.watch-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--accent);
+}
+.watch-icon svg { width: 13px; height: 13px; fill: currentColor; margin-left: 2px; }
 
 .muted-note { font-size: 13.5px; color: var(--muted); }
 
