@@ -170,7 +170,9 @@ export function canonical(request, path) {
  * is about something else says so by naming its own — the flashcards are the
  * one that does, and functions/flashcard.js says why. Either way it is a path
  * under the site and either way the picture is drawn at 1200x630, which is
- * what lets the two tags under it be written once.
+ * what lets the two tags under it be written once. A person's face is the
+ * third kind, and is not drawn at any size of this file's choosing — see
+ * below.
  *
  * The name is the site's rather than the page's because functions/index.js and
  * functions/split.js each hold a copy of this path — they write their twelve
@@ -178,11 +180,34 @@ export function canonical(request, path) {
  * agree. Two of the four are one edit apart from being one. */
 const SITE_CARD = '/assets/logo/og.jpg';
 
+/* A face is the other kind of picture, and it changes three things about the
+   card. It is a person's photograph rather than the site's, so the card
+   carries their name alone — the suffix stays on the <title>, where a tab and
+   a search result want to say whose page this is, and comes off og:title,
+   which is what a chat prints under the picture beside the host it already
+   shows. It is square and small, so it is a "summary" card with the picture
+   beside the words rather than a banner stretched across them. And its size
+   is whatever the photograph in assets/faces/ is, so no size is claimed: the
+   two tags are hints, and a wrong hint is worse than none. The profile is the
+   one caller that has one — see functions/u/[name].js. */
 export function head(meta) {
   const title = esc(meta.title) + ' | Tallinn Tastebuds';
   const description = esc(meta.description);
   const url = esc(meta.url);
-  const image = esc(SITE + (meta.image || SITE_CARD));
+  const image = esc(SITE + (meta.face || meta.image || SITE_CARD));
+  const card = meta.face
+    ? [
+        '<meta property="og:title" content="' + esc(meta.title) + '">',
+        '<meta property="og:image" content="' + image + '">',
+        '<meta name="twitter:card" content="summary">'
+      ]
+    : [
+        '<meta property="og:title" content="' + title + '">',
+        '<meta property="og:image" content="' + image + '">',
+        '<meta property="og:image:width" content="1200">',
+        '<meta property="og:image:height" content="630">',
+        '<meta name="twitter:card" content="summary_large_image">'
+      ];
 
   return [
     /* The only <title> the page has. It used to be the second one — lists.html
@@ -201,13 +226,8 @@ export function head(meta) {
     '<meta property="og:type" content="' + esc(meta.type) + '">',
     '<meta property="og:site_name" content="Tallinn Tastebuds">',
     '<meta property="og:url" content="' + url + '">',
-    '<meta property="og:title" content="' + title + '">',
-    '<meta property="og:description" content="' + description + '">',
-    '<meta property="og:image" content="' + image + '">',
-    '<meta property="og:image:width" content="1200">',
-    '<meta property="og:image:height" content="630">',
-    '<meta name="twitter:card" content="summary_large_image">'
-  ].join('\n');
+    '<meta property="og:description" content="' + description + '">'
+  ].concat(card).join('\n');
 }
 
 /* The block between the two markers in a page, swapped for tags of this

@@ -6917,7 +6917,11 @@ password, for the reason the line does, and it is `noindex` in both
 
 **The face.** For the few who have one, `assets/faces/<name>.jpg` in the
 repository is drawn over the profile's card, and nothing is drawn for the
-rest. `faceOf()` in `functions/api/_profile.js` asks the deployment for it
+rest, and a link to the profile unfurls as it: `head()` in
+`functions/_shell.js` makes the face the card's picture, a small square
+`summary` card rather than the map's banner, with the person's name and line
+as `og:title` and no site name after it — the chat already prints the host
+beside it. `faceOf()` in `functions/api/_profile.js` asks the deployment for it
 with one HEAD, and counts it there only when the answer is an image: the
 site has no `404.html`, so Pages answers a missing file with `index.html` and
 a 200, and a check on the status alone once drew a broken picture on every
