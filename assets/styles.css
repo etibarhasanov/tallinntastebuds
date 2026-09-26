@@ -611,7 +611,13 @@ a:hover { color: var(--accent-lit); }
 
 /* Where you are. Still a plain circle, and now the only one on the map — a
    place wears the mark, so nothing else can be mistaken for you. */
-.pin-here { pointer-events: none; }
+.pin-here {
+  pointer-events: none;
+  /* The lift Google's own dot has: a soft shadow under the paper ring, so
+     the dot stands on the map rather than being printed on it and reads as
+     the one thing up there that is not a place. */
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .35));
+}
 
 /* Every place on the map is the mark — the painting itself, cropped round,
    not a drawing of it. A plain circle is left to the one dot out there that
@@ -1235,7 +1241,7 @@ body.lang-open .controls { z-index: 1250; }
    - --here paints the "you are here" dot and the button that drops it, and is
      deliberately a hue neither accent uses: a blue dot next to brick pins, a
      warm one against green. Otherwise you cannot tell yourself from a
-     restaurant — and in the corner the button stands in, a red crosshair on
+     restaurant — and in the corner the button stands in, a red arrow on
      red paper was one more red thing rather than the one control that is
      about you.
    - Green is the dark one and swaps to CARTO Dark Matter.
@@ -1334,11 +1340,11 @@ body.lang-open .controls { z-index: 1250; }
 
 /* One pill, written once, worn by every button on it. The account, Surprise me and the
    radio had it and the two below them did not: a colour swatch in a round
-   case of its own and a crosshair in a second one, both of them mute, under
+   case of its own and an arrow in a second one, both of them mute, under
    three buttons that say what they are. Down the left edge of the map that
    read as two things somebody had forgotten to finish rather than as the
    quieter half of one rail — the eye counts labels before it counts jobs. So
-   the swatch and the crosshair are pills too, wearing the words they were
+   the swatch and the arrow are pills too, wearing the words they were
    already carrying for the phone's sake, and the rail is one column of one
    shape.
 
@@ -1482,7 +1488,7 @@ body.lang-open .controls { z-index: 1250; }
    screen allows — a thumb that had just pressed Surprise me had the length of
    the page to travel. It is the foot of the rail now, and one of the rail's
    own buttons rather than a card parked beneath them — which is also what
-   turns the crosshair from the muted grey of the chrome at the top into the
+   turns the arrow from the muted grey of the chrome at the top into the
    accent the rest of the rail's icons are drawn in. The dot in the middle of
    it is filled with the accent for the same reason, rather than with the ink
    the label beside it is set in.
@@ -1500,17 +1506,25 @@ body.lang-open .controls { z-index: 1250; }
 
    And it is the one pill on the rail drawn in something other than the
    accent. Everything on this map is the style's own red — the pins, the
-   chips, the other seven crosshair-sized drawings down the left — so a red
-   crosshair on red paper in the corner was one more red thing to find rather
+   chips, the other seven icon-sized drawings down the left — so a red
+   arrow on red paper in the corner was one more red thing to find rather
    than the one control that is about you. It takes --here instead, which is
    the hue the dot it drops is painted in and is chosen in the palette block
    above to be a hue neither accent uses: blue against brick, warm against
    green. Press the button and the colour you pressed is the colour that
    appears on the map, which is the argument for using that token rather than
    inventing a second blue. The border and the label follow it under a
-   pointer, so the whole pill agrees with itself. */
-#btn-locate svg { stroke: var(--here); }
-#btn-locate svg circle:first-child { fill: var(--here); stroke: none; }
+   pointer, so the whole pill agrees with itself.
+
+   And it is an arrow, filled, rather than a crosshair drawn in hairlines.
+   The crosshair was the one drawing on the rail that read as another thin
+   ring in a column of thin rings, and on a phone, alone in the corner over a
+   map full of pins, people looked straight past it. The filled arrow pointing
+   up and to the right is the one Google Maps puts in the same corner, so it is
+   the shape a thumb already knows means "where am I" — a solid mark in --here
+   is the heaviest thing in that corner rather than the lightest. */
+#btn-locate svg { stroke: var(--here); stroke-linejoin: round; }
+#btn-locate svg .here-arrow { fill: var(--here); }
 #btn-locate:hover { border-color: var(--here); color: var(--here); }
 
 /* ---------- the find bar ---------- */
@@ -4766,7 +4780,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   /* And the feedback door steps out of that row, which is arithmetic before
      it is taste. Collapsed, a pill is a 35.6px disc and the row's gap is 8px,
      and a 390px screen leaves 374px after the rail's own left inset — less
-     the crosshair, which stands at the right end of this same strip in its
+     the arrow, which stands at the right end of this same strip in its
      corner and takes 35.6px of it plus a gap to be told apart from the row.
      That leaves 330px. The eight pills still in the row measure 341px, so the
      last one hangs off the edge; seven measure 297px, which is the room this
@@ -4791,7 +4805,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      A phone has no hover and no title tooltip, so the desktop pill lost its
      label here and the rail arrived as a column of bare discs: a head and
      shoulders, a die, a speech bubble, a play triangle, a coloured dot, a
-     crosshair and a question mark, floating over a map, saying nothing about
+     arrow and a question mark, floating over a map, saying nothing about
      what pressing them does. People did not press them.
      So on a phone they now open wearing their label, in the order they are
      stacked, hold it long enough to read, and collapse to the icon so the map
@@ -4800,7 +4814,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
      Every one of them is the same shape: an icon at the left, a label that
      grows out of nothing beside it, and a pill drawn around the pair — which
-     is one rule now that the swatch and the crosshair wear the same pill as
+     is one rule now that the swatch and the arrow wear the same pill as
      the ones above them. */
   .rail-label {
     display: block;
@@ -4850,9 +4864,9 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
   /* ---- where you are, in the corner the thumb is already in ----
 
-     The crosshair leaves the column for the bottom-right corner — the
-     argument is up beside the rule that draws its dot — and the two rules
-     below are all it takes, plus one the rail has to give up for them.
+     The arrow leaves the column for the bottom-right corner — the argument
+     is up beside the rule that draws it — and the rules below are all it
+     takes, plus one the rail has to give up for them.
 
      The rail is centred by an auto margin between top: 0 and bottom: 0 rather
      than by the translate it uses above 860px, because a transformed ancestor
@@ -4865,7 +4879,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      it pins a top, or the auto margin would re-centre the rail in whatever
      was left below the nudge.
 
-     The crosshair stands clear of the attribution strip in that corner, the
+     The arrow stands clear of the attribution strip in that corner, the
      way .panel does above, and clear of the bottom edge of the glass besides
      — --locate-b below is that sum written out. With a sheet up it rides the
      strip above it, alongside the row the rail becomes — and the two sheets
@@ -4873,30 +4887,42 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      transparent parent is transparent too. */
   body {
     /* 30px of attribution strip, the gap the rest of the chrome keeps, and
-       24px more on top of that. The last of those is not clearance from
+       56px more on top of that. The last of those is not clearance from
        anything drawn: it is clearance from the bottom edge of the glass,
        where a phone's own swipe-up gesture lives and where a pill sitting
-       flush reads as something that fell out of the layout. */
-    --locate-b: calc(54px + var(--gap) + var(--safe-b));
+       flush reads as something that fell out of the layout. It was 24px,
+       which put the button down among the credits at the very foot of the
+       screen, the one stretch of it the eye skips; 56px lifts it to where a
+       thumb resting on the phone actually is. */
+    --locate-b: calc(86px + var(--gap) + var(--safe-b));
     /* And the floor for anything else that stands centred at the foot of a
        phone, so the toast and the account offer clear the corner instead of
-       being drawn across it: the pill is 35.6px, plus 10px of air. Written
+       being drawn across it: the button is 48px, plus 10px of air. Written
        once, because two numbers that have to agree and are typed twice are
        two numbers that stop agreeing. */
-    --above-locate: calc(var(--locate-b) + 45.6px);
+    --above-locate: calc(var(--locate-b) + 58px);
   }
+  /* Bigger than the rail's discs: 48px against their 35.6, with a 24px arrow
+     in it. The rail's pills are the same size because they are one column of
+     equals; this one stands alone in a corner and is the button a visitor
+     most needs to find, so it is drawn at the size Google draws its own. */
   #btn-locate {
     position: fixed;
     right: calc(var(--gap) + var(--safe-r));
     bottom: var(--locate-b);
+    min-width: 48px;
+    height: 48px;
+    padding: 0 11px;
   }
+  #btn-locate svg { width: 24px; height: 24px; }
+  #btn-locate.hint-open { padding: 0 16px 0 11px; }
   body.panel-open #btn-locate {
     bottom: calc(var(--sheet-h) + 10px + var(--safe-b));
   }
 
   /* The welcome card: what this site is, once, to a phone that has never
      been here — see showWelcome() in assets/app.js. On the shelf above the
-     crosshair, so neither covers the other, and across the width less the
+     arrow, so neither covers the other, and across the width less the
      gutter the find bar keeps. Built like a sheet (rule 6): eyebrow, the
      line, the one filled action, the way out, and a cross in the corner
      where a cross is looked for. It rises from below the glass and sinks

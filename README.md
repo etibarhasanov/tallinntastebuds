@@ -337,7 +337,7 @@ sheet no longer lands the dot behind itself.
 
 **And on a phone every frame allows for the chrome.** With no sheet up, the
 name, the find bar and Filters stand across the top of the map, the rail down
-its left and the crosshair in the bottom corner, all of them on the map rather
+its left and the arrow in the bottom corner, all of them on the map rather
 than beside it. The fit used to pad every side by the same 24px as though none
 of them were there, so the very first screen a stranger saw — the whole map,
 framed on arrival — had a cluster half under the die and a pin under Ask:
@@ -11713,7 +11713,7 @@ So a first visit on a phone gets a card from the foot of the map instead:
 > myself and approved.
 > **Got it** · Show me around
 
-It stands on the shelf above the crosshair (`--above-locate`), across the
+It stands on the shelf above the arrow (`--above-locate`), across the
 width less the 10px gutter, and is built like a sheet — eyebrow, the line, one
 filled action, the way out, a cross in the corner. The line is the `tagline`
 key, the same sentence the desktop prints, and it is also the site's
@@ -11750,7 +11750,7 @@ drawing: see **Two
 doors to the lists** under **Lists**.
 
 On a phone it used to arrive as a column of bare discs: a head and shoulders,
-a die, a speech bubble, a play triangle, a coloured dot, a crosshair and a
+a die, a speech bubble, a play triangle, a coloured dot, an arrow and a
 question mark over a map, saying nothing. A phone has no hover, so the `title`
 that carries the meaning on a desktop is never read out loud, and people did
 not press them.
@@ -11875,12 +11875,12 @@ instead of sitting in a case of its own.
 
 **Every pill carries a label, at every width.** Three of them used to have one
 and the two under them did not: a coloured dot in a round case of its own and a
-crosshair in a second one, both mute, under three buttons that say what they
+arrow in a second one, both mute, under three buttons that say what they
 are. The argument for that was that a pointer can hover and read a `title`, and
 that two more words down the left edge are two more than the map can spare —
 but what it actually put on the screen was two things that looked unfinished,
 and the eye counts labels before it counts jobs. So the swatch says which style
-it is about to give you and the crosshair says *Show my location*, in the words
+it is about to give you and the arrow says *Show my location*, in the words
 they were already carrying for the phone's sake, and the rail is one column of
 one shape. The longest pill on the rail is Ukrainian's
 `ПОКАЗАТИ МОЄ МІСЦЕЗНАХОДЖЕННЯ` at 267px, which is the width of the brand's
@@ -11985,31 +11985,45 @@ the length of the page to travel. It wears the rail's own pill, so it reads as
 one of its buttons rather than as a stray card parked beneath them.
 
 **On a phone it stands in the bottom-right corner instead**, above the
-attribution strip and a little above the bottom edge of the glass, where the
-phone's own swipe-up gesture lives. Everything else centred at the foot of a
+attribution strip and well clear of the bottom edge of the glass, where the
+phone's own swipe-up gesture lives. It stood 24px above that strip for a
+while, down among the credits at the very foot of the screen, and people did
+not see it; it stands 56px up now, where a thumb resting on the phone is, and
+at 48px it is bigger than the rail's discs — they are a column of equals, and
+this one is alone in a corner and is the button a visitor most needs to find.
+Everything else centred at the foot of a
 phone — the toast, the offer of an account — stands on a shelf above it, so
 nothing is ever drawn across the corner; `--above-locate` in the stylesheet
 is that shelf and is written once so the two cannot drift apart. Not the corner it came from: the other one, which is where
 every map anybody has used on a phone keeps it, and which is under the thumb
 that is already panning the city rather than across the screen under the hand
 holding the phone. It is the only pill on the rail that gets pressed in the
-middle of a gesture — the rest are read, chosen and then pressed — and a
-crosshair that is not where the hand already is gets looked for in that corner
+middle of a gesture — the rest are read, chosen and then pressed — and an
+arrow that is not where the hand already is gets looked for in that corner
 first and found second. With a place open it rides the strip above the sheet,
 at the right end of the row the rail becomes there; with the chat or a
 full-height sheet up it goes with the rail. Above 860px nothing moves: a
 pointer has no reach worth saving and the column reads as one list.
 
 **It is also the one pill on the rail that is not drawn in the accent.** The
-map is the style's own red from the pins up, so a red crosshair on red paper
+map is the style's own red from the pins up, so a red locate button on red paper
 in the corner was one more red thing to find rather than the one control that
 is about you. It wears `--here` instead — the hue the dot it drops is painted
 in, chosen in the palette to be one neither accent uses: blue against brick,
 warm amber against green. Press it and the colour you pressed is the colour
-that appears on the map. It is the glyph, the centre dot, and the border and
-label under a pointer; the pill itself stays paper, so it is still one of the
-rail's shapes. This part is not narrowed to a phone — a crosshair is not a
-place at any width.
+that appears on the map. It is the glyph, and the border and label under a
+pointer; the pill itself stays paper, so it is still one of the rail's shapes.
+This part is not narrowed to a phone — you are not a place at any width.
+
+**And the glyph is a filled arrow**, pointing up and to the right, where it
+was a crosshair drawn in hairlines. The crosshair was one more thin ring in a
+column of thin rings, and alone in the corner of a phone people looked past
+it. The arrow is the one Google Maps keeps in that same corner, so it is the
+shape a thumb already knows means *where am I*, and filled in `--here` it is
+the heaviest mark in the corner rather than the lightest. The dot it drops is
+Google's too: 8px of `--here` in a 3px ring of paper with a soft shadow under
+it, where it was 6px and flat — the smallest thing on the screen at the one
+moment it was the only thing anybody wanted to find.
 
 It stays one of the rail's children in the markup, so `RAIL_PRESS`, the
 introduction cascade and the walk all still find it where they left it; the
@@ -12092,7 +12106,7 @@ first visitor might press, in the order it sits on the page: the pin, the
 buttons top right, the filters, the rail from the top down, and last the
 chip. The colour swatch and the locate button are the two it still passes
 over: both are settings, both are plain on sight, and a walk that stops to
-explain a crosshair is a walk that gets skipped.
+explain an arrow is a walk that gets skipped.
 
 Every step is about something that can be pressed. The walk used to open
 on the mark, with the one sentence the site rests on set large in the
@@ -12141,7 +12155,7 @@ there rather than a button the size of a word.
 
 On a phone it introduces itself with the rest of the rail, last in the
 cascade, and a question mark is the icon on the rail that says the least on
-its own: a die at least looks like chance and a crosshair like a location,
+its own: a die at least looks like chance and an arrow like a location,
 where a question mark over a map could be help, an about page or a search.
 
 The button is last because it is about the rest: a rail that opened with the

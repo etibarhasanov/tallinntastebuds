@@ -672,7 +672,7 @@
        the bottom of the window now, less the attribution strip and the same
        gap the rail keeps everywhere else. On a window too short for both, the
        rail stays centred and takes its chances with the card, which is where
-       it was before the nudge. On a phone the crosshair has gone back to
+       it was before the nudge. On a phone the arrow has gone back to
        standing in that corner — see the media query in assets/styles.css —
        but it is fixed to the window rather than to the rail, so it is not
        what the rail's foot is any more and it moves for nothing. */
@@ -681,7 +681,7 @@
     if (dom.rail.getBoundingClientRect().top < need) {
       dom.rail.style.top = need + 'px';
       /* Below 860px the rail is centred by an auto margin between top: 0 and
-         bottom: 0 rather than by a transform, so that the crosshair fixed in
+         bottom: 0 rather than by a transform, so that the arrow fixed in
          the corner measures from the window and not from the rail's box. A
          top pinned against that bottom would only re-centre the rail in what
          is left under the brand instead of putting it where it is wanted. */
@@ -1258,7 +1258,7 @@
     } else if (isNarrow() && !document.body.classList.contains('panel-open')) {
       /* The same judgement about the chrome, which on a phone is standing on
          the map rather than beside it: the name, the find bar and Filters
-         across the top, the rail down the left and the crosshair in the
+         across the top, the rail down the left and the arrow in the
          bottom corner. A symmetric 24px each side framed the city as though
          none of them were there, so the first thing a stranger saw was a
          cluster half under the die and a pin under Ask — places the page had
@@ -1300,7 +1300,7 @@
 
   /* How far in from each edge of the map the phone's floating chrome reaches,
      in pixels: the top row down to the foot of Filters, the rail's discs
-     while it is a column down the left, and the crosshair's top in the bottom
+     while it is a column down the left, and the arrow's top in the bottom
      corner. Nothing reaches in from the right. Measured rather than written
      down, because the top row is a different height in every language and
      the rail grows a pill when the account answers. Null when what is left
@@ -4312,7 +4312,7 @@
 
   /* ------------------------------------------------------------ rail hints
    * On a phone the rail is a column of icons: a head and shoulders, a die, a
-   * speech bubble, a play triangle, a coloured dot, a crosshair and a question
+   * speech bubble, a play triangle, a coloured dot, an arrow and a question
    * mark, because a label wide enough to read is a label wide enough to cover
    * the map. Which left them explaining nothing — a phone has no hover, so
    * the title that carries the meaning on a desktop is never read out loud,
@@ -4364,7 +4364,7 @@
      mountRadio()'s onchange, below — which is a different piece of code
      from this cascade and did not move with it.
 
-     The crosshair has left the column too, for the bottom-right corner, and
+     The arrow has left the column too, for the bottom-right corner, and
      it stays in this list where the radio did not. The radio was leaving for
      a corner it shares with the language switch, which says what it is
      without being told; this one is leaving for an empty corner nobody has
@@ -10052,8 +10052,13 @@
         if (hereAccuracy.bringToBack) hereAccuracy.bringToBack();
       }
 
+      /* Google's size rather than a pin's: 8px of --here inside a 3px ring
+         of paper, which is what a thumb that has used a map on a phone is
+         looking for. It was 6, and the pins are 18px of painting at phone
+         scale, so the dot arrived as the smallest thing on the screen at the
+         one moment it was the only thing anybody wanted to see. */
       hereMarker = L.circleMarker(ev.latlng, {
-        radius: 6,
+        radius: 8,
         weight: 3,
         color: c.paper,
         fillColor: c.here,
