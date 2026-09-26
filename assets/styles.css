@@ -1958,6 +1958,18 @@ body.is-results .filter-bar {
 }
 .find-area[hidden] { display: none; }
 
+/* A swipe across the card of a result steps to the next one, and the card
+   follows the finger a third of the way while it is pulled — wireResultSwipe()
+   in assets/app.js. pan-y hands the browser the up-and-down scroll of the
+   write-up and keeps the sideways move for the swipe; the transition is what
+   eases the card back, and it is off while the finger is on it so the card
+   does not lag behind the thumb. */
+body.is-results #panel-detail {
+  touch-action: pan-y;
+  transition: transform .22s var(--ease);
+}
+body.is-results #panel-detail.is-swiping { transition: none; }
+
 /* "‹ 3 of 9 ›" over the card of a place that is one of the results. It sits
    in the card's own flow above the name, so it scrolls away with the write-up
    rather than standing over it, and it leaves the corner the close, the mark

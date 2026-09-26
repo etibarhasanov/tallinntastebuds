@@ -31,11 +31,14 @@
  *                  browser's own gesture, on iOS and on Android alike, and
  *                  answering it here as well would press Back twice.
  *   something that a chip row, a photo strip, anything with
- *   moves sideways `touch-action: none` or `pan-x` on it or over it — the
- *                  lightbox, the stories, a row's grip on a list of your own,
- *                  the sheet's grip — and any ancestor that actually scrolls
- *                  sideways. Those have their own meaning for a finger going
- *                  right, and were laid out to say so in CSS.
+ *   moves sideways `touch-action: none`, `pan-x` or `pan-y` on it or over
+ *                  it — the lightbox, the stories, a row's grip on a list of
+ *                  your own, the sheet's grip, the card of a search result
+ *                  on the map, which steps to the next result on a swipe —
+ *                  and any ancestor that actually scrolls sideways. Those
+ *                  have their own meaning for a finger going right, and were
+ *                  laid out to say so in CSS: `pan-y` is the browser told to
+ *                  keep its hands off everything but the up-and-down.
  *   a field        being typed in: a drag across text is selecting it.
  *   a carry        a row lifted on a list of your own is following the
  *                  finger (`is-lifted`, `is-carrying`), and the sheet on the
@@ -101,7 +104,7 @@
     while (at && at !== document.body) {
       var style = window.getComputedStyle(at);
       var touch = style.touchAction || '';
-      if (touch.indexOf('none') !== -1 || touch.indexOf('pan-x') !== -1) return false;
+      if (touch.indexOf('none') !== -1 || touch.indexOf('pan-x') !== -1 || touch.indexOf('pan-y') !== -1) return false;
       var overflow = style.overflowX;
       if ((overflow === 'auto' || overflow === 'scroll') && at.scrollWidth > at.clientWidth + 1) return false;
       at = at.parentNode;
