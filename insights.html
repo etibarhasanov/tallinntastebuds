@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Insights | Tallinn Tastebuds</title>
+<meta name="description" content="How often the page under your name is opened, where from, and what on it is pressed.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+
+<!-- Analytics: Google and Microsoft Clarity, both from one file. The same tag
+     account.html carries, written from the root for the same reason. -->
+<script src="/assets/analytics.js?v=a44b6b90" defer></script>
+
+<!-- One person's own numbers, behind a session cookie, the same as the
+     account page it is a door off: nothing to unfurl, nothing to index.
+     _headers carries the noindex to match, and it is not in sitemap.xml. -->
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The map's tokens, chips and controls; the lists page's header, stack and
+     card; and /stats's row — a rank, a name, a number — which this page is
+     mostly made of. Its own few rules are at the foot of that sheet, under
+     "/insights", beside the row they build on. -->
+<link rel="stylesheet" href="/assets/styles.css?v=eeb02929">
+<link rel="stylesheet" href="/assets/lists.css?v=31585bee">
+<link rel="stylesheet" href="/assets/stats.css?v=186a7b42">
+</head>
+<body class="lists-body">
+
+<a class="skip-link" href="#main" data-i18n="insightsSkip">Skip to your numbers</a>
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" data-track="home" data-i18n-aria-label="backToMap" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
+  </a>
+  <!-- The page these numbers are about, once it is known whose it is.
+       assets/insights.js fills in the address. -->
+  <a class="lists-who" id="insights-view" href="/account.html" data-track="insights_view" data-i18n="editView" hidden>View your page</a>
+</header>
+
+<!-- Signed in, signed out, and accounts switched off are all built by
+     assets/insights.js into this one element, once every answer is in. -->
+<main class="lists-main" id="main" tabindex="-1"></main>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Insights</p>
+    <h2>Insights</h2>
+    <p>This page draws its numbers with JavaScript. The map works rather
+      better than this page does without it — <a href="/">it is over here</a>.</p>
+  </div>
+</noscript>
+
+<!-- What every press reports, shared by every page. Before the page's own
+     script and deferred like it, so document order puts the global in place
+     first. -->
+<script src="/assets/track.js?v=1783fa58" defer></script>
+<script src="/assets/insights.js?v=583b48f1" defer></script>
+</body>
+</html>

@@ -165,13 +165,128 @@ a.stats-name:hover { color: var(--accent); }
   letter-spacing: .02em;
 }
 
-/* ------------------------------------------------ your page, on the account */
+/* ------------------------------------------------------------- /insights */
 
-/* The same row drawn three times on /account.html, under "Your page, lately"
-   — where a profile's views came from, which country, and what on it was
-   pressed. visitsCard() in assets/account.js, which is why that page carries
-   this sheet. Each table is a label and its rows, and the space is between
-   tables rather than under the last one, so the fold ends where its rows do. */
-.visits-table { margin-top: 20px; }
+/* One person's numbers about their own page, which borrows this sheet for
+   the row above — a rank, a name, a number — and adds only what a ranking
+   does not have: the range, three headline figures, the line, and a row with
+   three numbers in it. assets/insights.js draws all of it. No colour is
+   named here either; the line is the accent because it is the one thing on
+   the page drawn rather than written. */
 
-.visits-table .eyebrow { margin: 0 0 10px; }
+/* The four ranges, as the map's chips. Wrapping, because four of them in the
+   mono do not fit across 390px and a row that scrolled sideways would hide
+   the one somebody was looking for. */
+.ins-range {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 16px 0 4px;
+}
+
+/* Views, clicks, click rate: three answers under three labels, which is a
+   <dl> — the same argument .stats-heads makes. Three across at every width,
+   since each is a number rather than a name and a number fits. */
+.ins-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 8px;
+}
+
+.ins-kpi dd { margin: 0; }
+
+.ins-kpi-n {
+  margin-top: 6px;
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.ins-kpi-was {
+  margin-top: 3px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .02em;
+  line-height: 1.35;
+}
+
+/* The line. An <svg> sized by its viewBox, so it is the width of the card
+   at every width and its text scales with it. */
+.ins-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 10px;
+  overflow: visible;
+}
+
+.ins-chart .ins-grid { stroke: var(--hairline); stroke-width: 1; }
+.ins-chart .ins-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
+.ins-chart .ins-dot { fill: var(--accent); }
+.ins-chart text {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
+}
+
+/* Where they came from: the ranking row with three numbers where it has one.
+   One grid for the whole table, with each row's cells laid straight into it
+   (display: contents), so a column is as wide as the widest thing in it —
+   "ПРОСМОТРЫ" over a column of twos included — and every row lines up with
+   the header. Rows that were grids of their own sized each column alone,
+   and in Russian the headers ran into each other. The name keeps
+   minmax(0, 1fr) for the reason .stats-row's does. */
+.ins-table {
+  display: grid;
+  grid-template-columns: 1.6em minmax(0, 1fr) auto auto auto;
+}
+
+.ins-row { display: contents; }
+
+/* The space between columns is padding on the cells rather than a column
+   gap, so the rule under a row runs the width of the card unbroken; and one
+   line height for every cell, so the 16px name and the 13px numbers stand
+   on the same line and the rules under them at the same height. */
+.ins-row > * {
+  padding: 11px 0 11px 14px;
+  line-height: 24px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.ins-row > :first-child { padding-left: 0; }
+.ins-row > :nth-child(2) { padding-left: 4px; }
+
+.ins-row:last-child > * { border-bottom: none; padding-bottom: 0; }
+
+.ins-head > * { line-height: 16px; }
+
+.ins-head > * {
+  padding-top: 14px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.ins-row .stats-n,
+.ins-head > * { text-align: right; }
+
+/* The line under a table that says what it cannot say — see untold in
+   functions/api/_visits.js. */
+.ins-note {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .02em;
+  line-height: 1.45;
+}
+
+/* A ranking under a card's title on /insights, which has no lead sentence
+   between the two the way the tables on /stats do. */
+.ins-list { margin-top: 14px; }

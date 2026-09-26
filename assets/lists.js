@@ -427,11 +427,12 @@
 
   /* And a profile: opened once per load, and every press of a thing on it
      that leads somewhere — a row, a handle, a list. Both are the owner's own
-     numbers, drawn back to them on /account.html under "Your page, lately",
-     and never to anybody else; functions/api/_visits.js is the other half and
-     says what is kept. The referrer goes with the open because it is the
-     browser's to send and not the server's to see — the Function only has
-     the beacon's own, which is this page. The owner's own visits are left
+     numbers, drawn back to them on /insights and never to anybody else;
+     functions/api/_visits.js is the other half and says what is kept. The
+     referrer goes with the open, and again with every press so a click can
+     be filed under where its visitor came from, because it is the browser's
+     to send and not the server's to see — the Function only has the
+     beacon's own, which is this page. The owner's own visits are left
      out here and again on the server, where the session decides it. */
   function countProfile() {
     if (state.me === state.profile.name) return;
@@ -440,7 +441,7 @@
 
   function countProfilePress(what) {
     if (state.me === state.profile.name) return;
-    tell({ kind: 'profile-press', id: state.profile.name, what: what });
+    tell({ kind: 'profile-press', id: state.profile.name, what: what, from: document.referrer || '' });
   }
 
   /* The one POST all three make. keepalive, so a press on a link that leaves

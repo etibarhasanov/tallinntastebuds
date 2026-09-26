@@ -200,7 +200,7 @@
     user: null,
     linked: false,   // whether this account was reached through Google
     password: true,  // whether there is a password on it at all
-    visits: null,    // how /u/<you> has been opened lately, null without the table
+    views: null,     // /u/<you> opened in the last 7 days, null without the table
     saved: [],       // place ids, newest first
     places: {},      // id -> { name, address }
     lists: [],       // the ones you wrote
@@ -400,8 +400,10 @@
      the shape the map's account sheet draws its places-to-go in, because that
      is what this is.
 
-     Two callers now, both on the card that carries your name: your public
-     profile, and /edit, where the page on that profile is written. It has had
+     Three callers now, all on the card that carries your name: your public
+     profile, /edit, where the page on that profile is written, and
+     /insights, how it is doing. The second line is text rather than a key
+     because the third one's is a number. It has had
      six in all — one became the thing it had been promising, a
      field that makes a list, another, everybody else's lists, became a card in
      its own right and then left the page altogether, and the Estonian
@@ -412,12 +414,12 @@
      stops matching the sheet's. */
   var ICON_GO = '<path d="M9 5l7 7-7 7"/>';
 
-  function door(nameKey, whyKey, href, event, params) {
+  function door(nameKey, why, href, event, params) {
     return el('li', { className: 'menu-item' }, [
       TTBTrack.click(el('a', { className: 'menu-row', href: href }, [
         el('span', { className: 'menu-say' }, [
           el('span', { className: 'menu-name', textContent: t(nameKey) }),
-          el('span', { className: 'menu-why', textContent: t(whyKey) })
+          el('span', { className: 'menu-why', textContent: why })
         ]),
         chevron()
       ]), event, params)
@@ -803,6 +805,15 @@
 
   /* ------------------------------------------------------------------- you */
 
+  /* The second line of the Insights row: last week's views where there are
+     any, and what the page is for where there are none yet — nought is not
+     worth a line of its own, and before profile_counts is applied there is
+     no number to say. */
+  function insightsWhy() {
+    if (!state.views) return t('insightsWhy');
+    return state.views === 1 ? t('insightsWeekOne') : t('insightsWeek', { n: state.views });
+  }
+
   /* Your name, what this page is, and the one door that is about you rather
      than about any of your things: your public profile.
 
@@ -832,13 +843,16 @@
       heading(state.user),
       el('p', { className: 'lists-say', textContent: t('accountWhat') }),
       el('ul', { className: 'menu' }, [
-        door('profileYours', 'profileYoursWhy', '/u/' + encodeURIComponent(state.user), 'profile_open', { name: state.user }),
+        door('profileYours', t('profileYoursWhy'), '/u/' + encodeURIComponent(state.user), 'profile_open', { name: state.user }),
         /* The page of links under your name — the name you go by, your line,
            your handles and the rows — is written on /edit, beside a preview
            of the page itself. It was four boxes on this card, each with a
            Save of its own and none of them showing the page; see "Your page"
            in README.md. */
-        door('editDoor', 'editDoorWhy', '/edit', 'edit_open')
+        door('editDoor', t('editDoorWhy'), '/edit', 'edit_open'),
+        /* How that page is doing, on /insights — and the one number worth
+           having without opening it, as the row's own second line. */
+        door('insightsTitle', insightsWhy(), '/insights', 'insights_open', { views: state.views || 0 })
       ]),
       foot([
         /* Into the map's sheet and back again. The ?then= is what makes the
@@ -856,121 +870,6 @@
         signOut()
       ])
     ]);
-  }
-
-  /* --------------------------------------------------------- your page, lately
-   * How often /u/<you> was opened in the last thirty days, where the people
-   * who opened it came from, and what on it they pressed — out of
-   * profile_counts, through GET /api/account; functions/api/_visits.js is
-   * the whole of what is counted and what is not.
-   *
-   * Straight under the card that says who you are, because it is the other
-   * half of the door on that card: the door is your page as a stranger sees
-   * it, and this is how many strangers did. A fold like every column on this
-   * page, with the thirty-day count on the line you press, so a closed card
-   * is one line with the number most people open it for.
-   *
-   * Three short tables, each the /stats row — a rank, a name, a number — and
-   * the stylesheet that draws that row, because a fourth design for "a name
-   * and how many" would be one more thing to learn. Where they came from and
-   * which country are cut to five and an Other: the long tail of a page's
-   * sources is one visit each, and a column of ones says nothing the Other
-   * line does not.
-   *
-   * Not drawn at all where the answer carried no `visits`, which is a
-   * database without the table — the one state here nobody but the person
-   * applying it should ever see.
-   */
-  var VISIT_ROWS = 5;
-
-  /* Where a view came from, in words. The three networks arrive named — a
-     brand is the same word in every language, and the server has the table
-     — the three buckets are named here, and a host that is none of them is
-     printed as itself, which is the most anybody could say about it. */
-  var SOURCES = {
-    search: 'visitsSearch',
-    here: 'visitsHere',
-    direct: 'visitsDirect'
-  };
-
-  function sourceName(r) {
-    if (r.name) return r.name;
-    return SOURCES[r.id] ? t(SOURCES[r.id]) : r.id;
-  }
-
-  /* The browser's own name for a country, in the language the page is being
-     read in — Intl already carries every one of them in all ten, which is
-     two hundred names nobody has to write into data/ui.json. XX is
-     Cloudflare not knowing, T1 is Tor. */
-  function countryName(code) {
-    if (code === 'XX' || code === 'T1') return t('visitsUnknown');
-    try {
-      return new Intl.DisplayNames([state.lang], { type: 'region' }).of(code) || code;
-    } catch (e) {
-      return code;
-    }
-  }
-
-  /* One table: the rows, most first, the first VISIT_ROWS of them and the
-     rest summed into one Other line when `cut` is asked for. */
-  function visitTable(title, items, name, cut) {
-    var rows = items.slice();
-    if (cut && rows.length > VISIT_ROWS + 1) {
-      var rest = 0;
-      rows.slice(VISIT_ROWS).forEach(function (r) { rest += r.n; });
-      rows = rows.slice(0, VISIT_ROWS).concat([{ other: true, n: rest }]);
-    }
-    var ol = el('ol', { className: 'stats-list' });
-    rows.forEach(function (r, i) {
-      ol.appendChild(el('li', { className: 'stats-row' }, [
-        el('span', { className: 'stats-rank', textContent: r.other ? '' : String(i + 1) }),
-        el('span', { className: 'stats-who' }, [
-          el('span', { className: 'stats-name', textContent: r.other ? t('visitsOther') : name(r) })
-        ]),
-        el('span', { className: 'stats-n', textContent: String(r.n) })
-      ]));
-    });
-    return el('div', { className: 'visits-table' }, [
-      el('h3', { className: 'eyebrow', textContent: title }),
-      ol
-    ]);
-  }
-
-  function visitsCard() {
-    var v = state.visits;
-    if (!v || !v.views) return null;
-
-    var page = '/u/' + encodeURIComponent(state.user);
-
-    /* Never opened: not a fold, because there is nothing behind it — the
-       rule savedCard() keeps. The address instead, which is the one thing
-       that changes this. */
-    if (!v.views.total) {
-      return card([
-        heading(t('visitsTitle'), 'h2'),
-        el('p', { className: 'lists-none', textContent: t('visitsNone') }),
-        foot([link('profileYours', page, 'profile_open', { name: state.user })])
-      ]);
-    }
-
-    var kids = [
-      el('p', { className: 'lists-say', textContent: t('visitsWhat', { days: v.days }) }),
-      el('p', { className: 'stats-lead', textContent: t('visitsTotal', { n: v.views.total }) })
-    ];
-    if (!v.views.recent) {
-      kids.push(el('p', { className: 'lists-none', textContent: t('visitsQuiet', { days: v.days }) }));
-    } else {
-      kids.push(visitTable(t('visitsFrom'), v.from, sourceName, true));
-      kids.push(visitTable(t('visitsCountry'), v.country, function (r) { return countryName(r.id); }, true));
-      /* Nothing pressed is no table rather than a heading over nothing. */
-      if (v.press.length) kids.push(visitTable(t('visitsPressed'), v.press, function (r) { return r.name; }, false));
-    }
-
-    return card([fold('visits', t('visitsTitle'), visitsLabel(v.views.recent), kids)]);
-  }
-
-  function visitsLabel(n) {
-    return n === 1 ? t('visitsViewsOne') : t('visitsViews', { n: n });
   }
 
   /* --------------------------------------------------------------- Google
@@ -1143,7 +1042,6 @@
       add(savedCard());
     } else {
       add(youCard());
-      add(visitsCard());
       add(savedCard());
       add(listsCard());
       add(keptCard());
@@ -1204,8 +1102,8 @@
          for an account that is not already using it. */
       state.linked = !!account.out.linked;
       state.password = state.user ? !!account.out.password : true;
-      /* Only there once profile_counts is applied — see visitsCard(). */
-      state.visits = account.out.visits || null;
+      /* Only there once profile_counts is applied — see insightsWhy(). */
+      state.views = typeof account.out.views === 'number' ? account.out.views : null;
       state.saved = Object.prototype.toString.call(account.out.saved) === '[object Array]'
         ? account.out.saved
         : [];
