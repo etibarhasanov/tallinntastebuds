@@ -353,7 +353,7 @@ export async function refreshOnOpen(env, id) {
   if (!key || !env || !env.DB) return 'no-key';
 
   /* A Google key names its row. A place of mine is a lowercase slug, and
-     sixty-one of them are also rows of the export, joined by map_id, whose
+     sixty-two of them are also rows of the export, joined by map_id, whose
      numbers the panel on the map prints under "According to Google" — so
      opening one of those is as good a reason to ask as opening the row
      itself. Found the way /api/venues?map= finds the row that panel draws,

@@ -522,7 +522,7 @@ export async function wordsFor(context, asked, only) {
 }
 
 /* --------------------------------------------------------------- venues
- * google_venues — the Google Places export, eleven hundred and ten places
+ * google_venues — the Google Places export, eleven hundred and eleven places
  * this city can eat in, in the database rather than in a file. See the table in
  * db/schema.sql for why it is a mirror and what the columns mean.
  *

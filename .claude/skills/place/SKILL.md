@@ -179,7 +179,7 @@ its pin can land on the wrong side of the street. What it does, in order:
   so `node tools/typelists.mjs` again. The English first sentence is what a
   list prints under a place; the other nine languages never reach one.
 - `db/google-venues.sql` never moves for a change to a place that is already
-  on the map: the 61 export rows matched to it carry `map_id`, and that
+  on the map: the 62 export rows matched to it carry `map_id`, and that
   column survives every refresh. **Adding** a place the export already lists
   does move it — step 5 of **The hand road** says how.
 

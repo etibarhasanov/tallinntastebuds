@@ -45,7 +45,7 @@ does not have to:
   carries the one-line `wc -l` that lists every file over ~600 lines; the
   answer changes month to month and the rule says how to read a file on
   either side of that line.
-- **The counts are written into the prose** — seventy-five places, 1,110
+- **The counts are written into the prose** — seventy-five places, 1,111
   Google venues, ten languages, thirteen types — in the README, the code
   comments and the skills, and each skill says where its own copies live and
   gives the `grep` that finds them. Change a count, move the copies you are
