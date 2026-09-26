@@ -4453,45 +4453,12 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     column-gap: 10px;
     width: auto;
   }
-  /* The one sentence on this site that says what it is: every place on this
-     map is a place I have eaten in myself. A stranger who arrives on a phone
-     and never reads it is looking at a map of pins like any other, so it is
-     no longer dropped here — it is the first thing the page says, and then it
-     stops saying it, the same bargain the rail buttons below make with their
-     labels. On a line of its own under the mark and the handle, across both
-     columns, where it has the width to be prose rather than three words a
-     line.
-
-     Collapsed by default and opened by .hint-open from assets/app.js: the
-     height animates so the sentence unrolls under the mark instead of
-     appearing over the map. max-height is a ceiling for the transition to
-     run to, set well past the three lines the longest translation takes. */
-  .brand .tagline {
-    grid-row: 3;
-    grid-column: 1 / -1;
-    max-width: min(78vw, 320px);
-    margin: 0;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    font-size: 13px;
-    line-height: 1.4;
-    transition: opacity .3s var(--ease), max-height .38s var(--ease),
-                margin-top .38s var(--ease);
-  }
-  .brand.hint-open .tagline {
-    max-height: 6em;
-    margin-top: 7px;
-    opacity: 1;
-  }
-
-  /* The chip row begins where the mark ends, so a sentence unrolling under
-     the mark lands straight on top of Filters. It makes room instead: the
-     row slides down by the height of the line for as long as the line is up,
-     and comes back up with it — the corner empties in the order it filled.
-     --tell-h is measured in openBrandHint rather than guessed here, because
-     three lines of Estonian are not two lines of English. */
-  body.brand-telling .filter-bar { transform: translateY(var(--tell-h, 46px)); }
+  /* The sentence the desktop prints beside the mark says what this site is,
+     and on a phone it is not in the header at all: there is no room for it
+     up here without pushing the find bar and the chips down for the whole
+     visit. A first visit gets it in the welcome card at the foot of the map
+     instead — see .welcome below — and a return visit already knows. */
+  .brand .tagline { display: none; }
 
   /* The mark and the name are laid out against the handle and the sentence,
      which are not inside this box, so up here it stops being a box and lets
@@ -4577,12 +4544,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     left: 10px;
     right: 10px;
     width: auto;
-    transition: transform .38s var(--ease);
   }
-  /* The tagline unrolls under the mark and pushes what is below it down — see
-     .brand .tagline above. That used to be the chip row alone; now it is this
-     and then the chips, moving together and by the same measured line. */
-  body.brand-telling .find { transform: translateY(var(--tell-h, 46px)); }
 
   .filter-bar {
     --chrome-h: 36px;
@@ -4895,6 +4857,63 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   }
   body.panel-open #btn-locate {
     bottom: calc(var(--sheet-h) + 10px + var(--safe-b));
+  }
+
+  /* The welcome card: what this site is, once, to a phone that has never
+     been here — see showWelcome() in assets/app.js. On the shelf above the
+     crosshair, so neither covers the other, and across the width less the
+     gutter the find bar keeps. Built like a sheet (rule 6): eyebrow, the
+     line, the one filled action, the way out, and a cross in the corner
+     where a cross is looked for. It rises from below the glass and sinks
+     back, and under reduced motion it simply appears. */
+  .welcome {
+    position: fixed;
+    z-index: 1100;
+    left: 10px;
+    right: 10px;
+    bottom: calc(var(--above-locate) + 4px);
+    padding: 16px 18px 14px;
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-soft);
+    box-shadow: var(--shadow);
+    color: var(--ink);
+    transform: translateY(calc(100% + var(--above-locate) + 8px));
+    transition: transform .38s var(--ease);
+  }
+  .welcome.is-up { transform: none; }
+  .welcome-eyebrow {
+    margin: 0 36px 8px 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .welcome-line {
+    margin: 0 0 14px;
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  .welcome-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+  .welcome-x {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .welcome-x svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+  @media (prefers-reduced-motion: reduce) {
+    .welcome { transition: none; }
   }
   .rail {
     top: 0;

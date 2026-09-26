@@ -664,24 +664,9 @@
     /* With the sheet up the rail is anchored to its top edge by the
        stylesheet. Pinning a top as well would stretch it between the two. */
     if (isNarrow() && document.body.classList.contains('panel-open')) return;
-    /* Measured to the foot of what stays. On a phone the brand grows a line
-       of prose for the first few seconds — see openBrandHint — and a rail
-       pushed down to clear a sentence that is on its way out would be left
-       standing there for the rest of the visit.
-
-       The mark and the handle, not the box around them: up here .brand-head
-       is display: contents, so it has no rectangle of its own to measure. */
-    var edge = dom.brand.getBoundingClientRect().bottom;
-    if (isNarrow() && dom.brand.classList.contains('hint-open')) {
-      edge = 0;
-      var stays = dom.brand.querySelectorAll('.brand-mark, .ig-link');
-      for (var k = 0; k < stays.length; k++) {
-        var foot = stays[k].getBoundingClientRect().bottom;
-        if (foot > edge) edge = foot;
-      }
-      if (!edge) edge = dom.brand.getBoundingClientRect().bottom;
-    }
-    var need = edge + 14;
+    /* Measured to the foot of the brand: on a phone the mark and the handle,
+       since the sentence is not in the header there. */
+    var need = dom.brand.getBoundingClientRect().bottom + 14;
     /* And never so far down that the foot of the rail leaves the screen. The
        locate button used to be the thing it must not land on; the floor is
        the bottom of the window now, less the attribution strip and the same
@@ -785,6 +770,10 @@
     map.attributionControl.setPrefix('<a href="https://leafletjs.com/">Leaflet</a>');
 
     takeWheel();
+
+    /* A touch on the map is somebody who has stopped reading the welcome
+       card and started using the thing it was about. */
+    map.on('click dragstart', function () { dismissWelcome(false); });
 
     /* Which pins share a dot depends on the zoom and on nothing else; which
        names fit depends on the whole view, so that one follows the pan too.
@@ -2817,6 +2806,9 @@
 
   function openExplain() {
     if (!dom.tour || tour.i >= 0) return;
+    /* The question mark pressed with the card still up is Show me around by
+       another door: the card goes, and dismissWelcome comes back here. */
+    if (welcomeOwed && dom.welcome && !dom.welcome.hidden) { dismissWelcome(true); return; }
     TTBTrack.event('explain_open');
     /* Over the map, not over a sheet: the walk points at the pins and the
        rail, and on a phone a sheet covers the one and lays the other along
@@ -4381,36 +4373,19 @@
                    'style', 'locate', 'explain', 'feedback'];
   var hintTimers = {};
 
-  /* Before any of them, the sentence. On a desktop it is printed in the card
-     and stays there; on a phone the card is gone and the line went with it,
-     so the page opened on a map of pins that never said whose pins they are
-     — every one of them a place I have eaten in myself, which is the whole
-     claim the site is making and the first thing a stranger should read.
-     It comes up under the mark on arrival, holds long enough to be read at
-     an unhurried pace, and clears. Longer than a rail label because it is a
-     sentence rather than two words, and it opens ahead of them so the claim
-     lands before the buttons start introducing themselves under it. */
-  var BRAND_MS = 7600;
-  var BRAND_IN = 260;
-  /* The rail follows it rather than racing it. By the time the first pill
-     opens the sentence has been up for the best part of a second, and the
-     last one collapses just before the sentence does, so the corner empties
-     in the order it filled. Nine pills, 300ms apart and held for 4.2s each,
-     put that last collapse at 7.75s against the sentence's 7.86s.
+  /* Before any of them, the welcome card: see showWelcome below. The pills
+     wait until it has been put away, so there is one introduction at a time.
 
-     THE ROOM THIS COSTS IS BORROWED, NOT FREE. It was spent once already —
-     nine pills at these same numbers is what the flashcards door found when
-     it joined the rail as a tenth, and BRAND_MS moved to 7900 to keep the
-     last collapse ahead of the sentence with the same margin. The radio's
-     move to the corner beside the language switch handed that pill back,
-     which is the only reason these numbers could come back with it — a pill
-     taken out for some other reason would not by itself make room for one
-     added later. Whichever of the two happens first, the thing to move is
-     BRAND_MS, since the sentence is what the rail is being measured
-     against. */
+     The first pill waits a little over a second after that, so the map has
+     settled before the buttons start naming themselves. Nine pills 300ms
+     apart and held for 4.2s each put the last collapse at 7.75s, and every
+     pill added puts another 300ms on how long the corner spends talking —
+     which is the cost of a tenth, and a real one. */
   var RAIL_IN = 1150;
-  var brandInTimer = null;
-  var brandOutTimer = null;
+  /* Whether this visit owes the welcome card: set on the way in when
+     INTRO_KEY says this browser has never been introduced, and spent the
+     moment the card is put away, however that happens. */
+  var welcomeOwed = false;
   /* An introduction owed to a visitor who has had a sheet standing open ever
      since it was due. Paid off by closePanel. */
   var introPending = false;
@@ -4476,48 +4451,7 @@
     if (btn) btn.classList.remove('hint-open');
   }
 
-  function closeBrandHint() {
-    if (brandInTimer) { clearTimeout(brandInTimer); brandInTimer = null; }
-    if (brandOutTimer) { clearTimeout(brandOutTimer); brandOutTimer = null; }
-    if (dom.brand) dom.brand.classList.remove('hint-open');
-    document.body.classList.remove('brand-telling');
-  }
-
-  /* Same shape as openHint, with one difference: a sentence already on
-     screen is not blinked off and started again — a second call while it is
-     up only buys it a fresh stay. That is what a language switch does while
-     the arrival line is still open. */
-  function openBrandHint() {
-    if (!dom.brand) return;
-    var up = dom.brand.classList.contains('hint-open');
-    if (brandInTimer) { clearTimeout(brandInTimer); brandInTimer = null; }
-    if (brandOutTimer) { clearTimeout(brandOutTimer); brandOutTimer = null; }
-    var show = function () {
-      brandInTimer = null;
-      if (sheetIsOver()) return;
-      /* Measured collapsed — the line is max-height: 0 with the overflow
-         hidden, and scrollHeight reads the content through that — so the chip
-         row below knows how far to step down before either of them moves.
-         Only the number goes in the style; both the unrolling and the step
-         are the stylesheet's, so they run on the same curve. */
-      var line = dom.brand.querySelector('.tagline');
-      if (line) {
-        document.body.style.setProperty('--tell-h', (line.scrollHeight + 7) + 'px');
-      }
-      dom.brand.classList.add('hint-open');
-      document.body.classList.add('brand-telling');
-      brandOutTimer = setTimeout(function () {
-        brandOutTimer = null;
-        dom.brand.classList.remove('hint-open');
-        document.body.classList.remove('brand-telling');
-      }, BRAND_MS);
-    };
-    if (up) show();
-    else brandInTimer = setTimeout(show, BRAND_IN);
-  }
-
   function closeHints() {
-    closeBrandHint();
     closeChipRowHint();
     for (var i = 0; i < HINT_KEYS.length; i++) closeHint(HINT_KEYS[i]);
   }
@@ -4551,8 +4485,8 @@
 
      With the first pill rather than after the last, because the row sits
      above the rail on the screen and the cascade is meant to read down it —
-     and because that leaves the rail's own arithmetic, eight pills 300ms
-     apart against the sentence's 7.6s, exactly where it was. */
+     and because that leaves the rail's own arithmetic exactly where it
+     was. */
   var chipRowTimer = null;
 
   function closeChipRowHint() {
@@ -4599,11 +4533,15 @@
       introPending = true;
       return;
     }
-    /* The sentence goes first and does not wait on anything. It is about the
-       places, not about the rail, so a slow /api/account must not hold it —
-       and the wait below can spend more than a second of the moment it is
-       supposed to open in. */
-    openBrandHint();
+    /* The card first, on a first visit. It says what the map is; the pills
+       say what the buttons do, and they wait for it to be put away —
+       dismissWelcome() comes back here. A language switch while it is up
+       lands here too, and finds it already up. */
+    if (welcomeOwed) {
+      introPending = false;
+      showWelcome();
+      return;
+    }
     /* Once, on the way in: after that the answer has either landed or been
        given up on, and a language switch introduces the rail as it stands. */
     if (!accountAnswered && !railWaited) {
@@ -4623,6 +4561,49 @@
        together for most of the time they are up at all. */
     for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], RAIL_IN + i * 300);
     openChipRowHint();
+  }
+
+  /* The welcome card: what this site is, said once, to a phone that has
+     never been here. The header has no room for the sentence the desktop
+     prints beside the mark, and for a while it was said there anyway —
+     for 7.6s on arrival, then for the whole visit, pushing the find bar
+     down — and neither was right: the first went before a stranger looking
+     at the pins had read it, the second spent the top of the map on every
+     visit to tell a regular what they knew. This comes up from the foot of
+     the map, says it, and goes when it is told to, or the moment the map is
+     touched.
+
+     It is the same sentence as the desktop's, the tagline key, and the same
+     INTRO_KEY as the rail: one first visit, one introduction, card then
+     pills. Storage that throws makes every visit a first visit, which is the
+     right failure — one welcome too many rather than none. */
+  function showWelcome() {
+    if (!dom.welcome || !dom.welcome.hidden) return;
+    dom.welcome.hidden = false;
+    /* A frame between unhiding and sliding, or the browser draws it where
+       it ends up and there is nothing to slide. */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { dom.welcome.classList.add('is-up'); });
+    });
+  }
+
+  /* Put away, by the button, the cross, a touch on the map, or a place
+     opening. Only "Show me around" starts the walk, and the walk opens the
+     labels it wants itself, so it is the one way out that does not go on to
+     the pills. */
+  function dismissWelcome(tour) {
+    /* Only a card that is up: a sheet a link opened on arrival is not the
+       visitor putting away a card they have not been shown yet. */
+    if (!welcomeOwed || !dom.welcome || dom.welcome.hidden) return;
+    welcomeOwed = false;
+    dom.welcome.classList.remove('is-up');
+    setTimeout(function () { dom.welcome.hidden = true; }, reduceMotion() ? 0 : 320);
+    if (tour) {
+      storeSet(INTRO_KEY, '1');
+      openExplain();
+    } else {
+      introduceRail();
+    }
   }
 
   /* --------------------------------------------------- the corner on approach
@@ -5852,6 +5833,10 @@
     dom.panel.removeAttribute('inert');
     document.body.classList.add('panel-open');
     dom.btnList.setAttribute('aria-expanded', 'true');
+    /* A place or the list opening is somebody using the map, which is what
+       the card was waiting for; the pills it hands on to wait for the sheet
+       to go, the way they always have. */
+    dismissWelcome(false);
     /* The rail turns into a row along the top of the sheet here, and a pill
        still wearing its label would push the buttons after it off the side of
        the screen. Whatever it was saying, it has been read. */
@@ -9760,6 +9745,11 @@
       closeAccount();
     });
     dom.btnExplain.addEventListener('click', openExplain);
+    if (dom.welcome) {
+      $('welcome-ok').addEventListener('click', function () { dismissWelcome(false); });
+      $('welcome-x').addEventListener('click', function () { dismissWelcome(false); });
+      $('welcome-tour').addEventListener('click', function () { dismissWelcome(true); });
+    }
     /* Reported with the step being left, one-based, so the report reads as
        how far into the tour people get before Next stops being pressed. */
     var tourNext = function () {
@@ -10180,6 +10170,7 @@
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
       btnExplain: $('btn-explain'),
+      welcome: $('welcome'),
       /* Held only so the introduction can open its label — the press itself
          is an <a> going to an address, and nothing in this file wires it. */
       btnFeedback: $('btn-feedback'),
@@ -10403,7 +10394,7 @@
          the deep link has had its say: a link straight to a place opens the
          sheet, and the introduction is owed to the map behind it rather than
          spent on a screen the rail is only a row along the top of. */
-      if (!storeGet(INTRO_KEY)) introduceRail();
+      if (!storeGet(INTRO_KEY)) { welcomeOwed = true; introduceRail(); }
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
 
