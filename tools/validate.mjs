@@ -459,8 +459,16 @@ if (taxonomy !== null) {
           fail(where, `type "${type.id}" has no "${lang}" label`);
         }
       }
+      /* `words` is the one key that is not a label: what else somebody types
+         when they mean this kind of place, in no language in particular —
+         "cappuccino" for Coffee/tea. Both searches on the map and the chat's
+         reader match it like a label and nothing ever prints it; see
+         **Searching the list** in README.md. */
+      if ('words' in type && !isNonEmptyString(type.words)) {
+        fail(where, `type "${type.id}" has "words" that is not a non-empty string of words joined by "/"`);
+      }
       for (const key of Object.keys(type)) {
-        if (key !== 'id' && !languages.includes(key)) {
+        if (key !== 'id' && key !== 'words' && !languages.includes(key)) {
           warn(where, `type "${type.id}" has an extra key "${key}" that is not a language in ui.json`);
         }
       }

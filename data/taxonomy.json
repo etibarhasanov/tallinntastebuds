@@ -37,7 +37,8 @@
       "es": "Café/té",
       "tr": "Kahve/çay",
       "uk": "Кава/чай",
-      "hy": "Սուրճ/թեյ"
+      "hy": "Սուրճ/թեյ",
+      "words": "espresso/cappuccino/latte/flatwhite/americano/macchiato/cortado/mocha/matcha/cafe/kohvik/kahvila/kafe/cafeteria/кофейня/капучино/латте/эспрессо/кав'ярня/սրճարան"
     },
     {
       "id": "pub",
