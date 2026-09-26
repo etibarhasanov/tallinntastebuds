@@ -7983,10 +7983,23 @@ next run of its own deck and is sitting in **Words you missed** meanwhile.
 
 **Or throw the card, from either face.** Right for *Knew it*, left for *Show me
 again* — the same two answers, given with the thumb that is already on the
-card. The card follows the finger, tilts as it goes, and says in words which
-answer it is heading for, because a tint on its own says nothing to somebody
-who cannot see this one (design rule 10). A quarter of the card's width is far
-enough to mean it; anything shorter springs back and means nothing.
+card. The card follows the finger, tilts as it goes, and leans into its answer:
+it washes green towards the right and red towards the left, the border takes
+the same colour, and the answer is written across the top in words, because a
+tint on its own says nothing to somebody who cannot see this one (design rule
+10). The pair is `--yes` and `--no` in `assets/styles.css` rather than the
+accent, because the accent is red in one style and green in the other, and the
+gesture should not change its meaning with the swatch. A quarter of the card's
+width is far enough to mean it; anything shorter springs back and means
+nothing.
+
+**And away it goes.** An answer sends the card off the side it was answered
+towards, still in its colour, in a fifth of a second, and the next card
+settles in under it — for a throw, for the two buttons and for the arrow keys
+alike, so the three ways of answering look like the same answer. It used to be
+left where the finger put it, which meant a right and a left looked the same
+the moment the finger came up; the owner asked for the difference to be
+visible. Under `prefers-reduced-motion` the card simply swaps.
 
 **The front answers too, and that is the one way a throw differs from the
 buttons.** A word you know on sight is answered before the card is turned over,
@@ -8047,6 +8060,30 @@ it says what taking the focus is about to say, twice. At the end of a run there
 is no card and the focus lands on `<main>`, which is where the skip link lands.
 A thumb and a mouse see none of it: focus moved by a script after a pointer
 press draws no ring.
+
+### Undo
+
+A card thrown the wrong way — a thumb that slipped, an arrow pressed a beat too
+early — can be taken back. **↶ Undo** stands between the two tallies over the
+card once there is an answer to take back, and Control-Z or Command-Z does the
+same from the keyboard. The card comes back in from the side it left by, on the
+face it was answered from, and everything the answer moved goes back with it:
+the tallies, the queue (a *Show me again* had put the card on the end of it),
+the count the stages open on, and whether it had been hinted.
+
+**One answer deep**, the way the undo on every card app is: the one somebody
+means is the one that just went.
+
+**It needs no route, because the answer taken back was never sent.** The
+latest answer is held in the page rather than posted, and goes out when Undo
+stops being on offer — the next card answered, the card leaving the screen for
+any reason (the end of the run, the gate, the editor, the way back to the
+decks), or the tab being put away, where `keepalive` carries it past the page
+closing. Signed out it is written into the tab the way every answer with
+nobody to tell is. What that costs is one answer lost if a phone kills the tab
+without ever saying it was hidden, which is the same harmless direction a
+failed write already errs in: the card comes round again. `flush()` and
+`undo()` in `assets/flashcard.js` are the whole of it.
 
 ### How the run is going, which is not how far through it is
 
@@ -12646,6 +12683,7 @@ Flashcards, `assets/flashcard.js`:
 | `page_view` | one per deck opened or closed in the page: `page_title` is the deck, `page_location` its `?d=` URL. The tag counts the load and `TTBTrack.view()` counts the walks, because opening a deck stopped being a load — see **Opening a deck does not load the page** |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`), `hint` (`1`/`0`) — one per card answered, which of the three ways it was answered, whether the card had been turned over first (`front` is a throw or an arrow on a card nobody opened), and whether the first letters had been asked for before the answer was given |
+| `flash_undo` | `deck_id`, `was` (`knew`/`again`) — the last answer taken back, which is how anybody will find out whether the throw is misfiring in one direction more than the other — see **Undo** under **Flashcards** |
 | `flash_hint` | `deck_id` — the first letters of a meaning asked for, once per card at most. Against `flash_knew` with `hint: 1`, this is what says whether a hint leads to knowing the word — see **The hint** under **Flashcards** |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_editcard`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |

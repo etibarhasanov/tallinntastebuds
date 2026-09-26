@@ -642,11 +642,14 @@
       .catch(function () { return { status: 0, ok: false, out: {} }; });
   }
 
-  function post(url, payload) {
+  /* `keepalive` is for the one write sent as the tab goes away — see flush() —
+     which a plain fetch would have cancelled along with the page. */
+  function post(url, payload, keepalive) {
     return fetch(url, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      keepalive: !!keepalive
     }).then(function (res) {
       return res.json().catch(function () { return {}; }).then(function (out) {
         return { ok: res.ok, out: out || {} };
@@ -1620,6 +1623,19 @@
      keep() above. The run is still this tab's; what changed is that making an
      account at the end of it no longer throws the tab away. */
   function mark(word, knew, how) {
+    var run = state.run;
+    var key = from(word) + '/' + word.id;
+
+    /* Everything this answer is about to change, written down first so that
+       Undo can put it all back — undo() below. The previous answer's write is
+       sent now, because only one answer can be taken back at a time. */
+    flush();
+    var was = {
+      word: word, knew: knew, known: word.known, words: state.words,
+      at: run.at, turned: run.turned, hint: run.hint, length: run.queue.length,
+      back: run.back[key], said: run.said[key], tallyKnew: run.knew, tallyAgain: run.again
+    };
+
     /* The count the stages open on, kept in step with the answer so that the
        end of this run can say a stage has opened without asking the route
        again — see opened(). A shipped card newly known is one more, a known
@@ -1647,13 +1663,12 @@
       hint: state.run.hint ? 1 : 0
     });
 
-    if (state.user && state.ready) {
-      post(FLASH_API, { action: knew ? 'knew' : 'again', deck: from(word), card: word.id });
-    } else {
-      /* Nobody to tell yet, so it is written down for whoever signs in from
-         the card at the end of this run — see keep() above. */
-      keep(from(word), word.id, knew);
-    }
+    /* Held rather than sent, until the next answer or until the card in hand
+       is no longer on screen — flush() says when. That is what makes Undo
+       honest without a route of its own: an answer taken back was never
+       written anywhere, so there is nothing on the server to unwind. */
+    run.pending = { deck: from(word), card: word.id, knew: knew };
+    run.last = was;
 
     /* Back on the end of the run, and once only.
      *
@@ -1669,7 +1684,7 @@
        server, so it is due at the top of the next run of this deck and it is
        in the deck of what you got wrong, which is where looking again
        belongs. */
-    var again = from(word) + '/' + word.id;
+    var again = key;
     if (!knew && !state.run.back[again]) {
       state.run.back[again] = true;
       state.run.queue.push(word);
@@ -1704,6 +1719,106 @@
 
     render();
     focusRun();
+  }
+
+  /* The one answer that has been given and not yet written, sent now.
+   *
+     An answer waits until the next one because Undo can take it back, and
+     it is sent the moment Undo stops being on offer: the next card answered,
+     the card in hand gone off the screen for any reason — the end of the run,
+     the gate, the editor, the way back to the decks, all of which go through
+     render() — and the tab going away, which is what `keepalive` is for.
+     Signed out it is written down in the tab instead, the way every answer
+     with nobody to tell is — keep() above. */
+  function flush(leaving) {
+    var run = state.run;
+    var p = run && run.pending;
+    if (!p) return;
+    run.pending = null;
+    run.last = null;
+    if (state.user && state.ready) {
+      post(FLASH_API, { action: p.knew ? 'knew' : 'again', deck: p.deck, card: p.card }, leaving);
+    } else {
+      keep(p.deck, p.card, p.knew);
+    }
+  }
+
+  /* Undo: the last answer taken back, whichever of the three ways it was
+     given. The card comes back from the side it left by, on the face it was
+     answered from, with the tallies, the queue, the count the stages open on
+     and whether it had been hinted all as they were — mark() wrote each of
+     them down before it touched them. One answer deep, the way the undo on
+     every card app is: the one somebody means is the one that just went. */
+  function undo() {
+    var run = state.run;
+    var u = run && run.last;
+    if (!u || run.flying) return;
+    var key = from(u.word) + '/' + u.word.id;
+
+    run.last = null;
+    run.pending = null;
+    u.word.known = u.known;
+    state.words = u.words;
+    run.queue.length = u.length;
+    run.at = u.at;
+    run.turned = u.turned;
+    run.hint = u.hint;
+    if (u.back) run.back[key] = u.back; else delete run.back[key];
+    if (u.said) run.said[key] = u.said; else delete run.said[key];
+    run.knew = u.tallyKnew;
+    run.again = u.tallyAgain;
+
+    TTBTrack.event('flash_undo', { deck_id: state.deck.id, was: u.knew ? 'knew' : 'again' });
+    run.returning = u.knew ? 'knew' : 'again';
+    render();
+    run.returning = null;
+    focusRun();
+  }
+
+  /* An answer, with the card thrown off the side it was answered towards
+     first — right and green for Knew it, left and red for Show me again —
+     and then mark(). The same flight for a throw, a press and an arrow key,
+     so that the three ways of answering look like the same answer.
+   *
+     `flying` holds everything else off for the fifth of a second the card is
+     in the air, so a second tap does not answer the next card unseen. And
+     the answer is given only if the card is still the one in hand when it
+     lands: anything that took the run away meanwhile has said what it wanted
+     instead. */
+  var FLIGHT_MS = 200;
+
+  function answer(word, knew, how) {
+    var run = state.run;
+    if (run.flying) return;
+    var node = main.querySelector('.flash-card');
+    /* Somebody who has asked the page to hold still gets the card swapped
+       rather than thrown. */
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!node || still) { mark(word, knew, how); return; }
+
+    run.flying = true;
+    var dir = knew ? 1 : -1;
+    var far = Math.round((node.offsetWidth || 320) * 1.2 + 40);
+    var verdict = node.querySelector('.flash-verdict');
+    if (verdict) {
+      verdict.textContent = knew ? t('flashKnew') : t('flashAgain');
+      verdict.className = 'flash-verdict ' + (knew ? 'is-knew' : 'is-again');
+      verdict.style.opacity = '1';
+    }
+    node.classList.remove('is-dragging', 'leans-knew', 'leans-again');
+    node.classList.add('is-leaving', knew ? 'leans-knew' : 'leans-again');
+    node.style.setProperty('--lean', '1');
+    /* Read once so the browser has the card where it is now before it is
+       told where to go, or a press would jump it straight to the end. */
+    void node.offsetWidth;
+    node.style.transform = 'translateX(' + (dir * far) + 'px) rotate(' + (dir * 14) + 'deg)';
+    node.style.opacity = '0';
+
+    setTimeout(function () {
+      run.flying = false;
+      if (state.run !== run || current() !== word) return;
+      mark(word, knew, how);
+    }, FLIGHT_MS);
   }
 
   /* The card itself. A <button>, so the thumb, the keyboard and the screen
@@ -1751,8 +1866,9 @@
 
     /* The word the card is heading for while it is being dragged. Drawn
        empty and filled by the drag, so nothing is built mid-gesture, and it
-       says the answer in words rather than in a tint alone — design rule 10,
-       and the reason there is no green card and red card here. */
+       says the answer in words as well as in the green or red the card leans
+       into — design rule 10: a tint on its own says nothing to somebody who
+       cannot see this one. */
     var verdict = el('p', { className: 'flash-verdict', 'aria-hidden': 'true' });
 
     /* No aria-live on it, and that is deliberate rather than an omission. It
@@ -1760,7 +1876,10 @@
        pressed — which is the one arrangement a live region does not reliably
        announce, and where it does work it says the same thing taking the focus
        is about to say, twice. focusRun() below is what took over the job. */
-    var node = el('button', { type: 'button', className: 'flash-card' }, [verdict, face]);
+    var node = el('button', {
+      type: 'button',
+      className: 'flash-card' + (state.run.returning ? ' is-back-' + state.run.returning : '')
+    }, [verdict, face]);
 
     /* Wired on both faces, and it answers on both — the header of swipe()
        says why the front answers a throw and not a button. What comes back is
@@ -1775,7 +1894,7 @@
          The press is still the only thing wired for turning it, because a
          keyboard and a screen reader activate a button without ever sending a
          pointer anywhere near it. */
-      if (dragged()) return;
+      if (dragged() || state.run.flying) return;
       state.run.turned = !state.run.turned;
       render();
       focusRun();
@@ -1871,16 +1990,23 @@
       verdict.textContent = dx > 0 ? t('flashKnew') : t('flashAgain');
       verdict.className = 'flash-verdict ' + (dx > 0 ? 'is-knew' : 'is-again');
       verdict.style.opacity = String(past);
+      /* And the card leans the same way, green or red, as far as the drag
+         has gone towards meaning it — the lean in assets/flashcard.css. */
+      node.classList.toggle('leans-knew', dx > 0);
+      node.classList.toggle('leans-again', dx < 0);
+      node.style.setProperty('--lean', past.toFixed(3));
     }
 
     function rest() {
-      node.classList.remove('is-dragging');
+      node.classList.remove('is-dragging', 'leans-knew', 'leans-again');
       node.style.transform = '';
+      node.style.removeProperty('--lean');
       verdict.style.opacity = '0';
     }
 
     node.addEventListener('pointerdown', function (ev) {
       if (ev.button !== undefined && ev.button !== 0) return;
+      if (state.run.flying) return;
       down = true;
       live = false;
       moved = false;
@@ -1924,11 +2050,11 @@
       if (!live) return;
 
       if (Math.abs(dx) >= far) {
-        /* Answered. The card is left where the finger put it and the next one
-           is drawn over it by render() — no fly-out, because the movement
-           under the thumb has already said what happened and this site's one
-           motion idea is things settling into place rather than leaving it. */
-        mark(word, dx > 0, 'swipe');
+        /* Answered, and the card carries on the way the thumb sent it, off
+           the edge in its answer's colour — answer() above. It used to be
+           left where the finger put it, and a right and a left looked the
+           same the moment the finger came up. */
+        answer(word, dx > 0, 'swipe');
         return;
       }
       rest();
@@ -1983,7 +2109,33 @@
    * which is a keyboard shortcut that mostly does not work.
    */
   function wireKeys() {
+    /* The answer Undo was holding goes with the tab — flush(). pagehide for
+       the tab closing, and visibilitychange for a phone that puts a tab away
+       and may never wake it again. */
+    window.addEventListener('pagehide', function () { flush(true); });
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') {
+        var had = state.run && state.run.last;
+        flush(true);
+        if (had && current()) render();
+      }
+    });
+
     document.addEventListener('keydown', function (ev) {
+      /* Undo is Control-Z, or Command-Z on a Mac, which is what it is
+         everywhere else — and the same rules as the arrows below about
+         fields and the language menu, since in a field it is the field's. */
+      var undoKey = (ev.key === 'z' || ev.key === 'Z') && (ev.ctrlKey || ev.metaKey) && !ev.altKey && !ev.shiftKey;
+      if (undoKey) {
+        var at = ev.target;
+        if (at && (at.isContentEditable || /^(?:INPUT|TEXTAREA|SELECT)$/.test(at.tagName))) return;
+        if (langBar && langBar.classList.contains('is-open')) return;
+        if (!state.run || !state.run.last || state.editing || state.gated) return;
+        ev.preventDefault();
+        undo();
+        return;
+      }
+
       if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
 
       /* An arrow with a modifier on it belongs to the browser or to a
@@ -2018,7 +2170,7 @@
       /* Left to itself an arrow scrolls the page sideways, which on a phone-
          width window is the card leaving. */
       ev.preventDefault();
-      mark(word, ev.key === 'ArrowRight', 'key');
+      answer(word, ev.key === 'ArrowRight', 'key');
     });
   }
 
@@ -2051,8 +2203,21 @@
       ]);
     };
 
+    /* Undo stands between them, once there is an answer to take back. The
+       arrow is aria-hidden because the word beside it is the whole of what
+       it says. */
+    var back = null;
+    if (run.last) {
+      back = el('button', { type: 'button', className: 'alt flash-undo' }, [
+        el('span', { className: 'flash-undo-arrow', 'aria-hidden': 'true', textContent: '\u21B6' }),
+        el('span', { textContent: t('flashUndo') })
+      ]);
+      back.addEventListener('click', undo);
+    }
+
     return el('div', { className: 'flash-tally' }, [
       side('flashLearning', run.again, 'is-again'),
+      back,
       side('flashKnow', run.knew, 'is-knew')
     ]);
   }
@@ -2196,11 +2361,11 @@
     var acts = el('div', { className: 'flash-acts' });
 
     var again = el('button', { type: 'button', className: 'alt', textContent: t('flashAgain') });
-    again.addEventListener('click', function () { mark(word, false, 'press'); });
+    again.addEventListener('click', function () { answer(word, false, 'press'); });
     acts.appendChild(again);
 
     var knew = el('button', { type: 'button', className: 'go', textContent: t('flashKnew') });
-    knew.addEventListener('click', function () { mark(word, true, 'press'); });
+    knew.addEventListener('click', function () { answer(word, true, 'press'); });
     acts.appendChild(knew);
 
     return [runHead(), tallyRow(), faceCard(word), runBar(), acts, wrongLine(word)];
@@ -2547,6 +2712,10 @@
    */
   function render() {
     clear(main);
+
+    /* Undo is on offer only while a card of the run is on screen, so anything
+       else this draws sends the answer it was holding back — flush(). */
+    if (!(state.deck && !state.editing && !state.locked && !state.gated && current())) flush();
 
     /* The tab is part of what a link is: somebody with six tabs open should be
        able to tell which one is the Estonian. And back to the page's own name
