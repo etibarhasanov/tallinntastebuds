@@ -720,6 +720,12 @@ endings ten languages put on a word still reach the label it came from:
 stemming — one rule and no dictionary — and the only end a site in ten
 languages can afford. Four letters is the floor: `pizza` is looked for as
 `pizz` at the shortest, and a three-letter stem would match half the map.
+A stem is the front of a word, so it only counts at the front of a word in
+the haystack — after a space, a slash or a mark of punctuation — where the
+word as typed still lands anywhere, which is what lets `burger` find a
+Hamburger Restaurant. For an afternoon the stem landed anywhere too, and
+`ramen`, trimmed to `rame`, found Bekker Pagariäri by the *salted caramel
+kringel* on its must-order list.
 The price of it is a stem two words share — `pasta` reaches the pastry shops
 — and here, in a list of seventy-odd ordered by distance, a row like that is
 visible for what it is. `hasWords()` in `assets/app.js` is the rule, and the
