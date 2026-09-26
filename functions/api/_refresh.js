@@ -4,9 +4,11 @@
  * The directory's eleven hundred rows came out of one sweep of Google in
  * September 2026, and a review count is the kind of number that is wrong a
  * month later. This is what keeps them from going stale without anybody
- * re-running that sweep: when somebody opens one of Google's places — on the
- * map, or as a card on /google — and its row has not been refreshed for
- * REFRESH_AFTER, the place is asked about again and the answer written back.
+ * re-running that sweep: when somebody opens a place whose Google numbers the
+ * site prints — one of Google's places, on the map or as a card on /google, or
+ * one of mine that the export also lists, whose panel carries "According to
+ * Google" — and its row has not been refreshed for REFRESH_AFTER, the place is
+ * asked about again and the answer written back.
  *
  * WHY ON OPEN, AND NOT ON A SCHEDULE
  *
@@ -305,20 +307,32 @@ async function log(env, now, id, outcome, changes, note) {
 
 /* The whole of it, for one place somebody has just opened. Called from
  * functions/api/stats.js through waitUntil, with an id that route has already
- * checked is a row of google_venues. Never throws. The word it answers with
- * names the exit it took; nothing on the site reads it, and it is what a
- * console.log under `wrangler pages dev` would want. */
+ * checked is real — either kind of id, because both kinds of place now show
+ * Google's numbers. Never throws. The word it answers with names the exit it
+ * took; nothing on the site reads it, and it is what a console.log under
+ * `wrangler pages dev` would want. */
 export async function refreshOnOpen(env, id) {
   const at = Date.now();
   const key = googleKey(env);
   if (!key || !env || !env.DB) return 'no-key';
 
+  /* A Google key names its row. A place of mine is a lowercase slug, and
+     sixty-one of them are also rows of the export, joined by map_id, whose
+     numbers the panel on the map prints under "According to Google" — so
+     opening one of those is as good a reason to ask as opening the row
+     itself. Found the way /api/venues?map= finds the row that panel draws,
+     so the row refreshed is the row shown; a place of mine Google does not
+     list finds nothing and stops here. */
+  const google = /[A-Z]/.test(id);
   let before;
   try {
     before = await env.DB
       .prepare(
-        'SELECT rating, reviews, status, price, phone, website, opening_hours, ' +
-        'refreshed_at, hidden FROM google_venues WHERE place_id = ?'
+        'SELECT place_id, rating, reviews, status, price, phone, website, opening_hours, ' +
+        'refreshed_at, hidden FROM google_venues ' +
+        (google
+          ? 'WHERE place_id = ?'
+          : 'WHERE map_id = ? AND hidden = 0 AND missing_since IS NULL LIMIT 1')
       )
       .bind(id)
       .first();
@@ -327,6 +341,7 @@ export async function refreshOnOpen(env, id) {
     return 'not-ready';
   }
   if (!before || before.hidden) return 'not-a-venue';
+  const placeId = before.place_id;
   const was = before.refreshed_at === undefined ? null : before.refreshed_at;
   if ((Number(was) || 0) > at - REFRESH_AFTER) return 'fresh';
 
@@ -339,7 +354,7 @@ export async function refreshOnOpen(env, id) {
         'UPDATE google_venues SET refreshed_at = ?1 ' +
         'WHERE place_id = ?2 AND COALESCE(refreshed_at, 0) <= ?3'
       )
-      .bind(at, id, at - REFRESH_AFTER)
+      .bind(at, placeId, at - REFRESH_AFTER)
       .run();
     if (!claimed || !claimed.meta || claimed.meta.changes !== 1) return 'taken';
   } catch (e) {
@@ -354,7 +369,7 @@ export async function refreshOnOpen(env, id) {
   let written = false;
   const unclaim = () => env.DB
     .prepare('UPDATE google_venues SET refreshed_at = ? WHERE place_id = ? AND refreshed_at = ?')
-    .bind(was, id, at)
+    .bind(was, placeId, at)
     .run();
 
   try {
@@ -365,12 +380,12 @@ export async function refreshOnOpen(env, id) {
 
     let res;
     try {
-      res = await fetch(DETAILS + encodeURIComponent(id), {
+      res = await fetch(DETAILS + encodeURIComponent(placeId), {
         headers: { 'X-Goog-Api-Key': key, 'X-Goog-FieldMask': FIELDS }
       });
     } catch (e) {
       await unclaim();
-      await log(env, at, id, 'failed', null, 'no answer from Google');
+      await log(env, at, placeId, 'failed', null, 'no answer from Google');
       return 'failed';
     }
 
@@ -380,10 +395,10 @@ export async function refreshOnOpen(env, id) {
     if (res.status === 404) {
       await env.DB
         .prepare('UPDATE google_venues SET missing_since = COALESCE(missing_since, ?) WHERE place_id = ?')
-        .bind(at, id)
+        .bind(at, placeId)
         .run();
       written = true;
-      await log(env, at, id, 'gone', null, 'Google does not know this place any more');
+      await log(env, at, placeId, 'gone', null, 'Google does not know this place any more');
       return 'gone';
     }
 
@@ -396,7 +411,7 @@ export async function refreshOnOpen(env, id) {
         if (body && body.error && body.error.message) why += ': ' + String(body.error.message).slice(0, 200);
       } catch (e) { /* not JSON, and the status says enough */ }
       await unclaim();
-      await log(env, at, id, 'failed', null, why);
+      await log(env, at, placeId, 'failed', null, why);
       return 'failed';
     }
 
@@ -412,13 +427,13 @@ export async function refreshOnOpen(env, id) {
         'WHERE place_id = ?'
       )
       .bind(row.rating, row.reviews, row.status, row.price, row.phone,
-        row.website, row.opening_hours, at, closedForGood ? 1 : 0, at, id)
+        row.website, row.opening_hours, at, closedForGood ? 1 : 0, at, placeId)
       .run();
     written = true;
 
     const any = Object.keys(moved).length > 0;
     const outcome = closedForGood ? 'closed' : any ? 'changed' : 'same';
-    await log(env, at, id, outcome, any ? moved : null,
+    await log(env, at, placeId, outcome, any ? moved : null,
       closedForGood ? 'Google says it has closed for good' : '');
     return outcome;
   } catch (e) {
