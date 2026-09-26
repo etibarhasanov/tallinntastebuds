@@ -1725,8 +1725,9 @@ body.lang-open .controls { z-index: 1250; }
   white-space: nowrap;
 }
 
-/* The street, and Google's score where there is one. Mono, because both are
-   facts rather than sentences — rule 2 of the design rules. */
+/* The street, and how far it is once the map knows where you are — "450 m ·
+   Kopli tn 16". Mono, because both are facts rather than sentences — rule 2
+   of the design rules. No score: see findRow() in assets/app.js. */
 .find-where {
   display: block;
   font-family: var(--mono);

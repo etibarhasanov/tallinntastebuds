@@ -713,6 +713,21 @@ marks (`NFD`) and dropping the marks; the dotless Turkish `ı` has no
 decomposition of its own and is mapped by hand, which is what makes `firin`
 work as well as `fırın`.
 
+A word of five letters or more is also tried without its last two, so the
+endings ten languages put on a word still reach the label it came from:
+`kohvik` and `kohvi` reach *Kohv/tee*, `kahvila` reaches *Kahvi/tee*,
+`пиццу` reaches *Пицца*, `kebabi` the kebab shops. That is the cheap end of
+stemming — one rule and no dictionary — and the only end a site in ten
+languages can afford. Four letters is the floor: `pizza` is looked for as
+`pizz` at the shortest, and a three-letter stem would match half the map.
+The price of it is a stem two words share — `pasta` reaches the pastry shops
+— and here, in a list of seventy-odd ordered by distance, a row like that is
+visible for what it is. `hasWords()` in `assets/app.js` is the rule, and the
+find bar's two halves match through the same function, with one thing more:
+there the rows that carry a word as typed are drawn above the rows that only
+reached it by its stem, so *pasta* is the pasta places first and the pastry
+shops after them.
+
 Several words all have to land somewhere, so `telliskivi kohvik` narrows rather
 than widening the way a match on the whole phrase would.
 
@@ -763,6 +778,12 @@ the map**, which is my own places, and **Everywhere in Tallinn**, which is the
 Google export behind them — eleven hundred venues, the whole city. Press a row
 and the place opens. Empty the field and the map is exactly as it was.
 
+Type a kind of place rather than a name — *pizza*, *õlu*, *nearby ramen*,
+*ближайший бар* — and the same two groups come back, of that kind, in
+whichever of the ten languages it was typed, and nearest first when the map
+knows where you are. **What the bar understands** below is the whole of what
+it reads a field as, and **Where you are** what the dot changes.
+
 On a phone the field is 16px, the same floor the column's search box and the
 chat's field take and for the same reason: anything smaller and iOS zooms the
 whole page the moment the field takes focus, and never zooms back out. This
@@ -797,8 +818,8 @@ Tallinn* on the map.
 `/api/places`, once, on the first keystroke — the map's own places merged over
 `google_venues`, deduplicated and cached five minutes, which is the same answer
 the lists page's picker has been searching all along. It is not asked for on
-the way in: somebody who opens the map and never types has no use for two
-hundred kilobytes of it.
+the way in: somebody who opens the map and never types has no use for three
+hundred kilobytes of it, sixty on the wire.
 
 **A `?q=` route querying D1 per keystroke was the obvious other shape and it
 cannot be written here.** SQLite has no accent folding. Nobody types *Põhjala*
@@ -808,22 +829,148 @@ anything is matched, and no `LIKE` can do the same. Searching in the browser is
 not the lazy option in this city — it is the only one that finds Põhjala when
 you type `pohjala`.
 
-### What is searched on each side, which is not the same thing
+Two things ride on a Google row for this bar that the picker never reads:
+`kitchens`, what Google says the place cooks in the directory's cuisine ids,
+and `category`, Google's own word for what it is — the next section says
+what for. Measured over the export as it stands they are fifty kilobytes
+before compression and five and a half after, on an answer the bar has
+already decided to download whole; the header of `functions/api/places.js`
+is the argument.
+
+### What is searched on each side, which is nearly the same thing now
 
 My own places go through the map's own index: the name, the street, the type
 labels **in all ten languages**, and the dishes in `mustOrder` — the four
-columns **Searching the list** describes, reused rather than rebuilt. A Google
-venue has none of that. What the roll carries for one is a name and an address,
-so that is what it is matched on.
+columns **Searching the list** describes, reused rather than rebuilt — and,
+once the roll is in, a fifth the column's field does not have: what Google
+files the place as cooking, in the directory's cuisine ids and the ten
+languages `data/cuisines.json` says them in. `/api/places` lends that to a
+place of mine off the Google row `map_id` joins to it, the way the chat's
+Function does for its own narrowing (**One Ask, two rolls**), so *korean*,
+*korea* and *корейская* all reach Ariran whether or not the write-up says
+the word. Nothing on my map records a cuisine; the row Google keeps for the
+same door does.
 
-Better matching on my own places than on Google's is an asymmetry and it is the
-honest one: I know more about them.
+A Google venue used to be matched on a name and a street and nothing else,
+which is why *pizza* found the pizzerias with pizza in the name and missed
+the fifty-three the export files under it, and *beer* found nothing at all.
+The roll carries a row's kinds now — `types`, the map's own words for it, and
+`kitchens`, the directory's — and the bar says each of them in all ten
+languages before it matches, so *õlu*, *пиво*, *bira* and *beer* all reach
+the pubs and *pitsa*, *піца* and *pizza* the pizzerias, whichever language
+was typed and whichever is on screen. Google's own `category` — *Kebab Shop*,
+*Cocktail Bar*, *Sushi Restaurant* — rides along too, because it is the most
+exact thing the export knows about a place and *kebab* is a word people
+type; it is matched and never printed, which is the rule every other Google
+string on the site keeps.
+
+One of the map's words is left out of that on purpose. `VENUE_TYPES` in
+`functions/api/_lib.js` files any place with a drinks licence under `pub` —
+**The directory** says why that is over-broad, under the `pub` and `bar`
+rows of its table — so read through it, *beer* answered with every
+restaurant that has a bar tag. The directory split beer from the rest of the
+bar, and the find bar takes its reading: `pub` is a beer word in any of the
+three columns, `bar` is a bar by category or a cocktail, wine or hookah bar
+by any of them.
+
+What is still not the same: a place of mine is searched by its dishes and a
+Google one is not, because the export does not know any. Better matching on
+my own places than on Google's is an asymmetry and it is the honest one: I
+know more about them.
 
 A word has to land somewhere in the haystack for the row to match, so
-`telliskivi kohvik` narrows rather than widening. The city's half is ordered
-the way a dropdown is read — a name that *starts* with what was typed before
-one that merely contains it, then by how many people Google says have reviewed
-it, which is the only thing the export knows about how well known somewhere is.
+`telliskivi kohvik` narrows rather than widening — and a word of five letters
+or more also lands on its first letters, so `kohvik` reaches *Kohv/tee*;
+**Searching the list** has the rule. Ahead of any other order, the rows that
+carry the words as typed come before the rows that only reached them by a
+stem. Then the city's half is ordered the way a dropdown is read — a name
+that *starts* with what was typed before one that merely contains it, then
+by how many people Google says have reviewed it, which is the only thing the
+export knows about how well known somewhere is — unless the field asked for
+somewhere near, which **Where you are** below takes up.
+
+### What the bar understands, and what it leaves to the chat
+
+The field is read with the chat's own reader — `read()` in `assets/ask.js`,
+see **Ask for somewhere** — before anything is matched, for the two reasons
+the chat reads with it: the vocabulary is already in ten languages, and the
+wishes a sentence carries are not words a name contains. So *pizza near me*
+is *pizza* and a wish to be near; *cheap ramen* is *ramen* in the two lower
+price bands; *somewhere for beer* loses *somewhere* and *for* before
+anything is looked for, because they are the noise the reader already drops.
+The words left over are matched as substrings, the way they always were,
+since a dropdown redraws on every letter and *piz* has to find the pizzerias
+before the word is finished. That is also why the kinds the reader found are
+not what matches: a label reaches the haystack in every language it has, so
+the typed word finds it in whichever one it was typed in, whole or not, and
+the reader's job here is the wishes.
+
+Three wishes are honoured, in the words `askWordsNear`, `askWordsMe`,
+`askWordsCheap` and `askWordsFancy` carry for the language on screen — the
+same lists the chat reads, so *lähedal*, *рядом*, *yakın* and *nearby* are
+one thing and *odav*, *дешево* and *cheap* another:
+
+- **Near me** — *nearby pizza*, *lähim kohvik*, *ближайший бар*, *cerveza
+  cerca*: the rows go nearest first from where you are, and each says how
+  far. **Where you are** below.
+- **Cheap** and **fancy**: cheap is the two lower of the map's four price
+  bands, fancy the two upper, and a Google row the export gives no price to is
+  offered as neither, because it cannot be claimed cheap.
+
+Two things the reader hands over are deliberately not answered here. *Open
+now* is one: nothing in the roll carries a week of hours, so those words fall
+away and the rest of the sentence is answered — *pizza open now* is the
+pizzerias — and the chat, which knows the week, is where that question goes.
+A place to be near — *pizza near Kalamaja* — is the other: the bar does not
+go to the geocoder for it. The words are matched like any others, so a street
+lands on the rows whose address carries it (*pizza near Telliskivi* is Q
+Pizza Jaam and Q Pizza&Pan) and a district lands on nothing but the streets
+named after it. Finding somewhere is still looking one place up; measuring
+the city from a landmark is the chat's job, and **Near somewhere** says how
+it does it.
+
+A field that is nothing but a wish — *nearby*, *lähedal*, *cheap* — looks for
+everything and lets the wish choose, which is how *near me* on its own
+answers with the eight places of mine and the sixteen of Google's nearest to
+you. And a field the reader makes nothing of — a letter, *the* — is looked for
+as typed, so the first letters of a name still bring the name.
+
+### Where you are, and what it changes
+
+Nearness is measured from the dot the locate button draws, and only from that
+— the rule the list, the card and the chat keep, for the same reason: a
+distance on a row reads as a distance from *you*, so it is printed only once
+it is. See **A number on a row only when it is the reader's own** under
+**The list is ordered by distance**.
+
+With a dot within reach of the map, every row in both groups says how far —
+*450 m*, *1,2 km*, out of `askMetres` and `askKm` and rounded the way the
+chat's rows round — in front of the street on the same mono line, and my own
+places come nearest first the way the list does. The city's half keeps its
+dropdown order until the field says *near*; then it goes nearest first too,
+because *nearby pizza* is a question about the corner you are standing on and
+not about which pizzeria is best known.
+
+Said *near* with no dot yet, and the device is asked once, through the same
+events the locate button's press goes through — `locateOnce()` in
+`assets/app.js`, the chat's own way of asking — so the dot appears and the
+map frames it exactly as if the button had been pressed, and the browser's
+own permission prompt comes up for exactly the request that asked for it.
+While it is being asked the note under the rows reads *Working out where you
+are…* (`findLocating`); the rows are already there in their usual order and
+rearrange when the answer lands. Refused, unavailable or slow, and they stay
+in that order under *Couldn't get your location.* (`locateFail`), and the bar
+does not ask again for the life of the page — a permission prompt on every
+letter of the next word would be the bar nagging. The locate button still
+can, and a dot it draws is used the moment it is there. A dot further from
+every place than `HERE_MAX_M` — a visitor asking from the ferry — is the same
+as none, under *You're away from the map* (`locateAway`), since a row reading
+*82 km* says nothing anybody can use.
+
+Nothing else asks the device. *Pizza* from a visitor with no dot is the
+dropdown it always was, in its usual order, with no distances on it and no
+prompt — the site's own permission prompt over a name lookup would be a
+question nobody asked.
 
 ### No score on a row
 
@@ -1547,6 +1694,10 @@ after both is a street, a district or a name, and is looked up as before;
 a dish left over, *ramen nearby*, still goes to Photon, because nothing in
 the reader can tell a dish from a street, and the line under the reply says
 what it was taken for.
+
+The find bar across the top of the map reads with the same reader and the
+same words, and answers the near half of it without the model or Photon —
+**What the bar understands** under **Finding anywhere in Tallinn**.
 
 *Nearest* and *closest* are near words too, with their forms in the other
 nine languages beside them — *lähim*, *lähin*, *ближайший*, *найближчий*,
@@ -4083,7 +4234,10 @@ from**.
 A row out of this table brings `category`, `cuisine`, `tags`, `price`, `rating`
 and `reviews` with it, turned into the map's own vocabulary on the way out and
 drawn under the name with Google's name on it — see **A Google row says whose
-description it is**.
+description it is**. The same roll is what the map's find bar searches, and
+for that a row also carries the directory's reading of the same three columns
+as `kitchens`, and Google's `category` as it stands — matched, never printed.
+See **Finding anywhere in Tallinn**.
 
 And the map, for a place on somebody's list that is not on mine. That card asks
 for four more columns nothing else needs — `phone`, `website`, `opening_hours`
@@ -5941,6 +6095,13 @@ Rows Google says are shut, and rows marked `hidden`, are not offered at all.
 The answer is cached five minutes: it changes when a deploy or a sync changes
 it, and it is the same for everybody — unlike a list, which is read by its
 owner in the middle of writing it and is never cached.
+
+A Google row also carries `kitchens` — what Google says it cooks, in the
+directory's cuisine ids — and `category`, Google's own word for what the
+place is, and a row of mine carries the `kitchens` of the Google row `map_id`
+joins to it. The picker reads none of the three; the map's find bar reads all
+of them, and **What is searched on each side** under **Finding anywhere in
+Tallinn** says what for.
 
 A list item stores whichever id it was added under, and the two cannot be
 confused: a catalogue id is a lowercase slug, a Google key always carries

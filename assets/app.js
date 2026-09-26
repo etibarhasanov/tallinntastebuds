@@ -7319,23 +7319,28 @@
   /* Every language at once, not the one on screen. Somebody reading the map
      in Turkish still types "bakery" half the time, and somebody reading it in
      English may well know the place as a pagariäri. So a type carries all
-     seven of its labels into the index and any of them matches, whatever the
+     ten of its labels into the index and any of them matches, whatever the
      switcher happens to say.
      Names, streets and dishes are never translated, so they go in once.
      The index is built once from data that cannot change afterwards; folding
-     sixty-eight of these on every keystroke would be work for nothing. */
+     seventy-odd of these on every keystroke would be work for nothing. */
   var hayIndex = null;
 
-  function typeWords(id) {
-    for (var i = 0; i < state.types.length; i++) {
-      if (state.types[i].id === id) {
-        var type = state.types[i];
-        return Object.keys(type).map(function (k) {
-          return k === 'id' ? '' : type[k];
+  /* Every label one entry of a translated list carries, in one string: a
+     type's ten out of data/taxonomy.json, or a cuisine's out of
+     data/cuisines.json, whichever list is handed in. Nothing for an id the
+     list does not hold. The index below reads the types this way, and the
+     find bar reads both lists this way for the Google half of the city. */
+  function labelWords(list, id) {
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].id === id) {
+        var entry = list[i];
+        return Object.keys(entry).map(function (k) {
+          return k === 'id' ? '' : entry[k];
         }).join(' ');
       }
     }
-    return id;
+    return '';
   }
 
   function buildSearchIndex() {
@@ -7344,20 +7349,48 @@
       hayIndex[place.id] = fold([
         place.name,
         place.address,
-        (place.types || []).map(typeWords).join(' '),
+        (place.types || []).map(function (id) { return labelWords(state.types, id); }).join(' '),
         (place.mustOrder || []).join(' ')
       ].join(' '));
     });
   }
 
   /* Every word has to land somewhere, so "telliskivi kohvik" narrows rather
-     than widening the way a plain substring match on the whole phrase would. */
-  function matches(place, words) {
-    var hay = (hayIndex && hayIndex[place.id]) || '';
+     than widening the way a plain substring match on the whole phrase would.
+
+     A word of five letters or more is also tried without its last two, so
+     that the endings ten languages put on a word still reach the label it
+     came from: "kohvik" and "kohvi" reach Kohv/tee, "kahvila" reaches
+     Kahvi/tee, "пиццу" reaches Пицца, "kebabi" the kebab shops. That is the
+     cheap end of stemming, and the only end this site can afford in ten
+     languages. Four letters is the floor, so "pizza" is looked for as
+     "pizz" at the shortest and a three-letter stem never matches half the
+     map.
+
+     Two when every word is there as typed, one when any of them reached the
+     haystack only by its stem, nought when a word landed nowhere. The two
+     kinds of hit are told apart so that what was typed can be drawn above
+     what it might have meant: "pasta" is the pasta places first and the
+     pastry shops, whose stem it shares, after them. Three searches ask this
+     of a haystack — the column's, and each half of the find bar's — which is
+     why it is one function and not a loop in each. */
+  function hasWords(hay, words) {
+    var hit = 2;
     for (var i = 0; i < words.length; i++) {
-      if (hay.indexOf(words[i]) === -1) return false;
+      var word = words[i];
+      if (hay.indexOf(word) !== -1) continue;
+      if (word.length < 5) return 0;
+      if (hay.indexOf(word.slice(0, Math.max(4, word.length - 2))) === -1) return 0;
+      hit = 1;
     }
-    return true;
+    return hit;
+  }
+
+  /* The column's test is only whether a place is in or out: its list is
+     ordered by distance, and a row that reached it by a stem is visible for
+     what it is among seventy-odd. */
+  function matches(place, words) {
+    return hasWords((hayIndex && hayIndex[place.id]) || '', words) > 0;
   }
 
   function searchWords() {
@@ -7415,6 +7448,9 @@
    * over google_venues, deduplicated and cached five minutes. It is not asked
    * for on the way in: somebody who opens the map and never types has no use
    * for it, and it is the largest answer this page could ask for.
+   * data/cuisines.json comes in ahead of it, through the same loadCuisines()
+   * the chat uses, so the roll's kitchens have their ten labels by the time
+   * they are folded.
    *
    * A `?q=` route querying D1 was the obvious other shape and it cannot be
    * written, for a reason that is specific to this city: SQLite has no
@@ -7424,15 +7460,70 @@
    * exactly as the lists page's picker has been folding the same answer all
    * along.
    *
-   * WHAT IS SEARCHED ON EACH SIDE, WHICH IS NOT THE SAME THING
+   * WHAT IS SEARCHED ON EACH SIDE, WHICH IS NEARLY THE SAME THING NOW
    *
-   * The map's own places go through matches() and hayIndex above — the name,
-   * the street, the type labels in all ten languages, and the dishes — so
-   * "pagariäri" and "bakery" both find the bakery whichever language the page
-   * is being read in. A Google venue has none of that: what the roll carries
-   * for one is a name and an address, so that is what it is matched on.
-   * Better matching on my own places than on Google's is the honest asymmetry
-   * — I know more about them.
+   * The map's own places go through hayIndex above — the name, the street,
+   * the type labels in all ten languages, and the dishes — so "pagariäri"
+   * and "bakery" both find the bakery whichever language the page is being
+   * read in; and, once the roll is in, what Google files each of them as
+   * cooking, in the same ten languages, which /api/places lends a place of
+   * mine off its linked row so that "thai" reaches my Thai place whether or
+   * not its write-up says the word. A Google venue used to be matched on a
+   * name and a street and nothing else, so "pizza" found the pizzerias with
+   * pizza in the name and missed the fifty-odd the export files under it,
+   * and "beer" found nothing at all. The roll carries its kinds now —
+   * `types`, the map's own seven words, and `kitchens`, the directory's
+   * cuisines — and findHay says each of them in all ten languages, so "õlu",
+   * "пиво" and "beer" all reach the pubs; and Google's own `category` —
+   * "Kebab Shop", "Cocktail Bar" — which is the most exact thing the export
+   * knows about a place, and is matched here and never printed.
+   *
+   * What is still not the same: a place of mine is searched by its dishes and
+   * a Google one is not, because the export does not know any. Better
+   * matching on my own places than on Google's is the honest asymmetry — I
+   * know more about them.
+   *
+   * WHAT THE BAR UNDERSTANDS, AND WHAT IT LEAVES TO THE CHAT
+   *
+   * The field is read with the chat's own reader, TTBAsk.read() in
+   * assets/ask.js, before it is matched, for the two reasons the chat reads
+   * with it: the vocabulary is already in ten languages, and the wishes a
+   * sentence carries are not words a name contains. So "pizza near me" is
+   * "pizza" and a wish to be near, "cheap ramen" is "ramen" in the two lower
+   * price bands, and "somewhere for beer" loses "somewhere" and "for" before
+   * anything is looked for. The words left over are matched as substrings,
+   * the way they always were, because a dropdown redraws on every letter and
+   * "piz" has to find the pizzerias before the word is finished — which is
+   * also why the reader's kinds are not the matcher: a label reaches the
+   * haystack in every language it has, so the typed word finds it in
+   * whichever one it was typed in, whole or not.
+   *
+   * Three wishes are honoured: near me, cheap and fancy. "Open now" is the
+   * one the reader hands over that the bar cannot answer — nothing in the
+   * roll carries a week of hours — so those words fall away and the rest of
+   * the sentence is answered; the chat is where that question goes. And a
+   * place to be near — "pizza near Kalamaja" — is words like any other: a
+   * street lands on the rows whose address carries it, a district on nothing,
+   * and the bar does not go to the geocoder for it. Finding somewhere is
+   * still looking one place up; the chat is what measures from a landmark.
+   *
+   * WHERE YOU ARE
+   *
+   * Nearness is measured from the dot the locate button draws, and only from
+   * that — the rule the list, the card and the chat keep, for the same
+   * reason: a distance on a row reads as a distance from you, so it is
+   * printed only once it is. With a dot in reach of the map, every row says
+   * how far, and my own places come nearest first the way the list does.
+   * Said "near" — "nearby pizza", "lähim kohvik", "ближайший бар" — and the
+   * city's half goes nearest first too, instead of by name and reviews. Said
+   * "near" with no dot yet, and the device is asked once, through the same
+   * events the locate button's press goes through, so the dot appears and
+   * the map frames it exactly as if the button had been pressed — the chat
+   * does the same for "near me", and the browser's own permission prompt is
+   * the right thing to see for exactly that request. Refused, unavailable or
+   * slow, and the rows stand in their usual order under a line saying the
+   * location could not be had, and the bar does not ask again on every
+   * letter of the next word.
    *
    * WHAT PICKING ONE DOES
    *
@@ -7462,6 +7553,21 @@
   var findRows = [];
   var findTrackTimer = null;
 
+  /* data/cuisines.json, once the roll has brought it in, and what Google
+     files each place of mine as cooking — folded, in ten languages, by the
+     map's own id. The two halves of the reader's vocabulary the map does not
+     load on the way in: both are empty until the first keystroke, and a
+     place is matched on what is known so far. */
+  var findCuisines = [];
+  var findLent = {};
+
+  /* The one reading of the device this bar makes, while it is in the air,
+     and whether it came back with nothing — after which the bar does not ask
+     again for the life of the page. The locate button still can, and a dot
+     it draws is used the moment it is there. */
+  var findLocating = null;
+  var findNoFix = false;
+
   /* Where the map stood the moment this bar first flew it somewhere, so that
      emptying the field can put it back — see "clearing it puts it back"
      under setFind() below. Set on the first pick of a search and read once,
@@ -7478,19 +7584,43 @@
   function findLoad() {
     if (findRoll) return Promise.resolve(findRoll);
     if (findAsking) return findAsking;
-    findAsking = getJSON('/api/places').then(function (answer) {
+    findAsking = loadCuisines().then(function (cuisines) {
+      findCuisines = cuisines;
+      return getJSON('/api/places');
+    }).then(function (answer) {
       var rows = [];
       var list = Array.isArray(answer) ? answer : (answer && answer.places) || [];
       /* Only what this bar can actually offer: a venue with no point cannot
          be dropped on the map, and one of my own is already in state.places
-         and is searched properly there. */
+         and is searched properly there — what the roll adds for one of mine
+         is the kitchens lent to it, kept here by its id. */
       findHay = {};
+      findLent = {};
       for (var i = 0; i < list.length; i++) {
         var row = list[i];
         if (!row || !row.name) continue;
+        if (byMapId(row.id) || (row.mapId && byMapId(row.mapId))) {
+          if (row.kitchens && row.kitchens.length) {
+            findLent[row.mapId || row.id] = fold(row.kitchens.map(kitchenWords).join(' '));
+          }
+          continue;
+        }
         if (typeof row.lat !== 'number' || typeof row.lng !== 'number') continue;
-        if (byMapId(row.id) || (row.mapId && byMapId(row.mapId))) continue;
-        findHay[row.id] = fold(row.name + ' ' + (row.address || ''));
+        /* The map's words for the row and the directory's, less one: the
+           map files any place with a drinks licence under `pub` — VENUE_TYPES
+           in functions/api/_lib.js, and README.md says it is over-broad —
+           which would answer "beer" with every restaurant that has a bar
+           tag. The directory split beer from the rest of the bar, so `pub`
+           here is the directory's word, and so is `bar`. */
+        findHay[row.id] = fold([
+          row.name,
+          row.address || '',
+          row.category || '',
+          (row.types || []).map(function (id) {
+            return id === 'pub' ? '' : labelWords(state.types, id);
+          }).join(' '),
+          (row.kitchens || []).map(kitchenWords).join(' ')
+        ].join(' '));
         rows.push(row);
       }
       findRoll = rows;
@@ -7501,6 +7631,40 @@
       return findRoll;
     });
     return findAsking;
+  }
+
+  /* A kitchen's ten labels: a cuisine's out of data/cuisines.json, or a
+     type's, because the directory files a place under `pub`, `coffee`,
+     `bakery`, `vegan` and `fine-dining` as well — KITCHENS in
+     functions/api/venues.js is the list, and it reaches into both files. */
+  function kitchenWords(id) {
+    return labelWords(findCuisines, id) || labelWords(state.types, id);
+  }
+
+  /* The two price bands the reader can ask for, held to: cheap is the lower
+     two of the map's four, fancy the upper two, and a row the export gives
+     no price to is offered as neither, since it cannot be claimed cheap. */
+  function findPriced(place, wish) {
+    if (!wish.cheap && !wish.fancy) return true;
+    if (typeof place.price !== 'number') return false;
+    return wish.cheap ? place.price <= 2 : place.price >= 3;
+  }
+
+  /* The point to measure from: the dot, when it is within reach of the map
+     — measureList()'s own test, so the bar and the list agree on when a
+     reading is worth printing. No dot, and a field that asked to be near the
+     visitor themself, and the device is asked, once; the redraw when it
+     answers is what puts the distances on. Null is never a failure. */
+  function findFrom(wish) {
+    if (hereMarker) return measureList(state.places).here ? hereMarker.getLatLng() : null;
+    if (wish.nearby && !wish.near && !findNoFix && !findLocating) {
+      findLocating = locateOnce().then(function (point) {
+        findLocating = null;
+        if (!point) findNoFix = true;
+        if (state.find) renderFound();
+      });
+    }
+    return null;
   }
 
   /* One of the map's own, by id, and only those — byId() would also answer
@@ -7516,20 +7680,26 @@
   /* The city's half, ordered the way somebody reading a dropdown expects:
      a name that starts with what was typed before a name that merely contains
      it, and past that the places more people have been to — which is the only
-     thing the export knows about how well known somewhere is. */
-  function findCity(words, q) {
+     thing the export knows about how well known somewhere is. Asked for
+     somewhere near, with a dot to measure from, and the order is the distance
+     instead: "nearby pizza" is a question about the corner you are standing
+     on, not about which pizzeria is best known. `away` is metres by id from
+     that dot, or null when there is none in reach. Ahead of either order,
+     the rows that carry the words as typed come before the rows that only
+     reached them by a stem — see hasWords(). */
+  function findCity(words, wish, away) {
     var hits = [];
+    var level = {};
     if (!findRoll) return hits;
     for (var i = 0; i < findRoll.length; i++) {
       var row = findRoll[i];
-      var hay = findHay[row.id] || '';
-      var all = true;
-      for (var w = 0; w < words.length; w++) {
-        if (hay.indexOf(words[w]) === -1) { all = false; break; }
-      }
-      if (all) hits.push(row);
+      var hit = hasWords(findHay[row.id] || '', words);
+      if (hit && findPriced(row, wish)) { level[row.id] = hit; hits.push(row); }
     }
+    var q = words.join(' ');
     hits.sort(function (a, b) {
+      if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
+      if (away && wish.nearby && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
       var ah = fold(a.name).indexOf(q) === 0 ? 0 : 1;
       var bh = fold(b.name).indexOf(q) === 0 ? 0 : 1;
       if (ah !== bh) return ah - bh;
@@ -7541,9 +7711,10 @@
     return hits;
   }
 
-  /* One row in the dropdown: a pin, a name and the street under it. `mine` is
-     what puts the pin in the accent, and it is the whole of what the two
-     groups look like from a distance.
+  /* One row in the dropdown: a pin, a name, and under it the street, with
+     how far it is in front once the map knows where you are. `mine` is what
+     puts the pin in the accent, and it is the whole of what the two groups
+     look like from a distance.
 
      NO SCORE ON A ROW, AND THAT IS NOT AN OVERSIGHT
 
@@ -7555,8 +7726,12 @@
      wrong half to lose. So a row is a name and a street, the card that opens
      carries the score with its attribution whole, and /admin/google is the page
      that sorts by one. */
-  function findRow(place, mine) {
+  function findRow(place, mine, far) {
     var where = place.address || '';
+    /* How far it is, ahead of the street on the same mono line — "450 m ·
+       Kopli tn 16" — and only while the map knows where you are: see WHERE
+       YOU ARE in the header. */
+    var line = far ? (where ? far + ' \u00b7 ' + where : far) : where;
 
     var pin = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     pin.setAttribute('class', 'find-pin');
@@ -7571,13 +7746,13 @@
       type: 'button',
       className: 'find-row' + (mine ? ' is-mine' : ''),
       'data-id': place.id,
-      'aria-label': place.name + (where ? ', ' + where : '') +
+      'aria-label': place.name + (where ? ', ' + where : '') + (far ? ', ' + far : '') +
         ', ' + (mine ? t('findOnMap') : t('findInCity'))
     }, [
       pin,
       el('span', { className: 'find-text' }, [
         el('span', { className: 'find-name', textContent: place.name }),
-        el('span', { className: 'find-where', textContent: where })
+        el('span', { className: 'find-where', textContent: line })
       ])
     ]);
     row.addEventListener('click', function () { findPick(place.id, mine); });
@@ -7586,35 +7761,67 @@
 
   /* The dropdown as it stands: nothing at all while the field is empty, my
      own places the moment anything is typed, and the city's underneath them
-     as soon as the roll is in. The note above both is the one line that says
-     what is happening — looking, or nothing matched — and it is the live
-     region, so a screen reader hears the outcome rather than every row again
-     on every keystroke. */
+     as soon as the roll is in. The note under both is the one line that says
+     what is happening — looking, nothing matched, or nothing to measure from
+     — and it is the live region, so a screen reader hears the outcome rather
+     than every row again on every keystroke. */
   function renderFound() {
-    var q = fold(state.find).replace(/\s+/g, ' ').replace(/^ | $/g, '');
-    var words = q ? q.split(' ') : [];
+    var typed = state.find.replace(/\s+/g, ' ').replace(/^ | $/g, '');
 
     findRows = [];
     clear(dom.findBody);
 
-    if (!words.length) {
+    if (!typed) {
       dom.findNote.textContent = '';
       dom.findOut.hidden = true;
       return;
     }
 
-    var mine = [];
-    for (var i = 0; i < state.places.length && mine.length < FIND_MINE; i++) {
-      if (matches(state.places[i], words)) mine.push(state.places[i]);
+    /* What was asked for, and the words to look for. The reader takes the
+       wish phrases and the joins out, so "pizza near me" looks for "pizza";
+       a field that is nothing but a wish — "nearby", "cheap", "lähedal" —
+       looks for everything and lets the wish choose; and one the reader
+       made nothing of — a letter, "the" — is looked for as typed, the way
+       it always was, so the first letters of a name still bring the name. */
+    var wish = readWish(typed, findCuisines);
+    var words = wish.rest;
+    if (!words.length && !wish.nearby && !wish.cheap && !wish.fancy) {
+      words = fold(typed).split(' ');
     }
 
-    var city = findCity(words, q);
+    /* Metres from the dot to every place on either roll, when there is a
+       dot in reach, and what puts a distance on a row and the nearest first. */
+    var at = findFrom(wish);
+    var away = at ? measureFrom(at, state.places.concat(findRoll || [])) : null;
+    var far = function (place) { return away ? farWords(away[place.id] / 1000) : ''; };
+
+    /* Mine: the words as typed ahead of the words by their stems, then
+       nearest first when there is a dot, else the catalogue's own order —
+       spelled out as the last tiebreak rather than left to the sort, which
+       older engines do not keep stable. */
+    var mine = [];
+    var level = {};
+    var order = {};
+    for (var i = 0; i < state.places.length; i++) {
+      var place = state.places[i];
+      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
+      var hit = hasWords(hay, words);
+      if (hit && findPriced(place, wish)) { level[place.id] = hit; order[place.id] = i; mine.push(place); }
+    }
+    mine.sort(function (a, b) {
+      if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
+      if (away && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
+      return order[a.id] - order[b.id];
+    });
+    mine = mine.slice(0, FIND_MINE);
+
+    var city = findCity(words, wish, away);
     var shown = city.slice(0, FIND_CITY);
 
     if (mine.length) {
       dom.findBody.appendChild(el('p', { className: 'find-group', textContent: t('findOnMap') }));
       for (var m = 0; m < mine.length; m++) {
-        var row = findRow(mine[m], true);
+        var row = findRow(mine[m], true, far(mine[m]));
         findRows.push(row);
         dom.findBody.appendChild(row);
       }
@@ -7623,19 +7830,25 @@
     if (shown.length) {
       dom.findBody.appendChild(el('p', { className: 'find-group', textContent: t('findInCity') }));
       for (var c = 0; c < shown.length; c++) {
-        var crow = findRow(shown[c], false);
+        var crow = findRow(shown[c], false, far(shown[c]));
         findRows.push(crow);
         dom.findBody.appendChild(crow);
       }
     }
 
-    /* Three things this line can be saying, and only one of them at a time:
-       the city half has not landed yet, nothing matched anywhere, or this is
-       how many there are and there are more of them than fit. */
+    /* Four things this line can be saying, and only one of them at a time:
+       the city half has not landed yet; nothing matched anywhere; the field
+       asked to be near and there is nothing to measure from — the device is
+       still being asked, or it said no, or the dot is out of town — which
+       takes the line over the count because it is the one thing on screen
+       that says why the order is what it is; or this is how many there are
+       and there are more of them than fit. */
     if (!findRoll) {
       dom.findNote.textContent = t('findLooking');
     } else if (!findRows.length) {
-      dom.findNote.textContent = t('searchNone', { q: state.find.trim() });
+      dom.findNote.textContent = t('searchNone', { q: typed });
+    } else if (wish.nearby && !wish.near && !away) {
+      dom.findNote.textContent = t(findLocating ? 'findLocating' : hereMarker ? 'locateAway' : 'locateFail');
     } else if (city.length > shown.length) {
       dom.findNote.textContent = t('findMore', { n: city.length - shown.length });
     } else {

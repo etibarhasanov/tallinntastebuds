@@ -16,10 +16,12 @@
  * They read the same table and answer different questions, which is why there
  * are two of them rather than one with a flag on it:
  *
- *   /api/places   the roll a list is built from. The map's own places merged
- *                 over the export, Google's row dropped wherever it is a place
- *                 I have already been to, and stripped to the five fields a
- *                 picker row needs — name, address, pin.
+ *   /api/places   the roll a list is built from, and the one the map's find
+ *                 bar searches. The map's own places merged over the export,
+ *                 Google's row dropped wherever it is a place I have already
+ *                 been to, and stripped to what a picker row and a search
+ *                 need — name, address, pin, and the kinds a row is filed
+ *                 under.
  *
  *   /api/venues   Google's description of Tallinn, whole and unmerged. The
  *                 rating, the review count, where the two of them together put

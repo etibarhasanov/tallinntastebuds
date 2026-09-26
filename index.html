@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=9786e862">
+<link rel="stylesheet" href="assets/styles.css?v=d3a36865">
 </head>
 <body>
 
@@ -342,13 +342,13 @@
      QUESTIONS. #list-search down in #panel-list narrows what the map is
      already showing — seventy-six places somebody has been to and written up
      — and it is the right field for "which of these was the ramen one". This
-     one answers "is Riva on here at all", over the eleven hundred Google
-     venues behind /api/places as well as the map's own, and what it finds is
-     mostly somewhere with no write-up. One field could not be both without
-     lying about one of them: a column search that quietly returned a thousand
-     places nobody has visited would stop being the list's search, and a city
-     search stuck inside the list panel is a city search you have to open a
-     panel to reach.
+     one answers "is Riva on here at all" and "where is pizza near me", over
+     the eleven hundred Google venues behind /api/places as well as the map's
+     own, and what it finds is mostly somewhere with no write-up. One field
+     could not be both without lying about one of them: a column search that
+     quietly returned a thousand places nobody has visited would stop being
+     the list's search, and a city search stuck inside the list panel is a
+     city search you have to open a panel to reach.
      So: two fields, each saying what it is, and this is the one on the map.
      Emptying it puts the map back exactly as it was — see forgetFound() in
      assets/app.js, which is the third door into the same stand-in machinery
@@ -730,12 +730,12 @@
      of place, cheap or fancy, open now, near what — before the model sees a
      line of either list. It names no place itself. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
-<script src="assets/ask.js?v=f90b33f2" defer></script>
+<script src="assets/ask.js?v=492c23cd" defer></script>
 <!-- The eighteen glyphs, the six tones, and which of them a place draws. The
      map's own places wear the mark and nothing else can; a place off Google's
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=e17dd7e1" defer></script>
+<script src="assets/app.js?v=5578ca96" defer></script>
 </body>
 </html>
