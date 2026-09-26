@@ -3180,7 +3180,8 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
    Drawn on an answer's rows and on the map's own list, which is ordered by
    distance — but on that list only once the locate button has been pressed,
    because a number on a row reads as a number from you. farOf() in
-   assets/app.js is that rule. */
+   assets/app.js is that rule. The open place's head carries it beside the
+   price under the same rule, through farBadge(). */
 .list-far {
   flex: 0 0 auto;
   font-variant-numeric: tabular-nums;
