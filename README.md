@@ -6921,7 +6921,10 @@ rest, and a link to the profile unfurls as it: `head()` in
 `functions/_shell.js` makes the face the card's picture, a small square
 `summary` card rather than the map's banner, with the person's name and line
 as `og:title` and no site name after it — the chat already prints the host
-beside it. `faceOf()` in `functions/api/_profile.js` asks the deployment for it
+beside it. A face is committed at **at least 200 × 200**, square: Facebook
+drops a preview picture smaller than that and unfurls the link with none,
+which is what the first, 168-pixel photograph did. `faceOf()` in
+`functions/api/_profile.js` asks the deployment for it
 with one HEAD, and counts it there only when the answer is an image: the
 site has no `404.html`, so Pages answers a missing file with `index.html` and
 a 200, and a check on the status alone once drew a broken picture on every
