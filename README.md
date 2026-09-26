@@ -469,9 +469,17 @@ reaches the phone, and the three attempts that tried -- forcing `/p/`, adding
 `?cr=1&v=14&wp=...&rd=...&rp=...`, going back to `embed.js` -- each shipped,
 each looked plausible from the code, and each changed nothing.
 
-**So on a phone the frame is not drawn at all.** Under **The reel** a phone gets
-one button -- **Watch on Instagram**, `reelWatch` in `data/ui.json` -- and that
-is the whole section. It goes straight to the exact post in one press.
+**So on a phone the frame is not drawn at all.** A phone gets one button
+instead -- **Watch on Instagram**, `reelWatch` in `data/ui.json` -- a filled
+pill with a play mark, straight under the place's name, and there is no video
+section further down. It goes straight to the exact post in one press.
+
+It used to stand where the frame would have, as the only thing in a section of
+its own below the write-up: below the fold on most phones, and reading as what
+was left of a player rather than as an invitation. The video is why most people
+open a place, so the way to it is now the first thing under the heading.
+`watchesOnInstagram()` and `watchButton()` in `assets/app.js`; `reel_load` is
+still counted once per place, button or player.
 
 That is not only because the frame is a card there rather than a player. It is
 because the card's own **View on Instagram** carries `target="_blank"`, and an
@@ -509,9 +517,6 @@ back to it. Navigating the tab the visitor is already in leaves nothing behind,
 and Back returns to the map with the place still open, because a place is an
 address of its own. The website and phone links keep their new tab: those are
 somewhere else to go, and this one is where the video is.
-
-What is still worth improving is how that link looks -- it is a grey footnote
-under something that, on a phone, resembles a broken player.
 
 **So the rule is: leave the URL alone.** If a single place comes up with "the
 link to this photo or video may be broken", write **that one permalink** the
@@ -12443,7 +12448,7 @@ The map, `assets/app.js`:
 | `deal_signin` | `place` — the button a discount shows instead, signed out; it opens the sign-in sheet |
 | `photo_open`, `photo_step`, `photo_close` | `place`, `photo_index` |
 | `reel_load` | `place`, `provider` |
-| `reel_open` | `place` — the way out to Instagram or TikTok when the frame is blank |
+| `reel_open` | `place` — the way out to Instagram or TikTok: the link under a frame that came up blank, or the **Watch on Instagram** button under the name on a phone |
 | `save_place`, `unsave_place` | `place`, `place_id`, `saves_total` |
 | `place_share` | `place`, `method` (`sheet`/`copy`) — the link out of the panel's chrome; `sheet` is the phone's own share sheet, `copy` the clipboard or the prompt behind it |
 | `list_keep` | `list_id`, `list_state` (`on`/`off`, or `signed_out` when the press opened the sign-up sheet instead) |
