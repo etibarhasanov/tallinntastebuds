@@ -8368,12 +8368,17 @@
   }
 
   function showResults(typed, found, hits, bounds) {
-    /* Nearest first, from the dot when there is one in reach and otherwise
-       from the middle of the part of the map searched — so "next" walks to
-       a neighbour rather than across the city and back. */
-    var from = hits.at || (bounds ? bounds.getCenter() : map.getCenter());
-    var away = measureFrom(from, found);
-    found.sort(function (a, b) { return away[a.id] - away[b.id]; });
+    /* In the dropdown's order: my own places first, then the city's best
+       first — findCity() says what best is — or nearest first when the field
+       asked to be near, which findHits() has already done. The results used
+       to be sorted again here, nearest to the middle of the map first, so
+       that "next" walked to a neighbour rather than across the city and
+       back; what that opened on was whichever place happened to be closest
+       to the middle, and "wine" opened on a 4.3 with a dozen better ones
+       behind it. The card that opens first is read as the answer, and the
+       arrows are for going down the list, not round the block. It is also
+       what the cap below keeps: the best sixty, not the sixty nearest the
+       middle. */
     var total = found.length;
     found = found.slice(0, FIND_RESULTS);
 
