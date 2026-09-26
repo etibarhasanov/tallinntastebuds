@@ -3360,8 +3360,8 @@ username and password it always did.
 
 `/account.html`. Your name, the line you wrote about yourself and the door to
 your public profile, with everything you can do to an account along the foot
-of the same card; then how often that profile has been opened lately; then
-the places you saved, the lists you wrote, the box that
+of the same card, and the doors to the page under your name and to how it is
+doing; then the places you saved, the lists you wrote, the box that
 makes another and the ones you kept. Nothing after that: the page ends where
 it stops being about you.
 
@@ -3715,16 +3715,9 @@ over it is a `<summary>` when the fold is closed and a column of lists when it
 is open, and neither of those can carry a margin that only means something
 under a form.
 
-It borrows one more, and borrows rather than writes: `assets/stats.css`, the
-row `/stats` draws a ranking in — a rank, a name, a number — for the three
-short tables under **Your page, lately** (**Who opened your page** under
-**Profiles**). A fourth design for "a name and how many" would have been one
-more thing to learn, and two lines at the foot of that sheet space the tables
-apart.
-
-That is the whole reason a stylesheet of its own was not written. A page that
-needed new furniture would be a page that had drifted from the ones that were
-already here.
+That is the whole reason a third stylesheet was not written. A page that needed
+new furniture would be a page that had drifted from the two that were already
+here.
 
 ### What it costs to open
 
@@ -3745,10 +3738,9 @@ somebody who is not you, and they stay a separate module all the way down;
 for exactly that reason. This page simply no longer asks the second one, and
 has nothing on it that would.
 
-**Your page, lately** costs no request of its own: `/api/account` carries it
-as `visits`, one grouped read of `profile_counts` on its owner's own rows,
-plus one read of the page's rows and one of its lists to name what was
-pressed — only when something was.
+The number on the Insights row costs no request of its own: `/api/account`
+carries it as `views`, one read of `profile_counts` over the owner's last
+seven days.
 
 Nothing is cached: both API answers are `no-store` and both are about a
 session. `data/places.json` is 13KB and revalidates like everything else.
@@ -6500,24 +6492,50 @@ Until it is, a profile and the editor draw no rows rather than a 500 —
 `readRows()` takes "no such table" as an answer, at the cost of one failed
 statement per read — and a save says *Pages are not switched on here yet.*
 
-### Who opened your page
+### Insights
 
-`/account.html`, straight under the card with your name on it: **Your page,
-lately**. How often `/u/<you>` was opened in the last thirty days, where the
-people opening it came from, which country, and what on it they pressed —
-with how many views there have been since the counting started beside it.
-It is read by the owner of the page and by nobody else; nothing about it is
-printed on the profile, on `/stats` or anywhere a stranger can see.
+`/insights`: how the page under your name is doing. How often `/u/<you>` was
+opened, where the people opening it came from, which country, and what on it
+they pressed — over the last 7, 28 or 90 days or all of it. It is read by
+the owner of the page and by nobody else; nothing about it is printed on the
+profile, on `/stats` or anywhere a stranger can see, and the route has no way
+to ask about anybody but yourself. The door to it is a row on the account
+page's first card, beside **Your public profile** and **Build your page**,
+and that row's second line is the one number worth having without opening
+it: *46 views in the last 7 days*.
 
 Google Analytics has all of this for the whole site. What it cannot do is hand
-one person the slice that is about their own page, on the page where they
-look after it, and that is the whole of what this is. It is meant to be
-roughly right rather than exactly right, and it says what it is counting
-in its first sentence: **views, not people**. A reload is another view, the
-way it is another page view in GA, and one person coming back on five
-evenings is five. Your own visits are not counted — the page leaves them out
-when it knows it is yours, and the server leaves them out again by the
-session, so checking how your page looks never moves its number.
+one person the slice that is about their own page, and that is the whole of
+what this is. It is meant to be roughly right rather than exactly right, and
+it says what it is counting in its first sentence: **views, not people**. A
+reload is another view, the way it is another page view in GA, and one person
+coming back on five evenings is five. Your own visits are not counted — the
+profile leaves them out when it knows it is yours, and the server leaves them
+out again by the session, so checking how your page looks never moves its
+number.
+
+**The shape is the one people already know.** Every page-of-links host draws
+this the same way — a range, three figures, a line, a table of sources — and
+the people with a page here have met it there, so a new arrangement of the
+same four things would have been something to learn for nothing. From the
+top: the four ranges as the map's own chips; **Views**, **Clicks** and
+**Click rate** (clicks ÷ views), each with how it moved against the same
+length of time just before; a line of views over time; then **Where they came
+from** with views, clicks and rate per source; **What was pressed**; and
+**Country**. Where they came from and which country are cut to five rows and
+an **Other**, since the long tail of a page's sources is one visit each.
+
+Where it parts from those hosts, on purpose. **Every range is there for
+everybody** — there is no ninety days behind an upgrade, because this site
+sells nothing. **One line, not a line per source**: three coloured lines are
+told apart by colour alone, which is **The design rules**' rule 10, and on a
+phone they halve the height each one has to say anything in. Clicks are the
+second figure above the line and the sources are the table under it. The line
+is a point a day for 7 and 28 days, a week for 90 — ninety points on a phone
+is a smear — and a month for all of it, from the month the page was first
+opened; it is drawn by hand as an SVG, because there is no chart library here
+and a polyline and three rules do not need one. A click rate over 100% is
+right rather than a bug: one visitor can press three things.
 
 **Where they came from** is the part that needed thinking about, because the
 obvious answer is the one that says least. A referrer is what the browser
@@ -6541,6 +6559,14 @@ it. A tag on the link — `/u/kate?from=ig` — would have caught more of
 Instagram and was left out on purpose: nobody pastes the tagged version of
 their own address, and the user agent catches most of what it would have.
 
+**A click is filed under its source too.** Every press on a profile carries
+the same referrer its view did, so it lands in the same bucket, and that is
+what the clicks and rate per source are made of. It started a little after
+the views did, so a range that reaches back past that day has presses with
+no source; the table then says so in a line under it — *Some of these clicks
+were made before clicks were counted by source* — rather than letting its rows
+quietly add up to less than the figure at the top.
+
 **Country** is Cloudflare's two letters, `request.cf.country`, which every
 request carries whatever this code does; the address it was worked out from
 is never read. The browser names the country in the language the page is
@@ -6555,34 +6581,32 @@ a load, for the reason the rail on `/stats` counts every press: which link
 people actually push is the question. A row is filed under its title,
 because `profile_rows` is keyed on a row's position and that moves every
 time the page is reordered; a row renamed or taken down drops off the table,
-since the card is about the page as it stands.
+though its presses still count in the Clicks figure, because they happened.
 
-Where they came from and which country are cut to five rows and an **Other**:
-the long tail of a page's sources is one visit each, and a column of ones
-says nothing the Other line does not. The rows are the `/stats` row — a
-rank, a name, a number — and the account page carries `assets/stats.css` to
-draw them rather than a fourth design for "a name and how many".
-
-**Its states.** Never opened: a plain card, *Nobody has opened your public
-page yet*, and the door to it — not a fold, since there is nothing behind
-one. Opened, but not in the last thirty days: the fold, the all-time line,
-and *Nobody has opened it in the last 30 days* where the tables would be.
-Nothing pressed: no pressed table rather than a heading over nothing. And
-before `profile_counts` has been applied, no card at all — `GET /api/account`
-leaves `visits` out and the page draws what it always did.
+**Its states.** Signed out: the two doors to an account, the way `/edit`
+offers them. Never opened: the heading and *Nobody has opened your page yet.
+Share its address, and the numbers will start here* — no ranges to choose
+between and no noughts compared with noughts. Opened, but not in this range:
+the figures, a flat line, and *Nobody opened it in these 7 days* where the
+tables would be. Nothing pressed: no pressed table rather than a heading over
+nothing. And before `profile_counts` has been applied, the heading and *The
+numbers are not switched on here yet.*
 
 **How it is kept.** `profile_counts` in `db/schema.sql`: one row per page,
 per day, per fact, and an upsert that adds one — `press_counts` with the day
 in the key, which is exactly the change that table's header said it would
 make the day somebody asked "this month". A view writes two rows in one
-batch, where from and which country, and the number of views is the sum of
-the first, so there is no third row to disagree with it. It goes through
-`POST /api/stats` as two more kinds, `profile` and `profile-press`, because
-that is the door every page here already uses to say something was pressed,
-and a route of its own would have been a second. Nothing is filed under the
-visitor: no address, no device id, no fingerprint, no row per visit.
+batch, where from and which country; a press writes two, what and where
+from. The number of views is the sum of the first, so there is no third row
+to disagree with it. Both go through `POST /api/stats` as two more kinds,
+`profile` and `profile-press`, because that is the door every page here
+already uses to say something was pressed. They are read by `GET
+/api/insights?days=`, which takes the session and nothing else and answers
+only the four ranges — one grouped read of the range and the one before it,
+and the arithmetic in `readInsights()`. Nothing is filed under the visitor:
+no address, no device id, no fingerprint, no row per visit.
 
-Nothing is deleted either, so all-time means all of it. A page opened a few
+Nothing is deleted either, so all time means all of it. A page opened a few
 dozen times a day is a few thousand rows a year; the day that stops being
 small, the answer is a monthly roll-up, and it is not worth writing before
 then. And nothing stops somebody posting to the route in a loop to inflate
@@ -6590,21 +6614,17 @@ their own page — which is the bargain `/stats` already makes, for the same
 reason: nobody is paid for the number, and the only person who reads it is
 the one it is about.
 
-**What it does not do.** No list of who visited, no times of day, no chart
-of the thirty days, no email about it, and no number on the profile itself —
-a count under somebody's name on a page strangers read would be a score, and
-there are none of those here. Views of your *lists* are not on this card:
-those order `/lists` and are counted under **Statistics**.
+**What it does not do.** No list of who visited, no times of day, no custom
+range, no export, no email about it, and no number on the profile itself — a
+count under somebody's name on a page strangers read would be a score, and
+there are none of those here. Views of your *lists* are not on it: those
+order `/lists` and are counted under **Statistics**.
 
 **Turning it on** is one table, applied by hand to both databases the way
-every table is — `db/schema.sql` is all `IF NOT EXISTS`:
-
-```
-wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
-wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
-```
-
-Until it is, profiles are not counted and the card is not drawn.
+every table is — `db/schema.sql` is all `IF NOT EXISTS` — and both
+databases have it. On one that does not, profiles are not counted, the
+account page's row says what Insights is for instead of a number, and the
+page says the numbers are not switched on.
 
 ### Private lists are not on it, including for its owner
 
@@ -9712,8 +9732,8 @@ chart: a ranking is a list and a bar chart of seventy-six rows is a list with
 decoration on it. No languages, no referrers, no countries — Google Analytics
 has all of that and this page is the half GA cannot do, which is the site
 owning its own numbers. The one place this site does keep a referrer and a
-country is somebody's own profile, counted for them alone — see **Who opened
-your page** under **Profiles**. No per-place badge anywhere else on the site: the
+country is somebody's own profile, counted for them alone — see **Insights**
+under **Profiles**. No per-place badge anywhere else on the site: the
 count is on this page or it is nowhere, because a number under a name on the
 map is a score, and there are none of those here — and no number on a pill
 either, for that reason and because there is no room on one. No returning-users figure
@@ -10492,6 +10512,10 @@ functions/api/_mostkept.js reading a page of everybody's, most opened first
 functions/api/_profile.js  reading one person, shared the same way
 functions/api/_visits.js   how often a profile is opened, from where, and
                            what on it is pressed — for its owner alone
+functions/api/insights.js  /api/insights — a range of it, by the session
+insights.html              those numbers, drawn: a range, three figures, a
+assets/insights.js         line and the tables; noindex, one door off the
+                           account page
 functions/_shell.js        a static page with a head and an answer written
                            in, shared by the five Functions that serve one
 functions/list/[id].js     /list/<id> — the page a shared link opens
@@ -10509,8 +10533,7 @@ assets/lists.css           what a list page has and the map does not, and the
                            furniture the account page is built from too
 account.html               your name, your saved places, your lists, the
                            ones you kept, and everybody else's
-assets/account.js          all three of its states, and the card that says
-                           who opened your page; no stylesheet of its own
+assets/account.js          all three of its states; no stylesheet of its own
 split.html                 splitwise, at /split and at the root of
                            splitwise.tallinntastebuds.ee
 assets/split.js            all four of its states, the second sign-in form on
@@ -10555,8 +10578,8 @@ assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
 stats.html                 which places get opened and which  } unlinked and
 assets/stats.js            chips get pressed: three rankings  } noindex
-assets/stats.css           the rows of a ranking, and nothing else — drawn
-                           on the account page too, under Your page, lately
+assets/stats.css           the rows of a ranking, and what /insights adds
+                           to them
 assets/rows.js             the page of links on a profile: what a row is,
                            which addresses get a player, and the note sheet —
                            said once for the profile and the account page
@@ -12216,6 +12239,7 @@ The account page, `assets/account.js`:
 | `account_open` | `view` — the two doors when signed out |
 | `account_rename_open`, `account_password_open` | — into the map's sheet |
 | `edit_open` | — the door to `/edit`, where the page under your name is written |
+| `insights_open` | `views` — the door to `/insights`, with the week's number its row was showing |
 | `profile_link_open` | `network` (`instagram`/`tiktok`/`facebook`) — a handle pressed on somebody's profile |
 | `profile_row`, `profile_play`, `profile_note` | `row`, one-based, and `host` on the first two — a row on somebody's page: left through, opened as a player, opened as a note. Reported from `assets/rows.js`, which the profile hands its reporter |
 | `profile_share` | `name`, `method` (`sheet`/`copy`) — the Share pill on a profile that is a page |
@@ -12234,6 +12258,15 @@ The editor for the page under your name, `assets/edit.js`:
 | `edit_save` | `parts` — which of `display`, `about`, `links` and `rows` changed, comma-joined — and `rows_count` |
 | `edit_discard` | — |
 | `edit_view` | — the way to the page as everybody sees it, in the header |
+| `account_open` | `view` — the two doors when signed out |
+| `home` | as on the map |
+
+How the page under your name is doing, `assets/insights.js`:
+
+| event | parameters |
+| --- | --- |
+| `insights_range` | `days` (`7`, `28`, `90`, or `0` for all time) — a range chip pressed |
+| `insights_view` | — the way to the page as everybody sees it, in the header |
 | `account_open` | `view` — the two doors when signed out |
 | `home` | as on the map |
 

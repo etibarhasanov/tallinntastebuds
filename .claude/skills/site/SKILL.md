@@ -257,11 +257,11 @@ write gate's `--check`:
   changing one means `node tools/typelists.mjs` and a stale
   `db/type-lists.sql` to commit — see **The chips, as lists** in `README.md`.
   Adding a language costs nothing there; the lists are English.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the thirteen pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the fourteen pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`, `google.html`,
   `deal.html`, `verify.html`, `staff.html`, `split.html`,
-  `flashcard.html`, `stats.html`, `edit.html` — must carry `?v=` equal to the first
+  `flashcard.html`, `stats.html`, `edit.html`, `insights.html` — must carry `?v=` equal to the first
   eight hex of the file's SHA-256. A new page that loads anything out of
   `assets/` is added to that list, or it never gets stamped. `admin.html` is
   deliberately unstamped; it is served `no-store`.

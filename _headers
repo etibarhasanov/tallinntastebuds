@@ -70,6 +70,17 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, nofollow
 
+# How the page under your name is doing, one door off the account page and
+# behind the same session, so the same two lines for the same reasons — and
+# spelled both ways for the reason /edit is.
+/insights
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
+/insights.html
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
 # Splitwise. Stored as split.html and served at /split as well — and, on
 # splitwise.tallinntastebuds.ee, at the bare root, which
 # functions/_middleware.js rewrites to this file. These rules match the

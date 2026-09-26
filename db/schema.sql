@@ -184,10 +184,9 @@ CREATE TABLE IF NOT EXISTS press_counts (
 
 -- ---------------------------------------------------------- profile_counts
 -- How often somebody's /u/<name> was opened, from where, and what on it was
--- pressed — read by its owner alone, on the card on /account.html headed
--- "Your page, lately". functions/api/_visits.js writes and reads it, and its
--- header is the reasoning; **Who opened your page** under **Profiles** in
--- README.md is the page's half.
+-- pressed — read by its owner alone, on /insights. functions/api/_visits.js
+-- writes and reads it, and its header is the reasoning; **Insights** under
+-- **Profiles** in README.md is the page's half.
 --
 -- It is the table press_counts' own header says it would become the day
 -- somebody asked "this month": the same upsert, with the day in the key.
@@ -197,8 +196,10 @@ CREATE TABLE IF NOT EXISTS press_counts (
 --                   facebook, search, here, direct, or a host
 --   kind 'country'  id is Cloudflare's two letters, XX where it does not know
 --   kind 'press'    id is row:<title>, net:<network> or list:<id>
+--   kind 'clicks'   id is where the person pressing came from, the same
+--                   buckets as 'from' — what clicks per source are made of
 --
--- The number of views is the sum of the 'from' rows, so there is no fourth
+-- The number of views is the sum of the 'from' rows, so there is no fifth
 -- kind to disagree with it. Views and presses, never people: nothing here
 -- says who opened anything, and the owner's own opens are not counted.
 --

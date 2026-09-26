@@ -42,7 +42,7 @@
  * And two kinds that are counted somewhere else, which this route only
  * carries: `profile`, a public profile at /u/<name> opened, and
  * `profile-press`, a row, a handle or a list on one pressed. They are the
- * owner's own numbers, read on their account page and never ranked here, so
+ * owner's own numbers, read on /insights and never ranked here, so
  * they live in profile_counts and ./_visits.js — this is the door because it
  * is already the one every page on this site knocks on to say something was
  * pressed, and a route of its own would be a second.
@@ -427,10 +427,10 @@ export async function onRequestPost(context) {
 
   /* A profile opened, or something on one pressed. Counted into a table of
      their own and not press_counts, because the number belongs to the person
-     whose page it is and is read by them on /account.html rather than ranked
+     whose page it is and is read by them on /insights rather than ranked
      here — ./_visits.js is the whole of it. `id` is the username. */
   if (kind === PROFILE) return json({ ok: await countView(context, id, body.from) }, 200);
-  if (kind === PROFILE_PRESS) return json({ ok: await countPress(context, id, body.what) }, 200);
+  if (kind === PROFILE_PRESS) return json({ ok: await countPress(context, id, body.what, body.from) }, 200);
 
   const real = kind === PLACE ? await realPlace(context, id)
              : kind === LIST ? await realList(context, id)
