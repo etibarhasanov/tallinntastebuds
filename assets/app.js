@@ -7626,7 +7626,7 @@
    * printed only once it is. With a dot in reach of the map, every row says
    * how far, and my own places come nearest first the way the list does.
    * Said "near" — "nearby pizza", "lähim kohvik", "ближайший бар" — and the
-   * city's half goes nearest first too, instead of by name and reviews. Said
+   * city's half goes nearest first too, instead of best first. Said
    * "near" with no dot yet, and the device is asked once, through the same
    * events the locate button's press goes through, so the dot appears and
    * the map frames it exactly as if the button had been pressed — the chat
@@ -7673,6 +7673,7 @@
      something to walk without reading the DOM back. */
   var findRoll = null;
   var findHay = null;
+  var findKind = null;
   var findAsking = null;
   var findRows = [];
   var findTrackTimer = null;
@@ -7720,6 +7721,7 @@
          and is searched properly there — what the roll adds for one of mine
          is the kitchens lent to it, kept here by its id. */
       findHay = {};
+      findKind = {};
       findLent = {};
       for (var i = 0; i < list.length; i++) {
         var row = list[i];
@@ -7737,15 +7739,17 @@
            which would answer "beer" with every restaurant that has a bar
            tag. The directory split beer from the rest of the bar, so `pub`
            here is the directory's word, and so is `bar`. */
-        findHay[row.id] = fold([
-          row.name,
-          row.address || '',
+        /* What the row is, apart from what it is called and where: the half
+           of the haystack findCity() asks of to tell "sushi" the kind from
+           "riva" the name. */
+        findKind[row.id] = fold([
           row.category || '',
           (row.types || []).map(function (id) {
             return id === 'pub' ? '' : labelWords(state.types, id);
           }).join(' '),
           (row.kitchens || []).map(kitchenWords).join(' ')
         ].join(' '));
+        findHay[row.id] = fold(row.name + ' ' + (row.address || '')) + ' ' + findKind[row.id];
         rows.push(row);
       }
       findRoll = rows;
@@ -7753,6 +7757,7 @@
     }).catch(function () {
       findRoll = [];
       findHay = {};
+      findKind = {};
       return findRoll;
     });
     return findAsking;
@@ -7802,17 +7807,36 @@
     return null;
   }
 
-  /* The city's half, ordered the way somebody reading a dropdown expects:
-     a name that starts with what was typed before a name that merely contains
-     it, and past that the places more people have been to — which is the only
-     thing the export knows about how well known somewhere is. Asked for
-     somewhere near, with a dot to measure from, and the order is the distance
-     instead: "nearby pizza" is a question about the corner you are standing
-     on, not about which pizzeria is best known. `away` is metres by id from
-     that dot, or null when there is none in reach. Ahead of either order,
-     the rows that carry the words as typed come before the rows that only
-     reached them by a stem — see hasWords(). `area` is the part of the map
-     the search is held to, or null for the whole city; see findArea(). */
+  /* The city's half, best first: under the map's own places, which always
+     come ahead of it, "pizza" is the city's best-rated pizzerias from the
+     top down. It used to be the most-reviewed first, on the argument that a
+     review count is how well known somewhere is, and what that drew was a
+     4.2 in third place over a 4.9 because more tourists had passed the
+     first — the owner's objection, and a fair one: a dropdown is read top
+     to bottom as a ranking whether it means to be one or not.
+
+     Best is Google's score pulled towards the city's average by how few
+     people it rests on — findScore() below — so a 5.0 from three reviews
+     does not outrank a 4.9 from four hundred. A row with no score goes
+     last. The score is still not printed on the row (see findRow()); it
+     only decides the order.
+
+     A name that starts with what was typed still goes first when the field
+     is a name — "riva" is looking for Riva — but not when it is a kind of
+     place: "sushi" is asking for sushi, and a 3.9 called Sushi Something is
+     not better sushi than a 4.8 for the word it starts with. A kind is words
+     that land in what Google files some matching row as — its category, its
+     types, its kitchens — rather than only in names and streets. The
+     reader's own vocabulary was the first test tried, and "sushi" is not in
+     it, so the export's categories are the ones asked.
+
+     Asked for somewhere near, with a dot to measure from, and the order is
+     the distance instead: "nearby pizza" is a question about the corner you
+     are standing on, not about which pizzeria is best. `away` is metres by
+     id from that dot, or null when there is none in reach. Ahead of either
+     order, the rows that carry the words as typed come before the rows that
+     only reached them by a stem — see hasWords(). `area` is the part of the
+     map the search is held to, or null for the whole city; see findArea(). */
   function findCity(words, wish, away, area, level) {
     var hits = [];
     if (!findRoll) return hits;
@@ -7823,18 +7847,41 @@
       if (hit && findPriced(row, wish)) { level[row.id] = hit; hits.push(row); }
     }
     var q = words.join(' ');
+    var named = !hits.some(function (row) { return hasWords(findKind[row.id] || '', words) === 3; });
     hits.sort(function (a, b) {
       if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
       if (away && wish.nearby && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
-      var ah = fold(a.name).indexOf(q) === 0 ? 0 : 1;
-      var bh = fold(b.name).indexOf(q) === 0 ? 0 : 1;
-      if (ah !== bh) return ah - bh;
+      if (named) {
+        var ah = fold(a.name).indexOf(q) === 0 ? 0 : 1;
+        var bh = fold(b.name).indexOf(q) === 0 ? 0 : 1;
+        if (ah !== bh) return ah - bh;
+      }
+      var as = findScore(a);
+      var bs = findScore(b);
+      if (as !== bs) return bs - as;
       var ar = typeof a.reviews === 'number' ? a.reviews : 0;
       var br = typeof b.reviews === 'number' ? b.reviews : 0;
       if (ar !== br) return br - ar;
       return fold(a.name) < fold(b.name) ? -1 : 1;
     });
     return hits;
+  }
+
+  /* How good Google says a row is, for ordering and nothing else: the score,
+     as if FIND_PRIOR more people had also reviewed it and given the city's
+     average. A place with thousands of reviews keeps its own number almost
+     exactly; one with a handful is mostly the average until more people
+     agree. The export's 1,111 venues average 4.4, and a quarter of them
+     have fewer than ninety-odd reviews; fifty is about half that —
+     enough that "pizza" opens on a 4.9 from 455 rather than a 5.0 from 20,
+     and not so much that a well-liked new place is buried. No score at all
+     is -1, under every row that has one. */
+  var FIND_PRIOR = 50;
+  var FIND_MEAN = 4.4;
+  function findScore(row) {
+    if (typeof row.rating !== 'number') return -1;
+    var n = typeof row.reviews === 'number' ? row.reviews : 0;
+    return (n * row.rating + FIND_PRIOR * FIND_MEAN) / (n + FIND_PRIOR);
   }
 
   /* Mine: the words as typed ahead of the words by their stems and their
