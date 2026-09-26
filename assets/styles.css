@@ -518,7 +518,11 @@ a:hover { color: var(--accent-lit); }
   font-family: var(--mono) !important;
   font-size: 10px !important;
   line-height: 1.5;
-  padding: 3px 8px !important;
+  /* The strip runs to the foot of the glass, so on a phone with a home bar
+     its background goes under the bar and the credits stand above it —
+     they were drawn straight through it, which is a licence line nobody can
+     read and a strip that looks like it slipped off the bottom. */
+  padding: 3px 8px calc(3px + var(--safe-b)) !important;
   background: var(--attrib-bg) !important;
   border: 1px solid var(--hairline);
   border-right: 0;

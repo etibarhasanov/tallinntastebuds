@@ -1256,6 +1256,7 @@
        panel shut or about to shut, and a fit that always allowed for a panel
        would leave the map sitting off-centre for them. */
     var behind = 0;
+    var cover = null;
     if (o.clearPanel && dom.panel.classList.contains('is-open')) {
       behind = isNarrow() ? dom.panel.offsetHeight : dom.panel.offsetWidth;
       /* A sheet dragged to full height leaves no strip to fit into, so there
@@ -1265,6 +1266,16 @@
       pad = isNarrow()
         ? L.point(pad.x, pad.y + behind / 2)
         : L.point(pad.x + behind / 2, pad.y);
+    } else if (isNarrow() && !document.body.classList.contains('panel-open')) {
+      /* The same judgement about the chrome, which on a phone is standing on
+         the map rather than beside it: the name, the find bar and Filters
+         across the top, the rail down the left and the crosshair in the
+         bottom corner. A symmetric 24px each side framed the city as though
+         none of them were there, so the first thing a stranger saw was a
+         cluster half under the die and a pin under Ask — places the page had
+         drawn and then covered. */
+      cover = chromeCover();
+      if (cover) pad = L.point(pad.x + cover.l, pad.y + cover.t + cover.b);
     }
 
     /* Down to the whole level below. getBoundsZoom used to do the rounding
@@ -1285,9 +1296,43 @@
       var pt = map.project(centre, zoom);
       if (isNarrow()) pt.y += behind / 2; else pt.x += behind / 2;
       centre = map.unproject(pt, zoom);
+    } else if (cover) {
+      /* The clear rectangle's middle is off the window's middle by half the
+         difference between opposite sides, and the map's centre goes the
+         other way by as much. */
+      var off = map.project(centre, zoom);
+      off.x -= cover.l / 2;
+      off.y -= (cover.t - cover.b) / 2;
+      centre = map.unproject(off, zoom);
     }
 
     travelTo(centre, zoom, !!o.animate);
+  }
+
+  /* How far in from each edge of the map the phone's floating chrome reaches,
+     in pixels: the top row down to the foot of Filters, the rail's discs
+     while it is a column down the left, and the crosshair's top in the bottom
+     corner. Nothing reaches in from the right. Measured rather than written
+     down, because the top row is a different height in every language and
+     the rail grows a pill when the account answers. Null when what is left
+     would be too small to frame anything in, which is the same answer
+     fitLatLngs gives a sheet dragged to full height. */
+  function chromeCover() {
+    var box = map.getContainer().getBoundingClientRect();
+    var c = { l: 0, t: 0, b: 0 };
+    var bar = document.getElementById('filter-bar');
+    var r = bar && bar.getBoundingClientRect();
+    if (r && r.height) c.t = Math.max(0, r.bottom - box.top);
+    /* A shut pill is a disc, so its height is its width; the rail's own right
+       edge is not used because a pill opening its label mid-introduction
+       would pad the fit for words that are about to go. */
+    r = dom.rail && dom.rail.getBoundingClientRect();
+    var disc = dom.btnFlash || dom.btnRandom;
+    if (r && r.height > r.width && disc) c.l = Math.max(0, r.left - box.left + disc.offsetHeight);
+    r = dom.btnLocate && !dom.btnLocate.hidden && dom.btnLocate.getBoundingClientRect();
+    if (r && r.height) c.b = Math.max(0, box.bottom - r.top);
+    if (c.l > box.width - 160 || c.t + c.b > box.height - 160) return null;
+    return c;
   }
 
   function fitToPins(opts) {
