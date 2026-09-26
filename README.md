@@ -915,11 +915,22 @@ or more also lands on its first letters, so `kohvik` reaches *Kohv/tee*, and
 failing that on a word one slip away, so `cappucino` reaches the cafés;
 **Searching the list** has both rules. Ahead of any other order, the rows that
 carry the words as typed come before the rows that only reached them by a
-stem, and those before the rows that reached them by a slip. Then the city's half is ordered the way a dropdown is read — a name
-that *starts* with what was typed before one that merely contains it, then
-by how many people Google says have reviewed it, which is the only thing the
-export knows about how well known somewhere is — unless the field asked for
-somewhere near, which **Where you are** below takes up.
+stem, and those before the rows that reached them by a slip. My own places
+always come first, and the city's half under them goes **best first**: by
+Google's score, pulled towards the city's average of 4.4 as if fifty more
+people had reviewed it (`findScore()`), so a 5.0 from twenty reviews does not
+open the list over a 4.9 from four hundred, and a row with no score goes last.
+It used to go by how many people had reviewed a place, which put a 4.2 third
+for *pizza* over a 4.9 because more tourists had passed it; a dropdown is read
+as a ranking whether it means to be one or not. A name that *starts* with what
+was typed still goes ahead of that when the field is a name — *riva* is
+looking for Riva — but not when it is a kind of place, words that land in what
+Google files some matching row as (its category, types or kitchens) rather than
+only in names, because a 3.9 called Sushi Something is not better sushi than a
+4.8 for the word it starts with. The
+score decides the order and is still not printed on the row. All of that
+gives way when the field asked for somewhere near, which **Where you are**
+below takes up.
 
 ### What the bar understands, and what it leaves to the chat
 
@@ -984,7 +995,7 @@ chat's rows round — in front of the street on the same mono line, and my own
 places come nearest first the way the list does. The city's half keeps its
 dropdown order until the field says *near*; then it goes nearest first too,
 because *nearby pizza* is a question about the corner you are standing on and
-not about which pizzeria is best known.
+not about which pizzeria is best.
 
 Said *near* with no dot yet, and the device is asked once, through the same
 events the locate button's press goes through — `locateOnce()` in
