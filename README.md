@@ -1079,7 +1079,12 @@ mine and Google's alike, goes on the map and nothing else stays there, so
 zooming out shows ramen and only ramen. The map is framed on all of them, and
 the card opens on the first with **‹ 1 of 10 ›** over it; the arrows walk the
 rest, round from the last back to the first, and each step carries the map to
-that place. They go nearest first — from the dot when there is one in reach,
+that place. On a phone a swipe across the card does the same — left for the
+next, right for the one before. The card follows the thumb a third of the way
+so the gesture is visibly doing something, it counts at sixty pixels, and only
+while the move has stayed more sideways than down, so scrolling the write-up
+is still scrolling; the sheet's own swipe-down stands aside for a sideways
+move rather than closing under a thumb that drifted. They go nearest first — from the dot when there is one in reach,
 and otherwise from the middle of the part of the map searched — so *next* is
 a neighbour rather than the other side of town. On a desktop the column lists
 them in the same order under the word that found them.
@@ -12835,7 +12840,7 @@ The map, `assets/app.js`:
 | `find_clear` | — the cross on the find bar |
 | `find_submit` | `search_term`, `results` — Enter in the find bar, putting every result on the map; `results` is how many there were, before the cap of sixty |
 | `find_area` | `search_term`, `results` — Search this area, the same words over the part of the map on screen |
-| `find_step` | `direction` (`next`/`prev`) — an arrow on the card of a result |
+| `find_step` | `direction` (`next`/`prev`), `by` (`arrow`/`swipe`) — a step along the results, from an arrow on the card or a swipe across it |
 | `list_open` | `places_shown` |
 | `list_close`, `ask_close` | — the cross on the panel, by what it shut; on a list it puts it on the band rather than shutting it, and reports the press all the same |
 | `place_close` | `place` |
