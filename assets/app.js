@@ -7367,6 +7367,15 @@
      "pizz" at the shortest and a three-letter stem never matches half the
      map.
 
+     A stem is the front of a word, so it only counts at the front of a word
+     in the haystack — the beginning, or after a space or a mark of
+     punctuation. The word as typed still lands anywhere, which is what lets
+     "burger" find a Hamburger Restaurant and "sasl" find Šašlõkk. The stem
+     landed anywhere too for an afternoon, and "ramen" trimmed to "rame"
+     found the salted caramel kringel on Bekker's must-order list: a bakery
+     among the ramen places, matched on the middle of a word for a dish
+     nobody had asked for.
+
      Two when every word is there as typed, one when any of them reached the
      haystack only by its stem, nought when a word landed nowhere. The two
      kinds of hit are told apart so that what was typed can be drawn above
@@ -7380,10 +7389,28 @@
       var word = words[i];
       if (hay.indexOf(word) !== -1) continue;
       if (word.length < 5) return 0;
-      if (hay.indexOf(word.slice(0, Math.max(4, word.length - 2))) === -1) return 0;
+      if (!startsWord(hay, word.slice(0, Math.max(4, word.length - 2)))) return 0;
       hit = 1;
     }
     return hit;
+  }
+
+  /* What can stand in front of a word in a haystack: the space the pieces
+     are joined with, the slash of a label like Kohv/tee, and the punctuation
+     a name or a street carries. Spelled out as the separators rather than as
+     "not a letter", for the reason PUNCTUATION in assets/ask.js gives: \b
+     and \w are ASCII in this dialect, and a boundary drawn with them falls
+     in the middle of every Cyrillic and Armenian word. Anything not listed —
+     a letter in any alphabet, a digit — means the stem is inside a word. */
+  var WORD_EDGE = /[\s\/(),.&'"\u2019\u201c\u201d\u00ab\u00bb\-\u2013\u2014:;!?]/;
+
+  function startsWord(hay, stem) {
+    var at = hay.indexOf(stem);
+    while (at !== -1) {
+      if (at === 0 || WORD_EDGE.test(hay.charAt(at - 1))) return true;
+      at = hay.indexOf(stem, at + 1);
+    }
+    return false;
   }
 
   /* The column's test is only whether a place is in or out: its list is
