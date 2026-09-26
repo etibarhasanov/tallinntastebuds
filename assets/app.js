@@ -5372,11 +5372,12 @@
 
   /* ------------------------------------------------------------ the sheet
    * On a phone the panel is a bottom sheet with two heights, and the grip
-   * moves between them: drag it, or tap to swap. Every sheet opens at the
-   * high stop — what you tapped for is the place, the chat is about to take
-   * the keyboard, and a list is a list — and dragging down pulls it to the
-   * low one, where half the map is back and the search field and the first
-   * rows are still on screen.
+   * moves between them: drag it, or tap to swap. The chat and the map's own
+   * list open at the high stop — the chat is about to take the keyboard, and
+   * the list was asked for for its names — while a place and somebody's list
+   * open at the low one, where half the map is back and the search field and
+   * the first rows are still on screen, because half of what they were asked
+   * for is where. openSheetAt() says which.
    *
    * DRAGGING DOWN IS NOT DISMISSING
    *
@@ -5533,10 +5534,11 @@
   }
 
   /* Which stop a sheet arrives at, said once for the four things that open
-     one: a place, the list, the chat and an answer. The three that are made
-     of words want the full stop, because the words are what was asked for. A
-     place wants the half one, because half of what was asked for is the map
-     — selectPlace() has that argument. Off a phone there are no stops and the
+     one: a place, the list, the chat and an answer. The map's own list, the
+     chat and an answer are made of words and want the full stop, because the
+     words are what was asked for. A place wants the half one, because half of
+     what was asked for is the map — selectPlace() has that argument — and so
+     does somebody's list, whose pins are the map; showList() has that one. Off a phone there are no stops and the
      class only decides whether the rail is covered.
 
      The height written during a drag goes with it. The stops are the
@@ -6047,13 +6049,16 @@
     renderPanel(opts);
     openPanel();
     /* At the full stop on a phone, the way the chat opens: asking for the
-       list is asking for the names, and the half stop is what the grip and a
-       swipe are for once you have them.
+       map's own places is asking for the names, and the half stop is what the
+       grip and a swipe are for once you have them.
 
-       `half` is the one arrival that wants the other stop: a row pressed on a
-       list's own page, which asked where that one place is rather than for
-       the names it already had in front of it. See standOn(). */
-    openSheetAt(!(opts && opts.half));
+       Somebody's list is the other way round. A list is a mode — the map is cut down to its
+       pins — and at the full stop those pins were squeezed into the strip
+       along the top, under the brand card and the rail, where a list of ten
+       read as a sheet of text with no map at all. At the half stop the pins
+       stand in the half above it and the first rows are still under them; a
+       row pressed on a list's own page (standOn()) lands there too. */
+    openSheetAt(!state.list);
     paintMarkers();
     syncUrl();
     dom.panelScroll.scrollTop = 0;
@@ -6078,13 +6083,11 @@
      the pins, the same rows under them, and the place that was pressed lit
      between the two.
 
-     Two things separate this from every other way the list opens, and both
-     are because of what the press meant. The sheet stops at half: every other
-     arrival was asked for by somebody who wanted the names, and this one by
-     somebody who had them in front of them, so what it hands back is the map.
-     And the frame is the list's rather than the place's — focusOn() is told
-     not to zoom, so the map keeps the fit that holds all of these pins and
-     only centres on this one. Going in to FOCUS_ZOOM would leave a single pin
+     One thing separates this from every other way the list opens, and it is
+     because of what the press meant. The sheet stops at half, the way any
+     list does, but the frame is the list's rather than the place's —
+     focusOn() is told not to zoom, so the map keeps the fit that holds all of
+     these pins and only centres on this one. Going in to FOCUS_ZOOM would leave a single pin
      on a street, which is what ?spot= is for and the opposite of what
      somebody who has not yet noticed the map needs to see. The write-up is
      one press further, on the row or on the pin, and that press zooms. */
@@ -6092,7 +6095,7 @@
     /* Lit, named and haloed, the way the place you last had open is: nothing
        is open here, so this is the mark rather than the selection. */
     state.marked = place.id;
-    showList(false, { half: true });
+    showList(false);
     fitToPins({ clearPanel: true });
     focusOn(place, false);
     showRow(place.id);

@@ -5754,7 +5754,7 @@ rows ago — which is why the map kept being the half of a list nobody had
 noticed was there.
 
 So a row is a door too, and it goes to `/?list=<id>&at=<place>`: this same
-list on the map, the sheet at its half stop on a phone rather than open full,
+list on the map, the sheet at its half stop on a phone the way any list opens,
 and the place that was pressed lit, named and haloed between the two. The pins
 above, the list's own rows under them scrolled to that row and marking it, and
 both questions a row raises answered at once — where is this, and where is it
@@ -5763,11 +5763,11 @@ next to the other nine.
 Three details, and the two that can differ from what `?spot=` does both do,
 because the press means something else:
 
-- **The half stop.** Every other way the list opens was asked for by somebody
-  who wanted the names, so it opens full. This one was asked for by somebody
-  who had the names in front of them, so what it hands back is the map. `?spot=`
-  lands there too, by a different road: a place opens at the half stop however
-  you got to it — see **The sheet** in the design notes.
+- **The half stop.** A list opens there on a phone however it was arrived at,
+  because its pins are the map and at the full stop they were squeezed into the
+  strip under the brand card. `?spot=` lands there too, by a different road: a
+  place opens at the half stop however you got to it — see **The sheet** in the
+  design notes.
 - **The list's frame, not the place's.** `?spot=` comes in to `FOCUS_ZOOM`,
   because opening a place is a street question. This does not zoom at all: it
   keeps the fit that holds every pin on the list and only centres on this one.
@@ -13471,9 +13471,13 @@ chat. Drag the grip, swipe the sheet, or tap the grip to swap, and
 in `assets/styles.css` draws, because a drag settles on a height the stylesheet
 then has to agree with.
 
-**The sheets made of words open at the taller one, and a place opens at the
-half.** The list and the chat were asked for by somebody who wanted the words,
-so the words are what they arrive showing. Opening a place asks two things at
+**The sheets made of words open at the taller one, and a place or somebody's
+list opens at the half.** The map's own list and the chat were asked for by
+somebody who wanted the words, so the words are what they arrive showing.
+Somebody's list is a mode — the map is cut down to its pins — and opened full
+those pins were crushed into the strip along the top, a list of ten reading as
+a sheet of text with no map; at the half stop the pins stand above it and the
+first rows under them. Opening a place asks two things at
 once — what is this, and where is it — and a sheet over the whole screen
 answers only the first: the pin it is about ends up crushed into the 110px
 strip along the top, under the brand card, which is not a map anybody can read.
