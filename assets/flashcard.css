@@ -93,17 +93,23 @@
 
 /* And away. An answer — thrown, pressed or given by an arrow key — sends the
    card off the side it was answered towards, still washed in its answer, and
-   the next card settles in under it the way every card does. Quick, because it
-   happens a hundred times in a sitting and nobody should wait on it. */
+   the next card settles in under it the way every card does.
+
+   Half a second, and eased in and out rather than on --ease. It was a fifth
+   of a second on --ease, which puts most of the distance in the first few
+   frames, and on a desktop — where the card is wide and so is the way off
+   the screen — it was gone before anybody could see which way it went. The
+   fade lags the movement for the same reason: the colour is the point, so
+   the card keeps it until it is most of the way out. */
 .flash-card.is-leaving {
-  transition: transform .22s var(--ease), opacity .22s var(--ease);
+  transition: transform .5s cubic-bezier(.45, 0, .55, 1), opacity .5s ease-in;
   pointer-events: none;
 }
 
 /* And back again, on Undo: the card comes in from the side it left by, so the
    answer being taken back is visibly the one that was given. */
-.flash-card.is-back-knew { animation: flash-back-knew .26s var(--ease); }
-.flash-card.is-back-again { animation: flash-back-again .26s var(--ease); }
+.flash-card.is-back-knew { animation: flash-back-knew .4s var(--ease); }
+.flash-card.is-back-again { animation: flash-back-again .4s var(--ease); }
 
 @keyframes flash-back-knew {
   from { opacity: 0; transform: translateX(60%) rotate(8deg); }

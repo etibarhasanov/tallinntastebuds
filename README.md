@@ -8006,12 +8006,15 @@ width is far enough to mean it; anything shorter springs back and means
 nothing.
 
 **And away it goes.** An answer sends the card off the side it was answered
-towards, still in its colour, in a fifth of a second, and the next card
+towards, still in its colour, over half a second, and the next card
 settles in under it — for a throw, for the two buttons and for the arrow keys
 alike, so the three ways of answering look like the same answer. It used to be
 left where the finger put it, which meant a right and a left looked the same
 the moment the finger came up; the owner asked for the difference to be
-visible. Under `prefers-reduced-motion` the card simply swaps.
+visible. It first shipped at a fifth of a second and was too fast to follow on
+a desktop, where the card is wide and the way off the screen is long; half a
+second, eased in and out, is what it came down to. Under
+`prefers-reduced-motion` the card simply swaps.
 
 **The front answers too, and that is the one way a throw differs from the
 buttons.** A word you know on sight is answered before the card is turned over,
