@@ -915,10 +915,28 @@ or more also lands on its first letters, so `kohvik` reaches *Kohv/tee*, and
 failing that on a word one slip away, so `cappucino` reaches the cafés;
 **Searching the list** has both rules. Ahead of any other order, the rows that
 carry the words as typed come before the rows that only reached them by a
-stem, and those before the rows that reached them by a slip. My own places
-always come first, and the city's half under them goes **best first**: by
-Google's score, pulled towards the city's average of 4.4 as if fifty more
-people had reviewed it (`findScore()`), so a 5.0 from twenty reviews does not
+stem, and those before the rows that reached them by a slip.
+
+Then how squarely the words landed, because a substring is a generous
+somewhere: *riva* is inside *Müürivahe*, and answered with every place on that
+street with Riva lost among them, and *bar* is the start of *barato* —
+Portuguese and Spanish for cheap — and answered with every cheap place of mine
+before a single bar. It read as a list in no order at all. So each word is
+also asked where it landed (`findTier()`): at the start of a word of the name,
+or as a whole word of what the place is — give or take two letters of ending,
+so *burger* is a whole word of *Burgers* and *kohv* of *kohvik* — is square;
+the start of a longer word of what it is, from four letters typed, comes next;
+inside a word of the name, or the start of a word of the street, after that;
+and only ever *inside* a word of what it is or where it is, or three letters
+at the start of a longer one, is brushing it. A row is as good as its weakest
+word. The brushed rows are dropped whenever anything on either half landed
+better, and a map zoomed in on a part of town where the words only brushed a
+street name counts as a part of town with nothing in it, so the bar looks
+across the whole city instead.
+
+My own places always come first, and within each of those tiers the city's
+half under them goes **best first**: by Google's score, pulled towards the
+city's average of 4.4 as if fifty more people had reviewed it (`findScore()`), so a 5.0 from twenty reviews does not
 open the list over a 4.9 from four hundred, and a row with no score goes last.
 It used to go by how many people had reviewed a place, which put a 4.2 third
 for *pizza* over a 4.9 because more tourists had passed it; a dropdown is read
