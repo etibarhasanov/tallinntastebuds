@@ -10906,8 +10906,20 @@
 
        clearPanel because this fit is the one that is *about* the dot. Framing
        you into the middle of the whole map with the sheet open puts you behind
-       it, and a dot nobody can see is the same failure as a dot under a pin. */
-    fitLatLngs([[latlng.lat, latlng.lng], [nearest.lat, nearest.lng]], {
+       it, and a dot nobody can see is the same failure as a dot under a pin.
+
+       The dot is the middle of the frame, not one end of it. The fit used to
+       take you and the nearest place as the two corners, which put the pair's
+       midpoint in the middle and you somewhere off towards an edge — and on a
+       phone, where the chrome leaves a strip rather than a screen, "towards an
+       edge" was close enough to a corner that the button read as having found
+       you and then looked somewhere else. So the place is framed twice over:
+       where it is, and the same distance the other side of you. The fit of
+       that pair is centred on you by construction, and still holds the place.
+       Mirrored in degrees rather than in projected pixels, which is the same
+       thing at any distance HERE_MAX_M lets through. */
+    var mirror = [2 * latlng.lat - nearest.lat, 2 * latlng.lng - nearest.lng];
+    fitLatLngs([[nearest.lat, nearest.lng], mirror], {
       animate: true,
       maxZoom: HERE_ZOOM,
       floor: 0,
