@@ -955,6 +955,37 @@ CREATE TABLE IF NOT EXISTS google_refreshes (
 );
 CREATE INDEX IF NOT EXISTS idx_google_refreshes_at ON google_refreshes (at DESC);
 
+-- ------------------------------------------------- what the numbers used to be
+-- Every rating and review count Google has ever given a place, one row per
+-- answer, kept for good. google_venues holds only the latest pair and a
+-- refresh overwrites it; google_refreshes says what moved but forgets after
+-- ninety days. This is the one that remembers, so that how many reviews a
+-- place has gathered, and how its score has drifted while it did, can be read
+-- off later as a series rather than guessed at from two numbers.
+--
+-- Written by keepScores() in functions/api/_refresh.js on every answer that
+-- carried numbers — 'changed', 'same' and 'closed' alike, because a count
+-- that held still for a month is part of the series too. The first time a
+-- place is written, the pair it had before goes in ahead of the new one:
+--
+--   source   'export'  the pair db/google-venues.sql loaded; `at` is NULL,
+--                      because the export is one sweep with no time on the
+--                      row. Which sweep is in git, against the CSV.
+--            'open'    a refresh when somebody opened the place; `at` is when
+--
+-- Nothing is lost between the two: a row with a line here has refreshed_at
+-- set, and the export never overwrites the numbers on such a row. At most
+-- 950 answers a month plus one baseline each, so a few thousand rows a year.
+CREATE TABLE IF NOT EXISTS google_scores (
+  id       INTEGER PRIMARY KEY AUTOINCREMENT,
+  place_id TEXT    NOT NULL,
+  at       INTEGER,                     -- ms; NULL for the export's pair
+  rating   REAL,
+  reviews  INTEGER,
+  source   TEXT    NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_google_scores_place ON google_scores (place_id, at);
+
 
 -- ------------------------------------------------------------------- meta
 -- ---------------------------------------------------------------- feedback

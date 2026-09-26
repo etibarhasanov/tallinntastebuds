@@ -58,6 +58,10 @@
  *   google_refreshes  one row per call, saying what came back and what moved.
  *                     It is what the Google tab on /admin.html reads, through
  *                     /api/refreshes, and it keeps ninety days.
+ *   google_scores     the rating and review count of every answer, kept for
+ *                     good, with the pair the row had before the first one —
+ *                     so a place's numbers are a series rather than whatever
+ *                     the last answer said. See keepScores().
  *
  * `rank` is not recomputed here. It is every row's position among all of
  * them, so one row's new count cannot place it without re-reading the rest;
@@ -287,6 +291,38 @@ function changesBetween(before, after) {
 
 /* ------------------------------------------------------------------ refresh */
 
+/* The numbers an answer carried, added to google_scores rather than written
+   over, so how a place's review count and rating moved can be read later.
+   Every answer is kept, a count that did not move included: a flat month is
+   part of the series, and without it a gap and a standstill look the same.
+
+   The first answer for a place also keeps what the row said before it — the
+   export's pair, or a refresh from before this table existed — in the same
+   batch and only while the place has no line yet, so the series starts where
+   the site's knowledge of the place does rather than at the first open.
+
+   Quiet, like everything else here: without the table the refresh has already
+   been written, and only the history misses a point. */
+async function keepScores(env, placeId, before, after, at, was) {
+  try {
+    await env.DB.batch([
+      env.DB
+        .prepare(
+          'INSERT INTO google_scores (place_id, at, rating, reviews, source) ' +
+          'SELECT ?1, ?2, ?3, ?4, ?5 ' +
+          'WHERE NOT EXISTS (SELECT 1 FROM google_scores WHERE place_id = ?1)'
+        )
+        .bind(placeId, was, before.rating === undefined ? null : before.rating,
+          before.reviews === undefined ? null : before.reviews, was === null ? 'export' : 'open'),
+      env.DB
+        .prepare('INSERT INTO google_scores (place_id, at, rating, reviews, source) VALUES (?, ?, ?, ?, ?)')
+        .bind(placeId, at, after.rating, after.reviews, 'open')
+    ]);
+  } catch (e) {
+    /* google_scores not applied to this database yet. */
+  }
+}
+
 /* One line of the log, and the prune that keeps it to KEEP_LOG, in one round
    trip. `changes` is { column: [from, to] } or nothing; `note` is a sentence
    for the outcomes a column cannot explain — a refusal, a closure, a place
@@ -430,6 +466,7 @@ export async function refreshOnOpen(env, id) {
         row.website, row.opening_hours, at, closedForGood ? 1 : 0, at, placeId)
       .run();
     written = true;
+    await keepScores(env, placeId, before, row, at, was);
 
     const any = Object.keys(moved).length > 0;
     const outcome = closedForGood ? 'closed' : any ? 'changed' : 'same';

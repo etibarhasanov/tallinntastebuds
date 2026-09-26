@@ -4014,6 +4014,23 @@ been refreshed, and how much is due. That route answers anybody: the numbers in
 it are Google's public ones, which `/api/venues` already hands out, and `key`
 says whether the secret is set without saying a character of it.
 
+**What the numbers used to be.** A refresh writes the new rating and review
+count over the old ones in `google_venues`, and `google_refreshes` forgets
+after ninety days, so neither is a history. `google_scores` is: every answer
+that carried numbers adds a line — place, time, rating, reviews — and nothing
+ever prunes it, so how many reviews a place has gathered and how its score
+drifted while it did can be read later as a series. A count that did not move
+is kept too, because a flat month and a month nobody asked about should not
+look the same. The first answer for a place also keeps the pair the row had
+before it, with source `export` and no time, since the export is one sweep
+with no time on its rows. Nothing falls between the two: a place with a line
+in the table has `refreshed_at` set, and the export never overwrites the
+numbers on such a row. At most 950 answers a month and a baseline each, so a
+few thousand rows a year. Nothing reads it yet; it is being kept for the
+statistics to come. `keepScores()` in `functions/api/_refresh.js` writes it,
+and without the table the refresh carries on and only the history misses a
+point.
+
 **Turning it on.** Three things, once:
 
 1. In the Google Cloud console, a key restricted to **Places API (New)**, on a
@@ -4024,7 +4041,7 @@ says whether the secret is set without saying a character of it.
    in whichever database the site is bound to, so a key in both would be two
    counters spending from one free thousand. For `wrangler pages dev`, a line in
    `.dev.vars`, which is ignored.
-3. The column and the two tables, on production:
+3. The column and the three tables, on production:
 
    ```
    wrangler d1 execute tallinntastebuds --remote --command \

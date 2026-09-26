@@ -174,7 +174,10 @@ row's `refreshed_at` is empty or over thirty days old — `refreshOnOpen()` in
 `functions/api/_refresh.js`, called from `/api/stats`, inside a budget of 32
 Place Details calls a day and 950 a month, and only where
 `GOOGLE_MAPS_API_KEY` is set, which is Production. It writes the seven columns
-that move and never the name, address, category, tags or coordinates.
+that move and never the name, address, category, tags or coordinates. Every
+answer's rating and review count is also added to `google_scores`, which is
+never pruned — the history of each place's numbers — with the export's pair
+ahead of a place's first answer.
 **Keeping it current** under **Google venues** in `README.md` is the whole of
 it, and the **Google** tab on `/admin.html` is where to see what it did.
 
