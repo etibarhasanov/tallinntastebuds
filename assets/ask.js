@@ -16,6 +16,13 @@
  * mind. Now the model is the only thing that ever names a place, and this
  * only reads.
  *
+ * The find bar across the top of the map reads with it too — see WHAT THE
+ * BAR UNDERSTANDS in the find section of app.js. It is the same question
+ * asked of a shorter sentence: which kinds, which cuisines, near whom, how
+ * dear, and what is left over. There the leftovers are matched in the
+ * browser rather than sent anywhere, and "open now" is read and not
+ * answered, because nothing the bar holds knows a week of hours.
+ *
  * WHY A GLOBAL AND NOT A MODULE
  *
  * The same reason as assets/basemap.js, assets/pass.js and assets/radio.js:

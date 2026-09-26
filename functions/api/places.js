@@ -3,10 +3,10 @@
  *
  * GET /api/places
  *
- * One answer, two sources, and the picker on the lists page is the only thing
- * that asks for it:
+ * One answer, two sources, and two things ask for it — the picker on the
+ * lists page, and the find bar across the top of the map:
  *
- *   data/places.json   the map and the hand-kept CSV beside it. Seventy-four
+ *   data/places.json   the map and the hand-kept CSV beside it. Seventy-six
  *                      places I have been to, and the only ones that link
  *                      through to a write-up.
  *
@@ -31,9 +31,33 @@
  * answers no-store. This is the opposite kind of thing: it changes when a
  * deploy or a sync changes it, it is the same for everybody, and it is the
  * one big answer on the page. Five minutes.
+ *
+ * WHAT A ROW CARRIES BEYOND A NAME, AND FOR WHOM
+ *
+ * The map's find bar searches this same roll — see the find section of
+ * assets/app.js — and a name and a street were all it had to search a Google
+ * row by, so "pizza" found the pizzerias with pizza in the name and not the
+ * fifty-three the export files under it. Two things ride on a Google row now
+ * that the picker never reads: `kitchens`, what Google says the place cooks
+ * in the directory's cuisine ids, the same kitchensOf() the directory and
+ * the chat read a row with, so the bar can say them in ten languages; and
+ * `category`, Google's own word for what the place is — "Kebab Shop",
+ * "Cocktail Bar" — which is matched and never printed, because a
+ * Ukrainian reader typing "kebab" should find the kebab shops and should
+ * not be shown Google's English for one. Measured over the export as it
+ * stands, the two together are fifty kilobytes before compression and five
+ * and a half after, on a roll the bar has already decided to download whole.
+ *
+ * And a place of mine is lent its linked row's kitchens on the way past:
+ * nothing on my map records a cuisine beyond a name and its dishes, so
+ * "thai" reached my Thai place only when its write-up said the word. The
+ * chat's Function lends the same thing for the same reason (cooksOf() in
+ * ./ask.js); this is where the two rolls are already joined, so it is one
+ * line here rather than a second join in the browser.
  */
 
 import { json, catalogue, venueEntry, wrongDatabase } from './_lib.js';
+import { kitchensOf } from './venues.js';
 
 /* How a name is compared when deciding whether two rows are one place. The
    same folding the map's search and the picker's do, so "Põhjala" and
@@ -68,13 +92,15 @@ export async function onRequestGet(context) {
     lat: typeof p.lat === 'number' ? p.lat : null,
     lng: typeof p.lng === 'number' ? p.lng : null,
     map: !!p.map,
-    mapId: null
+    mapId: null,
+    kitchens: []
   }));
 
   /* What the merge refuses: an id already in the answer, a Google row the
      table has tied to a place on my map, and a row whose name is a name the
      catalogue already carries. */
-  const ids = new Set(out.map((p) => p.id));
+  const mine = new Map(out.map((p) => [p.id, p]));
+  const ids = new Set(mine.keys());
   const names = new Set(out.map((p) => fold(p.name)));
 
   /* The export is the wider half and the one that can be missing: a preview
@@ -100,12 +126,17 @@ export async function onRequestGet(context) {
       for (const row of results || []) {
         if (!row || typeof row.name !== 'string' || !row.name) continue;
         if (ids.has(row.place_id)) continue;
-        if (row.map_id && ids.has(row.map_id)) continue;
+        if (row.map_id && ids.has(row.map_id)) {
+          /* The row goes, and what Google says it cooks stays with the place
+             it is a row for. */
+          mine.get(row.map_id).kitchens = kitchensOf(row);
+          continue;
+        }
         const name = fold(row.name);
         if (names.has(name)) continue;
         ids.add(row.place_id);
         names.add(name);
-        out.push(venueEntry(row));
+        out.push({ ...venueEntry(row), kitchens: kitchensOf(row), category: row.category || '' });
       }
     } catch (e) {
       /* No table, or a database that cannot answer. The map's places are
