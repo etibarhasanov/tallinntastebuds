@@ -3872,6 +3872,7 @@
     });
 
     wireSheetSwipe();
+    wireResultSwipe();
   }
 
   function wireSheetSwipe() {
@@ -3879,6 +3880,7 @@
     if (!scroll) return;
     var armed = false;
     var active = false;
+    var startX = 0;
     var startY = 0;
     var startH = 0;
     var height = 0;
@@ -3897,6 +3899,7 @@
       if (ev.touches.length !== 1 || ignore(ev.target)) return;
       armed = scroll.scrollTop <= 0;
       active = false;
+      startX = ev.touches[0].clientX;
       startY = ev.touches[0].clientY;
       startH = dom.panel.offsetHeight;
       height = startH;
@@ -3907,6 +3910,8 @@
       if (!armed || ev.touches.length !== 1) return;
       var dy = ev.touches[0].clientY - startY;
       if (!active) {
+        var dx = ev.touches[0].clientX - startX;
+        if (Math.abs(dx) > 9 && Math.abs(dx) > Math.abs(dy)) { armed = false; return; }
         if (dy < 9) {
           if (dy < -3) armed = false;   /* they are scrolling, not dismissing */
           return;
@@ -5562,13 +5567,13 @@
     syncUrl();
   }
 
-  function stepResult(delta) {
+  function stepResult(delta, how) {
     if (!state.results || !state.selected) return;
     var ids = state.results.ids;
     var at = ids.indexOf(state.selected);
     if (at === -1) return;
     var next = ids[(at + delta + ids.length) % ids.length];
-    TTBTrack.event('find_step', { direction: delta > 0 ? 'next' : 'prev' });
+    TTBTrack.event('find_step', { direction: delta > 0 ? 'next' : 'prev', by: how || 'arrow' });
     selectPlace(next, { fly: false });
   }
 
@@ -5596,6 +5601,71 @@
       }),
       arrow(1, 'findNext', 'M9.5 6l6 6-6 6')
     ]);
+  }
+
+  var SWIPE_STEP = 60;
+
+  function wireResultSwipe() {
+    var card = dom.detail;
+    var on = false;
+    var startX = 0;
+    var startY = 0;
+    var dx = 0;
+    var sideways = false;
+
+    function scrollsSideways(node) {
+      for (; node && node !== card; node = node.parentNode) {
+        if (node.nodeType !== 1) continue;
+        if (node.tagName === 'IFRAME' || node.tagName === 'VIDEO') return true;
+        if (node.scrollWidth > node.clientWidth + 1) {
+          var o = getComputedStyle(node).overflowX;
+          if (o === 'auto' || o === 'scroll') return true;
+        }
+      }
+      return false;
+    }
+
+    function pull(x) {
+      if (reduceMotion()) return;
+      card.style.transform = x ? 'translateX(' + Math.round(x / 3) + 'px)' : '';
+    }
+
+    card.addEventListener('touchstart', function (ev) {
+      on = false;
+      if (!state.results || !state.selected || state.view !== 'detail') return;
+      if (state.results.ids.length < 2 || state.results.ids.indexOf(state.selected) === -1) return;
+      if (ev.touches.length !== 1 || scrollsSideways(ev.target)) return;
+      on = true;
+      sideways = false;
+      dx = 0;
+      startX = ev.touches[0].clientX;
+      startY = ev.touches[0].clientY;
+    }, { passive: true });
+
+    card.addEventListener('touchmove', function (ev) {
+      if (!on || ev.touches.length !== 1) return;
+      dx = ev.touches[0].clientX - startX;
+      var dy = ev.touches[0].clientY - startY;
+      if (!sideways) {
+        if (Math.abs(dy) > 10 && Math.abs(dy) >= Math.abs(dx)) { on = false; return; }
+        if (Math.abs(dx) < 10) return;
+        sideways = true;
+        card.classList.add('is-swiping');
+      }
+      pull(dx);
+      if (ev.cancelable) ev.preventDefault();
+    }, { passive: false });
+
+    function release() {
+      if (!on) return;
+      on = false;
+      card.classList.remove('is-swiping');
+      pull(0);
+      if (sideways && Math.abs(dx) >= SWIPE_STEP) stepResult(dx < 0 ? 1 : -1, 'swipe');
+    }
+
+    card.addEventListener('touchend', release);
+    card.addEventListener('touchcancel', release);
   }
 
   function wireFindMoved() {

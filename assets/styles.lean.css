@@ -1159,6 +1159,12 @@ body.is-results .filter-bar {
 }
 .find-area[hidden] { display: none; }
 
+body.is-results #panel-detail {
+  touch-action: pan-y;
+  transition: transform .22s var(--ease);
+}
+body.is-results #panel-detail.is-swiping { transition: none; }
+
 .result-steps {
   display: flex;
   align-items: center;
