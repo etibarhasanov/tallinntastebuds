@@ -164,3 +164,14 @@ a.stats-name:hover { color: var(--accent); }
   font-size: 11.5px;
   letter-spacing: .02em;
 }
+
+/* ------------------------------------------------ your page, on the account */
+
+/* The same row drawn three times on /account.html, under "Your page, lately"
+   — where a profile's views came from, which country, and what on it was
+   pressed. visitsCard() in assets/account.js, which is why that page carries
+   this sheet. Each table is a label and its rows, and the space is between
+   tables rather than under the last one, so the fold ends where its rows do. */
+.visits-table { margin-top: 20px; }
+
+.visits-table .eyebrow { margin: 0 0 10px; }

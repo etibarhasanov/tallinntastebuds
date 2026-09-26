@@ -422,11 +422,36 @@
    * this one is a page per list, and the only way to open the same list twice
    * is to load the page twice — which is two opens, and is meant to be. */
   function countOpen(id) {
+    tell({ kind: 'list', id: id });
+  }
+
+  /* And a profile: opened once per load, and every press of a thing on it
+     that leads somewhere — a row, a handle, a list. Both are the owner's own
+     numbers, drawn back to them on /account.html under "Your page, lately",
+     and never to anybody else; functions/api/_visits.js is the other half and
+     says what is kept. The referrer goes with the open because it is the
+     browser's to send and not the server's to see — the Function only has
+     the beacon's own, which is this page. The owner's own visits are left
+     out here and again on the server, where the session decides it. */
+  function countProfile() {
+    if (state.me === state.profile.name) return;
+    tell({ kind: 'profile', id: state.profile.name, from: document.referrer || '' });
+  }
+
+  function countProfilePress(what) {
+    if (state.me === state.profile.name) return;
+    tell({ kind: 'profile-press', id: state.profile.name, what: what });
+  }
+
+  /* The one POST all three make. keepalive, so a press on a link that leaves
+     the page in this tab is still sent after the page has gone. */
+  function tell(payload) {
     fetch('/api/stats', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ kind: 'list', id: id })
-    }).catch(function () { /* the order misses one, the list still opened */ });
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(function () { /* a count missed, and nothing the reader needs to hear */ });
   }
 
   /* One sentence per refusal the server can send, and the general one for
@@ -780,10 +805,10 @@
      title and every number beside it read out in one breath. */
   function listRow(l) {
     var box = el('div', { className: 'lists-index-card' }, [
-      TTBTrack.click(el('a', {
+      pressed(TTBTrack.click(el('a', {
         className: 'lists-index-title lists-open',
         href: '/list/' + l.id
-      }, [listPin(l), el('span', { textContent: l.title })]), 'list_page', { list_id: l.id }),
+      }, [listPin(l), el('span', { textContent: l.title })]), 'list_page', { list_id: l.id }), 'list:' + l.id),
       el('span', { className: 'lists-index-meta mono' }, [
         el('span', { textContent: countLabel(l.n) }),
         /* How many people kept it — the one fact about a list its own author
@@ -907,7 +932,14 @@
       TTBRows.draw(who.rows, {
         t: t,
         play: true,
-        report: TTBTrack.event,
+        /* Every press the rows report is one on this page's own rows, so the
+           row's title is what the owner's count is filed under — see
+           countProfilePress(). */
+        report: function (name, params) {
+          TTBTrack.event(name, params);
+          var row = who.rows[params.row - 1];
+          if (row) countProfilePress('row:' + row.title);
+        },
         onNote: sheet.open
       }),
       sheet.node
@@ -930,14 +962,14 @@
     var ul = el('ul', { className: 'lists-page-social' });
     rows.forEach(function (row) {
       ul.appendChild(el('li', null, [
-        TTBTrack.click(el('a', {
+        pressed(TTBTrack.click(el('a', {
           href: row.href,
           target: '_blank',
           rel: 'me nofollow noopener',
           'aria-label': row.label,
           title: row.label,
           html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + TTBLinks.GLYPHS[row.id] + '</svg>'
-        }), 'profile_link_open', { network: row.id })
+        }), 'profile_link_open', { network: row.id }), 'net:' + row.id)
       ]));
     });
     return ul;
@@ -978,7 +1010,7 @@
     var ul = el('ul', { className: 'lists-links' });
     rows.forEach(function (row) {
       ul.appendChild(el('li', null, [
-        TTBTrack.click(el('a', {
+        pressed(TTBTrack.click(el('a', {
           className: 'lists-link',
           href: row.href,
           target: '_blank',
@@ -990,10 +1022,16 @@
              three buttons. */
           el('span', { className: 'lists-link-net mono', textContent: row.label }),
           el('span', { className: 'lists-link-who', textContent: row.shown })
-        ]), 'profile_link_open', { network: row.id })
+        ]), 'profile_link_open', { network: row.id }), 'net:' + row.id)
       ]));
     });
     return ul;
+  }
+
+  /* A link on a profile, counted for its owner when it is pressed. */
+  function pressed(node, what) {
+    node.addEventListener('click', function () { countProfilePress(what); });
+    return node;
   }
 
   /* The standing: how many times, in all, other people have kept the lists on
@@ -4427,6 +4465,7 @@
          way of anything it could slow down. Somebody else's list only: see
          countOpen(). */
       if (state.view === 'one' && state.list && !state.list.mine) countOpen(state.list.id);
+      if (state.view === 'who' && state.profile) countProfile();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
       dom.main.appendChild(el('div', { className: 'noscript card' }, [

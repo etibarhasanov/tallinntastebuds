@@ -182,6 +182,39 @@ CREATE TABLE IF NOT EXISTS press_counts (
   PRIMARY KEY (kind, id)
 );
 
+-- ---------------------------------------------------------- profile_counts
+-- How often somebody's /u/<name> was opened, from where, and what on it was
+-- pressed — read by its owner alone, on the card on /account.html headed
+-- "Your page, lately". functions/api/_visits.js writes and reads it, and its
+-- header is the reasoning; **Who opened your page** under **Profiles** in
+-- README.md is the page's half.
+--
+-- It is the table press_counts' own header says it would become the day
+-- somebody asked "this month": the same upsert, with the day in the key.
+-- One row per page, per day, per fact:
+--
+--   kind 'from'     id is where the view came from — instagram, tiktok,
+--                   facebook, search, here, direct, or a host
+--   kind 'country'  id is Cloudflare's two letters, XX where it does not know
+--   kind 'press'    id is row:<title>, net:<network> or list:<id>
+--
+-- The number of views is the sum of the 'from' rows, so there is no fourth
+-- kind to disagree with it. Views and presses, never people: nothing here
+-- says who opened anything, and the owner's own opens are not counted.
+--
+-- The key leads with the owner, which is the only way the table is ever
+-- read, so the primary key is the index.
+CREATE TABLE IF NOT EXISTS profile_counts (
+  -- users.id.
+  owner TEXT    NOT NULL,
+  -- YYYY-MM-DD, UTC.
+  day   TEXT    NOT NULL,
+  kind  TEXT    NOT NULL,
+  id    TEXT    NOT NULL,
+  n     INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (owner, day, kind, id)
+);
+
 
 -- ---------------------------------------------------------------- accounts
 -- An account is optional. Saving works without one, filed under the device's
