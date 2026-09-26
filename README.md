@@ -335,6 +335,22 @@ of it a place is on, and the fit still pulls back on its own as the nearest
 place gets further away. The frame allows for the panel as well, so an open
 sheet no longer lands the dot behind itself.
 
+**And on a phone every frame allows for the chrome.** With no sheet up, the
+name, the find bar and Filters stand across the top of the map, the rail down
+its left and the crosshair in the bottom corner, all of them on the map rather
+than beside it. The fit used to pad every side by the same 24px as though none
+of them were there, so the very first screen a stranger saw — the whole map,
+framed on arrival — had a cluster half under the die and a pin under Ask:
+places the page had drawn and then covered with its own buttons.
+`chromeCover()` in `assets/app.js` measures how far each of them reaches in
+from its edge, and `fitLatLngs()` frames the places in the rectangle that is
+left, the same way it frames them above a sheet. Measured rather than written
+down, because the top row is a different height in every language and the rail
+grows a pill when the account answers. At `FIT_FLOOR` the zoom cannot go out
+any further to make the room, so there the frame only moves the centre: the
+middle of the city lands in the clear, and the handful of far places that were
+already a zoom-out away stay one.
+
 The dot is also drawn in a pane of its own above the marks, which is not where
 Leaflet puts a plain circle: markers sit above the pane circles are drawn in,
 so a dot on the same pixel as a mark went under it — and standing outside
