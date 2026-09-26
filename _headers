@@ -151,12 +151,17 @@
 # two side by side would be the whole point of keeping them apart, lost. The
 # page carries the tag in its markup too; this is the half that binds for
 # anything that does not parse the HTML to find it.
+#
+# And it is the owner's page now: functions/_middleware.js answers 404 to
+# anybody who is not signed in as an account ADMINS names in wrangler.toml, and
+# sends the owner's copy `private, no-store`. This says the same, so the two
+# never disagree about whether a cache may keep it.
 /google.html
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: private, no-store
   X-Robots-Tag: noindex, nofollow
 
 /google
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: private, no-store
   X-Robots-Tag: noindex, nofollow
 
 # The blog. Stored as blog.html and served at /blog as well, so both
@@ -216,12 +221,16 @@
 # in the colo for five minutes — see the TTL at the top of
 # functions/api/stats.js — so this rule is about the page and never about what
 # is on it.
+#
+# And it is the owner's page now, the way /google above is: a 404 to anybody
+# else out of functions/_middleware.js, and `private, no-store` for the owner,
+# which these lines say as well so the two never disagree.
 /stats.html
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: private, no-store
   X-Robots-Tag: noindex, follow
 
 /stats
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: private, no-store
   X-Robots-Tag: noindex, follow
 
 # Scripts and stylesheets are content-addressed by tools/stamp.mjs — the URL
