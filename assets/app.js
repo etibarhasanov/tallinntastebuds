@@ -6587,6 +6587,165 @@
     return (new Date().getDay() + 6) % 7;
   }
 
+  /* ------------------------------------------------- Google, on a place of mine
+   * Sixty-odd of the places on this map are also rows in Google's export,
+   * matched onto them through `map_id`, and the panel for one of those closes
+   * with what Google makes of it: the score and the count behind it, where the
+   * two of them put the place among everything in the export, whether it is
+   * open right now, the week, the number where mine has none, and the listing.
+   *
+   * That breaks the oldest sentence in README.md on purpose, and the section
+   * **Google, on a place of mine** there says where the line moved to. What it
+   * keeps: the whole block sits under a heading that says whose it is, below
+   * everything I wrote, and nothing sorts, filters or sizes a pin by it.
+   *
+   * Asked for once per place per page load, when the panel first opens, and
+   * drawn into a holder that is already on the panel rather than by rendering
+   * the panel again — a second render would restart the reel somebody has
+   * just pressed play on. `googleFor` holds the answer: absent until asked,
+   * ASKING while the request is out, null for a place Google has nothing on
+   * (or a request that failed, which the panel treats the same way), and the
+   * row otherwise.
+   */
+  var googleFor = {};
+  var ASKING = {};
+
+  function googleBlock(place, holder) {
+    var row = googleFor[place.id];
+    if (row === ASKING || row === null) return;
+    if (row) { fillGoogle(holder, place, row); return; }
+
+    googleFor[place.id] = ASKING;
+    getJSON('/api/venues?map=' + encodeURIComponent(place.id)).then(function (rows) {
+      googleFor[place.id] = rows && rows[0] ? rows[0] : null;
+    }, function () {
+      googleFor[place.id] = null;
+    }).then(function () {
+      /* The panel may have moved on, or been drawn again in another language
+         while this was out; a holder that is no longer on the page is dropped,
+         and the render that replaced it has asked for the same row. */
+      if (googleFor[place.id] && holder.parentNode && state.selected === place.id) {
+        fillGoogle(holder, place, googleFor[place.id]);
+      }
+    });
+  }
+
+  function fillGoogle(holder, place, row) {
+    var kids = [];
+
+    /* The score and the count, never apart — scoreMark() says why. */
+    if (typeof row.rating === 'number') {
+      kids.push(el('p', { className: 'google-line' }, [scoreMark(row)]));
+    }
+
+    /* Where the weighing puts it, in the sentence /google keeps behind a
+       hover: here it is the line itself, because a bare "#42" under a write-up
+       of mine would read as my number. */
+    if (typeof row.rank === 'number' && typeof row.of === 'number') {
+      kids.push(el('p', {
+        className: 'google-line google-rank',
+        textContent: t('venuesRankTitle', {
+          n: formatDecimal(row.rank, 0),
+          total: formatDecimal(row.of, 0)
+        })
+      }));
+    }
+
+    /* Google's word on the door, which is not mine: a place I have closed is
+       flagged at the top of the panel, and a place Google calls temporarily
+       closed is said here in Google's words and left open on the map. */
+    var now = row.closed ? { text: t('venuesShutFor'), open: false } : openingNow(row.hours);
+    if (now) {
+      kids.push(el('p', {
+        className: 'google-line google-now' + (now.open ? ' is-open' : ''),
+        textContent: now.text
+      }));
+    }
+
+    var week = hoursBlock(row);
+    if (week) kids.push(week);
+
+    /* The number only where mine has none, so a number I wrote down is never
+       contradicted by a second one a few lines further down. */
+    if (row.phone && !place.phone) {
+      kids.push(el('dl', { className: 'facts' }, [
+        el('dt', { textContent: t('phone') }),
+        el('dd', {}, [
+          TTBTrack.click(el('a', { href: telHref(row.phone), textContent: row.phone }), 'call_place', { place: place.name })
+        ])
+      ]));
+    }
+
+    /* Google's own listing, by the key it is filed under — the address Google
+       documents for exactly this, and one that needs nothing /api/venues does
+       not already send. */
+    kids.push(el('div', { className: 'link-row' }, [
+      TTBTrack.click(el('a', {
+        className: 'link-btn',
+        href: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(row.name) +
+          '&query_place_id=' + encodeURIComponent(row.id),
+        target: '_blank',
+        rel: 'noopener',
+        textContent: t('googleSee')
+      }), 'google_listing', { place: place.name })
+    ]));
+
+    clear(holder);
+    holder.appendChild(section('googleSays', el('div', { className: 'google-block' }, kids)));
+  }
+
+  /* Open or shut in Tallinn this minute, out of Google's week, in the words
+     /google already uses for the same question — or null when Google gave no
+     hours, which is "we do not know" and says nothing. A copy of opening() and
+     spansOf() in assets/venues.js, which the map does not load; change one,
+     change the other. */
+  function openingNow(week) {
+    if (!week || week.length !== 7) return null;
+    var now = Date.now();
+    var wall = new Date(now + tallinnOffset(now));
+    var day = (wall.getUTCDay() + 6) % 7;
+    var minute = wall.getUTCHours() * 60 + wall.getUTCMinutes();
+
+    var today = daySpans(week[day]);
+    var i;
+    for (i = 0; i < today.length; i++) {
+      var from = today[i][0], to = today[i][1];
+      if (to > from ? (minute >= from && minute < to) : (to < from && minute >= from)) {
+        return { open: true, text: t('venuesOpenUntil', { time: clockAt(to) }) };
+      }
+    }
+    /* Past midnight, the place that is open is the one that opened last night. */
+    var last = daySpans(week[(day + 6) % 7]);
+    for (i = 0; i < last.length; i++) {
+      if (last[i][1] < last[i][0] && minute < last[i][1]) {
+        return { open: true, text: t('venuesOpenUntil', { time: clockAt(last[i][1]) }) };
+      }
+    }
+    var next = null;
+    for (i = 0; i < today.length; i++) {
+      if (today[i][0] > minute && (next === null || today[i][0] < next)) next = today[i][0];
+    }
+    return next === null
+      ? { open: false, text: t('venuesShutToday') }
+      : { open: false, text: t('venuesOpensAt', { time: clockAt(next) }) };
+  }
+
+  function daySpans(day) {
+    var out = [];
+    var chunks = String(day || '').split(',');
+    for (var i = 0; i < chunks.length; i++) {
+      var at = /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/.exec(chunks[i]);
+      if (at) out.push([Number(at[1]) * 60 + Number(at[2]), Number(at[3]) * 60 + Number(at[4])]);
+    }
+    return out;
+  }
+
+  function clockAt(minutes) {
+    var h = Math.floor(minutes / 60) % 24;
+    var m = minutes % 60;
+    return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+  }
+
 
   function renderDetail(place) {
     clear(dom.detail);
@@ -6755,6 +6914,12 @@
           : null
       ])
     ]));
+
+    /* Google's half, last and under its own name — see googleBlock(). Empty
+       until the answer lands, and for good on a place Google has nothing on. */
+    var google = el('div', { className: 'google-holder' });
+    dom.detail.appendChild(google);
+    googleBlock(place, google);
   }
 
   /* The field is called "reel" whichever platform it points at — renaming it

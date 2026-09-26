@@ -4,16 +4,18 @@ A full-screen map of the places in Tallinn I have eaten at and approved for
 [@tallinntastebuds](https://www.instagram.com/tallinntastebuds/). Tap a pin,
 read the write-up, watch the reel.
 
-There are no scores, stars or rankings on my places, and there never will be.
-Being on the map is the verdict.
+I give no scores, stars or rankings to my places, and I never will. Being on
+the map is the verdict.
 
-A number does appear on Google's places — the ones off the Places export that
-are not on my map — and every time it does it says whose it is: "According to
-Google 4.8 from 3,041 reviews". The one page where those numbers can be sorted
-by, and where each row also says where the two of them together put it among
-all eleven hundred, is `/google`, which is Google's directory of the city
-rather than mine, which nothing links to. See **On "no scores, stars or rankings"** and **The
-directory**.
+Google's numbers do appear, and every time they do they say whose they are:
+"According to Google 4.8 from 3,041 reviews". On Google's places — the ones off
+the Places export that are not on my map — that line is all there is. On the
+sixty-odd of mine that Google also lists, it is a section at the foot of the
+panel, under Google's name, with where those two numbers put the place among
+all eleven hundred. The one page where they can be sorted by is `/google`,
+which is Google's directory of the city rather than mine, which nothing links
+to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
+and **The directory**.
 
 Static files, one small Function, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
@@ -2396,17 +2398,18 @@ the distinction this whole section turns on.
 Your own lists are in the order you last edited them and the ones you kept
 are in the order you kept them.
 
-A place off the Google export is the one thing on this site with a number out
-of five next to it — and, since the directory started printing where the
-weighing puts each row, a position as well. It is the exception that says what
-the rule is. It is
-not on my map; it has no write-up, because nobody here has eaten there; and the
-number is printed with "According to Google" in front of it, in the same line
-and the same breath. The rule is that **this site does not rate anything** —
-not that a card may never repeat what somebody else's rating is, on somebody
-else's place, with their name attached. Nothing sorts by it, no place of mine
-has one, and the day a score of Google's appears without the attribution is the
-day the rule has actually been broken. See **A Google row says whose
+A row of Google's is the one thing on this site with a number out of five next
+to it — and, since the directory started printing where the weighing puts each
+row, a position as well. It is the exception that says what the rule is. On a
+place off the export it is all there is: not on my map, no write-up, because
+nobody here has eaten there, and the number printed with "According to Google"
+in front of it, in the same line and the same breath. On a place of mine it is
+the last section of the panel, under a heading that says the same thing — see
+**And on printing it on a place of mine** below. The rule is that **this site
+does not rate anything** — not that a card may never repeat what somebody
+else's rating is, with their name attached. Nothing sorts by it, I give it to
+none of my places, and the day a score of Google's appears without the
+attribution is the day the rule has actually been broken. See **A Google row says whose
 description it is**.
 
 If a future change wants to sort *places* by saves, it is changing the
@@ -2440,25 +2443,44 @@ saying where it lands rather than letting it ride on the paragraph above.
 
 Sorting leaves the reader to notice that this place came before that one.
 Printing the number says it out loud, and a sentence said out loud is easier to
-mistake for mine. Three things keep it Google's. It appears on `/google` and
-**nowhere else** — not on the map, not on a list row, not in the picker, not on
-the card the map draws for a place off this export — so it never travels to a
-page that carries my opinion. It is arithmetic on two numbers the same card is
+mistake for mine. Three things keep it Google's. On `/google` it is a bare
+**#15**, and it goes nowhere else in that form — not on a list row, not in the
+picker, not on the card the map draws for a place off this export. The one
+other place it appears is the panel for a place of mine, and there it is the
+whole sentence rather than the number — see the next paragraph but one. It is
+arithmetic on two numbers the same card is
 already printing under Google's name, in a directory whose first paragraph says
 whose numbers those are before anything is drawn, and hovering it says "by
 Google's rating and review count" in so many words. And the sixty-odd rows here
 that are also on my map get the same treatment as the other thousand — a rank
-off Google's numbers, beside a door to a write-up that still carries no score of
-any kind. The rank is a fact about Google's directory; the write-up on the other
-side of that link is mine, and it has nothing but sentences in it.
+off Google's numbers, beside a door to a write-up. The rank is a fact about
+Google's directory; the write-up on the other side of that link is mine, and
+what I wrote there is nothing but sentences — Google's numbers follow it, under
+Google's name.
 
-The line that has not moved: **no place of mine is scored or ranked**. The map
-draws seventy-five pins the same size in no order but distance, and the day one
-of them carries a position is the day this section needs writing again rather
-than extending. What changed here is that a mirror is now legible as well as
-sortable, which is a smaller thing than it looks and a bigger one than nothing,
-and it is written down for the next person who reads line 7 of this file and
-finds a **#1** on a card.
+**And on printing it on a place of mine, which the panel now does.** This
+paragraph used to end: *the day one of them carries a position is the day this
+section needs writing again rather than extending.* That day was 26 September
+2026, and it was decided rather than drifted into: the owner was asked, with
+this section quoted back, and said yes.
+
+So where the line is now. **I still score nothing and rank nothing.** A place
+of mine that Google also lists carries Google's score and Google's position in
+the city, at the foot of its panel, below everything I wrote, under a heading
+that reads "According to Google", with the position spelled out as a sentence
+that names Google a second time — *#105 of 1,110 in Tallinn, by Google's rating
+and review count*. It never appears as a bare number, never on a pin, never on
+a row of the list, and nothing on the map sorts, filters or sizes by it. The
+list is still ordered by distance, every pin is still the same size, and a
+place Google does not list carries nothing and is not the worse for it.
+
+What moved is that a visitor reading my write-up can now see, one scroll down,
+what the rest of the internet makes of the same door. That is information the
+reader was going to go and get from Google Maps anyway, and printing it where
+they already are is more honest than pretending the disagreement does not
+exist — a place of mine at #600 is a place I am vouching for against the
+crowd, and the panel now says so plainly. **Google, on a place of mine** under
+**Google venues** has the mechanics.
 
 **And on ordering by distance, which the map's own list does.** The list used
 to be alphabetical and is nearest first now — see **The list is ordered by
@@ -3863,13 +3885,15 @@ They keep Google's own names, `latitude` and `longitude` included, even though
 the rest of the site says `lat` and `lng`. The contract of that table is "the
 export, in SQL", and a contract with exceptions is one you have to look up.
 
-`rating` and `reviews` are Google's, and they are shown on Google's places and
-nowhere else: the card the map draws for a place off this export, and the rows
-that lead to it, print "According to Google 4.8 from 3,041 reviews" — attributed,
-every time, in the same line as the kinds and the band. Not one of the
-seventy-five places on my map carries a score, nothing sorts or ranks by one
-except under Google's own name, and that is the rule these numbers do not
-touch — see **On "no scores, stars or rankings"** and **A Google row says
+`rating` and `reviews` are Google's, and they are shown under Google's name
+and nowhere else: the card the map draws for a place off this export, and the
+rows that lead to it, print "According to Google 4.8 from 3,041 reviews" —
+attributed, every time, in the same line as the kinds and the band — and the
+panel for a place of mine that Google also lists closes with the same two
+numbers under a heading that says whose they are. I score none of the
+seventy-five, nothing sorts or ranks by these except under Google's own name,
+and that is the rule these numbers do not touch — see **On "no scores, stars
+or rankings"**, **Google, on a place of mine** below, and **A Google row says
 whose description it is**. They are also still what decides which of these
 places are worth promoting onto the map.
 
@@ -4021,9 +4045,69 @@ and `maps_url` — so `venuesByIds()` in `functions/api/_lib.js` selects them an
 `/api/places` does not: the picker fetches all 1,110 rows at once, and the
 difference is ninety kilobytes of numbers no row on that page prints.
 
-And `/google`, which is the whole table rather than the part either of
+And the panel for a place of mine, for the one row `map_id` joins to it —
+the score, the position, the week and the listing, drawn under Google's name
+at the foot of the panel. See **Google, on a place of mine**, below.
+
+And `/google`, which is the whole table rather than the part any of
 those needs: all 1,110 rows in one answer, so a filter can run over them. See
 **The directory**.
+
+### Google, on a place of mine
+
+The panel for a place on my map closes with what Google says about the same
+door, when Google lists it — sixty-one of the seventy-five, the ones `map_id`
+joins. Under a heading that reads **According to Google**, below the address,
+the phone and the directions:
+
+```
+4.8 from 198 reviews
+#105 of 1,110 in Tallinn, by Google's rating and review count
+Opens at 14:00
+MON  Closed          TUE  16:00–21:00   …
+[ See on Google ]
+```
+
+- **The score and the count**, together, in the reading language's digits —
+  `scoreMark()`, the same span the card for a Google place draws.
+- **The position**, as the full sentence `/google` keeps behind a hover
+  (`venuesRankTitle`), never as a bare **#105**. On the directory the number
+  sits in a page that has already said whose numbers these are; on my panel it
+  is under my write-up, and the sentence is what stops it reading as mine.
+- **Open or shut this minute**, on Tallinn's clock, in the directory's own
+  words — *Open until 22:00*, *Opens at 14:00*, *Closed today* — out of
+  `openingNow()`, which is a copy of `opening()` in `assets/venues.js` because
+  the map does not load that file. A place Google calls temporarily closed says
+  *Temporarily closed* here, in Google's voice, and stays open on the map: the
+  closed flag at the top of the panel is mine to raise, and Google's word for
+  one door is not a reason to raise it.
+- **The week**, through `hoursBlock()`, today in ink. Two columns at every
+  width now, the phone included, which changed the card for a Google place
+  too: stacked, it was fourteen lines to say seven things.
+- **Google's phone number, only where mine has none**, so nothing a few lines
+  above is contradicted.
+- **The listing**, by its key, at the address Google documents for opening a
+  place by `place_id` — nothing `/api/venues` does not already send.
+
+Every string here was already in `data/ui.json` for `/google` or the card, so
+it costs no new keys and speaks all ten languages on the day it lands.
+
+**It is asked for, not shipped with the map.** `data/restaurants.json` is
+static and Google's rows live in D1, so the panel asks `/api/venues?map=<id>`
+the first time a place is opened, once per page load, with five minutes of
+cache on the answer. It draws into a holder the panel already has rather than
+by rendering the panel again, because a second render would restart a reel
+somebody has just pressed play on. A place Google does not list, a database
+that cannot answer, and a request that fails all draw nothing — no heading
+over an empty section.
+
+**The total is how many rows the last sync carried**, sent as `of` beside the
+row, because that is the roll `ranked()` in `tools/googlevenues.mjs` numbered.
+It is not `MAX(rank)`: on the day this landed both databases carried a rank on
+three hundred rows and not eleven hundred, a load of `db/google-venues.sql`
+that had stopped after six batches, and the maximum would have said *of 300*.
+A row whose rank has not arrived draws no position line and everything else;
+reloading the file fills the rest in.
 
 ### The six lists Google wrote
 
@@ -5855,8 +5939,9 @@ out of six visits and a 4.6 out of three thousand are not the same claim, and
 the score on its own cannot tell them apart. Both are set in the reading
 language's own digits, so Estonian gets "4,8" where English gets "4.8". This is
 the one number out of five anywhere on this site, and **On "no scores, stars or
-rankings"** says why it does not break that rule: it is Google's number, on
-Google's place, with Google's name in front of it. Nothing sorts by it.
+rankings"** says why it does not break that rule: it is Google's number, with
+Google's name in front of it — on Google's place here, and at the foot of the
+panel on a place of mine Google also lists. Nothing sorts by it.
 
 **Why it is attributed.** The gauge is drawn in the site's accent, in the
 vocabulary the map uses for the seventy-four places I have eaten at. Without a
