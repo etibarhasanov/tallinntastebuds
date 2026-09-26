@@ -27,7 +27,7 @@
  * those are the places this site is about and the bottom of that list is as
  * much of an answer as the top: a ranking that printed only what has been
  * opened would quietly drop the places nobody has, which is the half the page
- * was asked for. The 1,110 Google venues are an array of their own and only
+ * was asked for. The 1,111 Google venues are an array of their own and only
  * the ones somebody has actually pressed, capped at VENUES — a thousand rows
  * tied at nought is not a ranking, and the directory is not the map. The
  * filters are the third array, in full, because there are fourteen of them,

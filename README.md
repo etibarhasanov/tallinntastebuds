@@ -1269,7 +1269,7 @@ place cooks beyond its name and its dishes, but the export files a place as
 those ids in ten languages for [the directory](#the-directory) — so the reader
 takes them the way it takes the taxonomy, and *thai*, *tai* and *тайская* all
 score a Thai row as a type would. The file is fetched the first time a
-question is asked, not on load. And the sixty-one of my places that have a Google
+question is asked, not on load. And the sixty-two of my places that have a Google
 row inherit its cuisine through the same join that gives them their hours —
 see **Where the opening hours come from** — so the one word scores both rolls,
 and the line the model reads for Ramen Taro says *asian japanese* where it
@@ -1278,7 +1278,7 @@ and mine among them when I have been; "khachapuri" still answers Gobi and
 Pirosmani first, off their dishes, with a Georgian place from the export
 after them; and "somewhere I can hear myself think" finds nothing in the
 export it can score, and the answer is whatever my places make of it. The
-sixty-one Google rows that are already places of mine are left out of the
+sixty-two Google rows that are already places of mine are left out of the
 export's half — offering the Google copy beside the write-up would be the
 same door twice.
 
@@ -1401,7 +1401,7 @@ does it work* finds nothing.
 ### Where the opening hours come from
 
 The map's own places carry no hours — there is no such field in
-`data/restaurants.json` — but sixty-one of the seventy-six are also rows in
+`data/restaurants.json` — but sixty-two of the seventy-six are also rows in
 [Google venues](#google-venues), joined on `google_venues.map_id`, and those
 rows carry the week, and Google's word for what the place cooks. So
 `/api/ask` reads both — the cuisine goes onto the line the model reads and
@@ -2458,7 +2458,7 @@ not be principled either; it would just make Google's directory harder to use
 without making it any less Google's.
 
 **And on printing the position, which `/admin/google` now does.** Every card there
-opens with **#1**, **#15**, **#1,110** — see **Where a place stands** under
+opens with **#1**, **#15**, **#1,111** — see **Where a place stands** under
 **The directory** — and that is a further step than sorting, so it is worth
 saying where it lands rather than letting it ride on the paragraph above.
 
@@ -2489,7 +2489,7 @@ So where the line is now. **I still score nothing and rank nothing.** A place
 of mine that Google also lists carries Google's score and Google's position in
 the city, at the foot of its panel, below everything I wrote, under a heading
 that reads "According to Google", with the position spelled out as a sentence
-that names Google a second time — *#105 of 1,110 in Tallinn, by Google's rating
+that names Google a second time — *#105 of 1,111 in Tallinn, by Google's rating
 and review count*. It never appears as a bare number, never on a pin, never on
 a row of the list, and nothing on the map sorts, filters or sizes by it. The
 list is still ordered by distance, every pin is still the same size, and a
@@ -3806,7 +3806,7 @@ all what they were.
 
 ## Google venues
 
-1,110 places in Tallinn you can eat or drink in, out of the Google Places API,
+1,111 places in Tallinn you can eat or drink in, out of the Google Places API,
 in the database as a table of their own — `google_venues`. Separate from everything else here on purpose — this is somebody
 else's data about the city, not mine about the food.
 
@@ -3818,7 +3818,7 @@ seventeen types and found the other 360. Refreshing from there is one script,
 and `exports/README.md` says which.
 
 ```
-exports/tallinn_restaurants.csv   the export: 1,110 rows, 18 columns
+exports/tallinn_restaurants.csv   the export: 1,111 rows, 18 columns
 tools/googlevenues.mjs            turns it into SQL
 db/google-venues.sql              GENERATED — what actually loads them
 google_venues                     the table, in db/schema.sql
@@ -3876,7 +3876,7 @@ wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sq
 ### The table is a mirror, and that is the whole rule
 
 `place_id` — Google's own `ChIJ…` key — is the primary key. It is unique across
-all 1,110, stable across refreshes, and it is what a list item holds when it
+all 1,111, stable across refreshes, and it is what a list item holds when it
 points at one of these. A catalogue slug is lowercase letters, digits and
 hyphens, so the two can never be mistaken for each other.
 
@@ -3889,7 +3889,7 @@ The columns split in two, and the split is the point:
 | **Mine** — `map_id`, `hidden`, `note` | never touched by a refresh |
 
 `rank` is the one column Google did not send. It is where a place stands among
-all 1,110 once Google's rating is weighed by Google's review count — `ranked()`
+all 1,111 once Google's rating is weighed by Google's review count — `ranked()`
 in `tools/googlevenues.mjs`, the same arithmetic and the same prior as the
 directory's **Best overall** — and it is in the first group rather than the
 third because it is a reading of two of Google's numbers and nothing of mine.
@@ -3940,7 +3940,7 @@ the rows above the point it stopped and nothing else.
 
 The upserts are batched fifty to a statement. `wrangler d1 execute --remote`
 sends one HTTP request per statement, so this is the difference between
-twenty-four round trips and eleven hundred and ten.
+twenty-four round trips and eleven hundred and eleven.
 
 `tools/validate.mjs` runs `--check`, so CI refuses a deploy where the export
 moved and the SQL did not.
@@ -3963,7 +3963,7 @@ one signal this site already has about which places matter: somebody opening
 one.
 
 When a place whose Google numbers the site prints is opened — a card on
-`/admin/google`, a Google place on the map, or one of the sixty-one places of mine the
+`/admin/google`, a Google place on the map, or one of the sixty-two places of mine the
 export also lists, whose panel ends "According to Google" (**Google, on a place
 of mine**) — the page tells `/api/stats` so the open is counted. For a place of
 mine the Google row is found by `map_id`, the same way that panel finds it. If
@@ -4062,7 +4062,7 @@ Without the key nothing here runs and the site is exactly what it was. Without
 the column the refresh finds nothing to stamp and stops; without the tables it
 gives its claim back and stops. The Google tab says which.
 
-### The 61 that are already on the map
+### The 62 that are already on the map
 
 Matched on coordinates rather than names — the names disagree ("Põhjala Tap
 Room" against "Põhjala Brewery & Tap Room") while a front door does not move —
@@ -4088,7 +4088,7 @@ description it is**.
 And the map, for a place on somebody's list that is not on mine. That card asks
 for four more columns nothing else needs — `phone`, `website`, `opening_hours`
 and `maps_url` — so `venuesByIds()` in `functions/api/_lib.js` selects them and
-`/api/places` does not: the picker fetches all 1,110 rows at once, and the
+`/api/places` does not: the picker fetches all 1,111 rows at once, and the
 difference is ninety kilobytes of numbers no row on that page prints.
 
 And the panel for a place of mine, for the one row `map_id` joins to it —
@@ -4096,19 +4096,19 @@ the score, the position, the week and the listing, drawn under Google's name
 at the foot of the panel. See **Google, on a place of mine**, below.
 
 And `/admin/google`, which is the whole table rather than the part any of
-those needs: all 1,110 rows in one answer, so a filter can run over them. See
+those needs: all 1,111 rows in one answer, so a filter can run over them. See
 **The directory**.
 
 ### Google, on a place of mine
 
 The panel for a place on my map closes with what Google says about the same
-door, when Google lists it — sixty-one of the seventy-five, the ones `map_id`
+door, when Google lists it — sixty-two of the seventy-six, the ones `map_id`
 joins. Under a heading that reads **According to Google**, below the address,
 the phone and the directions:
 
 ```
 4.8 from 198 reviews
-#105 of 1,110 in Tallinn, by Google's rating and review count
+#105 of 1,111 in Tallinn, by Google's rating and review count
 Opens at 14:00
 MON  Closed          TUE  16:00–21:00   …
 [ See on Google ]
@@ -4336,7 +4336,7 @@ data/cuisines.json         37 cuisine labels in ten languages
 
 ### What it shows
 
-A card per place: the name, where Google's two numbers put it among all 1,110
+A card per place: the name, where Google's two numbers put it among all 1,111
 — see **Where a place stands** — Google's rating and review count, the price
 band as the map's own four-euro gauge, what it cooks, whether it is open right
 now, the street, and a row of links — Call, Website, Directions, Open in Google
@@ -4400,10 +4400,10 @@ the next section.
 
 ### Where a place stands
 
-Every card opens with a rank: **#1** on PullaBakery, **#1,110** on the
+Every card opens with a rank: **#1** on PullaBakery, **#1,111** on the
 worst-scoring of the sixty-five places Google says are shut for good. It is the
 position the Bayesian average above puts the place in across the whole export,
-and hovering it gives the sentence in full — *#1 of 1,110 in Tallinn, by
+and hovering it gives the sentence in full — *#1 of 1,111 in Tallinn, by
 Google's rating and review count* — in the reader's own language, the way
 `.venue-score` beside it already hands over "Google rates this 4.9 out of 5".
 
@@ -4428,7 +4428,7 @@ is the whole argument for having both orders, made visible on the card.
 
 **The total is the roll the reader is looking at**, not a constant: the page
 counts what `/api/admin/venues` handed it, so a row switched off with `hidden` or
-dropped by a refresh takes itself out of the "of 1,110" without anybody editing
+dropped by a refresh takes itself out of the "of 1,111" without anybody editing
 a sentence.
 
 **And it needs an `ALTER`.** `db/schema.sql` is `CREATE TABLE IF NOT EXISTS`,
@@ -10951,7 +10951,7 @@ data/places.csv            the Google Maps export a list picks from (yours to dr
 data/places.json           the catalogue: the map plus that CSV — GENERATED
 data/city.json             the ground under every list's panel on /lists, out of
                            the export below — GENERATED
-exports/tallinn_restaurants.csv    1,110 Tallinn venues out of Google Places
+exports/tallinn_restaurants.csv    1,111 Tallinn venues out of Google Places
 exports/README.md          what was cleaned out of the raw export, and why
 exports/clean_restaurants_csv.py   the cleaning, from the upstream export
 exports/REVIEW.md          the shortlisting worksheet those rows are read

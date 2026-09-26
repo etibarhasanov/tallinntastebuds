@@ -2,7 +2,7 @@
 /**
  * Tallinn Tastebuds — the six lists Google wrote.
  *
- * Reads exports/tallinn_restaurants.csv — the same 1,110 places
+ * Reads exports/tallinn_restaurants.csv — the same 1,111 places
  * tools/googlevenues.mjs loads into google_venues — and writes
  * db/google-lists.sql: one account called `google-statistics`, six public
  * lists under its name, in Google's order. Top ten restaurants, bakeries,
@@ -117,7 +117,7 @@
  * "Top twenty places in Tallinn, by Google" is not a category singled out and
  * weighed at PRIOR 300 the way the five above are. It is the export's own
  * rank column — overallOrder() in tools/googlevenues.mjs, RANK_PRIOR 100,
- * mean taken over all 1,110 rather than one pool — with its first twenty open
+ * mean taken over all 1,111 rather than one pool — with its first twenty open
  * places taken in order. That column already answers "where does this place
  * stand in the whole city", which is the question a top twenty asks; running
  * a second, differently-weighed pass over the same rows would answer it a

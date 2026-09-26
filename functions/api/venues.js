@@ -4,7 +4,7 @@
  * GET /api/venues?ids=… and ?map=…, and GET /api/admin/venues
  *
  * Every place in this city you can eat or drink in, out of `google_venues` —
- * the Google Places export mirrored into D1, eleven hundred and ten rows,
+ * the Google Places export mirrored into D1, eleven hundred and eleven rows,
  * see db/schema.sql. The whole roll is what /admin/google draws, answered by
  * ./admin/venues.js to the owner alone; this route answers the two narrow
  * asks — a handful of rows at a time through `?ids=`, where the map's find
@@ -25,7 +25,7 @@
  *                 rating, the review count, where the two of them together put
  *                 the place among all eleven hundred, the price band, the
  *                 phone, the website and the week's opening hours, for all
- *                 1,110 rows at once — which is what a directory filters and
+ *                 1,111 rows at once — which is what a directory filters and
  *                 sorts on, and what the picker deliberately leaves behind.
  *
  * venuesByIds() in _lib.js hands the map that same contact half for a place on
@@ -79,7 +79,7 @@
  * of mine** in README.md for why a map that ranks nothing now prints that.
  *
  * Same row shape again, with one field only this half carries: `of`, how many
- * rows the last sync carried, so the panel can say "#42 of 1,110" without the
+ * rows the last sync carried, so the panel can say "#42 of 1,111" without the
  * eleven hundred rows /admin/google counts to get the same number. Every row the
  * export holds, closed and hidden ones included, because that is the roll
  * ranked() in tools/googlevenues.mjs numbered — and deliberately not
