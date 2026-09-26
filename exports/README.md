@@ -1,6 +1,6 @@
 # Tallinn restaurants — cleaned export
 
-`tallinn_restaurants.csv` — **1,110 places, 18 columns**, reshaped from the raw
+`tallinn_restaurants.csv` — **1,111 places, 18 columns**, reshaped from the raw
 Google Places export in
 [`etibarhasanov/allRestaurants`](https://github.com/etibarhasanov/allRestaurants/blob/claude/google-maps-restaurants-salesforce-iz2bj5/exports/tallinn_restaurants.csv)
 (44 columns). Regenerate with `clean_restaurants_csv.py` when the upstream export refreshes:
@@ -91,6 +91,13 @@ hand-correction down is not having none — it is having one nobody can find.
 |---|---|---|---|---|
 | Morii Tea House | `reviews` | 148 | 165 | Checked on Google on 11 Sep 2026, after the 3 Sep sweep. The owner asked for it |
 | Varkizana Kreeka tavern | `status` | `Temporarily closed` | `Open` | The tavern reopened after the 3 Sep sweep and Google had not caught up on 15 Sep 2026. The owner said so |
+| Q Pizza Jaam | the whole row | not in the sweep | added | A new Google listing (`ChIJFQD2R7iTkkYRGgFVTpGcEIM`) at Telliskivi 62, opened after the 3 Sep sweep, which only found the old Q Pizza&Pan listing at the same door. Typed in from Google Maps on 26 Sep 2026 so the map's Q Pizza Jaam has a Google row to take its hours from. The owner asked for it. `category`, `rating`, `reviews`, `price`, `phone` and `opening_hours` are what Google showed; `cuisine` is Pizza by reading the name, `tags` is empty because the Maps page does not show Google's types, the pin is the map's, and `maps_url` is the `place_id` form because the page gives no `cid` |
+
+A whole row is the other kind of hand-correction, and it goes a different way at
+the next refresh: if the sweep finds the place, its own row replaces this one
+under the same key; if it does not, the row is marked missing like any other that
+left the export. So Q Pizza Jaam stays only as long as Google keeps listing it,
+which is the right terms for a row wearing Google's name.
 
 **Every one of these is erased by the next refresh, silently and correctly.** The
 sweep rewrites the row from Google and the number goes back to whatever Google says
