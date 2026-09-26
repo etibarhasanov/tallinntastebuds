@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=1ffb9c1c">
+<link rel="stylesheet" href="assets/styles.css?v=60be116f">
 </head>
 <body>
 
@@ -98,7 +98,7 @@
          another. -->
     <h1 class="wordmark"><a class="brand-home" href="/" data-track="home" data-i18n="wordmark">Tallinn Tastebuds</a></h1>
   </div>
-  <p class="tagline" data-i18n="tagline">All the places in this map I have personally been and approved.</p>
+  <p class="tagline" data-i18n="tagline">Where to eat and drink in Tallinn — every place on this map I have been to myself and approved.</p>
   <a class="ig-link" data-track="instagram"
      href="https://www.instagram.com/tallinntastebuds/"
      target="_blank"
@@ -244,11 +244,11 @@
     <span class="rail-label" data-i18n="locate" aria-hidden="true">Show my location</span>
   </button>
   <!-- Last, and the one that is about the rest: what this map is and what
-       the buttons above it do, on demand. The page already says all of it on
-       arrival — the tagline under the mark, the labels down the rail — but
-       only once, and only for a few seconds, and a visitor who landed on a
-       place or was looking at the pins gets a map that never introduced
-       itself. This is the introduction for the asking. -->
+       the buttons above it do, on demand. The welcome card says the first
+       half on a first visit and the labels down the rail say the second,
+       each once, and a visitor who landed on a place or was looking at the
+       pins may have missed both. This is the introduction for the
+       asking. -->
   <button type="button" class="rail-btn" id="btn-explain" data-i18n-title="explainOpen" data-i18n-aria-label="explainOpen" aria-label="How this works" title="How this works">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <circle cx="12" cy="12" r="8.4"/>
@@ -273,14 +273,14 @@
        feedback could not be read — which is a state it has on a perfectly
        healthy deployment whenever a request does not come back.
 
-       IT TAKES THE LAST SLOT ON THE RAIL, AND THERE IS NOT ANOTHER ONE.
+       IT TAKES THE LAST SLOT ON THE RAIL, AND A TENTH IS NOT FREE.
        The cascade that introduces these pills on a phone opens them 300ms
-       apart and holds each for 4.2s against a sentence under the mark that is
-       up for 7.86s. At eight pills the last one collapsed at 7.45s; at nine
-       it collapses at 7.75s, which still lands inside the sentence with a
-       tenth of a second to spare. A tenth button would not, and the rail
-       would be talking over a sentence that has gone. See introduceRail() in
-       assets/app.js, where those numbers are. -->
+       apart and holds each for 4.2s, so at nine the last one collapses at
+       7.75s. It used to be timed to finish inside the sentence under the
+       mark, which cleared at 7.86s; that sentence is the welcome card now,
+       which the pills wait for, but every pill added is another 300ms of the
+       corner talking to somebody who came for the map. See introduceRail() in assets/app.js, where those numbers
+       are. -->
   <a class="rail-btn" id="btn-feedback" href="/feedback" data-track="feedback_open"
      data-i18n-title="feedbackWhy" data-i18n-aria-label="feedbackTitle"
      title="What you would change about this site." aria-label="Feedback">
@@ -621,6 +621,24 @@
   <div class="account card" id="account-card"></div>
 </div>
 
+<!-- The welcome card: what this site is, from the foot of the map, once, on
+     a phone that has never been here. Built in the sheet order — eyebrow,
+     the line, the one action, the way out — with the tagline the desktop
+     prints beside the mark as its line. Put away by either button, the
+     cross, or a touch on the map; then the rail introduces itself. See
+     showWelcome() in assets/app.js and "The welcome card" in README.md. -->
+<section class="welcome" id="welcome" aria-labelledby="welcome-eyebrow" hidden>
+  <button type="button" class="welcome-x" id="welcome-x" data-i18n-aria-label="close" aria-label="Close">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <p class="welcome-eyebrow" id="welcome-eyebrow" data-i18n="welcomeEyebrow">New here?</p>
+  <p class="welcome-line" data-i18n="tagline">Where to eat and drink in Tallinn — every place on this map I have been to myself and approved.</p>
+  <div class="welcome-row">
+    <button type="button" class="go" id="welcome-ok" data-track="welcome_ok" data-i18n="welcomeOk">Got it</button>
+    <button type="button" class="alt" id="welcome-tour" data-track="welcome_tour" data-i18n="welcomeTour">Show me around</button>
+  </div>
+</section>
+
 <!-- How this works: a walk round the page, opened from the foot of the
      rail. A big cursor sets off from the button that was pressed and glides
      to each thing in turn — a pin, Places, the language, the filters, then
@@ -718,6 +736,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=0360a5a1" defer></script>
+<script src="assets/app.js?v=238a8dcd" defer></script>
 </body>
 </html>

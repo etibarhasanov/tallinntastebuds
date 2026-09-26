@@ -9874,10 +9874,10 @@ on `google_venues` that exists only because it is Google's and says so.
 
 Two tables have something to change, and the rail's is the newer of them. It
 is nine pills deep on a phone and the cascade that introduces them is timed
-against the sentence under the mark — nine collapse at 7.75s against 7.86s of
-sentence, and a tenth would talk over it, which is written out at the foot of
-the rail in `index.html`. So "what earns a slot" is a question with a real
-cost behind it, and this is the measurement of it. Nothing is wired to it: the
+for 300ms a pill — nine put the last collapse at 7.75s, and a tenth is
+another 300ms of the corner talking to somebody who came for the map, which
+is written out at the foot of the rail in `index.html`. So "what earns a
+slot" is a question with a real cost behind it, and this is the measurement of it. Nothing is wired to it: the
 rail is in a hand-written order and stays that way.
 
 The filter table is the other one. **The order of the
@@ -11664,6 +11664,45 @@ tapping a pin asks too — so it is where every place opens now, and this button
 picks a name and calls `selectPlace()` like anything else. **The sheet** in the
 design notes has that argument.
 
+### The welcome card
+
+**Before the pills, a card says what the site is.** On a phone the sentence
+the desktop prints beside the mark has no room in the header. For a long time
+it unrolled under the mark on arrival, held for 7.6 seconds and cleared, with
+the rail timed to finish inside it — which left a stranger who looked at the
+pins first with a map of grinning faces that never said what it was. It was
+then kept up for the whole visit for a day, which fixed that and spent the top
+of the map on every visit to tell a regular what they already knew.
+
+So a first visit on a phone gets a card from the foot of the map instead:
+
+> NEW HERE?
+> Where to eat and drink in Tallinn — every place on this map I have been to
+> myself and approved.
+> **Got it** · Show me around
+
+It stands on the shelf above the crosshair (`--above-locate`), across the
+width less the 10px gutter, and is built like a sheet — eyebrow, the line, one
+filled action, the way out, a cross in the corner. The line is the `tagline`
+key, the same sentence the desktop prints, and it is also the site's
+`og:description` and the WebSite description `functions/index.js` writes, so a
+shared link says the same thing. The eyebrow and the two buttons are
+`welcomeEyebrow`, `welcomeOk` and `welcomeTour`.
+
+It goes when it is told to — **Got it**, the cross — or the moment the map is
+used: a tap or a drag on it, or a place or the list opening. Then the rail
+introduces itself, exactly as below; the pills wait for the card, so there is
+one introduction at a time. **Show me around** is the one way out that does
+not: it starts **How this works**, which opens the labels it wants itself.
+The question mark on the rail pressed while the card is up does the same.
+
+It is owed by the same `ttb.introduced` flag as the cascade, and it waits
+the same way: a visitor who arrived on a place link or a story gets it when
+they are first looking at the map. A language switch while it is up rewrites
+it in place. It is a phone's alone — above 860px the sentence is in the
+corner — and `showWelcome()` and `dismissWelcome()` in `assets/app.js` are
+the whole of it.
+
 ### The rail introduces itself on a phone
 
 The rail runs the account, everybody's lists, Surprise me, Ask, the colour
@@ -11721,9 +11760,7 @@ and rolls back.
 
 It rolls out with the *first* pill rather than after the last. The row sits
 above the rail on the screen, so the introduction still reads top to bottom,
-and the rail's own arithmetic — eight pills 300ms apart against the sentence's
-7.6 seconds, the last of them collapsing at 7.45 — is left exactly where it
-was.
+and the rail's own arithmetic is left exactly where it was.
 
 **And the whole of it is a phone's.** `introduceRail()` asks `isNarrow()`
 before anything else and returns above 860px. Up there the chip row is already
@@ -11747,7 +11784,7 @@ name of the style it has just become the way back to. Surprise me and Ask do
 the opposite and shut their own label early — the question each of them
 answers is the question its label was there to ask, and each shuts its own:
 pressing one of the two is not an answer to the other. How this works shuts
-all of them, the arrival sentence included, because the walk it starts opens
+all of them, because the walk it starts opens
 the labels it wants itself and two introductions talking at once is neither.
 The radio does the same trick from outside this cascade now — starting it
 still opens the station's name, so a triangle in a circle is not the only
@@ -11767,8 +11804,8 @@ moment ago.
 **And it runs once.** The introduction is for a stranger, and the second
 visit is not a stranger's: a map that explains the die every morning to
 somebody who opens it every morning reads as a page that does not remember
-them, and for a while that is what it did, the sentence, the nine pills and
-the chip row on every arrival. So the cascade runs the first time this
+them, and for a while that is what it did, the nine pills and the chip row
+on every arrival. So the cascade runs the first time this
 browser opens the map, and `ttb.introduced` in `localStorage` records that
 it did; a return visit gets the discs, the way the desktop always has. The
 flag is written the moment the cascade actually runs rather than when it is
@@ -11973,9 +12010,9 @@ Everything above is an introduction that runs once, for a few seconds, and
 only for somebody who happened to be looking at the rail when it ran. A
 visitor who landed on a place, or on a story, or who spent the first ten
 seconds looking at the pins, gets a map that never said whose pins they are
-or what the buttons down the side do. The tagline under the mark says the
-first half, briefly, and at every width since the corner started stepping
-back; nothing on the page said the second half twice.
+or what the buttons down the side do. The welcome card says the first half on
+a phone's first visit, and the tagline beside the mark on a desktop whenever
+the corner is open; nothing on the page said the second half twice.
 
 So the last pill on the rail is a question mark labelled **How this works**,
 and pressing it walks the page rather than describing it. A cursor the size
@@ -12397,6 +12434,7 @@ The map, `assets/app.js`:
 | `account_password_change`, `account_rename` | — on success |
 | `account_nudge` | `taken` |
 | `saved_open` | — the row in the sheet |
+| `welcome_ok`, `welcome_tour` | — the two buttons on the welcome card; the cross and a touch on the map put it away without reporting |
 | `explain_open` | — |
 | `explain_step`, `explain_close` | `step`, one-based, the one being left |
 | `story_open`, `story_view`, `story_watch`, `story_sound`, `story_link` | see **Stories** |
