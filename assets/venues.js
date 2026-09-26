@@ -92,7 +92,7 @@
     /* id -> the label object for one cuisine, in every language. Two files
        feed it and they are deliberately disjoint: data/taxonomy.json already
        says asian, vegan, bakery, coffee, pub and fine-dining for the map's own
-       chips, and data/cuisines.json carries the thirty-seven the export needs
+       chips, and data/cuisines.json carries the thirty-nine the export needs
        on top of those. Copying the six into the second file would be six
        translations to keep in step with another six. */
     labels: {},
