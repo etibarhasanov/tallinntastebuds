@@ -1739,6 +1739,73 @@ body.lang-open .controls { z-index: 1250; }
   white-space: nowrap;
 }
 
+/* ---------- results ---------- */
+
+/* Enter in the find bar puts every result on the map and nothing else there,
+   which is the one time the bar narrows the map — RESULTS in assets/app.js.
+   The chips are a narrowing of my places and cannot be one of results that
+   are mostly Google's, so they go while results are up; emptying the field
+   brings them back. Hidden rather than taken out, so the row keeps the height
+   the fit measures the chrome by, and Search this area stands in it. */
+body.is-results .filter-bar {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* Search this area, where the chips were: under the find bar, in the middle
+   of it, once the map has been moved by hand over results. A chip, because it
+   stands in the chip row, and in the ink rather than the muted grey a chip at
+   rest takes, because it is the one thing on the row and it is a question the
+   map is asking. */
+.find-area {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--ink);
+}
+.find-area[hidden] { display: none; }
+
+/* "‹ 3 of 9 ›" over the card of a place that is one of the results. It sits
+   in the card's own flow above the name, so it scrolls away with the write-up
+   rather than standing over it, and it leaves the corner the close, the mark
+   and the share are placed in. */
+.result-steps {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+.result-count {
+  min-width: 56px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: var(--muted);
+  text-align: center;
+}
+.result-step {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  background: var(--paper);
+  color: var(--ink);
+  transition: border-color .15s var(--ease), color .15s var(--ease);
+}
+.result-step:hover { border-color: var(--accent); color: var(--accent); }
+.result-step svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* ---------- filters ---------- */
 
 /* The bar is fixed; only the chips inside it scroll, so the random-pick

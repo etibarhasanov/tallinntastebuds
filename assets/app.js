@@ -157,18 +157,31 @@
        is. Held apart from listPlaces because the two go away for different
        reasons — see forgetList() and forgetAnswer(). */
     askPlaces: [],
-    /* And the third door into the same machinery: the one venue the find bar
-       at the top of the map has been used to look up. Same stand-in shape as
-       the two above, drawn by the same loops, held apart for the same reason
-       — it goes away when the field is emptied and at no other time, which is
-       neither of theirs. See forgetFound().
+    /* And the third door into the same machinery: the Google venues the find
+       bar at the top of the map has put there. Same stand-in shape as the two
+       above, drawn by the same loops, held apart for the same reason — they
+       go away when the field is emptied, which is neither of theirs. See
+       forgetFound().
 
-       At most one. Finding somewhere is looking one place up, not narrowing
-       the map to a set of them, so a second search replaces the first rather
-       than leaving a trail of pins nobody asked to keep. An array all the
-       same, because every loop that draws a pin takes a list and none of them
-       should have to learn that this one is different. */
+       One venue after a row in the dropdown is pressed: looking one place up
+       is not narrowing the map, so a second pick replaces the first rather
+       than leaving a trail of pins nobody asked to keep. Every Google venue in
+       the results after Enter is pressed, which is the one time the bar does
+       narrow the map — see state.results below. */
     foundPlaces: [],
+    /* What the map is narrowed to after Enter in the find bar: every place
+       the words reached, mine and the city's, in the order the card's arrows
+       step through them — nearest the dot, or the middle of the map, first.
+
+       A mode, the third one, and the one that hides the chips rather than
+       giving way to them. A chip is a narrowing of my places and the results
+       are mostly not my places; "ramen, but only the laptop-friendly ones"
+       would be a chip nothing on the Google half can answer. So while results
+       are up the chip row is put away, and emptying the field is what brings
+       it back — with the map framed on everything, the way it opens.
+
+       Null on arrival and for every visit that never presses Enter there. */
+    results: null,       // { q, ids: [...] }, or null
     /* Who is signed in, and whether accounts work here at all. Both come
        from /api/account and both are absent until it answers. */
     account: { ready: false, google: false, user: null, linked: false, password: true },
@@ -334,10 +347,11 @@
 
   /* Everything that has a pin on the map right now: my seventy-six, plus the
      stand-ins for a list's places that are not among them, the ones an answer
-     on the whole city put there, and the one the find bar looked up. A list
-     and an answer are never both up — an answer puts a list away before it
-     draws — and a found venue can be up with either, because it narrows
-     nothing. The loops below do not need to know any of that.
+     on the whole city put there, and the ones the find bar put there. A list,
+     an answer and the find bar's results are never up together — each puts
+     the others away before it draws — and one venue looked up in the find bar
+     can be up with a list or an answer, because a pick narrows nothing. The
+     loops below do not need to know any of that.
 
      Deliberately not "everything the map knows about". state.places is the
      map and stays the map — the chips, the search, Surprise me, the just-added
@@ -375,11 +389,12 @@
      an answer puts a list away before it draws — so for those the mode says
      which and the place carries no flag for it.
 
-     The third is not a mode: somebody looked this one place up in the find
-     bar, and a list or an answer may perfectly well still be underneath it.
+     The third is the find bar's, and a venue picked from its dropdown is not
+     a mode: a list or an answer may perfectly well still be underneath it.
      So that one is asked about by name rather than inferred, which is why
-     this takes a place where it used to take nothing. Called without one it
-     answers as it always did. */
+     this takes a place where it used to take nothing — and it answers for
+     the bar's results after Enter too, which are its venues by the same
+     door. Called without one it answers as it always did. */
   function standInNote(place) {
     if (place && isFound(place.id)) return t('findNotMine');
     if (state.answer) return t('askNotMine');
@@ -388,7 +403,7 @@
       : t('listNotMine');
   }
 
-  /* Whether this is the venue the find bar put on the map. */
+  /* Whether this is a venue the find bar put on the map. */
   function isFound(id) {
     for (var i = 0; i < state.foundPlaces.length; i++) {
       if (state.foundPlaces[i].id === id) return true;
@@ -3696,9 +3711,12 @@
      listener that asks it. A chip added to this row later gets it without
      being told. */
   function toggleChip(id) {
-    /* Both modes go, and for one reason: a chip is a narrowing of the map,
-       and neither a list nor an answer is the map. The redraw is left to
-       applyFilters() below rather than done twice. */
+    /* The modes go, and for one reason: a chip is a narrowing of the map,
+       and neither a list nor an answer is the map. The find bar's results
+       hide the chips while they are up, so a press here with results under
+       it is Back or a link restoring one — and the results go the same way.
+       The redraw is left to applyFilters() below rather than done twice. */
+    forgetResults({ redraw: false });
     forgetAnswer({ redraw: false });
     forgetList();
     var at = state.active.indexOf(id);
@@ -3707,7 +3725,8 @@
   }
 
   function clearChips() {
-    if (!state.active.length && !state.list && !state.answer) return;
+    if (!state.active.length && !state.list && !state.answer && !state.results) return;
+    forgetResults({ redraw: false });
     forgetAnswer({ redraw: false });
     forgetList();
     state.active = [];
@@ -3767,7 +3786,10 @@
     });
   }
 
-  /* A list first, because while one is open it is the whole of what the map
+  /* The find bar's results first, then an answer, then a list: each is the
+     whole of what the map is showing while it is up, and never two at once.
+
+     A list, because while one is open it is the whole of what the map
      is showing — the mode above, answered before the chips are consulted at
      all. It is also the only state in which a stand-in is on the map at all:
      leaving a list empties state.listPlaces, so allPlaces() below the first
@@ -3778,6 +3800,7 @@
      Then the chips, over my own places. No chips is the whole map, and the
      whole map is mine. */
   function visiblePlaces() {
+    if (state.results) return resultPlaces();
     if (state.answer) return answerPlaces();
     if (state.list) return allPlaces().filter(function (p) { return isOnList(p.id); });
     if (!state.active.length) return state.places.slice();
@@ -5276,6 +5299,15 @@
      opened on Sunday afternoon would draw three closed restaurants under a
      sentence explaining that they are open. */
   function showAnswer(turn) {
+    /* Results out of the find bar go with their word: an answer is the map
+       now, and a field still saying "ramen" over it would be a word nothing
+       on screen is about. */
+    if (state.results) {
+      forgetResults({ redraw: false });
+      state.find = '';
+      dom.findInput.value = '';
+      dom.findClear.hidden = true;
+    }
     forgetList();
     state.active = [];
     setQuery('');
@@ -6108,6 +6140,9 @@
 
     TTBTrack.view(place.name);
     countPress('place', place.id);
+    /* The phone, the site and the week of a venue the find bar put there,
+       fetched the first time it is opened — see dressFound(). */
+    if (isFound(id)) dressFound(place);
   }
 
   function showList(focus, opts) {
@@ -6308,6 +6343,10 @@
        that. */
     var listUp = listOnScreen();
     if (detail) renderDetail(byId(state.selected)); else clear(dom.detail);
+    /* The arrows through the find bar's results, over whichever card is
+       open — a write-up or a stand-in's short one alike. */
+    var steps = detail && resultStepper();
+    if (steps) dom.detail.insertBefore(steps, dom.detail.firstChild);
     if (asking) renderAsk();
     var keep = opts && opts.keepList && lastListUp && dom.listBody.firstChild;
     if (listUp && !keep) renderList();
@@ -7614,6 +7653,12 @@
    * /api/venues?ids= and folded into the card when they land. The card is
    * drawn before they arrive and stands without them; nothing on this page
    * waits on /api/*.
+   *
+   * WHAT ENTER DOES
+   *
+   * Every result on the map at once, and nothing else there, with arrows on
+   * the card to walk them and Search this area once the map is moved. The
+   * one time this bar narrows the map; RESULTS below is the whole of it.
    */
 
   /* How many rows each group offers. Mine are few and all of them are worth
@@ -7891,24 +7936,18 @@
     return row;
   }
 
-  /* The dropdown as it stands: nothing at all while the field is empty, my
-     own places the moment anything is typed, and the city's underneath them
-     as soon as the roll is in. The note under both is the one line that says
-     what is happening — looking, nothing matched, or nothing to measure from
-     — and it is the live region, so a screen reader hears the outcome rather
-     than every row again on every keystroke. */
-  function renderFound() {
-    var typed = state.find.replace(/\s+/g, ' ').replace(/^ | $/g, '');
+  /* The field as it is read: runs of space made one, and none at either end. */
+  function findTyped() {
+    return state.find.replace(/\s+/g, ' ').replace(/^ | $/g, '');
+  }
 
-    findRows = [];
-    clear(dom.findBody);
-
-    if (!typed) {
-      dom.findNote.textContent = '';
-      dom.findOut.hidden = true;
-      return;
-    }
-
+  /* What a field reaches, on both halves — the one reading the dropdown and
+     the results after Enter both draw from, so the two can never disagree
+     about what "ramen" found. `bounds`, when given, is the part of the map to
+     hold the search to whatever the zoom: it is what Search this area passes.
+     Without it the part of the map is findArea()'s to decide, and falls back
+     to the whole city when nothing there answers. */
+  function findHits(typed, bounds) {
     /* What was asked for, and the words to look for. The reader takes the
        wish phrases and the joins out, so "pizza near me" looks for "pizza";
        a field that is nothing but a wish — "nearby", "cheap", "lähedal" —
@@ -7925,7 +7964,6 @@
        dot in reach, and what puts a distance on a row and the nearest first. */
     var at = findFrom(wish);
     var away = at ? measureFrom(at, state.places.concat(findRoll || [])) : null;
-    var far = function (place) { return away ? farWords(away[place.id] / 1000) : ''; };
 
     /* Held to the part of the map on screen when the visitor has zoomed in
        — see findArea() — and let go again when nothing there answers: an
@@ -7934,20 +7972,56 @@
        says which of the two it is showing. A slip only survives when nothing
        on either half answered better; see bestOnly(). Before the roll is in
        only mine are known, and the area is held on to until it is: the
-       city's half may yet answer inside it. */
-    var area = findArea(wish);
+       city's half may yet answer inside it. Asked about one part of the map
+       by name, and there is no letting go: an empty answer is the answer. */
+    var area = bounds || findArea(wish);
     var outside = false;
     var level = {};
     var mine = findMine(words, wish, away, area, level);
     var city = findCity(words, wish, away, area, level);
-    if (area && findRoll && !mine.length && !city.length) {
+    if (!bounds && area && findRoll && !mine.length && !city.length) {
       area = null;
       outside = true;
       mine = findMine(words, wish, away, null, level);
       city = findCity(words, wish, away, null, level);
     }
-    mine = bestOnly(mine, level).slice(0, FIND_MINE);
-    city = bestOnly(city, level);
+    return {
+      wish: wish,
+      at: at,
+      away: away,
+      area: area,
+      outside: outside,
+      mine: bestOnly(mine, level),
+      city: bestOnly(city, level)
+    };
+  }
+
+  /* The dropdown as it stands: nothing at all while the field is empty, my
+     own places the moment anything is typed, and the city's underneath them
+     as soon as the roll is in. The note under both is the one line that says
+     what is happening — looking, nothing matched, or nothing to measure from
+     — and it is the live region, so a screen reader hears the outcome rather
+     than every row again on every keystroke. */
+  function renderFound() {
+    var typed = findTyped();
+
+    findRows = [];
+    clear(dom.findBody);
+
+    if (!typed) {
+      dom.findNote.textContent = '';
+      dom.findOut.hidden = true;
+      return;
+    }
+
+    var hits = findHits(typed);
+    var wish = hits.wish;
+    var away = hits.away;
+    var area = hits.area;
+    var outside = hits.outside;
+    var far = function (place) { return away ? farWords(away[place.id] / 1000) : ''; };
+    var mine = hits.mine.slice(0, FIND_MINE);
+    var city = hits.city;
     var shown = city.slice(0, FIND_CITY);
 
     if (mine.length) {
@@ -8006,7 +8080,16 @@
      knowing which door it came in by. */
   function seatFound(row) {
     forgetFound({ redraw: false });
-    var place = cityStandIn({
+    var place = foundStandIn(row);
+    state.foundPlaces = [place];
+    addPins(state.foundPlaces);
+    return place;
+  }
+
+  /* A row off the roll in the stand-in shape. Only what the roll carries:
+     the rest is dressFound()'s, one venue at a time, once it is opened. */
+  function foundStandIn(row) {
+    return cityStandIn({
       id: row.id,
       name: row.name,
       address: row.address || '',
@@ -8017,9 +8100,6 @@
       rating: typeof row.rating === 'number' ? row.rating : null,
       reviews: typeof row.reviews === 'number' ? row.reviews : null
     });
-    state.foundPlaces = [place];
-    addPins(state.foundPlaces);
-    return place;
   }
 
   /* The half the roll does not carry: the number to ring, the site to read
@@ -8028,8 +8108,15 @@
      contact block and nothing else. A reply that arrives after the visitor
      has moved on is dropped rather than drawn: state.foundPlaces is checked
      again on the way back in, which is what stops a slow answer redressing a
-     place that is no longer the one being read. */
+     place that is no longer the one being read.
+
+     Asked by selectPlace() the first time a venue the bar put there is
+     opened, however it was opened — a row, a pin, or the arrows on the card
+     stepping through results — and once: `dressed` is set on the way out, so
+     stepping back to a place does not ask for it twice. */
   function dressFound(place) {
+    if (place.dressed) return;
+    place.dressed = true;
     getJSON('/api/venues?ids=' + encodeURIComponent(place.id)).then(function (rows) {
       if (!rows || !rows.length || !rows[0]) return;
       if (!isFound(place.id)) return;
@@ -8055,6 +8142,16 @@
     findRows = [];
     dom.findInput.blur();
 
+    /* With results up, a row that is one of them is a step to it — the map
+       is already showing it, and the arrows on its card carry on from there.
+       A row that is not one of them is a different question: the results go,
+       and this is the one place looked up, the way it would have been with
+       no results under it. */
+    if (state.results) {
+      if (state.results.ids.indexOf(id) !== -1) { selectPlace(id, { fly: true }); return; }
+      forgetResults();
+    }
+
     /* Before the fly below moves anything: the first pick of a search is the
        last place the map stood on its own, and that is what emptying the
        field is going to fly back to. */
@@ -8074,7 +8171,6 @@
 
     var place = seatFound(row);
     selectPlace(place.id, { fly: true });
-    dressFound(place);
   }
 
   /* The venue going off the map again, and everything that was standing on
@@ -8102,9 +8198,10 @@
      so the city half appears under my own places without anything being
      typed a second time.
 
-     An empty field is the default map: the pin the bar dropped goes, and
-     nothing else about the page has been touched, because this bar narrows
-     nothing. That is the whole of "clearing it puts it back". */
+     An empty field is the default map. After a pick, the pin the bar dropped
+     goes and nothing else about the page has been touched, because a pick
+     narrows nothing. After Enter, the results go and the chips come back —
+     see forgetResults(). That is the whole of "clearing it puts it back". */
   function setFind(next) {
     if (dom.findInput.value !== next) dom.findInput.value = next;
     if (next === state.find) return;
@@ -8112,6 +8209,16 @@
     dom.findClear.hidden = !next;
 
     if (!next) {
+      /* Results are the one time this bar narrowed the map, and emptying it
+         is how they end: the chips come back and the map is framed on
+         everything, the way it opens, rather than left on the view the
+         last result was read at. */
+      if (state.results) {
+        forgetResults();
+        findReturn = null;
+        renderFound();
+        return;
+      }
       forgetFound();
       /* The zoom and pan a pick flew to are the other half of "nothing else
          has been touched" — a visitor who searched from the whole city and
@@ -8138,6 +8245,230 @@
       if (state.find === next) renderFound();
     });
     trackFind(next);
+  }
+
+  /* ------------------------------------------------------------- results
+   *
+   * Enter in the find bar. A row in the dropdown is one place looked up;
+   * Enter is every place the words reached, on the map at once and nothing
+   * else there: type "ramen", press Enter, and zooming out shows ramen and
+   * only ramen, mine and the city's. The card opens on the first of them
+   * with an arrow either side of "1 of 9", and the arrows walk the rest.
+   *
+   * Moved by hand, the map offers "Search this area" where the chips were,
+   * and pressing it asks the same words again of the part of the map on
+   * screen. It is a button and not a search that follows the map on its
+   * own: pins jumping while somebody is still dragging is a map that will
+   * not hold still to be read, and a wide zoom-out would pull in two
+   * hundred cafés nobody asked for.
+   *
+   * The chips go while results are up — the header over state.results says
+   * why — and emptying the field is the way out: the chips come back and
+   * the map is framed on everything, the way it opens.
+   */
+
+  /* How many results go on the map at once, nearest first. Mine are never
+     more than seventy-odd, but "coffee" over the whole city is two hundred,
+     and two hundred pins is not a map anybody can read; the toast says how
+     many there were and that zooming in and searching the area brings the
+     rest. */
+  var FIND_RESULTS = 60;
+
+  /* Whether the map has been moved by a hand since the results were drawn,
+     which is what puts Search this area up. A drag, a wheel, a pinch or a
+     double-tap set it; a move this page makes itself — framing the results,
+     stepping to the next one — sets nothing, so the button never offers to
+     search somewhere the visitor did not go. */
+  var findMoved = false;
+
+  function resultPlaces() {
+    var out = [];
+    for (var i = 0; i < state.results.ids.length; i++) {
+      var place = byId(state.results.ids[i]);
+      if (place) out.push(place);
+    }
+    return out;
+  }
+
+  /* Enter, and Search this area, which is Enter held to `bounds`. The roll
+     is waited for rather than raced — Enter pressed on the first word typed
+     arrives before it has landed — and dropped if the field changed while it
+     was in the air.
+
+     Nothing found and the map is left alone: from Enter the dropdown stays
+     up saying so, which is the answer the visitor was already looking at;
+     from Search this area it is a toast, and the results that were there
+     stay, because "no ramen in this part of town" is not a reason to lose
+     the ramen somebody had. */
+  function submitFind(bounds) {
+    var typed = findTyped();
+    if (!typed) { dom.findInput.blur(); return; }
+    findLoad().then(function () {
+      if (findTyped() !== typed) return;
+      var hits = findHits(typed, bounds);
+      var found = hits.mine.concat(hits.city);
+      if (!found.length) {
+        if (bounds) {
+          dom.findArea.hidden = true;
+          toast(t('findNoneInArea', { q: typed }));
+        } else {
+          renderFound();
+        }
+        return;
+      }
+      showResults(typed, found, hits, bounds);
+    });
+  }
+
+  function showResults(typed, found, hits, bounds) {
+    /* Nearest first, from the dot when there is one in reach and otherwise
+       from the middle of the part of the map searched — so "next" walks to
+       a neighbour rather than across the city and back. */
+    var from = hits.at || (bounds ? bounds.getCenter() : map.getCenter());
+    var away = measureFrom(from, found);
+    found.sort(function (a, b) { return away[a.id] - away[b.id]; });
+    var total = found.length;
+    found = found.slice(0, FIND_RESULTS);
+
+    /* The modes the results replace, and the one place a pick dropped. */
+    forgetAnswer({ redraw: false });
+    forgetList();
+    forgetFound({ redraw: false });
+    state.active = [];
+    if (isNarrow() && filterMenuOpen()) closeFilterMenu();
+
+    var city = [];
+    var ids = [];
+    for (var i = 0; i < found.length; i++) {
+      var place = byMapId(found[i].id) ? found[i] : foundStandIn(found[i]);
+      if (place !== found[i]) city.push(place);
+      ids.push(place.id);
+    }
+    state.foundPlaces = city;
+    addPins(city);
+    state.results = { q: typed, ids: ids };
+    findReturn = null;
+    findMoved = false;
+    document.body.classList.add('is-results');
+
+    dom.findOut.hidden = true;
+    findRows = [];
+    dom.findInput.blur();
+    dom.findArea.hidden = true;
+    renderFilters();
+    /* Drawn now, because the card opening below keeps whatever list is
+       standing beside it — and the list standing there is the map's. */
+    renderList();
+
+    TTBTrack.event(bounds ? 'find_area' : 'find_submit', {
+      search_term: typed.toLowerCase(),
+      results: total
+    });
+
+    /* The first result open, and — from Enter — the map framed on all of
+       them in the strip the card leaves, which is the whole point: zoom out
+       and it is ramen. The fit waits out the sheet's own rise on a phone,
+       for the reason refocus() waits: it measures what the panel covers. Search
+       this area leaves the map where the visitor put it and only carries
+       the first result clear of the card. */
+    selectPlace(ids[0], { fly: false });
+    if (!bounds) {
+      cancelRefocus();
+      window.setTimeout(function () {
+        if (state.results && state.results.q === typed) fitToPins({ animate: true, clearPanel: true });
+      }, isNarrow() && !reduceMotion() ? 320 : 0);
+    }
+    if (total > found.length) toast(t('findCapped', { n: found.length, total: total }));
+  }
+
+  /* The results going, and everything they brought: the city's pins, the
+     body class that put the chips away, the button. The panel drops back to
+     the list and the map is framed on everything, which is the map as it
+     opens. `redraw: false` is for a caller about to draw the map its own way —
+     an answer from the chat, a chip — the rule forgetAnswer() keeps. */
+  function forgetResults(opts) {
+    if (!state.results) return;
+    state.results = null;
+    findMoved = false;
+    document.body.classList.remove('is-results');
+    dom.findArea.hidden = true;
+    forgetFound({ redraw: false });
+    if (opts && opts.redraw === false) return;
+    state.selected = null;
+    state.view = 'list';
+    renderFilters();
+    renderPanel();
+    if (isNarrow()) closePanel({ history: false });
+    paintMarkers();
+    cancelRefocus();
+    fitToPins({ animate: true });
+    syncUrl();
+  }
+
+  /* One step along the results, from the card's arrows. Round the end and
+     back to the start, the way a story queue does not and a carousel does:
+     the results have no last one worth stopping on, and an arrow that goes
+     dead at nine is a control that looks broken. */
+  function stepResult(delta) {
+    if (!state.results || !state.selected) return;
+    var ids = state.results.ids;
+    var at = ids.indexOf(state.selected);
+    if (at === -1) return;
+    var next = ids[(at + delta + ids.length) % ids.length];
+    TTBTrack.event('find_step', { direction: delta > 0 ? 'next' : 'prev' });
+    selectPlace(next, { fly: false });
+  }
+
+  /* "‹ 3 of 9 ›" over the card, while the place open is one of the results.
+     Two real buttons and the count between them, which is what a screen
+     reader is told the buttons are stepping through. */
+  function resultStepper() {
+    if (!state.results || !state.selected) return null;
+    var ids = state.results.ids;
+    var at = ids.indexOf(state.selected);
+    if (at === -1 || ids.length < 2) return null;
+    var arrow = function (delta, key, d) {
+      var btn = el('button', {
+        type: 'button',
+        className: 'result-step',
+        'aria-label': t(key),
+        title: t(key),
+        html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="' + d + '"/></svg>'
+      });
+      btn.addEventListener('click', function () { stepResult(delta); });
+      return btn;
+    };
+    return el('div', { className: 'result-steps' }, [
+      arrow(-1, 'findPrev', 'M14.5 6l-6 6 6 6'),
+      el('span', {
+        className: 'result-count',
+        textContent: t('findStep', { i: at + 1, n: ids.length })
+      }),
+      arrow(1, 'findNext', 'M9.5 6l6 6-6 6')
+    ]);
+  }
+
+  /* A hand on the map, which is what puts Search this area up once the move
+     it started has ended. Leaflet's dragstart is a drag; the wheel is ours
+     (takeWheel) and says nothing to Leaflet's events, so it is heard on the
+     container; a pinch is two fingers down; a double-tap is a zoom. */
+  function wireFindMoved() {
+    var box = map.getContainer();
+    var touched = function () { if (state.results) findMoved = true; };
+    map.on('dragstart', touched);
+    box.addEventListener('wheel', touched, { passive: true });
+    box.addEventListener('dblclick', touched);
+    box.addEventListener('touchstart', function (ev) {
+      if (ev.touches && ev.touches.length > 1) touched();
+    }, { passive: true });
+    map.on('moveend', function () {
+      if (!state.results || !findMoved) return;
+      if (dom.findOut.hidden) dom.findArea.hidden = false;
+    });
+    dom.findArea.addEventListener('click', function () {
+      dom.findArea.hidden = true;
+      submitFind(map.getBounds());
+    });
   }
 
   /* One event per search, the way the column's field reports: what people
@@ -8416,7 +8747,13 @@
        neither has a distance to print or a heading to name one. */
     var from = null;
 
-    if (reading) {
+    if (state.results) {
+      /* Results in the order the card's arrows walk them, so the column and
+         the arrows never disagree about which one is next. */
+      var step = {};
+      state.results.ids.forEach(function (id, i) { step[id] = i; });
+      places.sort(function (a, b) { return step[a.id] - step[b.id]; });
+    } else if (reading) {
       /* The order is the whole point of a top ten. Its owner dragged these
          into the order they are in, and the alphabet would throw away the one
          piece of information a list carries that a filter does not. */
@@ -8543,7 +8880,10 @@
        flag that worked out which heading came first has one answer. So the
        heading and its list are built here, the way the branch above builds
        the list's own. */
-    var name = t(mine ? 'listSaved' : from.here ? 'listNearYou' : 'listNearOldTown');
+    /* Results out of the find bar are headed by the words that found them,
+       which is the one thing that says why these and not the map. */
+    var name = state.results ? state.results.q
+      : t(mine ? 'listSaved' : from.here ? 'listNearYou' : 'listNearOldTown');
     var count = places.length === 1 ? t('listCountOne') : t('listCount', { n: places.length });
 
     /* The count is spelled into the label rather than left to the name
@@ -10340,15 +10680,13 @@
       setFind('');
       dom.findInput.focus();
     });
-    /* Enter picks the first row rather than submitting anything — there is
-       nothing to submit, and a phone's keyboard shows a Search key that has
-       to do something. With nothing found it puts the keyboard away, which is
-       what the column's field does with Enter too. */
+    /* Enter is every result on the map at once — see RESULTS above
+       submitFind(). A row is still one place: the arrows reach them, and
+       Enter on a row is the row's own press, since it is a button. */
     dom.findInput.addEventListener('keydown', function (ev) {
       if (ev.key !== 'Enter') return;
       ev.preventDefault();
-      if (findRows.length) findRows[0].click();
-      else dom.findInput.blur();
+      submitFind();
     });
     /* On the box and not on the field, so one press is one step. The field is
        inside the box, so a keydown in it arrives here by bubbling; handling
@@ -10630,6 +10968,7 @@
       find: $('find'),
       findInput: $('find-input'),
       findClear: $('find-clear'),
+      findArea: $('find-area'),
       findOut: $('find-out'),
       findNote: $('find-note'),
       findBody: $('find-body'),
@@ -10748,6 +11087,7 @@
       renderLanguageSwitch();
       renderStyleSwitch();
       initMap();
+      wireFindMoved();
       wireLocation();
       buildMarkers();
       renderFilters();
