@@ -7297,7 +7297,8 @@
       return;
     }
 
-    fitLatLngs([[latlng.lat, latlng.lng], [nearest.lat, nearest.lng]], {
+    var mirror = [2 * latlng.lat - nearest.lat, 2 * latlng.lng - nearest.lng];
+    fitLatLngs([[nearest.lat, nearest.lng], mirror], {
       animate: true,
       maxZoom: HERE_ZOOM,
       floor: 0,

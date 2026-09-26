@@ -398,6 +398,14 @@ and the map said nothing. Now the locate button frames you together with the
 nearest place the chips allow, so you land looking at somewhere you could walk
 to, and the chips keep the map on their own places from then on.
 
+You are the middle of that frame, not one corner of it. The fit first took the
+two of you as opposite corners, which centred the map on the halfway point and
+left the dot out towards an edge — on a phone, with the top row, the rail and
+the arrow standing on the map, far enough out that the button looked as though
+it had found you and then gone somewhere else. `frameHere()` now fits the
+place and its mirror image through you, so the zoom still holds the place and
+the dot lands in the middle of the strip the chrome leaves.
+
 How close that frame goes is `HERE_ZOOM` in `assets/app.js`, and because the
 pair is usually you and a place across the road, the cap is what decides it
 nearly every time rather than the fit. It was 15 until somebody pressed the
