@@ -12,7 +12,7 @@ Google's numbers do appear, and every time they do they say whose they are:
 the Places export that are not on my map — that line is all there is. On the
 sixty-odd of mine that Google also lists, it is a section at the foot of the
 panel, under Google's name, with where those two numbers put the place among
-all eleven hundred. The one page where they can be sorted by is `/google`,
+all eleven hundred. The one page where they can be sorted by is `/admin/google`,
 which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
@@ -295,7 +295,7 @@ account, and a fourteenth row here is a fourteenth list that needs a name.
 See **[The chips, as lists](#the-chips-as-lists)** under **Lists**.
 
 The counts above are how many places carry each type, which is a fact about
-the map rather than about anybody reading it. `/stats` is the other half and
+the map rather than about anybody reading it. `/admin/stats` is the other half and
 the one this order is really trying to guess: how often each chip is actually
 pressed. It is not wired to anything and the row is still ordered by hand, on
 purpose — a chip row that rearranged itself under people's thumbs would move
@@ -2438,7 +2438,7 @@ argument of the site rather than adding a feature. That is a decision for a
 person, not a patch — which is how the page above was arrived at, and it took
 the argument in **Public lists** to arrive at it.
 
-**And on sorting by one, which `/google` does.** Google's numbers already
+**And on sorting by one, which `/admin/google` does.** Google's numbers already
 appear on Google's places, attributed every time — that is settled above and in
 **A Google row says whose description it is**. The directory goes one step
 further: it offers "Highest rated", "Most reviewed" and "Best overall" — the
@@ -2457,14 +2457,14 @@ Google's opinion rather than a way of stating one. Refusing to sort it would
 not be principled either; it would just make Google's directory harder to use
 without making it any less Google's.
 
-**And on printing the position, which `/google` now does.** Every card there
+**And on printing the position, which `/admin/google` now does.** Every card there
 opens with **#1**, **#15**, **#1,110** — see **Where a place stands** under
 **The directory** — and that is a further step than sorting, so it is worth
 saying where it lands rather than letting it ride on the paragraph above.
 
 Sorting leaves the reader to notice that this place came before that one.
 Printing the number says it out loud, and a sentence said out loud is easier to
-mistake for mine. Three things keep it Google's. On `/google` it is a bare
+mistake for mine. Three things keep it Google's. On `/admin/google` it is a bare
 **#15**, and it goes nowhere else in that form — not on a list row, not in the
 picker, not on the card the map draws for a place off this export. The one
 other place it appears is the panel for a place of mine, and there it is the
@@ -3919,7 +3919,7 @@ whose description it is**. They are also still what decides which of these
 places are worth promoting onto the map.
 
 Two things sort by them, and neither is a ranking of anything this site
-vouches for. `/google` is a directory of Google's rows, in Google's order, and
+vouches for. `/admin/google` is a directory of Google's rows, in Google's order, and
 it says so — see **The directory**; it also prints where that order puts each
 row, which `rank` carries and **Where a place stands** argues for. And six
 lists, under an account called `google-statistics`, are Google's top tens and
@@ -3963,7 +3963,7 @@ one signal this site already has about which places matter: somebody opening
 one.
 
 When a place whose Google numbers the site prints is opened — a card on
-`/google`, a Google place on the map, or one of the sixty-one places of mine the
+`/admin/google`, a Google place on the map, or one of the sixty-one places of mine the
 export also lists, whose panel ends "According to Google" (**Google, on a place
 of mine**) — the page tells `/api/stats` so the open is counted. For a place of
 mine the Google row is found by `map_id`, the same way that panel finds it. If
@@ -3987,7 +3987,7 @@ What it leaves alone, and why:
   carry it, and this writes with nobody watching, so it takes the side that
   cannot wipe a good phone number.
 - **`rank`.** It is every row's position among all of them, so one row's new
-  count cannot place it. `/google` sorts by its own copy of the arithmetic in
+  count cannot place it. `/admin/google` sorts by its own copy of the arithmetic in
   the browser, so the order follows the new numbers at once; only the printed
   position waits for the next export load.
 - **The six lists under `google-statistics`.** They are still written from the
@@ -4013,11 +4013,12 @@ the row is stamped first, and only one stamp finds it still due.
 
 **Where it says what it did.** `google_refreshes` logs every call — which place,
 whether it moved, what from and to, or why it failed — and keeps ninety days.
-The **Google** tab on `/admin.html` reads it through `/api/refreshes`, with the
-day's and the month's calls against their limits, how much of the directory has
-been refreshed, and how much is due. That route answers anybody: the numbers in
-it are Google's public ones, which `/api/venues` already hands out, and `key`
-says whether the secret is set without saying a character of it.
+The **Google** tab on `/admin.html` reads it through `/api/admin/refreshes`,
+with the day's and the month's calls against their limits, how much of the
+directory has been refreshed, and how much is due. That route answers the
+owner alone, like everything under `/api/admin/` — so the tab fills when the
+owner is signed in on the site, whatever the admin page's own door says — and
+`key` says whether the secret is set without saying a character of it.
 
 **What the numbers used to be.** A refresh writes the new rating and review
 count over the old ones in `google_venues`, and `google_refreshes` forgets
@@ -4094,7 +4095,7 @@ And the panel for a place of mine, for the one row `map_id` joins to it —
 the score, the position, the week and the listing, drawn under Google's name
 at the foot of the panel. See **Google, on a place of mine**, below.
 
-And `/google`, which is the whole table rather than the part any of
+And `/admin/google`, which is the whole table rather than the part any of
 those needs: all 1,110 rows in one answer, so a filter can run over them. See
 **The directory**.
 
@@ -4115,7 +4116,7 @@ MON  Closed          TUE  16:00–21:00   …
 
 - **The score and the count**, together, in the reading language's digits —
   `scoreMark()`, the same span the card for a Google place draws.
-- **The position**, as the full sentence `/google` keeps behind a hover
+- **The position**, as the full sentence `/admin/google` keeps behind a hover
   (`venuesRankTitle`), never as a bare **#105**. On the directory the number
   sits in a page that has already said whose numbers these are; on my panel it
   is under my write-up, and the sentence is what stops it reading as mine.
@@ -4134,7 +4135,7 @@ MON  Closed          TUE  16:00–21:00   …
 - **The listing**, by its key, at the address Google documents for opening a
   place by `place_id` — nothing `/api/venues` does not already send.
 
-Every string here was already in `data/ui.json` for `/google` or the card, so
+Every string here was already in `data/ui.json` for `/admin/google` or the card, so
 it costs no new keys and speaks all ten languages on the day it lands.
 
 **It is asked for, not shipped with the map.** `data/restaurants.json` is
@@ -4299,12 +4300,12 @@ that forgot the lists fails CI.
 
 ## The directory
 
-`/google` — every place in this city you can eat or drink in, searchable,
+`/admin/google` — every place in this city you can eat or drink in, searchable,
 filterable, with a map of the matches beside the list. Eleven hundred and ten
 of them, out of `google_venues`.
 
-**Nothing links to it.** Not the map, not the lists page, not the sitemap. It
-carries `noindex, nofollow` and `robots.txt` disallows it. That is deliberate
+**Nothing links to it but the admin page.** Not the map, not the lists page,
+not the sitemap. It carries `noindex, nofollow` and `robots.txt` disallows it. That is deliberate
 and it is the price of the page existing at all: it is Google's description of
 Tallinn and this site is one person's, and the two must not be mistaken for
 each other by a reader or by a search engine. The first paragraph on the page
@@ -4312,22 +4313,25 @@ says which one it is, in ten languages, before anything else is drawn.
 
 **And only the owner can open it.** An unlinked address is still an address,
 and this one handed the whole export — every phone number, website and week of
-opening hours — to anybody who typed it, in one answer. So `/google` and
-`/google.html` answer 404 to anybody who is not signed in as an account `ADMINS`
-in `wrangler.toml` names, out of `functions/_middleware.js`, and `GET
-/api/venues` with neither `?ids=` nor `?map=` — the whole roll — answers 403 to
-them and `no-store` to the owner. The two narrow asks stay open and cached,
-because the map itself makes them for anybody who opens a place: fifty rows at
-most, each named by a key the asker already holds. The gate is the one
+opening hours — to anybody who typed it, in one answer. So the page lives
+under `/admin/` and the whole roll under `/api/admin/`, and
+`functions/_middleware.js` answers both prefixes only for a signed-in account
+`ADMINS` in `wrangler.toml` names: a 404 for the page and a 403 for the data to
+anybody else, `no-store` to the owner. `/google`, where the page used to be,
+is a 404 to everybody. The two narrow asks, `/api/venues?ids=` and `?map=`,
+stay where they were, open and cached, because the map itself makes them for
+anybody who opens a place: fifty rows at most, each named by a key the asker
+already holds; `/api/venues` with neither is a 404. The gate is the one
 **Statistics** uses; **Only the owner can open it** there says who the owner
 is and why it is an id rather than a name.
 
 ```
-google.html            the page, served at /google
-assets/venues.js       ES5, one IIFE, like every other file in assets/
-assets/venues.css      only what a directory has and the map does not
-functions/api/venues.js  GET /api/venues
-data/cuisines.json     37 cuisine labels in ten languages
+admin/google.html          the page, served at /admin/google
+assets/venues.js           ES5, one IIFE, like every other file in assets/
+assets/venues.css          only what a directory has and the map does not
+functions/api/venues.js    GET /api/venues?ids= and ?map=, the narrow asks
+functions/api/admin/venues.js  GET /api/admin/venues, the whole roll
+data/cuisines.json         37 cuisine labels in ten languages
 ```
 
 ### What it shows
@@ -4423,7 +4427,7 @@ Morii Tea House is 5.0 from 165 reviews and stands #15 — and that disagreement
 is the whole argument for having both orders, made visible on the card.
 
 **The total is the roll the reader is looking at**, not a constant: the page
-counts what `/api/venues` handed it, so a row switched off with `hidden` or
+counts what `/api/admin/venues` handed it, so a row switched off with `hidden` or
 dropped by a refresh takes itself out of the "of 1,110" without anybody editing
 a sentence.
 
@@ -4554,11 +4558,10 @@ The same over-broad pattern is still in `VENUE_TYPES` in
 export place, so the map calls that ramen shop a beer pub too. Different file,
 different callers, its own change.
 
-### One answer, cached, and the page does the narrowing
+### One answer, and the page does the narrowing
 
-`/api/venues` takes no query parameters. The whole roll goes out in one response
-with five minutes on it, exactly as `/api/places` does, and the browser filters
-it. That is not laziness about SQL: the page draws a map of every match beside
+`/api/admin/venues` takes no query parameters. The whole roll goes out in one
+response, to the owner and never cached, and the browser filters it. That is not laziness about SQL: the page draws a map of every match beside
 the list, so it needs every matching pin whatever the filter says, and "open
 now" is a question about a week of opening hours rather than something a `WHERE`
 clause can answer. A filtered endpoint would mean a round trip per keystroke to
@@ -5148,7 +5151,7 @@ order. The same is true of `?sort=kept` links from the days that was the
 default, except that one is still a real order and arrives at itself.
 
 **Where the number comes from.** `press_counts`, the same table the map's
-places are ranked out of on `/stats`, under a third `kind` of its own:
+places are ranked out of on `/admin/stats`, under a third `kind` of its own:
 `list`, with the list's id. `countOpen()` in `assets/lists.js` posts one to
 `/api/stats` when a list's own page has drawn, once per load, however the
 reader got there — the directory, a link somebody sent, a byline, a search
@@ -5361,7 +5364,7 @@ plural of the thing. `/lists` is everybody's lists, it is one segment, and it
 is the address that fits in a sentence somebody says out loud.
 
 The cost is that `/lists` was not free. Pages serves `lists.html` at both
-`/lists` and `/lists.html`, the way it serves `google.html` at `/google`, so
+`/lists` and `/lists.html`, the way it serves `feedback.html` at `/feedback`, so
 the bare address already answered — with the page that has nothing of its own
 on it any more and replaces itself with `/account.html`. A Function outranks a
 static asset at the same path, which is what makes `functions/lists/index.js`
@@ -6739,7 +6742,7 @@ statement per read — and a save says *Pages are not switched on here yet.*
 opened, where the people opening it came from, which country, and what on it
 they pressed — over the last 7, 28 or 90 days or all of it. It is read by
 the owner of the page and by nobody else; nothing about it is printed on the
-profile, on `/stats` or anywhere a stranger can see, and the route has no way
+profile, on `/admin/stats` or anywhere a stranger can see, and the route has no way
 to ask about anybody but yourself. The door to it is a row on the account
 page's first card, beside **Your public profile** and **Build your page**,
 and that row's second line is the one number worth having without opening
@@ -6818,7 +6821,7 @@ written into `data/ui.json` ten times. Cloudflare's *XX* and Tor's *T1* are
 **What was pressed** is every row on your page of links — a link followed, a
 player opened, a note opened — each of the three handles, and on a profile
 that is a card rather than a page, each of your lists. Every press, not once
-a load, for the reason the rail on `/stats` counts every press: which link
+a load, for the reason the rail on `/admin/stats` counts every press: which link
 people actually push is the question. A row is filed under its title,
 because `profile_rows` is keyed on a row's position and that moves every
 time the page is reordered; a row renamed or taken down drops off the table,
@@ -6851,7 +6854,7 @@ Nothing is deleted either, so all time means all of it. A page opened a few
 dozen times a day is a few thousand rows a year; the day that stops being
 small, the answer is a monthly roll-up, and it is not worth writing before
 then. And nothing stops somebody posting to the route in a loop to inflate
-their own page — which is the bargain `/stats` already makes, for the same
+their own page — which is the bargain `/admin/stats` already makes, for the same
 reason: nobody is paid for the number, and the only person who reads it is
 the one it is about.
 
@@ -9516,7 +9519,7 @@ came here to find dinner. **How this works** is already the short answer, in
 eight sentences, at the moment somebody wants it.
 
 **It is not hidden from search, though, and that is the difference between
-this page and `/google`.** The directory is unlinked *and* `noindex` *and*
+this page and `/admin/google`.** The directory is unlinked *and* `noindex` *and*
 disallowed in `robots.txt`, because it is Google's description of Tallinn and
 must never turn up beside the pages that are the verdict. The blog is this
 site's own writing about itself: being read by somebody who searched for why
@@ -9783,7 +9786,7 @@ owner reads the page.
 
 ## Statistics
 
-`/stats` — which places get opened, and which chips and buttons get pressed.
+`/admin/stats` — which places get opened, and which chips and buttons get pressed.
 The map says where to eat, the blog says why the site works the way it does,
 the feedback page listens; this is the one that counts.
 
@@ -9801,24 +9804,29 @@ and **Not indexed, and not disallowed either** below says why.
 
 ### Only the owner can open it
 
-Pressing is anybody's and reading is one person's. The `POST` that counts a
-press stays open, because every page on the site sends it; the page and the
-`GET` that ranks the presses answer only to a signed-in account whose
-`users.id` is named in `ADMINS` in `wrangler.toml`. Anybody else asking for
-`/stats` or `/stats.html` gets a plain 404 out of `functions/_middleware.js`
-— a 404 rather than a 403, so the address does not advertise itself — and
-anybody asking `GET /api/stats` directly gets a 403 before the cache is
-consulted.
+Pressing is anybody's and reading is one person's. `POST /api/stats`, which
+counts a press, stays open, because every page on the site sends it. The page
+lives at `/admin/stats` and the ranking at `GET /api/admin/stats`, and
+`functions/_middleware.js` answers everything under `/admin/` and
+`/api/admin/` only for a signed-in account whose `users.id` is named in
+`ADMINS` in `wrangler.toml`. Anybody else gets a plain 404 for the page — a
+404 rather than a 403, so the address does not advertise itself — and a 403
+for the data, before the route or its cache is reached. `/stats`, where the
+page used to be, is a 404 to everybody, and so is `GET /api/stats`.
+
+One lock on two prefixes rather than a check in each route, so a page or a
+route added under either is locked by where it is put.
 
 The id rather than the username, because a username can be changed and, thirty
 days later, claimed by somebody else; a gate keyed on a name would hand the
 numbers to whoever took it next. The rule and why it fails closed is the header
-of `functions/api/_admin.js`, and `/google` is gated by the same one — see
+of `functions/api/_admin.js`, and `/admin/google` is gated by the same one — see
 **The directory**.
 
 It is not the door on `/admin.html`. That page holds a GitHub token and never
 talks to the server; the site's own accounts are the identity the server can
 already check, so the owner signs in on the map as usual and the two pages open.
+The admin page links to both, under its tabs.
 `ADMINS` is empty in the preview blocks, where the owner has no account yet —
 put a preview `users.id` there to drive the page under `wrangler pages dev`.
 
@@ -9943,7 +9951,7 @@ than two.
 
 ### One request on the way in, and five minutes of cache
 
-`GET /api/stats?lang=` answers with the ranking **and** the page's words in one
+`GET /api/admin/stats?lang=` answers with the ranking **and** the page's words in one
 block, so `assets/stats.js` never fetches `data/ui.json` at all — the
 arrangement the flashcards page introduced, and `wordsFor()` in
 `functions/api/_lib.js` is now shared by both.
@@ -10021,7 +10029,7 @@ One more number, under the total of opens and in the same style: `SELECT
 COUNT(*) FROM users`, read fresh on every cache miss rather than kept as a
 running total — the table this counts is small enough, unlike `press_counts`,
 that there is nothing to save by not asking it directly. `users` in the
-answer `/api/stats` gives, `statsUsersTotal` in `data/ui.json` the sentence
+answer `/api/admin/stats` gives, `statsUsersTotal` in `data/ui.json` the sentence
 around it, drawn in `assets/stats.js` right under **A count and not a log**'s
 own footnote.
 
@@ -10806,8 +10814,11 @@ functions/api/lists.js     somebody else's top ten: make one, fill it, share
                            it, keep somebody else's, add a place nobody has
 functions/api/places.js    the roll the picker searches: the map plus the export
 functions/api/venues.js    the Google Places directory, whole and unmerged
-functions/api/refreshes.js what the Google refresh has done lately, for the
-                           Google tab on /admin.html
+functions/api/admin/       the owner's routes, locked by functions/_middleware.js:
+                           stats.js the ranking, venues.js the whole directory,
+                           refreshes.js what the Google refresh has done lately
+                           for the Google tab on /admin.html
+functions/api/_admin.js    who the owner is (not a route: leading _)
 functions/api/geocode.js   a typed street to a point, for the add-a-place form
                            and for "near Laulupeo" in the chat; Photon behind it,
                            a session in front of the route
@@ -10888,10 +10899,10 @@ clips/                     GENERATED — the looping clip on each post, and the
 clips/scenes/              scenes, made of the site's own components, that
                            tools/blogclips.mjs draws them from
 tools/blogclips.mjs        one frame a launch, diffed, written as one APNG
-google.html                Google's directory of the city   } unlinked and
+admin/google.html          Google's directory of the city   } owner only and
 assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
-stats.html                 which places get opened and which  } unlinked and
+admin/stats.html           which places get opened and which  } owner only and
 assets/stats.js            chips get pressed: three rankings  } noindex
 assets/stats.css           the rows of a ranking, and what /insights adds
                            to them
@@ -10899,9 +10910,10 @@ assets/rows.js             the page of links on a profile: what a row is,
                            which addresses get a player, and the note sheet —
                            said once for the profile and the account page
 assets/faces/              a photograph per username, for the few who have one
-functions/api/stats.js     /api/stats — one press in, the whole ranking out,
-                           with the page's words and five minutes of cache;
-                           a Google place pressed may also refresh it
+functions/api/stats.js     POST /api/stats — one press in; a Google place
+                           pressed may also refresh it. The ranking out is
+                           functions/api/admin/stats.js, with the page's words
+                           and five minutes of cache
 assets/links.js            the three sites a profile can link to, the handles
                            they take and the addresses they build — said once
                            for the profile and the account page

@@ -1,7 +1,7 @@
 /**
  * Tallinn Tastebuds — what the Google refresh has been doing.
  *
- * GET /api/refreshes
+ * GET /api/admin/refreshes
  *
  * The report behind the Google tab on /admin.html: whether the key is set,
  * how much of the free allowance is spent today and this month, how much of
@@ -24,18 +24,19 @@
  *   }
  *
  * `table` counts the rows the directory shows — not hidden, not missing — so
- * its total is the number on /google rather than the number in the table.
+ * its total is the number on /admin/google rather than the number in the table.
  * `due` is the ones an open would refresh right now.
  *
  * WHO MAY READ IT
  *
- * Anybody, and that is said out loud because /admin.html is behind a
- * passphrase and this is not. Nothing here is anybody's: the numbers are
- * Google's own public ones, which /api/venues already hands to every visitor,
- * the call counts say how busy the directory has been and nothing about who,
- * and `key` says whether a secret is set without saying a character of it.
- * The admin page is a static file with no session to check, so gating this
- * would mean a second secret to keep for no row that needs one.
+ * The owner, like everything under /api/admin/: the lock in
+ * functions/_middleware.js answers anybody else with a 403 before this file
+ * is reached — adminUser() in ../_admin.js — so it does not check again. It
+ * was open to anybody for a while, on the argument that every number in it is
+ * Google's own or a count; it moved here with the directory and the
+ * statistics, so that everything the admin page reads sits behind one door
+ * and "under /api/admin/" is the whole of the rule. The owner signs in on the
+ * site as usual for the Google tab to fill.
  *
  * `ready: false` is a database that has not had the tables or the
  * refreshed_at column applied yet; the admin tab says so and prints the line
@@ -43,8 +44,8 @@
  * pressed a button to see it now.
  */
 
-import { json, wrongDatabase } from './_lib.js';
-import { BUDGET, REFRESH_AFTER, googleKey, spent } from './_refresh.js';
+import { json, wrongDatabase } from '../_lib.js';
+import { BUDGET, REFRESH_AFTER, googleKey, spent } from '../_refresh.js';
 
 /* Fifty lines of the log: a few days of opens on an ordinary week, and a
    screen and a half on a phone. */

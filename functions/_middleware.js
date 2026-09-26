@@ -77,28 +77,52 @@
  * route to call.
  *
  * ---------------------------------------------------------------------------
- * AND TWO PAGES THAT ARE THE OWNER'S
+ * AND EVERYTHING UNDER /admin/ AND /api/admin/, WHICH IS THE OWNER'S
  *
- * /stats and /google answer a 404 to anybody but the owner — see the OWNER
- * ONLY block, and functions/api/_admin.js for who the owner is. It is here
- * rather than in a route per page because both are static files, and this is
- * the one Function every request to them already passes through.
+ * The statistics and the Google directory live at /admin/stats and
+ * /admin/google, and everything they and the admin page read lives under
+ * /api/admin/. Both prefixes answer only the owner — see the OWNER ONLY
+ * block, and functions/api/_admin.js for who the owner is. One lock on two
+ * prefixes rather than a check in every file, so a page or a route added
+ * under either is locked by where it is put rather than by somebody
+ * remembering to lock it. The addresses those two pages had before, /stats
+ * and /google, are a 404 to everybody.
  */
 
 const CANONICAL_HOST = 'tallinntastebuds.ee';
 const PAGES_HOST = 'tallinntastebuds.pages.dev';
 
 /* ----------------------------------------------------------- OWNER ONLY */
-/* Two pages that are the owner's and nobody else's: /stats and /google, each
-   under both spellings Pages serves a static file at. Anybody else is told
-   there is nothing here — a 404 rather than a 403, so the address does not
-   advertise that anything is behind it. Who the owner is, and why it
-   fails closed, is the header of functions/api/_admin.js; the numbers behind
-   both pages are gated again in their own routes, so this is about the page
-   and not the only lock. */
+/* The two prefixes that are the owner's and nobody else's. A page under
+   /admin/ is a 404 to anybody else — rather than a 403, so the address does
+   not advertise that anything is behind it — and a route under /api/admin/
+   is a 403 in JSON, the shape every other route here answers in. Who the
+   owner is, and why it fails closed, is the header of
+   functions/api/_admin.js. /admin.html itself is not under the prefix: it is
+   a door with its own lock and has to open for a device that is not signed in
+   yet. */
 import { adminUser } from './api/_admin.js';
 
-const OWNER_PAGES = new Set(['/stats', '/stats.html', '/google', '/google.html']);
+const OWNER_PAGES = '/admin/';
+const OWNER_API = '/api/admin/';
+
+/* Where the statistics and the directory were before they moved under
+   /admin/. Nothing is served there now. Said out loud because this project
+   has no 404.html, so Pages would otherwise answer an unknown address with
+   the map, and a bookmark to /stats should say the page is gone rather than
+   quietly open something else. */
+const RETIRED = new Set(['/stats', '/stats.html', '/google', '/google.html']);
+
+function notFound() {
+  return new Response('Not found', {
+    status: 404,
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'no-store',
+      'X-Robots-Tag': 'noindex, nofollow'
+    }
+  });
+}
 /* ------------------------------------------------------- end OWNER ONLY */
 
 /* ------------------------------------------------------------- SPLITWISE */
@@ -157,19 +181,32 @@ export async function onRequest(context) {
   }
 
   /* ---------------------------------------------------------- OWNER ONLY */
-  /* A trailing slash is the same page to Pages, so it is the same page here. */
-  const bare = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, '') : url.pathname;
-  if (OWNER_PAGES.has(bare)) {
+  /* A trailing slash is the same page to Pages, so it is the same page here.
+     Decoded and lowercased for the test only, so that neither /%61dmin/stats
+     nor /ADMIN/stats walks around the lock on the chance the asset server
+     reads it the friendlier way; an address that will not decode is tested
+     as it came. */
+  let path = url.pathname;
+  try { path = decodeURIComponent(path); } catch (e) { /* as it came */ }
+  const bare = path.length > 1 ? path.replace(/\/+$/, '') : path;
+  const lower = bare.toLowerCase();
+  if (RETIRED.has(lower)) return notFound();
+
+  if (lower.startsWith(OWNER_API)) {
     if (!(await adminUser(context.request, context.env))) {
-      return new Response('Not found', {
-        status: 404,
+      return new Response(JSON.stringify({ error: 'owner-only' }), {
+        status: 403,
         headers: {
-          'Content-Type': 'text/plain; charset=utf-8',
-          'Cache-Control': 'no-store',
-          'X-Robots-Tag': 'noindex, nofollow'
+          'content-type': 'application/json; charset=utf-8',
+          'cache-control': 'no-store'
         }
       });
     }
+    return context.next();
+  }
+
+  if (lower.startsWith(OWNER_PAGES)) {
+    if (!(await adminUser(context.request, context.env))) return notFound();
     /* The owner's copy is nobody else's either: no-store, so no cache between
        here and the browser can hand it to the next person to ask. */
     const res = await context.next();

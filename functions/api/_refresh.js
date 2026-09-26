@@ -5,7 +5,7 @@
  * September 2026, and a review count is the kind of number that is wrong a
  * month later. This is what keeps them from going stale without anybody
  * re-running that sweep: when somebody opens a place whose Google numbers the
- * site prints — one of Google's places, on the map or as a card on /google, or
+ * site prints — one of Google's places, on the map or as a card on /admin/google, or
  * one of mine that the export also lists, whose panel carries "According to
  * Google" — and its row has not been refreshed for REFRESH_AFTER, the place is
  * asked about again and the answer written back.
@@ -57,7 +57,7 @@
  *   google_calls      one row per UTC day and kind of call, counting up.
  *   google_refreshes  one row per call, saying what came back and what moved.
  *                     It is what the Google tab on /admin.html reads, through
- *                     /api/refreshes, and it keeps ninety days.
+ *                     /api/admin/refreshes, and it keeps ninety days.
  *   google_scores     the rating and review count of every answer, kept for
  *                     good, with the pair the row had before the first one —
  *                     so a place's numbers are a series rather than whatever
@@ -65,7 +65,7 @@
  *
  * `rank` is not recomputed here. It is every row's position among all of
  * them, so one row's new count cannot place it without re-reading the rest;
- * /google sorts by its own copy of that arithmetic in the browser, so the
+ * /admin/google sorts by its own copy of that arithmetic in the browser, so the
  * order on the page follows the new numbers at once and only the printed
  * position waits.
  *

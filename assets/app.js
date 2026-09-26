@@ -3588,7 +3588,7 @@
 
   /* --------------------------------------------------- what gets pressed
    * A place opened, a chip turned on and a pill on the rail pressed are all a
-   * row on /stats, and this is the only thing on this page that puts them
+   * row on /admin/stats, and this is the only thing on this page that puts them
    * there. The first two go through countPress() and the third through
    * countRailPress() below, which is the one that counts every press rather
    * than one a load.
@@ -3632,7 +3632,7 @@
 
   /* THE RAIL IS COUNTED EVERY PRESS, AND THAT IS THE DIFFERENCE
    * A place and a chip are one question asked once — see above. A pill is a
-   * press: the question /stats answers about the rail is which of the nine
+   * press: the question /admin/stats answers about the rail is which of the nine
    * buttons people actually push and how often, and pressing the die four
    * times is somebody asking for four restaurants. It is also what this page
    * already tells Google Analytics, which gets an event per press of these
@@ -4364,7 +4364,7 @@
       params.filter_id = change.id;
       params.filter_state = change.on ? 'on' : 'off';
       TTBTrack.event('filter_select', params);
-      /* Turned on and not turned off: the ranking on /stats is of chips
+      /* Turned on and not turned off: the ranking on /admin/stats is of chips
          people chose, and a chip put away again was still chosen. Counting
          both ends would make every filter worth exactly twice itself and say
          nothing new. */
@@ -6742,7 +6742,7 @@
       kids.push(el('p', { className: 'google-line' }, [scoreMark(row)]));
     }
 
-    /* Where the weighing puts it, in the sentence /google keeps behind a
+    /* Where the weighing puts it, in the sentence /admin/google keeps behind a
        hover: here it is the line itself, because a bare "#42" under a write-up
        of mine would read as my number. */
     if (typeof row.rank === 'number' && typeof row.of === 'number') {
@@ -6799,7 +6799,7 @@
   }
 
   /* Open or shut in Tallinn this minute, out of Google's week, in the words
-     /google already uses for the same question — or null when Google gave no
+     /admin/google already uses for the same question — or null when Google gave no
      hours, which is "we do not know" and says nothing. A copy of opening() and
      spansOf() in assets/venues.js, which the map does not load; change one,
      change the other. */
@@ -7448,7 +7448,7 @@
 
   /* How many rows each group offers. Mine are few and all of them are worth
      showing; the city's are eleven hundred and a dropdown is a way to one
-     place rather than a directory — /google is the directory, and the note at
+     place rather than a directory — /admin/google is the directory, and the note at
      the foot of the list says so when there are more. */
   var FIND_MINE = 8;
   var FIND_CITY = 16;
@@ -7553,7 +7553,7 @@
      shipped for an afternoon truncated to "According to Goo…", which is the
      attribution failing while the number survived, and that is exactly the
      wrong half to lose. So a row is a name and a street, the card that opens
-     carries the score with its attribution whole, and /google is the page
+     carries the score with its attribution whole, and /admin/google is the page
      that sorts by one. */
   function findRow(place, mine) {
     var where = place.address || '';
@@ -9771,7 +9771,7 @@
     });
 
     /* One listener over the whole rail, before the nine buttons get theirs:
-       which pill was pressed, counted on /stats. See countRailPress(). */
+       which pill was pressed, counted on /admin/stats. See countRailPress(). */
     if (dom.rail) dom.rail.addEventListener('click', countRailPress);
 
     /* Pressing it answers the question the label was there to answer, and

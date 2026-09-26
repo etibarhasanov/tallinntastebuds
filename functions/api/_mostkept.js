@@ -14,8 +14,8 @@
  * question entirely: every public list, in an order, without any of them.
  *
  * "Most kept" and not "the directory", in the filename and all the way
- * through: this repository already has a directory, at /google, and it is a
- * directory of restaurants. Two things under one word in one codebase is one
+ * through: this repository already has a directory, at /admin/google, and it
+ * is a directory of restaurants. Two things under one word in one codebase is one
  * of them being read as the other at three in the morning. The page the query
  * feeds is called Everybody's lists — the name is about whose they are, this
  * file is about the order they come back in, and those are two different

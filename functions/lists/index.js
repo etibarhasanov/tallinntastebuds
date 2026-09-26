@@ -37,7 +37,7 @@
  * AND /lists WAS NOT FREE
  *
  * Pages serves lists.html at /lists as well as at /lists.html, the way it
- * serves google.html at /google — so the bare address already answered, with
+ * serves feedback.html at /feedback — so the bare address already answered, with
  * the page that has nothing of its own on it any more and replaces itself with
  * /account.html. A Function outranks a static asset at the same path, which is
  * what makes this file the answer there now. /lists.html is untouched and

@@ -168,8 +168,8 @@ binding = "AI"
 # database's own meta row by functions/api/_lib.js, so a binding pointed at
 # the wrong database shuts the API off instead of writing to it.
 ENVIRONMENT = "preview"
-# Whose account may open /stats and /google, and read the numbers behind
-# them: `users.id`, comma separated, never a username — a username can be
+# Whose account may open anything under /admin/ and /api/admin/ — the
+# statistics, the Google directory and what they read: `users.id`, comma separated, never a username — a username can be
 # changed and claimed again. Empty is nobody, and every environment block
 # carries its own because the two databases hold different accounts. See
 # functions/api/_admin.js.

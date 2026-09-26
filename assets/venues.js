@@ -1,6 +1,6 @@
 /* Tallinn Tastebuds — the Google Places directory.
  *
- * /google, and nothing else on this site links to it. The map is
+ * /admin/google, and only the admin page links to it. The map is
  * seventy-five places I have been to and it is the whole point of Tallinn
  * Tastebuds; this is the other eleven hundred, out of Google's export, with
  * Google's ratings and Google's opening hours on them. Being on this page is
@@ -9,8 +9,9 @@
  *
  * WHAT IT DOES
  *
- * One request to /api/venues, which answers with the whole roll and five
- * minutes of cache on it, and everything after that happens in the browser: a
+ * One request to /api/admin/venues, which answers the owner with the whole
+ * roll — this page is /admin/google and nobody else's, see
+ * functions/api/_admin.js — and everything after that happens in the browser: a
  * search, four narrowing controls, three orders, and a map beside the list with
  * a dot for every match. See functions/api/venues.js for why the filtering is
  * this side and not in a WHERE clause — briefly, the map needs every matching
@@ -45,7 +46,7 @@
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
 
-  var API = '/api/venues';
+  var API = '/api/admin/venues';
 
   /* How many cards are built at once. Seven hundred articles is a second of
      layout on a phone and a scrollbar nobody can aim with, so the list grows a
@@ -784,7 +785,7 @@
   }
 
   /* ------------------------------------------------- how often it is opened
-   * A venue pressed is one row on /stats, the way a place opened on the map
+   * A venue pressed is one row on /admin/stats, the way a place opened on the map
    * is: same route, same rule, and the same silence around it. Once per venue
    * per load — `counted` — because pressing a card lights it and pressing it
    * again puts it out, and a ranking of how often somebody toggled a card is

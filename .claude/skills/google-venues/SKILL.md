@@ -7,7 +7,7 @@ description: Refresh the Google Places export: a new exports/tallinn_restaurants
 
 1,110 places in Tallinn out of the Google Places API, mirrored into the
 `google_venues` table so a list can hold a place that is not on the map and
-`/google` can be a directory of the city. The number moves with every
+`/admin/google` can be a directory of the city. The number moves with every
 refresh — the first pull found 750 restaurants, the second sweep, over
 seventeen Google types, found the rest — so read it off the first line of
 `db/google-venues.sql` rather than off this page. It is somebody else's data
@@ -35,7 +35,7 @@ The second pair is the same export read again: six public lists — top ten
 restaurants, bakeries, cafés, bars, pizzerias, and a top twenty across all of
 them — under an account called `google-statistics` that nobody can sign in
 as, ordered by Google's rating weighed by its review count. The top twenty is
-not a pool of its own: it is the same arithmetic `/google` ranks the whole
+not a pool of its own: it is the same arithmetic `/admin/google` ranks the whole
 city by, `overallOrder()` in `tools/googlevenues.mjs`, so it can never
 disagree with the rank that page already prints. **The six lists Google
 wrote** under **Google venues** in `README.md` is the argument and the
@@ -168,7 +168,7 @@ else runs.
 
 ## Between refreshes, the table refreshes itself
 
-A Google place opened on the map or on `/google`, or a place of mine whose
+A Google place opened on the map or on `/admin/google`, or a place of mine whose
 Google row its panel prints (found by `map_id`), is asked about again when that
 row's `refreshed_at` is empty or over thirty days old — `refreshOnOpen()` in
 `functions/api/_refresh.js`, called from `/api/stats`, inside a budget of 32
@@ -210,7 +210,7 @@ What that means for this process:
   the SQL carries the answer per row. A refresh overwrites it, because a
   position off last month's counts is worse than none. Its `RANK_PRIOR` is
   **100, and must stay equal to `PRIOR` in `weigh()` in `assets/venues.js`**:
-  `/google` sorts by its own copy of that arithmetic and prints this column
+  `/admin/google` sorts by its own copy of that arithmetic and prints this column
   beside it, so two priors make the first screen count 1, 2, 4, 3. It is
   deliberately not the 300 `tools/googlelists.mjs` uses — that one singles out
   ten names for the city and wants a heavier thumb on a small count.
@@ -227,8 +227,8 @@ What that means for this process:
   `missing_since`, because a list may point at it and somebody wrote a
   sentence about it. Every upsert clears the mark again.
 - `rating` and `reviews` are Google's, shown attributed on Google's places
-  and sorted by in two places only, both under Google's name: `/google`, and
-  the six lists `db/google-lists.sql` writes. `/google` also prints the
+  and sorted by in two places only, both under Google's name: `/admin/google`, and
+  the six lists `db/google-lists.sql` writes. `/admin/google` also prints the
   position that first sort puts a row in, out of `rank`, and it is the only
   page that does — not the map, not a list row, not the picker. Nothing on
   the map carries a score or a position.
@@ -250,7 +250,7 @@ categories renamed, patterns dropped — and that both databases were loaded.
 3. Ask to load the SQL into **preview** from the branch, with the delta
    described as in step 5 above —
    `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`,
-   then the same with `db/google-lists.sql` — then check `/google`, the list
+   then the same with `db/google-lists.sql` — then check `/admin/google`, the list
    picker and `/u/google-statistics` under `npx wrangler pages dev .`, which
    reads that same preview database, to see the rows arrive. Pushing deploys
    no preview; `CLAUDE.md` says why. A no here is an answer: push the branch

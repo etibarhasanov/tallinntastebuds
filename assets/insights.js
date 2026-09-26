@@ -396,7 +396,7 @@
     ]);
   }
 
-  /* A ranking of one number, as /stats draws them. */
+  /* A ranking of one number, as /admin/stats draws them. */
   function ranking(title, rows, name) {
     var ol = el('ol', { className: 'stats-list ins-list' });
     rows.forEach(function (r, i) {

@@ -70,7 +70,7 @@
   var CLIPS = '/clips/';
 
   /* The address this page is served at. Cloudflare Pages serves blog.html
-     here as well, the way it serves google.html at /google, and this is the
+     here as well, the way it serves feedback.html at /feedback, and this is the
      spelling every link written by this file uses: one address per post, and
      not two spellings of it in anybody's history. */
   var PAGE = '/blog';

@@ -1113,6 +1113,21 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
     body.appendChild(panel);
     draw();
 
+    /* The two pages that are the owner's and live under /admin/. They are
+       not tabs because they are whole pages with their own scripts, and they
+       are not behind this door: the server locks them — an account ADMINS
+       names in wrangler.toml, see functions/api/_admin.js — so they open for
+       the owner signed in on the site and are a 404 to everybody else,
+       passphrase or not. */
+    body.appendChild(el('hr'));
+    body.appendChild(el('p', {}, [
+      el('a', { href: '/admin/stats', textContent: 'Statistics' }),
+      ' · ',
+      el('a', { href: '/admin/google', textContent: 'Google directory' })
+    ]));
+    body.appendChild(el('p', { className: 'hint',
+      textContent: 'Open when you are signed in on the site as the owner.' }));
+
     body.appendChild(el('hr'));
 
     var facts = el('dl', { className: 'facts' });
@@ -1148,9 +1163,10 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
    * the directory is fresh, and the last fifty calls with what each changed.
    *
    * The one tab that neither needs nor uses the token. It reads
-   * /api/refreshes, which is the site's own route and answers anybody — the
-   * head of functions/api/refreshes.js says why that is fine — so it is here
-   * because this is where the owner looks, not because it is behind the door.
+   * /api/admin/refreshes, the site's own route, which answers only the owner
+   * signed in on the site — see the head of functions/api/admin/refreshes.js —
+   * so it fills for the owner whatever this door says, and says so when it
+   * does not.
    * It only reads: nothing on this tab calls Google or writes a row.
    */
   var OUTCOMES = {
@@ -1254,13 +1270,14 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
     function load() {
       again.disabled = true;
       say('Reading the report…');
-      fetch('/api/refreshes', { cache: 'no-store' })
+      fetch('/api/admin/refreshes', { cache: 'no-store' })
         .then(function (res) {
+          if (res.status === 403) throw new Error('sign in on the site as the owner first');
           if (!res.ok) throw new Error('HTTP ' + res.status);
           return res.json();
         })
         .then(function (r) { draw(r); })
-        .catch(function (e) { say('Could not read /api/refreshes: ' + (e && e.message || e), true); })
+        .catch(function (e) { say('Could not read the report: ' + (e && e.message || e), true); })
         .then(function () { again.disabled = false; });
     }
 

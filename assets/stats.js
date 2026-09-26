@@ -1,4 +1,4 @@
-/* Tallinn Tastebuds — /stats, what gets pressed on this site.
+/* Tallinn Tastebuds — /admin/stats, what gets pressed on this site.
  *
  * Four tables, and the first one is the page. The map's own places, every one
  * of them, most opened at the top and least opened at the bottom — both ends
@@ -27,7 +27,7 @@
  * ONE REQUEST ON THE WAY IN
  *
  * The words arrive with the numbers. This page does not fetch data/ui.json at
- * all — it sends /api/stats the languages it would have picked from and the
+ * all — it sends /api/admin/stats the languages it would have picked from and the
  * route answers with the one block the site speaks, which is the arrangement
  * the flashcards page introduced and the reason it loads in one round trip
  * rather than two. So the boot block below is the style half only; the
@@ -42,7 +42,7 @@
 (function () {
   'use strict';
 
-  var API = '/api/stats';
+  var API = '/api/admin/stats';
 
   /* The two styles, their key and the one the page opens on: the same names
      and the same default as assets/app.js, which is where they are actually

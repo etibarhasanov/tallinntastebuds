@@ -42,7 +42,7 @@
 #
 # This rule is one path and not two, which every other page in this file
 # spells both ways. Pages serves lists.html at /lists as well, the way it
-# serves google.html at /google — but /lists is the directory now, answered by
+# serves feedback.html at /feedback — but /lists is the directory now, answered by
 # a Function that outranks the static file and sets its own headers, so the
 # static spelling never binds there and a noindex written for it would be a
 # line about a page nobody is served.
@@ -139,28 +139,16 @@
 /flashcard
   Cache-Control: public, max-age=0, must-revalidate
 
-# Google's directory of the city. It is stored as google.html and Pages serves
-# it at /google as well, and these rules match the request path rather than the
-# file, so both spellings are spelled out — the same reason "/" and
-# "/index.html" both appear at the top of this file. The address people are
-# given is the short one.
-#
-# Same revalidating Cache-Control as the map, for the ?v= stamps, and the
-# strongest noindex on the site after the pass pages: this is somebody else's
-# description of Tallinn and the map is mine, and a search result that put the
-# two side by side would be the whole point of keeping them apart, lost. The
-# page carries the tag in its markup too; this is the half that binds for
-# anything that does not parse the HTML to find it.
-#
-# And it is the owner's page now: functions/_middleware.js answers 404 to
-# anybody who is not signed in as an account ADMINS names in wrangler.toml, and
-# sends the owner's copy `private, no-store`. This says the same, so the two
-# never disagree about whether a cache may keep it.
-/google.html
-  Cache-Control: private, no-store
-  X-Robots-Tag: noindex, nofollow
-
-/google
+# The owner's pages: the statistics and Google's directory of the city, stored
+# as admin/stats.html and admin/google.html and served at /admin/stats and
+# /admin/google as well. functions/_middleware.js answers 404 to anybody who
+# is not signed in as an account ADMINS names in wrangler.toml, and sends the
+# owner's copy `private, no-store`; this says the same for every spelling
+# under the prefix, so the two never disagree about whether a cache may keep
+# it. `noindex, nofollow`, the strongest on the site, because nothing here is
+# for a search result: the directory is somebody else's description of
+# Tallinn, and the statistics are how this site is used.
+/admin/*
   Cache-Control: private, no-store
   X-Robots-Tag: noindex, nofollow
 
@@ -201,36 +189,6 @@
 
 /feedback
   Cache-Control: public, max-age=0, must-revalidate
-  X-Robots-Tag: noindex, follow
-
-# The statistics. Stored as stats.html and served at /stats as well, so both
-# spellings are spelled out, the same reason "/" and "/index.html" both appear
-# at the top of this file. The address people are given is the short one.
-#
-# Same revalidating Cache-Control as the map, for the ?v= stamps, and the
-# feedback page's robots tag rather than the directory's: noindex, because
-# everything here is about how this site is used rather than about the city and
-# a search for a restaurant should never be answered with a row saying how far
-# down a ranking it sits — and `follow`, because every name on it links to a
-# place on the map, which is indexed. It is not disallowed in robots.txt for
-# the reason /feedback is not: a crawler forbidden to fetch it cannot read
-# either half of that. The page carries the meta robots tag to match; this is
-# the half that binds for anything that does not parse the HTML to find it.
-#
-# The numbers themselves are not cached here. /api/stats holds its own answer
-# in the colo for five minutes — see the TTL at the top of
-# functions/api/stats.js — so this rule is about the page and never about what
-# is on it.
-#
-# And it is the owner's page now, the way /google above is: a 404 to anybody
-# else out of functions/_middleware.js, and `private, no-store` for the owner,
-# which these lines say as well so the two never disagree.
-/stats.html
-  Cache-Control: private, no-store
-  X-Robots-Tag: noindex, follow
-
-/stats
-  Cache-Control: private, no-store
   X-Robots-Tag: noindex, follow
 
 # Scripts and stylesheets are content-addressed by tools/stamp.mjs — the URL

@@ -142,7 +142,7 @@ and the parity rule does not reach it. See **Flashcards** in `README.md`.
 **Every touch of `localStorage` is inside `try/catch`.** It throws outright
 in some private-browsing modes, and the site is meant to work with it absent.
 
-**A press on a place or a chip is also counted on this site.** `/stats` ranks
+**A press on a place or a chip is also counted on this site.** `/admin/stats` ranks
 what gets opened, out of `press_counts`, and three call sites feed it:
 `selectPlace()` and `applyFilters()` in `assets/app.js` and `select()` in
 `assets/venues.js`, each once per thing per page load. A new way to open a
@@ -259,9 +259,10 @@ write gate's `--check`:
   Adding a language costs nothing there; the lists are English.
 - **Stamps**: every `src`/`href` to `assets/*.js|css` in the fourteen pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
-  `lists.html`, `account.html`, `blog.html`, `feedback.html`, `google.html`,
+  `lists.html`, `account.html`, `blog.html`, `feedback.html`,
   `deal.html`, `verify.html`, `staff.html`, `split.html`,
-  `flashcard.html`, `stats.html`, `edit.html`, `insights.html` — must carry `?v=` equal to the first
+  `flashcard.html`, `edit.html`, `insights.html`, and the owner's two under
+  `admin/` — `admin/google.html`, `admin/stats.html` — must carry `?v=` equal to the first
   eight hex of the file's SHA-256. A new page that loads anything out of
   `assets/` is added to that list, or it never gets stamped. `admin.html` is
   deliberately unstamped; it is served `no-store`.
