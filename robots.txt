@@ -137,6 +137,10 @@ Disallow: /google
 #
 # One line would cover both spellings the way the Google line above does. There
 # is no line at all, which is the point.
+#
+# Since the page became the owner's alone, a crawler asking for it is answered
+# 404 by functions/_middleware.js, which settles the indexing question without
+# a line here either.
 
 # The admin page is not for anybody, crawler or otherwise. Nothing links to
 # it and it carries its own noindex tag.

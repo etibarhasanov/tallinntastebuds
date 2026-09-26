@@ -14,7 +14,8 @@
  *                       refresh the numbers from Google:
  *                       functions/api/_refresh.js.
  *   GET  ?lang=         the whole ranking, the page's words beside it, and
- *                       five minutes of edge cache on the pair.
+ *                       five minutes of edge cache on the pair. The owner's
+ *                       only — see WHO MAY READ IT below.
  *
  * WHAT IS COUNTED, AND WHAT IS NOT
  *
@@ -91,6 +92,22 @@
  * request itself was malformed, because a press that did not get counted is
  * not something a visitor should ever be told about.
  *
+ * WHO MAY READ IT
+ *
+ * Anybody may press, and only the owner may read. The POST stays open because
+ * every page on the site sends it and a press is nobody's secret; the GET is
+ * how the site is used — which places get opened, which buttons get pushed,
+ * how many accounts there are — and it answers 403 to anybody adminUser() in
+ * ./_admin.js does not recognise, before the cache is even asked. The page
+ * itself is gated in functions/_middleware.js as well, so this is the second
+ * lock and not the only one.
+ *
+ * The colo cache stays, because it is still the cost control, but it is only
+ * ever read after the check — and what goes back to the browser is
+ * `private, no-store` whatever the cached copy says, so no cache between here
+ * and the owner's phone can hand the ranking to the next person to ask. See
+ * privately() below.
+ *
  * ONE NUMBER ABOUT THE SITE RATHER THAN ABOUT A PRESS
  *
  * `users` is how many accounts exist, `SELECT COUNT(*) FROM users` read fresh
@@ -110,6 +127,8 @@ import {
    module and this is the fourth reader of that expression. */
 import { LIST_ID } from './_lists.js';
 import { countView, countPress } from './_visits.js';
+/* Who may read the ranking. */
+import { adminUser } from './_admin.js';
 /* A Google place opened is also the moment its numbers are worth checking. */
 import { refreshOnOpen } from './_refresh.js';
 
@@ -123,8 +142,9 @@ import { refreshOnOpen } from './_refresh.js';
  * table they do.
  *
  * It is the only thing between this route and the database, so it is also the
- * cost control: however many people open /stats, each colo asks D1 twelve
- * times an hour per language and no more. */
+ * cost control: however often /stats is opened, each colo asks D1 twelve
+ * times an hour per language and no more. It is read only after the owner
+ * check, so holding it never hands the answer to anybody else. */
 const TTL = 300;
 
 /* How many Google venues the second table prints. Twenty-five is a screen of
@@ -191,6 +211,10 @@ const GOOGLE_KEY = /^[A-Za-z0-9_-]{16,128}$/;
 export async function onRequestGet(context) {
   const { request, env } = context;
 
+  /* The owner, or nothing — before the words, before the cache. See WHO MAY
+     READ IT in the header. */
+  if (!(await adminUser(request, env))) return json({ error: 'owner-only' }, 403);
+
   /* The words first, and before anything that can fail, because every answer
      this route gives carries them — including the ones that carry no numbers.
      A page that cannot say "nothing has been opened yet" in the language it is
@@ -206,17 +230,17 @@ export async function onRequestGet(context) {
   const cache = caches.default;
   const key = statsKey(request, words.lang);
   const hit = await cache.match(key);
-  if (hit) return hit;
+  if (hit) return privately(hit);
 
   const empty = {
     ready: false, opens: 0, users: 0, map: [], venues: [], filters: [], rail: [], ...words
   };
-  if (!env.DB) return json(empty, 200, TTL);
+  if (!env.DB) return json(empty, 200);
   /* A deployment holding the other environment's database answers as though it
      had no database at all — the same rule /api/saves follows, and for the
      same reason: a preview showing the live numbers is the same mistake as
      writing to them. */
-  if (await wrongDatabase(env)) return json(empty, 200, TTL);
+  if (await wrongDatabase(env)) return json(empty, 200);
 
   let rows;
   try {
@@ -226,7 +250,7 @@ export async function onRequestGet(context) {
     rows = answer.results || [];
   } catch (e) {
     /* No table yet — see the header. */
-    return json(empty, 200, TTL);
+    return json(empty, 200);
   }
 
   const counted = new Map();
@@ -240,7 +264,7 @@ export async function onRequestGet(context) {
     /* The roll of places is unreadable, which is a broken deployment rather
        than an empty ranking. Say the same thing as no database: the page draws
        and has nothing to print. */
-    return json(empty, 200, TTL);
+    return json(empty, 200);
   }
 
   /* The map, every one of them, most opened first.
@@ -324,7 +348,16 @@ export async function onRequestGet(context) {
     200, TTL
   );
   context.waitUntil(cache.put(key, res.clone()));
-  return res;
+  return privately(res);
+}
+
+/* The colo's copy carries `public, max-age` because the Cache API will not
+   store anything less; the browser's copy carries `private, no-store`,
+   because the only person allowed to read it is the one who just asked. */
+function privately(res) {
+  const out = new Response(res.body, res);
+  out.headers.set('cache-control', 'private, no-store');
+  return out;
 }
 
 /* Every chip on the map, most pressed first, named in the reading language.

@@ -75,10 +75,31 @@
  *
  * This was a rewrite for a day, when the page carried a noindex and had no
  * route to call.
+ *
+ * ---------------------------------------------------------------------------
+ * AND TWO PAGES THAT ARE THE OWNER'S
+ *
+ * /stats and /google answer a 404 to anybody but the owner — see the OWNER
+ * ONLY block, and functions/api/_admin.js for who the owner is. It is here
+ * rather than in a route per page because both are static files, and this is
+ * the one Function every request to them already passes through.
  */
 
 const CANONICAL_HOST = 'tallinntastebuds.ee';
 const PAGES_HOST = 'tallinntastebuds.pages.dev';
+
+/* ----------------------------------------------------------- OWNER ONLY */
+/* Two pages that are the owner's and nobody else's: /stats and /google, each
+   under both spellings Pages serves a static file at. Anybody else is told
+   there is nothing here — a 404 rather than a 403, so the address does not
+   advertise that anything is behind it. Who the owner is, and why it
+   fails closed, is the header of functions/api/_admin.js; the numbers behind
+   both pages are gated again in their own routes, so this is about the page
+   and not the only lock. */
+import { adminUser } from './api/_admin.js';
+
+const OWNER_PAGES = new Set(['/stats', '/stats.html', '/google', '/google.html']);
+/* ------------------------------------------------------- end OWNER ONLY */
 
 /* ------------------------------------------------------------- SPLITWISE */
 /* The page at that hostname's root is not the static file: it is the route
@@ -134,6 +155,29 @@ export async function onRequest(context) {
   if (url.pathname === '/about' || url.pathname === '/about.html') {
     return Response.redirect(new URL('/u/etibar', url).toString(), 301);
   }
+
+  /* ---------------------------------------------------------- OWNER ONLY */
+  /* A trailing slash is the same page to Pages, so it is the same page here. */
+  const bare = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, '') : url.pathname;
+  if (OWNER_PAGES.has(bare)) {
+    if (!(await adminUser(context.request, context.env))) {
+      return new Response('Not found', {
+        status: 404,
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'no-store',
+          'X-Robots-Tag': 'noindex, nofollow'
+        }
+      });
+    }
+    /* The owner's copy is nobody else's either: no-store, so no cache between
+       here and the browser can hand it to the next person to ask. */
+    const res = await context.next();
+    const out = new Response(res.body, res);
+    out.headers.set('Cache-Control', 'private, no-store');
+    return out;
+  }
+  /* ------------------------------------------------------ end OWNER ONLY */
 
   /* ----------------------------------------------------------- SPLITWISE */
   if (url.hostname === SPLIT_HOST) {

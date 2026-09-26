@@ -37,15 +37,15 @@
  * through to a write-up — so they carry `mapId` and stay where Google filed
  * them, rather than being replaced by my entry for them.
  *
- * ONE ANSWER, CACHED, AND THE PAGE DOES THE FILTERING
+ * ONE ANSWER, AND THE PAGE DOES THE FILTERING
  *
- * The whole roll goes out in one response with five minutes on it, exactly as
- * /api/places does, and the page narrows it in the browser. That is not
- * laziness about SQL: the page draws a map of every match beside the list, so
- * it needs every matching pin whatever the filter says, and "open now" is a
- * question about a week of opening hours rather than something a WHERE clause
- * can answer. A filtered endpoint would mean a round trip per keystroke to
- * hand back most of the same rows.
+ * The whole roll goes out in one response, to the owner alone and never
+ * cached — see WHO MAY ASK FOR WHAT below — and the page narrows it in the
+ * browser. That is not laziness about SQL: the page draws a map of every
+ * match beside the list, so it needs every matching pin whatever the filter
+ * says, and "open now" is a question about a week of opening hours rather
+ * than something a WHERE clause can answer. A filtered endpoint would mean a
+ * round trip per keystroke to hand back most of the same rows.
  *
  * ONE EXCEPTION, AND IT IS A HANDFUL OF ROWS AND NOT A FILTER
  *
@@ -91,6 +91,19 @@
  * of one: a row switched off with `hidden`, or one the last sync no longer
  * carried, has nothing current to say about a place that is still on the map.
  *
+ * WHO MAY ASK FOR WHAT
+ *
+ * The whole roll is the owner's. It is every row of the export in one answer
+ * — every phone number, website and week of opening hours, a few hundred
+ * kilobytes — and a public address that hands that over to anybody who asks
+ * is a scraper's afternoon saved. So without `?ids=` or `?map=` this answers
+ * 403 to anybody adminUser() in ./_admin.js does not recognise, `no-store` to
+ * the one it does, and /google itself is gated in functions/_middleware.js.
+ *
+ * `?ids=` and `?map=` stay open, because the map itself asks them for anybody
+ * who opens a place: fifty rows at most, named one at a time by a key the
+ * asker already has. They keep their five minutes of public cache.
+ *
  * EMPTY FIELDS ARE NOT SENT
  *
  * One rule for the whole answer: a field with nothing in it is left out rather
@@ -101,6 +114,8 @@
  */
 
 import { json, wrongDatabase, venueHours } from './_lib.js';
+/* Who may have the whole roll. */
+import { adminUser } from './_admin.js';
 
 /* Google's words for what a place cooks, in ids the site can say in ten
  * languages. data/cuisines.json carries the labels; this is the only thing
@@ -414,6 +429,11 @@ export async function onRequestGet(context) {
   const mine = asked.has('map') ? String(asked.get('map') || '').trim() : null;
   if (mine !== null && !/^[a-z0-9-]{1,80}$/.test(mine)) return json([], 200, 300);
 
+  /* Neither: the whole roll, which is the owner's — see WHO MAY ASK FOR WHAT
+     in the header. */
+  const whole = !ids && mine === null;
+  if (whole && !(await adminUser(request, env))) return json({ error: 'owner-only' }, 403);
+
   let results;
   try {
     ({ results } = await readingRanks(env, ids, mine));
@@ -430,5 +450,6 @@ export async function onRequestGet(context) {
     .filter((row) => row && typeof row.name === 'string' && row.name)
     .map(entry);
 
-  return json(out, 200, 300);
+  /* The whole roll is no-store: it was one person's to ask for. */
+  return whole ? json(out, 200) : json(out, 200, 300);
 }

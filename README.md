@@ -4310,6 +4310,18 @@ Tallinn and this site is one person's, and the two must not be mistaken for
 each other by a reader or by a search engine. The first paragraph on the page
 says which one it is, in ten languages, before anything else is drawn.
 
+**And only the owner can open it.** An unlinked address is still an address,
+and this one handed the whole export — every phone number, website and week of
+opening hours — to anybody who typed it, in one answer. So `/google` and
+`/google.html` answer 404 to anybody who is not signed in as an account `ADMINS`
+in `wrangler.toml` names, out of `functions/_middleware.js`, and `GET
+/api/venues` with neither `?ids=` nor `?map=` — the whole roll — answers 403 to
+them and `no-store` to the owner. The two narrow asks stay open and cached,
+because the map itself makes them for anybody who opens a place: fifty rows at
+most, each named by a key the asker already holds. The gate is the one
+**Statistics** uses; **Only the owner can open it** there says who the owner
+is and why it is an id rather than a name.
+
 ```
 google.html            the page, served at /google
 assets/venues.js       ES5, one IIFE, like every other file in assets/
@@ -9782,6 +9794,31 @@ accounts exist** below for the second. Nothing on the site links to it. That is 
 the directory's, with one difference: the blog is indexed and this is not,
 and **Not indexed, and not disallowed either** below says why.
 
+**And it is the owner's alone** — see **Only the owner can open it** below.
+
+### Only the owner can open it
+
+Pressing is anybody's and reading is one person's. The `POST` that counts a
+press stays open, because every page on the site sends it; the page and the
+`GET` that ranks the presses answer only to a signed-in account whose
+`users.id` is named in `ADMINS` in `wrangler.toml`. Anybody else asking for
+`/stats` or `/stats.html` gets a plain 404 out of `functions/_middleware.js`
+— a 404 rather than a 403, so the address does not advertise itself — and
+anybody asking `GET /api/stats` directly gets a 403 before the cache is
+consulted.
+
+The id rather than the username, because a username can be changed and, thirty
+days later, claimed by somebody else; a gate keyed on a name would hand the
+numbers to whoever took it next. The rule and why it fails closed is the header
+of `functions/api/_admin.js`, and `/google` is gated by the same one — see
+**The directory**.
+
+It is not the door on `/admin.html`. That page holds a GitHub token and never
+talks to the server; the site's own accounts are the identity the server can
+already check, so the owner signs in on the map as usual and the two pages open.
+`ADMINS` is empty in the preview blocks, where the owner has no account yet —
+put a preview `users.id` there to drive the page under `wrangler pages dev`.
+
 ### It counts opens, and an open is a gesture
 
 Five gestures, and no others:
@@ -9908,7 +9945,9 @@ block, so `assets/stats.js` never fetches `data/ui.json` at all — the
 arrangement the flashcards page introduced, and `wordsFor()` in
 `functions/api/_lib.js` is now shared by both.
 
-The answer is held in the colo for five minutes. Nothing purges it: a save
+The answer is held in the colo for five minutes — read only after the owner
+check above, and handed to the browser `private, no-store` whatever the colo's
+copy says, so no cache in between can pass it on. Nothing purges it: a save
 purges the counts cache because the number it changed is on the screen that
 changed it, and this is the opposite — the ranking is read on a page of its
 own by somebody who is not the person whose press moved it. So the page is at
@@ -9969,6 +10008,9 @@ them — a fact about this site's traffic and not a verdict on anybody — and a
 search for a restaurant's name answered with its position in that ranking
 would read as exactly the verdict it is not. Followed, because every name on
 the map's table links to a place on the map, which is indexed and meant to be.
+
+Both of which matter less than they did: a crawler is not the owner, so since
+**Only the owner can open it** it is answered 404 and never sees the page.
 
 ### How many accounts exist
 

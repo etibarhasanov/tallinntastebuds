@@ -168,6 +168,12 @@ binding = "AI"
 # database's own meta row by functions/api/_lib.js, so a binding pointed at
 # the wrong database shuts the API off instead of writing to it.
 ENVIRONMENT = "preview"
+# Whose account may open /stats and /google, and read the numbers behind
+# them: `users.id`, comma separated, never a username — a username can be
+# changed and claimed again. Empty is nobody, and every environment block
+# carries its own because the two databases hold different accounts. See
+# functions/api/_admin.js.
+ADMINS = ""
 
 # ----------------------------------------------------------------- preview
 # Every deployment that is not from the production branch.
@@ -181,6 +187,7 @@ binding = "AI"
 
 [env.preview.vars]
 ENVIRONMENT = "preview"
+ADMINS = ""
 
 # -------------------------------------------------------------- production
 # tallinntastebuds.ee, and the only database anybody would miss.
@@ -194,3 +201,5 @@ binding = "AI"
 
 [env.production.vars]
 ENVIRONMENT = "production"
+# etibar
+ADMINS = "e572e9c3-40e8-4be4-bc23-15fa339dd655"
