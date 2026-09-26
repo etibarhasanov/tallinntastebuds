@@ -66,6 +66,31 @@
  * card the lists and the chat draw, and this route builds a directory row, so
  * they share the ceiling and nothing else.
  *
+ * AND ONE MORE, WHICH IS ONE ROW AND ASKED FROM THE OTHER SIDE
+ *
+ * `?map=` names a place on my map by its data/restaurants.json id and answers
+ * the Google row filed against it through `map_id`, or nothing — an empty
+ * array, the same as `?ids=` naming a key the table does not hold. It is what
+ * the map's panel for a place of mine asks when it opens, for the section
+ * under the write-up that says what Google makes of the same door: the score,
+ * where the score puts it, the week and the listing. See **Google, on a place
+ * of mine** in README.md for why a map that ranks nothing now prints that.
+ *
+ * Same row shape again, with one field only this half carries: `of`, how many
+ * rows the last sync carried, so the panel can say "#42 of 1,110" without the
+ * eleven hundred rows /google counts to get the same number. Every row the
+ * export holds, closed and hidden ones included, because that is the roll
+ * ranked() in tools/googlevenues.mjs numbered — and deliberately not
+ * MAX(rank), which reads the same on a database that took the whole file and
+ * says "of 300" on one where a load stopped after six batches, as both did
+ * in September 2026. A row whose rank did not arrive sends no `rank`, and the
+ * panel prints no line for it. The directory sends no `of` — it counts what it
+ * has, and eleven hundred copies of one number is sixteen kilobytes of nothing.
+ *
+ * The directory's filter applies here rather than the `?ids=` half's absence
+ * of one: a row switched off with `hidden`, or one the last sync no longer
+ * carried, has nothing current to say about a place that is still on the map.
+ *
  * EMPTY FIELDS ARE NOT SENT
  *
  * One rule for the whole answer: a field with nothing in it is left out rather
@@ -250,6 +275,8 @@ function entry(row) {
      ALTER has not reached yet, and absent on a row Google gave no numbers
      for; the page prints nothing either way. */
   if (typeof row.rank === 'number') out.rank = row.rank;
+  /* Only `?map=` asks for this — see the note at the top. */
+  if (typeof row.ranked === 'number') out.of = row.ranked;
   /* Google's "$" to "$$$$" as the map's band of four, which is the one place
      this conversion is needed — db/schema.sql keeps the string verbatim so the
      mirror does not store an opinion. */
@@ -297,19 +324,26 @@ function entry(row) {
    that is down is still a database that is down. */
 let ranks;
 
-/* One query builder for both answers this route gives, so the whole roll and
-   `?ids=` cannot drift into selecting different halves of the same row — and
-   so the rank probe above covers both rather than only the roll it was
-   written for. `ids` picks which rows: null is the directory, a list of
-   Google keys is the find bar asking after the one venue it has been used to
-   look up. */
-function roll(env, withRank, ids) {
+/* One query builder for every answer this route gives, so the whole roll,
+   `?ids=` and `?map=` cannot drift into selecting different halves of the
+   same row — and so the rank probe above covers all three rather than only
+   the roll it was written for. `ids` picks which rows: null is the directory,
+   a list of Google keys is the find bar asking after the one venue it has
+   been used to look up. `mine` is a map id instead, and wins over both. */
+function roll(env, withRank, ids, mine) {
   const sql =
     'SELECT place_id, name, category, cuisine, tags, rating, reviews, price, status, ' +
     'address, postal_code, city, phone, website, opening_hours, latitude, longitude, map_id' +
-    (withRank ? ', rank' : '') + ' ' +
+    (withRank ? ', rank' : '') +
+    (withRank && mine ? ', (SELECT COUNT(*) FROM google_venues WHERE missing_since IS NULL) AS ranked' : '') + ' ' +
     'FROM google_venues ' +
-    (ids
+    (mine
+      /* LIMIT 1 because nothing stops two rows carrying the same map_id — the
+         matcher only ever fills an empty one, but a hand-set one could — and
+         a panel has one place on it. The directory's filter, for the reason
+         at the top. */
+      ? 'WHERE map_id = ? AND hidden = 0 AND missing_since IS NULL LIMIT 1'
+      : ids
       /* No hidden/missing clause on this half, and that is deliberate. It
          answers a venue somebody has already been shown and has pressed;
          dropping it here would be the map offering a row in the morning and
@@ -323,19 +357,20 @@ function roll(env, withRank, ids) {
       : 'WHERE hidden = 0 AND missing_since IS NULL');
 
   const statement = env.DB.prepare(sql);
+  if (mine) return statement.bind(mine).all();
   return (ids ? statement.bind(...ids) : statement).all();
 }
 
-async function readingRanks(env, ids) {
-  if (ranks === false) return roll(env, false, ids);
+async function readingRanks(env, ids, mine) {
+  if (ranks === false) return roll(env, false, ids, mine);
   try {
-    const out = await roll(env, true, ids);
+    const out = await roll(env, true, ids, mine);
     ranks = true;
     return out;
   } catch (e) {
     if (!/no such column/i.test(String((e && e.message) || e))) throw e;
     ranks = false;
-    return roll(env, false, ids);
+    return roll(env, false, ids, mine);
   }
 }
 
@@ -373,9 +408,15 @@ export async function onRequestGet(context) {
   const ids = asked.has('ids') ? wantedIds(asked.get('ids')) : null;
   if (ids && !ids.length) return json([], 200, 300);
 
+  /* A place of mine, when the address names one. A map id is lowercase
+     letters, digits and hyphens, and anything else is an empty answer for the
+     reason an unusable `?ids=` is one. */
+  const mine = asked.has('map') ? String(asked.get('map') || '').trim() : null;
+  if (mine !== null && !/^[a-z0-9-]{1,80}$/.test(mine)) return json([], 200, 300);
+
   let results;
   try {
-    ({ results } = await readingRanks(env, ids));
+    ({ results } = await readingRanks(env, ids, mine));
   } catch (e) {
     return json({ error: 'venues' }, 503);
   }

@@ -2748,6 +2748,20 @@ body.panel-detail .panel {
 .facts.is-hours .is-today { color: var(--ink); }
 .facts.is-hours dt.is-today { color: var(--accent); }
 
+/* Google's half of a panel for a place of mine: the score, where it stands,
+   whether the door is open this minute, and then the week and the listing.
+   Three short lines rather than one wrapped one, because each is its own
+   claim, and all of it in the muted voice — the heading above says whose it
+   is, and nothing here should be louder than what I wrote over it. The score
+   is in ink for the reason .place-source gives, and "open" in the accent for
+   the reason the directory's .venue-when gives. */
+.google-block { display: grid; gap: 4px; }
+.google-line { font-size: 13.5px; line-height: 1.45; color: var(--muted); }
+.google-line .score { color: var(--ink); font-variant-numeric: tabular-nums; }
+.google-now.is-open { color: var(--accent); }
+.google-block .facts.is-hours { margin-top: 8px; }
+.google-block .link-row { margin-top: 10px; }
+
 /* Places visited but not filmed. It has a heading of its own now, in the slot
    the reel and the photos take, so the line under it is a sentence rather than
    another label: the rule and the mono caps belonged to a stray line and would
@@ -4895,6 +4909,11 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 @media (max-width: 420px) {
   .facts { grid-template-columns: 1fr; gap: 2px 0; }
   .facts dd { margin-bottom: 8px; }
+  /* Except the week. A day name is three letters and a time is eleven
+     characters, so the pair fits a phone side by side with room over, and
+     stacked it was fourteen lines to say seven things. */
+  .facts.is-hours { grid-template-columns: auto 1fr; gap: 4px 18px; }
+  .facts.is-hours dd { margin-bottom: 0; }
 }
 
 /* ---------- reduced motion ---------- */
