@@ -1090,9 +1090,12 @@ mine and Google's alike, goes on the map and nothing else stays there, so
 zooming out shows ramen and only ramen. The map is framed on all of them, and
 the card opens on the first with **‹ 1 of 10 ›** over it; the arrows walk the
 rest, round from the last back to the first, and each step carries the map to
-that place. They go nearest first — from the dot when there is one in reach,
-and otherwise from the middle of the part of the map searched — so *next* is
-a neighbour rather than the other side of town. On a desktop the column lists
+that place. They go in the dropdown's order — my own places first, then the
+city's best first, or nearest first when the field asked to be near — so the
+card that opens is the best answer, and *next* is the next best. They used to
+go nearest to the middle of the map first, so that *next* was a neighbour, and
+*wine* opened on a 4.3 with a dozen better ones behind it; the first card is
+read as the answer, and it has to be one. On a desktop the column lists
 them in the same order under the word that found them.
 
 Move the map by hand and **Search this area** comes up where the chips were;
