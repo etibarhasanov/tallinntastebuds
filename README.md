@@ -11684,9 +11684,16 @@ of the map on every visit to tell a regular what they already knew.
 So a first visit on a phone gets a card from the foot of the map instead:
 
 > NEW HERE?
-> Where to eat and drink in Tallinn — every place on this map I have been to
-> myself and approved.
+> An independent, honest guide to Tallinn's best restaurants. Every place on
+> this map I have been to myself.
 > **Got it** · Show me around
+
+The line is the owner's own words. It says *best*, which the rest of this
+README keeps out of the site's voice — see **The list is ordered by
+distance**, where a ranking is a claim by whoever publishes it — and here that
+is exactly the point: the whole map is one person's claim, made in the first
+person, and *independent* and *honest* say what it is not. What stays true
+everywhere else is that nothing *on* the map is ranked against anything else.
 
 It stands on the shelf above the crosshair (`--above-locate`), across the
 width less the 10px gutter, and is built like a sheet — eyebrow, the line, one
