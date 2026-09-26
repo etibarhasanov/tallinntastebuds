@@ -7861,21 +7861,28 @@
      are standing on, not about which pizzeria is best. `away` is metres by
      id from that dot, or null when there is none in reach. Ahead of either
      order, the rows that carry the words as typed come before the rows that
-     only reached them by a stem — see hasWords(). `area` is the part of the
-     map the search is held to, or null for the whole city; see findArea(). */
-  function findCity(words, wish, away, area, level) {
+     only reached them by a stem — see hasWords() — and within each, the rows
+     the words land on squarely before the ones they only brush: see
+     findTier(). `area` is the part of the map the search is held to, or null
+     for the whole city; see findArea(). */
+  function findCity(words, wish, away, area, level, tier) {
     var hits = [];
     if (!findRoll) return hits;
     for (var i = 0; i < findRoll.length; i++) {
       var row = findRoll[i];
       if (area && !area.contains([row.lat, row.lng])) continue;
       var hit = hasWords(findHay[row.id] || '', words);
-      if (hit && findPriced(row, wish)) { level[row.id] = hit; hits.push(row); }
+      if (hit && findPriced(row, wish)) {
+        level[row.id] = hit;
+        tier[row.id] = findTier(fold(row.name), findKind[row.id] || '', fold(row.address || ''), words);
+        hits.push(row);
+      }
     }
     var q = words.join(' ');
     var named = !hits.some(function (row) { return hasWords(findKind[row.id] || '', words) === 3; });
     hits.sort(function (a, b) {
       if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
+      if (tier[a.id] !== tier[b.id]) return tier[b.id] - tier[a.id];
       if (away && wish.nearby && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
       if (named) {
         var ah = fold(a.name).indexOf(q) === 0 ? 0 : 1;
@@ -7911,10 +7918,13 @@
   }
 
   /* Mine: the words as typed ahead of the words by their stems and their
-     slips, then nearest first when there is a dot, else the catalogue's own
-     order — spelled out as the last tiebreak rather than left to the sort,
-     which older engines do not keep stable. */
-  function findMine(words, wish, away, area, level) {
+     slips, then the squarest hits ahead of the glancing ones — findTier() —
+     then nearest first when there is a dot, else the catalogue's own order,
+     spelled out as the last tiebreak rather than left to the sort, which
+     older engines do not keep stable. What a place of mine is, for the tier,
+     is its types in ten languages, its dishes and the kitchens lent to it:
+     the same haystack hayIndex is built from, cut into its three parts. */
+  function findMine(words, wish, away, area, level, tier) {
     var hits = [];
     var order = {};
     for (var i = 0; i < state.places.length; i++) {
@@ -7927,14 +7937,119 @@
       if (area && !area.contains([place.lat, place.lng])) continue;
       var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
       var hit = hasWords(hay, words);
-      if (hit && findPriced(place, wish)) { level[place.id] = hit; order[place.id] = i; hits.push(place); }
+      if (hit && findPriced(place, wish)) {
+        level[place.id] = hit;
+        tier[place.id] = findTier(fold(place.name), fold([
+          (place.types || []).map(function (id) { return labelWords(state.types, id); }).join(' '),
+          (place.mustOrder || []).join(' ')
+        ].join(' ')) + ' ' + (findLent[place.id] || ''), fold(place.address || ''), words);
+        order[place.id] = i;
+        hits.push(place);
+      }
     }
     hits.sort(function (a, b) {
       if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
+      if (tier[a.id] !== tier[b.id]) return tier[b.id] - tier[a.id];
       if (away && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
       return order[a.id] - order[b.id];
     });
     return hits;
+  }
+
+  /* HOW SQUARELY THE WORDS LAND
+
+     hasWords() says whether every word is somewhere in a haystack, and a
+     substring is a generous somewhere. "riva" is inside Müürivahe, so it
+     answered with every place on that street and put Riva itself among
+     them; "bar" is the start of barato, which is Portuguese and Spanish for
+     cheap, so it answered with every cheap place of mine before a single
+     bar. Both were hits by the rule and both read as a list in no order at
+     all, which is what the owner called it.
+
+     So each word is also asked where it landed, in three parts of the row:
+     what it is called, what it is (its kinds, in every language, and for a
+     place of mine its dishes) and where it is.
+
+       3  at the start of a word of its name, or a whole word of what it is
+          — "pizza" in Q Pizza Jaam, "sushi" in a row Google files as Sushi
+          Restaurant. A word counts as whole with up to two letters left
+          over, so that "burger" is a whole word of Burgers and "kohv" of
+          kohvik, and "bar" of baari, but not of barato.
+       2  at the start of a longer word of what it is, from four letters
+          typed: "burg" on its way to Burgers. Three letters at the start of
+          a longer word are too little to go on, and are a 0 — that is the
+          case "bar" and barato were.
+       1  inside a word of its name, or at the start of a word of its street:
+          "kohvik" in Salt'sUp soolakohvik, "telliskivi" on Telliskivi.
+       0  only ever inside a word of what it is or where it is — Müürivahe —
+          or three letters at the start of a longer one.
+
+     A row is as good as its weakest word, so "telliskivi kohvik" is a 1
+     however good a kohvik it is. Within a tier the order is whatever the
+     half already used — the best rated or the nearest — so "pizza" is still
+     the best pizzerias first, whether or not they say so in the name; the
+     tier only stops a place that was never about the word from standing
+     among the ones that are. A 0 is dropped outright when anything on
+     either half scored above it; see findHits(). A word that landed nowhere
+     as typed is tried by its stem the way hasWords() tries it, and one that
+     only slipped in is given a 1 and left to bestOnly(). */
+  function findTier(name, kind, where, words) {
+    var low = 3;
+    for (var i = 0; i < words.length && low > 0; i++) {
+      var word = words[i];
+      var n = wordAt(name, word);
+      var k = wordAt(kind, word);
+      var w = wordAt(where, word);
+      if (!n && !k && !w && word.length >= 5) {
+        word = word.slice(0, Math.max(4, word.length - 2));
+        n = wordAt(name, word);
+        k = wordAt(kind, word);
+        w = wordAt(where, word);
+      }
+      var got;
+      if (n >= 2 || k === 3) got = 3;
+      else if (k === 2 && word.length >= 4) got = 2;
+      else if (n === 1 || w >= 2) got = 1;
+      else if (k || w) got = 0;
+      else got = 1;
+      low = Math.min(low, got);
+    }
+    return low;
+  }
+
+  /* Where one word falls in one folded string: 3 a whole word, give or take
+     two letters of ending — none for a word of one or two letters, or "a"
+     would be a whole word of every "ala" — 2 the start of a longer word; 1
+     inside a word; 0 nowhere. The edges are the ones hayWords() splits on. */
+  var WORD_EDGE = /[\s\/,.;:()&'"’+-]/;
+  function wordAt(hay, word) {
+    var best = 0;
+    var from = 0;
+    var i;
+    while (best < 3 && (i = hay.indexOf(word, from)) !== -1) {
+      if (i === 0 || WORD_EDGE.test(hay.charAt(i - 1))) {
+        var end = i + word.length;
+        var j = end;
+        while (j < hay.length && !WORD_EDGE.test(hay.charAt(j))) j++;
+        best = Math.max(best, j - end <= (word.length < 3 ? 0 : 2) ? 3 : 2);
+      } else {
+        best = Math.max(best, 1);
+      }
+      from = i + 1;
+    }
+    return best;
+  }
+
+  /* The rows worth showing once the tiers are in: every one, unless some
+     row on either half scored above nought, in which case the noughts go.
+     Only then, so that a street somebody half-remembers the middle of still
+     finds something when nothing else does. */
+  function firmOnly(rows, tier, firm) {
+    if (!firm) return rows;
+    return rows.filter(function (row) { return tier[row.id] > 0; });
+  }
+  function anyFirm(rows, tier) {
+    return rows.some(function (row) { return tier[row.id] > 0; });
   }
 
   /* THE PART OF THE MAP THE BAR SEARCHES
@@ -8051,26 +8166,30 @@
        on either half answered better; see bestOnly(). Before the roll is in
        only mine are known, and the area is held on to until it is: the
        city's half may yet answer inside it. Asked about one part of the map
-       by name, and there is no letting go: an empty answer is the answer. */
+       by name, and there is no letting go: an empty answer is the answer.
+       A part of the map where the words only brushed a street name — "riva"
+       inside Müürivahe — counts as empty for that: see findTier(). */
     var area = bounds || findArea(wish);
     var outside = false;
     var level = {};
-    var mine = findMine(words, wish, away, area, level);
-    var city = findCity(words, wish, away, area, level);
-    if (!bounds && area && findRoll && !mine.length && !city.length) {
+    var tier = {};
+    var mine = findMine(words, wish, away, area, level, tier);
+    var city = findCity(words, wish, away, area, level, tier);
+    if (!bounds && area && findRoll && !anyFirm(mine.concat(city), tier)) {
       area = null;
       outside = true;
-      mine = findMine(words, wish, away, null, level);
-      city = findCity(words, wish, away, null, level);
+      mine = findMine(words, wish, away, null, level, tier);
+      city = findCity(words, wish, away, null, level, tier);
     }
+    var firm = anyFirm(mine.concat(city), tier);
     return {
       wish: wish,
       at: at,
       away: away,
       area: area,
       outside: outside,
-      mine: bestOnly(mine, level),
-      city: bestOnly(city, level)
+      mine: firmOnly(bestOnly(mine, level), tier, firm),
+      city: firmOnly(bestOnly(city, level), tier, firm)
     };
   }
 
