@@ -1,13 +1,15 @@
 /**
  * Tallinn Tastebuds — the Google Places directory, as its own answer.
  *
- * GET /api/venues
+ * GET /api/venues?ids=… and ?map=…, and GET /api/admin/venues
  *
  * Every place in this city you can eat or drink in, out of `google_venues` —
  * the Google Places export mirrored into D1, eleven hundred and ten rows,
- * see db/schema.sql. It is what /google draws, and — a handful of rows at a
- * time through `?ids=` below — where the map's find bar gets the contact half
- * of a venue somebody has just looked up.
+ * see db/schema.sql. The whole roll is what /admin/google draws, answered by
+ * ./admin/venues.js to the owner alone; this route answers the two narrow
+ * asks — a handful of rows at a time through `?ids=`, where the map's find
+ * bar gets the contact half of a venue somebody has just looked up, and the
+ * one row `?map=` names.
  *
  * WHY THIS IS NOT /api/places
  *
@@ -78,7 +80,7 @@
  *
  * Same row shape again, with one field only this half carries: `of`, how many
  * rows the last sync carried, so the panel can say "#42 of 1,110" without the
- * eleven hundred rows /google counts to get the same number. Every row the
+ * eleven hundred rows /admin/google counts to get the same number. Every row the
  * export holds, closed and hidden ones included, because that is the roll
  * ranked() in tools/googlevenues.mjs numbered — and deliberately not
  * MAX(rank), which reads the same on a database that took the whole file and
@@ -96,13 +98,13 @@
  * The whole roll is the owner's. It is every row of the export in one answer
  * — every phone number, website and week of opening hours, a few hundred
  * kilobytes — and a public address that hands that over to anybody who asks
- * is a scraper's afternoon saved. So without `?ids=` or `?map=` this answers
- * 403 to anybody adminUser() in ./_admin.js does not recognise, `no-store` to
- * the one it does, and /google itself is gated in functions/_middleware.js.
+ * is a scraper's afternoon saved. So it is answered at /api/admin/venues,
+ * behind the lock every /api/admin/ address has in functions/_middleware.js,
+ * `no-store`; here, an address with neither `?ids=` nor `?map=` is a 404.
  *
- * `?ids=` and `?map=` stay open, because the map itself asks them for anybody
- * who opens a place: fifty rows at most, named one at a time by a key the
- * asker already has. They keep their five minutes of public cache.
+ * `?ids=` and `?map=` stay here and open, because the map itself asks them
+ * for anybody who opens a place: fifty rows at most, named one at a time by a
+ * key the asker already has. They keep their five minutes of public cache.
  *
  * EMPTY FIELDS ARE NOT SENT
  *
@@ -114,8 +116,6 @@
  */
 
 import { json, wrongDatabase, venueHours } from './_lib.js';
-/* Who may have the whole roll. */
-import { adminUser } from './_admin.js';
 
 /* Google's words for what a place cooks, in ids the site can say in ten
  * languages. data/cuisines.json carries the labels; this is the only thing
@@ -405,21 +405,43 @@ function wantedIds(raw) {
   return [...seen];
 }
 
+/* The rows every answer is made of, in the directory's shape: the whole roll
+   when `ids` and `mine` are both null, the named venues or the one place of
+   mine otherwise. Throws when the database does; the route decides what that
+   looks like. Exported because the whole roll is answered from
+   ./admin/venues.js, and one reader of the table is what keeps the two from
+   drifting into different shapes. */
+export async function venueRows(env, ids, mine) {
+  const { results } = await readingRanks(env, ids, mine);
+
+  /* In whatever order the database hands them back, and deliberately not
+     sorted here. The page offers three orders and applies one of them to every
+     answer before it draws a card, so a sort on the way out would be a second
+     opinion about the order that nothing ever sees — and one that would drift
+     from the page's the first time either changed. */
+  return (results || [])
+    .filter((row) => row && typeof row.name === 'string' && row.name)
+    .map(entry);
+}
+
 export async function onRequestGet(context) {
   const { env, request } = context;
 
-  /* Nothing to fall back on here. The map's own places are a roll of
-     seventy-five and this page is a directory of everywhere else, so a
-     database that cannot answer means the page has nothing — and it says so,
-     rather than drawing an empty directory that reads as a city with no
-     restaurants in it. */
+  /* The whole roll is not answered here any more — see WHO MAY ASK FOR WHAT
+     in the header — so an address that names neither half is asking for
+     something that lives at /api/admin/venues, and is told there is nothing
+     here. Before the database, so it costs nothing. */
+  const asked = new URL(request.url).searchParams;
+  if (!asked.has('ids') && !asked.has('map')) return json({ error: 'not-found' }, 404);
+
+  /* Nothing to fall back on here: a database that cannot answer means the
+     map's panel has nothing to add, and it draws without it. */
   if (!env.DB || (await wrongDatabase(env))) return json({ error: 'venues' }, 503);
 
   /* Named venues, when the address asks for them. `?ids=` with nothing usable
      in it is an empty answer and not the whole roll: somebody asking for two
      venues and getting eleven hundred is a worse surprise than an empty list,
      and the map's find bar reads it as a venue it could not dress. */
-  const asked = new URL(request.url).searchParams;
   const ids = asked.has('ids') ? wantedIds(asked.get('ids')) : null;
   if (ids && !ids.length) return json([], 200, 300);
 
@@ -429,27 +451,9 @@ export async function onRequestGet(context) {
   const mine = asked.has('map') ? String(asked.get('map') || '').trim() : null;
   if (mine !== null && !/^[a-z0-9-]{1,80}$/.test(mine)) return json([], 200, 300);
 
-  /* Neither: the whole roll, which is the owner's — see WHO MAY ASK FOR WHAT
-     in the header. */
-  const whole = !ids && mine === null;
-  if (whole && !(await adminUser(request, env))) return json({ error: 'owner-only' }, 403);
-
-  let results;
   try {
-    ({ results } = await readingRanks(env, ids, mine));
+    return json(await venueRows(env, ids, mine), 200, 300);
   } catch (e) {
     return json({ error: 'venues' }, 503);
   }
-
-  /* In whatever order the database hands them back, and deliberately not
-     sorted here. The page offers three orders and applies one of them to every
-     answer before it draws a card, so a sort on the way out would be a second
-     opinion about the order that nothing ever sees — and one that would drift
-     from the page's the first time either changed. */
-  const out = (results || [])
-    .filter((row) => row && typeof row.name === 'string' && row.name)
-    .map(entry);
-
-  /* The whole roll is no-store: it was one person's to ask for. */
-  return whole ? json(out, 200) : json(out, 200, 300);
 }

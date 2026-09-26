@@ -42,8 +42,10 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 /* Every page that loads something out of assets/. */
 export const PAGES = [
   'index.html', 'lists.html', 'account.html', 'blog.html', 'feedback.html',
-  'google.html', 'deal.html', 'verify.html', 'staff.html', 'split.html',
-  'flashcard.html', 'stats.html', 'edit.html', 'insights.html'
+  'deal.html', 'verify.html', 'staff.html', 'split.html',
+  'flashcard.html', 'edit.html', 'insights.html',
+  /* The owner's two, under admin/ — see functions/_middleware.js. */
+  'admin/google.html', 'admin/stats.html'
 ];
 
 /* Scripts and stylesheets only. Images are addressed by name and replaced

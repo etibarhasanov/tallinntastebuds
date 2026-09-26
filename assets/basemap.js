@@ -1,7 +1,7 @@
 /* Tallinn Tastebuds — the basemap, said once.
  *
  * Four maps draw the same CARTO tiles: the map on index.html, the directory's
- * map on google.html, the pin picker in the "add a place" form on lists.html,
+ * map on admin/google.html, the pin picker in the "add a place" form on lists.html,
  * and the pin picker in admin.html.
  * Each of them used to carry its own copy of the URL, the key and the
  * attribution, and that is exactly how the picker on lists.html ended up

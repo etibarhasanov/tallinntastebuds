@@ -1,15 +1,16 @@
 /**
  * Tallinn Tastebuds — who the owner is, to the server.
  *
- * Two pages on this site are the owner's and nobody else's: /stats, which is
- * how the site is used — what gets opened, what gets pressed, how many
- * accounts there are — and /google, which hands over the whole of the Google
- * export, eleven hundred rows with every phone number and week of opening
- * hours in one answer. Both were public for a while on the argument that
- * nothing linked to them. An address nobody links to is still an address, and
- * both answers are cheap to ask for and expensive to have handed out, so they
- * are gated now: the pages in functions/_middleware.js, the numbers in
- * GET /api/stats and the whole roll in GET /api/venues.
+ * Everything under /admin/ and /api/admin/ is the owner's and nobody else's:
+ * /admin/stats, which is how the site is used — what gets opened, what gets
+ * pressed, how many accounts there are — /admin/google, which hands over the
+ * whole of the Google export, eleven hundred rows with every phone number and
+ * week of opening hours in one answer, and the routes they and the admin page
+ * read. The first two were public for a while, at /stats and /google, on the
+ * argument that nothing linked to them. An address nobody links to is still an
+ * address, and both answers are cheap to ask for and expensive to have handed
+ * out, so they moved under the two prefixes and functions/_middleware.js
+ * locks both with what is below.
  *
  * WHO COUNTS AS THE OWNER
  *

@@ -1555,7 +1555,12 @@ if (ui !== null && isPlainObject(ui)) {
      Delete this line with the block above. */
   for (const key of splitKeys) known.add(key);
 
-  const pages = readdirSync(ROOT).filter((f) => f.endsWith('.html'));
+  /* The root's pages and the owner's two under admin/. */
+  const ADMIN_PAGES = join(ROOT, 'admin');
+  const pages = readdirSync(ROOT).filter((f) => f.endsWith('.html'))
+    .concat(existsSync(ADMIN_PAGES)
+      ? readdirSync(ADMIN_PAGES).filter((f) => f.endsWith('.html')).map((f) => 'admin/' + f)
+      : []);
   for (const page of pages) {
     const text = readFileSync(join(ROOT, page), 'utf8');
     for (const attr of I18N_ATTRS) {

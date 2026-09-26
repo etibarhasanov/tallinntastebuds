@@ -450,7 +450,7 @@ export function uiStrings(context) {
  *
  * `langs` comes back beside them: every language the file speaks, each with
  * the name it has for itself, for a page that draws a switch. The flashcards
- * page does and reads it; /stats does not and drops it on the way past. A
+ * page does and reads it; /admin/stats does not and drops it on the way past. A
  * handful of short pairs either way, which is a couple of hundred bytes
  * against the eight to ten KB of strings already in the answer, so it is not
  * worth a second shape of this function to leave out.

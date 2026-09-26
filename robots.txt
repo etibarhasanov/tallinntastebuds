@@ -99,13 +99,6 @@ Disallow: /account.html
 # because the bylines on it lead to real profiles and there is no reason a
 # crawler should not walk to them.
 
-# Google's own directory of the city, which is emphatically not the map: the
-# ratings on it are Google's and nothing on it has been visited. Being indexed
-# beside the pages that are the verdict is exactly what it must not be, so
-# nothing links to it and it carries its own noindex tag as well.
-# One line for both spellings: Pages serves google.html at /google as well.
-Disallow: /google
-
 # Splitwise is deliberately NOT disallowed, and it was for a day.
 #
 # A group's link is pasted into a message and tapped by four people, so the
@@ -121,29 +114,13 @@ Disallow: /google
 # itself, so the card gets built and the search result never does. There is
 # nothing on the page for anybody who is not in the group in any case.
 
-# /stats is deliberately NOT disallowed, and it is not indexed either — the
-# same pair /feedback is under, and they depend on each other: the page carries
-# `noindex, follow` in _headers and in its own markup, and a crawler that is
-# forbidden to fetch it can read neither half of that. A Disallow here would
-# leave the address eligible to be listed on the strength of any link pointing
-# at it, with nothing to say otherwise.
-#
-# Not indexed, because it is a page about how this site is used rather than
-# about the city: it ranks real restaurants by how often somebody pressed
-# them, which is a fact about this site's traffic and not a verdict on anybody
-# — and a search for a restaurant's name answered with its position in that
-# ranking would read as exactly the verdict it is not. Followed, because every
-# name on it links to a place on the map, which is indexed and meant to be.
-#
-# One line would cover both spellings the way the Google line above does. There
-# is no line at all, which is the point.
-#
-# Since the page became the owner's alone, a crawler asking for it is answered
-# 404 by functions/_middleware.js, which settles the indexing question without
-# a line here either.
-
 # The admin page is not for anybody, crawler or otherwise. Nothing links to
 # it and it carries its own noindex tag.
 Disallow: /admin.html
+
+# And the owner's pages under it: the statistics and Google's directory,
+# /admin/stats and /admin/google. functions/_middleware.js answers a crawler
+# 404 there anyway; this saves it the trip.
+Disallow: /admin/
 
 Sitemap: https://tallinntastebuds.ee/sitemap.xml
