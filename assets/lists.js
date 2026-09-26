@@ -921,15 +921,8 @@
   /* The three handles as glyphs, on the page. The same rows profileLinks()
      draws as words on the card — the same table, the same address, the same
      rel — with the site's name as the label a reader who cannot see the
-     glyph gets. The glyphs are drawn here rather than fetched: three small
-     outlines in the site's own stroke, which is what keeps three brands from
-     turning the page three colours. */
-  var GLYPHS = {
-    instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle class="is-fill" cx="17.4" cy="6.6" r="1.1"/>',
-    tiktok: '<path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.6 2 4.2 4.6 4.5"/>',
-    facebook: '<path class="is-fill" d="M15.5 4h-2.2A3.8 3.8 0 0 0 9.5 7.8V10H7.5v3h2v7h3v-7h2.3l.5-3h-2.8V8.2c0-.7.4-1.2 1.2-1.2h1.8z"/>'
-  };
-
+     glyph gets. The glyphs themselves are TTBLinks.GLYPHS, shared with the
+     editor's preview on /edit. */
   function pageSocial(links) {
     var rows = TTBLinks.of(links);
     if (!rows.length) return null;
@@ -943,7 +936,7 @@
           rel: 'me nofollow noopener',
           'aria-label': row.label,
           title: row.label,
-          html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + GLYPHS[row.id] + '</svg>'
+          html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + TTBLinks.GLYPHS[row.id] + '</svg>'
         }), 'profile_link_open', { network: row.id })
       ]));
     });

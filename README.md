@@ -3378,9 +3378,8 @@ that names them:
 
 ```
 etibar                          the name, one line saying what the page is,
-  Eating my way through …       the line you wrote about yourself, with the
-  Change your line              word that opens the field again under it,
   Your public profile >         the door to how it looks to everybody else,
+  Build your page >             and the door to where that page is written,
   Change username ·             and everything you can do to the account
   Change password · Sign out
 Places I saved        8 places  a fold: six rows a place, newest first
@@ -3431,6 +3430,14 @@ than a stack of links: two rows were still a list and four would have been
 the menu this page exists to stop being, but the page reads best when the
 only row on it is the one that is about you. A second door wants an argument,
 not a line.
+
+It has one, and this is it: **Build your page**, the door to `/edit`. It
+stands in for four quiet words that used to sit on this card — the name you
+go by, the line, the handles and the page of links, each opening a form of
+its own — which were the stack of links rule 8 is about, only spread down
+the card rather than in a column. Those four are one thing, the page under
+your name, and one row to where it is written is shorter than any of them
+was. See **Your page** under **Profiles**.
 
 ### Two pages open with your name, and this one says which it is
 
@@ -3699,12 +3706,9 @@ one line, and turn the chevron a quarter when it opens. The chevron is
 page and a title that opens where it stands point the same way at what they do.
 There was a third, `.lists-door` — a `position: relative` and a hover, which is
 what made a whole card a press — and it went with the card it was written for.
-And `.lists-about`, which is the room the line about yourself stands in, and
-the room the three handles under it stand in too: the same room whether what
-is in it is what somebody wrote or the field they write it in, so the card
-does not shift under your hand when a field arrives. `.lists-links` is the
-wrapping row those handles are drawn as, on this page and on the profile, so
-that what you edit here is what a stranger reads there. `.lists-new` grew a margin
+There was a `.lists-about` too, the room the line about yourself and the
+handles stood in on this page, and it went to `/edit` with them — see **Your
+page** under **Profiles**. `.lists-new` grew a margin
 of its own when the box arrived here, for the reason its comment gives: what is
 over it is a `<summary>` when the fold is closed and a column of lists when it
 is open, and neither of those can carry a margin that only means something
@@ -6156,45 +6160,28 @@ a page revealing something.
 
 Two hundred characters under your name on `/u/<name>`, and the only thing
 anybody writes on this site about themselves rather than about a restaurant.
-It is written on `/account.html`, on the card that carries your name, directly
-over the door to the profile it appears on — write the line, then go and read
-it where everybody else does.
+It is written on `/edit`, under **About you**, with the page it appears on
+drawn beside it as it is typed — see **Your page** below.
 
-It is the same box a list's intro is, at the same length and in the same
-class, because it does the same job one floor up: a line under a title, not
-a page about a person. A profile that opened with six paragraphs of
-autobiography would have stopped being a page about somebody's lists.
+It is the same length a list's intro is, because it does the same job one
+floor up: a line under a title, not a page about a person. A profile that
+opened with six paragraphs of autobiography would have stopped being a page
+about somebody's lists.
 
-**On the account page it is a line until you ask for the field.** What stands
-there is what you wrote, drawn as `.lists-say` — the same class it is read in
-on your profile, so the card shows you the thing rather than a box with the
-thing in it — with one quiet word under it to change it, and nothing but that
-word where nobody has written a line yet. The field arrives when the word is
-pressed and goes again when the line is saved.
-
-It was a field and a filled Save standing open on every visit, and two things
-were wrong with that and they were the same thing twice. A page that had
-already spent its accent on the box that makes a list was spending it a second
-time here, which is **The design rules**, rule 5. And that is what it looked
-like: the loudest thing on somebody's account was a two-hundred-character
-field nearly nobody has ever typed in, which, once they had, stayed open and
-stayed loud, saying *Saved* at a line that was already saved. The Save inside
-the field is an `.alt` now for the same rule — the accent on that page belongs
-to the box that makes a list, and it is still spent exactly once while this is
-open.
-
-There is no way out of the field that is not Save, and it needs none: nothing
-has gone anywhere until it is pressed, and the field opens holding the line
-that is already there, so pressing Save on a field opened by accident writes
-back what was written before.
+It used to be written on `/account.html`, as a line with a quiet word under
+it that opened a field with a Save of its own, and before that as a field
+and a filled Save standing open on every visit — which spent the accent a
+second time on a page that had already spent it on the box that makes a
+list, **The design rules**, rule 5. The editor is where it went when the
+page of links needed somewhere of its own, and the line went with it: it is
+the second line of that page, and it is easier to write looking at the page.
 
 **Nothing is drawn on the profile for an account that has not written one**,
 which is nearly all of them. That is the rule the standing and every save count
 on this site already follow: a line reading "this person has not written
 anything yet" is a page telling a reader about an empty field rather than about
 a person. Emptying the field and pressing Save is how a line comes down, and
-the server takes empty as an answer rather than as a mistake — on the account
-page the word goes back to offering one.
+the server takes empty as an answer rather than as a mistake.
 
 **It does not ask for your password, and the other two changes do.** A
 password change and a rename are each a way to take an account off somebody
@@ -6214,7 +6201,7 @@ ALTER TABLE users ADD COLUMN about TEXT NOT NULL DEFAULT '';
 `db/schema.sql` lists it last because that is where SQLite puts an added
 column, which is what keeps that file readable against the real table. It is
 read on `/api/profile` and once more on `GET /api/account`, on the id already
-in hand, so the box on the account page opens with what is in it —
+in hand, so the editor opens with what is in it —
 `sessionUser()` does not carry it, because every signed-in request on this
 site goes through that function and not one of the others prints this.
 
@@ -6225,18 +6212,18 @@ site asks for a column that is not there yet. Everywhere else that window is
 survived by the feature simply not being reachable; here it would have been
 survived by nothing, because the account page and every profile would answer
 500 and take somebody's saves, lists and byline down with a line of
-autobiography nearly nobody has written. So the account page catches it and
-draws no box, and `readProfile()` falls back to the same query without the one
-optional field. Run the `ALTER` and the line starts saving; until then
-`/api/account` sends no line and the account page offers to take one, which is
-the one thing in that window that is not quite honest — pressing Save there
-fails and says so. The rest of both pages is exactly what it was before this
-existed, which is the point.
+autobiography nearly nobody has written. So `GET /api/account` and
+`readProfile()` both fall back to the same query without the optional field.
+Run the `ALTER` and the line starts saving; until then `/api/account` sends
+no line and the editor offers a field for one anyway, which is the one thing
+in that window that is not quite honest — pressing Save there fails and says
+so. The rest of every page is exactly what it was before this existed, which
+is the point.
 
 ### Where else you are
 
 Three handles under the line — **Instagram, TikTok, Facebook** — written on
-`/account.html` on the same card the line is, and read by everybody who opens
+`/edit` under **About you**, beside the line, and read by everybody who opens
 `/u/<name>`. Nothing at all for an account that gave none, which is every
 account that existed before this did.
 
@@ -6281,15 +6268,11 @@ field that does not clean stops the whole save and says which site it was
 for, rather than being quietly dropped and leaving somebody looking at a
 profile with a link missing and nothing saying why.
 
-**One form, one Save, and an empty field is a link taken down.** The box on
-the account page is the line's twin: what stands there is the links
-themselves, drawn exactly as the profile draws them, with one quiet word under
-them to change them — and nothing but that word for the account that has none.
-The three fields arrive when the word is pressed and go when they are saved.
-Anything else would put a second filled Save on a page whose accent is already
-spent on the box that makes a list, which is **The design rules**, rule 5, and
-spend it on three boxes almost nobody types in. It asks for a session and not
-the password, for the reason the line does.
+**An empty field is a link taken down.** What is in the three boxes when
+Save is pressed is what is on the profile afterwards, so clearing one is how
+it comes down. They are three fields in the editor's one form, under the
+one Save that writes everything else — **Your page** below — and they ask
+for a session and not the password, for the reason the line does.
 
 **The links are `rel="me nofollow noopener"`.** `me` because that is what a
 link from somebody's page to their account elsewhere is, and both a browser
@@ -6354,9 +6337,7 @@ without rows is the card it has always been.
 
 **The name you go by.** A username is lowercase letters and a page needs a
 heading — *Etibar Ädalät* over `etibar`. `users.display_name`, sixty
-characters, written on `/account.html` above the line in the same box the
-line uses (`lineBox()` in `assets/account.js`, one function drawn twice),
-and drawn as the page's heading and in its title; the username stands
+characters, written on `/edit` above the line, and drawn as the page's heading and in its title; the username stands
 wherever it is empty, which is nearly everywhere. The other way — a display
 name for everybody, everywhere — would have put a second name on every
 byline, and a byline is the one place a name has to be the address.
@@ -6406,20 +6387,62 @@ host printed under every plain link, so a reader knows where it goes before
 pressing; every link out `nofollow noopener`; and the caps below. The three
 handle fields stay as they were.
 
-**It is written on `/account.html`**, on the card that carries your name,
-the way the line and the handles are: what stands there is the rows
-themselves, drawn as the profile draws them minus the players, with one
-quiet word under them — *Change your page* — and just that word for the
-account that has none. Press it and each row is a box: the title over the
-address, or over the note, with *Write a note instead*, *Move up*, *Move
-down* and *Remove* along its foot; under them *Add a row* and an `.alt`
-Save, for rule 5. Arrows rather than dragging, because a thumb cannot drag
-inside a scrolling card. One form, one Save, one write: the rows are deleted
-for the owner and written again in one batch, in the form's order, so a save
-that fails halfway leaves the page as it was. A row without a title, or with
-an address that is not `https`, stops the save and names the row, here and
-on the server alike. It asks for a session and not the password, for the
-reason the line does.
+**It is written on `/edit`**, a page of its own one door off the card that
+carries your name on `/account.html` — *Build your page* — shaped the way
+every page-of-links editor people already know is shaped: the editor on the
+left and the page itself on the right, redrawn on every keystroke before
+anything is saved. `edit.html` and `assets/edit.js`; the few rules it adds
+are at the foot of `lists.css`, under *the editor*.
+
+- **Two tabs, one draft.** *Links* is the rows; *About you* is the name you
+  go by, the line and the three handles. Everything on both is one draft
+  with one Save, and Save is the page's one filled action (rule 5) — on a
+  page whose whole job is editing, saving is the thing it is asking for.
+  Save sends only the parts that changed, as the same four actions
+  `/api/account` has always taken, one after the other; each is whole on its
+  own, so a Save refused halfway leaves the parts before it saved and says
+  which part stopped it. What is drawn afterwards is what came back.
+- **A row is closed until you open it.** A closed row is its title and what
+  it is — *Video · YouTube*, *Link · agencyicon.com*, *Note*, *Heading* — and
+  the whole of it is the press that opens it: the title over the address or
+  the note, with *Write a note instead*, *Remove* and *Done* along its foot.
+  Rows are added by kind — *+ Link*, *+ Heading*, *+ Note* — because an
+  empty row has no other way to say what it is meant to be. A link left
+  without an address, or a note without a note, stops the Save and names the
+  row, rather than being stored as the heading the server would make of it.
+- **A row moves by being dragged, and only that.** By the handle on its left,
+  with a mouse or a thumb alike — pointer events rather than the browser's
+  own drag, which never starts under a finger, with `touch-action: none` on
+  the handle so the thumb moves the row and not the page, and the page
+  scrolling under a row carried to the top or foot of the window. With the
+  handle focused, the up and down arrow keys move it too. The account page
+  had *Move up* and *Move down* for the finger's sake; dragging that works
+  under a finger is why they went.
+- **The preview is the profile's own drawing.** `TTBRows.draw()` and
+  `TTBLinks`, the same two files `renderPage()` draws `/u/<name>` with, in the
+  same classes, inside a frame the width of a phone, with the row being
+  written lit on both sides. Nothing in it leaves the page — a press on a
+  link is swallowed, since leaving would take the unsaved draft with it —
+  and the players are off, because a frame from YouTube reloading on every
+  keystroke is a page that stutters. A note still opens. The face is asked
+  for as `assets/faces/<name>.jpg` directly: an image that arrives or does
+  not is the whole question `faceOf()` asks on the profile.
+- **On a phone there is no right-hand side**, so the bar at the foot carries
+  *Preview*, which lays the page over the editor with a cross to close it
+  (Escape does too). The bar is stuck to the foot of the window on every
+  width, so Save is never a scroll away, and says *Unsaved changes* with a
+  dot, or *All saved*. Leaving with something unsaved asks first.
+- **Signed out** it is a card saying what the page is and the two doors to
+  an account, which bring you back here. **Accounts off** is the account
+  page's own sentence.
+
+It replaced four boxes on the account page's card — the name, the line, the
+handles and the rows — each a quiet word that opened a form with a Save of
+its own, none of them showing the page. That was the right shape for a line
+nearly nobody writes and the wrong one for somebody's whole page, which
+nobody could see until it was live. It asks for a session and not the
+password, for the reason the line does, and it is `noindex` in both
+`_headers` and its own head, like the account page it is a door off.
 
 **The face.** For the few who have one, `assets/faces/<name>.jpg` in the
 repository is drawn over the profile's card, and nothing is drawn for the
@@ -6446,7 +6469,7 @@ A profile with a face in the repository is also in `sitemap.xml` —
 because that is the one kind of profile the repository can know exists.
 
 **The caps**, in `functions/api/_profile.js` and restated as maxlengths in
-`assets/account.js`: twenty rows, a title of 60, an address of 2,048, a note
+`assets/edit.js`: twenty rows, a title of 60, an address of 2,048, a note
 of 3,000. The title and the note are cut, the way every line here is; an
 address over the cap is refused, because a cut address points somewhere
 else.
@@ -6460,7 +6483,7 @@ wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
 ALTER TABLE users ADD COLUMN display_name TEXT NOT NULL DEFAULT '';
 ```
 
-Until it is, a profile and an account page draw no rows rather than a 500 —
+Until it is, a profile and the editor draw no rows rather than a 500 —
 `readRows()` takes "no such table" as an answer, at the cost of one failed
 statement per read — and a save says *Pages are not switched on here yet.*
 
@@ -12067,20 +12090,27 @@ The account page, `assets/account.js`:
 | `list_create` | `list_id` |
 | `account_open` | `view` — the two doors when signed out |
 | `account_rename_open`, `account_password_open` | — into the map's sheet |
-| `account_about_open` | `about_state` (`set`/`empty`) — the field for the line about yourself, on opening it |
-| `account_about` | `about_state` (`set`/`cleared`) — the line about yourself, on save |
-| `account_links_open` | `links_state` (`set`/`empty`) — the three handles, on opening the fields |
-| `account_links` | `links_state` (`set`/`cleared`) — the three handles, on save |
+| `edit_open` | — the door to `/edit`, where the page under your name is written |
 | `profile_link_open` | `network` (`instagram`/`tiktok`/`facebook`) — a handle pressed on somebody's profile |
 | `profile_row`, `profile_play`, `profile_note` | `row`, one-based, and `host` on the first two — a row on somebody's page: left through, opened as a player, opened as a note. Reported from `assets/rows.js`, which the profile hands its reporter |
 | `profile_share` | `name`, `method` (`sheet`/`copy`) — the Share pill on a profile that is a page |
-| `account_display_open` | `display_state` (`set`/`empty`) — the name you go by, on opening the field |
-| `account_display` | `display_state` (`set`/`cleared`) — the name you go by, on save |
-| `account_rows_open` | `rows_state` (`set`/`empty`) — the page of links, on opening the form |
-| `account_rows` | `rows_state` (`set`/`cleared`), `rows_count` — the page of links, on save |
 | `account_google_unlink` | — Google taken off the one kind of account that has it |
 | `account_logout` | — |
 | `radio_play`, `radio_stop`, `home` | as on the map |
+
+The editor for the page under your name, `assets/edit.js`:
+
+| event | parameters |
+| --- | --- |
+| `edit_tab` | `tab` (`links`/`about`) |
+| `edit_add` | `kind` (`link`/`heading`/`note`) — a row added |
+| `edit_drag` | `from`, `to`, one-based — a row dragged to a new place |
+| `edit_preview` | — the preview opened over the editor, on a phone |
+| `edit_save` | `parts` — which of `display`, `about`, `links` and `rows` changed, comma-joined — and `rows_count` |
+| `edit_discard` | — |
+| `edit_view` | — the way to the page as everybody sees it, in the header |
+| `account_open` | `view` — the two doors when signed out |
+| `home` | as on the map |
 
 The directory, `assets/venues.js`:
 

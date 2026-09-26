@@ -541,36 +541,9 @@
   margin-bottom: 10px;
 }
 
-/* The line somebody wrote about themselves, on /account.html, with the quiet
-   word that opens the field under it — and the field itself, in the same
-   place, once that word is pressed.
-
-   The room above belongs to the box rather than to either of the two things
-   it holds, which is what keeps the card from shifting under your hand when
-   the field arrives: .lists-new carries 16px of its own for the box that
-   makes a list, and it gives that up in here.
-
-   The line takes the whole row and the word wraps under it, at every width.
-   Beside it, the word sat against the middle of a line that had wrapped to
-   three and read as a caption on the second of them; and a basis narrow
-   enough to keep a short line company is a number that decides, per phone,
-   which of the two a given sentence gets. Under it, it is the same quiet word
-   under the same line whatever anybody wrote.
-
-   The line drops its own bottom margin — it is standing in a row, not in a
-   column of paragraphs. It is .lists-say, the same class the line is read in
-   on /u/<name>, because seeing it here the way a stranger will is the whole
-   point of writing it where the door to that page is. See aboutBox() in
-   assets/account.js. */
-.lists-about { margin-top: 14px; }
-.lists-about > .lists-new { margin-top: 0; }
-.lists-about .lists-say { flex: 1 1 100%; margin: 0; }
-.lists-about .lists-links,
-.lists-about .lists-page-shown { flex: 1 1 100%; }
-
-/* The three places somebody said they are: on /u/<name> under their line, and
-   on /account.html in the box above, drawn the same both times so that what
-   you edit is what a stranger reads.
+/* The three places somebody said they are, as words under their line on the
+   card /u/<name> draws for a profile without rows. A profile that is a page
+   draws them as glyphs instead — .lists-page-social below.
 
    A wrapping row rather than a column. Three of them are shorter than one
    line of the sentence above, and stacking them would make the quietest thing
@@ -606,32 +579,10 @@
 .lists-link-net { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .lists-link-who { font-family: var(--body); font-size: 14px; }
 
-/* Three fields where the box that makes a list has one, each under the name
-   of the site it is for — in the mono it wears on the profile, so the form
-   reads as the three links rather than as three boxes.
-
-   The name is a <label> and not a placeholder, because a placeholder is a
-   label only until somebody types: these three are full on every visit after
-   the first, and that is exactly when it matters which of them the TikTok one
-   is.
-
-   A basis narrow enough for two to share a phone and wide enough that a
-   handle is not read through a slot. The input is taken out of the form's
-   flex here — inside its label it is a column, where .lists-new's basis would
-   be read as a height. */
-.lists-links-form .lists-link-field {
-  flex: 1 1 140px;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.lists-links-form .lists-link-field .lists-input { flex: 0 0 auto; width: 100%; }
-
 /* ---------- the page of links ----------
    The rows under somebody's name on a profile, between the handles and the
-   lists — assets/rows.js draws them, and the account page draws the same
-   rows as a picture of the profile over the form that rewrites them. */
+   lists — assets/rows.js draws them, and /edit draws the same rows, with
+   the same rules, as the preview beside the form that rewrites them. */
 
 /* The face, over the eyebrow on the profile's card, for the few who have one
    in the repository — see faceOf() in functions/api/_profile.js. */
@@ -823,32 +774,177 @@
 .lists-page-note-text p:last-child { margin-bottom: 0; }
 .lists-page-note-foot { margin-top: 18px; }
 
-/* The form that writes the rows, on the account page: one box per row, the
-   title over the address or the note, and the quiet words along its foot.
-   The fields are the page's own .lists-input; the note is the same box let
-   grow. */
-.lists-page-help { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
-.lists-page-form { display: flex; flex-direction: column; gap: 12px; margin-top: 0; }
-.lists-page-edit {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 0;
-  /* A fieldset's own minimum is its widest child, which on a phone is the
-     address box, which is the card's width plus the padding: taken off. */
-  min-width: 0;
-  padding: 12px 12px 6px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
+/* ---------- the editor ----------
+   /edit: the page of links written on the left and drawn on the right, the
+   preview redrawn on every keystroke — assets/edit.js. The preview is the
+   rules above, unchanged, inside a frame the width of the phone the README
+   measures against; everything here is the editor round it. */
+
+.lists-body.is-editor .lists-brand { max-width: 1180px; }
+
+.ed {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 32px;
+  align-items: start;
 }
-/* Taken out of .lists-new's flex, the way the handle fields are: in a column
-   its 200px basis would be read as a height. Three classes deep because
-   .lists-new's own rule is further down this file and would otherwise win. */
-.lists-new .lists-page-edit .lists-input { flex: 0 0 auto; width: 100%; }
-.lists-page-edit textarea.lists-input { min-height: 96px; resize: vertical; font-family: var(--body); line-height: 1.45; }
-.lists-page-edit-foot,
-.lists-page-form-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; }
-.lists-page-edit-foot { margin: 0 -8px; }
+.ed-panel { padding-bottom: 0; }
+.ed-tabs { margin-bottom: 18px; }
+.ed-pane .ac-err { margin: 0 0 14px; }
+
+/* A mono label over a 16px field — design rule 9 — for every box on the
+   page: the title, the address, the note, the name, the line, the handles. */
+.ed-fields { display: flex; flex-direction: column; gap: 12px; }
+.ed-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.ed-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ed-field .lists-input { width: 100%; }
+.ed-field textarea.lists-input { min-height: 88px; resize: vertical; font-family: var(--body); line-height: 1.45; }
+
+.ed-add { margin-bottom: 14px; }
+.ed-empty { padding: 18px 0 6px; }
+
+.ed-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.ed-row {
+  position: relative;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  background: var(--paper);
+}
+.ed-row.is-open { padding-bottom: 6px; border-color: var(--accent); }
+.ed-row.is-dragging { position: relative; z-index: 3; box-shadow: var(--shadow); }
+/* Where the row being dragged will land: a line in the accent in the gap
+   above the row it will go in front of, or below the last. */
+.ed-row.is-drop-before::before,
+.ed-row.is-drop-after::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  border-radius: 100px;
+  background: var(--accent);
+}
+.ed-row.is-drop-before::before { top: -7px; }
+.ed-row.is-drop-after::after { bottom: -7px; }
+
+.ed-row-head { display: flex; align-items: center; min-width: 0; }
+.ed-grip {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  align-self: stretch;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: grab;
+  /* A thumb on the handle drags the row rather than scrolling the page. */
+  touch-action: none;
+}
+.ed-row.is-dragging .ed-grip { cursor: grabbing; }
+.ed-grip:hover { color: var(--ink); }
+.ed-grip:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; border-radius: var(--radius-soft); }
+.ed-grip svg { width: 18px; height: 18px; fill: currentColor; }
+/* A closed row: the title and the line under it, and the whole of the rest
+   of the row is the press that opens it — design rule 8. */
+.ed-row-open {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 12px 14px 12px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.ed-row-open .menu-name { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ed-row-open .menu-name.is-empty { color: var(--muted); }
+.ed-row-open:hover .menu-name { color: var(--accent); }
+.ed-kind { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ed-row.is-open .ed-fields { padding: 0 14px 0 40px; }
+.ed-row-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; padding: 6px 6px 0 32px; }
+.ed-row-foot .ed-remove { margin-left: auto; }
+
+/* The foot of the editor, stuck to the bottom of the window while there is
+   more editor below it, so Save is never a scroll away. */
+.ed-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 22px -22px 0;
+  padding: 12px 22px calc(12px + var(--safe-b));
+  border-top: 1px solid var(--hairline);
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--paper);
+}
+.ed-status { margin: 0 auto 0 0; font-size: 11.5px; letter-spacing: .04em; color: var(--muted); }
+/* Unsaved, in a dot and the words — design rule 10. */
+.ed-status.is-dirty::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 1px;
+}
+
+/* The preview. Stuck beside the editor on a wide screen, so the page stays
+   in view however far down the rows the editor has gone. */
+.ed-side { position: sticky; top: 16px; }
+.ed-phone {
+  height: min(760px, calc(100vh - 110px));
+  overflow-y: auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  background: var(--wash);
+  box-shadow: var(--shadow);
+}
+.ed-screen { padding: 26px 16px 28px; }
+.ed-screen .lists-page-face { width: 88px; height: 88px; }
+.ed-screen .lists-page-name { font-size: 26px; }
+/* The row being written, lit on the page as well, so it is plain which of
+   them the fields on the left are. */
+.ed-screen .is-editing { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ed-note { margin: 10px 0 0; font-size: 11px; letter-spacing: .04em; color: var(--muted); text-align: center; }
+.ed-only-phone { display: none; }
+.ed-shut { top: calc(10px + var(--safe-t)); right: max(10px, var(--safe-r)); }
+
+@media (max-width: 860px) {
+  .ed { grid-template-columns: minmax(0, 1fr); }
+  .ed-only-phone { display: inline-block; }
+  .ed-panel { padding-left: 16px; padding-right: 16px; }
+  .ed-bar { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }
+  /* Four things do not fit one line at 390px, so the words that say where
+     the draft stands take a line of their own over the three buttons. */
+  .ed-status { flex: 1 0 100%; }
+  .ed-row.is-open .ed-fields { padding: 0 12px; }
+  .ed-row-foot { padding-left: 4px; }
+  /* On a phone the preview is not in the layout until it is asked for, and
+     then it is the whole window, over the editor. */
+  .ed-side { display: none; }
+  .is-previewing { overflow: hidden; }
+  .is-previewing .ed-side {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    overflow-y: auto;
+    padding: calc(56px + var(--safe-t)) var(--gap) calc(24px + var(--safe-b));
+    background: var(--wash);
+  }
+  .is-previewing .ed-phone { height: auto; overflow: visible; border: 0; box-shadow: none; background: none; }
+  .is-previewing .ed-shut { position: fixed; display: grid; }
+}
 
 /* The box that makes a list. It stands under the fold on the account page,
    and the room above it is its own: what is over it is a <summary> when the
