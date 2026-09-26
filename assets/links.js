@@ -147,5 +147,18 @@ window.TTBLinks = (function () {
     return out;
   }
 
-  return { NETWORKS: NETWORKS, clean: clean, of: of };
+  /* The three as glyphs, for the page a profile becomes once it has rows —
+     drawn here rather than fetched: three small outlines in the site's own
+     stroke, which is what keeps three brands from turning the page three
+     colours. Here rather than in assets/lists.js because the editor's
+     preview draws the same header, and a second copy of three paths is the
+     copy that quietly stops matching. The inside of an <svg viewBox="0 0 24
+     24">; the page supplies the element and the stroke. */
+  var GLYPHS = {
+    instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle class="is-fill" cx="17.4" cy="6.6" r="1.1"/>',
+    tiktok: '<path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.6 2 4.2 4.6 4.5"/>',
+    facebook: '<path class="is-fill" d="M15.5 4h-2.2A3.8 3.8 0 0 0 9.5 7.8V10H7.5v3h2v7h3v-7h2.3l.5-3h-2.8V8.2c0-.7.4-1.2 1.2-1.2h1.8z"/>'
+  };
+
+  return { NETWORKS: NETWORKS, GLYPHS: GLYPHS, clean: clean, of: of };
 }());

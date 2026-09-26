@@ -1716,7 +1716,7 @@ if (ui !== null && isPlainObject(ui)) {
 {
   const links = join(ROOT, 'assets', 'links.js');
   if (!existsSync(links)) {
-    fail('assets/links.js', 'is missing — /u/<name> and the account page both load it');
+    fail('assets/links.js', 'is missing — /u/<name> and the editor on /edit both load it');
   } else {
     const text = readFileSync(links, 'utf8');
     /* Each row on its own line in that file, which is what makes this

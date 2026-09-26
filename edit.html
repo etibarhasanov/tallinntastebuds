@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your page | Tallinn Tastebuds</title>
+<meta name="description" content="Build the page of links under your name, with the page itself beside you as you type.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+
+<!-- Analytics: Google and Microsoft Clarity, both from one file. The same tag
+     account.html carries, written from the root for the same reason. -->
+<script src="/assets/analytics.js?v=a44b6b90" defer></script>
+
+<!-- One person's own page, behind a session cookie, the same as the account
+     page it is a door off: nothing to unfurl, nothing to index. _headers
+     carries the noindex to match, and it is not in sitemap.xml. -->
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The map's tokens and controls, and the lists page's furniture — the
+     header, the card, the field, and the page of links itself, which the
+     preview is drawn in so that it cannot look like anything but the page.
+     The editor's own few rules are at the foot of the lists stylesheet, under
+     "the editor", beside the page they are a picture of. -->
+<link rel="stylesheet" href="/assets/styles.css?v=eeb02929">
+<link rel="stylesheet" href="/assets/lists.css?v=31585bee">
+</head>
+<body class="lists-body is-editor">
+
+<a class="skip-link" href="#main" data-i18n="editSkip">Skip to your page</a>
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" data-track="home" data-i18n-aria-label="backToMap" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
+  </a>
+  <!-- The way to the page as everybody else sees it, once it is known whose
+       page this is. assets/edit.js fills in the address. -->
+  <a class="lists-who" id="edit-view" href="/account.html" data-track="edit_view" data-i18n="editView" hidden>View your page</a>
+</header>
+
+<!-- Signed in, signed out, and accounts switched off are all built by
+     assets/edit.js into this one element, once every answer is in. -->
+<main class="lists-main is-wide" id="main" tabindex="-1"></main>
+
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Your page</p>
+    <h2>Your page</h2>
+    <p>This page is an editor, and an editor takes JavaScript. The map works
+      rather better than this page does without it — <a href="/">it is over
+      here</a>.</p>
+  </div>
+</noscript>
+
+<!-- What every press reports, shared by every page. Before the page's own
+     script and deferred like it, so document order puts the global in place
+     first. -->
+<script src="/assets/track.js?v=1783fa58" defer></script>
+<!-- The three sites a profile links to, and the page of links under them:
+     the same two files the profile draws itself with, so the preview is the
+     profile's own drawing rather than a copy of it. -->
+<script src="/assets/links.js?v=4f679c7b" defer></script>
+<script src="/assets/rows.js?v=320a70c3" defer></script>
+<script src="/assets/edit.js?v=c6426d6f" defer></script>
+</body>
+</html>
