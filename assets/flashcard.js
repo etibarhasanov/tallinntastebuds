@@ -1780,12 +1780,12 @@
      and then mark(). The same flight for a throw, a press and an arrow key,
      so that the three ways of answering look like the same answer.
    *
-     `flying` holds everything else off for the fifth of a second the card is
+     `flying` holds everything else off for the half second the card is
      in the air, so a second tap does not answer the next card unseen. And
      the answer is given only if the card is still the one in hand when it
      lands: anything that took the run away meanwhile has said what it wanted
      instead. */
-  var FLIGHT_MS = 200;
+  var FLIGHT_MS = 500;
 
   function answer(word, knew, how) {
     var run = state.run;
