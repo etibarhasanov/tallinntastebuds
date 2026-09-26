@@ -183,7 +183,11 @@ export async function onRequest(context) {
        lowercase and matched without case, so /u/KATE and /u/kate are one page
        and only one of them is the address it should be indexed at. */
     url: canonical(request, '/u/' + profile.name),
-    type: 'profile'
+    type: 'profile',
+    /* Their photograph, where the repository has one, so a link to them
+       unfurls as them rather than as the map — and under their name alone.
+       head() says what else a face changes about the card. */
+    face: profile.face
   });
   html = rehead(html, indexable
     ? tags + '\n<script type="application/ld+json">' + seed(structuredData(request, profile)) + '</script>'
