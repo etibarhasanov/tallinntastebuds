@@ -6673,7 +6673,10 @@ password, for the reason the line does, and it is `noindex` in both
 **The face.** For the few who have one, `assets/faces/<name>.jpg` in the
 repository is drawn over the profile's card, and nothing is drawn for the
 rest. `faceOf()` in `functions/api/_profile.js` asks the deployment for it
-with one HEAD. Nothing is uploaded and nothing is stored: a photograph comes
+with one HEAD, and counts it there only when the answer is an image: the
+site has no `404.html`, so Pages answers a missing file with `index.html` and
+a 200, and a check on the status alone once drew a broken picture on every
+profile without a face. Nothing is uploaded and nothing is stored: a photograph comes
 in by the road every photograph on this site takes, a commit, which today
 means the owner's. Uploads are a bucket, a route and a moderation question,
 and are **What is not built yet**.

@@ -332,14 +332,21 @@ export async function readRows(env, ownerId) {
    asked for with a HEAD through the same binding _shell.js reads a page
    with. A username is [a-z0-9-], so the path is never anything but a file
    under that folder. Nothing is stored — the picture is in the repository or
-   it is not — and nothing is drawn for the many who have none. */
+   it is not — and nothing is drawn for the many who have none.
+
+   A 200 alone does not say the picture is there. The site has no top-level
+   404.html, so Pages serves it as a single-page app: a path that matches no
+   file answers 200 with index.html. Asking only for res.ok gave every
+   profile without a face the path to one, and the page drew a broken image
+   in an empty circle. So the answer has to be an image as well. */
 export async function faceOf(context, name) {
   const url = new URL('/assets/faces/' + name + '.jpg', context.request.url);
   try {
     const res = context.env.ASSETS
       ? await context.env.ASSETS.fetch(new Request(url.toString(), { method: 'HEAD' }))
       : await fetch(url.toString(), { method: 'HEAD' });
-    return res.ok ? url.pathname : undefined;
+    const type = res.headers.get('content-type') || '';
+    return res.ok && type.indexOf('image/') === 0 ? url.pathname : undefined;
   } catch (e) {
     return undefined;
   }
