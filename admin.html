@@ -21,8 +21,9 @@
 <!--
   WHAT THIS PAGE IS
 
-  The door, and the four things behind it: post a story, add a place, change
-  a place, set a discount. It holds a GitHub token for this one device,
+  The door, and the five things behind it: post a story, add a place, change
+  a place, set a discount, and see what the Google refresh has been doing —
+  the one of the five that reads the site's own API rather than GitHub. It holds a GitHub token for this one device,
   encrypted with a passphrase, and proves the token can still reach the
   repository.
 
@@ -238,6 +239,22 @@ code { font-family: var(--mono); font-size: .85em; background: var(--wash); padd
 a { color: var(--accent); }
 .spin { opacity: .6; }
 [hidden] { display: none !important; }
+
+/* The Google tab's log. */
+h2.gap { margin-top: 22px; }
+pre.cmd {
+  font-family: var(--mono); font-size: .74rem; background: var(--wash);
+  padding: 10px 12px; border-radius: var(--radius); overflow-x: auto; margin: 0 0 12px;
+}
+ul.log { list-style: none; padding: 0; margin: 0; }
+ul.log li { border-top: 1px solid var(--hairline); padding: 9px 0; font-size: .86rem; }
+ul.log .head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+ul.log .name { font-family: var(--display); }
+ul.log .outcome { flex: 0 0 auto; font-size: .76rem; color: var(--muted); }
+ul.log .outcome.changed { color: var(--good); }
+ul.log .outcome.failed, ul.log .outcome.closed, ul.log .outcome.gone { color: var(--bad); }
+ul.log .when { font-family: var(--mono); font-size: .72rem; color: var(--muted); }
+ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; word-break: break-word; }
 </style>
 </head>
 <body>
@@ -1073,7 +1090,7 @@ a { color: var(--accent); }
 
     function draw() {
       clear(tabs);
-      [['story', 'Story'], ['place', 'Add a place'], ['edit', 'Edit a place'], ['deal', 'Discount']].forEach(function (pair) {
+      [['story', 'Story'], ['place', 'Add a place'], ['edit', 'Edit a place'], ['deal', 'Discount'], ['google', 'Google']].forEach(function (pair) {
         var b = el('button', { type: 'button',
           className: 'tab' + (which === pair[0] ? ' on' : ''),
           textContent: pair[1] });
@@ -1088,6 +1105,7 @@ a { color: var(--accent); }
       if (which === 'story') storyForm(repo, panel);
       else if (which === 'place') placeForm(repo, panel, null);
       else if (which === 'deal') dealForm(repo, panel);
+      else if (which === 'google') googleReport(panel);
       else editPicker(repo, panel);
     }
 
@@ -1122,6 +1140,132 @@ a { color: var(--accent); }
       boot();
     });
     body.appendChild(forget);
+  }
+
+  /* ------------------------------------------------------ the Google refresh
+   * What functions/api/_refresh.js has been doing: whether its key is set, how
+   * much of Google's free allowance is gone today and this month, how much of
+   * the directory is fresh, and the last fifty calls with what each changed.
+   *
+   * The one tab that neither needs nor uses the token. It reads
+   * /api/refreshes, which is the site's own route and answers anybody — the
+   * head of functions/api/refreshes.js says why that is fine — so it is here
+   * because this is where the owner looks, not because it is behind the door.
+   * It only reads: nothing on this tab calls Google or writes a row.
+   */
+  var OUTCOMES = {
+    changed: 'updated',
+    same: 'checked, nothing moved',
+    closed: 'closed for good',
+    gone: 'Google no longer knows it',
+    failed: 'failed'
+  };
+  var COLUMN_NAMES = {
+    rating: 'rating', reviews: 'reviews', status: 'status', price: 'price',
+    phone: 'phone', website: 'website', opening_hours: 'hours'
+  };
+
+  function tallinnStamp(ms) {
+    return new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Tallinn', day: 'numeric', month: 'short',
+      hour: '2-digit', minute: '2-digit', hour12: false
+    }).format(new Date(ms));
+  }
+
+  /* One column's move as a line of text. The week is a long string and
+     printing both copies of it is a paragraph nobody reads on a phone, so it
+     says that it moved and stops there. */
+  function moveText(column, pair) {
+    var name = COLUMN_NAMES[column] || column;
+    if (column === 'opening_hours') return name + ' changed';
+    var from = pair[0] === null || pair[0] === '' ? '—' : String(pair[0]);
+    var to = pair[1] === null || pair[1] === '' ? '—' : String(pair[1]);
+    return name + ' ' + from + ' → ' + to;
+  }
+
+  function googleReport(panel) {
+    var out = el('div');
+    var again = el('button', { type: 'button', className: 'quiet', textContent: 'Check again' });
+    panel.appendChild(el('h2', { textContent: 'Google refresh' }));
+    panel.appendChild(out);
+    panel.appendChild(again);
+
+    function say(text, bad) {
+      clear(out);
+      out.appendChild(el('p', { className: 'msg' + (bad ? ' bad' : ''), textContent: text }));
+    }
+
+    function draw(r) {
+      clear(out);
+      if (!r.ready) {
+        out.appendChild(el('p', { className: 'msg bad',
+          textContent: 'This database has not got the refresh tables yet. Run these once, then check again:' }));
+        out.appendChild(el('pre', { className: 'cmd', textContent:
+          'wrangler d1 execute tallinntastebuds --remote --command \\\n' +
+          '  "ALTER TABLE google_venues ADD COLUMN refreshed_at INTEGER"\n' +
+          'wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql' }));
+        return;
+      }
+
+      out.appendChild(el('p', { className: 'note', textContent:
+        'A Google place is asked about again when somebody opens it and its numbers are more than ' +
+        r.refreshAfterDays + ' days old. At most ' + r.calls.day + ' calls a day and ' +
+        r.calls.monthCap + ' a month, inside Google’s free thousand.' }));
+
+      var facts = el('dl', { className: 'facts' });
+      function fact(term, value) {
+        facts.appendChild(el('div', {}, [el('dt', { textContent: term }), el('dd', { textContent: value })]));
+      }
+      fact('Key', r.key ? 'set' : 'not set — nothing refreshes');
+      fact('Calls today', r.calls.today + ' of ' + r.calls.day);
+      fact('This month', r.calls.month + ' of ' + r.calls.monthCap);
+      fact('Refreshed', r.table.refreshed.toLocaleString('en') + ' of ' +
+        r.table.total.toLocaleString('en') + ' places');
+      fact('Due now', r.table.due.toLocaleString('en'));
+      out.appendChild(facts);
+
+      out.appendChild(el('h2', { className: 'gap', textContent: 'Latest' }));
+      if (!r.recent.length) {
+        out.appendChild(el('p', { className: 'small', textContent: r.key
+          ? 'Nothing yet. The first refresh happens the next time somebody opens one of Google’s places.'
+          : 'Nothing yet, and nothing will be until the key is set.' }));
+        return;
+      }
+
+      var list = el('ul', { className: 'log' });
+      r.recent.forEach(function (row) {
+        var lines = [];
+        Object.keys(row.changes || {}).forEach(function (column) {
+          lines.push(moveText(column, row.changes[column]));
+        });
+        if (row.note) lines.push(row.note);
+        list.appendChild(el('li', {}, [
+          el('div', { className: 'head' }, [
+            el('span', { className: 'name', textContent: row.name || row.id }),
+            el('span', { className: 'outcome ' + row.outcome, textContent: OUTCOMES[row.outcome] || row.outcome })
+          ]),
+          el('div', { className: 'when', textContent: tallinnStamp(row.at) }),
+          lines.length ? el('div', { className: 'what', textContent: lines.join(' · ') }) : null
+        ]));
+      });
+      out.appendChild(list);
+    }
+
+    function load() {
+      again.disabled = true;
+      say('Reading the report…');
+      fetch('/api/refreshes', { cache: 'no-store' })
+        .then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function (r) { draw(r); })
+        .catch(function (e) { say('Could not read /api/refreshes: ' + (e && e.message || e), true); })
+        .then(function () { again.disabled = false; });
+    }
+
+    again.addEventListener('click', load);
+    load();
   }
 
   /* ------------------------------------------------------------ a story

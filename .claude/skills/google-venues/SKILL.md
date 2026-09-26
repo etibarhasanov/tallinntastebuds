@@ -166,13 +166,36 @@ else runs.
    `grep -o "('Ch[A-Za-z0-9_-]*'" db/google-venues.sql | grep -c '^([a-z0-9_-]*$'`
    must print `0`, or a Google row will be read as somebody's addition.
 
+## Between refreshes, the table refreshes itself
+
+A Google place opened on the map or on `/google` is asked about again when its
+`refreshed_at` is empty or over thirty days old — `refreshOnOpen()` in
+`functions/api/_refresh.js`, called from `/api/stats`, inside a budget of 32
+Place Details calls a day and 950 a month, and only where
+`GOOGLE_MAPS_API_KEY` is set, which is Production. It writes the seven columns
+that move and never the name, address, category, tags or coordinates.
+**Keeping it current** under **Google venues** in `README.md` is the whole of
+it, and the **Google** tab on `/admin.html` is where to see what it did.
+
+What that means for this process:
+
+- **`db/google-venues.sql` skips every row with `refreshed_at` set**, in the
+  upsert and in the missing mark. A refresh here therefore only reaches the
+  rows nobody has opened since the last one, and the delta in step 5 is
+  worked out against those rows — say how many were skipped.
+- **Loading it needs the column.** On a database without `refreshed_at` the
+  first statement stops. The `ALTER` is in `db/schema.sql` above the column.
+- **`rank` and the six lists still come from the export alone**, so a refresh
+  is still how they move.
+
 ## The rules of the table
 
 - `place_id`, Google's key, is the primary key and what a list item holds. A
   catalogue slug is lowercase letters, digits and hyphens, so the two can
   never be mistaken for each other.
 - **Google's seventeen columns are overwritten by every refresh, without
-  asking.** Do not hand-edit them: "hand-curation that a sync can erase is
+  asking** — on every row the refresh on open has not answered for since;
+  see above. Do not hand-edit them: "hand-curation that a sync can erase is
   curation you will do twice". If a name is wrong and it matters, promote the
   place onto the map, where `data/restaurants.json` is hand-written.
 - **`rank` is the eighteenth, and it goes the same way.** Not in the CSV —

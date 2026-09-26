@@ -97,6 +97,13 @@ sweep rewrites the row from Google and the number goes back to whatever Google s
 that day, which is the right outcome: by then the fresher figure is upstream's job
 to carry, not this file's.
 
+In the database they can go sooner. Since the directory began refreshing an opened
+place from Google — **Keeping it current** under **Google venues** in the root
+`README.md` — the first time somebody opens Morii or Varkizana after the key is set,
+Google's own figure replaces the corrected one in `google_venues`. This file keeps
+the correction until the next export; the table carries Google's answer from then
+on, and the export will not put the correction back over it.
+
 What it costs while it stands is worth stating, because it is the reason the list is
 not longer. `db/google-lists.sql` ranks places against each other, so a row holding
 today's count among eleven hundred rows holding the sweep's tilts every comparison
