@@ -728,6 +728,32 @@ there the rows that carry a word as typed are drawn above the rows that only
 reached it by its stem, so *pasta* is the pasta places first and the pastry
 shops after them.
 
+**A word that still lands nowhere is allowed one slip.** At five letters or
+more, a word one keystroke away from a whole word of the haystack — a letter
+missing, one too many, one wrong, two the wrong way round — still reaches it,
+because the words people type into a food search are the ones nobody can
+spell: *cappucino*, *expresso*, *croissnt*. One slip and no more, and not
+below five letters, so *bar* never reaches *bor*. A slip is a guess, so it is
+only offered when nothing carries the words as typed — *bread* finds the
+bakeries and not somewhere called Break under them — and it is drawn below
+anything that reached the words by a stem. `oneSlip()` and `bestOnly()` in
+`assets/app.js`; the find bar's two halves are judged together, so a slip in
+the city's half goes when one of mine carries the word itself.
+
+**And a kind of place can carry words that are not its name.** A type in
+`data/taxonomy.json` may have a `words` key beside its ten labels — what else
+somebody types when they mean that kind of place, in no language in
+particular, joined by `/` the way a label is. Coffee/tea carries the drinks —
+*espresso*, *cappuccino*, *latte*, *flatwhite*, *matcha* and the rest — and
+the words for a café in the languages whose label does not say it. Nothing
+ever prints them; both searches on the map and the chat's reader match them
+exactly as they match a label, so *cappuccino* is the seventeen cafés on the
+map and not the none that have the word in a dish. The validator lets that one
+key through and holds it to a non-empty string. *Flatwhite* is written as one
+word on purpose: a label of two words is also read a word at a time by the
+chat's reader, and *white* on its own would make *white wine* a question about
+coffee — while typed as two, *flat* and *white* each land inside *flatwhite*.
+
 Several words all have to land somewhere, so `telliskivi kohvik` narrows rather
 than widening the way a match on the whole phrase would.
 
@@ -782,7 +808,10 @@ Type a kind of place rather than a name — *pizza*, *õlu*, *nearby ramen*,
 *ближайший бар* — and the same two groups come back, of that kind, in
 whichever of the ten languages it was typed, and nearest first when the map
 knows where you are. **What the bar understands** below is the whole of what
-it reads a field as, and **Where you are** what the dot changes.
+it reads a field as, and **Where you are** what the dot changes. Zoom in
+and it looks only at the part of the map on screen; zoom back out, or load the
+page again, and it looks at the whole city — **Zoomed in, it searches what is
+on screen** below.
 
 On a phone the field is 16px, the same floor the column's search box and the
 chat's field take and for the same reason: anything smaller and iOS zooms the
@@ -880,10 +909,11 @@ know more about them.
 
 A word has to land somewhere in the haystack for the row to match, so
 `telliskivi kohvik` narrows rather than widening — and a word of five letters
-or more also lands on its first letters, so `kohvik` reaches *Kohv/tee*;
-**Searching the list** has the rule. Ahead of any other order, the rows that
+or more also lands on its first letters, so `kohvik` reaches *Kohv/tee*, and
+failing that on a word one slip away, so `cappucino` reaches the cafés;
+**Searching the list** has both rules. Ahead of any other order, the rows that
 carry the words as typed come before the rows that only reached them by a
-stem. Then the city's half is ordered the way a dropdown is read — a name
+stem, and those before the rows that reached them by a slip. Then the city's half is ordered the way a dropdown is read — a name
 that *starts* with what was typed before one that merely contains it, then
 by how many people Google says have reviewed it, which is the only thing the
 export knows about how well known somewhere is — unless the field asked for
@@ -931,8 +961,11 @@ it does it.
 
 A field that is nothing but a wish — *nearby*, *lähedal*, *cheap* — looks for
 everything and lets the wish choose, which is how *near me* on its own
-answers with the eight places of mine and the sixteen of Google's nearest to
-you. And a field the reader makes nothing of — a letter, *the* — is looked for
+answers with up to twenty-four places of mine and the sixteen of Google's
+nearest to you. Twenty-four is `FIND_MINE`, and it is that many so that every
+place of mine a word reaches is in the dropdown: it was eight, which is how
+*coffee* showed eight of the seventeen cafés on the map and the owner went
+looking for the other nine. And a field the reader makes nothing of — a letter, *the* — is looked for
 as typed, so the first letters of a name still bring the name.
 
 ### Where you are, and what it changes
@@ -971,6 +1004,37 @@ Nothing else asks the device. *Pizza* from a visitor with no dot is the
 dropdown it always was, in its usual order, with no distances on it and no
 prompt — the site's own permission prompt over a name lookup would be a
 question nobody asked.
+
+### Zoomed in, it searches what is on screen
+
+The bar searches the whole city until the map has been zoomed in, and then
+only the part of it on screen. Somebody who has zoomed into Kalamaja and types
+*coffee* is asking about Kalamaja — the map is already saying where they are
+looking — so the first answers are the ones they can see, both halves held to
+the view, and the city's half is headed *More in this area* (`findInArea`)
+rather than *Everywhere in Tallinn*. The note under the rows says so and says
+how to have the rest: *In this part of the map. Zoom out for all of Tallinn.*
+(`findHere`).
+
+"Zoomed in" is judged against the map as it opens, which is framed on every
+place of mine: closer than the zoom that fits all of them, by more than half a
+level. Zoom back out, or load the page again, and the bar searches everywhere.
+A dropdown left open across a move is asked again about the new view.
+
+Three things it deliberately does not do. **It does not hold a search to a view
+it flew to itself**: after a pick the map sits at `FOCUS_ZOOM` on one place,
+and a second search from there would be held to the few streets around the
+first answer, so the view read is the one from before any pick — the same
+`findReturn` that emptying the field flies back to. **It does not answer
+*nothing* for a small view**: when nothing on screen matches, it searches the
+whole city after all and says *Nothing in this part of the map, so these are
+from all of Tallinn.* (`findNoneHere`), because an empty dropdown over a
+zoomed map reads as "there is no coffee in Tallinn". And **it does not scope a
+field that asked to be near** — *coffee near me* is measured from the dot,
+which is its own answer to "where", and the two would only argue.
+
+The places column's own field does not do any of this. It narrows the list,
+and the list is already the map's places nearest first.
 
 ### No score on a row
 

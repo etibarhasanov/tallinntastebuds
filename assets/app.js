@@ -1029,6 +1029,10 @@
     if (zoomed) syncMarkers();
     paintLabels();
     warmTiles();
+    /* The find bar searches the part of the map on screen once it is zoomed
+       in — see findArea() — so a dropdown left open across a move is asked
+       again about where the map is now. */
+    if (state.find && dom.findOut && !dom.findOut.hidden) renderFound();
   }
 
   /* The tiles either side of the one on screen, fetched into the browser's
@@ -7367,30 +7371,98 @@
      "pizz" at the shortest and a three-letter stem never matches half the
      map.
 
-     Two when every word is there as typed, one when any of them reached the
-     haystack only by its stem, nought when a word landed nowhere. The two
-     kinds of hit are told apart so that what was typed can be drawn above
-     what it might have meant: "pasta" is the pasta places first and the
-     pastry shops, whose stem it shares, after them. Three searches ask this
-     of a haystack — the column's, and each half of the find bar's — which is
-     why it is one function and not a loop in each. */
+     And a word of five letters or more that still landed nowhere is allowed
+     one slip against a whole word of the haystack — a letter missing, one
+     too many, one wrong, or two the wrong way round — because the words
+     people type into a food search are exactly the ones nobody can spell:
+     "cappucino", "expresso", "croissnt". One slip and no more, and only at
+     five letters, so "bar" never reaches "bor" and a long word does not
+     drift into a different one.
+
+     Three when every word is there as typed, two when any of them reached
+     the haystack only by its stem, one when any of them reached it only by
+     a slip, nought when a word landed nowhere. The kinds of hit are told
+     apart so that what was typed can be drawn above what it might have
+     meant: "pasta" is the pasta places first and the pastry shops, whose
+     stem it shares, after them — and a slip is only offered at all when
+     nothing carries the words as typed; see bestOnly(). Three searches
+     ask this of a haystack — the column's, and each half of the find bar's
+     — which is why it is one function and not a loop in each. */
   function hasWords(hay, words) {
-    var hit = 2;
+    var hit = 3;
     for (var i = 0; i < words.length; i++) {
       var word = words[i];
       if (hay.indexOf(word) !== -1) continue;
       if (word.length < 5) return 0;
-      if (hay.indexOf(word.slice(0, Math.max(4, word.length - 2))) === -1) return 0;
+      if (hay.indexOf(word.slice(0, Math.max(4, word.length - 2))) !== -1) {
+        hit = Math.min(hit, 2);
+        continue;
+      }
+      if (!hayWords(hay).some(function (w) { return oneSlip(word, w); })) return 0;
       hit = 1;
     }
     return hit;
   }
 
-  /* The column's test is only whether a place is in or out: its list is
-     ordered by distance, and a row that reached it by a stem is visible for
-     what it is among seventy-odd. */
-  function matches(place, words) {
-    return hasWords((hayIndex && hayIndex[place.id]) || '', words) > 0;
+  /* A haystack's words, split once and kept: the slip above is tried
+     against every word of eleven hundred haystacks on a keystroke that
+     matched nothing, and splitting each of them again every time would be
+     the bulk of the work. Keyed by the haystack itself, which is built once
+     and never changes. */
+  var hayWordsCache = {};
+  function hayWords(hay) {
+    var got = hayWordsCache[hay];
+    if (!got) {
+      got = hay.split(/[\s\/,.;:()&'"\u2019+-]+/);
+      hayWordsCache[hay] = got;
+    }
+    return got;
+  }
+
+  /* Whether two words are one keystroke apart: one letter inserted,
+     dropped or changed, or two neighbours swapped. Walked once from each
+     end rather than by the full edit-distance table, since the only
+     question is "one or not". */
+  function oneSlip(a, b) {
+    var la = a.length;
+    var lb = b.length;
+    if (a === b || Math.abs(la - lb) > 1 || lb < 4) return false;
+    var i = 0;
+    while (i < la && i < lb && a.charAt(i) === b.charAt(i)) i++;
+    var ja = la - 1;
+    var jb = lb - 1;
+    while (ja >= i && jb >= i && a.charAt(ja) === b.charAt(jb)) { ja--; jb--; }
+    if (la === lb) {
+      if (ja === i) return true;
+      return ja === i + 1 && a.charAt(i) === b.charAt(ja) && a.charAt(ja) === b.charAt(i);
+    }
+    return ja < i + 1 && jb < i + 1;
+  }
+
+  /* A slip is a guess, and a guess is only worth showing when nothing
+     answered the words themselves: "bread" should not bring in somewhere
+     called Break under the bakeries it found. So once any row carries the
+     words as typed, the rows that only slipped in go. A stem is a guess as
+     well, and not a better one than a slip — "expresso" reaches somewhere
+     called Express by its stem and the espresso bars only by a slip — so
+     a stem does not push the slips out; it is drawn above them.
+     `level` is every row the search tried, by id, so the find bar's two
+     halves are judged together: a slip among the city's rows goes when one
+     of mine answered the word itself. */
+  function bestOnly(rows, level) {
+    var best = 0;
+    for (var id in level) best = Math.max(best, level[id]);
+    if (best < 3) return rows;
+    return rows.filter(function (row) { return level[row.id] > 1; });
+  }
+
+  /* The column's test is whether a place is in or out, and its list is
+     ordered by distance: a row that reached it by a stem is visible for what
+     it is among seventy-odd. `level` is filled in for bestOnly(). */
+  function matches(place, words, level) {
+    var hit = hasWords((hayIndex && hayIndex[place.id]) || '', words);
+    if (level) level[place.id] = hit;
+    return hit > 0;
   }
 
   function searchWords() {
@@ -7525,6 +7597,13 @@
    * location could not be had, and the bar does not ask again on every
    * letter of the next word.
    *
+   * ZOOMED IN, IT SEARCHES WHAT IS ON SCREEN
+   *
+   * The whole city until the map has been zoomed in past the view that
+   * frames all of my places, and the part of it on screen after that —
+   * falling back to the whole city when nothing there answers. findArea()
+   * is the rule and says what it leaves alone.
+   *
    * WHAT PICKING ONE DOES
    *
    * One of mine is selectPlace(), the same as pressing its pin. A Google one
@@ -7541,7 +7620,7 @@
      showing; the city's are eleven hundred and a dropdown is a way to one
      place rather than a directory — /admin/google is the directory, and the note at
      the foot of the list says so when there are more. */
-  var FIND_MINE = 8;
+  var FIND_MINE = 24;
   var FIND_CITY = 16;
 
   /* The roll behind /api/places once it has arrived, the folded haystack
@@ -7573,7 +7652,8 @@
      under setFind() below. Set on the first pick of a search and read once,
      on the way out; a second pick in the same search does not overwrite it,
      so three places looked up in a row still land back on the view the
-     visitor had before any of them. */
+     visitor had before any of them. It is also the view findArea() holds
+     the search to while it is set, for the same reason. */
   var findReturn = null;
 
   /* The roll, once. A second call while the first is in the air joins it
@@ -7686,13 +7766,14 @@
      on, not about which pizzeria is best known. `away` is metres by id from
      that dot, or null when there is none in reach. Ahead of either order,
      the rows that carry the words as typed come before the rows that only
-     reached them by a stem — see hasWords(). */
-  function findCity(words, wish, away) {
+     reached them by a stem — see hasWords(). `area` is the part of the map
+     the search is held to, or null for the whole city; see findArea(). */
+  function findCity(words, wish, away, area, level) {
     var hits = [];
-    var level = {};
     if (!findRoll) return hits;
     for (var i = 0; i < findRoll.length; i++) {
       var row = findRoll[i];
+      if (area && !area.contains([row.lat, row.lng])) continue;
       var hit = hasWords(findHay[row.id] || '', words);
       if (hit && findPriced(row, wish)) { level[row.id] = hit; hits.push(row); }
     }
@@ -7709,6 +7790,57 @@
       return fold(a.name) < fold(b.name) ? -1 : 1;
     });
     return hits;
+  }
+
+  /* Mine: the words as typed ahead of the words by their stems and their
+     slips, then nearest first when there is a dot, else the catalogue's own
+     order — spelled out as the last tiebreak rather than left to the sort,
+     which older engines do not keep stable. */
+  function findMine(words, wish, away, area, level) {
+    var hits = [];
+    var order = {};
+    for (var i = 0; i < state.places.length; i++) {
+      var place = state.places[i];
+      if (area && !area.contains([place.lat, place.lng])) continue;
+      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
+      var hit = hasWords(hay, words);
+      if (hit && findPriced(place, wish)) { level[place.id] = hit; order[place.id] = i; hits.push(place); }
+    }
+    hits.sort(function (a, b) {
+      if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
+      if (away && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
+      return order[a.id] - order[b.id];
+    });
+    return hits;
+  }
+
+  /* THE PART OF THE MAP THE BAR SEARCHES
+
+     The whole city, until the visitor has zoomed in; then the part of it on
+     screen. Somebody who has zoomed into Kalamaja and types "coffee" is
+     asking about Kalamaja — the map is already telling us where they are
+     looking — and the first answers should be the ones they can see. The
+     map as it opens is framed on all of my places, so "zoomed in" is judged
+     against that: closer than the zoom that fits every place of mine by
+     more than half a level. Zoom back out, or load the page again, and the
+     bar searches everywhere.
+
+     The view is the one the visitor chose, not one this bar flew to. After
+     a pick the map sits at FOCUS_ZOOM on that one place, and a second
+     search from there would otherwise be held to a few streets around the
+     first answer; findReturn is the view from before any pick, and it is
+     the one read while it is held.
+
+     Null for the whole city, and always null for a field that asked to be
+     near — "coffee near me" is measured from the dot, which is its own
+     answer to "where", and the two would only argue. */
+  function findArea(wish) {
+    if (!map || wish.nearby || !state.places.length) return null;
+    var view = findReturn || { bounds: map.getBounds(), zoom: map.getZoom() };
+    var whole = map.getBoundsZoom(L.latLngBounds(state.places.map(function (p) {
+      return [p.lat, p.lng];
+    })));
+    return view.zoom > whole + 0.5 ? view.bounds : null;
   }
 
   /* One row in the dropdown: a pin, a name, and under it the street, with
@@ -7795,27 +7927,27 @@
     var away = at ? measureFrom(at, state.places.concat(findRoll || [])) : null;
     var far = function (place) { return away ? farWords(away[place.id] / 1000) : ''; };
 
-    /* Mine: the words as typed ahead of the words by their stems, then
-       nearest first when there is a dot, else the catalogue's own order —
-       spelled out as the last tiebreak rather than left to the sort, which
-       older engines do not keep stable. */
-    var mine = [];
+    /* Held to the part of the map on screen when the visitor has zoomed in
+       — see findArea() — and let go again when nothing there answers: an
+       empty dropdown over a zoomed map reads as "there is no coffee in
+       Tallinn", when what it means is "not on these six streets". The note
+       says which of the two it is showing. A slip only survives when nothing
+       on either half answered better; see bestOnly(). Before the roll is in
+       only mine are known, and the area is held on to until it is: the
+       city's half may yet answer inside it. */
+    var area = findArea(wish);
+    var outside = false;
     var level = {};
-    var order = {};
-    for (var i = 0; i < state.places.length; i++) {
-      var place = state.places[i];
-      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
-      var hit = hasWords(hay, words);
-      if (hit && findPriced(place, wish)) { level[place.id] = hit; order[place.id] = i; mine.push(place); }
+    var mine = findMine(words, wish, away, area, level);
+    var city = findCity(words, wish, away, area, level);
+    if (area && findRoll && !mine.length && !city.length) {
+      area = null;
+      outside = true;
+      mine = findMine(words, wish, away, null, level);
+      city = findCity(words, wish, away, null, level);
     }
-    mine.sort(function (a, b) {
-      if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
-      if (away && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
-      return order[a.id] - order[b.id];
-    });
-    mine = mine.slice(0, FIND_MINE);
-
-    var city = findCity(words, wish, away);
+    mine = bestOnly(mine, level).slice(0, FIND_MINE);
+    city = bestOnly(city, level);
     var shown = city.slice(0, FIND_CITY);
 
     if (mine.length) {
@@ -7828,7 +7960,10 @@
     }
 
     if (shown.length) {
-      dom.findBody.appendChild(el('p', { className: 'find-group', textContent: t('findInCity') }));
+      dom.findBody.appendChild(el('p', {
+        className: 'find-group',
+        textContent: t(area ? 'findInArea' : 'findInCity')
+      }));
       for (var c = 0; c < shown.length; c++) {
         var crow = findRow(shown[c], false, far(shown[c]));
         findRows.push(crow);
@@ -7836,19 +7971,26 @@
       }
     }
 
-    /* Four things this line can be saying, and only one of them at a time:
+    /* Six things this line can be saying, and only one of them at a time:
        the city half has not landed yet; nothing matched anywhere; the field
        asked to be near and there is nothing to measure from — the device is
        still being asked, or it said no, or the dot is out of town — which
        takes the line over the count because it is the one thing on screen
-       that says why the order is what it is; or this is how many there are
-       and there are more of them than fit. */
+       that says why the order is what it is; the map is zoomed in and nothing
+       on it answered, so these are from the whole city; the map is zoomed in
+       and these are only what is on it, which is the line that says how to
+       have the rest; or this is how many there are and there are more of
+       them than fit. */
     if (!findRoll) {
       dom.findNote.textContent = t('findLooking');
     } else if (!findRows.length) {
       dom.findNote.textContent = t('searchNone', { q: typed });
     } else if (wish.nearby && !wish.near && !away) {
       dom.findNote.textContent = t(findLocating ? 'findLocating' : hereMarker ? 'locateAway' : 'locateFail');
+    } else if (outside) {
+      dom.findNote.textContent = t('findNoneHere');
+    } else if (area) {
+      dom.findNote.textContent = t('findHere');
     } else if (city.length > shown.length) {
       dom.findNote.textContent = t('findMore', { n: city.length - shown.length });
     } else {
@@ -7916,7 +8058,7 @@
     /* Before the fly below moves anything: the first pick of a search is the
        last place the map stood on its own, and that is what emptying the
        field is going to fly back to. */
-    if (!findReturn) findReturn = { centre: map.getCenter(), zoom: map.getZoom() };
+    if (!findReturn) findReturn = { centre: map.getCenter(), zoom: map.getZoom(), bounds: map.getBounds() };
 
     if (mine) {
       forgetFound();
@@ -8248,7 +8390,8 @@
     var words = searchWords();
     var places = visiblePlaces();
     if (words.length) {
-      places = places.filter(function (p) { return matches(p, words); });
+      var level = {};
+      places = bestOnly(places.filter(function (p) { return matches(p, words, level); }), level);
     }
 
     /* Whether what is on screen is your own saves and nothing else. One
