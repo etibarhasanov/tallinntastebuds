@@ -204,8 +204,17 @@ export const KITCHENS = [
      are wine bars, cocktail bars, and a ramen shop. See `bar` below for where
      those went. */
   ['pub',              /\bpub\b|brewpub|brewery|\bbeer\b|gastropub/],
-  /* Everywhere you would go for the drink rather than the meal, and the one
-     pattern in this table that cares which column a word came from. "Bar" in
+  /* Somewhere you go for the wine, and only where Google's category says so
+     — "Wine Bar", the one wine word it uses for a category in the export —
+     or the name does, which is NAMED below. Not the tags: Google hangs "Wine
+     Bar" on two ramen shops, a bakery and a fine-dining room, and none of
+     them is where somebody asking for wine means. Not bare "wine" either, for
+     the reason `bar` gives below. Ahead of `bar`, and kitchensOf() puts `bar`
+     behind everything else on a row that has this, so Veino's card says Wine
+     bar rather than Wine bar · Bar. */
+  ['wine',             /^[^|]*wine bar/],
+  /* Everywhere you would go for the drink rather than the meal, and one of
+     the two patterns in this table that care which column a word came from. "Bar" in
      the category is what the place IS — "Bar", "Oyster Bar Restaurant",
      "Hookah Bar" — and `^[^|]*` is what holds it there, because said() keeps
      the three columns apart with a pipe. "Bar" in the tags is what the place
@@ -222,12 +231,30 @@ export const KITCHENS = [
   ['fine-dining',      /fine dining/]
 ];
 
+/* The kitchens a name can decide as well as the category, when the place has
+ * named itself after the thing. Veinirestoran Dominic and Toro veinikohvik are
+ * wine bars by name and a "Restaurant" and a "Bar" to Google, so the category
+ * alone would leave them out of the one chip they belong under.
+ *
+ * Only words that name the thing on their own, in the languages the city's
+ * signs are written in — "vein" is Estonian, "vino" Italian and Spanish — and
+ * only a kitchen that is somewhere you go rather than something you eat: a
+ * name with "pizza" in it is usually a pizzeria, and Google already says so.
+ * Measured over the export, these reach the veinibaarid, Gloria Veinikelder,
+ * Pan Y Vino and the places called Something & Wine, and nothing that is not
+ * about the wine. tools/validate.mjs holds each to still matching a name.
+ */
+export const NAMED = [
+  ['wine', /\bwine\b|vein|\bvino/]
+];
+
 /* The three columns a kitchen is decided from, lowercased and kept apart.
  *
- * The pipe is load-bearing for exactly one pattern — `bar`, which has to know
- * whether the word was Google's category or one of its tags — and harmless to
- * the other forty-three, none of which spans a column boundary. Measured: not
- * one of them matches a different set of rows for the separator being there.
+ * The pipe is load-bearing for two patterns — `bar` and `wine`, which have to
+ * know whether the word was Google's category or one of its tags — and
+ * harmless to the other forty-four, none of which spans a column boundary.
+ * Measured: not one of them matches a different set of rows for the
+ * separator being there.
  *
  * Exported because tools/validate.mjs holds every pattern in this table to
  * still matching a row of the export, and it has to ask that question of the
@@ -259,17 +286,27 @@ export function said(row) {
  * than the columns apart, with the tags cut off the end for the first group,
  * because `bar` is anchored to the category with ^[^|]* and would answer
  * differently if it were handed a column on its own.
+ *
+ * A kitchen NAMED above can also come from the name, and joins the leading
+ * group when it does: a place that named itself after the wine has said what
+ * it is as plainly as its category would.
  */
 export function kitchensOf(row) {
   const whole = said(row);
   const primary = whole.split(' | ').slice(0, 2).join(' | ');
+  const name = String(row.name || '').toLowerCase();
   const first = [];
   const rest = [];
   for (const [id, pattern] of KITCHENS) {
-    if (!pattern.test(whole)) continue;
-    (pattern.test(primary) ? first : rest).push(id);
+    if (pattern.test(whole)) (pattern.test(primary) ? first : rest).push(id);
+    else if (NAMED.some(([named, words]) => named === id && words.test(name))) first.push(id);
   }
-  return first.concat(rest);
+  const out = first.concat(rest);
+  /* A wine bar is a bar, and the Bar chip keeps it; it is just not the word
+     worth one of the card's two. */
+  const bar = out.indexOf('bar');
+  if (bar !== -1 && out.includes('wine')) out.push(out.splice(bar, 1)[0]);
+  return out;
 }
 
 /* One row as the page draws it. See the note at the top about empty fields:

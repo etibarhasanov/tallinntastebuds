@@ -100,7 +100,7 @@ import { PAGES } from '../functions/api/_visitors.js';
    file, the way VENUE_TYPES is, and the checks below are what keep it honest:
    every id has a label in ten languages, and every pattern still matches
    something in the export it was measured against. */
-import { KITCHENS, said } from '../functions/api/venues.js';
+import { KITCHENS, NAMED, said } from '../functions/api/venues.js';
 /* The forty markers a list may wear. The server half of a table that is
    written out twice — assets/pins.js is the other — so the checks below are
    what make "change one, change the other" something other than a promise in
@@ -821,7 +821,7 @@ if (taxonomy !== null) {
  * cuisines it looks like it cooks, and says those words in ten languages. Two
  * files hold the labels and they are meant to be disjoint: taxonomy.json above
  * already says asian, vegan, bakery, coffee, pub and fine-dining for the map's
- * own chips, and this one carries the thirty-seven the export needs on top of
+ * own chips, and this one carries the thirty-nine the export needs on top of
  * them. Copying the six across would be six translations to keep in step with
  * another six, so the page reads both files instead — see label() in
  * assets/venues.js.
@@ -854,8 +854,14 @@ if (cuisines !== null) {
           fail(where, `cuisine "${cuisine.id}" has no "${lang}" label`);
         }
       }
+      /* `words`, as on a type: what else somebody types when they mean this
+         kitchen, which the find bar and the chat's reader match and nothing
+         prints — "vein" and "вино" for Wine bar. */
+      if ('words' in cuisine && !isNonEmptyString(cuisine.words)) {
+        fail(where, `cuisine "${cuisine.id}" has "words" that is not a non-empty string of words joined by "/"`);
+      }
       for (const key of Object.keys(cuisine)) {
-        if (key !== 'id' && !languages.includes(key)) {
+        if (key !== 'id' && key !== 'words' && !languages.includes(key)) {
           warn(where, `cuisine "${cuisine.id}" has an extra key "${key}" that is not a language in ui.json`);
         }
       }
@@ -900,6 +906,18 @@ for (const id of cuisineIds) {
     for (const [id, pattern] of KITCHENS) {
       if (!haystacks.some((text) => pattern.test(text))) {
         fail('functions/api/venues.js', `the KITCHENS pattern for "${id}" matches nothing in the Google Places export any more`);
+      }
+    }
+
+    /* NAMED reads the name rather than the three columns, so it is held to
+       the names: a word that no longer names anything is the same dead line. */
+    const names = rows.slice(1).map((row) => String(row[at('name')] || '').toLowerCase());
+    for (const [id, pattern] of NAMED) {
+      if (!kitchenIds.has(id)) {
+        fail('functions/api/venues.js', `NAMED has "${id}", which is not a KITCHENS id — a name could file a place under nothing`);
+      }
+      if (!names.some((name) => pattern.test(name))) {
+        fail('functions/api/venues.js', `the NAMED pattern for "${id}" matches no name in the Google Places export any more`);
       }
     }
   }
