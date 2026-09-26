@@ -5730,6 +5730,7 @@
     });
 
     wireSheetSwipe();
+    wireResultSwipe();
   }
 
   /* Swiping the sheet down pulls it to its low stop, and past that closes it,
@@ -5749,6 +5750,7 @@
     if (!scroll) return;
     var armed = false;
     var active = false;
+    var startX = 0;
     var startY = 0;
     var startH = 0;
     var height = 0;
@@ -5770,6 +5772,7 @@
       if (ev.touches.length !== 1 || ignore(ev.target)) return;
       armed = scroll.scrollTop <= 0;
       active = false;
+      startX = ev.touches[0].clientX;
       startY = ev.touches[0].clientY;
       startH = dom.panel.offsetHeight;
       height = startH;
@@ -5780,6 +5783,12 @@
       if (!armed || ev.touches.length !== 1) return;
       var dy = ev.touches[0].clientY - startY;
       if (!active) {
+        /* Sideways is never the sheet's: on the card of a result it is the
+           step to the next one — wireResultSwipe() — and a thumb going left
+           drifts down a few pixels often enough to have closed the sheet
+           under it instead. */
+        var dx = ev.touches[0].clientX - startX;
+        if (Math.abs(dx) > 9 && Math.abs(dx) > Math.abs(dy)) { armed = false; return; }
         if (dy < 9) {
           if (dy < -3) armed = false;   /* they are scrolling, not dismissing */
           return;
@@ -8405,17 +8414,18 @@
     syncUrl();
   }
 
-  /* One step along the results, from the card's arrows. Round the end and
-     back to the start, the way a story queue does not and a carousel does:
-     the results have no last one worth stopping on, and an arrow that goes
-     dead at nine is a control that looks broken. */
-  function stepResult(delta) {
+  /* One step along the results, from the card's arrows or a swipe across
+     it — `how` says which, for the report. Round the end and back to the
+     start, the way a story queue does not and a carousel does: the results
+     have no last one worth stopping on, and an arrow that goes dead at nine
+     is a control that looks broken. */
+  function stepResult(delta, how) {
     if (!state.results || !state.selected) return;
     var ids = state.results.ids;
     var at = ids.indexOf(state.selected);
     if (at === -1) return;
     var next = ids[(at + delta + ids.length) % ids.length];
-    TTBTrack.event('find_step', { direction: delta > 0 ? 'next' : 'prev' });
+    TTBTrack.event('find_step', { direction: delta > 0 ? 'next' : 'prev', by: how || 'arrow' });
     selectPlace(next, { fly: false });
   }
 
@@ -8446,6 +8456,86 @@
       }),
       arrow(1, 'findNext', 'M9.5 6l6 6-6 6')
     ]);
+  }
+
+  /* A swipe left or right on the card of a result is the arrow on that side:
+   * left for the next, right for the one before, the way a row of cards
+   * reads under a thumb. Only on a touch screen and only on a result's card;
+   * everywhere else a sideways swipe on the card does what it always did,
+   * which is nothing.
+   *
+   * The card follows the finger a third of the way while it is being pulled,
+   * so the gesture is visibly doing something before it lets go, and eases
+   * back if it was not far enough. It counts at sixty pixels, and only while
+   * the move has stayed more sideways than down — a thumb scrolling the
+   * write-up wanders a little left or right, and that is a scroll. An embed
+   * keeps its own gestures, and so does anything inside the card that
+   * scrolls sideways itself. The sheet's own swipe stands aside for a
+   * sideways move — see wireSheetSwipe().
+   */
+  var SWIPE_STEP = 60;
+
+  function wireResultSwipe() {
+    var card = dom.detail;
+    var on = false;
+    var startX = 0;
+    var startY = 0;
+    var dx = 0;
+    var sideways = false;
+
+    function scrollsSideways(node) {
+      for (; node && node !== card; node = node.parentNode) {
+        if (node.nodeType !== 1) continue;
+        if (node.tagName === 'IFRAME' || node.tagName === 'VIDEO') return true;
+        if (node.scrollWidth > node.clientWidth + 1) {
+          var o = getComputedStyle(node).overflowX;
+          if (o === 'auto' || o === 'scroll') return true;
+        }
+      }
+      return false;
+    }
+
+    function pull(x) {
+      if (reduceMotion()) return;
+      card.style.transform = x ? 'translateX(' + Math.round(x / 3) + 'px)' : '';
+    }
+
+    card.addEventListener('touchstart', function (ev) {
+      on = false;
+      if (!state.results || !state.selected || state.view !== 'detail') return;
+      if (state.results.ids.length < 2 || state.results.ids.indexOf(state.selected) === -1) return;
+      if (ev.touches.length !== 1 || scrollsSideways(ev.target)) return;
+      on = true;
+      sideways = false;
+      dx = 0;
+      startX = ev.touches[0].clientX;
+      startY = ev.touches[0].clientY;
+    }, { passive: true });
+
+    card.addEventListener('touchmove', function (ev) {
+      if (!on || ev.touches.length !== 1) return;
+      dx = ev.touches[0].clientX - startX;
+      var dy = ev.touches[0].clientY - startY;
+      if (!sideways) {
+        if (Math.abs(dy) > 10 && Math.abs(dy) >= Math.abs(dx)) { on = false; return; }
+        if (Math.abs(dx) < 10) return;
+        sideways = true;
+        card.classList.add('is-swiping');
+      }
+      pull(dx);
+      if (ev.cancelable) ev.preventDefault();
+    }, { passive: false });
+
+    function release() {
+      if (!on) return;
+      on = false;
+      card.classList.remove('is-swiping');
+      pull(0);
+      if (sideways && Math.abs(dx) >= SWIPE_STEP) stepResult(dx < 0 ? 1 : -1, 'swipe');
+    }
+
+    card.addEventListener('touchend', release);
+    card.addEventListener('touchcancel', release);
   }
 
   /* A hand on the map, which is what puts Search this area up once the move
