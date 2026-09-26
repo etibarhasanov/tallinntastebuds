@@ -6,7 +6,8 @@
  * because they are one number seen from either end, and splitting them would
  * be two places to change when what counts as a press changes.
  *
- *   POST { kind, id }   adds one. Answers {ok} and nothing else; the page
+ *   POST { kind, id }   adds one — or, for a profile, hands it to
+ *                       ./_visits.js with `from` or `what` beside it. Answers {ok} and nothing else; the page
  *                       never waits on it and never draws anything from it.
  *   GET  ?lang=         the whole ranking, the page's words beside it, and
  *                       five minutes of edge cache on the pair.
@@ -37,6 +38,14 @@
  *            nothing else. The radio is not one of them: it left the rail for
  *            the corner beside the language switch, and a table about the rail
  *            that carried it would be a table about something else.
+ *
+ * And two kinds that are counted somewhere else, which this route only
+ * carries: `profile`, a public profile at /u/<name> opened, and
+ * `profile-press`, a row, a handle or a list on one pressed. They are the
+ * owner's own numbers, read on their account page and never ranked here, so
+ * they live in profile_counts and ./_visits.js — this is the door because it
+ * is already the one every page on this site knocks on to say something was
+ * pressed, and a route of its own would be a second.
  *
  * Nothing else does. A row on somebody's list, a search that narrows to one
  * name, a pin hovered on the way past: none of them is somebody asking for a
@@ -96,6 +105,7 @@ import {
    guards the venue lookup. Imported rather than restated: _lists.js is a
    module and this is the fourth reader of that expression. */
 import { LIST_ID } from './_lists.js';
+import { countView, countPress } from './_visits.js';
 
 /* Five minutes in the colo, which is what the page is allowed to be stale by.
  *
@@ -124,6 +134,9 @@ const PLACE = 'place';
 const FILTER = 'filter';
 const LIST = 'list';
 const RAIL = 'rail';
+/* And two that are not counted here at all but handed on — see the POST. */
+const PROFILE = 'profile';
+const PROFILE_PRESS = 'profile-press';
 
 /* The pills on the rail, top to bottom as index.html stands them, each with
    the string data/ui.json already names it by — the same string the button
@@ -402,7 +415,7 @@ export async function onRequestPost(context) {
     return json({ error: 'body' }, 400);
   }
 
-  const kind = [PLACE, FILTER, LIST, RAIL].indexOf(body.kind) !== -1 ? body.kind : '';
+  const kind = [PLACE, FILTER, LIST, RAIL, PROFILE, PROFILE_PRESS].indexOf(body.kind) !== -1 ? body.kind : '';
   const id = typeof body.id === 'string' ? body.id.trim() : '';
   if (!kind || !id || id.length > 128) return json({ error: 'press' }, 400);
 
@@ -411,6 +424,13 @@ export async function onRequestPost(context) {
      and the page is not listening anyway. */
   if (!env.DB) return json({ ok: false }, 200);
   if (await wrongDatabase(env)) return json({ ok: false }, 200);
+
+  /* A profile opened, or something on one pressed. Counted into a table of
+     their own and not press_counts, because the number belongs to the person
+     whose page it is and is read by them on /account.html rather than ranked
+     here — ./_visits.js is the whole of it. `id` is the username. */
+  if (kind === PROFILE) return json({ ok: await countView(context, id, body.from) }, 200);
+  if (kind === PROFILE_PRESS) return json({ ok: await countPress(context, id, body.what) }, 200);
 
   const real = kind === PLACE ? await realPlace(context, id)
              : kind === LIST ? await realList(context, id)

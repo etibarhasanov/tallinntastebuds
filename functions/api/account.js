@@ -89,6 +89,7 @@ import {
 } from './_account.js';
 import { googleReady, unlinkGoogle, hasGoogle, pendingCookie } from './_google.js';
 import { NETWORKS, cleanHandle, readLinks, readingExtras, cleanRows, readRows } from './_profile.js';
+import { readVisits } from './_visits.js';
 
 /* The line somebody writes about themselves on /u/<name>. The same length as
    a list's intro in functions/api/lists.js, and the same reasoning: it is a
@@ -231,6 +232,11 @@ export async function onRequestGet(context) {
        are: the table arrives by hand, and until it has, an account has no
        rows rather than no account page. */
     rows: await readRows(env, user.id),
+    /* How often /u/<you> has been opened, from where, and what on it was
+       pressed — the card headed "Your page, lately". Left out entirely where
+       profile_counts is not applied yet, and the card is not drawn; see
+       ./_visits.js. */
+    visits: (await readVisits(env, user.id)) || undefined,
     saved: await savedByUser(env, user.id)
   }, 200);
 }

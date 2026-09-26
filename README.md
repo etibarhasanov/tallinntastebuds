@@ -3360,7 +3360,8 @@ username and password it always did.
 
 `/account.html`. Your name, the line you wrote about yourself and the door to
 your public profile, with everything you can do to an account along the foot
-of the same card; then the places you saved, the lists you wrote, the box that
+of the same card; then how often that profile has been opened lately; then
+the places you saved, the lists you wrote, the box that
 makes another and the ones you kept. Nothing after that: the page ends where
 it stops being about you.
 
@@ -3714,9 +3715,16 @@ over it is a `<summary>` when the fold is closed and a column of lists when it
 is open, and neither of those can carry a margin that only means something
 under a form.
 
-That is the whole reason a third stylesheet was not written. A page that needed
-new furniture would be a page that had drifted from the two that were already
-here.
+It borrows one more, and borrows rather than writes: `assets/stats.css`, the
+row `/stats` draws a ranking in — a rank, a name, a number — for the three
+short tables under **Your page, lately** (**Who opened your page** under
+**Profiles**). A fourth design for "a name and how many" would have been one
+more thing to learn, and two lines at the foot of that sheet space the tables
+apart.
+
+That is the whole reason a stylesheet of its own was not written. A page that
+needed new furniture would be a page that had drifted from the ones that were
+already here.
 
 ### What it costs to open
 
@@ -3736,6 +3744,11 @@ somebody who is not you, and they stay a separate module all the way down;
 `functions/api/_lists.js` and `functions/api/_mostkept.js` have never been one
 for exactly that reason. This page simply no longer asks the second one, and
 has nothing on it that would.
+
+**Your page, lately** costs no request of its own: `/api/account` carries it
+as `visits`, one grouped read of `profile_counts` on its owner's own rows,
+plus one read of the page's rows and one of its lists to name what was
+pressed — only when something was.
 
 Nothing is cached: both API answers are `no-store` and both are about a
 session. `data/places.json` is 13KB and revalidates like everything else.
@@ -6486,6 +6499,112 @@ ALTER TABLE users ADD COLUMN display_name TEXT NOT NULL DEFAULT '';
 Until it is, a profile and the editor draw no rows rather than a 500 —
 `readRows()` takes "no such table" as an answer, at the cost of one failed
 statement per read — and a save says *Pages are not switched on here yet.*
+
+### Who opened your page
+
+`/account.html`, straight under the card with your name on it: **Your page,
+lately**. How often `/u/<you>` was opened in the last thirty days, where the
+people opening it came from, which country, and what on it they pressed —
+with how many views there have been since the counting started beside it.
+It is read by the owner of the page and by nobody else; nothing about it is
+printed on the profile, on `/stats` or anywhere a stranger can see.
+
+Google Analytics has all of this for the whole site. What it cannot do is hand
+one person the slice that is about their own page, on the page where they
+look after it, and that is the whole of what this is. It is meant to be
+roughly right rather than exactly right, and it says what it is counting
+in its first sentence: **views, not people**. A reload is another view, the
+way it is another page view in GA, and one person coming back on five
+evenings is five. Your own visits are not counted — the page leaves them out
+when it knows it is yours, and the server leaves them out again by the
+session, so checking how your page looks never moves its number.
+
+**Where they came from** is the part that needed thinking about, because the
+obvious answer is the one that says least. A referrer is what the browser
+says the page was opened from, and every site that matters sends only its
+origin — `https://l.instagram.com/`, never the post — which is enough for a
+bucket and no more. But Instagram, TikTok and Facebook open a link from a bio
+in a browser of their own, and those browsers often send no referrer at all.
+That is why GA only *sometimes* says Instagram: the rest of the time it has
+nothing to go on and files the visit as direct. Each of those in-app
+browsers does name itself in its user agent, though — `Instagram 312.0…`,
+`BytedanceWebview`, `FBAN` — and `sourceOf()` in `functions/api/_visits.js`
+reads that first, off the request the count arrives on. So a view from a link
+in somebody's Instagram bio is Instagram here far more often than it is in GA.
+
+The buckets are Instagram, TikTok, Facebook, **Search** (Google in any of its
+country domains, Bing, DuckDuckGo and the rest), **This site** (a byline, the
+directory, a list), and **Direct** — a link pasted into a chat, a QR code, a
+typed address, which nothing can see through. Any other site is kept as its
+host, `linktr.ee` or `t.co`, because that is the most anybody can say about
+it. A tag on the link — `/u/kate?from=ig` — would have caught more of
+Instagram and was left out on purpose: nobody pastes the tagged version of
+their own address, and the user agent catches most of what it would have.
+
+**Country** is Cloudflare's two letters, `request.cf.country`, which every
+request carries whatever this code does; the address it was worked out from
+is never read. The browser names the country in the language the page is
+read in, through `Intl.DisplayNames`, so two hundred names did not have to be
+written into `data/ui.json` ten times. Cloudflare's *XX* and Tor's *T1* are
+**Unknown**.
+
+**What was pressed** is every row on your page of links — a link followed, a
+player opened, a note opened — each of the three handles, and on a profile
+that is a card rather than a page, each of your lists. Every press, not once
+a load, for the reason the rail on `/stats` counts every press: which link
+people actually push is the question. A row is filed under its title,
+because `profile_rows` is keyed on a row's position and that moves every
+time the page is reordered; a row renamed or taken down drops off the table,
+since the card is about the page as it stands.
+
+Where they came from and which country are cut to five rows and an **Other**:
+the long tail of a page's sources is one visit each, and a column of ones
+says nothing the Other line does not. The rows are the `/stats` row — a
+rank, a name, a number — and the account page carries `assets/stats.css` to
+draw them rather than a fourth design for "a name and how many".
+
+**Its states.** Never opened: a plain card, *Nobody has opened your public
+page yet*, and the door to it — not a fold, since there is nothing behind
+one. Opened, but not in the last thirty days: the fold, the all-time line,
+and *Nobody has opened it in the last 30 days* where the tables would be.
+Nothing pressed: no pressed table rather than a heading over nothing. And
+before `profile_counts` has been applied, no card at all — `GET /api/account`
+leaves `visits` out and the page draws what it always did.
+
+**How it is kept.** `profile_counts` in `db/schema.sql`: one row per page,
+per day, per fact, and an upsert that adds one — `press_counts` with the day
+in the key, which is exactly the change that table's header said it would
+make the day somebody asked "this month". A view writes two rows in one
+batch, where from and which country, and the number of views is the sum of
+the first, so there is no third row to disagree with it. It goes through
+`POST /api/stats` as two more kinds, `profile` and `profile-press`, because
+that is the door every page here already uses to say something was pressed,
+and a route of its own would have been a second. Nothing is filed under the
+visitor: no address, no device id, no fingerprint, no row per visit.
+
+Nothing is deleted either, so all-time means all of it. A page opened a few
+dozen times a day is a few thousand rows a year; the day that stops being
+small, the answer is a monthly roll-up, and it is not worth writing before
+then. And nothing stops somebody posting to the route in a loop to inflate
+their own page — which is the bargain `/stats` already makes, for the same
+reason: nobody is paid for the number, and the only person who reads it is
+the one it is about.
+
+**What it does not do.** No list of who visited, no times of day, no chart
+of the thirty days, no email about it, and no number on the profile itself —
+a count under somebody's name on a page strangers read would be a score, and
+there are none of those here. Views of your *lists* are not on this card:
+those order `/lists` and are counted under **Statistics**.
+
+**Turning it on** is one table, applied by hand to both databases the way
+every table is — `db/schema.sql` is all `IF NOT EXISTS`:
+
+```
+wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
+wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
+```
+
+Until it is, profiles are not counted and the card is not drawn.
 
 ### Private lists are not on it, including for its owner
 
@@ -9592,7 +9711,9 @@ No time window, which **A count and not a log** above is the whole of. No
 chart: a ranking is a list and a bar chart of seventy-six rows is a list with
 decoration on it. No languages, no referrers, no countries — Google Analytics
 has all of that and this page is the half GA cannot do, which is the site
-owning its own numbers. No per-place badge anywhere else on the site: the
+owning its own numbers. The one place this site does keep a referrer and a
+country is somebody's own profile, counted for them alone — see **Who opened
+your page** under **Profiles**. No per-place badge anywhere else on the site: the
 count is on this page or it is nowhere, because a number under a name on the
 map is a score, and there are none of those here — and no number on a pill
 either, for that reason and because there is no room on one. No returning-users figure
@@ -10369,6 +10490,8 @@ functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
 functions/api/_mostkept.js reading a page of everybody's, most opened first
 functions/api/_profile.js  reading one person, shared the same way
+functions/api/_visits.js   how often a profile is opened, from where, and
+                           what on it is pressed — for its owner alone
 functions/_shell.js        a static page with a head and an answer written
                            in, shared by the five Functions that serve one
 functions/list/[id].js     /list/<id> — the page a shared link opens
@@ -10386,7 +10509,8 @@ assets/lists.css           what a list page has and the map does not, and the
                            furniture the account page is built from too
 account.html               your name, your saved places, your lists, the
                            ones you kept, and everybody else's
-assets/account.js          all three of its states; no stylesheet of its own
+assets/account.js          all three of its states, and the card that says
+                           who opened your page; no stylesheet of its own
 split.html                 splitwise, at /split and at the root of
                            splitwise.tallinntastebuds.ee
 assets/split.js            all four of its states, the second sign-in form on
@@ -10431,7 +10555,8 @@ assets/venues.js           search, five filters, four orders } noindex
 assets/venues.css          only what a directory has and the map does not
 stats.html                 which places get opened and which  } unlinked and
 assets/stats.js            chips get pressed: three rankings  } noindex
-assets/stats.css           the rows of a ranking, and nothing else
+assets/stats.css           the rows of a ranking, and nothing else — drawn
+                           on the account page too, under Your page, lately
 assets/rows.js             the page of links on a profile: what a row is,
                            which addresses get a player, and the note sheet —
                            said once for the profile and the account page
