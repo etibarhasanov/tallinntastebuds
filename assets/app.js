@@ -1231,41 +1231,38 @@
     var bounds = L.latLngBounds(pts);
     var pad = isNarrow() ? L.point(48, 48) : L.point(96, 96);
 
-    /* The panel covers the bottom of a phone and the right of a desktop, and
-       a pin underneath it is not on screen in any sense a visitor would
-       accept — which is the same judgement anyInView() already makes.
+    /* What stands on the map, as how far it reaches in from each side: the
+       panel on the bottom of a phone and the right of a desktop, when the fit
+       is asked to clear it, and otherwise the phone's floating chrome. A pin
+       underneath either is not on screen in any sense a visitor would accept
+       — the same judgement anyInView() already makes.
 
-       Half the panel is added to the padding and the centre is then shifted
-       by the same amount. getBoundsZoom pads both sides equally, so half on
-       each is one panel's worth of room taken out of the fit; moving the
-       centre the other way puts all of that on the side the panel is on. The
-       result is the whole set framed in the strip that is actually visible.
+       All of it is added to the padding, and the centre is moved by half the
+       difference between opposite sides. getBoundsZoom takes its padding as
+       the total across both sides — it subtracts the point from the map's
+       size — so that is the covered room taken out of the fit, and the move
+       puts the set in the middle of what is left. It added half the panel for
+       a long time, on the reading that the padding was per side, which left
+       every fit into the strip a zoom level too close: the pair frameHere()
+       frames arrived with one of the two under the panel as often as not.
 
-       Asked for rather than assumed: most fits on this map happen with the
-       panel shut or about to shut, and a fit that always allowed for a panel
-       would leave the map sitting off-centre for them. */
-    var behind = 0;
+       The panel is asked for rather than assumed: most fits on this map happen
+       with the panel shut or about to shut, and a fit that always allowed for
+       one would leave the map sitting off-centre for them. */
     var cover = null;
     if (o.clearPanel && dom.panel.classList.contains('is-open')) {
-      behind = isNarrow() ? dom.panel.offsetHeight : dom.panel.offsetWidth;
-      /* A sheet dragged to full height leaves no strip to fit into, so there
-         is nothing to correct for and the plain fit is the honest answer. */
-      var room = isNarrow() ? map.getSize().y : map.getSize().x;
-      if (behind > room - 120) behind = 0;
-      pad = isNarrow()
-        ? L.point(pad.x, pad.y + behind / 2)
-        : L.point(pad.x + behind / 2, pad.y);
+      cover = stripCover();
     } else if (isNarrow() && !document.body.classList.contains('panel-open')) {
-      /* The same judgement about the chrome, which on a phone is standing on
-         the map rather than beside it: the name, the find bar and Filters
-         across the top, the rail down the left and the arrow in the
-         bottom corner. A symmetric 24px each side framed the city as though
-         none of them were there, so the first thing a stranger saw was a
-         cluster half under the die and a pin under Ask — places the page had
-         drawn and then covered. */
+      /* The chrome on its own, which on a phone is standing on the map rather
+         than beside it: the name, the find bar and Filters across the top,
+         the rail down the left and the arrow in the bottom corner. A
+         symmetric 24px each side framed the city as though none of them were
+         there, so the first thing a stranger saw was a cluster half under the
+         die and a pin under Ask — places the page had drawn and then
+         covered. */
       cover = chromeCover();
-      if (cover) pad = L.point(pad.x + cover.l, pad.y + cover.t + cover.b);
     }
+    if (cover) pad = L.point(pad.x + cover.l + cover.r, pad.y + cover.t + cover.b);
 
     /* Down to the whole level below. getBoundsZoom used to do the rounding
        itself; it rounds to zoomSnap, which is now off so that the wheel can
@@ -1278,19 +1275,12 @@
     );
 
     var centre = bounds.getCenter();
-    if (behind) {
+    if (cover) {
       /* In projected pixels at the zoom being flown to, not at the current
          one: the same number of pixels is a different distance at each zoom,
          and the move has not happened yet. */
-      var pt = map.project(centre, zoom);
-      if (isNarrow()) pt.y += behind / 2; else pt.x += behind / 2;
-      centre = map.unproject(pt, zoom);
-    } else if (cover) {
-      /* The clear rectangle's middle is off the window's middle by half the
-         difference between opposite sides, and the map's centre goes the
-         other way by as much. */
       var off = map.project(centre, zoom);
-      off.x -= cover.l / 2;
+      off.x -= (cover.l - cover.r) / 2;
       off.y -= (cover.t - cover.b) / 2;
       centre = map.unproject(off, zoom);
     }
@@ -1308,7 +1298,7 @@
      fitLatLngs gives a sheet dragged to full height. */
   function chromeCover() {
     var box = map.getContainer().getBoundingClientRect();
-    var c = { l: 0, t: 0, b: 0 };
+    var c = { l: 0, t: 0, r: 0, b: 0 };
     var bar = document.getElementById('filter-bar');
     var r = bar && bar.getBoundingClientRect();
     if (r && r.height) c.t = Math.max(0, r.bottom - box.top);
@@ -1321,6 +1311,42 @@
     r = dom.btnLocate && !dom.btnLocate.hidden && dom.btnLocate.getBoundingClientRect();
     if (r && r.height) c.b = Math.max(0, box.bottom - r.top);
     if (c.l > box.width - 160 || c.t + c.b > box.height - 160) return null;
+    return c;
+  }
+
+  /* The same measurement with a place or the list open, for a fit that has
+     to land in the strip the panel leaves — frameHere() putting you beside
+     the nearest place, frameWithHere() putting you beside a roll. The panel
+     is the side it covers, and the chrome still stands on what is left of
+     the map: the top row down to the foot of the filter bar, and then the
+     rail — on a phone a row of discs riding on the sheet's top edge with the
+     arrow in the other corner, so the strip ends at the top of the taller of
+     the two rather than of the sheet; above 860px
+     a column down the left, which the fit clears by its right edge. Without
+     that, a fit of two points put the one nearer the top under the brand
+     card. Null for a sheet dragged to full height, which leaves no strip to
+     fit into, so the plain fit is the honest answer; and just the panel when
+     the chrome would leave too little to frame anything in. */
+  function stripCover() {
+    var box = map.getContainer().getBoundingClientRect();
+    var narrow = isNarrow();
+    var behind = narrow ? dom.panel.offsetHeight : dom.panel.offsetWidth;
+    if (behind > (narrow ? box.height : box.width) - 120) return null;
+
+    var panel = narrow ? { l: 0, t: 0, r: 0, b: behind } : { l: 0, t: 0, r: behind, b: 0 };
+    var c = { l: 0, t: 0, r: panel.r, b: panel.b };
+    var bar = dom.filterBar && dom.filterBar.getBoundingClientRect();
+    if (bar && bar.height) c.t = Math.max(0, bar.bottom - box.top);
+    var rail = dom.rail && dom.rail.getBoundingClientRect();
+    if (rail && rail.height) {
+      if (narrow && rail.height < rail.width) c.b = Math.max(c.b, box.bottom - rail.top);
+      if (!narrow && rail.height > rail.width) c.l = Math.max(0, rail.right - box.left);
+    }
+    /* The arrow rides the same edge in the other corner, and stands taller
+       than the row of discs. */
+    var arrow = narrow && dom.btnLocate && !dom.btnLocate.hidden && dom.btnLocate.getBoundingClientRect();
+    if (arrow && arrow.height && arrow.top > c.t) c.b = Math.max(c.b, box.bottom - arrow.top);
+    if (c.l + c.r > box.width - 160 || c.t + c.b > box.height - 160) return panel;
     return c;
   }
 
@@ -1784,13 +1810,51 @@
     if (refocusTimer) { window.clearTimeout(refocusTimer); refocusTimer = null; }
   }
 
-  function refocus(place, zoomIn) {
+  function refocus(place, zoomIn, withHere) {
     var key = sheetKey();
     var resizing = isNarrow() && key !== lastSheetKey;
     lastSheetKey = key;
     cancelRefocus();
-    if (!resizing || reduceMotion()) { focusOn(place, zoomIn); return; }
-    refocusTimer = window.setTimeout(function () { refocusTimer = null; focusOn(place, zoomIn); }, 300);
+    var go = function () {
+      if (!withHere || !frameWithHere(place)) focusOn(place, zoomIn);
+    };
+    if (!resizing || reduceMotion()) { go(); return; }
+    refocusTimer = window.setTimeout(function () { refocusTimer = null; go(); }, 300);
+  }
+
+  /* The place and the dot in one frame, in the strip the panel leaves — so a
+     place you did not choose arrives with where you are beside it rather than
+     alone on a street you cannot place. The same fit frameHere() makes
+     against the nearest place when the dot first lands, pointed at this one
+     instead. False, and the caller centres on the place as usual, when there
+     is no dot or the place is past HERE_MAX_M from it: no zoom holds the
+     pair of you then, and framing Tallinn from the next country is the city
+     fit rather than an answer about one place. */
+  function frameWithHere(place) {
+    if (hereAway(place) == null) return false;
+    var here = hereMarker.getLatLng();
+    fitLatLngs([[here.lat, here.lng], [place.lat, place.lng]], {
+      animate: true,
+      maxZoom: HERE_ZOOM,
+      floor: 0,
+      clearPanel: true
+    });
+    return true;
+  }
+
+  /* Metres from the dot to a place, or null when there is no dot or it is
+     further than HERE_MAX_M — the distance the list stops printing at too,
+     since twenty-odd kilometres to everything tells you nothing. */
+  function hereAway(place) {
+    if (!hereMarker || !place) return null;
+    var away = hereMarker.getLatLng().distanceTo(L.latLng(place.lat, place.lng));
+    return away > HERE_MAX_M ? null : away;
+  }
+
+  function farBadge(place) {
+    var away = hereAway(place);
+    if (away == null) return null;
+    return el('span', { className: 'list-far', textContent: farWords(away / 1000) });
   }
 
   /* ----------------------------------------------------------------- saves
@@ -4836,7 +4900,10 @@
 
     state.lastPick = choice.id;
     TTBTrack.event('random_pick', { place: choice.name, pool: pool.length });
-    selectPlace(choice.id, { fly: true });
+    /* withHere: with a dot on the map, the roll lands framing the place and
+       you together, so it answers "where is it" as "this far from where you
+       are standing" — the panel prints the distance too. See frameWithHere(). */
+    selectPlace(choice.id, { fly: true, withHere: true });
   }
 
   /* --------------------------------------------------------------- the ask
@@ -6025,7 +6092,7 @@
        half the window, and the answer to "where is this" was as often as not
        behind it. It glides rather than jumps — travelTo — which is what makes
        a map that moves under you readable rather than startling. */
-    refocus(place, !!opts.fly);
+    refocus(place, !!opts.fly, opts.withHere);
 
     dom.panelScroll.scrollTop = 0;
     /* The place's own column on a desktop, where the scroll lives now. The
@@ -6827,7 +6894,14 @@
          you would read once you have decided to go. */
       el('div', { className: 'head-meta' }, [
         priceGauge(place.price),
-        deal ? dealMark(deal) : null
+        deal ? dealMark(deal) : null,
+        /* How far it is from you, in the words the list's rows use, and only
+           once the locate button has put a dot on the map — the same rule as
+           the list, for the same reason: a number here reads as a number from
+           you. Surprise me is the press that asked for it. A name you have
+           never heard of is a question about where it is, and "1,2 km" is
+           the half of that answer the map cannot print. */
+        farBadge(place)
       ]),
       watchUp ? watchButton(place) : null
     ]));

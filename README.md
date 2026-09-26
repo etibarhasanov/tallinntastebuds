@@ -11696,6 +11696,27 @@ tapping a pin asks too — so it is where every place opens now, and this button
 picks a name and calls `selectPlace()` like anything else. **The sheet** in the
 design notes has that argument.
 
+**With a dot on the map, a roll is framed against you.** Once the locate
+button has found you, the die does not centre on the place alone: it fits the
+place *and* the dot into the strip the sheet leaves, the fit `frameHere()`
+makes against the nearest place when the dot first lands, pointed at the roll
+instead — so "where is it" is answered as "this far from where you are
+standing" rather than as a pin on a street you cannot place. The open place
+prints the distance beside its price in the list's own words — "450 m", "1,2
+km" — and does so however it was opened, under the list's rule: only once
+there is a dot, and not past `HERE_MAX_M`, where no zoom holds the pair of you
+and the roll centres on the place as it always has. Nothing asks the device;
+without a dot a roll is exactly what it was. `frameWithHere()` and
+`farBadge()` in `assets/app.js` are the whole of it.
+
+Building it turned up why that fit had never quite worked. It counted half the
+panel into the padding, on the reading that Leaflet's padding was per side;
+`getBoundsZoom()` takes it as the total, so every fit into the strip — the
+locate button's included — came in a zoom level too close, and on a phone it
+also left the brand card and the rail standing on the strip. `stripCover()`
+now measures the whole of what covers the map with a place open — the panel,
+the top row down to the filter bar, the rail — and the fit clears all of it.
+
 ### The welcome card
 
 **Before the pills, a card says what the site is.** On a phone the sentence
