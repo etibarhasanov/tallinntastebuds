@@ -47,6 +47,15 @@
   --pin-sea:    #1a6b73;
   --pin-amber:  #b4650f;
 
+  /* The two answers a flashcard can be thrown towards: right is Knew it and
+     leans green, left is Show me again and leans red. Their own pair rather
+     than --accent, because the accent is red in one style and green in the
+     other, and a throw that meant "knew it" in one and "again" in the other
+     would be the swatch changing what the gesture says. Never on their own:
+     the card always says the answer in words as well — design rule 10. */
+  --yes: #2e7a4c;
+  --no:  #b3262f;
+
   /* Three tokens for chrome that stands on the map with no card under it.
      --lift is a short shadow for a picture at logo size: --shadow is a card's
      shadow, 28px of blur meant to lift a 288px panel, and under a 40px circle
@@ -1267,6 +1276,8 @@ body.lang-open .controls { z-index: 1250; }
   --pin-accent: var(--accent);
   --pin-sea:    #1a6b73;
   --pin-amber:  #b4650f;
+  --yes: #2e7a4c;
+  --no:  #b3262f;
 }
 
 /* Forest — the dark one. */
@@ -1296,6 +1307,10 @@ body.lang-open .controls { z-index: 1250; }
   --pin-accent: var(--accent);
   --pin-sea:    #6bd0d6;
   --pin-amber:  #edc064;
+  /* Lifted for the same reason the pins are: the light style's pair is a
+     dark ring on a dark card here. */
+  --yes: #6fd39a;
+  --no:  #f08a80;
 }
 
 /* Dark Matter is drawn almost black, which reads as a hole in the screen next
