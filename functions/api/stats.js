@@ -9,8 +9,9 @@
  *   POST { kind, id }   adds one — or, for a profile, hands it to
  *                       ./_visits.js with `from` or `what` beside it. Answers {ok} and nothing else; the page
  *                       never waits on it and never draws anything from it.
- *                       For one of Google's places it may also, after that
- *                       answer, refresh the place's numbers from Google —
+ *                       For a place Google lists — one of its own, or one of
+ *                       mine joined to it — it may also, after that answer,
+ *                       refresh the numbers from Google:
  *                       functions/api/_refresh.js.
  *   GET  ?lang=         the whole ranking, the page's words beside it, and
  *                       five minutes of edge cache on the pair.
@@ -463,14 +464,14 @@ export async function onRequestPost(context) {
     return json({ ok: false }, 200);
   }
 
-  /* One of Google's places, opened: ask Google whether its numbers still
-     hold, if they are old enough to be worth asking about. After the answer
-     has gone, so nobody waits on Google; and only for a Google key — a map
-     slug is lowercase and a Google key always carries a capital, so the
-     capital is the whole test once realPlace() has said the id is real.
-     functions/api/_refresh.js is the rest, the budget included; without
-     GOOGLE_MAPS_API_KEY it returns at once. */
-  if (kind === PLACE && /[A-Z]/.test(id)) context.waitUntil(refreshOnOpen(env, id));
+  /* A place opened: ask Google whether its numbers still hold, if they are
+     old enough to be worth asking about. After the answer has gone, so nobody
+     waits on Google. Either kind of place, because both now print Google's
+     numbers — a Google row on its card, and one of mine under "According to
+     Google" in its panel — and functions/api/_refresh.js finds the Google row
+     behind a slug by map_id. That file is the rest, the budget included;
+     without GOOGLE_MAPS_API_KEY it returns before asking anything. */
+  if (kind === PLACE) context.waitUntil(refreshOnOpen(env, id));
 
   return json({ ok: true }, 200);
 }

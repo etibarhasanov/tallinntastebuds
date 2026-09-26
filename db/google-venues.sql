@@ -54,24 +54,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -129,24 +128,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -204,24 +202,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -279,24 +276,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -354,24 +350,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -429,24 +424,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -504,24 +498,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -579,24 +572,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -654,24 +646,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -729,24 +720,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -804,24 +794,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -879,24 +868,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -954,24 +942,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1029,24 +1016,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1104,24 +1090,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1179,24 +1164,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1254,24 +1238,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1329,24 +1312,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1404,24 +1386,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1479,24 +1460,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1554,24 +1534,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1629,24 +1608,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 INSERT INTO google_venues (place_id, name, category, cuisine, rating, reviews, price, status, address, postal_code, city, phone, website, opening_hours, tags, latitude, longitude, maps_url, rank, first_seen_at, synced_at)
 VALUES
@@ -1664,24 +1642,23 @@ ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
     cuisine = excluded.cuisine,
-    rating = excluded.rating,
-    reviews = excluded.reviews,
-    price = excluded.price,
-    status = excluded.status,
+    rating = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.rating ELSE google_venues.rating END,
+    reviews = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.reviews ELSE google_venues.reviews END,
+    price = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.price ELSE google_venues.price END,
+    status = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.status ELSE google_venues.status END,
     address = excluded.address,
     postal_code = excluded.postal_code,
     city = excluded.city,
-    phone = excluded.phone,
-    website = excluded.website,
-    opening_hours = excluded.opening_hours,
+    phone = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.phone ELSE google_venues.phone END,
+    website = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.website ELSE google_venues.website END,
+    opening_hours = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.opening_hours ELSE google_venues.opening_hours END,
     tags = excluded.tags,
     latitude = excluded.latitude,
     longitude = excluded.longitude,
     maps_url = excluded.maps_url,
     rank = excluded.rank,
     synced_at = CAST(strftime('%s','now') AS INTEGER) * 1000,
-    missing_since = NULL
-WHERE google_venues.refreshed_at IS NULL;
+    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 UPDATE google_venues SET missing_since = CAST(strftime('%s','now') AS INTEGER) * 1000
 WHERE missing_since IS NULL AND refreshed_at IS NULL AND place_id NOT IN (

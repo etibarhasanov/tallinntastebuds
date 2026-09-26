@@ -168,8 +168,9 @@ else runs.
 
 ## Between refreshes, the table refreshes itself
 
-A Google place opened on the map or on `/google` is asked about again when its
-`refreshed_at` is empty or over thirty days old — `refreshOnOpen()` in
+A Google place opened on the map or on `/google`, or a place of mine whose
+Google row its panel prints (found by `map_id`), is asked about again when that
+row's `refreshed_at` is empty or over thirty days old — `refreshOnOpen()` in
 `functions/api/_refresh.js`, called from `/api/stats`, inside a budget of 32
 Place Details calls a day and 950 a month, and only where
 `GOOGLE_MAPS_API_KEY` is set, which is Production. It writes the seven columns
@@ -179,10 +180,12 @@ it, and the **Google** tab on `/admin.html` is where to see what it did.
 
 What that means for this process:
 
-- **`db/google-venues.sql` skips every row with `refreshed_at` set**, in the
-  upsert and in the missing mark. A refresh here therefore only reaches the
-  rows nobody has opened since the last one, and the delta in step 5 is
-  worked out against those rows — say how many were skipped.
+- **On a row with `refreshed_at` set, `db/google-venues.sql` keeps the seven
+  refreshed columns and `missing_since`**, writes everything else, `rank`
+  included, and the missing mark at the end skips the row. A refresh here
+  therefore moves the numbers only on rows nobody has opened since the last
+  one, and the delta in step 5 is worked out that way — say how many rows
+  kept their refreshed numbers.
 - **Loading it needs the column.** On a database without `refreshed_at` the
   first statement stops. The `ALTER` is in `db/schema.sql` above the column.
 - **`rank` and the six lists still come from the export alone**, so a refresh

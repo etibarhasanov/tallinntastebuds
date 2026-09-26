@@ -896,10 +896,11 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- when somebody opens the place and this is more than thirty days old; see
   -- **Keeping it current** under **Google venues** in README.md.
   --
-  -- It is also what keeps the export from undoing a refresh:
-  -- db/google-venues.sql only overwrites a row where this is NULL, so a
-  -- reload of September's file cannot put September's counts back over
-  -- today's. Appended for the same reason `rank` is:
+  -- It is also what keeps the export from undoing a refresh: on a row where
+  -- this is set, db/google-venues.sql leaves those seven columns and
+  -- missing_since as they are and writes the rest, so a reload of
+  -- September's file cannot put September's counts back over today's.
+  -- Appended for the same reason `rank` is:
   --   ALTER TABLE google_venues ADD COLUMN refreshed_at INTEGER;
   -- Until that runs, the refresh finds no column and does nothing.
   refreshed_at INTEGER

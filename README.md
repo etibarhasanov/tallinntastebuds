@@ -3940,12 +3940,15 @@ twenty-four round trips and eleven hundred and ten.
 `tools/validate.mjs` runs `--check`, so CI refuses a deploy where the export
 moved and the SQL did not.
 
-One kind of row the file leaves alone entirely: a row with `refreshed_at` set,
+One kind of row the file treats differently: a row with `refreshed_at` set,
 which a refresh from Google has answered for since the export was taken — see
-**Keeping it current** below. Both the upserts and the missing mark skip it, so
-loading September's file in October cannot put September's review counts back
-over October's. That makes the column a prerequisite of loading the file at all:
-on a database without it, the first statement stops saying so.
+**Keeping it current** below. On that row the upsert leaves the seven columns
+the refresh wrote exactly as they are, and its `missing_since` too, and still
+writes everything else, `rank` included; the missing mark at the end skips it.
+So loading September's file in October cannot put September's review counts
+back over October's, and still fills in whatever else the table is short of.
+That makes the column a prerequisite of loading the file at all: on a database
+without it, the first statement stops saying so.
 
 ### Keeping it current
 
@@ -3954,10 +3957,14 @@ already wrong. So the table keeps itself current, one place at a time, from the
 one signal this site already has about which places matter: somebody opening
 one.
 
-When a Google place is opened — a card on `/google`, or the place on the map —
-the page tells `/api/stats` so the open is counted. If that place's
-`refreshed_at` is empty or more than thirty days old, the same request, after
-its answer has gone, asks Google's Place Details about that one place and writes
+When a place whose Google numbers the site prints is opened — a card on
+`/google`, a Google place on the map, or one of the sixty-one places of mine the
+export also lists, whose panel ends "According to Google" (**Google, on a place
+of mine**) — the page tells `/api/stats` so the open is counted. For a place of
+mine the Google row is found by `map_id`, the same way that panel finds it. If
+the row's `refreshed_at` is empty or more than thirty days old, the same
+request, after its answer has gone, asks Google's Place Details about that one
+place and writes
 back the seven columns that move: `rating`, `reviews`, `status`, `price`,
 `phone`, `website` and `opening_hours`. Nobody waits on Google; whoever opened
 it sees the row as it was, and the next visitor sees it fresh. A place nobody

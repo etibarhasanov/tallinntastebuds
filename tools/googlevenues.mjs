@@ -58,18 +58,24 @@
  * That split is the point. Hand-curation that a sync can erase is curation
  * you will do twice.
  *
- * NEVER OVER A ROW GOOGLE HAS ANSWERED FOR SINCE
+ * NEVER OVER WHAT GOOGLE HAS ANSWERED SINCE
  *
  * functions/api/_refresh.js asks Google about a place again when somebody
- * opens it, and stamps `refreshed_at` when it does. A row with that stamp
- * holds numbers newer than any export this file could be reading, so both
- * the upsert and the missing mark skip it: a reload of an old CSV cannot put
- * last month's review count back over this morning's, and a place the export
- * no longer carries is not marked missing on the export's word while Google's
- * own more recent answer says it is there. Loading this file therefore needs
- * that column on the table — `ALTER TABLE google_venues ADD COLUMN
- * refreshed_at INTEGER`, in db/schema.sql — or it stops at the first
- * statement saying the column does not exist.
+ * opens it, writes the seven columns in REFRESHED, and stamps `refreshed_at`.
+ * On a row with that stamp those seven hold numbers newer than any export this
+ * file could be reading, so the upsert leaves exactly those alone — a reload
+ * of an old CSV cannot put last month's review count back over this
+ * morning's — and still writes everything else, `rank` included, which is how
+ * a reload fills in a column a half-finished load left empty. For the same
+ * reason a stamped row keeps whatever `missing_since` the refresh gave it:
+ * Google saying a place has closed for good outranks an older export still
+ * listing it, and the missing mark at the end skips stamped rows so an export
+ * that no longer carries a place cannot mark it missing while Google's more
+ * recent answer says it is there.
+ *
+ * Loading this file therefore needs that column on the table — `ALTER TABLE
+ * google_venues ADD COLUMN refreshed_at INTEGER`, in db/schema.sql — or it
+ * stops at the first statement saying the column does not exist.
  *
  * THE ONE COLUMN GOOGLE DID NOT SEND
  *
@@ -188,6 +194,12 @@ const GOOGLE_COLUMNS = [
    with mine because a refresh must overwrite it — a rank left over from last
    month's numbers is worse than no rank at all. */
 const DERIVED = ['rank'];
+
+/* The columns a refresh from Google writes — MOVING in functions/api/_refresh.js,
+   restated because a tool cannot import a Function's module and the Function
+   cannot import a tool. On a row the refresh has stamped, the upsert keeps
+   these as they are; see NEVER OVER WHAT GOOGLE HAS ANSWERED SINCE. */
+const REFRESHED = new Set(['rating', 'reviews', 'status', 'price', 'phone', 'website', 'opening_hours']);
 
 /* The two that are numbers in SQL and text in a CSV. Everything else is text,
    including price ("$$") and postal_code, which has leading zeroes to lose. */
@@ -436,7 +448,10 @@ export function build() {
 
   const cols = ['place_id', ...GOOGLE_COLUMNS, ...DERIVED];
   const setters = [...GOOGLE_COLUMNS, ...DERIVED]
-    .map((c) => `    ${c} = excluded.${c}`).join(',\n');
+    .map((c) => REFRESHED.has(c)
+      ? `    ${c} = CASE WHEN google_venues.refreshed_at IS NULL THEN excluded.${c} ELSE google_venues.${c} END`
+      : `    ${c} = excluded.${c}`)
+    .join(',\n');
 
   /* One entry per statement, and no comments between them — see the header
      for why. The file is these joined with a blank line. */
@@ -473,8 +488,7 @@ export function build() {
       rows.join(',\n') + '\n' +
       `ON CONFLICT(place_id) DO UPDATE SET\n${setters},\n` +
       `    synced_at = ${NOW},\n` +
-      `    missing_since = NULL\n` +
-      'WHERE google_venues.refreshed_at IS NULL;'
+      '    missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;'
     );
   }
 
