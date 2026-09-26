@@ -89,7 +89,7 @@ window.TTBPins = (function () {
    *            them was a second decision to make before you could name a
    *            list, for a difference the marker was already making.
    *
-   *   PLACES   what a GOOGLE ROW is. Five kinds of place, not thirty-eight
+   *   PLACES   what a GOOGLE ROW is. Five kinds of place, not forty-six
    *            kitchens: the question a pin on a map answers is "what is
    *            this door", and "somewhere you sit and eat" / "coffee" /
    *            "a drink" / "a counter you queue at" / "something baked" is
@@ -191,7 +191,7 @@ window.TTBPins = (function () {
 
      Everything not named here is somewhere you sit and eat, which is the
      honest answer for half the export: a Thai restaurant, a pizzeria and a
-     steakhouse are three cuisines and one kind of door. The thirty-eight
+     steakhouse are three cuisines and one kind of door. The forty-six
      kitchens still exist and the directory still filters on them; they are
      words under a card rather than a picture on a map.
 

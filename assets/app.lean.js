@@ -3436,12 +3436,14 @@
   var ASK_URL = '/api/ask';
 
   var cuisinesLoading = null;
+  var cuisinesKnown = [];
 
   function loadCuisines() {
     if (!cuisinesLoading) {
       cuisinesLoading = getJSON('data/cuisines.json')
         .then(function (data) { return (data && data.cuisines) || []; })
-        .catch(function () { return []; });
+        .catch(function () { return []; })
+        .then(function (list) { cuisinesKnown = list; return list; });
     }
     return cuisinesLoading;
   }
@@ -4417,7 +4419,7 @@
 
   function sourceLine(place) {
     if (!place.google) return null;
-    var kinds = (place.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
+    var kinds = googleKinds(place).join(' \u00b7 ');
     if (!kinds && !place.price && !place.rating) return null;
     return el('span', { className: 'place-source mono' }, [
       el('span', { textContent: t('googleSays') }),
@@ -4425,6 +4427,24 @@
       place.price ? priceGauge(place.price) : null,
       kinds ? el('span', { textContent: kinds }) : null
     ]);
+  }
+
+  function googleKinds(place) {
+    var types = place.types || [];
+    var wine = (place.kitchens || []).indexOf('wine') !== -1 ? cuisineLabel('wine') : '';
+    if (wine) types = types.filter(function (id) { return id !== 'pub'; });
+    var out = types.map(typeLabel).filter(Boolean);
+    if (wine) out.unshift(wine);
+    return out;
+  }
+
+  function cuisineLabel(id) {
+    for (var i = 0; i < cuisinesKnown.length; i++) {
+      if (cuisinesKnown[i].id === id) {
+        return cuisinesKnown[i][state.lang] || cuisinesKnown[i][DEFAULT_LANG] || '';
+      }
+    }
+    return '';
   }
 
   function googleMark(place) {
@@ -5371,6 +5391,7 @@
       lat: row.lat,
       lng: row.lng,
       types: row.types || [],
+      kitchens: row.kitchens || [],
       price: typeof row.price === 'number' ? row.price : null,
       rating: typeof row.rating === 'number' ? row.rating : null,
       reviews: typeof row.reviews === 'number' ? row.reviews : null

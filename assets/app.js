@@ -5967,12 +5967,18 @@
      types "thai". Unreadable is an empty list, and a question is still read
      without it — a cuisine then reaches the export only as a word. */
   var cuisinesLoading = null;
+  /* The same list once it has landed, for the one reader that cannot wait
+     for it: sourceLine(), which draws a card now and says Wine bar only if
+     the words are already here. Every Google card this map opens came out of
+     the find bar or the chat, and both have loaded it by then. */
+  var cuisinesKnown = [];
 
   function loadCuisines() {
     if (!cuisinesLoading) {
       cuisinesLoading = getJSON('data/cuisines.json')
         .then(function (data) { return (data && data.cuisines) || []; })
-        .catch(function () { return []; });
+        .catch(function () { return []; })
+        .then(function (list) { cuisinesKnown = list; return list; });
     }
     return cuisinesLoading;
   }
@@ -6260,8 +6266,9 @@
       types: row.types || [],
       /* What Google says the place cooks, in data/cuisines.json's ids.
          Scored by functions/api/ask.js when it narrows the city, and drawn
-         by nothing here: the row prints the types, which are the map's own
-         words for the same thing. */
+         here only once: the row prints the types, which are the map's own
+         words for the same thing, except that `wine` takes Beer/pub's place
+         — see googleKinds(). */
       kitchens: row.kitchens || [],
       price: typeof row.price === 'number' ? row.price : null,
       rating: typeof row.rating === 'number' ? row.rating : null,
@@ -7710,7 +7717,7 @@
    */
   function sourceLine(place) {
     if (!place.google) return null;
-    var kinds = (place.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
+    var kinds = googleKinds(place).join(' \u00b7 ');
     if (!kinds && !place.price && !place.rating) return null;
     /* A span rather than a paragraph because one of the two places it goes is
        a row in the panel, and a row is a button: a button holds phrasing
@@ -7722,6 +7729,31 @@
       place.price ? priceGauge(place.price) : null,
       kinds ? el('span', { textContent: kinds }) : null
     ]);
+  }
+
+  /* What a Google place is, in the map's own words — with one word
+     borrowed from the directory. The map's types file anything with a
+     drinks licence under Beer/pub (VENUE_TYPES in functions/api/_lib.js),
+     which on Veino's card read as a beer hall. A row the directory files
+     under `wine` says Wine bar in that slot instead, in the reading
+     language, when data/cuisines.json is in; before it is, the card says
+     what it always said. */
+  function googleKinds(place) {
+    var types = place.types || [];
+    var wine = (place.kitchens || []).indexOf('wine') !== -1 ? cuisineLabel('wine') : '';
+    if (wine) types = types.filter(function (id) { return id !== 'pub'; });
+    var out = types.map(typeLabel).filter(Boolean);
+    if (wine) out.unshift(wine);
+    return out;
+  }
+
+  function cuisineLabel(id) {
+    for (var i = 0; i < cuisinesKnown.length; i++) {
+      if (cuisinesKnown[i].id === id) {
+        return cuisinesKnown[i][state.lang] || cuisinesKnown[i][DEFAULT_LANG] || '';
+      }
+    }
+    return '';
   }
 
   /* Whose description a row is, in the slot a row of mine uses for how much
@@ -9456,6 +9488,7 @@
       lat: row.lat,
       lng: row.lng,
       types: row.types || [],
+      kitchens: row.kitchens || [],
       price: typeof row.price === 'number' ? row.price : null,
       rating: typeof row.rating === 'number' ? row.rating : null,
       reviews: typeof row.reviews === 'number' ? row.reviews : null

@@ -5344,7 +5344,7 @@ assets/venues.js           ES5, one IIFE, like every other file in assets/
 assets/venues.css          only what a directory has and the map does not
 functions/api/venues.js    GET /api/venues?ids= and ?map=, the narrow asks
 functions/api/admin/venues.js  GET /api/admin/venues, the whole roll
-data/cuisines.json         37 cuisine labels in ten languages
+data/cuisines.json         39 cuisine labels in ten languages
 ```
 
 ### What it shows
@@ -5499,13 +5499,13 @@ languages between them.
 
 The two label files are deliberately disjoint. `taxonomy.json` already carries
 `asian`, `vegan`, `bakery`, `coffee`, `pub` and `fine-dining` for the map's own
-chips, so `cuisines.json` holds only the thirty-seven the export needs on top
+chips, so `cuisines.json` holds only the thirty-nine the export needs on top
 of them — copying the six across would be six translations to keep in step with
 another six. It is a file of its own rather than a second array in
 `taxonomy.json` because the map downloads that one and would be carrying nine
 kilobytes it never reads.
 
-Forty-four ids, and every one of them matches at least one row of the export as
+Forty-six ids, and every one of them matches at least one row of the export as
 it stands. `tools/validate.mjs` fails the build if a pattern stops matching
 anything, if an id has no label, or if a label has no pattern. That standard is
 why **european** is not in the table: Google hangs it on a hundred and four
@@ -5515,6 +5515,25 @@ mostly pizzerias while saying nothing a more exact chip does not.
 Two hundred and forty-nine places get no cuisine at all, because Google says
 only "Restaurant" about them. No chip is the truthful answer there rather than
 a gap.
+
+**Wine bar is the one a name can decide.** Half the wine bars in town say so
+only in Estonian — Veinirestoran Dominic is a *Restaurant* to Google and Toro
+veinikohvik a *Bar* — so searching *wine* found Veino, filed as a *Wine Bar*,
+and missed Dominic three doors away. `wine` is filed from Google's category
+(*Wine Bar*) or from the name, through `NAMED` beside
+`KITCHENS`: *wine*, *vein* or *vino* in it and the place is a wine bar. Never
+from the tags, which hang *Wine Bar* on two ramen shops and a bakery. That is
+twenty-one places over the export as it stands. A wine bar is still a bar and
+the Bar chip keeps it, but `kitchensOf()` puts `bar` last on a row that has
+`wine`, so the card says *Wine bar* rather than *Wine bar · Bar*.
+
+A cuisine may carry a `words` key the way a type in `taxonomy.json` does —
+what else somebody types when they mean it, joined by `/` and never printed.
+Wine bar carries the word for wine in ten languages, so *wine*, *vein*,
+*вино* and *şarap* all reach the same twenty-one in the find bar and in the
+chat, where a label alone (*Винный бар*) would have missed *вино*. On the
+map's card for a Google place, `wine` also takes the slot the map's own types
+give Beer/pub — see `googleKinds()` in `assets/app.js`.
 
 #### Which two words a card says, and in which order
 
@@ -15181,7 +15200,7 @@ db/google-venues.sql       GENERATED — loads that export into D1
 db/google-lists.sql        GENERATED — the five top tens and a top twenty
                            under `google-statistics`
 data/taxonomy.json         the controlled vocabulary of types
-data/cuisines.json         the 37 cuisines only the directory needs, in ten
+data/cuisines.json         the 39 cuisines only the directory needs, in ten
                            languages — taxonomy.json holds the other six
 data/ui.json               every interface string, in every language
 data/radio.json            the stations, by language and a default
@@ -15424,9 +15443,9 @@ What a Google row is read as, and never something anybody picks:
 | 🍔 | a counter you queue at | 135 · 12% |
 | 🥐 | something baked | 66 · 6% |
 
-Five and not thirty-eight, because the question a pin on a map answers is
+Five and not forty-six, because the question a pin on a map answers is
 *what is this door*, and a Thai restaurant, a pizzeria and a steakhouse are
-three cuisines and one kind of door. The thirty-eight kitchens still exist and
+three cuisines and one kind of door. The forty-six kitchens still exist and
 the directory still filters on every one of them — they are words under a
 card, which is where a word that exact belongs. It is also the split Google
 Maps itself draws, in this site's two palettes rather than in Google's one.
