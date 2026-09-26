@@ -802,7 +802,9 @@ A bar across the top of the map, and the one thing on this page that can answer
 for somewhere I have never been. Type into it and two groups come back: **On
 the map**, which is my own places, and **Everywhere in Tallinn**, which is the
 Google export behind them — eleven hundred venues, the whole city. Press a row
-and the place opens. Empty the field and the map is exactly as it was.
+and the place opens. Press Enter and every one of them goes on the map at once,
+with nothing else there — **Enter puts the results on the map** below. Empty
+the field and the map is back to the one that opens, chips and all.
 
 Type a kind of place rather than a name — *pizza*, *õlu*, *nearby ramen*,
 *ближайший бар* — and the same two groups come back, of that kind, in
@@ -1059,20 +1061,57 @@ is drawn before they arrive and stands without them, because nothing in
 `assets/` waits on `/api/*`.
 
 **One at a time.** Finding somewhere is looking one place up, not narrowing the
-map to a set of them, so a second search replaces the first rather than leaving
+map to a set of them, so a second pick replaces the first rather than leaving
 a trail of pins nobody asked to keep.
 
-### It is not a mode, and that is the difference from a list
+### A row is one place, Enter is all of them
 
-A list and an answer from the chat are **modes**: they narrow the map, and a
-filter chip puts them away because a chip and a narrowing that ignores it
-cannot both be true. This bar narrows nothing. It drops one pin and opens one
-card, so a chip, a list and a found venue can all be true at once, and the pin
-goes away when the field is emptied and at no other time.
+Pressing a row in the dropdown is looking one place up. It drops one pin and
+opens one card, and narrows nothing, so a chip, a list and a found venue can
+all be true at once, and the pin goes when the field is emptied and at no
+other time.
 
-That is the whole of *clearing it puts the map back*: `forgetFound()` takes the
-pin off, the panel drops back to the list the way it does for the other two,
-and nothing else on the page has been touched.
+### Enter puts the results on the map
+
+Pressing Enter (the Search key on a phone's keyboard) is the other question:
+not *is Kanuti on here*, but *where is the ramen*. Every place the words reach,
+mine and Google's alike, goes on the map and nothing else stays there, so
+zooming out shows ramen and only ramen. The map is framed on all of them, and
+the card opens on the first with **‹ 1 of 10 ›** over it; the arrows walk the
+rest, round from the last back to the first, and each step carries the map to
+that place. They go nearest first — from the dot when there is one in reach,
+and otherwise from the middle of the part of the map searched — so *next* is
+a neighbour rather than the other side of town. On a desktop the column lists
+them in the same order under the word that found them.
+
+Move the map by hand and **Search this area** comes up where the chips were;
+pressing it asks the same words again of the part of the map on screen, and
+the card opens on the first of those. It is a button and not a search that
+follows the map by itself, which the owner chose: pins jumping while somebody
+is still dragging is a map that will not hold still to be read, and a wide
+zoom-out would pull in two hundred cafés. Nothing in that part of the map
+and a toast says so (`findNoneInArea`) and the results already up stay. A
+move this page makes itself — framing the results, stepping to the next one —
+does not bring the button up.
+
+At most sixty go on the map at once, the nearest. *Cafe* over the whole city
+is a hundred and twenty, and when there are more than fit a toast says how
+many and how to have the rest (`findCapped`). Nothing found anywhere and
+nothing changes: the dropdown stays up saying so.
+
+**Results are a mode, and the chips go while they are up.** A list and an
+answer from the chat are modes too, and a chip puts either of them away,
+because a chip and a narrowing that ignores it cannot both be true. The
+results do it the other way round: the chip row is hidden, and emptying the
+field is what brings it back. A chip is a narrowing of my places, and results
+are mostly not my places — *ramen, only the laptop-friendly ones* is a
+question nothing on Google's half can answer. So while results are up the bar
+searches everywhere, alone, and emptying it puts the map back to the one that
+opens: every place, framed as it is on arrival, chips and all. An answer from
+the chat arriving takes the results and their word with it, the same way.
+
+`showResults()` and `forgetResults()` in `assets/app.js` are the whole of it,
+and `state.results` is what the map is narrowed to.
 
 ### Where it stands
 
@@ -12794,6 +12833,9 @@ The map, `assets/app.js`:
 | `search_clear` | `scope` |
 | `find_pick` | `search_term`, `scope` (`map`/`city`) — a row pressed in the find bar, and which of the two groups it came from |
 | `find_clear` | — the cross on the find bar |
+| `find_submit` | `search_term`, `results` — Enter in the find bar, putting every result on the map; `results` is how many there were, before the cap of sixty |
+| `find_area` | `search_term`, `results` — Search this area, the same words over the part of the map on screen |
+| `find_step` | `direction` (`next`/`prev`) — an arrow on the card of a result |
 | `list_open` | `places_shown` |
 | `list_close`, `ask_close` | — the cross on the panel, by what it shut; on a list it puts it on the band rather than shutting it, and reports the press all the same |
 | `place_close` | `place` |
