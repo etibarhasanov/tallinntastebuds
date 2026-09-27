@@ -362,9 +362,11 @@ function card(request, spot, ui, lang, self) {
 
   /* A place that has shut keeps its pin and its link — closedNote in
      data/ui.json promises exactly that — so the card says so before the
-     write-up sells a kitchen that is not cooking. */
+     write-up sells a kitchen that is not cooking. For good or for the
+     moment: the two are different words on the card and the same rule. */
   const said = blurbOf(spot, lang) || spot.address || '';
-  const description = clip(spot.closed && ui.closedFlag ? ui.closedFlag + '. ' + said : said);
+  const flag = spot.closed === 'temporary' ? ui.venuesShutFor : ui.closedFlag;
+  const description = clip(spot.closed && flag ? flag + '. ' + said : said);
   const photo = photoOf(spot);
 
   return [

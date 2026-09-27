@@ -1088,12 +1088,21 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
     var panel = el('div');
     var which = 'story';
 
+    /* How many places the map and Google disagree about — see
+       mapAgainstGoogle(). It rides on the Google tab's label so the
+       disagreement is found on the way to a story rather than by opening the
+       tab on a hunch, and it is looked up once, after the door opens. */
+    var disagree = 0;
+    function tabLabel(pair) {
+      return pair[1] + (pair[0] === 'google' && disagree ? ' · ' + disagree : '');
+    }
+
     function draw() {
       clear(tabs);
       [['story', 'Story'], ['place', 'Add a place'], ['edit', 'Edit a place'], ['deal', 'Discount'], ['google', 'Google']].forEach(function (pair) {
         var b = el('button', { type: 'button',
           className: 'tab' + (which === pair[0] ? ' on' : ''),
-          textContent: pair[1] });
+          textContent: tabLabel(pair) });
         b.addEventListener('click', function () {
           if (which === pair[0]) return;
           which = pair[0];
@@ -1105,13 +1114,24 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
       if (which === 'story') storyForm(repo, panel);
       else if (which === 'place') placeForm(repo, panel, null);
       else if (which === 'deal') dealForm(repo, panel);
-      else if (which === 'google') googleReport(panel);
+      else if (which === 'google') googleReport(repo, panel);
       else editPicker(repo, panel);
     }
 
     body.appendChild(tabs);
     body.appendChild(panel);
     draw();
+
+    /* The label, not the panel: a redraw here would take a half-written
+       story with it. Quiet on any failure — the tab itself says why when it
+       is opened. */
+    Promise.all([readRefreshes(), loadPlaces(true)])
+      .then(function (got) {
+        disagree = mapAgainstGoogle(got[0], got[1]).length;
+        var last = tabs.lastChild;
+        if (last) last.textContent = tabLabel(['google', 'Google']);
+      })
+      .catch(function () { /* the tab says so */ });
 
     /* The two pages that are the owner's and live under /admin/. They are
        not tabs because they are whole pages with their own scripts, and they
@@ -1162,12 +1182,26 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
    * much of Google's free allowance is gone today and this month, how much of
    * the directory is fresh, and the last fifty calls with what each changed.
    *
-   * The one tab that neither needs nor uses the token. It reads
-   * /api/admin/refreshes, the site's own route, which answers only the owner
-   * signed in on the site — see the head of functions/api/admin/refreshes.js —
-   * so it fills for the owner whatever this door says, and says so when it
-   * does not.
-   * It only reads: nothing on this tab calls Google or writes a row.
+   * It reads /api/admin/refreshes, the site's own route, which answers only
+   * the owner signed in on the site — see the head of
+   * functions/api/admin/refreshes.js — so it fills for the owner whatever this
+   * door says, and says so when it does not. Nothing on this tab calls Google
+   * or writes a row.
+   *
+   * WHERE THE MAP AND GOOGLE DISAGREE
+   *
+   * The one part of the tab that uses the token. Google's status is refreshed
+   * when somebody opens a place, and a flip to "Temporarily closed" used to be
+   * a line in the log below that nobody was reading for it — the map went on
+   * sending people to a door that was shut. Now the route also says what
+   * Google's word is on every row tied to one of my places, and this tab lays
+   * that against data/restaurants.json: a place Google calls temporarily
+   * closed that the map still sends people to, or one the map holds shut for
+   * the moment that Google says is open again. Each gets a button that opens
+   * the same pull request Edit a place would, with `closed` moved and nothing
+   * else — the map is still mine to change, Google only says when to look.
+   * Closing for good is never offered from here: Google losing a row is not
+   * the same fact, and that one is a decision for the edit form.
    */
   var OUTCOMES = {
     changed: 'updated',
@@ -1199,7 +1233,43 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
     return name + ' ' + from + ' → ' + to;
   }
 
-  function googleReport(panel) {
+  function readRefreshes() {
+    return fetch('/api/admin/refreshes', { cache: 'no-store' })
+      .then(function (res) {
+        if (res.status === 403) throw new Error('sign in on the site as the owner first');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      });
+  }
+
+  /* The places where Google's word and the map's disagree, and the move that
+     would settle each: `to` is what `closed` should become. A place Google no
+     longer knows is listed with no move, because the only move that fits —
+     closed for good — is not one to offer on Google's say-so. */
+  function mapAgainstGoogle(r, places) {
+    var rows = [];
+    if (!r || !r.ready || !r.map) return rows;
+    var byId = {};
+    (r.map || []).forEach(function (row) { byId[row.id] = row; });
+    places.forEach(function (pl) {
+      var g = byId[pl.id];
+      if (!g) return;
+      var paused = g.status === 'Temporarily closed';
+      if (g.missing) {
+        if (!pl.closed) rows.push({ place: pl, to: null,
+          why: 'Google no longer knows it. If it has shut for good, close it from Edit a place.' });
+      } else if (paused && !pl.closed) {
+        rows.push({ place: pl, to: 'temporary',
+          why: 'Google says temporarily closed; the map still sends people there.' });
+      } else if (!paused && pl.closed === 'temporary') {
+        rows.push({ place: pl, to: false,
+          why: 'Google says it is open again; the map still holds it shut for the moment.' });
+      }
+    });
+    return rows;
+  }
+
+  function googleReport(repo, panel) {
     var out = el('div');
     var again = el('button', { type: 'button', className: 'quiet', textContent: 'Check again' });
     panel.appendChild(el('h2', { textContent: 'Google refresh' }));
@@ -1240,6 +1310,17 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
       fact('Due now', r.table.due.toLocaleString('en'));
       out.appendChild(facts);
 
+      out.appendChild(el('h2', { className: 'gap', textContent: 'The map against Google' }));
+      var against = el('div');
+      out.appendChild(against);
+      against.appendChild(el('p', { className: 'small', textContent: 'Reading the map…' }));
+      loadPlaces(true)
+        .then(function (places) { drawAgainst(against, mapAgainstGoogle(r, places)); })
+        .catch(function () {
+          clear(against);
+          against.appendChild(el('p', { className: 'msg bad', textContent: 'Could not read the map’s places.' }));
+        });
+
       out.appendChild(el('h2', { className: 'gap', textContent: 'Latest' }));
       if (!r.recent.length) {
         out.appendChild(el('p', { className: 'small', textContent: r.key
@@ -1267,15 +1348,67 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
       out.appendChild(list);
     }
 
+    /* One row per disagreement, and a button where there is a move. The
+       button opens the pull request through openPlacePR() with no
+       photographs either way, so what lands is the entry as it stands with
+       `closed` moved — the same commit Edit a place would make. */
+    function drawAgainst(into, rows) {
+      clear(into);
+      if (!rows.length) {
+        into.appendChild(el('p', { className: 'small', textContent:
+          'Nothing. Every place of mine that Google has a row for, the map and Google agree on.' }));
+        return;
+      }
+      var list = el('ul', { className: 'log' });
+      rows.forEach(function (row) {
+        var status = el('div');
+        var item = el('li', {}, [
+          el('div', { className: 'head' }, [
+            el('span', { className: 'name', textContent: row.place.name }),
+            el('span', { className: 'outcome' + (row.to === null ? ' gone' : ''), textContent:
+              row.place.closed === 'temporary' ? 'map: temporarily closed'
+                : row.place.closed ? 'map: closed for good' : 'map: open' })
+          ]),
+          el('div', { className: 'what', textContent: row.why }),
+          status
+        ]);
+        if (row.to !== null) {
+          var go = el('button', { type: 'button', className: 'quiet', textContent:
+            row.to === 'temporary' ? 'Mark temporarily closed' : 'Reopen it' });
+          go.addEventListener('click', function () {
+            go.disabled = true;
+            /* Not say(): inside this tab that name is the report's own, and
+               it clears the whole panel to speak. */
+            function tell(text, kind) {
+              clear(status);
+              var node = el('p', { className: 'msg ' + (kind || ''), textContent: text });
+              status.appendChild(node);
+              return node;
+            }
+            var step = tell('Making a branch…', 'spin');
+            var next = JSON.parse(JSON.stringify(row.place));
+            next.closed = row.to;
+            openPlacePR(repo, next, [], [], [], row.place, function (msg) { step.textContent = msg; })
+              .then(function (pr) {
+                tell('Opened. Nothing on the map changes until it is merged.', 'good');
+                status.appendChild(el('p', { className: 'small', textContent: pr.url }));
+              })
+              .catch(function (err) {
+                tell(err.message, 'bad');
+                go.disabled = false;
+              });
+          });
+          item.appendChild(go);
+        }
+        list.appendChild(item);
+      });
+      into.appendChild(list);
+    }
+
     function load() {
       again.disabled = true;
       say('Reading the report…');
-      fetch('/api/admin/refreshes', { cache: 'no-store' })
-        .then(function (res) {
-          if (res.status === 403) throw new Error('sign in on the site as the owner first');
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          return res.json();
-        })
+      readRefreshes()
         .then(function (r) { draw(r); })
         .catch(function (e) { say('Could not read the report: ' + (e && e.message || e), true); })
         .then(function () { again.disabled = false; });
@@ -2278,17 +2411,31 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
 
     /* Closed is the one field that only makes sense on something that already
        exists, and it is a change rather than a deletion on purpose: the place
-       keeps its page, its photographs and its write-up, and says it has shut. */
-    var closedIn = null;
+       keeps its page, its photographs and its write-up, and says it has shut.
+       Two ways of being shut, because they are two different facts: for the
+       moment, which is Google's word and what the Google tab raises, and for
+       good, which is only ever said from here. */
+    var shutIns = null;
     if (editing) {
-      closedIn = el('input', { type: 'checkbox', checked: existing.closed || null });
+      var current = existing.closed === 'temporary' ? 'temporary' : existing.closed ? 'gone' : 'open';
+      var choices = [['open', 'Open'], ['temporary', 'Temporarily closed'], ['gone', 'Closed for good']];
+      shutIns = choices.map(function (pair) {
+        return el('input', { type: 'radio', name: 'shut', value: pair[0], checked: current === pair[0] || null });
+      });
       into.appendChild(el('label', { textContent: 'Open or closed' }));
-      into.appendChild(el('div', { className: 'types' }, [
-        el('label', {}, [closedIn, 'This place has closed down'])
-      ]));
+      into.appendChild(el('div', { className: 'types' }, choices.map(function (pair, i) {
+        return el('label', {}, [shutIns[i], pair[1]]);
+      })));
       into.appendChild(el('p', { className: 'hint', textContent:
-        'Closing keeps it on the map, greyed, rather than deleting it — somebody ' +
-        'looking for it deserves to be told it has gone.' }));
+        'Either kind keeps it on the map rather than deleting it — somebody looking ' +
+        'for it deserves to be told. Temporarily closed keeps the pin’s colour and ' +
+        'says the door should open again; the Google tab offers that one when ' +
+        'Google says so.' }));
+    }
+    function shutValue() {
+      var on = (shutIns || []).filter(function (radio) { return radio.checked; })[0];
+      if (!on || on.value === 'open') return false;
+      return on.value === 'temporary' ? 'temporary' : true;
     }
 
     /* What is already there, each with a tick to take it away. */
@@ -2451,7 +2598,7 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
       place.mustOrder = dishesIn.value.split('\n').map(function (d) { return d.trim(); })
         .filter(function (d) { return d; });
       place.reel = reelIn.value.trim();
-      place.closed = closedIn ? closedIn.checked : false;
+      place.closed = shutValue();
       if (!editing) place.added = tallinnNow().slice(0, 10);
 
       var site = siteIn.value.trim(), phone = phoneIn.value.trim();
@@ -2492,6 +2639,12 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
     });
 
     settle();
+  }
+
+  /* The Open row of the pull request's table, in words. */
+  function shutWords(closed) {
+    if (closed === 'temporary') return 'no, temporarily closed';
+    return closed ? 'no, it has closed for good' : 'yes';
   }
 
   /* A branch, the photographs, the entry, and then the pull request — in that
@@ -2615,7 +2768,7 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
           '| Reel | ' + (place.reel || 'none yet') + ' |'
         ];
         if (editing) {
-          lines.push('| Open | ' + (place.closed ? 'no, it has closed' : 'yes') + ' |');
+          lines.push('| Open | ' + shutWords(place.closed) + ' |');
           var changed = [];
           if (existing.name !== place.name) changed.push('renamed from "' + existing.name + '"');
           if (existing.address !== place.address) changed.push('address');
@@ -2623,7 +2776,10 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
           if (existing.price !== place.price) changed.push('price');
           if (existing.types.join() !== place.types.join()) changed.push('types');
           if ((existing.reel || '') !== place.reel) changed.push('reel');
-          if (!!existing.closed !== !!place.closed) changed.push(place.closed ? 'marked closed' : 'reopened');
+          if ((existing.closed || false) !== (place.closed || false)) {
+            changed.push(place.closed === 'temporary' ? 'marked temporarily closed'
+              : place.closed ? 'marked closed for good' : 'reopened');
+          }
           if (fresh.length) changed.push(fresh.length + ' photograph' + (fresh.length === 1 ? '' : 's') + ' added');
           if (gone.length) changed.push(gone.join(', ') + ' removed');
           lines.push('', '**Changed:** ' + (changed.length ? changed.join(', ') : 'the write-up or the dishes') + '.');
