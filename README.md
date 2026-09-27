@@ -14089,7 +14089,13 @@ Corners come from the same short list: `--radius` (4px) for anything holding a
 picture or a page of words, `--radius-soft` (12px) for chrome floating on the
 map and for a field, `100px` for a pill — which is only ever a button or a
 chip — and `50%` for a dot. A new value is a fourth thing to remember; use one
-of these.
+of these. The account sheet and the More sheet are chrome, not pages: they
+float over the map under a pill of a find bar and hold 12px fields, and at 4px
+they read as a box nobody had rounded, so `.account` takes `--radius-soft`.
+
+A row in either sheet opens focused, and iOS paints the ring for that even
+after a tap, so there the ring is not the page's square outline round the
+row's hairlines but the wash the find bar's rows use, in the same 12px corner.
 
 ### 4. Four controls, defined once
 
