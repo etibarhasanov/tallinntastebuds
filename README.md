@@ -7661,7 +7661,9 @@ or Russian, whichever the page is being read in — and one card at a time with
 two words under it — *Knew it*, and *Show me again*. Over the card, how the
 sitting is going; under it, while the front is up, the first letters of the
 answer for anybody who wants them; and on the decks page, how many words you
-know in all.
+know in all. And, under a heading of their own on that page, two lessons of
+grammar about why the words on the cards come in threes — **Grammar, which is
+read rather than turned over** below.
 
 It is the second thing on this site that is not about restaurants, and it is
 here for the same reason the first one is: it is what the people this map is
@@ -7929,8 +7931,8 @@ for Russian. So there is a switch, and the next section is it.
 the old argument stands: it is deliberately *not* the arrangement splitwise has,
 where the strings live in a file of their own. The `/site` skill says in so many
 words that there is one such exception and a second would be two files to keep
-in step. So the seventy-seven `flash*` keys are in `ui.json`, and taking this
-feature out means taking seventy-four keys out of ten blocks rather than deleting
+in step. So the eighty-two `flash*` keys are in `ui.json`, and taking this
+feature out means taking eighty-two keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
 
@@ -9078,6 +9080,99 @@ the English one — what a word is looked up *with* is the word, and the Estonia
 of the sentence is already on the page beside it, so writing all three would put
 the same sentence into the page three times.
 
+### Grammar, which is read rather than turned over
+
+The back of a card carries three forms and never says why. Somebody who has
+turned over two hundred of them has seen *leib, leiva, leiba* two hundred times
+and been told nothing about what the second and third are for — and that is
+the one thing about Estonian a learner most needs to be told early, because
+the whole case system hangs off those two forms and the words that change most
+are the commonest.
+
+So the shelf carries a heading of its own, **Grammar**, between *First words*
+and *At a restaurant*, and under it two tiles that open to prose rather than
+to a run: **Why a noun has three forms** and **Why a verb has three forms**.
+Each is a page of a few hundred words in the language the cards are being read
+in — the three the decks speak, not the ten the site does — with a paradigm or
+two set in the mono the card prints its forms in, and one filled action at the
+foot, **Got it**, which marks it read and goes back to the shelf. The tile's
+foot says *Not read yet* or *Read*, in words, and nothing else: there is no
+rule to fill and no count to keep, because there is nothing to be part-way
+through.
+
+**Between the first words and the restaurant, and in front of nobody.** After
+the first stage rather than at the top, so a stranger's first tile is still
+*Hello and goodbye* and the lesson comes just before the four decks whose every
+card wears the forms it explains. And it holds nothing back: the lessons are a
+file, prose, open signed out and behind no gate — a lesson never stands between
+anybody and a deck, and reading one does not spend the free word. It could not
+be the other way round: **Which decks are open** holds a *deck* back so that a
+beginner has somewhere to start, and two tiles under a heading called Grammar
+are not that problem.
+
+**Each language argues from its own grammar.** The three texts are not
+translations of one another. The English explains the *omastav* with the
+possessive and the *osastav* with *some*. The Russian points at родительный,
+at *нет хлеба* and *выпить чаю*, which a Russian speaker already does without
+being told. The Azerbaijani points at yiyəlik and təsirlik, and at *çörək
+yedim* against *çörəyi yedim* — the same distinction Estonian draws between
+*leiva* and *leiba*, with the suffix on the other side of it. That is the
+argument **The back of the card is in three languages** makes, carried into a
+page of prose: the lesson *is* the help, and help in a language you are shaky
+in is two languages' work.
+
+**Where it lives, and what shape it is.** `lessons` in `data/decks.json`,
+beside the decks — one file, one route, one validator block, and one thing to
+delete under **Taking it out**. A lesson is an `id`, a `name`, a `why` and a
+`body` of blocks: a paragraph (`say`), a small heading (`head`), or a table of
+three heads and rows of three Estonian forms with what the word means. Every
+text is an object keyed by language, English required and the other two warned
+about, exactly as a card's back is, and the ids share the decks' namespace
+because a lesson opens at `?d=<id>` the way a deck does — the validator fails a
+lesson named after a deck. The one piece of markup the content carries is
+`*…*` for the Estonian inside a paragraph, drawn as an `<i lang="et">` by
+`prose()` in `assets/flashcard.js` and by `lessonWords()` in
+`functions/flashcard.js`, and set in the mono rather than in an italic: the
+site loads no italic face, and the mono is what the forms on the card are
+already printed in, so *vesi* looks the same in the sentence as in the paradigm
+under it. An unmatched asterisk fails the build.
+
+**Read is a known row.** Got it is the same `knew` action a card sends, under
+the deck id `grammar`, which no deck may have — `GRAMMAR_DECK` in
+`functions/api/flashcard.js` and a reserved id in `tools/validate.mjs` — with
+the lesson's id as the card. One row in `flashcard_known`, the same shape as
+every other row in it, and no table of its own: two rows a person is not a
+table. Nothing that counts cards can see it — `wordsKnown()` sums over the
+decks in the file, `gathered()` looks every row up in the file and drops one it
+cannot find, and the two gathered rows on the shelf skip the lessons' keys
+outright — so *You know 63 words* and *Words you know* are exactly what they
+were. Signed out the read is kept in the tab the way an answer is, through
+`keep()`, and posted by the load that comes back with a session, so a lesson
+read before the account was made is read on it.
+
+**And on every page the crawler is served.** `functions/flashcard.js` writes a
+lesson into the `<main>` as prose — its paragraphs, headings and tables, in
+English as the `<main>` always is — and its name into the head, and the shelf's
+own page lists the lessons under a Grammar heading of their own so a crawler
+walks to them. `tools/sitemap.mjs` lists them beside the decks. Somebody
+searching for why Estonian nouns have three forms should find a page that
+answers, and until this section existed the answer was a card that showed the
+forms and said nothing.
+
+**What it does not do.** No quiz at the end; four hundred words known is the
+test, as it is for the stages. No third lesson yet — the second ends by saying
+more will come as the decks grow, which is true and promises no number. No
+lessons in the other seven languages: they get English, as the cards do. No
+scroll position remembered inside a lesson. And no lessons for a deck somebody
+wrote, for the reason there are no forms on one.
+
+**The Estonian in them is mine**, like the rest of it: the forms in the tables
+are the cards' own, copied rather than retyped, and the sentences in the prose
+— *Leib on laual*, *Ma ostan leiva*, *Tulge! Minge!* — are sentences I would
+say and no native speaker has read. The people reading them are the
+proofreaders, and **This card is wrong** below is where a card is reported; a
+lesson has no such line yet, and a wrong sentence in one is a pull request.
+
 ### This card is wrong
 
 Under the two answers, on a turned-over card in a deck the site ships, one
@@ -9307,7 +9402,7 @@ functions/flashcard.js         the route that serves it, with the deck's head
 assets/flashcard.js            the browser half, and the third sign-in form
 assets/flashcard.css           its rules
 functions/api/flashcard.js     the API route, and the three tables' only writer
-data/decks.json                the decks the site ships
+data/decks.json                the decks the site ships, and the grammar lessons
 ```
 
 Then take these back out. Each is an addition to a file that stood before it,
@@ -9318,14 +9413,14 @@ and each is fenced or prefixed so it can be found by looking:
 | `functions/_middleware.js` | the `FLASHCARDS` block of constants and the `FLASHCARDS` block inside `onRequest()` — both marked, both additions |
 | `tools/validate.mjs` | the `FLASHCARDS` block after the splitwise one, and `'flashcard.html'` in the PAGE-HEAD marker list |
 | `functions/_shell.js` | the `flashcard.html` line in `EMPTY`, and the route's line in the header's list. **This is the only file the flashcards changed rather than added to**, and it is one key |
-| `tools/sitemap.mjs` | `DECKS`, `deckIds()`, the two `entries.push` lines and the third argument the three callers pass |
+| `tools/sitemap.mjs` | `DECKS`, `shelfIds()`, the two `entries.push` lines and the third argument the three callers pass |
 | `robots.txt` | the paragraph about the flashcards. There is no `Disallow` to put back — see **How it is found** — so removing it is removing a comment |
 | `index.html` | `#btn-flash` on the rail, the only link to the feature on this site — plain markup, so nothing in `assets/` goes with it |
 | `data/ui.json` | `flashDoor` and `flashDoorWhy` with the rest |
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
-| `data/ui.json` | the seventy-seven `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
+| `data/ui.json` | the eighty-two `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
 | `README.md` | this section, its line in **Contents**, its five lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
 | `.claude/skills/api/SKILL.md` | the `/api/flashcard` row, and the flashcards clause in the `/*` row |
@@ -11011,7 +11106,11 @@ to read and write first.
   language, one of those with no `en` for everything else to fall back to or
   with an `et` — Estonian is what the front asks, never what the back answers —
   or a deck id shaped like one somebody wrote, since the two namespaces must not
-  meet. A back missing its Azerbaijani or its Russian only warns.
+  meet. A back missing its Azerbaijani or its Russian only warns. And its
+  `lessons`, held to the same three languages: a lesson whose id a deck already
+  has or the reserved `grammar`, a block that is not exactly one paragraph,
+  heading or table, a table row that is not three Estonian forms with what they
+  mean, or a paragraph with an unmatched `*`.
   See **[Flashcards](#flashcards)**
 - a colour token one style declares and another leaves out, which is a style
   quietly wearing the other one's value out of `:root`. See **The design
@@ -11215,9 +11314,10 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            forty-two decks of Estonian, 1,960 cards at three
-                           levels; content rather than interface, and written
-                           in three languages rather than the site's ten
+data/decks.json            forty-two decks of Estonian, 1,960 cards under four
+                           headings, and two lessons of grammar; content rather
+                           than interface, and written in three languages
+                           rather than the site's ten
 blog.html                  a post per thing this site does   } unlinked, and
 assets/blog.js             the index, one post, and the walk  } indexed on
 assets/blog.css            only what a page of prose has      } purpose
@@ -13080,6 +13180,8 @@ Flashcards, `assets/flashcard.js`:
 | `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
 | `page_view` | one per deck opened or closed in the page: `page_title` is the deck, `page_location` its `?d=` URL. The tag counts the load and `TTBTrack.view()` counts the walks, because opening a deck stopped being a load — see **Opening a deck does not load the page** |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
+| `flash_lesson_open` | `lesson_id` — a lesson's tile under the Grammar heading |
+| `flash_lesson_read` | `lesson_id` — Got it at the foot of a lesson, read before or not — see **Grammar, which is read rather than turned over** |
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`), `hint` (`1`/`0`) — one per card answered, which of the three ways it was answered, whether the card had been turned over first (`front` is a throw or an arrow on a card nobody opened), and whether the first letters had been asked for before the answer was given |
 | `flash_undo` | `deck_id`, `was` (`knew`/`again`) — the last answer taken back, which is how anybody will find out whether the throw is misfiring in one direction more than the other — see **Undo** under **Flashcards** |
 | `flash_hint` | `deck_id` — the first letters of a meaning asked for, once per card at most. Against `flash_knew` with `hint: 1`, this is what says whether a hint leads to knowing the word — see **The hint** under **Flashcards** |

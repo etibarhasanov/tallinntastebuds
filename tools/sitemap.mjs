@@ -160,7 +160,7 @@ function faceNames() {
     .sort();
 }
 
-export function render(langs, placeIds, deckIds, faces) {
+export function render(langs, placeIds, shelfIds, faces) {
   /* Sorted by code, the way the switcher lists them and functions/index.js
      writes them into the head. */
   const codes = langs.slice().sort();
@@ -182,7 +182,7 @@ export function render(langs, placeIds, deckIds, faces) {
      actually is. No alternates: the cards are English and Estonian and there
      is no tenth translation of them to point at. */
   entries.push(entry(SITE + '/flashcard'));
-  for (const id of deckIds) entries.push(entry(SITE + '/flashcard?d=' + id));
+  for (const id of shelfIds) entries.push(entry(SITE + '/flashcard?d=' + id));
   for (const list of CHIP_LISTS) entries.push(entry(SITE + '/list/' + list.id));
   for (const list of GOOGLE_LISTS) entries.push(entry(SITE + '/list/' + list.id));
   for (const id of placeIds) entries.push(entry(mapAt(DEFAULT_LANG, id), alternates(id)));
@@ -205,13 +205,16 @@ function languages() {
   return Object.keys(JSON.parse(readFileSync(UI, 'utf8')));
 }
 
-/* Every deck the site ships, by id, in the order of the file — which is the
-   order they are drawn in. The decks people write for themselves are not here
-   and never will be: they need their owner's session to read at all. */
-function deckIds() {
+/* Everything on the shelf the site ships, by id, in the order of the file —
+   which is the order it is drawn in: the decks, and then the grammar lessons,
+   which open at the same kind of address. The decks people write for
+   themselves are not here and never will be: they need their owner's session
+   to read at all. */
+function shelfIds() {
   if (!existsSync(DECKS)) return [];
   const file = JSON.parse(readFileSync(DECKS, 'utf8'));
-  return (Array.isArray(file.decks) ? file.decks : []).map((deck) => deck.id);
+  return [...(Array.isArray(file.decks) ? file.decks : []), ...(Array.isArray(file.lessons) ? file.lessons : [])]
+    .map((one) => one.id);
 }
 
 /* Every open place, by id, in the order of the file — which is the order a
@@ -225,7 +228,7 @@ function placeIds() {
 
 export function stale() {
   try {
-    const want = render(languages(), placeIds(), deckIds(), faceNames());
+    const want = render(languages(), placeIds(), shelfIds(), faceNames());
     const got = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
     return want !== got;
   } catch (e) {
@@ -237,11 +240,11 @@ function main() {
   const check = process.argv.includes('--check');
   const langs = languages();
   const ids = placeIds();
-  const decks = deckIds();
+  const shelf = shelfIds();
   const faces = faceNames();
-  const next = render(langs, ids, decks, faces);
+  const next = render(langs, ids, shelf, faces);
   const now = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
-  const count = langs.length + 3 + CHIP_LISTS.length + GOOGLE_LISTS.length + ids.length + decks.length + faces.length;
+  const count = langs.length + 3 + CHIP_LISTS.length + GOOGLE_LISTS.length + ids.length + shelf.length + faces.length;
 
   if (check) {
     if (now === next) {
@@ -255,7 +258,7 @@ function main() {
   writeFileSync(OUT, next);
   console.log(
     `${OUT} — ${count} addresses: the map in ${langs.length} languages, ${ids.length} places, ` +
-    `/lists, /blog, /flashcard and ${decks.length} decks, ${CHIP_LISTS.length} chip lists and ` +
+    `/lists, /blog, /flashcard and ${shelf.length} decks and lessons, ${CHIP_LISTS.length} chip lists and ` +
     `${GOOGLE_LISTS.length} Google lists, and ${faces.length} ${faces.length === 1 ? 'profile' : 'profiles'} with a face.`
   );
 }

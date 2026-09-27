@@ -55,6 +55,19 @@
  * than a requirement for it, and the <main> it writes into is emptied by
  * render() before anything is drawn.
  *
+ * AND THE GRAMMAR, WHICH IS READ RATHER THAN TURNED OVER
+ *
+ * Two lessons sit on the shelf under a heading of their own, after the first
+ * stage: why a noun has three forms, and why a verb does. A lesson is a tile
+ * like a deck's and opens at the same kind of address, and what it opens to is
+ * prose — paragraphs, small headings and a paradigm or two — with one filled
+ * action at its foot, Got it, which marks it read and goes back to the shelf.
+ * The mark is a known row under the deck id GRAMMAR below, written by the
+ * same action a card is and kept in this tab the same way when there is no
+ * account to write it to. lessonCard() is the whole of the drawing, and
+ * **Grammar, which is read rather than turned over** under **Flashcards** in
+ * README.md is the reasoning.
+ *
  * HOW ANYBODY FINDS IT, WHICH IS ONE PILL
  *
  * A pill on the map's rail, third down, open to anybody who loads the map.
@@ -224,6 +237,8 @@
     user: null,
     decks: [],       // every deck: the shipped ones, then yours
     deck: null,      // the one that is open, whole, with its cards
+    lessons: [],     // the grammar on the shelf: id, name, why, read
+    lesson: null,    // the one being read, whole, with its body
     run: null,       // the cards left to turn over, and where in them we are
     gated: false,    // whether the gate stands in place of the next card
     words: 0,        // how many shipped cards this person knows, all decks
@@ -371,6 +386,8 @@
     state.user = out.user || null;
     state.decks = out.decks || [];
     state.deck = out.deck || null;
+    state.lessons = out.lessons || [];
+    state.lesson = out.lesson || null;
     state.words = state.wordsIn = out.words || 0;
     state.gates = out.gates || {};
     state.run = null;
@@ -421,6 +438,12 @@
       state.locked = !!(state.user && gateFor(state.deck.level));
     }
 
+    /* And a lesson read in this tab before there was an account: the same
+       store, under the deck id the route files a lesson under, read back on
+       to its tile and on to the lesson itself. */
+    state.lessons.forEach(function (l) { if (sent[GRAMMAR + '/' + l.id]) l.read = true; });
+    if (state.lesson && sent[GRAMMAR + '/' + state.lesson.id]) state.lesson.read = true;
+
     /* A deck of your own with nothing in it yet opens as the editor rather
        than as a deck. There is nothing to turn over, and anything else would
        be an empty card with a word on it telling somebody to go and find the
@@ -449,7 +472,7 @@
        being kept from anybody — so the deck runs as it always did, which is
        the same rule authCard() is drawn under. */
     if (state.deck && !state.user && state.ready &&
-        (state.view === 'google' || Object.keys(sent).length)) standGate();
+        (state.view === 'google' || answeredAny(sent))) standGate();
   }
 
   /* A link to one of this page's two addresses, answered here rather than by
@@ -537,6 +560,19 @@
    * the answer it ended on rather than as two writes racing.
    */
   var KEPT_KEY = 'ttb.flash.kept';
+
+  /* The deck id a lesson read is filed under, in the tab's store here and in
+     flashcard_known on the account: GRAMMAR_DECK in functions/api/flashcard.js,
+     written out twice because neither dialect can import the other. */
+  var GRAMMAR = 'grammar';
+
+  /* Whether the tab has answered a card, as opposed to read a lesson. The
+     free word is spent by an answer — see gateCard() — and reading is not an
+     answer, so a lesson read signed out must not raise the gate on the next
+     deck opened. */
+  function answeredAny(sent) {
+    return Object.keys(sent).some(function (k) { return k.indexOf(GRAMMAR + '/') !== 0; });
+  }
 
   /* Past this, the rest are answered again next time — the direction a failed
      write already errs in, and the harmless one.
@@ -1391,6 +1427,35 @@
     return ul;
   }
 
+  /* A lesson's tile: the same tile a deck gets, with one word at its foot
+     saying whether it has been read. No rule and no count — there is nothing
+     to be part-way through — and it never sinks: standing() sorts by what a
+     deck is asking for, and a lesson asks for nothing but a read. */
+  function lessonRow(lesson) {
+    var said = el('span', { className: 'lists-count mono' + (lesson.read ? ' is-read' : ''),
+                            textContent: t(lesson.read ? 'flashRead' : 'flashUnread') });
+    return el('li', { className: 'menu-item' }, [
+      TTBTrack.click(
+        inPage(el('a', { className: 'menu-row', href: deckHref(lesson.id) }, [
+          el('span', { className: 'menu-say' }, [
+            el('span', { className: 'menu-name', textContent: means(lesson.name) }),
+            lesson.why ? el('span', { className: 'flash-why', textContent: means(lesson.why) }) : null
+          ]),
+          el('span', { className: 'menu-go', 'aria-hidden': 'true',
+                       html: '<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>' }),
+          el('span', { className: 'flash-meter' }, [said])
+        ]), lesson.id),
+        'flash_lesson_open', { lesson_id: lesson.id }
+      )
+    ]);
+  }
+
+  function lessonList(lessons) {
+    var ul = el('ul', { className: 'menu flash-shelf' });
+    lessons.forEach(function (lesson) { ul.appendChild(lessonRow(lesson)); });
+    return ul;
+  }
+
   /* The count itself, with the number set apart from the words around it: it
      is the thing the eye is meant to land on, and a figure in the middle of a
      sentence at the sentence's own size is a figure nobody sees.
@@ -1432,6 +1497,12 @@
     { id: 'more', key: 'flashLevelMore' },
     { id: 'deep', key: 'flashLevelDeep' }
   ];
+
+  /* Which stage the grammar heading follows on the shelf. After the first
+     rather than at the top: a stranger's first tile stays Hello and goodbye,
+     and the lessons are about the three forms the restaurant decks under
+     them show on every card. */
+  var LESSONS_AFTER = 'start';
 
   /* The decks the site ships, and the sentence saying what this page is for.
      The two gathered ones go at the top, above the headings, in the order the
@@ -1499,19 +1570,27 @@
          about a person: the headings are for the decks, not the other way
          round. */
       var gate = gateFor(level.id);
-      if (!these.length && !gate) return;
-      kids.push(el('h2', { className: 'lists-section', textContent: t(level.key) }));
-      if (gate) {
-        /* With the same rule a deck's tile wears under it, filled to how far
-           the count has come towards the gate: the stage is somewhere to get
-           to, and a length is how far off it is at a glance. The line beside
-           it still says it in words. */
-        kids.push(el('p', { className: 'flash-opens mono' }, [
-          meter(state.words, gate),
-          el('span', { textContent: t('flashOpens', { n: gate, left: gate - state.words }) })
-        ]));
+      if (these.length || gate) {
+        kids.push(el('h2', { className: 'lists-section', textContent: t(level.key) }));
+        if (gate) {
+          /* With the same rule a deck's tile wears under it, filled to how far
+             the count has come towards the gate: the stage is somewhere to get
+             to, and a length is how far off it is at a glance. The line beside
+             it still says it in words. */
+          kids.push(el('p', { className: 'flash-opens mono' }, [
+            meter(state.words, gate),
+            el('span', { textContent: t('flashOpens', { n: gate, left: gate - state.words }) })
+          ]));
+        }
+        if (these.length) kids.push(deckList(these));
       }
-      if (these.length) kids.push(deckList(these));
+      /* The grammar, under a heading of its own — LESSONS_AFTER says where.
+         Every lesson, whatever the count: they are prose, and a file has
+         nobody to hold back. */
+      if (level.id === LESSONS_AFTER && state.lessons.length) {
+        kids.push(el('h2', { className: 'lists-section', textContent: t('flashGrammar') }));
+        kids.push(lessonList(state.lessons));
+      }
     });
 
     var loose = ours.filter(function (d) {
@@ -2368,7 +2447,7 @@
   function runHead() {
     var kids = [
       el('span', { className: 'eyebrow', textContent: deckName(state.deck) }),
-      backOut()
+      backOut({ deck_id: state.deck.id })
     ];
 
     if (state.deck.own) {
@@ -2482,10 +2561,10 @@
     return el('p', { className: 'flash-wrong' }, [btn]);
   }
 
-  function backOut() {
+  function backOut(params) {
     return TTBTrack.click(
       inPage(el('a', { className: 'alt', href: at(HOME), textContent: t('flashDecks') }), ''),
-      'flash_back', { deck_id: state.deck.id }
+      'flash_back', params
     );
   }
 
@@ -2740,11 +2819,98 @@
     return card(kids);
   }
 
+  /* ------------------------------------------------------------ the grammar
+   * A lesson, read rather than turned over: the head a deck has, with Grammar
+   * where the deck's name would be and the same way out, and under it one
+   * card of prose — the name, the line under it, then the body's blocks in
+   * order, and Got it at the foot. It is the sheet's own order, design rule
+   * 6, and Got it is the one filled action on it.
+   */
+  function lessonHead() {
+    return el('div', { className: 'flash-deck' }, [
+      el('span', { className: 'eyebrow', textContent: t('flashGrammar') }),
+      backOut({ lesson_id: state.lesson.id })
+    ]);
+  }
+
+  /* A paragraph, with the Estonian in it set apart: *…* in the data is an
+     <i lang="et"> here, so the word being learnt reads as the word being
+     learnt inside a sentence about it. The one piece of markup the content
+     carries, and tools/validate.mjs holds the asterisks to pairs. */
+  function prose(text) {
+    return el('p', { className: 'flash-prose' }, text.split('*').map(function (part, i) {
+      return i % 2 ? el('i', { lang: 'et', textContent: part }) : part;
+    }));
+  }
+
+  /* A paradigm: three heads, and rows of three Estonian forms with what the
+     word means at the end of each. The forms are lang="et" for the same
+     reason the paragraph's are. */
+  function paradigm(table) {
+    var heads = table.heads.map(function (head) {
+      return el('th', { scope: 'col', textContent: means(head) });
+    });
+    heads.push(el('th', { scope: 'col' }));
+    var rows = table.rows.map(function (row) {
+      var cells = row.et.map(function (form) { return el('td', { lang: 'et', textContent: form }); });
+      cells.push(el('td', { textContent: means(row.means) }));
+      return el('tr', null, cells);
+    });
+    return el('table', { className: 'flash-table' }, [
+      el('thead', null, [el('tr', null, heads)]),
+      el('tbody', null, rows)
+    ]);
+  }
+
+  function lessonCard() {
+    var lesson = state.lesson;
+    var kids = [
+      heading(means(lesson.name)),
+      lesson.why ? el('p', { className: 'lists-say', textContent: means(lesson.why) }) : null
+    ];
+    lesson.body.forEach(function (block) {
+      if (block.say) kids.push(prose(means(block.say)));
+      else if (block.head) kids.push(el('h2', { className: 'flash-lesson-head', textContent: means(block.head) }));
+      else if (block.table) kids.push(paradigm(block.table));
+    });
+
+    var got = el('button', { type: 'button', className: 'go', textContent: t('flashGotIt') });
+    got.addEventListener('click', function () {
+      if (got.disabled) return;
+      got.disabled = true;
+      readLesson(lesson);
+    });
+    kids.push(foot([got]));
+
+    var node = card(kids);
+    node.classList.add('flash-lesson');
+    return node;
+  }
+
+  /* Got it: the lesson is read — on the account where there is one, and in
+     this tab where there is not, through keep(), the same store an answer
+     with nobody to tell goes into — and the shelf is where you go next, at
+     the place it was left. Pressed on a lesson already read it is only the
+     way out; the row it writes is the row that is there. The write is waited
+     for before the shelf is asked for, so the tile does not say Not read yet
+     over a row that landed a moment later. */
+  function readLesson(lesson) {
+    lesson.read = true;
+    TTBTrack.event('flash_lesson_read', { lesson_id: lesson.id });
+    var back = function () { go('', true); };
+    if (state.user && state.ready) {
+      post(FLASH_API, { action: 'knew', deck: GRAMMAR, card: lesson.id }).then(back);
+    } else {
+      keep(GRAMMAR, lesson.id, true);
+      back();
+    }
+  }
+
   /* -------------------------------------------------------------- the deck is
    * gone, or was never there. A deck id in the address that answers with
-   * nothing: somebody's own deck deleted in another tab, a shipped deck that
-   * has been taken out of the file, or a link that was mistyped. All three are
-   * the same sentence and the way back to the decks.
+   * nothing: somebody's own deck deleted in another tab, a shipped deck or a
+   * lesson that has been taken out of the file, or a link that was mistyped.
+   * All of them are the same sentence and the way back to the decks.
    */
   function goneCard() {
     return card([
@@ -2774,13 +2940,17 @@
        when the deck is closed, because closing one is no longer a page load
        and nothing else would ever put it back. */
     if (state.deck) document.title = deckName(state.deck);
+    else if (state.lesson) document.title = means(state.lesson.name);
     else document.title = t('flashDocumentTitle');
 
     var wrap = el('div', { className: 'lists-stack' });
     var add = function (node) { if (node) wrap.appendChild(node); };
 
-    if (asked && !state.deck) {
+    if (asked && !state.deck && !state.lesson) {
       add(goneCard());
+    } else if (state.lesson) {
+      add(lessonHead());
+      add(lessonCard());
     } else if (state.deck && state.editing) {
       add(editView());
     } else if (state.deck) {

@@ -309,6 +309,11 @@ if (decksFile !== null) {
        they got wrong, and the cards they know — and two decks answering to
        one id is a run that reads the wrong rows. */
     const RESERVED = new Set(['missed', 'review']);
+    /* And the third, which is not a deck at all: the deck id a lesson read is
+       filed under in flashcard_known — GRAMMAR_DECK in the same route. A
+       shipped deck of that name would have its known rows counted as lessons
+       read and its cards' rows read back as lessons. */
+    RESERVED.add('grammar');
     const deckIds = new Set();
 
     /* A deck's name, the line under it, the back of a card, or what a card's
@@ -420,6 +425,73 @@ if (decksFile !== null) {
               }
             });
           }
+        }
+      });
+    });
+
+    /* The grammar lessons, which are read rather than turned over: an id, a
+       name, the line under it, and a body of blocks — a paragraph, a small
+       heading, or a table of three Estonian forms with what the word means.
+       Every text on one is held to the three languages a card's back is, through
+       said() above, and a lesson's id is held to the decks' namespace: a lesson
+       opens at ?d=<id> the way a deck does, so the two lists cannot share a
+       name. Optional as a whole — a file with no "lessons" is the shelf without
+       a grammar heading — and held to its shape where it is there. See
+       **Grammar, which is read rather than turned over** under **Flashcards**
+       in README.md. */
+    if (decksFile.lessons !== undefined && !Array.isArray(decksFile.lessons)) {
+      fail('data/decks.json', '"lessons" must be an array');
+    }
+    (Array.isArray(decksFile.lessons) ? decksFile.lessons : []).forEach((lesson, i) => {
+      const where = `data/decks.json → lessons[${i}]`;
+      if (!isPlainObject(lesson)) { fail(where, 'must be an object'); return; }
+      if (!isNonEmptyString(lesson.id)) { fail(where, 'has no "id"'); return; }
+      if (!SLUG.test(lesson.id)) fail(where, `id "${lesson.id}" is not a lowercase slug`);
+      if (deckIds.has(lesson.id)) fail(where, `id "${lesson.id}" is already a deck's or a lesson's`);
+      if (RESERVED.has(lesson.id)) fail(where, `id "${lesson.id}" is reserved — see functions/api/flashcard.js`);
+      deckIds.add(lesson.id);
+
+      said(lesson.name, where, `lesson "${lesson.id}" name`);
+      said(lesson.why, where, `lesson "${lesson.id}" why`);
+
+      if (!Array.isArray(lesson.body) || lesson.body.length === 0) {
+        fail(where, `lesson "${lesson.id}" has no body`);
+        return;
+      }
+      lesson.body.forEach((block, j) => {
+        const at = `${where} → body[${j}]`;
+        if (!isPlainObject(block)) { fail(at, 'must be an object'); return; }
+        const kinds = ['say', 'head', 'table'].filter((kind) => kind in block);
+        if (kinds.length !== 1) { fail(at, 'must be exactly one of "say", "head" or "table"'); return; }
+
+        if (block.say !== undefined) {
+          said(block.say, at, 'paragraph');
+          /* *…* marks Estonian inside a paragraph, and the page draws it as
+             an <i lang="et">; an odd number of them is a sentence with an
+             asterisk printed in it. */
+          for (const [lang, one] of Object.entries(isPlainObject(block.say) ? block.say : {})) {
+            if (typeof one === 'string' && (one.split('*').length - 1) % 2 !== 0) {
+              fail(at, `the "${lang}" paragraph has an unmatched *`);
+            }
+          }
+        } else if (block.head !== undefined) {
+          said(block.head, at, 'heading');
+        } else {
+          const table = block.table;
+          if (!isPlainObject(table) || !Array.isArray(table.heads) || table.heads.length !== 3 ||
+              !Array.isArray(table.rows) || table.rows.length === 0) {
+            fail(at, 'a table is three "heads" and at least one row');
+            return;
+          }
+          table.heads.forEach((one, k) => said(one, at, `head ${k}`));
+          table.rows.forEach((one, k) => {
+            const row = `${at} → rows[${k}]`;
+            if (!isPlainObject(one) || !Array.isArray(one.et) || one.et.length !== 3 || !one.et.every(isNonEmptyString)) {
+              fail(row, 'a row is exactly three Estonian forms in "et", and what they mean in "means"');
+              return;
+            }
+            said(one.means, row, 'what the row means');
+          });
         }
       });
     });
