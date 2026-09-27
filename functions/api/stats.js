@@ -49,14 +49,14 @@
  *            that carried it would be a table about something else. A row in
  *            the More sheet on the short rail is the pill it stands for and
  *            is counted under that pill's id — renderMore() in assets/app.js.
- *   layout   the short rail dealt to a browser that had never been here —
- *            `b`, once per browser, from pickLayout() in assets/app.js — and
- *            `b-opened`, the first place that browser opened on the visit it
- *            was dealt it. Two ids and no more, LAYOUT_IDS below, so the page
- *            can print one sentence: how many strangers got the short rail,
- *            and how many of them found a place with it. Nothing is filed
- *            under the full rail, which nobody is dealt any more. "The short
- *            rail" in README.md.
+ *   layout   the rail a browser that had never been here was dealt — `a`
+ *            the full one or `b` the short one, once per browser, from
+ *            pickLayout() in assets/app.js — and `a-opened` / `b-opened`,
+ *            the first place that browser opened on the visit it was dealt
+ *            it. Four ids and no more, LAYOUT_IDS below, so the page can set
+ *            the two rails' strangers side by side: how many got each, and
+ *            how many of them found a place with it. "The short rail" in
+ *            README.md.
  *
  * And two kinds that are counted somewhere else, which this route only
  * carries: `profile`, a public profile at /u/<name> opened, and
@@ -141,8 +141,8 @@ export const RAIL_PILLS = [
   { id: 'feedback', label: 'feedbackTitle' }
 ];
 
-/* The two things a browser's deal of the short rail can say — see the header. */
-export const LAYOUT_IDS = ['b', 'b-opened'];
+/* The four things a stranger's deal can say — see the header. */
+export const LAYOUT_IDS = ['a', 'b', 'a-opened', 'b-opened'];
 
 /* The one chip on the map that is not a type out of data/taxonomy.json.
    DEAL_FILTER in assets/app.js is the same string, and it is written out twice
