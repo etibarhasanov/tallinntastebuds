@@ -65,14 +65,18 @@ const ENDPOINT = 'https://api.tartunlp.ai/text-to-speech/v2';
 
 const VOICE = 'mari';
 
-/* A little under natural pace, because the people pressing this are learning
-   the word rather than hearing it in passing. Tartu takes a multiplier
-   between 0.5 and 2. */
-const SPEED = 0.9;
+/* The voice's own pace. It was 0.9 at first, a little under natural for
+   people learning the word, and it came back sounding more robotic for it —
+   on an iPhone and on a computer alike, and on words and sentences the same.
+   Tartu takes a multiplier between 0.5 and 2, and anything but 1 asks the
+   model for a pace it was not trained at. */
+const SPEED = 1;
 
-/* Thirty days, at the browser and at the edge. The key is the words
-   themselves, so the only thing a shorter life would buy is a fresher copy of
-   an identical recording. */
+/* Thirty days, at the browser and at the edge. Both keep a recording by what
+   it is — the edge by the voice, the pace and the words, the browser by an
+   address carrying SAY_TAKE in assets/flashcard.js — so a change to how it
+   sounds is a new key rather than a stale copy, and a shorter life would buy
+   nothing but a fresher copy of an identical recording. */
 const CACHE_SECONDS = 2592000;
 
 /* The longest thing on a card is a sentence of a hundred-odd characters. Past
@@ -162,9 +166,13 @@ export async function onRequestGet(context) {
   }
   if (!sayable(file).has(text)) return json({ error: 'not-a-card' }, 404);
 
-  /* The key is an address of our own with the voice in it, not the request's,
-     so a stray parameter on the way in cannot make a second copy. */
-  const key = new Request(new URL('/api/say?voice=' + VOICE + '&text=' + encodeURIComponent(text), request.url).toString());
+  /* The key is an address of our own, not the request's, so a stray
+     parameter on the way in cannot make a second copy — the page's own take=
+     included. It carries everything that changes the sound, the voice and the
+     pace, so a change to either is a new recording at the edge the day it
+     deploys; the browser's copy is SAY_TAKE's to replace, and changing either
+     of these means bumping that too. */
+  const key = new Request(new URL('/api/say?voice=' + VOICE + '&speed=' + SPEED + '&text=' + encodeURIComponent(text), request.url).toString());
   const cache = caches.default;
   const kept = await cache.match(key);
   if (kept) return answer(request, await kept.arrayBuffer());

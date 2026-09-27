@@ -2469,6 +2469,15 @@
    */
   var SAY_API = '/api/say';
 
+  /* Which recording of a word to ask for. The route answers with thirty days
+     of cache, so a browser that has heard a word keeps it by its address for a
+     month, and a change to how the voice sounds — VOICE or SPEED in
+     functions/api/say.js — would reach nobody who had already pressed the
+     button. So every address carries this, and it goes up by one with either:
+     2 is the voice at its own pace, after 0.9 sounded robotic. The route does
+     not read it; the edge keys on the voice and the pace itself. */
+  var SAY_TAKE = 2;
+
   var voice = { audio: null, text: '', now: '', token: 0 };
 
   /* Only a card out of data/decks.json can be said, because that file is the
@@ -2526,7 +2535,7 @@
 
     voice.text = text;
     voice.now = 'loading';
-    audio.src = SAY_API + '?text=' + encodeURIComponent(text);
+    audio.src = SAY_API + '?take=' + SAY_TAKE + '&text=' + encodeURIComponent(text);
     var played = audio.play();
     /* A play() that was stopped by the next press rejects with an AbortError,
        which is this page changing its mind rather than anything failing. */

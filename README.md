@@ -9175,12 +9175,31 @@ answering: the press goes quiet, one line says the voice is not answering just
 now, and the card works exactly as it did before any of this.
 
 **Nothing is stored.** No row, no bucket, no file in the repository. The page
-hands `/api/say?text=…` to an `<audio>`, the route asks Tartu for those words
-and hands back what it says, and Cloudflare's cache keeps it for thirty days,
-keyed on the voice and the words. So *Tere* goes to Tartu once per data centre
-a month and everybody else hears it from the edge. A card whose words are
-corrected is different words and so a different key, which means nothing ever
-needs purging.
+hands `/api/say?take=…&text=…` to an `<audio>`, the route asks Tartu for those
+words and hands back what it says, and Cloudflare's cache keeps it for thirty
+days, keyed on the voice, the pace and the words. So *Tere* goes to Tartu once
+per data centre a month and everybody else hears it from the edge. A card whose
+words are corrected is different words and so a different key, which means
+nothing ever needs purging.
+
+**A new sound is a new address.** A browser keeps a recording for the same
+thirty days, by its address, so a change to how the voice sounds would reach
+nobody who had already pressed the button. Every address the page asks for
+therefore carries a take — `SAY_TAKE` in `assets/flashcard.js` — and anything
+that changes the sound, `VOICE` or `SPEED` in the route, bumps it by one. The
+route does not read it; the edge keys on the voice and the pace for itself.
+
+**At the voice's own pace.** It asked Tartu for 0.9 at first, a little slower
+for people learning the word, and the owner heard it come back robotic and
+muffled — on an iPhone and on a computer alike, and on words and sentences the
+same, which is what said it was the voice and not the playback. Nothing on
+this side touches the sound: the route hands on Tartu's file byte for byte. So
+the one knob it had went back to 1, the pace the model was trained at, and the
+take went to 2. Whatever robotic edge is left after that is Tartu's research
+voice itself, and there is no knob for it on this side. The better voice on
+offer is Microsoft's Azure — Anu, and Kert for a man — free to 500,000
+characters a month where the whole shelf is 31,703, but it wants an Azure
+account and a key in the Pages settings, and it was left for later.
 
 **Only what is on a card.** The route speaks a string only if it is the front
 of a card in `data/decks.json` or the Estonian of a card's sentence, exactly,
@@ -9214,7 +9233,8 @@ button says which state it is in.
 
 **It could not be heard from where it was built.** The sandbox this was written
 in had no route to `api.tartunlp.ai`, so the page was driven with the route
-stubbed and the first real word said aloud was the owner's. If the voice ever
+stubbed and the first real word said aloud was the owner's — on an iPhone and
+a computer, both of which played it. If the voice ever
 comes back silent, `curl -sS -o t.wav 'https://tallinntastebuds.ee/api/say?text=Tere'`
 is the one request that says whether it is the route or Tartu.
 
