@@ -5357,14 +5357,22 @@ chips share the sticky row with the search field, so what narrows the page and
 what orders it are in one place and both stay under the thumb while the page
 grows.
 
-**A phone gets the title, the keep count and the three places, and that is
-all.** Under that same 900px the row carries no panel of city and no byline,
-and the bookmark loses its word and moves to the top corner as a mark — so a
-row is a title and two short lines rather than most of a screen, and a reader
-scrolling a ranking sees five or six lists at a time instead of one and a
-half. What the row is for is picking one list out of twenty; the title and the
-three names are what does that, and the rest is what a desk has the width to
-add.
+**A phone gets the title, whose list it is, the keep count and the three
+places, and that is all.** Under that same 900px the row carries no panel of
+city, and the bookmark loses its word and moves to the top corner as a mark —
+so a row is a title and two short lines rather than most of a screen, and a
+reader scrolling a ranking sees five or six lists at a time instead of one and
+a half. What the row is for is picking one list out of twenty; the title, its
+author and the three names are what does that, and the sky is what a desk has
+the width to add.
+
+**The author's name is on every row, at every width**, first on the line under
+the title — *created by* and the name, the name a link to their profile at
+`/u/<name>`, the same `byline()` a list's own page carries. It was the desk's
+alone for a while, on the argument that the name was one press away on the
+list's own page. But who made a list is half of why somebody opens it, and the
+name sits on a line the row was already drawing, so it costs a phone nothing
+in height.
 
 It is not a `display: none`. `wide()` in `assets/lists.js` is the same 900px
 asked in the script, and a narrow page never builds the panel — twenty rows of
