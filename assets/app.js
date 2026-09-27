@@ -5195,10 +5195,10 @@
    * seconds it was still standing on most names when the map arrived. At
    * FLY_MS it is folding as the pin comes down.
    *
-   * On the full rail the label is folded into a row along the sheet the roll
-   * just opened, with no room to slide, so the words change and stay unseen;
-   * above 860px they are the ones the pointer on the button is already
-   * reading.
+   * The short rail's alone. The full rail is the old design, the one the
+   * short rail is set against, and the owner wants it left exactly as it
+   * was: its die says Surprise me on hover and in the cascade, and a press
+   * there changes nothing about the button.
    */
   var ROLLED_MS = FLY_MS * 1000;
   var rolledTimer = null;
@@ -5224,7 +5224,7 @@
        you together, so it answers "where is it" as "this far from where you
        are standing" — the panel prints the distance too. See frameWithHere(). */
     selectPlace(choice.id, { fly: true, withHere: true });
-    sayRolled();
+    if (shortRail()) sayRolled();
   }
 
   function sayRolled() {
