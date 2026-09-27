@@ -530,6 +530,12 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
 }
 
+/* The one field these pages borrow rather than draw: the map panel's search,
+   on the directory, over somebody else's list and in the picker. On the map it
+   is a pill, to match the find bar; here it stands among cards and fields that
+   are all square, and a pill among them read as a part from another page. */
+.search-input { border-radius: var(--radius); }
+
 /* The title of your own list, edited in the place it is read. Sized as the
    heading it replaces, so switching between reading and editing is not the
    page changing shape under you. */
@@ -1152,7 +1158,9 @@
 
 /* The search field, a row of the page between the head card and the rows. It
    borrows the field, the magnifier and the clear button from the map's panel —
-   same classes, same shapes — and only the box around them is this page's.
+   same classes, and the same shapes but for the corners, which are square on
+   these pages (see the fields, above) — and only the box around them is this
+   page's.
 
    It sticks. The rows under it keep coming for as long as anybody scrolls,
    and a field that stays at the top of the page is a field a hundred rows
@@ -1520,8 +1528,8 @@
 /* The field over somebody else's list, built out of the same three elements
    in assets/styles.css that the map's panel and the "add a place" picker use,
    because it is one tool asked about a different set of rows. Only the box
-   round them is this page's — see listFind() in assets/lists.js for what it
-   looks at and why your own list has none.
+   round them and the square corners are this page's — see listFind() in
+   assets/lists.js for what it looks at and why your own list has none.
 
    It does not stick, where the directory's row does. That page grows under
    the reader for as long as they scroll, so a field at the top of it is a
