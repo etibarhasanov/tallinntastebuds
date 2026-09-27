@@ -13,8 +13,8 @@
    card the size of the screen with a word on it, the two words under it, and
    under those the quiet third line for when the card itself is wrong. The
    rest of it is what the two shared sheets could not say for this page in
-   particular — how a deck's row reads, and how much room a level's heading
-   gets over a run of them. Forty-odd rules, and not a colour among them —
+   particular — the shelf of decks as tiles, and how much room a level's heading
+   gets over a run of them. A hundred-odd rules, and not a colour among them —
    every one is a token, so this page turns dark with the rest of the site
    and no swatch can leave it behind.
    ========================================================================== */
@@ -447,33 +447,55 @@
 .flash-deck .alt { padding-top: 0; padding-bottom: 0; }
 .flash-deck .eyebrow + .alt { margin-left: auto; }
 
-/* ---------- the decks, as rows ---------- */
+/* ---------- the decks, as tiles ---------- */
 
-/* How much of a deck is known, on the end of its row. Never wrapped: it is
-   four characters and a slash, and a count that folds onto a second line
-   pushes the row taller than the two lines of words beside it. What gives way
-   instead is the line saying what the deck is, which has somewhere to go.
+/* The shelf. It was one column of hairline-ruled rows, forty-two of them with
+   a count adrift at the end of each, and it read as a table of settings: every
+   row the same weight, nothing on the page saying where anybody had got to.
+   Now each deck is a tile — its name, the sentence saying what is in it, and
+   at its foot a rule filled to how much of it is known, with the count beside
+   it. Two tiles a line where the card is wide enough, one on a phone.
 
-   Where it sits is not this file's doing and is worth knowing: it stands
-   against the chevron because .menu-say takes the free space of the row,
-   which is a line in assets/styles.css. Before that line it drifted, further
-   left the longer the line under the name happened to be, so no two rows
-   agreed. It is the thing anybody scans this page for — which deck has
-   something waiting — and a column of numbers that does not line up cannot be
-   scanned at all. */
-.menu .lists-count { white-space: nowrap; }
+   Still a .menu, and every tile still a .menu-row: the whole tile is the
+   target, the chevron still says it opens, and it is the fourth control of
+   design rule 4 set out on a grid rather than a fifth. What changes is the
+   edge — a hairline round each tile at the card's own --radius, instead of a
+   hairline between rows — because tiles side by side need an edge each. */
+.menu.flash-shelf {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+}
+
+/* The tile. A grid of its own rather than the row's flex line: the name and
+   the chevron across the top, the rule and the count across the foot, so the
+   foot lines up from tile to tile however long the sentence above it is. */
+.flash-shelf .menu-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: 1fr auto;
+  align-items: start;
+  gap: 12px 10px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 14px 14px 13px 15px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--paper);
+  transition: border-color .15s var(--ease);
+}
+.flash-shelf .menu-row:hover { border-color: var(--accent); }
+.flash-shelf .menu-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.flash-shelf .menu-go { margin-left: 0; }
 
 /* The line under a deck's name, which on this page is a sentence of prose:
    "The words a day in Tallinn opens and closes with". .menu-why holds the same
    position in the account sheet and is mono at 11px, which is right for
    "everybody's lists, most kept first" and wrong for a sentence — the second
    of the design rules, and the argument assets/blog.css already makes for
-   .blog-say under a post's title. The same face and rhythm as that one, so the
-   site's two lists of things to open read alike.
-
-   A deck nobody wrote a line for prints its size there instead, and a size is
-   a label rather than a sentence: deckRow() in assets/flashcard.js keeps
-   .menu-why for that one. */
+   .blog-say under a post's title. */
 .flash-why {
   font-family: var(--body);
   font-size: 13.5px;
@@ -481,68 +503,150 @@
   color: var(--muted);
 }
 
+/* The foot of a tile: how much of the deck is known as a length, and as a
+   number beside it. The track is the one the bar under a card is drawn with.
+   A deck somebody has no progress on — signed out, or the two gathered decks
+   — has the count alone, standing at the end where it stands on the rest. */
+.flash-meter {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.flash-meter .flash-track { height: 4px; }
+
+/* The count. Mono and tabular like every count on this site, never wrapped,
+   with its figure in the ink so it is what the eye finds. What is due is the
+   reason to open a deck, so that one is in the accent; a deck with nothing
+   waiting is resting, and says its known-of in the quiet tone, with the rule
+   beside it filled in the colour the answer Knew it is drawn in. Both say it
+   in words as well — "6 due", "22 / 22" — which is design rule 10. */
+.flash-shelf .lists-count {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.flash-shelf .lists-count b { font-weight: 500; color: var(--ink); }
+.flash-shelf .lists-count.is-due,
+.flash-shelf .lists-count.is-due b { color: var(--accent); }
+.flash-meter.is-rested .flash-fill { background: var(--yes); }
+
+/* The two gathered decks — what you got wrong, and what you know — side by
+   side over the shelf, and a different kind of thing from it: they are made
+   of every deck, and they are where somebody coming back on a Tuesday starts.
+   So they are washed in the accent rather than ruled, and the number of words
+   waiting in each is the biggest thing in them, in the display face the count
+   of words known is in. Two across even on a phone: a pair is the point. */
+.menu.flash-lifted {
+  grid-template-columns: 1fr 1fr;
+  margin-top: 20px;
+}
+.flash-lifted .menu-row {
+  grid-template-rows: auto 1fr;
+  border-color: transparent;
+  background: color-mix(in srgb, var(--accent) 7%, var(--paper));
+}
+.flash-lifted .menu-item:last-child .menu-row { border-color: transparent; }
+.flash-lifted .menu-item .menu-row:hover { border-color: var(--accent); }
+.flash-lifted .flash-meter {
+  grid-row: 1;
+  grid-column: 1;
+  justify-content: flex-start;
+}
+.flash-lifted .menu-go { grid-row: 1; grid-column: 2; }
+.flash-lifted .menu-say { grid-row: 2; grid-column: 1 / -1; }
+.flash-lifted .lists-count { margin-left: 0; font-size: 12px; letter-spacing: .04em; }
+.flash-lifted .lists-count b {
+  margin-right: 2px;
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -.03em;
+  line-height: 1;
+}
+.flash-lifted .flash-why { font-size: 13px; line-height: 1.45; }
+
+@media (max-width: 520px) {
+  .menu.flash-shelf { gap: 8px; }
+  .flash-shelf .menu-row { padding: 12px 12px 11px 13px; gap: 10px 8px; }
+  .flash-lifted .lists-count b { font-size: 26px; }
+  .flash-lifted .flash-why { font-size: 12.5px; }
+}
+
 /* How many of the shipped words this person knows, over every deck, under the
    line saying what the page is for. The only thing on the decks page that is
-   about the person rather than about the decks — forty-two rows each saying
-   "9 / 22" is forty-two facts and no score — so it is set apart from the
-   sentence above it and is the one number here in the display face. It is the
-   number the stages open on, printed rather than counted again.
+   about the person rather than about the decks, so the figure is the largest
+   type on the page — the size of the title over it and in the accent, where
+   it had been a notch above the sentence it sits in and was read past.
 
-   Not a badge, not a pill, and nothing around it. It is a sentence with a
-   figure in it, and the figure is what the eye lands on: the count is in the
-   ink at the size a name is set in and the words either side of it stay the
-   quiet tone the line above them is in. A box drawn round it would make it a
-   score out of something, and there is nothing to be out of. Close under the
-   sentence it belongs with — the two of them are what the page opens with —
-   and nothing under it, because the room below is the first stage heading's
-   own thirty-four and is settled further down this file. */
+   Still not a badge, a pill or a box. It is a sentence with a figure in it,
+   and the words either side of the figure stay the quiet tone the line above
+   them is in. A box drawn round it would make it a score out of something,
+   and there is nothing to be out of. */
 .flash-learned {
-  margin: 14px 0 0;
+  margin: 18px 0 0;
   font-family: var(--body);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.3;
   color: var(--muted);
 }
 .flash-learned b {
+  margin: 0 3px;
   font-family: var(--display);
   font-variant-numeric: tabular-nums;
-  font-size: 19px;
+  font-size: 44px;
   font-weight: 600;
-  letter-spacing: -.02em;
-  color: var(--ink);
+  letter-spacing: -.035em;
+  line-height: 1;
+  color: var(--accent);
 }
 
 /* The level's name over the run of decks under it. .lists-section comes from
-   the directory, where it stands over a strip of cards and is spaced for one.
-   Here what follows is hairline-ruled rows, and the heading was landing with
-   six pixels above it and the rule that closes the run before it right on top
-   of those — a heading between two hairlines with the same air either side
-   reads as an empty row rather than as the name of what is under it.
-
-   So the room goes above, which is what says which side of the rule the
-   heading is on, and the run below it is pulled in closer than .lists-card >
-   .menu leaves it. */
-.lists-card > .lists-section { margin: 34px 0 0; }
-.lists-section + .menu { margin-top: 10px; }
+   the directory and is a quiet 13px there; over a shelf of tiles that was the
+   smallest heading on the page naming the largest thing on it. So it is the
+   size a card's second heading is, with a short rule in the accent over it —
+   the one mark saying a new stretch of the shelf begins, since there are no
+   hairlines between tiles to say it any more. The room goes above. */
+.lists-card > .lists-section {
+  margin: 36px 0 0;
+  padding-top: 14px;
+  font-size: 19px;
+  letter-spacing: -.015em;
+  position: relative;
+}
+.lists-card > .lists-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 3px;
+  border-radius: 100px;
+  background: var(--accent);
+}
+.lists-section + .menu { margin-top: 12px; }
 
 /* A stage this person has not reached, which is a heading and this line and
    nothing else: the route sends no rows for one, so there is no run of decks
    under it to grey out. The line says what opens it and how far off that is,
-   in the mono, because it is a count and is scanned the way the counts on
-   the rows are.
-
-   It had rows for a while — the same rows minus their links, with the name's
-   ink turned down — and the two rules that drew them went with them. What
-   they made was a page half greyed out, and a heading saying the stage was
-   shut over thirteen rows that mostly still opened, since a deck with a card
-   already known in it was let through. See **Which decks are open** under
-   **Flashcards** in README.md. */
+   in the mono, because it is a count — and the rule in front of it is filled
+   to how far the count has come, the same rule a deck's tile wears. See
+   **Which decks are open** under **Flashcards** in README.md. */
 .flash-opens {
-  margin: 8px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border: 1px dashed var(--hairline);
+  border-radius: var(--radius);
   font-size: 11px;
   line-height: 1.4;
   color: var(--muted);
 }
+.flash-opens .flash-track { flex: 0 0 72px; height: 4px; }
 
 /* A form under a list of things, rather than against it. Three cards on this
    page end in one — the decks you wrote, the words in a deck, and the empty

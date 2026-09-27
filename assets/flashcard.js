@@ -1272,16 +1272,52 @@
          : (means(deck.why) || null);
   }
 
+  /* A count with its figure set apart from the words around it, the same way
+     learnedLine() sets the words known: split on the placeholder rather than
+     printed through t()'s substitution, so the string stays one sentence in
+     data/ui.json and a language that puts the number after the word gets it
+     there. The figure is what a row is scanned for, so it is the one thing in
+     the count that carries weight. */
+  function figure(key, n, className) {
+    var said = t(key).split('{n}');
+    return el('span', { className: className }, [
+      said[0] || '', el('b', { textContent: String(n) }), said.slice(1).join(String(n))
+    ]);
+  }
+
+  /* How much of a deck is known, as a rule the width of the tile. The same
+     track and fill the bar under a card is drawn with, so the page has one
+     picture of "how far through" rather than two. It repeats the count beside
+     it rather than replacing it — a length says nothing to somebody who
+     cannot see it, and design rule 10 is about exactly that. */
+  function meter(known, all) {
+    var fill = el('span', { className: 'flash-fill' });
+    fill.style.width = (all ? Math.round((known / all) * 100) : 0) + '%';
+    return el('span', { className: 'flash-track', 'aria-hidden': 'true' }, [fill]);
+  }
+
   function deckRow(deck) {
-    /* One number on the end of a row, and which one depends on whether there
-       is anything to do: "6 due" is a reason to open a deck, and "9 / 22" is a
-       fact about one. Signed out neither applies and it is the size of the
-       deck, which is the only thing true for everybody. */
-    var said = !(state.user && state.ready) ? t('flashCards', { n: deck.cards })
-             : deck.due ? t('flashDue', { n: deck.due })
-             : t('flashKnownOf', { known: deck.known, n: deck.cards });
+    /* One number at the foot of a tile, and which one depends on whether
+       there is anything to do: "6 due" is a reason to open a deck, and
+       "9 / 22" is a fact about one. Signed out neither applies and it is the
+       size of the deck, which is the only thing true for everybody. */
+    var tracked = !!(state.user && state.ready);
+    var said = !tracked ? figure('flashCards', deck.cards, 'lists-count mono')
+             : deck.due ? figure('flashDue', deck.due, 'lists-count mono is-due')
+             : el('span', { className: 'lists-count mono',
+                            textContent: t('flashKnownOf', { known: deck.known, n: deck.cards }) });
 
     var why = deckWhy(deck);
+    var lifted = gathered(deck);
+
+    /* The rule of how much is known sits at the foot of every tile a person
+       has progress on. Not on the two gathered decks, which are made of
+       progress rather than having any — "what you know" is every word known
+       by definition, and a full bar there would say nothing. */
+    var foot = el('span', { className: 'flash-meter' + (tracked && !deck.due ? ' is-rested' : '') }, [
+      tracked && !lifted && deck.cards ? meter(deck.known || 0, deck.cards) : null,
+      said
+    ]);
 
     return el('li', { className: 'menu-item' }, [
       TTBTrack.click(
@@ -1290,18 +1326,12 @@
             el('span', { className: 'menu-name', textContent: deckName(deck) }),
             /* What the deck is, in the body face, because it is a sentence of
                prose — .flash-why in assets/flashcard.css carries the argument
-               and the design rule behind it. The count standing in its place
-               on a deck nobody wrote a line for is a label rather than a
-               sentence, so that one keeps .menu-why's mono. */
-            el('span', { className: why ? 'flash-why' : 'menu-why',
-                         textContent: why || said })
+               and the design rule behind it. */
+            why ? el('span', { className: 'flash-why', textContent: why }) : null
           ]),
-          /* .mono, like every other count on this site: the lists page's and
-             the account page's both ask for it at the call site, and this row
-             was the one that had been drawing its number in the body face. */
-          why ? el('span', { className: 'lists-count mono', textContent: said }) : null,
           el('span', { className: 'menu-go', 'aria-hidden': 'true',
-                       html: '<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>' })
+                       html: '<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>' }),
+          foot
         ]), deck.id),
         'flash_open', { deck_id: deck.id, own: deck.own ? 1 : 0 }
       )
@@ -1337,7 +1367,7 @@
 
      Nothing is pressed and nothing is stored. The two numbers this turns on —
      `due` and `known` — are already on every row the route answers, because
-     they are what draws "6 due" against "22 / 22" on the end of it. A press
+     they are what draws "6 due" against "22 / 22" at its foot. A press
      would have wanted somewhere to keep the answer, and it would have fought
      the spacing besides: a deck is never finished here, only resting, and one
      put at the bottom by hand would still be at the bottom on the morning its
@@ -1352,8 +1382,8 @@
      Signed out, and with the database off, there is nothing to sort by. Every
      row says how many cards it holds, none of them says what is due, and the
      order stays the file's — the same line deckRow() draws its count under. */
-  function deckList(decks, asIs) {
-    var ul = el('ul', { className: 'menu' });
+  function deckList(decks, asIs, className) {
+    var ul = el('ul', { className: 'menu flash-shelf' + (className ? ' ' + className : '') });
     var order = (state.user && state.ready && !asIs)
       ? decks.slice().sort(function (a, b) { return standing(a) - standing(b); })
       : decks;
@@ -1444,7 +1474,7 @@
       state.ready ? null : el('p', { className: 'lists-say', textContent: t('flashErrOff') })
     ];
 
-    if (lifted.length) kids.push(deckList(lifted, true));
+    if (lifted.length) kids.push(deckList(lifted, true, 'flash-lifted'));
 
     if (!ours.length) {
       kids.push(el('p', { className: 'lists-none', textContent: t('flashNoneShipped') }));
@@ -1472,8 +1502,14 @@
       if (!these.length && !gate) return;
       kids.push(el('h2', { className: 'lists-section', textContent: t(level.key) }));
       if (gate) {
-        kids.push(el('p', { className: 'flash-opens mono',
-                            textContent: t('flashOpens', { n: gate, left: gate - state.words }) }));
+        /* With the same rule a deck's tile wears under it, filled to how far
+           the count has come towards the gate: the stage is somewhere to get
+           to, and a length is how far off it is at a glance. The line beside
+           it still says it in words. */
+        kids.push(el('p', { className: 'flash-opens mono' }, [
+          meter(state.words, gate),
+          el('span', { textContent: t('flashOpens', { n: gate, left: gate - state.words }) })
+        ]));
       }
       if (these.length) kids.push(deckList(these));
     });
