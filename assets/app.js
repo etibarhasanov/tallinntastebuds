@@ -4720,16 +4720,18 @@
   var hintTimers = {};
 
   /* The ones this rail draws, top to bottom. The full rail is eight; the
-     short one is three pills and the arrow, and its cascade is over inside
+     short one is three pills and the corner, and its cascade is over inside
      two seconds — which is half of why it exists. openHint() would skip a
-     put-away pill on its own; naming the four keeps the arithmetic honest.
+     put-away pill on its own; naming the five keeps the arithmetic honest.
 
-     The die in the corner is not one of them. It says nothing until it is
-     pressed, and then says Surprised — the owner's word, and sayRolled()
-     below — so a stranger's first look at it is the red disc and nothing
-     else. The stylesheet holds it to that for the walk too. */
+     The die in the corner is one of them. It is a bare disc the rest of the
+     time — no words until it is pressed, and then Surprised, see sayRolled()
+     below — but the first visit is when every pill says what it is, and the
+     owner wants it to say so then with the others, once. It was left out of
+     this list for an afternoon, which made it the one button a stranger was
+     never told the meaning of. */
   function railKeys() {
-    if (shortRail()) return ['account', 'lists', 'more', 'locate'];
+    if (shortRail()) return ['account', 'lists', 'more', 'random', 'locate'];
     return HINT_KEYS.filter(function (key) { return key !== 'more'; });
   }
 
@@ -4740,8 +4742,8 @@
      settled before the buttons start naming themselves. Eight pills 300ms
      apart and held for 4.2s each put the last collapse at 7.45s, and every
      pill added puts another 300ms on how long the corner spends talking —
-     which is the cost of a ninth, and a real one. The short rail's four are
-     all open by 2.05s and gone by 6.25s. */
+     which is the cost of a ninth, and a real one. The short rail's five are
+     all open by 2.35s and gone by 6.55s. */
   var RAIL_IN = 1150;
   /* Whether this visit owes the welcome card: set on the way in when
      INTRO_KEY says this browser has never been introduced, and spent the
