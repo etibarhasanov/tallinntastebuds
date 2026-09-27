@@ -1045,9 +1045,51 @@
       add(savedCard());
       add(listsCard());
       add(keptCard());
+      add(layoutCard());
     }
 
     main.appendChild(wrap);
+  }
+
+  /* ------------------------------------------------------------ the rail
+   * Which of the map's two rails this browser draws: the full column of
+   * pills, or the short one a stranger's phone is dealt — three pills,
+   * Surprise me in the corner, the rest behind More. "The short rail" in
+   * README.md. The map decides for a browser that has said nothing — see
+   * pickLayout() in assets/app.js — and this is where somebody signed in
+   * says otherwise, written into the same key the map reads. This browser's
+   * and not the account's: it is a fact about the phone in your hand, and
+   * making it follow you would be a column on users nobody has asked for.
+   *
+   * A segment rather than a row, because it is a choice between two things
+   * that are both already here rather than a way on to somewhere. The same
+   * control as a list's Everyone/Only me, and wired the same way — the
+   * radio is one transparent pixel and is-on is what moves. */
+  var LAYOUT_KEY = 'ttb.layout';
+
+  function layoutCard() {
+    var now = storeGet(LAYOUT_KEY) === 'b' ? 'b' : 'a';
+    var option = function (id, labelKey) {
+      var input = el('input', { type: 'radio', name: 'layout', value: id, checked: now === id ? true : null });
+      var label = el('label', { className: 'lists-seg-opt' + (now === id ? ' is-on' : '') },
+        [input, el('span', { textContent: t(labelKey) })]);
+      input.addEventListener('change', function () {
+        if (!input.checked) return;
+        storeSet(LAYOUT_KEY, id);
+        TTBTrack.event('layout_select', { layout: id });
+        var opts = label.parentNode.querySelectorAll('.lists-seg-opt');
+        for (var i = 0; i < opts.length; i++) opts[i].classList.toggle('is-on', opts[i] === label);
+      });
+      return label;
+    };
+    return card([
+      heading(t('layoutTitle'), 'h2'),
+      el('p', { className: 'lists-say', textContent: t('layoutWhy') }),
+      el('div', { className: 'lists-seg', role: 'radiogroup', 'aria-label': t('layoutTitle') }, [
+        option('a', 'layoutFull'),
+        option('b', 'layoutShort')
+      ])
+    ]);
   }
 
   /* ------------------------------------------------------------------ radio

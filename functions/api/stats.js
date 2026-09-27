@@ -23,7 +23,7 @@
  *
  * WHAT IS COUNTED, AND WHAT IS NOT
  *
- * Four kinds, which is the whole of `kind` in db/schema.sql:
+ * Five kinds, which is the whole of `kind` in db/schema.sql:
  *
  *   place    a place opened. selectPlace() in assets/app.js, which is the
  *            same moment TTBTrack.view() reports one to Google Analytics, and
@@ -46,7 +46,17 @@
  *            in RAIL_PILLS below, which is every button inside #rail and
  *            nothing else. The radio is not one of them: it left the rail for
  *            the corner beside the language switch, and a table about the rail
- *            that carried it would be a table about something else.
+ *            that carried it would be a table about something else. A row in
+ *            the More sheet on the short rail is the pill it stands for and
+ *            is counted under that pill's id — renderMore() in assets/app.js.
+ *   layout   the short rail dealt to a browser that had never been here —
+ *            `b`, once per browser, from pickLayout() in assets/app.js — and
+ *            `b-opened`, the first place that browser opened on the visit it
+ *            was dealt it. Two ids and no more, LAYOUT_IDS below, so the page
+ *            can print one sentence: how many strangers got the short rail,
+ *            and how many of them found a place with it. Nothing is filed
+ *            under the full rail, which nobody is dealt any more. "The short
+ *            rail" in README.md.
  *
  * And two kinds that are counted somewhere else, which this route only
  * carries: `profile`, a public profile at /u/<name> opened, and
@@ -99,6 +109,7 @@ export const PLACE = 'place';
 export const FILTER = 'filter';
 const LIST = 'list';
 export const RAIL = 'rail';
+export const LAYOUT = 'layout';
 /* And two that are not counted here at all but handed on — see the POST. */
 const PROFILE = 'profile';
 const PROFILE_PRESS = 'profile-press';
@@ -108,7 +119,9 @@ const PROFILE_PRESS = 'profile-press';
    wears as its own label on the map, so the table reads as the rail does and
    nothing new was written into ten languages to name a button that is already
    named. The ids are the keys hintPill() in assets/app.js uses for the same
-   nine buttons, which is where they came from.
+   nine buttons, which is where they came from. Nine across the two rails:
+   the full one draws eight of them and the short one four — More is only
+   the short rail's, and its rows count as the four pills it stands in for.
 
    Written out here because a pill is not a row in any file this side can
    open: the chips come out of data/taxonomy.json and this is markup. So it is
@@ -119,14 +132,17 @@ const PROFILE_PRESS = 'profile-press';
 export const RAIL_PILLS = [
   { id: 'account', label: 'accountOpen' },
   { id: 'lists', label: 'listsAllTitle' },
+  { id: 'more', label: 'moreOpen' },
   { id: 'flash', label: 'flashDoor' },
   { id: 'random', label: 'randomPick' },
   { id: 'ask', label: 'askOpen' },
   { id: 'style', label: 'styleLabel' },
   { id: 'locate', label: 'locate' },
-  { id: 'explain', label: 'explainOpen' },
   { id: 'feedback', label: 'feedbackTitle' }
 ];
+
+/* The two things a browser's deal of the short rail can say — see the header. */
+export const LAYOUT_IDS = ['b', 'b-opened'];
 
 /* The one chip on the map that is not a type out of data/taxonomy.json.
    DEAL_FILTER in assets/app.js is the same string, and it is written out twice
@@ -167,7 +183,7 @@ export async function onRequestPost(context) {
     return json({ error: 'body' }, 400);
   }
 
-  const kind = [PLACE, FILTER, LIST, RAIL, PROFILE, PROFILE_PRESS].indexOf(body.kind) !== -1 ? body.kind : '';
+  const kind = [PLACE, FILTER, LIST, RAIL, LAYOUT, PROFILE, PROFILE_PRESS].indexOf(body.kind) !== -1 ? body.kind : '';
   const id = typeof body.id === 'string' ? body.id.trim() : '';
   if (!kind || !id || id.length > 128) return json({ error: 'press' }, 400);
 
@@ -187,6 +203,7 @@ export async function onRequestPost(context) {
   const real = kind === PLACE ? await realPlace(context, id)
              : kind === LIST ? await realList(context, id)
              : kind === RAIL ? realPill(id)
+             : kind === LAYOUT ? LAYOUT_IDS.indexOf(id) !== -1
              : await realFilter(context, id);
   if (!real) return json({ ok: false }, 200);
 

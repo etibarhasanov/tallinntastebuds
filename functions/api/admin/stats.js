@@ -31,7 +31,8 @@
  * the ones somebody has actually pressed, capped at VENUES — a thousand rows
  * tied at nought is not a ranking, and the directory is not the map. The
  * filters are the third array, in full, because there are fourteen of them,
- * and the rail is the fourth, in full, because there are nine.
+ * and the rail is the fourth, in full, because there are nine across its
+ * two shapes — "The short rail" in README.md.
  *
  * WHAT A FAILURE LOOKS LIKE
  *
@@ -49,6 +50,11 @@
  * than failing the rest of the page when `users` is not there yet, the same
  * way the ranking above answers empty rather than failing when `press_counts`
  * is not.
+ *
+ * And `layout`, two numbers out of the same table under the `layout` kind:
+ * `given`, how many browsers that had never been here were dealt the short
+ * rail, and `opened`, how many of them opened a place on that first visit.
+ * The one comparison the split was made for, read straight off two rows.
  */
 
 import {
@@ -56,7 +62,7 @@ import {
 } from '../_lib.js';
 /* The kinds, the pills and the deal chip are the counting side's, so the
    ranking reads the table with the same words it was written with. */
-import { PLACE, FILTER, RAIL, RAIL_PILLS, DEAL_FILTER } from '../stats.js';
+import { PLACE, FILTER, RAIL, LAYOUT, RAIL_PILLS, DEAL_FILTER } from '../stats.js';
 
 /* Five minutes in the colo, which is what the page is allowed to be stale by.
  *
@@ -101,7 +107,8 @@ export async function onRequestGet(context) {
   if (hit) return privately(hit);
 
   const empty = {
-    ready: false, opens: 0, users: 0, map: [], venues: [], filters: [], rail: [], ...words
+    ready: false, opens: 0, users: 0, layout: { given: 0, opened: 0 },
+    map: [], venues: [], filters: [], rail: [], ...words
   };
   if (!env.DB) return json(empty, 200);
   /* A deployment holding the other environment's database answers as though it
@@ -210,6 +217,7 @@ export async function onRequestGet(context) {
   const res = json(
     {
       ready: true, opens: opens, users: users,
+      layout: { given: countOf(LAYOUT, 'b'), opened: countOf(LAYOUT, 'b-opened') },
       map: map, venues: venues, filters: filters, rail: rail,
       ...words
     },

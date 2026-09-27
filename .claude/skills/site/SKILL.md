@@ -147,7 +147,9 @@ in some private-browsing modes, and the site is meant to work with it absent.
 **A press on a place or a chip is also counted on this site.** `/admin/stats` ranks
 what gets opened, out of `press_counts`, and three call sites feed it:
 `selectPlace()` and `applyFilters()` in `assets/app.js` and `select()` in
-`assets/venues.js`, each once per thing per page load. A new way to open a
+`assets/venues.js`, each once per thing per page load — and the rail every
+press, through `countRailPress()` and the rows of the More sheet in
+`renderMore()`, which count as the pills they stand for. A new way to open a
 place is a fourth, and it belongs there in the same commit — see
 **Statistics** in `README.md`, which is also where the reasoning for what is
 deliberately *not* counted lives.
