@@ -8045,6 +8045,39 @@ tab's own store is read back on every one of these walks exactly as it was read
 on every reload — see **Signed out, one word of a deck**. Walking out of a deck
 and into another one was never a way past it and is not one now.
 
+### Where you left off
+
+Opening this page used to mean the shelf, whatever you had been doing when you
+closed it. Forty-two tiles is several screens on a phone, and the one you were
+in the middle of was somewhere down them — sorted to the top of its stage by
+**And a finished deck sinks**, which helped, and still not where a page opened
+at the same card would have put you.
+
+So the front door reopens what this device had open: the deck a run was going
+in, or the lesson being read. `rememberHere()` in `assets/flashcard.js` writes
+it on every draw and `boot()` reads it when the address does not name a deck —
+the page asks the route for that deck in the same one request it would have
+asked for the shelf with, then puts the deck's address on the history so the
+back button goes to the shelf rather than leaving the site. Only what was
+actually underway is ever reopened: the shelf, the end of a run, the gate, a
+shut stage and the editor all clear it, so nobody is put back on a screen they
+had finished with, and a remembered place that has gone — a deck deleted in
+another tab — falls back to the shelf and is forgotten.
+
+**The device's, and not the account's.** It is `ttb.flash.last` in this
+origin's `localStorage`, beside the language, rather than a column on the
+account, because it is a fact about where *this* was closed: a phone closed on
+*Food and drink* and a laptop closed on the shelf were closed in two places,
+and a laptop that opened on the phone's deck would be a jump nobody made. It
+costs no column, no write and no string in ten languages. And only signed in:
+signed out the run is the tab's and goes with the tab, so there is nothing to
+come back to, and a stranger's front door stays the nine decks and the offer of
+an account.
+
+**What a link does is unchanged.** An address carrying `?d=` opens what it
+names, as it always did, and a walk back to the shelf with *All the decks* is a
+decision to be on the shelf, so the next front door is the shelf too.
+
 ### And a radio while you learn it
 
 The map's button, in the same header, to the left of the language: a station
@@ -13182,6 +13215,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
 | `flash_lesson_open` | `lesson_id` — a lesson's tile under the Grammar heading |
 | `flash_lesson_read` | `lesson_id` — Got it at the foot of a lesson, read before or not — see **Grammar, which is read rather than turned over** |
+| `flash_resume` | `deck_id` — the front door reopening the deck or the lesson this device was closed on, which is the deck's or the lesson's id — see **Where you left off** |
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`), `hint` (`1`/`0`) — one per card answered, which of the three ways it was answered, whether the card had been turned over first (`front` is a throw or an arrow on a card nobody opened), and whether the first letters had been asked for before the answer was given |
 | `flash_undo` | `deck_id`, `was` (`knew`/`again`) — the last answer taken back, which is how anybody will find out whether the throw is misfiring in one direction more than the other — see **Undo** under **Flashcards** |
 | `flash_hint` | `deck_id` — the first letters of a meaning asked for, once per card at most. Against `flash_knew` with `hint: 1`, this is what says whether a hint leads to knowing the word — see **The hint** under **Flashcards** |
