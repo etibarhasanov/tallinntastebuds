@@ -1376,6 +1376,27 @@ body.lang-open .controls { z-index: 1250; }
    .search-clear and .panel-save fall into further down. */
 .rail-btn[hidden] { display: none; }
 
+/* ---------- the short rail ----------
+
+   Two rails on one page, and <html data-layout> says which is drawn. A phone
+   that has never been here gets the short one — see pickLayout() in
+   assets/app.js and "The short rail" in README.md: the account, the lists
+   and More, with Surprise me filled in the corner and the other four doors
+   behind More as rows. Everybody who was here before the split keeps the
+   full column, and the only thing the attribute does is put away whichever
+   pills the other rail draws. Neither rail is a second stylesheet: the pill
+   is the same pill, and a rule that is not scoped to the attribute belongs
+   to both.
+
+   display on the attribute beats the UA sheet's [hidden] the same way the
+   rule above does, and it beats .styles' own display: flex, which is what
+   makes the swatch go with the rest. */
+html:not([data-layout="b"]) #btn-more { display: none; }
+[data-layout="b"] #btn-flash,
+[data-layout="b"] #btn-ask,
+[data-layout="b"] #styles,
+[data-layout="b"] #btn-feedback { display: none; }
+
 .rail-btn {
   flex: 0 0 auto;
   display: flex;
@@ -1752,7 +1773,8 @@ body.lang-open .controls { z-index: 1250; }
    are mostly Google's, so they go while results are up; emptying the field
    brings them back. Hidden rather than taken out, so the row keeps the height
    the fit measures the chrome by, and Search this area stands in it. */
-body.is-results .filter-bar {
+body.is-results .filter-bar,
+body.is-results .chip-list {
   visibility: hidden;
   opacity: 0;
 }
@@ -1875,6 +1897,38 @@ body.is-results .filter-bar {
    markup that appears and disappears with the viewport is markup the script
    has to keep checking for — so this is where it is put away. */
 .filter-toggle { display: none; }
+
+/* The short rail's three chips outside the drawer, and they are a phone's:
+   above 860px the whole row is flat on the map and there is nothing to stand
+   outside of, so the second nav draws nothing at any layout up here. The
+   phone block below is where it is drawn, and only under the short rail —
+   and not while it is empty, or its padding and the bar's gap stand the
+   Filters button a finger's width to the right of where the full rail has
+   it. */
+.chips-front,
+.chips-front:empty { display: none; }
+
+/* Under the chips, with one of them on: the same question as a list. A word
+   on the map with no card under it, so it wears --glow the way the brand's
+   sentence does, and the accent because it is a link and goes somewhere. It
+   is the one thing in the bar that takes the pointer while the bar itself
+   passes it through to the map. */
+.chip-list {
+  position: fixed;
+  z-index: 1000;
+  left: calc(var(--gap) + var(--safe-l) + var(--brand-w) + 16px);
+  top: calc(var(--gap) + var(--safe-t) + 40px + 12px + 34px + 10px);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--accent);
+  text-shadow: var(--glow);
+}
+.chip-list::after { content: " \203A"; }
+.chip-list:hover { text-decoration: underline; }
+.chip-list[hidden] { display: none; }
 
 @keyframes chip-in {
   from { opacity: 0; transform: translateX(-16px); }
@@ -5008,6 +5062,83 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   body.panel-open #btn-locate {
     bottom: calc(var(--sheet-h) + 10px + var(--safe-b));
   }
+
+  /* ---- the short rail, on a phone ----
+
+     Surprise me leaves the column for the corner above the arrow and is the
+     map's one filled button: the accent, its label out for good, the die in
+     paper. /admin/stats had it the most pressed thing on the rail after the
+     account, fourth from the top of nine discs that all looked alike — and
+     rule 5 spends the accent once a surface, which nothing on the map was
+     spending it on. It stays a child of the rail, the way the arrow does,
+     so the press counter, the cascade and the walk all still find it; and
+     like the arrow it is fixed to the window, so a transformed rail is not
+     its containing block. Sized to the arrow's 48px rather than the discs'
+     35.6, because the two stand together in the corner as a pair.
+
+     The shelf every centred thing at the foot of the map stands on moves up
+     by the button's height plus the air under it, so the welcome card, the
+     toast and the account offer clear it the way they clear the arrow. */
+  html[data-layout="b"] body { --above-locate: calc(var(--locate-b) + 58px + 58px); }
+  [data-layout="b"] #btn-random {
+    position: fixed;
+    right: calc(var(--gap) + var(--safe-r));
+    bottom: calc(var(--locate-b) + 58px);
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    height: 48px;
+    padding: 0 16px 0 12px;
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+  [data-layout="b"] #btn-random svg { width: 24px; height: 24px; stroke: var(--paper); }
+  [data-layout="b"] #btn-random svg .pip { fill: var(--paper); }
+  [data-layout="b"] #btn-random .rail-label { opacity: 1; color: var(--paper); }
+  [data-layout="b"] #btn-random:hover { background: var(--accent-lit); border-color: var(--accent-lit); color: var(--paper); }
+  body.panel-open [data-layout="b"] #btn-random,
+  [data-layout="b"] body.panel-open #btn-random {
+    bottom: calc(var(--sheet-h) + 10px + var(--safe-b) + 58px);
+  }
+
+  /* The three chips outside the drawer. The nav wears .filters for the row's
+     own rules — the gap, the scroll, the hidden scrollbar — and gives back
+     the four that fold a drawer shut, so it is a row that is simply there.
+     The same chips inside the drawer are put away, so the row and the drawer
+     between them are the vocabulary once. */
+  [data-layout="b"] .chips-front:not(:empty) {
+    display: flex;
+    max-width: 100%;
+    padding-left: 2px;
+    padding-right: 2px;
+    opacity: 1;
+    visibility: visible;
+    transition: none;
+  }
+  /* With the drawer open the whole vocabulary is on the row, the three
+     included, and the second nav steps out of the bar rather than standing
+     squeezed to a sliver beside it. Shut, the drawer is 0px wide, so the
+     three inside it need no putting away of their own. */
+  [data-layout="b"] .filter-bar.is-open .chips-front { display: none; }
+  /* The button after three chips is the icon alone, or the fourth chip is
+     cut off at the edge of a 390px phone: the word stays for a reader, as
+     the pill's own name, the way .rail-label does when it is folded. */
+  [data-layout="b"] .filter-bar:not(.is-open) .filter-toggle span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  [data-layout="b"] .filter-bar:not(.is-open) .filter-toggle { gap: 0; padding-left: 12px; padding-right: 12px; }
+
+  /* And the line under a pressed chip stands under the bar, at the
+     gutter, rather than where the desktop's row begins. */
+  .chip-list {
+    left: 12px;
+    top: calc(var(--gap) + var(--safe-t) + 36px + 12px + var(--find-h) + 8px + 44px);
+  }
+  body.panel-open .chip-list { display: none; }
 
   /* The welcome card: what this site is, once, to a phone that has never
      been here — see showWelcome() in assets/app.js. On the shelf above the

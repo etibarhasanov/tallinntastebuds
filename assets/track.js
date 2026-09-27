@@ -55,8 +55,28 @@ window.TTBTrack = (function () {
      did, and neither can answer "who pressed Keep" across a week. Clarity's
      queue takes the call before its script lands, the same as gtag's. */
   function event(name, params) {
-    if (live()) window.gtag('event', name, params || {});
+    params = params || {};
+    params.layout = layout();
+    if (live()) window.gtag('event', name, params);
     if (typeof window.clarity === 'function') window.clarity('event', name);
+  }
+
+  /* Which rail this browser was dealt on the map — 'a', the full column, or
+     'b', the short one — read off the key pickLayout() in assets/app.js
+     writes, so every event on every page carries it and GA can be split by
+     it: what the short rail's visitors press against what the full rail's
+     do. Every page and not the map alone, because the question is about the
+     visitor and they carry the rail with them to the lists and back. 'a'
+     where nothing is written, which is every browser from before the split
+     and every page opened before the map has dealt one. Read on every event
+     rather than once, since the map deals it after this script has loaded;
+     a storage read is nothing next to the request it rides on. Clarity gets
+     it as a tag once the page is up, below, which is what lets its
+     recordings be filtered the same way. */
+  var LAYOUT_KEY = 'ttb.layout';
+
+  function layout() {
+    try { return window.localStorage.getItem(LAYOUT_KEY) === 'b' ? 'b' : 'a'; } catch (e) { return 'a'; }
   }
 
   /* Attaches a report to a link or button that is built inline, and hands
@@ -92,6 +112,10 @@ window.TTBTrack = (function () {
      here, once, for every page. Deferred scripts run before DOMContentLoaded,
      so the whole page is there to walk. */
   document.addEventListener('DOMContentLoaded', function () {
+    /* Deferred scripts have all run by now, the map's included, so the rail
+       it dealt is in storage. Clarity's queue takes the call before its
+       script lands, the same as an event. */
+    if (typeof window.clarity === 'function') window.clarity('set', 'layout', layout());
     var marked = document.querySelectorAll('[data-track]');
     for (var i = 0; i < marked.length; i++) {
       click(marked[i], marked[i].getAttribute('data-track'));

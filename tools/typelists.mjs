@@ -160,11 +160,16 @@ const NOW = "CAST(strftime('%s','now') AS INTEGER) * 1000";
    taxonomy.json holds the order the chips are in, and this is the table it is
    read against.
 
-   The id is written out whole rather than cut from the title, which is what
-   keeps a title a name rather than a key. A list's id is its address — it is
-   what a link somebody sent points at — so renaming **All the bakeries** has
-   to leave /list/all-the-bakeries-vncgvm exactly where it is. The readable
-   half is what the list was called on the day the id was minted, and the six
+   The id is the chip's own `list` in data/taxonomy.json rather than a column
+   here, because the map reads it too: the line under a pressed chip that says
+   the same question exists as a list — see chipListLink() in assets/app.js —
+   needs the address, and this file is the one thing in tools/ the browser
+   cannot import from. One place, read by both. It is written out whole rather
+   than cut from the title, which is what keeps a title a name rather than a
+   key: a list's id is its address — it is what a link somebody sent points at
+   — so renaming **All the bakeries** has to leave
+   /list/all-the-bakeries-vncgvm exactly where it is. The readable half is
+   what the list was called on the day the id was minted, and the six
    characters after it were minted once, the way functions/api/lists.js mints
    them.
 
@@ -176,19 +181,19 @@ const NOW = "CAST(strftime('%s','now') AS INTEGER) * 1000";
    not — see **Getting found** in README.md. The ids were minted before the
    city was in the names, and stay. */
 export const LISTS = [
-  { type: 'casual', id: 'all-the-casual-and-solo-places-5xjdth', title: 'All the casual and solo places in Tallinn' },
-  { type: 'bakery', id: 'all-the-bakeries-vncgvm', title: 'All the bakeries in Tallinn' },
-  { type: 'coffee', id: 'all-the-coffee-and-tea-places-gq9nms', title: 'All the coffee and tea places in Tallinn' },
-  { type: 'pub', id: 'all-the-pubs-and-beer-bars-3q29c9', title: 'All the pubs and beer bars in Tallinn' },
-  { type: 'hidden-gem', id: 'all-the-hidden-gems-htp2gd', title: 'All the hidden gems in Tallinn' },
-  { type: 'cheap-eats', id: 'all-the-cheap-eats-t7yn32', title: 'All the cheap eats in Tallinn' },
-  { type: 'laptop', id: 'all-the-laptop-friendly-places-qbf3nf', title: 'All the laptop friendly places in Tallinn' },
-  { type: 'date', id: 'all-the-date-night-places-3n445f', title: 'All the date night places in Tallinn' },
-  { type: 'asian', id: 'all-the-asian-places-jzhqqq', title: 'All the Asian places in Tallinn' },
-  { type: 'vegan', id: 'all-the-vegan-places-svmsrw', title: 'All the vegan places in Tallinn' },
-  { type: 'fine-dining', id: 'all-the-fine-dining-places-nvrz5g', title: 'All the fine dining places in Tallinn' },
-  { type: 'caucasian', id: 'all-the-caucasus-places-r8xn4m', title: 'All the Caucasus places in Tallinn' },
-  { type: 'restaurant', id: 'all-the-restaurants-rxz3tt', title: 'All the restaurants in Tallinn' }
+  { type: 'casual', title: 'All the casual and solo places in Tallinn' },
+  { type: 'bakery', title: 'All the bakeries in Tallinn' },
+  { type: 'coffee', title: 'All the coffee and tea places in Tallinn' },
+  { type: 'pub', title: 'All the pubs and beer bars in Tallinn' },
+  { type: 'hidden-gem', title: 'All the hidden gems in Tallinn' },
+  { type: 'cheap-eats', title: 'All the cheap eats in Tallinn' },
+  { type: 'laptop', title: 'All the laptop friendly places in Tallinn' },
+  { type: 'date', title: 'All the date night places in Tallinn' },
+  { type: 'asian', title: 'All the Asian places in Tallinn' },
+  { type: 'vegan', title: 'All the vegan places in Tallinn' },
+  { type: 'fine-dining', title: 'All the fine dining places in Tallinn' },
+  { type: 'caucasian', title: 'All the Caucasus places in Tallinn' },
+  { type: 'restaurant', title: 'All the restaurants in Tallinn' }
 ];
 
 /* The chip's own English label, so the line under the title names the thing
@@ -228,8 +233,15 @@ export function build() {
     if (!listed.has(type.id)) {
       throw new Error(
         `data/taxonomy.json has a chip with no list: "${type.id}". Add it to ` +
-        'LISTS with a title and an id — six characters off CODE_ALPHABET in ' +
+        'LISTS with a title, and give the chip a `list` in taxonomy.json — its ' +
+        'readable name and six characters off CODE_ALPHABET in ' +
         'functions/api/lists.js, minted once.'
+      );
+    }
+    if (typeof type.list !== 'string' || !/^[a-z0-9-]+$/.test(type.list)) {
+      throw new Error(
+        `data/taxonomy.json has a chip with no list id: "${type.id}". Its ` +
+        '`list` is the address of the list this file writes for it.'
       );
     }
   }
@@ -238,7 +250,7 @@ export function build() {
     if (!chips.has(list.type)) {
       throw new Error(
         `LISTS names a chip data/taxonomy.json no longer has: "${list.type}". ` +
-        `Take the entry out, and delete /list/${list.id} from both databases ` +
+        `Take the entry out, and delete its list from both databases ` +
         'by hand — dropping it here only stops it being rewritten.'
       );
     }
@@ -253,6 +265,7 @@ export function build() {
     const named = LISTS.find((list) => list.type === type.id);
     return {
       ...named,
+      id: type.list,
       label: type.en,
       intro: intro(type.en),
       places: open

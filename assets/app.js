@@ -82,12 +82,23 @@
      a block you can recognise and walk from, rather than in a city. */
   var FOCUS_ZOOM = 16;
   var STYLE_KEY = 'ttb.style';
+  /* Which rail this browser draws — see pickLayout(). 'a' is the full column
+     of pills, 'b' the short one: three pills, Surprise me in the corner, the
+     rest behind More. "The short rail" in README.md. */
+  var LAYOUT_KEY = 'ttb.layout';
+  var LAYOUTS = ['a', 'b'];
+  /* The chips the short rail stands outside the drawer, in this order, out
+     of the thirteen and the discount. The three /admin/stats says get
+     pressed; the discount only while one is live, since renderFilters draws
+     it nowhere otherwise. */
+  var FRONT_CHIPS = [DEAL_FILTER, 'bakery', 'hidden-gem'];
   /* ----------------------------------------------------------------- state */
 
   var state = {
     places: [],
     deals: [],           // data/deals.json, usually empty
     types: [],
+    layout: 'a',         // which rail, see pickLayout()
     ui: {},
     langs: [],
     q: '',
@@ -630,6 +641,58 @@
 
   function makeTiles(dark) {
     return TTBBasemap.layer(L, { dark: dark });
+  }
+
+  /* ------------------------------------------------------- which rail
+   * Decided once, on the way in, and kept: a rail that changed between
+   * visits is a rail nobody learns. ?layout= names one and pins it, the way
+   * ?style= does — it is how the owner looks at either on a phone that has
+   * already been dealt the other. Failing that, the one this browser was
+   * dealt. Failing that, the deal: a browser that has been introduced —
+   * INTRO_KEY — was here before the split and keeps the full rail it knows;
+   * a stranger gets the short one, and is counted as given it, once, so
+   * /admin/stats can say how many were and how many of them opened a place
+   * on that first visit — see selectPlace(). Storage that throws deals the
+   * short rail to everybody every time and counts nobody, which is the
+   * right failure: the page still works, the numbers just do not move.
+   *
+   * The signed-in half of the choice is on /account.html, written into the
+   * same key — layoutCard() in assets/account.js — because that page is
+   * where somebody with an account goes to change things about themselves.
+   * It is this browser's choice and not the account's: the key is local,
+   * and following a person across their devices would be a column on users
+   * nobody has asked for yet. */
+  function pickLayout() {
+    var params = new URLSearchParams(window.location.search);
+    var asked = params.get('layout');
+    if (asked && LAYOUTS.indexOf(asked) !== -1) {
+      storeSet(LAYOUT_KEY, asked);
+      return asked;
+    }
+    var stored = storeGet(LAYOUT_KEY);
+    if (stored && LAYOUTS.indexOf(stored) !== -1) return stored;
+    var dealt = storeGet(INTRO_KEY) ? 'a' : 'b';
+    storeSet(LAYOUT_KEY, dealt);
+    if (dealt === 'b') {
+      layoutFresh = true;
+      postPress('layout', 'b');
+    }
+    return dealt;
+  }
+
+  /* Whether this load is the visit that dealt the short rail, so the first
+     place opened on it can be counted against the deal, and whether one has
+     been. */
+  var layoutFresh = false;
+  var layoutOpened = false;
+
+  function shortRail() {
+    return state.layout === 'b';
+  }
+
+  function applyLayout(id) {
+    state.layout = id;
+    document.documentElement.setAttribute('data-layout', id);
   }
 
   function applyStyle(id) {
@@ -2794,6 +2857,92 @@
     if (first) first.focus();
   }
 
+  /* --------------------------------------------------------- the More sheet
+   * The four doors the short rail does not draw as pills — Ask, the
+   * flashcards, the colour and feedback — as rows, in the account sheet's
+   * own menu shape and under its own card. Built when it opens, because the
+   * colour row names the side you are about to get and that is decided at
+   * the moment of opening, the way the swatch's label is. Never opened on the
+   * full rail: its pill is put away there. "The short rail" in README.md.
+   *
+   * Every row is the pill it stands for. It reports the same event the pill
+   * reports and is counted on /admin/stats under the pill's own id, so a
+   * door pressed here and the same door pressed on the full rail are one
+   * number and the two rails can be read against each other. */
+  function openMore() {
+    state.lastFocus = document.activeElement;
+    dom.moreScrim.hidden = false;
+    document.body.classList.add('has-scrim');
+    renderMore();
+    var first = dom.moreCard.querySelector('.menu-row');
+    if (first) first.focus();
+  }
+
+  function closeMore() {
+    dom.moreScrim.hidden = true;
+    document.body.classList.remove('has-scrim');
+    var back = state.lastFocus;
+    state.lastFocus = null;
+    if (back && back.focus) back.focus();
+  }
+
+  function renderMore() {
+    clear(dom.moreCard);
+    var close = el('button', {
+      type: 'button',
+      className: 'panel-close ac-close',
+      'aria-label': t('close'),
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+    });
+    close.addEventListener('click', function () {
+      TTBTrack.event('more_close');
+      closeMore();
+    });
+    dom.moreCard.appendChild(close);
+
+    /* A row that leaves for an address is an <a>, the way the two doors are
+       on the rail; a row that does something to this page is a button. */
+    function row(id, name, why, href, event, press) {
+      var node = el(href ? 'a' : 'button', href
+        ? { className: 'menu-row', href: href }
+        : { type: 'button', className: 'menu-row' }, [
+        el('span', { className: 'menu-say' }, [
+          el('span', { className: 'menu-name', textContent: name }),
+          el('span', { className: 'menu-why', textContent: why })
+        ]),
+        el('span', { className: 'menu-go', 'aria-hidden': 'true', html: AC_CHEVRON })
+      ]);
+      node.addEventListener('click', function () {
+        TTBTrack.event(event);
+        postPress('rail', id);
+        if (press) press();
+      });
+      return el('li', { className: 'menu-item' }, [node]);
+    }
+
+    var next = nextStyle();
+    dom.moreCard.appendChild(el('div', { className: 'ac-form' }, [
+      el('p', { className: 'eyebrow ac-eyebrow', textContent: t('wordmark') }),
+      el('h2', { className: 'ac-title', textContent: t('moreOpen') }),
+      el('p', { className: 'ac-why', textContent: t('moreLine') }),
+      el('ul', { className: 'menu' }, [
+        row('ask', t('askOpen'), t('askTitle'), '', 'ask_open', function () {
+          closeMore();
+          openAsk();
+        }),
+        row('flash', t('flashDoor'), t('flashDoorWhy'), '/flashcard', 'flash_open_rail'),
+        /* The line under Colour is the side you are about to get, exactly as
+           the swatch's label is; pressing it redraws the sheet so the line
+           says the way back. */
+        row('style', t('styleLabel'), t(styleKey(next)), '', 'style_open', function () {
+          setStyle(next);
+          renderMore();
+        }),
+        row('feedback', t('feedbackTitle'), t('feedbackWhy'), '/feedback', 'feedback_open')
+      ])
+    ]));
+  }
+
   function closeAccount() {
     dom.accountScrim.hidden = true;
     document.body.classList.remove('has-scrim');
@@ -2870,7 +3019,10 @@
       at: function () { return chipRow() || dom.btnFilters; } },
     { key: 'explainRandom', at: function () { return dom.btnRandom; },
       pills: function () { return [dom.btnRandom]; } },
+    /* Ask is a pill on the full rail and a row behind More on the short one,
+       so the walk points at whichever door this rail has. */
     { key: 'explainAsk', at: function () { return dom.btnAsk; },
+      when: function () { return !shortRail(); },
       pills: function () { return [dom.btnAsk]; } },
     { key: 'explainSave', at: function () { return dom.btnAccount; },
       when: function () { return !dom.btnAccount.hidden; },
@@ -2882,6 +3034,9 @@
     { key: 'explainLists', at: function () { return dom.btnLists; },
       when: function () { return !dom.btnLists.hidden; },
       pills: function () { return [dom.btnLists]; } },
+    { key: 'explainMore', at: function () { return dom.btnMore; },
+      when: shortRail,
+      pills: function () { return [dom.btnMore]; } },
     /* Second in the row, after All: renderFilters draws the discount chip
        ahead of the types. */
     { key: 'explainDiscount', when: anyLiveDeal, drawer: true,
@@ -2950,7 +3105,10 @@
        to leave somewhere rather than to appear, and the first step is placed
        without a slide from wherever the last open left the pieces. */
     dom.tour.classList.add('no-move');
-    var from = dom.btnExplain.getBoundingClientRect();
+    /* From Show me around, which is the one button that starts this now:
+       the card is on its way out but still drawn, so the cursor is seen to
+       leave it. */
+    var from = dom.welcomeTour.getBoundingClientRect();
     moveCursor(from.left + from.width / 2, from.top + from.height / 2);
     /* The reflow is what makes the jump a jump: without it the browser
        coalesces the two transforms into one transition. */
@@ -3695,6 +3853,11 @@
    * not named there is a press the route answers {ok:false} to. Nothing in
    * #rail but these nine is counted, and the radio is outside it — it stands
    * next to the language switch now — so it is not in this table.
+   *
+   * The rows behind More count as the pills they stand for — a row is that
+   * pill, drawn elsewhere — through postPress() in renderMore(), so Ask
+   * pressed on either rail is one number. More itself is a pill and counts
+   * as one.
    */
   var RAIL_PRESS = {
     'btn-account': 'account',
@@ -3703,7 +3866,7 @@
     'btn-random': 'random',
     'btn-ask': 'ask',
     'btn-locate': 'locate',
-    'btn-explain': 'explain',
+    'btn-more': 'more',
     'btn-feedback': 'feedback'
   };
 
@@ -3911,7 +4074,7 @@
          on it and shutting it again used to lose somebody's list, with nothing
          pressed and nothing said. Pressing a chip still ends it; that is a
          question about the map, and it is asked on purpose. */
-      if (isNarrow() && state.active.length) clearChips();
+      if (drawerHolds()) clearChips();
       return;
     }
     /* The class the chips' entrance is hung on, held for exactly as long as
@@ -3929,6 +4092,17 @@
   }
 
   function closeFilterMenu() { setFilterMenu(false); }
+
+  /* Whether shutting the drawer would hide a chip that is filtering the
+     map, which is the one state this design says cannot exist. On the full
+     rail that is any chip at all; on the short one the three out front stay
+     in view with the drawer shut, so only a chip from inside it counts. A
+     desktop has no drawer and shuts nothing. */
+  function drawerHolds() {
+    if (!isNarrow()) return false;
+    if (!shortRail()) return state.active.length > 0;
+    return state.active.some(function (id) { return FRONT_CHIPS.indexOf(id) === -1; });
+  }
 
   /* The chip row when it is out on the page, and null while it is folded
      away behind Filters. Above 860px there is no drawer, so it is always
@@ -3960,7 +4134,7 @@
   function hideChipRow() {
     if (!chipRowShown) return;
     chipRowShown = false;
-    if (!state.active.length) setFilterMenu(false);
+    if (!drawerHolds()) setFilterMenu(false);
   }
 
   /* The one thing a resize can break: a window narrowing onto a filtered map
@@ -3968,20 +4142,31 @@
      filtering, which is the one state this design says cannot exist. So it
      arrives open instead, showing what is doing the filtering. */
   function syncFilterMenuToWidth() {
-    if (isNarrow() && state.active.length) setFilterMenu(true);
+    if (drawerHolds()) setFilterMenu(true);
+  }
+
+  /* One chip, however many rows it is drawn on: All, the discount and the
+     types were three copies of this before the short rail wanted a fourth. */
+  function chipEl(label, on, press) {
+    var chip = el('button', {
+      type: 'button',
+      className: 'chip',
+      'aria-pressed': String(on),
+      textContent: label
+    });
+    chip.addEventListener('click', press);
+    return chip;
   }
 
   function renderFilters() {
     clear(dom.filters);
+    clear(dom.chipsFront);
 
-    var all = el('button', {
-      type: 'button',
-      className: 'chip',
-      'aria-pressed': String(state.active.length === 0),
-      textContent: t('filterAll')
-    });
-    all.addEventListener('click', clearChips);
-    dom.filters.appendChild(all);
+    dom.filters.appendChild(chipEl(t('filterAll'), state.active.length === 0, clearChips));
+    /* The way out of the chips goes out front only while there is something
+       to get out of: with nothing pressed, All at the head of three chips is
+       a fourth chip that does nothing. */
+    if (state.active.length) dom.chipsFront.appendChild(chipEl(t('filterAll'), false, clearChips));
 
     /* THE LIST IS NOT A CHIP
        Somebody's top ten used to sit here as a chip wearing its own title,
@@ -4010,28 +4195,20 @@
     /* The only chip that is an offer rather than a description — and last to
        appear, since with no live deal anywhere it is a chip that would filter
        down to nothing. */
-    if (anyLiveDeal()) {
-      var onDeal = state.active.indexOf(DEAL_FILTER) !== -1;
-      var dealChip = el('button', {
-        type: 'button',
-        className: 'chip',
-        'aria-pressed': String(onDeal),
-        textContent: t('filterDiscount')
-      });
-      dealChip.addEventListener('click', function () { toggleChip(DEAL_FILTER); });
-      dom.filters.appendChild(dealChip);
-    }
-
-    usedTypeIds().forEach(function (id) {
+    var ids = anyLiveDeal() ? [DEAL_FILTER].concat(usedTypeIds()) : usedTypeIds();
+    ids.forEach(function (id) {
       var on = state.active.indexOf(id) !== -1;
-      var chip = el('button', {
-        type: 'button',
-        className: 'chip',
-        'aria-pressed': String(on),
-        textContent: typeLabel(id)
-      });
-      chip.addEventListener('click', function () { toggleChip(id); });
-      dom.filters.appendChild(chip);
+      var label = id === DEAL_FILTER ? t('filterDiscount') : typeLabel(id);
+      var press = function () { toggleChip(id); };
+      var chip = dom.filters.appendChild(chipEl(label, on, press));
+      /* The short rail's three stand outside the drawer as well, and the
+         copy inside it wears a class the stylesheet puts away on that rail,
+         so the chip is on the page once at a time. Drawn at every width and
+         on both rails, cheaply; the stylesheet decides what shows. */
+      if (FRONT_CHIPS.indexOf(id) !== -1) {
+        chip.classList.add('chip-front');
+        dom.chipsFront.appendChild(chipEl(label, on, press));
+      }
     });
 
     /* Each chip slides in a beat after the one before it. Capped at eight
@@ -4045,9 +4222,37 @@
     updateFilterFades();
   }
 
-  /* Keep the fade classes in step with how far the chip row is scrolled. */
+  /* The same question as a list, under the chips, while exactly one type is
+     pressed: every chip is also a public list under the map's own account —
+     "The chips, as lists" in README.md — and a filtered map is not a thing
+     you can send somebody where a list is. The address is the chip's `list`
+     in data/taxonomy.json, which is where tools/typelists.mjs reads it from
+     too. One chip and not two, because two chips are a map nobody has written
+     a list of; and never the discount, which is an offer rather than a kind
+     of place and has no list. Hidden again the moment the chips change. */
+  function chipListLink() {
+    var link = dom.chipList;
+    if (!link) return;
+    var id = state.active.length === 1 ? state.active[0] : '';
+    var type = null;
+    for (var i = 0; i < state.types.length; i++) {
+      if (state.types[i].id === id) type = state.types[i];
+    }
+    if (!type || !type.list) { link.hidden = true; return; }
+    link.href = '/list/' + encodeURIComponent(type.list);
+    link.textContent = t('chipList');
+    link.hidden = false;
+  }
+
+  /* Keep the fade classes in step with how far a chip row is scrolled — the
+     drawer's row, and the short rail's three outside it, which run past a
+     390px phone the moment All joins them. */
   function updateFilterFades() {
-    var box = dom.filters;
+    fadeEdges(dom.filters);
+    fadeEdges(dom.chipsFront);
+  }
+
+  function fadeEdges(box) {
     var max = box.scrollWidth - box.clientWidth;
     var x = box.scrollLeft;
     box.classList.toggle('can-left', max > 1 && x > 1);
@@ -4389,6 +4594,7 @@
     }
     syncUrl();
     renderFilters();
+    chipListLink();
     if (state.view === 'list') renderPanel();
     paintMarkers();
 
@@ -4490,18 +4696,28 @@
      have named themselves and the eye has somewhere to be sent. The label
      grows leftwards out of the corner, because the pill is anchored by its
      right edge down here. */
-  var HINT_KEYS = ['account', 'lists', 'flash', 'random', 'ask',
-                   'style', 'locate', 'explain', 'feedback'];
+  var HINT_KEYS = ['account', 'lists', 'more', 'flash', 'random', 'ask',
+                   'style', 'locate', 'feedback'];
   var hintTimers = {};
+
+  /* The ones this rail draws, top to bottom. The full rail is eight; the
+     short one is three pills and the corner, and its cascade is over inside
+     two seconds — which is half of why it exists. openHint() would skip a
+     put-away pill on its own; naming the four keeps the arithmetic honest. */
+  function railKeys() {
+    if (shortRail()) return ['account', 'lists', 'more', 'random', 'locate'];
+    return HINT_KEYS.filter(function (key) { return key !== 'more'; });
+  }
 
   /* Before any of them, the welcome card: see showWelcome below. The pills
      wait until it has been put away, so there is one introduction at a time.
 
      The first pill waits a little over a second after that, so the map has
-     settled before the buttons start naming themselves. Nine pills 300ms
-     apart and held for 4.2s each put the last collapse at 7.75s, and every
+     settled before the buttons start naming themselves. Eight pills 300ms
+     apart and held for 4.2s each put the last collapse at 7.45s, and every
      pill added puts another 300ms on how long the corner spends talking —
-     which is the cost of a tenth, and a real one. */
+     which is the cost of a ninth, and a real one. The short rail's five are
+     all open by 2.35s and gone by 6.55s. */
   var RAIL_IN = 1150;
   /* Whether this visit owes the welcome card: set on the way in when
      INTRO_KEY says this browser has never been introduced, and spent the
@@ -4547,12 +4763,12 @@
   function hintPill(key) {
     if (key === 'account') return dom.btnAccount;
     if (key === 'lists') return dom.btnLists;
+    if (key === 'more') return dom.btnMore;
     if (key === 'flash') return dom.btnFlash;
     if (key === 'ask') return dom.btnAsk;
     if (key === 'radio') return dom.btnRadio;
     if (key === 'style') return dom.styles && dom.styles.querySelector('.rail-btn');
     if (key === 'locate') return dom.btnLocate;
-    if (key === 'explain') return dom.btnExplain;
     if (key === 'feedback') return dom.btnFeedback;
     return dom.btnRandom;
   }
@@ -4577,9 +4793,15 @@
     for (var i = 0; i < HINT_KEYS.length; i++) closeHint(HINT_KEYS[i]);
   }
 
+  /* A pill the other rail draws is put away by the stylesheet rather than
+     by `hidden`, so it is asked for its width, the way chipRow() asks. */
+  function shownPill(btn) {
+    return !!(btn && !btn.hidden && btn.getBoundingClientRect().width);
+  }
+
   function openHint(key, delay) {
     var btn = hintPill(key);
-    if (!btn || btn.hidden || !hintText(btn)) return;
+    if (!shownPill(btn) || !hintText(btn)) return;
     closeHint(key);
     hintTimers[key] = setTimeout(function () {
       /* Never over an open sheet. With a place open the rail lies along the
@@ -4680,7 +4902,8 @@
     /* A cascade rather than the whole column at once: 300ms apart is slow
        enough to read down the rail and quick enough that they are all up
        together for most of the time they are up at all. */
-    for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], RAIL_IN + i * 300);
+    var keys = railKeys();
+    for (var i = 0; i < keys.length; i++) openHint(keys[i], RAIL_IN + i * 300);
     openChipRowHint();
   }
 
@@ -6166,6 +6389,14 @@
 
     TTBTrack.view(place.name);
     countPress('place', place.id);
+    /* The first place this visit opened, on the visit the short rail was
+       dealt — the number /admin/stats sets against how many were dealt it.
+       Once, whatever else this visit opens; the place a link opened is the
+       link's and not a press, and is left out — see boot. */
+    if (layoutFresh && !opts.arrived && !layoutOpened) {
+      layoutOpened = true;
+      postPress('layout', 'b-opened');
+    }
     /* The phone, the site and the week of a venue the find bar put there,
        fetched the first time it is opened — see dressFound(). */
     if (isFound(id)) dressFound(place);
@@ -10528,6 +10759,10 @@
     else params.delete('lang');
     if (state.stylePinned) params.set('style', state.style);
     else params.delete('style');
+    /* Read once by pickLayout() and kept in storage, so it has said its
+       piece: left on the bar it would deal the same rail to whoever the link
+       was sent on to. */
+    params.delete('layout');
     /* ?story= is a door, not a state: it opens the queue on the way in and is
        taken off the address bar there and then, so nothing anybody copies out
        of it later reopens a video that has since gone.
@@ -10751,11 +10986,20 @@
       TTBTrack.event('account_close');
       closeAccount();
     });
-    dom.btnExplain.addEventListener('click', openExplain);
+    dom.btnMore.addEventListener('click', function () {
+      closeHint('more');
+      TTBTrack.event('more_open');
+      openMore();
+    });
+    dom.moreScrim.addEventListener('click', function (ev) {
+      if (ev.target !== dom.moreScrim) return;
+      TTBTrack.event('more_close');
+      closeMore();
+    });
     if (dom.welcome) {
       $('welcome-ok').addEventListener('click', function () { dismissWelcome(false); });
       $('welcome-x').addEventListener('click', function () { dismissWelcome(false); });
-      $('welcome-tour').addEventListener('click', function () { dismissWelcome(true); });
+      dom.welcomeTour.addEventListener('click', function () { dismissWelcome(true); });
     }
     /* Reported with the step being left, one-based, so the report reads as
        how far into the tour people get before Next stops being pressed. */
@@ -10820,6 +11064,7 @@
         /* Ahead of the lightbox: the account sheet stands over everything, so
            it is the thing Escape means when it is open. */
         if (!dom.accountScrim.hidden) { closeAccount(); return; }
+        if (!dom.moreScrim.hidden) { closeMore(); return; }
         if (tour.i >= 0) { closeExplain(); return; }
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
@@ -10935,6 +11180,7 @@
     });
 
     dom.filters.addEventListener('scroll', updateFilterFades, { passive: true });
+    dom.chipsFront.addEventListener('scroll', updateFilterFades, { passive: true });
 
     /* A desktop mouse only has a vertical wheel; turn that into sideways
        travel while the pointer is over the chip row. */
@@ -11132,6 +11378,8 @@
       brand: $('brand'),
       langSwitch: $('lang-switch'),
       filters: $('filters'),
+      chipsFront: $('chips-front'),
+      chipList: $('chip-list'),
       filterBar: $('filter-bar'),
       btnFilters: $('btn-filters'),
       styles: $('styles'),
@@ -11147,6 +11395,9 @@
       panelShare: $('panel-share'),
       btnAccount: $('btn-account'),
       btnLists: $('btn-lists'),
+      btnMore: $('btn-more'),
+      moreScrim: $('more-scrim'),
+      moreCard: $('more-card'),
       btnFlash: $('btn-flash'),
       nudge: $('nudge'),
       nudgeSay: $('nudge-say'),
@@ -11180,8 +11431,8 @@
       askThread: $('ask-thread'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
-      btnExplain: $('btn-explain'),
       welcome: $('welcome'),
+      welcomeTour: $('welcome-tour'),
       /* Held only so the introduction can open its label — the press itself
          is an <a> going to an address, and nothing in this file wires it. */
       btnFeedback: $('btn-feedback'),
@@ -11283,6 +11534,9 @@
       state.style = styled.style;
       state.stylePinned = styled.pinned;
       applyStyle(state.style);
+      /* And which rail, before the rail is measured: a pill the stylesheet
+         puts away has no height for placeRail() to count. */
+      applyLayout(pickLayout());
 
       buildSearchIndex();
       applyStaticStrings();
@@ -11345,7 +11599,9 @@
       var at = params.get('at') || '';
       var stand = isOnList(at) ? byId(at) : null;
       syncUrl();
-      if (spot && byId(spot)) selectPlace(spot, { fly: true });
+      /* `arrived` says this open was the link's and not a press, which the
+         count of first places opened on the short rail leaves out. */
+      if (spot && byId(spot)) selectPlace(spot, { fly: true, arrived: true });
 
       /* The list, standing on one of its places: the map above, the list
          under it, and that place lit between the two. See standOn(). */

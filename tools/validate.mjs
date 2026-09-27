@@ -1919,7 +1919,7 @@ for (const [page, empty] of Object.entries(EMPTY)) {
    link to all ten on every one: a language added to ui.json without it is a
    page a search engine is never told about. */
 if (staleSitemap()) {
-  fail('sitemap.xml', 'is not what tools/sitemap.mjs would write from data/ui.json and tools/typelists.mjs — run `node tools/sitemap.mjs` and commit the result');
+  fail('sitemap.xml', 'is not what tools/sitemap.mjs would write from data/ui.json and data/taxonomy.json — run `node tools/sitemap.mjs` and commit the result');
 }
 
 /* ---------------------------------------------------------------- reporting */

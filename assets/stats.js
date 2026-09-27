@@ -6,10 +6,11 @@
  * Then Google's directory, only the venues somebody has actually pressed. Then
  * the filter chips, in full, which is the table that argues about the order of
  * the chip row: see **The order of the filter chips** in README.md. Then the
- * nine pills down the rail on the map, in full, which is the table that argues
- * about what earns a slot on it. Under all four, two footnotes about the site
- * rather than about a press: how many opens have been counted, and how many
- * accounts exist.
+ * nine pills across the map's two rails, in full, which is the table that
+ * argues about what earns a slot on it. Under all four, footnotes about the
+ * site rather than about a press: how many opens have been counted, how many
+ * accounts exist, and — once anybody has been dealt it — how many strangers
+ * got the short rail and how many of them opened a place with it.
  *
  * WHERE THE NUMBERS COME FROM
  *
@@ -60,6 +61,7 @@
     ready: false,   // whether the numbers came back at all
     opens: 0,
     users: 0,
+    layout: { given: 0, opened: 0 },
     map: [],
     venues: [],
     filters: [],
@@ -329,10 +331,18 @@
        stack sets 18px between whatever it is given, which is right between
        cards and far too much between two lines of the same footnote — it read
        as one stray sentence that had come off something. */
-    stack.appendChild(el('div', { className: 'stats-totals' }, [
+    var totals = el('div', { className: 'stats-totals' }, [
       el('p', { className: 'stats-total', textContent: t('statsTotal', { n: state.opens }) }),
       el('p', { className: 'stats-total', textContent: t('statsUsersTotal', { n: state.users }) })
-    ]));
+    ]);
+    /* The short rail's own sentence, once somebody has been dealt it: how
+       many were, and how many of them found a place with it. Absent before
+       that rather than a line about nought, like the two tables above. */
+    if (state.layout.given) {
+      totals.appendChild(el('p', { className: 'stats-total', textContent:
+        t('statsLayoutTotal', { given: state.layout.given, opened: state.layout.opened }) }));
+    }
+    stack.appendChild(totals);
 
     main.appendChild(stack);
   }
@@ -363,6 +373,7 @@
         state.ready = !!out.ready;
         state.opens = out.opens || 0;
         state.users = out.users || 0;
+        state.layout = out.layout || { given: 0, opened: 0 };
         state.map = out.map || [];
         state.venues = out.venues || [];
         state.filters = out.filters || [];
