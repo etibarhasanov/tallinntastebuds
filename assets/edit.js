@@ -36,7 +36,20 @@
  *
  * ONE SAVE FOR ALL OF IT
  *
- * Everything on both tabs is one draft, and Save sends what changed and
+ * EVERYTHING ON ONE PAGE
+ *
+ * It was two tabs for a while — Links, and About you with the name, the line
+ * and the three handles under it — and the tab was one more thing to find
+ * before anything could be typed. The name and the line are two boxes and
+ * the handles are three short ones; together they are shorter than one open
+ * row, so they go at the top, in the order the profile draws them, and the
+ * rows follow under a heading of their own. A handle is written after the
+ * address it becomes — instagram.com/ in front of the box — so the box needs
+ * no label over it and the five fields read as one short block.
+ *
+ * ONE SAVE FOR ALL OF IT
+ *
+ * Everything on the page is one draft, and Save sends what changed and
  * nothing else — up to four writes to /api/account, the same four actions
  * the account page's boxes made, one after the other. Each of those writes is
  * whole on its own, so a Save that fails halfway leaves the parts before it
@@ -110,7 +123,6 @@
        difference; Discard copies the first over the second. */
     saved: { display: '', about: '', links: {}, rows: [] },
     draft: null,
-    tab: 'links',
     open: -1,     // the row whose fields are showing, -1 for none
     err: '',      // the sentence over the fields after a refusal
     busy: false
@@ -352,7 +364,6 @@
 
     main.appendChild(el('div', { className: 'ed' }, [
       el('section', { className: 'card lists-card ed-panel' }, [
-        tabs(),
         dom.pane,
         el('div', { className: 'ed-bar' }, [dom.status, preview, dom.discard, dom.save])
       ]),
@@ -364,39 +375,16 @@
     drawBar();
   }
 
-  /* The two halves of the draft, as a segmented control — the one this site
-     already has for a choice between views of one thing (.lists-seg), with
-     its radios, and with is-on moved by hand because the radio being checked
-     changes nothing anybody can see. */
-  function tabs() {
-    var seg = el('div', { className: 'lists-seg ed-tabs', role: 'radiogroup', 'aria-label': t('editTitle') });
-    [['links', 'editTabLinks'], ['about', 'accountAbout']].forEach(function (tab) {
-      var input = el('input', { type: 'radio', name: 'ed-tab', value: tab[0], checked: state.tab === tab[0] });
-      var label = el('label', { className: 'lists-seg-opt' + (state.tab === tab[0] ? ' is-on' : '') }, [input, t(tab[1])]);
-      input.addEventListener('change', function () {
-        var opts = seg.querySelectorAll('.lists-seg-opt');
-        for (var i = 0; i < opts.length; i++) opts[i].classList.toggle('is-on', opts[i] === label);
-        state.tab = tab[0];
-        state.err = '';
-        state.open = -1;
-        TTBTrack.event('edit_tab', { tab: tab[0] });
-        drawPane();
-        drawPreview();
-      });
-      seg.appendChild(label);
-    });
-    return seg;
-  }
-
   function drawPane() {
     clear(dom.pane);
-    var about = state.tab === 'about';
-    dom.pane.appendChild(el('h1', { className: 'lists-title', textContent: t(about ? 'accountAbout' : 'editTabLinks') }));
-    dom.pane.appendChild(el('p', { className: 'lists-say', textContent: t(about ? 'editAboutWhy' : 'editLinksWhy') }));
+    dom.pane.appendChild(el('h1', { className: 'lists-title', textContent: t('editTitle') }));
     dom.err.textContent = state.err;
     dom.err.hidden = !state.err;
     dom.pane.appendChild(dom.err);
-    dom.pane.appendChild(about ? aboutFields() : rowsList());
+    dom.pane.appendChild(aboutFields());
+    dom.pane.appendChild(el('h2', { className: 'ed-head', textContent: t('editTabLinks') }));
+    dom.pane.appendChild(el('p', { className: 'lists-say', textContent: t('editLinksWhy') }));
+    dom.pane.appendChild(rowsList());
   }
 
   /* Anything typed: the preview and the bar follow, and nothing is sent. The
@@ -415,7 +403,8 @@
 
   /* ------------------------------------------------------------ about you */
 
-  /* A mono label over a 16px field, design rule 9, for all five. */
+  /* A mono label over a 16px field, design rule 9, for the name, the line
+     and every box in a row. */
   function field(labelKey, input) {
     return el('label', { className: 'ed-field' }, [
       el('span', { className: 'ed-label mono', textContent: labelKey }),
@@ -435,7 +424,7 @@
     display.addEventListener('input', function () { d.display = display.value; touched(); });
 
     var about = el('textarea', {
-      className: 'lists-input', maxlength: String(MAX_ABOUT), rows: '3',
+      className: 'lists-input', maxlength: String(MAX_ABOUT), rows: '2',
       placeholder: t('accountAboutHint')
     });
     about.value = d.about;
@@ -446,11 +435,17 @@
 
     /* The handles take a pasted address and show what they made of it once
        the field is left — **Where else you are** in README.md, and the
-       header of assets/links.js for why these three carry no maxlength. */
+       header of assets/links.js for why these three carry no maxlength.
+       Each is one line: the site's glyph and the address with the handle
+       missing off the end of it, then the box for the handle. The address
+       is the label, so it says what goes in the box better than the site's
+       name over it did, and the name is still what a screen reader hears. */
+    var social = el('div', { className: 'ed-social' });
     TTBLinks.NETWORKS.forEach(function (net) {
       var input = el('input', {
-        type: 'text', className: 'lists-input', autocomplete: 'off',
-        autocapitalize: 'none', spellcheck: 'false', 'data-net': net.id
+        type: 'text', className: 'ed-handle', autocomplete: 'off',
+        autocapitalize: 'none', spellcheck: 'false', 'data-net': net.id,
+        'aria-label': net.label
       });
       input.value = d.links[net.id] || '';
       input.addEventListener('input', function () { d.links[net.id] = input.value; touched(); });
@@ -458,9 +453,16 @@
         var handle = TTBLinks.clean(net.id, input.value);
         if (handle && handle !== input.value) { input.value = handle; d.links[net.id] = handle; touched(); }
       });
-      /* The site's own name is the label, in all ten languages. */
-      box.appendChild(field(net.label, input));
+      social.appendChild(el('label', { className: 'ed-net' }, [
+        el('span', {
+          className: 'ed-glyph',
+          html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + TTBLinks.GLYPHS[net.id] + '</svg>'
+        }),
+        el('span', { className: 'ed-base mono', 'aria-hidden': 'true', textContent: net.base.replace(/^https:\/\/(?:www\.)?/, '') }),
+        input
+      ]));
     });
+    box.appendChild(social);
 
     return box;
   }
@@ -803,12 +805,9 @@
     drawBar();
   }
 
-  function fail(message, tab, row) {
+  function fail(message, row) {
     state.err = message;
-    if (tab) state.tab = tab;
     if (typeof row === 'number') state.open = row;
-    /* The tabs are redrawn with the pane, because a refusal can move you
-       from one to the other. */
     render();
     if (typeof row === 'number') focusOpen();
     else dom.err.scrollIntoView({ block: 'nearest' });
@@ -823,20 +822,20 @@
     var rows = rowsOut(d.rows);
 
     for (var i = 0; i < rows.length; i++) {
-      if (!rows[i].title) return fail(t('rowsErrTitle', { n: i + 1 }), 'links', i);
+      if (!rows[i].title) return fail(t('rowsErrTitle', { n: i + 1 }), i);
       /* A link with no address and a note with no note would be stored as
          headings — which is what the server makes of either — and a row
          somebody added as a note turning into a heading on Save is a
          surprise, so it is said instead. */
-      if (d.rows[i].kind === 'link' && !rows[i].url) return fail(t('editErrUrl', { n: i + 1 }), 'links', i);
-      if (d.rows[i].kind === 'note' && !rows[i].note.trim()) return fail(t('editErrNote', { n: i + 1 }), 'links', i);
-      if (rows[i].url && !/^https:\/\/[^/]/.test(rows[i].url)) return fail(t('rowsErrUrl', { n: i + 1 }), 'links', i);
+      if (d.rows[i].kind === 'link' && !rows[i].url) return fail(t('editErrUrl', { n: i + 1 }), i);
+      if (d.rows[i].kind === 'note' && !rows[i].note.trim()) return fail(t('editErrNote', { n: i + 1 }), i);
+      if (rows[i].url && !/^https:\/\/[^/]/.test(rows[i].url)) return fail(t('rowsErrUrl', { n: i + 1 }), i);
     }
     var links = linksOut(d.links);
     for (var n = 0; n < TTBLinks.NETWORKS.length; n++) {
       var net = TTBLinks.NETWORKS[n];
       if (links[net.id] && !TTBLinks.clean(net.id, links[net.id])) {
-        return fail(t('accountErrLink', { name: net.label }), 'about');
+        return fail(t('accountErrLink', { name: net.label }));
       }
     }
 
@@ -888,14 +887,14 @@
       var out = (why && why.out) || {};
       var err = out.error;
       if (why && why.status === 401) return fail(t('editErrSignedOut'));
-      if (err === 'row-title' && typeof out.row === 'number') return fail(t('rowsErrTitle', { n: out.row + 1 }), 'links', out.row);
-      if (err === 'row-url' && typeof out.row === 'number') return fail(t('rowsErrUrl', { n: out.row + 1 }), 'links', out.row);
-      if (err === 'rows-many') return fail(t('rowsErrMany'), 'links');
-      if (err === 'no-rows-table') return fail(t('rowsErrOff'), 'links');
+      if (err === 'row-title' && typeof out.row === 'number') return fail(t('rowsErrTitle', { n: out.row + 1 }), out.row);
+      if (err === 'row-url' && typeof out.row === 'number') return fail(t('rowsErrUrl', { n: out.row + 1 }), out.row);
+      if (err === 'rows-many') return fail(t('rowsErrMany'));
+      if (err === 'no-rows-table') return fail(t('rowsErrOff'));
       if (err === 'bad-link') {
         var named = '';
         TTBLinks.NETWORKS.forEach(function (net) { if (net.id === out.network) named = net.label; });
-        return fail(t('accountErrLink', { name: named }), 'about');
+        return fail(t('accountErrLink', { name: named }));
       }
       return fail(t('accountErrGeneric'));
     });

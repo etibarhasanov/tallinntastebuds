@@ -6918,8 +6918,14 @@ left and the page itself on the right, redrawn on every keystroke before
 anything is saved. `edit.html` and `assets/edit.js`; the few rules it adds
 are at the foot of `lists.css`, under *the editor*.
 
-- **Two tabs, one draft.** *Links* is the rows; *About you* is the name you
-  go by, the line and the three handles. Everything on both is one draft
+- **One page, one draft.** The name you go by, the line and the three
+  handles come first, in the order the profile draws them, and the rows
+  follow under *Links*. It was two tabs once — *Links* and *About you* — and
+  the tab was one more thing to find before anything could be typed; five
+  short fields together are shorter than one open row. Each handle is one
+  line with no label over it: the site's glyph and its address with the
+  handle missing — `instagram.com/`, `tiktok.com/@`, `facebook.com/` — then
+  the box, so the box says what goes in it. Everything is one draft
   with one Save, and Save is the page's one filled action (rule 5) — on a
   page whose whole job is editing, saving is the thing it is asking for.
   Save sends only the parts that changed, as the same four actions
@@ -12988,7 +12994,6 @@ The editor for the page under your name, `assets/edit.js`:
 
 | event | parameters |
 | --- | --- |
-| `edit_tab` | `tab` (`links`/`about`) |
 | `edit_add` | `kind` (`link`/`heading`/`note`) — a row added |
 | `edit_drag` | `from`, `to`, one-based — a row dragged to a new place |
 | `edit_preview` | — the preview opened over the editor, on a phone |
