@@ -789,7 +789,17 @@
   align-items: start;
 }
 .ed-panel { padding-bottom: 0; }
-.ed-tabs { margin-bottom: 18px; }
+/* Your name, your line and your handles at the top, then the rows under a
+   heading of their own: one page where there were two tabs. */
+.ed-head {
+  margin: 30px 0 4px;
+  padding-top: 22px;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
 .ed-pane .ac-err { margin: 0 0 14px; }
 
 /* A mono label over a 16px field — design rule 9 — for every box on the
@@ -798,7 +808,52 @@
 .ed-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .ed-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .ed-field .lists-input { width: 100%; }
-.ed-field textarea.lists-input { min-height: 88px; resize: vertical; font-family: var(--body); line-height: 1.45; }
+.ed-field textarea.lists-input { min-height: 64px; resize: vertical; font-family: var(--body); line-height: 1.45; }
+
+/* The three handles, one line each and no label over any of them: the
+   site's glyph and its address with the handle missing, then the box the
+   handle goes in. The whole line is the field — it takes the border, the
+   hover and the focus ring a .lists-input would — so the address reads as
+   the start of what is being typed rather than as a caption beside it. */
+.ed-social { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.ed-net {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0 0 0 11px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  cursor: text;
+}
+.ed-net:hover { border-color: var(--muted); }
+.ed-net:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.ed-glyph { flex: none; display: grid; place-items: center; width: 22px; height: 22px; color: var(--ink); }
+.ed-glyph svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ed-glyph .is-fill { fill: currentColor; stroke: none; }
+.ed-base { flex: none; margin-left: 9px; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.ed-handle {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 10px 13px 10px 1px;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 15px;
+}
+.ed-handle:focus { outline: none; }
 
 .ed-add { margin-bottom: 14px; }
 .ed-empty { padding: 18px 0 6px; }
@@ -1875,7 +1930,8 @@ body.has-scrim { overflow: hidden; }
      bumped here for the same reason since the day it was written; these two had
      been missed, and this is the page with the most typing on it. */
   .lists-input,
-  .item-input { font-size: 16px; }
+  .item-input,
+  .ed-handle { font-size: 16px; }
   /* The word "Order" costs the chips a line at this width; the group still
      says its name to a screen reader, and three pressed-or-not pills under a
      search field read as what they are. */
