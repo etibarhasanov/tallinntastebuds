@@ -1286,7 +1286,7 @@
   }
 
   /* How much of a deck is known, as a rule the width of the tile. The same
-     track and fill the bar under a card is drawn with, so the page has one
+     track and fill the bar over a run is drawn with, so the page has one
      picture of "how far through" rather than two. It repeats the count beside
      it rather than replacing it — a length says nothing to somebody who
      cannot see it, and design rule 10 is about exactly that. */
@@ -1585,7 +1585,7 @@
    * and not an unlimited supply. See mark().
    *
    * `said`, `knew` and `again` are the two tallies over the card: how the run
-   * is going, where the bar under it says how far through it is. They count
+   * is going, where the bar over them says how far through it is. They count
    * **cards** rather than answers, which is the whole of what `said` is for —
    * a card got wrong and then known on its second turn moves from one tally
    * to the other rather than standing in both, and the two of them always add
@@ -1710,7 +1710,7 @@
      *
        It used to be every time, and a run of a deck somebody was struggling
        with then had no end: three cards answered wrong put three more on a
-       queue that was already growing, the bar under the card filled towards a
+       queue that was already growing, the bar over the card filled towards a
        total that moved away from it, and the only way to leave was the way
        back to the decks. A second look is the point — it is the one the
        README promises — and a third in the same sitting is not learning, it is
@@ -1864,6 +1864,11 @@
     var turned = state.run.turned;
     var face = el('div', { className: 'flash-face' }, turned
       ? [
+          /* The Estonian again, small, over what it means — on a card without
+             the three forms below, which would otherwise be the one place on
+             the answering side where the word being learnt did not appear at
+             all. A card with forms says it there, first of the three. */
+          word.forms ? null : el('p', { className: 'flash-echo', textContent: word.front }),
           el('p', { className: 'flash-back', textContent: means(word.back) }),
           /* The three forms, on the side that answers. A dictionary gives an
              Estonian noun as three — the nominative, the genitive and the
@@ -1914,7 +1919,8 @@
        is about to say, twice. focusRun() below is what took over the job. */
     var node = el('button', {
       type: 'button',
-      className: 'flash-card' + (state.run.returning ? ' is-back-' + state.run.returning : '')
+      className: 'flash-card' + (turned ? ' is-turned' : '') +
+                 (state.run.returning ? ' is-back-' + state.run.returning : '')
     }, [verdict, face]);
 
     /* Wired on both faces, and it answers on both — the header of swipe()
@@ -2213,14 +2219,13 @@
   /* The two tallies, over the card: what is still being learnt on the left and
      what is known on the right, of the cards this run has answered so far.
    *
-     They are not the bar under the card wearing different words. That one says
+     They are not the bar over them wearing different words. That one says
      how far through the deck this sitting is — a fact about the queue — and
      these say how the sitting is going, which is the thing somebody actually
      wants to know halfway down a deck and the thing that makes them finish it.
      Both start at nought and they always add up to the cards answered.
    *
-     A row of their own above the card rather than either end of the bar under
-     it. Three numbers on one line is two too many at 390 px, which is the
+     A row of their own under the bar rather than either end of it. Three numbers on one line is two too many at 390 px, which is the
      phone this page is measured against, and the bar's own count is the one
      that would have had to go.
    *
@@ -2350,7 +2355,7 @@
     ]);
   }
 
-  /* The eyebrow over the card: which deck this is, the way back out of it, and
+  /* The head of a run: which deck this is, the way back out of it, and
      — on a deck of your own — the word that opens the editor.
    *
      The way out is here rather than under the card, and that is the second
@@ -2391,7 +2396,7 @@
        gone by the time the two answers arrive, so the row under the card asks
        one thing at a time either way. See hintLine(). */
     if (!state.run.turned) {
-      return [runHead(), tallyRow(), faceCard(word), runBar(), hintLine(word)];
+      return [runHead(), runBar(), tallyRow(), pile(word), hintLine(word)];
     }
 
     var acts = el('div', { className: 'flash-acts' });
@@ -2404,7 +2409,18 @@
     knew.addEventListener('click', function () { answer(word, true, 'press'); });
     acts.appendChild(knew);
 
-    return [runHead(), tallyRow(), faceCard(word), runBar(), acts, wrongLine(word)];
+    return [runHead(), runBar(), tallyRow(), pile(word), acts, wrongLine(word)];
+  }
+
+  /* The card in hand, standing on the edges of the ones still under it. The
+     two edges are the wrapper's own, drawn in assets/flashcard.css, so they
+     stay put while the card on top is dragged or thrown: what is revealed
+     under a card on its way off the screen is the rest of the deck, which is
+     what is actually there. Only while more than this one card is left —
+     the last card of a run is the last card, and stands on nothing. */
+  function pile(word) {
+    var left = state.run.queue.length - state.run.at - 1;
+    return el('div', { className: 'flash-pile' + (left > 0 ? ' has-more' : '') }, [faceCard(word)]);
   }
 
   /* --------------------------------------------------- this card is wrong
