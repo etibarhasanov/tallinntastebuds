@@ -8391,8 +8391,8 @@ failed write already errs in: the card comes round again. `flush()` and
 ### How the run is going, which is not how far through it is
 
 Over the card, two tallies: **Still learning** on the left and **Know** on the
-right, of the cards this run has answered. Under the card, unchanged, the bar
-and **4 / 18**.
+right, of the cards this run has answered. Over them, under the deck's name,
+the bar and **4 / 18**.
 
 They are two different questions and the page had only ever answered one of
 them. *How far through am I* is a fact about the queue, and it is the one the
@@ -8419,11 +8419,38 @@ it does not fit: three numbers on one line at 390 px is two too many, and the
 one that would have had to go is the one saying how much is left. Neither side
 is pressable and neither is drawn to look it — no pill, no border, no fill:
 the figure is in the display face the score at the end of a run is in, and the
-word beside it is the mono every label on this site wears. Which side is which
-is said in words rather than in colour, the way the throw's own verdict is —
-design rule 10 — and the two differ by weight: what is known is in the ink and
-what is still being learnt is in the muted tone, which is the direction the
-count is meant to travel in.
+word beside it is the mono every label on this site wears. Each figure is in
+its answer's colour, with a dot of it beside the word — the red and the green
+a thrown card leans into, so the two counters and the two throws read as one
+pair — and the word still says which is which, the way the throw's own verdict
+does, for design rule 10.
+
+### What a run looks like
+
+The deck's name at the top, in the display face a name is set in, with **All
+the decks** beside it; under that the bar of how far through; then the two
+tallies; then the card. It was an eyebrow of spaced capitals over the card with
+the bar under it, which made the one thing saying where you are the smallest
+thing on the screen and put *how far* below the thing being answered.
+
+**The card stands on the rest of the deck.** Two edges of paper show under it,
+each a little narrower, while there is more than one card left — `pile()` in
+`assets/flashcard.js`. They belong to a wrapper rather than to the card, so they
+stay put while the card on top is dragged or thrown, and what shows under a
+card on its way off the screen is the deck, which is what is there.
+
+**The two faces look different before a word on them is read.** The front is
+plain paper with the Estonian at forty-six points; the back is washed a shade
+towards the accent with a band of it along the top edge. A card with no three
+forms says the Estonian again, small and muted, over its meaning — before, the
+answering side of a card like *Mis?* never showed the word being learnt at all.
+The line saying *tap to turn it over* or *did you know it?* stands at the foot
+of the card rather than under the last line of words, so it is in the same place
+on every card.
+
+**The two answers share the row equally**: **Knew it** fills its half, and
+**Show me again** stands in the middle of the other rather than against the
+edge, so the quiet answer is as easy to hit as the filled one.
 
 ### The hint
 
@@ -8677,7 +8704,7 @@ tile at `--radius` instead of a hairline between rows, because things side
 by side need an edge each. The grid, the tile and the foot are all
 `.flash-shelf` in `assets/flashcard.css`; `deckList()` puts the class on.
 
-**The rule is the bar under a card**, the same `.flash-track` and
+**The rule is the bar over a run**, the same `.flash-track` and
 `.flash-fill`, so the page has one picture of *how far through* rather than
 two. It is drawn only where there is progress to draw — signed in, with the
 database on, and not on the two gathered decks, which are made of progress
