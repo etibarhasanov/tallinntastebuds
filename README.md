@@ -13187,6 +13187,53 @@ list of what it leaves out.
 
 ---
 
+## A swipe to the right is Back
+
+On a phone the way back is a thumb dragged across the screen from left to
+right, and every app somebody opens before this site answers it from wherever
+the drag begins. A browser answers it only when the drag begins on the very
+edge of the glass. Start it an inch in, where a thumb actually lands, and a
+page does nothing — or scrolls sideways, or moves the map — and on a list or
+on a place's write-up that read as the site ignoring you. So the pages a
+visitor reaches listen for the drag themselves, in `assets/back.js`, and
+answer it the way the Back button would: `history.back()`, and nothing else.
+A place opened on the map closes, because opening one is a history entry of
+its own (**Back** under **Analytics**); a list goes back to the account page
+or the map it was opened from; a post on the blog goes back to the index.
+
+It is a press of Back and not a page sliding with the finger. Drawing the page
+underneath would mean knowing what the page underneath is, which no page here
+does. The drag ends, then the page changes.
+
+**Where it is not heard.** The map itself, because sideways is how a map is
+moved: on `index.html` the gesture is heard only on the panel, and only while
+`?spot=` says a place is open in it — with nothing open, Back is whatever page
+came before the site, and a thumb across the places column should not leave
+it. The first 24px from the left edge, which is the browser's own gesture on
+iOS and on Android alike, and answering it here as well would press Back
+twice. Anything laid out to take a sideways finger — a chip row, a photo
+strip, the lightbox and the stories, a row's grip on a list of your own, the
+sheet's grip — which CSS already says with `touch-action: none` or `pan-x`,
+or by scrolling sideways; the script walks up from where the finger landed and
+reads that rather than keeping a list of its own. A field being typed in,
+where a drag across the text is selecting it. A row being carried or a sheet
+being dragged, which the pages mark with `is-lifted`, `is-carrying` and
+`is-dragging` and this only reads. And a finger that goes up or down as much
+as across is scrolling: the direction is settled once, twelve pixels in, and a
+swipe counts at eighty, twice as wide as it is tall.
+
+The flashcards do not carry it, because a swipe on a card is an answer there;
+neither do splitwise nor the owner's pages, nor `verify.html` and
+`staff.html`, which are a waiter's camera and a restaurant's screen rather
+than somewhere a visitor walks back from.
+
+**Nowhere to go.** A page opened straight from a link has no entry behind it,
+and Back from there is the browser's start page or a closed tab. The gesture
+goes to the map instead, since on this site the map is what every page is a
+step away from. `navigation.canGoBack` says so exactly where it exists; where
+it does not, `history.length` says whether there is an entry at all, which can
+be one on another site — and going there is what the Back button does too.
+
 ## The map zooms by the pixel
 
 The zoom used to arrive in steps. Leaflet's own wheel handler gathers forty
@@ -13674,6 +13721,13 @@ for:
 | `pass_signin` | `place` — the way in, on a pass page opened signed out |
 | `pass_verify` | `place`, `status` — the verdict a scan got |
 | `home` | — |
+
+And every page that carries `assets/back.js` — the map, the lists, the account
+page, the blog, the feedback page, a deal, a page of links and its editor:
+
+| event | parameters |
+| --- | --- |
+| `swipe_back` | `can_go_back` (`1`/`0`) — a thumb dragged to the right, answered as Back; `0` is the one that went to the map instead because there was no entry behind. See **A swipe to the right is Back** |
 
 They appear under **Reports → Engagement → Events** on their own. To break the
 numbers down by a parameter — which chip, which language, which list — register
