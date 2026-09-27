@@ -12479,16 +12479,18 @@ surface, which nothing on the map was spending it on. It is the same
 `#btn-random`, a child of the rail fixed to the window the way the arrow is,
 so the counter, the cascade and the walk all still find it.
 
-**It is a die until it is pressed.** It first stood there as a filled pill
-wearing "Surprise me" for good, which over the arrow was the biggest thing on
-the map and read as a banner; the owner asked for it compact, with no words
-on it until it has done something. So it is the arrow's size, a 48px disc,
-and the colour is what says it is the one to press. Unlike every other pill it
-does not introduce itself: the cascade leaves it out (`railKeys()`), and the
-walk rings it and says its sentence without opening a label. The one thing
-that opens it is a roll: the label reads *Surprised*, the way a Copy button
-says Copied, for as long as the map is flying to the place (`FLY_MS`, 1.2
-seconds), then folds back to the die as the pin lands. No longer than that,
+**It is a die, and says what it is when the others do.** It first stood there
+as a filled pill wearing "Surprise me" for good, which over the arrow was the
+biggest thing on the map and read as a banner; the owner asked for it
+compact. So it is the arrow's size, a 48px disc, and the colour is what says
+it is the one to press. Its label comes out when every other pill's does —
+once in the cascade on a first visit, and under the walk — and otherwise
+only after a roll. For an afternoon the cascade left it out, so that it had
+no words at all until pressed, and that made it the one button a stranger
+was never told the meaning of; it is back in, once, with the others. After a
+roll the label reads *Surprised*, the way a Copy button says Copied, for as
+long as the map is flying to the place (`FLY_MS`, 1.2 seconds), then folds
+back to the die as the pin lands. No longer than that,
 because the pill grows leftwards into the strip where the chosen pin comes
 down with its name over it, and held for two seconds it stood on most names.
 That word is `randomDone`, and `sayRolled()` in `assets/app.js` is the whole
@@ -13048,7 +13050,7 @@ spending it on — the three most pressed chips stand in the open, and the
 four at the foot go behind one pill together. The cascade that introduces
 the rail on a phone — **The rail introduces itself on a phone** — was 300ms
 a pill and 7.45s for eight; it is four pills and the chip row now, all open
-by 2.05s. How this works went altogether rather than behind More: the
+by 2.35s. How this works went altogether rather than behind More: the
 welcome card's **Show me around** is the same walk, offered to the same
 stranger — **How this works, for the asking**.
 
@@ -13096,13 +13098,13 @@ comes back a stranger and is dealt again, possibly the other rail.
   behind it.
 - **Surprise me in the corner**, on a phone: the same `#btn-random`, fixed to
   the window above the arrow the way the arrow is fixed, a 48px disc in the
-  accent with the die in paper and no words on it, whose label slides out
-  only for a moment after a roll, to say *Surprised*. Above 860px it stays in
-  the rail, which is a column of discs beside a corner that opens on hover and
-  has no corner to spare. **Surprise me** has the rest. Everything centred at
-  the foot of a phone — the welcome card, the toast, the account offer —
-  stands on `--above-locate`, and the short rail raises that shelf by the
-  button's height, so nothing lands on it.
+  accent with the die in paper, whose label slides out with the other pills'
+  in the cascade and, for a moment after a roll, to say *Surprised*. Above
+  860px it stays in the rail, which is a column of discs beside a corner that
+  opens on hover and has no corner to spare. **Surprise me** has the rest.
+  Everything centred at the foot of a phone — the welcome card, the toast,
+  the account offer — stands on `--above-locate`, and the short rail raises
+  that shelf by the button's height, so nothing lands on it.
 - **The More sheet**, `renderMore()`: the account sheet's card and scrim, the
   wordmark as its eyebrow, *More* as its title, one line under it, and four
   `.menu-row`s in the rail's own order — Ask, Learn Estonian, Colour,

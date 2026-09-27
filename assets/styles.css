@@ -5074,19 +5074,16 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      the cascade and the walk all still find it; and like the arrow it is
      fixed to the window, so a transformed rail is not its containing block.
 
-     A disc the arrow's size, and no words until it is pressed. It wore
-     "Surprise me" out for good at first, and a filled pill that long, stood
-     over the arrow, was the biggest thing on the map and read as a banner
-     rather than a button; the owner asked for it compact, with nothing
-     written on it until it has done something. So the colour is what makes
-     it the one to press, and the label comes out once, for a moment after a
-     press, to say it has done it — "Surprised" — see sayRolled() in
-     assets/app.js. The track is written shut here rather than inherited, so
-     .hint-open cannot open it: the cascade leaves this one out on its own
-     (railKeys()), and the walk lights it with the ring and its sentence
-     and no label. Sized to the arrow's 48px rather than the discs' 35.6,
-     because the two stand together in the corner as a pair, and padded to
-     match it.
+     A disc the arrow's size, and words only when every pill has them. It
+     wore "Surprise me" out for good at first, and a filled pill that long,
+     stood over the arrow, was the biggest thing on the map and read as a
+     banner rather than a button; the owner asked for it compact. So the
+     colour is what makes it the one to press, and the label comes out when
+     the others' do — once in the cascade on a first visit, and under the
+     walk, as .hint-open — and for a moment after a press, to say it has done
+     it: "Surprised", .is-rolled, see sayRolled() in assets/app.js. Sized to
+     the arrow's 48px rather than the discs' 35.6, because the two stand
+     together in the corner as a pair, and padded to match it.
 
      The shelf every centred thing at the foot of the map stands on moves up
      by the button's height plus the air under it, so the welcome card, the
@@ -5096,8 +5093,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     position: fixed;
     right: calc(var(--gap) + var(--safe-r));
     bottom: calc(var(--locate-b) + 58px);
-    grid-template-columns: auto 0fr;
-    gap: 0;
     min-width: 48px;
     height: 48px;
     padding: 0 11px;
@@ -5105,6 +5100,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     border-color: var(--accent);
     color: var(--paper);
   }
+  [data-layout="b"] #btn-random.hint-open,
   [data-layout="b"] #btn-random.is-rolled {
     grid-template-columns: auto 1fr;
     gap: 8px;
