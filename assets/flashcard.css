@@ -106,21 +106,23 @@
    card off the side it was answered towards, still washed in its answer, and
    the next card settles in under it the way every card does.
 
-   Half a second, and eased in and out rather than on --ease. It was a fifth
+   450 ms, and eased in and out rather than on --ease. It was half a second
+   for a while, which was a shade slow to sit through a hundred times a deck,
+   and a tenth off it is exactly what was asked for and no more. It was a fifth
    of a second on --ease, which puts most of the distance in the first few
    frames, and on a desktop — where the card is wide and so is the way off
    the screen — it was gone before anybody could see which way it went. The
    fade lags the movement for the same reason: the colour is the point, so
    the card keeps it until it is most of the way out. */
 .flash-card.is-leaving {
-  transition: transform .5s cubic-bezier(.45, 0, .55, 1), opacity .5s ease-in;
+  transition: transform .45s cubic-bezier(.45, 0, .55, 1), opacity .45s ease-in;
   pointer-events: none;
 }
 
 /* And back again, on Undo: the card comes in from the side it left by, so the
    answer being taken back is visibly the one that was given. */
-.flash-card.is-back-knew { animation: flash-back-knew .4s var(--ease); }
-.flash-card.is-back-again { animation: flash-back-again .4s var(--ease); }
+.flash-card.is-back-knew { animation: flash-back-knew .36s var(--ease); }
+.flash-card.is-back-again { animation: flash-back-again .36s var(--ease); }
 
 @keyframes flash-back-knew {
   from { opacity: 0; transform: translateX(60%) rotate(8deg); }
@@ -461,16 +463,22 @@
    that moved one of them. It is drawn only once there is an answer to take
    back, and it is an .alt like every other quiet press here; the arrow is the
    one every undo on every phone wears, and the word is beside it because an
-   arrow on its own is a guess. Small, since it is the exception in a run and
-   the card under it is the rule. */
+   arrow on its own is a guess. In the ink rather than .alt's muted tone and a
+   size up from it: at twelve points in the muted tone, between two coloured
+   counters, it was the one press on the screen nobody found, and the moment
+   somebody wants it is the moment after a thumb slipped. Still an .alt —
+   quieter than Knew it, which is where the accent is spent. */
 .flash-undo.alt {
   align-self: center;
   padding: 5px 11px;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
 }
+.flash-undo.alt:hover { color: var(--accent); }
 /* Inline-block so the .alt underline stops at the word and does not run
    under the arrow too. */
-.flash-undo-arrow { display: inline-block; margin-right: 5px; }
+.flash-undo-arrow { display: inline-block; margin-right: 6px; font-size: 16px; }
 
 /* And the press that asks for it, under the card and on its front only.
    Centred and alone, in the row the two answers take over the moment the card
