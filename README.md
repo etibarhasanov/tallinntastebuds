@@ -3937,9 +3937,9 @@ presses where there was one.
 
 The last card, under the three columns, is the one setting on this page:
 **Map layout**, a segment with two answers, **Full rail** and **Short rail**.
-A phone that has never been here is dealt the short one on the map — **The
-short rail** — and this is where somebody signed in says otherwise, or asks
-for it on a phone that was here before the split. It is written into the
+The map deals one — eight phones in ten the short one, **The short rail** —
+and this is where somebody signed in says otherwise, marked as chosen so no
+deal overrides it. It is written into the
 same `ttb.layout` the map reads, so the next load of the map draws what was
 chosen; and it is this browser's choice rather than the account's, which the
 line under the title says: the key is local, and making the rail follow a
@@ -13019,12 +13019,13 @@ in all ten languages. The pieces are `#tour` in
 
 ## The short rail
 
-A phone that has never opened this map gets a shorter rail than the one
-everybody else has: **the account, everybody's lists and More** down the
+Eight phones in ten get a shorter rail than the map had: **the account, everybody's lists and More** down the
 left, **Surprise me** filled in the corner above the locate arrow, three
 chips standing outside the Filters drawer, and the other four doors — Ask,
-the flashcards, the colour and feedback — as rows behind More. Everybody who
-was here before it keeps the full column of eight. Which of the two a browser
+the flashcards, the colour and feedback — as rows behind More. The other two
+in ten keep the full column of eight, which is what makes the short rail's
+numbers mean anything: there is a group of strangers on the old rail to set
+them against. Which of the two a browser
 draws is `data-layout` on `<html>`, `a` for the full rail and `b` for the
 short one, and everything about the difference is a stylesheet rule scoped to
 that attribute: the pill is the same pill, the sheet is the account sheet's
@@ -13054,34 +13055,38 @@ stranger — **How this works, for the asking**.
 
 ### Who gets it
 
-`pickLayout()` in `assets/app.js`, once, on the way in, and then kept:
+`pickLayout()` in `assets/app.js`, once per browser, and then kept:
 
 1. `?layout=a` or `?layout=b` on the address names one and pins it, the way
    `?style=` does. It is how the owner looks at either rail on a phone that
    was dealt the other, and `syncUrl()` takes it back off the bar so a link
    sent on does not deal the same rail to whoever opens it.
-2. Failing that, the rail this browser was dealt, `ttb.layout` in
-   `localStorage`.
-3. Failing that, the deal. A browser that has been introduced —
-   `ttb.introduced`, the flag the welcome card and the cascade set — was here
-   before the split and keeps the full rail it knows. A stranger gets the
-   short one, and the deal is written down so it holds.
+2. A rail chosen by hand — that, or the card on `/account.html` — is never
+   dealt over: `ttb.layout.by` says a hand chose it.
+3. A rail dealt under this deal is kept: `ttb.layout.deal` records which deal
+   wrote `ttb.layout`.
+4. Otherwise the deal: the short rail with `LAYOUT_SHARE` — 0.8 — and the
+   full one otherwise, **for a stranger and for somebody who was here before
+   alike**. The first deal, for the first hour this was live, gave every
+   stranger the short rail and everybody else the full one; a browser holding
+   the short rail from then keeps it, having already learnt it, and one
+   holding the full rail from then is dealt again, once.
 
 A rail that changed between visits would be a rail nobody learns, which is
 why the answer is kept rather than worked out fresh each time, and why nobody
-is moved from one to the other by anything but their own hand. That hand is
+is moved from one to the other after that but by their own hand — the one
+re-deal of the first hour's full rails aside. That hand is
 the **Map layout** card on `/account.html` — **Which rail this phone draws**
 under **The account page** — where somebody signed in picks either. It is
 the browser's choice and not the account's: the key is local, and a rail
 that followed a person across their phones would be a column on `users` that
 nobody has asked for.
 
-Storage that throws — some private windows — deals the short rail on every
-load and counts nobody, which is the right failure: the map works, the number
-below does not move. And Safari's seven-day storage rule applies here as it
+Storage that throws — some private windows — cannot keep a deal, and a rail
+rolled afresh on every load would be worse than either rail, so it draws the
+short one every time and counts nobody. And Safari's seven-day storage rule applies here as it
 does to the style and the language: a phone that stays away long enough
-comes back a stranger and is dealt the short rail again, having been dealt
-it before.
+comes back a stranger and is dealt again, possibly the other rail.
 
 ### What it draws, and what it does not
 
@@ -13126,11 +13131,11 @@ it before.
   full rail's and a More step is the short rail's, straight after the lists;
   `explainMore` is its sentence. **How this works, for the asking**.
 
-It does not split anybody at random. The first draft of this was an
-experiment with three arms and a page of its own to read them on; what the
-owner asked for was the short rail for strangers, the full one for everybody
-who knows it, and a choice on the account page — which is what this is, and
-it costs no table. It does not touch the desktop beyond putting four pills
+It is a split of two, at random, and nothing more. The first draft of this
+was an experiment with three arms and a page of its own to read them on; what
+the owner asked for was the short rail for most people and the full one for
+the rest, and a choice on the account page — which is what this is, and it
+costs no table. It does not touch the desktop beyond putting four pills
 behind one: the column, the corner and the chip row up there are what they
 were. And it is not a third style: **The two styles** are the colours, and
 both rails wear both.
@@ -13143,16 +13148,15 @@ the site's own numbers rather than only from Google's:
 - **The rail's presses, under the same ids on both rails.** `RAIL_PILLS` in
   `functions/api/stats.js` names nine: the eight the full rail draws and
   More. A row in the sheet counts as its pill. **Statistics** is the rest.
-- **`layout`, a fifth kind in `press_counts`**, two rows: `b`, once per
-  browser dealt the short rail, and `b-opened`, the first place that browser
-  opened on the visit it was dealt it — a press, not a link: a place a shared
-  link opened is left out. `/admin/stats` prints the pair as one sentence
-  under its footnotes once the first is above nought: *N new visitors were
-  dealt the short rail, and M of them opened a place on that first visit.*
-  Nothing is filed under the full rail, which nobody is dealt any more; the
-  comparison for M/N is what Google Analytics says new visitors did before
-  the day this landed, and what its own numbers say about the full rail's
-  visitors after it, because
+- **`layout`, a fifth kind in `press_counts`**, four rows: `a` and `b`, once
+  per stranger dealt that rail, and `a-opened` and `b-opened`, the first place
+  that stranger opened on the visit it was dealt — a press, not a link: a
+  place a shared link opened is left out. Strangers only, because a
+  returning visitor's first visit is long gone. `/admin/stats` prints one
+  sentence a rail under its footnotes: *N new visitors were dealt the short
+  rail, and M of them opened a place on that first visit*, and the same for
+  the full rail — the two side by side are the comparison. Returning
+  visitors are in Google Analytics, because
 - **every event carries `layout`.** `assets/track.js` reads `ttb.layout` on
   every event, on every page — the lists, the account page, feedback and the
   rest included, since the visitor carries the rail with them — and sends it
@@ -13164,9 +13168,10 @@ the site's own numbers rather than only from Google's:
 
 ### Making it everybody's, or nobody's
 
-When the numbers say so, one line in `pickLayout()` does it: the deal is
-`storeGet(INTRO_KEY) ? 'a' : 'b'`, and dealing `'b'` to everybody — or
-`'a'` — is that expression. The pills that go, the sheet, the front chips and
+When the numbers say so, one line does it: `LAYOUT_SHARE` at 1 deals the
+short rail to everybody not dealt one already, and at 0 the full one — and
+bumping `LAYOUT_DEAL` alongside deals everybody again, once, hand-chosen
+rails aside. The pills that go, the sheet, the front chips and
 the counting are all scoped to the attribute and come and go with it. The
 full rail's markup stays either way: it is the rail, and the short one is a
 list of what it leaves out.

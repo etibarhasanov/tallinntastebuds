@@ -86,6 +86,8 @@
      of pills, 'b' the short one: three pills, Surprise me in the corner, the
      rest behind More. "The short rail" in README.md. */
   var LAYOUT_KEY = 'ttb.layout';
+  var LAYOUT_BY_KEY = 'ttb.layout.by';
+  var LAYOUT_DEAL_KEY = 'ttb.layout.deal';
   var LAYOUTS = ['a', 'b'];
   /* The chips the short rail stands outside the drawer, in this order, out
      of the thirteen and the discount. The three /admin/stats says get
@@ -644,45 +646,62 @@
   }
 
   /* ------------------------------------------------------- which rail
-   * Decided once, on the way in, and kept: a rail that changed between
-   * visits is a rail nobody learns. ?layout= names one and pins it, the way
-   * ?style= does — it is how the owner looks at either on a phone that has
-   * already been dealt the other. Failing that, the one this browser was
-   * dealt. Failing that, the deal: a browser that has been introduced —
-   * INTRO_KEY — was here before the split and keeps the full rail it knows;
-   * a stranger gets the short one, and is counted as given it, once, so
-   * /admin/stats can say how many were and how many of them opened a place
-   * on that first visit — see selectPlace(). Storage that throws deals the
-   * short rail to everybody every time and counts nobody, which is the
-   * right failure: the page still works, the numbers just do not move.
+   * Decided once per browser and kept: a rail that changed between visits
+   * is a rail nobody learns. In order:
    *
-   * The signed-in half of the choice is on /account.html, written into the
-   * same key — layoutCard() in assets/account.js — because that page is
-   * where somebody with an account goes to change things about themselves.
-   * It is this browser's choice and not the account's: the key is local,
-   * and following a person across their devices would be a column on users
-   * nobody has asked for yet. */
+   * 1. ?layout= names one and pins it, the way ?style= does — how the owner
+   *    looks at either on a phone that was dealt the other.
+   * 2. A rail chosen by hand — that, or the Map layout card on
+   *    /account.html, layoutCard() in assets/account.js — is never dealt
+   *    over. LAYOUT_BY_KEY says a hand chose it.
+   * 3. A rail dealt under this deal, which LAYOUT_DEAL_KEY records, is kept.
+   * 4. Otherwise the deal: the short rail with LAYOUT_SHARE, the full one
+   *    otherwise, for a stranger and for somebody who was here before alike.
+   *    The first deal gave every stranger the short rail and everybody else
+   *    the full one; a browser holding the short rail from then keeps it,
+   *    because it has already learnt it, and one holding the full rail from
+   *    then is dealt again, once. "The short rail" in README.md.
+   *
+   * A stranger's deal is counted — `a` or `b` under the `layout` kind — so
+   * /admin/stats can set the two rails' strangers side by side, with how many
+   * of each opened a place on that first visit; see selectPlace(). Only
+   * strangers, because a returning visitor's first visit is long gone and
+   * what they do next is not the same question. Their rail still rides on
+   * every event to Google Analytics — assets/track.js.
+   *
+   * Storage that throws cannot keep a deal, and a rail rolled afresh on every
+   * load would be the one thing worse than either rail, so it draws the short
+   * one every time and counts nobody. */
+  var LAYOUT_SHARE = 0.8;
+  var LAYOUT_DEAL = '2';
+
   function pickLayout() {
     var params = new URLSearchParams(window.location.search);
     var asked = params.get('layout');
     if (asked && LAYOUTS.indexOf(asked) !== -1) {
       storeSet(LAYOUT_KEY, asked);
+      storeSet(LAYOUT_BY_KEY, 'hand');
       return asked;
     }
     var stored = storeGet(LAYOUT_KEY);
-    if (stored && LAYOUTS.indexOf(stored) !== -1) return stored;
-    var dealt = storeGet(INTRO_KEY) ? 'a' : 'b';
+    var known = stored && LAYOUTS.indexOf(stored) !== -1;
+    if (known && (storeGet(LAYOUT_BY_KEY) === 'hand' || storeGet(LAYOUT_DEAL_KEY) === LAYOUT_DEAL || stored === 'b')) {
+      return stored;
+    }
+    var dealt = Math.random() < LAYOUT_SHARE ? 'b' : 'a';
     storeSet(LAYOUT_KEY, dealt);
-    if (dealt === 'b') {
+    storeSet(LAYOUT_DEAL_KEY, LAYOUT_DEAL);
+    if (storeGet(LAYOUT_KEY) !== dealt) return 'b';
+    if (!storeGet(INTRO_KEY)) {
       layoutFresh = true;
-      postPress('layout', 'b');
+      postPress('layout', dealt);
     }
     return dealt;
   }
 
-  /* Whether this load is the visit that dealt the short rail, so the first
-     place opened on it can be counted against the deal, and whether one has
-     been. */
+  /* Whether this load is a stranger's first, with the rail it was dealt, so
+     the first place opened on it can be counted against that rail — and
+     whether one has been. */
   var layoutFresh = false;
   var layoutOpened = false;
 
@@ -6431,13 +6450,13 @@
 
     TTBTrack.view(place.name);
     countPress('place', place.id);
-    /* The first place this visit opened, on the visit the short rail was
-       dealt — the number /admin/stats sets against how many were dealt it.
+    /* The first place this visit opened, on a stranger's first visit — the
+       number /admin/stats sets against how many were dealt that rail.
        Once, whatever else this visit opens; the place a link opened is the
        link's and not a press, and is left out — see boot. */
     if (layoutFresh && !opts.arrived && !layoutOpened) {
       layoutOpened = true;
-      postPress('layout', 'b-opened');
+      postPress('layout', state.layout + '-opened');
     }
     /* The phone, the site and the week of a venue the find bar put there,
        fetched the first time it is opened — see dressFound(). */

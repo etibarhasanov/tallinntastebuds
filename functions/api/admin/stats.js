@@ -51,10 +51,11 @@
  * way the ranking above answers empty rather than failing when `press_counts`
  * is not.
  *
- * And `layout`, two numbers out of the same table under the `layout` kind:
- * `given`, how many browsers that had never been here were dealt the short
- * rail, and `opened`, how many of them opened a place on that first visit.
- * The one comparison the split was made for, read straight off two rows.
+ * And `layout`, the two rails' strangers side by side out of the same table
+ * under the `layout` kind: for each of `a` and `b`, `given`, how many
+ * browsers that had never been here were dealt it, and `opened`, how many of
+ * them opened a place on that first visit. The one comparison the split was
+ * made for, read straight off four rows.
  */
 
 import {
@@ -107,7 +108,8 @@ export async function onRequestGet(context) {
   if (hit) return privately(hit);
 
   const empty = {
-    ready: false, opens: 0, users: 0, layout: { given: 0, opened: 0 },
+    ready: false, opens: 0, users: 0,
+    layout: { a: { given: 0, opened: 0 }, b: { given: 0, opened: 0 } },
     map: [], venues: [], filters: [], rail: [], ...words
   };
   if (!env.DB) return json(empty, 200);
@@ -217,7 +219,10 @@ export async function onRequestGet(context) {
   const res = json(
     {
       ready: true, opens: opens, users: users,
-      layout: { given: countOf(LAYOUT, 'b'), opened: countOf(LAYOUT, 'b-opened') },
+      layout: {
+        a: { given: countOf(LAYOUT, 'a'), opened: countOf(LAYOUT, 'a-opened') },
+        b: { given: countOf(LAYOUT, 'b'), opened: countOf(LAYOUT, 'b-opened') }
+      },
       map: map, venues: venues, filters: filters, rail: rail,
       ...words
     },
