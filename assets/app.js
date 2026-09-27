@@ -4701,11 +4701,16 @@
   var hintTimers = {};
 
   /* The ones this rail draws, top to bottom. The full rail is eight; the
-     short one is three pills and the corner, and its cascade is over inside
+     short one is three pills and the arrow, and its cascade is over inside
      two seconds — which is half of why it exists. openHint() would skip a
-     put-away pill on its own; naming the four keeps the arithmetic honest. */
+     put-away pill on its own; naming the four keeps the arithmetic honest.
+
+     The die in the corner is not one of them. It says nothing until it is
+     pressed, and then says Surprised — the owner's word, and sayRolled()
+     below — so a stranger's first look at it is the red disc and nothing
+     else. The stylesheet holds it to that for the walk too. */
   function railKeys() {
-    if (shortRail()) return ['account', 'lists', 'more', 'random', 'locate'];
+    if (shortRail()) return ['account', 'lists', 'more', 'locate'];
     return HINT_KEYS.filter(function (key) { return key !== 'more'; });
   }
 
@@ -4716,8 +4721,8 @@
      settled before the buttons start naming themselves. Eight pills 300ms
      apart and held for 4.2s each put the last collapse at 7.45s, and every
      pill added puts another 300ms on how long the corner spends talking —
-     which is the cost of a ninth, and a real one. The short rail's five are
-     all open by 2.35s and gone by 6.55s. */
+     which is the cost of a ninth, and a real one. The short rail's four are
+     all open by 2.05s and gone by 6.25s. */
   var RAIL_IN = 1150;
   /* Whether this visit owes the welcome card: set on the way in when
      INTRO_KEY says this browser has never been introduced, and spent the
@@ -5158,7 +5163,27 @@
    * question about where it is before it is anything else — and that turned
    * out to be true of a name you tapped as well, so it is what every place
    * does now. See selectPlace().
+   *
+   * And the button says it has done it. On the short rail it is a bare die
+   * in the corner — "the short rail, on a phone" in assets/styles.css is
+   * why — and a roll is the one thing that opens its label: it slides out
+   * reading "Surprised", the way a Copy button says Copied, and folds back
+   * to the die.
+   *
+   * For as long as the map is in the air, and no longer. The pill grows
+   * leftwards out of the corner into the strip above the sheet, which is
+   * where the place it chose lands with its name over it; held for two
+   * seconds it was still standing on most names when the map arrived. At
+   * FLY_MS it is folding as the pin comes down.
+   *
+   * On the full rail the label is folded into a row along the sheet the roll
+   * just opened, with no room to slide, so the words change and stay unseen;
+   * above 860px they are the ones the pointer on the button is already
+   * reading.
    */
+  var ROLLED_MS = FLY_MS * 1000;
+  var rolledTimer = null;
+
   function randomPick() {
     var pool = visiblePlaces().filter(function (p) { return !p.closed; });
 
@@ -5180,6 +5205,23 @@
        you together, so it answers "where is it" as "this far from where you
        are standing" — the panel prints the distance too. See frameWithHere(). */
     selectPlace(choice.id, { fly: true, withHere: true });
+    sayRolled();
+  }
+
+  function sayRolled() {
+    var label = dom.btnRandom.querySelector('.rail-label');
+    clearTimeout(rolledTimer);
+    label.textContent = t('randomDone');
+    dom.btnRandom.classList.add('is-rolled');
+    rolledTimer = setTimeout(function () {
+      dom.btnRandom.classList.remove('is-rolled');
+      /* The words go back once the pill has folded over them, or the fold
+         is drawn round "Surprise me" and slides the wrong width. */
+      rolledTimer = setTimeout(function () {
+        rolledTimer = null;
+        label.textContent = t('randomPick');
+      }, 400);
+    }, ROLLED_MS);
   }
 
   /* --------------------------------------------------------------- the ask
