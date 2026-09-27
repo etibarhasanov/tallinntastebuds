@@ -5066,15 +5066,27 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   /* ---- the short rail, on a phone ----
 
      Surprise me leaves the column for the corner above the arrow and is the
-     map's one filled button: the accent, its label out for good, the die in
-     paper. /admin/stats had it the most pressed thing on the rail after the
-     account, fourth from the top of nine discs that all looked alike — and
-     rule 5 spends the accent once a surface, which nothing on the map was
-     spending it on. It stays a child of the rail, the way the arrow does,
-     so the press counter, the cascade and the walk all still find it; and
-     like the arrow it is fixed to the window, so a transformed rail is not
-     its containing block. Sized to the arrow's 48px rather than the discs'
-     35.6, because the two stand together in the corner as a pair.
+     map's one filled button: the accent, with the die in paper. /admin/stats
+     had it the most pressed thing on the rail after the account, fourth from
+     the top of nine discs that all looked alike — and rule 5 spends the
+     accent once a surface, which nothing on the map was spending it on. It
+     stays a child of the rail, the way the arrow does, so the press counter,
+     the cascade and the walk all still find it; and like the arrow it is
+     fixed to the window, so a transformed rail is not its containing block.
+
+     A disc the arrow's size, and no words until it is pressed. It wore
+     "Surprise me" out for good at first, and a filled pill that long, stood
+     over the arrow, was the biggest thing on the map and read as a banner
+     rather than a button; the owner asked for it compact, with nothing
+     written on it until it has done something. So the colour is what makes
+     it the one to press, and the label comes out once, for a moment after a
+     press, to say it has done it — "Surprised" — see sayRolled() in
+     assets/app.js. The track is written shut here rather than inherited, so
+     .hint-open cannot open it: the cascade leaves this one out on its own
+     (railKeys()), and the walk lights it with the ring and its sentence
+     and no label. Sized to the arrow's 48px rather than the discs' 35.6,
+     because the two stand together in the corner as a pair, and padded to
+     match it.
 
      The shelf every centred thing at the foot of the map stands on moves up
      by the button's height plus the air under it, so the welcome card, the
@@ -5084,17 +5096,24 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     position: fixed;
     right: calc(var(--gap) + var(--safe-r));
     bottom: calc(var(--locate-b) + 58px);
-    grid-template-columns: auto 1fr;
-    gap: 8px;
+    grid-template-columns: auto 0fr;
+    gap: 0;
+    min-width: 48px;
     height: 48px;
-    padding: 0 16px 0 12px;
+    padding: 0 11px;
     background: var(--accent);
     border-color: var(--accent);
     color: var(--paper);
   }
+  [data-layout="b"] #btn-random.is-rolled {
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    padding: 0 16px 0 11px;
+  }
+  [data-layout="b"] #btn-random.is-rolled > .rail-label { opacity: 1; }
   [data-layout="b"] #btn-random svg { width: 24px; height: 24px; stroke: var(--paper); }
   [data-layout="b"] #btn-random svg .pip { fill: var(--paper); }
-  [data-layout="b"] #btn-random .rail-label { opacity: 1; color: var(--paper); }
+  [data-layout="b"] #btn-random .rail-label { color: var(--paper); }
   [data-layout="b"] #btn-random:hover { background: var(--accent-lit); border-color: var(--accent-lit); color: var(--paper); }
   body.panel-open [data-layout="b"] #btn-random,
   [data-layout="b"] body.panel-open #btn-random {
