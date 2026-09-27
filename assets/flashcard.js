@@ -1979,8 +1979,7 @@
           word.sentence ? el('p', { className: 'flash-sentence' }, [
             el('span', { className: 'flash-said', textContent: word.sentence.et }),
             el('span', { className: 'flash-means', textContent: means(word.sentence) })
-          ]) : null,
-          el('p', { className: 'flash-turn', textContent: t('flashTurned') })
+          ]) : null
         ]
       : [
           el('p', { className: 'flash-front', textContent: word.front }),
@@ -1990,9 +1989,17 @@
              than a control: what changed when the button was pressed is the
              card, and a hint standing under it would leave the card looking
              untouched. See hintLine(). */
-          state.run.hint ? el('p', { className: 'flash-hint', textContent: hintOf(word) }) : null,
-          el('p', { className: 'flash-turn', textContent: t('flashTurn') })
+          state.run.hint ? el('p', { className: 'flash-hint', textContent: hintOf(word) }) : null
         ]);
+
+    /* The line at the foot of the card — what to do with it, or whether you
+       knew it — hung on the card rather than inside the face. It is placed
+       absolutely against the card, and the face settles in on a transform,
+       which makes the face the box it is placed against for as long as the
+       animation runs: it stood at the foot of the words, mid-card, for a
+       sixth of a second on every turn and then dropped to the foot. See
+       .flash-card > .flash-turn in assets/flashcard.css. */
+    var foot = el('p', { className: 'flash-turn', textContent: t(turned ? 'flashTurned' : 'flashTurn') });
 
     /* The word the card is heading for while it is being dragged. Drawn
        empty and filled by the drag, so nothing is built mid-gesture, and it
@@ -2010,7 +2017,7 @@
       type: 'button',
       className: 'flash-card' + (turned ? ' is-turned' : '') +
                  (state.run.returning ? ' is-back-' + state.run.returning : '')
-    }, [verdict, face]);
+    }, [verdict, face, foot]);
 
     /* Wired on both faces, and it answers on both — the header of swipe()
        says why the front answers a throw and not a button. What comes back is
