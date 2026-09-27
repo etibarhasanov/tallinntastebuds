@@ -1097,8 +1097,9 @@
   function renderAll() {
     var wrap = el('div', { className: 'lists-stack lists-all' });
 
+    /* The one head card on these pages without an eyebrow. Over a title that
+       already says lists, LISTS was the same word read twice. */
     wrap.appendChild(card([
-      el('p', { className: 'eyebrow', textContent: t('listsEyebrow') }),
       heading(t('listsAllTitle')),
       el('p', { className: 'lists-say', textContent: t('listsAllSay') })
     ]));
