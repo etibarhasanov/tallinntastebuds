@@ -12492,10 +12492,9 @@ seconds), then folds back to the die as the pin lands. No longer than that,
 because the pill grows leftwards into the strip where the chosen pin comes
 down with its name over it, and held for two seconds it stood on most names.
 That word is `randomDone`, and `sayRolled()` in `assets/app.js` is the whole
-of it. On the full rail the same press changes
-the same label, but there it is folded into the row along the sheet the roll
-just opened and has no room to slide, so it goes unseen; above 860px it is
-the label the pointer on the button is already reading.
+of it. **The full rail is untouched**: all of this is the short rail's, and
+the die on the full rail still says Surprise me in the cascade and on hover,
+and says nothing new when it is pressed.
 
 **On a phone it opens the place at the low stop, and this is the button that
 argued for it.** The name means nothing to you yet, and the first thing you
