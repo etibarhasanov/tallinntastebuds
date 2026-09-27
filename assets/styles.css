@@ -2374,12 +2374,18 @@ body.panel-detail .panel {
 }
 .scrim[hidden] { display: none; }
 
+/* The two sheets the map opens over itself — the account and More — float
+   on the map the way the find bar, the chips and the rail do, so they take
+   that chrome's corner rather than the near-square one .card gives a picture.
+   At 4px the sheet read as a box nobody had rounded, sitting under a pill of
+   a find bar and holding fields and notices that were already 12px. */
 .account {
   position: relative;
   width: min(380px, 100%);
   max-height: 100%;
   overflow-y: auto;
   padding: 22px 22px 22px;
+  border-radius: var(--radius-soft);
 }
 .ac-close { top: 8px; right: 8px; }
 
@@ -2454,6 +2460,26 @@ body.panel-detail .panel {
 /* The menu is the sheet's whole body when it is showing an account, so it
    takes the card's own width back off the form's padding. */
 .ac-form .menu { margin: 2px -2px 0; }
+
+/* A row in the sheet opens focused, because a sheet puts the cursor on the
+   first thing there is to press — and iOS shows the ring for that even when
+   the sheet was opened with a finger. The page's own ring is a square drawn
+   round the row's hairlines, which put a red box on the first row of every
+   sheet a phone opened. Here it is the wash the find bar's rows take, in the
+   sheet's own corner, standing a little proud of the row so the words do not
+   touch its edge; isolate keeps it above the card and below the words. */
+.account .menu-row { position: relative; isolation: isolate; }
+.account .menu-row:focus-visible { outline: none; }
+.account .menu-row:focus-visible::before {
+  content: "";
+  position: absolute;
+  inset: 4px -10px;
+  z-index: -1;
+  border-radius: var(--radius-soft);
+  background: var(--wash);
+}
+.account .menu-row:focus-visible .menu-name,
+.account .menu-row:focus-visible .menu-go { color: var(--accent); }
 
 .ac-field { display: flex; flex-direction: column; gap: 5px; }
 .ac-label {
