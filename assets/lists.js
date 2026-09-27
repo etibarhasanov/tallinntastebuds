@@ -175,9 +175,9 @@
      sky is a few hundred SVG circles a row — twenty rows of them — and the
      city they are drawn on is a nineteen-kilobyte fetch that exists only to
      fill them. A phone that draws neither has not hidden them; it has not
-     built them. The byline is the cheap one and goes with them so that what a
-     narrow row carries is decided in one place: the title, the count, and the
-     names. */
+     built them. The byline is not one of them: it is on every row at every
+     width, because who made a list is something a reader picks it by — see
+     allMeta(). */
   var WIDE = '(min-width: 900px)';
 
   function wide() {
@@ -1643,9 +1643,9 @@
     moreWatch.observe(go);
   }
 
-  /* One list on /lists: the title, the keep count, the first three places,
-     the bookmark in the corner — and, on a desk, the sky above the title and
-     whose list it is beside the count.
+  /* One list on /lists: the title, whose list it is and the keep count, the
+     first three places, the bookmark in the corner — and, on a desk, the sky
+     above the title.
 
      WHY A PHONE GETS LESS AND NOT A SMALLER VERSION OF THE SAME
 
@@ -1654,10 +1654,10 @@
      bookmark is most of a screen per row, so three rows was a whole scroll
      and the shape of the page — twenty of them — was something a reader had
      to take on trust. What the row is for is picking one list out of twenty,
-     and the title and the three places are what does that. So the narrow row
-     carries those and the keep count between them, and the sky and the byline
-     are what a desk has the width to add — see WIDE above, which is also why
-     neither is built at all rather than drawn and hidden. */
+     and the title, its author and the three places are what does that. So the
+     narrow row carries those and the keep count, and the sky is what a desk
+     has the width to add — see WIDE above, which is also why it is not built
+     at all rather than drawn and hidden. */
   function allRow(l) {
     var line = el('p', { className: 'lists-all-meta mono' });
     allMeta(l, line);
@@ -1705,8 +1705,8 @@
     ]);
   }
 
-  /* The one line of facts under a title: how many people kept it, and — on a
-     desk — whose it is. Painted into a line that already exists rather than
+  /* The one line of facts under a title: whose it is, and how many people
+     kept it. Painted into a line that already exists rather than
      returned, because the bookmark on the row rewrites it every time it is
      pressed and a fresh node would have to be swapped into a list somebody is
      looking at.
@@ -1720,6 +1720,14 @@
   function allMeta(l, line) {
     clear(line);
     var meta = [
+      /* The byline first, straight under the title, and at every width. It was
+         the desk's alone for a while, on the argument that a phone's row had
+         no room for it and the list's own page names the author one press
+         away. But a list is somebody's, and who is half of why a reader opens
+         it: a stranger's top ten and a friend's are not the same ten. The
+         name is a few characters on a line that was already there, so it
+         costs the row nothing in height. */
+      l.by ? byline(l.by) : null,
       /* Hidden at zero, the way every other count on this site is. A "0 kept"
          under somebody's top ten reads as a verdict on the list rather than as
          nobody having pressed it yet. */
@@ -1734,12 +1742,7 @@
               l.keeps === 1 ? t('listsKeptOne') : t('listsKeptN', { n: l.keeps })
             )
           ])
-        : null,
-      /* The byline is a door to the person, and on a phone it is a door this
-         row has no room for: the title and the three places are what pick a
-         list out of twenty, and the name is one line further from them. It is
-         on the list's own page either way, one press from here. */
-      l.by && wide() ? byline(l.by) : null
+        : null
     ].filter(Boolean);
 
     meta.forEach(function (part, i) {

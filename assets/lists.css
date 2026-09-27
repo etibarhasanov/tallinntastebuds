@@ -1261,10 +1261,9 @@
   letter-spacing: .03em;
   line-height: 1.65;
 }
-/* A list nobody has kept, on a phone, has nothing on this line at all — the
-   byline that used to keep it company is the desk's now. An empty paragraph
-   is still a paragraph with margins, and the gap it leaves under a title reads
-   as a line that failed to load. */
+/* A list with no author the API would name and nobody's keep has nothing on
+   this line at all. An empty paragraph is still a paragraph with margins, and
+   the gap it leaves under a title reads as a line that failed to load. */
 .lists-all-meta:empty { display: none; }
 
 /* The keep count carries the ink the rest of the line does not, and holds
