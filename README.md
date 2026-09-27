@@ -7931,8 +7931,8 @@ for Russian. So there is a switch, and the next section is it.
 the old argument stands: it is deliberately *not* the arrangement splitwise has,
 where the strings live in a file of their own. The `/site` skill says in so many
 words that there is one such exception and a second would be two files to keep
-in step. So the eighty-two `flash*` keys are in `ui.json`, and taking this
-feature out means taking eighty-two keys out of ten blocks rather than deleting
+in step. So the eighty-seven `flash*` keys are in `ui.json`, and taking this
+feature out means taking eighty-seven keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
 
@@ -9113,6 +9113,72 @@ the English one — what a word is looked up *with* is the word, and the Estonia
 of the sentence is already on the page beside it, so writing all three would put
 the same sentence into the page three times.
 
+### Hearing it
+
+Under the card, a row of one or two quiet presses with a speaker beside them:
+**Hear it** on the front, which says the word, and on the back **The word**
+and — on the 772 cards that have one — **The sentence**. The S key says the
+same thing the last of them would. A second press on the one that is sounding
+stops it, and the speaker turns into the square that says so.
+
+A word read is half a word. *Leib* and *leiba* are one thing on the page and
+two in the mouth, *õ* is a vowel nobody reading this has heard before, and a
+sentence is the thing somebody will actually have to say out loud in a café.
+This was on the list under **What it does not do** until it was asked for.
+
+**The voice is the University of Tartu's**, their Neurokõne text-to-speech, and
+it is Mari's. It is free, it needs no key, and it is the best Estonian voice
+there is without paying for one — the browser's own `speechSynthesis` has no
+Estonian on most phones, Workers AI's speaks no Estonian at all, and Azure's
+Anu and Kert are a bill for a site that has none. It is a research group's
+public endpoint with no promise of uptime, so the page is written for it not
+answering: the press goes quiet, one line says the voice is not answering just
+now, and the card works exactly as it did before any of this.
+
+**Nothing is stored.** No row, no bucket, no file in the repository. The page
+hands `/api/say?text=…` to an `<audio>`, the route asks Tartu for those words
+and hands back what it says, and Cloudflare's cache keeps it for thirty days,
+keyed on the voice and the words. So *Tere* goes to Tartu once per data centre
+a month and everybody else hears it from the edge. A card whose words are
+corrected is different words and so a different key, which means nothing ever
+needs purging.
+
+**Only what is on a card.** The route speaks a string only if it is the front
+of a card in `data/decks.json` or the Estonian of a card's sentence, exactly,
+and answers anything else 404. An open text-to-speech proxy on a university's
+goodwill is the kind of thing that gets found and used, and this is how it is
+not one. It also means a deck somebody wrote has no voice: see **What it does
+not do**.
+
+**An iPhone asks for it two bytes at a time.** Safari fetches a recording in
+ranges, and its first request for one is for two bytes — `bytes=0-1` — to find
+out whether the server can. Apple's guide to media on iOS says that a server
+hosting it must answer that, and a phone handed the whole file instead may not
+play it at all. So the route honours a `Range` header out of the recording it
+already holds in full, and it waits for the cache to take a new recording
+before it answers: Safari's second request arrives the moment the two bytes
+do, and without the wait it would find nothing there and send the same words
+to Tartu twice. A voice that has not answered in fifteen seconds is taken as not
+answering.
+
+**One voice for now, and a second is small.** `VOICE` is a constant at the top
+of `functions/api/say.js` and the cache key already carries it, so offering
+Albert as well is a `voice` checked against a list there, a switch on the page,
+and its strings. It was left for a second step on purpose: a switch is a
+decision about where it sits and what it remembers, and that deserved asking
+about rather than guessing.
+
+**The radio is not touched.** It has its own `<audio>` and the voice has
+another. A phone that plays one sound at a time may pause the radio for the
+word; that is the phone's rule rather than this page's, and the radio's own
+button says which state it is in.
+
+**It could not be heard from where it was built.** The sandbox this was written
+in had no route to `api.tartunlp.ai`, so the page was driven with the route
+stubbed and the first real word said aloud was the owner's. If the voice ever
+comes back silent, `curl -sS -o t.wav 'https://tallinntastebuds.ee/api/say?text=Tere'`
+is the one request that says whether it is the route or Tartu.
+
 ### Grammar, which is read rather than turned over
 
 The back of a card carries three forms and never says why. Somebody who has
@@ -9435,6 +9501,8 @@ functions/flashcard.js         the route that serves it, with the deck's head
 assets/flashcard.js            the browser half, and the third sign-in form
 assets/flashcard.css           its rules
 functions/api/flashcard.js     the API route, and the three tables' only writer
+functions/api/say.js           the voice, which reads data/decks.json and nothing
+                               else
 data/decks.json                the decks the site ships, and the grammar lessons
 ```
 
@@ -9453,10 +9521,10 @@ and each is fenced or prefixed so it can be found by looking:
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
-| `data/ui.json` | the eighty-two `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
-| `README.md` | this section, its line in **Contents**, its five lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
+| `data/ui.json` | the eighty-seven `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
+| `README.md` | this section, its line in **Contents**, its seven lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
-| `.claude/skills/api/SKILL.md` | the `/api/flashcard` row, and the flashcards clause in the `/*` row |
+| `.claude/skills/api/SKILL.md` | the `/api/flashcard` and `/api/say` rows, and the flashcards clause in the `/*` row |
 | `.claude/skills/site/SKILL.md` | the `flashcard.html` in the stamped-pages list |
 
 And in Cloudflare: remove `flashcard.tallinntastebuds.ee` from the Pages
@@ -9486,25 +9554,32 @@ deliberately not made in the change that brought this page.
 
 ### What it does not do
 
-No audio, no pronunciation, no typing the answer in, no matching game, no test
+No typing the answer in, no matching game, no test
 mode — not even one to jump a stage with — no streaks, no decks anybody can
 share, and no notifications — this site has no address for anybody, and that
 has not changed for this. The spacing has
 six fixed rungs and no per-card ease: see **The spacing** above for why that is
 a decision rather than a first version.
 
-**And no shuffle, and no undo**, both of which were asked for in the same
-sentence the tallies and the hint arrived in. A shuffle undoes the two orders a
-run is built in — what you have never got right first, and, inside that, the
-progression somebody wrote the deck in — so what it would fix is a deck whose
-order has been memorised, which is a rarer complaint than it sounds and one the
-spacing already answers by changing what is due. An undo is the expensive one:
-the answer has already gone to the database by the time anybody wants it back,
-so undoing means a second write and a fourth action on `/api/flashcard`, and
-the card is in box nought meanwhile, which is the harmless direction. Both are
-a description away from being built if they are wanted.
+**And no shuffle**, which was asked for in the same sentence the tallies and
+the hint arrived in. A shuffle undoes the two orders a run is built in — what
+you have never got right first, and, inside that, the progression somebody
+wrote the deck in — so what it would fix is a deck whose order has been
+memorised, which is a rarer complaint than it sounds and one the spacing
+already answers by changing what is due. It is a description away from being
+built if it is wanted. The undo asked for in the same sentence has since been
+built: **Undo** above.
 
-**And no forms on a deck you wrote.** The three principal parts below are a
+**And no voice for a deck you wrote, and one voice for the rest.** The
+route that speaks a card speaks only what `data/decks.json` says, so a deck
+somebody typed is read in silence: speaking it would mean saying whatever
+anybody chose, on a university's goodwill. The grammar lessons are read in
+silence too, for now — their Estonian is in prose and tables rather than on a
+card, and the route says only what is on one. And it is Mari's voice alone —
+**Hearing it** above says why a man's voice is a small change and not yet
+made.
+
+**And no forms on a deck you wrote.** The three principal parts above are a
 field in `data/decks.json`, which is content the repository carries; a deck
 somebody types is two sides, because a third box asking for a genitive is a
 grammar lesson in a form that was meant to take a word and its meaning.
@@ -11299,6 +11374,9 @@ functions/api/split.js     splitwise: a group, who is in it, what everybody
 functions/api/flashcard.js flashcards: the decks somebody wrote, which cards
                            each account knows, and which of the shipped ones
                            a reader has said is wrong
+functions/api/say.js       flashcards: a card's Estonian said aloud, by the
+                           University of Tartu's voice, kept in Cloudflare's
+                           cache and nowhere else
 functions/flashcard.js     the page, with a deck's head and a deck's words
                            written into it so a search finds the Estonian
 functions/api/_lib.js      what those routes share (not a route: leading _)
@@ -13219,6 +13297,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`), `hint` (`1`/`0`) — one per card answered, which of the three ways it was answered, whether the card had been turned over first (`front` is a throw or an arrow on a card nobody opened), and whether the first letters had been asked for before the answer was given |
 | `flash_undo` | `deck_id`, `was` (`knew`/`again`) — the last answer taken back, which is how anybody will find out whether the throw is misfiring in one direction more than the other — see **Undo** under **Flashcards** |
 | `flash_hint` | `deck_id` — the first letters of a meaning asked for, once per card at most. Against `flash_knew` with `hint: 1`, this is what says whether a hint leads to knowing the word — see **The hint** under **Flashcards** |
+| `flash_say` | `deck_id`, `what` (`word`/`sentence`) — a card's Estonian asked for aloud, by a button under the card or the S key; a second press that stops it is not counted. Nothing says whether it was heard: a voice that failed is still one of these — see **Hearing it** under **Flashcards** |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_editcard`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |

@@ -490,6 +490,42 @@
   justify-content: center;
 }
 
+/* The Estonian said aloud, in a row of its own straight under the card: one
+   press on the front, the word and the sentence on the back. Quiet .alts, like
+   the hint under it, because the accent here is Knew it's. The speaker is
+   drawn beside the word the way Undo draws its arrow, and it is a character
+   rather than an icon so it takes the colour of the text in both styles.
+   Wrapped, so two presses in a long language still fit 390 px on two lines
+   rather than off the edge. */
+.flash-sayline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 20px;
+}
+.flash-say.alt {
+  padding: 5px 11px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.flash-say.alt:hover { color: var(--accent); }
+.flash-say-icon { display: inline-block; width: 1.1em; margin-right: 6px; font-size: 15px; text-align: center; }
+.flash-say-icon::before { content: '\1F50A'; }
+/* Sounding, the speaker becomes the square that stops it, since a second
+   press does exactly that. On its way, it breathes — the first press of a
+   word goes to Tartu and can take a second or two; every press after that is
+   from the cache and never shows this at all. */
+.flash-say.is-playing .flash-say-icon::before { content: '\25FC'; }
+.flash-say.is-loading .flash-say-icon { animation: flash-say-wait 900ms ease-in-out infinite alternate; }
+@keyframes flash-say-wait {
+  from { opacity: 1; }
+  to { opacity: 0.25; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flash-say.is-loading .flash-say-icon { animation: none; opacity: 0.5; }
+}
+
 /* The two answers under the card, drawn only once it has been turned over:
    Show me again on the left, and on the right, where a thumb is, the one
    filled action. Design rule 5 — the accent is spent once on this surface and
