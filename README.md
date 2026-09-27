@@ -8622,7 +8622,9 @@ one thing the page is for.
 One line on the decks page, under the sentence saying what the page is for:
 **You know 134 Estonian words.** Every deck the site ships, one number, with
 the figure set apart from the words around it because the figure is the thing
-the eye is meant to land on.
+the eye is meant to land on — at the size of the page's title and in the
+accent, the largest type on the page, where it had been a notch above the
+sentence around it and was read straight past.
 
 It is the only thing on that page that is about the person rather than about
 the decks. Forty-two rows each saying "9 / 22" is forty-two facts and no
@@ -8656,37 +8658,56 @@ With the database off it is not drawn either — a count of what is remembered i
 a promise a deployment that is remembering nothing should not make, and the
 line above it has already said so.
 
-### A deck's row
+### A deck's row, which is a tile
 
-Forty-two decks and the two that are not decks, as rows, is most of what
-this page is. A row is four things: the deck's name in the display face, the
-line under it saying what is in the deck, what is waiting in it, and the
-chevron that says it opens.
+Forty-two decks and the two that are not decks is most of what this page is,
+and for a long while they were rows: the account page's `.menu`, hairline
+between each, a count adrift at the end. Forty-two rows of the same weight is
+a table of settings rather than a shelf, and nothing on it said where anybody
+had got to. So each deck is a **tile** now — two a line where the card is wide
+enough, one on a phone — and a tile is four things: the deck's name in the
+display face, the line under it saying what is in the deck, the chevron that
+says it opens, and at its foot **a rule filled to how much of the deck is
+known**, with the count beside it.
+
+**It is still a `.menu`**, and every tile still a `.menu-row`: the whole tile
+is the target, and it is the fourth control of design rule 4 laid out on a
+grid rather than a fifth. What changed is the edge — a hairline round each
+tile at `--radius` instead of a hairline between rows, because things side
+by side need an edge each. The grid, the tile and the foot are all
+`.flash-shelf` in `assets/flashcard.css`; `deckList()` puts the class on.
+
+**The rule is the bar under a card**, the same `.flash-track` and
+`.flash-fill`, so the page has one picture of *how far through* rather than
+two. It is drawn only where there is progress to draw — signed in, with the
+database on, and not on the two gathered decks, which are made of progress
+rather than having any. It never stands alone: the count beside it says the
+same thing in words, which is design rule 10.
+
+**The count is a figure and a word**, *21 due*, and the figure carries the
+weight: `figure()` splits the string on its `{n}` the way `learnedLine()`
+does, so the sentence stays one string in `data/ui.json`. What is due is the
+reason to open a deck and is in the accent; a deck with nothing waiting says
+its *22 / 22* in the quiet tone and its rule fills in the colour **Knew it**
+is drawn in. The foot is a row of its own at the bottom of the tile, so it
+lines up from tile to tile however long the sentence above it runs — the
+count used to drift at the end of a row for exactly that reason.
 
 **The line under the name is a sentence, so it is set like one.** *The words a
 day in Tallinn opens and closes with.* That is prose, and prose on this site is
 Literata — the second of the design rules. It arrived mono at eleven points,
 because the row was copied from the account page's doors, where the same line
 reads *everybody's lists, most opened first* and is a label rather than a
-sentence. Forty-two of them in a column, a clause each, is where the
-difference tells: mono says *this is a fact or a control*, and a page that says
-that forty-two times reads as a table of settings rather than as a shelf of
-decks. `assets/blog.css` had already made this argument for a post's standfirst
-and given it a class of its own, so this is that class again — `.flash-why` —
-and a deck nobody wrote a line for still prints its size in the mono, because a
-size is a label.
+sentence. `assets/blog.css` had already made this argument for a post's
+standfirst and given it a class of its own, so this is that class again —
+`.flash-why`. A deck nobody wrote a line for has none, and its tile is the
+name and the foot.
 
-**The count stands in a column against the chevron**, in the mono every other
-count on this site is in, with tabular figures. It had been standing wherever
-the row left it: nothing in the row took the free space, so the count and the
-chevron shared it between their two auto margins, and the number landed further
-left the longer the line under the name happened to be — a different place on
-every row. It is the one thing here anybody scans, *which deck has something
-waiting for me*, and forty-two numbers that do not line up cannot be scanned
-at all. What fixed it is one line in `assets/styles.css`: `.menu-say` takes the
-room, so everything after it stands at the end of the row. The account page's
-folds had already hit the same bug and answered it where they stand, and this
-is the same answer one level up, where the row is defined.
+**The two gathered decks are a pair of tiles over the shelf**, two across
+even on a phone, washed in the accent rather than ruled, with the number
+waiting in each as the largest thing in them. They are made of every deck and
+they are where somebody coming back on a Tuesday starts, so they are not
+dressed like the forty-two under them.
 
 ### Four headings
 
@@ -8738,20 +8759,18 @@ signed-in one has not started in — so it is worth getting roughly right and
 not worth arguing about to the last row. Somebody who knows the language better than the person who
 sorted them is welcome to move a deck; nothing but the file's order changes.
 
-The headings are `.lists-section`, the same quiet heading `/lists` puts over a
-run of rows, and a level with nothing in it draws no heading: the headings are
-for the decks rather than the other way round. `tools/validate.mjs` fails a
+The headings are `.lists-section`, the heading `/lists` once put over a run
+of rows, set here at the size of a card's second heading with a short rule in
+the accent over it — over a shelf of tiles the directory's quiet 13px was the
+smallest heading on the page naming the largest thing on it, and with no
+hairlines between tiles any more the rule is what says a new stretch begins.
+A level with nothing in it draws no heading: the headings are for the decks
+rather than the other way round. `tools/validate.mjs` fails a
 deck whose level is not one of the four, because a deck under no heading is a
 deck nobody scrolls to.
 
-The room around them is `assets/flashcard.css`'s rather than that heading's
-own, and what decides it is what stands under it. On `/lists` a heading of this
-kind sits over a strip of cards, which brings its own air; here it sits over
-hairline-ruled rows, and with the six pixels the directory gives it the heading
-had the rule closing the run above and the rule opening the run below the same
-short distance away on either side. A title with equal air above and below two
-hairlines does not read as a title. It reads as an empty row. So the room goes
-above it, which is what says which side of the rule the heading is on.
+The room goes above each heading rather than below it, which is what says
+which run of tiles it names.
 
 ### And a finished deck sinks
 
@@ -8774,7 +8793,7 @@ So the rows go in the order of what each deck is asking for. Three rungs, and
 
 **Nothing is pressed and nothing is stored.** The two numbers this turns on are
 already on every row the route answers — `due` and `known`, which are what draw
-"6 due" against "22 / 22" on the end of it — so this is a sort over what the
+"6 due" against "22 / 22" at the foot of a tile — so this is a sort over what the
 page is already holding, and it costs no column, no write, no string in ten
 languages and nothing to run by hand against either database.
 
