@@ -344,8 +344,22 @@
   to   { opacity: 1; transform: none; }
 }
 
+/* The line at the foot of the card fades in with the face but does not move
+   with it. It is a child of the card rather than of the face for exactly that
+   reason: a transform on an ancestor becomes the box an absolutely placed
+   line is measured from, so while the face settled the line stood at the foot
+   of the words, halfway up the card, and dropped to the card's foot when the
+   animation ended. An opacity creates no such box. */
+.flash-card > .flash-turn { animation: flash-fade .16s var(--ease); }
+
+@keyframes flash-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .flash-face { animation: none; }
+  .flash-face,
+  .flash-card > .flash-turn { animation: none; }
   /* The card still follows the finger — that is the gesture itself and not an
      animation — but it stops easing back into place on its own. */
   .flash-card { transition: none; }
