@@ -1152,7 +1152,7 @@
       node.setAttribute('tabindex', '0');
       node.setAttribute('role', 'button');
       node.setAttribute('aria-label', t('openPlace', { name: place.name }) +
-        (place.closed ? ', ' + t('closed') : ''));
+        (place.closed ? ', ' + shutWord(place) : ''));
       node.addEventListener('keydown', function (ev) {
         if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
           ev.preventDefault();
@@ -1172,7 +1172,9 @@
        language as how much there is to read about it. The ring is drawn
        outside the pin, dashed, so the mark underneath keeps saying what
        there is to watch: a closed place you can still see a reel of is a
-       full-collared mark inside a broken circle, two facts at once. */
+       full-collared mark inside a broken circle, two facts at once. Both
+       kinds of shut door get the ring — it says "not tonight" — and only the
+       one that is shut for good loses its colour; see dressPin(). */
     if (place.closed) {
       var ring = L.circleMarker([place.lat, place.lng], {
         radius: PIN_D / 2 + 4,
@@ -1515,10 +1517,28 @@
      watchButton(). A triangle, the one shape everybody reads as "a video". */
   var PLAY_GLYPH = '<svg viewBox="0 0 10 10" focusable="false"><path d="M3 1.8v6.4L8.4 5z"/></svg>';
 
-  function shutMark() {
+  /* Two kinds of shut door. `closed: true` is for good; `closed:
+     "temporary"` is a door that should open again — Google's word for it,
+     raised and lowered from the admin page's Google tab rather than by hand,
+     see **Close a place instead of deleting it** in README.md. Everything
+     that asks "is it shut?" still asks `place.closed`, because a visitor is
+     not sent to either; what differs is the word beside it, the note under
+     it, and whether the pin keeps its colour. */
+  function isPaused(place) {
+    return place.closed === 'temporary';
+  }
+
+  /* The one-word badge, in whichever of the two shapes the place is in. The
+     temporary one borrows the directory's phrase — venuesShutFor is what the
+     "According to Google" block already prints for the same fact. */
+  function shutWord(place) {
+    return t(isPaused(place) ? 'venuesShutFor' : 'closed');
+  }
+
+  function shutMark(place) {
     return el('span', { className: 'shut-mark' }, [
       el('span', { className: 'shut-glyph', 'aria-hidden': 'true', html: SHUT_GLYPH }),
-      el('span', { textContent: t('closed') })
+      el('span', { textContent: shutWord(place) })
     ]);
   }
 
@@ -1529,6 +1549,7 @@
      photos, or nothing to see, which is the only case the plain note covers
      and the only case it ever read right in. */
   function closedNoteKey(place) {
+    if (isPaused(place)) return 'closedTempNote';
     var depth = pinDepth(place);
     if (depth === 'reel') {
       return reelProvider(place.reel) === 'tiktok' ? 'closedVideoNote' : 'closedReelNote';
@@ -1701,6 +1722,7 @@
     node.classList.toggle('is-chosen', chosen);
     node.classList.toggle('is-kept', kept);
     node.classList.toggle('is-shut', !!place.closed);
+    node.classList.toggle('is-paused', isPaused(place));
     node.style.setProperty('--pin-d', d + 'px');
 
     /* The mouth or a glyph, and the tone that goes with it, as classes on
@@ -1716,8 +1738,12 @@
        this map rather than about the place: shut for good, open, and the one
        you last had open. An inline custom property beats the tone class, so
        saying it here is the whole of how it wins — and removing it is the
-       whole of how the choice comes back. */
-    if (place.closed) node.style.setProperty('--pin-tone', c.muted);
+       whole of how the choice comes back. A place shut for the moment is
+       none of the three: it keeps its own tone, faded by the stylesheet, so
+       that grey means gone and faded means paused — and it does not light up
+       when chosen either, for the same reason a closed one does not. */
+    if (place.closed === true) node.style.setProperty('--pin-tone', c.muted);
+    else if (place.closed) node.style.removeProperty('--pin-tone');
     else if (chosen || kept) node.style.setProperty('--pin-tone', c.lit);
     else node.style.removeProperty('--pin-tone');
 
@@ -6921,7 +6947,7 @@
       place.closed
         ? el('div', { className: 'closed-flag' }, [
             el('span', { className: 'shut-glyph', 'aria-hidden': 'true', html: SHUT_GLYPH }),
-            el('span', { textContent: t('closedFlag') })
+            el('span', { textContent: isPaused(place) ? t('venuesShutFor') : t('closedFlag') })
           ])
         : null,
       el('h2', {
@@ -7893,6 +7919,11 @@
     var order = {};
     for (var i = 0; i < state.places.length; i++) {
       var place = state.places[i];
+      /* Shut, for good or for now, and it is not an answer: the bar is the
+         one thing on the page that only ever offers somewhere to go, and a
+         place found here is a place somebody sets off for. The row and the
+         pin keep saying it is shut — this is the only place it is left out. */
+      if (place.closed) continue;
       if (area && !area.contains([place.lat, place.lng])) continue;
       var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
       var hit = hasWords(hay, words);
@@ -8625,7 +8656,7 @@
       /* The row's own label is what a screen reader reads, so anything the
          row shows has to be spelled into it or it is not there at all. */
       'aria-label': t('openPlace', { name: place.name }) +
-        (place.closed ? ', ' + t('closed') : '') + ', ' + t(depthMarkKey(place)) +
+        (place.closed ? ', ' + shutWord(place) : '') + ', ' + t(depthMarkKey(place)) +
         (deal ? ', ' + (offer || t('filterDiscount')) : '') +
         /* The count is drawn aria-hidden, so a row that shows one has to
            spell it out or a screen reader gets the digit and nothing to
@@ -8648,7 +8679,7 @@
            decides whether to set off at all the last word of a description.
            It sits with the badges now, where the discount sits: the row's
            two facts about the place rather than about the food. */
-        place.closed ? shutMark() : null,
+        place.closed ? shutMark(place) : null,
         saveMark(place),
         far ? el('span', { className: 'list-far', textContent: far }) : null,
         el('span', {

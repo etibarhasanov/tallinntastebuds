@@ -168,7 +168,7 @@ Field by field:
 | `phone` | Optional. The number you would actually ring, international form with spaces: `+372 661 0180`. It becomes the **Call** button at the foot of the panel, next to **Directions** — a `tel:` link, so a phone hands it straight to the dialler — and a tappable row in the facts list just above it. An empty string and a missing key both mean "no number", and the button and the row both disappear. |
 | `added` | The day you added the place, `YYYY-MM-DD`. Optional, and nothing on the site reads it: it drove a **Just added** section at the top of the list until that section was taken out. It stays as a record of when each place went in, `/admin.html` still stamps one on every place it creates, and the validator still holds it to being a real date when it is there. |
 | `visited` | The month you last ate there, `YYYY-MM`. |
-| `closed` | `true` greys the pin out and draws a dashed ring round it. See below. |
+| `closed` | `true` greys the pin out and draws a dashed ring round it; `"temporary"` keeps the ring and the colour, for a door that should open again. See below. |
 
 There is deliberately **no neighbourhood field** — the map is the location
 index, and a district label would be a third thing to keep translated. There is
@@ -1924,6 +1924,32 @@ A shut place is two facts, not one, and the second is the reason it is still
 here: **the door is closed, and the reel is not.** So it is marked in two
 places rather than dimmed in one.
 
+**And there are two kinds of shut.** `"closed": "temporary"` is the door that
+should open again — a renovation, a holiday, a kitchen between owners — and
+it is Google's word for it: `status` in `google_venues` says *Temporarily
+closed* when Google does, and the refresh keeps that current for any place
+somebody opens. The site used to keep that word in the *According to Google*
+block and nowhere else, on the argument that the flag at the top of the
+panel is mine to raise; that was right about whose flag it is and wrong about
+what a visitor was told, because the pin stayed lit and the find bar went on
+answering "borscht" with a door that was shut. So it is a state of its own
+now, and the difference between the two is drawn once, on the pin: **both
+get the broken ring, and only the one shut for good loses its colour.** Grey
+means gone; faded means paused. The list badge and the panel flag say
+**Temporarily closed** — the same phrase the directory uses, `venuesShutFor`,
+because it is the same fact from the same source — and the note under the
+flag is `closedTempNote`, one string for every shape of place, because what is
+left to look at is not the point when the door is coming back.
+
+Everything below that says *closed* means both kinds unless it says otherwise:
+neither is suggested, neither is found, and both stay on the map. The one
+thing that differs in code is `isPaused()` in `assets/app.js`, and the one
+thing that raises the temporary flag is the **Google** tab on `/admin.html` —
+see **The map against Google** under **The admin page** — which lists every
+place where Google's word and the map's disagree and opens the pull request
+that moves `closed`. It never offers *closed for good*: Google losing a row
+is not the same fact, and that one stays a decision made on the edit form.
+
 - **On the map** the pin keeps the collar that says what there is to watch —
   solid, hollow, hairline — in grey, the mark itself drains of colour, and it
   gains a **dashed ring** drawn just outside it. A closed place you can still
@@ -1960,13 +1986,21 @@ Closed places are left out of everything that goes looking for somewhere to
 eat. **Surprise me** never picks one — `randomPick()` filters `!p.closed` off
 the visible set before it draws, so a shut place cannot come up however many
 times you press it, and with every place filtered out the toast says so rather
-than sending you to a closed door. And the locate framing walks you to the
-nearest *open* place. They stay on the map, and in the list, and at their own
-`?spot=` link — that is the whole point — but nothing ever *suggests* them.
+than sending you to a closed door. The locate framing walks you to the
+nearest *open* place. And the find bar across the top of the map never
+answers with one — `findMine()` skips `place.closed` — because that bar is
+the one thing on the page that only ever offers somewhere to go, and a name
+found there is a name somebody sets off for. The column's own field still
+narrows the list to it, badge and all: that field is a search of the list,
+and the list keeps its shut places on purpose. They stay on the map, and in
+the list, and at their own `?spot=` link — that is the whole point — but
+nothing ever *suggests* them.
 
-Six places in `data/restaurants.json` are marked closed today — Bueno Gourmet
-Kadriorg, Cafe Cape Town, Ferment, Lendav Maaler, Lokaal Tilk and Maison
-François. All six have a reel, so all six get `closedReelNote`.
+Five places in `data/restaurants.json` are marked closed for good today —
+Bueno Gourmet Kadriorg, Cafe Cape Town, Lendav Maaler, Lokaal Tilk and Maison
+François. All five have a reel, so all five get `closedReelNote`. Two are
+shut for the moment — Borsch & Varenyk and Ferment — on Google's word, and
+they come back the same way.
 
 Do not write the closure into the `blurb` as well. The panel says it in every
 language already, and Laboratooriumi 23 used to end with "Sadly closed now,
@@ -4286,7 +4320,10 @@ with the day's and the month's calls against their limits, how much of the
 directory has been refreshed, and how much is due. That route answers the
 owner alone, like everything under `/api/admin/` — so the tab fills when the
 owner is signed in on the site, whatever the admin page's own door says — and
-`key` says whether the secret is set without saying a character of it.
+`key` says whether the secret is set without saying a character of it. The
+same answer carries `map`: Google's status on every row tied to a place on my
+map, which the tab lays against `data/restaurants.json` — **The map against
+Google** under **The admin page** says what it does with a disagreement.
 
 **What the numbers used to be.** A refresh writes the new rating and review
 count over the old ones in `google_venues`, and `google_refreshes` forgets
@@ -4395,9 +4432,11 @@ MON  Closed          TUE  16:00–21:00   …
   words — *Open until 22:00*, *Opens at 14:00*, *Closed today* — out of
   `openingNow()`, which is a copy of `opening()` in `assets/venues.js` because
   the map does not load that file. A place Google calls temporarily closed says
-  *Temporarily closed* here, in Google's voice, and stays open on the map: the
-  closed flag at the top of the panel is mine to raise, and Google's word for
-  one door is not a reason to raise it.
+  *Temporarily closed* here, in Google's voice — and, since **Close a place
+  instead of deleting it** grew a second kind of shut, the same word is on the
+  flag at the top of the panel and on the pin, once the Google tab on
+  `/admin.html` has moved `closed` to `"temporary"`. The flag is still mine to
+  raise; Google's word is what says when to look.
 - **The week**, through `hoursBlock()`, today in ink. Two columns at every
   width now, the phone included, which changed the card for a Google place
   too: stacked, it was fourteen lines to say seven things.
@@ -10741,7 +10780,9 @@ Two things it will tell you rather than decide for you:
   a thing a phone should do on its own — and the form and the pull request
   both say so, by name.
 - **Closed is a change, not a deletion.** Closed places are in the picker too,
-  so reopening one is an edit like any other. See
+  so reopening one is an edit like any other. The choice has three answers —
+  **Open**, **Temporarily closed**, **Closed for good** — and the form is the
+  only place the third is ever set. See
   [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it).
 
 Editing opens the map on that place at street zoom, which is the point: **check
@@ -10754,6 +10795,34 @@ file from the repository as well, since nothing else points at it. New ones are
 numbered **past the highest that has ever been there**, never into a gap a
 removal just made: `/photos/*` is cached for a week, so a reused filename would
 serve last month's picture to anybody who had already seen the old one.
+
+### The map against Google
+
+The **Google** tab is mostly a report — what the refresh in
+`functions/api/_refresh.js` has been doing, against its budget — and one part
+of it acts. Google's `status` for a place moves when somebody opens it, and a
+flip to *Temporarily closed* used to be a line in that log which nobody was
+reading for it, while the map went on lighting the pin and answering searches
+with a shut door. The route now also says Google's word on every row tied to
+a place on the map, and the tab lays that against `data/restaurants.json`
+under **The map against Google**:
+
+- a place Google calls temporarily closed that the map still sends people to
+  gets **Mark temporarily closed**;
+- a place the map holds shut for the moment that Google says is open again
+  gets **Reopen it**;
+- a place Google no longer knows at all is listed with no button, because
+  the only move that fits is *closed for good*, and that is not a thing to do
+  on Google's say-so — it points at **Edit a place** instead.
+
+The button opens the same pull request **Edit a place** would, through the
+same code, with `closed` moved and nothing else touched — so it is a pull
+request to read and merge, not a change to the live map, and the map stays
+the owner's to change with Google only saying when to look. The count of
+disagreements rides on the tab's label, **Google · 2**, looked up once when
+the page opens, so it is found on the way to posting a story rather than by
+opening the tab on a hunch. When the two agree everywhere the section says
+so in a line.
 
 ### Setting a discount
 

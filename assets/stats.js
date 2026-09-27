@@ -194,7 +194,10 @@
         /* A shut place still has a card and can still be opened, so it is
            still ranked — and a row at the bottom of a ranking has to say why
            it is there rather than let the number read as a verdict. */
-        place.closed ? el('span', { className: 'stats-shut', textContent: t('closed') }) : null
+        place.closed
+          ? el('span', { className: 'stats-shut',
+              textContent: t(place.closed === 'temporary' ? 'venuesShutFor' : 'closed') })
+          : null
       ]),
       el('span', { className: 'stats-n', textContent: String(place.n) })
     ]);
@@ -237,7 +240,8 @@
            verdict on a restaurant rather than as a fact about a card nobody
            opens any more. */
         alone && tied[0].closed
-          ? el('span', { className: 'stats-shut', textContent: t('closed') })
+          ? el('span', { className: 'stats-shut',
+              textContent: t(tied[0].closed === 'temporary' ? 'venuesShutFor' : 'closed') })
           : null
       ]),
       el('dd', { className: 'stats-head-n', textContent: t('statsOpens', { n: tied[0].n }) })

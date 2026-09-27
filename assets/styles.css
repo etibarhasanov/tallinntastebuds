@@ -753,6 +753,11 @@ a:hover { color: var(--accent-lit); }
    round it says the same thing a second time, in the shape the list uses. */
 .is-shut .pin-face { filter: grayscale(1) contrast(.92); opacity: .86; }
 
+/* Shut for the moment: the same broken ring round it, but the colour stays
+   in, faded. Grey is what gone looks like; this is the door that should open
+   again, and the mark says which by keeping what it cooks. */
+.is-shut.is-paused .pin-face { filter: saturate(.5) contrast(.94); opacity: .8; }
+
 .pin-mark:focus-visible .pin-face {
   box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--accent-lit);
   opacity: 1;

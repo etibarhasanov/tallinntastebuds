@@ -20,8 +20,21 @@
  *       { at: 1790000000000, id: "ChIJ…", name: "Morii Tea House",
  *         outcome: "changed", changes: { reviews: [165, 171] }, note: "" },
  *       …
+ *     ],
+ *     map: [
+ *       { id: "borsch-ja-varenyk", status: "Temporarily closed", missing: false },
+ *       …
  *     ]
  *   }
+ * `map` is Google's word on every row tied to a place on my map — status as
+ * the refresh last wrote it, and whether Google has stopped knowing it at all.
+ * The Google tab lays it against data/restaurants.json and lists the places
+ * where the two disagree, with a button that opens the pull request to move
+ * the map: a place Google calls temporarily closed that the map still sends
+ * people to, or one the map holds shut for the moment that Google says is
+ * open again. Sixty-odd rows, and the list is the whole reason a status flip
+ * in the log below is something the owner finds rather than remembers. See
+ * **Close a place instead of deleting it** in README.md.
  *
  * `table` counts the rows the directory shows — not hidden, not missing — so
  * its total is the number on /admin/google rather than the number in the table.
@@ -69,7 +82,7 @@ export async function onRequestGet(context) {
   if (!env.DB || (await wrongDatabase(env))) return json({ ready: false, key });
 
   try {
-    const [counts, calls, log] = await Promise.all([
+    const [counts, calls, log, tied] = await Promise.all([
       env.DB
         .prepare(
           'SELECT COUNT(*) AS total, ' +
@@ -87,6 +100,9 @@ export async function onRequestGet(context) {
           'ORDER BY r.at DESC LIMIT ?'
         )
         .bind(RECENT)
+        .all(),
+      env.DB
+        .prepare('SELECT map_id, status, missing_since FROM google_venues WHERE map_id IS NOT NULL')
         .all()
     ]);
 
@@ -112,6 +128,11 @@ export async function onRequestGet(context) {
         outcome: row.outcome,
         changes: parsed(row.changes),
         note: row.note || ''
+      })),
+      map: (tied.results || []).map((row) => ({
+        id: row.map_id,
+        status: row.status || '',
+        missing: row.missing_since != null
       }))
     });
   } catch (e) {

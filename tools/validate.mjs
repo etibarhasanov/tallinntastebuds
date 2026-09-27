@@ -821,9 +821,13 @@ if (places !== null) {
         warn(where, 'has a video but no "visited" month');
       }
 
-      /* closed */
-      if (typeof place.closed !== 'boolean') {
-        fail(where, '"closed" must be true or false');
+      /* closed — false, true, or "temporary". Two kinds of shut door, and
+         the string is the one that is meant to go away again: the pin keeps
+         its colour, the flag says so, and the admin page's Google tab is
+         what raises and lowers it. See **Close a place instead of deleting
+         it** in README.md. */
+      if (typeof place.closed !== 'boolean' && place.closed !== 'temporary') {
+        fail(where, '"closed" must be true, false or "temporary"');
       }
     });
   }

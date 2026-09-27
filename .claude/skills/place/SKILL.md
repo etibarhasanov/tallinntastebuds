@@ -58,7 +58,7 @@ and requires the first twelve. An unknown key is a warning ("typo?"), which is h
 | `phone` | absent, `""`, or `^\+[1-9][0-9]{0,3}( [0-9]{2,4}){1,4}$` — `+372 661 0180`. Absent on an open place warns | error / warning |
 | `added` | `YYYY-MM-DD` when present, and nothing reads it since **Just added** was taken out — absent is fine and warns about nothing. `/admin.html` still stamps one | error |
 | `visited` | `YYYY-MM`; absent warns only when there is a reel to date it from | error / warning |
-| `closed` | boolean | error |
+| `closed` | `false`, `true`, or `"temporary"` — a door that should open again, Google's word, raised from the admin page's Google tab | error |
 
 The taxonomy is checked too: every type needs a label in all ten languages,
 and no type may claim `discount` or `saved`. A `photos/` folder no place
@@ -77,7 +77,8 @@ its pin can land on the wrong side of the street. What it does, in order:
    is read-only when editing), address, coordinates by tapping the map,
    dragging the pin or **I am here**, price, types as checkboxes, the
    **English** write-up only, must-orders one per line, reel, website, phone,
-   and photographs. Editing adds **This place has closed down**. There is no
+   and photographs. Editing adds **Open or closed** — Open, Temporarily
+   closed, Closed for good. There is no
    `visited` field. Every rule in the table above that the validator would
    fail on is checked before anything is written, in the same words.
 2. Photographs are shrunk on the device down the ladder 1600/0.72, 1400/0.68,
@@ -185,7 +186,11 @@ its pin can land on the wrong side of the street. What it does, in order:
 
 ## Closing one
 
-Set `"closed": true` and change nothing else. Every `?spot=` link keeps
+Set `"closed": true` and change nothing else — or `"closed": "temporary"`
+for a door that should open again, which is normally not typed at all: the
+**Google** tab on `/admin.html` lists every place where Google's status and
+the map disagree and opens the edit PR that moves it, both ways. **The map
+against Google** under **The admin page** in `README.md`. Either way, every `?spot=` link keeps
 working, the pin greys and gains a dashed ring, the row and the panel say so
 in every language, and **Surprise me** and the locate framing skip it on their
 own. It still sorts into the list by distance like everything else, greyed —
