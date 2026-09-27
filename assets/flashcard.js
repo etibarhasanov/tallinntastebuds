@@ -68,6 +68,14 @@
  * **Grammar, which is read rather than turned over** under **Flashcards** in
  * README.md is the reasoning.
  *
+ * WHERE YOU LEFT OFF
+ *
+ * The front door reopens what this device had open — the deck a run was going
+ * in, or the lesson being read — rather than the shelf, for somebody signed
+ * in. rememberHere() below writes it and boot() reads it; **Where you left
+ * off** under **Flashcards** in README.md says why it is the device's and not
+ * the account's.
+ *
  * HOW ANYBODY FINDS IT, WHICH IS ONE PILL
  *
  * A pill on the map's rail, third down, open to anybody who loads the map.
@@ -2906,6 +2914,33 @@
     }
   }
 
+  /* ------------------------------------------------- where you left off
+   * What this device had open, so the front door can reopen it: the deck a
+   * run is going in, or the lesson being read. Written on every draw and
+   * cleared by the shelf, the end of a run, the gate, a shut stage and the
+   * editor, so what is ever reopened is a card in hand or a page being read,
+   * never a screen somebody had finished with. localStorage rather than the
+   * account, because it is where this device was closed — a phone closed on
+   * a deck and a laptop closed on the shelf were closed in two places — and
+   * only signed in, since signed out the run is the tab's and goes with it.
+   * boot() is the reader. See **Where you left off** under **Flashcards** in
+   * README.md.
+   */
+  var LAST_KEY = 'ttb.flash.last';
+
+  function rememberHere() {
+    if (!state.user || !state.ready) return;
+    var here = state.lesson ? state.lesson.id
+             : state.deck && current() && !state.gated && !state.locked && !state.editing ? state.deck.id
+             : '';
+    if (here) storeSet(LAST_KEY, here);
+    else forgetHere();
+  }
+
+  function forgetHere() {
+    try { window.localStorage.removeItem(LAST_KEY); } catch (e) { /* no store */ }
+  }
+
   /* -------------------------------------------------------------- the deck is
    * gone, or was never there. A deck id in the address that answers with
    * nothing: somebody's own deck deleted in another tab, a shipped deck or a
@@ -2987,6 +3022,7 @@
     }
 
     main.appendChild(wrap);
+    rememberHere();
   }
 
   /* What came of a round trip to Google, said once the page has drawn and
@@ -3045,6 +3081,12 @@
        answer. /api/account is not read on the way in at all: the only thing
        this page ever wanted from it was a name to put in the sign-up field,
        and the form asks for that now rather than offering one. */
+    /* Where this device left off, if the address does not say: the deck or
+       the lesson the front door reopens instead of the shelf — see
+       rememberHere(). Asked for in the same one request. */
+    var resumed = asked ? '' : (storeGet(LAST_KEY) || '');
+    if (resumed) asked = resumed;
+
     var query = new URLSearchParams();
     query.set('lang', wanted().join(','));
     if (asked) query.set('deck', asked);
@@ -3083,7 +3125,26 @@
         go(new URLSearchParams(window.location.search).get('d') || '', false);
       });
 
-      render();
+      if (resumed && (!state.user || (!state.deck && !state.lesson))) {
+        /* A place remembered for somebody no longer signed in, or a deck or
+           a lesson that has gone since: the front door is the shelf after
+           all, asked for a second time — rare, and the one case where this
+           page makes two requests on the way in. */
+        forgetHere();
+        asked = '';
+        go('', false);
+      } else {
+        if (resumed) {
+          /* The address says where this is, as it would after a press, and
+             the front door stays under it, so the back button leaves the deck
+             rather than the site. */
+          try {
+            window.history.pushState(null, '', deckHref(resumed));
+          } catch (e) { /* an old browser keeps the address; the page is right */ }
+          TTBTrack.event('flash_resume', { deck_id: resumed });
+        }
+        render();
+      }
       /* The tag counted this address as the document loaded, deck and all, so
          only the walks from here are go()'s to report. */
       TTBTrack.seen();
