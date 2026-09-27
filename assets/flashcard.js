@@ -205,6 +205,8 @@
  *                              is being read in
  *   /api/flashcard?deck=       one deck, whole, with its cards, and the same
  *   /api/account               posted to, to sign in or create an account
+ *   /api/say?text=             a card's Estonian aloud, only when a speaker
+ *                              under the card is pressed — see sayLine()
  *
  * Every other page fetches data/ui.json whole on the way in — ten languages of
  * every string the site has, 85 KB gzipped — to print its few dozen keys in
@@ -2265,7 +2267,11 @@
         return;
       }
 
-      if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
+      /* S says the card aloud — the word, or the sentence where the back is
+         up and has one: sayCard(). Under every rule the arrows are under,
+         since an S in a field is a letter. */
+      var sayKey = ev.key === 's' || ev.key === 'S';
+      if (!sayKey && ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
 
       /* An arrow with a modifier on it belongs to the browser or to a
          selection and never to the card: Alt and the left arrow is Back on
@@ -2295,6 +2301,13 @@
       if (!state.deck || state.editing || state.gated) return;
       var word = current();
       if (!word) return;
+
+      if (sayKey) {
+        if (!sayable(word)) return;
+        ev.preventDefault();
+        sayCard(word);
+        return;
+      }
 
       /* Left to itself an arrow scrolls the page sideways, which on a phone-
          width window is the card leaving. */
@@ -2429,6 +2442,149 @@
     return el('div', { className: 'flash-hintline' }, [ask]);
   }
 
+  /* ------------------------------------------------------------ hearing it
+   * The Estonian, said aloud: the word on the front, and on the back the word
+   * again and the sentence under it where the card has one. A word read is
+   * half a word — leib and leiba are one thing on the page and two in the
+   * mouth — and the people turning these over have mostly never heard any of
+   * them.
+   *
+   * The sound is nobody's file. /api/say asks the University of Tartu's
+   * Estonian voice for the words when the button is pressed, and Cloudflare
+   * keeps what comes back, so the second person to press Tere hears it from
+   * the edge — see the header of functions/api/say.js. This side only hands
+   * an address to one <audio> and follows what it does.
+   *
+   * One <audio> for the whole sitting, made on the first press and pointed at
+   * each word in turn, because a phone lets a page play sound only from a
+   * gesture and an element that has played once from one keeps being allowed
+   * to. The radio has its own and neither touches the other.
+   *
+   * render() rebuilds <main> on every press, so what the buttons show lives
+   * here rather than on them: `text` is what is being said and `now` whether
+   * it is still on its way or already playing, and paintSay() puts that on
+   * whichever buttons are on screen. A sound whose button has gone — the card
+   * was answered, the deck was left — is stopped by render() itself, which is
+   * the one place every one of those passes through.
+   */
+  var SAY_API = '/api/say';
+
+  var voice = { audio: null, text: '', now: '', token: 0 };
+
+  /* Only a card out of data/decks.json can be said, because that file is the
+     whole of what the route will speak — a deck somebody typed is anything
+     anybody chose, and the header of the route says why that stays unsaid. A
+     shipped card's back is an object keyed by language and a typed one's is
+     a string, and that holds in the gathered decks too, where the two are
+     mixed. */
+  function sayable(word) {
+    return !!word && !state.deck.own && !!word.back && typeof word.back === 'object';
+  }
+
+  function paintSay() {
+    var buttons = main.querySelectorAll('.flash-say');
+    for (var i = 0; i < buttons.length; i++) {
+      var b = buttons[i];
+      var mine = b.getAttribute('data-say') === voice.text;
+      b.classList.toggle('is-loading', mine && voice.now === 'loading');
+      b.classList.toggle('is-playing', mine && voice.now === 'playing');
+      b.setAttribute('aria-pressed', mine && voice.now ? 'true' : 'false');
+    }
+  }
+
+  function hush() {
+    voice.token++;
+    if (voice.audio) voice.audio.pause();
+    voice.text = '';
+    voice.now = '';
+    paintSay();
+  }
+
+  /* A second press on the one that is sounding stops it; a press on another
+     one starts that one instead. Whatever goes wrong — the voice is down, the
+     phone is offline, the browser refused — ends the same way: quiet, and one
+     line saying the voice is not answering. The card goes on working, since
+     nothing in a run waits on this. */
+  function sayIt(text, what) {
+    if (voice.text === text && voice.now) { hush(); return; }
+    hush();
+
+    if (!voice.audio) voice.audio = new Audio();
+
+    var token = voice.token;
+    var audio = voice.audio;
+    var ours = function () { return token === voice.token; };
+    var failed = function () {
+      if (!ours()) return;
+      hush();
+      toast(t('flashSayFail'));
+    };
+
+    audio.onplaying = function () { if (ours()) { voice.now = 'playing'; paintSay(); } };
+    audio.onended = function () { if (ours()) hush(); };
+    audio.onerror = failed;
+
+    voice.text = text;
+    voice.now = 'loading';
+    audio.src = SAY_API + '?text=' + encodeURIComponent(text);
+    var played = audio.play();
+    /* A play() that was stopped by the next press rejects with an AbortError,
+       which is this page changing its mind rather than anything failing. */
+    if (played && played.catch) {
+      played.catch(function (e) { if (!e || e.name !== 'AbortError') failed(); });
+    }
+    paintSay();
+
+    TTBTrack.event('flash_say', { deck_id: state.deck.id, what: what });
+  }
+
+  /* What the S key says: the sentence where the back is up and there is one,
+     and the word otherwise — the same thing the last button in the row would
+     say. */
+  function sayCard(word) {
+    if (!sayable(word)) return;
+    if (state.run.turned && word.sentence && word.sentence.et) sayIt(word.sentence.et, 'sentence');
+    else sayIt(word.front, 'word');
+  }
+
+  /* The row of them, under the card and over whatever answers it. On the
+     front, one press for the word. On the back, the word again and, where
+     there is one, the sentence — both there because the sentence is the thing
+     to say and the word is the thing to learn, and somebody who wanted one has
+     usually just heard the other.
+   *
+     Under rather than on the card for the reason the hint is: the card is a
+     <button>, and nothing pressable can stand inside one. .alt like every
+     other quiet press here, with the speaker drawn beside the word the way
+     Undo draws its arrow. */
+  function sayLine(word) {
+    if (!sayable(word)) return null;
+
+    var one = function (text, key, what) {
+      var b = el('button', {
+        type: 'button',
+        className: 'alt flash-say',
+        'data-say': text,
+        'aria-pressed': 'false',
+        'aria-label': t('flashSayAria', { text: text })
+      }, [
+        el('span', { className: 'flash-say-icon', 'aria-hidden': 'true' }),
+        el('span', { textContent: t(key) })
+      ]);
+      b.addEventListener('click', function () { sayIt(text, what); });
+      return b;
+    };
+
+    var kids = [];
+    if (!state.run.turned) {
+      kids.push(one(word.front, 'flashSay', 'word'));
+    } else {
+      kids.push(one(word.front, 'flashSayWord', 'word'));
+      if (word.sentence && word.sentence.et) kids.push(one(word.sentence.et, 'flashSaySentence', 'sentence'));
+    }
+    return el('div', { className: 'flash-sayline' }, kids);
+  }
+
   function runBar() {
     var run = state.run;
     var done = run.at;
@@ -2481,9 +2637,11 @@
        What does stand there on the front is the hint, which is the one press
        that belongs to a card nobody has seen the meaning of yet — and it is
        gone by the time the two answers arrive, so the row under the card asks
-       one thing at a time either way. See hintLine(). */
+       one thing at a time either way. See hintLine(). Over both, on either
+       face, the word said aloud, which is not a question about the card at
+       all: see sayLine(). */
     if (!state.run.turned) {
-      return [runHead(), runBar(), tallyRow(), pile(word), hintLine(word)];
+      return [runHead(), runBar(), tallyRow(), pile(word), sayLine(word), hintLine(word)];
     }
 
     var acts = el('div', { className: 'flash-acts' });
@@ -2496,7 +2654,7 @@
     knew.addEventListener('click', function () { answer(word, true, 'press'); });
     acts.appendChild(knew);
 
-    return [runHead(), runBar(), tallyRow(), pile(word), acts, wrongLine(word)];
+    return [runHead(), runBar(), tallyRow(), pile(word), sayLine(word), acts, wrongLine(word)];
   }
 
   /* The card in hand, standing on the edges of the ones still under it. The
@@ -3023,6 +3181,19 @@
 
     main.appendChild(wrap);
     rememberHere();
+
+    /* A word still sounding whose button is no longer on screen — the card
+       was answered, undone or left — stops here, and one that is still there
+       gets its button drawn the way it was. */
+    if (voice.text) {
+      var still = false;
+      var says = main.querySelectorAll('.flash-say');
+      for (var i = 0; i < says.length; i++) {
+        if (says[i].getAttribute('data-say') === voice.text) still = true;
+      }
+      if (still) paintSay();
+      else hush();
+    }
   }
 
   /* What came of a round trip to Google, said once the page has drawn and
