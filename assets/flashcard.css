@@ -767,6 +767,85 @@
 .lists-none + .ac-form,
 .flash-rows + .ac-form { margin-top: 20px; }
 
+/* ---------- a lesson, which is read rather than turned over ---------- */
+
+/* A lesson's tile is a deck's tile with one word at its foot — Not read yet,
+   or Read — and no rule and no count, because there is nothing to be part-way
+   through. Read is in the colour Knew it is drawn in, and it is the word as
+   well, which is design rule 10. */
+.flash-shelf .lists-count.is-read { color: var(--yes); }
+
+/* The lesson itself is prose, so it is set the way the blog sets a post: the
+   body face at a reading size with a paragraph's line-height, in the ink
+   rather than the muted tone a card's sentence is in — this is the page, not
+   a footnote to a word. The Estonian inside it is an <i lang="et">, and it is
+   set in the mono rather than in an italic, for two reasons: the site loads no
+   italic face and a synthesised slant is a smear, and the mono is already what
+   the three forms on a card are printed in, so the same word looks the same
+   in the paragraph as it does in the paradigm under it. */
+.flash-lesson .lists-say { margin-bottom: 18px; }
+.flash-prose {
+  margin: 0 0 14px;
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.62;
+}
+.flash-prose i {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: .88em;
+  color: var(--ink);
+}
+.flash-lesson-head {
+  margin: 24px 0 8px;
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+/* A paradigm: three Estonian forms across, in the mono the card prints them
+   in, and what the word means in the body face at the end of the row. The
+   first form is in the ink, as it is on the card, because it is the one the
+   card asks. Hairlines between rows and none around the table; the card is
+   the frame. At 390px the three forms and a one-word gloss fit on a line, and
+   a longer gloss wraps under itself rather than pushing the forms apart. */
+.flash-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 4px 0 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .02em;
+}
+.flash-table th {
+  padding: 0 8px 6px 0;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--muted);
+}
+.flash-table td {
+  padding: 7px 8px 7px 0;
+  border-top: 1px solid var(--hairline);
+  vertical-align: top;
+  color: var(--muted);
+}
+.flash-table td:first-child { color: var(--ink); }
+.flash-table td:last-child {
+  padding-right: 0;
+  font-family: var(--body);
+  font-size: 13.5px;
+  letter-spacing: 0;
+}
+
+/* The one action at the foot of a lesson, with a little more air over it than
+   a card's foot gets: the paragraph above it is the end of a page of reading
+   rather than a field. */
+.flash-lesson .lists-foot { margin-top: 10px; }
+
 /* ---------- the end of a deck ---------- */
 
 .flash-done { text-align: center; padding: 30px 22px; }

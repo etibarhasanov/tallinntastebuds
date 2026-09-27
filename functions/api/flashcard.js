@@ -25,6 +25,19 @@
  * cards readers say is wrong. See **Flashcards** in README.md and the block at
  * the end of db/schema.sql.
  *
+ * AND THE GRAMMAR, WHICH IS READ RATHER THAN TURNED OVER
+ *
+ * The same file carries the lessons — prose about why a word has three forms,
+ * under a heading of their own on the shelf — and this file hands those on
+ * whole as well: the shelf answer names them, ?deck=<lesson id> answers one
+ * with its body, and a lesson somebody has read is one row in flashcard_known
+ * under GRAMMAR_DECK below, written by the same `knew` action a card is.
+ * Nothing else about a lesson is in the database, and nothing that counts or
+ * gathers known cards can see that row: wordsKnown() sums over the decks in
+ * the file and gathered() looks every row up in it, so a deck id that is in
+ * neither is dropped rather than counted. See **Grammar, which is read rather
+ * than turned over** under **Flashcards** in README.md.
+ *
  * **Nothing here chooses which language a card is turned over into.** A deck
  * the site ships carries its name, the line under it and the back of every
  * card as an object keyed by language — English, Azerbaijani and Russian — and
@@ -124,9 +137,9 @@
  *     under a person — see flashcard_reports in db/schema.sql — which is what
  *     makes it the one write here that needs SAVE_SALT.
  *   - A card marked known is checked against the deck it claims to be in —
- *     the file for a built-in deck, the table for somebody's own — so the
- *     progress table cannot be filled with rows about cards that do not
- *     exist.
+ *     the file for a built-in deck, the table for somebody's own, and the
+ *     file again for a lesson under GRAMMAR_DECK — so the progress table
+ *     cannot be filled with rows about cards that do not exist.
  *   - Everything anybody types is capped in length before it is stored, and
  *     the counts below cap how much of it there can be.
  *
@@ -282,6 +295,19 @@ function shutAt(level, words, ready) {
    reserved for the same reason. */
 const REVIEW_DECK = 'review';
 
+/* And the deck id a lesson read is filed under in flashcard_known. Not a deck
+   at all, but the row is the same shape — this person, this thing, known —
+   and a table of its own for two rows a person would be a table nobody needs.
+   tools/validate.mjs keeps a shipped deck from taking the name; the row's
+   card_id is the lesson's id out of data/decks.json. */
+const GRAMMAR_DECK = 'grammar';
+
+/* Whether a known row is a lesson's rather than a card's, by the key knownOf()
+   files it under. The two gathered decks are built out of every known row
+   there is, and a lesson read must not be a card in either — not counted on
+   the shelf, not a slot in the run. */
+const lessonRow = (key) => key.startsWith(GRAMMAR_DECK + '/');
+
 /* Sixteen hex characters: a deck's id, and a card's. Minted rather than
    slugged, because neither ever appears in a link anybody sends — see
    flashcard_decks in db/schema.sql. */
@@ -338,6 +364,33 @@ async function shipped(context) {
 
 function shippedDeck(decks, id) {
   return decks.find((d) => d.id === id) || null;
+}
+
+/* The lessons the site ships, out of the same file and held to the same id
+   shape. A lesson has no cards; what it has is a body of blocks the page draws
+   as prose, and tools/validate.mjs holds the blocks to their shape so nothing
+   here has to. */
+async function shippedLessons(context) {
+  try {
+    const file = await dataFile(context, DECKS_FILE);
+    const lessons = file && Array.isArray(file.lessons) ? file.lessons : [];
+    return lessons.filter((l) => l && WRITTEN.test(String(l.id || '')) && Array.isArray(l.body));
+  } catch (e) {
+    return [];
+  }
+}
+
+/* A lesson as the page reads it: its name and line for the shelf, its body
+   when it is the one open, and whether this person has pressed Got it on it —
+   which is a known row under GRAMMAR_DECK, read the way a card's is. */
+function lessonAnswer(lesson, known, whole) {
+  return {
+    id: lesson.id,
+    name: lesson.name,
+    why: lesson.why || null,
+    ...(whole ? { body: lesson.body } : {}),
+    read: stateOf(known, GRAMMAR_DECK, lesson.id).known
+  };
 }
 
 /* ------------------------------------------------------------- somebody's
@@ -563,7 +616,7 @@ function reviewDeck(context, user, decks, known) {
   const due = [];
   const rest = [];
   known.forEach((was, key) => {
-    if (!was.known) return;
+    if (!was.known || lessonRow(key)) return;
     (was.due ? due : rest).push({ ...keyed(key), at: was.at });
   });
   due.sort((a, b) => a.at - b.at);
@@ -626,11 +679,16 @@ export async function onRequestGet(context) {
     }
 
     const deck = shippedDeck(decks, asked);
+    if (deck) return json({ ...base, deck: deckAnswer(deck, deck.cards, false, known) }, 200);
+
+    /* Or a lesson, which opens at the same kind of address and is answered
+       whole the way a deck is: its name, its line and its body. */
+    const lesson = (await shippedLessons(context)).find((l) => l.id === asked) || null;
+    if (lesson) return json({ ...base, lesson: lessonAnswer(lesson, known, true) }, 200);
+
     /* A deck id that is somebody else's, one that was deleted, and one that
        was never anything are the same answer. */
-    if (!deck) return json({ ...base, error: 'not-found' }, 404);
-
-    return json({ ...base, deck: deckAnswer(deck, deck.cards, false, known) }, 200);
+    return json({ ...base, error: 'not-found' }, 404);
   }
 
   /* How many of a deck this person knows, and how many of it are waiting for
@@ -686,7 +744,7 @@ export async function onRequestGet(context) {
      wait has come round as due, so it reads "6 due" while there is something
      to do and "40 / 40" when there is not — the same two sentences every
      other row says, meaning the same things. */
-  const rows = [...known.values()];
+  const rows = [...known.entries()].filter(([key]) => !lessonRow(key)).map(([, was]) => was);
   const learnt = rows.filter((was) => was.known);
   if (learnt.length > 0) {
     list.unshift({
@@ -754,7 +812,13 @@ export async function onRequestGet(context) {
     });
   }
 
-  return json({ ...base, decks: list }, 200);
+  /* And the lessons, every one, with whether each has been read. They are in
+     no stage and behind no gate: they are a file, prose, and the argument for
+     holding a deck back — forty-two rows with nothing saying where to start —
+     does not reach two tiles under a heading of their own. */
+  const lessons = (await shippedLessons(context)).map((l) => lessonAnswer(l, known, false));
+
+  return json({ ...base, decks: list, lessons: lessons }, 200);
 }
 
 /* ---------------------------------------------------------------- writing */
@@ -982,6 +1046,12 @@ async function mark(context, body, user, knew) {
         .first();
       real = !!row;
     }
+  } else if (deckId === GRAMMAR_DECK && WRITTEN.test(cardId)) {
+    /* A lesson read is a card known, under the one deck id no deck has, and
+       the lesson has to be one the file ships for the same reason a card
+       does. It climbs the boxes like a card and nothing reads which box it
+       is in: known is the whole of the fact. */
+    real = (await shippedLessons(context)).some((l) => l.id === cardId);
   } else if (WRITTEN.test(deckId) && WRITTEN.test(cardId)) {
     const deck = shippedDeck(await shipped(context), deckId);
     real = !!deck && deck.cards.some((c) => c.id === cardId);

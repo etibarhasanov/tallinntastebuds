@@ -149,25 +149,62 @@ function where(request, path) {
   return new URL(request.url).hostname === FLASH_HOST ? SITE + path : canonical(request, path);
 }
 
-async function decksOf(context) {
+/* Both lists out of the one file: the decks, and the grammar lessons that sit
+   under a heading of their own on the shelf. A missing or malformed file is two
+   empty lists rather than a throw — this route improves a load and is never a
+   requirement for one. */
+async function shelfOf(context) {
   try {
     const file = await dataFile(context, DECKS_FILE);
-    return file && Array.isArray(file.decks) ? file.decks : [];
+    return {
+      decks: file && Array.isArray(file.decks) ? file.decks : [],
+      lessons: file && Array.isArray(file.lessons) ? file.lessons : []
+    };
   } catch (e) {
-    return [];
+    return { decks: [], lessons: [] };
   }
 }
 
 /* The decks, as text: what each one is called and the line saying what is in
    it. A list of links, so a crawler that landed on this page walks to the
    forty-two under it rather than treating it as a leaf. */
-function deckList(decks) {
-  const row = (deck) =>
-    '<li><h2><a href="' + PATH + '?d=' + esc(deck.id) + '">' + esc(inEnglish(deck.name)) + '</a></h2>' +
-    (deck.why ? '<p>' + esc(inEnglish(deck.why)) + '</p>' : '') +
+function deckList(decks, lessons) {
+  const row = (one) =>
+    '<li><h2><a href="' + PATH + '?d=' + esc(one.id) + '">' + esc(inEnglish(one.name)) + '</a></h2>' +
+    (one.why ? '<p>' + esc(inEnglish(one.why)) + '</p>' : '') +
     '</li>';
+  /* And the lessons as a second list under their own heading, the way the
+     page draws them — a lesson is a name and a line the same as a deck is,
+     so the same row draws it. */
   return '<h1>' + esc(TITLE) + '</h1><p>' + esc(DESCRIPTION) + '</p>' +
-    '<ol>' + decks.map(row).join('') + '</ol>';
+    '<ol>' + decks.map(row).join('') + '</ol>' +
+    (lessons.length ? '<h2>Grammar</h2><ol>' + lessons.map(row).join('') + '</ol>' : '');
+}
+
+/* And one lesson, as the prose it is. A paragraph is a <p> with the Estonian
+   in it set apart — *…* in the file is an <i lang="et"> here, the one piece of
+   markup the content carries and the same one assets/flashcard.js draws — a
+   heading is an <h2>, and a paradigm is a <table> of three Estonian forms and
+   what the word means. In English, for the reason the <main> always is. */
+function lessonWords(lesson) {
+  const prose = (text) => String(text).split('*')
+    .map((part, i) => (i % 2 ? '<i lang="et">' + esc(part) + '</i>' : esc(part)))
+    .join('');
+  const table = (one) =>
+    '<table><tr>' + one.heads.map((head) => '<th>' + esc(inEnglish(head)) + '</th>').join('') + '<th></th></tr>' +
+    one.rows.map((row) =>
+      '<tr>' + row.et.map((form) => '<td lang="et">' + esc(form) + '</td>').join('') +
+      '<td>' + esc(inEnglish(row.means)) + '</td></tr>').join('') +
+    '</table>';
+  const block = (one) =>
+    one.say ? '<p>' + prose(inEnglish(one.say)) + '</p>'
+    : one.head ? '<h2>' + esc(inEnglish(one.head)) + '</h2>'
+    : one.table ? table(one.table)
+    : '';
+  return '<h1>' + esc(inEnglish(lesson.name)) + '</h1>' +
+    (lesson.why ? '<p>' + esc(inEnglish(lesson.why)) + '</p>' : '') +
+    lesson.body.map(block).join('') +
+    '<p><a href="' + PATH + '">' + esc(TITLE) + '</a></p>';
 }
 
 /* And one deck, as the words and their meanings it is: a description list,
@@ -264,7 +301,7 @@ const LANGUAGE = { '@type': 'Language', name: 'Estonian', alternateName: 'et' };
 /* What the page is, said the same way whether it is the shelf or one deck: a
    page, and a thing to learn from. `teaches` is the one property here that a
    reader could not have worked out from the words on the page. */
-function learningPage(self, name, description) {
+function learningPage(self, name, description, lesson) {
   return {
     '@type': ['WebPage', 'LearningResource'],
     '@id': self + '#page',
@@ -274,9 +311,11 @@ function learningPage(self, name, description) {
     inLanguage: DEFAULT_LANG,
     isPartOf: { '@id': SITE + '#website' },
     isAccessibleForFree: true,
-    learningResourceType: 'Flashcards',
+    /* A lesson is the one page here that is read rather than turned over, and
+       it teaches the grammar the cards only show. */
+    learningResourceType: lesson ? 'Reading' : 'Flashcards',
     educationalLevel: 'Beginner',
-    teaches: 'Estonian vocabulary',
+    teaches: lesson ? 'Estonian grammar' : 'Estonian vocabulary',
     about: LANGUAGE
   };
 }
@@ -311,8 +350,29 @@ function definedTerm(card, set) {
    or the shelf as a list of the decks on it. One deck is named in the shelf's
    list by its name and its line and never by its cards — a crawler that wants
    those follows the link, which is the same bargain the <ol> above strikes. */
-function structuredData(request, decks, deck) {
+function structuredData(request, decks, deck, lesson) {
   const site = { '@type': 'WebSite', '@id': SITE + '#website', url: SITE, name: 'Tallinn Tastebuds' };
+
+  /* A lesson is the page and its breadcrumb and nothing more: there is no
+     glossary in it to list, and its words are already on the page as prose. */
+  if (lesson) {
+    const self = where(request, PATH + '?d=' + lesson.id);
+    const name = inEnglish(lesson.name);
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        site,
+        learningPage(self, name, inEnglish(lesson.why) || DESCRIPTION, true),
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: TITLE, item: where(request, PATH) },
+            { '@type': 'ListItem', position: 2, name }
+          ]
+        }
+      ]
+    };
+  }
 
   if (deck) {
     const self = where(request, PATH + '?d=' + deck.id);
@@ -420,9 +480,14 @@ export async function onRequest(context) {
   }
 
   const asked = new URL(request.url).searchParams.get('d') || '';
-  const decks = await decksOf(context);
+  const { decks, lessons } = await shelfOf(context);
   const deck = WRITTEN.test(asked)
     ? decks.find((d) => d && d.id === asked && Array.isArray(d.cards)) || null
+    : null;
+  /* Or a lesson, at the same kind of address; the validator keeps the two
+     lists from sharing a name. */
+  const lesson = !deck && WRITTEN.test(asked)
+    ? lessons.find((l) => l && l.id === asked && Array.isArray(l.body)) || null
     : null;
 
   /* The site's own words, for the head. A missing or malformed file is the
@@ -444,7 +509,7 @@ export async function onRequest(context) {
      what one would file is a page of nothing under a title it was not given,
      and what an unfurled link should say about an address whose contents are
      not the sender's to share is the page rather than the deck. */
-  const own = asked !== '' && deck === null;
+  const own = asked !== '' && deck === null && lesson === null;
 
   const tags = deck
     ? head({
@@ -454,6 +519,14 @@ export async function onRequest(context) {
            page of its own — the same call the map makes for ?spot=, and the
            same set of addresses tools/sitemap.mjs writes out. */
         url: where(request, PATH + '?d=' + deck.id),
+        type: 'article',
+        image: CARD
+      })
+    : lesson
+    ? head({
+        title: inLanguage(lesson.name, lang),
+        description: inLanguage(lesson.why, lang) || DESCRIPTION,
+        url: where(request, PATH + '?d=' + lesson.id),
         type: 'article',
         image: CARD
       })
@@ -469,7 +542,7 @@ export async function onRequest(context) {
         image: CARD
       });
 
-  const words = deck ? deckWords(deck) : own ? '' : deckList(decks);
+  const words = deck ? deckWords(deck) : lesson ? lessonWords(lesson) : own ? '' : deckList(decks, lessons);
 
   /* And the same thing as data, on everything that is indexed. A deck out of
      the database gets none: its words are behind a session, so what this would
@@ -477,7 +550,7 @@ export async function onRequest(context) {
   const said = own || (!deck && decks.length === 0)
     ? tags
     : tags + '\n<script type="application/ld+json">' +
-      seed(structuredData(request, decks, deck)) + '</script>';
+      seed(structuredData(request, decks, deck, lesson)) + '</script>';
 
   return page(fill(rehead(html, said), EMPTY[FILE.slice(1)], words), 200, !own);
 }

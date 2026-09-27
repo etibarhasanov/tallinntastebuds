@@ -1355,7 +1355,11 @@ CREATE TABLE IF NOT EXISTS flashcard_known (
   -- Either a deck id out of data/decks.json — "table", "numbers" — or one of
   -- flashcard_decks.id above. They cannot collide: the built-in ones are
   -- written by hand as words and tools/validate.mjs refuses one shaped like a
-  -- minted id.
+  -- minted id. Or "grammar", which is no deck at all: a grammar lesson
+  -- somebody has read is a row under that id with the lesson's id as the
+  -- card — GRAMMAR_DECK in functions/api/flashcard.js, reserved by the
+  -- validator so no shipped deck takes the name — and the route keeps it out
+  -- of every count of cards.
   deck_id TEXT    NOT NULL,
   card_id TEXT    NOT NULL,
   seen_at INTEGER NOT NULL,
