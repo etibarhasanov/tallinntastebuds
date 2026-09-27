@@ -166,6 +166,15 @@ not in it is a name nobody will find in the console. `grep -n TTBTrack
 assets/<file>.js` shows what the page beside yours reports, and the same
 press on two pages reports the same name.
 
+**And every page a visitor walks back from carries `assets/back.js`**, after
+`track.js` and before the page's own script: a swipe to the right from
+anywhere on the screen is Back. It reads `touch-action: none` and `pan-x`,
+and the `is-lifted`, `is-carrying` and `is-dragging` classes, to know where
+a sideways finger already means something — so a new thing that takes one
+says so in CSS the way the chips and the grips do, and needs nothing here.
+The map hears it only on the panel with a place open. **A swipe to the right
+is Back** in `README.md`.
+
 **And every page is watched, once somebody agrees to it.** That is the other
 half of analytics and it costs nothing per press: Microsoft Clarity records the
 page itself — heatmaps, and a replay of the DOM as it changed. Nothing calls
