@@ -10760,9 +10760,10 @@ visitor differ, then the experiment, then what was done.
   each against the same length of time just before it — **visitors**, the
   share of them **returning**, **page views**, **time per visitor** and
   **clicks per visitor** — then a bar a day of new and returning visitors (a
-  bar a week for ninety days, and none for today), **countries** and **where
-  they came from**. Today is not set against yesterday: half a day against a
-  whole one says nothing.
+  bar a week for ninety days, and none for today), **countries**, **where
+  they came from**, and **languages** with the switches between them — see
+  **The language it was read in** below. Today is not set against yesterday:
+  half a day against a whole one says nothing.
 - **New against returning**: a column each, and per visitor the pages, the
   time, the clicks and the places opened, with the sign-ins and the accounts
   made as counts — see **New against returning** below.
@@ -10810,6 +10811,36 @@ short and never long, and one stretch is capped at half an hour, so a tab left
 open on a desk all afternoon adds thirty minutes rather than five hours.
 **Time per visitor** is all the seconds over the visitors, which is what GA
 calls average engagement time.
+
+### The language it was read in
+
+Every page writes the language it is read in on to `<html lang>`, and
+`assets/track.js` watches that attribute, so the seconds on screen are split
+by whatever it said while they passed. The card has two tables with a row per
+language and a column each for new and returning visitors: how many
+**visitors** arrived in it — the language on screen before any switch, which
+is the one the site picked for them out of `?lang=`, their saved choice or
+the browser's — and how much **time** the site was read in it. Time follows a
+switch: somebody who arrives in English and changes to Russian after a
+minute is one visitor under English, one minute under English and the rest
+under Russian. Two tables of two columns rather than one of four, because
+four numbers and a language name do not fit across a phone.
+
+Under it, **Changed language** ranks the switches as pairs, English →
+Russian, out of the `language_select` event the map's and the flashcards'
+switches already send — a language people keep leaving shows up as the left
+half of a pair.
+
+It rides on the report a page sends when it is put away, so a visitor's
+language is counted when their first page of the day is hidden or closed
+rather than as it opens, and a phone that kills a tab outright loses it the
+way it loses the last stretch of time. Every code is checked against the
+languages `data/ui.json` speaks, so the `lang` kind is a closed list. Nothing
+from before it landed was counted.
+
+What it cannot say is which language is missing: a browser that asks for
+German and gets English is counted under English. That is still GA's
+**Language** report, which reads the browser's own setting.
 
 ### New against returning
 
@@ -10865,7 +10896,9 @@ day and a number, keyed `(day, kind, id)` and `WITHOUT ROWID` because the key
 is the only way it is read. A busy day costs no more rows than a quiet one
 with the same pages in it. The pages, the two visitor kinds, the rails and
 the six facts counted under new, returning and each rail are lists in
-`functions/api/_visitors.js` — forty ids a day at most between them; the countries, the sources and the
+`functions/api/_visitors.js` — forty ids a day at most between them — and
+the languages are the ones `data/ui.json` speaks, four rows a language a day
+at most and one per pair of a switch somebody pressed; the countries, the sources and the
 press names are whatever a request says, so each of those takes at most a
 hundred ids a day, after which only ids already counted that day go up. A day
 is a hundred-odd short rows at most, which is tens of thousands a year —
@@ -10878,8 +10911,9 @@ and a stretch on screen with its presses — and one batch of upserts each:
 one row for a page view and two for it as new or returning and on its rail,
 four more on a visitor's first page of the day, and on the way out one for
 the time, one per press name, and two for each of the time, the presses, the
-places, a sign-in and an account made that the stretch had. That is ten to
-fifteen writes for an ordinary page. On the free plan's hundred thousand
+places, a sign-in and an account made that the stretch had, one per language
+it was read in and one per switch, and on a visitor's first page one for the
+language they arrived in. That is ten to fifteen writes for an ordinary page. On the free plan's hundred thousand
 writes a day it is room for six thousand page views a day or so alongside
 everything else the site writes, against forty-odd on a day now; the day
 that is close, the rail's copies are the ones to stop writing, once the
