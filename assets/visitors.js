@@ -34,6 +34,12 @@
 
   var API = '/api/admin/visitors';
 
+  /* The last half hour, asked for on its own and again every LIVE_EVERY
+     while the page is on screen — the one part of the page that is not the
+     range's, and not cached. functions/api/admin/live.js. */
+  var LIVE_API = '/api/admin/live';
+  var LIVE_EVERY = 60 * 1000;
+
   var STYLES = ['red', 'green'];
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
@@ -59,9 +65,14 @@
 
   var SOURCES = { search: 'insightsSearch', here: 'insightsHere', direct: 'insightsDirect' };
 
-  var state = { lang: DEFAULT_LANG, ui: {}, data: null };
+  var state = { lang: DEFAULT_LANG, ui: {}, data: null, live: null };
 
   var main = null;
+
+  /* The Right now card: one node for the life of the page, so a redraw of
+     the range puts the same card back and a refresh of the last half hour
+     redraws only it. */
+  var liveCard = null;
 
   /* --------------------------------------------------------------- helpers */
 
@@ -546,6 +557,57 @@
     return card(kids);
   }
 
+  /* Right now: pages opened in the last five minutes and the last thirty,
+     and a bar for each of those thirty minutes, the one still going at the
+     right. Pages rather than people — THE LAST HALF HOUR in
+     functions/api/_visitors.js says why — which the line under it says too.
+     Hidden, rather than drawn empty, where the route has no table yet. */
+  function drawLive() {
+    clear(liveCard);
+    var mins = state.live;
+    liveCard.hidden = !mins;
+    if (!mins) return;
+    var sum = function (list) { return list.reduce(function (a, n) { return a + n; }, 0); };
+    var all = sum(mins);
+
+    var W = 340, H = 64, B = 44, T = 4;
+    var top = Math.max(1, Math.max.apply(null, mins));
+    var slot = W / mins.length;
+    var bars = [];
+    mins.forEach(function (n, i) {
+      if (!n) return;
+      var h = (B - T) * n / top;
+      bars.push(svg('rect', { 'class': 'vis-new', x: (slot * i + slot * 0.15).toFixed(1),
+        width: (slot * 0.7).toFixed(1), y: (B - h).toFixed(1), height: h.toFixed(1) }));
+    });
+    bars.push(svg('line', { 'class': 'ins-grid', x1: 0, x2: W, y1: B, y2: B }));
+    bars.push(svg('text', { x: 0, y: B + 16, 'text-anchor': 'start' }, [t('visitorsLiveAgo', { n: mins.length })]));
+    bars.push(svg('text', { x: W, y: B + 16, 'text-anchor': 'end' }, [t('visitorsLiveNow')]));
+
+    [
+      el('h2', { className: 'lists-title', textContent: t('visitorsLiveHead') }),
+      el('dl', { className: 'ins-kpis vis-kpis vis-kpis-2' }, [
+        figure(t('visitorsLive5'), num(sum(mins.slice(-5))), null),
+        figure(t('visitorsLive30'), num(all), null)
+      ]),
+      all ? svg('svg', { 'class': 'ins-chart', viewBox: '0 0 ' + W + ' ' + H, role: 'img',
+        'aria-label': t('visitorsLiveAria', { list: mins.join(', ') }) }, bars) : null,
+      el('p', { className: 'ins-note', textContent: t(all ? 'visitorsLiveLead' : 'visitorsLiveNone') })
+    ].forEach(function (kid) { if (kid) liveCard.appendChild(kid); });
+  }
+
+  /* The last half hour asked for again. Quiet on any failure: the card keeps
+     what it had, or stays hidden. */
+  function loadLive() {
+    fetch(LIVE_API, { headers: { accept: 'application/json' } })
+      .then(function (res) { return res.json(); })
+      .then(function (out) {
+        state.live = out && out.ready ? out.minutes : null;
+        drawLive();
+      })
+      .catch(function () { /* the card keeps what it had */ });
+  }
+
   /* ----------------------------------------------------------- the states */
 
   function note(key, vars) {
@@ -566,6 +628,7 @@
     }
 
     var stack = el('div', { className: 'lists-stack' });
+    stack.appendChild(liveCard);
     stack.appendChild(today());
     stack.appendChild(card([
       ranges(),
@@ -629,13 +692,25 @@
         applyStaticStrings();
         document.title = t('visitorsDocumentTitle');
         render();
+        loadLive();
       });
   }
 
   function boot() {
     main = document.getElementById('main');
+    liveCard = card([]);
+    liveCard.hidden = true;
     applyStyle();
     load(wantedSpan());
+    /* Right now asks again every minute, but only while somebody is looking:
+       a tab in the background asks nothing, and coming back asks at once.
+       Only once the words are in, which the first load() brings. */
+    setInterval(function () {
+      if (document.visibilityState === 'visible' && state.data) loadLive();
+    }, LIVE_EVERY);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible' && state.data) loadLive();
+    });
   }
 
   if (document.readyState === 'loading') {

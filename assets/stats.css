@@ -300,9 +300,11 @@ a.stats-name:hover { color: var(--accent); }
 
 /* Five figures rather than three: three across and two under, and two
    across on a phone, where a third column would leave "6m 47s" no room.
-   Today's four are four across, and two and two on a phone. */
+   Today's four are four across, and two and two on a phone; the last half
+   hour's two are two at every width. */
 .vis-kpis { row-gap: 18px; }
 .vis-kpis-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.vis-kpis-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 @media (max-width: 479px) {
   .vis-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }

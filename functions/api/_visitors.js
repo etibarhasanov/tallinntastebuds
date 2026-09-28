@@ -14,6 +14,7 @@
  *   countLeave()    a page put away, with how long it was on screen and what
  *                   was pressed on it — the same
  *   readVisitors()  a range of it, for /admin/visitors — GET /api/admin/visitors
+ *   readLive()      the last half hour, a minute at a time — GET /api/admin/live
  *
  * A VISITOR IS A BROWSER'S FIRST PAGE OF THE DAY
  *
@@ -107,10 +108,30 @@
  * and past that only ids already counted that day go up. A press name must
  * also be shaped like one, which every name TTBTrack sends is.
  *
+ * THE LAST HALF HOUR
+ *
+ * visitor_counts has a day as its finest grain, and "who is on the site right
+ * now" wants a minute. So every page opened is also counted once into
+ * visitor_live, a row per minute — and only sixty rows ever: a minute's row
+ * is slot minute % 60, and the first page of a new minute takes the slot over
+ * from the one an hour before, resetting its count. Nothing is deleted and
+ * nothing needs pruning, the table can never grow, and it costs one write a
+ * page opened and nothing per minute a page stays open.
+ *
+ * What it counts is pages opened, not people: somebody opening three pages
+ * in five minutes is three. Telling people apart would take an id, and none
+ * is made — A VISITOR IS A BROWSER'S FIRST PAGE OF THE DAY. At this site's
+ * size it is a fair reading of how busy it is right now, which is what the
+ * card on /admin/visitors is for.
+ *
  * WHAT A FAILURE LOOKS LIKE
  *
- * Nothing, on either side. The table arrives by hand; until it has, a count
- * answers false and /admin/visitors says the numbers are not in yet.
+ * Nothing, on either side. The tables arrive by hand; until they have, a
+ * count answers false and /admin/visitors says the numbers are not in yet —
+ * or, for visitor_live alone, leaves the card for the last half hour out.
+ * The live count is its own statement rather than part of the day's batch,
+ * because a batch is one transaction and a missing visitor_live would take
+ * the day's facts down with it.
  */
 
 import { sourceOf, siteOf, countryOf, networkName, today, dayBack } from './_visits.js';
@@ -166,6 +187,20 @@ const MAX_SECS = 1800;
 const MAX_NAMES = 20;
 const MAX_PRESS = 50;
 const PRESS = /^[a-z][a-z0-9_]{1,39}$/;
+
+/* The last half hour — see THE LAST HALF HOUR. LIVE_SLOTS is the ring's
+   size, and LIVE_SPAN how much of it the page is sent. */
+const LIVE_SLOTS = 60;
+const LIVE_SPAN = 30;
+const LIVE_ADD =
+  'INSERT INTO visitor_live (slot, minute, n) VALUES (?1, ?2, 1) ' +
+  'ON CONFLICT(slot) DO UPDATE SET ' +
+  'n = CASE WHEN visitor_live.minute = excluded.minute THEN visitor_live.n + 1 ELSE 1 END, ' +
+  'minute = excluded.minute';
+
+function minuteNow() {
+  return Math.floor(Date.now() / 60000);
+}
 
 const ADD =
   'INSERT INTO visitor_counts (day, kind, id, n) VALUES (?1, ?2, ?3, ?4) ' +
@@ -246,7 +281,37 @@ export async function countArrive(context, body) {
     );
     if (rail) facts.push(['layout', rail + ':' + who, 1]);
   }
-  return file(env, facts);
+  const [counted] = await Promise.all([file(env, facts), countLive(env)]);
+  return counted;
+}
+
+/* One page opened, into this minute's slot — THE LAST HALF HOUR. */
+async function countLive(env) {
+  const minute = minuteNow();
+  try {
+    await env.DB.prepare(LIVE_ADD).bind(minute % LIVE_SLOTS, minute).run();
+  } catch (e) {
+    /* No visitor_live yet. The day's facts do not wait on it. */
+  }
+}
+
+/* The last LIVE_SPAN minutes, oldest first, this one last and still
+   filling: pages opened in each. Null where there is no table yet. */
+export async function readLive(env) {
+  const minute = minuteNow();
+  let rows;
+  try {
+    rows = await env.DB.prepare('SELECT minute, n FROM visitor_live WHERE minute > ?')
+      .bind(minute - LIVE_SPAN).all();
+  } catch (e) {
+    return null;
+  }
+  const minutes = new Array(LIVE_SPAN).fill(0);
+  for (const r of rows.results || []) {
+    const at = LIVE_SPAN - 1 - (minute - r.minute);
+    if (at >= 0 && at < LIVE_SPAN) minutes[at] = r.n;
+  }
+  return minutes;
 }
 
 /* A stretch on screen ended: `secs` of it on the page at `id`, `presses`,

@@ -321,7 +321,7 @@
         {"id": "staff-link", "type": "user", "lane": "owner", "name": "Sends the restaurant its staff link, once", "ref": ["staff.html"]},
         {"id": "discount-live", "type": "end", "lane": "owner", "name": "Offer live"},
         {"id": "stats", "type": "user", "lane": "owner", "name": "Reads the stats, the visitors, Google's directory and budget", "ref": ["admin/stats.html", "admin/visitors.html", "admin/google.html", "admin.html"]},
-        {"id": "owner-only", "type": "service", "lane": "site", "name": "Answers the owner only", "note": "Anybody else gets a 404 for the pages and a 403 for the data.", "ref": ["functions/_middleware.js", "functions/api/_admin.js adminUser()", "functions/api/admin/stats.js GET", "functions/api/admin/visitors.js GET", "functions/api/admin/venues.js GET", "functions/api/admin/refreshes.js GET"]},
+        {"id": "owner-only", "type": "service", "lane": "site", "name": "Answers the owner only", "note": "Anybody else gets a 404 for the pages and a 403 for the data.", "ref": ["functions/_middleware.js", "functions/api/_admin.js adminUser()", "functions/api/admin/stats.js GET", "functions/api/admin/visitors.js GET", "functions/api/admin/live.js GET", "functions/api/admin/venues.js GET", "functions/api/admin/refreshes.js GET"]},
         {"id": "knows", "type": "end", "lane": "owner", "name": "Knows what gets opened"}
       ],
       "edges": [

@@ -10748,9 +10748,12 @@ and a 403 for `GET /api/admin/visitors` to anybody else — the first row of
 **The numbers** on `/admin.html`, not indexed, and not disallowed either.
 
 It is laid out in the order the questions get asked, which is also how an
-analyst would group it: today, then who came, then how the two kinds of
-visitor differ, then the experiment, then what was done.
+analyst would group it: right now, today, then who came, then how the two
+kinds of visitor differ, then the experiment, then what was done.
 
+- **Right now**: pages opened in the last five minutes and the last thirty,
+  and a bar for each of those thirty minutes. It asks again every minute
+  while the page is on screen — see **Right now** below.
 - **Today so far**, whatever range is chosen: visitors, new ones, sign-ins
   and accounts made, and under them the same four for the full rail, the
   short rail and **no rail yet** — the visitors who have not opened the map,
@@ -10889,6 +10892,32 @@ the rail once its places are in, which is after the page is ready, so its
 `TTBTrack.arrive()` itself once the rail is dealt — otherwise the one visit
 the comparison most needs, a stranger's first, would arrive with no rail.
 
+### Right now
+
+Everything else here is by the day, and "who is on the site right now" wants
+a minute. So every page opened is also counted once into `visitor_live`, a
+table of sixty rows and never more: a minute is filed in slot `minute % 60`,
+and the first page of a new minute takes the slot over from the one an hour
+before and starts its count again. Nothing is deleted, nothing needs
+pruning, and the table cannot grow. It costs one write a page opened and
+nothing per minute a page stays open — the version with a signal every
+minute from every open tab was the alternative, and it is the one design
+here whose cost grows with how long people stay rather than how many come.
+
+It counts **pages, not people**: somebody who opens three pages in five
+minutes is three. Telling people apart in a half hour would take an id,
+even one kept for thirty minutes, and none is made — **A visitor is a
+browser on a day**. At this site's size, pages opened in the last five
+minutes is a fair reading of how busy it is right now, and the line under
+the card says what it counts.
+
+`GET /api/admin/live` answers the thirty minutes, oldest first and the
+minute still going last, uncached — five minutes old is not right now — and
+the page asks for it again every minute, but only while it is on screen.
+The card is left out until `visitor_live` has been applied; its write is a
+statement of its own rather than part of the day's batch, so a missing table
+never takes the day's counts down with it.
+
 ### Rows by the day, not by the visit
 
 `visitor_counts` is `profile_counts` for the whole site: one row per fact per
@@ -10922,8 +10951,9 @@ experiment is decided.
 ### What it does not do
 
 No recordings and no heatmaps — that is Clarity, and nothing here replaces
-it. No path through the site for one visitor, no funnels, nothing in real
-time: the finest grain is a day. No device or browser breakdown. Numbers will
+it. No path through the site for one visitor, no funnels, and nothing in real
+time finer than **Right now**, which is pages a minute for the last half hour
+rather than people: everything else's finest grain is a day. No device or browser breakdown. Numbers will
 not match GA's exactly — GA and this count different things by different
 means — so the two are worth running side by side for a few weeks before
 Google's tag comes out. `/admin/` sends nothing, so the owner reading this

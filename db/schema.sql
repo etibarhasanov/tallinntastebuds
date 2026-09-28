@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS profile_counts (
 -- half.
 --
 -- profile_counts again, for the whole site rather than one page: the day in
--- the key, one row per fact per day, and a number. Six kinds:
+-- the key, one row per fact per day, and a number. Nine kinds:
 --
 --   kind 'visitor'  id 'new' or 'back' — a browser's first page of the day,
 --                   and whether it had been here on an earlier one
@@ -233,8 +233,15 @@ CREATE TABLE IF NOT EXISTS profile_counts (
 --   kind 'view'     id is which page, out of PAGES in _visitors.js
 --   kind 'time'     id is which page; n is seconds it was on screen
 --   kind 'press'    id is the name of a press TTBTrack reported
---   kind 'layout'   id is '<rail>:<fact>' — the same facts again, split by
---                   which of the map's two rails the browser was dealt
+--   kind 'cohort'   id is '<who>:<fact>' — pages, seconds, presses, places
+--                   opened, sign-ins and accounts made, split by new ('new')
+--                   and returning ('back') visitors
+--   kind 'layout'   id is '<rail>:<who>' for the visitors on each of the
+--                   map's two rails, and '<rail>:<who>:<fact>' for the same
+--                   facts as 'cohort', split by rail as well
+--   kind 'lang'     id is '<who>:<code>' for the language a visitor arrived
+--                   in, '<who>:secs:<code>' for seconds read in it, and
+--                   '<from>><to>' for a switch pressed
 --
 -- Nothing is filed under a person and there is no row per visit: the browser
 -- says whether this is its first page today, and the table only ever hears
@@ -254,6 +261,24 @@ CREATE TABLE IF NOT EXISTS visitor_counts (
   id    TEXT    NOT NULL,
   n     INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (day, kind, id)
+) WITHOUT ROWID;
+
+-- ------------------------------------------------------------ visitor_live
+-- Pages opened in each of the last sixty minutes, for the Right now card on
+-- /admin/visitors. THE LAST HALF HOUR in functions/api/_visitors.js is the
+-- reasoning.
+--
+-- A ring of sixty rows and never more: a minute is filed in slot minute % 60,
+-- and the first page of a new minute takes the slot over from the one an
+-- hour before and starts its count again. So nothing here is ever deleted
+-- and the table cannot grow, and a page opened costs one row written. Pages,
+-- not people — there is no id in it.
+CREATE TABLE IF NOT EXISTS visitor_live (
+  -- 0–59: the minute below, mod 60.
+  slot   INTEGER PRIMARY KEY,
+  -- Minutes since the Unix epoch — which minute the slot holds now.
+  minute INTEGER NOT NULL,
+  n      INTEGER NOT NULL DEFAULT 0
 ) WITHOUT ROWID;
 
 
