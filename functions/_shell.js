@@ -244,18 +244,6 @@ export function rehead(html, tags) {
   return html.slice(0, open) + tags + html.slice(close + HEAD_CLOSE.length);
 }
 
-/* What every page served through here carries. The two security headers are
-   the ones `_headers` gives every static file under `/*`, said again because
-   that file binds only on an answer the asset server gave: a Function's own
-   Response arrives with exactly the headers it was built with. The map is not
-   under this — functions/index.js copies the static answer's headers instead,
-   which carry the same two. */
-const PAGE_HEADERS = {
-  'content-type': 'text/html; charset=utf-8',
-  'x-content-type-options': 'nosniff',
-  'referrer-policy': 'strict-origin-when-cross-origin'
-};
-
 /* Never cached, whether or not it is indexed. A list is edited by its owner
    while they are looking at it, and — because a private list is served only to
    the session that owns it — a shared copy of one of these responses would be
@@ -264,12 +252,15 @@ const PAGE_HEADERS = {
    it is seeded with rows that change as people keep things.
  *
  * A crawler is not harmed by this: it fetches a page once and keeps what it
- * finds. no-store is about the caches in between. */
+ * finds. no-store is about the caches in between.
+ *
+ * The security headers are not written here: functions/_middleware.js puts
+ * functions/_security.js on every answer a Function gives, this one included. */
 export function page(html, status, indexable) {
   return new Response(html, {
     status: status || 200,
     headers: {
-      ...PAGE_HEADERS,
+      'content-type': 'text/html; charset=utf-8',
       'cache-control': 'no-store',
       'x-robots-tag': indexable ? 'index, follow' : 'noindex, follow'
     }

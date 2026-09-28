@@ -99,6 +99,9 @@ import { KITCHENS, said } from '../functions/api/venues.js';
    a comment. */
 import { PIN_GLYPHS, DEFAULT_PIN } from '../functions/api/_pins.js';
 import { NETWORKS } from '../functions/api/_profile.js';
+/* The security headers every Function's answer carries, which `_headers`
+   has to carry too for the files the Functions never see. */
+import { SECURITY } from '../functions/_security.js';
 
 /* How many places a list may hold, from the route that enforces it, so the
    check below is the server's number and not a fourth copy of it. */
@@ -1611,6 +1614,29 @@ if (wrangler) {
     if (seen.preview.name && seen.preview.name === seen.production.name) {
       fail(WRANGLER, `preview and production name the same database ("${seen.production.name}")`);
     }
+  }
+}
+
+/* ------------------------------------------------------ security headers
+   functions/_security.js is what functions/_middleware.js puts on every answer
+   a Function gives; `_headers` has to say the same under `/*` for the files
+   the asset server gives without ever asking a Function. Two copies of a list
+   neither can read from the other, so the check is here: every header in
+   SECURITY stands in the `/*` block, with the same value. */
+{
+  const where = '_headers';
+  const text = readFileSync(join(ROOT, '_headers'), 'utf8');
+  const block = {};
+  let inAll = false;
+  for (const line of text.split('\n')) {
+    if (/^\S/.test(line) && !line.startsWith('#')) { inAll = line.trim() === '/*'; continue; }
+    const hit = inAll && /^\s+([A-Za-z-]+):\s*(.*)$/.exec(line);
+    if (hit) block[hit[1].toLowerCase()] = hit[2].trim();
+  }
+  for (const [name, value] of Object.entries(SECURITY)) {
+    const said = block[name.toLowerCase()];
+    if (said === undefined) fail(where, `the /* block has no ${name} — functions/_security.js puts it on every Function's answer, so the files the asset server gives would go without it`);
+    else if (said !== value) fail(where, `the /* block says ${name}: ${said}, where functions/_security.js says ${value}`);
   }
 }
 
