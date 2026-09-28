@@ -10941,6 +10941,19 @@ before it is live and after.
 **Discount** commits straight, the way a story does — see
 [Setting a discount](#setting-a-discount) for why.
 
+**It looks like the rest of the owner's pages.** It used to carry a palette
+and a box of its own — Helvetica on a plain card, five boxed tabs that broke
+onto two lines on a phone, the pages under `/admin/` as a row of underlined
+links — so the owner's five pages looked like two sites. It now links the same
+three sheets `/admin/stats` and `/admin/visitors` do (`styles.css`,
+`lists.css`, `stats.css`, unstamped because the page is `no-store`), wears the
+same header, eyebrow and title, and reads the style the map's swatch left in
+`ttb.style`, so the dark style reaches it too. Unlocked, it is three cards: the
+five tools behind the lists page's segmented control, which wraps rather than
+scrolls so the Google count is never off the edge; **The numbers**, the four
+pages under `/admin/` as the account sheet's rows; and **This device**, the
+token's facts with Lock and Forget under them. Nothing it does has changed.
+
 ### Setting up a device
 
 Once per device, per browser. Do the laptop first — Chrome will sync the
@@ -11092,7 +11105,7 @@ The button opens the same pull request **Edit a place** would, through the
 same code, with `closed` moved and nothing else touched — so it is a pull
 request to read and merge, not a change to the live map, and the map stays
 the owner's to change with Google only saying when to look. The count of
-disagreements rides on the tab's label, **Google · 2**, looked up once when
+disagreements rides on the tab's label as a small filled count, **Google (2)**, looked up once when
 the page opens, so it is found on the way to posting a story rather than by
 opening the tab on a hunch. When the two agree everywhere the section says
 so in a line.
