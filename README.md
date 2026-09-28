@@ -68,6 +68,7 @@ completely with the database switched off.
 - [The blog](#the-blog)
 - [Feedback](#feedback)
 - [Statistics](#statistics)
+- [Who uses the site, drawn](#who-uses-the-site-drawn)
 - [The short rail](#the-short-rail)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -10834,6 +10835,90 @@ page is not counted by it; the owner using the site is, as in GA.
 
 ---
 
+## Who uses the site, drawn
+
+`/admin/flows` — one BPMN diagram for each kind of person this site answers,
+and what each of them can do on it: what happens, who does it, and every way a
+journey can go. It is the owner's, like everything under `/admin/`, linked from
+`/admin.html` beside the statistics and answered 404 to anybody else by
+`functions/_middleware.js`.
+
+What gets shared is the diagrams, not the page. Each one has a **Download the
+.bpmn** link, and the files themselves are public at `/flows/<id>.bpmn` —
+`/flows/discount.bpmn` is the one to send somebody who asks how a discount
+works at the table. They open in bpmn.io, Camunda Modeler or any other BPMN
+tool, and nothing in them is not already in this public repository. It was a
+public page at `/flows` for the length of one pull request, and moved under
+`/admin/` before it landed: the page is the owner's workbench, and a file is
+the better thing to hand somebody anyway.
+
+Six diagrams, and the line between them is a person rather than a feature:
+
+| Diagram | Who | Lanes |
+|---|---|---|
+| `visitor` | anybody without an account | one |
+| `member` | anybody with one | one |
+| `discount` | the guest, the waiter and the counter, around one code | four: guest, site, waiter, counter |
+| `splitwise` | the owner of a group, somebody holding its link, a member | four: owner, link holder, member, site |
+| `flashcards` | a learner, signed in or not | one |
+| `owner` | the person whose site this is | three: owner, GitHub, site |
+
+Flashcards is a sixth rather than a part of the visitor and the member because
+it lives on its own subdomain and a learner is somebody who may never open the
+map at all.
+
+### The source, and what is generated from it
+
+`data/flows.json` is written by hand and is short on purpose: a lane per actor,
+a step per thing they can do, an arrow per "and then". Each step has a `type` —
+`user` for a person at a screen, `manual` for a person with no screen in it
+(a waiter holding up a camera), `service` for the site, and the events and
+gateways — and a `ref` list naming the files and routes that do it. That list
+is the reason the diagrams exist for anybody working on the code: a session
+that needs to know what a member can do, and where, reads this file first.
+
+`node tools/flows.mjs` lays each flow out and writes `flows/<id>.bpmn` —
+standard BPMN 2.0 XML with the coordinates in it, so a file opens as it is in
+bpmn.io, Camunda Modeler or any other BPMN tool. **Download the .bpmn** on the
+page hands over that file. The layout is computed rather than drawn because the
+drawing is the part that makes a change expensive: one step added in the middle
+of a journey moves every box after it. The cost is that an edit made in a
+modeler and saved over `flows/` is overwritten the next time the tool runs; a
+change goes in `data/flows.json`.
+
+The validator fails on a `.bpmn` that is not what the tool would write, and on
+a `ref` whose path is not in the repository. The second is the one that keeps
+the diagrams honest: a file renamed or a route removed breaks the build until
+the step pointing at it is moved too.
+
+### Why three of them have one lane
+
+A lane for the site was tried on all six. On the discount, splitwise and owner
+diagrams it earns its place — those are several people handing work to each
+other and to the site, which is what lanes are for. On the visitor, the member
+and the learner it did not: each is one person fanning out into eight
+journeys, and a second lane underneath drew every branch down through every
+other one to reach it. So those three are one lane, and the site's steps are
+told apart by the cog in their corner and the washed fill.
+
+### Why not bpmn-js
+
+bpmn.io's viewer is the obvious way to draw a `.bpmn`, and it is about a
+megabyte of somebody else's script from a CDN for a page that draws five kinds
+of shape. `assets/flows.js` reads the same file with `DOMParser` and draws its
+pools, lanes, tasks, events, gateways and arrows as SVG in the site's own
+tokens, so both styles work with no extra rule. It draws only what
+`tools/flows.mjs` writes; a `.bpmn` from elsewhere with a sub-process or a data
+object in it would lose those here and keep them in a modeler.
+
+### Keeping it true
+
+A change to what a kind of person can do — a new route, a new button, a gate
+that moved — changes their diagram in the same pull request, the same way it
+changes the README section for that feature. Edit `data/flows.json`, run
+`node tools/flows.mjs`, commit both. The `/site` and `/api` skills say so, and
+a new kind of person is a new flow and a new chip, with nothing else to touch.
+
 ## The admin page
 
 `/admin.html` — a door, and behind it the tools for posting without opening a
@@ -11537,6 +11622,9 @@ to read and write first.
   languages in `data/ui.json` and the thirteen lists in `tools/typelists.mjs`
   (run the tool and commit the result) — a language added without it is a
   page no search engine is told about
+- a diagram in `flows/` that is not what `tools/flows.mjs` would write from
+  `data/flows.json`, or a step there whose `ref` names a path that is not in
+  the repository — see **Who uses the site, drawn**
 - `index.html`, `lists.html`, `split.html` or `flashcard.html` without exactly
   one pair of `PAGE-HEAD` markers, which is where the Function serving that
   page writes its head; `rehead()` in `functions/_shell.js` leaves a page
@@ -11712,6 +11800,10 @@ assets/venues.css          only what a directory has and the map does not
 admin/stats.html           which places get opened and which  } owner only and
 assets/stats.js            chips get pressed: three rankings  } noindex
 assets/stats.css           the rows of a ranking, and what /insights adds
+admin/flows.html           who uses the site, one BPMN diagram each  } owner only
+assets/flows.js            reads a .bpmn and draws it as SVG          } and noindex
+assets/flows.css           the diagram, in the site's tokens          }
+flows/                     the diagrams as .bpmn, public — GENERATED
                            to them
 assets/rows.js             the page of links on a profile: what a row is,
                            which addresses get a player, and the note sheet —
@@ -11775,6 +11867,7 @@ data/ui.json               every interface string, in every language
 data/radio.json            the stations, by language and a default
 data/deals.json            the discounts, and which of them are live
 data/stories.json          the stories, when each goes up and when it goes away
+data/flows.json            who uses the site and what each can do, by hand
 data/schema.json           JSON Schema, for editor autocomplete
 admin.html                 the admin door, self-contained and unlinked
 _headers                   caching and the noindex on the unlinked pages
@@ -11805,6 +11898,7 @@ tools/storymedia.mjs       makes every story video an H.264 MP4 a browser will p
 tools/qrperf.mjs           checks the QR encoder still draws the same code, and times it
 tools/ogcard.mjs           draws assets/logo/og-flashcard.png, the card a link to
                            the flashcards unfurls as, out of the page's own CSS
+tools/flows.mjs            lays out data/flows.json and writes flows/<id>.bpmn
 .github/workflows/validate.yml     the validator, the QR check and the write gate, on every push
 .github/workflows/indexnow.yml     the IndexNow ping, on every push to the production branch
 .github/workflows/stories.yml      the hourly tick, and the tidying up after it
@@ -13812,6 +13906,16 @@ for:
 | `pass_back` | `place` |
 | `pass_signin` | `place` — the way in, on a pass page opened signed out |
 | `pass_verify` | `place`, `status` — the verdict a scan got |
+| `home` | — |
+
+`/admin/flows`, `assets/flows.js` — the owner's, so these count the owner
+reading their own diagrams, which is still the way to see which ones get
+opened:
+
+| event | parameters |
+| --- | --- |
+| `flow_open` | `flow` — a chip pressed, which diagram was opened |
+| `flow_step` | `flow`, `step` — a step pressed, to read what it does and where it lives |
 | `home` | — |
 
 And every page that carries `assets/back.js` — the map, the lists, the account

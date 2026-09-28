@@ -338,7 +338,11 @@ no step 1 until the owner has answered it.
    few questions at a time. To look at rows without a dev server, the
    Cloudflare MCP tool `d1_database_query` reads either database without a
    prompt and writes to neither without one — see **The rules of a write**.
-4. Rewrite the README paragraph the change made wrong, and the header.
+4. Rewrite the README paragraph the change made wrong, and the header. A
+   route added, removed or gated differently is a step in somebody's
+   diagram: the `ref` in `data/flows.json` that names it moves too, then
+   `node tools/flows.mjs` — the validator fails on a `ref` to a file that is
+   gone. **Who uses the site, drawn** in `README.md`.
 5. The pass in `leave-it-better.md`.
 
 ## The commit
