@@ -83,8 +83,8 @@
   var FOCUS_ZOOM = 16;
   var STYLE_KEY = 'ttb.style';
   /* Which rail this browser draws — see pickLayout(). 'a' is the full column
-     of pills, 'b' the short one: three pills, Surprise me in the corner, the
-     rest behind More. "The short rail" in README.md. */
+     of pills, 'b' the short one: four pills, Surprise me third, the rest
+     behind More. "The short rail" in README.md. */
   var LAYOUT_KEY = 'ttb.layout';
   var LAYOUT_BY_KEY = 'ttb.layout.by';
   var LAYOUT_DEAL_KEY = 'ttb.layout.deal';
@@ -4715,23 +4715,20 @@
      have named themselves and the eye has somewhere to be sent. The label
      grows leftwards out of the corner, because the pill is anchored by its
      right edge down here. */
-  var HINT_KEYS = ['account', 'lists', 'more', 'flash', 'random', 'ask',
+  var HINT_KEYS = ['account', 'lists', 'flash', 'random', 'more', 'ask',
                    'style', 'locate', 'feedback'];
   var hintTimers = {};
 
   /* The ones this rail draws, top to bottom. The full rail is eight; the
-     short one is three pills and the corner, and its cascade is over inside
+     short one is four pills and the arrow, and its cascade is over inside
      two seconds — which is half of why it exists. openHint() would skip a
      put-away pill on its own; naming the five keeps the arithmetic honest.
 
-     The die in the corner is one of them. It is a bare disc the rest of the
-     time — no words until it is pressed, and then Surprised, see sayRolled()
-     below — but the first visit is when every pill says what it is, and the
-     owner wants it to say so then with the others, once. It was left out of
-     this list for an afternoon, which made it the one button a stranger was
-     never told the meaning of. */
+     The die is one of them on both rails. It was left out of this list for
+     an afternoon, which made it the one button a stranger was never told
+     the meaning of. */
   function railKeys() {
-    if (shortRail()) return ['account', 'lists', 'more', 'random', 'locate'];
+    if (shortRail()) return ['account', 'lists', 'random', 'more', 'locate'];
     return HINT_KEYS.filter(function (key) { return key !== 'more'; });
   }
 
@@ -5185,17 +5182,16 @@
    * out to be true of a name you tapped as well, so it is what every place
    * does now. See selectPlace().
    *
-   * And the button says it has done it. On the short rail it is a bare die
-   * in the corner — "the short rail, on a phone" in assets/styles.css is
-   * why — and a roll is the one thing that opens its label: it slides out
-   * reading "Surprised", the way a Copy button says Copied, and folds back
-   * to the die.
+   * And the button says it has done it. On the short rail a roll opens the
+   * die's label for a moment — "the short rail, on a phone" in
+   * assets/styles.css — reading "Surprised", the way a Copy button says
+   * Copied, and folds back to the die.
    *
    * For as long as the map is in the air, and no longer. The pill grows
-   * leftwards out of the corner into the strip above the sheet, which is
-   * where the place it chose lands with its name over it; held for two
-   * seconds it was still standing on most names when the map arrived. At
-   * FLY_MS it is folding as the pin comes down.
+   * rightwards out of the rail over the map, where the place it chose may
+   * land with its name over it; held for two seconds it was still standing
+   * on names when the map arrived. At FLY_MS it is folding as the pin comes
+   * down.
    *
    * The short rail's alone. The full rail is the old design, the one the
    * short rail is set against, and the owner wants it left exactly as it

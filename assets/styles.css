@@ -1380,9 +1380,8 @@ body.lang-open .controls { z-index: 1250; }
 
    Two rails on one page, and <html data-layout> says which is drawn. A phone
    that has never been here gets the short one — see pickLayout() in
-   assets/app.js and "The short rail" in README.md: the account, the lists
-   and More, with Surprise me filled in the corner and the other four doors
-   behind More as rows. Everybody who was here before the split keeps the
+   assets/app.js and "The short rail" in README.md: the account, the lists,
+   Surprise me and More, and the other four doors behind More as rows. Everybody who was here before the split keeps the
    full column, and the only thing the attribute does is put away whichever
    pills the other rail draws. Neither rail is a second stylesheet: the pill
    is the same pill, and a rule that is not scoped to the attribute belongs
@@ -5091,56 +5090,20 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
   /* ---- the short rail, on a phone ----
 
-     Surprise me leaves the column for the corner above the arrow and is the
-     map's one filled button: the accent, with the die in paper. /admin/stats
-     had it the most pressed thing on the rail after the account, fourth from
-     the top of nine discs that all looked alike — and rule 5 spends the
-     accent once a surface, which nothing on the map was spending it on. It
-     stays a child of the rail, the way the arrow does, so the press counter,
-     the cascade and the walk all still find it; and like the arrow it is
-     fixed to the window, so a transformed rail is not its containing block.
-
-     A disc the arrow's size, and words only when every pill has them. It
-     wore "Surprise me" out for good at first, and a filled pill that long,
-     stood over the arrow, was the biggest thing on the map and read as a
-     banner rather than a button; the owner asked for it compact. So the
-     colour is what makes it the one to press, and the label comes out when
-     the others' do — once in the cascade on a first visit, and under the
-     walk, as .hint-open — and for a moment after a press, to say it has done
-     it: "Surprised", .is-rolled, see sayRolled() in assets/app.js. Sized to
-     the arrow's 48px rather than the discs' 35.6, because the two stand
-     together in the corner as a pair, and padded to match it.
-
-     The shelf every centred thing at the foot of the map stands on moves up
-     by the button's height plus the air under it, so the welcome card, the
-     toast and the account offer clear it the way they clear the arrow. */
-  html[data-layout="b"] body { --above-locate: calc(var(--locate-b) + 58px + 58px); }
-  [data-layout="b"] #btn-random {
-    position: fixed;
-    right: calc(var(--gap) + var(--safe-r));
-    bottom: calc(var(--locate-b) + 58px);
-    min-width: 48px;
-    height: 48px;
-    padding: 0 11px;
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--paper);
-  }
-  [data-layout="b"] #btn-random.hint-open,
+     Surprise me is the third of the short rail's four pills, under the
+     lists, and the same pill as the three beside it. For a while it left
+     the column for the corner above the arrow, filled in the accent — and
+     over a map already dotted with the accent's round cluster discs, a
+     filled round disc read as one more of them rather than as a button. So
+     it is back among its equals, and what it keeps from the corner is the
+     word after a press: for a moment the label opens to say it has done
+     it, "Surprised", .is-rolled, see sayRolled() in assets/app.js. */
   [data-layout="b"] #btn-random.is-rolled {
     grid-template-columns: auto 1fr;
+    padding: 0 13px 0 6px;
     gap: 8px;
-    padding: 0 16px 0 11px;
   }
   [data-layout="b"] #btn-random.is-rolled > .rail-label { opacity: 1; }
-  [data-layout="b"] #btn-random svg { width: 24px; height: 24px; stroke: var(--paper); }
-  [data-layout="b"] #btn-random svg .pip { fill: var(--paper); }
-  [data-layout="b"] #btn-random .rail-label { color: var(--paper); }
-  [data-layout="b"] #btn-random:hover { background: var(--accent-lit); border-color: var(--accent-lit); color: var(--paper); }
-  body.panel-open [data-layout="b"] #btn-random,
-  [data-layout="b"] body.panel-open #btn-random {
-    bottom: calc(var(--sheet-h) + 10px + var(--safe-b) + 58px);
-  }
 
   /* The three chips outside the drawer. The nav wears .filters for the row's
      own rules — the gap, the scroll, the hidden scrollbar — and gives back

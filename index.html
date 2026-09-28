@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=b30e8a34">
+<link rel="stylesheet" href="assets/styles.css?v=6e1c5999">
 </head>
 <body>
 
@@ -160,30 +160,6 @@
     <span class="rail-glyph" aria-hidden="true">📋</span>
     <span class="rail-label" data-i18n="listsAllTitle">Everybody’s lists</span>
   </a>
-  <!-- The short rail's third pill, and the door to the four below that it
-       does not draw. A stranger's phone gets the rail three pills long —
-       account, lists, this — with Surprise me filled in the corner, and
-       the rest of what the map can do one press behind this: Ask, the
-       flashcards, the colour, feedback. Somebody who has been here before
-       keeps the full rail, where this pill is put away by the stylesheet
-       and the four stand in the column as they always have. Which of the
-       two a browser gets is decided once, on the way in — pickLayout() in
-       assets/app.js — and "The short rail" in README.md is why.
-
-       Counted on /admin/stats as `more`, the way every pill here is, and
-       the rows in the sheet it opens count as the pills they stand for, so
-       Ask pressed from here and Ask pressed on the full rail are one
-       number. A button rather than a link: it opens a sheet over the map
-       and leaves nothing behind in the address bar. -->
-  <button type="button" class="rail-btn" id="btn-more" data-i18n-title="moreWhy" data-i18n-aria-label="moreOpen"
-          aria-label="More" title="Ask, flashcards, colour, feedback">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="6" cy="12" r="1.5" class="pip"/>
-      <circle cx="12" cy="12" r="1.5" class="pip"/>
-      <circle cx="18" cy="12" r="1.5" class="pip"/>
-    </svg>
-    <span class="rail-label" data-i18n="moreOpen">More</span>
-  </button>
   <!-- The other thing on this site that is not about tonight's dinner: a
        door onto flashcard.tallinntastebuds.ee, and now the only one
        anywhere. The first was a row on /account.html, behind a sign-in, and
@@ -231,7 +207,14 @@
        is the one button here that *does* something to the evening; the
        colour swatch and "where am I" are settings, and settings belong under
        the things they settle. On a phone that order is the whole point: the
-       buttons at the top are the ones that introduce themselves first. -->
+       buttons at the top are the ones that introduce themselves first.
+
+       On the short rail it is third of four, straight under the lists —
+       the flashcards above it are put away there. It stood apart for a
+       while, a filled disc in the corner above the arrow, and beside the
+       accent's cluster discs on the map it read as one more of them rather
+       than as a button, so it came back into the column, the same pill as
+       its neighbours. -->
   <button type="button" class="rail-btn" id="btn-random" data-i18n-title="randomPick" data-i18n-aria-label="randomPick" aria-label="Surprise me" title="Surprise me">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <rect x="4" y="4" width="16" height="16" rx="4"/>
@@ -240,6 +223,33 @@
       <circle cx="15" cy="15" r="1.35" class="pip"/>
     </svg>
     <span class="rail-label" data-i18n="randomPick">Surprise me</span>
+  </button>
+  <!-- The short rail's last pill, and the door to the four below that it
+       does not draw. A stranger's phone gets the rail four pills long —
+       account, lists, Surprise me, this — and the rest of what the map can do one press behind this: Ask, the
+       flashcards, the colour, feedback. Somebody who has been here before
+       keeps the full rail, where this pill is put away by the stylesheet
+       and the four stand in the column as they always have. Which of the
+       two a browser gets is decided once, on the way in — pickLayout() in
+       assets/app.js — and "The short rail" in README.md is why.
+
+       Counted on /admin/stats as `more`, the way every pill here is, and
+       the rows in the sheet it opens count as the pills they stand for, so
+       Ask pressed from here and Ask pressed on the full rail are one
+       number. A button rather than a link: it opens a sheet over the map
+       and leaves nothing behind in the address bar.
+
+       After Surprise me in the markup, so the short rail reads account,
+       lists, the die, More from the top; the full rail puts this away, so
+       where it stands changes nothing there. -->
+  <button type="button" class="rail-btn" id="btn-more" data-i18n-title="moreWhy" data-i18n-aria-label="moreOpen"
+          aria-label="More" title="Ask, flashcards, colour, feedback">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="6" cy="12" r="1.5" class="pip"/>
+      <circle cx="12" cy="12" r="1.5" class="pip"/>
+      <circle cx="18" cy="12" r="1.5" class="pip"/>
+    </svg>
+    <span class="rail-label" data-i18n="moreOpen">More</span>
   </button>
   <!-- Next to Surprise me, because the two are the same button with the
        question turned round: one answers "anywhere, you choose", the other
@@ -661,7 +671,7 @@
   <div class="account card" id="account-card"></div>
 </div>
 
-<!-- The rest of the short rail: the four doors the three pills do not carry,
+<!-- The rest of the short rail: the four doors the four pills do not carry,
      as rows. Built by assets/app.js the way the account sheet is, because
      one row — the colour — names the side you are about to get, which is
      decided at the moment it opens. Never opened on the full rail, whose
@@ -790,6 +800,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="assets/pins.js?v=6030fdcf" defer></script>
-<script src="assets/app.js?v=6d49c74c" defer></script>
+<script src="assets/app.js?v=d1936339" defer></script>
 </body>
 </html>
