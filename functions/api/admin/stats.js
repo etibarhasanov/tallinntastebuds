@@ -51,11 +51,9 @@
  * way the ranking above answers empty rather than failing when `press_counts`
  * is not.
  *
- * And `layout`, the two rails' strangers side by side out of the same table
- * under the `layout` kind: for each of `a` and `b`, `given`, how many
- * browsers that had never been here were dealt it, and `opened`, how many of
- * them opened a place on that first visit. The one comparison the split was
- * made for, read straight off four rows.
+ * The two rails' strangers are in the same table, under the `layout` kind,
+ * and are not read here: ./visitors.js carries them to /admin/visitors, to
+ * sit with everything else about the two rails.
  */
 
 import {
@@ -63,7 +61,7 @@ import {
 } from '../_lib.js';
 /* The kinds, the pills and the deal chip are the counting side's, so the
    ranking reads the table with the same words it was written with. */
-import { PLACE, FILTER, RAIL, LAYOUT, RAIL_PILLS, DEAL_FILTER } from '../stats.js';
+import { PLACE, FILTER, RAIL, RAIL_PILLS, DEAL_FILTER } from '../stats.js';
 
 /* Five minutes in the colo, which is what the page is allowed to be stale by.
  *
@@ -109,7 +107,6 @@ export async function onRequestGet(context) {
 
   const empty = {
     ready: false, opens: 0, users: 0,
-    layout: { a: { given: 0, opened: 0 }, b: { given: 0, opened: 0 } },
     map: [], venues: [], filters: [], rail: [], ...words
   };
   if (!env.DB) return json(empty, 200);
@@ -219,10 +216,6 @@ export async function onRequestGet(context) {
   const res = json(
     {
       ready: true, opens: opens, users: users,
-      layout: {
-        a: { given: countOf(LAYOUT, 'a'), opened: countOf(LAYOUT, 'a-opened') },
-        b: { given: countOf(LAYOUT, 'b'), opened: countOf(LAYOUT, 'b-opened') }
-      },
       map: map, venues: venues, filters: filters, rail: rail,
       ...words
     },

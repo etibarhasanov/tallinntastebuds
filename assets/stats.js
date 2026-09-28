@@ -8,10 +8,10 @@
  * the chip row: see **The order of the filter chips** in README.md. Then the
  * nine pills across the map's two rails, in full, which is the table that
  * argues about what earns a slot on it. Under all four, footnotes about the
- * site rather than about a press: how many opens have been counted, how many
- * accounts exist, and — once anybody has been dealt one — how many strangers
- * got each of the map's two rails and how many of them opened a place with
- * it.
+ * site rather than about a press: how many opens have been counted and how
+ * many accounts exist. How many strangers got each of the map's two rails,
+ * and how many of them opened a place with it, is on /admin/visitors with
+ * everything else about the rails.
  *
  * WHERE THE NUMBERS COME FROM
  *
@@ -62,7 +62,6 @@
     ready: false,   // whether the numbers came back at all
     opens: 0,
     users: 0,
-    layout: { a: { given: 0, opened: 0 }, b: { given: 0, opened: 0 } },
     map: [],
     venues: [],
     filters: [],
@@ -332,22 +331,10 @@
        stack sets 18px between whatever it is given, which is right between
        cards and far too much between two lines of the same footnote — it read
        as one stray sentence that had come off something. */
-    var totals = el('div', { className: 'stats-totals' }, [
+    stack.appendChild(el('div', { className: 'stats-totals' }, [
       el('p', { className: 'stats-total', textContent: t('statsTotal', { n: state.opens }) }),
       el('p', { className: 'stats-total', textContent: t('statsUsersTotal', { n: state.users }) })
-    ]);
-    /* A sentence a rail, once somebody has been dealt it: how many strangers
-       got it and how many of them found a place with it — the short rail's
-       and the full one's side by side, which is the comparison the split is
-       for. Absent before that rather than a line about nought, like the two
-       tables above. */
-    [['b', 'statsLayoutTotal'], ['a', 'statsLayoutFullTotal']].forEach(function (pair) {
-      var arm = state.layout[pair[0]];
-      if (!arm || !arm.given) return;
-      totals.appendChild(el('p', { className: 'stats-total', textContent:
-        t(pair[1], { given: arm.given, opened: arm.opened }) }));
-    });
-    stack.appendChild(totals);
+    ]));
 
     main.appendChild(stack);
   }
@@ -378,7 +365,6 @@
         state.ready = !!out.ready;
         state.opens = out.opens || 0;
         state.users = out.users || 0;
-        state.layout = out.layout || state.layout;
         state.map = out.map || [];
         state.venues = out.venues || [];
         state.filters = out.filters || [];

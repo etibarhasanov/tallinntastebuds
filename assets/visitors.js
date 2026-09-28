@@ -1,12 +1,16 @@
 /* Tallinn Tastebuds — /admin/visitors, who came to the site and what they did.
  *
  * The page Google Analytics is open in a tab for, drawn from the site's own
- * count instead: a range, five figures, a bar a day of new and returning
- * visitors, the map's two rails side by side, and four tables — pages,
- * countries, where people came from, and what they pressed. The shape is the
- * one /insights already has, because it is the same kind of question and the
- * owner has met that page; the rows, the figures and the chart borrow its
- * classes and /admin/stats' out of assets/stats.css.
+ * count instead, in the order the questions are asked. Today so far first,
+ * whatever the range: who came, who signed in and made an account, and on
+ * which of the map's two rails. Then a range and who came in it — five
+ * figures, a bar a day of new and returning visitors, the countries and
+ * where they came from. Then what a new visitor does against a returning
+ * one, then the two rails against each other, and last what was done —
+ * pages and presses. The shape is the one /insights already has, because it
+ * is the same kind of question and the owner has met that page; the rows,
+ * the figures and the chart borrow its classes and /admin/stats' out of
+ * assets/stats.css.
  *
  * WHERE THE NUMBERS COME FROM
  *
@@ -46,6 +50,12 @@
 
   /* The two rails by the id pickLayout() in assets/app.js deals them. */
   var RAILS = { a: 'visitorsLayoutFull', b: 'visitorsLayoutShort' };
+
+  /* How many strangers each rail needs before the two are set against each
+     other at all. Thirty is where a share out of them stops swinging ten
+     points on one visitor; below it the page says it is too early rather
+     than print a verdict on four against five. */
+  var FEWEST = 30;
 
   var SOURCES = { search: 'insightsSearch', here: 'insightsHere', direct: 'insightsDirect' };
 
@@ -350,7 +360,8 @@
   /* A table of a name and two numbers — the grid /insights draws its
      sources in. `heads` names the two columns, `cells` gives a row's. */
   function grid(label, heads, rows, name, cells) {
-    var table = el('div', { className: 'ins-table vis-table', role: 'table', 'aria-label': label }, [
+    var table = el('div', { className: 'ins-table vis-table' + (heads.length > 2 ? ' vis-table-3' : ''),
+      role: 'table', 'aria-label': label }, [
       el('div', { className: 'ins-row ins-head', role: 'row' },
         [el('span', { role: 'columnheader' })].concat(heads.map(function (h) {
           return el('span', { role: 'columnheader', textContent: h });
@@ -373,25 +384,129 @@
     ]);
   }
 
-  /* The map's two rails side by side, once either has had a visitor: a row
-     per figure and a column per rail, which is the comparison the split is
-     for and the one arrangement of eight numbers that fits across a phone. */
-  function layouts() {
-    var rails = state.data.layouts.filter(function (r) { return RAILS[r.id]; });
-    if (!rails.some(function (r) { return r.visitors; })) return null;
+  /* Today so far, whatever the range: four figures, and under them new and
+     returning visitors, sign-ins and accounts made for each rail and for the
+     visitors no rail has been dealt to yet — the one place the page answers
+     "who came today, and on which rail". */
+  function today() {
+    var d = state.data.today;
+    var cols = ['a', 'b', 'none'];
     var rows = [
-      [t('visitorsVisitors'), function (r) { return num(r.visitors); }],
-      [t('visitorsReturning'), function (r) { return share(r.back, r.visitors); }],
-      [t('visitorsTime'), function (r) { return duration(per(r.secs, r.visitors)); }],
-      [t('visitorsPresses'), function (r) { return num(per(r.presses, r.visitors), 1); }]
+      [t('visitorsNew'), 'fresh'],
+      [t('visitorsReturning'), 'back'],
+      [t('visitorsSignIns'), 'login'],
+      [t('visitorsSignUps'), 'signup']
     ];
     return card([
+      el('h2', { className: 'lists-title', textContent: t('visitorsTodayHead') }),
+      el('dl', { className: 'ins-kpis vis-kpis vis-kpis-4' }, [
+        figure(t('visitorsVisitors'), num(d.fresh + d.back), null),
+        figure(t('visitorsNew'), num(d.fresh), null),
+        figure(t('visitorsSignIns'), num(d.login), null),
+        figure(t('visitorsSignUps'), num(d.signup), null)
+      ]),
+      grid(t('visitorsTodayHead'), [t(RAILS.a), t(RAILS.b), t('visitorsNoRail')], rows,
+        function (r) { return r[0]; },
+        function (r) { return cols.map(function (c) { return num(d.rails[c][r[1]]); }); })
+    ]);
+  }
+
+  /* The per-visitor rows the two cards below share, as [label, of(row)]
+     over a row carrying `visitors` and the facts _visitors.js counts. */
+  function perVisitor() {
+    return [
+      [t('visitorsPagesPer'), function (r) { return num(per(r.views, r.visitors), 1); }],
+      [t('visitorsTime'), function (r) { return duration(per(r.secs, r.visitors)); }],
+      [t('visitorsPresses'), function (r) { return num(per(r.presses, r.visitors), 1); }],
+      [t('visitorsPlaces'), function (r) { return num(per(r.places, r.visitors), 1); }],
+      [t('visitorsSignIns'), function (r) { return num(r.login); }],
+      [t('visitorsSignUps'), function (r) { return num(r.signup); }]
+    ];
+  }
+
+  /* A line saying from when a card's numbers run, where that is inside the
+     range — the range reaching back past the day they began. */
+  function splitSince() {
+    var d = state.data;
+    if (!d.split || d.split <= d.from) return null;
+    return el('p', { className: 'ins-note', textContent: t('visitorsSplitSince', { date: dateLabel(d.split, true) }) });
+  }
+
+  /* A figure per row, a column for each of a set of rows. */
+  function sideBySide(label, cols, heads, rows) {
+    return grid(label, heads, rows,
+      function (f) { return f[0]; },
+      function (f) { return cols.map(f[1]); });
+  }
+
+  /* What a new visitor does against a returning one, per visitor, over the
+     days that tell them apart. Absent until either has been counted. */
+  function cohorts() {
+    var cols = state.data.cohorts;
+    if (!cols.some(function (c) { return c.visitors; })) return null;
+    var heads = cols.map(function (c) { return t(c.id === 'new' ? 'visitorsNew' : 'visitorsReturning'); });
+    var rows = [[t('visitorsVisitors'), function (c) { return num(c.visitors); }]].concat(perVisitor());
+    return card([
+      el('h2', { className: 'lists-title', textContent: t('visitorsCohorts') }),
+      el('p', { className: 'stats-lead', textContent: t('visitorsCohortsLead') }),
+      sideBySide(t('visitorsCohorts'), cols, heads, rows),
+      splitSince()
+    ]);
+  }
+
+  /* Whether the two rails' strangers found a place at rates that differ by
+     more than chance: a two-proportion z-test on `opened` out of `given`,
+     with 1.96 as the line, which is the ordinary 95%. Said in words, and
+     only once each rail has FEWEST strangers — see there. */
+  function verdict(dealt) {
+    var a = dealt.a, b = dealt.b;
+    if (!a.given && !b.given) return null;
+    var say = function (key, vars) { return el('p', { className: 'vis-verdict', textContent: t(key, vars) }); };
+    if (Math.min(a.given, b.given) < FEWEST) {
+      return say('visitorsVerdictEarly', { a: num(a.given), b: num(b.given), min: FEWEST });
+    }
+    var pool = (a.opened + b.opened) / (a.given + b.given);
+    var spread = Math.sqrt(pool * (1 - pool) * (1 / a.given + 1 / b.given));
+    var z = spread ? (a.opened / a.given - b.opened / b.given) / spread : 0;
+    var pa = share(a.opened, a.given), pb = share(b.opened, b.given);
+    if (Math.abs(z) < 1.96) return say('visitorsVerdictNone', { a: pa, b: pb });
+    return z > 0 ? say('visitorsVerdictAhead', { rail: t(RAILS.a), ahead: pa, behind: pb })
+                 : say('visitorsVerdictAhead', { rail: t(RAILS.b), ahead: pb, behind: pa });
+  }
+
+  /* The map's two rails against each other, in three blocks under one
+     verdict: the strangers each was dealt to since the split began and how
+     many found a place, everyone on each rail in the range, and the rail's
+     new visitors alone. A row per figure and a column per rail, which is the
+     one arrangement of these numbers that fits across a phone. Absent until
+     either rail has had anybody. */
+  function layouts() {
+    var d = state.data;
+    var rails = d.layouts.filter(function (r) { return RAILS[r.id]; });
+    var dealt = d.dealt;
+    var lived = rails.some(function (r) { return r.visitors; });
+    if (!lived && !dealt.a.given && !dealt.b.given) return null;
+    var heads = rails.map(function (r) { return t(RAILS[r.id]); });
+    var visitors = [t('visitorsVisitors'), function (r) { return num(r.visitors); }];
+    var block = function (key, cols, rows) {
+      return [el('h3', { className: 'eyebrow vis-sub', textContent: t(key) }), sideBySide(t(key), cols, heads, rows)];
+    };
+    var kids = [
       el('h2', { className: 'lists-title', textContent: t('visitorsLayouts') }),
       el('p', { className: 'stats-lead', textContent: t('visitorsLayoutsLead') }),
-      grid(t('visitorsLayouts'), rails.map(function (r) { return t(RAILS[r.id]); }), rows,
-        function (f) { return f[0]; },
-        function (f) { return rails.map(f[1]); })
-    ]);
+      verdict(dealt)
+    ].concat(block('visitorsStrangers', rails, [
+      [t('visitorsDealt'), function (r) { return num(dealt[r.id].given); }],
+      [t('visitorsOpened'), function (r) { return share(dealt[r.id].opened, dealt[r.id].given); }]
+    ]));
+    if (lived) {
+      kids = kids
+        .concat(block('visitorsEveryone', rails, [visitors,
+          [t('visitorsReturning'), function (r) { return share(r.back, r.visitors); }]].concat(perVisitor())))
+        .concat(block('visitorsNewOnly', rails.map(function (r) { return r.fresh; }), [visitors].concat(perVisitor())))
+        .concat([splitSince()]);
+    }
+    return card(kids);
   }
 
   /* ----------------------------------------------------------- the states */
@@ -414,8 +529,10 @@
     }
 
     var stack = el('div', { className: 'lists-stack' });
+    stack.appendChild(today());
     stack.appendChild(card([
       ranges(),
+      el('h2', { className: 'lists-title vis-range-title', textContent: t('visitorsWhoCame') }),
       figures(),
       d.span === 1 ? el('p', { className: 'ins-note', textContent: t('visitorsSoFar') }) : null
     ]));
@@ -424,12 +541,12 @@
       stack.appendChild(card([el('p', { className: 'lists-none', textContent: t('visitorsQuiet') })]));
     } else {
       if (d.series) stack.appendChild(card(chart()));
-      stack.appendChild(layouts());
-      if (d.pages.length) stack.appendChild(pages());
       if (d.countries.length) {
         stack.appendChild(ranking(t('insightsCountry'), d.countries, function (r) { return countryName(r.id); }));
       }
       if (d.sources.length) stack.appendChild(ranking(t('insightsFrom'), d.sources, sourceName));
+      [cohorts(), layouts()].forEach(function (c) { if (c) stack.appendChild(c); });
+      if (d.pages.length) stack.appendChild(pages());
       if (d.presses.length) {
         stack.appendChild(ranking(t('insightsPressed'), d.presses, function (r) { return r.id; }, true));
       }
