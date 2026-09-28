@@ -62,206 +62,245 @@
   the whole of its job, and it is enough, because the blast radius on the
   other side is one public repository whose every change is revertible.
 -->
+<meta name="theme-color" content="#f7ddd4">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+
+<!-- The same three sheets /admin/stats and /admin/visitors are drawn with:
+     the map's tokens, card and eyebrow, the lists page's header and column,
+     and the lead line under a title. This page used to carry a palette and a
+     box of its own, and the owner's five pages looked like two sites — this
+     one in Helvetica on a plain card, the four under /admin/ in the site's own
+     faces. Unstamped, like basemap.js below: the page is served no-store and
+     /assets/* revalidates, so it never holds a stale copy. What follows the
+     links is only what a form has and a ranking does not. -->
+<link rel="stylesheet" href="/assets/styles.css">
+<link rel="stylesheet" href="/assets/lists.css">
+<link rel="stylesheet" href="/assets/stats.css">
 <style>
-:root {
-  --ink:        #27141a;
-  --muted:      #7d5754;
-  --paper:      #fff0ea;
-  --wash:       #f7ddd4;
-  --hairline:   #f0cec3;
-  --accent:     #a81e28;
-  --accent-lit: #c9323d;
-  --good:       #1e6b3a;
-  --bad:        #b3261e;
-  --display: "Familjen Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --body: "Literata", Georgia, "Times New Roman", serif;
-  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --radius: 6px;
-}
+/* No colour is named below — rule 1 of The design rules in README.md — so
+   the dark style the owner picked on the map reaches this page too. */
 
-*, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0;
-  min-height: 100dvh;
-  background: var(--wash);
-  color: var(--ink);
-  font-family: var(--body);
-  font-size: 16px;
-  line-height: 1.5;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: max(16px, env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
-}
+.admin-card { padding: 22px 22px 20px; }
+.admin-card > h2:first-child,
+.admin-card > .lists-title:first-child { margin-top: 0; }
 
-main {
-  width: 100%;
-  max-width: 34rem;
-  background: var(--paper);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
-  padding: 22px;
-  margin-top: 4vh;
-}
-
-h1 {
-  font-family: var(--display);
-  font-size: 1.25rem;
-  letter-spacing: -0.01em;
-  margin: 0 0 2px;
-}
-.sub { color: var(--muted); font-size: .85rem; margin: 0 0 20px; }
-
-h2 { font-family: var(--display); font-size: 1rem; margin: 0 0 8px; }
+h2 { font-family: var(--display); font-size: 17px; font-weight: 600; letter-spacing: -.01em; margin: 0 0 10px; }
 p { margin: 0 0 12px; }
-.small { font-size: .85rem; color: var(--muted); }
+.small { font-size: 13px; color: var(--muted); }
 
-label { display: block; font-family: var(--display); font-size: .82rem; margin: 14px 0 5px; }
+label {
+  display: block;
+  margin: 18px 0 6px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
 
-input[type="password"], input[type="text"], input[type="number"] {
+input[type="password"], input[type="text"], input[type="number"],
+select, textarea, input[type="datetime-local"] {
   width: 100%;
   font: inherit;
-  font-family: var(--mono);
-  font-size: 15px;               /* 16px or more, or iOS zooms the page in */
+  font-size: 16px;               /* 16px or more, or iOS zooms the page in */
   padding: 11px 12px;
   color: var(--ink);
-  background: #fff;
+  background: var(--wash);
   border: 1px solid var(--hairline);
-  border-radius: var(--radius);
+  border-radius: var(--radius-soft);
 }
-input:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 1px; }
+input[type="password"], input[type="text"], input[type="number"] { font-family: var(--mono); font-size: 16px; }
+textarea { min-height: 4.5rem; resize: vertical; font-family: var(--body); line-height: 1.5; }
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--accent-lit); outline-offset: 1px; border-radius: var(--radius-soft);
+}
+input[type="file"] {
+  width: 100%; font-size: 13px; padding: 14px 12px; color: var(--muted);
+  background: var(--wash); border: 1px dashed var(--hairline); border-radius: var(--radius-soft);
+}
 
+/* Every button on a form is the site's .go — the filled pill in the mono —
+   and full width, because on a phone the thumb is looking for it. The quiet
+   one is .alt's shape: a way out rather than a second action. */
 button {
-  font-family: var(--display);
-  font-size: .95rem;
-  padding: 12px 16px;
-  border-radius: var(--radius);
-  border: 1px solid transparent;
-  background: var(--accent);
-  color: #fff;
-  cursor: pointer;
-  min-height: 44px;              /* a thumb target, not a mouse target */
+  display: block;
   width: 100%;
-  margin-top: 16px;
+  min-height: 44px;              /* a thumb target, not a mouse target */
+  margin-top: 18px;
+  padding: 12px 18px;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-align: center;
 }
-button:hover { background: var(--accent-lit); }
+button:hover { background: var(--accent-lit); border-color: var(--accent-lit); }
 button[disabled] { opacity: .55; cursor: default; }
 button.quiet {
-  background: transparent;
-  color: var(--muted);
-  border-color: var(--hairline);
   margin-top: 10px;
+  background: transparent;
+  border-color: var(--hairline);
+  color: var(--muted);
+  font-weight: 400;
+  letter-spacing: .02em;
 }
 button.quiet:hover { background: var(--wash); color: var(--ink); }
 
 .note {
-  border-left: 3px solid var(--hairline);
+  border-left: 2px solid var(--accent);
   padding: 2px 0 2px 12px;
   margin: 0 0 14px;
-  font-size: .85rem;
+  font-size: 13.5px;
   color: var(--muted);
 }
-.msg { margin-top: 14px; font-size: .88rem; }
-.msg.bad  { color: var(--bad); }
-.msg.good { color: var(--good); }
+.msg { margin: 14px 0 0; font-size: 14px; }
+.msg.bad  { color: var(--no); }
+.msg.good { color: var(--yes); }
 
-dl.facts { margin: 0; font-size: .88rem; }
-dl.facts div { display: flex; gap: 10px; padding: 7px 0; border-top: 1px solid var(--hairline); }
-dl.facts dt { color: var(--muted); flex: 0 0 8.5rem; }
-dl.facts dd { margin: 0; font-family: var(--mono); font-size: .82rem; word-break: break-word; }
+dl.admin-facts { margin: 0; font-size: 14px; }
+dl.admin-facts div { display: flex; gap: 12px; padding: 9px 0; border-top: 1px solid var(--hairline); }
+dl.admin-facts div:last-child { border-bottom: 1px solid var(--hairline); }
+dl.admin-facts dt { color: var(--muted); flex: 0 0 8.5rem; }
+dl.admin-facts dd { margin: 0; min-width: 0; font-family: var(--mono); font-size: 12.5px; overflow-wrap: anywhere; }
 
-select, textarea, input[type="datetime-local"] {
-  width: 100%;
-  font: inherit;
-  font-size: 15px;
-  padding: 11px 12px;
-  color: var(--ink);
-  background: #fff;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
-}
-textarea { min-height: 4.5rem; resize: vertical; font-family: var(--body); }
-select:focus-visible, textarea:focus-visible, input:focus-visible {
-  outline: 2px solid var(--accent-lit); outline-offset: 1px;
-}
-input[type="file"] {
-  width: 100%; font-size: .85rem; padding: 14px 12px;
-  background: #fff; border: 1px dashed var(--hairline); border-radius: var(--radius);
-}
 .shot { margin-top: 12px; text-align: center; }
 .shot img, .shot video {
-  max-width: 100%; max-height: 44vh; border-radius: var(--radius);
+  display: inline-block;
+  max-width: 100%; max-height: 44vh; border-radius: var(--radius-soft);
   border: 1px solid var(--hairline);
 }
-.shot video { background: #000; }
+.shot video { background: var(--ink); }
 .shot button { margin-top: 10px; }
-.shot p { margin: 6px 0 0; font-family: var(--mono); font-size: .78rem; color: var(--muted); }
-.hint { font-size: .78rem; color: var(--muted); margin: 5px 0 0; }
+.shot p { margin: 6px 0 0; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.hint { font-size: 12.5px; line-height: 1.5; color: var(--muted); margin: 6px 0 0; }
 hr { border: 0; border-top: 1px solid var(--hairline); margin: 22px 0 4px; }
 
-.tabs { display: flex; gap: 6px; margin-bottom: 4px; }
-.tabs button {
-  flex: 1; margin: 0; min-height: 40px; font-size: .88rem; padding: 10px 6px;
-  background: transparent; color: var(--muted); border-color: var(--hairline);
+/* The five tools, as the lists page's segmented control: the wash as the
+   track and the chosen one lifted onto paper. It wraps rather than scrolls,
+   because at 390px a scrolled row would put the Google tab — and the count
+   of disagreements that rides on it — off the edge where nobody sees it. */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 3px;
+  margin: 0 0 20px;
+  background: var(--wash);
+  border: 1px solid var(--hairline);
+  border-radius: 22px;
 }
-.tabs button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
-.tabs button:hover { color: var(--ink); }
-.tabs button.on:hover { color: #fff; background: var(--accent-lit); }
+.tabs button {
+  flex: 1 1 auto;
+  width: auto;
+  min-height: 38px;
+  margin: 0;
+  padding: 8px 12px;
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.tabs button:hover { background: transparent; color: var(--ink); }
+.tabs button.on,
+.tabs button.on:hover { background: var(--paper); border-color: var(--hairline); color: var(--ink); box-shadow: var(--lift); }
+.tabs .count {
+  display: inline-block;
+  min-width: 18px;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 100px;
+  background: var(--accent);
+  color: var(--paper);
+  font-size: 10.5px;
+  line-height: 16px;
+}
 
 fieldset { border: 0; padding: 0; margin: 0; }
 .types { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 .types label {
-  margin: 0; display: inline-flex; align-items: center; gap: 5px;
-  border: 1px solid var(--hairline); border-radius: 999px;
-  padding: 7px 11px; font-size: .8rem; background: #fff; cursor: pointer;
+  margin: 0; display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--hairline); border-radius: 100px;
+  padding: 7px 12px; background: var(--paper); cursor: pointer;
+  color: var(--ink); font-size: 11.5px; font-weight: 400; letter-spacing: .02em; text-transform: none;
 }
+.types label:has(input:checked) { border-color: var(--accent); color: var(--accent); }
 .types input { margin: 0; accent-color: var(--accent); }
 .row { display: flex; gap: 8px; }
-.row > * { flex: 1; }
-.row button { margin-top: 0; flex: 0 0 auto; width: auto; padding: 11px 13px; font-size: .82rem; }
-.thumbs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.row > * { flex: 1; min-width: 0; }
+.row button { margin-top: 0; flex: 0 0 auto; width: auto; padding: 11px 14px; }
+.thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .thumbs figure { margin: 0; width: 86px; }
-.thumbs img { width: 86px; height: 86px; object-fit: cover; border-radius: 4px; border: 1px solid var(--hairline); }
-.thumbs figcaption { font-family: var(--mono); font-size: .66rem; color: var(--muted); text-align: center; margin-top: 2px; }
+.thumbs img { width: 86px; height: 86px; object-fit: cover; border-radius: var(--radius-soft); border: 1px solid var(--hairline); }
+.thumbs figcaption { font-family: var(--mono); font-size: 11px; color: var(--muted); text-align: center; margin-top: 3px; }
 
 .map {
   height: 260px; margin-top: 6px;
-  border: 1px solid var(--hairline); border-radius: var(--radius);
+  border: 1px solid var(--hairline); border-radius: var(--radius-soft);
   overflow: hidden; background: var(--wash);
 }
 .map .hint { padding: 12px; margin: 0; }
 .leaflet-container { font-family: var(--body); }
 
-ol { margin: 0 0 12px; padding-left: 1.2rem; font-size: .88rem; }
+ol { margin: 0 0 12px; padding-left: 1.3rem; list-style: decimal; font-size: 14px; }
 ol li { margin-bottom: 6px; }
 code { font-family: var(--mono); font-size: .85em; background: var(--wash); padding: 1px 4px; border-radius: 3px; }
-a { color: var(--accent); }
 .spin { opacity: .6; }
 [hidden] { display: none !important; }
 
+/* The owner's pages under /admin/, as the account sheet's rows. */
+.admin-card > .menu { margin-top: 14px; }
+.menu-row:hover { color: inherit; }
+
 /* The Google tab's log. */
-h2.gap { margin-top: 22px; }
+h2.gap { margin-top: 26px; }
 pre.cmd {
-  font-family: var(--mono); font-size: .74rem; background: var(--wash);
-  padding: 10px 12px; border-radius: var(--radius); overflow-x: auto; margin: 0 0 12px;
+  font-family: var(--mono); font-size: 12px; background: var(--wash);
+  padding: 10px 12px; border-radius: var(--radius-soft); overflow-x: auto; margin: 0 0 12px;
 }
 ul.log { list-style: none; padding: 0; margin: 0; }
-ul.log li { border-top: 1px solid var(--hairline); padding: 9px 0; font-size: .86rem; }
+ul.log li { border-top: 1px solid var(--hairline); padding: 10px 0; font-size: 14px; }
 ul.log .head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
-ul.log .name { font-family: var(--display); }
-ul.log .outcome { flex: 0 0 auto; font-size: .76rem; color: var(--muted); }
-ul.log .outcome.changed { color: var(--good); }
-ul.log .outcome.failed, ul.log .outcome.closed, ul.log .outcome.gone { color: var(--bad); }
-ul.log .when { font-family: var(--mono); font-size: .72rem; color: var(--muted); }
-ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; word-break: break-word; }
+ul.log .name { font-family: var(--display); font-weight: 600; }
+ul.log .outcome { flex: 0 0 auto; font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+ul.log .outcome.changed { color: var(--yes); }
+ul.log .outcome.failed, ul.log .outcome.closed, ul.log .outcome.gone { color: var(--no); }
+ul.log .when { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+ul.log .what { font-family: var(--mono); font-size: 12px; margin-top: 3px; overflow-wrap: anywhere; }
+ul.log li button.quiet { width: auto; display: inline-block; }
 </style>
 </head>
-<body>
-<main id="card" aria-live="polite">
-  <h1>Tallinn Tastebuds</h1>
-  <p class="sub" id="sub">Checking this device…</p>
-  <div id="body"></div>
+<body class="lists-body">
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark">Tallinn Tastebuds</span>
+  </a>
+</header>
+
+<!-- The title and the line under it, as on the four pages under /admin/; the
+     line is the one the script rewrites as the door changes state. -->
+<div class="lists-main">
+  <p class="eyebrow">Tallinn</p>
+  <h1 class="lists-title">Admin</h1>
+  <p class="stats-lead" id="sub">Checking this device…</p>
+</div>
+
+<main class="lists-main" id="card" aria-live="polite">
+  <div class="lists-stack" id="stack">
+    <section class="card admin-card" id="body"></section>
+  </div>
 </main>
 
 <!-- The basemap the pin picker draws, shared with the map page and the lists
@@ -285,6 +324,7 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
      phone left on a table locks itself. */
   var IDLE_MS = 15 * 60 * 1000;
 
+  var stack = document.getElementById('stack');
   var body = document.getElementById('body');
   var sub = document.getElementById('sub');
 
@@ -1093,8 +1133,13 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
        disagreement is found on the way to a story rather than by opening the
        tab on a hunch, and it is looked up once, after the door opens. */
     var disagree = 0;
-    function tabLabel(pair) {
-      return pair[1] + (pair[0] === 'google' && disagree ? ' · ' + disagree : '');
+    function tabLabel(b, pair) {
+      clear(b);
+      b.appendChild(document.createTextNode(pair[1]));
+      if (pair[0] === 'google' && disagree) {
+        b.appendChild(el('span', { className: 'count', textContent: String(disagree),
+          'aria-label': disagree + (disagree === 1 ? ' disagreement' : ' disagreements') }));
+      }
     }
 
     function draw() {
@@ -1102,7 +1147,8 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
       [['story', 'Story'], ['place', 'Add a place'], ['edit', 'Edit a place'], ['deal', 'Discount'], ['google', 'Google']].forEach(function (pair) {
         var b = el('button', { type: 'button',
           className: 'tab' + (which === pair[0] ? ' on' : ''),
-          textContent: tabLabel(pair) });
+          'aria-pressed': which === pair[0] ? 'true' : 'false' });
+        tabLabel(b, pair);
         b.addEventListener('click', function () {
           if (which === pair[0]) return;
           which = pair[0];
@@ -1129,7 +1175,7 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
       .then(function (got) {
         disagree = mapAgainstGoogle(got[0], got[1]).length;
         var last = tabs.lastChild;
-        if (last) last.textContent = tabLabel(['google', 'Google']);
+        if (last) tabLabel(last, ['google', 'Google']);
       })
       .catch(function () { /* the tab says so */ });
 
@@ -1138,23 +1184,34 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
        are not behind this door: the server locks them — an account ADMINS
        names in wrangler.toml, see functions/api/_admin.js — so they open for
        the owner signed in on the site and are a 404 to everybody else,
-       passphrase or not. */
-    body.appendChild(el('hr'));
-    body.appendChild(el('p', {}, [
-      el('a', { href: '/admin/stats', textContent: 'Statistics' }),
-      ' · ',
-      el('a', { href: '/admin/visitors', textContent: 'Visitors' }),
-      ' · ',
-      el('a', { href: '/admin/google', textContent: 'Google directory' }),
-      ' · ',
-      el('a', { href: '/admin/flows', textContent: 'Who uses the site' })
+       passphrase or not. Drawn as the account sheet's rows, a name and what
+       is behind it, because that is what they are: places to go. */
+    var pages = el('ul', { className: 'menu' });
+    [
+      ['/admin/stats', 'Statistics', 'Which places and chips get opened most'],
+      ['/admin/visitors', 'Visitors', 'Who came, from where, and what they pressed'],
+      ['/admin/google', 'Google directory', 'Every place in Tallinn, off Google’s list'],
+      ['/admin/flows', 'Who uses the site', 'What each kind of person can do, drawn']
+    ].forEach(function (page) {
+      pages.appendChild(el('li', { className: 'menu-item' }, [
+        el('a', { className: 'menu-row', href: page[0] }, [
+          el('span', { className: 'menu-say' }, [
+            el('span', { className: 'menu-name', textContent: page[1] }),
+            el('span', { className: 'menu-why', textContent: page[2] })
+          ]),
+          el('span', { className: 'menu-go', 'aria-hidden': 'true',
+            html: '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>' })
+        ])
+      ]));
+    });
+    stack.appendChild(el('section', { className: 'card admin-card' }, [
+      el('h2', { className: 'lists-title', textContent: 'The numbers' }),
+      el('p', { className: 'stats-lead', textContent:
+        'They open when you are signed in on the site as the owner.' }),
+      pages
     ]));
-    body.appendChild(el('p', { className: 'hint',
-      textContent: 'Open when you are signed in on the site as the owner.' }));
 
-    body.appendChild(el('hr'));
-
-    var facts = el('dl', { className: 'facts' });
+    var facts = el('dl', { className: 'admin-facts' });
     function fact(term, value) {
       facts.appendChild(el('div', {}, [
         el('dt', { textContent: term }),
@@ -1165,11 +1222,9 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
     fact('Write access', repo.canWrite ? 'yes' : 'no — read only');
     fact('Publishes to', repo.branch);
     if (repo.expires) fact('Token expires', repo.expires);
-    body.appendChild(facts);
 
     var lock = el('button', { type: 'button', className: 'quiet', textContent: 'Lock' });
     lock.addEventListener('click', function () { token = null; boot(); });
-    body.appendChild(lock);
 
     var forget = el('button', { type: 'button', className: 'quiet',
       textContent: 'Forget this device' });
@@ -1178,7 +1233,11 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
       token = null;
       boot();
     });
-    body.appendChild(forget);
+
+    stack.appendChild(el('section', { className: 'card admin-card' }, [
+      el('h2', { className: 'lists-title', textContent: 'This device' }),
+      facts, lock, forget
+    ]));
   }
 
   /* ------------------------------------------------------ the Google refresh
@@ -1302,7 +1361,7 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
         r.refreshAfterDays + ' days old. At most ' + r.calls.day + ' calls a day and ' +
         r.calls.monthCap + ' a month, inside Google’s free thousand.' }));
 
-      var facts = el('dl', { className: 'facts' });
+      var facts = el('dl', { className: 'admin-facts' });
       function fact(term, value) {
         facts.appendChild(el('div', {}, [el('dt', { textContent: term }), el('dd', { textContent: value })]));
       }
@@ -1717,7 +1776,7 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
           clear(out);
           say(out, 'Posted. It goes up at ' + done.when.replace('T', ' ') +
             ' and comes down ' + plusHours(done.when, 36).replace('T', ' ') + '.', 'good');
-          out.appendChild(el('dl', { className: 'facts' }, [
+          out.appendChild(el('dl', { className: 'admin-facts' }, [
             el('div', {}, [
               el('dt', { textContent: 'Link to it' }),
               el('dd', { textContent: '/?story=' + done.id })
@@ -2062,7 +2121,7 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
           clear(out);
           say(out, 'Published. Cloudflare redeploys within the minute, and the map and the ' +
             'pass pages read the file on their next load.', 'good');
-          out.appendChild(el('dl', { className: 'facts' }, [
+          out.appendChild(el('dl', { className: 'admin-facts' }, [
             el('div', {}, [el('dt', { textContent: 'Guest page' }), el('dd', { textContent: '/deal.html?r=' + place.id })]),
             el('div', {}, [el('dt', { textContent: 'Staff link' }), el('dd', { textContent: 'https://tallinntastebuds.ee/staff.html?r=' + place.id })])
           ]));
@@ -2621,7 +2680,7 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
         .then(function (pr) {
           clear(out);
           say(out, 'Opened. It is a pull request, so nothing on the map changes until it is merged.', 'good');
-          out.appendChild(el('dl', { className: 'facts' }, [
+          out.appendChild(el('dl', { className: 'admin-facts' }, [
             el('div', {}, [el('dt', { textContent: 'Pull request' }), el('dd', { textContent: pr.title })]),
             el('div', {}, [el('dt', { textContent: 'Open it' }), el('dd', { textContent: pr.url })])
           ]));
@@ -2841,12 +2900,34 @@ ul.log .what { font-family: var(--mono); font-size: .76rem; margin-top: 3px; wor
 
   /* ----------------------------------------------------------------- boot */
 
+  /* The owner's style, as every other page on the site takes it — see
+     applyStyle() in assets/lists.js, which is the fullest copy. The door
+     writes nothing to ttb.style; it only reads what the map's swatch left. */
+  var STYLES = ['red', 'green'];
+  function applyStyle() {
+    var fromUrl = new URLSearchParams(window.location.search).get('style');
+    var stored = null;
+    try { stored = window.localStorage.getItem('ttb.style'); } catch (e) { /* none */ }
+    var style = STYLES.indexOf(fromUrl) !== -1 ? fromUrl
+              : STYLES.indexOf(stored) !== -1 ? stored
+              : 'red';
+    document.documentElement.setAttribute('data-style', style);
+    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
+    var meta = document.querySelector('meta[name="theme-color"]');
+    var wash = getComputedStyle(document.documentElement).getPropertyValue('--wash').trim();
+    if (meta && wash) meta.setAttribute('content', wash);
+  }
+
+  /* Back to the door: the one card, emptied, and the two the unlocked page
+     adds under it taken away. */
   function boot() {
     clear(body);
+    while (body.nextSibling) stack.removeChild(body.nextSibling);
     if (!window.crypto || !window.crypto.subtle) return insecure();
     return vault() ? locked() : setup();
   }
 
+  applyStyle();
   boot();
 })();
 </script>
