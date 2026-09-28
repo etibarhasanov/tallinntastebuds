@@ -87,6 +87,16 @@
  * under either is locked by where it is put rather than by somebody
  * remembering to lock it. The addresses those two pages had before, /stats
  * and /google, are a 404 to everybody.
+ *
+ * ---------------------------------------------------------------------------
+ * AND EVERY ANSWER LEAVES WITH THE SECURITY HEADERS ON IT
+ *
+ * Whichever branch below gave it — a page, a JSON answer, a 404, a redirect,
+ * or the asset server's file passed through — onRequest() puts the headers in
+ * functions/_security.js on it on the way out. This is the one place every
+ * Function-routed answer passes, so it is the one place they are written;
+ * `_headers` carries the same list for the files that never come here, and
+ * that file says why there are two.
  */
 
 const CANONICAL_HOST = 'tallinntastebuds.ee';
@@ -158,7 +168,14 @@ const FLASH_PAGE = '/flashcard';
 const FLASH_FILE = '/flashcard.html';
 /* ------------------------------------------------------- end FLASHCARDS */
 
+/* The security headers, onto whatever route() below answers. */
+import { secured } from './_security.js';
+
 export async function onRequest(context) {
+  return secured(await route(context), new URL(context.request.url));
+}
+
+async function route(context) {
   const url = new URL(context.request.url);
 
   if (url.hostname === PAGES_HOST) {

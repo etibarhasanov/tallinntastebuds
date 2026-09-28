@@ -11483,8 +11483,9 @@ Two things worth knowing about this arrangement:
   `no-store` with and without the middleware. The map is the one page that
   no longer comes back that way: `functions/index.js` answers `/` with its
   own Response, so it restates the revalidating rule `_headers` gives the
-  static file, and `PAGE_HEADERS` in `functions/_shell.js` restates the two
-  security headers every Function-served page would otherwise lose.
+  static file. The security headers are not restated anywhere: the
+  middleware puts them on every answer a Function gives — see **The
+  security headers** below.
 - A 301 is cached hard by browsers, which is the point of using one — it is
   also what makes it awkward to undo. Anyone who has hit the redirect once
   will keep skipping to `tallinntastebuds.ee` without asking. That is the
@@ -11510,6 +11511,37 @@ allowed to break.
 
 [cf-redirects]: https://developers.cloudflare.com/pages/configuration/redirects/
 [cf-headers]: https://developers.cloudflare.com/pages/configuration/headers/
+
+### The security headers
+
+Every answer this site gives carries the same seven headers, the ones
+[specification.website](https://specification.website/) marks required or
+recommended and an audit against it in September 2026 found missing or
+partial: `nosniff`, a referrer policy, a year of HSTS with the subdomains,
+`frame-ancestors 'none'` with `X-Frame-Options: DENY` beside it, COOP
+`same-origin`, and a `Permissions-Policy` that turns off what the site never
+uses and keeps location for the locate pill. Every `/api/` answer carries
+`Cross-Origin-Resource-Policy: same-site` besides, so another site cannot
+load one into its page. `functions/_security.js` is the list and says what
+each line is for.
+
+It is written twice, because there are two doors. `_headers` binds on what
+the asset server gives — the files `_routes.json` keeps away from the
+Functions — and on nothing a Function builds, so the list stands under `/*`
+there; `functions/_middleware.js` puts the same list on every answer a
+Function gives, a page, a JSON answer, a 404 and a redirect alike, in one
+place rather than in each route. `node tools/validate.mjs` imports the list
+and fails the build when `_headers` is missing a line or says it
+differently.
+
+What is deliberately not here yet: a content policy. A
+`Content-Security-Policy` that names what may load would have to list Google
+Fonts, unpkg, CARTO's tiles, the Instagram, TikTok and YouTube players,
+Turnstile, Google Analytics and Clarity, and a wrong line in it breaks a page
+silently for everybody — so it starts as `Content-Security-Policy-Report-Only`
+with somewhere to send the reports, which is a change of its own. HSTS is not
+preloaded, because a preload is a promise to a list the browsers ship and
+takes months to take back.
 
 ### Other hosts
 

@@ -4,9 +4,19 @@
 # changed, but an edit to restaurants.json shows up on the next load rather
 # than whenever a cache decides to expire. Photos are the one exception.
 
+# The security headers, on every file the asset server gives. The same list
+# is in functions/_security.js, which functions/_middleware.js puts on every
+# answer a Function gives — this file never binds on one of those, so there
+# have to be two. tools/validate.mjs fails the build when the lines below
+# stop matching that file's SECURITY. What each one is for is written there.
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: frame-ancestors 'none'
+  X-Frame-Options: DENY
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), payment=(), usb=(), serial=(), hid=(), browsing-topics=(), geolocation=(self)
 
 # The pages carry the ?v= stamps that tell a browser which copy of the scripts
 # and stylesheets it is allowed to reuse, so a stale page is a stale
