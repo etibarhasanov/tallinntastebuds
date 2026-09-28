@@ -55,21 +55,39 @@
  * came from Instagram and then read six pages is one visitor from Instagram
  * rather than six.
  *
+ * NEW AGAINST RETURNING
+ *
+ * A visitor is new on the first day its browser ever came and returning on
+ * every day after, and assets/track.js says which on every page, as `who`,
+ * out of the first day it keeps in `ttb.since`. Everything a visit does is
+ * then counted a second time under the `cohort` kind, `<who>:<fact>`, so the
+ * page can say what a new visitor does against a returning one — pages,
+ * seconds, presses, places opened, sign-ins and accounts made (FACTS below).
+ * The visitors themselves are the `visitor` kind's two ids, already there.
+ *
+ * These began after the visitors did, so the days before the first `cohort`
+ * row have visitors and nothing to divide among them. The reader counts only
+ * the days that have both — see readVisitors() — and says from when.
+ *
  * THE TWO RAILS
  *
  * The map deals a stranger one of two rails, and **The short rail** in
- * README.md is why. /admin/stats says how many were dealt each and how many
- * opened a place; this says how each did afterwards, under the `layout`
- * kind: visitors, returning ones, views, seconds and presses, per rail. Only
- * a browser that has been dealt one is counted there — one that has never
+ * README.md is why. The same facts are counted a third time per rail and
+ * per kind of visitor, under the `layout` kind as `<rail>:<who>:<fact>`, and
+ * the visitors on each rail as `<rail>:new` and `<rail>:back`. Only a
+ * browser that has been dealt one is counted there — one that has never
  * opened the map has not, and filing it under the full rail by default would
- * be comparing the short rail against everybody.
+ * be comparing the short rail against everybody. How many strangers were
+ * dealt each and how many opened a place on that first visit is press_counts'
+ * and ./stats.js's, and ./admin/visitors.js reads it beside this.
  *
  * WHAT IS BOUNDED, AND HOW
  *
  * One row per fact per day, like profile_counts: a busy day and a quiet one
  * with the same pages in them are the same number of rows. The pages, the
- * visitor kinds and the rails are lists written here. The countries, the
+ * visitor kinds, the rails and the facts counted under them are lists
+ * written here — forty ids a day at the most between the `cohort` and
+ * `layout` kinds. The countries, the
  * sources and the presses are not — a host or a press name is whatever the
  * request says — so those three kinds take at most MAX_IDS ids a day each,
  * and past that only ids already counted that day go up. A press name must
@@ -111,6 +129,15 @@ const PAGES = [
 
 /* The two rails, as pickLayout() in assets/app.js deals them. */
 const RAILS = ['a', 'b'];
+
+/* New and returning — see NEW AGAINST RETURNING. */
+const WHO = ['new', 'back'];
+
+/* What is counted per kind of visitor and per rail: pages opened, seconds
+   on screen, presses, places opened on the map, sign-ins and accounts made.
+   The last two are presses already, picked out of a report by SIGNS. */
+const FACTS = ['views', 'secs', 'presses', 'places', 'login', 'signup'];
+const SIGNS = { account_login: 'login', account_create: 'signup' };
 
 /* The kinds whose ids nobody chose from a list, and how many ids a day each
    may hold — see WHAT IS BOUNDED. A hundred countries in a day would be a
@@ -159,6 +186,19 @@ function railOf(body) {
   return RAILS.includes(body.layout) ? body.layout : null;
 }
 
+/* New or returning, or null where the browser could not keep the date. */
+function whoOf(body) {
+  return WHO.includes(body.who) ? body.who : null;
+}
+
+/* One fact about a visit, filed under its kind of visitor and, where it has
+   one, under its rail as well — NEW AGAINST RETURNING and THE TWO RAILS. */
+function split(facts, rail, who, fact, n) {
+  if (!who || !(n > 0)) return;
+  facts.push(['cohort', who + ':' + fact, n]);
+  if (rail) facts.push(['layout', rail + ':' + who + ':' + fact, n]);
+}
+
 /* One batch of [kind, id, n] facts, today. True when it was counted. */
 async function file(env, facts) {
   const day = today();
@@ -172,7 +212,8 @@ async function file(env, facts) {
 }
 
 /* A page opened: `id` is its path, `first` and `back` what ttb.seen said,
-   `from` the referrer it was opened with, `layout` the rail if any. */
+   `who` what ttb.since said, `from` the referrer it was opened with,
+   `layout` the rail if any. */
 export async function countArrive(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
@@ -180,7 +221,7 @@ export async function countArrive(context, body) {
   const rail = railOf(body);
 
   const facts = [['view', page, 1]];
-  if (rail) facts.push(['layout', rail + ':views', 1]);
+  split(facts, rail, whoOf(body), 'views', 1);
   if (body.first === true) {
     const who = body.back === true ? 'back' : 'new';
     facts.push(
@@ -193,30 +234,35 @@ export async function countArrive(context, body) {
   return file(env, facts);
 }
 
-/* A stretch on screen ended: `secs` of it on the page at `id`, and `presses`,
-   { name: times }, what TTBTrack reported meanwhile. */
+/* A stretch on screen ended: `secs` of it on the page at `id`, `presses`,
+   { name: times }, what TTBTrack reported meanwhile, and `places`, how many
+   places were opened on the map in it. */
 export async function countLeave(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
   if (!page) return false;
   const rail = railOf(body);
+  const who = whoOf(body);
 
   const facts = [];
   const secs = Math.min(MAX_SECS, Math.round(Number(body.secs) || 0));
-  if (secs > 0) {
-    facts.push(['time', page, secs]);
-    if (rail) facts.push(['layout', rail + ':secs', secs]);
-  }
+  if (secs > 0) facts.push(['time', page, secs]);
+  split(facts, rail, who, 'secs', secs);
 
   let pressed = 0;
+  const signs = { login: 0, signup: 0 };
   const presses = body.presses && typeof body.presses === 'object' ? body.presses : {};
   for (const name of Object.keys(presses).slice(0, MAX_NAMES)) {
     const n = Math.min(MAX_PRESS, Math.round(Number(presses[name]) || 0));
     if (!PRESS.test(name) || n < 1) continue;
     facts.push(['press', name, n]);
     pressed += n;
+    if (SIGNS[name]) signs[SIGNS[name]] += n;
   }
-  if (rail && pressed) facts.push(['layout', rail + ':presses', pressed]);
+  split(facts, rail, who, 'presses', pressed);
+  split(facts, rail, who, 'login', signs.login);
+  split(facts, rail, who, 'signup', signs.signup);
+  split(facts, rail, who, 'places', Math.min(MAX_PRESS, Math.round(Number(body.places) || 0)));
 
   return facts.length ? file(env, facts) : false;
 }
@@ -226,6 +272,13 @@ export async function countLeave(context, body) {
 /* The five figures a range adds up to. */
 function blank() {
   return { visitors: 0, back: 0, views: 0, secs: 0, presses: 0 };
+}
+
+/* What one kind of visitor did — the visitors and every one of FACTS. */
+function facts() {
+  const out = { visitors: 0 };
+  for (const f of FACTS) out[f] = 0;
+  return out;
 }
 
 function tally(figures, kind, id, n) {
@@ -249,34 +302,51 @@ function most(map) {
  * language's block, which names the pages and the three networks.
  *
  *   span       1, 7, 28 or 90
+ *   from       the first day of the range
  *   since      the first day anything was counted, or null for never
+ *   split      the first day new and returning were told apart, or null
  *   now        { visitors, back, views, secs, presses } in the range
  *   before     the same over the range just before it; null for today,
  *              since a day half over set against a whole one says nothing
+ *   today      { fresh, back, login, signup, rails } today so far, whatever
+ *              the range, `rails` holding the same four for `a`, `b` and
+ *              `none` — the visitors no rail has been dealt to yet
  *   unit       'day' or 'week' — what one bar is — or null for today
  *   series     [{ day, fresh, back }] visitors per bar, oldest first, zeros
  *              included; `day` is the first day the bar covers
+ *   cohorts    [{ id, visitors, ...FACTS }] new and returning, over the
+ *              days of the range that tell them apart
+ *   layouts    [{ id, visitors, back, ...FACTS, fresh }] the two rails over
+ *              the same days, `fresh` being the rail's new visitors alone
  *   pages      [{ id, name, views, secs }] most viewed first
  *   countries  [{ id, n }] visitors, most first
  *   sources    [{ id, name?, n }] visitors, most first
  *   presses    [{ id, n }] most first
- *   layouts    [{ id, visitors, back, views, secs, presses }] the two rails
  *
  * One read of the range and the one before it; the rest is arithmetic on at
- * most 180 days of a few dozen rows each. */
+ * most 180 days of a hundred-odd rows each.
+ *
+ * Who did what is counted only over the days that have `cohort` rows, and
+ * the visitors divided among it only over the same days, so a range reaching
+ * back past the day it began is not a week of visitors over two days of what
+ * they did. */
 export async function readVisitors(env, span, ui) {
   const first = dayBack(2 * span - 1);
   const cut = dayBack(span - 1);
+  const day = today();
   let rows;
   let since;
+  let began;
   try {
-    [rows, since] = await Promise.all([
+    [rows, since, began] = await Promise.all([
       env.DB.prepare('SELECT day, kind, id, n FROM visitor_counts WHERE day >= ?').bind(first).all(),
-      env.DB.prepare('SELECT MIN(day) AS day FROM visitor_counts').first()
+      env.DB.prepare('SELECT MIN(day) AS day FROM visitor_counts').first(),
+      env.DB.prepare("SELECT MIN(day) AS day FROM visitor_counts WHERE kind = 'cohort'").first()
     ]);
   } catch (e) {
     return null;
   }
+  rows = rows.results || [];
 
   const now = blank();
   const was = blank();
@@ -285,16 +355,24 @@ export async function readVisitors(env, span, ui) {
   const countries = new Map();
   const sources = new Map();
   const presses = new Map();
-  const rails = new Map(RAILS.map((id) => [id, { id: id, ...blank() }]));
+  const cohorts = new Map(WHO.map((id) => [id, { id: id, ...facts() }]));
+  const rails = new Map(RAILS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
+  const quad = () => ({ fresh: 0, back: 0, login: 0, signup: 0 });
+  const sofar = { ...quad(), rails: { a: quad(), b: quad(), none: quad() } };
 
-  for (const r of rows.results || []) {
+  /* The days that tell new from returning — see the note above. */
+  const told = new Set(rows.filter((r) => r.kind === 'cohort').map((r) => r.day));
+
+  for (const r of rows) {
     const inside = r.day >= cut;
     tally(inside ? now : was, r.kind, r.id, r.n);
+    if (r.day === day) countToday(sofar, r);
     if (!inside) continue;
     if (r.kind === 'visitor') {
       const d = byDay.get(r.day) || { fresh: 0, back: 0 };
       d[r.id === 'back' ? 'back' : 'fresh'] += r.n;
       byDay.set(r.day, d);
+      if (told.has(r.day) && cohorts.has(r.id)) cohorts.get(r.id).visitors += r.n;
     } else if (r.kind === 'view' || r.kind === 'time') {
       const p = pages.get(r.id) || { views: 0, secs: 0 };
       p[r.kind === 'view' ? 'views' : 'secs'] += r.n;
@@ -302,32 +380,65 @@ export async function readVisitors(env, span, ui) {
     } else if (r.kind === 'country') bump(countries, r.id, r.n);
     else if (r.kind === 'from') bump(sources, r.id, r.n);
     else if (r.kind === 'press') bump(presses, r.id, r.n);
-    else if (r.kind === 'layout') {
-      const [rail, fact] = r.id.split(':');
+    else if (r.kind === 'cohort') {
+      const [who, fact] = r.id.split(':');
+      if (cohorts.has(who) && FACTS.includes(fact)) cohorts.get(who)[fact] += r.n;
+    } else if (r.kind === 'layout' && told.has(r.day)) {
+      const [rail, who, fact] = r.id.split(':');
       const into = rails.get(rail);
-      if (!into) continue;
-      if (fact === 'new' || fact === 'back') {
+      if (!into || !WHO.includes(who)) continue;
+      if (!fact) {
         into.visitors += r.n;
-        if (fact === 'back') into.back += r.n;
-      } else if (fact === 'views' || fact === 'secs' || fact === 'presses') into[fact] += r.n;
+        if (who === 'back') into.back += r.n;
+        else into.fresh.visitors += r.n;
+      } else if (FACTS.includes(fact)) {
+        into[fact] += r.n;
+        if (who === 'new') into.fresh[fact] += r.n;
+      }
     }
+  }
+
+  /* The visitors no rail has been dealt to yet are everybody less the two. */
+  for (const f of ['fresh', 'back', 'login', 'signup']) {
+    sofar.rails.none[f] = Math.max(0, sofar[f] - sofar.rails.a[f] - sofar.rails.b[f]);
   }
 
   return {
     span: span,
+    from: cut,
     since: (since && since.day) || null,
+    split: (began && began.day) || null,
     now: now,
     before: span > 1 ? was : null,
+    today: sofar,
     ...bars(span, byDay),
+    cohorts: [...cohorts.values()],
+    layouts: [...rails.values()],
     pages: PAGES
       .filter((p) => pages.has(p.id))
       .map((p) => ({ id: p.id, name: ui[p.label] || p.id, ...pages.get(p.id) }))
       .sort((a, b) => b.views - a.views),
     countries: most(countries),
     sources: most(sources).map((s) => ({ ...s, name: networkName(s.id) })),
-    presses: most(presses),
-    layouts: [...rails.values()]
+    presses: most(presses)
   };
+}
+
+/* One of today's rows into the Today card: visitors new and returning,
+ * sign-ins and accounts made, in all and per rail. */
+function countToday(into, r) {
+  if (r.kind === 'visitor') {
+    into[r.id === 'back' ? 'back' : 'fresh'] += r.n;
+  } else if (r.kind === 'cohort') {
+    const fact = r.id.split(':')[1];
+    if (fact === 'login' || fact === 'signup') into[fact] += r.n;
+  } else if (r.kind === 'layout') {
+    const [rail, who, fact] = r.id.split(':');
+    const arm = into.rails[rail];
+    if (!arm || !WHO.includes(who)) return;
+    if (!fact) arm[who === 'back' ? 'back' : 'fresh'] += r.n;
+    else if (fact === 'login' || fact === 'signup') arm[fact] += r.n;
+  }
 }
 
 /* The bars under the figures: a day each for seven and twenty-eight days, a

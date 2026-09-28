@@ -5,6 +5,14 @@
  *                      it, and five minutes of edge cache on the pair. What
  *                      /admin/visitors draws.
  *
+ * And `dealt`, the four rows of press_counts ./stats.js counts the two rails'
+ * strangers in: for each of `a` and `b`, `given`, how many browsers that had
+ * never been here were dealt it, and `opened`, how many of them opened a
+ * place on that first visit. They are since the split began rather than in
+ * the range, because they are one row each and have no day; the page says
+ * so. They used to be a footnote on /admin/stats, and moved here to sit with
+ * everything else about the two rails.
+ *
  * The visits themselves are counted by POST /api/stats, which hands them to
  * ../_visitors.js; that file says what is counted, what is not, and why.
  * This is the other end of the same table, and it is the owner's alone: the
@@ -25,6 +33,7 @@
 
 import { json, wrongDatabase, wordsFor } from '../_lib.js';
 import { SPANS, readVisitors } from '../_visitors.js';
+import { LAYOUT } from '../stats.js';
 
 /* Five minutes in the colo, for the reason ./stats.js holds its ranking that
    long: it is what the page may be stale by, and the only thing between the
@@ -49,12 +58,28 @@ export async function onRequestGet(context) {
   if (!env.DB) return json(empty, 200);
   if (await wrongDatabase(env)) return json(empty, 200);
 
-  const visitors = await readVisitors(env, span, ui);
+  const [visitors, dealt] = await Promise.all([readVisitors(env, span, ui), readDealt(env)]);
   if (!visitors) return json(empty, 200);
 
-  const res = json({ ready: true, ...visitors, lang: lang, ui: ui }, 200, TTL);
+  const res = json({ ready: true, ...visitors, dealt: dealt, lang: lang, ui: ui }, 200, TTL);
   context.waitUntil(cache.put(key, res.clone()));
   return privately(res);
+}
+
+/* The strangers each rail was dealt to and how many of them opened a place
+   — see the header. Nought all round where press_counts is not there. */
+async function readDealt(env) {
+  const dealt = { a: { given: 0, opened: 0 }, b: { given: 0, opened: 0 } };
+  try {
+    const got = await env.DB.prepare('SELECT id, n FROM press_counts WHERE kind = ?').bind(LAYOUT).all();
+    for (const r of got.results || []) {
+      const [rail, opened] = r.id.split('-');
+      if (dealt[rail]) dealt[rail][opened ? 'opened' : 'given'] = r.n;
+    }
+  } catch (e) {
+    /* No table yet. */
+  }
+  return dealt;
 }
 
 /* The colo's copy is public, because the Cache API stores nothing less; the
@@ -66,10 +91,16 @@ function privately(res) {
 }
 
 /* The route, the language and the range, and never the rest of the address
-   — see statsKey() in ./stats.js. Forty keys per colo at most. */
+   — see statsKey() in ./stats.js. Forty keys per colo at most. `shape` is
+   the answer's own version: moved on when the answer gains a field the page
+   cannot draw without, so a colo's copy from before the deploy is not handed
+   to the page that came with it. */
+const SHAPE = '2';
+
 function visitorsKey(request, lang, span) {
   const url = new URL('/api/admin/visitors', request.url);
   url.searchParams.set('lang', lang);
   url.searchParams.set('days', String(span));
+  url.searchParams.set('shape', SHAPE);
   return new Request(url.toString());
 }

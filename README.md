@@ -10457,10 +10457,12 @@ the 640px column, the cards — and four tables. Two facts at the top, **Most
 opened** and **Least opened**, then every place on the map ranked with the
 zeros in it, then the Google venues somebody has pressed, then all fourteen
 filter chips, then the nine pills across the rail's two shapes, then the
-footnotes under all four: every open counted, how many accounts exist — see
-**How many accounts exist** below — and, once anybody has been dealt it, how
-many strangers got the short rail and how many of them opened a place with
-it — see **The short rail**. Nothing on the site links to it. That is the blog's arrangement rather than
+footnotes under all four: every open counted, and how many accounts exist —
+see **How many accounts exist** below. How many strangers got each of the
+map's two rails and how many of them opened a place with it used to be two
+more footnotes here, and is now on `/admin/visitors` with everything else
+about the rails — see **The two rails** under **Visitors**. Nothing on the
+site links to it. That is the blog's arrangement rather than
 the directory's, with one difference: the blog is indexed and this is not,
 and **Not indexed, and not disallowed either** below says why.
 
@@ -10742,27 +10744,47 @@ see it at all rather than a missing link.
 page Google Analytics is open in a tab for, drawn from this site's own count
 instead, so that the day Google's tag comes out the numbers do not go with it.
 The owner's alone, under the same lock as **Statistics** — a 404 for the page
-and a 403 for `GET /api/admin/visitors` to anybody else — linked from under
-the tabs on `/admin.html`, not indexed, and not disallowed either.
+and a 403 for `GET /api/admin/visitors` to anybody else — the first row of
+**The numbers** on `/admin.html`, not indexed, and not disallowed either.
 
-A range — today so far, 7, 28 or 90 days — and under it five figures, each
-against the same length of time just before it: **visitors**, the share of
-them **returning**, **page views**, **time per visitor** and **clicks per
-visitor**. Then a bar a day of new and returning visitors (a bar a week for
-ninety days, and none for today), **the two rails** side by side, and four
-tables: **pages** with their views and average time, **countries**, **where
-they came from**, and **what was pressed**, named by the event it is reported
-to GA under. Today is not set against yesterday: half a day against a whole
-one says nothing.
+It is laid out in the order the questions get asked, which is also how an
+analyst would group it: today, then who came, then how the two kinds of
+visitor differ, then the experiment, then what was done.
+
+- **Today so far**, whatever range is chosen: visitors, new ones, sign-ins
+  and accounts made, and under them the same four for the full rail, the
+  short rail and **no rail yet** — the visitors who have not opened the map,
+  so no rail has been dealt to them. It is the one card that answers "who
+  came today, and on which rail".
+- **Who came**, over a range — today so far, 7, 28 or 90 days: five figures,
+  each against the same length of time just before it — **visitors**, the
+  share of them **returning**, **page views**, **time per visitor** and
+  **clicks per visitor** — then a bar a day of new and returning visitors (a
+  bar a week for ninety days, and none for today), **countries** and **where
+  they came from**. Today is not set against yesterday: half a day against a
+  whole one says nothing.
+- **New against returning**: a column each, and per visitor the pages, the
+  time, the clicks and the places opened, with the sign-ins and the accounts
+  made as counts — see **New against returning** below.
+- **The two rails**, the experiment the map is running — see **The two
+  rails** below.
+- **What they did**: **pages** with their views and average time, and **what
+  was pressed**, named by the event it is reported to GA under.
 
 ### A visitor is a browser on a day
 
-`assets/track.js` keeps one date in the browser, `ttb.seen` — the last day
+`assets/track.js` keeps two dates in the browser. `ttb.seen` is the last day
 this browser opened a page here. A page opened on a day that is not that one
 is the browser's first today, and a date before today means it has been here
-before. That is all that is sent: whether this is the first page today,
-whether there was an earlier day, the page's path, where it was opened from
-and which rail the map dealt it. No id is made, no address is read, no
+before. `ttb.since` is the first day it ever did, which is what lets every
+later page that day still say whether it belongs to a new visitor or a
+returning one — the first page has overwritten `ttb.seen` with today by
+then. A browser from before `ttb.since` existed takes the earlier day
+`ttb.seen` remembers; one already here on the day it shipped, with no
+earlier day to go on, was filed as new for that one day. That is all that is
+sent: whether this is the first page today, whether there was an earlier day,
+new or returning, the page's path, where it was opened from and which rail
+the map dealt it. No id is made, no address is read, no
 fingerprint is taken, and nothing in the table could tell one visitor from
 another. A browser that cannot write storage is counted as views and never as
 a visitor, which undercounts rather than counting a visitor per page; two
@@ -10771,32 +10793,66 @@ returning visitor new — the same limits GA has with a cookie in the date's
 place. Bots mostly never reach it: the count is sent by the page's script and
 a crawler runs none.
 
-The date is written on to the visitor's device, and ePrivacy asks about
-exactly that — see **No consent banner**. It is one date, first-party, read
-by nothing but this count, and never sent anywhere as itself; whether that
-needs asking first is the owner's call and not this section's.
+The dates are written on to the visitor's device, and ePrivacy asks about
+exactly that — see **No consent banner**. They are two dates, first-party,
+read by nothing but this count, and never sent anywhere as themselves;
+whether that needs asking first is the owner's call and not this section's.
 
 ### Time is time on screen
 
 The page counts the seconds it is visible — a tab in the background is not
 somebody reading — and reports them when it is hidden or put away, together
-with the presses `TTBTrack.event()` saw meanwhile, so a visit of twelve
-presses is two requests rather than thirteen. A phone that kills a tab outright
+with the presses `TTBTrack.event()` saw meanwhile and the places
+`TTBTrack.view()` opened, so a visit of twelve presses is two requests rather
+than thirteen. A phone that kills a tab outright
 sometimes takes the last stretch with it, so time and presses run slightly
 short and never long, and one stretch is capped at half an hour, so a tab left
 open on a desk all afternoon adds thirty minutes rather than five hours.
 **Time per visitor** is all the seconds over the visitors, which is what GA
 calls average engagement time.
 
+### New against returning
+
+Everything a visit does — pages, seconds, presses, places opened on the map,
+sign-ins and accounts made — is counted a second time under the kind of
+visitor it was, so the page can put a first day here against a later one.
+Sign-ins and accounts made are the `account_login` and `account_create`
+presses picked out of the same report; a place opened is one of
+`TTBTrack.view()`'s. Pages, time, clicks and places are per visitor, and
+sign-ins and accounts are counts, because one person can sign in three times
+and a share of that would be a number about nothing.
+
+This began after the visitors did, so a range that reaches back past its
+first day has visitors on days that have nothing else to divide among them.
+Those days are left out of this card and the rails' — the visitors along
+with the rest — and a line under each says from when.
+
 ### The two rails
 
-The map deals a stranger one of two rails — **The short rail**. `/admin/stats`
-says how many were dealt each and how many of them opened a place on that
-first visit; this says how each did afterwards — visitors, returning ones,
-time and clicks per visitor — out of the same beacons, filed a second time
-under the rail. Only a browser that has been dealt one counts here: one that
-has never opened the map has not, and filing it under the full rail by
-default would be comparing the short rail against everybody. The map deals
+The map deals a stranger one of two rails — **The short rail** — and this is
+the card that reads the experiment, in three blocks under one sentence.
+
+- **Strangers, since the split began**: how many browsers that had never
+  been here were dealt each rail, and the share of them that opened a place
+  on that first visit. These are the four `layout` rows in `press_counts`,
+  which have no day, so they are all-time rather than the range. They used
+  to be two footnotes on `/admin/stats`.
+- **Everyone on the rail, in this range**: visitors, the share returning,
+  and the per-visitor figures **New against returning** has.
+- **New visitors only**: the same, for the rail's first-day visitors alone,
+  which is the half of a rail's traffic that has not already learnt the map.
+
+The sentence over them is the verdict on the first block, as a two-
+proportion z-test at the usual 95%: **too early to call** until each rail
+has thirty strangers (`FEWEST` in `assets/visitors.js`), where one visitor
+stops swinging a share by several points; then **no clear difference yet**,
+or **the full rail (or the short one) is ahead** once the gap is bigger than
+chance would make. It is there so that four strangers against five is never
+read as a result.
+
+Only a browser that has been dealt a rail counts in the second and third
+blocks: one that has never opened the map has not, and filing it under the
+full rail by default would be comparing the short rail against everybody. The map deals
 the rail once its places are in, which is after the page is ready, so its
 `track.js` tag carries `data-arrive="late"` and `assets/app.js` calls
 `TTBTrack.arrive()` itself once the rail is dealt — otherwise the one visit
@@ -10807,8 +10863,9 @@ the comparison most needs, a stranger's first, would arrive with no rail.
 `visitor_counts` is `profile_counts` for the whole site: one row per fact per
 day and a number, keyed `(day, kind, id)` and `WITHOUT ROWID` because the key
 is the only way it is read. A busy day costs no more rows than a quiet one
-with the same pages in it. The pages, the two visitor kinds and the rails are
-lists in `functions/api/_visitors.js`; the countries, the sources and the
+with the same pages in it. The pages, the two visitor kinds, the rails and
+the six facts counted under new, returning and each rail are lists in
+`functions/api/_visitors.js` — forty ids a day at most between them; the countries, the sources and the
 press names are whatever a request says, so each of those takes at most a
 hundred ids a day, after which only ids already counted that day go up. A day
 is a hundred-odd short rows at most, which is tens of thousands a year —
@@ -10817,11 +10874,16 @@ small the answer is a monthly roll-up, and it is not worth writing before
 then.
 
 Per page load that is two requests to `POST /api/stats` — the page opened,
-and a stretch on screen with its presses — and one batch of upserts each: one
-row for a page view, four more on a visitor's first page of the day, one for
-the time and one per press name. On the free plan's hundred thousand writes a
-day that is room for well over ten thousand page views a day alongside
-everything else the site writes.
+and a stretch on screen with its presses — and one batch of upserts each:
+one row for a page view and two for it as new or returning and on its rail,
+four more on a visitor's first page of the day, and on the way out one for
+the time, one per press name, and two for each of the time, the presses, the
+places, a sign-in and an account made that the stretch had. That is ten to
+fifteen writes for an ordinary page. On the free plan's hundred thousand
+writes a day it is room for six thousand page views a day or so alongside
+everything else the site writes, against forty-odd on a day now; the day
+that is close, the rail's copies are the ones to stop writing, once the
+experiment is decided.
 
 ### What it does not do
 
@@ -13391,11 +13453,12 @@ the site's own numbers rather than only from Google's:
   per stranger dealt that rail, and `a-opened` and `b-opened`, the first place
   that stranger opened on the visit it was dealt — a press, not a link: a
   place a shared link opened is left out. Strangers only, because a
-  returning visitor's first visit is long gone. `/admin/stats` prints one
-  sentence a rail under its footnotes: *N new visitors were dealt the short
-  rail, and M of them opened a place on that first visit*, and the same for
-  the full rail — the two side by side are the comparison. Returning
-  visitors are in Google Analytics, because
+  returning visitor's first visit is long gone. `/admin/visitors` sets the
+  two rails side by side — how many strangers each was dealt, the share of
+  them that opened a place on that first visit, and a line saying whether
+  the gap is bigger than chance yet — see **The two rails** under
+  **Visitors**. Returning visitors are there too, and in Google Analytics,
+  because
 - **every event carries `layout`.** `assets/track.js` reads `ttb.layout` on
   every event, on every page — the lists, the account page, feedback and the
   rest included, since the visitor carries the rail with them — and sends it
@@ -14304,14 +14367,15 @@ has seen before. This is a map of Tallinn; practically all its traffic is the
 EEA, so without the signal the replays arrive as a heap of one-page fragments,
 which is the opposite of the thing Clarity was added for.
 
-**The site's own count writes one thing too**: `ttb.seen`, the date of the
-last day this browser opened a page here, which is how **Visitors** tells a
-visitor from a view and a returning one from a new one without an id. It is
-first-party, never sent as itself and read by nothing else, which is a much
+**The site's own count writes two things too**: `ttb.seen`, the date of the
+last day this browser opened a page here, and `ttb.since`, the first, which
+is how **Visitors** tells a visitor from a view and a returning one from a
+new one without an id. They are first-party, never sent as themselves and
+read by nothing else, which is a much
 smaller thing than two third-party tags and a session replay — but it is
 still a write to the device for the purpose of counting, and it is in the
-same question as they are. Taking Google and Clarity out leaves it the only
-one.
+same question as they are. Taking Google and Clarity out leaves them the
+only ones.
 
 It is `clarity('consentv2', …)` rather than the older `clarity('consent')`,
 which is deprecated. The object carries **both spellings** of its two keys —

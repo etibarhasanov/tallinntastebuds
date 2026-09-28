@@ -299,12 +299,17 @@ a.stats-name:hover { color: var(--accent); }
    that page does not have. */
 
 /* Five figures rather than three: three across and two under, and two
-   across on a phone, where a third column would leave "6m 47s" no room. */
+   across on a phone, where a third column would leave "6m 47s" no room.
+   Today's four are four across, and two and two on a phone. */
 .vis-kpis { row-gap: 18px; }
+.vis-kpis-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 @media (max-width: 479px) {
   .vis-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* The range's title sits under the range chips that choose it. */
+.vis-range-title { margin-top: 18px; }
 
 /* The bars: new visitors in the accent, returning ones stacked on them in
    the second tone the pins already use, and a key above the chart naming
@@ -337,10 +342,30 @@ a.stats-name:hover { color: var(--accent); }
 .vis-swatch-back { background: var(--pin-sea); }
 
 /* A name and two numbers, with no rank before the name: the pages with
-   their views and time, and the figures with a rail each. Every number keeps
-   the gap /insights gives its columns. */
+   their views and time, new visitors against returning ones, and the
+   figures with a rail each — and today's, with a third column for the
+   visitors no rail has been dealt to. Every number keeps the gap /insights
+   gives its columns. */
 .vis-table { grid-template-columns: minmax(0, 1fr) auto auto; margin-top: 4px; }
+.vis-table-3 { grid-template-columns: minmax(0, 1fr) auto auto auto; }
 .vis-table .ins-row > :nth-child(2) { padding-left: 14px; }
+
+/* The three blocks of the two rails' card, each under a line of its own. */
+.vis-sub { margin: 22px 0 0; }
+
+/* What the two rails' strangers say so far, in a sentence: too early, no
+   difference yet, or which one is ahead. Set off on the wash, because it is
+   the line the card is read for. */
+.vis-verdict {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  background: var(--wash);
+  border-radius: var(--radius-soft);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .02em;
+  line-height: 1.45;
+}
 
 /* A press is named by the id it is reported under, which is a word nobody
    translated, so it is set as one. */

@@ -33,10 +33,12 @@
  * why. Two reports a page, and no more — one when it opens, and one each
  * time it is hidden or put away, carrying the seconds it was visible and the
  * names of the presses event() saw meanwhile — so a visit of twelve presses
- * is not twelve requests. The one thing kept in the browser for it is the
- * date of the last day this browser opened a page here, `ttb.seen`, which is
+ * is not twelve requests. Two things are kept in the browser for it, both
+ * dates: the last day this browser opened a page here, `ttb.seen`, which is
  * how a page knows it is the browser's first today and whether there was an
- * earlier one; no id is made or sent. The owner's pages under /admin/ send
+ * earlier one; and the first day it ever did, `ttb.since`, which is how every
+ * later page that day still knows whether it belongs to a new visitor or a
+ * returning one. No id is made or sent. The owner's pages under /admin/ send
  * nothing.
  *
  * TO REMOVE TRACKING
@@ -118,6 +120,7 @@ window.TTBTrack = (function () {
   function view(title) {
     if (here() === seenPath) return;
     seenPath = here();
+    opened += 1;
     if (live()) {
       window.gtag('event', 'page_view', {
         page_location: window.location.href,
@@ -163,11 +166,15 @@ window.TTBTrack = (function () {
 
   var STATS = '/api/stats';
   var SEEN_KEY = 'ttb.seen';
+  var SINCE_KEY = 'ttb.since';
   var COUNTED = window.location.pathname.indexOf('/admin') !== 0;
   var LATE = !!(document.currentScript && document.currentScript.getAttribute('data-arrive') === 'late');
   var arrived = false;
+  var DAY = /^\d{4}-\d{2}-\d{2}$/;
 
   var tallied = {};    // press name -> times, since the last report
+  var opened = 0;      // places opened with view(), since the last report
+  var who = '';        // 'new' or 'back', once arrive() has read the dates
   var shown = 0;       // milliseconds on screen, since the last report
   var since = null;    // when the page last came on screen, null while hidden
 
@@ -194,7 +201,16 @@ window.TTBTrack = (function () {
      it had a day before that, is the date in ttb.seen against today's — and
      where storage cannot be written, neither: the page is a view and never a
      visitor, which undercounts rather than counting a visitor per page.
-     Once a page, however it is reached — see LATE. */
+     Once a page, however it is reached — see LATE.
+
+     `who` is the same question asked of every page rather than only the
+     first: a browser whose first day here is today is new all day, and one
+     that came before is returning. ttb.seen cannot answer it past the first
+     page, because the first page overwrites it with today, so ttb.since
+     keeps the first day. A browser from before ttb.since existed takes the
+     earlier day ttb.seen remembers, and one already here today with no
+     ttb.since is filed as new for the rest of that day — a guess that can
+     only be wrong on the day ttb.since first shipped. */
   function arrive() {
     if (arrived || !COUNTED) return;
     arrived = true;
@@ -203,14 +219,21 @@ window.TTBTrack = (function () {
     var kept = false;
     try {
       last = window.localStorage.getItem(SEEN_KEY);
+      var since = window.localStorage.getItem(SINCE_KEY);
+      if (!DAY.test(since || '')) {
+        since = DAY.test(last || '') && last < day ? last : day;
+        window.localStorage.setItem(SINCE_KEY, since);
+      }
       window.localStorage.setItem(SEEN_KEY, day);
+      who = since < day ? 'back' : 'new';
       kept = true;
     } catch (e) { kept = false; }
     send({
       kind: 'arrive',
       id: window.location.pathname,
       first: kept && last !== day,
-      back: kept && /^\d{4}-\d{2}-\d{2}$/.test(last || '') && last < day,
+      back: kept && DAY.test(last || '') && last < day,
+      who: who,
       from: document.referrer,
       layout: dealt()
     });
@@ -220,8 +243,8 @@ window.TTBTrack = (function () {
     if (since === null && document.visibilityState === 'visible') since = Date.now();
   }
 
-  /* The page hidden or put away: the stretch it was on screen and the
-     presses since the last report, sent once and forgotten. */
+  /* The page hidden or put away: the stretch it was on screen, the presses
+     and the places opened since the last report, sent once and forgotten. */
   function putAway() {
     /* A page put away before it said it was opened — the map, closed before
        its places came in — says so now, so the view is not lost. */
@@ -231,10 +254,12 @@ window.TTBTrack = (function () {
       since = null;
     }
     var secs = Math.round(shown / 1000);
-    if (!secs && !Object.keys(tallied).length) return;
-    send({ kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied, layout: dealt() });
+    if (!secs && !opened && !Object.keys(tallied).length) return;
+    send({ kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied,
+      places: opened, who: who, layout: dealt() });
     shown = 0;
     tallied = {};
+    opened = 0;
   }
 
   if (COUNTED) {
