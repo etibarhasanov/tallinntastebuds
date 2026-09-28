@@ -3,9 +3,9 @@
 A full-screen map of places in Tallinn, plus discounts, stories, saves,
 lists, profiles, a directory of the city, a chat that answers with places, a
 blog about what all of it does, a page of which places get opened, a page of
-links on every profile, and — each on a subdomain of its own — a way to split
+who comes to the site and what they do, a page of links on every profile, and — each on a subdomain of its own — a way to split
 the bill afterwards and a deck of Estonian flashcards.
-Static files, twenty-five Cloudflare Functions, two D1 databases (preview and
+Static files, twenty-six Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and

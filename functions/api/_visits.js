@@ -162,19 +162,21 @@ export function sourceOf(from, ua, siteHost) {
 
 /* This site's own host, which is what a referrer from a byline or the
    directory carries — and on a preview or pages dev, that host instead. */
-function siteOf(request) {
+export function siteOf(request) {
   return new URL(request.url).hostname.replace(/^www\./, '');
 }
 
 /* Today in UTC, as the table files it. UTC rather than Tallinn's clock
    because the Workers runtime has no time zones worth trusting and a day's
-   boundary landing at two or three in the morning here costs nothing. */
-function today() {
+   boundary landing at two or three in the morning here costs nothing.
+   Exported with dayBack() and the three readings above and below, because
+   ./_visitors.js files the whole site's days by the same clock. */
+export function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
 /* The day `back` days before today, as the table files it. */
-function dayBack(back) {
+export function dayBack(back) {
   return new Date(Date.now() - back * 86400000).toISOString().slice(0, 10);
 }
 
@@ -212,19 +214,23 @@ export async function countView(context, name, from) {
     const owner = await ownerOf(request, env, name);
     if (!owner) return false;
     const source = sourceOf(from, request.headers.get('user-agent'), siteOf(request));
-    const country = /^[A-Z][A-Z0-9]$/.test(String((request.cf && request.cf.country) || ''))
-      ? request.cf.country
-      : 'XX';
     const day = today();
     await env.DB.batch([
       bump(env, owner, day, 'from', source),
-      bump(env, owner, day, 'country', country)
+      bump(env, owner, day, 'country', countryOf(request))
     ]);
     return true;
   } catch (e) {
     /* No table yet, or the write failed. Nobody is waiting to hear it. */
     return false;
   }
+}
+
+/* The country a request came from, as Cloudflare's two letters — see AND
+   THE COUNTRY above. */
+export function countryOf(request) {
+  const code = String((request.cf && request.cf.country) || '');
+  return /^[A-Z][A-Z0-9]$/.test(code) ? code : 'XX';
 }
 
 /* One press of something on /u/<name>, checked against that page, and
@@ -449,7 +455,7 @@ function add(map, id, n) {
    every language and is already written in NETWORKS, so the account page
    does not have to load assets/links.js to say it. Undefined for anything
    else, and dropped from the answer with it. */
-function networkName(id) {
+export function networkName(id) {
   const net = NETWORKS.find((n) => n.id === id);
   return net ? net.label : undefined;
 }

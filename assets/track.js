@@ -1,4 +1,5 @@
-/* Tallinn Tastebuds — what gets reported to Google Analytics, said once.
+/* Tallinn Tastebuds — what gets reported, to Google Analytics and to this
+ * site's own count of its visitors, said once.
  *
  * Every page carries Google's tag in its head, exactly as the console emits
  * it, and the tag on its own records one page view per address. That was
@@ -24,13 +25,29 @@
  * `file://` included. Load it before the page's own script — both are
  * `defer`, so document order is execution order.
  *
+ * AND THE SITE'S OWN COUNT
+ *
+ * The same file tells this site, not only Google, that a page was opened and
+ * how long it was on screen: /admin/visitors is drawn from what the bottom
+ * of this file sends, and functions/api/_visitors.js is what is counted and
+ * why. Two reports a page, and no more — one when it opens, and one each
+ * time it is hidden or put away, carrying the seconds it was visible and the
+ * names of the presses event() saw meanwhile — so a visit of twelve presses
+ * is not twelve requests. The one thing kept in the browser for it is the
+ * date of the last day this browser opened a page here, `ttb.seen`, which is
+ * how a page knows it is the browser's first today and whether there was an
+ * earlier one; no id is made or sent. The owner's pages under /admin/ send
+ * nothing.
+ *
  * TO REMOVE TRACKING
  *
  * Delete the gtag block from every page's head, or this file's script tag,
  * or both. Everything below checks for the tag and returns quietly when it
  * is missing, which is also what happens for a visitor running an ad
  * blocker, so every call site becomes a harmless no-op and none of them has
- * to change.
+ * to change. The site's own count is the part that does not check for the
+ * tag: removing Google leaves it running, and removing this file's script
+ * tag stops both.
  */
 window.TTBTrack = (function () {
   'use strict';
@@ -57,6 +74,7 @@ window.TTBTrack = (function () {
   function event(name, params) {
     params = params || {};
     params.layout = layout();
+    tallied[name] = (tallied[name] || 0) + 1;
     if (live()) window.gtag('event', name, params);
     if (typeof window.clarity === 'function') window.clarity('event', name);
   }
@@ -76,7 +94,15 @@ window.TTBTrack = (function () {
   var LAYOUT_KEY = 'ttb.layout';
 
   function layout() {
-    try { return window.localStorage.getItem(LAYOUT_KEY) === 'b' ? 'b' : 'a'; } catch (e) { return 'a'; }
+    return dealt() || 'a';
+  }
+
+  /* The rail as it was dealt, or '' where none has been — the site's own
+     count keeps those apart rather than filing them under the full rail. */
+  function dealt() {
+    var id = '';
+    try { id = window.localStorage.getItem(LAYOUT_KEY); } catch (e) { id = ''; }
+    return id === 'a' || id === 'b' ? id : '';
   }
 
   /* Attaches a report to a link or button that is built inline, and hands
@@ -112,15 +138,114 @@ window.TTBTrack = (function () {
      here, once, for every page. Deferred scripts run before DOMContentLoaded,
      so the whole page is there to walk. */
   document.addEventListener('DOMContentLoaded', function () {
-    /* Deferred scripts have all run by now, the map's included, so the rail
-       it dealt is in storage. Clarity's queue takes the call before its
-       script lands, the same as an event. */
+    /* Deferred scripts have all run by now, so a rail dealt on any earlier
+       visit is in storage. A stranger's first visit to the map is the one
+       exception: the map deals the rail once its places are in, which is
+       later than this, so that one visit is tagged 'a' here — see LATE
+       below for how the site's own count avoids the same mistake. Clarity's
+       queue takes the call before its script lands, the same as an event. */
     if (typeof window.clarity === 'function') window.clarity('set', 'layout', layout());
     var marked = document.querySelectorAll('[data-track]');
     for (var i = 0; i < marked.length; i++) {
       click(marked[i], marked[i].getAttribute('data-track'));
     }
+    /* Here and not as the script loads, so every other deferred script
+       has run. The map is the exception: it deals the rail once its places
+       are in, which is later than this, and a stranger's first visit is the
+       one the comparison of the two rails most needs — so its tag carries
+       data-arrive="late" and assets/app.js calls arrive() itself once the
+       rail is dealt. */
+    if (!LATE) arrive();
   });
 
-  return { event: event, click: click, view: view, seen: seen };
+  /* ------------------------------------------------ the site's own count
+   * See AND THE SITE'S OWN COUNT at the top. */
+
+  var STATS = '/api/stats';
+  var SEEN_KEY = 'ttb.seen';
+  var COUNTED = window.location.pathname.indexOf('/admin') !== 0;
+  var LATE = !!(document.currentScript && document.currentScript.getAttribute('data-arrive') === 'late');
+  var arrived = false;
+
+  var tallied = {};    // press name -> times, since the last report
+  var shown = 0;       // milliseconds on screen, since the last report
+  var since = null;    // when the page last came on screen, null while hidden
+
+  /* A beacon survives the page being put away, which is when half of these
+     are sent; fetch with keepalive is the same promise where there is no
+     beacon. Nothing waits on either. */
+  function send(body) {
+    var data = JSON.stringify(body);
+    try {
+      if (navigator.sendBeacon && navigator.sendBeacon(STATS, data)) return;
+    } catch (e) { /* fall through to fetch */ }
+    try {
+      fetch(STATS, { method: 'POST', body: data, keepalive: true,
+        headers: { 'content-type': 'application/json' } }).catch(function () {});
+    } catch (e) { /* the count misses one, and nobody is told */ }
+  }
+
+  /* Today in UTC, the clock functions/api/_visitors.js files days by. */
+  function today() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  /* The page opened. Whether it is this browser's first today, and whether
+     it had a day before that, is the date in ttb.seen against today's — and
+     where storage cannot be written, neither: the page is a view and never a
+     visitor, which undercounts rather than counting a visitor per page.
+     Once a page, however it is reached — see LATE. */
+  function arrive() {
+    if (arrived || !COUNTED) return;
+    arrived = true;
+    var day = today();
+    var last = null;
+    var kept = false;
+    try {
+      last = window.localStorage.getItem(SEEN_KEY);
+      window.localStorage.setItem(SEEN_KEY, day);
+      kept = true;
+    } catch (e) { kept = false; }
+    send({
+      kind: 'arrive',
+      id: window.location.pathname,
+      first: kept && last !== day,
+      back: kept && /^\d{4}-\d{2}-\d{2}$/.test(last || '') && last < day,
+      from: document.referrer,
+      layout: dealt()
+    });
+  }
+
+  function onScreen() {
+    if (since === null && document.visibilityState === 'visible') since = Date.now();
+  }
+
+  /* The page hidden or put away: the stretch it was on screen and the
+     presses since the last report, sent once and forgotten. */
+  function putAway() {
+    /* A page put away before it said it was opened — the map, closed before
+       its places came in — says so now, so the view is not lost. */
+    arrive();
+    if (since !== null) {
+      shown += Date.now() - since;
+      since = null;
+    }
+    var secs = Math.round(shown / 1000);
+    if (!secs && !Object.keys(tallied).length) return;
+    send({ kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied, layout: dealt() });
+    shown = 0;
+    tallied = {};
+  }
+
+  if (COUNTED) {
+    onScreen();
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') putAway();
+      else onScreen();
+    });
+    window.addEventListener('pagehide', putAway);
+    window.addEventListener('pageshow', onScreen);
+  }
+
+  return { event: event, click: click, view: view, seen: seen, arrive: arrive };
 })();

@@ -10,7 +10,9 @@
  * counts into rather than a copy of it.
  *
  *   POST { kind, id }   adds one — or, for a profile, hands it to
- *                       ./_visits.js with `from` or `what` beside it. Answers {ok} and nothing else; the page
+ *                       ./_visits.js with `from` or `what` beside it, and
+ *                       for a page opened or put away, to ./_visitors.js
+ *                       with the rest of the body. Answers {ok} and nothing else; the page
  *                       never waits on it and never draws anything from it.
  *                       For a place Google lists — one of its own, or one of
  *                       mine joined to it — it may also, after that answer,
@@ -58,13 +60,17 @@
  *            how many of them found a place with it. "The short rail" in
  *            README.md.
  *
- * And two kinds that are counted somewhere else, which this route only
+ * And four kinds that are counted somewhere else, which this route only
  * carries: `profile`, a public profile at /u/<name> opened, and
  * `profile-press`, a row, a handle or a list on one pressed. They are the
  * owner's own numbers, read on /insights and never ranked here, so
  * they live in profile_counts and ./_visits.js — this is the door because it
  * is already the one every page on this site knocks on to say something was
- * pressed, and a route of its own would be a second.
+ * pressed, and a route of its own would be a second. `arrive` and `leave`
+ * are the same arrangement for the whole site: a page opened, and a stretch
+ * of one on screen with what was pressed meanwhile, sent by assets/track.js
+ * from every page and counted into visitor_counts by ./_visitors.js, which
+ * /admin/visitors reads.
  *
  * Nothing else does. A row on somebody's list, a search that narrows to one
  * name, a pin hovered on the way past: none of them is somebody asking for a
@@ -99,6 +105,7 @@ import {
    module and this is the fourth reader of that expression. */
 import { LIST_ID } from './_lists.js';
 import { countView, countPress } from './_visits.js';
+import { countArrive, countLeave } from './_visitors.js';
 /* A Google place opened is also the moment its numbers are worth checking. */
 import { refreshOnOpen } from './_refresh.js';
 
@@ -110,9 +117,11 @@ export const FILTER = 'filter';
 const LIST = 'list';
 export const RAIL = 'rail';
 export const LAYOUT = 'layout';
-/* And two that are not counted here at all but handed on — see the POST. */
+/* And four that are not counted here at all but handed on — see the POST. */
 const PROFILE = 'profile';
 const PROFILE_PRESS = 'profile-press';
+const ARRIVE = 'arrive';
+const LEAVE = 'leave';
 
 /* The pills on the rail, top to bottom as index.html stands them, each with
    the string data/ui.json already names it by — the same string the button
@@ -183,7 +192,7 @@ export async function onRequestPost(context) {
     return json({ error: 'body' }, 400);
   }
 
-  const kind = [PLACE, FILTER, LIST, RAIL, LAYOUT, PROFILE, PROFILE_PRESS].indexOf(body.kind) !== -1 ? body.kind : '';
+  const kind = [PLACE, FILTER, LIST, RAIL, LAYOUT, PROFILE, PROFILE_PRESS, ARRIVE, LEAVE].indexOf(body.kind) !== -1 ? body.kind : '';
   const id = typeof body.id === 'string' ? body.id.trim() : '';
   if (!kind || !id || id.length > 128) return json({ error: 'press' }, 400);
 
@@ -199,6 +208,12 @@ export async function onRequestPost(context) {
      here — ./_visits.js is the whole of it. `id` is the username. */
   if (kind === PROFILE) return json({ ok: await countView(context, id, body.from) }, 200);
   if (kind === PROFILE_PRESS) return json({ ok: await countPress(context, id, body.what, body.from) }, 200);
+
+  /* A page of the site opened, or put away. Counted into visitor_counts, the
+     whole site's by the day, and read on /admin/visitors — ./_visitors.js is
+     the whole of it. `id` is the page's path. */
+  if (kind === ARRIVE) return json({ ok: await countArrive(context, body) }, 200);
+  if (kind === LEAVE) return json({ ok: await countLeave(context, body) }, 200);
 
   const real = kind === PLACE ? await realPlace(context, id)
              : kind === LIST ? await realList(context, id)
