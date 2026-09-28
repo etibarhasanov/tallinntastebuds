@@ -41,6 +41,13 @@
  * returning one. No id is made or sent. The owner's pages under /admin/ send
  * nothing.
  *
+ * The language rides in the same reports. Every page writes the language it
+ * is read in on to <html lang>, so the seconds on screen are split by what
+ * that said while they passed, and a press of a language switch — the
+ * `language_select` event the switches already send — is kept as the pair it
+ * was, from and to. The first report of a browser's first page today also
+ * says which language it arrived in.
+ *
  * TO REMOVE TRACKING
  *
  * Delete the gtag block from every page's head, or this file's script tag,
@@ -77,6 +84,7 @@ window.TTBTrack = (function () {
     params = params || {};
     params.layout = layout();
     tallied[name] = (tallied[name] || 0) + 1;
+    if (name === 'language_select') switched(params.language);
     if (live()) window.gtag('event', name, params);
     if (typeof window.clarity === 'function') window.clarity('event', name);
   }
@@ -177,6 +185,11 @@ window.TTBTrack = (function () {
   var who = '';        // 'new' or 'back', once arrive() has read the dates
   var shown = 0;       // milliseconds on screen, since the last report
   var since = null;    // when the page last came on screen, null while hidden
+  var spoken = {};     // language -> milliseconds of `shown` read in it
+  var moved = {};      // 'from>to' -> times the switch was pressed
+  var lang = langNow();  // the language on screen, as <html lang> last said
+  var first = false;   // this page is the browser's first today, not yet told
+  var arrivedIn = '';  // the language on screen before the first switch
 
   /* A beacon survives the page being put away, which is when half of these
      are sent; fetch with keepalive is the same promise where there is no
@@ -219,19 +232,20 @@ window.TTBTrack = (function () {
     var kept = false;
     try {
       last = window.localStorage.getItem(SEEN_KEY);
-      var since = window.localStorage.getItem(SINCE_KEY);
-      if (!DAY.test(since || '')) {
-        since = DAY.test(last || '') && last < day ? last : day;
-        window.localStorage.setItem(SINCE_KEY, since);
+      var began = window.localStorage.getItem(SINCE_KEY);
+      if (!DAY.test(began || '')) {
+        began = DAY.test(last || '') && last < day ? last : day;
+        window.localStorage.setItem(SINCE_KEY, began);
       }
       window.localStorage.setItem(SEEN_KEY, day);
-      who = since < day ? 'back' : 'new';
+      who = began < day ? 'back' : 'new';
       kept = true;
     } catch (e) { kept = false; }
+    first = kept && last !== day;
     send({
       kind: 'arrive',
       id: window.location.pathname,
-      first: kept && last !== day,
+      first: first,
       back: kept && DAY.test(last || '') && last < day,
       who: who,
       from: document.referrer,
@@ -243,26 +257,76 @@ window.TTBTrack = (function () {
     if (since === null && document.visibilityState === 'visible') since = Date.now();
   }
 
-  /* The page hidden or put away: the stretch it was on screen, the presses
-     and the places opened since the last report, sent once and forgotten. */
+  function langNow() {
+    return String(document.documentElement.lang || '').toLowerCase();
+  }
+
+  /* The time on screen since `since`, added to the stretch and to the
+     language it was read in, with the clock left running. */
+  function charge() {
+    if (since === null) return;
+    var now = Date.now();
+    shown += now - since;
+    if (lang) spoken[lang] = (spoken[lang] || 0) + now - since;
+    since = now;
+  }
+
+  /* <html lang> changed, so what went before is the old language's. Every
+     page sets it once as it boots, over the English the markup ships with,
+     and the moment before that is charged to English and rounds away. */
+  function relang() {
+    charge();
+    lang = langNow();
+  }
+
+  /* The switch was pressed. Whether the page has written the new language on
+     to <html lang> yet or is about to, the observer below has not run — it
+     runs once this press is over — so `lang` is still the one it was
+     switched from. */
+  function switched(to) {
+    to = String(to || '').toLowerCase();
+    if (!lang || !to || to === lang) return;
+    if (!arrivedIn) arrivedIn = lang;
+    moved[lang + '>' + to] = (moved[lang + '>' + to] || 0) + 1;
+  }
+
+  /* The page hidden or put away: the stretch it was on screen and the same
+     seconds by language, the presses, the places opened and the languages
+     switched since the last report, sent once and forgotten. The first
+     report of a browser's first page today also says which language it
+     arrived in — the one before any switch, which is the one the site chose. */
   function putAway() {
     /* A page put away before it said it was opened — the map, closed before
        its places came in — says so now, so the view is not lost. */
     arrive();
-    if (since !== null) {
-      shown += Date.now() - since;
-      since = null;
-    }
+    charge();
+    since = null;
     var secs = Math.round(shown / 1000);
-    if (!secs && !opened && !Object.keys(tallied).length) return;
-    send({ kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied,
-      places: opened, who: who, layout: dealt() });
+    var langs = {};
+    Object.keys(spoken).forEach(function (code) {
+      var s = Math.round(spoken[code] / 1000);
+      if (s) langs[code] = s;
+    });
+    if (!secs && !opened && !first && !Object.keys(tallied).length && !Object.keys(moved).length) return;
+    var body = { kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied,
+      places: opened, langs: langs, moved: moved, who: who, layout: dealt() };
+    if (first) {
+      body.first = true;
+      body.lang = arrivedIn || lang;
+      first = false;
+    }
+    send(body);
     shown = 0;
     tallied = {};
     opened = 0;
+    spoken = {};
+    moved = {};
   }
 
   if (COUNTED) {
+    if (window.MutationObserver) {
+      new MutationObserver(relang).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+    }
     onScreen();
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') putAway();

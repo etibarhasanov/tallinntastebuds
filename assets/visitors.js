@@ -4,8 +4,8 @@
  * count instead, in the order the questions are asked. Today so far first,
  * whatever the range: who came, who signed in and made an account, and on
  * which of the map's two rails. Then a range and who came in it — five
- * figures, a bar a day of new and returning visitors, the countries and
- * where they came from. Then what a new visitor does against a returning
+ * figures, a bar a day of new and returning visitors, the countries, where
+ * they came from and the languages they read in. Then what a new visitor does against a returning
  * one, then the two rails against each other, and last what was done —
  * pages and presses. The shape is the one /insights already has, because it
  * is the same kind of question and the owner has met that page; the rows,
@@ -149,6 +149,21 @@
     } catch (e) {
       return code;
     }
+  }
+
+  /* A language by its code, named in the reading language — countryName()'s
+     arrangement, so data/ui.json needs no word for each of the ten. */
+  function languageName(code) {
+    try {
+      return new Intl.DisplayNames([state.lang], { type: 'language' }).of(code) || code;
+    } catch (e) {
+      return code;
+    }
+  }
+
+  function switchName(r) {
+    var pair = r.id.split('>');
+    return languageName(pair[0]) + ' → ' + languageName(pair[1]);
   }
 
   function sourceName(r) {
@@ -454,6 +469,28 @@
     ]);
   }
 
+  /* The languages, new visitors against returning ones: how many arrived in
+     each, and how long the site was read in each. Time follows a switch, so
+     the minutes of somebody who arrived in English and changed to Russian
+     are English's up to the switch and Russian's after it. Two tables of a
+     language a row rather than one of four columns, which would not fit
+     across a phone. */
+  function languages() {
+    var rows = state.data.languages;
+    var heads = [t('visitorsNew'), t('visitorsReturning')];
+    var name = function (l) { return languageName(l.id); };
+    return card([
+      el('h2', { className: 'lists-title', textContent: t('visitorsLanguages') }),
+      el('p', { className: 'stats-lead', textContent: t('visitorsLanguagesLead') }),
+      el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsVisitors') }),
+      grid(t('visitorsVisitors'), heads, rows, name,
+        function (l) { return [num(l.visitors.new), num(l.visitors.back)]; }),
+      el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsTimeShort') }),
+      grid(t('visitorsTimeShort'), heads, rows, name,
+        function (l) { return [duration(l.secs.new), duration(l.secs.back)]; })
+    ]);
+  }
+
   /* Whether the two rails' strangers found a place at rates that differ by
      more than chance: a two-proportion z-test on `opened` out of `given`,
      with 1.96 as the line, which is the ordinary 95%. Said in words, and
@@ -545,6 +582,8 @@
         stack.appendChild(ranking(t('insightsCountry'), d.countries, function (r) { return countryName(r.id); }));
       }
       if (d.sources.length) stack.appendChild(ranking(t('insightsFrom'), d.sources, sourceName));
+      if (d.languages.length) stack.appendChild(languages());
+      if (d.switches.length) stack.appendChild(ranking(t('visitorsSwitches'), d.switches, switchName));
       [cohorts(), layouts()].forEach(function (c) { if (c) stack.appendChild(c); });
       if (d.pages.length) stack.appendChild(pages());
       if (d.presses.length) {

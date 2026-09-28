@@ -69,6 +69,19 @@
  * row have visitors and nothing to divide among them. The reader counts only
  * the days that have both — see readVisitors() — and says from when.
  *
+ * THE LANGUAGE IT WAS READ IN
+ *
+ * Under the `lang` kind, each split by new and returning the way `cohort`
+ * is: `<who>:<code>`, a visitor by the language their first page today
+ * arrived in — the one on screen before any switch, which is the one the
+ * site chose for them — and `<who>:secs:<code>`, the seconds on screen read
+ * in it. And `<from>><to>`, a press of a language switch, so somebody who
+ * arrived in English and read on in Russian is one visitor in English, their
+ * minutes split between the two, and one `en>ru`. All of it rides on the
+ * report a page sends when it is put away, and every code is checked against
+ * the languages data/ui.json speaks, so the kind is a closed list: four rows
+ * a language a day at the most, and a row per pair somebody pressed.
+ *
  * THE TWO RAILS
  *
  * The map deals a stranger one of two rails, and **The short rail** in
@@ -87,7 +100,8 @@
  * with the same pages in them are the same number of rows. The pages, the
  * visitor kinds, the rails and the facts counted under them are lists
  * written here — forty ids a day at the most between the `cohort` and
- * `layout` kinds. The countries, the
+ * `layout` kinds — and the languages are the ones data/ui.json speaks. The
+ * countries, the
  * sources and the presses are not — a host or a press name is whatever the
  * request says — so those three kinds take at most MAX_IDS ids a day each,
  * and past that only ids already counted that day go up. A press name must
@@ -100,6 +114,7 @@
  */
 
 import { sourceOf, siteOf, countryOf, networkName, today, dayBack } from './_visits.js';
+import { uiStrings } from './_lib.js';
 
 /* The ranges the page offers, in days. 1 is today so far. */
 export const SPANS = [1, 7, 28, 90];
@@ -236,7 +251,10 @@ export async function countArrive(context, body) {
 
 /* A stretch on screen ended: `secs` of it on the page at `id`, `presses`,
    { name: times }, what TTBTrack reported meanwhile, and `places`, how many
-   places were opened on the map in it. */
+   places were opened on the map in it. `langs` is the same seconds by
+   language, { code: secs }, `moved` the switches pressed, { 'from>to': n },
+   and on a browser's first page today `first` is true and `lang` the
+   language it arrived in. */
 export async function countLeave(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
@@ -263,8 +281,40 @@ export async function countLeave(context, body) {
   split(facts, rail, who, 'login', signs.login);
   split(facts, rail, who, 'signup', signs.signup);
   split(facts, rail, who, 'places', Math.min(MAX_PRESS, Math.round(Number(body.places) || 0)));
+  facts.push(...await languageFacts(context, body, who));
 
   return facts.length ? file(env, facts) : false;
+}
+
+/* The `lang` facts a report carries — THE LANGUAGE IT WAS READ IN — with
+   every code one data/ui.json speaks. The file is read only when there is
+   something to check, through the cache every data file is read through;
+   where it cannot be read, nothing about language is counted. */
+async function languageFacts(context, body, who) {
+  const langs = body.langs && typeof body.langs === 'object' ? body.langs : {};
+  const moved = body.moved && typeof body.moved === 'object' ? body.moved : {};
+  const arrived = who && body.first === true;
+  if (!arrived && !(who && Object.keys(langs).length) && !Object.keys(moved).length) return [];
+
+  let spoken;
+  try {
+    spoken = new Set(Object.keys((await uiStrings(context)) || {}));
+  } catch (e) {
+    return [];
+  }
+
+  const facts = [];
+  if (arrived && spoken.has(body.lang)) facts.push(['lang', who + ':' + body.lang, 1]);
+  for (const code of who ? Object.keys(langs).slice(0, MAX_NAMES) : []) {
+    const secs = Math.min(MAX_SECS, Math.round(Number(langs[code]) || 0));
+    if (spoken.has(code) && secs > 0) facts.push(['lang', who + ':secs:' + code, secs]);
+  }
+  for (const pair of Object.keys(moved).slice(0, MAX_NAMES)) {
+    const [from, to] = pair.split('>');
+    const n = Math.min(MAX_PRESS, Math.round(Number(moved[pair]) || 0));
+    if (spoken.has(from) && spoken.has(to) && from !== to && n > 0) facts.push(['lang', from + '>' + to, n]);
+  }
+  return facts;
 }
 
 /* ------------------------------------------------------------- reading */
@@ -322,6 +372,9 @@ function most(map) {
  *   countries  [{ id, n }] visitors, most first
  *   sources    [{ id, name?, n }] visitors, most first
  *   presses    [{ id, n }] most first
+ *   languages  [{ id, visitors: { new, back }, secs: { new, back } }] by
+ *              the language visitors arrived in, most first, then by time
+ *   switches   [{ id: 'from>to', n }] language switches, most first
  *
  * One read of the range and the one before it; the rest is arithmetic on at
  * most 180 days of a hundred-odd rows each.
@@ -355,6 +408,8 @@ export async function readVisitors(env, span, ui) {
   const countries = new Map();
   const sources = new Map();
   const presses = new Map();
+  const languages = new Map();
+  const switches = new Map();
   const cohorts = new Map(WHO.map((id) => [id, { id: id, ...facts() }]));
   const rails = new Map(RAILS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
   const quad = () => ({ fresh: 0, back: 0, login: 0, signup: 0 });
@@ -380,6 +435,7 @@ export async function readVisitors(env, span, ui) {
     } else if (r.kind === 'country') bump(countries, r.id, r.n);
     else if (r.kind === 'from') bump(sources, r.id, r.n);
     else if (r.kind === 'press') bump(presses, r.id, r.n);
+    else if (r.kind === 'lang') countLanguage(languages, switches, r);
     else if (r.kind === 'cohort') {
       const [who, fact] = r.id.split(':');
       if (cohorts.has(who) && FACTS.includes(fact)) cohorts.get(who)[fact] += r.n;
@@ -420,8 +476,24 @@ export async function readVisitors(env, span, ui) {
       .sort((a, b) => b.views - a.views),
     countries: most(countries),
     sources: most(sources).map((s) => ({ ...s, name: networkName(s.id) })),
-    presses: most(presses)
+    presses: most(presses),
+    languages: [...languages.values()].sort((a, b) =>
+      (b.visitors.new + b.visitors.back) - (a.visitors.new + a.visitors.back) ||
+      (b.secs.new + b.secs.back) - (a.secs.new + a.secs.back) || a.id.localeCompare(b.id)),
+    switches: most(switches)
   };
+}
+
+/* One `lang` row into the languages or the switches — see THE LANGUAGE IT
+ * WAS READ IN for the three shapes of id. */
+function countLanguage(languages, switches, r) {
+  const parts = r.id.split(':');
+  if (parts.length === 1) return bump(switches, r.id, r.n);
+  const [who, fact, code] = parts.length === 2 ? [parts[0], 'visitors', parts[1]] : parts;
+  if (!WHO.includes(who) || (fact !== 'visitors' && fact !== 'secs')) return;
+  const l = languages.get(code) || { id: code, visitors: { new: 0, back: 0 }, secs: { new: 0, back: 0 } };
+  l[fact][who] += r.n;
+  languages.set(code, l);
 }
 
 /* One of today's rows into the Today card: visitors new and returning,

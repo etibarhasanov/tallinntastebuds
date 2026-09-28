@@ -405,10 +405,11 @@ export async function dataFile(context, path) {
  *
  * wordsFor() below is what a route wants when it is answering a page: one
  * language's block, picked against what the reader asked for. This is the
- * other shape of the same file, and functions/flashcard.js is its one reader —
- * it writes a deck's head in the language the link carried, which means asking
+ * other shape of the same file, and it has two readers. functions/flashcard.js
+ * writes a deck's head in the language the link carried, which means asking
  * whether the file speaks that one at all, and that is a question about the
- * whole file rather than about a block of it.
+ * whole file rather than about a block of it; ./_visitors.js asks the same
+ * question of every language a visitor's report names.
  *
  * It went out with the commit that wrote wordsFor(), which read the same file
  * for the other shape and looked like the whole of what anybody wanted from
