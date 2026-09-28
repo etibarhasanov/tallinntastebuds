@@ -1053,8 +1053,8 @@
 
   /* ------------------------------------------------------------ the rail
    * Which of the map's two rails this browser draws: the full column of
-   * pills, or the short one a stranger's phone is dealt — three pills,
-   * Surprise me in the corner, the rest behind More. "The short rail" in
+   * pills, or the short one a stranger's phone is dealt — four pills,
+   * Surprise me third, the rest behind More. "The short rail" in
    * README.md. The map deals one — eight phones in ten the short rail — to
    * a browser that has said nothing, see pickLayout() in assets/app.js, and
    * this is where somebody signed in says otherwise, written into the same

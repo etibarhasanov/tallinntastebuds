@@ -12479,32 +12479,24 @@ It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
 scrolls out of reach is no use.
 
-**On the short rail it is the map's one filled button**, a disc in the corner
-above the locate arrow, on a phone — see **The short rail**. `/admin/stats`
-had it the most pressed thing on the rail after the account, fourth from the
-top of nine discs that all looked alike, and rule 5 spends the accent once a
-surface, which nothing on the map was spending it on. It is the same
-`#btn-random`, a child of the rail fixed to the window the way the arrow is,
-so the counter, the cascade and the walk all still find it.
+**On the short rail it is the third of four pills**, straight under the
+lists and above More, the same pill as the three beside it. For a while it
+stood apart as the map's one filled button, a disc in the accent in the
+corner above the locate arrow — `/admin/stats` had it the most pressed thing
+on the rail after the account, and rule 5 spends the accent once a surface.
+But the map is already dotted with the accent's round cluster discs, and a
+filled round disc among them read as one more cluster rather than as a
+button; the owner asked for it back among the rail's pills. It keeps its
+place high on the rail, which is what the number argued for.
 
-**It is a die, and says what it is when the others do.** It first stood there
-as a filled pill wearing "Surprise me" for good, which over the arrow was the
-biggest thing on the map and read as a banner; the owner asked for it
-compact. So it is the arrow's size, a 48px disc, and the colour is what says
-it is the one to press. Its label comes out when every other pill's does —
-once in the cascade on a first visit, and under the walk — and otherwise
-only after a roll. For an afternoon the cascade left it out, so that it had
-no words at all until pressed, and that made it the one button a stranger
-was never told the meaning of; it is back in, once, with the others. After a
-roll the label reads *Surprised*, the way a Copy button says Copied, for as
-long as the map is flying to the place (`FLY_MS`, 1.2 seconds), then folds
-back to the die as the pin lands. No longer than that,
-because the pill grows leftwards into the strip where the chosen pin comes
-down with its name over it, and held for two seconds it stood on most names.
-That word is `randomDone`, and `sayRolled()` in `assets/app.js` is the whole
-of it. **The full rail is untouched**: all of this is the short rail's, and
-the die on the full rail still says Surprise me in the cascade and on hover,
-and says nothing new when it is pressed.
+**After a roll it says so.** On the short rail the label opens for a moment
+reading *Surprised*, the way a Copy button says Copied, for as long as the
+map is flying to the place (`FLY_MS`, 1.2 seconds), then folds back to the
+die as the pin lands. No longer than that, because the pill grows out over
+the map where the chosen pin may come down with its name over it. That word
+is `randomDone`, and `sayRolled()` in `assets/app.js` is the whole of it.
+**The full rail is untouched**: the die there says Surprise me in the
+cascade and on hover, and says nothing new when it is pressed.
 
 **On a phone it opens the place at the low stop, and this is the button that
 argued for it.** The name means nothing to you yet, and the first thing you
@@ -13028,8 +13020,8 @@ in all ten languages. The pieces are `#tour` in
 
 ## The short rail
 
-Eight phones in ten get a shorter rail than the map had: **the account, everybody's lists and More** down the
-left, **Surprise me** filled in the corner above the locate arrow, three
+Eight phones in ten get a shorter rail than the map had: **the account,
+everybody's lists, Surprise me and More** down the left, three
 chips standing outside the Filters drawer, and the other four doors — Ask,
 the flashcards, the colour and feedback — as rows behind More. The other two
 in ten keep the full column of eight, which is what makes the short rail's
@@ -13052,9 +13044,9 @@ nine discs that all looked alike. And the chips were pressed 113 times
 against 1,529 places opened, with the row folded behind one word on a phone.
 
 So the short rail is that table acted on: the three most pressed things
-stay as pills, the one that does the most is the map's one filled button —
-rule 5, the accent spent once a surface, which nothing on the map was
-spending it on — the three most pressed chips stand in the open, and the
+stay as pills, the one that does the most moves up to third, straight under
+the lists — it spent a while as the map's one filled button in the corner,
+and **Surprise me** says why it came back — the three most pressed chips stand in the open, and the
 four at the foot go behind one pill together. The cascade that introduces
 the rail on a phone — **The rail introduces itself on a phone** — was 300ms
 a pill and 7.45s for eight; it is four pills and the chip row now, all open
@@ -13104,15 +13096,10 @@ comes back a stranger and is dealt again, possibly the other rail.
   button, `#btn-more`, counted on `/admin/stats` as `more` and introduced in
   the cascade with a label of its own — *More* — and a title saying what is
   behind it.
-- **Surprise me in the corner**, on a phone: the same `#btn-random`, fixed to
-  the window above the arrow the way the arrow is fixed, a 48px disc in the
-  accent with the die in paper, whose label slides out with the other pills'
-  in the cascade and, for a moment after a roll, to say *Surprised*. Above
-  860px it stays in the rail, which is a column of discs beside a corner that
-  opens on hover and has no corner to spare. **Surprise me** has the rest.
-  Everything centred at the foot of a phone — the welcome card, the toast,
-  the account offer — stands on `--above-locate`, and the short rail raises
-  that shelf by the button's height, so nothing lands on it.
+- **Surprise me third**, under the lists and above More: the same
+  `#btn-random` and the same pill, whose label slides out with the others'
+  in the cascade and, for a moment after a roll, to say *Surprised*.
+  **Surprise me** has the rest.
 - **The More sheet**, `renderMore()`: the account sheet's card and scrim, the
   wordmark as its eyebrow, *More* as its title, one line under it, and four
   `.menu-row`s in the rail's own order — Ask, Learn Estonian, Colour,
