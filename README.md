@@ -10784,8 +10784,16 @@ before. `ttb.since` is the first day it ever did, which is what lets every
 later page that day still say whether it belongs to a new visitor or a
 returning one — the first page has overwritten `ttb.seen` with today by
 then. A browser from before `ttb.since` existed takes the earlier day
-`ttb.seen` remembers; one already here on the day it shipped, with no
-earlier day to go on, was filed as new for that one day. That is all that is
+`ttb.seen` remembers.
+
+Both dates are the count's own, and the count began on 28 September 2026 —
+so on its first day every browser was new, and the page showed no returning
+visitors at all although the site had had them for weeks. Google's `_ga`
+cookie ends in the time that browser was first seen, and `arrive()` takes
+the first day as the earlier of that and `ttb.since`, so a browser GA knew
+before the count began is returning from its first page. Only the time is
+read out of the cookie, never Google's id beside it; a browser with Google
+blocked has no cookie and goes by the two dates alone. That is all that is
 sent: whether this is the first page today, whether there was an earlier day,
 new or returning, the page's path, where it was opened from and which rail
 the map dealt it. No id is made, no address is read, no

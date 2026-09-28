@@ -38,7 +38,8 @@
  * how a page knows it is the browser's first today and whether there was an
  * earlier one; and the first day it ever did, `ttb.since`, which is how every
  * later page that day still knows whether it belongs to a new visitor or a
- * returning one. No id is made or sent. The owner's pages under /admin/ send
+ * returning one — or the day Google's `_ga` cookie says, where that is
+ * earlier, since the count is younger than the site. No id is made or sent. The owner's pages under /admin/ send
  * nothing.
  *
  * The language rides in the same reports. Every page writes the language it
@@ -221,9 +222,17 @@ window.TTBTrack = (function () {
      that came before is returning. ttb.seen cannot answer it past the first
      page, because the first page overwrites it with today, so ttb.since
      keeps the first day. A browser from before ttb.since existed takes the
-     earlier day ttb.seen remembers, and one already here today with no
-     ttb.since is filed as new for the rest of that day — a guess that can
-     only be wrong on the day ttb.since first shipped. */
+     earlier day ttb.seen remembers.
+
+     Both dates are this count's own, though, and the count began on
+     28 September 2026 — so on its first day every browser was new, the ones
+     that had been coming for weeks included, and /admin/visitors showed no
+     returning visitor at all. Google's `_ga` cookie has been on every
+     visitor's device since long before and carries the day that browser
+     first came, so the first day is the earlier of the two wherever the
+     cookie is there to read. Only the day is read out of it and only a
+     day's comparison leaves the page; a browser with Google blocked has no
+     cookie and goes by the site's own dates alone. */
   function arrive() {
     if (arrived || !COUNTED) return;
     arrived = true;
@@ -233,10 +242,11 @@ window.TTBTrack = (function () {
     try {
       last = window.localStorage.getItem(SEEN_KEY);
       var began = window.localStorage.getItem(SINCE_KEY);
-      if (!DAY.test(began || '')) {
-        began = DAY.test(last || '') && last < day ? last : day;
-        window.localStorage.setItem(SINCE_KEY, began);
-      }
+      var was = began;
+      if (!DAY.test(began || '')) began = DAY.test(last || '') && last < day ? last : day;
+      var ga = gaDay();
+      if (ga && ga < began) began = ga;
+      if (began !== was) window.localStorage.setItem(SINCE_KEY, began);
       window.localStorage.setItem(SEEN_KEY, day);
       who = began < day ? 'back' : 'new';
       kept = true;
@@ -246,11 +256,22 @@ window.TTBTrack = (function () {
       kind: 'arrive',
       id: window.location.pathname,
       first: first,
-      back: kept && DAY.test(last || '') && last < day,
+      back: who === 'back',
       who: who,
       from: document.referrer,
       layout: dealt()
     });
+  }
+
+  /* The day Google's tag first saw this browser, out of the `_ga` cookie
+     — GA1.<n>.<random>.<seconds> — or null where there is none. The random
+     part is Google's id for the browser and is never read, let alone sent:
+     only the last field, which is a time. */
+  function gaDay() {
+    var m = /(?:^|;\s*)_ga=GA\d\.\d+\.\d+\.(\d{9,10})(?:;|$)/.exec(document.cookie || '');
+    if (!m) return null;
+    var d = new Date(Number(m[1]) * 1000).toISOString().slice(0, 10);
+    return DAY.test(d) ? d : null;
   }
 
   function onScreen() {
