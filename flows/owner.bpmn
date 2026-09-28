@@ -152,6 +152,7 @@ ref: functions/_middleware.js
 ref: functions/api/_admin.js adminUser()
 ref: functions/api/admin/stats.js GET
 ref: functions/api/admin/visitors.js GET
+ref: functions/api/admin/live.js GET
 ref: functions/api/admin/venues.js GET
 ref: functions/api/admin/refreshes.js GET</bpmn:documentation>
       <bpmn:incoming>owner-e21</bpmn:incoming>
