@@ -10948,11 +10948,17 @@ links — so the owner's five pages looked like two sites. It now links the same
 three sheets `/admin/stats` and `/admin/visitors` do (`styles.css`,
 `lists.css`, `stats.css`, unstamped because the page is `no-store`), wears the
 same header, eyebrow and title, and reads the style the map's swatch left in
-`ttb.style`, so the dark style reaches it too. Unlocked, it is three cards: the
-five tools behind the lists page's segmented control, which wraps rather than
-scrolls so the Google count is never off the edge; **The numbers**, the four
-pages under `/admin/` as the account sheet's rows; and **This device**, the
-token's facts with Lock and Forget under them. Nothing it does has changed.
+`ttb.style`, so the dark style reaches it too. Unlocked, it is three cards.
+**The numbers** comes first — the four pages under `/admin/` as the account
+sheet's rows, Visitors at the top — because reading them is what the door is
+opened for most days. Then **Edit the site**, a fold that is shut when the
+door opens: the account page's `.lists-fold`, with the Google count beside
+its title so a disagreement is seen without opening it, and inside the five
+tools behind the lists page's segmented control, which wraps rather than
+scrolls so the Google tab is never off the edge. A half-written story
+survives the fold being shut again, since a `<details>` only hides what it
+holds. Last, **This device**, the token's facts with Lock and Forget under
+them. Nothing any of the tools does has changed.
 
 ### Setting up a device
 
