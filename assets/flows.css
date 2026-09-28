@@ -1,0 +1,199 @@
+/* Tallinn Tastebuds — /flows, and only what a diagram needs.
+ *
+ * The tokens, the card, the chips and the eyebrow come from assets/styles.css;
+ * the brand header and the column from assets/lists.css. What is left is the
+ * chip row, the stage the diagram scrolls inside, the card under it that says
+ * what a pressed step is, and the diagram itself — whose shapes are SVG drawn
+ * by assets/flows.js with a class each and no colour of their own, so that
+ * pressing the swatch on the map and coming back brings the diagram with it,
+ * which is rule 1 of **The design rules** in README.md.
+ *
+ * Who does a step is told by its outline: the accent for a person, the muted
+ * ink for the site. The lane says the same thing, and the outline is there so
+ * that a step read on its own — pressed, or zoomed into — still says it.
+ */
+
+.flows-lead {
+  margin: 8px 0 18px;
+  max-width: 62ch;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.flows-state {
+  padding: 24px 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .04em;
+}
+.flows-state.is-error { color: var(--no); }
+
+/* The chips wrap rather than scroll: six of them fit two rows on a phone, and
+   a row that scrolls hides the ones past the edge from somebody who does not
+   know they are there. */
+.flows-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.flows-card { padding: 20px 20px 16px; }
+
+.flows-name {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+.flows-who {
+  margin: 6px 0 14px;
+  max-width: 70ch;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.flows-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.flows-zoom {
+  display: inline-flex;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.flows-zoom .btn { min-width: 44px; min-height: 36px; }
+
+.flows-download {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .04em;
+}
+
+/* The diagram scrolls inside its card in both directions and the page never
+   scrolls sideways. A diagram is wider than any phone, and is wider than a
+   laptop too once it is big enough to read. */
+.flows-stage {
+  overflow: auto;
+  max-height: 75vh;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  background: var(--wash);
+  -webkit-overflow-scrolling: touch;
+}
+.flows-stage .flows-state { padding: 24px 16px; }
+
+.flow-svg { display: block; height: auto; }
+
+/* ---------------------------------------------------------- the diagram */
+
+.flow-pool { fill: var(--paper); stroke: var(--muted); stroke-width: 1.2; }
+.flow-lane { fill: none; stroke: var(--hairline); stroke-width: 1; }
+.flow-rule { stroke: var(--hairline); stroke-width: 1; }
+
+.flow-pool-name,
+.flow-lane-name {
+  fill: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .06em;
+}
+.flow-lane-name { fill: var(--muted); }
+
+.flow-arrow { fill: none; stroke: var(--muted); stroke-width: 1.3; }
+.flow-head { fill: var(--muted); }
+.flow-edge-name {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
+}
+
+.flow-box { fill: var(--paper); stroke: var(--muted); stroke-width: 1.5; }
+.flow-userTask .flow-box,
+.flow-manualTask .flow-box { stroke: var(--accent); }
+.flow-serviceTask .flow-box,
+.flow-task .flow-box { fill: var(--wash); }
+.flow-endEvent .flow-box { stroke: var(--ink); stroke-width: 3.5; }
+.flow-startEvent .flow-box { stroke: var(--ink); }
+.flow-exclusiveGateway .flow-box,
+.flow-parallelGateway .flow-box { stroke: var(--ink); }
+
+.flow-glyph { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+.flow-mark { fill: none; stroke: var(--muted); stroke-width: 1.3; }
+
+.flow-name {
+  fill: var(--ink);
+  font-family: var(--display);
+  font-size: 12px;
+}
+.flow-under { font-size: 11px; }
+
+.flow-step { cursor: pointer; outline: none; }
+.flow-step:hover .flow-box,
+.flow-step:focus-visible .flow-box { stroke-width: 3; }
+.flow-step.is-picked .flow-box { fill: var(--accent); stroke: var(--accent); }
+.flow-step.is-picked .flow-name { fill: var(--paper); }
+.flow-step.is-picked .flow-mark,
+.flow-step.is-picked .flow-glyph { stroke: var(--paper); }
+/* The name under an event or a gateway sits on the lane, not in the shape, so
+   it keeps the ink when its shape fills. */
+.flow-step.is-picked .flow-under { fill: var(--accent); }
+
+/* --------------------------------------------- what the pressed step is */
+
+.flows-detail { margin-top: 14px; padding: 18px 20px; }
+
+.flows-hint {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.flows-step-name {
+  margin: 4px 0 0;
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.flows-note {
+  margin: 8px 0 0;
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.flows-where {
+  margin: 14px 0 6px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.flows-refs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.flows-refs li + li { margin-top: 4px; }
+.flows-refs code {
+  font-family: var(--mono);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}

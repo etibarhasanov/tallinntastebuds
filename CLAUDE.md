@@ -128,6 +128,14 @@ refresh that changed a count the `/google-venues` skill had written down.
 A change to a feature reads the skill for that feature before the PR, the
 way it reads the README section, and fixes what the change made wrong.
 
+**And the diagrams go stale the same way.** `/admin/flows` draws what each kind of
+person can do, from `data/flows.json`, and every step there names the files
+that do it. A change that gives somebody something new to do, takes something
+away, or moves where a step lives updates their flow in the same PR and runs
+`node tools/flows.mjs`. It is also the quickest answer to "what can a member
+actually do here" — read it before grepping for it. **Who uses the site,
+drawn** in `README.md`.
+
 ## Something new is described before it is built
 
 A change to something that already exists arrives with its own brief: the
@@ -330,7 +338,7 @@ push afterwards is another deploy — and re-run everything below afterwards
 each time: replaying your commits over somebody else's `assets/` change is
 exactly what makes the stamps stale.
 
-Nine things in this repo are **generated**. Editing a source without
+Ten things in this repo are **generated**. Editing a source without
 re-running its generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
@@ -343,6 +351,7 @@ re-running its generator is the single most common way to fail CI:
 | `exports/tallinn_restaurants.csv` | `node tools/googlelists.mjs` | `db/google-lists.sql` |
 | a scene in `clips/scenes/` | `node tools/blogclips.mjs` | the four files in `clips/` that scene is drawn into — it needs a Chromium, and `--check` says which are missing |
 | `assets/logo/og-flashcard.html`, or a token or rule it draws itself with | `node tools/ogcard.mjs` | `assets/logo/og-flashcard.png`, the card a link to the flashcards unfurls as — it needs a Chromium, and nothing in CI can see that it went stale |
+| `data/flows.json` | `node tools/flows.mjs` | `flows/<id>.bpmn`, the diagrams on `/admin/flows` of who uses the site and what each can do |
 | a language in `data/ui.json`, a place in `data/restaurants.json`, a chip list in `tools/typelists.mjs`, a Google list in `tools/googlelists.mjs` or a face in `assets/faces/` | `node tools/sitemap.mjs` | `sitemap.xml` |
 
 (The catalogue is the map plus an optional `data/places.csv` import. That CSV

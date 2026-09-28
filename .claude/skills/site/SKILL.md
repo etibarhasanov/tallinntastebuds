@@ -279,8 +279,8 @@ write gate's `--check`:
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`,
   `deal.html`, `verify.html`, `staff.html`, `split.html`,
-  `flashcard.html`, `edit.html`, `insights.html`, and the owner's three under
-  `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html` — must carry `?v=` equal to the first
+  `flashcard.html`, `edit.html`, `insights.html`, and the owner's four under
+  `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html`, `admin/flows.html` — must carry `?v=` equal to the first
   eight hex of the file's SHA-256. A new page that loads anything out of
   `assets/` is added to that list, or it never gets stamped. `admin.html` is
   deliberately unstamped; it is served `no-store`.
@@ -316,7 +316,10 @@ no step 1 until the owner has answered it.
    the phone the README measures its layouts against.
 6. **Rewrite the README paragraph** the change made wrong, and the comment
    above the function. A paragraph that now describes the version that lost
-   the argument is a bug.
+   the argument is a bug. And if the change gives somebody a thing to do
+   they could not do before — or takes one away, or moves where it lives —
+   their diagram in `data/flows.json` moves with it, then
+   `node tools/flows.mjs`. **Who uses the site, drawn** in `README.md`.
 7. The pass in `leave-it-better.md`, over every file in the diff, whole.
 
 ## Adding a language

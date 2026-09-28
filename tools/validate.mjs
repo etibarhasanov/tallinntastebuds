@@ -27,6 +27,9 @@
  *     list that have stopped answering to each other
  *   - a sitemap.xml that is not what tools/sitemap.mjs would write from the
  *     languages in data/ui.json and the thirteen lists
+ *   - a diagram in flows/ that is not what tools/flows.mjs would write from
+ *     data/flows.json, or a step in that file whose ref names a path that is
+ *     not in the repository
  *   - a page served through a Function with a head of its own — index.html,
  *     lists.html, split.html, flashcard.html — missing the pair of PAGE-HEAD markers that
  *     head goes between, which would leave it wearing its static head at
@@ -84,6 +87,7 @@ import { stale as staleGoogleLists } from './googlelists.mjs';
 import { stale as staleCity } from './city.mjs';
 import { stale as staleTypeLists, build as buildTypeLists } from './typelists.mjs';
 import { stale as staleSitemap } from './sitemap.mjs';
+import { stale as staleFlows, problems as flowProblems, load as loadFlows } from './flows.mjs';
 /* The directory's own vocabulary. It is a table in the endpoint rather than a
    file, the way VENUE_TYPES is, and the checks below are what keep it honest:
    every id has a label in ten languages, and every pattern still matches
@@ -1920,6 +1924,24 @@ for (const [page, empty] of Object.entries(EMPTY)) {
    page a search engine is never told about. */
 if (staleSitemap()) {
   fail('sitemap.xml', 'is not what tools/sitemap.mjs would write from data/ui.json and data/taxonomy.json — run `node tools/sitemap.mjs` and commit the result');
+}
+
+/* And the diagrams on /admin/flows — one BPMN file per kind of person, laid out
+   by tools/flows.mjs from data/flows.json. Two ways for them to go wrong: a
+   source edited without the tool re-run, which is the stamps' fault again,
+   and a step whose ref names a file that has since moved, which is the one a
+   diagram is actually for — it is an index into the code, and an entry
+   pointing at nothing is worse than no entry. */
+let flowDoc = null;
+try { flowDoc = loadFlows(); } catch (e) { fail('data/flows.json', `does not parse: ${e.message}`); }
+if (flowDoc) {
+  const found = flowProblems(flowDoc);
+  for (const line of found) fail('data/flows.json', line);
+  /* A source with problems does not lay out, so staleness is only asked of
+     one that does — otherwise every broken ref would fail twice. */
+  if (!found.length) for (const file of staleFlows()) {
+    fail(file, 'is not what tools/flows.mjs would write from data/flows.json — run `node tools/flows.mjs` and commit the result');
+  }
 }
 
 /* ---------------------------------------------------------------- reporting */
