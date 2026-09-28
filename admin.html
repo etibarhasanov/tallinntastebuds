@@ -183,6 +183,16 @@ dl.admin-facts dd { margin: 0; min-width: 0; font-family: var(--mono); font-size
 .hint { font-size: 12.5px; line-height: 1.5; color: var(--muted); margin: 6px 0 0; }
 hr { border: 0; border-top: 1px solid var(--hairline); margin: 22px 0 4px; }
 
+/* The five tools, folded under one title so the numbers above them are what
+   the door opens on, and the tools one press away. The fold is the account
+   page's — .lists-fold in assets/lists.css — and the title keeps the Google
+   count beside it, so a disagreement is seen with the fold shut. */
+.admin-card > .lists-fold[open] > summary > .lists-title { margin-bottom: 18px; }
+/* The name takes the free width, so the count and the chevron sit together
+   at the far end, where the account page's fold keeps them. */
+.admin-fold-name { flex: 1 1 auto; }
+.lists-fold > summary .count { margin-left: 0; }
+
 /* The five tools, as the lists page's segmented control: the wash as the
    track and the chosen one lifted onto paper. It wraps rather than scrolls,
    because at 390px a scrolled row would put the Google tab — and the count
@@ -214,7 +224,8 @@ hr { border: 0; border-top: 1px solid var(--hairline); margin: 22px 0 4px; }
 .tabs button:hover { background: transparent; color: var(--ink); }
 .tabs button.on,
 .tabs button.on:hover { background: var(--paper); border-color: var(--hairline); color: var(--ink); box-shadow: var(--lift); }
-.tabs .count {
+.tabs .count,
+.lists-fold .count {
   display: inline-block;
   min-width: 18px;
   margin-left: 6px;
@@ -1128,6 +1139,24 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     var panel = el('div');
     var which = 'story';
 
+    /* The tools under one title that opens them — see .lists-fold above.
+       Shut when the door opens, because the numbers are what it is opened
+       for more often than a story; a half-written form is kept when it is
+       shut again, since a <details> only hides what it holds. */
+    var told = el('span', { className: 'count', hidden: true });
+    var fold = el('details', { className: 'lists-fold' }, [
+      el('summary', {}, [
+        el('h2', { className: 'lists-title' }, [
+          el('span', { className: 'admin-fold-name', textContent: 'Edit the site' }),
+          told,
+          el('span', { className: 'menu-go', 'aria-hidden': 'true',
+            html: '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>' })
+        ])
+      ]),
+      tabs,
+      panel
+    ]);
+
     /* How many places the map and Google disagree about — see
        mapAgainstGoogle(). It rides on the Google tab's label so the
        disagreement is found on the way to a story rather than by opening the
@@ -1164,8 +1193,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       else editPicker(repo, panel);
     }
 
-    body.appendChild(tabs);
-    body.appendChild(panel);
+    body.appendChild(fold);
     draw();
 
     /* The label, not the panel: a redraw here would take a half-written
@@ -1176,6 +1204,9 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         disagree = mapAgainstGoogle(got[0], got[1]).length;
         var last = tabs.lastChild;
         if (last) tabLabel(last, ['google', 'Google']);
+        told.textContent = String(disagree);
+        told.setAttribute('aria-label', disagree + (disagree === 1 ? ' disagreement' : ' disagreements'));
+        told.hidden = !disagree;
       })
       .catch(function () { /* the tab says so */ });
 
@@ -1185,11 +1216,13 @@ ul.log li button.quiet { width: auto; display: inline-block; }
        names in wrangler.toml, see functions/api/_admin.js — so they open for
        the owner signed in on the site and are a 404 to everybody else,
        passphrase or not. Drawn as the account sheet's rows, a name and what
-       is behind it, because that is what they are: places to go. */
+       is behind it, because that is what they are: places to go. First on
+       the page, over the tools, because they are what the door is opened
+       for most days. */
     var pages = el('ul', { className: 'menu' });
     [
+      ['/admin/visitors', 'Visitors', 'Today, who came, new against returning, the two rails'],
       ['/admin/stats', 'Statistics', 'Which places and chips get opened most'],
-      ['/admin/visitors', 'Visitors', 'Who came, from where, and what they pressed'],
       ['/admin/google', 'Google directory', 'Every place in Tallinn, off Google’s list'],
       ['/admin/flows', 'Who uses the site', 'What each kind of person can do, drawn']
     ].forEach(function (page) {
@@ -1204,12 +1237,12 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         ])
       ]));
     });
-    stack.appendChild(el('section', { className: 'card admin-card' }, [
+    stack.insertBefore(el('section', { className: 'card admin-card' }, [
       el('h2', { className: 'lists-title', textContent: 'The numbers' }),
       el('p', { className: 'stats-lead', textContent:
         'They open when you are signed in on the site as the owner.' }),
       pages
-    ]));
+    ]), body);
 
     var facts = el('dl', { className: 'admin-facts' });
     function fact(term, value) {
@@ -2919,9 +2952,10 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   }
 
   /* Back to the door: the one card, emptied, and the two the unlocked page
-     adds under it taken away. */
+     adds around it taken away. */
   function boot() {
     clear(body);
+    while (stack.firstChild !== body) stack.removeChild(stack.firstChild);
     while (body.nextSibling) stack.removeChild(body.nextSibling);
     if (!window.crypto || !window.crypto.subtle) return insecure();
     return vault() ? locked() : setup();
