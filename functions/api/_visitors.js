@@ -21,7 +21,10 @@
  * assets/track.js keeps one date in the browser, `ttb.seen`: the last day
  * this browser opened a page here. A page opened on a day that is not that
  * one is the browser's first today, and it says so with `first`; `back` is
- * whether there was an earlier day at all. That is the whole of it. No id is
+ * whether there was an earlier day at all — by `ttb.since`, the first day it
+ * came, which the page takes from Google's `_ga` cookie where that remembers
+ * an earlier one, since this count is younger than the site (arrive() in
+ * assets/track.js). That is the whole of it. No id is
  * sent, no address is read, no fingerprint is made, and nothing here could
  * tell one visitor from another if it tried: the table hears "a new visitor
  * today" or "a returning one" and adds one.
