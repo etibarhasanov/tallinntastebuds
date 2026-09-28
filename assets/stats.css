@@ -290,3 +290,63 @@ a.stats-name:hover { color: var(--accent); }
 /* A ranking under a card's title on /insights, which has no lead sentence
    between the two the way the tables on /stats do. */
 .ins-list { margin-top: 14px; }
+
+/* ------------------------------------------------------ /admin/visitors */
+
+/* The whole site's numbers, for the owner, drawn by assets/visitors.js out of
+   the same pieces as /insights above: the range, the figures, the chart and
+   the grid of a name and several numbers. What is added here is only what
+   that page does not have. */
+
+/* Five figures rather than three: three across and two under, and two
+   across on a phone, where a third column would leave "6m 47s" no room. */
+.vis-kpis { row-gap: 18px; }
+
+@media (max-width: 479px) {
+  .vis-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* The bars: new visitors in the accent, returning ones stacked on them in
+   the second tone the pins already use, and a key above the chart naming
+   both, so the two are not told apart by colour alone. */
+.ins-chart .vis-new { fill: var(--accent); }
+.ins-chart .vis-back { fill: var(--pin-sea); }
+
+.vis-key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .02em;
+}
+
+.vis-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* The second swatch starts the second name, so it stands further off. */
+.vis-key .vis-swatch:not(:first-child) { margin-left: 10px; }
+
+.vis-swatch-new { background: var(--accent); }
+.vis-swatch-back { background: var(--pin-sea); }
+
+/* A name and two numbers, with no rank before the name: the pages with
+   their views and time, and the figures with a rail each. Every number keeps
+   the gap /insights gives its columns. */
+.vis-table { grid-template-columns: minmax(0, 1fr) auto auto; margin-top: 4px; }
+.vis-table .ins-row > :nth-child(2) { padding-left: 14px; }
+
+/* A press is named by the id it is reported under, which is a word nobody
+   translated, so it is set as one. */
+.vis-id {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+}

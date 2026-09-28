@@ -216,6 +216,46 @@ CREATE TABLE IF NOT EXISTS profile_counts (
   PRIMARY KEY (owner, day, kind, id)
 );
 
+-- ---------------------------------------------------------- visitor_counts
+-- Who came to the site, roughly, and what they did — read by the owner
+-- alone, on /admin/visitors. functions/api/_visitors.js writes and reads it,
+-- and its header is the reasoning; **Visitors** in README.md is the page's
+-- half.
+--
+-- profile_counts again, for the whole site rather than one page: the day in
+-- the key, one row per fact per day, and a number. Six kinds:
+--
+--   kind 'visitor'  id 'new' or 'back' — a browser's first page of the day,
+--                   and whether it had been here on an earlier one
+--   kind 'country'  id is Cloudflare's two letters, once per visitor per day
+--   kind 'from'     id is where that first page came from — the buckets
+--                   profile_counts uses, or a host
+--   kind 'view'     id is which page, out of PAGES in _visitors.js
+--   kind 'time'     id is which page; n is seconds it was on screen
+--   kind 'press'    id is the name of a press TTBTrack reported
+--   kind 'layout'   id is '<rail>:<fact>' — the same facts again, split by
+--                   which of the map's two rails the browser was dealt
+--
+-- Nothing is filed under a person and there is no row per visit: the browser
+-- says whether this is its first page today, and the table only ever hears
+-- the answer. The size is bounded by the day, not by the traffic — the
+-- kinds with ids nobody chose from a list (country, from, press) are capped
+-- at a hundred ids a day each in the code — so a year is tens of thousands
+-- of short rows at the very most, and a busy day costs no more rows than a
+-- quiet one with the same pages in it.
+--
+-- WITHOUT ROWID, because the primary key is the only way the table is read
+-- and every row is a few short strings and a number: the key is the table,
+-- rather than a table plus a copy of it as an index.
+CREATE TABLE IF NOT EXISTS visitor_counts (
+  -- YYYY-MM-DD, UTC.
+  day   TEXT    NOT NULL,
+  kind  TEXT    NOT NULL,
+  id    TEXT    NOT NULL,
+  n     INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (day, kind, id)
+) WITHOUT ROWID;
+
 
 -- ---------------------------------------------------------------- accounts
 -- An account is optional. Saving works without one, filed under the device's

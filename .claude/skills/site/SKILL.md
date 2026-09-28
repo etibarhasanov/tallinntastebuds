@@ -164,7 +164,12 @@ holds, and the event gets a row in the table under **Analytics** in
 `README.md` in the same commit — that table is the list, and a name that is
 not in it is a name nobody will find in the console. `grep -n TTBTrack
 assets/<file>.js` shows what the page beside yours reports, and the same
-press on two pages reports the same name.
+press on two pages reports the same name. The name also lands in
+`/admin/visitors` under **What was pressed**, because `track.js` tallies every
+event it sends and reports the tally with the time on screen — so a name is a
+lowercase word with underscores, which is the shape `functions/api/_visitors.js`
+accepts, and a new page that loads `track.js` is counted there with nothing
+more to do, once its path is named in `PAGES` in that file.
 
 **And every page a visitor walks back from carries `assets/back.js`**, after
 `track.js` and before the page's own script: a swipe to the right from
@@ -270,12 +275,12 @@ write gate's `--check`:
   changing one means `node tools/typelists.mjs` and a stale
   `db/type-lists.sql` to commit — see **The chips, as lists** in `README.md`.
   Adding a language costs nothing there; the lists are English.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the fourteen pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the fifteen pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`,
   `deal.html`, `verify.html`, `staff.html`, `split.html`,
-  `flashcard.html`, `edit.html`, `insights.html`, and the owner's two under
-  `admin/` — `admin/google.html`, `admin/stats.html` — must carry `?v=` equal to the first
+  `flashcard.html`, `edit.html`, `insights.html`, and the owner's three under
+  `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html` — must carry `?v=` equal to the first
   eight hex of the file's SHA-256. A new page that loads anything out of
   `assets/` is added to that list, or it never gets stamped. `admin.html` is
   deliberately unstamped; it is served `no-store`.

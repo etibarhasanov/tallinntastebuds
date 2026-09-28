@@ -1639,7 +1639,7 @@ if (ui !== null && isPlainObject(ui)) {
      Delete this line with the block above. */
   for (const key of splitKeys) known.add(key);
 
-  /* The root's pages and the owner's two under admin/. */
+  /* The root's pages and the owner's pages under admin/. */
   const ADMIN_PAGES = join(ROOT, 'admin');
   const pages = readdirSync(ROOT).filter((f) => f.endsWith('.html'))
     .concat(existsSync(ADMIN_PAGES)

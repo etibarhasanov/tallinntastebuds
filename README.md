@@ -10488,8 +10488,9 @@ of `functions/api/_admin.js`, and `/admin/google` is gated by the same one — s
 
 It is not the door on `/admin.html`. That page holds a GitHub token and never
 talks to the server; the site's own accounts are the identity the server can
-already check, so the owner signs in on the map as usual and the two pages open.
-The admin page links to both, under its tabs.
+already check, so the owner signs in on the map as usual and the pages open.
+The admin page links to all three — this one, **Visitors** and the directory —
+under its tabs.
 `ADMINS` is empty in the preview blocks, where the owner has no account yet —
 put a preview `users.id` there to drive the page under `wrangler pages dev`.
 
@@ -10708,8 +10709,9 @@ It is a count of accounts, not of people who visited: `users.last_seen_at`
 only moves on a sign-in (`enterAccount()` in `functions/api/_account.js`, and
 the Google round trip in `functions/api/google.js`), never on an ordinary page
 load with an already-valid session, so a figure about who came back *today*
-would answer "signed in today" and not "visited today" — a gap worth knowing
-about before building one. This number sidesteps it entirely by asking
+would answer "signed in today" and not "visited today" — which is why
+**Visitors** answers that question another way, with a date kept in the
+browser rather than a column on `users`. This number sidesteps it entirely by asking
 something that does not depend on when anybody was last seen: how many rows
 the table holds, full stop. It draws whenever the ranking above it is in at
 all, `opened` or not — an account is not a press, so it is not gated behind
@@ -10719,20 +10721,116 @@ one.
 
 No time window, which **A count and not a log** above is the whole of. No
 chart: a ranking is a list and a bar chart of seventy-six rows is a list with
-decoration on it. No languages, no referrers, no countries — Google Analytics
-has all of that and this page is the half GA cannot do, which is the site
-owning its own numbers. The one place this site does keep a referrer and a
-country is somebody's own profile, counted for them alone — see **Insights**
-under **Profiles**. No per-place badge anywhere else on the site: the
+decoration on it. No visitors, referrers, countries or time on this page:
+those are **Visitors** below, the site's own count of who came and what they
+did, on a page of its own because this one is about places and that one is
+about people. The one other place this site keeps a referrer and a country is
+somebody's own profile, counted for them alone — see **Insights** under
+**Profiles**. No per-place badge anywhere else on the site: the
 count is on this page or it is nowhere, because a number under a name on the
 map is a score, and there are none of those here — and no number on a pill
-either, for that reason and because there is no room on one. No returning-users figure
-either, for the reason **How many accounts exist** above gives — the data
-this site keeps cannot honestly answer "who came back today" without a
-schema change that writes on every request from a signed-in visitor, which is
-a cost this page has not asked anybody to pay. Nothing links to it, and if
-that ever changes it is a decision about whether a visitor should see it at
-all rather than a missing link.
+either, for that reason and because there is no room on one. Nothing links to
+it, and if that ever changes it is a decision about whether a visitor should
+see it at all rather than a missing link.
+
+---
+
+## Visitors
+
+`/admin/visitors` — who came to the site, from where, and what they did. The
+page Google Analytics is open in a tab for, drawn from this site's own count
+instead, so that the day Google's tag comes out the numbers do not go with it.
+The owner's alone, under the same lock as **Statistics** — a 404 for the page
+and a 403 for `GET /api/admin/visitors` to anybody else — linked from under
+the tabs on `/admin.html`, not indexed, and not disallowed either.
+
+A range — today so far, 7, 28 or 90 days — and under it five figures, each
+against the same length of time just before it: **visitors**, the share of
+them **returning**, **page views**, **time per visitor** and **clicks per
+visitor**. Then a bar a day of new and returning visitors (a bar a week for
+ninety days, and none for today), **the two rails** side by side, and four
+tables: **pages** with their views and average time, **countries**, **where
+they came from**, and **what was pressed**, named by the event it is reported
+to GA under. Today is not set against yesterday: half a day against a whole
+one says nothing.
+
+### A visitor is a browser on a day
+
+`assets/track.js` keeps one date in the browser, `ttb.seen` — the last day
+this browser opened a page here. A page opened on a day that is not that one
+is the browser's first today, and a date before today means it has been here
+before. That is all that is sent: whether this is the first page today,
+whether there was an earlier day, the page's path, where it was opened from
+and which rail the map dealt it. No id is made, no address is read, no
+fingerprint is taken, and nothing in the table could tell one visitor from
+another. A browser that cannot write storage is counted as views and never as
+a visitor, which undercounts rather than counting a visitor per page; two
+browsers of one person are two visitors, and clearing site data makes a
+returning visitor new — the same limits GA has with a cookie in the date's
+place. Bots mostly never reach it: the count is sent by the page's script and
+a crawler runs none.
+
+The date is written on to the visitor's device, and ePrivacy asks about
+exactly that — see **No consent banner**. It is one date, first-party, read
+by nothing but this count, and never sent anywhere as itself; whether that
+needs asking first is the owner's call and not this section's.
+
+### Time is time on screen
+
+The page counts the seconds it is visible — a tab in the background is not
+somebody reading — and reports them when it is hidden or put away, together
+with the presses `TTBTrack.event()` saw meanwhile, so a visit of twelve
+presses is two requests rather than thirteen. A phone that kills a tab outright
+sometimes takes the last stretch with it, so time and presses run slightly
+short and never long, and one stretch is capped at half an hour, so a tab left
+open on a desk all afternoon adds thirty minutes rather than five hours.
+**Time per visitor** is all the seconds over the visitors, which is what GA
+calls average engagement time.
+
+### The two rails
+
+The map deals a stranger one of two rails — **The short rail**. `/admin/stats`
+says how many were dealt each and how many of them opened a place on that
+first visit; this says how each did afterwards — visitors, returning ones,
+time and clicks per visitor — out of the same beacons, filed a second time
+under the rail. Only a browser that has been dealt one counts here: one that
+has never opened the map has not, and filing it under the full rail by
+default would be comparing the short rail against everybody. The map deals
+the rail once its places are in, which is after the page is ready, so its
+`track.js` tag carries `data-arrive="late"` and `assets/app.js` calls
+`TTBTrack.arrive()` itself once the rail is dealt — otherwise the one visit
+the comparison most needs, a stranger's first, would arrive with no rail.
+
+### Rows by the day, not by the visit
+
+`visitor_counts` is `profile_counts` for the whole site: one row per fact per
+day and a number, keyed `(day, kind, id)` and `WITHOUT ROWID` because the key
+is the only way it is read. A busy day costs no more rows than a quiet one
+with the same pages in it. The pages, the two visitor kinds and the rails are
+lists in `functions/api/_visitors.js`; the countries, the sources and the
+press names are whatever a request says, so each of those takes at most a
+hundred ids a day, after which only ids already counted that day go up. A day
+is a hundred-odd short rows at most, which is tens of thousands a year —
+megabytes, not gigabytes — and nothing needs deleting. The day it stops being
+small the answer is a monthly roll-up, and it is not worth writing before
+then.
+
+Per page load that is two requests to `POST /api/stats` — the page opened,
+and a stretch on screen with its presses — and one batch of upserts each: one
+row for a page view, four more on a visitor's first page of the day, one for
+the time and one per press name. On the free plan's hundred thousand writes a
+day that is room for well over ten thousand page views a day alongside
+everything else the site writes.
+
+### What it does not do
+
+No recordings and no heatmaps — that is Clarity, and nothing here replaces
+it. No path through the site for one visitor, no funnels, nothing in real
+time: the finest grain is a day. No device or browser breakdown. Numbers will
+not match GA's exactly — GA and this count different things by different
+means — so the two are worth running side by side for a few weeks before
+Google's tag comes out. `/admin/` sends nothing, so the owner reading this
+page is not counted by it; the owner using the site is, as in GA.
 
 ---
 
@@ -13464,6 +13562,13 @@ the map alone, which made the map the only page GA had heard of; the lists,
 the account page, the directory, the three pass pages and splitwise were
 invisible, and so was every press on any of them.
 
+**The same file also counts for the site itself.** Besides GA, `assets/track.js`
+tells `POST /api/stats` when a page opens and how long it was on screen, with
+the names of the presses `TTBTrack.event()` saw meanwhile, and that is what
+`/admin/visitors` is drawn from — see **Visitors**. It does not check for
+Google's tag, so taking GA out leaves it running; every event name below is
+also a row in that page's **What was pressed**.
+
 The tag on its own records one view per address, and that is where its
 usefulness ends. The map is one address on which everything happens, and
 even the pages that do change address are mostly buttons that change nothing
@@ -14043,6 +14148,15 @@ where every page load is a fresh session and a returning visitor is nobody it
 has seen before. This is a map of Tallinn; practically all its traffic is the
 EEA, so without the signal the replays arrive as a heap of one-page fragments,
 which is the opposite of the thing Clarity was added for.
+
+**The site's own count writes one thing too**: `ttb.seen`, the date of the
+last day this browser opened a page here, which is how **Visitors** tells a
+visitor from a view and a returning one from a new one without an id. It is
+first-party, never sent as itself and read by nothing else, which is a much
+smaller thing than two third-party tags and a session replay — but it is
+still a write to the device for the purpose of counting, and it is in the
+same question as they are. Taking Google and Clarity out leaves it the only
+one.
 
 It is `clarity('consentv2', …)` rather than the older `clarity('consent')`,
 which is deprecated. The object carries **both spellings** of its two keys —

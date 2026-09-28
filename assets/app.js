@@ -11596,6 +11596,10 @@
       /* And which rail, before the rail is measured: a pill the stylesheet
          puts away has no height for placeRail() to count. */
       applyLayout(pickLayout());
+      /* And now the page may say it was opened: the site's own count files
+         a visit under the rail it was dealt, and on a stranger's first visit
+         that is this line — see data-arrive on track.js in index.html. */
+      TTBTrack.arrive();
 
       buildSearchIndex();
       applyStaticStrings();
