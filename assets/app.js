@@ -205,6 +205,11 @@
        question. The mark outlives the panel and only a different place, or a
        filter that rules it out, takes it. */
     marked: null,        // restaurant id, or null
+    /* The place a row on a list's own page opened, for as long as it is the
+       one open. Closing it lands back on that list with the row in view
+       rather than on the band, because the list is where the press came
+       from — see openFromRow(). */
+    fromRow: null,       // restaurant id, or null
     view: 'list',        // 'list' | 'detail'
     lastFocus: null,
     /* The photograph up in the lightbox, and how far into it a pinch has
@@ -6267,6 +6272,20 @@
      whole map still showing behind it. */
   function closePanel(opts) {
     if (!dom.panel.classList.contains('is-open')) return;
+    /* A place a list's own row opened goes back to the list, at its half
+       stop and scrolled to that row, on a phone as on a desktop: the visitor
+       was reading down the list when they pressed it, and closing the place
+       is going back to where they were rather than down to the band. Back
+       reaches here too, through wireHistory(). See openFromRow(). */
+    var row = state.fromRow;
+    if (row && state.list && state.view === 'detail' && state.selected === row &&
+        (!opts || opts.band !== false)) {
+      state.fromRow = null;
+      state.selected = null;
+      lastReelKey = null;
+      standOn(byId(row));
+      return;
+    }
     if (state.list && isNarrow() && (!opts || opts.band !== false)) { restOnBand(); return; }
     /* Above 860px the places column does not close, so a cross is never about
        the panel — it is about whatever opened in front of the list, and what
@@ -6351,6 +6370,8 @@
     if (!state.lastFocus) state.lastFocus = document.activeElement;
 
     var fresh = !state.selected;
+    /* Any other place is an ordinary open, and closes the ordinary way. */
+    if (id !== state.fromRow) state.fromRow = null;
     state.selected = id;
     /* One mark at a time: opening a place takes it from whatever held it. */
     state.marked = id;
@@ -6432,7 +6453,7 @@
        along the top, under the brand card and the rail, where a list of ten
        read as a sheet of text with no map at all. At the half stop the pins
        stand in the half above it and the first rows are still under them; a
-       row pressed on a list's own page (standOn()) lands there too. */
+       place a list's own row opened closes there too (standOn()). */
     openSheetAt(!state.list);
     paintMarkers();
     syncUrl();
@@ -6450,22 +6471,30 @@
      which .lists-open stretches across the whole of the row rather than the
      name along the top of it.
 
-     A list is one thing with two views and this is the step between them. The
-     switch in the bar has said so for as long as there has been one, and it
-     sits at the top of a page people read down: somebody eight places into a
-     top ten presses the eighth place, not the chip above it. So the row is the
-     step across, and it lands on the arrangement the switch was pointing at —
-     the pins, the same rows under them, and the place that was pressed lit
-     between the two.
+     The press was on a place, so the place is what opens: its write-up, the
+     way ?spot= opens it, with the list's pins still on the map around it. It
+     used to stop a step short — the list at its half stop with the row lit
+     and the write-up one more press away — and that read as the press having
+     opened the list rather than the place anybody had pressed.
 
-     One thing separates this from every other way the list opens, and it is
-     because of what the press meant. The sheet stops at half, the way any
-     list does, but the frame is the list's rather than the place's —
-     focusOn() is told not to zoom, so the map keeps the fit that holds all of
-     these pins and only centres on this one. Going in to FOCUS_ZOOM would leave a single pin
-     on a street, which is what ?spot= is for and the opposite of what
-     somebody who has not yet noticed the map needs to see. The write-up is
-     one press further, on the row or on the pin, and that press zooms. */
+     The list is still under it, and closing the place is how it comes back:
+     closePanel() sees fromRow and hands over to standOn(), which is the list
+     at its half stop, scrolled to this row and with the pin lit. The cross,
+     Escape and Back all get there, so Back from the place is the list and a
+     second Back is the list's own page. */
+  function openFromRow(place) {
+    state.fromRow = place.id;
+    selectPlace(place.id, { fly: true, arrived: true });
+  }
+
+  /* The list, standing on one of its places: the list at its half stop, its
+     rows scrolled to that place's, and the place lit on the map between the
+     two. Where a place a row opened closes to — see openFromRow().
+
+     The frame is the list's rather than the place's — focusOn() is told not
+     to zoom, so the map keeps the fit that holds all of these pins and only
+     centres on this one. Somebody who has just shut a write-up is back to
+     reading the list, and a single pin on a street is not a list. */
   function standOn(place) {
     /* Lit, named and haloed, the way the place you last had open is: nothing
        is open here, so this is the mark rather than the selection. */
@@ -10791,9 +10820,9 @@
     params.delete('then');
     /* And ?at= with them: it names the place a list's own row was pressed on,
        which is a thing that happens once on the way in. What the page is
-       showing afterwards is ?list=, the same as arriving on the list any
-       other way — and a link copied out of it should be that rather than one
-       that reopens somebody else's eighth choice. See standOn(). */
+       showing afterwards is ?list= and ?spot=, the same as opening that place
+       over the list any other way — and a link copied out of it should be
+       that rather than one that replays the press. See openFromRow(). */
     params.delete('at');
     /* ?saved= is one of those doors too: the account page opens the map on
        your own marks with it, and a link copied afterwards is a link to the
@@ -11619,9 +11648,9 @@
          count of first places opened on the short rail leaves out. */
       if (spot && byId(spot)) selectPlace(spot, { fly: true, arrived: true });
 
-      /* The list, standing on one of its places: the map above, the list
-         under it, and that place lit between the two. See standOn(). */
-      else if (stand) standOn(stand);
+      /* The place a row on the list's own page was pressed on, open, with
+         the list underneath it for the close to land on. See openFromRow(). */
+      else if (stand) openFromRow(stand);
 
       /* Arriving on a list opens the panel on it. The pins answer "where are
          these"; the panel answers "why these" — the sentence its owner wrote
