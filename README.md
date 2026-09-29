@@ -7131,7 +7131,8 @@ statement per read — and a save says *Pages are not switched on here yet.*
 
 `/insights`: how the page under your name is doing. How often `/u/<you>` was
 opened, where the people opening it came from, which country, and what on it
-they pressed — over the last 7, 28 or 90 days or all of it. It is read by
+they pressed — over the last 7, 28 or 90 days or all of it — and under that,
+how often each of your lists has been opened. It is read by
 the owner of the page and by nobody else; nothing about it is printed on the
 profile, on `/admin/stats` or anywhere a stranger can see, and the route has no way
 to ask about anybody but yourself. The door to it is a row on the account
@@ -7142,12 +7143,31 @@ it: *46 views in the last 7 days*.
 Google Analytics has all of this for the whole site. What it cannot do is hand
 one person the slice that is about their own page, and that is the whole of
 what this is. It is meant to be roughly right rather than exactly right, and
-it says what it is counting in its first sentence: **views, not people**. A
-reload is another view, the way it is another page view in GA, and one person
-coming back on five evenings is five. Your own visits are not counted — the
-profile leaves them out when it knows it is yours, and the server leaves them
-out again by the session, so checking how your page looks never moves its
-number.
+it says what it is counting in its first sentence: **views, not people**. One
+person coming back on five evenings is five — but one person reloading twenty
+times in an afternoon is one, because a view is counted once a day per visitor
+(below). Your own visits are not counted — the profile leaves them out when it
+knows it is yours, and the server leaves them out again by the session, so
+checking how your page looks never moves its number.
+
+**Once a day, whoever is refreshing.** A reload used to be another view, the
+way it is another page view in GA, and that was wrong for a number somebody
+reads as "how many people looked": a page refreshed over and over by one
+visitor, or by a script to make a list look popular, said something that was
+not true. So an open of a profile or of a list now counts the first time it
+happens in a UTC day from one browser on one network and not again until the
+next. The page remembers what it sent today in `localStorage` under
+`ttb.opened` and does not send it twice, which stops the ordinary reload for
+free; and the server keeps `view_seen`, one row per day, visitor and thing,
+the visitor being an HMAC under `SAVE_SALT` of the address and the user agent
+— the same one-way `fingerprint()` the save cap uses — so a script that clears
+its storage still counts once. The address is never stored, the key is a
+different one for every thing and every day, so the table cannot be read as
+what one visitor looked at, and yesterday's rows are deleted in passing.
+Something that changes its address on every request still gets through, and
+that is the bargain: nobody is paid for the number. Everything counted before
+this landed stays as it was, reloads included — there is no way to take them
+back out. `firstToday()` in `functions/api/_visits.js` is the whole of it.
 
 **The shape is the one people already know.** Every page-of-links host draws
 this the same way — a range, three figures, a line, a table of sources — and
@@ -7159,6 +7179,19 @@ length of time just before; a line of views over time; then **Where they came
 from** with views, clicks and rate per source; **What was pressed**; and
 **Country**. Where they came from and which country are cut to five rows and
 an **Other**, since the long tail of a page's sources is one visit each.
+
+**Your lists** is the last card: every list you have, most opened first, the
+name a way into it and the number beside it, private ones marked **Private**
+with the number they had when they were last public. It is **all time**
+whatever the range chips say, because a list's opens are one running number
+in `press_counts` — the one that orders `/lists` — with no day in it to cut
+by, and the line under the card says so rather than letting the chips seem to
+apply. It is read out of another table from the page's own numbers, so it is
+there in every state below, a page nobody has opened included. No lists is no
+card; lists nobody has opened yet are *None of your lists has been opened yet*
+rather than a column of noughts. Following one to a range would take a table
+of list opens by day, and is not worth building until somebody asks which
+week a list took off.
 
 Where it parts from those hosts, on purpose. **Every range is there for
 everybody** — there is no ninety days behind an upgrade, because this site
@@ -7238,28 +7271,33 @@ to disagree with it. Both go through `POST /api/stats` as two more kinds,
 already uses to say something was pressed. They are read by `GET
 /api/insights?days=`, which takes the session and nothing else and answers
 only the four ranges — one grouped read of the range and the one before it,
-and the arithmetic in `readInsights()`. Nothing is filed under the visitor:
-no address, no device id, no fingerprint, no row per visit.
+and the arithmetic in `readInsights()` — plus one read of your lists joined to
+their opens, `listViews()`. Nothing in the counts is filed under the visitor:
+no address, no device id, no row per visit. The one keyed hash is
+`view_seen`'s, which lives a day and says only that something was already
+counted.
 
 Nothing is deleted either, so all time means all of it. A page opened a few
 dozen times a day is a few thousand rows a year; the day that stops being
 small, the answer is a monthly roll-up, and it is not worth writing before
-then. And nothing stops somebody posting to the route in a loop to inflate
-their own page — which is the bargain `/admin/stats` already makes, for the same
-reason: nobody is paid for the number, and the only person who reads it is
-the one it is about.
+then. A loop posting to the route from one address is one view a day; one
+that rotates its address still inflates the number — which is the bargain
+`/admin/stats` already makes, for the same reason: nobody is paid for the
+number, and the only person who reads it is the one it is about.
 
 **What it does not do.** No list of who visited, no times of day, no custom
 range, no export, no email about it, and no number on the profile itself — a
 count under somebody's name on a page strangers read would be a score, and
-there are none of those here. Views of your *lists* are not on it: those
-order `/lists` and are counted under **Statistics**.
+there are none of those here. The same goes for a list: its opens are yours
+on this page and an order on `/lists`, and never a number on the list.
 
-**Turning it on** is one table, applied by hand to both databases the way
-every table is — `db/schema.sql` is all `IF NOT EXISTS` — and both
-databases have it. On one that does not, profiles are not counted, the
-account page's row says what Insights is for instead of a number, and the
-page says the numbers are not switched on.
+**Turning it on** is two tables, applied by hand to both databases the way
+every table is — `db/schema.sql` is all `IF NOT EXISTS`. Both databases have
+`profile_counts`; on one that does not, profiles are not counted, the account
+page's row says what Insights is for instead of a number, and the page says
+the numbers are not switched on, with Your lists still under it. `view_seen`
+is the once-a-day, and on a database without it every open the page sends is
+counted — which is still once a day per browser, by the page's own memory.
 
 ### Private lists are not on it, including for its owner
 
@@ -10525,19 +10563,23 @@ counted either — it was already counted when it went on, and counting both
 ends would make every filter worth exactly twice itself. **All** is not a
 filter and counts nothing: it is the way out of the chips.
 
-Each page counts each place, each chip and each list **once per load**, held
-in memory and never in storage — and a list's page counts the one list it is,
-which needs nothing held at all: the only way to open the same list twice is
-to load the page twice, and that is two opens. A list its own owner opens is
-not counted, so an author reloading their draft cannot climb a ranking of
-strangers. That is the rule `TTBTrack.view()` already applies to the page view
+Each page counts each place and each chip **once per load**, held in memory
+and never in storage. A list is the exception, and counts **once a day per
+visitor**: its opens are drawn back to its owner on `/insights`, where they
+read as how many people looked, and a reload is not somebody else looking —
+**Once a day, whoever is refreshing** under **Insights** is the rule and the
+table behind it. A list its own owner opens is not counted at all, left out
+by the page and again by the server's session, so an author reloading their
+draft cannot climb a ranking of strangers or their own number. For places and
+chips the rule is `TTBTrack.view()` already applies to the page view
 it reports to Google Analytics beside an opened place, and the two agree on
 purpose: two numbers about the same gesture that counted it differently would
 be two numbers somebody eventually puts side by side. So comparing three
 places is three, walking back through history is not thirty, and a chip
 flicked on and off while somebody makes their mind up is one press.
 
-A reload counts again, exactly as a reload is a fresh page view in GA.
+A reload of the map counts a place again, exactly as a reload is a fresh
+page view in GA.
 
 ### The rail is the one that counts every press
 
@@ -13996,6 +14038,7 @@ How the page under your name is doing, `assets/insights.js`:
 | --- | --- |
 | `insights_range` | `days` (`7`, `28`, `90`, or `0` for all time) — a range chip pressed |
 | `insights_view` | — the way to the page as everybody sees it, in the header |
+| `list_page` | `list_id` — a row on **Your lists**, as on the lists |
 | `account_open` | `view` — the two doors when signed out |
 | `home` | as on the map |
 
