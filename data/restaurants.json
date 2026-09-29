@@ -2579,6 +2579,42 @@
     "closed": false
   },
   {
+    "id": "veino",
+    "name": "Veino",
+    "address": "Rataskaevu tn 6, 10123 Tallinn",
+    "lat": 59.437339,
+    "lng": 24.742808,
+    "price": 2,
+    "types": [
+      "date",
+      "hidden-gem"
+    ],
+    "blurb": {
+      "az": "Köhnə Şəhərdə kiçik bir şərab barı və burada işləyənlər şəraba həqiqətən ciddi yanaşırlar. Rəfdəki hər şüşəni tanıyırlar, hər birini danışa bilərlər, rəflər də maraqlı şərablarla doludur. Şamlar, şahmat taxtası kimi döşəmə, rəngli divarlar. Nə sevdiyini de və seçimi onlara burax.",
+      "hy": "Փոքրիկ գինու բար Հին քաղաքում, և այստեղ աշխատողները գինուն իսկապես լուրջ են վերաբերվում։ Նրանք ճանաչում են դարակի ամեն շիշ և կպատմեն ցանկացածի մասին, իսկ դարակները լի են հետաքրքիր գինիներով։ Մոմեր, շախմատաձև հատակ, գունավոր պատեր։ Ասա, թե ինչ ես սիրում, և թող ընտրեն իրենք։",
+      "en": "A small wine bar in the Old Town, run by people who are properly serious about wine. They know every bottle on the shelf and can talk you through any of them, and the shelves are full of interesting ones. Candles, a checkerboard floor, painted walls. Tell them what you like and let them pick.",
+      "et": "Väike veinibaar vanalinnas, mida peavad inimesed, kes võtavad veini päriselt tõsiselt. Nad tunnevad iga riiulil olevat pudelit ja oskavad igaühest rääkida, ning riiulid on huvitavaid veine täis. Küünlad, malelauamustriga põrand, maalitud seinad. Ütle, mis sulle meeldib, ja lase neil valida.",
+      "fi": "Pieni viinibaari vanhassakaupungissa, jota pyörittävät ihmiset, jotka ottavat viinin todella vakavasti. He tuntevat hyllyn jokaisen pullon ja osaavat kertoa jokaisesta, ja hyllyt ovat täynnä kiinnostavia viinejä. Kynttilät, shakkiruutulattia, maalatut seinät. Kerro mistä pidät ja anna heidän valita.",
+      "pt": "Um pequeno bar de vinhos na Cidade Velha, gerido por gente que leva o vinho mesmo a sério. Conhecem cada garrafa da prateleira e explicam qualquer uma, e as prateleiras estão cheias de vinhos interessantes. Velas, chão em xadrez, paredes pintadas. Diga do que gosta e deixe-os escolher.",
+      "ru": "Маленький винный бар в Старом городе, где работают люди, по-настоящему серьёзно относящиеся к вину. Они знают каждую бутылку на полке и расскажут про любую, а полки полны интересных вин. Свечи, пол в шахматную клетку, расписанные стены. Скажите, что вам нравится, и доверьте выбор им.",
+      "es": "Un pequeño bar de vinos en el casco antiguo, llevado por gente que se toma el vino muy en serio. Conocen cada botella de la estantería y te hablan de cualquiera, y las estanterías están llenas de vinos interesantes. Velas, suelo de ajedrez, paredes pintadas. Diles qué te gusta y deja que elijan ellos.",
+      "tr": "Eski Şehir'de küçük bir şarap barı; şarabı gerçekten ciddiye alan insanlar işletiyor. Raftaki her şişeyi tanıyorlar ve hangisini sorsan anlatıyorlar, raflar da ilginç şaraplarla dolu. Mumlar, dama tahtası zemin, boyalı duvarlar. Ne sevdiğini söyle, seçimi onlara bırak.",
+      "uk": "Маленький винний бар у Старому місті, де працюють люди, які ставляться до вина по-справжньому серйозно. Вони знають кожну пляшку на полиці й розкажуть про будь-яку, а полиці повні цікавих вин. Свічки, підлога в шахову клітинку, розмальовані стіни. Скажіть, що вам подобається, і дайте вибрати їм."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [
+      "01.webp",
+      "02.webp",
+      "03.webp"
+    ],
+    "website": "https://www.instagram.com/veinoveinikas/",
+    "phone": "+372 5429 0900",
+    "added": "2026-09-29",
+    "visited": "2026-09",
+    "closed": false
+  },
+  {
     "id": "vesta",
     "name": "Vesta",
     "address": "Tööstuse 88, 10416 Tallinn",

@@ -592,6 +592,14 @@
     "map": true
   },
   {
+    "id": "veino",
+    "name": "Veino",
+    "address": "Rataskaevu tn 6, 10123 Tallinn",
+    "lat": 59.437339,
+    "lng": 24.742808,
+    "map": true
+  },
+  {
     "id": "vesta",
     "name": "Vesta",
     "address": "Tööstuse 88, 10416 Tallinn",
