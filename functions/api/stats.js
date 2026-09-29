@@ -139,8 +139,8 @@ const LEAVE = 'leave';
    buttons, which is where most of them came from. Ten across the two rails:
    the full one draws eight of them and the short one four — More is only
    the short rail's, and its rows count as the pills they stand in for — and
-   chess is a pill on either rail only for somebody signed in, and otherwise a
-   row behind More on the short rail alone.
+   chess is the one id with no pill at all: a row behind More on the short
+   rail, counted here so /admin/stats can say how often it is opened.
 
    Written out here because a pill is not a row in any file this side can
    open: the chips come out of data/taxonomy.json and this is markup. So it is
